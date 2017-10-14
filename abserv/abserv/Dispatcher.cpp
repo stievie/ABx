@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Dispatcher.h"
-#include <thread>
 
 Dispatcher Dispatcher::Instance;
 
@@ -18,7 +17,7 @@ Dispatcher::~Dispatcher()
 void Dispatcher::Start()
 {
     state_ = State::Running;
-    std::thread(DispatcherThread, (void*)this);
+    thread_ = std::thread(DispatcherThread, (void*)this);
 }
 
 void Dispatcher::Stop()
@@ -61,18 +60,18 @@ void Dispatcher::DispatcherThread(void* p)
     Dispatcher* dispatcher = (Dispatcher*)p;
 
     // NOTE: second argument defer_lock is to prevent from immediate locking
-    std::unique_lock<std::mutex> taskLoockUnique(dispatcher->taskLock_, std::defer_lock);
+    std::unique_lock<std::mutex> taskLockUnique(dispatcher->taskLock_, std::defer_lock);
 
     while (dispatcher->state_ == State::Running)
     {
         Task* task = nullptr;
 
-        taskLoockUnique.lock();
+        taskLockUnique.lock();
 
         if (dispatcher->tasks_.empty())
         {
             // List is empty, wait for signal
-            dispatcher->taskSignal_.wait(taskLoockUnique);
+            dispatcher->taskSignal_.wait(taskLockUnique);
         }
 
         if (!dispatcher->tasks_.empty() && (dispatcher->state_ == State::Running))
@@ -82,7 +81,7 @@ void Dispatcher::DispatcherThread(void* p)
             dispatcher->tasks_.pop_front();
         }
 
-        taskLoockUnique.unlock();
+        taskLockUnique.unlock();
 
         // Execute the task
         if (task)

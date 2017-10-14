@@ -25,6 +25,15 @@ void ServiceManager::Die()
     ioService_.stop();
 }
 
+void ServicePort::Open(uint16_t port)
+{
+}
+
+bool ServicePort::AddService(std::shared_ptr<ServiceBase> service)
+{
+    return false;
+}
+
 void ServicePort::OnStopServer()
 {
 }

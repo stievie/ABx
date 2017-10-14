@@ -7,6 +7,11 @@ Connection::~Connection()
 {
 }
 
+bool Connection::Send(std::shared_ptr<OutputMessage> message)
+{
+    return false;
+}
+
 std::shared_ptr<Connection> ConnectionManager::CreateConnection(asio::ip::tcp::socket* socket,
     asio::io_service& ioService, std::shared_ptr<ServicePort> servicer)
 {

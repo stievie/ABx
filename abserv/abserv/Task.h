@@ -21,3 +21,7 @@ private:
     std::function<void(void)> function_;
 };
 
+inline Task* CreateTask(std::function<void(void)> f)
+{
+    return new Task(f);
+}

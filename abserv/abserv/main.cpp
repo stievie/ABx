@@ -5,6 +5,14 @@
 #include "Scheduler.h"
 #include "Service.h"
 #include "Dispatcher.h"
+#include "ProtocolGame.h"
+#include "ConfigManager.h"
+#include "Task.h"
+
+static void MainLoader(ServiceManager* serviceManager)
+{
+    serviceManager->Add<ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
+}
 
 int main(int argc, char** argv)
 {
@@ -12,6 +20,8 @@ int main(int argc, char** argv)
 
     Dispatcher::Instance.Start();
     Scheduler::Instance.Start();
+
+    Dispatcher::Instance.Add(CreateTask(std::bind(MainLoader, &serviceManager)));
 
     if (serviceManager.IsRunning())
     {
@@ -24,4 +34,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-

@@ -7,6 +7,7 @@
 
 class Connection;
 class ServicePort;
+class OutputMessage;
 
 class ConnectionManager
 {
@@ -40,6 +41,8 @@ public:
         servicePort_(servicPort)
     {}
     ~Connection();
+
+    bool Send(std::shared_ptr<OutputMessage> message);
 private:
     asio::ip::tcp::socket* socket_;
     asio::io_service& ioService_;
