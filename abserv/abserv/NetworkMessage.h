@@ -32,6 +32,8 @@ public:
     ~NetworkMessage()
     {}
 
+    int32_t GetMessageLength() const { return size_; }
+
     /// Read functions
     uint8_t GetByte() { return buffer_[readPos_++]; }
     uint16_t GetU16()
@@ -42,6 +44,8 @@ public:
     }
 
     /// Add function
+    void AddPaddingBytes(uint32_t n);
+    void AddBytes(const char* bytes, uint32_t size);
     void AddByte(uint8_t value)
     {
         if (!CanAdd(1))

@@ -74,7 +74,7 @@ void Dispatcher::DispatcherThread(void* p)
             dispatcher->taskSignal_.wait(taskLockUnique);
         }
 
-        if (!dispatcher->tasks_.empty() && (dispatcher->state_ == State::Running))
+        if (!dispatcher->tasks_.empty() && (dispatcher->state_ != State::Terminated))
         {
             // Take first task
             task = dispatcher->tasks_.front();
@@ -86,7 +86,10 @@ void Dispatcher::DispatcherThread(void* p)
         // Execute the task
         if (task)
         {
-            (*task)();
+            if (!task->IsExpired())
+            {
+                (*task)();
+            }
 
             delete task;
         }

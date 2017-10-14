@@ -74,9 +74,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Task.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Scheduler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
