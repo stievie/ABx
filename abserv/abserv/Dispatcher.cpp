@@ -62,7 +62,7 @@ void Dispatcher::DispatcherThread(void* p)
     // NOTE: second argument defer_lock is to prevent from immediate locking
     std::unique_lock<std::mutex> taskLockUnique(dispatcher->taskLock_, std::defer_lock);
 
-    while (dispatcher->state_ == State::Running)
+    while (dispatcher->state_ != State::Terminated)
     {
         Task* task = nullptr;
 

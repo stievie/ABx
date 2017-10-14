@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <asio.hpp>
 #include "Protocol.h"
+#include "Logger.h"
 
 class ServiceBase
 {
@@ -56,6 +57,7 @@ public:
     ~ServicePort() {}
 
     void Open(uint16_t port);
+    void Close();
     bool AddService(std::shared_ptr<ServiceBase> service);
     bool IsSingleSocket() const
     {
@@ -64,8 +66,12 @@ public:
     void OnStopServer();
 private:
     asio::io_service& service_;
+    asio::ip::tcp::acceptor* acceptor_;
     uint16_t serverPort_;
     std::vector<std::shared_ptr<ServiceBase>> services_;
+
+    void Accept();
+    void OnAccept(asio::ip::tcp::socket* socket, const asio::error_code& error);
 };
 
 class ServiceManager
@@ -94,7 +100,7 @@ public:
             return false;
         }
         std::shared_ptr<ServicePort> servicePort;
-        auto finder = acceptors_.find(port);
+        std::map<uint16_t, std::shared_ptr<ServicePort>>::iterator finder = acceptors_.find(port);
         if (finder == acceptors_.end())
         {
             servicePort.reset(new ServicePort(ioService_));
