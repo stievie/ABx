@@ -22,6 +22,16 @@ void ServiceManager::Stop()
     acceptors_.clear();
 }
 
+std::list<uint16_t> ServiceManager::GetPorts() const
+{
+    std::list<uint16_t> ports;
+    for (auto it = acceptors_.begin(); it != acceptors_.end(); ++it)
+        ports.push_back(it->first);
+    // Maps are ordered, so the elements are in order
+    ports.unique();
+    return ports;
+}
+
 void ServiceManager::Die()
 {
     ioService_.stop();

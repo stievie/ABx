@@ -1,18 +1,9 @@
 #include "stdafx.h"
 #include "Dispatcher.h"
+#include "Logger.h"
+#include "OutputMessage.h"
 
 Dispatcher Dispatcher::Instance;
-
-Dispatcher::Dispatcher() :
-    state_(State::Terminated)
-{
-}
-
-
-Dispatcher::~Dispatcher()
-{
-}
-
 
 void Dispatcher::Start()
 {
@@ -22,22 +13,22 @@ void Dispatcher::Start()
 
 void Dispatcher::Stop()
 {
-    taskLock_.lock();
+    lock_.lock();
     state_ = State::Closing;
-    taskLock_.unlock();
+    lock_.unlock();
 }
 
 void Dispatcher::Terminate()
 {
-    taskLock_.lock();
+    lock_.lock();
     state_ = State::Terminated;
-    taskLock_.unlock();
+    lock_.unlock();
 }
 
 void Dispatcher::Add(Task* task, bool front /* = false */)
 {
     bool doSignal = false;
-    taskLock_.lock();
+    lock_.lock();
 
     if (state_ == State::Running)
     {
@@ -49,18 +40,24 @@ void Dispatcher::Add(Task* task, bool front /* = false */)
             tasks_.push_front(task);
     }
 
-    taskLock_.unlock();
+    lock_.unlock();
 
     if (doSignal)
-        taskSignal_.notify_one();
+        signal_.notify_one();
 }
 
 void Dispatcher::DispatcherThread(void* p)
 {
+#ifdef DEBUG_DISPATTCHER
+    LOG_DEBUG << "Dispatcher threat started" << std::endl;
+#endif
+
     Dispatcher* dispatcher = (Dispatcher*)p;
 
+    OutputMessagePool* outputPool;
+
     // NOTE: second argument defer_lock is to prevent from immediate locking
-    std::unique_lock<std::mutex> taskLockUnique(dispatcher->taskLock_, std::defer_lock);
+    std::unique_lock<std::mutex> taskLockUnique(dispatcher->lock_, std::defer_lock);
 
     while (dispatcher->state_ != State::Terminated)
     {
@@ -71,8 +68,15 @@ void Dispatcher::DispatcherThread(void* p)
         if (dispatcher->tasks_.empty())
         {
             // List is empty, wait for signal
-            dispatcher->taskSignal_.wait(taskLockUnique);
+            dispatcher->signal_.wait(taskLockUnique);
+#ifdef DEBUG_DISPATTCHER
+            LOG_DEBUG << "Waiting for task" << std::endl;
+#endif
         }
+
+#ifdef DEBUG_DISPATTCHER
+        LOG_DEBUG << "Dispatcher signaled" << std::endl;
+#endif
 
         if (!dispatcher->tasks_.empty() && (dispatcher->state_ != State::Terminated))
         {
@@ -88,10 +92,22 @@ void Dispatcher::DispatcherThread(void* p)
         {
             if (!task->IsExpired())
             {
+                OutputMessagePool::Instance()->StartExecutionFrame();
                 (*task)();
+
+                outputPool = OutputMessagePool::Instance();
+                if (outputPool)
+                    outputPool->SendAll();
             }
 
             delete task;
+
+#ifdef DEBUG_DISPATTCHER
+            LOG_DEBUG << "Executing task" << std::endl;
+#endif
         }
     }
+#ifdef DEBUG_DISPATTCHER
+    LOG_DEBUG << "Dispatcher threat stopped" << std::endl;
+#endif
 }

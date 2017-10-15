@@ -9,8 +9,12 @@
 class Dispatcher
 {
 public:
-    Dispatcher();
-    ~Dispatcher();
+    Dispatcher() :
+        state_(State::Terminated)
+    {
+        tasks_.clear();
+    }
+    ~Dispatcher() {}
 
     void Start();
     void Stop();
@@ -24,11 +28,11 @@ public:
         Terminated
     };
 private:
-    std::mutex taskLock_;
+    std::mutex lock_;
     std::list<Task*> tasks_;
     State state_;
     std::thread thread_;
-    std::condition_variable taskSignal_;
+    std::condition_variable signal_;
     static void DispatcherThread(void* p);
 public:
     static Dispatcher Instance;

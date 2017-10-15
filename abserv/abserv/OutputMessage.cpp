@@ -11,7 +11,7 @@ OutputMessagePool::OutputMessagePool()
         OutputMessage* msg = new OutputMessage();
         outputMessages_.push_back(msg);
     }
-    frameTime_ = SysTime();
+    frameTime_ = AbTick();
 }
 
 OutputMessagePool::~OutputMessagePool()
@@ -25,7 +25,7 @@ OutputMessagePool::~OutputMessagePool()
 
 void OutputMessagePool::StartExecutionFrame()
 {
-    frameTime_ = SysTime();
+    frameTime_ = AbTick();
     isOpen_ = true;
 }
 
@@ -51,6 +51,10 @@ void OutputMessagePool::Send(std::shared_ptr<OutputMessage> message)
     }
     else
         LOG_WARNING << "state != OutputMessage::State::STATE_ALLOCATED_NO_AUTOSEND" << std::endl;
+}
+
+void OutputMessagePool::SendAll()
+{
 }
 
 std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage(Protocol* protocol,

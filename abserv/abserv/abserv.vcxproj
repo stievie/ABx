@@ -93,6 +93,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -107,6 +108,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,6 +127,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,6 +146,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -151,6 +155,8 @@
     <ClInclude Include="Connection.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Dispatcher.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
@@ -158,6 +164,7 @@
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ProtocolLogin.h" />
     <ClInclude Include="RefCounted.h" />
+    <ClInclude Include="Rsa.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="stdafx.h" />
@@ -170,6 +177,8 @@
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
@@ -177,6 +186,7 @@
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
     <ClCompile Include="ProtocolLogin.cpp" />
+    <ClCompile Include="Rsa.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="stdafx.cpp">

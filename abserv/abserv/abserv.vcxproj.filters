@@ -72,6 +72,15 @@
     <ClInclude Include="RefCounted.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Rsa.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -114,6 +123,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolLogin.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Rsa.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

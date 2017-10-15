@@ -15,10 +15,10 @@ class Logger
 {
 private:
     std::ostream& stream_;
-    bool nextIsBegin;
+    bool nextIsBegin_;
     Logger(std::ostream& stream = std::cout) :
         stream_(stream),
-        nextIsBegin(true)
+        nextIsBegin_(true)
     {}
     using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
@@ -28,7 +28,7 @@ public:
     Logger& operator << (endlType endl)
     {
 
-        nextIsBegin = true;
+        nextIsBegin_ = true;
         stream_ << endl;
         return *this;
     }
@@ -36,7 +36,7 @@ public:
     template <typename T>
     Logger& operator << (const T& data)
     {
-        if (nextIsBegin)
+        if (nextIsBegin_)
         {
             //set time_point to current time
             std::chrono::time_point<std::chrono::system_clock> time_point;
@@ -48,7 +48,7 @@ public:
             strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", (const tm*)&p);
 
             stream_ << chr << ": " << data;
-            nextIsBegin = false;
+            nextIsBegin_ = false;
         }
         else
         {
@@ -58,28 +58,36 @@ public:
     }
     Logger& Error()
     {
-        (*this) << "[ERROR] ";
+        if (nextIsBegin_)
+            (*this) << "[ERROR] ";
         return *this;
     }
     Logger& Info()
     {
-        (*this) << "[Info] ";
+        if (nextIsBegin_)
+            (*this) << "[Info] ";
         return *this;
     }
     Logger& Warning()
     {
-        (*this) << "[Warning] ";
+        if (nextIsBegin_)
+            (*this) << "[Warning] ";
         return *this;
     }
+#ifdef _DEBUG
     Logger& Debug()
     {
-        (*this) << "[Debug] ";
+        if (nextIsBegin_)
+            (*this) << "[Debug] ";
         return *this;
     }
+#endif
     static Logger Instance;
 };
 
 #define LOG_INFO (Logger::Instance.Info())
-#define LOG_WARNING (Logger::Instance.Warning() << "[" << __AB_PRETTY_FUNCTION__ << "] ")
-#define LOG_ERROR (Logger::Instance.Error() << "[" << __AB_PRETTY_FUNCTION__ << "] ")
-#define LOG_DEBUG (Logger::Instance.Debug() << "[" << __AB_PRETTY_FUNCTION__ << "] ")
+#define LOG_WARNING (Logger::Instance.Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
+#define LOG_ERROR (Logger::Instance.Error() << __AB_PRETTY_FUNCTION__ << "(): ")
+#ifdef _DEBUG
+#define LOG_DEBUG (Logger::Instance.Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
+#endif

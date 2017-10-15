@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <sys/timeb.h>
 
-inline int64_t SysTime()
+inline int64_t AbTick()
 {
     timeb t;
     ftime(&t);

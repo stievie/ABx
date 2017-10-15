@@ -85,6 +85,7 @@ public:
 
     void StartExecutionFrame();
     void Send(std::shared_ptr<OutputMessage> message);
+    void SendAll();
     std::shared_ptr<OutputMessage> GetOutputMessage(Protocol* protocol, bool autosend = true);
 protected:
     typedef std::list<OutputMessage*> InternalOutputMessageList;

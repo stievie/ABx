@@ -90,6 +90,7 @@ public:
     void Run();
     void Stop();
     bool IsRunning() const { return !acceptors_.empty(); }
+    std::list<uint16_t> GetPorts() const;
 
     /// Adds a protocol and binds it to the port
     template <typename T>
