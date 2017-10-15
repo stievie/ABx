@@ -2,11 +2,12 @@
 
 #include <memory>
 #include "Connection.h"
+#include "RefCounted.h"
 
 class OutputMessage;
 class NetworkMessage;
 
-class Protocol
+class Protocol : public RefCounted
 {
 private:
     std::shared_ptr<Connection> connection_;
@@ -22,8 +23,18 @@ public:
     ~Protocol() {}
 
     void OnSendMessage(std::shared_ptr<OutputMessage> message);
-    void OnRecvMessage(NetworkMessage* message);
+    void OnRecvMessage(NetworkMessage& message);
+
+    virtual void OnRecvFirstMessage(NetworkMessage& msg) = 0;
+    virtual void OnConnect() {}
+
+    void SetConnection(std::shared_ptr<Connection> connection)
+    {
+        connection_ = connection;
+    }
     std::shared_ptr<Connection> GetConnection() const { return connection_; }
+
+    void Release();
 
 };
 

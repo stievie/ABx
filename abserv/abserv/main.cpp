@@ -6,6 +6,7 @@
 #include "Service.h"
 #include "Dispatcher.h"
 #include "ProtocolGame.h"
+#include "ProtocolLogin.h"
 #include "ConfigManager.h"
 #include "Task.h"
 #include <mutex>
@@ -23,6 +24,7 @@ static void MainLoader(ServiceManager* serviceManager)
     LOG_INFO << "Loading..." << std::endl;
 
     serviceManager->Add<ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
+    serviceManager->Add<ProtocolLogin>(ConfigManager::Instance.config_[ConfigManager::Key::LoginPort].GetInt());
 
     // notify we are ready
     loaderSignal.notify_all();

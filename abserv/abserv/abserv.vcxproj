@@ -156,6 +156,8 @@
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolGame.h" />
+    <ClInclude Include="ProtocolLogin.h" />
+    <ClInclude Include="RefCounted.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="stdafx.h" />
@@ -174,6 +176,7 @@
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
+    <ClCompile Include="ProtocolLogin.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="stdafx.cpp">

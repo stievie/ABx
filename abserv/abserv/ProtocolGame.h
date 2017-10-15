@@ -15,5 +15,8 @@ public:
 public:
     ProtocolGame(std::shared_ptr<Connection> connection);
     ~ProtocolGame();
+
+    void OnRecvFirstMessage(NetworkMessage& msg) override;
+    void OnConnect() override;
 };
 

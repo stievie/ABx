@@ -29,9 +29,9 @@ private:
 
     OutputMessage()
     {
-        FreeMessage();
+        Free();
     }
-    void FreeMessage()
+    void Free()
     {
         SetConnection(std::shared_ptr<Connection>());
         SetProtocol(nullptr);
@@ -54,6 +54,7 @@ public:
     {
         connection_ = connection;
     }
+    Protocol* GetProtocol() { return protocol_; }
     void SetProtocol(Protocol* protocol)
     {
         protocol_ = protocol;
@@ -62,6 +63,10 @@ public:
     void SetState(OutputMessage::State state)
     {
         state_ = state;
+    }
+    void SetFrame(uint64_t frame)
+    {
+        frame_ = frame;
     }
 };
 
@@ -80,9 +85,15 @@ public:
 
     void StartExecutionFrame();
     void Send(std::shared_ptr<OutputMessage> message);
+    std::shared_ptr<OutputMessage> GetOutputMessage(Protocol* protocol, bool autosend = true);
 protected:
     typedef std::list<OutputMessage*> InternalOutputMessageList;
     typedef std::list<std::shared_ptr<OutputMessage>> OutputMessageList;
+private:
+    void ReleaseMessage(OutputMessage* message);
+    void InternalReleaseMessage(OutputMessage* message);
+    void ConfigureOutputMessage(std::shared_ptr<OutputMessage> message,
+        Protocol* protocol, bool autosend);
 
     InternalOutputMessageList outputMessages_;
     InternalOutputMessageList allOutputMessages_;

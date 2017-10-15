@@ -53,6 +53,15 @@ public:
         buffer_[readPos_++] = value;
         size_++;
     }
+    void AddString(const char* value);
+    void AddU16(uint16_t value)
+    {
+        if (!CanAdd(sizeof(value)))
+            return;
+        *(uint16_t*)(buffer_ + readPos_) = value;
+        readPos_ += 2;
+        size_ += 2;
+    }
 
     /// Other function
     void Skip(int bytes)

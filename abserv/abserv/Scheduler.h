@@ -1,5 +1,7 @@
 #pragma once
 
+#define SCHEDULER_MINTICKS 50
+
 class Scheduler
 {
 public:

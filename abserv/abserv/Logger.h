@@ -5,6 +5,12 @@
 #include <chrono>
 #include <ctime>
 
+#if defined __GNUC__
+#define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__
+#elif defined _MSC_VER
+#define __AB_PRETTY_FUNCTION__ __FUNCTION__
+#endif
+
 class Logger
 {
 private:
@@ -14,12 +20,12 @@ private:
         stream_(stream),
         nextIsBegin(true)
     {}
-    using endl_type = decltype(std::endl<char, std::char_traits<char>>);
+    using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     ~Logger() {}
 
     //Overload for std::endl only:
-    Logger& operator << (endl_type endl)
+    Logger& operator << (endlType endl)
     {
 
         nextIsBegin = true;
@@ -74,6 +80,6 @@ public:
 };
 
 #define LOG_INFO (Logger::Instance.Info())
-#define LOG_WARNING (Logger::Instance.Warning())
-#define LOG_ERROR (Logger::Instance.Error())
-#define LOG_DEBUG (Logger::Instance.Debug())
+#define LOG_WARNING (Logger::Instance.Warning() << "[" << __AB_PRETTY_FUNCTION__ << "] ")
+#define LOG_ERROR (Logger::Instance.Error() << "[" << __AB_PRETTY_FUNCTION__ << "] ")
+#define LOG_DEBUG (Logger::Instance.Debug() << "[" << __AB_PRETTY_FUNCTION__ << "] ")

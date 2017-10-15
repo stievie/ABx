@@ -8,7 +8,8 @@ public:
     enum Key
     {
         GamePort,
-        AdminPort
+        AdminPort,
+        LoginPort
     };
 public:
     ConfigManager();

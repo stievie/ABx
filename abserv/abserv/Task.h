@@ -15,7 +15,7 @@ public:
     }
     Task(std::function<void(void)>& f) :
         function_(f),
-        expiration_(-1)
+        expiration_(0)
     {}
     ~Task() {}
 
@@ -27,7 +27,7 @@ public:
 
     bool IsExpired() const
     {
-        if (expiration_ < 0)
+        if (expiration_ <= 0)
             // Does not expire
             return false;
         return expiration_ < std::chrono::duration_cast<std::chrono::milliseconds>

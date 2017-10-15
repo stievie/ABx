@@ -25,6 +25,10 @@ void Protocol::OnSendMessage(std::shared_ptr<OutputMessage> message)
 {
 }
 
-void Protocol::OnRecvMessage(NetworkMessage* message)
+void Protocol::OnRecvMessage(NetworkMessage& message)
+{
+}
+
+void Protocol::Release()
 {
 }
