@@ -32,8 +32,8 @@ bool Variant::operator ==(const Variant& other) const
         return value_.boolValue == other.value_.boolValue;
     case VAR_FLOAT:
         return value_.floatValue == other.value_.floatValue;
-    case VAR_TIME:
-        return value_.timeValue == other.value_.timeValue;
+    case VAR_INT64:
+        return value_.int64Value == other.value_.int64Value;
     case VAR_STRING:
         return stringValue_.compare(other.stringValue_) == 0;
     case VAR_VOIDPTR:
@@ -53,8 +53,8 @@ std::string Variant::ToString() const
         return std::to_string(value_.boolValue);
     case VAR_FLOAT:
         return std::to_string(value_.floatValue);
-    case VAR_TIME:
-        return std::to_string(value_.timeValue);
+    case VAR_INT64:
+        return std::to_string(value_.int64Value);
     case VAR_STRING:
         return stringValue_;
     case VAR_VOIDPTR:

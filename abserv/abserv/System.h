@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <sys/timeb.h>
+#include <string>
 
 inline int64_t AbTick()
 {

@@ -18,7 +18,6 @@ public:
     int32_t GetKeySize() const;
     void GetPublicKey(char* buffer);
 private:
-    bool keySet_;
     std::recursive_mutex lock_;
     //use only GMP
     mpz_t m_p, m_q, m_u, m_d, m_dp, m_dq, m_mod;

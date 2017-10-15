@@ -7,9 +7,9 @@ enum VariantType
 {
     VAR_NONE = 0,
     VAR_INT,
+    VAR_INT64,
     VAR_BOOL,
     VAR_FLOAT,
-    VAR_TIME,
     VAR_STRING,
     VAR_VOIDPTR
 };
@@ -19,16 +19,15 @@ struct VariantValue
     union
     {
         int intValue;
+        int64_t int64Value;
         bool boolValue;
         float floatValue;
-        long long timeValue;               // milliseconds since the epoch of system_clock
         void* ptrValue;
     };
     VariantValue() :
         intValue(0),
         boolValue(false),
         floatValue(0.0f),
-        timeValue(0),
         ptrValue(nullptr)
     { }
 };
@@ -51,9 +50,9 @@ public:
     { }
 
     Variant(int value) : type_(VAR_INT) { value_.intValue = value; }
+    Variant(long long value) : type_(VAR_INT64) { value_.int64Value = value; }
     Variant(bool value) : type_(VAR_BOOL) { value_.boolValue = value; }
     Variant(float value) : type_(VAR_FLOAT) { value_.floatValue = value; }
-    Variant(long long value) : type_(VAR_TIME) { value_.timeValue = value; }
     Variant(const std::string& value) : type_(VAR_STRING), stringValue_(value) {}
     Variant(const char* value) : type_(VAR_STRING), stringValue_(value) {}
 
@@ -90,8 +89,8 @@ public:
     }
     Variant& operator =(long long other)
     {
-        SetType(VAR_TIME);
-        value_.timeValue = other;
+        SetType(VAR_INT64);
+        value_.int64Value = other;
         return *this;
     }
     Variant& operator =(const std::string& other)
@@ -119,7 +118,7 @@ public:
     bool operator ==(int other) const { return type_ == VAR_INT ? value_.intValue == other : false; }
     bool operator ==(bool other) const { return type_ == VAR_BOOL ? value_.boolValue == other : false; }
     bool operator ==(float other) const { return type_ == VAR_FLOAT ? value_.floatValue == other : false; }
-    bool operator ==(long long other) const { return type_ == VAR_TIME ? value_.timeValue == other : false; }
+    bool operator ==(long long other) const { return type_ == VAR_INT64 ? value_.int64Value == other : false; }
     bool operator ==(const std::string& other) const { return type_ == VAR_STRING ? (stringValue_.compare(other) == 0) : false; }
     bool operator ==(const char* other) const { return type_ == VAR_STRING ? stringValue_.compare(other) == 0 : false; }
     bool operator ==(void* other) const { return type_ == VAR_VOIDPTR ? value_.ptrValue == other : false; }
@@ -147,7 +146,7 @@ public:
     }
     long long GetTime() const
     {
-        return (type_ == VAR_TIME) ? value_.timeValue : 0;
+        return (type_ == VAR_INT64) ? value_.int64Value : 0;
     }
     const std::string& GetString() const
     {

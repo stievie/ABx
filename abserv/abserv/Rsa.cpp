@@ -3,8 +3,7 @@
 
 Rsa Rsa::Instance;
 
-Rsa::Rsa() :
-    keySet_(false)
+Rsa::Rsa()
 {
     mpz_init2(m_p, 1024);
     mpz_init2(m_q, 1024);
@@ -14,7 +13,6 @@ Rsa::Rsa() :
     mpz_init2(m_dq, 1024);
     mpz_init2(m_mod, 1024);
 }
-
 
 Rsa::~Rsa()
 {
@@ -52,18 +50,19 @@ void Rsa::SetKey(const char* p, const char* q, const char* d)
 
 bool Rsa::SetKey(const std::string& file)
 {
-    //loads p,q and d from a file
+    // loads p,q and d from a file
     FILE* f;
     errno_t err = fopen_s(&f, file.c_str(), "r");
     if (err)
         return false;
 
+    // 2048 bit
     char p[512];
     char q[512];
     char d[512];
-    delete fgets(p, 512, f);
-    delete fgets(q, 512, f);
-    delete fgets(d, 512, f);
+    fgets(p, 512, f);
+    fgets(q, 512, f);
+    fgets(d, 512, f);
 
     SetKey(p, q, d);
     return true;
@@ -89,7 +88,8 @@ bool Rsa::Decrypt(char* msg, size_t size)
     mpz_sub(u2, v2, v1);
     mpz_mul(tmp, u2, m_u);
     mpz_mod(u2, tmp, m_q);
-    if (mpz_cmp_si(u2, 0) < 0) {
+    if (mpz_cmp_si(u2, 0) < 0)
+    {
         mpz_add(tmp, u2, m_q);
         mpz_set(u2, tmp);
     }

@@ -21,6 +21,7 @@
 std::mutex loaderLock;
 std::condition_variable loaderSignal;
 std::unique_lock<std::mutex> loaderUniuqueLock(loaderLock);
+std::string appPath;
 
 static void PrintServerInfo(ServiceManager* serviceManager)
 {
@@ -40,6 +41,10 @@ static void MainLoader(ServiceManager* serviceManager)
 
     LOG_INFO << "Loading..." << std::endl;
 
+    LOG_INFO << "Loading configuration...";
+    ConfigManager::Instance.Load(appPath + "/" + CONFIG_FILE);
+    LOG_INFO << "[done]" << std::endl;
+
     LOG_INFO << "Initializing PRNG...";
     std::srand((unsigned)AbTick());
     LOG_INFO << "[done]" << std::endl;
@@ -55,10 +60,7 @@ static void MainLoader(ServiceManager* serviceManager)
 
     // ENC ------------------------
     LOG_INFO << "Loading RSA key...";
-    const char* p("MIICWgIBAAKBgFm8OdzKgKgOXkWrndXFqmzuHjRbUTTgWn87Izl0MdipcKghEyyljcD4Z04Msg+N0r91ChbqeswreJvdGItQvtEwrHgtTTaDzmELk5XbEmVkxHw1CNwcJh+HR8dJjUV8JA3OSqnzE4tGTf6");
-    const char* q("i5NBdWXA2gBQ9qTAbhSMt1ZyC6JiuKt2xzmMs7IFh3y0QQJBAJztZyrChf08T4v8snOEl2aKNoJqHFSZUhgK+yW0h5LDgdrwda9fC/3rn9dBP5hONTHIi4ZXy7hT8X32/Cevz3kCQQCSYzy2fbmHOQqyfnF");
-    const char* d("snOEl2aKNoJqHFSZUhgK+yW0h5LDgdrwda9fC/3rn9dBP5hONTHIi4ZXy7hT8X32/Cevz3kCQQCSYzy2fbmHOKK64JB9aqQqyfnFh8nVMPD6UacTuPQUAaUI5z4GtDyeA/sLziasMu7TYENuHbZ0dTaJl9Xj9kp5AkAYe8251Sm0jeFXVPC+pzQ78lp41HdhF57AU45Fnrn8QvaSoyupVen4DvgcTHjQmXshLknehvoo4yftYEiNJJf5AkAmcrQWhkz9TA3JoYOxvRmjN2tHy1NikDkqtdl5H6HTw17SSNIMtrgZFJiSUDHuFm6NzAHJ4Tnz");
-    Rsa::Instance.SetKey(p, q, d);
+    Rsa::Instance.SetKey(appPath + "/rsa.key");
     LOG_INFO << "[done]" << std::endl;
 
 
@@ -78,6 +80,10 @@ static void MainLoader(ServiceManager* serviceManager)
 
 int main(int argc, char** argv)
 {
+    std::string aux(argv[0]);
+    size_t pos = aux.find_last_of("\\/");
+    appPath = aux.substr(0, pos);
+
     ServiceManager serviceManager;
 
     Dispatcher::Instance.Start();

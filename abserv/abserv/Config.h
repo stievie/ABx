@@ -10,3 +10,5 @@
 #define DEBUG_SCHEDULER
 #else
 #endif
+
+#define CONFIG_FILE "config.lua"
