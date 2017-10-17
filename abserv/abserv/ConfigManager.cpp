@@ -8,8 +8,10 @@ ConfigManager::ConfigManager() :
     L(nullptr),
     isLoaded(false)
 {
-    config_[Key::GamePort] = 1337;
     config_[Key::LoginPort] = 1336;
+    config_[Key::AdminPort] = 1336;
+    config_[Key::StatusPort] = 1336;
+    config_[Key::GamePort] = 1337;
 }
 
 std::string ConfigManager::GetGlobal(const std::string& ident, const std::string& default)
@@ -50,6 +52,7 @@ bool ConfigManager::Load(const std::string& file)
     L = lua_open();
     if (!L)
         return false;
+    luaL_openlibs(L);
 
     if (luaL_dofile(L, file.c_str()) != 0)
     {
@@ -61,9 +64,12 @@ bool ConfigManager::Load(const std::string& file)
         return false;
     }
 
+    config_[Key::Location] = GetGlobal("location", "Unknown");
     config_[Key::IP] = GetGlobal("ip", "127.0.01");
-    config_[Key::GamePort] = (int)GetGlobal("game_port", 1337);
     config_[Key::LoginPort] = (int)GetGlobal("login_port", 1336);
+    config_[Key::AdminPort] = (int)GetGlobal("admin_port", 1336);
+    config_[Key::StatusPort] = (int)GetGlobal("status_port", 1336);
+    config_[Key::GamePort] = (int)GetGlobal("game_port", 1337);
 
     config_[Key::DBHost] = GetGlobal("db_host", "localhost");
     config_[Key::DBPort] = (int)GetGlobal("db_port", 3306);

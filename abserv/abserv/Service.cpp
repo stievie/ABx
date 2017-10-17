@@ -87,7 +87,7 @@ void ServicePort::Close()
 
 bool ServicePort::AddService(std::shared_ptr<ServiceBase> service)
 {
-    for (std::vector<std::shared_ptr<ServiceBase>>::const_iterator it = services_.begin(); it != services_.end(); ++it)
+    for (ConstIt it = services_.begin(); it != services_.end(); ++it)
     {
         if ((*it)->IsSingleSocket())
             return false;
@@ -102,10 +102,10 @@ void ServicePort::OnStopServer()
     Close();
 }
 
-Protocol * ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg) const
+Protocol* ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg) const
 {
     uint8_t protocolId = msg.GetByte();
-    for (std::vector<std::shared_ptr<ServiceBase>>::const_iterator it = services_.begin(); it != services_.end(); ++it)
+    for (ConstIt it = services_.begin(); it != services_.end(); ++it)
     {
         std::shared_ptr<ServiceBase> service = *it;
         if (service->GetPotocolIdentifier() == protocolId &&

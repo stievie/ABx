@@ -9,10 +9,12 @@ class ConfigManager
 public:
     enum Key
     {
+        Location,
         IP,
         GamePort,
         AdminPort,
         LoginPort,
+        StatusPort,
 
         DBHost,
         DBPort,

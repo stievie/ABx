@@ -7,6 +7,8 @@
 #include "Dispatcher.h"
 #include "ProtocolGame.h"
 #include "ProtocolLogin.h"
+#include "ProtocolAdmin.h"
+#include "ProtocolStatus.h"
 #include "ConfigManager.h"
 #include "Task.h"
 #include <mutex>
@@ -60,8 +62,10 @@ static void MainLoader(ServiceManager* serviceManager)
 
 
 
-    serviceManager->Add<ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
     serviceManager->Add<ProtocolLogin>(ConfigManager::Instance.config_[ConfigManager::Key::LoginPort].GetInt());
+    serviceManager->Add<ProtocolAdmin>(ConfigManager::Instance.config_[ConfigManager::Key::AdminPort].GetInt());
+    serviceManager->Add<ProtocolStatus>(ConfigManager::Instance.config_[ConfigManager::Key::StatusPort].GetInt());
+    serviceManager->Add<ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
 
     PrintServerInfo(serviceManager);
 

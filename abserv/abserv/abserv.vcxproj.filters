@@ -84,6 +84,12 @@
     <ClInclude Include="Utils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ProtocolAdmin.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ProtocolStatus.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -141,6 +147,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Uttils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtocolAdmin.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtocolStatus.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

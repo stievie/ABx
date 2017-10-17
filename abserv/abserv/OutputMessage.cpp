@@ -64,7 +64,7 @@ void OutputMessagePool::SendAll()
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
-    for (auto it = toAddQueue_.begin(); it != toAddQueue_.end();)
+    for (OutputMessageList::iterator it = toAddQueue_.begin(); it != toAddQueue_.end();)
     {
         // Drop messages older than 10 seconds
         if (AbTick() - (*it)->GetFrame() > 10 * 1000)
@@ -80,7 +80,7 @@ void OutputMessagePool::SendAll()
 
     toAddQueue_.clear();
 
-    for (auto it = autosendOutputMessages_.begin(); it != autosendOutputMessages_.end();)
+    for (OutputMessageList::iterator it = autosendOutputMessages_.begin(); it != autosendOutputMessages_.end();)
     {
         std::shared_ptr<OutputMessage> omsg = *it;
         bool v = omsg->GetMessageLength() > 1024 || (frameTime_ - omsg->GetFrame() > 10);

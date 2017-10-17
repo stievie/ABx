@@ -66,6 +66,7 @@ public:
     void OnStopServer();
     Protocol* MakeProtocol(bool checksummed, NetworkMessage& msg) const;
 private:
+    using ConstIt = std::vector<std::shared_ptr<ServiceBase>>::const_iterator;
     asio::io_service& service_;
     asio::ip::tcp::acceptor* acceptor_;
     uint16_t serverPort_;
@@ -101,13 +102,16 @@ public:
     {
         if (port == 0)
         {
+#ifdef DEBUG_NET
+            LOG_ERROR << "Port can not be 0" << std::endl;
+#endif
             return false;
         }
         std::shared_ptr<ServicePort> servicePort;
         std::map<uint16_t, std::shared_ptr<ServicePort>>::iterator finder = acceptors_.find(port);
         if (finder == acceptors_.end())
         {
-            servicePort.reset(new ServicePort(ioService_));
+            servicePort = std::make_shared<ServicePort>(ioService_);
             servicePort->Open(port);
             acceptors_[port] = servicePort;
         }
