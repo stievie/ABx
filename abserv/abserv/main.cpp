@@ -16,7 +16,7 @@
 #include <thread>
 #include <chrono>
 #include "Logger.h"
-#include "System.h"
+#include "Utils.h"
 #include "GameManager.h"
 #include "Rsa.h"
 
@@ -25,7 +25,7 @@ std::condition_variable loaderSignal;
 std::unique_lock<std::mutex> loaderUniuqueLock(loaderLock);
 std::string appPath;
 
-static void PrintServerInfo(ServiceManager* serviceManager)
+static void PrintServerInfo(Net::ServiceManager* serviceManager)
 {
     std::list<uint16_t> ports = serviceManager->GetPorts();
     LOG_INFO << "Local ports: ";
@@ -37,9 +37,9 @@ static void PrintServerInfo(ServiceManager* serviceManager)
     LOG_INFO << std::endl;
 }
 
-static void MainLoader(ServiceManager* serviceManager)
+static void MainLoader(Net::ServiceManager* serviceManager)
 {
-    int64_t startLoading = AbTick();
+    int64_t startLoading = Utils::AbTick();
 
     LOG_INFO << "Loading..." << std::endl;
 
@@ -48,7 +48,7 @@ static void MainLoader(ServiceManager* serviceManager)
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing PRNG...";
-    std::srand((unsigned)AbTick());
+    std::srand((unsigned)Utils::AbTick());
     LOG_INFO << "[done]" << std::endl;
 
     // DB ----------------
@@ -62,15 +62,15 @@ static void MainLoader(ServiceManager* serviceManager)
 
 
 
-    serviceManager->Add<ProtocolLogin>(ConfigManager::Instance.config_[ConfigManager::Key::LoginPort].GetInt());
-    serviceManager->Add<ProtocolAdmin>(ConfigManager::Instance.config_[ConfigManager::Key::AdminPort].GetInt());
-    serviceManager->Add<ProtocolStatus>(ConfigManager::Instance.config_[ConfigManager::Key::StatusPort].GetInt());
-    serviceManager->Add<ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
+    serviceManager->Add<Net::ProtocolLogin>(ConfigManager::Instance.config_[ConfigManager::Key::LoginPort].GetInt());
+    serviceManager->Add<Net::ProtocolAdmin>(ConfigManager::Instance.config_[ConfigManager::Key::AdminPort].GetInt());
+    serviceManager->Add<Net::ProtocolStatus>(ConfigManager::Instance.config_[ConfigManager::Key::StatusPort].GetInt());
+    serviceManager->Add<Net::ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
 
     PrintServerInfo(serviceManager);
 
 
-    LOG_INFO << "Loading done in " << (AbTick() - startLoading) / (1000) << " sec." << std::endl;
+    LOG_INFO << "Loading done in " << (Utils::AbTick() - startLoading) / (1000) << " sec." << std::endl;
 
     GameManager::Instance.Start(serviceManager);
 
@@ -84,12 +84,12 @@ int main(int argc, char** argv)
     size_t pos = aux.find_last_of("\\/");
     appPath = aux.substr(0, pos);
 
-    ServiceManager serviceManager;
+    Net::ServiceManager serviceManager;
 
-    Dispatcher::Instance.Start();
-    Scheduler::Instance.Start();
+    Asynch::Dispatcher::Instance.Start();
+    Asynch::Scheduler::Instance.Start();
 
-    Dispatcher::Instance.Add(CreateTask(std::bind(MainLoader, &serviceManager)));
+    Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(MainLoader, &serviceManager)));
     loaderSignal.wait(loaderUniuqueLock);
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(1s);
@@ -105,10 +105,10 @@ int main(int argc, char** argv)
         LOG_ERROR << "No services running" << std::endl;
     }
 
-    Scheduler::Instance.Stop();
-    Scheduler::Instance.Terminate();
-    Dispatcher::Instance.Stop();
-    Dispatcher::Instance.Terminate();
+    Asynch::Scheduler::Instance.Stop();
+    Asynch::Scheduler::Instance.Terminate();
+    Asynch::Dispatcher::Instance.Stop();
+    Asynch::Dispatcher::Instance.Terminate();
 
     return 0;
 }

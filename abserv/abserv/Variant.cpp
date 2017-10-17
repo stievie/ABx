@@ -2,6 +2,8 @@
 #include "Variant.h"
 #include <string>
 
+namespace Utils {
+
 const Variant Variant::Empty;
 
 Variant& Variant::operator =(const Variant& other)
@@ -62,4 +64,6 @@ std::string Variant::ToString() const
     default:
         return std::string();
     }
+}
+
 }

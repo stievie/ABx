@@ -2,6 +2,8 @@
 #include "ProtocolLogin.h"
 #include "OutputMessage.h"
 
+namespace Net {
+
 ProtocolLogin::ProtocolLogin(std::shared_ptr<Connection> connection) :
     Protocol(connection)
 {
@@ -31,4 +33,6 @@ void ProtocolLogin::DisconnectClient(uint8_t error, const char* message)
 bool ProtocolLogin::ParseFirstPacket(NetworkMessage& message)
 {
     return false;
+}
+
 }

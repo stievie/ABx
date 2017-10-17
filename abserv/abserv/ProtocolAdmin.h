@@ -5,6 +5,8 @@
 #include "Connection.h"
 #include <stdint.h>
 
+namespace Net {
+
 class ProtocolAdmin : public Protocol
 {
 public:
@@ -20,3 +22,4 @@ public:
     void OnRecvFirstMessage(NetworkMessage& msg) override;
 };
 
+}

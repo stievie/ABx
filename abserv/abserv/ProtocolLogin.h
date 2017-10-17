@@ -5,6 +5,8 @@
 #include "Connection.h"
 #include <stdint.h>
 
+namespace Net {
+
 class ProtocolLogin : public Protocol
 {
 public:
@@ -23,3 +25,4 @@ private:
     bool ParseFirstPacket(NetworkMessage& message);
 };
 
+}

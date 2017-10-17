@@ -4,10 +4,11 @@
 #include "Connection.h"
 #include "RefCounted.h"
 
-class OutputMessage;
-class NetworkMessage;
+namespace Net {
 
-class Protocol : public RefCounted
+class OutputMessage;
+
+class Protocol : public Utils::RefCounted
 {
 private:
     std::shared_ptr<Connection> connection_;
@@ -38,3 +39,4 @@ public:
 
 };
 
+}

@@ -7,10 +7,12 @@
 #include "RefCounted.h"
 #include "NetworkMessage.h"
 
-class Connection;
+namespace Net {
+
 class ServicePort;
 class OutputMessage;
 class Protocol;
+class Connection;
 
 class ConnectionManager
 {
@@ -33,7 +35,7 @@ private:
     std::recursive_mutex lock_;
 };
 
-class Connection : public std::enable_shared_from_this<Connection>, public RefCounted
+class Connection : public std::enable_shared_from_this<Connection>, public Utils::RefCounted
 {
 public:
     enum { WriteTimeout = 30 };
@@ -103,3 +105,4 @@ private:
     State state_;
 };
 
+}

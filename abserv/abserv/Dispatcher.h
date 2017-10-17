@@ -6,6 +6,8 @@
 #include "Task.h"
 #include <thread>
 
+namespace Asynch {
+
 class Dispatcher
 {
 public:
@@ -38,3 +40,4 @@ public:
     static Dispatcher Instance;
 };
 
+}

@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 
+namespace Utils {
+
 enum VariantType
 {
     VAR_NONE = 0,
@@ -163,3 +165,5 @@ public:
 };
 
 typedef std::map<size_t, Variant> VariantMap;
+
+}

@@ -10,6 +10,8 @@
 #include "Service.h"
 #include "OutputMessage.h"
 
+namespace Net {
+
 bool Connection::Send(std::shared_ptr<OutputMessage> message)
 {
 #ifdef DEBUG_NET
@@ -55,8 +57,8 @@ void Connection::Close()
 
     state_ = State::RequestClose;
 
-    Dispatcher::Instance.Add(
-        CreateTask(std::bind(&Connection::CloseConnectionTask, this))
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(&Connection::CloseConnectionTask, this))
     );
 }
 
@@ -381,7 +383,7 @@ void Connection::ReleaseConnection()
     if (refCount_ > 0)
     {
         // Reschedule
-        Scheduler::Instance.Add(CreateScheduledTask(SCHEDULER_MINTICKS,
+        Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(SCHEDULER_MINTICKS,
             std::bind(&Connection::ReleaseConnection, this)));
     }
     else
@@ -416,7 +418,8 @@ void Connection::OnStopOperation()
             socket_->close();
         }
         catch (asio::system_error&)
-        { }
+        {
+        }
     }
 
     delete socket_;
@@ -511,4 +514,6 @@ void ConnectionManager::CloseAll()
         catch (asio::system_error&) {}
     }
     connections_.clear();
+}
+
 }

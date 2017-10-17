@@ -45,13 +45,7 @@
     <ClInclude Include="NetworkMessage.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Consts.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="OutputMessage.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="System.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolGame.h">
@@ -141,9 +135,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Rsa.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="System.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Uttils.cpp">

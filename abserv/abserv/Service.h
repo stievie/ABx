@@ -7,6 +7,10 @@
 #include "Protocol.h"
 #include "Logger.h"
 
+namespace Net {
+
+class Connection;
+
 class ServiceBase
 {
 public:
@@ -132,3 +136,4 @@ private:
     std::map<uint16_t, std::shared_ptr<ServicePort>> acceptors_;
 };
 
+}

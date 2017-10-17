@@ -4,6 +4,9 @@
 #include "Connection.h"
 #include "Scheduler.h"
 #include <algorithm>
+#include "NetworkMessage.h"
+
+namespace Net {
 
 void ServiceManager::Run()
 {
@@ -56,9 +59,9 @@ void ServicePort::Open(uint16_t port)
 #else
         UNREFERENCED_PARAMETER(e)
 #endif
-        // Reschedule
-        pendingStart_ = true;
-        Scheduler::Instance.Add(CreateScheduledTask(
+            // Reschedule
+            pendingStart_ = true;
+        Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
             5000,
             std::bind(&ServicePort::OpenAcceptor,
                 std::weak_ptr<ServicePort>(shared_from_this()),
@@ -189,7 +192,7 @@ void ServicePort::OnAccept(asio::ip::tcp::socket* socket, const asio::error_code
         if (!pendingStart_)
         {
             pendingStart_ = true;
-            Scheduler::Instance.Add(CreateScheduledTask(
+            Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
                 5000,
                 std::bind(&ServicePort::OpenAcceptor,
                     std::weak_ptr<ServicePort>(shared_from_this()),
@@ -209,4 +212,6 @@ void ServicePort::OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint16_t 
     {
         s->Open(port);
     }
+}
+
 }

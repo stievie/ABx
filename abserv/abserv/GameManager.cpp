@@ -12,7 +12,7 @@ GameManager::~GameManager()
 {
 }
 
-void GameManager::Start(ServiceManager* serviceManager)
+void GameManager::Start(Net::ServiceManager* serviceManager)
 {
     serviceManager_ = serviceManager;
 }

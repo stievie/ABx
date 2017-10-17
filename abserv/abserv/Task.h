@@ -4,12 +4,14 @@
 #include <chrono>
 #include <stdint.h>
 
+namespace Asynch {
+
 using the_clock = std::chrono::system_clock;
 
 class Task
 {
 public:
-    Task(unsigned ms, const std::function<void (void)>& f) :
+    Task(unsigned ms, const std::function<void(void)>& f) :
         function_(f),
         expires_(true)
     {
@@ -54,4 +56,6 @@ inline Task* CreateTask(std::function<void(void)> f)
 inline Task* CreateTask(unsigned ms, std::function<void(void)> f)
 {
     return new Task(ms, f);
+}
+
 }

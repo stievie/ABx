@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+namespace Utils {
+
 class RefCounted
 {
 protected:
@@ -17,3 +19,4 @@ public:
     int32_t Refs() const { return refCount_; }
 };
 
+}

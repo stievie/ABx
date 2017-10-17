@@ -37,6 +37,6 @@ public:
     bool Load(const std::string& file);
     static ConfigManager Instance;
 
-    VariantMap config_;
+    Utils::VariantMap config_;
 };
 

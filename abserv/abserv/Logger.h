@@ -11,6 +11,8 @@
 #define __AB_PRETTY_FUNCTION__ __FUNCTION__
 #endif
 
+namespace IO {
+
 class Logger
 {
 private:
@@ -85,9 +87,11 @@ public:
     static Logger Instance;
 };
 
-#define LOG_INFO (Logger::Instance.Info())
-#define LOG_WARNING (Logger::Instance.Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
-#define LOG_ERROR (Logger::Instance.Error() << __AB_PRETTY_FUNCTION__ << "(): ")
+}
+
+#define LOG_INFO (IO::Logger::Instance.Info())
+#define LOG_WARNING (IO::Logger::Instance.Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
+#define LOG_ERROR (IO::Logger::Instance.Error() << __AB_PRETTY_FUNCTION__ << "(): ")
 #ifdef _DEBUG
-#define LOG_DEBUG (Logger::Instance.Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
+#define LOG_DEBUG (IO::Logger::Instance.Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
 #endif

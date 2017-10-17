@@ -3,6 +3,8 @@
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
 
+namespace Net {
+
 void Protocol::XTEAEncrypt(OutputMessage& message)
 {
     int32_t msgLength = message.GetMessageLength();
@@ -31,4 +33,6 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
 
 void Protocol::Release()
 {
+}
+
 }

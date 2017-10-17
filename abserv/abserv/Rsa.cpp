@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Rsa.h"
 
+namespace Utils {
+
 Rsa Rsa::Instance;
 
 Rsa::Rsa()
@@ -150,6 +152,8 @@ void Rsa::GetPublicKey(char* buffer)
     size_t count = (mpz_sizeinbase(m_mod, 2) + 7) / 8;
     memset(buffer, 0, 128 - count);
     mpz_export(&buffer[128 - count], NULL, 1, 1, 0, 0, m_mod);
+}
+
 }
 
 #pragma comment(lib, "mpir.lib")

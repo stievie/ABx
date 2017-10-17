@@ -1,8 +1,11 @@
 #pragma once
 
 #include <stdint.h>
-#include "Consts.h"
 #include <string>
+
+#define NETWORKMESSAGE_MAXSIZE 15340
+
+namespace Net {
 
 class NetworkMessage
 {
@@ -102,3 +105,4 @@ public:
     int32_t GetReadPos() const { return readPos_; }
 };
 
+}

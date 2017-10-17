@@ -3,6 +3,8 @@
 #include "Logger.h"
 #include "OutputMessage.h"
 
+namespace Asynch {
+
 Dispatcher Dispatcher::Instance;
 
 void Dispatcher::Start()
@@ -54,7 +56,7 @@ void Dispatcher::DispatcherThread(void* p)
 
     Dispatcher* dispatcher = (Dispatcher*)p;
 
-    OutputMessagePool* outputPool;
+    Net::OutputMessagePool* outputPool;
 
     // NOTE: second argument defer_lock is to prevent from immediate locking
     std::unique_lock<std::mutex> taskLockUnique(dispatcher->lock_, std::defer_lock);
@@ -92,10 +94,10 @@ void Dispatcher::DispatcherThread(void* p)
         {
             if (!task->IsExpired())
             {
-                OutputMessagePool::Instance()->StartExecutionFrame();
+                Net::OutputMessagePool::Instance()->StartExecutionFrame();
                 (*task)();
 
-                outputPool = OutputMessagePool::Instance();
+                outputPool = Net::OutputMessagePool::Instance();
                 if (outputPool)
                     outputPool->SendAll();
             }
@@ -110,4 +112,6 @@ void Dispatcher::DispatcherThread(void* p)
 #ifdef DEBUG_DISPATTCHER
     LOG_DEBUG << "Dispatcher threat stopped" << std::endl;
 #endif
+}
+
 }

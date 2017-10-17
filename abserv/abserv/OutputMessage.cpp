@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "OutputMessage.h"
-#include "System.h"
+#include "Utils.h"
 #include "Dispatcher.h"
 #include "Logger.h"
+
+namespace Net {
 
 OutputMessagePool::OutputMessagePool()
 {
@@ -11,7 +13,7 @@ OutputMessagePool::OutputMessagePool()
         OutputMessage* msg = new OutputMessage();
         outputMessages_.push_back(msg);
     }
-    frameTime_ = AbTick();
+    frameTime_ = Utils::AbTick();
 }
 
 OutputMessagePool::~OutputMessagePool()
@@ -25,7 +27,7 @@ OutputMessagePool::~OutputMessagePool()
 
 void OutputMessagePool::StartExecutionFrame()
 {
-    frameTime_ = AbTick();
+    frameTime_ = Utils::AbTick();
     isOpen_ = true;
 }
 
@@ -67,7 +69,7 @@ void OutputMessagePool::SendAll()
     for (OutputMessageList::iterator it = toAddQueue_.begin(); it != toAddQueue_.end();)
     {
         // Drop messages older than 10 seconds
-        if (AbTick() - (*it)->GetFrame() > 10 * 1000)
+        if (Utils::AbTick() - (*it)->GetFrame() > 10 * 1000)
         {
             (*it)->GetProtocol()->OnSendMessage(*it);
             it = toAddQueue_.erase(it);
@@ -145,8 +147,8 @@ void OutputMessagePool::AddToAutoSend(std::shared_ptr<OutputMessage> msg)
 
 void OutputMessagePool::ReleaseMessage(OutputMessage* message)
 {
-    Dispatcher::Instance.Add(
-        CreateTask(std::bind(&OutputMessagePool::InternalReleaseMessage, this, message)),
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(&OutputMessagePool::InternalReleaseMessage, this, message)),
         true
     );
 }
@@ -192,4 +194,6 @@ void OutputMessagePool::ConfigureOutputMessage(std::shared_ptr<OutputMessage> me
     message->SetConnection(connection);
     connection->AddRef();
     message->SetFrame(frameTime_);
+}
+
 }

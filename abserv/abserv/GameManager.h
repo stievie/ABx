@@ -5,12 +5,12 @@
 class GameManager
 {
 private:
-    ServiceManager* serviceManager_;
+    Net::ServiceManager* serviceManager_;
 public:
     GameManager();
     ~GameManager();
 
-    void Start(ServiceManager* serviceManager);
+    void Start(Net::ServiceManager* serviceManager);
 public:
     static GameManager Instance;
 };

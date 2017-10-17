@@ -10,6 +10,8 @@
 
 #define OUTPUT_POOL_SIZE 100
 
+namespace Net {
+
 class OutputMessage : public NetworkMessage
 {
 public:
@@ -109,3 +111,5 @@ private:
     uint64_t frameTime_;
     bool isOpen_;
 };
+
+}

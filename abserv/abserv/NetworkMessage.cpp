@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "NetworkMessage.h"
 
+namespace Net {
+
 std::string NetworkMessage::GetString()
 {
     uint16_t len = GetU16();
@@ -41,4 +43,6 @@ void NetworkMessage::AddString(const char* value)
     strcpy_s((char*)(buffer_ + readPos_), NETWORKMESSAGE_MAXSIZE, value);
     readPos_ += len;
     size_ += len;
+}
+
 }

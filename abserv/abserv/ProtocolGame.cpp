@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
 
+namespace Net {
 
 ProtocolGame::ProtocolGame(std::shared_ptr<Connection> connection) :
     Protocol(connection)
@@ -18,4 +19,6 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
+}
+
 }

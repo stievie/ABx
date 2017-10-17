@@ -10,6 +10,8 @@
 
 #define SCHEDULER_MINTICKS 50
 
+namespace Asynch {
+
 class ScheduledTask : public Task
 {
 public:
@@ -83,3 +85,4 @@ public:
     static Scheduler Instance;
 };
 
+}

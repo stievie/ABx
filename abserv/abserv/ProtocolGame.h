@@ -4,6 +4,8 @@
 #include "Protocol.h"
 #include "Connection.h"
 
+namespace Net {
+
 class ProtocolGame : public Protocol
 {
 public:
@@ -20,3 +22,4 @@ public:
     void OnConnect() override;
 };
 
+}

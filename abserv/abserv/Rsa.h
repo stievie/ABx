@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <mutex>
 
+namespace Utils {
+
 class Rsa
 {
 public:
@@ -25,3 +27,4 @@ public:
     static Rsa Instance;
 };
 
+}

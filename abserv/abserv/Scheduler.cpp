@@ -3,6 +3,8 @@
 #include "Logger.h"
 #include "Dispatcher.h"
 
+namespace Asynch {
+
 Scheduler Scheduler::Instance;
 
 void Scheduler::SchedulerThread(void* p)
@@ -167,4 +169,6 @@ void Scheduler::Terminate()
     }
     eventIds_.clear();
     lock_.unlock();
+}
+
 }
