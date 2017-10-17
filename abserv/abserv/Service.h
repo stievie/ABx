@@ -64,14 +64,17 @@ public:
         return services_.size() && services_.front()->IsSingleSocket();
     }
     void OnStopServer();
+    Protocol* MakeProtocol(bool checksummed, NetworkMessage& msg) const;
 private:
     asio::io_service& service_;
     asio::ip::tcp::acceptor* acceptor_;
     uint16_t serverPort_;
     std::vector<std::shared_ptr<ServiceBase>> services_;
+    bool pendingStart_;
 
     void Accept();
     void OnAccept(asio::ip::tcp::socket* socket, const asio::error_code& error);
+    static void OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint16_t port);
 };
 
 class ServiceManager

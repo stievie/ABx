@@ -31,11 +31,11 @@ void OutputMessagePool::StartExecutionFrame()
 
 void OutputMessagePool::Send(std::shared_ptr<OutputMessage> message)
 {
-    outputPoolLock_.lock();
+    lock_.lock();
     OutputMessage::State state = message->GetState();
-    outputPoolLock_.unlock();
+    lock_.unlock();
 
-    if (state == OutputMessage::State::STATE_ALLOCATED_NO_AUTOSEND)
+    if (state == OutputMessage::State::StateAllocatedNoAutosend)
     {
 #ifdef DEBUG_NET
         LOG_DEBUG << "Sending message" << std::endl;
@@ -56,13 +56,13 @@ void OutputMessagePool::Send(std::shared_ptr<OutputMessage> message)
     }
 #ifdef DEBUG_NET
     else
-        LOG_WARNING << "state != OutputMessage::State::STATE_ALLOCATED_NO_AUTOSEND" << std::endl;
+        LOG_WARNING << "state != OutputMessage::State::StateAllocatedNoAutosend" << std::endl;
 #endif
 }
 
 void OutputMessagePool::SendAll()
 {
-    std::lock_guard<std::recursive_mutex> lockClass(outputPoolLock_);
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     for (auto it = toAddQueue_.begin(); it != toAddQueue_.end();)
     {
@@ -74,7 +74,7 @@ void OutputMessagePool::SendAll()
             continue;
         }
 
-        (*it)->SetState(OutputMessage::State::STATE_ALLOCATED);
+        (*it)->SetState(OutputMessage::State::StateAllocated);
         autosendOutputMessages_.push_back(*it);
     }
 
@@ -115,7 +115,7 @@ std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage(Protocol* pro
     if (!isOpen_)
         return std::shared_ptr<OutputMessage>();
 
-    std::lock_guard<std::recursive_mutex> lockClass(outputPoolLock_);
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     if (protocol->GetConnection() == nullptr)
         return std::shared_ptr<OutputMessage>();
@@ -134,6 +134,13 @@ std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage(Protocol* pro
 
     ConfigureOutputMessage(outputMessage, protocol, autosend);
     return outputMessage;
+}
+
+void OutputMessagePool::AddToAutoSend(std::shared_ptr<OutputMessage> msg)
+{
+    lock_.lock();
+    toAddQueue_.push_back(msg);
+    lock_.unlock();
 }
 
 void OutputMessagePool::ReleaseMessage(OutputMessage* message)
@@ -156,11 +163,11 @@ void OutputMessagePool::InternalReleaseMessage(OutputMessage* message)
         message->GetConnection()->ReleaseRef();
     }
 
-    message->Free();
+    message->FreeMessage();
 
-    outputPoolLock_.lock();
+    lock_.lock();
     outputMessages_.push_back(message);
-    outputPoolLock_.unlock();
+    lock_.unlock();
 }
 
 void OutputMessagePool::ConfigureOutputMessage(std::shared_ptr<OutputMessage> message,
@@ -169,12 +176,12 @@ void OutputMessagePool::ConfigureOutputMessage(std::shared_ptr<OutputMessage> me
     message->Reset();
     if (autosend)
     {
-        message->SetState(OutputMessage::State::STATE_ALLOCATED);
+        message->SetState(OutputMessage::State::StateAllocated);
         autosendOutputMessages_.push_back(message);
     }
     else
     {
-        message->SetState(OutputMessage::State::STATE_ALLOCATED_NO_AUTOSEND);
+        message->SetState(OutputMessage::State::StateAllocatedNoAutosend);
     }
 
     std::shared_ptr<Connection> connection = protocol->GetConnection();

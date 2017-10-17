@@ -15,10 +15,10 @@ class OutputMessage : public NetworkMessage
 public:
     enum State
     {
-        STATE_FREE,
-        STATE_ALLOCATED,
-        STATE_ALLOCATED_NO_AUTOSEND,
-        STATE_WAITING
+        StateFree,
+        StateAllocated,
+        StateAllocatedNoAutosend,
+        StateWaiting
     };
 private:
     std::shared_ptr<Connection> connection_;
@@ -29,9 +29,10 @@ private:
 
     OutputMessage()
     {
-        Free();
+        FreeMessage();
     }
-    void Free()
+
+    void FreeMessage()
     {
         SetConnection(std::shared_ptr<Connection>());
         SetProtocol(nullptr);
@@ -41,7 +42,7 @@ private:
         // 4 bytes for checksum
         // 2 bytes for encrypted message size
         outputBufferStart_ = 8;
-        SetState(OutputMessage::State::STATE_FREE);
+        SetState(OutputMessage::State::StateFree);
     }
 
     friend class OutputMessagePool;
@@ -49,6 +50,7 @@ public:
     OutputMessage(const OutputMessage&) = delete;
     ~OutputMessage() {}
 
+    char* GetOutputBuffer() { return (char*)&buffer_[outputBufferStart_]; }
     std::shared_ptr<Connection> GetConnection() { return connection_; }
     void SetConnection(std::shared_ptr<Connection> connection)
     {
@@ -88,6 +90,7 @@ public:
     void Send(std::shared_ptr<OutputMessage> message);
     void SendAll();
     std::shared_ptr<OutputMessage> GetOutputMessage(Protocol* protocol, bool autosend = true);
+    void AddToAutoSend(std::shared_ptr<OutputMessage> msg);
 protected:
     typedef std::list<OutputMessage*> InternalOutputMessageList;
     typedef std::list<std::shared_ptr<OutputMessage>> OutputMessageList;
@@ -101,7 +104,7 @@ private:
     InternalOutputMessageList allOutputMessages_;
     OutputMessageList autosendOutputMessages_;
     OutputMessageList toAddQueue_;
-    std::recursive_mutex outputPoolLock_;
+    std::recursive_mutex lock_;
 
     uint64_t frameTime_;
     bool isOpen_;

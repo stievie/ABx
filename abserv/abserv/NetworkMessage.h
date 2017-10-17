@@ -14,8 +14,8 @@ public:
 private:
     int32_t size_;
     int32_t readPos_;
-    uint8_t buffer_[NETWORKMESSAGE_MAXSIZE];
 protected:
+    uint8_t buffer_[NETWORKMESSAGE_MAXSIZE];
     void Reset()
     {
         size_ = 0;

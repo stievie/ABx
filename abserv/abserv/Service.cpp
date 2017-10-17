@@ -2,6 +2,8 @@
 #include "Service.h"
 #include <functional>
 #include "Connection.h"
+#include "Scheduler.h"
+#include <algorithm>
 
 void ServiceManager::Run()
 {
@@ -40,9 +42,29 @@ void ServiceManager::Die()
 void ServicePort::Open(uint16_t port)
 {
     serverPort_ = port;
-    acceptor_ = new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
-        asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort_));
-    Accept();
+    pendingStart_ = false;
+    try
+    {
+        acceptor_ = new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
+            asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort_));
+        Accept();
+    }
+    catch (asio::system_error& e)
+    {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Network " << e.what() << std::endl;
+#else
+        UNREFERENCED_PARAMETER(e)
+#endif
+        // Reschedule
+        pendingStart_ = true;
+        Scheduler::Instance.Add(CreateScheduledTask(
+            5000,
+            std::bind(&ServicePort::OpenAcceptor,
+                std::weak_ptr<ServicePort>(shared_from_this()),
+                serverPort_))
+        );
+    }
 }
 
 void ServicePort::Close()
@@ -55,7 +77,7 @@ void ServicePort::Close()
             acceptor_->close(error);
             if (error)
             {
-
+                LOG_ERROR << "Closing socket " << error.message() << std::endl;
             }
         }
         delete acceptor_;
@@ -65,6 +87,13 @@ void ServicePort::Close()
 
 bool ServicePort::AddService(std::shared_ptr<ServiceBase> service)
 {
+    for (std::vector<std::shared_ptr<ServiceBase>>::const_iterator it = services_.begin(); it != services_.end(); ++it)
+    {
+        if ((*it)->IsSingleSocket())
+            return false;
+    }
+
+    services_.push_back(service);
     return false;
 }
 
@@ -73,14 +102,40 @@ void ServicePort::OnStopServer()
     Close();
 }
 
+Protocol * ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg) const
+{
+    uint8_t protocolId = msg.GetByte();
+    for (std::vector<std::shared_ptr<ServiceBase>>::const_iterator it = services_.begin(); it != services_.end(); ++it)
+    {
+        std::shared_ptr<ServiceBase> service = *it;
+        if (service->GetPotocolIdentifier() == protocolId &&
+            ((checksummed && service->IsChecksummed()) || !service->IsChecksummed()))
+        {
+            return service->MakeProtocol(std::shared_ptr<Connection>());
+        }
+    }
+    return nullptr;
+}
+
 void ServicePort::Accept()
 {
     if (!acceptor_)
         return;
 
-    asio::ip::tcp::socket* socket = new asio::ip::tcp::socket(service_);
-    acceptor_->async_accept(*socket,
-        std::bind(&ServicePort::OnAccept, this, socket, std::placeholders::_1));
+    try
+    {
+        asio::ip::tcp::socket* socket = new asio::ip::tcp::socket(service_);
+        acceptor_->async_accept(*socket,
+            std::bind(&ServicePort::OnAccept, this, socket, std::placeholders::_1));
+    }
+    catch (asio::system_error& e)
+    {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Nettwork " << e.what() << std::endl;
+#else
+        UNREFERENCED_PARAMETER(e)
+#endif
+    }
 }
 
 void ServicePort::OnAccept(asio::ip::tcp::socket* socket, const asio::error_code& error)
@@ -106,7 +161,11 @@ void ServicePort::OnAccept(asio::ip::tcp::socket* socket, const asio::error_code
 
             if (services_.front()->IsSingleSocket())
             {
+                // Only one handler, and it will send first
+                connection->AcceptConnection(services_.front()->MakeProtocol(connection));
             }
+            else
+                connection->AcceptConnection();
         }
         else
         {
@@ -119,10 +178,35 @@ void ServicePort::OnAccept(asio::ip::tcp::socket* socket, const asio::error_code
                 delete socket;
             }
         }
+#ifdef DEBUG_NET
+        LOG_DEBUG << "Accept OK" << std::endl;
+#endif
+        Accept();
     }
-    else if (error == asio::error::operation_aborted)
+    else if (error != asio::error::operation_aborted)
     {
         Close();
+        if (!pendingStart_)
+        {
+            pendingStart_ = true;
+            Scheduler::Instance.Add(CreateScheduledTask(
+                5000,
+                std::bind(&ServicePort::OpenAcceptor,
+                    std::weak_ptr<ServicePort>(shared_from_this()),
+                    serverPort_))
+            );
+        }
     }
+#ifdef DEBUG_NET
+    else
+        LOG_ERROR << "Operation aborted" << std::endl;
+#endif
+}
 
+void ServicePort::OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint16_t port)
+{
+    if (auto s = weakService.lock())
+    {
+        s->Open(port);
+    }
 }

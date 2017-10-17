@@ -77,11 +77,15 @@ private:
     void ParseHeader(const asio::error_code& error);
     void ParsePacket(const asio::error_code& error);
     void HandleReadError(const asio::error_code& error);
+    void HandleWriteError(const asio::error_code& error);
     void CloseConnectionTask();
     void CloseSocket();
     void ReleaseConnection();
     void DeleteConnectionTask();
     void OnStopOperation();
+    void OnWriteOperation(std::shared_ptr<OutputMessage> msg, const asio::error_code& error);
+    void OnReadTimeout();
+    void OnWriteTimeout();
     void InternalSend(std::shared_ptr<OutputMessage> message);
     asio::io_service& ioService_;
     std::shared_ptr<ServicePort> servicePort_;

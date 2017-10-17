@@ -2,6 +2,8 @@
 #include "Utils.h"
 #include "Logger.h"
 
+namespace Utils {
+
 uint32_t AdlerChecksum(uint8_t* data, int32_t len)
 {
     if (len < 0) {
@@ -28,4 +30,6 @@ uint32_t AdlerChecksum(uint8_t* data, int32_t len)
     }
 
     return (b << 16) | a;
+}
+
 }
