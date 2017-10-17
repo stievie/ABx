@@ -4,7 +4,7 @@
 
 class RefCounted
 {
-private:
+protected:
     uint32_t refCount_;
 public:
     RefCounted(const RefCounted&) = delete;

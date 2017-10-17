@@ -14,7 +14,6 @@ public:
         AdminPort,
         LoginPort,
 
-        DBDriver,
         DBHost,
         DBPort,
         DBUser,

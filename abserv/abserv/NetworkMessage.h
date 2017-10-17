@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include "Consts.h"
+#include <string>
 
 class NetworkMessage
 {
@@ -36,10 +37,22 @@ public:
 
     /// Read functions
     uint8_t GetByte() { return buffer_[readPos_++]; }
+    std::string GetString();
     uint16_t GetU16()
     {
         uint16_t v = *(uint32_t*)(buffer_ + readPos_);
         readPos_ += 2;
+        return v;
+    }
+    uint32_t GetU32()
+    {
+        uint32_t v = *(uint32_t*)(buffer_ + readPos_);
+        readPos_ += 4;
+        return v;
+    }
+    uint32_t PeekU32()
+    {
+        uint32_t v = *(uint32_t*)(buffer_ + readPos_);
         return v;
     }
 
@@ -53,6 +66,10 @@ public:
         buffer_[readPos_++] = value;
         size_++;
     }
+    void AddString(const std::string& value)
+    {
+        AddString(value.c_str());
+    }
     void AddString(const char* value);
     void AddU16(uint16_t value)
     {
@@ -63,13 +80,25 @@ public:
         size_ += 2;
     }
 
+    int32_t DecodeHeader()
+    {
+        size_ = (int32_t)(buffer_[0] | buffer_[1] << 8);
+        return size_;
+    }
     /// Other function
     void Skip(int bytes)
     {
         readPos_ += bytes;
     }
 
+    char* GetBuffer() { return (char*)&buffer_[0]; }
+    char* GetBodyBuffer()
+    {
+        readPos_ = 2;
+        return (char*)&buffer_[HeaderLength];
+    }
     int32_t GetSize() const { return size_; }
+    void SetSize(int32_t size) { size_ = size; }
     int32_t GetReadPos() const { return readPos_; }
 };
 

@@ -81,6 +81,9 @@
     <ClInclude Include="Rsa.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -135,6 +138,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="System.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Uttils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

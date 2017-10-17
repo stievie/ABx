@@ -58,10 +58,6 @@ static void MainLoader(ServiceManager* serviceManager)
     // TODO:
     LOG_INFO << "[done]" << std::endl;
 
-    // ENC ------------------------
-    LOG_INFO << "Loading RSA key...";
-    Rsa::Instance.SetKey(appPath + "/rsa.key");
-    LOG_INFO << "[done]" << std::endl;
 
 
     serviceManager->Add<ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
@@ -74,7 +70,7 @@ static void MainLoader(ServiceManager* serviceManager)
 
     GameManager::Instance.Start(serviceManager);
 
-    // notify we are ready
+    // Notify we are ready
     loaderSignal.notify_all();
 }
 

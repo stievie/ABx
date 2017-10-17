@@ -68,6 +68,7 @@ public:
     {
         frame_ = frame;
     }
+    uint64_t GetFrame() const { return frame_; }
 };
 
 class OutputMessagePool

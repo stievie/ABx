@@ -1,6 +1,16 @@
 #include "stdafx.h"
 #include "NetworkMessage.h"
-#include <string>
+
+std::string NetworkMessage::GetString()
+{
+    uint16_t len = GetU16();
+    if (len >= (NETWORKMESSAGE_MAXSIZE - readPos_))
+        return std::string();
+
+    char* v = (char*)(buffer_ + readPos_);
+    readPos_ += len;
+    return std::string(v, len);
+}
 
 void NetworkMessage::AddPaddingBytes(uint32_t n)
 {
