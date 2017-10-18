@@ -21,6 +21,7 @@ public:
 
     bool Initialize(int argc, char** argv);
     void Run();
+    void Stop();
 
     std::string path_;
     std::vector<std::string> arguments_;

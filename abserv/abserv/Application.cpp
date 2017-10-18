@@ -17,14 +17,49 @@
 #include <functional>
 #include "Random.h"
 
+static Application* gApplication = nullptr;
+
+#ifdef  _WIN32
+BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
+{
+    assert(gApplication);
+
+#ifdef _DEBUG
+    LOG_DEBUG << "Got signal " << dwCtrlType << std::endl;
+#endif
+
+    switch (dwCtrlType)
+    {
+    case CTRL_CLOSE_EVENT:                  // Close button or End Task
+    case CTRL_C_EVENT:                      // Ctrl+C
+        // Either it stops or it crashes...
+        gApplication->Stop();
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+#endif
+
 Application::Application() :
     loaderUniuqueLock_(loaderLock_)
 {
+    assert(gApplication == nullptr);
+    gApplication = this;
 }
 
 bool Application::Initialize(int argc, char** argv)
 {
+#ifdef _WIN32
+    SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandlerRoutine, TRUE);
+#endif
+#ifdef _WIN32
+    char buff[MAX_PATH];
+    GetModuleFileNameA(NULL, buff, MAX_PATH);
+    std::string aux(buff);
+#else
     std::string aux(argv[0]);
+#endif
     size_t pos = aux.find_last_of("\\/");
     path_ = aux.substr(0, pos);
     for (int i = 0; i < argc; i++)
@@ -103,4 +138,10 @@ void Application::Run()
 
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
+}
+
+void Application::Stop()
+{
+    LOG_INFO << "Server is shutting down" << std::endl;
+    serviceManager_.Stop();
 }
