@@ -2,6 +2,8 @@
 
 #include "Service.h"
 
+namespace Game {
+
 class GameManager
 {
 private:
@@ -15,3 +17,4 @@ public:
     static GameManager Instance;
 };
 
+}

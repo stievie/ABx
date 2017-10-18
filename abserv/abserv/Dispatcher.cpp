@@ -15,16 +15,21 @@ void Dispatcher::Start()
 
 void Dispatcher::Stop()
 {
-    lock_.lock();
-    state_ = State::Closing;
-    lock_.unlock();
-}
-
-void Dispatcher::Terminate()
-{
-    lock_.lock();
-    state_ = State::Terminated;
-    lock_.unlock();
+    if (state_ == State::Running)
+    {
+        lock_.lock();
+        state_ = State::Terminated;
+        while (!tasks_.empty())
+        {
+            Task* task = tasks_.front();
+            tasks_.pop_front();
+            delete task;
+        }
+        lock_.unlock();
+        // Notify thread to exit
+        signal_.notify_one();
+        thread_.join();
+    }
 }
 
 void Dispatcher::Add(Task* task, bool front /* = false */)

@@ -216,7 +216,7 @@ void Connection::HandleReadError(const asio::error_code& error)
     std::lock_guard<std::recursive_mutex> lock(lock_);
     if (error == asio::error::operation_aborted)
     {
-
+        // Do nothing
     }
     else if (error == asio::error::eof)
     {
@@ -241,7 +241,7 @@ void Connection::HandleWriteError(const asio::error_code& error)
     std::lock_guard<std::recursive_mutex> lock(lock_);
     if (error == asio::error::operation_aborted)
     {
-
+        // Do nothing
     }
     else if (error == asio::error::eof)
     {
@@ -383,7 +383,8 @@ void Connection::ReleaseConnection()
     if (refCount_ > 0)
     {
         // Reschedule
-        Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(SCHEDULER_MINTICKS,
+        Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
+            SCHEDULER_MINTICKS,
             std::bind(&Connection::ReleaseConnection, this)));
     }
     else

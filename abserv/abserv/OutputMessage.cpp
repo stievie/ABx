@@ -114,13 +114,14 @@ void OutputMessagePool::SendAll()
 std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage(Protocol* protocol,
     bool autosend /* = true */)
 {
+    std::shared_ptr<OutputMessage> result;
     if (!isOpen_)
-        return std::shared_ptr<OutputMessage>();
+        return result;
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     if (protocol->GetConnection() == nullptr)
-        return std::shared_ptr<OutputMessage>();
+        return result;
 
     if (outputMessages_.empty())
     {
@@ -128,14 +129,13 @@ std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage(Protocol* pro
         outputMessages_.push_back(msg);
     }
 
-    std::shared_ptr<OutputMessage> outputMessage;
-    outputMessage.reset(outputMessages_.back(),
+    result.reset(outputMessages_.back(),
         std::bind(&OutputMessagePool::ReleaseMessage, this, std::placeholders::_1));
 
     outputMessages_.pop_back();
 
-    ConfigureOutputMessage(outputMessage, protocol, autosend);
-    return outputMessage;
+    ConfigureOutputMessage(result, protocol, autosend);
+    return result;
 }
 
 void OutputMessagePool::AddToAutoSend(std::shared_ptr<OutputMessage> msg)

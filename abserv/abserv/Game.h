@@ -1,5 +1,6 @@
 #pragma once
 
+namespace Game {
 class Game
 {
 public:
@@ -7,3 +8,4 @@ public:
     ~Game();
 };
 
+}

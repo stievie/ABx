@@ -84,6 +84,15 @@
     <ClInclude Include="ProtocolStatus.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Database.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -144,6 +153,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolStatus.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Database.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

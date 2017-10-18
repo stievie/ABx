@@ -109,7 +109,7 @@ uint32_t Scheduler::Add(ScheduledTask* task)
         doSignal = (task == events_.top());
 
 #ifdef DEBUG_SCHEDULER
-        LOG_DEBUG << "Added event" << task->GetEventId() << std::endl;
+        LOG_DEBUG << "Added event " << task->GetEventId() << std::endl;
 #endif
     }
     else
@@ -154,21 +154,21 @@ void Scheduler::Start()
 
 void Scheduler::Stop()
 {
-    lock_.lock();
-    state_ = State::Closing;
-    lock_.unlock();
-}
-
-void Scheduler::Terminate()
-{
-    lock_.lock();
-    state_ = State::Terminated;
-    while (!events_.empty())
+    if (state_ == State::Running)
     {
-        events_.pop();
+        lock_.lock();
+        state_ = State::Terminated;
+        while (!events_.empty())
+        {
+            ScheduledTask* task = events_.top();
+            events_.pop();
+            delete task;
+        }
+        eventIds_.clear();
+        lock_.unlock();
+        signal_.notify_one();
+        thread_.join();
     }
-    eventIds_.clear();
-    lock_.unlock();
 }
 
 }

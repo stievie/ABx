@@ -56,7 +56,6 @@ class Scheduler
 public:
     enum State {
         Running,
-        Closing,
         Terminated
     };
 private:
@@ -80,7 +79,6 @@ public:
 
     void Start();
     void Stop();
-    void Terminate();
 
     static Scheduler Instance;
 };

@@ -20,13 +20,11 @@ public:
 
     void Start();
     void Stop();
-    void Terminate();
     void Add(Task* task, bool front = false);
 
     enum State
     {
         Running,
-        Closing,
         Terminated
     };
 private:
