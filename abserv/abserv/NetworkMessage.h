@@ -15,9 +15,9 @@ public:
     enum { XteaMultiple = 8 };
     enum { MaxBodyLength = NETWORKMESSAGE_MAXSIZE - HeaderLength - CryptoLength - XteaMultiple };
 private:
-    int32_t size_;
     int32_t readPos_;
 protected:
+    int32_t size_;
     uint8_t buffer_[NETWORKMESSAGE_MAXSIZE];
     void Reset()
     {

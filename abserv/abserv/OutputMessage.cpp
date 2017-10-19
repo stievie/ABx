@@ -2,7 +2,6 @@
 #include "OutputMessage.h"
 #include "Utils.h"
 #include "Dispatcher.h"
-#include "Logger.h"
 
 namespace Net {
 

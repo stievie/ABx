@@ -17,4 +17,8 @@ void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
 {
 }
 
+void ProtocolAdmin::ParsePacket(NetworkMessage& message)
+{
+}
+
 }

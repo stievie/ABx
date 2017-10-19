@@ -17,7 +17,7 @@ public:
     static const char* ProtocolName() { return "Status Protocol"; };
 public:
     ProtocolStatus(std::shared_ptr<Connection> connection);
-    ~ProtocolStatus();
+    virtual ~ProtocolStatus();
 
     void OnRecvFirstMessage(NetworkMessage& msg) override;
 };

@@ -7,6 +7,8 @@
 #include "NetworkMessage.h"
 #include "Connection.h"
 #include "Protocol.h"
+#include "Utils.h"
+#include "Logger.h"
 
 #define OUTPUT_POOL_SIZE 100
 
@@ -48,6 +50,20 @@ private:
     }
 
     friend class OutputMessagePool;
+
+    template <typename T>
+    inline void AddHeader(T add)
+    {
+        if ((int32_t)outputBufferStart_ - (int32_t)sizeof(T) < 0)
+        {
+            LOG_ERROR << "outputBufferStart_(" << outputBufferStart_ << ") < " <<
+                sizeof(T) << std::endl;
+            return;
+        }
+        outputBufferStart_ -= sizeof(T);
+        *(T*)(buffer_ + outputBufferStart_) = add;
+        size_ += sizeof(T);
+    }
 public:
     OutputMessage(const OutputMessage&) = delete;
     ~OutputMessage() {}
@@ -73,6 +89,16 @@ public:
         frame_ = frame;
     }
     uint64_t GetFrame() const { return frame_; }
+    void AddCryptoHeader(bool addChecksum)
+    {
+        if (addChecksum)
+            AddHeader<uint32_t>(Utils::AdlerChecksum((uint8_t*)(buffer_ - outputBufferStart_), size_));
+        AddHeader<uint16_t>(size_);
+    }
+    void WriteMessageLength()
+    {
+        AddHeader<uint16_t>(size_);
+    }
 };
 
 class OutputMessagePool

@@ -13,7 +13,7 @@ void Scheduler::SchedulerThread(void* p)
     LOG_DEBUG << "Scheduler threat started" << std::endl;
 #endif
 
-    Scheduler* scheduler = (Scheduler*)p;
+    Scheduler* scheduler = static_cast<Scheduler*>(p);
 
     std::unique_lock<std::mutex> lockUnique(scheduler->lock_, std::defer_lock);
     while (scheduler->state_ != State::Terminated)

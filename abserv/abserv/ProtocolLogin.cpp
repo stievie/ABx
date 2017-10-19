@@ -14,8 +14,9 @@ ProtocolLogin::~ProtocolLogin()
 {
 }
 
-void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& msg)
+void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 {
+    ParseFirstPacket(message);
 }
 
 void ProtocolLogin::DisconnectClient(uint8_t error, const char* message)

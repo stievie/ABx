@@ -17,9 +17,10 @@ public:
     static const char* ProtocolName() { return "Admin Protocol"; };
 public:
     ProtocolAdmin(std::shared_ptr<Connection> connection);
-    ~ProtocolAdmin();
+    virtual ~ProtocolAdmin();
 
     void OnRecvFirstMessage(NetworkMessage& msg) override;
+    void ParsePacket(NetworkMessage& message) override;
 };
 
 }

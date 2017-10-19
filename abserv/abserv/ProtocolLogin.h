@@ -17,9 +17,9 @@ public:
     static const char* ProtocolName() { return "Login Protocol"; };
 public:
     ProtocolLogin(std::shared_ptr<Connection> connection);
-    ~ProtocolLogin();
+    virtual ~ProtocolLogin();
 
-    void OnRecvFirstMessage(NetworkMessage& msg) override;
+    void OnRecvFirstMessage(NetworkMessage& message) override;
 private:
     void DisconnectClient(uint8_t error, const char* message);
     bool ParseFirstPacket(NetworkMessage& message);

@@ -16,7 +16,7 @@ public:
     static const char* ProtocolName() { return "Game Protocol"; };
 public:
     ProtocolGame(std::shared_ptr<Connection> connection);
-    ~ProtocolGame();
+    virtual ~ProtocolGame();
 
     void OnRecvFirstMessage(NetworkMessage& msg) override;
     void OnConnect() override;

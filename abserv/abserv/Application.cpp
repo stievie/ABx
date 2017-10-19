@@ -50,6 +50,7 @@ Application::Application() :
 
 bool Application::Initialize(int argc, char** argv)
 {
+    using namespace std::chrono_literals;
 #ifdef _WIN32
     SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandlerRoutine, TRUE);
 #endif
@@ -72,7 +73,6 @@ bool Application::Initialize(int argc, char** argv)
 
     Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::MainLoader, this)));
     loaderSignal_.wait(loaderUniuqueLock_);
-    using namespace std::chrono_literals;
     std::this_thread::sleep_for(1s);
 
     if (!serviceManager_.IsRunning())

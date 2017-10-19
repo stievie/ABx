@@ -59,7 +59,7 @@ void Dispatcher::DispatcherThread(void* p)
     LOG_DEBUG << "Dispatcher threat started" << std::endl;
 #endif
 
-    Dispatcher* dispatcher = (Dispatcher*)p;
+    Dispatcher* dispatcher = static_cast<Dispatcher*>(p);
 
     Net::OutputMessagePool* outputPool;
 
