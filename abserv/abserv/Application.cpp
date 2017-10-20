@@ -16,6 +16,8 @@
 #include "Rsa.h"
 #include <functional>
 #include "Random.h"
+#include <ostream>
+#include <iostream>
 
 static Application* gApplication = nullptr;
 
@@ -32,9 +34,20 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
     {
     case CTRL_CLOSE_EVENT:                  // Close button or End Task
     case CTRL_C_EVENT:                      // Ctrl+C
+    {
         // Either it stops or it crashes...
-        gApplication->Stop();
+        std::cout << "Stopping server? [y/n]: ";
+        std::string answer;
+        std::cin >> answer;
+        if (answer.compare("y") == 0)
+        {
+            Asynch::Dispatcher::Instance.Add(
+                Asynch::CreateTask(std::bind(&Application::Stop, gApplication))
+            );
+            // gApplication->Stop();
+        }
         return TRUE;
+    }
     default:
         return FALSE;
     }

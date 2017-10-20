@@ -3,6 +3,8 @@
 #include "Utils.h"
 #include "Dispatcher.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 OutputMessagePool::OutputMessagePool()

@@ -152,10 +152,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Bans.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="Database.h" />
+    <ClInclude Include="DebugNew.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
@@ -180,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Bans.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="Database.cpp" />

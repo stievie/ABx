@@ -24,8 +24,7 @@ public:
         return &instance;
     }
 
-    std::shared_ptr<Connection> CreateConnection(asio::ip::tcp::socket* socket,
-        asio::io_service& ioService, std::shared_ptr<ServicePort> servicer);
+    std::shared_ptr<Connection> CreateConnection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicer);
     void ReleaseConnection(std::shared_ptr<Connection> connection);
     void CloseAll();
 protected:
@@ -48,9 +47,10 @@ public:
     };
 public:
     Connection(const Connection&) = delete;
-    Connection(asio::ip::tcp::socket* socket,
-        asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort) :
-        socket_(socket),
+    Connection& operator=(const Connection&) = delete;
+
+    Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort) :
+        socket_(ioService),
         ioService_(ioService),
         servicePort_(servicPort),
         state_(State::Open),
@@ -66,10 +66,10 @@ public:
     void Close();
     void AcceptConnection(Protocol* protocol);
     void AcceptConnection();
-    asio::ip::tcp::socket& GetHandle() { return *socket_; }
+    asio::ip::tcp::socket& GetHandle() { return socket_; }
     uint32_t GetIP();
 protected:
-    asio::ip::tcp::socket* socket_;
+    asio::ip::tcp::socket socket_;
 private:
     friend class ConnectionManager;
 

@@ -10,6 +10,8 @@
 #include "Service.h"
 #include "OutputMessage.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 bool Connection::Send(std::shared_ptr<OutputMessage> message)
@@ -92,7 +94,7 @@ void Connection::AcceptConnection()
 uint32_t Connection::GetIP()
 {
     asio::error_code err;
-    const asio::ip::tcp::endpoint endpoint = socket_->remote_endpoint(err);
+    const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
     if (!err)
         return htonl(endpoint.address().to_v4().to_ulong());
     LOG_ERROR << "Getting IP" << std::endl;
@@ -328,7 +330,7 @@ void Connection::CloseConnectionTask()
         ReleaseConnection();
         state_ = State::Closed;
     }
-    // else will be closed by onWriteOperation/handleWriteTimeout/handleReadTimeout instead
+    // else will be closed by OnWriteOperation/HandleWriteTimeout/HandleReadTimeout instead
 
     lock_.unlock();
 }
@@ -337,7 +339,7 @@ void Connection::CloseSocket()
 {
     lock_.lock();
 
-    if (socket_->is_open())
+    if (socket_.is_open())
     {
 #ifdef DEBUG_NET
         LOG_DEBUG << "Closing socket" << std::endl;
@@ -348,7 +350,7 @@ void Connection::CloseSocket()
         try
         {
             asio::error_code err;
-            socket_->shutdown(asio::ip::tcp::socket::shutdown_both, err);
+            socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
             if (err)
             {
                 if (err == asio::error::not_connected)
@@ -360,7 +362,7 @@ void Connection::CloseSocket()
                     LOG_ERROR << "Shutdown " << err.value() << ", Message " << err.message() << std::endl;
                 }
             }
-            socket_->close(err);
+            socket_.close(err);
             if (err)
             {
                 LOG_ERROR << "Close " << err.value() << ", Message " << err.message() << std::endl;
@@ -410,21 +412,18 @@ void Connection::OnStopOperation()
 {
     lock_.lock();
 
-    if (socket_->is_open())
+    if (socket_.is_open())
     {
         try
         {
             asio::error_code err;
-            socket_->shutdown(asio::ip::tcp::socket::shutdown_both, err);
-            socket_->close();
+            socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
+            socket_.close();
         }
         catch (asio::system_error&)
         {
         }
     }
-
-    delete socket_;
-    socket_ = nullptr;
 
     lock_.unlock();
     ConnectionManager::GetInstance()->ReleaseConnection(shared_from_this());
@@ -470,11 +469,11 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
     }
 }
 
-std::shared_ptr<Connection> ConnectionManager::CreateConnection(asio::ip::tcp::socket* socket,
+std::shared_ptr<Connection> ConnectionManager::CreateConnection(
     asio::io_service& ioService, std::shared_ptr<ServicePort> servicer)
 {
     std::lock_guard<std::recursive_mutex> lock(lock_);
-    std::shared_ptr<Connection> connection = std::make_shared<Connection>(socket, ioService, servicer);
+    std::shared_ptr<Connection> connection = std::make_shared<Connection>(ioService, servicer);
     connections_.push_back(connection);
 
     return connection;
@@ -504,13 +503,13 @@ void ConnectionManager::CloseAll()
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
-    for (auto it = connections_.begin(); it != connections_.end();)
+    for (const auto& conn : connections_)
     {
         try
         {
             asio::error_code err;
-            (*it)->socket_->shutdown(asio::ip::tcp::socket::shutdown_both, err);
-            (*it)->socket_->close(err);
+            conn->socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
+            conn->socket_.close(err);
         }
         catch (asio::system_error&) {}
     }

@@ -2,6 +2,8 @@
 #include "ProtocolLogin.h"
 #include "OutputMessage.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 ProtocolLogin::ProtocolLogin(std::shared_ptr<Connection> connection) :

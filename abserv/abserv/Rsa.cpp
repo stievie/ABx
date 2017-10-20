@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Rsa.h"
 
+#include "DebugNew.h"
+
 namespace Utils {
 
 Rsa Rsa::Instance;

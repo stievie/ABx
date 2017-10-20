@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 ProtocolGame::ProtocolGame(std::shared_ptr<Connection> connection) :

@@ -2,6 +2,8 @@
 #include "ConfigManager.h"
 #include "Logger.h"
 
+#include "DebugNew.h"
+
 ConfigManager ConfigManager::Instance;
 
 ConfigManager::ConfigManager() :
@@ -75,6 +77,9 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::DBPort] = (int)GetGlobal("db_port", 3306);
     config_[Key::DBUser] = GetGlobal("db_user", "root");
     config_[Key::DBPass] = GetGlobal("db_pass", "");
+
+    config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
+
 
     isLoaded = true;
     return true;

@@ -19,7 +19,9 @@ public:
         DBHost,
         DBPort,
         DBUser,
-        DBPass
+        DBPass,
+
+        StatusQueryTimeout
     };
 private:
     lua_State* L;

@@ -3,6 +3,8 @@
 #include "Logger.h"
 #include "Dispatcher.h"
 
+#include "DebugNew.h"
+
 namespace Asynch {
 
 Scheduler Scheduler::Instance;

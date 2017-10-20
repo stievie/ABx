@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "NetworkMessage.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 std::string NetworkMessage::GetString()

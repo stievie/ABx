@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ProtocolAdmin.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 ProtocolAdmin::ProtocolAdmin(std::shared_ptr<Connection> connection) :

@@ -4,6 +4,7 @@
 #include "Protocol.h"
 #include "Connection.h"
 #include <stdint.h>
+#include <map>
 
 namespace Net {
 
@@ -15,11 +16,14 @@ public:
     enum { ProtocolIdentifier = 0xFF };
     enum { UseChecksum = false };
     static const char* ProtocolName() { return "Status Protocol"; };
+private:
+    using MapIter = std::map<uint32_t, int64_t>::const_iterator;
+    static std::map<uint32_t, int64_t> ipConnectMap_;
 public:
     ProtocolStatus(std::shared_ptr<Connection> connection);
     virtual ~ProtocolStatus();
 
-    void OnRecvFirstMessage(NetworkMessage& msg) override;
+    void OnRecvFirstMessage(NetworkMessage& message) override;
 };
 
 }

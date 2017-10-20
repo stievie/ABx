@@ -2,6 +2,8 @@
 #include "Variant.h"
 #include <string>
 
+#include "DebugNew.h"
+
 namespace Utils {
 
 const Variant Variant::Empty;

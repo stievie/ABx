@@ -5,6 +5,8 @@
 #include "Logger.h"
 #include "Scheduler.h"
 
+#include "DebugNew.h"
+
 namespace Net {
 
 void Protocol::XTEAEncrypt(OutputMessage& message)

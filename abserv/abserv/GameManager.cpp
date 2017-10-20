@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "GameManager.h"
 
+#include "DebugNew.h"
+
 namespace Game {
+
 GameManager GameManager::Instance;
 
 GameManager::GameManager()

@@ -93,6 +93,12 @@
     <ClInclude Include="Random.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DebugNew.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Bans.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -162,6 +168,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Bans.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

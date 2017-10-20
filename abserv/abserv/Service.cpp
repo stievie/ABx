@@ -5,6 +5,9 @@
 #include "Scheduler.h"
 #include <algorithm>
 #include "NetworkMessage.h"
+#include "Bans.h"
+
+#include "DebugNew.h"
 
 namespace Net {
 
@@ -127,41 +130,32 @@ void ServicePort::Accept()
 
     try
     {
-        asio::ip::tcp::socket* socket = new asio::ip::tcp::socket(service_);
-        acceptor_->async_accept(*socket,
-            std::bind(&ServicePort::OnAccept, this, socket, std::placeholders::_1));
+        std::shared_ptr<Connection> conn = ConnectionManager::GetInstance()->CreateConnection(
+            service_, shared_from_this()
+        );
+        acceptor_->async_accept(conn->GetHandle(),
+            std::bind(&ServicePort::OnAccept, this, conn, std::placeholders::_1));
     }
     catch (asio::system_error& e)
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Nettwork " << e.what() << std::endl;
+        LOG_ERROR << "Network " << e.what() << std::endl;
 #else
         UNREFERENCED_PARAMETER(e)
 #endif
     }
 }
 
-void ServicePort::OnAccept(asio::ip::tcp::socket* socket, const asio::error_code& error)
+void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::error_code& error)
 {
     if (!error)
     {
         if (services_.empty())
-        {
             return;
-        }
 
-        asio::error_code err;
-        const asio::ip::tcp::endpoint endpoint = socket->remote_endpoint(err);
-        uint32_t remoteIp = 0;
-        if (!err)
-            remoteIp = htonl(endpoint.address().to_v4().to_ulong());
-
-        if (remoteIp != 0)
+        uint32_t remoteIp = connection->GetIP();
+        if (remoteIp != 0 && Bans::Instance.AcceptConnection(remoteIp))
         {
-            std::shared_ptr<Connection> connection = ConnectionManager::GetInstance()->CreateConnection(
-                socket, service_, shared_from_this()
-            );
-
             if (services_.front()->IsSingleSocket())
             {
                 // Only one handler, and it will send first
@@ -172,15 +166,9 @@ void ServicePort::OnAccept(asio::ip::tcp::socket* socket, const asio::error_code
         }
         else
         {
-            // Close connection
-            if (socket->is_open())
-            {
-                asio::error_code err2;
-                socket->shutdown(asio::ip::tcp::socket::shutdown_both, err2);
-                socket->close(err2);
-                delete socket;
-            }
+            connection->Close();
         }
+
 #ifdef DEBUG_NET
         LOG_DEBUG << "Accept OK" << std::endl;
 #endif

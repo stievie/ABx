@@ -10,6 +10,7 @@ protected:
     uint32_t refCount_;
 public:
     RefCounted(const RefCounted&) = delete;
+    RefCounted& operator=(const RefCounted&) = delete;
     RefCounted() :
         refCount_(0)
     {}

@@ -3,6 +3,8 @@
 #include "Logger.h"
 #include "OutputMessage.h"
 
+#include "DebugNew.h"
+
 namespace Asynch {
 
 Dispatcher Dispatcher::Instance;

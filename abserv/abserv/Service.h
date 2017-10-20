@@ -54,7 +54,8 @@ class ServicePort : public std::enable_shared_from_this<ServicePort>
 {
 public:
     ServicePort(const ServicePort&) = delete;
-    ServicePort(asio::io_service& ioService) :
+    ServicePort& operator=(const ServicePort&) = delete;
+    explicit ServicePort(asio::io_service& ioService) :
         service_(ioService),
         serverPort_(0)
     {}
@@ -78,7 +79,7 @@ private:
     bool pendingStart_;
 
     void Accept();
-    void OnAccept(asio::ip::tcp::socket* socket, const asio::error_code& error);
+    void OnAccept(std::shared_ptr<Connection> connection, const asio::error_code& error);
     static void OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint16_t port);
 };
 
