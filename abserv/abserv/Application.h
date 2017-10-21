@@ -11,7 +11,7 @@ class Application
 private:
     std::mutex loaderLock_;
     std::condition_variable loaderSignal_;
-    std::unique_lock<std::mutex> loaderUniuqueLock_;
+    std::unique_lock<std::mutex> loaderUniqueLock_;
     Net::ServiceManager serviceManager_;
     void MainLoader();
     void PrintServerInfo();

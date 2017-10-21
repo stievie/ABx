@@ -55,7 +55,7 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 #endif
 
 Application::Application() :
-    loaderUniuqueLock_(loaderLock_)
+    loaderUniqueLock_(loaderLock_)
 {
     assert(gApplication == nullptr);
     gApplication = this;
@@ -85,7 +85,7 @@ bool Application::Initialize(int argc, char** argv)
     Asynch::Scheduler::Instance.Start();
 
     Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::MainLoader, this)));
-    loaderSignal_.wait(loaderUniuqueLock_);
+    loaderSignal_.wait(loaderUniqueLock_);
     std::this_thread::sleep_for(1s);
 
     if (!serviceManager_.IsRunning())
