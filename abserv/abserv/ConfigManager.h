@@ -9,6 +9,7 @@ class ConfigManager
 public:
     enum Key
     {
+        ServerName,
         Location,
         IP,
         GamePort,
@@ -21,19 +22,28 @@ public:
         DBUser,
         DBPass,
 
-        StatusQueryTimeout
+        StatusQueryTimeout,
+
+        AdminEnabled,
+        AdminLocalhostOnly
     };
 private:
     lua_State* L;
     bool isLoaded;
     std::string GetGlobal(const std::string& ident, const std::string& default);
     int64_t GetGlobal(const std::string& ident, int64_t default);
+    bool GetGlobalBool(const std::string& ident, bool default);
 public:
     ConfigManager();
     ~ConfigManager()
     {
         if (L)
             lua_close(L);
+    }
+
+    Utils::Variant& operator[](Key key)
+    {
+        return config_[key];
     }
 
     bool Load(const std::string& file);

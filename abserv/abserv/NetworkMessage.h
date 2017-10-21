@@ -28,6 +28,12 @@ protected:
     {
         return (size + readPos_ < MaxBodyLength);
     }
+    bool CanRead(size_t size)
+    {
+        if ((readPos_ + size) > (size_ + 8) || size >= (NETWORKMESSAGE_MAXSIZE - readPos_))
+            return false;
+        return true;
+    }
 public:
     NetworkMessage()
     {
@@ -40,19 +46,16 @@ public:
 
     /// Read functions
     uint8_t GetByte() { return buffer_[readPos_++]; }
-    std::string GetString();
-    uint16_t GetU16()
+    template <typename T>
+    T Get()
     {
-        uint16_t v = *(uint32_t*)(buffer_ + readPos_);
-        readPos_ += 2;
+        if (!CanRead(sizeof(T)))
+            return 0;
+        T v = *(T*)(buffer_ + readPos_);
+        readPos_ += sizeof(T);
         return v;
     }
-    uint32_t GetU32()
-    {
-        uint32_t v = *(uint32_t*)(buffer_ + readPos_);
-        readPos_ += 4;
-        return v;
-    }
+    std::string GetString(uint16_t len = 0);
     uint32_t PeekU32()
     {
         uint32_t v = *(uint32_t*)(buffer_ + readPos_);
@@ -74,13 +77,14 @@ public:
         AddString(value.c_str());
     }
     void AddString(const char* value);
-    void AddU16(uint16_t value)
+    template <typename T>
+    void Add(T value)
     {
-        if (!CanAdd(sizeof(value)))
+        if (!CanAdd(sizeof(T)))
             return;
-        *(uint16_t*)(buffer_ + readPos_) = value;
-        readPos_ += 2;
-        size_ += 2;
+        *(T*)(buffer_ + readPos_) = value;
+        readPos_ += sizeof(T);
+        size_ += sizeof(T);
     }
 
     int32_t DecodeHeader()

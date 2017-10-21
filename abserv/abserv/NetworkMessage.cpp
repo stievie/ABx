@@ -5,13 +5,18 @@
 
 namespace Net {
 
-std::string NetworkMessage::GetString()
+std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
 {
-    uint16_t len = GetU16();
-    if (len >= (NETWORKMESSAGE_MAXSIZE - readPos_))
+    if (len == 0)
+    {
+        len = Get<uint16_t>();
+        if (len >= (NETWORKMESSAGE_MAXSIZE - readPos_))
+            return std::string();
+    }
+    if (!CanRead(len))
         return std::string();
 
-    char* v = (char*)(buffer_ + readPos_);
+    char* v = reinterpret_cast<char*>(buffer_ + readPos_);
     readPos_ += len;
     return std::string(v, len);
 }
@@ -41,7 +46,7 @@ void NetworkMessage::AddString(const char* value)
     if (!CanAdd(len + 2) || len > 8192)
         return;
 
-    AddU16(len);
+    Add<uint16_t>(len);
     strcpy_s((char*)(buffer_ + readPos_), NETWORKMESSAGE_MAXSIZE, value);
     readPos_ += len;
     size_ += len;

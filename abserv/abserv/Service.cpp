@@ -60,10 +60,10 @@ void ServicePort::Open(uint16_t port)
 #ifdef DEBUG_NET
         LOG_ERROR << "Network " << e.what() << std::endl;
 #else
-        UNREFERENCED_PARAMETER(e)
+        UNREFERENCED_PARAMETER(e);
 #endif
-            // Reschedule
-            pendingStart_ = true;
+        // Reschedule
+        pendingStart_ = true;
         Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
             5000,
             std::bind(&ServicePort::OpenAcceptor,
@@ -141,7 +141,7 @@ void ServicePort::Accept()
 #ifdef DEBUG_NET
         LOG_ERROR << "Network " << e.what() << std::endl;
 #else
-        UNREFERENCED_PARAMETER(e)
+        UNREFERENCED_PARAMETER(e);
 #endif
     }
 }
@@ -154,7 +154,7 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
             return;
 
         uint32_t remoteIp = connection->GetIP();
-        if (remoteIp != 0 && Bans::Instance.AcceptConnection(remoteIp))
+        if (remoteIp != 0 && BanManager::Instance.AcceptConnection(remoteIp))
         {
             if (services_.front()->IsSingleSocket())
             {

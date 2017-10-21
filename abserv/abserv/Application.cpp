@@ -117,10 +117,10 @@ void Application::MainLoader()
     // TODO:
     LOG_INFO << "[done]" << std::endl;
 
-    serviceManager_.Add<Net::ProtocolLogin>(ConfigManager::Instance.config_[ConfigManager::Key::LoginPort].GetInt());
-    serviceManager_.Add<Net::ProtocolAdmin>(ConfigManager::Instance.config_[ConfigManager::Key::AdminPort].GetInt());
-    serviceManager_.Add<Net::ProtocolStatus>(ConfigManager::Instance.config_[ConfigManager::Key::StatusPort].GetInt());
-    serviceManager_.Add<Net::ProtocolGame>(ConfigManager::Instance.config_[ConfigManager::Key::GamePort].GetInt());
+    serviceManager_.Add<Net::ProtocolLogin>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
+    serviceManager_.Add<Net::ProtocolAdmin>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
+    serviceManager_.Add<Net::ProtocolStatus>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
+    serviceManager_.Add<Net::ProtocolGame>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
 
     PrintServerInfo();
 

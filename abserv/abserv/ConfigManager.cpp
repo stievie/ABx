@@ -10,10 +10,13 @@ ConfigManager::ConfigManager() :
     L(nullptr),
     isLoaded(false)
 {
+    config_[Key::ServerName] = "abserv";
     config_[Key::LoginPort] = 1336;
     config_[Key::AdminPort] = 1336;
     config_[Key::StatusPort] = 1336;
     config_[Key::GamePort] = 1337;
+    config_[Key::AdminEnabled] = false;
+    config_[Key::AdminLocalhostOnly] = true;
 }
 
 std::string ConfigManager::GetGlobal(const std::string& ident, const std::string& default)
@@ -47,6 +50,21 @@ int64_t ConfigManager::GetGlobal(const std::string& ident, int64_t default)
     return val;
 }
 
+bool ConfigManager::GetGlobalBool(const std::string& ident, bool default)
+{
+    lua_getglobal(L, ident.c_str());
+
+    if (!lua_isboolean(L, -1)) {
+        lua_pop(L, 1);
+        return default;
+    }
+
+    bool val = lua_toboolean(L, -1) != 0;
+    lua_pop(L, 1);
+
+    return val;
+}
+
 bool ConfigManager::Load(const std::string& file)
 {
     if (L)
@@ -66,6 +84,7 @@ bool ConfigManager::Load(const std::string& file)
         return false;
     }
 
+    config_[Key::ServerName] = GetGlobal("server_name", "abserv");
     config_[Key::Location] = GetGlobal("location", "Unknown");
     config_[Key::IP] = GetGlobal("ip", "127.0.01");
     config_[Key::LoginPort] = (int)GetGlobal("login_port", 1336);
@@ -80,6 +99,8 @@ bool ConfigManager::Load(const std::string& file)
 
     config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
 
+    config_[Key::AdminEnabled] = GetGlobalBool("admin_enabled", false);
+    config_[Key::AdminLocalhostOnly] = GetGlobalBool("admin_localhost_only", true);
 
     isLoaded = true;
     return true;

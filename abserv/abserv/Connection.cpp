@@ -165,7 +165,7 @@ void Connection::ParsePacket(const asio::error_code& error)
 
     if (recvChecksum == checksum)
         // Remove the checksum
-        msg_.GetU32();
+        msg_.Get<uint32_t>();
 
     if (!receivedFirst_)
     {

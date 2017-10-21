@@ -54,8 +54,9 @@ public:
         return 0;
     }
 
+    void Send(std::shared_ptr<OutputMessage> message);
+    void Disconnect();
     void Release();
-
 };
 
 }

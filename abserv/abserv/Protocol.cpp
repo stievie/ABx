@@ -76,7 +76,7 @@ bool Protocol::XTEADecrypt(NetworkMessage& message)
         readPos += 2;
     }
 
-    int tmp = message.GetU16();
+    int tmp = message.Get<uint16_t>();
     if (tmp > message.GetMessageLength() - 8)
     {
 #ifdef DEBUG_NET
@@ -137,6 +137,16 @@ std::shared_ptr<OutputMessage> Protocol::GetOutputBuffer()
         return outputBuffer_;
     }
     return std::shared_ptr<OutputMessage>();
+}
+
+void Protocol::Send(std::shared_ptr<OutputMessage> message)
+{
+    OutputMessagePool::Instance()->Send(message);
+}
+
+void Protocol::Disconnect()
+{
+    GetConnection()->Close();
 }
 
 void Protocol::Release()

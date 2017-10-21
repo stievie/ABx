@@ -146,7 +146,7 @@ public:
     {
         return (type_ == VAR_FLOAT) ? value_.floatValue : 0.0f;
     }
-    long long GetTime() const
+    long long GetInt64() const
     {
         return (type_ == VAR_INT64) ? value_.int64Value : 0;
     }
@@ -158,6 +158,23 @@ public:
     void* GetPtr() const
     {
         return (type_ == VAR_VOIDPTR) ? value_.ptrValue : nullptr;
+    }
+
+    operator bool() const
+    {
+        return GetBool();
+    }
+    operator int() const
+    {
+        return GetInt();
+    }
+    operator float() const
+    {
+        return GetFloat();
+    }
+    operator std::string() const
+    {
+        return GetString();
     }
 
     /// Empty variant.
