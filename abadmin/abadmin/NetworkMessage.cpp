@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "NetworkMessage.h"
+#include "Rsa.h"
 
+bool NetworkMessage::encryptionEnabled = false;
+bool NetworkMessage::keySet = false;
+uint32_t NetworkMessage::key[4] = { 0 };
 
 NetworkMessage::NetworkMessage()
 {

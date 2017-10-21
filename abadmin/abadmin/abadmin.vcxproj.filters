@@ -27,6 +27,9 @@
     <ClInclude Include="Definitions.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Rsa.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +39,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="NetworkMessage.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Rsa.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
