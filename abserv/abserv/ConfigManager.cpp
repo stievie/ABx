@@ -17,6 +17,7 @@ ConfigManager::ConfigManager() :
     config_[Key::GamePort] = 1337;
     config_[Key::AdminEnabled] = false;
     config_[Key::AdminLocalhostOnly] = true;
+    config_[Key::AdminRequireEncryption] = true;
 }
 
 std::string ConfigManager::GetGlobal(const std::string& ident, const std::string& default)
@@ -100,7 +101,10 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
 
     config_[Key::AdminEnabled] = GetGlobalBool("admin_enabled", false);
+    config_[Key::AdminRequireLogin] = GetGlobalBool("admin_requirelogin", true);
     config_[Key::AdminLocalhostOnly] = GetGlobalBool("admin_localhost_only", true);
+    config_[Key::AdminRequireEncryption] = GetGlobalBool("admin_require_encryption", true);
+    config_[Key::AdminPassword] = GetGlobalBool("admin_password", "");
 
     isLoaded = true;
     return true;

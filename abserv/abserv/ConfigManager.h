@@ -25,7 +25,10 @@ public:
         StatusQueryTimeout,
 
         AdminEnabled,
-        AdminLocalhostOnly
+        AdminRequireLogin,
+        AdminLocalhostOnly,
+        AdminRequireEncryption,
+        AdminPassword,
     };
 private:
     lua_State* L;

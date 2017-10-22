@@ -8,6 +8,19 @@ Commands Commands::Instance;
 extern Client* gClient;
 extern bool gRunning;
 
+std::string Trim(const std::string& str,
+    const std::string& whitespace = " \t")
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
 int QuitCommand(const std::vector<std::string>& params)
 {
     gRunning = false;
@@ -55,7 +68,7 @@ int CommandConnect(const std::vector<std::string>& params)
     return ret ? 1 : -1;
 }
 
-int CoommandBroadcast(const std::vector<std::string>& params)
+int CommandBroadcast(const std::vector<std::string>& params)
 {
     if (!gClient->GetConnected())
     {
@@ -67,7 +80,12 @@ int CoommandBroadcast(const std::vector<std::string>& params)
         std::cout << "Missing parameters" << std::endl;
         return -1;
     }
-    std::string msg = params[0];
+
+    std::string msg;
+    for (const auto& m : params)
+        msg += " " + m;
+
+    msg = Trim(msg);
     if (msg.length() > 127 || msg.length() == 0)
     {
         std::cout << "No valid message" << std::endl;
@@ -83,13 +101,45 @@ int CoommandBroadcast(const std::vector<std::string>& params)
     return true;
 }
 
+int CommandCloseServer(const std::vector<std::string>& params)
+{
+    if (!gClient->GetConnected())
+    {
+        std::cout << "Not connected" << std::endl;
+        return -1;
+    }
+    bool ret = gClient->SendCommand(CMD_CLOSE_SERVER, nullptr);
+    if (!ret)
+    {
+        return false;
+    }
+    return true;
+}
+
+int CommandShutdownServer(const std::vector<std::string>& params)
+{
+    if (!gClient->GetConnected())
+    {
+        std::cout << "Not connected" << std::endl;
+        return -1;
+    }
+    bool ret = gClient->SendCommand(CMD_SHUTDOWN_SERVER, nullptr);
+    if (!ret)
+    {
+        return false;
+    }
+    return true;
+}
+
 void Commands::Initialize()
 {
-    commands_["q"] = Command(&QuitCommand, "Quit");
-    commands_["h"] = Command(&HelpCommand, "Show help");
-    commands_["server"] = Command(&CommandServer, "<host> <port>");
-    commands_["connect"] = Command(&CommandConnect, "[<pass>]");
-    commands_["broadcast"] = Command(&CoommandBroadcast, "<message>");
+    commands_["q"] = Command(&QuitCommand, "\n  Quit");
+    commands_["h"] = Command(&HelpCommand, "\n  Show help");
+    commands_["server"] = Command(&CommandServer, "<host> <port>\n  Set server");
+    commands_["connect"] = Command(&CommandConnect, "[<pass>]\n  Connect to server");
+    commands_["broadcast"] = Command(&CommandBroadcast, "<message>\n  Broadcast a message");
+    commands_["close"] = Command(&CommandCloseServer, "\n  Close server");
+    commands_["shutdown"] = Command(&CommandShutdownServer, "\n  Shutdown server");
 }
 
 int Commands::Execute(const std::string& line)
