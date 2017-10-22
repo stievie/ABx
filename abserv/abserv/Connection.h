@@ -55,6 +55,9 @@ public:
         servicePort_(servicPort),
         state_(State::Open),
         protocol_(nullptr),
+        readError_(false),
+        writeError_(false),
+        receivedFirst_(false),
         readTimer_(asio::steady_timer(ioService)),
         writeTimer_(asio::steady_timer(ioService))
     {}

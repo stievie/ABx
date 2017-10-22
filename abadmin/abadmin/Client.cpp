@@ -119,7 +119,7 @@ bool Client::Connect(const std::string& pass)
     SetSocketMode(false);
 
     NetworkMessage msg;
-    msg.AddByte(0xFE);
+    msg.AddByte(0xFE);      // Protocol ID
     if (msg.WriteToSocket(socket_) != SocketCodeOK)
     {
         closesocket(socket_);

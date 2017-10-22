@@ -220,7 +220,7 @@ void NetworkMessage::AddString(const char* value)
 void NetworkMessage::Reset()
 {
     size_ = 0;
-    readPos_ = 0;
+    readPos_ = 4;
 }
 
 void NetworkMessage::XTEAEncrypt()
