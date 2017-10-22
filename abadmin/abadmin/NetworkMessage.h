@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Definitions.h"
+#include <string>
 
 #define RETRY_TIME 10000
 
@@ -21,6 +22,8 @@ private:
     {
         return (size + readPos_ < NETWORKMESSAGE_MAXSIZE - 16);
     }
+    void XTEAEncrypt();
+    void XTEADecrypt();
 public:
     NetworkMessage();
     ~NetworkMessage() {}
@@ -28,12 +31,15 @@ public:
     // socket functions
     SocketCode ReadFromSocket(SOCKET socket, int timeout = RETRY_TIME);
     SocketCode WriteToSocket(SOCKET socket, int timeout = RETRY_TIME);
+    void SetEncryptionState(bool state);
+    void SetEncryptionKey(const uint32_t* _key);
+    bool RSAEncrypt();
 
     uint8_t PeekByte()
     {
         return buffer_[readPos_];
     }
-    uint16_t GetByte()
+    uint8_t GetByte()
     {
         return buffer_[readPos_++];
     }
@@ -44,6 +50,7 @@ public:
         readPos_ += sizeof(T);
         return v;
     }
+    std::string GetString();
 
     void AddByte(uint8_t value)
     {
@@ -61,6 +68,8 @@ public:
         readPos_ += sizeof(T);
         size_ += sizeof(T);
     }
+    void AddString(const std::string &value);
+    void AddString(const char* value);
 
     void Reset();
 

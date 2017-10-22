@@ -30,6 +30,12 @@
     <ClInclude Include="Rsa.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Commands.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +48,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Rsa.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

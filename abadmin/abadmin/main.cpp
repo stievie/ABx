@@ -5,30 +5,42 @@
 #include <stdio.h>
 #include <list>
 #include "Definitions.h"
+#include "NetworkMessage.h"
 #include <string>
+#include "Client.h"
+#include "Commands.h"
+#include <time.h>
 
-static void ShowHelp()
-{
-
-}
+Client* gClient = nullptr;
+bool gRunning = false;
 
 static void Run()
 {
-    while (true)
-    {
-        std::cout << "AB> ";
-        std::string input;
-        std::cin >> input;
+    Client cli;
+    gClient = &cli;
+    Commands::Instance.Initialize();
 
-        if (input.compare("q") == 0)
-            break;
-        else if (input.compare("h") == 0)
-            ShowHelp();
+    gRunning = true;
+    while (gRunning)
+    {
+        std::cout << "AB";
+        if (cli.GetConnected())
+        {
+            std::cout << " " << cli.GetHost() << ":" << cli.GetPort();
+        }
+        std::cout << "> ";
+        std::string input;
+        std::getline(std::cin, input);
+
+        Commands::Instance.Execute(input);
     }
+    gClient = nullptr;
 }
 
 int main()
 {
+    srand((unsigned)time(NULL));
+
 #if defined WIN32 || defined __WINDOWS__
     WSADATA wsd;
     if (WSAStartup(MAKEWORD(2, 2), &wsd) != 0)
