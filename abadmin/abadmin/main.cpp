@@ -37,8 +37,21 @@ static void Run()
     gClient = nullptr;
 }
 
+static void ShowLogo()
+{
+    std::cout << "##########  ######  ######" << std::endl;
+    std::cout << "    ##          ##  ##" << std::endl;
+    std::cout << "    ##  ######  ##  ##" << std::endl;
+    std::cout << "    ##  ##      ##  ##" << std::endl;
+    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+}
+
 int main()
 {
+    ShowLogo();
+    std::cout << std::endl;
     srand((unsigned)time(NULL));
 
 #if defined WIN32 || defined __WINDOWS__
