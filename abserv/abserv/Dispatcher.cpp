@@ -12,7 +12,7 @@ Dispatcher Dispatcher::Instance;
 void Dispatcher::Start()
 {
     state_ = State::Running;
-    thread_ = std::thread(DispatcherThread, (void*)this);
+    thread_ = std::thread(&Dispatcher::DispatcherThread, this);
 }
 
 void Dispatcher::Stop()
@@ -48,6 +48,8 @@ void Dispatcher::Add(Task* task, bool front /* = false */)
         else
             tasks_.push_front(task);
     }
+    else
+        delete task;
 
     lock_.unlock();
 
@@ -55,29 +57,27 @@ void Dispatcher::Add(Task* task, bool front /* = false */)
         signal_.notify_one();
 }
 
-void Dispatcher::DispatcherThread(void* p)
+void Dispatcher::DispatcherThread()
 {
 #ifdef DEBUG_DISPATTCHER
     LOG_DEBUG << "Dispatcher threat started" << std::endl;
 #endif
 
-    Dispatcher* dispatcher = static_cast<Dispatcher*>(p);
-
     Net::OutputMessagePool* outputPool;
 
     // NOTE: second argument defer_lock is to prevent from immediate locking
-    std::unique_lock<std::mutex> taskLockUnique(dispatcher->lock_, std::defer_lock);
+    std::unique_lock<std::mutex> taskLockUnique(lock_, std::defer_lock);
 
-    while (dispatcher->state_ != State::Terminated)
+    while (state_ != State::Terminated)
     {
         Task* task = nullptr;
 
         taskLockUnique.lock();
 
-        if (dispatcher->tasks_.empty())
+        if (tasks_.empty())
         {
             // List is empty, wait for signal
-            dispatcher->signal_.wait(taskLockUnique);
+            signal_.wait(taskLockUnique);
 #ifdef DEBUG_DISPATTCHER
             LOG_DEBUG << "Waiting for task" << std::endl;
 #endif
@@ -87,11 +87,11 @@ void Dispatcher::DispatcherThread(void* p)
         LOG_DEBUG << "Dispatcher signaled" << std::endl;
 #endif
 
-        if (!dispatcher->tasks_.empty() && (dispatcher->state_ != State::Terminated))
+        if (!tasks_.empty() && (state_ != State::Terminated))
         {
             // Take first task
-            task = dispatcher->tasks_.front();
-            dispatcher->tasks_.pop_front();
+            task = tasks_.front();
+            tasks_.pop_front();
         }
 
         taskLockUnique.unlock();

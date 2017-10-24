@@ -17,7 +17,6 @@ class Connection;
 class ConnectionManager
 {
 public:
-    ~ConnectionManager() {}
     static ConnectionManager* GetInstance()
     {
         static ConnectionManager instance;
@@ -31,7 +30,7 @@ protected:
     ConnectionManager() {}
 private:
     std::list<std::shared_ptr<Connection>> connections_;
-    std::recursive_mutex lock_;
+    std::mutex lock_;
 };
 
 class Connection : public std::enable_shared_from_this<Connection>, public Utils::RefCounted
@@ -64,9 +63,10 @@ public:
     ~Connection() {}
 
     /// Send the message
-    bool Send(std::shared_ptr<OutputMessage> message);
+    bool Send(const std::shared_ptr<OutputMessage>& message);
     /// Close the connection
     void Close();
+    /// Used by protocols that require server to send first
     void AcceptConnection(Protocol* protocol);
     void AcceptConnection();
     asio::ip::tcp::socket& GetHandle() { return socket_; }

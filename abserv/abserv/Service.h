@@ -69,7 +69,7 @@ public:
         return services_.size() && services_.front()->IsSingleSocket();
     }
     void OnStopServer();
-    Protocol* MakeProtocol(bool checksummed, NetworkMessage& msg) const;
+    Protocol* MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const;
 private:
     using ConstIt = std::vector<std::shared_ptr<ServiceBase>>::const_iterator;
     asio::io_service& service_;

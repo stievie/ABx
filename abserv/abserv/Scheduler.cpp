@@ -9,16 +9,14 @@ namespace Asynch {
 
 Scheduler Scheduler::Instance;
 
-void Scheduler::SchedulerThread(void* p)
+void Scheduler::SchedulerThread()
 {
 #ifdef DEBUG_SCHEDULER
     LOG_DEBUG << "Scheduler threat started" << std::endl;
 #endif
 
-    Scheduler* scheduler = static_cast<Scheduler*>(p);
-
-    std::unique_lock<std::mutex> lockUnique(scheduler->lock_, std::defer_lock);
-    while (scheduler->state_ != State::Terminated)
+    std::unique_lock<std::mutex> lockUnique(lock_, std::defer_lock);
+    while (state_ != State::Terminated)
     {
         ScheduledTask* task = nullptr;
         bool runTask = false;
@@ -26,21 +24,21 @@ void Scheduler::SchedulerThread(void* p)
 
         lockUnique.lock();
 
-        if (scheduler->events_.empty())
+        if (events_.empty())
         {
 #ifdef DEBUG_SCHEDULER
             LOG_DEBUG << "No events" << std::endl;
 #endif
-            scheduler->signal_.wait(lockUnique);
+            signal_.wait(lockUnique);
         }
         else
         {
 #ifdef DEBUG_SCHEDULER
             LOG_DEBUG << "Waiting for event" << std::endl;
 #endif
-            ret = scheduler->signal_.wait_until(
+            ret = signal_.wait_until(
                 lockUnique,
-                scheduler->events_.top()->GetCycle()
+                events_.top()->GetCycle()
             ) == std::cv_status::no_timeout;
         }
 
@@ -48,18 +46,18 @@ void Scheduler::SchedulerThread(void* p)
         LOG_DEBUG << "Scheduler signaled" << std::endl;
 #endif
 
-        if (!ret && (scheduler->state_ != State::Terminated))
+        if (!ret && (state_ != State::Terminated))
         {
             // Timeout
-            task = scheduler->events_.top();
-            scheduler->events_.pop();
+            task = events_.top();
+            events_.pop();
 
-            auto it = scheduler->eventIds_.find(task->GetEventId());
-            if (it != scheduler->eventIds_.end())
+            auto it = eventIds_.find(task->GetEventId());
+            if (it != eventIds_.end())
             {
                 // Found so not stopped -> run it
                 runTask = true;
-                scheduler->eventIds_.erase(it);
+                eventIds_.erase(it);
             }
         }
 
@@ -70,7 +68,7 @@ void Scheduler::SchedulerThread(void* p)
             // Add it to the Dispatcher
             if (runTask)
             {
-                task->SettDontExpires();
+                task->SetDontExpires();
 #ifdef DEBUG_SCHEDULER
                 LOG_DEBUG << "Executing event " << task->GetEventId() << std::endl;
 #endif
@@ -151,7 +149,7 @@ bool Scheduler::StopEvent(uint32_t eventId)
 void Scheduler::Start()
 {
     state_ = State::Running;
-    thread_ = std::thread(std::bind(&Scheduler::SchedulerThread, (void*)this));
+    thread_ = std::thread(&Scheduler::SchedulerThread, this);
 }
 
 void Scheduler::Stop()

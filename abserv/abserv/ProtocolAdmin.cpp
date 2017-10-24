@@ -41,7 +41,7 @@ void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
     {
         output->AddByte(AP_MSG_HELLO);
         output->Add<uint32_t>(1);  // Version
-        output->AddString("ABADMIN");
+//        output->AddString("ABADMIN");
         output->Add<uint16_t>(GetProtocolPolicy());
         output->Add<uint32_t>(GetProtocolOptions());
         Send(output);

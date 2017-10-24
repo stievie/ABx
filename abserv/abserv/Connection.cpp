@@ -14,18 +14,15 @@
 
 namespace Net {
 
-bool Connection::Send(std::shared_ptr<OutputMessage> message)
+bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 {
 #ifdef DEBUG_NET
     LOG_DEBUG << "Sending message" << std::endl;
 #endif
 
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     if (state_ != State::Open || writeError_)
-    {
-        lock_.unlock();
         return false;
-    }
 
     if (pendingWrite_ == 0)
     {
@@ -44,7 +41,6 @@ bool Connection::Send(std::shared_ptr<OutputMessage> message)
         pool->AddToAutoSend(message);
     }
 
-    lock_.unlock();
     return true;
 }
 
@@ -60,7 +56,7 @@ void Connection::Close()
     state_ = State::RequestClose;
 
     Asynch::Dispatcher::Instance.Add(
-        Asynch::CreateTask(std::bind(&Connection::CloseConnectionTask, this))
+        Asynch::CreateTask(std::bind(&Connection::CloseConnectionTask, shared_from_this()))
     );
 }
 
@@ -103,7 +99,7 @@ uint32_t Connection::GetIP()
 
 void Connection::ParseHeader(const asio::error_code& error)
 {
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 
     int32_t size = msg_.DecodeHeader();
@@ -113,7 +109,6 @@ void Connection::ParseHeader(const asio::error_code& error)
     if (state_ != State::Open || readError_)
     {
         Close();
-        lock_.unlock();
         return;
     }
 
@@ -136,13 +131,11 @@ void Connection::ParseHeader(const asio::error_code& error)
     {
         LOG_ERROR << "Network " << e.what() << std::endl;
     }
-
-    lock_.unlock();
 }
 
 void Connection::ParsePacket(const asio::error_code& error)
 {
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 
     if (error)
@@ -151,7 +144,6 @@ void Connection::ParsePacket(const asio::error_code& error)
     if (state_ != State::Open || readError_)
     {
         Close();
-        lock_.unlock();
         return;
     }
 
@@ -172,11 +164,10 @@ void Connection::ParsePacket(const asio::error_code& error)
         receivedFirst_ = true;
         if (!protocol_)
         {
-            protocol_ = servicePort_->MakeProtocol(recvChecksum == checksum, msg_);
+            protocol_ = servicePort_->MakeProtocol(recvChecksum == checksum, msg_, shared_from_this());
             if (!protocol_)
             {
                 Close();
-                lock_.unlock();
                 return;
             }
             protocol_->SetConnection(shared_from_this());
@@ -209,8 +200,6 @@ void Connection::ParsePacket(const asio::error_code& error)
     {
         LOG_ERROR << "Network " << e.what() << std::endl;
     }
-
-    lock_.unlock();
 }
 
 void Connection::HandleReadError(const asio::error_code& error)
@@ -307,11 +296,10 @@ void Connection::OnWriteTimeout()
 
 void Connection::CloseConnectionTask()
 {
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     if (state_ != State::RequestClose)
     {
         LOG_ERROR << "state = " << state_ << std::endl;
-        lock_.unlock();
         return;
     }
 
@@ -331,13 +319,11 @@ void Connection::CloseConnectionTask()
         state_ = State::Closed;
     }
     // else will be closed by OnWriteOperation/HandleWriteTimeout/HandleReadTimeout instead
-
-    lock_.unlock();
 }
 
 void Connection::CloseSocket()
 {
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     if (socket_.is_open())
     {
@@ -373,8 +359,6 @@ void Connection::CloseSocket()
             LOG_ERROR << "Network " << e.what() << std::endl;
         }
     }
-
-    lock_.unlock();
 }
 
 void Connection::ReleaseConnection()
@@ -410,7 +394,7 @@ void Connection::DeleteConnectionTask()
 
 void Connection::OnStopOperation()
 {
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     if (socket_.is_open())
     {
@@ -424,14 +408,12 @@ void Connection::OnStopOperation()
         {
         }
     }
-
-    lock_.unlock();
     ConnectionManager::GetInstance()->ReleaseConnection(shared_from_this());
 }
 
 void Connection::OnWriteOperation(std::shared_ptr<OutputMessage> msg, const asio::error_code& error)
 {
-    lock_.lock();
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     writeTimer_.cancel();
     msg.reset();
 
@@ -442,12 +424,10 @@ void Connection::OnWriteOperation(std::shared_ptr<OutputMessage> msg, const asio
     {
         CloseSocket();
         Close();
-        lock_.unlock();
         return;
     }
 
     --pendingWrite_;
-    lock_.unlock();
 }
 
 void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
@@ -472,7 +452,7 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
 std::shared_ptr<Connection> ConnectionManager::CreateConnection(
     asio::io_service& ioService, std::shared_ptr<ServicePort> servicer)
 {
-    std::lock_guard<std::recursive_mutex> lock(lock_);
+    std::lock_guard<std::mutex> lock(lock_);
     std::shared_ptr<Connection> connection = std::make_shared<Connection>(ioService, servicer);
     connections_.push_back(connection);
 
@@ -484,7 +464,7 @@ void ConnectionManager::ReleaseConnection(std::shared_ptr<Connection> connection
 #ifdef DEBUG_NET
     LOG_DEBUG << "Releasing connection" << std::endl;
 #endif
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
+    std::lock_guard<std::mutex> lockClass(lock_);
 
     auto it = std::find(connections_.begin(), connections_.end(), connection);
     if (it != connections_.end())
@@ -501,7 +481,7 @@ void ConnectionManager::CloseAll()
     LOG_DEBUG << "Closing all connections" << std::endl;
 #endif
 
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
+    std::lock_guard<std::mutex> lockClass(lock_);
 
     for (const auto& conn : connections_)
     {

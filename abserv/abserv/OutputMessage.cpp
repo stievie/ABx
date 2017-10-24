@@ -43,7 +43,7 @@ void OutputMessagePool::Send(std::shared_ptr<OutputMessage> message)
 #ifdef DEBUG_NET
         LOG_DEBUG << "Sending message" << std::endl;
 #endif
-        if (auto conn = message->GetConnection())
+        if (std::shared_ptr<Connection> conn = message->GetConnection())
         {
             if (!conn->Send(message))
             {

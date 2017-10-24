@@ -31,7 +31,7 @@ public:
         function_();
     }
 
-    void SettDontExpires()
+    void SetDontExpires()
     {
         expires_ = false;
     }

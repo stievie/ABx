@@ -66,7 +66,7 @@ private:
     std::set<uint32_t> eventIds_;
     std::thread thread_;
     std::priority_queue<ScheduledTask*, std::vector<ScheduledTask*>, LessSchedTask> events_;
-    static void SchedulerThread(void* p);
+    void SchedulerThread();
 public:
     Scheduler() :
         state_(State::Terminated),

@@ -108,7 +108,7 @@ void ServicePort::OnStopServer()
     Close();
 }
 
-Protocol* ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg) const
+Protocol* ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const
 {
     uint8_t protocolId = msg.GetByte();
     for (ConstIt it = services_.begin(); it != services_.end(); ++it)
@@ -117,7 +117,7 @@ Protocol* ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg) const
         if (service->GetPotocolIdentifier() == protocolId &&
             ((checksummed && service->IsChecksummed()) || !service->IsChecksummed()))
         {
-            return service->MakeProtocol(std::shared_ptr<Connection>());
+            return service->MakeProtocol(connection);
         }
     }
     return nullptr;
@@ -134,7 +134,7 @@ void ServicePort::Accept()
             service_, shared_from_this()
         );
         acceptor_->async_accept(conn->GetHandle(),
-            std::bind(&ServicePort::OnAccept, this, conn, std::placeholders::_1));
+            std::bind(&ServicePort::OnAccept, shared_from_this(), conn, std::placeholders::_1));
     }
     catch (asio::system_error& e)
     {
