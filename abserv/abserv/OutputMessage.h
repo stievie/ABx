@@ -54,14 +54,14 @@ private:
     template <typename T>
     inline void AddHeader(T add)
     {
-        if ((int32_t)outputBufferStart_ - (int32_t)sizeof(T) < 0)
+        if ((int32_t)outputBufferStart_ < (int32_t)sizeof(T))
         {
             LOG_ERROR << "outputBufferStart_(" << outputBufferStart_ << ") < " <<
                 sizeof(T) << std::endl;
             return;
         }
         outputBufferStart_ -= sizeof(T);
-        *(T*)(buffer_ + outputBufferStart_) = add;
+        memcpy(buffer_ + outputBufferStart_, &add, sizeof(T));
         size_ += sizeof(T);
     }
 public:
@@ -93,7 +93,7 @@ public:
     {
         if (addChecksum)
             AddHeader<uint32_t>(Utils::AdlerChecksum((uint8_t*)(buffer_ - outputBufferStart_), size_));
-        AddHeader<uint16_t>(size_);
+        WriteMessageLength();
     }
     void WriteMessageLength()
     {

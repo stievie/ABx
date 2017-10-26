@@ -139,11 +139,6 @@ std::shared_ptr<OutputMessage> Protocol::GetOutputBuffer()
     return std::shared_ptr<OutputMessage>();
 }
 
-void Protocol::Send(std::shared_ptr<OutputMessage> message)
-{
-    OutputMessagePool::Instance()->Send(message);
-}
-
 void Protocol::Disconnect()
 {
     GetConnection()->Close();

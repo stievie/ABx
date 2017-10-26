@@ -11,9 +11,9 @@ class NetworkMessage
 {
 public:
     enum { HeaderLength = 2 };
-    enum { CryptoLength = 4 };
+    enum { ChecksumLength = 4 };
     enum { XteaMultiple = 8 };
-    enum { MaxBodyLength = NETWORKMESSAGE_MAXSIZE - HeaderLength - CryptoLength - XteaMultiple };
+    enum { MaxBodyLength = NETWORKMESSAGE_MAXSIZE - HeaderLength - ChecksumLength - XteaMultiple };
 private:
     int32_t readPos_;
 protected:

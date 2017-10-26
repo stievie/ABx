@@ -40,8 +40,6 @@ public:
     enum { ReadTimeout = 30 };
     enum State {
         Open = 0,
-        RequestClose = 1,
-        Closing = 2,
         Closed = 3
     };
 public:
@@ -54,21 +52,19 @@ public:
         servicePort_(servicPort),
         state_(State::Open),
         protocol_(nullptr),
-        readError_(false),
-        writeError_(false),
         receivedFirst_(false),
         readTimer_(asio::steady_timer(ioService)),
         writeTimer_(asio::steady_timer(ioService))
     {}
-    ~Connection() {}
+    ~Connection();
 
     /// Send the message
     bool Send(const std::shared_ptr<OutputMessage>& message);
     /// Close the connection
-    void Close();
+    void Close(bool force = false);
     /// Used by protocols that require server to send first
-    void AcceptConnection(Protocol* protocol);
-    void AcceptConnection();
+    void Accept(Protocol* protocol);
+    void Accept();
     asio::ip::tcp::socket& GetHandle() { return socket_; }
     uint32_t GetIP();
 protected:
@@ -76,34 +72,28 @@ protected:
 private:
     friend class ConnectionManager;
 
-    static void HandleReadTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error);
-    static void HandleWriteTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error);
+    static void HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error);
 
     void ParseHeader(const asio::error_code& error);
     void ParsePacket(const asio::error_code& error);
-    void HandleReadError(const asio::error_code& error);
-    void HandleWriteError(const asio::error_code& error);
-    void CloseConnectionTask();
+//    void HandleReadError(const asio::error_code& error);
+//    void HandleWriteError(const asio::error_code& error);
+//    void CloseConnectionTask();
     void CloseSocket();
-    void ReleaseConnection();
-    void DeleteConnectionTask();
+//    void ReleaseConnection();
+//    void DeleteConnectionTask();
     void OnStopOperation();
-    void OnWriteOperation(std::shared_ptr<OutputMessage> msg, const asio::error_code& error);
-    void OnReadTimeout();
-    void OnWriteTimeout();
+    void OnWriteOperation(const asio::error_code& error);
     void InternalSend(std::shared_ptr<OutputMessage> message);
     asio::io_service& ioService_;
     std::shared_ptr<ServicePort> servicePort_;
     std::recursive_mutex lock_;
     Protocol* protocol_;
-    int32_t pendingWrite_;
-    int32_t pendingRead_;
-    bool writeError_;
-    bool readError_;
     bool receivedFirst_;
     asio::steady_timer readTimer_;
     asio::steady_timer writeTimer_;
     NetworkMessage msg_;
+    std::list<std::shared_ptr<OutputMessage>> messageQueue_;
 
     State state_;
 };

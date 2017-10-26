@@ -4,6 +4,8 @@
 #include <string>
 #include "Definitions.h"
 #include "NetworkMessage.h"
+#include "ProtocolAdmin.h"
+#include <memory>
 
 enum
 {
@@ -69,6 +71,7 @@ private:
     bool connected_;
     void SetSocketMode(bool blocking);
     SocketCode SendMsg(NetworkMessage& msg, uint32_t* key = nullptr);
+    std::shared_ptr<ProtocolAdmin> protocol_;
 public:
     Client();
     ~Client();
@@ -87,7 +90,7 @@ public:
     {
         return port_;
     }
-    bool Connect(const std::string& pass);
+    void Connect(const std::string& pass);
     bool Disconnect();
     bool SendCommand(char cmdByte, char* command);
     bool GetConnected() const { return connected_; }

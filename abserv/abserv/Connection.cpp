@@ -14,6 +14,11 @@
 
 namespace Net {
 
+Connection::~Connection()
+{
+    CloseSocket();
+}
+
 bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 {
 #ifdef DEBUG_NET
@@ -21,59 +26,73 @@ bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 #endif
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
-    if (state_ != State::Open || writeError_)
+
+    if (state_ != State::Open)
         return false;
 
-    if (pendingWrite_ == 0)
-    {
-        message->GetProtocol()->OnSendMessage(message);
-#ifdef DEBUG_NET
-        LOG_DEBUG << "Sending " << message->GetMessageLength() << std::endl;
-#endif
+    bool noPendingWrite = messageQueue_.empty();
+    messageQueue_.emplace_back(message);
+    if (noPendingWrite)
         InternalSend(message);
-    }
-    else
-    {
-#ifdef DEBUG_NET
-        LOG_DEBUG << "Adding to queue " << message->GetMessageLength() << std::endl;
-#endif
-        OutputMessagePool* pool = OutputMessagePool::Instance();
-        pool->AddToAutoSend(message);
-    }
 
     return true;
 }
 
-void Connection::Close()
+void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
+{
+    protocol_->OnSendMessage(message);
+    try
+    {
+        writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));
+        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
+            std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+
+        asio::async_write(GetHandle(),
+            asio::buffer(message->GetOutputBuffer(), message->GetMessageLength()),
+            std::bind(&Connection::OnWriteOperation, shared_from_this(), std::placeholders::_1));
+    }
+    catch (asio::system_error& e)
+    {
+        LOG_ERROR << "Network " << e.what() << std::endl;
+    }
+}
+
+void Connection::Close(bool force /* = false */)
 {
 #ifdef DEBUG_NET
     LOG_DEBUG << "Closing connection" << std::endl;
 #endif
+    ConnectionManager::GetInstance()->ReleaseConnection(shared_from_this());
+
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
-    if (state_ == State::Closed || state_ == State::RequestClose)
+    if (state_ != State::Open)
         return;
+    state_ = State::Closed;
+    if (protocol_)
+    {
+        protocol_->SetConnection(std::shared_ptr<Connection>());
+        protocol_->Release();
+        protocol_ = nullptr;
+    }
 
-    state_ = State::RequestClose;
-
-    Asynch::Dispatcher::Instance.Add(
-        Asynch::CreateTask(std::bind(&Connection::CloseConnectionTask, shared_from_this()))
-    );
+    if (messageQueue_.empty() || force)
+        CloseSocket();
 }
 
-void Connection::AcceptConnection(Protocol* protocol)
+void Connection::Accept(Protocol* protocol)
 {
     protocol_ = protocol;
     protocol_->OnConnect();
-    AcceptConnection();
+    Accept();
 }
 
-void Connection::AcceptConnection()
+void Connection::Accept()
 {
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     try
     {
-        ++pendingRead_;
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
+        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Read size of packet
@@ -101,23 +120,26 @@ void Connection::ParseHeader(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
-
-    int32_t size = msg_.DecodeHeader();
-    if (error || size <= 0 || size >= NETWORKMESSAGE_MAXSIZE - 16)
-        HandleReadError(error);
-
-    if (state_ != State::Open || readError_)
+    if (error)
     {
-        Close();
+        LOG_ERROR << "Network " << error.message() << std::endl;
+        Close(true);
         return;
     }
+    if (state_ != State::Open)
+        return;
 
-    --pendingRead_;
+    uint16_t size = msg_.DecodeHeader();
+    if (size == 0 || size >= NETWORKMESSAGE_MAXSIZE - 16)
+    {
+        Close(true);
+        return;
+    }
 
     try
     {
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
+        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Read content
@@ -139,57 +161,54 @@ void Connection::ParsePacket(const asio::error_code& error)
     readTimer_.cancel();
 
     if (error)
-        HandleReadError(error);
-
-    if (state_ != State::Open || readError_)
     {
-        Close();
+        Close(true);
         return;
     }
+    if (state_ != State::Open)
+        return;
 
-    --pendingRead_;
-
-    uint32_t recvChecksum = msg_.PeekU32();
-    uint32_t checksum = 0;
-    int32_t len = msg_.GetMessageLength() - msg_.GetReadPos() - 4;
+    uint32_t checksum;;
+    int32_t len = msg_.GetMessageLength() - msg_.GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
-        checksum = Utils::AdlerChecksum((uint8_t*)(msg_.GetBuffer() + msg_.GetReadPos() + 4), len);
-
-    if (recvChecksum == checksum)
-        // Remove the checksum
-        msg_.Get<uint32_t>();
+        checksum = Utils::AdlerChecksum((uint8_t*)(msg_.GetBuffer() + msg_.GetReadPos() + NetworkMessage::ChecksumLength), len);
+    else
+        checksum = 0;
+    uint32_t recvChecksum = msg_.Get<uint32_t>();
+    if (recvChecksum != checksum)
+        // it might not have been the checksum, step back
+        msg_.Skip(-NetworkMessage::ChecksumLength);
 
     if (!receivedFirst_)
     {
+        // First message received
         receivedFirst_ = true;
+
         if (!protocol_)
         {
+            // Game protocol has already been created at this point
             protocol_ = servicePort_->MakeProtocol(recvChecksum == checksum, msg_, shared_from_this());
             if (!protocol_)
             {
-                Close();
+                Close(true);
                 return;
             }
-            protocol_->SetConnection(shared_from_this());
+
         }
         else
-        {
-            // Skip ID
-            msg_.GetByte();
-        }
+            // Skip protocol ID
+            msg_.Skip(1);
+
         protocol_->OnRecvFirstMessage(msg_);
     }
     else
-    {
         // Send the packet to the current protocol
         protocol_->OnRecvMessage(msg_);
-    }
 
     try
     {
-        ++pendingRead_;
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
+        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         asio::async_read(GetHandle(),
@@ -202,123 +221,15 @@ void Connection::ParsePacket(const asio::error_code& error)
     }
 }
 
-void Connection::HandleReadError(const asio::error_code& error)
-{
-    std::lock_guard<std::recursive_mutex> lock(lock_);
-    if (error == asio::error::operation_aborted)
-    {
-        // Do nothing
-    }
-    else if (error == asio::error::eof)
-    {
-        // No more read
-        Close();
-    }
-    else if (error == asio::error::connection_reset ||
-        error == asio::error::connection_aborted)
-    {
-        // Remotely close connection
-        Close();
-    }
-    else
-    {
-        Close();
-    }
-    readError_ = true;
-}
-
-void Connection::HandleWriteError(const asio::error_code& error)
-{
-    std::lock_guard<std::recursive_mutex> lock(lock_);
-    if (error == asio::error::operation_aborted)
-    {
-        // Do nothing
-    }
-    else if (error == asio::error::eof)
-    {
-        // No more read
-        Close();
-    }
-    else if (error == asio::error::connection_reset ||
-        error == asio::error::connection_aborted)
-    {
-        // Remotely close connection
-        Close();
-    }
-    else
-    {
-        Close();
-    }
-    writeError_ = true;
-}
-
-void Connection::HandleReadTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
+void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
-    {
-        if (auto conn = weakConn.lock())
-        {
-            conn->OnReadTimeout();
-        }
-    }
-}
-
-void Connection::HandleWriteTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
-{
-    if (error == asio::error::operation_aborted)
-    {
-        if (auto conn = weakConn.lock())
-        {
-            conn->OnWriteTimeout();
-        }
-    }
-}
-
-void Connection::OnReadTimeout()
-{
-    std::lock_guard<std::recursive_mutex> lock(lock_);
-    if (pendingRead_ > 0 || readError_)
-    {
-        CloseSocket();
-        Close();
-    }
-}
-
-void Connection::OnWriteTimeout()
-{
-    std::lock_guard<std::recursive_mutex> lock(lock_);
-    if (pendingWrite_ > 0 || writeError_)
-    {
-        CloseSocket();
-        Close();
-    }
-}
-
-void Connection::CloseConnectionTask()
-{
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
-    if (state_ != State::RequestClose)
-    {
-        LOG_ERROR << "state = " << state_ << std::endl;
         return;
-    }
 
-    if (protocol_)
+    if (auto conn = weakConn.lock())
     {
-        protocol_->SetConnection(std::shared_ptr<Connection>());
-        protocol_->Release();
-        protocol_ = nullptr;
+        conn->Close(true);
     }
-
-    state_ = State::Closing;
-
-    if (pendingWrite_ == 0 || writeError_)
-    {
-        CloseSocket();
-        ReleaseConnection();
-        state_ = State::Closed;
-    }
-    // else will be closed by OnWriteOperation/HandleWriteTimeout/HandleReadTimeout instead
 }
 
 void Connection::CloseSocket()
@@ -330,65 +241,18 @@ void Connection::CloseSocket()
 #ifdef DEBUG_NET
         LOG_DEBUG << "Closing socket" << std::endl;
 #endif
-        pendingRead_ = 0;
-        pendingWrite_ = 0;
-
         try
         {
+            readTimer_.cancel();
+            writeTimer_.cancel();
             asio::error_code err;
             socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
-            if (err)
-            {
-                if (err == asio::error::not_connected)
-                {
-                    // Not connected
-                }
-                else
-                {
-                    LOG_ERROR << "Shutdown " << err.value() << ", Message " << err.message() << std::endl;
-                }
-            }
             socket_.close(err);
-            if (err)
-            {
-                LOG_ERROR << "Close " << err.value() << ", Message " << err.message() << std::endl;
-            }
         }
         catch (asio::system_error& e)
         {
             LOG_ERROR << "Network " << e.what() << std::endl;
         }
-    }
-}
-
-void Connection::ReleaseConnection()
-{
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Releasing connection" << std::endl;
-#endif
-    if (refCount_ > 0)
-    {
-        // Reschedule
-        Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
-            SCHEDULER_MINTICKS,
-            std::bind(&Connection::ReleaseConnection, this)));
-    }
-    else
-    {
-        DeleteConnectionTask();
-    }
-}
-
-void Connection::DeleteConnectionTask()
-{
-    assert(refCount_ == 0);
-    try
-    {
-        ioService_.dispatch(std::bind(&Connection::OnStopOperation, this));
-    }
-    catch (asio::system_error& e)
-    {
-        LOG_ERROR << "Network " << e.what() << std::endl;
     }
 }
 
@@ -411,41 +275,25 @@ void Connection::OnStopOperation()
     ConnectionManager::GetInstance()->ReleaseConnection(shared_from_this());
 }
 
-void Connection::OnWriteOperation(std::shared_ptr<OutputMessage> msg, const asio::error_code& error)
+void Connection::OnWriteOperation(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     writeTimer_.cancel();
-    msg.reset();
+    messageQueue_.pop_front();
 
     if (error)
-        HandleWriteError(error);
-
-    if (state_ != State::Open || writeError_)
     {
-        CloseSocket();
-        Close();
+        messageQueue_.clear();
         return;
     }
 
-    --pendingWrite_;
-}
-
-void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
-{
-    try
+    if (!messageQueue_.empty())
     {
-        ++pendingWrite_;
-        writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleWriteTimeout,
-            std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
-
-        asio::async_write(GetHandle(),
-            asio::buffer(message->GetOutputBuffer(), message->GetMessageLength()),
-            std::bind(&Connection::OnWriteOperation, shared_from_this(), message, std::placeholders::_1));
+        InternalSend(messageQueue_.front());
     }
-    catch (asio::system_error& e)
+    else if (state_ == State::Closed)
     {
-        LOG_ERROR << "Network " << e.what() << std::endl;
+        CloseSocket();
     }
 }
 

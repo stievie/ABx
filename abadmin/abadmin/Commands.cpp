@@ -64,8 +64,8 @@ int CommandConnect(const std::vector<std::string>& params)
         std::cout << "Password too long" << std::endl;
         return -1;
     }
-    bool ret = gClient->Connect(pass);
-    return ret ? 1 : -1;
+    gClient->Connect(pass);
+    return 1;
 }
 
 int CommandBroadcast(const std::vector<std::string>& params)

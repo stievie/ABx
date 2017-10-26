@@ -159,10 +159,10 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
             if (services_.front()->IsSingleSocket())
             {
                 // Only one handler, and it will send first
-                connection->AcceptConnection(services_.front()->MakeProtocol(connection));
+                connection->Accept(services_.front()->MakeProtocol(connection));
             }
             else
-                connection->AcceptConnection();
+                connection->Accept();
         }
         else
         {

@@ -4,10 +4,12 @@
 #include "Rsa.h"
 
 Client::Client() :
-    connected_(false)
+    connected_(false),
+    protocol_(nullptr),
+    host_("127.0.0.1"),
+    port_(7171)
 {
 }
-
 
 Client::~Client()
 {
@@ -82,8 +84,12 @@ SocketCode Client::SendMsg(NetworkMessage& msg, uint32_t* key)
     return ret;
 }
 
-bool Client::Connect(const std::string& pass)
+void Client::Connect(const std::string& pass)
 {
+    if (!protocol_)
+        protocol_ = std::make_shared<ProtocolAdmin>();
+    protocol_->Login(pass, host_, port_);
+#if false
     if (connected_)
         return false;
 
@@ -295,6 +301,7 @@ bool Client::Connect(const std::string& pass)
 
     connected_ = true;
     return true;
+#endif
 }
 
 bool Client::Disconnect()
@@ -302,9 +309,11 @@ bool Client::Disconnect()
     if (!connected_)
         return false;
 
+/*
     closesocket(socket_);
     socket_ = SOCKET_ERROR;
     std::cout << "Disconnected" << std::endl;
+    */
     connected_ = false;
 
     return true;

@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <cassert>
 
 // Suppress min/max conflicts with STL. For further information visit: http://support.microsoft.com/kb/143208
 #ifndef NOMINMAX
@@ -20,5 +21,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
+
+#define ASIO_STANDALONE
 
 #pragma comment( lib, "Ws2_32.lib" )

@@ -54,7 +54,11 @@ public:
         return 0;
     }
 
-    void Send(std::shared_ptr<OutputMessage> message);
+    void Send(std::shared_ptr<OutputMessage> message)
+    {
+        if (auto conn = GetConnection())
+            conn->Send(message);
+    }
     void Disconnect();
     void Release();
 };
