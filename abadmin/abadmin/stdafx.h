@@ -24,4 +24,8 @@
 
 #define ASIO_STANDALONE
 
-#pragma comment( lib, "Ws2_32.lib" )
+#if defined(_DEBUG)
+//#define _LOGGING
+#else
+#undef _LOGGING
+#endif

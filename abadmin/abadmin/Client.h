@@ -15,7 +15,6 @@ private:
     SOCKET socket_;
     uint16_t port_;
     std::string host_;
-    bool connected_;
     SocketCode SendMsg(NetworkMessage& msg, uint32_t* key = nullptr);
     std::shared_ptr<ProtocolAdmin> protocol_;
     std::thread pollThread_;
@@ -41,6 +40,7 @@ public:
     void Connect(const std::string& pass);
     bool Disconnect();
     bool SendCommand(char cmdByte, char* command);
-    bool GetConnected() const { return connected_; }
+    bool IsConnected() const { return protocol_ && protocol_->IsConnected(); }
+    bool IsLoggedIn() const { return protocol_ && protocol_->IsLoggedIn(); }
 };
 

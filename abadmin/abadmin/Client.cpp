@@ -5,7 +5,6 @@
 #include "OutputMessage.h"
 
 Client::Client() :
-    connected_(false),
     protocol_(nullptr),
     host_("127.0.0.1"),
     port_(7173)
@@ -304,16 +303,10 @@ void Client::Connect(const std::string& pass)
 
 bool Client::Disconnect()
 {
-    if (!connected_)
+    if (!IsConnected())
         return false;
 
-/*
-    closesocket(socket_);
-    socket_ = SOCKET_ERROR;
-    std::cout << "Disconnected" << std::endl;
-    */
-    connected_ = false;
-
+    protocol_->Disconnect();
     return true;
 }
 

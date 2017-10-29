@@ -33,6 +33,8 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
     switch (dwCtrlType)
     {
     case CTRL_CLOSE_EVENT:                  // Close button or End Task
+        gApplication->Stop();
+        return TRUE;
     case CTRL_C_EVENT:                      // Ctrl+C
     {
         // Either it stops or it crashes...
@@ -44,7 +46,6 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
             Asynch::Dispatcher::Instance.Add(
                 Asynch::CreateTask(std::bind(&Application::Stop, gApplication))
             );
-            // gApplication->Stop();
         }
         return TRUE;
     }
@@ -86,7 +87,7 @@ bool Application::Initialize(int argc, char** argv)
 
     Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::MainLoader, this)));
     loaderSignal_.wait(loaderUniqueLock_);
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(100ms);
 
     if (!serviceManager_.IsRunning())
         LOG_ERROR << "No services running" << std::endl;

@@ -6,8 +6,8 @@
 #endif
 
 #if defined(_DEBUG)
-#   define DEBUG_DISPATTCHER
-#   define DEBUG_SCHEDULER
+//#   define DEBUG_DISPATTCHER
+//#   define DEBUG_SCHEDULER
 #   define DEBUG_NET
 #else
 #endif

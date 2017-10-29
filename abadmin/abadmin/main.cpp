@@ -24,7 +24,7 @@ static void Run()
     while (gRunning)
     {
         std::cout << "AB";
-        if (cli.GetConnected())
+        if (cli.IsConnected() && cli.IsLoggedIn())
         {
             std::cout << " " << cli.GetHost() << ":" << cli.GetPort();
         }

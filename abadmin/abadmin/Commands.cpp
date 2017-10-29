@@ -48,7 +48,7 @@ int CommandServer(const std::vector<std::string>& params)
 
 int CommandConnect(const std::vector<std::string>& params)
 {
-    if (gClient->GetConnected())
+    if (gClient->IsConnected())
     {
         std::cout << "Already connected" << std::endl;
         return -1;
@@ -65,12 +65,38 @@ int CommandConnect(const std::vector<std::string>& params)
         return -1;
     }
     gClient->Connect(pass);
+
+    int loops = 0;
+    while (!gClient->IsLoggedIn())
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        ++loops;
+        // Wait max 5sec
+        if (loops > 100)
+            break;
+    }
+
+    if (gClient->IsLoggedIn())
+        std::cout << "Logged in" << std::endl;
+    else
+        std::cout << "Not logged in" << std::endl;
+    return 1;
+}
+
+int CommandDisconnect(const std::vector<std::string>& params)
+{
+    if (!gClient->IsConnected())
+    {
+        std::cout << "Not connected" << std::endl;
+        return -1;
+    }
+    gClient->Disconnect();
     return 1;
 }
 
 int CommandBroadcast(const std::vector<std::string>& params)
 {
-    if (!gClient->GetConnected())
+    if (!gClient->IsConnected())
     {
         std::cout << "Not connected" << std::endl;
         return -1;
@@ -96,14 +122,14 @@ int CommandBroadcast(const std::vector<std::string>& params)
     bool ret = gClient->SendCommand(CMD_BROADCAST, message);
     if (!ret)
     {
-        return false;
+        return -1;
     }
-    return true;
+    return 1;
 }
 
 int CommandCloseServer(const std::vector<std::string>& params)
 {
-    if (!gClient->GetConnected())
+    if (!gClient->IsConnected())
     {
         std::cout << "Not connected" << std::endl;
         return -1;
@@ -111,14 +137,14 @@ int CommandCloseServer(const std::vector<std::string>& params)
     bool ret = gClient->SendCommand(CMD_CLOSE_SERVER, nullptr);
     if (!ret)
     {
-        return false;
+        return -1;
     }
-    return true;
+    return 1;
 }
 
 int CommandShutdownServer(const std::vector<std::string>& params)
 {
-    if (!gClient->GetConnected())
+    if (!gClient->IsConnected())
     {
         std::cout << "Not connected" << std::endl;
         return -1;
@@ -126,9 +152,9 @@ int CommandShutdownServer(const std::vector<std::string>& params)
     bool ret = gClient->SendCommand(CMD_SHUTDOWN_SERVER, nullptr);
     if (!ret)
     {
-        return false;
+        return -1;
     }
-    return true;
+    return 1;
 }
 
 void Commands::Initialize()
@@ -137,6 +163,7 @@ void Commands::Initialize()
     commands_["h"] = Command(&HelpCommand, "\n  Show help");
     commands_["server"] = Command(&CommandServer, "<host> <port>\n  Set server");
     commands_["connect"] = Command(&CommandConnect, "[<pass>]\n  Connect to server");
+    commands_["disconnect"] = Command(&CommandDisconnect, "\n  Disconnect from server");
     commands_["broadcast"] = Command(&CommandBroadcast, "<message>\n  Broadcast a message");
     commands_["close"] = Command(&CommandCloseServer, "\n  Close server");
     commands_["shutdown"] = Command(&CommandShutdownServer, "\n  Shutdown server");

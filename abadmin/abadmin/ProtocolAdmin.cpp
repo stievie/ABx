@@ -2,7 +2,9 @@
 #include "ProtocolAdmin.h"
 #include "Logger.h"
 
-ProtocolAdmin::ProtocolAdmin()
+ProtocolAdmin::ProtocolAdmin() :
+    Protocol(),
+    loggedIn_(false)
 {
 }
 
@@ -14,7 +16,7 @@ void ProtocolAdmin::Login(const std::string& host, uint16_t port, const std::str
 {
     password_ = password;
     Connect(host, port);
-    Connection::Run();
+//    Connection::Run();
 }
 
 void ProtocolAdmin::SendLoginPacket()
@@ -30,28 +32,43 @@ void ProtocolAdmin::ParseMessage(const std::shared_ptr<InputMessage>& message)
 {
     uint8_t recvByte = message->Get<uint8_t>();
 
-#ifdef _DEBUG
+#ifdef _LOGGING
     LOG_DEBUG << "recvByte = " << static_cast<unsigned>(recvByte) << std::endl;
 #endif
     switch (recvByte)
     {
     case AP_MSG_HELLO:
-        ParseMessageHello(message);
+        HandleMessageHello(message);
         break;
     case AP_MSG_LOGIN_OK:
-#ifdef _DEBUG
+#ifdef _LOGGING
         LOG_DEBUG << "Login OK" << std::endl;
 #endif
+        loggedIn_ = true;
         break;
     case AP_MSG_LOGIN_FAILED:
-#ifdef _DEBUG
+#ifdef _LOGGING
         LOG_DEBUG << "Login failed" << std::endl;
 #endif
+        break;
+    case AP_MSG_COMMAND_OK:
+        break;
+    case AP_MSG_COMMAND_FAILED:
+        break;
+    case AP_MSG_ENCRYPTION_OK:
+        break;
+    case AP_MSG_ENCRYPTION_FAILED:
+        break;
+    case AP_MSG_PING_OK:
+        break;
+    case AP_MSG_MESSAGE:
+        break;
+    case AP_MSG_ERROR:
         break;
     }
 }
 
-void ProtocolAdmin::ParseMessageHello(const std::shared_ptr<InputMessage>& message)
+void ProtocolAdmin::HandleMessageHello(const std::shared_ptr<InputMessage>& message)
 {
     message->Get<uint32_t>();
     serverString_ = message->GetString();
@@ -68,7 +85,7 @@ void ProtocolAdmin::ParseMessageHello(const std::shared_ptr<InputMessage>& messa
     if (security_ & REQUIRE_LOGIN)
         serverString_ += " login";
 
-#ifdef _DEBUG
+#ifdef _LOGGING
     LOG_DEBUG << "Hello from " << serverString_ << std::endl;
 #endif
 
@@ -81,6 +98,9 @@ void ProtocolAdmin::ParseMessageHello(const std::shared_ptr<InputMessage>& messa
     {
         DoLogin();
     }
+    else
+        // No login required
+        loggedIn_ = true;
 }
 
 void ProtocolAdmin::DoLogin()

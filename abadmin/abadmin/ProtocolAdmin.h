@@ -73,11 +73,12 @@ private:
     std::string serverString_;
     uint16_t security_;
     uint32_t options_;
+    bool loggedIn_;
 
     bool firstRecv_;
     void SendLoginPacket();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
-    void ParseMessageHello(const std::shared_ptr<InputMessage>& message);
+    void HandleMessageHello(const std::shared_ptr<InputMessage>& message);
     void DoLogin();
     void SetupEncryption();
 protected:
@@ -93,5 +94,6 @@ public:
     const std::string& GetServerString() const { return serverString_; }
     uint16_t GetSecurity() const { return security_; }
     uint32_t GetOptions() const { return options_; }
+    bool IsLoggedIn() const { return loggedIn_; }
 };
 

@@ -90,7 +90,7 @@ void Protocol::InternalRecvHeader(uint8_t* buffer, uint16_t size)
 
     inputMessage_->FillBuffer(buffer, size);
     uint16_t remainingSize = inputMessage_->ReadSize();
-#ifdef _DEBUG
+#ifdef _LOGGING
     LOG_DEBUG << "size = " << size << ", remaining size = " << remainingSize << std::endl;
 #endif
 
@@ -105,7 +105,7 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     if (!IsConnected())
         return;
 
-#ifdef _DEBUG
+#ifdef _LOGGING
     LOG_DEBUG << "size = " << size << std::endl;
 #endif
 
