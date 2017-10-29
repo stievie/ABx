@@ -26,6 +26,6 @@ Thumbs.db
 .directory
 *.opendb
 *.db
-/Tiny3D/*.filters
+*.filters
 /*.dll
-/Tiny3D/*.user
+*.user
