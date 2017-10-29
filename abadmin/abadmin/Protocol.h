@@ -14,8 +14,8 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
     std::shared_ptr<InputMessage> inputMessage_;
-    bool checksumEnabled;
-    bool xteaEnabled;
+    bool checksumEnabled_;
+    bool xteaEnabled_;
     void InternalRecvHeader(uint8_t* buffer, uint16_t size);
     void InternalRecvData(uint8_t* buffer, uint16_t size);
     bool XteaDecrypt(const std::shared_ptr<InputMessage>& message);

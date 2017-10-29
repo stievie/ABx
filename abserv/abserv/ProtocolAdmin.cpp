@@ -22,6 +22,9 @@ ProtocolAdmin::ProtocolAdmin(std::shared_ptr<Connection> connection) :
 
 void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
 {
+#ifdef DEBUG_NET
+        LOG_DEBUG << std::endl;
+#endif
     if (!ConfigManager::Instance[ConfigManager::Key::AdminEnabled])
     {
         Disconnect();
@@ -56,6 +59,9 @@ void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolAdmin::ParsePacket(NetworkMessage& message)
 {
+#ifdef DEBUG_NET
+        LOG_DEBUG << std::endl;
+#endif
     uint8_t recvByte = message.GetByte();
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -91,9 +97,37 @@ void ProtocolAdmin::ParsePacket(NetworkMessage& message)
         {
             if (ConfigManager::Instance[ConfigManager::Key::AdminRequireLogin])
             {
+                if ((std::time(nullptr) - startTime_) > 30000)
+                {
+                    // Login timeout
+                    Disconnect();
+                    LOG_WARNING << "Login timeout" << std::endl;
+                    return;
+                }
 
+                if (loginTries_ > 3)
+                {
+                    output->AddByte(AP_MSG_ERROR);
+                    output->AddString("Too many login tries");
+                    Send(output);
+                    Disconnect();
+                    LOG_WARNING << "Too many login tries" << std::endl;
+                    return;
+                }
+
+                if (recvByte != AP_MSG_LOGIN)
+                {
+                    output->AddByte(AP_MSG_ERROR);
+                    output->AddString("You are not logged in");
+                    Send(output);
+                    Disconnect();
+                    LOG_WARNING << "Wrong command while NotloggedIn" << std::endl;
+                    return;
+                }
+                break;
             }
-            break;
+            else
+                state_ = LoggedIn;
         }
         case LoggedIn:
             // Can execute commands
@@ -138,25 +172,69 @@ void ProtocolAdmin::ParsePacket(NetworkMessage& message)
 
 void ProtocolAdmin::HandleMsgLogin(NetworkMessage& message, OutputMessage* output)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
+    if (state_ == NotloggedIn && ConfigManager::Instance[ConfigManager::Key::AdminRequireLogin].GetBool())
+    {
+        std::string password = message.GetString();
+        if (password.compare(ConfigManager::Instance[ConfigManager::Key::AdminPassword].GetString()) == 0)
+        {
+            state_ = LoggedIn;
+            output->AddByte(AP_MSG_LOGIN_OK);
+            LOG_INFO << "Login OK" << std::endl;
+        }
+        else
+        {
+            loginTries_++;
+            output->AddByte(AP_MSG_LOGIN_FAILED);
+            output->AddString("Wrong password");
+            LOG_WARNING << "Login failed, password: " << password << std::endl;
+        }
+    }
+    else
+    {
+        output->AddByte(AP_MSG_LOGIN_FAILED);
+        output->AddString("Can not login");
+        LOG_WARNING << "Wrong state at login" << std::endl;
+    }
 }
 
 void ProtocolAdmin::HandleMsgEncryption(NetworkMessage& message, OutputMessage* output)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
 
 }
 
 void ProtocolAdmin::HandleMsgKeyExchange(NetworkMessage& message, OutputMessage* output)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
 
 }
 
 void ProtocolAdmin::HandleMsgCommand(NetworkMessage& message, OutputMessage* output)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
+    if (state_ != LoggedIn)
+    {
+        LOG_ERROR << "Got AP_MSG_COMMAND while not logged in" << std::endl;
+        return;
+    }
 
+    uint8_t command = message.GetByte();
 }
 
 void ProtocolAdmin::HandleMsgPing(NetworkMessage& message, OutputMessage* output)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
     output->AddByte(AP_MSG_PING_OK);
 }
 

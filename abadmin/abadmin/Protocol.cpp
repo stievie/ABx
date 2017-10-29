@@ -5,8 +5,8 @@
 
 Protocol::Protocol() :
     connection_(nullptr),
-    checksumEnabled(false),
-    xteaEnabled(false)
+    checksumEnabled_(false),
+    xteaEnabled_(false)
 {
     inputMessage_ = std::make_shared<InputMessage>();
 }
@@ -52,7 +52,9 @@ void Protocol::SetXteaKey(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
 
 void Protocol::Send(const std::shared_ptr<OutputMessage>& message)
 {
-    if (checksumEnabled)
+    if (xteaEnabled_)
+        XteaEncrypt(message);
+    if (checksumEnabled_)
         message->WriteChecksum();
     message->WriteMessageSize();
 
@@ -68,9 +70,9 @@ void Protocol::Receive()
 
     // first update message header size
     int headerSize = 2; // 2 bytes for message size
-    if (checksumEnabled)
+    if (checksumEnabled_)
         headerSize += 4; // 4 bytes for checksum
-    if (xteaEnabled)
+    if (xteaEnabled_)
         headerSize += 2; // 2 bytes for XTEA encrypted message size
     inputMessage_->SetHeaderSize(headerSize);
 
@@ -101,10 +103,13 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 
     inputMessage_->FillBuffer(buffer, size);
 
-    if (checksumEnabled && !inputMessage_->ReadChecksum())
+    if (checksumEnabled_ && !inputMessage_->ReadChecksum())
+    {
+        // Invalid checksum
         return;
+    }
 
-    if (xteaEnabled)
+    if (xteaEnabled_)
     {
         if (!XteaDecrypt(inputMessage_))
         {

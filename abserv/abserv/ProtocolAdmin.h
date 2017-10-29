@@ -106,7 +106,6 @@ enum
     CMD_RELATIONAL_SAVE_SERVER = 16
 };
 
-
 enum
 {
     REQUIRE_LOGIN = 1,

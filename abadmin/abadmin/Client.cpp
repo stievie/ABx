@@ -85,11 +85,7 @@ void Client::Connect(const std::string& pass)
 {
     if (!protocol_)
         protocol_ = std::make_shared<ProtocolAdmin>();
-//    protocol_->Connect(host_, port_);
-//    Connection::Poll();
     protocol_->Login(host_, port_, pass);
-//    protocol_->Receive();
-//    Connection::Poll();
 
 #if false
     if (connected_)

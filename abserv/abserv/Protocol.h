@@ -45,7 +45,7 @@ public:
     virtual ~Protocol()
     {
 #ifdef DEBUG_NET
-        LOG_DEBUG << std::endl;
+//        LOG_DEBUG << std::endl;
 #endif
     }
 #else

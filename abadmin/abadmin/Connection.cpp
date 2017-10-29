@@ -188,7 +188,8 @@ void Connection::Write(uint8_t* buffer, size_t size)
     // We can't send the data right away, otherwise we could create tcp congestion
     if (!outputStream_)
     {
-        if (!outputStreams_.empty()) {
+        if (!outputStreams_.empty())
+        {
             outputStream_ = outputStreams_.front();
             outputStreams_.pop_front();
         }

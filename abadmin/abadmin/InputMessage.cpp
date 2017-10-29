@@ -24,6 +24,15 @@ void InputMessage::SetBuffer(const std::string& buffer)
     size_ = (uint16_t)len;
 }
 
+std::string InputMessage::GetString()
+{
+    uint16_t len = Get<uint16_t>();
+    CheckRead(len);
+    char* v = (char*)(buffer_ + pos_);
+    pos_ += len;
+    return std::string(v, len);
+}
+
 void InputMessage::CheckWrite(size_t size)
 {
     if (size > MaxBufferSize)

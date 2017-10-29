@@ -2,18 +2,34 @@
 #include "OutputMessage.h"
 #include "Utils.h"
 #include "Dispatcher.h"
+#include "Scheduler.h"
 
 #include "DebugNew.h"
 
 namespace Net {
 
+const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
+
 void OutputMessagePool::SendAll()
 {
+    // Dispatcher Thread
+    for (auto& proto : bufferedProtocols_)
+    {
+        auto& msg = proto->GetCurrentBuffer();
+        if (msg)
+            proto->Send(msg);
+    }
 
+    if (!bufferedProtocols_.empty())
+        ScheduleSendAll();
 }
 
 void OutputMessagePool::ScheduleSendAll()
 {
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(static_cast<uint32_t>(OUTPUTMESSAGE_AUTOSEND_DELAY.count()),
+            std::bind(&OutputMessagePool::SendAll, this))
+    );
 }
 
 std::shared_ptr<OutputMessage> OutputMessagePool::GetOutputMessage()

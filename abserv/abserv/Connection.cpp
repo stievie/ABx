@@ -18,7 +18,7 @@ namespace Net {
 Connection::~Connection()
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << std::endl;
+//    LOG_DEBUG << std::endl;
 #endif
     CloseSocket();
 }
@@ -26,7 +26,7 @@ Connection::~Connection()
 bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Sending message" << std::endl;
+    LOG_DEBUG << "Sending message with size " << message->GetMessageLength() << std::endl;
 #endif
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -267,11 +267,12 @@ void Connection::ParsePacket(const asio::error_code& error)
 
 void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
 {
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Timeout" << std::endl;
-#endif
     if (error == asio::error::operation_aborted)
         return;
+
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Timeout, closing connection" << std::endl;
+#endif
 
     if (auto conn = weakConn.lock())
     {

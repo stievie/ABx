@@ -54,6 +54,7 @@ public:
 
     void SetBuffer(const std::string& buffer);
 
+    std::string GetString();
     template <typename T>
     T Get()
     {
