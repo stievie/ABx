@@ -16,38 +16,8 @@ namespace Net {
 
 class OutputMessage : public NetworkMessage
 {
-public:
-    enum State
-    {
-        StateFree,
-        StateAllocated,
-        StateAllocatedNoAutosend,
-        StateWaiting
-    };
 private:
-    std::shared_ptr<Connection> connection_;
-    Protocol* protocol_;
-    OutputMessage::State state_;
     uint32_t outputBufferStart_;
-    uint64_t frame_;
-
-    OutputMessage()
-    {
-        FreeMessage();
-    }
-
-    void FreeMessage()
-    {
-        SetConnection(std::shared_ptr<Connection>());
-        SetProtocol(nullptr);
-        frame_ = 0;
-        // allocate enough size for headers
-        // 2 bytes for unencrypted message size
-        // 4 bytes for checksum
-        // 2 bytes for encrypted message size
-        outputBufferStart_ = 8;
-        SetState(OutputMessage::State::StateFree);
-    }
 
     friend class OutputMessagePool;
 
@@ -62,51 +32,48 @@ private:
         }
         outputBufferStart_ -= sizeof(T);
         memcpy(buffer_ + outputBufferStart_, &add, sizeof(T));
-        size_ += sizeof(T);
+        info_.length += sizeof(T);
     }
 public:
+    OutputMessage() = default;
     OutputMessage(const OutputMessage&) = delete;
     ~OutputMessage() {}
 
-    char* GetOutputBuffer() { return (char*)&buffer_[outputBufferStart_]; }
-    std::shared_ptr<Connection> GetConnection() { return connection_; }
-    void SetConnection(std::shared_ptr<Connection> connection)
-    {
-        connection_ = connection;
-    }
-    Protocol* GetProtocol() { return protocol_; }
-    void SetProtocol(Protocol* protocol)
-    {
-        protocol_ = protocol;
-    }
-    OutputMessage::State GetState() const { return state_; }
-    void SetState(OutputMessage::State state)
-    {
-        state_ = state;
-    }
-    void SetFrame(uint64_t frame)
-    {
-        frame_ = frame;
-    }
-    uint64_t GetFrame() const { return frame_; }
+    uint8_t* GetOutputBuffer() { return buffer_ + outputBufferStart_; }
     void AddCryptoHeader(bool addChecksum)
     {
         if (addChecksum)
-            AddHeader<uint32_t>(Utils::AdlerChecksum((uint8_t*)(buffer_ - outputBufferStart_), size_));
+            AddHeader<uint32_t>(Utils::AdlerChecksum((uint8_t*)(buffer_ - outputBufferStart_), info_.length));
         WriteMessageLength();
     }
     void WriteMessageLength()
     {
-        AddHeader<uint16_t>(size_);
+        AddHeader<uint16_t>(info_.length);
+    }
+
+    void Append(const NetworkMessage& msg)
+    {
+        int32_t msgLen = msg.GetSize();
+        memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg.GetBuffer() + 8), msgLen);
+        info_.length += msgLen;
+        info_.position += msgLen;
+    }
+    void Append(const std::shared_ptr<OutputMessage>& msg)
+    {
+        int32_t msgLen = msg->GetSize();
+        memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg->GetBuffer() + 8), msgLen);
+        info_.length += msgLen;
+        info_.position += msgLen;
     }
 };
 
 class OutputMessagePool
 {
 private:
-    OutputMessagePool();
+    OutputMessagePool() = default;
 public:
-    ~OutputMessagePool();
+    OutputMessagePool(const OutputMessagePool&) = delete;
+    OutputMessagePool& operator=(const OutputMessagePool&) = delete;
 
     static OutputMessagePool* Instance()
     {
@@ -114,28 +81,15 @@ public:
         return &instance;
     }
 
-    void StartExecutionFrame();
-    void Send(std::shared_ptr<OutputMessage> message);
     void SendAll();
-    std::shared_ptr<OutputMessage> GetOutputMessage(Protocol* protocol, bool autosend = true);
-    void AddToAutoSend(std::shared_ptr<OutputMessage> msg);
-protected:
-    typedef std::list<OutputMessage*> InternalOutputMessageList;
-    typedef std::list<std::shared_ptr<OutputMessage>> OutputMessageList;
+    void ScheduleSendAll();
+    static std::shared_ptr<OutputMessage> GetOutputMessage();
+    void AddToAutoSend(std::shared_ptr<Protocol> protocol);
+    void RemoveFromAutoSend(const std::shared_ptr<Protocol>& protocol);
 private:
-    void ReleaseMessage(OutputMessage* message);
-    void InternalReleaseMessage(OutputMessage* message);
-    void ConfigureOutputMessage(std::shared_ptr<OutputMessage> message,
-        Protocol* protocol, bool autosend);
-
-    InternalOutputMessageList outputMessages_;
-    InternalOutputMessageList allOutputMessages_;
-    OutputMessageList autosendOutputMessages_;
-    OutputMessageList toAddQueue_;
-    std::recursive_mutex lock_;
-
-    uint64_t frameTime_;
-    bool isOpen_;
+    //NOTE: A vector is used here because this container is mostly read
+    //and relatively rarely modified (only when a client connects/disconnects)
+    std::vector<std::shared_ptr<Protocol>> bufferedProtocols_;
 };
 
 }

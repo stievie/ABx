@@ -23,14 +23,14 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
 void ProtocolLogin::DisconnectClient(uint8_t error, const char* message)
 {
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage(this, false);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)
     {
         output->AddByte(error);
         output->AddString(message);
-        OutputMessagePool::Instance()->Send(output);
+        Send(output);
     }
-    GetConnection()->Close();
+    Disconnect();
 }
 
 bool ProtocolLogin::ParseFirstPacket(NetworkMessage& message)

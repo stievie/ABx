@@ -63,9 +63,6 @@
     <ClInclude Include="ProtocolLogin.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="RefCounted.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="GameManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

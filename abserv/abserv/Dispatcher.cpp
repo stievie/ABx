@@ -70,8 +70,6 @@ void Dispatcher::DispatcherThread()
 
     while (state_ != State::Terminated)
     {
-        Task* task = nullptr;
-
         taskLockUnique.lock();
 
         if (tasks_.empty())
@@ -87,21 +85,17 @@ void Dispatcher::DispatcherThread()
         LOG_DEBUG << "Dispatcher signaled" << std::endl;
 #endif
 
-        if (!tasks_.empty() && (state_ != State::Terminated))
+        if (!tasks_.empty())
         {
             // Take first task
-            task = tasks_.front();
+            Task* task = tasks_.front();
             tasks_.pop_front();
-        }
+            taskLockUnique.unlock();
 
-        taskLockUnique.unlock();
-
-        // Execute the task
-        if (task)
-        {
+            // Execute the task
             if (!task->IsExpired())
             {
-                Net::OutputMessagePool::Instance()->StartExecutionFrame();
+                ++dispatcherCycle_;
                 (*task)();
 
                 outputPool = Net::OutputMessagePool::Instance();
@@ -115,6 +109,8 @@ void Dispatcher::DispatcherThread()
             LOG_DEBUG << "Executing task" << std::endl;
 #endif
         }
+        else
+            taskLockUnique.unlock();
     }
 #ifdef DEBUG_DISPATTCHER
     LOG_DEBUG << "Dispatcher threat stopped" << std::endl;

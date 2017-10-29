@@ -47,12 +47,15 @@ void ServiceManager::Die()
 
 void ServicePort::Open(uint16_t port)
 {
+    Close();
+
     serverPort_ = port;
     pendingStart_ = false;
     try
     {
-        acceptor_ = new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
-            asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort_));
+        acceptor_.reset(new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
+            asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort_)));
+        acceptor_->set_option(asio::ip::tcp::no_delay(true));
         Accept();
     }
     catch (asio::system_error& e)
@@ -86,8 +89,6 @@ void ServicePort::Close()
                 LOG_ERROR << "Closing socket " << error.message() << std::endl;
             }
         }
-        delete acceptor_;
-        acceptor_ = nullptr;
     }
 }
 
@@ -108,7 +109,7 @@ void ServicePort::OnStopServer()
     Close();
 }
 
-Protocol* ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const
+std::shared_ptr<Protocol> ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const
 {
     uint8_t protocolId = msg.GetByte();
     for (ConstIt it = services_.begin(); it != services_.end(); ++it)
@@ -126,7 +127,12 @@ Protocol* ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg, std::
 void ServicePort::Accept()
 {
     if (!acceptor_)
+    {
+#ifdef DEBUG_NET
+        LOG_INFO << "acceptor_ == null" << std::endl;
+#endif
         return;
+    }
 
     try
     {
@@ -176,9 +182,9 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
     }
     else if (error != asio::error::operation_aborted)
     {
-        Close();
         if (!pendingStart_)
         {
+            Close();
             pendingStart_ = true;
             Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
                 5000,

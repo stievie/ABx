@@ -2,41 +2,37 @@
 #include "Client.h"
 #include <iostream>
 #include "Rsa.h"
+#include "OutputMessage.h"
 
 Client::Client() :
     connected_(false),
     protocol_(nullptr),
     host_("127.0.0.1"),
-    port_(7171)
+    port_(7173)
 {
+    running_ = true;
+    pollThread_ = std::thread([&]() {
+        while (running_)
+        {
+//            Connection::Run();
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            Connection::Poll();
+//            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        }
+    });
 }
 
 Client::~Client()
 {
-}
-
-void Client::SetSocketMode(bool blocking)
-{
-#if defined WIN32 || defined __WINDOWS__
-    // Set the socket I/O mode; iMode = 0 for blocking; iMode != 0 for non-blocking
-    unsigned long mode;
-    if (blocking)
-        mode = 0;
-    else
-        mode = 1;
-    ioctlsocket(socket_, FIONBIO, &mode);
-#else
-    int flags = fcntl(g_socket, F_GETFL);
-    if (blocking)
-        flags &= (~O_NONBLOCK);
-    else
-        flags |= O_NONBLOCK;
-    fcntl(g_socket, F_SETFL, flags);
-#endif
+    running_ = false;
+    pollThread_.join();
 }
 
 SocketCode Client::SendMsg(NetworkMessage& msg, uint32_t* key)
 {
+
+    return SocketCodeError;
+#if false
     SocketCode ret = msg.WriteToSocket(socket_);
     msg.Reset();
 
@@ -82,13 +78,19 @@ SocketCode Client::SendMsg(NetworkMessage& msg, uint32_t* key)
     else if (ret == SocketCodeError)
         std::cout << "Error sending message" << std::endl;
     return ret;
+#endif
 }
 
 void Client::Connect(const std::string& pass)
 {
     if (!protocol_)
         protocol_ = std::make_shared<ProtocolAdmin>();
-    protocol_->Login(pass, host_, port_);
+//    protocol_->Connect(host_, port_);
+//    Connection::Poll();
+    protocol_->Login(host_, port_, pass);
+//    protocol_->Receive();
+//    Connection::Poll();
+
 #if false
     if (connected_)
         return false;

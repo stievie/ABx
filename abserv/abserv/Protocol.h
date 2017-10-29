@@ -2,27 +2,38 @@
 
 #include <memory>
 #include "Connection.h"
-#include "RefCounted.h"
+#include "Logger.h"
 
 namespace Net {
 
 class OutputMessage;
 
-class Protocol : public Utils::RefCounted
+class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
-    std::shared_ptr<Connection> connection_;
+    const std::weak_ptr<Connection> connection_;
     uint32_t xteaKey_[4];
-    void DeleteProtocolTask();
 protected:
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool encryptionEnabled_;
     bool rawMessages_;
     bool checksumEnabled_;
-    void XTEAEncrypt(OutputMessage& message);
-    bool XTEADecrypt(NetworkMessage& message);
+    void XTEAEncrypt(OutputMessage& message) const;
+    bool XTEADecrypt(NetworkMessage& message) const;
+    void SetXTEAKey(const uint32_t* key)
+    {
+        memcpy_s(xteaKey_, 4, key, sizeof(*key) * 4);
+    }
+    void Disconnect() const
+    {
+        if (auto conn = GetConnection())
+            conn->Close();
+    }
+    virtual void Release() {}
+
+    friend class Connection;
 public:
-    Protocol(std::shared_ptr<Connection> connection) :
+    explicit Protocol(std::shared_ptr<Connection> connection) :
         connection_(connection),
         encryptionEnabled_(false),
         rawMessages_(false),
@@ -30,10 +41,20 @@ public:
     {
         memset(&xteaKey_, 0, sizeof(xteaKey_));
     }
+#if defined(_DEBUG)
+    virtual ~Protocol()
+    {
+#ifdef DEBUG_NET
+        LOG_DEBUG << std::endl;
+#endif
+    }
+#else
+    virtual ~Protocol() = default;
+#endif
     Protocol(const Protocol&) = delete;
-    virtual ~Protocol() {}
+    Protocol& operator=(const Protocol&) = delete;
 
-    void OnSendMessage(std::shared_ptr<OutputMessage> message);
+    virtual void OnSendMessage(const std::shared_ptr<OutputMessage>& message) const;
     void OnRecvMessage(NetworkMessage& message);
 
     virtual void OnRecvFirstMessage(NetworkMessage& msg) = 0;
@@ -41,17 +62,19 @@ public:
 
     virtual void ParsePacket(NetworkMessage& message) {}
 
-    void SetConnection(std::shared_ptr<Connection> connection)
-    {
-        connection_ = connection;
-    }
-    std::shared_ptr<Connection> GetConnection() const { return connection_; }
-    std::shared_ptr<OutputMessage> GetOutputBuffer();
+    bool IsConnectionExpired() const { return connection_.expired(); }
+    std::shared_ptr<Connection> GetConnection() const { return connection_.lock(); }
+
+    std::shared_ptr<OutputMessage> GetOutputBuffer(int32_t size);
     uint32_t GetIP()
     {
         if (auto c = GetConnection())
             return c->GetIP();
         return 0;
+    }
+    std::shared_ptr<OutputMessage>& GetCurrentBuffer()
+    {
+        return outputBuffer_;
     }
 
     void Send(std::shared_ptr<OutputMessage> message)
@@ -59,8 +82,6 @@ public:
         if (auto conn = GetConnection())
             conn->Send(message);
     }
-    void Disconnect();
-    void Release();
 };
 
 }

@@ -23,6 +23,7 @@ public:
         DBPass,
 
         StatusQueryTimeout,
+        MaxPacketsPerSecond,
 
         AdminEnabled,
         AdminRequireLogin,

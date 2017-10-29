@@ -28,6 +28,11 @@ void Connection::Poll()
     gIoService.poll();
 }
 
+void Connection::Run()
+{
+    gIoService.run();
+}
+
 void Connection::Terminate()
 {
     gIoService.stop();

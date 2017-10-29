@@ -36,14 +36,17 @@ void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage(this, false);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)
     {
-        output->AddByte(AP_MSG_HELLO);
-        output->Add<uint32_t>(1);  // Version
-//        output->AddString("ABADMIN");
-        output->Add<uint16_t>(GetProtocolPolicy());
-        output->Add<uint32_t>(GetProtocolOptions());
+#ifdef DEBUG_NET
+        LOG_DEBUG << "Sending HELLO" << std::endl;
+#endif
+        output->AddByte(AP_MSG_HELLO);                  // 1 Byte
+        output->Add<uint32_t>(1);                       // Version 4 Byte
+        output->AddString("ABADMIN");                   // Server string
+        output->Add<uint16_t>(GetProtocolPolicy());     // 2 Byte
+        output->Add<uint32_t>(GetProtocolOptions());    // 4 Byte
         Send(output);
     }
 
@@ -55,7 +58,7 @@ void ProtocolAdmin::ParsePacket(NetworkMessage& message)
 {
     uint8_t recvByte = message.GetByte();
 
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage(this, false);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)
     {
         switch (state_)

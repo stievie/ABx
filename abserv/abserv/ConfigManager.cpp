@@ -99,6 +99,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::DBPass] = GetGlobal("db_pass", "");
 
     config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
+    config_[Key::MaxPacketsPerSecond] = GetGlobal("max_packets_per_second", 25);
 
     config_[Key::AdminEnabled] = GetGlobalBool("admin_enabled", false);
     config_[Key::AdminRequireLogin] = GetGlobalBool("admin_requirelogin", true);

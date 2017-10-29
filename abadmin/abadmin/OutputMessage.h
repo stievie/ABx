@@ -25,7 +25,7 @@ protected:
     void Reset()
     {
         pos_ = (uint16_t)MaxHeaderSize;
-        headerPos_ = (uint16_t)MaxBufferSize;
+        headerPos_ = (uint16_t)MaxHeaderSize;
         size_ = 0;
     }
     void WriteChecksum();

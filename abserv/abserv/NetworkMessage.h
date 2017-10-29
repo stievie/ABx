@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <memory>
 
 #define NETWORKMESSAGE_MAXSIZE 15340
 
@@ -10,55 +11,71 @@ namespace Net {
 class NetworkMessage
 {
 public:
+    using MsgSize_t = uint16_t;
+    // Headers:
+    // 2 bytes for unencrypted message size
+    // 4 bytes for checksum
+    // 2 bytes for encrypted message size
+    static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
     enum { HeaderLength = 2 };
     enum { ChecksumLength = 4 };
     enum { XteaMultiple = 8 };
     enum { MaxBodyLength = NETWORKMESSAGE_MAXSIZE - HeaderLength - ChecksumLength - XteaMultiple };
-private:
-    int32_t readPos_;
+    enum { MaxProtocolBodyLength = MaxBodyLength - 10 };
 protected:
-    int32_t size_;
+    struct NetworkMessageInfo
+    {
+        MsgSize_t length = 0;
+        MsgSize_t position = INITIAL_BUFFER_POSITION;
+        bool overrun = false;
+    };
+
+    NetworkMessageInfo info_;
+
     uint8_t buffer_[NETWORKMESSAGE_MAXSIZE];
-    void Reset()
+    bool CanAdd(uint32_t size) const
     {
-        size_ = 0;
-        readPos_ = 0;
-    }
-    bool CanAdd(uint32_t size)
-    {
-        return (size + readPos_ < MaxBodyLength);
+        return (size + info_.position < MaxBodyLength);
     }
     bool CanRead(size_t size)
     {
-        if ((readPos_ + size) > (size_ + 8) || size >= (NETWORKMESSAGE_MAXSIZE - readPos_))
+        if ((info_.position + size) > (info_.length + 8) || size >= (NETWORKMESSAGE_MAXSIZE - info_.position))
+        {
+            info_.overrun = true;
             return false;
+        }
         return true;
     }
 public:
-    NetworkMessage()
+    NetworkMessage() = default;
+    void Reset()
     {
-        Reset();
+        info_ = {};
     }
-    ~NetworkMessage()
-    {}
 
-    int32_t GetMessageLength() const { return size_; }
+    int32_t GetMessageLength() const { return info_.length; }
 
     /// Read functions
-    uint8_t GetByte() { return buffer_[readPos_++]; }
+    uint8_t GetByte()
+    {
+        if (!CanRead(1))
+            return 0;
+        return buffer_[info_.position++];
+    }
     template <typename T>
     T Get()
     {
         if (!CanRead(sizeof(T)))
             return 0;
-        T v = *(T*)(buffer_ + readPos_);
-        readPos_ += sizeof(T);
+        T v;
+        memcpy_s(&v, sizeof(T), buffer_ + info_.position, sizeof(T));
+        info_.position += sizeof(T);
         return v;
     }
     std::string GetString(uint16_t len = 0);
     uint32_t PeekU32()
     {
-        uint32_t v = *(uint32_t*)(buffer_ + readPos_);
+        uint32_t v = *(uint32_t*)(buffer_ + info_.position);
         return v;
     }
 
@@ -69,8 +86,8 @@ public:
     {
         if (!CanAdd(1))
             return;
-        buffer_[readPos_++] = value;
-        size_++;
+        buffer_[info_.position++] = value;
+        info_.length++;
     }
     void AddString(const std::string& value)
     {
@@ -82,31 +99,32 @@ public:
     {
         if (!CanAdd(sizeof(T)))
             return;
-        *(T*)(buffer_ + readPos_) = value;
-        readPos_ += sizeof(T);
-        size_ += sizeof(T);
+
+        memcpy_s(buffer_ + info_.position, sizeof(T), &value, sizeof(T));
+        info_.position += sizeof(T);
+        info_.length += sizeof(T);
     }
 
-    int32_t DecodeHeader()
+    int32_t GetHeaderSize()
     {
-        size_ = (int32_t)(buffer_[0] | buffer_[1] << 8);
-        return size_;
+        return (int32_t)(buffer_[0] | buffer_[1] << 8);
     }
     /// Other function
     void Skip(int bytes)
     {
-        readPos_ += bytes;
+        info_.position += bytes;
     }
 
-    char* GetBuffer() { return (char*)&buffer_[0]; }
-    char* GetBodyBuffer()
+    uint8_t* GetBuffer() { return buffer_; }
+    const uint8_t* GetBuffer() const { return buffer_; }
+    uint8_t* GetBodyBuffer()
     {
-        readPos_ = 2;
-        return (char*)&buffer_[HeaderLength];
+        info_.position = 2;
+        return buffer_  +HeaderLength;
     }
-    int32_t GetSize() const { return size_; }
-    void SetSize(int32_t size) { size_ = size; }
-    int32_t GetReadPos() const { return readPos_; }
+    int32_t GetSize() const { return info_.length; }
+    void SetSize(int32_t size) { info_.length = size; }
+    int32_t GetReadPos() const { return info_.position; }
 };
 
 }

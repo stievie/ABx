@@ -171,7 +171,6 @@
     <ClInclude Include="ProtocolLogin.h" />
     <ClInclude Include="ProtocolStatus.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="RefCounted.h" />
     <ClInclude Include="Rsa.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />

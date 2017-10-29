@@ -20,33 +20,33 @@ public:
     virtual uint8_t GetPotocolIdentifier() const = 0;
     virtual const char* GetProtocolName() const = 0;
 
-    virtual Protocol* MakeProtocol(std::shared_ptr<Connection> c) const = 0;
+    virtual std::shared_ptr<Protocol> MakeProtocol(std::shared_ptr<Connection> c) const = 0;
 };
 
 template <typename T>
 class Service : public ServiceBase
 {
 public:
-    bool IsSingleSocket() const override
+    bool IsSingleSocket() const final
     {
         return T::ServerSendsFirst;
     }
-    bool IsChecksummed() const override
+    bool IsChecksummed() const final
     {
         return T::UseChecksum;
     }
-    uint8_t GetPotocolIdentifier() const override
+    uint8_t GetPotocolIdentifier() const final
     {
         return T::ProtocolIdentifier;
     }
-    const char* GetProtocolName() const override
+    const char* GetProtocolName() const final
     {
         return T::ProtocolName();
     }
 
-    Protocol* MakeProtocol(std::shared_ptr<Connection> c) const override
+    std::shared_ptr<Protocol> MakeProtocol(std::shared_ptr<Connection> c) const final
     {
-        return new T(c);
+        return std::make_shared<T>(c);
     }
 };
 
@@ -57,7 +57,8 @@ public:
     ServicePort& operator=(const ServicePort&) = delete;
     explicit ServicePort(asio::io_service& ioService) :
         service_(ioService),
-        serverPort_(0)
+        serverPort_(0),
+        acceptor_(nullptr)
     {}
     ~ServicePort() {}
 
@@ -69,11 +70,11 @@ public:
         return services_.size() && services_.front()->IsSingleSocket();
     }
     void OnStopServer();
-    Protocol* MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const;
+    std::shared_ptr<Protocol> MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const;
 private:
     using ConstIt = std::vector<std::shared_ptr<ServiceBase>>::const_iterator;
     asio::io_service& service_;
-    asio::ip::tcp::acceptor* acceptor_;
+    std::unique_ptr<asio::ip::tcp::acceptor> acceptor_;
     uint16_t serverPort_;
     std::vector<std::shared_ptr<ServiceBase>> services_;
     bool pendingStart_;

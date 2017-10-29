@@ -67,7 +67,7 @@ void ProtocolStatus::OnRecvFirstMessage(NetworkMessage& message)
 
 void ProtocolStatus::SendStatusString()
 {
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage(this, false);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     pugi::xml_document doc;
     pugi::xml_node decl = doc.prepend_child(pugi::node_declaration);
@@ -88,7 +88,7 @@ void ProtocolStatus::SendStatusString()
 
 void ProtocolStatus::SendInfo(uint16_t requestedInfo)
 {
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage(this, false);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     if (requestedInfo & BasicServerInfo)
     {

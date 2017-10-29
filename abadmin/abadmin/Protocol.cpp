@@ -19,8 +19,8 @@ Protocol::~Protocol()
 void Protocol::Connect(const std::string& host, uint16_t port)
 {
     connection_ = std::make_shared<Connection>();
-    connection_->SetErrorCallback(std::bind(&Protocol::OnError, this, std::placeholders::_1));
-    connection_->Connect(host, port, std::bind(&Protocol::OnConnect, this));
+    connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(), std::placeholders::_1));
+    connection_->Connect(host, port, std::bind(&Protocol::OnConnect, shared_from_this()));
 }
 
 void Protocol::Disconnect()
@@ -76,7 +76,7 @@ void Protocol::Receive()
 
     // read the first 2 bytes which contain the message size
     if (connection_)
-        connection_->Read(2, std::bind(&Protocol::InternalRecvHeader, this,
+        connection_->Read(2, std::bind(&Protocol::InternalRecvHeader, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -91,7 +91,7 @@ void Protocol::InternalRecvHeader(uint8_t* buffer, uint16_t size)
     // read remaining message data
     if (connection_)
         connection_->Read(remainingSize, std::bind(&Protocol::InternalRecvData,
-            this, std::placeholders::_1, std::placeholders::_2));
+            shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
 void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)

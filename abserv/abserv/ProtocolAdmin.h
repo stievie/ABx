@@ -1,5 +1,60 @@
 #pragma once
 
+// -> server
+// command(1 byte) | size(2 bytes) | parameters(size bytes)
+// commands:
+//  login
+//    password(string)
+//  encryption
+//    encryption type(1 byte)
+//      RSA1024+XTEA
+//        :128 bytes encrypted using 1024 bytes public key
+//        16 bytes XTEA key
+//  key-exchange
+//    public_key_type(1 byte)
+//      RSA1024+XTEA
+//  command
+//    command + paramters(string)
+//  no_operation/ping
+//    nothing
+//
+// <- server
+// ret-code(1 byte)| size(2 bytes) | parameters(size bytes)
+// ret-codes:
+//  hello
+//    server_version(4 bytes)
+//    server_string(string)
+//    security_policy(2 bytes flags)
+//      required_login
+//      required_encryption
+//    accepted_encryptions(4 bytes flags)
+//      RSA1024+XTEA
+//  key-exchange-ok
+//    public_key_type(1 byte)
+//      RSA1024+XTEA
+//        :128 bytes public key modulus
+//  key-exchange-failed
+//    reason(string)
+//  login-ok
+//    nothing
+//  login-failed
+//    reason(string)
+//  command-ok
+//    command result(string)
+//  command-failed
+//    reason(string)
+//  encryption-ok
+//    nothing
+//  encryption-failed
+//    reason(string)
+//  no_operation-ok
+//    nothing
+//  message
+//    message(string)
+//  error
+//    message(string)
+//
+
 #include <memory>
 #include "Protocol.h"
 #include "Connection.h"

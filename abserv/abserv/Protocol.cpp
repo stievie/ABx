@@ -2,14 +2,13 @@
 #include "Protocol.h"
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
-#include "Logger.h"
 #include "Scheduler.h"
 
 #include "DebugNew.h"
 
 namespace Net {
 
-void Protocol::XTEAEncrypt(OutputMessage& message)
+void Protocol::XTEAEncrypt(OutputMessage& message) const
 {
     uint32_t k[4];
     k[0] = xteaKey_[0]; k[1] = xteaKey_[1]; k[2] = xteaKey_[2]; k[3] = xteaKey_[3];
@@ -44,7 +43,7 @@ void Protocol::XTEAEncrypt(OutputMessage& message)
     }
 }
 
-bool Protocol::XTEADecrypt(NetworkMessage& message)
+bool Protocol::XTEADecrypt(NetworkMessage& message) const
 {
     if ((message.GetMessageLength() - 6) % 8 != 0)
     {
@@ -88,7 +87,7 @@ bool Protocol::XTEADecrypt(NetworkMessage& message)
     return true;
 }
 
-void Protocol::OnSendMessage(std::shared_ptr<OutputMessage> message)
+void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) const
 {
 #ifdef DEBUG_NET
     LOG_DEBUG << "Sending message" << std::endl;
@@ -105,11 +104,7 @@ void Protocol::OnSendMessage(std::shared_ptr<OutputMessage> message)
             XTEAEncrypt(*message);
             message->AddCryptoHeader(checksumEnabled_);
         }
-        else if (checksumEnabled_)
-            message->AddCryptoHeader(true);
     }
-    if (message == outputBuffer_)
-        outputBuffer_.reset();
 }
 
 void Protocol::OnRecvMessage(NetworkMessage& message)
@@ -122,47 +117,25 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
 #ifdef DEBUG_NET
         LOG_DEBUG << "Decrypting" << std::endl;
 #endif
-        XTEADecrypt(message);
+        if (!XTEADecrypt(message))
+            return;
     }
     ParsePacket(message);
 }
 
-std::shared_ptr<OutputMessage> Protocol::GetOutputBuffer()
+std::shared_ptr<OutputMessage> Protocol::GetOutputBuffer(int32_t size)
 {
-    if (outputBuffer_ && outputBuffer_->GetMessageLength() < NETWORKMESSAGE_MAXSIZE - 4096)
-        return outputBuffer_;
-    if (connection_)
+    // Dispatcher Thread
+    if (!outputBuffer_)
     {
-        outputBuffer_ = OutputMessagePool::Instance()->GetOutputMessage(this);
-        return outputBuffer_;
+        outputBuffer_ = OutputMessagePool::GetOutputMessage();
     }
-    return std::shared_ptr<OutputMessage>();
-}
-
-void Protocol::Disconnect()
-{
-    GetConnection()->Close();
-}
-
-void Protocol::Release()
-{
-    if (refCount_ > 0)
+    else if ((outputBuffer_->GetSize() + size) > NetworkMessage::MaxProtocolBodyLength)
     {
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(SCHEDULER_MINTICKS,
-                std::bind(&Protocol::Release, this))
-        );
+        Send(outputBuffer_);
+        outputBuffer_ = OutputMessagePool::GetOutputMessage();
     }
-    else
-        DeleteProtocolTask();
-}
-
-void Protocol::DeleteProtocolTask()
-{
-    assert(refCount_ == 0);
-    SetConnection(std::shared_ptr<Connection>());
-
-    delete this;
+    return outputBuffer_;
 }
 
 }

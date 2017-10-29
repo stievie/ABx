@@ -47,6 +47,7 @@ public:
     ~Connection();
 
     static void Poll();
+    static void Run();
     static void Terminate();
 
     void Connect(const std::string& host, uint16_t port, const std::function<void()>& connectCallback);

@@ -9,6 +9,7 @@
 #include "Utils.h"
 #include "Service.h"
 #include "OutputMessage.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
@@ -16,6 +17,9 @@ namespace Net {
 
 Connection::~Connection()
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
     CloseSocket();
 }
 
@@ -70,19 +74,21 @@ void Connection::Close(bool force /* = false */)
     state_ = State::Closed;
     if (protocol_)
     {
-        protocol_->SetConnection(std::shared_ptr<Connection>());
-        protocol_->Release();
-        protocol_ = nullptr;
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(&Protocol::Release, protocol_))
+        );
     }
 
     if (messageQueue_.empty() || force)
         CloseSocket();
 }
 
-void Connection::Accept(Protocol* protocol)
+void Connection::Accept(std::shared_ptr<Protocol> protocol)
 {
     protocol_ = protocol;
-    protocol_->OnConnect();
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(&Protocol::OnConnect, protocol))
+    );
     Accept();
 }
 
@@ -103,6 +109,7 @@ void Connection::Accept()
     catch (asio::system_error& e)
     {
         LOG_ERROR << "Network " << e.what() << std::endl;
+        Close(true);
     }
 }
 
@@ -120,18 +127,45 @@ void Connection::ParseHeader(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
+
     if (error)
     {
-        LOG_ERROR << "Network " << error.message() << std::endl;
+        LOG_ERROR << "Network " << error.value() << " " << error.message() << std::endl;
         Close(true);
         return;
     }
     if (state_ != State::Open)
+    {
+#ifdef DEBUG_NET
+        LOG_WARNING << "Connection not opened" << std::endl;
+#endif
         return;
+    }
 
-    uint16_t size = msg_.DecodeHeader();
+    uint32_t timePassed = std::max<uint32_t>(1, static_cast<uint32_t>(time(nullptr) - timeConnected_) + 1);
+    ++packetsSent_;
+    if ((packetsSent_ / timePassed) > static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt()))
+    {
+        LOG_ERROR << Utils::ConvertIPToString(GetIP()) << " disconnected for exceeding packet per second limit." << std::endl;
+        Close(true);
+        return;
+    }
+
+    if (timePassed > 2)
+    {
+        timeConnected_ = time(nullptr);
+        packetsSent_ = 0;
+    }
+
+    uint16_t size = msg_.GetHeaderSize();
     if (size == 0 || size >= NETWORKMESSAGE_MAXSIZE - 16)
     {
+#ifdef DEBUG_NET
+        LOG_WARNING << "Invalid message size " << size << std::endl;
+#endif
         Close(true);
         return;
     }
@@ -151,7 +185,8 @@ void Connection::ParseHeader(const asio::error_code& error)
     }
     catch (asio::system_error& e)
     {
-        LOG_ERROR << "Network " << e.what() << std::endl;
+        LOG_ERROR << "Network " << e.code() << " " << e.what() << std::endl;
+        Close(true);
     }
 }
 
@@ -159,6 +194,9 @@ void Connection::ParsePacket(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
+#ifdef DEBUG_NET
+    LOG_DEBUG << std::endl;
+#endif
 
     if (error)
     {
@@ -166,7 +204,12 @@ void Connection::ParsePacket(const asio::error_code& error)
         return;
     }
     if (state_ != State::Open)
+    {
+#ifdef DEBUG_NET
+        LOG_WARNING << "Connection not opened" << std::endl;
+#endif
         return;
+    }
 
     uint32_t checksum;;
     int32_t len = msg_.GetMessageLength() - msg_.GetReadPos() - NetworkMessage::ChecksumLength;
@@ -218,11 +261,15 @@ void Connection::ParsePacket(const asio::error_code& error)
     catch (asio::system_error& e)
     {
         LOG_ERROR << "Network " << e.what() << std::endl;
+        Close(true);
     }
 }
 
 void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Timeout" << std::endl;
+#endif
     if (error == asio::error::operation_aborted)
         return;
 
@@ -234,8 +281,6 @@ void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::e
 
 void Connection::CloseSocket()
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
-
     if (socket_.is_open())
     {
 #ifdef DEBUG_NET
@@ -256,25 +301,6 @@ void Connection::CloseSocket()
     }
 }
 
-void Connection::OnStopOperation()
-{
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
-
-    if (socket_.is_open())
-    {
-        try
-        {
-            asio::error_code err;
-            socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
-            socket_.close();
-        }
-        catch (asio::system_error&)
-        {
-        }
-    }
-    ConnectionManager::GetInstance()->ReleaseConnection(shared_from_this());
-}
-
 void Connection::OnWriteOperation(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -284,6 +310,7 @@ void Connection::OnWriteOperation(const asio::error_code& error)
     if (error)
     {
         messageQueue_.clear();
+        Close(true);
         return;
     }
 
@@ -302,7 +329,7 @@ std::shared_ptr<Connection> ConnectionManager::CreateConnection(
 {
     std::lock_guard<std::mutex> lock(lock_);
     std::shared_ptr<Connection> connection = std::make_shared<Connection>(ioService, servicer);
-    connections_.push_back(connection);
+    connections_.insert(connection);
 
     return connection;
 }
@@ -313,14 +340,7 @@ void ConnectionManager::ReleaseConnection(std::shared_ptr<Connection> connection
     LOG_DEBUG << "Releasing connection" << std::endl;
 #endif
     std::lock_guard<std::mutex> lockClass(lock_);
-
-    auto it = std::find(connections_.begin(), connections_.end(), connection);
-    if (it != connections_.end())
-        connections_.erase(it);
-#ifdef DEBUG_NET
-    else
-        LOG_ERROR << "Connection not found" << std::endl;
-#endif
+    connections_.erase(connection);
 }
 
 void ConnectionManager::CloseAll()
