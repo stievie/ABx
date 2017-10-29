@@ -17,7 +17,7 @@ namespace Net {
 class OutputMessage : public NetworkMessage
 {
 private:
-    uint32_t outputBufferStart_;
+    uint32_t outputBufferStart_ = INITIAL_BUFFER_POSITION;
 
     friend class OutputMessagePool;
 

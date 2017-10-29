@@ -26,6 +26,5 @@ Thumbs.db
 .directory
 *.opendb
 *.db
-*.filters
 /*.dll
 *.user

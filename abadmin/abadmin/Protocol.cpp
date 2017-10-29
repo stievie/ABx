@@ -2,6 +2,7 @@
 #include "Protocol.h"
 #include <random>
 #include <ctime>
+#include "Logger.h"
 
 Protocol::Protocol() :
     connection_(nullptr),
@@ -89,6 +90,9 @@ void Protocol::InternalRecvHeader(uint8_t* buffer, uint16_t size)
 
     inputMessage_->FillBuffer(buffer, size);
     uint16_t remainingSize = inputMessage_->ReadSize();
+#ifdef _DEBUG
+    LOG_DEBUG << "size = " << size << ", remaining size = " << remainingSize << std::endl;
+#endif
 
     // read remaining message data
     if (connection_)
@@ -100,6 +104,10 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 {
     if (!IsConnected())
         return;
+
+#ifdef _DEBUG
+    LOG_DEBUG << "size = " << size << std::endl;
+#endif
 
     inputMessage_->FillBuffer(buffer, size);
 

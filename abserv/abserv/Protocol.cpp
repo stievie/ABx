@@ -93,7 +93,7 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
     LOG_DEBUG << "Sending message" << std::endl;
 #endif
 
-    if (rawMessages_)
+    if (!rawMessages_)
     {
         message->WriteMessageLength();
         if (encryptionEnabled_)
@@ -110,7 +110,7 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
 void Protocol::OnRecvMessage(NetworkMessage& message)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Receiving message" << std::endl;
+    LOG_DEBUG << "Receiving message with size " << message.GetMessageLength() << std::endl;
 #endif
     if (encryptionEnabled_)
     {

@@ -178,7 +178,8 @@ void ProtocolAdmin::HandleMsgLogin(NetworkMessage& message, OutputMessage* outpu
     if (state_ == NotloggedIn && ConfigManager::Instance[ConfigManager::Key::AdminRequireLogin].GetBool())
     {
         std::string password = message.GetString();
-        if (password.compare(ConfigManager::Instance[ConfigManager::Key::AdminPassword].GetString()) == 0)
+        std::string pass = ConfigManager::Instance[ConfigManager::Key::AdminPassword].GetString();
+        if (password.compare(pass) == 0)
         {
             state_ = LoggedIn;
             output->AddByte(AP_MSG_LOGIN_OK);

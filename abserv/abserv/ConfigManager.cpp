@@ -105,7 +105,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::AdminRequireLogin] = GetGlobalBool("admin_requirelogin", true);
     config_[Key::AdminLocalhostOnly] = GetGlobalBool("admin_localhost_only", true);
     config_[Key::AdminRequireEncryption] = GetGlobalBool("admin_require_encryption", true);
-    config_[Key::AdminPassword] = GetGlobalBool("admin_password", "");
+    config_[Key::AdminPassword] = GetGlobal("admin_password", "");
 
     isLoaded = true;
     return true;

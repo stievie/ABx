@@ -18,6 +18,20 @@ void OutputMessage::AddPaddingBytes(int bytes, uint8_t byte)
     size_ += bytes;
 }
 
+void OutputMessage::AddString(const std::string& value)
+{
+    uint16_t len = static_cast<uint16_t>(value.length());
+
+    if (len > MaxStringLength)
+        throw std::exception("String too long");
+
+    CheckWrite(len + 2);
+    Add<uint16_t>(len);
+    memcpy_s((char*)(buffer_ + pos_), MaxBufferSize - len, value.c_str(), len);
+    pos_ += len;
+    size_ += len;
+}
+
 bool OutputMessage::CanWrite(int bytes)
 {
     if (pos_ + bytes > MaxBufferSize)

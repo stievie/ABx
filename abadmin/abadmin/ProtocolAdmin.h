@@ -78,6 +78,8 @@ private:
     void SendLoginPacket();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
     void ParseMessageHello(const std::shared_ptr<InputMessage>& message);
+    void DoLogin();
+    void SetupEncryption();
 protected:
     void OnConnect() override;
     void OnReceive(const std::shared_ptr<InputMessage>& message) override;

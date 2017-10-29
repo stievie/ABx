@@ -14,10 +14,8 @@ Client::Client() :
     pollThread_ = std::thread([&]() {
         while (running_)
         {
-//            Connection::Run();
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             Connection::Poll();
-//            std::this_thread::sleep_for(std::chrono::milliseconds(16));
         }
     });
 }
@@ -25,6 +23,8 @@ Client::Client() :
 Client::~Client()
 {
     running_ = false;
+    // Let poll() return
+    Connection::Terminate();
     pollThread_.join();
 }
 

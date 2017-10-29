@@ -147,7 +147,8 @@ void Connection::ParseHeader(const asio::error_code& error)
 
     uint32_t timePassed = std::max<uint32_t>(1, static_cast<uint32_t>(time(nullptr) - timeConnected_) + 1);
     ++packetsSent_;
-    if ((packetsSent_ / timePassed) > static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt()))
+    uint32_t maxPackets = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
+    if ((packetsSent_ / timePassed) > maxPackets)
     {
         LOG_ERROR << Utils::ConvertIPToString(GetIP()) << " disconnected for exceeding packet per second limit." << std::endl;
         Close(true);

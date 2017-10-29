@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 class Protocol;
 
@@ -59,5 +60,7 @@ public:
         *(T*)(buffer_ + pos_) = value;
         pos_ = p;
     }
+
+    void AddString(const std::string& value);
 };
 

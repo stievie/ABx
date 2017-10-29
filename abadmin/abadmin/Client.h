@@ -19,7 +19,6 @@ private:
     SocketCode SendMsg(NetworkMessage& msg, uint32_t* key = nullptr);
     std::shared_ptr<ProtocolAdmin> protocol_;
     std::thread pollThread_;
-    std::condition_variable pollSignal_;
     bool running_;
 public:
     Client();
