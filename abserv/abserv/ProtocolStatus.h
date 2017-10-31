@@ -22,10 +22,9 @@ private:
     void SendStatusString();
     void SendInfo(uint16_t requestedInfo);
 public:
-    ProtocolStatus(std::shared_ptr<Connection> connection) :
+    explicit ProtocolStatus(std::shared_ptr<Connection> connection) :
         Protocol(connection)
     {}
-    virtual ~ProtocolStatus() {}
 
     void OnRecvFirstMessage(NetworkMessage& message) override;
 };

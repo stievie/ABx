@@ -16,13 +16,15 @@ public:
     enum { UseChecksum = true };
     static const char* ProtocolName() { return "Login Protocol"; };
 public:
-    ProtocolLogin(std::shared_ptr<Connection> connection);
-    virtual ~ProtocolLogin();
+    explicit ProtocolLogin(std::shared_ptr<Connection> connection) :
+        Protocol(connection)
+    {}
 
     void OnRecvFirstMessage(NetworkMessage& message) override;
 private:
     void DisconnectClient(uint8_t error, const char* message);
-    bool ParseFirstPacket(NetworkMessage& message);
+    void GetCharacterList(const std::string& accountName, const std::string& password,
+        const std::string& token);
 };
 
 }

@@ -148,8 +148,7 @@ private:
     void CommandKickPlayer(const std::string& name);
     void CommandShutdownServer();
 public:
-    ProtocolAdmin(std::shared_ptr<Connection> connection);
-    virtual ~ProtocolAdmin() {}
+    explicit ProtocolAdmin(std::shared_ptr<Connection> connection);
 
     void OnRecvFirstMessage(NetworkMessage& msg) override;
     void ParsePacket(NetworkMessage& message) override;

@@ -3,6 +3,8 @@
 #include "Utils.h"
 #include "ConfigManager.h"
 
+namespace Auth {
+
 BanManager BanManager::Instance;
 
 bool BanManager::AcceptConnection(uint32_t clientIP)
@@ -46,4 +48,11 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
 
     lock_.unlock();
     return true;
+}
+
+bool BanManager::IsIpBanned(uint32_t clienttIP, BanInfo& info)
+{
+    return false;
+}
+
 }

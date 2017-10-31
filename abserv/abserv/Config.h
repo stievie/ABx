@@ -9,7 +9,7 @@
 //#   define DEBUG_DISPATTCHER
 //#   define DEBUG_SCHEDULER
 #   define DEBUG_NET
-#   define DEBUG_MATH
+//#   define DEBUG_MATH
 #else
 #endif
 

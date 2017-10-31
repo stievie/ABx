@@ -15,7 +15,7 @@ public:
     enum { UseChecksum = true };
     static const char* ProtocolName() { return "Game Protocol"; };
 public:
-    ProtocolGame(std::shared_ptr<Connection> connection);
+    explicit ProtocolGame(std::shared_ptr<Connection> connection);
     virtual ~ProtocolGame();
 
     void OnRecvFirstMessage(NetworkMessage& msg) override;

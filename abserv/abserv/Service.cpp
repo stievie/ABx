@@ -160,7 +160,7 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
             return;
 
         uint32_t remoteIp = connection->GetIP();
-        if (remoteIp != 0 && BanManager::Instance.AcceptConnection(remoteIp))
+        if (remoteIp != 0 && Auth::BanManager::Instance.AcceptConnection(remoteIp))
         {
             if (services_.front()->IsSingleSocket())
             {

@@ -111,6 +111,12 @@
     <ClInclude Include="Vector4.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Account.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -198,6 +204,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Vector4.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Account.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

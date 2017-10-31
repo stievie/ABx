@@ -11,9 +11,9 @@ class OutputMessage;
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
-    const std::weak_ptr<Connection> connection_;
     uint32_t xteaKey_[4];
 protected:
+    const std::weak_ptr<Connection> connection_;
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool encryptionEnabled_;
     bool rawMessages_;

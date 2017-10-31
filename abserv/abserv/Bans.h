@@ -4,6 +4,14 @@
 #include <mutex>
 #include <map>
 
+namespace Auth {
+
+struct BanInfo
+{
+    std::string bannedBy;
+    std::string reason;
+    time_t expiresAt;
+};
 struct LoginBlock
 {
     time_t lastLoginTime;
@@ -33,7 +41,9 @@ public:
     ~BanManager() {}
 
     bool AcceptConnection(uint32_t clientIP);
+    bool IsIpBanned(uint32_t clienttIP, BanInfo& info);
 
     static BanManager Instance;
 };
 
+}
