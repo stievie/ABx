@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <string>
 #include "Definitions.h"
-#include "NetworkMessage.h"
 #include "ProtocolAdmin.h"
 #include <memory>
 #include <thread>
@@ -15,10 +14,18 @@ private:
     SOCKET socket_;
     uint16_t port_;
     std::string host_;
-    SocketCode SendMsg(NetworkMessage& msg, uint32_t* key = nullptr);
+//    SocketCode SendMsg(NetworkMessage& msg, uint32_t* key = nullptr);
     std::shared_ptr<ProtocolAdmin> protocol_;
     std::thread pollThread_;
+    std::thread keepAliveThread_;
+    std::string errorMessage_;
     bool running_;
+    enum RespStatus
+    {
+        Pending,
+        Success,
+        Failure
+    };
 public:
     Client();
     ~Client();
@@ -42,5 +49,6 @@ public:
     bool SendCommand(char cmdByte, char* command);
     bool IsConnected() const { return protocol_ && protocol_->IsConnected(); }
     bool IsLoggedIn() const { return protocol_ && protocol_->IsLoggedIn(); }
+    const std::string& GetErrorMessage() const { return errorMessage_; }
 };
 

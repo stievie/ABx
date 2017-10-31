@@ -157,6 +157,24 @@ int CommandShutdownServer(const std::vector<std::string>& params)
     return 1;
 }
 
+int CommandKickPlayer(const std::vector<std::string>& params)
+{
+    if (!gClient->IsConnected())
+    {
+        std::cout << "Not connected" << std::endl;
+        return -1;
+    }
+    if (params.size() < 1)
+    {
+        std::cout << "Missing parameters" << std::endl;
+        return -1;
+    }
+    std::string name = params[0];
+    bool ret = gClient->SendCommand(CMD_KICK, (char*)name.c_str());
+
+    return ret ? 1 : -1;
+}
+
 void Commands::Initialize()
 {
     commands_["q"] = Command(&QuitCommand, "\n  Quit");
@@ -167,6 +185,7 @@ void Commands::Initialize()
     commands_["broadcast"] = Command(&CommandBroadcast, "<message>\n  Broadcast a message");
     commands_["close"] = Command(&CommandCloseServer, "\n  Close server");
     commands_["shutdown"] = Command(&CommandShutdownServer, "\n  Shutdown server");
+    commands_["kick"] = Command(&CommandKickPlayer, "<name>\n  Kick player");
 }
 
 int Commands::Execute(const std::string& line)

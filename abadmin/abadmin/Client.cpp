@@ -17,16 +17,28 @@ Client::Client() :
             Connection::Poll();
         }
     });
+    keepAliveThread_ = std::thread([&]() {
+        while (running_)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            if (IsConnected() && IsLoggedIn())
+            {
+                protocol_->SendKeepAlive();
+            }
+        }
+    });
 }
 
 Client::~Client()
 {
     running_ = false;
+    keepAliveThread_.join();
     // Let poll() return
     Connection::Terminate();
     pollThread_.join();
 }
 
+#if false
 SocketCode Client::SendMsg(NetworkMessage& msg, uint32_t* key)
 {
 
@@ -79,6 +91,7 @@ SocketCode Client::SendMsg(NetworkMessage& msg, uint32_t* key)
     return ret;
 #endif
 }
+#endif
 
 void Client::Connect(const std::string& pass)
 {
@@ -312,25 +325,32 @@ bool Client::Disconnect()
 
 bool Client::SendCommand(char cmdByte, char* command)
 {
-    NetworkMessage msg;
-    msg.AddByte(AP_MSG_COMMAND);
-    msg.AddByte(cmdByte);
-    if (command)
-        msg.AddString(command);
-
-    SocketCode ret = SendMsg(msg);
-    if (ret == SocketCodeTimeout)
-        return false;
-
-    char retCode = msg.GetByte();
-    if (retCode == AP_MSG_COMMAND_OK)
-        return true;
-    if (retCode == AP_MSG_COMMAND_FAILED)
+    RespStatus s = Pending;
+    std::string err;
+    protocol_->SendCommand(cmdByte, command, [&](uint8_t recvByte, const std::shared_ptr<InputMessage>& message)
     {
-        std::string errorDesc = msg.GetString();
-        std::cout << "Error: " << errorDesc << std::endl;
-        return false;
+        switch (recvByte)
+        {
+        case AP_MSG_COMMAND_OK:
+            s = Success;
+            break;
+        case AP_MSG_COMMAND_FAILED:
+            err = message->GetString();
+            s = Failure;
+            break;
+        }
+    });
+    int loops = 0;
+    while (s == Pending)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        ++loops;
+        // Wait max 5sec
+        if (loops > 100)
+            break;
     }
-    std::cout << "Unknown return code" << std::endl;
-    return false;
+    if (s == Failure)
+        errorMessage_ = err;
+
+    return s == Success;
 }

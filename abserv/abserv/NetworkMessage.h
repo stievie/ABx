@@ -120,7 +120,7 @@ public:
     uint8_t* GetBodyBuffer()
     {
         info_.position = 2;
-        return buffer_  +HeaderLength;
+        return buffer_ + HeaderLength;
     }
     int32_t GetSize() const { return info_.length; }
     void SetSize(int32_t size) { info_.length = size; }

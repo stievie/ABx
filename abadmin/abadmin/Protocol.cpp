@@ -113,7 +113,9 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 
     if (checksumEnabled_ && !inputMessage_->ReadChecksum())
     {
-        // Invalid checksum
+#ifdef _LOGGING
+        LOG_ERROR << "Invalid checksum" << std::endl;
+#endif
         return;
     }
 
@@ -121,6 +123,9 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     {
         if (!XteaDecrypt(inputMessage_))
         {
+#ifdef _LOGGING
+            LOG_ERROR << "Decryption failed" << std::endl;
+#endif
             return;
         }
     }
@@ -131,7 +136,11 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 bool Protocol::XteaDecrypt(const std::shared_ptr<InputMessage>& message)
 {
     uint16_t encryptedSize = message->GetUnreadSize();
-    if (encryptedSize % 8 != 0) {
+    if (encryptedSize % 8 != 0)
+    {
+#ifdef _LOGGING
+        LOG_ERROR << "Invalid decrypted network message" << std::endl;
+#endif
         return false;
     }
 
@@ -158,6 +167,9 @@ bool Protocol::XteaDecrypt(const std::shared_ptr<InputMessage>& message)
     int sizeDelta = decryptedSize - encryptedSize;
     if (sizeDelta > 0 || -sizeDelta > encryptedSize)
     {
+#ifdef _LOGGING
+        LOG_ERROR << "Invalid decrypted network message" << std::endl;
+#endif
         return false;
     }
 
@@ -170,7 +182,7 @@ void Protocol::XteaEncrypt(const std::shared_ptr<OutputMessage>& message)
     message->WriteMessageSize();
     uint16_t encryptedSize = message->GetSize();
 
-    //add bytes until reach 8 multiple
+    // Add bytes until reach 8 multiple
     if ((encryptedSize % 8) != 0)
     {
         uint16_t n = 8 - (encryptedSize % 8);
@@ -199,5 +211,8 @@ void Protocol::XteaEncrypt(const std::shared_ptr<OutputMessage>& message)
 
 void Protocol::OnError(const asio::error_code& err)
 {
+#ifdef _LOGGING
+    LOG_ERROR << err.value() << " " << err.message();
+#endif
     Disconnect();
 }

@@ -17,9 +17,6 @@ namespace Net {
 
 Connection::~Connection()
 {
-#ifdef DEBUG_NET
-//    LOG_DEBUG << std::endl;
-#endif
     CloseSocket();
 }
 
@@ -51,7 +48,7 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
         readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
-        asio::async_write(GetHandle(),
+        asio::async_write(socket_,
             asio::buffer(message->GetOutputBuffer(), message->GetMessageLength()),
             std::bind(&Connection::OnWriteOperation, shared_from_this(), std::placeholders::_1));
     }
@@ -102,7 +99,7 @@ void Connection::Accept()
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Read size of packet
-        asio::async_read(GetHandle(),
+        asio::async_read(socket_,
             asio::buffer(msg_.GetBuffer(), NetworkMessage::HeaderLength),
             std::bind(&Connection::ParseHeader, shared_from_this(), std::placeholders::_1));
     }
@@ -111,16 +108,6 @@ void Connection::Accept()
         LOG_ERROR << "Network " << e.what() << std::endl;
         Close(true);
     }
-}
-
-uint32_t Connection::GetIP()
-{
-    asio::error_code err;
-    const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
-    if (!err)
-        return htonl(endpoint.address().to_v4().to_ulong());
-    LOG_ERROR << "Getting IP" << std::endl;
-    return 0;
 }
 
 void Connection::ParseHeader(const asio::error_code& error)
@@ -179,7 +166,7 @@ void Connection::ParseHeader(const asio::error_code& error)
 
         // Read content
         msg_.SetSize(size + NetworkMessage::HeaderLength);
-        asio::async_read(GetHandle(),
+        asio::async_read(socket_,
             asio::buffer(msg_.GetBodyBuffer(), size),
             std::bind(&Connection::ParsePacket, shared_from_this(), std::placeholders::_1));
 
@@ -255,7 +242,8 @@ void Connection::ParsePacket(const asio::error_code& error)
         readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
-        asio::async_read(GetHandle(),
+        // Wait for the next packet
+        asio::async_read(socket_,
             asio::buffer(msg_.GetBuffer(), NetworkMessage::HeaderLength),
             std::bind(&Connection::ParseHeader, shared_from_this(), std::placeholders::_1));
     }
@@ -364,6 +352,16 @@ void ConnectionManager::CloseAll()
         catch (asio::system_error&) {}
     }
     connections_.clear();
+}
+
+uint32_t Connection::GetIP()
+{
+    asio::error_code err;
+    const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
+    if (!err)
+        return htonl(endpoint.address().to_v4().to_ulong());
+    LOG_ERROR << "Getting IP" << std::endl;
+    return 0;
 }
 
 }

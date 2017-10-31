@@ -32,7 +32,16 @@ static void Run()
         std::string input;
         std::getline(std::cin, input);
 
-        Commands::Instance.Execute(input);
+        if (Commands::Instance.Execute(input) == 1)
+            std::cout << "OK" << std::endl;
+        else
+        {
+            std::cout << "Failed";
+            const std::string& error = gClient->GetErrorMessage();
+            if (!error.empty())
+                std::cout << ": " << error;
+            std::cout << std::endl;
+        }
     }
     gClient = nullptr;
 }
@@ -52,31 +61,14 @@ int main()
 {
     ShowLogo();
     std::cout << std::endl;
+
     srand((unsigned)time(NULL));
 
-#if defined WIN32 || defined __WINDOWS__
-    WSADATA wsd;
-    if (WSAStartup(MAKEWORD(2, 2), &wsd) != 0)
-    {
-        std::cout << "WSAStartup() failed" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    LARGE_INTEGER counter;
-    QueryPerformanceCounter(&counter);
-    srand(counter.LowPart);
-#else
-    srand(time(NULL));
-#endif
     std::cout << "Running, type `h` for some help" << std::endl;
 
     Run();
 
     std::cout << "Stopping" << std::endl;
-
-#if defined WIN32 || defined __WINDOWS__
-    WSACleanup();
-#endif
 
     return EXIT_SUCCESS;
 }

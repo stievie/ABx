@@ -25,7 +25,7 @@
 #define ASIO_STANDALONE
 
 #if defined(_DEBUG)
-//#define _LOGGING
+#define _LOGGING
 #else
 #undef _LOGGING
 #endif

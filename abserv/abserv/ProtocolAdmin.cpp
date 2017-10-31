@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "Utils.h"
 #include "OutputMessage.h"
+#include "Dispatcher.h"
 
 #include "DebugNew.h"
 
@@ -229,6 +230,44 @@ void ProtocolAdmin::HandleMsgCommand(NetworkMessage& message, OutputMessage* out
     }
 
     uint8_t command = message.GetByte();
+    switch (command)
+    {
+    case CMD_BROADCAST:
+    {
+        const std::string msg = message.GetString();
+#ifdef DEBUG_NET
+        LOG_DEBUG << "Broadcast: " << msg << std::endl;
+#endif
+        output->AddByte(AP_MSG_COMMAND_OK);
+        break;
+    }
+    case CMD_KICK:
+    {
+        const std::string name = message.GetString();
+#ifdef DEBUG_NET
+        LOG_DEBUG << "Kick: " << name << std::endl;
+#endif
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(&ProtocolAdmin::CommandKickPlayer, this, name))
+        );
+        break;
+    }
+    default:
+        output->AddByte(AP_MSG_COMMAND_FAILED);
+        output->AddString("Unknown command");
+        LOG_WARNING << "Unknown server command " << command << std::endl;
+        break;
+    }
+}
+
+void ProtocolAdmin::CommandKickPlayer(const std::string& name)
+{
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    if (output)
+    {
+        output->AddByte(AP_MSG_COMMAND_OK);
+        Send(output);
+    }
 }
 
 void ProtocolAdmin::HandleMsgPing(NetworkMessage& message, OutputMessage* output)

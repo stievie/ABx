@@ -66,6 +66,7 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = 0xFE };
     enum { UseChecksum = false };
+    typedef std::function<void(uint8_t, const std::shared_ptr<InputMessage>&)> ResponseCallback;
 private:
     std::string password_;
     std::string host_;
@@ -74,6 +75,7 @@ private:
     uint16_t security_;
     uint32_t options_;
     bool loggedIn_;
+    ResponseCallback responseCallback_;
 
     bool firstRecv_;
     void SendLoginPacket();
@@ -90,6 +92,9 @@ public:
     ~ProtocolAdmin();
 
     void Login(const std::string& host, uint16_t port, const std::string& password);
+    void SendCommand(char cmdByte, char* command);
+    void SendCommand(char cmdByte, char* command, const ResponseCallback& callback);
+    void SendKeepAlive();
 
     const std::string& GetServerString() const { return serverString_; }
     uint16_t GetSecurity() const { return security_; }

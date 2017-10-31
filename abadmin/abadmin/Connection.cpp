@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "Connection.h"
+#include "Logger.h"
 
 asio::io_service gIoService;
 //asio::io_service::work work(gIoService);
 std::list<std::shared_ptr<asio::streambuf>> Connection::outputStreams_;
 
 Connection::Connection() :
+    connectTimer_(gIoService),
     readTimer_(gIoService),
     writeTimer_(gIoService),
     delayedWriteTimer_(gIoService),
@@ -46,17 +48,23 @@ void Connection::Connect(const std::string& host, uint16_t port, const std::func
     error_.clear();
     connectCallback_ = connectCallback;
 
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
+    connectTimer_.cancel();
+    connectTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
+    connectTimer_.async_wait(std::bind(&Connection::OnConnectTimeout, shared_from_this(), std::placeholders::_1));
+
     asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), host, std::to_string(port));
     resolver_.async_resolve(query, std::bind(&Connection::OnResolve, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-
-    readTimer_.cancel();
-    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnTimeout, shared_from_this(), std::placeholders::_1));
 }
 
 void Connection::OnResolve(const asio::error_code& error, asio::ip::tcp::resolver::iterator endpointIterator)
 {
-    readTimer_.cancel();
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
+    connectTimer_.cancel();
     if (error == asio::error::operation_aborted)
         return;
 
@@ -66,7 +74,21 @@ void Connection::OnResolve(const asio::error_code& error, asio::ip::tcp::resolve
         HandleError(error);
 }
 
-void Connection::OnTimeout(const asio::error_code& error)
+void Connection::OnConnectTimeout(const asio::error_code& error)
+{
+    if (error == asio::error::operation_aborted)
+        return;
+    HandleError(error);
+}
+
+void Connection::OnReadTimeout(const asio::error_code& error)
+{
+    if (error == asio::error::operation_aborted)
+        return;
+    HandleError(error);
+}
+
+void Connection::OnWriteTimeout(const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
         return;
@@ -75,7 +97,10 @@ void Connection::OnTimeout(const asio::error_code& error)
 
 void Connection::OnConnect(const asio::error_code& error)
 {
-    readTimer_.cancel();
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
+    connectTimer_.cancel();
     activityTimer_.restart();
 
     if (error == asio::error::operation_aborted)
@@ -128,11 +153,15 @@ void Connection::HandleError(const asio::error_code& error)
 
 void Connection::InternalConnect(asio::ip::basic_resolver<asio::ip::tcp>::iterator endpointIterator)
 {
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
+    connectTimer_.cancel();
+    connectTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
+    connectTimer_.async_wait(std::bind(&Connection::OnConnectTimeout, shared_from_this(), std::placeholders::_1));
+
     socket_.async_connect(*endpointIterator,
         std::bind(&Connection::OnConnect, shared_from_this(), std::placeholders::_1));
-    readTimer_.cancel();
-    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnTimeout, shared_from_this(), std::placeholders::_1));
 }
 
 void Connection::InternalWrite()
@@ -149,11 +178,14 @@ void Connection::InternalWrite()
 
     writeTimer_.cancel();
     writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));
-    writeTimer_.async_wait(std::bind(&Connection::OnTimeout, shared_from_this(), std::placeholders::_1));
+    writeTimer_.async_wait(std::bind(&Connection::OnWriteTimeout, shared_from_this(), std::placeholders::_1));
 }
 
 void Connection::Close()
 {
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
     if (!connected_ && !connecting_)
         return;
 
@@ -168,6 +200,7 @@ void Connection::Close()
     recvCallback_ = nullptr;
 
     resolver_.cancel();
+    connectTimer_.cancel();
     readTimer_.cancel();
     writeTimer_.cancel();
     delayedWriteTimer_.cancel();
@@ -197,7 +230,7 @@ void Connection::Write(uint8_t* buffer, size_t size)
             outputStream_ = std::shared_ptr<asio::streambuf>(new asio::streambuf);
 
         delayedWriteTimer_.cancel();
-        delayedWriteTimer_.expires_from_now(std::chrono::milliseconds(0));
+        delayedWriteTimer_.expires_from_now(std::chrono::milliseconds(10));
         delayedWriteTimer_.async_wait(std::bind(&Connection::OnCanWrite, shared_from_this(), std::placeholders::_1));
     }
 
@@ -221,6 +254,9 @@ void Connection::OnRecv(const asio::error_code& error, size_t recvSize)
 {
     readTimer_.cancel();
     activityTimer_.restart();
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
 
     if (error == asio::error::operation_aborted)
         return;
@@ -250,14 +286,18 @@ void Connection::Read(uint16_t bytes, const RecvCallback& callback)
 
     recvCallback_ = callback;
 
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
+    readTimer_.cancel();
+    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
+    readTimer_.async_wait(std::bind(&Connection::OnReadTimeout, shared_from_this(), std::placeholders::_1));
+
     asio::async_read(socket_,
         asio::buffer(inputStream_.prepare(bytes)),
         std::bind(&Connection::OnRecv, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2));
 
-    readTimer_.cancel();
-    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnTimeout, shared_from_this(), std::placeholders::_1));
 }
 
 void Connection::ReadUntil(const std::string& what, const RecvCallback& callback)
@@ -267,14 +307,18 @@ void Connection::ReadUntil(const std::string& what, const RecvCallback& callback
 
     recvCallback_ = callback;
 
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
+    readTimer_.cancel();
+    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
+    readTimer_.async_wait(std::bind(&Connection::OnReadTimeout, shared_from_this(), std::placeholders::_1));
+
     asio::async_read_until(socket_,
         inputStream_,
         what.c_str(),
         std::bind(&Connection::OnRecv, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 
-    readTimer_.cancel();
-    readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnTimeout, shared_from_this(), std::placeholders::_1));
 }
 
 void Connection::ReadSome(const RecvCallback& callback)
@@ -284,10 +328,13 @@ void Connection::ReadSome(const RecvCallback& callback)
 
     recvCallback_ = callback;
 
-    socket_.async_read_some(asio::buffer(inputStream_.prepare(RecvBufferSize)),
-        std::bind(&Connection::OnRecv, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
-
+#ifdef _LOGGING
+    LOG_DEBUG << std::endl;
+#endif
     readTimer_.cancel();
     readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    readTimer_.async_wait(std::bind(&Connection::OnTimeout, shared_from_this(), std::placeholders::_1));
+    readTimer_.async_wait(std::bind(&Connection::OnReadTimeout, shared_from_this(), std::placeholders::_1));
+
+    socket_.async_read_some(asio::buffer(inputStream_.prepare(RecvBufferSize)),
+        std::bind(&Connection::OnRecv, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }

@@ -21,9 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkMessage.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Definitions.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkMessage.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Rsa.cpp">

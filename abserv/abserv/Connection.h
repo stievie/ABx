@@ -66,7 +66,7 @@ public:
     /// Used by protocols that require server to send first
     void Accept(std::shared_ptr<Protocol> protocol);
     void Accept();
-    asio::ip::tcp::socket& GetHandle() { return socket_; }
+    asio::ip::tcp::socket& GetSocket() { return socket_; }
     uint32_t GetIP();
 protected:
     asio::ip::tcp::socket socket_;

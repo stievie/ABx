@@ -4,7 +4,8 @@
 
 ProtocolAdmin::ProtocolAdmin() :
     Protocol(),
-    loggedIn_(false)
+    loggedIn_(false),
+    responseCallback_(nullptr)
 {
 }
 
@@ -17,6 +18,30 @@ void ProtocolAdmin::Login(const std::string& host, uint16_t port, const std::str
     password_ = password;
     Connect(host, port);
 //    Connection::Run();
+}
+
+void ProtocolAdmin::SendCommand(char cmdByte, char* command)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AP_MSG_COMMAND);
+    msg->Add<uint8_t>(cmdByte);
+    if (command)
+        msg->AddString(std::string(command));
+    Send(msg);
+    Receive();
+}
+
+void ProtocolAdmin::SendCommand(char cmdByte, char * command, const ResponseCallback& callback)
+{
+    responseCallback_ = callback;
+    SendCommand(cmdByte, command);
+}
+
+void ProtocolAdmin::SendKeepAlive()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AP_MSG_KEEP_ALIVE);
+    Send(msg);
 }
 
 void ProtocolAdmin::SendLoginPacket()
@@ -44,16 +69,36 @@ void ProtocolAdmin::ParseMessage(const std::shared_ptr<InputMessage>& message)
 #ifdef _LOGGING
         LOG_DEBUG << "Login OK" << std::endl;
 #endif
+        if (responseCallback_)
+        {
+            responseCallback_(recvByte, message);
+            responseCallback_ = nullptr;
+        }
         loggedIn_ = true;
         break;
     case AP_MSG_LOGIN_FAILED:
 #ifdef _LOGGING
         LOG_DEBUG << "Login failed" << std::endl;
 #endif
+        if (responseCallback_)
+        {
+            responseCallback_(recvByte, message);
+            responseCallback_ = nullptr;
+        }
         break;
     case AP_MSG_COMMAND_OK:
+        if (responseCallback_)
+        {
+            responseCallback_(recvByte, message);
+            responseCallback_ = nullptr;
+        }
         break;
     case AP_MSG_COMMAND_FAILED:
+        if (responseCallback_)
+        {
+            responseCallback_(recvByte, message);
+            responseCallback_ = nullptr;
+        }
         break;
     case AP_MSG_ENCRYPTION_OK:
         break;
@@ -135,7 +180,7 @@ void ProtocolAdmin::OnReceive(const std::shared_ptr<InputMessage>& message)
     }
 
     ParseMessage(message);
-    Receive();
+//    Receive();
 }
 
 void ProtocolAdmin::OnError(const asio::error_code& err)

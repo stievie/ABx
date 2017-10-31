@@ -18,7 +18,9 @@ private:
         RecvBufferSize = 65536
     };
     void OnResolve(const asio::error_code& error, asio::ip::tcp::resolver::iterator endpointIterator);
-    void OnTimeout(const asio::error_code& error);
+    void OnConnectTimeout(const asio::error_code& error);
+    void OnReadTimeout(const asio::error_code& error);
+    void OnWriteTimeout(const asio::error_code& error);
     void OnConnect(const asio::error_code& error);
     void OnWrite(const asio::error_code& error, size_t writeSize, std::shared_ptr<asio::streambuf> outputStream);
     void OnCanWrite(const asio::error_code& error);
@@ -31,6 +33,7 @@ protected:
     ErrorCallback errorCallback_;
     RecvCallback recvCallback_;
     asio::steady_timer readTimer_;
+    asio::steady_timer connectTimer_;
     asio::steady_timer writeTimer_;
     asio::steady_timer delayedWriteTimer_;
     asio::ip::tcp::resolver resolver_;
