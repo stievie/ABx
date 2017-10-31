@@ -115,7 +115,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 #ifdef DEBUG_NET
-    LOG_DEBUG << std::endl;
+//    LOG_DEBUG << std::endl;
 #endif
 
     if (error)
@@ -183,7 +183,7 @@ void Connection::ParsePacket(const asio::error_code& error)
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 #ifdef DEBUG_NET
-    LOG_DEBUG << std::endl;
+//    LOG_DEBUG << std::endl;
 #endif
 
     if (error)

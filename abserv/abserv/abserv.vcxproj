@@ -165,11 +165,14 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolAdmin.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ProtocolLogin.h" />
     <ClInclude Include="ProtocolStatus.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rsa.h" />
     <ClInclude Include="Scheduler.h" />
@@ -179,6 +182,8 @@
     <ClInclude Include="Task.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Variant.h" />
+    <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Vector4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -193,11 +198,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolAdmin.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
     <ClCompile Include="ProtocolLogin.cpp" />
     <ClCompile Include="ProtocolStatus.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Rsa.cpp" />
     <ClCompile Include="Scheduler.cpp" />
@@ -210,6 +218,8 @@
     </ClCompile>
     <ClCompile Include="Uttils.cpp" />
     <ClCompile Include="Variant.cpp" />
+    <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="Vector4.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

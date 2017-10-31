@@ -17,7 +17,7 @@ private:
     void PrintServerInfo();
 public:
     Application();
-    ~Application() {}
+    ~Application();
 
     bool Initialize(int argc, char** argv);
     void Run();

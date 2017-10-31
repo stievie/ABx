@@ -18,8 +18,9 @@
 #include "Random.h"
 #include <ostream>
 #include <iostream>
+#include "Connection.h"
 
-static Application* gApplication = nullptr;
+Application* gApplication = nullptr;
 
 #ifdef  _WIN32
 BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
@@ -60,6 +61,12 @@ Application::Application() :
 {
     assert(gApplication == nullptr);
     gApplication = this;
+}
+
+Application::~Application()
+{
+    Asynch::Scheduler::Instance.Stop();
+    Asynch::Dispatcher::Instance.Stop();
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -149,13 +156,13 @@ void Application::Run()
 {
     LOG_INFO << "Server is running" << std::endl;
     serviceManager_.Run();
-
-    Asynch::Scheduler::Instance.Stop();
-    Asynch::Dispatcher::Instance.Stop();
 }
 
 void Application::Stop()
 {
     LOG_INFO << "Server is shutting down" << std::endl;
+    // Before serviceManager_.Stop()
+    Net::ConnectionManager::GetInstance()->CloseAll();
+
     serviceManager_.Stop();
 }

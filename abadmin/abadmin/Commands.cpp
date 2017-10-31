@@ -154,6 +154,7 @@ int CommandShutdownServer(const std::vector<std::string>& params)
     {
         return -1;
     }
+//    gClient->Disconnect();
     return 1;
 }
 

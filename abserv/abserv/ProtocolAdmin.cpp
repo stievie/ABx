@@ -5,8 +5,11 @@
 #include "Utils.h"
 #include "OutputMessage.h"
 #include "Dispatcher.h"
+#include "Application.h"
 
 #include "DebugNew.h"
+
+extern Application* gApplication;
 
 namespace Net {
 
@@ -24,7 +27,7 @@ ProtocolAdmin::ProtocolAdmin(std::shared_ptr<Connection> connection) :
 void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
 {
 #ifdef DEBUG_NET
-        LOG_DEBUG << std::endl;
+//        LOG_DEBUG << std::endl;
 #endif
     if (!ConfigManager::Instance[ConfigManager::Key::AdminEnabled])
     {
@@ -61,7 +64,7 @@ void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
 void ProtocolAdmin::ParsePacket(NetworkMessage& message)
 {
 #ifdef DEBUG_NET
-        LOG_DEBUG << std::endl;
+//        LOG_DEBUG << std::endl;
 #endif
     uint8_t recvByte = message.GetByte();
 
@@ -174,7 +177,7 @@ void ProtocolAdmin::ParsePacket(NetworkMessage& message)
 void ProtocolAdmin::HandleMsgLogin(NetworkMessage& message, OutputMessage* output)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << std::endl;
+//    LOG_DEBUG << std::endl;
 #endif
     if (state_ == NotloggedIn && ConfigManager::Instance[ConfigManager::Key::AdminRequireLogin].GetBool())
     {
@@ -221,7 +224,7 @@ void ProtocolAdmin::HandleMsgKeyExchange(NetworkMessage& message, OutputMessage*
 void ProtocolAdmin::HandleMsgCommand(NetworkMessage& message, OutputMessage* output)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << std::endl;
+//    LOG_DEBUG << std::endl;
 #endif
     if (state_ != LoggedIn)
     {
@@ -252,10 +255,15 @@ void ProtocolAdmin::HandleMsgCommand(NetworkMessage& message, OutputMessage* out
         );
         break;
     }
+    case CMD_SHUTDOWN_SERVER:
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(&ProtocolAdmin::CommandShutdownServer, this))
+        );
+        break;
     default:
         output->AddByte(AP_MSG_COMMAND_FAILED);
         output->AddString("Unknown command");
-        LOG_WARNING << "Unknown server command " << command << std::endl;
+        LOG_WARNING << "Unknown server command " << static_cast<int>(command) << std::endl;
         break;
     }
 }
@@ -270,10 +278,23 @@ void ProtocolAdmin::CommandKickPlayer(const std::string& name)
     }
 }
 
+void ProtocolAdmin::CommandShutdownServer()
+{
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(&Application::Stop, gApplication))
+    );
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    if (output)
+    {
+        output->AddByte(AP_MSG_COMMAND_OK);
+        Send(output);
+    }
+}
+
 void ProtocolAdmin::HandleMsgPing(NetworkMessage& message, OutputMessage* output)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << std::endl;
+//    LOG_DEBUG << std::endl;
 #endif
     output->AddByte(AP_MSG_PING_OK);
 }

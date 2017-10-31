@@ -6,6 +6,34 @@
 
 namespace Utils {
 
+std::string Trim(const std::string& str,
+    const std::string& whitespace /* = " \t" */)
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
+std::vector<std::string> Split(const std::string& str, const std::string& delim)
+{
+    std::vector<std::string> parts;
+    char* input = (char*)str.c_str();
+    const char* d = delim.c_str();
+    char* next;
+    char* pos = strtok_s(input, d, &next);
+    while (pos != NULL)
+    {
+        parts.push_back(std::string(pos));
+        pos = strtok_s(NULL, d, &next);
+    }
+    return parts;
+}
+
 uint32_t AdlerChecksum(uint8_t* data, int32_t len)
 {
     if (len < 0) {

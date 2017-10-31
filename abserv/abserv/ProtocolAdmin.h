@@ -146,6 +146,7 @@ private:
     void HandleMsgPing(NetworkMessage& message, OutputMessage* output);
     void HandleMsgCommand(NetworkMessage& message, OutputMessage* output);
     void CommandKickPlayer(const std::string& name);
+    void CommandShutdownServer();
 public:
     ProtocolAdmin(std::shared_ptr<Connection> connection);
     virtual ~ProtocolAdmin() {}
