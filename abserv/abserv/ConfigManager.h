@@ -17,10 +17,12 @@ public:
         LoginPort,
         StatusPort,
 
+        DBDriver,
         DBHost,
         DBPort,
         DBUser,
         DBPass,
+        DBName,
 
         StatusQueryTimeout,
         MaxPacketsPerSecond,

@@ -19,6 +19,7 @@
 #include <ostream>
 #include <iostream>
 #include "Connection.h"
+#include "Database.h"
 
 Application* gApplication = nullptr;
 
@@ -118,12 +119,18 @@ void Application::MainLoader()
 
     // DB ----------------
     LOG_INFO << "Creating DB connection...";
+    DB::Database* db = DB::Database::Instance();
+    if (db == nullptr || !db->IsConnected())
+    {
+        LOG_ERROR << "Database connection failed" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     // TODO:
     LOG_INFO << "[done]" << std::endl;
 
-    LOG_INFO << "Checking DB schema version...";
+//    LOG_INFO << "Checking DB schema version...";
     // TODO:
-    LOG_INFO << "[done]" << std::endl;
+//    LOG_INFO << "[done]" << std::endl;
 
     serviceManager_.Add<Net::ProtocolLogin>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
     serviceManager_.Add<Net::ProtocolAdmin>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());

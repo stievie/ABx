@@ -10,7 +10,10 @@
 //#   define DEBUG_SCHEDULER
 #   define DEBUG_NET
 //#   define DEBUG_MATH
+#define DEBUG_SQL
 #else
 #endif
+
+#define USE_MYSQL
 
 #define CONFIG_FILE "config.lua"

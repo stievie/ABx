@@ -93,10 +93,12 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::StatusPort] = (int)GetGlobal("status_port", 1336);
     config_[Key::GamePort] = (int)GetGlobal("game_port", 1337);
 
+    config_[Key::DBDriver] = GetGlobal("db_driver", "mysql");
     config_[Key::DBHost] = GetGlobal("db_host", "localhost");
     config_[Key::DBPort] = (int)GetGlobal("db_port", 3306);
     config_[Key::DBUser] = GetGlobal("db_user", "root");
     config_[Key::DBPass] = GetGlobal("db_pass", "");
+    config_[Key::DBName] = GetGlobal("db_name", "forgottenwars");
 
     config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
     config_[Key::MaxPacketsPerSecond] = GetGlobal("max_packets_per_second", 25);
