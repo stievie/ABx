@@ -187,21 +187,21 @@ void ProtocolAdmin::HandleMsgLogin(NetworkMessage& message, OutputMessage* outpu
         {
             state_ = LoggedIn;
             output->AddByte(AP_MSG_LOGIN_OK);
-            LOG_INFO << "Login OK" << std::endl;
+            LOG_INFO << "Admin Login OK" << std::endl;
         }
         else
         {
             loginTries_++;
             output->AddByte(AP_MSG_LOGIN_FAILED);
             output->AddString("Wrong password");
-            LOG_WARNING << "Login failed, password: " << password << std::endl;
+            LOG_WARNING << "Admin Login failed, password: " << password << std::endl;
         }
     }
     else
     {
         output->AddByte(AP_MSG_LOGIN_FAILED);
         output->AddString("Can not login");
-        LOG_WARNING << "Wrong state at login" << std::endl;
+        LOG_WARNING << "Admin Wrong state at login" << std::endl;
     }
 }
 

@@ -14,7 +14,7 @@ namespace Net {
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap_;
 
-enum RequestInfo_t : uint16_t
+enum RequestInfo : uint16_t
 {
     BasicServerInfo    = 1 << 0,
     OwnerServerInfo    = 1 << 1,
@@ -96,6 +96,10 @@ void ProtocolStatus::SendInfo(uint16_t requestedInfo)
         output->AddString(ConfigManager::Instance[ConfigManager::Key::ServerName].ToString());
         output->AddString(ConfigManager::Instance[ConfigManager::Key::IP].ToString());
         output->AddString(ConfigManager::Instance[ConfigManager::Key::LoginPort].ToString());
+    }
+
+    if (requestedInfo & ServerSoftwareInfo)
+    {
     }
 
     Send(output);

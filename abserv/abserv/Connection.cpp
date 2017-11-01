@@ -120,7 +120,10 @@ void Connection::ParseHeader(const asio::error_code& error)
 
     if (error)
     {
+#ifdef DEBUG_NET
+        // Maybe disconnect
         LOG_ERROR << "Network " << error.value() << " " << error.message() << std::endl;
+#endif
         Close(true);
         return;
     }

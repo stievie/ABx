@@ -150,6 +150,9 @@ void Application::MainLoader()
 
 void Application::PrintServerInfo()
 {
+    LOG_INFO << "Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
+    LOG_INFO << "Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
+
     std::list<uint16_t> ports = serviceManager_.GetPorts();
     LOG_INFO << "Local ports: ";
     while (ports.size())
