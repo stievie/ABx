@@ -19,12 +19,11 @@ enum DBParam
 class Database
 {
 private:
-    static Database* instance_;
+    static std::unique_ptr<Database> instance_;
 protected:
     Database() :
         connected_(false)
     {}
-    virtual ~Database() {}
 
     friend class DBTransaction;
     virtual bool BeginTransaction() = 0;
@@ -36,6 +35,7 @@ protected:
     std::shared_ptr<DBResult> VerifyResult(std::shared_ptr<DBResult> result);
     bool connected_;
 public:
+    virtual ~Database() {}
     static Database* Instance();
 
     virtual bool GetParam(DBParam param) { return false; }

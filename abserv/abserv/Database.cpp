@@ -10,7 +10,7 @@
 namespace DB {
 
 std::recursive_mutex DBQuery::lock_;
-Database* Database::instance_ = nullptr;
+std::unique_ptr<Database> Database::instance_ = nullptr;
 
 Database* Database::Instance()
 {
@@ -19,10 +19,10 @@ Database* Database::Instance()
         std::string driver = ConfigManager::Instance[ConfigManager::DBDriver].GetString();
 #ifdef USE_MYSQL
         if (driver.compare("mysql") == 0)
-            instance_ = new DatabaseMysql();
+            instance_ = std::make_unique<DatabaseMysql>();
 #endif
     }
-    return instance_;
+    return instance_.get();
 }
 
 bool Database::ExecuteQuery(const std::string& query)

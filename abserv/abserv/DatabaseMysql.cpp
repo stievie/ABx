@@ -5,6 +5,8 @@
 #include "ConfigManager.h"
 #include <sstream>
 
+#include "DebugNew.h"
+
 namespace DB {
 
 DatabaseMysql::DatabaseMysql() :
@@ -141,7 +143,7 @@ bool DatabaseMysql::InternalQuery(const std::string& query)
     bool state = true;
 
     // executes the query
-    if (mysql_real_query(&handle_, query.c_str(), query.length()) != 0)
+    if (mysql_real_query(&handle_, query.c_str(), static_cast<unsigned long>(query.length())) != 0)
     {
         LOG_ERROR << "mysql_real_query(): " << query.substr(0, 256) << ": MYSQL ERROR: " << mysql_error(&handle_) << std::endl;
         int error = mysql_errno(&handle_);
@@ -232,10 +234,9 @@ int32_t MySqlResult::GetInt(const std::string& col)
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
-        if (row_[it->second] == NULL)
-            return 0;
-        else
+        if (row_[it->second])
             return atoi(row_[it->second]);
+        return 0;
     }
 
     LOG_ERROR << "Error in GetInt(" << col << ")" << std::endl;
@@ -247,15 +248,14 @@ uint32_t MySqlResult::GetUInt(const std::string& col)
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
-        if (row_[it->second] == NULL)
-            return 0;
-        else
+        if (row_[it->second])
         {
             std::istringstream os(row_[it->second]);
             uint32_t res;
             os >> res;
             return res;
         }
+        return 0;
     }
 
     LOG_ERROR << "Error in GetUInt(" << col << ")" << std::endl;
@@ -267,10 +267,9 @@ int64_t MySqlResult::GetLong(const std::string& col)
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
-        if (row_[it->second] == NULL)
-            return 0;
-        else
+        if (row_[it->second])
             return atoll(row_[it->second]);
+        return 0;
     }
 
     LOG_ERROR << "Error in GetLong(" << col << ")" << std::endl;
@@ -282,10 +281,9 @@ std::string MySqlResult::GetString(const std::string& col)
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
-        if (row_[it->second] == NULL)
-            return std::string("");
-        else
+        if (row_[it->second])
             return std::string(row_[it->second]);
+        return std::string("");
     }
 
     LOG_ERROR << "Error in GetString(" << col << ")" << std::endl;
@@ -296,16 +294,13 @@ const char * MySqlResult::GetStream(const std::string& col, unsigned long& size)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end()) {
-        if (row_[it->second] == NULL)
-        {
-            size = 0;
-            return nullptr;
-        }
-        else
+        if (row_[it->second])
         {
             size = mysql_fetch_lengths(handle_)[it->second];
             return row_[it->second];
         }
+        size = 0;
+        return nullptr;
     }
 
     LOG_ERROR << "Error in GetStream(" << col << ")" << std::endl;

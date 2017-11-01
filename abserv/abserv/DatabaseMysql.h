@@ -33,13 +33,13 @@ class MySqlResult : public DBResult
     friend class DatabaseMysql;
 protected:
     MySqlResult(MYSQL_RES* res);
-    virtual ~MySqlResult();
 
     typedef std::map<const std::string, uint32_t> ListNames;
     ListNames listNames_;
     MYSQL_RES* handle_;
     MYSQL_ROW row_;
 public:
+    virtual ~MySqlResult();
     int32_t GetInt(const std::string& col) override;
     uint32_t GetUInt(const std::string& col) override;
     int64_t GetLong(const std::string& col) override;

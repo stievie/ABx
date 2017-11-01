@@ -68,6 +68,7 @@ Application::~Application()
 {
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
+    DB::Database* db = DB::Database::Instance();
 }
 
 bool Application::Initialize(int argc, char** argv)
