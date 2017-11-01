@@ -23,8 +23,7 @@ public:
     void OnRecvFirstMessage(NetworkMessage& message) override;
 private:
     void DisconnectClient(uint8_t error, const char* message);
-    void GetCharacterList(const std::string& accountName, const std::string& password,
-        const std::string& token);
+    void GetCharacterList(const std::string& accountName, const std::string& password);
 };
 
 }

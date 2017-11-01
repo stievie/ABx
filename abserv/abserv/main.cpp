@@ -16,7 +16,11 @@ static void ShowLogo()
 {
     std::cout << "This is " << SERVER_PRODUCT_NAME << std::endl;
     std::cout << "Version " << SERVER_VERSION_MAJOR << "." << SERVER_VERSION_MINOR <<
-        " (" << __DATE__ << " " << __TIME__ << ")" << std::endl;
+        " (" << __DATE__ << " " << __TIME__ << ")";
+#ifdef _DEBUG
+    std::cout << " DEBUG";
+#endif
+    std::cout << std::endl;
     std::cout << "(C) " << SERVER_YEAR << std::endl;
 
     std::cout << std::endl;

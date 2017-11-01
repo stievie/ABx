@@ -89,7 +89,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::Location] = GetGlobal("location", "Unknown");
     config_[Key::IP] = GetGlobal("ip", "127.0.01");
     config_[Key::LoginPort] = (int)GetGlobal("login_port", 1336);
-    config_[Key::AdminPort] = (int)GetGlobal("admin_port", 1336);
+    config_[Key::AdminPort] = (int)GetGlobal("admin_port", 1338);
     config_[Key::StatusPort] = (int)GetGlobal("status_port", 1336);
     config_[Key::GamePort] = (int)GetGlobal("game_port", 1337);
 
@@ -108,6 +108,11 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::AdminLocalhostOnly] = GetGlobalBool("admin_localhost_only", true);
     config_[Key::AdminRequireEncryption] = GetGlobalBool("admin_require_encryption", true);
     config_[Key::AdminPassword] = GetGlobal("admin_password", "");
+
+    config_[Key::LoginTries] = (int)GetGlobal("login_tries", 5);
+    config_[Key::LoginTimeout] = (int)GetGlobal("login_timeout", 60 * 1000);
+    config_[Key::LoginRetryTimeout] = (int)GetGlobal("login_retrytimeout", 5000);
+
 
     isLoaded = true;
     return true;

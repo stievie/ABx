@@ -168,6 +168,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IOAccount.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />

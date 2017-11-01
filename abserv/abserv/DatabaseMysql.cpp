@@ -276,6 +276,20 @@ int64_t MySqlResult::GetLong(const std::string& col)
     return 0; // Failed
 }
 
+uint64_t MySqlResult::GetULong(const std::string& col)
+{
+    ListNames::iterator it = listNames_.find(col);
+    if (it != listNames_.end())
+    {
+        if (row_[it->second])
+            return strtoul(row_[it->second], nullptr, 0);
+        return 0;
+    }
+
+    LOG_ERROR << "Error in GetULong(" << col << ")" << std::endl;
+    return 0; // Failed
+}
+
 std::string MySqlResult::GetString(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);

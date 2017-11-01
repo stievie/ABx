@@ -41,7 +41,11 @@ public:
     ~BanManager() {}
 
     bool AcceptConnection(uint32_t clientIP);
-    bool IsIpBanned(uint32_t clienttIP, BanInfo& info);
+    /// mask = network mask
+    bool IsIpBanned(uint32_t clienttIP, uint32_t mask = 0xFFFFFFFF);
+    /// May happen when there are too many connections from this IP
+    bool IsIpDisabled(uint32_t clientIP);
+    void AddLoginAttempt(uint32_t clientIP, bool success);
 
     static BanManager Instance;
 };

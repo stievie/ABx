@@ -32,6 +32,10 @@ public:
         AdminLocalhostOnly,
         AdminRequireEncryption,
         AdminPassword,
+
+        LoginTries,
+        LoginTimeout,
+        LoginRetryTimeout,
     };
 private:
     lua_State* L;

@@ -123,6 +123,9 @@
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOAccount.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -219,6 +222,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseMysql.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOAccount.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

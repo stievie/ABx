@@ -9,3 +9,4 @@
 
 #pragma comment(lib, "lua51.lib")
 #pragma comment(lib, "PugiXml.lib")
+#pragma comment(lib, "abcrypto.lib")

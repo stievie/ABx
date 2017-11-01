@@ -43,6 +43,7 @@ public:
     int32_t GetInt(const std::string& col) override;
     uint32_t GetUInt(const std::string& col) override;
     int64_t GetLong(const std::string& col) override;
+    uint64_t GetULong(const std::string& col) override;
     std::string GetString(const std::string& col) override;
     const char* GetStream(const std::string& col, unsigned long &size) override;
 

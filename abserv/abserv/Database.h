@@ -60,6 +60,7 @@ public:
     virtual int32_t GetInt(const std::string& col) { return 0; }
     virtual uint32_t GetUInt(const std::string& col) { return 0; }
     virtual int64_t GetLong(const std::string& col) { return 0; }
+    virtual uint64_t GetULong(const std::string& col) { return 0; }
     virtual std::string GetString(const std::string& col) { return "''"; }
     virtual const char* GetStream(const std::string& col, unsigned long &size) { return 0; }
 
