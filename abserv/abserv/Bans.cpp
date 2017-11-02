@@ -86,12 +86,29 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
 
     time_t currentTime = (Utils::AbTick() / 1000);
 
-    uint32_t loginTimeout = (uint32_t)ConfigManager::Instance[ConfigManager::LoginTimeout].GetInt() / 1000;
+    uint32_t loginTimeout = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginTimeout].GetInt()) / 1000;
     if ((it->second.numberOfLogins >= loginTries) &&
         (uint32_t)currentTime < it->second.lastLoginTime + loginTimeout)
         return true;
 
     return false;
+}
+
+bool BanManager::IsAccountBanned(uint32_t accountId)
+{
+    DB::Database* db = DB::Database::Instance();
+    DB::DBQuery query;
+    query <<
+        "SELECT COUNT(*) as `count` "
+        "FROM `account_bans` "
+        "INNER JOIN `bans` ON `bans`.`id` = `account_bans`.`ban_id` "
+        "WHERE "
+        "`account_id` = " << accountId << " AND `active` = 1 AND (`expires` >= " << (Utils::AbTick() / 1000) << " OR `expires` <= 0)";
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query);
+    if (!result)
+        return false;
+
+    return result->GetInt("count") > 0;
 }
 
 void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
@@ -115,7 +132,7 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
     if (it->second.numberOfLogins >= loginTries)
         it->second.numberOfLogins = 0;
 
-    uint32_t retryTimeout = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginRetryTimeout].GetInt());
+    uint32_t retryTimeout = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginRetryTimeout].GetInt()) / 1000;
     if (!success || (currentTime < it->second.lastLoginTime + retryTimeout))
     {
         ++it->second.numberOfLogins;
@@ -125,6 +142,70 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
         it->second.numberOfLogins = 0;
     }
     it->second.lastLoginTime = currentTime;
+}
+
+bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, uint32_t adminId,
+    const std::string& comment, BanReason reason /* = ReasonOther */)
+{
+    if (ip == 0 || mask == 0)
+        return false;
+
+    DB::Database* db = DB::Database::Instance();
+    DB::DBQuery query;
+    DB::DBInsert stmt(db);
+
+    stmt.SetQuery("INSERT INTO `bans` (`expires`, `added`, `reason`, `active`, `admin_id`, `comment`) VALUES ");
+    query << expires << ", " << (Utils::AbTick() / 1000) << reason << ", 1, " << adminId << ", " << db->EscapeString(comment);
+
+    if (!stmt.AddRow(query.str()))
+        return false;
+    if (!stmt.Execute())
+        return false;
+
+    uint64_t banId = db->GetLastInsertId();
+
+    stmt.SetQuery("INSERT INTO `ip_bans` (`ban_id`, `ip`, `mask`) VALUES ");
+    query.Reset();
+    query << banId << ", " << ip << ", " << mask;
+
+    if (!stmt.AddRow(query.str()))
+        return false;
+    if (!stmt.Execute())
+        return false;
+
+    return true;
+}
+
+bool BanManager::AddAccountBan(uint32_t accountId, int32_t expires, uint32_t adminId,
+    const std::string & comment, BanReason reason /* = ReasonOther */)
+{
+    if (accountId == 0)
+        return false;
+
+    DB::Database* db = DB::Database::Instance();
+    DB::DBQuery query;
+    DB::DBInsert stmt(db);
+
+    stmt.SetQuery("INSERT INTO `bans` (`expires`, `added`, `reason`, `active`, `admin_id`, `comment`) VALUES ");
+    query << expires << ", " << (Utils::AbTick() / 1000) << reason << ", 1, " << adminId << ", " << db->EscapeString(comment);
+
+    if (!stmt.AddRow(query.str()))
+        return false;
+    if (!stmt.Execute())
+        return false;
+
+    uint64_t banId = db->GetLastInsertId();
+
+    stmt.SetQuery("INSERT INTO `account_bans` (`ban_id`, `account_id`) VALUES ");
+    query.Reset();
+    query << banId << ", " << accountId;
+
+    if (!stmt.AddRow(query.str()))
+        return false;
+    if (!stmt.Execute())
+        return false;
+
+    return true;
 }
 
 }

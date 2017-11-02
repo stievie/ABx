@@ -128,7 +128,7 @@ std::string DatabaseMysql::EscapeBlob(const char* s, uint32_t length)
 
 void DatabaseMysql::FreeResult(DBResult* res)
 {
-    delete (MySqlResult*)res;
+    delete (MysqlResult*)res;
 }
 
 bool DatabaseMysql::InternalQuery(const std::string& query)
@@ -206,11 +206,11 @@ std::shared_ptr<DBResult> DatabaseMysql::InternalSelectQuery(const std::string& 
     }
 
     // retrieving results of query
-    std::shared_ptr<DBResult> res(new MySqlResult(m_res), std::bind(&Database::FreeResult, this, std::placeholders::_1));
+    std::shared_ptr<DBResult> res(new MysqlResult(m_res), std::bind(&Database::FreeResult, this, std::placeholders::_1));
     return VerifyResult(res);
 }
 
-MySqlResult::MySqlResult(MYSQL_RES* res)
+MysqlResult::MysqlResult(MYSQL_RES* res)
 {
     handle_ = res;
     listNames_.clear();
@@ -224,12 +224,12 @@ MySqlResult::MySqlResult(MYSQL_RES* res)
     }
 }
 
-MySqlResult::~MySqlResult()
+MysqlResult::~MysqlResult()
 {
     mysql_free_result(handle_);
 }
 
-int32_t MySqlResult::GetInt(const std::string& col)
+int32_t MysqlResult::GetInt(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
@@ -243,7 +243,7 @@ int32_t MySqlResult::GetInt(const std::string& col)
     return 0; // Failed
 }
 
-uint32_t MySqlResult::GetUInt(const std::string& col)
+uint32_t MysqlResult::GetUInt(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
@@ -262,7 +262,7 @@ uint32_t MySqlResult::GetUInt(const std::string& col)
     return 0; // Failed
 }
 
-int64_t MySqlResult::GetLong(const std::string& col)
+int64_t MysqlResult::GetLong(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
@@ -276,7 +276,7 @@ int64_t MySqlResult::GetLong(const std::string& col)
     return 0; // Failed
 }
 
-uint64_t MySqlResult::GetULong(const std::string& col)
+uint64_t MysqlResult::GetULong(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
@@ -290,7 +290,7 @@ uint64_t MySqlResult::GetULong(const std::string& col)
     return 0; // Failed
 }
 
-std::string MySqlResult::GetString(const std::string& col)
+std::string MysqlResult::GetString(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
@@ -304,7 +304,7 @@ std::string MySqlResult::GetString(const std::string& col)
     return std::string(""); // Failed
 }
 
-const char * MySqlResult::GetStream(const std::string& col, unsigned long& size)
+const char* MysqlResult::GetStream(const std::string& col, unsigned long& size)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end()) {
@@ -322,7 +322,7 @@ const char * MySqlResult::GetStream(const std::string& col, unsigned long& size)
     return nullptr;
 }
 
-std::shared_ptr<DBResult> MySqlResult::Advance()
+std::shared_ptr<DBResult> MysqlResult::Next()
 {
     row_ = mysql_fetch_row(handle_);
     return row_ != NULL ? shared_from_this() : std::shared_ptr<DBResult>();

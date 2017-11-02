@@ -69,6 +69,14 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
+    output->AddByte(0x64);
+    for (const AccountCharacter& character : account.characters_)
+    {
+        output->Add<uint32_t>(character.id);
+        output->Add<uint16_t>(character.level);
+        output->AddString(character.name);
+    }
+
     Send(output);
     Disconnect();
 }

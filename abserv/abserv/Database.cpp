@@ -16,7 +16,7 @@ Database* Database::Instance()
 {
     if (!instance_)
     {
-        std::string driver = ConfigManager::Instance[ConfigManager::DBDriver].GetString();
+        const std::string driver = ConfigManager::Instance[ConfigManager::DBDriver].GetString();
 #ifdef USE_MYSQL
         if (driver.compare("mysql") == 0)
             instance_ = std::make_unique<DatabaseMysql>();
@@ -47,7 +47,7 @@ std::shared_ptr<DBResult> Database::StoreQuery(DBQuery& query)
 
 std::shared_ptr<DBResult> Database::VerifyResult(std::shared_ptr<DBResult> result)
 {
-    if (!result->Advance())
+    if (!result->Next())
         return std::shared_ptr<DBResult>();
     return result;
 }

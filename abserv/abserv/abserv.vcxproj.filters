@@ -126,6 +126,12 @@
     <ClInclude Include="IOAccount.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOPlayer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IOGuild.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -225,6 +231,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOAccount.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOPlayer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOGuild.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

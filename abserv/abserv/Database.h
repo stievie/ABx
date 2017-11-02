@@ -62,10 +62,10 @@ public:
     virtual int64_t GetLong(const std::string& col) { return 0; }
     virtual uint64_t GetULong(const std::string& col) { return 0; }
     virtual std::string GetString(const std::string& col) { return "''"; }
-    virtual const char* GetStream(const std::string& col, unsigned long &size) { return 0; }
+    virtual const char* GetStream(const std::string& col, unsigned long& size) { return 0; }
 
-    virtual std::shared_ptr<DBResult> Advance() { return std::shared_ptr<DBResult>(); }
-    virtual bool Empty() { return true; }
+    virtual std::shared_ptr<DBResult> Next() { return std::shared_ptr<DBResult>(); }
+    virtual bool Empty() const { return true; }
 };
 
 class DBQuery : public std::ostringstream

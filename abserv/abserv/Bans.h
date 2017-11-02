@@ -6,10 +6,19 @@
 
 namespace Auth {
 
+enum BanReason : uint8_t
+{
+    ReasonOther = 0,
+    ReasonNameReport = 1,
+    ReasonLeeching = 2,
+    ReasonBotting = 3,
+    ReasonScamming = 4
+};
+
 struct BanInfo
 {
     std::string bannedBy;
-    std::string reason;
+    std::string comment;
     time_t expiresAt;
 };
 struct LoginBlock
@@ -45,7 +54,12 @@ public:
     bool IsIpBanned(uint32_t clienttIP, uint32_t mask = 0xFFFFFFFF);
     /// May happen when there are too many connections from this IP
     bool IsIpDisabled(uint32_t clientIP);
+    bool IsAccountBanned(uint32_t accountId);
     void AddLoginAttempt(uint32_t clientIP, bool success);
+    bool AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, uint32_t adminId, const std::string& comment,
+        BanReason reason = ReasonOther);
+    bool AddAccountBan(uint32_t accountId, int32_t expires, uint32_t adminId, const std::string& comment,
+        BanReason reason = ReasonOther);
 
     static BanManager Instance;
 };
