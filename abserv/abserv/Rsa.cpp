@@ -3,7 +3,7 @@
 
 #include "DebugNew.h"
 
-namespace Utils {
+namespace Crypto {
 
 Rsa Rsa::Instance;
 

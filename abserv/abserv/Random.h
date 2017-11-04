@@ -1,15 +1,14 @@
 #pragma once
 
-#include <rng.h>
 #include <mutex>
 #include <limits>
+#include <abcrypto.hpp>
 
 namespace Utils {
 
 class Random
 {
 private:
-    rng::rng64 gen_;
     std::mutex lock_;
 public:
     Random() = default;
@@ -24,7 +23,9 @@ public:
     T Get()
     {
         std::lock_guard<std::mutex> lock(lock_);
-        return static_cast<T>(gen_());
+        T r;
+        arc4random_buf(&r, sizeof(T));
+        return static_cast<T>(r);
     }
     /// Get value from 0..max
     template <typename T>

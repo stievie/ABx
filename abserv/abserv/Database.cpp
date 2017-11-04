@@ -16,7 +16,7 @@ Database* Database::Instance()
 {
     if (!instance_)
     {
-        const std::string driver = ConfigManager::Instance[ConfigManager::DBDriver].GetString();
+        const std::string& driver = ConfigManager::Instance[ConfigManager::DBDriver].GetString();
 #ifdef USE_MYSQL
         if (driver.compare("mysql") == 0)
             instance_ = std::make_unique<DatabaseMysql>();
@@ -72,7 +72,7 @@ void DBInsert::SetQuery(const std::string& query)
     rows_ = 0;
 }
 
-bool DBInsert::AddRow(const std::string & row)
+bool DBInsert::AddRow(const std::string& row)
 {
     if (multiLine_) {
         ++rows_;

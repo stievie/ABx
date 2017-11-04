@@ -132,6 +132,12 @@
     <ClInclude Include="IOGuild.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DHKeys.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Aes.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -237,6 +243,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOGuild.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DHKeys.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Aes.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

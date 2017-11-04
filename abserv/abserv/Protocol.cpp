@@ -87,6 +87,18 @@ bool Protocol::XTEADecrypt(NetworkMessage& message) const
     return true;
 }
 
+void Protocol::AESEnctypt(OutputMessage& message)
+{
+}
+
+bool Protocol::AESDecrypt(NetworkMessage& message)
+{
+    int size = message.GetSize() - message.GetReadPos();
+    uint8_t* buff = message.GetBuffer() + message.GetReadPos();
+    AES_ECB_decrypt(buff, dhKey_, buff, size);
+    return true;
+}
+
 void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) const
 {
 #ifdef DEBUG_NET

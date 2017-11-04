@@ -20,6 +20,8 @@
 #include <iostream>
 #include "Connection.h"
 #include "Database.h"
+#include "DHKeys.h"
+#include "Aes.h"
 
 Application* gApplication = nullptr;
 
@@ -117,6 +119,24 @@ void Application::MainLoader()
     LOG_INFO << "Initializing RNG...";
     Utils::Random::Instance.Initialize();
     LOG_INFO << "[done]" << std::endl;
+
+    LOG_INFO << "Loading crypto keys...";
+    {
+        std::string keyFile = ConfigManager::Instance[ConfigManager::CryptoKeys].GetString();
+        if (keyFile.empty())
+            keyFile  = path_ + "/" + DH_KEYS_FILE;
+        if (!Crypto::DHKeys::Instance.LoadKeys(keyFile))
+        {
+            Crypto::DHKeys::Instance.GenerateKeys();
+            Crypto::DHKeys::Instance.SaveKeys(keyFile);
+        }
+    }
+    LOG_INFO << "[done]" << std::endl;
+    LOG_INFO << "Testing AES...";
+    if (Crypto::Aes::SelfTest())
+        LOG_INFO << "[done]" << std::endl;
+    else
+        LOG_INFO << "[FAILED]" << std::endl;
 
     // DB ----------------
     LOG_INFO << "Creating DB connection...";

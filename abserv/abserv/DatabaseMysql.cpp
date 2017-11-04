@@ -110,7 +110,7 @@ std::string DatabaseMysql::EscapeString(const std::string& s)
 
 std::string DatabaseMysql::EscapeBlob(const char* s, uint32_t length)
 {
-    // remember about quoiting even an empty string!
+    // remember about quoting even an empty string!
     if (!s)
         return std::string("''");
 
@@ -119,11 +119,10 @@ std::string DatabaseMysql::EscapeBlob(const char* s, uint32_t length)
 
     // quotes escaped string and frees temporary buffer
     mysql_real_escape_string(&handle_, output, s, length);
-    std::string r = "'";
-    r += output;
-    r += "'";
+    std::stringstream r;
+    r << "'" << output << "'";
     delete[] output;
-    return r;
+    return r.str();
 }
 
 void DatabaseMysql::FreeResult(DBResult* res)

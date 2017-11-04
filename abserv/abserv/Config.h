@@ -11,9 +11,11 @@
 #   define DEBUG_NET
 //#   define DEBUG_MATH
 #define DEBUG_SQL
+#define DEGUB_ENCRYPTION
 #else
 #endif
 
 #define USE_MYSQL
 
 #define CONFIG_FILE "config.lua"
+#define DH_KEYS_FILE "server.key"

@@ -9,8 +9,7 @@ Random Random::Instance;
 
 void Random::Initialize()
 {
-    rng::tsc_seed seed;
-    gen_ = rng::rng64(seed());
+    arc4random_stir();
 }
 
 bool Random::GetBool()

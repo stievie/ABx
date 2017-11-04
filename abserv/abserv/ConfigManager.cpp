@@ -88,6 +88,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::ServerName] = GetGlobal("server_name", "abserv");
     config_[Key::Location] = GetGlobal("location", "Unknown");
     config_[Key::IP] = GetGlobal("ip", "127.0.01");
+    config_[Key::CryptoKeys] = GetGlobal("crypto_keys", "");
     config_[Key::LoginPort] = (int)GetGlobal("login_port", 1336);
     config_[Key::AdminPort] = (int)GetGlobal("admin_port", 1338);
     config_[Key::StatusPort] = (int)GetGlobal("status_port", 1336);

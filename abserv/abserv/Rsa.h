@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <mutex>
 
-namespace Utils {
+namespace Crypto {
 
 class Rsa
 {

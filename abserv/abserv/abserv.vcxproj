@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Account.h" />
+    <ClInclude Include="Aes.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Config.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Database.h" />
     <ClInclude Include="DatabaseMysql.h" />
     <ClInclude Include="DebugNew.h" />
+    <ClInclude Include="DHKeys.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
@@ -197,12 +199,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Account.cpp" />
+    <ClCompile Include="Aes.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="DatabaseMysql.cpp" />
+    <ClCompile Include="DHKeys.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
