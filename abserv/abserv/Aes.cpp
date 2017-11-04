@@ -4,7 +4,7 @@
 
 namespace Crypto {
 
-// Buffer must be a multiple of 16
+// Buffer should be a multiple of 16 or it adds padding bytes.
 
 void Aes::SetIv()
 {
@@ -49,24 +49,36 @@ void Aes::Reset()
     blocks_.clear();
 }
 
-size_t Aes::Encrypt(uint8_t* buffer, uint32_t len, uint8_t* out, DH_KEY& key)
+size_t Aes::Encrypt(uint8_t* buffer, uint32_t len, uint8_t* out, uint32_t outlen, DH_KEY& key)
 {
     Blockify(buffer, len);
     SetIv();
     AES_CBC_encrypt_buffer16_ip(blocks_.data(), size_, key, iv_);
     PrefixIv();
-    memcpy_s(out, blocks_.size(), blocks_.data(), blocks_.size());
+    memcpy_s(out, outlen, blocks_.data(), blocks_.size());
     return blocks_.size();
 }
 
-size_t Aes::Decrypt(uint8_t* buffer, uint32_t len, uint8_t* out, DH_KEY& key)
+size_t Aes::Decrypt(uint8_t* buffer, uint32_t len, uint8_t* out, uint32_t outlen, DH_KEY& key)
 {
 
     Blockify(buffer, len);
     ExtractIv();
     AES_CBC_decrypt_buffer16_ip(blocks_.data(), size_, key, iv_);
-    memcpy_s(out, blocks_.size(), blocks_.data(), blocks_.size());
+    memcpy_s(out, outlen, blocks_.data(), blocks_.size());
     return blocks_.size();
+}
+
+size_t Aes::AesEncrypt(uint8_t* buffer, uint32_t len, uint8_t* out, uint32_t outlen, DH_KEY& key)
+{
+    Aes aes;
+    return aes.Encrypt(buffer, len, out, outlen, key);
+}
+
+size_t Aes::AesDecrypt(uint8_t* buffer, uint32_t len, uint8_t* out, uint32_t outlen, DH_KEY& key)
+{
+    Aes aes;
+    return aes.Decrypt(buffer, len, out, outlen, key);
 }
 
 bool Aes::SelfTest()
@@ -83,9 +95,9 @@ bool Aes::SelfTest()
     uint8_t enc[100];
     uint8_t out[100];
 
-    size_t size = aes.Encrypt(data, sizeof(data), enc, key);
+    size_t size = aes.Encrypt(data, sizeof(data), enc, 100, key);
     aes.Reset();
-    aes.Decrypt(enc, (uint32_t)size, out, key);
+    aes.Decrypt(enc, (uint32_t)size, out, 100, key);
     if (memcmp((char*)out, (char*)data, sizeof(data)) == 0)
         return true;
     return false;

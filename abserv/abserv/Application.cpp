@@ -134,7 +134,7 @@ void Application::MainLoader()
     LOG_INFO << "[done]" << std::endl;
     LOG_INFO << "Testing AES...";
     if (Crypto::Aes::SelfTest())
-        LOG_INFO << "[done]" << std::endl;
+        LOG_INFO << "[success]" << std::endl;
     else
         LOG_INFO << "[FAILED]" << std::endl;
 
