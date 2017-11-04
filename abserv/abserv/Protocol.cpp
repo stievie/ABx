@@ -3,6 +3,7 @@
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
 #include "Scheduler.h"
+#include "Aes.h"
 
 #include "DebugNew.h"
 
@@ -87,15 +88,31 @@ bool Protocol::XTEADecrypt(NetworkMessage& message) const
     return true;
 }
 
-void Protocol::AESEnctypt(OutputMessage& message)
+void Protocol::AESEncrypt(OutputMessage& message)
 {
+    int32_t msgLength = message.GetMessageLength();
+
+    uint32_t n;
+    // Add bytes until we reach a multiple of 16
+    if ((msgLength % AES_BLOCK_SIZE) != 0)
+    {
+        n = AES_BLOCK_SIZE - (msgLength % AES_BLOCK_SIZE);
+        message.AddPaddingBytes(n);
+        msgLength += n;
+    }
+    uint8_t* buffer = (uint8_t*)(message.GetBuffer() + message.GetReadPos());
+    uint8_t* buff = new uint8_t[msgLength + AES_IV_SIZE];
+    size_t len = Crypto::Aes::AesEncrypt(buffer, msgLength, buff, msgLength + AES_IV_SIZE, dhKey_);
+    delete[] buff;
 }
 
 bool Protocol::AESDecrypt(NetworkMessage& message)
 {
-    int size = message.GetSize() - message.GetReadPos();
-    uint8_t* buff = message.GetBuffer() + message.GetReadPos();
-    AES_ECB_decrypt(buff, dhKey_, buff, size);
+    int32_t msgLength = message.GetMessageLength();
+    uint8_t* buffer = (uint8_t*)(message.GetBuffer() + message.GetReadPos());
+    uint8_t* buff = new uint8_t[msgLength + AES_IV_SIZE];
+    size_t len = Crypto::Aes::AesDecrypt(buffer, msgLength, buff, msgLength + AES_IV_SIZE, dhKey_);
+    delete[] buff;
     return true;
 }
 

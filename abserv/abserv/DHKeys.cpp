@@ -42,7 +42,7 @@ bool DHKeys::LoadKeys(const std::string& fileName)
     return true;
 }
 
-bool DHKeys::SaveKeys(const std::string & fileName)
+bool DHKeys::SaveKeys(const std::string& fileName)
 {
     if (!keysLoaded_)
         return false;
@@ -60,7 +60,7 @@ bool DHKeys::SaveKeys(const std::string & fileName)
 
 void DHKeys::GetSharedKey(const DH_KEY& publicKey, DH_KEY& sharedKey)
 {
-    // User our private key and the recipients public key to create a
+    // Use our private key and the recipients public key to create a
     // shared key.
     DH_generate_key_secret(sharedKey, privateKey_, publicKey);
 }

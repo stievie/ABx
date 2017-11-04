@@ -8,12 +8,12 @@ namespace Crypto {
 
 void Aes::SetIv()
 {
-    arc4random_buf(iv_, 16);
+    arc4random_buf(iv_, AES_IV_SIZE);
 }
 
 void Aes::PrefixIv()
 {
-    for (int i = 15; i >= 0; i--)
+    for (int i = AES_IV_SIZE - 1; i >= 0; i--)
     {
         blocks_.insert(blocks_.begin(), iv_[i]);
     }
@@ -21,7 +21,7 @@ void Aes::PrefixIv()
 
 void Aes::ExtractIv()
 {
-    for (uint32_t i = 0; i < 16; i++)
+    for (uint32_t i = 0; i < AES_IV_SIZE; i++)
     {
         iv_[i] = blocks_[0];
         // Delete IV from the block
@@ -31,8 +31,8 @@ void Aes::ExtractIv()
 
 void Aes::Blockify(uint8_t* buffer, uint32_t len)
 {
-    numBlocks_ = static_cast<uint32_t>(ceil(len / 16));
-    size_ = numBlocks_ * 16;
+    numBlocks_ = static_cast<uint32_t>(ceil(len / AES_BLOCK_SIZE));
+    size_ = numBlocks_ * AES_BLOCK_SIZE;
     blocks_.clear();
     for (uint32_t i = 0; i < size_; i++)
     {

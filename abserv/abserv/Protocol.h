@@ -23,13 +23,14 @@ protected:
     bool checksumEnabled_;
     void XTEAEncrypt(OutputMessage& message) const;
     bool XTEADecrypt(NetworkMessage& message) const;
-    void AESEnctypt(OutputMessage& message);
+    void AESEncrypt(OutputMessage& message);
     bool AESDecrypt(NetworkMessage& message);
     void SetXTEAKey(const uint32_t* key)
     {
         memcpy_s(xteaKey_, 4, key, sizeof(*key) * 4);
     }
-    void SetDhKey(const DH_KEY* key)
+    /// Sets the shared key
+    void SetDHKey(const DH_KEY* key)
     {
         memcpy_s(dhKey_, DH_KEY_LENGTH, key, DH_KEY_LENGTH);
     }
