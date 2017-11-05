@@ -31,7 +31,7 @@ private:
     Mode mode_;
     using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
-    static std::string logFile_;
+    static std::string logDir_;
 
     Logger(std::ostream& stream = std::cout) :
         stream_(stream),
@@ -116,19 +116,7 @@ public:
         return *this;
     }
 #endif
-    static Logger& Instance()
-    {
-        if (!instance_)
-        {
-            if (!logFile_.empty())
-            {
-                instance_ = std::make_unique<Logger>(logFile_);
-            }
-            else
-                instance_ = std::make_unique<Logger>();
-        }
-        return *instance_.get();
-    }
+    static Logger& Instance();
 };
 
 }

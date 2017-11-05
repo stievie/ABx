@@ -6,6 +6,24 @@
 
 namespace Utils {
 
+bool CopyFile(const std::string& src, const std::string& dst)
+{
+    std::ifstream fsrc(src, std::ios::binary);
+    if (!fsrc.is_open())
+        return false;
+    std::ofstream fdst(dst, std::ios::binary);
+    if (!fdst.is_open())
+        return false;
+    fdst << fsrc.rdbuf();
+    return true;
+}
+
+bool FileExists(const std::string& name)
+{
+    std::ifstream infile(name.c_str());
+    return infile.good();
+}
+
 std::string Trim(const std::string& str,
     const std::string& whitespace /* = " \t" */)
 {

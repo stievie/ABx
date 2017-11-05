@@ -196,10 +196,10 @@ void Application::Run()
 {
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
-    std::string logFile = ConfigManager::Instance[ConfigManager::Key::LogFile].GetString();
-    if (!logFile.empty())
+    std::string logDir = ConfigManager::Instance[ConfigManager::Key::LogDir].GetString();
+    if (!logDir.empty())
     {
-        IO::Logger::logFile_ = logFile;
+        IO::Logger::logDir_ = logDir;
         IO::Logger::Instance().Close();
     }
     serviceManager_.Run();
