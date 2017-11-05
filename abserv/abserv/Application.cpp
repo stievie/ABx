@@ -123,7 +123,7 @@ void Application::MainLoader()
     Utils::Random::Instance.Initialize();
     LOG_INFO << "[done]" << std::endl;
 
-    LOG_INFO << "Loading crypto keys...";
+    LOG_INFO << "Loading cryptographic keys...";
     {
         std::string keyFile = ConfigManager::Instance[ConfigManager::CryptoKeys].GetString();
         if (keyFile.empty())
@@ -152,9 +152,9 @@ void Application::MainLoader()
     // TODO:
     LOG_INFO << "[done]" << std::endl;
 
-//    LOG_INFO << "Checking DB schema version...";
+    LOG_INFO << "Checking DB schema version...";
     // TODO:
-//    LOG_INFO << "[done]" << std::endl;
+    LOG_INFO << "[done]" << std::endl;
 
     serviceManager_.Add<Net::ProtocolLogin>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
     serviceManager_.Add<Net::ProtocolAdmin>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
@@ -163,7 +163,13 @@ void Application::MainLoader()
 
     PrintServerInfo();
 
-    LOG_INFO << "Loading done in " << (Utils::AbTick() - startLoading) / (1000) << " sec." << std::endl;
+    LOG_INFO << "Loading done in ";
+    int64_t loadingTime = (Utils::AbTick() - startLoading);
+    if (loadingTime < 1000)
+        LOG_INFO << loadingTime << " ms";
+    else
+        LOG_INFO << (loadingTime / 1000) << " s";
+    LOG_INFO << std::endl;
 
     Game::GameManager::Instance.Start(&serviceManager_);
 
@@ -189,6 +195,13 @@ void Application::PrintServerInfo()
 void Application::Run()
 {
     LOG_INFO << "Server is running" << std::endl;
+    // If we use a log file close current and reopen as file logger
+    std::string logFile = ConfigManager::Instance[ConfigManager::Key::LogFile].GetString();
+    if (!logFile.empty())
+    {
+        IO::Logger::logFile_ = logFile;
+        IO::Logger::Instance().Close();
+    }
     serviceManager_.Run();
 }
 

@@ -141,6 +141,9 @@
     <ClInclude Include="IOGame.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -255,6 +258,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOGame.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

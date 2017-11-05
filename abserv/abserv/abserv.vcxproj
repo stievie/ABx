@@ -175,6 +175,7 @@
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Player.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Player.cpp" />

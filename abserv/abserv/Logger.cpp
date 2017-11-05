@@ -5,6 +5,8 @@
 
 namespace IO {
 
-Logger Logger::Instance;
+std::unique_ptr<Logger> Logger::instance_ = nullptr;
+std::string Logger::logFile_ = "";
 
 }
+

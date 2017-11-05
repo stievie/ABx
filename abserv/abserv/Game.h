@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <memory>
 #include <string>
+#include "Map.h"
 
 namespace Game {
 
@@ -25,6 +26,8 @@ public:
     GameData data_;
     /// Auto generated ID
     uint32_t id_;
+
+    std::shared_ptr<Map> map_;
 };
 
 }

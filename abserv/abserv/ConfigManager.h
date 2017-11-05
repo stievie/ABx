@@ -17,6 +17,7 @@ public:
         LoginPort,
         StatusPort,
         CryptoKeys,
+        LogFile,
 
         DBDriver,
         DBHost,
