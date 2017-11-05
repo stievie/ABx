@@ -200,7 +200,7 @@ void Application::Run()
     if (!logDir.empty())
     {
         IO::Logger::logDir_ = logDir;
-        IO::Logger::Instance().Close();
+        IO::Logger::Close();
     }
     serviceManager_.Run();
 }

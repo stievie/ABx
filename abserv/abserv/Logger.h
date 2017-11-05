@@ -16,6 +16,7 @@
 
 namespace IO {
 
+/// Logger class with stream interface
 class Logger
 {
 private:
@@ -53,12 +54,7 @@ public:
         }
     }
 
-    void Close()
-    {
-        Logger::instance_.reset();
-    }
-
-    //Overload for std::endl only:
+    // Overload for std::endl only:
     Logger& operator << (endlType endl)
     {
 
@@ -116,6 +112,11 @@ public:
         return *this;
     }
 #endif
+
+    static void Close()
+    {
+        Logger::instance_.reset();
+    }
     static Logger& Instance();
 };
 
