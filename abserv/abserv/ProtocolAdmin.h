@@ -117,7 +117,7 @@ enum
     ENCRYPTION_RSA1024XTEA = 1
 };
 
-class ProtocolAdmin : public Protocol
+class ProtocolAdmin final : public Protocol
 {
 public:
     // static protocol information
@@ -150,8 +150,8 @@ private:
 public:
     explicit ProtocolAdmin(std::shared_ptr<Connection> connection);
 
-    void OnRecvFirstMessage(NetworkMessage& msg) override;
-    void ParsePacket(NetworkMessage& message) override;
+    void OnRecvFirstMessage(NetworkMessage& msg) final;
+    void ParsePacket(NetworkMessage& message) final;
 
     bool AllowIP(uint32_t clientIP);
     uint16_t GetProtocolPolicy() const

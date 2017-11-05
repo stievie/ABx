@@ -3,6 +3,8 @@
 #include "Database.h"
 #include <abcrypto.hpp>
 
+#include "DebugNew.h"
+
 namespace DB {
 
 bool IOAccount::LoginServerAuth(const std::string & name, const std::string & pass, Account& account)
@@ -39,6 +41,37 @@ bool IOAccount::LoginServerAuth(const std::string & name, const std::string & pa
     return true;
 }
 
+uint32_t IOAccount::GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName)
+{
+    Database* db = Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT `id`, `password` FROM `accounts` WHERE `name` = " << db->EscapeString(name);
+    std::shared_ptr<DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return 0;
+
+    if (bcrypt_checkpass(pass.c_str(), result->GetString("password").c_str()) != 0)
+        return false;
+
+    uint32_t accountId = result->GetUInt("account_id");
+
+    query.str("");
+    query << "SELECT `account_id`, `name`, `deleted` FROM `players` WHERE `name` = " <<
+        db->EscapeString(charName);
+    result = db->StoreQuery(query.str());
+    if (!result)
+        return 0;
+    if (result->GetUInt("account_id") != accountId)
+        // Character does not belong to this account
+        return 0;
+    if (result->GetULong("deleted") != 0)
+        // Character was deleted
+        return 0;
+
+    return accountId;
+}
+
 bool IOAccount::Save(const Account& account)
 {
     return true;
@@ -48,6 +81,11 @@ bool IOAccount::Save(const Account& account)
     query << "UPDATE `accounts` SET `warnings` = " << account.warnings_ << " WHERE `id` = " << account.id_;
     return db->ExecuteQuery(query);
     */
+}
+
+bool IOAccount::Load(Account& account, uint32_t id)
+{
+    return false;
 }
 
 }

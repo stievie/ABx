@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Aes.h"
 #include <algorithm>
+#include "Random.h"
+
+#include "DebugNew.h"
 
 namespace Crypto {
 
@@ -8,7 +11,8 @@ namespace Crypto {
 
 void Aes::SetIv()
 {
-    arc4random_buf(iv_, AES_IV_SIZE);
+    // Use the wrapper because it lockes the pool
+    Utils::Random::Instance.GetBuff(iv_, AES_IV_SIZE);
 }
 
 void Aes::PrefixIv()

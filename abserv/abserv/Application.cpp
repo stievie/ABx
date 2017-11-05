@@ -23,6 +23,8 @@
 #include "DHKeys.h"
 #include "Aes.h"
 
+#include "DebugNew.h"
+
 Application* gApplication = nullptr;
 
 #ifdef  _WIN32
@@ -68,6 +70,7 @@ Application::Application() :
 
 Application::~Application()
 {
+    Game::GameManager::Instance.Stop();
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
     DB::Database* db = DB::Database::Instance();

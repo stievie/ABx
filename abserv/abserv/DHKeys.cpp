@@ -5,12 +5,16 @@
 #include <stdint.h>
 #include "Logger.h"
 
+#include "DebugNew.h"
+
 namespace Crypto {
 
 DHKeys DHKeys::Instance;
 
 void DHKeys::GenerateKeys()
 {
+    // Random pool must be locked
+    std::lock_guard<std::mutex> lockGuard(lock_);
     DH_generate_key_pair(publicKey_, privateKey_);
     keysLoaded_ = true;
 }

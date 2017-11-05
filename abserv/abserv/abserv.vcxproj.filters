@@ -138,6 +138,9 @@
     <ClInclude Include="Aes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOGame.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -249,6 +252,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Aes.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOGame.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

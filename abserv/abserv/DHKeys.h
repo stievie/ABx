@@ -2,6 +2,7 @@
 
 #include <abcrypto.hpp>
 #include <string>
+#include <mutex>
 
 namespace Crypto {
 
@@ -11,6 +12,7 @@ private:
     DH_KEY privateKey_;
     DH_KEY publicKey_;
     bool keysLoaded_;
+    std::mutex lock_;
 public:
     DHKeys() :
         keysLoaded_(false)

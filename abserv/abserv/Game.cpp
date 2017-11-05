@@ -13,4 +13,8 @@ Game::~Game()
 {
 }
 
+void Game::Update(uint32_t timeElapsed)
+{
+}
+
 }

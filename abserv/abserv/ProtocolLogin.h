@@ -7,7 +7,7 @@
 
 namespace Net {
 
-class ProtocolLogin : public Protocol
+class ProtocolLogin final : public Protocol
 {
 public:
     // static protocol information
@@ -20,7 +20,7 @@ public:
         Protocol(connection)
     {}
 
-    void OnRecvFirstMessage(NetworkMessage& message) override;
+    void OnRecvFirstMessage(NetworkMessage& message) final;
 private:
     void DisconnectClient(uint8_t error, const char* message);
     void GetCharacterList(const std::string& accountName, const std::string& password);

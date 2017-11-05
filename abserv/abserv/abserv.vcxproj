@@ -171,6 +171,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="IOAccount.h" />
+    <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="Logger.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IOAccount.cpp" />
+    <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="Logger.cpp" />

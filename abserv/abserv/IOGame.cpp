@@ -1,8 +1,9 @@
 #include "stdafx.h"
-#include "IOGuild.h"
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
 namespace DB {
+
 
 }

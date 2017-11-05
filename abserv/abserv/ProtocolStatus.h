@@ -8,7 +8,7 @@
 
 namespace Net {
 
-class ProtocolStatus : public Protocol
+class ProtocolStatus final : public Protocol
 {
 public:
     // static protocol information
@@ -26,7 +26,7 @@ public:
         Protocol(connection)
     {}
 
-    void OnRecvFirstMessage(NetworkMessage& message) override;
+    void OnRecvFirstMessage(NetworkMessage& message) final;
 };
 
 }

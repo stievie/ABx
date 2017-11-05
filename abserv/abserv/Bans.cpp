@@ -5,6 +5,8 @@
 #include "Database.h"
 #include "Utils.h"
 
+#include "DebugNew.h"
+
 namespace Auth {
 
 BanManager BanManager::Instance;

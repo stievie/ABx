@@ -22,10 +22,15 @@ public:
     template <typename T>
     T Get()
     {
-        std::lock_guard<std::mutex> lock(lock_);
         T r;
+        std::lock_guard<std::mutex> lock(lock_);
         arc4random_buf(&r, sizeof(T));
         return static_cast<T>(r);
+    }
+    void GetBuff(void* buff, size_t len)
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        arc4random_buf(buff, len);
     }
     /// Get value from 0..max
     template <typename T>
