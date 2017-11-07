@@ -51,6 +51,10 @@ public:
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
 
+    std::shared_ptr<Game> GetGame() const
+    {
+        return game_.lock();
+    }
     void SetGame(std::shared_ptr<Game> game)
     {
         game_ = game;

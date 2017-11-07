@@ -16,6 +16,15 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
     return std::shared_ptr<Player>();
 }
 
+std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
+{
+    auto it = players_.find(id);
+    if (it != players_.end())
+        return (*it).second;
+
+    return std::shared_ptr<Player>();
+}
+
 std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& name,
     std::shared_ptr<Net::ProtocolGame> client)
 {

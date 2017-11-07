@@ -198,6 +198,7 @@ void Application::Run()
     std::string logDir = ConfigManager::Instance[ConfigManager::Key::LogDir].GetString();
     if (!logDir.empty())
     {
+        LOG_INFO << "Log directory: " << logDir << std::endl;
         IO::Logger::logDir_ = logDir;
         IO::Logger::Close();
     }

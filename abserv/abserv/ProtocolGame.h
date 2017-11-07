@@ -3,12 +3,28 @@
 #include <memory>
 #include "Protocol.h"
 #include "Connection.h"
+#include "Dispatcher.h"
 
 namespace Game {
 class Player;
 }
 
 namespace Net {
+
+enum PacketType : uint8_t
+{
+    PacketTypeLogout = 0x14,
+
+    PacketTypeMoveNorth = 0x65,
+    PacketTypeMoveNorthEast = 0x66,
+    PacketTypeMoveEast = 0x67,
+    PacketTypeMoveSouthEast = 0x68,
+    PacketTypeMoveSouth = 0x69,
+    PacketTypeMoveSouthWest = 0x70,
+    PacketTypeMoveWest = 0x71,
+    PacketTypeMoveNorthWest = 0x72,
+};
+
 
 class ProtocolGame final : public Protocol
 {
@@ -29,6 +45,23 @@ public:
     void Login(const std::string& name, uint32_t accountId);
     void Logout();
 private:
+    // Helpers so we don't need to bind every time
+    template <typename Callable, typename... Args>
+    void AddGameTask(Callable function, Args&&... args)
+    {
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(function, player_->GetGame(), std::forward<Args>(args)...))
+        );
+    }
+
+    template <typename Callable, typename... Args>
+    void AddGameTaskTimed(uint32_t delay, Callable function, Args&&... args)
+    {
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(delay, std::bind(function, player_->GetGame(), std::forward<Args>(args)...))
+        );
+    }
+
     std::shared_ptr<ProtocolGame> GetThis()
     {
         return std::static_pointer_cast<ProtocolGame>(shared_from_this());

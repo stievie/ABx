@@ -9,7 +9,7 @@ namespace Game {
 
 class Creature;
 
-enum EffectAttr
+enum EffectAttr : uint8_t
 {
     EffectAttrId = 1,
     EffectAttrTicks,
@@ -18,7 +18,7 @@ enum EffectAttr
     EffectAttrEnd = 254
 };
 
-enum EffectType
+enum EffectType : uint8_t
 {
     EffectNone = 0,
     EffectCondition,
@@ -56,7 +56,7 @@ public:
 
 typedef std::forward_list<std::unique_ptr<Effect>> EffectList;
 
-enum ConditionType
+enum ConditionType : uint8_t
 {
     ConditionNone = 0,
     ConditionDazed,

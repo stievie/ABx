@@ -89,7 +89,7 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
         if (g->GetPlayerCount() < GAME_MAX_PLAYER || !canCreate)
         {
             const auto git = games_.find(g->id_);
-            return git->second;
+            return (*git).second;
         }
     }
     if (canCreate)

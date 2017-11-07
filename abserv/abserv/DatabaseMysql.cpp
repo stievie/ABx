@@ -34,6 +34,7 @@ DatabaseMysql::DatabaseMysql() :
         return;
     }
 
+/*
     if (MYSQL_VERSION_ID < 50019)
     {
         // MySQL servers < 5.0.19 has a bug where MYSQL_OPT_RECONNECT is (incorrectly) reset by mysql_real_connect calls
@@ -41,6 +42,7 @@ DatabaseMysql::DatabaseMysql() :
         mysql_options(&handle_, MYSQL_OPT_RECONNECT, &reconnect);
         LOG_WARNING << "Outdated MySQL server detected. Consider upgrading to a newer version." << std::endl;
     }
+*/
 
     connected_ = true;
 }
@@ -216,7 +218,7 @@ MysqlResult::MysqlResult(MYSQL_RES* res)
 
     MYSQL_FIELD* field;
     int i = 0;
-    while ((field = mysql_fetch_field(handle_)))
+    while ((field = mysql_fetch_field(handle_)) != NULL)
     {
         listNames_[field->name] = i;
         ++i;
