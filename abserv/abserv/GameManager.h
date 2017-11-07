@@ -10,6 +10,8 @@
 
 namespace Game {
 
+class Player;
+
 class GameManager
 {
 public:
@@ -22,8 +24,9 @@ private:
     Net::ServiceManager* serviceManager_;
     std::thread thread_;
     State state_;
-    std::mutex lock_;
-    std::vector<std::shared_ptr<Game>> games_;
+    std::recursive_mutex lock_;
+    std::map<uint32_t, std::shared_ptr<Game>> games_;
+    std::map<std::string, std::vector<Game*>> maps_;
     uint32_t gameIds_ = 0;
     uint32_t GetNewGameId()
     {
@@ -32,6 +35,8 @@ private:
         return gameIds_++;
     }
     void UpdateThread();
+    std::shared_ptr<Game> CreateGame(const std::string& mapName);
+    void DeleteGameTask(uint32_t gameId);
 public:
     GameManager() :
         state_(Terminated)
@@ -39,6 +44,9 @@ public:
 
     void Start(Net::ServiceManager* serviceManager);
     void Stop();
+    /// Returns the game with the mapName. If no such game exists it creates one.
+    std::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
+    void AddPlayer(const std::string& mapName, std::shared_ptr<Player> player);
 
     GameManager::State GetState() const { return state_; }
 public:

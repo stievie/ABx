@@ -55,15 +55,15 @@ public:
     {
         int32_t msgLen = msg.GetSize();
         memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg.GetBuffer() + 8), msgLen);
-        info_.length += msgLen;
-        info_.position += msgLen;
+        info_.length += static_cast<MsgSize_t>(msgLen);
+        info_.position += static_cast<MsgSize_t>(msgLen);
     }
     void Append(const std::shared_ptr<OutputMessage>& msg)
     {
         int32_t msgLen = msg->GetSize();
         memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg->GetBuffer() + 8), msgLen);
-        info_.length += msgLen;
-        info_.position += msgLen;
+        info_.length += static_cast<MsgSize_t>(msgLen);
+        info_.position += static_cast<MsgSize_t>(msgLen);
     }
 };
 

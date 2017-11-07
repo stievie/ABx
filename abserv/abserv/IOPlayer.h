@@ -16,7 +16,7 @@ public:
     static bool PreloadPlayer(Game::Player* player, const std::string& name);
     static bool LoadPlayerByName(Game::Player* player, const std::string& name);
     static bool LoadPlayerById(Game::Player* player, uint32_t playerId);
-
+    static bool SavePlayer(Game::Player* player);
 };
 
 }

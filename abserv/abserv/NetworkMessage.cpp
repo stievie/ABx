@@ -27,7 +27,7 @@ void NetworkMessage::AddPaddingBytes(uint32_t n)
         return;
 
     memset((void*)&buffer_[info_.position], 0x33, n);
-    info_.length += n;
+    info_.length += static_cast<MsgSize_t>(n);
 }
 
 void NetworkMessage::AddBytes(const char* bytes, uint32_t size)
@@ -36,20 +36,20 @@ void NetworkMessage::AddBytes(const char* bytes, uint32_t size)
         return;
 
     memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, bytes, size);
-    info_.position += size;
-    info_.length += size;
+    info_.position += static_cast<MsgSize_t>(size);
+    info_.length += static_cast<MsgSize_t>(size);
 }
 
 void NetworkMessage::AddString(const char* value)
 {
-    uint32_t len = static_cast<uint32_t>(strlen(value));
+    uint16_t len = static_cast<uint16_t>(strlen(value));
     if (!CanAdd(len + 2) || len > 8192)
         return;
 
     Add<uint16_t>(len);
     memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value, len);
-    info_.position += len;
-    info_.length += len;
+    info_.position += static_cast<MsgSize_t>(len);
+    info_.length += static_cast<MsgSize_t>(len);
 }
 
 }

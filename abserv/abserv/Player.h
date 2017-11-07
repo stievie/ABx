@@ -4,6 +4,9 @@
 #include <memory>
 #include "GameObject.h"
 #include "Game.h"
+#include "Effect.h"
+#include <list>
+#include "Creature.h"
 
 namespace Game {
 
@@ -23,12 +26,15 @@ struct PlayerData
     /// Character name
     std::string name;
     uint32_t level;
-    uint32_t xp;
+    uint64_t xp;
     uint32_t skillPoints;
     PlayerSex sex;
+    std::string lastMap;
+    time_t lastLogin;
+    time_t lastLogout;
 };
 
-class Player final : public GameObject
+class Player final : public Creature
 {
 private:
     std::weak_ptr<Game> game_;
@@ -51,8 +57,8 @@ public:
     }
 
     PlayerData data_;
-    /// Auto ID, not DB ID
-    uint32_t id_;
+    time_t loginTime_;
+    time_t logoutTime_;
     std::shared_ptr<Net::ProtocolGame> client_;
 };
 

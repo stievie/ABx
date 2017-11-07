@@ -21,7 +21,6 @@ std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& name,
 {
     std::shared_ptr<Player> result(new Player(client));
 
-    result->id_ = GetNewPlayerId();
     players_[result->id_] = result;
     playerNames_[name] = result.get();
 

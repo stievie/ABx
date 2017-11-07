@@ -151,7 +151,7 @@ void Connection::ParseHeader(const asio::error_code& error)
         packetsSent_ = 0;
     }
 
-    uint16_t size = msg_.GetHeaderSize();
+    int32_t size = msg_.GetHeaderSize();
     if (size == 0 || size >= NETWORKMESSAGE_MAXSIZE - 16)
     {
 #ifdef DEBUG_NET

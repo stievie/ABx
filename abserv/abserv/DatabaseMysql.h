@@ -44,8 +44,10 @@ public:
     uint32_t GetUInt(const std::string& col) final;
     int64_t GetLong(const std::string& col) final;
     uint64_t GetULong(const std::string& col) final;
+    time_t GetTime(const std::string& col) final;
     std::string GetString(const std::string& col) final;
     const char* GetStream(const std::string& col, unsigned long& size) final;
+    bool IsNull(const std::string& col) final;
 
     bool Empty() const final { return row_ == NULL; }
     std::shared_ptr<DBResult> Next() final;

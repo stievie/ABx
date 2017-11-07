@@ -12,7 +12,9 @@
 
 #define ASIO_STANDALONE
 
-// TODO: Hier auf zusätzliche Header, die das Programm erfordert, verweisen.
+#ifndef UNREFERENCED_PARAMETER
+#define UNREFERENCED_PARAMETER(P) (P)
+#endif
 
 #include <cassert>
 #include "Config.h"

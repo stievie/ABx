@@ -5,8 +5,11 @@
 
 namespace Game {
 
+uint32_t GameObject::objectIds_ = 0;
+
 GameObject::GameObject()
 {
+    id_ = GetNewId();
 }
 
 

@@ -19,13 +19,6 @@ private:
     std::map<std::string, Player*> playerNames_;
     /// The owner of players
     std::map<uint32_t, std::shared_ptr<Player>> players_;
-    uint32_t playerIds_ = 0;
-    uint32_t GetNewPlayerId()
-    {
-        if (playerIds_ >= std::numeric_limits<uint32_t>::max())
-            playerIds_ = 0;
-        return playerIds_++;
-    }
 public:
     PlayerManager() = default;
 

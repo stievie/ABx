@@ -3,7 +3,10 @@
 #include <memory>
 #include <map>
 #include <stdint.h>
+#pragma warning(push)
+#pragma warning(disable: 4592)
 #include <asio.hpp>
+#pragma warning(pop)
 #include "Protocol.h"
 #include "Logger.h"
 

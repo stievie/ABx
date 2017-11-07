@@ -70,7 +70,9 @@ public:
     virtual void OnRecvFirstMessage(NetworkMessage& msg) = 0;
     virtual void OnConnect() {}
 
-    virtual void ParsePacket(NetworkMessage& message) {}
+    virtual void ParsePacket(NetworkMessage& message) {
+        UNREFERENCED_PARAMETER(message);
+    }
 
     bool IsConnectionExpired() const { return connection_.expired(); }
     std::shared_ptr<Connection> GetConnection() const { return connection_.lock(); }

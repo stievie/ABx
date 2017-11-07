@@ -73,7 +73,6 @@ Application::~Application()
     Game::GameManager::Instance.Stop();
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
-    DB::Database* db = DB::Database::Instance();
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -156,10 +155,10 @@ void Application::MainLoader()
     // TODO:
     LOG_INFO << "[done]" << std::endl;
 
-    serviceManager_.Add<Net::ProtocolLogin>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
-    serviceManager_.Add<Net::ProtocolAdmin>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
-    serviceManager_.Add<Net::ProtocolStatus>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
-    serviceManager_.Add<Net::ProtocolGame>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
+    serviceManager_.Add<Net::ProtocolLogin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt()));
+    serviceManager_.Add<Net::ProtocolAdmin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt()));
+    serviceManager_.Add<Net::ProtocolStatus>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt()));
+    serviceManager_.Add<Net::ProtocolGame>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt()));
 
     PrintServerInfo();
 

@@ -38,7 +38,10 @@ public:
     virtual ~Database() {}
     static Database* Instance();
 
-    virtual bool GetParam(DBParam param) { return false; }
+    virtual bool GetParam(DBParam param) {
+        UNREFERENCED_PARAMETER(param);
+        return false;
+    }
     bool IsConnected() const { return connected_; }
 
     bool ExecuteQuery(const std::string& query);
@@ -57,12 +60,40 @@ protected:
     DBResult() = default;
     virtual ~DBResult() {}
 public:
-    virtual int32_t GetInt(const std::string& col) { return 0; }
-    virtual uint32_t GetUInt(const std::string& col) { return 0; }
-    virtual int64_t GetLong(const std::string& col) { return 0; }
-    virtual uint64_t GetULong(const std::string& col) { return 0; }
-    virtual std::string GetString(const std::string& col) { return "''"; }
-    virtual const char* GetStream(const std::string& col, unsigned long& size) { return 0; }
+    virtual int32_t GetInt(const std::string& col) {
+        UNREFERENCED_PARAMETER(col);
+        return 0;
+    }
+    virtual uint32_t GetUInt(const std::string& col) {
+        UNREFERENCED_PARAMETER(col);
+        return 0;
+    }
+    virtual int64_t GetLong(const std::string& col) {
+        UNREFERENCED_PARAMETER(col);
+        return 0;
+    }
+    virtual uint64_t GetULong(const std::string& col) {
+        UNREFERENCED_PARAMETER(col);
+        return 0;
+    }
+    virtual time_t GetTime(const std::string& col) {
+        // time_t = int64_t = BIGINT(20)
+        UNREFERENCED_PARAMETER(col);
+        return 0;
+    }
+    virtual std::string GetString(const std::string& col) {
+        UNREFERENCED_PARAMETER(col);
+        return "''";
+    }
+    virtual const char* GetStream(const std::string& col, unsigned long& size) {
+        UNREFERENCED_PARAMETER(col);
+        UNREFERENCED_PARAMETER(size);
+        return 0;
+    }
+    virtual bool IsNull(const std::string& col) {
+        UNREFERENCED_PARAMETER(col);
+        return true;
+    }
 
     virtual std::shared_ptr<DBResult> Next() { return std::shared_ptr<DBResult>(); }
     virtual bool Empty() const { return true; }

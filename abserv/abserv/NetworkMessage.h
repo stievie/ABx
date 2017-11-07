@@ -112,7 +112,7 @@ public:
     /// Other function
     void Skip(int bytes)
     {
-        info_.position += bytes;
+        info_.position += (MsgSize_t)bytes;
     }
 
     uint8_t* GetBuffer() { return buffer_; }
@@ -123,7 +123,7 @@ public:
         return buffer_ + HeaderLength;
     }
     int32_t GetSize() const { return info_.length; }
-    void SetSize(int32_t size) { info_.length = size; }
+    void SetSize(int32_t size) { info_.length = (MsgSize_t)size; }
     int32_t GetReadPos() const { return info_.position; }
 };
 

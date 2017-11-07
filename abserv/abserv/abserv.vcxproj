@@ -84,7 +84,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -99,7 +99,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
@@ -113,7 +113,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -134,7 +134,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -158,10 +158,13 @@
     <ClInclude Include="Account.h" />
     <ClInclude Include="Aes.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Asset.h" />
     <ClInclude Include="Bans.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Connection.h" />
+    <ClInclude Include="Creature.h" />
     <ClInclude Include="Database.h" />
     <ClInclude Include="DatabaseMysql.h" />
     <ClInclude Include="DebugNew.h" />
@@ -180,6 +183,7 @@
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
+    <ClInclude Include="PropStream.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolAdmin.h" />
     <ClInclude Include="ProtocolGame.h" />
@@ -203,9 +207,12 @@
     <ClCompile Include="Account.cpp" />
     <ClCompile Include="Aes.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bans.cpp" />
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
+    <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="DatabaseMysql.cpp" />
     <ClCompile Include="DHKeys.cpp" />
@@ -224,6 +231,7 @@
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
+    <ClCompile Include="PropStream.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolAdmin.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />

@@ -1,6 +1,9 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 4127)
 #include <gmp.h>
+#pragma warning(pop)
 #include <string>
 #include <stdint.h>
 #include <mutex>

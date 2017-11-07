@@ -144,6 +144,18 @@
     <ClInclude Include="Map.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Asset.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="PropStream.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Creature.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -261,6 +273,18 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Asset.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="PropStream.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Creature.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

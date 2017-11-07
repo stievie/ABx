@@ -289,6 +289,11 @@ uint64_t MysqlResult::GetULong(const std::string& col)
     return 0; // Failed
 }
 
+time_t MysqlResult::GetTime(const std::string& col)
+{
+    return static_cast<time_t>(GetLong(col));
+}
+
 std::string MysqlResult::GetString(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
@@ -319,6 +324,16 @@ const char* MysqlResult::GetStream(const std::string& col, unsigned long& size)
     LOG_ERROR << "Error in GetStream(" << col << ")" << std::endl;
     size = 0;
     return nullptr;
+}
+
+bool MysqlResult::IsNull(const std::string& col)
+{
+    ListNames::iterator it = listNames_.find(col);
+    if (it != listNames_.end())
+    {
+        return (row_[it->second] == nullptr);
+    }
+    return true;
 }
 
 std::shared_ptr<DBResult> MysqlResult::Next()
