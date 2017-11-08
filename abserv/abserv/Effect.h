@@ -21,11 +21,17 @@ enum EffectAttr : uint8_t
 enum EffectType : uint8_t
 {
     EffectNone = 0,
+    // From skills ---------------
     EffectCondition,
     EffectHex,
+    EffectWell,
     EffectEnchantment,
     EffectStance,
-
+    EffectShout,
+    EffectPreparation,
+    EffectSpirit,
+    EffectWard,
+    // ---------------------------
     EffectEnvironment
 };
 

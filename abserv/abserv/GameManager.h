@@ -22,7 +22,6 @@ public:
     };
 private:
     Net::ServiceManager* serviceManager_;
-    std::thread thread_;
     State state_;
     std::recursive_mutex lock_;
     std::map<uint32_t, std::shared_ptr<Game>> games_;
@@ -34,8 +33,9 @@ private:
             gameIds_ = 0;
         return gameIds_++;
     }
-    void UpdateThread();
     std::shared_ptr<Game> CreateGame(const std::string& mapName);
+protected:
+    friend class Game;
     void DeleteGameTask(uint32_t gameId);
 public:
     GameManager() :

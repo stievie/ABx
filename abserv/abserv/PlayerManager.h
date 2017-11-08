@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <limits>
+#include <mutex>
 
 namespace Net {
 class ProtocolGame;
@@ -16,6 +17,7 @@ class Player;
 class PlayerManager
 {
 private:
+    std::recursive_mutex lock_;
     std::map<std::string, Player*> playerNames_;
     /// The owner of players
     std::map<uint32_t, std::shared_ptr<Player>> players_;

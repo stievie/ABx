@@ -30,6 +30,7 @@ std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& name,
 {
     std::shared_ptr<Player> result(new Player(client));
 
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     players_[result->id_] = result;
     playerNames_[name] = result.get();
 
@@ -41,6 +42,7 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
     auto it = players_.find(playerId);
     if (it != players_.end())
     {
+        std::lock_guard<std::recursive_mutex> lockClass(lock_);
         players_.erase(it);
     }
 }
