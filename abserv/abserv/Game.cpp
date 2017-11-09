@@ -12,7 +12,8 @@
 namespace Game {
 
 Game::Game() :
-    state_(GameStateTerminated)
+    state_(GameStateTerminated),
+    lastUpdate_(0)
 {
     startTime_ = Utils::AbTick();
 }
@@ -37,9 +38,9 @@ void Game::Update()
 {
     // Dispatcher Thread
     static int64_t prevTime = Utils::AbTick();
-    int64_t start = Utils::AbTick();
-    uint32_t delta = static_cast<uint32_t>(start - prevTime);
-    prevTime = start;
+    lastUpdate_ = Utils::AbTick();
+    uint32_t delta = static_cast<uint32_t>(lastUpdate_ - prevTime);
+    prevTime = lastUpdate_;
 
     for (const auto& o : objects_)
     {
@@ -49,15 +50,23 @@ void Game::Update()
     switch (state_)
     {
     case GameStateRunning:
+    case GameStateShutdown:
     {
-        // Reschedule next update
+        if (state_ == GameStateShutdown && GetPlayerCount() == 0)
+        {
+            // If all players left the game, delete it
+            SetState(GameStateTerminated);
+        }
+
+        // Schedule next update
         int64_t end = Utils::AbTick();
-        uint32_t duration = static_cast<uint32_t>(end - start);
+        uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         // At least 5ms
         int32_t sleepTime = std::max<int32_t>(5, NETWORK_TICK - duration);
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, shared_from_this()))
         );
+
         break;
     }
     case GameStateTerminated:
@@ -93,6 +102,7 @@ void Game::InternalLoad()
     // TODO: Load Data, Assets etc
 
     if (state_ == GameStateStartup)
+        // Loading done -> start it
         Start();
 }
 

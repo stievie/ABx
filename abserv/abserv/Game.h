@@ -14,21 +14,33 @@ namespace Game {
 
 class Player;
 
+/// Direction relative to current rotation
 enum MoveDirection
 {
-    MoveDirectionNorth,
-    MoveDirectionNorthEast,
-    MoveDirectionEast,
-    MoveDirectionSouthEast,
-    MoveDirectionSouth,
-    MoveDirectionSouthWest,
-    MoveDirectionWest,
-    MoveDirectionNorthWest,
+    MoveDirectionNorth = 0,
+    MoveDirectionNorthWest = 45,
+    MoveDirectionWest = 90,
+    MoveDirectionSouthWest = 135,
+    MoveDirectionSouth = 180,
+    MoveDirectionSouthEast 225,
+    MoveDirectionEast = 270,
+    MoveDirectionNorthEast = 315,
+};
+
+enum GameType
+{
+    GameTypeOutpost = 1,
+    GameTypePvPCombat,
+    GameTypeExploreable,
+    GameTypeMission,
 };
 
 struct GameData
 {
+    uint32_t id;
+    GameType type;
     std::string mapName;
+    std::string mapFile;
 };
 
 class Game : public std::enable_shared_from_this<Game>
@@ -47,6 +59,7 @@ private:
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
     GameData data_;
+    int64_t lastUpdate_;
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     void InternalLoad();

@@ -10,8 +10,9 @@
 //#   define DEBUG_SCHEDULER
 #   define DEBUG_NET
 //#   define DEBUG_MATH
-#define DEBUG_SQL
-#define DEGUB_ENCRYPTION
+#   define DEBUG_SQL
+#   define DEBUG_GAME
+#   define DEGUB_ENCRYPTION
 #else
 #endif
 
@@ -22,5 +23,6 @@
 
 // ms = 20 network ticks/second. Update game state each 50ms (= 20 Updates/sec)
 #define NETWORK_TICK 50
+// Maximum players per game. If reached a new instance of the same game is started.
 #define GAME_MAX_PLAYER 100
 
