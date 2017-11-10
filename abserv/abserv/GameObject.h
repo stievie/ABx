@@ -4,6 +4,10 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include <limits>
+#pragma warning(push)
+#pragma warning(disable: 4702 4127)
+#include <kaguya/kaguya.hpp>
+#pragma warning(pop)
 
 namespace Game {
 
@@ -22,8 +26,9 @@ protected:
         return objectIds_++;
     }
 public:
+    static void RegisterLua(kaguya::State& state);
     GameObject();
-    ~GameObject();
+    virtual ~GameObject();
 
     virtual void Update(uint32_t timeElapsed) {
         UNREFERENCED_PARAMETER(timeElapsed);

@@ -9,6 +9,7 @@ namespace Game {
 class Creature : public GameObject
 {
 public:
+    static void RegisterLua(kaguya::State& state);
     EffectList effects_;
 };
 

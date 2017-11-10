@@ -38,4 +38,10 @@ bool Effect::UnserializeProp(EffectAttr attr, IO::PropReadStream& stream)
     return false;
 }
 
+void Effect::RegisterLua(kaguya::State& state)
+{
+    state["Effect"].setClass(kaguya::UserdataMetatable<Effect>()
+    );
+}
+
 }

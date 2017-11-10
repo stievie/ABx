@@ -29,7 +29,7 @@ std::string ConfigManager::GetGlobal(const std::string& ident, const std::string
         return default;
     }
 
-    int len = (int)lua_strlen(L, -1);
+    int len = (int)luaL_len(L, -1);
     std::string ret(lua_tostring(L, -1), len);
     lua_pop(L, 1);
 
@@ -70,14 +70,14 @@ bool ConfigManager::Load(const std::string& file)
 {
     if (L)
         lua_close(L);
-    L = lua_open();
+    L = luaL_newstate();
     if (!L)
         return false;
     luaL_openlibs(L);
 
     if (luaL_dofile(L, file.c_str()) != 0)
     {
-        int len = (int)lua_strlen(L, -1);
+        int len = (int)luaL_len(L, -1);
         std::string err(lua_tostring(L, -1), len);
         LOG_ERROR << err << std::endl;
         lua_close(L);

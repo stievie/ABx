@@ -9,6 +9,10 @@
 #include "GameObject.h"
 #include "Utils.h"
 #include <mutex>
+#pragma warning(push)
+#pragma warning(disable: 4702 4127)
+#include <kaguya/kaguya.hpp>
+#pragma warning(pop)
 
 namespace Game {
 
@@ -22,7 +26,7 @@ enum MoveDirection
     MoveDirectionWest = 90,
     MoveDirectionSouthWest = 135,
     MoveDirectionSouth = 180,
-    MoveDirectionSouthEast 225,
+    MoveDirectionSouthEast = 225,
     MoveDirectionEast = 270,
     MoveDirectionNorthEast = 315,
 };
@@ -58,19 +62,23 @@ private:
     GameState state_;
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
-    GameData data_;
     int64_t lastUpdate_;
+    kaguya::State luaState_;
+    void InitializeLua();
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     void InternalLoad();
     void Update();
 public:
+    static void RegisterLua(kaguya::State& state);
+
     Game();
     ~Game() {}
 
     void Start();
     void Stop();
 
+    GameData data_;
     /// Auto generated ID used by the GameManager
     uint32_t id_;
     int64_t startTime_;

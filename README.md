@@ -1,11 +1,8 @@
-# Encryption
 
-AES with DH key exchange DH_AES128
 
-# Games
+# Third Party
 
-* 1v1
-* RA (Gladiator)
-* TA (Gladiator)
-* HA (Hero)
-* GvG (Champion)
+* asio https://think-async.com/Asio/AsioStandalone
+* Lua 5.3.4 https://www.lua.org/
+* Kaguya https://github.com/satoren/kaguya
+* pugixml https://pugixml.org/

@@ -6,6 +6,8 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "GameManager.h"
+#include "Effect.h"
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
@@ -15,6 +17,7 @@ Game::Game() :
     state_(GameStateTerminated),
     lastUpdate_(0)
 {
+    InitializeLua();
     startTime_ = Utils::AbTick();
 }
 
@@ -22,6 +25,9 @@ void Game::Start()
 {
     if (state_ == GameStateStartup)
     {
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "Starting game " << id_ << ", " << data_.mapName << std::endl;
+#endif // DEBUG_GAME
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
@@ -31,6 +37,9 @@ void Game::Start()
 
 void Game::Stop()
 {
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Stopping game " << id_ << ", " << data_.mapName << std::endl;
+#endif // DEBUG_GAME
     SetState(GameStateTerminated);
 }
 
@@ -64,7 +73,7 @@ void Game::Update()
         // At least 5ms
         int32_t sleepTime = std::max<int32_t>(5, NETWORK_TICK - duration);
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, shared_from_this()))
+            Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, this))
         );
 
         break;
@@ -76,6 +85,22 @@ void Game::Update()
         );
         break;
     }
+}
+
+void Game::RegisterLua(kaguya::State& state)
+{
+    state["Game"].setClass(kaguya::UserdataMetatable<Game>()
+        /*        .addFunction("GetName", &Skill::GetName)
+        */
+    );
+}
+
+void Game::InitializeLua()
+{
+    // Register all used classes
+    Game::RegisterLua(luaState_);
+    Effect::RegisterLua(luaState_);
+    Player::RegisterLua(luaState_);
 }
 
 Player* Game::GetPlayerById(uint32_t playerId)
@@ -110,6 +135,12 @@ void Game::Load(const std::string& mapName)
 {
     // Dispatcher Thread
     data_.mapName = mapName;
+    if (!DB::IOGame::LoadGameByName(this, mapName))
+    {
+        LOG_ERROR << "Error loading game with name " << mapName << std::endl;
+        return;
+    }
+    // Load Assets
     std::thread(&Game::InternalLoad, shared_from_this()).detach();
 }
 
