@@ -72,6 +72,8 @@ private:
     GameObject* GetObjectById(uint32_t objectId);
     void InternalLoad();
     void Update();
+
+    static void LuaErrorHandler(int errCode, const char* message);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -91,6 +93,7 @@ public:
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }
     GameState GetState() const { return state_; }
+    const kaguya::State& GetLuaState() const { return luaState_; }
     void SetState(GameState state);
     void Load(const std::string& mapName);
 

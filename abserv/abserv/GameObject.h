@@ -32,7 +32,7 @@ public:
     virtual ~GameObject();
 
     virtual void Update(uint32_t timeElapsed) {
-        UNREFERENCED_PARAMETER(timeElapsed);
+        AB_UNUSED(timeElapsed);
     }
 
     uint32_t GetId() const { return id_; }

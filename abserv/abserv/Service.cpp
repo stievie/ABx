@@ -63,7 +63,7 @@ void ServicePort::Open(uint16_t port)
 #ifdef DEBUG_NET
         LOG_ERROR << "Network " << e.what() << std::endl;
 #else
-        UNREFERENCED_PARAMETER(e);
+        AB_UNUSED(e);
 #endif
         // Reschedule
         pendingStart_ = true;
@@ -147,7 +147,7 @@ void ServicePort::Accept()
 #ifdef DEBUG_NET
         LOG_ERROR << "Network " << e.what() << std::endl;
 #else
-        UNREFERENCED_PARAMETER(e);
+        AB_UNUSED(e);
 #endif
     }
 }

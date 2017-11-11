@@ -12,9 +12,7 @@
 
 #define ASIO_STANDALONE
 
-#ifndef UNREFERENCED_PARAMETER
-#define UNREFERENCED_PARAMETER(P) (P)
-#endif
+#define AB_UNUSED(P) (void)(P)
 
 #include <cassert>
 #include "Config.h"

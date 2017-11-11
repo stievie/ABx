@@ -9,10 +9,16 @@
 #include "Effect.h"
 #include "IOGame.h"
 #include "ConfigManager.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 
 namespace Game {
+
+void Game::LuaErrorHandler(int errCode, const char* message)
+{
+    LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
+}
 
 Game::Game() :
     state_(GameStateTerminated),
@@ -73,10 +79,10 @@ void Game::Update()
         }
 
         // Schedule next update
-        int64_t end = Utils::AbTick();
-        uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
-        // At least 5ms
-        int32_t sleepTime = std::max<int32_t>(5, NETWORK_TICK - duration);
+        const int64_t end = Utils::AbTick();
+        const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
+        // At least SCHEDULER_MINTICKS
+        const int32_t sleepTime = std::max<int32_t>(SCHEDULER_MINTICKS, NETWORK_TICK - duration);
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, this))
         );
@@ -104,6 +110,8 @@ void Game::RegisterLua(kaguya::State& state)
 
 void Game::InitializeLua()
 {
+    luaState_.setErrorHandler(LuaErrorHandler);
+
     // Register all used classes
     Game::RegisterLua(luaState_);
     Effect::RegisterLua(luaState_);

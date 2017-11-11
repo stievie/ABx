@@ -71,7 +71,7 @@ public:
     virtual void OnConnect() {}
 
     virtual void ParsePacket(NetworkMessage& message) {
-        UNREFERENCED_PARAMETER(message);
+        AB_UNUSED(message);
     }
 
     bool IsConnectionExpired() const { return connection_.expired(); }

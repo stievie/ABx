@@ -11,6 +11,9 @@ class Creature : public GameObject
 public:
     static void RegisterLua(kaguya::State& state);
     EffectList effects_;
+
+    /// Move speed: 1 = normal speed
+    float speed_ = 1.0f;
 };
 
 }

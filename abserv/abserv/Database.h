@@ -39,7 +39,7 @@ public:
     static Database* Instance();
 
     virtual bool GetParam(DBParam param) {
-        UNREFERENCED_PARAMETER(param);
+        AB_UNUSED(param);
         return false;
     }
     bool IsConnected() const { return connected_; }
@@ -61,37 +61,37 @@ protected:
     virtual ~DBResult() {}
 public:
     virtual int32_t GetInt(const std::string& col) {
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return 0;
     }
     virtual uint32_t GetUInt(const std::string& col) {
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return 0;
     }
     virtual int64_t GetLong(const std::string& col) {
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return 0;
     }
     virtual uint64_t GetULong(const std::string& col) {
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return 0;
     }
     virtual time_t GetTime(const std::string& col) {
         // time_t = int64_t = BIGINT(20)
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return 0;
     }
     virtual std::string GetString(const std::string& col) {
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return "''";
     }
     virtual const char* GetStream(const std::string& col, unsigned long& size) {
-        UNREFERENCED_PARAMETER(col);
-        UNREFERENCED_PARAMETER(size);
+        AB_UNUSED(col);
+        AB_UNUSED(size);
         return 0;
     }
     virtual bool IsNull(const std::string& col) {
-        UNREFERENCED_PARAMETER(col);
+        AB_UNUSED(col);
         return true;
     }
 

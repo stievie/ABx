@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "Scheduler.h"
 #include "Dispatcher.h"
+#include "Player.h"
 
 #include "DebugNew.h"
 
@@ -15,14 +16,13 @@ void GameManager::Start(Net::ServiceManager* serviceManager)
 {
     // Main Thread
     serviceManager_ = serviceManager;
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
-    state_ = State::Running;
+    {
+        std::lock_guard<std::recursive_mutex> lockClass(lock_);
+        state_ = State::Running;
+    }
     // Create default game
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(200, std::bind(&GameManager::CreateGame, this, "Temple"))
-    );
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(505, std::bind(&GameManager::CreateGame, this, "Temple"))
     );
 }
 
@@ -95,7 +95,7 @@ void GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     std::shared_ptr<Game> game = GetGame(mapName, true);
 
-
+    game->PlayerJoin(player->id_);
 }
 
 }
