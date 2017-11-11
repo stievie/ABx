@@ -25,6 +25,8 @@ struct PlayerData
     uint32_t accountId;
     /// Character name
     std::string name;
+    /// PvP only character
+    bool pvp;
     uint32_t level;
     uint64_t xp;
     uint32_t skillPoints;

@@ -33,6 +33,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result
 
     player->data_.accountId = result->GetUInt("account_id");
     player->data_.name = result->GetString("name");
+    player->data_.pvp = result->GetUInt("pvp") != 0;
     player->data_.level = result->GetUInt("level");
     player->data_.xp = result->GetULong("experience");
     player->data_.skillPoints = result->GetUInt("skillpoints");
@@ -47,12 +48,12 @@ bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result
     return true;
 }
 
-bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string & name)
+bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
 {
     Database* db = Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `id`, `name`, `account_id`, `level`, `experience`, `skillpoints`, " <<
+    query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `experience`, `skillpoints`, " <<
         "`sex`, `lastlogin`, `lastlogout`, `lastip` FROM `players` WHERE `name` = " <<
         db->EscapeString(name);
 
@@ -64,7 +65,7 @@ bool IOPlayer::LoadPlayerById(Game::Player* player, uint32_t playerId)
     Database* db = Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `id`, `name`, `account_id`, `level`, `experience`, `skillpoints`, " <<
+    query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `experience`, `skillpoints`, " <<
         "`sex`, `lastlogin`, `lastlogout`, `lastip` FROM `players` WHERE `id` = " << playerId;
 
     return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));

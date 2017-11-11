@@ -113,11 +113,7 @@ void Game::InitializeLua()
 {
     luaState_.setErrorHandler(LuaErrorHandler);
 
-    // Register all used classes
-    Game::RegisterLua(luaState_);
-    Effect::RegisterLua(luaState_);
-    Skill::RegisterLua(luaState_);
-    Player::RegisterLua(luaState_);
+    GameManager::RegisterLuaAll(luaState_);
 
     // Set game instance
     luaState_["thisGame"] = this;

@@ -22,6 +22,9 @@
 #include "Database.h"
 #include "DHKeys.h"
 #include "Aes.h"
+#include "SkillManager.h"
+#include "Skill.h"
+#include "IOSkills.h"
 
 #include "DebugNew.h"
 
@@ -148,12 +151,18 @@ void Application::MainLoader()
         LOG_ERROR << "Database connection failed" << std::endl;
         exit(EXIT_FAILURE);
     }
-    // TODO:
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Checking DB schema version...";
     // TODO:
     LOG_INFO << "[done]" << std::endl;
+
+    LOG_INFO << "Loading skills...";
+    if (IO::IOSkills::Load(Game::SkillManager::Instance, ConfigManager::Instance.GetDataFile("/skills/skills.xml")))
+        LOG_INFO << "[done]" << std::endl;
+    else
+        LOG_INFO << "[failed]" << std::endl;
+//    std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.GetSkill(1);
 
     serviceManager_.Add<Net::ProtocolLogin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt()));
     serviceManager_.Add<Net::ProtocolAdmin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt()));

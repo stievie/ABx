@@ -16,4 +16,10 @@ void Creature::RegisterLua(kaguya::State& state)
     );
 }
 
+void Creature::Update(uint32_t timeElapsed)
+{
+    GameObject::Update(timeElapsed);
+    skills_.Update(timeElapsed);
+}
+
 }

@@ -98,4 +98,13 @@ void GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> 
     game->PlayerJoin(player->id_);
 }
 
+void GameManager::RegisterLuaAll(kaguya::State& state)
+{
+    // Register all used classes
+    Game::RegisterLua(state);
+    Effect::RegisterLua(state);
+    Skill::RegisterLua(state);
+    Player::RegisterLua(state);
+}
+
 }

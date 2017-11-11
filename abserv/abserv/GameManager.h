@@ -7,6 +7,10 @@
 #include "Game.h"
 #include <stdint.h>
 #include <limits>
+#pragma warning(push)
+#pragma warning(disable: 4702 4127 4244)
+#include <kaguya/kaguya.hpp>
+#pragma warning(pop)
 
 namespace Game {
 
@@ -49,6 +53,8 @@ public:
     void AddPlayer(const std::string& mapName, std::shared_ptr<Player> player);
 
     GameManager::State GetState() const { return state_; }
+
+    static void RegisterLuaAll(kaguya::State& state);
 public:
     static GameManager Instance;
 };

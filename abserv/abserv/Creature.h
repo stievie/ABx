@@ -31,6 +31,8 @@ public:
         return nullptr;
     }
 
+    void Update(uint32_t timeElapsed) override;
+
     EffectList effects_;
     SkillBar skills_;
     float speed_ = 1.0f;

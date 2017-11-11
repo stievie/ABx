@@ -9,14 +9,18 @@ namespace Game {
 class SkillBar
 {
 private:
-    std::array<std::shared_ptr<Skill>, PLAYER_MAX_SKILLS> spells_;
+    std::array<std::shared_ptr<Skill>, PLAYER_MAX_SKILLS> skills_;
 public:
-    SkillBar();
-    ~SkillBar();
+    SkillBar() = default;
+    ~SkillBar() = default;
+
+    void Update(uint32_t timeElapsed);
+    std::string Encode();
+    bool Decode(const std::string& str);
 
     Skill* operator[](uint32_t index)
     {
-        return spells_[index].get();
+        return skills_[index].get();
     }
 };
 

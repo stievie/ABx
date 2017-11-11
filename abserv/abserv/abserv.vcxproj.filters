@@ -165,6 +165,9 @@
     <ClInclude Include="SkillManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOSkills.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -303,6 +306,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="SkillManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOSkills.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
