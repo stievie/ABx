@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<effects>
+  <effect id="1" script="/scripts/effects/dazed.lua" />
+</effects>

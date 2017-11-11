@@ -17,6 +17,8 @@ private:
     kaguya::State luaState_;
     int64_t startUse_;
     void InitializeLua();
+    Creature* source_;
+    Creature* target_;
 public:
     static void RegisterLua(kaguya::State& state);
 

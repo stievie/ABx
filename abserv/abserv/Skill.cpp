@@ -41,8 +41,9 @@ bool Skill::LoadScript(const std::string& fileName)
 void Skill::Update(uint32_t timeElapsed)
 {
     AB_UNUSED(timeElapsed);
-    if (startUse_ + activation_ >= Utils::AbTick())
+    if (startUse_ != 0 && startUse_ + activation_ <= Utils::AbTick())
     {
+        luaState_["onEndUse"](source_, target_);
         startUse_ = 0;
     }
 }
@@ -50,12 +51,19 @@ void Skill::Update(uint32_t timeElapsed)
 bool Skill::StartUse(Creature* source, Creature* target)
 {
     startUse_ = Utils::AbTick();
-    return luaState_["onStartUse"](source, target);
+    source_ = source;
+    target_ = target;
+    if (!luaState_["onStartUse"](source, target))
+    {
+        startUse_ = 0;
+        return false;
+    }
+    return true;
 }
 
 void Skill::CancelUse()
 {
-    luaState_["onStartUse"]();
+    luaState_["onCancelUse"]();
     startUse_ = 0;
 }
 
