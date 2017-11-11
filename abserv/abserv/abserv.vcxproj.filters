@@ -221,9 +221,6 @@
     <ClCompile Include="Rsa.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Uttils.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ProtocolAdmin.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -309,6 +306,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOSkills.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
