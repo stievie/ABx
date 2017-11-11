@@ -18,9 +18,9 @@ void GameManager::Start(Net::ServiceManager* serviceManager)
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     state_ = State::Running;
     // Create default game
-//    Asynch::Scheduler::Instance.Add(
-//        Asynch::CreateScheduledTask(500, std::bind(&GameManager::CreateGame, this, "Temple"))
-//    );
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(200, std::bind(&GameManager::CreateGame, this, "Temple"))
+    );
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(505, std::bind(&GameManager::CreateGame, this, "Temple"))
     );

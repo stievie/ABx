@@ -11,19 +11,18 @@ using the_clock = std::chrono::system_clock;
 class Task
 {
 public:
-    Task(unsigned ms, const std::function<void(void)>& f) :
+    explicit Task(unsigned ms, const std::function<void(void)>& f) :
         function_(f),
         expires_(true)
     {
-        using namespace std::chrono_literals;
-        expiration_ = the_clock::now() + (ms * 1ms);
+        expiration_ = the_clock::now() + std::chrono::milliseconds(ms);
     }
-    Task(const std::function<void(void)>& f) :
+    explicit Task(const std::function<void(void)>& f) :
         function_(f),
         expiration_(the_clock::time_point::max()),
         expires_(false)
     {}
-    ~Task() {}
+    ~Task() = default;
 
     /// Execute function
     void operator()()

@@ -21,6 +21,7 @@
 #define CONFIG_FILE "config.lua"
 #define DH_KEYS_FILE "server.key"
 
+#define SCHEDULER_MINTICKS 10
 // ms = 20 network ticks/second. Update game state each 50ms (= 20 Updates/sec)
 #define NETWORK_TICK 50
 // Maximum players per game. If reached a new instance of the same game is started.

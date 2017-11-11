@@ -5,7 +5,7 @@
 #include "Quaternion.h"
 #include <limits>
 #pragma warning(push)
-#pragma warning(disable: 4702 4127)
+#pragma warning(disable: 4702 4127 4244)
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
 
@@ -23,16 +23,19 @@ protected:
     {
         if (objectIds_ >= std::numeric_limits<uint32_t>::max())
             objectIds_ = 0;
-        return objectIds_++;
+        return ++objectIds_;
     }
 public:
     static void RegisterLua(kaguya::State& state);
+
     GameObject();
     virtual ~GameObject();
 
     virtual void Update(uint32_t timeElapsed) {
         UNREFERENCED_PARAMETER(timeElapsed);
     }
+
+    uint32_t GetId() const { return id_; }
 
     Math::Vector3 position_;
     Math::Quaternion rotation_;

@@ -18,6 +18,7 @@ public:
         StatusPort,
         CryptoKeys,
         LogDir,
+        DataDir,
 
         DBDriver,
         DBHost,
@@ -62,5 +63,6 @@ public:
     static ConfigManager Instance;
 
     Utils::VariantMap config_;
+    std::string GetDataFile(const std::string& name);
 };
 

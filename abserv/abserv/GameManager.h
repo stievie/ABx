@@ -31,7 +31,7 @@ private:
     {
         if (gameIds_ >= std::numeric_limits<uint32_t>::max())
             gameIds_ = 0;
-        return gameIds_++;
+        return ++gameIds_;
     }
     std::shared_ptr<Game> CreateGame(const std::string& mapName);
 protected:

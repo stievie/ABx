@@ -10,7 +10,7 @@
 #include "Utils.h"
 #include <mutex>
 #pragma warning(push)
-#pragma warning(disable: 4702 4127)
+#pragma warning(disable: 4702 4127 4244)
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
 
@@ -45,6 +45,7 @@ struct GameData
     GameType type;
     std::string mapName;
     std::string mapFile;
+    std::string scriptFile;
 };
 
 class Game : public std::enable_shared_from_this<Game>
@@ -67,6 +68,8 @@ private:
     void InitializeLua();
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
+    Player* GetPlayerByName(const std::string& name);
+    GameObject* GetObjectById(uint32_t objectId);
     void InternalLoad();
     void Update();
 public:

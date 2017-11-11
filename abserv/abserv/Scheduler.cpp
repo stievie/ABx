@@ -2,6 +2,7 @@
 #include "Scheduler.h"
 #include "Logger.h"
 #include "Dispatcher.h"
+#include "Utils.h"
 
 #include "DebugNew.h"
 
@@ -19,65 +20,62 @@ void Scheduler::SchedulerThread()
     while (state_ != State::Terminated)
     {
         ScheduledTask* task = nullptr;
-        bool runTask = false;
-        bool ret = false;
+        std::cv_status ret = std::cv_status::no_timeout;
 
         lockUnique.lock();
 
         if (events_.empty())
         {
 #ifdef DEBUG_SCHEDULER
-            LOG_DEBUG << "No events" << std::endl;
+//            LOG_DEBUG << "No events" << std::endl;
 #endif
             signal_.wait(lockUnique);
         }
         else
         {
 #ifdef DEBUG_SCHEDULER
-            LOG_DEBUG << "Waiting for event" << std::endl;
+//            LOG_DEBUG << "Waiting for event" << std::endl;
+            int64_t waitStart = Utils::AbTick();
 #endif
             ret = signal_.wait_until(
                 lockUnique,
                 events_.top()->GetCycle()
-            ) == std::cv_status::no_timeout;
+            );
+#ifdef DEBUG_SCHEDULER
+//            LOG_DEBUG << "Waited " << (Utils::AbTick() - waitStart) << std::endl;
+#endif
         }
 
 #ifdef DEBUG_SCHEDULER
-        LOG_DEBUG << "Scheduler signaled" << std::endl;
+//        LOG_DEBUG << "Scheduler signaled" << std::endl;
 #endif
 
-        if (!ret && (state_ != State::Terminated))
+        if (ret == std::cv_status::timeout)
         {
+#ifdef DEBUG_SCHEDULER
+//            LOG_DEBUG << "Timeout" << std::endl;
+#endif
             // Timeout
             task = events_.top();
             events_.pop();
 
             auto it = eventIds_.find(task->GetEventId());
-            if (it != eventIds_.end())
+            if (it == eventIds_.end())
             {
-                // Found so not stopped -> run it
-                runTask = true;
-                eventIds_.erase(it);
-            }
-        }
-
-        lockUnique.unlock();
-
-        if (task)
-        {
-            // Add it to the Dispatcher
-            if (runTask)
-            {
-                task->SetDontExpires();
-#ifdef DEBUG_SCHEDULER
-                LOG_DEBUG << "Executing event " << task->GetEventId() << std::endl;
-#endif
-                Dispatcher::Instance.Add(task);
-            }
-            else
-                // Was stopped
+                lockUnique.unlock();
                 delete task;
+                continue;
+            }
+
+            eventIds_.erase(it);
+            lockUnique.unlock();
+
+            task->SetDontExpires();
+            Dispatcher::Instance.Add(task, true);
         }
+        else
+            lockUnique.unlock();
+
     }
 #ifdef DEBUG_SCHEDULER
     LOG_DEBUG << "Scheduler threat stopped" << std::endl;
@@ -113,7 +111,12 @@ uint32_t Scheduler::Add(ScheduledTask* task)
 #endif
     }
     else
+    {
         LOG_ERROR << "Scheduler thread not running" << std::endl;
+        lock_.unlock();
+        delete task;
+        return 0;
+    }
 
     lock_.unlock();
     if (doSignal)

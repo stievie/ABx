@@ -8,6 +8,7 @@
 #include "GameManager.h"
 #include "Effect.h"
 #include "IOGame.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
@@ -51,10 +52,14 @@ void Game::Update()
     uint32_t delta = static_cast<uint32_t>(lastUpdate_ - prevTime);
     prevTime = lastUpdate_;
 
+    // First Update all objects
     for (const auto& o : objects_)
     {
         o->Update(delta);
     }
+
+    // Then call Lua Update function
+    luaState_["Game_Update"](this, delta);
 
     switch (state_)
     {
@@ -90,8 +95,10 @@ void Game::Update()
 void Game::RegisterLua(kaguya::State& state)
 {
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
-        /*        .addFunction("GetName", &Skill::GetName)
-        */
+        // Get any game object by ID
+        .addFunction("GetObject", &Game::GetObjectById)
+        // Get player of game by ID or name
+        .addOverloadedFunctions("GetPlayer", &Game::GetPlayerById, &Game::GetPlayerByName)
     );
 }
 
@@ -101,6 +108,9 @@ void Game::InitializeLua()
     Game::RegisterLua(luaState_);
     Effect::RegisterLua(luaState_);
     Player::RegisterLua(luaState_);
+
+    // Set game instance
+    luaState_["thisGame"] = this;
 }
 
 Player* Game::GetPlayerById(uint32_t playerId)
@@ -109,6 +119,25 @@ Player* Game::GetPlayerById(uint32_t playerId)
     if (it == players_.end())
         return nullptr;
     return (*it).second;
+}
+
+Player* Game::GetPlayerByName(const std::string& name)
+{
+    uint32_t playerId = PlayerManager::Instance.GetPlayerId(name);
+    if (playerId != 0)
+        return GetPlayerById(playerId);
+    return nullptr;
+}
+
+GameObject * Game::GetObjectById(uint32_t objectId)
+{
+    auto it = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
+    {
+        return o->id_ == objectId;
+    });
+    if (it != objects_.end())
+        return (*it).get();
+    return nullptr;
 }
 
 void Game::SetState(GameState state)
@@ -125,6 +154,9 @@ void Game::InternalLoad()
     // Game::Load() Thread
 
     // TODO: Load Data, Assets etc
+    std::string luaFile = ConfigManager::Instance.GetDataFile(data_.scriptFile);
+    // Execute initialization code if any
+    luaState_.dofile(luaFile.c_str());
 
     if (state_ == GameStateStartup)
         // Loading done -> start it

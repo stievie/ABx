@@ -8,8 +8,6 @@
 #include <thread>
 #include <queue>
 
-#define SCHEDULER_MINTICKS 50
-
 namespace Asynch {
 
 class ScheduledTask : public Task
@@ -42,12 +40,11 @@ inline ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<vo
     return new ScheduledTask(delay, f);
 }
 
-class LessSchedTask : public std::binary_function<ScheduledTask*&, ScheduledTask*&, bool>
+struct TaskComparator
 {
-public:
-    bool operator()(ScheduledTask*& t1, ScheduledTask*& t2)
+    bool operator()(const ScheduledTask* lhs, const ScheduledTask* rhs) const
     {
-        return (*t1) < (*t2);
+        return lhs->GetCycle() > rhs->GetCycle();
     }
 };
 
@@ -65,7 +62,7 @@ private:
     std::condition_variable signal_;
     std::set<uint32_t> eventIds_;
     std::thread thread_;
-    std::priority_queue<ScheduledTask*, std::vector<ScheduledTask*>, LessSchedTask> events_;
+    std::priority_queue<ScheduledTask*, std::deque<ScheduledTask*>, TaskComparator> events_;
     void SchedulerThread();
 public:
     Scheduler() :
