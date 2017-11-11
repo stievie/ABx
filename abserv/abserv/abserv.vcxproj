@@ -194,6 +194,9 @@
     <ClInclude Include="Rsa.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
+    <ClInclude Include="Skill.h" />
+    <ClInclude Include="SkillBar.h" />
+    <ClInclude Include="SkillManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
@@ -242,6 +245,9 @@
     <ClCompile Include="Rsa.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
+    <ClCompile Include="Skill.cpp" />
+    <ClCompile Include="SkillBar.cpp" />
+    <ClCompile Include="SkillManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

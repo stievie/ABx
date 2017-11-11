@@ -49,7 +49,7 @@ public:
     Effect() = default;
     virtual ~Effect() = default;
 
-    /// Gets saved to the DB when player logges out
+    /// Gets saved to the DB when player logs out
     bool IsPersistent() const
     {
         return false;

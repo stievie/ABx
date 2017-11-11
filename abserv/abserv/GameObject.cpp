@@ -10,17 +10,13 @@ uint32_t GameObject::objectIds_ = 0;
 void GameObject::RegisterLua(kaguya::State& state)
 {
     state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
-        .addFunction("GetId", &GameObject::GetId)
+        .addProperty("Id", &GameObject::GetId)
     );
 }
 
 GameObject::GameObject()
 {
     id_ = GetNewId();
-}
-
-GameObject::~GameObject()
-{
 }
 
 }

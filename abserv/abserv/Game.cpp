@@ -10,6 +10,7 @@
 #include "IOGame.h"
 #include "ConfigManager.h"
 #include "Logger.h"
+#include "Skill.h"
 
 #include "DebugNew.h"
 
@@ -115,6 +116,7 @@ void Game::InitializeLua()
     // Register all used classes
     Game::RegisterLua(luaState_);
     Effect::RegisterLua(luaState_);
+    Skill::RegisterLua(luaState_);
     Player::RegisterLua(luaState_);
 
     // Set game instance

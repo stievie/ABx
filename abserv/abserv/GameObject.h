@@ -29,7 +29,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     GameObject();
-    virtual ~GameObject();
+    virtual ~GameObject() = default;
 
     virtual void Update(uint32_t timeElapsed) {
         AB_UNUSED(timeElapsed);

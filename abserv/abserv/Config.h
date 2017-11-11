@@ -26,4 +26,5 @@
 #define NETWORK_TICK 50
 // Maximum players per game. If reached a new instance of the same game is started.
 #define GAME_MAX_PLAYER 100
+#define PLAYER_MAX_SKILLS 8
 
