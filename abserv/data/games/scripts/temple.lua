@@ -1,6 +1,9 @@
 function onStart(self)
 --  print(self:GetName())
-  local npc = self:AddNpc("/objects/scripts/npcs/priest.lua")
+--  for i = 1, 100 do
+    self:AddNpc("/objects/npcs/scripts/priest.lua")
+    self:AddNpc("/objects/npcs/scripts/guild_lord.lua")
+--  end
 end
 
 function onStop(self)
