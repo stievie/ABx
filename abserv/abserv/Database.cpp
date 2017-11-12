@@ -4,6 +4,10 @@
 #ifdef USE_MYSQL
 #include "DatabaseMysql.h"
 #endif // USE_MYSQL
+#ifdef USE_PGSQL
+#include "DatabasePgsql.h"
+#endif // USE_PGSQL
+
 
 #include "DebugNew.h"
 
@@ -20,6 +24,10 @@ Database* Database::Instance()
 #ifdef USE_MYSQL
         if (driver.compare("mysql") == 0)
             instance_ = std::make_unique<DatabaseMysql>();
+#endif
+#ifdef USE_PGSQL
+        if (driver.compare("pgsql") == 0)
+            instance_ = std::make_unique<DatabasePgsql>();
 #endif
     }
     return instance_.get();
