@@ -26,6 +26,8 @@ public:
     uint32_t GetOvercast() const { return overcast_; }
     void SetOvercast(uint32_t value) { overcast_ = value; }
 
+    virtual uint32_t GetLevel() const { return 0; }
+
     Skill* GetSkill(uint32_t index)
     {
         if (index >= 0 && index < PLAYER_MAX_SKILLS)
@@ -33,6 +35,8 @@ public:
         return nullptr;
     }
     void AddEffect(uint32_t id, uint32_t ticks);
+    void AddEffectByName(const std::string& name, uint32_t ticks);
+    /// Remove effect before it ended
     void RemoveEffect(uint32_t id);
 
     void Update(uint32_t timeElapsed) override;
@@ -45,10 +49,12 @@ public:
     uint32_t overcast_;
 
     float speed_ = 1.0f;
-    /// Effects may influence the cast speed
+    /// Effects may influence the cast spells speed
     float castSpeedFactor_ = 1.0f;
+    /// For any skill
+    float skillSpeedFactor_ = 1.0f;
     /// Effects may influence the attack speed
-    float meleeSpeedFactor_ = 1.0f;
+    float attackSpeedFactor_ = 1.0f;
 };
 
 }

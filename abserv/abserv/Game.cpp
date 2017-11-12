@@ -11,6 +11,7 @@
 #include "ConfigManager.h"
 #include "Logger.h"
 #include "Skill.h"
+#include "Npc.h"
 
 #include "DebugNew.h"
 
@@ -31,6 +32,7 @@ void Game::Start()
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Starting game " << id_ << ", " << data_.mapName << std::endl;
 #endif // DEBUG_GAME
+        lastUpdate_ = 0;
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
@@ -48,6 +50,9 @@ void Game::Stop()
 
 void Game::Update()
 {
+    if (lastUpdate_ == 0)
+        luaState_["onStart"](this);
+
     // Dispatcher Thread
     static int64_t prevTime = Utils::AbTick();
     lastUpdate_ = Utils::AbTick();
@@ -72,6 +77,7 @@ void Game::Update()
         {
             // If all players left the game, delete it
             SetState(GameStateTerminated);
+            luaState_["onStop"](this);
         }
 
         // Schedule next update
@@ -97,10 +103,13 @@ void Game::Update()
 void Game::RegisterLua(kaguya::State& state)
 {
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
+        .addFunction("GetName", &Game::GetName)
         // Get any game object by ID
         .addFunction("GetObject", &Game::GetObjectById)
         // Get player of game by ID or name
         .addOverloadedFunctions("GetPlayer", &Game::GetPlayerById, &Game::GetPlayerByName)
+
+        .addFunction("AddNpc", &Game::AddNpc)
     );
 }
 
@@ -134,6 +143,19 @@ GameObject* Game::GetObjectById(uint32_t objectId)
     if (it != objects_.end())
         return (*it).get();
     return nullptr;
+}
+
+std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
+{
+    std::shared_ptr<Npc> result = std::make_shared<Npc>();
+    if (!result->LoadScript(ConfigManager::Instance.GetDataFile(script)))
+    {
+        return std::shared_ptr<Npc>();
+    }
+    objects_.push_back(result);
+    result->SetGame(shared_from_this());
+    luaState_["onAddObject"](this, result);
+    return result;
 }
 
 void Game::SetState(GameState state)
@@ -184,6 +206,7 @@ void Game::PlayerJoin(uint32_t playerId)
         players_[player->id_] = player.get();
         objects_.push_back(player);
         player->SetGame(shared_from_this());
+        luaState_["onAddObject"](this, player);
         luaState_["onPlayerJoin"](this, player.get());
     }
 }

@@ -17,6 +17,7 @@
 namespace Game {
 
 class Player;
+class Npc;
 
 /// Direction relative to current rotation
 enum MoveDirection
@@ -90,6 +91,10 @@ public:
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }
+    std::string GetName() const { return data_.mapName; }
+
+    std::shared_ptr<Npc> AddNpc(const std::string& script);
+
     GameState GetState() const { return state_; }
     const kaguya::State& GetLuaState() const { return luaState_; }
     void SetState(GameState state);

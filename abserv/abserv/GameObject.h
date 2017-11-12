@@ -25,6 +25,11 @@ protected:
             objectIds_ = 0;
         return ++objectIds_;
     }
+    template <typename T>
+    std::shared_ptr<T> GetThis()
+    {
+        return std::static_pointer_cast<T>(shared_from_this());
+    }
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -45,6 +50,7 @@ public:
         game_ = game;
     }
 
+    virtual std::string GetName() const { return "Unknown"; }
     Math::Vector3 position_;
     Math::Quaternion rotation_;
     /// Auto ID, not DB ID

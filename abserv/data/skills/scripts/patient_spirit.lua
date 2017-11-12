@@ -11,7 +11,7 @@ function onStartUse(player, target)
 end
 
 function onEndUse(player, target)
-  target:AddEffect(1, duration)
+  target:AddEffect("Patient Spirit", duration)
 end
 
 function onCancelUse()

@@ -44,7 +44,7 @@ class Effect
 {
 private:
     kaguya::State luaState_;
-    Creature* target_;
+    std::weak_ptr<Creature> target_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
 public:
@@ -65,7 +65,7 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    void Start(Creature* target, uint32_t ticks);
+    void Start(std::shared_ptr<Creature> target, uint32_t ticks);
     void Remove();
 
     bool Serialize(IO::PropWriteStream& stream);

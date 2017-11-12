@@ -53,6 +53,9 @@ public:
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
 
+    std::string GetName() const override { return data_.name; }
+    uint32_t GetLevel() const override { return data_.level; }
+
     PlayerData data_;
     time_t loginTime_;
     time_t logoutTime_;

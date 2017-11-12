@@ -7,15 +7,17 @@ namespace Game {
 
 void Creature::RegisterLua(kaguya::State& state)
 {
-    GameObject::RegisterLua(state);
     state["Creature"].setClass(kaguya::UserdataMetatable<Creature, GameObject>()
-        .addProperty("Speed", &Creature::GetSpeed, &Creature::SetSpeed)
-        .addProperty("Energy", &Creature::GetEnergy, &Creature::SetEnergy)
+        .addFunction("GetLevel", &Creature::GetLevel)
+
+        .addFunction("GetSpeed", &Creature::GetSpeed)
+        .addFunction("SetSpeed", &Creature::SetSpeed)
+/*        .addProperty("Energy", &Creature::GetEnergy, &Creature::SetEnergy)
         .addProperty("Health", &Creature::GetHealth, &Creature::SetHealth)
         .addProperty("Adrenaline", &Creature::GetAdrenaline, &Creature::SetAdrenaline)
         .addProperty("Overcast", &Creature::GetOvercast, &Creature::SetOvercast)
         .addProperty("Skills", &Creature::GetSkill)
-        .addFunction("AddEffect", &Creature::AddEffect)
+        .addFunction("AddEffect", &Creature::AddEffectByName)*/
     );
 }
 
@@ -27,8 +29,14 @@ void Creature::AddEffect(uint32_t id, uint32_t ticks)
     if (effect)
     {
         effects_.push_back(std::move(effect));
-        effect->Start(this, ticks);
+        effect->Start(GetThis<Creature>(), ticks);
     }
+}
+
+void Creature::AddEffectByName(const std::string& name, uint32_t ticks)
+{
+    uint32_t id = EffectManager::Instance.GetEffectId(name);
+    AddEffect(id, ticks);
 }
 
 void Creature::DeleteEffect(uint32_t id)

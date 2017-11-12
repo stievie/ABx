@@ -9,9 +9,9 @@ namespace Game {
 void Effect::RegisterLua(kaguya::State& state)
 {
     state["Effect"].setClass(kaguya::UserdataMetatable<Effect>()
-        .addProperty("StartTime", &Effect::GetStartTime)
-        .addProperty("EndTime", &Effect::GetEndTime)
-        .addProperty("Ticks", &Effect::GetTicks)
+        .addFunction("GetStartTime", &Effect::GetStartTime)
+        .addFunction("GetEndTime", &Effect::GetEndTime)
+        .addFunction("GetTicks", &Effect::GetTicks)
     );
 }
 
@@ -40,7 +40,7 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
-void Effect::Start(Creature* target, uint32_t ticks)
+void Effect::Start(std::shared_ptr<Creature> target, uint32_t ticks)
 {
     target_ = target;
     startTime_ = Utils::AbTick();

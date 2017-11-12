@@ -5,6 +5,7 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "Player.h"
+#include "Npc.h"
 
 #include "DebugNew.h"
 
@@ -107,10 +108,13 @@ void GameManager::RegisterLuaAll(kaguya::State& state)
 {
     state.setErrorHandler(LuaErrorHandler);
     // Register all used classes
+    GameObject::RegisterLua(state);
+    Creature::RegisterLua(state);
     Game::RegisterLua(state);
     Effect::RegisterLua(state);
     Skill::RegisterLua(state);
     Player::RegisterLua(state);
+    Npc::RegisterLua(state);
 }
 
 }
