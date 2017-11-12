@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Database.h"
 #include "ConfigManager.h"
+#include "Logger.h"
 #ifdef USE_MYSQL
 #include "DatabaseMysql.h"
 #endif // USE_MYSQL
@@ -29,6 +30,10 @@ Database* Database::Instance()
         if (driver.compare("pgsql") == 0)
             instance_ = std::make_unique<DatabasePgsql>();
 #endif
+        if (!instance_)
+        {
+            LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;
+        }
     }
     return instance_.get();
 }

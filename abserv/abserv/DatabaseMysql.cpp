@@ -21,10 +21,10 @@ DatabaseMysql::DatabaseMysql() :
     my_bool reconnect = true;
     mysql_options(&handle_, MYSQL_OPT_RECONNECT, &reconnect);
 
-    const std::string host = ConfigManager::Instance[ConfigManager::DBHost];
-    const std::string user = ConfigManager::Instance[ConfigManager::DBUser];
-    const std::string pass = ConfigManager::Instance[ConfigManager::DBPass];
-    const std::string db = ConfigManager::Instance[ConfigManager::DBName];
+    const std::string& host = ConfigManager::Instance[ConfigManager::DBHost];
+    const std::string& user = ConfigManager::Instance[ConfigManager::DBUser];
+    const std::string& pass = ConfigManager::Instance[ConfigManager::DBPass];
+    const std::string& db = ConfigManager::Instance[ConfigManager::DBName];
     const uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::DBPort].GetInt());
 
     if (!mysql_real_connect(&handle_, host.c_str(), user.c_str(),

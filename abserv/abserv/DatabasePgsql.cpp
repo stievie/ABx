@@ -10,10 +10,10 @@ namespace DB {
 DatabasePgsql::DatabasePgsql() :
     Database()
 {
-    const std::string host = ConfigManager::Instance[ConfigManager::DBHost];
-    const std::string user = ConfigManager::Instance[ConfigManager::DBUser];
-    const std::string pass = ConfigManager::Instance[ConfigManager::DBPass];
-    const std::string db = ConfigManager::Instance[ConfigManager::DBName];
+    const std::string& host = ConfigManager::Instance[ConfigManager::DBHost];
+    const std::string& user = ConfigManager::Instance[ConfigManager::DBUser];
+    const std::string& pass = ConfigManager::Instance[ConfigManager::DBPass];
+    const std::string& db = ConfigManager::Instance[ConfigManager::DBName];
     const uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::DBPort].GetInt());
     std::stringstream dns;
     dns << "host='" << host << "' dbname='" << db << "' user='" << user <<
@@ -76,7 +76,7 @@ uint64_t DatabasePgsql::GetLastInsertId()
     }
 
     // everything went fine
-    uint64_t id = atoll(PQgetvalue(res, 0, PQfnumber(res, "last")));
+    uint64_t id = strtoul(PQgetvalue(res, 0, PQfnumber(res, "last")), nullptr, 0);
     PQclear(res);
     return id;
 }
@@ -256,4 +256,10 @@ std::shared_ptr<DBResult> PgsqlResult::Next()
 
 }
 
+// Adds dependencies to
+// * libpq.dll
+// * ssleay32.dll
+// * libeay32.dll
+// * libintl-8.dll
+// * libiconv-2.dll
 #pragma comment(lib, "libpq.lib")
