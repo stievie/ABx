@@ -2,7 +2,6 @@
 #include "Skill.h"
 #include "Creature.h"
 #include "GameManager.h"
-#include "Utils.h"
 
 namespace Game {
 
@@ -21,6 +20,7 @@ void Skill::RegisterLua(kaguya::State& state)
 void Skill::InitializeLua()
 {
     GameManager::RegisterLuaAll(luaState_);
+    luaState_["this"] = this;
 }
 
 bool Skill::LoadScript(const std::string& fileName)
@@ -29,8 +29,8 @@ bool Skill::LoadScript(const std::string& fileName)
         return false;
 
     name_ = (const char*)luaState_["name"];
-    costEnergy_ = luaState_["costEnergy"];
-    costAdrenaline_ = luaState_["costAdrenaline"];
+    energy_ = luaState_["energy"];
+    adrenaline_ = luaState_["adrenaline"];
     activation_ = luaState_["activation"];
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
@@ -43,6 +43,7 @@ void Skill::Update(uint32_t timeElapsed)
     AB_UNUSED(timeElapsed);
     if (startUse_ != 0 && startUse_ + activation_ <= Utils::AbTick())
     {
+        recharged_ = Utils::AbTick() + recharge_;
         luaState_["onEndUse"](source_, target_);
         startUse_ = 0;
     }
@@ -50,14 +51,26 @@ void Skill::Update(uint32_t timeElapsed)
 
 bool Skill::StartUse(Creature* source, Creature* target)
 {
+    if (!IsUsing() ||
+        !IsRecharged() ||
+        source->energy_ < energy_ ||
+        source->adrenaline_ < adrenaline_)
+        return false;
+
     startUse_ = Utils::AbTick();
+
     source_ = source;
     target_ = target;
+
     if (!luaState_["onStartUse"](source, target))
     {
         startUse_ = 0;
+        recharged_ = 0;
         return false;
     }
+    source->energy_ += energy_;
+    source->adrenaline_ += adrenaline_;
+    source->overcast_ += overcast_;
     return true;
 }
 
@@ -65,6 +78,7 @@ void Skill::CancelUse()
 {
     luaState_["onCancelUse"]();
     startUse_ = 0;
+    recharged_ = 0;
 }
 
 }

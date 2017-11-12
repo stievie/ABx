@@ -16,11 +16,6 @@
 
 namespace Game {
 
-void Game::LuaErrorHandler(int errCode, const char* message)
-{
-    LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
-}
-
 Game::Game() :
     state_(GameStateTerminated),
     lastUpdate_(0)
@@ -66,7 +61,7 @@ void Game::Update()
     }
 
     // Then call Lua Update function
-    luaState_["Game_Update"](this, delta);
+    luaState_["onUpdate"](this, delta);
 
     switch (state_)
     {
@@ -111,12 +106,7 @@ void Game::RegisterLua(kaguya::State& state)
 
 void Game::InitializeLua()
 {
-    luaState_.setErrorHandler(LuaErrorHandler);
-
     GameManager::RegisterLuaAll(luaState_);
-
-    // Set game instance
-    luaState_["thisGame"] = this;
 }
 
 Player* Game::GetPlayerById(uint32_t playerId)
@@ -135,7 +125,7 @@ Player* Game::GetPlayerByName(const std::string& name)
     return nullptr;
 }
 
-GameObject * Game::GetObjectById(uint32_t objectId)
+GameObject* Game::GetObjectById(uint32_t objectId)
 {
     auto it = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
     {
@@ -162,7 +152,10 @@ void Game::InternalLoad()
     // TODO: Load Data, Assets etc
     std::string luaFile = ConfigManager::Instance.GetDataFile(data_.scriptFile);
     // Execute initialization code if any
-    luaState_.dofile(luaFile.c_str());
+    if (!luaState_.dofile(luaFile.c_str()))
+    {
+        return;
+    }
 
     if (state_ == GameStateStartup)
         // Loading done -> start it
@@ -191,6 +184,7 @@ void Game::PlayerJoin(uint32_t playerId)
         players_[player->id_] = player.get();
         objects_.push_back(player);
         player->SetGame(shared_from_this());
+        luaState_["onPlayerJoin"](this, player.get());
     }
 }
 
@@ -203,7 +197,10 @@ void Game::PlayerLeave(uint32_t playerId)
         player->SetGame(std::shared_ptr<Game>());
         auto it = players_.find(playerId);
         if (it != players_.end())
+        {
+            luaState_["onPlayerLeave"](this, (*it).second);
             players_.erase(it);
+        }
         auto ito = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
         {
             return o->id_ == player->id_;

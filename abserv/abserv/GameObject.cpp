@@ -11,6 +11,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 {
     state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
         .addProperty("Id", &GameObject::GetId)
+        .addProperty("Game", &GameObject::GetGame)
     );
 }
 

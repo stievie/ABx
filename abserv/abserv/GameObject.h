@@ -18,7 +18,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 private:
     static uint32_t objectIds_;
 protected:
-    std::shared_ptr<Game> game_;
+    std::weak_ptr<Game> game_;
     uint32_t GetNewId()
     {
         if (objectIds_ >= std::numeric_limits<uint32_t>::max())
@@ -36,6 +36,14 @@ public:
     }
 
     uint32_t GetId() const { return id_; }
+    std::shared_ptr<Game> GetGame() const
+    {
+        return game_.lock();
+    }
+    void SetGame(std::shared_ptr<Game> game)
+    {
+        game_ = game;
+    }
 
     Math::Vector3 position_;
     Math::Quaternion rotation_;

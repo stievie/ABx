@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <skills>
-  <skill id="1" script="/scripts/skills/word_of_healing.lua" />
-  <skill id="2" script="/scripts/skills/patient_spirit.lua" />
+  <skill id="1" script="/skills/scripts/word_of_healing.lua" />
+  <skill id="2" script="/skills/scripts/patient_spirit.lua" />
 </skills>

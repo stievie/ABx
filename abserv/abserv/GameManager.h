@@ -25,6 +25,7 @@ public:
         Terminated
     };
 private:
+    static void LuaErrorHandler(int errCode, const char* message);
     Net::ServiceManager* serviceManager_;
     State state_;
     std::recursive_mutex lock_;

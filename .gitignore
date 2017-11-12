@@ -9,6 +9,7 @@ ipch
 *.pbd
 *.cso
 *.ini
+*key
 
 # Precompiled header files
 *.gch/

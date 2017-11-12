@@ -6,7 +6,7 @@ namespace Game {
 
 SkillManager SkillManager::Instance;
 
-std::shared_ptr<Skill> SkillManager::GetSkill(uint32_t id)
+std::shared_ptr<Skill> SkillManager::Get(uint32_t id)
 {
     auto it = skills_.find(id);
     if (it == skills_.end())

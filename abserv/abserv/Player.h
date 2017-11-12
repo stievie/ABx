@@ -38,8 +38,6 @@ struct PlayerData
 
 class Player final : public Creature
 {
-private:
-    std::weak_ptr<Game> game_;
 protected:
     friend class PlayerManager;
     std::shared_ptr<Player> GetThis()
@@ -54,15 +52,6 @@ public:
     // non-copyable
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
-
-    std::shared_ptr<Game> GetGame() const
-    {
-        return game_.lock();
-    }
-    void SetGame(std::shared_ptr<Game> game)
-    {
-        game_ = game;
-    }
 
     PlayerData data_;
     time_t loginTime_;

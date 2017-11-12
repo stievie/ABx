@@ -1,8 +1,59 @@
 #include "stdafx.h"
 #include "Effect.h"
 #include "Creature.h"
+#include "GameManager.h"
+#include "Utils.h"
 
 namespace Game {
+
+void Effect::RegisterLua(kaguya::State& state)
+{
+    state["Effect"].setClass(kaguya::UserdataMetatable<Effect>()
+        .addProperty("StartTime", &Effect::GetStartTime)
+        .addProperty("EndTime", &Effect::GetEndTime)
+        .addProperty("Ticks", &Effect::GetTicks)
+    );
+}
+
+void Effect::InitializeLua()
+{
+    GameManager::RegisterLuaAll(luaState_);
+    luaState_["this"] = this;
+}
+
+bool Effect::LoadScript(const std::string& fileName)
+{
+    if (!luaState_.dofile(fileName.c_str()))
+        return false;
+
+    category_ = static_cast<EffectCategory>(luaState_["category"]);
+    return true;
+}
+
+void Effect::Update(uint32_t timeElapsed)
+{
+    luaState_["onUpdate"](timeElapsed);
+    if (endTime_ <= Utils::AbTick())
+    {
+        luaState_["onEnd"](target_);
+        ended_ = true;
+    }
+}
+
+void Effect::Start(Creature* target, uint32_t ticks)
+{
+    target_ = target;
+    startTime_ = Utils::AbTick();
+    ticks_ = ticks;
+    endTime_ = startTime_ + ticks;
+    luaState_["onStart"](target_);
+}
+
+void Effect::Remove()
+{
+    luaState_["onRemove"]();
+    cancelled_ = true;
+}
 
 bool Effect::Serialize(IO::PropWriteStream& stream)
 {
@@ -36,12 +87,6 @@ bool Effect::UnserializeProp(EffectAttr attr, IO::PropReadStream& stream)
         return stream.Read<uint32_t>(ticks_);
     }
     return false;
-}
-
-void Effect::RegisterLua(kaguya::State& state)
-{
-    state["Effect"].setClass(kaguya::UserdataMetatable<Effect>()
-    );
 }
 
 }

@@ -170,10 +170,12 @@
     <ClInclude Include="DebugNew.h" />
     <ClInclude Include="DHKeys.h" />
     <ClInclude Include="Dispatcher.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="IOAccount.h" />
+    <ClInclude Include="IOEffects.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IOPlayer.h" />
@@ -221,10 +223,12 @@
     <ClCompile Include="DatabaseMysql.cpp" />
     <ClCompile Include="DHKeys.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="IOAccount.cpp" />
+    <ClCompile Include="IOEffects.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />
     <ClCompile Include="IOPlayer.cpp" />

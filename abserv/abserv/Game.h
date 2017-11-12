@@ -72,8 +72,6 @@ private:
     GameObject* GetObjectById(uint32_t objectId);
     void InternalLoad();
     void Update();
-
-    static void LuaErrorHandler(int errCode, const char* message);
 public:
     static void RegisterLua(kaguya::State& state);
 

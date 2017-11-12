@@ -168,6 +168,12 @@
     <ClInclude Include="IOSkills.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IOEffects.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -309,6 +315,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOEffects.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

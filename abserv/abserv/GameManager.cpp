@@ -98,8 +98,14 @@ void GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> 
     game->PlayerJoin(player->id_);
 }
 
+void GameManager::LuaErrorHandler(int errCode, const char* message)
+{
+    LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
+}
+
 void GameManager::RegisterLuaAll(kaguya::State& state)
 {
+    state.setErrorHandler(LuaErrorHandler);
     // Register all used classes
     Game::RegisterLua(state);
     Effect::RegisterLua(state);

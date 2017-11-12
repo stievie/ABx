@@ -25,6 +25,8 @@
 #include "SkillManager.h"
 #include "Skill.h"
 #include "IOSkills.h"
+#include "IOEffects.h"
+#include "EffectManager.h"
 
 #include "DebugNew.h"
 
@@ -157,12 +159,13 @@ void Application::MainLoader()
     // TODO:
     LOG_INFO << "[done]" << std::endl;
 
-    LOG_INFO << "Loading skills...";
-    if (IO::IOSkills::Load(Game::SkillManager::Instance, ConfigManager::Instance.GetDataFile("/skills/skills.xml")))
+    {
+        LOG_INFO << "Loading game data...";
+        IO::IOSkills::Load(Game::SkillManager::Instance, ConfigManager::Instance.GetDataFile("/skills/skills.xml"));
+        IO::IOEffects::Load(Game::EffectManager::Instance, ConfigManager::Instance.GetDataFile("/effects/effects.xml"));
         LOG_INFO << "[done]" << std::endl;
-    else
-        LOG_INFO << "[failed]" << std::endl;
-//    std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.GetSkill(1);
+        //    std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.GetSkill(1);
+    }
 
     serviceManager_.Add<Net::ProtocolLogin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt()));
     serviceManager_.Add<Net::ProtocolAdmin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt()));

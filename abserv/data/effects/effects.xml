@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <effects>
-  <effect id="1" script="/scripts/effects/dazed.lua" />
+  <effect id="1" name="Patient Spirit" script="/effects/scripts/enchantment/patient_spirit.lua" />
+  
+  <!-- Conditions --> 
+  <effect id="100" name="Dazed" script="/effects/scripts/condition/dazed.lua" />
 </effects>

@@ -6,6 +6,7 @@
 #pragma warning(disable: 4702 4127 4244)
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
+#include "Utils.h"
 
 namespace Game {
 
@@ -16,6 +17,7 @@ class Skill : public std::enable_shared_from_this<Skill>
 private:
     kaguya::State luaState_;
     int64_t startUse_;
+    int64_t recharged_;
     void InitializeLua();
     Creature* source_;
     Creature* target_;
@@ -24,7 +26,8 @@ public:
 
     explicit Skill(uint32_t id) :
         id_(id),
-        startUse_(0)
+        startUse_(0),
+        recharged_(0)
     {
         InitializeLua();
     }
@@ -36,13 +39,14 @@ public:
     bool StartUse(Creature* source, Creature* target);
     void CancelUse();
 
-    bool Using() const { return startUse_ != 0; }
+    bool IsUsing() const { return startUse_ != 0; }
+    bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
 
     uint32_t id_;
 
     std::string name_;
-    uint32_t costEnergy_;
-    uint32_t costAdrenaline_;
+    uint32_t energy_;
+    uint32_t adrenaline_;
     uint32_t activation_;
     uint32_t recharge_;
     uint32_t overcast_;

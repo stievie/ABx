@@ -2,6 +2,7 @@
 
 #include "PropStream.h"
 #include <forward_list>
+#include <vector>
 #include <memory>
 #include <stdint.h>
 #pragma warning(push)
@@ -22,38 +23,50 @@ enum EffectAttr : uint8_t
     EffectAttrEnd = 254
 };
 
-enum EffectType : uint8_t
+enum EffectCategory : uint8_t
 {
     EffectNone = 0,
     // From skills ---------------
-    EffectCondition,
-    EffectHex,
-    EffectWell,
-    EffectEnchantment,
-    EffectStance,
-    EffectShout,
-    EffectPreparation,
-    EffectSpirit,
-    EffectWard,
+    EffectCondition = 1,
+    EffectEnchantment = 2,
+    EffectHex = 3,
+    EffectPreparation = 4,
+    EffectShout = 5,
+    EffectSpirit = 6,
+    EffectStance = 7,
+    EffectWard = 8,
+    EffectWell = 9,
     // ---------------------------
-    EffectEnvironment
+    EffectEnvironment = 254
 };
 
 class Effect
 {
 private:
+    kaguya::State luaState_;
+    Creature* target_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
+    void InitializeLua();
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Effect() = default;
-    virtual ~Effect() = default;
+    Effect(uint32_t id) :
+        id_(id),
+        ended_(false),
+        cancelled_(false)
+    {}
+    ~Effect() = default;
 
     /// Gets saved to the DB when player logs out
     bool IsPersistent() const
     {
         return false;
     }
+
+    bool LoadScript(const std::string& fileName);
+    void Update(uint32_t timeElapsed);
+    void Start(Creature* target, uint32_t ticks);
+    void Remove();
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);
@@ -63,10 +76,18 @@ public:
     int64_t endTime_;
     /// Duration
     uint32_t ticks_;
+    bool ended_;
+    bool cancelled_;
 
+    EffectCategory category_;
+
+    int64_t GetStartTime() const { return startTime_; }
+    int64_t GetEndTime() const { return endTime_; }
+    uint32_t GetTicks() const { return ticks_; }
 };
 
-typedef std::forward_list<std::unique_ptr<Effect>> EffectList;
+/// effects are fist-in-last-out
+typedef std::vector<std::unique_ptr<Effect>> EffectList;
 
 enum ConditionType : uint8_t
 {
@@ -81,16 +102,6 @@ enum ConditionType : uint8_t
     ConditionWeakness,
     ConditionDeepWound,
     ConditionCrippled
-};
-
-class EffectCondition final : public Effect
-{
-
-};
-
-class EffectHex final : public Effect
-{
-
 };
 
 }
