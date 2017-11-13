@@ -13,8 +13,11 @@ private:
     std::condition_variable loaderSignal_;
     std::unique_lock<std::mutex> loaderUniqueLock_;
     Net::ServiceManager serviceManager_;
+    std::string configFile_;
+    std::string logDir_;
     void MainLoader();
     void PrintServerInfo();
+    void ParseCommandLine();
 public:
     Application();
     ~Application();

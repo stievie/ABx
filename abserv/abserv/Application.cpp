@@ -80,6 +80,34 @@ Application::~Application()
     Asynch::Dispatcher::Instance.Stop();
 }
 
+void Application::ParseCommandLine()
+{
+    for (int i = 0; i != arguments_.size(); i++)
+    {
+        const std::string& a = arguments_[i];
+        if (a.compare("-conf") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                configFile_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -conf" << std::endl;
+        }
+        else if (a.compare("-log") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                logDir_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -log" << std::endl;
+        }
+    }
+}
+
 bool Application::Initialize(int argc, char** argv)
 {
     using namespace std::chrono_literals;
@@ -98,6 +126,14 @@ bool Application::Initialize(int argc, char** argv)
     for (int i = 0; i < argc; i++)
     {
         arguments_.push_back(std::string(argv[i]));
+    }
+    ParseCommandLine();
+    if (!logDir_.empty())
+    {
+        // From the command line
+        LOG_INFO << "Log directory: " << logDir_ << std::endl;
+        IO::Logger::logDir_ = logDir_;
+        IO::Logger::Close();
     }
 
     Asynch::Dispatcher::Instance.Start();
@@ -119,8 +155,10 @@ void Application::MainLoader()
 
     LOG_INFO << "Loading..." << std::endl;
 
-    LOG_INFO << "Loading configuration...";
-    ConfigManager::Instance.Load(path_ + "/" + CONFIG_FILE);
+    if (configFile_.empty())
+        configFile_ = path_ + "/" + CONFIG_FILE;
+    LOG_INFO << "Loading configuration: " << configFile_ << "...";
+    ConfigManager::Instance.Load(configFile_);
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
@@ -201,17 +239,28 @@ void Application::PrintServerInfo()
         ports.pop_front();
     }
     LOG_INFO << std::endl;
+
+    LOG_INFO << "Database drivers:";
+#ifdef USE_MYSQL
+    LOG_INFO << "\tMySQL";
+#endif
+#ifdef USE_PGSQL
+    LOG_INFO << "\tPostgresSQL";
+#endif
+    LOG_INFO << std::endl;
 }
 
 void Application::Run()
 {
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
-    std::string logDir = ConfigManager::Instance[ConfigManager::Key::LogDir].GetString();
-    if (!logDir.empty())
+    if (logDir_.empty())
+        logDir_ = ConfigManager::Instance[ConfigManager::Key::LogDir].GetString();
+    if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
-        LOG_INFO << "Log directory: " << logDir << std::endl;
-        IO::Logger::logDir_ = logDir;
+        // Different log dir
+        LOG_INFO << "Log directory: " << logDir_ << std::endl;
+        IO::Logger::logDir_ = logDir_;
         IO::Logger::Close();
     }
     serviceManager_.Run();

@@ -33,6 +33,7 @@ Database* Database::Instance()
         if (!instance_)
         {
             LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;
+            return nullptr;
         }
     }
     return instance_.get();

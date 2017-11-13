@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef USE_PGSQL
+
 #include "Database.h"
 #include <libpq-fe.h>
 
@@ -51,3 +53,5 @@ public:
 };
 
 }
+
+#endif

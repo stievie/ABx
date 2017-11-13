@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef USE_MYSQL
+
 #include "Database.h"
 #include <winsock2.h>              // SOCKET
 #include <mysql.h>
@@ -54,3 +56,5 @@ public:
 };
 
 }
+
+#endif

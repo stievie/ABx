@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifdef USE_MYSQL
+
 #include "DatabaseMysql.h"
 #include "Logger.h"
 #include <errmsg.h>
@@ -344,4 +347,8 @@ std::shared_ptr<DBResult> MysqlResult::Next()
 
 }
 
+// Adds dependencies to
+// * libmysql.dll
 #pragma comment(lib, "libmysql.lib")
+
+#endif

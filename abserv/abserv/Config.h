@@ -16,10 +16,13 @@
 #else
 #endif
 
+// Database drivers
 #define USE_MYSQL
 #define USE_PGSQL
 
+// Name of config file
 #define CONFIG_FILE "config.lua"
+// Servers DH keys
 #define DH_KEYS_FILE "server.key"
 
 #define SCHEDULER_MINTICKS 10

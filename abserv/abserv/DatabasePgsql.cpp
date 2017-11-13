@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifdef USE_PGSQL
+
 #include "DatabasePgsql.h"
 #include "ConfigManager.h"
 #include "Logger.h"
@@ -41,11 +44,17 @@ bool DatabasePgsql::BeginTransaction()
 
 bool DatabasePgsql::Rollback()
 {
+#ifdef DEBUG_SQL
+    LOG_DEBUG << "Rollback" << std::endl;
+#endif
     return ExecuteQuery("ROLLBACK");
 }
 
 bool DatabasePgsql::Commit()
 {
+#ifdef DEBUG_SQL
+    LOG_DEBUG << "Commit" << std::endl;
+#endif
     return ExecuteQuery("COMMIT");
 }
 
@@ -124,6 +133,10 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
     if (!connected_)
         return false;
 
+#ifdef DEBUG_SQL
+    LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
+#endif
+
    // executes query
     PGresult* res = PQexec(handle_, Parse(query).c_str());
     ExecStatusType stat = PQresultStatus(res);
@@ -144,6 +157,10 @@ std::shared_ptr<DBResult> DatabasePgsql::InternalSelectQuery(const std::string& 
 {
     if (!connected_)
         return std::shared_ptr<DBResult>();
+
+#ifdef DEBUG_SQL
+    LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
+#endif
 
     // executes query
     PGresult* res = PQexec(handle_, Parse(query).c_str());
@@ -250,7 +267,7 @@ std::shared_ptr<DBResult> PgsqlResult::Next()
     if (cursor_ >= rows_)
         return std::shared_ptr<DBResult>();
 
-    cursor_++;
+    ++cursor_;
     return shared_from_this();
 }
 
@@ -263,3 +280,5 @@ std::shared_ptr<DBResult> PgsqlResult::Next()
 // * libintl-8.dll
 // * libiconv-2.dll
 #pragma comment(lib, "libpq.lib")
+
+#endif
