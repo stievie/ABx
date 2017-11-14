@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 //
 
+#include "stdafx.h"
 #include <string>
 #include <sstream>
 

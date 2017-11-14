@@ -59,17 +59,16 @@ using namespace Urho3D;
 class ClientApp : public Application
 {
     URHO3D_OBJECT(ClientApp, Application);
-
 public:
     /// Construct.
     ClientApp(Context* context);
 
     virtual void Setup();
-    
+
     /// Setup after engine initialization and before running the main loop.
     virtual void Start();
     virtual void Stop();
-        
+
 protected:
 
 private:
@@ -79,7 +78,7 @@ private:
     SharedPtr<Scene> scene_;
     SharedPtr<Node> boxNode_;
     SharedPtr<Node> cameraNode_;
-    
+
     /// Handle the logic update event.
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleBeginFrame(StringHash eventType, VariantMap& eventData);
