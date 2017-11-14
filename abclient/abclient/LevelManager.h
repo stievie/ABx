@@ -32,7 +32,7 @@ private:
     float fadeTime_;
     int fadeStatus_;
     bool drawDebugGeometry_;
-    const float MAX_FADE_TIME = 1.0f;
+    const float MAX_FADE_TIME = 0.7f;
 
 public:
     Object* GetCurrentLevel() const { return level_; }

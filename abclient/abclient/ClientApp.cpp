@@ -24,12 +24,13 @@
 #include <string>
 #include <sstream>
 
-#include "abclient.h"
+#include "ClientApp.h"
 #include "LevelManager.h"
 #include "AbEvents.h"
 #include "LoginLevel.h"
 //#include "CharListLevel.h"
 #include "FwClient.h"
+#include "Player.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -70,6 +71,9 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterSubsystem(cli);
     LevelManager* lvl = new LevelManager(context);
     context->RegisterSubsystem(lvl);
+    // Register factory and attributes for the Character component so it can
+    // be created via CreateComponent, and loaded / saved
+    Player::RegisterObject(context);
 }
 
 /**
