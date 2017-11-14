@@ -24,10 +24,14 @@
 
 #define ASIO_STANDALONE
 
-#if defined(_DEBUG)
-//#define _LOGGING
+#ifndef ABCLIENT_STATIC_LIB
+#   if defined(_DEBUG)
+#       define _LOGGING
+#   else
+#       undef _LOGGING
+#   endif
 #else
-#undef _LOGGING
+#   undef _LOGGING
 #endif
 
 #define AB_UNUSED(P) (void)(P)
