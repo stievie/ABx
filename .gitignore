@@ -4,6 +4,7 @@ Release
 Debug Static
 Release Static
 ipch
+bin
 .vs
 *.exe
 *.dll
