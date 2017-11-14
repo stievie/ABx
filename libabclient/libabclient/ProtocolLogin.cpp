@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ProtocolLogin.h"
 
+namespace Client {
+
 ProtocolLogin::ProtocolLogin(const std::string& account, const std::string& password) :
     Protocol(),
     accountName_(account),
@@ -18,4 +20,6 @@ void ProtocolLogin::OnConnect()
 
 void ProtocolLogin::OnReceive(const std::shared_ptr<InputMessage>& message)
 {
+}
+
 }

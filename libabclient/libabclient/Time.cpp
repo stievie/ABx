@@ -4,6 +4,8 @@
 #include <ctime>
 #include <thread>
 
+namespace Client {
+
 const static auto gStartupTtime = std::chrono::high_resolution_clock::now();
 
 ticks_t time()
@@ -29,4 +31,6 @@ void millisleep(size_t ms)
 void microsleep(size_t us)
 {
     std::this_thread::sleep_for(std::chrono::microseconds(us));
+}
+
 }

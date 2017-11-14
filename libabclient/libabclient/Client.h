@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Client {
+
 class Client
 {
 public:
@@ -7,3 +9,4 @@ public:
     ~Client();
 };
 
+}

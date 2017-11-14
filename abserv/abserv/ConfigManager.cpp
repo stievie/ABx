@@ -11,10 +11,10 @@ ConfigManager::ConfigManager() :
     isLoaded(false)
 {
     config_[Key::ServerName] = "abserv";
-    config_[Key::LoginPort] = 1336;
-    config_[Key::AdminPort] = 1336;
-    config_[Key::StatusPort] = 1336;
-    config_[Key::GamePort] = 1337;
+    config_[Key::LoginPort] = 2748;
+    config_[Key::AdminPort] = 2750;
+    config_[Key::StatusPort] = 2748;
+    config_[Key::GamePort] = 2749;
     config_[Key::AdminEnabled] = false;
     config_[Key::AdminLocalhostOnly] = true;
     config_[Key::AdminRequireEncryption] = true;

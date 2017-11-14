@@ -22,8 +22,4 @@
 #include <cassert>
 #include <string>
 
-// TODO: reference additional headers your program requires here
-#undef URHO3D_ANGELSCRIPT
-#undef URHO3D_DATABASE
-#undef URHO3D_LUA
-#undef URHO3D_NETWORK
+#include "Config.h"

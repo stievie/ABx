@@ -2,6 +2,8 @@
 #include "InputMessage.h"
 #include "Utils.h"
 
+namespace Client {
+
 InputMessage::InputMessage()
 {
     Reset();
@@ -57,4 +59,6 @@ void InputMessage::FillBuffer(uint8_t* buffer, uint16_t size)
     CheckWrite(pos_ + size);
     memcpy_s(buffer_ + pos_, MaxBufferSize - pos_, buffer, size);
     size_ += size;
+}
+
 }

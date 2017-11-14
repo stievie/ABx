@@ -5,6 +5,7 @@
 
 #include "DebugNew.h"
 
+namespace Client {
 namespace Crypto {
 
 // Buffer should be a multiple of 16 or it adds padding bytes.
@@ -107,4 +108,5 @@ bool Aes::SelfTest()
     return false;
 }
 
+}
 }

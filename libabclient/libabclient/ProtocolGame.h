@@ -2,6 +2,8 @@
 
 #include "Protocol.h"
 
+namespace Client {
+
 class ProtocolGame : public Protocol
 {
 protected:
@@ -14,3 +16,4 @@ public:
     ~ProtocolGame();
 };
 
+}

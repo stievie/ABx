@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <string>
 
+namespace Client {
+
 class Protocol;
 
 class OutputMessage
@@ -64,3 +66,4 @@ public:
     void AddString(const std::string& value);
 };
 
+}

@@ -3,6 +3,8 @@
 #include <exception>
 #include "Utils.h"
 
+namespace Client {
+
 OutputMessage::OutputMessage()
 {
     Reset();
@@ -60,4 +62,6 @@ void OutputMessage::WriteMessageSize()
     headerPos_ -= 2;
     Set<uint16_t>(headerPos_, size_);
     size_ += 2;
+}
+
 }

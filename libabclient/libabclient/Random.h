@@ -4,6 +4,7 @@
 #include <limits>
 #include <abcrypto.hpp>
 
+namespace Client {
 namespace Utils {
 
 class Random
@@ -49,4 +50,5 @@ public:
     static Random Instance;
 };
 
+}
 }

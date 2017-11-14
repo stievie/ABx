@@ -4,6 +4,7 @@
 #include <abcrypto.hpp>
 #include <vector>
 
+namespace Client {
 namespace Crypto {
 
 #define AES_IV_SIZE     16
@@ -31,4 +32,5 @@ public:
     static bool SelfTest();
 };
 
+}
 }

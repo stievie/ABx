@@ -29,6 +29,7 @@
 #include "AbEvents.h"
 #include "LoginLevel.h"
 //#include "CharListLevel.h"
+#include "FwClient.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -64,6 +65,9 @@ ClientApp::ClientApp(Context* context) :
     // Register levels
     context->RegisterFactory<LoginLevel>();
 //    context->RegisterFactory<CharListLevel>();
+
+    FwClient* cli = new FwClient(context);
+    context->RegisterSubsystem(cli);
     LevelManager* lvl = new LevelManager(context);
     context->RegisterSubsystem(lvl);
 }

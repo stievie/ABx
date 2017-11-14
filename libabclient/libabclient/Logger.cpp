@@ -3,6 +3,7 @@
 
 #include "DebugNew.h"
 
+namespace Client {
 namespace IO {
 
 std::unique_ptr<Logger> Logger::instance_ = nullptr;
@@ -31,4 +32,4 @@ Logger& Logger::Instance()
 }
 
 }
-
+}

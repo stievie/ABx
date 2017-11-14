@@ -125,7 +125,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;..\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -165,8 +165,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -183,7 +183,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;..\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -223,8 +223,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -241,7 +241,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -281,8 +281,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\Lib\$(Platform)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -299,7 +299,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -339,8 +339,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\Lib\$(Platform)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -357,7 +357,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -396,8 +396,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D_d.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D_d.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>Debug/abclient.lib</ImportLibrary>
@@ -412,7 +412,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -451,8 +451,8 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D_d.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libabclient.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;Urho3D_d.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)$(Platform)\$(IntermediateOutputPath);$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>Debug/abclient.lib</ImportLibrary>
@@ -467,6 +467,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseLevel.cpp" />
+    <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LoginLevel.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -476,6 +477,8 @@
     <ClCompile Include="abclient.cpp" />
     <ClInclude Include="AbEvents.h" />
     <ClInclude Include="BaseLevel.h" />
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="FwClient.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
     <ClInclude Include="resource.h" />
@@ -487,6 +490,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="abclient.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libabclient\libabclient\libabclient.vcxproj">
+      <Project>{093fa600-c39d-400d-8a12-9e71e636066a}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

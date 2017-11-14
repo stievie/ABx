@@ -10,6 +10,8 @@
 #include "OutputMessage.h"
 #include <stdint.h>
 
+namespace Client {
+
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
@@ -50,3 +52,4 @@ public:
     virtual void Receive();
 };
 
+}

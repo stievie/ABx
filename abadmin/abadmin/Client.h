@@ -11,10 +11,8 @@
 class Client
 {
 private:
-    SOCKET socket_;
     uint16_t port_;
     std::string host_;
-//    SocketCode SendMsg(NetworkMessage& msg, uint32_t* key = nullptr);
     std::shared_ptr<ProtocolAdmin> protocol_;
     std::thread pollThread_;
     std::thread keepAliveThread_;

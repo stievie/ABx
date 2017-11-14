@@ -2,6 +2,8 @@
 #include "Connection.h"
 #include "Logger.h"
 
+namespace Client {
+
 asio::io_service gIoService;
 //asio::io_service::work work(gIoService);
 std::list<std::shared_ptr<asio::streambuf>> Connection::outputStreams_;
@@ -337,4 +339,6 @@ void Connection::ReadSome(const RecvCallback& callback)
 
     socket_.async_read_some(asio::buffer(inputStream_.prepare(RecvBufferSize)),
         std::bind(&Connection::OnRecv, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+}
+
 }

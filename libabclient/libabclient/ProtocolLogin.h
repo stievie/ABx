@@ -2,6 +2,8 @@
 
 #include "Protocol.h"
 
+namespace Client {
+
 class ProtocolLogin : public Protocol
 {
 private:
@@ -15,3 +17,4 @@ public:
     ~ProtocolLogin();
 };
 
+}

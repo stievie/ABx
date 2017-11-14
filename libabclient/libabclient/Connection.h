@@ -6,6 +6,8 @@
 #include <asio.hpp>
 #include "Time.h"
 
+namespace Client {
+
 class Connection : public std::enable_shared_from_this<Connection>
 {
 private:
@@ -67,3 +69,4 @@ public:
     bool IsConnected() const { return connected_; }
 };
 
+}

@@ -4,6 +4,8 @@
 #include <ctime>
 #include "Logger.h"
 
+namespace Client {
+
 Protocol::Protocol() :
     connection_(nullptr),
     checksumEnabled_(false),
@@ -217,4 +219,6 @@ void Protocol::OnError(const asio::error_code& err)
     AB_UNUSED(err);
 #endif
     Disconnect();
+}
+
 }

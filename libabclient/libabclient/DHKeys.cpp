@@ -7,6 +7,7 @@
 
 #include "DebugNew.h"
 
+namespace Client {
 namespace Crypto {
 
 DHKeys DHKeys::Instance;
@@ -69,4 +70,5 @@ void DHKeys::GetSharedKey(const DH_KEY& publicKey, DH_KEY& sharedKey)
     DH_generate_key_secret(sharedKey, privateKey_, publicKey);
 }
 
+}
 }

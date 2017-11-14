@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abclient", "abclient\abclient.vcxproj", "{2D4F9870-167C-395B-BA9D-808FB189F43B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libabclient", "..\libabclient\libabclient\libabclient.vcxproj", "{093FA600-C39D-400D-8A12-9E71E636066A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -36,6 +38,24 @@ Global
 		{2D4F9870-167C-395B-BA9D-808FB189F43B}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
 		{2D4F9870-167C-395B-BA9D-808FB189F43B}.RelWithDebInfo|x86.ActiveCfg = RelWithDebInfo|Win32
 		{2D4F9870-167C-395B-BA9D-808FB189F43B}.RelWithDebInfo|x86.Build.0 = RelWithDebInfo|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|Win32.Build.0 = Debug|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x64.ActiveCfg = Debug|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x64.Build.0 = Debug|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x86.ActiveCfg = Debug|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Debug|x86.Build.0 = Debug|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|Win32.ActiveCfg = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|Win32.Build.0 = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x64.ActiveCfg = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x64.Build.0 = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x86.ActiveCfg = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.Release|x86.Build.0 = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.RelWithDebInfo|Win32.Build.0 = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.RelWithDebInfo|x64.ActiveCfg = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.RelWithDebInfo|x64.Build.0 = Release|x64
+		{093FA600-C39D-400D-8A12-9E71E636066A}.RelWithDebInfo|x86.ActiveCfg = Release|Win32
+		{093FA600-C39D-400D-8A12-9E71E636066A}.RelWithDebInfo|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

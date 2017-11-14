@@ -14,6 +14,7 @@
 #define __AB_PRETTY_FUNCTION__ __FUNCTION__
 #endif
 
+namespace Client {
 namespace IO {
 
 /// Logger class with stream interface
@@ -121,10 +122,11 @@ public:
 };
 
 }
+}
 
-#define LOG_INFO (IO::Logger::Instance().Info())
-#define LOG_WARNING (IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
-#define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << "(): ")
+#define LOG_INFO (Client::IO::Logger::Instance().Info())
+#define LOG_WARNING (Client::IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
+#define LOG_ERROR (Client::IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << "(): ")
 #ifdef _DEBUG
-#   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
+#   define LOG_DEBUG (Client::IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
 #endif

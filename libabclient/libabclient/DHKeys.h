@@ -4,6 +4,7 @@
 #include <string>
 #include <mutex>
 
+namespace Client {
 namespace Crypto {
 
 class DHKeys
@@ -29,4 +30,5 @@ public:
     static DHKeys Instance;
 };
 
+}
 }

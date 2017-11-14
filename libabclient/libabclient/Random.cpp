@@ -3,6 +3,7 @@
 
 #include "DebugNew.h"
 
+namespace Client {
 namespace Utils {
 
 Random Random::Instance;
@@ -23,4 +24,5 @@ float Random::GetFloat()
     return (float)Get<uint32_t>() / (float)std::numeric_limits<uint32_t>::max();
 }
 
+}
 }

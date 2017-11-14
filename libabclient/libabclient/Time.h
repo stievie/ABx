@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+namespace Client {
+
 typedef int64_t ticks_t;
 
 ticks_t time();
@@ -21,3 +23,5 @@ public:
     ticks_t elapsed_micros() { return micros() - start_; }
     void restart() { start_ = micros(); }
 };
+
+}
