@@ -36,6 +36,9 @@
     <ClInclude Include="BaseLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LoginLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abclient.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BaseLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

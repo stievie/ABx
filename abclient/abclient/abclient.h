@@ -68,7 +68,6 @@ public:
     /// Setup after engine initialization and before running the main loop.
     virtual void Start();
     virtual void Stop();
-
 protected:
 
 private:
@@ -79,6 +78,8 @@ private:
     SharedPtr<Node> boxNode_;
     SharedPtr<Node> cameraNode_;
 
+    void SetWindowTitleAndIcon();
+    void SwitchScene(const String& sceneName);
     /// Handle the logic update event.
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleBeginFrame(StringHash eventType, VariantMap& eventData);

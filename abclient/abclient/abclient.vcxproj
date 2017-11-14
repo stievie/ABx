@@ -468,6 +468,7 @@
   <ItemGroup>
     <ClCompile Include="BaseLevel.cpp" />
     <ClCompile Include="LevelManager.cpp" />
+    <ClCompile Include="LoginLevel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -476,6 +477,7 @@
     <ClInclude Include="AbEvents.h" />
     <ClInclude Include="BaseLevel.h" />
     <ClInclude Include="LevelManager.h" />
+    <ClInclude Include="LoginLevel.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
