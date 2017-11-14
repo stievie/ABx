@@ -1,6 +1,8 @@
 # Output directories
 Debug
 Release
+Debug Static
+Release Static
 ipch
 .vs
 *.exe
@@ -9,7 +11,7 @@ ipch
 *.pbd
 *.cso
 *.ini
-*key
+*.key
 
 # Precompiled header files
 *.gch/
