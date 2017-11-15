@@ -23,7 +23,7 @@ DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile=C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\LICENSE.txt
 OutputDir=c:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\
-OutputBaseFilename=fwsetup
+OutputBaseFilename=fwclient-setup
 SetupIconFile=C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\abclient\abclient.ico
 Compression=lzma
 SolidCompression=yes
@@ -37,10 +37,10 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\AbData\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\Autoload\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\CoreData\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\Data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\AbData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\Autoload.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\CoreData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\Data.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

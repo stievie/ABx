@@ -22,10 +22,13 @@
 
 #pragma once
 
+#pragma warning( push )
+#pragma warning( disable : 4100 4305)
 #include <Urho3D/Core/Object.h>
 #include <Urho3D/Input/Controls.h>
 #include <Urho3D/Scene/LogicComponent.h>
 #include <Urho3D/Graphics/AnimatedModel.h>
+#pragma warning( pop )
 
 using namespace Urho3D;
 
