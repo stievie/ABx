@@ -12,4 +12,5 @@ namespace AbEvents
 {
     /// Load next level
     static const StringHash E_SET_LEVEL = StringHash("Set levels");
+    static const StringHash E_ENTER_MAP = StringHash("Enter Map");
 }

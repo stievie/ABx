@@ -12,6 +12,9 @@
 //#   define DEBUG_MATH
 //#   define DEBUG_SQL
 #   define DEBUG_GAME
+#   ifdef DEBUG_GAME
+#       define DEBUG_NAVIGATION
+#   endif
 #   define DEGUB_ENCRYPTION
 #else
 #endif

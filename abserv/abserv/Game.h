@@ -7,6 +7,7 @@
 #include <map>
 #include "Map.h"
 #include "GameObject.h"
+#include "NavigationMesh.h"
 #include "Utils.h"
 #include <mutex>
 #pragma warning(push)
@@ -64,6 +65,7 @@ private:
     GameState state_;
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
+    std::unique_ptr<NavigationMesh> navMesh_;
     int64_t lastUpdate_;
     kaguya::State luaState_;
     void InitializeLua();

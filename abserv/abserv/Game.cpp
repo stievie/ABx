@@ -19,7 +19,8 @@ namespace Game {
 
 Game::Game() :
     state_(GameStateTerminated),
-    lastUpdate_(0)
+    lastUpdate_(0),
+    navMesh_(nullptr)
 {
     InitializeLua();
     startTime_ = Utils::AbTick();

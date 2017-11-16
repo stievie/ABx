@@ -467,13 +467,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseLevel.cpp" />
+    <ClCompile Include="CharCreateLevel.cpp" />
+    <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LoginLevel.cpp" />
+    <ClCompile Include="OutpostLevel.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PvpCombatLevel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClInclude Include="CharCreateLevel.h" />
+    <ClInclude Include="CharSelectLevel.h" />
     <ClInclude Include="ClientApp.h" />
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="AbEvents.h" />
@@ -482,7 +488,9 @@
     <ClInclude Include="FwClient.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
+    <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PvpCombatLevel.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

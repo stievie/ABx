@@ -28,7 +28,10 @@
 #include "LevelManager.h"
 #include "AbEvents.h"
 #include "LoginLevel.h"
-//#include "CharListLevel.h"
+#include "OutpostLevel.h"
+#include "PvpCombatLevel.h"
+#include "CharSelectLevel.h"
+#include "CharCreateLevel.h"
 #include "FwClient.h"
 #include "Player.h"
 
@@ -65,7 +68,10 @@ ClientApp::ClientApp(Context* context) :
 {
     // Register levels
     context->RegisterFactory<LoginLevel>();
-//    context->RegisterFactory<CharListLevel>();
+    context->RegisterFactory<CharSelectLevel>();
+    context->RegisterFactory<CharCreateLevel>();
+    context->RegisterFactory<OutpostLevel>();
+    context->RegisterFactory<PvpCombatLevel>();
 
     FwClient* cli = new FwClient(context);
     context->RegisterSubsystem(cli);

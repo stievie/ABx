@@ -36,6 +36,7 @@ void BaseLevel::SubscribeToEvents()
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(BaseLevel, HandleUpdate));
     SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(BaseLevel, HandlePostUpdate));
     SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(BaseLevel, HandlePostRenderUpdate));
+    SubscribeToEvent(AbEvents::E_ENTER_MAP, URHO3D_HANDLER(BaseLevel, HandleEnterMap));
 }
 
 void BaseLevel::Update(StringHash eventType, VariantMap& eventData)
@@ -78,6 +79,11 @@ void BaseLevel::Update(StringHash eventType, VariantMap& eventData)
                 firstPerson_ = !firstPerson_;
         }
     }*/
+}
+
+void BaseLevel::HandleEnterMap(StringHash eventType, VariantMap & eventData)
+{
+
 }
 
 void BaseLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

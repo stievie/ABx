@@ -180,6 +180,9 @@
     <ClInclude Include="DatabasePgsql.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="NavigationMesh.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -333,6 +336,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DatabasePgsql.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="NavigationMesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
