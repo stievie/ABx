@@ -186,6 +186,7 @@
     <ClInclude Include="Recast\Include\RecastAssert.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TileBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BuildContext.cpp" />
@@ -226,6 +227,7 @@
     <ClCompile Include="Recast\Source\RecastRasterization.cpp" />
     <ClCompile Include="Recast\Source\RecastRegion.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="TileBuilder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

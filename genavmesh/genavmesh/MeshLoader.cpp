@@ -74,15 +74,15 @@ bool MeshLoader::load(const std::string& fileName)
         aiProcess_GenNormals |
         aiProcess_JoinIdenticalVertices |
         aiProcess_Triangulate |
-        aiProcess_GenUVCoords |
+//        aiProcess_GenUVCoords |
         aiProcess_SortByPType |
 
         // aiProcess_ConvertToLeftHanded
-        aiProcess_MakeLeftHanded |
-        aiProcess_FlipUVs |
-        aiProcess_FlipWindingOrder |
+//        aiProcess_MakeLeftHanded |
+//        aiProcess_FlipUVs |
+//        aiProcess_FlipWindingOrder |
 
-        aiProcess_TransformUVCoords |
+//        aiProcess_TransformUVCoords |
         aiProcess_FixInfacingNormals
     );
     if (!scene)

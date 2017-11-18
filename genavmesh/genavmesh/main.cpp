@@ -5,6 +5,7 @@
 #include <iostream>
 #include "InputGeom.h"
 #include "BuildContext.h"
+#include "TileBuilder.h"
 
 void ShowUsage()
 {
@@ -41,6 +42,8 @@ int main(int argc, char** argv)
     // Detail Mesh
     settings.detailSampleDist = 6.0f;
     settings.detailSampleMaxError = 1.0f;
+    // Tailing
+    settings.tileSize = 32;
 
 
     for (int i = 1; i < argc; i++)
@@ -61,6 +64,16 @@ int main(int argc, char** argv)
             std::cout << "Error generating geometry set" << std::endl;
             continue;
         }
+
+        TileBuilder builder(&ctx);
+        builder.m_filterLowHangingObstacles = true;
+        builder.m_filterLedgeSpans = true;
+        builder.m_filterWalkableLowHeightSpans = true;
+        if (!builder.Build(&geom, settings))
+        {
+            continue;
+        }
+        builder.Save((fn + ".navmesh").c_str(), builder.GetNavMesh());
     }
     return 0;
 }
