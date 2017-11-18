@@ -87,7 +87,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>DebugUtils\Include;Detour\Include;DetourCrowd\Include;DetourTileCache\Include;Recast\Include;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -103,7 +103,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>DebugUtils\Include;Detour\Include;DetourCrowd\Include;DetourTileCache\Include;Recast\Include;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -121,7 +121,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>DebugUtils\Include;Detour\Include;DetourCrowd\Include;DetourTileCache\Include;Recast\Include;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -141,7 +141,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>DebugUtils\Include;Detour\Include;DetourCrowd\Include;DetourTileCache\Include;Recast\Include;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -154,6 +154,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BuildContext.h" />
+    <ClInclude Include="Builder.h" />
+    <ClInclude Include="ChunkyTriMesh.h" />
     <ClInclude Include="DebugUtils\Include\DebugDraw.h" />
     <ClInclude Include="DebugUtils\Include\DetourDebugDraw.h" />
     <ClInclude Include="DebugUtils\Include\RecastDebugDraw.h" />
@@ -175,6 +178,9 @@
     <ClInclude Include="Detour\Include\DetourNavMeshQuery.h" />
     <ClInclude Include="Detour\Include\DetourNode.h" />
     <ClInclude Include="Detour\Include\DetourStatus.h" />
+    <ClInclude Include="InputGeom.h" />
+    <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Recast\Include\Recast.h" />
     <ClInclude Include="Recast\Include\RecastAlloc.h" />
     <ClInclude Include="Recast\Include\RecastAssert.h" />
@@ -182,6 +188,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BuildContext.cpp" />
+    <ClCompile Include="Builder.cpp" />
+    <ClCompile Include="ChunkyTriMesh.cpp" />
     <ClCompile Include="DebugUtils\Source\DebugDraw.cpp" />
     <ClCompile Include="DebugUtils\Source\DetourDebugDraw.cpp" />
     <ClCompile Include="DebugUtils\Source\RecastDebugDraw.cpp" />
@@ -201,7 +210,10 @@
     <ClCompile Include="Detour\Source\DetourNavMeshBuilder.cpp" />
     <ClCompile Include="Detour\Source\DetourNavMeshQuery.cpp" />
     <ClCompile Include="Detour\Source\DetourNode.cpp" />
+    <ClCompile Include="InputGeom.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
+    <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="Recast\Source\Recast.cpp" />
     <ClCompile Include="Recast\Source\RecastAlloc.cpp" />
     <ClCompile Include="Recast\Source\RecastArea.cpp" />

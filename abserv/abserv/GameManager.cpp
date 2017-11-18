@@ -23,7 +23,7 @@ void GameManager::Start(Net::ServiceManager* serviceManager)
     }
     // Create default game
     Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(500, std::bind(&GameManager::CreateGame, this, "Temple"))
+        Asynch::CreateScheduledTask(500, std::bind(&GameManager::CreateGame, this, "Temple of Athene"))
     );
 }
 
