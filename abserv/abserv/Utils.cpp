@@ -18,6 +18,14 @@ bool CopyFile(const std::string& src, const std::string& dst)
     return true;
 }
 
+std::string NormalizeFilename(const std::string& filename)
+{
+    std::string normal_name(filename);
+    ReplaceSubstring<char>(normal_name, "\\", "/");
+    while (ReplaceSubstring<char>(normal_name, "//", "/"));
+    return normal_name;
+}
+
 bool FileExists(const std::string& name)
 {
     std::ifstream infile(name.c_str());

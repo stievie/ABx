@@ -3,13 +3,4 @@
 
 namespace IO {
 
-Asset::Asset()
-{
-}
-
-
-Asset::~Asset()
-{
-}
-
 }

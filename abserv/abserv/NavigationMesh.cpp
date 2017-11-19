@@ -3,13 +3,16 @@
 
 namespace Game {
 
-NavigationMesh::NavigationMesh()
+NavigationMesh::NavigationMesh() :
+    AssetImpl<NavigationMesh>(),
+    navMesh_(nullptr)
 {
 }
 
 
 NavigationMesh::~NavigationMesh()
 {
+    dtFreeNavMesh(navMesh_);
 }
 
 }

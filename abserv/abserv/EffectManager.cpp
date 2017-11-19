@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EffectManager.h"
 #include "Effect.h"
-#include "ConfigManager.h"
+#include "DataProvider.h"
 
 namespace Game {
 
@@ -14,7 +14,7 @@ std::unique_ptr<Effect> EffectManager::Get(uint32_t id)
         return std::unique_ptr<Effect>();
 
     std::unique_ptr<Effect> result = std::make_unique<Effect>(id);
-    if (result->LoadScript(ConfigManager::Instance.GetDataFile((*it).second)))
+    if (result->LoadScript(IO::DataProvider::Instance.GetDataFile((*it).second)))
         return result;
 
     return std::unique_ptr<Effect>();

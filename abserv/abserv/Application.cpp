@@ -27,6 +27,7 @@
 #include "IOSkills.h"
 #include "IOEffects.h"
 #include "EffectManager.h"
+#include "DataProvider.h"
 
 #include "DebugNew.h"
 
@@ -199,12 +200,13 @@ void Application::MainLoader()
 
     {
         LOG_INFO << "Loading game data...";
-        IO::IOSkills::Load(Game::SkillManager::Instance, ConfigManager::Instance.GetDataFile("/skills/skills.xml"));
-        IO::IOEffects::Load(Game::EffectManager::Instance, ConfigManager::Instance.GetDataFile("/effects/effects.xml"));
+        IO::IOSkills::Load(Game::SkillManager::Instance, IO::DataProvider::Instance.GetDataFile("/skills/skills.xml"));
+        IO::IOEffects::Load(Game::EffectManager::Instance, IO::DataProvider::Instance.GetDataFile("/effects/effects.xml"));
         LOG_INFO << "[done]" << std::endl;
         //    std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.GetSkill(1);
     }
 
+    // Add Protocols
     serviceManager_.Add<Net::ProtocolLogin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt()));
     serviceManager_.Add<Net::ProtocolAdmin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt()));
     serviceManager_.Add<Net::ProtocolStatus>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt()));
@@ -220,6 +222,7 @@ void Application::MainLoader()
         LOG_INFO << (loadingTime / 1000) << " s";
     LOG_INFO << std::endl;
 
+    IO::DataProvider::Instance.Run();
     Game::GameManager::Instance.Start(&serviceManager_);
 
     // Notify we are ready

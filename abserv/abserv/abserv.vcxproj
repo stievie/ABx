@@ -161,6 +161,7 @@
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bans.h" />
     <ClInclude Include="DatabasePgsql.h" />
+    <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigManager.h" />
@@ -176,9 +177,11 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="IOAccount.h" />
+    <ClInclude Include="IOAsset.h" />
     <ClInclude Include="IOEffects.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
+    <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="IOSkills.h" />
     <ClInclude Include="Logger.h" />
@@ -219,6 +222,7 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
+    <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
@@ -235,6 +239,7 @@
     <ClCompile Include="IOEffects.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />
+    <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="IOSkills.cpp" />
     <ClCompile Include="Logger.cpp" />

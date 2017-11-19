@@ -12,6 +12,7 @@
 #include "Logger.h"
 #include "Skill.h"
 #include "Npc.h"
+#include "DataProvider.h"
 
 #include "DebugNew.h"
 
@@ -149,7 +150,7 @@ GameObject* Game::GetObjectById(uint32_t objectId)
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
-    if (!result->LoadScript(ConfigManager::Instance.GetDataFile(script)))
+    if (!result->LoadScript(IO::DataProvider::Instance.GetDataFile(script)))
     {
         return std::shared_ptr<Npc>();
     }
@@ -173,7 +174,8 @@ void Game::InternalLoad()
     // Game::Load() Thread
 
     // TODO: Load Data, Assets etc
-    std::string luaFile = ConfigManager::Instance.GetDataFile(data_.scriptFile);
+    navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.navMeshFile);
+    std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.scriptFile);
     // Execute initialization code if any
     if (!luaState_.dofile(luaFile.c_str()))
     {

@@ -47,6 +47,7 @@ struct GameData
     GameType type;
     std::string mapName;
     std::string mapFile;
+    std::string navMeshFile;
     std::string scriptFile;
 };
 
@@ -65,7 +66,6 @@ private:
     GameState state_;
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
-    std::unique_ptr<NavigationMesh> navMesh_;
     int64_t lastUpdate_;
     kaguya::State luaState_;
     void InitializeLua();
@@ -90,6 +90,7 @@ public:
     int64_t startTime_;
 
     std::shared_ptr<Map> map_;
+    std::shared_ptr<NavigationMesh> navMesh_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }

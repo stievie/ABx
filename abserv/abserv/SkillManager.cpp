@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SkillManager.h"
-#include "ConfigManager.h"
+#include "DataProvider.h"
 
 namespace Game {
 
@@ -13,7 +13,7 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t id)
         return std::shared_ptr<Skill>();
 
     std::shared_ptr<Skill> result = std::make_shared<Skill>(id);
-    if (result->LoadScript(ConfigManager::Instance.GetDataFile((*it).second)))
+    if (result->LoadScript(IO::DataProvider::Instance.GetDataFile((*it).second)))
         return result;
 
     return std::shared_ptr<Skill>();

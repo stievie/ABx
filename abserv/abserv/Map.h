@@ -20,7 +20,7 @@ class Map : public IO::AssetImpl<Map>
 {
 public:
     Map();
-    ~Map();
+    virtual ~Map();
 
     MapData data_;
 };

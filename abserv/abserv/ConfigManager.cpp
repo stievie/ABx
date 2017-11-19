@@ -122,9 +122,3 @@ bool ConfigManager::Load(const std::string& file)
     isLoaded = true;
     return true;
 }
-
-
-std::string ConfigManager::GetDataFile(const std::string& name)
-{
-    return config_[Key::DataDir].GetString() + name;
-}

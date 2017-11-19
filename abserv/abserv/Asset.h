@@ -1,21 +1,26 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 namespace IO {
 
 class Asset
 {
 public:
-    Asset();
-    ~Asset();
+    Asset() :
+        fileName_("")
+    {}
+    virtual ~Asset() = default;
+
+    std::string fileName_;
 };
 
-template <typename T>
-class AssetImpl : public Asset, public std::enable_shared_from_this<T>
+template<class T>
+class AssetImpl : public Asset, private std::enable_shared_from_this<T>
 {
 public:
-    std::shared_ptr<T> GetThis()
+    std::shared_ptr<T> GetPtr()
     {
         return shared_from_this();
     }

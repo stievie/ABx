@@ -13,6 +13,7 @@ bool IOGame::LoadGame(Game::Game* game, std::shared_ptr<DBResult> result)
     game->data_.id = result->GetUInt("id");
     game->data_.mapName = result->GetString("name");
     game->data_.mapFile = result->GetString("map");
+    game->data_.navMeshFile = result->GetString("nav_mesh");
     game->data_.scriptFile = result->GetString("script_file");
     game->data_.type = static_cast<Game::GameType>(result->GetUInt("id"));
 
@@ -24,7 +25,7 @@ bool IOGame::LoadGameByName(Game::Game* game, const std::string& name)
     Database* db = Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `id`, `name`, `type`, `map`, `script_file`, `landing` FROM `games` WHERE `name` = " <<
+    query << "SELECT `id`, `name`, `type`, `map`, `nav_mesh`, `script_file`, `landing` FROM `games` WHERE `name` = " <<
         db->EscapeString(name);
 
     return IOGame::LoadGame(game, db->StoreQuery(query.str()));

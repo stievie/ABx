@@ -35,3 +35,5 @@
 #define GAME_MAX_PLAYER 100
 #define PLAYER_MAX_SKILLS 8
 
+// Clean cache every 10min
+#define CLEAN_CACHE_MS (1000 * 60 * 10)
