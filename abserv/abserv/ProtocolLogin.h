@@ -18,7 +18,9 @@ public:
 public:
     explicit ProtocolLogin(std::shared_ptr<Connection> connection) :
         Protocol(connection)
-    {}
+    {
+        checksumEnabled_ = ProtocolLogin::UseChecksum;
+    }
 
     void OnRecvFirstMessage(NetworkMessage& message) final;
 private:

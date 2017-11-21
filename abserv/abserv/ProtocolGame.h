@@ -40,7 +40,9 @@ private:
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)
-    {}
+    {
+        checksumEnabled_ = ProtocolGame::UseChecksum;
+    }
 
     void Login(const std::string& name, uint32_t accountId);
     void Logout();

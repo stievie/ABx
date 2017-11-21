@@ -61,7 +61,7 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
 
     DB::Database* db = DB::Database::Instance();
     DB::DBQuery query;
-    query << "SELECT COUNT(ip_bans.*) AS `count` FROM `ip_bans` "
+    query << "SELECT COUNT(`ip_bans`.`ban_id`) AS `count` FROM `ip_bans` "
         "INNER JOIN `bans` ON `bans`.`id` = `ip_bans`.`ban_id` "
         "WHERE " << "((" << clientIP << " & " << mask << " & `mask`) = (`ip` & `mask` & " << mask << ")) "
         "AND `active` = 1 AND (`expires` >= " << (Utils::AbTick() / 1000) << " OR `expires` <= 0)";

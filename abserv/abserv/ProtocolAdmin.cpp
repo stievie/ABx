@@ -19,6 +19,7 @@ ProtocolAdmin::ProtocolAdmin(std::shared_ptr<Connection> connection) :
     lastCommand_(0),
     state_(NotConnected)
 {
+    checksumEnabled_ = ProtocolAdmin::UseChecksum;
     requireLogin_ = ConfigManager::Instance[ConfigManager::Key::AdminRequireLogin];
     requireEncryption_ = ConfigManager::Instance[ConfigManager::Key::AdminRequireEncryption];
     startTime_ = std::time(nullptr);

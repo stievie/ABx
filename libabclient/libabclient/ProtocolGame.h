@@ -8,10 +8,18 @@ namespace Client {
 
 class ProtocolGame : public Protocol
 {
+public:
+    // static protocol information
+    enum { ServerSendsFirst = true };
+    enum { ProtocolIdentifier = 0 }; // Not required as we send first
+    enum { UseChecksum = true };
 private:
     std::string accountName_;
     std::string accountPass_;
+    std::string charName_;
     bool firstRevc_;
+
+    void SendLoginPacket();
 protected:
     void OnConnect() override;
     void OnReceive(const std::shared_ptr<InputMessage>& message) override;
@@ -23,7 +31,7 @@ public:
     ~ProtocolGame();
 
     void Login(const std::string& accountName, const std::string& accountPass,
-        const std::string& host, uint16_t port);
+        std::string charName, const std::string& host, uint16_t port);
 };
 
 }

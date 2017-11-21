@@ -17,7 +17,8 @@ bool IOAccount::LoginServerAuth(const std::string & name, const std::string & pa
     if (!result)
         return false;
 
-    if (bcrypt_checkpass(pass.c_str(), result->GetString("password").c_str()) != 0)
+    std::string dbPass = result->GetString("password");
+    if (bcrypt_checkpass(pass.c_str(), dbPass.c_str()) != 0)
         return false;
 
     account.id_ = result->GetUInt("id");

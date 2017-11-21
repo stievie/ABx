@@ -20,13 +20,13 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
     std::shared_ptr<InputMessage> inputMessage_;
-    bool checksumEnabled_;
-    bool xteaEnabled_;
     void InternalRecvHeader(uint8_t* buffer, uint16_t size);
     void InternalRecvData(uint8_t* buffer, uint16_t size);
     bool XteaDecrypt(const std::shared_ptr<InputMessage>& message);
     void XteaEncrypt(const std::shared_ptr<OutputMessage>& message);
 protected:
+    bool checksumEnabled_;
+    bool xteaEnabled_;
     std::shared_ptr<Connection> connection_;
     uint32_t xteaKey_[4];
     virtual void OnError(const asio::error_code& err);
