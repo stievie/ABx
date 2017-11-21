@@ -3,7 +3,8 @@
 #include "ConfigManager.h"
 #include "NavigationMesh.h"
 #include "IONavMesh.h"
-#include "Scheduler.h"
+
+#include "DebugNew.h"
 
 namespace IO {
 
@@ -13,21 +14,6 @@ DataProvider::DataProvider()
 {
     // Add Importer
     IO::DataProvider::Instance.AddImporter<Game::NavigationMesh, IO::IONavMesh>();
-}
-
-void DataProvider::CleanCacheTask()
-{
-    CleanCache();
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&DataProvider::CleanCacheTask, this))
-    );
-}
-
-void DataProvider::Run()
-{
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&DataProvider::CleanCacheTask, this))
-    );
 }
 
 std::string DataProvider::GetDataFile(const std::string& name) const

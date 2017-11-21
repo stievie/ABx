@@ -71,6 +71,7 @@ public:
     {}
     ~Scheduler() {}
 
+    /// Add a Task, return EventID
     uint32_t Add(ScheduledTask* task);
     bool StopEvent(uint32_t eventId);
 

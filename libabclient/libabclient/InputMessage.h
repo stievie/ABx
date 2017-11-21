@@ -53,6 +53,7 @@ public:
     uint8_t* GetHeaderBuffer() { return buffer_ + headerPos_; }
     uint8_t* GetDataBuffer() { return buffer_ + MaxHeaderSize; }
     uint16_t GetHeaderSize() { return (MaxHeaderSize - headerPos_); }
+    bool Eof() const { return (pos_ - headerPos_) >= size_; }
 
     void SetBuffer(const std::string& buffer);
 

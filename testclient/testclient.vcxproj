@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8344104E-C5F6-4998-94D0-3762C4ECD075}</ProjectGuid>
+    <ProjectGuid>{669D0D8D-5BE8-4B59-A9C9-A77525569256}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>abserv</RootNamespace>
+    <RootNamespace>testclient</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -84,199 +84,83 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ASIO_STANDALONE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ASIO_STANDALONE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ASIO_STANDALONE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ASIO_STANDALONE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\libabclient\libabclient;$(SolutionDir)..\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Account.h" />
-    <ClInclude Include="Aes.h" />
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="Asset.h" />
-    <ClInclude Include="Bans.h" />
-    <ClInclude Include="DatabasePgsql.h" />
-    <ClInclude Include="DataProvider.h" />
-    <ClInclude Include="Effect.h" />
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="ConfigManager.h" />
-    <ClInclude Include="Connection.h" />
-    <ClInclude Include="Creature.h" />
-    <ClInclude Include="Database.h" />
-    <ClInclude Include="DatabaseMysql.h" />
-    <ClInclude Include="DebugNew.h" />
-    <ClInclude Include="DHKeys.h" />
-    <ClInclude Include="Dispatcher.h" />
-    <ClInclude Include="EffectManager.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="IOAccount.h" />
-    <ClInclude Include="IOAsset.h" />
-    <ClInclude Include="IOEffects.h" />
-    <ClInclude Include="IOGame.h" />
-    <ClInclude Include="IOGuild.h" />
-    <ClInclude Include="IONavMesh.h" />
-    <ClInclude Include="IOPlayer.h" />
-    <ClInclude Include="IOSkills.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="Maintenance.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="NavigationMesh.h" />
-    <ClInclude Include="NetworkMessage.h" />
-    <ClInclude Include="Npc.h" />
-    <ClInclude Include="OutputMessage.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerManager.h" />
-    <ClInclude Include="PropStream.h" />
-    <ClInclude Include="Protocol.h" />
-    <ClInclude Include="ProtocolAdmin.h" />
-    <ClInclude Include="ProtocolGame.h" />
-    <ClInclude Include="ProtocolLogin.h" />
-    <ClInclude Include="ProtocolStatus.h" />
-    <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="Rsa.h" />
-    <ClInclude Include="Scheduler.h" />
-    <ClInclude Include="Service.h" />
-    <ClInclude Include="Skill.h" />
-    <ClInclude Include="SkillBar.h" />
-    <ClInclude Include="SkillManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Task.h" />
-    <ClInclude Include="Utils.h" />
-    <ClInclude Include="Variant.h" />
-    <ClInclude Include="Vector3.h" />
-    <ClInclude Include="Vector4.h" />
-    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Account.cpp" />
-    <ClCompile Include="Aes.cpp" />
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Asset.cpp" />
-    <ClCompile Include="Bans.cpp" />
-    <ClCompile Include="DatabasePgsql.cpp" />
-    <ClCompile Include="DataProvider.cpp" />
-    <ClCompile Include="Effect.cpp" />
-    <ClCompile Include="ConfigManager.cpp" />
-    <ClCompile Include="Connection.cpp" />
-    <ClCompile Include="Creature.cpp" />
-    <ClCompile Include="Database.cpp" />
-    <ClCompile Include="DatabaseMysql.cpp" />
-    <ClCompile Include="DHKeys.cpp" />
-    <ClCompile Include="Dispatcher.cpp" />
-    <ClCompile Include="EffectManager.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="IOAccount.cpp" />
-    <ClCompile Include="IOEffects.cpp" />
-    <ClCompile Include="IOGame.cpp" />
-    <ClCompile Include="IOGuild.cpp" />
-    <ClCompile Include="IONavMesh.cpp" />
-    <ClCompile Include="IOPlayer.cpp" />
-    <ClCompile Include="IOSkills.cpp" />
-    <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Maintenance.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="NavigationMesh.cpp" />
-    <ClCompile Include="NetworkMessage.cpp" />
-    <ClCompile Include="Npc.cpp" />
-    <ClCompile Include="OutputMessage.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerManager.cpp" />
-    <ClCompile Include="PropStream.cpp" />
-    <ClCompile Include="Protocol.cpp" />
-    <ClCompile Include="ProtocolAdmin.cpp" />
-    <ClCompile Include="ProtocolGame.cpp" />
-    <ClCompile Include="ProtocolLogin.cpp" />
-    <ClCompile Include="ProtocolStatus.cpp" />
-    <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Rsa.cpp" />
-    <ClCompile Include="Scheduler.cpp" />
-    <ClCompile Include="Service.cpp" />
-    <ClCompile Include="Skill.cpp" />
-    <ClCompile Include="SkillBar.cpp" />
-    <ClCompile Include="SkillManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Variant.cpp" />
-    <ClCompile Include="Vector3.cpp" />
-    <ClCompile Include="Vector4.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

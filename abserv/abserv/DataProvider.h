@@ -19,9 +19,6 @@ public:
     DataProvider();
     ~DataProvider() = default;
 
-    void CleanCacheTask();
-    void Run();
-
     std::string GetDataFile(const std::string& name) const;
     bool FileExists(const std::string& name);
     std::string GetFile(const std::string& name) const;

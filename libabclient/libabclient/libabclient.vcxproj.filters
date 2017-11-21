@@ -66,6 +66,9 @@
     <ClInclude Include="Random.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

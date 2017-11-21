@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DetourNavMesh.h>
+#include <DetourNavMeshQuery.h>
 #include "Asset.h"
 
 namespace Game {
@@ -10,6 +11,7 @@ class NavigationMesh : public IO::AssetImpl<NavigationMesh>
 {
 private:
     dtNavMesh* navMesh_;
+    dtNavMeshQuery* navQuery_;
 public:
     NavigationMesh();
     virtual ~NavigationMesh();
@@ -20,7 +22,11 @@ public:
             dtFreeNavMesh(navMesh_);
 
         navMesh_ = value;
+        navQuery_->init(navMesh_, 2048);
     }
+
+    dtNavMesh* GetNavMesh() const { return navMesh_; }
+    dtNavMeshQuery* GetNavQuery() const { return navQuery_; }
 };
 
 }

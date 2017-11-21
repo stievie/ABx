@@ -14,6 +14,8 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
+    Creature();
+
     /// Move speed: 1 = normal speed
     float GetSpeed() const { return speed_; }
     void SetSpeed(float value) { speed_ = value; }

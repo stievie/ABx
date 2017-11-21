@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "EffectManager.h"
 
+#include "DebugNew.h"
+
 namespace Game {
 
 void Creature::RegisterLua(kaguya::State& state)
@@ -19,6 +21,11 @@ void Creature::RegisterLua(kaguya::State& state)
         .addProperty("Skills", &Creature::GetSkill)
         .addFunction("AddEffect", &Creature::AddEffectByName)*/
     );
+}
+
+Creature::Creature() :
+    GameObject()
+{
 }
 
 void Creature::AddEffect(uint32_t id, uint32_t ticks)

@@ -28,6 +28,7 @@
 #include "IOEffects.h"
 #include "EffectManager.h"
 #include "DataProvider.h"
+#include "Maintenance.h"
 
 #include "DebugNew.h"
 
@@ -222,7 +223,7 @@ void Application::MainLoader()
         LOG_INFO << (loadingTime / 1000) << " s";
     LOG_INFO << std::endl;
 
-    IO::DataProvider::Instance.Run();
+    Maintenance::Instance.Run();
     Game::GameManager::Instance.Start(&serviceManager_);
 
     // Notify we are ready
@@ -274,6 +275,7 @@ void Application::Stop()
     LOG_INFO << "Server is shutting down" << std::endl;
     // Before serviceManager_.Stop()
     Net::ConnectionManager::GetInstance()->CloseAll();
+    Maintenance::Instance.Stop();
 
     serviceManager_.Stop();
 }

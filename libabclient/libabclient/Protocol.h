@@ -4,11 +4,15 @@
 #include <stdint.h>
 #include "Connection.h"
 #include <memory>
+#pragma warning(push)
+#pragma warning(disable: 4592)
 #include <asio.hpp>
+#pragma warning(pop)
 #include "Connection.h"
 #include "InputMessage.h"
 #include "OutputMessage.h"
 #include <stdint.h>
+#include "Defines.h"
 
 namespace Client {
 
