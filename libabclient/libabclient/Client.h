@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <memory>
 #include "Account.h"
+#include "Receiver.h"
 
 namespace Client {
 
@@ -27,6 +28,8 @@ private:
     std::string password_;
     void OnGetCharlist();
     void OnEnterWorld();
+    void OnError(const std::error_code& err);
+    void OnProtocolError(uint8_t err);
 public:
     Client();
     ~Client();
@@ -36,6 +39,7 @@ public:
     std::string loginHost_;
     uint16_t loginPort_;
     ClientState state_;
+    Receiver* receiver_;
     const Charlist& GetCharacters() const;
 };
 

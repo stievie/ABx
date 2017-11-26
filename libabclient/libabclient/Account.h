@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+namespace Client {
+
 struct AccountCharacter
 {
     uint32_t id;
@@ -12,3 +14,5 @@ struct AccountCharacter
 };
 
 typedef std::vector<AccountCharacter> Charlist;
+
+}

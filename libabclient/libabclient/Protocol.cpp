@@ -9,7 +9,9 @@ namespace Client {
 Protocol::Protocol() :
     connection_(nullptr),
     checksumEnabled_(false),
-    xteaEnabled_(false)
+    xteaEnabled_(false),
+    errorCallback_(nullptr),
+    protocolErrorCallback_(nullptr)
 {
     inputMessage_ = std::make_shared<InputMessage>();
 }
@@ -215,9 +217,9 @@ void Protocol::OnError(const asio::error_code& err)
 {
 #ifdef _LOGGING
     LOG_ERROR << err.value() << " " << err.message();
-#else
-    AB_UNUSED(err);
 #endif
+    if (errorCallback_)
+        errorCallback_(err);
     Disconnect();
 }
 

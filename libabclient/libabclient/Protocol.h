@@ -18,6 +18,9 @@ namespace Client {
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
+public:
+    typedef std::function<void(const std::error_code&)> ErrorCallback;
+    typedef std::function<void(uint8_t)> ProtocolErrorCallback;
 private:
     std::shared_ptr<InputMessage> inputMessage_;
     void InternalRecvHeader(uint8_t* buffer, uint16_t size);
@@ -29,10 +32,17 @@ protected:
     bool xteaEnabled_;
     std::shared_ptr<Connection> connection_;
     uint32_t xteaKey_[4];
+    ErrorCallback errorCallback_;
+    ProtocolErrorCallback protocolErrorCallback_;
     virtual void OnError(const asio::error_code& err);
     virtual void OnConnect() {}
     virtual void OnReceive(const std::shared_ptr<InputMessage>& message) {
         AB_UNUSED(message);
+    }
+    void ProtocolError(uint8_t err)
+    {
+        if (protocolErrorCallback_)
+            protocolErrorCallback_(err);
     }
 public:
     Protocol();
@@ -54,6 +64,8 @@ public:
     void SetXteaKey(uint32_t a, uint32_t b, uint32_t c, uint32_t d);
     virtual void Send(const std::shared_ptr<OutputMessage>& message);
     virtual void Receive();
+    void SetErrorCallback(const ErrorCallback& errorCallback) { errorCallback_ = errorCallback; }
+    void SetProtocolErrorCallback(const ProtocolErrorCallback& errorCallback) { protocolErrorCallback_ = errorCallback; }
 };
 
 }

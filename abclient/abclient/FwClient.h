@@ -5,8 +5,10 @@
 #include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )
 #include "Client.h"
+#include "Receiver.h"
+#include "Account.h"
 
-class FwClient : public Object
+class FwClient : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object);
 private:
@@ -25,9 +27,16 @@ public:
     void Login(const String& name, const String& pass);
     void Logout();
 
-    void onConnectionError(int message);
-    void onConnectionClosed();
-    void onEnterGame();
-    void onSelectCharacter();
+    void OnGetCharlist() override;
+    void OnEnterWorld() override;
+    /// asio network error
+    void OnNetworkError(const std::error_code& err) override;
+    /// Protocol error, e.g. Login failed
+    void OnProtocolError(uint8_t err) override;
+    const Client::Charlist& GetCharacters() const
+    {
+        return client_.GetCharacters();
+    }
+
 };
 

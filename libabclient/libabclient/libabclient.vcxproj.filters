@@ -72,6 +72,9 @@
     <ClInclude Include="Account.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Receiver.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

@@ -22,11 +22,27 @@ Client::~Client()
 void Client::OnGetCharlist()
 {
     state_ = StateSelecChar;
+    if (receiver_)
+        receiver_->OnGetCharlist();
 }
 
 void Client::OnEnterWorld()
 {
     state_ = StateWorld;
+    if (receiver_)
+        receiver_->OnEnterWorld();
+}
+
+void Client::OnError(const std::error_code& err)
+{
+    if (receiver_)
+        receiver_->OnNetworkError(err);
+}
+
+void Client::OnProtocolError(uint8_t err)
+{
+    if (receiver_)
+        receiver_->OnProtocolError(err);
 }
 
 void Client::Login(const std::string& name, const std::string& pass)
@@ -36,6 +52,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     // 1. Login to login server -> get character list
     protoLogin_ = std::make_shared<ProtocolLogin>();
+    protoLogin_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
     protoLogin_->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnGetCharlist, this));
     Connection::Run();
@@ -45,6 +62,7 @@ void Client::EnterWorld(const std::string& charName)
 {
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
+    protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
     protoGame_->Login(accountName_, password_, charName, loginHost_, loginPort_,
         std::bind(&Client::OnEnterWorld, this));
     Connection::Run();

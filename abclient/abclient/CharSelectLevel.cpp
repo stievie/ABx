@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
-
+#include "FwClient.h"
 
 CharSelectLevel::CharSelectLevel(Context* context) :
     BaseLevel(context)
@@ -14,6 +14,18 @@ CharSelectLevel::CharSelectLevel(Context* context) :
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
+}
+
+void CharSelectLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)
+{
+    cameraNode_ = scene_->GetChild("CameraNode");
+    if (!cameraNode_)
+    {
+        cameraNode_ = scene_->CreateChild("CameraNode");
+        Camera* camera = cameraNode_->CreateComponent<Camera>();
+        camera->SetFarClip(300.0f);
+    }
+    SetupViewport();
 }
 
 void CharSelectLevel::SubscribeToEvents()
@@ -40,19 +52,32 @@ void CharSelectLevel::CreateUI()
     window_login->SetName("Select Character");
     window_login->SetStyleAuto();
 
-/*    button_ = new Button(context_);
-    button_->SetLayoutMode(LM_FREE);
-    button_->SetMinHeight(40);
-    button_->SetName("LoginButton");    // not required
-    button_->SetStyleAuto();
-    button_->SetOpacity(1.0f);     // transparency
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    const Client::Charlist& chars = client->GetCharacters();
+    for (const auto& ch : chars)
+    {
+        Button* button = new Button(context_);
+        button->SetMinHeight(40);
+        button->SetName("CharacterButton");    // not required
+        button->SetStyleAuto();
+        button->SetOpacity(1.0f);     // transparency
+        button->SetLayoutMode(LM_FREE);
+        SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCharClicked));
+        {
+            // buttons don't have a text by itself, a text needs to be added as a child
+            Text* t = new Text(context_);
+            t->SetAlignment(HA_CENTER, VA_CENTER);
+            t->SetName("CharacterName");
+            t->SetText(String(ch.name.c_str()));
+            t->SetStyle("Text");
+            button->AddChild(t);
+        }
+        window_login->AddChild(button);
+    }
 
-    button_->SetEnabled(false);
-
-    window_login->AddChild(button_);
+/*
 
 
-    SubscribeToEvent(button_, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCharClicked));
     */
 }
 
@@ -70,4 +95,13 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
 
 void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
+    UNREFERENCED_PARAMETER(eventType);
+
+    using namespace Update;
+
+    // Take the frame time step, which is stored as a float
+    float timeStep = eventData[P_TIMESTEP].GetFloat();
+    Quaternion rot;
+    rot.FromAngleAxis(timeStep, Vector3(0.0f, 1.0f, 0.0f));
+    cameraNode_->Rotate(rot);
 }

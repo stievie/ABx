@@ -127,6 +127,8 @@ void Connection::OnConnect(const asio::error_code& error)
 void Connection::OnWrite(const asio::error_code& error, size_t writeSize,
     std::shared_ptr<asio::streambuf> outputStream)
 {
+    AB_UNUSED(writeSize);
+
     writeTimer_.cancel();
 
     if (error == asio::error::operation_aborted)
