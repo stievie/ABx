@@ -13,7 +13,7 @@ class LoginLevel : public BaseLevel
 public:
     /// Construct.
     LoginLevel(Context* context);
-    virtual void CreatePlayer(const Vector3& position, const Quaternion& direction) override;
+    void CreatePlayer(const Vector3& position, const Quaternion& direction) override;
 
 protected:
     virtual void SubscribeToEvents();

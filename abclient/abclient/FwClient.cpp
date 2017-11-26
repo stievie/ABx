@@ -3,11 +3,13 @@
 #include "AbEvents.h"
 #include <sstream>
 #include <Urho3D/IO/Log.h>
+#include <string>
 
 FwClient::FwClient(Context* context) :
     Object(context),
     loggedIn_(false)
 {
+    lastState_ = client_.state_;
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
 
@@ -29,6 +31,20 @@ void FwClient::Stop()
 
 void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
+    if (lastState_ == client_.state_)
+        return;
+
+    switch (client_.state_)
+    {
+    case Client::Client::StateSelecChar:
+        loggedIn_ = true;
+        onSelectCharacter();
+        break;
+    case Client::Client::StateWorld:
+        onEnterGame();
+        break;
+    }
+    lastState_ = client_.state_;
 }
 
 void FwClient::Login(const String& name, const String& pass)
@@ -37,7 +53,7 @@ void FwClient::Login(const String& name, const String& pass)
     {
         accountName_ = name;
         accounbtPass_ = pass;
-//        protoLogin_ = Net::ProtocolLogin::Login("localhost", 7171, name, pass, "");
+        client_.Login(std::string(name.CString()), std::string(pass.CString()));
     }
 }
 
@@ -59,6 +75,13 @@ void FwClient::onConnectionClosed()
 void FwClient::onEnterGame()
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::E_SET_LEVEL] = "WorldLevel";
+    eData[AbEvents::E_SET_LEVEL] = "OutpostLevel";
+    SendEvent(AbEvents::E_SET_LEVEL, eData);
+}
+
+void FwClient::onSelectCharacter()
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::E_SET_LEVEL] = "CharSelectLevel";
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }

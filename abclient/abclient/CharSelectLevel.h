@@ -13,5 +13,12 @@ class CharSelectLevel : public BaseLevel
     URHO3D_OBJECT(CharSelectLevel, BaseLevel);
 public:
     CharSelectLevel(Context* context);
+protected:
+    virtual void SubscribeToEvents();
+    virtual void CreateUI();
+private:
+    void CreateScene();
+    void HandleCharClicked(StringHash eventType, VariantMap& eventData);
+    void HandleUpdate(StringHash eventType, VariantMap& eventData);
 };
 

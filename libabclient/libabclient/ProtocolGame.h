@@ -13,11 +13,13 @@ public:
     enum { ServerSendsFirst = true };
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
     enum { UseChecksum = true };
+    typedef std::function<void()> EnterWorldCallback;
 private:
     std::string accountName_;
     std::string accountPass_;
     std::string charName_;
     bool firstRevc_;
+    EnterWorldCallback enterWorldCallback_;
 
     void SendLoginPacket();
 protected:
@@ -31,7 +33,7 @@ public:
     ~ProtocolGame();
 
     void Login(const std::string& accountName, const std::string& accountPass,
-        std::string charName, const std::string& host, uint16_t port);
+        std::string charName, const std::string& host, uint16_t port, const EnterWorldCallback& callback);
 };
 
 }

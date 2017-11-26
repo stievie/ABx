@@ -14,6 +14,7 @@ private:
     String accounbtPass_;
     bool loggedIn_;
     Client::Client client_;
+    Client::Client::ClientState lastState_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     FwClient(Context* context);
@@ -27,5 +28,6 @@ public:
     void onConnectionError(int message);
     void onConnectionClosed();
     void onEnterGame();
+    void onSelectCharacter();
 };
 

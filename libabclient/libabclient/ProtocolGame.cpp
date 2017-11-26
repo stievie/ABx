@@ -4,7 +4,8 @@
 namespace Client {
 
 ProtocolGame::ProtocolGame() :
-    Protocol()
+    Protocol(),
+    enterWorldCallback_(nullptr)
 {
 }
 
@@ -13,11 +14,13 @@ ProtocolGame::~ProtocolGame()
 }
 
 void ProtocolGame::Login(const std::string& accountName,
-    const std::string& accountPass, std::string charName, const std::string& host, uint16_t port)
+    const std::string& accountPass, std::string charName,
+    const std::string& host, uint16_t port, const EnterWorldCallback& callback)
 {
     accountName_ = accountName;
     accountPass_ = accountPass;
     charName_ = charName;
+    enterWorldCallback_ = callback;
 
     Connect(host, port);
 }

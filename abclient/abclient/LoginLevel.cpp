@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LoginLevel.h"
 #include "AbEvents.h"
+#include "FwClient.h"
 
 LoginLevel::LoginLevel(Context* context) :
     BaseLevel(context),
@@ -161,8 +162,8 @@ void LoginLevel::DoLogin()
     button_->SetEnabled(false);
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
-//    FwClient* net = context_->GetSubsystem<FwClient>();
-//    net->Login(name, pass);
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->Login(name, pass);
 }
 
 void LoginLevel::HandleLoginClicked(StringHash eventType, VariantMap& eventData)

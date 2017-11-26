@@ -2,18 +2,21 @@
 
 #include <string>
 #include <stdint.h>
-#include "ProtocolLogin.h"
-#include "ProtocolGame.h"
 #include <memory>
+#include "Account.h"
 
 namespace Client {
 
-class Client : public std::enable_shared_from_this<Client>
+class ProtocolLogin;
+class ProtocolGame;
+
+class Client
 {
 public:
     enum ClientState
     {
         StateDisconnected,
+        StateCreateChar,
         StateSelecChar,
         StateWorld
     };
@@ -23,6 +26,7 @@ private:
     std::string accountName_;
     std::string password_;
     void OnGetCharlist();
+    void OnEnterWorld();
 public:
     Client();
     ~Client();
@@ -32,13 +36,7 @@ public:
     std::string loginHost_;
     uint16_t loginPort_;
     ClientState state_;
-    const Charlist& GetCharacters() const
-    {
-        static Charlist empty;
-        if (!protoLogin_)
-            return empty;
-        return protoLogin_->characters_;
-    }
+    const Charlist& GetCharacters() const;
 };
 
 }

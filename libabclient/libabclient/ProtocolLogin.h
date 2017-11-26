@@ -4,17 +4,9 @@
 #include <string>
 #include <stdint.h>
 #include <vector>
+#include "Account.h"
 
 namespace Client {
-
-struct AccountCharacter
-{
-    uint32_t id;
-    uint16_t level;
-    std::string name;
-};
-
-typedef std::vector<AccountCharacter> Charlist;
 
 class ProtocolLogin : public Protocol
 {

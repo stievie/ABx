@@ -120,6 +120,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Account.h" />
     <ClInclude Include="Aes.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Connection.h" />
