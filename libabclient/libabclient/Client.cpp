@@ -7,13 +7,19 @@ Client::Client() :
     loginHost_("127.0.0.1"),
     loginPort_(2748),
     protoLogin_(nullptr),
-    protoGame_(nullptr)
+    protoGame_(nullptr),
+    state_(StateDisconnected)
 {
 }
 
 Client::~Client()
 {
     Connection::Terminate();
+}
+
+void Client::OnGetCharlist()
+{
+    state_ = StateSelecChar;
 }
 
 void Client::Login(const std::string& name, const std::string& pass)
@@ -23,7 +29,8 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     // 1. Login to login server -> get character list
     protoLogin_ = std::make_shared<ProtocolLogin>();
-    protoLogin_->Login(loginHost_, loginPort_, name, pass);
+    protoLogin_->Login(loginHost_, loginPort_, name, pass,
+        std::bind(&Client::OnGetCharlist, shared_from_this()));
     Connection::Run();
 }
 

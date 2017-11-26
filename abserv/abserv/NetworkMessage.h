@@ -27,7 +27,6 @@ protected:
     {
         MsgSize_t length = 0;
         MsgSize_t position = INITIAL_BUFFER_POSITION;
-        bool overrun = false;
     };
 
     NetworkMessageInfo info_;
@@ -41,7 +40,6 @@ protected:
     {
         if ((info_.position + size) > (info_.length + 8) || size >= (NETWORKMESSAGE_MAXSIZE - info_.position))
         {
-            info_.overrun = true;
             return false;
         }
         return true;

@@ -14,6 +14,8 @@ struct AccountCharacter
     std::string name;
 };
 
+typedef std::vector<AccountCharacter> Charlist;
+
 class ProtocolLogin : public Protocol
 {
 public:
@@ -21,10 +23,12 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = 0x01 };
     enum { UseChecksum = true };
+    typedef std::function<void()> CharlistCallback;
 private:
     std::string accountName_;
     std::string password_;
     bool firstRecv_;
+    CharlistCallback charlistCallback;
     void SendLoginPacket();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
@@ -35,9 +39,9 @@ public:
     ~ProtocolLogin();
 
     void Login(std::string& host, uint16_t port,
-        const std::string& account, const std::string& password);
+        const std::string& account, const std::string& password, const CharlistCallback& callback);
 
-    std::vector<AccountCharacter> characters_;
+    Charlist characters_;
 };
 
 }

@@ -16,7 +16,7 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     // if not game == running return
 
     message.Skip(2);    // Client OS
-    uint16_t version = message.Get<uint16_t>();
+    /* uint16_t version = */ message.Get<uint16_t>();
 
     Auth::BanInfo banInfo;
     std::shared_ptr<Connection> conn = GetConnection();
@@ -70,6 +70,7 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(0x64);
+    output->AddByte(static_cast<uint8_t>(account.characters_.size()));
     for (const AccountCharacter& character : account.characters_)
     {
         output->Add<uint32_t>(character.id);

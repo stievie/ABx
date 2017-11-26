@@ -43,7 +43,10 @@ public:
     void AddCryptoHeader(bool addChecksum)
     {
         if (addChecksum)
-            AddHeader<uint32_t>(Utils::AdlerChecksum((uint8_t*)(buffer_ - outputBufferStart_), info_.length));
+        {
+            uint32_t checksum = Utils::AdlerChecksum((uint8_t*)(buffer_ + outputBufferStart_), info_.length);
+            AddHeader<uint32_t>(checksum);
+        }
         WriteMessageLength();
     }
     void WriteMessageLength()

@@ -4,7 +4,8 @@
 namespace Client {
 
 ProtocolLogin::ProtocolLogin() :
-    Protocol()
+    Protocol(),
+    charlistCallback(nullptr)
 {
     checksumEnabled_ = ProtocolLogin::UseChecksum;
 }
@@ -14,10 +15,11 @@ ProtocolLogin::~ProtocolLogin()
 }
 
 void ProtocolLogin::Login(std::string& host, uint16_t port,
-    const std::string& account, const std::string& password)
+    const std::string& account, const std::string& password, const CharlistCallback& callback)
 {
     accountName_ = account;
     password_ = password;
+    charlistCallback = callback;
     Connect(host, port);
 }
 
@@ -35,16 +37,23 @@ void ProtocolLogin::SendLoginPacket()
 
 void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
 {
+    message->Get<uint16_t>();       // ??
     uint8_t recvByte = message->Get<uint8_t>();
     switch (recvByte)
     {
     case 0x64:
     {
         characters_.clear();
-        uint32_t id = message->Get<uint32_t>();
-        uint16_t level = message->Get<uint16_t>();
-        std::string name = message->GetString();
-        characters_.push_back({ id, level, name });
+        int count = message->Get<uint8_t>();
+        for (int i = 0; i < count; i++)
+        {
+            uint32_t id = message->Get<uint32_t>();
+            uint16_t level = message->Get<uint16_t>();
+            std::string name = message->GetString();
+            characters_.push_back({ id, level, name });
+        }
+        if (charlistCallback)
+            charlistCallback();
         break;
     }
     }

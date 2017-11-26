@@ -133,6 +133,10 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
             XTEAEncrypt(*message);
             message->AddCryptoHeader(checksumEnabled_);
         }
+        else if (checksumEnabled_)
+        {
+            message->AddCryptoHeader(true);
+        }
     }
 }
 
