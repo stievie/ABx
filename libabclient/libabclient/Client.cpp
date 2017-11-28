@@ -2,12 +2,14 @@
 #include "Client.h"
 #include "ProtocolLogin.h"
 #include "ProtocolGame.h"
+#include "Connection.h"
 
 namespace Client {
 
 Client::Client() :
     loginHost_("127.0.0.1"),
     loginPort_(2748),
+    gamePort_(2749),
     protoLogin_(nullptr),
     protoGame_(nullptr),
     state_(StateDisconnected)
@@ -26,11 +28,12 @@ void Client::OnGetCharlist()
         receiver_->OnGetCharlist();
 }
 
-void Client::OnEnterWorld()
+void Client::OnEnterWorld(const std::string& mapName)
 {
     state_ = StateWorld;
+    mapName_ = mapName;
     if (receiver_)
-        receiver_->OnEnterWorld();
+        receiver_->OnEnterWorld(mapName);
 }
 
 void Client::OnError(const std::error_code& err)
@@ -63,9 +66,14 @@ void Client::EnterWorld(const std::string& charName)
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
-    protoGame_->Login(accountName_, password_, charName, loginHost_, loginPort_,
-        std::bind(&Client::OnEnterWorld, this));
+    protoGame_->Login(accountName_, password_, charName, loginHost_, gamePort_,
+        std::bind(&Client::OnEnterWorld, this, std::placeholders::_1));
     Connection::Run();
+}
+
+void Client::Update()
+{
+    Connection::Poll();
 }
 
 const Charlist& Client::GetCharacters() const

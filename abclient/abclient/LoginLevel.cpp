@@ -58,7 +58,7 @@ void LoginLevel::CreateUI()
 
     {
         Text* t = new Text(context_);
-        t->SetAlignment(HA_CENTER, VA_CENTER);
+        t->SetAlignment(HA_CENTER, VA_TOP);
         t->SetName("NameText");
         t->SetText("Name");
         t->SetStyle("Text");
@@ -68,12 +68,12 @@ void LoginLevel::CreateUI()
     nameEdit_->SetName("NameEdit");
     nameEdit_->SetMinHeight(30);
     nameEdit_->SetStyleAuto();
-    nameEdit_->SetCursorBlinkRate(1.0f);
+    nameEdit_->SetCursorBlinkRate(1.2f);
     window_login->AddChild(nameEdit_);
 
     {
         Text* t = new Text(context_);
-        t->SetAlignment(HA_CENTER, VA_CENTER);
+        t->SetAlignment(HA_CENTER, VA_TOP);
         t->SetName("PassText");
         t->SetText("Password");
         t->SetStyle("Text");
@@ -93,7 +93,6 @@ void LoginLevel::CreateUI()
     button_->SetName("LoginButton");    // not required
     button_->SetStyleAuto();
     button_->SetOpacity(1.0f);     // transparency
-
     {
         // buttons don't have a text by itself, a text needs to be added as a child
         Text* t = new Text(context_);

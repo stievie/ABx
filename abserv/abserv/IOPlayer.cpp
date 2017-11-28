@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IOPlayer.h"
 #include "PropStream.h"
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
@@ -10,7 +11,7 @@ bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
 {
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "SELECT `id`, `account_id`, `group_id`, `deleted`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
+    query << "SELECT `id`, `account_id`, `deleted`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
     query << " FROM `players` WHERE `name` = " << db->EscapeString(name);
     std::shared_ptr<DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -41,7 +42,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result
     if (!result->IsNull("last_map"))
         player->data_.lastMap = result->GetString("last_map");
     else
-        player->data_.lastMap = "";
+        player->data_.lastMap = IOGame::GetLandingGame();
     player->data_.lastLogin = result->GetTime("lastlogin");
     player->data_.lastLogout = result->GetTime("lastlogout");
 

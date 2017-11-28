@@ -37,6 +37,8 @@ public:
     friend class Game::Player;
 private:
     std::shared_ptr<Game::Player> player_;
+    uint32_t challengeTimestamp_ = 0;
+    uint8_t challengeRandom_ = 0;
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)
@@ -46,6 +48,7 @@ public:
 
     void Login(const std::string& name, uint32_t accountId);
     void Logout();
+    void EnterGame(const std::string& mapName);
 private:
     // Helpers so we don't need to bind every time
     template <typename Callable, typename... Args>

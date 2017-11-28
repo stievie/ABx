@@ -32,7 +32,6 @@ void ProtocolLogin::SendLoginPacket()
     msg->AddString(accountName_);
     msg->AddString(password_);
     Send(msg);
-    Receive();
 }
 
 void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
@@ -65,6 +64,7 @@ void ProtocolLogin::OnConnect()
     Protocol::OnConnect();
 
     SendLoginPacket();
+    Receive();
 }
 
 void ProtocolLogin::OnReceive(const std::shared_ptr<InputMessage>& message)

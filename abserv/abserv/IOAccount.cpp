@@ -55,7 +55,7 @@ uint32_t IOAccount::GameWorldAuth(const std::string& name, std::string& pass, co
     if (bcrypt_checkpass(pass.c_str(), result->GetString("password").c_str()) != 0)
         return false;
 
-    uint32_t accountId = result->GetUInt("account_id");
+    uint32_t accountId = result->GetUInt("id");
 
     query.str("");
     query << "SELECT `account_id`, `name`, `deleted` FROM `players` WHERE `name` = " <<

@@ -42,4 +42,16 @@ bool IOGame::LoadGameById(Game::Game* game, uint32_t gameId)
     return IOGame::LoadGame(game, db->StoreQuery(query.str()));
 }
 
+std::string IOGame::GetLandingGame()
+{
+    Database* db = Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT `name`, `landing` FROM `games` WHERE `landing` = 1";
+    std::shared_ptr<DBResult> result = db->StoreQuery(query.str());
+    if (result)
+        return result->GetString("name");
+    return "";
+}
+
 }

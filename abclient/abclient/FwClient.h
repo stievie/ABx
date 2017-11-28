@@ -25,10 +25,11 @@ public:
     bool Start();
     void Stop();
     void Login(const String& name, const String& pass);
+    void EnterWorld(const String& charName);
     void Logout();
 
     void OnGetCharlist() override;
-    void OnEnterWorld() override;
+    void OnEnterWorld(const std::string& mapName) override;
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
     /// Protocol error, e.g. Login failed

@@ -10,6 +10,7 @@
 #include "GameManager.h"
 #include "Logger.h"
 #include "Game.h"
+#include "Random.h"
 
 #include "DebugNew.h"
 
@@ -106,24 +107,22 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
 void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 {
-    std::string sessionKey = msg.GetString();
-    std::vector<std::string> sessionArgs = Utils::Split(sessionKey, "\n");
-    if (sessionArgs.size() != 4)
+    msg.Skip(2);    // Client OS
+    /* uint16_t version = */ msg.Get<uint16_t>();
+    std::string accountName = msg.GetString();
+    if (accountName.empty())
     {
-        Disconnect();
+        DisconnectClient("You must enter your account name");
         return;
     }
-
-    std::string& accountName = sessionArgs[0];
-    std::string& password = sessionArgs[1];
+    std::string password = msg.GetString();
+    std::string characterName = msg.GetString();
 
     if (accountName.empty())
     {
         DisconnectClient("You must enter your account name");
         return;
     }
-
-    std::string characterName = msg.GetString();
 
     if (Auth::BanManager::Instance.IsIpBanned(GetIP()))
     {
@@ -147,6 +146,24 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
+/*    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+
+    // Skip checksum
+//    output->Skip(sizeof(uint32_t));
+
+    // Packet length & type
+    output->Add<uint16_t>(0x0006);
+    output->AddByte(0x1F);
+
+    // Add timestamp & random number
+    challengeTimestamp_ = static_cast<uint32_t>(time(nullptr));
+    output->Add<uint32_t>(challengeTimestamp_);
+
+    challengeRandom_ = Utils::Random::Instance.Get<uint8_t>();
+    output->AddByte(challengeRandom_);
+
+    Send(output);
+    */
 }
 
 void ProtocolGame::DisconnectClient(const std::string& message)
@@ -176,7 +193,22 @@ void ProtocolGame::Connect(uint32_t playerId)
 
     acceptPackets_ = true;
 
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(
+            std::bind(&ProtocolGame::EnterGame, GetThis(), player_->data_.lastMap)
+        )
+    );
+}
 
+void ProtocolGame::EnterGame(const std::string& mapName)
+{
+    Game::GameManager::Instance.AddPlayer(mapName, player_);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    output->AddByte(15);               // GameServerEnterGame
+    output->AddString(player_->data_.lastMap);
+    output->AddVector3(player_->position_);
+    output->AddQuaternion(player_->rotation_);
+    Send(output);
 }
 
 }

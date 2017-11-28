@@ -13,7 +13,6 @@
 #include "Logger.h"
 #include "Utils.h"
 #include "GameManager.h"
-#include "Rsa.h"
 #include <functional>
 #include "Random.h"
 #include <ostream>

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
 #include "FwClient.h"
+#include <Urho3D/UI/UIEvents.h>
 
 CharSelectLevel::CharSelectLevel(Context* context) :
     BaseLevel(context)
@@ -41,16 +42,16 @@ void CharSelectLevel::CreateUI()
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
-    Window* window_login = new Window(context_);
-    uiRoot_->AddChild(window_login);
-    window_login->SetSize(400, 300);
-    window_login->SetPosition(0, -40);
-    window_login->SetLayoutMode(LM_VERTICAL);
-    window_login->SetLayoutSpacing(10);
-    window_login->SetLayoutBorder(IntRect(10, 10, 10, 10));
-    window_login->SetAlignment(HA_CENTER, VA_CENTER);
-    window_login->SetName("Select Character");
-    window_login->SetStyleAuto();
+    Window* window = new Window(context_);
+    uiRoot_->AddChild(window);
+    window->SetSize(400, 300);
+    window->SetPosition(0, -40);
+    window->SetLayoutMode(LM_VERTICAL);
+    window->SetLayoutSpacing(10);
+    window->SetLayoutBorder(IntRect(10, 10, 10, 10));
+    window->SetAlignment(HA_CENTER, VA_CENTER);
+    window->SetName("Select Character");
+    window->SetStyleAuto();
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     const Client::Charlist& chars = client->GetCharacters();
@@ -58,7 +59,7 @@ void CharSelectLevel::CreateUI()
     {
         Button* button = new Button(context_);
         button->SetMinHeight(40);
-        button->SetName("CharacterButton");    // not required
+        button->SetName(String(ch.name.c_str()));    // not required
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
@@ -72,13 +73,8 @@ void CharSelectLevel::CreateUI()
             t->SetStyle("Text");
             button->AddChild(t);
         }
-        window_login->AddChild(button);
+        window->AddChild(button);
     }
-
-/*
-
-
-    */
 }
 
 void CharSelectLevel::CreateScene()
@@ -91,6 +87,10 @@ void CharSelectLevel::CreateScene()
 
 void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventData)
 {
+    Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetVoidPtr());
+    const String& name = sender->GetName();
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->EnterWorld(name);
 }
 
 void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

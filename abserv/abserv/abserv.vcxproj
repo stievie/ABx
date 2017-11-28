@@ -201,7 +201,6 @@
     <ClInclude Include="ProtocolStatus.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="Rsa.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Skill.h" />
@@ -261,7 +260,6 @@
     <ClCompile Include="ProtocolStatus.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Rsa.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="Skill.cpp" />

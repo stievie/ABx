@@ -33,6 +33,7 @@ void FwClient::Stop()
 
 void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
+    client_.Update();
     if (lastState_ == client_.state_)
         return;
 
@@ -57,6 +58,14 @@ void FwClient::Login(const String& name, const String& pass)
     }
 }
 
+void FwClient::EnterWorld(const String& charName)
+{
+    if (loggedIn_)
+    {
+        client_.EnterWorld(std::string(charName.CString()));
+    }
+}
+
 void FwClient::Logout()
 {
     loggedIn_ = false;
@@ -69,7 +78,7 @@ void FwClient::OnGetCharlist()
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
 
-void FwClient::OnEnterWorld()
+void FwClient::OnEnterWorld(const std::string& mapName)
 {
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::E_SET_LEVEL] = "OutpostLevel";

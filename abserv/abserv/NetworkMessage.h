@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <string>
 #include <memory>
+#include "Vector3.h"
+#include "Quaternion.h"
 
 #define NETWORKMESSAGE_MAXSIZE 15340
 
@@ -92,6 +94,19 @@ public:
         AddString(value.c_str());
     }
     void AddString(const char* value);
+    void AddVector3(const Math::Vector3& value)
+    {
+        Add<float>(value.x_);
+        Add<float>(value.y_);
+        Add<float>(value.z_);
+    }
+    void AddQuaternion(const Math::Quaternion& value)
+    {
+        Add<float>(value.x_);
+        Add<float>(value.y_);
+        Add<float>(value.z_);
+        Add<float>(value.w_);
+    }
     template <typename T>
     void Add(T value)
     {
