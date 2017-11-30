@@ -17,6 +17,7 @@ private:
     bool loggedIn_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
+    Client::Charlist characters_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     FwClient(Context* context);
@@ -25,10 +26,10 @@ public:
     bool Start();
     void Stop();
     void Login(const String& name, const String& pass);
-    void EnterWorld(const String& charName);
+    void EnterWorld(const String& charName, const String& map);
     void Logout();
 
-    void OnGetCharlist() override;
+    void OnGetCharlist(const Client::Charlist& chars) override;
     void OnEnterWorld(const std::string& mapName) override;
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
@@ -36,7 +37,7 @@ public:
     void OnProtocolError(uint8_t err) override;
     const Client::Charlist& GetCharacters() const
     {
-        return client_.GetCharacters();
+        return characters_;
     }
 
 };

@@ -16,7 +16,7 @@
 
 namespace Net {
 
-void ProtocolGame::Login(const std::string& name, uint32_t accountId)
+void ProtocolGame::Login(const std::string& name, uint32_t accountId, const std::string& map)
 {
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByName(name);
     if (foundPlayer)
@@ -44,6 +44,7 @@ void ProtocolGame::Login(const std::string& name, uint32_t accountId)
         return;
     }
 
+    player_->map_ = map;
     Connect(player_->id_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
 }
@@ -117,6 +118,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     }
     std::string password = msg.GetString();
     std::string characterName = msg.GetString();
+    std::string map = msg.GetString();
 
     if (accountName.empty())
     {
@@ -139,7 +141,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::Login, GetThis(), characterName, accountId)
+            std::bind(&ProtocolGame::Login, GetThis(), characterName, accountId, map)
         )
     );
 }
@@ -195,7 +197,7 @@ void ProtocolGame::Connect(uint32_t playerId)
 
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::EnterGame, GetThis(), player_->data_.lastMap)
+            std::bind(&ProtocolGame::EnterGame, GetThis(), player_->map_)
         )
     );
 }
@@ -205,7 +207,7 @@ void ProtocolGame::EnterGame(const std::string& mapName)
     Game::GameManager::Instance.AddPlayer(mapName, player_);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(15);               // GameServerEnterGame
-    output->AddString(player_->data_.lastMap);
+    output->AddString(mapName);
     output->AddVector3(player_->position_);
     output->AddQuaternion(player_->rotation_);
     Send(output);

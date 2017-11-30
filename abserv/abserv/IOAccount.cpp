@@ -2,6 +2,7 @@
 #include "IOAccount.h"
 #include "Database.h"
 #include <abcrypto.hpp>
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
@@ -26,15 +27,20 @@ bool IOAccount::LoginServerAuth(const std::string & name, const std::string & pa
     account.type_ = static_cast<AccountType>(result->GetInt("type"));
     account.characters_.clear();
 
+    std::string landingGame = IOGame::GetLandingGame();
     query.str("");
-    query << "SELECT `id`, `level`, `name` FROM `players` WHERE `deleted` = 0 AND `account_id` = " << account.id_;
+    query << "SELECT `id`, `level`, `name`, `last_map` FROM `players` WHERE `deleted` = 0 AND `account_id` = " << account.id_;
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
+        std::string lastMap = result->GetString("last_map");
+        if (lastMap.empty())
+            lastMap = landingGame;
         AccountCharacter character
         {
             result->GetUInt("id"),
             static_cast<uint16_t>(result->GetUInt("level")),
-            result->GetString("name")
+            result->GetString("name"),
+            lastMap
         };
         account.characters_.push_back(character);
     }

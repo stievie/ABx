@@ -58,11 +58,11 @@ void FwClient::Login(const String& name, const String& pass)
     }
 }
 
-void FwClient::EnterWorld(const String& charName)
+void FwClient::EnterWorld(const String& charName, const String& map)
 {
     if (loggedIn_)
     {
-        client_.EnterWorld(std::string(charName.CString()));
+        client_.EnterWorld(std::string(charName.CString()), std::string(map.CString()));
     }
 }
 
@@ -71,8 +71,9 @@ void FwClient::Logout()
     loggedIn_ = false;
 }
 
-void FwClient::OnGetCharlist()
+void FwClient::OnGetCharlist(const Client::Charlist& chars)
 {
+    characters_ = chars;
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::E_SET_LEVEL] = "CharSelectLevel";
     SendEvent(AbEvents::E_SET_LEVEL, eData);

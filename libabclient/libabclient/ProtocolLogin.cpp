@@ -42,17 +42,20 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     {
     case 0x64:
     {
-        characters_.clear();
+        gameHost_ = message->GetString();
+        gamePort_ = message->Get<uint16_t>();
+        Charlist chars;
         int count = message->Get<uint8_t>();
         for (int i = 0; i < count; i++)
         {
             uint32_t id = message->Get<uint32_t>();
             uint16_t level = message->Get<uint16_t>();
             std::string name = message->GetString();
-            characters_.push_back({ id, level, name });
+            std::string lastMap = message->GetString();
+            chars.push_back({ id, level, name, lastMap });
         }
         if (charlistCallback)
-            charlistCallback();
+            charlistCallback(chars);
         break;
     }
     }

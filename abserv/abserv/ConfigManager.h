@@ -13,6 +13,7 @@ public:
         Location,
         IP,
         GamePort,
+        GameHost,
         AdminPort,
         LoginPort,
         StatusPort,

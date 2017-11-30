@@ -18,6 +18,7 @@ struct AccountCharacter
     uint32_t id;
     uint16_t level;
     std::string name;
+    std::string lastMap;
 };
 
 class Account

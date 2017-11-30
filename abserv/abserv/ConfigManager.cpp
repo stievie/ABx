@@ -11,10 +11,10 @@ ConfigManager::ConfigManager() :
     isLoaded(false)
 {
     config_[Key::ServerName] = "abserv";
-    config_[Key::LoginPort] = 2748;
-    config_[Key::AdminPort] = 2750;
-    config_[Key::StatusPort] = 2748;
-    config_[Key::GamePort] = 2749;
+    config_[Key::LoginPort] = 0;
+    config_[Key::AdminPort] = 0;
+    config_[Key::StatusPort] = 0;
+    config_[Key::GamePort] = 0;
     config_[Key::AdminEnabled] = false;
     config_[Key::AdminLocalhostOnly] = true;
     config_[Key::AdminRequireEncryption] = true;
@@ -91,10 +91,11 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::CryptoKeys] = GetGlobal("crypto_keys", "");
     config_[Key::LogDir] = GetGlobal("log_dir", "");
     config_[Key::DataDir] = GetGlobal("data_dir", "");
-    config_[Key::LoginPort] = (int)GetGlobal("login_port", 1336);
-    config_[Key::AdminPort] = (int)GetGlobal("admin_port", 1338);
-    config_[Key::StatusPort] = (int)GetGlobal("status_port", 1336);
-    config_[Key::GamePort] = (int)GetGlobal("game_port", 1337);
+    config_[Key::LoginPort] = (int)GetGlobal("login_port", 0);
+    config_[Key::AdminPort] = (int)GetGlobal("admin_port", 0);
+    config_[Key::StatusPort] = (int)GetGlobal("status_port", 0);
+    config_[Key::GamePort] = (int)GetGlobal("game_port", 0);
+    config_[Key::GameHost] = GetGlobal("game_host", "");
 
     config_[Key::DBDriver] = GetGlobal("db_driver", "mysql");
     config_[Key::DBHost] = GetGlobal("db_host", "localhost");

@@ -194,10 +194,6 @@ void Application::MainLoader()
     }
     LOG_INFO << "[done]" << std::endl;
 
-    LOG_INFO << "Checking DB schema version...";
-    // TODO:
-    LOG_INFO << "[done]" << std::endl;
-
     {
         LOG_INFO << "Loading game data...";
         IO::IOSkills::Load(Game::SkillManager::Instance, IO::DataProvider::Instance.GetDataFile("/skills/skills.xml"));
@@ -207,10 +203,18 @@ void Application::MainLoader()
     }
 
     // Add Protocols
-    serviceManager_.Add<Net::ProtocolLogin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt()));
-    serviceManager_.Add<Net::ProtocolAdmin>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt()));
-    serviceManager_.Add<Net::ProtocolStatus>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt()));
-    serviceManager_.Add<Net::ProtocolGame>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt()));
+    uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
+    if (port != 0)
+        serviceManager_.Add<Net::ProtocolLogin>(port);
+    port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
+    if (port != 0)
+        serviceManager_.Add<Net::ProtocolAdmin>(port);
+    port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
+    if (port != 0)
+        serviceManager_.Add<Net::ProtocolStatus>(port);
+    port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
+    if (port != 0)
+        serviceManager_.Add<Net::ProtocolGame>(port);
 
     PrintServerInfo();
 

@@ -55,11 +55,12 @@ void CharSelectLevel::CreateUI()
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     const Client::Charlist& chars = client->GetCharacters();
+    int i = 0;
     for (const auto& ch : chars)
     {
         Button* button = new Button(context_);
         button->SetMinHeight(40);
-        button->SetName(String(ch.name.c_str()));    // not required
+        button->SetName(String(i));    // not required
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
@@ -74,6 +75,7 @@ void CharSelectLevel::CreateUI()
             button->AddChild(t);
         }
         window->AddChild(button);
+        i++;
     }
 }
 
@@ -88,9 +90,11 @@ void CharSelectLevel::CreateScene()
 void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventData)
 {
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetVoidPtr());
-    const String& name = sender->GetName();
+    int index = std::atoi(sender->GetName().CString());
     FwClient* net = context_->GetSubsystem<FwClient>();
-    net->EnterWorld(name);
+    String name = String(net->GetCharacters()[index].name.c_str());
+    String map = String(net->GetCharacters()[index].lastMap.c_str());
+    net->EnterWorld(name, map);
 }
 
 void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

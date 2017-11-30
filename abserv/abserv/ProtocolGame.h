@@ -46,7 +46,7 @@ public:
         checksumEnabled_ = ProtocolGame::UseChecksum;
     }
 
-    void Login(const std::string& name, uint32_t accountId);
+    void Login(const std::string& name, uint32_t accountId, const std::string& map);
     void Logout();
     void EnterGame(const std::string& mapName);
 private:

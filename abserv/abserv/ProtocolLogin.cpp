@@ -6,6 +6,7 @@
 #include <functional>
 #include "Account.h"
 #include "IOAccount.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
@@ -70,12 +71,15 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(0x64);
+    output->AddString(ConfigManager::Instance[ConfigManager::GameHost].GetString());
+    output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));
     output->AddByte(static_cast<uint8_t>(account.characters_.size()));
     for (const AccountCharacter& character : account.characters_)
     {
         output->Add<uint32_t>(character.id);
         output->Add<uint16_t>(character.level);
         output->AddString(character.name);
+        output->AddString(character.lastMap);
     }
 
     Send(output);

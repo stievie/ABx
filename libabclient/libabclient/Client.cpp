@@ -8,6 +8,7 @@ namespace Client {
 
 Client::Client() :
     loginHost_("127.0.0.1"),
+    gameHost_("127.0.0.1"),
     loginPort_(2748),
     gamePort_(2749),
     protoLogin_(nullptr),
@@ -21,11 +22,14 @@ Client::~Client()
     Connection::Terminate();
 }
 
-void Client::OnGetCharlist()
+void Client::OnGetCharlist(const Charlist& chars)
 {
+    gamePort_ = protoLogin_->gamePort_;
+    if (!protoLogin_->gameHost_.empty())
+        gameHost_ = protoLogin_->gameHost_;
     state_ = StateSelecChar;
     if (receiver_)
-        receiver_->OnGetCharlist();
+        receiver_->OnGetCharlist(chars);
 }
 
 void Client::OnEnterWorld(const std::string& mapName)
@@ -57,16 +61,16 @@ void Client::Login(const std::string& name, const std::string& pass)
     protoLogin_ = std::make_shared<ProtocolLogin>();
     protoLogin_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
     protoLogin_->Login(loginHost_, loginPort_, name, pass,
-        std::bind(&Client::OnGetCharlist, this));
+        std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
     Connection::Run();
 }
 
-void Client::EnterWorld(const std::string& charName)
+void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
-    protoGame_->Login(accountName_, password_, charName, loginHost_, gamePort_,
+    protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
         std::bind(&Client::OnEnterWorld, this, std::placeholders::_1));
     Connection::Run();
 }
@@ -74,14 +78,6 @@ void Client::EnterWorld(const std::string& charName)
 void Client::Update()
 {
     Connection::Poll();
-}
-
-const Charlist& Client::GetCharacters() const
-{
-    static Charlist empty;
-    if (!protoLogin_)
-        return empty;
-    return protoLogin_->characters_;
 }
 
 }

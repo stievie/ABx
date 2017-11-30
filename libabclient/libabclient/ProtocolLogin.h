@@ -15,7 +15,7 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = 0x01 };
     enum { UseChecksum = true };
-    typedef std::function<void()> CharlistCallback;
+    typedef std::function<void(const Charlist& chars)> CharlistCallback;
 private:
     std::string accountName_;
     std::string password_;
@@ -31,9 +31,11 @@ public:
     ~ProtocolLogin();
 
     void Login(std::string& host, uint16_t port,
-        const std::string& account, const std::string& password, const CharlistCallback& callback);
+        const std::string& account, const std::string& password,
+        const CharlistCallback& callback);
 
-    Charlist characters_;
+    std::string gameHost_;
+    uint16_t gamePort_;
 };
 
 }

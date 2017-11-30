@@ -59,6 +59,7 @@ public:
     PlayerData data_;
     time_t loginTime_;
     time_t logoutTime_;
+    std::string map_;
     std::shared_ptr<Net::ProtocolGame> client_;
 };
 

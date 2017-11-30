@@ -14,12 +14,14 @@ ProtocolGame::~ProtocolGame()
 }
 
 void ProtocolGame::Login(const std::string& accountName,
-    const std::string& accountPass, std::string charName,
+    const std::string& accountPass, const std::string& charName,
+    const std::string& map,
     const std::string& host, uint16_t port, const EnterWorldCallback& callback)
 {
     accountName_ = accountName;
     accountPass_ = accountPass;
     charName_ = charName;
+    map_ = map;
     enterWorldCallback_ = callback;
 
     Connect(host, port);
@@ -88,6 +90,7 @@ void ProtocolGame::SendLoginPacket()
     msg->AddString(accountName_);
     msg->AddString(accountPass_);
     msg->AddString(charName_);
+    msg->AddString(map_);
     Send(msg);
 }
 

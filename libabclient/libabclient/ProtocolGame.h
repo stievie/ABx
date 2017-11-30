@@ -36,6 +36,7 @@ private:
     std::string accountName_;
     std::string accountPass_;
     std::string charName_;
+    std::string map_;
     bool firstRevc_;
     EnterWorldCallback enterWorldCallback_;
 
@@ -52,7 +53,8 @@ public:
     ~ProtocolGame();
 
     void Login(const std::string& accountName, const std::string& accountPass,
-        std::string charName, const std::string& host, uint16_t port, const EnterWorldCallback& callback);
+        const std::string& charName, const std::string& map, const std::string& host, uint16_t port,
+        const EnterWorldCallback& callback);
 };
 
 }
