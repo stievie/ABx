@@ -7,6 +7,7 @@
 #include "Account.h"
 #include "IOAccount.h"
 #include "ConfigManager.h"
+#include <AB/ProtocolCodes.h>
 
 #include "DebugNew.h"
 
@@ -23,26 +24,26 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     std::shared_ptr<Connection> conn = GetConnection();
     if (Auth::BanManager::Instance.IsIpBanned(conn->GetIP()))
     {
-        DisconnectClient(0x0A, "IP is banned");
+        DisconnectClient(AB::Errors::IPBanned);
         return;
     }
     if (Auth::BanManager::Instance.IsIpDisabled(conn->GetIP()))
     {
-        DisconnectClient(0x0A, "Too many connections from this IP");
+        DisconnectClient(AB::Errors::TooManyConnectionsFromThisIP);
         return;
     }
 
     std::string accountName = message.GetString();
     if (accountName.empty())
     {
-        DisconnectClient(0x0A, "Invalid account name");
+        DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
 
     std::string password = message.GetString();
     if (password.empty())
     {
-        DisconnectClient(0x0A, "Invalid password");
+        DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
 
@@ -61,7 +62,7 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
     bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);
     if (!res)
     {
-        DisconnectClient(0x0A, "Account name or password not correct");
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
@@ -70,7 +71,7 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    output->AddByte(0x64);
+    output->AddByte(AB::LoginProtocol::CharacterList);
     output->AddString(ConfigManager::Instance[ConfigManager::GameHost].GetString());
     output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));
     output->AddByte(static_cast<uint8_t>(account.characters_.size()));
@@ -86,13 +87,13 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
     Disconnect();
 }
 
-void ProtocolLogin::DisconnectClient(uint8_t error, const char* message)
+void ProtocolLogin::DisconnectClient(uint8_t error)
 {
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)
     {
+        output->AddByte(AB::LoginProtocol::LoginError);
         output->AddByte(error);
-        output->AddString(message);
         Send(output);
     }
     Disconnect();

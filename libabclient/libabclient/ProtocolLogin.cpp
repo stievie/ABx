@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ProtocolLogin.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -40,7 +41,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     uint8_t recvByte = message->Get<uint8_t>();
     switch (recvByte)
     {
-    case 0x64:
+    case AB::LoginProtocol::CharacterList:
     {
         gameHost_ = message->GetString();
         gamePort_ = message->Get<uint16_t>();
@@ -56,6 +57,12 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         }
         if (charlistCallback)
             charlistCallback(chars);
+        break;
+    }
+    case AB::LoginProtocol::LoginError:
+    {
+        uint8_t error = message->Get<uint8_t>();
+        ProtocolError(error);
         break;
     }
     }

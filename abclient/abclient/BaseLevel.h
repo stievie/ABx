@@ -60,6 +60,7 @@ public:
     {
         debugGeometry_ = !debugGeometry_;
     }
+    virtual void ShowError(const String& message);
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

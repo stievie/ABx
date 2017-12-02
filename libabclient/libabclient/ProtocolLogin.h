@@ -30,6 +30,7 @@ public:
     ProtocolLogin();
     ~ProtocolLogin();
 
+
     void Login(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,
         const CharlistCallback& callback);

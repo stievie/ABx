@@ -98,9 +98,9 @@ void Dispatcher::DispatcherThread()
                 ++dispatcherCycle_;
                 (*task)();
 
-                outputPool = Net::OutputMessagePool::Instance();
+/*                outputPool = Net::OutputMessagePool::Instance();
                 if (outputPool)
-                    outputPool->SendAll();
+                    outputPool->SendAll();*/
             }
 
             delete task;

@@ -36,6 +36,7 @@ public:
     ~Client();
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);
+    void Logout();
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
     void Update();

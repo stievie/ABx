@@ -11,21 +11,6 @@ class Player;
 
 namespace Net {
 
-enum PacketType : uint8_t
-{
-    PacketTypeLogout = 0x14,
-
-    PacketTypeMoveNorth = 0x65,
-    PacketTypeMoveNorthEast = 0x66,
-    PacketTypeMoveEast = 0x67,
-    PacketTypeMoveSouthEast = 0x68,
-    PacketTypeMoveSouth = 0x69,
-    PacketTypeMoveSouthWest = 0x70,
-    PacketTypeMoveWest = 0x71,
-    PacketTypeMoveNorthWest = 0x72,
-};
-
-
 class ProtocolGame final : public Protocol
 {
 public:
@@ -75,7 +60,7 @@ private:
     void OnRecvFirstMessage(NetworkMessage& msg) final;
     void OnConnect() final;
 
-    void DisconnectClient(const std::string& message);
+    void DisconnectClient(uint8_t error);
     void Connect(uint32_t playerId);
 
     bool acceptPackets_ = false;

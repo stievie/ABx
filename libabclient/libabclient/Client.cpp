@@ -60,9 +60,16 @@ void Client::Login(const std::string& name, const std::string& pass)
     // 1. Login to login server -> get character list
     protoLogin_ = std::make_shared<ProtocolLogin>();
     protoLogin_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
+    protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     protoLogin_->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
     Connection::Run();
+}
+
+void Client::Logout()
+{
+    if (protoGame_)
+        protoGame_->Logout();
 }
 
 void Client::EnterWorld(const std::string& charName, const std::string& map)
@@ -70,6 +77,7 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
+    protoGame_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
         std::bind(&Client::OnEnterWorld, this, std::placeholders::_1));
     Connection::Run();

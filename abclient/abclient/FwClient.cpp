@@ -4,6 +4,9 @@
 #include <sstream>
 #include <Urho3D/IO/Log.h>
 #include <string>
+#include "LevelManager.h"
+#include "BaseLevel.h"
+#include <AB/ProtocolCodes.h>
 
 FwClient::FwClient(Context* context) :
     Object(context),
@@ -68,6 +71,7 @@ void FwClient::EnterWorld(const String& charName, const String& map)
 
 void FwClient::Logout()
 {
+    client_.Logout();
     loggedIn_ = false;
 }
 
@@ -92,4 +96,34 @@ void FwClient::OnNetworkError(const std::error_code& err)
 
 void FwClient::OnProtocolError(uint8_t err)
 {
+    LevelManager* lm = context_->GetSubsystem<LevelManager>();
+    BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
+    switch (err)
+    {
+    case AB::Errors::IPBanned:
+        cl->ShowError("Your IP Address is banned");
+        break;
+    case AB::Errors::TooManyConnectionsFromThisIP:
+        cl->ShowError("Too many connection from this IP");
+        break;
+    case AB::Errors::InvalidAccountName:
+        cl->ShowError("Invalid Account name");
+        break;
+    case AB::Errors::InvalidPassword:
+        cl->ShowError("Invalid password");
+        break;
+    case AB::Errors::NamePasswordMismatch:
+        cl->ShowError("Name or password wrong");
+        break;
+    case AB::Errors::AlreadyLoggedIn:
+        cl->ShowError("You are already logged in");
+        break;
+    case AB::Errors::ErrorLoadingCharacter:
+        cl->ShowError("Error loading character");
+        break;
+    case AB::Errors::AccountBanned:
+        cl->ShowError("Your account is banned");
+        break;
+    }
+
 }

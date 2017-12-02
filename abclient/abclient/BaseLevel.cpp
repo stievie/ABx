@@ -2,6 +2,7 @@
 #include "BaseLevel.h"
 #include "AbEvents.h"
 #include "LevelManager.h"
+#include <Urho3D/UI/MessageBox.h>
 
 void BaseLevel::Run()
 {
@@ -84,6 +85,12 @@ void BaseLevel::Update(StringHash eventType, VariantMap& eventData)
 void BaseLevel::HandleEnterMap(StringHash eventType, VariantMap & eventData)
 {
 
+}
+
+void BaseLevel::ShowError(const String& message)
+{
+    using MsgBox = Urho3D::MessageBox;
+    MsgBox* msgBox = new MsgBox(context_, message, "Error");
 }
 
 void BaseLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

@@ -38,6 +38,12 @@ void LoginLevel::CreatePlayer(const Vector3& position, const Quaternion& directi
     SetupViewport();
 }
 
+void LoginLevel::ShowError(const String& message)
+{
+    BaseLevel::ShowError(message);
+    button_->SetEnabled(true);
+}
+
 void LoginLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();

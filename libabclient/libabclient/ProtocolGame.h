@@ -47,6 +47,7 @@ protected:
     void OnError(const asio::error_code& err) override;
 
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
+    void ParseError(const std::shared_ptr<InputMessage>& message);
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
@@ -55,6 +56,7 @@ public:
     void Login(const std::string& accountName, const std::string& accountPass,
         const std::string& charName, const std::string& map, const std::string& host, uint16_t port,
         const EnterWorldCallback& callback);
+    void Logout();
 };
 
 }

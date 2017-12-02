@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -61,17 +62,20 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
 
         switch (opCode)
         {
-        case GameServerLoginOrPendingState:
+        case AB::GameProtocol::Error:
+            ParseError(message);
             break;
-        case GameServerChallenge:
-            break;
-        case GameServerLoginSuccess:
-            break;
-        case GameServerEnterGame:
+        case AB::GameProtocol::EnterGame:
             ParseEnterWorld(message);
             break;
         }
     }
+}
+
+void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)
+{
+    uint8_t error = message->Get<uint8_t>();
+    ProtocolError(error);
 }
 
 void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
@@ -94,5 +98,12 @@ void ProtocolGame::SendLoginPacket()
     Send(msg);
 }
 
+void ProtocolGame::Logout()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
+    Send(msg);
+    Connection::Run();
+}
 
 }

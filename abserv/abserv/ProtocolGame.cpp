@@ -11,6 +11,7 @@
 #include "Logger.h"
 #include "Game.h"
 #include "Random.h"
+#include <AB/ProtocolCodes.h>
 
 #include "DebugNew.h"
 
@@ -21,26 +22,26 @@ void ProtocolGame::Login(const std::string& name, uint32_t accountId, const std:
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByName(name);
     if (foundPlayer)
     {
-        DisconnectClient("You are already logged in");
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
         return;
     }
 
     player_ = Game::PlayerManager::Instance.CreatePlayer(name, GetThis());
     if (!DB::IOPlayer::PreloadPlayer(player_.get(), name))
     {
-        DisconnectClient("Your character could not be loaded");
+        DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
 
     if (Auth::BanManager::Instance.IsAccountBanned(accountId))
     {
-        DisconnectClient("Your account has been banned");
+        DisconnectClient(AB::Errors::AccountBanned);
         return;
     }
 
     if (!DB::IOPlayer::LoadPlayerByName(player_.get(), name))
     {
-        DisconnectClient("Your character could not be loaded");
+        DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
 
@@ -54,8 +55,10 @@ void ProtocolGame::Logout()
     if (!player_)
         return;
 
+    player_->GetGame()->PlayerLeave(player_->id_);
     Game::PlayerManager::Instance.RemovePlayer(player_->id_);
     Disconnect();
+    OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
     player_.reset();
 }
 
@@ -70,33 +73,33 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
     switch (recvByte)
     {
-    case PacketTypeLogout:
+    case AB::GameProtocol::PacketTypeLogout:
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&ProtocolGame::Logout, GetThis()))
         );
         break;
-    case PacketTypeMoveNorth:
+    case AB::GameProtocol::PacketTypeMoveNorth:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorth);
         break;
-    case PacketTypeMoveNorthEast:
+    case AB::GameProtocol::PacketTypeMoveNorthEast:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorthEast);
         break;
-    case PacketTypeMoveEast:
+    case AB::GameProtocol::PacketTypeMoveEast:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionEast);
         break;
-    case PacketTypeMoveSouthEast:
+    case AB::GameProtocol::PacketTypeMoveSouthEast:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorth);
         break;
-    case PacketTypeMoveSouth:
+    case AB::GameProtocol::PacketTypeMoveSouth:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionSouth);
         break;
-    case PacketTypeMoveSouthWest:
+    case AB::GameProtocol::PacketTypeMoveSouthWest:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionSouthWest);
         break;
-    case PacketTypeMoveWest:
+    case AB::GameProtocol::PacketTypeMoveWest:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionWest);
         break;
-    case PacketTypeMoveNorthWest:
+    case AB::GameProtocol::PacketTypeMoveNorthWest:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorthWest);
         break;
     default:
@@ -113,29 +116,23 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     std::string accountName = msg.GetString();
     if (accountName.empty())
     {
-        DisconnectClient("You must enter your account name");
+        DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
     std::string password = msg.GetString();
     std::string characterName = msg.GetString();
     std::string map = msg.GetString();
 
-    if (accountName.empty())
-    {
-        DisconnectClient("You must enter your account name");
-        return;
-    }
-
     if (Auth::BanManager::Instance.IsIpBanned(GetIP()))
     {
-        DisconnectClient("Your IP has been banned");
+        DisconnectClient(AB::Errors::IPBanned);
         return;
     }
 
     uint32_t accountId = DB::IOAccount::GameWorldAuth(accountName, password, characterName);
     if (accountId == 0)
     {
-        DisconnectClient("Account name or password not correct");
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
     }
 
@@ -168,11 +165,11 @@ void ProtocolGame::OnConnect()
     */
 }
 
-void ProtocolGame::DisconnectClient(const std::string& message)
+void ProtocolGame::DisconnectClient(uint8_t error)
 {
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(0x14);
-    output->AddString(message);
+    output->AddByte(AB::GameProtocol::Error);
+    output->AddByte(error);
     Send(output);
     Disconnect();
 }
@@ -187,7 +184,7 @@ void ProtocolGame::Connect(uint32_t playerId)
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerById(playerId);
     if (!foundPlayer)
     {
-        DisconnectClient("You are already logged in");
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
         return;
     }
 
@@ -206,7 +203,7 @@ void ProtocolGame::EnterGame(const std::string& mapName)
 {
     Game::GameManager::Instance.AddPlayer(mapName, player_);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(15);               // GameServerEnterGame
+    output->AddByte(AB::GameProtocol::EnterGame);
     output->AddString(mapName);
     output->AddVector3(player_->position_);
     output->AddQuaternion(player_->rotation_);
