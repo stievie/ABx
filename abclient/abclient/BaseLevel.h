@@ -37,6 +37,7 @@ protected:
     virtual void Dispose();
     virtual void SubscribeToEvents();
     virtual void SetupViewport();
+    void CreateLogo();
     virtual void Update(StringHash eventType, VariantMap& eventData);
     virtual void PostUpdate(StringHash eventType, VariantMap & eventData);
     virtual void PostRenderUpdate(StringHash eventType, VariantMap & eventData);
@@ -50,6 +51,7 @@ protected:
     float yaw_;
     /// Camera pitch angle.
     float pitch_;
+    SharedPtr<Sprite> logoSprite_;
 
 public:
     bool debugGeometry_;

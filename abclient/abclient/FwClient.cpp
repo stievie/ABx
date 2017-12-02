@@ -100,10 +100,14 @@ void FwClient::OnNetworkError(const std::error_code& err)
     BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
 
     cl->ShowError(String(err.message().c_str()), "Network Error");
-    // Disconnect -> Relogin
-    VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::E_SET_LEVEL] = "LoginLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, eData);
+
+    if (lm->GetLevelName() != "LoginLevel")
+    {
+        // Disconnect -> Relogin
+        VariantMap& eData = GetEventDataMap();
+        eData[AbEvents::E_SET_LEVEL] = "LoginLevel";
+        SendEvent(AbEvents::E_SET_LEVEL, eData);
+    }
 }
 
 void FwClient::OnProtocolError(uint8_t err)

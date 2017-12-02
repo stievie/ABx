@@ -20,5 +20,7 @@ protected:
 private:
     void CreateScene();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+
+    Text* pingLabel_;
 };
 

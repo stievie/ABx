@@ -177,6 +177,43 @@ void BaseLevel::SetupViewport()
     viewport->SetRenderPath(effectRenderPath);
 }
 
+void BaseLevel::CreateLogo()
+{
+    // Get logo texture
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/Trill.png");
+    if (!logoTexture)
+        return;
+
+    // Create logo sprite and add to the UI layout
+    UI* ui = GetSubsystem<UI>();
+    logoSprite_ = ui->GetRoot()->CreateChild<Sprite>();
+
+    // Set logo sprite texture
+    logoSprite_->SetTexture(logoTexture);
+
+    int textureWidth = logoTexture->GetWidth();
+    int textureHeight = logoTexture->GetHeight();
+
+    // Set logo sprite scale
+    logoSprite_->SetScale(100.0f / textureWidth);
+
+    // Set logo sprite size
+    logoSprite_->SetSize(textureWidth, textureHeight);
+
+    // Set logo sprite hot spot
+    logoSprite_->SetHotSpot(textureWidth, textureHeight);
+
+    // Set logo sprite alignment
+    logoSprite_->SetAlignment(HA_RIGHT, VA_BOTTOM);
+
+    // Make logo not fully opaque to show the scene underneath
+    logoSprite_->SetOpacity(0.7f);
+
+    // Set a low priority for the logo so that other UI elements can be drawn on top
+    logoSprite_->SetPriority(-100);
+}
+
 void BaseLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)
 {
 /*    Node* objectNode = scene_->CreateChild("Player");

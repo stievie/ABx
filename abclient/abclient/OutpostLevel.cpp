@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "OutpostLevel.h"
-
+#include "FwClient.h"
 
 OutpostLevel::OutpostLevel(Context* context) :
     BaseLevel(context)
@@ -38,6 +38,12 @@ void OutpostLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
+
+
+    pingLabel_ = uiRoot_->CreateChild<Text>();
+    pingLabel_->SetSize(50, 20);
+    pingLabel_->SetAlignment(HA_LEFT, VA_BOTTOM);
+    pingLabel_->SetStyleAuto();
 }
 
 void OutpostLevel::CreateScene()
@@ -50,4 +56,12 @@ void OutpostLevel::CreateScene()
 
 void OutpostLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
+    FwClient* c = context_->GetSubsystem<FwClient>();
+    int avgPing = c->GetAvgPing();
+    int lastPing = c->GetLastPing();
+    String s("Avg. Ping ");
+    s += String(avgPing);
+    s += String(" Last Ping ");
+    s += String(lastPing);
+    pingLabel_->SetText(s);
 }

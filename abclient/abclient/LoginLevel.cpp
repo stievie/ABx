@@ -13,6 +13,7 @@ LoginLevel::LoginLevel(Context* context) :
 
     // Create the UI content
     CreateUI();
+    CreateLogo();
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();

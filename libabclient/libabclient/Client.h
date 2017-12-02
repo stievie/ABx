@@ -53,6 +53,22 @@ public:
     {
         return mapName_;
     }
+    int GetAvgPing() const
+    {
+        if (pings_.empty())
+            return 0;
+
+        float pings = 0.0f;
+        for (int p : pings_)
+            pings += static_cast<float>(p);
+        return static_cast<int>(pings / pings_.size());
+    }
+    int GetLastPing() const
+    {
+        if (!pings_.empty())
+            return pings_.back();
+        return 0;
+    }
 };
 
 }

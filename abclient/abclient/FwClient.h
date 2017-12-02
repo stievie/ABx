@@ -39,6 +39,14 @@ public:
     {
         return characters_;
     }
+    int GetAvgPing() const
+    {
+        return client_.GetAvgPing();
+    }
+    int GetLastPing() const
+    {
+        return client_.GetLastPing();
+    }
 
 };
 
