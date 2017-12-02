@@ -63,8 +63,6 @@ void Dispatcher::DispatcherThread()
     LOG_DEBUG << "Dispatcher threat started" << std::endl;
 #endif
 
-    Net::OutputMessagePool* outputPool;
-
     // NOTE: second argument defer_lock is to prevent from immediate locking
     std::unique_lock<std::mutex> taskLockUnique(lock_, std::defer_lock);
 
@@ -95,12 +93,7 @@ void Dispatcher::DispatcherThread()
             // Execute the task
             if (!task->IsExpired())
             {
-                ++dispatcherCycle_;
                 (*task)();
-
-/*                outputPool = Net::OutputMessagePool::Instance();
-                if (outputPool)
-                    outputPool->SendAll();*/
             }
 
             delete task;

@@ -27,6 +27,8 @@ Connection::~Connection()
 
 void Connection::Poll()
 {
+    // Blocking!
+
     // Reset must always be called prior to poll
     gIoService.reset();
     gIoService.poll();
@@ -34,6 +36,7 @@ void Connection::Poll()
 
 void Connection::Run()
 {
+    // Non-blocking
     gIoService.run();
 }
 

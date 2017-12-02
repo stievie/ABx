@@ -75,6 +75,7 @@ private:
     GameObject* GetObjectById(uint32_t objectId);
     void InternalLoad();
     void Update();
+    void SendStatus();
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -103,7 +104,9 @@ public:
     void SetState(GameState state);
     void Load(const std::string& mapName);
 
+
     /// From GameProtocol (Dispatcher Thread)
+    void Ping(uint32_t playerId);
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
     void PlayerMove(uint32_t playerId, MoveDirection direction);

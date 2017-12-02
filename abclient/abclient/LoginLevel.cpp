@@ -38,10 +38,11 @@ void LoginLevel::CreatePlayer(const Vector3& position, const Quaternion& directi
     SetupViewport();
 }
 
-void LoginLevel::ShowError(const String& message)
+void LoginLevel::ShowError(const String& message, const String& title)
 {
-    BaseLevel::ShowError(message);
+    BaseLevel::ShowError(message, title);
     button_->SetEnabled(true);
+    loggingIn_ = false;
 }
 
 void LoginLevel::CreateUI()
@@ -132,9 +133,6 @@ void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
 void LoginLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
 {
-    if (loggingIn_)
-        return;
-
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
     button_->SetEnabled(!name.Empty() && !pass.Empty());

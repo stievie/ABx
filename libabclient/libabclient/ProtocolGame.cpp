@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
 #include <AB/ProtocolCodes.h>
+#include "Time.h"
 
 namespace Client {
 
 ProtocolGame::ProtocolGame() :
     Protocol(),
-    enterWorldCallback_(nullptr)
+    enterWorldCallback_(nullptr),
+    pingCallback_(nullptr)
 {
 }
 
@@ -65,17 +67,28 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::Error:
             ParseError(message);
             break;
-        case AB::GameProtocol::EnterGame:
+        case AB::GameProtocol::GameEnter:
             ParseEnterWorld(message);
+            break;
+        case AB::GameProtocol::GamePong:
+            ParsePong(message);
             break;
         }
     }
 }
 
+void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
+{
+    lastPing_ = static_cast<int>(AbTick() - pingTick_);
+    if (pingCallback_)
+        pingCallback_(lastPing_);
+}
+
 void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)
 {
     uint8_t error = message->Get<uint8_t>();
-    ProtocolError(error);
+    if (error != 0)
+        ProtocolError(error);
 }
 
 void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
@@ -102,6 +115,15 @@ void ProtocolGame::Logout()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
+    Send(msg);
+}
+
+void ProtocolGame::Ping(const PingCallback& callback)
+{
+    pingCallback_ = callback;
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
+    pingTick_ = AbTick();
     Send(msg);
     Connection::Run();
 }

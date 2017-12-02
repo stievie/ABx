@@ -23,7 +23,7 @@ Connection::~Connection()
 bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Sending message with size " << message->GetMessageLength() << std::endl;
+//    LOG_DEBUG << "Sending message with size " << message->GetMessageLength() << std::endl;
 #endif
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -55,6 +55,29 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
     catch (asio::system_error& e)
     {
         LOG_ERROR << "Network " << e.what() << std::endl;
+    }
+}
+
+void Connection::OnWriteOperation(const asio::error_code& error)
+{
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
+    writeTimer_.cancel();
+    messageQueue_.pop_front();
+
+    if (error)
+    {
+        messageQueue_.clear();
+        Close(true);
+        return;
+    }
+
+    if (!messageQueue_.empty())
+    {
+        InternalSend(messageQueue_.front());
+    }
+    else if (state_ == State::Closed)
+    {
+        CloseSocket();
     }
 }
 
@@ -262,6 +285,8 @@ void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::e
     if (error == asio::error::operation_aborted)
         return;
 
+    // It needs a constant stream of packets or the connection will be closed.
+    // Send at least a ping once in a while.
 #ifdef DEBUG_NET
     LOG_DEBUG << "Timeout, closing connection" << std::endl;
 #endif
@@ -291,29 +316,6 @@ void Connection::CloseSocket()
         {
             LOG_ERROR << "Network " << e.what() << std::endl;
         }
-    }
-}
-
-void Connection::OnWriteOperation(const asio::error_code& error)
-{
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
-    writeTimer_.cancel();
-    messageQueue_.pop_front();
-
-    if (error)
-    {
-        messageQueue_.clear();
-        Close(true);
-        return;
-    }
-
-    if (!messageQueue_.empty())
-    {
-        InternalSend(messageQueue_.front());
-    }
-    else if (state_ == State::Closed)
-    {
-        CloseSocket();
     }
 }
 

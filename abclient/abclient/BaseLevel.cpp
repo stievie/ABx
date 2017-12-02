@@ -87,10 +87,10 @@ void BaseLevel::HandleEnterMap(StringHash eventType, VariantMap & eventData)
 
 }
 
-void BaseLevel::ShowError(const String& message)
+void BaseLevel::ShowError(const String& message, const String& title)
 {
     using MsgBox = Urho3D::MessageBox;
-    MsgBox* msgBox = new MsgBox(context_, message, "Error");
+    MsgBox* msgBox = new MsgBox(context_, message, title);
 }
 
 void BaseLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

@@ -52,6 +52,13 @@ void Client::OnProtocolError(uint8_t err)
         receiver_->OnProtocolError(err);
 }
 
+void Client::OnPong(int ping)
+{
+    while (pings_.size() > 9)
+        pings_.erase(pings_.begin());
+    pings_.push_back(ping);
+}
+
 void Client::Login(const std::string& name, const std::string& pass)
 {
     accountName_ = name;
@@ -69,7 +76,10 @@ void Client::Login(const std::string& name, const std::string& pass)
 void Client::Logout()
 {
     if (protoGame_)
+    {
         protoGame_->Logout();
+        Connection::Run();
+    }
 }
 
 void Client::EnterWorld(const std::string& charName, const std::string& map)
@@ -80,12 +90,22 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
     protoGame_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
         std::bind(&Client::OnEnterWorld, this, std::placeholders::_1));
-    Connection::Run();
 }
 
-void Client::Update()
+void Client::Update(int timeElapsed)
 {
-    Connection::Poll();
+    static int lastTime = 0;
+    if (lastTime >= 1000)
+    {
+        if (protoGame_)
+        {
+            protoGame_->Ping(std::bind(&Client::OnPong, this, std::placeholders::_1));
+//            Connection::Run();
+        }
+        lastTime = 0;
+    }
+    lastTime += timeElapsed;
+    Connection::Run();
 }
 
 }

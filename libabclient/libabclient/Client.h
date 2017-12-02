@@ -27,10 +27,12 @@ private:
     std::string accountName_;
     std::string password_;
     std::string mapName_;
+    std::vector<int> pings_;
     void OnGetCharlist(const Charlist& chars);
     void OnEnterWorld(const std::string& mapName);
     void OnError(const std::error_code& err);
     void OnProtocolError(uint8_t err);
+    void OnPong(int ping);
 public:
     Client();
     ~Client();
@@ -39,7 +41,7 @@ public:
     void Logout();
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
-    void Update();
+    void Update(int timeElapsed);
 
     std::string loginHost_;
     uint16_t loginPort_;

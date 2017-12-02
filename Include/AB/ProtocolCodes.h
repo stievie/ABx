@@ -44,11 +44,15 @@ enum GameProtocolCodes : uint8_t
     NoError = 0x00,
     Error = 0x01,
 
-    EnterGame = 0x02,
+    GameEnter = 0x02,
+    GameUpdate = 0x03,
+    GamePong = 0x04,
 };
 
 enum GamePacketTypes : uint8_t
 {
+    PacketTypePing = 0x01,
+
     PacketTypeLogout = 0x14,
 
     PacketTypeMoveNorth = 0x65,

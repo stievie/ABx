@@ -119,7 +119,7 @@ bool Protocol::AESDecrypt(NetworkMessage& message)
 void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) const
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Sending message" << std::endl;
+//    LOG_DEBUG << "Sending message" << std::endl;
 #endif
 
     if (!rawMessages_)
@@ -143,7 +143,7 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
 void Protocol::OnRecvMessage(NetworkMessage& message)
 {
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Receiving message with size " << message.GetMessageLength() << std::endl;
+//    LOG_DEBUG << "Receiving message with size " << message.GetMessageLength() << std::endl;
 #endif
     if (encryptionEnabled_)
     {

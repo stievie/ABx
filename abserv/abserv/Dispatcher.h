@@ -33,7 +33,6 @@ private:
     State state_;
     std::thread thread_;
     std::condition_variable signal_;
-    uint64_t dispatcherCycle_ = 0;
     void DispatcherThread();
 public:
     static Dispatcher Instance;

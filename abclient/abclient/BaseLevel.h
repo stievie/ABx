@@ -6,6 +6,7 @@
 #pragma warning( disable : 4100 4305)
 #include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )
+#include "Player.h"
 
 //#include "Player.h"
 
@@ -17,7 +18,7 @@ public:
         Object(context),
         uiRoot_(GetSubsystem<UI>()->GetRoot()),
         scene_(nullptr),
-//        player_(nullptr),
+        player_(nullptr),
         cameraNode_(nullptr),
         firstPerson_(false),
         debugGeometry_(false)
@@ -43,7 +44,7 @@ protected:
     Urho3D::UIElement* uiRoot_;
     SharedPtr<Scene> scene_;
     SharedPtr<Node> cameraNode_;
-//    SharedPtr<Player> player_;
+    SharedPtr<Player> player_;
     bool firstPerson_;
     /// Camera yaw angle.
     float yaw_;
@@ -60,7 +61,7 @@ public:
     {
         debugGeometry_ = !debugGeometry_;
     }
-    virtual void ShowError(const String& message);
+    virtual void ShowError(const String& message, const String& title = "Error");
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

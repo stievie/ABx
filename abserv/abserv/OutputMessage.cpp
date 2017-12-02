@@ -13,7 +13,7 @@ const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY{ 10 };
 void OutputMessagePool::SendAll()
 {
     // Dispatcher Thread
-    for (auto& proto : bufferedProtocols_)
+    for (const auto& proto : bufferedProtocols_)
     {
         auto& msg = proto->GetCurrentBuffer();
         if (msg)
@@ -41,6 +41,7 @@ void OutputMessagePool::AddToAutoSend(std::shared_ptr<Protocol> protocol)
 {
     // Dispatcher Thread
     if (bufferedProtocols_.empty())
+        // Create first task
         ScheduleSendAll();
 
     bufferedProtocols_.emplace_back(protocol);

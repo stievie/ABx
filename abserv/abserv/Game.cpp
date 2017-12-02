@@ -13,6 +13,8 @@
 #include "Skill.h"
 #include "Npc.h"
 #include "DataProvider.h"
+#include "OutputMessage.h"
+#include <AB/ProtocolCodes.h>
 
 #include "DebugNew.h"
 
@@ -70,6 +72,9 @@ void Game::Update()
     // Then call Lua Update function
     luaState_["onUpdate"](this, delta);
 
+    // Send game status to players
+    SendStatus();
+
     switch (state_)
     {
     case GameStateRunning:
@@ -100,6 +105,26 @@ void Game::Update()
         );
         break;
     }
+}
+
+void Game::SendStatus()
+{
+    std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
+    output->AddByte(AB::GameProtocol::GameUpdate);
+    for (const auto& p : players_)
+    {
+        p.second->client_->Send(output);
+    }
+}
+
+void Game::Ping(uint32_t playerId)
+{
+    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    if (!player)
+        return;
+    std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
+    output->AddByte(AB::GameProtocol::GamePong);
+    player->client_->Send(output);
 }
 
 void Game::RegisterLua(kaguya::State& state)

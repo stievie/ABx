@@ -73,6 +73,9 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
     switch (recvByte)
     {
+    case AB::GameProtocol::PacketTypePing:
+        AddGameTask(&Game::Game::Ping, player_->id_);
+        break;
     case AB::GameProtocol::PacketTypeLogout:
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&ProtocolGame::Logout, GetThis()))
@@ -203,7 +206,7 @@ void ProtocolGame::EnterGame(const std::string& mapName)
 {
     Game::GameManager::Instance.AddPlayer(mapName, player_);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(AB::GameProtocol::EnterGame);
+    output->AddByte(AB::GameProtocol::GameEnter);
     output->AddString(mapName);
     output->AddVector3(player_->position_);
     output->AddQuaternion(player_->rotation_);
