@@ -20,6 +20,8 @@ private:
     Client::Charlist characters_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
+    static String GetProtocolErrorMessage(uint8_t err);
+
     FwClient(Context* context);
     ~FwClient();
 

@@ -55,7 +55,6 @@ void ProtocolGame::Logout()
     if (!player_)
         return;
 
-    player_->GetGame()->PlayerLeave(player_->id_);
     Game::PlayerManager::Instance.RemovePlayer(player_->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
@@ -78,7 +77,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     case AB::GameProtocol::PacketTypeLogout:
         Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(std::bind(&ProtocolGame::Logout, GetThis()))
+            Asynch::CreateTask(std::bind(&Game::Player::Logout, player_))
         );
         break;
     case AB::GameProtocol::PacketTypeMoveNorth:
@@ -105,8 +104,16 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeMoveNorthWest:
         AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorthWest);
         break;
+    case AB::GameProtocol::PacketTypeUseSkill:
+        break;
+    case AB::GameProtocol::PackettTypeCancelSkill:
+        break;
+    case AB::GameProtocol::PacketTypeAttack:
+        break;
+    case AB::GameProtocol::PackettTypeCancelAttack:
+        break;
     default:
-        LOG_INFO << "Player " << player_->data_.name << " sent an unknown packet header: 0x" <<
+        LOG_INFO << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
         break;
     }

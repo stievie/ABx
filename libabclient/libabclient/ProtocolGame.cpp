@@ -79,6 +79,7 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
 {
+    AB_UNUSED(message);
     lastPing_ = static_cast<int>(AbTick() - pingTick_);
     if (pingCallback_)
         pingCallback_(lastPing_);
@@ -116,6 +117,7 @@ void ProtocolGame::Logout()
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
     Send(msg);
+    Connection::Poll();
 }
 
 void ProtocolGame::Ping(const PingCallback& callback)

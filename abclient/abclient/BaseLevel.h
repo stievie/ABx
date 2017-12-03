@@ -10,6 +10,8 @@
 
 //#include "Player.h"
 
+class FwClient;
+
 class BaseLevel : public Object
 {
     URHO3D_OBJECT(BaseLevel, Object);
@@ -33,6 +35,7 @@ public:
     virtual void Run();
     virtual void Pause();
 protected:
+    friend class FwClient;
     virtual void CreateUI();
     virtual void Dispose();
     virtual void SubscribeToEvents();
@@ -41,6 +44,9 @@ protected:
     virtual void Update(StringHash eventType, VariantMap& eventData);
     virtual void PostUpdate(StringHash eventType, VariantMap & eventData);
     virtual void PostRenderUpdate(StringHash eventType, VariantMap & eventData);
+
+    virtual void OnNetworkError(const std::error_code& err);
+    virtual void OnProtocolError(uint8_t err);
 
     Urho3D::UIElement* uiRoot_;
     SharedPtr<Scene> scene_;

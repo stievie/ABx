@@ -8,6 +8,32 @@
 #include "BaseLevel.h"
 #include <AB/ProtocolCodes.h>
 
+String FwClient::GetProtocolErrorMessage(uint8_t err)
+{
+    switch (err)
+    {
+    case AB::Errors::IPBanned:
+        return "Your IP Address is banned";
+    case AB::Errors::TooManyConnectionsFromThisIP:
+        return "Too many connection from this IP";
+    case AB::Errors::InvalidAccountName:
+        return "Invalid Account name";
+    case AB::Errors::InvalidPassword:
+        return "Invalid password";
+        break;
+    case AB::Errors::NamePasswordMismatch:
+        return "Name or password wrong";
+    case AB::Errors::AlreadyLoggedIn:
+        return "You are already logged in";
+    case AB::Errors::ErrorLoadingCharacter:
+        return "Error loading character";
+    case AB::Errors::AccountBanned:
+        return "Your account is banned";
+    default:
+        return "";
+    }
+}
+
 FwClient::FwClient(Context* context) :
     Object(context),
     loggedIn_(false)
@@ -16,7 +42,6 @@ FwClient::FwClient(Context* context) :
     lastState_ = client_.state_;
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
-
 
 FwClient::~FwClient()
 {
@@ -99,7 +124,7 @@ void FwClient::OnNetworkError(const std::error_code& err)
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
     BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
 
-    cl->ShowError(String(err.message().c_str()), "Network Error");
+    cl->OnNetworkError(err);
 
     if (lm->GetLevelName() != "LoginLevel")
     {
@@ -114,32 +139,5 @@ void FwClient::OnProtocolError(uint8_t err)
 {
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
     BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
-    switch (err)
-    {
-    case AB::Errors::IPBanned:
-        cl->ShowError("Your IP Address is banned");
-        break;
-    case AB::Errors::TooManyConnectionsFromThisIP:
-        cl->ShowError("Too many connection from this IP");
-        break;
-    case AB::Errors::InvalidAccountName:
-        cl->ShowError("Invalid Account name");
-        break;
-    case AB::Errors::InvalidPassword:
-        cl->ShowError("Invalid password");
-        break;
-    case AB::Errors::NamePasswordMismatch:
-        cl->ShowError("Name or password wrong");
-        break;
-    case AB::Errors::AlreadyLoggedIn:
-        cl->ShowError("You are already logged in");
-        break;
-    case AB::Errors::ErrorLoadingCharacter:
-        cl->ShowError("Error loading character");
-        break;
-    case AB::Errors::AccountBanned:
-        cl->ShowError("Your account is banned");
-        break;
-    }
-
+    cl->OnProtocolError(err);
 }

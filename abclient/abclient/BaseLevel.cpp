@@ -3,6 +3,7 @@
 #include "AbEvents.h"
 #include "LevelManager.h"
 #include <Urho3D/UI/MessageBox.h>
+#include "FwClient.h"
 
 void BaseLevel::Run()
 {
@@ -162,6 +163,18 @@ void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap & eventData)
 
 //    if (debugGeometry_)
 //        scene_->GetComponent<PhysicsWorld>()->DrawDebugGeometry(true);
+}
+
+void BaseLevel::OnNetworkError(const std::error_code& err)
+{
+    ShowError(String(err.message().c_str()), "Network Error");
+}
+
+void BaseLevel::OnProtocolError(uint8_t err)
+{
+    String msg = FwClient::GetProtocolErrorMessage(err);
+    if (!msg.Empty())
+        ShowError(msg, "Error");
 }
 
 void BaseLevel::SetupViewport()

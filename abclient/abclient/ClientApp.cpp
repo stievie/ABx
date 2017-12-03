@@ -101,6 +101,7 @@ void ClientApp::Setup()
     engineParameters_["VSync"] = true;
     engineParameters_["Multisample"] = true;
     engineParameters_["ResourcePaths"] = "AutoLoad;CoreData;Data;AbData";
+    engineParameters_["LogName"] = "abclient.log";
 }
 
 /**

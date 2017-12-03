@@ -107,6 +107,13 @@ void GameManager::LuaErrorHandler(int errCode, const char* message)
 void GameManager::RegisterLuaAll(kaguya::State& state)
 {
     state.setErrorHandler(LuaErrorHandler);
+#ifdef DEBUG_GAME
+    if (!state.gc().isenabled() ||
+        !state.gc().isrunning())
+    {
+        LOG_ERROR << "Lua GC not running" << std::endl;
+    }
+#endif
     // Register all used classes
     GameObject::RegisterLua(state);
     Creature::RegisterLua(state);

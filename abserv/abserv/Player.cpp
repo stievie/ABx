@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Player.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -13,6 +14,16 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
 
 Player::~Player()
 {
+#ifdef DEBUG_GAME
+//    LOG_DEBUG << std::endl;
+#endif
+}
+
+void Player::Logout()
+{
+    if (auto g = GetGame())
+        g->PlayerLeave(id_);
+    client_->Logout();
 }
 
 void Player::RegisterLua(kaguya::State& state)

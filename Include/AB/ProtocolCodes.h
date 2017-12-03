@@ -53,16 +53,24 @@ enum GamePacketTypes : uint8_t
 {
     PacketTypePing = 0x01,
 
-    PacketTypeLogout = 0x14,
+    PacketTypeLogout = 0x10,
 
-    PacketTypeMoveNorth = 0x65,
-    PacketTypeMoveNorthEast = 0x66,
-    PacketTypeMoveEast = 0x67,
-    PacketTypeMoveSouthEast = 0x68,
-    PacketTypeMoveSouth = 0x69,
-    PacketTypeMoveSouthWest = 0x70,
-    PacketTypeMoveWest = 0x71,
-    PacketTypeMoveNorthWest = 0x72,
+    // Move
+    PacketTypeMoveNorth = 0x20,
+    PacketTypeMoveNorthEast = 0x21,
+    PacketTypeMoveEast = 0x22,
+    PacketTypeMoveSouthEast = 0x23,
+    PacketTypeMoveSouth = 0x24,
+    PacketTypeMoveSouthWest = 0x25,
+    PacketTypeMoveWest = 0x26,
+    PacketTypeMoveNorthWest = 0x28,
+
+    // Skills
+    PacketTypeUseSkill = 0x40,
+    PackettTypeCancelSkill = 0x42,
+    // Attack
+    PacketTypeAttack = 0x50,
+    PackettTypeCancelAttack = 0x51
 };
 
 }

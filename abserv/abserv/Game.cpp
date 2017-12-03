@@ -15,6 +15,7 @@
 #include "DataProvider.h"
 #include "OutputMessage.h"
 #include <AB/ProtocolCodes.h>
+#include "ProtocolGame.h"
 
 #include "DebugNew.h"
 
@@ -109,10 +110,10 @@ void Game::Update()
 
 void Game::SendStatus()
 {
-    std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(AB::GameProtocol::GameUpdate);
     for (const auto& p : players_)
     {
+        std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
+        output->AddByte(AB::GameProtocol::GameUpdate);
         p.second->client_->Send(output);
     }
 }
