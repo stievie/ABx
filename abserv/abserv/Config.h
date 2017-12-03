@@ -33,7 +33,12 @@
 #define NETWORK_TICK 50
 // Maximum players per game. If reached a new instance of the same game is started.
 #define GAME_MAX_PLAYER 100
+// Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.
+// https://www.gamedev.net/forums/topic/319003-mmorpg-and-the-ol-udp-vs-tcp/?do=findComment&comment=3052256
+#define SERVER_MAX_CONNECTIONS 3000
 #define PLAYER_MAX_SKILLS 8
 
 // Clean cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
+// Clean games all 10 sec
+#define CLEAN_GAMES_MS (1000 * 10)

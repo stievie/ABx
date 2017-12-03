@@ -21,10 +21,6 @@ void GameManager::Start(Net::ServiceManager* serviceManager)
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
         state_ = State::Running;
     }
-    // Create default game
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(500, std::bind(&GameManager::CreateGame, this, "Temple of Athene"))
-    );
 }
 
 void GameManager::Stop()
@@ -46,7 +42,9 @@ void GameManager::Stop()
 std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapName)
 {
     assert(state_ == State::Running);
-
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Creating game " << mapName << std::endl;
+#endif
     std::shared_ptr<Game> game = std::make_shared<Game>();
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -55,18 +53,22 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapName)
         maps_[mapName].push_back(game.get());
     }
     game->SetState(Game::GameStateStartup);
-    Asynch::Dispatcher::Instance.Add(
-        Asynch::CreateTask(std::bind(&Game::Load, game, mapName))
-    );
+    game->Load(mapName);
     return game;
 }
 
 void GameManager::DeleteGameTask(uint32_t gameId)
 {
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Deleting game " << gameId << std::endl;
+#endif
     // Dispatcher Thread
     auto it = games_.find(gameId);
     if (it != games_.end())
+    {
+        maps_.erase((*it).second->GetName());
         games_.erase(it);
+    }
 }
 
 std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canCreate /* = false */)
@@ -91,12 +93,26 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
     return std::shared_ptr<Game>();
 }
 
-void GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> player)
+bool GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> player)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     std::shared_ptr<Game> game = GetGame(mapName, true);
 
+    if (!game)
+        return false;
+
+    // No need to wait until assets loaded
     game->PlayerJoin(player->id_);
+    return true;
+}
+
+void GameManager::CleanGames()
+{
+    for (const auto& g : games_)
+    {
+        if (g.second->GetPlayerCount() == 0)
+            g.second->SetState(Game::GameStateTerminated);
+    }
 }
 
 void GameManager::LuaErrorHandler(int errCode, const char* message)

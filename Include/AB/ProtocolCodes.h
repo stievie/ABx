@@ -23,6 +23,7 @@ enum ErrorCodes : uint8_t
     AlreadyLoggedIn = 0x06,
     ErrorLoadingCharacter = 0x07,
     AccountBanned = 0x08,
+    CannotEnterGame = 0x09,
 };
 
 }

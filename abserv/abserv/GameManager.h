@@ -51,7 +51,9 @@ public:
     void Stop();
     /// Returns the game with the mapName. If no such game exists it creates one.
     std::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
-    void AddPlayer(const std::string& mapName, std::shared_ptr<Player> player);
+    bool AddPlayer(const std::string& mapName, std::shared_ptr<Player> player);
+    // Delete all games with no players
+    void CleanGames();
 
     GameManager::State GetState() const { return state_; }
 

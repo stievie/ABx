@@ -23,6 +23,11 @@ private:
     std::map<uint32_t, std::shared_ptr<Player>> players_;
 public:
     PlayerManager() = default;
+    ~PlayerManager()
+    {
+        playerNames_.clear();
+        players_.clear();
+    }
 
     std::shared_ptr<Player> GetPlayerByName(const std::string& name);
     std::shared_ptr<Player> GetPlayerById(uint32_t id);

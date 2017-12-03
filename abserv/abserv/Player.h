@@ -44,10 +44,10 @@ protected:
     {
         return std::static_pointer_cast<Player>(shared_from_this());
     }
-    explicit Player(std::shared_ptr<Net::ProtocolGame> client);
 public:
     static void RegisterLua(kaguya::State& state);
 
+    explicit Player(std::shared_ptr<Net::ProtocolGame> client);
     ~Player() override;
     // non-copyable
     Player(const Player&) = delete;
@@ -62,6 +62,7 @@ public:
     time_t loginTime_;
     time_t logoutTime_;
     std::string map_;
+    int64_t lastPing_ = 0;
     std::shared_ptr<Net::ProtocolGame> client_;
 };
 

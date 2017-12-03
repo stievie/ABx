@@ -36,7 +36,7 @@ uint32_t PlayerManager::GetPlayerId(const std::string& name)
 std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& name,
     std::shared_ptr<Net::ProtocolGame> client)
 {
-    std::shared_ptr<Player> result(new Player(client));
+    std::shared_ptr<Player> result = std::make_shared<Player>(client);
 
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);

@@ -1,5 +1,9 @@
 # ABx
 
+## Architecture
+
+Uses a single TCP stream for the game protocol.
+
 ## Run
 
 ~~~

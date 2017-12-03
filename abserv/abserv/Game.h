@@ -80,7 +80,11 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     Game();
-    ~Game() {}
+    ~Game()
+    {
+        players_.clear();
+        objects_.clear();
+    }
 
     void Start();
     void Stop();

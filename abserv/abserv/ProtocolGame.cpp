@@ -211,13 +211,17 @@ void ProtocolGame::Connect(uint32_t playerId)
 
 void ProtocolGame::EnterGame(const std::string& mapName)
 {
-    Game::GameManager::Instance.AddPlayer(mapName, player_);
-    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(AB::GameProtocol::GameEnter);
-    output->AddString(mapName);
-    output->AddVector3(player_->position_);
-    output->AddQuaternion(player_->rotation_);
-    Send(output);
+    if (Game::GameManager::Instance.AddPlayer(mapName, player_))
+    {
+        std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+        output->AddByte(AB::GameProtocol::GameEnter);
+        output->AddString(mapName);
+        output->AddVector3(player_->position_);
+        output->AddQuaternion(player_->rotation_);
+        Send(output);
+    }
+    else
+        DisconnectClient(AB::Errors::CannotEnterGame);
 }
 
 }

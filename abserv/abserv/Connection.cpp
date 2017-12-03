@@ -322,8 +322,14 @@ void Connection::CloseSocket()
 std::shared_ptr<Connection> ConnectionManager::CreateConnection(
     asio::io_service& ioService, std::shared_ptr<ServicePort> servicer)
 {
-    std::lock_guard<std::mutex> lock(lock_);
+    if (connections_.size() >= SERVER_MAX_CONNECTIONS)
+    {
+        LOG_ERROR << "To many connections" << std::endl;
+        return std::shared_ptr<Connection>();
+    }
+
     std::shared_ptr<Connection> connection = std::make_shared<Connection>(ioService, servicer);
+    std::lock_guard<std::mutex> lock(lock_);
     connections_.insert(connection);
 
     return connection;

@@ -139,8 +139,12 @@ void ServicePort::Accept()
         std::shared_ptr<Connection> conn = ConnectionManager::GetInstance()->CreateConnection(
             service_, shared_from_this()
         );
-        acceptor_->async_accept(conn->GetSocket(),
-            std::bind(&ServicePort::OnAccept, shared_from_this(), conn, std::placeholders::_1));
+
+        if (conn)
+        {
+            acceptor_->async_accept(conn->GetSocket(),
+                std::bind(&ServicePort::OnAccept, shared_from_this(), conn, std::placeholders::_1));
+        }
     }
     catch (asio::system_error& e)
     {

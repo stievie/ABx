@@ -110,8 +110,14 @@ void Game::Update()
 
 void Game::SendStatus()
 {
+    int64_t tick = Utils::AbTick();
     for (const auto& p : players_)
     {
+        // If it didn't send a ping the last 2 sec it my be disconnected
+
+        if (p.second->lastPing_ + 2000 < tick)
+            continue;
+
         std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameUpdate);
         p.second->client_->Send(output);
@@ -123,6 +129,8 @@ void Game::Ping(uint32_t playerId)
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
     if (!player)
         return;
+
+    player->lastPing_ = Utils::AbTick();
     std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::GameProtocol::GamePong);
     player->client_->Send(output);
@@ -201,12 +209,6 @@ void Game::InternalLoad()
 
     // TODO: Load Data, Assets etc
     navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.navMeshFile);
-    std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.scriptFile);
-    // Execute initialization code if any
-    if (!luaState_.dofile(luaFile.c_str()))
-    {
-        return;
-    }
 
     if (state_ == GameStateStartup)
         // Loading done -> start it
@@ -222,6 +224,12 @@ void Game::Load(const std::string& mapName)
         LOG_ERROR << "Error loading game with name " << mapName << std::endl;
         return;
     }
+    std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.scriptFile);
+    // Execute initialization code if any
+    if (!luaState_.dofile(luaFile.c_str()))
+    {
+        return;
+    }
     // Load Assets
     std::thread(&Game::InternalLoad, shared_from_this()).detach();
 }
@@ -231,10 +239,12 @@ void Game::PlayerJoin(uint32_t playerId)
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
     if (player)
     {
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        players_[player->id_] = player.get();
-        objects_.push_back(player);
-        player->SetGame(shared_from_this());
+        {
+            std::lock_guard<std::recursive_mutex> lockClass(lock_);
+            players_[player->id_] = player.get();
+            objects_.push_back(player);
+            player->SetGame(shared_from_this());
+        }
         luaState_["onAddObject"](this, player);
         luaState_["onPlayerJoin"](this, player.get());
     }
