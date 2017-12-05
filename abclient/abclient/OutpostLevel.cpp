@@ -4,7 +4,7 @@
 #include <sstream>
 
 OutpostLevel::OutpostLevel(Context* context) :
-    BaseLevel(context)
+    WorldLevel(context)
 {
     // Create the scene content
     CreateScene();
@@ -17,18 +17,6 @@ OutpostLevel::OutpostLevel(Context* context) :
     SubscribeToEvents();
 }
 
-void OutpostLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)
-{
-    cameraNode_ = scene_->GetChild("CameraNode");
-    if (!cameraNode_)
-    {
-        cameraNode_ = scene_->CreateChild("CameraNode");
-        Camera* camera = cameraNode_->CreateComponent<Camera>();
-        camera->SetFarClip(300.0f);
-    }
-    SetupViewport();
-}
-
 void OutpostLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
@@ -38,12 +26,8 @@ void OutpostLevel::SubscribeToEvents()
 void OutpostLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
-    BaseLevel::CreateUI();
+    WorldLevel::CreateUI();
 
-    pingLabel_ = uiRoot_->CreateChild<Text>();
-    pingLabel_->SetSize(50, 20);
-    pingLabel_->SetAlignment(HA_LEFT, VA_BOTTOM);
-    pingLabel_->SetStyleAuto();
 }
 
 void OutpostLevel::CreateScene()

@@ -5,10 +5,10 @@
 #include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )
 
-#include "BaseLevel.h"
+#include "WorldLevel.h"
 
 /// PvP combat area
-class PvpCombatLevel : public BaseLevel
+class PvpCombatLevel : public WorldLevel
 {
     URHO3D_OBJECT(PvpCombatLevel, BaseLevel);
 public:

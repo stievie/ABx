@@ -5,22 +5,19 @@
 #include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )
 
-#include "BaseLevel.h"
+#include "WorldLevel.h"
 
 /// No combat area
-class OutpostLevel : public BaseLevel
+class OutpostLevel : public WorldLevel
 {
     URHO3D_OBJECT(OutpostLevel, BaseLevel);
 public:
     OutpostLevel(Context* context);
-    void CreatePlayer(const Vector3& position, const Quaternion& direction) override;
 protected:
-    virtual void SubscribeToEvents();
-    virtual void CreateUI();
+    void SubscribeToEvents() override;
+    void CreateUI() override;
 private:
     void CreateScene();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
-
-    Text* pingLabel_;
 };
 

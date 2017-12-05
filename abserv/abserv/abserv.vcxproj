@@ -160,6 +160,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bans.h" />
+    <ClInclude Include="Chat.h" />
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bans.cpp" />
+    <ClCompile Include="Chat.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />

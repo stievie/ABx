@@ -192,6 +192,9 @@
     <ClInclude Include="Maintenance.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -354,6 +357,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Maintenance.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Chat.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

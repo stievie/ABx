@@ -3,6 +3,6 @@
 
 
 PvpCombatLevel::PvpCombatLevel(Context* context) :
-    BaseLevel(context)
+    WorldLevel(context)
 {
 }

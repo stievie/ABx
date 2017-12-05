@@ -482,6 +482,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="CharCreateLevel.h" />
     <ClInclude Include="CharSelectLevel.h" />
     <ClInclude Include="ClientApp.h" />
@@ -498,6 +499,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="WorldLevel.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="abclient.rc" />
