@@ -37,7 +37,6 @@ void ProtocolLogin::SendLoginPacket()
 
 void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
 {
-    message->Get<uint16_t>();       // ??
     uint8_t recvByte = message->Get<uint8_t>();
     switch (recvByte)
     {
@@ -45,7 +44,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     {
         gameHost_ = message->GetString();
         gamePort_ = message->Get<uint16_t>();
-        Charlist chars;
+        CharList chars;
         int count = message->Get<uint8_t>();
         for (int i = 0; i < count; i++)
         {

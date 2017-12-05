@@ -8,6 +8,7 @@
 #include "IOAccount.h"
 #include "ConfigManager.h"
 #include <AB/ProtocolCodes.h>
+#include "PlayerManager.h"
 
 #include "DebugNew.h"
 
@@ -63,6 +64,13 @@ void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::
     if (!res)
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    }
+    const auto player = Game::PlayerManager::Instance.GetPlayerByAccountId(account.id_);
+    if (player)
+    {
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }

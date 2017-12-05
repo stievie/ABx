@@ -6,24 +6,6 @@
 
 namespace Client {
 
-enum GameServerOpCodes : uint8_t
-{
-    GameServerLoginOrPendingState = 10,
-    GameServerGMActions = 11,
-    GameServerEnterGame = 15,
-    GameServerUpdateNeeded = 17,
-    GameServerLoginError = 20,
-    GameServerLoginAdvice = 21,
-    GameServerLoginWait = 22,
-    GameServerLoginSuccess = 23,
-    GameServerLoginToken = 24,
-    GameServerStoreButtonIndicators = 25, // 1097
-    GameServerPingBack = 29,
-    GameServerPing = 30,
-    GameServerChallenge = 31,
-    GameServerDeath = 40,
-};
-
 class ProtocolGame : public Protocol
 {
 public:
@@ -54,6 +36,7 @@ protected:
     void ParseError(const std::shared_ptr<InputMessage>& message);
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
+    void ParseUpdate(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
     ~ProtocolGame();

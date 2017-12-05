@@ -12,23 +12,14 @@ class OutputMessage;
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
-    uint32_t xteaKey_[4];
     /// DH shared key
     DH_KEY dhKey_;
 protected:
     const std::weak_ptr<Connection> connection_;
     std::shared_ptr<OutputMessage> outputBuffer_;
-    bool encryptionEnabled_;
-    bool rawMessages_;
     bool checksumEnabled_;
-    void XTEAEncrypt(OutputMessage& message) const;
-    bool XTEADecrypt(NetworkMessage& message) const;
     void AESEncrypt(OutputMessage& message);
     bool AESDecrypt(NetworkMessage& message);
-    void SetXTEAKey(const uint32_t* key)
-    {
-        memcpy_s(xteaKey_, 4, key, sizeof(*key) * 4);
-    }
     /// Sets the shared key
     void SetDHKey(const DH_KEY* key)
     {
@@ -45,11 +36,8 @@ protected:
 public:
     explicit Protocol(std::shared_ptr<Connection> connection) :
         connection_(connection),
-        encryptionEnabled_(false),
-        rawMessages_(false),
         checksumEnabled_(false)
     {
-        memset(&xteaKey_, 0, sizeof(xteaKey_));
     }
 #if defined(_DEBUG)
     virtual ~Protocol()
@@ -78,6 +66,7 @@ public:
     std::shared_ptr<Connection> GetConnection() const { return connection_.lock(); }
 
     std::shared_ptr<OutputMessage> GetOutputBuffer(int32_t size);
+    void ResetOutputBuffer();
     uint32_t GetIP()
     {
         if (auto c = GetConnection())
@@ -92,7 +81,9 @@ public:
     void Send(std::shared_ptr<OutputMessage> message)
     {
         if (auto conn = GetConnection())
+        {
             conn->Send(message);
+        }
     }
 };
 

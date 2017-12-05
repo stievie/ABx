@@ -277,7 +277,7 @@ void Application::Stop()
 {
     LOG_INFO << "Server is shutting down" << std::endl;
     // Before serviceManager_.Stop()
-    Net::ConnectionManager::GetInstance()->CloseAll();
+    Net::ConnectionManager::Instance()->CloseAll();
     Maintenance::Instance.Stop();
 
     serviceManager_.Stop();

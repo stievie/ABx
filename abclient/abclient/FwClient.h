@@ -17,7 +17,7 @@ private:
     bool loggedIn_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
-    Client::Charlist characters_;
+    Client::CharList characters_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     static String GetProtocolErrorMessage(uint8_t err);
@@ -31,13 +31,13 @@ public:
     void EnterWorld(const String& charName, const String& map);
     void Logout();
 
-    void OnGetCharlist(const Client::Charlist& chars) override;
+    void OnGetCharlist(const Client::CharList& chars) override;
     void OnEnterWorld(const std::string& mapName) override;
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
-    const Client::Charlist& GetCharacters() const
+    const Client::CharList& GetCharacters() const
     {
         return characters_;
     }

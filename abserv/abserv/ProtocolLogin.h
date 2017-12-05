@@ -4,6 +4,7 @@
 #include "Protocol.h"
 #include "Connection.h"
 #include <stdint.h>
+#include <AB/ProtocolCodes.h>
 
 namespace Net {
 
@@ -12,7 +13,7 @@ class ProtocolLogin final : public Protocol
 public:
     // static protocol information
     enum { ServerSendsFirst = false };
-    enum { ProtocolIdentifier = 0x01 };
+    enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
     static const char* ProtocolName() { return "Login Protocol"; };
 public:

@@ -110,7 +110,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     case AB::GameProtocol::PacketTypeAttack:
         break;
-    case AB::GameProtocol::PackettTypeCancelAttack:
+    case AB::GameProtocol::PacketTypeCancelAttack:
         break;
     default:
         LOG_INFO << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
@@ -207,6 +207,12 @@ void ProtocolGame::Connect(uint32_t playerId)
             std::bind(&ProtocolGame::EnterGame, GetThis(), player_->map_)
         )
     );
+}
+
+void ProtocolGame::WriteToOutput(const NetworkMessage& message)
+{
+    std::shared_ptr<Net::OutputMessage> po = GetOutputBuffer(message.GetSize());
+    po->Append(message);
 }
 
 void ProtocolGame::EnterGame(const std::string& mapName)

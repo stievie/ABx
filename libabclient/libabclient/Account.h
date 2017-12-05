@@ -14,6 +14,6 @@ struct AccountCharacter
     std::string lastMap;
 };
 
-typedef std::vector<AccountCharacter> Charlist;
+typedef std::vector<AccountCharacter> CharList;
 
 }

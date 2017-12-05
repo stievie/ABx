@@ -25,13 +25,10 @@ private:
     std::shared_ptr<InputMessage> inputMessage_;
     void InternalRecvHeader(uint8_t* buffer, uint16_t size);
     void InternalRecvData(uint8_t* buffer, uint16_t size);
-    bool XteaDecrypt(const std::shared_ptr<InputMessage>& message);
-    void XteaEncrypt(const std::shared_ptr<OutputMessage>& message);
 protected:
     bool checksumEnabled_;
     bool xteaEnabled_;
     std::shared_ptr<Connection> connection_;
-    uint32_t xteaKey_[4];
     ErrorCallback errorCallback_;
     ProtocolErrorCallback protocolErrorCallback_;
     virtual void OnError(const asio::error_code& err);
@@ -60,8 +57,6 @@ public:
         return (connection_ && connection_->IsConnecting());
     }
 
-    void GenerateXteaKey();
-    void SetXteaKey(uint32_t a, uint32_t b, uint32_t c, uint32_t d);
     virtual void Send(const std::shared_ptr<OutputMessage>& message);
     virtual void Receive();
     void SetErrorCallback(const ErrorCallback& errorCallback) { errorCallback_ = errorCallback; }

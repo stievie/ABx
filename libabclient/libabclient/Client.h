@@ -28,7 +28,7 @@ private:
     std::string password_;
     std::string mapName_;
     std::vector<int> pings_;
-    void OnGetCharlist(const Charlist& chars);
+    void OnGetCharlist(const CharList& chars);
     void OnEnterWorld(const std::string& mapName);
     void OnError(const std::error_code& err);
     void OnProtocolError(uint8_t err);

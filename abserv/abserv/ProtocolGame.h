@@ -34,6 +34,7 @@ public:
     void Login(const std::string& name, uint32_t accountId, const std::string& map);
     void Logout();
     void EnterGame(const std::string& mapName);
+    void WriteToOutput(const NetworkMessage& message);
 private:
     // Helpers so we don't need to bind every time
     template <typename Callable, typename... Args>

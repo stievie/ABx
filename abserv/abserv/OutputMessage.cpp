@@ -16,8 +16,11 @@ void OutputMessagePool::SendAll()
     for (const auto& proto : bufferedProtocols_)
     {
         auto& msg = proto->GetCurrentBuffer();
-        if (msg)
+        if (msg && msg->GetSize() > 0)
+        {
             proto->Send(msg);
+            proto->ResetOutputBuffer();
+        }
     }
 
     if (!bufferedProtocols_.empty())

@@ -22,7 +22,7 @@ Client::~Client()
     Connection::Terminate();
 }
 
-void Client::OnGetCharlist(const Charlist& chars)
+void Client::OnGetCharlist(const CharList& chars)
 {
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())

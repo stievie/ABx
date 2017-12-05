@@ -19,7 +19,7 @@ class Connection;
 class ConnectionManager
 {
 public:
-    static ConnectionManager* GetInstance()
+    static ConnectionManager* Instance()
     {
         static ConnectionManager instance;
         return &instance;

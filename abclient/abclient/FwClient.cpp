@@ -103,7 +103,7 @@ void FwClient::Logout()
     loggedIn_ = false;
 }
 
-void FwClient::OnGetCharlist(const Client::Charlist& chars)
+void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
     characters_ = chars;
     VariantMap& eData = GetEventDataMap();

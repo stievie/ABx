@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <vector>
 #include "Account.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -13,9 +14,9 @@ class ProtocolLogin : public Protocol
 public:
     // static protocol information
     enum { ServerSendsFirst = false };
-    enum { ProtocolIdentifier = 0x01 };
+    enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
-    typedef std::function<void(const Charlist& chars)> CharlistCallback;
+    typedef std::function<void(const CharList& chars)> CharlistCallback;
 private:
     std::string accountName_;
     std::string password_;

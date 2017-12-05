@@ -10,6 +10,7 @@ ProtocolGame::ProtocolGame() :
     enterWorldCallback_(nullptr),
     pingCallback_(nullptr)
 {
+    checksumEnabled_ = ProtocolGame::UseChecksum;
 }
 
 ProtocolGame::~ProtocolGame()
@@ -73,8 +74,16 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GamePong:
             ParsePong(message);
             break;
+        case AB::GameProtocol::GameUpdate:
+            ParseUpdate(message);
+            break;
         }
     }
+}
+
+void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
+{
+
 }
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)

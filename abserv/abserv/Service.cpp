@@ -136,7 +136,7 @@ void ServicePort::Accept()
 
     try
     {
-        std::shared_ptr<Connection> conn = ConnectionManager::GetInstance()->CreateConnection(
+        std::shared_ptr<Connection> conn = ConnectionManager::Instance()->CreateConnection(
             service_, shared_from_this()
         );
 

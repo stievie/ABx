@@ -25,6 +25,18 @@ std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
     return std::shared_ptr<Player>();
 }
 
+std::shared_ptr<Player> PlayerManager::GetPlayerByAccountId(uint32_t id)
+{
+    auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
+    {
+        return current.second->data_.accountId == id;
+    });
+    if (it != players_.end())
+        return (*it).second;
+
+    return std::shared_ptr<Player>();
+}
+
 uint32_t PlayerManager::GetPlayerId(const std::string& name)
 {
     auto it = playerNames_.find(name);

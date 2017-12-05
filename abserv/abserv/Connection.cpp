@@ -86,7 +86,7 @@ void Connection::Close(bool force /* = false */)
 #ifdef DEBUG_NET
     LOG_DEBUG << "Closing connection" << std::endl;
 #endif
-    ConnectionManager::GetInstance()->ReleaseConnection(shared_from_this());
+    ConnectionManager::Instance()->ReleaseConnection(shared_from_this());
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     if (state_ != State::Open)

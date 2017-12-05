@@ -16,6 +16,7 @@
 #include "OutputMessage.h"
 #include <AB/ProtocolCodes.h>
 #include "ProtocolGame.h"
+#include "NetworkMessage.h"
 
 #include "DebugNew.h"
 
@@ -24,10 +25,10 @@ namespace Game {
 Game::Game() :
     state_(GameStateTerminated),
     lastUpdate_(0),
-    navMesh_(nullptr)
+    navMesh_(nullptr),
+    startTime_(0)
 {
     InitializeLua();
-    startTime_ = Utils::AbTick();
 }
 
 void Game::Start()
@@ -37,6 +38,7 @@ void Game::Start()
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Starting game " << id_ << ", " << data_.mapName << std::endl;
 #endif // DEBUG_GAME
+        startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
@@ -111,16 +113,19 @@ void Game::Update()
 void Game::SendStatus()
 {
     int64_t tick = Utils::AbTick();
+
+    // Collect all information
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::GameUpdate);
+
     for (const auto& p : players_)
     {
-        // If it didn't send a ping the last 2 sec it my be disconnected
-
+        // If it didn't send a ping the last 2 sec it may be disconnected
         if (p.second->lastPing_ + 2000 < tick)
             continue;
 
-        std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
-        output->AddByte(AB::GameProtocol::GameUpdate);
-        p.second->client_->Send(output);
+        // Write to buffered, auto-sent output message
+        p.second->client_->WriteToOutput(msg);
     }
 }
 
@@ -131,9 +136,9 @@ void Game::Ping(uint32_t playerId)
         return;
 
     player->lastPing_ = Utils::AbTick();
-    std::shared_ptr<Net::OutputMessage> output = Net::OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(AB::GameProtocol::GamePong);
-    player->client_->Send(output);
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::GamePong);
+    player->client_->WriteToOutput(msg);
 }
 
 void Game::RegisterLua(kaguya::State& state)
@@ -207,7 +212,7 @@ void Game::InternalLoad()
 {
     // Game::Load() Thread
 
-    // TODO: Load Data, Assets etc
+    // TODO: Load Data, Assets, Spawn stuff etc
     navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.navMeshFile);
 
     if (state_ == GameStateStartup)
@@ -224,12 +229,13 @@ void Game::Load(const std::string& mapName)
         LOG_ERROR << "Error loading game with name " << mapName << std::endl;
         return;
     }
+
+    // Must be executed here because the player doesn't wait to fully load the game to join
     std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.scriptFile);
     // Execute initialization code if any
     if (!luaState_.dofile(luaFile.c_str()))
-    {
         return;
-    }
+
     // Load Assets
     std::thread(&Game::InternalLoad, shared_from_this()).detach();
 }
