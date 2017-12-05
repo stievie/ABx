@@ -8,7 +8,7 @@
 
 namespace DB {
 
-bool IOAccount::LoginServerAuth(const std::string & name, const std::string & pass, Account& account)
+bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, Account& account)
 {
     Database* db = Database::Instance();
 
@@ -88,11 +88,6 @@ bool IOAccount::Save(const Account& account)
     query << "UPDATE `accounts` SET `warnings` = " << account.warnings_ << " WHERE `id` = " << account.id_;
     return db->ExecuteQuery(query);
     */
-}
-
-bool IOAccount::Load(Account& account, uint32_t id)
-{
-    return false;
 }
 
 }

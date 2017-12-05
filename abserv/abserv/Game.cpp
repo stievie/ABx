@@ -108,6 +108,7 @@ void Game::Update()
         );
         break;
     }
+
 }
 
 void Game::SendStatus()

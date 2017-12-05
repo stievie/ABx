@@ -2,6 +2,7 @@
 #include "IOPlayer.h"
 #include "PropStream.h"
 #include "IOGame.h"
+#include "Utils.h"
 
 #include "DebugNew.h"
 
@@ -90,17 +91,19 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     const char* effectBlob = stream.GetStream(effectSize);
 
     std::ostringstream query;
-    query << "UPDATE `players`SET ";
+    query << "UPDATE `players` SET ";
     query << " `level` = " << player->data_.level << ",";
     query << " `experience` = " << player->data_.xp << ",";
     query << " `skillpoints` = " << player->data_.skillPoints << ",";
-    query << " `lastloin` = " << player->loginTime_ << ",";
+    query << " `lastlogin` = " << player->loginTime_ << ",";
     query << " `lastlogout` = " << player->logoutTime_ << ",";
+    query << " `lastip` = " << player->client_->GetIP() << ",";
+    query << " `onlinetime` = `onlinetime` + " << player->logoutTime_ - player->loginTime_ << ",";
 
     query << " `effects` = " << db->EscapeBlob(effectBlob, static_cast<uint32_t>(effectSize)) << ",";
 
-    query << " `last_map` = " << player->data_.lastMap;
-    query << " WHERE = `id` = " << player->data_.id;
+    query << " `last_map` = " << db->EscapeString(player->data_.lastMap);
+    query << " WHERE `id` = " << player->data_.id;
 
     DBTransaction transaction(db);
     if (!transaction.Begin())

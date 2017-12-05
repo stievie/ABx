@@ -55,6 +55,8 @@ void ProtocolGame::Logout()
     if (!player_)
         return;
 
+    player_->logoutTime_ = Utils::AbTick();
+    DB::IOPlayer::SavePlayer(player_.get());
     Game::PlayerManager::Instance.RemovePlayer(player_->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
@@ -199,6 +201,7 @@ void ProtocolGame::Connect(uint32_t playerId)
     }
 
     player_ = foundPlayer;
+    player_->loginTime_ = Utils::AbTick();
 
     acceptPackets_ = true;
 
