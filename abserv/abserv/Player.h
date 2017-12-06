@@ -32,8 +32,6 @@ struct PlayerData
     uint32_t skillPoints;
     PlayerSex sex;
     std::string lastMap;
-    time_t lastLogin;
-    time_t lastLogout;
 };
 
 class Player final : public Creature

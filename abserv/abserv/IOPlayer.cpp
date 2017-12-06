@@ -44,8 +44,6 @@ bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result
         player->data_.lastMap = result->GetString("last_map");
     else
         player->data_.lastMap = IOGame::GetLandingGame();
-    player->data_.lastLogin = result->GetTime("lastlogin");
-    player->data_.lastLogout = result->GetTime("lastlogout");
 
     return true;
 }
@@ -56,7 +54,7 @@ bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
 
     std::ostringstream query;
     query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `experience`, `skillpoints`, " <<
-        "`sex`, `lastlogin`, `lastlogout`, `lastip` FROM `players` WHERE `name` = " <<
+        "`sex` FROM `players` WHERE `name` = " <<
         db->EscapeString(name);
 
     return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
@@ -68,7 +66,7 @@ bool IOPlayer::LoadPlayerById(Game::Player* player, uint32_t playerId)
 
     std::ostringstream query;
     query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `experience`, `skillpoints`, " <<
-        "`sex`, `lastlogin`, `lastlogout`, `lastip` FROM `players` WHERE `id` = " << playerId;
+        "`sex` FROM `players` WHERE `id` = " << playerId;
 
     return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
 }
