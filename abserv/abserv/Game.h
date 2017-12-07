@@ -14,6 +14,7 @@
 #pragma warning(disable: 4702 4127 4244)
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
+#include "NetworkMessage.h"
 
 namespace Game {
 
@@ -76,6 +77,9 @@ private:
     void InternalLoad();
     void Update();
     void SendStatus();
+    void ResetStatus();
+    /// Changes to the game are written to this message and sent to all players
+    std::shared_ptr<Net::NetworkMessage> gameStatus_;
 public:
     static void RegisterLua(kaguya::State& state);
 

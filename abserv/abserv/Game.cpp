@@ -16,7 +16,6 @@
 #include "OutputMessage.h"
 #include <AB/ProtocolCodes.h>
 #include "ProtocolGame.h"
-#include "NetworkMessage.h"
 
 #include "DebugNew.h"
 
@@ -39,6 +38,7 @@ void Game::Start()
         LOG_DEBUG << "Starting game " << id_ << ", " << data_.mapName << std::endl;
 #endif // DEBUG_GAME
         startTime_ = Utils::AbTick();
+        ResetStatus();
         lastUpdate_ = 0;
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
@@ -115,10 +115,6 @@ void Game::SendStatus()
 {
     int64_t tick = Utils::AbTick();
 
-    // Collect all information
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::GameUpdate);
-
     for (const auto& p : players_)
     {
         // If it didn't send a ping the last 2 sec it may be disconnected
@@ -126,8 +122,15 @@ void Game::SendStatus()
             continue;
 
         // Write to buffered, auto-sent output message
-        p.second->client_->WriteToOutput(msg);
+        p.second->client_->WriteToOutput(*gameStatus_.get());
     }
+    ResetStatus();
+}
+
+void Game::ResetStatus()
+{
+    gameStatus_ = std::make_shared<Net::NetworkMessage>();
+    gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
 }
 
 void Game::Ping(uint32_t playerId)
@@ -250,6 +253,7 @@ void Game::PlayerJoin(uint32_t playerId)
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
             objects_.push_back(player);
+            player->data_.lastMap = data_.mapName;
             player->SetGame(shared_from_this());
         }
         luaState_["onAddObject"](this, player);

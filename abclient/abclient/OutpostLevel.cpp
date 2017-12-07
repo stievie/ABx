@@ -34,7 +34,7 @@ void OutpostLevel::CreateScene()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     scene_ = new Scene(context_);
-    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CharSelect.xml");
+    XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/World.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 }
 

@@ -96,11 +96,13 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     query << " `lastlogin` = " << player->loginTime_ << ",";
     query << " `lastlogout` = " << player->logoutTime_ << ",";
     query << " `lastip` = " << player->client_->GetIP() << ",";
-    query << " `onlinetime` = `onlinetime` + " << player->logoutTime_ - player->loginTime_ << ",";
+    // Online time in sec
+    query << " `onlinetime` = `onlinetime` + " << static_cast<int>((player->logoutTime_ - player->loginTime_) / 1000) << ",";
 
     query << " `effects` = " << db->EscapeBlob(effectBlob, static_cast<uint32_t>(effectSize)) << ",";
 
     query << " `last_map` = " << db->EscapeString(player->data_.lastMap);
+
     query << " WHERE `id` = " << player->data_.id;
 
     DBTransaction transaction(db);

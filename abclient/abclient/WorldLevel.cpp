@@ -13,6 +13,7 @@ void WorldLevel::CreatePlayer(const Vector3& position, const Quaternion& directi
     if (!cameraNode_)
     {
         cameraNode_ = scene_->CreateChild("CameraNode");
+        cameraNode_->SetPosition(Vector3(0.0f, 15.0f, 0.0f));
         Camera* camera = cameraNode_->CreateComponent<Camera>();
         camera->SetFarClip(300.0f);
     }

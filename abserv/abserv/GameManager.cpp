@@ -95,8 +95,11 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
 
 bool GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> player)
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
-    std::shared_ptr<Game> game = GetGame(mapName, true);
+    std::shared_ptr<Game> game;
+    {
+        std::lock_guard<std::recursive_mutex> lockClass(lock_);
+        game = GetGame(mapName, true);
+    }
 
     if (!game)
         return false;
