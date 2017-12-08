@@ -7,6 +7,7 @@
 #include "LevelManager.h"
 #include "BaseLevel.h"
 #include <AB/ProtocolCodes.h>
+#include "Options.h"
 
 String FwClient::GetProtocolErrorMessage(uint8_t err)
 {
@@ -38,6 +39,9 @@ FwClient::FwClient(Context* context) :
     Object(context),
     loggedIn_(false)
 {
+    Options* o = context->GetSubsystem<Options>();
+    client_.loginHost_ = std::string(o->loginHost_.CString());
+    client_.loginPort_ = o->loginPort_;
     client_.receiver_ = this;
     lastState_ = client_.state_;
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));

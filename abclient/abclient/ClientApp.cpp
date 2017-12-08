@@ -34,6 +34,7 @@
 #include "CharCreateLevel.h"
 #include "FwClient.h"
 #include "Player.h"
+#include "Options.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -73,6 +74,10 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterFactory<OutpostLevel>();
     context->RegisterFactory<PvpCombatLevel>();
 
+    Options* options = new Options(context);
+    options->Load();
+    context->RegisterSubsystem(options);
+
     FwClient* cli = new FwClient(context);
     context->RegisterSubsystem(cli);
     LevelManager* lvl = new LevelManager(context);
@@ -90,16 +95,21 @@ ClientApp::ClientApp(Context* context) :
 */
 void ClientApp::Setup()
 {
+    Options* options = GetSubsystem<Options>();
     // These parameters should be self-explanatory.
     // See http://urho3d.github.io/documentation/1.5/_main_loop.html
     // for a more complete list.
-    engineParameters_["FullScreen"] = false;
-    engineParameters_["WindowWidth"] = 1280;
-    engineParameters_["WindowHeight"] = 720;
-    engineParameters_["WindowResizable"] = true;
-    engineParameters_["WindowTitle "] = "FW";
-    engineParameters_["VSync"] = true;
-    engineParameters_["Multisample"] = true;
+    //  Default 0 (use desktop resolution, or 1024 in windowed mode.)
+    engineParameters_["WindowWidth"] = options->GetWidth();
+    // Default 0 (use desktop resolution, or 768 in windowed mode.)
+    engineParameters_["WindowHeight"] = options->GetHeight();
+    engineParameters_["FullScreen"] = options->GetFullscreen();
+    engineParameters_["Borderless"] = options->GetBorderless();
+    engineParameters_["WindowResizable"] = options->GetResizeable();
+    engineParameters_["HighDPI"] = options->GetHighDPI();
+    engineParameters_["VSync"] = options->GetVSync();
+    engineParameters_["TripleBuffer"] = options->GetTripleBuffer();
+    engineParameters_["Multisample"] = options->GetMultiSample();
     engineParameters_["ResourcePaths"] = "AutoLoad;CoreData;Data;AbData";
     engineParameters_["LogName"] = "abclient.log";
 }
@@ -217,6 +227,14 @@ void ClientApp::HandleUpdate(StringHash eventType, VariantMap& eventData)
     {
         framecount_ = 0;
         time_ = 0;
+    }
+
+    Input* input = GetSubsystem<Input>();
+
+    if (input->GetKeyPress(KEY_F11))
+    {
+        Options* options = GetSubsystem<Options>();
+        options->SetFullscreen(!options->GetFullscreen());
     }
 }
 

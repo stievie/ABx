@@ -476,6 +476,7 @@
     <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LoginLevel.cpp" />
+    <ClCompile Include="Options.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PvpCombatLevel.cpp" />
@@ -493,6 +494,7 @@
     <ClInclude Include="FwClient.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
+    <ClInclude Include="Options.h" />
     <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PvpCombatLevel.h" />
