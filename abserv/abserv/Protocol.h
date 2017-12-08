@@ -12,9 +12,9 @@ class OutputMessage;
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 private:
+protected:
     /// DH shared key
     DH_KEY dhKey_;
-protected:
     const std::weak_ptr<Connection> connection_;
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
@@ -24,6 +24,10 @@ protected:
     void SetDHKey(const DH_KEY* key)
     {
         memcpy_s(dhKey_, DH_KEY_LENGTH, key, DH_KEY_LENGTH);
+    }
+    const DH_KEY& GetDHKey() const
+    {
+        return dhKey_;
     }
     void Disconnect() const
     {

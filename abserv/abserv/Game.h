@@ -21,19 +21,6 @@ namespace Game {
 class Player;
 class Npc;
 
-/// Direction relative to current rotation
-enum MoveDirection
-{
-    MoveDirectionNorth = 0,
-    MoveDirectionNorthWest = 45,
-    MoveDirectionWest = 90,
-    MoveDirectionSouthWest = 135,
-    MoveDirectionSouth = 180,
-    MoveDirectionSouthEast = 225,
-    MoveDirectionEast = 270,
-    MoveDirectionNorthEast = 315,
-};
-
 enum GameType
 {
     GameTypeOutpost = 1,
@@ -111,13 +98,15 @@ public:
     const kaguya::State& GetLuaState() const { return luaState_; }
     void SetState(GameState state);
     void Load(const std::string& mapName);
-
+    /// Send spawn message for all existing objects
+    void SendSpawnAll(uint32_t playerId);
+    void QueueSpawnObject(std::shared_ptr<GameObject> object);
+    void QueueLeaveObject(uint32_t objectId);
 
     /// From GameProtocol (Dispatcher Thread)
     void Ping(uint32_t playerId);
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
-    void PlayerMove(uint32_t playerId, MoveDirection direction);
 
 };
 

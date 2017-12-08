@@ -16,6 +16,7 @@
 #include "OutputMessage.h"
 #include <AB/ProtocolCodes.h>
 #include "ProtocolGame.h"
+#include "PropStream.h"
 
 #include "DebugNew.h"
 
@@ -28,6 +29,7 @@ Game::Game() :
     startTime_(0)
 {
     InitializeLua();
+    ResetStatus();
 }
 
 void Game::Start()
@@ -38,7 +40,6 @@ void Game::Start()
         LOG_DEBUG << "Starting game " << id_ << ", " << data_.mapName << std::endl;
 #endif // DEBUG_GAME
         startTime_ = Utils::AbTick();
-        ResetStatus();
         lastUpdate_ = 0;
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
@@ -117,9 +118,6 @@ void Game::SendStatus()
 
     for (const auto& p : players_)
     {
-        // If it didn't send a ping the last 2 sec it may be disconnected
-        if (p.second->lastPing_ + 2000 < tick)
-            continue;
 
         // Write to buffered, auto-sent output message
         p.second->client_->WriteToOutput(*gameStatus_.get());
@@ -129,8 +127,10 @@ void Game::SendStatus()
 
 void Game::ResetStatus()
 {
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     gameStatus_ = std::make_shared<Net::NetworkMessage>();
     gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
+    gameStatus_->Add<int64_t>(Utils::AbTick());
 }
 
 void Game::Ping(uint32_t playerId)
@@ -244,6 +244,59 @@ void Game::Load(const std::string& mapName)
     std::thread(&Game::InternalLoad, shared_from_this()).detach();
 }
 
+void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
+{
+    gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
+    gameStatus_->Add<uint32_t>(object->id_);
+    gameStatus_->Add<float>(object->position_.x_);
+    gameStatus_->Add<float>(object->position_.y_);
+    gameStatus_->Add<float>(object->position_.z_);
+    gameStatus_->Add<float>(object->rotation_);
+    IO::PropWriteStream data;
+    size_t dataSize;
+    object->Serialize(data);
+    const char* cData = data.GetStream(dataSize);
+    gameStatus_->AddString(std::string(cData, dataSize));
+}
+
+void Game::QueueLeaveObject(uint32_t objectId)
+{
+    gameStatus_->AddByte(AB::GameProtocol::GameLeaveObject);
+    gameStatus_->Add<uint32_t>(objectId);
+}
+
+void Game::SendSpawnAll(uint32_t playerId)
+{
+    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    if (!player)
+        return;
+
+    // Send all already existing objects to the player, excluding the player itself.
+    // This is sent to all players.
+    // Only called when the player enters a game. All spawns during the game are sent
+    // when they happen.
+    Net::NetworkMessage msg;
+    for (const auto& o : objects_)
+    {
+        if (o.get() == player.get())
+            continue;
+
+        msg.AddByte(AB::GameProtocol::GameSpawnObject);
+        msg.Add<uint32_t>(o->id_);
+        msg.Add<float>(o->position_.x_);
+        msg.Add<float>(o->position_.y_);
+        msg.Add<float>(o->position_.z_);
+        msg.Add<float>(o->rotation_);
+        IO::PropWriteStream data;
+        size_t dataSize;
+        o->Serialize(data);
+        const char* cData = data.GetStream(dataSize);
+        std::string sData = std::string(cData, dataSize);
+        msg.AddString(sData);
+        player->client_->WriteToOutput(msg);
+    }
+}
+
 void Game::PlayerJoin(uint32_t playerId)
 {
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
@@ -258,6 +311,14 @@ void Game::PlayerJoin(uint32_t playerId)
         }
         luaState_["onAddObject"](this, player);
         luaState_["onPlayerJoin"](this, player.get());
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(10, std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
+        );
+        // In worst case (i.e. the game data is still loading): will be sent as
+        // soon as the game runs and entered the Update loop.
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(20, std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
+        );
     }
 }
 
@@ -280,15 +341,11 @@ void Game::PlayerLeave(uint32_t playerId)
         });
         if (ito != objects_.end())
             objects_.erase(ito);
+
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(10, std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
+        );
     }
-}
-
-void Game::PlayerMove(uint32_t playerId, MoveDirection direction)
-{
-    Player* player = GetPlayerById(playerId);
-    if (!player)
-        return;
-
 }
 
 }

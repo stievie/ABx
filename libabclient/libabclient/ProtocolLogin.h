@@ -6,6 +6,7 @@
 #include <vector>
 #include "Account.h"
 #include <AB/ProtocolCodes.h>
+#include <abcrypto.hpp>
 
 namespace Client {
 
@@ -23,14 +24,14 @@ private:
     bool firstRecv_;
     CharlistCallback charlistCallback;
     void SendLoginPacket();
+    void SendKeyExchange();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
     void OnConnect() override;
     void OnReceive(const std::shared_ptr<InputMessage>& message) override;
 public:
     ProtocolLogin();
-    ~ProtocolLogin();
-
+    ~ProtocolLogin() {}
 
     void Login(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,

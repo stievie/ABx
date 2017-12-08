@@ -78,33 +78,31 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddGameTask(&Game::Game::Ping, player_->id_);
         break;
     case AB::GameProtocol::PacketTypeLogout:
-        Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(std::bind(&Game::Player::Logout, player_))
-        );
+        AddPlayerTask(&Game::Player::Logout);
         break;
     case AB::GameProtocol::PacketTypeMoveNorth:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorth);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorth);
         break;
     case AB::GameProtocol::PacketTypeMoveNorthEast:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorthEast);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorthEast);
         break;
     case AB::GameProtocol::PacketTypeMoveEast:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionEast);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionEast);
         break;
     case AB::GameProtocol::PacketTypeMoveSouthEast:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorth);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorth);
         break;
     case AB::GameProtocol::PacketTypeMoveSouth:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionSouth);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionSouth);
         break;
     case AB::GameProtocol::PacketTypeMoveSouthWest:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionSouthWest);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionSouthWest);
         break;
     case AB::GameProtocol::PacketTypeMoveWest:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionWest);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionWest);
         break;
     case AB::GameProtocol::PacketTypeMoveNorthWest:
-        AddGameTask(&Game::Game::PlayerMove, player_->id_, Game::MoveDirectionNorthWest);
+        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorthWest);
         break;
     case AB::GameProtocol::PacketTypeUseSkill:
         break;
@@ -225,8 +223,8 @@ void ProtocolGame::EnterGame(const std::string& mapName)
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
         output->AddString(mapName);
-        output->AddVector3(player_->position_);
-        output->AddQuaternion(player_->rotation_);
+        // Object ID in game
+        output->Add<uint32_t>(player_->id_);
         Send(output);
     }
     else

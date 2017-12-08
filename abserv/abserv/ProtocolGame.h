@@ -44,12 +44,18 @@ private:
             Asynch::CreateTask(std::bind(function, player_->GetGame(), std::forward<Args>(args)...))
         );
     }
-
     template <typename Callable, typename... Args>
     void AddGameTaskTimed(uint32_t delay, Callable function, Args&&... args)
     {
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(delay, std::bind(function, player_->GetGame(), std::forward<Args>(args)...))
+        );
+    }
+    template <typename Callable, typename... Args>
+    void AddPlayerTask(Callable function, Args&&... args)
+    {
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(function, player_, std::forward<Args>(args)...))
         );
     }
 

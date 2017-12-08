@@ -51,13 +51,18 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
-            &ProtocolLogin::GetCharacterList, thisPtr,
+            &ProtocolLogin::SendCharacterList, thisPtr,
             accountName, password
         ))
     );
 }
 
-void ProtocolLogin::GetCharacterList(const std::string& accountName, const std::string& password)
+void ProtocolLogin::SendKeyExchange()
+{
+
+}
+
+void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     Account account;
     bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);

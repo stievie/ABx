@@ -26,7 +26,10 @@ public:
     bool SaveKeys(const std::string& fileName);
     /// Get the shared key
     void GetSharedKey(const DH_KEY& publicKey, DH_KEY& sharedKey);
-
+    const DH_KEY& GetPublicKey() const
+    {
+        return publicKey_;
+    }
     static DHKeys Instance;
 };
 

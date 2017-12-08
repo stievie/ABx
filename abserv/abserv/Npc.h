@@ -25,6 +25,10 @@ public:
     Npc& operator=(const Npc&) = delete;
 
     bool LoadScript(const std::string& fileName);
+    AB::GameProtocol::GameObjectType GetType() const override
+    {
+        return AB::GameProtocol::ObjectTypeNpc;
+    }
 
     void Update(uint32_t timeElapsed) override;
 

@@ -254,7 +254,6 @@
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
-    <ClCompile Include="PropStream.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolAdmin.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />

@@ -15,6 +15,7 @@ Client::Client() :
     protoGame_(nullptr),
     state_(StateDisconnected)
 {
+    Crypto::DHKeys::Instance.GenerateKeys();
 }
 
 Client::~Client()
@@ -32,12 +33,24 @@ void Client::OnGetCharlist(const CharList& chars)
         receiver_->OnGetCharlist(chars);
 }
 
-void Client::OnEnterWorld(const std::string& mapName)
+void Client::OnEnterWorld(const std::string& mapName, uint32_t playerId)
 {
     state_ = StateWorld;
     mapName_ = mapName;
     if (receiver_)
-        receiver_->OnEnterWorld(mapName);
+        receiver_->OnEnterWorld(mapName, playerId);
+}
+
+void Client::OnDespawnObject(uint32_t id)
+{
+    if (receiver_)
+        receiver_->OnDespawnObject(id);
+}
+
+void Client::OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)
+{
+    if (receiver_)
+        receiver_->OnSpawnObject(id, x, y, z, rot, data);
 }
 
 void Client::OnError(const std::error_code& err)
@@ -88,8 +101,11 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
     protoGame_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
+    protoGame_->SetSpawnCallback(std::bind(&Client::OnSpawnObject, this, std::placeholders::_1,
+        std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5, std::placeholders::_6));
+    protoGame_->SetDespawnCallback(std::bind(&Client::OnDespawnObject, this, std::placeholders::_1));
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
-        std::bind(&Client::OnEnterWorld, this, std::placeholders::_1));
+        std::bind(&Client::OnEnterWorld, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void Client::Update(int timeElapsed)
@@ -100,7 +116,6 @@ void Client::Update(int timeElapsed)
         if (protoGame_)
         {
             protoGame_->Ping(std::bind(&Client::OnPong, this, std::placeholders::_1));
-//            Connection::Run();
         }
         lastTime = 0;
     }

@@ -8,8 +8,19 @@
 #pragma warning(disable: 4702 4127 4244)
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
+#include <sstream>
+#include "PropStream.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
+
+enum ObjerctAttr : uint8_t
+{
+    ObjectAttrName = 1,
+
+    // For serialization
+    ObjectAttrEnd = 254
+};
 
 class Game;
 
@@ -49,12 +60,18 @@ public:
     {
         game_ = game;
     }
+    virtual AB::GameProtocol::GameObjectType GetType() const
+    {
+        return AB::GameProtocol::ObjectTypeUnknown;
+    }
 
     virtual std::string GetName() const { return "Unknown"; }
     Math::Vector3 position_;
-    Math::Quaternion rotation_;
+    /// Rotation around y-axis
+    float rotation_;
     /// Auto ID, not DB ID
     uint32_t id_;
+    virtual bool Serialize(IO::PropWriteStream& stream);
 };
 
 }

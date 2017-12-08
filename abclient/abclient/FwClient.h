@@ -15,6 +15,7 @@ private:
     String accountName_;
     String accounbtPass_;
     bool loggedIn_;
+    uint32_t playerId_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
     Client::CharList characters_;
@@ -32,11 +33,13 @@ public:
     void Logout();
 
     void OnGetCharlist(const Client::CharList& chars) override;
-    void OnEnterWorld(const std::string& mapName) override;
+    void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
+    void OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data) override;
+    void OnDespawnObject(uint32_t id) override;
     const Client::CharList& GetCharacters() const
     {
         return characters_;

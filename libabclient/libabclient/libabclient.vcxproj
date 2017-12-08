@@ -131,6 +131,7 @@
     <ClInclude Include="InputMessage.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="OutputMessage.h" />
+    <ClInclude Include="PropStream.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ProtocolLogin.h" />

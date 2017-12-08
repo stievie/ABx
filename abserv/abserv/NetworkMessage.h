@@ -89,10 +89,7 @@ public:
         buffer_[info_.position++] = value;
         info_.length++;
     }
-    void AddString(const std::string& value)
-    {
-        AddString(value.c_str());
-    }
+    void AddString(const std::string& value);
     void AddString(const char* value);
     void AddVector3(const Math::Vector3& value)
     {

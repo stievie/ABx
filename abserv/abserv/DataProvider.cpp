@@ -39,10 +39,17 @@ std::string DataProvider::GetFile(const std::string & name) const
 
 void DataProvider::CleanCache()
 {
+    if (cache_.size() == 0)
+        return;
+
     for (auto it = cache_.begin(); it != cache_.end(); )
     {
         if ((*it).second.use_count() == 1)
+        {
             cache_.erase(it);
+            if (cache_.size() == 0)
+                return;
+        }
         else
             it++;
     }

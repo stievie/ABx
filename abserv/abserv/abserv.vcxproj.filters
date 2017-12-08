@@ -311,9 +311,6 @@
     <ClCompile Include="Asset.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="PropStream.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Creature.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>

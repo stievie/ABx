@@ -18,6 +18,19 @@ enum PlayerSex
     PlayerSexMale
 };
 
+/// Direction relative to current rotation
+enum MoveDirection
+{
+    MoveDirectionNorth = 0,
+    MoveDirectionNorthWest = 45,
+    MoveDirectionWest = 90,
+    MoveDirectionSouthWest = 135,
+    MoveDirectionSouth = 180,
+    MoveDirectionSouthEast = 225,
+    MoveDirectionEast = 270,
+    MoveDirectionNorthEast = 315,
+};
+
 /// DB Data
 struct PlayerData
 {
@@ -53,6 +66,10 @@ public:
 
     std::string GetName() const override { return data_.name; }
     uint32_t GetLevel() const override { return data_.level; }
+    AB::GameProtocol::GameObjectType GetType() const override
+    {
+        return AB::GameProtocol::ObjectTypePlayer;
+    }
 
     void Logout();
 
@@ -62,6 +79,9 @@ public:
     std::string map_;
     int64_t lastPing_ = 0;
     std::shared_ptr<Net::ProtocolGame> client_;
+
+    // Tasks
+    void PlayerMove(MoveDirection direction);
 };
 
 }

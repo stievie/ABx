@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ProtocolLogin.h"
 #include <AB/ProtocolCodes.h>
+#include "DHKeys.h"
 
 namespace Client {
 
@@ -11,10 +12,6 @@ ProtocolLogin::ProtocolLogin() :
     checksumEnabled_ = ProtocolLogin::UseChecksum;
 }
 
-ProtocolLogin::~ProtocolLogin()
-{
-}
-
 void ProtocolLogin::Login(std::string& host, uint16_t port,
     const std::string& account, const std::string& password, const CharlistCallback& callback)
 {
@@ -22,6 +19,19 @@ void ProtocolLogin::Login(std::string& host, uint16_t port,
     password_ = password;
     charlistCallback = callback;
     Connect(host, port);
+}
+
+void ProtocolLogin::SendKeyExchange()
+{
+    // TODO:
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+    msg->Add<uint16_t>(1);   // Client OS
+    msg->Add<uint16_t>(1);   // Client Version
+    const DH_KEY& clientKey = Crypto::DHKeys::Instance.GetPublicKey();
+    for (int i = 0; i < DH_KEY_LENGTH; i++)
+        msg->Add<uint8_t>(clientKey[i]);
+    Send(msg);
 }
 
 void ProtocolLogin::SendLoginPacket()
@@ -40,6 +50,15 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     uint8_t recvByte = message->Get<uint8_t>();
     switch (recvByte)
     {
+    case AB::LoginProtocol::KeyExchange:
+    {
+        DH_KEY serverPublic;
+        for (int i = 0; i < DH_KEY_LENGTH; i++)
+            serverPublic[i] = message->Get<uint8_t>();
+        // Calculate shared key from server pubic key and our key
+        Crypto::DHKeys::Instance.GetSharedKey(serverPublic, sharedKey_);
+        break;
+    }
     case AB::LoginProtocol::CharacterList:
     {
         gameHost_ = message->GetString();

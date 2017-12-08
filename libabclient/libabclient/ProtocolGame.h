@@ -3,6 +3,7 @@
 #include "Protocol.h"
 #include <string>
 #include <stdint.h>
+#include "PropStream.h"
 
 namespace Client {
 
@@ -13,8 +14,10 @@ public:
     enum { ServerSendsFirst = true };
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
     enum { UseChecksum = true };
-    typedef std::function<void(const std::string& mapName)> EnterWorldCallback;
+    typedef std::function<void(const std::string& mapName, uint32_t)> EnterWorldCallback;
     typedef std::function<void(int)> PingCallback;
+    typedef std::function<void(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)> SpawnCallback;
+    typedef std::function<void(uint32_t id)> DespawnCallback;;
 private:
     std::string accountName_;
     std::string accountPass_;
@@ -25,6 +28,8 @@ private:
     bool firstRevc_;
     EnterWorldCallback enterWorldCallback_;
     PingCallback pingCallback_;
+    SpawnCallback spawnCallback_;
+    DespawnCallback despawnCallback_;
 
     void SendLoginPacket();
 protected:
@@ -37,6 +42,8 @@ protected:
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
+    void ParseSpawnObject(const std::shared_ptr<InputMessage>& message);
+    void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
     ~ProtocolGame();
@@ -46,6 +53,8 @@ public:
         const EnterWorldCallback& callback);
     void Logout();
     void Ping(const PingCallback& callback);
+    void SetSpawnCallback(const SpawnCallback& callback) { spawnCallback_ = callback; }
+    void SetDespawnCallback(const DespawnCallback& callback) { despawnCallback_ = callback; }
 };
 
 }

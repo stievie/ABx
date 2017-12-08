@@ -13,6 +13,7 @@
 #include "OutputMessage.h"
 #include <stdint.h>
 #include "Defines.h"
+#include <abcrypto.hpp>
 
 namespace Client {
 
@@ -27,7 +28,7 @@ private:
     void InternalRecvData(uint8_t* buffer, uint16_t size);
 protected:
     bool checksumEnabled_;
-    bool xteaEnabled_;
+    DH_KEY sharedKey_;
     std::shared_ptr<Connection> connection_;
     ErrorCallback errorCallback_;
     ProtocolErrorCallback protocolErrorCallback_;

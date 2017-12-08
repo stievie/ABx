@@ -40,6 +40,18 @@ void NetworkMessage::AddBytes(const char* bytes, uint32_t size)
     info_.length += static_cast<MsgSize_t>(size);
 }
 
+void NetworkMessage::AddString(const std::string& value)
+{
+    uint16_t len = static_cast<uint16_t>(value.length());
+    if (!CanAdd(len + 2) || len > 8192)
+        return;
+    Add<uint16_t>(len);
+    // Allows also \0
+    memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value.data(), len);
+    info_.position += static_cast<MsgSize_t>(len);
+    info_.length += static_cast<MsgSize_t>(len);
+}
+
 void NetworkMessage::AddString(const char* value)
 {
     uint16_t len = static_cast<uint16_t>(strlen(value));

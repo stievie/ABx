@@ -111,8 +111,9 @@ void FwClient::OnGetCharlist(const Client::CharList& chars)
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
 
-void FwClient::OnEnterWorld(const std::string& mapName)
+void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)
 {
+    playerId_ = playerId;
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::E_SET_LEVEL] = "OutpostLevel";
     SendEvent(AbEvents::E_SET_LEVEL, eData);
@@ -140,4 +141,24 @@ void FwClient::OnProtocolError(uint8_t err)
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
     BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
     cl->OnProtocolError(err);
+}
+
+void FwClient::OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)
+{
+    uint8_t objectType;
+    if (!data.Read<uint8_t>(objectType))
+        return;
+
+    std::string name;
+    data.ReadString(name);
+    if (id == playerId_)
+    {
+        URHO3D_LOGDEBUG(name.c_str());
+        // This are we
+    }
+}
+
+void FwClient::OnDespawnObject(uint32_t id)
+{
+
 }

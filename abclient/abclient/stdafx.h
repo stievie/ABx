@@ -5,6 +5,11 @@
 
 #pragma once
 
+// Suppress min/max conflicts with STL. For further information visit: http://support.microsoft.com/kb/143208
+#ifndef NOMINMAX
+#   define NOMINMAX
+#endif
+
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

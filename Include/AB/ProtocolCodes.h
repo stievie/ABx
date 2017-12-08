@@ -34,6 +34,7 @@ enum LoginProtocolCodes : uint8_t
 {
     LoginError = 0x01,
     CharacterList = 0x02,                   // Returns character list
+    KeyExchange = 0x03,
 };
 
 }
@@ -48,6 +49,17 @@ enum GameProtocolCodes : uint8_t
     GameEnter = 0x02,
     GameUpdate = 0x03,
     GamePong = 0x04,
+    // An object spawned
+    GameSpawnObject = 0x05,
+    GameLeaveObject = 0x06,
+};
+
+enum GameObjectType : uint8_t
+{
+    ObjectTypeUnknown = 0x00,
+    ObjectTypeStatic = 0x01,
+    ObjectTypeNpc = 0x02,
+    ObjectTypePlayer = 0x03,
 };
 
 enum GamePacketTypes : uint8_t

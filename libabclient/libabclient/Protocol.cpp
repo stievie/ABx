@@ -56,8 +56,6 @@ void Protocol::Receive()
     int headerSize = 2; // 2 bytes for message size
     if (checksumEnabled_)
         headerSize += 4; // 4 bytes for checksum
-    if (xteaEnabled_)
-        headerSize += 2; // 2 bytes for XTEA encrypted message size
     inputMessage_->SetHeaderSize(static_cast<uint16_t>(headerSize));
 
     // read the first 2 bytes which contain the message size

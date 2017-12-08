@@ -5,6 +5,8 @@
 #include <memory>
 #include "Account.h"
 #include "Receiver.h"
+#include "DHKeys.h"
+#include "PropStream.h"
 
 namespace Client {
 
@@ -28,11 +30,15 @@ private:
     std::string password_;
     std::string mapName_;
     std::vector<int> pings_;
+    DH_KEY serverPublicKey_;
+    DH_KEY sharedKey_;
     void OnGetCharlist(const CharList& chars);
-    void OnEnterWorld(const std::string& mapName);
+    void OnEnterWorld(const std::string& mapName, uint32_t playerId);
     void OnError(const std::error_code& err);
     void OnProtocolError(uint8_t err);
     void OnPong(int ping);
+    void OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data);
+    void OnDespawnObject(uint32_t id);
 public:
     Client();
     ~Client();

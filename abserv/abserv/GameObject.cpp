@@ -16,9 +16,17 @@ void GameObject::RegisterLua(kaguya::State& state)
     );
 }
 
-GameObject::GameObject()
+GameObject::GameObject() :
+    rotation_(0.0f)
 {
     id_ = GetNewId();
+}
+
+bool GameObject::Serialize(IO::PropWriteStream& stream)
+{
+    stream.Write<uint8_t>(GetType());
+    stream.WriteString(GetName());
+    return true;
 }
 
 }

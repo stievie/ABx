@@ -77,13 +77,40 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
             break;
+        case AB::GameProtocol::GameSpawnObject:
+            ParseSpawnObject(message);
+            break;
+        case AB::GameProtocol::GameLeaveObject:
+            ParseLeaveObject(message);
+            break;
         }
     }
 }
 
+void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    if (despawnCallback_)
+        despawnCallback_(objectId);
+}
+
+void ProtocolGame::ParseSpawnObject(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    float x = message->Get<float>();
+    float y = message->Get<float>();
+    float z = message->Get<float>();
+    float rot = message->Get<float>();
+    std::string data = message->GetString();
+    PropReadStream stream;
+    stream.Init(data.c_str(), data.length());
+    if (spawnCallback_)
+        spawnCallback_(objectId, x, y, z, rot, stream);
+}
+
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
 {
-
+    int64_t tick = message->Get<int64_t>();
 }
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
@@ -104,8 +131,9 @@ void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)
 void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
 {
     std::string map = message->GetString();
+    uint32_t playerId = message->Get<uint32_t>();
     if (enterWorldCallback_)
-        enterWorldCallback_(map);
+        enterWorldCallback_(map, playerId);
 }
 
 void ProtocolGame::SendLoginPacket()
