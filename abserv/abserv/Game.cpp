@@ -29,6 +29,7 @@ Game::Game() :
     startTime_(0)
 {
     InitializeLua();
+    // Create gameStatus_ here, because we may already write it.
     ResetStatus();
 }
 
@@ -127,7 +128,6 @@ void Game::SendStatus()
 
 void Game::ResetStatus()
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     gameStatus_ = std::make_shared<Net::NetworkMessage>();
     gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
     gameStatus_->Add<int64_t>(Utils::AbTick());
