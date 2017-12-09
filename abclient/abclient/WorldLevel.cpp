@@ -69,7 +69,7 @@ void WorldLevel::CreateUI()
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
     chatWindow_ = uiRoot_->CreateChild<ChatWindow>();
-    chatWindow_->SetAlignment(HA_LEFT, VA_CUSTOM);
+    chatWindow_->SetAlignment(HA_LEFT, VA_BOTTOM);
 
     // Ping
     pingLabel_ = uiRoot_->CreateChild<Text>();

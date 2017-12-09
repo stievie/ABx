@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <element type="Window">
+  <attribute name="Name" value="ChatWindow" />
 	<attribute name="Position" value="0 0" />
 	<attribute name="Size" value="500 250" />
 	<attribute name="Pivot" value="0 0" />

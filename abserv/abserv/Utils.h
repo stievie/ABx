@@ -10,6 +10,7 @@ namespace Utils {
 
 uint32_t AdlerChecksum(uint8_t* data, int32_t len);
 std::string ConvertIPToString(uint32_t ip);
+uint32_t ConvertStringToIP(const std::string& ip);
 std::vector<std::string> Split(const std::string& str, const std::string& delim);
 std::string Trim(const std::string& str, const std::string& whitespace = " \t");
 bool FileExists(const std::string& name);

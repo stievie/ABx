@@ -34,7 +34,7 @@ std::list<uint16_t> ServiceManager::GetPorts() const
 {
     std::list<uint16_t> ports;
     for (auto it = acceptors_.begin(); it != acceptors_.end(); ++it)
-        ports.push_back(it->first);
+        ports.push_back(it->first.second);
     // Maps are ordered, so the elements are in order
     ports.unique();
     return ports;
@@ -45,16 +45,17 @@ void ServiceManager::Die()
     ioService_.stop();
 }
 
-void ServicePort::Open(uint16_t port)
+void ServicePort::Open(uint32_t ip, uint16_t port)
 {
     Close();
 
     serverPort_ = port;
+    serverIp_ = ip;
     pendingStart_ = false;
     try
     {
         acceptor_.reset(new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
-            asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort_)));
+            asio::ip::address(asio::ip::address_v4(serverIp_)), serverPort_)));
         acceptor_->set_option(asio::ip::tcp::no_delay(true));
         Accept();
     }
@@ -71,7 +72,7 @@ void ServicePort::Open(uint16_t port)
             5000,
             std::bind(&ServicePort::OpenAcceptor,
                 std::weak_ptr<ServicePort>(shared_from_this()),
-                serverPort_))
+                serverIp_, serverPort_))
         );
     }
 }
@@ -109,7 +110,8 @@ void ServicePort::OnStopServer()
     Close();
 }
 
-std::shared_ptr<Protocol> ServicePort::MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const
+std::shared_ptr<Protocol> ServicePort::MakeProtocol(bool checksummed,
+    NetworkMessage& msg, std::shared_ptr<Connection> connection) const
 {
     uint8_t protocolId = msg.GetByte();
     for (ConstIt it = services_.begin(); it != services_.end(); ++it)
@@ -194,7 +196,7 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
                 5000,
                 std::bind(&ServicePort::OpenAcceptor,
                     std::weak_ptr<ServicePort>(shared_from_this()),
-                    serverPort_))
+                    serverIp_, serverPort_))
             );
         }
     }
@@ -204,11 +206,11 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
 #endif
 }
 
-void ServicePort::OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint16_t port)
+void ServicePort::OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint32_t ip, uint16_t port)
 {
     if (auto s = weakService.lock())
     {
-        s->Open(port);
+        s->Open(ip, port);
     }
 }
 

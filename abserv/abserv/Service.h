@@ -61,11 +61,12 @@ public:
     explicit ServicePort(asio::io_service& ioService) :
         service_(ioService),
         serverPort_(0),
+        serverIp_(INADDR_ANY),
         acceptor_(nullptr)
     {}
     ~ServicePort() {}
 
-    void Open(uint16_t port);
+    void Open(uint32_t ip, uint16_t port);
     void Close();
     bool AddService(std::shared_ptr<ServiceBase> service);
     bool IsSingleSocket() const
@@ -73,22 +74,26 @@ public:
         return services_.size() && services_.front()->IsSingleSocket();
     }
     void OnStopServer();
-    std::shared_ptr<Protocol> MakeProtocol(bool checksummed, NetworkMessage& msg, std::shared_ptr<Connection> connection) const;
+    std::shared_ptr<Protocol> MakeProtocol(bool checksummed, NetworkMessage& msg,
+        std::shared_ptr<Connection> connection) const;
 private:
     using ConstIt = std::vector<std::shared_ptr<ServiceBase>>::const_iterator;
     asio::io_service& service_;
     std::unique_ptr<asio::ip::tcp::acceptor> acceptor_;
     uint16_t serverPort_;
+    uint32_t serverIp_;
     std::vector<std::shared_ptr<ServiceBase>> services_;
     bool pendingStart_;
 
     void Accept();
     void OnAccept(std::shared_ptr<Connection> connection, const asio::error_code& error);
-    static void OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint16_t port);
+    static void OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint32_t ip, uint16_t port);
 };
 
 class ServiceManager
 {
+private:
+    using AcceptorKey = std::pair<uint32_t, uint16_t>;
 public:
     ServiceManager(const ServiceManager&) = delete;
     ServiceManager() :
@@ -107,7 +112,7 @@ public:
 
     /// Adds a protocol and binds it to the port
     template <typename T>
-    bool Add(uint16_t port)
+    bool Add(uint32_t ip, uint16_t port)
     {
         if (port == 0)
         {
@@ -117,12 +122,13 @@ public:
             return false;
         }
         std::shared_ptr<ServicePort> servicePort;
-        std::map<uint16_t, std::shared_ptr<ServicePort>>::iterator finder = acceptors_.find(port);
+        AcceptorKey key(ip, port);
+        std::map<AcceptorKey, std::shared_ptr<ServicePort>>::iterator finder = acceptors_.find(key);
         if (finder == acceptors_.end())
         {
             servicePort = std::make_shared<ServicePort>(ioService_);
-            servicePort->Open(port);
-            acceptors_[port] = servicePort;
+            servicePort->Open(ip, port);
+            acceptors_[key] = servicePort;
         }
         else
         {
@@ -138,7 +144,7 @@ private:
     void Die();
     asio::io_service ioService_;
     bool running_;
-    std::map<uint16_t, std::shared_ptr<ServicePort>> acceptors_;
+    std::map<AcceptorKey, std::shared_ptr<ServicePort>> acceptors_;
 };
 
 }

@@ -11,6 +11,10 @@ ChatWindow::ChatWindow(Context* context) :
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/ChatWindow.xml");
     LoadChildXML(chatFile->GetRoot());
 
+    // Set self to same size as the window so align works
+    Window* wnd = dynamic_cast<Window*>(GetChild("ChatWindow", true));
+    SetSize(wnd->GetSize());
+
     chatLog_ = dynamic_cast<ListView*>(GetChild("ChatLog", true));
     chatEdit_ = dynamic_cast<LineEdit*>(GetChild("ChatEdit", true));
 }

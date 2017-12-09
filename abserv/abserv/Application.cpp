@@ -28,6 +28,7 @@
 #include "EffectManager.h"
 #include "DataProvider.h"
 #include "Maintenance.h"
+#include "Utils.h"
 
 #include "DebugNew.h"
 
@@ -203,18 +204,21 @@ void Application::MainLoader()
     }
 
     // Add Protocols
+    uint32_t ip = Utils::ConvertStringToIP(ConfigManager::Instance[ConfigManager::Key::IP].GetString());
     uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolLogin>(port);
+        serviceManager_.Add<Net::ProtocolLogin>(ip, port);
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolAdmin>(port);
+        serviceManager_.Add<Net::ProtocolAdmin>(ip, port);
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolStatus>(port);
+        serviceManager_.Add<Net::ProtocolStatus>(ip, port);
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolGame>(port);
+        // We pass a game host to the client, which (in this local case) does not match
+        // the listening IP, so listen on any IP for the game protocol.
+        serviceManager_.Add<Net::ProtocolGame>(INADDR_ANY, port);
 
     PrintServerInfo();
 
