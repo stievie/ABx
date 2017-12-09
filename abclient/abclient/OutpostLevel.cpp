@@ -2,24 +2,28 @@
 #include "OutpostLevel.h"
 #include "FwClient.h"
 #include <sstream>
+#include "AbEvents.h"
 
 OutpostLevel::OutpostLevel(Context* context) :
     WorldLevel(context)
 {
     // Create the scene content
     CreateScene();
-    BaseLevel::CreatePlayer();
 
     // Create the UI content
     CreateUI();
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
+
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::E_LEVEL_READY] = "OutpostLevel";
+    SendEvent(AbEvents::E_LEVEL_READY, eData);
 }
 
 void OutpostLevel::SubscribeToEvents()
 {
-    BaseLevel::SubscribeToEvents();
+    WorldLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(OutpostLevel, HandleUpdate));
 }
 

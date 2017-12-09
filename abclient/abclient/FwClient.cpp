@@ -37,7 +37,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
 
 FwClient::FwClient(Context* context) :
     Object(context),
-    loggedIn_(false)
+    loggedIn_(false),
+    playerId_(0)
 {
     Options* o = context->GetSubsystem<Options>();
     client_.loginHost_ = std::string(o->loginHost_.CString());
@@ -45,6 +46,7 @@ FwClient::FwClient(Context* context) :
     client_.receiver_ = this;
     lastState_ = client_.state_;
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
+    SubscribeToEvent(AbEvents::E_LEVEL_READY, URHO3D_HANDLER(FwClient, HandleLevelReady));
 }
 
 FwClient::~FwClient()
@@ -61,6 +63,18 @@ bool FwClient::Start()
 void FwClient::Stop()
 {
     Logout();
+}
+
+void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
+{
+    String levelName = eventData[AbEvents::E_LEVEL_READY].GetString();
+    levelReady_ = true;
+    // Level loaded, send queued events
+    for (auto& e : queuedEvents_)
+    {
+        SendEvent(e.eventId, e.eventData);
+    }
+    queuedEvents_.Clear();
 }
 
 void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -109,17 +123,21 @@ void FwClient::Logout()
 
 void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
+    levelReady_ = false;
     characters_ = chars;
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::E_SET_LEVEL] = "CharSelectLevel";
+    currentLevel_ = "CharSelectLevel";
+    eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
 
 void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)
 {
+    levelReady_ = false;
     playerId_ = playerId;
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::E_SET_LEVEL] = "OutpostLevel";
+    currentLevel_ = "OutpostLevel";
+    eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
 
@@ -140,6 +158,14 @@ void FwClient::OnNetworkError(const std::error_code& err)
     }
 }
 
+void FwClient::QueueEvent(StringHash eventType, VariantMap& eventData)
+{
+    if (levelReady_)
+        SendEvent(eventType, eventData);
+    else
+        queuedEvents_.Push({ eventType, eventData });
+}
+
 void FwClient::OnProtocolError(uint8_t err)
 {
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
@@ -149,20 +175,17 @@ void FwClient::OnProtocolError(uint8_t err)
 
 void FwClient::OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)
 {
-    uint8_t objectType;
-    if (!data.Read<uint8_t>(objectType))
-        return;
-
-    std::string name;
-    data.ReadString(name);
-    if (id == playerId_)
-    {
-        URHO3D_LOGDEBUG(name.c_str());
-        // This are we
-    }
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_OBJECT_ID] = id;
+    eData[AbEvents::ED_POS] = Vector3(x, y, z);
+    String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
+    eData[AbEvents::ED_OBJECT_DATA] = d;
+    QueueEvent(AbEvents::E_OBJECT_SPAWN, eData);
 }
 
 void FwClient::OnDespawnObject(uint32_t id)
 {
-
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_OBJECT_ID] = id;
+    QueueEvent(AbEvents::E_OBJECT_SPAWN, eData);
 }

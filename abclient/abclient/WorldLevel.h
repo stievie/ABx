@@ -18,6 +18,9 @@ public:
 protected:
     Text* pingLabel_;
     void CreateUI() override;
-
+    void SubscribeToEvents() override;
+private:
+    void HandleObjectSpawnn(StringHash eventType, VariantMap& eventData);
+    void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
 };
 

@@ -8,18 +8,29 @@
 #include "Receiver.h"
 #include "Account.h"
 
+struct EventItem
+{
+    StringHash eventId;
+    VariantMap eventData;
+};
+
 class FwClient : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object);
 private:
     String accountName_;
     String accounbtPass_;
+    String currentLevel_;
+    bool levelReady_;
+    Vector<EventItem> queuedEvents_;
     bool loggedIn_;
     uint32_t playerId_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
     Client::CharList characters_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleLevelReady(StringHash eventType, VariantMap& eventData);
+    void QueueEvent(StringHash eventType, VariantMap& eventData);
 public:
     static String GetProtocolErrorMessage(uint8_t err);
 
@@ -52,6 +63,9 @@ public:
     {
         return client_.GetLastPing();
     }
-
+    uint32_t GetPlayerId() const
+    {
+        return playerId_;
+    }
 };
 

@@ -10,14 +10,27 @@ class PropReadStream
 {
 private:
     const char* p_ = nullptr;
+    const char* start_ = nullptr;
     const char* end_ = nullptr;
 public:
+    PropReadStream() = default;
+    PropReadStream(const char* p, size_t size) :
+        p_(p),
+        start_(p),
+        end_(p + size)
+    {}
+
     void Init(const char* p, size_t size)
     {
         p_ = p;
+        start_ = p;
         end_ = p + size;
     }
     size_t GetSize() const { return end_ - p_; }
+    const char* Buffer() const
+    {
+        return start_;
+    }
     template <typename T>
     bool Read(T& r)
     {

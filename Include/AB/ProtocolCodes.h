@@ -60,6 +60,7 @@ enum GameObjectType : uint8_t
     ObjectTypeStatic = 0x01,
     ObjectTypeNpc = 0x02,
     ObjectTypePlayer = 0x03,
+    ObjectTypeProjectile = 0x04,
 };
 
 enum GamePacketTypes : uint8_t

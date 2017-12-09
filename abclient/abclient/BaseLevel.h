@@ -73,6 +73,7 @@ public:
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
-    void HandlePostRenderUpdate(StringHash eventType, VariantMap & eventData);
-    void HandleEnterMap(StringHash eventType, VariantMap & eventData);
+    void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleEnterMap(StringHash eventType, VariantMap& eventData);
+    void HandleLeaveMap(StringHash eventType, VariantMap& eventData);
 };

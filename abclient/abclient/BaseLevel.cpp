@@ -38,7 +38,6 @@ void BaseLevel::SubscribeToEvents()
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(BaseLevel, HandleUpdate));
     SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(BaseLevel, HandlePostUpdate));
     SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(BaseLevel, HandlePostRenderUpdate));
-    SubscribeToEvent(AbEvents::E_ENTER_MAP, URHO3D_HANDLER(BaseLevel, HandleEnterMap));
 }
 
 void BaseLevel::Update(StringHash eventType, VariantMap& eventData)
@@ -49,7 +48,7 @@ void BaseLevel::Update(StringHash eventType, VariantMap& eventData)
     using namespace Update;
 
     Input* input = GetSubsystem<Input>();
-/*
+
     if (player_)
     {
         // Clear previous controls
@@ -80,12 +79,7 @@ void BaseLevel::Update(StringHash eventType, VariantMap& eventData)
             if (input->GetKeyPress(KEY_F))
                 firstPerson_ = !firstPerson_;
         }
-    }*/
-}
-
-void BaseLevel::HandleEnterMap(StringHash eventType, VariantMap & eventData)
-{
-
+    }
 }
 
 void BaseLevel::ShowError(const String& message, const String& title)
@@ -109,12 +103,12 @@ void BaseLevel::HandlePostRenderUpdate(StringHash eventType, VariantMap & eventD
     PostRenderUpdate(eventType, eventData);
 }
 
-void BaseLevel::PostUpdate(StringHash eventType, VariantMap & eventData)
+void BaseLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
 {
     UNREFERENCED_PARAMETER(eventType);
     UNREFERENCED_PARAMETER(eventData);
 
-/*    if (!player_)
+    if (!player_)
         return;
 
     Node* characterNode = player_->GetNode();
@@ -153,7 +147,7 @@ void BaseLevel::PostUpdate(StringHash eventType, VariantMap & eventData)
         cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
 
         cameraNode_->SetRotation(dir);
-    }*/
+    }
 }
 
 void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap & eventData)

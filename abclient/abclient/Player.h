@@ -24,11 +24,10 @@
 
 #pragma warning( push )
 #pragma warning( disable : 4100 4305)
-#include <Urho3D/Core/Object.h>
-#include <Urho3D/Input/Controls.h>
-#include <Urho3D/Scene/LogicComponent.h>
-#include <Urho3D/Graphics/AnimatedModel.h>
+#include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )
+
+#include "Actor.h"
 
 using namespace Urho3D;
 
@@ -38,17 +37,14 @@ const int CTRL_LEFT = 4;
 const int CTRL_RIGHT = 8;
 const int CTRL_JUMP = 16;
 
-const float MOVE_FORCE = 0.8f;
-const float INAIR_MOVE_FORCE = 0.02f;
-const float BRAKE_FORCE = 0.2f;
-const float JUMP_FORCE = 7.0f;
-const float YAW_SENSITIVITY = 0.1f;
-const float INAIR_THRESHOLD_TIME = 0.1f;
+const float CAMERA_MIN_DIST = 0.05f;
+const float CAMERA_INITIAL_DIST = 0.5f;
+const float CAMERA_MAX_DIST = 2.0f;
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
-class Player : public LogicComponent
+class Player : public Actor
 {
-    URHO3D_OBJECT(Player, LogicComponent);
+    URHO3D_OBJECT(Player, Actor);
 
 public:
     /// Construct.
@@ -57,28 +53,15 @@ public:
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
     static Player* CreatePlayer(Context* context, Scene* scene);
+    void Init() override;
 
-    /// Handle startup. Called by LogicComponent base class.
-    virtual void Start();
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep);
 
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
-
-    /// First person camera flag.
-    bool firstPerson_;
-
 private:
+    SharedPtr<SoundSource3D> footstepsSource_;
     Node* playerNode_;
     AnimatedModel* animatedModel_;
-    /// Handle physics collision event.
-    void HandleNodeCollision(StringHash eventType, VariantMap& eventData);
-
-    /// Grounded flag for movement.
-    bool onGround_;
-    /// Jump flag.
-    bool okToJump_;
-    /// In air timer. Due to possible physics inaccuracy, character can be off ground for max. 1/10 second and still be allowed to move.
-    float inAirTimer_;
 };
