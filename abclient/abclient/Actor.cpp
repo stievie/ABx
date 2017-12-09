@@ -26,7 +26,7 @@
 #include "Actor.h"
 
 Actor::Actor(Context* context) :
-    LogicComponent(context),
+    GameObject(context),
     pickable_(false),
     castShadows_(true),
     mesh_(String::EMPTY),
@@ -78,8 +78,9 @@ void Actor::CreateModel()
     model_->SetCastShadows(castShadows_);
 }
 
-void Actor::FixedUpdate(float timeStep)
+void Actor::Update(float timeStep)
 {
+    GameObject::Update(timeStep);
     // Update movement & animation
     const Quaternion& rot = node_->GetRotation();
     Vector3 moveDir = Vector3::ZERO;

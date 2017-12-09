@@ -6,6 +6,8 @@
 #pragma warning( pop )
 
 #include "BaseLevel.h"
+#include "GameObject.h"
+#include <stdint.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI.
@@ -17,6 +19,8 @@ public:
     void CreatePlayer(const Vector3& position, const Quaternion& direction) override;
 protected:
     Text* pingLabel_;
+    /// All objects in the scene
+    HashMap<uint32_t, GameObject*> objects_;
     void CreateUI() override;
     void SubscribeToEvents() override;
 private:

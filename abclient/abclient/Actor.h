@@ -26,6 +26,7 @@
 #pragma warning( disable : 4100 4305)
 #include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )
+#include "GameObject.h"
 
 using namespace Urho3D;
 
@@ -58,9 +59,9 @@ static const StringHash COLLADJ_MUL("mul");
 static const StringHash COLLADJ_DIV("div");
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
-class Actor : public LogicComponent
+class Actor : public GameObject
 {
-    URHO3D_OBJECT(Actor, LogicComponent);
+    URHO3D_OBJECT(Actor, GameObject);
 public:
     enum ModelType {
         Static,
@@ -71,13 +72,11 @@ public:
     Actor(Context* context);
     ~Actor();
 
-    /// Handle startup. Called by LogicComponent base class.
-    virtual void Start() {}
     /// Handle physics world update. Called by LogicComponent base class.
-    virtual void FixedUpdate(float timeStep);
+    void Update(float timeStep) override;
 
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
-    virtual void Init();
+    void Init() override;
     void LoadXML(const XMLElement& source);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
     /// Movement controls. Assigned by the main program each frame.

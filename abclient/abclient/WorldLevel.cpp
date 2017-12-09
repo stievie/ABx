@@ -45,7 +45,8 @@ void WorldLevel::HandleObjectSpawnn(StringHash eventType, VariantMap& eventData)
 
 void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)
 {
-
+    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    GameObject* object = objects_[objectId];
 }
 
 void WorldLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)

@@ -80,9 +80,10 @@ void Player::Init()
     footstepsSource_->SetGain(0.3f);
 }
 
-/// Handle physics world update. Called by LogicComponent base class.
-void Player::FixedUpdate(float timeStep)
+void Player::Update(float timeStep)
 {
+    Actor::Update(timeStep);
+
     // Update movement & animation
     const Quaternion& rot = node_->GetRotation();
     Vector3 moveDir = Vector3::ZERO;
