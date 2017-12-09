@@ -7,6 +7,7 @@
 
 #include "BaseLevel.h"
 #include "GameObject.h"
+#include "ChatWindow.h"
 #include <stdint.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
@@ -19,6 +20,7 @@ public:
     void CreatePlayer(const Vector3& position, const Quaternion& direction) override;
 protected:
     Text* pingLabel_;
+    ChatWindow* chatWindow_;
     /// All objects in the scene
     HashMap<uint32_t, GameObject*> objects_;
     void CreateUI() override;

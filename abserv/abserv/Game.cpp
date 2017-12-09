@@ -307,6 +307,8 @@ void Game::PlayerJoin(uint32_t playerId)
             players_[player->id_] = player.get();
             objects_.push_back(player);
             player->data_.lastMap = data_.mapName;
+            // TODO: Get spawn position
+            player->position_ = Math::Vector3(0.0f, 10.0f, 0.0f);
             player->SetGame(shared_from_this());
         }
         luaState_["onAddObject"](this, player);

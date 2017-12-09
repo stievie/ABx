@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Position" value="0 0" />
+	<attribute name="Size" value="500 250" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Opacity" value="0.3" />
+	<attribute name="Bring To Back" value="false" />
+	<attribute name="Is Resizable" value="true" />
+	<element type="ListView">
+		<attribute name="Name" value="ChatLog" />
+		<attribute name="Size" value="500 230" />
+		<attribute name="Min Anchor" value="0.5 0" />
+		<attribute name="Max Anchor" value="0.5 0" />
+		<attribute name="Pivot" value="0.5 0" />
+		<attribute name="Opacity" value="0.7" />
+		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Size" value="500 16" />
+			<attribute name="Min Anchor" value="0 1" />
+			<attribute name="Max Anchor" value="0 1" />
+			<attribute name="Pivot" value="0 1" />
+			<attribute name="Color" value="0 0 0 0" />
+			<attribute name="Top Left Color" value="0 0 0 0" />
+			<attribute name="Top Right Color" value="0 0 0 0" />
+			<attribute name="Bottom Left Color" value="0 0 0 0" />
+			<attribute name="Bottom Right Color" value="0 0 0 0" />
+			<element type="Button" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
+			<element type="Slider" internal="true" style="none">
+				<attribute name="Position" value="16 0" />
+				<attribute name="Size" value="468 16" />
+				<attribute name="Pivot" value="0 0" />
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+			<element type="Button" internal="true" style="none">
+				<attribute name="Position" value="484 0" />
+				<attribute name="Pivot" value="0 0" />
+			</element>
+		</element>
+		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Size" value="16 230" />
+			<attribute name="Min Anchor" value="1 0" />
+			<attribute name="Max Anchor" value="1 0" />
+			<attribute name="Pivot" value="1 0" />
+			<attribute name="Color" value="0 0 0 0" />
+			<attribute name="Top Left Color" value="0 0 0 0" />
+			<attribute name="Top Right Color" value="0 0 0 0" />
+			<attribute name="Bottom Left Color" value="0 0 0 0" />
+			<attribute name="Bottom Right Color" value="0 0 0 0" />
+			<element type="Button" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
+			<element type="Slider" internal="true" style="none">
+				<attribute name="Position" value="0 16" />
+				<attribute name="Size" value="16 198" />
+				<attribute name="Pivot" value="0 0" />
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+			<element type="Button" internal="true" style="none">
+				<attribute name="Position" value="0 214" />
+				<attribute name="Pivot" value="0 0" />
+			</element>
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Pivot" value="0 0" />
+			<element internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
+		</element>
+	</element>
+	<element type="LineEdit">
+		<attribute name="Name" value="ChatEdit" />
+		<attribute name="Size" value="500 20" />
+		<attribute name="Min Anchor" value="0.5 1" />
+		<attribute name="Max Anchor" value="0.5 1" />
+		<attribute name="Pivot" value="0.5 1" />
+		<attribute name="Opacity" value="0.7" />
+		<element type="Text" internal="true" style="none">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Size" value="4 15" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+		</element>
+	</element>
+</element>

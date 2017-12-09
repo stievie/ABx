@@ -279,5 +279,4 @@ void BaseLevel::CreateUI()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* style = cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml");
     uiRoot_->SetDefaultStyle(style);
-//    GetSubsystem<PlayerHud>()->Init();
 }
