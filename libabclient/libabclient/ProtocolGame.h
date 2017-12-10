@@ -16,7 +16,7 @@ public:
     enum { UseChecksum = true };
     typedef std::function<void(const std::string& mapName, uint32_t)> EnterWorldCallback;
     typedef std::function<void(int)> PingCallback;
-    typedef std::function<void(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)> SpawnCallback;
+    typedef std::function<void(uint32_t id, float x, float y, float z, float rot, PropReadStream& data, bool existing)> SpawnCallback;
     typedef std::function<void(uint32_t id)> DespawnCallback;;
 private:
     std::string accountName_;
@@ -42,7 +42,7 @@ protected:
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
-    void ParseSpawnObject(const std::shared_ptr<InputMessage>& message);
+    void ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message);
     void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();

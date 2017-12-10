@@ -281,7 +281,7 @@ void Game::SendSpawnAll(uint32_t playerId)
         if (o.get() == player.get())
             continue;
 
-        msg.AddByte(AB::GameProtocol::GameSpawnObject);
+        msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         msg.Add<uint32_t>(o->id_);
         msg.Add<float>(o->position_.x_);
         msg.Add<float>(o->position_.y_);
@@ -314,12 +314,12 @@ void Game::PlayerJoin(uint32_t playerId)
         luaState_["onAddObject"](this, player);
         luaState_["onPlayerJoin"](this, player.get());
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(10, std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
+            Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
         );
         // In worst case (i.e. the game data is still loading): will be sent as
         // soon as the game runs and entered the Update loop.
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(20, std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
+            Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
         );
     }
 }
@@ -345,7 +345,7 @@ void Game::PlayerLeave(uint32_t playerId)
             objects_.erase(ito);
 
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(10, std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
+            Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
         );
     }
 }

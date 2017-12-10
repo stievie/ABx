@@ -58,10 +58,12 @@ void Connection::Connect(const std::string& host, uint16_t port, const std::func
 #endif
     connectTimer_.cancel();
     connectTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-    connectTimer_.async_wait(std::bind(&Connection::OnConnectTimeout, shared_from_this(), std::placeholders::_1));
+    connectTimer_.async_wait(std::bind(&Connection::OnConnectTimeout, shared_from_this(),
+        std::placeholders::_1));
 
     asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), host, std::to_string(port));
-    resolver_.async_resolve(query, std::bind(&Connection::OnResolve, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+    resolver_.async_resolve(query, std::bind(&Connection::OnResolve, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2));
 }
 
 void Connection::OnResolve(const asio::error_code& error, asio::ip::tcp::resolver::iterator endpointIterator)

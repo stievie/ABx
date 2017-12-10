@@ -137,6 +137,7 @@ void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)
     playerId_ = playerId;
     VariantMap& eData = GetEventDataMap();
     currentLevel_ = "OutpostLevel";
+    eData[AbEvents::ED_MAP_NAME] = String(mapName.c_str());
     eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
@@ -173,19 +174,23 @@ void FwClient::OnProtocolError(uint8_t err)
     cl->OnProtocolError(err);
 }
 
-void FwClient::OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)
+void FwClient::OnSpawnObject(uint32_t id, float x, float y, float z, float rot,
+    PropReadStream& data, bool existing)
 {
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_POS] = Vector3(x, y, z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
     eData[AbEvents::ED_OBJECT_DATA] = d;
-    QueueEvent(AbEvents::E_OBJECT_SPAWN, eData);
+    if (!existing)
+        QueueEvent(AbEvents::E_OBJECT_SPAWN, eData);
+    else
+        QueueEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, eData);
 }
 
 void FwClient::OnDespawnObject(uint32_t id)
 {
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::ED_OBJECT_ID] = id;
-    QueueEvent(AbEvents::E_OBJECT_SPAWN, eData);
+    QueueEvent(AbEvents::E_OBJECT_DESPAWN, eData);
 }

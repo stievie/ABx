@@ -3,6 +3,7 @@
 #include "ConfigManager.h"
 #include "NavigationMesh.h"
 #include "IONavMesh.h"
+#include <algorithm>
 
 #include "DebugNew.h"
 
@@ -22,7 +23,7 @@ std::string DataProvider::GetDataFile(const std::string& name) const
     return dataDir + name;
 }
 
-bool DataProvider::FileExists(const std::string& name)
+bool DataProvider::FileExists(const std::string& name) const
 {
     return Utils::FileExists(name);
 }
@@ -42,17 +43,13 @@ void DataProvider::CleanCache()
     if (cache_.size() == 0)
         return;
 
-    for (auto it = cache_.begin(); it != cache_.end(); )
+    // Delete all assets that are only owned by the cache
+    auto i = cache_.begin();
+    while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
-        if ((*it).second.use_count() == 1)
-        {
-            cache_.erase(it);
-            if (cache_.size() == 0)
-                return;
-        }
-        else
-            it++;
-    }
+        return current.second.use_count() == 1;
+    })) != cache_.end())
+        cache_.erase(i++);
 }
 
 }

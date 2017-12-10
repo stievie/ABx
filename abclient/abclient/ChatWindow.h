@@ -12,6 +12,11 @@ private:
     ListView* chatLog_;
     LineEdit* chatEdit_;
     SharedPtr<BorderImage> background_;
+    void HandleTextChanged(StringHash eventType, VariantMap& eventData);
+    void HandleTextFinished(StringHash eventType, VariantMap& eventData);
+    void HandleChatEditKey(StringHash eventType, VariantMap& eventData);
+    void HandleHoverBegin(StringHash eventType, VariantMap& eventData);
+    void HandleHoverEnd(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 

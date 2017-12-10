@@ -97,18 +97,12 @@ std::string ConvertIPToString(uint32_t ip)
 
 uint32_t ConvertStringToIP(const std::string& ip)
 {
-    unsigned int            byte3;
-    unsigned int            byte2;
-    unsigned int            byte1;
-    unsigned int            byte0;
-    char              dummyString[2];
+    unsigned int byte3;
+    unsigned int byte2;
+    unsigned int byte1;
+    unsigned int byte0;
 
-    /* The dummy string with specifier %1s searches for a non-whitespace char
-    * after the last number. If it is found, the result of sscanf will be 5
-    * instead of 4, indicating an erroneous format of the ip-address.
-    */
-    if (sscanf_s(ip.c_str(), "%u.%u.%u.%u%1s",
-        &byte3, &byte2, &byte1, &byte0, dummyString) == 4)
+    if (sscanf_s(ip.c_str(), "%u.%u.%u.%u", &byte3, &byte2, &byte1, &byte0) == 4)
     {
         if ((byte3 < 256)
             && (byte2 < 256)

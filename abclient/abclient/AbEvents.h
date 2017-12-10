@@ -14,7 +14,10 @@ namespace AbEvents
     static const StringHash E_SET_LEVEL = StringHash("Set levels");
     static const StringHash E_LEVEL_READY = StringHash("Level Ready");
     static const StringHash E_OBJECT_SPAWN = StringHash("Object Spawn");
+    static const StringHash E_OBJECT_SPAWN_EXISTING = StringHash("Object Spawn existing");
     static const StringHash E_OBJECT_DESPAWN = StringHash("Object Despawn");
+
+    static const StringHash ED_MAP_NAME = StringHash("Map name");
 
     static const StringHash ED_OBJECT_ID = StringHash("Object ID");
     static const StringHash ED_OBJECT_DATA = StringHash("Object Data");

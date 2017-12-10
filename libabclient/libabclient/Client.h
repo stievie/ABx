@@ -37,7 +37,7 @@ private:
     void OnError(const std::error_code& err);
     void OnProtocolError(uint8_t err);
     void OnPong(int ping);
-    void OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data);
+    void OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data, bool existing);
     void OnDespawnObject(uint32_t id);
 public:
     Client();

@@ -30,7 +30,7 @@ void LevelManager::HandleSetLevelQueue(StringHash eventType, VariantMap& eventDa
         return;
     }
     // Push to queue
-    levelQueue_.Push(eventData[AbEvents::E_SET_LEVEL].GetString());
+    levelQueue_.Push(eventData);
 
     // Subscribe HandleUpdate() function for processing update events
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(LevelManager, HandleUpdate));
@@ -105,7 +105,9 @@ void LevelManager::HandleUpdate(StringHash eventType, VariantMap& eventData)
     {
         // Create new level
         lastLevelName_ = levelName_;
-        levelName_ = levelQueue_.Front();
+        VariantMap& levelData = levelQueue_.Front();
+        levelName_ = levelData[AbEvents::E_SET_LEVEL].GetString();
+        mapName_ = levelData[AbEvents::ED_MAP_NAME].GetString();
         level_ = context_->CreateObject(StringHash(levelName_));
         BaseLevel* baseLevel = dynamic_cast<BaseLevel*>(GetCurrentLevel());
         if (baseLevel)

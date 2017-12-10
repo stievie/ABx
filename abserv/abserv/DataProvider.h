@@ -20,7 +20,7 @@ public:
     ~DataProvider() = default;
 
     std::string GetDataFile(const std::string& name) const;
-    bool FileExists(const std::string& name);
+    bool FileExists(const std::string& name) const;
     std::string GetFile(const std::string& name) const;
 
     /// Check if an asset exists in cache or as file

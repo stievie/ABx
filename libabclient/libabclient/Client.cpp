@@ -47,10 +47,10 @@ void Client::OnDespawnObject(uint32_t id)
         receiver_->OnDespawnObject(id);
 }
 
-void Client::OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data)
+void Client::OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data, bool existing)
 {
     if (receiver_)
-        receiver_->OnSpawnObject(id, x, y, z, rot, data);
+        receiver_->OnSpawnObject(id, x, y, z, rot, data, existing);
 }
 
 void Client::OnError(const std::error_code& err)
@@ -102,7 +102,8 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
     protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
     protoGame_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     protoGame_->SetSpawnCallback(std::bind(&Client::OnSpawnObject, this, std::placeholders::_1,
-        std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5, std::placeholders::_6));
+        std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5,
+        std::placeholders::_6, std::placeholders::_7));
     protoGame_->SetDespawnCallback(std::bind(&Client::OnDespawnObject, this, std::placeholders::_1));
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
         std::bind(&Client::OnEnterWorld, this, std::placeholders::_1, std::placeholders::_2));

@@ -3,10 +3,13 @@
 #include "FwClient.h"
 #include <sstream>
 #include "AbEvents.h"
+#include "LevelManager.h"
 
 OutpostLevel::OutpostLevel(Context* context) :
     WorldLevel(context)
 {
+    LevelManager* lm = context_->GetSubsystem<LevelManager>();
+    mapName_ = lm->GetMapName();
     // Create the scene content
     CreateScene();
 
@@ -19,6 +22,8 @@ OutpostLevel::OutpostLevel(Context* context) :
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::E_LEVEL_READY] = "OutpostLevel";
     SendEvent(AbEvents::E_LEVEL_READY, eData);
+
+    chatWindow_->AddLine("Entered map " + mapName_);
 }
 
 void OutpostLevel::SubscribeToEvents()

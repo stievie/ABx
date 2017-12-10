@@ -28,9 +28,15 @@ protected:
     {}
 
     friend ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<void(void)>&);
+    friend ScheduledTask* CreateScheduledTask(const std::function<void(void)>&);
 private:
     uint32_t eventId_;
 };
+
+inline ScheduledTask* CreateScheduledTask(const std::function<void(void)>& f)
+{
+    return CreateScheduledTask(SCHEDULER_MINTICKS, f);
+}
 
 inline ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<void(void)>& f)
 {

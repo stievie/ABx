@@ -4,6 +4,7 @@
 #include <AB/ProtocolCodes.h>
 #include "AbEvents.h"
 #include "FwClient.h"
+#include "LevelManager.h"
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context)
@@ -13,11 +14,12 @@ WorldLevel::WorldLevel(Context* context) :
 void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
-    SubscribeToEvent(AbEvents::E_OBJECT_SPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawnn));
+    SubscribeToEvent(AbEvents::E_OBJECT_SPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
+    SubscribeToEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
     SubscribeToEvent(AbEvents::E_OBJECT_DESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
 }
 
-void WorldLevel::HandleObjectSpawnn(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
 {
     FwClient* client = context_->GetSubsystem<FwClient>();
     uint32_t playerId = client->GetPlayerId();
@@ -41,13 +43,15 @@ void WorldLevel::HandleObjectSpawnn(StringHash eventType, VariantMap& eventData)
         }
         break;
     }
-    chatWindow_->AddLine("Object spawn");
+    if (eventType != AbEvents::E_OBJECT_SPAWN_EXISTING)
+        chatWindow_->AddLine("Object spawn");
 }
 
 void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)
 {
     uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
     GameObject* object = objects_[objectId];
+    chatWindow_->AddLine("Object left");
 }
 
 void WorldLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)

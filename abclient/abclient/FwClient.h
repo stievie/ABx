@@ -49,7 +49,7 @@ public:
     void OnNetworkError(const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
-    void OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data) override;
+    void OnSpawnObject(uint32_t id, float x, float y, float z, float rot, PropReadStream& data, bool existing) override;
     void OnDespawnObject(uint32_t id) override;
     const Client::CharList& GetCharacters() const
     {

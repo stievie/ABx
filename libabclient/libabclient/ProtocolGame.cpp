@@ -77,8 +77,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
             break;
+        case AB::GameProtocol::GameSpawnObjectExisting:
         case AB::GameProtocol::GameSpawnObject:
-            ParseSpawnObject(message);
+            ParseSpawnObject(opCode == AB::GameProtocol::GameSpawnObjectExisting, message);
             break;
         case AB::GameProtocol::GameLeaveObject:
             ParseLeaveObject(message);
@@ -94,7 +95,7 @@ void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message
         despawnCallback_(objectId);
 }
 
-void ProtocolGame::ParseSpawnObject(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
     float x = message->Get<float>();
@@ -105,7 +106,7 @@ void ProtocolGame::ParseSpawnObject(const std::shared_ptr<InputMessage>& message
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (spawnCallback_)
-        spawnCallback_(objectId, x, y, z, rot, stream);
+        spawnCallback_(objectId, x, y, z, rot, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)

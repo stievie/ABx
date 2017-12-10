@@ -23,8 +23,9 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void AddFadeLayer();
 
-    List<String> levelQueue_;
+    List<VariantMap> levelQueue_;
     String levelName_;
+    String mapName_;
     /// Name of level we're coming from. Needed to get the spawn point
     String lastLevelName_;
     SharedPtr<Object> level_;
@@ -38,6 +39,7 @@ public:
     Object* GetCurrentLevel() const { return level_; }
     const String& GetLevelName() const { return levelName_ ; }
     const String& GetLastLevelName() const { return lastLevelName_; }
+    String GetMapName() const { return mapName_; }
     bool GetDrawDebugGeometry() { return drawDebugGeometry_; }
     void SetDrawDebugGeometry(bool draw);
     void ToggleDebugGeometry()

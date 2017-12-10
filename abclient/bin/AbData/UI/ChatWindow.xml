@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <element type="Window">
-  <attribute name="Name" value="ChatWindow" />
-	<attribute name="Position" value="0 0" />
+	<attribute name="Name" value="ChatWindow" />
 	<attribute name="Size" value="500 250" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.3" />
@@ -80,6 +79,7 @@
 		<attribute name="Max Anchor" value="0.5 1" />
 		<attribute name="Pivot" value="0.5 1" />
 		<attribute name="Opacity" value="0.7" />
+		<attribute name="Layout Spacing" value="1" />
 		<element type="Text" internal="true" style="none">
 			<attribute name="Min Anchor" value="0 0.5" />
 			<attribute name="Max Anchor" value="0 0.5" />
