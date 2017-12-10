@@ -67,6 +67,7 @@ private:
     void ResetStatus();
     /// Changes to the game are written to this message and sent to all players
     std::shared_ptr<Net::NetworkMessage> gameStatus_;
+    Math::Vector3 GetSpawnPoint();
 public:
     static void RegisterLua(kaguya::State& state);
 

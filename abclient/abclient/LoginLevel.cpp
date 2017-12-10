@@ -9,7 +9,7 @@ LoginLevel::LoginLevel(Context* context) :
 {
     // Create the scene content
     CreateScene();
-    BaseLevel::CreatePlayer();
+    CreateCamera();
 
     // Create the UI content
     CreateUI();
@@ -27,7 +27,7 @@ void LoginLevel::CreateScene()
     scene_->LoadXML(sceneFile->GetRoot());
 }
 
-void LoginLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)
+void LoginLevel::CreateCamera()
 {
     cameraNode_ = scene_->GetChild("CameraNode");
     if (!cameraNode_)

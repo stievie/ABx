@@ -8,7 +8,7 @@ CharSelectLevel::CharSelectLevel(Context* context) :
 {
     // Create the scene content
     CreateScene();
-    BaseLevel::CreatePlayer();
+    CreateCamera();
 
     // Create the UI content
     CreateUI();
@@ -17,7 +17,7 @@ CharSelectLevel::CharSelectLevel(Context* context) :
     SubscribeToEvents();
 }
 
-void CharSelectLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)
+void CharSelectLevel::CreateCamera()
 {
     cameraNode_ = scene_->GetChild("CameraNode");
     if (!cameraNode_)

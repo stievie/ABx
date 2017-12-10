@@ -111,6 +111,7 @@ void BaseLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
     if (!player_)
         return;
 
+/*
     Node* characterNode = player_->GetNode();
 
     // Get camera lookat dir from character yaw + pitch
@@ -148,6 +149,7 @@ void BaseLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
 
         cameraNode_->SetRotation(dir);
     }
+    */
 }
 
 void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap & eventData)
@@ -219,59 +221,6 @@ void BaseLevel::CreateLogo()
 
     // Set a low priority for the logo so that other UI elements can be drawn on top
     logoSprite_->SetPriority(-100);
-}
-
-void BaseLevel::CreatePlayer(const Vector3& position, const Quaternion& direction)
-{
-/*    Node* objectNode = scene_->CreateChild("Player");
-    objectNode->Scale(Vector3(0.01f, 0.01f, 0.01f));
-    objectNode->SetPosition(position);
-    objectNode->SetRotation(direction);
-
-    // Create the character logic component, which takes care of steering the rigidbody
-    // Remember it so that we can set the controls. Use a WeakPtr because the scene hierarchy already owns it
-    // and keeps it alive as long as it's not removed from the hierarchy
-    player_ = objectNode->CreateComponent<Player>();
-    player_->Init();
-
-    cameraNode_ = scene_->CreateChild("CameraNode");
-    Camera* camera = cameraNode_->CreateComponent<Camera>();
-    camera->SetFarClip(300.0f);
-    SetupViewport();
-
-    player_->controls_.yaw_ = direction.YawAngle();
-
-    // Add sound listener to camera node
-    Node* listenerNode = cameraNode_->CreateChild("SoundListenerNode");
-    // Let's face the sound
-    listenerNode->SetDirection(Vector3(0.0f, M_HALF_PI, 0.0f));
-    SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
-    GetSubsystem<Audio>()->SetListener(soundListener);          */
-}
-
-void BaseLevel::CreatePlayer(const Vector3& position)
-{
-    CreatePlayer(position, Quaternion());
-}
-
-void BaseLevel::CreatePlayer()
-{
-    Node* spawnPoint = nullptr;
-    const String& lastLevel = GetSubsystem<LevelManager>()->GetLastLevelName();
-    if (!lastLevel.Empty())
-        // Find spawnpoint when we come from a level
-        spawnPoint = scene_->GetChild("SpawnPoint" + lastLevel, true);
-    if (!spawnPoint)
-        // No spawnpoint yet, find default spawn point
-        spawnPoint = scene_->GetChild("SpawnPoint", true);
-    if (spawnPoint)
-    {
-        const Vector3& pos = spawnPoint->GetPosition();
-        const Quaternion& rot = spawnPoint->GetRotation();
-        CreatePlayer(pos, rot);
-    }
-    else
-        CreatePlayer(Vector3(0.0f, 0.0f, 0.0f));
 }
 
 void BaseLevel::CreateUI()

@@ -13,7 +13,7 @@ class LoginLevel : public BaseLevel
 public:
     /// Construct.
     LoginLevel(Context* context);
-    void CreatePlayer(const Vector3& position, const Quaternion& direction) override;
+    void CreateCamera();
     void ShowError(const String& message, const String& title = "Error") override;
 
 protected:

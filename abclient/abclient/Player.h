@@ -52,7 +52,7 @@ public:
 
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
-    static Player* CreatePlayer(Context* context, Scene* scene);
+    static Player* CreatePlayer(uint32_t id, Context* context, Scene* scene);
     void Init() override;
 
     /// Handle physics world update. Called by LogicComponent base class.
@@ -62,6 +62,4 @@ public:
     Controls controls_;
 private:
     SharedPtr<SoundSource3D> footstepsSource_;
-    Node* playerNode_;
-    AnimatedModel* animatedModel_;
 };

@@ -17,5 +17,6 @@ public:
     virtual void Init() {}
 
     uint32_t id_;
+    unsigned index_;
 };
 

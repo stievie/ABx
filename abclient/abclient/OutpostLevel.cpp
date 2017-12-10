@@ -36,7 +36,6 @@ void OutpostLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     WorldLevel::CreateUI();
-
 }
 
 void OutpostLevel::CreateScene()

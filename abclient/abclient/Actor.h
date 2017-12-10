@@ -72,6 +72,7 @@ public:
     Actor(Context* context);
     ~Actor();
 
+    static Actor* CreateActor(uint32_t id, Context* context, Scene* scene);
     /// Handle physics world update. Called by LogicComponent base class.
     void Update(float timeStep) override;
 
@@ -90,6 +91,7 @@ public:
 private:
     void CreateModel();
 protected:
+    AnimatedModel* animatedModel_;
     Actor::ModelType type_;
     SharedPtr<AnimationController> animController_;
     SharedPtr<StaticModel> model_;
@@ -97,5 +99,6 @@ protected:
     /// Footsteps etc.
     HashMap<StringHash, String> sounds_;
 public:
+    Node* objectNode_;
     StaticModel* GetModel() const { return model_; }
 };

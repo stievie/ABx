@@ -17,6 +17,7 @@
 #include <AB/ProtocolCodes.h>
 #include "ProtocolGame.h"
 #include "PropStream.h"
+#include "Random.h"
 
 #include "DebugNew.h"
 
@@ -143,6 +144,14 @@ void Game::Ping(uint32_t playerId)
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::GamePong);
     player->client_->WriteToOutput(msg);
+}
+
+Math::Vector3 Game::GetSpawnPoint()
+{
+    // TODO: ...
+    float x = static_cast<float>(Utils::Random::Instance.Get<int>(1, 10));
+    float z = static_cast<float>(Utils::Random::Instance.Get<int>(1, 10));
+    return Math::Vector3(x, 10.0f, z);
 }
 
 void Game::RegisterLua(kaguya::State& state)
@@ -308,7 +317,7 @@ void Game::PlayerJoin(uint32_t playerId)
             objects_.push_back(player);
             player->data_.lastMap = data_.mapName;
             // TODO: Get spawn position
-            player->position_ = Math::Vector3(0.0f, 10.0f, 0.0f);
+            player->position_ = GetSpawnPoint();
             player->SetGame(shared_from_this());
         }
         luaState_["onAddObject"](this, player);

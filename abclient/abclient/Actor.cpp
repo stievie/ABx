@@ -41,6 +41,23 @@ Actor::~Actor()
 {
 }
 
+Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
+{
+    Actor* result = new Actor(context);
+    result->objectNode_ = scene->CreateChild("Actor", Urho3D::REPLICATED, id);
+
+    Node* adjustNode = result->objectNode_->CreateChild("AdjNode");
+    adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
+
+    adjustNode->CreateComponent<AnimationController>();
+    result->animatedModel_ = adjustNode->CreateComponent<AnimatedModel>();
+    result->animatedModel_->SetCastShadows(true);
+    adjustNode->CreateComponent<AnimationController>();
+
+    return result;
+
+}
+
 void Actor::Init()
 {
     if (!mesh_.Empty())

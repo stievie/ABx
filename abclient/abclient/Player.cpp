@@ -39,12 +39,12 @@ void Player::RegisterObject(Context* context)
     URHO3D_ATTRIBUTE("Controls Pitch", float, controls_.pitch_, 0.0f, AM_DEFAULT);
 }
 
-Player* Player::CreatePlayer(Context* context, Scene* scene)
+Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
 {
     Player* result = new Player(context);
-    Node* node = scene->CreateChild("Player");
+    result->objectNode_ = scene->CreateChild("Player", Urho3D::REPLICATED, id);
 
-    Node* adjustNode = node->CreateChild("AdjNode");
+    Node* adjustNode = result->objectNode_->CreateChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
 
     adjustNode->CreateComponent<AnimationController>();
@@ -52,7 +52,6 @@ Player* Player::CreatePlayer(Context* context, Scene* scene)
     result->animatedModel_->SetCastShadows(true);
     adjustNode->CreateComponent<AnimationController>();
 
-    result->playerNode_ = node;
     return result;
 }
 
@@ -60,6 +59,8 @@ void Player::Init()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     // Load stuff...
+    mesh_ = "/Models/Sphere.mdl";
+    materials_.Push("/Materials/Stone.xml");
 
     // Create the model
     Actor::Init();
