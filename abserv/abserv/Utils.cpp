@@ -91,7 +91,7 @@ uint32_t AdlerChecksum(uint8_t* data, int32_t len)
 std::string ConvertIPToString(uint32_t ip)
 {
     char buffer[20];
-    sprintf_s(buffer, 20, "%d.%d.%d.%d", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+    sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
     return buffer;
 }
 

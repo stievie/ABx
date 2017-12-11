@@ -4,6 +4,9 @@
 
 namespace AB {
 
+/// Increase whenever the protocol changes
+static constexpr uint16_t PROTOCOL_VERSION = 1;
+
 enum ProtocolIds : uint8_t
 {
     ProtocolLoginId = 0x01,
@@ -24,6 +27,7 @@ enum ErrorCodes : uint8_t
     ErrorLoadingCharacter = 0x07,
     AccountBanned = 0x08,
     CannotEnterGame = 0x09,
+    WrongProtocolVersion = 0x10,
 };
 
 }

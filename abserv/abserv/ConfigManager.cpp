@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ConfigManager.h"
 #include "Logger.h"
+#include "Utils.h"
 
 #include "DebugNew.h"
 
@@ -15,6 +16,11 @@ ConfigManager::ConfigManager() :
     config_[Key::AdminPort] = 0;
     config_[Key::StatusPort] = 0;
     config_[Key::GamePort] = 0;
+    config_[Key::IP] = 0; // INADDR_ANY
+    config_[Key::LoginIP] = 0; // INADDR_ANY
+    config_[Key::GameIP] = 0; // INADDR_ANY
+    config_[Key::StatusIP] = 0; // INADDR_ANY
+    config_[Key::AdminIP] = 0; // INADDR_ANY
     config_[Key::AdminEnabled] = false;
     config_[Key::AdminLocalhostOnly] = true;
     config_[Key::AdminRequireEncryption] = true;
@@ -87,7 +93,12 @@ bool ConfigManager::Load(const std::string& file)
 
     config_[Key::ServerName] = GetGlobal("server_name", "abserv");
     config_[Key::Location] = GetGlobal("location", "Unknown");
-    config_[Key::IP] = GetGlobal("ip", "127.0.01");
+    std::string defIp = GetGlobal("ip", "0.0.0.0");
+    config_[Key::IP] = Utils::ConvertStringToIP(defIp);
+    config_[Key::LoginIP] = Utils::ConvertStringToIP(GetGlobal("login_ip", defIp));
+    config_[Key::GameIP] = Utils::ConvertStringToIP(GetGlobal("game_ip", defIp));
+    config_[Key::StatusIP] = Utils::ConvertStringToIP(GetGlobal("status_ip", defIp));
+    config_[Key::AdminIP] = Utils::ConvertStringToIP(GetGlobal("admin_ip", defIp));
     config_[Key::CryptoKeys] = GetGlobal("crypto_keys", "");
     config_[Key::LogDir] = GetGlobal("log_dir", "");
     config_[Key::DataDir] = GetGlobal("data_dir", "");

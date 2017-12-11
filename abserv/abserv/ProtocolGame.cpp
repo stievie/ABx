@@ -122,7 +122,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 {
     msg.Skip(2);    // Client OS
-    /* uint16_t version = */ msg.Get<uint16_t>();
+    uint16_t version = msg.Get<uint16_t>();
+    if (version != AB::PROTOCOL_VERSION)
+    {
+        DisconnectClient(AB::Errors::WrongProtocolVersion);
+        return;
+    }
     std::string accountName = msg.GetString();
     if (accountName.empty())
     {

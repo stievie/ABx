@@ -29,6 +29,7 @@
 #include "DataProvider.h"
 #include "Maintenance.h"
 #include "Utils.h"
+#include <AB/ProtocolCodes.h>
 
 #include "DebugNew.h"
 
@@ -204,21 +205,22 @@ void Application::MainLoader()
     }
 
     // Add Protocols
-    uint32_t ip = Utils::ConvertStringToIP(ConfigManager::Instance[ConfigManager::Key::IP].GetString());
+    uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::LoginIP].GetInt());
     uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
     if (port != 0)
         serviceManager_.Add<Net::ProtocolLogin>(ip, port);
+    ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
     if (port != 0)
         serviceManager_.Add<Net::ProtocolAdmin>(ip, port);
+    ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::StatusIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
     if (port != 0)
         serviceManager_.Add<Net::ProtocolStatus>(ip, port);
+    ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     if (port != 0)
-        // We pass a game host to the client, which (in this local case) does not match
-        // the listening IP, so listen on any IP for the game protocol.
-        serviceManager_.Add<Net::ProtocolGame>(INADDR_ANY, port);
+        serviceManager_.Add<Net::ProtocolGame>(ip, port);
 
     PrintServerInfo();
 
@@ -241,12 +243,13 @@ void Application::PrintServerInfo()
 {
     LOG_INFO << "Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
     LOG_INFO << "Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
+    LOG_INFO << "Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
-    std::list<uint16_t> ports = serviceManager_.GetPorts();
-    LOG_INFO << "Local ports: ";
+    std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_.GetPorts();
+    LOG_INFO << "Listening: ";
     while (ports.size())
     {
-        LOG_INFO << ports.front() << "\t";
+        LOG_INFO << Utils::ConvertIPToString(ports.front().first) << ":" << ports.front().second << " ";
         ports.pop_front();
     }
     LOG_INFO << std::endl;

@@ -27,7 +27,7 @@ void ProtocolLogin::SendKeyExchange()
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(1);   // Client OS
-    msg->Add<uint16_t>(1);   // Client Version
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     const DH_KEY& clientKey = Crypto::DHKeys::Instance.GetPublicKey();
     for (int i = 0; i < DH_KEY_LENGTH; i++)
         msg->Add<uint8_t>(clientKey[i]);
@@ -39,7 +39,7 @@ void ProtocolLogin::SendLoginPacket()
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(1);   // Client OS
-    msg->Add<uint16_t>(1);   // Client Version
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->AddString(accountName_);
     msg->AddString(password_);
     Send(msg);

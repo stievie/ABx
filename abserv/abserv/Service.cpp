@@ -30,11 +30,13 @@ void ServiceManager::Stop()
     acceptors_.clear();
 }
 
-std::list<uint16_t> ServiceManager::GetPorts() const
+std::list<std::pair<uint32_t, uint16_t>> ServiceManager::GetPorts() const
 {
-    std::list<uint16_t> ports;
+    std::list<std::pair<uint32_t, uint16_t>> ports;
     for (auto it = acceptors_.begin(); it != acceptors_.end(); ++it)
-        ports.push_back(it->first.second);
+    {
+        ports.push_back(it->first);
+    }
     // Maps are ordered, so the elements are in order
     ports.unique();
     return ports;

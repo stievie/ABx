@@ -19,7 +19,12 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     // if not game == running return
 
     message.Skip(2);    // Client OS
-    /* uint16_t version = */ message.Get<uint16_t>();
+    uint16_t version = message.Get<uint16_t>();
+    if (version != AB::PROTOCOL_VERSION)
+    {
+        DisconnectClient(AB::Errors::WrongProtocolVersion);
+        return;
+    }
 
     Auth::BanInfo banInfo;
     std::shared_ptr<Connection> conn = GetConnection();

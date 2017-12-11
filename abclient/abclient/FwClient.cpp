@@ -21,7 +21,6 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Invalid Account name";
     case AB::Errors::InvalidPassword:
         return "Invalid password";
-        break;
     case AB::Errors::NamePasswordMismatch:
         return "Name or password wrong";
     case AB::Errors::AlreadyLoggedIn:
@@ -30,6 +29,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Error loading character";
     case AB::Errors::AccountBanned:
         return "Your account is banned";
+    case AB::Errors::WrongProtocolVersion:
+        return "Outdated client. Please update the game client.";
     default:
         return "";
     }

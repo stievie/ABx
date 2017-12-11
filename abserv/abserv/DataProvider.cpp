@@ -4,6 +4,7 @@
 #include "NavigationMesh.h"
 #include "IONavMesh.h"
 #include <algorithm>
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -43,6 +44,9 @@ void DataProvider::CleanCache()
     if (cache_.size() == 0)
         return;
 
+#ifdef _DEBUG
+    LOG_DEBUG << "Cleaning cache" << std::endl;
+#endif
     // Delete all assets that are only owned by the cache
     auto i = cache_.begin();
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool

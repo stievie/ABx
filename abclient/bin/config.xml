@@ -9,6 +9,6 @@
   <parameter name="VSync" type="bool" value="t" />
   <parameter name="TripleBuffer" type="bool" value="f" />
   <parameter name="MultiSample" type="int" value="4" />
-  <parameter name="LoginHost" type="string" value="localhost" />
+  <parameter name="LoginHost" type="string" value="pc.home.lan" />
   <parameter name="LoginPort" type="int" value="2748" />
 </config>

@@ -142,7 +142,7 @@ void ProtocolGame::SendLoginPacket()
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
     msg->Add<uint16_t>(1);   // Client OS
-    msg->Add<uint16_t>(1);   // Client Version
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->AddString(accountName_);
     msg->AddString(accountPass_);
     msg->AddString(charName_);
