@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "Random.h"
 #include <AB/ProtocolCodes.h>
+#include "Variant.h"
 
 #include "DebugNew.h"
 
@@ -81,37 +82,93 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::Logout);
         break;
     case AB::GameProtocol::PacketTypeMoveNorth:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorth);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionNorth;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveNorthEast:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorthEast);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionNorthEast;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveEast:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionEast);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionEast;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveSouthEast:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorth);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionSouthEast;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveSouth:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionSouth);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionSouth;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveSouthWest:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionSouthWest);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionSouthWest;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveWest:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionWest);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionWest;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeMoveNorthWest:
-        AddPlayerTask(&Game::Player::PlayerMove, Game::MoveDirectionNorthWest);
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = Game::MoveDirectionNorthWest;
+        player_->inputs_.Add(Game::InputTypeMove, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeUseSkill:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataSkillId] = message.Get<uint16_t>();
+        player_->inputs_.Add(Game::InputTypeUseSkill, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeCancelSkill:
+    {
+        Utils::VariantMap data;
+        player_->inputs_.Add(Game::InputTypeCancelSkill, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeAttack:
+    {
+        Utils::VariantMap data;
+        player_->inputs_.Add(Game::InputTypeAttack, data);
         break;
+    }
     case AB::GameProtocol::PacketTypeCancelAttack:
+    {
+        Utils::VariantMap data;
+        player_->inputs_.Add(Game::InputTypeCancelAttack, data);
         break;
+    }
+    case AB::GameProtocol::PacketTypeSelect:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataObjectId] = message.Get<uint32_t>();
+        player_->inputs_.Add(Game::InputTypeSelect, data);
+        break;
+    }
     default:
         LOG_INFO << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;

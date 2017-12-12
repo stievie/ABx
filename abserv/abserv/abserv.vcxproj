@@ -177,6 +177,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
     <ClInclude Include="IOEffects.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOEffects.cpp" />
     <ClCompile Include="IOGame.cpp" />

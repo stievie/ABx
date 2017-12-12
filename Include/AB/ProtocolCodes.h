@@ -89,7 +89,9 @@ enum GamePacketTypes : uint8_t
     PacketTypeCancelSkill = 0x42,
     // Attack
     PacketTypeAttack = 0x50,
-    PacketTypeCancelAttack = 0x51
+    PacketTypeCancelAttack = 0x51,
+    // Select
+    PacketTypeSelect = 0x60,
 };
 
 }

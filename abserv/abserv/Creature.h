@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Effect.h"
 #include "SkillBar.h"
+#include "InputQueue.h"
 
 namespace Game {
 
@@ -42,6 +43,8 @@ public:
     void RemoveEffect(uint32_t id);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+
+    InputQueue inputs_;
 
     EffectList effects_;
     SkillBar skills_;

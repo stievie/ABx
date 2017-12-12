@@ -80,8 +80,6 @@ public:
     int64_t lastPing_ = 0;
     std::shared_ptr<Net::ProtocolGame> client_;
 
-    // Tasks
-    void PlayerMove(MoveDirection direction);
 };
 
 }

@@ -32,8 +32,4 @@ void Player::RegisterLua(kaguya::State& state)
     );
 }
 
-void Player::PlayerMove(MoveDirection direction)
-{
-}
-
 }
