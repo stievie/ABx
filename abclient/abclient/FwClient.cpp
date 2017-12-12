@@ -175,12 +175,14 @@ void FwClient::OnProtocolError(uint8_t err)
     cl->OnProtocolError(err);
 }
 
-void FwClient::OnSpawnObject(uint32_t id, float x, float y, float z, float rot,
+void FwClient::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::ED_OBJECT_ID] = id;
-    eData[AbEvents::ED_POS] = Vector3(x, y, z);
+    eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
+    eData[AbEvents::ED_ROTATION] = rot;
+    eData[AbEvents::ED_SCALE] = Vector3(scale.x, scale.y, scale.z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
     eData[AbEvents::ED_OBJECT_DATA] = d;
     if (!existing)

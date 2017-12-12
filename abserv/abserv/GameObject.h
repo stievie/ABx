@@ -11,6 +11,7 @@
 #include <sstream>
 #include "PropStream.h"
 #include <AB/ProtocolCodes.h>
+#include "NetworkMessage.h"
 
 namespace Game {
 
@@ -47,7 +48,8 @@ public:
     GameObject();
     virtual ~GameObject() = default;
 
-    virtual void Update(uint32_t timeElapsed) {
+    virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message) {
+        AB_UNUSED(message);
         AB_UNUSED(timeElapsed);
     }
 
@@ -67,6 +69,7 @@ public:
 
     virtual std::string GetName() const { return "Unknown"; }
     Math::Vector3 position_;
+    Math::Vector3 scale_ = Math::Vector3::One;
     /// Rotation around y-axis
     float rotation_;
     /// Auto ID, not DB ID

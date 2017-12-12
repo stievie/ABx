@@ -73,9 +73,9 @@ void Creature::RemoveEffect(uint32_t id)
     }
 }
 
-void Creature::Update(uint32_t timeElapsed)
+void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    GameObject::Update(timeElapsed);
+    GameObject::Update(timeElapsed, message);
     skills_.Update(timeElapsed);
     for (const auto& effect : effects_)
     {

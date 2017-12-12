@@ -49,6 +49,7 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
     Node* adjustNode = result->objectNode_->CreateChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
 
+    result->Init();
     adjustNode->CreateComponent<AnimationController>();
     result->animatedModel_ = adjustNode->CreateComponent<AnimatedModel>();
     result->animatedModel_->SetCastShadows(true);
@@ -60,6 +61,7 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
 
 void Actor::Init()
 {
+    mesh_ = "/Models/Sphere.mdl";
     if (!mesh_.Empty())
     {
         CreateModel();
@@ -71,7 +73,7 @@ void Actor::CreateModel()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
     // spin node
-    Node* adjustNode = node_->CreateChild("AdjNode");
+    Node* adjustNode = objectNode_->GetChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
 
     // Create the rendering component + animation controller

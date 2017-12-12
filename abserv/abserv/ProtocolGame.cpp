@@ -106,7 +106,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     case AB::GameProtocol::PacketTypeUseSkill:
         break;
-    case AB::GameProtocol::PackettTypeCancelSkill:
+    case AB::GameProtocol::PacketTypeCancelSkill:
         break;
     case AB::GameProtocol::PacketTypeAttack:
         break;

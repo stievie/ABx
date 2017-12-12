@@ -46,11 +46,18 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
 
     Node* adjustNode = result->objectNode_->CreateChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
+    result->Init();
 
     adjustNode->CreateComponent<AnimationController>();
     result->animatedModel_ = adjustNode->CreateComponent<AnimatedModel>();
     result->animatedModel_->SetCastShadows(true);
     adjustNode->CreateComponent<AnimationController>();
+
+    // Create camera
+    result->cameraNode_ = result->objectNode_->CreateChild("CameraNode");
+    result->cameraNode_->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+    Camera* camera = result->cameraNode_->CreateComponent<Camera>();
+    camera->SetFarClip(300.0f);
 
     return result;
 }
@@ -59,12 +66,13 @@ void Player::Init()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     // Load stuff...
-    mesh_ = "/Models/Sphere.mdl";
-    materials_.Push("/Materials/Stone.xml");
+//    mesh_ = "/Models/Sphere.mdl";
+//    materials_.Push("/Materials/Stone.xml");
 
     // Create the model
     Actor::Init();
 
+/*
     // Set the head bone for manual control
     if (type_ == Actor::Animated)
     {
@@ -79,6 +87,7 @@ void Player::Init()
     footstepsSource_ = footstepNode->CreateComponent<SoundSource3D>();
     footstepsSource_->SetSoundType(SOUND_EFFECT);
     footstepsSource_->SetGain(0.3f);
+    */
 }
 
 void Player::Update(float timeStep)

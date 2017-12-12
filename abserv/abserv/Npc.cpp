@@ -37,9 +37,9 @@ bool Npc::LoadScript(const std::string& fileName)
     return true;
 }
 
-void Npc::Update(uint32_t timeElapsed)
+void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    Creature::Update(timeElapsed);
+    Creature::Update(timeElapsed, message);
     luaState_["onUpdate"](this, timeElapsed);
 }
 

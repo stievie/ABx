@@ -30,7 +30,7 @@ public:
         return AB::GameProtocol::ObjectTypeNpc;
     }
 
-    void Update(uint32_t timeElapsed) override;
+    void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     std::string GetName() const override { return name_; }
     uint32_t GetLevel() const override { return level_; }

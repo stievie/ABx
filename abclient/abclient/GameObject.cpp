@@ -3,7 +3,8 @@
 
 
 GameObject::GameObject(Context* context) :
-    LogicComponent(context)
+    LogicComponent(context),
+    objectType_(ObjectTypeStatic)
 {
 }
 

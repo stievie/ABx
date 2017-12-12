@@ -98,15 +98,21 @@ void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message
 void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    float x = message->Get<float>();
-    float y = message->Get<float>();
-    float z = message->Get<float>();
+
+    Vec3 pos;
+    Vec3 scale;
+    pos.x = message->Get<float>();
+    pos.y = message->Get<float>();
+    pos.z = message->Get<float>();
     float rot = message->Get<float>();
+    scale.x = message->Get<float>();
+    scale.y = message->Get<float>();
+    scale.z = message->Get<float>();
     std::string data = message->GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (spawnCallback_)
-        spawnCallback_(objectId, x, y, z, rot, stream, existing);
+        spawnCallback_(objectId, pos, scale, rot, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)

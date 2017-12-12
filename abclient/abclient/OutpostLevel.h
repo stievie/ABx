@@ -18,6 +18,5 @@ protected:
     void CreateUI() override;
 private:
     void CreateScene();
-    void HandleUpdate(StringHash eventType, VariantMap& eventData);
 };
 

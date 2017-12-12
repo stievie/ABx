@@ -60,6 +60,7 @@ public:
 
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
+    SharedPtr<Node> cameraNode_;
 private:
     SharedPtr<SoundSource3D> footstepsSource_;
 };

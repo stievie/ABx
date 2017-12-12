@@ -6,6 +6,14 @@
 #pragma warning( pop )
 #include <stdint.h>
 
+enum ObjectType
+{
+    ObjectTypeStatic = 0,
+    ObjectTypeNpc = 1,
+    ObjectTypePlayer = 2,
+    ObjectTypeSelf = 3
+};
+
 class GameObject : public LogicComponent
 {
     URHO3D_OBJECT(GameObject, LogicComponent);
@@ -18,5 +26,7 @@ public:
 
     uint32_t id_;
     unsigned index_;
+    Node* objectNode_;
+    ObjectType objectType_;
 };
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "OutpostLevel.h"
 #include "FwClient.h"
-#include <sstream>
 #include "AbEvents.h"
 #include "LevelManager.h"
 
@@ -29,7 +28,6 @@ OutpostLevel::OutpostLevel(Context* context) :
 void OutpostLevel::SubscribeToEvents()
 {
     WorldLevel::SubscribeToEvents();
-    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(OutpostLevel, HandleUpdate));
 }
 
 void OutpostLevel::CreateUI()
@@ -44,12 +42,4 @@ void OutpostLevel::CreateScene()
     scene_ = new Scene(context_);
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/World.xml");
     scene_->LoadXML(sceneFile->GetRoot());
-}
-
-void OutpostLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
-{
-    FwClient* c = context_->GetSubsystem<FwClient>();
-    std::stringstream s;
-    s << "Avg. Ping " << c->GetAvgPing() << " Last Ping " << c->GetLastPing();
-    pingLabel_->SetText(String(s.str().c_str()));
 }

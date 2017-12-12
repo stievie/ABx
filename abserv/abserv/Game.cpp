@@ -72,7 +72,7 @@ void Game::Update()
     // First Update all objects
     for (const auto& o : objects_)
     {
-        o->Update(delta);
+        o->Update(delta, *gameStatus_.get());
     }
 
     // Then call Lua Update function
@@ -117,6 +117,12 @@ void Game::Update()
 void Game::SendStatus()
 {
     int64_t tick = Utils::AbTick();
+    if (gameStatus_->GetSize() == 0)
+    {
+        // If there is nothing, at least send a hardbeat
+        gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
+        gameStatus_->Add<int64_t>(Utils::AbTick());
+    }
 
     for (const auto& p : players_)
     {
@@ -130,8 +136,6 @@ void Game::SendStatus()
 void Game::ResetStatus()
 {
     gameStatus_ = std::make_shared<Net::NetworkMessage>();
-    gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
-    gameStatus_->Add<int64_t>(Utils::AbTick());
 }
 
 void Game::Ping(uint32_t playerId)
@@ -149,9 +153,9 @@ void Game::Ping(uint32_t playerId)
 Math::Vector3 Game::GetSpawnPoint()
 {
     // TODO: ...
-    float x = static_cast<float>(Utils::Random::Instance.Get<int>(1, 10));
-    float z = static_cast<float>(Utils::Random::Instance.Get<int>(1, 10));
-    return Math::Vector3(x, 10.0f, z);
+    float x = static_cast<float>(Utils::Random::Instance.Get<int>(1, 5));
+    float z = static_cast<float>(Utils::Random::Instance.Get<int>(1, 5));
+    return Math::Vector3(x, 5.0f, z);
 }
 
 void Game::RegisterLua(kaguya::State& state)
@@ -261,6 +265,10 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
     gameStatus_->Add<float>(object->position_.y_);
     gameStatus_->Add<float>(object->position_.z_);
     gameStatus_->Add<float>(object->rotation_);
+    gameStatus_->Add<float>(object->scale_.x_);
+    gameStatus_->Add<float>(object->scale_.y_);
+    gameStatus_->Add<float>(object->scale_.z_);
+
     IO::PropWriteStream data;
     size_t dataSize;
     object->Serialize(data);
@@ -296,6 +304,9 @@ void Game::SendSpawnAll(uint32_t playerId)
         msg.Add<float>(o->position_.y_);
         msg.Add<float>(o->position_.z_);
         msg.Add<float>(o->rotation_);
+        msg.Add<float>(o->scale_.x_);
+        msg.Add<float>(o->scale_.y_);
+        msg.Add<float>(o->scale_.z_);
         IO::PropWriteStream data;
         size_t dataSize;
         o->Serialize(data);

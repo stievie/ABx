@@ -22,7 +22,6 @@ public:
         scene_(nullptr),
         player_(nullptr),
         cameraNode_(nullptr),
-        firstPerson_(false),
         debugGeometry_(false)
     {}
 
@@ -41,8 +40,8 @@ protected:
     virtual void SubscribeToEvents();
     virtual void SetupViewport();
     void CreateLogo();
-    virtual void Update(StringHash eventType, VariantMap& eventData);
-    virtual void PostUpdate(StringHash eventType, VariantMap & eventData);
+    virtual void Update(StringHash eventType, VariantMap& eventData) {}
+    virtual void PostUpdate(StringHash eventType, VariantMap & eventData) {}
     virtual void PostRenderUpdate(StringHash eventType, VariantMap & eventData);
 
     virtual void OnNetworkError(const std::error_code& err);
@@ -52,7 +51,6 @@ protected:
     SharedPtr<Scene> scene_;
     SharedPtr<Node> cameraNode_;
     SharedPtr<Player> player_;
-    bool firstPerson_;
     /// Camera yaw angle.
     float yaw_;
     /// Camera pitch angle.

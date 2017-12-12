@@ -41,7 +41,7 @@ public:
     /// Remove effect before it ended
     void RemoveEffect(uint32_t id);
 
-    void Update(uint32_t timeElapsed) override;
+    void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     EffectList effects_;
     SkillBar skills_;

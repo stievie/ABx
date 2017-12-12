@@ -144,6 +144,7 @@ void ClientApp::Start()
     // details.
     SubscribeToEvent(E_BEGINFRAME, URHO3D_HANDLER(ClientApp, HandleBeginFrame));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
+    SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(ClientApp, HandleKeyDown));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(ClientApp, HandleUpdate));
     SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(ClientApp, HandlePostUpdate));
     SubscribeToEvent(E_RENDERUPDATE, URHO3D_HANDLER(ClientApp, HandleRenderUpdate));
@@ -185,6 +186,11 @@ void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     if(key == KEY_ESCAPE)
         engine_->Exit();
         */
+}
+
+void ClientApp::HandleKeyUp(StringHash eventType, VariantMap& eventData)
+{
+
 }
 
 /**

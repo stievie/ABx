@@ -86,7 +86,7 @@ enum GamePacketTypes : uint8_t
 
     // Skills
     PacketTypeUseSkill = 0x40,
-    PackettTypeCancelSkill = 0x42,
+    PacketTypeCancelSkill = 0x42,
     // Attack
     PacketTypeAttack = 0x50,
     PacketTypeCancelAttack = 0x51

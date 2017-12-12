@@ -99,6 +99,5 @@ protected:
     /// Footsteps etc.
     HashMap<StringHash, String> sounds_;
 public:
-    Node* objectNode_;
     StaticModel* GetModel() const { return model_; }
 };

@@ -78,6 +78,9 @@
     <ClInclude Include="PropStream.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Structs.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
