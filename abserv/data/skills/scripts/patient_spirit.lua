@@ -5,6 +5,7 @@ activation = 250
 recharge = 4000
 overcast = 0
 duration = 2000
+skilltype = 10 | (1 << 8)  -- SkillTypeEnchantment
 
 function onStartUse(player, target)
   return true

@@ -15,6 +15,7 @@
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
 #include "NetworkMessage.h"
+#include "GameState.h"
 
 namespace Game {
 
@@ -42,7 +43,7 @@ struct GameData
 class Game : public std::enable_shared_from_this<Game>
 {
 public:
-    enum GameState
+    enum GameLoopState
     {
         GameStateStartup,
         GameStateRunning,
@@ -51,7 +52,9 @@ public:
     };
 private:
     std::recursive_mutex lock_;
-    GameState state_;
+    GameLoopState state_;
+    /// Game Tick -> Game State
+    std::map<int64_t, std::unique_ptr<GameState>> gameStates_;
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
     int64_t lastUpdate_;
@@ -95,9 +98,9 @@ public:
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 
-    GameState GetState() const { return state_; }
+    GameLoopState GetState() const { return state_; }
     const kaguya::State& GetLuaState() const { return luaState_; }
-    void SetState(GameState state);
+    void SetState(GameLoopState state);
     void Load(const std::string& mapName);
     /// Send spawn message for all existing objects
     void SendSpawnAll(uint32_t playerId);

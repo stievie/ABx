@@ -20,7 +20,7 @@ enum InputType
 enum InputDataType
 {
     InputDataDirection = 1,
-    InputDataSkillId = 2,
+    InputDataSkillIndex = 2,    // The index of the skill in the skill bar
     InputDataObjectId = 3,
 };
 

@@ -140,8 +140,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeUseSkill:
     {
         Utils::VariantMap data;
-        data[Game::InputDataSkillId] = message.Get<uint16_t>();
-        player_->inputs_.Add(Game::InputTypeUseSkill, data);
+        uint8_t index = message.Get<uint8_t>();
+        if (index < PLAYER_MAX_SKILLS)
+        {
+            data[Game::InputDataSkillIndex] = message.Get<uint8_t>();
+            player_->inputs_.Add(Game::InputTypeUseSkill, data);
+        }
         break;
     }
     case AB::GameProtocol::PacketTypeCancelSkill:

@@ -116,7 +116,6 @@ void Game::Update()
 
 void Game::SendStatus()
 {
-    int64_t tick = Utils::AbTick();
     if (gameStatus_->GetSize() == 0)
     {
         // If there is nothing, at least send a hardbeat
@@ -216,7 +215,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     return result;
 }
 
-void Game::SetState(GameState state)
+void Game::SetState(GameLoopState state)
 {
     if (state_ != state)
     {

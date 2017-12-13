@@ -7,6 +7,15 @@
 
 namespace Game {
 
+enum CreatureState
+{
+    CreatureStateIdle = 0,
+    CreatureStateMoving = 1,
+    CreatureStateUsingSkill = 2,
+    CreatureStateAttacking = 3,
+    CreatureStateEmote = 4,
+};
+
 /// Player, NPC, Monster some such
 class Creature : public GameObject
 {
@@ -33,7 +42,7 @@ public:
 
     Skill* GetSkill(uint32_t index)
     {
-        if (index >= 0 && index < PLAYER_MAX_SKILLS)
+        if (index < PLAYER_MAX_SKILLS)
             return skills_[index];
         return nullptr;
     }
@@ -45,6 +54,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     InputQueue inputs_;
+    CreatureState creatureState_;
 
     EffectList effects_;
     SkillBar skills_;

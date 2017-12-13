@@ -198,6 +198,9 @@
     <ClInclude Include="InputQueue.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -363,6 +366,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="InputQueue.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -201,7 +201,7 @@ void Application::MainLoader()
         IO::IOSkills::Load(Game::SkillManager::Instance, IO::DataProvider::Instance.GetDataFile("/skills/skills.xml"));
         IO::IOEffects::Load(Game::EffectManager::Instance, IO::DataProvider::Instance.GetDataFile("/effects/effects.xml"));
         LOG_INFO << "[done]" << std::endl;
-        //    std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.GetSkill(1);
+        //std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
     }
 
     // Add Protocols

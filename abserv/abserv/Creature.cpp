@@ -26,7 +26,8 @@ void Creature::RegisterLua(kaguya::State& state)
 }
 
 Creature::Creature() :
-    GameObject()
+    GameObject(),
+    creatureState_(CreatureStateIdle)
 {
 }
 
@@ -77,10 +78,53 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
 
+    Skill* skill = nullptr;
+    uint32_t targetId = 0;
+
     InputItem input;
+    // Multiple inputs of the same type overwrite previous
     while (inputs_.Get(input))
     {
+        switch (input.type)
+        {
+        case InputTypeMove:
+            creatureState_ = CreatureStateMoving;
+            break;
+        case InputTypeAttack:
+            creatureState_ = CreatureStateAttacking;
+            break;
+        case InputTypeUseSkill:
+        {
+            uint32_t skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
+            skill = GetSkill(skillIndex);
+            if (skill)
+            {
+                // Only stances do not change the state
+                if (!skill->IsType(SkillTypeStance) && !skill->IsType(SkillTypeFlashEnchantment))
+                    creatureState_ = CreatureStateUsingSkill;
+            }
+            break;
+        }
+        case InputTypeSelect:
+            targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            break;
+        case InputTypeNone:
+            break;
+        }
+    }
 
+    switch (creatureState_)
+    {
+    case CreatureStateIdle:
+        break;
+    case CreatureStateMoving:
+        break;
+    case CreatureStateUsingSkill:
+        break;
+    case CreatureStateAttacking:
+        break;
+    case CreatureStateEmote:
+        break;
     }
 
     skills_.Update(timeElapsed);
