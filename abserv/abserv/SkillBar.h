@@ -2,7 +2,6 @@
 
 #include "Skill.h"
 #include <array>
-#include <memory>
 
 namespace Game {
 

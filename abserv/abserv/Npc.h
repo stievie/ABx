@@ -1,10 +1,6 @@
 #pragma once
 
 #include "Creature.h"
-#pragma warning(push)
-#pragma warning(disable: 4702 4127)
-#include <kaguya/kaguya.hpp>
-#pragma warning(pop)
 
 namespace Game {
 

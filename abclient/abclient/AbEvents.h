@@ -1,10 +1,5 @@
 #pragma once
 
-#pragma warning( push )
-#pragma warning( disable : 4100 4305)
-#include <Urho3D/Urho3DAll.h>
-#pragma warning( pop )
-
 using namespace Urho3D;
 
 /// User defined events

@@ -1,9 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <stdint.h>
-
 enum AccountType : uint8_t
 {
     AccountTypeNormal = 1,

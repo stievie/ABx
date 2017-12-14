@@ -1,12 +1,5 @@
 #pragma once
 
-#include <memory>
-#pragma warning(push)
-#pragma warning(disable: 4592)
-#include <asio.hpp>
-#pragma warning(pop)
-#include <unordered_set>
-#include <mutex>
 #include "NetworkMessage.h"
 
 namespace Net {

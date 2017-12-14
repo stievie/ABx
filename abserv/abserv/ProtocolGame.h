@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "Protocol.h"
 #include "Connection.h"
 #include "Dispatcher.h"

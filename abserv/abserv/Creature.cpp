@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Creature.h"
-#include <algorithm>
 #include "EffectManager.h"
 
 #include "DebugNew.h"
@@ -80,6 +79,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     Skill* skill = nullptr;
     uint32_t targetId = 0;
+    MoveDirection dir = MoveDirectionNorth;
 
     InputItem input;
     // Multiple inputs of the same type overwrite previous
@@ -88,6 +88,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         switch (input.type)
         {
         case InputTypeMove:
+            dir = static_cast<MoveDirection>(input.data[InputDataDirection].GetInt());
             creatureState_ = CreatureStateMoving;
             break;
         case InputTypeAttack:
@@ -99,14 +100,19 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             skill = GetSkill(skillIndex);
             if (skill)
             {
-                // Only stances do not change the state
-                if (!skill->IsType(SkillTypeStance) && !skill->IsType(SkillTypeFlashEnchantment))
+                // These do not change the state
+                if (!skill->IsType(SkillTypeStance) && !skill->IsType(SkillTypeFlashEnchantment)
+                    && !skill->IsType(SkillTypeShout))
                     creatureState_ = CreatureStateUsingSkill;
             }
             break;
         }
         case InputTypeSelect:
             targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            break;
+        case InputTypeCancelSkill:
+            break;
+        case InputTypeCancelAttack:
             break;
         case InputTypeNone:
             break;
@@ -137,6 +143,38 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         effect->Update(timeElapsed);
     }
+}
+
+void Creature::Move(float speed, const Math::Vector3& amount)
+{
+    // new position = position + direction * speed (where speed = amount * speed)
+
+    // It's as easy as:
+    // 1. Create a matrix from the rotation,
+    // 2. multiply this matrix with the moving vector and
+    // 3. add the resulting vector to the current position
+#ifdef HAVE_DIRECTX_MATH
+    DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(transformation_.rotation_);
+    Math::Vector3 a = amount * speed;
+    DirectX::XMVECTOR v = DirectX::XMVector3Transform(a, m);
+    transformation_.position_.x_ += v.m128_f32[0];
+    transformation_.position_.y_ += v.m128_f32[1];
+    transformation_.position_.z_ += v.m128_f32[2];
+#endif
+    /*
+    Matrix4 m = Matrix4::CreateFromQuaternion(rotation_);
+    Vector3 a = amount * speed;
+    Vector3 v = m * a;
+    position_ += v;
+    */
+}
+
+void Creature::Turn(float angle, const Math::Vector3& axis)
+{
+    Math::Quaternion delta = Math::Quaternion::FromAxisAngle(axis, angle);
+    // Multiply current rotation by delta rotation
+    transformation_.rotation_ *= delta;
+    transformation_.rotation_.Normalize();
 }
 
 }

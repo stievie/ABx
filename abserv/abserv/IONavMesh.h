@@ -1,7 +1,6 @@
 #pragma once
 
 #include "NavigationMesh.h"
-#include <string>
 #include "IOAsset.h"
 
 namespace IO {

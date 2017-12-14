@@ -2,7 +2,6 @@
 
 #include "Variant.h"
 #include <queue>
-#include <mutex>
 
 namespace Game {
 

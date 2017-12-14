@@ -189,6 +189,7 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Maintenance.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Matrix4.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="Npc.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
+    <ClInclude Include="Transformation.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Variant.h" />
     <ClInclude Include="Vector3.h" />
@@ -251,6 +253,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maintenance.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="Npc.cpp" />
@@ -276,6 +279,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variant.cpp" />
     <ClCompile Include="Vector3.cpp" />

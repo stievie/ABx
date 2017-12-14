@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "Connection.h"
-#include <thread>
 #include "Dispatcher.h"
 #include "Logger.h"
 #include "Protocol.h"
-#include <list>
 #include "Scheduler.h"
 #include "Utils.h"
 #include "Service.h"

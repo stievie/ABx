@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GameManager.h"
 #include "Utils.h"
-#include <algorithm>
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "Player.h"

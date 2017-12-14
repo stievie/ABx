@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
 #include "Asset.h"
-#include <functional>
-#include <map>
 #include "IOAsset.h"
 #include "Logger.h"
 #include "Utils.h"

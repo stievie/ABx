@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <mutex>
-#include <condition_variable>
 #include "Service.h"
 
 class Application

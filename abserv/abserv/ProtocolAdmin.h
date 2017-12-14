@@ -55,10 +55,8 @@
 //    message(string)
 //
 
-#include <memory>
 #include "Protocol.h"
 #include "Connection.h"
-#include <stdint.h>
 
 namespace Net {
 

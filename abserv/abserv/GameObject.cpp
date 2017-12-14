@@ -16,8 +16,7 @@ void GameObject::RegisterLua(kaguya::State& state)
     );
 }
 
-GameObject::GameObject() :
-    rotation_(0.0f)
+GameObject::GameObject()
 {
     id_ = GetNewId();
 }

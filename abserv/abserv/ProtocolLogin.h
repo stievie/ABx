@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
 #include "Protocol.h"
 #include "Connection.h"
-#include <stdint.h>
 #include <AB/ProtocolCodes.h>
 
 namespace Net {

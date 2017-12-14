@@ -7,7 +7,6 @@
 #include <winsock2.h>
 #endif
 #include <mysql.h>
-#include <map>
 
 namespace DB {
 

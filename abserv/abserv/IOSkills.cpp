@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "IOSkills.h"
-#include <pugixml.hpp>
 
 namespace IO {
 

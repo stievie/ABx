@@ -1,8 +1,6 @@
 #pragma once
 
-#include <stdint.h>
 #include <abcrypto.hpp>
-#include <vector>
 
 namespace Crypto {
 

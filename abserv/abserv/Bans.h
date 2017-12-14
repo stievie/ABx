@@ -1,9 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-#include <mutex>
-#include <map>
-
 namespace Auth {
 
 enum BanReason : uint8_t

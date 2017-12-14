@@ -1,8 +1,6 @@
 #pragma once
 
-#include <functional>
 #include <chrono>
-#include <stdint.h>
 
 namespace Asynch {
 

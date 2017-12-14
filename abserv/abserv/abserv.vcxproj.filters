@@ -201,6 +201,12 @@
     <ClInclude Include="GameState.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix4.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Transformation.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -369,6 +375,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="GameState.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformation.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

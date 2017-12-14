@@ -1,12 +1,8 @@
 #pragma once
 
-#include <ostream>
-#include <iostream>
 #include <fstream>
 #include <chrono>
 #include <ctime>
-#include <memory>
-#include <string>
 
 #if defined __GNUC__
 #define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__

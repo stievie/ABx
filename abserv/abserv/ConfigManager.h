@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "Variant.h"
 #include <lua.hpp>
 

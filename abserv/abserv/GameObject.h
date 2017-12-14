@@ -1,17 +1,12 @@
 #pragma once
 
-#include <memory>
 #include "Vector3.h"
 #include "Quaternion.h"
 #include <limits>
-#pragma warning(push)
-#pragma warning(disable: 4702 4127 4244)
-#include <kaguya/kaguya.hpp>
-#pragma warning(pop)
-#include <sstream>
 #include "PropStream.h"
 #include <AB/ProtocolCodes.h>
 #include "NetworkMessage.h"
+#include "Transformation.h"
 
 namespace Game {
 
@@ -68,10 +63,7 @@ public:
     }
 
     virtual std::string GetName() const { return "Unknown"; }
-    Math::Vector3 position_;
-    Math::Vector3 scale_ = Math::Vector3::One;
-    /// Rotation around y-axis
-    float rotation_;
+    Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;
     virtual bool Serialize(IO::PropWriteStream& stream);

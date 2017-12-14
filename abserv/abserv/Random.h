@@ -1,6 +1,5 @@
 #pragma once
 
-#include <mutex>
 #include <limits>
 #include <abcrypto.hpp>
 

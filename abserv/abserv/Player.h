@@ -1,11 +1,9 @@
 #pragma once
 
 #include "ProtocolGame.h"
-#include <memory>
 #include "GameObject.h"
 #include "Game.h"
 #include "Effect.h"
-#include <list>
 #include "Creature.h"
 
 namespace Game {
@@ -16,19 +14,6 @@ enum PlayerSex
 {
     PlayerSexFemale,
     PlayerSexMale
-};
-
-/// Direction relative to current rotation
-enum MoveDirection
-{
-    MoveDirectionNorth = 0,
-    MoveDirectionNorthWest = 45,
-    MoveDirectionWest = 90,
-    MoveDirectionSouthWest = 135,
-    MoveDirectionSouth = 180,
-    MoveDirectionSouthEast = 225,
-    MoveDirectionEast = 270,
-    MoveDirectionNorthEast = 315,
 };
 
 /// DB Data

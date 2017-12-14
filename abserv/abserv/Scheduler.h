@@ -1,11 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include "Task.h"
 #include <set>
-#include <mutex>
-#include <condition_variable>
-#include <thread>
 #include <queue>
 
 namespace Asynch {

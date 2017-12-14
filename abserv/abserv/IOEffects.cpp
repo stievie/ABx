@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "IOEffects.h"
-#include <pugixml.hpp>
 
 namespace IO {
 

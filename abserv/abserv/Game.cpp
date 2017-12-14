@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "PlayerManager.h"
 #include "Player.h"
-#include <algorithm>
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "GameManager.h"
@@ -164,7 +163,7 @@ void Game::RegisterLua(kaguya::State& state)
         // Get any game object by ID
         .addFunction("GetObject", &Game::GetObjectById)
         // Get player of game by ID or name
-        .addOverloadedFunctions("GetPlayer", &Game::GetPlayerById, &Game::GetPlayerByName)
+        .addFunction("GetPlayer", &Game::GetPlayerById)
 
         .addFunction("AddNpc", &Game::AddNpc)
     );
@@ -260,13 +259,10 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
 {
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
     gameStatus_->Add<uint32_t>(object->id_);
-    gameStatus_->Add<float>(object->position_.x_);
-    gameStatus_->Add<float>(object->position_.y_);
-    gameStatus_->Add<float>(object->position_.z_);
-    gameStatus_->Add<float>(object->rotation_);
-    gameStatus_->Add<float>(object->scale_.x_);
-    gameStatus_->Add<float>(object->scale_.y_);
-    gameStatus_->Add<float>(object->scale_.z_);
+    gameStatus_->AddVector3(object->transformation_.position_);
+    Math::Vector3 rot = object->transformation_.rotation_.EulerAngles();
+    gameStatus_->Add<float>(rot.y_);
+    gameStatus_->AddVector3(object->transformation_.scale_);
 
     IO::PropWriteStream data;
     size_t dataSize;
@@ -299,13 +295,10 @@ void Game::SendSpawnAll(uint32_t playerId)
 
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         msg.Add<uint32_t>(o->id_);
-        msg.Add<float>(o->position_.x_);
-        msg.Add<float>(o->position_.y_);
-        msg.Add<float>(o->position_.z_);
-        msg.Add<float>(o->rotation_);
-        msg.Add<float>(o->scale_.x_);
-        msg.Add<float>(o->scale_.y_);
-        msg.Add<float>(o->scale_.z_);
+        msg.AddVector3(o->transformation_.position_);
+        Math::Vector3 rot = o->transformation_.rotation_.EulerAngles();
+        gameStatus_->Add<float>(rot.y_);
+        msg.AddVector3(o->transformation_.scale_);
         IO::PropWriteStream data;
         size_t dataSize;
         o->Serialize(data);
@@ -327,7 +320,7 @@ void Game::PlayerJoin(uint32_t playerId)
             objects_.push_back(player);
             player->data_.lastMap = data_.mapName;
             // TODO: Get spawn position
-            player->position_ = GetSpawnPoint();
+            player->transformation_.position_ = GetSpawnPoint();
             player->SetGame(shared_from_this());
         }
         luaState_["onAddObject"](this, player);

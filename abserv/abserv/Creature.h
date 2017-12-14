@@ -16,6 +16,19 @@ enum CreatureState
     CreatureStateEmote = 4,
 };
 
+/// Direction relative to current rotation
+enum MoveDirection
+{
+    MoveDirectionNorth = 0,
+    MoveDirectionNorthWest = 45,
+    MoveDirectionWest = 90,
+    MoveDirectionSouthWest = 135,
+    MoveDirectionSouth = 180,
+    MoveDirectionSouthEast = 225,
+    MoveDirectionEast = 270,
+    MoveDirectionNorthEast = 315,
+};
+
 /// Player, NPC, Monster some such
 class Creature : public GameObject
 {
@@ -50,6 +63,9 @@ public:
     void AddEffectByName(const std::string& name, uint32_t ticks);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t id);
+    /// Move in direction of rotation
+    void Move(float speed, const Math::Vector3& amount);
+    void Turn(float angle, const Math::Vector3& axis);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 

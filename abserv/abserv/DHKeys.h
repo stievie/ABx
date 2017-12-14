@@ -1,8 +1,6 @@
 #pragma once
 
 #include <abcrypto.hpp>
-#include <string>
-#include <mutex>
 
 namespace Crypto {
 

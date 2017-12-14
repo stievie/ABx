@@ -1,10 +1,6 @@
 #pragma once
 
-#include <mutex>
-#include <list>
-#include <condition_variable>
 #include "Task.h"
-#include <thread>
 
 namespace Asynch {
 

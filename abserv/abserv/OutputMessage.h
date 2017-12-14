@@ -1,9 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <stdint.h>
-#include <list>
-#include <mutex>
 #include "NetworkMessage.h"
 #include "Connection.h"
 #include "Protocol.h"

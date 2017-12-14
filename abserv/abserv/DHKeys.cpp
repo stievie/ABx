@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "DHKeys.h"
-#include <iostream>
 #include <fstream>
-#include <stdint.h>
 #include "Logger.h"
 
 #include "DebugNew.h"

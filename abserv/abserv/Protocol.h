@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "Connection.h"
 #include "Logger.h"
 #include <abcrypto.hpp>

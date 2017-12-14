@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Variant.h"
-#include <string>
 
 #include "DebugNew.h"
 

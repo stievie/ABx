@@ -8,15 +8,11 @@
 #include "ProtocolStatus.h"
 #include "ConfigManager.h"
 #include "Task.h"
-#include <thread>
-#include <chrono>
 #include "Logger.h"
 #include "Utils.h"
 #include "GameManager.h"
 #include <functional>
 #include "Random.h"
-#include <ostream>
-#include <iostream>
 #include "Connection.h"
 #include "Database.h"
 #include "DHKeys.h"

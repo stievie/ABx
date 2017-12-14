@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Aes.h"
-#include <algorithm>
 #include "Random.h"
 
 #include "DebugNew.h"

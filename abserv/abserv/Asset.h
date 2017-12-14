@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <string>
-
 namespace IO {
 
 class Asset

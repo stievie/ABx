@@ -1,10 +1,7 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <limits>
 #include <iterator>
-#include <stdint.h>
 
 namespace IO {
 

@@ -23,6 +23,8 @@
 #define USE_MYSQL
 #define USE_PGSQL
 
+#define HAVE_DIRECTX_MATH
+
 // Name of config file
 #define CONFIG_FILE "config.lua"
 // Servers DH keys

@@ -1,16 +1,8 @@
 #pragma once
 
-#include <thread>
-#include <mutex>
 #include "Service.h"
-#include <vector>
 #include "Game.h"
-#include <stdint.h>
 #include <limits>
-#pragma warning(push)
-#pragma warning(disable: 4702 4127 4244)
-#include <kaguya/kaguya.hpp>
-#pragma warning(pop)
 
 namespace Game {
 

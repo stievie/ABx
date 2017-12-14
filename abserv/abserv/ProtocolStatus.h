@@ -1,10 +1,7 @@
 #pragma once
 
-#include <memory>
 #include "Protocol.h"
 #include "Connection.h"
-#include <stdint.h>
-#include <map>
 
 namespace Net {
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "Vector3.h"
 
 namespace Math {
@@ -36,6 +35,15 @@ public:
         w_(w)
     { }
 
+#ifdef HAVE_DIRECTX_MATH
+    Vector4(const DirectX::XMVECTOR& vector) :
+        x_(vector.m128_f32[0]),
+        y_(vector.m128_f32[1]),
+        z_(vector.m128_f32[2]),
+        w_(vector.m128_f32[3])
+    { }
+#endif
+
     /// Parse from string
     explicit Vector4(const std::string& str);
 
@@ -47,6 +55,14 @@ public:
         w_ = vector.w_;
         return *this;
     }
+
+#ifdef HAVE_DIRECTX_MATH
+    /// Cast to XMVECTOR
+    operator DirectX::XMVECTOR() const
+    {
+        return DirectX::XMVectorSet(x_, y_, z_, w_);
+    }
+#endif
 
     bool operator ==(const Vector4& vector) const { return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_ && w_ == vector.w_; }
     bool operator !=(const Vector4& vector) const { return x_ != vector.x_ || y_ != vector.y_ || z_ != vector.z_ || w_ != vector.w_; }

@@ -1,19 +1,9 @@
 #pragma once
 
-#include <stdint.h>
-#include <memory>
-#include <string>
-#include <vector>
-#include <map>
 #include "Map.h"
 #include "GameObject.h"
 #include "NavigationMesh.h"
 #include "Utils.h"
-#include <mutex>
-#pragma warning(push)
-#pragma warning(disable: 4702 4127 4244)
-#include <kaguya/kaguya.hpp>
-#pragma warning(pop)
 #include "NetworkMessage.h"
 #include "GameState.h"
 

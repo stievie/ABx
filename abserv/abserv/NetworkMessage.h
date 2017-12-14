@@ -1,8 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-#include <string>
-#include <memory>
 #include "Vector3.h"
 #include "Quaternion.h"
 

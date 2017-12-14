@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "Service.h"
-#include <functional>
 #include "Connection.h"
 #include "Scheduler.h"
-#include <algorithm>
 #include "NetworkMessage.h"
 #include "Bans.h"
 

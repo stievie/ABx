@@ -3,7 +3,6 @@
 #include "ConfigManager.h"
 #include "NavigationMesh.h"
 #include "IONavMesh.h"
-#include <algorithm>
 #include "Logger.h"
 
 #include "DebugNew.h"

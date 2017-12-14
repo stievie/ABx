@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Quaternion.h"
-#include <vector>
 #include "Logger.h"
 #include "Utils.h"
 

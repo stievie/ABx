@@ -36,6 +36,14 @@ public:
     /// Create a Quaternion from Axis and Angle
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
 
+#ifdef HAVE_DIRECTX_MATH
+    /// Cast to XMVECTOR
+    operator DirectX::XMVECTOR() const
+    {
+        return DirectX::XMVectorSet(x_, y_, z_, w_);
+    }
+#endif
+
     /// Test for equality
     bool operator ==(const Quaternion& vector) const {
         return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_ && w_ == vector.w_;

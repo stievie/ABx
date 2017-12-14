@@ -4,9 +4,6 @@
 #include "ConfigManager.h"
 #include "Dispatcher.h"
 #include "OutputMessage.h"
-#include <pugixml.hpp>
-#include <ostream>
-#include <iostream>
 
 #include "DebugNew.h"
 
