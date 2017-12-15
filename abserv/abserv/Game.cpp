@@ -297,16 +297,16 @@ void Game::SendSpawnAll(uint32_t playerId)
         msg.Add<uint32_t>(o->id_);
         msg.AddVector3(o->transformation_.position_);
         Math::Vector3 rot = o->transformation_.rotation_.EulerAngles();
-        gameStatus_->Add<float>(rot.y_);
+        msg.Add<float>(rot.y_);
         msg.AddVector3(o->transformation_.scale_);
         IO::PropWriteStream data;
         size_t dataSize;
         o->Serialize(data);
         const char* cData = data.GetStream(dataSize);
-        std::string sData = std::string(cData, dataSize);
-        msg.AddString(sData);
-        player->client_->WriteToOutput(msg);
+        msg.AddString(std::string(cData, dataSize));
     }
+    if (msg.GetSize() != 0)
+        player->client_->WriteToOutput(msg);
 }
 
 void Game::PlayerJoin(uint32_t playerId)

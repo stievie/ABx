@@ -57,6 +57,9 @@ enum GameProtocolCodes : uint8_t
     GameSpawnObjectExisting = 0x05,
     GameSpawnObject = 0x06,
     GameLeaveObject = 0x07,
+    // Object Update
+    GameObjectPosUpdate = 0x08,
+    GameObjectSelectTarget = 0x09,
 };
 
 enum GameObjectType : uint8_t

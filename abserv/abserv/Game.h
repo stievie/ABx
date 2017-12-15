@@ -50,10 +50,6 @@ private:
     int64_t lastUpdate_;
     kaguya::State luaState_;
     void InitializeLua();
-    /// Returns only players that are part of this game
-    Player* GetPlayerById(uint32_t playerId);
-    Player* GetPlayerByName(const std::string& name);
-    GameObject* GetObjectById(uint32_t objectId);
     void InternalLoad();
     void Update();
     void SendStatus();
@@ -85,6 +81,10 @@ public:
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }
     std::string GetName() const { return data_.mapName; }
+    /// Returns only players that are part of this game
+    Player* GetPlayerById(uint32_t playerId);
+    Player* GetPlayerByName(const std::string& name);
+    GameObject* GetObjectById(uint32_t objectId);
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 

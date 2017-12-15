@@ -17,17 +17,19 @@ enum CreatureState
 };
 
 /// Direction relative to current rotation
-enum MoveDirection
+enum MoveDirection : uint8_t
 {
     MoveDirectionNorth = 0,
-    MoveDirectionNorthWest = 45,
-    MoveDirectionWest = 90,
-    MoveDirectionSouthWest = 135,
-    MoveDirectionSouth = 180,
-    MoveDirectionSouthEast = 225,
-    MoveDirectionEast = 270,
-    MoveDirectionNorthEast = 315,
+    MoveDirectionNorthWest = 1,
+    MoveDirectionWest = 2,
+    MoveDirectionSouthWest = 3,
+    MoveDirectionSouth = 4,
+    MoveDirectionSouthEast = 5,
+    MoveDirectionEast = 6,
+    MoveDirectionNorthEast = 7,
 };
+
+static const int MOVE_ANGLES[] = { 0, 45, 90, 135, 180, 225, 270, 315 };
 
 /// Player, NPC, Monster some such
 class Creature : public GameObject
@@ -51,6 +53,12 @@ public:
     uint32_t GetOvercast() const { return overcast_; }
     void SetOvercast(uint32_t value) { overcast_ = value; }
 
+    float GetActualMoveSpeed() const
+    {
+        // TODO:
+        return speed_;
+    }
+
     virtual uint32_t GetLevel() const { return 0; }
 
     Skill* GetSkill(uint32_t index)
@@ -71,6 +79,7 @@ public:
 
     InputQueue inputs_;
     CreatureState creatureState_;
+    GameObject* selectedObject_;
 
     EffectList effects_;
     SkillBar skills_;

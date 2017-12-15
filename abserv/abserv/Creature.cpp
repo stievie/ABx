@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Creature.h"
 #include "EffectManager.h"
+#include "Game.h"
 
 #include "DebugNew.h"
 
@@ -26,7 +27,8 @@ void Creature::RegisterLua(kaguya::State& state)
 
 Creature::Creature() :
     GameObject(),
-    creatureState_(CreatureStateIdle)
+    creatureState_(CreatureStateIdle),
+    selectedObject_(nullptr)
 {
 }
 
@@ -78,8 +80,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     GameObject::Update(timeElapsed, message);
 
     Skill* skill = nullptr;
-    uint32_t targetId = 0;
-    MoveDirection dir = MoveDirectionNorth;
+    float dirAngle = 0.0f;
 
     InputItem input;
     // Multiple inputs of the same type overwrite previous
@@ -88,9 +89,15 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         switch (input.type)
         {
         case InputTypeMove:
-            dir = static_cast<MoveDirection>(input.data[InputDataDirection].GetInt());
-            creatureState_ = CreatureStateMoving;
+        {
+            uint8_t dir = static_cast<uint8_t>(input.data[InputDataDirection].GetInt());
+            if (dir <= MoveDirectionNorthEast)
+            {
+                dirAngle = ((float)MOVE_ANGLES[dir] * (float)M_PI) / 180.0f;
+                creatureState_ = CreatureStateMoving;
+            }
             break;
+        }
         case InputTypeAttack:
             creatureState_ = CreatureStateAttacking;
             break;
@@ -108,8 +115,18 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             break;
         }
         case InputTypeSelect:
-            targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+        {
+            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            selectedObject_ = GetGame()->GetObjectById(targetId);
+            message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+            message.Add<uint32_t>(id_);
+            if (selectedObject_)
+                message.Add<uint32_t>(selectedObject_->id_);
+            else
+                // Clear Target
+                message.Add<uint32_t>(0);
             break;
+        }
         case InputTypeCancelSkill:
             break;
         case InputTypeCancelAttack:
@@ -124,7 +141,14 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     case CreatureStateIdle:
         break;
     case CreatureStateMoving:
+    {
+        Math::Vector3 moveDir(0.0f, dirAngle, 0.0f);
+        Move(GetActualMoveSpeed(), moveDir);
+        message.AddByte(AB::GameProtocol::GameObjectPosUpdate);
+        message.Add<uint32_t>(id_);
+        message.AddVector3(transformation_.position_);
         break;
+    }
     case CreatureStateUsingSkill:
         break;
     case CreatureStateAttacking:
@@ -160,13 +184,12 @@ void Creature::Move(float speed, const Math::Vector3& amount)
     transformation_.position_.x_ += v.m128_f32[0];
     transformation_.position_.y_ += v.m128_f32[1];
     transformation_.position_.z_ += v.m128_f32[2];
-#endif
-    /*
-    Matrix4 m = Matrix4::CreateFromQuaternion(rotation_);
+#else
+    Matrix4 m = Matrix4::CreateFromQuaternion(transformation_.rotation_);
     Vector3 a = amount * speed;
     Vector3 v = m * a;
-    position_ += v;
-    */
+    transformation_.position_ += v;
+#endif
 }
 
 void Creature::Turn(float angle, const Math::Vector3& axis)
