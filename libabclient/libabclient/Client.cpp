@@ -47,6 +47,12 @@ void Client::OnDespawnObject(uint32_t id)
         receiver_->OnDespawnObject(id);
 }
 
+void Client::OnObjectPos(uint32_t id, const Vec3& pos)
+{
+    if (receiver_)
+        receiver_->OnObjectPos(id, pos);
+}
+
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
@@ -106,6 +112,9 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
         std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5,
         std::placeholders::_6));
     protoGame_->SetDespawnCallback(std::bind(&Client::OnDespawnObject, this, std::placeholders::_1));
+    protoGame_->SetObjectPosCallback(std::bind(&Client::OnObjectPos, this, std::placeholders::_1,
+        std::placeholders::_2));
+
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
         std::bind(&Client::OnEnterWorld, this, std::placeholders::_1, std::placeholders::_2));
 }
@@ -123,6 +132,11 @@ void Client::Update(int timeElapsed)
     }
     lastTime += timeElapsed;
     Connection::Run();
+}
+
+void Client::Move(uint8_t direction)
+{
+    protoGame_->Move(direction);
 }
 
 }

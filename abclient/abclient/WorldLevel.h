@@ -1,10 +1,5 @@
 #pragma once
 
-#pragma warning( push )
-#pragma warning( disable : 4100 4305)
-#include <Urho3D/Urho3DAll.h>
-#pragma warning( pop )
-
 #include "BaseLevel.h"
 #include "GameObject.h"
 #include "ChatWindow.h"
@@ -36,6 +31,7 @@ private:
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleObjectSpawn(StringHash eventType, VariantMap& eventData);
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
+    void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);
     void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
         const Quaternion& direction, PropReadStream& data);
 };

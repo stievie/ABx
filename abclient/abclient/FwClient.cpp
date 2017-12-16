@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "FwClient.h"
 #include "AbEvents.h"
-#include <sstream>
-#include <Urho3D/IO/Log.h>
-#include <string>
 #include "LevelManager.h"
 #include "BaseLevel.h"
 #include <AB/ProtocolCodes.h>
@@ -122,6 +119,12 @@ void FwClient::Logout()
     loggedIn_ = false;
 }
 
+void FwClient::Move(uint8_t direction)
+{
+    if (loggedIn_)
+        client_.Move(direction);
+}
+
 void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
     levelReady_ = false;
@@ -141,6 +144,9 @@ void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)
     eData[AbEvents::ED_MAP_NAME] = String(mapName.c_str());
     eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
+
+    Graphics* graphics = GetSubsystem<Graphics>();
+    graphics->SetWindowTitle("FW - " + accountName_);
 }
 
 void FwClient::OnNetworkError(const std::error_code& err)
@@ -196,4 +202,12 @@ void FwClient::OnDespawnObject(uint32_t id)
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::ED_OBJECT_ID] = id;
     QueueEvent(AbEvents::E_OBJECT_DESPAWN, eData);
+}
+
+void FwClient::OnObjectPos(uint32_t id, const Vec3& pos)
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_OBJECT_ID] = id;
+    eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
+    QueueEvent(AbEvents::E_OBJECT_POS_UPDATE, eData);
 }

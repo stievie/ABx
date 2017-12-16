@@ -46,6 +46,8 @@ public:
     Actor(Context* context);
     ~Actor();
 
+    static void RegisterObject(Context* context);
+
     static Actor* CreateActor(uint32_t id, Context* context, Scene* scene);
     /// Handle physics world update. Called by LogicComponent base class.
     void Update(float timeStep) override;

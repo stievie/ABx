@@ -1,10 +1,5 @@
 #pragma once
 
-#pragma warning( push )
-#pragma warning( disable : 4100 4305)
-#include <Urho3D/Urho3DAll.h>
-#pragma warning( pop )
-
 class ChatWindow : public UIElement
 {
     URHO3D_OBJECT(ChatWindow, UIElement);

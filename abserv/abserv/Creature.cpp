@@ -2,6 +2,8 @@
 #include "Creature.h"
 #include "EffectManager.h"
 #include "Game.h"
+#include <AB/ProtocolCodes.h>
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -28,6 +30,7 @@ void Creature::RegisterLua(kaguya::State& state)
 Creature::Creature() :
     GameObject(),
     creatureState_(CreatureStateIdle),
+    moveDir_(AB::GameProtocol::MoveDirectionNone),
     selectedObject_(nullptr)
 {
 }
@@ -80,9 +83,10 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     GameObject::Update(timeElapsed, message);
 
     Skill* skill = nullptr;
-    float dirAngle = 0.0f;
 
     InputItem input;
+    CreatureState newState = creatureState_;
+
     // Multiple inputs of the same type overwrite previous
     while (inputs_.Get(input))
     {
@@ -90,16 +94,20 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
         case InputTypeMove:
         {
-            uint8_t dir = static_cast<uint8_t>(input.data[InputDataDirection].GetInt());
-            if (dir <= MoveDirectionNorthEast)
+            moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
+            if (moveDir_ > AB::GameProtocol::MoveDirectionNone)
             {
-                dirAngle = ((float)MOVE_ANGLES[dir] * (float)M_PI) / 180.0f;
-                creatureState_ = CreatureStateMoving;
+                newState = CreatureStateMoving;
+            }
+            else
+            {
+                if (creatureState_ == CreatureStateMoving)
+                    newState = CreatureStateIdle;
             }
             break;
         }
         case InputTypeAttack:
-            creatureState_ = CreatureStateAttacking;
+            newState = CreatureStateAttacking;
             break;
         case InputTypeUseSkill:
         {
@@ -110,7 +118,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 // These do not change the state
                 if (!skill->IsType(SkillTypeStance) && !skill->IsType(SkillTypeFlashEnchantment)
                     && !skill->IsType(SkillTypeShout))
-                    creatureState_ = CreatureStateUsingSkill;
+                    newState = CreatureStateUsingSkill;
             }
             break;
         }
@@ -136,17 +144,52 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
     }
 
+    if (newState != creatureState_)
+    {
+        creatureState_ = newState;
+#ifdef DEBUG_PROTOCOL
+//        LOG_DEBUG << "New State " << static_cast<int>(creatureState_) << std::endl;
+#endif
+    }
+
     switch (creatureState_)
     {
     case CreatureStateIdle:
         break;
     case CreatureStateMoving:
     {
-        Math::Vector3 moveDir(0.0f, dirAngle, 0.0f);
-        Move(GetActualMoveSpeed(), moveDir);
-        message.AddByte(AB::GameProtocol::GameObjectPosUpdate);
-        message.Add<uint32_t>(id_);
-        message.AddVector3(transformation_.position_);
+        bool moved = false;
+        if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
+        {
+            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::UnitZ);
+            moved = true;
+        }
+        if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
+        {
+            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::Back);
+            moved = true;
+        }
+        if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
+        {
+            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::Left);
+            moved = true;
+        }
+        if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
+        {
+            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::UnitX);
+            moved = true;
+        }
+
+        if (moved)
+        {
+            message.AddByte(AB::GameProtocol::GameObjectPosUpdate);
+            message.Add<uint32_t>(id_);
+            message.AddVector3(transformation_.position_);
+#ifdef DEBUG_PROTOCOL
+//            LOG_DEBUG << "New Pos x " << transformation_.position_.x_ <<
+//                " y " << transformation_.position_.y_ << " z " << transformation_.position_.z_ << std::endl;
+#endif
+        }
         break;
     }
     case CreatureStateUsingSkill:

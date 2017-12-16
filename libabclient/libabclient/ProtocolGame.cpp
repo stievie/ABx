@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
-#include <AB/ProtocolCodes.h>
 #include "Time.h"
 
 namespace Client {
@@ -84,8 +83,22 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameLeaveObject:
             ParseLeaveObject(message);
             break;
+        case AB::GameProtocol::GameObjectPosUpdate:
+            ParseObjectPosUpdate(message);
+            break;
         }
     }
+}
+
+void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    Vec3 newPos;
+    newPos.x = message->Get<float>();
+    newPos.y = message->Get<float>();
+    newPos.z = message->Get<float>();
+    if (objectPosCallback)
+        objectPosCallback(objectId, newPos);
 }
 
 void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message)
@@ -170,6 +183,15 @@ void ProtocolGame::Ping(const PingCallback& callback)
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
+    Send(msg);
+    Connection::Run();
+}
+
+void ProtocolGame::Move(uint8_t direction)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeMove);
+    msg->Add<uint8_t>(direction);
     Send(msg);
     Connection::Run();
 }

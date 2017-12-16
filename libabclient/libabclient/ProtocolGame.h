@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "PropStream.h"
 #include "Structs.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -19,7 +20,8 @@ public:
     typedef std::function<void(int)> PingCallback;
     typedef std::function<void(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing)> SpawnCallback;
-    typedef std::function<void(uint32_t id)> DespawnCallback;;
+    typedef std::function<void(uint32_t id)> DespawnCallback;
+    typedef std::function<void(uint32_t id, const Vec3& pos)> ObjectPosCallback;
 private:
     std::string accountName_;
     std::string accountPass_;
@@ -32,6 +34,7 @@ private:
     PingCallback pingCallback_;
     SpawnCallback spawnCallback_;
     DespawnCallback despawnCallback_;
+    ObjectPosCallback objectPosCallback;
 
     void SendLoginPacket();
 protected:
@@ -46,6 +49,7 @@ protected:
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message);
     void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
     ~ProtocolGame();
@@ -55,8 +59,11 @@ public:
         const EnterWorldCallback& callback);
     void Logout();
     void Ping(const PingCallback& callback);
+    void Move(uint8_t direction);
+
     void SetSpawnCallback(const SpawnCallback& callback) { spawnCallback_ = callback; }
     void SetDespawnCallback(const DespawnCallback& callback) { despawnCallback_ = callback; }
+    void SetObjectPosCallback(const ObjectPosCallback& callback) { objectPosCallback = callback; }
 };
 
 }

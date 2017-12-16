@@ -1,25 +1,3 @@
-//
-// Copyright (c) 2008-2016 the Urho3D project.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-
 // Most of it taken from the Character Demo
 
 #include "stdafx.h"
@@ -34,19 +12,24 @@ Actor::Actor(Context* context) :
     model_(nullptr)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
-    SetUpdateEventMask(USE_FIXEDUPDATE);
+    SetUpdateEventMask(USE_UPDATE);
 }
 
 Actor::~Actor()
 {
 }
 
+void Actor::RegisterObject(Context* context)
+{
+    context->RegisterFactory<Actor>();
+}
+
 Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
 {
-    Actor* result = new Actor(context);
-    result->objectNode_ = scene->CreateChild("Actor", Urho3D::REPLICATED, id);
+    Node* objectNode = scene->CreateChild(id, Urho3D::LOCAL, false);
+    Actor* result = objectNode->CreateComponent<Actor>();
 
-    Node* adjustNode = result->objectNode_->CreateChild("AdjNode");
+    Node* adjustNode = result->GetNode()->CreateChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
 
     result->Init();
@@ -73,7 +56,7 @@ void Actor::CreateModel()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
     // spin node
-    Node* adjustNode = objectNode_->GetChild("AdjNode");
+    Node* adjustNode = GetNode()->GetChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
 
     // Create the rendering component + animation controller
@@ -99,14 +82,6 @@ void Actor::CreateModel()
 
 void Actor::Update(float timeStep)
 {
-    GameObject::Update(timeStep);
-    // Update movement & animation
-    const Quaternion& rot = node_->GetRotation();
-    Vector3 moveDir = Vector3::ZERO;
-
-    // Normalize move vector so that diagonal strafing is not faster
-    if (moveDir.LengthSquared() > 0.0f)
-        moveDir.Normalize();
 }
 
 void Actor::LoadXML(const XMLElement& source)

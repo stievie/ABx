@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
 #include "FwClient.h"
-#include <Urho3D/UI/UIEvents.h>
 
 CharSelectLevel::CharSelectLevel(Context* context) :
     BaseLevel(context)

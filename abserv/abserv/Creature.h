@@ -16,19 +16,6 @@ enum CreatureState
     CreatureStateEmote = 4,
 };
 
-/// Direction relative to current rotation
-enum MoveDirection : uint8_t
-{
-    MoveDirectionNorth = 0,
-    MoveDirectionNorthWest = 1,
-    MoveDirectionWest = 2,
-    MoveDirectionSouthWest = 3,
-    MoveDirectionSouth = 4,
-    MoveDirectionSouthEast = 5,
-    MoveDirectionEast = 6,
-    MoveDirectionNorthEast = 7,
-};
-
 static const int MOVE_ANGLES[] = { 0, 45, 90, 135, 180, 225, 270, 315 };
 
 /// Player, NPC, Monster some such
@@ -36,6 +23,7 @@ class Creature : public GameObject
 {
 private:
     void DeleteEffect(uint32_t id);
+    uint8_t moveDir_;
 public:
     static void RegisterLua(kaguya::State& state);
 

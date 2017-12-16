@@ -19,6 +19,7 @@ public:
     virtual void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(uint32_t id) = 0;
+    virtual void OnObjectPos(uint32_t, const Vec3& pos) = 0;
 };
 
 }

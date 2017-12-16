@@ -45,6 +45,16 @@ enum LoginProtocolCodes : uint8_t
 
 namespace GameProtocol {
 
+/// Direction relative to current rotation
+enum MoveDirection : uint8_t
+{
+    MoveDirectionNone = 0,
+    MoveDirectionNorth = 1,
+    MoveDirectionWest = 1 << 1,
+    MoveDirectionSouth = 1 << 2,
+    MoveDirectionEast = 1 << 3,
+};
+
 enum GameProtocolCodes : uint8_t
 {
     NoError = 0x00,
@@ -78,14 +88,8 @@ enum GamePacketTypes : uint8_t
     PacketTypeLogout = 0x10,
 
     // Move
-    PacketTypeMoveNorth = 0x20,
-    PacketTypeMoveNorthEast = 0x21,
-    PacketTypeMoveEast = 0x22,
-    PacketTypeMoveSouthEast = 0x23,
-    PacketTypeMoveSouth = 0x24,
-    PacketTypeMoveSouthWest = 0x25,
-    PacketTypeMoveWest = 0x26,
-    PacketTypeMoveNorthWest = 0x28,
+    PacketTypeMove = 0x20,
+    PacketTypeTurn = 0x21,
 
     // Skills
     PacketTypeUseSkill = 0x40,

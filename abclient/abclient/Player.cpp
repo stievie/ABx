@@ -1,31 +1,10 @@
-//
-// Copyright (c) 2008-2016 the Urho3D project.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-
 #include "stdafx.h"
-
 #include "Player.h"
+#include "FwClient.h"
 
 Player::Player(Context* context) :
-    Actor(context)
+    Actor(context),
+    lastDir_(AB::GameProtocol::MoveDirectionNone)
 {
 }
 
@@ -41,10 +20,10 @@ void Player::RegisterObject(Context* context)
 
 Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
 {
-    Player* result = new Player(context);
-    result->objectNode_ = scene->CreateChild("Player", Urho3D::REPLICATED, id);
+    Node* objectNode = scene->CreateChild(id, Urho3D::LOCAL, false);
+    Player* result = objectNode->CreateComponent<Player>();
 
-    Node* adjustNode = result->objectNode_->CreateChild("AdjNode");
+    Node* adjustNode = result->GetNode()->CreateChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
     result->Init();
 
@@ -54,8 +33,8 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
     adjustNode->CreateComponent<AnimationController>();
 
     // Create camera
-    result->cameraNode_ = result->objectNode_->CreateChild("CameraNode");
-    result->cameraNode_->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+    result->cameraNode_ = result->GetNode()->CreateChild("CameraNode");
+    result->cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
     Camera* camera = result->cameraNode_->CreateComponent<Camera>();
     camera->SetFarClip(300.0f);
 
@@ -94,21 +73,22 @@ void Player::Update(float timeStep)
 {
     Actor::Update(timeStep);
 
-    // Update movement & animation
-    const Quaternion& rot = node_->GetRotation();
-    Vector3 moveDir = Vector3::ZERO;
+    FwClient* client = context_->GetSubsystem<FwClient>();
 
+    uint8_t dir = AB::GameProtocol::MoveDirectionNone;
     if (controls_.IsDown(CTRL_FORWARD))
-        moveDir -= Vector3::FORWARD;
+        dir |= AB::GameProtocol::MoveDirectionNorth;
     if (controls_.IsDown(CTRL_BACK))
-        moveDir -= Vector3::BACK * 2.0f;
+        dir |= AB::GameProtocol::MoveDirectionSouth;
     if (controls_.IsDown(CTRL_LEFT))
-        moveDir -= Vector3::LEFT;
+        dir |= AB::GameProtocol::MoveDirectionWest;
     if (controls_.IsDown(CTRL_RIGHT))
-        moveDir -= Vector3::RIGHT;
+        dir |= AB::GameProtocol::MoveDirectionEast;
 
-    // Normalize move vector so that diagonal strafing is not faster
-    if (moveDir.LengthSquared() > 0.0f)
-        moveDir.Normalize();
+    if (lastDir_ != dir)
+    {
+        client->Move(dir);
+        lastDir_ = dir;
+    }
 }
 

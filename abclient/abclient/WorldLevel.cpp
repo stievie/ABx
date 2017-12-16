@@ -5,7 +5,6 @@
 #include "AbEvents.h"
 #include "FwClient.h"
 #include "LevelManager.h"
-#include <sstream>
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context)
@@ -18,6 +17,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECT_SPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
     SubscribeToEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
     SubscribeToEvent(AbEvents::E_OBJECT_DESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
+    SubscribeToEvent(AbEvents::E_OBJECT_POS_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
 }
@@ -49,7 +49,7 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
     if (player_)
     {
         // Clear previous controls
-        player_->controls_.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT | CTRL_JUMP, false);
+        player_->controls_.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT, false);
 
         // Update controls using keys
         UI* ui = GetSubsystem<UI>();
@@ -59,7 +59,6 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             player_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_S));
             player_->controls_.Set(CTRL_LEFT, input->GetKeyDown(KEY_A));
             player_->controls_.Set(CTRL_RIGHT, input->GetKeyDown(KEY_D));
-            player_->controls_.Set(CTRL_JUMP, input->GetKeyDown(KEY_SPACE));
 
             if (input->GetMouseButtonDown(4))
             {
@@ -81,7 +80,7 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
     if (!player_)
         return;
 
-    Node* characterNode = player_->objectNode_;
+    Node* characterNode = player_->GetNode();
 
     // Get camera lookat dir from character yaw + pitch
     Quaternion rot = Quaternion(player_->controls_.yaw_, Vector3::UP);
@@ -89,7 +88,7 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
 
     // Third person camera: position behind the character
     Vector3 aimPoint = characterNode->GetPosition() + rot * Vector3(0.0f, 1.0f, -1.0f);
-    cameraNode_->SetPosition(aimPoint);
+//    cameraNode_->SetPosition(aimPoint);
     cameraNode_->SetRotation(dir);
 }
 
@@ -150,28 +149,39 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
     GameObject* object = objects_[objectId];
     if (object)
     {
-        object->objectNode_->Remove();
+        object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
             chatWindow_->AddLine("Player left");
         objects_.Erase(objectId);
     }
 }
 
+void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData)
+{
+    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
+        object->GetNode()->SetPosition(pos);
+    }
+}
+
 Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
     Actor* result = Actor::CreateActor(id, context_, scene_);
-    result->objectNode_->SetPosition(position);
-    result->objectNode_->SetRotation(direction);
-    result->objectNode_->SetScale(scale);
+    result->GetNode()->SetPosition(position);
+    result->GetNode()->SetRotation(direction);
+    result->GetNode()->SetScale(scale);
     return result;
 }
 
 void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
     player_ = Player::CreatePlayer(id, context_, scene_);
-    player_->objectNode_->SetPosition(position);
-    player_->objectNode_->SetRotation(direction);
-    player_->objectNode_->SetScale(scale);
+    player_->GetNode()->SetPosition(position);
+    player_->GetNode()->SetRotation(direction);
+    player_->GetNode()->SetScale(scale);
 
     cameraNode_ = player_->cameraNode_;
     SetupViewport();

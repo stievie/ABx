@@ -20,7 +20,6 @@ public:
 
     uint32_t id_;
     unsigned index_;
-    Node* objectNode_;
     ObjectType objectType_;
 };
 

@@ -8,6 +8,7 @@
 #include "DHKeys.h"
 #include "PropStream.h"
 #include "Structs.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -41,6 +42,7 @@ private:
     void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing);
     void OnDespawnObject(uint32_t id);
+    void OnObjectPos(uint32_t id, const Vec3& pos);
 public:
     Client();
     ~Client();
@@ -77,6 +79,8 @@ public:
             return pings_.back();
         return 0;
     }
+
+    void Move(uint8_t direction);
 };
 
 }

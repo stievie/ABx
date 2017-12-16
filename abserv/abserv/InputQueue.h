@@ -7,20 +7,22 @@ namespace Game {
 
 enum InputType
 {
-    InputTypeNone = 0,
-    InputTypeMove = 1,
-    InputTypeUseSkill = 2,
-    InputTypeCancelSkill = 3,
-    InputTypeAttack = 4,
-    InputTypeCancelAttack = 5,
-    InputTypeSelect = 6,
+    InputTypeNone          = 0,
+    InputTypeMove          = 1,
+    InputTypeTurn          = 2,
+    InputTypeUseSkill      = 3,
+    InputTypeCancelSkill   = 4,
+    InputTypeAttack        = 5,
+    InputTypeCancelAttack  = 6,
+    InputTypeSelect        = 7,
 };
 
 enum InputDataType
 {
-    InputDataDirection = 1,
-    InputDataSkillIndex = 2,    // The index of the skill in the skill bar
-    InputDataObjectId = 3,
+    InputDataDirection   = 1,
+    InputDataYAngle      = 2,
+    InputDataSkillIndex  = 3,    // The index of the skill in the skill bar
+    InputDataObjectId    = 4,
 };
 
 struct InputItem

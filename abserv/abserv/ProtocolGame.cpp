@@ -81,60 +81,18 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);
         break;
-    case AB::GameProtocol::PacketTypeMoveNorth:
+    case AB::GameProtocol::PacketTypeMove:
     {
         Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionNorth;
+        data[Game::InputDataDirection] = message.Get<uint8_t>();
         player_->inputs_.Add(Game::InputTypeMove, data);
         break;
     }
-    case AB::GameProtocol::PacketTypeMoveNorthEast:
+    case AB::GameProtocol::PacketTypeTurn:
     {
         Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionNorthEast;
-        player_->inputs_.Add(Game::InputTypeMove, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeMoveEast:
-    {
-        Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionEast;
-        player_->inputs_.Add(Game::InputTypeMove, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeMoveSouthEast:
-    {
-        Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionSouthEast;
-        player_->inputs_.Add(Game::InputTypeMove, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeMoveSouth:
-    {
-        Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionSouth;
-        player_->inputs_.Add(Game::InputTypeMove, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeMoveSouthWest:
-    {
-        Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionSouthWest;
-        player_->inputs_.Add(Game::InputTypeMove, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeMoveWest:
-    {
-        Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionWest;
-        player_->inputs_.Add(Game::InputTypeMove, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeMoveNorthWest:
-    {
-        Utils::VariantMap data;
-        data[Game::InputDataDirection] = Game::MoveDirectionNorthWest;
-        player_->inputs_.Add(Game::InputTypeMove, data);
+        data[Game::InputDataYAngle] = message.Get<uint16_t>();   // Deg
+        player_->inputs_.Add(Game::InputTypeTurn, data);
         break;
     }
     case AB::GameProtocol::PacketTypeUseSkill:

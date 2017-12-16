@@ -14,6 +14,7 @@
 #   define DEBUG_GAME
 #   ifdef DEBUG_GAME
 #       define DEBUG_NAVIGATION
+#       define DEBUG_PROTOCOL
 #   endif
 #   define DEGUB_ENCRYPTION
 #else

@@ -1,11 +1,6 @@
-// Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
-
 #pragma once
 
-#pragma warning( push )
-#pragma warning( disable : 4100 4305)
-#include <Urho3D/Urho3DAll.h>
-#pragma warning( pop )
+// Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 
 #include "AbEvents.h"
 

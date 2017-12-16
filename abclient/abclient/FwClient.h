@@ -1,12 +1,9 @@
 #pragma once
 
-#pragma warning( push )
-#pragma warning( disable : 4100 4305)
-#include <Urho3D/Urho3DAll.h>
-#pragma warning( pop )
 #include "Client.h"
 #include "Receiver.h"
 #include "Account.h"
+#include <AB/ProtocolCodes.h>
 
 struct EventItem
 {
@@ -42,6 +39,7 @@ public:
     void Login(const String& name, const String& pass);
     void EnterWorld(const String& charName, const String& map);
     void Logout();
+    void Move(uint8_t direction);
 
     void OnGetCharlist(const Client::CharList& chars) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
@@ -52,6 +50,8 @@ public:
     void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(uint32_t id) override;
+    void OnObjectPos(uint32_t id, const Vec3& pos) override;
+
     const Client::CharList& GetCharacters() const
     {
         return characters_;
