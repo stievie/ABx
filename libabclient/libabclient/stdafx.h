@@ -18,6 +18,11 @@
 
 #include <sys/timeb.h>
 #include <stdint.h>
+#include <string>
+#include <vector>
+#include <memory>
+#include <functional>
+#include <mutex>
 
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
@@ -33,5 +38,10 @@
 #else
 #   undef _LOGGING
 #endif
+
+#pragma warning(push)
+#pragma warning(disable: 4592)
+#include <asio.hpp>
+#pragma warning(pop)
 
 #define AB_UNUSED(P) (void)(P)

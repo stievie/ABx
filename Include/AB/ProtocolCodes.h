@@ -55,6 +55,13 @@ enum MoveDirection : uint8_t
     MoveDirectionEast = 1 << 3,
 };
 
+enum TurnDirection : uint8_t
+{
+    TurnDirectionNone = 0,
+    TurnDirectionLeft = 1,
+    TurnDirectionRight = 1 << 1
+};
+
 enum GameProtocolCodes : uint8_t
 {
     NoError = 0x00,
@@ -68,8 +75,9 @@ enum GameProtocolCodes : uint8_t
     GameSpawnObject = 0x06,
     GameLeaveObject = 0x07,
     // Object Update
-    GameObjectPosUpdate = 0x08,
-    GameObjectSelectTarget = 0x09,
+    GameObjectPositionChange = 0x08,
+    GameObjectRotationChange = 0x09,
+    GameObjectSelectTarget = 0x0A,
 };
 
 enum GameObjectType : uint8_t

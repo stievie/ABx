@@ -24,6 +24,9 @@
 #include <tchar.h>
 #include <stdint.h>
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <iostream>
 #include <cassert>
 #include <string>

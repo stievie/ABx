@@ -106,6 +106,20 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
+        case InputTypeTurn:
+        {
+            turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
+            if (turnDir_ > AB::GameProtocol::TurnDirectionNone)
+            {
+                newState = CreatureStateMoving;
+            }
+            else
+            {
+                if (creatureState_ == CreatureStateMoving)
+                    newState = CreatureStateIdle;
+            }
+            break;
+        }
         case InputTypeAttack:
             newState = CreatureStateAttacking;
             break;
@@ -159,36 +173,53 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     case CreatureStateMoving:
     {
         bool moved = false;
+        float speed = GetActualMoveSpeed();
         if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         {
-            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::UnitZ);
+            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitZ);
             moved = true;
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
         {
-            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::Back);
+            // Move slower backward
+            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::Back / 2.0f);
             moved = true;
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
         {
-            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::Left);
+            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::Left / 2.0f);
             moved = true;
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
         {
-            Move(((float)(timeElapsed) / 100.0f) * GetActualMoveSpeed(), Math::Vector3::UnitX);
+            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitX / 2.0f);
             moved = true;
         }
 
         if (moved)
         {
-            message.AddByte(AB::GameProtocol::GameObjectPosUpdate);
+            message.AddByte(AB::GameProtocol::GameObjectPositionChange);
             message.Add<uint32_t>(id_);
             message.AddVector3(transformation_.position_);
-#ifdef DEBUG_PROTOCOL
-//            LOG_DEBUG << "New Pos x " << transformation_.position_.x_ <<
-//                " y " << transformation_.position_.y_ << " z " << transformation_.position_.z_ << std::endl;
-#endif
+        }
+
+        bool turned = false;
+        if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
+        {
+            Turn(((float)(timeElapsed) / 2000.0f) * speed, Math::Vector3::Down);
+            turned = true;
+        }
+        if ((turnDir_ & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
+        {
+            Turn(((float)(timeElapsed) / 2000.0f) * speed, Math::Vector3::UnitY);
+            turned = true;
+        }
+        if (turned)
+        {
+            message.AddByte(AB::GameProtocol::GameObjectRotationChange);
+            message.Add<uint32_t>(id_);
+            Math::Vector4 rot = transformation_.rotation_.AxisAngle();
+            message.Add<float>(rot.w_);
         }
         break;
     }
@@ -237,10 +268,16 @@ void Creature::Move(float speed, const Math::Vector3& amount)
 
 void Creature::Turn(float angle, const Math::Vector3& axis)
 {
+#ifdef HAVE_DIRECTX_MATH
+    transformation_.rotation_ = DirectX::XMQuaternionNormalize(
+        DirectX::XMQuaternionMultiply(transformation_.rotation_,
+        DirectX::XMQuaternionRotationAxis(axis, angle)));
+#else
     Math::Quaternion delta = Math::Quaternion::FromAxisAngle(axis, angle);
     // Multiply current rotation by delta rotation
     transformation_.rotation_ *= delta;
     transformation_.rotation_.Normalize();
+#endif
 }
 
 }

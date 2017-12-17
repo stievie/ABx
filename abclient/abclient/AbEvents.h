@@ -12,6 +12,7 @@ namespace AbEvents
     static const StringHash E_OBJECT_SPAWN_EXISTING = StringHash("Object Spawn existing");
     static const StringHash E_OBJECT_DESPAWN = StringHash("Object Despawn");
     static const StringHash E_OBJECT_POS_UPDATE = StringHash("Object Pos Update");
+    static const StringHash E_OBJECT_ROT_UPDATE = StringHash("Object Rot Update");
 
     static const StringHash ED_MAP_NAME = StringHash("Map name");
 

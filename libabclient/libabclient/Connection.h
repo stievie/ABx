@@ -1,12 +1,5 @@
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <functional>
-#pragma warning(push)
-#pragma warning(disable: 4592)
-#include <asio.hpp>
-#pragma warning(pop)
 #include "Time.h"
 
 namespace Client {

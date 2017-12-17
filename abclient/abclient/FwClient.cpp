@@ -125,6 +125,12 @@ void FwClient::Move(uint8_t direction)
         client_.Move(direction);
 }
 
+void FwClient::Turn(uint8_t direction)
+{
+    if (loggedIn_)
+        client_.Turn(direction);
+}
+
 void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
     levelReady_ = false;
@@ -210,4 +216,12 @@ void FwClient::OnObjectPos(uint32_t id, const Vec3& pos)
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
     QueueEvent(AbEvents::E_OBJECT_POS_UPDATE, eData);
+}
+
+void FwClient::OnObjectRot(uint32_t id, float rot)
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_OBJECT_ID] = id;
+    eData[AbEvents::ED_ROTATION] = rot;
+    QueueEvent(AbEvents::E_OBJECT_ROT_UPDATE, eData);
 }

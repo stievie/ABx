@@ -45,6 +45,7 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
 void Actor::Init()
 {
     mesh_ = "/Models/Sphere.mdl";
+    materials_.Push("/Materials/Stone.xml");
     if (!mesh_.Empty())
     {
         CreateModel();

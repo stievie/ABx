@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
 #include "FwClient.h"
+#include "Account.h"
 
 CharSelectLevel::CharSelectLevel(Context* context) :
     BaseLevel(context)
@@ -11,6 +12,7 @@ CharSelectLevel::CharSelectLevel(Context* context) :
 
     // Create the UI content
     CreateUI();
+    CreateLogo();
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();

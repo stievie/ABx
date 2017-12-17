@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Protocol.h"
-#include <string>
-#include <stdint.h>
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
+#include "Receiver.h"
 
 namespace Client {
 
@@ -30,11 +29,7 @@ private:
     int64_t pingTick_;
     int lastPing_;
     bool firstRevc_;
-    EnterWorldCallback enterWorldCallback_;
     PingCallback pingCallback_;
-    SpawnCallback spawnCallback_;
-    DespawnCallback despawnCallback_;
-    ObjectPosCallback objectPosCallback;
 
     void SendLoginPacket();
 protected:
@@ -50,20 +45,20 @@ protected:
     void ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message);
     void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);
     void ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
     ~ProtocolGame();
 
+    Receiver* receiver_;
+
     void Login(const std::string& accountName, const std::string& accountPass,
-        const std::string& charName, const std::string& map, const std::string& host, uint16_t port,
-        const EnterWorldCallback& callback);
+        const std::string& charName, const std::string& map, const std::string& host, uint16_t port);
     void Logout();
     void Ping(const PingCallback& callback);
     void Move(uint8_t direction);
+    void Turn(uint8_t direction);
 
-    void SetSpawnCallback(const SpawnCallback& callback) { spawnCallback_ = callback; }
-    void SetDespawnCallback(const DespawnCallback& callback) { despawnCallback_ = callback; }
-    void SetObjectPosCallback(const ObjectPosCallback& callback) { objectPosCallback = callback; }
 };
 
 }

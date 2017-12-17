@@ -9,11 +9,11 @@ namespace Game {
 
 enum CreatureState
 {
-    CreatureStateIdle = 0,
-    CreatureStateMoving = 1,
-    CreatureStateUsingSkill = 2,
-    CreatureStateAttacking = 3,
-    CreatureStateEmote = 4,
+    CreatureStateIdle        = 0,
+    CreatureStateMoving      = 1,
+    CreatureStateUsingSkill  = 3,
+    CreatureStateAttacking   = 4,
+    CreatureStateEmote       = 5,
 };
 
 static const int MOVE_ANGLES[] = { 0, 45, 90, 135, 180, 225, 270, 315 };
@@ -24,6 +24,7 @@ class Creature : public GameObject
 private:
     void DeleteEffect(uint32_t id);
     uint8_t moveDir_;
+    uint8_t turnDir_;
 public:
     static void RegisterLua(kaguya::State& state);
 

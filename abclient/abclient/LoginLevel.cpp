@@ -43,6 +43,7 @@ void LoginLevel::ShowError(const String& message, const String& title)
 {
     BaseLevel::ShowError(message, title);
     button_->SetEnabled(true);
+    passEdit_->SetFocus(true);
     loggingIn_ = false;
 }
 

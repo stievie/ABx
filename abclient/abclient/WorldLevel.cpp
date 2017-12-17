@@ -18,6 +18,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
     SubscribeToEvent(AbEvents::E_OBJECT_DESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECT_POS_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECT_ROT_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
 }
@@ -49,16 +50,19 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
     if (player_)
     {
         // Clear previous controls
-        player_->controls_.Set(CTRL_FORWARD | CTRL_BACK | CTRL_LEFT | CTRL_RIGHT, false);
+        player_->controls_.Set(CTRL_MOVE_FORWARD | CTRL_MOVE_BACK | CTRL_MOVE_LEFT | CTRL_MOVE_RIGHT |
+            CTRL_TURN_LEFT | CTRL_TURN_RIGHT, false);
 
         // Update controls using keys
         UI* ui = GetSubsystem<UI>();
         if (!ui->GetFocusElement())
         {
-            player_->controls_.Set(CTRL_FORWARD, input->GetKeyDown(KEY_W));
-            player_->controls_.Set(CTRL_BACK, input->GetKeyDown(KEY_S));
-            player_->controls_.Set(CTRL_LEFT, input->GetKeyDown(KEY_A));
-            player_->controls_.Set(CTRL_RIGHT, input->GetKeyDown(KEY_D));
+            player_->controls_.Set(CTRL_MOVE_FORWARD, input->GetKeyDown(KEY_W));
+            player_->controls_.Set(CTRL_MOVE_BACK, input->GetKeyDown(KEY_S));
+            player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
+            player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
+            player_->controls_.Set(CTRL_TURN_LEFT, input->GetKeyDown(KEY_A));
+            player_->controls_.Set(CTRL_TURN_RIGHT, input->GetKeyDown(KEY_D));
 
             if (input->GetMouseButtonDown(4))
             {
@@ -99,7 +103,9 @@ void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
         return;
     Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
     float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
-    Quaternion direction(0.0f, rot, 0.0f);
+    Quaternion direction;
+    float deg = -rot * (180.0f / (float)M_PI);
+    direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
     Vector3 scale = eventData[AbEvents::ED_SCALE].GetVector3();
     String d = eventData[AbEvents::ED_OBJECT_DATA].GetString();
     PropReadStream data(d.CString(), d.Length());
@@ -108,7 +114,7 @@ void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
 }
 
 void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
-    const Quaternion& direction, PropReadStream& data)
+    const Quaternion& rot, PropReadStream& data)
 {
     uint8_t objectType;
     if (!data.Read<uint8_t>(objectType))
@@ -122,20 +128,20 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
     case AB::GameProtocol::ObjectTypePlayer:
         if (playerId == id)
         {
-            CreatePlayer(id, position, scale, direction);
+            CreatePlayer(id, position, scale, rot);
             object = player_;
             object->objectType_ = ObjectTypeSelf;
         }
         else
         {
-            object = CreateActor(id, position, scale, direction);
+            object = CreateActor(id, position, scale, rot);
             object->objectType_ = ObjectTypePlayer;
             if (!existing)
                 chatWindow_->AddLine("Player joined: " + position.ToString());
         }
         break;
     case AB::GameProtocol::ObjectTypeNpc:
-        object = CreateActor(id, position, scale, direction);
+        object = CreateActor(id, position, scale, rot);
         object->objectType_ = ObjectTypeNpc;
         break;
     }
@@ -164,6 +170,17 @@ void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventDa
     {
         Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
         object->GetNode()->SetPosition(pos);
+    }
+}
+
+void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData)
+{
+    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
+        object->SetYRotation(rot);
     }
 }
 

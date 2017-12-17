@@ -117,6 +117,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include</AdditionalIncludeDirectories>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>ABCLIENT_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -150,7 +151,6 @@
     <ClCompile Include="DHKeys.cpp" />
     <ClCompile Include="InputMessage.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
@@ -159,6 +159,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Utils.cpp" />

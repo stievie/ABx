@@ -53,6 +53,12 @@ void Client::OnObjectPos(uint32_t id, const Vec3& pos)
         receiver_->OnObjectPos(id, pos);
 }
 
+void Client::OnObjectRot(uint32_t id, float rot)
+{
+    if (receiver_)
+        receiver_->OnObjectRot(id, rot);
+}
+
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
@@ -60,7 +66,7 @@ void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, floa
         receiver_->OnSpawnObject(id, pos, scale, rot, data, existing);
 }
 
-void Client::OnError(const std::error_code& err)
+void Client::OnNetworkError(const std::error_code& err)
 {
     if (receiver_)
         receiver_->OnNetworkError(err);
@@ -86,7 +92,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     // 1. Login to login server -> get character list
     protoLogin_ = std::make_shared<ProtocolLogin>();
-    protoLogin_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
+    protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
     protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     protoLogin_->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
@@ -106,17 +112,9 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
-    protoGame_->SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
-    protoGame_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
-    protoGame_->SetSpawnCallback(std::bind(&Client::OnSpawnObject, this, std::placeholders::_1,
-        std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5,
-        std::placeholders::_6));
-    protoGame_->SetDespawnCallback(std::bind(&Client::OnDespawnObject, this, std::placeholders::_1));
-    protoGame_->SetObjectPosCallback(std::bind(&Client::OnObjectPos, this, std::placeholders::_1,
-        std::placeholders::_2));
+    protoGame_->receiver_ = this;
 
-    protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_,
-        std::bind(&Client::OnEnterWorld, this, std::placeholders::_1, std::placeholders::_2));
+    protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
 }
 
 void Client::Update(int timeElapsed)
@@ -137,6 +135,11 @@ void Client::Update(int timeElapsed)
 void Client::Move(uint8_t direction)
 {
     protoGame_->Move(direction);
+}
+
+void Client::Turn(uint8_t direction)
+{
+    protoGame_->Turn(direction);
 }
 
 }

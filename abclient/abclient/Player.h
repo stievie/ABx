@@ -27,10 +27,12 @@
 
 using namespace Urho3D;
 
-const int CTRL_FORWARD = 1;
-const int CTRL_BACK = 2;
-const int CTRL_LEFT = 4;
-const int CTRL_RIGHT = 8;
+const int CTRL_MOVE_FORWARD = 1;
+const int CTRL_MOVE_BACK    = 1 << 1;
+const int CTRL_MOVE_LEFT    = 1 << 2;
+const int CTRL_MOVE_RIGHT   = 1 << 4;
+const int CTRL_TURN_RIGHT   = 1 << 5;
+const int CTRL_TURN_LEFT    = 1 << 6;
 
 const float CAMERA_MIN_DIST = 0.05f;
 const float CAMERA_INITIAL_DIST = 0.5f;
@@ -58,5 +60,6 @@ public:
     SharedPtr<Node> cameraNode_;
 private:
     SharedPtr<SoundSource3D> footstepsSource_;
-    uint8_t lastDir_;
+    uint8_t lastMoveDir_;
+    uint8_t lastTurnDir_;
 };

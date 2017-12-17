@@ -4,7 +4,8 @@
 
 Player::Player(Context* context) :
     Actor(context),
-    lastDir_(AB::GameProtocol::MoveDirectionNone)
+    lastMoveDir_(AB::GameProtocol::MoveDirectionNone),
+    lastTurnDir_(AB::GameProtocol::TurnDirectionNone)
 {
 }
 
@@ -75,20 +76,31 @@ void Player::Update(float timeStep)
 
     FwClient* client = context_->GetSubsystem<FwClient>();
 
-    uint8_t dir = AB::GameProtocol::MoveDirectionNone;
-    if (controls_.IsDown(CTRL_FORWARD))
-        dir |= AB::GameProtocol::MoveDirectionNorth;
-    if (controls_.IsDown(CTRL_BACK))
-        dir |= AB::GameProtocol::MoveDirectionSouth;
-    if (controls_.IsDown(CTRL_LEFT))
-        dir |= AB::GameProtocol::MoveDirectionWest;
-    if (controls_.IsDown(CTRL_RIGHT))
-        dir |= AB::GameProtocol::MoveDirectionEast;
+    uint8_t moveDir = AB::GameProtocol::MoveDirectionNone;
+    if (controls_.IsDown(CTRL_MOVE_FORWARD))
+        moveDir |= AB::GameProtocol::MoveDirectionNorth;
+    if (controls_.IsDown(CTRL_MOVE_BACK))
+        moveDir |= AB::GameProtocol::MoveDirectionSouth;
+    if (controls_.IsDown(CTRL_MOVE_LEFT))
+        moveDir |= AB::GameProtocol::MoveDirectionWest;
+    if (controls_.IsDown(CTRL_MOVE_RIGHT))
+        moveDir |= AB::GameProtocol::MoveDirectionEast;
 
-    if (lastDir_ != dir)
+    if (lastMoveDir_ != moveDir)
     {
-        client->Move(dir);
-        lastDir_ = dir;
+        client->Move(moveDir);
+        lastMoveDir_ = moveDir;
+    }
+
+    uint8_t turnDir = AB::GameProtocol::TurnDirectionNone;
+    if (controls_.IsDown(CTRL_TURN_LEFT))
+        turnDir |= AB::GameProtocol::TurnDirectionLeft;
+    if (controls_.IsDown(CTRL_TURN_RIGHT))
+        turnDir |= AB::GameProtocol::TurnDirectionRight;
+    if (lastTurnDir_ != turnDir)
+    {
+        client->Turn(turnDir);
+        lastTurnDir_ = turnDir;
     }
 }
 

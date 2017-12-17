@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <memory>
 #include "Account.h"
 #include "Receiver.h"
 #include "DHKeys.h"
@@ -15,7 +12,7 @@ namespace Client {
 class ProtocolLogin;
 class ProtocolGame;
 
-class Client
+class Client : public Receiver
 {
 public:
     enum ClientState
@@ -34,15 +31,7 @@ private:
     std::vector<int> pings_;
     DH_KEY serverPublicKey_;
     DH_KEY sharedKey_;
-    void OnGetCharlist(const CharList& chars);
-    void OnEnterWorld(const std::string& mapName, uint32_t playerId);
-    void OnError(const std::error_code& err);
-    void OnProtocolError(uint8_t err);
     void OnPong(int ping);
-    void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-        PropReadStream& data, bool existing);
-    void OnDespawnObject(uint32_t id);
-    void OnObjectPos(uint32_t id, const Vec3& pos);
 public:
     Client();
     ~Client();
@@ -52,6 +41,17 @@ public:
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
     void Update(int timeElapsed);
+
+    // Receiver
+    void OnGetCharlist(const CharList& chars) override;
+    void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
+    void OnNetworkError(const std::error_code& err) override;
+    void OnProtocolError(uint8_t err) override;
+    void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
+        PropReadStream& data, bool existing) override;
+    void OnDespawnObject(uint32_t id) override;
+    void OnObjectPos(uint32_t id, const Vec3& pos) override;
+    void OnObjectRot(uint32_t id, float rot) override;
 
     std::string loginHost_;
     uint16_t loginPort_;
@@ -81,6 +81,7 @@ public:
     }
 
     void Move(uint8_t direction);
+    void Turn(uint8_t direction);
 };
 
 }

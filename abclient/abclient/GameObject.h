@@ -21,5 +21,7 @@ public:
     uint32_t id_;
     unsigned index_;
     ObjectType objectType_;
+
+    void SetYRotation(float rad);
 };
 

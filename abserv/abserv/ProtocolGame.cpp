@@ -91,7 +91,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeTurn:
     {
         Utils::VariantMap data;
-        data[Game::InputDataYAngle] = message.Get<uint16_t>();   // Deg
+        data[Game::InputDataDirection] = message.Get<uint8_t>();   // None | Left | Right
         player_->inputs_.Add(Game::InputTypeTurn, data);
         break;
     }

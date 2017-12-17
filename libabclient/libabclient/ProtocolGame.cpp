@@ -6,7 +6,6 @@ namespace Client {
 
 ProtocolGame::ProtocolGame() :
     Protocol(),
-    enterWorldCallback_(nullptr),
     pingCallback_(nullptr)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
@@ -19,13 +18,12 @@ ProtocolGame::~ProtocolGame()
 void ProtocolGame::Login(const std::string& accountName,
     const std::string& accountPass, const std::string& charName,
     const std::string& map,
-    const std::string& host, uint16_t port, const EnterWorldCallback& callback)
+    const std::string& host, uint16_t port)
 {
     accountName_ = accountName;
     accountPass_ = accountPass;
     charName_ = charName;
     map_ = map;
-    enterWorldCallback_ = callback;
 
     Connect(host, port);
 }
@@ -83,29 +81,42 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameLeaveObject:
             ParseLeaveObject(message);
             break;
-        case AB::GameProtocol::GameObjectPosUpdate:
+        case AB::GameProtocol::GameObjectPositionChange:
             ParseObjectPosUpdate(message);
+            break;
+        case AB::GameProtocol::GameObjectRotationChange:
+            ParseObjectRotUpdate(message);
             break;
         }
     }
 }
 
+void ProtocolGame::ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    float rot = message->Get<float>();
+    if (receiver_)
+        receiver_->OnObjectRot(objectId, rot);
+}
+
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    Vec3 newPos;
-    newPos.x = message->Get<float>();
-    newPos.y = message->Get<float>();
-    newPos.z = message->Get<float>();
-    if (objectPosCallback)
-        objectPosCallback(objectId, newPos);
+    Vec3 newPos
+    {
+        message->Get<float>(),
+        message->Get<float>(),
+        message->Get<float>()
+    };
+    if (receiver_)
+        receiver_->OnObjectPos(objectId, newPos);
 }
 
 void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    if (despawnCallback_)
-        despawnCallback_(objectId);
+    if (receiver_)
+        receiver_->OnDespawnObject(objectId);
 }
 
 void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message)
@@ -124,13 +135,13 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
     std::string data = message->GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
-    if (spawnCallback_)
-        spawnCallback_(objectId, pos, scale, rot, stream, existing);
+    if (receiver_)
+        receiver_->OnSpawnObject(objectId, pos, scale, rot, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
 {
-    int64_t tick = message->Get<int64_t>();
+    /* int64_t tick = */ message->Get<int64_t>();
 }
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
@@ -152,8 +163,8 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
 {
     std::string map = message->GetString();
     uint32_t playerId = message->Get<uint32_t>();
-    if (enterWorldCallback_)
-        enterWorldCallback_(map, playerId);
+    if (receiver_)
+        receiver_->OnEnterWorld(map, playerId);
 }
 
 void ProtocolGame::SendLoginPacket()
@@ -191,6 +202,15 @@ void ProtocolGame::Move(uint8_t direction)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeMove);
+    msg->Add<uint8_t>(direction);
+    Send(msg);
+    Connection::Run();
+}
+
+void ProtocolGame::Turn(uint8_t direction)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeTurn);
     msg->Add<uint8_t>(direction);
     Send(msg);
     Connection::Run();

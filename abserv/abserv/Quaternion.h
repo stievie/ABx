@@ -27,6 +27,14 @@ public:
         w_(w)
     {}
     Quaternion(float pitch, float yaw, float roll);
+#ifdef HAVE_DIRECTX_MATH
+    Quaternion(const DirectX::XMVECTOR& q) :
+        x_(q.m128_f32[0]),
+        y_(q.m128_f32[1]),
+        z_(q.m128_f32[2]),
+        w_(q.m128_f32[3])
+    { }
+#endif
     explicit Quaternion(const Vector3& eulerAngles) :
         Quaternion(eulerAngles.x_, eulerAngles.y_, eulerAngles.z_)
     {}

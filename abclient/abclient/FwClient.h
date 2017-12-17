@@ -40,6 +40,7 @@ public:
     void EnterWorld(const String& charName, const String& map);
     void Logout();
     void Move(uint8_t direction);
+    void Turn(uint8_t direction);
 
     void OnGetCharlist(const Client::CharList& chars) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
@@ -51,6 +52,7 @@ public:
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(uint32_t id) override;
     void OnObjectPos(uint32_t id, const Vec3& pos) override;
+    void OnObjectRot(uint32_t id, float rot) override;
 
     const Client::CharList& GetCharacters() const
     {

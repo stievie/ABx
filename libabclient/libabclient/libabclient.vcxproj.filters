@@ -86,9 +86,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Connection.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>

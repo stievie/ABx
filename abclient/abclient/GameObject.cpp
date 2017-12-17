@@ -12,3 +12,11 @@ GameObject::GameObject(Context* context) :
 GameObject::~GameObject()
 {
 }
+
+void GameObject::SetYRotation(float rad)
+{
+    Quaternion direction;
+    float deg = -rad * (180.0f / (float)M_PI);
+    direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
+    GetNode()->SetRotation(direction);
+}
