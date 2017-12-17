@@ -62,7 +62,7 @@ public:
     void RemoveEffect(uint32_t id);
     /// Move in direction of rotation
     void Move(float speed, const Math::Vector3& amount);
-    void Turn(float angle, const Math::Vector3& axis);
+    void Turn(float angle);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 

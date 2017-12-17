@@ -260,8 +260,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
     gameStatus_->Add<uint32_t>(object->id_);
     gameStatus_->AddVector3(object->transformation_.position_);
-    Math::Vector4 rot = object->transformation_.rotation_.AxisAngle();
-    gameStatus_->Add<float>(rot.w_);
+    gameStatus_->Add<float>(object->transformation_.rotation_);
     gameStatus_->AddVector3(object->transformation_.scale_);
 
     IO::PropWriteStream data;
@@ -296,8 +295,7 @@ void Game::SendSpawnAll(uint32_t playerId)
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         msg.Add<uint32_t>(o->id_);
         msg.AddVector3(o->transformation_.position_);
-        Math::Vector4 rot = o->transformation_.rotation_.AxisAngle();
-        msg.Add<float>(rot.w_);
+        msg.Add<float>(o->transformation_.rotation_);
         msg.AddVector3(o->transformation_.scale_);
         IO::PropWriteStream data;
         size_t dataSize;

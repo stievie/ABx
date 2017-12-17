@@ -31,6 +31,7 @@ Creature::Creature() :
     GameObject(),
     creatureState_(CreatureStateIdle),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
+    turnDir_(AB::GameProtocol::TurnDirectionNone),
     selectedObject_(nullptr)
 {
 }
@@ -206,20 +207,19 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         bool turned = false;
         if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
         {
-            Turn(((float)(timeElapsed) / 2000.0f) * speed, Math::Vector3::Down);
+            Turn(((float)(timeElapsed) / 2000.0f) * speed);
             turned = true;
         }
         if ((turnDir_ & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
         {
-            Turn(((float)(timeElapsed) / 2000.0f) * speed, Math::Vector3::UnitY);
+            Turn(-((float)(timeElapsed) / 2000.0f) * speed);
             turned = true;
         }
         if (turned)
         {
             message.AddByte(AB::GameProtocol::GameObjectRotationChange);
             message.Add<uint32_t>(id_);
-            Math::Vector4 rot = transformation_.rotation_.AxisAngle();
-            message.Add<float>(rot.w_);
+            message.Add<float>(transformation_.rotation_);
         }
         break;
     }
@@ -252,7 +252,7 @@ void Creature::Move(float speed, const Math::Vector3& amount)
     // 2. multiply this matrix with the moving vector and
     // 3. add the resulting vector to the current position
 #ifdef HAVE_DIRECTX_MATH
-    DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(transformation_.rotation_);
+    DirectX::XMMATRIX m = DirectX::XMMatrixRotationAxis(Math::Vector3::UnitY, -transformation_.rotation_);
     Math::Vector3 a = amount * speed;
     DirectX::XMVECTOR v = DirectX::XMVector3Transform(a, m);
     transformation_.position_.x_ += v.m128_f32[0];
@@ -266,12 +266,13 @@ void Creature::Move(float speed, const Math::Vector3& amount)
 #endif
 }
 
-void Creature::Turn(float angle, const Math::Vector3& axis)
+void Creature::Turn(float angle)
 {
+    transformation_.rotation_ += angle;
 #ifdef HAVE_DIRECTX_MATH
-    transformation_.rotation_ = DirectX::XMQuaternionNormalize(
+/*    transformation_.rotation_ = DirectX::XMQuaternionNormalize(
         DirectX::XMQuaternionMultiply(transformation_.rotation_,
-        DirectX::XMQuaternionRotationAxis(axis, angle)));
+        DirectX::XMQuaternionRotationAxis(axis, angle))); */
 #else
     Math::Quaternion delta = Math::Quaternion::FromAxisAngle(axis, angle);
     // Multiply current rotation by delta rotation

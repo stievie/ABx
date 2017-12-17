@@ -11,17 +11,20 @@ class Transformation
 public:
     Vector3 position_;
     Vector3 scale_;
-    Quaternion rotation_;
+    /// Angle in rad Y axis
+    float rotation_;
 
     Transformation() :
         position_(Vector3(0.0f, 0.0f, 0.0f)),
         scale_(Vector3(1.0f, 1.0f, 1.0f)),
-        rotation_(Quaternion::Identity)
+        rotation_(0.0f)
     {}
     ~Transformation() {};
 
-    void LookAt(const Vector3& position, const Vector3& up);
-    void LookAt(const Vector3& position);
+    Quaternion GetQuaternion() const
+    {
+        return Quaternion::FromAxisAngle(Vector3::UnitY, rotation_);
+    }
 
     DirectX::XMMATRIX GetMatrix() const;
 };
