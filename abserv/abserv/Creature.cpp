@@ -29,7 +29,7 @@ void Creature::RegisterLua(kaguya::State& state)
 
 Creature::Creature() :
     GameObject(),
-    creatureState_(CreatureStateIdle),
+    creatureState_(AB::GameProtocol::CreatureStateIdle),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone),
     selectedObject_(nullptr)
@@ -86,7 +86,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Skill* skill = nullptr;
 
     InputItem input;
-    CreatureState newState = creatureState_;
+    AB::GameProtocol::CreatureState newState = creatureState_;
 
     // Multiple inputs of the same type overwrite previous
     while (inputs_.Get(input))
@@ -98,12 +98,14 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
             if (moveDir_ > AB::GameProtocol::MoveDirectionNone)
             {
-                newState = CreatureStateMoving;
+                newState = AB::GameProtocol::CreatureStateMoving;
             }
             else
             {
-                if (creatureState_ == CreatureStateMoving)
-                    newState = CreatureStateIdle;
+                // Reset to Idle when neither moving nor turning
+                if (creatureState_ == AB::GameProtocol::CreatureStateMoving &&
+                    turnDir_ == AB::GameProtocol::TurnDirectionNone)
+                    newState = AB::GameProtocol::CreatureStateIdle;
             }
             break;
         }
@@ -112,17 +114,18 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
             if (turnDir_ > AB::GameProtocol::TurnDirectionNone)
             {
-                newState = CreatureStateMoving;
+                newState = AB::GameProtocol::CreatureStateMoving;
             }
             else
             {
-                if (creatureState_ == CreatureStateMoving)
-                    newState = CreatureStateIdle;
+                if (creatureState_ == AB::GameProtocol::CreatureStateMoving &&
+                    moveDir_ == AB::GameProtocol::MoveDirectionNone)
+                    newState = AB::GameProtocol::CreatureStateIdle;
             }
             break;
         }
         case InputTypeAttack:
-            newState = CreatureStateAttacking;
+            newState = AB::GameProtocol::CreatureStateAttacking;
             break;
         case InputTypeUseSkill:
         {
@@ -133,7 +136,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 // These do not change the state
                 if (!skill->IsType(SkillTypeStance) && !skill->IsType(SkillTypeFlashEnchantment)
                     && !skill->IsType(SkillTypeShout))
-                    newState = CreatureStateUsingSkill;
+                    newState = AB::GameProtocol::CreatureStateUsingSkill;
             }
             break;
         }
@@ -151,8 +154,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             break;
         }
         case InputTypeCancelSkill:
+            if (creatureState_ == AB::GameProtocol::CreatureStateUsingSkill)
+                newState = AB::GameProtocol::CreatureStateIdle;
             break;
         case InputTypeCancelAttack:
+            if (creatureState_ == AB::GameProtocol::CreatureStateAttacking)
+                newState = AB::GameProtocol::CreatureStateIdle;
             break;
         case InputTypeNone:
             break;
@@ -162,16 +169,18 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     if (newState != creatureState_)
     {
         creatureState_ = newState;
-#ifdef DEBUG_PROTOCOL
-//        LOG_DEBUG << "New State " << static_cast<int>(creatureState_) << std::endl;
-#endif
+        /* TODO
+        message.AddByte(AB::GameProtocol::GameObjectStateChange);
+        message.Add<uint32_t>(id_);
+        message.AddByte(creatureState_);
+        */
     }
 
     switch (creatureState_)
     {
-    case CreatureStateIdle:
+    case AB::GameProtocol::CreatureStateIdle:
         break;
-    case CreatureStateMoving:
+    case AB::GameProtocol::CreatureStateMoving:
     {
         bool moved = false;
         float speed = GetActualMoveSpeed();
@@ -223,11 +232,11 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         break;
     }
-    case CreatureStateUsingSkill:
+    case AB::GameProtocol::CreatureStateUsingSkill:
         break;
-    case CreatureStateAttacking:
+    case AB::GameProtocol::CreatureStateAttacking:
         break;
-    case CreatureStateEmote:
+    case AB::GameProtocol::CreatureStateEmote:
         break;
     }
 
@@ -259,7 +268,7 @@ void Creature::Move(float speed, const Math::Vector3& amount)
     transformation_.position_.y_ += v.m128_f32[1];
     transformation_.position_.z_ += v.m128_f32[2];
 #else
-    Matrix4 m = Matrix4::CreateFromQuaternion(transformation_.rotation_);
+    Matrix4 m = Matrix4::CreateFromQuaternion(transformation_.GetQuaternion());
     Vector3 a = amount * speed;
     Vector3 v = m * a;
     transformation_.position_ += v;
@@ -269,16 +278,11 @@ void Creature::Move(float speed, const Math::Vector3& amount)
 void Creature::Turn(float angle)
 {
     transformation_.rotation_ += angle;
-#ifdef HAVE_DIRECTX_MATH
-/*    transformation_.rotation_ = DirectX::XMQuaternionNormalize(
-        DirectX::XMQuaternionMultiply(transformation_.rotation_,
-        DirectX::XMQuaternionRotationAxis(axis, angle))); */
-#else
-    Math::Quaternion delta = Math::Quaternion::FromAxisAngle(axis, angle);
-    // Multiply current rotation by delta rotation
-    transformation_.rotation_ *= delta;
-    transformation_.rotation_.Normalize();
-#endif
+    // Angle should be >= 0 and < 2 * PI
+    if (transformation_.rotation_ >= 2.0f * (float)M_PI)
+        transformation_.rotation_ -= 2.0f * (float)M_PI;
+    else if (transformation_.rotation_ < 0.0f)
+        transformation_.rotation_ += 2.0f * (float)M_PI;
 }
 
 }

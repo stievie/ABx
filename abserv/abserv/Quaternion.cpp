@@ -204,14 +204,6 @@ float Quaternion::Length() const
     return sqrt(w_*w_ + x_*x_ + y_*y_ + z_*z_);
 }
 
-/*void Quaternion::Limit()
-{
-    Vector3 euler = EulerAngles();
-    if (euler.y_ >= (float)M_PI || euler.y_ < -((float)M_PI))
-        euler.y_ = (euler.y_ - (long)(euler.y_ / (float)M_PI) * (float)M_PI);
-    *this = Quaternion(euler);
-} */
-
 float Quaternion::LengthSqr() const
 {
     return (w_*w_ + x_*x_ + y_*y_ + z_*z_);

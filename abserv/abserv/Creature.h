@@ -7,15 +7,6 @@
 
 namespace Game {
 
-enum CreatureState
-{
-    CreatureStateIdle        = 0,
-    CreatureStateMoving      = 1,
-    CreatureStateUsingSkill  = 3,
-    CreatureStateAttacking   = 4,
-    CreatureStateEmote       = 5,
-};
-
 static const int MOVE_ANGLES[] = { 0, 45, 90, 135, 180, 225, 270, 315 };
 
 /// Player, NPC, Monster some such
@@ -67,7 +58,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     InputQueue inputs_;
-    CreatureState creatureState_;
+    AB::GameProtocol::CreatureState creatureState_;
     GameObject* selectedObject_;
 
     EffectList effects_;

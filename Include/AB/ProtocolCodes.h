@@ -62,6 +62,15 @@ enum TurnDirection : uint8_t
     TurnDirectionRight = 1 << 1
 };
 
+enum CreatureState : uint8_t
+{
+    CreatureStateIdle = 0,
+    CreatureStateMoving = 1,
+    CreatureStateUsingSkill = 3,
+    CreatureStateAttacking = 4,
+    CreatureStateEmote = 5,
+};
+
 enum GameProtocolCodes : uint8_t
 {
     NoError = 0x00,
@@ -78,6 +87,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectPositionChange = 0x08,
     GameObjectRotationChange = 0x09,
     GameObjectSelectTarget = 0x0A,
+    GameObjectStateChange = 0x0B,
 };
 
 enum GameObjectType : uint8_t
