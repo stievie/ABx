@@ -44,7 +44,7 @@ void Game::Start()
         lastUpdate_ = 0;
         SetState(GameStateRunning);
         // Games shouldn't start at the same time
-        uint32_t delay = Utils::Random::Instance.Get<uint32_t>(5, 100);
+        uint32_t delay = Utils::Random::Instance.Get<uint32_t>(0, 50);
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(delay, std::bind(&Game::Update, shared_from_this()))
         );
@@ -78,7 +78,7 @@ void Game::Update()
     }
 
     // Then call Lua Update function
-//    luaState_["onUpdate"](this, delta);
+    luaState_["onUpdate"](this, delta);
 
     // Send game status to players
     SendStatus();
