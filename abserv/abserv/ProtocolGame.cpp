@@ -95,6 +95,13 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         player_->inputs_.Add(Game::InputTypeTurn, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeSetDirection:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
+        player_->inputs_.Add(Game::InputTypeDirection, data);
+        break;
+    }
     case AB::GameProtocol::PacketTypeUseSkill:
     {
         Utils::VariantMap data;

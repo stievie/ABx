@@ -46,6 +46,7 @@ protected:
     void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);
     void ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectStateChange(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
     ~ProtocolGame();
@@ -58,6 +59,7 @@ public:
     void Ping(const PingCallback& callback);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
+    void SetDirection(float rad);
 
 };
 

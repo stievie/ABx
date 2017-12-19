@@ -7,7 +7,8 @@
 #include "LevelManager.h"
 
 WorldLevel::WorldLevel(Context* context) :
-    BaseLevel(context)
+    BaseLevel(context),
+    rmbDown_(false)
 {
 }
 
@@ -19,18 +20,44 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECT_DESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECT_POS_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
     SubscribeToEvent(AbEvents::E_OBJECT_ROT_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECT_SATE_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
+    SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
 }
 
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
+    Input* input = GetSubsystem<Input>();
+    if (input->GetMouseButtonDown(4))
+    {
+        rmbDown_ = true;
+        input->SetMouseMode(MM_RELATIVE);
+        mouseDownPos_ = input->GetMousePosition();
+    }
 }
 
 void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
 {
     using namespace MouseButtonUp;
+    Input* input = GetSubsystem<Input>();
+    if (rmbDown_)
+    {
+        rmbDown_ = false;
+        input->SetMousePosition(mouseDownPos_);
+        input->SetMouseMode(MM_ABSOLUTE);
+    }
+}
+
+void WorldLevel::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
+{
+    using namespace MouseWheel;
+    if (player_)
+    {
+        int delta = eventData[P_WHEEL].GetInt();
+        player_->SetCameraDist(delta < 0);
+    }
 }
 
 void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
@@ -61,13 +88,20 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             player_->controls_.Set(CTRL_MOVE_BACK, input->GetKeyDown(KEY_S));
             player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
             player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
-            player_->controls_.Set(CTRL_TURN_LEFT, input->GetKeyDown(KEY_A));
-            player_->controls_.Set(CTRL_TURN_RIGHT, input->GetKeyDown(KEY_D));
 
             if (input->GetMouseButtonDown(4))
             {
+                player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
+                    input->GetKeyDown(KEY_A));
+                player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
+                    input->GetKeyDown(KEY_D));
                 player_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
                 player_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
+            }
+            else
+            {
+                player_->controls_.Set(CTRL_TURN_LEFT, input->GetKeyDown(KEY_A));
+                player_->controls_.Set(CTRL_TURN_RIGHT, input->GetKeyDown(KEY_D));
             }
 
             // Limit pitch
@@ -80,20 +114,6 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
 {
     UNREFERENCED_PARAMETER(eventType);
     UNREFERENCED_PARAMETER(eventData);
-
-    if (!player_)
-        return;
-
-    Node* characterNode = player_->GetNode();
-
-    // Get camera lookat dir from character yaw + pitch
-    Quaternion rot = Quaternion(player_->controls_.yaw_, Vector3::UP);
-    Quaternion dir = rot * Quaternion(player_->controls_.pitch_, Vector3::RIGHT);
-
-    // Third person camera: position behind the character
-    Vector3 aimPoint = characterNode->GetPosition() + rot * Vector3(0.0f, 1.0f, -1.0f);
-//    cameraNode_->SetPosition(aimPoint);
-    cameraNode_->SetRotation(dir);
 }
 
 void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
@@ -181,6 +201,17 @@ void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventDa
     {
         float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
         object->SetYRotation(rot);
+    }
+}
+
+void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData)
+{
+    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt());
+        object->creatureState_ = state;
     }
 }
 

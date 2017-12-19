@@ -4,7 +4,8 @@
 
 GameObject::GameObject(Context* context) :
     LogicComponent(context),
-    objectType_(ObjectTypeStatic)
+    objectType_(ObjectTypeStatic),
+    creatureState_(AB::GameProtocol::CreatureStateIdle)
 {
 }
 

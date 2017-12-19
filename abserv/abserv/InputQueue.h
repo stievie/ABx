@@ -15,6 +15,7 @@ enum InputType
     InputTypeAttack        = 5,
     InputTypeCancelAttack  = 6,
     InputTypeSelect        = 7,
+    InputTypeDirection     = 8,
 };
 
 enum InputDataType

@@ -41,6 +41,7 @@ public:
     void Logout();
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
+    void SetDirection(float rad);
 
     void OnGetCharlist(const Client::CharList& chars) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
@@ -53,6 +54,7 @@ public:
     void OnDespawnObject(uint32_t id) override;
     void OnObjectPos(uint32_t id, const Vec3& pos) override;
     void OnObjectRot(uint32_t id, float rot) override;
+    void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
 
     const Client::CharList& GetCharacters() const
     {

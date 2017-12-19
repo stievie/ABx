@@ -131,6 +131,12 @@ void FwClient::Turn(uint8_t direction)
         client_.Turn(direction);
 }
 
+void FwClient::SetDirection(float rad)
+{
+    if (loggedIn_)
+        client_.SetDirection(rad);
+}
+
 void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
     levelReady_ = false;
@@ -224,4 +230,12 @@ void FwClient::OnObjectRot(uint32_t id, float rot)
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_ROTATION] = rot;
     QueueEvent(AbEvents::E_OBJECT_ROT_UPDATE, eData);
+}
+
+void FwClient::OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state)
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_OBJECT_ID] = id;
+    eData[AbEvents::ED_OBJECT_STATE] = static_cast<unsigned>(state);
+    QueueEvent(AbEvents::E_OBJECT_SATE_UPDATE, eData);
 }

@@ -5,7 +5,8 @@
 Player::Player(Context* context) :
     Actor(context),
     lastMoveDir_(AB::GameProtocol::MoveDirectionNone),
-    lastTurnDir_(AB::GameProtocol::TurnDirectionNone)
+    lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
+    cameraDistance_(CAMERA_INITIAL_DIST)
 {
 }
 
@@ -34,7 +35,7 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
     adjustNode->CreateComponent<AnimationController>();
 
     // Create camera
-    result->cameraNode_ = result->GetNode()->CreateChild("CameraNode");
+    result->cameraNode_ = scene->CreateChild("CameraNode");
     result->cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
     Camera* camera = result->cameraNode_->CreateComponent<Camera>();
     camera->SetFarClip(300.0f);
@@ -88,6 +89,13 @@ void Player::Update(float timeStep)
 
     if (lastMoveDir_ != moveDir)
     {
+        if (creatureState_ == AB::GameProtocol::CreatureStateIdle && lastYaw_ != controls_.yaw_)
+        {
+            float rad = 2.0f * (float)M_PI * (-controls_.yaw_ / 360.0f);
+            client->SetDirection(rad);
+            lastYaw_ = controls_.yaw_;
+        }
+
         client->Move(moveDir);
         lastMoveDir_ = moveDir;
     }
@@ -102,5 +110,42 @@ void Player::Update(float timeStep)
         client->Turn(turnDir);
         lastTurnDir_ = turnDir;
     }
+}
+
+void Player::SetYRotation(float rad)
+{
+    Actor::SetYRotation(rad);
+    // Update camera rotation
+    float deg = -rad * (180.0f / (float)M_PI);
+    controls_.yaw_ = deg;
+    lastYaw_ = deg;
+}
+
+void Player::SetCameraDist(bool increase)
+{
+    if (increase)
+        cameraDistance_ += 0.5f;
+    else
+        cameraDistance_ -= 0.5f;
+    cameraDistance_ = Clamp(cameraDistance_, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+}
+
+void Player::PostUpdate(float timeStep)
+{
+    Node* characterNode = GetNode();
+
+    // Get camera lookat dir from character yaw + pitch
+    Quaternion rot = Quaternion(controls_.yaw_, Vector3::UP);
+    Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
+
+    // Third person camera: position behind the character
+    Vector3 aimPoint = characterNode->GetPosition() + rot * Vector3(0.0f, 2.0f, 0.0f);
+
+    Vector3 rayDir = dir * Vector3::BACK;
+    float rayDistance = cameraDistance_;
+    rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+
+    cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
+    cameraNode_->SetRotation(dir);
 }
 

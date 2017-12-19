@@ -54,6 +54,7 @@ public:
     /// Move in direction of rotation
     void Move(float speed, const Math::Vector3& amount);
     void Turn(float angle);
+    void SetDirection(float worldAngle);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
@@ -75,6 +76,8 @@ public:
     float skillSpeedFactor_ = 1.0f;
     /// Effects may influence the attack speed
     float attackSpeedFactor_ = 1.0f;
+
+    bool Serialize(IO::PropWriteStream& stream) override;
 };
 
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <AB/ProtocolCodes.h>
+
 enum ObjectType
 {
     ObjectTypeStatic = 0,
@@ -21,7 +23,8 @@ public:
     uint32_t id_;
     unsigned index_;
     ObjectType objectType_;
+    AB::GameProtocol::CreatureState creatureState_;
 
-    void SetYRotation(float rad);
+    virtual void SetYRotation(float rad);
 };
 

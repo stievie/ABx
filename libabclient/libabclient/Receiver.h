@@ -6,6 +6,7 @@
 #include "Account.h"
 #include "PropStream.h"
 #include "Structs.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Client {
 
@@ -19,8 +20,9 @@ public:
     virtual void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(uint32_t id) = 0;
-    virtual void OnObjectPos(uint32_t, const Vec3& pos) = 0;
-    virtual void OnObjectRot(uint32_t, float rot) = 0;
+    virtual void OnObjectPos(uint32_t id, const Vec3& pos) = 0;
+    virtual void OnObjectRot(uint32_t id, float rot) = 0;
+    virtual void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) = 0;
 };
 
 }

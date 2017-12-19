@@ -84,6 +84,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     GameObject::Update(timeElapsed, message);
 
     Skill* skill = nullptr;
+    bool turned = false;
 
     InputItem input;
     AB::GameProtocol::CreatureState newState = creatureState_;
@@ -124,6 +125,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
+        case InputTypeDirection:
+        {
+            float worldAngle = input.data[InputDataDirection].GetFloat();
+            SetDirection(worldAngle);
+            turned = true;
+        }
         case InputTypeAttack:
             newState = AB::GameProtocol::CreatureStateAttacking;
             break;
@@ -161,19 +168,15 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             if (creatureState_ == AB::GameProtocol::CreatureStateAttacking)
                 newState = AB::GameProtocol::CreatureStateIdle;
             break;
-        case InputTypeNone:
-            break;
         }
     }
 
     if (newState != creatureState_)
     {
         creatureState_ = newState;
-        /* TODO
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);
         message.AddByte(creatureState_);
-        */
     }
 
     switch (creatureState_)
@@ -205,7 +208,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitX / 2.0f);
             moved = true;
         }
-
         if (moved)
         {
             message.AddByte(AB::GameProtocol::GameObjectPositionChange);
@@ -213,7 +215,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             message.AddVector3(transformation_.position_);
         }
 
-        bool turned = false;
         if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
         {
             Turn(((float)(timeElapsed) / 2000.0f) * speed);
@@ -224,12 +225,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             Turn(-((float)(timeElapsed) / 2000.0f) * speed);
             turned = true;
         }
-        if (turned)
-        {
-            message.AddByte(AB::GameProtocol::GameObjectRotationChange);
-            message.Add<uint32_t>(id_);
-            message.Add<float>(transformation_.rotation_);
-        }
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:
@@ -238,6 +233,14 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         break;
     case AB::GameProtocol::CreatureStateEmote:
         break;
+    }
+
+    // The rotation may change in 2 ways: Turn and SetWorldDirection
+    if (turned)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectRotationChange);
+        message.Add<uint32_t>(id_);
+        message.Add<float>(transformation_.rotation_);
     }
 
     skills_.Update(timeElapsed);
@@ -250,6 +253,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         effect->Update(timeElapsed);
     }
+}
+
+bool Creature::Serialize(IO::PropWriteStream& stream)
+{
+    if (!GameObject::Serialize(stream))
+        return false;
+    return true;
 }
 
 void Creature::Move(float speed, const Math::Vector3& amount)
@@ -278,6 +288,16 @@ void Creature::Move(float speed, const Math::Vector3& amount)
 void Creature::Turn(float angle)
 {
     transformation_.rotation_ += angle;
+    // Angle should be >= 0 and < 2 * PI
+    if (transformation_.rotation_ >= 2.0f * (float)M_PI)
+        transformation_.rotation_ -= 2.0f * (float)M_PI;
+    else if (transformation_.rotation_ < 0.0f)
+        transformation_.rotation_ += 2.0f * (float)M_PI;
+}
+
+void Creature::SetDirection(float worldAngle)
+{
+    transformation_.rotation_ = worldAngle;
     // Angle should be >= 0 and < 2 * PI
     if (transformation_.rotation_ >= 2.0f * (float)M_PI)
         transformation_.rotation_ -= 2.0f * (float)M_PI;

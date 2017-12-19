@@ -59,6 +59,12 @@ void Client::OnObjectRot(uint32_t id, float rot)
         receiver_->OnObjectRot(id, rot);
 }
 
+void Client::OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state)
+{
+    if (receiver_)
+        receiver_->OnObjectStateChange(id, state);
+}
+
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
@@ -140,6 +146,11 @@ void Client::Move(uint8_t direction)
 void Client::Turn(uint8_t direction)
 {
     protoGame_->Turn(direction);
+}
+
+void Client::SetDirection(float rad)
+{
+    protoGame_->SetDirection(rad);
 }
 
 }

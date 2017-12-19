@@ -25,14 +25,18 @@ protected:
     void CreateUI() override;
     void SubscribeToEvents() override;
     void Update(StringHash eventType, VariantMap& eventData) override;
-    void PostUpdate(StringHash eventType, VariantMap & eventData) override;
+    void PostUpdate(StringHash eventType, VariantMap& eventData) override;
 private:
+    IntVector2 mouseDownPos_;
+    bool rmbDown_;
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
+    void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
     void HandleObjectSpawn(StringHash eventType, VariantMap& eventData);
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
     void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
     void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
         const Quaternion& rot, PropReadStream& data);
 };

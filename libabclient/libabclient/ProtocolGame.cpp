@@ -87,6 +87,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectRotationChange:
             ParseObjectRotUpdate(message);
             break;
+        case AB::GameProtocol::GameObjectStateChange:
+            ParseObjectStateChange(message);
+            break;
         }
     }
 }
@@ -97,6 +100,14 @@ void ProtocolGame::ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& mes
     float rot = message->Get<float>();
     if (receiver_)
         receiver_->OnObjectRot(objectId, rot);
+}
+
+void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
+    if (receiver_)
+        receiver_->OnObjectStateChange(objectId, state);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
@@ -212,6 +223,15 @@ void ProtocolGame::Turn(uint8_t direction)
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeTurn);
     msg->Add<uint8_t>(direction);
+    Send(msg);
+    Connection::Run();
+}
+
+void ProtocolGame::SetDirection(float rad)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetDirection);
+    msg->Add<float>(rad);
     Send(msg);
     Connection::Run();
 }

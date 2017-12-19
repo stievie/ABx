@@ -13,6 +13,7 @@ namespace AbEvents
     static const StringHash E_OBJECT_DESPAWN = StringHash("Object Despawn");
     static const StringHash E_OBJECT_POS_UPDATE = StringHash("Object Pos Update");
     static const StringHash E_OBJECT_ROT_UPDATE = StringHash("Object Rot Update");
+    static const StringHash E_OBJECT_SATE_UPDATE = StringHash("Object Sate Update");
 
     static const StringHash ED_MAP_NAME = StringHash("Map name");
 
@@ -21,4 +22,5 @@ namespace AbEvents
     static const StringHash ED_POS = StringHash("Position");
     static const StringHash ED_ROTATION = StringHash("Rotation");
     static const StringHash ED_SCALE = StringHash("Scale");
+    static const StringHash ED_OBJECT_STATE = StringHash("Object State");
 }

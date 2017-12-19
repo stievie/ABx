@@ -34,9 +34,9 @@ const int CTRL_MOVE_RIGHT   = 1 << 4;
 const int CTRL_TURN_RIGHT   = 1 << 5;
 const int CTRL_TURN_LEFT    = 1 << 6;
 
-const float CAMERA_MIN_DIST = 0.05f;
-const float CAMERA_INITIAL_DIST = 0.5f;
-const float CAMERA_MAX_DIST = 2.0f;
+const float CAMERA_MIN_DIST = 0.0f;
+const float CAMERA_INITIAL_DIST = 5.0f;
+const float CAMERA_MAX_DIST = 30.0f;
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
 class Player : public Actor
@@ -58,8 +58,14 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
     SharedPtr<Node> cameraNode_;
+    float cameraDistance_;
+    void SetYRotation(float rad) override;
+    void SetCameraDist(bool increase);
+protected:
+    void PostUpdate(float timeStep) override;
 private:
     SharedPtr<SoundSource3D> footstepsSource_;
     uint8_t lastMoveDir_;
     uint8_t lastTurnDir_;
+    float lastYaw_;
 };

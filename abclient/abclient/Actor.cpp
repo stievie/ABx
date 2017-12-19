@@ -12,7 +12,7 @@ Actor::Actor(Context* context) :
     model_(nullptr)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
-    SetUpdateEventMask(USE_UPDATE);
+    SetUpdateEventMask(USE_UPDATE | USE_POSTUPDATE);
 }
 
 Actor::~Actor()

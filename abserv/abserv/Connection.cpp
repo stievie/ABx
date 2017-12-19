@@ -20,10 +20,6 @@ Connection::~Connection()
 
 bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 {
-#ifdef DEBUG_NET
-//    LOG_DEBUG << "Sending message with size " << message->GetMessageLength() << std::endl;
-#endif
-
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     if (state_ != State::Open)
@@ -52,7 +48,7 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
     }
     catch (asio::system_error& e)
     {
-        LOG_ERROR << "Network " << e.what() << std::endl;
+        LOG_ERROR << "Network " << e.code() << " " << e.what() << std::endl;
     }
 }
 
@@ -126,7 +122,7 @@ void Connection::Accept()
     }
     catch (asio::system_error& e)
     {
-        LOG_ERROR << "Network " << e.what() << std::endl;
+        LOG_ERROR << "Network " << e.code() << " " << e.what() << std::endl;
         Close(true);
     }
 }
@@ -135,15 +131,13 @@ void Connection::ParseHeader(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
-#ifdef DEBUG_NET
-//    LOG_DEBUG << std::endl;
-#endif
 
     if (error)
     {
 #ifdef DEBUG_NET
         // Maybe disconnect
-        LOG_ERROR << "Network " << error.value() << " " << error.message() << std::endl;
+        if (error.value() != 995)
+            LOG_ERROR << "Network " << error.value() << " " << error.message() << std::endl;
 #endif
         Close(true);
         return;
@@ -158,7 +152,7 @@ void Connection::ParseHeader(const asio::error_code& error)
 
     uint32_t timePassed = std::max<uint32_t>(1, static_cast<uint32_t>(time(nullptr) - timeConnected_) + 1);
     ++packetsSent_;
-    uint32_t maxPackets = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
+    static uint32_t maxPackets = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     if ((packetsSent_ / timePassed) > maxPackets)
     {
         LOG_ERROR << Utils::ConvertIPToString(GetIP()) << " disconnected for exceeding packet per second limit." << std::endl;
@@ -206,9 +200,6 @@ void Connection::ParsePacket(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
-#ifdef DEBUG_NET
-//    LOG_DEBUG << std::endl;
-#endif
 
     if (error)
     {
@@ -226,7 +217,8 @@ void Connection::ParsePacket(const asio::error_code& error)
     uint32_t checksum;;
     int32_t len = msg_.GetMessageLength() - msg_.GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
-        checksum = Utils::AdlerChecksum((uint8_t*)(msg_.GetBuffer() + msg_.GetReadPos() + NetworkMessage::ChecksumLength), len);
+        checksum = Utils::AdlerChecksum((uint8_t*)(msg_.GetBuffer() + msg_.GetReadPos() +
+            NetworkMessage::ChecksumLength), len);
     else
         checksum = 0;
     uint32_t recvChecksum = msg_.Get<uint32_t>();
@@ -273,7 +265,7 @@ void Connection::ParsePacket(const asio::error_code& error)
     }
     catch (asio::system_error& e)
     {
-        LOG_ERROR << "Network " << e.what() << std::endl;
+        LOG_ERROR << "Network " << e.code() << " " << e.what() << std::endl;
         Close(true);
     }
 }
@@ -312,7 +304,7 @@ void Connection::CloseSocket()
         }
         catch (asio::system_error& e)
         {
-            LOG_ERROR << "Network " << e.what() << std::endl;
+            LOG_ERROR << "Network " << e.code() << " " << e.what() << std::endl;
         }
     }
 }
