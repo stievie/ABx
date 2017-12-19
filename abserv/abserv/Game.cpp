@@ -43,8 +43,10 @@ void Game::Start()
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
         SetState(GameStateRunning);
-        Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
+        // Games shouldn't start at the same time
+        uint32_t delay = Utils::Random::Instance.Get<uint32_t>(5, 100);
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(delay, std::bind(&Game::Update, shared_from_this()))
         );
     }
 }
@@ -63,10 +65,11 @@ void Game::Update()
         luaState_["onStart"](this);
 
     // Dispatcher Thread
-    static int64_t prevTime = Utils::AbTick();
-    lastUpdate_ = Utils::AbTick();
-    uint32_t delta = static_cast<uint32_t>(lastUpdate_ - prevTime);
-    prevTime = lastUpdate_;
+    int64_t tick = Utils::AbTick();
+    if (lastUpdate_ == 0)
+        lastUpdate_ = tick - 50;
+    uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
+    lastUpdate_ = tick;
 
     // First Update all objects
     for (const auto& o : objects_)
@@ -75,7 +78,7 @@ void Game::Update()
     }
 
     // Then call Lua Update function
-    luaState_["onUpdate"](this, delta);
+//    luaState_["onUpdate"](this, delta);
 
     // Send game status to players
     SendStatus();
@@ -117,7 +120,7 @@ void Game::SendStatus()
 {
     if (gameStatus_->GetSize() == 0)
     {
-        // If there is nothing, at least send a hardbeat
+        // If there is nothing, at least send a heard beat
         gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
         gameStatus_->Add<int64_t>(Utils::AbTick());
     }

@@ -42,7 +42,6 @@ public:
 
     void Add(InputType type, const Utils::VariantMap& data)
     {
-        std::lock_guard<std::mutex> lockClass(lock_);
         queue_.push({ type, data });
     }
     bool Get(InputItem& item)
@@ -50,7 +49,10 @@ public:
         if (queue_.empty())
             return false;
         item = queue_.front();
-        queue_.pop();
+        {
+            std::lock_guard<std::mutex> lockClass(lock_);
+            queue_.pop();
+        }
         return true;
     }
 };
