@@ -124,9 +124,9 @@ void Player::SetYRotation(float rad)
 void Player::SetCameraDist(bool increase)
 {
     if (increase)
-        cameraDistance_ += 0.5f;
+        cameraDistance_ += cameraDistance_ / 10.0f;
     else
-        cameraDistance_ -= 0.5f;
+        cameraDistance_ -= cameraDistance_ / 10.0f;
     cameraDistance_ = Clamp(cameraDistance_, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
 }
 
@@ -139,7 +139,8 @@ void Player::PostUpdate(float timeStep)
     Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 
     // Third person camera: position behind the character
-    Vector3 aimPoint = characterNode->GetPosition() + rot * Vector3(0.0f, 2.0f, 0.0f);
+    static const Vector3 CAM_POS(0.0f, 2.0f, 0.0f);
+    Vector3 aimPoint = characterNode->GetPosition() + rot * CAM_POS;
 
     Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;

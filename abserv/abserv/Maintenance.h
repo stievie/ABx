@@ -12,6 +12,7 @@ private:
     MaintenanceStatus status_;
     void CleanCacheTask();
     void CleanGamesTask();
+    void CleanPlayersTask();
 public:
     Maintenance() :
         status_(StatusTerminated)

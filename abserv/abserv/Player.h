@@ -55,8 +55,15 @@ public:
     {
         return AB::GameProtocol::ObjectTypePlayer;
     }
+    uint32_t GetInactiveTime() const
+    {
+        if (lastPing_ == 0)
+            return 0;
+        return static_cast<uint32_t>(Utils::AbTick() - lastPing_);
+    }
 
     void Logout();
+    void Ping();
 
     PlayerData data_;
     time_t loginTime_;

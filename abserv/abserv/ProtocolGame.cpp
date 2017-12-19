@@ -76,7 +76,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     switch (recvByte)
     {
     case AB::GameProtocol::PacketTypePing:
-        AddGameTask(&Game::Game::Ping, player_->id_);
+        AddPlayerTask(&Game::Player::Ping);
         break;
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);

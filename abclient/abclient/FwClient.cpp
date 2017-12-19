@@ -11,21 +11,21 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
     switch (err)
     {
     case AB::Errors::IPBanned:
-        return "Your IP Address is banned";
+        return "Your IP Address is banned.";
     case AB::Errors::TooManyConnectionsFromThisIP:
-        return "Too many connection from this IP";
+        return "Too many connection from this IP.";
     case AB::Errors::InvalidAccountName:
-        return "Invalid Account name";
+        return "Invalid Account name.";
     case AB::Errors::InvalidPassword:
-        return "Invalid password";
+        return "Invalid password.";
     case AB::Errors::NamePasswordMismatch:
-        return "Name or password wrong";
+        return "Name or password wrong.";
     case AB::Errors::AlreadyLoggedIn:
-        return "You are already logged in";
+        return "You are already logged in.";
     case AB::Errors::ErrorLoadingCharacter:
-        return "Error loading character";
+        return "Error loading character.";
     case AB::Errors::AccountBanned:
-        return "Your account is banned";
+        return "Your account is banned.";
     case AB::Errors::WrongProtocolVersion:
         return "Outdated client. Please update the game client.";
     default:

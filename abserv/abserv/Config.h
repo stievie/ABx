@@ -45,3 +45,7 @@
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
 // Clean games all 10 sec
 #define CLEAN_GAMES_MS (1000 * 10)
+// Remove inactive players every 30sec
+#define CLEAN_PLAYERS_MS (1000 * 30)
+// Remove player from PlayerManager after this time
+#define PLAYER_INACTIVE_TIME_KICK (10 * 1000)

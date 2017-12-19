@@ -56,8 +56,6 @@ public:
     void Init() override;
     void LoadXML(const XMLElement& source);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
-    /// Movement controls. Assigned by the main program each frame.
-    Controls controls_;
     /// Model file name
     String mesh_;
     Vector<String> materials_;

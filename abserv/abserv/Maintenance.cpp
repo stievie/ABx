@@ -3,6 +3,7 @@
 #include "Scheduler.h"
 #include "DataProvider.h"
 #include "GameManager.h"
+#include "PlayerManager.h"
 
 #include "DebugNew.h"
 
@@ -30,6 +31,17 @@ void Maintenance::CleanGamesTask()
     }
 }
 
+void Maintenance::CleanPlayersTask()
+{
+    Game::PlayerManager::Instance.CleanPlayers();
+    if (status_ == StatusRunnig)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
+        );
+    }
+}
+
 void Maintenance::Run()
 {
     {
@@ -41,6 +53,9 @@ void Maintenance::Run()
     );
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(CLEAN_GAMES_MS, std::bind(&Maintenance::CleanGamesTask, this))
+    );
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
     );
 }
 

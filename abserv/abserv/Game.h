@@ -98,7 +98,6 @@ public:
     void QueueLeaveObject(uint32_t objectId);
 
     /// From GameProtocol (Dispatcher Thread)
-    void Ping(uint32_t playerId);
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
 

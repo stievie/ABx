@@ -136,18 +136,6 @@ void Game::ResetStatus()
     gameStatus_ = std::make_shared<Net::NetworkMessage>();
 }
 
-void Game::Ping(uint32_t playerId)
-{
-    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
-    if (!player)
-        return;
-
-    player->lastPing_ = Utils::AbTick();
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::GamePong);
-    player->client_->WriteToOutput(msg);
-}
-
 Math::Vector3 Game::GetSpawnPoint()
 {
     // TODO: ...

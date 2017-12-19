@@ -32,6 +32,7 @@ public:
     uint32_t GetPlayerId(const std::string& name);
     std::shared_ptr<Player> CreatePlayer(const std::string& name, std::shared_ptr<Net::ProtocolGame> client);
     void RemovePlayer(uint32_t playerId);
+    void CleanPlayers();
 
     static PlayerManager Instance;
 };

@@ -71,4 +71,25 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
     }
 }
 
+void PlayerManager::CleanPlayers()
+{
+    if (players_.size() == 0)
+        return;
+
+    // Delete all assets that are only owned by the cache
+    auto i = players_.begin();
+    while ((i = std::find_if(i, players_.end(), [](const auto& current) -> bool
+    {
+        // Disconnect after 10sec
+        return current.second->GetInactiveTime() > PLAYER_INACTIVE_TIME_KICK;
+    })) != players_.end())
+    {
+        std::shared_ptr<Player> p = (*i).second;
+        i++;
+        std::string name = p->GetName();
+        // Calls PlayerManager::RemovePlayer()
+        p->Logout();
+   }
+}
+
 }
