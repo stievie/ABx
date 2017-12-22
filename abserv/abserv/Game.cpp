@@ -43,10 +43,8 @@ void Game::Start()
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
         SetState(GameStateRunning);
-        // Games shouldn't start at the same time
-        uint32_t delay = Utils::Random::Instance.Get<uint32_t>(0, 50);
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(delay, std::bind(&Game::Update, shared_from_this()))
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
         );
     }
 }
@@ -67,7 +65,7 @@ void Game::Update()
     // Dispatcher Thread
     int64_t tick = Utils::AbTick();
     if (lastUpdate_ == 0)
-        lastUpdate_ = tick - 50;
+        lastUpdate_ = tick - NETWORK_TICK;
     uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
     lastUpdate_ = tick;
 

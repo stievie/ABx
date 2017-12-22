@@ -6,6 +6,7 @@
 #define MyAppPublisher "Trill.Net"
 #define MyAppURL "https://trill.net/"
 #define MyAppExeName "fw.exe"
+#define _SrcPath AddBackslash(SourcePath) + ".."
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -21,13 +22,18 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\LICENSE.txt
-OutputDir=c:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\
+LicenseFile={#_SrcPath}\LICENSE.txt
+OutputDir={#_SrcPath}\Setup\
 OutputBaseFilename=fwclient-setup
-SetupIconFile=C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\abclient\abclient.ico
+SetupIconFile={#_SrcPath}\abclient\abclient.ico
 Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64 
+WizardImageFile=C:\Program Files (x86)\Inno Setup 5\WizModernImage-IS.bmp
+WizardSmallImageFile=C:\Program Files (x86)\Inno Setup 5\WizModernSmallImage-IS.bmp
+UninstallDisplayIcon={app}\fw.exe
+; mystandard=C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin\signtool.exe sign /a /n $qTrill.net$q /t http://timestamp.comodoca.com/authenticode /d $qFW$q $f
+SignTool=mystandard
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -36,12 +42,12 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\AbData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\Autoload.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\CoreData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\Setup\Data.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\abclient\bin\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#_SrcPath}\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#_SrcPath}\Setup\AbData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#_SrcPath}\Setup\Autoload.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#_SrcPath}\Setup\CoreData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#_SrcPath}\Setup\Data.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#_SrcPath}\bin\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
