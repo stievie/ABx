@@ -502,6 +502,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="Player.h" />

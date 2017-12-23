@@ -31,6 +31,8 @@ private:
     std::vector<int> pings_;
     DH_KEY serverPublicKey_;
     DH_KEY sharedKey_;
+    int lastRun_;
+    int lastPing_;
     void OnPong(int ping);
 public:
     Client();

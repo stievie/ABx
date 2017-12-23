@@ -84,8 +84,10 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
         UI* ui = GetSubsystem<UI>();
         if (!ui->GetFocusElement())
         {
-            player_->controls_.Set(CTRL_MOVE_FORWARD, input->GetKeyDown(KEY_W));
-            player_->controls_.Set(CTRL_MOVE_BACK, input->GetKeyDown(KEY_S));
+            player_->controls_.Set(CTRL_MOVE_FORWARD, input->GetKeyDown(KEY_W) ||
+                input->GetKeyDown(KEY_UP));
+            player_->controls_.Set(CTRL_MOVE_BACK, input->GetKeyDown(KEY_S) ||
+                input->GetKeyDown(KEY_DOWN));
             player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
             player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
 
@@ -100,8 +102,10 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             }
             else
             {
-                player_->controls_.Set(CTRL_TURN_LEFT, input->GetKeyDown(KEY_A));
-                player_->controls_.Set(CTRL_TURN_RIGHT, input->GetKeyDown(KEY_D));
+                player_->controls_.Set(CTRL_TURN_LEFT, input->GetKeyDown(KEY_A) ||
+                    input->GetKeyDown(KEY_LEFT));
+                player_->controls_.Set(CTRL_TURN_RIGHT, input->GetKeyDown(KEY_D) ||
+                    input->GetKeyDown(KEY_RIGHT));
             }
 
             // Limit pitch
@@ -210,8 +214,7 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
     GameObject* object = objects_[objectId];
     if (object)
     {
-        AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt());
-        object->creatureState_ = state;
+        object->creatureState_ = static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt());
     }
 }
 

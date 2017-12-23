@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "FwClient.h"
+#include "MathUtils.h"
 
 Player::Player(Context* context) :
     Actor(context),
@@ -78,37 +79,52 @@ void Player::Update(float timeStep)
     FwClient* client = context_->GetSubsystem<FwClient>();
 
     uint8_t moveDir = AB::GameProtocol::MoveDirectionNone;
-    if (controls_.IsDown(CTRL_MOVE_FORWARD))
-        moveDir |= AB::GameProtocol::MoveDirectionNorth;
-    if (controls_.IsDown(CTRL_MOVE_BACK))
-        moveDir |= AB::GameProtocol::MoveDirectionSouth;
-    if (controls_.IsDown(CTRL_MOVE_LEFT))
-        moveDir |= AB::GameProtocol::MoveDirectionWest;
-    if (controls_.IsDown(CTRL_MOVE_RIGHT))
-        moveDir |= AB::GameProtocol::MoveDirectionEast;
+    if (!(controls_.IsDown(CTRL_MOVE_FORWARD) && controls_.IsDown(CTRL_MOVE_BACK)))
+    {
+        if (controls_.IsDown(CTRL_MOVE_FORWARD))
+            moveDir |= AB::GameProtocol::MoveDirectionNorth;
+        if (controls_.IsDown(CTRL_MOVE_BACK))
+            moveDir |= AB::GameProtocol::MoveDirectionSouth;
+    }
+    if (!(controls_.IsDown(CTRL_MOVE_LEFT) && controls_.IsDown(CTRL_MOVE_RIGHT)))
+    {
+        if (controls_.IsDown(CTRL_MOVE_LEFT))
+            moveDir |= AB::GameProtocol::MoveDirectionWest;
+        if (controls_.IsDown(CTRL_MOVE_RIGHT))
+            moveDir |= AB::GameProtocol::MoveDirectionEast;
+    }
 
     if (lastMoveDir_ != moveDir)
     {
         if (creatureState_ == AB::GameProtocol::CreatureStateIdle && lastYaw_ != controls_.yaw_)
         {
-            float rad = 2.0f * (float)M_PI * (-controls_.yaw_ / 360.0f);
-            client->SetDirection(rad);
+            // Set initial move dir when start moving to camera rotation
+            client->SetDirection(DegToRad(controls_.yaw_));
             lastYaw_ = controls_.yaw_;
         }
-
         client->Move(moveDir);
         lastMoveDir_ = moveDir;
     }
 
     uint8_t turnDir = AB::GameProtocol::TurnDirectionNone;
-    if (controls_.IsDown(CTRL_TURN_LEFT))
-        turnDir |= AB::GameProtocol::TurnDirectionLeft;
-    if (controls_.IsDown(CTRL_TURN_RIGHT))
-        turnDir |= AB::GameProtocol::TurnDirectionRight;
+    if (!(controls_.IsDown(CTRL_TURN_LEFT) & controls_.IsDown(CTRL_TURN_RIGHT)))
+    {
+        if (controls_.IsDown(CTRL_TURN_LEFT))
+            turnDir |= AB::GameProtocol::TurnDirectionLeft;
+        if (controls_.IsDown(CTRL_TURN_RIGHT))
+            turnDir |= AB::GameProtocol::TurnDirectionRight;
+    }
     if (lastTurnDir_ != turnDir)
     {
         client->Turn(turnDir);
         lastTurnDir_ = turnDir;
+    }
+
+    if (creatureState_ == AB::GameProtocol::CreatureStateMoving && fabs(lastYaw_ - controls_.yaw_) > 1.0f)
+    {
+        // Set initial move dir when start moving to camera rotation
+        client->SetDirection(DegToRad(controls_.yaw_));
+        lastYaw_ = controls_.yaw_;
     }
 }
 
@@ -116,9 +132,15 @@ void Player::SetYRotation(float rad)
 {
     Actor::SetYRotation(rad);
     // Update camera rotation
-    float deg = -rad * (180.0f / (float)M_PI);
-    controls_.yaw_ = deg;
-    lastYaw_ = deg;
+    Input* input = GetSubsystem<Input>();
+
+    if (!input->GetMouseButtonDown(4))
+    {
+        // Yaw is already set by the client
+        float deg = RadToDeg(GetYRotation());
+        controls_.yaw_ = deg;
+    }
+    lastYaw_ = controls_.yaw_;
 }
 
 void Player::SetCameraDist(bool increase)

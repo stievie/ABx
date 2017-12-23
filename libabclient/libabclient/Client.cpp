@@ -13,7 +13,9 @@ Client::Client() :
     gamePort_(2749),
     protoLogin_(nullptr),
     protoGame_(nullptr),
-    state_(StateDisconnected)
+    state_(StateDisconnected),
+    lastRun_(0),
+    lastPing_(0)
 {
     Crypto::DHKeys::Instance.GenerateKeys();
 }
@@ -125,17 +127,21 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
 
 void Client::Update(int timeElapsed)
 {
-    static int lastTime = 0;
-    if (lastTime >= 1000)
+    if (lastPing_ >= 1000)
     {
         if (protoGame_)
         {
             protoGame_->Ping(std::bind(&Client::OnPong, this, std::placeholders::_1));
         }
-        lastTime = 0;
+        lastPing_ = 0;
     }
-    lastTime += timeElapsed;
-    Connection::Run();
+    if (lastRun_ >= 16)
+    {
+        Connection::Run();
+        lastRun_ = 0;
+    }
+    lastRun_ += timeElapsed;
+    lastPing_ += timeElapsed;
 }
 
 void Client::Move(uint8_t direction)

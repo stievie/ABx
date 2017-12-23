@@ -26,5 +26,6 @@ public:
     AB::GameProtocol::CreatureState creatureState_;
 
     virtual void SetYRotation(float rad);
+    float GetYRotation();
 };
 

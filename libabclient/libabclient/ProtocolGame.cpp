@@ -206,7 +206,6 @@ void ProtocolGame::Ping(const PingCallback& callback)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
     Send(msg);
-    Connection::Run();
 }
 
 void ProtocolGame::Move(uint8_t direction)
@@ -215,7 +214,6 @@ void ProtocolGame::Move(uint8_t direction)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeMove);
     msg->Add<uint8_t>(direction);
     Send(msg);
-    Connection::Run();
 }
 
 void ProtocolGame::Turn(uint8_t direction)
@@ -224,7 +222,6 @@ void ProtocolGame::Turn(uint8_t direction)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeTurn);
     msg->Add<uint8_t>(direction);
     Send(msg);
-    Connection::Run();
 }
 
 void ProtocolGame::SetDirection(float rad)
@@ -233,7 +230,6 @@ void ProtocolGame::SetDirection(float rad)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetDirection);
     msg->Add<float>(rad);
     Send(msg);
-    Connection::Run();
 }
 
 }

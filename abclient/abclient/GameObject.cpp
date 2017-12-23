@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GameObject.h"
-
+#include "MathUtils.h"
 
 GameObject::GameObject(Context* context) :
     LogicComponent(context),
@@ -9,7 +9,6 @@ GameObject::GameObject(Context* context) :
 {
 }
 
-
 GameObject::~GameObject()
 {
 }
@@ -17,7 +16,12 @@ GameObject::~GameObject()
 void GameObject::SetYRotation(float rad)
 {
     Quaternion direction;
-    float deg = -rad * (180.0f / (float)M_PI);
+    float deg = RadToDeg(rad);
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
     GetNode()->SetRotation(direction);
+}
+
+float GameObject::GetYRotation()
+{
+    return DegToRad(GetNode()->GetRotation().YawAngle());
 }

@@ -85,6 +85,8 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     Skill* skill = nullptr;
     bool turned = false;
+    bool newDirection = false;
+    float worldAngle = 0.0f;
 
     InputItem input;
     AB::GameProtocol::CreatureState newState = creatureState_;
@@ -127,9 +129,9 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         case InputTypeDirection:
         {
-            float worldAngle = input.data[InputDataDirection].GetFloat();
-            SetDirection(worldAngle);
-            turned = true;
+            worldAngle = input.data[InputDataDirection].GetFloat();
+            newDirection = true;
+            break;
         }
         case InputTypeAttack:
             newState = AB::GameProtocol::CreatureStateAttacking;
@@ -173,6 +175,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     if (newState != creatureState_)
     {
+//        LOG_DEBUG << "New state " << (int)newState << std::endl;
         creatureState_ = newState;
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);
@@ -215,14 +218,22 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             message.AddVector3(transformation_.position_);
         }
 
-        if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
+        if (!newDirection)
         {
-            Turn(((float)(timeElapsed) / 2000.0f) * speed);
-            turned = true;
+            if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
+            {
+                Turn(((float)(timeElapsed) / 2000.0f) * speed);
+                turned = true;
+            }
+            if ((turnDir_ & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
+            {
+                Turn(-((float)(timeElapsed) / 2000.0f) * speed);
+                turned = true;
+            }
         }
-        if ((turnDir_ & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
+        else
         {
-            Turn(-((float)(timeElapsed) / 2000.0f) * speed);
+            SetDirection(worldAngle);
             turned = true;
         }
         break;
