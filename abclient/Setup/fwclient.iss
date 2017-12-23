@@ -30,10 +30,10 @@ Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64 
 WizardImageFile=C:\Program Files (x86)\Inno Setup 5\WizModernImage-IS.bmp
-WizardSmallImageFile=C:\Program Files (x86)\Inno Setup 5\WizModernSmallImage-IS.bmp
+WizardSmallImageFile={#_SrcPath}\Setup\trill-55.bmp
 UninstallDisplayIcon={app}\fw.exe
-; mystandard=C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin\signtool.exe sign /a /n $qTrill.net$q /t http://timestamp.comodoca.com/authenticode /d $qFW$q $f
-SignTool=mystandard
+; trillnet=C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin\signtool.exe sign /a /n $qTrill.net$q /t http://timestamp.comodoca.com/authenticode /d $qFW$q $f
+;SignTool=trillnet
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
