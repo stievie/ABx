@@ -2,12 +2,12 @@
 
 #include "BaseLevel.h"
 
-class LoginLevel : public BaseLevel
+class CreateAccountLevel : public BaseLevel
 {
-    URHO3D_OBJECT(LoginLevel, BaseLevel);
+    URHO3D_OBJECT(CreateAccountLevel, BaseLevel);
 public:
     /// Construct.
-    LoginLevel(Context* context);
+    CreateAccountLevel(Context* context);
     void CreateCamera();
     void ShowError(const String& message, const String& title = "Error") override;
 
@@ -16,16 +16,17 @@ protected:
     virtual void CreateUI();
 
 private:
-    bool loggingIn_;
     LineEdit* nameEdit_;
     LineEdit* passEdit_;
+    LineEdit* emailEdit_;
+    LineEdit* accKeyEdit_;
     Button* button_;
-    Button* createAccountButton_;
+    void DoCreateAccount();
+    void DoCancel();
     void CreateScene();
-    void HandleLoginClicked(StringHash eventType, VariantMap& eventData);
-    void HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData);
+    void HandleCreateClicked(StringHash eventType, VariantMap& eventData);
+    void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyUp(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-    void DoLogin();
 };

@@ -7,7 +7,9 @@ namespace Client {
 
 ProtocolLogin::ProtocolLogin() :
     Protocol(),
-    charlistCallback(nullptr)
+    charlistCallback(nullptr),
+    createAccCallback_(nullptr),
+    action_(ActionUnknown)
 {
     checksumEnabled_ = ProtocolLogin::UseChecksum;
 }
@@ -18,6 +20,21 @@ void ProtocolLogin::Login(std::string& host, uint16_t port,
     accountName_ = account;
     password_ = password;
     charlistCallback = callback;
+    action_ = ActionLogin;
+    Connect(host, port);
+}
+
+void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
+    const std::string& account, const std::string& password,
+    const std::string& email, const std::string& accKey,
+    const CreateAccountCallback& callback)
+{
+    accountName_ = account;
+    password_ = password;
+    email_ = email;
+    accKey_ = accKey;
+    createAccCallback_ = callback;
+    action_ = ActionCreateAccount;
     Connect(host, port);
 }
 
@@ -40,8 +57,23 @@ void ProtocolLogin::SendLoginPacket()
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(1);   // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+    msg->Add<uint8_t>(AB::LoginProtocol::LoginLogin);
     msg->AddString(accountName_);
     msg->AddString(password_);
+    Send(msg);
+}
+
+void ProtocolLogin::SendCreateAccountPacket()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+    msg->Add<uint16_t>(1);   // Client OS
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+    msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateAccount);
+    msg->AddString(accountName_);
+    msg->AddString(password_);
+    msg->AddString(email_);
+    msg->AddString(accKey_);
     Send(msg);
 }
 
@@ -83,6 +115,17 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         ProtocolError(error);
         break;
     }
+    case AB::LoginProtocol::CreateAccountError:
+    {
+        uint8_t error = message->Get<uint8_t>();
+        if (createAccCallback_)
+            createAccCallback_(false, error);
+        break;
+    }
+    case AB::LoginProtocol::CreateAccountSuccess:
+        if (createAccCallback_)
+            createAccCallback_(true, 0);
+        break;
     }
 }
 
@@ -91,7 +134,16 @@ void ProtocolLogin::OnConnect()
     firstRecv_ = true;
     Protocol::OnConnect();
 
-    SendLoginPacket();
+    switch (action_)
+    {
+    case ActionLogin:
+        SendLoginPacket();
+        break;
+    case ActionCreateAccount:
+        break;
+    default:
+        return;
+    }
     Receive();
 }
 

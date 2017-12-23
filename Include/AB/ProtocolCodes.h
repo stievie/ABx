@@ -27,18 +27,32 @@ enum ErrorCodes : uint8_t
     ErrorLoadingCharacter = 0x07,
     AccountBanned = 0x08,
     CannotEnterGame = 0x09,
-    WrongProtocolVersion = 0x10,
+    WrongProtocolVersion = 0x0a,
+    InvalidEmail = 0x0b,
+    InvalidAccKey = 0x0c,
+    UnknownError = 0x0d,
+    AccountNameExists = 0x0e,
+    InvalidAccountKey = 0x0f,
 };
 
 }
 
 namespace LoginProtocol {
 
+enum LoginPacketTypes : uint8_t
+{
+    LoginLogin = 0x01,
+    LoginCreateAccount = 0x02,
+};
+
+/// Returned by the server
 enum LoginProtocolCodes : uint8_t
 {
     LoginError = 0x01,
     CharacterList = 0x02,                   // Returns character list
     KeyExchange = 0x03,
+    CreateAccountError = 0x04,
+    CreateAccountSuccess = 0x05,
 };
 
 }

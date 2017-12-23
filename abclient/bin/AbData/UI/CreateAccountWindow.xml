@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Name" value="CreateAccount" />
+	<attribute name="Size" value="400 405" />
+	<attribute name="Min Anchor" value="0.5 0.5" />
+	<attribute name="Max Anchor" value="0.5 0.5" />
+	<attribute name="Pivot" value="0.5 0.5" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Spacing" value="10" />
+	<attribute name="Layout Border" value="10 10 10 10" />
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Border" value="0 0 0 5" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Create Account" />
+		</element>
+	</element>
+	<element type="Text">
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Text" value="Login Name" />
+	</element>
+	<element type="LineEdit">
+		<attribute name="Name" value="NameEdit" />
+		<attribute name="Min Size" value="0 30" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text" internal="true" style="none">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Size" value="4 15" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+		</element>
+	</element>
+	<element type="Text">
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Text" value="Password" />
+	</element>
+	<element type="LineEdit">
+		<attribute name="Name" value="PassEdit" />
+		<attribute name="Min Size" value="0 30" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Echo Character" value="42" />
+		<element type="Text" internal="true" style="none">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Size" value="4 15" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+		</element>
+	</element>
+	<element type="Text">
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Text" value="Email" />
+	</element>
+	<element type="LineEdit">
+		<attribute name="Name" value="EmailEdit" />
+		<attribute name="Min Size" value="0 30" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text" internal="true" style="none">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Size" value="4 15" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+		</element>
+	</element>
+	<element type="Text">
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Text" value="Account Key" />
+	</element>
+	<element type="LineEdit">
+		<attribute name="Name" value="AccountKeyEdit" />
+		<attribute name="Min Size" value="0 30" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text" internal="true" style="none">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+			<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Size" value="4 15" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="CreateButton" />
+		<attribute name="Min Size" value="0 35" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Create" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="CancelButton" />
+		<attribute name="Min Size" value="0 35" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Cancel" />
+		</element>
+	</element>
+</element>

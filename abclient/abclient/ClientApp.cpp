@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "Options.h"
 #include "ChatWindow.h"
+#include "CreateAccountLevel.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -46,6 +47,7 @@ ClientApp::ClientApp(Context* context) :
 {
     // Register levels
     context->RegisterFactory<LoginLevel>();
+    context->RegisterFactory<CreateAccountLevel>();
     context->RegisterFactory<CharSelectLevel>();
     context->RegisterFactory<CharCreateLevel>();
     context->RegisterFactory<OutpostLevel>();

@@ -18,12 +18,24 @@ public:
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
     typedef std::function<void(const CharList& chars)> CharlistCallback;
+    typedef std::function<void(bool success, uint8_t error)> CreateAccountCallback;
 private:
+    enum ProtocolAction
+    {
+        ActionUnknown,
+        ActionLogin,
+        ActionCreateAccount
+    };
+    ProtocolAction action_;
     std::string accountName_;
     std::string password_;
+    std::string email_;
+    std::string accKey_;
     bool firstRecv_;
     CharlistCallback charlistCallback;
+    CreateAccountCallback createAccCallback_;
     void SendLoginPacket();
+    void SendCreateAccountPacket();
     void SendKeyExchange();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
@@ -36,6 +48,10 @@ public:
     void Login(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,
         const CharlistCallback& callback);
+    void CreateAccount(std::string& host, uint16_t port,
+        const std::string& account, const std::string& password,
+        const std::string& email, const std::string& accKey,
+        const CreateAccountCallback& callback);
 
     std::string gameHost_;
     uint16_t gamePort_;

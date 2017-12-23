@@ -25,7 +25,11 @@ public:
 private:
     void DisconnectClient(uint8_t error);
     void SendCharacterList(const std::string& accountName, const std::string& password);
+    void CreateAccount(const std::string& accountName, const std::string& password,
+        const std::string& email, const std::string& accKey);
     void SendKeyExchange();
+    void HandleLoginPacket(NetworkMessage& message);
+    void HandleCreateAccountPacket(NetworkMessage& message);
 };
 
 }

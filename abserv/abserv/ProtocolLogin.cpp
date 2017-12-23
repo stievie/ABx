@@ -39,13 +39,32 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
         return;
     }
 
+    uint8_t recvByte = message.GetByte();
+    switch (recvByte)
+    {
+    case AB::LoginProtocol::LoginLogin:
+        HandleLoginPacket(message);
+        break;
+    case AB::LoginProtocol::LoginCreateAccount:
+        HandleCreateAccountPacket(message);
+        break;
+    }
+
+}
+
+void ProtocolLogin::SendKeyExchange()
+{
+
+}
+
+void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
+{
     std::string accountName = message.GetString();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-
     std::string password = message.GetString();
     if (password.empty())
     {
@@ -62,9 +81,40 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     );
 }
 
-void ProtocolLogin::SendKeyExchange()
+void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 {
-
+    std::string accountName = message.GetString();
+    if (accountName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountName);
+        return;
+    }
+    std::string password = message.GetString();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+    std::string email = message.GetString();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidEmail);
+        return;
+    }
+    std::string accKey = message.GetString();
+    if (accKey.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccKey);
+        return;
+    }
+    std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(
+            &ProtocolLogin::CreateAccount, thisPtr,
+            accountName, password,
+            email, accKey
+        ))
+    );
 }
 
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
@@ -103,6 +153,39 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
     Send(output);
     Disconnect();
+}
+
+void ProtocolLogin::CreateAccount(const std::string& accountName, const std::string& password,
+    const std::string& email, const std::string& accKey)
+{
+    DB::IOAccount::CreateAccountResult res = DB::IOAccount::CreateAccount(accountName, password, email, accKey);
+
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+
+    if (res == DB::IOAccount::ResultOK)
+    {
+        output->AddByte(AB::LoginProtocol::CreateAccountSuccess);
+    }
+    else
+    {
+        output->AddByte(AB::LoginProtocol::CreateAccountError);
+        switch (res)
+        {
+        case DB::IOAccount::ResultNameExists:
+            output->AddByte(AB::Errors::AccountNameExists);
+            break;
+        case DB::IOAccount::ResultInvalidAccountKey:
+            output->AddByte(AB::Errors::InvalidAccountKey);
+            break;
+        default:
+            output->AddByte(AB::Errors::UnknownError);
+            break;
+        }
+    }
+
+    Send(output);
+    Disconnect();
+
 }
 
 void ProtocolLogin::DisconnectClient(uint8_t error)

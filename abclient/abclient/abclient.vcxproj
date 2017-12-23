@@ -475,6 +475,7 @@
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
+    <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LevelManager.cpp" />
@@ -498,6 +499,7 @@
     <ClInclude Include="AbEvents.h" />
     <ClInclude Include="BaseLevel.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="FwClient.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="LevelManager.h" />

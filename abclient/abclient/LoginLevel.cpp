@@ -53,71 +53,17 @@ void LoginLevel::CreateUI()
     BaseLevel::CreateUI();
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile *chatFile = cache->GetResource<XMLFile>("UI/LoginWindow.xml");
+    uiRoot_->LoadChildXML(chatFile->GetRoot());
 
-    Window* window_login = new Window(context_);
-    uiRoot_->AddChild(window_login);
-    window_login->SetSize(400, 300);
-    window_login->SetPosition(0, -40);
-    window_login->SetLayoutMode(LM_VERTICAL);
-    window_login->SetLayoutSpacing(10);
-    window_login->SetLayoutBorder(IntRect(10, 10, 10, 10));
-    window_login->SetAlignment(HA_CENTER, VA_CENTER);
-    window_login->SetName("Login");
-    window_login->SetStyleAuto();
-
-    {
-        Text* t = new Text(context_);
-        t->SetAlignment(HA_CENTER, VA_TOP);
-        t->SetName("NameText");
-        t->SetText("Name");
-        t->SetStyle("Text");
-        window_login->AddChild(t);
-    }
-    nameEdit_ = new LineEdit(context_);
-    nameEdit_->SetName("NameEdit");
-    nameEdit_->SetMinHeight(30);
-    nameEdit_->SetStyleAuto();
-    nameEdit_->SetCursorBlinkRate(1.2f);
-    window_login->AddChild(nameEdit_);
-
-    {
-        Text* t = new Text(context_);
-        t->SetAlignment(HA_CENTER, VA_TOP);
-        t->SetName("PassText");
-        t->SetText("Password");
-        t->SetStyle("Text");
-        window_login->AddChild(t);
-    }
-    passEdit_ = new LineEdit(context_);
-    passEdit_->SetName("PassEdit");
-    passEdit_->SetMinHeight(30);
-    passEdit_->SetStyleAuto();
-    passEdit_->SetEchoCharacter('*');
-    passEdit_->SetCursorBlinkRate(1.0f);
-    window_login->AddChild(passEdit_);
-
-    button_ = new Button(context_);
-    button_->SetLayoutMode(LM_FREE);
-    button_->SetMinHeight(40);
-    button_->SetName("LoginButton");    // not required
-    button_->SetStyleAuto();
-    button_->SetOpacity(1.0f);     // transparency
-    {
-        // buttons don't have a text by itself, a text needs to be added as a child
-        Text* t = new Text(context_);
-        t->SetAlignment(HA_CENTER, VA_CENTER);
-        t->SetName("LoginText");
-        t->SetText("Login");
-        t->SetStyle("Text");
-        button_->AddChild(t);
-    }
+    nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
+    passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));
+    button_ = dynamic_cast<Button*>(uiRoot_->GetChild("LoginButton", true));
     button_->SetEnabled(false);
-
-    window_login->AddChild(button_);
-
     nameEdit_->SetFocus(true);
-
     SubscribeToEvent(button_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleLoginClicked));
+    createAccountButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateAccountButton", true));
+    SubscribeToEvent(createAccountButton_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleCreateAccountClicked));
 }
 
 void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -135,13 +81,6 @@ void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
 void LoginLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
 {
-    String name = nameEdit_->GetText();
-    String pass = passEdit_->GetText();
-    button_->SetEnabled(!name.Empty() && !pass.Empty());
-}
-
-void LoginLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
-{
     if (loggingIn_)
         return;
 
@@ -156,6 +95,13 @@ void LoginLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     int key = eventData[P_KEY].GetInt();
     if (key == KEY_RETURN)
         DoLogin();
+}
+
+void LoginLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+{
+    String name = nameEdit_->GetText();
+    String pass = passEdit_->GetText();
+    button_->SetEnabled(!name.Empty() && !pass.Empty());
 }
 
 void LoginLevel::DoLogin()
@@ -174,6 +120,13 @@ void LoginLevel::DoLogin()
 void LoginLevel::HandleLoginClicked(StringHash eventType, VariantMap& eventData)
 {
     DoLogin();
+}
+
+void LoginLevel::HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData)
+{
+    VariantMap& e = GetEventDataMap();
+    e[AbEvents::E_SET_LEVEL] = "CreateAccountLevel";
+    SendEvent(AbEvents::E_SET_LEVEL, e);
 }
 
 void LoginLevel::SubscribeToEvents()
