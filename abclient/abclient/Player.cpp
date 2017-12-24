@@ -128,13 +128,13 @@ void Player::Update(float timeStep)
     }
 }
 
-void Player::SetYRotation(float rad)
+void Player::SetYRotation(float rad, bool updateYaw)
 {
-    Actor::SetYRotation(rad);
+    Actor::SetYRotation(rad, updateYaw);
     // Update camera rotation
     Input* input = GetSubsystem<Input>();
 
-    if (!input->GetMouseButtonDown(4))
+    if (updateYaw)
     {
         // Yaw is already set by the client
         float deg = RadToDeg(GetYRotation());

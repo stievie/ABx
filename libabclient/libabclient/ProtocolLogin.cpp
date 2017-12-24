@@ -110,21 +110,15 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         break;
     }
     case AB::LoginProtocol::LoginError:
+    case AB::LoginProtocol::CreateAccountError:
     {
         uint8_t error = message->Get<uint8_t>();
         ProtocolError(error);
         break;
     }
-    case AB::LoginProtocol::CreateAccountError:
-    {
-        uint8_t error = message->Get<uint8_t>();
-        if (createAccCallback_)
-            createAccCallback_(false, error);
-        break;
-    }
     case AB::LoginProtocol::CreateAccountSuccess:
         if (createAccCallback_)
-            createAccCallback_(true, 0);
+            createAccCallback_();
         break;
     }
 }
@@ -140,6 +134,7 @@ void ProtocolLogin::OnConnect()
         SendLoginPacket();
         break;
     case ActionCreateAccount:
+        SendCreateAccountPacket();
         break;
     default:
         return;

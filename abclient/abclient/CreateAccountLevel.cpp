@@ -22,11 +22,18 @@ void CreateAccountLevel::DoCreateAccount()
 {
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
+    String repass = repeatPassEdit_->GetText();
     String email = emailEdit_->GetText();
     String accKey = accKeyEdit_->GetText();
+    if (pass.Compare(repass) != 0)
+    {
+        ShowError("Passwords do not match.");
+        repeatPassEdit_->SetFocus(true);
+        return;
+    }
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-
+    client->CreateAccount(name, pass, email, accKey);
 }
 
 void CreateAccountLevel::DoCancel()
@@ -73,6 +80,7 @@ void CreateAccountLevel::CreateUI()
 
     nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
     passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));
+    repeatPassEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("RepeatPassEdit", true));
     emailEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("EmailEdit", true));
     accKeyEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("AccountKeyEdit", true));
     button_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateButton", true));
@@ -103,11 +111,7 @@ void CreateAccountLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData
     int key = eventData[P_KEY].GetInt();
     if (key == KEY_RETURN)
     {
-        String name = nameEdit_->GetText();
-        String pass = passEdit_->GetText();
-        String email = emailEdit_->GetText();
-        String accKey = accKeyEdit_->GetText();
-        if (!button_->IsEnabled() || name.Empty() || pass.Empty() || email.Empty() || accKey.Empty())
+        if (!button_->IsEnabled())
             return;
         DoCreateAccount();
     }
@@ -119,9 +123,10 @@ void CreateAccountLevel::HandleKeyDown(StringHash eventType, VariantMap& eventDa
 {
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
+    String repass = repeatPassEdit_->GetText();
     String email = emailEdit_->GetText();
     String accKey = accKeyEdit_->GetText();
-    button_->SetEnabled(!name.Empty() && !pass.Empty() && !email.Empty() && !accKey.Empty());
+    button_->SetEnabled(!name.Empty() && !pass.Empty() && !repass.Empty() && !email.Empty() && !accKey.Empty());
 }
 
 void CreateAccountLevel::HandleCreateClicked(StringHash eventType, VariantMap& eventData)

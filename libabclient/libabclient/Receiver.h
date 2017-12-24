@@ -21,8 +21,9 @@ public:
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(uint32_t id) = 0;
     virtual void OnObjectPos(uint32_t id, const Vec3& pos) = 0;
-    virtual void OnObjectRot(uint32_t id, float rot) = 0;
+    virtual void OnObjectRot(uint32_t id, float rot, bool manual) = 0;
     virtual void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) = 0;
+    virtual void OnAccountCreated() = 0;
 };
 
 }

@@ -94,6 +94,8 @@ void ClientApp::Setup()
     engineParameters_["Multisample"] = options->GetMultiSample();
     engineParameters_["ResourcePaths"] = "AutoLoad;CoreData;Data;AbData";
     engineParameters_["LogName"] = "abclient.log";
+
+    GetSubsystem<UI>()->SetUseSystemClipboard(true);
 }
 
 /**

@@ -18,8 +18,9 @@ public:
     enum ClientState
     {
         StateDisconnected,
+        StateCreateAccount,
         StateCreateChar,
-        StateSelecChar,
+        StateSelectChar,
         StateWorld
     };
 private:
@@ -40,6 +41,8 @@ public:
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);
     void Logout();
+    void CreateAccount(const std::string& name, const std::string& pass,
+        const std::string& email, const std::string& accKey);
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
     void Update(int timeElapsed);
@@ -53,8 +56,9 @@ public:
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(uint32_t id) override;
     void OnObjectPos(uint32_t id, const Vec3& pos) override;
-    void OnObjectRot(uint32_t id, float rot) override;
+    void OnObjectRot(uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
+    void OnAccountCreated() override;
 
     std::string loginHost_;
     uint16_t loginPort_;

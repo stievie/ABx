@@ -23,7 +23,7 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     query.str("");
     query << "SELECT `id`, `account_key`, `used`, `total` FROM `account_keys` WHERE `status` = 1 AND `account_key` = " << db->EscapeString(accKey);
     result = db->StoreQuery(query.str());
-    if (result)
+    if (!result)
         return ResultInvalidAccountKey;
 
     uint32_t accKeyId = result->GetUInt("id");
@@ -41,10 +41,10 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     }
     std::string passwordHash(pwhash, 61);
 
-    query << "INSERTT INTO `accounts` (`name`, `password`, `email`, `type`, `blocked`, `creation`) VALUES (";
-    query << name << ", ";
-    query << passwordHash << ", ";
-    query << email << ", ";
+    query << "INSERT INTO `accounts` (`name`, `password`, `email`, `type`, `blocked`, `creation`) VALUES (";
+    query << db->EscapeString(name) << ", ";
+    query << db->EscapeString(passwordHash) << ", ";
+    query << db->EscapeString(email) << ", ";
     query << static_cast<int>(AccountTypeNormal) << ", ";
     query << "0, ";
     query << Utils::AbTick();

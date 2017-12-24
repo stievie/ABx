@@ -29,10 +29,9 @@ enum ErrorCodes : uint8_t
     CannotEnterGame = 0x09,
     WrongProtocolVersion = 0x0a,
     InvalidEmail = 0x0b,
-    InvalidAccKey = 0x0c,
+    InvalidAccountKey = 0x0c,
     UnknownError = 0x0d,
     AccountNameExists = 0x0e,
-    InvalidAccountKey = 0x0f,
 };
 
 }

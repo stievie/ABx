@@ -25,7 +25,7 @@ public:
     ObjectType objectType_;
     AB::GameProtocol::CreatureState creatureState_;
 
-    virtual void SetYRotation(float rad);
+    virtual void SetYRotation(float rad, bool updateYaw);
     float GetYRotation();
 };
 

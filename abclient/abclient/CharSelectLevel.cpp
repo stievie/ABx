@@ -78,6 +78,31 @@ void CharSelectLevel::CreateUI()
         window->AddChild(button);
         i++;
     }
+    {
+        UIElement* sep = new UIElement(context_);
+        sep->SetMinHeight(5);
+        sep->SetStyleAuto();
+        sep->SetLayoutMode(LM_FREE);
+        window->AddChild(sep);
+
+        Button* button = new Button(context_);
+        button->SetMinHeight(40);
+        button->SetName(String(i));    // not required
+        button->SetStyleAuto();
+        button->SetOpacity(1.0f);     // transparency
+        button->SetLayoutMode(LM_FREE);
+        window->AddChild(button);
+        SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCreateCharClicked));
+
+        {
+            // buttons don't have a text by itself, a text needs to be added as a child
+            Text* t = new Text(context_);
+            t->SetAlignment(HA_CENTER, VA_CENTER);
+            t->SetText("Create Character");
+            t->SetStyle("Text");
+            button->AddChild(t);
+        }
+    }
 }
 
 void CharSelectLevel::CreateScene()
@@ -96,6 +121,10 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
     String name = String(net->GetCharacters()[index].name.c_str());
     String map = String(net->GetCharacters()[index].lastMap.c_str());
     net->EnterWorld(name, map);
+}
+
+void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& eventData)
+{
 }
 
 void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

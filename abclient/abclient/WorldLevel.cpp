@@ -5,6 +5,7 @@
 #include "AbEvents.h"
 #include "FwClient.h"
 #include "LevelManager.h"
+#include "MathUtils.h"
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
@@ -204,7 +205,9 @@ void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventDa
     if (object)
     {
         float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
-        object->SetYRotation(rot);
+        bool manual = eventData[AbEvents::ED_ROTATION_MANUAL].GetBool();
+        // Manual SetDirection -> don't update camera yaw because it comes from camera move
+        object->SetYRotation(rot, !manual);
     }
 }
 

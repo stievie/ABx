@@ -49,7 +49,6 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
         HandleCreateAccountPacket(message);
         break;
     }
-
 }
 
 void ProtocolLogin::SendKeyExchange()
@@ -104,7 +103,7 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
     std::string accKey = message.GetString();
     if (accKey.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccKey);
+        DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
@@ -185,7 +184,6 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 
     Send(output);
     Disconnect();
-
 }
 
 void ProtocolLogin::DisconnectClient(uint8_t error)

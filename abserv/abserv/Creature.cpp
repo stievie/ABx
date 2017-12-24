@@ -85,6 +85,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     Skill* skill = nullptr;
     bool turned = false;
+    bool directionSet = false;
     bool newDirection = false;
     float worldAngle = 0.0f;
 
@@ -233,8 +234,11 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         else
         {
-            SetDirection(worldAngle);
-            turned = true;
+            if (transformation_.rotation_ != worldAngle)
+            {
+                SetDirection(worldAngle);
+                directionSet = true;
+            }
         }
         break;
     }
@@ -247,11 +251,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
 
     // The rotation may change in 2 ways: Turn and SetWorldDirection
-    if (turned)
+    if (turned || directionSet)
     {
         message.AddByte(AB::GameProtocol::GameObjectRotationChange);
         message.Add<uint32_t>(id_);
         message.Add<float>(transformation_.rotation_);
+        message.Add<uint8_t>(directionSet ? 1 : 0);
     }
 
     skills_.Update(timeElapsed);

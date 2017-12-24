@@ -18,6 +18,7 @@ protected:
 private:
     LineEdit* nameEdit_;
     LineEdit* passEdit_;
+    LineEdit* repeatPassEdit_;
     LineEdit* emailEdit_;
     LineEdit* accKeyEdit_;
     Button* button_;

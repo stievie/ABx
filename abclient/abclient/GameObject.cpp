@@ -13,11 +13,11 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::SetYRotation(float rad)
+void GameObject::SetYRotation(float rad, bool updateYaw)
 {
     Quaternion direction;
     float deg = RadToDeg(rad);
-    direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
+    direction.FromAngleAxis(deg, Vector3::UP);
     GetNode()->SetRotation(direction);
 }
 

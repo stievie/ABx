@@ -67,7 +67,7 @@
 			<attribute name="Pivot" value="0 0.5" />
 		</element>
 	</element>
-	<element type="Button">
+	<element type="Button" style="DefaultButton">
 		<attribute name="Name" value="LoginButton" />
 		<attribute name="Min Size" value="0 35" />
 		<attribute name="Pivot" value="0 0" />

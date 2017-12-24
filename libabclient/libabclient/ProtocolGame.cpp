@@ -98,8 +98,9 @@ void ProtocolGame::ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& mes
 {
     uint32_t objectId = message->Get<uint32_t>();
     float rot = message->Get<float>();
+    bool manual = message->Get<uint8_t>() != 0;
     if (receiver_)
-        receiver_->OnObjectRot(objectId, rot);
+        receiver_->OnObjectRot(objectId, rot, manual);
 }
 
 void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& message)

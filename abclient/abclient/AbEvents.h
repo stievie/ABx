@@ -21,6 +21,7 @@ namespace AbEvents
     static const StringHash ED_OBJECT_DATA = StringHash("Object Data");
     static const StringHash ED_POS = StringHash("Position");
     static const StringHash ED_ROTATION = StringHash("Rotation");
+    static const StringHash ED_ROTATION_MANUAL = StringHash("Rotation Manual");
     static const StringHash ED_SCALE = StringHash("Scale");
     static const StringHash ED_OBJECT_STATE = StringHash("Object State");
 }

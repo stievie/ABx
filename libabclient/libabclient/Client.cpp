@@ -30,7 +30,7 @@ void Client::OnGetCharlist(const CharList& chars)
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
         gameHost_ = protoLogin_->gameHost_;
-    state_ = StateSelecChar;
+    state_ = StateSelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);
 }
@@ -55,16 +55,22 @@ void Client::OnObjectPos(uint32_t id, const Vec3& pos)
         receiver_->OnObjectPos(id, pos);
 }
 
-void Client::OnObjectRot(uint32_t id, float rot)
+void Client::OnObjectRot(uint32_t id, float rot, bool manual)
 {
     if (receiver_)
-        receiver_->OnObjectRot(id, rot);
+        receiver_->OnObjectRot(id, rot, manual);
 }
 
 void Client::OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state)
 {
     if (receiver_)
         receiver_->OnObjectStateChange(id, state);
+}
+
+void Client::OnAccountCreated()
+{
+    if (receiver_)
+        receiver_->OnAccountCreated();
 }
 
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
@@ -104,6 +110,21 @@ void Client::Login(const std::string& name, const std::string& pass)
     protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     protoLogin_->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
+    Connection::Run();
+}
+
+void Client::CreateAccount(const std::string& name, const std::string& pass,
+    const std::string& email, const std::string& accKey)
+{
+    accountName_ = name;
+    password_ = pass;
+
+    protoLogin_ = std::make_shared<ProtocolLogin>();
+    protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
+    protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
+    protoLogin_->CreateAccount(loginHost_, loginPort_, name, pass,
+        email, accKey,
+        std::bind(&Client::OnAccountCreated, this));
     Connection::Run();
 }
 

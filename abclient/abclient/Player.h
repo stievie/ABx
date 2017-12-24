@@ -58,7 +58,7 @@ public:
     Controls controls_;
     SharedPtr<Node> cameraNode_;
     float cameraDistance_;
-    void SetYRotation(float rad) override;
+    void SetYRotation(float rad, bool updateYaw) override;
     void SetCameraDist(bool increase);
 protected:
     void PostUpdate(float timeStep) override;

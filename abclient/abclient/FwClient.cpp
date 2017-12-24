@@ -28,6 +28,14 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Your account is banned.";
     case AB::Errors::WrongProtocolVersion:
         return "Outdated client. Please update the game client.";
+    case AB::Errors::InvalidEmail:
+        return "Invalid Email.";
+    case AB::Errors::InvalidAccountKey:
+        return "Invalid Account Key.";
+    case AB::Errors::UnknownError:
+        return "Internal Error.";
+    case AB::Errors::AccountNameExists:
+        return "Login Name already exists.";
     default:
         return "";
     }
@@ -86,7 +94,7 @@ void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     switch (client_.state_)
     {
-    case Client::Client::StateSelecChar:
+    case Client::Client::StateSelectChar:
         loggedIn_ = true;
         break;
     case Client::Client::StateWorld:
@@ -100,8 +108,19 @@ void FwClient::Login(const String& name, const String& pass)
     if (!loggedIn_)
     {
         accountName_ = name;
-        accounbtPass_ = pass;
+        accountPass_ = pass;
         client_.Login(std::string(name.CString()), std::string(pass.CString()));
+    }
+}
+
+void FwClient::CreateAccount(const String& name, const String& pass, const String& email, const String& accKey)
+{
+    if (!loggedIn_)
+    {
+        accountName_ = name;
+        accountPass_ = pass;
+        client_.CreateAccount(std::string(name.CString()), std::string(pass.CString()),
+            std::string(email.CString()), std::string(accKey.CString()));
     }
 }
 
@@ -224,11 +243,12 @@ void FwClient::OnObjectPos(uint32_t id, const Vec3& pos)
     QueueEvent(AbEvents::E_OBJECT_POS_UPDATE, eData);
 }
 
-void FwClient::OnObjectRot(uint32_t id, float rot)
+void FwClient::OnObjectRot(uint32_t id, float rot, bool manual)
 {
     VariantMap& eData = GetEventDataMap();
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_ROTATION] = rot;
+    eData[AbEvents::ED_ROTATION_MANUAL] = manual;
     QueueEvent(AbEvents::E_OBJECT_ROT_UPDATE, eData);
 }
 
@@ -238,4 +258,10 @@ void FwClient::OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState 
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_OBJECT_STATE] = static_cast<unsigned>(state);
     QueueEvent(AbEvents::E_OBJECT_SATE_UPDATE, eData);
+}
+
+void FwClient::OnAccountCreated()
+{
+    // After successful account creation login with this credentials
+    Login(accountName_, accountPass_);
 }

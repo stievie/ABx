@@ -16,7 +16,7 @@ class FwClient : public Object, public Client::Receiver
     URHO3D_OBJECT(FwClient, Object);
 private:
     String accountName_;
-    String accounbtPass_;
+    String accountPass_;
     String currentLevel_;
     bool levelReady_;
     Vector<EventItem> queuedEvents_;
@@ -37,6 +37,7 @@ public:
     bool Start();
     void Stop();
     void Login(const String& name, const String& pass);
+    void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
     void EnterWorld(const String& charName, const String& map);
     void Logout();
     void Move(uint8_t direction);
@@ -53,8 +54,9 @@ public:
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(uint32_t id) override;
     void OnObjectPos(uint32_t id, const Vec3& pos) override;
-    void OnObjectRot(uint32_t id, float rot) override;
+    void OnObjectRot(uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
+    void OnAccountCreated() override;
 
     const Client::CharList& GetCharacters() const
     {
