@@ -79,11 +79,14 @@ void CharSelectLevel::CreateUI()
         i++;
     }
     {
-        UIElement* sep = new UIElement(context_);
-        sep->SetMinHeight(5);
-        sep->SetStyleAuto();
-        sep->SetLayoutMode(LM_FREE);
-        window->AddChild(sep);
+        if (i != 0)
+        {
+            UIElement* sep = new UIElement(context_);
+            sep->SetMinHeight(5);
+            sep->SetStyleAuto();
+            sep->SetLayoutMode(LM_FREE);
+            window->AddChild(sep);
+        }
 
         Button* button = new Button(context_);
         button->SetMinHeight(40);

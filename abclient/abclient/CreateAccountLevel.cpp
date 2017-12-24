@@ -83,6 +83,9 @@ void CreateAccountLevel::CreateUI()
     repeatPassEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("RepeatPassEdit", true));
     emailEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("EmailEdit", true));
     accKeyEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("AccountKeyEdit", true));
+    SubscribeToEvent(accKeyEdit_, E_FOCUSED, URHO3D_HANDLER(CreateAccountLevel, HandleAccKeyFocused));
+    SubscribeToEvent(accKeyEdit_, E_DEFOCUSED, URHO3D_HANDLER(CreateAccountLevel, HandleAccKeyDefocused));
+    accKeyPlaceholder_ = dynamic_cast<Text*>(uiRoot_->GetChild("AccountKeyPlaceHolder", true));
     button_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateButton", true));
     button_->SetEnabled(false);
     nameEdit_->SetFocus(true);
@@ -127,6 +130,18 @@ void CreateAccountLevel::HandleKeyDown(StringHash eventType, VariantMap& eventDa
     String email = emailEdit_->GetText();
     String accKey = accKeyEdit_->GetText();
     button_->SetEnabled(!name.Empty() && !pass.Empty() && !repass.Empty() && !email.Empty() && !accKey.Empty());
+}
+
+void CreateAccountLevel::HandleAccKeyFocused(StringHash eventType, VariantMap& eventData)
+{
+    accKeyPlaceholder_->SetVisible(false);
+}
+
+void CreateAccountLevel::HandleAccKeyDefocused(StringHash eventType, VariantMap& eventData)
+{
+    String accKey = accKeyEdit_->GetText();
+    if (accKey.Empty())
+        accKeyPlaceholder_->SetVisible(true);
 }
 
 void CreateAccountLevel::HandleCreateClicked(StringHash eventType, VariantMap& eventData)

@@ -21,6 +21,7 @@ private:
     LineEdit* repeatPassEdit_;
     LineEdit* emailEdit_;
     LineEdit* accKeyEdit_;
+    Text* accKeyPlaceholder_;
     Button* button_;
     void DoCreateAccount();
     void DoCancel();
@@ -30,4 +31,6 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyUp(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+    void HandleAccKeyFocused(StringHash eventType, VariantMap& eventData);
+    void HandleAccKeyDefocused(StringHash eventType, VariantMap& eventData);
 };

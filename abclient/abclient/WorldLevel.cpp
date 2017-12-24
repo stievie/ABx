@@ -248,9 +248,13 @@ void WorldLevel::CreateUI()
     chatWindow_ = uiRoot_->CreateChild<ChatWindow>();
     chatWindow_->SetAlignment(HA_LEFT, VA_BOTTOM);
 
+    gameMenu_ = uiRoot_->CreateChild<GameMenu>();
+    gameMenu_->SetAlignment(HA_LEFT, VA_BOTTOM);
+
     // Ping
     pingLabel_ = uiRoot_->CreateChild<Text>();
     pingLabel_->SetSize(50, 20);
+    pingLabel_->SetFontSize(10);
     pingLabel_->SetAlignment(HA_RIGHT, VA_BOTTOM);
     pingLabel_->SetStyleAuto();
 }

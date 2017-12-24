@@ -3,6 +3,7 @@
 #include "BaseLevel.h"
 #include "GameObject.h"
 #include "ChatWindow.h"
+#include "GameMenu.h"
 #include <stdint.h>
 #include "PropStream.h"
 #include "Actor.h"
@@ -19,6 +20,7 @@ public:
 protected:
     Text* pingLabel_;
     ChatWindow* chatWindow_;
+    GameMenu* gameMenu_;
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;

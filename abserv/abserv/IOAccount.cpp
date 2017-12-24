@@ -15,9 +15,11 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
-    query << "SELECT `name` FROM `accounts` WHERE `name` = " << db->EscapeString(name);
+    query << "SELECT COUNT(`id`) AS c FROM `accounts` WHERE `name` = " << db->EscapeString(name);
     result = db->StoreQuery(query.str());
-    if (result)
+    if (!result)
+        return ResultInternalError;
+    if (result->GetUInt("c") != 0)
         return ResultNameExists;
 
     query.str("");
@@ -41,6 +43,10 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     }
     std::string passwordHash(pwhash, 61);
 
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return ResultInternalError;
+
     query << "INSERT INTO `accounts` (`name`, `password`, `email`, `type`, `blocked`, `creation`) VALUES (";
     query << db->EscapeString(name) << ", ";
     query << db->EscapeString(passwordHash) << ", ";
@@ -49,34 +55,26 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     query << "0, ";
     query << Utils::AbTick();
     query << ")";
-    {
-        DBTransaction transaction(db);
-        if (!transaction.Begin())
-            return ResultInternalError;
+    if (!db->ExecuteQuery(query.str()))
+        return ResultInternalError;
 
-        if (!db->ExecuteQuery(query.str()))
-            return ResultInternalError;
-
-        // End transaction
-        if (!transaction.Commit())
-            return ResultInternalError;
-    }
+    uint64_t accId = db->GetLastInsertId();
+    query.str("");
+    query << "INSERT INTO `account_account_keys` (`account_id`, `account_keys_id`) VALUES (";
+    query << accId << ", ";
+    query << accKeyId << ")";
+    if (!db->ExecuteQuery(query.str()))
+        return ResultInternalError;
 
     // Update account keys
     query.str("");
     query << "UPDATE `account_keys` SET `used` = `used` + 1 WHERE `id` = " << accKeyId;
-    {
-        DBTransaction transaction(db);
-        if (!transaction.Begin())
-            return ResultInternalError;
+    if (!db->ExecuteQuery(query.str()))
+        return ResultInternalError;
 
-        if (!db->ExecuteQuery(query.str()))
-            return ResultInternalError;
-
-        // End transaction
-        if (!transaction.Commit())
-            return ResultInternalError;
-    }
+    // End transaction
+    if (!transaction.Commit())
+        return ResultInternalError;
 
     return ResultOK;
 }

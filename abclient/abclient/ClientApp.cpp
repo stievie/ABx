@@ -13,6 +13,7 @@
 #include "Options.h"
 #include "ChatWindow.h"
 #include "CreateAccountLevel.h"
+#include "GameMenu.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -67,6 +68,7 @@ ClientApp::ClientApp(Context* context) :
     Actor::RegisterObject(context);
     Player::RegisterObject(context);
     ChatWindow::RegisterObject(context);
+    GameMenu::RegisterObject(context);
 }
 
 /**

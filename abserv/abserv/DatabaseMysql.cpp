@@ -102,7 +102,15 @@ bool DatabaseMysql::GetParam(DBParam param)
 
 uint64_t DatabaseMysql::GetLastInsertId()
 {
-    return static_cast<uint64_t>(mysql_insert_id(&handle_));
+    std::ostringstream query;
+    query << "SELECT LAST_INSERT_ID() AS last_id";
+    std::shared_ptr<DBResult> result = StoreQuery(query.str());
+    if (result)
+        return result->GetULong("last_id");
+    return 0;
+
+    // Always returns 0?
+//    return static_cast<uint64_t>(mysql_insert_id(&handle_));
 }
 
 std::string DatabaseMysql::EscapeString(const std::string& s)
