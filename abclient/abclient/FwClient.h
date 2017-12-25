@@ -20,11 +20,11 @@ private:
     String currentLevel_;
     bool levelReady_;
     Vector<EventItem> queuedEvents_;
-    bool loggedIn_;
     uint32_t playerId_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
     Client::CharList characters_;
+    bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);
@@ -58,6 +58,12 @@ public:
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
     void OnAccountCreated() override;
 
+    void SetState(Client::Client::ClientState state)
+    {
+        if (state == Client::Client::StateDisconnected || state == Client::Client::StateCreateAccount)
+            loggedIn_ = false;
+        client_.state_ = state;
+    }
     const Client::CharList& GetCharacters() const
     {
         return characters_;

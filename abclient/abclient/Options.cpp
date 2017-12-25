@@ -77,6 +77,14 @@ void Options::Load()
         {
             loginHost_ = paramElem.GetAttribute("value");
         }
+        else if (name.Compare("Username") == 0)
+        {
+            username_ = paramElem.GetAttribute("value");
+        }
+        else if (name.Compare("Password") == 0)
+        {
+            password_ = paramElem.GetAttribute("value");
+        }
 
         paramElem = paramElem.GetNext("parameter");
     }

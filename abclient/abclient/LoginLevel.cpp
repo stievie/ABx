@@ -2,6 +2,7 @@
 #include "LoginLevel.h"
 #include "AbEvents.h"
 #include "FwClient.h"
+#include "Options.h"
 
 LoginLevel::LoginLevel(Context* context) :
     BaseLevel(context),
@@ -17,6 +18,8 @@ LoginLevel::LoginLevel(Context* context) :
 
     // Subscribe to global events for camera movement
     SubscribeToEvents();
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->SetState(Client::Client::StateDisconnected);
 }
 
 void LoginLevel::CreateScene()
@@ -64,6 +67,11 @@ void LoginLevel::CreateUI()
     SubscribeToEvent(button_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleLoginClicked));
     createAccountButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateAccountButton", true));
     SubscribeToEvent(createAccountButton_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleCreateAccountClicked));
+
+    Options* options = GetSubsystem<Options>();
+    nameEdit_->SetText(options->username_);
+    passEdit_->SetText(options->password_);
+    button_->SetEnabled(!(options->username_.Empty() || options->password_.Empty()));
 }
 
 void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

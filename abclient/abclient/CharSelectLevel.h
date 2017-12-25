@@ -16,6 +16,7 @@ private:
     void CreateScene();
     void HandleCharClicked(StringHash eventType, VariantMap& eventData);
     void HandleCreateCharClicked(StringHash eventType, VariantMap& eventData);
+    void HandleBackClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 };
 

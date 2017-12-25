@@ -34,8 +34,8 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
     if (input->GetMouseButtonDown(4))
     {
         rmbDown_ = true;
-        input->SetMouseMode(MM_RELATIVE);
         mouseDownPos_ = input->GetMousePosition();
+        input->SetMouseMode(MM_RELATIVE);
     }
 }
 
@@ -66,10 +66,12 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
     UNREFERENCED_PARAMETER(eventType);
     UNREFERENCED_PARAMETER(eventData);
 
+/*
     FwClient* c = context_->GetSubsystem<FwClient>();
     std::stringstream s;
     s << "Avg. Ping " << c->GetAvgPing() << " Last Ping " << c->GetLastPing();
     pingLabel_->SetText(String(s.str().c_str()));
+    */
 
     using namespace Update;
 
@@ -252,9 +254,14 @@ void WorldLevel::CreateUI()
     gameMenu_->SetAlignment(HA_LEFT, VA_BOTTOM);
 
     // Ping
-    pingLabel_ = uiRoot_->CreateChild<Text>();
+    pingDot_ = uiRoot_->CreateChild<PingDot>();
+    pingDot_->SetSize(IntVector2(16, 16));
+    pingDot_->SetAlignment(HA_RIGHT, VA_BOTTOM);
+
+/*    pingLabel_ = uiRoot_->CreateChild<Text>();
     pingLabel_->SetSize(50, 20);
     pingLabel_->SetFontSize(10);
     pingLabel_->SetAlignment(HA_RIGHT, VA_BOTTOM);
     pingLabel_->SetStyleAuto();
+    */
 }

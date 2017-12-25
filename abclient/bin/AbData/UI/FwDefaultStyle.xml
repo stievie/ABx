@@ -16,6 +16,9 @@
     <element type="DefaultButton" style="Button">
         <attribute name="Color" value="0.01 0.95 0.01" />
      </element>
+    <element type="BackButton" style="Button">
+        <attribute name="Color" value="1.0 0.05 0.05" />
+     </element>
     <element type="CheckBox" style="BorderImage">
         <attribute name="Min Size" value="16 16" />
         <attribute name="Max Size" value="16 16" />
@@ -401,10 +404,11 @@
         <attribute name="Layout Border" value="6 2 6 2" />
         <attribute name="Image Rect" value="48 0 64 16" />
         <attribute name="Border" value="4 4 4 4" />
+        <attribute name="Color" value="0.1 0.1 0.1" />
     </element>
     <element type="ToolTipText" style="Text">
         <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
-        <attribute name="Font Size" value="9" />
+        <attribute name="Font Size" value="10" />
     </element>
     <element type="ViewportBorder" style="BorderImage">
         <attribute name="Image Rect" value="50 5 51 6" />

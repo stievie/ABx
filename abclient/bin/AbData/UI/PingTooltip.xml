@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<element type="ToolTip" style="ToolTip">
+	<attribute name="Name" value="Tooltip" />
+	<attribute name="Position" value="-220 -70" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Priority" value="2147483647" />
+	<attribute name="Is Visible" value="false" />
+	<attribute name="Opacity" value="0.7" />
+	<element type="BorderImage" style="ToolTipBorderImage">
+		<attribute name="Size" value="212 40" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;" />
+		<attribute name="Image Rect" value="0 0 256 128" />
+		<element type="Text" style="ToolTipText">
+			<attribute name="Name" value="TooltipText" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Text" value="Ping" />
+			<attribute name="Word Wrap" value="true" />
+		</element>
+	</element>
+</element>

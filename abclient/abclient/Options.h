@@ -9,6 +9,8 @@ public:
 
     String loginHost_;
     uint16_t loginPort_;
+    String username_;
+    String password_;
 
     void Load();
 

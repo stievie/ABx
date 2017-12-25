@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include "PropStream.h"
 #include "Actor.h"
+#include "PingDot.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI.
@@ -20,6 +21,7 @@ public:
 protected:
     Text* pingLabel_;
     ChatWindow* chatWindow_;
+    PingDot* pingDot_;
     GameMenu* gameMenu_;
     String mapName_;
     /// All objects in the scene

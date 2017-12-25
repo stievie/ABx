@@ -2,6 +2,7 @@
 #include "CharSelectLevel.h"
 #include "FwClient.h"
 #include "Account.h"
+#include "AbEvents.h"
 
 CharSelectLevel::CharSelectLevel(Context* context) :
     BaseLevel(context)
@@ -90,7 +91,6 @@ void CharSelectLevel::CreateUI()
 
         Button* button = new Button(context_);
         button->SetMinHeight(40);
-        button->SetName(String(i));    // not required
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
@@ -102,6 +102,25 @@ void CharSelectLevel::CreateUI()
             Text* t = new Text(context_);
             t->SetAlignment(HA_CENTER, VA_CENTER);
             t->SetText("Create Character");
+            t->SetStyle("Text");
+            button->AddChild(t);
+        }
+    }
+    {
+        Button* button = new Button(context_);
+        button->SetMinHeight(40);
+        button->SetStyleAuto();
+        button->SetOpacity(1.0f);     // transparency
+        button->SetLayoutMode(LM_FREE);
+        button->SetStyle("BackButton");
+        window->AddChild(button);
+        SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleBackClicked));
+
+        {
+            // buttons don't have a text by itself, a text needs to be added as a child
+            Text* t = new Text(context_);
+            t->SetAlignment(HA_CENTER, VA_CENTER);
+            t->SetText("Back");
             t->SetStyle("Text");
             button->AddChild(t);
         }
@@ -128,6 +147,13 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
 
 void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& eventData)
 {
+}
+
+void CharSelectLevel::HandleBackClicked(StringHash eventType, VariantMap& eventData)
+{
+    VariantMap& e = GetEventDataMap();
+    e[AbEvents::E_SET_LEVEL] = "LoginLevel";
+    SendEvent(AbEvents::E_SET_LEVEL, e);
 }
 
 void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
