@@ -12,11 +12,11 @@ PingDot::PingDot(Context* context) :
     lastUpdate_(0.0f)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* style = cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml");
-    SetDefaultStyle(style);
+    SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/PingTooltip.xml");
     LoadChildXML(chatFile->GetRoot());
     tooltipText_ = dynamic_cast<Text*>(GetChild("TooltipText", true));
+    SetTexture(cache->GetResource<Texture2D>("Textures/ping_none.png"));
 }
 
 PingDot::~PingDot()
@@ -30,6 +30,8 @@ void PingDot::Update(float timeStep)
     if (lastUpdate_ >= 1.0f)
     {
         FwClient* c = context_->GetSubsystem<FwClient>();
+        Time* t = context_->GetSubsystem<Time>();
+        int fps = static_cast<int>(1.0f / t->GetTimeStep());
         int lastPing = c->GetLastPing();
         ResourceCache* cache = GetSubsystem<ResourceCache>();
         Texture2D* pingTexture = nullptr;
@@ -41,7 +43,8 @@ void PingDot::Update(float timeStep)
             pingTexture = cache->GetResource<Texture2D>("Textures/ping_bad.png");
         SetTexture(pingTexture);
         std::stringstream s;
-        s << "Avg. Ping " << c->GetAvgPing() << " Last Ping " << c->GetLastPing();
+        s << "FPS: " << fps << "\n\n";
+        s << "Average Ping: " << c->GetAvgPing() << "ms\nLast Ping: " << c->GetLastPing() << "ms";
         tooltipText_->SetText(String(s.str().c_str()));
 
         lastUpdate_ = 0.0f;

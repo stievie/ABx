@@ -47,6 +47,7 @@ void LoginLevel::ShowError(const String& message, const String& title)
     BaseLevel::ShowError(message, title);
     button_->SetEnabled(true);
     passEdit_->SetFocus(true);
+    passEdit_->GetTextElement()->SetSelection(0);
     loggingIn_ = false;
 }
 
@@ -101,7 +102,7 @@ void LoginLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
         return;
 
     int key = eventData[P_KEY].GetInt();
-    if (key == KEY_RETURN)
+    if (key == KEY_RETURN && (nameEdit_->HasFocus() || passEdit_->HasFocus()))
         DoLogin();
 }
 

@@ -15,7 +15,8 @@ Client::Client() :
     protoGame_(nullptr),
     state_(StateDisconnected),
     lastRun_(0),
-    lastPing_(0)
+    lastPing_(0),
+    gotPong_(true)
 {
     Crypto::DHKeys::Instance.GenerateKeys();
 }
@@ -94,6 +95,7 @@ void Client::OnProtocolError(uint8_t err)
 
 void Client::OnPong(int ping)
 {
+    gotPong_ = true;
     while (pings_.size() > 9)
         pings_.erase(pings_.begin());
     pings_.push_back(ping);
@@ -101,6 +103,9 @@ void Client::OnPong(int ping)
 
 void Client::Login(const std::string& name, const std::string& pass)
 {
+    if (state_ != StateDisconnected)
+        return;
+
     accountName_ = name;
     password_ = pass;
 
@@ -116,6 +121,9 @@ void Client::Login(const std::string& name, const std::string& pass)
 void Client::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
+    if (state_ != StateDisconnected)
+        return;
+
     accountName_ = name;
     password_ = pass;
 
@@ -130,6 +138,8 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
 
 void Client::Logout()
 {
+    if (state_ != StateWorld)
+        return;
     if (protoGame_)
     {
         protoGame_->Logout();
@@ -139,6 +149,8 @@ void Client::Logout()
 
 void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
+    if (state_ != StateSelectChar)
+        return;
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->receiver_ = this;
@@ -148,36 +160,45 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
 
 void Client::Update(int timeElapsed)
 {
-    if (lastPing_ >= 1000)
+    if (state_ == StateWorld)
     {
-        if (protoGame_)
+        if (lastPing_ >= 1000 && gotPong_)
         {
-            protoGame_->Ping(std::bind(&Client::OnPong, this, std::placeholders::_1));
+            if (protoGame_)
+            {
+                gotPong_ = false;
+                protoGame_->Ping(std::bind(&Client::OnPong, this, std::placeholders::_1));
+            }
+            lastPing_ = 0;
         }
-        lastPing_ = 0;
     }
+
     if (lastRun_ >= 16)
     {
         Connection::Run();
         lastRun_ = 0;
     }
     lastRun_ += timeElapsed;
-    lastPing_ += timeElapsed;
+    if (state_ == StateWorld)
+        lastPing_ += timeElapsed;
 }
 
 void Client::Move(uint8_t direction)
 {
-    protoGame_->Move(direction);
+    if (state_ == StateWorld)
+        protoGame_->Move(direction);
 }
 
 void Client::Turn(uint8_t direction)
 {
-    protoGame_->Turn(direction);
+    if (state_ == StateWorld)
+        protoGame_->Turn(direction);
 }
 
 void Client::SetDirection(float rad)
 {
-    protoGame_->SetDirection(rad);
+    if (state_ == StateWorld)
+        protoGame_->SetDirection(rad);
 }
 
 }

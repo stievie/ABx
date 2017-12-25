@@ -16,6 +16,7 @@
 // Windows Header Files:
 #include <windows.h>
 #undef MessageBox                       // Redefines Urho3D::MessageBox
+#undef GetMessage
 
 // C RunTime Header Files
 #include <stdlib.h>

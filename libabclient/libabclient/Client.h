@@ -34,6 +34,7 @@ private:
     DH_KEY sharedKey_;
     int lastRun_;
     int lastPing_;
+    bool gotPong_;
     void OnPong(int ping);
 public:
     Client();

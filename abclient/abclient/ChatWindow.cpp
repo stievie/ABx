@@ -6,8 +6,7 @@ ChatWindow::ChatWindow(Context* context) :
     UIElement(context)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* style = cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml");
-    SetDefaultStyle(style);
+    SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/ChatWindow.xml");
     LoadChildXML(chatFile->GetRoot());
 
