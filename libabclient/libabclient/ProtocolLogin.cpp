@@ -43,7 +43,7 @@ void ProtocolLogin::SendKeyExchange()
     // TODO:
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg->Add<uint16_t>(1);   // Client OS
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     const DH_KEY& clientKey = Crypto::DHKeys::Instance.GetPublicKey();
     for (int i = 0; i < DH_KEY_LENGTH; i++)
@@ -55,7 +55,7 @@ void ProtocolLogin::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg->Add<uint16_t>(1);   // Client OS
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginLogin);
     msg->AddString(accountName_);
@@ -67,7 +67,7 @@ void ProtocolLogin::SendCreateAccountPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
-    msg->Add<uint16_t>(1);   // Client OS
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateAccount);
     msg->AddString(accountName_);

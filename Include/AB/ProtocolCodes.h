@@ -7,6 +7,13 @@ namespace AB {
 /// Increase whenever the protocol changes
 static constexpr uint16_t PROTOCOL_VERSION = 1;
 
+static constexpr uint16_t CLIENT_OS_WIN = 1;
+static constexpr uint16_t CLIENT_OS_LINUX = 2;
+static constexpr uint16_t CLIENT_OS_MAC = 3;
+#ifdef _WIN32
+static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_WIN;
+#endif // _WIN32
+
 enum ProtocolIds : uint8_t
 {
     ProtocolLoginId = 0x01,

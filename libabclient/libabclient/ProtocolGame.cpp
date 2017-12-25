@@ -135,15 +135,19 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
 {
     uint32_t objectId = message->Get<uint32_t>();
 
-    Vec3 pos;
-    Vec3 scale;
-    pos.x = message->Get<float>();
-    pos.y = message->Get<float>();
-    pos.z = message->Get<float>();
+    Vec3 pos
+    {
+        message->Get<float>(),
+        message->Get<float>(),
+        message->Get<float>()
+    };
     float rot = message->Get<float>();
-    scale.x = message->Get<float>();
-    scale.y = message->Get<float>();
-    scale.z = message->Get<float>();
+    Vec3 scale
+    {
+        message->Get<float>(),
+        message->Get<float>(),
+        message->Get<float>()
+    };
     std::string data = message->GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
@@ -183,7 +187,7 @@ void ProtocolGame::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
-    msg->Add<uint16_t>(1);   // Client OS
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->AddString(accountName_);
     msg->AddString(accountPass_);
