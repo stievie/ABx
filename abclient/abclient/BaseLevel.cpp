@@ -84,15 +84,17 @@ void BaseLevel::OnProtocolError(uint8_t err)
 
 void BaseLevel::SetupViewport()
 {
+    Graphics* graphics = GetSubsystem<Graphics>();
+    Renderer* renderer = GetSubsystem<Renderer>();
 
-    SharedPtr<Viewport> viewport(new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>()));
-    GetSubsystem<Renderer>()->SetViewport(0, viewport);
+    viewport_ = new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>());
+    renderer->SetViewport(0, viewport_);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    SharedPtr<RenderPath> effectRenderPath = viewport->GetRenderPath()->Clone();
+    SharedPtr<RenderPath> effectRenderPath = viewport_->GetRenderPath()->Clone();
     effectRenderPath->Append(cache->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
     effectRenderPath->SetEnabled("FXAA2", false);
-    viewport->SetRenderPath(effectRenderPath);
+    viewport_->SetRenderPath(effectRenderPath);
 }
 
 void BaseLevel::CreateLogo()

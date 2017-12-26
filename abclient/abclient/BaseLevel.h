@@ -41,10 +41,21 @@ protected:
     virtual void OnNetworkError(const std::error_code& err);
     virtual void OnProtocolError(uint8_t err);
 
+    Ray GetActiveViewportScreenRay(const IntVector2& pos) const
+    {
+        return viewport_->GetScreenRay(pos.x_, pos.y_);
+/*        Camera* cam = cameraNode_->GetComponent<Camera>();
+        return cam->GetScreenRay(
+            static_cast<float>(pos.x_ - view.left_) / view.Width(),
+            static_cast<float>(pos.y_ - view.top_) / view.Height()
+        );*/
+    }
+
     Urho3D::UIElement* uiRoot_;
     SharedPtr<Scene> scene_;
     SharedPtr<Node> cameraNode_;
     SharedPtr<Player> player_;
+    SharedPtr<Viewport> viewport_;
     /// Camera yaw angle.
     float yaw_;
     /// Camera pitch angle.

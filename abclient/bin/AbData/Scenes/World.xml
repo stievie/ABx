@@ -6,9 +6,9 @@
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="0" />
 	<attribute name="Next Replicated Node ID" value="3" />
-	<attribute name="Next Replicated Component ID" value="9" />
-	<attribute name="Next Local Node ID" value="16779569" />
-	<attribute name="Next Local Component ID" value="16779645" />
+	<attribute name="Next Replicated Component ID" value="10" />
+	<attribute name="Next Local Node ID" value="16779619" />
+	<attribute name="Next Local Component ID" value="16779706" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />

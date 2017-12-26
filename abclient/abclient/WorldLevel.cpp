@@ -37,6 +37,27 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
         mouseDownPos_ = input->GetMousePosition();
         input->SetMouseMode(MM_RELATIVE);
     }
+    else if (input->GetMouseButtonDown(1))
+    {
+        // Pick object
+        IntVector2 pos = input->GetMousePosition();
+        Ray camRay = GetActiveViewportScreenRay(pos);
+        PODVector<RayQueryResult> result;
+        Octree* world = scene_->GetComponent<Octree>();
+        RayOctreeQuery query(result, camRay);
+        world->RaycastSingle(query);
+        if (!result.Empty())
+        {
+            Drawable* res = result[0].drawable_;
+            Node* nd = res->GetNode();
+            unsigned id = nd->GetID();
+            SharedPtr<GameObject> object = objects_[id];
+            if (object)
+            {
+                chatWindow_->AddLine("Object selected, ID = " + String(id));
+            }
+        }
+    }
 }
 
 void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
@@ -272,8 +293,8 @@ void WorldLevel::CreateUI()
 
     gameMenu_ = uiRoot_->CreateChild<GameMenu>();
     gameMenu_->SetAlignment(HA_LEFT, VA_TOP);
-    SubscribeToEvent(E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
-    SubscribeToEvent(E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
+    SubscribeToEvent(gameMenu_, E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
+    SubscribeToEvent(gameMenu_, E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();
