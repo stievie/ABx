@@ -163,15 +163,10 @@
 			<attribute name="Max Anchor" value="0 0.5" />
 			<attribute name="Pivot" value="0 0.5" />
 		</element>
-		<element type="Text">
+		<element type="Text" style="PlaceholderText">
 			<attribute name="Name" value="AccountKeyPlaceHolder" />
 			<attribute name="Position" value="5 5" />
 			<attribute name="Pivot" value="0 0" />
-			<attribute name="Color" value="0.45 0.45 0.45 1" />
-			<attribute name="Top Left Color" value="0.45 0.45 0.45 1" />
-			<attribute name="Top Right Color" value="0.45 0.45 0.45 1" />
-			<attribute name="Bottom Left Color" value="0.45 0.45 0.45 1" />
-			<attribute name="Bottom Right Color" value="0.45 0.45 0.45 1" />
 			<attribute name="Text" value="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" />
 		</element>
 	</element>

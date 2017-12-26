@@ -147,6 +147,9 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
 
 void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& eventData)
 {
+    VariantMap& e = GetEventDataMap();
+    e[AbEvents::E_SET_LEVEL] = "CharCreateLevel";
+    SendEvent(AbEvents::E_SET_LEVEL, e);
 }
 
 void CharSelectLevel::HandleBackClicked(StringHash eventType, VariantMap& eventData)

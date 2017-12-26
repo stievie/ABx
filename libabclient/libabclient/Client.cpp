@@ -144,6 +144,7 @@ void Client::Logout()
     {
         protoGame_->Logout();
         Connection::Run();
+        state_ = StateDisconnected;
     }
 }
 

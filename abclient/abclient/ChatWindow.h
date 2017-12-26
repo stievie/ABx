@@ -4,8 +4,8 @@ class ChatWindow : public UIElement
 {
     URHO3D_OBJECT(ChatWindow, UIElement);
 private:
-    ListView* chatLog_;
-    LineEdit* chatEdit_;
+    SharedPtr<ListView> chatLog_;
+    SharedPtr<LineEdit> chatEdit_;
     SharedPtr<BorderImage> background_;
     void HandleTextChanged(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);

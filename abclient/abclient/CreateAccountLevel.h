@@ -16,13 +16,13 @@ protected:
     virtual void CreateUI();
 
 private:
-    LineEdit* nameEdit_;
-    LineEdit* passEdit_;
-    LineEdit* repeatPassEdit_;
-    LineEdit* emailEdit_;
-    LineEdit* accKeyEdit_;
-    Text* accKeyPlaceholder_;
-    Button* button_;
+    SharedPtr<LineEdit> nameEdit_;
+    SharedPtr<LineEdit> passEdit_;
+    SharedPtr<LineEdit> repeatPassEdit_;
+    SharedPtr<LineEdit> emailEdit_;
+    SharedPtr<LineEdit> accKeyEdit_;
+    SharedPtr<Text> accKeyPlaceholder_;
+    SharedPtr<Button> button_;
     void DoCreateAccount();
     void DoCancel();
     void CreateScene();

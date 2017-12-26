@@ -5,7 +5,7 @@ class PingDot : public Button
     URHO3D_OBJECT(PingDot, Button);
 private:
     float lastUpdate_;
-    Text* tooltipText_;
+    SharedPtr<Text> tooltipText_;
 public:
     static void RegisterObject(Context* context);
 

@@ -19,10 +19,9 @@ public:
     void CreatePlayer(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction);
     Actor* CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction);
 protected:
-    Text* pingLabel_;
-    ChatWindow* chatWindow_;
-    PingDot* pingDot_;
-    GameMenu* gameMenu_;
+    SharedPtr<ChatWindow> chatWindow_;
+    SharedPtr<PingDot> pingDot_;
+    SharedPtr<GameMenu> gameMenu_;
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
@@ -41,6 +40,9 @@ private:
     void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleMenuLogout(StringHash eventType, VariantMap& eventData);
+    void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
+
     void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
         const Quaternion& rot, PropReadStream& data);
 };

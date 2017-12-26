@@ -223,6 +223,26 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
     }
 }
 
+void WorldLevel::HandleMenuLogout(StringHash eventType, VariantMap& eventData)
+{
+    gameMenu_->RemoveAllChildren();
+    uiRoot_->RemoveChild(gameMenu_);
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->Logout();
+    VariantMap& e = GetEventDataMap();
+    e[AbEvents::E_SET_LEVEL] = "LoginLevel";
+    SendEvent(AbEvents::E_SET_LEVEL, e);
+}
+
+void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventData)
+{
+    gameMenu_->RemoveAllChildren();
+    uiRoot_->RemoveChild(gameMenu_);
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->Logout();
+    net->Login(net->accountName_, net->accountPass_);
+}
+
 Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
     Actor* result = Actor::CreateActor(id, context_, scene_);
@@ -251,17 +271,12 @@ void WorldLevel::CreateUI()
     chatWindow_->SetAlignment(HA_LEFT, VA_BOTTOM);
 
     gameMenu_ = uiRoot_->CreateChild<GameMenu>();
-    gameMenu_->SetAlignment(HA_LEFT, VA_BOTTOM);
+    gameMenu_->SetAlignment(HA_LEFT, VA_TOP);
+    SubscribeToEvent(E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
+    SubscribeToEvent(E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();
     pingDot_->SetSize(IntVector2(16, 16));
     pingDot_->SetAlignment(HA_RIGHT, VA_BOTTOM);
-
-/*    pingLabel_ = uiRoot_->CreateChild<Text>();
-    pingLabel_->SetSize(50, 20);
-    pingLabel_->SetFontSize(10);
-    pingLabel_->SetAlignment(HA_RIGHT, VA_BOTTOM);
-    pingLabel_->SetStyleAuto();
-    */
 }

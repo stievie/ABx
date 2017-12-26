@@ -15,8 +15,6 @@ class FwClient : public Object, public Client::Receiver
 {
     URHO3D_OBJECT(FwClient, Object);
 private:
-    String accountName_;
-    String accountPass_;
     String currentLevel_;
     bool levelReady_;
     Vector<EventItem> queuedEvents_;
@@ -80,5 +78,8 @@ public:
     {
         return playerId_;
     }
+
+    String accountName_;
+    String accountPass_;
 };
 

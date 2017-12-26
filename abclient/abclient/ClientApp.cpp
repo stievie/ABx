@@ -1,16 +1,13 @@
 #include "stdafx.h"
 
 #include "ClientApp.h"
-#include "LevelManager.h"
 #include "AbEvents.h"
 #include "LoginLevel.h"
 #include "OutpostLevel.h"
 #include "PvpCombatLevel.h"
 #include "CharSelectLevel.h"
 #include "CharCreateLevel.h"
-#include "FwClient.h"
 #include "Player.h"
-#include "Options.h"
 #include "ChatWindow.h"
 #include "CreateAccountLevel.h"
 #include "GameMenu.h"
@@ -43,9 +40,7 @@ URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
 * You can also do this in the Setup method.
 */
 ClientApp::ClientApp(Context* context) :
-    Application(context),
-    framecount_(0),
-    time_(0)
+    Application(context)
 {
     // Register levels
     context->RegisterFactory<LoginLevel>();
@@ -55,14 +50,14 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterFactory<OutpostLevel>();
     context->RegisterFactory<PvpCombatLevel>();
 
-    Options* options = new Options(context);
-    options->Load();
-    context->RegisterSubsystem(options);
+    options_ = new Options(context);
+    options_->Load();
+    context->RegisterSubsystem(options_);
 
-    FwClient* cli = new FwClient(context);
-    context->RegisterSubsystem(cli);
-    LevelManager* lvl = new LevelManager(context);
-    context->RegisterSubsystem(lvl);
+    client_ = new FwClient(context);
+    context->RegisterSubsystem(client_);
+    levelManager_ = new LevelManager(context);
+    context->RegisterSubsystem(levelManager_);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved
@@ -127,14 +122,7 @@ void ClientApp::Start()
     // These are sort of subscribed in the order in which the engine
     // would send the events. Read each handler method's comment for
     // details.
-    SubscribeToEvent(E_BEGINFRAME, URHO3D_HANDLER(ClientApp, HandleBeginFrame));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
-    SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(ClientApp, HandleKeyDown));
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(ClientApp, HandleUpdate));
-    SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(ClientApp, HandlePostUpdate));
-    SubscribeToEvent(E_RENDERUPDATE, URHO3D_HANDLER(ClientApp, HandleRenderUpdate));
-    SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(ClientApp, HandlePostRenderUpdate));
-    SubscribeToEvent(E_ENDFRAME, URHO3D_HANDLER(ClientApp, HandleEndFrame));
 
     SwitchScene("LoginLevel");
 }
@@ -149,41 +137,6 @@ void ClientApp::Stop()
 {
     FwClient* cli = context_->GetSubsystem<FwClient>();
     cli->Logout();
-}
-
-/**
-* Every frame's life must begin somewhere. Here it is.
-*/
-void ClientApp::HandleBeginFrame(StringHash eventType, VariantMap& eventData)
-{
-    // We really don't have anything useful to do here for this example.
-    // Probably shouldn't be subscribing to events we don't care about.
-}
-
-/**
-* Input from keyboard is handled here. I'm assuming that Input, if
-* available, will be handled before E_UPDATE.
-*/
-void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
-{
-    using namespace KeyDown;
-/*    int key = eventData[P_KEY].GetInt();
-    if(key == KEY_ESCAPE)
-        engine_->Exit();
-        */
-}
-
-void ClientApp::HandleKeyUp(StringHash eventType, VariantMap& eventData)
-{
-
-}
-
-/**
-* You can get these events from when ever the user interacts with the UI.
-*/
-void ClientApp::HandleClosePressed(StringHash eventType, VariantMap& eventData)
-{
-    engine_->Exit();
 }
 
 void ClientApp::SetWindowTitleAndIcon()
@@ -209,20 +162,6 @@ void ClientApp::SwitchScene(const String& sceneName)
 */
 void ClientApp::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-    float timeStep = eventData[Update::P_TIMESTEP].GetFloat();
-    framecount_++;
-    time_ += timeStep;
-    // Movement speed as world units per second
-    float MOVE_SPEED = 10.0f;
-    // Mouse sensitivity as degrees per pixel
-    const float MOUSE_SENSITIVITY = 0.1f;
-
-    if (time_ >= 1)
-    {
-        framecount_ = 0;
-        time_ = 0;
-    }
-
     Input* input = GetSubsystem<Input>();
 
     if (input->GetKeyPress(KEY_F11))
@@ -230,47 +169,4 @@ void ClientApp::HandleUpdate(StringHash eventType, VariantMap& eventData)
         Options* options = GetSubsystem<Options>();
         options->SetFullscreen(!options->GetFullscreen());
     }
-}
-
-/**
-* Anything in the non-rendering logic that requires a second pass,
-* it might be well suited to be handled here.
-*/
-void ClientApp::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
-{
-    // We really don't have anything useful to do here for this example.
-    // Probably shouldn't be subscribing to events we don't care about.
-}
-
-/**
-* If you have any details you want to change before the viewport is
-* rendered, try putting it here.
-* See http://urho3d.github.io/documentation/1.32/_rendering.html
-* for details on how the rendering pipeline is setup.
-*/
-void ClientApp::HandleRenderUpdate(StringHash eventType, VariantMap & eventData)
-{
-    // We really don't have anything useful to do here for this example.
-    // Probably shouldn't be subscribing to events we don't care about.
-}
-
-/**
-* After everything is rendered, there might still be things you wish
-* to add to the rendering. At this point you cannot modify the scene,
-* only post rendering is allowed. Good for adding things like debug
-* artifacts on screen or brush up lighting, etc.
-*/
-void ClientApp::HandlePostRenderUpdate(StringHash eventType, VariantMap & eventData)
-{
-    // We could draw some debuggy looking thing for the octree.
-    // scene_->GetComponent<Octree>()->DrawDebugGeometry(true);
-}
-
-/**
-* All good things must come to an end.
-*/
-void ClientApp::HandleEndFrame(StringHash eventType, VariantMap& eventData)
-{
-    // We really don't have anything useful to do here for this example.
-    // Probably shouldn't be subscribing to events we don't care about.
 }

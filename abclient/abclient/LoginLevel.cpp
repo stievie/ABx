@@ -66,13 +66,26 @@ void LoginLevel::CreateUI()
     button_->SetEnabled(false);
     nameEdit_->SetFocus(true);
     SubscribeToEvent(button_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleLoginClicked));
+
+    SubscribeToEvent(nameEdit_, E_TEXTFINISHED, URHO3D_HANDLER(LoginLevel, HandleTextFinished));
+    SubscribeToEvent(passEdit_, E_TEXTFINISHED, URHO3D_HANDLER(LoginLevel, HandleTextFinished));
+
     createAccountButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateAccountButton", true));
     SubscribeToEvent(createAccountButton_, E_RELEASED, URHO3D_HANDLER(LoginLevel, HandleCreateAccountClicked));
 
-    Options* options = GetSubsystem<Options>();
-    nameEdit_->SetText(options->username_);
-    passEdit_->SetText(options->password_);
-    button_->SetEnabled(!(options->username_.Empty() || options->password_.Empty()));
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    if (!net->accountName_.Empty() && !net->accountPass_.Empty())
+    {
+        nameEdit_->SetText(net->accountName_);
+        passEdit_->SetText(net->accountPass_);
+    }
+    else
+    {
+        Options* options = GetSubsystem<Options>();
+        nameEdit_->SetText(options->username_);
+        passEdit_->SetText(options->password_);
+    }
+    button_->SetEnabled(!(nameEdit_->GetText().Empty() || passEdit_->GetText().Empty()));
 }
 
 void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -88,7 +101,7 @@ void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
     cameraNode_->Rotate(rot);
 }
 
-void LoginLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
+void LoginLevel::HandleTextFinished(StringHash eventType, VariantMap& eventData)
 {
     if (loggingIn_)
         return;
@@ -101,9 +114,7 @@ void LoginLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
     if (name.Empty() || pass.Empty())
         return;
 
-    int key = eventData[P_KEY].GetInt();
-    if (key == KEY_RETURN && (nameEdit_->HasFocus() || passEdit_->HasFocus()))
-        DoLogin();
+    DoLogin();
 }
 
 void LoginLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
@@ -143,5 +154,4 @@ void LoginLevel::SubscribeToEvents()
     BaseLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(LoginLevel, HandleUpdate));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(LoginLevel, HandleKeyDown));
-    SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(LoginLevel, HandleKeyUp));
 }

@@ -17,15 +17,15 @@ protected:
 
 private:
     bool loggingIn_;
-    LineEdit* nameEdit_;
-    LineEdit* passEdit_;
-    Button* button_;
-    Button* createAccountButton_;
+    SharedPtr<LineEdit> nameEdit_;
+    SharedPtr<LineEdit> passEdit_;
+    SharedPtr<Button> button_;
+    SharedPtr<Button> createAccountButton_;
     void CreateScene();
     void HandleLoginClicked(StringHash eventType, VariantMap& eventData);
     void HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleKeyUp(StringHash eventType, VariantMap& eventData);
+    void HandleTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void DoLogin();
 };
