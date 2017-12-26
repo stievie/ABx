@@ -48,13 +48,11 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
         world->RaycastSingle(query);
         if (!result.Empty())
         {
-            Drawable* res = result[0].drawable_;
-            Node* nd = res->GetNode();
-            unsigned id = nd->GetID();
-            SharedPtr<GameObject> object = objects_[id];
+            Node* nd = result[0].node_;
+            SharedPtr<GameObject> object = GetObjectFromNode(result[0].node_);
             if (object)
             {
-                chatWindow_->AddLine("Object selected, ID = " + String(id));
+                chatWindow_->AddLine("Object selected, ID = " + String(object->id_));
             }
         }
     }
@@ -194,7 +192,11 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
         break;
     }
     if (object)
+    {
         objects_[id] = object;
+        nodeIds_[object->GetNode()->GetID()] = id;
+        chatWindow_->AddLine("Object spawn ID = " + String(id));
+    }
 }
 
 void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)

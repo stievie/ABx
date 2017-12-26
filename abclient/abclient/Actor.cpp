@@ -26,8 +26,9 @@ void Actor::RegisterObject(Context* context)
 
 Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
 {
-    Node* objectNode = scene->CreateChild(id, Urho3D::LOCAL, false);
+    Node* objectNode = scene->CreateChild();
     Actor* result = objectNode->CreateComponent<Actor>();
+    result->id_ = id;
 
     Node* adjustNode = result->GetNode()->CreateChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));

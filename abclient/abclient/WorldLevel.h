@@ -25,6 +25,8 @@ protected:
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
+    /// Urho3D NodeIDs -> AB Object IDs given from the server
+    HashMap<uint32_t, uint32_t> nodeIds_;
     void CreateUI() override;
     void SubscribeToEvents() override;
     void Update(StringHash eventType, VariantMap& eventData) override;
@@ -32,6 +34,19 @@ protected:
 private:
     IntVector2 mouseDownPos_;
     bool rmbDown_;
+    SharedPtr<GameObject> GetObjectFromNode(Node* node)
+    {
+        unsigned id = node->GetID();
+        uint32_t objectId = nodeIds_[id];
+        if (objectId == 0 && node->GetParent())
+        {
+            id = node->GetParent()->GetID();
+            objectId = nodeIds_[id];
+        }
+        if (objectId != 0)
+            return objects_[objectId];
+        return SharedPtr<GameObject>();
+    }
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
