@@ -32,6 +32,7 @@ void GameMenu::CreateMenuBar()
     menuBar_->SetFixedWidth(menu_->GetWidth());
 
     Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
+    CreateMenuItem(popup, "Exit", URHO3D_HANDLER(GameMenu, HandleExitUsed));
     CreateMenuItem(popup, "Logout", URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
     CreateMenuItem(popup, "Select Character", URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
     CreateSeparator(popup);
@@ -82,6 +83,12 @@ Window* GameMenu::CreatePopup(Menu* baseMenu)
     baseMenu->SetPopup(popup);
     baseMenu->SetPopupOffset(IntVector2(0, baseMenu->GetHeight()));
     return popup;
+}
+
+void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
+{
+    Engine* engine = context_->GetSubsystem<Engine>();
+    engine->Exit();
 }
 
 void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)

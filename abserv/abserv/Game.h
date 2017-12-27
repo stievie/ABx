@@ -14,6 +14,7 @@ class Npc;
 
 enum GameType
 {
+    GameTypeUnknown = 0,
     GameTypeOutpost = 1,
     GameTypePvPCombat,
     GameTypeExploreable,

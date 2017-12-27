@@ -30,6 +30,10 @@ Database* Database::Instance()
         if (driver.compare("pgsql") == 0)
             instance_ = std::make_unique<DatabasePgsql>();
 #endif
+#ifdef USE_ODBC
+        if (driver.compare("odbc") == 0)
+            instance_ = std::make_unique<DatabaseOdbc>();
+#endif
         if (driver.compare("sqlite") == 0)
         {
             const std::string& dbFile = ConfigManager::Instance[ConfigManager::DBFile].GetString();

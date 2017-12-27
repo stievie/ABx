@@ -41,6 +41,11 @@ public:
 
     void Start(Net::ServiceManager* serviceManager);
     void Stop();
+    /// Creates a new game instance, e.g. when a group of players enters an instance
+    std::shared_ptr<Game> NewGame(const std::string& mapName)
+    {
+        return CreateGame(mapName);
+    }
     /// Returns the game with the mapName. If no such game exists it creates one.
     std::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
     bool AddPlayer(const std::string& mapName, std::shared_ptr<Player> player);

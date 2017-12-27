@@ -250,7 +250,7 @@ void Application::PrintServerInfo()
     LOG_INFO << std::endl;
 
     LOG_INFO << "Database drivers:";
-    LOG_INFO << " SQlite";   // We always have SQlite
+    LOG_INFO << " SQLite";   // We always have SQLite
 #ifdef USE_MYSQL
     LOG_INFO << " MySQL";
 #endif

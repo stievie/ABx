@@ -19,6 +19,7 @@ abserv [-conf <config file>] [-log <log dir>]
 * Kaguya https://github.com/satoren/kaguya
 * pugixml https://pugixml.org/
 * Recast & Detour https://github.com/recastnavigation/recastnavigation
+* SQLite https://sqlite.org/
 
 ### Client
 

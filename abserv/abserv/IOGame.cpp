@@ -54,4 +54,16 @@ std::string IOGame::GetLandingGame()
     return "";
 }
 
+Game::GameType IOGame::GetGameType(const std::string& mapName)
+{
+    Database* db = Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT `type` FROM `games` WHERE `name` = " << db->EscapeString(mapName);
+    std::shared_ptr<DBResult> result = db->StoreQuery(query.str());
+    if (result)
+        return static_cast<Game::GameType>(result->GetUInt("type"));
+    return Game::GameTypeUnknown;
+}
+
 }

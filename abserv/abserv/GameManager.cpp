@@ -75,13 +75,16 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
     const auto it = maps_.find(mapName);
     if (it == maps_.end())
     {
+        // Map does not exist
         if (!canCreate)
             return std::shared_ptr<Game>();
         return CreateGame(mapName);
     }
+    // There are already some games with this map
     for (const auto& g : it->second)
     {
-        if (g->GetPlayerCount() < GAME_MAX_PLAYER || !canCreate)
+        if (g->GetPlayerCount() < GAME_MAX_PLAYER &&
+            (g->GetState() == Game::GameStateRunning || g->GetState() == Game::GameStateStartup))
         {
             const auto git = games_.find(g->id_);
             return (*git).second;

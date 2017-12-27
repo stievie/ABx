@@ -14,6 +14,7 @@ public:
     static bool LoadGameByName(Game::Game* game, const std::string& name);
     static bool LoadGameById(Game::Game* game, uint32_t gameId);
     static std::string GetLandingGame();
+    static Game::GameType GetGameType(const std::string& mapName);
 };
 
 }
