@@ -164,6 +164,7 @@
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DataProvider.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="DatabaseOdbc.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
     <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DataProvider.cpp" />

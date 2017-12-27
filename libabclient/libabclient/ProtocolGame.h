@@ -47,9 +47,10 @@ protected:
     void ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseObjectStateChange(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectSelected(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
-    ~ProtocolGame();
+    ~ProtocolGame() = default;
 
     Receiver* receiver_;
 
@@ -60,6 +61,7 @@ public:
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
+    void SelectObject(uint32_t sourceId, uint32_t targetId);
 
 };
 

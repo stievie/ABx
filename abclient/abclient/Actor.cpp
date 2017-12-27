@@ -9,7 +9,8 @@ Actor::Actor(Context* context) :
     castShadows_(true),
     mesh_(String::EMPTY),
     animController_(nullptr),
-    model_(nullptr)
+    model_(nullptr),
+    selectedObject_(nullptr)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_UPDATE | USE_POSTUPDATE);

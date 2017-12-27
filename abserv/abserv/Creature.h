@@ -60,7 +60,7 @@ public:
 
     InputQueue inputs_;
     AB::GameProtocol::CreatureState creatureState_;
-    GameObject* selectedObject_;
+    std::weak_ptr<GameObject> selectedObject_;
 
     EffectList effects_;
     SkillBar skills_;

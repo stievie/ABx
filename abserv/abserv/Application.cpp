@@ -257,6 +257,9 @@ void Application::PrintServerInfo()
 #ifdef USE_PGSQL
     LOG_INFO << " PostgresSQL";
 #endif
+#ifdef USE_ODBC
+    LOG_INFO << " ODBC";
+#endif
     LOG_INFO << std::endl;
 }
 

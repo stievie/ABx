@@ -41,6 +41,7 @@ public:
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
+    void SelectObject(uint32_t sourceId, uint32_t targetId);
 
     void OnGetCharlist(const Client::CharList& chars) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
@@ -55,6 +56,7 @@ public:
     void OnObjectRot(uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
     void OnAccountCreated() override;
+    void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
 
     void SetState(Client::Client::ClientState state)
     {

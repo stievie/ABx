@@ -31,8 +31,7 @@ Creature::Creature() :
     GameObject(),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
-    turnDir_(AB::GameProtocol::TurnDirectionNone),
-    selectedObject_(nullptr)
+    turnDir_(AB::GameProtocol::TurnDirectionNone)
 {
 }
 
@@ -152,15 +151,28 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         case InputTypeSelect:
         {
-            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
-            selectedObject_ = GetGame()->GetObjectById(targetId);
-            message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-            message.Add<uint32_t>(id_);
-            if (selectedObject_)
-                message.Add<uint32_t>(selectedObject_->id_);
+            // If a player could control a NPC (e.g. Hero), the player can select
+            // targets for this NPC, so we also need the source ID.
+            uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
+
+            Creature* source = nullptr;
+            if (sourceId == id_)
+                source = this;
             else
-                // Clear Target
-                message.Add<uint32_t>(0);
+                source = dynamic_cast<Creature*>(GetGame()->GetObjectById(sourceId).get());
+
+            if (source)
+            {
+                source->selectedObject_ = GetGame()->GetObjectById(targetId);
+                message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+                message.Add<uint32_t>(source->id_);
+                if (auto sel = source->selectedObject_.lock())
+                    message.Add<uint32_t>(sel->id_);
+                else
+                    // Clear Target
+                    message.Add<uint32_t>(0);
+            }
             break;
         }
         case InputTypeCancelSkill:

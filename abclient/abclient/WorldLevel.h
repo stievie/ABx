@@ -55,6 +55,7 @@ private:
     void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleMenuLogout(StringHash eventType, VariantMap& eventData);
     void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
 

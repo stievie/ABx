@@ -134,7 +134,8 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeSelect:
     {
         Utils::VariantMap data;
-        data[Game::InputDataObjectId] = message.Get<uint32_t>();
+        data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
+        data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
         player_->inputs_.Add(Game::InputTypeSelect, data);
         break;
     }

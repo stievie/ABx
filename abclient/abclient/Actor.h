@@ -74,4 +74,5 @@ protected:
     HashMap<StringHash, String> sounds_;
 public:
     StaticModel* GetModel() const { return model_; }
+    WeakPtr<GameObject> selectedObject_;
 };

@@ -179,15 +179,15 @@ Player* Game::GetPlayerByName(const std::string& name)
     return nullptr;
 }
 
-GameObject* Game::GetObjectById(uint32_t objectId)
+std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 {
     auto it = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
     {
         return o->id_ == objectId;
     });
     if (it != objects_.end())
-        return (*it).get();
-    return nullptr;
+        return (*it);
+    return std::shared_ptr<GameObject>();
 }
 
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)

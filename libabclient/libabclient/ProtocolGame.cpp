@@ -11,10 +11,6 @@ ProtocolGame::ProtocolGame() :
     checksumEnabled_ = ProtocolGame::UseChecksum;
 }
 
-ProtocolGame::~ProtocolGame()
-{
-}
-
 void ProtocolGame::Login(const std::string& accountName,
     const std::string& accountPass, const std::string& charName,
     const std::string& map,
@@ -90,6 +86,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectStateChange:
             ParseObjectStateChange(message);
             break;
+        case AB::GameProtocol::GameObjectSelectTarget:
+            ParseObjectSelected(message);
+            break;
         }
     }
 }
@@ -109,6 +108,14 @@ void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& m
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectStateChange(objectId, state);
+}
+
+void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t sourceId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnObjectSelected(sourceId, targetId);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
@@ -234,6 +241,15 @@ void ProtocolGame::SetDirection(float rad)
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetDirection);
     msg->Add<float>(rad);
+    Send(msg);
+}
+
+void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSelect);
+    msg->Add<uint32_t>(sourceId);
+    msg->Add<uint32_t>(targetId);
     Send(msg);
 }
 

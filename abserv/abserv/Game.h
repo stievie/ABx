@@ -84,7 +84,7 @@ public:
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);
-    GameObject* GetObjectById(uint32_t objectId);
+    std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 

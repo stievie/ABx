@@ -27,5 +27,6 @@ public:
 
     virtual void SetYRotation(float rad, bool updateYaw);
     float GetYRotation();
+    bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
 };
 

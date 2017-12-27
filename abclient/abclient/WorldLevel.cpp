@@ -22,6 +22,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECT_POS_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
     SubscribeToEvent(AbEvents::E_OBJECT_ROT_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
     SubscribeToEvent(AbEvents::E_OBJECT_SATE_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECT_SELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
@@ -50,9 +51,10 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
         {
             Node* nd = result[0].node_;
             SharedPtr<GameObject> object = GetObjectFromNode(result[0].node_);
-            if (object)
+            if (object && object->IsSelectable())
             {
-                chatWindow_->AddLine("Object selected, ID = " + String(object->id_));
+                FwClient* client = context_->GetSubsystem<FwClient>();
+                client->SelectObject(player_->id_, object->id_);
             }
         }
     }
@@ -84,13 +86,6 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
 {
     UNREFERENCED_PARAMETER(eventType);
     UNREFERENCED_PARAMETER(eventData);
-
-/*
-    FwClient* c = context_->GetSubsystem<FwClient>();
-    std::stringstream s;
-    s << "Avg. Ping " << c->GetAvgPing() << " Last Ping " << c->GetLastPing();
-    pingLabel_->SetText(String(s.str().c_str()));
-    */
 
     using namespace Update;
 
@@ -202,12 +197,15 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
 void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)
 {
     uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
-    GameObject* object = objects_[objectId];
+    SharedPtr<GameObject> object = objects_[objectId];
     if (object)
     {
         object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
             chatWindow_->AddLine("Player left");
+        // If the player has selected this object -> unselect it
+        if (player_->selectedObject_ == object)
+            player_->selectedObject_.Reset();
         objects_.Erase(objectId);
     }
 }
@@ -243,6 +241,31 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
     if (object)
     {
         object->creatureState_ = static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt());
+    }
+}
+
+void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventData)
+{
+    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    uint32_t targetId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID2].GetInt());
+    SharedPtr<GameObject> object = objects_[objectId];
+    if (object)
+    {
+        Actor* actor = dynamic_cast<Actor*>(object.Get());
+        if (actor)
+        {
+            if (targetId != 0)
+            {
+                SharedPtr<GameObject> target = objects_[targetId];
+                if (target)
+                {
+                    chatWindow_->AddLine("Object " + String(object->id_) + " selected " + String(target->id_));
+                    actor->selectedObject_ = target;
+                }
+            }
+            else
+                actor->selectedObject_ = nullptr;
+        }
     }
 }
 

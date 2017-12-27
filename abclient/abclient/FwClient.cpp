@@ -156,6 +156,12 @@ void FwClient::SetDirection(float rad)
         client_.SetDirection(rad);
 }
 
+void FwClient::SelectObject(uint32_t sourceId, uint32_t targetId)
+{
+    if (loggedIn_)
+        client_.SelectObject(sourceId, targetId);
+}
+
 void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
     levelReady_ = false;
@@ -264,4 +270,12 @@ void FwClient::OnAccountCreated()
 {
     // After successful account creation login with this credentials
     Login(accountName_, accountPass_);
+}
+
+void FwClient::OnObjectSelected(uint32_t sourceId, uint32_t targetId)
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_OBJECT_ID] = sourceId;
+    eData[AbEvents::ED_OBJECT_ID2] = targetId;
+    QueueEvent(AbEvents::E_OBJECT_SELECTED, eData);
 }

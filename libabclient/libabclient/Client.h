@@ -60,6 +60,7 @@ public:
     void OnObjectRot(uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
     void OnAccountCreated() override;
+    void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
 
     std::string loginHost_;
     uint16_t loginPort_;
@@ -91,6 +92,7 @@ public:
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
+    void SelectObject(uint32_t sourceId, uint32_t targetId);
 };
 
 }

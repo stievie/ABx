@@ -23,6 +23,7 @@ enum InputDataType
     InputDataDirection   = 1,
     InputDataSkillIndex  = 3,    // The index of the skill in the skill bar
     InputDataObjectId    = 4,
+    InputDataObjectId2   = 5,
 };
 
 struct InputItem

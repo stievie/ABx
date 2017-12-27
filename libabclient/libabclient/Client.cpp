@@ -74,6 +74,12 @@ void Client::OnAccountCreated()
         receiver_->OnAccountCreated();
 }
 
+void Client::OnObjectSelected(uint32_t sourceId, uint32_t targetId)
+{
+    if (receiver_)
+        receiver_->OnObjectSelected(sourceId, targetId);
+}
+
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
@@ -200,6 +206,12 @@ void Client::SetDirection(float rad)
 {
     if (state_ == StateWorld)
         protoGame_->SetDirection(rad);
+}
+
+void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
+{
+    if (state_ == StateWorld)
+        protoGame_->SelectObject(sourceId, targetId);
 }
 
 }

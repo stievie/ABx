@@ -207,6 +207,9 @@
     <ClInclude Include="DatabaseSqlite.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DatabaseOdbc.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -381,6 +384,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseSqlite.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseOdbc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
