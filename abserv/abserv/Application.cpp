@@ -19,7 +19,6 @@
 #include "Aes.h"
 #include "SkillManager.h"
 #include "Skill.h"
-#include "IOSkills.h"
 #include "IOEffects.h"
 #include "EffectManager.h"
 #include "DataProvider.h"
@@ -194,10 +193,10 @@ void Application::MainLoader()
 
     {
         LOG_INFO << "Loading game data...";
-        IO::IOSkills::Load(Game::SkillManager::Instance, IO::DataProvider::Instance.GetDataFile("/skills/skills.xml"));
+        Game::SkillManager::Instance.Load(IO::DataProvider::Instance.GetDataFile("/skills/skills.db"));
         IO::IOEffects::Load(Game::EffectManager::Instance, IO::DataProvider::Instance.GetDataFile("/effects/effects.xml"));
         LOG_INFO << "[done]" << std::endl;
-        //std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
+//        std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
     }
 
     // Add Protocols
@@ -251,11 +250,12 @@ void Application::PrintServerInfo()
     LOG_INFO << std::endl;
 
     LOG_INFO << "Database drivers:";
+    LOG_INFO << " SQlite";   // We always have SQlite
 #ifdef USE_MYSQL
-    LOG_INFO << "\tMySQL";
+    LOG_INFO << " MySQL";
 #endif
 #ifdef USE_PGSQL
-    LOG_INFO << "\tPostgresSQL";
+    LOG_INFO << " PostgresSQL";
 #endif
     LOG_INFO << std::endl;
 }

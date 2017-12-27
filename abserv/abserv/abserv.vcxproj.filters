@@ -162,9 +162,6 @@
     <ClInclude Include="SkillManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IOSkills.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="EffectManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -205,6 +202,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Transformation.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseSqlite.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -338,9 +338,6 @@
     <ClCompile Include="SkillManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="IOSkills.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -381,6 +378,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Transformation.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DatabaseSqlite.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

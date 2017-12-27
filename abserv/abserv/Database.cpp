@@ -8,7 +8,7 @@
 #ifdef USE_PGSQL
 #include "DatabasePgsql.h"
 #endif // USE_PGSQL
-
+#include "DatabaseSqlite.h"
 
 #include "DebugNew.h"
 
@@ -30,6 +30,11 @@ Database* Database::Instance()
         if (driver.compare("pgsql") == 0)
             instance_ = std::make_unique<DatabasePgsql>();
 #endif
+        if (driver.compare("sqlite") == 0)
+        {
+            const std::string& dbFile = ConfigManager::Instance[ConfigManager::DBFile].GetString();
+            instance_ = std::make_unique<DatabaseSqlite>(dbFile);
+        }
         if (!instance_)
         {
             LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;

@@ -165,6 +165,7 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="DatabasePgsql.h" />
+    <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
@@ -188,7 +189,6 @@
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
-    <ClInclude Include="IOSkills.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Maintenance.h" />
     <ClInclude Include="Map.h" />
@@ -231,6 +231,7 @@
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
+    <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
@@ -251,7 +252,6 @@
     <ClCompile Include="IOGuild.cpp" />
     <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
-    <ClCompile Include="IOSkills.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maintenance.cpp" />

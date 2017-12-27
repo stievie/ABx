@@ -30,6 +30,7 @@ public:
         DBUser,
         DBPass,
         DBName,
+        DBFile,
 
         StatusQueryTimeout,
         MaxPacketsPerSecond,

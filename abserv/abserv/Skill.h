@@ -8,6 +8,7 @@ class Creature;
 
 enum SkillType : uint32_t
 {
+    SkillTypeUnknown = 0,
     SkillTypeAttack = 1,
         SkillTypeRangedAttack        = SkillTypeAttack | 1 << 8,
             SkillTypeBowAttack           = SkillTypeRangedAttack | 1 << 16,
@@ -59,7 +60,15 @@ public:
     explicit Skill(uint32_t id) :
         id_(id),
         startUse_(0),
-        recharged_(0)
+        recharged_(0),
+        source_(nullptr),
+        target_(nullptr),
+        type_(SkillTypeUnknown),
+        energy_(0),
+        adrenaline_(0),
+        activation_(0),
+        recharge_(0),
+        overcast_(0)
     {
         InitializeLua();
     }
