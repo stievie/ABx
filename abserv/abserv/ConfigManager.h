@@ -44,6 +44,8 @@ public:
         LoginTries,
         LoginTimeout,
         LoginRetryTimeout,
+
+        PlayerLevelCap,
     };
 private:
     lua_State* L;

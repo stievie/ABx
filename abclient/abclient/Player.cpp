@@ -3,6 +3,8 @@
 #include "FwClient.h"
 #include "MathUtils.h"
 
+#include <Urho3D/DebugNew.h>
+
 Player::Player(Context* context) :
     Actor(context),
     lastMoveDir_(AB::GameProtocol::MoveDirectionNone),

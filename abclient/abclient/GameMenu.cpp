@@ -3,6 +3,8 @@
 #include "AbEvents.h"
 #include "FwClient.h"
 
+#include <Urho3D/DebugNew.h>
+
 void GameMenu::RegisterObject(Context* context)
 {
     context->RegisterFactory<GameMenu>();

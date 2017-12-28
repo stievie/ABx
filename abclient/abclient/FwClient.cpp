@@ -6,6 +6,8 @@
 #include <AB/ProtocolCodes.h>
 #include "Options.h"
 
+#include <Urho3D/DebugNew.h>
+
 String FwClient::GetProtocolErrorMessage(uint8_t err)
 {
     switch (err)
@@ -36,6 +38,16 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Internal Error.";
     case AB::Errors::AccountNameExists:
         return "Login Name already exists.";
+    case AB::Errors::InvalidCharacterName:
+        return "Invalid character name.";
+    case AB::Errors::InvalidProfession:
+        return "Invalid profession.";
+    case AB::Errors::PlayerNameExists:
+        return "Character name already exists.";
+    case AB::Errors::InvalidAccount:
+        return "Invalid Account.";
+    case AB::Errors::InvalidPlayerSex:
+        return "Invalid character gender.";
     default:
         return "";
     }
@@ -121,6 +133,15 @@ void FwClient::CreateAccount(const String& name, const String& pass, const Strin
         accountPass_ = pass;
         client_.CreateAccount(std::string(name.CString()), std::string(pass.CString()),
             std::string(email.CString()), std::string(accKey.CString()));
+    }
+}
+
+void FwClient::CreatePlayer(const String& name, const String& prof, PlayerSex sex, bool isPvp)
+{
+    if (loggedIn_)
+    {
+        client_.CreatePlayer(std::string(accountName_.CString()), std::string(accountPass_.CString()),
+            std::string(name.CString()), std::string(prof.CString()), sex, isPvp);
     }
 }
 
@@ -270,6 +291,11 @@ void FwClient::OnAccountCreated()
 {
     // After successful account creation login with this credentials
     Login(accountName_, accountPass_);
+}
+
+void FwClient::OnPlayerCreated(const std::string& name, const std::string& map)
+{
+    EnterWorld(String(name.c_str()), String(map.c_str()));
 }
 
 void FwClient::OnObjectSelected(uint32_t sourceId, uint32_t targetId)

@@ -4,6 +4,8 @@
 #include "AbEvents.h"
 #include "LevelManager.h"
 
+#include <Urho3D/DebugNew.h>
+
 OutpostLevel::OutpostLevel(Context* context) :
     WorldLevel(context)
 {

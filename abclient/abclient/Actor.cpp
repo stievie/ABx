@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "Actor.h"
 
+#include <Urho3D/DebugNew.h>
+
 Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),

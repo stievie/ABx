@@ -7,6 +7,8 @@
 #include "LevelManager.h"
 #include "MathUtils.h"
 
+#include <Urho3D/DebugNew.h>
+
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
     rmbDown_(false)

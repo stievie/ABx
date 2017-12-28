@@ -74,6 +74,12 @@ void Client::OnAccountCreated()
         receiver_->OnAccountCreated();
 }
 
+void Client::OnPlayerCreated(const std::string& name, const std::string& map)
+{
+    if (receiver_)
+        receiver_->OnPlayerCreated(name, map);
+}
+
 void Client::OnObjectSelected(uint32_t sourceId, uint32_t targetId)
 {
     if (receiver_)
@@ -139,6 +145,24 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
     protoLogin_->CreateAccount(loginHost_, loginPort_, name, pass,
         email, accKey,
         std::bind(&Client::OnAccountCreated, this));
+    Connection::Run();
+}
+
+void Client::CreatePlayer(const std::string& account, const std::string& password,
+    const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp)
+{
+    if (state_ != StateSelectChar)
+        return;
+
+    accountName_ = account;
+    password_ = password;
+
+    protoLogin_ = std::make_shared<ProtocolLogin>();
+    protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
+    protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
+    protoLogin_->CreatePlayer(loginHost_, loginPort_, account, password,
+        charName, prof, sex, isPvp,
+        std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
     Connection::Run();
 }
 

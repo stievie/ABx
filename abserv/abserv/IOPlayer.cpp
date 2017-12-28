@@ -3,6 +3,7 @@
 #include "PropStream.h"
 #include "IOGame.h"
 #include "Utils.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
@@ -114,6 +115,57 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 
     // End transaction
     return transaction.Commit();
+}
+
+IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
+    std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp)
+{
+    Database* db = Database::Instance();
+    std::ostringstream query;
+    std::shared_ptr<DBResult> result;
+    query << "SELECT COUNT(`id`) AS c FROM `accounts` WHERE `id` = " << accountId;
+    result = db->StoreQuery(query.str());
+    if (!result)
+        return ResultInternalError;
+    if (result->GetUInt("c") != 1)
+        return ResultInvalidAccount;
+
+    query.str("");
+    query << "SELECT COUNT(`id`) FROM `players` WHERE `name` = " << db->EscapeString(name);
+    result = db->StoreQuery(query.str());
+    if (!result)
+        return ResultInternalError;
+    if (result->GetUInt("c") != 0)
+        return ResultNameExists;
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return ResultInternalError;
+
+    unsigned level = 1;
+    if (isPvp)
+    {
+        level = ConfigManager::Instance[ConfigManager::Key::PlayerLevelCap].GetInt();
+    }
+
+    query.str("");
+    query << "INSERT INTO `players` (`profession`, `name`, `sex`, `pvp`, `account_id`, `level`, `creation`) VALUES (";
+    query << db->EscapeString(prof) << ", ";
+    query << db->EscapeString(name) << ", ";
+    query << static_cast<uint32_t>(sex) << ", ";
+    query << (isPvp ? 1 : 0) << ", ";
+    query << accountId << ", ";
+    query << level << ", ";
+    query << Utils::AbTick();
+    query << ")";
+    if (!db->ExecuteQuery(query.str()))
+        return ResultInternalError;
+
+    // End transaction
+    if (!transaction.Commit())
+        return ResultInternalError;
+
+    return ResultOK;
 }
 
 }

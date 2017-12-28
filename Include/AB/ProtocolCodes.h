@@ -39,6 +39,11 @@ enum ErrorCodes : uint8_t
     InvalidAccountKey = 0x0c,
     UnknownError = 0x0d,
     AccountNameExists = 0x0e,
+    InvalidCharacterName = 0x0f,
+    InvalidProfession = 0x10,
+    PlayerNameExists = 0x11,
+    InvalidAccount = 0x12,
+    InvalidPlayerSex = 0x13,
 };
 
 }
@@ -49,6 +54,8 @@ enum LoginPacketTypes : uint8_t
 {
     LoginLogin = 0x01,
     LoginCreateAccount = 0x02,
+    LoginCreateCharacter = 0x03,
+    LoginDeleteCharacter = 0x04
 };
 
 /// Returned by the server
@@ -59,6 +66,8 @@ enum LoginProtocolCodes : uint8_t
     KeyExchange = 0x03,
     CreateAccountError = 0x04,
     CreateAccountSuccess = 0x05,
+    CreatePlayerError = 0x06,
+    CreatePlayerSuccess = 0x07,
 };
 
 }

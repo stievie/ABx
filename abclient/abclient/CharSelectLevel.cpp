@@ -4,6 +4,8 @@
 #include "Account.h"
 #include "AbEvents.h"
 
+#include <Urho3D/DebugNew.h>
+
 CharSelectLevel::CharSelectLevel(Context* context) :
     BaseLevel(context)
 {
@@ -72,7 +74,12 @@ void CharSelectLevel::CreateUI()
             Text* t = new Text(context_);
             t->SetAlignment(HA_CENTER, VA_CENTER);
             t->SetName("CharacterName");
-            t->SetText(String(ch.name.c_str()));
+            String text = String(ch.prof.c_str());
+            if (!ch.prof2.empty())
+                text += "/" + String(ch.prof2.c_str());
+            text += String(ch.level);
+            text += " " + String(ch.name.c_str());
+            t->SetText(text);
             t->SetStyle("Text");
             button->AddChild(t);
         }
@@ -137,7 +144,7 @@ void CharSelectLevel::CreateScene()
 
 void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventData)
 {
-    Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetVoidPtr());
+    Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
     int index = std::atoi(sender->GetName().CString());
     FwClient* net = context_->GetSubsystem<FwClient>();
     String name = String(net->GetCharacters()[index].name.c_str());

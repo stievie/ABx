@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ChatWindow.h"
 
+#include <Urho3D/DebugNew.h>
 
 ChatWindow::ChatWindow(Context* context) :
     UIElement(context)
@@ -43,13 +44,13 @@ void ChatWindow::RegisterObject(Context* context)
 void ChatWindow::HandleHoverBegin(StringHash eventType, VariantMap& eventData)
 {
     using namespace HoverBegin;
-    UIElement* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetVoidPtr());
+    UIElement* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
 }
 
 void ChatWindow::HandleHoverEnd(StringHash eventType, VariantMap& eventData)
 {
     using namespace HoverEnd;
-    UIElement* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetVoidPtr());
+    UIElement* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
 }
 
 void ChatWindow::HandleTextChanged(StringHash eventType, VariantMap& eventData)
@@ -61,7 +62,7 @@ void ChatWindow::HandleTextFinished(StringHash eventType, VariantMap& eventData)
 {
     using namespace TextFinished;
 
-    String line = chatEdit_->GetText();
+    String line = eventData[P_TEXT].GetString();
     if (!line.Empty())
     {
     }

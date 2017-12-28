@@ -16,6 +16,7 @@ public:
     bool Load(const std::string& file);
 
     std::shared_ptr<Skill> Get(uint32_t id);
+    uint32_t GetProfessionId(const std::string& abbr);
 public:
     static SkillManager Instance;
 };

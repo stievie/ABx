@@ -5,6 +5,8 @@
 #include <Urho3D/UI/MessageBox.h>
 #include "FwClient.h"
 
+#include <Urho3D/DebugNew.h>
+
 void BaseLevel::Run()
 {
     if (scene_)

@@ -7,6 +7,7 @@
 #include "Account.h"
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
+#include "Structs.h"
 
 namespace Client {
 
@@ -19,23 +20,31 @@ public:
     enum { UseChecksum = true };
     typedef std::function<void(const CharList& chars)> CharlistCallback;
     typedef std::function<void()> CreateAccountCallback;
+    typedef std::function<void(const std::string& name, const std::string& map)> CreatePlayerCallback;
 private:
     enum ProtocolAction
     {
         ActionUnknown,
         ActionLogin,
-        ActionCreateAccount
+        ActionCreateAccount,
+        ActionCreatePlayer
     };
     ProtocolAction action_;
     std::string accountName_;
     std::string password_;
     std::string email_;
     std::string accKey_;
+    std::string charName_;
+    std::string prof_;
+    PlayerSex sex_;
+    bool isPvp_;
     bool firstRecv_;
     CharlistCallback charlistCallback;
     CreateAccountCallback createAccCallback_;
+    CreatePlayerCallback createPlayerCallback_;
     void SendLoginPacket();
     void SendCreateAccountPacket();
+    void SendCreatePlayerPacket();
     void SendKeyExchange();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
@@ -52,6 +61,10 @@ public:
         const std::string& account, const std::string& password,
         const std::string& email, const std::string& accKey,
         const CreateAccountCallback& callback);
+    void CreatePlayer(std::string& host, uint16_t port,
+        const std::string& account, const std::string& password,
+        const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp,
+        const CreatePlayerCallback& callback);
 
     std::string gameHost_;
     uint16_t gamePort_;

@@ -2,6 +2,8 @@
 #include "PingDot.h"
 #include "FwClient.h"
 
+#include <Urho3D/DebugNew.h>
+
 void PingDot::RegisterObject(Context* context)
 {
     context->RegisterFactory<PingDot>();

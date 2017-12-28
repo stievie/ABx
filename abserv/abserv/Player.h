@@ -12,6 +12,7 @@ class PlayerManager;
 
 enum PlayerSex
 {
+    PlayerSexUnknown = 0,
     PlayerSexFemale,
     PlayerSexMale
 };

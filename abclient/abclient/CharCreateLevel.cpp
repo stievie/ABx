@@ -1,5 +1,10 @@
 #include "stdafx.h"
 #include "CharCreateLevel.h"
+#include "AbEvents.h"
+#include "Structs.h"
+#include "FwClient.h"
+
+#include <Urho3D/DebugNew.h>
 
 CharCreateLevel::CharCreateLevel(Context* context) :
     BaseLevel(context)
@@ -38,6 +43,88 @@ void CharCreateLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
+
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile *chatFile = cache->GetResource<XMLFile>("UI/CreateCharacterWindow.xml");
+    uiRoot_->LoadChildXML(chatFile->GetRoot());
+
+    nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("CharacterNameEdit", true));
+    professionDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("ProfessionDropDown", true));
+    sexDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("GenderDropDown", true));
+    createButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateButton", true));
+    cancelButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CancelButton", true));
+    SubscribeToEvent(createButton_, E_RELEASED, URHO3D_HANDLER(CharCreateLevel, HandleCreateClicked));
+    SubscribeToEvent(cancelButton_, E_RELEASED, URHO3D_HANDLER(CharCreateLevel, HandleCancelClicked));
+
+    professionDropdown_->GetPopup()->SetWidth(professionDropdown_->GetWidth());
+    professionDropdown_->AddItem(CreateDropdownItem("(Select primary Profession)", ""));
+    // TODO:
+    professionDropdown_->AddItem(CreateDropdownItem("Warrior", "W"));
+    professionDropdown_->AddItem(CreateDropdownItem("Ranger", "R"));
+    professionDropdown_->AddItem(CreateDropdownItem("Monk", "Mo"));
+    professionDropdown_->AddItem(CreateDropdownItem("Nercromancer", "N"));
+    professionDropdown_->AddItem(CreateDropdownItem("Mesmer", "Me"));
+    professionDropdown_->AddItem(CreateDropdownItem("Elementarist", "E"));
+
+    sexDropdown_->GetPopup()->SetWidth(sexDropdown_->GetWidth());
+    sexDropdown_->AddItem(CreateDropdownItem("(Select Gender)", static_cast<uint32_t>(PlayerSexUnknown)));
+    sexDropdown_->AddItem(CreateDropdownItem("Female", static_cast<uint32_t>(PlayerSexFemale)));
+    sexDropdown_->AddItem(CreateDropdownItem("Male", static_cast<uint32_t>(PlayerSexMale)));
+
+    nameEdit_->SetFocus(true);
+}
+
+Text* CharCreateLevel::CreateDropdownItem(const String& text, uint32_t value)
+{
+    Text* result = new Text(context_);
+    result->SetText(text);
+    result->SetVar("Int Value", value);
+    result->SetStyle("DropDownItemEnumText");
+    return result;
+}
+
+Text * CharCreateLevel::CreateDropdownItem(const String& text, const String& value)
+{
+    Text* result = new Text(context_);
+    result->SetText(text);
+    result->SetVar("String Value", value);
+    result->SetStyle("DropDownItemEnumText");
+    return result;
+}
+
+void CharCreateLevel::DoCreateCharacter()
+{
+    String name = nameEdit_->GetText();
+    if (name.Empty())
+    {
+        ShowError("Please enter a name for your character.");
+        return;
+    }
+    Text* profTxt = dynamic_cast<Text*>(professionDropdown_->GetSelectedItem());
+    String prof = profTxt->GetVar("String Value").GetString();
+    if (prof.Empty())
+    {
+        ShowError("Please select the primary profession of your character.");
+        return;
+    }
+
+    Text* sexTxt = dynamic_cast<Text*>(sexDropdown_->GetSelectedItem());
+    uint32_t sex = sexTxt->GetVar("Int Value").GetInt();
+    if (sex == 0 || sex > PlayerSexMale)
+    {
+        ShowError("Please select the gender of your character.");
+        return;
+    }
+
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    client->CreatePlayer(name, prof, static_cast<PlayerSex>(sex), true);
+}
+
+void CharCreateLevel::DoCancel()
+{
+    VariantMap& e = GetEventDataMap();
+    e[AbEvents::E_SET_LEVEL] = "CharSelectLevel";
+    SendEvent(AbEvents::E_SET_LEVEL, e);
 }
 
 void CharCreateLevel::CreateScene()
@@ -59,4 +146,14 @@ void CharCreateLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
     Quaternion rot;
     rot.FromAngleAxis(timeStep, Vector3(0.0f, 1.0f, 0.0f));
     cameraNode_->Rotate(rot);
+}
+
+void CharCreateLevel::HandleCreateClicked(StringHash eventType, VariantMap & eventData)
+{
+    DoCreateCharacter();
+}
+
+void CharCreateLevel::HandleCancelClicked(StringHash eventType, VariantMap & eventData)
+{
+    DoCancel();
 }

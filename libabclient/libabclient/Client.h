@@ -6,6 +6,7 @@
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
+#include "Structs.h"
 
 namespace Client {
 
@@ -44,6 +45,9 @@ public:
     void Logout();
     void CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
+    void CreatePlayer(const std::string& account, const std::string& password,
+        const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp);
+
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
     void Update(int timeElapsed);
@@ -60,6 +64,7 @@ public:
     void OnObjectRot(uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
     void OnAccountCreated() override;
+    void OnPlayerCreated(const std::string& name, const std::string& map) override;
     void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
 
     std::string loginHost_;

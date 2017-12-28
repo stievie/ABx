@@ -371,11 +371,11 @@
         <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
         <attribute name="Font Size" value="9" />
     </element>
-    <element type="EditorAttributeText" auto="false">
+    <element type="DropdownItemText" auto="false">
         <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
-        <attribute name="Font Size" value="9" />
+        <attribute name="Font Size" value="11" />
     </element>
-    <element type="EditorEnumAttributeText" style="EditorAttributeText" auto="false">
+    <element type="DropDownItemEnumText" style="DropdownItemText" auto="false">
         <attribute name="Is Enabled" value="true" />
         <attribute name="Selection Color" value="0.2 0.225 0.35 1" />
         <attribute name="Hover Color" value="0.3 0.4 0.7 1" />

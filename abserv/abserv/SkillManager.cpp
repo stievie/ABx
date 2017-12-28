@@ -32,4 +32,15 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t id)
     return std::shared_ptr<Skill>();
 }
 
+uint32_t SkillManager::GetProfessionId(const std::string& abbr)
+{
+    std::ostringstream query;
+    query << "SELECT `id` FROM `professions` WHERE `abbr` = " << database_->EscapeString(abbr);
+    std::shared_ptr<DB::DBResult> dbRes = database_->StoreQuery(query.str());
+    if (!dbRes)
+        return 0;
+
+    return dbRes->GetUInt("id");
+}
+
 }

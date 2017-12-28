@@ -4,6 +4,8 @@
 #include "FwClient.h"
 #include "Options.h"
 
+#include <Urho3D/DebugNew.h>
+
 LoginLevel::LoginLevel(Context* context) :
     BaseLevel(context),
     loggingIn_(false)

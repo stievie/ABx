@@ -2,6 +2,8 @@
 #include "LevelManager.h"
 #include "BaseLevel.h"
 
+#include <Urho3D/DebugNew.h>
+
 LevelManager::LevelManager(Context* context) :
     Object(context),
     fadeWindow_(nullptr),

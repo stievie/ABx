@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "MathUtils.h"
 
+#include <Urho3D/DebugNew.h>
+
 GameObject::GameObject(Context* context) :
     LogicComponent(context),
     objectType_(ObjectTypeStatic),

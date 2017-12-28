@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Options.h"
 
+#include <Urho3D/DebugNew.h>
+
 Options::Options(Context* context) :
     Object(context),
     width_(0),

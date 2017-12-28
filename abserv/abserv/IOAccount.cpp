@@ -100,7 +100,7 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
 
     std::string landingGame = IOGame::GetLandingGame();
     query.str("");
-    query << "SELECT `id`, `level`, `name`, `last_map` FROM `players` WHERE `deleted` = 0 AND `account_id` = " << account.id_;
+    query << "SELECT `id`, `level`, `name`, `profession`, `profession2`, `last_map` FROM `players` WHERE `deleted` = 0 AND `account_id` = " << account.id_;
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         std::string lastMap = result->GetString("last_map");
@@ -111,6 +111,8 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
             result->GetUInt("id"),
             static_cast<uint16_t>(result->GetUInt("level")),
             result->GetString("name"),
+            result->GetString("profession"),
+            result->GetString("profession2"),
             lastMap
         };
         account.characters_.push_back(character);

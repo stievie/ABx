@@ -4,6 +4,7 @@
 #include "Receiver.h"
 #include "Account.h"
 #include <AB/ProtocolCodes.h>
+#include "Structs.h"
 
 struct EventItem
 {
@@ -36,6 +37,7 @@ public:
     void Stop();
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
+    void CreatePlayer(const String& name, const String& prof, PlayerSex sex, bool isPvp);
     void EnterWorld(const String& charName, const String& map);
     void Logout();
     void Move(uint8_t direction);
@@ -56,6 +58,7 @@ public:
     void OnObjectRot(uint32_t id, float rot, bool manual) override;
     void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
     void OnAccountCreated() override;
+    void OnPlayerCreated(const std::string& name, const std::string& map) override;
     void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
 
     void SetState(Client::Client::ClientState state)

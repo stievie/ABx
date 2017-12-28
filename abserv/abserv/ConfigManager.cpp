@@ -129,6 +129,8 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::LoginTimeout] = (int)GetGlobal("login_timeout", 60 * 1000);
     config_[Key::LoginRetryTimeout] = (int)GetGlobal("login_retrytimeout", 5000);
 
+    config_[Key::PlayerLevelCap] = (int)GetGlobal("level_cap", 20);
+
     lua_close(L);
     L = nullptr;
 

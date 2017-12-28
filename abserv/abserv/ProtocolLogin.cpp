@@ -9,6 +9,9 @@
 #include "ConfigManager.h"
 #include <AB/ProtocolCodes.h>
 #include "PlayerManager.h"
+#include "SkillManager.h"
+#include "IOPlayer.h"
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
@@ -47,6 +50,12 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
         break;
     case AB::LoginProtocol::LoginCreateAccount:
         HandleCreateAccountPacket(message);
+        break;
+    case AB::LoginProtocol::LoginCreateCharacter:
+        HandleCreateCharacterPacket(message);
+        break;
+    case AB::LoginProtocol::LoginDeleteCharacter:
+        HandleDeleteCharacterPacket(message);
         break;
     }
 }
@@ -116,6 +125,72 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
     );
 }
 
+void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
+{
+    std::string accountName = message.GetString();
+    if (accountName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountName);
+        return;
+    }
+    std::string password = message.GetString();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+    std::string charName = message.GetString();
+    if (charName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidCharacterName);
+        return;
+    }
+    Game::PlayerSex sex = static_cast<Game::PlayerSex>(message.GetByte());
+    if (sex == Game::PlayerSexUnknown || sex > Game::PlayerSexMale)
+    {
+        DisconnectClient(AB::Errors::InvalidPlayerSex);
+        return;
+    }
+    std::string prof = message.GetString();
+    if (prof.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidProfession);
+        return;
+    }
+    uint32_t profId = Game::SkillManager::Instance.GetProfessionId(prof);
+    if (profId == 0)
+    {
+        DisconnectClient(AB::Errors::InvalidProfession);
+        return;
+    }
+    bool isPvp = message.GetByte() != 0;
+    std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(
+            &ProtocolLogin::CreatePlayer, thisPtr,
+            accountName, password,
+            charName, prof, sex, isPvp
+        ))
+    );
+}
+
+void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
+{
+    std::string accountName = message.GetString();
+    if (accountName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountName);
+        return;
+    }
+    std::string password = message.GetString();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+    uint32_t charId = message.Get<uint32_t>();
+}
+
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     Account account;
@@ -147,6 +222,8 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         output->Add<uint32_t>(character.id);
         output->Add<uint16_t>(character.level);
         output->AddString(character.name);
+        output->AddString(character.prof);
+        output->AddString(character.prof2);
         output->AddString(character.lastMap);
     }
 
@@ -175,6 +252,51 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
             break;
         case DB::IOAccount::ResultInvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
+            break;
+        default:
+            output->AddByte(AB::Errors::UnknownError);
+            break;
+        }
+    }
+
+    Send(output);
+    Disconnect();
+}
+
+void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::string& password,
+    std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp)
+{
+    Account account;
+    bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    if (!authRes)
+    {
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    }
+
+    DB::IOPlayer::CreatePlayerResult res = DB::IOPlayer::CreatePlayer(
+        account.id_, name, prof, sex, isPvp
+    );
+
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+
+    if (res == DB::IOPlayer::ResultOK)
+    {
+        output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
+        output->AddString(name);
+        output->AddString(DB::IOGame::GetLandingGame());
+    }
+    else
+    {
+        output->AddByte(AB::LoginProtocol::CreatePlayerError);
+        switch (res)
+        {
+        case DB::IOPlayer::ResultNameExists:
+            output->AddByte(AB::Errors::PlayerNameExists);
+            break;
+        case DB::IOPlayer::ResultInvalidAccount:
+            output->AddByte(AB::Errors::InvalidAccount);
             break;
         default:
             output->AddByte(AB::Errors::UnknownError);
