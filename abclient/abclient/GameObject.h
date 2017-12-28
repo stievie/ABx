@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/ProtocolCodes.h>
+#include "PropStream.h"
 
 enum ObjectType
 {
@@ -24,6 +25,8 @@ public:
     unsigned index_;
     ObjectType objectType_;
     AB::GameProtocol::CreatureState creatureState_;
+
+    virtual void Unserialize(PropReadStream& data) {}
 
     virtual void SetYRotation(float rad, bool updateYaw);
     float GetYRotation();

@@ -52,6 +52,8 @@ public:
     /// Handle physics world update. Called by LogicComponent base class.
     void Update(float timeStep) override;
 
+    void Unserialize(PropReadStream& data) override;
+
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     void Init() override;
     void LoadXML(const XMLElement& source);
@@ -75,4 +77,5 @@ protected:
 public:
     StaticModel* GetModel() const { return model_; }
     WeakPtr<GameObject> selectedObject_;
+    String name_;
 };

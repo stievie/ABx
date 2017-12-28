@@ -89,6 +89,14 @@ void Actor::Update(float timeStep)
 {
 }
 
+void Actor::Unserialize(PropReadStream& data)
+{
+    GameObject::Unserialize(data);
+    std::string str;
+    if (data.ReadString(str))
+        name_ = String(str.data(), (unsigned)str.length());
+}
+
 void Actor::LoadXML(const XMLElement& source)
 {
     assert(source.GetName() == "actor");

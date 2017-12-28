@@ -1,5 +1,7 @@
 # ABx
 
+Ancient Greece Multiplayer Online RPG.
+
 ## Architecture
 
 Uses a single TCP stream for the game protocol.

@@ -46,8 +46,8 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     switch (recvByte)
     {
     case AB::LoginProtocol::LoginLogin:
-        HandleLoginPacket(message);
-        break;
+HandleLoginPacket(message);
+break;
     case AB::LoginProtocol::LoginCreateAccount:
         HandleCreateAccountPacket(message);
         break;
@@ -93,6 +93,11 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 {
     std::string accountName = message.GetString();
     if (accountName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountName);
+        return;
+    }
+    if (accountName.length() < 6 || accountName.length() > 32)
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
@@ -145,6 +150,12 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidCharacterName);
         return;
     }
+    if (charName.length() < 6 || charName.length() > 20)
+    {
+        DisconnectClient(AB::Errors::InvalidCharacterName);
+        return;
+    }
+
     Game::PlayerSex sex = static_cast<Game::PlayerSex>(message.GetByte());
     if (sex == Game::PlayerSexUnknown || sex > Game::PlayerSexMale)
     {
@@ -189,6 +200,20 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
         return;
     }
     uint32_t charId = message.Get<uint32_t>();
+    if (charId == 0)
+    {
+        DisconnectClient(AB::Errors::InvalidCharacter);
+        return;
+    }
+
+    std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(
+            &ProtocolLogin::DeletePlayer, thisPtr,
+            accountName, password,
+            charId
+        ))
+    );
 }
 
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
@@ -302,6 +327,38 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
             output->AddByte(AB::Errors::UnknownError);
             break;
         }
+    }
+
+    Send(output);
+    Disconnect();
+}
+
+void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::string& password,
+    uint32_t playerId)
+{
+    Account account;
+    bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    if (!authRes)
+    {
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    }
+
+    bool res = DB::IOPlayer::DeletePlayer(
+        account.id_, playerId
+    );
+
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+
+    if (res)
+    {
+        output->AddByte(AB::LoginProtocol::DeletePlayerSuccess);
+    }
+    else
+    {
+        output->AddByte(AB::LoginProtocol::DeletePlayerError);
+        output->AddByte(AB::Errors::InvalidCharacter);
     }
 
     Send(output);

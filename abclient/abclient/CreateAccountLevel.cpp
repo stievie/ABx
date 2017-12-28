@@ -24,11 +24,43 @@ CreateAccountLevel::CreateAccountLevel(Context* context) :
 
 void CreateAccountLevel::DoCreateAccount()
 {
-    String name = nameEdit_->GetText();
+    String name = nameEdit_->GetText().Trimmed();
+    if (name.Empty())
+    {
+        ShowError("Please enter a login name for your account.");
+        nameEdit_->SetFocus(true);
+        return;
+    }
+    if (name.Length() < 6)
+    {
+        ShowError("Names must have at least six characters.");
+        nameEdit_->SetFocus(true);
+        return;
+    }
+    if (name.Length() > 32)
+    {
+        ShowError("The name is too long. Max 32 characters allowed.");
+        nameEdit_->SetFocus(true);
+        return;
+    }
+
     String pass = passEdit_->GetText();
+    if (pass.Empty())
+    {
+        ShowError("Please enter a password for your account.");
+        passEdit_->SetFocus(true);
+        return;
+    }
+    if (name.Length() < 6)
+    {
+        ShowError("Passwords must have at least six characters.");
+        passEdit_->SetFocus(true);
+        return;
+    }
+
     String repass = repeatPassEdit_->GetText();
-    String email = emailEdit_->GetText();
-    String accKey = accKeyEdit_->GetText();
+    String email = emailEdit_->GetText().Trimmed();
+    String accKey = accKeyEdit_->GetText().Trimmed();
     if (pass.Compare(repass) != 0)
     {
         ShowError("Passwords do not match.");

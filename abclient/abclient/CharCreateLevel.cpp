@@ -94,10 +94,23 @@ Text * CharCreateLevel::CreateDropdownItem(const String& text, const String& val
 
 void CharCreateLevel::DoCreateCharacter()
 {
-    String name = nameEdit_->GetText();
+    String name = nameEdit_->GetText().Trimmed();
     if (name.Empty())
     {
         ShowError("Please enter a name for your character.");
+        nameEdit_->SetFocus(true);
+        return;
+    }
+    if (name.Length() < 6)
+    {
+        ShowError("Names must have at least six characters.");
+        nameEdit_->SetFocus(true);
+        return;
+    }
+    if (name.Length() > 20)
+    {
+        ShowError("The name is too long. Max 20 characters allowed.");
+        nameEdit_->SetFocus(true);
         return;
     }
     Text* profTxt = dynamic_cast<Text*>(professionDropdown_->GetSelectedItem());

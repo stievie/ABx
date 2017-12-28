@@ -168,4 +168,33 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
     return ResultOK;
 }
 
+bool IOPlayer::DeletePlayer(uint32_t accountId, uint32_t playerId)
+{
+    Database* db = Database::Instance();
+    std::ostringstream query;
+    std::shared_ptr<DBResult> result;
+    query << "SELECT COUNT(`id`) AS c FROM `players` WHERE `account_id` = " << accountId;
+    query << " AND `id` = " << playerId;
+    result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+    if (result->GetUInt("c") != 1)
+        return false;
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    query.str("");
+    query << "DELETE FROM `players` WHERE `id` = " << playerId;
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    if (!transaction.Commit())
+        return false;
+
+    return true;
+}
+
 }

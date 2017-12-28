@@ -30,6 +30,7 @@ private:
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& accountName, const std::string& password,
         std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp);
+    void DeletePlayer(const std::string& accountName, const std::string& password, uint32_t playerId);
     void SendKeyExchange();
     void HandleLoginPacket(NetworkMessage& message);
     void HandleCreateAccountPacket(NetworkMessage& message);

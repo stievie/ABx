@@ -179,8 +179,6 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
         {
             object = CreateActor(id, position, scale, rot);
             object->objectType_ = ObjectTypePlayer;
-            if (!existing)
-                chatWindow_->AddLine("Player joined: " + position.ToString());
         }
         break;
     case AB::GameProtocol::ObjectTypeNpc:
@@ -190,9 +188,16 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
     }
     if (object)
     {
+        object->Unserialize(data);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
-        chatWindow_->AddLine("Object spawn ID = " + String(id));
+        switch (object->objectType_)
+        {
+        case ObjectTypePlayer:
+            if (!existing)
+                chatWindow_->AddLine(dynamic_cast<Actor*>(object)->name_ + " joined the game");
+            break;
+        }
     }
 }
 
@@ -204,7 +209,10 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
     {
         object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
-            chatWindow_->AddLine("Player left");
+        {
+            Actor* act = dynamic_cast<Actor*>(object.Get());
+            chatWindow_->AddLine(act->name_ + " left the game");
+        }
         // If the player has selected this object -> unselect it
         if (player_->selectedObject_ == object)
             player_->selectedObject_.Reset();

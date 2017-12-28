@@ -115,7 +115,7 @@ void Client::OnPong(int ping)
 
 void Client::Login(const std::string& name, const std::string& pass)
 {
-    if (state_ != StateDisconnected)
+    if (!(state_ == StateDisconnected || state_ == StateCreateAccount))
         return;
 
     accountName_ = name;
@@ -133,7 +133,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 void Client::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
-    if (state_ != StateDisconnected)
+    if (state_ != StateCreateAccount)
         return;
 
     accountName_ = name;
