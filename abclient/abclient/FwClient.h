@@ -44,6 +44,7 @@ public:
     void Turn(uint8_t direction);
     void SetDirection(float rad);
     void SelectObject(uint32_t sourceId, uint32_t targetId);
+    void Command(AB::GameProtocol::CommandTypes type, const String& data);
 
     void OnGetCharlist(const Client::CharList& chars) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
@@ -60,6 +61,8 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
     void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
+    void OnServerMessage(AB::GameProtocol::ServerMessageType type,
+        const std::string& senderName, const std::string& message) override;
 
     void SetState(Client::Client::ClientState state)
     {

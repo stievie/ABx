@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "SkillBar.h"
 #include "InputQueue.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 
@@ -16,6 +17,13 @@ private:
     void DeleteEffect(uint32_t id);
     uint8_t moveDir_;
     uint8_t turnDir_;
+protected:
+    virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
+        const std::string& command, Net::NetworkMessage& message) {
+        AB_UNUSED(type);
+        AB_UNUSED(command);
+        AB_UNUSED(message);
+    }
 public:
     static void RegisterLua(kaguya::State& state);
 

@@ -41,6 +41,8 @@ protected:
     {
         return std::static_pointer_cast<Player>(shared_from_this());
     }
+    void HandleCommand(AB::GameProtocol::CommandTypes type,
+        const std::string& command, Net::NetworkMessage& message) override;
 public:
     static void RegisterLua(kaguya::State& state);
 

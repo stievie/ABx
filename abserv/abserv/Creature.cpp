@@ -183,6 +183,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             if (creatureState_ == AB::GameProtocol::CreatureStateAttacking)
                 newState = AB::GameProtocol::CreatureStateIdle;
             break;
+        case InputTypeCommand:
+        {
+            AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
+            const std::string& cmd = input.data[InputDataCommandData].GetString();
+            HandleCommand(type, cmd, message);
+            break;
+        }
         }
     }
 

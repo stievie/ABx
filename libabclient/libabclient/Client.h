@@ -66,6 +66,8 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
     void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
+    void OnServerMessage(AB::GameProtocol::ServerMessageType type,
+        const std::string& senderName, const std::string& message) override;
 
     std::string loginHost_;
     uint16_t loginPort_;
@@ -98,6 +100,7 @@ public:
     void Turn(uint8_t direction);
     void SetDirection(float rad);
     void SelectObject(uint32_t sourceId, uint32_t targetId);
+    void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
 };
 
 }

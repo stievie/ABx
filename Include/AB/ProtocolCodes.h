@@ -103,23 +103,37 @@ enum CreatureState : uint8_t
     CreatureStateEmote = 5,
 };
 
+enum ServerMessageType : uint8_t
+{
+    ServerMessageTypeUnknown = 0,
+    ServerMessageTypeInfo,
+    ServerMessageTypeChatGeneral,
+    ServerMessageTypeChatGuild,
+    ServerMessageTypeChatParty,
+    ServerMessageTypeChatAlliance,
+    ServerMessageTypeChatTrade,
+    ServerMessageTypeChatWhisper,
+};
+
 enum GameProtocolCodes : uint8_t
 {
     NoError = 0x00,
     Error = 0x01,
 
-    GameEnter = 0x02,
-    GameUpdate = 0x03,
-    GamePong = 0x04,
+    ServerMessage,
+
+    GameEnter,
+    GameUpdate,
+    GamePong,
     // An object spawned
-    GameSpawnObjectExisting = 0x05,
-    GameSpawnObject = 0x06,
-    GameLeaveObject = 0x07,
+    GameSpawnObjectExisting,
+    GameSpawnObject,
+    GameLeaveObject,
     // Object Update
-    GameObjectPositionChange = 0x08,
-    GameObjectRotationChange = 0x09,
-    GameObjectSelectTarget = 0x0A,
-    GameObjectStateChange = 0x0B,
+    GameObjectPositionChange,
+    GameObjectRotationChange,
+    GameObjectSelectTarget,
+    GameObjectStateChange,
 };
 
 enum GameObjectType : uint8_t
@@ -150,6 +164,24 @@ enum GamePacketTypes : uint8_t
     PacketTypeCancelAttack = 0x51,
     // Select
     PacketTypeSelect = 0x60,
+    // Command
+    PacketTypeCommand = 0x70,
+};
+
+enum CommandTypes : uint8_t
+{
+    CommandTypeUnknown = 0,
+    // Chat
+    CommandTypeChatGeneral = 1,      // /a <message>
+    CommandTypeChatGuild,            // /g <message>
+    CommandTypeChatAlliance,         // /ally <message>
+    CommandTypeChatParty,            // /p <message>
+    CommandTypeChatTrade,            // /trade <message>
+    CommandTypeChatWhisper,          // /w <name>, <message>
+    // Info
+    CommandTypeAge,                  // /age
+    CommandTypeDeaths,               // /deaths
+    CommandTypeHealth,               // /hp
 };
 
 }

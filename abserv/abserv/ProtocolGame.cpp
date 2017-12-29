@@ -139,6 +139,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         player_->inputs_.Add(Game::InputTypeSelect, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeCommand:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataCommandType] = message.GetByte();
+        data[Game::InputDataCommandData] = message.GetString();
+        player_->inputs_.Add(Game::InputTypeCommand, data);
+        break;
+    }
     default:
         LOG_INFO << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;

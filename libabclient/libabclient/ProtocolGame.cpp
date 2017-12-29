@@ -89,6 +89,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectSelectTarget:
             ParseObjectSelected(message);
             break;
+        case AB::GameProtocol::ServerMessage:
+            ParseServerMessage(message);
+            break;
         }
     }
 }
@@ -116,6 +119,16 @@ void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& mess
     uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnObjectSelected(sourceId, targetId);
+}
+
+void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)
+{
+    AB::GameProtocol::ServerMessageType type =
+        static_cast<AB::GameProtocol::ServerMessageType>(message->Get<uint8_t>());
+    std::string sender = message->GetString();
+    std::string data = message->GetString();
+    if (receiver_)
+        receiver_->OnServerMessage(type, sender, data);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
@@ -250,6 +263,15 @@ void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSelect);
     msg->Add<uint32_t>(sourceId);
     msg->Add<uint32_t>(targetId);
+    Send(msg);
+}
+
+void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCommand);
+    msg->Add<uint8_t>(type);
+    msg->AddString(data);
     Send(msg);
 }
 

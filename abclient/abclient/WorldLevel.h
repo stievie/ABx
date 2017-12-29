@@ -47,6 +47,7 @@ private:
             return objects_[objectId];
         return SharedPtr<GameObject>();
     }
+    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);

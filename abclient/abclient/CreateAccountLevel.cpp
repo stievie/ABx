@@ -145,7 +145,7 @@ void CreateAccountLevel::HandleUpdate(StringHash eventType, VariantMap& eventDat
 
 void CreateAccountLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
 {
-    using namespace KeyDown;
+    using namespace KeyUp;
 
     int key = eventData[P_KEY].GetInt();
     if (key == KEY_RETURN)

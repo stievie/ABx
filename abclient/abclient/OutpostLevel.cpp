@@ -24,7 +24,7 @@ OutpostLevel::OutpostLevel(Context* context) :
     eData[AbEvents::E_LEVEL_READY] = "OutpostLevel";
     SendEvent(AbEvents::E_LEVEL_READY, eData);
 
-    chatWindow_->AddLine("Entered " + mapName_);
+    chatWindow_->AddLine("Entered " + mapName_, "ChatLogServerInfoText");
 }
 
 void OutpostLevel::SubscribeToEvents()

@@ -2,6 +2,9 @@
 
 namespace Game {
 
+class Game;
+class Player;
+
 enum ChatType : uint8_t
 {
     // Alliance chat
@@ -21,6 +24,18 @@ class ChatChannel
 public:
     ChatChannel() = default;
     virtual ~ChatChannel() = default;
+    virtual bool Talk(Player* player, const std::string& text) {
+        AB_UNUSED(player);
+        AB_UNUSED(text);
+        return false;
+    }
+};
+
+class GameChatChannel : public ChatChannel
+{
+public:
+    bool Talk(Player* player, const std::string& text) override;
+    std::weak_ptr<Game> game_;
 };
 
 class Chat
@@ -36,6 +51,7 @@ public:
     Chat& operator=(const Chat&) = delete;
 
     ChatChannel* Get(uint8_t type, uint32_t id);
+    void Remove(uint8_t type, uint32_t id);
 
     static Chat Instance;
 };

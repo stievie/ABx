@@ -33,6 +33,13 @@ Game::Game() :
     ResetStatus();
 }
 
+Game::~Game()
+{
+    players_.clear();
+    objects_.clear();
+    Chat::Instance.Remove(ChannelMap, id_);
+}
+
 void Game::Start()
 {
     if (state_ == GameStateStartup)
@@ -42,6 +49,8 @@ void Game::Start()
 #endif // DEBUG_GAME
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
+        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
+        generalChannel->game_ = shared_from_this();
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))

@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "NetworkMessage.h"
 #include "GameState.h"
+#include "Chat.h"
 
 namespace Game {
 
@@ -62,11 +63,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     Game();
-    ~Game()
-    {
-        players_.clear();
-        objects_.clear();
-    }
+    ~Game();
 
     void Start();
     void Stop();
@@ -80,6 +77,7 @@ public:
     std::shared_ptr<NavigationMesh> navMesh_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
+    const std::map<uint32_t, Player*>& GetPlayers() const { return players_; }
     int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }
     std::string GetName() const { return data_.mapName; }
     /// Returns only players that are part of this game

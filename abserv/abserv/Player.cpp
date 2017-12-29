@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "Logger.h"
+#include "Chat.h"
 
 #include "DebugNew.h"
 
@@ -33,6 +34,24 @@ void Player::Ping()
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::GamePong);
     client_->WriteToOutput(msg);
+}
+
+void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
+    const std::string& command, Net::NetworkMessage& message)
+{
+    AB_UNUSED(message);
+    switch (type)
+    {
+    case AB::GameProtocol::CommandTypeChatGeneral:
+    {
+        ChatChannel* channel = Chat::Instance.Get(ChannelMap, GetGame()->id_);
+        if (channel)
+        {
+            channel->Talk(this, command);
+        }
+        break;
+    }
+    }
 }
 
 void Player::RegisterLua(kaguya::State& state)

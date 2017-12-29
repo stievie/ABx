@@ -16,6 +16,7 @@ enum InputType
     InputTypeCancelAttack  = 6,
     InputTypeSelect        = 7,
     InputTypeDirection     = 8,
+    InputTypeCommand       = 9,
 };
 
 enum InputDataType
@@ -24,6 +25,8 @@ enum InputDataType
     InputDataSkillIndex  = 3,    // The index of the skill in the skill bar
     InputDataObjectId    = 4,
     InputDataObjectId2   = 5,
+    InputDataCommandType = 6,
+    InputDataCommandData = 7,
 };
 
 struct InputItem

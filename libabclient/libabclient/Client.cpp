@@ -86,6 +86,13 @@ void Client::OnObjectSelected(uint32_t sourceId, uint32_t targetId)
         receiver_->OnObjectSelected(sourceId, targetId);
 }
 
+void Client::OnServerMessage(AB::GameProtocol::ServerMessageType type,
+    const std::string& senderName, const std::string& message)
+{
+    if (receiver_)
+        receiver_->OnServerMessage(type, senderName, message);
+}
+
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
@@ -236,6 +243,12 @@ void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
     if (state_ == StateWorld)
         protoGame_->SelectObject(sourceId, targetId);
+}
+
+void Client::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
+{
+    if (state_ == StateWorld)
+        protoGame_->Command(type, data);
 }
 
 }

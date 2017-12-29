@@ -28,6 +28,16 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
+}
+
+void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+{
+    using namespace KeyDown;
+
+    int key = eventData[P_KEY].GetInt();
+    if (key == KEY_RETURN && !chatWindow_->chatEdit_->HasFocus())
+        chatWindow_->chatEdit_->SetFocus(true);
 }
 
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
@@ -195,7 +205,7 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
         {
         case ObjectTypePlayer:
             if (!existing)
-                chatWindow_->AddLine(dynamic_cast<Actor*>(object)->name_ + " joined the game");
+                chatWindow_->AddLine(dynamic_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
         }
     }
@@ -211,7 +221,7 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
         if (object->objectType_ == ObjectTypePlayer)
         {
             Actor* act = dynamic_cast<Actor*>(object.Get());
-            chatWindow_->AddLine(act->name_ + " left the game");
+            chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");
         }
         // If the player has selected this object -> unselect it
         if (player_->selectedObject_ == object)
@@ -269,7 +279,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
                 SharedPtr<GameObject> target = objects_[targetId];
                 if (target)
                 {
-                    chatWindow_->AddLine("Object " + String(object->id_) + " selected " + String(target->id_));
+                    chatWindow_->AddLine("Object " + String(object->id_) + " selected " + String(target->id_), "ChatLogServerInfoText");
                     actor->selectedObject_ = target;
                 }
             }

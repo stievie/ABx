@@ -292,6 +292,9 @@
     <element type="ChatLogServerInfoText" style="ChatLogText" auto="false">
         <attribute name="Color" value="0.57 0.95 0.66" />
     </element>
+    <element type="ChatLogGeneralChatText" style="ChatLogText" auto="false">
+        <attribute name="Color" value="0.86 0.88 0.37" />
+    </element>
     <element type="ChatLineEdit" style="LineEdit" auto="false">
         <attribute name="Min Size" value="0 20" />
         <attribute name="Max Size" value="2147483647 20" />

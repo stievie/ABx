@@ -183,6 +183,12 @@ void FwClient::SelectObject(uint32_t sourceId, uint32_t targetId)
         client_.SelectObject(sourceId, targetId);
 }
 
+void FwClient::Command(AB::GameProtocol::CommandTypes type, const String& data)
+{
+    if (loggedIn_)
+        client_.Command(type, std::string(data.CString()));
+}
+
 void FwClient::OnGetCharlist(const Client::CharList& chars)
 {
     levelReady_ = false;
@@ -304,4 +310,14 @@ void FwClient::OnObjectSelected(uint32_t sourceId, uint32_t targetId)
     eData[AbEvents::ED_OBJECT_ID] = sourceId;
     eData[AbEvents::ED_OBJECT_ID2] = targetId;
     QueueEvent(AbEvents::E_OBJECT_SELECTED, eData);
+}
+
+void FwClient::OnServerMessage(AB::GameProtocol::ServerMessageType type,
+    const std::string& senderName, const std::string& message)
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_MESSAGE_TYPE] = type;
+    eData[AbEvents::ED_MESSAGE_SENDER] = String(senderName.data(), (int)senderName.length());
+    eData[AbEvents::ED_MESSAGE_DATA] = String(message.data(), (int)message.length());
+    QueueEvent(AbEvents::E_SERVER_MESSAGE, eData);
 }

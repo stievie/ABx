@@ -26,6 +26,8 @@ public:
     virtual void OnAccountCreated() = 0;
     virtual void OnPlayerCreated(const std::string& name, const std::string& map) = 0;
     virtual void OnObjectSelected(uint32_t sourceId, uint32_t targetId) = 0;
+    virtual void OnServerMessage(AB::GameProtocol::ServerMessageType type,
+        const std::string& senderName, const std::string& message) = 0;
 };
 
 }
