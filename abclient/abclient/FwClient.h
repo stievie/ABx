@@ -33,6 +33,12 @@ public:
     FwClient(Context* context);
     ~FwClient();
 
+    uint32_t GetIp() const
+    {
+        if (loggedIn_)
+            return client_.GetIp();
+        return 0;
+    }
     bool Start();
     void Stop();
     void Login(const String& name, const String& pass);

@@ -221,6 +221,13 @@ void Client::Update(int timeElapsed)
         lastPing_ += timeElapsed;
 }
 
+uint32_t Client::GetIp() const
+{
+    if (protoGame_ && protoGame_->IsConnected())
+        return protoGame_->GetIp();
+    return 0;
+}
+
 void Client::Move(uint8_t direction)
 {
     if (state_ == StateWorld)

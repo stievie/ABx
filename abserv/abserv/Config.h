@@ -50,3 +50,6 @@
 #define CLEAN_PLAYERS_MS (1000 * 30)
 // Remove player from PlayerManager after this time
 #define PLAYER_INACTIVE_TIME_KICK (10 * 1000)
+
+#define ROLL_MIN 2
+#define ROLL_MAX 100

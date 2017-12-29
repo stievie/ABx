@@ -3,6 +3,7 @@
 #include <AB/ProtocolCodes.h>
 #include "FwClient.h"
 #include "AbEvents.h"
+#include "Utils.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -62,9 +63,28 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
 {
     AB::GameProtocol::ServerMessageType type =
         static_cast<AB::GameProtocol::ServerMessageType>(eventData[AbEvents::ED_MESSAGE_TYPE].GetInt());
-    String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
     String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-    AddLine(sender + ": " + message, "ChatLogGeneralChatText");
+    switch (type)
+    {
+    case AB::GameProtocol::ServerMessageTypeInfo:
+        AddLine(message, "ChatLogServerInfoText");
+        break;
+    case AB::GameProtocol::ServerMessageTypeRoll:
+    {
+        String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+        unsigned p = message.Find(":");
+        String res = message.Substring(0, p);
+        String max = message.Substring(p + 1);
+        AddLine(sender + " rolls " + res + " on a " + max + " sided die.", "ChatLogChatText");
+        break;
+    }
+    case AB::GameProtocol::ServerMessageTypeChatGeneral:
+    {
+        String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+        AddLine(sender, message, "ChatLogGeneralChatText", "ChatLogChatText");
+        break;
+    }
+    }
 }
 
 void ChatWindow::HandleTextChanged(StringHash eventType, VariantMap& eventData)
@@ -80,7 +100,7 @@ void ChatWindow::ParseChatCommand(const String& text)
     {
         String cmd;
         unsigned pos = 1;
-        while (pos < text.Length() - 1)
+        while (pos < text.Length())
         {
             char ch = text.At(pos);
             if (ch != ' ')
@@ -89,7 +109,7 @@ void ChatWindow::ParseChatCommand(const String& text)
             }
             else
             {
-                data = text.Substring(pos);
+                data = text.Substring(pos + 1);
                 break;
             }
             pos++;
@@ -106,6 +126,8 @@ void ChatWindow::ParseChatCommand(const String& text)
             type = AB::GameProtocol::CommandTypeChatTrade;
         else if (cmd.Compare("w") == 0)
             type = AB::GameProtocol::CommandTypeChatWhisper;
+        else if (cmd.Compare("roll") == 0)
+            type = AB::GameProtocol::CommandTypeRoll;
 
         else if (cmd.Compare("age") == 0)
             type = AB::GameProtocol::CommandTypeAge;
@@ -113,6 +135,10 @@ void ChatWindow::ParseChatCommand(const String& text)
             type = AB::GameProtocol::CommandTypeDeaths;
         else if (cmd.Compare("health") == 0)
             type = AB::GameProtocol::CommandTypeHealth;
+        else if (cmd.Compare("ip") == 0)
+            type = AB::GameProtocol::CommandTypeIp;
+        else if (cmd.Compare("help") == 0)
+            type = AB::GameProtocol::CommandTypeHelp;
     }
     else
     {
@@ -120,10 +146,34 @@ void ChatWindow::ParseChatCommand(const String& text)
         data = text;
     }
 
-    if (type != AB::GameProtocol::CommandTypeUnknown)
+    switch (type)
+    {
+    case AB::GameProtocol::CommandTypeHelp:
+        AddLine("Available commands:", "ChatLogServerInfoText");
+        AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
+        AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
+        AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
+        AddLine("  /help: Show this help", "ChatLogServerInfoText");
+        break;
+    case AB::GameProtocol::CommandTypeIp:
     {
         FwClient* client = context_->GetSubsystem<FwClient>();
-        client->Command(type, data);
+        uint32_t ip = client->GetIp();
+        char buffer[20];
+        sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
+        String sIp(buffer);
+        AddLine(sIp, "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandTypeUnknown:
+        AddLine("Unknown command", "ChatLogServerInfoText");
+        break;
+    default:
+    {
+        FwClient* client = context_->GetSubsystem<FwClient>();
+        client->Command(type, data.Substring(0, MAX_CHAT_MESSAGE));
+        break;
+    }
     }
 }
 
@@ -151,11 +201,42 @@ void ChatWindow::HandleChatEditKey(StringHash eventType, VariantMap& eventData)
 
 void ChatWindow::AddLine(const String& text, const String& style)
 {
-    Text* txt = new Text(context_);
+    Text* txt = chatLog_->CreateChild<Text>();
     txt->SetText(text);
     txt->SetStyle(style);
+    txt->EnableLayoutUpdate();
+    txt->SetMaxWidth(chatLog_->GetWidth() - 8);
+    txt->SetWordwrap(true);
+    txt->UpdateLayout();
     chatLog_->AddItem(txt);
     chatLog_->EnsureItemVisibility(txt);
+    chatLog_->EnableLayoutUpdate();
+    chatLog_->UpdateLayout();
+}
+
+void ChatWindow::AddLine(const String& name, const String& text,
+    const String& style, const String& style2 /* = String::EMPTY */)
+{
+    Text* nameText = chatLog_->CreateChild<Text>();
+    nameText->SetText(name + ":");
+    nameText->SetStyle(style);
+    nameText->EnableLayoutUpdate();
+    nameText->SetMaxWidth(chatLog_->GetWidth() - 8);
+    Text* textText = nameText->CreateChild<Text>();
+    textText->SetPosition(IntVector2(nameText->GetWidth() + 10, 0));
+    textText->SetText(text);
+    if (!style2.Empty())
+        textText->SetStyle(style2);
+    else
+        textText->SetStyle(style);
+    textText->SetMaxWidth(chatLog_->GetWidth() - textText->GetPosition().x_);
+    textText->SetWordwrap(true);
+    nameText->SetMinHeight(textText->GetHeight());
+    textText->EnableLayoutUpdate();
+    textText->UpdateLayout();
+
+    chatLog_->AddItem(nameText);
+    chatLog_->EnsureItemVisibility(nameText);
     chatLog_->EnableLayoutUpdate();
     chatLog_->UpdateLayout();
 }

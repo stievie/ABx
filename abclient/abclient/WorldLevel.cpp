@@ -279,7 +279,6 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
                 SharedPtr<GameObject> target = objects_[targetId];
                 if (target)
                 {
-                    chatWindow_->AddLine("Object " + String(object->id_) + " selected " + String(target->id_), "ChatLogServerInfoText");
                     actor->selectedObject_ = target;
                 }
             }

@@ -52,6 +52,8 @@ public:
     void EnterWorld(const std::string& charName, const std::string& map);
     void Update(int timeElapsed);
 
+    uint32_t GetIp() const;
+
     // Receiver
     void OnGetCharlist(const CharList& chars) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;

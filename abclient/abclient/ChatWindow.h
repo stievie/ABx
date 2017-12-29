@@ -16,6 +16,8 @@ public:
     static void RegisterObject(Context* context);
 
     void AddLine(const String& text, const String& style);
+    void AddLine(const String& name, const String& text,
+        const String& style, const String& style2 = String::EMPTY);
 
     ChatWindow(Context* context);
     ~ChatWindow();

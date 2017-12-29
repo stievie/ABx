@@ -118,6 +118,7 @@
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>ABCLIENT_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

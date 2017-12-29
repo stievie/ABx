@@ -57,6 +57,12 @@ public:
     {
         return (connection_ && connection_->IsConnecting());
     }
+    uint32_t GetIp() const
+    {
+        if (IsConnected())
+            return connection_->GetIp();
+        return 0;
+    }
 
     virtual void Send(const std::shared_ptr<OutputMessage>& message);
     virtual void Receive();

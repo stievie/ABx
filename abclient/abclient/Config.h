@@ -7,3 +7,5 @@
 
 #define SERVER_LOGIN_HOST "pc.home.lan"
 #define SERVER_LOGIN_PORT 2748
+
+#define MAX_CHAT_MESSAGE 120

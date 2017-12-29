@@ -107,6 +107,7 @@ enum ServerMessageType : uint8_t
 {
     ServerMessageTypeUnknown = 0,
     ServerMessageTypeInfo,
+    ServerMessageTypeRoll,                    // /roll result
     ServerMessageTypeChatGeneral,
     ServerMessageTypeChatGuild,
     ServerMessageTypeChatParty,
@@ -178,10 +179,15 @@ enum CommandTypes : uint8_t
     CommandTypeChatParty,            // /p <message>
     CommandTypeChatTrade,            // /trade <message>
     CommandTypeChatWhisper,          // /w <name>, <message>
+    // Other
+    CommandTypeRoll,                 // /roll <number>
     // Info
     CommandTypeAge,                  // /age
     CommandTypeDeaths,               // /deaths
     CommandTypeHealth,               // /hp
+    // Internal
+    CommandTypeHelp,                 // /help
+    CommandTypeIp,                   // /ip
 };
 
 }

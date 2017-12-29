@@ -63,6 +63,15 @@ public:
 
     bool IsConnecting() const { return connecting_; }
     bool IsConnected() const { return connected_; }
+    uint32_t GetIp() const {
+        if (connected_)
+        {
+            asio::ip::tcp::endpoint remote_ep = socket_.remote_endpoint();
+            asio::ip::address remote_ad = remote_ep.address();
+            return remote_ad.to_v4().to_uint();
+        }
+        return 0;
+    }
 };
 
 }
