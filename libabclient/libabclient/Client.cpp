@@ -93,6 +93,13 @@ void Client::OnServerMessage(AB::GameProtocol::ServerMessageType type,
         receiver_->OnServerMessage(type, senderName, message);
 }
 
+void Client::OnChatMessage(AB::GameProtocol::ChatMessageChannel channel,
+    uint32_t senderId, const std::string& senderName, const std::string& message)
+{
+    if (receiver_)
+        receiver_->OnChatMessage(channel, senderId, senderName, message);
+}
+
 void Client::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {

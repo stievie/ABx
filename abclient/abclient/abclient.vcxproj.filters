@@ -87,6 +87,9 @@
     <ClInclude Include="PingDot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TabGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PingDot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TabGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

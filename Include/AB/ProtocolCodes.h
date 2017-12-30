@@ -108,12 +108,16 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeUnknown = 0,
     ServerMessageTypeInfo,
     ServerMessageTypeRoll,                    // /roll result
-    ServerMessageTypeChatGeneral,
-    ServerMessageTypeChatGuild,
-    ServerMessageTypeChatParty,
-    ServerMessageTypeChatAlliance,
-    ServerMessageTypeChatTrade,
-    ServerMessageTypeChatWhisper,
+};
+
+enum ChatMessageChannel : uint8_t
+{
+    ChatChannelGeneral,
+    ChatChannelGuild,
+    ChatChannelParty,
+    ChatChannelAlliance,
+    ChatChannelTrade,
+    ChatChannelWhisper,
 };
 
 enum GameProtocolCodes : uint8_t
@@ -122,6 +126,7 @@ enum GameProtocolCodes : uint8_t
     Error = 0x01,
 
     ServerMessage,
+    ChatMessage,
 
     GameEnter,
     GameUpdate,

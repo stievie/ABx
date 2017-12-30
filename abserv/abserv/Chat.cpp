@@ -38,8 +38,9 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
     {
         Net::NetworkMessage msg;
         const std::map<uint32_t, Player*>& players = g->GetPlayers();
-        msg.AddByte(AB::GameProtocol::ServerMessage);
-        msg.AddByte(AB::GameProtocol::ServerMessageTypeChatGeneral);
+        msg.AddByte(AB::GameProtocol::ChatMessage);
+        msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
+        msg.Add<uint32_t>(player->id_);
         msg.AddString(player->GetName());
         msg.AddString(text);
         for (auto& p : players)

@@ -92,6 +92,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
+        case AB::GameProtocol::ChatMessage:
+            ParseChatMessage(message);
+            break;
         }
     }
 }
@@ -129,6 +132,17 @@ void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& messa
     std::string data = message->GetString();
     if (receiver_)
         receiver_->OnServerMessage(type, sender, data);
+}
+
+void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message)
+{
+    AB::GameProtocol::ChatMessageChannel type =
+        static_cast<AB::GameProtocol::ChatMessageChannel>(message->Get<uint8_t>());
+    uint32_t senderId = message->Get<uint32_t>();
+    std::string sender = message->GetString();
+    std::string data = message->GetString();
+    if (receiver_)
+        receiver_->OnChatMessage(type, senderId, sender, data);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)

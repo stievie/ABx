@@ -34,10 +34,6 @@ void WorldLevel::SubscribeToEvents()
 void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
     using namespace KeyDown;
-
-    int key = eventData[P_KEY].GetInt();
-    if (key == KEY_RETURN && !chatWindow_->chatEdit_->HasFocus())
-        chatWindow_->chatEdit_->SetFocus(true);
 }
 
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)

@@ -8,7 +8,7 @@
 	<attribute name="Is Resizable" value="true" />
 	<element type="ListView">
 		<attribute name="Name" value="ChatLog" />
-		<attribute name="Size" value="500 230" />
+		<attribute name="Size" value="500 210" />
 		<attribute name="Min Anchor" value="0.5 0" />
 		<attribute name="Max Anchor" value="0.5 0" />
 		<attribute name="Pivot" value="0.5 0" />
@@ -40,7 +40,7 @@
 			</element>
 		</element>
 		<element type="ScrollBar" internal="true" style="none">
-			<attribute name="Size" value="16 230" />
+			<attribute name="Size" value="16 210" />
 			<attribute name="Min Anchor" value="1 0" />
 			<attribute name="Max Anchor" value="1 0" />
 			<attribute name="Pivot" value="1 0" />
@@ -54,14 +54,14 @@
 			</element>
 			<element type="Slider" internal="true" style="none">
 				<attribute name="Position" value="0 16" />
-				<attribute name="Size" value="16 198" />
+				<attribute name="Size" value="16 178" />
 				<attribute name="Pivot" value="0 0" />
 				<element type="BorderImage" internal="true" style="none">
 					<attribute name="Pivot" value="0 0" />
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="0 214" />
+				<attribute name="Position" value="0 194" />
 				<attribute name="Pivot" value="0 0" />
 			</element>
 		</element>

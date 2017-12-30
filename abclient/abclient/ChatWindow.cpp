@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ChatWindow.h"
-#include <AB/ProtocolCodes.h>
 #include "FwClient.h"
 #include "AbEvents.h"
 #include "Utils.h"
@@ -21,42 +20,98 @@ ChatWindow::ChatWindow(Context* context) :
     wnd->SetBringToBack(false);
     wnd->SetPriority(200);
 
+    tabgroup_ = wnd->CreateChild<TabGroup>();
+    tabgroup_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+    tabgroup_->SetAlignment(HA_CENTER, VA_BOTTOM);
+    tabgroup_->SetSize(500, 40);
+    tabgroup_->SetColor(Color(0, 0, 0, 0));
+    tabgroup_->SetStyleAuto();
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGeneral);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelParty);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGuild);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelAlliance);
+
+    tabgroup_->SetEnabled(true);
+    SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(ChatWindow, HandleTabSelected));
+
     chatLog_ = dynamic_cast<ListView*>(GetChild("ChatLog", true));
-    chatEdit_ = dynamic_cast<LineEdit*>(GetChild("ChatEdit", true));
-    chatEdit_->SetStyle("ChatLineEdit");
-
-    SubscribeToEvent(chatEdit_, E_TEXTCHANGED, URHO3D_HANDLER(ChatWindow, HandleTextChanged));
-    SubscribeToEvent(chatEdit_, E_TEXTFINISHED, URHO3D_HANDLER(ChatWindow, HandleTextFinished));
-    SubscribeToEvent(chatEdit_, E_UNHANDLEDKEY, URHO3D_HANDLER(ChatWindow, HandleChatEditKey));
-    SubscribeToEvent(chatEdit_, E_HOVERBEGIN, URHO3D_HANDLER(ChatWindow, HandleHoverBegin));
-    SubscribeToEvent(chatEdit_, E_HOVEREND, URHO3D_HANDLER(ChatWindow, HandleHoverEnd));
-
-    SubscribeToEvent(chatLog_, E_HOVERBEGIN, URHO3D_HANDLER(ChatWindow, HandleHoverBegin));
-    SubscribeToEvent(chatLog_, E_HOVEREND, URHO3D_HANDLER(ChatWindow, HandleHoverEnd));
 
     SubscribeToEvent(AbEvents::E_SERVER_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
+    SubscribeToEvent(AbEvents::E_CHAT_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 }
 
-ChatWindow::~ChatWindow()
+void ChatWindow::FocusEdit()
 {
-    UnsubscribeFromAllEvents();
+    int sel = tabgroup_->GetSelectedIndex();
+    TabElement* elem = tabgroup_->GetTabElement(sel);
+    LineEdit* edit = GetActiveLineEdit();
+    if (edit && !edit->HasFocus())
+        edit->SetFocus(true);
+}
+
+void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel)
+{
+    static const IntVector2 tabSize(60, 20);
+    static const IntVector2 tabBodySize(500, 20);
+
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    TabElement *tabElement = tabs->CreateTab(tabSize, tabBodySize);
+    tabElement->tabText_->SetFont(cache->GetResource<Font>("Fonts/ClearSans-Regular.ttf"), 10);
+    switch (channel)
+    {
+    case AB::GameProtocol::ChatChannelGeneral:
+        tabElement->tabText_->SetText("General");
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        tabElement->tabText_->SetText("Party");
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        tabElement->tabText_->SetText("Guild");
+        break;
+    case AB::GameProtocol::ChatChannelAlliance:
+        tabElement->tabText_->SetText("Alliance");
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        tabElement->tabText_->SetText("Trade");
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        tabElement->tabText_->SetText("Whisper");
+        break;
+    }
+
+    LineEdit* edit = tabElement->tabBody_->CreateChild<LineEdit>();
+    edit->SetName("ChatLineEdit");
+    edit->SetVar("Channel", static_cast<int>(channel));
+    edit->SetPosition(0, 0);
+    edit->SetSize(tabElement->tabBody_->GetSize());
+    edit->SetAlignment(HA_CENTER, VA_CENTER);
+    edit->SetStyle("ChatLineEdit");
+    edit->SetHeight(20);
+    SubscribeToEvent(edit, E_TEXTFINISHED, URHO3D_HANDLER(ChatWindow, HandleTextFinished));
+    SubscribeToEvent(edit, E_FOCUSED, URHO3D_HANDLER(ChatWindow, HandleEditFocused));
+    SubscribeToEvent(edit, E_DEFOCUSED, URHO3D_HANDLER(ChatWindow, HandleEditDefocused));
+
+    tabElement->tabText_->SetColor(Color(1.0f, 1.0f, 1.0f));
+}
+
+LineEdit* ChatWindow::GetActiveLineEdit()
+{
+    return GetLineEdit(tabgroup_->GetSelectedIndex());
+}
+
+LineEdit* ChatWindow::GetLineEdit(int index)
+{
+    TabElement* elem = tabgroup_->GetTabElement(index);
+    if (!elem)
+        return nullptr;
+    LineEdit* edit = dynamic_cast<LineEdit*>(elem->tabBody_->GetChild("ChatLineEdit", true));
+    return edit;
 }
 
 void ChatWindow::RegisterObject(Context* context)
 {
     context->RegisterFactory<ChatWindow>();
-}
-
-void ChatWindow::HandleHoverBegin(StringHash eventType, VariantMap& eventData)
-{
-    using namespace HoverBegin;
-    UIElement* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
-}
-
-void ChatWindow::HandleHoverEnd(StringHash eventType, VariantMap& eventData)
-{
-    using namespace HoverEnd;
-    UIElement* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
 }
 
 void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData)
@@ -78,21 +133,39 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
         AddLine(sender + " rolls " + res + " on a " + max + " sided die.", "ChatLogChatText");
         break;
     }
-    case AB::GameProtocol::ServerMessageTypeChatGeneral:
-    {
-        String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-        AddLine(sender, message, "ChatLogGeneralChatText", "ChatLogChatText");
-        break;
-    }
     }
 }
 
-void ChatWindow::HandleTextChanged(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)
 {
-
+    AB::GameProtocol::ChatMessageChannel channel =
+        static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[AbEvents::ED_MESSAGE_TYPE].GetInt());
+    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    uint32_t senderId = static_cast<uint32_t>(eventData[AbEvents::ED_MESSAGE_SENDER_ID].GetInt());
+    AddChatLine(senderId, sender, message, channel);
 }
 
-void ChatWindow::ParseChatCommand(const String& text)
+void ChatWindow::HandleTabSelected(StringHash eventType, VariantMap& eventData)
+{
+    using namespace TabSelected;
+    int idx = eventData[P_INDEX].GetInt();
+    int oldIdx = eventData[P_OLD_INDEX].GetInt();
+    LineEdit* edit = GetLineEdit(idx);
+    if (edit)
+        edit->SetFocus(true);
+}
+
+void ChatWindow::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+{
+    using namespace KeyDown;
+
+    int key = eventData[P_KEY].GetInt();
+    if (key == KEY_RETURN)
+        FocusEdit();
+}
+
+void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
 {
     AB::GameProtocol::CommandTypes type = AB::GameProtocol::CommandTypeUnknown;
     String data;
@@ -142,7 +215,27 @@ void ChatWindow::ParseChatCommand(const String& text)
     }
     else
     {
-        type = AB::GameProtocol::CommandTypeChatGeneral;
+        switch (defChannel)
+        {
+        case AB::GameProtocol::ChatChannelGuild:
+            type = AB::GameProtocol::CommandTypeChatGuild;
+            break;
+        case AB::GameProtocol::ChatChannelAlliance:
+            type = AB::GameProtocol::CommandTypeChatAlliance;
+            break;
+        case AB::GameProtocol::ChatChannelParty:
+            type = AB::GameProtocol::CommandTypeChatParty;
+            break;
+        case AB::GameProtocol::ChatChannelTrade:
+            type = AB::GameProtocol::CommandTypeChatTrade;
+            break;
+        case AB::GameProtocol::ChatChannelWhisper:
+            type = AB::GameProtocol::CommandTypeChatWhisper;
+            break;
+        default:
+            type = AB::GameProtocol::CommandTypeChatGeneral;
+            break;
+        }
         data = text;
     }
 
@@ -177,26 +270,30 @@ void ChatWindow::ParseChatCommand(const String& text)
     }
 }
 
+void ChatWindow::HandleEditFocused(StringHash eventType, VariantMap& eventData)
+{
+    UnsubscribeFromEvent(E_KEYDOWN);
+}
+
+void ChatWindow::HandleEditDefocused(StringHash eventType, VariantMap& eventData)
+{
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
+}
+
 void ChatWindow::HandleTextFinished(StringHash eventType, VariantMap& eventData)
 {
     using namespace TextFinished;
 
     String line = eventData[P_TEXT].GetString();
+    LineEdit* sender = static_cast<LineEdit*>(eventData[P_ELEMENT].GetPtr());
     if (!line.Empty())
     {
-        ParseChatCommand(line);
+        AB::GameProtocol::ChatMessageChannel channel =
+            static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetInt());
+        ParseChatCommand(line, channel);
     }
-    LineEdit* sender = dynamic_cast<LineEdit*>(eventData[P_ELEMENT].GetPtr());
     sender->SetText("");
     sender->SetFocus(false);
-}
-
-void ChatWindow::HandleChatEditKey(StringHash eventType, VariantMap& eventData)
-{
-    using namespace UnhandledKey;
-/*    switch (eventData[P_KEY].GetInt())
-    {
-    } */
 }
 
 void ChatWindow::AddLine(const String& text, const String& style)
@@ -214,10 +311,11 @@ void ChatWindow::AddLine(const String& text, const String& style)
     chatLog_->UpdateLayout();
 }
 
-void ChatWindow::AddLine(const String& name, const String& text,
+void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
     const String& style, const String& style2 /* = String::EMPTY */)
 {
     Text* nameText = chatLog_->CreateChild<Text>();
+    nameText->SetVar("ID", id);
     nameText->SetText(name + ":");
     nameText->SetStyle(style);
     nameText->EnableLayoutUpdate();
@@ -239,4 +337,29 @@ void ChatWindow::AddLine(const String& name, const String& text,
     chatLog_->EnsureItemVisibility(nameText);
     chatLog_->EnableLayoutUpdate();
     chatLog_->UpdateLayout();
+}
+
+void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
+    const String& text, AB::GameProtocol::ChatMessageChannel channel)
+{
+    String style;
+    switch (channel)
+    {
+    case AB::GameProtocol::ChatChannelGeneral:
+        style = "ChatLogGeneralChatText";
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        style = "ChatLogGuildChatText";
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        style = "ChatLogPartyChatText";
+        break;
+    case AB::GameProtocol::ChatChannelAlliance:
+        style = "ChatLogAllianceChatText";
+        break;
+    default:
+        style = "ChatLogChatText";
+        break;
+    }
+    AddLine(senderId, name, text, style, "ChatLogChatText");
 }

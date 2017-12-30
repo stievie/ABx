@@ -321,3 +321,14 @@ void FwClient::OnServerMessage(AB::GameProtocol::ServerMessageType type,
     eData[AbEvents::ED_MESSAGE_DATA] = String(message.data(), (int)message.length());
     QueueEvent(AbEvents::E_SERVER_MESSAGE, eData);
 }
+
+void FwClient::OnChatMessage(AB::GameProtocol::ChatMessageChannel channel,
+    uint32_t senderId, const std::string& senderName, const std::string& message)
+{
+    VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_MESSAGE_TYPE] = channel;
+    eData[AbEvents::ED_MESSAGE_SENDER_ID] = senderId;
+    eData[AbEvents::ED_MESSAGE_SENDER] = String(senderName.data(), (int)senderName.length());
+    eData[AbEvents::ED_MESSAGE_DATA] = String(message.data(), (int)message.length());
+    QueueEvent(AbEvents::E_CHAT_MESSAGE, eData);
+}

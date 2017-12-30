@@ -49,6 +49,7 @@ protected:
     void ParseObjectStateChange(const std::shared_ptr<InputMessage>& message);
     void ParseObjectSelected(const std::shared_ptr<InputMessage>& message);
     void ParseServerMessage(const std::shared_ptr<InputMessage>& message);
+    void ParseChatMessage(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame();
     ~ProtocolGame() = default;

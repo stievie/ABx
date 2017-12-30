@@ -16,6 +16,7 @@ namespace AbEvents
     static const StringHash E_OBJECT_SATE_UPDATE = StringHash("Object Sate Update");
     static const StringHash E_OBJECT_SELECTED = StringHash("Object Selected");
     static const StringHash E_SERVER_MESSAGE = StringHash("Server Message");
+    static const StringHash E_CHAT_MESSAGE = StringHash("Chat Message");
 
     static const StringHash ED_MAP_NAME = StringHash("Map name");
 
@@ -30,4 +31,5 @@ namespace AbEvents
     static const StringHash ED_MESSAGE_TYPE = StringHash("Message Type");
     static const StringHash ED_MESSAGE_DATA = StringHash("Message Data");
     static const StringHash ED_MESSAGE_SENDER = StringHash("Message Sender");
+    static const StringHash ED_MESSAGE_SENDER_ID = StringHash("Message Sender ID");
 }

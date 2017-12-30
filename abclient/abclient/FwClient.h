@@ -69,6 +69,8 @@ public:
     void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
     void OnServerMessage(AB::GameProtocol::ServerMessageType type,
         const std::string& senderName, const std::string& message) override;
+    void OnChatMessage(AB::GameProtocol::ChatMessageChannel channel,
+        uint32_t senderId, const std::string& senderName, const std::string& message) override;
 
     void SetState(Client::Client::ClientState state)
     {

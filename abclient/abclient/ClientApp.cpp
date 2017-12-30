@@ -12,6 +12,7 @@
 #include "CreateAccountLevel.h"
 #include "GameMenu.h"
 #include "PingDot.h"
+#include "TabGroup.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -58,6 +59,9 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterSubsystem(client_);
     levelManager_ = new LevelManager(context);
     context->RegisterSubsystem(levelManager_);
+
+    // UI
+    TabGroup::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved

@@ -28,6 +28,8 @@ public:
     virtual void OnObjectSelected(uint32_t sourceId, uint32_t targetId) = 0;
     virtual void OnServerMessage(AB::GameProtocol::ServerMessageType type,
         const std::string& senderName, const std::string& message) = 0;
+    virtual void OnChatMessage(AB::GameProtocol::ChatMessageChannel channel,
+        uint32_t senderId, const std::string& senderName, const std::string& message) = 0;
 };
 
 }
