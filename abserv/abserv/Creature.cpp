@@ -341,6 +341,25 @@ void Creature::Move(float speed, const Math::Vector3& amount)
     Vector3 v = m * a;
     transformation_.position_ += v;
 #endif
+    std::vector<GameObject*> c;
+    if (GetCreatures(c, 1.0f))
+    {
+        Math::BoundingBox box = GetWorldBoundingBox();
+        for (auto ci : c)
+        {
+            if (ci != this)
+            {
+                Math::Vector3 move;
+                if (box.Collides(ci->GetWorldBoundingBox(), move))
+                {
+                    move.y_ = 0.0f;
+                    transformation_.position_ += move;
+                    box = GetWorldBoundingBox();
+                }
+            }
+        }
+    }
+
     if (octant_)
     {
         Math::Octree* octree = octant_->GetRoot();

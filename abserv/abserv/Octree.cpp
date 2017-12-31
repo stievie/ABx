@@ -210,7 +210,7 @@ void Octant::AddObject(Game::GameObject* drawable)
     IncObjectCount();
 }
 
-void Octant::RemoveObject(Game::GameObject* drawable, bool resetOctant)
+void Octant::RemoveObject(Game::GameObject* drawable, bool resetOctant /* = true */)
 {
     auto it = std::find(objects_.begin(), objects_.end(), drawable);
     if (it != objects_.end())

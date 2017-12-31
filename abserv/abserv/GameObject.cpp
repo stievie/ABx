@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameObject.h"
 #include "Game.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -18,7 +19,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 }
 
 GameObject::GameObject() :
-    boundingBox_(-2.0f, 2.0f),
+    boundingBox_(-0.5f, 0.5f),
     octant_(nullptr)
 {
     id_ = GetNewId();
@@ -49,8 +50,10 @@ void GameObject::RemoveFromOctree()
 {
     if (octant_)
     {
-        Math::Octree* octree = octant_->GetRoot();
-        octree->RemoveObject(this);
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "Removing " << GetName() << " from Octree" << std::endl;
+#endif
+        octant_->RemoveObject(this);
     }
 }
 
