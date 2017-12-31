@@ -39,6 +39,13 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SERVER_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
     SubscribeToEvent(AbEvents::E_CHAT_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
+
+    static bool firstStart = true;
+    if (firstStart)
+    {
+        AddLine("Hi, type /help for available commands.", "ChatLogServerInfoText");
+        firstStart = false;
+    }
 }
 
 void ChatWindow::FocusEdit()
@@ -299,6 +306,7 @@ void ChatWindow::HandleTextFinished(StringHash eventType, VariantMap& eventData)
 void ChatWindow::AddLine(const String& text, const String& style)
 {
     Text* txt = chatLog_->CreateChild<Text>();
+
     txt->SetText(text);
     txt->SetStyle(style);
     txt->EnableLayoutUpdate();

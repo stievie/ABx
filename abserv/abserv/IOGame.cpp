@@ -10,10 +10,10 @@ bool IOGame::LoadGame(Game::Game* game, std::shared_ptr<DBResult> result)
     if (!result)
         return false;
 
-    game->data_.id = result->GetUInt("id");
-    game->data_.mapName = result->GetString("name");
-    game->data_.mapFile = result->GetString("map");
-    game->data_.navMeshFile = result->GetString("nav_mesh");
+    game->map_->data_.id = result->GetUInt("id");
+    game->map_->data_.name = result->GetString("name");
+    game->map_->data_.file = result->GetString("map");
+    game->map_->data_.navMesh = result->GetString("nav_mesh");
     game->data_.scriptFile = result->GetString("script_file");
     game->data_.type = static_cast<Game::GameType>(result->GetUInt("id"));
 

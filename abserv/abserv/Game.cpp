@@ -25,7 +25,6 @@ namespace Game {
 Game::Game() :
     state_(GameStateTerminated),
     lastUpdate_(0),
-    navMesh_(nullptr),
     startTime_(0)
 {
     InitializeLua();
@@ -45,7 +44,7 @@ void Game::Start()
     if (state_ == GameStateStartup)
     {
 #ifdef DEBUG_GAME
-        LOG_DEBUG << "Starting game " << id_ << ", " << data_.mapName << std::endl;
+        LOG_DEBUG << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 #endif // DEBUG_GAME
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
@@ -61,7 +60,7 @@ void Game::Start()
 void Game::Stop()
 {
 #ifdef DEBUG_GAME
-    LOG_DEBUG << "Stopping game " << id_ << ", " << data_.mapName << std::endl;
+    LOG_DEBUG << "Stopping game " << id_ << ", " << map_->data_.name << std::endl;
 #endif // DEBUG_GAME
     SetState(GameStateTerminated);
 }
@@ -83,6 +82,9 @@ void Game::Update()
     {
         o->Update(delta, *gameStatus_.get());
     }
+
+    // Update Octree stuff
+    map_->Update(delta);
 
     // Then call Lua Update function
     luaState_["onUpdate"](this, delta);
@@ -199,6 +201,27 @@ std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
     return std::shared_ptr<GameObject>();
 }
 
+void Game::AddObject(std::shared_ptr<GameObject> object)
+{
+    objects_.push_back(object);
+    object->SetGame(shared_from_this());
+    luaState_["onAddObject"](this, object);
+}
+
+void Game::RemoveObject(std::shared_ptr<GameObject> object)
+{
+    luaState_["onRemoveObject"](this, object);
+    object->SetGame(std::shared_ptr<Game>());
+    auto ito = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
+    {
+        return o->id_ == object->id_;
+    });
+    if (ito != objects_.end())
+    {
+        objects_.erase(ito);
+    }
+}
+
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
@@ -206,9 +229,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     {
         return std::shared_ptr<Npc>();
     }
-    objects_.push_back(result);
-    result->SetGame(shared_from_this());
-    luaState_["onAddObject"](this, result);
+    AddObject(result);
     return result;
 }
 
@@ -226,7 +247,11 @@ void Game::InternalLoad()
     // Game::Load() Thread
 
     // TODO: Load Data, Assets, Spawn stuff etc
-    navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.navMeshFile);
+    if (!map_->Load())
+    {
+        LOG_ERROR << "Error loading map with name " << map_->data_.name << std::endl;
+        return;
+    }
 
     if (state_ == GameStateStartup)
         // Loading done -> start it
@@ -236,7 +261,7 @@ void Game::InternalLoad()
 void Game::Load(const std::string& mapName)
 {
     // Dispatcher Thread
-    data_.mapName = mapName;
+    map_ = std::make_shared<Map>();
     if (!DB::IOGame::LoadGameByName(this, mapName))
     {
         LOG_ERROR << "Error loading game with name " << mapName << std::endl;
@@ -313,13 +338,12 @@ void Game::PlayerJoin(uint32_t playerId)
         {
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
-            objects_.push_back(player);
-            player->data_.lastMap = data_.mapName;
+            player->data_.lastMap = map_->data_.name;
             // TODO: Get spawn position
             player->transformation_.position_ = GetSpawnPoint();
-            player->SetGame(shared_from_this());
+            AddObject(player);
         }
-        luaState_["onAddObject"](this, player);
+
         luaState_["onPlayerJoin"](this, player.get());
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
@@ -345,12 +369,7 @@ void Game::PlayerLeave(uint32_t playerId)
             luaState_["onPlayerLeave"](this, (*it).second);
             players_.erase(it);
         }
-        auto ito = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
-        {
-            return o->id_ == player->id_;
-        });
-        if (ito != objects_.end())
-            objects_.erase(ito);
+        RemoveObject(player);
 
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))

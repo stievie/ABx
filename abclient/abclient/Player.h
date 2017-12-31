@@ -36,7 +36,7 @@ const int CTRL_TURN_LEFT    = 1 << 6;
 
 const float CAMERA_MIN_DIST = 0.0f;
 const float CAMERA_INITIAL_DIST = 8.0f;
-const float CAMERA_MAX_DIST = 30.0f;
+const float CAMERA_MAX_DIST = 40.0f;
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
 class Player : public Actor

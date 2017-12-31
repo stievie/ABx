@@ -163,6 +163,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bans.h" />
+    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
@@ -197,6 +198,8 @@
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="Npc.h" />
+    <ClInclude Include="Octree.h" />
+    <ClInclude Include="OctreeQuery.h" />
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
@@ -214,6 +217,7 @@
     <ClInclude Include="SkillBar.h" />
     <ClInclude Include="SkillManager.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
@@ -230,6 +234,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bans.cpp" />
+    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="DatabaseOdbc.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
@@ -262,6 +267,8 @@
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="Npc.cpp" />
+    <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="OctreeQuery.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
@@ -278,6 +285,7 @@
     <ClCompile Include="SkillBar.cpp" />
     <ClCompile Include="SkillManager.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

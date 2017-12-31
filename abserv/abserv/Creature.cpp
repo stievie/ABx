@@ -4,6 +4,7 @@
 #include "Game.h"
 #include <AB/ProtocolCodes.h>
 #include "Logger.h"
+#include "OctreeQuery.h"
 
 #include "DebugNew.h"
 
@@ -269,6 +270,16 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         break;
     }
 
+#ifdef DEBUG_GAME
+/*    std::vector<GameObject*> c;
+    if (GetCreatures(c, 1.0f))
+    {
+        for (auto ci : c)
+            if (ci != this)
+                LOG_DEBUG << ci->GetName() << std::endl;
+    }*/
+#endif
+
     // The rotation may change in 2 ways: Turn and SetWorldDirection
     if (turned || directionSet)
     {
@@ -288,6 +299,18 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         effect->Update(timeElapsed);
     }
+}
+
+bool Creature::GetCreatures(std::vector<GameObject*>& result, float radius)
+{
+    if (!octant_)
+        return false;
+
+    Math::Sphere sphere(transformation_.position_, radius);
+    Math::SphereOctreeQuery query(result, sphere);
+    Math::Octree* octree = octant_->GetRoot();
+    octree->GetObjects(query);
+    return true;
 }
 
 bool Creature::Serialize(IO::PropWriteStream& stream)
@@ -318,6 +341,11 @@ void Creature::Move(float speed, const Math::Vector3& amount)
     Vector3 v = m * a;
     transformation_.position_ += v;
 #endif
+    if (octant_)
+    {
+        Math::Octree* octree = octant_->GetRoot();
+        octree->AddObjectUpdate(this);
+    }
 }
 
 void Creature::Turn(float angle)

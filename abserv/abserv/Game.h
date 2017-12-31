@@ -24,11 +24,7 @@ enum GameType
 
 struct GameData
 {
-    uint32_t id;
     GameType type;
-    std::string mapName;
-    std::string mapFile;
-    std::string navMeshFile;
     std::string scriptFile;
 };
 
@@ -74,16 +70,17 @@ public:
     int64_t startTime_;
 
     std::shared_ptr<Map> map_;
-    std::shared_ptr<NavigationMesh> navMesh_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     const std::map<uint32_t, Player*>& GetPlayers() const { return players_; }
     int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }
-    std::string GetName() const { return data_.mapName; }
+    std::string GetName() const { return map_->data_.name; }
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
+    void AddObject(std::shared_ptr<GameObject> object);
+    void RemoveObject(std::shared_ptr<GameObject> object);
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 

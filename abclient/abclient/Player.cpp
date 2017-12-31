@@ -148,10 +148,13 @@ void Player::SetYRotation(float rad, bool updateYaw)
 
 void Player::SetCameraDist(bool increase)
 {
+    float diff = cameraDistance_ / 10.0f;
+    if (diff < 0.5f)
+        diff = 0.5f;
     if (increase)
-        cameraDistance_ += cameraDistance_ / 10.0f;
+        cameraDistance_ += diff;
     else
-        cameraDistance_ -= cameraDistance_ / 10.0f;
+        cameraDistance_ -= diff;
     cameraDistance_ = Clamp(cameraDistance_, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
 }
 

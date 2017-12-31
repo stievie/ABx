@@ -76,7 +76,7 @@ void PlayerManager::CleanPlayers()
     if (players_.size() == 0)
         return;
 
-    // Delete all assets that are only owned by the cache
+    // Logout all inactive players
     auto i = players_.begin();
     while ((i = std::find_if(i, players_.end(), [](const auto& current) -> bool
     {
