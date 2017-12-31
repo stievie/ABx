@@ -85,7 +85,6 @@ public:
     /// Effects may influence the attack speed
     float attackSpeedFactor_ = 1.0f;
 
-    bool GetCreatures(std::vector<GameObject*>& result, float radius);
     bool Serialize(IO::PropWriteStream& stream) override;
 };
 

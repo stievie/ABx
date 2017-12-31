@@ -37,6 +37,29 @@ bool GameObject::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
+bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
+{
+    if (!octant_)
+        return false;
+
+    Math::Sphere sphere(transformation_.position_, radius);
+    Math::SphereOctreeQuery query(result, sphere);
+    Math::Octree* octree = octant_->GetRoot();
+    octree->GetObjects(query);
+    return true;
+}
+
+bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox & box)
+{
+    if (!octant_)
+        return false;
+
+    Math::BoxOctreeQuery query(result, box);
+    Math::Octree* octree = octant_->GetRoot();
+    octree->GetObjects(query);
+    return true;
+}
+
 void GameObject::AddToOctree()
 {
     if (auto g = game_.lock())

@@ -92,6 +92,8 @@ public:
     {
         return boundingBox_.Transformed(transformation_.GetMatrix());
     }
+    bool QueryObjects(std::vector<GameObject*>& result, float radius);
+    bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
 
 };
 

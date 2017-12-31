@@ -301,18 +301,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
 }
 
-bool Creature::GetCreatures(std::vector<GameObject*>& result, float radius)
-{
-    if (!octant_)
-        return false;
-
-    Math::Sphere sphere(transformation_.position_, radius);
-    Math::SphereOctreeQuery query(result, sphere);
-    Math::Octree* octree = octant_->GetRoot();
-    octree->GetObjects(query);
-    return true;
-}
-
 bool Creature::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
@@ -342,9 +330,9 @@ void Creature::Move(float speed, const Math::Vector3& amount)
     transformation_.position_ += v;
 #endif
     std::vector<GameObject*> c;
-    if (GetCreatures(c, 1.0f))
+    Math::BoundingBox box = GetWorldBoundingBox();
+    if (QueryObjects(c, box))
     {
-        Math::BoundingBox box = GetWorldBoundingBox();
         for (auto ci : c)
         {
             if (ci != this)
