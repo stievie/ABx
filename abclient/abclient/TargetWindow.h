@@ -2,6 +2,8 @@
 
 #include "GameObject.h"
 
+static const StringHash E_TARGETWINDOW_UNSELECT = StringHash("Target Window unselect object");
+
 class TargetWindow : public UIElement
 {
     URHO3D_OBJECT(TargetWindow, UIElement);

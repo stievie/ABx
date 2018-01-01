@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="0" />
 	<attribute name="Next Replicated Node ID" value="4" />
 	<attribute name="Next Replicated Component ID" value="11" />
-	<attribute name="Next Local Node ID" value="16779719" />
-	<attribute name="Next Local Component ID" value="16779828" />
+	<attribute name="Next Local Node ID" value="16779669" />
+	<attribute name="Next Local Component ID" value="16779767" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -39,6 +39,19 @@
 			<attribute name="Spot FOV" value="20" />
 			<attribute name="Light Shape Texture" value="Texture2D;Textures/temple_of_athene_SpecLM.png" />
 			<attribute name="Cast Shadows" value="true" />
+		</component>
+	</node>
+	<node id="3">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0.45804 3.4 8.76829" />
+		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+		<attribute name="Scale" value="7 7 7" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="10">
+			<attribute name="Model" value="Model;Models/Athene/Athena.mdl" />
+			<attribute name="Material" value="Material;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEPEDE1.xml;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEATHE.xml" />
 		</component>
 	</node>
 </scene>

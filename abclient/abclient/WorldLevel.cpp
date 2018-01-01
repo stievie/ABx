@@ -61,11 +61,16 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
             SharedPtr<GameObject> object = GetObjectFromNode(result[0].node_);
             if (object && object->IsSelectable())
             {
-                FwClient* client = context_->GetSubsystem<FwClient>();
-                client->SelectObject(player_->id_, object->id_);
+                SelectObject(object->id_);
             }
         }
     }
+}
+
+void WorldLevel::SelectObject(uint32_t objectId)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    client->SelectObject(player_->id_, objectId);
 }
 
 void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
@@ -314,6 +319,11 @@ void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventDat
     net->Login(net->accountName_, net->accountPass_);
 }
 
+void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
+{
+    SelectObject(0);
+}
+
 Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
     Actor* result = Actor::CreateActor(id, context_, scene_);
@@ -349,6 +359,7 @@ void WorldLevel::CreateUI()
     targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
     targetWindow_->SetAlignment(HA_CENTER, VA_TOP);
     targetWindow_->SetVisible(false);
+    SubscribeToEvent(targetWindow_, E_TARGETWINDOW_UNSELECT, URHO3D_HANDLER(WorldLevel, HandleTargetWindowUnselectObject));
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();

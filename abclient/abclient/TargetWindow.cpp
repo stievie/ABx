@@ -27,7 +27,8 @@ TargetWindow::~TargetWindow()
 
 void TargetWindow::HandleClearTargetClicked(StringHash eventType, VariantMap& eventData)
 {
-    SetTarget(SharedPtr<GameObject>());
+    VariantMap& e = GetEventDataMap();
+    SendEvent(E_TARGETWINDOW_UNSELECT, e);
 }
 
 void TargetWindow::SetTarget(SharedPtr<GameObject> target)

@@ -19,6 +19,7 @@ public:
     WorldLevel(Context* context);
     void CreatePlayer(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction);
     Actor* CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction);
+    void SelectObject(uint32_t objectId);
 protected:
     SharedPtr<ChatWindow> chatWindow_;
     SharedPtr<PingDot> pingDot_;
@@ -61,6 +62,7 @@ private:
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleMenuLogout(StringHash eventType, VariantMap& eventData);
     void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
+    void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
         const Quaternion& rot, PropReadStream& data);
