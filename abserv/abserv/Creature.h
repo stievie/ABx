@@ -15,6 +15,7 @@ class Creature : public GameObject
 {
 private:
     void DeleteEffect(uint32_t id);
+    void DoCollisions();
     uint8_t moveDir_;
     uint8_t turnDir_;
 protected:

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Size" value="348 48" />
+	<attribute name="Size" value="348 32" />
 	<attribute name="Min Anchor" value="0.5 0" />
 	<attribute name="Max Anchor" value="0.5 0" />
 	<attribute name="Pivot" value="0.5 0" />
@@ -8,7 +8,7 @@
 	<attribute name="Layout Border" value="4 4 4 4" />
 	<element type="Button">
 		<attribute name="Name" value="TargetButton" />
-		<attribute name="Min Size" value="300 40" />
+		<attribute name="Min Size" value="0 24" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Name" value="TargetText" />
@@ -24,7 +24,8 @@
 	</element>
 	<element type="Button">
 		<attribute name="Name" value="ClearTargetButton" />
-		<attribute name="Min Size" value="40 0" />
+		<attribute name="Min Size" value="24 0" />
+		<attribute name="Max Size" value="24 2147483647" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Image Rect" value="144 0 160 16" />
 	</element>

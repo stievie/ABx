@@ -2,16 +2,9 @@
 
 #include "Vector3.h"
 #include "Matrix4.h"
+#include "MathDefs.h"
 
 namespace Math {
-
-/// Intersection test result.
-enum Intersection
-{
-    OUTSIDE,
-    INTERSECTS,
-    INSIDE
-};
 
 class BoundingBox
 {

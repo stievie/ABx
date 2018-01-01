@@ -194,6 +194,7 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Maintenance.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MathDefs.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NetworkMessage.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="ProtocolStatus.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Skill.h" />
@@ -279,6 +281,7 @@
     <ClCompile Include="ProtocolStatus.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="Skill.cpp" />

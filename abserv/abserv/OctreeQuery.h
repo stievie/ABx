@@ -3,6 +3,7 @@
 #include "BoundingBox.h"
 #include "Vector3.h"
 #include "Sphere.h"
+#include "Ray.h"
 
 namespace Game {
 class GameObject;
@@ -22,7 +23,7 @@ public:
 
     /// Intersection test for an octant.
     virtual Intersection TestOctant(const BoundingBox& box, bool inside) = 0;
-    /// Intersection test for drawables.
+    /// Intersection test for objects.
     virtual void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
 
     std::vector<Game::GameObject*>& result_;
@@ -38,7 +39,7 @@ public:
 
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
-    /// Intersection test for drawables.
+    /// Intersection test for objects.
     void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) override;
 
     Vector3 point_;
@@ -55,7 +56,7 @@ public:
 
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
-    /// Intersection test for drawables.
+    /// Intersection test for objects.
     void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) override;
 
     /// Sphere.
@@ -73,11 +74,75 @@ public:
 
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
-    /// Intersection test for drawables.
+    /// Intersection test for objects.
     void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) override;
 
     /// Bounding box.
     BoundingBox box_;
+};
+
+/// Graphics raycast detail level.
+enum RayQueryLevel
+{
+    RAY_AABB = 0,
+    RAY_OBB,
+    RAY_TRIANGLE,
+    RAY_TRIANGLE_UV
+};
+
+struct RayQueryResult
+{
+    /// Construct with defaults.
+    RayQueryResult() :
+        object_(nullptr)
+    {}
+
+    /// Test for inequality, added to prevent GCC from complaining.
+    bool operator !=(const RayQueryResult& rhs) const
+    {
+        return position_ != rhs.position_ ||
+            normal_ != rhs.normal_ ||
+            distance_ != rhs.distance_ ||
+            object_ != rhs.object_;
+    }
+
+    /// Hit position in world space.
+    Vector3 position_;
+    /// Hit normal in world space. Negation of ray direction if per-triangle data not available.
+    Vector3 normal_;
+    /// Distance from ray origin.
+    float distance_;
+    /// Drawable.
+    Game::GameObject* object_;
+};
+
+class RayOctreeQuery
+{
+public:
+    /// Construct with ray and query parameters.
+    RayOctreeQuery(std::vector<RayQueryResult>& result, const Ray& ray, RayQueryLevel level = RAY_TRIANGLE,
+        float maxDistance = INFINITY) :
+        result_(result),
+        ray_(ray),
+        maxDistance_(maxDistance),
+        level_(level)
+    {}
+
+    RayOctreeQuery(const RayOctreeQuery& rhs) = delete;
+    RayOctreeQuery& operator =(const RayOctreeQuery& rhs) = delete;
+
+    /// Result vector reference.
+    std::vector<RayQueryResult>& result_;
+    /// Ray.
+    Ray ray_;
+    /// Drawable flags to include.
+    unsigned char drawableFlags_;
+    /// Drawable layers to include.
+    unsigned viewMask_;
+    /// Maximum ray distance.
+    float maxDistance_;
+    /// Raycast detail level.
+    RayQueryLevel level_;
 };
 
 }

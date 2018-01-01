@@ -9,6 +9,11 @@ namespace Math {
 static constexpr float DEFAULT_OCTREE_SIZE = 1000.0f;
 static constexpr int DEFAULT_OCTREE_LEVELS = 8;
 
+inline bool CompareRayQueryResults(const RayQueryResult& lhs, const RayQueryResult& rhs)
+{
+    return lhs.distance_ < rhs.distance_;
+}
+
 Octree::Octree() :
     Octant(BoundingBox(-DEFAULT_OCTREE_SIZE, DEFAULT_OCTREE_SIZE), 0, nullptr, this),
     numLevels_(DEFAULT_OCTREE_LEVELS)
@@ -42,6 +47,48 @@ void Octree::GetObjects(OctreeQuery& query) const
 {
     query.result_.clear();
     GetObjectsInternal(query, false);
+}
+
+void Octree::Raycast(RayOctreeQuery& query) const
+{
+    query.result_.clear();
+    GetObjectsInternal(query);
+    std::sort(query.result_.begin(), query.result_.end(), CompareRayQueryResults);
+}
+
+void Octree::RaycastSingle(RayOctreeQuery& query) const
+{
+    query.result_.clear();
+    rayQueryObjects_.clear();
+    GetObjectsOnlyInternal(query, rayQueryObjects_);
+
+    // Sort by increasing hit distance to AABB
+    for (auto object : rayQueryObjects_)
+    {
+        object->SetSortValue(query.ray_.HitDistance(object->GetWorldBoundingBox()));
+    }
+    std::sort(rayQueryObjects_.begin(), rayQueryObjects_.end(), Game::CompareObjects);
+
+    // Then do the actual test according to the query, and early-out as possible
+    float closestHit = INFINITY;
+    for (auto object : rayQueryObjects_)
+    {
+        if (object->GetSortValue() < std::min(closestHit, query.maxDistance_))
+        {
+            size_t oldSize = query.result_.size();
+            object->ProcessRayQuery(query, query.result_);
+            if (query.result_.size() > oldSize)
+                closestHit = std::min(closestHit, query.result_.back().distance_);
+        }
+        else
+            break;
+    }
+
+    if (query.result_.size() > 1)
+    {
+        std::sort(query.result_.begin(), query.result_.end(), CompareRayQueryResults);
+        query.result_.resize(1);
+    }
 }
 
 void Octree::Update()
@@ -239,7 +286,7 @@ void Octant::GetObjectsInternal(OctreeQuery& query, bool inside) const
             inside = true;
         else if (res == OUTSIDE)
         {
-            // Fully outside, so cull this octant, its children & drawables
+            // Fully outside, so cull this octant, its children & objects
             return;
         }
     }
@@ -255,6 +302,56 @@ void Octant::GetObjectsInternal(OctreeQuery& query, bool inside) const
     {
         if (children_[i])
             children_[i]->GetObjectsInternal(query, inside);
+    }
+}
+
+void Octant::GetObjectsInternal(RayOctreeQuery& query) const
+{
+    float octantDist = query.ray_.HitDistance(cullingBox_);
+    if (octantDist >= query.maxDistance_)
+        return;
+
+    if (objects_.size())
+    {
+        Game::GameObject** start = const_cast<Game::GameObject**>(&objects_[0]);
+        Game::GameObject** end = start + objects_.size();
+
+        while (start != end)
+        {
+            Game::GameObject* object = *start++;
+            object->ProcessRayQuery(query, query.result_);
+        }
+    }
+
+    for (unsigned i = 0; i < NUM_OCTANTS; ++i)
+    {
+        if (children_[i])
+            children_[i]->GetObjectsInternal(query);
+    }
+}
+
+void Octant::GetObjectsOnlyInternal(RayOctreeQuery& query, std::vector<Game::GameObject*>& objects) const
+{
+    float octantDist = query.ray_.HitDistance(cullingBox_);
+    if (octantDist >= query.maxDistance_)
+        return;
+
+    if (objects_.size())
+    {
+        Game::GameObject** start = const_cast<Game::GameObject**>(&objects_[0]);
+        Game::GameObject** end = start + objects_.size();
+
+        while (start != end)
+        {
+            Game::GameObject* object = *start++;
+            objects.push_back(object);
+        }
+    }
+
+    for (unsigned i = 0; i < NUM_OCTANTS; ++i)
+    {
+        if (children_[i])
+            children_[i]->GetObjectsOnlyInternal(query, objects);
     }
 }
 

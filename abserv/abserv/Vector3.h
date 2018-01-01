@@ -53,6 +53,9 @@ public:
     bool operator ==(const Vector3& vector) const { return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_; }
     bool operator !=(const Vector3& vector) const { return x_ != vector.x_ || y_ != vector.y_ || z_ != vector.z_; }
 
+    /// Return negation.
+    Vector3 operator -() const { return Vector3(-x_, -y_, -z_); }
+
     Vector3& operator+=(const Vector3& v);
     Vector3& operator-=(const Vector3& v);
 

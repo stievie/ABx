@@ -222,6 +222,12 @@
     <ClInclude Include="Sphere.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="MathDefs.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -411,6 +417,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Sphere.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

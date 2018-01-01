@@ -41,6 +41,10 @@ protected:
     void Initialize(const BoundingBox& box);
     /// Return drawable objects by a query, called internally.
     void GetObjectsInternal(OctreeQuery& query, bool inside) const;
+    /// Return drawable objects by a ray query, called internally.
+    void GetObjectsInternal(RayOctreeQuery& query) const;
+    /// Return drawable objects only for a threaded ray query, called internally.
+    void GetObjectsOnlyInternal(RayOctreeQuery& query, std::vector<Game::GameObject*>& objects) const;
     BoundingBox worldBoundingBox_;
     /// Bounding box used for drawable object fitting.
     BoundingBox cullingBox_;
@@ -90,10 +94,17 @@ public:
     void AddObjectUpdate(Game::GameObject* object);
     /// Return drawable objects by a query.
     void GetObjects(OctreeQuery& query) const;
+    /// Return drawable objects by a ray query.
+    void Raycast(RayOctreeQuery& query) const;
+    /// Return the closest drawable object by a ray query.
+    void RaycastSingle(RayOctreeQuery& query) const;
 
     /// Subdivision level.
     unsigned numLevels_;
     std::vector<Game::GameObject*> objectUpdate_;
+private:
+    /// Ray query temporary list of drawables.
+    mutable std::vector<Game::GameObject*> rayQueryObjects_;
 };
 
 }

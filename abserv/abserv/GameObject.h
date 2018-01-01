@@ -32,6 +32,7 @@ protected:
     std::weak_ptr<Game> game_;
     /// Octree octant.
     Math::Octant* octant_;
+    float sortValue_;
     uint32_t GetNewId()
     {
         if (objectIds_ >= std::numeric_limits<uint32_t>::max())
@@ -68,10 +69,20 @@ public:
         if (game)
             AddToOctree();
     }
+    void SetCollisionMask(uint32_t mask)
+    {
+        collisionMask_ = mask;
+    }
+    uint32_t GetCollisionMask() const { return collisionMask_; }
     virtual AB::GameProtocol::GameObjectType GetType() const
     {
         return AB::GameProtocol::ObjectTypeUnknown;
     }
+    /// Process octree raycast. May be called from a worker thread.
+    virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results);
+    void SetSortValue(float value) { sortValue_ = value; }
+    float GetSortValue() const { return sortValue_; }
+
     virtual bool Serialize(IO::PropWriteStream& stream);
 
     /// Return octree octant.
@@ -88,6 +99,7 @@ public:
     bool occluder_;
     /// Occludee flag.
     bool ocludee_;
+    uint32_t collisionMask_;
     Math::BoundingBox GetWorldBoundingBox() const
     {
         return boundingBox_.Transformed(transformation_.GetMatrix());
@@ -96,5 +108,10 @@ public:
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
 
 };
+
+inline bool CompareObjects(GameObject* lhs, GameObject* rhs)
+{
+    return lhs->GetSortValue() < rhs->GetSortValue();
+}
 
 }

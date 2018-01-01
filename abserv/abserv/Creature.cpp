@@ -294,6 +294,29 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
+void Creature::DoCollisions()
+{
+    std::vector<GameObject*> c;
+    Math::BoundingBox box = GetWorldBoundingBox();
+    if (QueryObjects(c, box))
+    {
+        for (auto ci : c)
+        {
+            if (ci != this && ((collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
+            {
+                Math::Vector3 move;
+                if (box.Collides(ci->GetWorldBoundingBox(), move))
+                {
+                    move.y_ = 0.0f;
+                    transformation_.position_ += move;
+                    // if we moved get new bounding box
+                    box = GetWorldBoundingBox();
+                }
+            }
+        }
+    }
+}
+
 bool Creature::Move(float speed, const Math::Vector3& amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
@@ -317,25 +340,8 @@ bool Creature::Move(float speed, const Math::Vector3& amount)
     Vector3 v = m * a;
     transformation_.position_ += v;
 #endif
-    std::vector<GameObject*> c;
-    Math::BoundingBox box = GetWorldBoundingBox();
-    if (QueryObjects(c, box))
-    {
-        for (auto ci : c)
-        {
-            if (ci != this)
-            {
-                Math::Vector3 move;
-                if (box.Collides(ci->GetWorldBoundingBox(), move))
-                {
-                    move.y_ = 0.0f;
-                    transformation_.position_ += move;
-                    box = GetWorldBoundingBox();
-                }
-            }
-        }
-    }
 
+    DoCollisions();
     bool moved = oldPos != transformation_.position_;
 
     if (moved && octant_)
