@@ -8,6 +8,7 @@
 #include "PropStream.h"
 #include "Actor.h"
 #include "PingDot.h"
+#include "TargetWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI.
@@ -22,6 +23,7 @@ protected:
     SharedPtr<ChatWindow> chatWindow_;
     SharedPtr<PingDot> pingDot_;
     SharedPtr<GameMenu> gameMenu_;
+    SharedPtr<TargetWindow> targetWindow_;
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;

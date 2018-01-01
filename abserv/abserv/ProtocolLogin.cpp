@@ -46,8 +46,8 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     switch (recvByte)
     {
     case AB::LoginProtocol::LoginLogin:
-HandleLoginPacket(message);
-break;
+        HandleLoginPacket(message);
+        break;
     case AB::LoginProtocol::LoginCreateAccount:
         HandleCreateAccountPacket(message);
         break;

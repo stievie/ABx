@@ -125,7 +125,9 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     }
     case AB::LoginProtocol::CharacterList:
     {
-        gameHost_ = message->GetString();
+        std::string host = message->GetString();
+        if (!host.empty())
+            gameHost_ = host;
         gamePort_ = message->Get<uint16_t>();
         CharList chars;
         int count = message->Get<uint8_t>();

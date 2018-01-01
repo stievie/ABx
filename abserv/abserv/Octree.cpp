@@ -80,7 +80,7 @@ Octant::~Octant()
 {
     if (root_)
     {
-        // Remove the drawables (if any) from this octant to the root octant
+        // Remove the objects (if any) from this octant to the root octant
         for (auto& o : objects_)
         {
             o->SetOctant(root_);

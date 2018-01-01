@@ -213,24 +213,20 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         float speed = GetActualMoveSpeed();
         if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         {
-            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitZ);
-            moved = true;
+            moved |= Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitZ);
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
         {
             // Move slower backward
-            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::Back / 2.0f);
-            moved = true;
+            moved |= Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::Back / 2.0f);
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
         {
-            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::Left / 2.0f);
-            moved = true;
+            moved |= Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::Left / 2.0f);
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
         {
-            Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitX / 2.0f);
-            moved = true;
+            moved |= Move(((float)(timeElapsed) / 100.0f) * speed, Math::Vector3::UnitX / 2.0f);
         }
         if (moved)
         {
@@ -270,16 +266,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         break;
     }
 
-#ifdef DEBUG_GAME
-/*    std::vector<GameObject*> c;
-    if (GetCreatures(c, 1.0f))
-    {
-        for (auto ci : c)
-            if (ci != this)
-                LOG_DEBUG << ci->GetName() << std::endl;
-    }*/
-#endif
-
     // The rotation may change in 2 ways: Turn and SetWorldDirection
     if (turned || directionSet)
     {
@@ -308,9 +294,11 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
-void Creature::Move(float speed, const Math::Vector3& amount)
+bool Creature::Move(float speed, const Math::Vector3& amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
+
+    Math::Vector3 oldPos = transformation_.position_;
 
     // It's as easy as:
     // 1. Create a matrix from the rotation,
@@ -348,11 +336,14 @@ void Creature::Move(float speed, const Math::Vector3& amount)
         }
     }
 
-    if (octant_)
+    bool moved = oldPos != transformation_.position_;
+
+    if (moved && octant_)
     {
         Math::Octree* octree = octant_->GetRoot();
         octree->AddObjectUpdate(this);
     }
+    return moved;
 }
 
 void Creature::Turn(float angle)

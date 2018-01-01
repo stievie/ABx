@@ -276,10 +276,20 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
                 if (target)
                 {
                     actor->selectedObject_ = target;
+                    if (actor->objectType_ == ObjectTypeSelf)
+                    {
+                        targetWindow_->SetTarget(target);
+                    }
                 }
             }
             else
+            {
                 actor->selectedObject_ = nullptr;
+                if (actor->objectType_ == ObjectTypeSelf)
+                {
+                    targetWindow_->SetTarget(SharedPtr<GameObject>());
+                }
+            }
         }
     }
 }
@@ -335,6 +345,10 @@ void WorldLevel::CreateUI()
     gameMenu_->SetAlignment(HA_LEFT, VA_TOP);
     SubscribeToEvent(gameMenu_, E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
     SubscribeToEvent(gameMenu_, E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
+
+    targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
+    targetWindow_->SetAlignment(HA_CENTER, VA_TOP);
+    targetWindow_->SetVisible(false);
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();

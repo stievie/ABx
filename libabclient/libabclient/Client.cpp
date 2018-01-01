@@ -31,6 +31,9 @@ void Client::OnGetCharlist(const CharList& chars)
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
         gameHost_ = protoLogin_->gameHost_;
+    else
+        // If game host is empty use the login host
+        gameHost_ = loginHost_;
     state_ = StateSelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);

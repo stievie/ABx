@@ -60,7 +60,7 @@ public:
     /// Remove effect before it ended
     void RemoveEffect(uint32_t id);
     /// Move in direction of rotation
-    void Move(float speed, const Math::Vector3& amount);
+    bool Move(float speed, const Math::Vector3& amount);
     void Turn(float angle);
     void SetDirection(float worldAngle);
 

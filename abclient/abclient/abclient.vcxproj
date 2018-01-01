@@ -492,6 +492,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TabGroup.cpp" />
+    <ClCompile Include="TargetWindow.cpp" />
     <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="CharCreateLevel.h" />
@@ -518,6 +519,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TabGroup.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TargetWindow.h" />
     <ClInclude Include="WorldLevel.h" />
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@
 #include "GameMenu.h"
 #include "PingDot.h"
 #include "TabGroup.h"
+#include "TargetWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -70,6 +71,7 @@ ClientApp::ClientApp(Context* context) :
     ChatWindow::RegisterObject(context);
     GameMenu::RegisterObject(context);
     PingDot::RegisterObject(context);
+    TargetWindow::RegisterObject(context);
 }
 
 /**
