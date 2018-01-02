@@ -30,7 +30,7 @@ public:
     void Init() override;
 
     /// Handle physics world update. Called by LogicComponent base class.
-    void Update(float timeStep) override;
+    void FixedUpdate(float timeStep) override;
 
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;

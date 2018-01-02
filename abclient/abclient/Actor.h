@@ -50,7 +50,8 @@ public:
 
     static Actor* CreateActor(uint32_t id, Context* context, Scene* scene);
     /// Handle physics world update. Called by LogicComponent base class.
-    void Update(float timeStep) override;
+    virtual void FixedUpdate(float timeStep) override;
+    void MoveTo(const Vector3& newPos) override;
 
     void Unserialize(PropReadStream& data) override;
 
@@ -67,6 +68,7 @@ public:
 private:
     void CreateModel();
 protected:
+    Vector3 moveToPos_;
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;
     SharedPtr<AnimationController> animController_;

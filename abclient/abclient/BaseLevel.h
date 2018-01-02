@@ -30,6 +30,7 @@ public:
 protected:
     friend class FwClient;
     virtual void CreateUI();
+    virtual void CreateScene();
     virtual void Dispose();
     virtual void SubscribeToEvents();
     virtual void SetupViewport();
@@ -44,11 +45,6 @@ protected:
     Ray GetActiveViewportScreenRay(const IntVector2& pos) const
     {
         return viewport_->GetScreenRay(pos.x_, pos.y_);
-/*        Camera* cam = cameraNode_->GetComponent<Camera>();
-        return cam->GetScreenRay(
-            static_cast<float>(pos.x_ - view.left_) / view.Width(),
-            static_cast<float>(pos.y_ - view.top_) / view.Height()
-        );*/
     }
 
     Urho3D::UIElement* uiRoot_;

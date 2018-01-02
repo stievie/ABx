@@ -68,8 +68,12 @@ void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap & eventData)
     UNREFERENCED_PARAMETER(eventType);
     UNREFERENCED_PARAMETER(eventData);
 
-//    if (debugGeometry_)
-//        scene_->GetComponent<PhysicsWorld>()->DrawDebugGeometry(true);
+    if (debugGeometry_)
+    {
+        PhysicsWorld* p = scene_->GetComponent<PhysicsWorld>();
+        if (p)
+            p->DrawDebugGeometry(true);
+    }
 }
 
 void BaseLevel::OnNetworkError(const std::error_code& err)
@@ -141,4 +145,9 @@ void BaseLevel::CreateUI()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* style = cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml");
     uiRoot_->SetDefaultStyle(style);
+}
+
+void BaseLevel::CreateScene()
+{
+    scene_ = new Scene(context_);
 }

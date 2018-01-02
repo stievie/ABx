@@ -27,3 +27,8 @@ float GameObject::GetYRotation()
 {
     return DegToRad(GetNode()->GetRotation().YawAngle());
 }
+
+void GameObject::MoveTo(const Vector3 & newPos)
+{
+    GetNode()->SetPosition(newPos);
+}

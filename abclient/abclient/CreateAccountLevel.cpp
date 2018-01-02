@@ -81,8 +81,8 @@ void CreateAccountLevel::DoCancel()
 
 void CreateAccountLevel::CreateScene()
 {
+    BaseLevel::CreateScene();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    scene_ = new Scene(context_);
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateAccount.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 }

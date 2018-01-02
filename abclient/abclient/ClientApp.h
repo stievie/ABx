@@ -34,4 +34,5 @@ private:
     void SwitchScene(const String& sceneName);
     /// Handle the logic update event.
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 };

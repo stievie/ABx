@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 #include "Actor.h"
+#include "Definitions.h"
+#include <SDL/SDL_timer.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -15,7 +17,7 @@ Actor::Actor(Context* context) :
     selectedObject_(nullptr)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
-    SetUpdateEventMask(USE_UPDATE | USE_POSTUPDATE);
+    SetUpdateEventMask(USE_FIXEDUPDATE);
 }
 
 Actor::~Actor()
@@ -60,6 +62,15 @@ void Actor::CreateModel()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
+    // Create rigidbody, and set non-zero mass so that the body becomes dynamic
+    RigidBody* body = GetNode()->CreateComponent<RigidBody>();
+    // Set mass to zero we control Y pos
+    body->SetMass(1.0f);
+    // Set zero angular factor so that physics doesn't turn the character on its own.
+    // Instead we will control the character yaw manually
+    body->SetAngularFactor(Vector3::ZERO);
+    body->SetLinearFactor(Vector3(1.0f, 0.0f, 1.0f));
+
     // spin node
     Node* adjustNode = GetNode()->GetChild("AdjNode");
     adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
@@ -83,10 +94,29 @@ void Actor::CreateModel()
         model_->SetMaterial(i, cache->GetResource<Material>((*it)));
     }
     model_->SetCastShadows(castShadows_);
+
+    CollisionShape* shape = node_->CreateComponent<CollisionShape>();
+    const BoundingBox& bb = model_->GetBoundingBox();
+    shape->SetCylinder(bb.Size().x_, bb.Size().y_);
 }
 
-void Actor::Update(float timeStep)
+void Actor::FixedUpdate(float timeStep)
 {
+    const Vector3& cp = GetNode()->GetPosition();
+    if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
+    {
+        // Try to make moves smoother...
+
+        // Difference between FixedUpdate time and network tick
+        float networkDiff = (NETWORK_TICK_MS - timeStep);
+        Vector3 pos = moveToPos_.Lerp(cp, networkDiff);
+        GetNode()->SetPosition(pos);
+    }
+}
+
+void Actor::MoveTo(const Vector3& newPos)
+{
+    moveToPos_ = newPos;
 }
 
 void Actor::Unserialize(PropReadStream& data)

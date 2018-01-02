@@ -9,15 +9,7 @@
 #include <Ws2tcpip.h>
 
 #define NETWORKMESSAGE_MAXSIZE 16768
+// ms = 20 network ticks/second. Update game state each 50ms (= 20 Updates/sec)
+#define NETWORK_TICK 50
 
-inline void AB_SLEEP(uint32_t t)
-{
-    Sleep(t);
-}
-
-inline long long AB_TIME()
-{
-    _timeb t;
-    _ftime64_s(&t);
-    return ((long long)t.millitm) + ((long long)t.time) * 1000;
-}
+static constexpr float NETWORK_TICK_MS(static_cast<float>(NETWORK_TICK) / 1000.0f);

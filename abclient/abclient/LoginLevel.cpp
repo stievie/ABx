@@ -26,8 +26,8 @@ LoginLevel::LoginLevel(Context* context) :
 
 void LoginLevel::CreateScene()
 {
+    BaseLevel::CreateScene();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    scene_ = new Scene(context_);
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/Login.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 }

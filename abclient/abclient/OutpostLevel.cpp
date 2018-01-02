@@ -40,8 +40,8 @@ void OutpostLevel::CreateUI()
 
 void OutpostLevel::CreateScene()
 {
+    WorldLevel::CreateScene();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    scene_ = new Scene(context_);
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/" + mapName_ + ".xml");
     scene_->LoadXML(sceneFile->GetRoot());
 }

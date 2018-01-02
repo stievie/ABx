@@ -72,6 +72,9 @@ ClientApp::ClientApp(Context* context) :
     GameMenu::RegisterObject(context);
     PingDot::RegisterObject(context);
     TargetWindow::RegisterObject(context);
+
+    // Subscribe key down event
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
 }
 
 /**
@@ -160,6 +163,20 @@ void ClientApp::SwitchScene(const String& sceneName)
     VariantMap& eventData = GetEventDataMap();
     eventData[AbEvents::E_SET_LEVEL] = sceneName;
     SendEvent(AbEvents::E_SET_LEVEL, eventData);
+}
+
+void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+{
+    using namespace KeyDown;
+    int key = eventData[P_KEY].GetInt();
+
+//#ifdef _DEBUG
+    // Toggle debug HUD with F2
+    if (key == KEY_F2)
+    {
+        GetSubsystem<LevelManager>()->ToggleDebugGeometry();
+    }
+//#endif
 }
 
 /**

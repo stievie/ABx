@@ -30,6 +30,7 @@ public:
 
     virtual void SetYRotation(float rad, bool updateYaw);
     float GetYRotation();
+    virtual void MoveTo(const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
 };
 

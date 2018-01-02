@@ -142,8 +142,8 @@ void CharCreateLevel::DoCancel()
 
 void CharCreateLevel::CreateScene()
 {
+    BaseLevel::CreateScene();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    scene_ = new Scene(context_);
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateCharacter.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 }

@@ -136,8 +136,8 @@ void CharSelectLevel::CreateUI()
 
 void CharSelectLevel::CreateScene()
 {
+    BaseLevel::CreateScene();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    scene_ = new Scene(context_);
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CharSelect.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 }

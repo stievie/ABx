@@ -11,6 +11,7 @@ Player::Player(Context* context) :
     lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
     cameraDistance_(CAMERA_INITIAL_DIST)
 {
+    SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE);
 }
 
 void Player::RegisterObject(Context* context)
@@ -75,9 +76,9 @@ void Player::Init()
     */
 }
 
-void Player::Update(float timeStep)
+void Player::FixedUpdate(float timeStep)
 {
-    Actor::Update(timeStep);
+    Actor::FixedUpdate(timeStep);
 
     FwClient* client = context_->GetSubsystem<FwClient>();
 

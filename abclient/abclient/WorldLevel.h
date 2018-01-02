@@ -34,6 +34,7 @@ protected:
     void SubscribeToEvents() override;
     void Update(StringHash eventType, VariantMap& eventData) override;
     void PostUpdate(StringHash eventType, VariantMap& eventData) override;
+    virtual void CreateScene();
 private:
     IntVector2 mouseDownPos_;
     bool rmbDown_;

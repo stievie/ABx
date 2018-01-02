@@ -150,6 +150,11 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
     UNREFERENCED_PARAMETER(eventData);
 }
 
+void WorldLevel::CreateScene()
+{
+    BaseLevel::CreateScene();
+}
+
 void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
 {
     uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
@@ -238,7 +243,7 @@ void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventDa
     if (object)
     {
         Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
-        object->GetNode()->SetPosition(pos);
+        object->MoveTo(pos);
     }
 }
 
