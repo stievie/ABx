@@ -28,6 +28,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
+    SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(WorldLevel, HandleMouseMove));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
 }
 
@@ -92,6 +93,45 @@ void WorldLevel::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
     {
         int delta = eventData[P_WHEEL].GetInt();
         player_->SetCameraDist(delta < 0);
+    }
+}
+
+void WorldLevel::HandleMouseMove(StringHash eventType, VariantMap& eventData)
+{
+    using namespace MouseMove;
+    // Hover object
+    Input* input = GetSubsystem<Input>();
+    if (input->GetMouseButtonDown(1) || input->GetMouseButtonDown(4))
+        return;
+
+    IntVector2 pos = input->GetMousePosition();
+    Ray camRay = GetActiveViewportScreenRay(pos);
+    PODVector<RayQueryResult> result;
+    Octree* world = scene_->GetComponent<Octree>();
+    RayOctreeQuery query(result, camRay);
+    world->RaycastSingle(query);
+    if (!result.Empty())
+    {
+        Node* nd = result[0].node_;
+        if (nd)
+        {
+            SharedPtr<GameObject> obj = GetObjectFromNode(result[0].node_);
+            if (obj == hoveredObject_.Lock())
+                return;
+            if (auto ho = hoveredObject_.Lock())
+                ho->HoverEnd();
+            hoveredObject_ = obj;
+            if (auto ho = hoveredObject_.Lock())
+            {
+                ho->HoverBegin();
+            }
+            return;
+        }
+    }
+    if (auto ho = hoveredObject_.Lock())
+    {
+        ho->HoverEnd();
+        hoveredObject_.Reset();
     }
 }
 
@@ -223,6 +263,7 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
     SharedPtr<GameObject> object = objects_[objectId];
     if (object)
     {
+        object->RemoveFromScene();
         object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
         {

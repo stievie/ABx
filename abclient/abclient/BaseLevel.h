@@ -66,6 +66,7 @@ public:
         debugGeometry_ = !debugGeometry_;
     }
     virtual void ShowError(const String& message, const String& title = "Error");
+    SharedPtr<Player> GetPlayer() const { return player_; }
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

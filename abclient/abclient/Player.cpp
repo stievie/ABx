@@ -11,7 +11,7 @@ Player::Player(Context* context) :
     lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
     cameraDistance_(CAMERA_INITIAL_DIST)
 {
-    SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE);
+    SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
 }
 
 void Player::RegisterObject(Context* context)

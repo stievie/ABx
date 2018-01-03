@@ -4,6 +4,8 @@
 #include "Actor.h"
 #include "Definitions.h"
 #include <SDL/SDL_timer.h>
+#include "LevelManager.h"
+#include "BaseLevel.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -14,10 +16,11 @@ Actor::Actor(Context* context) :
     mesh_(String::EMPTY),
     animController_(nullptr),
     model_(nullptr),
-    selectedObject_(nullptr)
+    selectedObject_(nullptr),
+    nameLabel_(nullptr)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
-    SetUpdateEventMask(USE_FIXEDUPDATE);
+    SetUpdateEventMask(USE_FIXEDUPDATE | USE_UPDATE);
 }
 
 Actor::~Actor()
@@ -108,15 +111,87 @@ void Actor::FixedUpdate(float timeStep)
         // Try to make moves smoother...
 
         // Difference between FixedUpdate time and network tick
-        float networkDiff = (NETWORK_TICK_MS - timeStep);
-        Vector3 pos = moveToPos_.Lerp(cp, networkDiff);
-        GetNode()->SetPosition(pos);
+//        float networkDiff = (NETWORK_TICK_MS - timeStep);
+        if ((cp - moveToPos_).Length() > 0.01f)
+        {
+            // Seems to be the best result
+            Vector3 pos = cp.Lerp(moveToPos_, 0.5f);
+            GetNode()->SetPosition(pos);
+        }
+        else
+            GetNode()->SetPosition(moveToPos_);
     }
+}
+
+void Actor::Update(float timeStep)
+{
+    if (hovered_)
+    {
+        Vector3 pos = node_->GetPosition();
+        IntVector2 screenPos = WorldToScreenPoint(pos);
+        float sizeFac = 1.0f;
+        if (screenPos != IntVector2::ZERO)
+        {
+            Node* camNode = GetScene()->GetChild("CameraNode");
+            if (camNode)
+            {
+                Vector3 dist = pos - camNode->GetPosition();
+                sizeFac = 10.0f / dist.Length();
+            }
+
+            const BoundingBox& bb = model_->GetBoundingBox();
+            Vector3 hpPos = pos + bb.Size();
+            IntVector2 hpTop = WorldToScreenPoint(hpPos);
+            IntVector2 labelPos(screenPos.x_ - nameLabel_->GetWidth() / 2, screenPos.y_);
+            nameLabel_->SetPosition(labelPos);
+
+            hpBar_->SetSize((int)(100.f * sizeFac), (int)(20.f * sizeFac));
+            IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_);
+            hpBar_->SetPosition(ihpPos);
+        }
+    }
+    nameLabel_->SetVisible(hovered_);
+    hpBar_->SetVisible(hovered_);
 }
 
 void Actor::MoveTo(const Vector3& newPos)
 {
     moveToPos_ = newPos;
+}
+
+void Actor::RemoveFromScene()
+{
+    RemoveActorUI();
+}
+
+void Actor::AddActorUI()
+{
+    if (name_.Empty())
+        return;
+
+    UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
+    nameLabel_ = uiRoot->CreateChild<Text>();
+    nameLabel_->SetStyle("ActorNameText");
+    nameLabel_->SetText(name_);
+    nameLabel_->SetVisible(false);
+
+    hpBar_ = uiRoot->CreateChild<ProgressBar>();
+    hpBar_->SetShowPercentText(false);
+    hpBar_->SetRange(100.0f);
+    hpBar_->SetStyle("HealthBar");
+    hpBar_->SetSize(100, 20);
+    hpBar_->SetValue(50.0f);
+    hpBar_->SetVisible(false);
+}
+
+void Actor::RemoveActorUI()
+{
+    if (nameLabel_)
+    {
+        UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
+        uiRoot->RemoveChild(nameLabel_);
+        uiRoot->RemoveChild(hpBar_);
+    }
 }
 
 void Actor::Unserialize(PropReadStream& data)
@@ -125,6 +200,8 @@ void Actor::Unserialize(PropReadStream& data)
     std::string str;
     if (data.ReadString(str))
         name_ = String(str.data(), (unsigned)str.length());
+
+    AddActorUI();
 }
 
 void Actor::LoadXML(const XMLElement& source)

@@ -51,7 +51,9 @@ public:
     static Actor* CreateActor(uint32_t id, Context* context, Scene* scene);
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep) override;
+    virtual void Update(float timeStep) override;
     void MoveTo(const Vector3& newPos) override;
+    void RemoveFromScene() override;
 
     void Unserialize(PropReadStream& data) override;
 
@@ -66,7 +68,11 @@ public:
     bool pickable_;
     bool castShadows_;
 private:
+    SharedPtr<Text> nameLabel_;
+    SharedPtr<ProgressBar> hpBar_;
     void CreateModel();
+    void AddActorUI();
+    void RemoveActorUI();
 protected:
     Vector3 moveToPos_;
     AnimatedModel* animatedModel_;

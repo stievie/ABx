@@ -30,6 +30,7 @@ protected:
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
     /// Urho3D NodeIDs -> AB Object IDs given from the server
     HashMap<uint32_t, uint32_t> nodeIds_;
+    WeakPtr<GameObject> hoveredObject_;
     void CreateUI() override;
     void SubscribeToEvents() override;
     void Update(StringHash eventType, VariantMap& eventData) override;
@@ -55,6 +56,7 @@ private:
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
+    void HandleMouseMove(StringHash eventType, VariantMap& eventData);
     void HandleObjectSpawn(StringHash eventType, VariantMap& eventData);
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
     void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);

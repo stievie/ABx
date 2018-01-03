@@ -24,6 +24,7 @@ public:
     uint32_t id_;
     unsigned index_;
     ObjectType objectType_;
+    bool hovered_;
     AB::GameProtocol::CreatureState creatureState_;
 
     virtual void Unserialize(PropReadStream& data) {}
@@ -32,5 +33,11 @@ public:
     float GetYRotation();
     virtual void MoveTo(const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
+    IntVector2 WorldToScreenPoint();
+    IntVector2 WorldToScreenPoint(Vector3 pos);
+    virtual void HoverBegin() { hovered_ = true; }
+    virtual void HoverEnd() { hovered_ = false; }
+
+    virtual void RemoveFromScene() {}
 };
 
