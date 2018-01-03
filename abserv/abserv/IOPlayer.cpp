@@ -123,7 +123,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
-    query << "SELECT COUNT(`id`) AS c FROM `accounts` WHERE `id` = " << accountId;
+    query << "SELECT COUNT(`id`) AS `c` FROM `accounts` WHERE `id` = " << accountId;
     result = db->StoreQuery(query.str());
     if (!result)
         return ResultInternalError;
@@ -131,7 +131,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
         return ResultInvalidAccount;
 
     query.str("");
-    query << "SELECT COUNT(`id`) FROM `players` WHERE `name` = " << db->EscapeString(name);
+    query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `name` = " << db->EscapeString(name);
     result = db->StoreQuery(query.str());
     if (!result)
         return ResultInternalError;
@@ -173,7 +173,7 @@ bool IOPlayer::DeletePlayer(uint32_t accountId, uint32_t playerId)
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
-    query << "SELECT COUNT(`id`) AS c FROM `players` WHERE `account_id` = " << accountId;
+    query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `account_id` = " << accountId;
     query << " AND `id` = " << playerId;
     result = db->StoreQuery(query.str());
     if (!result)

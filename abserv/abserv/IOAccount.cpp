@@ -15,7 +15,7 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
-    query << "SELECT COUNT(`id`) AS c FROM `accounts` WHERE `name` = " << db->EscapeString(name);
+    query << "SELECT COUNT(`id`) AS `c` FROM `accounts` WHERE `name` = " << db->EscapeString(name);
     result = db->StoreQuery(query.str());
     if (!result)
         return ResultInternalError;
