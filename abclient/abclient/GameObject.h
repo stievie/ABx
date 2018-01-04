@@ -18,13 +18,15 @@ public:
     GameObject(Context* context);
     ~GameObject();
 
-    /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     virtual void Init() {}
 
     uint32_t id_;
     unsigned index_;
     ObjectType objectType_;
+    /// Player hovers
     bool hovered_;
+    /// Player has selected this object
+    bool playerSelected_;
     AB::GameProtocol::CreatureState creatureState_;
 
     virtual void Unserialize(PropReadStream& data) {}

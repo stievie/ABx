@@ -109,13 +109,10 @@ void Actor::FixedUpdate(float timeStep)
     if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
     {
         // Try to make moves smoother...
-
-        // Difference between FixedUpdate time and network tick
-//        float networkDiff = (NETWORK_TICK_MS - timeStep);
-        if ((cp - moveToPos_).Length() > 0.01f)
+        if ((cp - moveToPos_).LengthSquared() > 0.01f)
         {
             // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveToPos_, 0.5f);
+            Vector3 pos = cp.Lerp(moveToPos_, 0.2f);
             GetNode()->SetPosition(pos);
         }
         else
@@ -125,7 +122,7 @@ void Actor::FixedUpdate(float timeStep)
 
 void Actor::Update(float timeStep)
 {
-    if (hovered_)
+    if (hovered_ || playerSelected_)
     {
         Vector3 pos = node_->GetPosition();
         IntVector2 screenPos = WorldToScreenPoint(pos);
@@ -145,13 +142,13 @@ void Actor::Update(float timeStep)
             IntVector2 labelPos(screenPos.x_ - nameLabel_->GetWidth() / 2, screenPos.y_);
             nameLabel_->SetPosition(labelPos);
 
-            hpBar_->SetSize((int)(100.f * sizeFac), (int)(20.f * sizeFac));
+            hpBar_->SetSize((int)(130.f * sizeFac), (int)(18.f * sizeFac));
             IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_);
             hpBar_->SetPosition(ihpPos);
         }
     }
-    nameLabel_->SetVisible(hovered_);
-    hpBar_->SetVisible(hovered_);
+    nameLabel_->SetVisible(hovered_ || playerSelected_);
+    hpBar_->SetVisible(hovered_ || playerSelected_);
 }
 
 void Actor::MoveTo(const Vector3& newPos)
@@ -186,11 +183,26 @@ void Actor::AddActorUI()
 
 void Actor::RemoveActorUI()
 {
+    UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
     if (nameLabel_)
-    {
-        UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
         uiRoot->RemoveChild(nameLabel_);
+    if (hpBar_)
         uiRoot->RemoveChild(hpBar_);
+}
+
+void Actor::SelectObject(SharedPtr<GameObject> object)
+{
+    if (selectedObject_ == object)
+        return;
+
+    if (objectType_ == ObjectTypeSelf && selectedObject_)
+    {
+        selectedObject_->playerSelected_ = false;
+    }
+    selectedObject_ = object;
+    if (objectType_ == ObjectTypeSelf && selectedObject_)
+    {
+        selectedObject_->playerSelected_ = true;
     }
 }
 

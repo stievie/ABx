@@ -271,8 +271,8 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
             chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");
         }
         // If the player has selected this object -> unselect it
-        if (player_->selectedObject_ == object)
-            player_->selectedObject_.Reset();
+        if (player_->GetSelectedObject() == object)
+            player_->SelectObject(SharedPtr<GameObject>());
         objects_.Erase(objectId);
     }
 }
@@ -326,7 +326,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
                 SharedPtr<GameObject> target = objects_[targetId];
                 if (target)
                 {
-                    actor->selectedObject_ = target;
+                    actor->SelectObject(target);
                     if (actor->objectType_ == ObjectTypeSelf)
                     {
                         targetWindow_->SetTarget(target);
@@ -335,7 +335,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
             }
             else
             {
-                actor->selectedObject_ = nullptr;
+                actor->SelectObject(SharedPtr<GameObject>());
                 if (actor->objectType_ == ObjectTypeSelf)
                 {
                     targetWindow_->SetTarget(SharedPtr<GameObject>());

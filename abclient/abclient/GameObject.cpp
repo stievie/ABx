@@ -8,7 +8,8 @@ GameObject::GameObject(Context* context) :
     LogicComponent(context),
     objectType_(ObjectTypeStatic),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
-    hovered_(false)
+    hovered_(false),
+    playerSelected_(false)
 {
 }
 

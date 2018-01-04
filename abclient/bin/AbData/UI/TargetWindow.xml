@@ -1,15 +1,47 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Size" value="348 32" />
+	<attribute name="Opacity" value="0.8" />
 	<attribute name="Min Anchor" value="0.5 0" />
 	<attribute name="Max Anchor" value="0.5 0" />
 	<attribute name="Pivot" value="0.5 0" />
 	<attribute name="Layout Mode" value="Horizontal" />
+	<attribute name="Layout Spacing" value="4" />
 	<attribute name="Layout Border" value="4 4 4 4" />
-	<element type="Button">
+	<element type="ProgressBar" style="HealthBar">
 		<attribute name="Name" value="TargetButton" />
 		<attribute name="Min Size" value="0 24" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Is Enabled" value="false" />
+		<attribute name="Is Editable" value="false" />
+		<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Range" value="100" />
+		<attribute name="Value" value="50" />
+		<attribute name="Show Percent Text" value="false" />
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Color" value="1 0.1 0.1 1" />
+			<attribute name="Top Left Color" value="1 0.1 0.1 1" />
+			<attribute name="Top Right Color" value="1 0.1 0.1 1" />
+			<attribute name="Bottom Left Color" value="1 0.1 0.1 1" />
+			<attribute name="Bottom Right Color" value="1 0.1 0.1 1" />
+			<attribute name="Image Rect" value="16 16 32 32" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+		</element>
+		<element type="Text" internal="true" style="none">
+			<attribute name="Name" value="S_Text" />
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Is Visible" value="false" />
+			<attribute name="Text" value="50 %" />
+		</element>
 		<element type="Text">
 			<attribute name="Name" value="TargetText" />
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -24,9 +56,12 @@
 	</element>
 	<element type="Button">
 		<attribute name="Name" value="ClearTargetButton" />
-		<attribute name="Min Size" value="24 0" />
-		<attribute name="Max Size" value="24 2147483647" />
-		<attribute name="Pivot" value="0 0" />
-		<attribute name="Image Rect" value="144 0 160 16" />
+		<attribute name="Max Size" value="16 16" />
+		<attribute name="Min Anchor" value="0 0.5" />
+		<attribute name="Max Anchor" value="0 0.5" />
+		<attribute name="Pivot" value="0 0.5" />
+		<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+		<attribute name="Image Rect" value="81 65 97 81" />
+		<attribute name="Hover Image Offset" value="16 0" />
 	</element>
 </element>

@@ -82,8 +82,10 @@ protected:
     HashMap<StringHash, String> animations_;
     /// Footsteps etc.
     HashMap<StringHash, String> sounds_;
+    WeakPtr<GameObject> selectedObject_;
 public:
     StaticModel* GetModel() const { return model_; }
-    WeakPtr<GameObject> selectedObject_;
     String name_;
+    void SelectObject(SharedPtr<GameObject> object);
+    SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
 };
