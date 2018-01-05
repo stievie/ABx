@@ -6,6 +6,7 @@
 #include <SDL/SDL_timer.h>
 #include "LevelManager.h"
 #include "BaseLevel.h"
+#include "MathUtils.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -112,11 +113,22 @@ void Actor::FixedUpdate(float timeStep)
         if ((cp - moveToPos_).LengthSquared() > 0.01f)
         {
             // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveToPos_, 0.2f);
+            Vector3 pos = cp.Lerp(moveToPos_, 0.4f);
             GetNode()->SetPosition(pos);
         }
         else
             GetNode()->SetPosition(moveToPos_);
+    }
+    const Quaternion& rot = node_->GetRotation();
+    if (rotateTo_ != rot)
+    {
+        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 10.0f)
+        {
+            Quaternion r = rot.Slerp(rotateTo_, 0.25f);
+            node_->SetRotation(r);
+        }
+        else
+            node_->SetRotation(rotateTo_);
     }
 }
 
@@ -154,6 +166,12 @@ void Actor::Update(float timeStep)
 void Actor::MoveTo(const Vector3& newPos)
 {
     moveToPos_ = newPos;
+}
+
+void Actor::SetYRotation(float rad, bool updateYaw)
+{
+    float deg = RadToDeg(rad);
+    rotateTo_.FromAngleAxis(deg, Vector3::UP);
 }
 
 void Actor::RemoveFromScene()

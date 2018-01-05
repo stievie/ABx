@@ -141,7 +141,7 @@ void Player::SetYRotation(float rad, bool updateYaw)
     if (updateYaw)
     {
         // Yaw is already set by the client
-        float deg = RadToDeg(GetYRotation());
+        float deg = RadToDeg(rad);
         controls_.yaw_ = deg;
     }
     lastYaw_ = controls_.yaw_;

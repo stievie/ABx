@@ -156,6 +156,15 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
 void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 {
+    if (encryptionEnabled_)
+    {
+        if (!XTEADecrypt(msg))
+        {
+            Disconnect();
+            return;
+        }
+    }
+
     msg.Skip(2);    // Client OS
     uint16_t version = msg.Get<uint16_t>();
     if (version != AB::PROTOCOL_VERSION)

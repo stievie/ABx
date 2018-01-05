@@ -18,7 +18,6 @@ Client::Client() :
     lastPing_(0),
     gotPong_(true)
 {
-    Crypto::DHKeys::Instance.GenerateKeys();
 }
 
 Client::~Client()
@@ -130,6 +129,17 @@ void Client::OnPong(int ping)
     pings_.push_back(ping);
 }
 
+std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
+{
+    if (!protoLogin_)
+    {
+        protoLogin_ = std::make_shared<ProtocolLogin>();
+        protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
+        protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
+    }
+    return protoLogin_;
+}
+
 void Client::Login(const std::string& name, const std::string& pass)
 {
     if (!(state_ == StateDisconnected || state_ == StateCreateAccount))
@@ -139,10 +149,7 @@ void Client::Login(const std::string& name, const std::string& pass)
     password_ = pass;
 
     // 1. Login to login server -> get character list
-    protoLogin_ = std::make_shared<ProtocolLogin>();
-    protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
-    protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
-    protoLogin_->Login(loginHost_, loginPort_, name, pass,
+    GetProtoLogin()->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
     Connection::Run();
 }
@@ -156,10 +163,7 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
     accountName_ = name;
     password_ = pass;
 
-    protoLogin_ = std::make_shared<ProtocolLogin>();
-    protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
-    protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
-    protoLogin_->CreateAccount(loginHost_, loginPort_, name, pass,
+    GetProtoLogin()->CreateAccount(loginHost_, loginPort_, name, pass,
         email, accKey,
         std::bind(&Client::OnAccountCreated, this));
     Connection::Run();
@@ -174,10 +178,7 @@ void Client::CreatePlayer(const std::string& account, const std::string& passwor
     accountName_ = account;
     password_ = password;
 
-    protoLogin_ = std::make_shared<ProtocolLogin>();
-    protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
-    protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
-    protoLogin_->CreatePlayer(loginHost_, loginPort_, account, password,
+    GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, account, password,
         charName, prof, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
     Connection::Run();
@@ -192,6 +193,7 @@ void Client::Logout()
         protoGame_->Logout();
         Connection::Run();
         state_ = StateDisconnected;
+        protoGame_.reset();
     }
 }
 
@@ -199,9 +201,13 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
     if (state_ != StateSelectChar)
         return;
+
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->receiver_ = this;
+
+    if (protoLogin_)
+        protoLogin_.reset();
 
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
 }

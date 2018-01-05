@@ -3,12 +3,15 @@
 #include <random>
 #include <ctime>
 #include "Logger.h"
+#include <AB/ProtocolCodes.h>
+#include <abcrypto.hpp>
 
 namespace Client {
 
 Protocol::Protocol() :
     connection_(nullptr),
     checksumEnabled_(false),
+    encryptEnabled_(false),
     errorCallback_(nullptr),
     protocolErrorCallback_(nullptr)
 {
@@ -38,6 +41,8 @@ void Protocol::Disconnect()
 
 void Protocol::Send(const std::shared_ptr<OutputMessage>& message)
 {
+    if (encryptEnabled_)
+        XTEAEncrypt(message);
     if (checksumEnabled_)
         message->WriteChecksum();
     message->WriteMessageSize();
@@ -56,6 +61,8 @@ void Protocol::Receive()
     int headerSize = 2; // 2 bytes for message size
     if (checksumEnabled_)
         headerSize += 4; // 4 bytes for checksum
+    if (encryptEnabled_)
+        headerSize += 2;
     inputMessage_->SetHeaderSize(static_cast<uint16_t>(headerSize));
 
     // read the first 2 bytes which contain the message size
@@ -99,8 +106,48 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
 #endif
         return;
     }
+    if (encryptEnabled_)
+    {
+        if (!XTEADecrypt(inputMessage_))
+        {
+#ifdef _LOGGING
+            LOG_ERROR << "Decryption failed" << std::endl;
+#endif
+            return;
+        }
+    }
 
     OnReceive(inputMessage_);
+}
+
+bool Protocol::XTEADecrypt(const std::shared_ptr<InputMessage>& inputMessage)
+{
+    uint16_t encryptedSize = (uint16_t)inputMessage->GetUnreadSize();
+    if (encryptedSize % 8 != 0)
+    {
+        return false;
+    }
+
+    uint32_t* buffer = (uint32_t*)(inputMessage->GetReadBuffer());
+    xxtea_dec(buffer, encryptedSize / 4, AB::ENC_KEY);
+
+    return true;
+}
+
+void Protocol::XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage)
+{
+    uint16_t encryptedSize = outputMessage->GetSize();
+
+    //add bytes until reach 8 multiple
+    if ((encryptedSize % 8) != 0)
+    {
+        uint16_t n = 8 - (encryptedSize % 8);
+        outputMessage->AddPaddingBytes(n);
+        encryptedSize += n;
+    }
+
+    uint32_t* buffer = (uint32_t*)(outputMessage->GetDataBuffer());
+    xxtea_enc(buffer, encryptedSize / 4, AB::ENC_KEY);
 }
 
 void Protocol::OnError(const asio::error_code& err)

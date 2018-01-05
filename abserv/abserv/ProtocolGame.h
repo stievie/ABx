@@ -28,6 +28,7 @@ public:
         Protocol(connection)
     {
         checksumEnabled_ = ProtocolGame::UseChecksum;
+        encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
     }
 
     void Login(const std::string& name, uint32_t accountId, const std::string& map);

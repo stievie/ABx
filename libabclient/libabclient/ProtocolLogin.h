@@ -30,6 +30,8 @@ private:
         ActionCreatePlayer
     };
     ProtocolAction action_;
+    std::string host_;
+    uint16_t port_;
     std::string accountName_;
     std::string password_;
     std::string email_;
@@ -45,7 +47,6 @@ private:
     void SendLoginPacket();
     void SendCreateAccountPacket();
     void SendCreatePlayerPacket();
-    void SendKeyExchange();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
     void OnConnect() override;
@@ -68,6 +69,7 @@ public:
 
     std::string gameHost_;
     uint16_t gamePort_;
+
 };
 
 }

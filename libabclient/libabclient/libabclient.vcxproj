@@ -123,13 +123,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Account.h" />
-    <ClInclude Include="Aes.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="DebugNew.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Definitions.h" />
-    <ClInclude Include="DHKeys.h" />
     <ClInclude Include="InputMessage.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="OutputMessage.h" />
@@ -146,10 +144,8 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Aes.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Connection.cpp" />
-    <ClCompile Include="DHKeys.cpp" />
     <ClCompile Include="InputMessage.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="OutputMessage.cpp" />

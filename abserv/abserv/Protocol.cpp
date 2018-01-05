@@ -3,37 +3,36 @@
 #include "NetworkMessage.h"
 #include "OutputMessage.h"
 #include "Scheduler.h"
-#include "Aes.h"
+#include <AB/ProtocolCodes.h>
+#include <abcrypto.hpp>
 
 #include "DebugNew.h"
 
 namespace Net {
 
-void Protocol::AESEncrypt(OutputMessage& message)
+void Protocol::XTEAEncrypt(OutputMessage& msg) const
 {
-    int32_t msgLength = message.GetMessageLength();
-
-    uint32_t n;
-    // Add bytes until we reach a multiple of 16
-    if ((msgLength % AES_BLOCK_SIZE) != 0)
+    // The message must be a multiple of 8
+    size_t paddingBytes = msg.GetSize() % 8;
+    if (paddingBytes != 0)
     {
-        n = AES_BLOCK_SIZE - (msgLength % AES_BLOCK_SIZE);
-        message.AddPaddingBytes(n);
-        msgLength += n;
+        msg.AddPaddingBytes((uint32_t)(8 - paddingBytes));
     }
-    uint8_t* buffer = (uint8_t*)(message.GetBuffer() + message.GetReadPos());
-    uint8_t* buff = new uint8_t[msgLength + AES_IV_SIZE];
-    size_t len = Crypto::Aes::AesEncrypt(buffer, msgLength, buff, msgLength + AES_IV_SIZE, dhKey_);
-    delete[] buff;
+
+    uint32_t* buffer = (uint32_t*)(msg.GetOutputBuffer());
+    const size_t messageLength = msg.GetSize();
+    xxtea_enc(buffer, (uint32_t)(messageLength / 4), AB::ENC_KEY);
 }
 
-bool Protocol::AESDecrypt(NetworkMessage& message)
+bool Protocol::XTEADecrypt(NetworkMessage& msg) const
 {
-    int32_t msgLength = message.GetMessageLength();
-    uint8_t* buffer = (uint8_t*)(message.GetBuffer() + message.GetReadPos());
-    uint8_t* buff = new uint8_t[msgLength + AES_IV_SIZE];
-    size_t len = Crypto::Aes::AesDecrypt(buffer, msgLength, buff, msgLength + AES_IV_SIZE, dhKey_);
-    delete[] buff;
+    int32_t length = msg.GetSize() - 6;
+    if ((length & 7) != 0)
+        return false;
+
+    uint32_t* buffer = (uint32_t*)(msg.GetBuffer() + 6);
+    xxtea_dec(buffer, length / 4, AB::ENC_KEY);
+
     return true;
 }
 
@@ -42,8 +41,13 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Sending message" << std::endl;
 #endif
-
-    if (checksumEnabled_)
+//    message->WriteMessageLength();
+    if (encryptionEnabled_)
+    {
+        XTEAEncrypt(*message);
+        message->AddCryptoHeader(checksumEnabled_);
+    }
+    else if (checksumEnabled_)
     {
         message->AddCryptoHeader(true);
     }
@@ -54,6 +58,17 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Receiving message with size " << message.GetMessageLength() << std::endl;
 #endif
+
+    if (encryptionEnabled_)
+    {
+        if (!XTEADecrypt(message))
+        {
+#ifdef DEBUG_NET
+            LOG_DEBUG << "Failed to decrypt message." << std::endl;
+#endif
+            return;
+        }
+    }
     ParsePacket(message);
 }
 

@@ -10,24 +10,14 @@ class OutputMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
-private:
 protected:
-    /// DH shared key
-    DH_KEY dhKey_;
     const std::weak_ptr<Connection> connection_;
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
-    void AESEncrypt(OutputMessage& message);
-    bool AESDecrypt(NetworkMessage& message);
-    /// Sets the shared key
-    void SetDHKey(const DH_KEY* key)
-    {
-        memcpy_s(dhKey_, DH_KEY_LENGTH, key, DH_KEY_LENGTH);
-    }
-    const DH_KEY& GetDHKey() const
-    {
-        return dhKey_;
-    }
+    bool encryptionEnabled_;
+    void XTEAEncrypt(OutputMessage& msg) const;
+    bool XTEADecrypt(NetworkMessage& msg) const;
+
     void Disconnect() const
     {
         if (auto conn = GetConnection())
@@ -39,7 +29,8 @@ protected:
 public:
     explicit Protocol(std::shared_ptr<Connection> connection) :
         connection_(connection),
-        checksumEnabled_(false)
+        checksumEnabled_(false),
+        encryptionEnabled_(false)
     {
     }
 #if defined(_DEBUG)

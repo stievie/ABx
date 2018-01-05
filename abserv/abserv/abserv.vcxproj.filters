@@ -129,12 +129,6 @@
     <ClInclude Include="IOGuild.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DHKeys.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Aes.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="IOGame.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -327,12 +321,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOGuild.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DHKeys.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Aes.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOGame.cpp">

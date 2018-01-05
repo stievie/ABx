@@ -99,7 +99,6 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::GameIP] = Utils::ConvertStringToIP(GetGlobal("game_ip", defIp));
     config_[Key::StatusIP] = Utils::ConvertStringToIP(GetGlobal("status_ip", defIp));
     config_[Key::AdminIP] = Utils::ConvertStringToIP(GetGlobal("admin_ip", defIp));
-    config_[Key::CryptoKeys] = GetGlobal("crypto_keys", "");
     config_[Key::LogDir] = GetGlobal("log_dir", "");
     config_[Key::DataDir] = GetGlobal("data_dir", "");
     config_[Key::LoginPort] = (int)GetGlobal("login_port", 0);

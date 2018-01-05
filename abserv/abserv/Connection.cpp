@@ -355,13 +355,23 @@ void ConnectionManager::CloseAll()
     connections_.clear();
 }
 
-uint32_t Connection::GetIP()
+uint32_t Connection::GetIP() const
 {
     asio::error_code err;
     const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
     if (!err)
         return htonl(endpoint.address().to_v4().to_ulong());
     LOG_ERROR << "Getting IP" << std::endl;
+    return 0;
+}
+
+uint16_t Connection::GetPort() const
+{
+    asio::error_code err;
+    const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
+    if (!err)
+        return endpoint.port();
+    LOG_ERROR << "Getting Port" << std::endl;
     return 0;
 }
 

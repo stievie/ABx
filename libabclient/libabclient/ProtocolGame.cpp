@@ -9,6 +9,7 @@ ProtocolGame::ProtocolGame() :
     pingCallback_(nullptr)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
+    encryptEnabled_ = ENABLE_GAME_ENCRYTION;
 }
 
 void ProtocolGame::Login(const std::string& accountName,

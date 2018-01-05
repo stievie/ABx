@@ -57,12 +57,6 @@
     <ClInclude Include="ProtocolLogin.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Aes.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="DHKeys.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -114,12 +108,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolLogin.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Aes.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DHKeys.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">

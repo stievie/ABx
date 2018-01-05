@@ -2,7 +2,6 @@
 
 #include "Account.h"
 #include "Receiver.h"
-#include "DHKeys.h"
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
@@ -31,12 +30,11 @@ private:
     std::string password_;
     std::string mapName_;
     std::vector<int> pings_;
-    DH_KEY serverPublicKey_;
-    DH_KEY sharedKey_;
     int lastRun_;
     int lastPing_;
     bool gotPong_;
     void OnPong(int ping);
+    std::shared_ptr<ProtocolLogin> GetProtoLogin();
 public:
     Client();
     ~Client();

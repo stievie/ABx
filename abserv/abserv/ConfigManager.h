@@ -20,7 +20,6 @@ public:
         GameIP,
         StatusIP,
         AdminIP,
-        CryptoKeys,
         LogDir,
         DataDir,
 

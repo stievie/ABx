@@ -60,11 +60,6 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     }
 }
 
-void ProtocolLogin::SendKeyExchange()
-{
-
-}
-
 void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 {
     std::string accountName = message.GetString();

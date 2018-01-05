@@ -53,6 +53,7 @@ public:
     virtual void FixedUpdate(float timeStep) override;
     virtual void Update(float timeStep) override;
     void MoveTo(const Vector3& newPos) override;
+    void SetYRotation(float rad, bool updateYaw) override;
     void RemoveFromScene() override;
 
     void Unserialize(PropReadStream& data) override;
@@ -74,7 +75,6 @@ private:
     void AddActorUI();
     void RemoveActorUI();
 protected:
-    Vector3 moveToPos_;
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;
     SharedPtr<AnimationController> animController_;
@@ -85,6 +85,8 @@ protected:
     WeakPtr<GameObject> selectedObject_;
 public:
     StaticModel* GetModel() const { return model_; }
+    Vector3 moveToPos_;
+    Quaternion rotateTo_;
     String name_;
     void SelectObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }

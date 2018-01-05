@@ -374,7 +374,9 @@ Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vecto
 {
     Actor* result = Actor::CreateActor(id, context_, scene_);
     result->GetNode()->SetPosition(position);
+    result->moveToPos_ = position;
     result->GetNode()->SetRotation(direction);
+    result->rotateTo_ = direction;
     result->GetNode()->SetScale(scale);
     return result;
 }
@@ -383,7 +385,9 @@ void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector
 {
     player_ = Player::CreatePlayer(id, context_, scene_);
     player_->GetNode()->SetPosition(position);
+    player_->moveToPos_ = position;
     player_->GetNode()->SetRotation(direction);
+    player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);
 
     cameraNode_ = player_->cameraNode_;

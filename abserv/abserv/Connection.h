@@ -63,7 +63,8 @@ public:
     void Accept(std::shared_ptr<Protocol> protocol);
     void Accept();
     asio::ip::tcp::socket& GetSocket() { return socket_; }
-    uint32_t GetIP();
+    uint32_t GetIP() const;
+    uint16_t GetPort() const;
 protected:
     asio::ip::tcp::socket socket_;
 private:

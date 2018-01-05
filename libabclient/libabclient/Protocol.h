@@ -26,9 +26,11 @@ private:
     std::shared_ptr<InputMessage> inputMessage_;
     void InternalRecvHeader(uint8_t* buffer, uint16_t size);
     void InternalRecvData(uint8_t* buffer, uint16_t size);
+    bool XTEADecrypt(const std::shared_ptr<InputMessage>& inputMessage);
+    void XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage);
 protected:
     bool checksumEnabled_;
-    DH_KEY sharedKey_;
+    bool encryptEnabled_;
     std::shared_ptr<Connection> connection_;
     ErrorCallback errorCallback_;
     ProtocolErrorCallback protocolErrorCallback_;

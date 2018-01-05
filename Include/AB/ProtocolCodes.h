@@ -21,6 +21,12 @@ enum ProtocolIds : uint8_t
     ProtocolStatusId = 0xFF
 };
 
+const uint32_t ENC_KEY[4] = {
+    0xd705d09f,
+    0x72a8a08c,
+    0xecabe20b,
+    0x76924dc0};
+
 namespace Errors {
 
 enum ErrorCodes : uint8_t
@@ -54,9 +60,9 @@ namespace LoginProtocol {
 enum LoginPacketTypes : uint8_t
 {
     LoginLogin = 0x01,
-    LoginCreateAccount = 0x02,
-    LoginCreateCharacter = 0x03,
-    LoginDeleteCharacter = 0x04
+    LoginCreateAccount = 0x03,
+    LoginCreateCharacter = 0x04,
+    LoginDeleteCharacter = 0x05
 };
 
 /// Returned by the server
