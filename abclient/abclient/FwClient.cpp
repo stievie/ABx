@@ -48,6 +48,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Invalid Account.";
     case AB::Errors::InvalidPlayerSex:
         return "Invalid character gender.";
+    case AB::Errors::InvalidCharactersInString:
+        return "The string contains invalid characters.";
     default:
         return "";
     }

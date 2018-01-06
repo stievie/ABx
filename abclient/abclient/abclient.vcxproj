@@ -481,6 +481,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LoginLevel.cpp" />
+    <ClCompile Include="MailWindow.cpp" />
+    <ClCompile Include="MultiLineEdit.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
     <ClCompile Include="PingDot.cpp" />
@@ -509,7 +511,9 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
+    <ClInclude Include="MailWindow.h" />
     <ClInclude Include="MathUtils.h" />
+    <ClInclude Include="MultiLineEdit.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="PingDot.h" />

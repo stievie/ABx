@@ -9,7 +9,7 @@
 namespace Game {
 
 static const int MOVE_ANGLES[] = { 0, 45, 90, 135, 180, 225, 270, 315 };
-static const float BASE_SPEED = 170.0f;
+static const float BASE_SPEED = 150.0f;
 
 /// Player, NPC, Monster some such
 class Creature : public GameObject

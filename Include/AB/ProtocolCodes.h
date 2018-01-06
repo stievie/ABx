@@ -52,7 +52,8 @@ enum ErrorCodes : uint8_t
     PlayerNameExists = 0x11,
     InvalidAccount = 0x12,
     InvalidPlayerSex = 0x13,
-    InvalidCharacter = 0x14
+    InvalidCharacter = 0x14,
+    InvalidCharactersInString = 0x15,
 };
 
 }

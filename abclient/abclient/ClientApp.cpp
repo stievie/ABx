@@ -14,6 +14,8 @@
 #include "PingDot.h"
 #include "TabGroup.h"
 #include "TargetWindow.h"
+#include "MultiLineEdit.h"
+#include "MailWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -63,6 +65,7 @@ ClientApp::ClientApp(Context* context) :
 
     // UI
     TabGroup::RegisterObject(context);
+    MultiLineEdit::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved
@@ -72,6 +75,7 @@ ClientApp::ClientApp(Context* context) :
     GameMenu::RegisterObject(context);
     PingDot::RegisterObject(context);
     TargetWindow::RegisterObject(context);
+    MailWindow::RegisterObject(context);
 
     // Subscribe key down event
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));

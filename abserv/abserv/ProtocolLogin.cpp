@@ -246,10 +246,10 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     {
         output->Add<uint32_t>(character.id);
         output->Add<uint16_t>(character.level);
-        output->AddString(character.name);
-        output->AddString(character.prof);
-        output->AddString(character.prof2);
-        output->AddString(character.lastMap);
+        output->AddStringEncrypted(character.name);
+        output->AddStringEncrypted(character.prof);
+        output->AddStringEncrypted(character.prof2);
+        output->AddStringEncrypted(character.lastMap);
     }
 
     Send(output);
@@ -309,8 +309,8 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
     if (res == DB::IOPlayer::ResultOK)
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
-        output->AddString(name);
-        output->AddString(DB::IOGame::GetLandingGame());
+        output->AddStringEncrypted(name);
+        output->AddStringEncrypted(DB::IOGame::GetLandingGame());
     }
     else
     {

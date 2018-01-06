@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "Chat.h"
 #include "Random.h"
+#include "MailBox.h"
 
 #include "DebugNew.h"
 
@@ -11,7 +12,8 @@ namespace Game {
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Creature(),
     client_(std::move(client)),
-    lastPing_(0)
+    lastPing_(0),
+    mailBox_(nullptr)
 {
 }
 

@@ -93,6 +93,12 @@
     <ClInclude Include="TargetWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MultiLineEdit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MailWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -156,6 +162,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TargetWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiLineEdit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MailWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

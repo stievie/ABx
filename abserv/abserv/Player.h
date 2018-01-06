@@ -9,6 +9,7 @@
 namespace Game {
 
 class PlayerManager;
+class MailBox;
 
 enum PlayerSex
 {
@@ -35,6 +36,8 @@ struct PlayerData
 
 class Player final : public Creature
 {
+private:
+    std::unique_ptr<MailBox> mailBox_;
 protected:
     friend class PlayerManager;
     std::shared_ptr<Player> GetThis()

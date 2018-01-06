@@ -44,6 +44,12 @@ void OutputMessage::AddStringEncrypted(const std::string& value)
     if (len > MaxStringLength)
         throw std::exception("String too long");
 
+    if (value.empty())
+    {
+        AddString(value);
+        return;
+    }
+
     //add bytes until reach 8 multiple
     if ((len % 8) != 0)
     {

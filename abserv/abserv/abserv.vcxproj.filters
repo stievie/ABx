@@ -222,6 +222,12 @@
     <ClInclude Include="MathDefs.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="MailBox.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IOMail.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -408,6 +414,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Ray.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MailBox.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOMail.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

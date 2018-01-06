@@ -121,10 +121,10 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         {
             uint32_t id = message->Get<uint32_t>();
             uint16_t level = message->Get<uint16_t>();
-            std::string name = message->GetString();
-            std::string prof = message->GetString();
-            std::string prof2 = message->GetString();
-            std::string lastMap = message->GetString();
+            std::string name = message->GetStringEncrypted();
+            std::string prof = message->GetStringEncrypted();
+            std::string prof2 = message->GetStringEncrypted();
+            std::string lastMap = message->GetStringEncrypted();
             chars.push_back({ id, level, name, prof, prof2, lastMap });
         }
         if (charlistCallback)
@@ -145,8 +145,8 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         break;
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
-        std::string playerName = message->GetString();
-        std::string map = message->GetString();
+        std::string playerName = message->GetStringEncrypted();
+        std::string map = message->GetStringEncrypted();
         if (createPlayerCallback_)
             createPlayerCallback_(playerName, map);
         break;

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "InputMessage.h"
 #include "Utils.h"
+#include <abcrypto.hpp>
+#include <AB/ProtocolCodes.h>
 
 #include "DebugNew.h"
 
@@ -36,6 +38,23 @@ std::string InputMessage::GetString()
     char* v = (char*)(buffer_ + pos_);
     pos_ += len;
     return std::string(v, len);
+}
+
+std::string InputMessage::GetStringEncrypted()
+{
+    std::string encString = GetString();
+    if (encString.empty())
+        return encString;
+
+    size_t len = encString.length();
+    char* buff = new char[len + 1];
+    memset(buff, 0, len + 1);
+    memcpy_s((char*)(buff), len, encString.data(), len);
+    uint32_t* buffer = (uint32_t*)(buff);
+    xxtea_dec(buffer, (uint32_t)(len / 4), AB::ENC_KEY);
+    std::string result(buff);
+    delete[] buff;
+    return result;
 }
 
 void InputMessage::CheckWrite(size_t size)

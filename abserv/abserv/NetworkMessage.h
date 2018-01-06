@@ -89,6 +89,7 @@ public:
     }
     void AddString(const std::string& value);
     void AddString(const char* value);
+    void AddStringEncrypted(const std::string& value);
     void AddVector3(const Math::Vector3& value)
     {
         Add<float>(value.x_);

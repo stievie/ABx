@@ -55,6 +55,7 @@ public:
     void SetBuffer(const std::string& buffer);
 
     std::string GetString();
+    std::string GetStringEncrypted();
     template <typename T>
     T Get()
     {

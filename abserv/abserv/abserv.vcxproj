@@ -187,9 +187,11 @@
     <ClInclude Include="IOEffects.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
+    <ClInclude Include="IOMail.h" />
     <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="MailBox.h" />
     <ClInclude Include="Maintenance.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MathDefs.h" />
@@ -255,9 +257,11 @@
     <ClCompile Include="IOEffects.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />
+    <ClCompile Include="IOMail.cpp" />
     <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="MailBox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maintenance.cpp" />
     <ClCompile Include="Map.cpp" />

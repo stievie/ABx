@@ -26,6 +26,8 @@ std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
 std::string NetworkMessage::GetStringEncrypted()
 {
     std::string encString = GetString();
+    if (encString.empty())
+        return encString;
 
     size_t len = encString.length();
     char* buff = new char[len + 1];
@@ -79,6 +81,34 @@ void NetworkMessage::AddString(const char* value)
     memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value, len);
     info_.position += static_cast<MsgSize_t>(len);
     info_.length += static_cast<MsgSize_t>(len);
+}
+
+void NetworkMessage::AddStringEncrypted(const std::string& value)
+{
+    uint16_t len = static_cast<uint16_t>(value.length());
+    if (!CanAdd(len + 2) || len > 8192)
+        return;
+
+    if (value.empty())
+    {
+        AddString(value);
+        return;
+    }
+
+    //add bytes until reach 8 multiple
+    if ((len % 8) != 0)
+    {
+        uint16_t n = 8 - (len % 8);
+        len += n;
+    }
+    char* buff = new char[len];
+    memset(buff, 0, len);
+    memcpy_s((char*)(buff), len, value.data(), len);
+    uint32_t* buffer = (uint32_t*)(buff);
+    xxtea_enc(buffer, len / 4, AB::ENC_KEY);
+    std::string encString(buff, len);
+    AddString(encString);
+    delete[] buff;
 }
 
 }
