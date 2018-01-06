@@ -4,6 +4,8 @@
 #include "ProtocolGame.h"
 #include "Connection.h"
 
+#include "DebugNew.h"
+
 namespace Client {
 
 Client::Client() :

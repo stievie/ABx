@@ -2,6 +2,8 @@
 #include "ProtocolGame.h"
 #include "Time.h"
 
+#include "DebugNew.h"
+
 namespace Client {
 
 ProtocolGame::ProtocolGame() :

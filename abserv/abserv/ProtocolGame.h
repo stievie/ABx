@@ -3,6 +3,7 @@
 #include "Protocol.h"
 #include "Connection.h"
 #include "Dispatcher.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 class Player;

@@ -2,6 +2,8 @@
 #include "InputMessage.h"
 #include "Utils.h"
 
+#include "DebugNew.h"
+
 namespace Client {
 
 InputMessage::InputMessage()

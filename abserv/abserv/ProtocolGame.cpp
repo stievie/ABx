@@ -11,7 +11,6 @@
 #include "Logger.h"
 #include "Game.h"
 #include "Random.h"
-#include <AB/ProtocolCodes.h>
 #include "Variant.h"
 
 #include "DebugNew.h"
@@ -67,7 +66,7 @@ void ProtocolGame::Logout()
 void ProtocolGame::ParsePacket(NetworkMessage& message)
 {
     if (!acceptPackets_ ||
-        Game::GameManager::Instance.GetState() != Game::GameManager::Running ||
+        Game::GameManager::Instance.GetState() != Game::GameManager::ManagerStateRunning ||
         message.GetSize() == 0)
         return;
 

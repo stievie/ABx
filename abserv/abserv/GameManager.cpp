@@ -18,18 +18,18 @@ void GameManager::Start(Net::ServiceManager* serviceManager)
     serviceManager_ = serviceManager;
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        state_ = State::Running;
+        state_ = State::ManagerStateRunning;
     }
 }
 
 void GameManager::Stop()
 {
     // Main Thread
-    if (state_ == State::Running)
+    if (state_ == State::ManagerStateRunning)
     {
         {
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
-            state_ = State::Terminated;
+            state_ = State::ManagerStateTerminated;
         }
         for (const auto& g : games_)
         {
@@ -40,7 +40,7 @@ void GameManager::Stop()
 
 std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapName)
 {
-    assert(state_ == State::Running);
+    assert(state_ == State::ManagerStateRunning);
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Creating game " << mapName << std::endl;
 #endif

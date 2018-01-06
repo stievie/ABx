@@ -2,6 +2,10 @@
 #include "OutputMessage.h"
 #include <exception>
 #include "Utils.h"
+#include <abcrypto.hpp>
+#include <AB/ProtocolCodes.h>
+
+#include "DebugNew.h"
 
 namespace Client {
 
@@ -32,6 +36,28 @@ void OutputMessage::AddString(const std::string& value)
     memcpy_s((char*)(buffer_ + pos_), MaxBufferSize - len, value.c_str(), len);
     pos_ += len;
     size_ += len;
+}
+
+void OutputMessage::AddStringEncrypted(const std::string& value)
+{
+    uint16_t len = static_cast<uint16_t>(value.length());
+    if (len > MaxStringLength)
+        throw std::exception("String too long");
+
+    //add bytes until reach 8 multiple
+    if ((len % 8) != 0)
+    {
+        uint16_t n = 8 - (len % 8);
+        len += n;
+    }
+    char* buff = new char[len];
+    memset(buff, 0, len);
+    memcpy_s((char*)(buff), len, value.data(), len);
+    uint32_t* buffer = (uint32_t*)(buff);
+    xxtea_enc(buffer, len / 4, AB::ENC_KEY);
+    std::string encString(buff, len);
+    AddString(encString);
+    delete[] buff;
 }
 
 bool OutputMessage::CanWrite(int bytes)

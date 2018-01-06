@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "Protocol.h"
-#include <random>
 #include <ctime>
 #include "Logger.h"
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
+
+#include "DebugNew.h"
 
 namespace Client {
 

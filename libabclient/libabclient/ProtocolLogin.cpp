@@ -2,6 +2,8 @@
 #include "ProtocolLogin.h"
 #include <AB/ProtocolCodes.h>
 
+#include "DebugNew.h"
+
 namespace Client {
 
 ProtocolLogin::ProtocolLogin() :
@@ -67,8 +69,8 @@ void ProtocolLogin::SendLoginPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginLogin);
-    msg->AddString(accountName_);
-    msg->AddString(password_);
+    msg->AddStringEncrypted(accountName_);
+    msg->AddStringEncrypted(password_);
     Send(msg);
 }
 
@@ -79,10 +81,10 @@ void ProtocolLogin::SendCreateAccountPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateAccount);
-    msg->AddString(accountName_);
-    msg->AddString(password_);
-    msg->AddString(email_);
-    msg->AddString(accKey_);
+    msg->AddStringEncrypted(accountName_);
+    msg->AddStringEncrypted(password_);
+    msg->AddStringEncrypted(email_);
+    msg->AddStringEncrypted(accKey_);
     Send(msg);
 }
 
@@ -93,9 +95,9 @@ void ProtocolLogin::SendCreatePlayerPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateCharacter);
-    msg->AddString(accountName_);
-    msg->AddString(password_);
-    msg->AddString(charName_);
+    msg->AddStringEncrypted(accountName_);
+    msg->AddStringEncrypted(password_);
+    msg->AddStringEncrypted(charName_);
     msg->Add<uint8_t>(static_cast<uint8_t>(sex_));
     msg->AddString(prof_);
     msg->Add<uint8_t>(isPvp_ ? 1 : 0);

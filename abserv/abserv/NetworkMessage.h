@@ -70,6 +70,7 @@ public:
         return v;
     }
     std::string GetString(uint16_t len = 0);
+    std::string GetStringEncrypted();
     uint32_t PeekU32()
     {
         uint32_t v = *(uint32_t*)(buffer_ + info_.position);

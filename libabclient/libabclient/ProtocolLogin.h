@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Protocol.h"
-#include <string>
-#include <stdint.h>
-#include <vector>
 #include "Account.h"
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>

@@ -20,8 +20,6 @@
 #else
 #endif
 
-#define ENABLE_GAME_ENCRYTION true
-
 // Database drivers
 #define USE_MYSQL
 #define USE_PGSQL

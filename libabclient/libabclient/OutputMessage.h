@@ -61,6 +61,7 @@ public:
     }
 
     void AddString(const std::string& value);
+    void AddStringEncrypted(const std::string& value);
 };
 
 }

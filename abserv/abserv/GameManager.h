@@ -13,8 +13,8 @@ class GameManager
 public:
     enum State
     {
-        Running,
-        Terminated
+        ManagerStateRunning,
+        ManagerStateTerminated
     };
 private:
     static void LuaErrorHandler(int errCode, const char* message);
@@ -36,7 +36,7 @@ protected:
     void DeleteGameTask(uint32_t gameId);
 public:
     GameManager() :
-        state_(Terminated)
+        state_(ManagerStateTerminated)
     { }
 
     void Start(Net::ServiceManager* serviceManager);

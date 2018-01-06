@@ -21,6 +21,8 @@ enum ProtocolIds : uint8_t
     ProtocolStatusId = 0xFF
 };
 
+#define ENABLE_GAME_ENCRYTION true
+
 const uint32_t ENC_KEY[4] = {
     0xd705d09f,
     0x72a8a08c,

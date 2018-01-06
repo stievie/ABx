@@ -12,6 +12,7 @@
 #include "SkillManager.h"
 #include "IOPlayer.h"
 #include "IOGame.h"
+#include "GameManager.h"
 
 #include "DebugNew.h"
 
@@ -19,7 +20,11 @@ namespace Net {
 
 void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 {
-    // if not game == running return
+    if (Game::GameManager::Instance.GetState() != Game::GameManager::ManagerStateRunning)
+    {
+        Disconnect();
+        return;
+    }
 
     message.Skip(2);    // Client OS
     uint16_t version = message.Get<uint16_t>();
@@ -62,13 +67,13 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
 void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetString();
+    std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetString();
+    std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
@@ -86,7 +91,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetString();
+    std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
@@ -97,19 +102,19 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetString();
+    std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    std::string email = message.GetString();
+    std::string email = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidEmail);
         return;
     }
-    std::string accKey = message.GetString();
+    std::string accKey = message.GetStringEncrypted();
     if (accKey.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountKey);
@@ -127,19 +132,19 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetString();
+    std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetString();
+    std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    std::string charName = message.GetString();
+    std::string charName = message.GetStringEncrypted();
     if (charName.empty())
     {
         DisconnectClient(AB::Errors::InvalidCharacterName);
@@ -182,13 +187,13 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetString();
+    std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetString();
+    std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);

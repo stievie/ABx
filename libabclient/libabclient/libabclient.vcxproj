@@ -126,7 +126,6 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="DebugNew.h" />
-    <ClInclude Include="Defines.h" />
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="InputMessage.h" />
     <ClInclude Include="Logger.h" />

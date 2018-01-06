@@ -2,6 +2,8 @@
 #include "Connection.h"
 #include "Logger.h"
 
+#include "DebugNew.h"
+
 namespace Client {
 
 asio::io_service gIoService;
