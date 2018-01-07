@@ -7,6 +7,17 @@ namespace DB {
 class IOAccount
 {
 public:
+    enum AccountKeyStatus : uint8_t
+    {
+        NotActivated = 0,
+        ReadyForUse = 1,
+        Banned = 2
+    };
+    enum AccountKeyType : uint8_t
+    {
+        KeyTypeAccount = 0,
+        KeyTypeCharSlot = 1,
+    };
     enum CreateAccountResult
     {
         ResultOK,

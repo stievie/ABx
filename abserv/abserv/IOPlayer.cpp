@@ -123,12 +123,21 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
-    query << "SELECT COUNT(`id`) AS `c` FROM `accounts` WHERE `id` = " << accountId;
+    query << "SELECT COUNT(`id`) AS `c`, `char_slots` FROM `accounts` WHERE `id` = " << accountId;
     result = db->StoreQuery(query.str());
     if (!result)
         return ResultInternalError;
     if (result->GetUInt("c") != 1)
         return ResultInvalidAccount;
+    uint32_t charSlots = result->GetUInt("char_slots");
+
+    query.str("");
+    query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `account_id` = " << accountId;
+    result = db->StoreQuery(query.str());
+    if (!result)
+        return ResultInternalError;
+    if (result->GetUInt("c") >= charSlots)
+        return ResultNoMoreCharSlots;
 
     query.str("");
     query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `name` = " << db->EscapeString(name);

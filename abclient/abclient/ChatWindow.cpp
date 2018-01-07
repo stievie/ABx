@@ -7,7 +7,8 @@
 #include <Urho3D/DebugNew.h>
 
 ChatWindow::ChatWindow(Context* context) :
-    UIElement(context)
+    UIElement(context),
+    tabIndexWhisper_(-1)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
@@ -85,6 +86,7 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
         break;
     case AB::GameProtocol::ChatChannelWhisper:
         tabElement->tabText_->SetText("Whisper");
+        tabIndexWhisper_ = tabs->GetTabCount() - 1;
         break;
     }
 
@@ -219,7 +221,7 @@ void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
     {
         LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
         nameEdit->SetText(text->GetVar("Name").GetString());
-        tabgroup_->SetSelectedIndex(4);
+        tabgroup_->SetSelectedIndex(tabIndexWhisper_);
     }
 }
 

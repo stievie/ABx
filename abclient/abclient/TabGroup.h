@@ -67,6 +67,8 @@ public:
     int GetSelectedIndex() const { return selectedIndex_; }
     void SetSelectedIndex(int index);
 
+    unsigned int GetTabCount() const { return childList_.Size(); }
+
 protected:
     void HandleTabToggled(StringHash eventType, VariantMap& eventData);
     void SendTabSelectedEvent(int idx, int oldIdx);

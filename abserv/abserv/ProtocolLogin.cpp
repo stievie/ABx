@@ -331,6 +331,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
         case DB::IOPlayer::ResultInvalidAccount:
             output->AddByte(AB::Errors::InvalidAccount);
             break;
+        case DB::IOPlayer::ResultNoMoreCharSlots:
+            output->AddByte(AB::Errors::NoMoreCharSlots);
+            break;
         default:
             output->AddByte(AB::Errors::UnknownError);
             break;

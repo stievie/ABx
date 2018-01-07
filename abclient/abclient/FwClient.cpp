@@ -50,6 +50,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Invalid character gender.";
     case AB::Errors::InvalidCharactersInString:
         return "The string contains invalid characters.";
+    case AB::Errors::NoMoreCharSlots:
+        return "You have no free character slots.";
     default:
         return "";
     }

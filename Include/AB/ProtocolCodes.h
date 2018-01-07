@@ -54,6 +54,7 @@ enum ErrorCodes : uint8_t
     InvalidPlayerSex = 0x13,
     InvalidCharacter = 0x14,
     InvalidCharactersInString = 0x15,
+    NoMoreCharSlots = 0x16,
 };
 
 }

@@ -15,6 +15,7 @@ public:
         ResultOK,
         ResultNameExists,
         ResultInvalidAccount,
+        ResultNoMoreCharSlots,
         ResultInternalError
     };
     IOPlayer() = delete;

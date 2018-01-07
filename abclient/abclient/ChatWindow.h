@@ -20,6 +20,7 @@ private:
     void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel);
     LineEdit* GetActiveLineEdit();
     LineEdit* GetLineEdit(int index);
+    int tabIndexWhisper_;
 public:
     static void RegisterObject(Context* context);
 

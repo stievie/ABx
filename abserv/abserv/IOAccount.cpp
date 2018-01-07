@@ -23,7 +23,10 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
         return ResultNameExists;
 
     query.str("");
-    query << "SELECT `id`, `account_key`, `used`, `total` FROM `account_keys` WHERE `status` = 1 AND `account_key` = " << db->EscapeString(accKey);
+    query << "SELECT `id`, `account_key`, `used`, `total` FROM `account_keys`"
+        << " WHERE `status` = " << static_cast<int>(AccountKeyStatus::ReadyForUse)
+        << " AND `key_type` = " << static_cast<int>(AccountKeyType::KeyTypeAccount)
+        << " AND `account_key` = " << db->EscapeString(accKey);
     result = db->StoreQuery(query.str());
     if (!result)
         return ResultInvalidAccountKey;
