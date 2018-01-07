@@ -4,6 +4,7 @@
 #include "Chat.h"
 #include "Random.h"
 #include "MailBox.h"
+#include "PlayerManager.h"
 
 #include "DebugNew.h"
 
@@ -46,7 +47,7 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     {
     case AB::GameProtocol::CommandTypeChatGeneral:
     {
-        ChatChannel* channel = Chat::Instance.Get(ChannelMap, GetGame()->id_);
+        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelMap, GetGame()->id_);
         if (channel)
         {
             channel->Talk(this, command);
@@ -65,6 +66,41 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
                 message.AddByte(AB::GameProtocol::ServerMessageTypeRoll);
                 message.AddString(GetName());
                 message.AddString(std::to_string(res) + ":" + std::to_string(max));
+            }
+        }
+    }
+    case AB::GameProtocol::CommandTypeChatWhisper:
+    {
+        size_t p = command.find(',');
+        if (p != std::string::npos)
+        {
+            std::string name = command.substr(0, p);
+            std::string msg = Utils::LeftTrim(command.substr(p + 1, std::string::npos));
+            std::shared_ptr<Player> target = PlayerManager::Instance.GetPlayerByName(name);
+            if (target)
+            {
+                std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelWhisper, target->id_);
+                if (channel)
+                {
+                    if (channel->Talk(this, msg))
+                    {
+                        Net::NetworkMessage nmsg;
+                        nmsg.AddByte(AB::GameProtocol::ServerMessage);
+                        nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
+                        nmsg.AddString(name);
+                        nmsg.AddString(msg);
+                        client_->WriteToOutput(nmsg);
+                    }
+                }
+            }
+            else
+            {
+                Net::NetworkMessage nmsg;
+                nmsg.AddByte(AB::GameProtocol::ServerMessage);
+                nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
+                nmsg.AddString(GetName());
+                nmsg.AddString(name);
+                client_->WriteToOutput(nmsg);
             }
         }
     }

@@ -130,6 +130,25 @@ void TabGroup::SetEnabled(bool enabled)
     }
 }
 
+void TabGroup::SetSelectedIndex(int index)
+{
+    using namespace Toggled;
+
+    TabElement* cur = GetTabElement(selectedIndex_);
+    if (cur)
+    {
+        cur->tabButton_->SetChecked(false);
+    }
+
+    {
+        TabElement* newTab = GetTabElement(index);
+        if (newTab)
+        {
+            newTab->tabButton_->SetChecked(true);
+        }
+    }
+}
+
 void TabGroup::HandleTabToggled(StringHash eventType, VariantMap& eventData)
 {
     using namespace Toggled;

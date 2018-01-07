@@ -30,6 +30,7 @@ ChatWindow::ChatWindow(Context* context) :
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelParty);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGuild);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelAlliance);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelWhisper);
 
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(ChatWindow, HandleTabSelected));
@@ -87,12 +88,36 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
         break;
     }
 
-    LineEdit* edit = tabElement->tabBody_->CreateChild<LineEdit>();
+    UIElement* parent = tabElement->tabBody_;
+    if (channel == AB::GameProtocol::ChatChannelWhisper)
+    {
+        UIElement* container = parent->CreateChild<UIElement>();
+        container->SetSize(parent->GetSize());
+        //        container->SetLayoutMode(LM_HORIZONTAL);
+        LineEdit* nameEdit = container->CreateChild<LineEdit>();
+        nameEdit->SetPosition(0, 0);
+        nameEdit->SetName("WhisperChatNameEdit");
+        nameEdit->SetAlignment(HA_LEFT, VA_CENTER);
+        nameEdit->SetStyle("ChatLineEdit");
+        nameEdit->SetSize(150, 20);
+        parent = container;
+    }
+
+    LineEdit* edit = parent->CreateChild<LineEdit>();
     edit->SetName("ChatLineEdit");
     edit->SetVar("Channel", static_cast<int>(channel));
-    edit->SetPosition(0, 0);
-    edit->SetSize(tabElement->tabBody_->GetSize());
-    edit->SetAlignment(HA_CENTER, VA_CENTER);
+    if (channel != AB::GameProtocol::ChatChannelWhisper)
+    {
+        edit->SetPosition(0, 0);
+        edit->SetSize(tabElement->tabBody_->GetSize());
+        edit->SetAlignment(HA_CENTER, VA_CENTER);
+    }
+    else
+    {
+        edit->SetPosition(150, 0);
+        edit->SetSize(tabElement->tabBody_->GetSize().x_ - 100, tabElement->tabBody_->GetSize().y_);
+        edit->SetAlignment(HA_LEFT, VA_CENTER);
+    }
     edit->SetStyle("ChatLineEdit");
     edit->SetHeight(20);
     SubscribeToEvent(edit, E_TEXTFINISHED, URHO3D_HANDLER(ChatWindow, HandleTextFinished));
@@ -140,6 +165,19 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
         AddLine(sender + " rolls " + res + " on a " + max + " sided die.", "ChatLogChatText");
         break;
     }
+    case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
+    {
+        String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+        AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
+    {
+        String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+        String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+        AddLine("{" + name + "}: " + data, "ChatLogServerInfoText");
+        break;
+    }
     }
 }
 
@@ -170,6 +208,19 @@ void ChatWindow::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     int key = eventData[P_KEY].GetInt();
     if (key == KEY_RETURN)
         FocusEdit();
+}
+
+void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
+{
+    using namespace Click;
+    Text* text = dynamic_cast<Text*>(eventData[P_ELEMENT].GetPtr());
+    int id = text->GetVar("ID").GetInt();
+    if (id)
+    {
+        LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
+        nameEdit->SetText(text->GetVar("Name").GetString());
+        tabgroup_->SetSelectedIndex(4);
+    }
 }
 
 void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
@@ -226,24 +277,33 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         {
         case AB::GameProtocol::ChatChannelGuild:
             type = AB::GameProtocol::CommandTypeChatGuild;
+            data = text;
             break;
         case AB::GameProtocol::ChatChannelAlliance:
             type = AB::GameProtocol::CommandTypeChatAlliance;
+            data = text;
             break;
         case AB::GameProtocol::ChatChannelParty:
             type = AB::GameProtocol::CommandTypeChatParty;
+            data = text;
             break;
         case AB::GameProtocol::ChatChannelTrade:
             type = AB::GameProtocol::CommandTypeChatTrade;
+            data = text;
             break;
         case AB::GameProtocol::ChatChannelWhisper:
+        {
             type = AB::GameProtocol::CommandTypeChatWhisper;
-            break;
-        default:
-            type = AB::GameProtocol::CommandTypeChatGeneral;
+            LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
+            String name = nameEdit->GetText();
+            data = name + ", " + text;
             break;
         }
-        data = text;
+        default:
+            type = AB::GameProtocol::CommandTypeChatGeneral;
+            data = text;
+            break;
+        }
     }
 
     switch (type)
@@ -251,6 +311,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     case AB::GameProtocol::CommandTypeHelp:
         AddLine("Available commands:", "ChatLogServerInfoText");
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
+        AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
         AddLine("  /help: Show this help", "ChatLogServerInfoText");
@@ -320,11 +381,16 @@ void ChatWindow::AddLine(const String& text, const String& style)
 }
 
 void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
-    const String& style, const String& style2 /* = String::EMPTY */)
+    const String& style, const String& style2 /* = String::EMPTY */, bool isWhisper /* = false */)
 {
     Text* nameText = chatLog_->CreateChild<Text>();
     nameText->SetVar("ID", id);
-    nameText->SetText(name + ":");
+    nameText->SetVar("Name", name);
+    if (!isWhisper)
+        nameText->SetText(name + ":");
+    else
+        nameText->SetText("{" + name + "}:");
+    SubscribeToEvent(nameText, E_CLICK, URHO3D_HANDLER(ChatWindow, HandleNameClicked));
     nameText->SetStyle(style);
     nameText->EnableLayoutUpdate();
     nameText->SetMaxWidth(chatLog_->GetWidth() - 8);
@@ -365,9 +431,12 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
     case AB::GameProtocol::ChatChannelAlliance:
         style = "ChatLogAllianceChatText";
         break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        style = "ChatLogWhisperChatText";
+        break;
     default:
         style = "ChatLogChatText";
         break;
     }
-    AddLine(senderId, name, text, style, "ChatLogChatText");
+    AddLine(senderId, name, text, style, "ChatLogChatText", channel == AB::GameProtocol::ChatChannelWhisper);
 }

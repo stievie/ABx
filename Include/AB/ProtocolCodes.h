@@ -117,6 +117,8 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeUnknown = 0,
     ServerMessageTypeInfo,
     ServerMessageTypeRoll,                    // /roll result
+    ServerMessageTypePlayerNotOnline,
+    ServerMessageTypePlayerGotMessage,
 };
 
 enum ChatMessageChannel : uint8_t

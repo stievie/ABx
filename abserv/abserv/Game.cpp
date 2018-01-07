@@ -48,8 +48,7 @@ void Game::Start()
 #endif // DEBUG_GAME
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
-        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
-        generalChannel->game_ = shared_from_this();
+//        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
         SetState(GameStateRunning);
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))

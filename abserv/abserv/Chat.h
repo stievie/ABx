@@ -21,8 +21,12 @@ enum ChatType : uint8_t
 
 class ChatChannel
 {
+protected:
+    uint32_t id_;
 public:
-    ChatChannel() = default;
+    ChatChannel(uint32_t id) :
+        id_(id)
+    {}
     virtual ~ChatChannel() = default;
     virtual bool Talk(Player* player, const std::string& text) {
         AB_UNUSED(player);
@@ -33,16 +37,27 @@ public:
 
 class GameChatChannel : public ChatChannel
 {
-public:
-    bool Talk(Player* player, const std::string& text) override;
+private:
     std::weak_ptr<Game> game_;
+public:
+    GameChatChannel(uint32_t id);
+    bool Talk(Player* player, const std::string& text) override;
+};
+
+class WhisperChatChannel : public ChatChannel
+{
+private:
+    std::weak_ptr<Player> player_;
+public:
+    WhisperChatChannel(uint32_t id);
+    bool Talk(Player* player, const std::string& text) override;
 };
 
 class Chat
 {
 private:
     // Type | ID
-    std::map<uint64_t, std::unique_ptr<ChatChannel>> channels_;
+    std::map<uint64_t, std::shared_ptr<ChatChannel>> channels_;
 public:
     Chat() = default;
     ~Chat() = default;
@@ -50,7 +65,7 @@ public:
     Chat(const Chat&) = delete;
     Chat& operator=(const Chat&) = delete;
 
-    ChatChannel* Get(uint8_t type, uint32_t id);
+    std::shared_ptr<ChatChannel> Get(uint8_t type, uint32_t id);
     void Remove(uint8_t type, uint32_t id);
 
     static Chat Instance;

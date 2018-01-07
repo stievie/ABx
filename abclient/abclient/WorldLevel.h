@@ -9,6 +9,7 @@
 #include "Actor.h"
 #include "PingDot.h"
 #include "TargetWindow.h"
+#include "MailWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI.
@@ -25,6 +26,7 @@ protected:
     SharedPtr<PingDot> pingDot_;
     SharedPtr<GameMenu> gameMenu_;
     SharedPtr<TargetWindow> targetWindow_;
+    SharedPtr<MailWindow> mailWindow_;
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
@@ -65,6 +67,7 @@ private:
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleMenuLogout(StringHash eventType, VariantMap& eventData);
     void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
+    void HandleMenuMail(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,

@@ -336,6 +336,9 @@
     <element type="ChatLogAllianceChatText" style="ChatLogText" auto="false">
         <attribute name="Color" value="0.88 0.55 0.25" />
     </element>
+    <element type="ChatLogWhisperChatText" style="ChatLogText" auto="false">
+        <attribute name="Color" value="0.57 0.69 0.8" />
+    </element>
     <element type="ChatLineEdit" style="LineEdit" auto="false">
         <attribute name="Min Size" value="0 20" />
         <attribute name="Max Size" value="2147483647 20" />

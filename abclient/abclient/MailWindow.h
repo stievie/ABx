@@ -15,6 +15,7 @@ public:
     }
 
 private:
+    void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     SharedPtr<MultiLineEdit> previewEdit_;
 };
 

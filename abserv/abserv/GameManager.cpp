@@ -95,6 +95,16 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
     return std::shared_ptr<Game>();
 }
 
+std::shared_ptr<Game> GameManager::Get(uint32_t gameId)
+{
+    auto it = games_.find(gameId);
+    if (it != games_.end())
+    {
+        return (*it).second;
+    }
+    return std::shared_ptr<Game>();
+}
+
 bool GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> player)
 {
     std::shared_ptr<Game> game;

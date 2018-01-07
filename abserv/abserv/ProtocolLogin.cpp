@@ -120,6 +120,7 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
+
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
@@ -175,6 +176,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
     bool isPvp = message.GetByte() != 0;
+
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
@@ -236,6 +238,9 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
     Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
 
+    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
+        << accountName << " logged in" << std::endl;
+
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
@@ -284,6 +289,9 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
         }
     }
 
+    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
+        << accountName << " created" << std::endl;
+
     Send(output);
     Disconnect();
 }
@@ -329,6 +337,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
         }
     }
 
+    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
+        << accountName << " created character " << name << std::endl;
+
     Send(output);
     Disconnect();
 }
@@ -360,6 +371,9 @@ void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::stri
         output->AddByte(AB::LoginProtocol::DeletePlayerError);
         output->AddByte(AB::Errors::InvalidCharacter);
     }
+
+    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
+        << accountName << " deleted character with ID " << playerId << std::endl;
 
     Send(output);
     Disconnect();

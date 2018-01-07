@@ -65,6 +65,7 @@ public:
     UIElement* GetBodyElement()   { return bodyElement_;   }
 
     int GetSelectedIndex() const { return selectedIndex_; }
+    void SetSelectedIndex(int index);
 
 protected:
     void HandleTabToggled(StringHash eventType, VariantMap& eventData);

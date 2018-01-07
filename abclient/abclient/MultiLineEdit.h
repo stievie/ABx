@@ -40,9 +40,9 @@ URHO3D_EVENT(E_CHARENTRY, CharEntry)
 }
 
 /// Single-line text editor %UI element.
-class MultiLineEdit : public Text
+class MultiLineEdit : public BorderImage
 {
-    URHO3D_OBJECT(MultiLineEdit, Text);
+    URHO3D_OBJECT(MultiLineEdit, BorderImage);
 public:
     /// Construct.
     MultiLineEdit(Context* context);
@@ -131,7 +131,7 @@ public:
     Text* GetTextElement() const { return text_; }
 
     /// Return cursor element.
-    Text* GetCursor() const { return cursor_; }
+    BorderImage* GetCursor() const { return cursor_; }
 
 protected:
     /// Filter implicit attributes in serialization process.
@@ -149,7 +149,7 @@ protected:
     /// Text element.
     SharedPtr<Text> text_;
     /// Cursor element.
-    SharedPtr<Text> cursor_;
+    SharedPtr<BorderImage> cursor_;
     /// Text line.
     String line_;
     /// Last used text font.

@@ -360,7 +360,7 @@ uint32_t Connection::GetIP() const
     asio::error_code err;
     const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
     if (!err)
-        return htonl(endpoint.address().to_v4().to_ulong());
+        return endpoint.address().to_v4().to_ulong();
     LOG_ERROR << "Getting IP" << std::endl;
     return 0;
 }

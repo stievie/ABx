@@ -40,7 +40,7 @@ StringHash VAR_ML_DRAGDROPCONTENT("DragDropContent");
 extern const char* UI_CATEGORY;
 
 MultiLineEdit::MultiLineEdit(Context* context) :
-    Text(context),
+    BorderImage(context),
     lastFont_(0),
     lastFontSize_(0),
     cursorPosition_(0),
@@ -60,11 +60,9 @@ MultiLineEdit::MultiLineEdit(Context* context) :
 
     text_ = CreateChild<Text>("LE_Text");
     text_->SetInternal(true);
-    cursor_ = CreateChild<Text>("LE_Cursor");
-    cursor_->SetText("|");
-    cursor_->SetStyleAuto();
+    cursor_ = CreateChild<BorderImage>("LE_Cursor");
     cursor_->SetInternal(true);
-    cursor_->SetPriority(100); // Show over text
+    cursor_->SetPriority(1); // Show over text
 
     SubscribeToEvent(this, E_FOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleFocused));
     SubscribeToEvent(this, E_DEFOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleDefocused));
@@ -94,6 +92,7 @@ void MultiLineEdit::RegisterObject(Context* context)
     URHO3D_ACCESSOR_ATTRIBUTE("Cursor Blink Rate", GetCursorBlinkRate, SetCursorBlinkRate, float, 1.0f, AM_FILE);
     URHO3D_ATTRIBUTE("Echo Character", int, echoCharacter_, 0, AM_FILE);
 }
+
 int MultiLineEdit::GetNumLines()
 {
     String Alltext = text_->GetText();
@@ -107,6 +106,7 @@ int MultiLineEdit::GetNumLines()
     }
     return counter;
 }
+
 void MultiLineEdit::SetMaxNumLines(int maxNumber)
 {
     if (maxNumber > 0)
@@ -122,7 +122,7 @@ void MultiLineEdit::SetMaxNumLines(int maxNumber)
 
 void MultiLineEdit::ApplyAttributes()
 {
-    Text::ApplyAttributes();
+    BorderImage::ApplyAttributes();
 
     // Set the text's position to match clipping and indent width, so that text left edge is not left partially hidden
     text_->SetPosition(GetIndentWidth() + clipBorder_.left_, clipBorder_.top_);
@@ -133,7 +133,6 @@ void MultiLineEdit::ApplyAttributes()
 
 void MultiLineEdit::Update(float timeStep)
 {
-    cursor_->SetFont(text_->GetFont(), text_->GetFontSize());
     if (cursorBlinkRate_ > 0.0f)
         cursorBlinkTimer_ = fmodf(cursorBlinkTimer_ + cursorBlinkRate_ * timeStep, 1.0f);
 
@@ -147,7 +146,6 @@ void MultiLineEdit::Update(float timeStep)
 
     bool cursorVisible = HasFocus() ? cursorBlinkTimer_ < 0.5f : false;
     cursor_->SetVisible(cursorVisible);
-    //cursor_->SetVisible(true);
 }
 
 void MultiLineEdit::OnClickBegin(const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers,
@@ -545,7 +543,8 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             return;
         }
 
-    default: break;
+    default:
+        break;
     }
 
     if (changed)
@@ -675,7 +674,7 @@ void MultiLineEdit::SetTextCopyable(bool enable)
 
 bool MultiLineEdit::FilterImplicitAttributes(XMLElement& dest) const
 {
-    if (!Text::FilterImplicitAttributes(dest))
+    if (!BorderImage::FilterImplicitAttributes(dest))
         return false;
 
     XMLElement childElem = dest.GetChild("element");
@@ -791,6 +790,7 @@ void MultiLineEdit::HandleDefocused(StringHash eventType, VariantMap& eventData)
     if (GetSubsystem<UI>()->GetUseScreenKeyboard())
         GetSubsystem<Input>()->SetScreenKeyboardVisible(false);
 }
+
 void MultiLineEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
     using namespace KeyDown;
@@ -799,12 +799,17 @@ void MultiLineEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     int qualifiers_ = eventData[P_QUALIFIERS].GetInt();
     OnKey(key, mouseButtons_, qualifiers_);
 }
-void MultiLineEdit::SetFontColor(Color color) {
+
+void MultiLineEdit::SetFontColor(Color color)
+{
 	text_->SetColor(color);
 }
-void MultiLineEdit::SetFontSize(int size) {
+
+void MultiLineEdit::SetFontSize(int size)
+{
 	text_->SetFont(text_->GetFont(), size);
 }
+
 void MultiLineEdit::HandleLayoutUpdated(StringHash eventType, VariantMap& eventData)
 {
     UpdateCursor();

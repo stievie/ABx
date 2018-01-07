@@ -5,6 +5,7 @@
 	<attribute name="Min Anchor" value="0.5 0.5" />
 	<attribute name="Max Anchor" value="0.5 0.5" />
 	<attribute name="Pivot" value="0.5 0.5" />
+	<attribute name="Opacity" value="0.8" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Is Movable" value="true" />
 	<attribute name="Is Resizable" value="true" />
@@ -27,11 +28,25 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 		<element type="Button" style="CloseButton">
+			<attribute name="Name" value="CloseButton" />
 			<attribute name="Min Anchor" value="0 0.5" />
 			<attribute name="Max Anchor" value="0 0.5" />
 			<attribute name="Pivot" value="0 0.5" />
 			<attribute name="Layout Spacing" value="4" />
 			<attribute name="Layout Border" value="4 4 4 4" />
+		</element>
+	</element>
+	<element>
+		<attribute name="Max Size" value="2147483647 30" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Button">
+			<attribute name="Size" value="30 30" />
+			<attribute name="Pivot" value="0 0" />
+		</element>
+		<element type="Button">
+			<attribute name="Position" value="30 0" />
+			<attribute name="Size" value="30 30" />
+			<attribute name="Pivot" value="0 0" />
 		</element>
 	</element>
 	<element type="ListView">
@@ -63,7 +78,7 @@
 			</element>
 		</element>
 		<element type="ScrollBar" internal="true" style="none">
-			<attribute name="Size" value="16 186" />
+			<attribute name="Size" value="16 340" />
 			<attribute name="Min Anchor" value="1 0" />
 			<attribute name="Max Anchor" value="1 0" />
 			<attribute name="Pivot" value="1 0" />
@@ -77,14 +92,14 @@
 			</element>
 			<element type="Slider" internal="true" style="none">
 				<attribute name="Position" value="0 16" />
-				<attribute name="Size" value="16 154" />
+				<attribute name="Size" value="16 308" />
 				<attribute name="Pivot" value="0 0" />
 				<element type="BorderImage" internal="true" style="none">
 					<attribute name="Pivot" value="0 0" />
 				</element>
 			</element>
 			<element type="Button" internal="true" style="none">
-				<attribute name="Position" value="0 170" />
+				<attribute name="Position" value="0 324" />
 				<attribute name="Pivot" value="0 0" />
 			</element>
 		</element>
@@ -94,9 +109,5 @@
 				<attribute name="Pivot" value="0 0" />
 			</element>
 		</element>
-	</element>
-	<element>
-		<attribute name="Name" value="MailPreviewPlaceholder" />
-		<attribute name="Pivot" value="0 0" />
 	</element>
 </element>

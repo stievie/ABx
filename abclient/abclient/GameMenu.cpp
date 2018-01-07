@@ -39,6 +39,8 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, "Select Character", URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
     CreateSeparator(popup);
     CreateMenuItem(popup, "Options", URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
+    CreateSeparator(popup);
+    CreateMenuItem(popup, "Mail", URHO3D_HANDLER(GameMenu, HandleMailUsed));
 
     popup->SetWidth(40);
 }
@@ -113,4 +115,11 @@ void GameMenu::HandleOptionsUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
 
+}
+
+void GameMenu::HandleMailUsed(StringHash eventType, VariantMap& eventData)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(E_GAMEMENU_MAIL, e);
 }

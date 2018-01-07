@@ -11,7 +11,8 @@
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
-    rmbDown_(false)
+    rmbDown_(false),
+    mailWindow_(nullptr)
 {
 }
 
@@ -365,6 +366,16 @@ void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventDat
     net->Login(net->accountName_, net->accountPass_);
 }
 
+void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
+{
+    if (!mailWindow_)
+    {
+        mailWindow_ = uiRoot_->CreateChild<MailWindow>();
+        mailWindow_->SetAlignment(HA_CENTER, VA_CENTER);
+    }
+    mailWindow_->SetVisible(true);
+}
+
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
 {
     SelectObject(0);
@@ -405,6 +416,7 @@ void WorldLevel::CreateUI()
     gameMenu_->SetAlignment(HA_LEFT, VA_TOP);
     SubscribeToEvent(gameMenu_, E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
     SubscribeToEvent(gameMenu_, E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
+    SubscribeToEvent(gameMenu_, E_GAMEMENU_MAIL , URHO3D_HANDLER(WorldLevel, HandleMenuMail));
 
     targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
     targetWindow_->SetAlignment(HA_CENTER, VA_TOP);

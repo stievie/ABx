@@ -52,6 +52,16 @@ std::string Trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
+std::string LeftTrim(const std::string& str,
+    const std::string& whitespace /* = " \t" */)
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    return str.substr(strBegin, std::string::npos);
+}
+
 std::vector<std::string> Split(const std::string& str, const std::string& delim)
 {
     std::vector<std::string> parts;
@@ -97,8 +107,14 @@ uint32_t AdlerChecksum(uint8_t* data, int32_t len)
 
 std::string ConvertIPToString(uint32_t ip)
 {
-    char buffer[20];
-    sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
+    unsigned char bytes[4];
+    bytes[0] = ip & 0xFF;
+    bytes[1] = (ip >> 8) & 0xFF;
+    bytes[2] = (ip >> 16) & 0xFF;
+    bytes[3] = (ip >> 24) & 0xFF;
+
+    char buffer[INET_ADDRSTRLEN];
+    sprintf_s(buffer, INET_ADDRSTRLEN, "%u.%u.%u.%u", bytes[3], bytes[2], bytes[1], bytes[0]);
     return buffer;
 }
 

@@ -19,8 +19,25 @@ MailWindow::MailWindow(Context* context) :
     wnd->SetBringToBack(false);
     wnd->SetPriority(200);
 
-    UIElement* preview = dynamic_cast<UIElement*>(GetChild("MailPreviewPlaceholder", true));
-    previewEdit_ = preview->CreateChild<MultiLineEdit>();
-    previewEdit_->SetSize(preview->GetSize());
-    previewEdit_->SetEditable(false);
+    previewEdit_ = wnd->CreateChild<MultiLineEdit>();
+    previewEdit_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+    previewEdit_->SetStyle("LineEdit");
+    previewEdit_->SetLayoutMode(LM_FREE);
+    previewEdit_->SetAlignment(HA_LEFT, VA_TOP);
+    previewEdit_->SetEditable(true);
+    previewEdit_->SetMultiLine(true);
+    previewEdit_->SetMaxNumLines(0);
+    previewEdit_->SetMaxLength(255);
+    previewEdit_->SetText("Hallo!");
+    previewEdit_->ApplyAttributes();
+
+    wnd->EnableLayoutUpdate();
+
+    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleCloseClicked));
+}
+
+void MailWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
+{
+    SetVisible(false);
 }
