@@ -9,6 +9,7 @@
 #include "Transformation.h"
 #include "BoundingBox.h"
 #include "Octree.h"
+#include "CollisionShape.h"
 
 namespace Game {
 
@@ -92,17 +93,17 @@ public:
 
     virtual std::string GetName() const { return "Unknown"; }
     Math::Transformation transformation_;
-    Math::BoundingBox boundingBox_;
+    Math::CollisionShape collisionShape_;
     /// Auto ID, not DB ID
     uint32_t id_;
-    /// Occluder flag.
+    /// Occluder flag. An object that can hide another object from view.
     bool occluder_;
-    /// Occludee flag.
+    /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
     bool ocludee_;
     uint32_t collisionMask_;
     Math::BoundingBox GetWorldBoundingBox() const
     {
-        return boundingBox_.Transformed(transformation_.GetMatrix());
+        return collisionShape_.GetWorldBoundingBox(transformation_.GetMatrix());
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);

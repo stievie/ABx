@@ -36,12 +36,13 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
     Auth::BanInfo banInfo;
     std::shared_ptr<Connection> conn = GetConnection();
-    if (Auth::BanManager::Instance.IsIpBanned(conn->GetIP()))
+    uint32_t clientIp = conn->GetIP();
+    if (Auth::BanManager::Instance.IsIpBanned(clientIp))
     {
         DisconnectClient(AB::Errors::IPBanned);
         return;
     }
-    if (Auth::BanManager::Instance.IsIpDisabled(conn->GetIP()))
+    if (Auth::BanManager::Instance.IsIpDisabled(clientIp))
     {
         DisconnectClient(AB::Errors::TooManyConnectionsFromThisIP);
         return;
@@ -61,6 +62,13 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
         break;
     case AB::LoginProtocol::LoginDeleteCharacter:
         HandleDeleteCharacterPacket(message);
+        break;
+    case AB::LoginProtocol::LoginAddAccountKey:
+        HandleAddAccountKeyPacket(message);
+        break;
+    default:
+        LOG_ERROR << Utils::ConvertIPToString(clientIp) << ": Unknown packet header: 0x" <<
+            std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
         break;
     }
 }
@@ -218,6 +226,37 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     );
 }
 
+void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
+{
+    std::string accountName = message.GetStringEncrypted();
+    if (accountName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountName);
+        return;
+    }
+    std::string password = message.GetStringEncrypted();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+    std::string accKey = message.GetStringEncrypted();
+    if (accKey.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountKey);
+        return;
+    }
+
+    std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(
+            &ProtocolLogin::AddAccountKey, thisPtr,
+            accountName, password,
+            accKey
+        ))
+    );
+}
+
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     Account account;
@@ -238,15 +277,13 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
     Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
 
-    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << accountName << " logged in" << std::endl;
-
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
     output->AddString(ConfigManager::Instance[ConfigManager::GameHost].GetString());
     output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));
-    output->AddByte(static_cast<uint8_t>(account.characters_.size()));
+    output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots_));
+    output->Add<uint16_t>(static_cast<uint16_t>(account.characters_.size()));
     for (const AccountCharacter& character : account.characters_)
     {
         output->Add<uint32_t>(character.id);
@@ -264,7 +301,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 void ProtocolLogin::CreateAccount(const std::string& accountName, const std::string& password,
     const std::string& email, const std::string& accKey)
 {
-    DB::IOAccount::CreateAccountResult res = DB::IOAccount::CreateAccount(accountName, password, email, accKey);
+    DB::IOAccount::Result res = DB::IOAccount::CreateAccount(accountName, password, email, accKey);
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
@@ -288,9 +325,6 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
             break;
         }
     }
-
-    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << accountName << " created" << std::endl;
 
     Send(output);
     Disconnect();
@@ -340,8 +374,48 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
         }
     }
 
-    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << accountName << " created character " << name << std::endl;
+    Send(output);
+    Disconnect();
+}
+
+void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::string& password,
+    const std::string& accKey)
+{
+    Account account;
+    bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    if (!authRes)
+    {
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    }
+
+    DB::IOAccount::Result res = DB::IOAccount::AddAccountKey(accountName, password, accKey);
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+
+    if (res == DB::IOAccount::ResultOK)
+    {
+        output->AddByte(AB::LoginProtocol::AddAccountKeySuccess);
+    }
+    else
+    {
+        output->AddByte(AB::LoginProtocol::AddAccountKeyError);
+        switch (res)
+        {
+        case DB::IOAccount::ResultNameExists:
+            output->AddByte(AB::Errors::AccountNameExists);
+            break;
+        case DB::IOAccount::ResultInvalidAccountKey:
+            output->AddByte(AB::Errors::InvalidAccountKey);
+            break;
+        case DB::IOAccount::ResultInvalidAccount:
+            output->AddByte(AB::Errors::InvalidAccount);
+            break;
+        default:
+            output->AddByte(AB::Errors::UnknownError);
+            break;
+        }
+    }
 
     Send(output);
     Disconnect();

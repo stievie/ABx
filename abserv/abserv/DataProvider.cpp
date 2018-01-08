@@ -4,6 +4,8 @@
 #include "NavigationMesh.h"
 #include "IONavMesh.h"
 #include "Logger.h"
+#include "IOTerrain.h"
+#include "Terrain.h"
 
 #include "DebugNew.h"
 
@@ -15,6 +17,7 @@ DataProvider::DataProvider()
 {
     // Add Importer
     IO::DataProvider::Instance.AddImporter<Game::NavigationMesh, IO::IONavMesh>();
+    IO::DataProvider::Instance.AddImporter<Game::Terrain, IO::IOTerrain>();
 }
 
 std::string DataProvider::GetDataFile(const std::string& name) const

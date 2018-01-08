@@ -142,6 +142,11 @@
             <attribute name="Vert Alignment" value="Center" />
         </element>
     </element>
+    <element type="MultiLineEdit" style="LineEdit">
+        <element type="Text" internal="true">
+          <attribute name="Font" value="Font;Fonts/Anonymous Pro.ttf" />
+        </element>
+    </element>
     <element type="ListView" style="ScrollView">  <!-- Shortcut to copy all the styles from ScrollView -->
         <element type="BorderImage" internal="true">
             <element internal="true">

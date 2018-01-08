@@ -68,12 +68,12 @@ void Actor::CreateModel()
 
     // Create rigidbody, and set non-zero mass so that the body becomes dynamic
     RigidBody* body = GetNode()->CreateComponent<RigidBody>();
-    // Set mass to zero we control Y pos
     body->SetMass(1.0f);
     // Set zero angular factor so that physics doesn't turn the character on its own.
     // Instead we will control the character yaw manually
     body->SetAngularFactor(Vector3::ZERO);
     body->SetLinearFactor(Vector3(1.0f, 0.0f, 1.0f));
+    body->SetCollisionMask(0);
 
     // spin node
     Node* adjustNode = GetNode()->GetChild("AdjNode");

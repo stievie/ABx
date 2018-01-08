@@ -62,6 +62,16 @@ Vector3 Vector3::operator-(const Vector3& v) const
     return Vector3(x_ - v.x_, y_ - v.y_, z_ - v.z_);
 }
 
+Vector3 Vector3::operator+(float v) const
+{
+    return Vector3(x_ + v, y_ + v, z_ + v);
+}
+
+Vector3 Vector3::operator-(float v) const
+{
+    return Vector3(x_ - v, y_ - v, z_ - v);
+}
+
 Vector3 operator*(const Vector3& v, float n)
 {
     return Vector3(v.x_ * n, v.y_ * n, v.z_ * n);

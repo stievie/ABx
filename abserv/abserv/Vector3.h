@@ -61,6 +61,8 @@ public:
 
     Vector3 operator+(const Vector3& v) const;
     Vector3 operator-(const Vector3& v) const;
+    Vector3 operator+(float v) const;
+    Vector3 operator-(float v) const;
 
     friend Vector3 operator*(const Vector3& v, float n);
     friend Vector3 operator*(float n, const Vector3& v);
@@ -101,6 +103,9 @@ public:
     {
         return *this * (1.0f - i) + to * i;
     }
+
+    /// Return integer data.
+    const float* Data() const { return &x_; }
 
     float x_;
     float y_;

@@ -17,9 +17,12 @@ Map::~Map()
 
 bool Map::Load()
 {
-    navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.navMesh);
+    navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.directory + "/navmesh.bin");
     if (!navMesh_)
         return false;
+//    terrain_ = IO::DataProvider::Instance.GetAsset<Terrain>(data_.directory + "/terrain.obj");
+//    if (!terrain_)
+//        return false;
 
     return true;
 }

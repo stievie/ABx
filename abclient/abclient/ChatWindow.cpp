@@ -177,7 +177,7 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
     {
         String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
         String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-        AddLine("{" + name + "}: " + data, "ChatLogServerInfoText");
+        AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
         break;
     }
     }
@@ -391,7 +391,7 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
     if (!isWhisper)
         nameText->SetText(name + ":");
     else
-        nameText->SetText("{" + name + "}:");
+        nameText->SetText("{" + name + "}");
     SubscribeToEvent(nameText, E_CLICK, URHO3D_HANDLER(ChatWindow, HandleNameClicked));
     nameText->SetStyle(style);
     nameText->EnableLayoutUpdate();

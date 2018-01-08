@@ -21,12 +21,14 @@ void GameObject::RegisterLua(kaguya::State& state)
 }
 
 GameObject::GameObject() :
-    boundingBox_(-0.5f, 0.5f),
     octant_(nullptr),
     sortValue_(0.0f),
+    ocludee_(true),
+    occluder_(true),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
     id_ = GetNewId();
+    collisionShape_.SetBox(-0.5f, 0.5f);
 }
 
 GameObject::~GameObject()
@@ -34,7 +36,7 @@ GameObject::~GameObject()
     RemoveFromOctree();
 }
 
-void GameObject::ProcessRayQuery(const Math::RayOctreeQuery & query, std::vector<Math::RayQueryResult>& results)
+void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results)
 {
     float distance = query.ray_.HitDistance(GetWorldBoundingBox());
     if (distance < query.maxDistance_)
@@ -67,7 +69,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
     return true;
 }
 
-bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox & box)
+bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box)
 {
     if (!octant_)
         return false;

@@ -66,7 +66,8 @@ enum LoginPacketTypes : uint8_t
     LoginLogin = 0x01,
     LoginCreateAccount = 0x03,
     LoginCreateCharacter = 0x04,
-    LoginDeleteCharacter = 0x05
+    LoginDeleteCharacter = 0x05,
+    LoginAddAccountKey = 0x06,
 };
 
 /// Returned by the server
@@ -81,6 +82,8 @@ enum LoginProtocolCodes : uint8_t
     CreatePlayerSuccess = 0x07,
     DeletePlayerError = 0x08,
     DeletePlayerSuccess = 0x09,
+    AddAccountKeySuccess = 0x0a,
+    AddAccountKeyError = 0x0b,
 };
 
 }

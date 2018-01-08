@@ -55,9 +55,6 @@ void ProtocolGame::Logout()
     if (!player_)
         return;
 
-    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << player_->GetName() << " logged out" << std::endl;
-
     player_->logoutTime_ = Utils::AbTick();
     DB::IOPlayer::SavePlayer(player_.get());
     Game::PlayerManager::Instance.RemovePlayer(player_->id_);
@@ -150,7 +147,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     }
     default:
-        LOG_INFO << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
+        LOG_ERROR << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
         break;
     }
@@ -274,9 +271,6 @@ void ProtocolGame::EnterGame(const std::string& mapName)
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
         output->AddString(mapName);
-        // Object ID in game
-        LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-            << player_->GetName() << " enters world " << mapName << std::endl;
         output->Add<uint32_t>(player_->id_);
         Send(output);
     }

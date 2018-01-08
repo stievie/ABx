@@ -368,12 +368,7 @@ void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventDat
 
 void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
 {
-    if (!mailWindow_)
-    {
-        mailWindow_ = uiRoot_->CreateChild<MailWindow>();
-        mailWindow_->SetAlignment(HA_CENTER, VA_CENTER);
-    }
-    mailWindow_->SetVisible(true);
+    MailWindow* mailwnd = new MailWindow(context_);
 }
 
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)

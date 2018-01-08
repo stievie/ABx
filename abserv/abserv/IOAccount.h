@@ -18,16 +18,19 @@ public:
         KeyTypeAccount = 0,
         KeyTypeCharSlot = 1,
     };
-    enum CreateAccountResult
+    enum Result
     {
         ResultOK,
         ResultNameExists,
         ResultInvalidAccountKey,
+        ResultInvalidAccount,
         ResultInternalError
     };
     IOAccount() = delete;
-    static CreateAccountResult CreateAccount(const std::string& name, const std::string& pass,
+    static Result CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
+    static Result AddAccountKey(const std::string& name, const std::string& pass,
+        const std::string& accKey);
     static bool LoginServerAuth(const std::string& name, const std::string& pass, Account& account);
     static uint32_t GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName);
     static bool Save(const Account& account);

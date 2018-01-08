@@ -2,6 +2,7 @@
 
 #include "NavigationMesh.h"
 #include "Octree.h"
+#include "Terrain.h"
 
 namespace Game {
 
@@ -12,8 +13,7 @@ struct MapData
     uint32_t id;
     /// The name of the map
     std::string name;
-    std::string file;
-    std::string navMesh;
+    std::string directory;
 };
 
 /// Holds all the map data, spawns NavMesh.
@@ -27,6 +27,7 @@ public:
     void Update(uint32_t delta);
     MapData data_;
     std::shared_ptr<NavigationMesh> navMesh_;
+    std::shared_ptr<Terrain> terrain_;
     std::unique_ptr<Math::Octree> octree_;
 };
 

@@ -17,7 +17,8 @@ ProtocolLogin::ProtocolLogin() :
 }
 
 void ProtocolLogin::Login(std::string& host, uint16_t port,
-    const std::string& account, const std::string& password, const CharlistCallback& callback)
+    const std::string& account, const std::string& password,
+    const CharlistCallback& callback)
 {
     host_ = host;
     port_ = port;
@@ -47,7 +48,7 @@ void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
 void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     const std::string& account, const std::string& password,
     const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp,
-    const CreatePlayerCallback & callback)
+    const CreatePlayerCallback& callback)
 {
     host_ = host;
     port_ = port;
@@ -115,17 +116,20 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         if (!host.empty())
             gameHost_ = host;
         gamePort_ = message->Get<uint16_t>();
+        /* int charSlots = */ message->Get<uint16_t>();
         CharList chars;
-        int count = message->Get<uint8_t>();
-        for (int i = 0; i < count; i++)
+        int count = message->Get<uint16_t>();
+        for (int i = 0; i < count; ++i)
         {
-            uint32_t id = message->Get<uint32_t>();
-            uint16_t level = message->Get<uint16_t>();
-            std::string name = message->GetStringEncrypted();
-            std::string prof = message->GetStringEncrypted();
-            std::string prof2 = message->GetStringEncrypted();
-            std::string lastMap = message->GetStringEncrypted();
-            chars.push_back({ id, level, name, prof, prof2, lastMap });
+            chars.push_back(
+            {
+                message->Get<uint32_t>(),      // ID
+                message->Get<uint16_t>(),      // Level
+                message->GetStringEncrypted(), // Name
+                message->GetStringEncrypted(), // Profession
+                message->GetStringEncrypted(), // Profession 2
+                message->GetStringEncrypted()  // Lat map
+            });
         }
         if (charlistCallback)
             charlistCallback(chars);
@@ -134,6 +138,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     case AB::LoginProtocol::LoginError:
     case AB::LoginProtocol::CreateAccountError:
     case AB::LoginProtocol::CreatePlayerError:
+    case AB::LoginProtocol::AddAccountKeyError:
     {
         uint8_t error = message->Get<uint8_t>();
         ProtocolError(error);
@@ -151,6 +156,9 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             createPlayerCallback_(playerName, map);
         break;
     }
+    case AB::LoginProtocol::AddAccountKeySuccess:
+        // TODO:
+        break;
     }
 }
 

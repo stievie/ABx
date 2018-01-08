@@ -12,8 +12,7 @@ bool IOGame::LoadGame(Game::Game* game, std::shared_ptr<DBResult> result)
 
     game->map_->data_.id = result->GetUInt("id");
     game->map_->data_.name = result->GetString("name");
-    game->map_->data_.file = result->GetString("map");
-    game->map_->data_.navMesh = result->GetString("nav_mesh");
+    game->map_->data_.directory = result->GetString("directory");
     game->data_.scriptFile = result->GetString("script_file");
     game->data_.type = static_cast<Game::GameType>(result->GetUInt("id"));
 
@@ -25,7 +24,7 @@ bool IOGame::LoadGameByName(Game::Game* game, const std::string& name)
     Database* db = Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `id`, `name`, `type`, `map`, `nav_mesh`, `script_file`, `landing` FROM `games` WHERE `name` = " <<
+    query << "SELECT `id`, `name`, `type`, `directory`, `script_file`, `landing` FROM `games` WHERE `name` = " <<
         db->EscapeString(name);
 
     return IOGame::LoadGame(game, db->StoreQuery(query.str()));
@@ -36,7 +35,7 @@ bool IOGame::LoadGameById(Game::Game* game, uint32_t gameId)
     Database* db = Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `id`, `name`, `type`, `map`, `script_file`, `landing` FROM `games` WHERE `id` = " <<
+    query << "SELECT `id`, `name`, `type`, `directory`, `landing` FROM `games` WHERE `id` = " <<
         gameId;
 
     return IOGame::LoadGame(game, db->StoreQuery(query.str()));

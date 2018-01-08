@@ -24,18 +24,20 @@ public:
 
     void OnRecvFirstMessage(NetworkMessage& message) final;
 private:
-    uint32_t clientKeyId_;
     void DisconnectClient(uint8_t error);
     void SendCharacterList(const std::string& accountName, const std::string& password);
     void CreateAccount(const std::string& accountName, const std::string& password,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& accountName, const std::string& password,
         std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp);
+    void AddAccountKey(const std::string& accountName, const std::string& password,
+        const std::string& accKey);
     void DeletePlayer(const std::string& accountName, const std::string& password, uint32_t playerId);
     void HandleLoginPacket(NetworkMessage& message);
     void HandleCreateAccountPacket(NetworkMessage& message);
     void HandleCreateCharacterPacket(NetworkMessage& message);
     void HandleDeleteCharacterPacket(NetworkMessage& message);
+    void HandleAddAccountKeyPacket(NetworkMessage& message);
 };
 
 }

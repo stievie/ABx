@@ -7,37 +7,52 @@ void MailWindow::RegisterObject(Context* context)
 }
 
 MailWindow::MailWindow(Context* context) :
-    UIElement(context)
+    Object(context)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-    XMLFile *chatFile = cache->GetResource<XMLFile>("UI/MailWindow.xml");
-    LoadChildXML(chatFile->GetRoot());
+    XMLFile* file = cache->GetResource<XMLFile>("UI/MailWindow.xml");
+    if (!file)
+        return;
 
-    Window* wnd = dynamic_cast<Window*>(GetChild("MailWindow", true));
-    SetSize(wnd->GetSize());
-    wnd->SetBringToBack(false);
-    wnd->SetPriority(200);
+    UI* ui = GetSubsystem<UI>();
+    UIElement* root = ui->GetRoot();
+    {
+        SharedPtr<UIElement> holder = ui->LoadLayout(file, root->GetDefaultStyle());
+        if (!holder)    // Error is already logged
+            return;
+        window_ = holder;
+        root->AddChild(window_);    // Take ownership of the object before SharedPtr goes out of scope
+    }
+    window_->SetStyleAuto();
 
-    previewEdit_ = wnd->CreateChild<MultiLineEdit>();
+    previewEdit_ = window_->CreateChild<MultiLineEdit>();
     previewEdit_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-    previewEdit_->SetStyle("LineEdit");
+    previewEdit_->SetStyle("MultiLineEdit");
     previewEdit_->SetLayoutMode(LM_FREE);
     previewEdit_->SetAlignment(HA_LEFT, VA_TOP);
     previewEdit_->SetEditable(true);
     previewEdit_->SetMultiLine(true);
     previewEdit_->SetMaxNumLines(0);
+    previewEdit_->SetClipBorder(IntRect(4, 4, 4, 4));
     previewEdit_->SetMaxLength(255);
-    previewEdit_->SetText("Hallo!");
+    previewEdit_->SetText("is simply dummy text of the printing and typesetting industry. Lorem Ipsum has\n"
+        "been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley\n"
+        "of type and scrambled it to make a type specimen book. It has survived not only five centuries,\n"
+        "but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised\n"
+        "in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
     previewEdit_->ApplyAttributes();
 
-    wnd->EnableLayoutUpdate();
-
-    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    Button* closeButton = dynamic_cast<Button*>(window_->GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleCloseClicked));
+
+    window_->EnableLayoutUpdate();
+
+    // Increase reference count to keep Self alive
+    AddRef();
 }
 
 void MailWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
 {
-    SetVisible(false);
+    // Self destruct
+    ReleaseRef();
 }

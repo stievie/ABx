@@ -58,8 +58,14 @@ MultiLineEdit::MultiLineEdit(Context* context) :
     SetEnabled(true);
     focusMode_ = FM_FOCUSABLE_DEFOCUSABLE;
 
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    SetLayoutMode(LM_FREE);
     text_ = CreateChild<Text>("LE_Text");
     text_->SetInternal(true);
+    text_->SetWordwrap(true);
+    text_->SetTextAlignment(HA_LEFT);
+    text_->SetAlignment(HA_LEFT, VA_TOP);
+
     cursor_ = CreateChild<BorderImage>("LE_Cursor");
     cursor_->SetInternal(true);
     cursor_->SetPriority(1); // Show over text
@@ -148,7 +154,8 @@ void MultiLineEdit::Update(float timeStep)
     cursor_->SetVisible(cursorVisible);
 }
 
-void MultiLineEdit::OnClickBegin(const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers,
+void MultiLineEdit::OnClickBegin(const IntVector2& position, const IntVector2& screenPosition,
+    int button, int buttons, int qualifiers,
     Cursor* cursor)
 {
     if (button == MOUSEB_LEFT && cursorMovable_)
@@ -431,7 +438,8 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             // move cursor according to cursor position and width of below line
             if (substring3.Find("\n") == 0xffffffff)
             {
-                if (line_.Length() - nextlinepos >= cursorPosition_ - lastlinepos) {
+                if (line_.Length() - nextlinepos >= cursorPosition_ - lastlinepos)
+                {
                     cursorPosition_ = nextlinepos + (cursorPosition_ - lastlinepos);
                 }
                 else
@@ -498,7 +506,6 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
     case KEY_RETURN:
         if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
-
         {
             line_.Insert(cursorPosition_, "\n");
             cursorPosition_ += 1;
@@ -508,15 +515,12 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
     case KEY_TAB:
         if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
-
         {
             line_.Insert(cursorPosition_, "    ");
             cursorPosition_ += 4;
         }
         changed = true;
         break;
-
-
 
     case KEY_RETURN2:
         if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
@@ -526,7 +530,6 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         }
         changed = true;
         break;
-
 
     case KEY_KP_ENTER:
         {
@@ -556,25 +559,19 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         UpdateCursor();
 }
 
-void MultiLineEdit::OnTextInput(const String& text, int buttons, int qualifiers)
+void MultiLineEdit::OnTextInput(const String& text)
 {
     if (!editable_)
         return;
 
     bool changed = false;
 
-    // If only CTRL is held down, do not edit
-    if ((qualifiers & (QUAL_CTRL | QUAL_ALT)) == QUAL_CTRL)
-        return;
-
     // Send char as an event to allow changing it
-    using namespace CharEntry;
+    using namespace TextEntry;
 
     VariantMap& eventData = GetEventDataMap();
     eventData[P_ELEMENT] = this;
     eventData[P_TEXT] = text;
-    eventData[P_BUTTONS] = buttons;
-    eventData[P_QUALIFIERS] = qualifiers;
     SendEvent(E_TEXTENTRY, eventData);
 
     const String newText = eventData[P_TEXT].GetString().SubstringUTF8(0);
@@ -615,7 +612,7 @@ void MultiLineEdit::SetText(const String& text)
     if (text != line_)
     {
         line_ = text;
-        cursorPosition_ = line_.LengthUTF8();
+        cursorPosition_ = 0;
         UpdateText();
         UpdateCursor();
     }
@@ -732,11 +729,15 @@ void MultiLineEdit::UpdateCursor()
     int x = text_->GetCharPosition(cursorPosition_).x_;
     int y = text_->GetCharPosition(cursorPosition_).y_;
 
+    IntVector2 size = GetSize() - IntVector2(clipBorder_.left_ * 2, clipBorder_.top_ * 2);
+    text_->SetSize(size);
+    text_->SetMinSize(size);
+    text_->SetFixedHeight(text_->GetHeight());
+    text_->SetPosition(GetIndentWidth() + clipBorder_.left_, clipBorder_.top_ * 2);
 
-    text_->SetPosition(GetIndentWidth() + clipBorder_.left_, clipBorder_.top_);
-    cursor_->SetPosition(text_->GetPosition() + IntVector2(x-text_->GetCharSize(cursorPosition_).x_/2, y));
+    cursor_->SetPosition(text_->GetPosition() + IntVector2((x - text_->GetCharSize(cursorPosition_).x_ / 2) + 2, y));
     //cursor_->SetSize(cursor_->GetWidth(), text_->GetRowHeight());
-    cursor_->SetSize(2, text_->GetRowHeight());
+    cursor_->SetSize(4, text_->GetRowHeight());
     // Scroll if necessary
     int sx = -GetChildOffset().x_;
     int left = clipBorder_.left_;
@@ -797,7 +798,11 @@ void MultiLineEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     int key = eventData[P_KEY].GetInt();
     int mouseButtons_ = eventData[P_BUTTONS].GetInt();
     int qualifiers_ = eventData[P_QUALIFIERS].GetInt();
-    OnKey(key, mouseButtons_, qualifiers_);
+		bool repeat = eventData[P_REPEAT].GetBool();
+
+		//manually ensure that only one key press is handled per frame.
+		if (repeat)
+        OnKey(key, mouseButtons_, qualifiers_);
 }
 
 void MultiLineEdit::SetFontColor(Color color)

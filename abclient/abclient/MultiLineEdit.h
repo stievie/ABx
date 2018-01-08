@@ -31,14 +31,6 @@ namespace Urho3D
 class Font;
 class BorderImage;
 
-URHO3D_EVENT(E_CHARENTRY, CharEntry)
-{
-    URHO3D_PARAM(P_ELEMENT, Element);              // UIElement pointer
-    URHO3D_PARAM(P_TEXT, Text);                    // String
-    URHO3D_PARAM(P_BUTTONS, Buttons);              // int
-    URHO3D_PARAM(P_QUALIFIERS, Qualifiers);        // int
-}
-
 /// Single-line text editor %UI element.
 class MultiLineEdit : public BorderImage
 {
@@ -73,9 +65,9 @@ public:
     /// React to drag and drop finish. Return true to signal that the drop was accepted.
     virtual bool OnDragDropFinish(UIElement* source);
     /// React to a key press.
-    virtual void OnKey(int key, int buttons, int qualifiers);
+    virtual void OnKey(int key, int buttons, int qualifiers) override;
     /// React to text input event.
-    virtual void OnTextInput(const String& text, int buttons, int qualifiers);
+    virtual void OnTextInput(const String& text) override;
 
     /// Set text.
     void SetText(const String& text);

@@ -164,6 +164,8 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="CollisionShape.h" />
+    <ClInclude Include="ConvexHull.h" />
     <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DatabaseSqlite.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Hull.h" />
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="IOMail.h" />
     <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
+    <ClInclude Include="IOTerrain.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MailBox.h" />
     <ClInclude Include="Maintenance.h" />
@@ -223,6 +227,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Variant.h" />
@@ -237,6 +242,8 @@
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="CollisionShape.cpp" />
+    <ClCompile Include="ConvexHull.cpp" />
     <ClCompile Include="DatabaseOdbc.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
     <ClCompile Include="DatabaseSqlite.cpp" />
@@ -252,6 +259,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Hull.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOEffects.cpp" />
@@ -260,6 +268,7 @@
     <ClCompile Include="IOMail.cpp" />
     <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
+    <ClCompile Include="IOTerrain.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="MailBox.cpp" />
     <ClCompile Include="main.cpp" />
@@ -295,6 +304,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Variant.cpp" />
