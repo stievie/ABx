@@ -11,10 +11,6 @@ ConvexHull::ConvexHull(const std::vector<Vector3>& vertices)
     BuildHull(vertices);
 }
 
-ConvexHull::~ConvexHull()
-{
-}
-
 BoundingBox ConvexHull::GetBoundingBox() const
 {
     return boundingBox_;

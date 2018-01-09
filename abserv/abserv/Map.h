@@ -3,8 +3,11 @@
 #include "NavigationMesh.h"
 #include "Octree.h"
 #include "Terrain.h"
+#include <pugixml.hpp>
 
 namespace Game {
+
+class Game;
 
 /// Database map data
 struct MapData
@@ -16,11 +19,16 @@ struct MapData
     std::string directory;
 };
 
-/// Holds all the map data, spawns NavMesh.
+/// Holds all the map data, static objects, NavMesh.
 class Map
 {
+private:
+    std::weak_ptr<Game> game_;
+    /// Load objects from Urho3D scene file
+    bool LoadObjects();
+    void LoadNode(const pugi::xml_node& node);
 public:
-    Map();
+    Map(std::shared_ptr<Game> game);
     virtual ~Map();
 
     bool Load();

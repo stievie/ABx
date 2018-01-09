@@ -107,7 +107,6 @@ public:
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
-
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

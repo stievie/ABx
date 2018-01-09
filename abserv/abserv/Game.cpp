@@ -202,9 +202,14 @@ std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 
 void Game::AddObject(std::shared_ptr<GameObject> object)
 {
+    AddObjectInternal(object);
+    luaState_["onAddObject"](this, object);
+}
+
+void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
+{
     objects_.push_back(object);
     object->SetGame(shared_from_this());
-    luaState_["onAddObject"](this, object);
 }
 
 void Game::RemoveObject(std::shared_ptr<GameObject> object)
@@ -260,7 +265,7 @@ void Game::InternalLoad()
 void Game::Load(const std::string& mapName)
 {
     // Dispatcher Thread
-    map_ = std::make_shared<Map>();
+    map_ = std::make_shared<Map>(shared_from_this());
     if (!DB::IOGame::LoadGameByName(this, mapName))
     {
         LOG_ERROR << "Error loading game with name " << mapName << std::endl;

@@ -80,6 +80,7 @@ public:
     Player* GetPlayerByName(const std::string& name);
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
+    void AddObjectInternal(std::shared_ptr<GameObject> object);
     void RemoveObject(std::shared_ptr<GameObject> object);
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);

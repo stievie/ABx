@@ -183,6 +183,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Hull.h" />
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />

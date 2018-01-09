@@ -228,9 +228,6 @@
     <ClInclude Include="IOMail.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Hull.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionShape.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -241,6 +238,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="IOTerrain.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Hull.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -437,9 +440,6 @@
     <ClCompile Include="IOMail.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Hull.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionShape.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -450,6 +450,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOTerrain.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Hull.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

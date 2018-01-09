@@ -28,7 +28,7 @@ Vector3 Ray::ClosestPoint(const Ray& ray) const
     return origin_ + a * direction_;
 }
 
-float Ray::HitDistance(const BoundingBox & box) const
+float Ray::HitDistance(const BoundingBox& box) const
 {
     // If undefined, no hit (infinite distance)
     if (!box.IsDefined())

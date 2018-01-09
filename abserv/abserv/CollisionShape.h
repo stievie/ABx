@@ -1,10 +1,13 @@
 #pragma once
 
+#include "MathDefs.h"
+
 namespace Math {
 
 class Vector3;
 class ConvexHull;
 class BoundingBox;
+class HeightMap;
 class Sphere;
 class Matrix4;
 
@@ -13,7 +16,8 @@ enum ShapeType
     ShapeTypeBox = 0,
     ShapeTypeSphere,
     ShapeTypeCapsule,
-    ShapeTypeConvexHull
+    ShapeTypeConvexHull,
+    ShapeHeightMap
 };
 
 class CollisionShape
