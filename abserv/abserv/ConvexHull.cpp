@@ -2,18 +2,12 @@
 #include "ConvexHull.h"
 #include "Hull.h"
 #include "Vector3.h"
-#include "BoundingBox.h"
 
 namespace Math {
 
 ConvexHull::ConvexHull(const std::vector<Vector3>& vertices)
 {
     BuildHull(vertices);
-}
-
-BoundingBox ConvexHull::GetBoundingBox() const
-{
-    return boundingBox_;
 }
 
 void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)

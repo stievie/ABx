@@ -2,7 +2,7 @@
 
 #define SERVER_VERSION_MAJOR 0
 #define SERVER_VERSION_MINOR 1
-#define SERVER_YEAR 2017
+#define SERVER_YEAR 2018
 #define SERVER_PRODUCT_NAME "Forgotten Wars Server"
 
 #define AB_VERSION_CREATE(major, minor) (((major) << 8) | (minor))

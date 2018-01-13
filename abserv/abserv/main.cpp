@@ -21,7 +21,7 @@ static void ShowLogo()
     std::cout << " DEBUG";
 #endif
     std::cout << std::endl;
-    std::cout << "(C) " << SERVER_YEAR << std::endl;
+    std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
 
     std::cout << std::endl;
 

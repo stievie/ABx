@@ -42,9 +42,17 @@ BoundingBox CollisionShape::GetWorldBoundingBox(const Matrix4& transform) const
         return BoundingBox(sphereShape_->center_ - sphereShape_->radius_,
             sphereShape_->center_ + sphereShape_->radius_);
     case ShapeTypeConvexHull:
-        return hullShape_->GetBoundingBox().Transformed(transform);
+        return hullShape_->boundingBox_.Transformed(transform);
+    case ShapeTypeHeightMap:
+        return heightShape_->boundingBox_.Transformed(transform);
     }
     return BoundingBox();
+}
+
+Intersection CollisionShape::IsInside(const CollisionShape& shape) const
+{
+    AB_UNUSED(shape);
+    return OUTSIDE;
 }
 
 }

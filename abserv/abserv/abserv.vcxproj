@@ -200,6 +200,7 @@
     <ClInclude Include="Maintenance.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MathDefs.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="NetworkMessage.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="PropStream.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolAdmin.h" />
@@ -218,6 +220,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Skill.h" />
@@ -286,6 +289,7 @@
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
+    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="ProtocolAdmin.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
@@ -294,6 +298,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="Rect.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="Skill.cpp" />

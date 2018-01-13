@@ -17,7 +17,7 @@ enum ShapeType
     ShapeTypeSphere,
     ShapeTypeCapsule,
     ShapeTypeConvexHull,
-    ShapeHeightMap
+    ShapeTypeHeightMap
 };
 
 class CollisionShape
@@ -27,6 +27,7 @@ private:
     std::shared_ptr<ConvexHull> hullShape_;
     std::shared_ptr<BoundingBox> boxShape_;
     std::shared_ptr<Sphere> sphereShape_;
+    std::shared_ptr<HeightMap> heightShape_;
 public:
     CollisionShape() :
         shapeType_(ShapeTypeBox)
@@ -41,6 +42,7 @@ public:
     ShapeType GetShapeType() const { return shapeType_; }
     /// AABB
     BoundingBox GetWorldBoundingBox(const Matrix4& transform) const;
+    Intersection IsInside(const CollisionShape& shape) const;
 };
 
 }

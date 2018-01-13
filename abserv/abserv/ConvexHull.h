@@ -9,15 +9,13 @@ class Vector3;
 class ConvexHull
 {
 private:
-    BoundingBox boundingBox_;
     void BuildHull(const std::vector<Vector3>& vertices);
 public:
     ConvexHull() = default;
     explicit ConvexHull(const std::vector<Vector3>& vertices);
     ~ConvexHull() = default;
 
-    BoundingBox GetBoundingBox() const;
-
+    BoundingBox boundingBox_;
     unsigned vertexCount_;
     unsigned indexCount_;
     std::vector<Vector3> vertexData_;
