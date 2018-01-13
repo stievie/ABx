@@ -147,14 +147,6 @@ void Game::ResetStatus()
     gameStatus_ = std::make_shared<Net::NetworkMessage>();
 }
 
-Math::Vector3 Game::GetSpawnPoint()
-{
-    // TODO: ...
-    float x = static_cast<float>(Utils::Random::Instance.Get<int>(1, 5));
-    float z = static_cast<float>(Utils::Random::Instance.Get<int>(1, 5));
-    return Math::Vector3(x, 5.0f, z);
-}
-
 void Game::RegisterLua(kaguya::State& state)
 {
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
@@ -250,7 +242,6 @@ void Game::InternalLoad()
 {
     // Game::Load() Thread
 
-    // TODO: Load Data, Assets, Spawn stuff etc
     if (!map_->Load())
     {
         LOG_ERROR << "Error loading map with name " << map_->data_.name << std::endl;
@@ -286,6 +277,13 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
 {
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
     gameStatus_->Add<uint32_t>(object->id_);
+    if (object->GetType() == AB::GameProtocol::ObjectTypePlayer)
+    {
+        // Spawn points are loaded now
+        const SpawnPoint& p = map_->GetFreeSpawnPoint();
+        object->transformation_.position_ = p.position;
+        object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
+    }
     gameStatus_->AddVector3(object->transformation_.position_);
     gameStatus_->Add<float>(object->transformation_.rotation_);
     gameStatus_->AddVector3(object->transformation_.scale_);
@@ -343,8 +341,6 @@ void Game::PlayerJoin(uint32_t playerId)
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
             player->data_.lastMap = map_->data_.name;
-            // TODO: Get spawn position
-            player->transformation_.position_ = GetSpawnPoint();
             AddObject(player);
         }
 

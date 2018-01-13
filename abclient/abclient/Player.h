@@ -38,6 +38,7 @@ public:
     float cameraDistance_;
     void SetYRotation(float rad, bool updateYaw) override;
     void SetCameraDist(bool increase);
+    void UpdateYaw();
 protected:
     void PostUpdate(float timeStep) override;
 private:

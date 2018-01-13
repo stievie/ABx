@@ -395,6 +395,7 @@ void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector
     player_->GetNode()->SetRotation(direction);
     player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);
+    player_->UpdateYaw();
 
     cameraNode_ = player_->cameraNode_;
     SetupViewport();

@@ -135,8 +135,6 @@ void Player::FixedUpdate(float timeStep)
 void Player::SetYRotation(float rad, bool updateYaw)
 {
     Actor::SetYRotation(rad, updateYaw);
-    // Update camera rotation
-    Input* input = GetSubsystem<Input>();
 
     if (updateYaw)
     {
@@ -157,6 +155,13 @@ void Player::SetCameraDist(bool increase)
     else
         cameraDistance_ -= diff;
     cameraDistance_ = Clamp(cameraDistance_, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+}
+
+void Player::UpdateYaw()
+{
+    Quaternion rot = node_->GetRotation();
+    controls_.yaw_ = rot.YawAngle();
+    lastYaw_ = controls_.yaw_;
 }
 
 void Player::PostUpdate(float timeStep)

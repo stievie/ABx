@@ -128,6 +128,7 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
+    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::toupper);
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
@@ -246,6 +247,7 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
+    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::toupper);
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
