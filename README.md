@@ -22,6 +22,7 @@ abserv [-conf <config file>] [-log <log dir>]
 * pugixml https://pugixml.org/
 * Recast & Detour https://github.com/recastnavigation/recastnavigation
 * SQLite https://sqlite.org/
+* GJK https://github.com/xuzebin/gjk
 
 ### Client
 

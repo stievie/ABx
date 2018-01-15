@@ -2,5 +2,5 @@
 <index>
   <file type="Scene" src="Temple of Athene.xml" />
   <file type="NavMesh" src="navmesh.bin" />
-  <file type="Terrain" src="terrain.bin" />
+  <file type="Terrain" src="terrain.obj" />
 </index>

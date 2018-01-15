@@ -2,10 +2,15 @@
 //
 
 #include "stdafx.h"
+#include "Application.h"
 
-
-int main()
+int main(int argc, char** argv)
 {
-    return 0;
+    Application app;
+    if (!app.Initialize(argc, argv))
+        return EXIT_FAILURE;
+
+    app.Run();
+    return EXIT_SUCCESS;
 }
 

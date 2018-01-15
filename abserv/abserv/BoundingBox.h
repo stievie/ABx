@@ -6,6 +6,10 @@
 
 namespace Math {
 
+class ConvexHull;
+class HeightMap;
+class Sphere;
+
 class BoundingBox
 {
 public:
@@ -36,6 +40,10 @@ public:
 
     Vector3 Center() const { return (max_ + min_) * 0.5; }
     Vector3 Size() const { return max_ - min_; }
+    BoundingBox GetBoundingBox() const
+    {
+        return *this;
+    }
     void Merge(float x, float y, float z);
     void Merge(const Vector3& vertex);
     void Merge(const Vector3* vertices, unsigned count);
@@ -65,6 +73,8 @@ public:
     /// Returns true if the boxes are colliding (velocities are not used)
     /// move will return the movement the b1 must move to avoid the collision
     bool Collides(const BoundingBox& b2, Vector3& move) const;
+    bool Collides(const Sphere& b2) const;
+    bool Collides(const Sphere& b2, Vector3& move) const;
 
     /// Test if a point is inside.
     Intersection IsInside(const Vector3& point) const
@@ -88,6 +98,9 @@ public:
         else
             return INSIDE;
     }
+    Intersection IsInside(const HeightMap& shape) const;
+    Intersection IsInside(const ConvexHull& shape) const;
+    Intersection IsInside(const Sphere& shape) const;
 
     /// Test if another bounding box is (partially) inside or outside.
     Intersection IsInsideFast(const BoundingBox& box) const
@@ -100,7 +113,9 @@ public:
     }
 
     Vector3 min_;
+    float dummyMin_; // This is never used, but exists to pad the min_ value to four floats.
     Vector3 max_;
+    float dummyMax_; // This is never used, but exists to pad the max_ value to four floats.
 };
 
 }

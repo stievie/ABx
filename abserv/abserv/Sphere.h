@@ -5,6 +5,9 @@
 
 namespace Math {
 
+class HeightMap;
+class ConvexHull;
+
 class Sphere
 {
 public:
@@ -82,6 +85,23 @@ public:
         return radius_ >= 0.0f;
     }
 
+    BoundingBox GetBoundingBox() const
+    {
+        return BoundingBox(center_ - radius_, center_ + radius_);
+    }
+    Sphere Transformed(const Matrix4& transform) const;
+
+    bool Collides(const BoundingBox& b2) const
+    {
+        return IsInsideFast(b2) != OUTSIDE;
+    }
+    bool Collides(const BoundingBox& b2, Vector3& move) const;
+    bool Collides(const Sphere& b2) const
+    {
+        return false;
+    }
+    bool Collides(const Sphere& b2, Vector3& move) const;
+
     /// Test if a point is inside.
     Intersection IsInside(const Vector3& point) const
     {
@@ -103,6 +123,8 @@ public:
         else
             return INTERSECTS;
     }
+    Intersection IsInside(const HeightMap& sphere) const;
+    Intersection IsInside(const ConvexHull& sphere) const;
 
     /// Test if another sphere is (partially) inside or outside.
     Intersection IsInsideFast(const Sphere& sphere) const

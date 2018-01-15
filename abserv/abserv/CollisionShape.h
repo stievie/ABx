@@ -1,48 +1,78 @@
 #pragma once
 
 #include "MathDefs.h"
+#include "BoundingBox.h"
 
 namespace Math {
 
 class Vector3;
 class ConvexHull;
-class BoundingBox;
 class HeightMap;
 class Sphere;
 class Matrix4;
 
 enum ShapeType
 {
-    ShapeTypeBox = 0,
+    ShapeTypeBoundingBox,
     ShapeTypeSphere,
-    ShapeTypeCapsule,
     ShapeTypeConvexHull,
     ShapeTypeHeightMap
 };
 
 class CollisionShape
 {
-private:
-    ShapeType shapeType_;
-    std::shared_ptr<ConvexHull> hullShape_;
-    std::shared_ptr<BoundingBox> boxShape_;
-    std::shared_ptr<Sphere> sphereShape_;
-    std::shared_ptr<HeightMap> heightShape_;
 public:
-    CollisionShape() :
-        shapeType_(ShapeTypeBox)
+    CollisionShape(ShapeType type) :
+        shapeType_(type)
     {}
     ~CollisionShape() = default;
 
-    void SetConvexHull(const std::vector<Vector3>& vertices);
-    void SetBox(const Vector3& min, const Vector3& max);
-    void SetBox(float min, float max);
-    void SetSphere(const Vector3& center, float radius);
-
-    ShapeType GetShapeType() const { return shapeType_; }
     /// AABB
-    BoundingBox GetWorldBoundingBox(const Matrix4& transform) const;
-    Intersection IsInside(const CollisionShape& shape) const;
+    virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;
+
+    virtual bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const = 0;
+
+    ShapeType shapeType_;
+};
+
+template <typename T>
+class CollisionShapeImpl : public CollisionShape
+{
+public:
+    template<typename... _CArgs>
+    CollisionShapeImpl(ShapeType type, _CArgs&&... _Args) :
+        CollisionShape(type),
+        shape_(std::forward<_CArgs>(_Args)...)
+    { }
+
+    BoundingBox GetWorldBoundingBox(const Matrix4& transform) const override
+    {
+        return shape_.GetBoundingBox().Transformed(transform);
+    }
+
+    bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const override
+    {
+        return shape_.Transformed(transformation).Collides(other, move);
+    }
+    bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const override
+    {
+        return shape_.Transformed(transformation).Collides(other, move);
+    }
+    bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const override
+    {
+        assert(false);
+        return false;
+    }
+    bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const override
+    {
+        assert(false);
+        return false;
+    }
+
+    T shape_;
 };
 
 }

@@ -28,12 +28,34 @@ GameObject::GameObject() :
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
     id_ = GetNewId();
-    collisionShape_.SetBox(-0.5f, 0.5f);
+    collisionShape_ = std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox , -0.5f, 0.5f);
 }
 
 GameObject::~GameObject()
 {
     RemoveFromOctree();
+}
+
+bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
+{
+    switch (other->GetCollisionShape()->shapeType_)
+    {
+    case Math::ShapeTypeBoundingBox:
+    {
+        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        BBoxShape* shape = (BBoxShape*)other->GetCollisionShape();
+        const Math::BoundingBox bbox = shape->shape_.Transformed(other->transformation_.GetMatrix());
+        return collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
+    }
+    case Math::ShapeTypeSphere:
+    {
+        using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+        SphereShape* shape = (SphereShape*)other->GetCollisionShape();
+        const Math::Sphere sphere = shape->shape_.Transformed(other->transformation_.GetMatrix());
+        return collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
+    }
+    }
+    return false;
 }
 
 void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results)

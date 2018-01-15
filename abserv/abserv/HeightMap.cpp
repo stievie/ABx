@@ -8,7 +8,8 @@ HeightMap::HeightMap()
 {
 }
 
-HeightMap::HeightMap(const std::vector<float>& data)
+HeightMap::HeightMap(const std::vector<float>& data, const Point<int>& size) :
+    numVertices_(size)
 {
     heightData_ = data;
     unsigned points = (unsigned)(numVertices_.x_ * numVertices_.y_);
@@ -20,8 +21,13 @@ HeightMap::HeightMap(const std::vector<float>& data)
         minHeight_ = std::min(minHeight_, fData[i]);
         maxHeight_ = std::max(maxHeight_, fData[i]);
     }
-    boundingBox_.min_ = Vector3(0.0f, minHeight_, 0.0f);
-    boundingBox_.max_ = Vector3(numVertices_.x_, maxHeight_, numVertices_.y_);
+
+    const Vector3 localAabbMin(0.0f, minHeight_, 0.0f);
+    const Vector3 localAabbMax((float)numVertices_.x_, maxHeight_, (float)numVertices_.y_);
+    const Vector3 halfExtends = (localAabbMax - localAabbMin) * 0.5f;
+
+    boundingBox_.min_ = -halfExtends;
+    boundingBox_.max_ = halfExtends;
 }
 
 HeightMap::~HeightMap()

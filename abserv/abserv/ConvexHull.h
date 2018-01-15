@@ -15,6 +15,12 @@ public:
     explicit ConvexHull(const std::vector<Vector3>& vertices);
     ~ConvexHull() = default;
 
+    BoundingBox GetBoundingBox() const
+    {
+        return boundingBox_;
+    }
+    Intersection IsInside(const Vector3& point) const;
+
     BoundingBox boundingBox_;
     unsigned vertexCount_;
     unsigned indexCount_;

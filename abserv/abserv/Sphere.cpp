@@ -49,6 +49,32 @@ void Sphere::Merge(const BoundingBox& box)
     Merge(max);
 }
 
+Sphere Sphere::Transformed(const Matrix4& transform) const
+{
+    return Sphere(transform * center_, radius_);
+}
+
+bool Sphere::Collides(const BoundingBox& b2, Vector3& move) const
+{
+    // TODO
+    return false;
+}
+
+bool Sphere::Collides(const Sphere& b2, Vector3& move) const
+{
+    return false;
+}
+
+Intersection Sphere::IsInside(const HeightMap& sphere) const
+{
+    return OUTSIDE;
+}
+
+Intersection Sphere::IsInside(const ConvexHull& sphere) const
+{
+    return OUTSIDE;
+}
+
 Intersection Sphere::IsInside(const BoundingBox& box) const
 {
     float radiusSquared = radius_ * radius_;

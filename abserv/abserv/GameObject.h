@@ -30,6 +30,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 private:
     static uint32_t objectIds_;
 protected:
+    std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::weak_ptr<Game> game_;
     /// Octree octant.
     Math::Octant* octant_;
@@ -75,6 +76,12 @@ public:
         collisionMask_ = mask;
     }
     uint32_t GetCollisionMask() const { return collisionMask_; }
+    Math::CollisionShape* GetCollisionShape() const
+    {
+        return collisionShape_.get();
+    }
+    bool Collides(GameObject* other, Math::Vector3& move) const;
+
     virtual AB::GameProtocol::GameObjectType GetType() const
     {
         return AB::GameProtocol::ObjectTypeUnknown;
@@ -93,7 +100,6 @@ public:
 
     virtual std::string GetName() const { return "Unknown"; }
     Math::Transformation transformation_;
-    Math::CollisionShape collisionShape_;
     /// Auto ID, not DB ID
     uint32_t id_;
     /// Occluder flag. An object that can hide another object from view.
@@ -103,7 +109,7 @@ public:
     uint32_t collisionMask_;
     Math::BoundingBox GetWorldBoundingBox() const
     {
-        return collisionShape_.GetWorldBoundingBox(transformation_.GetMatrix());
+        return collisionShape_->GetWorldBoundingBox(transformation_.GetMatrix());
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);

@@ -305,12 +305,10 @@ void Creature::DoCollisions()
             if (ci != this && ((collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
                 Math::Vector3 move;
-                if (box.Collides(ci->GetWorldBoundingBox(), move))
+                if (Collides(ci, move))
                 {
                     move.y_ = 0.0f;
                     transformation_.position_ += move;
-                    // if we moved get new bounding box
-                    box = GetWorldBoundingBox();
                 }
             }
         }

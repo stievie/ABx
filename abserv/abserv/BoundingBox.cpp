@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "BoundingBox.h"
+#include "HeightMap.h"
+#include "ConvexHull.h"
+#include "Sphere.h"
 
 namespace Math {
 
@@ -119,6 +122,75 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         move.z_ = 0.0f;
 
     return true;
+}
+
+bool BoundingBox::Collides(const Sphere & b2) const
+{
+    return false;
+}
+
+bool BoundingBox::Collides(const Sphere & b2, Vector3 & move) const
+{
+    return false;
+}
+
+Intersection BoundingBox::IsInside(const HeightMap& shape) const
+{
+    // TODO
+    return OUTSIDE;
+}
+
+Intersection BoundingBox::IsInside(const ConvexHull& shape) const
+{
+    // TODO
+    return OUTSIDE;
+}
+
+Intersection BoundingBox::IsInside(const Sphere& shape) const
+{
+    float distSquared = 0;
+    float temp;
+    const Vector3& center = shape.center_;
+
+    if (center.x_ < min_.x_)
+    {
+        temp = center.x_ - min_.x_;
+        distSquared += temp * temp;
+    }
+    else if (center.x_ > max_.x_)
+    {
+        temp = center.x_ - max_.x_;
+        distSquared += temp * temp;
+    }
+    if (center.y_ < min_.y_)
+    {
+        temp = center.y_ - min_.y_;
+        distSquared += temp * temp;
+    }
+    else if (center.y_ > max_.y_)
+    {
+        temp = center.y_ - max_.y_;
+        distSquared += temp * temp;
+    }
+    if (center.z_ < min_.z_)
+    {
+        temp = center.z_ - min_.z_;
+        distSquared += temp * temp;
+    }
+    else if (center.z_ > max_.z_)
+    {
+        temp = center.z_ - max_.z_;
+        distSquared += temp * temp;
+    }
+
+    float radius = shape.radius_;
+    if (distSquared >= radius * radius)
+        return OUTSIDE;
+    else if (center.x_ - radius < min_.x_ || center.x_ + radius > max_.x_ || center.y_ - radius < min_.y_ ||
+        center.y_ + radius > max_.y_ || center.z_ - radius < min_.z_ || center.z_ + radius > max_.z_)
+        return INTERSECTS;
+    else
+        return INSIDE;
 }
 
 }

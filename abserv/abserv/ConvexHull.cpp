@@ -10,6 +10,12 @@ ConvexHull::ConvexHull(const std::vector<Vector3>& vertices)
     BuildHull(vertices);
 }
 
+Intersection ConvexHull::IsInside(const Vector3& point) const
+{
+    // TODO
+    return OUTSIDE;
+}
+
 void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)
 {
     if (vertices.size())
