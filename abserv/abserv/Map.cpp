@@ -19,6 +19,11 @@ static constexpr size_t AttrPosition = Utils::StringHash("Position");
 static constexpr size_t AttrRotation = Utils::StringHash("Rotation");
 static constexpr size_t AttrScale = Utils::StringHash("Scale");
 static constexpr size_t AttrStaticModel = Utils::StringHash("StaticModel");
+static constexpr size_t AttrCollisionShape = Utils::StringHash("CollisionShape");
+
+static constexpr size_t AttrShapeType = Utils::StringHash("Shape Type");
+static constexpr size_t AttrConvexHull = Utils::StringHash("ConvexHull");
+static constexpr size_t AttrModel = Utils::StringHash("Model");
 #pragma warning(pop)
 
 Map::Map(std::shared_ptr<Game> game) :
@@ -103,8 +108,23 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
                 object->transformation_ = Math::Transformation(pos, scale, rot);
                 game->AddObjectInternal(object);
-                // Nothing else needed
-                return;
+                break;
+            }
+            case AttrCollisionShape:
+            {
+                for (const auto& attr : comp.children())
+                {
+                    const pugi::xml_attribute& name_attr = attr.attribute("name");
+                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const pugi::xml_attribute& value_attr = attr.attribute("value");
+                    switch (name_hash)
+                    {
+                    case AttrShapeType:
+                        break;
+                    case AttrModel:
+                        break;
+                    }
+                }
             }
             }
         }

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Game.h"
 #include "Logger.h"
+#include "ConvexHull.h"
 
 #include "DebugNew.h"
 
@@ -53,6 +54,13 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         SphereShape* shape = (SphereShape*)other->GetCollisionShape();
         const Math::Sphere sphere = shape->shape_.Transformed(other->transformation_.GetMatrix());
         return collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
+    }
+    case Math::ShapeTypeConvexHull:
+    {
+        using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
+        HullShape* shape = (HullShape*)other->GetCollisionShape();
+        const Math::ConvexHull hull = shape->shape_.Transformed(other->transformation_.GetMatrix());
+        return collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
     }
     }
     return false;

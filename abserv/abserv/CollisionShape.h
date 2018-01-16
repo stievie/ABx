@@ -68,8 +68,7 @@ public:
     }
     bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const override
     {
-        assert(false);
-        return false;
+        return shape_.Transformed(transformation).Collides(other, move);
     }
 
     T shape_;

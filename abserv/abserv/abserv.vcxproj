@@ -164,7 +164,10 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionShape.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentContainer.h" />
     <ClInclude Include="ConvexHull.h" />
     <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
@@ -183,8 +186,10 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Gjk.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Hull.h" />
+    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
@@ -223,6 +228,7 @@
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Service.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillBar.h" />
     <ClInclude Include="SkillManager.h" />
@@ -247,7 +253,10 @@
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionShape.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentContainer.cpp" />
     <ClCompile Include="ConvexHull.cpp" />
     <ClCompile Include="DatabaseOdbc.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
@@ -266,6 +275,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Hull.cpp" />
+    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOEffects.cpp" />
@@ -301,6 +311,7 @@
     <ClCompile Include="Rect.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Service.cpp" />
+    <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillBar.cpp" />
     <ClCompile Include="SkillManager.cpp" />

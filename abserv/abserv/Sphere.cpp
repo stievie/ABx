@@ -65,6 +65,11 @@ bool Sphere::Collides(const Sphere& b2, Vector3& move) const
     return false;
 }
 
+bool Sphere::Collides(const ConvexHull& b2, Vector3& move) const
+{
+    return false;
+}
+
 Intersection Sphere::IsInside(const HeightMap& sphere) const
 {
     return OUTSIDE;

@@ -134,6 +134,11 @@ bool BoundingBox::Collides(const Sphere & b2, Vector3 & move) const
     return false;
 }
 
+bool BoundingBox::Collides(const ConvexHull & b2, Vector3 & move) const
+{
+    return false;
+}
+
 Intersection BoundingBox::IsInside(const HeightMap& shape) const
 {
     // TODO

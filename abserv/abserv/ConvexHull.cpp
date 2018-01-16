@@ -2,6 +2,7 @@
 #include "ConvexHull.h"
 #include "Hull.h"
 #include "Vector3.h"
+#include "Gjk.h"
 
 namespace Math {
 
@@ -12,8 +13,36 @@ ConvexHull::ConvexHull(const std::vector<Vector3>& vertices)
 
 Intersection ConvexHull::IsInside(const Vector3& point) const
 {
-    // TODO
+    Gjk gjk;
+    Shape shape2(point);
+    if (gjk.Intersects(*this, shape2))
+        return INSIDE;
     return OUTSIDE;
+}
+
+ConvexHull ConvexHull::Transformed(const Matrix4& transform) const
+{
+    ConvexHull result(*this);
+    result.matrix_ = transform;
+    return result;
+}
+
+bool ConvexHull::Collides(const Sphere& b2, Vector3& move) const
+{
+    return false;
+}
+
+bool ConvexHull::Collides(const BoundingBox& b2, Vector3& move) const
+{
+    return false;
+}
+
+bool ConvexHull::Collides(const ConvexHull& b2, Vector3& move) const
+{
+    Gjk gjk;
+    if (gjk.Intersects(*this, b2))
+        return true;
+    return false;
 }
 
 void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)
