@@ -164,10 +164,7 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Chat.h" />
-    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionShape.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="ComponentContainer.h" />
     <ClInclude Include="ConvexHull.h" />
     <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
@@ -189,7 +186,6 @@
     <ClInclude Include="Gjk.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Hull.h" />
-    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
@@ -253,10 +249,7 @@
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Chat.cpp" />
-    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionShape.cpp" />
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="ComponentContainer.cpp" />
     <ClCompile Include="ConvexHull.cpp" />
     <ClCompile Include="DatabaseOdbc.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
@@ -275,7 +268,6 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Hull.cpp" />
-    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOEffects.cpp" />

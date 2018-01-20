@@ -10,7 +10,6 @@
 #include "BoundingBox.h"
 #include "Octree.h"
 #include "CollisionShape.h"
-#include "ComponentContainer.h"
 
 namespace Game {
 
@@ -30,7 +29,6 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     friend class Math::Octree;
 private:
     static uint32_t objectIds_;
-    Components::ComponentContainer components_;
 protected:
     std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::weak_ptr<Game> game_;
