@@ -3,7 +3,7 @@
 #include "CreateHullAction.h"
 #include "CreateHeightMapAction.h"
 
-void Application::ParseCommandLine()
+bool Application::ParseCommandLine()
 {
     for (int i = 0; i != arguments_.size(); i++)
     {
@@ -16,9 +16,23 @@ void Application::ParseCommandLine()
         {
             action_ = CreateHeightMap;
         }
+        else if (a.compare("-h") == 0 || a.compare("-?") == 0)
+        {
+            return false;
+        }
         else
             files_.push_back(a);
     }
+    return action_ != Unknown;
+}
+
+void Application::ShowHelp()
+{
+    std::cout << "import -<action> [<options>] <file1>[...<fileN>]" << std::endl;
+    std::cout << "action:" << std::endl;
+    std::cout << "  h, ?: Show help" << std::endl;
+    std::cout << "  hull: Create hull shape from model" << std::endl;
+    std::cout << "  hm: Create height (for terrain) map from image" << std::endl;
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -32,7 +46,12 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
-    ParseCommandLine();
+    if (!ParseCommandLine())
+    {
+        ShowHelp();
+        return;
+    }
+
     switch (action_)
     {
     case CreateHull:

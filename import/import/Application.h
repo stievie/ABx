@@ -10,8 +10,9 @@ private:
         CreateHeightMap
     };
     Action action_ = Unknown;
-    void ParseCommandLine();
+    bool ParseCommandLine();
     std::vector<std::string> files_;
+    void ShowHelp();
 public:
     Application() = default;
     ~Application() = default;
