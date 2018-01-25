@@ -5,7 +5,7 @@
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i != arguments_.size(); i++)
+    for (int i = 1; i != arguments_.size(); i++)
     {
         const std::string& a = arguments_[i];
         if (a.compare("-hull") == 0)
@@ -33,6 +33,7 @@ void Application::ShowHelp()
     std::cout << "  h, ?: Show help" << std::endl;
     std::cout << "  hull: Create hull shape from model" << std::endl;
     std::cout << "  hm: Create height (for terrain) map from image" << std::endl;
+    std::cout << "  scene: Import scene" << std::endl;
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -64,7 +65,7 @@ void Application::Run()
     case CreateHeightMap:
         for (const auto& file : files_)
         {
-            CreateHeightMapAction action(file);
+            CreateHeightMapAction action(file, 2.5f, 100, 100);
             action.Execute();
         }
         break;
