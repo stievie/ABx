@@ -65,7 +65,7 @@ void Application::Run()
     case CreateHeightMap:
         for (const auto& file : files_)
         {
-            CreateHeightMapAction action(file, 2.5f, 100, 100);
+            CreateHeightMapAction action(file, 1.0f);
             action.Execute();
         }
         break;

@@ -77,6 +77,15 @@ public:
     friend Quaternion operator/(const Quaternion& v, float n);
     friend Quaternion operator/(float n, const Quaternion& v);
 
+    Vector3 operator *(const Vector3 rhs) const
+    {
+        Vector3 qVec(x_, y_, z_);
+        Vector3 cross1(qVec.CrossProduct(rhs));
+        Vector3 cross2(qVec.CrossProduct(cross1));
+
+        return rhs + 2.0f * (cross1 * w_ + cross2);
+    }
+
     /// Return Axis and Angle
     /// x, y, z -> Axis
     /// w -> Angle

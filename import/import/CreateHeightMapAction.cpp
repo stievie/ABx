@@ -3,6 +3,7 @@
 #include "ObjWriter.h"
 #include <fstream>
 #include "MathUtils.h"
+#include <limits>
 
 void CreateHeightMapAction::SaveObj()
 {
@@ -24,12 +25,12 @@ void CreateHeightMapAction::SaveObj()
     {
         writer.Normal(n.x, n.y, n.z);
     }
-    writer.Comment(std::to_string(inidices_.size()) + " indices");
-    for (size_t i = 0; i < inidices_.size(); )
+    writer.Comment(std::to_string(indices_.size()) + " indices");
+    for (size_t i = 0; i < indices_.size(); )
     {
         writer.BeginFace();
         // Indices in OBJ are 1-based
-        writer << inidices_[i] + 1 << inidices_[i + 1] + 1 << inidices_[i + 2] + 1;
+        writer << indices_[i] + 1 << indices_[i + 1] + 1 << indices_[i + 2] + 1;
         writer.EndFace();
 
         i += 3;
@@ -40,15 +41,58 @@ void CreateHeightMapAction::SaveObj()
     std::cout << "Created " << fileName << std::endl;
 }
 
+void CreateHeightMapAction::SaveHeightMap()
+{
+    std::string fileName = file_ + ".terrain";
+    std::fstream output(fileName, std::ios::binary | std::fstream::out);
+    output.write((char*)"HM\0\0", 4);
+    // Height Data
+    output.write((char*)&width_, sizeof(width_));
+    output.write((char*)&height_, sizeof(height_));
+
+    output.write((char*)&minHeight_, sizeof(minHeight_));
+    output.write((char*)&maxHeight_, sizeof(maxHeight_));
+    unsigned c = (unsigned)heightData_.size();
+    output.write((char*)&c, sizeof(c));
+    output.write((char*)heightData_.data(), c * sizeof(float));
+
+    // Shape data
+    unsigned vertexCount = (unsigned)vertices_.size();
+    output.write((char*)&vertexCount, sizeof(vertexCount));
+    for (const auto& v : vertices_)
+    {
+        output.write((char*)&v.x, sizeof(float));
+        output.write((char*)&v.y, sizeof(float));
+        output.write((char*)&v.z, sizeof(float));
+    }
+    unsigned indexCount = (unsigned)indices_.size();
+    output.write((char*)&indexCount, sizeof(indexCount));
+    for (const auto& i : indices_)
+    {
+        output.write((char*)&i, sizeof(unsigned));
+    }
+
+    output.close();
+    std::cout << "Created " << fileName << std::endl;
+}
+
 void CreateHeightMapAction::CreateGeometry()
 {
+    minHeight_ = std::numeric_limits<float>::max();
+    maxHeight_ = std::numeric_limits<float>::min();
     vertices_.resize(width_ * height_);
     normals_.resize(width_ * height_);
+    heightData_.resize(width_ * height_);
     for (int x = 0; x < width_; x++)
     {
         for (int z = 0; z < height_; z++)
         {
             float fy = GetRawHeight(x, z) * heightFactor_;
+            heightData_[x * width_ + z] = fy;
+            if (minHeight_ > fy)
+                minHeight_ = fy;
+            if (maxHeight_ < fy)
+                maxHeight_ = fy;
             float fx = (float)x - (float)width_ / 2.0f;
             float fz = (float)z - (float)height_ / 2.0f;
             vertices_[x * width_ + z] = {
@@ -81,11 +125,11 @@ void CreateHeightMapAction::CreateGeometry()
                 int i2 = (z * width_) + x + 1;
                 int i3 = (z + 1) * width_ + (x + 1);
                 // P1
-                inidices_.push_back(i1);
+                indices_.push_back(i1);
                 // P2
-                inidices_.push_back(i2);
+                indices_.push_back(i2);
                 // P3
-                inidices_.push_back(i3);
+                indices_.push_back(i3);
             }
 
             {
@@ -94,11 +138,11 @@ void CreateHeightMapAction::CreateGeometry()
                 int i2 = (z + 1) * width_ + x;
                 int i1 = z * width_ + x;
                 // P3
-                inidices_.push_back(i3);
+                indices_.push_back(i3);
                 // P2
-                inidices_.push_back(i2);
+                indices_.push_back(i2);
                 // P1
-                inidices_.push_back(i1);
+                indices_.push_back(i1);
             }
         }
     }
@@ -113,11 +157,11 @@ float CreateHeightMapAction::GetRawHeight(int x, int z) const
     z = Clamp(z, 0, height_ - 1);
     int offset = (z * width_ + x) * components_;
     int i = 0;
-    float r = (float)data_[offset + i++] / 256.0f;
+    float r = (float)data_[offset + i++];
     if (components_ > 1)
-        r += (float)data_[offset + i++] / 256.0f;
+        r += (float)data_[offset + i++];
     if (components_ > 2)
-        r += (float)data_[offset + i++] / 256.0f;
+        r += (float)data_[offset + i++];
     return r / i;
 }
 
@@ -165,6 +209,7 @@ void CreateHeightMapAction::Execute()
 
     CreateGeometry();
 
+    SaveHeightMap(),
     SaveObj();
 
 }

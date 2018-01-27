@@ -43,7 +43,8 @@ void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
 
 void CreateHullAction::Save()
 {
-    std::ofstream output(file_ + ".hull", std::ios::binary);
+    std::string fileName = file_ + ".hull";
+    std::ofstream output(fileName, std::ios::binary);
     output.write((char*)"HULL", 4);
     output.write((char*)&vertexCount_, sizeof(vertexCount_));
     for (const auto& v : vertexData_)
@@ -58,6 +59,7 @@ void CreateHullAction::Save()
         output.write((char*)&i, sizeof(unsigned));
     }
     output.close();
+    std::cout << "Created " << fileName << std::endl;
 }
 
 void CreateHullAction::Execute()

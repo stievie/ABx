@@ -20,10 +20,12 @@ static constexpr size_t AttrRotation = Utils::StringHash("Rotation");
 static constexpr size_t AttrScale = Utils::StringHash("Scale");
 static constexpr size_t AttrStaticModel = Utils::StringHash("StaticModel");
 static constexpr size_t AttrCollisionShape = Utils::StringHash("CollisionShape");
+static constexpr size_t AttrTerrain = Utils::StringHash("Terrain");
 
 static constexpr size_t AttrShapeType = Utils::StringHash("Shape Type");
 static constexpr size_t AttrConvexHull = Utils::StringHash("ConvexHull");
 static constexpr size_t AttrModel = Utils::StringHash("Model");
+static constexpr size_t AttrVertexSpacing = Utils::StringHash("Vertex Spacing");
 #pragma warning(pop)
 
 Map::Map(std::shared_ptr<Game> game) :
@@ -110,6 +112,23 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 game->AddObjectInternal(object);
                 break;
             }
+            case AttrTerrain:
+            {
+                assert(terrain_);
+                terrain_->transformation_ = Math::Transformation(pos, scale, rot);
+                for (const auto& attr : comp.children())
+                {
+                    const pugi::xml_attribute& name_attr = attr.attribute("name");
+                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const pugi::xml_attribute& value_attr = attr.attribute("value");
+                    switch (name_hash)
+                    {
+                    case AttrVertexSpacing:
+                        terrain_->heightMap_->spacing_ = Math::Vector3(value_attr.as_string());
+                        break;
+                    }
+                }
+            }
             case AttrCollisionShape:
             {
                 for (const auto& attr : comp.children())
@@ -141,7 +160,10 @@ bool Map::Load()
     const pugi::xml_node& index_node = doc.child("index");
     if (!index_node)
         return false;
-    bool ret = true;
+
+    std::string sceneFile;
+    std::string navMeshFile;
+    std::string terrainFile;
 
     for (const auto& file_node : index_node.children("file"))
     {
@@ -151,25 +173,55 @@ bool Map::Load()
         switch (type_hash)
         {
         case FileTypeScene:
-            if (!LoadScene(src_attr.as_string()))
-                ret = false;
+            sceneFile = src_attr.as_string();
             break;
         case FileTypeNavmesh:
         {
-            navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.directory + "/" + std::string(src_attr.as_string()));
-            if (!navMesh_)
-                ret = false;
+            navMeshFile = src_attr.as_string();
             break;
         }
         case FileTypeTerrain:
-            //    terrain_ = IO::DataProvider::Instance.GetAsset<Terrain>(data_.directory + "/terrain.obj");
-            //    if (!terrain_)
-            //        ret = false;
+            terrainFile = src_attr.as_string();
             break;
         }
     }
 
-    return ret;
+    if (sceneFile.empty())
+    {
+        LOG_ERROR << "Map file " << file << " does not contain a scene" << std::endl;
+        return false;
+    }
+    if (navMeshFile.empty())
+    {
+        LOG_ERROR << "Map file " << file << " does not contain a nav mesh" << std::endl;
+        return false;
+    }
+    if (terrainFile.empty())
+    {
+        LOG_ERROR << "Map file " << file << " does not contain a terrain" << std::endl;
+        return false;
+    }
+
+    // Before scene
+    terrain_ = IO::DataProvider::Instance.GetAsset<Terrain>(data_.directory + "/" + terrainFile);
+    if (!terrain_)
+    {
+        LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
+        return false;
+    }
+    navMesh_ = IO::DataProvider::Instance.GetAsset<NavigationMesh>(data_.directory + "/" + navMeshFile);
+    if (!navMesh_)
+    {
+        LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;
+        return false;
+    }
+    if (!LoadScene(sceneFile))
+    {
+        LOG_ERROR << "Error loading scene " << navMeshFile << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 void Map::Update(uint32_t delta)

@@ -18,10 +18,10 @@ private:
     /// Vertex and height spacing.
     aiVector3D spacing_;
     std::vector<float> heightData_;
-    std::vector<unsigned short> inidices_;
-    std::vector<aiVector3D> normals_;
     float minHeight_;
     float maxHeight_;
+    std::vector<unsigned short> indices_;
+    std::vector<aiVector3D> normals_;
     float heightFactor_;
     int spacingX_;
     int spacingZ_;
@@ -32,6 +32,7 @@ private:
     int components_;
     stbi_uc* data_;
     void SaveObj();
+    void SaveHeightMap();
     void CreateGeometry();
     float GetRawHeight(int x, int z) const;
     aiVector3D GetRawNormal(int x, int z) const;

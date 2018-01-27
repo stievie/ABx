@@ -33,8 +33,12 @@
 #define DH_KEYS_FILE "server.key"
 
 #define SCHEDULER_MINTICKS 10
+
 // ms = 20 network ticks/second. Update game state each 50ms (= 20 Updates/sec)
 #define NETWORK_TICK 50
+// Update game state each 33ms (= 30 Updates/sec)
+//#define NETWORK_TICK 33
+
 // Maximum players per game. If reached a new instance of the same game is started.
 #define GAME_MAX_PLAYER 100
 // Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.

@@ -313,6 +313,10 @@ void Creature::DoCollisions()
             }
         }
     }
+
+    // Keep on ground
+    float y = GetGame()->map_->terrain_->GetHeight(transformation_.position_);
+    transformation_.position_.y_ = y;
 }
 
 bool Creature::Move(float speed, const Math::Vector3& amount)
