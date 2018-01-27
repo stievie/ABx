@@ -6,11 +6,11 @@ class ObjWriter
 {
 private:
     std::ostream& stream_;
-    int vertexIndex_;
+    bool normals_;
 public:
-    ObjWriter(std::ostream& stream) :
+    ObjWriter(std::ostream& stream, bool normals = false) :
         stream_(stream),
-        vertexIndex_(0)
+        normals_(normals)
     {
         stream_ << std::fixed << std::setprecision(6);
     }
@@ -21,7 +21,8 @@ public:
     void Material(const std::string& name);
     void Object(const std::string& name);
     void Group(const std::string& name);
-    int Vertex(float x, float y, float z);
+    void Vertex(float x, float y, float z);
+    void Normal(float x, float y, float z);
     void BeginFace();
     void EndFace();
     void Face(int index);

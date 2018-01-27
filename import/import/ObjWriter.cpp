@@ -28,10 +28,15 @@ void ObjWriter::Group(const std::string& name)
     stream_ << "g " << name << std::endl;
 }
 
-int ObjWriter::Vertex(float x, float y, float z)
+void ObjWriter::Vertex(float x, float y, float z)
 {
     stream_ << "v " << x << ' ' << y << ' ' << z << std::endl;
-    return vertexIndex_++;
+}
+
+void ObjWriter::Normal(float x, float y, float z)
+{
+    if (normals_)
+        stream_ << "vn " << x << ' ' << y << ' ' << z << std::endl;
 }
 
 void ObjWriter::BeginFace()
@@ -46,5 +51,8 @@ void ObjWriter::EndFace()
 
 void ObjWriter::Face(int index)
 {
-    stream_ << index << ' ';
+    stream_ << index;
+    if (normals_)
+        stream_ << "//" << index;
+    stream_ << ' ';
 }

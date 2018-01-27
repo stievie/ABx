@@ -19,6 +19,7 @@ private:
     aiVector3D spacing_;
     std::vector<float> heightData_;
     std::vector<unsigned short> inidices_;
+    std::vector<aiVector3D> normals_;
     float minHeight_;
     float maxHeight_;
     float heightFactor_;
@@ -33,6 +34,7 @@ private:
     void SaveObj();
     void CreateGeometry();
     float GetRawHeight(int x, int z) const;
+    aiVector3D GetRawNormal(int x, int z) const;
 public:
     CreateHeightMapAction(const std::string& file, float heightFactor = 1.0f, int spacingX = 1, int spacingZ = 1) :
         file_(file),
