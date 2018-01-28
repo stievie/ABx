@@ -3,6 +3,7 @@
 #include <fstream>
 #include "HeightMap.h"
 #include "Shape.h"
+#include "Profiler.h"
 
 namespace IO {
 
@@ -11,6 +12,8 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     std::fstream input(name, std::ios::binary | std::fstream::in);
     if (!input.is_open())
         return false;
+
+    AB_PROFILE(__AB_PRETTY_FUNCTION__);
 
     char sig[4];
     input.read(sig, 4);

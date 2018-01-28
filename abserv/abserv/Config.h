@@ -20,6 +20,8 @@
 #else
 #endif
 
+#define _PROFILING
+
 // Database drivers
 #define USE_MYSQL
 #define USE_PGSQL
