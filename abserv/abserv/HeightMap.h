@@ -21,7 +21,7 @@ public:
     float GetRawHeight(int x, int z) const;
     Vector3 GetRawNormal(int x, int z) const;
     /// Return height at world coordinates.
-    float GetHeight(const Vector3& world, const Matrix4& matrix = Matrix4::Identity) const;
+    float GetHeight(const Vector3& world, const Matrix4& matrix) const;
     Vector3 GetNormal(const Vector3& world, const Matrix4& matrix) const;
 
     BoundingBox GetBoundingBox() const

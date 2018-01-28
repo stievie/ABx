@@ -50,6 +50,15 @@ void Game::Start()
         lastUpdate_ = 0;
 //        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
         SetState(GameStateRunning);
+
+        if (queuedPlayer_)
+        {
+            Asynch::Scheduler::Instance.Add(
+                Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), queuedPlayer_))
+            );
+            queuedPlayer_.reset();
+        }
+
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
         );
@@ -135,7 +144,6 @@ void Game::SendStatus()
 
     for (const auto& p : players_)
     {
-
         // Write to buffered, auto-sent output message
         p.second->client_->WriteToOutput(*gameStatus_.get());
     }
@@ -282,6 +290,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
         // Spawn points are loaded now
         const SpawnPoint& p = map_->GetFreeSpawnPoint();
         object->transformation_.position_ = p.position;
+        object->transformation_.position_.y_ = map_->terrain_->GetHeight(p.position);
         object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
     }
     gameStatus_->AddVector3(object->transformation_.position_);
@@ -348,11 +357,17 @@ void Game::PlayerJoin(uint32_t playerId)
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
         );
-        // In worst case (i.e. the game data is still loading): will be sent as
-        // soon as the game runs and entered the Update loop.
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
-        );
+
+        if (GetState() == GameStateRunning)
+        {
+            // In worst case (i.e. the game data is still loading): will be sent as
+            // soon as the game runs and entered the Update loop.
+            Asynch::Scheduler::Instance.Add(
+                Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
+            );
+        }
+        else
+            queuedPlayer_ = player;
     }
 }
 

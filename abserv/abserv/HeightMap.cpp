@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HeightMap.h"
 #include "MathUtils.h"
+#include "Logger.h"
 
 namespace Math {
 
@@ -69,38 +70,45 @@ Vector3 HeightMap::GetRawNormal(int x, int z) const
 
 float HeightMap::GetHeight(const Vector3& world, const Matrix4& matrix) const
 {
+    // Get local
     Vector3 position = matrix.Inverse() * world;
-    float xPos = position.x_ / spacing_.x_;
-    float zPos = position.z_ / spacing_.z_;
+    float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
+    float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
     float zFrac = Fract(zPos);
+    unsigned uxPos = (unsigned)xPos;
+    unsigned uzPos = (unsigned)zPos;
     float h1, h2, h3;
 
     if (xFrac + zFrac >= 1.0f)
     {
-        h1 = GetRawHeight((unsigned)xPos + 1, (unsigned)zPos + 1);
-        h2 = GetRawHeight((unsigned)xPos, (unsigned)zPos + 1);
-        h3 = GetRawHeight((unsigned)xPos + 1, (unsigned)zPos);
+        h1 = GetRawHeight(uxPos + 1, uzPos + 1) * spacing_.y_;
+        h2 = GetRawHeight(uxPos, uzPos + 1) * spacing_.y_;
+        h3 = GetRawHeight(uxPos + 1, uzPos) * spacing_.y_;
         xFrac = 1.0f - xFrac;
         zFrac = 1.0f - zFrac;
     }
     else
     {
-        h1 = GetRawHeight((unsigned)xPos, (unsigned)zPos);
-        h2 = GetRawHeight((unsigned)xPos + 1, (unsigned)zPos);
-        h3 = GetRawHeight((unsigned)xPos, (unsigned)zPos + 1);
+        h1 = GetRawHeight(uxPos, uzPos) * spacing_.y_;
+        h2 = GetRawHeight(uxPos + 1, uzPos) * spacing_.y_;
+        h3 = GetRawHeight(uxPos, uzPos + 1) * spacing_.y_;
     }
 
     float h = h1 * (1.0f - xFrac - zFrac) + h2 * xFrac + h3 * zFrac;
+
     /// \todo This assumes that the terrain scene node is upright
-    return matrix.Scaling().y_ * h + matrix.Translation().y_;
+    float result = matrix.Scaling().y_ * h + matrix.Translation().y_;
+//    LOG_DEBUG << "X=" << position.x_ << " Y=" << position.y_ << " H=" << result << std::endl;
+//    LOG_DEBUG << "X=" << (unsigned)xPos << " Y=" << (unsigned)zPos << " H=" << GetRawHeight((unsigned)xPos, (unsigned)zPos) << std::endl;
+    return result;
 }
 
 Vector3 HeightMap::GetNormal(const Vector3& world, const Matrix4& matrix) const
 {
     Vector3 position = matrix.Inverse() * world;
-    float xPos = position.x_ / spacing_.x_;
-    float zPos = position.z_ / spacing_.z_;
+    float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
+    float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
     float zFrac = Fract(zPos);
     Vector3 n1, n2, n3;

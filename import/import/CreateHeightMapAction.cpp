@@ -87,15 +87,15 @@ void CreateHeightMapAction::CreateGeometry()
     {
         for (int z = 0; z < height_; z++)
         {
-            float fy = GetRawHeight(x, z) * heightFactor_;
-            heightData_[x * width_ + z] = fy;
+            float fy = GetRawHeight(x, z);
+            heightData_[z * width_ + x] = fy;
             if (minHeight_ > fy)
                 minHeight_ = fy;
             if (maxHeight_ < fy)
                 maxHeight_ = fy;
             float fx = (float)x - (float)width_ / 2.0f;
             float fz = (float)z - (float)height_ / 2.0f;
-            vertices_[x * width_ + z] = {
+            vertices_[z * width_ + x] = {
                 fx,
                 fy,
                 fz
@@ -106,9 +106,9 @@ void CreateHeightMapAction::CreateGeometry()
     }
 
     // Create index data
-    for (int z = 0; z < height_ - 1; z++)
+    for (int x = 0; x < width_ - 1; x++)
     {
-        for (int x = 0; x < width_ - 1; x++)
+        for (int z = 0; z < height_ - 1; z++)
         {
             /*
             Normal edge:
@@ -156,13 +156,13 @@ float CreateHeightMapAction::GetRawHeight(int x, int z) const
     x = Clamp(x, 0, width_ - 1);
     z = Clamp(z, 0, height_ - 1);
     int offset = (z * width_ + x) * components_;
-    int i = 0;
-    float r = (float)data_[offset + i++];
-    if (components_ > 1)
-        r += (float)data_[offset + i++];
-    if (components_ > 2)
-        r += (float)data_[offset + i++];
-    return r / i;
+    if (components_ == 1)
+    {
+        return (float)data_[offset];
+    }
+    // If more than 1 component, use the green channel for more accuracy
+    return (float)data_[offset] +
+        (float)data_[offset + 1] / 256.0f;
 }
 
 aiVector3D CreateHeightMapAction::GetRawNormal(int x, int z) const
@@ -176,7 +176,7 @@ aiVector3D CreateHeightMapAction::GetRawNormal(int x, int z) const
     float swSlope = GetRawHeight(x - 1, z + 1) - baseHeight;
     float wSlope = GetRawHeight(x - 1, z) - baseHeight;
     float nwSlope = GetRawHeight(x - 1, z - 1) - baseHeight;
-    float up = 0.5f * (spacingX_ + spacingZ_);
+    float up = 1.0f;
 
     aiVector3D result = Vector3Add(aiVector3D(0.0f, up, nSlope), aiVector3D(-neSlope, up, neSlope));
     result = Vector3Add(result, aiVector3D(-eSlope, up, 0.0f));
