@@ -5,6 +5,7 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "StringHash.h"
+#include "Profiler.h"
 
 namespace Game {
 
@@ -152,6 +153,8 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 
 bool Map::Load()
 {
+    AB_PROFILE;
+
     std::string file = IO::DataProvider::Instance.GetDataFile(data_.directory + "/index.xml");
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
@@ -259,6 +262,7 @@ SpawnPoint Map::GetFreeSpawnPoint()
             query.sphere_.center_.z_ += 0.5f;
             octree_->GetObjects(query);
         }
+        query.sphere_.center_.y_ = terrain_->GetHeight(query.sphere_.center_);
         return{ query.sphere_.center_, minPos.rotation };
     }
 }

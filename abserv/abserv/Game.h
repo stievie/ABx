@@ -47,8 +47,8 @@ private:
     std::map<uint32_t, Player*> players_;
     int64_t lastUpdate_;
     kaguya::State luaState_;
-    /// First player triggering the creation of this game
-    std::shared_ptr<Player> queuedPlayer_;
+    /// First player(s) triggering the creation of this game
+    std::vector<std::shared_ptr<Player>> queuedPlayers_;
     void InitializeLua();
     void InternalLoad();
     void Update();

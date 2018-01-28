@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "IONavMesh.h"
 #include "DetourNavMesh.h"
+#include "Profiler.h"
 
 namespace IO {
 
@@ -23,6 +24,8 @@ struct NavMeshTileHeader
 
 bool IONavMesh::Import(Game::NavigationMesh* asset, const std::string& fileName)
 {
+    AB_PROFILE;
+
 #ifdef _WIN32
     FILE* fp;
     errno_t err = fopen_s(&fp, fileName.c_str(), "rb");

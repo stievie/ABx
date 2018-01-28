@@ -51,12 +51,15 @@ void Game::Start()
 //        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
         SetState(GameStateRunning);
 
-        if (queuedPlayer_)
+        if (!queuedPlayers_.empty())
         {
-            Asynch::Scheduler::Instance.Add(
-                Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), queuedPlayer_))
-            );
-            queuedPlayer_.reset();
+            for (const auto& p : queuedPlayers_)
+            {
+                Asynch::Scheduler::Instance.Add(
+                    Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), p))
+                );
+            }
+            queuedPlayers_.clear();
         }
 
         Asynch::Dispatcher::Instance.Add(
@@ -290,7 +293,6 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
         // Spawn points are loaded now
         const SpawnPoint& p = map_->GetFreeSpawnPoint();
         object->transformation_.position_ = p.position;
-        object->transformation_.position_.y_ = map_->terrain_->GetHeight(p.position);
         object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
     }
     gameStatus_->AddVector3(object->transformation_.position_);
@@ -367,7 +369,7 @@ void Game::PlayerJoin(uint32_t playerId)
             );
         }
         else
-            queuedPlayer_ = player;
+            queuedPlayers_.push_back(player);
     }
 }
 

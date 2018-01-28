@@ -13,7 +13,7 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     if (!input.is_open())
         return false;
 
-    AB_PROFILE(__AB_PRETTY_FUNCTION__);
+    AB_PROFILE;
 
     char sig[4];
     input.read(sig, 4);
@@ -32,12 +32,7 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     unsigned heightsCount;
     input.read((char*)&heightsCount, sizeof(unsigned));
     asset->heightMap_->heightData_.resize(heightsCount);
-    for (unsigned i = 0; i < heightsCount; i++)
-    {
-        float h;
-        input.read((char*)&h, sizeof(float));
-        asset->heightMap_->heightData_[i] = h;
-    }
+    input.read((char*)asset->heightMap_->heightData_.data(), sizeof(float) * heightsCount);
 
     asset->heightMap_->ProcessData();
 
