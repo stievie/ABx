@@ -155,7 +155,8 @@ float CreateHeightMapAction::GetRawHeight(int x, int z) const
 
     x = Clamp(x, 0, width_ - 1);
     z = Clamp(z, 0, height_ - 1);
-    int offset = (z * width_ + x) * components_;
+    // From bottom to top
+    int offset = ((height_ - z) * width_ + x) * components_;
     if (components_ == 1)
     {
         return (float)data_[offset];
@@ -199,7 +200,7 @@ aiVector3D CreateHeightMapAction::GetRawNormal(int x, int z) const
 
 void CreateHeightMapAction::Execute()
 {
-    data_ = stbi_load(file_.c_str(), &width_, &height_, &components_, 3);
+    data_ = stbi_load(file_.c_str(), &width_, &height_, &components_, 0);
 
     if (!data_)
     {
