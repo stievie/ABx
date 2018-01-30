@@ -38,10 +38,10 @@ public:
     }
 };
 
+}
+
 #if defined(_PROFILING)
-#define AB_PROFILE Utils::Profiler __profiler__(__AB_PRETTY_FUNCTION__)
+#define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(__AB_PRETTY_FUNCTION__)
 #else
 #define AB_PROFILE
 #endif
-
-}

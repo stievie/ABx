@@ -40,8 +40,9 @@ float HeightMap::GetRawHeight(int x, int z) const
 {
     if (!heightData_.size())
         return 0.0f;
-    x = Clamp(x, 0, numVertices_.x_ - 1);
-    z = Clamp(z, 0, numVertices_.y_ - 1);
+    // TODO: +/- 16?
+    x = Clamp(x - 16, 0, numVertices_.x_ - 1);
+    z = Clamp(z + 16, 0, numVertices_.y_ - 1);
     return heightData_[z * numVertices_.x_ + x];
 }
 
@@ -76,8 +77,8 @@ float HeightMap::GetHeight(const Vector3& world, const Matrix4& matrix) const
     float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
     float zFrac = Fract(zPos);
-    unsigned uxPos = (unsigned)xPos;
-    unsigned uzPos = (unsigned)zPos;
+    unsigned uxPos = static_cast<unsigned>(xPos);
+    unsigned uzPos = static_cast<unsigned>(zPos);
     float h1, h2, h3;
 
     if (xFrac + zFrac >= 1.0f)
@@ -99,7 +100,7 @@ float HeightMap::GetHeight(const Vector3& world, const Matrix4& matrix) const
 
     /// \todo This assumes that the terrain scene node is upright
     float result = matrix.Scaling().y_ * h + matrix.Translation().y_;
-//    LOG_DEBUG << "X=" << position.x_ << " Y=" << position.y_ << " H=" << result << std::endl;
+//    LOG_DEBUG << "X=" << position.x_ << " Z=" << position.z_ << " H=" << result << std::endl;
 //    LOG_DEBUG << "X=" << (unsigned)xPos << " Y=" << (unsigned)zPos << " H=" << GetRawHeight((unsigned)xPos, (unsigned)zPos) << std::endl;
     return result;
 }
