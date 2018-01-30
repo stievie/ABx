@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="7" />
 	<attribute name="Next Replicated Component ID" value="21" />
-	<attribute name="Next Local Node ID" value="16780821" />
-	<attribute name="Next Local Component ID" value="16781161" />
+	<attribute name="Next Local Node ID" value="16781021" />
+	<attribute name="Next Local Component ID" value="16781405" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -82,7 +82,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SpawnPoint" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="7.7194 26.1 -13.209" />
+		<attribute name="Position" value="-11.7806 8.1 -13.209" />
 		<attribute name="Rotation" value="0.843392 8.00639e-09 -0.5373 -1.25675e-08" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -91,7 +91,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="SpawnPoint" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-10.485 26.1 -20.9601" />
+		<attribute name="Position" value="-23.485 8.1 -20.9601" />
 		<attribute name="Rotation" value="0.737278 0 0.67559 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -105,9 +105,9 @@
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Terrain" id="16780561">
-			<attribute name="Height Map" value="Image;Textures/temple_of_athene_HeightField.png" />
+			<attribute name="Height Map" value="Image;Textures/plain.png" />
 			<attribute name="Material" value="Material;Materials/terrain_mtl.xml" />
-			<attribute name="Vertex Spacing" value="1.04 0.2 1.04" />
+			<attribute name="Vertex Spacing" value="1 0.2 1" />
 		</component>
 		<component type="CollisionShape" id="16780672">
 			<attribute name="Shape Type" value="Terrain" />
