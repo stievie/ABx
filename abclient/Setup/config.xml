@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+  <parameter name="WindowWidth" type="int" value="0" />
+  <parameter name="WindowHeight" type="int" value="0" />
+  <parameter name="Fullscreen" type="bool" value="f" />
+  <parameter name="Borderless" type="bool" value="f" />
+  <parameter name="Resizeable" type="bool" value="t" />
+  <parameter name="HighDPI" type="bool" value="f" />
+  <parameter name="VSync" type="bool" value="t" />
+  <parameter name="TripleBuffer" type="bool" value="f" />
+  <parameter name="MultiSample" type="int" value="4" />
+  <parameter name="LoginHost" type="string" value="stievie.mooo.com" />
+  <parameter name="LoginPort" type="int" value="2748" />
+</config>
