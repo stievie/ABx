@@ -33,6 +33,11 @@ protected:
     /// Urho3D NodeIDs -> AB Object IDs given from the server
     HashMap<uint32_t, uint32_t> nodeIds_;
     WeakPtr<GameObject> hoveredObject_;
+    SharedPtr<Window> mapWindow_;
+    SharedPtr<Sprite> mapSprite_;
+    void ShowMap();
+    void HideMap();
+    void ToggleMap();
     void CreateUI() override;
     void SubscribeToEvents() override;
     void Update(StringHash eventType, VariantMap& eventData) override;

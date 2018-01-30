@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<index>
+  <file type="Scene" src="Temple of Hephaistos.xml" />
+  <file type="NavMesh" src="navmesh.bin" />
+  <file type="Terrain" src="temple_of_athene_HeightField.png.terrain" />
+</index>

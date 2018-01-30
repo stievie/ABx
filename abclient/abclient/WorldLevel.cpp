@@ -12,7 +12,8 @@
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
     rmbDown_(false),
-    mailWindow_(nullptr)
+    mailWindow_(nullptr),
+    mapWindow_(nullptr)
 {
 }
 
@@ -36,6 +37,13 @@ void WorldLevel::SubscribeToEvents()
 void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
     using namespace KeyDown;
+    int key = eventData[P_SCANCODE].GetInt();
+    switch (key)
+    {
+    case SDL_SCANCODE_M:
+        ToggleMap();
+        break;
+    }
 }
 
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
@@ -399,6 +407,63 @@ void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector
 
     cameraNode_ = player_->cameraNode_;
     SetupViewport();
+}
+
+void WorldLevel::ShowMap()
+{
+    if (!mapWindow_)
+    {
+        ResourceCache* cache = GetSubsystem<ResourceCache>();
+        Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/map.jpg");
+        if (!logoTexture)
+            return;
+
+        mapWindow_ = new Window(context_);
+        // Make the window a child of the root element, which fills the whole screen.
+        GetSubsystem<UI>()->GetRoot()->AddChild(mapWindow_);
+        mapWindow_->SetSize(GetSubsystem<Graphics>()->GetWidth(), GetSubsystem<Graphics>()->GetHeight());
+        mapWindow_->SetLayout(LM_FREE);
+        // Urho has three layouts: LM_FREE, LM_HORIZONTAL and LM_VERTICAL.
+        // In LM_FREE the child elements of this window can be arranged freely.
+        // In the other two they are arranged as a horizontal or vertical list.
+
+        // Center this window in it's parent element.
+        mapWindow_->SetAlignment(HA_CENTER, VA_CENTER);
+        // Black color
+        mapWindow_->SetColor(Color::BLACK);
+        mapWindow_->SetOpacity(0.7f);
+        // Make it top most
+        mapWindow_->SetBringToBack(false);
+
+        mapSprite_ = mapWindow_->CreateChild<Sprite>();
+
+        // Set logo sprite texture
+        mapSprite_->SetTexture(logoTexture);
+        mapSprite_->SetPosition(0, 0);
+
+        int textureWidth = mapSprite_->GetWidth();
+        int textureHeight = mapSprite_->GetHeight();
+
+        // Set logo sprite size
+        mapSprite_->SetSize(mapWindow_->GetSize());
+
+        mapWindow_->BringToFront();
+    }
+    mapWindow_->SetVisible(true);
+}
+
+void WorldLevel::HideMap()
+{
+    if (mapWindow_ && mapWindow_->IsVisible())
+        mapWindow_->SetVisible(false);
+}
+
+void WorldLevel::ToggleMap()
+{
+    if (mapWindow_ && mapWindow_->IsVisible())
+        mapWindow_->SetVisible(false);
+    else
+        ShowMap();
 }
 
 void WorldLevel::CreateUI()
