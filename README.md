@@ -6,13 +6,20 @@ Ancient Greece Multiplayer Online RPG.
 
 Uses a single TCP stream for the game protocol.
 
-## Run
+## Run Server
 
 ~~~
 abserv [-conf <config file>] [-log <log dir>]
 ~~~
 
-## Third Party
+## Run Client
+
+1. Start `fw.exe`
+2. Create an account
+3. Create a character
+4. Enter world
+
+## Credits
 
 ### Server
 
