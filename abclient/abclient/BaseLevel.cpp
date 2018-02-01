@@ -99,7 +99,7 @@ void BaseLevel::SetupViewport()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SharedPtr<RenderPath> effectRenderPath = viewport_->GetRenderPath()->Clone();
     effectRenderPath->Append(cache->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
-    effectRenderPath->SetEnabled("FXAA2", false);
+    effectRenderPath->SetEnabled("FXAA2", true);
     viewport_->SetRenderPath(effectRenderPath);
 }
 
