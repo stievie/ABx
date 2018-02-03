@@ -22,7 +22,8 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
 
     asset->heightMap_ = std::make_unique<Math::HeightMap>();
 
-    asset->heightMap_->spacing_ = Math::Vector3::One;
+    // Urho3D default spacing
+    asset->heightMap_->spacing_ = Math::Vector3(1.0f, 0.25f, 1.0f);
 
     input.read((char*)&asset->heightMap_->numVertices_.x_, sizeof(int));
     input.read((char*)&asset->heightMap_->numVertices_.y_, sizeof(int));
