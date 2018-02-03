@@ -104,7 +104,7 @@ void Octree::Update()
         if (!octant || octant->GetRoot() != this)
             continue;
         // Skip if still fits the current octant
-        if (o->ocludee_ && octant->GetCullingBox().IsInside(box) == INSIDE && octant->CheckObjectFit(box))
+        if (o->occludee_ && octant->GetCullingBox().IsInside(box) == INSIDE && octant->CheckObjectFit(box))
             continue;
 
         InsertObject(o);
@@ -177,7 +177,7 @@ void Octant::InsertObject(Game::GameObject* drawable)
     // Also if drawable is outside the root octant bounds, insert to root
     bool insertHere;
     if (this == root_)
-        insertHere = !drawable->ocludee_ || cullingBox_.IsInside(box) != INSIDE || CheckObjectFit(box);
+        insertHere = !drawable->occludee_ || cullingBox_.IsInside(box) != INSIDE || CheckObjectFit(box);
     else
         insertHere = CheckObjectFit(box);
 

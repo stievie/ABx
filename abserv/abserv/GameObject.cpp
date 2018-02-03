@@ -24,12 +24,11 @@ void GameObject::RegisterLua(kaguya::State& state)
 GameObject::GameObject() :
     octant_(nullptr),
     sortValue_(0.0f),
-    ocludee_(true),
-    occluder_(true),
+    occludee_(true),
+    occluder_(false),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
     id_ = GetNewId();
-    collisionShape_ = std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox , -0.5f, 0.5f);
 }
 
 GameObject::~GameObject()
@@ -39,6 +38,9 @@ GameObject::~GameObject()
 
 bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
 {
+    if (!collisionShape_ || !other->GetCollisionShape())
+        return false;
+
     switch (other->GetCollisionShape()->shapeType_)
     {
     case Math::ShapeTypeBoundingBox:
@@ -114,8 +116,10 @@ void GameObject::AddToOctree()
 {
     if (auto g = game_.lock())
     {
-        Math::Octree* octree = g->map_->octree_.get();
-        octree->InsertObject(this);
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "Adding " << GetName() << " to Octree" << std::endl;
+#endif
+        g->map_->octree_->InsertObject(this);
     }
 }
 

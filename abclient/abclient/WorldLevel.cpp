@@ -36,6 +36,10 @@ void WorldLevel::SubscribeToEvents()
 
 void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
+    UI* ui = GetSubsystem<UI>();
+    if (ui->GetFocusElement())
+        return;
+
     using namespace KeyDown;
     int key = eventData[P_SCANCODE].GetInt();
     switch (key)

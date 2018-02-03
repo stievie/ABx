@@ -30,6 +30,7 @@ struct SpawnPoint
 class Map
 {
 private:
+    std::mutex lock_;
     std::weak_ptr<Game> game_;
     /// Load objects from Urho3D scene file
     bool LoadScene(const std::string& name);

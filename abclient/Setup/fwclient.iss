@@ -43,7 +43,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#_SrcPath}\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#_SrcPath}\bin\config_dist.xml"; DestDir: "{app}"; DestName: "config.xml"; Flags: ignoreversion
+Source: "{#_SrcPath}\Setup\config.xml"; DestDir: "{app}"; DestName: "config.xml"; Flags: ignoreversion
 Source: "{#_SrcPath}\Setup\AbData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#_SrcPath}\Setup\Autoload.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#_SrcPath}\Setup\CoreData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs

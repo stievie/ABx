@@ -34,6 +34,11 @@ Creature::Creature() :
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone)
 {
+    // Creature always collides
+    SetCollisionShape(
+        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
+    );
+    occluder_ = true;
 }
 
 void Creature::AddEffect(uint32_t id, uint32_t ticks)

@@ -63,6 +63,9 @@ public:
     }
     bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const override
     {
+        AB_UNUSED(transformation);
+        AB_UNUSED(other);
+        AB_UNUSED(move);
         assert(false);
         return false;
     }

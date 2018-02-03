@@ -29,8 +29,8 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     friend class Math::Octree;
 private:
     static uint32_t objectIds_;
-protected:
     std::unique_ptr<Math::CollisionShape> collisionShape_;
+protected:
     std::weak_ptr<Game> game_;
     /// Octree octant.
     Math::Octant* octant_;
@@ -82,6 +82,8 @@ public:
     uint32_t GetCollisionMask() const { return collisionMask_; }
     Math::CollisionShape* GetCollisionShape() const
     {
+        if (!collisionShape_)
+            return nullptr;
         return collisionShape_.get();
     }
     bool Collides(GameObject* other, Math::Vector3& move) const;
@@ -109,10 +111,12 @@ public:
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_;
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
-    bool ocludee_;
+    bool occludee_;
     uint32_t collisionMask_;
     Math::BoundingBox GetWorldBoundingBox() const
     {
+        if (!collisionShape_)
+            return Math::BoundingBox();
         return collisionShape_->GetWorldBoundingBox(transformation_.GetMatrix());
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);

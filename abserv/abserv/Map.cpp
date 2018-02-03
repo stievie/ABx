@@ -20,13 +20,23 @@ static constexpr size_t AttrPosition = Utils::StringHash("Position");
 static constexpr size_t AttrRotation = Utils::StringHash("Rotation");
 static constexpr size_t AttrScale = Utils::StringHash("Scale");
 static constexpr size_t AttrStaticModel = Utils::StringHash("StaticModel");
+static constexpr size_t AttrRigidBody = Utils::StringHash("RigidBody");
 static constexpr size_t AttrCollisionShape = Utils::StringHash("CollisionShape");
 static constexpr size_t AttrTerrain = Utils::StringHash("Terrain");
+
+// Components
+static constexpr size_t CompStaticModel = Utils::StringHash("StaticModel");
+static constexpr size_t CompRigidBody = Utils::StringHash("RigidBody");
+static constexpr size_t CompCollisionShape = Utils::StringHash("CollisionShape");
+static constexpr size_t CompTerrain = Utils::StringHash("Terrain");
 
 static constexpr size_t AttrShapeType = Utils::StringHash("Shape Type");
 static constexpr size_t AttrConvexHull = Utils::StringHash("ConvexHull");
 static constexpr size_t AttrModel = Utils::StringHash("Model");
 static constexpr size_t AttrVertexSpacing = Utils::StringHash("Vertex Spacing");
+static constexpr size_t AttrIsOccluder = Utils::StringHash("Is Occluder");
+static constexpr size_t AttrIsOccludee = Utils::StringHash("Can Be Occluded");
+static constexpr size_t AttrCollisionMask = Utils::StringHash("Collision Mask");
 #pragma warning(pop)
 
 Map::Map(std::shared_ptr<Game> game) :
@@ -42,6 +52,7 @@ Map::~Map()
 
 bool Map::LoadScene(const std::string& name)
 {
+    // Game load thread
     std::string file = IO::DataProvider::Instance.GetDataFile(data_.directory + "/" + name);
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
@@ -59,11 +70,18 @@ bool Map::LoadScene(const std::string& name)
         }
     }
 
+    // Update spawn points
+    for (auto& p : spawnPoints_)
+    {
+        p.position.y_ = terrain_->GetHeight(p.position);
+    }
+
     return true;
 }
 
 void Map::LoadSceneNode(const pugi::xml_node& node)
 {
+    // Game load thread
     if (auto game = game_.lock())
     {
         Math::Vector3 pos;
@@ -100,17 +118,86 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             return;
         }
 
+        std::shared_ptr<GameObject> object;
         for (const auto& comp : node.children("component"))
         {
             const pugi::xml_attribute& type_attr = comp.attribute("type");
             const size_t type_hash = Utils::StringHashRt(type_attr.as_string());
+            // StaticModel must be first component
             switch (type_hash)
             {
             case AttrStaticModel:
             {
-                std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
+                object = std::make_shared<GameObject>();
+                object->collisionMask_ = 0;
                 object->transformation_ = Math::Transformation(pos, scale, rot);
-                game->AddObjectInternal(object);
+                {
+                    std::lock_guard<std::mutex> lock(lock_);
+                    game->AddObjectInternal(object);
+                }
+                for (const auto& attr : comp.children())
+                {
+                    const pugi::xml_attribute& name_attr = attr.attribute("name");
+                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const pugi::xml_attribute& value_attr = attr.attribute("value");
+                    switch (name_hash)
+                    {
+                    case AttrIsOccluder:
+                        object->occluder_ = value_attr.as_bool();
+                        break;
+                    case AttrIsOccludee:
+                        object->occludee_ = value_attr.as_bool();
+                        break;
+                    }
+                }
+                break;
+            }
+            case AttrCollisionShape:
+            {
+                for (const auto& attr : comp.children())
+                {
+                    const pugi::xml_attribute& name_attr = attr.attribute("name");
+                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const pugi::xml_attribute& value_attr = attr.attribute("value");
+                    switch (name_hash)
+                    {
+                    case AttrShapeType:
+                        if (object)
+                        {
+                            object->SetCollisionShape(
+                                std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                                    Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
+                            );
+                        }
+                        break;
+                    case AttrModel:
+                        break;
+                    }
+                }
+                if (object && !object->GetCollisionShape())
+                {
+                    // Unknown shape add default shape
+                    object->SetCollisionShape(
+                        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                            Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
+                    );
+                }
+                break;
+            }
+            case AttrRigidBody:
+            {
+                for (const auto& attr : comp.children())
+                {
+                    const pugi::xml_attribute& name_attr = attr.attribute("name");
+                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                    const pugi::xml_attribute& value_attr = attr.attribute("value");
+                    switch (name_hash)
+                    {
+                    case AttrCollisionMask:
+                        object->collisionMask_ = value_attr.as_uint();
+                        break;
+                    }
+                }
                 break;
             }
             case AttrTerrain:
@@ -130,22 +217,6 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                     }
                 }
             }
-            case AttrCollisionShape:
-            {
-                for (const auto& attr : comp.children())
-                {
-                    const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
-                    const pugi::xml_attribute& value_attr = attr.attribute("value");
-                    switch (name_hash)
-                    {
-                    case AttrShapeType:
-                        break;
-                    case AttrModel:
-                        break;
-                    }
-                }
-            }
             }
         }
     }
@@ -153,6 +224,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 
 bool Map::Load()
 {
+    // Game load thread
     AB_PROFILE;
 
     std::string file = IO::DataProvider::Instance.GetDataFile(data_.directory + "/index.xml");
@@ -249,20 +321,22 @@ SpawnPoint Map::GetFreeSpawnPoint()
         {
             minPos = p;
             minObjects = result.size();
+            if (minObjects == 0)
+                break;
         }
     }
 
     {
         std::vector<GameObject*> result;
-        Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 0.5f));
+        Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 1.0f));
         octree_->GetObjects(query);
         while (result.size() != 0)
         {
             query.sphere_.center_.x_ += 0.5f;
             query.sphere_.center_.z_ += 0.5f;
+            query.sphere_.center_.y_ = terrain_->GetHeight(query.sphere_.center_);
             octree_->GetObjects(query);
         }
-        query.sphere_.center_.y_ = terrain_->GetHeight(query.sphere_.center_);
         return{ query.sphere_.center_, minPos.rotation };
     }
 }
