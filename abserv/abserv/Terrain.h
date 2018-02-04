@@ -16,10 +16,10 @@ public:
 
     Math::Transformation transformation_;
     std::unique_ptr<Math::HeightMap> heightMap_;
-    std::unique_ptr<Math::Shape> shape_;
     float GetHeight(const Math::Vector3& world) const
     {
-        return heightMap_->GetHeight(world, transformation_.GetMatrix());
+        heightMap_->matrix_ = transformation_.GetMatrix();
+        return heightMap_->GetHeight(world);
     }
 };
 

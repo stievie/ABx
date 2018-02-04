@@ -7,6 +7,7 @@ namespace Math {
 
 class HeightMap;
 class ConvexHull;
+class Shape;
 
 class Sphere
 {
@@ -89,6 +90,8 @@ public:
     {
         return BoundingBox(center_ - radius_, center_ + radius_);
     }
+    Shape GetShape() const;
+
     Sphere Transformed(const Matrix4& transform) const;
 
     bool Collides(const BoundingBox& b2) const
@@ -102,6 +105,7 @@ public:
     }
     bool Collides(const Sphere& b2, Vector3& move) const;
     bool Collides(const ConvexHull& b2, Vector3& move) const;
+    bool Collides(const HeightMap& b2, Vector3& move) const;
 
     /// Test if a point is inside.
     Intersection IsInside(const Vector3& point) const

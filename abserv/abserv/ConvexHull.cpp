@@ -3,6 +3,7 @@
 #include "Hull.h"
 #include "Vector3.h"
 #include "Gjk.h"
+#include "Sphere.h"
 
 namespace Math {
 
@@ -29,11 +30,21 @@ ConvexHull ConvexHull::Transformed(const Matrix4& transform) const
 
 bool ConvexHull::Collides(const Sphere& b2, Vector3& move) const
 {
+    const Shape s = b2.GetShape();
+
+    Gjk gjk;
+    if (gjk.Intersects(*this, s))
+        return true;
     return false;
 }
 
 bool ConvexHull::Collides(const BoundingBox& b2, Vector3& move) const
 {
+    const Shape s = b2.GetShape();
+
+    Gjk gjk;
+    if (gjk.Intersects(*this, s))
+        return true;
     return false;
 }
 
@@ -42,6 +53,11 @@ bool ConvexHull::Collides(const ConvexHull& b2, Vector3& move) const
     Gjk gjk;
     if (gjk.Intersects(*this, b2))
         return true;
+    return false;
+}
+
+bool ConvexHull::Collides(const HeightMap& b2, Vector3& move) const
+{
     return false;
 }
 

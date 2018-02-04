@@ -6,6 +6,7 @@
 namespace Math {
 
 class Vector3;
+class HeightMap;
 
 class ConvexHull : public Shape
 {
@@ -29,6 +30,7 @@ public:
     bool Collides(const Sphere& b2, Vector3& move) const;
     bool Collides(const BoundingBox& b2, Vector3& move) const;
     bool Collides(const ConvexHull& b2, Vector3& move) const;
+    bool Collides(const HeightMap& b2, Vector3& move) const;
 
     BoundingBox boundingBox_;
 };

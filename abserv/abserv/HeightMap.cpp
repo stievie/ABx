@@ -2,6 +2,9 @@
 #include "HeightMap.h"
 #include "MathUtils.h"
 #include "Logger.h"
+#include "Sphere.h"
+#include "BoundingBox.h"
+#include "ConvexHull.h"
 
 namespace Math {
 
@@ -69,10 +72,10 @@ Vector3 HeightMap::GetRawNormal(int x, int z) const
         Vector3(nwSlope, up, nwSlope)).Normal();
 }
 
-float HeightMap::GetHeight(const Vector3& world, const Matrix4& matrix) const
+float HeightMap::GetHeight(const Vector3& world) const
 {
     // Get local
-    Vector3 position = matrix.Inverse() * world;
+    Vector3 position = matrix_.Inverse() * world;
     float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
     float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
@@ -99,15 +102,15 @@ float HeightMap::GetHeight(const Vector3& world, const Matrix4& matrix) const
     float h = h1 * (1.0f - xFrac - zFrac) + h2 * xFrac + h3 * zFrac;
 
     /// \todo This assumes that the terrain scene node is upright
-    float result = matrix.Scaling().y_ * h + matrix.Translation().y_;
+    float result = matrix_.Scaling().y_ * h + matrix_.Translation().y_;
 //    LOG_DEBUG << "X=" << position.x_ << " Z=" << position.z_ << " H=" << result << std::endl;
 //    LOG_DEBUG << "X=" << (unsigned)xPos << " Y=" << (unsigned)zPos << " H=" << GetRawHeight((unsigned)xPos, (unsigned)zPos) << std::endl;
     return result;
 }
 
-Vector3 HeightMap::GetNormal(const Vector3& world, const Matrix4& matrix) const
+Vector3 HeightMap::GetNormal(const Vector3& world) const
 {
-    Vector3 position = matrix.Inverse() * world;
+    Vector3 position = matrix_.Inverse() * world;
     float xPos = (position.x_ / spacing_.x_) + ((float)numVertices_.x_ / 2.0f);
     float zPos = (position.z_ / spacing_.z_) + ((float)numVertices_.y_ / 2.0f);
     float xFrac = Fract(xPos);
@@ -130,12 +133,32 @@ Vector3 HeightMap::GetNormal(const Vector3& world, const Matrix4& matrix) const
     }
 
     Vector3 n = (n1 * (1.0f - xFrac - zFrac) + n2 * xFrac + n3 * zFrac).Normal();
-    return matrix.Rotation() * n;
+    return matrix_.Rotation() * n;
 }
 
-Point<int> HeightMap::WorldToHeightmap(const Vector3& world, const Matrix4& matrix)
+bool HeightMap::Collides(const Sphere& b2, Vector3& move) const
 {
-    Vector3 pos = matrix.Inverse() * world;
+    return b2.Collides(*this, move);
+}
+
+bool HeightMap::Collides(const BoundingBox& b2, Vector3& move) const
+{
+    return b2.Collides(*this, move);
+}
+
+bool HeightMap::Collides(const ConvexHull& b2, Vector3& move) const
+{
+    return b2.Collides(*this, move);
+}
+
+bool HeightMap::Collides(const HeightMap& b2, Vector3& move) const
+{
+    return b2.Collides(*this, move);
+}
+
+Point<int> HeightMap::WorldToHeightmap(const Vector3& world)
+{
+    Vector3 pos = matrix_.Inverse() * world;
     int xPos = (int)(pos.x_ / spacing_.x_ + 0.5f);
     int zPos = (int)(pos.z_ / spacing_.z_ + 0.5f);
     xPos = Clamp(xPos, 0, numVertices_.x_ - 1);
@@ -143,14 +166,14 @@ Point<int> HeightMap::WorldToHeightmap(const Vector3& world, const Matrix4& matr
     return Point<int>(xPos, zPos);
 }
 
-Vector3 HeightMap::HeightmapToWorld(const Point<int>& pixel, const Matrix4& matrix)
+Vector3 HeightMap::HeightmapToWorld(const Point<int>& pixel)
 {
     Point<int> pos(pixel.x_, numVertices_.y_ - 1 - pixel.y_);
     float xPos = (float)(pos.x_ * spacing_.x_);
     float zPos = (float)(pos.y_ * spacing_.z_);
     Vector3 lPos(xPos, 0.0f, zPos);
-    Vector3 wPos = matrix * lPos;
-    wPos.y_ = GetHeight(wPos, matrix);
+    Vector3 wPos = matrix_ * lPos;
+    wPos.y_ = GetHeight(wPos);
 
     return wPos;
 }

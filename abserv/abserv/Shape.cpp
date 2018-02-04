@@ -4,6 +4,14 @@
 
 namespace Math {
 
+void Shape::AddTriangle(unsigned i1, unsigned i2, unsigned i3)
+{
+    indexData_.push_back(i1);
+    indexData_.push_back(i2);
+    indexData_.push_back(i3);
+    indexCount_ += 3;
+}
+
 Vector3 Shape::GetFarsetPointInDirection(const Vector3& v) const
 {
     const Vector3& v0 = GetVertex(0);

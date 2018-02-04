@@ -312,7 +312,7 @@ void Creature::DoCollisions()
                 Math::Vector3 move;
                 if (Collides(ci, move))
                 {
-                    move.y_ = 0.0f;
+//                    move.y_ = 0.0f;
                     transformation_.position_ += move;
                 }
             }

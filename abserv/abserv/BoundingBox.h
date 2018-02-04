@@ -9,6 +9,7 @@ namespace Math {
 class ConvexHull;
 class HeightMap;
 class Sphere;
+class Shape;
 
 class BoundingBox
 {
@@ -67,6 +68,8 @@ public:
     /// AABB
     BoundingBox Transformed(const Matrix4& transform) const;
 
+    Shape GetShape() const;
+
     /// https://www.gamedev.net/resources/_/technical/game-programming/swept-aabb-collision-detection-and-response-r3084
     /// Returns true if the boxes are colliding (velocities are not used)
     bool Collides(const BoundingBox& b2) const;
@@ -76,6 +79,7 @@ public:
     bool Collides(const Sphere& b2) const;
     bool Collides(const Sphere& b2, Vector3& move) const;
     bool Collides(const ConvexHull& b2, Vector3& move) const;
+    bool Collides(const HeightMap& b2, Vector3& move) const;
 
     /// Test if a point is inside.
     Intersection IsInside(const Vector3& point) const

@@ -3,6 +3,7 @@
 #include "HeightMap.h"
 #include "ConvexHull.h"
 #include "Sphere.h"
+#include "Shape.h"
 
 namespace Math {
 
@@ -78,6 +79,32 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
     return BoundingBox(newCenter - newEdge, newCenter + newEdge);
 }
 
+Shape BoundingBox::GetShape() const
+{
+    Shape s;
+    Vector3 boundPoint1 = min_;
+    Vector3 boundPoint2 = max_;
+    Vector3 boundPoint3 = Vector3(boundPoint1.x_, boundPoint1.y_, boundPoint2.z_);
+    Vector3 boundPoint4 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint1.z_);
+    Vector3 boundPoint5 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint1.z_);
+    Vector3 boundPoint6 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint2.z_);
+    Vector3 boundPoint7 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint2.z_);
+    Vector3 boundPoint8 = Vector3(boundPoint2.x_, boundPoint2.y_, boundPoint1.z_);
+
+    s.vertexData_.push_back(boundPoint1);
+    s.vertexData_.push_back(boundPoint2);
+    s.vertexData_.push_back(boundPoint3);
+    s.vertexData_.push_back(boundPoint4);
+    s.vertexData_.push_back(boundPoint5);
+    s.vertexData_.push_back(boundPoint6);
+    s.vertexData_.push_back(boundPoint7);
+    s.vertexData_.push_back(boundPoint8);
+    s.vertexCount_ = 8;
+    s.indexCount_ = 0;
+
+    return s;
+}
+
 bool BoundingBox::Collides(const BoundingBox& b2) const
 {
     const Vector3 size1 = Size();
@@ -124,18 +151,29 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
     return true;
 }
 
-bool BoundingBox::Collides(const Sphere & b2) const
+bool BoundingBox::Collides(const Sphere& b2) const
+{
+    return IsInside(b2) != OUTSIDE;
+}
+
+bool BoundingBox::Collides(const Sphere& b2, Vector3& move) const
+{
+    return IsInside(b2) != OUTSIDE;
+}
+
+bool BoundingBox::Collides(const ConvexHull& b2, Vector3& move) const
 {
     return false;
 }
 
-bool BoundingBox::Collides(const Sphere & b2, Vector3 & move) const
+bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
 {
-    return false;
-}
-
-bool BoundingBox::Collides(const ConvexHull & b2, Vector3 & move) const
-{
+    float y = b2.GetHeight(min_);
+    if (y > min_.y_)
+    {
+        move.y_ = min_.y_ - y;
+        return true;
+    }
     return false;
 }
 

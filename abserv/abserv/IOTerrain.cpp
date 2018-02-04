@@ -42,32 +42,6 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
 
     asset->heightMap_->ProcessData();
 
-    asset->shape_ = std::make_unique<Math::Shape>();
-
-    unsigned vertexCount;
-    input.read((char*)&vertexCount, sizeof(unsigned));
-    asset->shape_->vertexCount_ = vertexCount;
-    asset->shape_->vertexData_.resize(vertexCount);
-    for (unsigned i = 0; i < vertexCount; i++)
-    {
-        float x; float y; float z;
-        input.read((char*)&x, sizeof(float));
-        input.read((char*)&y, sizeof(float));
-        input.read((char*)&z, sizeof(float));
-
-        asset->shape_->vertexData_[i] = Math::Vector3(x, y, z);
-    }
-
-    unsigned indexCount;
-    input.read((char*)&indexCount, sizeof(unsigned));
-    asset->shape_->indexCount_ = indexCount;
-    asset->shape_->indexData_.resize(indexCount);
-    for (unsigned i = 0; i < indexCount; i++)
-    {
-        unsigned index;
-        input.read((char*)&index, sizeof(unsigned));
-        asset->shape_->indexData_[i] = index;
-    }
     return true;
 }
 

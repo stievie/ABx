@@ -21,16 +21,26 @@ public:
     float GetRawHeight(int x, int z) const;
     Vector3 GetRawNormal(int x, int z) const;
     /// Return height at world coordinates.
-    float GetHeight(const Vector3& world, const Matrix4& matrix) const;
-    Vector3 GetNormal(const Vector3& world, const Matrix4& matrix) const;
+    float GetHeight(const Vector3& world) const;
+    Vector3 GetNormal(const Vector3& world) const;
 
     BoundingBox GetBoundingBox() const
     {
         return boundingBox_;
     }
+    const HeightMap& Transformed(const Matrix4& transformation) const
+    {
+        AB_UNUSED(transformation);
+        return *this;
+    }
 
-    Point<int> WorldToHeightmap(const Vector3& world, const Matrix4& matrix);
-    Vector3 HeightmapToWorld(const Point<int>& pixel, const Matrix4& matrix);
+    bool Collides(const Sphere& b2, Vector3& move) const;
+    bool Collides(const BoundingBox& b2, Vector3& move) const;
+    bool Collides(const ConvexHull& b2, Vector3& move) const;
+    bool Collides(const HeightMap& b2, Vector3& move) const;
+
+    Point<int> WorldToHeightmap(const Vector3& world);
+    Vector3 HeightmapToWorld(const Point<int>& pixel);
 
     /// Vertex and height spacing.
     Vector3 spacing_;
@@ -39,6 +49,8 @@ public:
     float maxHeight_;
     Point<int> numVertices_;
     BoundingBox boundingBox_;
+    /// Transformation matrix
+    Matrix4 matrix_ = Matrix4::Identity;
 };
 
 }

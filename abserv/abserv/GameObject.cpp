@@ -64,6 +64,12 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         const Math::ConvexHull hull = shape->shape_.Transformed(other->transformation_.GetMatrix());
         return collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
     }
+    case Math::ShapeTypeHeightMap:
+    {
+        using HeightShape = Math::CollisionShapeImpl<Math::HeightMap>;
+        HeightShape* shape = (HeightShape*)other->GetCollisionShape();
+        return collisionShape_->Collides(transformation_.GetMatrix(), shape->shape_, move);
+    }
     }
     return false;
 }

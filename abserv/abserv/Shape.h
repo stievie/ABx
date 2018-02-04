@@ -37,6 +37,7 @@ public:
     {}
     ~Shape() = default;
 
+    void AddTriangle(unsigned i1, unsigned i2, unsigned i3);
     const Vector3& GetVertex(unsigned index) const
     {
         if (indexCount_)

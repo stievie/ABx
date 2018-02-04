@@ -204,6 +204,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             {
                 assert(terrain_);
                 terrain_->transformation_ = Math::Transformation(pos, scale, rot);
+                terrain_->heightMap_->matrix_ = terrain_->transformation_.GetMatrix();
                 for (const auto& attr : comp.children())
                 {
                     const pugi::xml_attribute& name_attr = attr.attribute("name");
