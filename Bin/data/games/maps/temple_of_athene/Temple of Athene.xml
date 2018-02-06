@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="12.9417" />
-	<attribute name="Next Replicated Node ID" value="7" />
-	<attribute name="Next Replicated Component ID" value="25" />
-	<attribute name="Next Local Node ID" value="16781122" />
-	<attribute name="Next Local Component ID" value="16781532" />
+	<attribute name="Next Replicated Node ID" value="8" />
+	<attribute name="Next Replicated Component ID" value="26" />
+	<attribute name="Next Local Node ID" value="16781172" />
+	<attribute name="Next Local Component ID" value="16781593" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -43,7 +43,7 @@
 		<attribute name="Tags" />
 		<attribute name="Position" value="-31.542 7.5 -20.7317" />
 		<attribute name="Rotation" value="-0.707107 0 0.707107 -0" />
-		<attribute name="Scale" value="5 5 5" />
+		<attribute name="Scale" value="2 2 2" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="10">
 			<attribute name="Model" value="Model;Models/Athene/Athena.mdl" />
@@ -135,6 +135,19 @@
 			<attribute name="Fog Color" value="0.5 0.5 0.5 1" />
 			<attribute name="Fog Start" value="100" />
 			<attribute name="Fog End" value="500" />
+		</component>
+	</node>
+	<node id="7">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-47.3259 7.41111 -23.99" />
+		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="25">
+			<attribute name="Model" value="Model;Models/Temple1/Cube.mdl" />
+			<attribute name="Material" value="Material;Models/Temple1/Material.001.xml;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" />
 		</component>
 	</node>
 </scene>

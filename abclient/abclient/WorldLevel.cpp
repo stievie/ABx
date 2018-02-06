@@ -34,6 +34,32 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
 }
 
+SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
+{
+    Ray camRay = GetActiveViewportScreenRay(pos);
+    PODVector<RayQueryResult> result;
+    Octree* world = scene_->GetComponent<Octree>();
+    RayOctreeQuery query(result, camRay);
+    // Can not use RaycastSingle because it would return the Zone
+    world->Raycast(query);
+    if (!result.Empty())
+    {
+        for (unsigned i = 0; i < result.Size(); i++)
+        {
+            Node* nd = result[i].node_;
+            if (nd)
+            {
+                SharedPtr<GameObject> obj = GetObjectFromNode(nd);
+                if (!obj)
+                    continue;
+
+                return obj;
+            }
+        }
+    }
+    return SharedPtr<GameObject>();
+}
+
 void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
@@ -63,20 +89,10 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
     else if (input->GetMouseButtonDown(1))
     {
         // Pick object
-        IntVector2 pos = input->GetMousePosition();
-        Ray camRay = GetActiveViewportScreenRay(pos);
-        PODVector<RayQueryResult> result;
-        Octree* world = scene_->GetComponent<Octree>();
-        RayOctreeQuery query(result, camRay);
-        world->RaycastSingle(query);
-        if (!result.Empty())
+        SharedPtr<GameObject> object = GetObjectAt(input->GetMousePosition());
+        if (object && object->IsSelectable())
         {
-            Node* nd = result[0].node_;
-            SharedPtr<GameObject> object = GetObjectFromNode(result[0].node_);
-            if (object && object->IsSelectable())
-            {
-                SelectObject(object->id_);
-            }
+            SelectObject(object->id_);
         }
     }
 }
@@ -122,23 +138,31 @@ void WorldLevel::HandleMouseMove(StringHash eventType, VariantMap& eventData)
     PODVector<RayQueryResult> result;
     Octree* world = scene_->GetComponent<Octree>();
     RayOctreeQuery query(result, camRay);
-    world->RaycastSingle(query);
+    // Can not use RaycastSingle because it would return the Zone
+    world->Raycast(query);
     if (!result.Empty())
     {
-        Node* nd = result[0].node_;
-        if (nd)
+        for (unsigned i = 0; i < result.Size(); i++)
         {
-            SharedPtr<GameObject> obj = GetObjectFromNode(result[0].node_);
-            if (obj == hoveredObject_.Lock())
-                return;
-            if (auto ho = hoveredObject_.Lock())
-                ho->HoverEnd();
-            hoveredObject_ = obj;
-            if (auto ho = hoveredObject_.Lock())
+            Node* nd = result[i].node_;
+            if (nd)
             {
-                ho->HoverBegin();
+                SharedPtr<GameObject> obj = GetObjectFromNode(nd);
+                if (!obj)
+                    continue;
+                if (obj == hoveredObject_.Lock())
+                    // Still the same object
+                    return;
+                // Unhover last
+                if (auto ho = hoveredObject_.Lock())
+                    ho->HoverEnd();
+                hoveredObject_ = obj;
+                if (auto ho = hoveredObject_.Lock())
+                {
+                    ho->HoverBegin();
+                }
+                return;
             }
-            return;
         }
     }
     if (auto ho = hoveredObject_.Lock())
@@ -260,6 +284,7 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
         object->Unserialize(data);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
+        object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
         switch (object->objectType_)
         {
         case ObjectTypePlayer:

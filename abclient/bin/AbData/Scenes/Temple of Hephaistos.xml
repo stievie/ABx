@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="51.2351" />
 	<attribute name="Next Replicated Node ID" value="11" />
 	<attribute name="Next Replicated Component ID" value="24" />
-	<attribute name="Next Local Node ID" value="16780573" />
-	<attribute name="Next Local Component ID" value="16780859" />
+	<attribute name="Next Local Node ID" value="16780773" />
+	<attribute name="Next Local Component ID" value="16781103" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -23,7 +23,7 @@
 		<attribute name="Name" value="Sun" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="0 64 0" />
-		<attribute name="Rotation" value="0.707107 0.707107 0 0" />
+		<attribute name="Rotation" value="0.742404 0.519837 0.346189 -0.242404" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="16779339">
@@ -48,6 +48,9 @@
 			<attribute name="Height Map" value="Image;Textures/temple_of_athene_HeightField.png" />
 			<attribute name="Material" value="Material;Materials/temple_of_athene.xml" />
 			<attribute name="Vertex Spacing" value="1 0.2 1" />
+			<attribute name="Smooth Height Map" value="true" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780673">
 			<attribute name="Collision Layer" value="2" />
@@ -67,42 +70,44 @@
 	</node>
 	<node id="4">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="Rock" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="0 25.2074 0" />
+		<attribute name="Position" value="0 25 0" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="12">
 			<attribute name="Model" value="Model;Models/Rock1/Models/Rock1.mdl" />
-			<attribute name="Material" value="Material;" />
+			<attribute name="Material" value="Material;Models/Rock1/Materials/Rock.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="CollisionShape" id="17">
 			<attribute name="Size" value="1.5 1.5 1.5" />
 			<attribute name="Model" value="Model;Models/Rock1/Models/Rock1.mdl" />
 		</component>
 		<component type="RigidBody" id="18">
-			<attribute name="Physics Position" value="0 25.2074 0" />
+			<attribute name="Physics Position" value="0 25 0" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
 	</node>
 	<node id="5">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="Rock" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-36.4385 24.1489 -3.3679" />
+		<attribute name="Position" value="-36.4385 23.7 -3.3679" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="13">
 			<attribute name="Model" value="Model;Models/Rock1/Models/Rock1.mdl" />
-			<attribute name="Material" value="Material;" />
+			<attribute name="Material" value="Material;Models/Rock1/Materials/Rock.xml" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="CollisionShape" id="19">
 			<attribute name="Size" value="1.5 1.5 1.5" />
 		</component>
 		<component type="RigidBody" id="20">
-			<attribute name="Physics Position" value="-36.4385 24.1489 -3.3679" />
+			<attribute name="Physics Position" value="-36.4385 23.7 -3.3679" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
 	</node>
@@ -139,7 +144,7 @@
 	</node>
 	<node id="16780522">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="Fire" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="10.1764 25.7038 23.214" />
 		<attribute name="Rotation" value="1 0 0 0" />
@@ -15160,16 +15165,17 @@
 	</node>
 	<node id="10">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="TEmple" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="73.3926 29.7739 8.53463" />
+		<attribute name="Position" value="73.3926 30.4 8.53463" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="23">
 			<attribute name="Model" value="Model;Models/Temple1/Cube.mdl" />
-			<attribute name="Material" value="Material;Models/Temple1/Material.001.xml;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" />
+			<attribute name="Material" value="Material;Models/Temple1/Pillar.xml;Models/Temple1/Material.001.xml" />
 			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 	</node>
 </scene>

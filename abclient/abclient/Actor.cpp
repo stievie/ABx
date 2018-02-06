@@ -134,7 +134,9 @@ void Actor::FixedUpdate(float timeStep)
 
 void Actor::Update(float timeStep)
 {
-    if (hovered_ || playerSelected_)
+    Input* input = GetSubsystem<Input>();
+    bool isLCtrlDown = input->GetScancodeDown(SDL_SCANCODE_LCTRL);
+    if (hovered_ || playerSelected_ || isLCtrlDown)
     {
         Vector3 pos = node_->GetPosition();
         IntVector2 screenPos = WorldToScreenPoint(pos);
@@ -159,7 +161,8 @@ void Actor::Update(float timeStep)
             hpBar_->SetPosition(ihpPos);
         }
     }
-    nameLabel_->SetVisible(hovered_ || playerSelected_);
+
+    nameLabel_->SetVisible(isLCtrlDown || hovered_ || playerSelected_);
     hpBar_->SetVisible(hovered_ || playerSelected_);
 }
 

@@ -59,6 +59,7 @@ private:
             return objects_[objectId];
         return SharedPtr<GameObject>();
     }
+    SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
