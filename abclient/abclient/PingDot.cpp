@@ -23,7 +23,7 @@ PingDot::PingDot(Context* context) :
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/PingTooltip.xml");
     LoadChildXML(chatFile->GetRoot());
     tooltipText_ = dynamic_cast<Text*>(GetChild("TooltipText", true));
-    SetTexture(cache->GetResource<Texture2D>("Textures/ping.png"));
+    SetTexture(cache->GetResource<Texture2D>("Textures/ping3d.png"));
     SetImageRect(PingDot::PING_NONE);
 }
 

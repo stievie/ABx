@@ -435,6 +435,12 @@ void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector
     player_->UpdateYaw();
 
     cameraNode_ = player_->cameraNode_;
+    // Add sound listener to camera node?
+    Node* listenerNode = player_->GetNode()->CreateChild("SoundListenerNode");
+    // Let's face the sound
+    listenerNode->SetDirection(Vector3(0.0f, M_HALF_PI, 0.0f));
+    SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
+    GetSubsystem<Audio>()->SetListener(soundListener);
     SetupViewport();
 }
 
@@ -515,6 +521,6 @@ void WorldLevel::CreateUI()
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();
-    pingDot_->SetSize(IntVector2(16, 16));
+    pingDot_->SetSize(IntVector2(24, 24));
     pingDot_->SetAlignment(HA_RIGHT, VA_BOTTOM);
 }

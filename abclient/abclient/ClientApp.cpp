@@ -124,6 +124,9 @@ void ClientApp::Start()
     GetSubsystem<Input>()->SetMouseVisible(true);
     GetSubsystem<Input>()->SetMouseGrabbed(false);
 
+    Audio* audio = GetSubsystem<Audio>();
+    audio->SetMasterGain(SOUND_EFFECT, 1.0f);
+
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     // Let's use the default style that comes with Urho3D.
     GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml"));
