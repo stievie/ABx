@@ -220,6 +220,7 @@ void Client::GetGameList()
 
 void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
+    // Enter the world after logging in
     if (state_ != StateSelectChar)
         return;
 
@@ -235,11 +236,13 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
 
 void Client::ChangeWorld(const std::string& charName, const std::string& map)
 {
+    // Travel
     if (state_ != StateWorld)
         return;
+    // 1. Disconnect from the current game
     Logout();
 
-    // 2. Login to game server
+    // 2. Login to game server and enter the new map
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->receiver_ = this;
 
