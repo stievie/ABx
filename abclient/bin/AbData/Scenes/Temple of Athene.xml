@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="8" />
 	<attribute name="Next Replicated Component ID" value="28" />
-	<attribute name="Next Local Node ID" value="16781522" />
-	<attribute name="Next Local Component ID" value="16782020" />
+	<attribute name="Next Local Node ID" value="16781655" />
+	<attribute name="Next Local Component ID" value="16782148" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />

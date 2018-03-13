@@ -413,6 +413,15 @@ void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantM
     SelectObject(0);
 }
 
+void WorldLevel::HandleMapGameClicked(StringHash eventType, VariantMap& eventData)
+{
+    Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
+    int index = std::atoi(sender->GetName().CString());
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    String name = String(net->GetGames()[index].name.c_str());
+    net->ChangeWorld(name);
+}
+
 Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
     Actor* result = Actor::CreateActor(id, context_, scene_);
@@ -481,6 +490,34 @@ void WorldLevel::ShowMap()
 
         // Set logo sprite size
         mapSprite_->SetSize(mapWindow_->GetSize());
+
+        FwClient* client = context_->GetSubsystem<FwClient>();
+        const Client::GameList& games = client->GetGames();
+        int i = 0;
+        for (const auto& game : games)
+        {
+            Button* button = new Button(context_);
+            button->SetMinHeight(40);
+            button->SetMinWidth(40);
+            button->SetName(String(i));    // not required
+            button->SetStyleAuto();
+            button->SetOpacity(1.0f);     // transparency
+            button->SetLayoutMode(LM_FREE);
+            button->SetAlignment(HA_CENTER, VA_TOP);
+            button->SetPosition(100, 40 * (i + 1) + 5);
+            SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(WorldLevel, HandleMapGameClicked));
+            {
+                // buttons don't have a text by itself, a text needs to be added as a child
+                Text* t = new Text(context_);
+                t->SetAlignment(HA_RIGHT, VA_CENTER);
+                t->SetName("GameName");
+                t->SetText(String(game.name.c_str()));
+                t->SetStyle("Text");
+                button->AddChild(t);
+            }
+            mapWindow_->AddChild(button);
+            i++;
+        }
 
         mapWindow_->BringToFront();
     }

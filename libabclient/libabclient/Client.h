@@ -41,6 +41,7 @@ public:
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);
     void Logout();
+    void GetGameList();
     void CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& account, const std::string& password,
@@ -48,12 +49,14 @@ public:
 
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
+    void ChangeWorld(const std::string& charName, const std::string& map);
     void Update(int timeElapsed);
 
     uint32_t GetIp() const;
 
     // Receiver
     void OnGetCharlist(const CharList& chars) override;
+    void OnGetGamelist(const GameList& games) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;

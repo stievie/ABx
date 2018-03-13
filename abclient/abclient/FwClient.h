@@ -3,6 +3,7 @@
 #include "Client.h"
 #include "Receiver.h"
 #include "Account.h"
+#include "Game.h"
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
 
@@ -23,6 +24,8 @@ private:
     Client::Client client_;
     Client::Client::ClientState lastState_;
     Client::CharList characters_;
+    Client::GameList games_;
+    String currentCharacter_;
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
@@ -45,6 +48,7 @@ public:
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
     void CreatePlayer(const String& name, const String& prof, PlayerSex sex, bool isPvp);
     void EnterWorld(const String& charName, const String& map);
+    void ChangeWorld(const String& map);
     void Logout();
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
@@ -53,6 +57,7 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const String& data);
 
     void OnGetCharlist(const Client::CharList& chars) override;
+    void OnGetGamelist(const Client::GameList& games) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
@@ -78,9 +83,17 @@ public:
             loggedIn_ = false;
         client_.state_ = state;
     }
+    const String& GetCurrentCharacter() const
+    {
+        return currentCharacter_;
+    }
     const Client::CharList& GetCharacters() const
     {
         return characters_;
+    }
+    const Client::GameList& GetGames() const
+    {
+        return games_;
     }
     int GetAvgPing() const
     {

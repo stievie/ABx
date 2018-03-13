@@ -5,6 +5,13 @@
 
 namespace DB {
 
+struct GameEntity
+{
+    uint32_t id;
+    std::string name;
+    Game::GameType type;
+};
+
 class IOGame
 {
 private:
@@ -15,6 +22,7 @@ public:
     static bool LoadGameById(Game::Game* game, uint32_t gameId);
     static std::string GetLandingGame();
     static Game::GameType GetGameType(const std::string& mapName);
+    static std::vector<GameEntity> GetGameList();
 };
 
 }

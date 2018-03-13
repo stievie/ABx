@@ -153,7 +153,16 @@ void FwClient::EnterWorld(const String& charName, const String& map)
 {
     if (loggedIn_)
     {
+        currentCharacter_ = charName;
         client_.EnterWorld(std::string(charName.CString()), std::string(map.CString()));
+    }
+}
+
+void FwClient::ChangeWorld(const String& map)
+{
+    if (loggedIn_)
+    {
+        client_.ChangeWorld(std::string(currentCharacter_.CString()), std::string(map.CString()));
     }
 }
 
@@ -201,6 +210,11 @@ void FwClient::OnGetCharlist(const Client::CharList& chars)
     currentLevel_ = "CharSelectLevel";
     eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
+}
+
+void FwClient::OnGetGamelist(const Client::GameList& games)
+{
+    games_ = games;
 }
 
 void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)

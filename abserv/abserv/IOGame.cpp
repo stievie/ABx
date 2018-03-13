@@ -65,4 +65,26 @@ Game::GameType IOGame::GetGameType(const std::string& mapName)
     return Game::GameTypeUnknown;
 }
 
+std::vector<GameEntity> IOGame::GetGameList()
+{
+    Database* db = Database::Instance();
+
+    std::vector<GameEntity> result;
+
+    std::ostringstream query;
+    std::shared_ptr<DBResult> dbResult;
+    query << "SELECT `id`, `name`, `type` FROM games";
+    for (dbResult = db->StoreQuery(query.str()); dbResult; dbResult = dbResult->Next())
+    {
+        GameEntity game
+        {
+            dbResult->GetUInt("id"),
+            dbResult->GetString("name"),
+            static_cast<Game::GameType>(dbResult->GetUInt("type"))
+        };
+        result.push_back(game);
+    }
+    return result;
+}
+
 }

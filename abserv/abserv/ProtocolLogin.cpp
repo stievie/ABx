@@ -66,6 +66,9 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     case AB::LoginProtocol::LoginAddAccountKey:
         HandleAddAccountKeyPacket(message);
         break;
+    case AB::LoginProtocol::LoginGetGameList:
+        HandleGetGameListPacket(message);
+        break;
     default:
         LOG_ERROR << Utils::ConvertIPToString(clientIp) << ": Unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
@@ -259,6 +262,30 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     );
 }
 
+void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
+{
+    std::string accountName = message.GetStringEncrypted();
+    if (accountName.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccountName);
+        return;
+    }
+    std::string password = message.GetStringEncrypted();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+
+    std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(
+            &ProtocolLogin::SendGameList, thisPtr,
+            accountName, password
+        ))
+    );
+}
+
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     Account account;
@@ -279,6 +306,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
     Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
 
+    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": " << accountName << " logged in" << std::endl;
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
@@ -294,6 +322,31 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         output->AddStringEncrypted(character.prof);
         output->AddStringEncrypted(character.prof2);
         output->AddStringEncrypted(character.lastMap);
+    }
+
+    Send(output);
+    Disconnect();
+}
+
+void ProtocolLogin::SendGameList(const std::string& accountName, const std::string& password)
+{
+    Account account;
+    bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    if (!res)
+    {
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    }
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    output->AddByte(AB::LoginProtocol::GameList);
+    const std::vector<DB::GameEntity> games = DB::IOGame::GetGameList();
+    output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
+    for (const DB::GameEntity& game : games)
+    {
+        output->Add<uint32_t>(game.id);
+        output->AddStringEncrypted(game.name);
+        output->AddByte(static_cast<uint8_t>(game.type));
     }
 
     Send(output);

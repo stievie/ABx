@@ -38,6 +38,15 @@ void Client::OnGetCharlist(const CharList& chars)
     state_ = StateSelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);
+
+    // Get list of games
+    GetGameList();
+}
+
+void Client::OnGetGamelist(const GameList& games)
+{
+    if (receiver_)
+        receiver_->OnGetGamelist(games);
 }
 
 void Client::OnEnterWorld(const std::string& mapName, uint32_t playerId)
@@ -199,6 +208,16 @@ void Client::Logout()
     }
 }
 
+void Client::GetGameList()
+{
+    if (accountName_.empty() || password_.empty())
+        return;
+
+    GetProtoLogin()->GetGameList(loginHost_, loginPort_, accountName_, password_,
+        std::bind(&Client::OnGetGamelist, this, std::placeholders::_1));
+    Connection::Run();
+}
+
 void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
     if (state_ != StateSelectChar)
@@ -210,6 +229,19 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
 
     if (protoLogin_)
         protoLogin_.reset();
+
+    protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
+}
+
+void Client::ChangeWorld(const std::string& charName, const std::string& map)
+{
+    if (state_ != StateWorld)
+        return;
+    Logout();
+
+    // 2. Login to game server
+    protoGame_ = std::make_shared<ProtocolGame>();
+    protoGame_->receiver_ = this;
 
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
 }

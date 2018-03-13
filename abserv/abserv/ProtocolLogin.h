@@ -26,6 +26,7 @@ public:
 private:
     void DisconnectClient(uint8_t error);
     void SendCharacterList(const std::string& accountName, const std::string& password);
+    void SendGameList(const std::string& accountName, const std::string& password);
     void CreateAccount(const std::string& accountName, const std::string& password,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& accountName, const std::string& password,
@@ -38,6 +39,7 @@ private:
     void HandleCreateCharacterPacket(NetworkMessage& message);
     void HandleDeleteCharacterPacket(NetworkMessage& message);
     void HandleAddAccountKeyPacket(NetworkMessage& message);
+    void HandleGetGameListPacket(NetworkMessage& message);
 };
 
 }

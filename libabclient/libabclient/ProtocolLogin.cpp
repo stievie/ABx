@@ -8,7 +8,8 @@ namespace Client {
 
 ProtocolLogin::ProtocolLogin() :
     Protocol(),
-    charlistCallback(nullptr),
+    charlistCallback_(nullptr),
+    gamelistCallback_(nullptr),
     createAccCallback_(nullptr),
     action_(ActionUnknown)
 {
@@ -24,7 +25,7 @@ void ProtocolLogin::Login(std::string& host, uint16_t port,
     port_ = port;
     accountName_ = account;
     password_ = password;
-    charlistCallback = callback;
+    charlistCallback_ = callback;
     action_ = ActionLogin;
     Connect(host, port);
 }
@@ -60,6 +61,19 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     isPvp_ = isPvp;
     createPlayerCallback_ = callback;
     action_ = ActionCreatePlayer;
+    Connect(host, port);
+}
+
+void ProtocolLogin::GetGameList(std::string& host, uint16_t port,
+    const std::string& account, const std::string& password,
+    const GamelistCallback& callback)
+{
+    host_ = host;
+    port_ = port;
+    accountName_ = account;
+    password_ = password;
+    gamelistCallback_ = callback;
+    action_ = ActionGetGameList;
     Connect(host, port);
 }
 
@@ -105,6 +119,18 @@ void ProtocolLogin::SendCreatePlayerPacket()
     Send(msg);
 }
 
+void ProtocolLogin::SendGetGameListPacket()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+    msg->Add<uint8_t>(AB::LoginProtocol::LoginGetGameList);
+    msg->AddStringEncrypted(accountName_);
+    msg->AddStringEncrypted(password_);
+    Send(msg);
+}
+
 void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
 {
     uint8_t recvByte = message->Get<uint8_t>();
@@ -131,8 +157,25 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
                 message->GetStringEncrypted()  // Lat map
             });
         }
-        if (charlistCallback)
-            charlistCallback(chars);
+        if (charlistCallback_)
+            charlistCallback_(chars);
+        break;
+    }
+    case AB::LoginProtocol::GameList:
+    {
+        GameList games;
+        int count = message->Get<uint16_t>();
+        for (int i = 0; i < count; ++i)
+        {
+            games.push_back(
+            {
+                message->Get<uint32_t>(),      // ID
+                message->GetStringEncrypted(), // Name
+                message->Get<uint8_t>()        // Type
+            });
+        }
+        if (gamelistCallback_)
+            gamelistCallback_(games);
         break;
     }
     case AB::LoginProtocol::LoginError:
@@ -177,6 +220,9 @@ void ProtocolLogin::OnConnect()
         break;
     case ActionCreatePlayer:
         SendCreatePlayerPacket();
+        break;
+    case ActionGetGameList:
+        SendGetGameListPacket();
         break;
     default:
         return;
