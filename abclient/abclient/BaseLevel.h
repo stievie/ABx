@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Player.h"
+#include "PostProcessController.h"
 
 class FwClient;
 
@@ -52,6 +53,7 @@ protected:
     SharedPtr<Node> cameraNode_;
     SharedPtr<Player> player_;
     SharedPtr<Viewport> viewport_;
+    SharedPtr<PostProcessController> postProcess_;
     /// Camera yaw angle.
     float yaw_;
     /// Camera pitch angle.

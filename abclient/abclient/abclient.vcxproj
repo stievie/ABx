@@ -487,6 +487,7 @@
     <ClCompile Include="OutpostLevel.cpp" />
     <ClCompile Include="PingDot.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PostProcessController.cpp" />
     <ClCompile Include="PvpCombatLevel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -518,6 +519,7 @@
     <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="PingDot.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PostProcessController.h" />
     <ClInclude Include="PvpCombatLevel.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />

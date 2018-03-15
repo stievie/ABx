@@ -96,11 +96,15 @@ void BaseLevel::SetupViewport()
     viewport_ = new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>());
     renderer->SetViewport(0, viewport_);
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    postProcess_ = scene_->CreateComponent<PostProcessController>();
+    postProcess_->AddViewport(viewport_, true);
+    postProcess_->SetUseFXAA3(true);
+
+    /*    ResourceCache* cache = GetSubsystem<ResourceCache>();
     SharedPtr<RenderPath> effectRenderPath = viewport_->GetRenderPath()->Clone();
     effectRenderPath->Append(cache->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
     effectRenderPath->SetEnabled("FXAA2", true);
-    viewport_->SetRenderPath(effectRenderPath);
+    viewport_->SetRenderPath(effectRenderPath);*/
 }
 
 void BaseLevel::CreateLogo()
