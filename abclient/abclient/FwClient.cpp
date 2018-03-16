@@ -162,7 +162,7 @@ void FwClient::ChangeWorld(const String& map)
 {
     if (loggedIn_)
     {
-        client_.ChangeWorld(std::string(currentCharacter_.CString()), std::string(map.CString()));
+        client_.EnterWorld(std::string(currentCharacter_.CString()), std::string(map.CString()));
     }
 }
 
@@ -223,7 +223,8 @@ void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)
     playerId_ = playerId;
     VariantMap& eData = GetEventDataMap();
     currentLevel_ = "OutpostLevel";
-    eData[AbEvents::ED_MAP_NAME] = String(mapName.c_str());
+    currentMap_ = String(mapName.c_str());
+    eData[AbEvents::ED_MAP_NAME] = currentMap_;
     eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 

@@ -18,6 +18,7 @@ class FwClient : public Object, public Client::Receiver
     URHO3D_OBJECT(FwClient, Object);
 private:
     String currentLevel_;
+    String currentMap_;
     bool levelReady_;
     Vector<EventItem> queuedEvents_;
     uint32_t playerId_;

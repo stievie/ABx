@@ -49,7 +49,6 @@ public:
 
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
-    void ChangeWorld(const std::string& charName, const std::string& map);
     void Update(int timeElapsed);
 
     uint32_t GetIp() const;

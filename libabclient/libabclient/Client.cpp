@@ -220,31 +220,21 @@ void Client::GetGameList()
 
 void Client::EnterWorld(const std::string& charName, const std::string& map)
 {
-    // Enter the world after logging in
-    if (state_ != StateSelectChar)
+    // Enter or changing the world
+    if (state_ != StateSelectChar && state_ != StateWorld)
         return;
+
+    if (state_ == StateWorld)
+        // We are already logged in to some world so we must logout
+        Logout();
 
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
     protoGame_->receiver_ = this;
 
-    if (protoLogin_)
+    if (state_ == StateSelectChar && protoLogin_)
+        // If we came from the select character scene
         protoLogin_.reset();
-
-    protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
-}
-
-void Client::ChangeWorld(const std::string& charName, const std::string& map)
-{
-    // Travel
-    if (state_ != StateWorld)
-        return;
-    // 1. Disconnect from the current game
-    Logout();
-
-    // 2. Login to game server and enter the new map
-    protoGame_ = std::make_shared<ProtocolGame>();
-    protoGame_->receiver_ = this;
 
     protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
 }
