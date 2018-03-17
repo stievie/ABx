@@ -492,7 +492,7 @@ void WorldLevel::ShowMap()
         mapSprite_->SetSize(mapWindow_->GetSize());
 
         FwClient* client = context_->GetSubsystem<FwClient>();
-        const Client::GameList& games = client->GetGames();
+        const AB::Data::GameList& games = client->GetGames();
         int i = 0;
         for (const auto& game : games)
         {

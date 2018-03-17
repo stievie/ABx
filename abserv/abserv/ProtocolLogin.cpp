@@ -4,7 +4,7 @@
 #include "Bans.h"
 #include "Dispatcher.h"
 #include <functional>
-#include "Account.h"
+#include <AB/AccountData.h>
 #include "IOAccount.h"
 #include "ConfigManager.h"
 #include <AB/ProtocolCodes.h>
@@ -169,8 +169,8 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
 
-    Game::PlayerSex sex = static_cast<Game::PlayerSex>(message.GetByte());
-    if (sex == Game::PlayerSexUnknown || sex > Game::PlayerSexMale)
+    AB::Data::CreatureSex sex = static_cast<AB::Data::CreatureSex>(message.GetByte());
+    if (sex == AB::Data::CreatureSex::CreatureSexFemale || sex > AB::Data::CreatureSex::CreatureSexMale)
     {
         DisconnectClient(AB::Errors::InvalidPlayerSex);
         return;
@@ -288,7 +288,7 @@ void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
 
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
-    Account account;
+    AB::Data::AccountData account;
     bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);
     if (!res)
     {
@@ -314,13 +314,14 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));
     output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots_));
     output->Add<uint16_t>(static_cast<uint16_t>(account.characters_.size()));
-    for (const AccountCharacter& character : account.characters_)
+    for (const AB::Data::CharacterData& character : account.characters_)
     {
         output->Add<uint32_t>(character.id);
         output->Add<uint16_t>(character.level);
         output->AddStringEncrypted(character.name);
         output->AddStringEncrypted(character.prof);
         output->AddStringEncrypted(character.prof2);
+        output->AddByte(static_cast<uint8_t>(character.sex));
         output->AddStringEncrypted(character.lastMap);
     }
 
@@ -330,7 +331,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
 void ProtocolLogin::SendGameList(const std::string& accountName, const std::string& password)
 {
-    Account account;
+    AB::Data::AccountData account;
     bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);
     if (!res)
     {
@@ -340,9 +341,9 @@ void ProtocolLogin::SendGameList(const std::string& accountName, const std::stri
     }
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::LoginProtocol::GameList);
-    const std::vector<DB::GameEntity> games = DB::IOGame::GetGameList();
+    const std::vector<AB::Data::GameData> games = DB::IOGame::GetGameList();
     output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
-    for (const DB::GameEntity& game : games)
+    for (const AB::Data::GameData& game : games)
     {
         output->Add<uint32_t>(game.id);
         output->AddStringEncrypted(game.name);
@@ -386,9 +387,9 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 }
 
 void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::string& password,
-    std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp)
+    std::string& name, const std::string& prof, AB::Data::CreatureSex sex, bool isPvp)
 {
-    Account account;
+    AB::Data::AccountData account;
     bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
     if (!authRes)
     {
@@ -436,7 +437,7 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
 void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::string& password,
     const std::string& accKey)
 {
-    Account account;
+    AB::Data::AccountData account;
     bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
     if (!authRes)
     {
@@ -479,7 +480,7 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
 void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::string& password,
     uint32_t playerId)
 {
-    Account account;
+    AB::Data::AccountData account;
     bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
     if (!authRes)
     {

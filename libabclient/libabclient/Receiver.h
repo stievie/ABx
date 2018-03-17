@@ -3,8 +3,9 @@
 #include <system_error>
 #include <stdint.h>
 #include <string>
-#include "Account.h"
-#include "Game.h"
+#include <AB/AccountData.h>
+#include <AB/CharacterData.h>
+#include <AB/GameData.h>
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
@@ -14,8 +15,8 @@ namespace Client {
 class Receiver
 {
 public:
-    virtual void OnGetCharlist(const CharList& chars) = 0;
-    virtual void OnGetGamelist(const GameList& games) = 0;
+    virtual void OnGetCharlist(const AB::Data::CharacterList& chars) = 0;
+    virtual void OnGetGamelist(const AB::Data::GameList& games) = 0;
     virtual void OnEnterWorld(const std::string& mapName, uint32_t playerId) = 0;
     virtual void OnNetworkError(const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;

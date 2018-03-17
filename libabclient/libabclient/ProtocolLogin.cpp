@@ -143,19 +143,19 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             gameHost_ = host;
         gamePort_ = message->Get<uint16_t>();
         /* int charSlots = */ message->Get<uint16_t>();
-        CharList chars;
+        AB::Data::CharacterList chars;
         int count = message->Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {
-            chars.push_back(
-            {
-                message->Get<uint32_t>(),      // ID
-                message->Get<uint16_t>(),      // Level
-                message->GetStringEncrypted(), // Name
-                message->GetStringEncrypted(), // Profession
-                message->GetStringEncrypted(), // Profession 2
-                message->GetStringEncrypted()  // Lat map
-            });
+            AB::Data::CharacterData cData;
+            cData.id = message->Get<uint32_t>();
+            cData.level = message->Get<uint16_t>();
+            cData.name = message->GetStringEncrypted();
+            cData.prof = message->GetStringEncrypted();
+            cData.prof2 = message->GetStringEncrypted();
+            cData.sex = static_cast<AB::Data::CreatureSex>(message->Get<uint8_t>());
+            cData.lastMap = message->GetStringEncrypted();
+            chars.push_back(cData);
         }
         if (charlistCallback_)
             charlistCallback_(chars);
@@ -163,7 +163,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     }
     case AB::LoginProtocol::GameList:
     {
-        GameList games;
+        AB::Data::GameList games;
         int count = message->Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {

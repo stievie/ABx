@@ -202,7 +202,7 @@ void FwClient::Command(AB::GameProtocol::CommandTypes type, const String& data)
         client_.Command(type, std::string(data.CString()));
 }
 
-void FwClient::OnGetCharlist(const Client::CharList& chars)
+void FwClient::OnGetCharlist(const AB::Data::CharacterList& chars)
 {
     levelReady_ = false;
     characters_ = chars;
@@ -212,7 +212,7 @@ void FwClient::OnGetCharlist(const Client::CharList& chars)
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
 
-void FwClient::OnGetGamelist(const Client::GameList& games)
+void FwClient::OnGetGamelist(const AB::Data::GameList& games)
 {
     games_ = games;
 }

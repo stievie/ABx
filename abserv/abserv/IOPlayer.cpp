@@ -37,10 +37,10 @@ bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result
     player->data_.accountId = result->GetUInt("account_id");
     player->data_.name = result->GetString("name");
     player->data_.pvp = result->GetUInt("pvp") != 0;
-    player->data_.level = result->GetUInt("level");
+    player->data_.level = static_cast<uint16_t>(result->GetUInt("level"));
     player->data_.xp = result->GetULong("experience");
     player->data_.skillPoints = result->GetUInt("skillpoints");
-    player->data_.sex = static_cast<Game::PlayerSex>(result->GetUInt("sex"));
+    player->data_.sex = static_cast<AB::Data::CreatureSex>(result->GetUInt("sex"));
     if (!result->IsNull("last_map"))
         player->data_.lastMap = result->GetString("last_map");
     else
@@ -118,7 +118,7 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 }
 
 IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
-    std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp)
+    std::string& name, const std::string& prof, AB::Data::CreatureSex sex, bool isPvp)
 {
     Database* db = Database::Instance();
     std::ostringstream query;

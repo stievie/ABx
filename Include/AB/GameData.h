@@ -2,16 +2,17 @@
 
 #include <vector>
 
-namespace Client
-{
+namespace AB {
+namespace Data {
 
-struct Game
+struct GameData
 {
     uint32_t id;
     std::string name;
     uint8_t type;
 };
 
-typedef std::vector<Game> GameList;
+typedef std::vector<GameData> GameList;
 
+}
 }

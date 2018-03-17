@@ -2,8 +2,9 @@
 
 #include "Client.h"
 #include "Receiver.h"
-#include "Account.h"
-#include "Game.h"
+#include <AB/AccountData.h>
+#include <AB/CharacterData.h>
+#include <AB/GameData.h>
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
 
@@ -24,8 +25,8 @@ private:
     uint32_t playerId_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
-    Client::CharList characters_;
-    Client::GameList games_;
+    AB::Data::CharacterList characters_;
+    AB::Data::GameList games_;
     String currentCharacter_;
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -57,8 +58,8 @@ public:
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandTypes type, const String& data);
 
-    void OnGetCharlist(const Client::CharList& chars) override;
-    void OnGetGamelist(const Client::GameList& games) override;
+    void OnGetCharlist(const AB::Data::CharacterList& chars) override;
+    void OnGetGamelist(const AB::Data::GameList& games) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
@@ -88,11 +89,11 @@ public:
     {
         return currentCharacter_;
     }
-    const Client::CharList& GetCharacters() const
+    const AB::Data::CharacterList& GetCharacters() const
     {
         return characters_;
     }
-    const Client::GameList& GetGames() const
+    const AB::Data::GameList& GetGames() const
     {
         return games_;
     }

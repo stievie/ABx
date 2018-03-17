@@ -5,33 +5,17 @@
 #include "Game.h"
 #include "Effect.h"
 #include "Creature.h"
+#include <AB/CharacterData.h>
 
 namespace Game {
 
 class PlayerManager;
 class MailBox;
 
-enum PlayerSex
-{
-    PlayerSexUnknown = 0,
-    PlayerSexFemale,
-    PlayerSexMale
-};
-
 /// DB Data
-struct PlayerData
+struct PlayerData : public AB::Data::CharacterData
 {
-    uint32_t id;
     uint32_t accountId;
-    /// Character name
-    std::string name;
-    /// PvP only character
-    bool pvp;
-    uint32_t level;
-    uint64_t xp;
-    uint32_t skillPoints;
-    PlayerSex sex;
-    std::string lastMap;
 };
 
 class Player final : public Creature

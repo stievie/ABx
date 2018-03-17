@@ -158,7 +158,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Account.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Bans.h" />
@@ -244,7 +243,6 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Account.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="Bans.cpp" />

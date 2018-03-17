@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
 #include "FwClient.h"
-#include "Account.h"
+#include <AB/AccountData.h>
+#include <AB/CharacterData.h>
 #include "AbEvents.h"
 
 #include <Urho3D/DebugNew.h>
@@ -58,7 +59,7 @@ void CharSelectLevel::CreateUI()
     window->SetStyleAuto();
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-    const Client::CharList& chars = client->GetCharacters();
+    const AB::Data::CharacterList& chars = client->GetCharacters();
     int i = 0;
     for (const auto& ch : chars)
     {

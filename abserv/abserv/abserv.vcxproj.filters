@@ -111,9 +111,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Account.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="DatabaseMysql.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -351,9 +348,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Account.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseMysql.cpp">

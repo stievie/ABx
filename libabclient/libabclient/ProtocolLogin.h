@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Protocol.h"
-#include "Account.h"
-#include "Game.h"
+#include <AB/AccountData.h>
+#include <AB/GameData.h>
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
 #include "Structs.h"
@@ -16,8 +16,8 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
-    typedef std::function<void(const CharList& chars)> CharlistCallback;
-    typedef std::function<void(const GameList& chars)> GamelistCallback;
+    typedef std::function<void(const AB::Data::CharacterList& chars)> CharlistCallback;
+    typedef std::function<void(const AB::Data::GameList& chars)> GamelistCallback;
     typedef std::function<void()> CreateAccountCallback;
     typedef std::function<void(const std::string& name, const std::string& map)> CreatePlayerCallback;
 private:

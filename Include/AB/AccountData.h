@@ -1,5 +1,11 @@
 #pragma once
 
+#include <vector>
+#include <AB/CharacterData.h>
+
+namespace AB {
+namespace Data {
+
 enum AccountType : uint8_t
 {
     AccountTypeNormal = 1,
@@ -9,22 +15,12 @@ enum AccountType : uint8_t
     AccountTypeGod = 5
 };
 
-struct AccountCharacter
-{
-    uint32_t id;
-    uint16_t level;
-    std::string name;
-    std::string prof;
-    std::string prof2;
-    std::string lastMap;
-};
-
-class Account
+class AccountData
 {
 public:
-    Account() = default;
+    AccountData() = default;
 
-    std::vector<AccountCharacter> characters_;
+    CharacterList characters_;
     std::string name_;
     std::string key_;
     uint32_t id_ = 0;
@@ -33,3 +29,6 @@ public:
     AccountType type_ = AccountTypeNormal;
     bool loggedIn_ = false;
 };
+
+}
+}

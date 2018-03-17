@@ -60,9 +60,6 @@
     <ClInclude Include="Random.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Account.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Receiver.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -70,9 +67,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Structs.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -27,7 +27,7 @@ Client::~Client()
     Connection::Terminate();
 }
 
-void Client::OnGetCharlist(const CharList& chars)
+void Client::OnGetCharlist(const AB::Data::CharacterList& chars)
 {
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
@@ -43,7 +43,7 @@ void Client::OnGetCharlist(const CharList& chars)
     GetGameList();
 }
 
-void Client::OnGetGamelist(const GameList& games)
+void Client::OnGetGamelist(const AB::Data::GameList& games)
 {
     if (receiver_)
         receiver_->OnGetGamelist(games);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Account.h"
+#include <AB/AccountData.h>
 
 namespace DB {
 
@@ -31,9 +31,9 @@ public:
         const std::string& email, const std::string& accKey);
     static Result AddAccountKey(const std::string& name, const std::string& pass,
         const std::string& accKey);
-    static bool LoginServerAuth(const std::string& name, const std::string& pass, Account& account);
+    static bool LoginServerAuth(const std::string& name, const std::string& pass, AB::Data::AccountData& account);
     static uint32_t GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName);
-    static bool Save(const Account& account);
+    static bool Save(const AB::Data::AccountData& account);
 };
 
 }

@@ -54,7 +54,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     query << db->EscapeString(name) << ", ";
     query << db->EscapeString(passwordHash) << ", ";
     query << db->EscapeString(email) << ", ";
-    query << static_cast<int>(AccountTypeNormal) << ", ";
+    query << static_cast<int>(AB::Data::AccountTypeNormal) << ", ";
     query << "0, ";
     query << Utils::AbTick();
     query << ")";
@@ -155,7 +155,7 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
     return ResultOK;
 }
 
-bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, Account& account)
+bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, AB::Data::AccountData& account)
 {
     Database* db = Database::Instance();
 
@@ -171,27 +171,30 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
 
     account.id_ = result->GetUInt("id");
     account.name_ = result->GetString("name");
-    account.type_ = static_cast<AccountType>(result->GetInt("type"));
+    account.type_ = static_cast<AB::Data::AccountType>(result->GetInt("type"));
     account.charSlots_ = result->GetUInt("char_slots");
     account.characters_.clear();
 
     std::string landingGame = IOGame::GetLandingGame();
     query.str("");
-    query << "SELECT `id`, `level`, `name`, `profession`, `profession2`, `last_map` FROM `players` WHERE `deleted` = 0 AND `account_id` = " << account.id_;
+    query << "SELECT `id`, `level`, `experience`, `skillpoints`, `name`, `profession`, `profession2`, `pvp`, ";
+    query << "`sex`, `last_map` FROM `players` WHERE `deleted` = 0 AND `account_id` = " << account.id_;
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         std::string lastMap = result->GetString("last_map");
         if (lastMap.empty())
             lastMap = landingGame;
-        AccountCharacter character
-        {
-            result->GetUInt("id"),
-            static_cast<uint16_t>(result->GetUInt("level")),
-            result->GetString("name"),
-            result->GetString("profession"),
-            result->GetString("profession2"),
-            lastMap
-        };
+        AB::Data::CharacterData character;
+        character.id = result->GetUInt("id");
+        character.level = static_cast<uint16_t>(result->GetUInt("level"));
+        character.name = result->GetString("name");
+        character.prof = result->GetString("profession");
+        character.prof2 = result->GetString("profession2");
+        character.sex = static_cast<AB::Data::CreatureSex>(result->GetUInt("sex"));
+        character.pvp = result->GetUInt("pvp") != 0;
+        character.xp = result->GetULong("experience");
+        character.skillPoints = result->GetUInt("skillpoints");
+        character.lastMap = lastMap;
         account.characters_.push_back(character);
     }
     account.loggedIn_ = true;
@@ -229,7 +232,7 @@ uint32_t IOAccount::GameWorldAuth(const std::string& name, std::string& pass, co
     return accountId;
 }
 
-bool IOAccount::Save(const Account& account)
+bool IOAccount::Save(const AB::Data::AccountData& account)
 {
     return true;
     /*

@@ -30,7 +30,7 @@ private:
     void CreateAccount(const std::string& accountName, const std::string& password,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& accountName, const std::string& password,
-        std::string& name, const std::string& prof, Game::PlayerSex sex, bool isPvp);
+        std::string& name, const std::string& prof, AB::Data::CreatureSex sex, bool isPvp);
     void AddAccountKey(const std::string& accountName, const std::string& password,
         const std::string& accKey);
     void DeletePlayer(const std::string& accountName, const std::string& password, uint32_t playerId);

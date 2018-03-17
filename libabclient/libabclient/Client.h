@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Account.h"
+#include <AB/AccountData.h>
 #include "Receiver.h"
 #include "PropStream.h"
 #include "Structs.h"
@@ -54,8 +54,8 @@ public:
     uint32_t GetIp() const;
 
     // Receiver
-    void OnGetCharlist(const CharList& chars) override;
-    void OnGetGamelist(const GameList& games) override;
+    void OnGetCharlist(const AB::Data::CharacterList& chars) override;
+    void OnGetGamelist(const AB::Data::GameList& games) override;
     void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
