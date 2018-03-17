@@ -341,7 +341,7 @@ void ProtocolLogin::SendGameList(const std::string& accountName, const std::stri
     }
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::LoginProtocol::GameList);
-    const std::vector<AB::Data::GameData> games = DB::IOGame::GetGameList();
+    const std::vector<AB::Data::GameData> games = DB::IOGame::GetGameList(AB::Data::GameType::GameTypeOutpost);
     output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
     for (const AB::Data::GameData& game : games)
     {

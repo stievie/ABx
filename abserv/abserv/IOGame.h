@@ -15,8 +15,8 @@ public:
     static bool LoadGameByName(Game::Game* game, const std::string& name);
     static bool LoadGameById(Game::Game* game, uint32_t gameId);
     static std::string GetLandingGame();
-    static Game::GameType GetGameType(const std::string& mapName);
-    static std::vector<AB::Data::GameData> GetGameList();
+    static AB::Data::GameType GetGameType(const std::string& mapName);
+    static std::vector<AB::Data::GameData> GetGameList(AB::Data::GameType type);
 };
 
 }

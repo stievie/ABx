@@ -14,7 +14,7 @@ bool IOGame::LoadGame(Game::Game* game, std::shared_ptr<DBResult> result)
     game->map_->data_.name = result->GetString("name");
     game->map_->data_.directory = result->GetString("directory");
     game->data_.scriptFile = result->GetString("script_file");
-    game->data_.type = static_cast<Game::GameType>(result->GetUInt("id"));
+    game->data_.type = static_cast<AB::Data::GameType>(result->GetUInt("id"));
 
     return true;
 }
@@ -53,7 +53,7 @@ std::string IOGame::GetLandingGame()
     return "";
 }
 
-Game::GameType IOGame::GetGameType(const std::string& mapName)
+AB::Data::GameType IOGame::GetGameType(const std::string& mapName)
 {
     Database* db = Database::Instance();
 
@@ -61,11 +61,11 @@ Game::GameType IOGame::GetGameType(const std::string& mapName)
     query << "SELECT `type` FROM `games` WHERE `name` = " << db->EscapeString(mapName);
     std::shared_ptr<DBResult> result = db->StoreQuery(query.str());
     if (result)
-        return static_cast<Game::GameType>(result->GetUInt("type"));
-    return Game::GameTypeUnknown;
+        return static_cast<AB::Data::GameType>(result->GetUInt("type"));
+    return AB::Data::GameType::GameTypeUnknown;
 }
 
-std::vector<AB::Data::GameData> IOGame::GetGameList()
+std::vector<AB::Data::GameData> IOGame::GetGameList(AB::Data::GameType type)
 {
     Database* db = Database::Instance();
 
@@ -74,13 +74,15 @@ std::vector<AB::Data::GameData> IOGame::GetGameList()
     std::ostringstream query;
     std::shared_ptr<DBResult> dbResult;
     query << "SELECT `id`, `name`, `type` FROM games";
+    if (type != AB::Data::GameType::GameTypeUnknown)
+        query << " WHERE `type` = " << static_cast<uint32_t>(type);
     for (dbResult = db->StoreQuery(query.str()); dbResult; dbResult = dbResult->Next())
     {
         AB::Data::GameData game
         {
             dbResult->GetUInt("id"),
             dbResult->GetString("name"),
-            static_cast<Game::GameType>(dbResult->GetUInt("type"))
+            static_cast<AB::Data::GameType>(dbResult->GetUInt("type"))
         };
         result.push_back(game);
     }

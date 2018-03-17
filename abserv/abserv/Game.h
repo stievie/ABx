@@ -7,40 +7,31 @@
 #include "NetworkMessage.h"
 #include "GameState.h"
 #include "Chat.h"
+#include <AB/GameData.h>
 
 namespace Game {
 
 class Player;
 class Npc;
 
-enum GameType
+struct GameData : public AB::Data::GameData
 {
-    GameTypeUnknown = 0,
-    GameTypeOutpost = 1,
-    GameTypePvPCombat,
-    GameTypeExploreable,
-    GameTypeMission,
-};
-
-struct GameData
-{
-    GameType type;
     std::string scriptFile;
 };
 
 class Game : public std::enable_shared_from_this<Game>
 {
 public:
-    enum GameLoopState
+    enum ExecutionState
     {
-        GameStateStartup,
-        GameStateRunning,
-        GameStateShutdown,
-        GameStateTerminated
+        ExecutionStateStartup,
+        ExecutionStateRunning,
+        ExecutionStateShutdown,
+        ExecutionStateTerminated
     };
 private:
     std::recursive_mutex lock_;
-    GameLoopState state_;
+    ExecutionState state_;
     /// Game Tick -> Game State
     std::map<int64_t, std::unique_ptr<GameState>> gameStates_;
     std::vector<std::shared_ptr<GameObject>> objects_;
@@ -86,9 +77,9 @@ public:
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 
-    GameLoopState GetState() const { return state_; }
+    ExecutionState GetState() const { return state_; }
     const kaguya::State& GetLuaState() const { return luaState_; }
-    void SetState(GameLoopState state);
+    void SetState(ExecutionState state);
     void Load(const std::string& mapName);
     /// Send spawn message for all existing objects
     void SendSpawnAll(uint32_t playerId);

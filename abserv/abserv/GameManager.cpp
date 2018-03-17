@@ -33,7 +33,7 @@ void GameManager::Stop()
         }
         for (const auto& g : games_)
         {
-            g.second->SetState(Game::GameStateTerminated);
+            g.second->SetState(Game::ExecutionStateTerminated);
         }
     }
 }
@@ -51,7 +51,7 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapName)
         games_[game->id_] = game;
         maps_[mapName].push_back(game.get());
     }
-    game->SetState(Game::GameStateStartup);
+    game->SetState(Game::ExecutionStateStartup);
     game->Load(mapName);
     return game;
 }
@@ -84,7 +84,7 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
     for (const auto& g : it->second)
     {
         if (g->GetPlayerCount() < GAME_MAX_PLAYER &&
-            (g->GetState() == Game::GameStateRunning || g->GetState() == Game::GameStateStartup))
+            (g->GetState() == Game::ExecutionStateRunning || g->GetState() == Game::ExecutionStateStartup))
         {
             const auto git = games_.find(g->id_);
             return (*git).second;
@@ -126,7 +126,7 @@ void GameManager::CleanGames()
     for (const auto& g : games_)
     {
         if (g.second->GetPlayerCount() == 0)
-            g.second->SetState(Game::GameStateTerminated);
+            g.second->SetState(Game::ExecutionStateTerminated);
     }
 }
 

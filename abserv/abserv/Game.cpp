@@ -23,7 +23,7 @@
 namespace Game {
 
 Game::Game() :
-    state_(GameStateTerminated),
+    state_(ExecutionStateTerminated),
     lastUpdate_(0),
     startTime_(0)
 {
@@ -41,7 +41,7 @@ Game::~Game()
 
 void Game::Start()
 {
-    if (state_ == GameStateStartup)
+    if (state_ == ExecutionStateStartup)
     {
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
@@ -49,7 +49,7 @@ void Game::Start()
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
 //        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
-        SetState(GameStateRunning);
+        SetState(ExecutionStateRunning);
 
         if (!queuedPlayers_.empty())
         {
@@ -73,7 +73,7 @@ void Game::Stop()
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Stopping game " << id_ << ", " << map_->data_.name << std::endl;
 #endif // DEBUG_GAME
-    SetState(GameStateTerminated);
+    SetState(ExecutionStateTerminated);
 }
 
 void Game::Update()
@@ -105,13 +105,13 @@ void Game::Update()
 
     switch (state_)
     {
-    case GameStateRunning:
-    case GameStateShutdown:
+    case ExecutionStateRunning:
+    case ExecutionStateShutdown:
     {
-        if (state_ == GameStateShutdown && GetPlayerCount() == 0)
+        if (state_ == ExecutionStateShutdown && GetPlayerCount() == 0)
         {
             // If all players left the game, delete it
-            SetState(GameStateTerminated);
+            SetState(ExecutionStateTerminated);
             luaState_["onStop"](this);
         }
 
@@ -126,7 +126,7 @@ void Game::Update()
 
         break;
     }
-    case GameStateTerminated:
+    case ExecutionStateTerminated:
         // Delete this game
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(500, std::bind(&GameManager::DeleteGameTask, &GameManager::Instance, id_))
@@ -240,7 +240,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     return result;
 }
 
-void Game::SetState(GameLoopState state)
+void Game::SetState(ExecutionState state)
 {
     if (state_ != state)
     {
@@ -259,7 +259,7 @@ void Game::InternalLoad()
         return;
     }
 
-    if (state_ == GameStateStartup)
+    if (state_ == ExecutionStateStartup)
         // Loading done -> start it
         Start();
 }
@@ -360,7 +360,7 @@ void Game::PlayerJoin(uint32_t playerId)
             Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
         );
 
-        if (GetState() == GameStateRunning)
+        if (GetState() == ExecutionStateRunning)
         {
             // In worst case (i.e. the game data is still loading): will be sent as
             // soon as the game runs and entered the Update loop.
