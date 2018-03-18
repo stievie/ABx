@@ -22,12 +22,11 @@ namespace Urho3D
 //typedef Pair<const String&, const String&> TagEffectPair;
 
 using namespace Urho3D;
-using TagEffectPair = Pair< String,  String>;
+using TagEffectPair = Pair<String, String>;
 
 class PostProcessController : public Component
 {
     URHO3D_OBJECT(PostProcessController, Component);
-
 public:
     PostProcessController(Context* context);
     ~PostProcessController();

@@ -102,6 +102,9 @@
     <ClInclude Include="PostProcessController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MapWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -174,6 +177,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PostProcessController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MapWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

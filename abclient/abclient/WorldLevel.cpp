@@ -221,10 +221,10 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
+void WorldLevel::SetupViewport()
 {
-    UNREFERENCED_PARAMETER(eventType);
-    UNREFERENCED_PARAMETER(eventData);
+    BaseLevel::SetupViewport();
+//    postProcess_->SetUseAutoExposure(true);
 }
 
 void WorldLevel::CreateScene()
@@ -413,15 +413,6 @@ void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantM
     SelectObject(0);
 }
 
-void WorldLevel::HandleMapGameClicked(StringHash eventType, VariantMap& eventData)
-{
-    Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
-    int index = std::atoi(sender->GetName().CString());
-    FwClient* net = context_->GetSubsystem<FwClient>();
-    String name = String(net->GetGames()[index].name.c_str());
-    net->ChangeWorld(name);
-}
-
 Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
     Actor* result = Actor::CreateActor(id, context_, scene_);
@@ -457,69 +448,7 @@ void WorldLevel::ShowMap()
 {
     if (!mapWindow_)
     {
-        ResourceCache* cache = GetSubsystem<ResourceCache>();
-        Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/map.jpg");
-        if (!logoTexture)
-            return;
-
-        mapWindow_ = new Window(context_);
-        // Make the window a child of the root element, which fills the whole screen.
-        GetSubsystem<UI>()->GetRoot()->AddChild(mapWindow_);
-        mapWindow_->SetSize(GetSubsystem<Graphics>()->GetWidth(), GetSubsystem<Graphics>()->GetHeight());
-        mapWindow_->SetLayout(LM_FREE);
-        // Urho has three layouts: LM_FREE, LM_HORIZONTAL and LM_VERTICAL.
-        // In LM_FREE the child elements of this window can be arranged freely.
-        // In the other two they are arranged as a horizontal or vertical list.
-
-        // Center this window in it's parent element.
-        mapWindow_->SetAlignment(HA_CENTER, VA_CENTER);
-        // Black color
-        mapWindow_->SetColor(Color::BLACK);
-        mapWindow_->SetOpacity(0.7f);
-        // Make it top most
-        mapWindow_->SetBringToBack(false);
-
-        mapSprite_ = mapWindow_->CreateChild<Sprite>();
-
-        // Set logo sprite texture
-        mapSprite_->SetTexture(logoTexture);
-        mapSprite_->SetPosition(0, 0);
-
-        int textureWidth = mapSprite_->GetWidth();
-        int textureHeight = mapSprite_->GetHeight();
-
-        // Set logo sprite size
-        mapSprite_->SetSize(mapWindow_->GetSize());
-
-        FwClient* client = context_->GetSubsystem<FwClient>();
-        const AB::Data::GameList& games = client->GetGames();
-        int i = 0;
-        for (const auto& game : games)
-        {
-            Button* button = new Button(context_);
-            button->SetMinHeight(40);
-            button->SetMinWidth(40);
-            button->SetName(String(i));    // not required
-            button->SetStyleAuto();
-            button->SetOpacity(1.0f);     // transparency
-            button->SetLayoutMode(LM_FREE);
-            button->SetAlignment(HA_CENTER, VA_TOP);
-            button->SetPosition(100, 40 * (i + 1) + 5);
-            SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(WorldLevel, HandleMapGameClicked));
-            {
-                // buttons don't have a text by itself, a text needs to be added as a child
-                Text* t = new Text(context_);
-                t->SetAlignment(HA_RIGHT, VA_CENTER);
-                t->SetName("GameName");
-                t->SetText(String(game.name.c_str()));
-                t->SetStyle("Text");
-                button->AddChild(t);
-            }
-            mapWindow_->AddChild(button);
-            i++;
-        }
-
-        mapWindow_->BringToFront();
+        mapWindow_ = new MapWindow(context_);
     }
     mapWindow_->SetVisible(true);
 }

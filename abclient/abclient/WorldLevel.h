@@ -10,6 +10,7 @@
 #include "PingDot.h"
 #include "TargetWindow.h"
 #include "MailWindow.h"
+#include "MapWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI.
@@ -27,21 +28,20 @@ protected:
     SharedPtr<GameMenu> gameMenu_;
     SharedPtr<TargetWindow> targetWindow_;
     SharedPtr<MailWindow> mailWindow_;
+    SharedPtr<MapWindow> mapWindow_;
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
     /// Urho3D NodeIDs -> AB Object IDs given from the server
     HashMap<uint32_t, uint32_t> nodeIds_;
     WeakPtr<GameObject> hoveredObject_;
-    SharedPtr<Window> mapWindow_;
-    SharedPtr<Sprite> mapSprite_;
     void ShowMap();
     void HideMap();
     void ToggleMap();
     void CreateUI() override;
     void SubscribeToEvents() override;
     void Update(StringHash eventType, VariantMap& eventData) override;
-    void PostUpdate(StringHash eventType, VariantMap& eventData) override;
+    void SetupViewport() override;
     virtual void CreateScene();
 private:
     IntVector2 mouseDownPos_;
@@ -75,7 +75,6 @@ private:
     void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleMenuMail(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
-    void HandleMapGameClicked(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
         const Quaternion& rot, PropReadStream& data);

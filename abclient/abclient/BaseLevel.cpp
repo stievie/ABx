@@ -99,12 +99,6 @@ void BaseLevel::SetupViewport()
     postProcess_ = scene_->CreateComponent<PostProcessController>();
     postProcess_->AddViewport(viewport_, true);
     postProcess_->SetUseFXAA3(true);
-
-    /*    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    SharedPtr<RenderPath> effectRenderPath = viewport_->GetRenderPath()->Clone();
-    effectRenderPath->Append(cache->GetResource<XMLFile>("PostProcess/FXAA2.xml"));
-    effectRenderPath->SetEnabled("FXAA2", true);
-    viewport_->SetRenderPath(effectRenderPath);*/
 }
 
 void BaseLevel::CreateLogo()
