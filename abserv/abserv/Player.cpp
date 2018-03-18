@@ -68,16 +68,20 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
                 message.AddString(std::to_string(res) + ":" + std::to_string(max));
             }
         }
+        break;
     }
     case AB::GameProtocol::CommandTypeAge:
     {
         uint32_t playTime = data_.onlineTime + static_cast<uint32_t>((Utils::AbTick() - loginTime_) / 1000);
         uint32_t age = static_cast<uint32_t>(Utils::AbTick() - data_.creation);
 
-        message.AddByte(AB::GameProtocol::ServerMessage);
-        message.AddByte(AB::GameProtocol::ServerMessageTypeAge);
-        message.AddString(GetName());
-        message.AddString(std::to_string(age) + ":" + std::to_string(playTime));
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::ServerMessage);
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeAge);
+        nmsg.AddString(GetName());
+        nmsg.AddString(std::to_string(age) + ":" + std::to_string(playTime));
+        client_->WriteToOutput(nmsg);
+        break;
     }
     case AB::GameProtocol::CommandTypeChatWhisper:
     {
@@ -113,6 +117,7 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
                 client_->WriteToOutput(nmsg);
             }
         }
+        break;
     }
     }
 }

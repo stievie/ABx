@@ -10,6 +10,7 @@ MapWindow::MapWindow(Context* context) :
     if (!mapTexture)
         return;
 
+    Texture2D* cityTexture = cache->GetResource<Texture2D>("Textures/map_city_icon.png");
     // Make the window a child of the root element, which fills the whole screen.
     GetSubsystem<UI>()->GetRoot()->AddChild(this);
     SetSize(GetSubsystem<Graphics>()->GetWidth(), GetSubsystem<Graphics>()->GetHeight());
@@ -47,20 +48,25 @@ MapWindow::MapWindow(Context* context) :
         button->SetMinHeight(40);
         button->SetMinWidth(40);
         button->SetName(String(i));    // not required
-        button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
-        button->SetAlignment(HA_CENTER, VA_TOP);
+        button->SetAlignment(HA_LEFT, VA_TOP);
         button->SetPosition(100, 40 * (i + 1) + 5);
+        button->SetTexture(cityTexture);
+        button->SetImageRect(IntRect(0, 0, 256, 256));
+        button->SetHoverOffset(IntVector2(257, 0));
+        button->SetPressedOffset(IntVector2(513, 0));
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MapWindow, HandleMapGameClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
             Text* t = new Text(context_);
-            t->SetAlignment(HA_RIGHT, VA_CENTER);
             t->SetName("GameName");
             t->SetText(String(game.name.c_str()));
             t->SetStyle("Text");
-            button->AddChild(t);
+            t->SetLayoutMode(LM_FREE);
+            t->SetAlignment(HA_LEFT, VA_TOP);
+            t->SetPosition(100 + 45, 40 * (i + 1) + 25);
+            AddChild(t);
         }
         AddChild(button);
         i++;
