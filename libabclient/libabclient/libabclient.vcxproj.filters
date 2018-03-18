@@ -33,9 +33,6 @@
     <ClInclude Include="Protocol.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Time.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -69,6 +66,9 @@
     <ClInclude Include="Structs.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="TimeUtils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -84,9 +84,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Protocol.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Time.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
@@ -105,6 +102,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeUtils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

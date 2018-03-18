@@ -170,7 +170,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
     }
 
     AB::Data::CreatureSex sex = static_cast<AB::Data::CreatureSex>(message.GetByte());
-    if (sex == AB::Data::CreatureSex::CreatureSexFemale || sex > AB::Data::CreatureSex::CreatureSexMale)
+    if (sex < AB::Data::CreatureSex::CreatureSexFemale || sex > AB::Data::CreatureSex::CreatureSexMale)
     {
         DisconnectClient(AB::Errors::InvalidPlayerSex);
         return;

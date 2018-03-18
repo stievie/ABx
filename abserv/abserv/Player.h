@@ -16,6 +16,8 @@ class MailBox;
 struct PlayerData : public AB::Data::CharacterData
 {
     uint32_t accountId;
+    uint64_t creation;
+    uint32_t onlineTime;
 };
 
 class Player final : public Creature

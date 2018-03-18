@@ -32,6 +32,7 @@ public:
     void SetHighDPI(bool value);
     void SetMultiSample(int value);
     int GetMultiSample() { return multiSample_; }
+    const String& GetRenderPath() const;
 private:
     int width_;
     int height_;
@@ -42,6 +43,9 @@ private:
     bool tripleBuffer_;
     bool highDPI_;
     int multiSample_;
+    // "RenderPaths/Prepass.xml";
+    // "RenderPaths/Deferred.xml";
+    String renderPath_;
 
     void UpdateGraphicsMode();
 };

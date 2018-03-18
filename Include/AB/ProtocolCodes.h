@@ -123,6 +123,7 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeUnknown = 0,
     ServerMessageTypeInfo,
     ServerMessageTypeRoll,                    // /roll result
+    ServerMessageTypeAge,                     // /age
     ServerMessageTypePlayerNotOnline,
     ServerMessageTypePlayerGotMessage,
 };

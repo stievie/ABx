@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
-#include "Time.h"
+#include "TimeUtils.h"
 
 #include "DebugNew.h"
 

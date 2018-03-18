@@ -171,7 +171,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             {
                 message->Get<uint32_t>(),      // ID
                 message->GetStringEncrypted(), // Name
-                message->Get<uint8_t>()        // Type
+                static_cast<AB::Data::GameType>(message->Get<uint8_t>())        // Type
             });
         }
         if (gamelistCallback_)

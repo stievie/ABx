@@ -3,6 +3,7 @@
 #include "FwClient.h"
 #include "AbEvents.h"
 #include "Utils.h"
+#include <TimeUtils.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -167,6 +168,32 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
         AddLine(sender + " rolls " + res + " on a " + max + " sided die.", "ChatLogChatText");
         break;
     }
+    case AB::GameProtocol::ServerMessageTypeAge:
+    {
+        unsigned p = message.Find(":");
+        String age = message.Substring(0, p);
+        String playTime = message.Substring(p + 1);
+        uint32_t uAge = std::atoi(age.CString());
+        uint32_t uPlayTime = std::atoi(playTime.CString());
+        Client::TimeSpan tAge(uAge);
+        std::stringstream ss;
+        ss << "You have played this characters for ";
+        uint32_t hours = uPlayTime / 3600;
+        if (hours > 0)
+            uPlayTime -= hours * 3600;
+        uint32_t minutes = uPlayTime / 60;
+        if (minutes > 0)
+            uPlayTime -= minutes * 60;
+        if (hours > 0)
+            ss << hours << " hour(s) ";
+        ss << minutes << " minute(s) over the past ";
+        if (tAge.months > 0)
+            ss << tAge.months << " month(s).";
+        else
+            ss << tAge.days << " day(s).";
+        AddLine(String(ss.str().c_str()), "ChatLogServerInfoText");
+        break;
+    }
     case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
     {
         String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
@@ -315,6 +342,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
+        AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
         AddLine("  /help: Show this help", "ChatLogServerInfoText");
         break;

@@ -96,18 +96,23 @@ void ClientApp::Setup()
     // See http://urho3d.github.io/documentation/1.5/_main_loop.html
     // for a more complete list.
     //  Default 0 (use desktop resolution, or 1024 in windowed mode.)
-    engineParameters_["WindowWidth"] = options->GetWidth();
+    engineParameters_[EP_WINDOW_WIDTH] = options->GetWidth();
     // Default 0 (use desktop resolution, or 768 in windowed mode.)
-    engineParameters_["WindowHeight"] = options->GetHeight();
-    engineParameters_["FullScreen"] = options->GetFullscreen();
-    engineParameters_["Borderless"] = options->GetBorderless();
-    engineParameters_["WindowResizable"] = options->GetResizeable();
-    engineParameters_["HighDPI"] = options->GetHighDPI();
-    engineParameters_["VSync"] = options->GetVSync();
-    engineParameters_["TripleBuffer"] = options->GetTripleBuffer();
-    engineParameters_["Multisample"] = options->GetMultiSample();
-    engineParameters_["ResourcePaths"] = "AutoLoad;CoreData;Data;AbData";
-    engineParameters_["LogName"] = "abclient.log";
+    engineParameters_[EP_WINDOW_HEIGHT] = options->GetHeight();
+    engineParameters_[EP_FULL_SCREEN] = options->GetFullscreen();
+    engineParameters_[EP_BORDERLESS] = options->GetBorderless();
+    engineParameters_[EP_WINDOW_RESIZABLE] = options->GetResizeable();
+    engineParameters_[EP_HIGH_DPI] = options->GetHighDPI();
+    engineParameters_[EP_VSYNC] = options->GetVSync();
+    engineParameters_[EP_TRIPLE_BUFFER] = options->GetTripleBuffer();
+    engineParameters_[EP_MULTI_SAMPLE] = options->GetMultiSample();
+    engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
+    engineParameters_[EP_RESOURCE_PATHS] = "CoreData;Data;AbData";
+    engineParameters_[EP_LOG_NAME] = "abclient.log";
+    engineParameters_[EP_LOG_QUIET] = false;
+    // "RenderPaths/Prepass.xml";
+    // "RenderPaths/Deferred.xml";
+    engineParameters_[EP_RENDER_PATH] = options->GetRenderPath();
 
     GetSubsystem<UI>()->SetUseSystemClipboard(true);
 }

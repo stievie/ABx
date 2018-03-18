@@ -33,4 +33,29 @@ inline int64_t AbTick()
     return int64_t(t.millitm) + int64_t(t.time) * 1000;
 }
 
+struct TimeSpan
+{
+    uint32_t months = 0;
+    uint32_t days = 0;
+    uint32_t hours = 0;
+    uint32_t minutes = 0;
+    uint32_t seconds = 0;
+    TimeSpan(uint32_t seconds)
+    {
+        time_t secs(seconds); // you have to convert your input_seconds into time_t
+        struct tm p;
+        gmtime_s(&p, &secs); // convert to broken down time
+        if (p.tm_yday > 31)
+        {
+            months = p.tm_yday / 31;
+            days = p.tm_yday - (months * 31);
+        }
+        else
+            days = p.tm_yday;
+        hours = p.tm_hour;
+        minutes = p.tm_min;
+        seconds = p.tm_sec;
+    }
+};
+
 }

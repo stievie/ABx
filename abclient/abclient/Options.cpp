@@ -14,7 +14,8 @@ Options::Options(Context* context) :
     vSync_(false),
     tripleBuffer_(false),
     multiSample_(1),
-    loginHost_("localhost")
+    loginHost_("localhost"),
+    renderPath_("RenderPaths/Prepass.xml")
 {
 }
 
@@ -87,6 +88,10 @@ void Options::Load()
         {
             password_ = paramElem.GetAttribute("value");
         }
+        else if (name.Compare("RenderPath") == 0)
+        {
+            renderPath_ = paramElem.GetAttribute("value");
+        }
 
         paramElem = paramElem.GetNext("parameter");
     }
@@ -99,6 +104,11 @@ void Options::SetMultiSample(int value)
         multiSample_ = value;
         UpdateGraphicsMode();
     }
+}
+
+const String& Options::GetRenderPath() const
+{
+    return renderPath_;
 }
 
 void Options::SetWidth(int value)
