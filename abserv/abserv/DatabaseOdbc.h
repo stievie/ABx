@@ -14,10 +14,11 @@
 
 namespace DB {
 
-/// ODBC Database driver. Should onbly be used with MS SQL Server.
+/// ODBC Database driver. Should only be used with MS SQL Server.
 class DatabaseOdbc final : public Database
 {
 private:
+    /// Number of active transactions.
     unsigned transactions_;
 protected:
     SQLHDBC handle_;

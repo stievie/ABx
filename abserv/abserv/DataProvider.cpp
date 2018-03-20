@@ -31,7 +31,7 @@ bool DataProvider::FileExists(const std::string& name) const
     return Utils::FileExists(name);
 }
 
-std::string DataProvider::GetFile(const std::string & name) const
+std::string DataProvider::GetFile(const std::string& name) const
 {
     if (Utils::FileExists(name))
         return name;

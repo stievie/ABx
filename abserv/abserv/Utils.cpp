@@ -13,7 +13,7 @@ bool IsNumber(const std::string& s)
     return !s.empty() && it == s.end();
 }
 
-bool CopyFile(const std::string& src, const std::string& dst)
+bool FileCopy(const std::string& src, const std::string& dst)
 {
     std::ifstream fsrc(src, std::ios::binary);
     if (!fsrc.is_open())

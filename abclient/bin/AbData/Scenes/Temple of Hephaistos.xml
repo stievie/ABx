@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2343.48" />
 	<attribute name="Next Replicated Node ID" value="23" />
 	<attribute name="Next Replicated Component ID" value="31" />
-	<attribute name="Next Local Node ID" value="16782358" />
-	<attribute name="Next Local Component ID" value="16782931" />
+	<attribute name="Next Local Node ID" value="16782409" />
+	<attribute name="Next Local Component ID" value="16782995" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -180,7 +180,6 @@
 		<component type="RigidBody" id="16781790">
 			<attribute name="Physics Rotation" value="0.678221 0 -0.734858 0" />
 			<attribute name="Physics Position" value="-4.01834 25.3975 15.3441" />
-			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781791">
@@ -15880,6 +15879,30 @@
 		<component type="CollisionShape" id="16782930">
 			<attribute name="Size" value="0.0676499 0.571692 0.212188" />
 			<attribute name="Offset Position" value="-0.00123222 0.285307 0.0234151" />
+		</component>
+	</node>
+	<node id="16782408">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Xiphos" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-3.90283 25.6721 18.515" />
+		<attribute name="Rotation" value="0.5078 0.759154 -0.313009 0.260478" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16782992">
+			<attribute name="Model" value="Model;Models/Xiphos.mdl" />
+			<attribute name="Material" value="Material;Materials/Xiphos_Wood.xml;Materials/Xiphos_Leather.xml;Materials/Xiphos_Steel.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16782993">
+			<attribute name="Physics Rotation" value="0.5078 0.759155 -0.313009 0.260478" />
+			<attribute name="Physics Position" value="-3.90283 25.6721 18.515" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16782994">
+			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Model" value="Model;Models/Xiphos.mdl" />
 		</component>
 	</node>
 </scene>

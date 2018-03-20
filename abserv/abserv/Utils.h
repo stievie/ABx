@@ -13,7 +13,7 @@ std::vector<std::string> Split(const std::string& str, const std::string& delim)
 std::string Trim(const std::string& str, const std::string& whitespace = " \t");
 std::string LeftTrim(const std::string& str, const std::string& whitespace = " \t");
 bool FileExists(const std::string& name);
-bool CopyFile(const std::string& src, const std::string& dst);
+bool FileCopy(const std::string& src, const std::string& dst);
 std::string NormalizeFilename(const std::string& filename);
 /// Replace all occurrences of search with replace in subject
 /// Returns true if it replaced something
