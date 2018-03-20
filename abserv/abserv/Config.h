@@ -25,7 +25,7 @@
 // Database drivers
 #define USE_MYSQL
 #define USE_PGSQL
-//#define USE_ODBC
+#define USE_ODBC
 
 #define HAVE_DIRECTX_MATH
 

@@ -8,6 +8,9 @@
 #ifdef USE_PGSQL
 #include "DatabasePgsql.h"
 #endif // USE_PGSQL
+#ifdef USE_ODBC
+#include "DatabaseOdbc.h"
+#endif // USE_ODBC
 #include "DatabaseSqlite.h"
 
 #include "DebugNew.h"
