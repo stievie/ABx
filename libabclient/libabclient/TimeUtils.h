@@ -40,11 +40,14 @@ struct TimeSpan
     uint32_t hours = 0;
     uint32_t minutes = 0;
     uint32_t seconds = 0;
-    TimeSpan(uint32_t seconds)
+    TimeSpan(uint32_t sec)
     {
-        time_t secs(seconds); // you have to convert your input_seconds into time_t
+        time_t secs(sec); // you have to convert your input_seconds into time_t
         struct tm p;
-        gmtime_s(&p, &secs); // convert to broken down time
+        errno_t err = gmtime_s(&p, &secs); // convert to broken down time
+        if (err)
+            return;
+
         if (p.tm_yday > 31)
         {
             months = p.tm_yday / 31;

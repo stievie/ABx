@@ -15,7 +15,12 @@ Options::Options(Context* context) :
     tripleBuffer_(false),
     multiSample_(1),
     loginHost_("localhost"),
-    renderPath_("RenderPaths/Prepass.xml")
+    renderPath_("RenderPaths/Prepass.xml"),
+    gainMaster_(1.0f),
+    gainEffect_(1.0f),
+    gainAmbient_(1.0f),
+    gainVoice_(1.0f),
+    gainMusic_(1.0f)
 {
 }
 
@@ -91,6 +96,26 @@ void Options::Load()
         else if (name.Compare("RenderPath") == 0)
         {
             renderPath_ = paramElem.GetAttribute("value");
+        }
+        else if (name.Compare("GainMaster") == 0)
+        {
+            gainMaster_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("GainEffect") == 0)
+        {
+            gainEffect_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("GainAmbient") == 0)
+        {
+            gainAmbient_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("GainVoice") == 0)
+        {
+            gainVoice_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("GainMusic") == 0)
+        {
+            gainMusic_ = paramElem.GetFloat("value");
         }
 
         paramElem = paramElem.GetNext("parameter");
@@ -188,4 +213,14 @@ void Options::UpdateGraphicsMode()
     Graphics* graphics = GetSubsystem<Graphics>();
     graphics->SetMode(width_, height_, fullscreen_, borderless_, resizeable_,
         highDPI_, vSync_, tripleBuffer_, multiSample_, 0, 0);
+}
+
+void Options::UpdateAudio()
+{
+    Audio* audio = GetSubsystem<Audio>();
+    audio->SetMasterGain(SOUND_MASTER, gainMaster_);
+    audio->SetMasterGain(SOUND_EFFECT, gainEffect_);
+    audio->SetMasterGain(SOUND_AMBIENT, gainAmbient_);
+    audio->SetMasterGain(SOUND_VOICE, gainVoice_);
+    audio->SetMasterGain(SOUND_MUSIC, gainMusic_);
 }

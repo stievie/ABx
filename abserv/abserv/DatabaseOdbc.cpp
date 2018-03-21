@@ -19,7 +19,7 @@ DatabaseOdbc::DatabaseOdbc() :
     Database(),
     transactions_(0)
 {
-    const std::string& sdsn = ConfigManager::Instance[ConfigManager::DBHost];
+    const std::string& sdsn = ConfigManager::Instance[ConfigManager::DBName];
     const std::string& suser = ConfigManager::Instance[ConfigManager::DBUser];
     const std::string& spass = ConfigManager::Instance[ConfigManager::DBPass];
 
@@ -172,7 +172,8 @@ bool DatabaseOdbc::BeginTransaction()
             (SQLPOINTER)SQL_AUTOCOMMIT_OFF,
             SQL_IS_UINTEGER));
     }
-    transactions_++;
+    if (ret)
+        transactions_++;
     return ret;
 }
 
@@ -183,7 +184,8 @@ bool DatabaseOdbc::Rollback()
     if (transactions_ == 0)
         return false;
     bool ret = RETURN_SUCCESS(SQLEndTran(SQL_HANDLE_DBC, handle_, SQL_ROLLBACK));
-    transactions_--;
+    if (ret)
+        transactions_--;
     if (transactions_ == 0)
     {
         SQLSetConnectAttrA(handle_, SQL_ATTR_AUTOCOMMIT,
@@ -200,7 +202,8 @@ bool DatabaseOdbc::Commit()
     if (transactions_ == 0)
         return false;
     bool ret = RETURN_SUCCESS(SQLEndTran(SQL_HANDLE_DBC, handle_, SQL_COMMIT));
-    transactions_--;
+    if (ret)
+        transactions_--;
     if (transactions_ == 0)
     {
         SQLSetConnectAttrA(handle_, SQL_ATTR_AUTOCOMMIT,

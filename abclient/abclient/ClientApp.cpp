@@ -131,12 +131,11 @@ void ClientApp::Start()
     GetSubsystem<Input>()->SetMouseVisible(true);
     GetSubsystem<Input>()->SetMouseGrabbed(false);
 
-    Audio* audio = GetSubsystem<Audio>();
-    audio->SetMasterGain(SOUND_EFFECT, 1.0f);
-
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     // Let's use the default style that comes with Urho3D.
     GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml"));
+
+    GetSubsystem<Options>()->UpdateAudio();
 
     // We subscribe to the events we'd like to handle.
     // In this example we will be showing what most of them do,

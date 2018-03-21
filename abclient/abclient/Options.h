@@ -33,6 +33,8 @@ public:
     void SetMultiSample(int value);
     int GetMultiSample() { return multiSample_; }
     const String& GetRenderPath() const;
+
+    void UpdateAudio();
 private:
     int width_;
     int height_;
@@ -46,6 +48,12 @@ private:
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     String renderPath_;
+
+    float gainMaster_;
+    float gainEffect_;
+    float gainAmbient_;
+    float gainVoice_;
+    float gainMusic_;
 
     void UpdateGraphicsMode();
 };
