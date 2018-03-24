@@ -247,14 +247,13 @@ std::string PgsqlResult::GetString(const std::string& col)
     return std::string(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())));
 }
 
-const char* PgsqlResult::GetStream(const std::string& col, unsigned long& size)
+std::string PgsqlResult::GetStream(const std::string& col, unsigned long& size)
 {
     std::string buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
     unsigned char* temp = PQunescapeBytea((const unsigned char*)buf.c_str(), (size_t*)&size);
-    char* value = new char[buf.size()];
-    strcpy_s(value, buf.size(), (char*)temp);
+    std::string result((char*)temp, buf.size());
     PQfreemem(temp);
-    return value;
+    return result;
 }
 
 bool PgsqlResult::IsNull(const std::string & col)

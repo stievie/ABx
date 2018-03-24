@@ -2,6 +2,7 @@
 #include "DatabaseSqlite.h"
 #include <fstream>
 #include "Logger.h"
+#include <base64.h>
 
 namespace DB {
 
@@ -175,18 +176,9 @@ std::string DatabaseSqlite::EscapeString(const std::string &s)
 
 std::string DatabaseSqlite::EscapeBlob(const char* s, uint32_t length)
 {
-    std::string buf = "x'";
-
-    char hex[2 + 1]; //need one extra byte for null-character
-
-    for (uint32_t i = 0; i < length; i++)
-    {
-        sprintf_s(hex, "%02x", ((unsigned char)s[i]));
-        buf += hex;
-    }
-
-    buf += "'";
-    return buf;
+    std::stringstream r;
+    r << "'" << base64::encode((const unsigned char*)s, length) << "'";
+    return r.str();
 }
 
 void DatabaseSqlite::FreeResult(DBResult* res)
@@ -269,18 +261,18 @@ std::string SqliteResult::GetString(const std::string& col)
     return std::string(""); // Failed
 }
 
-const char* SqliteResult::GetStream(const std::string& col, unsigned long& size)
+std::string SqliteResult::GetStream(const std::string& col, unsigned long& size)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
         const char* value = (const char*)sqlite3_column_blob(handle_, it->second);
         size = sqlite3_column_bytes(handle_, it->second);
-        return value;
+        return base64::decode(value, size);
     }
 
     LOG_ERROR << "Error during GetStream(" << col << ")." << std::endl;
-    return NULL; // Failed
+    return std::string(""); // Failed
 }
 
 bool SqliteResult::IsNull(const std::string& col)

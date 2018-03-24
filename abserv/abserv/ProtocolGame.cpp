@@ -260,8 +260,7 @@ void ProtocolGame::Connect(uint32_t playerId)
 
 void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 {
-    std::shared_ptr<Net::OutputMessage> po = GetOutputBuffer(message.GetSize());
-    po->Append(message);
+    GetOutputBuffer(message.GetSize())->Append(message);
 }
 
 void ProtocolGame::EnterGame(const std::string& mapName)
