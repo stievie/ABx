@@ -413,13 +413,14 @@ std::string OdbcResult::GetString(const std::string& col)
     return std::string(""); // Failed
 }
 
-std::string OdbcResult::GetStream(const std::string& col, unsigned long& size)
+std::string OdbcResult::GetStream(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
         std::string result;
         result.resize(1024);
+        unsigned long size;
         SQLRETURN ret = SQLGetData(handle_, (SQLUSMALLINT)it->second, SQL_C_BINARY,
             &result[0], 1024, (SQLLEN*)&size);
 
@@ -428,7 +429,6 @@ std::string OdbcResult::GetStream(const std::string& col, unsigned long& size)
     }
 
     LOG_ERROR << "Error during GetStream(" << col << ")." << std::endl;
-    size = 0;
     return std::string(""); // Failed
 }
 

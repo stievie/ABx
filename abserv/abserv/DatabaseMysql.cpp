@@ -318,20 +318,19 @@ std::string MysqlResult::GetString(const std::string& col)
     return std::string(""); // Failed
 }
 
-std::string MysqlResult::GetStream(const std::string& col, unsigned long& size)
+std::string MysqlResult::GetStream(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
         if (row_[it->second])
         {
-            size = mysql_fetch_lengths(handle_)[it->second];
+            unsigned long size = mysql_fetch_lengths(handle_)[it->second];
             return std::string(row_[it->second], size);
         }
     }
 
     LOG_ERROR << "Error in GetStream(" << col << ")" << std::endl;
-    size = 0;
     return std::string("");
 }
 

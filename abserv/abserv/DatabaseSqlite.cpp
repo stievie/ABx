@@ -261,13 +261,13 @@ std::string SqliteResult::GetString(const std::string& col)
     return std::string(""); // Failed
 }
 
-std::string SqliteResult::GetStream(const std::string& col, unsigned long& size)
+std::string SqliteResult::GetStream(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
         const char* value = (const char*)sqlite3_column_blob(handle_, it->second);
-        size = sqlite3_column_bytes(handle_, it->second);
+        int size = sqlite3_column_bytes(handle_, it->second);
         return base64::decode(value, size);
     }
 

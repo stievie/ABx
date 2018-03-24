@@ -23,6 +23,8 @@
 #include "Maintenance.h"
 #include "Utils.h"
 #include <AB/ProtocolCodes.h>
+#include <base64.h>
+#include "Profiler.h"
 
 #include "DebugNew.h"
 

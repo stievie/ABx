@@ -38,6 +38,9 @@ static const unsigned int base64_chars[64] = {
 };
 
 std::string encode(const unsigned char* src, size_t len)
+#if !defined(BASE64_IMPLEMENTATION)
+;
+#else
 {
     unsigned char *out, *pos;
     const unsigned char *end, *in;
@@ -83,8 +86,12 @@ std::string encode(const unsigned char* src, size_t len)
 
     return outStr;
 }
+#endif
 
 std::string decode(const void* data, const size_t len)
+#if !defined(BASE64_IMPLEMENTATION)
+;
+#else
 {
     unsigned char* p = (unsigned char*)data;
     int pad = len > 0 && (len % 4 || p[len - 1] == '=');
@@ -97,29 +104,34 @@ std::string decode(const void* data, const size_t len)
     {
         int n = base64_index[p[i]] << 18 | base64_index[p[i + 1]] << 12 |
             base64_index[p[i + 2]] << 6 | base64_index[p[i + 3]];
-        str[j++] = (char)n >> 16;
-        str[j++] = (char)n >> 8 & 0xFF;
-        str[j++] = (char)n & 0xFF;
+        str[j++] = (char)(n >> 16);
+        str[j++] = (char)(n >> 8 & 0xFF);
+        str[j++] = (char)(n & 0xFF);
     }
     if (pad)
     {
         int n = base64_index[p[L]] << 18 | base64_index[p[L + 1]] << 12;
-        str[j++] = (char)n >> 16;
+        str[j++] = (char)(n >> 16);
 
         if (len > L + 2 && p[L + 2] != '=')
         {
             n |= base64_index[p[L + 2]] << 6;
-            str[j++] = n >> 8 & 0xFF;
+            str[j++] = (char)(n >> 8 & 0xFF);
         }
     }
 
     str.resize(j);
     return std::move(str);
 }
+#endif
 
 std::string decode(const std::string& str64)
+#if !defined(BASE64_IMPLEMENTATION)
+;
+#else
 {
     return decode(str64.data(), str64.length());
 }
+#endif
 
 }

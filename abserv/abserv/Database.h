@@ -80,10 +80,9 @@ public:
         AB_UNUSED(col);
         return "''";
     }
-    virtual std::string GetStream(const std::string& col, unsigned long& size) {
+    virtual std::string GetStream(const std::string& col) {
         AB_UNUSED(col);
-        AB_UNUSED(size);
-        return std::string();
+        return std::string("");
     }
     virtual bool IsNull(const std::string& col) {
         AB_UNUSED(col);
