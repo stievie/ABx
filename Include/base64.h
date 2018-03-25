@@ -125,6 +125,15 @@ std::string decode(const void* data, const size_t len)
 }
 #endif
 
+std::string encode(const std::string& str64)
+#if !defined(BASE64_IMPLEMENTATION)
+;
+#else
+{
+    return encode((const unsigned char*)str64.data(), str64.length());
+}
+#endif
+
 std::string decode(const std::string& str64)
 #if !defined(BASE64_IMPLEMENTATION)
 ;

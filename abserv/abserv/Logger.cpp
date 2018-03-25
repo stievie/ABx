@@ -20,7 +20,7 @@ Logger& Logger::Instance()
             tm p;
             localtime_s(&p, &ttp);
             char chr[50];
-            strftime(chr, 50, "%g-%m-%d-%H-%M-%S", (const tm*)&p);
+            strftime(chr, 50, "%Y-%m-%d-%H-%M-%S", (const tm*)&p);
             std::string logFile = logDir_ + "/" + std::string(chr) + ".log";
             instance_ = std::make_unique<Logger>(logFile);
         }

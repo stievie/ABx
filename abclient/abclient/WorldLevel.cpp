@@ -39,8 +39,8 @@ SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
     Ray camRay = GetActiveViewportScreenRay(pos);
     PODVector<RayQueryResult> result;
     Octree* world = scene_->GetComponent<Octree>();
-    RayOctreeQuery query(result, camRay);
-    // Can not use RaycastSingle because it would return the Zone
+    RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
+    // Can not use RaycastSingle because it would also return drawables that are not game objects
     world->Raycast(query);
     if (!result.Empty())
     {
@@ -230,6 +230,9 @@ void WorldLevel::SetupViewport()
 void WorldLevel::CreateScene()
 {
     BaseLevel::CreateScene();
+    NavigationMesh* navMesh = scene_->GetComponent<NavigationMesh>();
+    if (navMesh)
+        navMesh->Build();
 }
 
 void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)

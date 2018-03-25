@@ -58,21 +58,22 @@ void BaseLevel::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
     PostUpdate(eventType, eventData);
 }
 
-void BaseLevel::HandlePostRenderUpdate(StringHash eventType, VariantMap & eventData)
+void BaseLevel::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 {
     PostRenderUpdate(eventType, eventData);
 }
 
-void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap & eventData)
+void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap& eventData)
 {
     UNREFERENCED_PARAMETER(eventType);
     UNREFERENCED_PARAMETER(eventData);
 
     if (debugGeometry_)
     {
-        PhysicsWorld* p = scene_->GetComponent<PhysicsWorld>();
-        if (p)
-            p->DrawDebugGeometry(true);
+        if (auto physW = scene_->GetComponent<PhysicsWorld>())
+            physW->DrawDebugGeometry(true);
+        if (auto navMesh = scene_->GetComponent<NavigationMesh>())
+            navMesh->DrawDebugGeometry(true);
     }
 }
 
