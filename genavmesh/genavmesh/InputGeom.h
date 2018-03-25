@@ -68,6 +68,10 @@ struct BuildSettings
 	float navMeshBMax[3];
 	// Size of the tiles in voxels
 	float tileSize;
+
+    float hmScaleX;
+    float hmScaleY;
+    float hmScaleZ;
 };
 
 class InputGeom
@@ -99,12 +103,13 @@ class InputGeom
 
     bool loadMesh(class rcContext* ctx, const std::string& filepath);
     bool loadGeomSet(class rcContext* ctx, const std::string& filepath);
+    bool loadHeightMap(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
 public:
 	InputGeom();
 	~InputGeom();
 
 
-	bool load(class rcContext* ctx, const std::string& filepath);
+	bool load(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
 	bool saveGeomSet(const BuildSettings* settings);
 
 	/// Method to return static mesh data.

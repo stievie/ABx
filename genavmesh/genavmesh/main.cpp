@@ -6,10 +6,152 @@
 #include "InputGeom.h"
 #include "BuildContext.h"
 #include "TileBuilder.h"
+#include <string>
+#include <vector>
 
 void ShowUsage()
 {
-    std::cout << "Usage: genavmesh [options] files" << std::endl;
+    std::cout << "Generate Detour navmesh from input geometry or height map" << std::endl << std::endl;
+    std::cout << "Usage: genavmesh [-<options>] files" << std::endl;
+    std::cout << "options (format is -<name>:<value>):" << std::endl;
+    std::cout << "  cs, cell-size: cell size, default 0.3" << std::endl;
+    std::cout << "  ch, cell-height: cell height, default 0.2" << std::endl;
+    std::cout << "  ah, agent-height: agent height, default 2.0" << std::endl;
+    std::cout << "  ar, agent-radius: agent radius, default 0.6" << std::endl;
+    std::cout << "  amc: agent max climb, default 0.9" << std::endl;
+    std::cout << "  ams: agent max slope, default 45.0" << std::endl;
+    std::cout << "  rms: region min size, default 8.0" << std::endl;
+    std::cout << "  rmes: region merge size, default 20.0" << std::endl;
+    std::cout << "  pt: partition type, default 1 (Watershed)" << std::endl;
+    std::cout << "  eml: edge max len, default 12.0" << std::endl;
+    std::cout << "  eme: edge max error, default 1.3" << std::endl;
+    std::cout << "  vpp: verts per poly, default 6" << std::endl;
+    std::cout << "  dsd: detail sample dist, default 6.0" << std::endl;
+    std::cout << "  dsmm: detail sample max error, default 1.0" << std::endl;
+    std::cout << "  ts: tile size, default 32" << std::endl;
+    std::cout << "  hmsx: heightmap scaling X, default 1.0" << std::endl;
+    std::cout << "  hmsy: heightmap scaling Y, default 1.0" << std::endl;
+    std::cout << "  hmsz: heightmap scaling Z, default 1.0" << std::endl;
+    std::cout << "Example:" << std::endl;
+    std::cout << "  genavmesh -cs:0.4 sourcemesh.obj" << std::endl;
+}
+
+std::vector<std::string> split(const std::string& s, char seperator)
+{
+    std::vector<std::string> output;
+
+    std::string::size_type prev_pos = 0, pos = 0;
+
+    while ((pos = s.find(seperator, pos)) != std::string::npos)
+    {
+        std::string substring(s.substr(prev_pos, pos - prev_pos));
+        output.push_back(substring);
+        prev_pos = ++pos;
+    }
+
+    output.push_back(s.substr(prev_pos, pos - prev_pos)); // Last word
+
+    return output;
+}
+
+void ParseArg(const std::string& arg, BuildSettings& settings)
+{
+    std::vector<std::string> parts = split(arg, ':');
+    if (parts.size() != 2)
+        return;
+    const std::string& name = parts[0];
+    const std::string& value = parts[1];
+    // Rasterization
+    if (name.compare("cs") == 0 || name.compare("cell-size") == 0)
+    {
+        settings.cellSize = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("ch") == 0 || name.compare("cell-height") == 0)
+    {
+        settings.cellHeight = (float)std::atof(value.c_str());
+    }
+    // Agent
+    else if (name.compare("ah") == 0 || name.compare("agent-height") == 0)
+    {
+        settings.agentHeight = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("ar") == 0 || name.compare("agent-radius") == 0)
+    {
+        settings.agentRadius = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("amc") == 0 || name.compare("agent-max-climb") == 0)
+    {
+        settings.agentMaxClimb = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("ams") == 0 || name.compare("agent-max-slope") == 0)
+    {
+        settings.agentMaxSlope = (float)std::atof(value.c_str());
+    }
+    // Region
+    else if (name.compare("rms") == 0 || name.compare("region-min-size") == 0)
+    {
+        settings.regionMinSize = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("rmes") == 0 || name.compare("region-merge-size") == 0)
+    {
+        settings.regionMergeSize = (float)std::atof(value.c_str());
+    }
+
+    else if (name.compare("pt") == 0 || name.compare("partition-type") == 0)
+    {
+        settings.partitionType = std::atoi(value.c_str());
+    }
+    else if (name.compare("eml") == 0 || name.compare("edge-max-len") == 0)
+    {
+        settings.edgeMaxLen = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("eme") == 0 || name.compare("edge-max-error") == 0)
+    {
+        settings.edgeMaxError = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("vpp") == 0 || name.compare("verts-per-poly") == 0)
+    {
+        settings.vertsPerPoly = (float)std::atoi(value.c_str());
+    }
+    else if (name.compare("dsd") == 0 || name.compare("detail-sample-dist") == 0)
+    {
+        settings.detailSampleDist = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("dsmm") == 0 || name.compare("detail-sample-max-error") == 0)
+    {
+        settings.detailSampleMaxError = (float)std::atoi(value.c_str());
+    }
+    else if (name.compare("ts") == 0 || name.compare("tile-size") == 0)
+    {
+        settings.tileSize = (float)std::atoi(value.c_str());
+    }
+    else if (name.compare("hmsx") == 0 || name.compare("heightmap-scaling-x") == 0)
+    {
+        settings.hmScaleX = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("hmsy") == 0 || name.compare("heightmap-scaling-y") == 0)
+    {
+        settings.hmScaleY = (float)std::atof(value.c_str());
+    }
+    else if (name.compare("hmsz") == 0 || name.compare("heightmap-scaling-z") == 0)
+    {
+        settings.hmScaleZ = (float)std::atof(value.c_str());
+    }
+    else
+        std::cout << "Warning: Unknown command line switch " << name << std::endl;
+}
+
+int ParseOptions(int argc, char** argv, BuildSettings& settings)
+{
+    for (int i = 1; i < argc; i++)
+    {
+        std::string arg(argv[i]);
+        if (arg[0] != '-' && arg[0] != '/')
+            return i;
+        arg.erase(0, 1);
+        ParseArg(arg, settings);
+    }
+    return argc;
 }
 
 int main(int argc, char** argv)
@@ -44,14 +186,19 @@ int main(int argc, char** argv)
     settings.detailSampleMaxError = 1.0f;
     // Tailing
     settings.tileSize = 32;
+    // Heightmap
+    settings.hmScaleX = 1.0f;
+    settings.hmScaleY = 1.0f;
+    settings.hmScaleZ = 1.0f;
 
+    int filesStart = ParseOptions(argc, argv, settings);
 
-    for (int i = 1; i < argc; i++)
+    for (int i = filesStart; i < argc; i++)
     {
         InputGeom geom;
         std::string fn(argv[i]);
         std::cout << "Processing file " << fn << std::endl;
-        if (!geom.load(&ctx, fn))
+        if (!geom.load(&ctx, &settings, fn))
         {
 
             std::cout << "Error loading file " << fn << std::endl;
@@ -73,8 +220,9 @@ int main(int argc, char** argv)
         {
             continue;
         }
-        builder.Save((fn + ".navmesh").c_str(), builder.GetNavMesh());
+        std::string navmeshFile = fn + ".navmesh";
+        builder.Save(navmeshFile.c_str(), builder.GetNavMesh());
+        std::cout << "Created " << navmeshFile << std::endl;
     }
     return 0;
 }
-

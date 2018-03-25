@@ -56,6 +56,26 @@ void MeshLoader::addTriangle(int a, int b, int c, int& cap)
     m_triCount++;
 }
 
+float MeshLoader::GetHeight(int x, int z) const
+{
+    if (!data_)
+        return 0.0f;
+
+    if (x >= width_)
+        x = width_ - 1;
+    if (z >= height_)
+        z = height_ - 1;
+    // From bottom to top
+    int offset = ((height_ - z) * width_ + x) * components_;
+    if (components_ == 1)
+    {
+        return (float)data_[offset];
+    }
+    // If more than 1 component, use the green channel for more accuracy
+    return (float)data_[offset] +
+        (float)data_[offset + 1] / 256.0f;
+}
+
 bool MeshLoader::load(const std::string& fileName)
 {
     // Create an instance of the Importer class
@@ -69,21 +89,22 @@ bool MeshLoader::load(const std::string& fileName)
         aiProcess_FindDegenerates |
         aiProcess_FindInvalidData |
 
+        aiProcess_Triangulate //|
+
         // aiProcessPreset_TargetRealtime_Fast
-        aiProcess_CalcTangentSpace |
-        aiProcess_GenNormals |
-        aiProcess_JoinIdenticalVertices |
-        aiProcess_Triangulate |
+//        aiProcess_CalcTangentSpace |
+//        aiProcess_GenNormals |
+//        aiProcess_JoinIdenticalVertices |
 //        aiProcess_GenUVCoords |
-        aiProcess_SortByPType |
+//        aiProcess_SortByPType //|
 
         // aiProcess_ConvertToLeftHanded
 //        aiProcess_MakeLeftHanded |
 //        aiProcess_FlipUVs |
-//        aiProcess_FlipWindingOrder |
+//        aiProcess_FlipWindingOrder //|
 
 //        aiProcess_TransformUVCoords |
-        aiProcess_FixInfacingNormals
+//        aiProcess_FixInfacingNormals
     );
     if (!scene)
         return false;
@@ -144,5 +165,90 @@ bool MeshLoader::load(const std::string& fileName)
     }
 
     m_filename = fileName;
+    return true;
+}
+
+bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float scaleY, float scaleZ)
+{
+    data_ = stbi_load(fileName.c_str(), &width_, &height_, &components_, 0);
+
+    if (!data_)
+    {
+        return false;
+    }
+
+    int vcap = 0;
+    int tcap = 0;
+    for (int x = 0; x < width_; x++)
+    {
+        for (int z = 0; z < height_; z++)
+        {
+            float fy = GetHeight(x, z);
+            float fx = (float)x - (float)width_ / 2.0f;
+            float fz = (float)z - (float)height_ / 2.0f;
+            addVertex(fx * scaleX, fy * scaleY, fz * scaleZ, vcap);
+        }
+    }
+
+    // Create index data
+    for (int x = 0; x < width_ - 1; x++)
+    {
+        for (int z = 0; z < height_ - 1; z++)
+        {
+            /*
+            Normal edge:
+            +----+----+
+            |\ 1 |\   |
+            | \  | \  |
+            |  \ |  \ |
+            | 2 \|   \|
+            +----+----+
+            */
+            {
+                // First triangle
+                int i1 = z * width_ + x;
+                int i2 = (z * width_) + x + 1;
+                int i3 = (z + 1) * width_ + (x + 1);
+                addTriangle(i1, i2, i3, tcap);
+            }
+
+            {
+                // Second triangle
+                int i3 = (z + 1) * width_ + (x + 1);
+                int i2 = (z + 1) * width_ + x;
+                int i1 = z * width_ + x;
+                addTriangle(i3, i2, i1, tcap);
+            }
+        }
+    }
+
+    // Calculate normals.
+    m_normals = new float[m_triCount * 3];
+    for (int i = 0; i < m_triCount * 3; i += 3)
+    {
+        const float* v0 = &m_verts[m_tris[i] * 3];
+        const float* v1 = &m_verts[m_tris[i + 1] * 3];
+        const float* v2 = &m_verts[m_tris[i + 2] * 3];
+        float e0[3], e1[3];
+        for (int j = 0; j < 3; ++j)
+        {
+            e0[j] = v1[j] - v0[j];
+            e1[j] = v2[j] - v0[j];
+        }
+        float* n = &m_normals[i];
+        n[0] = e0[1] * e1[2] - e0[2] * e1[1];
+        n[1] = e0[2] * e1[0] - e0[0] * e1[2];
+        n[2] = e0[0] * e1[1] - e0[1] * e1[0];
+        float d = sqrtf(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
+        if (d > 0)
+        {
+            d = 1.0f / d;
+            n[0] *= d;
+            n[1] *= d;
+            n[2] *= d;
+        }
+    }
+
+    free(data_);
     return true;
 }

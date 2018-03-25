@@ -132,7 +132,7 @@ bool InputGeom::loadMesh(rcContext* ctx, const std::string& filepath)
 	m_offMeshConCount = 0;
 	m_volumeCount = 0;
 
-	m_mesh = new MeshLoader;
+	m_mesh = new MeshLoader();
 	if (!m_mesh)
 	{
 		ctx->log(RC_LOG_ERROR, "loadMesh: Out of memory 'm_mesh'.");
@@ -295,7 +295,48 @@ bool InputGeom::loadGeomSet(rcContext* ctx, const std::string& filepath)
 	return true;
 }
 
-bool InputGeom::load(rcContext* ctx, const std::string& filepath)
+bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, const std::string& filepath)
+{
+    if (m_mesh)
+    {
+        delete m_chunkyMesh;
+        m_chunkyMesh = 0;
+        delete m_mesh;
+        m_mesh = 0;
+    }
+    m_offMeshConCount = 0;
+    m_volumeCount = 0;
+
+    m_mesh = new MeshLoader();
+    if (!m_mesh)
+    {
+        ctx->log(RC_LOG_ERROR, "loadMesh: Out of memory 'm_mesh'.");
+        return false;
+    }
+    if (!m_mesh->loadHeightmap(filepath, settings->hmScaleX, settings->hmScaleY, settings->hmScaleZ))
+    {
+        ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not load '%s'", filepath.c_str());
+        return false;
+    }
+
+    rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
+
+    m_chunkyMesh = new rcChunkyTriMesh;
+    if (!m_chunkyMesh)
+    {
+        ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Out of memory 'm_chunkyMesh'.");
+        return false;
+    }
+    if (!rcCreateChunkyTriMesh(m_mesh->getVerts(), m_mesh->getTris(), m_mesh->getTriCount(), 256, m_chunkyMesh))
+    {
+        ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Failed to build chunky mesh.");
+        return false;
+    }
+
+    return true;
+}
+
+bool InputGeom::load(rcContext* ctx, const BuildSettings* settings, const std::string& filepath)
 {
 	size_t extensionPos = filepath.find_last_of('.');
 	if (extensionPos == std::string::npos)
@@ -306,6 +347,8 @@ bool InputGeom::load(rcContext* ctx, const std::string& filepath)
 
 	if (extension == ".gset")
 		return loadGeomSet(ctx, filepath);
+    if (extension == ".png" || extension == ".jpg")
+        return loadHeightMap(ctx, settings, filepath);
 
     return loadMesh(ctx, filepath);
 }
