@@ -5,6 +5,8 @@
 #pragma warning(disable: 4244 4456)
 #include <stb_image.h>
 #pragma warning(pop)
+#include <vector>
+#include <assimp/vector3.h>           // Output data structure
 
 class MeshLoader
 {
@@ -16,6 +18,8 @@ private:
     void addVertex(float x, float y, float z, int& cap);
     void addTriangle(int a, int b, int c, int& cap);
     float GetHeight(int x, int z) const;
+    aiVector3D GetRawNormal(int x, int z) const;
+    void CalculateNormals();
 
     std::string m_filename;
     float m_scale;
@@ -42,5 +46,9 @@ public:
     int getVertCount() const { return m_vertCount; }
     int getTriCount() const { return m_triCount; }
     const std::string& getFileName() const { return m_filename; }
+
+    std::vector<aiVector3D> vertices_;
+    std::vector<unsigned short> indices_;
+    std::vector<aiVector3D> normals_;
 };
 

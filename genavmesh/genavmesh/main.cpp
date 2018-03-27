@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-void ShowUsage()
+static void ShowUsage()
 {
     std::cout << "Generate Detour navmesh from input geometry or height map" << std::endl << std::endl;
     std::cout << "Usage: genavmesh [-<options>] files" << std::endl;
@@ -36,7 +36,7 @@ void ShowUsage()
     std::cout << "  genavmesh -cs:0.4 sourcemesh.obj" << std::endl;
 }
 
-std::vector<std::string> split(const std::string& s, char seperator)
+static std::vector<std::string> split(const std::string& s, char seperator)
 {
     std::vector<std::string> output;
 
@@ -54,7 +54,7 @@ std::vector<std::string> split(const std::string& s, char seperator)
     return output;
 }
 
-void ParseArg(const std::string& arg, BuildSettings& settings)
+static void ParseArg(const std::string& arg, BuildSettings& settings)
 {
     std::vector<std::string> parts = split(arg, ':');
     if (parts.size() != 2)
@@ -141,7 +141,7 @@ void ParseArg(const std::string& arg, BuildSettings& settings)
         std::cout << "Warning: Unknown command line switch " << name << std::endl;
 }
 
-int ParseOptions(int argc, char** argv, BuildSettings& settings)
+static int ParseOptions(int argc, char** argv, BuildSettings& settings)
 {
     for (int i = 1; i < argc; i++)
     {
@@ -212,6 +212,15 @@ int main(int argc, char** argv)
             continue;
         }
 
+        if (geom.GetType() == InputGeom::MeshTypeHeightmap)
+        {
+            std::string objFile = fn + ".obj";
+            if (geom.saveObj(&settings, objFile))
+                std::cout << "Saved height map mesh to " << objFile << std::endl;
+            else
+                std::cout << "Error saving mesh" << std::endl;
+        }
+
         TileBuilder builder(&ctx);
         builder.m_filterLowHangingObstacles = true;
         builder.m_filterLedgeSpans = true;
@@ -222,7 +231,7 @@ int main(int argc, char** argv)
         }
         std::string navmeshFile = fn + ".navmesh";
         builder.Save(navmeshFile.c_str(), builder.GetNavMesh());
-        std::cout << "Created " << navmeshFile << std::endl;
+        std::cout << "Created NavMesh " << navmeshFile << std::endl;
     }
     return 0;
 }

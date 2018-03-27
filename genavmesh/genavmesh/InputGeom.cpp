@@ -29,6 +29,8 @@
 #include "DebugDraw.h"
 #include "RecastDebugDraw.h"
 #include "DetourNavMesh.h"
+#include <fstream>
+#include <iomanip>
 
 static bool intersectSegmentTriangle(const float* sp, const float* sq,
 									 const float* a, const float* b, const float* c,
@@ -103,14 +105,13 @@ static char* parseRow(char* buf, char* bufEnd, char* row, int len)
 	return buf;
 }
 
-
-
 InputGeom::InputGeom() :
 	m_chunkyMesh(0),
 	m_mesh(0),
 	m_hasBuildSettings(false),
 	m_offMeshConCount(0),
-	m_volumeCount(0)
+	m_volumeCount(0),
+    type_(MeshTypeUnknown)
 {
 }
 
@@ -158,6 +159,7 @@ bool InputGeom::loadMesh(rcContext* ctx, const std::string& filepath)
 		return false;
 	}
 
+    type_ = MeshTypeMesh;
 	return true;
 }
 
@@ -292,6 +294,7 @@ bool InputGeom::loadGeomSet(rcContext* ctx, const std::string& filepath)
 
 	delete [] buf;
 
+    type_ = MeshTypeGeomSet;
 	return true;
 }
 
@@ -333,6 +336,7 @@ bool InputGeom::loadHeightMap(rcContext* ctx, const BuildSettings* settings, con
         return false;
     }
 
+    type_ = MeshTypeHeightmap;
     return true;
 }
 
@@ -423,6 +427,61 @@ bool InputGeom::saveGeomSet(const BuildSettings* settings)
 	fclose(fp);
 
 	return true;
+}
+
+bool InputGeom::saveObj(const BuildSettings* settings, const std::string& filename)
+{
+    if (!m_mesh || m_mesh->vertices_.size() < 3)
+        return false;
+
+    std::fstream f(filename, std::fstream::out);
+    f << std::fixed << std::setprecision(6);
+    f << "o " << "heightmap" << std::endl;
+
+/*
+    const float* verts = m_mesh->getVerts();
+    const int* tris = m_mesh->getTris();
+    for (int i = 0; i < m_mesh->getTriCount() * 3; i += 3)
+    {
+        const float* v0 = &verts[tris[i] * 3];
+        const float* v1 = &verts[tris[i + 1] * 3];
+        const float* v2 = &verts[tris[i + 2] * 3];
+    }
+    */
+
+    f << "# vertices " << m_mesh->vertices_.size() << std::endl;
+    for (const auto& vert : m_mesh->vertices_)
+    {
+        f << "v " << vert.x << " " << vert.y << " " << vert.z << std::endl;
+
+    }
+
+/*  f << "# normals " << m_mesh->normals_.size() << std::endl;
+    for (const auto& n : m_mesh->normals_)
+    {
+        f << "vn " << n.x << " " << n.y << " " << n.z << std::endl;
+    }*/
+
+
+    f << "# indices " << m_mesh->indices_.size() << std::endl;
+
+    for (size_t i = 0; i < m_mesh->indices_.size(); i += 3)
+    {
+        f << "f " << (int)(m_mesh->indices_[i] + 1) << " " <<
+            (int)(m_mesh->indices_[i + 1] + 1) << " " <<
+            (int)(m_mesh->indices_[i + 2] + 1) << std::endl;
+    }
+
+/*    for (size_t i = 0; i < m_mesh->indices_.size(); i += 3)
+    {
+        f << "f " << (int)(m_mesh->indices_[i] + 1) << "//" << (int)(m_mesh->indices_[i] + 1) << " " <<
+            (int)(m_mesh->indices_[i + 1] + 1) << "//" << (int)(m_mesh->indices_[i] + 1) << " " <<
+            (int)(m_mesh->indices_[i + 2] + 1)<< "//" << (int)(m_mesh->indices_[i] + 1) << std::endl;
+    }*/
+
+    f << "# EOF" << std::endl;
+    f.close();
+    return true;
 }
 
 static bool isectSegAABB(const float* sp, const float* sq,

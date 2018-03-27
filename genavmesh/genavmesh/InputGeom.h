@@ -24,6 +24,7 @@
 #include <string>
 
 static const int MAX_CONVEXVOL_PTS = 12;
+
 struct ConvexVolume
 {
 	float verts[MAX_CONVEXVOL_PTS*3];
@@ -76,11 +77,21 @@ struct BuildSettings
 
 class InputGeom
 {
-	rcChunkyTriMesh* m_chunkyMesh;
+public:
+    enum MeshType
+    {
+        MeshTypeUnknown,
+        MeshTypeGeomSet,
+        MeshTypeMesh,
+        MeshTypeHeightmap
+    };
+private:
+    rcChunkyTriMesh* m_chunkyMesh;
     MeshLoader* m_mesh;
 	float m_meshBMin[3], m_meshBMax[3];
 	BuildSettings m_buildSettings;
 	bool m_hasBuildSettings;
+    MeshType type_;
 
 	/// @name Off-Mesh connections.
 	///@{
@@ -108,9 +119,9 @@ public:
 	InputGeom();
 	~InputGeom();
 
-
 	bool load(class rcContext* ctx, const BuildSettings* settings, const std::string& filepath);
 	bool saveGeomSet(const BuildSettings* settings);
+    bool saveObj(const BuildSettings* settings, const std::string& filename);
 
 	/// Method to return static mesh data.
 	const MeshLoader* getMesh() const { return m_mesh; }
@@ -120,7 +131,8 @@ public:
 	const float* getNavMeshBoundsMax() const { return m_hasBuildSettings ? m_buildSettings.navMeshBMax : m_meshBMax; }
 	const rcChunkyTriMesh* getChunkyMesh() const { return m_chunkyMesh; }
 	const BuildSettings* getBuildSettings() const { return m_hasBuildSettings ? &m_buildSettings : 0; }
-	bool raycastMesh(float* src, float* dst, float& tmin);
+    MeshType GetType() const { return type_; }
+    bool raycastMesh(float* src, float* dst, float& tmin);
 
 	/// @name Off-Mesh connections.
 	///@{

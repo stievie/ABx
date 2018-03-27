@@ -179,6 +179,7 @@
     <ClInclude Include="Detour\Include\DetourNode.h" />
     <ClInclude Include="Detour\Include\DetourStatus.h" />
     <ClInclude Include="InputGeom.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Recast\Include\Recast.h" />

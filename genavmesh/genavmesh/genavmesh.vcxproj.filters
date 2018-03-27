@@ -114,6 +114,9 @@
     <ClInclude Include="TileBuilder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="MathUtils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
