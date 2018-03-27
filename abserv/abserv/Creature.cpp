@@ -139,6 +139,28 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             newDirection = true;
             break;
         }
+        case InputTypeGoto:
+        {
+            // TODO: Just adjust move direction to next points
+            const Math::Vector3 dest = {
+                input.data[InputDataVertexX].GetFloat(),
+                input.data[InputDataVertexY].GetFloat(),
+                input.data[InputDataVertexZ].GetFloat()
+            };
+            GetGame()->map_->navMesh_->FindPath(wayPoints_, transformation_.position_,
+                dest);
+            if (wayPoints_.size() != 0)
+            {
+
+            }
+            break;
+        }
+        case InputTypeFollow:
+        {
+            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            followedObject_ = GetGame()->GetObjectById(targetId);
+            break;
+        }
         case InputTypeAttack:
             newState = AB::GameProtocol::CreatureStateAttacking;
             break;

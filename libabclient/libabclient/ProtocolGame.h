@@ -65,6 +65,8 @@ public:
     void SetDirection(float rad);
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
+    void GotoPos(const Vec3& pos);
+    void Follow(uint32_t targetId);
 };
 
 }

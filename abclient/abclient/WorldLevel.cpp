@@ -73,6 +73,9 @@ void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     case SDL_SCANCODE_M:
         ToggleMap();
         break;
+    case SDL_SCANCODE_SPACE:
+        player_->GotoSelected();
+        break;
     }
 }
 

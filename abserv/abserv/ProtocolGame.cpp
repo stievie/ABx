@@ -101,6 +101,22 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         player_->inputs_.Add(Game::InputTypeDirection, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeGoto:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataVertexX] = message.Get<float>();
+        data[Game::InputDataVertexY] = message.Get<float>();
+        data[Game::InputDataVertexZ] = message.Get<float>();
+        player_->inputs_.Add(Game::InputTypeGoto, data);
+        break;
+    }
+    case AB::GameProtocol::PacketTypeFollow:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataObjectId] = message.Get<uint8_t>();
+        player_->inputs_.Add(Game::InputTypeFollow, data);
+        break;
+    }
     case AB::GameProtocol::PacketTypeUseSkill:
     {
         Utils::VariantMap data;

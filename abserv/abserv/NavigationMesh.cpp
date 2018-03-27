@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "NavigationMesh.h"
+#include "Profiler.h"
 
 namespace Game {
 
@@ -39,6 +40,10 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends, const dtQueryFilter* filter)
 {
+    dest.clear();
+
+    AB_PROFILE;
+
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;
     dtPolyRef endRef = 0;
@@ -55,6 +60,20 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
         pathData_->polys_, &numPolys, MAX_POLYS);
     if (!numPolys)
         return;
+
+    Math::Vector3 actualEnd = end;
+
+    // If full path was not found, clamp end point to the end polygon
+    if (pathData_->polys_[numPolys - 1] != endRef)
+        navQuery_->closestPointOnPoly(pathData_->polys_[numPolys - 1], &end.x_, &actualEnd.x_, nullptr);
+
+    navQuery_->findStraightPath(&start.x_, &actualEnd.x_, pathData_->polys_, numPolys,
+        &pathData_->pathPoints_[0].x_, pathData_->pathFlags_, pathData_->pathPolys_, &numPathPoints, MAX_POLYS);
+
+    for (int i = 0; i < numPathPoints; ++i)
+    {
+        dest.push_back(pathData_->pathPoints_[i]);
+    }
 }
 
 }

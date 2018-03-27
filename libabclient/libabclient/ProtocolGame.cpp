@@ -292,4 +292,22 @@ void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::strin
     Send(msg);
 }
 
+void ProtocolGame::GotoPos(const Vec3& pos)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGoto);
+    msg->Add<float>(pos.x);
+    msg->Add<float>(pos.y);
+    msg->Add<float>(pos.z);
+    Send(msg);
+}
+
+void ProtocolGame::Follow(uint32_t targetId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
+    msg->Add<uint32_t>(targetId);
+    Send(msg);
+}
+
 }

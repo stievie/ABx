@@ -20,6 +20,7 @@ private:
     uint8_t moveDir_;
     uint8_t turnDir_;
 protected:
+    std::vector<Math::Vector3> wayPoints_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) {
         AB_UNUSED(type);
@@ -71,6 +72,7 @@ public:
     InputQueue inputs_;
     AB::GameProtocol::CreatureState creatureState_;
     std::weak_ptr<GameObject> selectedObject_;
+    std::weak_ptr<GameObject> followedObject_;
 
     EffectList effects_;
     SkillBar skills_;

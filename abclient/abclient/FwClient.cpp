@@ -202,6 +202,18 @@ void FwClient::Command(AB::GameProtocol::CommandTypes type, const String& data)
         client_.Command(type, std::string(data.CString()));
 }
 
+void FwClient::GotoPos(const Vector3& pos)
+{
+    if (loggedIn_)
+        client_.GotoPos({ pos.x_, pos.y_, pos.z_ });
+}
+
+void FwClient::FollowObject(uint32_t objectId)
+{
+    if (loggedIn_)
+        client_.FollowObject(objectId);
+}
+
 void FwClient::OnGetCharlist(const AB::Data::CharacterList& chars)
 {
     levelReady_ = false;

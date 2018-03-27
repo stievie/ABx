@@ -164,6 +164,15 @@ void Player::UpdateYaw()
     lastYaw_ = controls_.yaw_;
 }
 
+void Player::GotoSelected()
+{
+    if (selectedObject_)
+    {
+        FwClient* client = context_->GetSubsystem<FwClient>();
+        client->GotoPos(selectedObject_->GetNode()->GetPosition());
+    }
+}
+
 void Player::PostUpdate(float timeStep)
 {
     Node* characterNode = GetNode();

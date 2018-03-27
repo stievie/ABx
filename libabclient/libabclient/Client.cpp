@@ -295,10 +295,22 @@ void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
         protoGame_->SelectObject(sourceId, targetId);
 }
 
+void Client::FollowObject(uint32_t targetId)
+{
+    if (state_ == StateWorld)
+        protoGame_->Follow(targetId);
+}
+
 void Client::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
 {
     if (state_ == StateWorld)
         protoGame_->Command(type, data);
+}
+
+void Client::GotoPos(const Vec3& pos)
+{
+    if (state_ == StateWorld)
+        protoGame_->GotoPos(pos);
 }
 
 }

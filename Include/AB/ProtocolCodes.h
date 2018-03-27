@@ -180,6 +180,8 @@ enum GamePacketTypes : uint8_t
     PacketTypeMove = 0x20,
     PacketTypeTurn = 0x21,
     PacketTypeSetDirection = 0x22,
+    PacketTypeGoto = 0x23,                  // Goto point
+    PacketTypeFollow = 0x24,                // Follow object
 
     // Skills
     PacketTypeUseSkill = 0x40,
