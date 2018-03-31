@@ -109,29 +109,32 @@ void Actor::CreateModel()
 
 void Actor::FixedUpdate(float timeStep)
 {
+    Vector3 moveTo = Vector3::ZERO;
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
     {
         float p[3];
         FwClient* c = context_->GetSubsystem<FwClient>();
         double diff = (double)c->GetLastPing();
         posExtrapolator_.ReadPosition(GetClientTime() - diff, p);
-        GetNode()->SetPosition(Vector3(p[0], p[1], p[2]));
+        moveTo = Vector3(p[0], p[1], p[2]);
     }
     else
     {
-        const Vector3& cp = GetNode()->GetPosition();
-        if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
+        moveTo = moveToPos_;
+    }
+
+    const Vector3& cp = GetNode()->GetPosition();
+    if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
+    {
+        // Try to make moves smoother...
+        if ((cp - moveToPos_).LengthSquared() > 0.01f)
         {
-            // Try to make moves smoother...
-            if ((cp - moveToPos_).LengthSquared() > 0.01f)
-            {
-                // Seems to be the best result
-                Vector3 pos = cp.Lerp(moveToPos_, 0.3f);
-                GetNode()->SetPosition(pos);
-            }
-            else
-                GetNode()->SetPosition(moveToPos_);
+            // Seems to be the best result
+            Vector3 pos = cp.Lerp(moveToPos_, 0.4f);
+            GetNode()->SetPosition(pos);
         }
+        else
+            GetNode()->SetPosition(moveToPos_);
     }
 
     const Quaternion& rot = node_->GetRotation();
