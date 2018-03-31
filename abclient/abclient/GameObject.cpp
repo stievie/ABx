@@ -25,12 +25,17 @@ void GameObject::SetYRotation(float rad, bool updateYaw)
     GetNode()->SetRotation(direction);
 }
 
+void GameObject::SetCreatureState(double time, AB::GameProtocol::CreatureState newState)
+{
+    creatureState_ = newState;
+}
+
 float GameObject::GetYRotation()
 {
     return DegToRad(GetNode()->GetRotation().YawAngle());
 }
 
-void GameObject::MoveTo(const Vector3 & newPos)
+void GameObject::MoveTo(double time, const Vector3 & newPos)
 {
     GetNode()->SetPosition(newPos);
 }

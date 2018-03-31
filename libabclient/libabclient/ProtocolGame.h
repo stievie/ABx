@@ -27,6 +27,7 @@ private:
     std::string charName_;
     std::string map_;
     int64_t pingTick_;
+    int64_t updateTick_;
     int lastPing_;
     bool firstRevc_;
     PingCallback pingCallback_;
@@ -67,6 +68,11 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void Follow(uint32_t targetId);
+
+    int64_t GetUpdateTick() const
+    {
+        return updateTick_;
+    }
 };
 
 }

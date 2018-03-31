@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Extrapolator.h"
 
 using namespace Urho3D;
 
@@ -52,9 +53,10 @@ public:
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep) override;
     virtual void Update(float timeStep) override;
-    void MoveTo(const Vector3& newPos) override;
+    void MoveTo(double time, const Vector3& newPos) override;
     void SetYRotation(float rad, bool updateYaw) override;
     void RemoveFromScene() override;
+    void SetCreatureState(double time, AB::GameProtocol::CreatureState newState) override;
 
     void Unserialize(PropReadStream& data) override;
 
@@ -88,6 +90,7 @@ public:
     Vector3 moveToPos_;
     Quaternion rotateTo_;
     String name_;
+    Extrapolator<3, float> posExtrapolator_;
     void SelectObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
 };

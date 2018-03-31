@@ -54,23 +54,25 @@ public:
     uint32_t GetIp() const;
 
     // Receiver
-    void OnGetCharlist(const AB::Data::CharacterList& chars) override;
-    void OnGetGamelist(const AB::Data::GameList& games) override;
-    void OnEnterWorld(const std::string& mapName, uint32_t playerId) override;
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
-    void OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-        PropReadStream& data, bool existing) override;
-    void OnDespawnObject(uint32_t id) override;
-    void OnObjectPos(uint32_t id, const Vec3& pos) override;
-    void OnObjectRot(uint32_t id, float rot, bool manual) override;
-    void OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state) override;
+
+    void OnGetCharlist(const AB::Data::CharacterList& chars) override;
+    void OnGetGamelist(const AB::Data::GameList& games) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
-    void OnObjectSelected(uint32_t sourceId, uint32_t targetId) override;
-    void OnServerMessage(AB::GameProtocol::ServerMessageType type,
+
+    void OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId) override;
+    void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
+        PropReadStream& data, bool existing) override;
+    void OnDespawnObject(int64_t updateTick, uint32_t id) override;
+    void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) override;
+    void OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual) override;
+    void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) override;
+    void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
+    void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
         const std::string& senderName, const std::string& message) override;
-    void OnChatMessage(AB::GameProtocol::ChatMessageChannel channel,
+    void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) override;
 
     std::string loginHost_;

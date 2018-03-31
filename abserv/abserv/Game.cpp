@@ -88,6 +88,10 @@ void Game::Update()
     uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
     lastUpdate_ = tick;
 
+    // Add timestamp
+    gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
+    gameStatus_->Add<int64_t>(tick);
+
     // First Update all objects
     for (const auto& o : objects_)
     {

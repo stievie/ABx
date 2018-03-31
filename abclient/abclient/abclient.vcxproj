@@ -508,6 +508,7 @@
     <ClInclude Include="BaseLevel.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CreateAccountLevel.h" />
+    <ClInclude Include="Extrapolator.h" />
     <ClInclude Include="FwClient.h" />
     <ClInclude Include="GameMenu.h" />
     <ClInclude Include="GameObject.h" />

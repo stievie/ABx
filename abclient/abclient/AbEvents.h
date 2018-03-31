@@ -20,6 +20,7 @@ namespace AbEvents
 
     static const StringHash ED_MAP_NAME = StringHash("Map name");
 
+    static const StringHash ED_UPDATE_TICK = StringHash("Update Tick");
     static const StringHash ED_OBJECT_ID = StringHash("Object ID");
     static const StringHash ED_OBJECT_ID2 = StringHash("Object ID 2");
     static const StringHash ED_OBJECT_DATA = StringHash("Object Data");

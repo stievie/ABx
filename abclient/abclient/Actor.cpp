@@ -7,6 +7,8 @@
 #include "LevelManager.h"
 #include "BaseLevel.h"
 #include "MathUtils.h"
+#include "TimeUtils.h"
+#include <AB/ProtocolCodes.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -106,6 +108,7 @@ void Actor::CreateModel()
 
 void Actor::FixedUpdate(float timeStep)
 {
+    /*
     const Vector3& cp = GetNode()->GetPosition();
     if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
     {
@@ -119,6 +122,17 @@ void Actor::FixedUpdate(float timeStep)
         else
             GetNode()->SetPosition(moveToPos_);
     }
+    */
+    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+    {
+        double now = (Client::AbTick() - spawnTickServer_) / 1000.0;
+        float p[3];
+        posExtrapolator_.ReadPosition(now, p);
+        GetNode()->SetPosition(Vector3(p[0], p[1], p[2]));
+    }
+    else
+        GetNode()->SetPosition(moveToPos_);
+
     const Quaternion& rot = node_->GetRotation();
     if (rotateTo_ != rot)
     {
@@ -166,8 +180,11 @@ void Actor::Update(float timeStep)
     hpBar_->SetVisible(hovered_ || playerSelected_);
 }
 
-void Actor::MoveTo(const Vector3& newPos)
+void Actor::MoveTo(double time, const Vector3& newPos)
 {
+    double now = (Client::AbTick() - spawnTickServer_) / 1000.0;
+    const float p[3] = { newPos.x_, newPos.y_, newPos.z_ };
+    posExtrapolator_.AddSample(time, now, p);
     moveToPos_ = newPos;
 }
 
@@ -225,6 +242,17 @@ void Actor::SelectObject(SharedPtr<GameObject> object)
     {
         selectedObject_->playerSelected_ = true;
     }
+}
+
+void Actor::SetCreatureState(double time, AB::GameProtocol::CreatureState newState)
+{
+    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+    {
+        double now = (Client::AbTick() - spawnTickServer_) / 1000.0;
+        const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
+        posExtrapolator_.Reset(time, now, p);
+    }
+    GameObject::SetCreatureState(time, newState);
 }
 
 void Actor::Unserialize(PropReadStream& data)

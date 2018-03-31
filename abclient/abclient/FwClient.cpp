@@ -229,13 +229,14 @@ void FwClient::OnGetGamelist(const AB::Data::GameList& games)
     games_ = games;
 }
 
-void FwClient::OnEnterWorld(const std::string& mapName, uint32_t playerId)
+void FwClient::OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId)
 {
     levelReady_ = false;
     playerId_ = playerId;
     VariantMap& eData = GetEventDataMap();
     currentLevel_ = "OutpostLevel";
     currentMap_ = String(mapName.c_str());
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_MAP_NAME] = currentMap_;
     eData[AbEvents::E_SET_LEVEL] = currentLevel_;
     SendEvent(AbEvents::E_SET_LEVEL, eData);
@@ -276,10 +277,11 @@ void FwClient::OnProtocolError(uint8_t err)
     cl->OnProtocolError(err);
 }
 
-void FwClient::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
+void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
     eData[AbEvents::ED_ROTATION] = rot;
@@ -292,33 +294,37 @@ void FwClient::OnSpawnObject(uint32_t id, const Vec3& pos, const Vec3& scale, fl
         QueueEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, eData);
 }
 
-void FwClient::OnDespawnObject(uint32_t id)
+void FwClient::OnDespawnObject(int64_t updateTick, uint32_t id)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_OBJECT_ID] = id;
     QueueEvent(AbEvents::E_OBJECT_DESPAWN, eData);
 }
 
-void FwClient::OnObjectPos(uint32_t id, const Vec3& pos)
+void FwClient::OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
     QueueEvent(AbEvents::E_OBJECT_POS_UPDATE, eData);
 }
 
-void FwClient::OnObjectRot(uint32_t id, float rot, bool manual)
+void FwClient::OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_ROTATION] = rot;
     eData[AbEvents::ED_ROTATION_MANUAL] = manual;
     QueueEvent(AbEvents::E_OBJECT_ROT_UPDATE, eData);
 }
 
-void FwClient::OnObjectStateChange(uint32_t id, AB::GameProtocol::CreatureState state)
+void FwClient::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_OBJECT_ID] = id;
     eData[AbEvents::ED_OBJECT_STATE] = static_cast<unsigned>(state);
     QueueEvent(AbEvents::E_OBJECT_SATE_UPDATE, eData);
@@ -335,28 +341,31 @@ void FwClient::OnPlayerCreated(const std::string& name, const std::string& map)
     EnterWorld(String(name.c_str()), String(map.c_str()));
 }
 
-void FwClient::OnObjectSelected(uint32_t sourceId, uint32_t targetId)
+void FwClient::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_OBJECT_ID] = sourceId;
     eData[AbEvents::ED_OBJECT_ID2] = targetId;
     QueueEvent(AbEvents::E_OBJECT_SELECTED, eData);
 }
 
-void FwClient::OnServerMessage(AB::GameProtocol::ServerMessageType type,
+void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_MESSAGE_TYPE] = type;
     eData[AbEvents::ED_MESSAGE_SENDER] = String(senderName.data(), (int)senderName.length());
     eData[AbEvents::ED_MESSAGE_DATA] = String(message.data(), (int)message.length());
     QueueEvent(AbEvents::E_SERVER_MESSAGE, eData);
 }
 
-void FwClient::OnChatMessage(AB::GameProtocol::ChatMessageChannel channel,
+void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
     uint32_t senderId, const std::string& senderName, const std::string& message)
 {
     VariantMap& eData = GetEventDataMap();
+    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
     eData[AbEvents::ED_MESSAGE_TYPE] = channel;
     eData[AbEvents::ED_MESSAGE_SENDER_ID] = senderId;
     eData[AbEvents::ED_MESSAGE_SENDER] = String(senderName.data(), (int)senderName.length());

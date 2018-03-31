@@ -6,6 +6,7 @@
 #include "FwClient.h"
 #include "LevelManager.h"
 #include "MathUtils.h"
+#include "TimeUtils.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -243,6 +244,7 @@ void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
     uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
     if (objects_.Contains(objectId))
         return;
+    int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
     Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
     float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
     Quaternion direction;
@@ -251,11 +253,11 @@ void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
     Vector3 scale = eventData[AbEvents::ED_SCALE].GetVector3();
     String d = eventData[AbEvents::ED_OBJECT_DATA].GetString();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(objectId, eventType == AbEvents::E_OBJECT_SPAWN_EXISTING,
+    SpawnObject(tick, objectId, eventType == AbEvents::E_OBJECT_SPAWN_EXISTING,
         pos, scale, direction, data);
 }
 
-void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
+void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
     const Quaternion& rot, PropReadStream& data)
 {
     uint8_t objectType;
@@ -288,6 +290,10 @@ void WorldLevel::SpawnObject(uint32_t id, bool existing, const Vector3& position
     if (object)
     {
         object->Unserialize(data);
+        object->spawnTickServer_ = updateTick;
+        double now = (Client::AbTick() - updateTick) / 1000.0;
+        const float p[3] = { position.x_, position.y_, position.z_ };
+        dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(0.0, now, p);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
@@ -327,8 +333,10 @@ void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventDa
     GameObject* object = objects_[objectId];
     if (object)
     {
+        int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
+        double time = (tick - object->spawnTickServer_) / 1000.0;
         Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
-        object->MoveTo(pos);
+        object->MoveTo(time, pos);
     }
 }
 
@@ -351,7 +359,9 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
     GameObject* object = objects_[objectId];
     if (object)
     {
-        object->creatureState_ = static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt());
+        int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
+        double time = (tick - object->spawnTickServer_) / 1000.0;
+        object->SetCreatureState(time, static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt()));
     }
 }
 

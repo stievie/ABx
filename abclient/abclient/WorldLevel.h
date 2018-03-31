@@ -76,7 +76,7 @@ private:
     void HandleMenuMail(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
 
-    void SpawnObject(uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
+    void SpawnObject(int64_t updateTick, uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
         const Quaternion& rot, PropReadStream& data);
 };
 

@@ -105,6 +105,9 @@
     <ClInclude Include="MapWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Extrapolator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">

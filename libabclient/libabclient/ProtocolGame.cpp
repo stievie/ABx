@@ -8,7 +8,8 @@ namespace Client {
 
 ProtocolGame::ProtocolGame() :
     Protocol(),
-    pingCallback_(nullptr)
+    pingCallback_(nullptr),
+    updateTick_(0)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
@@ -108,7 +109,7 @@ void ProtocolGame::ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& mes
     float rot = message->Get<float>();
     bool manual = message->Get<uint8_t>() != 0;
     if (receiver_)
-        receiver_->OnObjectRot(objectId, rot, manual);
+        receiver_->OnObjectRot(updateTick_, objectId, rot, manual);
 }
 
 void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& message)
@@ -116,7 +117,7 @@ void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& m
     uint32_t objectId = message->Get<uint32_t>();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
     if (receiver_)
-        receiver_->OnObjectStateChange(objectId, state);
+        receiver_->OnObjectStateChange(updateTick_, objectId, state);
 }
 
 void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& message)
@@ -124,7 +125,7 @@ void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& mess
     uint32_t sourceId = message->Get<uint32_t>();
     uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnObjectSelected(sourceId, targetId);
+        receiver_->OnObjectSelected(updateTick_, sourceId, targetId);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)
@@ -134,7 +135,7 @@ void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& messa
     std::string sender = message->GetString();
     std::string data = message->GetString();
     if (receiver_)
-        receiver_->OnServerMessage(type, sender, data);
+        receiver_->OnServerMessage(updateTick_, type, sender, data);
 }
 
 void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message)
@@ -145,7 +146,7 @@ void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message
     std::string sender = message->GetString();
     std::string data = message->GetString();
     if (receiver_)
-        receiver_->OnChatMessage(type, senderId, sender, data);
+        receiver_->OnChatMessage(updateTick_, type, senderId, sender, data);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
@@ -158,14 +159,14 @@ void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& mes
         message->Get<float>()
     };
     if (receiver_)
-        receiver_->OnObjectPos(objectId, newPos);
+        receiver_->OnObjectPos(updateTick_, objectId, newPos);
 }
 
 void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnDespawnObject(objectId);
+        receiver_->OnDespawnObject(updateTick_, objectId);
 }
 
 void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message)
@@ -189,12 +190,12 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (receiver_)
-        receiver_->OnSpawnObject(objectId, pos, scale, rot, stream, existing);
+        receiver_->OnSpawnObject(updateTick_, objectId, pos, scale, rot, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
 {
-    /* int64_t tick = */ message->Get<int64_t>();
+    updateTick_ = message->Get<int64_t>();
 }
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
@@ -217,7 +218,7 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
     std::string map = message->GetString();
     uint32_t playerId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnEnterWorld(map, playerId);
+        receiver_->OnEnterWorld(updateTick_, map, playerId);
 }
 
 void ProtocolGame::SendLoginPacket()
