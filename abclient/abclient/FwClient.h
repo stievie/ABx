@@ -44,6 +44,13 @@ public:
             return client_.GetIp();
         return 0;
     }
+    /// Get difference of server and client clock
+    int64_t GetClockDiff() const
+    {
+        if (loggedIn_)
+            return client_.GetClockDiff();
+        return 0;
+    }
     bool Start();
     void Stop();
     void Login(const String& name, const String& pass);

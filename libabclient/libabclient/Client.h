@@ -101,6 +101,7 @@ public:
             return pings_.back();
         return 0;
     }
+    int64_t GetClockDiff() const;
 
     void Move(uint8_t direction);
     void Turn(uint8_t direction);

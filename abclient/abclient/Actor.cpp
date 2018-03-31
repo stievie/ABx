@@ -9,6 +9,7 @@
 #include "MathUtils.h"
 #include "TimeUtils.h"
 #include <AB/ProtocolCodes.h>
+#include "FwClient.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -108,30 +109,30 @@ void Actor::CreateModel()
 
 void Actor::FixedUpdate(float timeStep)
 {
-    /*
-    const Vector3& cp = GetNode()->GetPosition();
-    if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
-    {
-        // Try to make moves smoother...
-        if ((cp - moveToPos_).LengthSquared() > 0.01f)
-        {
-            // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveToPos_, 0.4f);
-            GetNode()->SetPosition(pos);
-        }
-        else
-            GetNode()->SetPosition(moveToPos_);
-    }
-    */
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
     {
-        double now = (Client::AbTick() - spawnTickServer_) / 1000.0;
         float p[3];
-        posExtrapolator_.ReadPosition(now, p);
+        FwClient* c = context_->GetSubsystem<FwClient>();
+        double diff = (double)c->GetLastPing();
+        posExtrapolator_.ReadPosition(GetClientTime() - diff, p);
         GetNode()->SetPosition(Vector3(p[0], p[1], p[2]));
     }
     else
-        GetNode()->SetPosition(moveToPos_);
+    {
+        const Vector3& cp = GetNode()->GetPosition();
+        if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
+        {
+            // Try to make moves smoother...
+            if ((cp - moveToPos_).LengthSquared() > 0.01f)
+            {
+                // Seems to be the best result
+                Vector3 pos = cp.Lerp(moveToPos_, 0.3f);
+                GetNode()->SetPosition(pos);
+            }
+            else
+                GetNode()->SetPosition(moveToPos_);
+        }
+    }
 
     const Quaternion& rot = node_->GetRotation();
     if (rotateTo_ != rot)
@@ -180,12 +181,11 @@ void Actor::Update(float timeStep)
     hpBar_->SetVisible(hovered_ || playerSelected_);
 }
 
-void Actor::MoveTo(double time, const Vector3& newPos)
+void Actor::MoveTo(int64_t time, const Vector3& newPos)
 {
-    double now = (Client::AbTick() - spawnTickServer_) / 1000.0;
-    const float p[3] = { newPos.x_, newPos.y_, newPos.z_ };
-    posExtrapolator_.AddSample(time, now, p);
     moveToPos_ = newPos;
+    const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
+    posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
 }
 
 void Actor::SetYRotation(float rad, bool updateYaw)
@@ -244,13 +244,12 @@ void Actor::SelectObject(SharedPtr<GameObject> object)
     }
 }
 
-void Actor::SetCreatureState(double time, AB::GameProtocol::CreatureState newState)
+void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
 {
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
     {
-        double now = (Client::AbTick() - spawnTickServer_) / 1000.0;
         const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
-        posExtrapolator_.Reset(time, now, p);
+        posExtrapolator_.Reset(GetServerTime(time), GetClientTime(), p);
     }
     GameObject::SetCreatureState(time, newState);
 }

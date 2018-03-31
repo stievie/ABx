@@ -271,6 +271,13 @@ uint32_t Client::GetIp() const
     return 0;
 }
 
+int64_t Client::GetClockDiff() const
+{
+    if (protoGame_)
+        return protoGame_->GetClockDiff();
+    return 0;
+}
+
 void Client::Move(uint8_t direction)
 {
     if (state_ == StateWorld)

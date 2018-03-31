@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameObject.h"
 #include "MathUtils.h"
+#include "FwClient.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -17,6 +18,12 @@ GameObject::~GameObject()
 {
 }
 
+double GameObject::GetClientTime() const
+{
+    FwClient* c = context_->GetSubsystem<FwClient>();
+    return (double)(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
+}
+
 void GameObject::SetYRotation(float rad, bool updateYaw)
 {
     Quaternion direction;
@@ -25,7 +32,7 @@ void GameObject::SetYRotation(float rad, bool updateYaw)
     GetNode()->SetRotation(direction);
 }
 
-void GameObject::SetCreatureState(double time, AB::GameProtocol::CreatureState newState)
+void GameObject::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
 {
     creatureState_ = newState;
 }
@@ -35,7 +42,7 @@ float GameObject::GetYRotation()
     return DegToRad(GetNode()->GetRotation().YawAngle());
 }
 
-void GameObject::MoveTo(double time, const Vector3 & newPos)
+void GameObject::MoveTo(int64_t time, const Vector3 & newPos)
 {
     GetNode()->SetPosition(newPos);
 }

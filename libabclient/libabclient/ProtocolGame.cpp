@@ -196,6 +196,7 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
 {
     updateTick_ = message->Get<int64_t>();
+    clockDiff_ = AbTick() - updateTick_;
 }
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)

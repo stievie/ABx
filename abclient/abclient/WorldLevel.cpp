@@ -291,9 +291,9 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing, con
     {
         object->Unserialize(data);
         object->spawnTickServer_ = updateTick;
-        double now = (Client::AbTick() - updateTick) / 1000.0;
         const float p[3] = { position.x_, position.y_, position.z_ };
-        dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(0.0, now, p);
+        dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
+            object->GetClientTime(), p);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
@@ -334,9 +334,8 @@ void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventDa
     if (object)
     {
         int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
-        double time = (tick - object->spawnTickServer_) / 1000.0;
         Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
-        object->MoveTo(time, pos);
+        object->MoveTo(tick, pos);
     }
 }
 
@@ -360,8 +359,7 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
     if (object)
     {
         int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
-        double time = (tick - object->spawnTickServer_) / 1000.0;
-        object->SetCreatureState(time, static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt()));
+        object->SetCreatureState(tick, static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt()));
     }
 }
 

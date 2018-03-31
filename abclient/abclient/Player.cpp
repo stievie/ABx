@@ -78,8 +78,6 @@ void Player::Init()
 
 void Player::FixedUpdate(float timeStep)
 {
-    Actor::FixedUpdate(timeStep);
-
     FwClient* client = context_->GetSubsystem<FwClient>();
 
     uint8_t moveDir = AB::GameProtocol::MoveDirectionNone;
@@ -130,12 +128,12 @@ void Player::FixedUpdate(float timeStep)
         client->SetDirection(DegToRad(controls_.yaw_));
         lastYaw_ = controls_.yaw_;
     }
+
+    Actor::FixedUpdate(timeStep);
 }
 
 void Player::SetYRotation(float rad, bool updateYaw)
 {
-    Actor::SetYRotation(rad, updateYaw);
-
     if (updateYaw)
     {
         // Yaw is already set by the client
@@ -143,6 +141,8 @@ void Player::SetYRotation(float rad, bool updateYaw)
         controls_.yaw_ = deg;
     }
     lastYaw_ = controls_.yaw_;
+
+    Actor::SetYRotation(rad, updateYaw);
 }
 
 void Player::SetCameraDist(bool increase)

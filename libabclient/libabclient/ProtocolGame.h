@@ -28,6 +28,7 @@ private:
     std::string map_;
     int64_t pingTick_;
     int64_t updateTick_;
+    int64_t clockDiff_;
     int lastPing_;
     bool firstRevc_;
     PingCallback pingCallback_;
@@ -72,6 +73,10 @@ public:
     int64_t GetUpdateTick() const
     {
         return updateTick_;
+    }
+    int64_t GetClockDiff() const
+    {
+        return clockDiff_;
     }
 };
 

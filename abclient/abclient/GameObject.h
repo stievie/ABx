@@ -2,6 +2,7 @@
 
 #include <AB/ProtocolCodes.h>
 #include "PropStream.h"
+#include "TimeUtils.h"
 
 enum ObjectType
 {
@@ -26,6 +27,7 @@ public:
     unsigned index_;
     ObjectType objectType_;
     int64_t spawnTickServer_;
+//    int64_t spawnTickClient_;
     /// Player hovers
     bool hovered_;
     /// Player has selected this object
@@ -33,14 +35,20 @@ public:
 
     virtual void Unserialize(PropReadStream& data) {}
 
+    double GetServerTime(int64_t tick) const
+    {
+        return (double)(tick - spawnTickServer_) / 1000.0;
+    }
+    double GetClientTime() const;
+
     virtual void SetYRotation(float rad, bool updateYaw);
-    virtual void SetCreatureState(double time, AB::GameProtocol::CreatureState newState);
+    virtual void SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState);
     AB::GameProtocol::CreatureState GetCreatureState() const
     {
         return creatureState_;
     }
     float GetYRotation();
-    virtual void MoveTo(double time, const Vector3& newPos);
+    virtual void MoveTo(int64_t time, const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
     IntVector2 WorldToScreenPoint();
     IntVector2 WorldToScreenPoint(Vector3 pos);

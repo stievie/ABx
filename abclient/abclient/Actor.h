@@ -53,10 +53,10 @@ public:
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep) override;
     virtual void Update(float timeStep) override;
-    void MoveTo(double time, const Vector3& newPos) override;
+    void MoveTo(int64_t time, const Vector3& newPos) override;
     void SetYRotation(float rad, bool updateYaw) override;
     void RemoveFromScene() override;
-    void SetCreatureState(double time, AB::GameProtocol::CreatureState newState) override;
+    void SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState) override;
 
     void Unserialize(PropReadStream& data) override;
 
