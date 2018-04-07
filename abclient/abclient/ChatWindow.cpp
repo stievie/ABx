@@ -4,6 +4,7 @@
 #include "AbEvents.h"
 #include "Utils.h"
 #include <TimeUtils.h>
+#include <Mustache/mustache.hpp>
 
 #include <Urho3D/DebugNew.h>
 
@@ -165,7 +166,13 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
         unsigned p = message.Find(":");
         String res = message.Substring(0, p);
         String max = message.Substring(p + 1);
-        AddLine(sender + " rolls " + res + " on a " + max + " sided die.", "ChatLogChatText");
+        kainjow::mustache::mustache tpl{ "{{name}} rolls {{res}} on a {{max}} sided die." };
+        kainjow::mustache::data data;
+        data.set("name", std::string(sender.CString(), sender.Length()));
+        data.set("res", std::string(res.CString(), res.Length()));
+        data.set("max", std::string(max.CString(), max.Length()));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
         break;
     }
     case AB::GameProtocol::ServerMessageTypeAge:

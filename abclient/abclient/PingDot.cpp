@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PingDot.h"
 #include "FwClient.h"
+#include <Mustache/mustache.hpp>
 
 #include <Urho3D/DebugNew.h>
 
@@ -48,10 +49,13 @@ void PingDot::Update(float timeStep)
         else
             SetImageRect(PingDot::PING_BAD);
 
-        std::stringstream s;
-        s << "FPS: " << fps << "\n\n";
-        s << "Average Ping: " << c->GetAvgPing() << "ms\nLast Ping: " << c->GetLastPing() << "ms";
-        tooltipText_->SetText(String(s.str().c_str()));
+        kainjow::mustache::mustache tmpl{ "FPS: {{fps}}\n\nAverage Ping: {{avg_ping}}ms\nLast Ping: {{last_ping}}ms" };
+        kainjow::mustache::data d;
+        d.set("fps", std::to_string(fps));
+        d.set("avg_ping", std::to_string(c->GetAvgPing()));
+        d.set("last_ping", std::to_string(c->GetLastPing()));
+        std::string text = tmpl.render(d);
+        tooltipText_->SetText(String(text.c_str()));
 
         lastUpdate_ = 0.0f;
     }

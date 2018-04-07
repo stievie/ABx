@@ -109,14 +109,16 @@ void Actor::CreateModel()
 
 void Actor::FixedUpdate(float timeStep)
 {
-    Vector3 moveTo = Vector3::ZERO;
+    Vector3 moveTo;
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
     {
         float p[3];
         FwClient* c = context_->GetSubsystem<FwClient>();
         double diff = (double)c->GetLastPing();
-        posExtrapolator_.ReadPosition(GetClientTime() - diff, p);
-        moveTo = Vector3(p[0], p[1], p[2]);
+        if (posExtrapolator_.ReadPosition(GetClientTime() - diff, p))
+            moveTo = Vector3(p[0], p[1], p[2]);
+        else
+            moveTo = moveToPos_;
     }
     else
     {
@@ -140,9 +142,9 @@ void Actor::FixedUpdate(float timeStep)
     const Quaternion& rot = node_->GetRotation();
     if (rotateTo_ != rot)
     {
-        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 10.0f)
+        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 0.1f)
         {
-            Quaternion r = rot.Slerp(rotateTo_, 0.25f);
+            Quaternion r = rot.Slerp(rotateTo_, 0.3f);
             node_->SetRotation(r);
         }
         else
