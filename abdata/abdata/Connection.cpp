@@ -105,7 +105,6 @@ void Connection::StartGetOperation()
     data_ = storageProvider_.Get(key_);
     if (data_)
     {
-
         uint8_t header[] = {
             (uint8_t)Data,
             (uint8_t)data_->size(),
@@ -181,23 +180,21 @@ void Connection::StartClientRequestedOp()
 {
     switch (opcode_)
     {
-    case 0:
+    case OpCodes::Set:
         StartSetDataOperation();
         break;
-    case 1:
+    case OpCodes::Get:
         StartGetOperation();
         break;
-    case 2:
+    case OpCodes::Delete:
         StartDeleteOperation();
         break;
-    case 3:
-    case 4:
+    case OpCodes::Status:
+    case OpCodes::Data:
         SendStatusAndRestart(OtherErrors, "Opcode you sent is not valid in this case");
         break;
     default:
-    {
         SendStatusAndRestart(OtherErrors, "Opcode you sent does not exist");
-    }
     }
 }
 
@@ -212,7 +209,7 @@ void Connection::SendStatusAndRestart(ErrorCodes code, std::string message)
 
     //push message length
     data_->push_back((unsigned char)message.length());
-    for (auto letter : message)
+    for (const auto& letter : message)
     {
         data_.get()->push_back(letter);
     }
@@ -222,7 +219,8 @@ void Connection::SendStatusAndRestart(ErrorCodes code, std::string message)
 
 void Connection::SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size)
 {
-    asio::async_write(socket_, resp, asio::transfer_at_least(size), std::bind(&Connection::HandleWriteReqResponse,
-        shared_from_this(), std::placeholders::_1));
+    asio::async_write(socket_, resp, asio::transfer_at_least(size),
+        std::bind(&Connection::HandleWriteReqResponse,
+            shared_from_this(), std::placeholders::_1));
 }
 

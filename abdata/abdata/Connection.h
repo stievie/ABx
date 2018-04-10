@@ -8,7 +8,7 @@ class ConnectionManager;
 
 enum OpCodes
 {
-	Set,
+	Set = 0,
     Get,
     Delete,
     Status,

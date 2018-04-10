@@ -20,8 +20,9 @@ Server::Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize)
 void Server::StartAccept()
 {
 	newConnection_.reset(new Connection(io_service_, connectionManager_, storageProvider_,maxDataSize_,maxKeySize_));
-	acceptor_.async_accept(newConnection_->socket(), std::bind(&Server::HandleAccept, this,
-        std::placeholders::_1));
+	acceptor_.async_accept(newConnection_->socket(),
+        std::bind(&Server::HandleAccept, this,
+            std::placeholders::_1));
 }
 
 void Server::HandleAccept(const asio::error_code& error)

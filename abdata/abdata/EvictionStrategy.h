@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -11,7 +12,7 @@ class DataItem
 public:
     std::string key;
     uint64_t rank;
-    DataItem(std::string k, uint64_t r) :
+    DataItem(const std::string& k, uint64_t r) :
         key(k),
         rank(r)
     { }
@@ -34,35 +35,27 @@ typedef boost::multi_index::multi_index_container
 class  EvictionStrategy
 {
 public:
-    virtual ~EvictionStrategy()
-    { }
-
+    virtual ~EvictionStrategy() = default;
     virtual std::string NextEviction() = 0;
-
-    virtual void AddKey(std::string) = 0;
-
-    virtual void RefreshKey(std::string) = 0;
-
-    virtual void DeleteKey(std::string) = 0;
+    virtual void AddKey(const std::string&) = 0;
+    virtual void RefreshKey(const std::string&) = 0;
+    virtual void DeleteKey(const std::string&) = 0;
 };
 
 class OldestInsertionEviction : public EvictionStrategy
 {
 public:
     OldestInsertionEviction();
-
     std::string NextEviction();
-
-    void AddKey(std::string);
-
-    void RefreshKey(std::string);
-
-    void DeleteKey(std::string);
+    void AddKey(const std::string&);
+    void RefreshKey(const std::string&);
+    void DeleteKey(const std::string&);
 private:
     uint64_t GetNextRank()
     {
+        //NOTE not thread safe
         return currentRank++;
-    }//NOTE not thread safe
+    }
     uint64_t currentRank;
     DataItemContainer dataItems_;
 };

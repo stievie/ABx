@@ -71,13 +71,9 @@ bool StorageProvider::RemoveData(const std::string& key)
         currentSize_ -= (*data).second->size();
         cache_.erase(key);
         evictor_->DeleteKey(key);
-        return 1;
+        return true;
     }
-    else
-    {
-        return 0;
-    }
-
+    return false;
 }
 
 

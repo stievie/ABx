@@ -20,12 +20,12 @@ std::string OldestInsertionEviction::NextEviction()
     return retVal;
 }
 
-void OldestInsertionEviction::AddKey(std::string key)
+void OldestInsertionEviction::AddKey(const std::string& key)
 {
     dataItems_.insert(DataItem(key, GetNextRank()));
 }
 
-void OldestInsertionEviction::RefreshKey(std::string key)
+void OldestInsertionEviction::RefreshKey(const std::string& key)
 {
     uint64_t next = GetNextRank();
     auto keyItr = dataItems_.find(key);
@@ -35,7 +35,7 @@ void OldestInsertionEviction::RefreshKey(std::string key)
     });
 }
 
-void OldestInsertionEviction::DeleteKey(std::string key)
+void OldestInsertionEviction::DeleteKey(const std::string& key)
 {
     auto keyItr = dataItems_.find(key);
     if (keyItr != dataItems_.end())
