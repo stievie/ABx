@@ -5,36 +5,42 @@
 
 using namespace boost::multi_index;
 
-OldestInsertionEviction::OldestInsertionEviction():currentRank(0){}
-
-std::string OldestInsertionEviction::nextEviction()
+OldestInsertionEviction::OldestInsertionEviction() :
+    currentRank(0)
 {
-	DataItemContainer::nth_index<1>::type& rankIndex = dataItems_.get<1>();
-
-	auto first = rankIndex.begin();
-	std::string retVal = first->key;
-	dataItems_.erase(retVal);
-	return retVal;
 }
 
-void OldestInsertionEviction::addKey(std::string key)
+std::string OldestInsertionEviction::NextEviction()
 {
-	dataItems_.insert(DataItem(key,getNextRank()));
+    DataItemContainer::nth_index<1>::type& rankIndex = dataItems_.get<1>();
+
+    auto first = rankIndex.begin();
+    std::string retVal = first->key;
+    dataItems_.erase(retVal);
+    return retVal;
 }
 
-void OldestInsertionEviction::refreshKey(std::string key)
+void OldestInsertionEviction::AddKey(std::string key)
 {
-	uint64_t next=getNextRank();
-	auto keyItr = dataItems_.find(key);
-	dataItems_.modify(keyItr, [next](DataItem& d) {d.rank = next; });
+    dataItems_.insert(DataItem(key, GetNextRank()));
 }
 
-void OldestInsertionEviction::deleteKey(std::string key)
+void OldestInsertionEviction::RefreshKey(std::string key)
 {
-	auto keyItr = dataItems_.find(key);
-	if (keyItr != dataItems_.end())
-	{
-		dataItems_.erase(keyItr);
-	}
+    uint64_t next = GetNextRank();
+    auto keyItr = dataItems_.find(key);
+    dataItems_.modify(keyItr, [next](DataItem& d)
+    {
+        d.rank = next;
+    });
+}
+
+void OldestInsertionEviction::DeleteKey(std::string key)
+{
+    auto keyItr = dataItems_.find(key);
+    if (keyItr != dataItems_.end())
+    {
+        dataItems_.erase(keyItr);
+    }
 
 }

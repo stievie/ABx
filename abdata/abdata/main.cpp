@@ -30,11 +30,10 @@ int main(int argc, char* argv[])
         if (argc > 1)
             port = std::atoi(argv[1]);
         int maxSize = 1024 * 1024 * 1024;
-        //TODO check that maxsize > size of file
         std::cout << "Port: " << port << std::endl;
         std::cout << "MaxSize: " << maxSize << " bytes" << std::endl;
         asio::io_service io_service;
-        Server serv(io_service, port, maxSize);
+        Server serv(io_service, (uint16_t)port, maxSize);
         io_service.run();
     }
     catch (std::exception& e)

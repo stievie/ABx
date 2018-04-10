@@ -11,13 +11,13 @@ public:
     ConnectionManager& operator=(const ConnectionManager&) = delete;
 
     /// Add the specified connection to the manager and start it.
-	void start(ConnectionPtr c);
+	void Start(ConnectionPtr c);
 
 	/// Stop the specified connection.
-	void stop(ConnectionPtr c);
+	void Stop(ConnectionPtr c);
 
 	/// Stop all connections.
-	void stop_all();
+	void StopAll();
 
 private:
 

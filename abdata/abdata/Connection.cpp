@@ -4,8 +4,8 @@
 #include "ConnectionManager.h"
 #include "StorageProvider.h"
 
-Connection::Connection(asio::io_service & io_service, ConnectionManager& manager,
-    StorageProvider& storage, int maxData, int maxKey) :
+Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
+    StorageProvider& storage, size_t maxData, size_t maxKey) :
     socket_(io_service),
     connectionManager_(manager),
     storageProvider_(storage),
@@ -19,34 +19,34 @@ asio::ip::tcp::socket& Connection::socket()
     return socket_;
 }
 
-void Connection::start()
+void Connection::Start()
 {
     data_.reset(new std::vector<uint8_t>(3));
     auto self(shared_from_this());
     asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(3),
-        [this, self](const asio::error_code& error, uint32_t bytes_transferred)
+        [this, self](const asio::error_code& error, size_t /* bytes_transferred */)
     {
         if (!error)
         {
             opcode_ = data_->at(0);
             uint16_t keySize = toInt16(*data_.get(), 1);
-            if (keySize <= maxKeySize_)
+            if (keySize <= (uint16_t)maxKeySize_)
             {
-                startReadKey(keySize);
+                StartReadKey(keySize);
             }
             else
             {
-                sendStatusAndRestart(KeyTooBig, "supplied key is too big.Maximum allowed key size is: " + maxKeySize_);
+                SendStatusAndRestart(KeyTooBig, "supplied key is too big.Maximum allowed key size is: " + maxKeySize_);
             }
         }
         else
         {
-            connectionManager_.stop(self);
+            connectionManager_.Stop(self);
         }
     });
 }
 
-void Connection::startReadKey(uint16_t& keySize)
+void Connection::StartReadKey(uint16_t& keySize)
 {
     key_.resize(keySize);// .clear();//start fresh.TODO consider cost of this
     auto self = shared_from_this();
@@ -55,28 +55,28 @@ void Connection::startReadKey(uint16_t& keySize)
     {
         if (!error)
         {
-            if (byteTransferred != keySize)
+            if ((uint16_t)byteTransferred != keySize)
             {
-                sendStatusAndRestart(OtherErrors, "Data sent is not equal to the expected size");
+                SendStatusAndRestart(OtherErrors, "Data sent is not equal to the expected size");
             }
             else
             {
-                startClientRequestedOp();
+                StartClientRequestedOp();
             }
         }
         else
         {
-            connectionManager_.stop(self);
+            connectionManager_.Stop(self);
         }
     });
 }
 
-void Connection::startSetDataOperation()
+void Connection::StartSetDataOperation()
 {
     data_.reset(new std::vector<uint8_t>(4));
     auto self = shared_from_this();
     asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
-        [this, self](const asio::error_code & error, uint32_t bytes_transferred)
+        [this, self](const asio::error_code& error, size_t /* bytes_transferred */)
     {
         if (!error)
         {
@@ -85,26 +85,24 @@ void Connection::startSetDataOperation()
             {
                 data_.reset(new std::vector<uint8_t>(size));
                 asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
-                    std::bind(&Connection::handleReadRawData, self,
+                    std::bind(&Connection::HandleReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
             {
-
-                sendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
+                SendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
             }
-
         }
         else
         {
-            connectionManager_.stop(self);
+            connectionManager_.Stop(self);
         }
     });
 }
 
-void Connection::startGetOperation()
+void Connection::StartGetOperation()
 {
-    data_ = storageProvider_.get(key_);
+    data_ = storageProvider_.Get(key_);
     if (data_)
     {
 
@@ -121,94 +119,89 @@ void Connection::startGetOperation()
             asio::buffer(*data_.get())
         };
 
-        sendResponseAndStart(bufs, data_->size() + 4);
+        SendResponseAndStart(bufs, data_->size() + 4);
     }
     else
     {
         /*boost::shared_ptr<std::vector<uint8_t>> r;
         data_ = r;*/
-        sendStatusAndRestart(NoSuchKey, "Requested data not in cache");
+        SendStatusAndRestart(NoSuchKey, "Requested data not in cache");
     }
 }
 
-void Connection::startDeleteOperation()
+void Connection::StartDeleteOperation()
 {
-    if (storageProvider_.remove(key_))
+    if (storageProvider_.Remove(key_))
     {
-        sendStatusAndRestart(Ok, "OK");
+        SendStatusAndRestart(Ok, "OK");
     }
     else
     {
-        sendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
+        SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
     }
 }
 
-void Connection::stop()
+void Connection::Stop()
 {
     std::string address = socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port());
     socket_.close();
     std::cout << "Connection Closed: " << address << std::endl;
 }
 
-void Connection::handleReadRawData(const asio::error_code& error,
-    uint32_t bytes_transferred, uint32_t expected)
+void Connection::HandleReadRawData(const asio::error_code& error,
+    size_t bytes_transferred, size_t expected)
 {
     if (!error)
     {
         if (bytes_transferred != expected)
         {
-            sendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+            SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
         }
         else
         {
-            storageProvider_.save(key_, data_);
-            sendStatusAndRestart(Ok, "OK");
+            storageProvider_.Save(key_, data_);
+            SendStatusAndRestart(Ok, "OK");
         }
-
     }
     else
     {
-        connectionManager_.stop(shared_from_this());
+        connectionManager_.Stop(shared_from_this());
     }
 }
 
-void Connection::handleWriteReqResponse(const asio::error_code & error)
+void Connection::HandleWriteReqResponse(const asio::error_code& error)
 {
     if (!error)
-    {
-        start();
-    }
+        Start();
     else
-    {
-        connectionManager_.stop(shared_from_this());
-    }
+        connectionManager_.Stop(shared_from_this());
 }
 
-void Connection::startClientRequestedOp()
+void Connection::StartClientRequestedOp()
 {
     switch (opcode_)
     {
     case 0:
-        startSetDataOperation();
+        StartSetDataOperation();
         break;
     case 1:
-        startGetOperation();
+        StartGetOperation();
         break;
     case 2:
-        startDeleteOperation();
+        StartDeleteOperation();
         break;
     case 3:
     case 4:
-        sendStatusAndRestart(OtherErrors, "Opcode you sent is not valid in this case");
+        SendStatusAndRestart(OtherErrors, "Opcode you sent is not valid in this case");
         break;
     default:
     {
-        sendStatusAndRestart(OtherErrors, "Opcode you sent does not exist");
+        SendStatusAndRestart(OtherErrors, "Opcode you sent does not exist");
     }
     }
 }
 
-void Connection::sendStatusAndRestart(ErrorCodes code, std::string message)
+void Connection::SendStatusAndRestart(ErrorCodes code, std::string message)
 {
     data_.reset(new std::vector<uint8_t>);
     data_.get()->push_back(Status);
@@ -224,23 +217,12 @@ void Connection::sendStatusAndRestart(ErrorCodes code, std::string message)
         data_.get()->push_back(letter);
     }
     std::vector<asio::mutable_buffer> bufs = { asio::buffer(*data_.get()) };
-    sendResponseAndStart(bufs, data_->size());
+    SendResponseAndStart(bufs, data_->size());
 }
 
-void Connection::sendResponseAndStart(std::vector<asio::mutable_buffer>& resp, uint32_t size)
+void Connection::SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size)
 {
-    asio::async_write(socket_, resp, asio::transfer_at_least(size), std::bind(&Connection::handleWriteReqResponse,
+    asio::async_write(socket_, resp, asio::transfer_at_least(size), std::bind(&Connection::HandleWriteReqResponse,
         shared_from_this(), std::placeholders::_1));
-}
-
-
-uint32_t Connection::toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
-{
-    return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
-}
-
-uint16_t Connection::toInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
-{
-    return  (intBytes[start + 1] << 8) | intBytes[start];
 }
 

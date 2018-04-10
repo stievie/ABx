@@ -1,24 +1,21 @@
 #pragma once
 
-#include <asio.hpp>
 #include "Connection.h"
 #include "ConnectionManager.h"
 
 class Server {
 
 public:
-	Server(asio::io_service& io_service, uint32_t port, int maxCacheSize);
-
-
+	Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize);
 private:
-	void startAccept();
-	void handleAccept(const asio::error_code& error);
+	void StartAccept();
+	void HandleAccept(const asio::error_code& error);
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor acceptor_;
 	ConnectionPtr newConnection_;
 	ConnectionManager connectionManager_;
 	StorageProvider storageProvider_;
-	int maxDataSize_;
-	int maxKeySize_;
+	size_t maxDataSize_;
+	size_t maxKeySize_;
 
 };

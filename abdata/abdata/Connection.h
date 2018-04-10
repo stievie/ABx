@@ -15,58 +15,47 @@ enum OpCodes
     Data
 };
 
-enum ErrorCodes
+enum ErrorCodes : uint8_t
 {
-	Ok,NoSuchKey,KeyTooBig,DataTooBig,OtherErrors
+	Ok,
+    NoSuchKey,
+    KeyTooBig,
+    DataTooBig,
+    OtherErrors
 };
 
 class Connection:public std::enable_shared_from_this<Connection> {
 public:
 	explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
-        StorageProvider& storage,int maxData,int maxKeySize_);
+        StorageProvider& storage, size_t maxData, size_t maxKeySize_);
     asio::ip::tcp::socket& socket();
-	void start();
-	void stop();
+	void Start();
+	void Stop();
 private:
-	/*void handleReadOpcode(const boost::system::error_code& error,unsigned int bytes_transferred);
+	void HandleReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
+	void HandleWriteReqResponse(const asio::error_code& error);
+	void StartClientRequestedOp();
+	void StartReadKey(uint16_t& keySize);
+	void StartSetDataOperation();
+	void StartGetOperation();
+	void StartDeleteOperation();
+	void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
+	void SendStatusAndRestart(ErrorCodes code, std::string message);
 
-	void handleReadKey(const boost::system::error_code& error, boost::uint16_t byteTransferred, boost::uint16_t expectedkeySize);
-
-	void handleReadRawDataHeader(const boost::system::error_code& error, unsigned int bytes_transferred);
-*/
-	void handleReadRawData(const asio::error_code& error, uint32_t bytes_transferred, uint32_t expected);
-
-	void handleWriteReqResponse(const asio::error_code& error);
-
-	void startClientRequestedOp();
-
-	void startReadKey(uint16_t& keySize);
-
-	void startSetDataOperation();
-
-	void startGetOperation();
-
-	void startDeleteOperation();
-
-	void sendResponseAndStart(std::vector<asio::mutable_buffer>& resp, uint32_t size);
-
-	uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start);
-
-	uint16_t toInt16(const std::vector<uint8_t>& intBytes, uint32_t start);
-
-	void sendStatusAndRestart(ErrorCodes code, std::string message);
-
-	void retriveAndSendData(uint16_t key);
-
-	void deleteData(uint16_t key);
-
+    static uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
+    {
+        return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
+    }
+    static uint16_t toInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
+    {
+        return  (intBytes[start + 1] << 8) | intBytes[start];
+    }
 
     asio::ip::tcp::socket socket_;
-
 	uint8_t opcode_;
 	std::vector<uint8_t> key_;
-	uint32_t maxDataSize_;
-	uint32_t maxKeySize_;
+	size_t maxDataSize_;
+	size_t maxKeySize_;
 	ConnectionManager& connectionManager_;
 	StorageProvider& storageProvider_;
 	std::shared_ptr<std::vector<uint8_t>> data_;

@@ -6,57 +6,63 @@
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 
-
 class DataItem
 {
 public:
-	std::string key;
-	uint64_t rank;
-	DataItem(std::string k, uint64_t r) :key(k), rank(r) {}
-	bool operator<(const DataItem& e)const { return rank < e.rank; }
+    std::string key;
+    uint64_t rank;
+    DataItem(std::string k, uint64_t r) :
+        key(k),
+        rank(r)
+    { }
+    bool operator<(const DataItem& e) const
+    {
+        return rank < e.rank;
+    }
 };
 
 typedef boost::multi_index::multi_index_container
 <
-	DataItem,
-	boost::multi_index::indexed_by
-	<
-	boost::multi_index::hashed_unique<boost::multi_index::member<DataItem, std::string, &DataItem::key>>,
-
-	boost::multi_index::ordered_unique<boost::multi_index::member<DataItem,uint64_t, &DataItem::rank>>
-	>
+    DataItem,
+    boost::multi_index::indexed_by
+    <
+        boost::multi_index::hashed_unique<boost::multi_index::member<DataItem, std::string, &DataItem::key>>,
+        boost::multi_index::ordered_unique<boost::multi_index::member<DataItem, uint64_t, &DataItem::rank>>
+    >
 > DataItemContainer;
-
 
 class  EvictionStrategy
 {
 public:
+    virtual ~EvictionStrategy()
+    { }
 
-	virtual ~EvictionStrategy() {}
+    virtual std::string NextEviction() = 0;
 
-	virtual std::string nextEviction()=0;
+    virtual void AddKey(std::string) = 0;
 
-	virtual void addKey(std::string)=0;
+    virtual void RefreshKey(std::string) = 0;
 
-	virtual void refreshKey(std::string) = 0;
-
-	virtual void deleteKey(std::string)=0;
+    virtual void DeleteKey(std::string) = 0;
 };
 
-class OldestInsertionEviction :public EvictionStrategy
+class OldestInsertionEviction : public EvictionStrategy
 {
 public:
-	 OldestInsertionEviction();
+    OldestInsertionEviction();
 
-	 std::string nextEviction() ;
+    std::string NextEviction();
 
-	 void addKey(std::string) ;
+    void AddKey(std::string);
 
-	 void refreshKey(std::string);
+    void RefreshKey(std::string);
 
-	 void deleteKey(std::string);
+    void DeleteKey(std::string);
 private:
-	uint64_t getNextRank() { return currentRank++; }//NOTE not thread safe
-	uint64_t currentRank;
-	DataItemContainer dataItems_;
+    uint64_t GetNextRank()
+    {
+        return currentRank++;
+    }//NOTE not thread safe
+    uint64_t currentRank;
+    DataItemContainer dataItems_;
 };

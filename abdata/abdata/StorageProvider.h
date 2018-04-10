@@ -7,25 +7,25 @@
 class StorageProvider
 {
 public:
-	StorageProvider(uint32_t maxSize);
+	StorageProvider(size_t maxSize);
 
-	void save(const std::vector<uint8_t>& key,
+	void Save(const std::vector<uint8_t>& key,
 		std::shared_ptr<std::vector<uint8_t>>  data);
 
-	std::shared_ptr<std::vector<uint8_t>> get(const std::vector<uint8_t>& key);
+	std::shared_ptr<std::vector<uint8_t>> Get(const std::vector<uint8_t>& key);
 
-	int remove(const std::vector<uint8_t>& key);
+	int Remove(const std::vector<uint8_t>& key);
 
 private:
-	bool enoughSpace(uint32_t size);
+	bool EnoughSpace(size_t size);
 
-	void createSpace(uint32_t size);
+	void CreateSpace(size_t size);
 
-	bool removeData(const std::string& key);
+	bool RemoveData(const std::string& key);
 
 	std::unordered_map<std::string, std::shared_ptr<std::vector<uint8_t>>> cache_;
-	uint32_t currentSize_;
-	uint32_t maxSize_;
+	size_t currentSize_;
+	size_t maxSize_;
 	std::shared_ptr<EvictionStrategy> evictor_;
 };
 
