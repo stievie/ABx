@@ -54,6 +54,12 @@
     <ClInclude Include="Logger.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Account.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
