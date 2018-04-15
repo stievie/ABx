@@ -74,7 +74,6 @@ void StorageProvider::Shutdown()
     {
         std::vector<uint8_t> key(c.first.begin(), c.first.end());
         FlushData(key);
-        RemoveData(c.first);
     }
 }
 

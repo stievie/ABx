@@ -19,6 +19,7 @@ Server::Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize)
 
 void Server::Shutdown()
 {
+    connectionManager_.StopAll();
     storageProvider_.Shutdown();
     io_service_.stop();
 }
