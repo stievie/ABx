@@ -70,4 +70,23 @@ bool DBAccount::Save(Entities::Account& account)
     return ret;
 }
 
+bool DBAccount::Delete(Entities::Account& account)
+{
+    if (account.id == 0)
+        return false;
+
+    Database* db = Database::Instance();
+    std::ostringstream query;
+    query << "DELETE FROM `accounts` WHERE `id` = " << account.id;
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
+}
+
 }

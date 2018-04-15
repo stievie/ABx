@@ -31,18 +31,12 @@ void Connection::Start()
             opcode_ = data_->at(0);
             uint16_t keySize = toInt16(*data_.get(), 1);
             if (keySize <= (uint16_t)maxKeySize_)
-            {
                 StartReadKey(keySize);
-            }
             else
-            {
                 SendStatusAndRestart(KeyTooBig, "supplied key is too big.Maximum allowed key size is: " + maxKeySize_);
-            }
         }
         else
-        {
             connectionManager_.Stop(self);
-        }
     });
 }
 
@@ -56,18 +50,12 @@ void Connection::StartReadKey(uint16_t& keySize)
         if (!error)
         {
             if ((uint16_t)byteTransferred != keySize)
-            {
                 SendStatusAndRestart(OtherErrors, "Data sent is not equal to the expected size");
-            }
             else
-            {
                 StartClientRequestedOp();
-            }
         }
         else
-        {
             connectionManager_.Stop(self);
-        }
     });
 }
 
@@ -89,14 +77,10 @@ void Connection::StartSetDataOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-            {
                 SendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
-            }
         }
         else
-        {
             connectionManager_.Stop(self);
-        }
     });
 }
 
@@ -121,30 +105,22 @@ void Connection::StartGetOperation()
         SendResponseAndStart(bufs, data_->size() + 4);
     }
     else
-    {
-        /*boost::shared_ptr<std::vector<uint8_t>> r;
-        data_ = r;*/
         SendStatusAndRestart(NoSuchKey, "Requested data not in cache");
-    }
 }
 
 void Connection::StartDeleteOperation()
 {
-    if (storageProvider_.Remove(key_))
-    {
+    if (storageProvider_.Delete(key_))
         SendStatusAndRestart(Ok, "OK");
-    }
     else
-    {
         SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
-    }
 }
 
 void Connection::Stop()
 {
     std::string address = socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port());
     socket_.close();
-    std::cout << "Connection Closed: " << address << std::endl;
+    std::cout << "Connection closed: " << address << std::endl;
 }
 
 void Connection::HandleReadRawData(const asio::error_code& error,
@@ -153,9 +129,7 @@ void Connection::HandleReadRawData(const asio::error_code& error,
     if (!error)
     {
         if (bytes_transferred != expected)
-        {
             SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
-        }
         else
         {
             storageProvider_.Save(key_, data_);
@@ -163,9 +137,7 @@ void Connection::HandleReadRawData(const asio::error_code& error,
         }
     }
     else
-    {
         connectionManager_.Stop(shared_from_this());
-    }
 }
 
 void Connection::HandleWriteReqResponse(const asio::error_code& error)

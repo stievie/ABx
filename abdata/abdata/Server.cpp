@@ -30,7 +30,7 @@ void Server::HandleAccept(const asio::error_code& error)
 	if (!error)
 	{
 		auto endp = newConnection_.get()->socket().remote_endpoint();
-		std::cout << "new connection from " << endp.address()
+		std::cout << "Connection from " << endp.address()
 			      <<" at port " << endp.port() << std::endl;
 		connectionManager_.Start(newConnection_);
 	}

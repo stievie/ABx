@@ -60,8 +60,10 @@ std::shared_ptr<std::vector<uint8_t>> StorageProvider::Get(const std::vector<uin
     return (*data).second;
 }
 
-bool StorageProvider::Remove(const std::vector<uint8_t>& key)
+bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 {
+    // Delete from DB
+    DeleteData(key);
     std::string dataToRemove(key.begin(), key.end());
     return RemoveData(dataToRemove);
 }
@@ -71,7 +73,7 @@ bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key, std::string& ta
     // key = <tablename><id>
     if (key.size() <= sizeof(uint32_t))
         return false;
-    table.assign(key.begin(), key.end() + sizeof(uint32_t));
+    table.assign(key.begin(), key.end() - sizeof(uint32_t));
     size_t start = key.size() - sizeof(uint32_t);
     id = (key[start + 3] << 24) | (key[start + 2] << 16) | (key[start + 1] << 8) | key[start];
     return false;
@@ -97,6 +99,8 @@ void StorageProvider::CreateSpace(size_t size)
     while ((currentSize_ + size) > maxSize_)
     {
         std::string dataToRemove = evictor_->NextEviction();
+        std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
+        FlushData(key);
         RemoveData(dataToRemove);
     }
 }
@@ -165,6 +169,28 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
             DB::DBAccount::Save(acc);
         }
     }
+}
+
+void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
+{
+    std::string table;
+    uint32_t id;
+    if (!DecodeKey(key, table, id))
+        return;
+
+    auto data = Get(key);
+    if (!data)
+        return;
+    std::vector<uint8_t>* d = data.get();
+    using Buffer = std::vector<uint8_t>;
+    using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
+    if (table.compare("accounts") == 0)
+    {
+        Entities::Account acc{};
+        bitsery::quickDeserialization<InputAdapter, Entities::Account>({ d->begin(), d->size() }, acc);
+        DB::DBAccount::Delete(acc);
+    }
+
 }
 
 

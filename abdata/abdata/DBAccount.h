@@ -12,6 +12,7 @@ public:
 
     static bool Load(Entities::Account& account);
     static bool Save(Entities::Account& account);
+    static bool Delete(Entities::Account& account);
 };
 
 }
