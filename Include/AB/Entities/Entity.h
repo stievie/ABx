@@ -1,8 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include "Database.h"
 
+namespace AB {
 namespace Entities {
 
 struct Entity
@@ -22,4 +22,5 @@ void serialize(S& s, Entity& o)
     s.value4b(o.id);
 }
 
+}
 }

@@ -158,7 +158,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Account.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="ConnectionManager.h" />
@@ -168,7 +167,6 @@
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DBAccount.h" />
-    <ClInclude Include="Entity.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Server.h" />

@@ -3,8 +3,8 @@
 #include <string>
 #include "Database.h"
 #include <sstream>
-#include "Entity.h"
-#include "Account.h"
+#include <AB/Entities/Entity.h>
+#include <AB/Entities/Account.h>
 #pragma warning(push)
 #pragma warning(disable: 4310 4100)
 #include <bitsery/bitsery.h>
@@ -136,7 +136,7 @@ std::shared_ptr<std::vector<uint8_t>> StorageProvider::LoadData(const std::vecto
 
     if (table.compare("accounts") == 0)
     {
-        Entities::Account acc;
+        AB::Entities::Account acc;
         acc.id = id;
         if (DB::DBAccount::Load(acc))
         {
@@ -170,8 +170,8 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
 
     if (table.compare("accounts") == 0)
     {
-        Entities::Account acc{};
-        bitsery::quickDeserialization<InputAdapter, Entities::Account>({ d->begin(), d->size() }, acc);
+        AB::Entities::Account acc{};
+        bitsery::quickDeserialization<InputAdapter, AB::Entities::Account>({ d->begin(), d->size() }, acc);
 
         if (acc.dirty)
         {
@@ -195,8 +195,8 @@ void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
     using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
     if (table.compare("accounts") == 0)
     {
-        Entities::Account acc{};
-        bitsery::quickDeserialization<InputAdapter, Entities::Account>({ d->begin(), d->size() }, acc);
+        AB::Entities::Account acc{};
+        bitsery::quickDeserialization<InputAdapter, AB::Entities::Account>({ d->begin(), d->size() }, acc);
         DB::DBAccount::Delete(acc);
     }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Account.h"
+#include <AB/Entities/Account.h>
 
 namespace DB {
 
@@ -10,9 +10,9 @@ public:
     DBAccount() = delete;
     ~DBAccount() = delete;
 
-    static bool Load(Entities::Account& account);
-    static bool Save(Entities::Account& account);
-    static bool Delete(Entities::Account& account);
+    static bool Load(AB::Entities::Account& account);
+    static bool Save(AB::Entities::Account& account);
+    static bool Delete(AB::Entities::Account& account);
 };
 
 }

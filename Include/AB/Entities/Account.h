@@ -12,6 +12,7 @@
 using bitsery::ext::BaseClass;
 using bitsery::ext::VirtualBaseClass;
 
+namespace AB {
 namespace Entities {
 
 namespace Limits {
@@ -48,4 +49,5 @@ void serialize(S& s, Account& o)
     s.text1b(o.password, Limits::MAX_ACCOUNT_PASS);
 }
 
+}
 }

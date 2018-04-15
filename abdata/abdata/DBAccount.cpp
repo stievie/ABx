@@ -4,7 +4,7 @@
 
 namespace DB {
 
-bool DBAccount::Load(Entities::Account& account)
+bool DBAccount::Load(AB::Entities::Account& account)
 {
     DB::Database* db = DB::Database::Instance();
 
@@ -17,7 +17,7 @@ bool DBAccount::Load(Entities::Account& account)
     account.name = result->GetString("name");
     account.password = result->GetString("password");
     account.email = result->GetString("email");
-    account.type = static_cast<Entities::AccountType>(result->GetInt("type"));
+    account.type = static_cast<AB::Entities::AccountType>(result->GetInt("type"));
     account.blocked = result->GetUInt("blocked") != 0;
     account.creation = result->GetULong("creation");
     account.charSlots = result->GetUInt("char_slots");
@@ -25,7 +25,7 @@ bool DBAccount::Load(Entities::Account& account)
     return true;
 }
 
-bool DBAccount::Save(Entities::Account& account)
+bool DBAccount::Save(AB::Entities::Account& account)
 {
     Database* db = Database::Instance();
     std::ostringstream query;
@@ -70,7 +70,7 @@ bool DBAccount::Save(Entities::Account& account)
     return ret;
 }
 
-bool DBAccount::Delete(Entities::Account& account)
+bool DBAccount::Delete(AB::Entities::Account& account)
 {
     if (account.id == 0)
         return false;
