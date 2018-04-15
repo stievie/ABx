@@ -47,15 +47,15 @@ class OldestInsertionEviction : public EvictionStrategy
 public:
     OldestInsertionEviction();
     std::string NextEviction();
-    void AddKey(const std::string&);
-    void RefreshKey(const std::string&);
-    void DeleteKey(const std::string&);
+    void AddKey(const std::string&) override;
+    void RefreshKey(const std::string&) override;
+    void DeleteKey(const std::string&) override;
 private:
     uint64_t GetNextRank()
     {
         //NOTE not thread safe
-        return currentRank++;
+        return currentRank_++;
     }
-    uint64_t currentRank;
+    uint64_t currentRank_;
     DataItemContainer dataItems_;
 };

@@ -6,7 +6,7 @@
 using namespace boost::multi_index;
 
 OldestInsertionEviction::OldestInsertionEviction() :
-    currentRank(0)
+    currentRank_(0)
 {
 }
 

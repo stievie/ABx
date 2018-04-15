@@ -2,6 +2,17 @@
 #include "StorageProvider.h"
 #include <string>
 #include "Database.h"
+#include <sstream>
+#include "Entity.h"
+#include "Account.h"
+#pragma warning(push)
+#pragma warning(disable: 4310 4100)
+#include <bitsery/bitsery.h>
+#include <bitsery/adapter/buffer.h>
+#include <bitsery/traits/vector.h>
+#include <bitsery/traits/string.h>
+#pragma warning(pop)
+#include "DBAccount.h"
 
 StorageProvider::StorageProvider(size_t maxSize) :
     maxSize_(maxSize),
@@ -109,15 +120,51 @@ std::shared_ptr<std::vector<uint8_t>> StorageProvider::LoadData(const std::vecto
     uint32_t id;
     if (!DecodeKey(key, table, id))
         return std::shared_ptr<std::vector<uint8_t>>();
-    DB::Database* db = DB::Database::Instance();
 
-    std::ostringstream query;
-    query << "SELECT * FROM " << table << " WHERE `id` = " << id;
-    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
-    if (!result)
-        return std::shared_ptr<std::vector<uint8_t>>();
+    if (table.compare("accounts") == 0)
+    {
+        Entities::Account acc;
+        acc.id = id;
+        if (DB::DBAccount::Load(acc))
+        {
+            using Buffer = std::vector<uint8_t>;
+            using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
+            Buffer buffer;
+            /*auto writtenSize =*/ bitsery::quickSerialization<OutputAdapter>(buffer, acc);
+            return std::shared_ptr<std::vector<uint8_t>>(&buffer);
+        }
+    }
 
     return std::shared_ptr<std::vector<uint8_t>>();
+}
+
+void StorageProvider::FlushData(const std::vector<uint8_t>& key)
+{
+    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+
+    auto data = cache_.find(keyString);
+    if (data == cache_.end())
+        return;
+
+    std::string table;
+    uint32_t id;
+    if (!DecodeKey(key, table, id))
+        return;
+
+    std::vector<uint8_t>* d = (*data).second.get();
+    using Buffer = std::vector<uint8_t>;
+    using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
+
+    if (table.compare("accounts") == 0)
+    {
+        Entities::Account acc{};
+        bitsery::quickDeserialization<InputAdapter, Entities::Account>({ d->begin(), d->size() }, acc);
+
+        if (acc.dirty)
+        {
+            DB::DBAccount::Save(acc);
+        }
+    }
 }
 
 

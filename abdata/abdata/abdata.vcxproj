@@ -166,6 +166,7 @@
     <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DatabaseSqlite.h" />
+    <ClInclude Include="DBAccount.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="Logger.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="DatabaseOdbc.cpp" />
     <ClCompile Include="DatabasePgsql.cpp" />
     <ClCompile Include="DatabaseSqlite.cpp" />
+    <ClCompile Include="DBAccount.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OldestInsertionEviction.cpp" />
