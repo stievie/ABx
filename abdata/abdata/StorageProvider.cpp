@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "StorageProvider.h"
-#include <string>
 #include "Database.h"
 #include <sstream>
-#include <AB/Entities/Entity.h>
 #include <AB/Entities/Account.h>
 #pragma warning(push)
 #pragma warning(disable: 4310 4100)

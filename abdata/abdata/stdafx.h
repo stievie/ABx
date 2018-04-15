@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <map>
+#include <string>
 
 #define ASIO_STANDALONE
 
