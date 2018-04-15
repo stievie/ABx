@@ -54,6 +54,12 @@ Database* Database::Instance()
     return instance_.get();
 }
 
+void Database::Reset()
+{
+    if (instance_)
+        instance_.reset();
+}
+
 bool Database::ExecuteQuery(const std::string& query)
 {
     return InternalQuery(query);

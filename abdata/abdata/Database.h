@@ -40,6 +40,7 @@ public:
 
     virtual ~Database() {}
     static Database* Instance();
+    static void Reset();
 
     virtual bool GetParam(DBParam) {
         return false;

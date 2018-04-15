@@ -180,6 +180,8 @@ static void LoadConfig()
 {
     gPort = static_cast<int>(ConfigManager::Instance.GetGlobal("data_port", gPort));
     gMaxSize = ConfigManager::Instance.GetGlobal("max_size", gMaxSize);
+    if (IO::Logger::logDir_.empty())
+        IO::Logger::logDir_ = ConfigManager::Instance.GetGlobal("log_dir", "");
     if (DB::Database::driver_.empty())
         DB::Database::driver_ = ConfigManager::Instance.GetGlobal("db_driver", "");
     if (DB::Database::dbFile_.empty())
@@ -188,6 +190,10 @@ static void LoadConfig()
         DB::Database::dbHost_ = ConfigManager::Instance.GetGlobal("db_host", "");
     if (DB::Database::dbName_.empty())
         DB::Database::dbName_ = ConfigManager::Instance.GetGlobal("db_name", "");
+    if (DB::Database::dbUser_.empty())
+        DB::Database::dbUser_ = ConfigManager::Instance.GetGlobal("db_user", "");
+    if (DB::Database::dbPass_.empty())
+        DB::Database::dbPass_ = ConfigManager::Instance.GetGlobal("db_pass", "");
     if (DB::Database::dbPort_ == 0)
         DB::Database::dbPort_ = static_cast<uint16_t>(ConfigManager::Instance.GetGlobal("db_port", 0));
 }
@@ -227,16 +233,28 @@ int main(int argc, char* argv[])
     try
     {
         std::cout << "Server config:" << std::endl;
+        std::cout << "  Config file: " << gConfigFile << std::endl;
         std::cout << "  Port: " << gPort << std::endl;
         std::cout << "  MaxSize: " << gMaxSize << " bytes" << std::endl;
+        std::cout << "  Log dir: " << IO::Logger::logDir_ << std::endl;
         std::cout << "Database config:" << std::endl;
         std::cout << "  Driver: " << DB::Database::driver_ << std::endl;
         std::cout << "  File (SQlite): " << DB::Database::dbFile_ << std::endl;
         std::cout << "  Host: " << DB::Database::dbHost_ << std::endl;
         std::cout << "  Name: " << DB::Database::dbName_ << std::endl;
         std::cout << "  Port: " << DB::Database::dbPort_ << std::endl;
+        std::cout << "  User: " << DB::Database::dbUser_ << std::endl;
+        std::cout << "  Password: " << (DB::Database::dbPass_.empty() ? "(empty)" : "***********") << std::endl;
 
-        signal(SIGINT, signal_handler);
+        DB::Database* db = DB::Database::Instance();
+        if (db == nullptr || !db->IsConnected())
+        {
+            LOG_ERROR << "Database connection failed" << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        signal(SIGINT, signal_handler);              // Ctrl+C
+        signal(SIGBREAK, signal_handler);            // x clicked
         asio::io_service io_service;
         Server serv(io_service, (uint16_t)gPort, gMaxSize);
         shutdown_handler = [&](int /*signal*/)
@@ -249,9 +267,9 @@ int main(int argc, char* argv[])
     catch (std::exception& e)
     {
         std::cerr << "Exception: " << e.what() << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
