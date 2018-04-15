@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
     if (!ParseCommandline(argc, argv))
     {
         ShowHelp();
-        return 1;
+        return EXIT_FAILURE;
     }
 
 #ifdef _WIN32
@@ -232,19 +232,19 @@ int main(int argc, char* argv[])
         IO::Logger::Close();
     try
     {
-        std::cout << "Server config:" << std::endl;
-        std::cout << "  Config file: " << gConfigFile << std::endl;
-        std::cout << "  Port: " << gPort << std::endl;
-        std::cout << "  MaxSize: " << gMaxSize << " bytes" << std::endl;
-        std::cout << "  Log dir: " << IO::Logger::logDir_ << std::endl;
-        std::cout << "Database config:" << std::endl;
-        std::cout << "  Driver: " << DB::Database::driver_ << std::endl;
-        std::cout << "  File (SQlite): " << DB::Database::dbFile_ << std::endl;
-        std::cout << "  Host: " << DB::Database::dbHost_ << std::endl;
-        std::cout << "  Name: " << DB::Database::dbName_ << std::endl;
-        std::cout << "  Port: " << DB::Database::dbPort_ << std::endl;
-        std::cout << "  User: " << DB::Database::dbUser_ << std::endl;
-        std::cout << "  Password: " << (DB::Database::dbPass_.empty() ? "(empty)" : "***********") << std::endl;
+        LOG_INFO << "Server config:" << std::endl;
+        LOG_INFO << "  Config file: " << gConfigFile << std::endl;
+        LOG_INFO << "  Port: " << gPort << std::endl;
+        LOG_INFO << "  MaxSize: " << gMaxSize << " bytes" << std::endl;
+        LOG_INFO << "  Log dir: " << IO::Logger::logDir_ << std::endl;
+        LOG_INFO << "Database config:" << std::endl;
+        LOG_INFO << "  Driver: " << DB::Database::driver_ << std::endl;
+        LOG_INFO << "  File (SQlite): " << DB::Database::dbFile_ << std::endl;
+        LOG_INFO << "  Host: " << DB::Database::dbHost_ << std::endl;
+        LOG_INFO << "  Name: " << DB::Database::dbName_ << std::endl;
+        LOG_INFO << "  Port: " << DB::Database::dbPort_ << std::endl;
+        LOG_INFO << "  User: " << DB::Database::dbUser_ << std::endl;
+        LOG_INFO << "  Password: " << (DB::Database::dbPass_.empty() ? "(empty)" : "***********") << std::endl;
 
         DB::Database* db = DB::Database::Instance();
         if (db == nullptr || !db->IsConnected())
@@ -259,14 +259,14 @@ int main(int argc, char* argv[])
         Server serv(io_service, (uint16_t)gPort, gMaxSize);
         shutdown_handler = [&](int /*signal*/)
         {
-            std::cout << "Server shutdown...\n";
+            LOG_INFO << "Server shutdown..." << std::endl;
             serv.Shutdown();
         };
         io_service.run();
     }
     catch (std::exception& e)
     {
-        std::cerr << "Exception: " << e.what() << std::endl;
+        LOG_ERROR << "Exception: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 

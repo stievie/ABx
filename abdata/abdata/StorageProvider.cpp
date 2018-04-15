@@ -3,14 +3,11 @@
 #include "Database.h"
 #include <sstream>
 #include <AB/Entities/Account.h>
-#pragma warning(push)
-#pragma warning(disable: 4310 4100)
-#include <bitsery/bitsery.h>
-#include <bitsery/adapter/buffer.h>
-#include <bitsery/traits/vector.h>
-#include <bitsery/traits/string.h>
-#pragma warning(pop)
+#include <AB/Entities/Character.h>
 #include "DBAccount.h"
+#include "DBCharacter.h"
+#include "StringHash.h"
+#include "Logger.h"
 
 StorageProvider::StorageProvider(size_t maxSize) :
     maxSize_(maxSize),
@@ -132,18 +129,16 @@ std::shared_ptr<std::vector<uint8_t>> StorageProvider::LoadData(const std::vecto
     if (!DecodeKey(key, table, id))
         return std::shared_ptr<std::vector<uint8_t>>();
 
-    if (table.compare("accounts") == 0)
+    size_t tableHash = Utils::StringHashRt(table.data());
+    switch (tableHash)
     {
-        AB::Entities::Account acc;
-        acc.id = id;
-        if (DB::DBAccount::Load(acc))
-        {
-            using Buffer = std::vector<uint8_t>;
-            using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
-            Buffer buffer;
-            /*auto writtenSize =*/ bitsery::quickSerialization<OutputAdapter>(buffer, acc);
-            return std::shared_ptr<std::vector<uint8_t>>(&buffer);
-        }
+    case TABLE_ACCOUNTS:
+        return LoadFromDB<DB::DBAccount, AB::Entities::Account>(id);
+    case TABLE_CHARACTERS:
+        return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id);
+    default:
+        LOG_ERROR << "Unknown table " << table << std::endl;
+        break;
     }
 
     return std::shared_ptr<std::vector<uint8_t>>();
@@ -162,19 +157,19 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (!DecodeKey(key, table, id))
         return;
 
-    std::vector<uint8_t>* d = (*data).second.get();
-    using Buffer = std::vector<uint8_t>;
-    using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
-
-    if (table.compare("accounts") == 0)
+    auto d = (*data).second.get();
+    size_t tableHash = Utils::StringHashRt(table.data());
+    switch (tableHash)
     {
-        AB::Entities::Account acc{};
-        bitsery::quickDeserialization<InputAdapter, AB::Entities::Account>({ d->begin(), d->size() }, acc);
-
-        if (acc.dirty)
-        {
-            DB::DBAccount::Save(acc);
-        }
+    case TABLE_ACCOUNTS:
+        SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
+        break;
+    case TABLE_CHARACTERS:
+        SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
+        break;
+    default:
+        LOG_ERROR << "Unknown table " << table << std::endl;
+        break;
     }
 }
 
@@ -189,15 +184,18 @@ void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
     if (!data)
         return;
     std::vector<uint8_t>* d = data.get();
-    using Buffer = std::vector<uint8_t>;
-    using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
-    if (table.compare("accounts") == 0)
+    size_t tableHash = Utils::StringHashRt(table.data());
+    switch (tableHash)
     {
-        AB::Entities::Account acc{};
-        bitsery::quickDeserialization<InputAdapter, AB::Entities::Account>({ d->begin(), d->size() }, acc);
-        DB::DBAccount::Delete(acc);
+    case TABLE_ACCOUNTS:
+        DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d);
+        break;
+    case TABLE_CHARACTERS:
+        DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d);
+        break;
+    default:
+        LOG_ERROR << "Unknown table " << table << std::endl;
+        break;
     }
 
 }
-
-

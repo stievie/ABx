@@ -9,7 +9,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT * FROM accounts WHERE `id` = " << account.id;
+    query << "SELECT * FROM `accounts` WHERE `id` = " << account.id;
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
@@ -37,7 +37,7 @@ bool DBAccount::Save(AB::Entities::Account& account)
         query << " `email` = " << db->EscapeString(account.email) << ",";
         query << " `type` = " << static_cast<int>(account.type) << ",";
         query << " `blocked` = " << (account.blocked ? 1 : 0) << ",";
-        query << " `char_slots` = " << account.charSlots << ",";
+        query << " `char_slots` = " << account.charSlots;
 
         query << " WHERE `id` = " << account.id;
     }
