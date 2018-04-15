@@ -7,6 +7,7 @@ class Server {
 
 public:
 	Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize);
+    void Shutdown();
 private:
 	void StartAccept();
 	void HandleAccept(const asio::error_code& error);

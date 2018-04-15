@@ -68,6 +68,16 @@ bool StorageProvider::Delete(const std::vector<uint8_t>& key)
     return RemoveData(dataToRemove);
 }
 
+void StorageProvider::Shutdown()
+{
+    for (const auto& c : cache_)
+    {
+        std::vector<uint8_t> key(c.first.begin(), c.first.end());
+        FlushData(key);
+        RemoveData(c.first);
+    }
+}
+
 bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key, std::string& table, uint32_t& id)
 {
     // key = <tablename><id>

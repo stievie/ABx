@@ -17,6 +17,12 @@ Server::Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize)
 	StartAccept();
 }
 
+void Server::Shutdown()
+{
+    storageProvider_.Shutdown();
+    io_service_.stop();
+}
+
 void Server::StartAccept()
 {
 	newConnection_.reset(new Connection(io_service_, connectionManager_, storageProvider_,maxDataSize_,maxKeySize_));

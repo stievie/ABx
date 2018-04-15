@@ -16,7 +16,7 @@ namespace DB {
 
 std::recursive_mutex DBQuery::lock_;
 std::unique_ptr<Database> Database::instance_ = nullptr;
-std::string Database::driver_ = "mysql";
+std::string Database::driver_ = "";
 std::string Database::dbFile_ = "";
 std::string Database::dbHost_ = "";
 std::string Database::dbName_ = "";

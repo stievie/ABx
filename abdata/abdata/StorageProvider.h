@@ -10,6 +10,7 @@ public:
 	void Save(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
 	std::shared_ptr<std::vector<uint8_t>> Get(const std::vector<uint8_t>& key);
 	bool Delete(const std::vector<uint8_t>& key);
+    void Shutdown();
     static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uint32_t& id);
     static std::vector<uint8_t> EncodeKey(const std::string& table, uint32_t id);
 private:
