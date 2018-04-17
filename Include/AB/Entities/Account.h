@@ -6,6 +6,8 @@
 namespace AB {
 namespace Entities {
 
+constexpr auto KEY_ACCOUNTS = "accounts";
+
 enum AccountType : uint8_t
 {
     AccountTypeUnknown = 0,

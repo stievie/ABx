@@ -15,25 +15,38 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_CHARACTERS = "characters";
+constexpr auto KEY_GAMES = "games";
 
-struct Character : Entity
+enum GameType : uint8_t
+{
+    GameTypeUnknown = 0,
+    GameTypeOutpost = 1,
+    GameTypePvPCombat,
+    GameTypeExploreable,
+    GameTypeMission,
+};
+
+struct Game : Entity
 {
     template<typename S>
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.value1b(pvp);
-        s.value8b(xp);
-        s.value4b(skillPoints);
-        s.text1b(lastMap, Limits::MAX_MAP_NAME);
+        s.text1b(name, Limits::MAX_MAP_NAME);
+        s.text1b(directory, Limits::MAX_FILENAME);
+        s.text1b(script, Limits::MAX_FILENAME);
+        s.value1b(type);
+        s.value1b(landing);
     }
 
-    /// PvP only character
-    bool pvp = false;
-    uint64_t xp = 0;
-    uint32_t skillPoints = 0;
-    std::string lastMap;
+    /// The name of the game
+    std::string name;
+    /// Directory with game data
+    std::string directory;
+    /// Script file
+    std::string script;
+    GameType type = GameTypeUnknown;
+    bool landing = false;
 };
 
 }

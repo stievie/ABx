@@ -168,6 +168,7 @@
     <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DBAccount.h" />
     <ClInclude Include="DBCharacter.h" />
+    <ClInclude Include="DBGame.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Server.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DBAccount.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
+    <ClCompile Include="DBGame.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OldestInsertionEviction.cpp" />

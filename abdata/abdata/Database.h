@@ -31,10 +31,10 @@ protected:
     bool connected_;
 public:
     static std::string driver_;
-    static std::string dbFile_;
     static std::string dbHost_;
     static std::string dbUser_;
     static std::string dbPass_;
+    /// Name of Database or Database SQlite file
     static std::string dbName_;
     static uint16_t dbPort_;
 

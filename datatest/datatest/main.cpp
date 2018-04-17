@@ -5,7 +5,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "DataClient.h"
 
+#if 0
 uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
 {
     return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
@@ -80,10 +82,15 @@ std::string getData(asio::ip::tcp::socket& socket, std::string& key)
 
     return{ data.begin(),data.end() };
 }
+#endif
 
 int main()
 {
     asio::io_service io_service;
+    DataClient cli(io_service);
+    cli.Connect("localhost", 2770);
+
+/*
     asio::ip::tcp::resolver resolver(io_service);
     asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), "localhost", "2770");
     asio::ip::tcp::resolver::iterator endpoint = resolver.resolve(query);
@@ -109,6 +116,8 @@ int main()
     int k;
     std::cin >> k;
     socket.close();
+
+    */
     return 0;
 }
 

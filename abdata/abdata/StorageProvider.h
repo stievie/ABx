@@ -9,22 +9,17 @@
 #include <bitsery/traits/vector.h>
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
-#include "StringHash.h"
-
-#pragma warning(push)
-#pragma warning(disable: 4307)
-static constexpr size_t TABLE_ACCOUNTS = Utils::StringHash("accounts");
-static constexpr size_t TABLE_CHARACTERS = Utils::StringHash("players");
-#pragma warning(pop)
 
 class StorageProvider
 {
 public:
     StorageProvider(size_t maxSize);
+
     uint32_t Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     bool Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     std::shared_ptr<std::vector<uint8_t>> Read(const std::vector<uint8_t>& key);
     bool Delete(const std::vector<uint8_t>& key);
+
     /// Flush all
     void Shutdown();
 private:
@@ -38,6 +33,7 @@ private:
     void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data, bool modified);
     bool RemoveData(const std::string& key);
 
+    /// Create data in DB. Returns id (primary key)
     uint32_t CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     template<typename D, typename E>
     uint32_t CreateInDB(std::vector<uint8_t>& data)

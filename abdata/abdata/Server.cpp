@@ -27,7 +27,7 @@ void Server::Shutdown()
 
 void Server::StartAccept()
 {
-	newConnection_.reset(new Connection(io_service_, connectionManager_, storageProvider_,maxDataSize_,maxKeySize_));
+	newConnection_.reset(new Connection(io_service_, connectionManager_, storageProvider_, maxDataSize_, maxKeySize_));
 	acceptor_.async_accept(newConnection_->socket(),
         std::bind(&Server::HandleAccept, this,
             std::placeholders::_1));
@@ -38,8 +38,7 @@ void Server::HandleAccept(const asio::error_code& error)
 	if (!error)
 	{
 		auto endp = newConnection_.get()->socket().remote_endpoint();
-        LOG_INFO << "Connection from " << endp.address()
-			      <<" at port " << endp.port() << std::endl;
+        LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;
 		connectionManager_.Start(newConnection_);
 	}
 	StartAccept();

@@ -19,7 +19,7 @@ enum OpCodes
 
 enum ErrorCodes : uint8_t
 {
-	Ok,
+    Ok,
     NoSuchKey,
     KeyTooBig,
     DataTooBig,
@@ -43,10 +43,10 @@ private:
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleWriteReqResponse(const asio::error_code& error);
-	void StartClientRequestedOp();
-	void StartReadKey(uint16_t& keySize);
-	void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
-	void SendStatusAndRestart(ErrorCodes code, const std::string& message);
+    void StartClientRequestedOp();
+    void StartReadKey(uint16_t& keySize);
+    void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
+    void SendStatusAndRestart(ErrorCodes code, const std::string& message);
 
     static uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
@@ -58,13 +58,13 @@ private:
     }
 
     asio::ip::tcp::socket socket_;
-	uint8_t opcode_;
-	std::vector<uint8_t> key_;
-	size_t maxDataSize_;
-	size_t maxKeySize_;
-	ConnectionManager& connectionManager_;
-	StorageProvider& storageProvider_;
-	std::shared_ptr<std::vector<uint8_t>> data_;
+    uint8_t opcode_;
+    std::vector<uint8_t> key_;
+    size_t maxDataSize_;
+    size_t maxKeySize_;
+    ConnectionManager& connectionManager_;
+    StorageProvider& storageProvider_;
+    std::shared_ptr<std::vector<uint8_t>> data_;
 };
 
 typedef std::shared_ptr<Connection> ConnectionPtr;

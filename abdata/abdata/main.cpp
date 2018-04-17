@@ -112,16 +112,6 @@ static bool ParseCommandline(int argc, char* argv[])
             else
                 LOG_WARNING << "Missing argument for -dbdriver" << std::endl;
         }
-        else if (arg.compare("-dbfile") == 0)
-        {
-            if (i + 1 < argc)
-            {
-                i++;
-                DB::Database::dbFile_ = std::string(argv[i]);
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbfile" << std::endl;
-        }
         else if (arg.compare("-dbhost") == 0)
         {
             if (i + 1 < argc)
@@ -184,8 +174,6 @@ static void LoadConfig()
         IO::Logger::logDir_ = ConfigManager::Instance.GetGlobal("log_dir", "");
     if (DB::Database::driver_.empty())
         DB::Database::driver_ = ConfigManager::Instance.GetGlobal("db_driver", "");
-    if (DB::Database::dbFile_.empty())
-        DB::Database::dbFile_ = ConfigManager::Instance.GetGlobal("db_file", "");
     if (DB::Database::dbHost_.empty())
         DB::Database::dbHost_ = ConfigManager::Instance.GetGlobal("db_host", "");
     if (DB::Database::dbName_.empty())
@@ -251,7 +239,6 @@ int main(int argc, char* argv[])
         LOG_INFO << std::endl;
         LOG_INFO << "Database config:" << std::endl;
         LOG_INFO << "  Driver: " << DB::Database::driver_ << std::endl;
-        LOG_INFO << "  File (SQlite): " << DB::Database::dbFile_ << std::endl;
         LOG_INFO << "  Host: " << DB::Database::dbHost_ << std::endl;
         LOG_INFO << "  Name: " << DB::Database::dbName_ << std::endl;
         LOG_INFO << "  Port: " << DB::Database::dbPort_ << std::endl;
@@ -266,7 +253,7 @@ int main(int argc, char* argv[])
         }
 
         signal(SIGINT, signal_handler);              // Ctrl+C
-        signal(SIGBREAK, signal_handler);            // x clicked
+        signal(SIGBREAK, signal_handler);            // X clicked
         asio::io_service io_service;
         Server serv(io_service, (uint16_t)gPort, gMaxSize);
         shutdown_handler = [&](int /*signal*/)

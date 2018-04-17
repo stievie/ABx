@@ -4,17 +4,27 @@
 #include <sstream>
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Game.h>
 #include "DBAccount.h"
 #include "DBCharacter.h"
+#include "DBGame.h"
 #include "StringHash.h"
 #include "Logger.h"
+#include "StringHash.h"
+
+#pragma warning(push)
+#pragma warning(disable: 4307)
+static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::KEY_ACCOUNTS);
+static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::KEY_CHARACTERS);
+static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::KEY_GAMES);
+#pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize) :
     maxSize_(maxSize),
     currentSize_(0),
     cache_()
 {
-    evictor_.reset(new OldestInsertionEviction());
+    evictor_ = std::make_shared<OldestInsertionEviction>();
 }
 
 uint32_t StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
@@ -36,7 +46,7 @@ bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<st
     uint32_t id;
     if (!DecodeKey(key, table, id))
     {
-        LOG_WARNING << "Unable to decode key" << std::endl;
+        LOG_ERROR << "Unable to decode key" << std::endl;
         return false;
     }
 
@@ -164,10 +174,12 @@ uint32_t StorageProvider::CreateData(const std::vector<uint8_t>& key, std::share
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
-    case TABLE_ACCOUNTS:
+    case KEY_ACCOUNTS_HASH:
         return CreateInDB<DB::DBAccount, AB::Entities::Account>(*data);
-    case TABLE_CHARACTERS:
+    case KEY_CHARACTERS_HASH:
         return CreateInDB<DB::DBCharacter, AB::Entities::Character>(*data);
+    case KEY_GAMES_HASH:
+        return CreateInDB<DB::DBGame, AB::Entities::Game>(*data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -185,10 +197,12 @@ std::shared_ptr<std::vector<uint8_t>> StorageProvider::LoadData(const std::vecto
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
-    case TABLE_ACCOUNTS:
+    case KEY_ACCOUNTS_HASH:
         return LoadFromDB<DB::DBAccount, AB::Entities::Account>(id);
-    case TABLE_CHARACTERS:
+    case KEY_CHARACTERS_HASH:
         return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id);
+    case KEY_GAMES_HASH:
+        return LoadFromDB<DB::DBGame, AB::Entities::Game>(id);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -215,20 +229,31 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
 
     auto d = (*data).second.second.get();
     size_t tableHash = Utils::StringHashRt(table.data());
+    bool succ = false;
     switch (tableHash)
     {
-    case TABLE_ACCOUNTS:
-        SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
-        (*data).second.first = false;
+    case KEY_ACCOUNTS_HASH:
+        succ = SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
+        if (!succ)
+            LOG_ERROR << "Unable to store Account data" << std::endl;
         break;
-    case TABLE_CHARACTERS:
-        SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
-        (*data).second.first = false;
+    case KEY_CHARACTERS_HASH:
+        succ = SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
+        if (!succ)
+            LOG_ERROR << "Unable to store Character data" << std::endl;
+        break;
+    case KEY_GAMES_HASH:
+        succ = SaveToDB<DB::DBGame, AB::Entities::Game>(*d);
+        if (!succ)
+            LOG_ERROR << "Unable to store Game data" << std::endl;
         break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
     }
+
+    if (succ)
+        (*data).second.first = false;
 }
 
 void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
@@ -245,11 +270,17 @@ void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
-    case TABLE_ACCOUNTS:
-        DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d);
+    case KEY_ACCOUNTS_HASH:
+        if (!DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d))
+            LOG_ERROR << "Unable to delete Account data" << std::endl;
         break;
-    case TABLE_CHARACTERS:
-        DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d);
+    case KEY_CHARACTERS_HASH:
+        if (!DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d))
+            LOG_ERROR << "Unable to delete Character data" << std::endl;
+        break;
+    case KEY_GAMES_HASH:
+        if (!DeleteFromDB<DB::DBGame, AB::Entities::Game>(*d))
+            LOG_ERROR << "Unable to delete Character data" << std::endl;
         break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
