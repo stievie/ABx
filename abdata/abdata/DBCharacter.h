@@ -10,9 +10,10 @@ public:
     DBCharacter() = delete;
     ~DBCharacter() = delete;
 
-    static bool Load(AB::Entities::Character& account);
-    static bool Save(AB::Entities::Character& account);
-    static bool Delete(AB::Entities::Character& account);
+    static uint32_t Create(AB::Entities::Character& character);
+    static bool Load(AB::Entities::Character& character);
+    static bool Save(const AB::Entities::Character& character);
+    static bool Delete(const AB::Entities::Character& character);
 };
 
 }

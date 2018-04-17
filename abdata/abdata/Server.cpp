@@ -3,6 +3,7 @@
 #include <iostream>
 #include "ConnectionManager.h"
 #include "Connection.h"
+#include "Logger.h"
 
 Server::Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize) :
     io_service_(io_service),
@@ -37,7 +38,7 @@ void Server::HandleAccept(const asio::error_code& error)
 	if (!error)
 	{
 		auto endp = newConnection_.get()->socket().remote_endpoint();
-		std::cout << "Connection from " << endp.address()
+        LOG_INFO << "Connection from " << endp.address()
 			      <<" at port " << endp.port() << std::endl;
 		connectionManager_.Start(newConnection_);
 	}

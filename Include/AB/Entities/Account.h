@@ -8,7 +8,7 @@ namespace Entities {
 
 enum AccountType : uint8_t
 {
-    AccountTyxpeUnknown = 0,
+    AccountTypeUnknown = 0,
     AccountTypeNormal = 1,
     AccountTypeTutor = 2,
     AccountTypeSeniorTutor = 3,
@@ -31,7 +31,7 @@ struct Account : Entity
         s.value4b(charSlots);
     }
 
-    uint8_t type = AccountTyxpeUnknown;
+    uint8_t type = AccountTypeUnknown;
     bool blocked = false;
     uint64_t creation = 0;
     std::string name;

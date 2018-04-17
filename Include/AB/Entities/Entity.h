@@ -23,7 +23,6 @@ struct Entity
     }
 
     uint32_t id = 0;
-    bool dirty = false;
 };
 
 }

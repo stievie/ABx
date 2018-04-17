@@ -8,9 +8,11 @@ class ConnectionManager;
 
 enum OpCodes
 {
-	Set = 0,
-    Get,
-    Delete,
+    Create = 0,
+    Update = 1,
+    Read = 2,
+    Delete = 3,
+    // Responses
     Status,
     Data
 };
@@ -24,7 +26,8 @@ enum ErrorCodes : uint8_t
     OtherErrors
 };
 
-class Connection:public std::enable_shared_from_this<Connection> {
+class Connection:public std::enable_shared_from_this<Connection>
+{
 public:
 	explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
         StorageProvider& storage, size_t maxData, size_t maxKeySize_);
@@ -32,15 +35,18 @@ public:
 	void Start();
 	void Stop();
 private:
-	void HandleReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
-	void HandleWriteReqResponse(const asio::error_code& error);
+    void StartCreateOperation();
+    void StartUpdateDataOperation();
+    void StartReadOperation();
+    void StartDeleteOperation();
+
+    void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
+    void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
+    void HandleWriteReqResponse(const asio::error_code& error);
 	void StartClientRequestedOp();
 	void StartReadKey(uint16_t& keySize);
-	void StartSetDataOperation();
-	void StartGetOperation();
-	void StartDeleteOperation();
 	void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
-	void SendStatusAndRestart(ErrorCodes code, std::string message);
+	void SendStatusAndRestart(ErrorCodes code, const std::string& message);
 
     static uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
     {

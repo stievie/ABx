@@ -237,6 +237,18 @@ int main(int argc, char* argv[])
         LOG_INFO << "  Port: " << gPort << std::endl;
         LOG_INFO << "  MaxSize: " << gMaxSize << " bytes" << std::endl;
         LOG_INFO << "  Log dir: " << IO::Logger::logDir_ << std::endl;
+        LOG_INFO << "Database drivers:";
+        LOG_INFO << " SQLite";   // We always have SQLite
+#ifdef USE_MYSQL
+        LOG_INFO << " MySQL";
+#endif
+#ifdef USE_PGSQL
+        LOG_INFO << " PostgresSQL";
+#endif
+#ifdef USE_ODBC
+        LOG_INFO << " ODBC";
+#endif
+        LOG_INFO << std::endl;
         LOG_INFO << "Database config:" << std::endl;
         LOG_INFO << "  Driver: " << DB::Database::driver_ << std::endl;
         LOG_INFO << "  File (SQlite): " << DB::Database::dbFile_ << std::endl;

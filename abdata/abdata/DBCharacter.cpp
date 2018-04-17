@@ -4,6 +4,31 @@
 
 namespace DB {
 
+uint32_t DBCharacter::Create(AB::Entities::Character& character)
+{
+    Database* db = Database::Instance();
+    std::ostringstream query;
+    query << "INSERT INTO `players` (`pvp`) VALUES ( ";
+
+    query << character.pvp;
+
+    query << ")";
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return 0;
+
+    if (!db->ExecuteQuery(query.str()))
+        return 0;
+
+    // End transaction
+    if (!transaction.Commit())
+        return 0;
+
+    character.id = static_cast<uint32_t>(db->GetLastInsertId());
+    return character.id;
+}
+
 bool DB::DBCharacter::Load(AB::Entities::Character& character)
 {
     DB::Database* db = DB::Database::Instance();
@@ -19,26 +44,18 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     return true;
 }
 
-bool DB::DBCharacter::Save(AB::Entities::Character& character)
+bool DB::DBCharacter::Save(const AB::Entities::Character& character)
 {
     Database* db = Database::Instance();
     std::ostringstream query;
-    if (character.id != 0)
-    {
-        query << "UPDATE `players` SET ";
+    if (character.id == 0)
+        return false;
 
-        query << " `pvp` = " << character.pvp;
+    query << "UPDATE `players` SET ";
 
-        query << " WHERE `id` = " << character.id;
-    }
-    else
-    {
-        query << "INSERT INTO `players` (`pvp`) VALUES ( ";
+    query << " `pvp` = " << character.pvp;
 
-        query << character.pvp;
-
-        query << ")";
-    }
+    query << " WHERE `id` = " << character.id;
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -48,13 +65,10 @@ bool DB::DBCharacter::Save(AB::Entities::Character& character)
         return false;
 
     // End transaction
-    bool ret = transaction.Commit();
-    if (ret && character.id == 0)
-        character.id = static_cast<uint32_t>(db->GetLastInsertId());
-    return ret;
+    return transaction.Commit();
 }
 
-bool DB::DBCharacter::Delete(AB::Entities::Character& character)
+bool DB::DBCharacter::Delete(const AB::Entities::Character& character)
 {
     if (character.id == 0)
         return false;

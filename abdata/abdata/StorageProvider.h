@@ -20,23 +20,48 @@ static constexpr size_t TABLE_CHARACTERS = Utils::StringHash("players");
 class StorageProvider
 {
 public:
-	StorageProvider(size_t maxSize);
-	void Save(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
-	std::shared_ptr<std::vector<uint8_t>> Get(const std::vector<uint8_t>& key);
-	bool Delete(const std::vector<uint8_t>& key);
+    StorageProvider(size_t maxSize);
+    uint32_t Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    std::shared_ptr<std::vector<uint8_t>> Read(const std::vector<uint8_t>& key);
+    bool Delete(const std::vector<uint8_t>& key);
+    /// Flush all
     void Shutdown();
+private:
+    /// first = dirty, second = data
+    using CacheItem = std::pair<bool, std::shared_ptr<std::vector<uint8_t>>>;
+
     static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uint32_t& id);
     static std::vector<uint8_t> EncodeKey(const std::string& table, uint32_t id);
-private:
-	bool EnoughSpace(size_t size);
-	void CreateSpace(size_t size);
-	bool RemoveData(const std::string& key);
+    bool EnoughSpace(size_t size);
+    void CreateSpace(size_t size);
+    void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data, bool modified);
+    bool RemoveData(const std::string& key);
+
+    uint32_t CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    template<typename D, typename E>
+    uint32_t CreateInDB(std::vector<uint8_t>& data)
+    {
+        E e{};
+        if (GetEntity<E>(data, e))
+        {
+            uint32_t id = D::Create(e);
+            if (id != 0)
+            {
+                // Update data, id changed
+                auto d = SetEntity<E>(e);
+                data.assign(d->begin(), d->end());
+            }
+            return id;
+        }
+        return 0;
+    }
     /// Loads Data from DB
     std::shared_ptr<std::vector<uint8_t>> LoadData(const std::vector<uint8_t>& key);
     template<typename D, typename E>
     std::shared_ptr<std::vector<uint8_t>> LoadFromDB(uint32_t id)
     {
-        E e;
+        E e{};
         e.id = id;
         if (D::Load(e))
             return SetEntity<E>(e);
@@ -83,9 +108,9 @@ private:
         return std::shared_ptr<std::vector<uint8_t>>(&buffer);
     }
 
-	std::unordered_map<std::string, std::shared_ptr<std::vector<uint8_t>>> cache_;
-	size_t currentSize_;
-	size_t maxSize_;
-	std::shared_ptr<EvictionStrategy> evictor_;
+    std::unordered_map<std::string, CacheItem> cache_;
+    size_t currentSize_;
+    size_t maxSize_;
+    std::shared_ptr<EvictionStrategy> evictor_;
 };
 
