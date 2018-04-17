@@ -14,9 +14,9 @@
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
-static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::KEY_ACCOUNTS);
-static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::KEY_CHARACTERS);
-static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::KEY_GAMES);
+static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::Account::KEY());
+static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::Character::KEY());
+static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::Game::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize) :

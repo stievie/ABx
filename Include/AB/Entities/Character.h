@@ -19,6 +19,10 @@ constexpr auto KEY_CHARACTERS = "characters";
 
 struct Character : Entity
 {
+    static constexpr const char* KEY()
+    {
+        return KEY_CHARACTERS;
+    }
     template<typename S>
     void serialize(S& s)
     {

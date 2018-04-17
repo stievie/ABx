@@ -20,6 +20,10 @@ enum AccountType : uint8_t
 
 struct Account : Entity
 {
+    static constexpr const char* KEY()
+    {
+        return KEY_ACCOUNTS;
+    }
     template<typename S>
     void serialize(S& s)
     {

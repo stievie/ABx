@@ -28,6 +28,10 @@ enum GameType : uint8_t
 
 struct Game : Entity
 {
+    static constexpr const char* KEY()
+    {
+        return KEY_GAMES;
+    }
     template<typename S>
     void serialize(S& s)
     {

@@ -6,6 +6,9 @@
 #include <vector>
 #include <string>
 #include "DataClient.h"
+#include <AB/Entities/Account.h>
+#include <AB/Entities/Character.h>
+#include <AB/Entities/Game.h>
 
 #if 0
 uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
@@ -89,6 +92,9 @@ int main()
     asio::io_service io_service;
     DataClient cli(io_service);
     cli.Connect("localhost", 2770);
+    AB::Entities::Account a{};
+    cli.Read<AB::Entities::Account>(1, a);
+    cli.Update(a);
 
 /*
     asio::ip::tcp::resolver resolver(io_service);

@@ -19,7 +19,7 @@ void DataClient::Connect(const std::string& host, uint16_t port)
     InternalConnect();
 }
 
-std::shared_ptr<std::vector<uint8_t>> DataClient::Read(const std::string& key)
+std::shared_ptr<std::vector<uint8_t>> DataClient::ReadData(const std::string& key)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
@@ -30,7 +30,7 @@ std::shared_ptr<std::vector<uint8_t>> DataClient::Read(const std::string& key)
     std::vector<uint8_t> dataheader(5);
     size_t read = asio::read(socket_, asio::buffer(dataheader, 5), asio::transfer_at_least(5));
 
-    const int size = toInt32(dataheader, 1);
+    const int size = ToInt32(dataheader, 1);
     //TODO handle message statuses
     std::vector<uint8_t> data(size);
     size_t read2 = asio::read(socket_, asio::buffer(data), asio::transfer_at_least(size));
@@ -38,7 +38,7 @@ std::shared_ptr<std::vector<uint8_t>> DataClient::Read(const std::string& key)
     return std::shared_ptr<std::vector<uint8_t>>(&data);
 }
 
-bool DataClient::Delete(const std::string& key)
+bool DataClient::DeleteData(const std::string& key)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
@@ -59,7 +59,7 @@ bool DataClient::Delete(const std::string& key)
     return true;
 }
 
-bool DataClient::Update(const std::string& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool DataClient::UpdateData(const std::string& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
@@ -84,7 +84,7 @@ bool DataClient::Update(const std::string& key, std::shared_ptr<std::vector<uint
     return true;
 }
 
-uint32_t DataClient::Create(const std::string& key, std::shared_ptr<std::vector<uint8_t>> data)
+uint32_t DataClient::CreateData(const std::string& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
