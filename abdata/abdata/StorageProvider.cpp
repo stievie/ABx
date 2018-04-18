@@ -19,9 +19,10 @@ static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::Ch
 static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::Game::KEY());
 #pragma warning(pop)
 
-StorageProvider::StorageProvider(size_t maxSize) :
+StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     maxSize_(maxSize),
     currentSize_(0),
+    readonly_(readonly),
     cache_()
 {
     evictor_ = std::make_shared<OldestInsertionEviction>();
@@ -171,6 +172,12 @@ uint32_t StorageProvider::CreateData(const std::vector<uint8_t>& key, std::share
     if (!DecodeKey(key, table, id))
         return 0;
 
+    if (readonly_)
+    {
+        LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
+        return id;
+    }
+
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
@@ -227,6 +234,12 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (!DecodeKey(key, table, id))
         return;
 
+    if (readonly_)
+    {
+        LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
+        return;
+    }
+
     auto d = (*data).second.second.get();
     size_t tableHash = Utils::StringHashRt(table.data());
     bool succ = false;
@@ -266,6 +279,13 @@ void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
     auto data = Read(key);
     if (!data)
         return;
+
+    if (readonly_)
+    {
+        LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
+        return;
+    }
+
     std::vector<uint8_t>* d = data.get();
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)

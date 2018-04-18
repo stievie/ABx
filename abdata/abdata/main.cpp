@@ -20,6 +20,7 @@
 int gPort = 0;
 size_t gMaxSize = 0;
 std::string gConfigFile = "";
+bool gReadonly = false;
 
 namespace {
 std::function<void(int)> shutdown_handler;
@@ -81,6 +82,11 @@ static bool ParseCommandline(int argc, char* argv[])
             }
             else
                 LOG_WARNING << "Missing argument for -maxsize" << std::endl;
+        }
+        else if (arg.compare("-readonly") == 0)
+        {
+            gReadonly = true;
+            i++;
         }
         else if (arg.compare("-log") == 0)
         {
@@ -170,6 +176,7 @@ static void LoadConfig()
 {
     gPort = static_cast<int>(ConfigManager::Instance.GetGlobal("data_port", gPort));
     gMaxSize = ConfigManager::Instance.GetGlobal("max_size", gMaxSize);
+    gReadonly = ConfigManager::Instance.GetGlobalBool("read_only", gReadonly);
     if (IO::Logger::logDir_.empty())
         IO::Logger::logDir_ = ConfigManager::Instance.GetGlobal("log_dir", "");
     if (DB::Database::driver_.empty())
@@ -225,6 +232,7 @@ int main(int argc, char* argv[])
         LOG_INFO << "  Port: " << gPort << std::endl;
         LOG_INFO << "  MaxSize: " << gMaxSize << " bytes" << std::endl;
         LOG_INFO << "  Log dir: " << IO::Logger::logDir_ << std::endl;
+        LOG_INFO << "  Readonly mode: " << (gReadonly ? "TRUE" : "false")  << std::endl;
         LOG_INFO << "Database drivers:";
         LOG_INFO << " SQLite";   // We always have SQLite
 #ifdef USE_MYSQL
@@ -255,7 +263,7 @@ int main(int argc, char* argv[])
         signal(SIGINT, signal_handler);              // Ctrl+C
         signal(SIGBREAK, signal_handler);            // X clicked
         asio::io_service io_service;
-        Server serv(io_service, (uint16_t)gPort, gMaxSize);
+        Server serv(io_service, (uint16_t)gPort, gMaxSize, gReadonly);
         shutdown_handler = [&](int /*signal*/)
         {
             LOG_INFO << "Server shutdown..." << std::endl;

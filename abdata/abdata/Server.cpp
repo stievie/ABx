@@ -5,13 +5,13 @@
 #include "Connection.h"
 #include "Logger.h"
 
-Server::Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize) :
+Server::Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize, bool readonly) :
     io_service_(io_service),
     acceptor_(
         io_service,
         asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)
     ),
-    storageProvider_(maxCacheSize),
+    storageProvider_(maxCacheSize, readonly),
 	maxDataSize_(1048576),
     maxKeySize_(256)
 {

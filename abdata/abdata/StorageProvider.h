@@ -13,7 +13,7 @@
 class StorageProvider
 {
 public:
-    StorageProvider(size_t maxSize);
+    StorageProvider(size_t maxSize, bool readonly);
 
     uint32_t Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     bool Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
@@ -104,6 +104,7 @@ private:
         return std::shared_ptr<std::vector<uint8_t>>(&buffer);
     }
 
+    bool readonly_;
     std::unordered_map<std::string, CacheItem> cache_;
     size_t currentSize_;
     size_t maxSize_;

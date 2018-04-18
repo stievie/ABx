@@ -1,8 +1,6 @@
 # abdata
 
-Caching data server.
-
-Add Create method
+Caching data server with Database backend.
 
 ## Dependencies
 

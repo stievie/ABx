@@ -6,7 +6,7 @@
 class Server {
 
 public:
-	Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize);
+	Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize, bool readonly);
     void Shutdown();
 private:
 	void StartAccept();
