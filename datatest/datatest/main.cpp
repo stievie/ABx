@@ -92,9 +92,11 @@ int main()
     asio::io_service io_service;
     DataClient cli(io_service);
     cli.Connect("localhost", 2770);
-    AB::Entities::Account a{};
-    cli.Read<AB::Entities::Account>(1, a);
-    cli.Update(a);
+    AB::Entities::Account a{ };
+    a.id = 1;
+    cli.Read(a);
+    std::cout << a.name << std::endl;
+//    cli.Update(a);
 
 /*
     asio::ip::tcp::resolver resolver(io_service);

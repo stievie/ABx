@@ -8,7 +8,7 @@
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
 
-enum OpCodes
+enum OpCodes : uint8_t
 {
     Create = 0,
     Update = 1,
@@ -37,9 +37,9 @@ public:
     void Connect(const std::string& host, uint16_t port);
 
     template<typename E>
-    bool Read(uint32_t id, E& entity)
+    bool Read(E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), id);
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), entity.id);
         std::string sKey(aKey.begin(), aKey.end());
         std::shared_ptr<std::vector<uint8_t>> data = ReadData(sKey);
         if (!data)
@@ -64,13 +64,13 @@ public:
         return UpdateData(sKey, data);
     }
     template<typename E>
-    bool Create(uint32_t& id, E& entity)
+    bool Create(E& entity)
     {
         std::vector<uint8_t> aKey = EncodeKey(E::KEY(), 0);
         std::string sKey(aKey.begin(), aKey.end());
         auto data = SetEntity<E>(entity);
-        id = CreateData(sKey, data);
-        return id != 0;
+        entity.id = CreateData(sKey, data);
+        return entity.id != 0;
     }
 private:
     template<typename E>
