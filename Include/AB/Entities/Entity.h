@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 //include inheritance extension
 //this header contains two extensions, that specifies inheritance type of base class
 //  BaseClass - normal inheritance
@@ -20,9 +21,11 @@ struct Entity
     void serialize(S& s)
     {
         s.value4b(id);
+        s.text1b(uuid, Limits::MAX_UUID);
     }
 
     uint32_t id = 0;
+    std::string uuid;
 };
 
 }

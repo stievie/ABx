@@ -3,6 +3,8 @@
 namespace AB {
 namespace Entities {
 namespace Limits {
+// General
+static constexpr int MAX_UUID = 36;
 static constexpr int MAX_FILENAME = 260;
 // Account
 static constexpr int MAX_ACCOUNT_NAME = 32;

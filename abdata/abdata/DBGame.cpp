@@ -16,7 +16,17 @@ bool DBGame::Load(AB::Entities::Game& game)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT * FROM `games` WHERE `id` = " << game.id;
+    query << "SELECT * FROM `games` WHERE ";
+    if (game.id != 0)
+        query << "`id` = " << game.id;
+    else if (!game.name.empty())
+        query << "`name` = " << db->EscapeString(game.name);
+    else
+    {
+        LOG_ERROR << "ID and name are empty" << std::endl;
+        return false;
+    }
+
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;

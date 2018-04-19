@@ -21,6 +21,8 @@
 #include <asio.hpp>
 #pragma warning(pop)
 
+#include <uuid.h>
+
 #define USE_MYSQL
 #define USE_PGSQL
 #define USE_ODBC

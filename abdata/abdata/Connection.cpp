@@ -142,6 +142,14 @@ void Connection::StartDeleteOperation()
         SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
 }
 
+void Connection::StartInvalidateOperation()
+{
+    if (storageProvider_.Invalidate(key_))
+        SendStatusAndRestart(Ok, "OK");
+    else
+        SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
+}
+
 void Connection::Stop()
 {
     std::string address = socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port());
@@ -212,6 +220,9 @@ void Connection::StartClientRequestedOp()
         break;
     case OpCodes::Delete:
         StartDeleteOperation();
+        break;
+    case OpCodes::Invalidate:
+        StartInvalidateOperation();
         break;
     case OpCodes::Status:
     case OpCodes::Data:

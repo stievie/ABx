@@ -8,10 +8,12 @@ class ConnectionManager;
 
 enum OpCodes
 {
+    // Requests
     Create = 0,
     Update = 1,
     Read = 2,
     Delete = 3,
+    Invalidate = 4,           // Invalidate a cache item. Next read will load it from the DB
     // Responses
     Status,
     Data
@@ -39,6 +41,7 @@ private:
     void StartUpdateDataOperation();
     void StartReadOperation();
     void StartDeleteOperation();
+    void StartInvalidateOperation();
 
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);

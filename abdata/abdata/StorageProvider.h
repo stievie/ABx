@@ -10,33 +10,40 @@
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
 
+struct CacheFlags
+{
+    bool modified;
+    bool deleted;
+};
+
 class StorageProvider
 {
 public:
     StorageProvider(size_t maxSize, bool readonly);
 
-    uint32_t Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     bool Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     std::shared_ptr<std::vector<uint8_t>> Read(const std::vector<uint8_t>& key);
     bool Delete(const std::vector<uint8_t>& key);
+    bool Invalidate(const std::vector<uint8_t>& key);
 
     /// Flush all
     void Shutdown();
 private:
     /// first = dirty, second = data
-    using CacheItem = std::pair<bool, std::shared_ptr<std::vector<uint8_t>>>;
+    using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;
 
-    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uint32_t& id);
-    static std::vector<uint8_t> EncodeKey(const std::string& table, uint32_t id);
+    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id);
+    static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id);
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
     void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data, bool modified);
     bool RemoveData(const std::string& key);
 
     /// Create data in DB. Returns id (primary key)
-    uint32_t CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     template<typename D, typename E>
-    uint32_t CreateInDB(std::vector<uint8_t>& data)
+    bool CreateInDB(std::vector<uint8_t>& data)
     {
         E e{};
         if (GetEntity<E>(data, e))
@@ -47,24 +54,25 @@ private:
                 // Update data, id changed
                 auto d = SetEntity<E>(e);
                 data.assign(d->begin(), d->end());
+                return true;
             }
-            return id;
         }
-        return 0;
+        return false;
     }
     /// Loads Data from DB
     std::shared_ptr<std::vector<uint8_t>> LoadData(const std::vector<uint8_t>& key);
     template<typename D, typename E>
-    std::shared_ptr<std::vector<uint8_t>> LoadFromDB(uint32_t id)
+    std::shared_ptr<std::vector<uint8_t>> LoadFromDB(const uuids::uuid& id)
     {
         E e{};
-        e.id = id;
+        e.uuid = id.to_string();
         if (D::Load(e))
             return SetEntity<E>(e);
         return std::shared_ptr<std::vector<uint8_t>>();
     }
 
-    /// Save data to DB
+    /// Save data to DB or delete from DB.
+    /// So synchronize this item with the DB.
     void FlushData(const std::vector<uint8_t>& key);
     template<typename D, typename E>
     bool SaveToDB(std::vector<uint8_t>& data)
@@ -74,9 +82,6 @@ private:
             return D::Save(e);
         return false;
     }
-
-    /// Delete data from DB
-    void DeleteData(const std::vector<uint8_t>& key);
     template<typename D, typename E>
     bool DeleteFromDB(std::vector<uint8_t>& data)
     {

@@ -28,30 +28,31 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     evictor_ = std::make_shared<OldestInsertionEviction>();
 }
 
-uint32_t StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
-    uint32_t _id;
+    uuids::uuid _id;
     if (!DecodeKey(key, table, _id))
-        return 0;
+        return false;
+    if (_id.nil())
+        return false;
 
-    uint32_t id = CreateData(key, data);
-    std::vector<uint8_t> newKey = EncodeKey(table, id);
-    CacheData(newKey, data, false);
-    return id;
+    // Mark modified since to in DB
+    CacheData(key, data, true);
+    return true;
 }
 
 bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
-    uint32_t id;
+    uuids::uuid id;
     if (!DecodeKey(key, table, id))
     {
         LOG_ERROR << "Unable to decode key" << std::endl;
         return false;
     }
 
-    if (id == 0)
+    if (id.nil())
         // Does not exist
         return false;
 
@@ -79,7 +80,7 @@ void StorageProvider::CacheData(const std::vector<uint8_t>& key,
         evictor_->RefreshKey(keyString);
         currentSize_ = (currentSize_ - cache_[keyString].second->size()) + data->size();
     }
-    cache_[keyString] = { modified, data };
+    cache_[keyString] = { { modified, false }, data };
 }
 
 std::shared_ptr<std::vector<uint8_t>> StorageProvider::Read(const std::vector<uint8_t>& key)
@@ -95,13 +96,26 @@ std::shared_ptr<std::vector<uint8_t>> StorageProvider::Read(const std::vector<ui
         return d;
     }
 
+    if ((*data).second.first.deleted)
+        // Don't return deleted items that are in cache
+        return std::shared_ptr<std::vector<uint8_t>>();
     return (*data).second.second;
 }
 
 bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 {
-    // Delete from DB
-    DeleteData(key);
+    std::string dataToRemove(key.begin(), key.end());
+    auto data = cache_.find(dataToRemove);
+    if (data == cache_.end())
+    {
+        (*data).second.first.deleted = true;
+        return true;
+    }
+    return false;
+}
+
+bool StorageProvider::Invalidate(const std::vector<uint8_t>& key)
+{
     std::string dataToRemove(key.begin(), key.end());
     return RemoveData(dataToRemove);
 }
@@ -115,24 +129,20 @@ void StorageProvider::Shutdown()
     }
 }
 
-bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key, std::string& table, uint32_t& id)
+bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id)
 {
-    // key = <tablename><id>
-    if (key.size() <= sizeof(uint32_t))
+    // key = <tablename><guid>
+    if (key.size() <= uuids::uuid::state_size)
         return false;
-    table.assign(key.begin(), key.end() - sizeof(uint32_t));
-    size_t start = key.size() - sizeof(uint32_t);
-    id = (key[start + 3] << 24) | (key[start + 2] << 16) | (key[start + 1] << 8) | key[start];
-    return false;
+    table.assign(key.begin(), key.end() - uuids::uuid::state_size);
+    id = uuids::uuid(key.end() - uuids::uuid::state_size, key.end());
+    return true;
 }
 
-std::vector<uint8_t> StorageProvider::EncodeKey(const std::string& table, uint32_t id)
+std::vector<uint8_t> StorageProvider::EncodeKey(const std::string& table, const uuids::uuid& id)
 {
     std::vector<uint8_t> result(table.begin(), table.end());
-    result.push_back((uint8_t)id);
-    result.push_back((uint8_t)(id >> 8));
-    result.push_back((uint8_t)(id >> 16));
-    result.push_back((uint8_t)(id >> 24));
+    result.insert(result.end(), id.begin(), id.end());
     return result;
 }
 
@@ -165,17 +175,17 @@ bool StorageProvider::RemoveData(const std::string& key)
     return false;
 }
 
-uint32_t StorageProvider::CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
-    uint32_t id;
+    uuids::uuid id;
     if (!DecodeKey(key, table, id))
         return 0;
 
     if (readonly_)
     {
         LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
-        return id;
+        return false;
     }
 
     size_t tableHash = Utils::StringHashRt(table.data());
@@ -197,7 +207,7 @@ uint32_t StorageProvider::CreateData(const std::vector<uint8_t>& key, std::share
 std::shared_ptr<std::vector<uint8_t>> StorageProvider::LoadData(const std::vector<uint8_t>& key)
 {
     std::string table;
-    uint32_t id;
+    uuids::uuid id;
     if (!DecodeKey(key, table, id))
         return std::shared_ptr<std::vector<uint8_t>>();
 
@@ -226,11 +236,11 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (data == cache_.end())
         return;
     // No need to save to DB when not modified
-    if (!(*data).second.first)
+    if (!(*data).second.first.modified || !(*data).second.first.deleted)
         return;
 
     std::string table;
-    uint32_t id;
+    uuids::uuid id;
     if (!DecodeKey(key, table, id))
         return;
 
@@ -246,19 +256,28 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     switch (tableHash)
     {
     case KEY_ACCOUNTS_HASH:
-        succ = SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
+        if ((*data).second.first.modified)
+            succ = SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
+        else if ((*data).second.first.deleted)
+            succ = DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d);
         if (!succ)
-            LOG_ERROR << "Unable to store Account data" << std::endl;
+            LOG_ERROR << "Unable to flush Account data" << std::endl;
         break;
     case KEY_CHARACTERS_HASH:
-        succ = SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
+        if ((*data).second.first.modified)
+            succ = SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
+        else if ((*data).second.first.deleted)
+            succ = DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d);
         if (!succ)
-            LOG_ERROR << "Unable to store Character data" << std::endl;
+            LOG_ERROR << "Unable to flush Character data" << std::endl;
         break;
     case KEY_GAMES_HASH:
-        succ = SaveToDB<DB::DBGame, AB::Entities::Game>(*d);
+        if ((*data).second.first.modified)
+            succ = SaveToDB<DB::DBGame, AB::Entities::Game>(*d);
+        else if ((*data).second.first.deleted)
+            succ = DeleteFromDB<DB::DBGame, AB::Entities::Game>(*d);
         if (!succ)
-            LOG_ERROR << "Unable to store Game data" << std::endl;
+            LOG_ERROR << "Unable to flush Game data" << std::endl;
         break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
@@ -266,45 +285,10 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     }
 
     if (succ)
-        (*data).second.first = false;
-}
-
-void StorageProvider::DeleteData(const std::vector<uint8_t>& key)
-{
-    std::string table;
-    uint32_t id;
-    if (!DecodeKey(key, table, id))
-        return;
-
-    auto data = Read(key);
-    if (!data)
-        return;
-
-    if (readonly_)
     {
-        LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
-        return;
+        if ((*data).second.first.modified)
+            (*data).second.first.modified = false;
+        else if ((*data).second.first.deleted)
+            RemoveData(keyString);
     }
-
-    std::vector<uint8_t>* d = data.get();
-    size_t tableHash = Utils::StringHashRt(table.data());
-    switch (tableHash)
-    {
-    case KEY_ACCOUNTS_HASH:
-        if (!DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d))
-            LOG_ERROR << "Unable to delete Account data" << std::endl;
-        break;
-    case KEY_CHARACTERS_HASH:
-        if (!DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d))
-            LOG_ERROR << "Unable to delete Character data" << std::endl;
-        break;
-    case KEY_GAMES_HASH:
-        if (!DeleteFromDB<DB::DBGame, AB::Entities::Game>(*d))
-            LOG_ERROR << "Unable to delete Character data" << std::endl;
-        break;
-    default:
-        LOG_ERROR << "Unknown table " << table << std::endl;
-        break;
-    }
-
 }

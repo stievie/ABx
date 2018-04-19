@@ -6,3 +6,5 @@
 * https://github.com/kainjow/Mustache
 * Entity Position Interpolation https://github.com/jwatte/EPIC
 * https://github.com/fraillt/bitsery
+* https://github.com/brimzi/simple-cache
+* https://github.com/mariusbancila/stduuid
