@@ -52,6 +52,7 @@ public:
             return true;
         return false;
     }
+    /// Delete an entity. This entity must be in cache, if not, use Read first.
     template<typename E>
     bool Delete(const E& entity)
     {

@@ -18,9 +18,21 @@ int main()
     asio::io_service io_service;
     DataClient cli(io_service);
     cli.Connect("localhost", 2770);
-    AB::Entities::Account a{ };
 
-    uuids::uuid empty;
+    AB::Entities::Account a4{};
+    a4.name = "stievie25";
+    a4.email = "test@test";
+    a4.password = "test";
+    a4.uuid = uuids::uuid_system_generator{}().to_string();
+    {
+        AB_PROFILE;
+        cli.Create(a4);
+    }
+    cli.Delete(a4);
+
+/*
+AB::Entities::Account a{ };
+uuids::uuid empty;
     a.uuid = empty.to_string();
     a.name = "trill";
     {
@@ -46,6 +58,7 @@ int main()
     AB::Entities::Account a4{};
     a4.name = "stievie25";
     a4.email = "test@test";
+    a4.password = "test";
     a4.uuid = uuids::uuid_system_generator{}().to_string();
     {
         AB_PROFILE;
@@ -69,11 +82,11 @@ int main()
 
     {
         AB_PROFILE;
-        cli.Delete(a3);
+//        cli.Delete(a3);
     }
     if (!cli.Read(a3))
         std::cout << "noexists" << std::endl;
-
+*/
     return 0;
 }
 

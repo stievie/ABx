@@ -45,7 +45,7 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
         return false;
 
     // Mark modified since to in DB
-    CacheData(key, data, true);
+    CacheData(key, data, true, false);
     return true;
 }
 
@@ -63,13 +63,20 @@ bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<st
         // Does not exist
         return false;
 
+    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+    auto _data = cache_.find(keyString);
+    // The only possibility to update a not yet created entity is when its in cache and not flushed.
+    bool isCreated = true;
+    if (_data != cache_.end())
+        isCreated = (*_data).second.first.created;
+
     // The client sets the data so this is not stored in DB
-    CacheData(key, data, true);
+    CacheData(key, data, true, isCreated);
     return true;
 }
 
 void StorageProvider::CacheData(const std::vector<uint8_t>& key,
-    std::shared_ptr<std::vector<uint8_t>> data, bool modified)
+    std::shared_ptr<std::vector<uint8_t>> data, bool modified, bool created)
 {
     std::string keyString(key.begin(), key.end());//TODO think about the cost here
 
@@ -87,7 +94,7 @@ void StorageProvider::CacheData(const std::vector<uint8_t>& key,
         evictor_->RefreshKey(keyString);
         currentSize_ = (currentSize_ - cache_[keyString].second->size()) + data->size();
     }
-    cache_[keyString] = { { modified, false }, data };
+    cache_[keyString] = { { created, modified, false }, data };
 }
 
 bool StorageProvider::Read(const std::vector<uint8_t>& key,
@@ -108,7 +115,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
             // If no UUID given in key (e.g. when reading by name) cache with the proper key
             _id = GetUuid(data);
         auto newKey = EncodeKey(table, _id);
-        CacheData(newKey, data, false);
+        CacheData(newKey, data, false, true);
         return true;
     }
 
@@ -123,12 +130,12 @@ bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 {
     std::string dataToRemove(key.begin(), key.end());
     auto data = cache_.find(dataToRemove);
-    if (data != cache_.end())
+    if (data == cache_.end())
     {
-        (*data).second.first.deleted = true;
-        return true;
+        return false;
     }
-    return false;
+    (*data).second.first.deleted = true;
+    return true;
 }
 
 bool StorageProvider::Invalidate(const std::vector<uint8_t>& key)
@@ -183,6 +190,7 @@ void StorageProvider::CreateSpace(size_t size)
     {
         std::string dataToRemove = evictor_->NextEviction();
         std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
+
         FlushData(key);
         RemoveData(dataToRemove);
     }
@@ -199,36 +207,6 @@ bool StorageProvider::RemoveData(const std::string& key)
         return true;
     }
     return false;
-}
-
-bool StorageProvider::CreateData(const std::vector<uint8_t>& key,
-    std::shared_ptr<std::vector<uint8_t>> data)
-{
-    std::string table;
-    uuids::uuid id;
-    if (!DecodeKey(key, table, id))
-        return 0;
-
-    if (readonly_)
-    {
-        LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
-        return false;
-    }
-
-    size_t tableHash = Utils::StringHashRt(table.data());
-    switch (tableHash)
-    {
-    case KEY_ACCOUNTS_HASH:
-        return CreateInDB<DB::DBAccount, AB::Entities::Account>(*data);
-    case KEY_CHARACTERS_HASH:
-        return CreateInDB<DB::DBCharacter, AB::Entities::Character>(*data);
-    case KEY_GAMES_HASH:
-        return CreateInDB<DB::DBGame, AB::Entities::Game>(*data);
-    default:
-        LOG_ERROR << "Unknown table " << table << std::endl;
-        break;
-    }
-    return 0;
 }
 
 bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
@@ -264,7 +242,7 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (data == cache_.end())
         return;
     // No need to save to DB when not modified
-    if (!(*data).second.first.modified || !(*data).second.first.deleted)
+    if (!(*data).second.first.modified && !(*data).second.first.deleted)
         return;
 
     std::string table;
@@ -281,28 +259,69 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     auto d = (*data).second.second.get();
     size_t tableHash = Utils::StringHashRt(table.data());
     bool succ = false;
+
     switch (tableHash)
     {
     case KEY_ACCOUNTS_HASH:
-        if ((*data).second.first.modified)
+        // These flags are not mutually exclusive, hoverer creating it implies it is no longer modified
+        if (!(*data).second.first.created)
+        {
+            succ = CreateInDB<DB::DBAccount, AB::Entities::Account>(*d);
+            if (succ)
+            {
+                (*data).second.first.created = true;
+                (*data).second.first.modified = false;
+            }
+        }
+        else if ((*data).second.first.modified)
+        {
             succ = SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
-        else if ((*data).second.first.deleted)
+            if (succ)
+                (*data).second.first.modified = false;
+        }
+        if ((*data).second.first.deleted)
             succ = DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d);
         if (!succ)
             LOG_ERROR << "Unable to flush Account data" << std::endl;
         break;
     case KEY_CHARACTERS_HASH:
-        if ((*data).second.first.modified)
+        if ((*data).second.first.created)
+        {
+            succ = CreateInDB<DB::DBCharacter, AB::Entities::Character>(*d);
+            if (succ)
+            {
+                (*data).second.first.created = true;
+                (*data).second.first.modified = false;
+            }
+        }
+        else if ((*data).second.first.modified)
+        {
             succ = SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
-        else if ((*data).second.first.deleted)
+            if (succ)
+                (*data).second.first.modified = false;
+        }
+        if ((*data).second.first.deleted)
             succ = DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d);
         if (!succ)
             LOG_ERROR << "Unable to flush Character data" << std::endl;
         break;
     case KEY_GAMES_HASH:
-        if ((*data).second.first.modified)
+        if ((*data).second.first.created)
+        {
+            succ = CreateInDB<DB::DBGame, AB::Entities::Game>(*d);
+            if (succ)
+            {
+                (*data).second.first.created = true;
+                (*data).second.first.modified = false;
+            }
+        }
+        else if ((*data).second.first.modified)
+        {
             succ = SaveToDB<DB::DBGame, AB::Entities::Game>(*d);
-        else if ((*data).second.first.deleted)
+            if (succ)
+                (*data).second.first.modified = false;
+        }
+        if ((*data).second.first.deleted)
             succ = DeleteFromDB<DB::DBGame, AB::Entities::Game>(*d);
         if (!succ)
             LOG_ERROR << "Unable to flush Game data" << std::endl;
@@ -310,13 +329,5 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
-    }
-
-    if (succ)
-    {
-        if ((*data).second.first.modified)
-            (*data).second.first.modified = false;
-        else if ((*data).second.first.deleted)
-            RemoveData(keyString);
     }
 }

@@ -12,6 +12,7 @@
 
 struct CacheFlags
 {
+    bool created;             // It exists in DB
     bool modified;
     bool deleted;
 };
@@ -38,11 +39,10 @@ private:
     static uuids::uuid GetUuid(std::shared_ptr<std::vector<uint8_t>> data);
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
-    void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data, bool modified);
+    void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data,
+        bool modified, bool created);
     bool RemoveData(const std::string& key);
 
-    /// Create data in DB. Returns id (primary key)
-    bool CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     template<typename D, typename E>
     bool CreateInDB(std::vector<uint8_t>& data)
     {
