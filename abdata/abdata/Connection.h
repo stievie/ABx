@@ -6,14 +6,16 @@
 
 class ConnectionManager;
 
-enum OpCodes
+enum OpCodes : uint8_t
 {
     // Requests
     Create = 0,
     Update = 1,
     Read = 2,
     Delete = 3,
-    Invalidate = 4,           // Invalidate a cache item. Next read will load it from the DB
+    // Invalidate a cache item. Does NOT flush modified data. Next read will load it from the DB.
+    // TODO: Check if needed.
+    Invalidate = 4,
     // Responses
     Status,
     Data
@@ -28,7 +30,7 @@ enum ErrorCodes : uint8_t
     OtherErrors
 };
 
-class Connection:public std::enable_shared_from_this<Connection>
+class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
 	explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
@@ -45,6 +47,7 @@ private:
 
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
+    void HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleWriteReqResponse(const asio::error_code& error);
     void StartClientRequestedOp();
     void StartReadKey(uint16_t& keySize);

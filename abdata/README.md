@@ -2,7 +2,7 @@
 
 Caching data server with Database backend.
 
-Use UUID instead of autoincrement id
+TODO: How to check constraints?
 
 ## Dependencies
 

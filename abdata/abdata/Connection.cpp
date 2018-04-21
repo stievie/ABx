@@ -112,26 +112,27 @@ void Connection::StartUpdateDataOperation()
 
 void Connection::StartReadOperation()
 {
-    data_ = storageProvider_.Read(key_);
-    if (data_)
+    data_.reset(new std::vector<uint8_t>(4));
+    auto self = shared_from_this();
+    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
+        [this, self](const asio::error_code& error, size_t bytes_transferred)
     {
-        uint8_t header[] = {
-            (uint8_t)OpCodes::Data,
-            (uint8_t)data_->size(),
-            (uint8_t)(data_->size() >> 8),
-            (uint8_t)(data_->size() >> 16),
-            (uint8_t)(data_->size() >> 24)
-        };//TODO verify this
-
-        std::vector<asio::mutable_buffer> bufs = {
-            asio::buffer(header),
-            asio::buffer(*data_.get())
-        };
-
-        SendResponseAndStart(bufs, data_->size() + 4);
-    }
-    else
-        SendStatusAndRestart(NoSuchKey, "Requested data not in cache");
+        if (!error && bytes_transferred >= 4)
+        {
+            uint32_t size = toInt32(*data_.get(), 0);
+            if (size <= maxDataSize_)
+            {
+                data_.reset(new std::vector<uint8_t>(size));
+                asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
+                    std::bind(&Connection::HandleReadReadRawData, self,
+                        std::placeholders::_1, std::placeholders::_2, size));
+            }
+            else
+                SendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
+        }
+        else
+            connectionManager_.Stop(self);
+    });
 }
 
 void Connection::StartDeleteOperation()
@@ -185,16 +186,54 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
             SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
         else
         {
-            uint32_t id = storageProvider_.Create(key_, data_);
-            if (id != 0)
+            if (storageProvider_.Create(key_, data_))
                 // Returns the id of the created Entity so client can construct the key
-                SendStatusAndRestart(Ok, std::to_string(id));
+                SendStatusAndRestart(Ok, "OK");
             else
                 SendStatusAndRestart(OtherErrors, "Error");
         }
     }
     else
         connectionManager_.Stop(shared_from_this());
+}
+
+void Connection::HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
+{
+    if (error)
+    {
+        connectionManager_.Stop(shared_from_this());
+        return;
+    }
+    if (!data_)
+    {
+        SendStatusAndRestart(NoSuchKey, "Requested data not in cache");
+        return;
+    }
+    if (bytes_transferred != expected)
+    {
+        SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+        return;
+    }
+
+    if (!storageProvider_.Read(key_, data_))
+    {
+        SendStatusAndRestart(OtherErrors, "Error");
+        return;
+    }
+
+    uint8_t header[] = {
+        (uint8_t)OpCodes::Data,
+        (uint8_t)data_->size(),
+        (uint8_t)(data_->size() >> 8),
+        (uint8_t)(data_->size() >> 16),
+        (uint8_t)(data_->size() >> 24)
+    };//TODO verify this
+
+    std::vector<asio::mutable_buffer> bufs = {
+        asio::buffer(header),
+        asio::buffer(*data_.get())
+    };
+    SendResponseAndStart(bufs, data_->size() + 4);
 }
 
 void Connection::HandleWriteReqResponse(const asio::error_code& error)

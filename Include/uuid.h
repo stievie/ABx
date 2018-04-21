@@ -1,5 +1,7 @@
 #pragma once
 
+// https://github.com/mariusbancila/stduuid
+
 #include <string>
 #include <sstream>
 #include <iomanip>
@@ -626,12 +628,12 @@ public:
             std::copy(first, last, std::begin(data));
     }
 
-    explicit uuid(std::string str)
+    explicit uuid(const std::string& str)
     {
         create(str.data(), str.size());
     }
 
-    explicit uuid(std::wstring str)
+    explicit uuid(const std::wstring& str)
     {
         create(str.data(), str.size());
     }

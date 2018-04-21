@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include <AB/Entities/Entity.h>
 //include inheritance extension
 //this header contains two extensions, that specifies inheritance type of base class
 //  BaseClass - normal inheritance

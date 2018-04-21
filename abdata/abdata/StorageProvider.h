@@ -23,7 +23,7 @@ public:
 
     bool Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     bool Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
-    std::shared_ptr<std::vector<uint8_t>> Read(const std::vector<uint8_t>& key);
+    bool Read(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     bool Delete(const std::vector<uint8_t>& key);
     bool Invalidate(const std::vector<uint8_t>& key);
 
@@ -35,6 +35,7 @@ private:
 
     static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id);
     static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id);
+    static uuids::uuid GetUuid(std::shared_ptr<std::vector<uint8_t>> data);
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
     void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data, bool modified);
@@ -48,27 +49,35 @@ private:
         E e{};
         if (GetEntity<E>(data, e))
         {
-            uint32_t id = D::Create(e);
-            if (id != 0)
+            if (D::Create(e))
             {
-                // Update data, id changed
-                auto d = SetEntity<E>(e);
-                data.assign(d->begin(), d->end());
-                return true;
+                // Update data, id may have changed
+                if (SetEntity<E>(e, data) != 0)
+                    return true;
+                return false;
             }
         }
         return false;
     }
     /// Loads Data from DB
-    std::shared_ptr<std::vector<uint8_t>> LoadData(const std::vector<uint8_t>& key);
+    bool LoadData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     template<typename D, typename E>
-    std::shared_ptr<std::vector<uint8_t>> LoadFromDB(const uuids::uuid& id)
+    bool LoadFromDB(const uuids::uuid& id, std::vector<uint8_t>& data)
     {
         E e{};
-        e.uuid = id.to_string();
+        if (!id.nil())
+            e.uuid = id.to_string();
+        else
+        {
+            GetEntity<E>(data, e);
+        }
         if (D::Load(e))
-            return SetEntity<E>(e);
-        return std::shared_ptr<std::vector<uint8_t>>();
+        {
+            if (SetEntity<E>(e, data) != 0)
+                return true;
+            return false;
+        }
+        return false;
     }
 
     /// Save data to DB or delete from DB.
@@ -92,21 +101,20 @@ private:
     }
 
     template<typename E>
-    bool GetEntity(std::vector<uint8_t>& data, E& e)
+    static bool GetEntity(std::vector<uint8_t>& data, E& e)
     {
-        using Buffer = std::vector<uint8_t>;
-        using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
-        auto state = bitsery::quickDeserialization<InputAdapter, E>({ data.begin(), data.end() }, e);
-        return state.first == bitsery::ReaderError::NoError && state.second;
+        using InputAdapter = bitsery::InputBufferAdapter<std::vector<uint8_t>>;
+        InputAdapter ia(data.begin(), data.size());
+        auto state = bitsery::quickDeserialization<InputAdapter, E>(ia, e);
+        return state.first == bitsery::ReaderError::NoError;
     }
     template<typename E>
-    std::shared_ptr<std::vector<uint8_t>> SetEntity(const E& e)
+    static size_t SetEntity(const E& e, std::vector<uint8_t>& buffer)
     {
         using Buffer = std::vector<uint8_t>;
         using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
-        Buffer buffer;
-        /*auto writtenSize =*/ bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
-        return std::shared_ptr<std::vector<uint8_t>>(&buffer);
+        auto writtenSize = bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
+        return writtenSize;
     }
 
     bool readonly_;

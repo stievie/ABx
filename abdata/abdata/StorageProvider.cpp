@@ -11,6 +11,7 @@
 #include "StringHash.h"
 #include "Logger.h"
 #include "StringHash.h"
+#include <AB/Entities/Limits.h>
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
@@ -30,6 +31,12 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
 
 bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
+    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+    auto _data = cache_.find(keyString);
+    if (_data != cache_.end())
+        // Already exists
+        return false;
+
     std::string table;
     uuids::uuid _id;
     if (!DecodeKey(key, table, _id))
@@ -83,30 +90,40 @@ void StorageProvider::CacheData(const std::vector<uint8_t>& key,
     cache_[keyString] = { { modified, false }, data };
 }
 
-std::shared_ptr<std::vector<uint8_t>> StorageProvider::Read(const std::vector<uint8_t>& key)
+bool StorageProvider::Read(const std::vector<uint8_t>& key,
+    std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string keyString(key.begin(), key.end());//TODO think about the cost here
 
-    auto data = cache_.find(keyString);
-    if (data == cache_.end())
+    auto _data = cache_.find(keyString);
+    if (_data == cache_.end())
     {
-        std::shared_ptr<std::vector<uint8_t>> d = LoadData(key);
-        if (d)
-            CacheData(key, d, false);
-        return d;
+        if (!LoadData(key, data))
+            return false;
+
+        std::string table;
+        uuids::uuid _id;
+        DecodeKey(key, table, _id);
+        if (_id.nil())
+            // If no UUID given in key (e.g. when reading by name) cache with the proper key
+            _id = GetUuid(data);
+        auto newKey = EncodeKey(table, _id);
+        CacheData(newKey, data, false);
+        return true;
     }
 
-    if ((*data).second.first.deleted)
+    if ((*_data).second.first.deleted)
         // Don't return deleted items that are in cache
-        return std::shared_ptr<std::vector<uint8_t>>();
-    return (*data).second.second;
+        return false;
+    data->assign((*_data).second.second->begin(), (*_data).second.second->end());
+    return true;
 }
 
 bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 {
     std::string dataToRemove(key.begin(), key.end());
     auto data = cache_.find(dataToRemove);
-    if (data == cache_.end())
+    if (data != cache_.end())
     {
         (*data).second.first.deleted = true;
         return true;
@@ -129,7 +146,8 @@ void StorageProvider::Shutdown()
     }
 }
 
-bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id)
+bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key,
+    std::string& table, uuids::uuid& id)
 {
     // key = <tablename><guid>
     if (key.size() <= uuids::uuid::state_size)
@@ -144,6 +162,14 @@ std::vector<uint8_t> StorageProvider::EncodeKey(const std::string& table, const 
     std::vector<uint8_t> result(table.begin(), table.end());
     result.insert(result.end(), id.begin(), id.end());
     return result;
+}
+
+uuids::uuid StorageProvider::GetUuid(std::shared_ptr<std::vector<uint8_t>> data)
+{
+    // Get UUID from raw data. First is id = uint32_t, second is the UUID as string
+    const std::string suuid(data->begin() + sizeof(uint32_t) + 1,
+        data->begin() + sizeof(uint32_t) + AB::Entities::Limits::MAX_UUID + 1);
+    return uuids::uuid(suuid);
 }
 
 bool StorageProvider::EnoughSpace(size_t size)
@@ -175,7 +201,8 @@ bool StorageProvider::RemoveData(const std::string& key)
     return false;
 }
 
-bool StorageProvider::CreateData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::CreateData(const std::vector<uint8_t>& key,
+    std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
     uuids::uuid id;
@@ -204,28 +231,29 @@ bool StorageProvider::CreateData(const std::vector<uint8_t>& key, std::shared_pt
     return 0;
 }
 
-std::shared_ptr<std::vector<uint8_t>> StorageProvider::LoadData(const std::vector<uint8_t>& key)
+bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
+    std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
     uuids::uuid id;
     if (!DecodeKey(key, table, id))
-        return std::shared_ptr<std::vector<uint8_t>>();
+        return false;
 
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
     case KEY_ACCOUNTS_HASH:
-        return LoadFromDB<DB::DBAccount, AB::Entities::Account>(id);
+        return LoadFromDB<DB::DBAccount, AB::Entities::Account>(id, *data);
     case KEY_CHARACTERS_HASH:
-        return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id);
+        return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id, *data);
     case KEY_GAMES_HASH:
-        return LoadFromDB<DB::DBGame, AB::Entities::Game>(id);
+        return LoadFromDB<DB::DBGame, AB::Entities::Game>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
     }
 
-    return std::shared_ptr<std::vector<uint8_t>>();
+    return false;
 }
 
 void StorageProvider::FlushData(const std::vector<uint8_t>& key)

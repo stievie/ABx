@@ -4,7 +4,7 @@
 
 namespace DB {
 
-uint32_t DBCharacter::Create(AB::Entities::Character& character)
+bool DBCharacter::Create(AB::Entities::Character& character)
 {
     Database* db = Database::Instance();
     std::ostringstream query;
@@ -16,25 +16,27 @@ uint32_t DBCharacter::Create(AB::Entities::Character& character)
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
-        return 0;
+        return false;
 
     if (!db->ExecuteQuery(query.str()))
-        return 0;
+        return false;
 
     // End transaction
     if (!transaction.Commit())
-        return 0;
+        return false;
 
-    character.id = static_cast<uint32_t>(db->GetLastInsertId());
-    return character.id;
+    return true;
 }
 
 bool DB::DBCharacter::Load(AB::Entities::Character& character)
 {
+    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+        return false;
+
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT * FROM `players` WHERE `id` = " << character.id;
+    query << "SELECT * FROM `players` WHERE `uuid` = " << character.uuid;
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
@@ -46,16 +48,17 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
 
 bool DB::DBCharacter::Save(const AB::Entities::Character& character)
 {
+    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+        return false;
+
     Database* db = Database::Instance();
     std::ostringstream query;
-    if (character.id == 0)
-        return false;
 
     query << "UPDATE `players` SET ";
 
     query << " `pvp` = " << character.pvp;
 
-    query << " WHERE `id` = " << character.id;
+    query << " WHERE `uuid` = " << character.uuid;
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -70,12 +73,12 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
 
 bool DB::DBCharacter::Delete(const AB::Entities::Character& character)
 {
-    if (character.id == 0)
+    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
         return false;
 
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "DELETE FROM `players` WHERE `id` = " << character.id;
+    query << "DELETE FROM `players` WHERE `uuid` = " << character.uuid;
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;

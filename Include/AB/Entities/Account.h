@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include <AB/Entities/Entity.h>
 #include <AB/Entities/Limits.h>
 
 namespace AB {

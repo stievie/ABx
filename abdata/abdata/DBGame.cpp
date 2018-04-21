@@ -5,10 +5,10 @@
 
 namespace DB {
 
-uint32_t DBGame::Create(AB::Entities::Game&)
+bool DBGame::Create(AB::Entities::Game&)
 {
     // Do nothing
-    return 0;
+    return false;
 }
 
 bool DBGame::Load(AB::Entities::Game& game)
@@ -17,13 +17,13 @@ bool DBGame::Load(AB::Entities::Game& game)
 
     std::ostringstream query;
     query << "SELECT * FROM `games` WHERE ";
-    if (game.id != 0)
-        query << "`id` = " << game.id;
+    if (!game.uuid.empty() && !uuids::uuid(game.uuid).nil())
+        query << "`uuid` = " << game.uuid;
     else if (!game.name.empty())
         query << "`name` = " << db->EscapeString(game.name);
     else
     {
-        LOG_ERROR << "ID and name are empty" << std::endl;
+        LOG_ERROR << "UUID and name are empty" << std::endl;
         return false;
     }
 

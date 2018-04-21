@@ -24,6 +24,12 @@
     <ClInclude Include="DataClient.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Profiler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -33,6 +39,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DataClient.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,10 +10,14 @@
 
 enum OpCodes : uint8_t
 {
+    // Requests
     Create = 0,
     Update = 1,
     Read = 2,
     Delete = 3,
+    // Invalidate a cache item. Does NOT flush modified data. Next read will load it from the DB.
+    // TODO: Check if needed.
+    Invalidate = 4,
     // Responses
     Status,
     Data
@@ -39,75 +43,70 @@ public:
     template<typename E>
     bool Read(E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), entity.id);
-        std::string sKey(aKey.begin(), aKey.end());
-        std::shared_ptr<std::vector<uint8_t>> data = ReadData(sKey);
-        if (!data)
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::vector<uint8_t> data;
+        SetEntity<E>(entity, data);
+        if (!ReadData(aKey, data))
             return false;
-        if (GetEntity(*data.get(), entity))
+        if (GetEntity(data, entity))
             return true;
         return false;
     }
     template<typename E>
     bool Delete(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), entity.id);
-        std::string sKey(aKey.begin(), aKey.end());
-        return DeleteData(sKey);
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        return DeleteData(aKey);
     }
     template<typename E>
     bool Update(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), entity.id);
-        std::string sKey(aKey.begin(), aKey.end());
-        auto data = SetEntity<E>(entity);
-        return UpdateData(sKey, data);
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::vector<uint8_t> data;
+        if (SetEntity<E>(entity, data) == 0)
+            return false;
+        return UpdateData(aKey, data);
     }
     template<typename E>
     bool Create(E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), 0);
-        std::string sKey(aKey.begin(), aKey.end());
-        auto data = SetEntity<E>(entity);
-        entity.id = CreateData(sKey, data);
-        return entity.id != 0;
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::vector<uint8_t> data;
+        if (SetEntity<E>(entity, data) == 0)
+            return false;
+        return CreateData(aKey, data);
     }
 private:
     template<typename E>
     static bool GetEntity(std::vector<uint8_t>& data, E& e)
     {
-        using Buffer = std::vector<uint8_t>;
-        using InputAdapter = bitsery::InputBufferAdapter<Buffer>;
-        auto state = bitsery::quickDeserialization<InputAdapter, E>({ data.begin(), data.end() }, e);
-        return state.first == bitsery::ReaderError::NoError && state.second;
+        using InputAdapter = bitsery::InputBufferAdapter<std::vector<uint8_t>>;
+        InputAdapter ia(data.begin(), data.size());
+        auto state = bitsery::quickDeserialization<InputAdapter, E>(ia, e);
+        return state.first == bitsery::ReaderError::NoError;
     }
     template<typename E>
-    static std::shared_ptr<std::vector<uint8_t>> SetEntity(const E& e)
+    static size_t SetEntity(const E& e, std::vector<uint8_t>& buffer)
     {
         using Buffer = std::vector<uint8_t>;
         using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
-        Buffer buffer;
-        /*auto writtenSize =*/ bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
-        return std::shared_ptr<std::vector<uint8_t>>(&buffer);
+        auto writtenSize = bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
+        return writtenSize;
     }
 
-    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uint32_t& id)
+    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id)
     {
-        // key = <tablename><id>
-        if (key.size() <= sizeof(uint32_t))
+        // key = <tablename><guid>
+        if (key.size() <= uuids::uuid::state_size)
             return false;
-        table.assign(key.begin(), key.end() - sizeof(uint32_t));
-        size_t start = key.size() - sizeof(uint32_t);
-        id = (key[start + 3] << 24) | (key[start + 2] << 16) | (key[start + 1] << 8) | key[start];
-        return false;
+        table.assign(key.begin(), key.end() - uuids::uuid::state_size);
+        id = uuids::uuid(key.end() - uuids::uuid::state_size, key.end());
+        return true;
     }
-    static std::vector<uint8_t> EncodeKey(const std::string& table, uint32_t id)
+    static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id)
     {
         std::vector<uint8_t> result(table.begin(), table.end());
-        result.push_back((uint8_t)id);
-        result.push_back((uint8_t)(id >> 8));
-        result.push_back((uint8_t)(id >> 16));
-        result.push_back((uint8_t)(id >> 24));
+        result.insert(result.end(), id.begin(), id.end());
         return result;
     }
     static uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
@@ -119,10 +118,10 @@ private:
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
 
-    std::shared_ptr<std::vector<uint8_t>> ReadData(const std::string& key);
-    bool DeleteData(const std::string& key);
-    bool UpdateData(const std::string& key, std::shared_ptr<std::vector<uint8_t>> data);
-    uint32_t CreateData(const std::string& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
+    bool DeleteData(const std::vector<uint8_t>& key);
+    bool UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
+    bool CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     void InternalConnect();
 
     std::string host_;

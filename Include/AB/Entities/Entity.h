@@ -20,11 +20,10 @@ struct Entity
     template<typename S>
     void serialize(S& s)
     {
-        s.value4b(id);
+        // UUID must be the first serialized
         s.text1b(uuid, Limits::MAX_UUID);
     }
 
-    uint32_t id = 0;
     std::string uuid;
 };
 

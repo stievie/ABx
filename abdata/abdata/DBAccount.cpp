@@ -2,10 +2,11 @@
 #include "DBAccount.h"
 #include "Database.h"
 #include "Logger.h"
+#include <uuid.h>
 
 namespace DB {
 
-uint32_t DBAccount::Create(AB::Entities::Account& account)
+bool DBAccount::Create(AB::Entities::Account& account)
 {
     Database* db = Database::Instance();
     std::ostringstream query;
@@ -13,6 +14,7 @@ uint32_t DBAccount::Create(AB::Entities::Account& account)
 
     if (account.uuid.empty())
     {
+        LOG_WARNING << "UUID of entity is empty" << std::endl;
         const uuids::uuid guid = uuids::uuid_random_generator{}();
         account.uuid = guid.to_string();
     }
@@ -28,17 +30,16 @@ uint32_t DBAccount::Create(AB::Entities::Account& account)
     query << ")";
     DBTransaction transaction(db);
     if (!transaction.Begin())
-        return 0;
+        return false;
 
     if (!db->ExecuteQuery(query.str()))
-        return 0;
+        return false;
 
     // End transaction
     if (!transaction.Commit())
-        return 0;
+        return false;
 
-    account.id = static_cast<uint32_t>(db->GetLastInsertId());
-    return account.id;
+    return true;
 }
 
 bool DBAccount::Load(AB::Entities::Account& account)
@@ -47,9 +48,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
 
     std::ostringstream query;
     query << "SELECT * FROM `accounts` WHERE ";
-    if (account.id != 0)
-        query << "`id` = " << account.id;
-    else if (!account.uuid.empty())
+    if (!account.uuid.empty() && !uuids::uuid(account.uuid).nil())
         query << "`uuid` = " << db->EscapeString(account.uuid);
     else if (!account.name.empty())
         query << "`name` = " << db->EscapeString(account.name);
@@ -63,7 +62,6 @@ bool DBAccount::Load(AB::Entities::Account& account)
     if (!result)
         return false;
 
-    account.id = result->GetUInt("id");
     account.uuid = result->GetString("uuid");
     account.name = result->GetString("name");
     account.password = result->GetString("password");
@@ -80,7 +78,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
 {
     Database* db = Database::Instance();
     std::ostringstream query;
-    if (account.id == 0)
+    if (account.uuid.empty() || uuids::uuid(account.uuid).nil())
         return false;
 
     query << "UPDATE `accounts` SET ";
@@ -92,17 +90,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `char_slots` = " << account.charSlots;
 
     query << " WHERE ";
-    if (account.id != 0)
-        query << "`id` = " << account.id;
-    else if (!account.uuid.empty())
-        query << "`uuid` = " << db->EscapeString(account.uuid);
-    else if (!account.name.empty())
-        query << "`name` = " << db->EscapeString(account.name);
-    else
-    {
-        LOG_ERROR << "ID and name are empty" << std::endl;
-        return false;
-    }
+    query << "`uuid` = " << db->EscapeString(account.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -117,23 +105,13 @@ bool DBAccount::Save(const AB::Entities::Account& account)
 
 bool DBAccount::Delete(const AB::Entities::Account& account)
 {
-    if (account.id == 0)
+    if (account.uuid.empty() || uuids::uuid(account.uuid).nil())
         return false;
 
     Database* db = Database::Instance();
     std::ostringstream query;
     query << "DELETE FROM `accounts` WHERE ";
-    if (account.id != 0)
-        query << "`id` = " << account.id;
-    else if (!account.uuid.empty())
-        query << "`uuid` = " << db->EscapeString(account.uuid);
-    else if (!account.name.empty())
-        query << "`name` = " << db->EscapeString(account.name);
-    else
-    {
-        LOG_ERROR << "ID and name are empty" << std::endl;
-        return false;
-    }
+    query << "`uuid` = " << db->EscapeString(account.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
