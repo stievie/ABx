@@ -129,7 +129,6 @@ private:
     bool CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     void InternalConnect();
     bool TryConnect(bool force);
-    bool CheckConnection();
 
     std::string host_;
     uint16_t port_;

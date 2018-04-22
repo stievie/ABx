@@ -153,9 +153,7 @@ void Connection::StartInvalidateOperation()
 
 void Connection::Stop()
 {
-    std::string address = socket_.remote_endpoint().address().to_string() + ":" + std::to_string(socket_.remote_endpoint().port());
     socket_.close();
-    LOG_INFO << "Connection closed: " << address << std::endl;
 }
 
 void Connection::HandleUpdateReadRawData(const asio::error_code& error,

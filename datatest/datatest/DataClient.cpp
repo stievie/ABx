@@ -181,25 +181,19 @@ bool DataClient::TryConnect(bool force)
         connected_ = false;
         socket_.close();
     }
+    // Try for 1 seconds, 10 tries
     int tries = 0;
     while (!connected_ && tries < 10)
     {
         ++tries;
         InternalConnect();
-        if (!connected_ && tries < 10)
-        {
-            using namespace std::chrono_literals;
-            std::this_thread::sleep_for(100ms);
-        }
-    }
-    return connected_;
-}
+        if (connected_)
+            return true;
+        if (tries >= 10)
+            return false;
 
-bool DataClient::CheckConnection()
-{
-    connected_ = socket_.is_open();
-    if (connected_)
-        return true;
-    TryConnect(false);
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(100ms);
+    }
     return connected_;
 }
