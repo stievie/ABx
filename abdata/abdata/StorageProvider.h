@@ -80,6 +80,31 @@ private:
     /// So synchronize this item with the DB. Depending on the data header calls
     /// CreateInDB(), SaveToDB() and/or DeleteFromDB()
     bool FlushData(const std::vector<uint8_t>& key);
+    template<typename D, typename E, typename I>
+    bool FlushRecord(I& data)
+    {
+        bool succ = true;
+        // These flags are not mutually exclusive, hoverer creating it implies it is no longer modified
+        if (!(*data).second.first.created)
+        {
+            succ = CreateInDB<D, E>(*(*data).second.second.get());
+            if (succ)
+            {
+                (*data).second.first.created = true;
+                (*data).second.first.modified = false;
+            }
+        }
+        else if ((*data).second.first.modified)
+        {
+            succ = SaveToDB<D, E>(*(*data).second.second.get());
+            if (succ)
+                (*data).second.first.modified = false;
+        }
+        if ((*data).second.first.deleted)
+            succ = DeleteFromDB<D, E>(*(*data).second.second.get());
+
+        return succ;
+    }
     template<typename D, typename E>
     bool CreateInDB(std::vector<uint8_t>& data)
     {

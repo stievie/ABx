@@ -9,9 +9,9 @@ while a client is connected to the server.
 * Short Read, Update, Delete operations ~30µs. Create takes longer. This maakes it
 possible that many clients read and write data very frequently (e.g. inside a
 game loop) and still share the same data.
-* Flushed data to the database server in a background thread (except for Create).
+* Flushes data to the database server in a background thread (except for Create).
 * Does not take care about database cobstraints.
-* Does not use database generated values, like INSERT ID's. It uses application managed UUID's.
+* Does not use database generated values, like INSERT ID's. It uses client managed UUID's.
 * Simple API, it has just 4 methods `Create()`, `Read()`, `Update()` and `Delete()`.
 * Serialize any object over a network that is a descendant of `AB::Entities::Entity`.
 * Type safety with C++ templates.

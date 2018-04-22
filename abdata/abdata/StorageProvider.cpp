@@ -359,73 +359,23 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (!DecodeKey(key, table, id))
         return false;
 
-    auto d = (*data).second.second.get();
     size_t tableHash = Utils::StringHashRt(table.data());
     bool succ = false;
 
     switch (tableHash)
     {
     case KEY_ACCOUNTS_HASH:
-        // These flags are not mutually exclusive, hoverer creating it implies it is no longer modified
-        if (!(*data).second.first.created)
-        {
-            succ = CreateInDB<DB::DBAccount, AB::Entities::Account>(*d);
-            if (succ)
-            {
-                (*data).second.first.created = true;
-                (*data).second.first.modified = false;
-            }
-        }
-        else if ((*data).second.first.modified)
-        {
-            succ = SaveToDB<DB::DBAccount, AB::Entities::Account>(*d);
-            if (succ)
-                (*data).second.first.modified = false;
-        }
-        if ((*data).second.first.deleted)
-            succ = DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d);
+        succ = FlushRecord<DB::DBAccount, AB::Entities::Account>(data);
         break;
     case KEY_CHARACTERS_HASH:
-        if ((*data).second.first.created)
-        {
-            succ = CreateInDB<DB::DBCharacter, AB::Entities::Character>(*d);
-            if (succ)
-            {
-                (*data).second.first.created = true;
-                (*data).second.first.modified = false;
-            }
-        }
-        else if ((*data).second.first.modified)
-        {
-            succ = SaveToDB<DB::DBCharacter, AB::Entities::Character>(*d);
-            if (succ)
-                (*data).second.first.modified = false;
-        }
-        if ((*data).second.first.deleted)
-            succ = DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d);
+        succ = FlushRecord<DB::DBCharacter, AB::Entities::Character>(data);
         break;
     case KEY_GAMES_HASH:
-        if ((*data).second.first.created)
-        {
-            succ = CreateInDB<DB::DBGame, AB::Entities::Game>(*d);
-            if (succ)
-            {
-                (*data).second.first.created = true;
-                (*data).second.first.modified = false;
-            }
-        }
-        else if ((*data).second.first.modified)
-        {
-            succ = SaveToDB<DB::DBGame, AB::Entities::Game>(*d);
-            if (succ)
-                (*data).second.first.modified = false;
-        }
-        if ((*data).second.first.deleted)
-            succ = DeleteFromDB<DB::DBGame, AB::Entities::Game>(*d);
+        succ = FlushRecord<DB::DBGame, AB::Entities::Game>(data);
         break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
-        break;
+        return false;
     }
 
     if (!succ)
