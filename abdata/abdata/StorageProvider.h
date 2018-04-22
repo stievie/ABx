@@ -11,7 +11,9 @@
 #pragma warning(pop)
 
 // Clean cache every 10min
-#define CLEAN_CACHE_MS (1000 * 60 * 1)
+#define CLEAN_CACHE_MS (1000 * 60 * 10)
+// Flush cache every minute
+#define FLUSH_CACHE_MS (1000 * 60)
 
 struct CacheFlags
 {
@@ -51,6 +53,8 @@ private:
 
     void CleanCache();
     void CleanCacheTask();
+    void FlushCache();
+    void FlushCacheTask();
 
     /// Loads Data from DB
     bool LoadData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);

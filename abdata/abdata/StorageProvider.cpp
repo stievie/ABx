@@ -31,6 +31,9 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
 {
     evictor_ = std::make_unique<OldestInsertionEviction>();
     Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(FLUSH_CACHE_MS, std::bind(&StorageProvider::FlushCacheTask, this))
+    );
+    Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanCacheTask, this))
     );
 }
@@ -184,19 +187,25 @@ void StorageProvider::CleanCache()
         return;
     std::lock_guard<std::mutex> lock(lock_);
     size_t oldSize = currentSize_;
+    int removed = 0;
     auto i = cache_.begin();
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         return current.second.first.deleted;
     })) != cache_.end())
     {
+        ++removed;
         std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
         FlushData(key);
         currentSize_ -= (*i).second.second->size();
         evictor_->DeleteKey((*i).first);
         cache_.erase(i++);
     }
-    LOG_INFO << "Cleaned cache old size " << oldSize << " current size " << currentSize_ << std::endl;
+    if (removed > 0)
+    {
+        LOG_INFO << "Cleaned cache old size " << oldSize << " current size " << currentSize_ <<
+            " removed " << removed << " records" << std::endl;
+    }
 }
 
 void StorageProvider::CleanCacheTask()
@@ -206,6 +215,40 @@ void StorageProvider::CleanCacheTask()
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanCacheTask, this))
+        );
+    }
+}
+
+void StorageProvider::FlushCache()
+{
+    if (cache_.size() == 0)
+        return;
+    int written = 0;
+    std::lock_guard<std::mutex> lock(lock_);
+    auto i = cache_.begin();
+    while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
+    {
+        return (current.second.first.modified || !current.second.first.created) &&
+            !!current.second.first.deleted;
+    })) != cache_.end())
+    {
+        ++written;
+        std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
+        FlushData(key);
+    }
+    if (written > 0)
+    {
+        LOG_INFO << "Flushed cache wrote " << written << " records" << std::endl;
+    }
+}
+
+void StorageProvider::FlushCacheTask()
+{
+    FlushCache();
+    if (running_)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(FLUSH_CACHE_MS, std::bind(&StorageProvider::FlushCacheTask, this))
         );
     }
 }
