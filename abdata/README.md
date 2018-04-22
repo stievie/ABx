@@ -11,6 +11,7 @@ Caching data server with Database backend.
 * Simple API, it has just 4 methods `Create()`, `Read()`, `Update()` and `Delete()`.
 * Serialize any object over a network that is a descendant of `AB::Entities::Entity`.
 * Type safety with C++ templates.
+* Wow even works when its connected to MySQL while MySQL is updating!
 
 ## Entity
 
@@ -73,7 +74,6 @@ struct Account : Entity
 
 * How to check constraints?
 * Use SSL?
-* Wow even works when its connected to MySQL while MySQL is updating!
 
 ## External Dependencies
 
