@@ -6,11 +6,14 @@
 class Server {
 
 public:
-	Server(asio::io_service& io_service, uint16_t port, size_t maxCacheSize, bool readonly);
+	Server(asio::io_service& io_service,
+        uint16_t port, size_t maxCacheSize, bool readonly);
+    ~Server();
     void Shutdown();
 private:
 	void StartAccept();
 	void HandleAccept(const asio::error_code& error);
+    bool runnig_;
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor acceptor_;
 	ConnectionPtr newConnection_;
@@ -18,5 +21,4 @@ private:
 	StorageProvider storageProvider_;
 	size_t maxDataSize_;
 	size_t maxKeySize_;
-
 };

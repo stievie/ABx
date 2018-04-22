@@ -12,6 +12,8 @@
 #include "Logger.h"
 #include "StringHash.h"
 #include <AB/Entities/Limits.h>
+#include "Scheduler.h"
+#include "Dispatcher.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
@@ -24,18 +26,28 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     maxSize_(maxSize),
     currentSize_(0),
     readonly_(readonly),
+    running_(true),
     cache_()
 {
-    evictor_ = std::make_shared<OldestInsertionEviction>();
+    evictor_ = std::make_unique<OldestInsertionEviction>();
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanCacheTask, this))
+    );
 }
 
 bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
-    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+    std::string keyString(key.begin(), key.end());
     auto _data = cache_.find(keyString);
+
     if (_data != cache_.end())
-        // Already exists
-        return false;
+    {
+        if ((*_data).second.first.deleted)
+            FlushData(key);
+        else
+            // Already exists
+            return false;
+    }
 
     std::string table;
     uuids::uuid _id;
@@ -46,6 +58,14 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
 
     // Mark modified since to in DB
     CacheData(key, data, true, false);
+    // Unfortunately we must flush the data for create operations. Or we find a way
+    // to check constraints, unique columns etc.
+    if (!FlushData(key))
+    {
+        // TODO: Cached deleted data still in DB...
+        RemoveData(keyString);
+        return false;
+    }
     return true;
 }
 
@@ -63,7 +83,7 @@ bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<st
         // Does not exist
         return false;
 
-    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+    std::string keyString(key.begin(), key.end());
     auto _data = cache_.find(keyString);
     // The only possibility to update a not yet created entity is when its in cache and not flushed.
     bool isCreated = true;
@@ -78,12 +98,16 @@ bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<st
 void StorageProvider::CacheData(const std::vector<uint8_t>& key,
     std::shared_ptr<std::vector<uint8_t>> data, bool modified, bool created)
 {
-    std::string keyString(key.begin(), key.end());//TODO think about the cost here
-
     if (!EnoughSpace(data->size()))
-        CreateSpace(data->size());
+    {
+        // Create space later
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(10, std::bind(&StorageProvider::CreateSpace, this, data->size()))
+        );
+    }
 
-    //we check if its already in cache
+    std::string keyString(key.begin(), key.end());
+    // we check if its already in cache
     if (cache_.find(keyString) == cache_.end())
     {
         evictor_->AddKey(keyString);
@@ -146,10 +170,43 @@ bool StorageProvider::Invalidate(const std::vector<uint8_t>& key)
 
 void StorageProvider::Shutdown()
 {
+    running_ = false;
     for (const auto& c : cache_)
     {
         std::vector<uint8_t> key(c.first.begin(), c.first.end());
         FlushData(key);
+    }
+}
+
+void StorageProvider::CleanCache()
+{
+    if (cache_.size() == 0)
+        return;
+    std::lock_guard<std::mutex> lock(lock_);
+    size_t oldSize = currentSize_;
+    auto i = cache_.begin();
+    while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
+    {
+        return current.second.first.deleted;
+    })) != cache_.end())
+    {
+        std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
+        FlushData(key);
+        currentSize_ -= (*i).second.second->size();
+        evictor_->DeleteKey((*i).first);
+        cache_.erase(i++);
+    }
+    LOG_INFO << "Cleaned cache old size " << oldSize << " current size " << currentSize_ << std::endl;
+}
+
+void StorageProvider::CleanCacheTask()
+{
+    CleanCache();
+    if (running_)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanCacheTask, this))
+        );
     }
 }
 
@@ -186,7 +243,10 @@ bool StorageProvider::EnoughSpace(size_t size)
 
 void StorageProvider::CreateSpace(size_t size)
 {
-    while ((currentSize_ + size) > maxSize_)
+    // Create more than required space
+    std::lock_guard<std::mutex> lock(lock_);
+    const size_t sizeNeeded = size * 2;
+    while ((currentSize_ + sizeNeeded) > maxSize_)
     {
         std::string dataToRemove = evictor_->NextEviction();
         std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
@@ -234,27 +294,27 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
     return false;
 }
 
-void StorageProvider::FlushData(const std::vector<uint8_t>& key)
+bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
 {
-    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+    if (readonly_)
+    {
+        LOG_WARNING << "READONLY: Nothing is written to the database" << std::endl;
+        return false;
+    }
+
+    std::string keyString(key.begin(), key.end());
 
     auto data = cache_.find(keyString);
     if (data == cache_.end())
-        return;
+        return false;
     // No need to save to DB when not modified
     if (!(*data).second.first.modified && !(*data).second.first.deleted)
-        return;
+        return true;
 
     std::string table;
     uuids::uuid id;
     if (!DecodeKey(key, table, id))
-        return;
-
-    if (readonly_)
-    {
-        LOG_WARNING << "READONLY: Nothing written to database" << std::endl;
-        return;
-    }
+        return false;
 
     auto d = (*data).second.second.get();
     size_t tableHash = Utils::StringHashRt(table.data());
@@ -281,8 +341,6 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
         }
         if ((*data).second.first.deleted)
             succ = DeleteFromDB<DB::DBAccount, AB::Entities::Account>(*d);
-        if (!succ)
-            LOG_ERROR << "Unable to flush Account data" << std::endl;
         break;
     case KEY_CHARACTERS_HASH:
         if ((*data).second.first.created)
@@ -302,8 +360,6 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
         }
         if ((*data).second.first.deleted)
             succ = DeleteFromDB<DB::DBCharacter, AB::Entities::Character>(*d);
-        if (!succ)
-            LOG_ERROR << "Unable to flush Character data" << std::endl;
         break;
     case KEY_GAMES_HASH:
         if ((*data).second.first.created)
@@ -323,11 +379,13 @@ void StorageProvider::FlushData(const std::vector<uint8_t>& key)
         }
         if ((*data).second.first.deleted)
             succ = DeleteFromDB<DB::DBGame, AB::Entities::Game>(*d);
-        if (!succ)
-            LOG_ERROR << "Unable to flush Game data" << std::endl;
         break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
     }
+
+    if (!succ)
+        LOG_ERROR << "Unable to write data" << std::endl;
+    return succ;
 }

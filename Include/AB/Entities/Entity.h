@@ -15,6 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
+/// Base class for entities.
 struct Entity
 {
     template<typename S>

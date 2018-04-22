@@ -72,6 +72,15 @@
     <ClInclude Include="DBGame.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Dispatcher.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -123,6 +132,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBGame.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Dispatcher.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Scheduler.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

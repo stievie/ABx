@@ -13,80 +13,84 @@
 #define _PROFILING
 #include "Profiler.h"
 
+void TestCreate(DataClient* cli)
+{
+    // Before Creating a record try Read it to check if such a record already exists.
+    LOG_INFO << "TestCreate()" << std::endl;
+    AB::Entities::Account a{};
+    a.name = "stievie25";
+    a.email = "test@test";
+    a.password = "test";
+    a.uuid = "0d936635-3011-44ec-9df6-da3f25e6fd32";
+    {
+        AB_PROFILE;
+        if (!cli->Create(a))
+            LOG_ERROR << "Error Create" << std::endl;
+    }
+}
+
+void TestReadCache(DataClient* cli)
+{
+    LOG_INFO << "TestReadCache()" << std::endl;
+    AB::Entities::Account a{};
+    a.uuid = "0d936635-3011-44ec-9df6-da3f25e6fd32";
+    {
+        AB_PROFILE;
+        if (!cli->Read(a))
+            LOG_ERROR << "Error Read" << std::endl;
+    }
+}
+
+void TestReadDB(DataClient* cli)
+{
+    LOG_INFO << "TestReadDB()" << std::endl;
+    AB::Entities::Account a{};
+    a.name = "trill2";
+    {
+        AB_PROFILE;
+        if (!cli->Read(a))
+            LOG_ERROR << "Error Read" << std::endl;
+    }
+}
+
+void TestDelete(DataClient* cli)
+{
+    LOG_INFO << "TestDelete()" << std::endl;
+    AB::Entities::Account a{};
+    a.uuid = "0d936635-3011-44ec-9df6-da3f25e6fd32";
+    {
+        AB_PROFILE;
+        if (!cli->Read(a))
+        {
+            LOG_ERROR << "Error Read" << std::endl;
+            return;
+        }
+    }
+    {
+        AB_PROFILE;
+        if (!cli->Delete(a))
+        {
+            LOG_ERROR << "Error Delete" << std::endl;
+        }
+    }
+    {
+        AB_PROFILE;
+        if (!cli->Read(a))
+            LOG_ERROR << "Error Read this is correct!" << std::endl;
+    }
+}
+
 int main()
 {
     asio::io_service io_service;
     DataClient cli(io_service);
     cli.Connect("localhost", 2770);
 
-    AB::Entities::Account a4{};
-    a4.name = "stievie25";
-    a4.email = "test@test";
-    a4.password = "test";
-    a4.uuid = uuids::uuid_system_generator{}().to_string();
-    {
-        AB_PROFILE;
-        cli.Create(a4);
-    }
-    cli.Delete(a4);
+    TestCreate(&cli);
+    TestReadCache(&cli);
+    TestReadDB(&cli);
+    TestDelete(&cli);
 
-/*
-AB::Entities::Account a{ };
-uuids::uuid empty;
-    a.uuid = empty.to_string();
-    a.name = "trill";
-    {
-        AB_PROFILE;
-        cli.Read(a);
-    }
-    std::cout << a.email << std::endl;
-
-    AB::Entities::Account a2{};
-    a2.uuid = a.uuid;
-    {
-        AB_PROFILE;
-        cli.Read(a2);
-    }
-    std::cout << a2.email << std::endl;
-    a2.email = "test";
-    {
-        AB_PROFILE;
-        cli.Update(a2);
-    }
-    std::cout << a2.email << std::endl;
-
-    AB::Entities::Account a4{};
-    a4.name = "stievie25";
-    a4.email = "test@test";
-    a4.password = "test";
-    a4.uuid = uuids::uuid_system_generator{}().to_string();
-    {
-        AB_PROFILE;
-        cli.Create(a4);
-    }
-
-    AB::Entities::Account a5{};
-    a5.uuid = a4.uuid;
-    {
-        AB_PROFILE;
-        cli.Read(a5);
-    }
-
-    AB::Entities::Account a3{};
-    a3.uuid = a5.uuid;
-    {
-        AB_PROFILE;
-        cli.Read(a3);
-    }
-    std::cout << a3.email << std::endl;
-
-    {
-        AB_PROFILE;
-//        cli.Delete(a3);
-    }
-    if (!cli.Read(a3))
-        std::cout << "noexists" << std::endl;
-*/
     return 0;
 }
 

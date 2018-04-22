@@ -169,13 +169,16 @@
     <ClInclude Include="DBAccount.h" />
     <ClInclude Include="DBCharacter.h" />
     <ClInclude Include="DBGame.h" />
+    <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StorageProvider.h" />
     <ClInclude Include="StringHash.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Task.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -190,9 +193,11 @@
     <ClCompile Include="DBAccount.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
     <ClCompile Include="DBGame.cpp" />
+    <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OldestInsertionEviction.cpp" />
+    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -27,4 +27,6 @@
 #define USE_PGSQL
 #define USE_ODBC
 
+#define SCHEDULER_MINTICKS 10
+
 // TODO: Hier auf zusätzliche Header, die das Programm erfordert, verweisen.

@@ -10,6 +10,9 @@
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
 
+// Clean cache every 10min
+#define CLEAN_CACHE_MS (1000 * 60 * 1)
+
 struct CacheFlags
 {
     bool created;             // It exists in DB
@@ -36,13 +39,43 @@ private:
 
     static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id);
     static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id);
+    /// Read UUID from data
     static uuids::uuid GetUuid(std::shared_ptr<std::vector<uint8_t>> data);
+
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
-    void CacheData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data,
+    void CacheData(const std::vector<uint8_t>& key,
+        std::shared_ptr<std::vector<uint8_t>> data,
         bool modified, bool created);
     bool RemoveData(const std::string& key);
 
+    void CleanCache();
+    void CleanCacheTask();
+
+    /// Loads Data from DB
+    bool LoadData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    template<typename D, typename E>
+    bool LoadFromDB(const uuids::uuid& id, std::vector<uint8_t>& data)
+    {
+        E e{};
+        if (!id.nil())
+            // An UUID is all we need to identify a record
+            e.uuid = id.to_string();
+        else
+        {
+            // If not, get it from the data
+            if (!GetEntity<E>(data, e))
+                return false;
+        }
+        if (D::Load(e))
+            return (SetEntity<E>(e, data) != 0);
+        return false;
+    }
+
+    /// Save data to DB or delete from DB.
+    /// So synchronize this item with the DB. Depending on the data header calls
+    /// CreateInDB(), SaveToDB() and/or DeleteFromDB()
+    bool FlushData(const std::vector<uint8_t>& key);
     template<typename D, typename E>
     bool CreateInDB(std::vector<uint8_t>& data)
     {
@@ -52,37 +85,11 @@ private:
             if (D::Create(e))
             {
                 // Update data, id may have changed
-                if (SetEntity<E>(e, data) != 0)
-                    return true;
-                return false;
+                return (SetEntity<E>(e, data) != 0);
             }
         }
         return false;
     }
-    /// Loads Data from DB
-    bool LoadData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
-    template<typename D, typename E>
-    bool LoadFromDB(const uuids::uuid& id, std::vector<uint8_t>& data)
-    {
-        E e{};
-        if (!id.nil())
-            e.uuid = id.to_string();
-        else
-        {
-            GetEntity<E>(data, e);
-        }
-        if (D::Load(e))
-        {
-            if (SetEntity<E>(e, data) != 0)
-                return true;
-            return false;
-        }
-        return false;
-    }
-
-    /// Save data to DB or delete from DB.
-    /// So synchronize this item with the DB.
-    void FlushData(const std::vector<uint8_t>& key);
     template<typename D, typename E>
     bool SaveToDB(std::vector<uint8_t>& data)
     {
@@ -118,9 +125,11 @@ private:
     }
 
     bool readonly_;
+    bool running_;
+    std::mutex lock_;
     std::unordered_map<std::string, CacheItem> cache_;
     size_t currentSize_;
     size_t maxSize_;
-    std::shared_ptr<EvictionStrategy> evictor_;
+    std::unique_ptr<EvictionStrategy> evictor_;
 };
 

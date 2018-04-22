@@ -10,6 +10,8 @@
 #include "Version.h"
 #include <signal.h>     /* signal, raise, sig_atomic_t */
 #include <functional>
+#include "Scheduler.h"
+#include "Dispatcher.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -263,6 +265,8 @@ int main(int argc, char* argv[])
         signal(SIGINT, signal_handler);              // Ctrl+C
         signal(SIGBREAK, signal_handler);            // X clicked
         asio::io_service io_service;
+        Asynch::Dispatcher::Instance.Start();
+        Asynch::Scheduler::Instance.Start();
         Server serv(io_service, (uint16_t)gPort, gMaxSize, gReadonly);
         shutdown_handler = [&](int /*signal*/)
         {
@@ -270,6 +274,8 @@ int main(int argc, char* argv[])
             serv.Shutdown();
         };
         io_service.run();
+        Asynch::Scheduler::Instance.Stop();
+        Asynch::Dispatcher::Instance.Stop();
     }
     catch (std::exception& e)
     {
