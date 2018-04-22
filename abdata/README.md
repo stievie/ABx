@@ -4,8 +4,12 @@ Caching data server with Database backend.
 
 ## Characteristics
 
-* Resistent to connection failures. It's even possible to restart the data server.
-* Short Read, Update, Delete operations ~30µs. Create takes longer.
+* Resistent to connection failures. It's even possible to restart the data server
+while a client is connected to the server.
+* Short Read, Update, Delete operations ~30µs. Create takes longer. This maakes it
+possible that many clients read and write data very frequently (e.g. inside a
+game loop) and still share the same data.
+* Flushed data to the database server in a background thread (except for Create).
 * Does not take care about database cobstraints.
 * Does not use database generated values, like INSERT ID's. It uses application managed UUID's.
 * Simple API, it has just 4 methods `Create()`, `Read()`, `Update()` and `Delete()`.
