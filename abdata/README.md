@@ -6,7 +6,7 @@ Caching data server with Database backend.
 
 * Resistent to connection failures. It's even possible to restart the data server
 while a client is connected to the server.
-* Short Read, Update, Delete operations ~30µs. Create takes longer. This maakes it
+* Short Read, Update, Delete operations ~30µs. Create takes longer. This makes it
 possible that many clients read and write data very frequently (e.g. inside a
 game loop) and still share the same data.
 * Flushes data to the database server in a background thread (except for Create).
@@ -15,6 +15,8 @@ game loop) and still share the same data.
 * Simple API, it has just 4 methods `Create()`, `Read()`, `Update()` and `Delete()`.
 * Serialize any object over a network that is a descendant of `AB::Entities::Entity`.
 * Type safety with C++ templates.
+* If the cache is full it throws out old records. So the recordset the application
+works with, should fit in memory.
 * Wow even works when its connected to MySQL while MySQL is updating!
 
 ## Entity
