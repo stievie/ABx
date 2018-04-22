@@ -5,7 +5,7 @@ Caching data server with Database backend.
 ## Characteristics
 
 * Resistent to connection failures. It's even possible to restart the data server.
-* Short Read, Update, Delete operations ~30µs. Create takes longer.
+* Short Read, Update, Delete operations ~30Âµs. Create takes longer.
 * Does not take care about database cobstraints.
 * Does not use database generated values, like INSERT ID's. It uses application managed UUID's.
 * Simple API, it has just 4 methods `Create()`, `Read()`, `Update()` and `Delete()`.
