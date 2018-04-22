@@ -77,6 +77,10 @@ public:
             return false;
         return CreateData(aKey, data);
     }
+    bool IsConnected() const
+    {
+        return connected_;
+    }
 private:
     template<typename E>
     static bool GetEntity(std::vector<uint8_t>& data, E& e)
@@ -124,10 +128,13 @@ private:
     bool UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     bool CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     void InternalConnect();
+    bool TryConnect(bool force);
+    bool CheckConnection();
 
     std::string host_;
     uint16_t port_;
     asio::ip::tcp::socket socket_;
     asio::ip::tcp::resolver resolver_;
+    bool connected_;
 };
 

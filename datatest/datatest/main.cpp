@@ -82,14 +82,29 @@ void TestDelete(DataClient* cli)
 
 int main()
 {
+    std::cout << "Connecting..." << std::endl;
     asio::io_service io_service;
     DataClient cli(io_service);
     cli.Connect("localhost", 2770);
+    if (!cli.IsConnected())
+    {
+        std::cout << "Failed to connect to server" << std::endl;
+        return 1;
+    }
 
+run_it:
     TestCreate(&cli);
     TestReadCache(&cli);
     TestReadDB(&cli);
     TestDelete(&cli);
+
+    std::cout << "Run again? [y/n]: ";
+    std::string answer;
+    std::cin >> answer;
+    if (answer.compare("y") == 0)
+    {
+        goto run_it;
+    }
 
     return 0;
 }

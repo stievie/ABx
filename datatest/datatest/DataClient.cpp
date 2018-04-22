@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "DataClient.h"
+#include <chrono>
+#include <thread>
 
 DataClient::DataClient(asio::io_service& io_service) :
     resolver_(io_service),
-    socket_(io_service)
+    socket_(io_service),
+    connected_(false)
 {
 }
 
@@ -16,7 +19,7 @@ void DataClient::Connect(const std::string& host, uint16_t port)
 {
     host_ = host;
     port_ = port;
-    InternalConnect();
+    TryConnect(false);
 }
 
 bool DataClient::ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
@@ -24,7 +27,14 @@ bool DataClient::ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>&
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Read, ksize1, ksize2 };
-    socket_.send(asio::buffer(header));
+    asio::error_code ec;
+    socket_.send(asio::buffer(header), 0, ec);
+    if (ec)
+    {
+        if (!TryConnect(true))
+            return false;
+        socket_.send(asio::buffer(header));
+    }
 
     socket_.send(asio::buffer(key));
 
@@ -62,7 +72,14 @@ bool DataClient::DeleteData(const std::vector<uint8_t>& key)
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Delete, ksize1, ksize2 };
-    socket_.send(asio::buffer(header));
+    asio::error_code ec;
+    socket_.send(asio::buffer(header), 0, ec);
+    if (ec)
+    {
+        if (!TryConnect(true))
+            return false;
+        socket_.send(asio::buffer(header));
+    }
 
     socket_.send(asio::buffer(key));
 
@@ -81,7 +98,14 @@ bool DataClient::UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Update, ksize1, ksize2 };
-    socket_.send(asio::buffer(header));
+    asio::error_code ec;
+    socket_.send(asio::buffer(header), 0, ec);
+    if (ec)
+    {
+        if (!TryConnect(true))
+            return false;
+        socket_.send(asio::buffer(header));
+    }
 
     socket_.send(asio::buffer(key));
 
@@ -107,7 +131,15 @@ bool DataClient::CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Create, ksize1, ksize2 };
-    socket_.send(asio::buffer(header));
+
+    asio::error_code ec;
+    socket_.send(asio::buffer(header), 0, ec);
+    if (ec)
+    {
+        if (!TryConnect(true))
+            return false;
+        socket_.send(asio::buffer(header));
+    }
 
     socket_.send(asio::buffer(key));
 
@@ -131,7 +163,43 @@ bool DataClient::CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t
 
 void DataClient::InternalConnect()
 {
+    if (connected_)
+        return;
+
     asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), host_, std::to_string(port_));
     asio::ip::tcp::resolver::iterator endpoint = resolver_.resolve(query);
-    asio::connect(socket_, endpoint);
+    asio::error_code error;
+    socket_.connect(*endpoint, error);
+    if (!error)
+        connected_ = true;
+}
+
+bool DataClient::TryConnect(bool force)
+{
+    if (force)
+    {
+        connected_ = false;
+        socket_.close();
+    }
+    int tries = 0;
+    while (!connected_ && tries < 10)
+    {
+        ++tries;
+        InternalConnect();
+        if (!connected_ && tries < 10)
+        {
+            using namespace std::chrono_literals;
+            std::this_thread::sleep_for(100ms);
+        }
+    }
+    return connected_;
+}
+
+bool DataClient::CheckConnection()
+{
+    connected_ = socket_.is_open();
+    if (connected_)
+        return true;
+    TryConnect(false);
+    return connected_;
 }
