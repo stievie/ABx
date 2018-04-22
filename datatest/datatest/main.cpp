@@ -80,6 +80,33 @@ void TestDelete(DataClient* cli)
     }
 }
 
+void TestUpdate(DataClient* cli)
+{
+    LOG_INFO << "TestUpdate()" << std::endl;
+    AB::Entities::Account a{};
+    a.name = "trill2";
+    {
+        if (!cli->Read(a))
+            LOG_ERROR << "Error Read" << std::endl;
+        else
+        {
+            int c = 0;
+            while (c < 10)
+            {
+                ++c;
+                AB_PROFILE;
+                a.email = "test@test.2";
+                if (!cli->Update(a))
+                {
+                    LOG_ERROR << "Error Update" << std::endl;
+                    break;
+                }
+            }
+        }
+    }
+
+}
+
 int main()
 {
     std::cout << "Connecting..." << std::endl;
@@ -97,6 +124,7 @@ run_it:
     TestReadCache(&cli);
     TestReadDB(&cli);
     TestDelete(&cli);
+    TestUpdate(&cli);
 
     std::cout << "Run again? [y/n]: ";
     std::string answer;

@@ -129,6 +129,20 @@ private:
     bool CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     void InternalConnect();
     bool TryConnect(bool force);
+    /// Try to send some data. If not connected tries to reconnect.
+    template<typename B>
+    bool TryWrite(const B& buffer)
+    {
+        asio::error_code ec;
+        socket_.send(buffer, 0, ec);
+        if (ec)
+        {
+            if (!TryConnect(true))
+                return false;
+            socket_.send(buffer, 0, ec);
+        }
+        return !(bool)ec;
+    }
 
     std::string host_;
     uint16_t port_;

@@ -27,16 +27,11 @@ bool DataClient::ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>&
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Read, ksize1, ksize2 };
-    asio::error_code ec;
-    socket_.send(asio::buffer(header), 0, ec);
-    if (ec)
-    {
-        if (!TryConnect(true))
-            return false;
-        socket_.send(asio::buffer(header));
-    }
+    if (!TryWrite(asio::buffer(header)))
+        return false;
 
-    socket_.send(asio::buffer(key));
+    if (!TryWrite(asio::buffer(key)))
+        return false;
 
     uint8_t dsize4 = static_cast<uint8_t>(data.size() >> 24);
     uint8_t dsize3 = static_cast<uint8_t>(data.size() >> 16);
@@ -44,9 +39,11 @@ bool DataClient::ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>&
     uint8_t dsize1 = static_cast<uint8_t>(data.size());
 
     uint8_t data_header[] = { dsize1, dsize2, dsize3, dsize4 };
-    socket_.send(asio::buffer(data_header));
+    if (!TryWrite(asio::buffer(data_header)))
+        return false;
 
-    socket_.send(asio::buffer(data));
+    if (!TryWrite(asio::buffer(data)))
+        return false;
 
     std::vector<uint8_t> dataheader(5);
     size_t read = asio::read(socket_, asio::buffer(dataheader, 5), asio::transfer_at_least(5));
@@ -72,16 +69,11 @@ bool DataClient::DeleteData(const std::vector<uint8_t>& key)
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Delete, ksize1, ksize2 };
-    asio::error_code ec;
-    socket_.send(asio::buffer(header), 0, ec);
-    if (ec)
-    {
-        if (!TryConnect(true))
-            return false;
-        socket_.send(asio::buffer(header));
-    }
+    if (!TryWrite(asio::buffer(header)))
+        return false;
 
-    socket_.send(asio::buffer(key));
+    if (!TryWrite(asio::buffer(key)))
+        return false;
 
     uint8_t result[128];
     size_t read = socket_.read_some(asio::buffer(result));
@@ -98,16 +90,12 @@ bool DataClient::UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Update, ksize1, ksize2 };
-    asio::error_code ec;
-    socket_.send(asio::buffer(header), 0, ec);
-    if (ec)
-    {
-        if (!TryConnect(true))
-            return false;
-        socket_.send(asio::buffer(header));
-    }
 
-    socket_.send(asio::buffer(key));
+    if (!TryWrite(asio::buffer(header)))
+        return false;
+
+    if (!TryWrite(asio::buffer(key)))
+        return false;
 
     uint8_t dsize4 = static_cast<uint8_t>(data.size() >> 24);
     uint8_t dsize3 = static_cast<uint8_t>(data.size() >> 16);
@@ -115,9 +103,11 @@ bool DataClient::UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t
     uint8_t dsize1 = static_cast<uint8_t>(data.size());
 
     uint8_t data_header[] = { dsize1, dsize2, dsize3, dsize4 };
-    socket_.send(asio::buffer(data_header));
+    if (!TryWrite(asio::buffer(data_header)))
+        return false;
 
-    socket_.send(asio::buffer(data));
+    if (!TryWrite(asio::buffer(data)))
+        return false;
 
     uint8_t result[128];
     size_t read = socket_.read_some(asio::buffer(result));
@@ -132,16 +122,11 @@ bool DataClient::CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     uint8_t header[] = { OpCodes::Create, ksize1, ksize2 };
 
-    asio::error_code ec;
-    socket_.send(asio::buffer(header), 0, ec);
-    if (ec)
-    {
-        if (!TryConnect(true))
-            return false;
-        socket_.send(asio::buffer(header));
-    }
+    if (!TryWrite(asio::buffer(header)))
+        return false;
 
-    socket_.send(asio::buffer(key));
+    if (!TryWrite(asio::buffer(key)))
+        return false;
 
     uint8_t dsize4 = static_cast<uint8_t>(data.size() >> 24);
     uint8_t dsize3 = static_cast<uint8_t>(data.size() >> 16);
@@ -149,9 +134,11 @@ bool DataClient::CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t
     uint8_t dsize1 = static_cast<uint8_t>(data.size());
 
     uint8_t data_header[] = { dsize1, dsize2, dsize3, dsize4 };
-    socket_.send(asio::buffer(data_header));
+    if (!TryWrite(asio::buffer(data_header)))
+        return false;
 
-    socket_.send(asio::buffer(data));
+    if (!TryWrite(asio::buffer(data)))
+        return false;
 
     uint8_t result[128];
     size_t read = socket_.read_some(asio::buffer(result));
