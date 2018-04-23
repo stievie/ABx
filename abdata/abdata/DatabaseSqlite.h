@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef USE_SQLITE
+
 #include "Database.h"
 #include <sqlite3.h>
 #include <map>
@@ -56,3 +58,4 @@ public:
 
 }
 
+#endif

@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifdef USE_SQLITE
+
 #include "DatabaseSqlite.h"
 #include <fstream>
 #include "Logger.h"
@@ -295,3 +298,5 @@ std::shared_ptr<DBResult> SqliteResult::Next()
 }
 
 #pragma comment(lib, "sqlite3.lib")
+
+#endif

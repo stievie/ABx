@@ -81,6 +81,9 @@
     <ClInclude Include="Task.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -138,6 +141,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Scheduler.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

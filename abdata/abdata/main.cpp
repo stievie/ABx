@@ -12,6 +12,7 @@
 #include <functional>
 #include "Scheduler.h"
 #include "Dispatcher.h"
+#include "StringUtils.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -230,13 +231,15 @@ int main(int argc, char* argv[])
     try
     {
         LOG_INFO << "Server config:" << std::endl;
-        LOG_INFO << "  Config file: " << gConfigFile << std::endl;
+        LOG_INFO << "  Config file: " << (gConfigFile.empty() ? "(empty)" : gConfigFile) << std::endl;
         LOG_INFO << "  Port: " << gPort << std::endl;
-        LOG_INFO << "  MaxSize: " << gMaxSize << " bytes" << std::endl;
-        LOG_INFO << "  Log dir: " << IO::Logger::logDir_ << std::endl;
+        LOG_INFO << "  Cache size: " << Utils::ConvertSize(gMaxSize) << std::endl;
+        LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
         LOG_INFO << "  Readonly mode: " << (gReadonly ? "TRUE" : "false")  << std::endl;
         LOG_INFO << "Database drivers:";
-        LOG_INFO << " SQLite";   // We always have SQLite
+#ifdef USE_SQLITE
+        LOG_INFO << " SQLite";
+#endif
 #ifdef USE_MYSQL
         LOG_INFO << " MySQL";
 #endif

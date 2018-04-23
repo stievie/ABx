@@ -10,7 +10,9 @@
 #ifdef USE_ODBC
 #include "DatabaseOdbc.h"
 #endif // USE_ODBC
+#ifdef USE_SQLITE
 #include "DatabaseSqlite.h"
+#endif
 
 namespace DB {
 
@@ -40,10 +42,10 @@ Database* Database::Instance()
         if (driver.compare("odbc") == 0)
             instance_ = std::make_unique<DatabaseOdbc>();
 #endif
+#ifdef USE_SQLITE
         if (driver.compare("sqlite") == 0)
-        {
             instance_ = std::make_unique<DatabaseSqlite>(Database::dbName_);
-        }
+#endif
         if (!instance_)
         {
             LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;

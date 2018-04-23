@@ -55,17 +55,20 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
     std::string table;
     uuids::uuid _id;
     if (!DecodeKey(key, table, _id))
+    {
+        LOG_ERROR << "Unable to decode key" << std::endl;
         return false;
+    }
     if (_id.nil())
         return false;
 
-    // Mark modified since to in DB
+    // Mark modified since not in DB
     CacheData(key, data, true, false);
     // Unfortunately we must flush the data for create operations. Or we find a way
     // to check constraints, unique columns etc.
     if (!FlushData(key))
     {
-        // TODO: Cached deleted data still in DB...
+        // Failed -> remove from cache
         RemoveData(keyString);
         return false;
     }
@@ -101,11 +104,12 @@ bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<st
 void StorageProvider::CacheData(const std::vector<uint8_t>& key,
     std::shared_ptr<std::vector<uint8_t>> data, bool modified, bool created)
 {
-    if (!EnoughSpace(data->size()))
+    size_t sizeNeeded = data->size();
+    if (!EnoughSpace(sizeNeeded))
     {
         // Create space later
         Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(10, std::bind(&StorageProvider::CreateSpace, this, data->size()))
+            Asynch::CreateTask(10, std::bind(&StorageProvider::CreateSpace, this, sizeNeeded))
         );
     }
 
@@ -127,17 +131,22 @@ void StorageProvider::CacheData(const std::vector<uint8_t>& key,
 bool StorageProvider::Read(const std::vector<uint8_t>& key,
     std::shared_ptr<std::vector<uint8_t>> data)
 {
-    std::string keyString(key.begin(), key.end());//TODO think about the cost here
+    std::string keyString(key.begin(), key.end());
 
     auto _data = cache_.find(keyString);
     if (_data == cache_.end())
     {
+        std::string table;
+        uuids::uuid _id;
+        if (!DecodeKey(key, table, _id))
+        {
+            LOG_ERROR << "Unable to decode key" << std::endl;
+            return false;
+        }
+
         if (!LoadData(key, data))
             return false;
 
-        std::string table;
-        uuids::uuid _id;
-        DecodeKey(key, table, _id);
         if (_id.nil())
             // If no UUID given in key (e.g. when reading by name) cache with the proper key
             _id = GetUuid(data);
@@ -149,6 +158,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
     if ((*_data).second.first.deleted)
         // Don't return deleted items that are in cache
         return false;
+//    data = (*_data).second.second;
     data->assign((*_data).second.second->begin(), (*_data).second.second->end());
     return true;
 }
@@ -204,7 +214,7 @@ void StorageProvider::CleanCache()
     if (removed > 0)
     {
         LOG_INFO << "Cleaned cache old size " << oldSize << " current size " << currentSize_ <<
-            " removed " << removed << " records" << std::endl;
+            " removed " << removed << " record(s)" << std::endl;
     }
 }
 
@@ -238,7 +248,7 @@ void StorageProvider::FlushCache()
     }
     if (written > 0)
     {
-        LOG_INFO << "Flushed cache wrote " << written << " records" << std::endl;
+        LOG_INFO << "Flushed cache wrote " << written << " record(s)" << std::endl;
     }
 }
 
@@ -273,9 +283,9 @@ std::vector<uint8_t> StorageProvider::EncodeKey(const std::string& table, const 
 
 uuids::uuid StorageProvider::GetUuid(std::shared_ptr<std::vector<uint8_t>> data)
 {
-    // Get UUID from raw data. First is id = uint32_t, second is the UUID as string
-    const std::string suuid(data->begin() + sizeof(uint32_t) + 1,
-        data->begin() + sizeof(uint32_t) + AB::Entities::Limits::MAX_UUID + 1);
+    // Get UUID from raw data. UUID is serialized first as string
+    const std::string suuid(data->begin() + 1,
+        data->begin() + AB::Entities::Limits::MAX_UUID + 1);
     return uuids::uuid(suuid);
 }
 

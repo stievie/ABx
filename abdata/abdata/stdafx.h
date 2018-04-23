@@ -23,6 +23,7 @@
 
 #include <uuid.h>
 
+#define USE_SQLITE
 #define USE_MYSQL
 #define USE_PGSQL
 #define USE_ODBC
