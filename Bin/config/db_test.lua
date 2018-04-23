@@ -1,0 +1,19 @@
+--------------------------------------------------------------------------------
+-- Database Settings -----------------------------------------------------------
+--------------------------------------------------------------------------------
+
+-- Database: mysql (default port 3306), pgsql (default port 5432), sqlite, odbc
+db_driver = "mysql"
+-- Database Host. Not used for ODBC
+db_host = "ba.home.lan"
+-- Database Port. Not used for ODBC
+db_port = 3306
+-- Database user
+db_user = "root"
+-- Database name or DSN for ODBC
+db_name = "forgottenwars_test"
+
+-- SQlite DB file. Only used when db_driver == sqlite
+db_file = ""
+
+require("config/db_private")

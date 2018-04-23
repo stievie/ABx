@@ -16,6 +16,10 @@ static constexpr int MAX_PLAYER_NAME = 20;
 
 // Map
 static constexpr int MAX_MAP_NAME = 50;
+
+// Guild
+static constexpr int MAX_GUILD_NAME = 255;
+static constexpr int MAX_GUILD_TAG = 4;
 }
 }
 }

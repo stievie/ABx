@@ -218,7 +218,11 @@ int main(int argc, char* argv[])
     if (gConfigFile.empty())
         gConfigFile = path + "/" + "abdata.lua";
 
-    ConfigManager::Instance.Load(gConfigFile);
+    if (!ConfigManager::Instance.Load(gConfigFile))
+    {
+        LOG_ERROR << "Error loading config file" << std::endl;
+        return EXIT_FAILURE;
+    }
     LoadConfig();
 
     if (gPort == 0)
