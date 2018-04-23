@@ -8,8 +8,6 @@ db_driver = "mysql"
 db_host = "ba.home.lan"
 -- Database Port. Not used for ODBC
 db_port = 3306
--- Database user
-db_user = "root"
 -- Database name or DSN for ODBC
 db_name = "forgottenwars"
 
