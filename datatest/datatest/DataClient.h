@@ -18,6 +18,7 @@ enum OpCodes : uint8_t
     // Invalidate a cache item. Does NOT flush modified data. Next read will load it from the DB.
     // TODO: Check if needed.
     Invalidate = 4,
+    Preload = 5,
     // Responses
     Status,
     Data
@@ -77,6 +78,19 @@ public:
             return false;
         return CreateData(aKey, data);
     }
+    template<typename E>
+    bool Preload(const E& entity)
+    {
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        return PreloadData(aKey);
+    }
+    /// Flushes an entity and removes it from cache
+    template<typename E>
+    bool Invalidate(const E& entity)
+    {
+        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        return InvalidateData(aKey);
+    }
     bool IsConnected() const
     {
         return connected_;
@@ -123,10 +137,14 @@ private:
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
 
+    bool MakeRequest(OpCodes opCode, const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
+    bool MakeRequestNoData(OpCodes opCode, const std::vector<uint8_t>& key);
     bool ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     bool DeleteData(const std::vector<uint8_t>& key);
     bool UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
     bool CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
+    bool PreloadData(const std::vector<uint8_t>& key);
+    bool InvalidateData(const std::vector<uint8_t>& key);
     void InternalConnect();
     bool TryConnect(bool force);
     /// Try to send some data. If not connected tries to reconnect.

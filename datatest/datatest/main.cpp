@@ -107,6 +107,36 @@ void TestUpdate(DataClient* cli)
 
 }
 
+void TestPreload(DataClient* cli)
+{
+    LOG_INFO << "TestUpdate()" << std::endl;
+    AB::Entities::Account a{};
+    a.name = "stievie7";
+    {
+        AB_PROFILE;
+        if (!cli->Preload(a))
+        {
+            LOG_ERROR << "Error Preload" << std::endl;
+            return;
+        }
+    }
+    {
+        AB_PROFILE;
+        if (!cli->Read(a))
+            LOG_ERROR << "Error Read" << std::endl;
+    }
+    {
+        AB_PROFILE;
+        if (!cli->Invalidate(a))
+            LOG_ERROR << "Error Invalidate" << std::endl;
+    }
+    {
+        AB_PROFILE;
+        if (!cli->Read(a))
+            LOG_ERROR << "Error Read" << std::endl;
+    }
+}
+
 int main()
 {
     std::cout << "Connecting..." << std::endl;
@@ -125,6 +155,7 @@ run_it:
     TestReadDB(&cli);
     TestDelete(&cli);
     TestUpdate(&cli);
+    TestPreload(&cli);
 
     std::cout << "Run again? [y/n]: ";
     std::string answer;

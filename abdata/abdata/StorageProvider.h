@@ -32,6 +32,7 @@ public:
     bool Read(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
     bool Delete(const std::vector<uint8_t>& key);
     bool Invalidate(const std::vector<uint8_t>& key);
+    bool Preload(const std::vector<uint8_t>& key);
 
     /// Flush all
     void Shutdown();

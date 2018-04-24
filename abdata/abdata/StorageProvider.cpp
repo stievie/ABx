@@ -178,11 +178,42 @@ bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 bool StorageProvider::Invalidate(const std::vector<uint8_t>& key)
 {
     std::string dataToRemove(key.begin(), key.end());
+    if (!FlushData(key))
+        return false;
     return RemoveData(dataToRemove);
+}
+
+bool StorageProvider::Preload(const std::vector<uint8_t>& key)
+{
+    std::string keyString(key.begin(), key.end());
+
+    auto _data = cache_.find(keyString);
+    if (_data == cache_.end())
+        return true;
+
+    std::string table;
+    uuids::uuid _id;
+    if (!DecodeKey(key, table, _id))
+    {
+        LOG_ERROR << "Unable to decode key" << std::endl;
+        return false;
+    }
+
+    std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>(0);
+    if (!LoadData(key, data))
+        return false;
+
+    if (_id.nil())
+        // If no UUID given in key (e.g. when reading by name) cache with the proper key
+        _id = GetUuid(data);
+    auto newKey = EncodeKey(table, _id);
+    CacheData(newKey, data, false, true);
+    return true;
 }
 
 void StorageProvider::Shutdown()
 {
+    std::lock_guard<std::mutex> lock(lock_);
     running_ = false;
     for (const auto& c : cache_)
     {

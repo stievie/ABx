@@ -13,9 +13,10 @@ enum OpCodes : uint8_t
     Update = 1,
     Read = 2,
     Delete = 3,
-    // Invalidate a cache item. Does NOT flush modified data. Next read will load it from the DB.
+    // Invalidate a cache item. Flushes modified data. Next read will load it from the DB.
     // TODO: Check if needed.
     Invalidate = 4,
+    Preload = 5,
     // Responses
     Status,
     Data
@@ -44,6 +45,7 @@ private:
     void StartReadOperation();
     void StartDeleteOperation();
     void StartInvalidateOperation();
+    void StartPreloadOperation();
 
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);

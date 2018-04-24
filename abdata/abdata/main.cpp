@@ -13,6 +13,7 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "StringUtils.h"
+#include "FileUtils.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -218,10 +219,13 @@ int main(int argc, char* argv[])
     if (gConfigFile.empty())
         gConfigFile = path + "/" + "abdata.lua";
 
-    if (!ConfigManager::Instance.Load(gConfigFile))
+    if (Utils::FileExists(gConfigFile))
     {
-        LOG_ERROR << "Error loading config file" << std::endl;
-        return EXIT_FAILURE;
+        if (!ConfigManager::Instance.Load(gConfigFile))
+        {
+            LOG_ERROR << "Error loading config file" << std::endl;
+            return EXIT_FAILURE;
+        }
     }
     LoadConfig();
 

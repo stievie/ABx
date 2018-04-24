@@ -151,6 +151,14 @@ void Connection::StartInvalidateOperation()
         SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
 }
 
+void Connection::StartPreloadOperation()
+{
+    if (storageProvider_.Preload(key_))
+        SendStatusAndRestart(Ok, "OK");
+    else
+        SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
+}
+
 void Connection::Stop()
 {
     socket_.close();
@@ -225,7 +233,7 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
         (uint8_t)(data_->size() >> 8),
         (uint8_t)(data_->size() >> 16),
         (uint8_t)(data_->size() >> 24)
-    };//TODO verify this
+    };
 
     std::vector<asio::mutable_buffer> bufs = {
         asio::buffer(header),
@@ -260,6 +268,9 @@ void Connection::StartClientRequestedOp()
         break;
     case OpCodes::Invalidate:
         StartInvalidateOperation();
+        break;
+    case OpCodes::Preload:
+        StartPreloadOperation();
         break;
     case OpCodes::Status:
     case OpCodes::Data:
