@@ -23,6 +23,13 @@ enum FriendRelation : uint8_t
     FriendRelationIgnore = 1
 };
 
+struct Friend
+{
+    std::string friend_uuid;
+    FriendRelation relation;
+}
+
+/// Friendlist. UUID is Account UUID
 struct FriendList : Entity
 {
     static constexpr const char* KEY()
@@ -33,14 +40,14 @@ struct FriendList : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.text1b(account_uuid, Limits::MAX_UUID);
-        s.text1b(friend_uuid, Limits::MAX_UUID);
-        s.value1b(relation);
+        s.container(friends, Limits::MAX_FRIENDS_MAX, [&s](Friend& c)
+        {
+            s.text1b(c.friend_uuid, Limits::MAX_UUID);
+            s.value1b(c.relation);
+        });
     }
 
-    std::string account_uuid;
-    std::string friend_uuid;
-    FriendRelation relation;
+    std::vector<Friend> friends;
 };
 
 }

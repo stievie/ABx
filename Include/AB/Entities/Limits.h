@@ -28,6 +28,9 @@ static constexpr int MAX_GUILD_TAG = 4;
 // Ban
 static constexpr int MAX_BAN_COMMENT = 255;
 
+// Friendlist
+static constexpr int MAX_FRIENDS_MAX = 1000;
+
 }
 }
 }
