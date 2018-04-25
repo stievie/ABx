@@ -56,7 +56,7 @@ struct Character : Entity
     std::string name;
     std::string profession;
     std::string profession2;
-    uint8_t level;
+    uint8_t level = 0;
     /// PvP only character
     bool pvp = false;
     uint32_t xp = 0;

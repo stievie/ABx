@@ -111,9 +111,9 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
     query << " `lastip` = " << character.lastIp << ", ";
     query << " `onlinetime` = " << character.onlineTime << ", ";
     query << " `deleted` = " << character.deletedTime << ", ";
-    query << " `last_map` = " << character.lastMap;
+    query << " `last_map` = " << db->EscapeString(character.lastMap);
 
-    query << " WHERE `uuid` = " << character.uuid;
+    query << " WHERE `uuid` = " << db->EscapeString(character.uuid);
 
     DBTransaction transaction(db);
     if (!transaction.Begin())
@@ -136,7 +136,7 @@ bool DB::DBCharacter::Delete(const AB::Entities::Character& character)
 
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "DELETE FROM `players` WHERE `uuid` = " << character.uuid;
+    query << "DELETE FROM `players` WHERE `uuid` = " << db->EscapeString(character.uuid);
     DBTransaction transaction(db);
     if (!transaction.Begin())
         return false;

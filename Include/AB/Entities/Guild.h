@@ -30,12 +30,12 @@ struct Guild : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.text1b(name, Limits::MAX_GUILD_NAME);
         s.text1b(tag, Limits::MAX_GUILD_TAG);
-        s.text1b(owner_uuid, Limits::MAX_UUID);
+        s.text1b(creatorAccountUuid, Limits::MAX_UUID);
     }
 
     std::string name;
     std::string tag;
-    std::string owner_uuid;
+    std::string creatorAccountUuid;
 };
 
 }

@@ -39,11 +39,21 @@ struct GuildMember : Entity
         s.text1b(accountUuid, Limits::MAX_UUID);
         s.text1b(guildUuid, Limits::MAX_UUID);
         s.value1b(role);
+        s.value8b(invited);
+        s.value8b(joined);
+        s.value8b(expires);
     }
 
     std::string accountUuid;
     std::string guildUuid;
     GuildRole role;
+    /// Time invited
+    int64_t invited;
+    /// Time joined
+    int64_t joined;
+    /// Time membership expires
+    int64_t expires;
+    
 };
 
 }

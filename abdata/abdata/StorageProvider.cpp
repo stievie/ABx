@@ -5,6 +5,9 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Game.h>
+#include <AB/Entities/IpBan.h>
+#include <AB/Entities/AccountBan.h>
+#include <AB/Entities/Ban.h>
 #include "DBAccount.h"
 #include "DBCharacter.h"
 #include "DBGame.h"
@@ -14,12 +17,18 @@
 #include <AB/Entities/Limits.h>
 #include "Scheduler.h"
 #include "Dispatcher.h"
+#include "DBIpBan.h"
+#include "DBBan.h"
+#include "DBAccountBan.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
 static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::Account::KEY());
 static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::Character::KEY());
 static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::Game::KEY());
+static constexpr size_t KEY_IPBANS_HASH = Utils::StringHash(AB::Entities::IpBan::KEY());
+static constexpr size_t KEY_ACCOUNTBANS_HASH = Utils::StringHash(AB::Entities::AccountBan::KEY());
+static constexpr size_t KEY_BANS_HASH = Utils::StringHash(AB::Entities::Ban::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -370,6 +379,12 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id, *data);
     case KEY_GAMES_HASH:
         return LoadFromDB<DB::DBGame, AB::Entities::Game>(id, *data);
+    case KEY_IPBANS_HASH:
+        return LoadFromDB<DB::DBIpBan, AB::Entities::IpBan>(id, *data);
+    case KEY_ACCOUNTBANS_HASH:
+        return LoadFromDB<DB::DBAccountBan, AB::Entities::AccountBan>(id, *data);
+    case KEY_BANS_HASH:
+        return LoadFromDB<DB::DBBan, AB::Entities::Ban>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -413,6 +428,15 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
         break;
     case KEY_GAMES_HASH:
         succ = FlushRecord<DB::DBGame, AB::Entities::Game>(data);
+        break;
+    case KEY_IPBANS_HASH:
+        succ = FlushRecord<DB::DBIpBan, AB::Entities::IpBan>(data);
+        break;
+    case KEY_ACCOUNTBANS_HASH:
+        succ = FlushRecord<DB::DBAccountBan, AB::Entities::AccountBan>(data);
+        break;
+    case KEY_BANS_HASH:
+        succ = FlushRecord<DB::DBBan, AB::Entities::Ban>(data);
         break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;

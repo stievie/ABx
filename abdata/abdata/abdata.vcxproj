@@ -167,8 +167,11 @@
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DBAccount.h" />
+    <ClInclude Include="DBAccountBan.h" />
+    <ClInclude Include="DBBan.h" />
     <ClInclude Include="DBCharacter.h" />
     <ClInclude Include="DBGame.h" />
+    <ClInclude Include="DBIpBan.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="FileUtils.h" />
@@ -193,8 +196,11 @@
     <ClCompile Include="DatabasePgsql.cpp" />
     <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DBAccount.cpp" />
+    <ClCompile Include="DBAccountBan.cpp" />
+    <ClCompile Include="DBBan.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
     <ClCompile Include="DBGame.cpp" />
+    <ClCompile Include="DBIpBan.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="Logger.cpp" />

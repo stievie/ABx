@@ -22,8 +22,12 @@ static constexpr int MAX_CHARACTER_PROF = 2;
 static constexpr int MAX_MAP_NAME = 50;
 
 // Guild
-static constexpr int MAX_GUILD_NAME = 255;
+static constexpr int MAX_GUILD_NAME = 32;
 static constexpr int MAX_GUILD_TAG = 4;
+
+// Ban
+static constexpr int MAX_BAN_COMMENT = 255;
+
 }
 }
 }
