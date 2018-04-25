@@ -15,6 +15,13 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
+enum CharacterSex : uint8_t
+{
+    CharacterSexUnknown = 0,
+    CharacterSexFemale = 1,
+    CharacterSexMale = 3
+};
+
 constexpr auto KEY_CHARACTERS = "characters";
 
 struct Character : Entity
@@ -27,17 +34,45 @@ struct Character : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
+        s.text1b(name, Limits::MAX_CHARACTER_NAME);
+        s.text1b(profession, Limits::MAX_CHARACTER_PROF);
+        s.text1b(profession2, Limits::MAX_CHARACTER_PROF);
+        s.value1b(level);
         s.value1b(pvp);
-        s.value8b(xp);
+        s.value4b(xp);
         s.value4b(skillPoints);
+        s.value1b(sex);
+        s.text1b(accountUuid, Limits::MAX_UUID);
+        s.value8b(onlineTime);
+        s.value8b(deletedTime);
+        s.value8b(creation);
         s.text1b(lastMap, Limits::MAX_MAP_NAME);
+        
+        s.value8b(lastLogin);
+        s.value8b(lastLogout);
+        s.value4b(lastIp);
     }
 
+    std::string name;
+    std::string profession;
+    std::string profession2;
+    uint8_t level;
     /// PvP only character
     bool pvp = false;
-    uint64_t xp = 0;
+    uint32_t xp = 0;
     uint32_t skillPoints = 0;
+    CharacterSex sex = CharacterSexUnknown;
     std::string lastMap;
+    std::string accountUuid;
+    
+    int64_t onlineTime = 0;
+    /// 0 if not deleted
+    int64_t deletedTime = 0;
+    int64_t creation = 0;
+
+    int64_t lastLogin = 0;
+    int64_t lastLogout = 0;
+    uint32_t lastIp = 0;
 };
 
 }

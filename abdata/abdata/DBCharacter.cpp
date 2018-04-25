@@ -1,16 +1,36 @@
 #include "stdafx.h"
 #include "DBCharacter.h"
 #include "Database.h"
+#include "Logger.h"
 
 namespace DB {
 
 bool DBCharacter::Create(AB::Entities::Character& character)
 {
+    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "INSERT INTO `players` (`pvp`) VALUES ( ";
+    query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `name`, `pvp`, " <<
+        "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
+        "`creation`";
+    query << ") VALUES(";
 
-    query << character.pvp;
+    query << db->EscapeString(character.uuid) << ", ";
+    query << db->EscapeString(character.profession) << ", ";
+    query << db->EscapeString(character.profession2) << ", ";
+    query << db->EscapeString(character.name) << ", ";
+    query << character.pvp << ", ";
+    query << db->EscapeString(character.accountUuid) << ", ";
+    query << character.level << ", ";
+    query << character.xp << ", ";
+    query << character.skillPoints << ", ";
+    query << static_cast<uint32_t>(character.sex) << ", ";
+    query << character.creation;
 
     query << ")";
 
@@ -30,18 +50,40 @@ bool DBCharacter::Create(AB::Entities::Character& character)
 
 bool DB::DBCharacter::Load(AB::Entities::Character& character)
 {
-    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
-        return false;
-
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT * FROM `players` WHERE `uuid` = " << character.uuid;
+    query << "SELECT * FROM `players` WHERE ";
+    if (!character.uuid.empty() && !uuids::uuid(character.uuid).nil())
+        query << "`uuid` = " << character.uuid;
+    else if (!character.name.empty())
+        query << "`name` = " << db->EscapeString(character.name);
+    else
+    {
+        LOG_ERROR << "UUID and name are empty" << std::endl;
+        return false;
+    }
+
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
 
+    character.profession = result->GetString("profession");
+    character.profession2 = result->GetString("profession2");
+    character.name = result->GetString("name");
     character.pvp = result->GetInt("pvp") != 0;
+    character.accountUuid = result->GetString("account_uuid");
+    character.level = static_cast<uint8_t>(result->GetUInt("level"));
+    character.xp = result->GetUInt("experience");
+    character.skillPoints = result->GetUInt("skillpoints");
+    character.sex = static_cast<AB::Entities::CharacterSex>(result->GetUInt("sex"));
+    character.lastLogin = result->GetULong("lastlogin");
+    character.lastLogout = result->GetULong("lastlogout");
+    character.creation = result->GetULong("creation");
+    character.lastIp = result->GetUInt("lastip");
+    character.onlineTime = result->GetULong("onlinetime");
+    character.deletedTime = result->GetULong("deleted");
+    character.lastMap = result->GetString("last_map");
 
     return true;
 }
@@ -49,14 +91,27 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
 bool DB::DBCharacter::Save(const AB::Entities::Character& character)
 {
     if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
         return false;
+    }
 
     Database* db = Database::Instance();
     std::ostringstream query;
 
     query << "UPDATE `players` SET ";
 
-    query << " `pvp` = " << character.pvp;
+    // Only these may be changed
+    query << " `profession2`" << db->EscapeString(character.profession2) << ", ";
+    query << " `level` = " << character.level << ", ";
+    query << " `experience` = " << character.xp << ", ";
+    query << " `skillpoints` = " << character.skillPoints << ", ";
+    query << " `lastlogin` = " << character.lastLogin << ", ";
+    query << " `lastlogout` = " << character.lastLogout << ", ";
+    query << " `lastip` = " << character.lastIp << ", ";
+    query << " `onlinetime` = " << character.onlineTime << ", ";
+    query << " `deleted` = " << character.deletedTime << ", ";
+    query << " `last_map` = " << character.lastMap;
 
     query << " WHERE `uuid` = " << character.uuid;
 
@@ -74,7 +129,10 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
 bool DB::DBCharacter::Delete(const AB::Entities::Character& character)
 {
     if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
         return false;
+    }
 
     Database* db = Database::Instance();
     std::ostringstream query;

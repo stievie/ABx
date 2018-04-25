@@ -2,6 +2,7 @@
 
 #include <AB/Entities/Entity.h>
 #include <AB/Entities/Limits.h>
+#include <bitsery/traits/vector.h>
 
 namespace AB {
 namespace Entities {
@@ -35,15 +36,25 @@ struct Account : Entity
         s.text1b(password, Limits::MAX_ACCOUNT_PASS);
         s.text1b(email, Limits::MAX_ACCOUNT_EMAIL);
         s.value4b(charSlots);
+        s.text1b(lastCharacterUuid, Limits::MAX_UUID);
+
+        // https://github.com/fraillt/bitsery/blob/master/examples/context_usage.cpp
+        // https://github.com/fraillt/bitsery/blob/master/examples/basic_usage.cpp
+        s.container(characterUuids, Limits::MAX_ACCOUNT_CHARACTERS, [&s](std::string& c)
+        {
+            s.text1b(c, Limits::MAX_UUID);
+        });
     }
 
-    uint8_t type = AccountTypeUnknown;
+    AccountType type = AccountTypeUnknown;
     bool blocked = false;
     uint64_t creation = 0;
     std::string name;
     std::string password;
     std::string email;
     uint32_t charSlots = 0;
+    std::string lastCharacterUuid;
+    std::vector<std::string> characterUuids;
 };
 
 }

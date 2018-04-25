@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_FRIENDLIST = "friendlist";
+constexpr auto KEY_FRIENDLIST = "friend_list";
 
 enum FriendRelation : uint8_t
 {

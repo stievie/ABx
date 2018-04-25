@@ -45,7 +45,7 @@ void TestReadDB(DataClient* cli)
 {
     LOG_INFO << "TestReadDB()" << std::endl;
     AB::Entities::Account a{};
-    a.name = "trill2";
+    a.name = "trill";
     {
         AB_PROFILE;
         if (!cli->Read(a))

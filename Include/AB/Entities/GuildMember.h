@@ -36,13 +36,13 @@ struct GuildMember : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.text1b(account_uuid, Limits::MAX_UUID);
-        s.text1b(guild_uuid, Limits::MAX_UUID);
+        s.text1b(accountUuid, Limits::MAX_UUID);
+        s.text1b(guildUuid, Limits::MAX_UUID);
         s.value1b(role);
     }
 
-    std::string account_uuid;
-    std::string guild_uuid;
+    std::string accountUuid;
+    std::string guildUuid;
     GuildRole role;
 };
 
