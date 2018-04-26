@@ -24,12 +24,13 @@ static constexpr int MAX_MAP_NAME = 50;
 // Guild
 static constexpr int MAX_GUILD_NAME = 32;
 static constexpr int MAX_GUILD_TAG = 4;
+static constexpr int MAX_GUILD_MEMBERS = 500;
 
 // Ban
 static constexpr int MAX_BAN_COMMENT = 255;
 
 // Friendlist
-static constexpr int MAX_FRIENDS_MAX = 1000;
+static constexpr int MAX_FRIENDS = 1000;
 
 }
 }

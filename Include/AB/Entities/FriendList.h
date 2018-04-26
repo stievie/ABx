@@ -8,6 +8,7 @@
 //in order for virtual inheritance to work, InheritanceContext is required.
 //it can be created either internally (via configuration) or externally (pointer to context).
 #include <bitsery/ext/inheritance.h>
+#include <bitsery/traits/vector.h>
 #include <AB/Entities/Limits.h>
 
 using bitsery::ext::BaseClass;
@@ -27,7 +28,7 @@ struct Friend
 {
     std::string friend_uuid;
     FriendRelation relation;
-}
+};
 
 /// Friendlist. UUID is Account UUID
 struct FriendList : Entity
@@ -40,7 +41,7 @@ struct FriendList : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.container(friends, Limits::MAX_FRIENDS_MAX, [&s](Friend& c)
+        s.container(friends, Limits::MAX_FRIENDS, [&s](Friend& c)
         {
             s.text1b(c.friend_uuid, Limits::MAX_UUID);
             s.value1b(c.relation);

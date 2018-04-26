@@ -13,6 +13,8 @@ enum BanReason : uint8_t
     BanReasonUnknown = 0,
     BanReasonScamming,
     BanReasonBotting,
+    BanReasonGoldSelling,
+    BanReasonInapropriateName,
 };
 
 struct Ban : Entity

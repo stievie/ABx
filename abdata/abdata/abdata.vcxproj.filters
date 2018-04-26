@@ -96,6 +96,9 @@
     <ClInclude Include="DBBan.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBFriendList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -168,6 +171,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBBan.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBFriendList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

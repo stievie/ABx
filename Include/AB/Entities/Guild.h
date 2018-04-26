@@ -8,7 +8,6 @@
 //in order for virtual inheritance to work, InheritanceContext is required.
 //it can be created either internally (via configuration) or externally (pointer to context).
 #include <bitsery/ext/inheritance.h>
-#include <bitsery/traits/vector.h>
 #include <AB/Entities/Limits.h>
 
 using bitsery::ext::BaseClass;

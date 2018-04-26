@@ -16,14 +16,14 @@ bool DBAccount::Create(AB::Entities::Account& account)
 
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, `blocked`, `creation`, `char_slots`) VALUES ( ";
+    query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, `status`, `blocked`, `creation`, `char_slots`) VALUES ( ";
 
     query << db->EscapeString(account.uuid) << ", ";
     query << db->EscapeString(account.name) << ", ";
     query << db->EscapeString(account.password) << ", ";
     query << db->EscapeString(account.email) << ", ";
     query << static_cast<int>(account.type) << ", ";
-    query << (account.blocked ? 1 : 0) << ", ";
+    query << static_cast<int>(account.status) << ", ";
     query << account.creation << ", ";
     query << account.charSlots;
 
@@ -67,10 +67,10 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.password = result->GetString("password");
     account.email = result->GetString("email");
     account.type = static_cast<AB::Entities::AccountType>(result->GetInt("type"));
-    account.blocked = result->GetUInt("blocked") != 0;
+    account.status = static_cast<AB::Entities::AccountStatus>(result->GetInt("status"));
     account.creation = result->GetULong("creation");
     account.charSlots = result->GetUInt("char_slots");
-    account.lastCharacterUuid = result->GetString("last_character_uuid");
+    account.currentCharacterUuid = result->GetString("last_character_uuid");
 
     // load characters
     account.characterUuids.clear();
@@ -100,9 +100,9 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `password` = " << db->EscapeString(account.password) << ",";
     query << " `email` = " << db->EscapeString(account.email) << ",";
     query << " `type` = " << static_cast<int>(account.type) << ",";
-    query << " `blocked` = " << (account.blocked ? 1 : 0) << ",";
+    query << " `status` = " << static_cast<int>(account.status) << ",";
     query << " `char_slots` = " << account.charSlots << ",";
-    query << " `last_character_uuid` = " << db->EscapeString(account.lastCharacterUuid);
+    query << " `last_character_uuid` = " << db->EscapeString(account.currentCharacterUuid);
 
     query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
 

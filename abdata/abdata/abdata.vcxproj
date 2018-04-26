@@ -170,6 +170,7 @@
     <ClInclude Include="DBAccountBan.h" />
     <ClInclude Include="DBBan.h" />
     <ClInclude Include="DBCharacter.h" />
+    <ClInclude Include="DBFriendList.h" />
     <ClInclude Include="DBGame.h" />
     <ClInclude Include="DBIpBan.h" />
     <ClInclude Include="Dispatcher.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="DBAccountBan.cpp" />
     <ClCompile Include="DBBan.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
+    <ClCompile Include="DBFriendList.cpp" />
     <ClCompile Include="DBGame.cpp" />
     <ClCompile Include="DBIpBan.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
