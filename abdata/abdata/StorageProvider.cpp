@@ -161,7 +161,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
 
         if (_id.nil())
             // If no UUID given in key (e.g. when reading by name) cache with the proper key
-            _id = GetUuid(data);
+            _id = GetUuid(*data);
         auto newKey = EncodeKey(table, _id);
         CacheData(newKey, data, false, true);
         return true;
@@ -195,6 +195,35 @@ bool StorageProvider::Invalidate(const std::vector<uint8_t>& key)
     return RemoveData(dataToRemove);
 }
 
+void StorageProvider::PreloadTask(std::vector<uint8_t> key)
+{
+    // Dispatcher thread
+
+    std::string keyString(key.begin(), key.end());
+
+    auto _data = cache_.find(keyString);
+    if (_data == cache_.end())
+        return;
+
+    std::string table;
+    uuids::uuid _id;
+    if (!DecodeKey(key, table, _id))
+    {
+        LOG_ERROR << "Unable to decode key" << std::endl;
+        return;
+    }
+    std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>(0);
+    if (!LoadData(key, data))
+        return;
+
+    if (_id.nil())
+        // If no UUID given in key (e.g. when reading by name) cache with the proper key
+        _id = GetUuid(*data);
+    auto newKey = EncodeKey(table, _id);
+    std::lock_guard<std::mutex> lock(lock_);
+    CacheData(newKey, data, false, true);
+}
+
 bool StorageProvider::Preload(const std::vector<uint8_t>& key)
 {
     std::string keyString(key.begin(), key.end());
@@ -203,23 +232,10 @@ bool StorageProvider::Preload(const std::vector<uint8_t>& key)
     if (_data == cache_.end())
         return true;
 
-    std::string table;
-    uuids::uuid _id;
-    if (!DecodeKey(key, table, _id))
-    {
-        LOG_ERROR << "Unable to decode key" << std::endl;
-        return false;
-    }
-
-    std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>(0);
-    if (!LoadData(key, data))
-        return false;
-
-    if (_id.nil())
-        // If no UUID given in key (e.g. when reading by name) cache with the proper key
-        _id = GetUuid(data);
-    auto newKey = EncodeKey(table, _id);
-    CacheData(newKey, data, false, true);
+    // Load later
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(10, std::bind(&StorageProvider::PreloadTask, this, key))
+    );
     return true;
 }
 
@@ -324,11 +340,11 @@ std::vector<uint8_t> StorageProvider::EncodeKey(const std::string& table, const 
     return result;
 }
 
-uuids::uuid StorageProvider::GetUuid(std::shared_ptr<std::vector<uint8_t>> data)
+uuids::uuid StorageProvider::GetUuid(std::vector<uint8_t>& data)
 {
     // Get UUID from raw data. UUID is serialized first as string
-    const std::string suuid(data->begin() + 1,
-        data->begin() + AB::Entities::Limits::MAX_UUID + 1);
+    const std::string suuid(data.begin() + 1,
+        data.begin() + AB::Entities::Limits::MAX_UUID + 1);
     return uuids::uuid(suuid);
 }
 

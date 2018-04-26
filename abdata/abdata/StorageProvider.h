@@ -43,7 +43,7 @@ private:
     static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id);
     static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id);
     /// Read UUID from data
-    static uuids::uuid GetUuid(std::shared_ptr<std::vector<uint8_t>> data);
+    static uuids::uuid GetUuid(std::vector<uint8_t>& data);
 
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
@@ -51,6 +51,7 @@ private:
         std::shared_ptr<std::vector<uint8_t>> data,
         bool modified, bool created);
     bool RemoveData(const std::string& key);
+    void PreloadTask(std::vector<uint8_t> key);
 
     void CleanCache();
     void CleanCacheTask();

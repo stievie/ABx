@@ -16,7 +16,8 @@ bool DBAccount::Create(AB::Entities::Account& account)
 
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, `status`, `blocked`, `creation`, `char_slots`) VALUES ( ";
+    query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
+        "`status`, `creation`, `char_slots`) VALUES ( ";
 
     query << db->EscapeString(account.uuid) << ", ";
     query << db->EscapeString(account.name) << ", ";
