@@ -112,4 +112,26 @@ bool DBAccountBan::Delete(const AB::Entities::AccountBan& ban)
     return transaction.Commit();
 }
 
+bool DBAccountBan::Exists(const AB::Entities::AccountBan& ban)
+{
+    DB::Database* db = DB::Database::Instance();
+    std::ostringstream query;
+    query << "SELECT COUNT(*) AS `count` FROM `account_bans` WHERE ";
+    if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
+        query << "`uuid` = " << ban.uuid;
+    else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
+        query << "`account_uuid` = " << db->EscapeString(ban.accountUuid);
+    else
+    {
+        LOG_ERROR << "UUID and Account UUID are empty" << std::endl;
+        return false;
+    }
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+
+    return result->GetUInt("count") != 0;
+}
+
 }

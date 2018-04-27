@@ -168,6 +168,8 @@
     <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DBAccount.h" />
     <ClInclude Include="DBAccountBan.h" />
+    <ClInclude Include="DBAccountKey.h" />
+    <ClInclude Include="DBAccountKeyAccounts.h" />
     <ClInclude Include="DBBan.h" />
     <ClInclude Include="DBCharacter.h" />
     <ClInclude Include="DBFriendList.h" />
@@ -198,6 +200,8 @@
     <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DBAccount.cpp" />
     <ClCompile Include="DBAccountBan.cpp" />
+    <ClCompile Include="DBAccountKey.cpp" />
+    <ClCompile Include="DBAccountKeyAccounts.cpp" />
     <ClCompile Include="DBBan.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
     <ClCompile Include="DBFriendList.cpp" />

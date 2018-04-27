@@ -72,7 +72,7 @@ struct Account : Entity
     std::string currentCharacterUuid;
     std::vector<std::string> characterUuids;
     /// Not written to DB just in dataservers cache
-    OnlineStatus onlineStatus;
+    OnlineStatus onlineStatus = OnlineStatusOffline;
 };
 
 }

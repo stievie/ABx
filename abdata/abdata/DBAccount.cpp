@@ -141,4 +141,26 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
     return transaction.Commit();
 }
 
+bool DBAccount::Exists(const AB::Entities::Account& account)
+{
+    DB::Database* db = DB::Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT COUNT(*) AS `count` FROM `accounts` WHERE ";
+    if (!account.uuid.empty() && !uuids::uuid(account.uuid).nil())
+        query << "`uuid` = " << db->EscapeString(account.uuid);
+    else if (!account.name.empty())
+        query << "`name` = " << db->EscapeString(account.name);
+    else
+    {
+        LOG_ERROR << "UUID and name are empty" << std::endl;
+        return false;
+    }
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+    return result->GetUInt("count") != 0;
+}
+
 }

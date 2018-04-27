@@ -52,4 +52,26 @@ bool DBGame::Delete(const AB::Entities::Game&)
     return true;
 }
 
+bool DBGame::Exists(const AB::Entities::Game& game)
+{
+    DB::Database* db = DB::Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT COUNT(*) AS `count` FROM `games` WHERE ";
+    if (!game.uuid.empty() && !uuids::uuid(game.uuid).nil())
+        query << "`uuid` = " << game.uuid;
+    else if (!game.name.empty())
+        query << "`name` = " << db->EscapeString(game.name);
+    else
+    {
+        LOG_ERROR << "UUID and name are empty" << std::endl;
+        return false;
+    }
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+    return result->GetUInt("count") != 0;
+}
+
 }

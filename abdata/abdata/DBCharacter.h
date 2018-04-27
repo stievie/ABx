@@ -14,6 +14,7 @@ public:
     static bool Load(AB::Entities::Character& character);
     static bool Save(const AB::Entities::Character& character);
     static bool Delete(const AB::Entities::Character& character);
+    static bool Exists(const AB::Entities::Character& character);
 };
 
 }

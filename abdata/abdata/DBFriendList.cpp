@@ -82,4 +82,9 @@ bool DBFriendList::Delete(const AB::Entities::FriendList&)
     return false;
 }
 
+bool DBFriendList::Exists(const AB::Entities::FriendList&)
+{
+    return false;
+}
+
 }

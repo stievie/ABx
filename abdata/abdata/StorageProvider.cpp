@@ -9,6 +9,8 @@
 #include <AB/Entities/AccountBan.h>
 #include <AB/Entities/Ban.h>
 #include <AB/Entities/FriendList.h>
+#include <AB/Entities/AccountKey.h>
+#include <AB/Entities/AccountKeyAccounts.h>
 #include "DBAccount.h"
 #include "DBCharacter.h"
 #include "DBGame.h"
@@ -22,6 +24,8 @@
 #include "DBBan.h"
 #include "DBAccountBan.h"
 #include "DBFriendList.h"
+#include "DBAccountKey.h"
+#include "DBAccountKeyAccounts.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
@@ -32,6 +36,8 @@ static constexpr size_t KEY_IPBANS_HASH = Utils::StringHash(AB::Entities::IpBan:
 static constexpr size_t KEY_ACCOUNTBANS_HASH = Utils::StringHash(AB::Entities::AccountBan::KEY());
 static constexpr size_t KEY_BANS_HASH = Utils::StringHash(AB::Entities::Ban::KEY());
 static constexpr size_t KEY_FRIENDLIST_HASH = Utils::StringHash(AB::Entities::FriendList::KEY());
+static constexpr size_t KEY_ACCOUNTKEYS_HASH = Utils::StringHash(AB::Entities::AccountKey::KEY());
+static constexpr size_t KEY_ACCOUNTKEYACCOUNTS_HASH = Utils::StringHash(AB::Entities::AccountKeyAccounts::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -163,7 +169,21 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
             // If no UUID given in key (e.g. when reading by name) cache with the proper key
             _id = GetUuid(*data);
         auto newKey = EncodeKey(table, _id);
-        CacheData(newKey, data, false, true);
+        std::string newKeyString(newKey.begin(), newKey.end());
+        auto _newdata = cache_.find(newKeyString);
+        if (_newdata == cache_.end())
+        {
+            CacheData(newKey, data, false, true);
+        }
+        else
+        {
+            // Was already cached
+            if ((*_newdata).second.first.deleted)
+                // Don't return deleted items that are in cache
+                return false;
+            // REturn the cached object, it may have changed
+            data->assign((*_newdata).second.second->begin(), (*_newdata).second.second->end());
+        }
         return true;
     }
 
@@ -220,8 +240,14 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
     auto newKey = EncodeKey(table, _id);
-    std::lock_guard<std::mutex> lock(lock_);
-    CacheData(newKey, data, false, true);
+
+    std::string newKeyString(newKey.begin(), newKey.end());
+    auto _newdata = cache_.find(newKeyString);
+    if (_newdata == cache_.end())
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        CacheData(newKey, data, false, true);
+    }
 }
 
 bool StorageProvider::Preload(const std::vector<uint8_t>& key)
@@ -237,6 +263,17 @@ bool StorageProvider::Preload(const std::vector<uint8_t>& key)
         Asynch::CreateTask(10, std::bind(&StorageProvider::PreloadTask, this, key))
     );
     return true;
+}
+
+bool StorageProvider::Exists(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+{
+    std::string keyString(key.begin(), key.end());
+    auto _data = cache_.find(keyString);
+
+    if (_data != cache_.end())
+        return !(*_data).second.first.deleted;
+
+    return ExistsData(key, *data);
 }
 
 void StorageProvider::Shutdown()
@@ -406,6 +443,10 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBBan, AB::Entities::Ban>(id, *data);
     case KEY_FRIENDLIST_HASH:
         return LoadFromDB<DB::DBFriendList, AB::Entities::FriendList>(id, *data);
+    case KEY_ACCOUNTKEYS_HASH:
+        return LoadFromDB<DB::DBAccountKey, AB::Entities::AccountKey>(id, *data);
+    case KEY_ACCOUNTKEYACCOUNTS_HASH:
+        return LoadFromDB<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -462,6 +503,12 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_FRIENDLIST_HASH:
         succ = FlushRecord<DB::DBFriendList, AB::Entities::FriendList>(data);
         break;
+    case KEY_ACCOUNTKEYS_HASH:
+        succ = FlushRecord<DB::DBAccountKey, AB::Entities::AccountKey>(data);
+        break;
+    case KEY_ACCOUNTKEYACCOUNTS_HASH:
+        succ = FlushRecord<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -470,4 +517,40 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (!succ)
         LOG_ERROR << "Unable to write data" << std::endl;
     return succ;
+}
+
+bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+{
+    std::string table;
+    uuids::uuid id;
+    if (!DecodeKey(key, table, id))
+        return false;
+
+    size_t tableHash = Utils::StringHashRt(table.data());
+    switch (tableHash)
+    {
+    case KEY_ACCOUNTS_HASH:
+        return ExistsInDB<DB::DBAccount, AB::Entities::Account>(data);
+    case KEY_CHARACTERS_HASH:
+        return ExistsInDB<DB::DBCharacter, AB::Entities::Character>(data);
+    case KEY_GAMES_HASH:
+        return ExistsInDB<DB::DBGame, AB::Entities::Game>(data);
+    case KEY_IPBANS_HASH:
+        return ExistsInDB<DB::DBIpBan, AB::Entities::IpBan>(data);
+    case KEY_ACCOUNTBANS_HASH:
+        return ExistsInDB<DB::DBAccountBan, AB::Entities::AccountBan>(data);
+    case KEY_BANS_HASH:
+        return ExistsInDB<DB::DBBan, AB::Entities::Ban>(data);
+    case KEY_FRIENDLIST_HASH:
+        return ExistsInDB<DB::DBFriendList, AB::Entities::FriendList>(data);
+    case KEY_ACCOUNTKEYS_HASH:
+        return ExistsInDB<DB::DBAccountKey, AB::Entities::AccountKey>(data);
+    case KEY_ACCOUNTKEYACCOUNTS_HASH:
+        return ExistsInDB<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(data);
+    default:
+        LOG_ERROR << "Unknown table " << table << std::endl;
+        break;
+    }
+
+    return false;
 }

@@ -159,6 +159,31 @@ void Connection::StartPreloadOperation()
         SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
 }
 
+void Connection::StartExistsOperation()
+{
+    data_.reset(new std::vector<uint8_t>(4));
+    auto self = shared_from_this();
+    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
+        [this, self](const asio::error_code& error, size_t /* bytes_transferred */)
+    {
+        if (!error)
+        {
+            uint32_t size = toInt32(*data_.get(), 0);
+            if (size <= maxDataSize_)
+            {
+                data_.reset(new std::vector<uint8_t>(size));
+                asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
+                    std::bind(&Connection::HandleExistsReadRawData, self,
+                        std::placeholders::_1, std::placeholders::_2, size));
+            }
+            else
+                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + maxDataSize_);
+        }
+        else
+            connectionManager_.Stop(self);
+    });
+}
+
 void Connection::Stop()
 {
     socket_.close();
@@ -250,6 +275,25 @@ void Connection::HandleWriteReqResponse(const asio::error_code& error)
         connectionManager_.Stop(shared_from_this());
 }
 
+void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
+{
+    if (!error)
+    {
+        if (bytes_transferred != expected)
+            SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+        else
+        {
+            if (storageProvider_.Exists(key_, data_))
+                // Returns the id of the created Entity so client can construct the key
+                SendStatusAndRestart(Ok, "OK");
+            else
+                SendStatusAndRestart(NotExists, "Record does not exist");
+        }
+    }
+    else
+        connectionManager_.Stop(shared_from_this());
+}
+
 void Connection::StartClientRequestedOp()
 {
     switch (opcode_)
@@ -271,6 +315,9 @@ void Connection::StartClientRequestedOp()
         break;
     case OpCodes::Preload:
         StartPreloadOperation();
+        break;
+    case OpCodes::Exists:
+        StartExistsOperation();
         break;
     case OpCodes::Status:
     case OpCodes::Data:

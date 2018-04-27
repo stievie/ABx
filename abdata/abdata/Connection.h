@@ -17,6 +17,7 @@ enum OpCodes : uint8_t
     // TODO: Check if needed.
     Invalidate = 4,
     Preload = 5,
+    Exists = 6,
     // Responses
     Status,
     Data
@@ -28,7 +29,8 @@ enum ErrorCodes : uint8_t
     NoSuchKey,
     KeyTooBig,
     DataTooBig,
-    OtherErrors
+    OtherErrors,
+    NotExists
 };
 
 class Connection : public std::enable_shared_from_this<Connection>
@@ -46,11 +48,13 @@ private:
     void StartDeleteOperation();
     void StartInvalidateOperation();
     void StartPreloadOperation();
+    void StartExistsOperation();
 
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleWriteReqResponse(const asio::error_code& error);
+    void HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void StartClientRequestedOp();
     void StartReadKey(uint16_t& keySize);
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);

@@ -133,4 +133,33 @@ bool DBIpBan::Delete(const AB::Entities::IpBan& ban)
     return transaction.Commit();
 }
 
+bool DBIpBan::Exists(const AB::Entities::IpBan& ban)
+{
+    DB::Database* db = DB::Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT COUNT(*) AS `count` FROM `ip_bans` WHERE ";
+    if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
+        query << "`uuid` = " << ban.uuid;
+    else if (!ban.ip != 0)
+    {
+        if (ban.mask == 0)
+        {
+            LOG_ERROR << "IP mask is 0 it would match all IPs" << std::endl;
+            return false;
+        }
+        query << "((" << ban.ip << " & " << ban.mask << " & `mask`) = (`ip` & `mask` & " << ban.mask << "))";
+    }
+    else
+    {
+        LOG_ERROR << "UUID and IP are empty" << std::endl;
+        return false;
+    }
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+    return result->GetUInt("count") != 0;
+}
+
 }

@@ -33,6 +33,7 @@ public:
     bool Delete(const std::vector<uint8_t>& key);
     bool Invalidate(const std::vector<uint8_t>& key);
     bool Preload(const std::vector<uint8_t>& key);
+    bool Exists(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
 
     /// Flush all
     void Shutdown();
@@ -52,6 +53,7 @@ private:
         bool modified, bool created);
     bool RemoveData(const std::string& key);
     void PreloadTask(std::vector<uint8_t> key);
+    bool ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
 
     void CleanCache();
     void CleanCacheTask();
@@ -135,6 +137,14 @@ private:
         E e{};
         if (GetEntity<E>(data, e))
             return D::Delete(e);
+        return false;
+    }
+    template<typename D, typename E>
+    bool ExistsInDB(std::vector<uint8_t>& data)
+    {
+        E e{};
+        if (GetEntity<E>(data, e))
+            return D::Exists(e);
         return false;
     }
 

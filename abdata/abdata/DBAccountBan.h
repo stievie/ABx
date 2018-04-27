@@ -14,6 +14,7 @@ public:
     static bool Load(AB::Entities::AccountBan& ban);
     static bool Save(const AB::Entities::AccountBan& ban);
     static bool Delete(const AB::Entities::AccountBan& ban);
+    static bool Exists(const AB::Entities::AccountBan& ban);
 };
 
 }

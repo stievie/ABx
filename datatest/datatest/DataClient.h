@@ -19,6 +19,7 @@ enum OpCodes : uint8_t
     // TODO: Check if needed.
     Invalidate = 4,
     Preload = 5,
+    Exists = 6,
     // Responses
     Status,
     Data
@@ -30,7 +31,8 @@ enum ErrorCodes : uint8_t
     NoSuchKey,
     KeyTooBig,
     DataTooBig,
-    OtherErrors
+    OtherErrors,
+    NotExists
 };
 
 class DataClient

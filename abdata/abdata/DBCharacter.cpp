@@ -148,4 +148,26 @@ bool DB::DBCharacter::Delete(const AB::Entities::Character& character)
     return transaction.Commit();
 }
 
+bool DBCharacter::Exists(const AB::Entities::Character& character)
+{
+    DB::Database* db = DB::Database::Instance();
+
+    std::ostringstream query;
+    query << "SELECT COUNT(*) AS `count` FROM `players` WHERE ";
+    if (!character.uuid.empty() && !uuids::uuid(character.uuid).nil())
+        query << "`uuid` = " << character.uuid;
+    else if (!character.name.empty())
+        query << "`name` = " << db->EscapeString(character.name);
+    else
+    {
+        LOG_ERROR << "UUID and name are empty" << std::endl;
+        return false;
+    }
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+    return result->GetUInt("count") != 0;
+}
+
 }

@@ -15,6 +15,7 @@ public:
     static bool Load(AB::Entities::Account& account);
     static bool Save(const AB::Entities::Account& account);
     static bool Delete(const AB::Entities::Account& account);
+    static bool Exists(const AB::Entities::Account& account);
 };
 
 }
