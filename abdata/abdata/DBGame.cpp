@@ -31,6 +31,7 @@ bool DBGame::Load(AB::Entities::Game& game)
     if (!result)
         return false;
 
+    game.uuid = result->GetString("uuid");
     game.name = result->GetString("name");
     game.type = static_cast<AB::Entities::GameType>(result->GetInt("type"));
     game.directory = result->GetString("directory");

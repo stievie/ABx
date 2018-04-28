@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
         LOG_INFO << " MySQL";
 #endif
 #ifdef USE_PGSQL
-        LOG_INFO << " PostgresSQL";
+        LOG_INFO << " PostgreSQL";
 #endif
 #ifdef USE_ODBC
         LOG_INFO << " ODBC";

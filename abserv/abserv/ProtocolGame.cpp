@@ -27,11 +27,6 @@ void ProtocolGame::Login(const std::string& name, const uuids::uuid& accountUuid
     }
 
     player_ = Game::PlayerManager::Instance.CreatePlayer(name, GetThis());
-    if (!IO::IOPlayer::PreloadPlayer(player_.get(), name))
-    {
-        DisconnectClient(AB::Errors::ErrorLoadingCharacter);
-        return;
-    }
 
     if (Auth::BanManager::Instance.IsAccountBanned(accountUuid))
     {
@@ -44,6 +39,17 @@ void ProtocolGame::Login(const std::string& name, const uuids::uuid& accountUuid
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
+
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Account acc;
+    acc.uuid = player_->data_.accountUuid;
+    if (!client->Read(acc))
+    {
+        DisconnectClient(AB::Errors::InvalidAccount);
+        return;
+    }
+    acc.currentCharacterUuid = player_->data_.uuid;
+    client->Update(acc);
 
     player_->map_ = map;
     Connect(player_->id_);

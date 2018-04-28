@@ -68,6 +68,7 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     if (!result)
         return false;
 
+    character.uuid = result->GetString("uuid");
     character.profession = result->GetString("profession");
     character.profession2 = result->GetString("profession2");
     character.name = result->GetString("name");
@@ -102,8 +103,8 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
     query << "UPDATE `players` SET ";
 
     // Only these may be changed
-    query << " `profession2`" << db->EscapeString(character.profession2) << ", ";
-    query << " `level` = " << character.level << ", ";
+    query << " `profession2` = " << db->EscapeString(character.profession2) << ", ";
+    query << " `level` = " << static_cast<int>(character.level) << ", ";
     query << " `experience` = " << character.xp << ", ";
     query << " `skillpoints` = " << character.skillPoints << ", ";
     query << " `lastlogin` = " << character.lastLogin << ", ";
