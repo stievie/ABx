@@ -161,6 +161,8 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     ch.name = name;
     if (client->Exists(ch))
         return ResultNameExists;
+    // To reload the character list
+    client->Invalidate(acc);
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     ch.uuid = guid.to_string();

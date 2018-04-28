@@ -18,15 +18,15 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `name`, `pvp`, " <<
         "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
         "`creation`";
-    query << ") VALUES(";
+    query << ") VALUES (";
 
     query << db->EscapeString(character.uuid) << ", ";
     query << db->EscapeString(character.profession) << ", ";
     query << db->EscapeString(character.profession2) << ", ";
     query << db->EscapeString(character.name) << ", ";
-    query << character.pvp << ", ";
+    query << (character.pvp ? 1 : 0) << ", ";
     query << db->EscapeString(character.accountUuid) << ", ";
-    query << character.level << ", ";
+    query << static_cast<int>(character.level) << ", ";
     query << character.xp << ", ";
     query << character.skillPoints << ", ";
     query << static_cast<uint32_t>(character.sex) << ", ";
