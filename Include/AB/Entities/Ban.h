@@ -11,10 +11,11 @@ constexpr auto KEY_BANS = "bans";
 enum BanReason : uint8_t
 {
     BanReasonUnknown = 0,
+    BanReasonOther,
     BanReasonScamming,
     BanReasonBotting,
     BanReasonGoldSelling,
-    BanReasonInapropriateName,
+    BanReasonNameReport,
 };
 
 struct Ban : Entity

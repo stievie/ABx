@@ -7,17 +7,12 @@
 #include "NetworkMessage.h"
 #include "GameState.h"
 #include "Chat.h"
-#include <AB/GameData.h>
+#include <AB/Entities/Game.h>
 
 namespace Game {
 
 class Player;
 class Npc;
-
-struct GameData : public AB::Data::GameData
-{
-    std::string scriptFile;
-};
 
 class Game : public std::enable_shared_from_this<Game>
 {
@@ -56,7 +51,7 @@ public:
     void Start();
     void Stop();
 
-    GameData data_;
+    AB::Entities::Game data_;
     /// Auto generated ID used by the GameManager
     uint32_t id_;
     int64_t startTime_;

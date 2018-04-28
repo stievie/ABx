@@ -8,7 +8,7 @@ static constexpr int MAX_UUID = 36;
 static constexpr int MAX_FILENAME = 260;
 // Account
 static constexpr int MAX_ACCOUNT_NAME = 32;
-static constexpr int MAX_ACCOUNT_PASS = 60;
+static constexpr int MAX_ACCOUNT_PASS = 61;
 static constexpr int MAX_ACCOUNT_EMAIL = 60;
 static constexpr int MAX_ACCOUNT_CHARACTERS = 50;
 // AccountKey
@@ -20,6 +20,7 @@ static constexpr int MAX_CHARACTER_PROF = 2;
 
 // Map
 static constexpr int MAX_MAP_NAME = 50;
+static constexpr int MAX_GAMES = 500;
 
 // Guild
 static constexpr int MAX_GUILD_NAME = 32;

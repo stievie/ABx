@@ -89,8 +89,8 @@ private:
     using AcceptorKey = std::pair<uint32_t, uint16_t>;
 public:
     ServiceManager(const ServiceManager&) = delete;
-    ServiceManager() :
-        ioService_(),
+    ServiceManager(asio::io_service& ioService) :
+        ioService_(ioService),
         running_(false)
     {}
     ~ServiceManager()
@@ -135,7 +135,7 @@ public:
     }
 private:
     void Die();
-    asio::io_service ioService_;
+    asio::io_service& ioService_;
     bool running_;
     std::map<AcceptorKey, std::shared_ptr<ServicePort>> acceptors_;
 };

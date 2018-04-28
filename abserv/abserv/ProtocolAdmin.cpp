@@ -9,8 +9,6 @@
 
 #include "DebugNew.h"
 
-extern Application* gApplication;
-
 namespace Net {
 
 ProtocolAdmin::ProtocolAdmin(std::shared_ptr<Connection> connection) :
@@ -282,7 +280,7 @@ void ProtocolAdmin::CommandKickPlayer(const std::string& name)
 void ProtocolAdmin::CommandShutdownServer()
 {
     Asynch::Dispatcher::Instance.Add(
-        Asynch::CreateTask(std::bind(&Application::Stop, gApplication))
+        Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance))
     );
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)

@@ -5,20 +5,12 @@
 #include "Game.h"
 #include "Effect.h"
 #include "Creature.h"
-#include <AB/CharacterData.h>
+#include <AB/Entities/Character.h>
 
 namespace Game {
 
 class PlayerManager;
 class MailBox;
-
-/// DB Data
-struct PlayerData : public AB::Data::CharacterData
-{
-    uint32_t accountId;
-    uint64_t creation;
-    uint32_t onlineTime;
-};
 
 class Player final : public Creature
 {
@@ -57,7 +49,7 @@ public:
     void Logout();
     void Ping();
 
-    PlayerData data_;
+    AB::Entities::Character data_;
     time_t loginTime_;
     time_t logoutTime_;
     std::string map_;

@@ -28,12 +28,12 @@
 
 #include "DebugNew.h"
 
-Application* gApplication = nullptr;
+Application* Application::Instance = nullptr;
 
 #ifdef  _WIN32
 BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 {
-    assert(gApplication);
+    assert(Application::Instance);
 
 #ifdef _DEBUG
     LOG_DEBUG << "Got signal " << dwCtrlType << std::endl;
@@ -42,7 +42,7 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
     switch (dwCtrlType)
     {
     case CTRL_CLOSE_EVENT:                  // Close button or End Task
-        gApplication->Stop();
+        Application::Instance->Stop();
         return TRUE;
     case CTRL_C_EVENT:                      // Ctrl+C
     {
@@ -53,7 +53,7 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
         if (answer.compare("y") == 0)
         {
             Asynch::Dispatcher::Instance.Add(
-                Asynch::CreateTask(std::bind(&Application::Stop, gApplication))
+                Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance))
             );
         }
         return TRUE;
@@ -65,10 +65,13 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 #endif
 
 Application::Application() :
-    loaderUniqueLock_(loaderLock_)
+    loaderUniqueLock_(loaderLock_),
+    ioService_()
 {
-    assert(gApplication == nullptr);
-    gApplication = this;
+    assert(Application::Instance == nullptr);
+    Application::Instance = this;
+    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
+    serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
 }
 
 Application::~Application()
@@ -141,10 +144,10 @@ bool Application::Initialize(int argc, char** argv)
     loaderSignal_.wait(loaderUniqueLock_);
     std::this_thread::sleep_for(100ms);
 
-    if (!serviceManager_.IsRunning())
+    if (!serviceManager_->IsRunning())
         LOG_ERROR << "No services running" << std::endl;
 
-    return serviceManager_.IsRunning();
+    return serviceManager_->IsRunning();
 }
 
 void Application::MainLoader()
@@ -163,12 +166,13 @@ void Application::MainLoader()
     Utils::Random::Instance.Initialize();
     LOG_INFO << "[done]" << std::endl;
 
-    // DB ----------------
-    LOG_INFO << "Creating DB connection...";
-    DB::Database* db = DB::Database::Instance();
-    if (db == nullptr || !db->IsConnected())
+    LOG_INFO << "Connecting to data server...";
+    const std::string& dataHost = ConfigManager::Instance[ConfigManager::Key::DataServerHost].GetString();
+    uint16_t dataPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::DataServerPort].GetInt());
+    dataClient_->Connect(dataHost, dataPort);
+    if (!dataClient_->IsConnected())
     {
-        LOG_ERROR << "Database connection failed" << std::endl;
+        LOG_ERROR << "Failed to connect to data server" << std::endl;
         exit(EXIT_FAILURE);
     }
     LOG_INFO << "[done]" << std::endl;
@@ -181,23 +185,24 @@ void Application::MainLoader()
 //        std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
     }
 
+
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::LoginIP].GetInt());
     uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolLogin>(ip, port);
+        serviceManager_->Add<Net::ProtocolLogin>(ip, port);
     ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolAdmin>(ip, port);
+        serviceManager_->Add<Net::ProtocolAdmin>(ip, port);
     ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::StatusIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolStatus>(ip, port);
+        serviceManager_->Add<Net::ProtocolStatus>(ip, port);
     ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     if (port != 0)
-        serviceManager_.Add<Net::ProtocolGame>(ip, port);
+        serviceManager_->Add<Net::ProtocolGame>(ip, port);
 
     PrintServerInfo();
 
@@ -210,7 +215,7 @@ void Application::MainLoader()
     LOG_INFO << std::endl;
 
     Maintenance::Instance.Run();
-    Game::GameManager::Instance.Start(&serviceManager_);
+    Game::GameManager::Instance.Start(serviceManager_.get());
 
     // Notify we are ready
     loaderSignal_.notify_all();
@@ -222,7 +227,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
-    std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_.GetPorts();
+    std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_->GetPorts();
     LOG_INFO << "Listening: ";
     while (ports.size())
     {
@@ -231,18 +236,7 @@ void Application::PrintServerInfo()
     }
     LOG_INFO << std::endl;
 
-    LOG_INFO << "Database drivers:";
-    LOG_INFO << " SQLite";   // We always have SQLite
-#ifdef USE_MYSQL
-    LOG_INFO << " MySQL";
-#endif
-#ifdef USE_PGSQL
-    LOG_INFO << " PostgresSQL";
-#endif
-#ifdef USE_ODBC
-    LOG_INFO << " ODBC";
-#endif
-    LOG_INFO << std::endl;
+    LOG_INFO << "Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
 }
 
 void Application::Run()
@@ -258,7 +252,7 @@ void Application::Run()
         IO::Logger::logDir_ = logDir_;
         IO::Logger::Close();
     }
-    serviceManager_.Run();
+    serviceManager_->Run();
 }
 
 void Application::Stop()
@@ -268,5 +262,5 @@ void Application::Stop()
     Net::ConnectionManager::Instance()->CloseAll();
     Maintenance::Instance.Stop();
 
-    serviceManager_.Stop();
+    serviceManager_->Stop();
 }

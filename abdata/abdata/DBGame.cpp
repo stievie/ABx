@@ -18,7 +18,7 @@ bool DBGame::Load(AB::Entities::Game& game)
     std::ostringstream query;
     query << "SELECT * FROM `games` WHERE ";
     if (!game.uuid.empty() && !uuids::uuid(game.uuid).nil())
-        query << "`uuid` = " << game.uuid;
+        query << "`uuid` = " << db->EscapeString(game.uuid);
     else if (!game.name.empty())
         query << "`name` = " << db->EscapeString(game.name);
     else

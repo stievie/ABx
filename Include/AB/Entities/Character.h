@@ -19,7 +19,7 @@ enum CharacterSex : uint8_t
 {
     CharacterSexUnknown = 0,
     CharacterSexFemale = 1,
-    CharacterSexMale = 3
+    CharacterSexMale = 2
 };
 
 constexpr auto KEY_CHARACTERS = "characters";
@@ -47,7 +47,7 @@ struct Character : Entity
         s.value8b(deletedTime);
         s.value8b(creation);
         s.text1b(lastMap, Limits::MAX_MAP_NAME);
-        
+
         s.value8b(lastLogin);
         s.value8b(lastLogout);
         s.value4b(lastIp);
@@ -64,7 +64,7 @@ struct Character : Entity
     CharacterSex sex = CharacterSexUnknown;
     std::string lastMap;
     std::string accountUuid;
-    
+
     int64_t onlineTime = 0;
     /// 0 if not deleted
     int64_t deletedTime = 0;
@@ -74,6 +74,8 @@ struct Character : Entity
     int64_t lastLogout = 0;
     uint32_t lastIp = 0;
 };
+
+typedef std::vector<Character> CharacterList;
 
 }
 }

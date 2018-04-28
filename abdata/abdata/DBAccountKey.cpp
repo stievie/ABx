@@ -21,7 +21,7 @@ bool DBAccountKey::Load(AB::Entities::AccountKey& ak)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `account_keys` WHERE `uuid` = " << db->EscapeString(ak.uuid);
+    query << "SELECT * FROM `account_keys` WHERE `uuid` = " << db->EscapeString(ak.uuid);
     if (ak.status != AB::Entities::AccountKeyStatus::Unknown)
         query << " AND `status` = " << ak.status;
     if (ak.type != AB::Entities::AccountKeyType::KeyTypeUnknown)

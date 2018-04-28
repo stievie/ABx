@@ -1,15 +1,8 @@
 #pragma once
 
-namespace Auth {
+#include <AB/Entities/Ban.h>
 
-enum BanReason : uint8_t
-{
-    ReasonOther = 0,
-    ReasonNameReport = 1,
-    ReasonLeeching = 2,
-    ReasonBotting = 3,
-    ReasonScamming = 4
-};
+namespace Auth {
 
 struct BanInfo
 {
@@ -50,12 +43,12 @@ public:
     bool IsIpBanned(uint32_t clienttIP, uint32_t mask = 0xFFFFFFFF);
     /// May happen when there are too many connections from this IP
     bool IsIpDisabled(uint32_t clientIP);
-    bool IsAccountBanned(uint32_t accountId);
+    bool IsAccountBanned(const uuids::uuid& accountUuid);
     void AddLoginAttempt(uint32_t clientIP, bool success);
-    bool AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, uint32_t adminId, const std::string& comment,
-        BanReason reason = ReasonOther);
-    bool AddAccountBan(uint32_t accountId, int32_t expires, uint32_t adminId, const std::string& comment,
-        BanReason reason = ReasonOther);
+    bool AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std::string& adminUuid, const std::string& comment,
+        AB::Entities::BanReason reason = AB::Entities::BanReasonOther);
+    bool AddAccountBan(const std::string& accountUuid, int32_t expires, const std::string& adminUuid, const std::string& comment,
+        AB::Entities::BanReason reason = AB::Entities::BanReasonOther);
 
     static BanManager Instance;
 };

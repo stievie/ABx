@@ -4,13 +4,20 @@
 #include "IOGame.h"
 #include "Utils.h"
 #include "ConfigManager.h"
+#include "DataClient.h"
+#include <AB/Entities/Account.h>
 
 #include "DebugNew.h"
 
-namespace DB {
+namespace IO {
 
 bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    player->data_.name = name;
+    return client->Read(player->data_);
+
+#if 0
     Database* db = Database::Instance();
     std::ostringstream query;
     query << "SELECT `id`, `account_id`, `deleted`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
@@ -27,10 +34,15 @@ bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
     player->data_.accountId = result->GetUInt("account_id");
 
     return true;
+#endif
 }
 
-bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result)
+bool IOPlayer::LoadCharacter(AB::Entities::Character& player)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    return client->Read(player);
+
+#if 0
     if (!result)
         return false;
 
@@ -49,10 +61,14 @@ bool IOPlayer::LoadPlayer(Game::Player* player, std::shared_ptr<DBResult> result
         player->data_.lastMap = IOGame::GetLandingGame();
 
     return true;
+#endif
 }
 
 bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
 {
+    player->data_.name = name;
+    return LoadCharacter(player->data_);
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -61,10 +77,14 @@ bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
         db->EscapeString(name);
 
     return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
+#endif
 }
 
-bool IOPlayer::LoadPlayerById(Game::Player* player, uint32_t playerId)
+bool IOPlayer::LoadPlayerByUuid(Game::Player* player, const std::string& uuid)
 {
+    player->data_.uuid = uuid;
+    return LoadCharacter(player->data_);
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -72,10 +92,15 @@ bool IOPlayer::LoadPlayerById(Game::Player* player, uint32_t playerId)
         "`sex` FROM `players` WHERE `id` = " << playerId;
 
     return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
+#endif
 }
 
 bool IOPlayer::SavePlayer(Game::Player* player)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    return client->Update(player->data_);
+
+#if 0
     Database* db = Database::Instance();
 
     // Conditions
@@ -117,11 +142,41 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 
     // End transaction
     return transaction.Commit();
+#endif
 }
 
-IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
-    std::string& name, const std::string& prof, AB::Data::CreatureSex sex, bool isPvp)
+IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUuid,
+    std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+
+    AB::Entities::Account acc;
+    acc.uuid = accountUuid;
+    if (!client->Read(acc))
+        return ResultInvalidAccount;
+    if (acc.characterUuids.size() + 1 > acc.charSlots)
+        return ResultNoMoreCharSlots;
+
+    AB::Entities::Character ch;
+    ch.name = name;
+    if (client->Exists(ch))
+        return ResultNameExists;
+
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    ch.uuid = guid.to_string();
+    ch.name = name;
+    ch.profession = prof;
+    ch.sex = sex;
+    ch.pvp = isPvp;
+    ch.level = isPvp ? static_cast<uint8_t>(ConfigManager::Instance[ConfigManager::Key::PlayerLevelCap].GetInt()) : 1;
+    ch.creation = Utils::AbTick();
+    ch.accountUuid = accountUuid;
+    if (!client->Create(ch))
+        return ResultInternalError;
+
+    return ResultOK;
+
+#if 0
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
@@ -177,10 +232,20 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(uint32_t accountId,
         return ResultInternalError;
 
     return ResultOK;
+#endif
 }
 
-bool IOPlayer::DeletePlayer(uint32_t accountId, uint32_t playerId)
+bool IOPlayer::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Character ch;
+    ch.uuid = playerUuid;
+    if (!client->Read(ch))
+        return false;
+    if (ch.accountUuid.compare(accountUuid) != 0)
+        return false;
+    return client->Delete(ch);
+#if 0
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
@@ -206,6 +271,7 @@ bool IOPlayer::DeletePlayer(uint32_t accountId, uint32_t playerId)
         return false;
 
     return true;
+#endif
 }
 
 }

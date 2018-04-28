@@ -72,7 +72,7 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     }
     case AB::GameProtocol::CommandTypeAge:
     {
-        uint32_t playTime = data_.onlineTime + static_cast<uint32_t>((Utils::AbTick() - loginTime_) / 1000);
+        uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) + static_cast<uint32_t>((Utils::AbTick() - loginTime_) / 1000);
         uint32_t age = static_cast<uint32_t>(Utils::AbTick() - data_.creation);
 
         Net::NetworkMessage nmsg;

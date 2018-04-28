@@ -3,6 +3,7 @@
 #include "AbEvents.h"
 #include "Structs.h"
 #include "FwClient.h"
+#include <AB/Entities/Character.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -67,9 +68,9 @@ void CharCreateLevel::CreateUI()
     professionDropdown_->AddItem(CreateDropdownItem("Elementarist", "E"));
 
     sexDropdown_->GetPopup()->SetWidth(sexDropdown_->GetWidth());
-    sexDropdown_->AddItem(CreateDropdownItem("(Select Gender)", static_cast<uint32_t>(PlayerSexUnknown)));
-    sexDropdown_->AddItem(CreateDropdownItem("Female", static_cast<uint32_t>(PlayerSexFemale)));
-    sexDropdown_->AddItem(CreateDropdownItem("Male", static_cast<uint32_t>(PlayerSexMale)));
+    sexDropdown_->AddItem(CreateDropdownItem("(Select Gender)", static_cast<uint32_t>(AB::Entities::CharacterSexUnknown)));
+    sexDropdown_->AddItem(CreateDropdownItem("Female", static_cast<uint32_t>(AB::Entities::CharacterSexFemale)));
+    sexDropdown_->AddItem(CreateDropdownItem("Male", static_cast<uint32_t>(AB::Entities::CharacterSexMale)));
 
     nameEdit_->SetFocus(true);
 }
@@ -123,14 +124,14 @@ void CharCreateLevel::DoCreateCharacter()
 
     Text* sexTxt = dynamic_cast<Text*>(sexDropdown_->GetSelectedItem());
     uint32_t sex = sexTxt->GetVar("Int Value").GetInt();
-    if (sex == 0 || sex > PlayerSexMale)
+    if (sex == 0 || sex > AB::Entities::CharacterSexMale)
     {
         ShowError("Please select the gender of your character.");
         return;
     }
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-    client->CreatePlayer(name, prof, static_cast<PlayerSex>(sex), true);
+    client->CreatePlayer(name, prof, static_cast<AB::Entities::CharacterSex>(sex), true);
 }
 
 void CharCreateLevel::DoCancel()

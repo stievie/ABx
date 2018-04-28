@@ -14,10 +14,3 @@ struct Quat
     float z;
     float w;
 };
-
-enum PlayerSex : uint8_t
-{
-    PlayerSexUnknown = 0,
-    PlayerSexFemale,
-    PlayerSexMale
-};

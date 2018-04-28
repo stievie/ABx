@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stdint.h>
-#include <string>
+#include <AB/Entities/Entity.h>
 //include inheritance extension
 //this header contains two extensions, that specifies inheritance type of base class
 //  BaseClass - normal inheritance
@@ -9,23 +8,32 @@
 //in order for virtual inheritance to work, InheritanceContext is required.
 //it can be created either internally (via configuration) or externally (pointer to context).
 #include <bitsery/ext/inheritance.h>
+#include <AB/Entities/Limits.h>
 
 using bitsery::ext::BaseClass;
 
 namespace AB {
 namespace Entities {
 
-/// Base class for entities.
-struct Entity
+constexpr auto KEY_GAMELIST = "game_list";
+
+struct GameList : Entity
 {
+    static constexpr const char* KEY()
+    {
+        return KEY_GAMELIST;
+    }
     template<typename S>
     void serialize(S& s)
     {
-        // UUID must be the first serialized
-        s.text1b(uuid, Limits::MAX_UUID);
+        s.ext(*this, BaseClass<Entity>{});
+        s.container(gameUuids, Limits::MAX_GAMES, [&s](std::string& c)
+        {
+            s.text1b(c, Limits::MAX_UUID);
+        });
     }
 
-    std::string uuid = "00000000-0000-0000-0000-000000000000";
+    std::vector<std::string> gameUuids;
 };
 
 }

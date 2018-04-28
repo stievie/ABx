@@ -27,7 +27,7 @@ Client::~Client()
     Connection::Terminate();
 }
 
-void Client::OnGetCharlist(const AB::Data::CharacterList& chars)
+void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
 {
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
@@ -43,7 +43,7 @@ void Client::OnGetCharlist(const AB::Data::CharacterList& chars)
     GetGameList();
 }
 
-void Client::OnGetGamelist(const AB::Data::GameList& games)
+void Client::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
 {
     if (receiver_)
         receiver_->OnGetGamelist(games);
@@ -181,7 +181,7 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
 }
 
 void Client::CreatePlayer(const std::string& account, const std::string& password,
-    const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp)
+    const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
     if (state_ != StateSelectChar)
         return;

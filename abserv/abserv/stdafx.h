@@ -52,6 +52,10 @@
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
 
+#include <uuid.h>
+
+#include "Application.h"
+
 // Used by the profiler to generate a unique identifier
 #define CONCAT(a, b) a ## b
 #define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)

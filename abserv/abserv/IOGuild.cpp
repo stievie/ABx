@@ -3,6 +3,6 @@
 
 #include "DebugNew.h"
 
-namespace DB {
+namespace IO {
 
 }

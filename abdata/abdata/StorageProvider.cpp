@@ -5,6 +5,7 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Game.h>
+#include <AB/Entities/GameList.h>
 #include <AB/Entities/IpBan.h>
 #include <AB/Entities/AccountBan.h>
 #include <AB/Entities/Ban.h>
@@ -26,12 +27,14 @@
 #include "DBFriendList.h"
 #include "DBAccountKey.h"
 #include "DBAccountKeyAccounts.h"
+#include "DBGameList.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
 static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::Account::KEY());
 static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::Character::KEY());
 static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::Game::KEY());
+static constexpr size_t KEY_GAMELIST_HASH = Utils::StringHash(AB::Entities::GameList::KEY());
 static constexpr size_t KEY_IPBANS_HASH = Utils::StringHash(AB::Entities::IpBan::KEY());
 static constexpr size_t KEY_ACCOUNTBANS_HASH = Utils::StringHash(AB::Entities::AccountBan::KEY());
 static constexpr size_t KEY_BANS_HASH = Utils::StringHash(AB::Entities::Ban::KEY());
@@ -335,7 +338,7 @@ void StorageProvider::FlushCache()
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         return (current.second.first.modified || !current.second.first.created) &&
-            !!current.second.first.deleted;
+            !current.second.first.deleted;
     })) != cache_.end())
     {
         ++written;
@@ -435,6 +438,8 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id, *data);
     case KEY_GAMES_HASH:
         return LoadFromDB<DB::DBGame, AB::Entities::Game>(id, *data);
+    case KEY_GAMELIST_HASH:
+        return LoadFromDB<DB::DBGameList, AB::Entities::GameList>(id, *data);
     case KEY_IPBANS_HASH:
         return LoadFromDB<DB::DBIpBan, AB::Entities::IpBan>(id, *data);
     case KEY_ACCOUNTBANS_HASH:
@@ -491,6 +496,9 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_GAMES_HASH:
         succ = FlushRecord<DB::DBGame, AB::Entities::Game>(data);
         break;
+    case KEY_GAMELIST_HASH:
+        succ = FlushRecord<DB::DBGameList, AB::Entities::GameList>(data);
+        break;
     case KEY_IPBANS_HASH:
         succ = FlushRecord<DB::DBIpBan, AB::Entities::IpBan>(data);
         break;
@@ -535,6 +543,8 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBCharacter, AB::Entities::Character>(data);
     case KEY_GAMES_HASH:
         return ExistsInDB<DB::DBGame, AB::Entities::Game>(data);
+    case KEY_GAMELIST_HASH:
+        return ExistsInDB<DB::DBGameList, AB::Entities::GameList>(data);
     case KEY_IPBANS_HASH:
         return ExistsInDB<DB::DBIpBan, AB::Entities::IpBan>(data);
     case KEY_ACCOUNTBANS_HASH:

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Protocol.h"
-#include <AB/AccountData.h>
-#include <AB/GameData.h>
+#include <AB/Entities/Character.h>
+#include <AB/Entities/Game.h>
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
 #include "Structs.h"
@@ -16,8 +16,8 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
-    typedef std::function<void(const AB::Data::CharacterList& chars)> CharlistCallback;
-    typedef std::function<void(const AB::Data::GameList& chars)> GamelistCallback;
+    typedef std::function<void(const AB::Entities::CharacterList& chars)> CharlistCallback;
+    typedef std::function<void(const std::vector<AB::Entities::Game>& chars)> GamelistCallback;
     typedef std::function<void()> CreateAccountCallback;
     typedef std::function<void(const std::string& name, const std::string& map)> CreatePlayerCallback;
 private:
@@ -38,7 +38,7 @@ private:
     std::string accKey_;
     std::string charName_;
     std::string prof_;
-    PlayerSex sex_;
+    AB::Entities::CharacterSex sex_;
     bool isPvp_;
     bool firstRecv_;
     CharlistCallback charlistCallback_;
@@ -66,7 +66,7 @@ public:
         const CreateAccountCallback& callback);
     void CreatePlayer(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,
-        const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp,
+        const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
     void GetGameList(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,

@@ -31,7 +31,6 @@ protected:
     bool connected_;
 public:
     virtual ~Database() {}
-    static Database* Instance();
 
     virtual bool GetParam(DBParam param) {
         AB_UNUSED(param);

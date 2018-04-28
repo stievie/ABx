@@ -1,8 +1,8 @@
 #pragma once
 
-#include <AB/AccountData.h>
+#include <AB/Entities/Account.h>
 
-namespace DB {
+namespace IO {
 
 class IOAccount
 {
@@ -31,9 +31,9 @@ public:
         const std::string& email, const std::string& accKey);
     static Result AddAccountKey(const std::string& name, const std::string& pass,
         const std::string& accKey);
-    static bool LoginServerAuth(const std::string& name, const std::string& pass, AB::Data::AccountData& account);
-    static uint32_t GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName);
-    static bool Save(const AB::Data::AccountData& account);
+    static bool LoginServerAuth(const std::string& name, const std::string& pass, AB::Entities::Account& account);
+    static uuids::uuid GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName);
+    static bool Save(const AB::Entities::Account& account);
 };
 
 }

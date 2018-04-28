@@ -2,15 +2,6 @@
 #include "Database.h"
 #include "ConfigManager.h"
 #include "Logger.h"
-#ifdef USE_MYSQL
-#include "DatabaseMysql.h"
-#endif // USE_MYSQL
-#ifdef USE_PGSQL
-#include "DatabasePgsql.h"
-#endif // USE_PGSQL
-#ifdef USE_ODBC
-#include "DatabaseOdbc.h"
-#endif // USE_ODBC
 #include "DatabaseSqlite.h"
 
 #include "DebugNew.h"
@@ -18,38 +9,6 @@
 namespace DB {
 
 std::recursive_mutex DBQuery::lock_;
-std::unique_ptr<Database> Database::instance_ = nullptr;
-
-Database* Database::Instance()
-{
-    if (!instance_)
-    {
-        const std::string& driver = ConfigManager::Instance[ConfigManager::DBDriver].GetString();
-#ifdef USE_MYSQL
-        if (driver.compare("mysql") == 0)
-            instance_ = std::make_unique<DatabaseMysql>();
-#endif
-#ifdef USE_PGSQL
-        if (driver.compare("pgsql") == 0)
-            instance_ = std::make_unique<DatabasePgsql>();
-#endif
-#ifdef USE_ODBC
-        if (driver.compare("odbc") == 0)
-            instance_ = std::make_unique<DatabaseOdbc>();
-#endif
-        if (driver.compare("sqlite") == 0)
-        {
-            const std::string& dbFile = ConfigManager::Instance[ConfigManager::DBFile].GetString();
-            instance_ = std::make_unique<DatabaseSqlite>(dbFile);
-        }
-        if (!instance_)
-        {
-            LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;
-            return nullptr;
-        }
-    }
-    return instance_.get();
-}
 
 bool Database::ExecuteQuery(const std::string& query)
 {

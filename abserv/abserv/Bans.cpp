@@ -4,6 +4,9 @@
 #include "ConfigManager.h"
 #include "Database.h"
 #include "Utils.h"
+#include <AB/Entities/IpBan.h>
+#include <AB/Entities/AccountBan.h>
+#include "DataClient.h"
 
 #include "DebugNew.h"
 
@@ -59,6 +62,21 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
     if (clientIP == 0)
         return false;
 
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::IpBan ban;
+    ban.ip = clientIP;
+    ban.mask = mask;
+    if (!client->Read(ban))
+        return false;
+    AB::Entities::Ban _ban;
+    _ban.uuid = ban.banUuid;
+    if (!client->Read(_ban))
+        return false;
+    if (!_ban.active)
+        return false;
+    return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
+
+#if 0
     DB::Database* db = DB::Database::Instance();
     DB::DBQuery query;
     query << "SELECT COUNT(`ip_bans`.`ban_id`) AS `count` FROM `ip_bans` "
@@ -70,6 +88,7 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
         return false;
 
     return result->GetInt("count") > 0;
+#endif
 }
 
 bool BanManager::IsIpDisabled(uint32_t clientIP)
@@ -96,8 +115,22 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
     return false;
 }
 
-bool BanManager::IsAccountBanned(uint32_t accountId)
+bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::AccountBan ban;
+    ban.accountUuid = accountUuid.to_string();
+    if (!client->Read(ban))
+        return false;
+    AB::Entities::Ban _ban;
+    _ban.uuid = ban.banUuid;
+    if (!client->Read(_ban))
+        return false;
+    if (!_ban.active)
+        return false;
+    return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
+
+#if 0
     DB::Database* db = DB::Database::Instance();
     DB::DBQuery query;
     query <<
@@ -111,6 +144,7 @@ bool BanManager::IsAccountBanned(uint32_t accountId)
         return false;
 
     return result->GetInt("count") > 0;
+#endif
 }
 
 void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
@@ -146,12 +180,31 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
     it->second.lastLoginTime = currentTime;
 }
 
-bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, uint32_t adminId,
-    const std::string& comment, BanReason reason /* = ReasonOther */)
+bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std::string& adminUuid,
+    const std::string& comment, AB::Entities::BanReason reason /* = AB::Entities::BanReasonOther */)
 {
     if (ip == 0 || mask == 0)
         return false;
 
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Ban ban;
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    ban.uuid = guid.to_string();
+    ban.expires = expires;
+    ban.added = (Utils::AbTick() / 1000);
+    ban.reason = reason;
+    ban.adminUuid = adminUuid;
+    ban.comment = comment;
+    if (!client->Create(ban))
+        return false;
+
+    AB::Entities::IpBan ipBan;
+    ipBan.banUuid = guid.to_string();
+    ipBan.ip = ip;
+    ipBan.mask = mask;
+    return client->Create(ipBan);
+
+#if 0
     DB::Database* db = DB::Database::Instance();
     DB::DBQuery query;
     DB::DBInsert stmt(db);
@@ -176,14 +229,33 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, uint32_t 
         return false;
 
     return true;
+#endif
 }
 
-bool BanManager::AddAccountBan(uint32_t accountId, int32_t expires, uint32_t adminId,
-    const std::string & comment, BanReason reason /* = ReasonOther */)
+bool BanManager::AddAccountBan(const std::string& accountUuid, int32_t expires, const std::string& adminUuid,
+    const std::string & comment, AB::Entities::BanReason reason /* = AB::Entities::BanReasonOther */)
 {
-    if (accountId == 0)
+    if (accountUuid.empty() || uuids::uuid(accountUuid).nil())
         return false;
 
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Ban ban;
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    ban.uuid = guid.to_string();
+    ban.expires = expires;
+    ban.added = (Utils::AbTick() / 1000);
+    ban.reason = reason;
+    ban.adminUuid = adminUuid;
+    ban.comment = comment;
+    if (!client->Create(ban))
+        return false;
+
+    AB::Entities::AccountBan accBan;
+    accBan.banUuid = guid.to_string();
+    accBan.accountUuid = accountUuid;
+    return client->Create(accBan);
+
+#if 0
     DB::Database* db = DB::Database::Instance();
     DB::DBQuery query;
     DB::DBInsert stmt(db);
@@ -208,6 +280,7 @@ bool BanManager::AddAccountBan(uint32_t accountId, int32_t expires, uint32_t adm
         return false;
 
     return true;
+#endif
 }
 
 }

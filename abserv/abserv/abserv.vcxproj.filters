@@ -111,9 +111,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DatabaseMysql.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -162,9 +159,6 @@
     <ClInclude Include="Npc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DatabasePgsql.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="NavigationMesh.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -193,12 +187,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Transformation.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="DatabaseSqlite.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="DatabaseOdbc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="BoundingBox.h">
@@ -262,6 +250,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Profiler.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DataClient.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DatabaseSqlite.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -350,9 +344,6 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="DatabaseMysql.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="IOAccount.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -398,9 +389,6 @@
     <ClCompile Include="Npc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="DatabasePgsql.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="NavigationMesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -429,9 +417,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseSqlite.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DatabaseOdbc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
@@ -480,6 +465,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Shape.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DataClient.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

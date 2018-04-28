@@ -17,8 +17,8 @@ bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
     Database* db = Database::Instance();
     std::ostringstream query;
     query << "INSERT INTO `account_account_keys` (`account_uuid`, `account_key_uuid`) VALUES ( ";
-    query << db->EscapeString(ak.uuid) << ",";
-    query << db->EscapeString(ak.accountUuid);
+    query << db->EscapeString(ak.accountUuid) << ",";
+    query << db->EscapeString(ak.uuid);
     query << ")";
 
     DBTransaction transaction(db);

@@ -272,14 +272,16 @@ void Game::Load(const std::string& mapName)
 {
     // Dispatcher Thread
     map_ = std::make_shared<Map>(shared_from_this());
-    if (!DB::IOGame::LoadGameByName(this, mapName))
+    if (!IO::IOGame::LoadGameByName(this, mapName))
     {
         LOG_ERROR << "Error loading game with name " << mapName << std::endl;
         return;
     }
+    map_->data_.name = data_.name;
+    map_->data_.directory = data_.directory;
 
     // Must be executed here because the player doesn't wait to fully load the game to join
-    std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.scriptFile);
+    std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.script);
     // Execute initialization code if any
     if (!luaState_.dofile(luaFile.c_str()))
         return;

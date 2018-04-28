@@ -105,6 +105,9 @@
     <ClInclude Include="DBAccountKeyAccounts.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBGameList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -186,6 +189,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBAccountKeyAccounts.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBGameList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

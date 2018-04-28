@@ -17,7 +17,7 @@
 
 namespace Net {
 
-void ProtocolGame::Login(const std::string& name, uint32_t accountId, const std::string& map)
+void ProtocolGame::Login(const std::string& name, const uuids::uuid& accountUuid, const std::string& map)
 {
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByName(name);
     if (foundPlayer)
@@ -27,19 +27,19 @@ void ProtocolGame::Login(const std::string& name, uint32_t accountId, const std:
     }
 
     player_ = Game::PlayerManager::Instance.CreatePlayer(name, GetThis());
-    if (!DB::IOPlayer::PreloadPlayer(player_.get(), name))
+    if (!IO::IOPlayer::PreloadPlayer(player_.get(), name))
     {
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
 
-    if (Auth::BanManager::Instance.IsAccountBanned(accountId))
+    if (Auth::BanManager::Instance.IsAccountBanned(accountUuid))
     {
         DisconnectClient(AB::Errors::AccountBanned);
         return;
     }
 
-    if (!DB::IOPlayer::LoadPlayerByName(player_.get(), name))
+    if (!IO::IOPlayer::LoadPlayerByName(player_.get(), name))
     {
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
@@ -56,7 +56,7 @@ void ProtocolGame::Logout()
         return;
 
     player_->logoutTime_ = Utils::AbTick();
-    DB::IOPlayer::SavePlayer(player_.get());
+    IO::IOPlayer::SavePlayer(player_.get());
     Game::PlayerManager::Instance.RemovePlayer(player_->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
@@ -203,8 +203,8 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    uint32_t accountId = DB::IOAccount::GameWorldAuth(accountName, password, characterName);
-    if (accountId == 0)
+    uuids::uuid accountId = IO::IOAccount::GameWorldAuth(accountName, password, characterName);
+    if (accountId.nil())
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;

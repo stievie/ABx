@@ -27,7 +27,7 @@ public:
 
     std::shared_ptr<Player> GetPlayerByName(const std::string& name);
     std::shared_ptr<Player> GetPlayerById(uint32_t id);
-    std::shared_ptr<Player> GetPlayerByAccountId(uint32_t id);
+    std::shared_ptr<Player> GetPlayerByAccountId(const std::string& uuid);
     /// Get player ID by name
     uint32_t GetPlayerId(const std::string& name);
     std::shared_ptr<Player> CreatePlayer(const std::string& name, std::shared_ptr<Net::ProtocolGame> client);

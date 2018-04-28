@@ -1,12 +1,18 @@
 #include "stdafx.h"
 #include "IOGame.h"
+#include "DataClient.h"
+#include <AB/Entities/GameList.h>
 
 #include "DebugNew.h"
 
-namespace DB {
+namespace IO {
 
-bool IOGame::LoadGame(Game::Game* game, std::shared_ptr<DBResult> result)
+bool IOGame::LoadGame(AB::Entities::Game& game)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    return client->Read(game);
+
+#if 0
     if (!result)
         return false;
 
@@ -17,10 +23,15 @@ bool IOGame::LoadGame(Game::Game* game, std::shared_ptr<DBResult> result)
     game->data_.type = static_cast<AB::Data::GameType>(result->GetUInt("id"));
 
     return true;
+#endif
 }
 
 bool IOGame::LoadGameByName(Game::Game* game, const std::string& name)
 {
+    game->data_.name = name;
+    return LoadGame(game->data_);
+
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -28,10 +39,15 @@ bool IOGame::LoadGameByName(Game::Game* game, const std::string& name)
         db->EscapeString(name);
 
     return IOGame::LoadGame(game, db->StoreQuery(query.str()));
+#endif
 }
 
-bool IOGame::LoadGameById(Game::Game* game, uint32_t gameId)
+bool IOGame::LoadGameByUuid(Game::Game* game, const std::string& uuid)
 {
+    game->data_.uuid = uuid;
+    return LoadGame(game->data_);
+
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -39,10 +55,28 @@ bool IOGame::LoadGameById(Game::Game* game, uint32_t gameId)
         gameId;
 
     return IOGame::LoadGame(game, db->StoreQuery(query.str()));
+#endif
 }
 
 std::string IOGame::GetLandingGame()
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::GameList gl;
+    if (!client->Read(gl))
+        return "";
+    if (gl.gameUuids.size() == 0)
+        return "";
+
+    for (const std::string& uuid : gl.gameUuids)
+    {
+        AB::Entities::Game g;
+        g.uuid = uuid;
+        if (client->Read(g) && g.landing)
+            return g.name;
+    }
+    return "";
+
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -51,10 +85,19 @@ std::string IOGame::GetLandingGame()
     if (result)
         return result->GetString("name");
     return "";
+#endif
 }
 
-AB::Data::GameType IOGame::GetGameType(const std::string& mapName)
+AB::Entities::GameType IOGame::GetGameType(const std::string& mapName)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Game g;
+    g.name = mapName;
+    if (!client->Read(g))
+        return AB::Entities::GameTypeUnknown;
+    return g.type;
+
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -63,10 +106,31 @@ AB::Data::GameType IOGame::GetGameType(const std::string& mapName)
     if (result)
         return static_cast<AB::Data::GameType>(result->GetUInt("type"));
     return AB::Data::GameType::GameTypeUnknown;
+#endif
 }
 
-std::vector<AB::Data::GameData> IOGame::GetGameList(AB::Data::GameType type)
+std::vector<AB::Entities::Game> IOGame::GetGameList()
 {
+    std::vector<AB::Entities::Game> result;
+
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::GameList gl;
+    if (!client->Read(gl))
+        return result;
+
+    for (const std::string& uuid : gl.gameUuids)
+    {
+        AB::Entities::Game g;
+        g.uuid = uuid;
+        if (!client->Read(g))
+            continue;
+        result.push_back(g);
+    }
+
+    if (result.size() == 0)
+        LOG_WARNING << "No Games found!" << std::endl;
+    return result;
+#if 0
     Database* db = Database::Instance();
 
     std::vector<AB::Data::GameData> result;
@@ -87,6 +151,7 @@ std::vector<AB::Data::GameData> IOGame::GetGameList(AB::Data::GameType type)
         result.push_back(game);
     }
     return result;
+#endif
 }
 
 }

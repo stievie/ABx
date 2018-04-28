@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ProtocolLogin.h"
 #include <AB/ProtocolCodes.h>
+#include <AB/Entities/Character.h>
 
 #include "DebugNew.h"
 
@@ -48,7 +49,7 @@ void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
 
 void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     const std::string& account, const std::string& password,
-    const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp,
+    const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp,
     const CreatePlayerCallback& callback)
 {
     host_ = host;
@@ -143,17 +144,17 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             gameHost_ = host;
         gamePort_ = message->Get<uint16_t>();
         /* int charSlots = */ message->Get<uint16_t>();
-        AB::Data::CharacterList chars;
+        AB::Entities::CharacterList chars;
         int count = message->Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {
-            AB::Data::CharacterData cData;
-            cData.id = message->Get<uint32_t>();
+            AB::Entities::Character cData;
+            cData.uuid = message->GetStringEncrypted();
             cData.level = message->Get<uint16_t>();
             cData.name = message->GetStringEncrypted();
-            cData.prof = message->GetStringEncrypted();
-            cData.prof2 = message->GetStringEncrypted();
-            cData.sex = static_cast<AB::Data::CreatureSex>(message->Get<uint8_t>());
+            cData.profession = message->GetStringEncrypted();
+            cData.profession2 = message->GetStringEncrypted();
+            cData.sex = static_cast<AB::Entities::CharacterSex>(message->Get<uint8_t>());
             cData.lastMap = message->GetStringEncrypted();
             chars.push_back(cData);
         }
@@ -163,16 +164,15 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     }
     case AB::LoginProtocol::GameList:
     {
-        AB::Data::GameList games;
+        std::vector<AB::Entities::Game> games;
         int count = message->Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {
-            games.push_back(
-            {
-                message->Get<uint32_t>(),      // ID
-                message->GetStringEncrypted(), // Name
-                static_cast<AB::Data::GameType>(message->Get<uint8_t>())        // Type
-            });
+            AB::Entities::Game g;
+            g.uuid = message->GetStringEncrypted();
+            g.name = message->GetStringEncrypted();
+            g.type = static_cast<AB::Entities::GameType>(message->Get<uint8_t>());
+            games.push_back(g);
         }
         if (gamelistCallback_)
             gamelistCallback_(games);

@@ -8,6 +8,7 @@ namespace AB {
 namespace Entities {
 
 constexpr auto KEY_ACCOUNTS = "accounts";
+static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
 
 enum AccountType : uint8_t
 {
@@ -67,7 +68,7 @@ struct Account : Entity
     std::string name;
     std::string password;
     std::string email;
-    uint32_t charSlots = 0;
+    uint32_t charSlots = ACCOUNT_DEF_CHARSLOTS;
     /// Last or current character
     std::string currentCharacterUuid;
     std::vector<std::string> characterUuids;

@@ -3,12 +3,11 @@
 #include <system_error>
 #include <stdint.h>
 #include <string>
-#include <AB/AccountData.h>
-#include <AB/CharacterData.h>
-#include <AB/GameData.h>
 #include "PropStream.h"
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
+#include <AB/Entities/Character.h>
+#include <AB/Entities/Game.h>
 
 namespace Client {
 
@@ -18,8 +17,8 @@ public:
     virtual void OnNetworkError(const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;
 
-    virtual void OnGetCharlist(const AB::Data::CharacterList& chars) = 0;
-    virtual void OnGetGamelist(const AB::Data::GameList& games) = 0;
+    virtual void OnGetCharlist(const AB::Entities::CharacterList& chars) = 0;
+    virtual void OnGetGamelist(const std::vector<AB::Entities::Game>& games) = 0;
     virtual void OnAccountCreated() = 0;
     virtual void OnPlayerCreated(const std::string& name, const std::string& map) = 0;
 

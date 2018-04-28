@@ -140,7 +140,7 @@ void FwClient::CreateAccount(const String& name, const String& pass, const Strin
     }
 }
 
-void FwClient::CreatePlayer(const String& name, const String& prof, PlayerSex sex, bool isPvp)
+void FwClient::CreatePlayer(const String& name, const String& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
     if (loggedIn_)
     {
@@ -214,7 +214,7 @@ void FwClient::FollowObject(uint32_t objectId)
         client_.FollowObject(objectId);
 }
 
-void FwClient::OnGetCharlist(const AB::Data::CharacterList& chars)
+void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
 {
     levelReady_ = false;
     characters_ = chars;
@@ -224,7 +224,7 @@ void FwClient::OnGetCharlist(const AB::Data::CharacterList& chars)
     SendEvent(AbEvents::E_SET_LEVEL, eData);
 }
 
-void FwClient::OnGetGamelist(const AB::Data::GameList& games)
+void FwClient::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
 {
     games_ = games;
 }

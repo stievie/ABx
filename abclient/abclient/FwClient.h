@@ -2,11 +2,9 @@
 
 #include "Client.h"
 #include "Receiver.h"
-#include <AB/AccountData.h>
-#include <AB/CharacterData.h>
-#include <AB/GameData.h>
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
+#include <AB/Entities/Character.h>
 
 struct EventItem
 {
@@ -25,8 +23,8 @@ private:
     uint32_t playerId_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
-    AB::Data::CharacterList characters_;
-    AB::Data::GameList games_;
+    AB::Entities::CharacterList characters_;
+    std::vector<AB::Entities::Game> games_;
     String currentCharacter_;
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -55,7 +53,7 @@ public:
     void Stop();
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
-    void CreatePlayer(const String& name, const String& prof, PlayerSex sex, bool isPvp);
+    void CreatePlayer(const String& name, const String& prof, AB::Entities::CharacterSex sex, bool isPvp);
     void EnterWorld(const String& charName, const String& map);
     void ChangeWorld(const String& map);
     void Logout();
@@ -72,8 +70,8 @@ public:
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
 
-    void OnGetCharlist(const AB::Data::CharacterList& chars) override;
-    void OnGetGamelist(const AB::Data::GameList& games) override;
+    void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
+    void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
 
@@ -100,11 +98,11 @@ public:
     {
         return currentCharacter_;
     }
-    const AB::Data::CharacterList& GetCharacters() const
+    const AB::Entities::CharacterList& GetCharacters() const
     {
         return characters_;
     }
-    const AB::Data::GameList& GetGames() const
+    const std::vector<AB::Entities::Game>& GetGames() const
     {
         return games_;
     }

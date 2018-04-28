@@ -23,13 +23,8 @@ public:
         LogDir,
         DataDir,
 
-        DBDriver,
-        DBHost,
-        DBPort,
-        DBUser,
-        DBPass,
-        DBName,
-        DBFile,
+        DataServerHost,
+        DataServerPort,
 
         StatusQueryTimeout,
         MaxPacketsPerSecond,

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "CharSelectLevel.h"
 #include "FwClient.h"
-#include <AB/AccountData.h>
-#include <AB/CharacterData.h>
 #include "AbEvents.h"
 
 #include <Urho3D/DebugNew.h>
@@ -59,7 +57,7 @@ void CharSelectLevel::CreateUI()
     window->SetStyleAuto();
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-    const AB::Data::CharacterList& chars = client->GetCharacters();
+    const AB::Entities::CharacterList& chars = client->GetCharacters();
     int i = 0;
     for (const auto& ch : chars)
     {
@@ -75,10 +73,10 @@ void CharSelectLevel::CreateUI()
             Text* t = new Text(context_);
             t->SetAlignment(HA_CENTER, VA_CENTER);
             t->SetName("CharacterName");
-            String text = String(ch.prof.c_str());
-            if (!ch.prof2.empty())
-                text += "/" + String(ch.prof2.c_str());
-            text += String(ch.level);
+            String text = String(ch.profession.c_str());
+            if (!ch.profession2.empty())
+                text += "/" + String(ch.profession2.c_str());
+            text += String((int)ch.level);
             text += " " + String(ch.name.c_str());
             t->SetText(text);
             t->SetStyle("Text");

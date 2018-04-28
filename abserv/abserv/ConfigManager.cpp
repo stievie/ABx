@@ -24,6 +24,9 @@ ConfigManager::ConfigManager() :
     config_[Key::AdminEnabled] = false;
     config_[Key::AdminLocalhostOnly] = true;
     config_[Key::AdminRequireEncryption] = true;
+
+    config_[Key::DataServerHost] = "localhost";
+    config_[Key::DataServerPort] = 2770;
 }
 
 std::string ConfigManager::GetGlobal(const std::string& ident, const std::string& default)
@@ -107,13 +110,8 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::GamePort] = (int)GetGlobal("game_port", 0);
     config_[Key::GameHost] = GetGlobal("game_host", "");
 
-    config_[Key::DBDriver] = GetGlobal("db_driver", "mysql");
-    config_[Key::DBHost] = GetGlobal("db_host", "localhost");
-    config_[Key::DBPort] = (int)GetGlobal("db_port", 3306);
-    config_[Key::DBUser] = GetGlobal("db_user", "root");
-    config_[Key::DBPass] = GetGlobal("db_pass", "");
-    config_[Key::DBName] = GetGlobal("db_name", "forgottenwars");
-    config_[Key::DBFile] = GetGlobal("db_file", "");
+    config_[Key::DataServerHost] = GetGlobal("data_host", "localhost");
+    config_[Key::DataServerPort] = (int)GetGlobal("data_port", 2770);
 
     config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
     config_[Key::MaxPacketsPerSecond] = GetGlobal("max_packets_per_second", 25);

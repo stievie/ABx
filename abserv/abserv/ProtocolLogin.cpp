@@ -4,7 +4,6 @@
 #include "Bans.h"
 #include "Dispatcher.h"
 #include <functional>
-#include <AB/AccountData.h>
 #include "IOAccount.h"
 #include "ConfigManager.h"
 #include <AB/ProtocolCodes.h>
@@ -13,6 +12,8 @@
 #include "IOPlayer.h"
 #include "IOGame.h"
 #include "GameManager.h"
+#include <AB/Entities/Account.h>
+#include <AB/Entities/Game.h>
 
 #include "DebugNew.h"
 
@@ -131,7 +132,7 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
-    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::toupper);
+    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::tolower);
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
@@ -169,8 +170,8 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
 
-    AB::Data::CreatureSex sex = static_cast<AB::Data::CreatureSex>(message.GetByte());
-    if (sex < AB::Data::CreatureSex::CreatureSexFemale || sex > AB::Data::CreatureSex::CreatureSexMale)
+    AB::Entities::CharacterSex sex = static_cast<AB::Entities::CharacterSex>(message.GetByte());
+    if (sex < AB::Entities::CharacterSex::CharacterSexFemale || sex > AB::Entities::CharacterSex::CharacterSexMale)
     {
         DisconnectClient(AB::Errors::InvalidPlayerSex);
         return;
@@ -213,8 +214,8 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    uint32_t charId = message.Get<uint32_t>();
-    if (charId == 0)
+    const std::string charUuid = message.GetStringEncrypted();
+    if (charUuid.empty() || uuids::uuid(charUuid).nil())
     {
         DisconnectClient(AB::Errors::InvalidCharacter);
         return;
@@ -225,7 +226,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::DeletePlayer, thisPtr,
             accountName, password,
-            charId
+            charUuid
         ))
     );
 }
@@ -250,7 +251,7 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
-    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::toupper);
+    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::tolower);
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
@@ -288,15 +289,15 @@ void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
 
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
-    AB::Data::AccountData account;
-    bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    AB::Entities::Account account;
+    bool res = IO::IOAccount::LoginServerAuth(accountName, password, account);
     if (!res)
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
-    const auto player = Game::PlayerManager::Instance.GetPlayerByAccountId(account.id_);
+    const auto player = Game::PlayerManager::Instance.GetPlayerByAccountId(account.uuid);
     if (player)
     {
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
@@ -312,15 +313,20 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     output->AddByte(AB::LoginProtocol::CharacterList);
     output->AddString(ConfigManager::Instance[ConfigManager::GameHost].GetString());
     output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));
-    output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots_));
-    output->Add<uint16_t>(static_cast<uint16_t>(account.characters_.size()));
-    for (const AB::Data::CharacterData& character : account.characters_)
+    output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots));
+    output->Add<uint16_t>(static_cast<uint16_t>(account.characterUuids.size()));
+    for (const std::string& characterUuid : account.characterUuids)
     {
-        output->Add<uint32_t>(character.id);
+        AB::Entities::Character character;
+        character.uuid = characterUuid;
+        if (!IO::IOPlayer::LoadCharacter(character))
+            continue;
+
+        output->AddStringEncrypted(character.uuid);
         output->Add<uint16_t>(character.level);
         output->AddStringEncrypted(character.name);
-        output->AddStringEncrypted(character.prof);
-        output->AddStringEncrypted(character.prof2);
+        output->AddStringEncrypted(character.profession);
+        output->AddStringEncrypted(character.profession2);
         output->AddByte(static_cast<uint8_t>(character.sex));
         output->AddStringEncrypted(character.lastMap);
     }
@@ -331,8 +337,8 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
 void ProtocolLogin::SendGameList(const std::string& accountName, const std::string& password)
 {
-    AB::Data::AccountData account;
-    bool res = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    AB::Entities::Account account;
+    bool res = IO::IOAccount::LoginServerAuth(accountName, password, account);
     if (!res)
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
@@ -341,13 +347,16 @@ void ProtocolLogin::SendGameList(const std::string& accountName, const std::stri
     }
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::LoginProtocol::GameList);
-    const std::vector<AB::Data::GameData> games = DB::IOGame::GetGameList(AB::Data::GameType::GameTypeOutpost);
+    const std::vector<AB::Entities::Game> games = IO::IOGame::GetGameList();
     output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
-    for (const AB::Data::GameData& game : games)
+    for (const AB::Entities::Game& game : games)
     {
-        output->Add<uint32_t>(game.id);
-        output->AddStringEncrypted(game.name);
-        output->AddByte(static_cast<uint8_t>(game.type));
+        if (game.type == AB::Entities::GameType::GameTypeOutpost)
+        {
+            output->AddStringEncrypted(game.uuid);
+            output->AddStringEncrypted(game.name);
+            output->AddByte(static_cast<uint8_t>(game.type));
+        }
     }
 
     Send(output);
@@ -357,11 +366,11 @@ void ProtocolLogin::SendGameList(const std::string& accountName, const std::stri
 void ProtocolLogin::CreateAccount(const std::string& accountName, const std::string& password,
     const std::string& email, const std::string& accKey)
 {
-    DB::IOAccount::Result res = DB::IOAccount::CreateAccount(accountName, password, email, accKey);
+    IO::IOAccount::Result res = IO::IOAccount::CreateAccount(accountName, password, email, accKey);
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == DB::IOAccount::ResultOK)
+    if (res == IO::IOAccount::ResultOK)
     {
         output->AddByte(AB::LoginProtocol::CreateAccountSuccess);
     }
@@ -370,10 +379,10 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
         output->AddByte(AB::LoginProtocol::CreateAccountError);
         switch (res)
         {
-        case DB::IOAccount::ResultNameExists:
+        case IO::IOAccount::ResultNameExists:
             output->AddByte(AB::Errors::AccountNameExists);
             break;
-        case DB::IOAccount::ResultInvalidAccountKey:
+        case IO::IOAccount::ResultInvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
         default:
@@ -387,10 +396,10 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 }
 
 void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::string& password,
-    std::string& name, const std::string& prof, AB::Data::CreatureSex sex, bool isPvp)
+    std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
-    AB::Data::AccountData account;
-    bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    AB::Entities::Account account;
+    bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
     if (!authRes)
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
@@ -398,30 +407,30 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
         return;
     }
 
-    DB::IOPlayer::CreatePlayerResult res = DB::IOPlayer::CreatePlayer(
-        account.id_, name, prof, sex, isPvp
+    IO::IOPlayer::CreatePlayerResult res = IO::IOPlayer::CreatePlayer(
+        account.uuid, name, prof, sex, isPvp
     );
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == DB::IOPlayer::ResultOK)
+    if (res == IO::IOPlayer::ResultOK)
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
         output->AddStringEncrypted(name);
-        output->AddStringEncrypted(DB::IOGame::GetLandingGame());
+        output->AddStringEncrypted(IO::IOGame::GetLandingGame());
     }
     else
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerError);
         switch (res)
         {
-        case DB::IOPlayer::ResultNameExists:
+        case IO::IOPlayer::ResultNameExists:
             output->AddByte(AB::Errors::PlayerNameExists);
             break;
-        case DB::IOPlayer::ResultInvalidAccount:
+        case IO::IOPlayer::ResultInvalidAccount:
             output->AddByte(AB::Errors::InvalidAccount);
             break;
-        case DB::IOPlayer::ResultNoMoreCharSlots:
+        case IO::IOPlayer::ResultNoMoreCharSlots:
             output->AddByte(AB::Errors::NoMoreCharSlots);
             break;
         default:
@@ -437,8 +446,8 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
 void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::string& password,
     const std::string& accKey)
 {
-    AB::Data::AccountData account;
-    bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    AB::Entities::Account account;
+    bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
     if (!authRes)
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
@@ -446,10 +455,10 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
         return;
     }
 
-    DB::IOAccount::Result res = DB::IOAccount::AddAccountKey(accountName, password, accKey);
+    IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountName, password, accKey);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == DB::IOAccount::ResultOK)
+    if (res == IO::IOAccount::ResultOK)
     {
         output->AddByte(AB::LoginProtocol::AddAccountKeySuccess);
     }
@@ -458,13 +467,13 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
         output->AddByte(AB::LoginProtocol::AddAccountKeyError);
         switch (res)
         {
-        case DB::IOAccount::ResultNameExists:
+        case IO::IOAccount::ResultNameExists:
             output->AddByte(AB::Errors::AccountNameExists);
             break;
-        case DB::IOAccount::ResultInvalidAccountKey:
+        case IO::IOAccount::ResultInvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
-        case DB::IOAccount::ResultInvalidAccount:
+        case IO::IOAccount::ResultInvalidAccount:
             output->AddByte(AB::Errors::InvalidAccount);
             break;
         default:
@@ -478,10 +487,10 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
 }
 
 void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::string& password,
-    uint32_t playerId)
+    const std::string& playerUuid)
 {
-    AB::Data::AccountData account;
-    bool authRes = DB::IOAccount::LoginServerAuth(accountName, password, account);
+    AB::Entities::Account account;
+    bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
     if (!authRes)
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
@@ -489,8 +498,8 @@ void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::stri
         return;
     }
 
-    bool res = DB::IOPlayer::DeletePlayer(
-        account.id_, playerId
+    bool res = IO::IOPlayer::DeletePlayer(
+        account.uuid, playerUuid
     );
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -506,7 +515,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::stri
     }
 
     LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << accountName << " deleted character with ID " << playerId << std::endl;
+        << accountName << " deleted character with UUID " << playerUuid << std::endl;
 
     Send(output);
     Disconnect();

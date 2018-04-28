@@ -1,6 +1,7 @@
 #pragma once
 
-#include <AB/AccountData.h>
+#include <AB/Entities/Account.h>
+#include <AB/Entities/Character.h>
 #include "Receiver.h"
 #include "PropStream.h"
 #include "Structs.h"
@@ -45,7 +46,7 @@ public:
     void CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& account, const std::string& password,
-        const std::string& charName, const std::string& prof, PlayerSex sex, bool isPvp);
+        const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp);
 
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charName, const std::string& map);
@@ -57,8 +58,8 @@ public:
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
 
-    void OnGetCharlist(const AB::Data::CharacterList& chars) override;
-    void OnGetGamelist(const AB::Data::GameList& games) override;
+    void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
+    void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
 

@@ -4,14 +4,64 @@
 #include <abcrypto.hpp>
 #include "IOGame.h"
 #include "Utils.h"
+#include "DataClient.h"
+#include <AB/Entities/AccountKey.h>
+#include <AB/Entities/AccountKeyAccounts.h>
+#include <AB/Entities/Character.h>
 
 #include "DebugNew.h"
 
-namespace DB {
+namespace IO {
 
 IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Account acc;
+    acc.name = name;
+    if (client->Exists(acc))
+        return ResultNameExists;
+
+    AB::Entities::AccountKey akey;
+    akey.uuid = accKey;
+    akey.status = AB::Entities::AccountKeyStatus::ReadyForUse;
+    akey.type = AB::Entities::AccountKeyType::KeyTypeAccount;
+    if (!client->Read(akey))
+        return ResultInvalidAccountKey;
+    if (akey.used + 1 > akey.total)
+        return ResultInvalidAccountKey;
+
+    // Create the account
+    char pwhash[61];
+    if (bcrypt_newhash(pass.c_str(), 10, pwhash, 61) != 0)
+    {
+        return ResultInternalError;
+    }
+    std::string passwordHash(pwhash, 61);
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    acc.uuid = guid.to_string();
+    acc.password = passwordHash;
+    acc.email = email;
+    acc.type = AB::Entities::AccountType::AccountTypeNormal;
+    acc.creation = Utils::AbTick();
+    if (!client->Create(acc))
+        return ResultInternalError;
+
+    // Bind account to key
+    AB::Entities::AccountKeyAccounts aka;
+    aka.uuid = akey.uuid;
+    aka.accountUuid = acc.uuid;
+    if (!client->Create(aka))
+        return ResultInternalError;
+
+    // Update account key
+    akey.used++;
+    if (!client->Update(akey))
+        return ResultInternalError;
+
+    return ResultOK;
+
+#if 0
     Database* db = Database::Instance();
     std::ostringstream query;
     std::shared_ptr<DBResult> result;
@@ -80,11 +130,56 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
         return ResultInternalError;
 
     return ResultOK;
+#endif
 }
 
 IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::string& pass,
     const std::string& accKey)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Account acc;
+    acc.name = name;
+    if (!client->Read(acc))
+        return ResultInvalidAccount;
+
+    if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
+        return ResultInvalidAccount;
+
+    AB::Entities::AccountKey ak;
+    ak.uuid = accKey;
+    if (!client->Read(ak))
+        return ResultInvalidAccountKey;
+    if (ak.used + 1 > ak.total)
+        return ResultInvalidAccountKey;
+
+    switch (ak.type)
+    {
+    case AB::Entities::KeyTypeCharSlot:
+    {
+        acc.charSlots++;
+        if (!client->Update(acc))
+            return ResultInternalError;
+        break;
+    }
+    default:
+        return ResultInvalidAccountKey;
+    }
+
+    // Bind account to key
+    AB::Entities::AccountKeyAccounts aka;
+    aka.uuid = ak.uuid;
+    aka.accountUuid = acc.uuid;
+    if (!client->Create(aka))
+        return ResultInternalError;
+
+    // Update account key
+    ak.used++;
+    if (!client->Update(ak))
+        return ResultInternalError;
+
+    return ResultOK;
+
+#if 0
     AB_UNUSED(pass);
 
     Database* db = Database::Instance();
@@ -153,10 +248,27 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
         return ResultInternalError;
 
     return ResultOK;
+#endif
 }
 
-bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, AB::Data::AccountData& account)
+bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, AB::Entities::Account& account)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    account.name = name;
+    if (!client->Read(account))
+        return false;
+
+    if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
+        return false;
+
+    const std::string landingGame = IOGame::GetLandingGame();
+
+    account.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
+    client->Update(account);
+
+    return true;
+
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -199,10 +311,28 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
     }
     account.loggedIn_ = true;
     return true;
+#endif
 }
 
-uint32_t IOAccount::GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName)
+uuids::uuid IOAccount::GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Account acc;
+    acc.name = name;
+    if (!client->Read(acc))
+        return uuids::uuid();
+    if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
+        return uuids::uuid();
+
+    AB::Entities::Character ch;
+    ch.name = charName;
+    if (!client->Read(ch))
+        return uuids::uuid();
+    if (ch.accountUuid.compare(acc.uuid) != 0)
+        return uuids::uuid();
+
+    return uuids::uuid(acc.uuid);
+#if 0
     Database* db = Database::Instance();
 
     std::ostringstream query;
@@ -230,17 +360,13 @@ uint32_t IOAccount::GameWorldAuth(const std::string& name, std::string& pass, co
         return 0;
 
     return accountId;
+#endif
 }
 
-bool IOAccount::Save(const AB::Data::AccountData& account)
+bool IOAccount::Save(const AB::Entities::Account& account)
 {
-    return true;
-    /*
-    Database* db = Database::Instance();
-    DBQuery query;
-    query << "UPDATE `accounts` SET `warnings` = " << account.warnings_ << " WHERE `id` = " << account.id_;
-    return db->ExecuteQuery(query);
-    */
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    return client->Update(account);
 }
 
 }
