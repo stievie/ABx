@@ -5,6 +5,7 @@
 #include "Random.h"
 #include "MailBox.h"
 #include "PlayerManager.h"
+#include "IOMail.h"
 
 #include "DebugNew.h"
 
@@ -38,6 +39,25 @@ void Player::Ping()
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::GamePong);
     client_->WriteToOutput(msg);
+}
+
+void Player::UpdateMailBox()
+{
+    if (!mailBox_ && !data_.accountUuid.empty())
+        mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
+    if (mailBox_)
+    {
+        mailBox_->Update();
+        if (mailBox_->GetNewMailCount() > 0)
+        {
+            Net::NetworkMessage msg;
+            msg.AddByte(AB::GameProtocol::ServerMessage);
+            msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
+            msg.AddString(GetName());
+            msg.AddString(std::to_string(mailBox_->GetNewMailCount()));
+            client_->WriteToOutput(msg);
+        }
+    }
 }
 
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
@@ -81,6 +101,37 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         nmsg.AddString(GetName());
         nmsg.AddString(std::to_string(age) + ":" + std::to_string(playTime));
         client_->WriteToOutput(nmsg);
+        break;
+    }
+    case AB::GameProtocol::CommandTypeMailSend:
+    {
+        size_t p = command.find(',');
+        if (p != std::string::npos)
+        {
+            size_t p2 = command.find(':');
+            std::string name = command.substr(0, p);
+            std::string subject;
+            std::string mailmsg;
+
+            if (p2 != std::string::npos)
+            {
+                subject = Utils::Trim(command.substr(p + 1, p2 - p - 1));
+                mailmsg = Utils::Trim(command.substr(p2 + 1, std::string::npos));
+            }
+            else
+                mailmsg = Utils::Trim(command.substr(p + 1, std::string::npos));
+
+            Net::NetworkMessage nmsg;
+            nmsg.AddByte(AB::GameProtocol::ServerMessage);
+            if (IO::IOMail::SendMailToPlayer(name, data_.accountUuid, GetName(), subject, mailmsg))
+                nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
+            else
+                nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
+            nmsg.AddString(name);
+            nmsg.AddString("");                // Data
+            client_->WriteToOutput(nmsg);
+        }
+
         break;
     }
     case AB::GameProtocol::CommandTypeChatWhisper:

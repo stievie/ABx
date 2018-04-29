@@ -21,7 +21,7 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT * FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
+    query << "SELECT `uuid` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;

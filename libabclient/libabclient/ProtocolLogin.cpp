@@ -150,7 +150,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         {
             AB::Entities::Character cData;
             cData.uuid = message->GetStringEncrypted();
-            cData.level = message->Get<uint16_t>();
+            cData.level = message->Get<uint8_t>();
             cData.name = message->GetStringEncrypted();
             cData.profession = message->GetStringEncrypted();
             cData.profession2 = message->GetStringEncrypted();

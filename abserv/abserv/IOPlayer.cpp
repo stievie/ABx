@@ -67,7 +67,9 @@ bool IOPlayer::LoadCharacter(AB::Entities::Character& player)
 bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
 {
     player->data_.name = name;
-    return LoadCharacter(player->data_);
+    if (!LoadCharacter(player->data_))
+        return false;
+    return true;
 #if 0
     Database* db = Database::Instance();
 
@@ -75,21 +77,6 @@ bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
     query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `onlinetime`, `creation`, `experience`, `skillpoints`, " <<
         "`sex` FROM `players` WHERE `name` = " <<
         db->EscapeString(name);
-
-    return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
-#endif
-}
-
-bool IOPlayer::LoadPlayerByUuid(Game::Player* player, const std::string& uuid)
-{
-    player->data_.uuid = uuid;
-    return LoadCharacter(player->data_);
-#if 0
-    Database* db = Database::Instance();
-
-    std::ostringstream query;
-    query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `onlinetime`, `creation`, `experience`, `skillpoints`, " <<
-        "`sex` FROM `players` WHERE `id` = " << playerId;
 
     return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
 #endif

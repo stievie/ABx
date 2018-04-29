@@ -126,6 +126,9 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeAge,                     // /age
     ServerMessageTypePlayerNotOnline,
     ServerMessageTypePlayerGotMessage,
+    ServerMessageTypeNewMail,
+    ServerMessageTypeMailSent,
+    ServerMessageTypeMailNotSent,
 };
 
 enum ChatMessageChannel : uint8_t
@@ -205,6 +208,9 @@ enum CommandTypes : uint8_t
     CommandTypeChatParty,            // /p <message>
     CommandTypeChatTrade,            // /trade <message>
     CommandTypeChatWhisper,          // /w <name>, <message>
+    // Mail
+    CommandTypeMailSend,             // /mail <name>, <message>
+
     // Other
     CommandTypeRoll,                 // /roll <number>
     // Info

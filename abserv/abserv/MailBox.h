@@ -1,28 +1,30 @@
 #pragma once
-namespace Game {
 
-struct Mail
-{
-    uint32_t id;
-    uint32_t fromPlayer;
-    uint32_t fromAccount;
-    uint32_t toPlayer;
-    uint32_t toAccount;
-    std::string subject;
-    std::string message;
-    bool isRead;
-};
+#include <AB/Entities/MailList.h>
+
+namespace Game {
 
 class MailBox
 {
 private:
-    uint32_t playerId_;
-    uint32_t accountId_;
+    std::string accountUuid_;
+    AB::Entities::MailList mailList_;
+    int oldMailCount_;
+    int newMail_;
 public:
-    MailBox(uint32_t playerId) :
-        playerId_(playerId)
+    MailBox(const std::string& accountUuid) :
+        accountUuid_(accountUuid),
+        oldMailCount_(0),
+        newMail_(0)
     {}
     ~MailBox();
+
+    void Update();
+    int GetNewMailCount() const
+    {
+        return newMail_;
+    }
+
 };
 
 }

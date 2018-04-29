@@ -15,12 +15,15 @@ bool DBMail::Create(AB::Entities::Mail& mail)
 
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "INSERT INTO `mails` (`uuid`, `from_account_uuid`, `to_account_uuid`, `subject`, `message`, `created`, `is_read`";
+    query << "INSERT INTO `mails` (`uuid`, `from_account_uuid`, `to_account_uuid`, `from_name`, `to_name`, " <<
+        "`subject`, `message`, `created`, `is_read`";
     query << ") VALUES (";
 
     query << db->EscapeString(mail.uuid) << ", ";
     query << db->EscapeString(mail.fromAccountUuid) << ", ";
     query << db->EscapeString(mail.toAccountUuid) << ", ";
+    query << db->EscapeString(mail.fromName) << ", ";
+    query << db->EscapeString(mail.toName) << ", ";
     query << db->EscapeString(mail.subject) << ", ";
     query << db->EscapeString(mail.message) << ", ";
     query << mail.created << ", ";
@@ -61,6 +64,8 @@ bool DBMail::Load(AB::Entities::Mail& mail)
     mail.uuid = result->GetString("uuid");
     mail.fromAccountUuid = result->GetString("from_account_uuid");
     mail.toAccountUuid = result->GetString("to_account_uuid");
+    mail.fromName = result->GetString("from_name");
+    mail.toName = result->GetString("to_name");
     mail.subject = result->GetString("subject");
     mail.message = result->GetString("message");
     mail.created = result->GetLong("created");
@@ -82,6 +87,8 @@ bool DBMail::Save(const AB::Entities::Mail& mail)
     query << "UPDATE `mails` SET ";
     query << " `from_account_uuid` = " << db->EscapeString(mail.fromAccountUuid) << ", ";
     query << " `to_account_uuid` = " << db->EscapeString(mail.toAccountUuid) << ", ";
+    query << " `from_name` = " << db->EscapeString(mail.fromName) << ", ";
+    query << " `to_name` = " << db->EscapeString(mail.toName) << ", ";
     query << " `subject` = " << db->EscapeString(mail.subject) << ", ";
     query << " `message` = " << db->EscapeString(mail.message) << ", ";
     query << " `created` = " << mail.created << ", ";

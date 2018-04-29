@@ -48,6 +48,7 @@ public:
 
     void Logout();
     void Ping();
+    void UpdateMailBox();
 
     AB::Entities::Character data_;
     time_t loginTime_;

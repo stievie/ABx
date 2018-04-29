@@ -323,7 +323,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
             continue;
 
         output->AddStringEncrypted(character.uuid);
-        output->Add<uint16_t>(character.level);
+        output->Add<uint8_t>(character.level);
         output->AddStringEncrypted(character.name);
         output->AddStringEncrypted(character.profession);
         output->AddStringEncrypted(character.profession2);

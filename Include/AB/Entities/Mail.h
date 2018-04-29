@@ -20,6 +20,8 @@ struct Mail : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.text1b(fromAccountUuid, Limits::MAX_UUID);
         s.text1b(toAccountUuid, Limits::MAX_UUID);
+        s.text1b(fromName, Limits::MAX_CHARACTER_NAME);
+        s.text1b(toName, Limits::MAX_CHARACTER_NAME);
         s.text1b(subject, Limits::MAX_MAIL_SUBJECT);
         s.text1b(message, Limits::MAX_MAIL_MESSAGE);
         s.value8b(created);
@@ -28,6 +30,8 @@ struct Mail : Entity
 
     std::string fromAccountUuid;
     std::string toAccountUuid;
+    std::string fromName;
+    std::string toName;
     std::string subject;
     std::string message;
     int64_t created;
