@@ -8,9 +8,24 @@ Uses a single TCP stream for the game protocol.
 
 ## Run Server
 
+1. Run the data server `abdada`
+2. Run the game server `abserv`
+
 ~~~
 abserv [-conf <config file>] [-log <log dir>]
 ~~~
+
+The Data server provides data from the database server and caches them. The Game
+Server connects to the Data server.
+
+### Run as NT service
+
+Use NSSM: The Non-Sucking Service Manager. Install `abdata` as service with automatic 
+start. Install `abserv` as service with *Delayed* automatic start. `abserv` must start
+after `abdata`.
+
+* `abdata` Arguments: -conf "<Path To>/Bin/abdata_svc.lua"
+* `abserv` Arguments: -conf "<Path To>/Bin/config_svc.lua" -log "<Path To>/Bin/logs/abserv"
 
 ## Run Client
 

@@ -7,7 +7,7 @@ namespace Utils {
 
 bool IsNumber(const std::string& s);
 uint32_t AdlerChecksum(uint8_t* data, int32_t len);
-std::string ConvertIPToString(uint32_t ip);
+std::string ConvertIPToString(uint32_t ip, bool mask = false);
 uint32_t ConvertStringToIP(const std::string& ip);
 std::vector<std::string> Split(const std::string& str, const std::string& delim);
 std::string Trim(const std::string& str, const std::string& whitespace = " \t");

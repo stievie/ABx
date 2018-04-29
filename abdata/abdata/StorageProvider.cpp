@@ -2,32 +2,13 @@
 #include "StorageProvider.h"
 #include "Database.h"
 #include <sstream>
-#include <AB/Entities/Account.h>
-#include <AB/Entities/Character.h>
-#include <AB/Entities/Game.h>
-#include <AB/Entities/GameList.h>
-#include <AB/Entities/IpBan.h>
-#include <AB/Entities/AccountBan.h>
-#include <AB/Entities/Ban.h>
-#include <AB/Entities/FriendList.h>
-#include <AB/Entities/AccountKey.h>
-#include <AB/Entities/AccountKeyAccounts.h>
-#include "DBAccount.h"
-#include "DBCharacter.h"
-#include "DBGame.h"
 #include "StringHash.h"
 #include "Logger.h"
 #include "StringHash.h"
-#include <AB/Entities/Limits.h>
 #include "Scheduler.h"
 #include "Dispatcher.h"
-#include "DBIpBan.h"
-#include "DBBan.h"
-#include "DBAccountBan.h"
-#include "DBFriendList.h"
-#include "DBAccountKey.h"
-#include "DBAccountKeyAccounts.h"
-#include "DBGameList.h"
+#include "EntitiesAll.h"
+#include "DBAll.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
@@ -184,7 +165,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
             if ((*_newdata).second.first.deleted)
                 // Don't return deleted items that are in cache
                 return false;
-            // REturn the cached object, it may have changed
+            // Return the cached object, it may have changed
             data->assign((*_newdata).second.second->begin(), (*_newdata).second.second->end());
         }
         return true;
@@ -193,7 +174,6 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
     if ((*_data).second.first.deleted)
         // Don't return deleted items that are in cache
         return false;
-//    data = (*_data).second.second;
     data->assign((*_data).second.second->begin(), (*_data).second.second->end());
     return true;
 }

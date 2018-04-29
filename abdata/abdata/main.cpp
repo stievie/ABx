@@ -22,6 +22,7 @@
 #endif
 
 int gPort = 0;
+uint32_t gListenIp = 0;
 size_t gMaxSize = 0;
 std::string gConfigFile = "";
 bool gReadonly = false;
@@ -73,6 +74,16 @@ static bool ParseCommandline(int argc, char* argv[])
             {
                 i++;
                 gPort = std::atoi(argv[i]);
+            }
+            else
+                LOG_WARNING << "Missing argument for -port" << std::endl;
+        }
+        if (arg.compare("-ip") == 0)
+        {
+            if (i + 1 < argc)
+            {
+                i++;
+                gListenIp = Utils::ConvertStringToIP(argv[i]);
             }
             else
                 LOG_WARNING << "Missing argument for -port" << std::endl;
@@ -179,6 +190,7 @@ static bool ParseCommandline(int argc, char* argv[])
 static void LoadConfig()
 {
     gPort = static_cast<int>(ConfigManager::Instance.GetGlobal("data_port", gPort));
+    gListenIp = Utils::ConvertStringToIP(ConfigManager::Instance.GetGlobal("data_ip", Utils::ConvertIPToString(gListenIp)));
     gMaxSize = ConfigManager::Instance.GetGlobal("max_size", gMaxSize);
     gReadonly = ConfigManager::Instance.GetGlobalBool("read_only", gReadonly);
     if (IO::Logger::logDir_.empty())
@@ -240,7 +252,7 @@ int main(int argc, char* argv[])
     {
         LOG_INFO << "Server config:" << std::endl;
         LOG_INFO << "  Config file: " << (gConfigFile.empty() ? "(empty)" : gConfigFile) << std::endl;
-        LOG_INFO << "  Port: " << gPort << std::endl;
+        LOG_INFO << "  Listening: " << Utils::ConvertIPToString(gListenIp) << ":" << gPort << std::endl;
         LOG_INFO << "  Cache size: " << Utils::ConvertSize(gMaxSize) << std::endl;
         LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
         LOG_INFO << "  Readonly mode: " << (gReadonly ? "TRUE" : "false")  << std::endl;
@@ -278,7 +290,7 @@ int main(int argc, char* argv[])
         asio::io_service io_service;
         Asynch::Dispatcher::Instance.Start();
         Asynch::Scheduler::Instance.Start();
-        Server serv(io_service, (uint16_t)gPort, gMaxSize, gReadonly);
+        Server serv(io_service, gListenIp, (uint16_t)gPort, gMaxSize, gReadonly);
         shutdown_handler = [&](int /*signal*/)
         {
             LOG_INFO << "Server shutdown..." << std::endl;

@@ -105,7 +105,7 @@ uint32_t AdlerChecksum(uint8_t* data, int32_t len)
     return (b << 16) | a;
 }
 
-std::string ConvertIPToString(uint32_t ip)
+std::string ConvertIPToString(uint32_t ip, bool mask /* = false */)
 {
     unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
@@ -114,7 +114,10 @@ std::string ConvertIPToString(uint32_t ip)
     bytes[3] = (ip >> 24) & 0xFF;
 
     char buffer[INET_ADDRSTRLEN];
-    sprintf_s(buffer, INET_ADDRSTRLEN, "%u.%u.%u.%u", bytes[3], bytes[2], bytes[1], bytes[0]);
+    if (!mask)
+        sprintf_s(buffer, INET_ADDRSTRLEN, "%u.%u.%u.%u", bytes[3], bytes[2], bytes[1], bytes[0]);
+    else
+        sprintf_s(buffer, INET_ADDRSTRLEN, "%u.%u.x.x", bytes[3], bytes[2]);
     return buffer;
 }
 

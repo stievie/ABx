@@ -29,5 +29,5 @@
 #define USE_ODBC
 
 #define SCHEDULER_MINTICKS 10
-
-// TODO: Hier auf zusätzliche Header, die das Programm erfordert, verweisen.
+#define MAX_DATA_SIZE (1024 * 1024)
+#define MAX_KEY_SIZE 256

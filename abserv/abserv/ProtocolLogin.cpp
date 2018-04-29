@@ -307,7 +307,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
     Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
 
-    LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": " << accountName << " logged in" << std::endl;
+    LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << accountName << " logged in" << std::endl;
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);

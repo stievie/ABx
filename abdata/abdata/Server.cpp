@@ -5,18 +5,19 @@
 #include "Connection.h"
 #include "Logger.h"
 
-Server::Server(asio::io_service& io_service,
+Server::Server(asio::io_service& io_service, uint32_t ip,
     uint16_t port, size_t maxCacheSize, bool readonly) :
     io_service_(io_service),
     acceptor_(
         io_service,
-        asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)
+        asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port)
     ),
     runnig_(false),
     storageProvider_(maxCacheSize, readonly),
-	maxDataSize_(1048576),
-    maxKeySize_(256)
+	maxDataSize_(MAX_DATA_SIZE),
+    maxKeySize_(MAX_KEY_SIZE)
 {
+    acceptor_.set_option(asio::ip::tcp::no_delay(true));
 	StartAccept();
     runnig_ = true;
 }

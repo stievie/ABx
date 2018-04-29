@@ -55,7 +55,7 @@ bool DBIpBan::Load(AB::Entities::IpBan& ban)
     query << "SELECT * FROM `ip_bans` WHERE ";
     if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
         query << "`uuid` = " << ban.uuid;
-    else if (!ban.ip != 0)
+    else if (ban.ip != 0)
     {
         if (ban.mask == 0)
         {

@@ -108,6 +108,12 @@
     <ClInclude Include="DBGameList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="EntitiesAll.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBAll.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
