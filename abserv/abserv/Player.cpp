@@ -112,7 +112,7 @@ void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessa
     if (p != std::string::npos)
     {
         size_t p2 = command.find(':');
-        std::string name = command.substr(0, p);
+        const std::string name = command.substr(0, p);
         if (name.empty())
             return;
 
@@ -148,8 +148,8 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     size_t p = command.find(',');
     if (p != std::string::npos)
     {
-        std::string name = command.substr(0, p);
-        std::string msg = Utils::LeftTrim(command.substr(p + 1, std::string::npos));
+        const std::string name = command.substr(0, p);
+        const std::string msg = Utils::LeftTrim(command.substr(p + 1, std::string::npos));
         std::shared_ptr<Player> target = PlayerManager::Instance.GetPlayerByName(name);
         if (target)
         {

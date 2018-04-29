@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Player.h"
-#include "Database.h"
 #include <AB/Entities/Character.h>
 
 namespace IO {

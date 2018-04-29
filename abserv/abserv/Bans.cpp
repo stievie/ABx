@@ -2,7 +2,6 @@
 #include "Bans.h"
 #include "Utils.h"
 #include "ConfigManager.h"
-#include "Database.h"
 #include "Utils.h"
 #include <AB/Entities/IpBan.h>
 #include <AB/Entities/AccountBan.h>

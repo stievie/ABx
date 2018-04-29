@@ -16,52 +16,12 @@ bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
     IO::DataClient* client = Application::Instance->GetDataClient();
     player->data_.name = name;
     return client->Read(player->data_);
-
-#if 0
-    Database* db = Database::Instance();
-    std::ostringstream query;
-    query << "SELECT `id`, `account_id`, `deleted`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-    query << " FROM `players` WHERE `name` = " << db->EscapeString(name);
-    std::shared_ptr<DBResult> result = db->StoreQuery(query.str());
-    if (!result)
-        return false;
-
-    if (result->GetULong("deleted") != 0)
-        // Was deleted
-        return false;
-
-    player->data_.id = result->GetUInt("id");
-    player->data_.accountId = result->GetUInt("account_id");
-
-    return true;
-#endif
 }
 
 bool IOPlayer::LoadCharacter(AB::Entities::Character& player)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
     return client->Read(player);
-
-#if 0
-    if (!result)
-        return false;
-
-    player->data_.accountId = result->GetUInt("account_id");
-    player->data_.name = result->GetString("name");
-    player->data_.pvp = result->GetUInt("pvp") != 0;
-    player->data_.level = static_cast<uint16_t>(result->GetUInt("level"));
-    player->data_.xp = result->GetULong("experience");
-    player->data_.skillPoints = result->GetUInt("skillpoints");
-    player->data_.sex = static_cast<AB::Data::CreatureSex>(result->GetUInt("sex"));
-    player->data_.creation = result->GetULong("creation");
-    player->data_.onlineTime = result->GetUInt("onlinetime");
-    if (!result->IsNull("last_map"))
-        player->data_.lastMap = result->GetString("last_map");
-    else
-        player->data_.lastMap = IOGame::GetLandingGame();
-
-    return true;
-#endif
 }
 
 bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
@@ -70,16 +30,6 @@ bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
     if (!LoadCharacter(player->data_))
         return false;
     return true;
-#if 0
-    Database* db = Database::Instance();
-
-    std::ostringstream query;
-    query << "SELECT `id`, `name`, `pvp`, `account_id`, `level`, `onlinetime`, `creation`, `experience`, `skillpoints`, " <<
-        "`sex` FROM `players` WHERE `name` = " <<
-        db->EscapeString(name);
-
-    return IOPlayer::LoadPlayer(player, db->StoreQuery(query.str()));
-#endif
 }
 
 bool IOPlayer::SavePlayer(Game::Player* player)
@@ -164,64 +114,6 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
         return ResultInternalError;
 
     return ResultOK;
-
-#if 0
-    Database* db = Database::Instance();
-    std::ostringstream query;
-    std::shared_ptr<DBResult> result;
-    query << "SELECT COUNT(`id`) AS `c`, `char_slots` FROM `accounts` WHERE `id` = " << accountId;
-    result = db->StoreQuery(query.str());
-    if (!result)
-        return ResultInternalError;
-    if (result->GetUInt("c") != 1)
-        return ResultInvalidAccount;
-    uint32_t charSlots = result->GetUInt("char_slots");
-
-    query.str("");
-    query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `account_id` = " << accountId;
-    result = db->StoreQuery(query.str());
-    if (!result)
-        return ResultInternalError;
-    if (result->GetUInt("c") >= charSlots)
-        return ResultNoMoreCharSlots;
-
-    query.str("");
-    query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `name` = " << db->EscapeString(name);
-    result = db->StoreQuery(query.str());
-    if (!result)
-        return ResultInternalError;
-    if (result->GetUInt("c") != 0)
-        return ResultNameExists;
-
-    DBTransaction transaction(db);
-    if (!transaction.Begin())
-        return ResultInternalError;
-
-    unsigned level = 1;
-    if (isPvp)
-    {
-        level = ConfigManager::Instance[ConfigManager::Key::PlayerLevelCap].GetInt();
-    }
-
-    query.str("");
-    query << "INSERT INTO `players` (`profession`, `name`, `sex`, `pvp`, `account_id`, `level`, `creation`) VALUES (";
-    query << db->EscapeString(prof) << ", ";
-    query << db->EscapeString(name) << ", ";
-    query << static_cast<uint32_t>(sex) << ", ";
-    query << (isPvp ? 1 : 0) << ", ";
-    query << accountId << ", ";
-    query << level << ", ";
-    query << Utils::AbTick();
-    query << ")";
-    if (!db->ExecuteQuery(query.str()))
-        return ResultInternalError;
-
-    // End transaction
-    if (!transaction.Commit())
-        return ResultInternalError;
-
-    return ResultOK;
-#endif
 }
 
 bool IOPlayer::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
@@ -234,33 +126,6 @@ bool IOPlayer::DeletePlayer(const std::string& accountUuid, const std::string& p
     if (ch.accountUuid.compare(accountUuid) != 0)
         return false;
     return client->Delete(ch);
-#if 0
-    Database* db = Database::Instance();
-    std::ostringstream query;
-    std::shared_ptr<DBResult> result;
-    query << "SELECT COUNT(`id`) AS `c` FROM `players` WHERE `account_id` = " << accountId;
-    query << " AND `id` = " << playerId;
-    result = db->StoreQuery(query.str());
-    if (!result)
-        return false;
-    if (result->GetUInt("c") != 1)
-        return false;
-
-    DBTransaction transaction(db);
-    if (!transaction.Begin())
-        return false;
-
-    query.str("");
-    query << "DELETE FROM `players` WHERE `id` = " << playerId;
-    if (!db->ExecuteQuery(query.str()))
-        return false;
-
-    // End transaction
-    if (!transaction.Commit())
-        return false;
-
-    return true;
-#endif
 }
 
 }

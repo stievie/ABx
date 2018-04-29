@@ -1,7 +1,6 @@
 #pragma once
 
 #include <AB/Entities/Game.h>
-#include "Database.h"
 #include "Game.h"
 
 namespace IO {

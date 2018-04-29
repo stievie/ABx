@@ -32,7 +32,7 @@ public:
     static Result AddAccountKey(const std::string& name, const std::string& pass,
         const std::string& accKey);
     static bool LoginServerAuth(const std::string& name, const std::string& pass, AB::Entities::Account& account);
-    static uuids::uuid GameWorldAuth(const std::string& name, std::string& pass, const std::string& charName);
+    static uuids::uuid GameWorldAuth(const std::string& name, const std::string& pass, const std::string& charName);
     static bool Save(const AB::Entities::Account& account);
 };
 

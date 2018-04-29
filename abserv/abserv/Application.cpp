@@ -14,7 +14,6 @@
 #include <functional>
 #include "Random.h"
 #include "Connection.h"
-#include "Database.h"
 #include "SkillManager.h"
 #include "Skill.h"
 #include "IOEffects.h"
@@ -204,10 +203,11 @@ void Application::MainLoader()
     if (port != 0)
         serviceManager_->Add<Net::ProtocolGame>(ip, port);
 
+    int64_t loadingTime = (Utils::AbTick() - startLoading);
+
     PrintServerInfo();
 
     LOG_INFO << "Loading done in ";
-    int64_t loadingTime = (Utils::AbTick() - startLoading);
     if (loadingTime < 1000)
         LOG_INFO << loadingTime << " ms";
     else
