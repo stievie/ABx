@@ -15,6 +15,16 @@ bool DBMail::Create(AB::Entities::Mail& mail)
 
     Database* db = Database::Instance();
     std::ostringstream query;
+
+    // Check if exceeding mail limit, if yes fail
+    query << "SELECT COUNT(*) AS `count` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(mail.toAccountUuid);
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        return false;
+    if (result->GetUInt("count") >= AB::Entities::Limits::MAX_MAIL_COUNT)
+        return false;
+
+    query.str("");
     query << "INSERT INTO `mails` (`uuid`, `from_account_uuid`, `to_account_uuid`, `from_name`, `to_name`, " <<
         "`subject`, `message`, `created`, `is_read`";
     query << ") VALUES (";

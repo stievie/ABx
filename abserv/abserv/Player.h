@@ -24,6 +24,11 @@ protected:
     }
     void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) override;
+    void HandleSendMailCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage& message);
 public:
     static void RegisterLua(kaguya::State& state);
 

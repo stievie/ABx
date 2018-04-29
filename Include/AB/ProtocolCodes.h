@@ -129,6 +129,7 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeNewMail,
     ServerMessageTypeMailSent,
     ServerMessageTypeMailNotSent,
+    ServerMessageTypeMailboxFull,
 };
 
 enum ChatMessageChannel : uint8_t

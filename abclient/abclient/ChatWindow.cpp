@@ -237,12 +237,22 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
     case AB::GameProtocol::ServerMessageTypeMailNotSent:
     {
         String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-        kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name." };
+        kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
         kainjow::mustache::data data;
         data.set("recipient", std::string(name.CString(), name.Length()));
         std::string t = tpl.render(data);
         AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
         break;
+    }
+    case AB::GameProtocol::ServerMessageTypeMailboxFull:
+    {
+        String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+        kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
+        kainjow::mustache::data data;
+        data.set("count", std::string(count.CString(), count.Length()));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+
     }
     }
 }
@@ -380,7 +390,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("Available commands:", "ChatLogServerInfoText");
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
-        AddLine("  /mail <name>, <subject>: <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
+        AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");

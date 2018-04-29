@@ -24,6 +24,10 @@ public:
     {
         return newMail_;
     }
+    int GetTotalMailCount() const
+    {
+        return static_cast<int>(mailList_.mailUuids.size());
+    }
 
 };
 
