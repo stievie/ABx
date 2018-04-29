@@ -24,8 +24,10 @@ Use NSSM: The Non-Sucking Service Manager. Install `abdata` as service with auto
 start. Install `abserv` as service with *Delayed* automatic start. `abserv` must start
 after `abdata`.
 
-* `abdata` Arguments: -conf "<Path To>/Bin/abdata_svc.lua"
-* `abserv` Arguments: -conf "<Path To>/Bin/config_svc.lua" -log "<Path To>/Bin/logs/abserv"
+`abdata` Arguments
+: `-conf "<Path To>/Bin/abdata_svc.lua"`
+`abserv` Arguments
+: `-conf "<Path To>/Bin/config_svc.lua" -log "<Path To>/Bin/logs/abserv"`
 
 ## Run Client
 
