@@ -22,6 +22,8 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
+    // Newest first
+    query << " ORDER BY `created` DESC";
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
