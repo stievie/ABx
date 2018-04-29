@@ -6,17 +6,12 @@ namespace Game {
 
 void MailBox::Update()
 {
-    oldMailCount_ = static_cast<int>(mailList_.mailUuids.size());
-    AB::Entities::MailList ml;
-    if (IO::IOMail::LoadMailList(ml, accountUuid_))
+    if (IO::IOMail::LoadMailList(mailList_, accountUuid_))
     {
-        mailList_ = ml;
-        newMail_ = static_cast<int>(mailList_.mailUuids.size()) - oldMailCount_;
+        if (oldMailCount_ != -1)
+            newMail_ = static_cast<int>(mailList_.mails.size()) - oldMailCount_;
+        oldMailCount_ = static_cast<int>(mailList_.mails.size());
     }
-}
-
-MailBox::~MailBox()
-{
 }
 
 }

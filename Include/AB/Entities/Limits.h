@@ -34,9 +34,9 @@ static constexpr int MAX_BAN_COMMENT = 255;
 static constexpr int MAX_FRIENDS = 1000;
 
 // Mail
-static constexpr int MAX_MAIL_SUBJECT = 63;
+static constexpr int MAX_MAIL_SUBJECT = 60;
 static constexpr int MAX_MAIL_MESSAGE = 255;
-static constexpr int MAX_MAIL_COUNT = 1000;
+static constexpr int MAX_MAIL_COUNT = 500;
 
 }
 }

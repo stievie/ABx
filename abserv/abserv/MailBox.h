@@ -14,10 +14,11 @@ private:
 public:
     MailBox(const std::string& accountUuid) :
         accountUuid_(accountUuid),
-        oldMailCount_(0),
-        newMail_(0)
+        oldMailCount_(-1),
+        newMail_(0),
+        notifiedFull_(false)
     {}
-    ~MailBox();
+    ~MailBox() = default;
 
     void Update();
     int GetNewMailCount() const
@@ -26,9 +27,10 @@ public:
     }
     int GetTotalMailCount() const
     {
-        return static_cast<int>(mailList_.mailUuids.size());
+        return static_cast<int>(mailList_.mails.size());
     }
 
+    bool notifiedFull_;
 };
 
 }

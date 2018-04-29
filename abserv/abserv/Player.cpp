@@ -43,31 +43,32 @@ void Player::Ping()
 
 void Player::UpdateMailBox()
 {
-    if (!mailBox_ && !data_.accountUuid.empty())
+    if (!mailBox_ && !data_.accountUuid.empty() && !uuids::uuid(data_.accountUuid).nil())
         mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
     if (mailBox_)
     {
         mailBox_->Update();
         if (mailBox_->GetNewMailCount() > 0)
         {
-            {
-                Net::NetworkMessage msg;
-                msg.AddByte(AB::GameProtocol::ServerMessage);
-                msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
-                msg.AddString(GetName());
-                msg.AddString(std::to_string(mailBox_->GetNewMailCount()));
-                client_->WriteToOutput(msg);
-            }
-
-            if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
-            {
-                Net::NetworkMessage msg;
-                msg.AddByte(AB::GameProtocol::ServerMessage);
-                msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
-                msg.AddString(GetName());
-                msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-                client_->WriteToOutput(msg);
-            }
+            // Notify player there are new emails since last check.
+            Net::NetworkMessage msg;
+            msg.AddByte(AB::GameProtocol::ServerMessage);
+            msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
+            msg.AddString(GetName());
+            msg.AddString(std::to_string(mailBox_->GetNewMailCount()));
+            client_->WriteToOutput(msg);
+        }
+        if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT &&
+            !mailBox_->notifiedFull_)
+        {
+            // Notify player that mailbox is full if not already done.
+            mailBox_->notifiedFull_ = true;
+            Net::NetworkMessage msg;
+            msg.AddByte(AB::GameProtocol::ServerMessage);
+            msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
+            msg.AddString(GetName());
+            msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
+            client_->WriteToOutput(msg);
         }
     }
 }

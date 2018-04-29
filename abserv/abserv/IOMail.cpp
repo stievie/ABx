@@ -8,7 +8,6 @@ bool IOMail::LoadMailList(AB::Entities::MailList& ml, const std::string& account
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
     ml.uuid = accountUuid;
-    ml.mailUuids.clear();
     return client->Read(ml);
 }
 

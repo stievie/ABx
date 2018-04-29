@@ -8,6 +8,15 @@ namespace Entities {
 
 constexpr auto KEY_MAILLIST = "mail_list";
 
+struct MailHeader
+{
+    std::string uuid;
+    std::string fromName;
+    std::string subject;
+    int64_t created;
+    bool isRead;
+};
+
 /// List of mails. UUID is the receiver account UUID.
 struct MailList : Entity
 {
@@ -19,13 +28,17 @@ struct MailList : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.container(mailUuids, Limits::MAX_MAIL_COUNT, [&s](std::string& m)
+        s.container(mails, Limits::MAX_MAIL_COUNT, [&s](MailHeader& m)
         {
-            s.text1b(m, Limits::MAX_UUID);
+            s.text1b(m.uuid, Limits::MAX_UUID);
+            s.text1b(m.fromName, Limits::MAX_CHARACTER_NAME);
+            s.text1b(m.subject, Limits::MAX_MAIL_SUBJECT);
+            s.value8b(m.created);
+            s.value1b(m.isRead);
         });
     }
-    
-    std::vector<std::string> mailUuids;
+
+    std::vector<MailHeader> mails;
 };
 
 }

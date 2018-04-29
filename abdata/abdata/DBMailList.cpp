@@ -21,17 +21,23 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
+    query << "SELECT `uuid`, `from_name`, `subject`, `created`, `is_read` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
     // Newest first
     query << " ORDER BY `created` DESC";
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
 
-    ml.mailUuids.clear();
+    ml.mails.clear();
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        ml.mailUuids.push_back(result->GetString("uuid"));
+        ml.mails.push_back({
+            result->GetString("uuid"),
+            result->GetString("from_name"),
+            result->GetString("subject"),
+            result->GetLong("created"),
+            result->GetUInt("is_read") != 0
+        });
     }
 
     return true;
