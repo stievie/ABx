@@ -177,8 +177,9 @@
     <ClInclude Include="DBGame.h" />
     <ClInclude Include="DBGameList.h" />
     <ClInclude Include="DBIpBan.h" />
+    <ClInclude Include="DBMail.h" />
+    <ClInclude Include="DBMailList.h" />
     <ClInclude Include="Dispatcher.h" />
-    <ClInclude Include="EntitiesAll.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="Logger.h" />
@@ -211,6 +212,8 @@
     <ClCompile Include="DBGame.cpp" />
     <ClCompile Include="DBGameList.cpp" />
     <ClCompile Include="DBIpBan.cpp" />
+    <ClCompile Include="DBMail.cpp" />
+    <ClCompile Include="DBMailList.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="Logger.cpp" />

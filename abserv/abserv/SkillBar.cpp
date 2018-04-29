@@ -12,6 +12,8 @@ void SkillBar::Update(uint32_t timeElapsed)
     }
 }
 
+// https://wiki.guildwars.com/wiki/Skill_template_format
+// https://wiki.guildwars.com/wiki/Equipment_template_format
 std::string SkillBar::Encode()
 {
     return std::string();

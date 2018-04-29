@@ -118,7 +118,7 @@ bool DBAccountBan::Exists(const AB::Entities::AccountBan& ban)
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `account_bans` WHERE ";
     if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
-        query << "`uuid` = " << ban.uuid;
+        query << "`uuid` = " << db->EscapeString(ban.uuid);
     else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
         query << "`account_uuid` = " << db->EscapeString(ban.accountUuid);
     else

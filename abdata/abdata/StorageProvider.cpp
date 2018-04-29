@@ -7,7 +7,6 @@
 #include "StringHash.h"
 #include "Scheduler.h"
 #include "Dispatcher.h"
-#include "EntitiesAll.h"
 #include "DBAll.h"
 
 #pragma warning(push)
@@ -22,6 +21,8 @@ static constexpr size_t KEY_BANS_HASH = Utils::StringHash(AB::Entities::Ban::KEY
 static constexpr size_t KEY_FRIENDLIST_HASH = Utils::StringHash(AB::Entities::FriendList::KEY());
 static constexpr size_t KEY_ACCOUNTKEYS_HASH = Utils::StringHash(AB::Entities::AccountKey::KEY());
 static constexpr size_t KEY_ACCOUNTKEYACCOUNTS_HASH = Utils::StringHash(AB::Entities::AccountKeyAccounts::KEY());
+static constexpr size_t KEY_MAIL_HASH = Utils::StringHash(AB::Entities::Mail::KEY());
+static constexpr size_t KEY_MAILLIST_HASH = Utils::StringHash(AB::Entities::MailList::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -432,6 +433,10 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBAccountKey, AB::Entities::AccountKey>(id, *data);
     case KEY_ACCOUNTKEYACCOUNTS_HASH:
         return LoadFromDB<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(id, *data);
+    case KEY_MAIL_HASH:
+        return LoadFromDB<DB::DBMail, AB::Entities::Mail>(id, *data);
+    case KEY_MAILLIST_HASH:
+        return LoadFromDB<DB::DBMailList, AB::Entities::MailList>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -497,6 +502,12 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_ACCOUNTKEYACCOUNTS_HASH:
         succ = FlushRecord<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(data);
         break;
+    case KEY_MAIL_HASH:
+        succ = FlushRecord<DB::DBMail, AB::Entities::Mail>(data);
+        break;
+    case KEY_MAILLIST_HASH:
+        succ = FlushRecord<DB::DBMailList, AB::Entities::MailList>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -537,6 +548,10 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBAccountKey, AB::Entities::AccountKey>(data);
     case KEY_ACCOUNTKEYACCOUNTS_HASH:
         return ExistsInDB<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(data);
+    case KEY_MAIL_HASH:
+        return ExistsInDB<DB::DBMail, AB::Entities::Mail>(data);
+    case KEY_MAILLIST_HASH:
+        return ExistsInDB<DB::DBMailList, AB::Entities::MailList>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;

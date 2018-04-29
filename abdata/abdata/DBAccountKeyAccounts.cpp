@@ -48,15 +48,15 @@ bool DBAccountKeyAccounts::Load(AB::Entities::AccountKeyAccounts& ak)
 
     std::ostringstream query;
     query << "SELECT * FROM `account_account_keys` WHERE ";
-    query << "`account_uuid` = " << db->EscapeString(ak.uuid);
-    query << " AND `account_key_uuid` = " << db->EscapeString(ak.accountUuid);
+    query << "`account_uuid` = " << db->EscapeString(ak.accountUuid);
+    query << " AND `account_key_uuid` = " << db->EscapeString(ak.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
         return false;
 
-    ak.uuid = result->GetString("account_uuid");
-    ak.accountUuid = result->GetString("account_key_uuid");
+    ak.uuid = result->GetString("account_key_uuid");
+    ak.accountUuid = result->GetString("account_uuid");
     return true;
 }
 
@@ -85,8 +85,8 @@ bool DBAccountKeyAccounts::Exists(const AB::Entities::AccountKeyAccounts& ak)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `account_account_keys` WHERE ";
-    query << "`account_uuid` = " << db->EscapeString(ak.uuid);
-    query << " AND `account_key_uuid` = " << db->EscapeString(ak.accountUuid);
+    query << "`account_uuid` = " << db->EscapeString(ak.accountUuid);
+    query << " AND `account_key_uuid` = " << db->EscapeString(ak.uuid);
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

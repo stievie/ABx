@@ -108,10 +108,13 @@
     <ClInclude Include="DBGameList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="EntitiesAll.h">
+    <ClInclude Include="DBAll.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DBAll.h">
+    <ClInclude Include="DBMail.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBMailList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -198,6 +201,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBGameList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBMail.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBMailList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

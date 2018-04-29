@@ -10,3 +10,6 @@
 #include "DBAccount.h"
 #include "DBCharacter.h"
 #include "DBGame.h"
+#include "DBMail.h"
+#include "DBMailList.h"
+
