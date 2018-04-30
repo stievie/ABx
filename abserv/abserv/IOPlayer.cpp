@@ -6,6 +6,7 @@
 #include "ConfigManager.h"
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
+#include "Profiler.h"
 
 #include "DebugNew.h"
 
@@ -13,6 +14,7 @@ namespace IO {
 
 bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     player->data_.name = name;
     return client->Read(player->data_);
@@ -20,6 +22,7 @@ bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
 
 bool IOPlayer::LoadCharacter(AB::Entities::Character& player)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     return client->Read(player);
 }
@@ -34,7 +37,11 @@ bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
 
 bool IOPlayer::SavePlayer(Game::Player* player)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
+    player->data_.lastLogin = player->loginTime_;
+    player->data_.lastLogout = player->logoutTime_;
+    player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
     return client->Update(player->data_);
 
 #if 0

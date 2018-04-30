@@ -43,14 +43,14 @@
 #define SERVER_MAX_CONNECTIONS 3000
 #define PLAYER_MAX_SKILLS 8
 
-// Clean cache every 10min
+// Clean assets cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
 // Clean games all 10 sec
 #define CLEAN_GAMES_MS (1000 * 10)
-// Remove inactive players every 30sec
-#define CLEAN_PLAYERS_MS (1000 * 30)
-// Remove player from PlayerManager after this time
-#define PLAYER_INACTIVE_TIME_KICK (10 * 1000)
+// Remove inactive players every 10sec
+#define CLEAN_PLAYERS_MS (1000 * 10)
+// Remove player from PlayerManager after this time. Inactive means not Ping.
+#define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
 
 #define ROLL_MIN 2
 #define ROLL_MAX 100

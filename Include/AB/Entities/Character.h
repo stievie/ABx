@@ -50,7 +50,6 @@ struct Character : Entity
 
         s.value8b(lastLogin);
         s.value8b(lastLogout);
-        s.value4b(lastIp);
     }
 
     std::string name;
@@ -72,7 +71,6 @@ struct Character : Entity
 
     int64_t lastLogin = 0;
     int64_t lastLogout = 0;
-    uint32_t lastIp = 0;
 };
 
 typedef std::vector<Character> CharacterList;

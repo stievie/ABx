@@ -21,13 +21,14 @@ bool DBFriendList::Load(AB::Entities::FriendList& fl)
 
     DB::Database* db = DB::Database::Instance();
 
+    fl.friends.clear();
     std::ostringstream query;
     query << "SELECT * FROM `friend_list` WHERE `account_uuid` = " << db->EscapeString(fl.uuid);
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
-        return false;
+        // Maybe no friends
+        return true;
 
-    fl.friends.clear();
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         fl.friends.push_back({

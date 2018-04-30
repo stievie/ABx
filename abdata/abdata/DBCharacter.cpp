@@ -81,7 +81,6 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     character.lastLogin = result->GetULong("lastlogin");
     character.lastLogout = result->GetULong("lastlogout");
     character.creation = result->GetULong("creation");
-    character.lastIp = result->GetUInt("lastip");
     character.onlineTime = result->GetULong("onlinetime");
     character.deletedTime = result->GetULong("deleted");
     character.lastMap = result->GetString("last_map");
@@ -109,7 +108,6 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
     query << " `skillpoints` = " << character.skillPoints << ", ";
     query << " `lastlogin` = " << character.lastLogin << ", ";
     query << " `lastlogout` = " << character.lastLogout << ", ";
-    query << " `lastip` = " << character.lastIp << ", ";
     query << " `onlinetime` = " << character.onlineTime << ", ";
     query << " `deleted` = " << character.deletedTime << ", ";
     query << " `last_map` = " << db->EscapeString(character.lastMap);

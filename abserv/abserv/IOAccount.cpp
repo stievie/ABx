@@ -7,6 +7,7 @@
 #include <AB/Entities/AccountKey.h>
 #include <AB/Entities/AccountKeyAccounts.h>
 #include <AB/Entities/Character.h>
+#include "Profiler.h"
 
 #include "DebugNew.h"
 
@@ -15,6 +16,7 @@ namespace IO {
 IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
     acc.name = name;
@@ -64,6 +66,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
 IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::string& pass,
     const std::string& accKey)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
     acc.name = name;
@@ -110,6 +113,7 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
 
 bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, AB::Entities::Account& account)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     account.name = name;
     if (!client->Read(account))
@@ -128,6 +132,7 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
 
 uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string& pass, const std::string& charName)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
     acc.name = name;
@@ -148,6 +153,7 @@ uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string&
 
 bool IOAccount::Save(const AB::Entities::Account& account)
 {
+    AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     return client->Update(account);
 }

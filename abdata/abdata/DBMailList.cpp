@@ -20,15 +20,16 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
 
     DB::Database* db = DB::Database::Instance();
 
+    ml.mails.clear();
     std::ostringstream query;
     query << "SELECT `uuid`, `from_name`, `subject`, `created`, `is_read` FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
     // Newest first
     query << " ORDER BY `created` DESC";
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
-        return false;
+        // Maybe no mails
+        return true;
 
-    ml.mails.clear();
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         ml.mails.push_back({
