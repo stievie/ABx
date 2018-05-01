@@ -11,12 +11,14 @@ private:
     AB::Entities::MailList mailList_;
     int oldMailCount_;
     int newMail_;
+    int64_t lastCheck_;
 public:
     MailBox(const std::string& accountUuid) :
         accountUuid_(accountUuid),
         oldMailCount_(-1),
         newMail_(0),
-        notifiedFull_(false)
+        notifiedFull_(false),
+        lastCheck_(0)
     {}
     ~MailBox() = default;
 

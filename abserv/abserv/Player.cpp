@@ -181,9 +181,11 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
 
 void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 {
+    // In seconds
     uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) +
         static_cast<uint32_t>((Utils::AbTick() - loginTime_) / 1000);
-    uint32_t age = static_cast<uint32_t>(Utils::AbTick() - data_.creation);
+    // In seconds
+    uint32_t age = static_cast<uint32_t>((Utils::AbTick() - data_.creation) / 1000);
 
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::ServerMessage);

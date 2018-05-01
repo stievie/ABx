@@ -180,7 +180,9 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
         unsigned p = message.Find(":");
         String age = message.Substring(0, p);
         String playTime = message.Substring(p + 1);
+        // Seconds
         uint32_t uAge = std::atoi(age.CString());
+        // Seconds
         uint32_t uPlayTime = std::atoi(playTime.CString());
         Client::TimeSpan tAge(uAge);
         std::stringstream ss;

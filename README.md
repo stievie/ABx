@@ -35,6 +35,20 @@ after `abdata`.
 You may want to increase `max_allowed_packet` in `my.cnf / my.ini`  in the `[mysqld]`
 section to e.g. `32M`, if the data server loses connection from time to time.
 
+~~~
+[mysqld]
+# ...
+max_allowed_packet = 32M
+~~~
+
+Also adding `skip-name-resolve` to `[mysqld]` may be a good idea.
+
+~~~
+[mysqld]
+# ...
+skip-name-resolve
+~~~
+
 ## Run Client
 
 1. Start `fw.exe`

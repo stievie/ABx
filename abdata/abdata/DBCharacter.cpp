@@ -78,11 +78,11 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     character.xp = result->GetUInt("experience");
     character.skillPoints = result->GetUInt("skillpoints");
     character.sex = static_cast<AB::Entities::CharacterSex>(result->GetUInt("sex"));
-    character.lastLogin = result->GetULong("lastlogin");
-    character.lastLogout = result->GetULong("lastlogout");
-    character.creation = result->GetULong("creation");
-    character.onlineTime = result->GetULong("onlinetime");
-    character.deletedTime = result->GetULong("deleted");
+    character.lastLogin = result->GetLong("lastlogin");
+    character.lastLogout = result->GetLong("lastlogout");
+    character.creation = result->GetLong("creation");
+    character.onlineTime = result->GetLong("onlinetime");
+    character.deletedTime = result->GetLong("deleted");
     character.lastMap = result->GetString("last_map");
 
     return true;
