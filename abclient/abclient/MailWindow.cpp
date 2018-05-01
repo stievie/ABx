@@ -23,7 +23,7 @@ MailWindow::MailWindow(Context* context) :
         window_ = holder;
         root->AddChild(window_);    // Take ownership of the object before SharedPtr goes out of scope
     }
-    window_->SetStyleAuto();
+//    window_->SetStyleAuto();
 
     previewEdit_ = window_->CreateChild<MultiLineEdit>();
     previewEdit_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
@@ -35,11 +35,8 @@ MailWindow::MailWindow(Context* context) :
     previewEdit_->SetMaxNumLines(0);
     previewEdit_->SetClipBorder(IntRect(4, 4, 4, 4));
     previewEdit_->SetMaxLength(255);
-    previewEdit_->SetText("is simply dummy text of the printing and typesetting industry. Lorem Ipsum has\n"
-        "been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley\n"
-        "of type and scrambled it to make a type specimen book. It has survived not only five centuries,\n"
-        "but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised\n"
-        "in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+    previewEdit_->SetText("is simply dummy text of the printing and typesetting industry.\n"
+        "been the industry's standard dummy text ever since the 1500s\n");
     previewEdit_->ApplyAttributes();
 
     Button* closeButton = dynamic_cast<Button*>(window_->GetChild("CloseButton", true));

@@ -172,6 +172,12 @@ void FwClient::Logout()
     loggedIn_ = false;
 }
 
+void FwClient::GetMailHeaders()
+{
+    if (loggedIn_)
+        client_.GetMailHeaders();
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -227,6 +233,17 @@ void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
 void FwClient::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
 {
     games_ = games;
+}
+
+void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
+{
+    mailHeaders_ = headers;
+    // TODO
+}
+
+void FwClient::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
+{
+    // TODO
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId)

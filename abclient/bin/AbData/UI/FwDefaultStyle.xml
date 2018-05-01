@@ -144,6 +144,7 @@
     </element>
     <element type="MultiLineEdit" style="LineEdit">
         <element type="Text" internal="true">
+          <attribute name="Color" value="0.9 0.9 0.9" />
           <attribute name="Font" value="Font;Fonts/Anonymous Pro.ttf" />
         </element>
     </element>

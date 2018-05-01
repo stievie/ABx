@@ -8,6 +8,8 @@
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Game.h>
+#include <AB/Entities/MailList.h>
+#include <AB/Entities/Mail.h>
 
 namespace Client {
 
@@ -22,6 +24,8 @@ public:
     virtual void OnAccountCreated() = 0;
     virtual void OnPlayerCreated(const std::string& name, const std::string& map) = 0;
 
+    virtual void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) = 0;
+    virtual void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) = 0;
     virtual void OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId) = 0;
     virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) = 0;

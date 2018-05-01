@@ -49,6 +49,18 @@ void Client::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
         receiver_->OnGetGamelist(games);
 }
 
+void Client::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
+{
+    if (receiver_)
+        receiver_->OnGetMailHeaders(updateTick, headers);
+}
+
+void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
+{
+    if (receiver_)
+        receiver_->OnGetMail(updateTick, mail);
+}
+
 void Client::OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId)
 {
     state_ = StateWorld;
@@ -277,6 +289,18 @@ int64_t Client::GetClockDiff() const
     if (protoGame_)
         return protoGame_->GetClockDiff();
     return 0;
+}
+
+void Client::GetMailHeaders()
+{
+    if (state_ == StateWorld)
+        protoGame_->GetMailHeaders();
+}
+
+void Client::GetMail(const std::string& mailUuid)
+{
+    if (state_ == StateWorld)
+        protoGame_->GetMail(mailUuid);
 }
 
 void Client::Move(uint8_t direction)

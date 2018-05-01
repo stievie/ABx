@@ -150,6 +150,9 @@ enum GameProtocolCodes : uint8_t
     WelcomeMessage,
     ServerMessage,
     ChatMessage,
+    // Mail
+    MailHeaders,
+    MailComplete,
 
     GameEnter,
     GameUpdate,
@@ -180,6 +183,10 @@ enum GamePacketTypes : uint8_t
 
     PacketTypeLogout = 0x10,
 
+    // Mail
+    PacketTypeGetMailHeaders = 0x11,
+    PacketTypeGetMail = 0x12,
+
     // Move
     PacketTypeMove = 0x20,
     PacketTypeTurn = 0x21,
@@ -197,6 +204,7 @@ enum GamePacketTypes : uint8_t
     PacketTypeSelect = 0x60,
     // Command
     PacketTypeCommand = 0x70,
+
 };
 
 enum CommandTypes : uint8_t

@@ -64,6 +64,8 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
 
+    void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
+    void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
     void OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;
@@ -105,6 +107,8 @@ public:
     }
     int64_t GetClockDiff() const;
 
+    void GetMailHeaders();
+    void GetMail(const std::string& mailUuid);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

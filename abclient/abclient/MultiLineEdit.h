@@ -32,9 +32,10 @@ class Font;
 class BorderImage;
 
 /// Single-line text editor %UI element.
-class MultiLineEdit : public BorderImage
+class  MultiLineEdit : public BorderImage
 {
     URHO3D_OBJECT(MultiLineEdit, BorderImage);
+
 public:
     /// Construct.
     MultiLineEdit(Context* context);
@@ -49,25 +50,25 @@ public:
     virtual void Update(float timeStep);
     /// React to mouse click begin.
     virtual void OnClickBegin
-        (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
+    (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
     /// React to mouse doubleclick.
     virtual void OnDoubleClick
-        (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
+    (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
     /// React to mouse drag begin.
     virtual void
         OnDragBegin(const IntVector2& position, const IntVector2& screenPosition, int buttons, int qualifiers, Cursor* cursor);
     /// React to mouse drag motion.
     virtual void OnDragMove
-        (const IntVector2& position, const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons, int qualifiers,
-            Cursor* cursor);
+    (const IntVector2& position, const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons, int qualifiers,
+        Cursor* cursor);
     /// React to drag and drop test. Return true to signal that the drop is acceptable.
     virtual bool OnDragDropTest(UIElement* source);
     /// React to drag and drop finish. Return true to signal that the drop was accepted.
     virtual bool OnDragDropFinish(UIElement* source);
     /// React to a key press.
-    virtual void OnKey(int key, int buttons, int qualifiers) override;
+    virtual void OnKey(int key, int buttons, int qualifiers);
     /// React to text input event.
-    virtual void OnTextInput(const String& text) override;
+    virtual void OnTextInput(const String& text);
 
     /// Set text.
     void SetText(const String& text);
@@ -91,39 +92,69 @@ public:
     void SetMaxNumLines(int maxNumber);
     /// Enable Multiline to on.
     void SetMultiLine(bool enable);
-	/// Set font size.
-	void SetFontSize(int size);
-	/// Set font color.
-	void SetFontColor(Color color);
+    /// Set font size.
+    void SetFontSize(int size);
+    /// Set font color.
+    void SetFontColor(Color color);
     /// Return text.
-    const String& GetText() const { return line_; }
+    const String& GetText() const
+    {
+        return line_;
+    }
 
     /// Return cursor position.
-    unsigned GetCursorPosition() const { return cursorPosition_; }
+    unsigned GetCursorPosition() const
+    {
+        return cursorPosition_;
+    }
 
     /// Return cursor blink rate.
-    float GetCursorBlinkRate() const { return cursorBlinkRate_; }
+    float GetCursorBlinkRate() const
+    {
+        return cursorBlinkRate_;
+    }
 
     /// Return maximum text length.
-    unsigned GetMaxLength() const { return maxLength_; }
+    unsigned GetMaxLength() const
+    {
+        return maxLength_;
+    }
 
     /// Return echo character.
-    unsigned GetEchoCharacter() const { return echoCharacter_; }
+    unsigned GetEchoCharacter() const
+    {
+        return echoCharacter_;
+    }
 
     /// Return whether can move cursor with arrows or mouse.
-    bool IsCursorMovable() const { return cursorMovable_; }
+    bool IsCursorMovable() const
+    {
+        return cursorMovable_;
+    }
 
     /// Return whether selections are allowed.
-    bool IsTextSelectable() const { return textSelectable_; }
+    bool IsTextSelectable() const
+    {
+        return textSelectable_;
+    }
 
     /// Return whether copy-paste operations are allowed.
-    bool IsTextCopyable() const { return textCopyable_; }
+    bool IsTextCopyable() const
+    {
+        return textCopyable_;
+    }
 
     /// Return text element.
-    Text* GetTextElement() const { return text_; }
+    Text* GetTextElement() const
+    {
+        return text_;
+    }
 
     /// Return cursor element.
-    BorderImage* GetCursor() const { return cursor_; }
+    BorderImage* GetCursor() const
+    {
+        return cursor_;
+    }
 
 protected:
     /// Filter implicit attributes in serialization process.
@@ -134,9 +165,9 @@ protected:
     void UpdateCursor();
     /// Return char index corresponding to position within element, or M_MAX_UNSIGNED if not found.
     unsigned GetCharIndex(const IntVector2& position);
-	/// Is number of lines limited
+    /// Is number of lines limited
     bool hasMaxLines;
-	/// maximum number of lines that can be inputted (only applicable if hasMaxLines is true).
+    /// maximum number of lines that can be inputted (only applicable if hasMaxLines is true).
     int maxLines;
     /// Text element.
     SharedPtr<Text> text_;
@@ -166,7 +197,7 @@ protected:
     bool textSelectable_;
     /// Copy-paste enable flag.
     bool textCopyable_;
-	/// Ability to write several lines enabled flag.
+    /// Ability to write several lines enabled flag.
     bool multiLine_;
 
 private:
@@ -176,8 +207,7 @@ private:
     void HandleDefocused(StringHash eventType, VariantMap& eventData);
     /// Handle the element layout having been updated.
     void HandleLayoutUpdated(StringHash eventType, VariantMap& eventData);
-	/// Handle key down.
+    /// Handle key down.
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 };
-
 }

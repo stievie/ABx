@@ -17,6 +17,7 @@ public:
     static bool SendMailToAccount(const std::string& accountUuid, const std::string& fromAcc,
         const std::string& fromName, const std::string& toName,
         const std::string& subject, const std::string& message);
+    static bool GetMail(AB::Entities::Mail& mail);
 };
 
 }

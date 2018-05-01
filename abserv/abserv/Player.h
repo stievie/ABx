@@ -54,6 +54,8 @@ public:
     void Logout();
     void Ping();
     void UpdateMailBox();
+    void GetMailHeaders();
+    void GetMail(const std::string mailUuid);
 
     AB::Entities::Character data_;
     time_t loginTime_;

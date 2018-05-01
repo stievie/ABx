@@ -25,6 +25,7 @@ private:
     Client::Client::ClientState lastState_;
     AB::Entities::CharacterList characters_;
     std::vector<AB::Entities::Game> games_;
+    std::vector<AB::Entities::MailHeader> mailHeaders_;
     String currentCharacterUuid_;
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -57,6 +58,7 @@ public:
     void EnterWorld(const String& charUuid, const String& map);
     void ChangeWorld(const String& map);
     void Logout();
+    void GetMailHeaders();
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
@@ -75,6 +77,8 @@ public:
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& name, const std::string& map) override;
 
+    void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
+    void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
     void OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;

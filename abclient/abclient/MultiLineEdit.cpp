@@ -27,6 +27,7 @@
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/IO/Log.h>
 
 #include "MultiLineEdit.h"
 
@@ -52,23 +53,25 @@ MultiLineEdit::MultiLineEdit(Context* context) :
     cursorMovable_(true),
     textSelectable_(true),
     textCopyable_(true),
-    multiLine_(false)
+    multiLine_(true)
 {
     clipChildren_ = true;
     SetEnabled(true);
     focusMode_ = FM_FOCUSABLE_DEFOCUSABLE;
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetLayoutMode(LM_FREE);
     text_ = CreateChild<Text>("LE_Text");
-    text_->SetInternal(true);
-    text_->SetWordwrap(true);
-    text_->SetTextAlignment(HA_LEFT);
     text_->SetAlignment(HA_LEFT, VA_TOP);
-
+    text_->SetInternal(true);
+    text_->SetPosition(0, 0);
     cursor_ = CreateChild<BorderImage>("LE_Cursor");
+    cursor_->SetBorder(IntRect(0, 0, 0, 0));
+    cursor_->SetClipBorder(IntRect(0, 0, 0, 0));
+    cursor_->SetMinSize(1, 1);
+    cursor_->SetMaxWidth(2);
     cursor_->SetInternal(true);
     cursor_->SetPriority(1); // Show over text
+    cursor_->SetUseDerivedOpacity(false);
 
     SubscribeToEvent(this, E_FOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleFocused));
     SubscribeToEvent(this, E_DEFOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleDefocused));
@@ -98,7 +101,6 @@ void MultiLineEdit::RegisterObject(Context* context)
     URHO3D_ACCESSOR_ATTRIBUTE("Cursor Blink Rate", GetCursorBlinkRate, SetCursorBlinkRate, float, 1.0f, AM_FILE);
     URHO3D_ATTRIBUTE("Echo Character", int, echoCharacter_, 0, AM_FILE);
 }
-
 int MultiLineEdit::GetNumLines()
 {
     String Alltext = text_->GetText();
@@ -112,7 +114,6 @@ int MultiLineEdit::GetNumLines()
     }
     return counter;
 }
-
 void MultiLineEdit::SetMaxNumLines(int maxNumber)
 {
     if (maxNumber > 0)
@@ -139,6 +140,7 @@ void MultiLineEdit::ApplyAttributes()
 
 void MultiLineEdit::Update(float timeStep)
 {
+    //cursor_->SetFont(text_->GetFont(), text_->GetFontSize());
     if (cursorBlinkRate_ > 0.0f)
         cursorBlinkTimer_ = fmodf(cursorBlinkTimer_ + cursorBlinkRate_ * timeStep, 1.0f);
 
@@ -146,16 +148,17 @@ void MultiLineEdit::Update(float timeStep)
     if (text_->GetFont() != lastFont_ || text_->GetFontSize() != lastFontSize_)
     {
         lastFont_ = text_->GetFont();
-        lastFontSize_ = (int)text_->GetFontSize();
+        lastFontSize_ = static_cast<int>(text_->GetFontSize());
         UpdateCursor();
     }
 
     bool cursorVisible = HasFocus() ? cursorBlinkTimer_ < 0.5f : false;
     cursor_->SetVisible(cursorVisible);
+    //cursor_->SetVisible(true);
 }
 
-void MultiLineEdit::OnClickBegin(const IntVector2& position, const IntVector2& screenPosition,
-    int button, int buttons, int qualifiers,
+void MultiLineEdit::OnClickBegin(const IntVector2& position,
+    const IntVector2& screenPosition, int button, int buttons, int qualifiers,
     Cursor* cursor)
 {
     if (button == MOUSEB_LEFT && cursorMovable_)
@@ -169,14 +172,16 @@ void MultiLineEdit::OnClickBegin(const IntVector2& position, const IntVector2& s
     }
 }
 
-void MultiLineEdit::OnDoubleClick(const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers,
+void MultiLineEdit::OnDoubleClick(const IntVector2& position,
+    const IntVector2& screenPosition, int button, int buttons, int qualifiers,
     Cursor* cursor)
 {
     if (button == MOUSEB_LEFT)
         text_->SetSelection(0);
 }
 
-void MultiLineEdit::OnDragBegin(const IntVector2& position, const IntVector2& screenPosition, int buttons, int qualifiers,
+void MultiLineEdit::OnDragBegin(const IntVector2& position,
+    const IntVector2& screenPosition, int buttons, int qualifiers,
     Cursor* cursor)
 {
     UIElement::OnDragBegin(position, screenPosition, buttons, qualifiers, cursor);
@@ -184,7 +189,8 @@ void MultiLineEdit::OnDragBegin(const IntVector2& position, const IntVector2& sc
     dragBeginCursor_ = GetCharIndex(position);
 }
 
-void MultiLineEdit::OnDragMove(const IntVector2& position, const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons,
+void MultiLineEdit::OnDragMove(const IntVector2& position,
+    const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons,
     int qualifiers, Cursor* cursor)
 {
     if (cursorMovable_ && textSelectable_)
@@ -205,44 +211,48 @@ void MultiLineEdit::OnDragMove(const IntVector2& position, const IntVector2& scr
 
 bool MultiLineEdit::OnDragDropTest(UIElement* source)
 {
-    if (source && editable_)
-    {
-        if (source->GetVars().Contains(VAR_ML_DRAGDROPCONTENT))
-            return true;
-        StringHash sourceType = source->GetType();
-        return sourceType == MultiLineEdit::GetTypeStatic() || sourceType == Text::GetTypeStatic();
-    }
+    //if (source && editable_)
+    //{
+    //	if (source->GetVars().Contains(VAR_ML_DRAGDROPCONTENT))
+    //		return true;
+    //	StringHash sourceType = source->GetType();
+    //	return sourceType == MultiLineEdit::GetTypeStatic() || sourceType == Text::GetTypeStatic();
+    //}
 
-    return false;
+    //return false;
+
+    return true;
 }
 
 bool MultiLineEdit::OnDragDropFinish(UIElement* source)
 {
-    if (source && editable_)
-    {
-        // If the UI element in question has a drag-and-drop content string defined, use it instead of element text
-        if (source->GetVars().Contains(VAR_ML_DRAGDROPCONTENT))
-        {
-            SetText(source->GetVar(VAR_ML_DRAGDROPCONTENT).GetString());
-            return true;
-        }
+    //if (source && editable_)
+    //{
+    //	// If the UI element in question has a drag-and-drop content string defined, use it instead of element text
+    //	if (source->GetVars().Contains(VAR_ML_DRAGDROPCONTENT))
+    //	{
+    //		SetText(source->GetVar(VAR_ML_DRAGDROPCONTENT).GetString());
+    //		return true;
+    //	}
 
-        StringHash sourceType = source->GetType();
-        if (sourceType == MultiLineEdit::GetTypeStatic())
-        {
-            MultiLineEdit* sourceMultiLineEdit = static_cast<MultiLineEdit*>(source);
-            SetText(sourceMultiLineEdit->GetText());
-            return true;
-        }
-        else if (sourceType == Text::GetTypeStatic())
-        {
-            Text* sourceText = static_cast<Text*>(source);
-            SetText(sourceText->GetText());
-            return true;
-        }
-    }
+    //	StringHash sourceType = source->GetType();
+    //	if (sourceType == MultiLineEdit::GetTypeStatic())
+    //	{
+    //		MultiLineEdit* sourceMultiLineEdit = static_cast<MultiLineEdit*>(source);
+    //		SetText(sourceMultiLineEdit->GetText());
+    //		return true;
+    //	}
+    //	else if (sourceType == Text::GetTypeStatic())
+    //	{
+    //		Text* sourceText = static_cast<Text*>(source);
+    //		SetText(sourceText->GetText());
+    //		return true;
+    //	}
+    //}
 
-    return false;
+    //return false;
+
+    return true;
 }
 
 void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
@@ -251,10 +261,13 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
     bool changed = false;
     bool cursorMoved = false;
 
+    if (!editable_)
+        return;
+
     switch (key)
     {
-    case 'X':
-    case 'C':
+    case KEY_X:
+    case KEY_C:
         if (textCopyable_ && qualifiers & QUAL_CTRL)
         {
             unsigned start = text_->GetSelectionStart();
@@ -263,7 +276,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             if (text_->GetSelectionLength())
                 GetSubsystem<UI>()->SetClipboardText(line_.SubstringUTF8(start, length));
 
-            if (key == 'X' && editable_)
+            if (key == KEY_X && editable_)
             {
                 if (start + length < line_.LengthUTF8())
                     line_ = line_.SubstringUTF8(0, start) + line_.SubstringUTF8(start + length);
@@ -276,7 +289,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         }
         break;
 
-    case 'V':
+    case KEY_V:
         if (editable_ && textCopyable_ && qualifiers & QUAL_CTRL)
         {
             const String& clipBoard = GetSubsystem<UI>()->GetClipboardText();
@@ -399,7 +412,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         if (multiLine_ && cursorMovable_ && cursorPosition_ > 0)
         {
             // get substring from start to cursor position
-            String substring = line_.SubstringUTF8(0,cursorPosition_);
+            String substring = line_.SubstringUTF8(0, cursorPosition_);
             // find nearest new line before cursor position
             unsigned lastlinepos = substring.FindLast("\n");
             // get substring from start to above new line
@@ -417,6 +430,14 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             }
 
         }
+
+        if (editable_ && qualifiers & QUAL_CTRL)
+        {
+            int currSize = static_cast<int>(text_->GetFontSize());
+            currSize += 2;
+            text_->SetFontSize((float)currSize);
+        }
+
         changed = true;
         break;
 
@@ -432,9 +453,9 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             // find position of new line after cursor postion
             unsigned nextlinepos = substring2.Find("\n") + cursorPosition_;
             // get substring from new line after cursor to end
-            String substring3 = line_.SubstringUTF8(nextlinepos+1);
+            String substring3 = line_.SubstringUTF8(nextlinepos + 1);
             // find position of new line after previous new line (width of line below cursor)
-            unsigned widthofbelow = substring3.Find("\n")+1;
+            unsigned widthofbelow = substring3.Find("\n") + 1;
             // move cursor according to cursor position and width of below line
             if (substring3.Find("\n") == 0xffffffff)
             {
@@ -457,21 +478,30 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
             }
 
         }
+
+        if (editable_ && qualifiers & QUAL_CTRL)
+        {
+            int currSize = static_cast<int>(text_->GetFontSize());
+            currSize -= 2;
+            currSize = Clamp(currSize, 6, 1000);
+            text_->SetFontSize((float)currSize);
+        }
+
         changed = true;
         break;
     case KEY_PAGEUP:
     case KEY_PAGEDOWN:
-        {
-            using namespace UnhandledKey;
+    {
+        using namespace UnhandledKey;
 
-            VariantMap& eventData = GetEventDataMap();
-            eventData[P_ELEMENT] = this;
-            eventData[P_KEY] = key;
-            eventData[P_BUTTONS] = buttons;
-            eventData[P_QUALIFIERS] = qualifiers;
-            SendEvent(E_UNHANDLEDKEY, eventData);
-        }
-        return;
+        VariantMap& eventData = GetEventDataMap();
+        eventData[P_ELEMENT] = this;
+        eventData[P_KEY] = key;
+        eventData[P_BUTTONS] = buttons;
+        eventData[P_QUALIFIERS] = qualifiers;
+        SendEvent(E_UNHANDLEDKEY, eventData);
+    }
+    return;
 
     case KEY_BACKSPACE:
         if (editable_)
@@ -506,6 +536,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
     case KEY_RETURN:
         if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
+
         {
             line_.Insert(cursorPosition_, "\n");
             cursorPosition_ += 1;
@@ -515,6 +546,7 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
 
     case KEY_TAB:
         if (editable_ && multiLine_ && (!hasMaxLines || GetNumLines() < maxLines))
+
         {
             line_.Insert(cursorPosition_, "    ");
             cursorPosition_ += 4;
@@ -532,19 +564,19 @@ void MultiLineEdit::OnKey(int key, int buttons, int qualifiers)
         break;
 
     case KEY_KP_ENTER:
-        {
-            // If using the on-screen keyboard, defocus this element to hide it now
-            if (GetSubsystem<UI>()->GetUseScreenKeyboard() && HasFocus())
-                SetFocus(false);
+    {
+        // If using the on-screen keyboard, defocus this element to hide it now
+        if (GetSubsystem<UI>()->GetUseScreenKeyboard() && HasFocus())
+            SetFocus(false);
 
-            using namespace TextFinished;
+        using namespace TextFinished;
 
-            VariantMap& eventData = GetEventDataMap();
-            eventData[P_ELEMENT] = this;
-            eventData[P_TEXT] = line_;
-            SendEvent(E_TEXTFINISHED, eventData);
-            return;
-        }
+        VariantMap& eventData = GetEventDataMap();
+        eventData[P_ELEMENT] = this;
+        eventData[P_TEXT] = line_;
+        SendEvent(E_TEXTFINISHED, eventData);
+        return;
+    }
 
     default:
         break;
@@ -565,6 +597,10 @@ void MultiLineEdit::OnTextInput(const String& text)
         return;
 
     bool changed = false;
+
+    // If only CTRL is held down, do not edit
+    //if ((qualifiers & (QUAL_CTRL | QUAL_ALT)) == QUAL_CTRL)
+    //    return;
 
     // Send char as an event to allow changing it
     using namespace TextEntry;
@@ -726,18 +762,16 @@ void MultiLineEdit::UpdateText()
 
 void MultiLineEdit::UpdateCursor()
 {
-    int x = text_->GetCharPosition(cursorPosition_).x_;
-    int y = text_->GetCharPosition(cursorPosition_).y_;
+    const Vector2 charPos = text_->GetCharPosition(cursorPosition_);
+    int x = static_cast<int>(charPos.x_) + 1;
+    int y = static_cast<int>(charPos.y_) - clipBorder_.top_;
 
-    IntVector2 size = GetSize() - IntVector2(clipBorder_.left_ * 2, clipBorder_.top_ * 2);
-    text_->SetSize(size);
-    text_->SetMinSize(size);
-    text_->SetFixedHeight(text_->GetHeight());
-    text_->SetPosition(GetIndentWidth() + clipBorder_.left_, clipBorder_.top_ * 2);
 
-    cursor_->SetPosition(text_->GetPosition() + IntVector2((x - text_->GetCharSize(cursorPosition_).x_ / 2) + 2, y));
+    text_->SetPosition(GetIndentWidth() + clipBorder_.left_, clipBorder_.top_);
+    cursor_->SetPosition(IntVector2(x, y));
     //cursor_->SetSize(cursor_->GetWidth(), text_->GetRowHeight());
-    cursor_->SetSize(4, text_->GetRowHeight());
+    cursor_->SetFixedSize(4, static_cast<int>(text_->GetRowHeight()));
+    cursor_->SetSize(4, static_cast<int>(text_->GetRowHeight()));
     // Scroll if necessary
     int sx = -GetChildOffset().x_;
     int left = clipBorder_.left_;
@@ -764,7 +798,8 @@ unsigned MultiLineEdit::GetCharIndex(const IntVector2& position)
 
     for (int i = text_->GetNumChars(); i >= 0; --i)
     {
-        if (textPosition.x_ >= text_->GetCharPosition((unsigned)i).x_ && textPosition.y_ >= text_->GetCharPosition((unsigned)i).y_)
+        if (textPosition.x_ >= text_->GetCharPosition((unsigned)i).x_ &&
+            textPosition.y_ >= text_->GetCharPosition((unsigned)i).y_)
             return (unsigned)i;
     }
 
@@ -798,26 +833,24 @@ void MultiLineEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     int key = eventData[P_KEY].GetInt();
     int mouseButtons_ = eventData[P_BUTTONS].GetInt();
     int qualifiers_ = eventData[P_QUALIFIERS].GetInt();
-		bool repeat = eventData[P_REPEAT].GetBool();
+    bool repeat = eventData[P_REPEAT].GetBool();
 
-		//manually ensure that only one key press is handled per frame.
-		if (repeat)
+    //manually ensure that only one key press is handled per frame.
+    if (repeat)
         OnKey(key, mouseButtons_, qualifiers_);
 }
-
 void MultiLineEdit::SetFontColor(Color color)
 {
-	text_->SetColor(color);
+    text_->SetColor(color);
 }
-
 void MultiLineEdit::SetFontSize(int size)
 {
-	text_->SetFont(text_->GetFont(), size);
+    text_->SetFont(text_->GetFont(), (float)size);
 }
-
 void MultiLineEdit::HandleLayoutUpdated(StringHash eventType, VariantMap& eventData)
 {
     UpdateCursor();
 }
 
 }
+

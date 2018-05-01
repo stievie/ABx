@@ -20,4 +20,10 @@ void MailBox::Update()
     }
 }
 
+bool MailBox::GetMail(const std::string& uuid, AB::Entities::Mail& mail)
+{
+    mail.uuid = uuid;
+    return IO::IOMail::GetMail(mail);
+}
+
 }

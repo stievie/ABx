@@ -42,6 +42,8 @@ protected:
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
     void ParseError(const std::shared_ptr<InputMessage>& message);
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
+    void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);
+    void ParseMailComplete(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message);
@@ -62,6 +64,9 @@ public:
         const std::string& charUuid, const std::string& map, const std::string& host, uint16_t port);
     void Logout();
     void Ping(const PingCallback& callback);
+    void GetMailHeaders();
+    void GetMail(const std::string& mailUuid);
+
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

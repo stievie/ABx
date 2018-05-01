@@ -52,4 +52,10 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     return ret;
 }
 
+bool IOMail::GetMail(AB::Entities::Mail& mail)
+{
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    return client->Read(mail);
+}
+
 }

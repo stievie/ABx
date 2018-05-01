@@ -73,6 +73,42 @@ void Player::UpdateMailBox()
     }
 }
 
+void Player::GetMailHeaders()
+{
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::MailHeaders);
+    msg.Add<uint16_t>(static_cast<uint16_t>(mailBox_->GetTotalMailCount()));
+    const AB::Entities::MailList& mails = mailBox_->GetMails();
+    for (const auto& mail : mails.mails)
+    {
+        msg.AddString(mail.uuid);
+        msg.AddString(mail.fromName);
+        msg.AddString(mail.subject);
+        msg.Add<int64_t>(mail.created);
+        msg.AddByte(mail.isRead ? 1 : 0);
+    }
+    client_->WriteToOutput(msg);
+}
+
+void Player::GetMail(const std::string mailUuid)
+{
+    // mailUuid must not be a reference!
+    AB::Entities::Mail m;
+    if (mailBox_->GetMail(mailUuid, m))
+    {
+        Net::NetworkMessage msg;
+        msg.AddByte(AB::GameProtocol::MailComplete);
+        msg.AddString(m.fromAccountUuid);
+        msg.AddString(m.fromName);
+        msg.AddString(m.toName);
+        msg.AddString(m.subject);
+        msg.AddString(m.message);
+        msg.Add<int64_t>(m.created);
+        msg.AddByte(m.isRead ? 1 : 0);
+        client_->WriteToOutput(msg);
+    }
+}
+
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     const std::string& command, Net::NetworkMessage& message)
 {

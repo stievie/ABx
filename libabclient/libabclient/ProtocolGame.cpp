@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ProtocolGame.h"
 #include "TimeUtils.h"
+#include <AB/Entities/MailList.h>
+#include <AB/Entities/Mail.h>
 
 #include "DebugNew.h"
 
@@ -70,6 +72,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
             break;
         case AB::GameProtocol::GamePong:
             ParsePong(message);
+            break;
+        case AB::GameProtocol::MailHeaders:
+            ParseMailHeaders(message);
+            break;
+        case AB::GameProtocol::MailComplete:
+            ParseMailComplete(message);
             break;
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
@@ -222,6 +230,38 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
         receiver_->OnEnterWorld(updateTick_, map, playerId);
 }
 
+void ProtocolGame::ParseMailHeaders(const std::shared_ptr<InputMessage>& message)
+{
+    uint16_t mailCount = message->Get<uint16_t>();
+    std::vector<AB::Entities::MailHeader> mailHeaders;
+    for (uint16_t i = 0; i < mailCount; i++)
+    {
+        mailHeaders.push_back({
+            message->GetString(),         // UUID
+            message->GetString(),         // From name
+            message->GetString(),         // Subject
+            message->Get<int64_t>(),      // Created
+            message->Get<uint8_t>() != 0  // Read
+        });
+    }
+    if (receiver_)
+        receiver_->OnGetMailHeaders(updateTick_, mailHeaders);
+}
+
+void ProtocolGame::ParseMailComplete(const std::shared_ptr<InputMessage>& message)
+{
+    AB::Entities::Mail mail;
+    mail.fromAccountUuid = message->GetString();
+    mail.fromName = message->GetString();
+    mail.toName = message->GetString();
+    mail.subject = message->GetString();
+    mail.message = message->GetString();
+    mail.created = message->Get<int64_t>();
+    mail.isRead = message->Get<uint8_t>() != 0;
+    if (receiver_)
+        receiver_->OnGetMail(updateTick_, mail);
+}
+
 void ProtocolGame::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
@@ -249,6 +289,21 @@ void ProtocolGame::Ping(const PingCallback& callback)
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
+    Send(msg);
+}
+
+void ProtocolGame::GetMailHeaders()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMailHeaders);
+    Send(msg);
+}
+
+void ProtocolGame::GetMail(const std::string& mailUuid)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMail);
+    msg->AddString(mailUuid);
     Send(msg);
 }
 

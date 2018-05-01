@@ -421,6 +421,8 @@ void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventDat
 void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
 {
     MailWindow* mailwnd = new MailWindow(context_);
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->GetMailHeaders();
 }
 
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)

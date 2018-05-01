@@ -88,6 +88,15 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);
         break;
+    case AB::GameProtocol::PacketTypeGetMailHeaders:
+        AddPlayerTask(&Game::Player::GetMailHeaders);
+        break;
+    case AB::GameProtocol::PacketTypeGetMail:
+    {
+        const std::string mailUuid = message.GetString();
+        AddPlayerTask(&Game::Player::GetMail, mailUuid);
+        break;
+    }
     case AB::GameProtocol::PacketTypeMove:
     {
         Utils::VariantMap data;
