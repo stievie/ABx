@@ -178,6 +178,12 @@ void FwClient::GetMailHeaders()
         client_.GetMailHeaders();
 }
 
+void FwClient::ReadMail(const std::string& uuid)
+{
+    if (loggedIn_)
+        client_.GetMail(uuid);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -239,11 +245,16 @@ void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entiti
 {
     mailHeaders_ = headers;
     // TODO
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(AbEvents::E_MAIL_INBOX, eData);
 }
 
 void FwClient::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
 {
     // TODO
+    currentMail_ = mail;
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(AbEvents::E_MAIL_READ, eData);
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId)

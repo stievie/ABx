@@ -345,6 +345,16 @@
     <element type="ChatLogWhisperChatText" style="ChatLogText" auto="false">
         <attribute name="Color" value="0.57 0.69 0.8" />
     </element>
+    <element type="ChatLogMailText" style="ChatLogText" auto="false">
+        <attribute name="Color" value="0.95 0.95 0.95" />
+    </element>
+    <element type="ChatLogMailText" style="ChatLogText" auto="false">
+        <attribute name="Color" value="0.95 0.95 0.95" />
+    </element>
+    <element type="ChatLogMailUnreadText" style="ChatLogText" auto="false">
+        <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
+        <attribute name="Color" value="0.95 0.95 0.95" />
+    </element>
     <element type="ChatLineEdit" style="LineEdit" auto="false">
         <attribute name="Min Size" value="0 20" />
         <attribute name="Max Size" value="2147483647 20" />

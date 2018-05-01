@@ -219,6 +219,8 @@ enum CommandTypes : uint8_t
     CommandTypeChatWhisper,          // /w <name>, <message>
     // Mail
     CommandTypeMailSend,             // /mail <name>, <message>
+    CommandTypeMailInbox,            // /inbox
+    CommandTypeMailRead,             // /read <index>
 
     // Other
     CommandTypeRoll,                 // /roll <number>

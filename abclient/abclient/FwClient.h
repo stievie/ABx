@@ -26,6 +26,7 @@ private:
     AB::Entities::CharacterList characters_;
     std::vector<AB::Entities::Game> games_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
+    AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -59,6 +60,7 @@ public:
     void ChangeWorld(const String& map);
     void Logout();
     void GetMailHeaders();
+    void ReadMail(const std::string& uuid);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
@@ -109,6 +111,14 @@ public:
     const std::vector<AB::Entities::Game>& GetGames() const
     {
         return games_;
+    }
+    const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
+    {
+        return mailHeaders_;
+    }
+    const AB::Entities::Mail& GetCurrentMail() const
+    {
+        return currentMail_;
     }
     int GetAvgPing() const
     {

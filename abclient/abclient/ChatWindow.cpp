@@ -42,6 +42,8 @@ ChatWindow::ChatWindow(Context* context) :
 
     SubscribeToEvent(AbEvents::E_SERVER_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
     SubscribeToEvent(AbEvents::E_CHAT_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
+    SubscribeToEvent(AbEvents::E_MAIL_INBOX, URHO3D_HANDLER(ChatWindow, HandleMailInboxMessage));
+    SubscribeToEvent(AbEvents::E_MAIL_READ, URHO3D_HANDLER(ChatWindow, HandleMailReadMessage));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     static bool firstStart = true;
@@ -332,6 +334,50 @@ void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
     }
 }
 
+void ChatWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventData)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
+    {
+        kainjow::mustache::mustache tpl{ "You have {{count}} mails:" };
+        kainjow::mustache::data data;
+        data.set("count", std::to_string(headers.size()));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
+    }
+    kainjow::mustache::mustache tpl{ "#{{index}}: <{{from}}> {{subject}} at {{date}}" };
+    unsigned i = 0;
+    for (const auto& header : headers)
+    {
+        ++i;
+        kainjow::mustache::data data;
+        data.set("index", std::to_string(i));
+        data.set("from", header.fromName);
+        data.set("subject", header.subject);
+        time_t tm = header.created / 1000;
+        data.set("date", asctime(gmtime(&tm)));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), header.isRead ? "ChatLogMailText" : "ChatLogMailUnreadText");
+    }
+}
+
+void ChatWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventData)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    const AB::Entities::Mail mail = client->GetCurrentMail();
+    {
+        kainjow::mustache::mustache tpl{ "<{{from}}> at {{date}}" };
+        kainjow::mustache::data data;
+        data.set("from", mail.fromName);
+        data.set("subject", mail.subject);
+        time_t tm = mail.created / 1000;
+        data.set("date", asctime(gmtime(&tm)));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogMailText");
+    }
+    AddLine(String(mail.message.c_str(), (unsigned)mail.message.size()), "ChatLogMailText");
+}
+
 void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
 {
     AB::GameProtocol::CommandTypes type = AB::GameProtocol::CommandTypeUnknown;
@@ -370,6 +416,10 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeRoll;
         else if (cmd.Compare("mail") == 0)
             type = AB::GameProtocol::CommandTypeMailSend;
+        else if (cmd.Compare("inbox") == 0)
+            type = AB::GameProtocol::CommandTypeMailInbox;
+        else if (cmd.Compare("read") == 0)
+            type = AB::GameProtocol::CommandTypeMailRead;
 
         else if (cmd.Compare("age") == 0)
             type = AB::GameProtocol::CommandTypeAge;
@@ -424,6 +474,9 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
+        AddLine("  /inbox: Show you mail inbox", "ChatLogServerInfoText");
+        AddLine("  /read <index>: Read mail with <index>", "ChatLogServerInfoText");
+        AddLine("  /delete <index>: Delete mail with <index>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
@@ -437,6 +490,28 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
         String sIp(buffer);
         AddLine(sIp, "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandTypeMailInbox:
+    {
+        FwClient* client = context_->GetSubsystem<FwClient>();
+        client->GetMailHeaders();
+        break;
+    }
+    case AB::GameProtocol::CommandTypeMailRead:
+    {
+        unsigned p = data.Find(' ');
+        String sIndex = data.Substring(p + 1).Trimmed();
+        if (!sIndex.Empty())
+        {
+            FwClient* client = context_->GetSubsystem<FwClient>();
+            const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
+            int index = atoi(sIndex.CString());
+            if (index > 0 && index <= headers.size())
+            {
+                client->ReadMail(headers[index - 1].uuid);
+            }
+        }
         break;
     }
     case AB::GameProtocol::CommandTypeUnknown:

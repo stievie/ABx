@@ -55,7 +55,17 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
 bool IOMail::GetMail(AB::Entities::Mail& mail)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
-    return client->Read(mail);
+    bool ret = client->Read(mail);
+    if (ret)
+    {
+        mail.isRead = true;
+        client->Update(mail);
+        // Invalidate mail list
+        AB::Entities::MailList ml;
+        ml.uuid = mail.toAccountUuid;
+        client->Invalidate(ml);
+    }
+    return ret;
 }
 
 }

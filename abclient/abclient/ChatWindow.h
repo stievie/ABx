@@ -25,6 +25,8 @@ private:
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleMailInboxMessage(StringHash eventType, VariantMap& eventData);
+    void HandleMailReadMessage(StringHash eventType, VariantMap& eventData);
     void ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel);
     void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel);
     LineEdit* GetActiveLineEdit();
