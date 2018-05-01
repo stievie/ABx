@@ -257,7 +257,8 @@ void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
         pos, scale, direction, data);
 }
 
-void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
+void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
+    const Vector3& position, const Vector3& scale,
     const Quaternion& rot, PropReadStream& data)
 {
     uint8_t objectType;

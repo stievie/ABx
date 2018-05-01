@@ -154,109 +154,140 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
 {
     AB::GameProtocol::ServerMessageType type =
         static_cast<AB::GameProtocol::ServerMessageType>(eventData[AbEvents::ED_MESSAGE_TYPE].GetInt());
-    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
     switch (type)
     {
     case AB::GameProtocol::ServerMessageTypeInfo:
-        AddLine(message, "ChatLogServerInfoText");
+        HandleServerMessageInfo(eventData);
         break;
     case AB::GameProtocol::ServerMessageTypeRoll:
-    {
-        String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-        unsigned p = message.Find(":");
-        String res = message.Substring(0, p);
-        String max = message.Substring(p + 1);
-        kainjow::mustache::mustache tpl{ "{{name}} rolls {{res}} on a {{max}} sided die." };
-        kainjow::mustache::data data;
-        data.set("name", std::string(sender.CString(), sender.Length()));
-        data.set("res", std::string(res.CString(), res.Length()));
-        data.set("max", std::string(max.CString(), max.Length()));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
+        HandleServerMessageRoll(eventData);
         break;
-    }
     case AB::GameProtocol::ServerMessageTypeAge:
-    {
-        unsigned p = message.Find(":");
-        String age = message.Substring(0, p);
-        String playTime = message.Substring(p + 1);
-        // Seconds
-        uint32_t uAge = std::atoi(age.CString());
-        // Seconds
-        uint32_t uPlayTime = std::atoi(playTime.CString());
-        Client::TimeSpan tAge(uAge);
-        std::stringstream ss;
-        ss << "You have played this characters for ";
-        uint32_t hours = uPlayTime / 3600;
-        if (hours > 0)
-            uPlayTime -= hours * 3600;
-        uint32_t minutes = uPlayTime / 60;
-        if (minutes > 0)
-            uPlayTime -= minutes * 60;
-        if (hours > 0)
-            ss << hours << " hour(s) ";
-        ss << minutes << " minute(s) over the past ";
-        if (tAge.months > 0)
-            ss << tAge.months << " month(s).";
-        else
-            ss << tAge.days << " day(s).";
-        AddLine(String(ss.str().c_str()), "ChatLogServerInfoText");
+        HandleServerMessageAge(eventData);
         break;
-    }
     case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
-    {
-        String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-        AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
+        HandleServerMessagePlayerNotOnline(eventData);
         break;
-    }
     case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
-    {
-        String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-        String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-        AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
+        HandleServerMessagePlayerGotMessage(eventData);
         break;
-    }
     case AB::GameProtocol::ServerMessageTypeNewMail:
-    {
-        String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-        kainjow::mustache::mustache tpl{ "You got {{count}} new mail(s)." };
-        kainjow::mustache::data data;
-        data.set("count", std::string(count.CString(), count.Length()));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        HandleServerMessageNewMail(eventData);
         break;
-    }
     case AB::GameProtocol::ServerMessageTypeMailSent:
-    {
-        String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-        kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
-        kainjow::mustache::data data;
-        data.set("recipient", std::string(name.CString(), name.Length()));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        HandleServerMessageMailSent(eventData);
         break;
-    }
     case AB::GameProtocol::ServerMessageTypeMailNotSent:
-    {
-        String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-        kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
-        kainjow::mustache::data data;
-        data.set("recipient", std::string(name.CString(), name.Length()));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        HandleServerMessageMailNotSent(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeMailboxFull:
+        HandleServerMessageMailboxFull(eventData);
         break;
     }
-    case AB::GameProtocol::ServerMessageTypeMailboxFull:
-    {
-        String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-        kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
-        kainjow::mustache::data data;
-        data.set("count", std::string(count.CString(), count.Length()));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
 
-    }
-    }
+void ChatWindow::HandleServerMessageInfo(VariantMap& eventData)
+{
+    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    AddLine(message, "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
+{
+    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    unsigned p = message.Find(":");
+    String res = message.Substring(0, p);
+    String max = message.Substring(p + 1);
+    kainjow::mustache::mustache tpl{ "{{name}} rolls {{res}} on a {{max}} sided die." };
+    kainjow::mustache::data data;
+    data.set("name", std::string(sender.CString(), sender.Length()));
+    data.set("res", std::string(res.CString(), res.Length()));
+    data.set("max", std::string(max.CString(), max.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
+}
+
+void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
+{
+    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    unsigned p = message.Find(":");
+    String age = message.Substring(0, p);
+    String playTime = message.Substring(p + 1);
+    // Seconds
+    uint32_t uAge = std::atoi(age.CString());
+    // Seconds
+    uint32_t uPlayTime = std::atoi(playTime.CString());
+    Client::TimeSpan tAge(uAge);
+    std::stringstream ss;
+    ss << "You have played this characters for ";
+    uint32_t hours = uPlayTime / 3600;
+    if (hours > 0)
+        uPlayTime -= hours * 3600;
+    uint32_t minutes = uPlayTime / 60;
+    if (minutes > 0)
+        uPlayTime -= minutes * 60;
+    if (hours > 0)
+        ss << hours << " hour(s) ";
+    ss << minutes << " minute(s) over the past ";
+    if (tAge.months > 0)
+        ss << tAge.months << " month(s).";
+    else
+        ss << tAge.days << " day(s).";
+    AddLine(String(ss.str().c_str()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
+{
+    String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
+{
+    String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
+{
+    String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "You got {{count}} new mail(s)." };
+    kainjow::mustache::data data;
+    data.set("count", std::string(count.CString(), count.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
+{
+    String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
+    kainjow::mustache::data data;
+    data.set("recipient", std::string(name.CString(), name.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
+{
+    String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
+    kainjow::mustache::data data;
+    data.set("recipient", std::string(name.CString(), name.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
+{
+    String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
+    kainjow::mustache::data data;
+    data.set("count", std::string(count.CString(), count.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)

@@ -12,6 +12,15 @@ private:
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleServerMessage(StringHash eventType, VariantMap& eventData);
+    void HandleServerMessageInfo(VariantMap& eventData);
+    void HandleServerMessageRoll(VariantMap& eventData);
+    void HandleServerMessageAge(VariantMap& eventData);
+    void HandleServerMessagePlayerNotOnline(VariantMap& eventData);
+    void HandleServerMessagePlayerGotMessage(VariantMap& eventData);
+    void HandleServerMessageNewMail(VariantMap& eventData);
+    void HandleServerMessageMailSent(VariantMap& eventData);
+    void HandleServerMessageMailNotSent(VariantMap& eventData);
+    void HandleServerMessageMailboxFull(VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
