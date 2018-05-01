@@ -79,13 +79,13 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
 void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetStringEncrypted();
+    const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetStringEncrypted();
+    const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
@@ -103,7 +103,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetStringEncrypted();
+    const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
@@ -114,25 +114,24 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetStringEncrypted();
+    const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    std::string email = message.GetStringEncrypted();
+    const std::string email = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidEmail);
         return;
     }
-    std::string accKey = message.GetStringEncrypted();
+    const std::string accKey = message.GetStringEncrypted();
     if (accKey.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
-    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::tolower);
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
@@ -146,19 +145,19 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetStringEncrypted();
+    const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetStringEncrypted();
+    const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    std::string charName = message.GetStringEncrypted();
+    const std::string charName = message.GetStringEncrypted();
     if (charName.empty())
     {
         DisconnectClient(AB::Errors::InvalidCharacterName);
@@ -176,7 +175,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidPlayerSex);
         return;
     }
-    std::string prof = message.GetString();
+    const std::string prof = message.GetString();
     if (prof.empty())
     {
         DisconnectClient(AB::Errors::InvalidProfession);
@@ -202,13 +201,13 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetStringEncrypted();
+    const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetStringEncrypted();
+    const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
@@ -233,25 +232,24 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetStringEncrypted();
+    const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetStringEncrypted();
+    const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
-    std::string accKey = message.GetStringEncrypted();
+    const std::string accKey = message.GetStringEncrypted();
     if (accKey.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
-    std::transform(accKey.begin(), accKey.end(), accKey.begin(), ::tolower);
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
@@ -265,13 +263,13 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
 {
-    std::string accountName = message.GetStringEncrypted();
+    const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
-    std::string password = message.GetStringEncrypted();
+    const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
@@ -297,7 +295,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
-    const auto player = Game::PlayerManager::Instance.GetPlayerByAccountId(account.uuid);
+    const auto player = Game::PlayerManager::Instance.GetPlayerByAccountUuid(account.uuid);
     if (player)
     {
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
@@ -396,7 +394,7 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 }
 
 void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::string& password,
-    std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
+    const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
     AB::Entities::Account account;
     bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);

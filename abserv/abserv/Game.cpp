@@ -190,7 +190,7 @@ Player* Game::GetPlayerById(uint32_t playerId)
 
 Player* Game::GetPlayerByName(const std::string& name)
 {
-    uint32_t playerId = PlayerManager::Instance.GetPlayerId(name);
+    uint32_t playerId = PlayerManager::Instance.GetPlayerIdByName(name);
     if (playerId != 0)
         return GetPlayerById(playerId);
     return nullptr;

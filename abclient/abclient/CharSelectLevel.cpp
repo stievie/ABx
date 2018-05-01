@@ -146,9 +146,9 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
     int index = std::atoi(sender->GetName().CString());
     FwClient* net = context_->GetSubsystem<FwClient>();
-    String name = String(net->GetCharacters()[index].name.c_str());
+    String uuid = String(net->GetCharacters()[index].uuid.c_str());
     String map = String(net->GetCharacters()[index].lastMap.c_str());
-    net->EnterWorld(name, map);
+    net->EnterWorld(uuid, map);
 }
 
 void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& eventData)

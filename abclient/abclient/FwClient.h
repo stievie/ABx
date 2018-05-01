@@ -25,7 +25,7 @@ private:
     Client::Client::ClientState lastState_;
     AB::Entities::CharacterList characters_;
     std::vector<AB::Entities::Game> games_;
-    String currentCharacter_;
+    String currentCharacterUuid_;
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
@@ -54,7 +54,7 @@ public:
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
     void CreatePlayer(const String& name, const String& prof, AB::Entities::CharacterSex sex, bool isPvp);
-    void EnterWorld(const String& charName, const String& map);
+    void EnterWorld(const String& charUuid, const String& map);
     void ChangeWorld(const String& map);
     void Logout();
     void Move(uint8_t direction);
@@ -94,9 +94,9 @@ public:
             loggedIn_ = false;
         client_.state_ = state;
     }
-    const String& GetCurrentCharacter() const
+    const String& GetCurrentCharacterUuid() const
     {
-        return currentCharacter_;
+        return currentCharacterUuid_;
     }
     const AB::Entities::CharacterList& GetCharacters() const
     {

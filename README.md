@@ -30,6 +30,11 @@ after `abdata`.
 `abserv` Arguments
 : `-conf "<Path To>/Bin/config_svc.lua" -log "<Path To>/Bin/logs/abserv"`
 
+### MySQL
+
+You may want to increase `max_allowed_packet` in `my.cnf / my.ini`  in the `[mysqld]`
+section to e.g. `32M`, if the data server loses connection from time to time.
+
 ## Run Client
 
 1. Start `fw.exe`

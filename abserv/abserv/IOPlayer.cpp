@@ -35,6 +35,14 @@ bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
     return true;
 }
 
+bool IOPlayer::LoadPlayerByUuid(Game::Player* player, const std::string& uuid)
+{
+    player->data_.uuid = uuid;
+    if (!LoadCharacter(player->data_))
+        return false;
+    return true;
+}
+
 bool IOPlayer::SavePlayer(Game::Player* player)
 {
     AB_PROFILE;
@@ -90,7 +98,7 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 }
 
 IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUuid,
-    std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
+    const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
 

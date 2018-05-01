@@ -10,8 +10,20 @@ PlayerManager PlayerManager::Instance;
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 {
-    auto it = playerNames_.find(name);
-    if (it != playerNames_.end())
+    auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
+    {
+        return current.second->data_.name.compare(name) == 0;
+    });
+    if (it != players_.end())
+        return (*it).second;
+
+    return std::shared_ptr<Player>();
+}
+
+std::shared_ptr<Player> PlayerManager::GetPlayerByUuid(const std::string& uuid)
+{
+    auto it = playerUuids_.find(uuid);
+    if (it != playerUuids_.end())
         return (*it).second->GetThis();
     return std::shared_ptr<Player>();
 }
@@ -25,7 +37,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
     return std::shared_ptr<Player>();
 }
 
-std::shared_ptr<Player> PlayerManager::GetPlayerByAccountId(const std::string& uuid)
+std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string& uuid)
 {
     auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
     {
@@ -37,15 +49,18 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByAccountId(const std::string& u
     return std::shared_ptr<Player>();
 }
 
-uint32_t PlayerManager::GetPlayerId(const std::string& name)
+uint32_t PlayerManager::GetPlayerIdByName(const std::string& name)
 {
-    auto it = playerNames_.find(name);
-    if (it != playerNames_.end())
-        return (*it).second->id_;
+    auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
+    {
+        return current.second->data_.name.compare(name) == 0;
+    });
+    if (it != players_.end())
+        return (*it).first;
     return 0;
 }
 
-std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& name,
+std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& playerUuid,
     std::shared_ptr<Net::ProtocolGame> client)
 {
     std::shared_ptr<Player> result = std::make_shared<Player>(client);
@@ -53,7 +68,7 @@ std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& name,
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
         players_[result->id_] = result;
-        playerNames_[name] = result.get();
+        playerUuids_[playerUuid] = result.get();
     }
 
     return result;
@@ -64,9 +79,9 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
     auto it = players_.find(playerId);
     if (it != players_.end())
     {
-        std::string name = (*it).second->GetName();
+        const std::string& uuid = (*it).second->data_.uuid;
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        playerNames_.erase(name);
+        playerUuids_.erase(uuid);
         players_.erase(it);
     }
 }

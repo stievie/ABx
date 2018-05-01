@@ -24,7 +24,7 @@ public:
 private:
     std::string accountName_;
     std::string accountPass_;
-    std::string charName_;
+    std::string charUuid_;
     std::string map_;
     int64_t pingTick_;
     int64_t updateTick_;
@@ -59,7 +59,7 @@ public:
     Receiver* receiver_;
 
     void Login(const std::string& accountName, const std::string& accountPass,
-        const std::string& charName, const std::string& map, const std::string& host, uint16_t port);
+        const std::string& charUuid, const std::string& map, const std::string& host, uint16_t port);
     void Logout();
     void Ping(const PingCallback& callback);
     void Move(uint8_t direction);

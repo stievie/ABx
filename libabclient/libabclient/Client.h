@@ -28,6 +28,7 @@ private:
     std::shared_ptr<ProtocolLogin> protoLogin_;
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
+    std::string accountUuid_;
     std::string password_;
     std::string mapName_;
     std::vector<int> pings_;
@@ -49,7 +50,7 @@ public:
         const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp);
 
     /// Connect to game server -> authenticate -> enter game
-    void EnterWorld(const std::string& charName, const std::string& map);
+    void EnterWorld(const std::string& charUuid, const std::string& map);
     void Update(int timeElapsed);
 
     uint32_t GetIp() const;

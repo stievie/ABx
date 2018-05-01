@@ -17,16 +17,16 @@
 
 namespace Net {
 
-void ProtocolGame::Login(const std::string& name, const uuids::uuid& accountUuid, const std::string& map)
+void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid, const std::string& map)
 {
-    std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByName(name);
+    std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByUuid(playerUuid);
     if (foundPlayer)
     {
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         return;
     }
 
-    player_ = Game::PlayerManager::Instance.CreatePlayer(name, GetThis());
+    player_ = Game::PlayerManager::Instance.CreatePlayer(playerUuid, GetThis());
 
     if (Auth::BanManager::Instance.IsAccountBanned(accountUuid))
     {
@@ -34,7 +34,7 @@ void ProtocolGame::Login(const std::string& name, const uuids::uuid& accountUuid
         return;
     }
 
-    if (!IO::IOPlayer::LoadPlayerByName(player_.get(), name))
+    if (!IO::IOPlayer::LoadPlayerByUuid(player_.get(), playerUuid))
     {
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
@@ -171,7 +171,8 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     }
     default:
-        LOG_ERROR << "Player " << player_->GetName() << " sent an unknown packet header: 0x" <<
+        LOG_ERROR << Utils::ConvertIPToString(GetIP()) << ": Player " << player_->GetName() <<
+            " sent an unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
         break;
     }

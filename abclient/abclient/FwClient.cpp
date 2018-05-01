@@ -149,12 +149,12 @@ void FwClient::CreatePlayer(const String& name, const String& prof, AB::Entities
     }
 }
 
-void FwClient::EnterWorld(const String& charName, const String& map)
+void FwClient::EnterWorld(const String& charUuid, const String& map)
 {
     if (loggedIn_)
     {
-        currentCharacter_ = charName;
-        client_.EnterWorld(std::string(charName.CString()), std::string(map.CString()));
+        currentCharacterUuid_ = charUuid;
+        client_.EnterWorld(std::string(charUuid.CString()), std::string(map.CString()));
     }
 }
 
@@ -162,7 +162,7 @@ void FwClient::ChangeWorld(const String& map)
 {
     if (loggedIn_)
     {
-        client_.EnterWorld(std::string(currentCharacter_.CString()), std::string(map.CString()));
+        client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(map.CString()));
     }
 }
 

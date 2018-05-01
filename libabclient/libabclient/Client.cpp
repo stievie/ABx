@@ -218,7 +218,7 @@ void Client::GetGameList()
     Connection::Run();
 }
 
-void Client::EnterWorld(const std::string& charName, const std::string& map)
+void Client::EnterWorld(const std::string& charUuid, const std::string& map)
 {
     // Enter or changing the world
     if (state_ != StateSelectChar && state_ != StateWorld)
@@ -236,7 +236,7 @@ void Client::EnterWorld(const std::string& charName, const std::string& map)
         // If we came from the select character scene
         protoLogin_.reset();
 
-    protoGame_->Login(accountName_, password_, charName, map, gameHost_, gamePort_);
+    protoGame_->Login(accountName_, password_, charUuid, map, gameHost_, gamePort_);
 }
 
 void Client::Update(int timeElapsed)
@@ -256,6 +256,7 @@ void Client::Update(int timeElapsed)
 
     if (lastRun_ >= 16)
     {
+        // Don't send more than 60 updates to the server, it might DC.
         Connection::Run();
         lastRun_ = 0;
     }

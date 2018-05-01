@@ -16,13 +16,13 @@ ProtocolGame::ProtocolGame() :
 }
 
 void ProtocolGame::Login(const std::string& accountName,
-    const std::string& accountPass, const std::string& charName,
+    const std::string& accountPass, const std::string& charUuid,
     const std::string& map,
     const std::string& host, uint16_t port)
 {
     accountName_ = accountName;
     accountPass_ = accountPass;
-    charName_ = charName;
+    charUuid_ = charUuid;
     map_ = map;
 
     Connect(host, port);
@@ -230,7 +230,7 @@ void ProtocolGame::SendLoginPacket()
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->AddString(accountName_);
     msg->AddString(accountPass_);
-    msg->AddString(charName_);
+    msg->AddString(charUuid_);
     msg->AddString(map_);
     Send(msg);
 }

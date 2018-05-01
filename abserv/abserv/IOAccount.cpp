@@ -130,7 +130,7 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
     return true;
 }
 
-uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string& pass, const std::string& charName)
+uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string& pass, const std::string& charUuid)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
@@ -142,7 +142,7 @@ uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string&
         return uuids::uuid();
 
     AB::Entities::Character ch;
-    ch.name = charName;
+    ch.uuid = charUuid;
     if (!client->Read(ch))
         return uuids::uuid();
     if (ch.accountUuid.compare(acc.uuid) != 0)
