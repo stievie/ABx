@@ -345,7 +345,7 @@ void ChatWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventD
         std::string t = tpl.render(data);
         AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
     }
-    kainjow::mustache::mustache tpl{ "#{{index}}: <{{from}}> {{subject}} at {{date}}" };
+    kainjow::mustache::mustache tpl{ "#{{index}}: <{{from}}> on {{date}}: {{subject}}" };
     unsigned i = 0;
     for (const auto& header : headers)
     {
@@ -354,8 +354,7 @@ void ChatWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventD
         data.set("index", std::to_string(i));
         data.set("from", header.fromName);
         data.set("subject", header.subject);
-        time_t tm = header.created / 1000;
-        data.set("date", asctime(gmtime(&tm)));
+        data.set("date", Client::format_tick(header.created));
         std::string t = tpl.render(data);
         AddLine(String(t.c_str(), (unsigned)t.size()), header.isRead ? "ChatLogMailText" : "ChatLogMailUnreadText");
     }
@@ -366,15 +365,15 @@ void ChatWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventDa
     FwClient* client = context_->GetSubsystem<FwClient>();
     const AB::Entities::Mail mail = client->GetCurrentMail();
     {
-        kainjow::mustache::mustache tpl{ "<{{from}}> at {{date}}" };
+        kainjow::mustache::mustache tpl{ "{{from}} to {{to}} on {{date}}" };
         kainjow::mustache::data data;
         data.set("from", mail.fromName);
-        data.set("subject", mail.subject);
-        time_t tm = mail.created / 1000;
-        data.set("date", asctime(gmtime(&tm)));
+        data.set("to", mail.toName);
+        data.set("date", Client::format_tick(mail.created));
         std::string t = tpl.render(data);
         AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogMailText");
     }
+    AddLine(String(mail.subject.c_str(), (unsigned)mail.subject.size()), "ChatLogMailText");
     AddLine(String(mail.message.c_str(), (unsigned)mail.message.size()), "ChatLogMailText");
 }
 
@@ -474,7 +473,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
-        AddLine("  /inbox: Show you mail inbox", "ChatLogServerInfoText");
+        AddLine("  /inbox: Show your mail inbox", "ChatLogServerInfoText");
         AddLine("  /read <index>: Read mail with <index>", "ChatLogServerInfoText");
         AddLine("  /delete <index>: Delete mail with <index>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");

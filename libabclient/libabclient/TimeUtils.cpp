@@ -33,4 +33,15 @@ void microsleep(size_t us)
     std::this_thread::sleep_for(std::chrono::microseconds(us));
 }
 
+std::string format_tick(int64_t tick)
+{
+    time_t tm = tick / 1000;
+    char buff[256];
+    struct tm t1;
+    if (localtime_s(&t1, &tm))
+        return std::string();
+    size_t size = strftime(buff, 256, "%d %b %Y %H:%M", &t1);
+    return std::string(buff, size);
+}
+
 }

@@ -18,3 +18,16 @@ Delete the extracted files.
 2. Create an account
 3. Create a character
 4. Enter world
+
+## Chat commands
+
+/a <message>: General chat
+/w <name>, <message>: Whisper to <name> a <message>
+/mail <name>, [<subject>:] <message>: Send mail to <name> with <message>
+/inbox: Show your mail inbox
+/read <index>: Read mail with <index>
+/delete <index>: Delete mail with <index>
+/roll <number>: Rolls a <number>-sided die (2-100 sides)
+/age: Show Character age
+/ip: Show server IP
+/help: Show this help

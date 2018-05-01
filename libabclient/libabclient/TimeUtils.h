@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <sys/timeb.h>
 #include <time.h>
+#include <string>
 
 namespace Client {
 
@@ -13,6 +14,7 @@ ticks_t millis();
 ticks_t micros();
 void millisleep(size_t ms);
 void microsleep(size_t us);
+std::string format_tick(int64_t tick);
 
 struct timer
 {
