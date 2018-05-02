@@ -52,6 +52,9 @@ bool DBMailList::Save(const AB::Entities::MailList& ml)
         return false;
     }
 
+    if (ml.mails.size() == 0)
+        return true;
+
     Database* db = Database::Instance();
     std::ostringstream query;
 
@@ -65,10 +68,10 @@ bool DBMailList::Save(const AB::Entities::MailList& ml)
         query << "UPDATE `mails` SET ";
         query << " `is_read` = " << (mail.isRead ? 1 : 0);
         query << " WHERE `uuid` = " << db->EscapeString(mail.uuid);
-    }
 
-    if (!db->ExecuteQuery(query.str()))
-        return false;
+        if (!db->ExecuteQuery(query.str()))
+            return false;
+    }
 
     // End transaction
     return transaction.Commit();

@@ -60,17 +60,20 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
     if (!db->ExecuteQuery(query.str()))
         return false;
 
-    // Then add all
-    for (const auto& f : fl.friends)
+    if (fl.friends.size() > 0)
     {
-        query.str("");
-        query << "INSERT INTO `friend_list` (`account_uuid`, `friend_uuid`, `relation`) VALUES (";
-        query << db->EscapeString(fl.uuid) << ", ";
-        query << db->EscapeString(f.friend_uuid) << ", ";
-        query << static_cast<int>(f.relation);
-        query << ")";
-        if (!db->ExecuteQuery(query.str()))
-            return false;
+        // Then add all
+        for (const auto& f : fl.friends)
+        {
+            query.str("");
+            query << "INSERT INTO `friend_list` (`account_uuid`, `friend_uuid`, `relation`) VALUES (";
+            query << db->EscapeString(fl.uuid) << ", ";
+            query << db->EscapeString(f.friend_uuid) << ", ";
+            query << static_cast<int>(f.relation);
+            query << ")";
+            if (!db->ExecuteQuery(query.str()))
+                return false;
+        }
     }
     // End transaction
     return transaction.Commit();
