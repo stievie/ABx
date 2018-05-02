@@ -110,6 +110,21 @@ void Player::GetMail(const std::string mailUuid)
     }
 }
 
+void Player::DeleteMail(const std::string mailUuid)
+{
+    // mailUuid must not be a reference!
+    AB::Entities::Mail m;
+    if (mailBox_->DeleteMail(mailUuid, m))
+    {
+        Net::NetworkMessage msg;
+        msg.AddByte(AB::GameProtocol::ServerMessage);
+        msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
+        msg.AddString(GetName());
+        msg.AddString(mailUuid);
+        client_->WriteToOutput(msg);
+    }
+}
+
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     const std::string& command, Net::NetworkMessage& message)
 {

@@ -34,4 +34,13 @@ bool MailBox::ReadMail(const std::string& uuid, AB::Entities::Mail& mail)
     return ret;
 }
 
+bool MailBox::DeleteMail(const std::string& uuid, AB::Entities::Mail& mail)
+{
+    mail.uuid = uuid;
+    bool ret = IO::IOMail::DeleteMail(mail);
+    // Get updated mail list
+    lastCheck_ = 0;
+    return ret;
+}
+
 }

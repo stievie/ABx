@@ -307,6 +307,14 @@ void ProtocolGame::GetMail(const std::string& mailUuid)
     Send(msg);
 }
 
+void ProtocolGame::DeleteMail(const std::string& mailUuid)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeDeleteMail);
+    msg->AddString(mailUuid);
+    Send(msg);
+}
+
 void ProtocolGame::Move(uint8_t direction)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();

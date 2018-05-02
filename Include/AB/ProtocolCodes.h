@@ -130,6 +130,7 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailSent,
     ServerMessageTypeMailNotSent,
     ServerMessageTypeMailboxFull,
+    ServerMessageTypeMailDeleted,
 };
 
 enum ChatMessageChannel : uint8_t
@@ -186,6 +187,7 @@ enum GamePacketTypes : uint8_t
     // Mail
     PacketTypeGetMailHeaders = 0x11,
     PacketTypeGetMail = 0x12,
+    PacketTypeDeleteMail = 0x13,
 
     // Move
     PacketTypeMove = 0x20,
@@ -221,6 +223,7 @@ enum CommandTypes : uint8_t
     CommandTypeMailSend,             // /mail <name>, <message>
     CommandTypeMailInbox,            // /inbox
     CommandTypeMailRead,             // /read <index>
+    CommandTypeMailDelete,           // /delete <index>
 
     // Other
     CommandTypeRoll,                 // /roll <number>

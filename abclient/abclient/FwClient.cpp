@@ -184,6 +184,12 @@ void FwClient::ReadMail(const std::string& uuid)
         client_.GetMail(uuid);
 }
 
+void FwClient::DeleteMail(const std::string & uuid)
+{
+    if (loggedIn_)
+        client_.DeleteMail(uuid);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -244,14 +250,12 @@ void FwClient::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
 void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
 {
     mailHeaders_ = headers;
-    // TODO
     VariantMap& eData = GetEventDataMap();
     SendEvent(AbEvents::E_MAIL_INBOX, eData);
 }
 
 void FwClient::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
 {
-    // TODO
     currentMail_ = mail;
     VariantMap& eData = GetEventDataMap();
     SendEvent(AbEvents::E_MAIL_READ, eData);

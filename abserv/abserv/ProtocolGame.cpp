@@ -97,6 +97,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::GetMail, mailUuid);
         break;
     }
+    case AB::GameProtocol::PacketTypeDeleteMail:
+    {
+        const std::string mailUuid = message.GetString();
+        AddPlayerTask(&Game::Player::DeleteMail, mailUuid);
+        break;
+    }
     case AB::GameProtocol::PacketTypeMove:
     {
         Utils::VariantMap data;

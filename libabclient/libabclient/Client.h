@@ -109,6 +109,7 @@ public:
 
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
+    void DeleteMail(const std::string& mailUuid);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

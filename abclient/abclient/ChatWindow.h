@@ -21,6 +21,7 @@ private:
     void HandleServerMessageMailSent(VariantMap& eventData);
     void HandleServerMessageMailNotSent(VariantMap& eventData);
     void HandleServerMessageMailboxFull(VariantMap& eventData);
+    void HandleServerMessageMailDeleted(VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);

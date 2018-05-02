@@ -38,6 +38,7 @@ public:
         return mailList_;
     }
     bool ReadMail(const std::string& uuid, AB::Entities::Mail& mail);
+    bool DeleteMail(const std::string& uuid, AB::Entities::Mail& mail);
 
     bool notifiedFull_;
     bool notifiedNewMail_;

@@ -185,6 +185,9 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
     case AB::GameProtocol::ServerMessageTypeMailboxFull:
         HandleServerMessageMailboxFull(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypeMailDeleted:
+        HandleServerMessageMailDeleted(eventData);
+        break;
     }
 }
 
@@ -290,6 +293,11 @@ void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
     data.set("count", std::string(count.CString(), count.Length()));
     std::string t = tpl.render(data);
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageMailDeleted(VariantMap& eventData)
+{
+    AddLine("The mail was deleted.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)
@@ -419,6 +427,8 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeMailInbox;
         else if (cmd.Compare("read") == 0)
             type = AB::GameProtocol::CommandTypeMailRead;
+        else if (cmd.Compare("delete") == 0)
+            type = AB::GameProtocol::CommandTypeMailDelete;
 
         else if (cmd.Compare("age") == 0)
             type = AB::GameProtocol::CommandTypeAge;
@@ -474,8 +484,8 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
         AddLine("  /inbox: Show your mail inbox", "ChatLogServerInfoText");
-        AddLine("  /read <index>: Read mail with <index>", "ChatLogServerInfoText");
-        AddLine("  /delete <index>: Delete mail with <index>", "ChatLogServerInfoText");
+        AddLine("  /read <number>: Read mail with <number>", "ChatLogServerInfoText");
+        AddLine("  /delete <number>: Delete mail with <number>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
@@ -498,6 +508,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         break;
     }
     case AB::GameProtocol::CommandTypeMailRead:
+    case AB::GameProtocol::CommandTypeMailDelete:
     {
         unsigned p = data.Find(' ');
         String sIndex = data.Substring(p + 1).Trimmed();
@@ -508,7 +519,10 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             int index = atoi(sIndex.CString());
             if (index > 0 && index <= headers.size())
             {
-                client->ReadMail(headers[index - 1].uuid);
+                if (type == AB::GameProtocol::CommandTypeMailRead)
+                    client->ReadMail(headers[index - 1].uuid);
+                else if (type == AB::GameProtocol::CommandTypeMailDelete)
+                    client->DeleteMail(headers[index - 1].uuid);
             }
         }
         break;

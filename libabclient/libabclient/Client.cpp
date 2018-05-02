@@ -303,6 +303,12 @@ void Client::GetMail(const std::string& mailUuid)
         protoGame_->GetMail(mailUuid);
 }
 
+void Client::DeleteMail(const std::string& mailUuid)
+{
+    if (state_ == StateWorld)
+        protoGame_->DeleteMail(mailUuid);
+}
+
 void Client::Move(uint8_t direction)
 {
     if (state_ == StateWorld)

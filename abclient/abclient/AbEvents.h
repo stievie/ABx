@@ -19,6 +19,7 @@ namespace AbEvents
     static const StringHash E_CHAT_MESSAGE = StringHash("Chat Message");
     static const StringHash E_MAIL_INBOX = StringHash("Mail Inbox");
     static const StringHash E_MAIL_READ = StringHash("Mail Read");
+    static const StringHash E_MAIL_DELETED = StringHash("Mail Deleted");
 
     static const StringHash ED_MAP_NAME = StringHash("Map name");
 

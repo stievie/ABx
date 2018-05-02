@@ -61,6 +61,7 @@ public:
     void Logout();
     void GetMailHeaders();
     void ReadMail(const std::string& uuid);
+    void DeleteMail(const std::string& uuid);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

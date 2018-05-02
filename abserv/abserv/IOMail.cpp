@@ -80,4 +80,32 @@ bool IOMail::ReadMail(AB::Entities::Mail& mail)
     return ret;
 }
 
+bool IOMail::DeleteMail(AB::Entities::Mail& mail)
+{
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    if (!client->Read(mail))
+        return false;
+
+    bool ret = client->Delete(mail);
+    if (ret)
+    {
+        // Delete mail from mail list
+        AB::Entities::MailList ml;
+        ml.uuid = mail.toAccountUuid;
+        if (client->Read(ml))
+        {
+            auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&](const AB::Entities::MailHeader& current)
+            {
+                return current.uuid.compare(mail.uuid) == 0;
+            });
+            if (it != ml.mails.end())
+            {
+                ml.mails.erase(it);
+                client->Update(ml);
+            }
+        }
+    }
+    return ret;
+}
+
 }
