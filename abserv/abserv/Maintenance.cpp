@@ -4,6 +4,7 @@
 #include "DataProvider.h"
 #include "GameManager.h"
 #include "PlayerManager.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -42,6 +43,19 @@ void Maintenance::CleanPlayersTask()
     }
 }
 
+void Maintenance::LogRotateTask()
+{
+    if (IO::Logger::Instance().logDir_.empty())
+        return;
+    IO::Logger::Instance().Close();
+    if (status_ == StatusRunnig)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Maintenance::LogRotateTask, this))
+        );
+    }
+}
+
 void Maintenance::Run()
 {
     {
@@ -56,6 +70,9 @@ void Maintenance::Run()
     );
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
+    );
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Maintenance::LogRotateTask, this))
     );
 }
 

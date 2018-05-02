@@ -18,6 +18,7 @@ bool IOMail::SendMailToPlayer(const std::string& playerName, const std::string& 
     AB::Entities::Character ch;
     ch.name = playerName;
 
+    // Get recipient account
     bool ret = IOPlayer::LoadCharacter(ch);
     if (!ret)
         return false;
@@ -52,7 +53,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     return ret;
 }
 
-bool IOMail::GetMail(AB::Entities::Mail& mail)
+bool IOMail::ReadMail(AB::Entities::Mail& mail)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
     bool ret = client->Read(mail);
@@ -60,10 +61,21 @@ bool IOMail::GetMail(AB::Entities::Mail& mail)
     {
         mail.isRead = true;
         client->Update(mail);
-        // Invalidate mail list
+        // Update read flag in mail list
         AB::Entities::MailList ml;
         ml.uuid = mail.toAccountUuid;
-        client->Invalidate(ml);
+        if (client->Read(ml))
+        {
+            auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&](const AB::Entities::MailHeader& current)
+            {
+                return current.uuid.compare(mail.uuid) == 0;
+            });
+            if (it != ml.mails.end())
+            {
+                (*it).isRead = true;
+                client->Update(ml);
+            }
+        }
     }
     return ret;
 }

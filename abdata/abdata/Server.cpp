@@ -4,6 +4,7 @@
 #include "ConnectionManager.h"
 #include "Connection.h"
 #include "Logger.h"
+#include "Scheduler.h"
 
 Server::Server(asio::io_service& io_service, uint32_t ip,
     uint16_t port, size_t maxCacheSize, bool readonly) :
@@ -12,19 +13,22 @@ Server::Server(asio::io_service& io_service, uint32_t ip,
         io_service,
         asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port)
     ),
-    runnig_(false),
+    running_(false),
     storageProvider_(maxCacheSize, readonly),
 	maxDataSize_(MAX_DATA_SIZE),
     maxKeySize_(MAX_KEY_SIZE)
 {
     acceptor_.set_option(asio::ip::tcp::no_delay(true));
 	StartAccept();
-    runnig_ = true;
+    running_ = true;
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Server::LogRotateTask, this))
+    );
 }
 
 Server::~Server()
 {
-    if (runnig_)
+    if (running_)
         Shutdown();
 }
 
@@ -33,7 +37,22 @@ void Server::Shutdown()
     connectionManager_.StopAll();
     storageProvider_.Shutdown();
     io_service_.stop();
-    runnig_ = false;
+    running_ = false;
+}
+
+void Server::LogRotateTask()
+{
+    if (IO::Logger::Instance().logDir_.empty())
+        return;
+
+    IO::Logger::Instance().Close();
+
+    if (running_)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Server::LogRotateTask, this))
+        );
+    }
 }
 
 void Server::StartAccept()

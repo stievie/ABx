@@ -28,6 +28,8 @@
 #define USE_PGSQL
 #define USE_ODBC
 
+// All 24h rotate log
+#define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
 #define SCHEDULER_MINTICKS 10
 #define MAX_DATA_SIZE (1024 * 1024)
 #define MAX_KEY_SIZE 256

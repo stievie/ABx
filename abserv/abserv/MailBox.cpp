@@ -15,15 +15,23 @@ void MailBox::Update()
     {
         // if oldMailCount_ == -1 it was not yet initialized
         if (oldMailCount_ != -1)
+        {
             newMail_ = static_cast<int>(mailList_.mails.size()) - oldMailCount_;
+            // Needed because user will get notified until PLAYER_CHECK_MAIL_MS passed
+            if (newMail_ > 0)
+                notifiedNewMail_ = false;
+        }
         oldMailCount_ = static_cast<int>(mailList_.mails.size());
     }
 }
 
-bool MailBox::GetMail(const std::string& uuid, AB::Entities::Mail& mail)
+bool MailBox::ReadMail(const std::string& uuid, AB::Entities::Mail& mail)
 {
     mail.uuid = uuid;
-    return IO::IOMail::GetMail(mail);
+    bool ret = IO::IOMail::ReadMail(mail);
+    // Get updated mail list
+    lastCheck_ = 0;
+    return ret;
 }
 
 }

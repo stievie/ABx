@@ -48,9 +48,10 @@ void Player::UpdateMailBox()
     if (mailBox_)
     {
         mailBox_->Update();
-        if (mailBox_->GetNewMailCount() > 0)
+        if (mailBox_->GetNewMailCount() > 0 && !mailBox_->notifiedNewMail_)
         {
             // Notify player there are new emails since last check.
+            mailBox_->notifiedNewMail_ = true;
             Net::NetworkMessage msg;
             msg.AddByte(AB::GameProtocol::ServerMessage);
             msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
@@ -94,7 +95,7 @@ void Player::GetMail(const std::string mailUuid)
 {
     // mailUuid must not be a reference!
     AB::Entities::Mail m;
-    if (mailBox_->GetMail(mailUuid, m))
+    if (mailBox_->ReadMail(mailUuid, m))
     {
         Net::NetworkMessage msg;
         msg.AddByte(AB::GameProtocol::MailComplete);

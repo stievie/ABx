@@ -11,9 +11,10 @@ public:
     ~Server();
     void Shutdown();
 private:
+    void LogRotateTask();
 	void StartAccept();
 	void HandleAccept(const asio::error_code& error);
-    bool runnig_;
+    bool running_;
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor acceptor_;
 	ConnectionPtr newConnection_;

@@ -13,6 +13,7 @@ private:
     void CleanCacheTask();
     void CleanGamesTask();
     void CleanPlayersTask();
+    void LogRotateTask();
 public:
     Maintenance() :
         status_(StatusTerminated)

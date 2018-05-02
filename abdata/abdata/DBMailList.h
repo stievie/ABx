@@ -12,8 +12,8 @@ public:
 
     static bool Create(AB::Entities::MailList&);
     static bool Load(AB::Entities::MailList& ml);
-    static bool Save(const AB::Entities::MailList&);
-    static bool Delete(const AB::Entities::MailList&);
+    static bool Save(const AB::Entities::MailList& ml);
+    static bool Delete(const AB::Entities::MailList& ml);
     static bool Exists(const AB::Entities::MailList&);
 };
 

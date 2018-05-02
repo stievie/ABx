@@ -19,6 +19,7 @@ public:
         oldMailCount_(-1),
         newMail_(0),
         notifiedFull_(false),
+        notifiedNewMail_(false),
         lastCheck_(0)
     {}
     ~MailBox() = default;
@@ -36,9 +37,10 @@ public:
     {
         return mailList_;
     }
-    bool GetMail(const std::string& uuid, AB::Entities::Mail& mail);
+    bool ReadMail(const std::string& uuid, AB::Entities::Mail& mail);
 
     bool notifiedFull_;
+    bool notifiedNewMail_;
 };
 
 }
