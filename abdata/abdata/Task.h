@@ -46,10 +46,14 @@ private:
     std::function<void(void)> function_;
 };
 
+/// Creates a task that does not expire.
 inline Task* CreateTask(std::function<void(void)> f)
 {
     return new Task(f);
 }
+/// Creates a new task that may expire.
+/// \param ms Expiration
+/// \param f Function
 inline Task* CreateTask(unsigned ms, std::function<void(void)> f)
 {
     return new Task(ms, f);

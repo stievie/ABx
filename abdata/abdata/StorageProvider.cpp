@@ -8,6 +8,7 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "DBAll.h"
+#include "StringUtils.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
@@ -112,7 +113,7 @@ void StorageProvider::CacheData(const std::vector<uint8_t>& key,
     {
         // Create space later
         Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(10, std::bind(&StorageProvider::CreateSpace, this, sizeNeeded))
+            Asynch::CreateTask(std::bind(&StorageProvider::CreateSpace, this, sizeNeeded))
         );
     }
 
@@ -243,7 +244,7 @@ bool StorageProvider::Preload(const std::vector<uint8_t>& key)
 
     // Load later
     Asynch::Dispatcher::Instance.Add(
-        Asynch::CreateTask(10, std::bind(&StorageProvider::PreloadTask, this, key))
+        Asynch::CreateTask(std::bind(&StorageProvider::PreloadTask, this, key))
     );
     return true;
 }
@@ -261,6 +262,7 @@ bool StorageProvider::Exists(const std::vector<uint8_t>& key, std::shared_ptr<st
 
 void StorageProvider::Shutdown()
 {
+    // The only thing that not called from the dispatcher thread, so lock it.
     std::lock_guard<std::mutex> lock(lock_);
     running_ = false;
     for (const auto& c : cache_)
@@ -272,6 +274,7 @@ void StorageProvider::Shutdown()
 
 void StorageProvider::CleanCache()
 {
+    // Delete deleted records from DB and remove them from cache.
     if (cache_.size() == 0)
         return;
     size_t oldSize = currentSize_;
@@ -294,7 +297,8 @@ void StorageProvider::CleanCache()
     }
     if (removed > 0)
     {
-        LOG_INFO << "Cleaned cache old size " << oldSize << " current size " << currentSize_ <<
+        LOG_INFO << "Cleaned cache old size " << Utils::ConvertSize(oldSize) <<
+            " current size " << Utils::ConvertSize(currentSize_) <<
             " removed " << removed << " record(s)" << std::endl;
     }
 }
