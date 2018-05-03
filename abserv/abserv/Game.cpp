@@ -357,7 +357,6 @@ void Game::PlayerJoin(uint32_t playerId)
         {
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
-            player->data_.lastMap = map_->data_.name;
             AddObject(player);
         }
 

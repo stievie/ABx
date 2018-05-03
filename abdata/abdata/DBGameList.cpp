@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBGameList::Create(AB::Entities::GameList&)
 {
-    return false;
+    return true;
 }
 
 bool DBGameList::Load(AB::Entities::GameList& game)
@@ -25,17 +25,17 @@ bool DBGameList::Load(AB::Entities::GameList& game)
 
 bool DBGameList::Save(const AB::Entities::GameList&)
 {
-    return false;
+    return true;
 }
 
 bool DBGameList::Delete(const AB::Entities::GameList&)
 {
-    return false;
+    return true;
 }
 
 bool DBGameList::Exists(const AB::Entities::GameList&)
 {
-    return false;
+    return true;
 }
 
 }

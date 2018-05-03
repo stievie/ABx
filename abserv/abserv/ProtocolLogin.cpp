@@ -326,7 +326,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         output->AddStringEncrypted(character.profession);
         output->AddStringEncrypted(character.profession2);
         output->AddByte(static_cast<uint8_t>(character.sex));
-        output->AddStringEncrypted(character.lastMap);
+        output->AddStringEncrypted(character.currentMap);
     }
 
     Send(output);

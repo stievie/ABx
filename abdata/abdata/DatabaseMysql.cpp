@@ -19,6 +19,11 @@ DatabaseMysql::DatabaseMysql() :
 
     my_bool reconnect = true;
     mysql_options(&handle_, MYSQL_OPT_RECONNECT, &reconnect);
+    int connectTimeout = 60;
+    mysql_options(&handle_, MYSQL_OPT_CONNECT_TIMEOUT, &connectTimeout);
+    int timeout = 360;
+    mysql_options(&handle_, MYSQL_OPT_READ_TIMEOUT, &timeout);
+    mysql_options(&handle_, MYSQL_OPT_WRITE_TIMEOUT, &timeout);
 
     const std::string& host = Database::dbHost_;
     const std::string& user = Database::dbUser_;

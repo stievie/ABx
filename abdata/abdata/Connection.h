@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include "StorageProvider.h"
+#include "Dispatcher.h"
 
 class ConnectionManager;
 
@@ -42,6 +43,14 @@ public:
 	void Start();
 	void Stop();
 private:
+    template <typename Callable, typename... Args>
+    void AddTask(Callable function, Args&&... args)
+    {
+        Asynch::Dispatcher::Instance.Add(
+            Asynch::CreateTask(std::bind(function, this, std::forward<Args>(args)...))
+        );
+    }
+
     void StartCreateOperation();
     void StartUpdateDataOperation();
     void StartReadOperation();

@@ -5,9 +5,14 @@
 
 namespace DB {
 
-bool DBMailList::Create(AB::Entities::MailList&)
+bool DBMailList::Create(AB::Entities::MailList& ml)
 {
-    return false;
+    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 bool DBMailList::Load(AB::Entities::MailList& ml)
@@ -51,30 +56,8 @@ bool DBMailList::Save(const AB::Entities::MailList& ml)
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
-
-    if (ml.mails.size() == 0)
-        return true;
-
-    Database* db = Database::Instance();
-    std::ostringstream query;
-
-    DBTransaction transaction(db);
-    if (!transaction.Begin())
-        return false;
-
-    for (const auto& mail : ml.mails)
-    {
-        query.str("");
-        query << "UPDATE `mails` SET ";
-        query << " `is_read` = " << (mail.isRead ? 1 : 0);
-        query << " WHERE `uuid` = " << db->EscapeString(mail.uuid);
-
-        if (!db->ExecuteQuery(query.str()))
-            return false;
-    }
-
-    // End transaction
-    return transaction.Commit();
+    // Do nothing
+    return true;
 }
 
 bool DBMailList::Delete(const AB::Entities::MailList& ml)
@@ -85,24 +68,17 @@ bool DBMailList::Delete(const AB::Entities::MailList& ml)
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
-
-    Database* db = Database::Instance();
-    std::ostringstream query;
-    query << "DELETE FROM `mails` WHERE `to_account_uuid` = " << db->EscapeString(ml.uuid);
-    DBTransaction transaction(db);
-    if (!transaction.Begin())
-        return false;
-
-    if (!db->ExecuteQuery(query.str()))
-        return false;
-
-    // End transaction
-    return transaction.Commit();
+    return true;
 }
 
-bool DBMailList::Exists(const AB::Entities::MailList&)
+bool DBMailList::Exists(const AB::Entities::MailList& ml)
 {
-    return false;
+    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 }

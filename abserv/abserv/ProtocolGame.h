@@ -34,7 +34,7 @@ public:
 
     void Login(const std::string& playerUuid, const uuids::uuid& accountUuid, const std::string& map);
     void Logout();
-    void EnterGame(const std::string& mapName);
+    void EnterGame();
     void WriteToOutput(const NetworkMessage& message);
 private:
     // Helpers so we don't need to bind every time

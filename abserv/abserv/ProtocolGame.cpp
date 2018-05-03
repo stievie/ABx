@@ -51,7 +51,8 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     acc.currentCharacterUuid = player_->data_.uuid;
     client->Update(acc);
 
-    player_->map_ = map;
+    player_->data_.currentMap = map;
+    client->Update(player_->data_);
     Connect(player_->id_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
 }
@@ -293,7 +294,7 @@ void ProtocolGame::Connect(uint32_t playerId)
 
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::EnterGame, GetThis(), player_->map_)
+            std::bind(&ProtocolGame::EnterGame, GetThis())
         )
     );
 }
@@ -303,13 +304,13 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
     GetOutputBuffer(message.GetSize())->Append(message);
 }
 
-void ProtocolGame::EnterGame(const std::string& mapName)
+void ProtocolGame::EnterGame()
 {
-    if (Game::GameManager::Instance.AddPlayer(mapName, player_))
+    if (Game::GameManager::Instance.AddPlayer(player_->data_.currentMap, player_))
     {
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
-        output->AddString(mapName);
+        output->AddString(player_->data_.currentMap);
         output->Add<uint32_t>(player_->id_);
         Send(output);
     }

@@ -5,10 +5,15 @@
 
 namespace DB {
 
-bool DBFriendList::Create(AB::Entities::FriendList&)
+bool DBFriendList::Create(AB::Entities::FriendList& fl)
 {
     // Do nothing
-    return false;
+    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 bool DBFriendList::Load(AB::Entities::FriendList& fl)
@@ -79,15 +84,26 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
     return transaction.Commit();
 }
 
-bool DBFriendList::Delete(const AB::Entities::FriendList&)
+bool DBFriendList::Delete(const AB::Entities::FriendList& fl)
 {
     // Do nothing
-    return false;
+    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+    return true;
 }
 
-bool DBFriendList::Exists(const AB::Entities::FriendList&)
+bool DBFriendList::Exists(const AB::Entities::FriendList& fl)
 {
-    return false;
+    // Do nothing
+    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 }

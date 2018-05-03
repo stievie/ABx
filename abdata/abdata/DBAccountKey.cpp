@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBAccountKey::Create(AB::Entities::AccountKey&)
 {
-    return false;
+    return true;
 }
 
 bool DBAccountKey::Load(AB::Entities::AccountKey& ak)
@@ -77,7 +77,7 @@ bool DBAccountKey::Save(const AB::Entities::AccountKey& ak)
 bool DBAccountKey::Delete(const AB::Entities::AccountKey&)
 {
     // Can not delete
-    return false;
+    return true;
 }
 
 bool DBAccountKey::Exists(const AB::Entities::AccountKey& ak)

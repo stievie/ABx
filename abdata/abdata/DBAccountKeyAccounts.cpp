@@ -63,13 +63,13 @@ bool DBAccountKeyAccounts::Load(AB::Entities::AccountKeyAccounts& ak)
 bool DBAccountKeyAccounts::Save(const AB::Entities::AccountKeyAccounts&)
 {
     // Not possible
-    return false;
+    return true;
 }
 
 bool DBAccountKeyAccounts::Delete(const AB::Entities::AccountKeyAccounts&)
 {
     // No possible
-    return false;
+    return true;
 }
 
 bool DBAccountKeyAccounts::Exists(const AB::Entities::AccountKeyAccounts& ak)

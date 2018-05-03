@@ -8,7 +8,7 @@ namespace DB {
 bool DBGame::Create(AB::Entities::Game&)
 {
     // Do nothing
-    return false;
+    return true;
 }
 
 bool DBGame::Load(AB::Entities::Game& game)

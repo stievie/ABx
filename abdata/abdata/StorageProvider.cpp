@@ -229,7 +229,6 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
     auto _newdata = cache_.find(newKeyString);
     if (_newdata == cache_.end())
     {
-        std::lock_guard<std::mutex> lock(lock_);
         CacheData(newKey, data, false, true);
     }
 }
@@ -275,7 +274,6 @@ void StorageProvider::CleanCache()
 {
     if (cache_.size() == 0)
         return;
-    std::lock_guard<std::mutex> lock(lock_);
     size_t oldSize = currentSize_;
     int removed = 0;
     auto i = cache_.begin();
@@ -286,7 +284,10 @@ void StorageProvider::CleanCache()
     {
         ++removed;
         std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
-        FlushData(key);
+        if (!FlushData(key))
+            // Error, break for now and try  the next time.
+            // In case of lost connection it would try forever.
+            break;
         currentSize_ -= (*i).second.second->size();
         evictor_->DeleteKey((*i).first);
         cache_.erase(i++);
@@ -314,17 +315,20 @@ void StorageProvider::FlushCache()
     if (cache_.size() == 0)
         return;
     int written = 0;
-    std::lock_guard<std::mutex> lock(lock_);
     auto i = cache_.begin();
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
+        // Don't return deleted, these are flushed in CleanCache()
         return (current.second.first.modified || !current.second.first.created) &&
             !current.second.first.deleted;
     })) != cache_.end())
     {
         ++written;
         std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
-        FlushData(key);
+        if (!FlushData(key))
+            // Error, break for now and try  the next time.
+            // In case of lost connection it would try forever.
+            break;
     }
     if (written > 0)
     {
@@ -377,15 +381,16 @@ bool StorageProvider::EnoughSpace(size_t size)
 void StorageProvider::CreateSpace(size_t size)
 {
     // Create more than required space
-    std::lock_guard<std::mutex> lock(lock_);
     const size_t sizeNeeded = size * 2;
     while ((currentSize_ + sizeNeeded) > maxSize_)
     {
         std::string dataToRemove = evictor_->NextEviction();
         std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
 
-        FlushData(key);
-        RemoveData(dataToRemove);
+        if (FlushData(key))
+            RemoveData(dataToRemove);
+        else
+            break;
     }
 }
 

@@ -61,7 +61,6 @@ public:
     AB::Entities::Character data_;
     time_t loginTime_;
     time_t logoutTime_;
-    std::string map_;
     int64_t lastPing_ = 0;
     std::shared_ptr<Net::ProtocolGame> client_;
 

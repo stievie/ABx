@@ -296,52 +296,54 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
 
 void Connection::StartClientRequestedOp()
 {
+    // All this executed in dispatcher thread
     switch (opcode_)
     {
     case OpCodes::Create:
-        StartCreateOperation();
+        AddTask(&Connection::StartCreateOperation);
         break;
     case OpCodes::Update:
-        StartUpdateDataOperation();
+        AddTask(&Connection::StartUpdateDataOperation);
         break;
     case OpCodes::Read:
-        StartReadOperation();
+        AddTask(&Connection::StartReadOperation);
         break;
     case OpCodes::Delete:
-        StartDeleteOperation();
+        AddTask(&Connection::StartDeleteOperation);
         break;
     case OpCodes::Invalidate:
-        StartInvalidateOperation();
+        AddTask(&Connection::StartInvalidateOperation);
         break;
     case OpCodes::Preload:
-        StartPreloadOperation();
+        AddTask(&Connection::StartPreloadOperation);
         break;
     case OpCodes::Exists:
-        StartExistsOperation();
+        AddTask(&Connection::StartExistsOperation);
         break;
     case OpCodes::Status:
     case OpCodes::Data:
-        SendStatusAndRestart(OtherErrors, "Invalid Opcode");
+        AddTask(&Connection::SendStatusAndRestart, OtherErrors, "Invalid Opcode");
         break;
     default:
-        SendStatusAndRestart(OtherErrors, "Invalid Opcode");
+        AddTask(&Connection::SendStatusAndRestart, OtherErrors, "Invalid Opcode");
+        break;
     }
 }
 
 void Connection::SendStatusAndRestart(ErrorCodes code, const std::string& message)
 {
     data_.reset(new std::vector<uint8_t>);
-    data_.get()->push_back(OpCodes::Status);
-    data_.get()->push_back(code);
-    data_.get()->push_back(0);
-    data_.get()->push_back(0);
-    data_.get()->push_back(0);
+    data_->push_back(OpCodes::Status);
+    data_->push_back(code);
+    data_->push_back(0);
+    data_->push_back(0);
+    data_->push_back(0);
 
     //push message length
     data_->push_back((unsigned char)message.length());
     for (const auto& letter : message)
     {
-        data_.get()->push_back(letter);
+        data_->push_back(letter);
     }
     std::vector<asio::mutable_buffer> bufs = { asio::buffer(*data_.get()) };
     SendResponseAndStart(bufs, data_->size());
