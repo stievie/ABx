@@ -48,10 +48,14 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Invalid Account.";
     case AB::Errors::InvalidPlayerSex:
         return "Invalid character gender.";
+    case AB::Errors::InvalidCharacter:
+        return "Invalid character.";
     case AB::Errors::InvalidCharactersInString:
         return "The string contains invalid characters.";
     case AB::Errors::NoMoreCharSlots:
         return "You have no free character slots.";
+    case AB::Errors::InvalidGame:
+        return "Invalid Game.";
     default:
         return "";
     }
@@ -244,7 +248,11 @@ void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
 
 void FwClient::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
 {
-    games_ = games;
+    games_.clear();
+    for (const auto& game : games)
+    {
+        games_[game.uuid] = game;
+    }
 }
 
 void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
@@ -368,9 +376,9 @@ void FwClient::OnAccountCreated()
     Login(accountName_, accountPass_);
 }
 
-void FwClient::OnPlayerCreated(const std::string& name, const std::string& map)
+void FwClient::OnPlayerCreated(const std::string& uuid, const std::string& map)
 {
-    EnterWorld(String(name.c_str()), String(map.c_str()));
+    EnterWorld(String(uuid.c_str()), String(map.c_str()));
 }
 
 void FwClient::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)

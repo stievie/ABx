@@ -25,7 +25,8 @@ public:
     static bool LoadPlayerByUuid(Game::Player* player, const std::string& uuid);
     static bool SavePlayer(Game::Player* player);
     static IOPlayer::CreatePlayerResult CreatePlayer(const std::string& accountUuid,
-        const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp);
+        const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp,
+        std::string& uuid);
     static bool DeletePlayer(const std::string& accountUuid, const std::string& playerUuid);
 };
 

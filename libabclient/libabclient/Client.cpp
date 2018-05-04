@@ -99,10 +99,10 @@ void Client::OnAccountCreated()
         receiver_->OnAccountCreated();
 }
 
-void Client::OnPlayerCreated(const std::string& name, const std::string& map)
+void Client::OnPlayerCreated(const std::string& uuid, const std::string& map)
 {
     if (receiver_)
-        receiver_->OnPlayerCreated(name, map);
+        receiver_->OnPlayerCreated(uuid, map);
 }
 
 void Client::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)

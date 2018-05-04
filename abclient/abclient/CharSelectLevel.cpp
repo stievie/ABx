@@ -63,10 +63,13 @@ void CharSelectLevel::CreateUI()
     {
         Button* button = new Button(context_);
         button->SetMinHeight(40);
-        button->SetName(String(i));    // not required
+        button->SetName(String(ch.uuid.c_str()));    // not required
         button->SetStyleAuto();
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
+        button->SetVar("uuid", String(ch.uuid.c_str()));
+        button->SetVar("char_name", String(ch.name.c_str()));
+        button->SetVar("cuurr_map", String(ch.currentMap.c_str()));
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCharClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
@@ -144,10 +147,10 @@ void CharSelectLevel::CreateScene()
 void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventData)
 {
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
-    int index = std::atoi(sender->GetName().CString());
+    String uuid = sender->GetVar("uuid").GetString();
+    String map = sender->GetVar("cuurr_map").GetString();
+
     FwClient* net = context_->GetSubsystem<FwClient>();
-    String uuid = String(net->GetCharacters()[index].uuid.c_str());
-    String map = String(net->GetCharacters()[index].lastMap.c_str());
     net->EnterWorld(uuid, map);
 }
 

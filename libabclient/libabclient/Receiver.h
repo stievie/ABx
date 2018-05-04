@@ -22,7 +22,7 @@ public:
     virtual void OnGetCharlist(const AB::Entities::CharacterList& chars) = 0;
     virtual void OnGetGamelist(const std::vector<AB::Entities::Game>& games) = 0;
     virtual void OnAccountCreated() = 0;
-    virtual void OnPlayerCreated(const std::string& name, const std::string& map) = 0;
+    virtual void OnPlayerCreated(const std::string& uuid, const std::string& map) = 0;
 
     virtual void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) = 0;
     virtual void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) = 0;

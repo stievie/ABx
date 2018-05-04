@@ -98,7 +98,8 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 }
 
 IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUuid,
-    const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
+    const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp,
+    std::string& uuid)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
 
@@ -128,6 +129,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     if (!client->Create(ch))
         return ResultInternalError;
 
+    uuid = ch.uuid;
     return ResultOK;
 }
 

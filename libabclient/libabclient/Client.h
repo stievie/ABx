@@ -62,7 +62,7 @@ public:
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
-    void OnPlayerCreated(const std::string& name, const std::string& map) override;
+    void OnPlayerCreated(const std::string& uuid, const std::string& map) override;
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;

@@ -286,14 +286,25 @@ void StorageProvider::CleanCache()
     })) != cache_.end())
     {
         ++removed;
-        std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
-        if (!FlushData(key))
+        bool error = false;
+        if ((*i).second.first.created)
+        {
+            // No need to delete from DB when it's not in DB
+            std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
+            error = FlushData(key);
+        }
+        if (!error)
+        {
+            currentSize_ -= (*i).second.second->size();
+            evictor_->DeleteKey((*i).first);
+            cache_.erase(i++);
+        }
+        else
+        {
             // Error, break for now and try  the next time.
             // In case of lost connection it would try forever.
             break;
-        currentSize_ -= (*i).second.second->size();
-        evictor_->DeleteKey((*i).first);
-        cache_.erase(i++);
+        }
     }
     if (removed > 0)
     {
@@ -459,7 +470,7 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (readonly_)
     {
         LOG_WARNING << "READONLY: Nothing is written to the database" << std::endl;
-        return false;
+        return true;
     }
 
     std::string keyString(key.begin(), key.end());

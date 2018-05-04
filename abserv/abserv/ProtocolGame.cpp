@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "Random.h"
 #include "Variant.h"
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
@@ -48,6 +49,17 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
+
+    // Check if game exists.
+    // TODO: Use UUID instead of name
+    AB::Entities::Game g;
+    g.name = map;
+    if (!client->Read(g))
+    {
+        DisconnectClient(AB::Errors::InvalidGame);
+        return;
+    }
+
     acc.currentCharacterUuid = player_->data_.uuid;
     client->Update(acc);
 

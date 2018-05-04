@@ -55,6 +55,7 @@ enum ErrorCodes : uint8_t
     InvalidCharacter = 0x14,
     InvalidCharactersInString = 0x15,
     NoMoreCharSlots = 0x16,
+    InvalidGame = 0x17,
 };
 
 }

@@ -5,6 +5,7 @@
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
 #include <AB/Entities/Character.h>
+#include <map>
 
 struct EventItem
 {
@@ -24,7 +25,7 @@ private:
     Client::Client client_;
     Client::Client::ClientState lastState_;
     AB::Entities::CharacterList characters_;
-    std::vector<AB::Entities::Game> games_;
+    std::map<std::string, AB::Entities::Game> games_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -78,7 +79,7 @@ public:
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
-    void OnPlayerCreated(const std::string& name, const std::string& map) override;
+    void OnPlayerCreated(const std::string& uuid, const std::string& map) override;
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
@@ -109,7 +110,7 @@ public:
     {
         return characters_;
     }
-    const std::vector<AB::Entities::Game>& GetGames() const
+    const std::map<std::string, AB::Entities::Game>& GetGames() const
     {
         return games_;
     }

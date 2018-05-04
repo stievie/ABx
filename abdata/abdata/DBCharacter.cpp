@@ -84,6 +84,7 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     character.onlineTime = result->GetLong("onlinetime");
     character.deletedTime = result->GetLong("deleted");
     character.currentMap = result->GetString("last_map");
+    character.currentMapUuid = result->GetString("last_map_uuid");
 
     return true;
 }
@@ -110,7 +111,8 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
     query << " `lastlogout` = " << character.lastLogout << ", ";
     query << " `onlinetime` = " << character.onlineTime << ", ";
     query << " `deleted` = " << character.deletedTime << ", ";
-    query << " `last_map` = " << db->EscapeString(character.currentMap);
+    query << " `last_map` = " << db->EscapeString(character.currentMap) << ", ";
+    query << " `last_map_uuid` = " << db->EscapeString(character.currentMapUuid);
 
     query << " WHERE `uuid` = " << db->EscapeString(character.uuid);
 

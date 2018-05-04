@@ -40,14 +40,14 @@ MapWindow::MapWindow(Context* context) :
     mapSprite_->SetSize(GetSize());
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-    const std::vector<AB::Entities::Game>& games = client->GetGames();
+    const std::map<std::string, AB::Entities::Game>& games = client->GetGames();
     int i = 0;
     for (const auto& game : games)
     {
         Button* button = new Button(context_);
         button->SetMinHeight(40);
         button->SetMinWidth(40);
-        button->SetName(String(i));    // not required
+        button->SetName(String(game.first.c_str()));    // not required
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
         button->SetAlignment(HA_LEFT, VA_TOP);
@@ -56,12 +56,13 @@ MapWindow::MapWindow(Context* context) :
         button->SetImageRect(IntRect(0, 0, 256, 256));
         button->SetHoverOffset(IntVector2(257, 0));
         button->SetPressedOffset(IntVector2(513, 0));
+        button->SetVar("uuid", String(game.first.c_str()));
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MapWindow, HandleMapGameClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
             Text* t = new Text(context_);
             t->SetName("GameName");
-            t->SetText(String(game.name.c_str()));
+            t->SetText(String(game.second.name.c_str()));
             t->SetStyle("Text");
             t->SetLayoutMode(LM_FREE);
             t->SetAlignment(HA_LEFT, VA_TOP);
@@ -81,8 +82,14 @@ MapWindow::~MapWindow()
 void MapWindow::HandleMapGameClicked(StringHash eventType, VariantMap& eventData)
 {
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
-    int index = std::atoi(sender->GetName().CString());
     FwClient* net = context_->GetSubsystem<FwClient>();
-    String name = String(net->GetGames()[index].name.c_str());
+    const String uuid = sender->GetVar("uuid").GetString();
+    const std::string sUuid = std::string(uuid.CString());
+    const auto& games = net->GetGames();
+    auto it = games.find(sUuid);
+    if (it == games.end())
+        return;
+
+    String name = String((*it).second.name.c_str());
     net->ChangeWorld(name);
 }

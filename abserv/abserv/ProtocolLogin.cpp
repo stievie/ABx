@@ -405,8 +405,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
         return;
     }
 
+    std::string uuid;
     IO::IOPlayer::CreatePlayerResult res = IO::IOPlayer::CreatePlayer(
-        account.uuid, name, prof, sex, isPvp
+        account.uuid, name, prof, sex, isPvp, uuid
     );
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -414,7 +415,7 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
     if (res == IO::IOPlayer::ResultOK)
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
-        output->AddStringEncrypted(name);
+        output->AddStringEncrypted(uuid);
         output->AddStringEncrypted(IO::IOGame::GetLandingGame());
     }
     else
