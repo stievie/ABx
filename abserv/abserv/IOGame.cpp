@@ -2,6 +2,7 @@
 #include "IOGame.h"
 #include "DataClient.h"
 #include <AB/Entities/GameList.h>
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -30,9 +31,15 @@ std::string IOGame::GetLandingGameUuid()
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
+    {
+        LOG_ERROR << "Error reading game list" << std::endl;
         return "00000000-0000-0000-0000-000000000000";
+    }
     if (gl.gameUuids.size() == 0)
+    {
+        LOG_ERROR << "Game list is empty" << std::endl;
         return "00000000-0000-0000-0000-000000000000";
+    }
 
     for (const std::string& uuid : gl.gameUuids)
     {
@@ -41,6 +48,7 @@ std::string IOGame::GetLandingGameUuid()
         if (client->Read(g) && g.landing)
             return g.uuid;
     }
+    LOG_ERROR << "No landing game found" << std::endl;
     return "00000000-0000-0000-0000-000000000000";
 }
 
@@ -50,7 +58,10 @@ AB::Entities::GameType IOGame::GetGameType(const std::string& mapName)
     AB::Entities::Game g;
     g.name = mapName;
     if (!client->Read(g))
+    {
+        LOG_ERROR << "Error reading game " << mapName << std::endl;
         return AB::Entities::GameTypeUnknown;
+    }
     return g.type;
 }
 
@@ -61,7 +72,10 @@ std::vector<AB::Entities::Game> IOGame::GetGameList()
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
+    {
+        LOG_ERROR << "Error reading game list" << std::endl;
         return result;
+    }
 
     for (const std::string& uuid : gl.gameUuids)
     {

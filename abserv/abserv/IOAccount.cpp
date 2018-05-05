@@ -36,6 +36,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     char pwhash[61];
     if (bcrypt_newhash(pass.c_str(), 10, pwhash, 61) != 0)
     {
+        LOG_ERROR << "bcrypt_newhash() failed" << std::endl;
         return ResultInternalError;
     }
     std::string passwordHash(pwhash, 61);
@@ -47,7 +48,10 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
     acc.creation = Utils::AbTick();
     if (!client->Create(acc))
+    {
+        LOG_ERROR << "Creating account with name " << name << " failed" << std::endl;
         return ResultInternalError;
+    }
 
     // Bind account to key
     AB::Entities::AccountKeyAccounts aka;
@@ -55,6 +59,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     aka.accountUuid = acc.uuid;
     if (!client->Create(aka))
     {
+        LOG_ERROR << "Creating account - account key failed" << std::endl;
         client->Delete(acc);
         return ResultInternalError;
     }
@@ -63,6 +68,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     akey.used++;
     if (!client->Update(akey))
     {
+        LOG_ERROR << "Updating account key failed" << std::endl;
         client->Delete(aka);
         client->Delete(acc);
         return ResultInternalError;
@@ -97,7 +103,10 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
     {
         acc.charSlots++;
         if (!client->Update(acc))
+        {
+            LOG_ERROR << "Account update failed " << name << std::endl;
             return ResultInternalError;
+        }
         break;
     }
     default:
@@ -109,12 +118,18 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
     aka.uuid = ak.uuid;
     aka.accountUuid = acc.uuid;
     if (!client->Create(aka))
+    {
+        LOG_ERROR << "Creating account - account key failed" << std::endl;
         return ResultInternalError;
+    }
 
     // Update account key
     ak.used++;
     if (!client->Update(ak))
+    {
+        LOG_ERROR << "Updating account key failed" << std::endl;
         return ResultInternalError;
+    }
 
     return ResultOK;
 }
@@ -134,7 +149,10 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& name, const 
         return LoginPasswordMismatch;
 
     account.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
-    client->Update(account);
+    if (!client->Update(account))
+    {
+        LOG_ERROR << "Updating account failed " << name << std::endl;
+    }
 
     return LoginOK;
 }
@@ -147,16 +165,26 @@ uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string&
     AB::Entities::Account acc;
     acc.name = name;
     if (!client->Read(acc))
+    {
+        // At this point the account must exist.
+        LOG_ERROR << "Error reading account " << name << std::endl;
         return uuids::uuid();
+    }
     if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
         return uuids::uuid();
 
     AB::Entities::Character ch;
     ch.uuid = charUuid;
     if (!client->Read(ch))
+    {
+        LOG_ERROR << "Error reading character " << charUuid << std::endl;
         return uuids::uuid();
+    }
     if (ch.accountUuid.compare(acc.uuid) != 0)
+    {
+        LOG_ERROR << "Character " << charUuid << " does not belong to account " << name << std::endl;
         return uuids::uuid();
+    }
 
     return uuids::uuid(acc.uuid);
 }
@@ -175,7 +203,11 @@ bool IOAccount::AccountLogout(const std::string& uuid)
     AB::Entities::Account acc;
     acc.uuid = uuid;
     if (!client->Read(acc))
+    {
+        LOG_ERROR << "Error reading account " << uuid << std::endl;
         return false;
+    }
+    LOG_INFO << acc.name << " logged out" << std::endl;
     acc.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOffline;
     return client->Update(acc);
 }

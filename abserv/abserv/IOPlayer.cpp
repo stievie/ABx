@@ -127,7 +127,10 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     ch.creation = Utils::AbTick();
     ch.accountUuid = accountUuid;
     if (!client->Create(ch))
+    {
+        LOG_ERROR << "Create character failed" << std::endl;
         return ResultInternalError;
+    }
 
     uuid = ch.uuid;
     return ResultOK;
