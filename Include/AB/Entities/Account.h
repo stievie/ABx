@@ -46,6 +46,7 @@ struct Account : Entity
     {
         s.ext(*this, BaseClass<Entity>{});
         s.value1b(type);
+        s.value1b(status);
         s.value8b(creation);
         s.text1b(name, Limits::MAX_ACCOUNT_NAME);
         s.text1b(password, Limits::MAX_ACCOUNT_PASS);

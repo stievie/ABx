@@ -288,13 +288,19 @@ void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     AB::Entities::Account account;
-    bool res = IO::IOAccount::LoginServerAuth(accountName, password, account);
-    if (!res)
+    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    switch (res)
     {
+    case IO::IOAccount::LoginInvalidAccount:
+        DisconnectClient(AB::Errors::InvalidAccount);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
+
     const auto player = Game::PlayerManager::Instance.GetPlayerByAccountUuid(account.uuid);
     if (player)
     {
@@ -336,13 +342,19 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 void ProtocolLogin::SendGameList(const std::string& accountName, const std::string& password)
 {
     AB::Entities::Account account;
-    bool res = IO::IOAccount::LoginServerAuth(accountName, password, account);
-    if (!res)
+    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    switch (res)
     {
+    case IO::IOAccount::LoginInvalidAccount:
+        DisconnectClient(AB::Errors::InvalidAccount);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
+
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::LoginProtocol::GameList);
     const std::vector<AB::Entities::Game> games = IO::IOGame::GetGameList();
@@ -397,9 +409,14 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
     const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
     AB::Entities::Account account;
-    bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
-    if (!authRes)
+    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    switch (authRes)
     {
+    case IO::IOAccount::LoginInvalidAccount:
+        DisconnectClient(AB::Errors::InvalidAccount);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
@@ -446,9 +463,14 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
     const std::string& accKey)
 {
     AB::Entities::Account account;
-    bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
-    if (!authRes)
+    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    switch (authRes)
     {
+    case IO::IOAccount::LoginInvalidAccount:
+        DisconnectClient(AB::Errors::InvalidAccount);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
@@ -489,9 +511,14 @@ void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::stri
     const std::string& playerUuid)
 {
     AB::Entities::Account account;
-    bool authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
-    if (!authRes)
+    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    switch (authRes)
     {
+    case IO::IOAccount::LoginInvalidAccount:
+        DisconnectClient(AB::Errors::InvalidAccount);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;

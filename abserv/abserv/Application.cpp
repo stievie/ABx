@@ -223,12 +223,13 @@ void Application::MainLoader()
 
 void Application::PrintServerInfo()
 {
-    LOG_INFO << "Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
-    LOG_INFO << "Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
-    LOG_INFO << "Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
+    LOG_INFO << "Server Info:" << std::endl;
+    LOG_INFO << "  Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
+    LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
+    LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
     std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_->GetPorts();
-    LOG_INFO << "Listening: ";
+    LOG_INFO << "  Listening: ";
     while (ports.size())
     {
         LOG_INFO << Utils::ConvertIPToString(ports.front().first) << ":" << ports.front().second << " ";
@@ -236,7 +237,7 @@ void Application::PrintServerInfo()
     }
     LOG_INFO << std::endl;
 
-    LOG_INFO << "Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+    LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
 }
 
 void Application::Run()

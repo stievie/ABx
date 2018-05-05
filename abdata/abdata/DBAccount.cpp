@@ -76,7 +76,8 @@ bool DBAccount::Load(AB::Entities::Account& account)
     // load characters
     account.characterUuids.clear();
     query.str("");
-    query << "SELECT `uuid` FROM `players` WHERE `account_uuid` = " << db->EscapeString(account.uuid);
+    query << "SELECT `uuid`, `name` FROM `players` WHERE `account_uuid` = " << db->EscapeString(account.uuid) <<
+        " ORDER BY `name`";
     for (result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         account.characterUuids.push_back(result->GetString("uuid"));

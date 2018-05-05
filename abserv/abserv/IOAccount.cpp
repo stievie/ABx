@@ -44,6 +44,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     acc.password = passwordHash;
     acc.email = email;
     acc.type = AB::Entities::AccountType::AccountTypeNormal;
+    acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
     acc.creation = Utils::AbTick();
     if (!client->Create(acc))
         return ResultInternalError;
@@ -53,12 +54,19 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     aka.uuid = akey.uuid;
     aka.accountUuid = acc.uuid;
     if (!client->Create(aka))
+    {
+        client->Delete(acc);
         return ResultInternalError;
+    }
 
     // Update account key
     akey.used++;
     if (!client->Update(akey))
+    {
+        client->Delete(aka);
+        client->Delete(acc);
         return ResultInternalError;
+    }
 
     return ResultOK;
 }
@@ -111,24 +119,28 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
     return ResultOK;
 }
 
-bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass, AB::Entities::Account& account)
+IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& name, const std::string& pass,
+    AB::Entities::Account& account)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     account.name = name;
     if (!client->Read(account))
-        return false;
+        return LoginInvalidAccount;
+    if (account.status != AB::Entities::AccountStatusActivated)
+        return LoginInvalidAccount;
 
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
-        return false;
+        return LoginPasswordMismatch;
 
     account.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
     client->Update(account);
 
-    return true;
+    return LoginOK;
 }
 
-uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string& pass, const std::string& charUuid)
+uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string& pass,
+    const std::string& charUuid)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
@@ -154,6 +166,18 @@ bool IOAccount::Save(const AB::Entities::Account& account)
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     return client->Update(account);
+}
+
+bool IOAccount::AccountLogout(const std::string& uuid)
+{
+    AB_PROFILE;
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Account acc;
+    acc.uuid = uuid;
+    if (!client->Read(acc))
+        return false;
+    acc.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOffline;
+    return client->Update(acc);
 }
 
 }

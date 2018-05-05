@@ -7,6 +7,12 @@ namespace IO {
 class IOAccount
 {
 public:
+    enum LoginError
+    {
+        LoginOK = 0,
+        LoginInvalidAccount,
+        LoginPasswordMismatch
+    };
     enum AccountKeyStatus : uint8_t
     {
         NotActivated = 0,
@@ -31,9 +37,12 @@ public:
         const std::string& email, const std::string& accKey);
     static Result AddAccountKey(const std::string& name, const std::string& pass,
         const std::string& accKey);
-    static bool LoginServerAuth(const std::string& name, const std::string& pass, AB::Entities::Account& account);
-    static uuids::uuid GameWorldAuth(const std::string& name, const std::string& pass, const std::string& charUuid);
+    static IOAccount::LoginError LoginServerAuth(const std::string& name, const std::string& pass,
+        AB::Entities::Account& account);
+    static uuids::uuid GameWorldAuth(const std::string& name, const std::string& pass,
+        const std::string& charUuid);
     static bool Save(const AB::Entities::Account& account);
+    static bool AccountLogout(const std::string& uuid);
 };
 
 }

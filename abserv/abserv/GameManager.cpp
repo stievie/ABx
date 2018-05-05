@@ -40,7 +40,7 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 {
     assert(state_ == State::ManagerStateRunning);
 #ifdef DEBUG_GAME
-    LOG_DEBUG << "Creating game " << mapName << std::endl;
+    LOG_DEBUG << "Creating game " << mapUuid << std::endl;
 #endif
     std::shared_ptr<Game> game = std::make_shared<Game>();
     {

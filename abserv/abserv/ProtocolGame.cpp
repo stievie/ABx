@@ -76,6 +76,7 @@ void ProtocolGame::Logout()
 
     player_->logoutTime_ = Utils::AbTick();
     IO::IOPlayer::SavePlayer(player_.get());
+    IO::IOAccount::AccountLogout(player_->data_.accountUuid);
     Game::PlayerManager::Instance.RemovePlayer(player_->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
