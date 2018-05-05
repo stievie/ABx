@@ -19,13 +19,13 @@ ProtocolGame::ProtocolGame() :
 
 void ProtocolGame::Login(const std::string& accountName,
     const std::string& accountPass, const std::string& charUuid,
-    const std::string& map,
+    const std::string& mapUuid,
     const std::string& host, uint16_t port)
 {
     accountName_ = accountName;
     accountPass_ = accountPass;
     charUuid_ = charUuid;
-    map_ = map;
+    mapUuid_ = mapUuid;
 
     Connect(host, port);
 }
@@ -224,10 +224,10 @@ void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)
 
 void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
 {
-    std::string map = message->GetString();
+    std::string mapUuid = message->GetString();
     uint32_t playerId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnEnterWorld(updateTick_, map, playerId);
+        receiver_->OnEnterWorld(updateTick_, mapUuid, playerId);
 }
 
 void ProtocolGame::ParseMailHeaders(const std::shared_ptr<InputMessage>& message)
@@ -271,7 +271,7 @@ void ProtocolGame::SendLoginPacket()
     msg->AddString(accountName_);
     msg->AddString(accountPass_);
     msg->AddString(charUuid_);
-    msg->AddString(map_);
+    msg->AddString(mapUuid_);
     Send(msg);
 }
 

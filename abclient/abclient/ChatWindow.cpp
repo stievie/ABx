@@ -40,10 +40,10 @@ ChatWindow::ChatWindow(Context* context) :
 
     chatLog_ = dynamic_cast<ListView*>(GetChild("ChatLog", true));
 
-    SubscribeToEvent(AbEvents::E_SERVER_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
-    SubscribeToEvent(AbEvents::E_CHAT_MESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
-    SubscribeToEvent(AbEvents::E_MAIL_INBOX, URHO3D_HANDLER(ChatWindow, HandleMailInboxMessage));
-    SubscribeToEvent(AbEvents::E_MAIL_READ, URHO3D_HANDLER(ChatWindow, HandleMailReadMessage));
+    SubscribeToEvent(AbEvents::E_SERVERMESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
+    SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
+    SubscribeToEvent(AbEvents::E_MAILINBOX, URHO3D_HANDLER(ChatWindow, HandleMailInboxMessage));
+    SubscribeToEvent(AbEvents::E_MAILREAD, URHO3D_HANDLER(ChatWindow, HandleMailReadMessage));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     static bool firstStart = true;
@@ -154,8 +154,9 @@ void ChatWindow::RegisterObject(Context* context)
 
 void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData)
 {
+    using namespace AbEvents::ServerMessage;
     AB::GameProtocol::ServerMessageType type =
-        static_cast<AB::GameProtocol::ServerMessageType>(eventData[AbEvents::ED_MESSAGE_TYPE].GetInt());
+        static_cast<AB::GameProtocol::ServerMessageType>(eventData[P_MESSAGETYPE].GetInt());
     switch (type)
     {
     case AB::GameProtocol::ServerMessageTypeInfo:
@@ -193,14 +194,16 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
 
 void ChatWindow::HandleServerMessageInfo(VariantMap& eventData)
 {
-    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    using namespace AbEvents::ServerMessage;
+    String message = eventData[P_DATA].GetString();
     AddLine(message, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
 {
-    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-    String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    using namespace AbEvents::ServerMessage;
+    String message = eventData[P_DATA].GetString();
+    String sender = eventData[P_SENDER].GetString();
     unsigned p = message.Find(":");
     String res = message.Substring(0, p);
     String max = message.Substring(p + 1);
@@ -215,7 +218,8 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
 {
-    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    using namespace AbEvents::ServerMessage;
+    String message = eventData[P_DATA].GetString();
     unsigned p = message.Find(":");
     String age = message.Substring(0, p);
     String playTime = message.Substring(p + 1);
@@ -244,20 +248,23 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
 {
-    String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    using namespace AbEvents::ServerMessage;
+    String data = eventData[P_DATA].GetString();
     AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
 {
-    String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-    String data = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    using namespace AbEvents::ServerMessage;
+    String name = eventData[P_SENDER].GetString();
+    String data = eventData[P_DATA].GetString();
     AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 {
-    String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    using namespace AbEvents::ServerMessage;
+    String count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "You got {{count}} new mail(s)." };
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
@@ -267,7 +274,8 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 {
-    String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    using namespace AbEvents::ServerMessage;
+    String name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
     kainjow::mustache::data data;
     data.set("recipient", std::string(name.CString(), name.Length()));
@@ -277,7 +285,8 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 {
-    String name = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
+    using namespace AbEvents::ServerMessage;
+    String name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
     kainjow::mustache::data data;
     data.set("recipient", std::string(name.CString(), name.Length()));
@@ -287,7 +296,8 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 
 void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
 {
-    String count = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
+    using namespace AbEvents::ServerMessage;
+    String count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
@@ -302,11 +312,12 @@ void ChatWindow::HandleServerMessageMailDeleted(VariantMap& eventData)
 
 void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)
 {
+    using namespace AbEvents::ChatMessage;
     AB::GameProtocol::ChatMessageChannel channel =
-        static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[AbEvents::ED_MESSAGE_TYPE].GetInt());
-    String message = eventData[AbEvents::ED_MESSAGE_DATA].GetString();
-    String sender = eventData[AbEvents::ED_MESSAGE_SENDER].GetString();
-    uint32_t senderId = static_cast<uint32_t>(eventData[AbEvents::ED_MESSAGE_SENDER_ID].GetInt());
+        static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[P_MESSAGETYPE].GetInt());
+    String message = eventData[P_DATA].GetString();
+    String sender = eventData[P_SENDER].GetString();
+    uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
     AddChatLine(senderId, sender, message, channel);
 }
 

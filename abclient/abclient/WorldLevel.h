@@ -29,6 +29,7 @@ protected:
     SharedPtr<TargetWindow> targetWindow_;
     SharedPtr<MailWindow> mailWindow_;
     SharedPtr<MapWindow> mapWindow_;
+    String mapUuid_;
     String mapName_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;

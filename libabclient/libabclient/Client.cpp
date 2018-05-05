@@ -61,12 +61,12 @@ void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
         receiver_->OnGetMail(updateTick, mail);
 }
 
-void Client::OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId)
+void Client::OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId)
 {
     state_ = StateWorld;
-    mapName_ = mapName;
+    mapUuid_ = mapUuid;
     if (receiver_)
-        receiver_->OnEnterWorld(updateTick, mapName, playerId);
+        receiver_->OnEnterWorld(updateTick, mapUuid, playerId);
 }
 
 void Client::OnDespawnObject(int64_t updateTick, uint32_t id)
@@ -99,10 +99,10 @@ void Client::OnAccountCreated()
         receiver_->OnAccountCreated();
 }
 
-void Client::OnPlayerCreated(const std::string& uuid, const std::string& map)
+void Client::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid)
 {
     if (receiver_)
-        receiver_->OnPlayerCreated(uuid, map);
+        receiver_->OnPlayerCreated(uuid, mapUuid);
 }
 
 void Client::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
@@ -230,7 +230,7 @@ void Client::GetGameList()
     Connection::Run();
 }
 
-void Client::EnterWorld(const std::string& charUuid, const std::string& map)
+void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid)
 {
     // Enter or changing the world
     if (state_ != StateSelectChar && state_ != StateWorld)
@@ -248,7 +248,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& map)
         // If we came from the select character scene
         protoLogin_.reset();
 
-    protoGame_->Login(accountName_, password_, charUuid, map, gameHost_, gamePort_);
+    protoGame_->Login(accountName_, password_, charUuid, mapUuid, gameHost_, gamePort_);
 }
 
 void Client::Update(int timeElapsed)

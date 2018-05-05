@@ -30,7 +30,7 @@ private:
             gameIds_ = 0;
         return ++gameIds_;
     }
-    std::shared_ptr<Game> CreateGame(const std::string& mapName);
+    std::shared_ptr<Game> CreateGame(const std::string& mapUuid);
 protected:
     friend class Game;
     void DeleteGameTask(uint32_t gameId);
@@ -49,7 +49,7 @@ public:
     /// Returns the game with the mapName. If no such game exists it creates one.
     std::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
     std::shared_ptr<Game> Get(uint32_t gameId);
-    bool AddPlayer(const std::string& mapName, std::shared_ptr<Player> player);
+    bool AddPlayer(const std::string& mapUuid, std::shared_ptr<Player> player);
     // Delete all games with no players
     void CleanGames();
 

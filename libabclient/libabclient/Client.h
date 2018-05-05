@@ -30,7 +30,7 @@ private:
     std::string accountName_;
     std::string accountUuid_;
     std::string password_;
-    std::string mapName_;
+    std::string mapUuid_;
     std::vector<int> pings_;
     int lastRun_;
     int lastPing_;
@@ -50,7 +50,7 @@ public:
         const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp);
 
     /// Connect to game server -> authenticate -> enter game
-    void EnterWorld(const std::string& charUuid, const std::string& map);
+    void EnterWorld(const std::string& charUuid, const std::string& mapUuid);
     void Update(int timeElapsed);
 
     uint32_t GetIp() const;
@@ -62,11 +62,11 @@ public:
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
-    void OnPlayerCreated(const std::string& uuid, const std::string& map) override;
+    void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
-    void OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId) override;
+    void OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;
@@ -85,9 +85,9 @@ public:
     uint16_t gamePort_;
     ClientState state_;
     Receiver* receiver_;
-    const std::string& GetMapName() const
+    const std::string& GetMapUuid() const
     {
-        return mapName_;
+        return mapUuid_;
     }
     int GetAvgPing() const
     {

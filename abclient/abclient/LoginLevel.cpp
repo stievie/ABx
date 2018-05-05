@@ -147,8 +147,9 @@ void LoginLevel::HandleLoginClicked(StringHash eventType, VariantMap& eventData)
 void LoginLevel::HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData)
 {
     VariantMap& e = GetEventDataMap();
-    e[AbEvents::E_SET_LEVEL] = "CreateAccountLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, e);
+    using namespace AbEvents::SetLevel;
+    e[P_NAME] = "CreateAccountLevel";
+    SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
 void LoginLevel::SubscribeToEvents()

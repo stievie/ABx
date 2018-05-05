@@ -155,7 +155,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             cData.profession = message->GetStringEncrypted();
             cData.profession2 = message->GetStringEncrypted();
             cData.sex = static_cast<AB::Entities::CharacterSex>(message->Get<uint8_t>());
-            cData.currentMap = message->GetStringEncrypted();
+            cData.currentMapUuid = message->GetStringEncrypted();
             chars.push_back(cData);
         }
         if (charlistCallback_)
@@ -194,9 +194,9 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
         std::string playerUuid = message->GetStringEncrypted();
-        std::string map = message->GetStringEncrypted();
+        std::string mapUuid = message->GetStringEncrypted();
         if (createPlayerCallback_)
-            createPlayerCallback_(playerUuid, map);
+            createPlayerCallback_(playerUuid, mapUuid);
         break;
     }
     case AB::LoginProtocol::AddAccountKeySuccess:

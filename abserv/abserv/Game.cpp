@@ -268,13 +268,13 @@ void Game::InternalLoad()
         Start();
 }
 
-void Game::Load(const std::string& mapName)
+void Game::Load(const std::string& mapUuid)
 {
     // Dispatcher Thread
     map_ = std::make_shared<Map>(shared_from_this());
-    if (!IO::IOGame::LoadGameByName(this, mapName))
+    if (!IO::IOGame::LoadGameByUuid(this, mapUuid))
     {
-        LOG_ERROR << "Error loading game with name " << mapName << std::endl;
+        LOG_ERROR << "Error loading game " << mapUuid << std::endl;
         return;
     }
     map_->data_.name = data_.name;

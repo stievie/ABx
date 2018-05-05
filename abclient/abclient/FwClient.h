@@ -18,7 +18,7 @@ class FwClient : public Object, public Client::Receiver
     URHO3D_OBJECT(FwClient, Object);
 private:
     String currentLevel_;
-    String currentMap_;
+    String currentMapUuid_;
     bool levelReady_;
     Vector<EventItem> queuedEvents_;
     uint32_t playerId_;
@@ -57,8 +57,8 @@ public:
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
     void CreatePlayer(const String& name, const String& prof, AB::Entities::CharacterSex sex, bool isPvp);
-    void EnterWorld(const String& charUuid, const String& map);
-    void ChangeWorld(const String& map);
+    void EnterWorld(const String& charUuid, const String& mapUuid);
+    void ChangeWorld(const String& mapUuid);
     void Logout();
     void GetMailHeaders();
     void ReadMail(const std::string& uuid);
@@ -79,11 +79,11 @@ public:
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
-    void OnPlayerCreated(const std::string& uuid, const std::string& map) override;
+    void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
-    void OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId) override;
+    void OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;
@@ -113,6 +113,13 @@ public:
     const std::map<std::string, AB::Entities::Game>& GetGames() const
     {
         return games_;
+    }
+    String GetGameName(const String& uuid) const
+    {
+        auto it = games_.find(std::string(uuid.CString()));
+        if (it == games_.end())
+            return "";
+        return String((*it).second.name.c_str());
     }
     const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
     {

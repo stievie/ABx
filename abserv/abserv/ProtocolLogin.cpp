@@ -326,7 +326,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         output->AddStringEncrypted(character.profession);
         output->AddStringEncrypted(character.profession2);
         output->AddByte(static_cast<uint8_t>(character.sex));
-        output->AddStringEncrypted(character.currentMap);
+        output->AddStringEncrypted(character.currentMapUuid);
     }
 
     Send(output);
@@ -416,7 +416,7 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
         output->AddStringEncrypted(uuid);
-        output->AddStringEncrypted(IO::IOGame::GetLandingGame());
+        output->AddStringEncrypted(IO::IOGame::GetLandingGameUuid());
     }
     else
     {

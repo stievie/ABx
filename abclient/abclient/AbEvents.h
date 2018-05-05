@@ -5,35 +5,88 @@ using namespace Urho3D;
 /// User defined events
 namespace AbEvents
 {
-    /// Load next level
-    static const StringHash E_SET_LEVEL = StringHash("Set levels");
-    static const StringHash E_LEVEL_READY = StringHash("Level Ready");
-    static const StringHash E_OBJECT_SPAWN = StringHash("Object Spawn");
-    static const StringHash E_OBJECT_SPAWN_EXISTING = StringHash("Object Spawn existing");
-    static const StringHash E_OBJECT_DESPAWN = StringHash("Object Despawn");
-    static const StringHash E_OBJECT_POS_UPDATE = StringHash("Object Pos Update");
-    static const StringHash E_OBJECT_ROT_UPDATE = StringHash("Object Rot Update");
-    static const StringHash E_OBJECT_SATE_UPDATE = StringHash("Object Sate Update");
-    static const StringHash E_OBJECT_SELECTED = StringHash("Object Selected");
-    static const StringHash E_SERVER_MESSAGE = StringHash("Server Message");
-    static const StringHash E_CHAT_MESSAGE = StringHash("Chat Message");
-    static const StringHash E_MAIL_INBOX = StringHash("Mail Inbox");
-    static const StringHash E_MAIL_READ = StringHash("Mail Read");
-    static const StringHash E_MAIL_DELETED = StringHash("Mail Deleted");
 
-    static const StringHash ED_MAP_NAME = StringHash("Map name");
+URHO3D_EVENT(E_SETLEVEL, SetLevel)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_NAME, Name);        // String
+    URHO3D_PARAM(P_MAPUUID, MapUuid);            // String
+}
 
-    static const StringHash ED_UPDATE_TICK = StringHash("Update Tick");
-    static const StringHash ED_OBJECT_ID = StringHash("Object ID");
-    static const StringHash ED_OBJECT_ID2 = StringHash("Object ID 2");
-    static const StringHash ED_OBJECT_DATA = StringHash("Object Data");
-    static const StringHash ED_POS = StringHash("Position");
-    static const StringHash ED_ROTATION = StringHash("Rotation");
-    static const StringHash ED_ROTATION_MANUAL = StringHash("Rotation Manual");
-    static const StringHash ED_SCALE = StringHash("Scale");
-    static const StringHash ED_OBJECT_STATE = StringHash("Object State");
-    static const StringHash ED_MESSAGE_TYPE = StringHash("Message Type");
-    static const StringHash ED_MESSAGE_DATA = StringHash("Message Data");
-    static const StringHash ED_MESSAGE_SENDER = StringHash("Message Sender");
-    static const StringHash ED_MESSAGE_SENDER_ID = StringHash("Message Sender ID");
+URHO3D_EVENT(E_LEVELREADY, LevelReady)
+{
+    URHO3D_PARAM(P_NAME, Name);        // String
+}
+
+URHO3D_EVENT(E_OBJECTSPAWN, ObjectSpawn)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_EXISTING, Existing);      // bool
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_POSITION, Position);
+    URHO3D_PARAM(P_ROTATION, Rotation);
+    URHO3D_PARAM(P_SCALE, Scale);
+    URHO3D_PARAM(P_DATA, Data);
+}
+
+URHO3D_EVENT(E_OBJECTDESPAWN, ObjectDespawn)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+}
+
+URHO3D_EVENT(E_OBJECTPOSUPDATE, ObjectPosUpdate)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_POSITION, Position);
+}
+
+URHO3D_EVENT(E_OBJECTROTUPDATE, ObjectRotUpdate)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_ROTATION, Rotation);
+    URHO3D_PARAM(P_MANUAL, Manual);
+}
+
+URHO3D_EVENT(E_OBJECTSTATEUPDATE, ObjectStateUpdate)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_STATE, State);
+}
+
+URHO3D_EVENT(E_OBJECTSELECTED, ObjectSelected)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_SOURCEID, SourceId);
+    URHO3D_PARAM(P_TARGETID, TargetId);
+}
+
+URHO3D_EVENT(E_SERVERMESSAGE, ServerMessage)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_MESSAGETYPE, MessageType);
+    URHO3D_PARAM(P_SENDER, Sender);
+    URHO3D_PARAM(P_DATA, Data);
+}
+
+URHO3D_EVENT(E_CHATMESSAGE, ChatMessage)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_MESSAGETYPE, MessageType);
+    URHO3D_PARAM(P_SENDERID, SenderId);
+    URHO3D_PARAM(P_SENDER, Sender);
+    URHO3D_PARAM(P_DATA, Data);
+}
+
+URHO3D_EVENT(E_MAILINBOX, MailInbox)
+{
+}
+
+URHO3D_EVENT(E_MAILREAD, MailRead)
+{
+}
+
 }

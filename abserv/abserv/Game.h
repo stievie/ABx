@@ -75,7 +75,7 @@ public:
     ExecutionState GetState() const { return state_; }
     const kaguya::State& GetLuaState() const { return luaState_; }
     void SetState(ExecutionState state);
-    void Load(const std::string& mapName);
+    void Load(const std::string& mapUuid);
     /// Send spawn message for all existing objects
     void SendSpawnAll(uint32_t playerId);
     void QueueSpawnObject(std::shared_ptr<GameObject> object);

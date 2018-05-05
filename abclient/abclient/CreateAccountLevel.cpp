@@ -75,8 +75,9 @@ void CreateAccountLevel::DoCreateAccount()
 void CreateAccountLevel::DoCancel()
 {
     VariantMap& e = GetEventDataMap();
-    e[AbEvents::E_SET_LEVEL] = "LoginLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, e);
+    using namespace AbEvents::SetLevel;
+    e[P_NAME] = "LoginLevel";
+    SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
 void CreateAccountLevel::CreateScene()

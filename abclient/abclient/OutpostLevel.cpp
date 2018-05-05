@@ -10,7 +10,9 @@ OutpostLevel::OutpostLevel(Context* context) :
     WorldLevel(context)
 {
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
-    mapName_ = lm->GetMapName();
+    mapUuid_ = lm->GetMapUuid();
+    FwClient* cli = context_->GetSubsystem<FwClient>();
+    mapName_ = cli->GetGameName(mapUuid_);
     // Create the scene content
     CreateScene();
 
@@ -21,8 +23,9 @@ OutpostLevel::OutpostLevel(Context* context) :
     SubscribeToEvents();
 
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::E_LEVEL_READY] = "OutpostLevel";
-    SendEvent(AbEvents::E_LEVEL_READY, eData);
+    using namespace AbEvents::LevelReady;
+    eData[P_NAME] = "OutpostLevel";
+    SendEvent(AbEvents::E_LEVELREADY, eData);
 
     chatWindow_->AddLine("Entered " + mapName_, "ChatLogServerInfoText");
 }

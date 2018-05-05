@@ -69,7 +69,7 @@ void CharSelectLevel::CreateUI()
         button->SetLayoutMode(LM_FREE);
         button->SetVar("uuid", String(ch.uuid.c_str()));
         button->SetVar("char_name", String(ch.name.c_str()));
-        button->SetVar("cuurr_map", String(ch.currentMap.c_str()));
+        button->SetVar("map_uuid", String(ch.currentMapUuid.c_str()));
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCharClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
@@ -148,24 +148,26 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
 {
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
     String uuid = sender->GetVar("uuid").GetString();
-    String map = sender->GetVar("cuurr_map").GetString();
+    String mapUuid = sender->GetVar("map_uuid").GetString();
 
     FwClient* net = context_->GetSubsystem<FwClient>();
-    net->EnterWorld(uuid, map);
+    net->EnterWorld(uuid, mapUuid);
 }
 
 void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& eventData)
 {
     VariantMap& e = GetEventDataMap();
-    e[AbEvents::E_SET_LEVEL] = "CharCreateLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, e);
+    using namespace AbEvents::SetLevel;
+    e[P_NAME] = "CharCreateLevel";
+    SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
 void CharSelectLevel::HandleBackClicked(StringHash eventType, VariantMap& eventData)
 {
     VariantMap& e = GetEventDataMap();
-    e[AbEvents::E_SET_LEVEL] = "LoginLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, e);
+    using namespace AbEvents::SetLevel;
+    e[P_NAME] = "LoginLevel";
+    SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
 void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

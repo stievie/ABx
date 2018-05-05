@@ -122,8 +122,6 @@ bool IOAccount::LoginServerAuth(const std::string& name, const std::string& pass
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
         return false;
 
-    const std::string landingGame = IOGame::GetLandingGame();
-
     account.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
     client->Update(account);
 

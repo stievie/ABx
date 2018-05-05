@@ -19,7 +19,7 @@ public:
     typedef std::function<void(const AB::Entities::CharacterList& chars)> CharlistCallback;
     typedef std::function<void(const std::vector<AB::Entities::Game>& chars)> GamelistCallback;
     typedef std::function<void()> CreateAccountCallback;
-    typedef std::function<void(const std::string& uuid, const std::string& map)> CreatePlayerCallback;
+    typedef std::function<void(const std::string& uuid, const std::string& mapUuid)> CreatePlayerCallback;
 private:
     enum ProtocolAction
     {

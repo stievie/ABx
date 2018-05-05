@@ -174,8 +174,9 @@ void ClientApp::SwitchScene(const String& sceneName)
 {
     // Switch level
     VariantMap& eventData = GetEventDataMap();
-    eventData[AbEvents::E_SET_LEVEL] = sceneName;
-    SendEvent(AbEvents::E_SET_LEVEL, eventData);
+    using namespace AbEvents::SetLevel;
+    eventData[P_NAME] = sceneName;
+    SendEvent(AbEvents::E_SETLEVEL, eventData);
 }
 
 void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)

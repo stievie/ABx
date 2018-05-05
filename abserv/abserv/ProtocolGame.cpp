@@ -18,7 +18,8 @@
 
 namespace Net {
 
-void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid, const std::string& map)
+void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
+    const std::string& mapUuid)
 {
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByUuid(playerUuid);
     if (foundPlayer)
@@ -51,9 +52,8 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     }
 
     // Check if game exists.
-    // TODO: Use UUID instead of name
     AB::Entities::Game g;
-    g.name = map;
+    g.uuid = mapUuid;
     if (!client->Read(g))
     {
         DisconnectClient(AB::Errors::InvalidGame);
@@ -63,7 +63,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     acc.currentCharacterUuid = player_->data_.uuid;
     client->Update(acc);
 
-    player_->data_.currentMap = map;
+    player_->data_.currentMapUuid = mapUuid;
     client->Update(player_->data_);
     Connect(player_->id_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
@@ -318,11 +318,11 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 
 void ProtocolGame::EnterGame()
 {
-    if (Game::GameManager::Instance.AddPlayer(player_->data_.currentMap, player_))
+    if (Game::GameManager::Instance.AddPlayer(player_->data_.currentMapUuid, player_))
     {
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
-        output->AddString(player_->data_.currentMap);
+        output->AddString(player_->data_.currentMapUuid);
         output->Add<uint32_t>(player_->id_);
         Send(output);
     }

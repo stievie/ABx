@@ -16,10 +16,8 @@ void GameManager::Start(Net::ServiceManager* serviceManager)
 {
     // Main Thread
     serviceManager_ = serviceManager;
-    {
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        state_ = State::ManagerStateRunning;
-    }
+    std::lock_guard<std::recursive_mutex> lockClass(lock_);
+    state_ = State::ManagerStateRunning;
 }
 
 void GameManager::Stop()
@@ -38,7 +36,7 @@ void GameManager::Stop()
     }
 }
 
-std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapName)
+std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 {
     assert(state_ == State::ManagerStateRunning);
 #ifdef DEBUG_GAME
@@ -49,10 +47,10 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapName)
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
         game->id_ = GetNewGameId();
         games_[game->id_] = game;
-        maps_[mapName].push_back(game.get());
+        maps_[mapUuid].push_back(game.get());
     }
     game->SetState(Game::ExecutionStateStartup);
-    game->Load(mapName);
+    game->Load(mapUuid);
     return game;
 }
 
@@ -65,20 +63,20 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     auto it = games_.find(gameId);
     if (it != games_.end())
     {
-        maps_.erase((*it).second->GetName());
+        maps_.erase((*it).second->data_.uuid);
         games_.erase(it);
     }
 }
 
-std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canCreate /* = false */)
+std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canCreate /* = false */)
 {
-    const auto it = maps_.find(mapName);
+    const auto it = maps_.find(mapUuid);
     if (it == maps_.end())
     {
         // Map does not exist
         if (!canCreate)
             return std::shared_ptr<Game>();
-        return CreateGame(mapName);
+        return CreateGame(mapUuid);
     }
     // There are already some games with this map
     for (const auto& g : it->second)
@@ -91,7 +89,7 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapName, bool canC
         }
     }
     if (canCreate)
-        return CreateGame(mapName);
+        return CreateGame(mapUuid);
     return std::shared_ptr<Game>();
 }
 
@@ -105,12 +103,12 @@ std::shared_ptr<Game> GameManager::Get(uint32_t gameId)
     return std::shared_ptr<Game>();
 }
 
-bool GameManager::AddPlayer(const std::string& mapName, std::shared_ptr<Player> player)
+bool GameManager::AddPlayer(const std::string& mapUuid, std::shared_ptr<Player> player)
 {
     std::shared_ptr<Game> game;
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        game = GetGame(mapName, true);
+        game = GetGame(mapUuid, true);
     }
 
     if (!game)

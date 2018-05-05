@@ -25,23 +25,23 @@ bool IOGame::LoadGameByUuid(Game::Game* game, const std::string& uuid)
     return LoadGame(game->data_);
 }
 
-std::string IOGame::GetLandingGame()
+std::string IOGame::GetLandingGameUuid()
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
-        return "";
+        return "00000000-0000-0000-0000-000000000000";
     if (gl.gameUuids.size() == 0)
-        return "";
+        return "00000000-0000-0000-0000-000000000000";
 
     for (const std::string& uuid : gl.gameUuids)
     {
         AB::Entities::Game g;
         g.uuid = uuid;
         if (client->Read(g) && g.landing)
-            return g.name;
+            return g.uuid;
     }
-    return "";
+    return "00000000-0000-0000-0000-000000000000";
 }
 
 AB::Entities::GameType IOGame::GetGameType(const std::string& mapName)

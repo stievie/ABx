@@ -46,7 +46,6 @@ struct Character : Entity
         s.value8b(onlineTime);
         s.value8b(deletedTime);
         s.value8b(creation);
-        s.text1b(currentMap, Limits::MAX_MAP_NAME);
         s.text1b(currentMapUuid, Limits::MAX_UUID);
 
         s.value8b(lastLogin);
@@ -62,7 +61,6 @@ struct Character : Entity
     uint32_t xp = 0;
     uint32_t skillPoints = 0;
     CharacterSex sex = CharacterSexUnknown;
-    std::string currentMap;
     std::string currentMapUuid;
     std::string accountUuid;
 

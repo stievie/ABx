@@ -84,12 +84,6 @@ void MapWindow::HandleMapGameClicked(StringHash eventType, VariantMap& eventData
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
     FwClient* net = context_->GetSubsystem<FwClient>();
     const String uuid = sender->GetVar("uuid").GetString();
-    const std::string sUuid = std::string(uuid.CString());
-    const auto& games = net->GetGames();
-    auto it = games.find(sUuid);
-    if (it == games.end())
-        return;
 
-    String name = String((*it).second.name.c_str());
-    net->ChangeWorld(name);
+    net->ChangeWorld(uuid);
 }

@@ -25,7 +25,7 @@ private:
     std::string accountName_;
     std::string accountPass_;
     std::string charUuid_;
-    std::string map_;
+    std::string mapUuid_;
     int64_t pingTick_;
     int64_t updateTick_;
     int64_t clockDiff_;

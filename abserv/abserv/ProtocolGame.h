@@ -32,7 +32,8 @@ public:
         encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
     }
 
-    void Login(const std::string& playerUuid, const uuids::uuid& accountUuid, const std::string& map);
+    void Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
+        const std::string& mapUuid);
     void Logout();
     void EnterGame();
     void WriteToOutput(const NetworkMessage& message);

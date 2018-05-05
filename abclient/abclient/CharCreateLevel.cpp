@@ -137,8 +137,9 @@ void CharCreateLevel::DoCreateCharacter()
 void CharCreateLevel::DoCancel()
 {
     VariantMap& e = GetEventDataMap();
-    e[AbEvents::E_SET_LEVEL] = "CharSelectLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, e);
+    using namespace AbEvents::SetLevel;
+    e[P_NAME] = "CharSelectLevel";
+    SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
 void CharCreateLevel::CreateScene()

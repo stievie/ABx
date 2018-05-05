@@ -21,13 +21,12 @@ WorldLevel::WorldLevel(Context* context) :
 void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
-    SubscribeToEvent(AbEvents::E_OBJECT_SPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
-    SubscribeToEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
-    SubscribeToEvent(AbEvents::E_OBJECT_DESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
-    SubscribeToEvent(AbEvents::E_OBJECT_POS_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
-    SubscribeToEvent(AbEvents::E_OBJECT_ROT_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
-    SubscribeToEvent(AbEvents::E_OBJECT_SATE_UPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
-    SubscribeToEvent(AbEvents::E_OBJECT_SELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
+    SubscribeToEvent(AbEvents::E_OBJECTSPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
+    SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
+    SubscribeToEvent(AbEvents::E_OBJECTPOSUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
@@ -241,20 +240,21 @@ void WorldLevel::CreateScene()
 
 void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
 {
-    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    using namespace AbEvents::ObjectSpawn;
+    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
     if (objects_.Contains(objectId))
         return;
-    int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
-    Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
-    float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
+    int64_t tick = eventData[P_UPDATETICK].GetInt64();
+    Vector3 pos = eventData[P_POSITION].GetVector3();
+    float rot = eventData[P_ROTATION].GetFloat();
     Quaternion direction;
     float deg = -rot * (180.0f / (float)M_PI);
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
-    Vector3 scale = eventData[AbEvents::ED_SCALE].GetVector3();
-    String d = eventData[AbEvents::ED_OBJECT_DATA].GetString();
+    Vector3 scale = eventData[P_SCALE].GetVector3();
+    String d = eventData[P_DATA].GetString();
+    bool existing = eventData[P_EXISTING].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, eventType == AbEvents::E_OBJECT_SPAWN_EXISTING,
-        pos, scale, direction, data);
+    SpawnObject(tick, objectId, existing, pos, scale, direction, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
@@ -310,7 +310,8 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
 
 void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)
 {
-    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    using namespace AbEvents::ObjectDespawn;
+    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
     SharedPtr<GameObject> object = objects_[objectId];
     if (object)
     {
@@ -330,24 +331,26 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
 
 void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData)
 {
-    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    using namespace AbEvents::ObjectPosUpdate;
+    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
     GameObject* object = objects_[objectId];
     if (object)
     {
-        int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
-        Vector3 pos = eventData[AbEvents::ED_POS].GetVector3();
+        int64_t tick = eventData[P_UPDATETICK].GetInt64();
+        Vector3 pos = eventData[P_POSITION].GetVector3();
         object->MoveTo(tick, pos);
     }
 }
 
 void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData)
 {
-    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    using namespace AbEvents::ObjectRotUpdate;
+    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
     GameObject* object = objects_[objectId];
     if (object)
     {
-        float rot = eventData[AbEvents::ED_ROTATION].GetFloat();
-        bool manual = eventData[AbEvents::ED_ROTATION_MANUAL].GetBool();
+        float rot = eventData[P_ROTATION].GetFloat();
+        bool manual = eventData[P_MANUAL].GetBool();
         // Manual SetDirection -> don't update camera yaw because it comes from camera move
         object->SetYRotation(rot, !manual);
     }
@@ -355,19 +358,22 @@ void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventDa
 
 void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData)
 {
-    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
+    using namespace AbEvents::ObjectStateUpdate;
+    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
     GameObject* object = objects_[objectId];
     if (object)
     {
-        int64_t tick = eventData[AbEvents::ED_UPDATE_TICK].GetInt64();
-        object->SetCreatureState(tick, static_cast<AB::GameProtocol::CreatureState>(eventData[AbEvents::ED_OBJECT_STATE].GetInt()));
+        int64_t tick = eventData[P_UPDATETICK].GetInt64();
+        object->SetCreatureState(tick,
+            static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetInt()));
     }
 }
 
 void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventData)
 {
-    uint32_t objectId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID].GetInt());
-    uint32_t targetId = static_cast<uint32_t>(eventData[AbEvents::ED_OBJECT_ID2].GetInt());
+    using namespace AbEvents::ObjectSelected;
+    uint32_t objectId = static_cast<uint32_t>(eventData[P_SOURCEID].GetInt());
+    uint32_t targetId = static_cast<uint32_t>(eventData[P_TARGETID].GetInt());
     SharedPtr<GameObject> object = objects_[objectId];
     if (object)
     {
@@ -405,8 +411,9 @@ void WorldLevel::HandleMenuLogout(StringHash eventType, VariantMap& eventData)
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->Logout();
     VariantMap& e = GetEventDataMap();
-    e[AbEvents::E_SET_LEVEL] = "LoginLevel";
-    SendEvent(AbEvents::E_SET_LEVEL, e);
+    using namespace AbEvents::SetLevel;
+    e[P_NAME] = "LoginLevel";
+    SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
 void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventData)

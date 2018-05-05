@@ -72,7 +72,7 @@ FwClient::FwClient(Context* context) :
     client_.receiver_ = this;
     lastState_ = client_.state_;
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
-    SubscribeToEvent(AbEvents::E_LEVEL_READY, URHO3D_HANDLER(FwClient, HandleLevelReady));
+    SubscribeToEvent(AbEvents::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
 }
 
 FwClient::~FwClient()
@@ -93,7 +93,8 @@ void FwClient::Stop()
 
 void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
 {
-    String levelName = eventData[AbEvents::E_LEVEL_READY].GetString();
+    using namespace AbEvents::LevelReady;
+    String levelName = eventData[P_NAME].GetString();
     levelReady_ = true;
     // Level loaded, send queued events
     for (auto& e : queuedEvents_)
@@ -153,21 +154,19 @@ void FwClient::CreatePlayer(const String& name, const String& prof, AB::Entities
     }
 }
 
-void FwClient::EnterWorld(const String& charUuid, const String& map)
+void FwClient::EnterWorld(const String& charUuid, const String& mapUuid)
 {
     if (loggedIn_)
     {
         currentCharacterUuid_ = charUuid;
-        client_.EnterWorld(std::string(charUuid.CString()), std::string(map.CString()));
+        client_.EnterWorld(std::string(charUuid.CString()), std::string(mapUuid.CString()));
     }
 }
 
-void FwClient::ChangeWorld(const String& map)
+void FwClient::ChangeWorld(const String& mapUuid)
 {
     if (loggedIn_)
-    {
-        client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(map.CString()));
-    }
+        client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(mapUuid.CString()));
 }
 
 void FwClient::Logout()
@@ -241,9 +240,10 @@ void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
     levelReady_ = false;
     characters_ = chars;
     VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::SetLevel;
     currentLevel_ = "CharSelectLevel";
-    eData[AbEvents::E_SET_LEVEL] = currentLevel_;
-    SendEvent(AbEvents::E_SET_LEVEL, eData);
+    eData[P_NAME] = currentLevel_;
+    SendEvent(AbEvents::E_SETLEVEL, eData);
 }
 
 void FwClient::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
@@ -259,27 +259,28 @@ void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entiti
 {
     mailHeaders_ = headers;
     VariantMap& eData = GetEventDataMap();
-    SendEvent(AbEvents::E_MAIL_INBOX, eData);
+    SendEvent(AbEvents::E_MAILINBOX, eData);
 }
 
 void FwClient::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
 {
     currentMail_ = mail;
     VariantMap& eData = GetEventDataMap();
-    SendEvent(AbEvents::E_MAIL_READ, eData);
+    SendEvent(AbEvents::E_MAILREAD, eData);
 }
 
-void FwClient::OnEnterWorld(int64_t updateTick, const std::string& mapName, uint32_t playerId)
+void FwClient::OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId)
 {
     levelReady_ = false;
     playerId_ = playerId;
     VariantMap& eData = GetEventDataMap();
     currentLevel_ = "OutpostLevel";
-    currentMap_ = String(mapName.c_str());
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_MAP_NAME] = currentMap_;
-    eData[AbEvents::E_SET_LEVEL] = currentLevel_;
-    SendEvent(AbEvents::E_SET_LEVEL, eData);
+    currentMapUuid_ = String(mapUuid.c_str());
+    using namespace AbEvents::SetLevel;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_MAPUUID] = currentMapUuid_;
+    eData[P_NAME] = currentLevel_;
+    SendEvent(AbEvents::E_SETLEVEL, eData);
 
     Graphics* graphics = GetSubsystem<Graphics>();
     graphics->SetWindowTitle("FW - " + accountName_);
@@ -297,8 +298,9 @@ void FwClient::OnNetworkError(const std::error_code& err)
     {
         // Disconnect -> Relogin
         VariantMap& eData = GetEventDataMap();
-        eData[AbEvents::E_SET_LEVEL] = "LoginLevel";
-        SendEvent(AbEvents::E_SET_LEVEL, eData);
+        using namespace AbEvents::SetLevel;
+        eData[P_NAME] = "LoginLevel";
+        SendEvent(AbEvents::E_SETLEVEL, eData);
     }
 }
 
@@ -320,54 +322,57 @@ void FwClient::OnProtocolError(uint8_t err)
 void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
+    using namespace AbEvents::ObjectSpawn;
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_OBJECT_ID] = id;
-    eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
-    eData[AbEvents::ED_ROTATION] = rot;
-    eData[AbEvents::ED_SCALE] = Vector3(scale.x, scale.y, scale.z);
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_EXISTING] = existing;
+    eData[P_OBJECTID] = id;
+    eData[P_POSITION] = Vector3(pos.x, pos.y, pos.z);
+    eData[P_ROTATION] = rot;
+    eData[P_SCALE] = Vector3(scale.x, scale.y, scale.z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
-    eData[AbEvents::ED_OBJECT_DATA] = d;
-    if (!existing)
-        QueueEvent(AbEvents::E_OBJECT_SPAWN, eData);
-    else
-        QueueEvent(AbEvents::E_OBJECT_SPAWN_EXISTING, eData);
+    eData[P_DATA] = d;
+    QueueEvent(AbEvents::E_OBJECTSPAWN, eData);
 }
 
 void FwClient::OnDespawnObject(int64_t updateTick, uint32_t id)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_OBJECT_ID] = id;
-    QueueEvent(AbEvents::E_OBJECT_DESPAWN, eData);
+    using namespace AbEvents::ObjectDespawn;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    QueueEvent(AbEvents::E_OBJECTDESPAWN, eData);
 }
 
 void FwClient::OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_OBJECT_ID] = id;
-    eData[AbEvents::ED_POS] = Vector3(pos.x, pos.y, pos.z);
-    QueueEvent(AbEvents::E_OBJECT_POS_UPDATE, eData);
+    using namespace AbEvents::ObjectPosUpdate;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_POSITION] = Vector3(pos.x, pos.y, pos.z);
+    QueueEvent(AbEvents::E_OBJECTPOSUPDATE, eData);
 }
 
 void FwClient::OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_OBJECT_ID] = id;
-    eData[AbEvents::ED_ROTATION] = rot;
-    eData[AbEvents::ED_ROTATION_MANUAL] = manual;
-    QueueEvent(AbEvents::E_OBJECT_ROT_UPDATE, eData);
+    using namespace AbEvents::ObjectRotUpdate;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_ROTATION] = rot;
+    eData[P_MANUAL] = manual;
+    QueueEvent(AbEvents::E_OBJECTROTUPDATE, eData);
 }
 
 void FwClient::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_OBJECT_ID] = id;
-    eData[AbEvents::ED_OBJECT_STATE] = static_cast<unsigned>(state);
-    QueueEvent(AbEvents::E_OBJECT_SATE_UPDATE, eData);
+    using namespace AbEvents::ObjectStateUpdate;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_STATE] = static_cast<unsigned>(state);
+    QueueEvent(AbEvents::E_OBJECTSTATEUPDATE, eData);
 }
 
 void FwClient::OnAccountCreated()
@@ -376,39 +381,42 @@ void FwClient::OnAccountCreated()
     Login(accountName_, accountPass_);
 }
 
-void FwClient::OnPlayerCreated(const std::string& uuid, const std::string& map)
+void FwClient::OnPlayerCreated(const std::string& uuid, const std::string& mapUuid)
 {
-    EnterWorld(String(uuid.c_str()), String(map.c_str()));
+    EnterWorld(String(uuid.c_str()), String(mapUuid.c_str()));
 }
 
 void FwClient::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_OBJECT_ID] = sourceId;
-    eData[AbEvents::ED_OBJECT_ID2] = targetId;
-    QueueEvent(AbEvents::E_OBJECT_SELECTED, eData);
+    using namespace AbEvents::ObjectSelected;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_SOURCEID] = sourceId;
+    eData[P_TARGETID] = targetId;
+    QueueEvent(AbEvents::E_OBJECTSELECTED, eData);
 }
 
 void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_MESSAGE_TYPE] = type;
-    eData[AbEvents::ED_MESSAGE_SENDER] = String(senderName.data(), (int)senderName.length());
-    eData[AbEvents::ED_MESSAGE_DATA] = String(message.data(), (int)message.length());
-    QueueEvent(AbEvents::E_SERVER_MESSAGE, eData);
+    using namespace AbEvents::ServerMessage;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_MESSAGETYPE] = type;
+    eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
+    eData[P_DATA] = String(message.data(), (int)message.length());
+    QueueEvent(AbEvents::E_SERVERMESSAGE, eData);
 }
 
 void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
     uint32_t senderId, const std::string& senderName, const std::string& message)
 {
     VariantMap& eData = GetEventDataMap();
-    eData[AbEvents::ED_UPDATE_TICK] = updateTick;
-    eData[AbEvents::ED_MESSAGE_TYPE] = channel;
-    eData[AbEvents::ED_MESSAGE_SENDER_ID] = senderId;
-    eData[AbEvents::ED_MESSAGE_SENDER] = String(senderName.data(), (int)senderName.length());
-    eData[AbEvents::ED_MESSAGE_DATA] = String(message.data(), (int)message.length());
-    QueueEvent(AbEvents::E_CHAT_MESSAGE, eData);
+    using namespace AbEvents::ChatMessage;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_MESSAGETYPE] = channel;
+    eData[P_SENDERID] = senderId;
+    eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
+    eData[P_DATA] = String(message.data(), (int)message.length());
+    QueueEvent(AbEvents::E_CHATMESSAGE, eData);
 }
