@@ -12,4 +12,6 @@
 #include "DBGame.h"
 #include "DBMail.h"
 #include "DBMailList.h"
+#include "DBProfession.h"
+#include "DBSkill.h"
 

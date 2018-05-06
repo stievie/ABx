@@ -78,9 +78,6 @@
     <ClInclude Include="ProtocolStatus.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Database.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -255,7 +252,10 @@
     <ClInclude Include="DataClient.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DatabaseSqlite.h">
+    <ClInclude Include="FriendList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IOFriendList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -312,9 +312,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolStatus.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Database.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
@@ -416,9 +413,6 @@
     <ClCompile Include="Transformation.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="DatabaseSqlite.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -468,6 +462,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DataClient.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="FriendList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOFriendList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

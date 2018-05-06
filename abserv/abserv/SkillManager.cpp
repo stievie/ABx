@@ -1,46 +1,43 @@
 #include "stdafx.h"
 #include "SkillManager.h"
 #include "DataProvider.h"
+#include <AB/Entities/Skill.h>
 
 namespace Game {
 
 SkillManager SkillManager::Instance;
 
-SkillManager::SkillManager() :
-    database_(nullptr)
+SkillManager::SkillManager()
 {
 }
 
-bool SkillManager::Load(const std::string& file)
+std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
 {
-    database_ = std::make_unique<DB::DatabaseSqlite>(file);
-    return (bool)database_;
-}
+    std::shared_ptr<Skill> result;
+    auto it = skillCache_.find(index);
+    if (it != skillCache_.end())
+    {
+        result = std::make_shared<Skill>(*(*it).second);
+    }
+    else
+    {
+        IO::DataClient* client = Application::Instance->GetDataClient();
+        std::unique_ptr<Skill> skill = std::make_unique<Skill>();
+        skill->data_.index = index;
+        if (!client->Read(skill->data_))
+            return std::shared_ptr<Skill>();
+        result = std::make_shared<Skill>(*skill);
+        // Move to cache
+        skillCache_.emplace(index, std::move(skill));
+    }
 
-std::shared_ptr<Skill> SkillManager::Get(uint32_t id)
-{
-    std::ostringstream query;
-    query << "SELECT `id`, `script` FROM `skills` WHERE `id` = " << id;
-    std::shared_ptr<DB::DBResult> dbRes = database_->StoreQuery(query.str());
-    if (!dbRes)
-        return std::shared_ptr<Skill>();
-
-    std::shared_ptr<Skill> result = std::make_shared<Skill>(id);
-    if (result->LoadScript(IO::DataProvider::Instance.GetDataFile(dbRes->GetString("script"))))
-        return result;
+    if (result)
+    {
+        if (result->LoadScript(IO::DataProvider::Instance.GetDataFile(result->data_.script)))
+            return result;
+    }
 
     return std::shared_ptr<Skill>();
-}
-
-uint32_t SkillManager::GetProfessionId(const std::string& abbr)
-{
-    std::ostringstream query;
-    query << "SELECT `id` FROM `professions` WHERE `abbr` = " << database_->EscapeString(abbr);
-    std::shared_ptr<DB::DBResult> dbRes = database_->StoreQuery(query.str());
-    if (!dbRes)
-        return 0;
-
-    return dbRes->GetUInt("id");
 }
 
 }

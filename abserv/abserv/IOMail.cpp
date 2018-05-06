@@ -30,6 +30,15 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     const std::string& fromName, const std::string& toName,
     const std::string& subject, const std::string& message)
 {
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::MailList ml;
+    ml.uuid = accountUuid;
+    // Check quota
+    if (!client->Read(ml))
+        return false;
+    if (ml.mails.size() >= AB::Entities::Limits::MAX_MAIL_COUNT)
+        return false;
+
     AB::Entities::Mail m;
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     m.uuid = guid.to_string();
@@ -41,14 +50,18 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     m.message = message;
     m.created = Utils::AbTick();
 
-    IO::DataClient* client = Application::Instance->GetDataClient();
     bool ret = client->Create(m);
     if (ret)
     {
-        // Invalidate recipients mail list
-        AB::Entities::MailList ml;
-        ml.uuid = accountUuid;
-        client->Invalidate(ml);
+        // Add to recipients mail list
+        ml.mails.push_back({
+            m.uuid,
+            fromName,
+            subject,
+            m.created,
+            false
+        });
+        client->Update(ml);
     }
     return ret;
 }

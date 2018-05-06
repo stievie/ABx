@@ -179,6 +179,8 @@
     <ClInclude Include="DBIpBan.h" />
     <ClInclude Include="DBMail.h" />
     <ClInclude Include="DBMailList.h" />
+    <ClInclude Include="DBProfession.h" />
+    <ClInclude Include="DBSkill.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="FileUtils.h" />
@@ -214,6 +216,8 @@
     <ClCompile Include="DBIpBan.cpp" />
     <ClCompile Include="DBMail.cpp" />
     <ClCompile Include="DBMailList.cpp" />
+    <ClCompile Include="DBProfession.cpp" />
+    <ClCompile Include="DBSkill.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="Logger.cpp" />

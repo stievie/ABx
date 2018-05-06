@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_GAMES = "games";
+constexpr auto KEY_GAMES = "game_maps";
 
 enum GameType : uint8_t
 {

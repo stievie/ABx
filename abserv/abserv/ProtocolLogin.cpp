@@ -181,12 +181,6 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidProfession);
         return;
     }
-    uint32_t profId = Game::SkillManager::Instance.GetProfessionId(prof);
-    if (profId == 0)
-    {
-        DisconnectClient(AB::Errors::InvalidProfession);
-        return;
-    }
     bool isPvp = message.GetByte() != 0;
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
@@ -448,6 +442,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
             break;
         case IO::IOPlayer::ResultNoMoreCharSlots:
             output->AddByte(AB::Errors::NoMoreCharSlots);
+            break;
+        case IO::IOPlayer::ResultInvalidProfession:
+            output->AddByte(AB::Errors::InvalidProfession);
             break;
         default:
             output->AddByte(AB::Errors::UnknownError);

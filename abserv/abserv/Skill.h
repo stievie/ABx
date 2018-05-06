@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utils.h"
+#include <AB/Entities/Skill.h>
 
 namespace Game {
 
@@ -8,7 +9,7 @@ class Creature;
 
 enum SkillType : uint32_t
 {
-    SkillTypeUnknown = 0,
+    SkillTypeSkill = 0,
     SkillTypeAttack = 1,
         SkillTypeRangedAttack        = SkillTypeAttack | 1 << 8,
             SkillTypeBowAttack           = SkillTypeRangedAttack | 1 << 16,
@@ -57,18 +58,33 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    explicit Skill(uint32_t id) :
-        id_(id),
+    Skill() :
         startUse_(0),
         recharged_(0),
         source_(nullptr),
         target_(nullptr),
-        type_(SkillTypeUnknown),
+        type_(SkillTypeSkill),
         energy_(0),
         adrenaline_(0),
         activation_(0),
         recharge_(0),
         overcast_(0)
+    {
+        InitializeLua();
+    }
+    /// Copy ctor
+    Skill(const Skill& other) :
+        startUse_(0),
+        recharged_(0),
+        source_(nullptr),
+        target_(nullptr),
+        data_(other.data_),
+        type_(other.type_),
+        energy_(other.energy_),
+        adrenaline_(other.adrenaline_),
+        activation_(other.activation_),
+        recharge_(other.recharge_),
+        overcast_(other.overcast_)
     {
         InitializeLua();
     }
@@ -87,11 +103,9 @@ public:
         return (type_ & type) == type;
     }
 
-    uint32_t id_;
+    AB::Entities::Skill data_;
 
     SkillType type_;
-    bool elite_;
-    std::string name_;
     uint32_t energy_;
     uint32_t adrenaline_;
     uint32_t activation_;

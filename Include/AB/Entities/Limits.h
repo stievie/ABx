@@ -38,6 +38,16 @@ static constexpr int MAX_MAIL_SUBJECT = 60;
 static constexpr int MAX_MAIL_MESSAGE = 255;
 static constexpr int MAX_MAIL_COUNT = 500;
 
+// Professions
+static constexpr int MAX_PROFESSION_NAME = 32;
+static constexpr int MAX_PROFESSION_ABBR = 2;
+// Attribute
+static constexpr int MAX_ATTRIBUTE_NAME = 32;
+// Skill
+static constexpr int MAX_SKILL_NAME = 64;
+static constexpr int MAX_SKILL_DESCRIPTION = 255;
+static constexpr int MAX_SKILL_SHORT_DESCRIPTION = 255;
+
 }
 }
 }

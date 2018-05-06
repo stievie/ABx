@@ -1,7 +1,7 @@
-costEnergy = 5
+costEnergy = 0
 costAdrenaline = 0
-activation = 750
-recharge = 3000
+activation = 3000
+recharge = (2 ^ 32) - 1    -- Infinite until morale boost
 overcast = 0
 
 function onStartUse(player, target)

@@ -6,6 +6,7 @@
 #include "Effect.h"
 #include "Creature.h"
 #include <AB/Entities/Character.h>
+#include "FriendList.h"
 
 namespace Game {
 
@@ -16,6 +17,7 @@ class Player final : public Creature
 {
 private:
     std::unique_ptr<MailBox> mailBox_;
+    std::unique_ptr<FriendList> friendList_;
 protected:
     friend class PlayerManager;
     std::shared_ptr<Player> GetThis()

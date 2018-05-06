@@ -24,6 +24,8 @@ static constexpr size_t KEY_ACCOUNTKEYS_HASH = Utils::StringHash(AB::Entities::A
 static constexpr size_t KEY_ACCOUNTKEYACCOUNTS_HASH = Utils::StringHash(AB::Entities::AccountKeyAccounts::KEY());
 static constexpr size_t KEY_MAIL_HASH = Utils::StringHash(AB::Entities::Mail::KEY());
 static constexpr size_t KEY_MAILLIST_HASH = Utils::StringHash(AB::Entities::MailList::KEY());
+static constexpr size_t KEY_PROFESSIONS_HASH = Utils::StringHash(AB::Entities::Profession::KEY());
+static constexpr size_t KEY_SKILLS_HASH = Utils::StringHash(AB::Entities::Skill::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -457,6 +459,10 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBMail, AB::Entities::Mail>(id, *data);
     case KEY_MAILLIST_HASH:
         return LoadFromDB<DB::DBMailList, AB::Entities::MailList>(id, *data);
+    case KEY_PROFESSIONS_HASH:
+        return LoadFromDB<DB::DBProfession, AB::Entities::Profession>(id, *data);
+    case KEY_SKILLS_HASH:
+        return LoadFromDB<DB::DBSkill, AB::Entities::Skill>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -528,6 +534,12 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_MAILLIST_HASH:
         succ = FlushRecord<DB::DBMailList, AB::Entities::MailList>(data);
         break;
+    case KEY_PROFESSIONS_HASH:
+        succ = FlushRecord<DB::DBProfession, AB::Entities::Profession>(data);
+        break;
+    case KEY_SKILLS_HASH:
+        succ = FlushRecord<DB::DBSkill, AB::Entities::Skill>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -572,6 +584,10 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBMail, AB::Entities::Mail>(data);
     case KEY_MAILLIST_HASH:
         return ExistsInDB<DB::DBMailList, AB::Entities::MailList>(data);
+    case KEY_PROFESSIONS_HASH:
+        return ExistsInDB<DB::DBProfession, AB::Entities::Profession>(data);
+    case KEY_SKILLS_HASH:
+        return ExistsInDB<DB::DBSkill, AB::Entities::Skill>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;

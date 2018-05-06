@@ -1,7 +1,7 @@
 costEnergy = 5
 costAdrenaline = 0
-activation = 750
-recharge = 3000
+activation = 0
+recharge = 20000
 overcast = 0
 
 function onStartUse(player, target)

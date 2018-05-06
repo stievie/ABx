@@ -1,22 +1,18 @@
 #pragma once
 
 #include "Skill.h"
-#include "DatabaseSqlite.h"
 
 namespace Game {
 
 class SkillManager
 {
 private:
-    std::unique_ptr<DB::DatabaseSqlite> database_;
+    std::map<uint32_t, std::unique_ptr<Skill>> skillCache_;
 public:
     SkillManager();
     ~SkillManager() = default;
 
-    bool Load(const std::string& file);
-
-    std::shared_ptr<Skill> Get(uint32_t id);
-    uint32_t GetProfessionId(const std::string& abbr);
+    std::shared_ptr<Skill> Get(uint32_t index);
 public:
     static SkillManager Instance;
 };

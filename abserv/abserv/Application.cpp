@@ -178,10 +178,9 @@ void Application::MainLoader()
 
     {
         LOG_INFO << "Loading game data...";
-        Game::SkillManager::Instance.Load(IO::DataProvider::Instance.GetDataFile("/skills/skills.db"));
         IO::IOEffects::Load(Game::EffectManager::Instance, IO::DataProvider::Instance.GetDataFile("/effects/effects.xml"));
         LOG_INFO << "[done]" << std::endl;
-//        std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
+        std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
     }
 
 

@@ -1,11 +1,8 @@
-name = "Patient Spirit"
-energy = -5
-adrenaline = 0
+costEnergy = -5
+costAdrenaline = 0
 activation = 250
 recharge = 4000
 overcast = 0
-duration = 2000
-skilltype = 10 | (1 << 8)  -- SkillTypeEnchantment
 
 function onStartUse(player, target)
   return true
@@ -16,4 +13,9 @@ function onEndUse(player, target)
 end
 
 function onCancelUse()
+end
+
+function getDuration(player, target)
+  -- TODO: Different factors influences the duration of enchantments.
+  return 2000
 end

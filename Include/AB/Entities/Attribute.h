@@ -1,0 +1,34 @@
+#pragma once
+
+#include <AB/Entities/Entity.h>
+#include <AB/Entities/Limits.h>
+
+namespace AB {
+namespace Entities {
+
+constexpr auto KEY_ATTRIBUTES = "game_attributes";
+
+struct Attribute : Entity
+{
+    static constexpr const char* KEY()
+    {
+        return KEY_ATTRIBUTES;
+    }
+    template<typename S>
+    void serialize(S& s)
+    {
+        s.ext(*this, BaseClass<Entity>{});
+        s.value4b(index);
+        s.text1b(professionUuid, Limits::MAX_UUID);
+        s.text1b(name, Limits::MAX_ATTRIBUTE_NAME);
+        s.value1b(isPrimary);
+    }
+
+    uint32_t index = 0;
+    std::string professionUuid;
+    std::string name;
+    bool isPrimary = false;
+};
+
+}
+}

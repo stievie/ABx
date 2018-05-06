@@ -37,6 +37,8 @@ struct Character : Entity
         s.text1b(name, Limits::MAX_CHARACTER_NAME);
         s.text1b(profession, Limits::MAX_CHARACTER_PROF);
         s.text1b(profession2, Limits::MAX_CHARACTER_PROF);
+        s.text1b(professionUuid, Limits::MAX_UUID);
+        s.text1b(profession2Uuid, Limits::MAX_UUID);
         s.value1b(level);
         s.value1b(pvp);
         s.value4b(xp);
@@ -55,6 +57,8 @@ struct Character : Entity
     std::string name;
     std::string profession;
     std::string profession2;
+    std::string professionUuid;
+    std::string profession2Uuid;
     uint8_t level = 0;
     /// PvP only character
     bool pvp = false;

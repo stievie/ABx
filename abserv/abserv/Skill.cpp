@@ -28,13 +28,12 @@ bool Skill::LoadScript(const std::string& fileName)
     if (!luaState_.dofile(fileName.c_str()))
         return false;
 
-    name_ = (const char*)luaState_["name"];
-    energy_ = luaState_["energy"];
-    adrenaline_ = luaState_["adrenaline"];
+    energy_ = luaState_["costEnergy"];
+    adrenaline_ = luaState_["costAdrenaline"];
     activation_ = luaState_["activation"];
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
-    type_ = static_cast<SkillType>(luaState_["skilltype"]);
+    type_ = static_cast<SkillType>(data_.type);
 
     return true;
 }

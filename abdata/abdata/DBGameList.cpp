@@ -15,7 +15,7 @@ bool DBGameList::Load(AB::Entities::GameList& game)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `games`";
+    query << "SELECT `uuid` FROM `game_maps`";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         game.gameUuids.push_back(result->GetString("uuid"));

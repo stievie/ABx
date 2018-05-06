@@ -166,7 +166,6 @@
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionShape.h" />
     <ClInclude Include="ConvexHull.h" />
-    <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DataClient.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
@@ -174,10 +173,10 @@
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="Creature.h" />
-    <ClInclude Include="Database.h" />
     <ClInclude Include="DebugNew.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="FriendList.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
@@ -188,6 +187,7 @@
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
     <ClInclude Include="IOEffects.h" />
+    <ClInclude Include="IOFriendList.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IOMail.h" />
@@ -249,16 +249,15 @@
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionShape.cpp" />
     <ClCompile Include="ConvexHull.cpp" />
-    <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DataClient.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="Creature.cpp" />
-    <ClCompile Include="Database.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -267,6 +266,7 @@
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOEffects.cpp" />
+    <ClCompile Include="IOFriendList.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />
     <ClCompile Include="IOMail.cpp" />

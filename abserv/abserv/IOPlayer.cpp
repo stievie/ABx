@@ -7,6 +7,7 @@
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
 #include "Profiler.h"
+#include <AB/Entities/Profession.h>
 
 #include "DebugNew.h"
 
@@ -110,17 +111,21 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     if (acc.characterUuids.size() + 1 > acc.charSlots)
         return ResultNoMoreCharSlots;
 
+    AB::Entities::Profession pro;
+    pro.abbr = prof;
+    if (!client->Read(pro))
+        return ResultInvalidProfession;
+
     AB::Entities::Character ch;
     ch.name = name;
     if (client->Exists(ch))
         return ResultNameExists;
-    // To reload the character list
-    client->Invalidate(acc);
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     ch.uuid = guid.to_string();
     ch.name = name;
     ch.profession = prof;
+    ch.professionUuid = pro.uuid;
     ch.sex = sex;
     ch.pvp = isPvp;
     ch.level = isPvp ? static_cast<uint8_t>(ConfigManager::Instance[ConfigManager::Key::PlayerLevelCap].GetInt()) : 1;
@@ -131,6 +136,8 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
         LOG_ERROR << "Create character failed" << std::endl;
         return ResultInternalError;
     }
+    // To reload the character list
+    client->Invalidate(acc);
 
     uuid = ch.uuid;
     return ResultOK;

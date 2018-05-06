@@ -16,7 +16,7 @@ bool DBGame::Load(AB::Entities::Game& game)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT * FROM `games` WHERE ";
+    query << "SELECT * FROM `game_maps` WHERE ";
     if (!game.uuid.empty() && !uuids::uuid(game.uuid).nil())
         query << "`uuid` = " << db->EscapeString(game.uuid);
     else if (!game.name.empty())
@@ -58,7 +58,7 @@ bool DBGame::Exists(const AB::Entities::Game& game)
     DB::Database* db = DB::Database::Instance();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `games` WHERE ";
+    query << "SELECT COUNT(*) AS `count` FROM `game_maps` WHERE ";
     if (!game.uuid.empty() && !uuids::uuid(game.uuid).nil())
         query << "`uuid` = " << db->EscapeString(game.uuid);
     else if (!game.name.empty())

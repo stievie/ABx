@@ -16,10 +16,10 @@ private:
 public:
     MailBox(const std::string& accountUuid) :
         accountUuid_(accountUuid),
-        oldMailCount_(-1),
+        oldMailCount_(0),
         newMail_(0),
         notifiedFull_(false),
-        notifiedNewMail_(false),
+        notifiedNewMail_(true),
         lastCheck_(0)
     {}
     ~MailBox() = default;

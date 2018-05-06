@@ -15,7 +15,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
 
     Database* db = Database::Instance();
     std::ostringstream query;
-    query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `name`, `pvp`, " <<
+    query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `profession_uuid`, `profession2_uuid`, `name`, `pvp`, " <<
         "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
         "`creation`";
     query << ") VALUES (";
@@ -23,6 +23,8 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     query << db->EscapeString(character.uuid) << ", ";
     query << db->EscapeString(character.profession) << ", ";
     query << db->EscapeString(character.profession2) << ", ";
+    query << db->EscapeString(character.professionUuid) << ", ";
+    query << db->EscapeString(character.profession2Uuid) << ", ";
     query << db->EscapeString(character.name) << ", ";
     query << (character.pvp ? 1 : 0) << ", ";
     query << db->EscapeString(character.accountUuid) << ", ";
@@ -71,6 +73,8 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     character.uuid = result->GetString("uuid");
     character.profession = result->GetString("profession");
     character.profession2 = result->GetString("profession2");
+    character.professionUuid = result->GetString("profession_uuid");
+    character.profession2Uuid = result->GetString("profession2_uuid");
     character.name = result->GetString("name");
     character.pvp = result->GetInt("pvp") != 0;
     character.accountUuid = result->GetString("account_uuid");
@@ -103,6 +107,7 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
 
     // Only these may be changed
     query << " `profession2` = " << db->EscapeString(character.profession2) << ", ";
+    query << " `profession2_uuid` = " << db->EscapeString(character.profession2Uuid) << ", ";
     query << " `level` = " << static_cast<int>(character.level) << ", ";
     query << " `experience` = " << character.xp << ", ";
     query << " `skillpoints` = " << character.skillPoints << ", ";
