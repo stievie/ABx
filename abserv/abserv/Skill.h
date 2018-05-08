@@ -41,12 +41,33 @@ public:
 
     bool StartUse(Creature* source, Creature* target);
     void CancelUse();
+    /// Disable a skill for some time
+    void Disable(uint32_t ticks)
+    {
+        recharged_ += ticks;
+    }
+    void Interrupt();
 
     bool IsUsing() const { return startUse_ != 0; }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
     bool IsType(AB::Entities::SkillType type)
     {
         return (data_.type & type) == type;
+    }
+    /// Does a skill change the creature state.
+    bool IsChangingState()
+    {
+        return !IsType(AB::Entities::SkillTypeStance) &&
+            !IsType(AB::Entities::SkillTypeFlashEnchantment) &&
+            !IsType(AB::Entities::SkillTypeShout);
+    }
+    Creature* GetSource()
+    {
+        return source_;
+    }
+    Creature* GetTarget()
+    {
+        return target_;
     }
 
     AB::Entities::Skill data_;

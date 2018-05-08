@@ -58,9 +58,14 @@ public:
             return skills_[index];
         return nullptr;
     }
+    SkillBar* GetSkillBar()
+    {
+        return &skills_;
+    }
     void AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
+
     /// Move in direction of rotation
     bool Move(float speed, const Math::Vector3& amount);
     void Turn(float angle);

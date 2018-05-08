@@ -148,6 +148,7 @@ void GameManager::RegisterLuaAll(kaguya::State& state)
     Game::RegisterLua(state);
     Effect::RegisterLua(state);
     Skill::RegisterLua(state);
+    SkillBar::RegisterLua(state);
     Player::RegisterLua(state);
     Npc::RegisterLua(state);
 }

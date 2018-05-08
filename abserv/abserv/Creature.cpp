@@ -14,6 +14,7 @@ void Creature::RegisterLua(kaguya::State& state)
 {
     state["Creature"].setClass(kaguya::UserdataMetatable<Creature, GameObject>()
         .addFunction("GetLevel", &Creature::GetLevel)
+        .addFunction("GetSkillBar", &Creature::GetSkillBar)
 
         .addFunction("GetSpeed", &Creature::GetSpeed)
         .addFunction("SetSpeed", &Creature::SetSpeed)
@@ -32,6 +33,7 @@ void Creature::RegisterLua(kaguya::State& state)
 
 Creature::Creature() :
     GameObject(),
+    skills_(this),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone)
@@ -85,6 +87,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     GameObject::Update(timeElapsed, message);
 
     Skill* skill = nullptr;
+    int skillIndex = -1;
     bool turned = false;
     bool directionSet = false;
     bool newDirection = false;
@@ -162,15 +165,19 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             break;
         case InputTypeUseSkill:
         {
-            uint32_t skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
+            skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
             skill = GetSkill(skillIndex);
             if (skill)
             {
-                // These do not change the state
-                if (!skill->IsType(AB::Entities::SkillTypeStance) &&
-                    !skill->IsType(AB::Entities::SkillTypeFlashEnchantment) &&
-                    !skill->IsType(AB::Entities::SkillTypeShout))
-                    newState = AB::GameProtocol::CreatureStateUsingSkill;
+                std::shared_ptr<Creature> target = std::dynamic_pointer_cast<Creature>(selectedObject_.lock());
+                if (target)
+                {
+                    // Can use skills only on Creatures not all GameObjects
+                    skills_.UseSkill(skillIndex, target);
+                    // These do not change the state
+                    if (skill->IsChangingState())
+                        newState = AB::GameProtocol::CreatureStateUsingSkill;
+                }
             }
             break;
         }

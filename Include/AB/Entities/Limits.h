@@ -41,6 +41,7 @@ static constexpr int MAX_MAIL_COUNT = 500;
 // Professions
 static constexpr int MAX_PROFESSION_NAME = 32;
 static constexpr int MAX_PROFESSION_ABBR = 2;
+static constexpr int MAX_PROFESSION_ATTRIBUTES = 5;
 // Attribute
 static constexpr int MAX_ATTRIBUTE_NAME = 32;
 // Skill

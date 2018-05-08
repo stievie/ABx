@@ -8,12 +8,10 @@ namespace Game {
 void Skill::RegisterLua(kaguya::State& state)
 {
     state["Skill"].setClass(kaguya::UserdataMetatable<Skill>()
-        /*        .addFunction("GetName", &Skill::GetName)
-        .addFunction("SetName", &Skill::SetName)
-        .addFunction("GetDescription", &Skill::GetDescription)
-        .addFunction("SetDescription", &Skill::SetDescription)
-        .addFunction("GetCooldownTime", &Skill::GetCooldownTime)
-        .addFunction("SetCooldownTime", &Skill::SetCooldownTime)*/
+        .addFunction("Disable", &Skill::Disable)
+        .addFunction("Interrupt", &Skill::Interrupt)
+        .addFunction("GetSource", &Skill::GetSource)
+        .addFunction("GetTarget", &Skill::GetTarget)
     );
 }
 
@@ -45,6 +43,8 @@ void Skill::Update(uint32_t timeElapsed)
         recharged_ = Utils::AbTick() + recharge_;
         luaState_["onEndUse"](source_, target_);
         startUse_ = 0;
+        source_ = nullptr;
+        target_ = nullptr;
     }
 }
 
@@ -78,6 +78,17 @@ void Skill::CancelUse()
     luaState_["onCancelUse"]();
     startUse_ = 0;
     recharged_ = 0;
+    source_ = nullptr;
+    target_ = nullptr;
+}
+
+void Skill::Interrupt()
+{
+    luaState_["onEndUse"](source_, target_);
+    startUse_ = 0;
+    source_ = nullptr;
+    target_ = nullptr;
+    // recharged_ remains
 }
 
 }

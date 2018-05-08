@@ -14,16 +14,16 @@ function onAddObject(self, object)
 end
 
 function onRemoveObject(self, object)
-  print("Object added: " .. object:GetName())
+  print("Object removed: " .. object:GetName())
 end
 
 function onPlayerJoin(self, player)
-  player:AddEffect(empty, 1, 0)
+  player:AddEffect(empty, 1000, 0)
   print("Player joined: " .. player:GetName())
 end
 
 function onPlayerLeave(self, player)
-  player:RemoveEffect(1)
+  player:RemoveEffect(1000)
   print("Player left: " .. player:GetName())
 end
 

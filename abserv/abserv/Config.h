@@ -42,6 +42,8 @@
 // https://www.gamedev.net/forums/topic/319003-mmorpg-and-the-ol-udp-vs-tcp/?do=findComment&comment=3052256
 #define SERVER_MAX_CONNECTIONS 3000
 #define PLAYER_MAX_SKILLS 8
+// Most profession have 4 attribute but Warrior and Elementarist have 5
+#define PLAYER_MAX_ATTRIBUTES 5
 
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)

@@ -9,6 +9,7 @@ function onStartUse(player, target)
 end
 
 function onEndUse(player, target)
+  player:AddEffect(player, 6, 0)
 end
 
 function onCancelUse()
