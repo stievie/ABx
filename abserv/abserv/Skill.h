@@ -7,45 +7,6 @@ namespace Game {
 
 class Creature;
 
-enum SkillType : uint32_t
-{
-    SkillTypeSkill = 0,
-    SkillTypeAttack = 1,
-        SkillTypeRangedAttack        = SkillTypeAttack | 1 << 8,
-            SkillTypeBowAttack           = SkillTypeRangedAttack | 1 << 16,
-            SkillTypeSpearAttack         = SkillTypeRangedAttack | 2 << 16,
-        SkillTypeMeleeAttack         = SkillTypeAttack | 2 << 8,
-            SkillTypeAxeAttack           = SkillTypeMeleeAttack | 1 << 16,
-            SkillTypeDaggerAttack        = SkillTypeMeleeAttack | 2 << 16,
-                SkillTypeLeadAttack          = SkillTypeDaggerAttack | 1 << 24,
-                SkillTypeOffHandAttack       = SkillTypeDaggerAttack | 2 << 24,
-                SkillTypeDualAttack          = SkillTypeDaggerAttack | 3 << 24,
-            SkillTypeHammerAttack        = SkillTypeMeleeAttack | 3 << 16,
-            SkillTypeScyteAttack         = SkillTypeMeleeAttack | 4 << 16,
-            SkillTypeSwordAttack         = SkillTypeMeleeAttack | 5 << 16,
-        SkillTypePetAttack           = SkillTypeAttack | 3 << 8,
-    SkillTypeShout = 2,
-    SkillTypeChant = 3,
-    SkillTypeEcho = 4,
-    SkillTypeForm = 5,
-    SkillTypeGlypthe = 6,
-    SkillTypePreparation = 7,
-    SkillTypeRitual = 8,
-        SkillTypeBindingRitual       = SkillTypeRitual | 1 << 8,
-        SkillTypeNatureRitual        = SkillTypeRitual | 2 << 8,
-    SkillTypeSignet = 9,
-    SkillTypeSpell = 10,
-        SkillTypeEnchantment         = SkillTypeSpell | 1 << 8,
-            SkillTypeFlashEnchantment    = SkillTypeEnchantment | 1 << 16,
-        SkillTypeHex                 = SkillTypeSpell | 2 << 8,
-        SkillTypeItemSpell           = SkillTypeSpell | 3 << 8,
-        SkillTypeWardSpell           = SkillTypeSpell | 4 << 8,
-        SkillTypeWeaponSpell         = SkillTypeSpell | 5 << 8,
-        SkillTypeWellSpell           = SkillTypeSpell | 6 << 8,
-    SkillTypeStance = 11,
-    SkillTypeTrap = 12
-};
-
 class Skill : public std::enable_shared_from_this<Skill>
 {
 private:
@@ -58,33 +19,18 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Skill() :
+    Skill() = delete;
+    explicit Skill(const AB::Entities::Skill& skill) :
         startUse_(0),
         recharged_(0),
         source_(nullptr),
         target_(nullptr),
-        type_(SkillTypeSkill),
         energy_(0),
         adrenaline_(0),
         activation_(0),
         recharge_(0),
-        overcast_(0)
-    {
-        InitializeLua();
-    }
-    /// Copy ctor
-    Skill(const Skill& other) :
-        startUse_(0),
-        recharged_(0),
-        source_(nullptr),
-        target_(nullptr),
-        data_(other.data_),
-        type_(other.type_),
-        energy_(other.energy_),
-        adrenaline_(other.adrenaline_),
-        activation_(other.activation_),
-        recharge_(other.recharge_),
-        overcast_(other.overcast_)
+        overcast_(0),
+        data_(skill)
     {
         InitializeLua();
     }
@@ -98,14 +44,13 @@ public:
 
     bool IsUsing() const { return startUse_ != 0; }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
-    bool IsType(SkillType type)
+    bool IsType(AB::Entities::SkillType type)
     {
-        return (type_ & type) == type;
+        return (data_.type & type) == type;
     }
 
     AB::Entities::Skill data_;
 
-    SkillType type_;
     uint32_t energy_;
     uint32_t adrenaline_;
     uint32_t activation_;

@@ -33,7 +33,6 @@ bool Skill::LoadScript(const std::string& fileName)
     activation_ = luaState_["activation"];
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
-    type_ = static_cast<SkillType>(data_.type);
 
     return true;
 }

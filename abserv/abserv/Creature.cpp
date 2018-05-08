@@ -19,6 +19,8 @@ void Creature::RegisterLua(kaguya::State& state)
         .addFunction("SetSpeed", &Creature::SetSpeed)
         .addFunction("GetEnergy", &Creature::GetEnergy)
         .addFunction("SetEnergy", &Creature::SetEnergy)
+        .addFunction("AddEffect", &Creature::AddEffect)
+        .addFunction("RemoveEffect", &Creature::RemoveEffect)
         /*        .addProperty("Energy", &Creature::GetEnergy, &Creature::SetEnergy)
         .addProperty("Health", &Creature::GetHealth, &Creature::SetHealth)
         .addProperty("Adrenaline", &Creature::GetAdrenaline, &Creature::SetAdrenaline)
@@ -41,29 +43,23 @@ Creature::Creature() :
     occluder_ = true;
 }
 
-void Creature::AddEffect(uint32_t id, uint32_t ticks)
+void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration)
 {
-    RemoveEffect(id);
+    RemoveEffect(index);
 
-    auto effect = EffectManager::Instance.Get(id);
+    auto effect = EffectManager::Instance.Get(index);
     if (effect)
     {
-        effects_.push_back(std::move(effect));
-        effect->Start(GetThis<Creature>(), ticks);
+        effects_.push_back(effect);
+        effect->Start(source, GetThis<Creature>(), baseDuration);
     }
 }
 
-void Creature::AddEffectByName(const std::string& name, uint32_t ticks)
+void Creature::DeleteEffect(uint32_t index)
 {
-    uint32_t id = EffectManager::Instance.GetEffectId(name);
-    AddEffect(id, ticks);
-}
-
-void Creature::DeleteEffect(uint32_t id)
-{
-    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::unique_ptr<Effect> const& current)
+    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
     {
-        return current->id_ == id;
+        return current->data_.index == index;
     });
     if (it != effects_.end())
     {
@@ -71,16 +67,16 @@ void Creature::DeleteEffect(uint32_t id)
     }
 }
 
-void Creature::RemoveEffect(uint32_t id)
+void Creature::RemoveEffect(uint32_t index)
 {
-    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::unique_ptr<Effect> const& current)
+    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
     {
-        return current->id_ == id;
+        return current->data_.index == index;
     });
     if (it != effects_.end())
     {
         (*it)->Remove();
-        DeleteEffect((*it)->id_);
+        DeleteEffect((*it)->data_.index);
     }
 }
 
@@ -171,8 +167,9 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             if (skill)
             {
                 // These do not change the state
-                if (!skill->IsType(SkillTypeStance) && !skill->IsType(SkillTypeFlashEnchantment)
-                    && !skill->IsType(SkillTypeShout))
+                if (!skill->IsType(AB::Entities::SkillTypeStance) &&
+                    !skill->IsType(AB::Entities::SkillTypeFlashEnchantment) &&
+                    !skill->IsType(AB::Entities::SkillTypeShout))
                     newState = AB::GameProtocol::CreatureStateUsingSkill;
             }
             break;
@@ -307,7 +304,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     {
         if (effect->cancelled_ || effect->ended_)
         {
-            DeleteEffect(effect->id_);
+            DeleteEffect(effect->data_.index);
             continue;
         }
         effect->Update(timeElapsed);

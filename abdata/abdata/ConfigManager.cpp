@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ConfigManager.h"
-#include "Logger.h"
 
 ConfigManager ConfigManager::Instance;
 

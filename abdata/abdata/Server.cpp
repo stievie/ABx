@@ -3,7 +3,6 @@
 #include <iostream>
 #include "ConnectionManager.h"
 #include "Connection.h"
-#include "Logger.h"
 #include "Scheduler.h"
 
 Server::Server(asio::io_service& io_service, uint32_t ip,

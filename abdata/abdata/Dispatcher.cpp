@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Dispatcher.h"
-#include "Logger.h"
 
 namespace Asynch {
 

@@ -7,7 +7,6 @@
 #endif
 
 #include "DatabaseOdbc.h"
-#include "Logger.h"
 
 #define RETURN_SUCCESS(ret) (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 

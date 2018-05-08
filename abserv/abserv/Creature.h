@@ -15,7 +15,7 @@ static const float BASE_SPEED = 150.0f;
 class Creature : public GameObject
 {
 private:
-    void DeleteEffect(uint32_t id);
+    void DeleteEffect(uint32_t index);
     void DoCollisions();
     uint8_t moveDir_;
     uint8_t turnDir_;
@@ -58,10 +58,9 @@ public:
             return skills_[index];
         return nullptr;
     }
-    void AddEffect(uint32_t id, uint32_t ticks);
-    void AddEffectByName(const std::string& name, uint32_t ticks);
+    void AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration);
     /// Remove effect before it ended
-    void RemoveEffect(uint32_t id);
+    void RemoveEffect(uint32_t index);
     /// Move in direction of rotation
     bool Move(float speed, const Math::Vector3& amount);
     void Turn(float angle);

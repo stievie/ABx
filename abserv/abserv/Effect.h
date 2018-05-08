@@ -2,6 +2,7 @@
 
 #include "PropStream.h"
 #include <forward_list>
+#include <AB/Entities/Effect.h>
 
 namespace Game {
 
@@ -16,55 +17,47 @@ enum EffectAttr : uint8_t
     EffectAttrEnd = 254
 };
 
-enum EffectCategory : uint8_t
-{
-    EffectNone = 0,
-    // From skills ---------------
-    EffectCondition = 1,
-    EffectEnchantment = 2,
-    EffectHex = 3,
-    EffectPreparation = 4,
-    EffectShout = 5,
-    EffectSpirit = 6,
-    EffectStance = 7,
-    EffectWard = 8,
-    EffectWell = 9,
-    // ---------------------------
-    EffectEnvironment = 254
-};
-
 class Effect
 {
 private:
     kaguya::State luaState_;
     std::weak_ptr<Creature> target_;
+    std::weak_ptr<Creature> source_;
+    bool persistent_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Effect(uint32_t id) :
-        id_(id),
+    Effect() = delete;
+    explicit Effect(const AB::Entities::Effect& effect) :
+        data_(effect),
+        startTime_(0),
+        endTime_(0),
+        ticks_(0),
         ended_(false),
         cancelled_(false)
-    {}
+    {
+        InitializeLua();
+    }
     ~Effect() = default;
 
     /// Gets saved to the DB when player logs out
     bool IsPersistent() const
     {
-        return false;
+        return persistent_;
     }
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    void Start(std::shared_ptr<Creature> target, uint32_t ticks);
+    void Start(std::shared_ptr<Creature> source, std::shared_ptr<Creature> target, uint32_t baseDuration);
     void Remove();
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);
 
-    uint32_t id_;
+    AB::Entities::Effect data_;
+
     int64_t startTime_;
     int64_t endTime_;
     /// Duration
@@ -72,15 +65,13 @@ public:
     bool ended_;
     bool cancelled_;
 
-    EffectCategory category_;
-
     int64_t GetStartTime() const { return startTime_; }
     int64_t GetEndTime() const { return endTime_; }
     uint32_t GetTicks() const { return ticks_; }
 };
 
 /// effects are fist-in-last-out
-typedef std::vector<std::unique_ptr<Effect>> EffectList;
+typedef std::vector<std::shared_ptr<Effect>> EffectList;
 
 enum ConditionType : uint8_t
 {

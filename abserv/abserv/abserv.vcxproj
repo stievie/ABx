@@ -186,7 +186,6 @@
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
-    <ClInclude Include="IOEffects.h" />
     <ClInclude Include="IOFriendList.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
@@ -265,7 +264,6 @@
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
-    <ClCompile Include="IOEffects.cpp" />
     <ClCompile Include="IOFriendList.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />

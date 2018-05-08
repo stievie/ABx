@@ -150,9 +150,6 @@
     <ClInclude Include="EffectManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IOEffects.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Npc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -378,9 +375,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="EffectManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="IOEffects.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Npc.cpp">

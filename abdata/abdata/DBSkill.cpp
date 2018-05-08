@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DBSkill.h"
 #include "Database.h"
-#include "Logger.h"
 
 namespace DB {
 
@@ -40,7 +39,7 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
     skill.index = result->GetUInt("idx");
     skill.name = result->GetString("name");
     skill.attributeUuid = result->GetString("attribute_uuid");
-    skill.type = result->GetUInt("type");
+    skill.type = static_cast<AB::Entities::SkillType>(result->GetUInt("type"));
     skill.isElite = result->GetUInt("is_elite") != 0;
     skill.description = result->GetString("description");
     skill.shortDescription = result->GetString("short_description");

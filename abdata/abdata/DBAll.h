@@ -14,4 +14,4 @@
 #include "DBMailList.h"
 #include "DBProfession.h"
 #include "DBSkill.h"
-
+#include "DBEffect.h"

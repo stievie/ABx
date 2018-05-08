@@ -17,18 +17,21 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
     auto it = skillCache_.find(index);
     if (it != skillCache_.end())
     {
-        result = std::make_shared<Skill>(*(*it).second);
+        result = std::make_shared<Skill>((*it).second);
     }
     else
     {
         IO::DataClient* client = Application::Instance->GetDataClient();
-        std::unique_ptr<Skill> skill = std::make_unique<Skill>();
-        skill->data_.index = index;
-        if (!client->Read(skill->data_))
+        AB::Entities::Skill skill;
+        skill.index = index;
+        if (!client->Read(skill))
+        {
+            LOG_ERROR << "Error reading skill with index " << index << std::endl;
             return std::shared_ptr<Skill>();
-        result = std::make_shared<Skill>(*skill);
+        }
+        result = std::make_shared<Skill>(skill);
         // Move to cache
-        skillCache_.emplace(index, std::move(skill));
+        skillCache_.emplace(index, skill);
     }
 
     if (result)

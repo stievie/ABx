@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DBBan.h"
 #include "Database.h"
-#include "Logger.h"
 
 namespace DB {
 

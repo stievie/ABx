@@ -3,7 +3,6 @@
 #ifdef USE_MYSQL
 
 #include "DatabaseMysql.h"
-#include "Logger.h"
 #include <errmsg.h>
 
 namespace DB {

@@ -18,7 +18,6 @@ void Effect::RegisterLua(kaguya::State& state)
 void Effect::InitializeLua()
 {
     GameManager::RegisterLuaAll(luaState_);
-    luaState_["this"] = this;
 }
 
 bool Effect::LoadScript(const std::string& fileName)
@@ -26,39 +25,40 @@ bool Effect::LoadScript(const std::string& fileName)
     if (!luaState_.dofile(fileName.c_str()))
         return false;
 
-    category_ = static_cast<EffectCategory>(luaState_["category"]);
+    persistent_ = luaState_["isPersistent"];
     return true;
 }
 
 void Effect::Update(uint32_t timeElapsed)
 {
-    luaState_["onUpdate"](timeElapsed);
+    luaState_["onUpdate"](this, source_.lock(), target_.lock(), timeElapsed);
     if (endTime_ <= Utils::AbTick())
     {
-        luaState_["onEnd"](target_);
+        luaState_["onEnd"](this, source_.lock(), target_.lock());
         ended_ = true;
     }
 }
 
-void Effect::Start(std::shared_ptr<Creature> target, uint32_t ticks)
+void Effect::Start(std::shared_ptr<Creature> source, std::shared_ptr<Creature> target, uint32_t baseDuration)
 {
     target_ = target;
+    source_ = source;
     startTime_ = Utils::AbTick();
-    ticks_ = ticks;
-    endTime_ = startTime_ + ticks;
-    luaState_["onStart"](target_);
+    ticks_ = luaState_["getDuration"](this, source_.lock(), target_.lock(), baseDuration);
+    endTime_ = startTime_ + ticks_;
+    luaState_["onStart"](this, source_.lock(), target_.lock());
 }
 
 void Effect::Remove()
 {
-    luaState_["onRemove"]();
+    luaState_["onRemove"](this, source_.lock(), target_.lock());
     cancelled_ = true;
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)
 {
     stream.Write<uint8_t>(EffectAttrId);
-    stream.Write<uint32_t>(id_);
+    stream.Write<uint32_t>(data_.index);
 
     stream.Write<uint8_t>(EffectAttrTicks);
     stream.Write<uint32_t>(ticks_);

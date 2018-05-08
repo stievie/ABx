@@ -10,21 +10,19 @@ function onStop(self)
 end
 
 function onAddObject(self, object)
-  print("Object added: " .. object:GetName())
+--  print("Object added: " .. object:GetName())
 end
 
 function onRemoveObject(self, object)
-  print("Object added: " .. object:GetName())
+--  print("Object added: " .. object:GetName())
 end
 
 function onPlayerJoin(self, player)
-  player:AddEffect(empty, 1, 0)
-  print("Player joined: " .. player:GetName())
+--  print("Player joined: " .. player:GetName())
 end
 
 function onPlayerLeave(self, player)
-  player:RemoveEffect(1)
-  print("Player left: " .. player:GetName())
+--  print("Player left: " .. player:GetName())
 end
 
 -- Game Update

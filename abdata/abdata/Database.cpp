@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Database.h"
-#include "Logger.h"
 #ifdef USE_MYSQL
 #include "DatabaseMysql.h"
 #endif // USE_MYSQL

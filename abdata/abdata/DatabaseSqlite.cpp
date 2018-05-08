@@ -4,7 +4,6 @@
 
 #include "DatabaseSqlite.h"
 #include <fstream>
-#include "Logger.h"
 #include <base64.h>
 
 namespace DB {

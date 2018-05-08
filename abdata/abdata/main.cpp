@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include <iostream>
 #include "Server.h"
-#include "Logger.h"
 #include "Database.h"
 #include "ConfigManager.h"
 #include "Version.h"

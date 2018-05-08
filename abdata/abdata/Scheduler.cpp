@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Scheduler.h"
-#include "Logger.h"
 #include "Dispatcher.h"
 
 namespace Asynch {

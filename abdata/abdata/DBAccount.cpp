@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DBAccount.h"
 #include "Database.h"
-#include "Logger.h"
 #include <uuid.h>
 
 namespace DB {

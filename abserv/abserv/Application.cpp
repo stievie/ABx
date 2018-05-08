@@ -16,7 +16,6 @@
 #include "Connection.h"
 #include "SkillManager.h"
 #include "Skill.h"
-#include "IOEffects.h"
 #include "EffectManager.h"
 #include "DataProvider.h"
 #include "Maintenance.h"
@@ -175,14 +174,6 @@ void Application::MainLoader()
         exit(EXIT_FAILURE);
     }
     LOG_INFO << "[done]" << std::endl;
-
-    {
-        LOG_INFO << "Loading game data...";
-        IO::IOEffects::Load(Game::EffectManager::Instance, IO::DataProvider::Instance.GetDataFile("/effects/effects.xml"));
-        LOG_INFO << "[done]" << std::endl;
-        std::shared_ptr<Game::Skill> skill = Game::SkillManager::Instance.Get(2);
-    }
-
 
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::LoginIP].GetInt());

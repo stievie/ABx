@@ -3,7 +3,6 @@
 #include <iostream>
 #include "ConnectionManager.h"
 #include "StorageProvider.h"
-#include "Logger.h"
 
 Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
     StorageProvider& storage, size_t maxData, size_t maxKey) :

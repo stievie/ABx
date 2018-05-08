@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<professions>
-  <profession id="1" name="Warrior" abbr="W" />
-  <profession id="2" name="Ranger" abbr="R" />
-  <profession id="3" name="Monk" abbr="Mo" />
-  <profession id="4" name="Nercromancer" abbr="N" />
-  <profession id="5" name="Mesmer" abbr="Me" />
-  <profession id="6" name="Elementarist" abbr="E" />  
-</professions>
