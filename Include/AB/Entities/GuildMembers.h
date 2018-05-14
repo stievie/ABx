@@ -32,6 +32,7 @@ enum GuildRole : uint8_t
 struct GuildMember
 {
     std::string accountUuid;
+    std::string inviteName;
     GuildRole role = GuildRoleUnknown;
     /// Time invited
     int64_t invited = 0;
@@ -56,6 +57,7 @@ struct GuildMembers : Entity
         s.container(members, Limits::MAX_GUILD_MEMBERS, [&s](GuildMember& c)
         {
             s.text1b(accountUuid, Limits::MAX_UUID);
+            s.text1b(inviteName, Limits::MAX_CHARACTER_NAME);
             s.value1b(role);
             s.value8b(invited);
             s.value8b(joined);

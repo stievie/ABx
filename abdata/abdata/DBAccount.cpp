@@ -16,7 +16,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
     Database* db = Database::Instance();
     std::ostringstream query;
     query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
-        "`status`, `creation`, `char_slots`) VALUES ( ";
+        "`status`, `creation`, `char_slots`, `last_server_uuid`) VALUES ( ";
 
     query << db->EscapeString(account.uuid) << ", ";
     query << db->EscapeString(account.name) << ", ";
@@ -25,7 +25,8 @@ bool DBAccount::Create(AB::Entities::Account& account)
     query << static_cast<int>(account.type) << ", ";
     query << static_cast<int>(account.status) << ", ";
     query << account.creation << ", ";
-    query << account.charSlots;
+    query << account.charSlots << ", ";
+    query << db->EscapeString(account.currentServerUuid);
 
     query << ")";
     DBTransaction transaction(db);
@@ -71,6 +72,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.creation = result->GetLong("creation");
     account.charSlots = result->GetUInt("char_slots");
     account.currentCharacterUuid = result->GetString("last_character_uuid");
+    account.currentServerUuid = result->GetString("last_server_uuid");
 
     // load characters
     account.characterUuids.clear();
@@ -103,7 +105,8 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `type` = " << static_cast<int>(account.type) << ",";
     query << " `status` = " << static_cast<int>(account.status) << ",";
     query << " `char_slots` = " << account.charSlots << ",";
-    query << " `last_character_uuid` = " << db->EscapeString(account.currentCharacterUuid);
+    query << " `last_character_uuid` = " << db->EscapeString(account.currentCharacterUuid) << ",";
+    query << " `last_server_uuid` = " << db->EscapeString(account.currentServerUuid);
 
     query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
 

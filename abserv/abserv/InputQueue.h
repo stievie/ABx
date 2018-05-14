@@ -51,11 +51,13 @@ public:
 
     void Add(InputType type, const Utils::VariantMap& data)
     {
+        // Network Threat
         std::lock_guard<std::mutex> lockClass(lock_);
         queue_.push({ type, data });
     }
     bool Get(InputItem& item)
     {
+        // Dispatcher Thread
         if (queue_.empty())
             return false;
         item = queue_.front();

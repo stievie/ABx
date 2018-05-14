@@ -51,6 +51,7 @@ struct Account : Entity
         s.text1b(name, Limits::MAX_ACCOUNT_NAME);
         s.text1b(password, Limits::MAX_ACCOUNT_PASS);
         s.text1b(email, Limits::MAX_ACCOUNT_EMAIL);
+        s.text1b(currentServerUuid, Limits::MAX_UUID);
         s.value4b(charSlots);
         s.text1b(currentCharacterUuid, Limits::MAX_UUID);
         s.value1b(onlineStatus);
@@ -69,6 +70,8 @@ struct Account : Entity
     std::string name;
     std::string password;
     std::string email;
+    /// The server currently logged in. Required for cross server chat etc.
+    std::string currentServerUuid;
     uint32_t charSlots = ACCOUNT_DEF_CHARSLOTS;
     /// Last or current character
     std::string currentCharacterUuid;

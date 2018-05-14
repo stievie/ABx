@@ -37,6 +37,7 @@ bool DBFriendList::Load(AB::Entities::FriendList& fl)
     {
         fl.friends.push_back({
             result->GetString("friend_uuid"),
+            result->GetString("friend_name"),
             static_cast<AB::Entities::FriendRelation>(result->GetUInt("relation"))
         });
     }
@@ -70,9 +71,10 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
         for (const auto& f : fl.friends)
         {
             query.str("");
-            query << "INSERT INTO `friend_list` (`account_uuid`, `friend_uuid`, `relation`) VALUES (";
+            query << "INSERT INTO `friend_list` (`account_uuid`, `friend_uuid`, `friend_name`, `relation`) VALUES (";
             query << db->EscapeString(fl.uuid) << ", ";
-            query << db->EscapeString(f.friend_uuid) << ", ";
+            query << db->EscapeString(f.friendName) << ", ";
+            query << db->EscapeString(f.friendName) << ", ";
             query << static_cast<int>(f.relation);
             query << ")";
             if (!db->ExecuteQuery(query.str()))

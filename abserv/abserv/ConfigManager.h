@@ -9,6 +9,7 @@ public:
     enum Key
     {
         ServerName,
+        ServerID,
         Location,
         IP,
         GamePort,

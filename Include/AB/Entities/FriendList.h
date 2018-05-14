@@ -26,7 +26,8 @@ enum FriendRelation : uint8_t
 
 struct Friend
 {
-    std::string friend_uuid;
+    std::string friendUuid;
+    std::string friendName;
     FriendRelation relation;
 };
 
@@ -43,7 +44,8 @@ struct FriendList : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.container(friends, Limits::MAX_FRIENDS, [&s](Friend& c)
         {
-            s.text1b(c.friend_uuid, Limits::MAX_UUID);
+            s.text1b(c.friendUuid, Limits::MAX_UUID);
+            s.text1b(c.friendName, Limits::MAX_CHARACTER_NAME);
             s.value1b(c.relation);
         });
     }

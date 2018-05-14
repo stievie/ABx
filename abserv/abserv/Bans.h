@@ -10,6 +10,7 @@ struct BanInfo
     std::string comment;
     time_t expiresAt;
 };
+
 struct LoginBlock
 {
     time_t lastLoginTime;

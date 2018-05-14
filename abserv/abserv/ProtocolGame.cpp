@@ -13,6 +13,8 @@
 #include "Random.h"
 #include "Variant.h"
 #include "IOGame.h"
+#include "stdafx.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
@@ -61,6 +63,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     }
 
     acc.currentCharacterUuid = player_->data_.uuid;
+    acc.currentServerUuid = ConfigManager::Instance[ConfigManager::ServerID].GetString();
     client->Update(acc);
 
     player_->data_.currentMapUuid = mapUuid;
