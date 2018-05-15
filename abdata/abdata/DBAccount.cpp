@@ -16,7 +16,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
     Database* db = Database::Instance();
     std::ostringstream query;
     query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
-        "`status`, `creation`, `char_slots`, `last_server_uuid`) VALUES ( ";
+        "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`) VALUES ( ";
 
     query << db->EscapeString(account.uuid) << ", ";
     query << db->EscapeString(account.name) << ", ";
@@ -26,7 +26,8 @@ bool DBAccount::Create(AB::Entities::Account& account)
     query << static_cast<int>(account.status) << ", ";
     query << account.creation << ", ";
     query << account.charSlots << ", ";
-    query << db->EscapeString(account.currentServerUuid);
+    query << db->EscapeString(account.currentServerUuid) << ", ";
+    query << static_cast<int>(account.onlineStatus);
 
     query << ")";
     DBTransaction transaction(db);
@@ -71,8 +72,9 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.status = static_cast<AB::Entities::AccountStatus>(result->GetInt("status"));
     account.creation = result->GetLong("creation");
     account.charSlots = result->GetUInt("char_slots");
-    account.currentCharacterUuid = result->GetString("last_character_uuid");
-    account.currentServerUuid = result->GetString("last_server_uuid");
+    account.currentCharacterUuid = result->GetString("current_character_uuid");
+    account.currentServerUuid = result->GetString("current_server_uuid");
+    account.onlineStatus = static_cast<AB::Entities::OnlineStatus>(result->GetInt("online_status"));
 
     // load characters
     account.characterUuids.clear();
@@ -105,8 +107,9 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `type` = " << static_cast<int>(account.type) << ",";
     query << " `status` = " << static_cast<int>(account.status) << ",";
     query << " `char_slots` = " << account.charSlots << ",";
-    query << " `last_character_uuid` = " << db->EscapeString(account.currentCharacterUuid) << ",";
-    query << " `last_server_uuid` = " << db->EscapeString(account.currentServerUuid);
+    query << " `current_character_uuid` = " << db->EscapeString(account.currentCharacterUuid) << ",";
+    query << " `current_server_uuid` = " << db->EscapeString(account.currentServerUuid) << ",";
+    query << " `online_status` = " << static_cast<int>(account.onlineStatus);
 
     query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
 

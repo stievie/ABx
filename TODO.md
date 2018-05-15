@@ -4,4 +4,3 @@
 * Check https://github.com/im95able/Rea for FL?
 * all: /friend /ignore /flremove /fl commands
 * abserv: Lua API (Sphere) Octree query
-* abserver, abdata: Server ID. Account.lastServer

@@ -62,6 +62,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
+    acc.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
     acc.currentCharacterUuid = player_->data_.uuid;
     acc.currentServerUuid = ConfigManager::Instance[ConfigManager::ServerID].GetString();
     client->Update(acc);

@@ -148,12 +148,6 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& name, const 
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
         return LoginPasswordMismatch;
 
-    account.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
-    if (!client->Update(account))
-    {
-        LOG_ERROR << "Updating account failed " << name << std::endl;
-    }
-
     return LoginOK;
 }
 
