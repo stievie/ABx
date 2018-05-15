@@ -28,7 +28,7 @@ struct Profession : Entity
         });
     }
 
-    uint32_t index = 0;
+    uint32_t index = INVALID_INDEX;
     std::string name;
     std::string abbr;
     uint32_t attributeCount;

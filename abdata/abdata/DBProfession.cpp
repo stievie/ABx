@@ -52,8 +52,11 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     prof.attributeUuids.clear();
     if (resAttrib)
     {
-        ++prof.attributeCount;
-        prof.attributeUuids.push_back(resAttrib->GetString("uuid"));
+        for (resAttrib = db->StoreQuery(query.str()); resAttrib; resAttrib = resAttrib->Next())
+        {
+            ++prof.attributeCount;
+            prof.attributeUuids.push_back(resAttrib->GetString("uuid"));
+        }
     }
     return true;
 }

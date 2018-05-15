@@ -24,7 +24,7 @@ struct Attribute : Entity
         s.value1b(isPrimary);
     }
 
-    uint32_t index = 0;
+    uint32_t index = INVALID_INDEX;
     std::string professionUuid;
     std::string name;
     bool isPrimary = false;

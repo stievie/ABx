@@ -126,6 +126,9 @@
     <ClInclude Include="DBEffect.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBAttribute.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -225,6 +228,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBEffect.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBAttribute.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

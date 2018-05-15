@@ -26,6 +26,7 @@ static constexpr size_t KEY_MAILLIST_HASH = Utils::StringHash(AB::Entities::Mail
 static constexpr size_t KEY_PROFESSIONS_HASH = Utils::StringHash(AB::Entities::Profession::KEY());
 static constexpr size_t KEY_SKILLS_HASH = Utils::StringHash(AB::Entities::Skill::KEY());
 static constexpr size_t KEY_EFFECTS_HASH = Utils::StringHash(AB::Entities::Effect::KEY());
+static constexpr size_t KEY_ATTRIBUTES_HASH = Utils::StringHash(AB::Entities::Attribute::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -465,6 +466,8 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBSkill, AB::Entities::Skill>(id, *data);
     case KEY_EFFECTS_HASH:
         return LoadFromDB<DB::DBEffect, AB::Entities::Effect>(id, *data);
+    case KEY_ATTRIBUTES_HASH:
+        return LoadFromDB<DB::DBAttribute, AB::Entities::Attribute>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -545,6 +548,9 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_EFFECTS_HASH:
         succ = FlushRecord<DB::DBEffect, AB::Entities::Effect>(data);
         break;
+    case KEY_ATTRIBUTES_HASH:
+        succ = FlushRecord<DB::DBAttribute, AB::Entities::Attribute>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -595,6 +601,8 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBSkill, AB::Entities::Skill>(data);
     case KEY_EFFECTS_HASH:
         return ExistsInDB<DB::DBEffect, AB::Entities::Effect>(data);
+    case KEY_ATTRIBUTES_HASH:
+        return ExistsInDB<DB::DBAttribute, AB::Entities::Attribute>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;

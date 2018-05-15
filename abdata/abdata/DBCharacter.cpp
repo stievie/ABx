@@ -77,6 +77,7 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     character.name = result->GetString("name");
     character.pvp = result->GetInt("pvp") != 0;
     character.accountUuid = result->GetString("account_uuid");
+    character.skillTemplate = result->GetString("skills");
     character.level = static_cast<uint8_t>(result->GetUInt("level"));
     character.xp = result->GetUInt("experience");
     character.skillPoints = result->GetUInt("skillpoints");
@@ -107,6 +108,7 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
     // Only these may be changed
     query << " `profession2` = " << db->EscapeString(character.profession2) << ", ";
     query << " `profession2_uuid` = " << db->EscapeString(character.profession2Uuid) << ", ";
+    query << " `skills` = " << db->EscapeString(character.skillTemplate) << ", ";
     query << " `level` = " << static_cast<int>(character.level) << ", ";
     query << " `experience` = " << character.xp << ", ";
     query << " `skillpoints` = " << character.skillPoints << ", ";

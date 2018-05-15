@@ -171,6 +171,7 @@
     <ClInclude Include="DBAccountKey.h" />
     <ClInclude Include="DBAccountKeyAccounts.h" />
     <ClInclude Include="DBAll.h" />
+    <ClInclude Include="DBAttribute.h" />
     <ClInclude Include="DBBan.h" />
     <ClInclude Include="DBCharacter.h" />
     <ClInclude Include="DBEffect.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="DBAccountBan.cpp" />
     <ClCompile Include="DBAccountKey.cpp" />
     <ClCompile Include="DBAccountKeyAccounts.cpp" />
+    <ClCompile Include="DBAttribute.cpp" />
     <ClCompile Include="DBBan.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
     <ClCompile Include="DBEffect.cpp" />

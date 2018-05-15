@@ -17,6 +17,7 @@ static constexpr int MAX_ACCOUNTKEY_DESCRIPTION = 255;
 // Character
 static constexpr int MAX_CHARACTER_NAME = 20;
 static constexpr int MAX_CHARACTER_PROF = 2;
+static constexpr int MAX_CHARACTER_SKILLTEMPLATE = 36;
 
 // Map
 static constexpr int MAX_MAP_NAME = 50;

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SkillBar.h"
+#include <base64.h>
 
 namespace Game {
 
@@ -52,14 +53,25 @@ void SkillBar::Update(uint32_t timeElapsed)
 
 // https://wiki.guildwars.com/wiki/Skill_template_format
 // https://wiki.guildwars.com/wiki/Equipment_template_format
+// OgUUcRrg1MT6WOBqGIG/aKHXi+G
 std::string SkillBar::Encode()
 {
-    return std::string();
+    // TODO:
+    std::vector<uint8_t> buff;
+    // Type, version
+    buff.push_back((0xe << 4) | 0);
+
+    return base64::encode(buff.data(), buff.size());
 }
 
 bool SkillBar::Decode(const std::string& str)
 {
-    return false;
+    // TODO:
+    std::string s = base64::decode(str);
+    if (s[0] != ((0xe << 4) | 0))
+        return false;
+
+    return true;
 }
 
 std::shared_ptr<Skill> SkillBar::GetSkill(uint32_t index)

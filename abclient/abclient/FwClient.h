@@ -56,7 +56,7 @@ public:
     void Stop();
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
-    void CreatePlayer(const String& name, const String& prof, AB::Entities::CharacterSex sex, bool isPvp);
+    void CreatePlayer(const String& name, const String& profUuid, AB::Entities::CharacterSex sex, bool isPvp);
     void EnterWorld(const String& charUuid, const String& mapUuid);
     void ChangeWorld(const String& mapUuid);
     void Logout();

@@ -37,7 +37,7 @@ private:
     std::string email_;
     std::string accKey_;
     std::string charName_;
-    std::string prof_;
+    std::string profUuid_;
     AB::Entities::CharacterSex sex_;
     bool isPvp_;
     bool firstRecv_;
@@ -66,7 +66,8 @@ public:
         const CreateAccountCallback& callback);
     void CreatePlayer(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,
-        const std::string& charName, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp,
+        const std::string& charName, const std::string& profUuid,
+        AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
     void GetGameList(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,

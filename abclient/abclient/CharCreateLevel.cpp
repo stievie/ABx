@@ -60,12 +60,12 @@ void CharCreateLevel::CreateUI()
     professionDropdown_->GetPopup()->SetWidth(professionDropdown_->GetWidth());
     professionDropdown_->AddItem(CreateDropdownItem("(Select primary Profession)", ""));
     // TODO:
-    professionDropdown_->AddItem(CreateDropdownItem("Warrior", "W"));
-    professionDropdown_->AddItem(CreateDropdownItem("Ranger", "R"));
-    professionDropdown_->AddItem(CreateDropdownItem("Monk", "Mo"));
-    professionDropdown_->AddItem(CreateDropdownItem("Nercromancer", "N"));
-    professionDropdown_->AddItem(CreateDropdownItem("Mesmer", "Me"));
-    professionDropdown_->AddItem(CreateDropdownItem("Elementarist", "E"));
+    professionDropdown_->AddItem(CreateDropdownItem("Warrior", "59f4493d-50f4-11e8-a7ca-02100700d6f0"));
+    professionDropdown_->AddItem(CreateDropdownItem("Ranger", "59f4b30b-50f4-11e8-a7ca-02100700d6f0"));
+    professionDropdown_->AddItem(CreateDropdownItem("Monk", "73156b15-50f4-11e8-a7ca-02100700d6f0"));
+    professionDropdown_->AddItem(CreateDropdownItem("Nercromancer", "7315cbd6-50f4-11e8-a7ca-02100700d6f0"));
+    professionDropdown_->AddItem(CreateDropdownItem("Mesmer", "85d0939b-50f4-11e8-a7ca-02100700d6f0"));
+    professionDropdown_->AddItem(CreateDropdownItem("Elementarist", "85d0ef81-50f4-11e8-a7ca-02100700d6f0"));
 
     sexDropdown_->GetPopup()->SetWidth(sexDropdown_->GetWidth());
     sexDropdown_->AddItem(CreateDropdownItem("(Select Gender)", static_cast<uint32_t>(AB::Entities::CharacterSexUnknown)));

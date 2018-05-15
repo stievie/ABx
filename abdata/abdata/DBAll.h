@@ -15,3 +15,4 @@
 #include "DBProfession.h"
 #include "DBSkill.h"
 #include "DBEffect.h"
+#include "DBAttribute.h"

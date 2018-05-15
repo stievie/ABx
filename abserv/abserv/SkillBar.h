@@ -3,6 +3,7 @@
 #include "Skill.h"
 #include <array>
 #include <queue>
+#include <AB/Entities/Profession.h>
 
 namespace Game {
 
@@ -45,6 +46,9 @@ public:
     {
         return skills_[index].get();
     }
+
+    AB::Entities::Profession prof1_;
+    AB::Entities::Profession prof2_;
 };
 
 }

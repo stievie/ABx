@@ -8,40 +8,72 @@
 #include <AB/Entities/Account.h>
 #include "Profiler.h"
 #include <AB/Entities/Profession.h>
+#include "Logger.h"
+#include <uuids.h>
 
 #include "DebugNew.h"
 
 namespace IO {
 
-bool IOPlayer::PreloadPlayer(Game::Player* player, const std::string& name)
+bool IOPlayer::LoadPlayer(Game::Player* player)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
-    player->data_.name = name;
-    return client->Read(player->data_);
+    if (!client->Read(player->data_))
+    {
+        LOG_ERROR << "Error reading player data" << std::endl;
+        return false;
+    }
+    if (uuids::uuid(player->data_.professionUuid).nil())
+    {
+        LOG_ERROR << "Error primary profession is nil" << std::endl;
+        return false;
+    }
+    player->skills_.prof1_.uuid = player->data_.professionUuid;
+    if (!client->Read(player->skills_.prof1_))
+    {
+        LOG_ERROR << "Error reading player profession1" << std::endl;
+        return false;
+    }
+    if (!uuids::uuid(player->data_.profession2Uuid).nil())
+    {
+        player->skills_.prof2_.uuid = player->data_.profession2Uuid;
+        if (!client->Read(player->skills_.prof2_))
+        {
+            LOG_ERROR << "Error reading player profession2" << std::endl;
+            return false;
+        }
+    }
+    // After loading professions we can load the skills
+    if (!player->skills_.Decode(player->data_.skillTemplate))
+    {
+        LOG_WARNING << "Unable to decode skill template " << player->data_.skillTemplate << std::endl;
+    }
+    return true;
 }
 
-bool IOPlayer::LoadCharacter(AB::Entities::Character& player)
+bool IOPlayer::LoadCharacter(AB::Entities::Character& ch)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
-    return client->Read(player);
+    if (!client->Read(ch))
+    {
+        LOG_ERROR << "Error reading player data" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
 {
     player->data_.name = name;
-    if (!LoadCharacter(player->data_))
-        return false;
-    return true;
+    return LoadPlayer(player);
 }
 
 bool IOPlayer::LoadPlayerByUuid(Game::Player* player, const std::string& uuid)
 {
     player->data_.uuid = uuid;
-    if (!LoadCharacter(player->data_))
-        return false;
-    return true;
+    return LoadPlayer(player);
 }
 
 bool IOPlayer::SavePlayer(Game::Player* player)
@@ -50,6 +82,8 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     IO::DataClient* client = Application::Instance->GetDataClient();
     player->data_.lastLogin = player->loginTime_;
     player->data_.lastLogout = player->logoutTime_;
+    player->data_.profession2 = player->skills_.prof2_.abbr;
+    player->data_.profession2Uuid = player->skills_.prof2_.uuid;
     player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
     return client->Update(player->data_);
 
@@ -99,7 +133,7 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 }
 
 IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUuid,
-    const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp,
+    const std::string& name, const std::string& profUuid, AB::Entities::CharacterSex sex, bool isPvp,
     std::string& uuid)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
@@ -112,7 +146,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
         return ResultNoMoreCharSlots;
 
     AB::Entities::Profession pro;
-    pro.abbr = prof;
+    pro.uuid = profUuid;
     if (!client->Read(pro))
         return ResultInvalidProfession;
 
@@ -124,7 +158,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     ch.uuid = guid.to_string();
     ch.name = name;
-    ch.profession = prof;
+    ch.profession = pro.abbr;
     ch.professionUuid = pro.uuid;
     ch.sex = sex;
     ch.pvp = isPvp;

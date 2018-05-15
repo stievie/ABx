@@ -15,6 +15,8 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
+static constexpr uint32_t INVALID_INDEX = 9999;
+
 /// Base class for entities.
 struct Entity
 {

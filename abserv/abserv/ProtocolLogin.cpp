@@ -14,6 +14,7 @@
 #include "GameManager.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Game.h>
+#include <uuids.h>
 
 #include "DebugNew.h"
 
@@ -176,7 +177,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
     const std::string prof = message.GetString();
-    if (prof.empty())
+    if (prof.empty() || uuids::uuid(prof).nil())
     {
         DisconnectClient(AB::Errors::InvalidProfession);
         return;
