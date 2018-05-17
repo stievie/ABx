@@ -57,9 +57,6 @@
     <ClInclude Include="DBAccount.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigManager.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -129,6 +126,9 @@
     <ClInclude Include="DBAttribute.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -171,9 +171,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBAccount.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ConfigManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBCharacter.cpp">
@@ -231,6 +228,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBAttribute.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <boost/filesystem.hpp>
+#include "SimpleConfigManager.h"
 
 using namespace std;
 using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
@@ -14,24 +15,8 @@ int main()
     HttpsServer server("server.crt", "server.key");
     server.config.port = 8081;
 
-    server.resource["^/string$"]["POST"] = [](shared_ptr<HttpsServer::Response> response, shared_ptr<HttpsServer::Request> request)
-    {
-        // Retrieve string:
-        auto content = request->content.string();
-        // request->content.string() is a convenience function for:
-        // stringstream ss;
-        // ss << request->content.rdbuf();
-        // auto content=ss.str();
-
-        *response << "HTTP/1.1 200 OK\r\nContent-Length: " << content.length() << "\r\n\r\n"
-            << content;
-
-
-        // Alternatively, use one of the convenience functions, for instance:
-        // response->write(content);
-    };
-
-    server.resource["^/info$"]["GET"] = [](shared_ptr<HttpsServer::Response> response, shared_ptr<HttpsServer::Request> request)
+    server.resource["^/info$"]["GET"] =
+        [](shared_ptr<HttpsServer::Response> response, shared_ptr<HttpsServer::Request> request)
     {
         stringstream stream;
         stream << "<h1>Request from " << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << "</h1>";
@@ -54,7 +39,8 @@ int main()
     // Will respond with content in the web/-directory, and its subdirectories.
     // Default file: index.html
     // Can for instance be used to retrieve an HTML 5 client that uses REST-resources on this server
-    server.default_resource["GET"] = [](shared_ptr<HttpsServer::Response> response, shared_ptr<HttpsServer::Request> request)
+    server.default_resource["GET"] =
+        [](shared_ptr<HttpsServer::Response> response, shared_ptr<HttpsServer::Request> request)
     {
         try
         {
@@ -71,26 +57,6 @@ int main()
 
             // Uncomment the following line to enable Cache-Control
             // header.emplace("Cache-Control", "max-age=86400");
-
-#ifdef HAVE_OPENSSL
-            //    Uncomment the following lines to enable ETag
-            //    {
-            //      ifstream ifs(path.string(), ifstream::in | ios::binary);
-            //      if(ifs) {
-            //        auto hash = SimpleWeb::Crypto::to_hex_string(SimpleWeb::Crypto::md5(ifs));
-            //        header.emplace("ETag", "\"" + hash + "\"");
-            //        auto it = request->header.find("If-None-Match");
-            //        if(it != request->header.end()) {
-            //          if(!it->second.empty() && it->second.compare(1, hash.size(), hash) == 0) {
-            //            response->write(SimpleWeb::StatusCode::redirection_not_modified, header);
-            //            return;
-            //          }
-            //        }
-            //      }
-            //      else
-            //        throw invalid_argument("could not read file");
-            //    }
-#endif
 
             auto ifs = make_shared<ifstream>();
             ifs->open(path.string(), ifstream::in | ios::binary | ios::ate);
@@ -110,7 +76,7 @@ int main()
                     static void read_and_send(const shared_ptr<HttpsServer::Response> &response, const shared_ptr<ifstream> &ifs)
                     {
                         // Read and send 128 KB at a time
-                        static vector<char> buffer(131072); // Safe when server is running on one thread
+                        vector<char> buffer(131072);
                         streamsize read_length;
                         if ((read_length = ifs->read(&buffer[0], static_cast<streamsize>(buffer.size())).gcount()) > 0)
                         {
@@ -139,7 +105,8 @@ int main()
         }
     };
 
-    server.on_error = [](shared_ptr<HttpsServer::Request> /*request*/, const SimpleWeb::error_code & /*ec*/)
+    server.on_error =
+        [](shared_ptr<HttpsServer::Request> /*request*/, const SimpleWeb::error_code & /*ec*/)
     {
         // Handle errors here
         // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
