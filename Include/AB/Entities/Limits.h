@@ -51,6 +51,9 @@ static constexpr int MAX_SKILL_DESCRIPTION = 255;
 static constexpr int MAX_SKILL_SHORT_DESCRIPTION = 255;
 // Effect
 static constexpr int MAX_EFFECT_NAME = 64;
+// Item
+static constexpr int MAX_ITEM_NAME = 64;
+
 }
 }
 }

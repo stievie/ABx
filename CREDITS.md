@@ -3,6 +3,7 @@
 ## Common
 
 * asio https://think-async.com/Asio/AsioStandalone
+* SimpleWeb https://github.com/eidheim/Simple-Web-Server
 
 ## Server
 
