@@ -95,7 +95,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
@@ -158,7 +158,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="Database.h" />
@@ -183,22 +182,15 @@
     <ClInclude Include="DBMailList.h" />
     <ClInclude Include="DBProfession.h" />
     <ClInclude Include="DBSkill.h" />
-    <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="EvictionStrategy.h" />
-    <ClInclude Include="FileUtils.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="Scheduler.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StorageProvider.h" />
     <ClInclude Include="StringHash.h" />
-    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Task.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="ConnectionManager.cpp" />
     <ClCompile Include="Database.cpp" />
@@ -222,12 +214,8 @@
     <ClCompile Include="DBMailList.cpp" />
     <ClCompile Include="DBProfession.cpp" />
     <ClCompile Include="DBSkill.cpp" />
-    <ClCompile Include="Dispatcher.cpp" />
-    <ClCompile Include="FileUtils.cpp" />
-    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OldestInsertionEviction.cpp" />
-    <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -236,7 +224,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StorageProvider.cpp" />
-    <ClCompile Include="StringUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
+      <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

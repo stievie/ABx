@@ -7,6 +7,7 @@
 #include "Logger.h"
 
 Application::Application() :
+    ServerApp::ServerApp(),
     running_(false)
 {
 }
@@ -31,6 +32,7 @@ bool Application::Initialize(int argc, char** argv)
     std::string cert = IO::SimpleConfigManager::Instance.GetGlobal("server_cert", "server.crt");
     size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 1);
     root_ = IO::SimpleConfigManager::Instance.GetGlobal("root_dir", "");
+    logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
 
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = port;
@@ -53,6 +55,14 @@ bool Application::Initialize(int argc, char** argv)
 void Application::Run()
 {
     running_ = true;
+    LOG_INFO << "Server is running" << std::endl;
+    if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
+    {
+        // Different log dir
+        LOG_INFO << "Log directory: " << logDir_ << std::endl;
+        IO::Logger::logDir_ = logDir_;
+        IO::Logger::Close();
+    }
     server_->start();
 }
 

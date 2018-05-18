@@ -20,3 +20,5 @@
 #pragma warning(pop)
 
 #include <uuid.h>
+
+#define SCHEDULER_MINTICKS 10

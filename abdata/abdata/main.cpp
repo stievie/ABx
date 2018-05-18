@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Server.h"
 #include "Database.h"
-#include "ConfigManager.h"
+#include "SimpleConfigManager.h"
 #include "Version.h"
 #include <signal.h>     /* signal, raise, sig_atomic_t */
 #include <functional>
@@ -188,24 +188,24 @@ static bool ParseCommandline(int argc, char* argv[])
 
 static void LoadConfig()
 {
-    gPort = static_cast<int>(ConfigManager::Instance.GetGlobal("data_port", gPort));
-    gListenIp = Utils::ConvertStringToIP(ConfigManager::Instance.GetGlobal("data_ip", Utils::ConvertIPToString(gListenIp)));
-    gMaxSize = ConfigManager::Instance.GetGlobal("max_size", gMaxSize);
-    gReadonly = ConfigManager::Instance.GetGlobalBool("read_only", gReadonly);
+    gPort = static_cast<int>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", gPort));
+    gListenIp = Utils::ConvertStringToIP(IO::SimpleConfigManager::Instance.GetGlobal("data_ip", Utils::ConvertIPToString(gListenIp)));
+    gMaxSize = IO::SimpleConfigManager::Instance.GetGlobal("max_size", gMaxSize);
+    gReadonly = IO::SimpleConfigManager::Instance.GetGlobalBool("read_only", gReadonly);
     if (IO::Logger::logDir_.empty())
-        IO::Logger::logDir_ = ConfigManager::Instance.GetGlobal("log_dir", "");
+        IO::Logger::logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
     if (DB::Database::driver_.empty())
-        DB::Database::driver_ = ConfigManager::Instance.GetGlobal("db_driver", "");
+        DB::Database::driver_ = IO::SimpleConfigManager::Instance.GetGlobal("db_driver", "");
     if (DB::Database::dbHost_.empty())
-        DB::Database::dbHost_ = ConfigManager::Instance.GetGlobal("db_host", "");
+        DB::Database::dbHost_ = IO::SimpleConfigManager::Instance.GetGlobal("db_host", "");
     if (DB::Database::dbName_.empty())
-        DB::Database::dbName_ = ConfigManager::Instance.GetGlobal("db_name", "");
+        DB::Database::dbName_ = IO::SimpleConfigManager::Instance.GetGlobal("db_name", "");
     if (DB::Database::dbUser_.empty())
-        DB::Database::dbUser_ = ConfigManager::Instance.GetGlobal("db_user", "");
+        DB::Database::dbUser_ = IO::SimpleConfigManager::Instance.GetGlobal("db_user", "");
     if (DB::Database::dbPass_.empty())
-        DB::Database::dbPass_ = ConfigManager::Instance.GetGlobal("db_pass", "");
+        DB::Database::dbPass_ = IO::SimpleConfigManager::Instance.GetGlobal("db_pass", "");
     if (DB::Database::dbPort_ == 0)
-        DB::Database::dbPort_ = static_cast<uint16_t>(ConfigManager::Instance.GetGlobal("db_port", 0));
+        DB::Database::dbPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("db_port", 0));
 }
 
 int main(int argc, char* argv[])
@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
 
     if (Utils::FileExists(gConfigFile))
     {
-        if (!ConfigManager::Instance.Load(gConfigFile))
+        if (!IO::SimpleConfigManager::Instance.Load(gConfigFile))
         {
             LOG_ERROR << "Error loading config file" << std::endl;
             return EXIT_FAILURE;

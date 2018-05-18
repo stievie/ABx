@@ -10,6 +10,7 @@ private:
     std::unique_ptr<HttpsServer> server_;
     std::string root_;
     std::string configFile_;
+    std::string logDir_;
     bool running_;
     void DefaultGetHandler(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
