@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ServerApp.h" />
     <ClInclude Include="SimpleConfigManager.h" />
     <ClInclude Include="DataClient.h" />
     <ClInclude Include="Logger.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ServerApp.cpp" />
     <ClCompile Include="SimpleConfigManager.cpp" />
     <ClCompile Include="DataClient.cpp" />
     <ClCompile Include="FileUtils.cpp" />
