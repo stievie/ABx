@@ -7,6 +7,7 @@
 #include <bitsery/traits/vector.h>
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
+#include <uuid.h>
 
 namespace IO {
 

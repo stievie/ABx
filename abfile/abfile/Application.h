@@ -4,6 +4,10 @@
 
 using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
 
+namespace IO {
+class DataClient;
+}
+
 class Application : public ServerApp, public std::enable_shared_from_this<Application>
 {
 private:
@@ -11,10 +15,14 @@ private:
     std::string root_;
     std::string configFile_;
     std::string logDir_;
+    std::unique_ptr<IO::DataClient> dataClient_;
+    asio::io_service ioService_;
+    std::string dataHost_;
+    uint16_t dataPort_;
     bool running_;
-    void DefaultGetHandler(std::shared_ptr<HttpsServer::Response> response,
+    void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
-    void InfoGetHandler(std::shared_ptr<HttpsServer::Response> response,
+    void GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
 public:
     Application();

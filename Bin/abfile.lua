@@ -10,3 +10,7 @@ root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin
 
 -- log_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/abserv/logs"
 data_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/data"
+
+-- Data server
+data_host = "localhost"
+data_port = 2770

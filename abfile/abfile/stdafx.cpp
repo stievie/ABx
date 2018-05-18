@@ -14,7 +14,6 @@
 #pragma comment(lib, "libeay32.lib")
 #pragma comment(lib, "ssleay32.lib")
 #endif
-//#pragma comment(lib, "libssl.lib")
-//#pragma comment(lib, "libeay32.lib")
+#pragma comment(lib, "PugiXml.lib")
 
 #pragma warning(disable: 4503)

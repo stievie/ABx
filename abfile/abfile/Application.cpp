@@ -5,10 +5,15 @@
 #include <sstream>
 #include <fstream>
 #include "Logger.h"
+#include "DataClient.h"
+#include <AB/Entities/GameList.h>
+#include <AB/Entities/Game.h>
+#include <pugixml.hpp>
 
 Application::Application() :
     ServerApp::ServerApp(),
-    running_(false)
+    running_(false),
+    ioService_()
 {
 }
 
@@ -33,14 +38,16 @@ bool Application::Initialize(int argc, char** argv)
     size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 1);
     root_ = IO::SimpleConfigManager::Instance.GetGlobal("root_dir", "");
     logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
+    dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "localhost");
+    dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
 
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = port;
     server_->config.thread_pool_size = threads;
 
-    server_->resource["^/info$"]["GET"] = std::bind(&Application::InfoGetHandler, shared_from_this(),
+    server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
-    server_->default_resource["GET"] = std::bind(&Application::DefaultGetHandler, shared_from_this(),
+    server_->resource["^/games$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
     server_->on_error =
@@ -49,6 +56,18 @@ bool Application::Initialize(int argc, char** argv)
         // Handle errors here
         // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
     };
+
+    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
+
+    LOG_INFO << "Connecting to data server...";
+    dataClient_->Connect(dataHost_, dataPort_);
+    if (!dataClient_->IsConnected())
+    {
+        LOG_ERROR << "Failed to connect to data server" << std::endl;
+        return false;
+    }
+    LOG_INFO << "[done]" << std::endl;
+
     return true;
 }
 
@@ -73,7 +92,7 @@ void Application::Stop()
     server_->stop();
 }
 
-void Application::DefaultGetHandler(std::shared_ptr<HttpsServer::Response> response,
+void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
     try
@@ -139,22 +158,56 @@ void Application::DefaultGetHandler(std::shared_ptr<HttpsServer::Response> respo
     }
 }
 
-void Application::InfoGetHandler(std::shared_ptr<HttpsServer::Response> response,
+//void Application::GetHandlerInfo(std::shared_ptr<HttpsServer::Response> response,
+//    std::shared_ptr<HttpsServer::Request> request)
+//{
+//    std::stringstream stream;
+//    stream << "<h1>Request from " << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << "</h1>";
+//
+//    stream << request->method << " " << request->path << " HTTP/" << request->http_version;
+//
+//    stream << "<h2>Query Fields</h2>";
+//    auto query_fields = request->parse_query_string();
+//    for (auto &field : query_fields)
+//        stream << field.first << ": " << field.second << "<br>";
+//
+//    stream << "<h2>Header Fields</h2>";
+//    for (auto &field : request->header)
+//        stream << field.first << ": " << field.second << "<br>";
+//
+//    response->write(stream);
+//}
+
+void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
+    AB::Entities::GameList gl;
+    if (!dataClient_->Read(gl))
+    {
+        LOG_ERROR << "Error reading game list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("games");
+
+    for (const std::string& uuid : gl.gameUuids)
+    {
+        AB::Entities::Game g;
+        g.uuid = uuid;
+        if (!dataClient_->Read(g))
+            continue;
+        auto gNd = root.append_child("game");
+        gNd.append_attribute("uuid") = g.uuid.c_str();
+        gNd.append_attribute("name") = g.name.c_str();
+        gNd.append_attribute("type") = g.type;
+    }
+
     std::stringstream stream;
-    stream << "<h1>Request from " << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << "</h1>";
-
-    stream << request->method << " " << request->path << " HTTP/" << request->http_version;
-
-    stream << "<h2>Query Fields</h2>";
-    auto query_fields = request->parse_query_string();
-    for (auto &field : query_fields)
-        stream << field.first << ": " << field.second << "<br>";
-
-    stream << "<h2>Header Fields</h2>";
-    for (auto &field : request->header)
-        stream << field.first << ": " << field.second << "<br>";
-
+    doc.save(stream);
     response->write(stream);
 }
