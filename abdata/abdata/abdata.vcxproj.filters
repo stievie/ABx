@@ -108,6 +108,15 @@
     <ClInclude Include="DBAttribute.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBSkillList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBEffectList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBProfessionList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,6 +201,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBAttribute.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBSkillList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBEffectList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBProfessionList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

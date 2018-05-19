@@ -43,14 +43,17 @@ static constexpr int MAX_MAIL_COUNT = 500;
 static constexpr int MAX_PROFESSION_NAME = 32;
 static constexpr int MAX_PROFESSION_ABBR = 2;
 static constexpr int MAX_PROFESSION_ATTRIBUTES = 5;
+static constexpr int MAX_PROFESSIONS = 24;                            // Max professions in game
 // Attribute
 static constexpr int MAX_ATTRIBUTE_NAME = 32;
 // Skill
 static constexpr int MAX_SKILL_NAME = 64;
 static constexpr int MAX_SKILL_DESCRIPTION = 255;
 static constexpr int MAX_SKILL_SHORT_DESCRIPTION = 255;
+static constexpr int MAX_SKILLS = 4096;                            // Max skills in game
 // Effect
 static constexpr int MAX_EFFECT_NAME = 64;
+static constexpr int MAX_EFFECTS = 4096;                            // Max effects in game
 // Item
 static constexpr int MAX_ITEM_NAME = 64;
 

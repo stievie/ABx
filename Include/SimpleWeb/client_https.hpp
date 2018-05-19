@@ -136,6 +136,7 @@ namespace SimpleWeb {
       });
     }
   };
+
 } // namespace SimpleWeb
 
 #endif /* CLIENT_HTTPS_HPP */

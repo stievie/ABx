@@ -8,7 +8,12 @@
 #include "DataClient.h"
 #include <AB/Entities/GameList.h>
 #include <AB/Entities/Game.h>
+#include <AB/Entities/Skill.h>
+#include <AB/Entities/SkillList.h>
+#include <AB/Entities/ProfessionList.h>
+#include <AB/Entities/Profession.h>
 #include <pugixml.hpp>
+#include "Profiler.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -32,6 +37,7 @@ bool Application::Initialize(int argc, char** argv)
         configFile_ = path_ + "/abfile.lua";
     IO::SimpleConfigManager::Instance.Load(configFile_);
 
+    std::string address = IO::SimpleConfigManager::Instance.GetGlobal("server_ip", "");
     uint16_t port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
     std::string key = IO::SimpleConfigManager::Instance.GetGlobal("server_key", "server.key");
     std::string cert = IO::SimpleConfigManager::Instance.GetGlobal("server_cert", "server.crt");
@@ -47,15 +53,15 @@ bool Application::Initialize(int argc, char** argv)
 
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/games$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
+    server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
-    server_->on_error =
-        [](std::shared_ptr<HttpsServer::Request> /*request*/, const SimpleWeb::error_code & /*ec*/)
-    {
-        // Handle errors here
-        // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
-    };
+    server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
 
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 
@@ -68,13 +74,18 @@ bool Application::Initialize(int argc, char** argv)
     }
     LOG_INFO << "[done]" << std::endl;
 
+    LOG_INFO << "Server config:" << std::endl;
+    LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
+    LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
+    LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
+    LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+
     return true;
 }
 
 void Application::Run()
 {
     running_ = true;
-    LOG_INFO << "Server is running" << std::endl;
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
         // Different log dir
@@ -82,6 +93,7 @@ void Application::Run()
         IO::Logger::logDir_ = logDir_;
         IO::Logger::Close();
     }
+    LOG_INFO << "Server is running" << std::endl;
     server_->start();
 }
 
@@ -104,7 +116,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))
             throw std::invalid_argument("path must be within root path");
         if (boost::filesystem::is_directory(path))
-            path /= "index.html";
+            throw std::invalid_argument("not a file");
 
         SimpleWeb::CaseInsensitiveMultimap header;
 
@@ -126,7 +138,8 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
             class FileServer
             {
             public:
-                static void read_and_send(const std::shared_ptr<HttpsServer::Response> &response, const std::shared_ptr<std::ifstream> &ifs)
+                static void read_and_send(const std::shared_ptr<HttpsServer::Response> &response,
+                    const std::shared_ptr<std::ifstream> &ifs)
                 {
                     // Read and send 128 KB at a time
                     std::vector<char> buffer(131072);
@@ -154,7 +167,8 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
     }
     catch (const std::exception &e)
     {
-        response->write(SimpleWeb::StatusCode::client_error_bad_request, "Could not open path " + request->path + ": " + e.what());
+        response->write(SimpleWeb::StatusCode::client_error_not_found,
+            "Not found " + request->path);
     }
 }
 
@@ -181,6 +195,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
 void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
+    AB_PROFILE;
     AB::Entities::GameList gl;
     if (!dataClient_->Read(gl))
     {
@@ -210,4 +225,86 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
     std::stringstream stream;
     doc.save(stream);
     response->write(stream);
+}
+
+void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+    AB::Entities::SkillList sl;
+    if (!dataClient_->Read(sl))
+    {
+        LOG_ERROR << "Error reading skill list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("skills");
+
+    for (const std::string& uuid : sl.skillUuids)
+    {
+        AB::Entities::Skill s;
+        s.uuid = uuid;
+        if (!dataClient_->Read(s))
+            continue;
+        auto gNd = root.append_child("skill");
+        gNd.append_attribute("uuid") = s.uuid.c_str();
+        gNd.append_attribute("index") = s.index;
+        gNd.append_attribute("name") = s.name.c_str();
+        gNd.append_attribute("attribute") = s.attributeUuid.c_str();
+        gNd.append_attribute("type") = s.type;
+        gNd.append_attribute("elite") = s.isElite;
+        gNd.append_attribute("description") = s.description.c_str();
+        gNd.append_attribute("short_description") = s.shortDescription.c_str();
+        gNd.append_attribute("icon") = s.icon.c_str();
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    response->write(stream);
+}
+
+void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response, std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+    AB::Entities::ProfessionList pl;
+    if (!dataClient_->Read(pl))
+    {
+        LOG_ERROR << "Error reading profession list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("professions");
+
+    for (const std::string& uuid : pl.profUuids)
+    {
+        AB::Entities::Profession s;
+        s.uuid = uuid;
+        if (!dataClient_->Read(s))
+            continue;
+        auto gNd = root.append_child("skill");
+        gNd.append_attribute("uuid") = s.uuid.c_str();
+        gNd.append_attribute("index") = s.index;
+        gNd.append_attribute("name") = s.name.c_str();
+        gNd.append_attribute("abbr") = s.abbr.c_str();
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    response->write(stream);
+}
+
+void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const SimpleWeb::error_code&)
+{
+    // Handle errors here
+    // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
 }

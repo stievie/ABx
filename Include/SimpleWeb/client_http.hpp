@@ -448,12 +448,12 @@ namespace SimpleWeb {
       return streambuf;
     }
 
-    std::pair<std::string, unsigned short> parse_host_port(const std::string &host_port, unsigned short default_port) const noexcept {
+    std::pair<std::string, unsigned short> parse_host_port(const std::string &host_port, unsigned short _default_port) const noexcept {
       std::pair<std::string, unsigned short> parsed_host_port;
       std::size_t host_end = host_port.find(':');
       if(host_end == std::string::npos) {
         parsed_host_port.first = host_port;
-        parsed_host_port.second = default_port;
+        parsed_host_port.second = _default_port;
       }
       else {
         parsed_host_port.first = host_port.substr(0, host_end);
@@ -684,8 +684,8 @@ namespace SimpleWeb {
                 return;
               if(!ec) {
                 asio::ip::tcp::no_delay option(true);
-                error_code ec;
-                session->connection->socket->set_option(option, ec);
+                error_code ec2;
+                session->connection->socket->set_option(option, ec2);
                 this->write(session);
               }
               else

@@ -310,8 +310,12 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
+
     output->AddString(ConfigManager::Instance[ConfigManager::GameHost].GetString());
     output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));
+    output->AddString(ConfigManager::Instance[ConfigManager::FileHost].GetString());
+    output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::FilePort].GetInt()));
+
     output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots));
     output->Add<uint16_t>(static_cast<uint16_t>(account.characterUuids.size()));
     for (const std::string& characterUuid : account.characterUuids)

@@ -110,6 +110,8 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::StatusPort] = (int)GetGlobal("status_port", 0);
     config_[Key::GamePort] = (int)GetGlobal("game_port", 0);
     config_[Key::GameHost] = GetGlobal("game_host", "");
+    config_[Key::FilePort] = (int)GetGlobal("file_port", 8081);
+    config_[Key::FileHost] = GetGlobal("file_host", "");
 
     config_[Key::DataServerHost] = GetGlobal("data_host", "localhost");
     config_[Key::DataServerPort] = (int)GetGlobal("data_port", 2770);

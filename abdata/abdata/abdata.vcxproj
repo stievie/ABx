@@ -174,6 +174,7 @@
     <ClInclude Include="DBBan.h" />
     <ClInclude Include="DBCharacter.h" />
     <ClInclude Include="DBEffect.h" />
+    <ClInclude Include="DBEffectList.h" />
     <ClInclude Include="DBFriendList.h" />
     <ClInclude Include="DBGame.h" />
     <ClInclude Include="DBGameList.h" />
@@ -181,7 +182,9 @@
     <ClInclude Include="DBMail.h" />
     <ClInclude Include="DBMailList.h" />
     <ClInclude Include="DBProfession.h" />
+    <ClInclude Include="DBProfessionList.h" />
     <ClInclude Include="DBSkill.h" />
+    <ClInclude Include="DBSkillList.h" />
     <ClInclude Include="EvictionStrategy.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="stdafx.h" />
@@ -206,6 +209,7 @@
     <ClCompile Include="DBBan.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
     <ClCompile Include="DBEffect.cpp" />
+    <ClCompile Include="DBEffectList.cpp" />
     <ClCompile Include="DBFriendList.cpp" />
     <ClCompile Include="DBGame.cpp" />
     <ClCompile Include="DBGameList.cpp" />
@@ -213,7 +217,9 @@
     <ClCompile Include="DBMail.cpp" />
     <ClCompile Include="DBMailList.cpp" />
     <ClCompile Include="DBProfession.cpp" />
+    <ClCompile Include="DBProfessionList.cpp" />
     <ClCompile Include="DBSkill.cpp" />
+    <ClCompile Include="DBSkillList.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OldestInsertionEviction.cpp" />
     <ClCompile Include="Server.cpp" />

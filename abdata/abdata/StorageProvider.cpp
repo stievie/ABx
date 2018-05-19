@@ -27,6 +27,9 @@ static constexpr size_t KEY_PROFESSIONS_HASH = Utils::StringHash(AB::Entities::P
 static constexpr size_t KEY_SKILLS_HASH = Utils::StringHash(AB::Entities::Skill::KEY());
 static constexpr size_t KEY_EFFECTS_HASH = Utils::StringHash(AB::Entities::Effect::KEY());
 static constexpr size_t KEY_ATTRIBUTES_HASH = Utils::StringHash(AB::Entities::Attribute::KEY());
+static constexpr size_t KEY_SKILLLIST_HASH = Utils::StringHash(AB::Entities::SkillList::KEY());
+static constexpr size_t KEY_EFFECTLIST_HASH = Utils::StringHash(AB::Entities::EffectList::KEY());
+static constexpr size_t KEY_PROFESSIONLIST_HASH = Utils::StringHash(AB::Entities::ProfessionList::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -468,6 +471,12 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBEffect, AB::Entities::Effect>(id, *data);
     case KEY_ATTRIBUTES_HASH:
         return LoadFromDB<DB::DBAttribute, AB::Entities::Attribute>(id, *data);
+    case KEY_SKILLLIST_HASH:
+        return LoadFromDB<DB::DBSkillList, AB::Entities::SkillList>(id, *data);
+    case KEY_EFFECTLIST_HASH:
+        return LoadFromDB<DB::DBEffectList, AB::Entities::EffectList>(id, *data);
+    case KEY_PROFESSIONLIST_HASH:
+        return LoadFromDB<DB::DBProfessionList, AB::Entities::ProfessionList>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -551,6 +560,15 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_ATTRIBUTES_HASH:
         succ = FlushRecord<DB::DBAttribute, AB::Entities::Attribute>(data);
         break;
+    case KEY_SKILLLIST_HASH:
+        succ = FlushRecord<DB::DBSkillList, AB::Entities::SkillList>(data);
+        break;
+    case KEY_EFFECTLIST_HASH:
+        succ = FlushRecord<DB::DBEffectList, AB::Entities::EffectList>(data);
+        break;
+    case KEY_PROFESSIONLIST_HASH:
+        succ = FlushRecord<DB::DBProfessionList, AB::Entities::ProfessionList>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -603,6 +621,12 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBEffect, AB::Entities::Effect>(data);
     case KEY_ATTRIBUTES_HASH:
         return ExistsInDB<DB::DBAttribute, AB::Entities::Attribute>(data);
+    case KEY_SKILLLIST_HASH:
+        return ExistsInDB<DB::DBSkillList, AB::Entities::SkillList>(data);
+    case KEY_EFFECTLIST_HASH:
+        return ExistsInDB<DB::DBEffectList, AB::Entities::EffectList>(data);
+    case KEY_PROFESSIONLIST_HASH:
+        return ExistsInDB<DB::DBProfessionList, AB::Entities::ProfessionList>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;

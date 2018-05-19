@@ -19,4 +19,7 @@
 #include <SimpleWeb/server_https.hpp>
 #pragma warning(pop)
 
-// TODO: Hier auf zusätzliche Header, die das Programm erfordert, verweisen.
+#define _PROFILING
+// Used by the profiler to generate a unique identifier
+#define CONCAT(a, b) a ## b
+#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)

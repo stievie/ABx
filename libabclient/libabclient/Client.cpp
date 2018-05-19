@@ -3,27 +3,49 @@
 #include "ProtocolLogin.h"
 #include "ProtocolGame.h"
 #include "Connection.h"
+#define USE_STANDALONE_ASIO
+#pragma warning(push)
+#pragma warning(disable: 4457 4456 4150)
+#include <SimpleWeb/client_https.hpp>
+#pragma warning(pop)
 
 #include "DebugNew.h"
 
 namespace Client {
 
+class HttpsClient : public SimpleWeb::Client<SimpleWeb::HTTPS>
+{
+public:
+    HttpsClient(const std::string &server_port_path, bool verify_certificate = true,
+        const std::string &cert_file = std::string(),
+        const std::string &private_key_file = std::string(),
+        const std::string &verify_file = std::string()) :
+        SimpleWeb::Client<SimpleWeb::HTTPS>::Client(server_port_path, verify_certificate,
+            cert_file, private_key_file, verify_file)
+    { }
+};
+
 Client::Client() :
     loginHost_("127.0.0.1"),
     gameHost_("127.0.0.1"),
+    fileHost_("127.0.0.1"),
     loginPort_(2748),
     gamePort_(2749),
+    filePort_(8081),
     protoLogin_(nullptr),
     protoGame_(nullptr),
     state_(StateDisconnected),
     lastRun_(0),
     lastPing_(0),
-    gotPong_(true)
+    gotPong_(true),
+    httpClient_(nullptr)
 {
 }
 
 Client::~Client()
 {
+    if (httpClient_)
+        delete httpClient_;
     Connection::Terminate();
 }
 
@@ -35,6 +57,21 @@ void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
     else
         // If game host is empty use the login host
         gameHost_ = loginHost_;
+
+    filePort_ = protoLogin_->filePort_;
+    if (!protoLogin_->fileHost_.empty())
+        fileHost_ = protoLogin_->fileHost_;
+    else
+        // If file host is empty use the login host
+        fileHost_ = loginHost_;
+
+    if (!fileHost_.empty() && filePort_ != 0)
+    {
+        std::stringstream ss;
+        ss << fileHost_ << ":" << filePort_;
+        httpClient_ = new HttpsClient(ss.str(), false);
+    }
+
     state_ = StateSelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);
@@ -193,7 +230,7 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
 }
 
 void Client::CreatePlayer(const std::string& account, const std::string& password,
-    const std::string& charName, const std::string& profUuid, 
+    const std::string& charName, const std::string& profUuid,
     AB::Entities::CharacterSex sex, bool isPvp)
 {
     if (state_ != StateSelectChar)
@@ -276,6 +313,24 @@ void Client::Update(int timeElapsed)
     lastRun_ += timeElapsed;
     if (state_ == StateWorld)
         lastPing_ += timeElapsed;
+}
+
+bool Client::HttpRequest(const std::string& path, std::ostream& out)
+{
+    if (httpClient_ == nullptr)
+        return false;
+    SimpleWeb::CaseInsensitiveMultimap header;
+    header.emplace("Connection", "keep-alive");
+    try
+    {
+        auto r = httpClient_->request("GET", path, "", header);
+        out << r->content.rdbuf();
+        return true;
+    }
+    catch (const SimpleWeb::system_error&)
+    {
+        return false;
+    }
 }
 
 uint32_t Client::GetIp() const

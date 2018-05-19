@@ -144,6 +144,11 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         if (!host.empty())
             gameHost_ = host;
         gamePort_ = message->Get<uint16_t>();
+        host = message->GetString();
+        if (!host.empty())
+            fileHost_ = host;
+        filePort_ = message->Get<uint16_t>();
+
         /* int charSlots = */ message->Get<uint16_t>();
         AB::Entities::CharacterList chars;
         int count = message->Get<uint16_t>();

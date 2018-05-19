@@ -28,8 +28,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 
-#define ASIO_STANDALONE
-
 #ifndef ABCLIENT_STATIC_LIB
 #   if defined(_DEBUG)
 #       define _LOGGING
@@ -40,6 +38,7 @@
 #   undef _LOGGING
 #endif
 
+#define USE_STANDALONE_ASIO
 #pragma warning(push)
 #pragma warning(disable: 4592)
 #include <asio.hpp>

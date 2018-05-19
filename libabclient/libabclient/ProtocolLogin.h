@@ -75,7 +75,8 @@ public:
 
     std::string gameHost_;
     uint16_t gamePort_;
-
+    std::string fileHost_;
+    uint16_t filePort_;
 };
 
 }

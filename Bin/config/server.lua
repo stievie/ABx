@@ -27,6 +27,9 @@ status_port = login_port
 admin_port = 2750         -- 0xABF
 -- admin_ip = ip
 
+--file_host = "stievie.mooo.com"
+file_port = 8081
+
 status_timeout = 30 * 1000
 
 -- DOS prevention

@@ -12,6 +12,7 @@ namespace Client {
 
 class ProtocolLogin;
 class ProtocolGame;
+class HttpsClient;
 
 class Client : public Receiver
 {
@@ -47,12 +48,14 @@ public:
     void CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& account, const std::string& password,
-        const std::string& charName, const std::string& profUuid, 
+        const std::string& charName, const std::string& profUuid,
         AB::Entities::CharacterSex sex, bool isPvp);
 
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charUuid, const std::string& mapUuid);
     void Update(int timeElapsed);
+
+    bool HttpRequest(const std::string& path, std::ostream& out);
 
     uint32_t GetIp() const;
 
@@ -82,10 +85,13 @@ public:
 
     std::string loginHost_;
     uint16_t loginPort_;
+    std::string fileHost_;
+    uint16_t filePort_;
     std::string gameHost_;
     uint16_t gamePort_;
     ClientState state_;
     Receiver* receiver_;
+    HttpsClient* httpClient_;
     const std::string& GetMapUuid() const
     {
         return mapUuid_;

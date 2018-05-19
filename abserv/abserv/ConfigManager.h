@@ -14,6 +14,8 @@ public:
         IP,
         GamePort,
         GameHost,
+        FilePort,
+        FileHost,
         AdminPort,
         LoginPort,
         StatusPort,

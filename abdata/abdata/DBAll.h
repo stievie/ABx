@@ -16,3 +16,6 @@
 #include "DBSkill.h"
 #include "DBEffect.h"
 #include "DBAttribute.h"
+#include "DBSkillList.h"
+#include "DBEffectList.h"
+#include "DBProfessionList.h"
