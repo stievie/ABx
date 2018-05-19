@@ -56,6 +56,7 @@ public:
     void Update(int timeElapsed);
 
     bool HttpRequest(const std::string& path, std::ostream& out);
+    bool HttpDownload(const std::string& path, const std::string& outFile);
 
     uint32_t GetIp() const;
 

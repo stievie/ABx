@@ -8,6 +8,8 @@
 #pragma warning(disable: 4457 4456 4150)
 #include <SimpleWeb/client_https.hpp>
 #pragma warning(pop)
+#include <iostream>
+#include <fstream>
 
 #include "DebugNew.h"
 
@@ -331,6 +333,17 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     {
         return false;
     }
+}
+
+bool Client::HttpDownload(const std::string& path, const std::string& outFile)
+{
+    std::ofstream f;
+    f.open(outFile);
+    if (!f.is_open())
+        return false;
+    bool ret = HttpRequest(path, f);
+    f.close();
+    return ret;
 }
 
 uint32_t Client::GetIp() const

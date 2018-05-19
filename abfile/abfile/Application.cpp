@@ -291,7 +291,7 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         s.uuid = uuid;
         if (!dataClient_->Read(s))
             continue;
-        auto gNd = root.append_child("skill");
+        auto gNd = root.append_child("prof");
         gNd.append_attribute("uuid") = s.uuid.c_str();
         gNd.append_attribute("index") = s.index;
         gNd.append_attribute("name") = s.name.c_str();

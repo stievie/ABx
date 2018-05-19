@@ -107,7 +107,7 @@ void ClientApp::Setup()
     engineParameters_[EP_TRIPLE_BUFFER] = options->GetTripleBuffer();
     engineParameters_[EP_MULTI_SAMPLE] = options->GetMultiSample();
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
-    engineParameters_[EP_RESOURCE_PATHS] = "AbData;CoreData;Data";
+    engineParameters_[EP_RESOURCE_PATHS] = "AbData;GameData;CoreData;Data";
     engineParameters_[EP_LOG_NAME] = "abclient.log";
     engineParameters_[EP_LOG_QUIET] = false;
     // "RenderPaths/Prepass.xml";

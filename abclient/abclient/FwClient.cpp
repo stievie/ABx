@@ -5,6 +5,7 @@
 #include "BaseLevel.h"
 #include <AB/ProtocolCodes.h>
 #include "Options.h"
+#include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
 
 #include <Urho3D/DebugNew.h>
 
@@ -419,4 +420,44 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
     eData[P_DATA] = String(message.data(), (int)message.length());
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
+}
+
+const std::vector<AB::Entities::Profession>& FwClient::GetProfessions()
+{
+    if (!professions_.empty())
+        return professions_;
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    if (!cache->Exists("GameData/Professions.xml"))
+    {
+        if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
+            return professions_;
+    }
+    XMLFile* file = cache->GetResource<XMLFile>("Professions.xml");
+    if (!file)
+    {
+        // Maybe corrupted
+        if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
+            return professions_;
+    }
+
+    pugi::xml_document* doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("professions");
+    if (!node)
+        return professions_;
+
+    for (const auto& attr : node.children("prof"))
+    {
+        const pugi::xml_attribute& uuid = attr.attribute("uuid");
+        const pugi::xml_attribute& index = attr.attribute("index");
+        const pugi::xml_attribute& name = attr.attribute("name");
+        const pugi::xml_attribute& abbr = attr.attribute("abbr");
+        AB::Entities::Profession prof;
+        prof.uuid = uuid.as_string();
+        prof.index = index.as_uint();
+        prof.name = name.as_string();
+        prof.abbr = abbr.as_string();
+        professions_.push_back(prof);
+    }
+
+    return professions_;
 }
