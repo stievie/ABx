@@ -9,6 +9,7 @@ Uses a single TCP stream for the game protocol.
 ## Run Server
 
 1. Run the data server `abdada`
+1. Run the file server `abfile`
 2. Run the game server `abserv`
 
 ~~~
@@ -17,6 +18,9 @@ abserv [-conf <config file>] [-log <log dir>]
 
 The Data server provides data from the database server and caches them. The Game
 Server connects to the Data server.
+
+The file server is a simple HTTP server providing files and other information.
+The client my connect to it from time to time and download data.
 
 ### Run as NT service
 
