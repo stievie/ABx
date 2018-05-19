@@ -64,7 +64,7 @@ void CharCreateLevel::CreateUI()
     const auto& profs = client->GetProfessions();
     for (const auto& prof : profs)
     {
-        professionDropdown_->AddItem(CreateDropdownItem(String(prof.name.c_str()), String(prof.uuid.c_str())));
+        professionDropdown_->AddItem(CreateDropdownItem(String(prof.second.name.c_str()), String(prof.first.c_str())));
     }
 
     sexDropdown_->GetPopup()->SetWidth(sexDropdown_->GetWidth());

@@ -422,7 +422,7 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
 }
 
-const std::vector<AB::Entities::Profession>& FwClient::GetProfessions()
+const std::map<std::string, AB::Entities::Profession>& FwClient::GetProfessions()
 {
     if (!professions_.empty())
         return professions_;
@@ -445,18 +445,19 @@ const std::vector<AB::Entities::Profession>& FwClient::GetProfessions()
     if (!node)
         return professions_;
 
-    for (const auto& attr : node.children("prof"))
+    for (const auto& pro : node.children("prof"))
     {
-        const pugi::xml_attribute& uuid = attr.attribute("uuid");
-        const pugi::xml_attribute& index = attr.attribute("index");
-        const pugi::xml_attribute& name = attr.attribute("name");
-        const pugi::xml_attribute& abbr = attr.attribute("abbr");
         AB::Entities::Profession prof;
-        prof.uuid = uuid.as_string();
-        prof.index = index.as_uint();
-        prof.name = name.as_string();
-        prof.abbr = abbr.as_string();
-        professions_.push_back(prof);
+        prof.uuid = pro.attribute("uuid").as_string();
+        prof.index = pro.attribute("index").as_uint();
+        prof.name = pro.attribute("name").as_string();
+        prof.abbr = pro.attribute("abbr").as_string();
+        prof.attributeCount = pro.attribute("num_attr").as_uint();
+        for (const auto& attr : pro.children("attr"))
+        {
+            prof.attributeUuids.push_back(attr.attribute("uuid").as_string());
+        }
+        professions_.emplace(prof.uuid, prof);
     }
 
     return professions_;

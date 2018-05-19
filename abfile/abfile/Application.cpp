@@ -296,6 +296,12 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         gNd.append_attribute("index") = s.index;
         gNd.append_attribute("name") = s.name.c_str();
         gNd.append_attribute("abbr") = s.abbr.c_str();
+        gNd.append_attribute("num_attr") = s.attributeCount;
+        for (const std::string& a : s.attributeUuids)
+        {
+            auto attrNd = gNd.append_child("attr");
+            attrNd.append_attribute("uuid") = a.c_str();
+        }
     }
 
     std::stringstream stream;

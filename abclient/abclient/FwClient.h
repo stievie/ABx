@@ -28,7 +28,7 @@ private:
     AB::Entities::CharacterList characters_;
     std::map<std::string, AB::Entities::Game> games_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
-    std::vector<AB::Entities::Profession> professions_;
+    std::map<std::string, AB::Entities::Profession> professions_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
     bool loggedIn_;
@@ -123,7 +123,7 @@ public:
             return "";
         return String((*it).second.name.c_str());
     }
-    const std::vector<AB::Entities::Profession>& GetProfessions();
+    const std::map<std::string, AB::Entities::Profession>& GetProfessions();
 
     const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
     {
