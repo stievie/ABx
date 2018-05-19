@@ -47,6 +47,13 @@ bool Application::Initialize(int argc, char** argv)
     dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "localhost");
     dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
 
+    if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
+    {
+        // Different log dir
+        IO::Logger::logDir_ = logDir_;
+        IO::Logger::Close();
+    }
+
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = port;
     server_->config.thread_pool_size = threads;
@@ -86,13 +93,6 @@ bool Application::Initialize(int argc, char** argv)
 void Application::Run()
 {
     running_ = true;
-    if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
-    {
-        // Different log dir
-        LOG_INFO << "Log directory: " << logDir_ << std::endl;
-        IO::Logger::logDir_ = logDir_;
-        IO::Logger::Close();
-    }
     LOG_INFO << "Server is running" << std::endl;
     server_->start();
 }

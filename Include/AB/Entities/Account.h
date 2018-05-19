@@ -32,7 +32,8 @@ enum OnlineStatus : uint8_t
     OnlineStatusOffline = 0,
     OnlineStatusAway,
     OnlineStatusDoNotDisturb,
-    OnlineStatusOnline
+    OnlineStatusOnline,
+    OnlineStatusInvisible              // Like offline for other users
 };
 
 struct Account : Entity

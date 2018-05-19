@@ -27,6 +27,7 @@ status_port = login_port
 admin_port = 2750         -- 0xABF
 -- admin_ip = ip
 
+-- The file server sent to the client. If host is empty the client uses the login host.
 --file_host = "stievie.mooo.com"
 file_port = 8081
 
