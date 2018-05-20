@@ -108,6 +108,9 @@ void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
 void FwClient::LoadData()
 {
     LoadGames();
+    LoadAttributes();
+    LoadProfessions();
+    LoadSkills();
 }
 
 void FwClient::LoadGames()
@@ -138,6 +141,70 @@ void FwClient::LoadGames()
         game.type = static_cast<AB::Entities::GameType>(pro.attribute("type").as_uint());
         game.landing = pro.attribute("landing").as_bool();
         games_.emplace(game.uuid, game);
+    }
+}
+
+void FwClient::LoadSkills()
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Skills.xml");
+    if (!file)
+    {
+        if (!client_.HttpDownload("/_skills_", "GameData/Skills.xml"))
+            return;
+    }
+    file = cache->GetResource<XMLFile>("Skills.xml");
+    if (!file)
+        return;
+}
+
+void FwClient::LoadAttributes()
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Attributes.xml");
+    if (!file)
+    {
+        if (!client_.HttpDownload("/_attributes_", "GameData/Attributes.xml"))
+            return;
+    }
+    file = cache->GetResource<XMLFile>("Attributes.xml");
+    if (!file)
+        return;
+}
+
+void FwClient::LoadProfessions()
+{
+    if (!professions_.empty())
+        return;
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Professions.xml");
+    if (!file)
+    {
+        if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
+            return;
+    }
+    file = cache->GetResource<XMLFile>("Professions.xml");
+    if (!file)
+        return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("professions");
+    if (!node)
+        return;
+
+    for (const auto& pro : node.children("prof"))
+    {
+        AB::Entities::Profession prof;
+        prof.uuid = pro.attribute("uuid").as_string();
+        prof.index = pro.attribute("index").as_uint();
+        prof.name = pro.attribute("name").as_string();
+        prof.abbr = pro.attribute("abbr").as_string();
+        prof.attributeCount = pro.attribute("num_attr").as_uint();
+        for (const auto& attr : pro.children("attr"))
+        {
+            prof.attributeUuids.push_back(attr.attribute("uuid").as_string());
+        }
+        professions_.emplace(prof.uuid, prof);
     }
 }
 
@@ -461,42 +528,4 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
     eData[P_DATA] = String(message.data(), (int)message.length());
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
-}
-
-const std::map<std::string, AB::Entities::Profession>& FwClient::GetProfessions()
-{
-    if (!professions_.empty())
-        return professions_;
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* file = cache->GetResource<XMLFile>("Professions.xml");
-    if (!file)
-    {
-        if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
-            return professions_;
-    }
-    file = cache->GetResource<XMLFile>("Professions.xml");
-    if (!file)
-        return professions_;
-
-    const pugi::xml_document* const doc = file->GetDocument();
-    const pugi::xml_node& node = doc->child("professions");
-    if (!node)
-        return professions_;
-
-    for (const auto& pro : node.children("prof"))
-    {
-        AB::Entities::Profession prof;
-        prof.uuid = pro.attribute("uuid").as_string();
-        prof.index = pro.attribute("index").as_uint();
-        prof.name = pro.attribute("name").as_string();
-        prof.abbr = pro.attribute("abbr").as_string();
-        prof.attributeCount = pro.attribute("num_attr").as_uint();
-        for (const auto& attr : pro.children("attr"))
-        {
-            prof.attributeUuids.push_back(attr.attribute("uuid").as_string());
-        }
-        professions_.emplace(prof.uuid, prof);
-    }
-
-    return professions_;
 }

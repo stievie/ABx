@@ -34,6 +34,9 @@ private:
     String currentCharacterUuid_;
     void LoadData();
     void LoadGames();
+    void LoadSkills();
+    void LoadAttributes();
+    void LoadProfessions();
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
@@ -135,7 +138,10 @@ public:
             return "";
         return String((*it).second.name.c_str());
     }
-    const std::map<std::string, AB::Entities::Profession>& GetProfessions();
+    const std::map<std::string, AB::Entities::Profession>& GetProfessions() const
+    {
+        return professions_;
+    }
 
     const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
     {

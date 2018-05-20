@@ -20,3 +20,4 @@
 #include "DBEffectList.h"
 #include "DBProfessionList.h"
 #include "DBVersion.h"
+#include "DBAttributeList.h"

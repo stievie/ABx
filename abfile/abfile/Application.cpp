@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "SimpleConfigManager.h"
-#include <boost/filesystem.hpp>
 #include <sstream>
 #include <fstream>
 #include "Logger.h"
@@ -13,8 +12,13 @@
 #include <AB/Entities/ProfessionList.h>
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/Version.h>
+#include <AB/Entities/Attribute.h>
+#include <AB/Entities/AttributeList.h>
+#include <AB/Entities/IpBan.h>
+#include <AB/Entities/Ban.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
+#include "Utils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -70,6 +74,8 @@ bool Application::Initialize(int argc, char** argv)
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
 
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
@@ -108,9 +114,45 @@ void Application::Stop()
     server_->stop();
 }
 
+bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
+{
+    uint32_t ip = request->remote_endpoint->address().to_v4().to_uint();
+    AB::Entities::IpBan ban;
+    ban.ip = ip;
+    ban.mask = 0xFFFFFFFF;
+    if (!dataClient_->Read(ban))
+        return true;
+    AB::Entities::Ban _ban;
+    _ban.uuid = ban.banUuid;
+    if (!dataClient_->Read(_ban))
+        return true;
+    if (!_ban.active)
+        return true;
+    return !(_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
+}
+
+bool Application::IsHidden(const boost::filesystem::path& path)
+{
+    auto name = path.filename();
+    if (name != ".." &&
+        name != "."  &&
+        name.string()[0] == '.')
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
     try
     {
         auto web_root_path = boost::filesystem::canonical(root_);
@@ -118,9 +160,20 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         // Check if path is within web_root_path
         if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))
+        {
+            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access file outside root " << path.string() << std::endl;
             throw std::invalid_argument("path must be within root path");
+        }
         if (boost::filesystem::is_directory(path))
+        {
+            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access a directory " << path.string() << std::endl;
             throw std::invalid_argument("not a file");
+        }
+        if (IsHidden(path))
+        {
+            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access a hidden file " << path.string() << std::endl;
+            throw std::invalid_argument("hidden a file");
+        }
 
         SimpleWeb::CaseInsensitiveMultimap header;
 
@@ -169,7 +222,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         else
             throw std::invalid_argument("could not read file");
     }
-    catch (const std::exception &e)
+    catch (const std::exception&)
     {
         response->write(SimpleWeb::StatusCode::client_error_not_found,
             "Not found " + request->path);
@@ -200,6 +253,14 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
     std::shared_ptr<HttpsServer::Request> request)
 {
     AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
     AB::Entities::GameList gl;
     if (!dataClient_->Read(gl))
     {
@@ -246,6 +307,14 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
     std::shared_ptr<HttpsServer::Request> request)
 {
     AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
     AB::Entities::SkillList sl;
     if (!dataClient_->Read(sl))
     {
@@ -297,6 +366,14 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
     std::shared_ptr<HttpsServer::Request> request)
 {
     AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
     AB::Entities::ProfessionList pl;
     if (!dataClient_->Read(pl))
     {
@@ -345,9 +422,73 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
     response->write(stream);
 }
 
+void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    AB::Entities::AttributeList pl;
+    if (!dataClient_->Read(pl))
+    {
+        LOG_ERROR << "Error reading attribute list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    AB::Entities::Version v;
+    v.name = "game_attributes";
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading attribute version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("attributes");
+    root.append_attribute("version") = v.value;
+
+    for (const std::string& uuid : pl.uuids)
+    {
+        AB::Entities::Attribute s;
+        s.uuid = uuid;
+        if (!dataClient_->Read(s))
+            continue;
+        auto gNd = root.append_child("attrib");
+        gNd.append_attribute("uuid") = s.uuid.c_str();
+        gNd.append_attribute("index") = s.index;
+        gNd.append_attribute("name") = s.name.c_str();
+        gNd.append_attribute("profession") = s.professionUuid.c_str();
+        gNd.append_attribute("primary") = s.isPrimary;
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    response->write(stream);
+}
+
 void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
     std::string table;
     auto query_fields = request->parse_query_string();
     for (const auto& field : query_fields)

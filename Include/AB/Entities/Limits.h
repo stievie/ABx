@@ -49,6 +49,7 @@ static constexpr int MAX_PROFESSION_ATTRIBUTES = 5;
 static constexpr int MAX_PROFESSIONS = 24;                            // Max professions in game
 // Attribute
 static constexpr int MAX_ATTRIBUTE_NAME = 32;
+static constexpr int MAX_ATTRIBUTES = 64;
 // Skill
 static constexpr int MAX_SKILL_NAME = 64;
 static constexpr int MAX_SKILL_DESCRIPTION = 255;

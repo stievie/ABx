@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ServerApp.h"
+#include <boost/filesystem.hpp>
 
 using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
 
@@ -20,6 +21,8 @@ private:
     std::string dataHost_;
     uint16_t dataPort_;
     bool running_;
+    bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
+    static bool IsHidden(const boost::filesystem::path& path);
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
@@ -27,6 +30,8 @@ private:
     void GetHandlerSkills(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
+    void GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
