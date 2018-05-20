@@ -105,6 +105,42 @@ void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
     queuedEvents_.Clear();
 }
 
+void FwClient::LoadData()
+{
+    LoadGames();
+}
+
+void FwClient::LoadGames()
+{
+    if (!games_.empty())
+        return;
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Games.xml");
+    if (!file)
+    {
+        if (!client_.HttpDownload("/_games_", "GameData/Games.xml"))
+            return;
+    }
+    file = cache->GetResource<XMLFile>("Games.xml");
+    if (!file)
+        return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("games");
+    if (!node)
+        return;
+
+    for (const auto& pro : node.children("game"))
+    {
+        AB::Entities::Game game;
+        game.uuid = pro.attribute("uuid").as_string();
+        game.name = pro.attribute("name").as_string();
+        game.type = static_cast<AB::Entities::GameType>(pro.attribute("type").as_uint());
+        game.landing = pro.attribute("landing").as_bool();
+        games_.emplace(game.uuid, game);
+    }
+}
+
 void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace Update;
@@ -236,6 +272,11 @@ void FwClient::FollowObject(uint32_t objectId)
         client_.FollowObject(objectId);
 }
 
+void FwClient::OnLoggedIn()
+{
+    LoadData();
+}
+
 void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
 {
     levelReady_ = false;
@@ -247,12 +288,12 @@ void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
     SendEvent(AbEvents::E_SETLEVEL, eData);
 }
 
-void FwClient::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
+void FwClient::OnGetOutposts(const std::vector<AB::Entities::Game>& games)
 {
-    games_.clear();
+    outposts_.clear();
     for (const auto& game : games)
     {
-        games_[game.uuid] = game;
+        outposts_[game.uuid] = game;
     }
 }
 
@@ -427,20 +468,17 @@ const std::map<std::string, AB::Entities::Profession>& FwClient::GetProfessions(
     if (!professions_.empty())
         return professions_;
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    if (!cache->Exists("GameData/Professions.xml"))
-    {
-        if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
-            return professions_;
-    }
     XMLFile* file = cache->GetResource<XMLFile>("Professions.xml");
     if (!file)
     {
-        // Maybe corrupted
         if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
             return professions_;
     }
+    file = cache->GetResource<XMLFile>("Professions.xml");
+    if (!file)
+        return professions_;
 
-    pugi::xml_document* doc = file->GetDocument();
+    const pugi::xml_document* const doc = file->GetDocument();
     const pugi::xml_node& node = doc->child("professions");
     if (!node)
         return professions_;

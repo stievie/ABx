@@ -12,6 +12,7 @@
 #include <AB/Entities/SkillList.h>
 #include <AB/Entities/ProfessionList.h>
 #include <AB/Entities/Profession.h>
+#include <AB/Entities/Version.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 
@@ -59,6 +60,9 @@ bool Application::Initialize(int argc, char** argv)
     server_->config.thread_pool_size = threads;
 
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+
+    server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
@@ -203,12 +207,22 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
         return;
     }
+
+    AB::Entities::Version gamesVersion;
+    gamesVersion.name = "game_maps";
+    if (!dataClient_->Read(gamesVersion))
+    {
+        LOG_ERROR << "Error reading game version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
     declarationNode.append_attribute("version") = "1.0";
     declarationNode.append_attribute("encoding") = "UTF-8";
     declarationNode.append_attribute("standalone") = "yes";
     auto root = doc.append_child("games");
+    root.append_attribute("version") = gamesVersion.value;
 
     for (const std::string& uuid : gl.gameUuids)
     {
@@ -220,6 +234,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("uuid") = g.uuid.c_str();
         gNd.append_attribute("name") = g.name.c_str();
         gNd.append_attribute("type") = g.type;
+        gNd.append_attribute("landing") = g.landing;
     }
 
     std::stringstream stream;
@@ -238,12 +253,22 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
         return;
     }
+    AB::Entities::Version v;
+    v.name = "game_skills";
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading skill version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
     declarationNode.append_attribute("version") = "1.0";
     declarationNode.append_attribute("encoding") = "UTF-8";
     declarationNode.append_attribute("standalone") = "yes";
     auto root = doc.append_child("skills");
+    root.append_attribute("version") = v.value;
 
     for (const std::string& uuid : sl.skillUuids)
     {
@@ -268,7 +293,8 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
     response->write(stream);
 }
 
-void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response, std::shared_ptr<HttpsServer::Request> request)
+void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
 {
     AB_PROFILE;
     AB::Entities::ProfessionList pl;
@@ -278,12 +304,22 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
         return;
     }
+    AB::Entities::Version v;
+    v.name = "game_professions";
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading profession version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
     declarationNode.append_attribute("version") = "1.0";
     declarationNode.append_attribute("encoding") = "UTF-8";
     declarationNode.append_attribute("standalone") = "yes";
     auto root = doc.append_child("professions");
+    root.append_attribute("version") = v.value;
 
     for (const std::string& uuid : pl.profUuids)
     {
@@ -306,6 +342,46 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
 
     std::stringstream stream;
     doc.save(stream);
+    response->write(stream);
+}
+
+void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    std::string table;
+    auto query_fields = request->parse_query_string();
+    for (const auto& field : query_fields)
+    {
+        if (field.first.compare("entity") == 0)
+        {
+            table = field.second;
+            break;
+        }
+    }
+    if (table.empty())
+    {
+        LOG_ERROR << "Empty table" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    AB::Entities::Version v;
+    v.name = table;
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    if (v.isInternal)
+    {
+        LOG_ERROR << "Error reading internal version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    std::stringstream stream;
+    stream << v.value;
     response->write(stream);
 }
 

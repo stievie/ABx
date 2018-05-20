@@ -66,7 +66,7 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     Connect(host, port);
 }
 
-void ProtocolLogin::GetGameList(std::string& host, uint16_t port,
+void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
     const std::string& account, const std::string& password,
     const GamelistCallback& callback)
 {
@@ -75,7 +75,7 @@ void ProtocolLogin::GetGameList(std::string& host, uint16_t port,
     accountName_ = account;
     password_ = password;
     gamelistCallback_ = callback;
-    action_ = ActionGetGameList;
+    action_ = ActionGetOutposts;
     Connect(host, port);
 }
 
@@ -121,13 +121,13 @@ void ProtocolLogin::SendCreatePlayerPacket()
     Send(msg);
 }
 
-void ProtocolLogin::SendGetGameListPacket()
+void ProtocolLogin::SendGetOutpostsPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg->Add<uint8_t>(AB::LoginProtocol::LoginGetGameList);
+    msg->Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
     msg->AddStringEncrypted(accountName_);
     msg->AddStringEncrypted(password_);
     Send(msg);
@@ -227,8 +227,8 @@ void ProtocolLogin::OnConnect()
     case ActionCreatePlayer:
         SendCreatePlayerPacket();
         break;
-    case ActionGetGameList:
-        SendGetGameListPacket();
+    case ActionGetOutposts:
+        SendGetOutpostsPacket();
         break;
     default:
         return;

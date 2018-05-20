@@ -51,6 +51,10 @@ Client::~Client()
     Connection::Terminate();
 }
 
+void Client::OnLoggedIn()
+{
+}
+
 void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
 {
     gamePort_ = protoLogin_->gamePort_;
@@ -74,18 +78,21 @@ void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
         httpClient_ = new HttpsClient(ss.str(), false);
     }
 
+    if (receiver_)
+        receiver_->OnLoggedIn();
+
     state_ = StateSelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);
 
-    // Get list of games
-    GetGameList();
+    // Get list of outposts
+    GetOutposts();
 }
 
-void Client::OnGetGamelist(const std::vector<AB::Entities::Game>& games)
+void Client::OnGetOutposts(const std::vector<AB::Entities::Game>& games)
 {
     if (receiver_)
-        receiver_->OnGetGamelist(games);
+        receiver_->OnGetOutposts(games);
 }
 
 void Client::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
@@ -260,13 +267,13 @@ void Client::Logout()
     }
 }
 
-void Client::GetGameList()
+void Client::GetOutposts()
 {
     if (accountName_.empty() || password_.empty())
         return;
 
-    GetProtoLogin()->GetGameList(loginHost_, loginPort_, accountName_, password_,
-        std::bind(&Client::OnGetGamelist, this, std::placeholders::_1));
+    GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountName_, password_,
+        std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
     Connection::Run();
 }
 
@@ -326,6 +333,8 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     try
     {
         auto r = httpClient_->request("GET", path, "", header);
+        if (r->status_code != "200 OK")
+            return false;
         out << r->content.rdbuf();
         return true;
     }

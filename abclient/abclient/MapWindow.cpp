@@ -40,7 +40,7 @@ MapWindow::MapWindow(Context* context) :
     mapSprite_->SetSize(GetSize());
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-    const std::map<std::string, AB::Entities::Game>& games = client->GetGames();
+    const std::map<std::string, AB::Entities::Game>& games = client->GetOutposts();
     int i = 0;
     for (const auto& game : games)
     {

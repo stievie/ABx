@@ -27,7 +27,7 @@ private:
         ActionLogin,
         ActionCreateAccount,
         ActionCreatePlayer,
-        ActionGetGameList
+        ActionGetOutposts
     };
     ProtocolAction action_;
     std::string host_;
@@ -48,7 +48,7 @@ private:
     void SendLoginPacket();
     void SendCreateAccountPacket();
     void SendCreatePlayerPacket();
-    void SendGetGameListPacket();
+    void SendGetOutpostsPacket();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
     void OnConnect() override;
@@ -69,7 +69,7 @@ public:
         const std::string& charName, const std::string& profUuid,
         AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
-    void GetGameList(std::string& host, uint16_t port,
+    void GetOutposts(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,
         const GamelistCallback& callback);
 

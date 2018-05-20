@@ -19,3 +19,4 @@
 #include "DBSkillList.h"
 #include "DBEffectList.h"
 #include "DBProfessionList.h"
+#include "DBVersion.h"

@@ -117,6 +117,9 @@
     <ClInclude Include="DBProfessionList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBVersion.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -210,6 +213,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBProfessionList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBVersion.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

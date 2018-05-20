@@ -68,8 +68,8 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     case AB::LoginProtocol::LoginAddAccountKey:
         HandleAddAccountKeyPacket(message);
         break;
-    case AB::LoginProtocol::LoginGetGameList:
-        HandleGetGameListPacket(message);
+    case AB::LoginProtocol::LoginGetOutposts:
+        HandleGetOutpostsPacket(message);
         break;
     default:
         LOG_ERROR << Utils::ConvertIPToString(clientIp) << ": Unknown packet header: 0x" <<
@@ -256,7 +256,7 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     );
 }
 
-void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
+void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 {
     const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
@@ -274,7 +274,7 @@ void ProtocolLogin::HandleGetGameListPacket(NetworkMessage& message)
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
-            &ProtocolLogin::SendGameList, thisPtr,
+            &ProtocolLogin::SendOutposts, thisPtr,
             accountName, password
         ))
     );
@@ -344,7 +344,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     Disconnect();
 }
 
-void ProtocolLogin::SendGameList(const std::string& accountName, const std::string& password)
+void ProtocolLogin::SendOutposts(const std::string& accountName, const std::string& password)
 {
     AB::Entities::Account account;
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(accountName, password, account);

@@ -31,6 +31,9 @@ static constexpr int MAX_GUILD_MEMBERS = 500;
 // Ban
 static constexpr int MAX_BAN_COMMENT = 255;
 
+// Version
+static constexpr int MAX_VERSION_NAME = 20;
+
 // Friendlist
 static constexpr int MAX_FRIENDS = 1000;
 

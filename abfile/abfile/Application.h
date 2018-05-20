@@ -28,6 +28,8 @@ private:
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
+    void GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code & /*ec*/);
 public:

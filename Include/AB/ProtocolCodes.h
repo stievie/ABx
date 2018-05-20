@@ -69,7 +69,7 @@ enum LoginPacketTypes : uint8_t
     LoginCreateCharacter = 0x04,
     LoginDeleteCharacter = 0x05,
     LoginAddAccountKey = 0x06,
-    LoginGetGameList = 0x07
+    LoginGetOutposts = 0x07
 };
 
 /// Returned by the server

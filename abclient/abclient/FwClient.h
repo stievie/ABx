@@ -26,11 +26,14 @@ private:
     Client::Client client_;
     Client::Client::ClientState lastState_;
     AB::Entities::CharacterList characters_;
+    std::map<std::string, AB::Entities::Game> outposts_;
     std::map<std::string, AB::Entities::Game> games_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::map<std::string, AB::Entities::Profession> professions_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
+    void LoadData();
+    void LoadGames();
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
@@ -78,8 +81,9 @@ public:
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
 
+    void OnLoggedIn() override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
-    void OnGetGamelist(const std::vector<AB::Entities::Game>& games) override;
+    void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
@@ -112,9 +116,17 @@ public:
     {
         return characters_;
     }
-    const std::map<std::string, AB::Entities::Game>& GetGames() const
+    const AB::Entities::Game* const GetGame(const String& uuid) const
     {
-        return games_;
+        auto it = games_.find(std::string(uuid.CString()));
+        if (it == games_.end())
+            return nullptr;
+        return &(*it).second;
+
+    }
+    const std::map<std::string, AB::Entities::Game>& GetOutposts() const
+    {
+        return outposts_;
     }
     String GetGameName(const String& uuid) const
     {
