@@ -53,6 +53,21 @@ Also adding `skip-name-resolve` to `[mysqld]` may be a good idea.
 skip-name-resolve
 ~~~
 
+### Structure of `data` directory
+
+~~~
+  data
+   - scripts
+     - creatures
+     - effects
+       - conditions
+       - ...
+     - games
+     - items (armor, mods etc.)
+     - skills
+   - maps (navmesh, terrain etc.)
+~~~
+
 ## Run Client
 
 1. Start `fw.exe`
