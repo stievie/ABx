@@ -66,5 +66,3 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
-
-#pragma warning(disable: 4503)

@@ -434,20 +434,20 @@ namespace SimpleWeb {
 
     template <typename... Args>
     std::shared_ptr<Connection> create_connection(Args &&... args) noexcept {
-      auto connections = this->connections;
-      auto connections_mutex = this->connections_mutex;
-      auto connection = std::shared_ptr<Connection>(new Connection(handler_runner, std::forward<Args>(args)...), [connections, connections_mutex](Connection *connection) {
+      auto connections_ = this->connections;
+      auto connections_mutex_ = this->connections_mutex;
+      auto connection = std::shared_ptr<Connection>(new Connection(handler_runner, std::forward<Args>(args)...), [connections_, connections_mutex_](Connection *connection) {
         {
-          std::unique_lock<std::mutex> lock(*connections_mutex);
-          auto it = connections->find(connection);
-          if(it != connections->end())
-            connections->erase(it);
+          std::unique_lock<std::mutex> lock(*connections_mutex_);
+          auto it = connections_->find(connection);
+          if(it != connections_->end())
+            connections_->erase(it);
         }
         delete connection;
       });
       {
-        std::unique_lock<std::mutex> lock(*connections_mutex);
-        connections->emplace(connection.get());
+        std::unique_lock<std::mutex> lock(*connections_mutex_);
+        connections_->emplace(connection.get());
       }
       return connection;
     }
@@ -632,9 +632,9 @@ namespace SimpleWeb {
           // remove connection from connections
           {
             std::unique_lock<std::mutex> lock(*connections_mutex);
-            auto it = connections->find(session->connection.get());
-            if(it != connections->end())
-              connections->erase(it);
+            auto it2 = connections->find(session->connection.get());
+            if(it2 != connections->end())
+              connections->erase(it2);
           }
 
           on_upgrade(session->connection->socket, session->request);
@@ -727,8 +727,10 @@ namespace SimpleWeb {
 
         if(!ec) {
           asio::ip::tcp::no_delay option(true);
-          error_code ec;
-          session->connection->socket->set_option(option, ec);
+          {
+              error_code ec2;
+              session->connection->socket->set_option(option, ec2);
+          }
 
           this->read(session);
         }

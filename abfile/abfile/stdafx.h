@@ -15,9 +15,12 @@
 
 #define USE_STANDALONE_ASIO
 #pragma warning(push)
-#pragma warning(disable: 4267 4592 4458 4457 4456)
+#pragma warning(disable: 4592)
 #include <SimpleWeb/server_https.hpp>
 #pragma warning(pop)
+
+// Decorated name length exceeded
+#pragma warning(disable: 4503)
 
 #define _PROFILING
 // Used by the profiler to generate a unique identifier

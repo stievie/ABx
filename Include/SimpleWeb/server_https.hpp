@@ -41,7 +41,7 @@ namespace SimpleWeb {
         auto session_id_context = std::to_string(acceptor->local_endpoint().port()) + ':';
         session_id_context.append(config.address.rbegin(), config.address.rend());
         SSL_CTX_set_session_id_context(context.native_handle(), reinterpret_cast<const unsigned char *>(session_id_context.data()),
-                                       std::min<std::size_t>(session_id_context.size(), (size_t)SSL_MAX_SSL_SESSION_ID_LENGTH));
+                                       std::min<unsigned>(static_cast<unsigned>(session_id_context.size()), SSL_MAX_SSL_SESSION_ID_LENGTH));
       }
     }
 
@@ -60,8 +60,10 @@ namespace SimpleWeb {
 
         if(!ec) {
           asio::ip::tcp::no_delay option(true);
-          error_code ec;
-          session->connection->socket->lowest_layer().set_option(option, ec);
+          {
+              error_code ec2;
+              session->connection->socket->lowest_layer().set_option(option, ec2);
+          }
 
           session->connection->set_timeout(config.timeout_request);
           session->connection->socket->async_handshake(asio::ssl::stream_base::server, [this, session](const error_code &ec) {
