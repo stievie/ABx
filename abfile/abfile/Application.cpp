@@ -149,30 +149,31 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         return true;
 
     // Check Auth
-    auto it = request->header.find("Auth");
+    const auto it = request->header.find("Auth");
     if (it == request->header.end())
     {
         LOG_WARNING << "Missing Auth header" << std::endl;
         return false;
     }
-    std::vector<std::string> auth = Utils::Split((*it).second, ":");
-    if (auth.size() != 2)
+    const std::string accId = (*it).second.substr(0, 36);
+    const std::string passwd = (*it).second.substr(36);
+    if (accId.empty() || passwd.empty())
     {
         LOG_ERROR << "Wrong Auth header " << (*it).second << std::endl;
         return false;
     }
 
     AB::Entities::Account acc;
-    acc.uuid = auth[0];
+    acc.uuid = accId;
     if (!dataClient_->Read(acc))
     {
-        LOG_ERROR << "Unable to read account " << auth[0] << std::endl;
+        LOG_ERROR << "Unable to read account " << accId << std::endl;
         return false;
     }
     if (acc.status != AB::Entities::AccountStatusActivated)
         return false;
 
-    if (bcrypt_checkpass(auth[1].c_str(), acc.password.c_str()) != 0)
+    if (bcrypt_checkpass(passwd.c_str(), acc.password.c_str()) != 0)
         return false;
 
     return true;

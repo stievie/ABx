@@ -331,7 +331,7 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     SimpleWeb::CaseInsensitiveMultimap header;
     header.emplace("Connection", "keep-alive");
     std::stringstream ss;
-    ss << accountUuid_ << ":" << password_;
+    ss << accountUuid_ << password_;
     header.emplace("Auth", ss.str());
     try
     {
