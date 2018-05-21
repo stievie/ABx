@@ -15,5 +15,6 @@
 #pragma comment(lib, "ssleay32.lib")
 #endif
 #pragma comment(lib, "PugiXml.lib")
+#pragma comment(lib, "abcrypto.lib")
 
 #pragma warning(disable: 4503)

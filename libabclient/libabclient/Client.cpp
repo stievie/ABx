@@ -51,11 +51,7 @@ Client::~Client()
     Connection::Terminate();
 }
 
-void Client::OnLoggedIn()
-{
-}
-
-void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
+void Client::OnLoggedIn(const std::string& accountUuid)
 {
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
@@ -77,10 +73,13 @@ void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
         ss << fileHost_ << ":" << filePort_;
         httpClient_ = new HttpsClient(ss.str(), false);
     }
-
+    accountUuid_ = accountUuid;
     if (receiver_)
-        receiver_->OnLoggedIn();
+        receiver_->OnLoggedIn(accountUuid);
+}
 
+void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
+{
     state_ = StateSelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);
@@ -219,6 +218,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     // 1. Login to login server -> get character list
     GetProtoLogin()->Login(loginHost_, loginPort_, name, pass,
+        std::bind(&Client::OnLoggedIn, this, std::placeholders::_1),
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
     Connection::Run();
 }
@@ -330,6 +330,9 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
         return false;
     SimpleWeb::CaseInsensitiveMultimap header;
     header.emplace("Connection", "keep-alive");
+    std::stringstream ss;
+    ss << accountUuid_ << ":" << password_;
+    header.emplace("Auth", ss.str());
     try
     {
         auto r = httpClient_->request("GET", path, "", header);
@@ -346,6 +349,7 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
 
 bool Client::HttpDownload(const std::string& path, const std::string& outFile)
 {
+    std::remove(outFile.c_str());
     std::ofstream f;
     f.open(outFile);
     if (!f.is_open())

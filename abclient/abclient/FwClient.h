@@ -37,6 +37,7 @@ private:
     void LoadSkills();
     void LoadAttributes();
     void LoadProfessions();
+    void LoadEffects();
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
@@ -84,7 +85,7 @@ public:
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
 
-    void OnLoggedIn() override;
+    void OnLoggedIn(const std::string&) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;

@@ -20,9 +20,11 @@ private:
     asio::io_service ioService_;
     std::string dataHost_;
     uint16_t dataPort_;
+    bool requireAuth_;
     bool running_;
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
-    static bool IsHidden(const boost::filesystem::path& path);
+    static bool IsHiddenFile(const boost::filesystem::path& path);
+    SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
@@ -32,6 +34,8 @@ private:
     void GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
+    void GetHandlerEffects(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);

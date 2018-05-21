@@ -111,6 +111,7 @@ void FwClient::LoadData()
     LoadAttributes();
     LoadProfessions();
     LoadSkills();
+    LoadEffects();
 }
 
 void FwClient::LoadGames()
@@ -206,6 +207,20 @@ void FwClient::LoadProfessions()
         }
         professions_.emplace(prof.uuid, prof);
     }
+}
+
+void FwClient::LoadEffects()
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Effects.xml");
+    if (!file)
+    {
+        if (!client_.HttpDownload("/_effects_", "GameData/Effects.xml"))
+            return;
+    }
+    file = cache->GetResource<XMLFile>("Effects.xml");
+    if (!file)
+        return;
 }
 
 void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
@@ -339,7 +354,7 @@ void FwClient::FollowObject(uint32_t objectId)
         client_.FollowObject(objectId);
 }
 
-void FwClient::OnLoggedIn()
+void FwClient::OnLoggedIn(const std::string&)
 {
     LoadData();
 }

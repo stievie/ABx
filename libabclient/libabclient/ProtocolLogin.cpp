@@ -20,12 +20,14 @@ ProtocolLogin::ProtocolLogin() :
 
 void ProtocolLogin::Login(std::string& host, uint16_t port,
     const std::string& account, const std::string& password,
+    const LoggedInCallback& onLoggedIn,
     const CharlistCallback& callback)
 {
     host_ = host;
     port_ = port;
     accountName_ = account;
     password_ = password;
+    loggedInCallback_ = onLoggedIn;
     charlistCallback_ = callback;
     action_ = ActionLogin;
     Connect(host, port);
@@ -140,6 +142,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     {
     case AB::LoginProtocol::CharacterList:
     {
+        std::string accountUuid = message->GetStringEncrypted();
         std::string host = message->GetString();
         if (!host.empty())
             gameHost_ = host;
@@ -148,6 +151,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         if (!host.empty())
             fileHost_ = host;
         filePort_ = message->Get<uint16_t>();
+        loggedInCallback_(accountUuid);
 
         /* int charSlots = */ message->Get<uint16_t>();
         AB::Entities::CharacterList chars;

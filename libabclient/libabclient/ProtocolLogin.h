@@ -16,6 +16,7 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
+    typedef std::function<void(const std::string& accountUuid)> LoggedInCallback;
     typedef std::function<void(const AB::Entities::CharacterList& chars)> CharlistCallback;
     typedef std::function<void(const std::vector<AB::Entities::Game>& chars)> GamelistCallback;
     typedef std::function<void()> CreateAccountCallback;
@@ -41,6 +42,7 @@ private:
     AB::Entities::CharacterSex sex_;
     bool isPvp_;
     bool firstRecv_;
+    LoggedInCallback loggedInCallback_;
     CharlistCallback charlistCallback_;
     GamelistCallback gamelistCallback_;
     CreateAccountCallback createAccCallback_;
@@ -59,6 +61,7 @@ public:
 
     void Login(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,
+        const LoggedInCallback& onLoggedIn,
         const CharlistCallback& callback);
     void CreateAccount(std::string& host, uint16_t port,
         const std::string& account, const std::string& password,

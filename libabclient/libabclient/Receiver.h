@@ -19,7 +19,7 @@ public:
     virtual void OnNetworkError(const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;
 
-    virtual void OnLoggedIn() = 0;
+    virtual void OnLoggedIn(const std::string& accountUuid) = 0;
     virtual void OnGetCharlist(const AB::Entities::CharacterList& chars) = 0;
     virtual void OnGetOutposts(const std::vector<AB::Entities::Game>& games) = 0;
     virtual void OnAccountCreated() = 0;

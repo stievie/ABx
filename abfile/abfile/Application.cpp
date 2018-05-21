@@ -16,13 +16,19 @@
 #include <AB/Entities/AttributeList.h>
 #include <AB/Entities/IpBan.h>
 #include <AB/Entities/Ban.h>
+#include <AB/Entities/EffectList.h>
+#include <AB/Entities/Effect.h>
+#include <AB/Entities/Account.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 #include "Utils.h"
+#include <abcrypto.hpp>
+#include "StringUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
+    requireAuth_(false),
     ioService_()
 {
 }
@@ -40,7 +46,11 @@ bool Application::Initialize(int argc, char** argv)
 
     if (configFile_.empty())
         configFile_ = path_ + "/abfile.lua";
-    IO::SimpleConfigManager::Instance.Load(configFile_);
+    if (!IO::SimpleConfigManager::Instance.Load(configFile_))
+    {
+        LOG_ERROR << "Error loading config file " << configFile_ << std::endl;
+        return false;
+    }
 
     std::string address = IO::SimpleConfigManager::Instance.GetGlobal("server_ip", "");
     uint16_t port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
@@ -51,6 +61,7 @@ bool Application::Initialize(int argc, char** argv)
     logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
     dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "localhost");
     dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
+    requireAuth_ = IO::SimpleConfigManager::Instance.GetGlobalBool("require_auth", false);
 
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
@@ -76,6 +87,8 @@ bool Application::Initialize(int argc, char** argv)
         std::placeholders::_1, std::placeholders::_2);
     server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
 
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
@@ -95,6 +108,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
+    LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
 
     return true;
@@ -120,18 +134,51 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     AB::Entities::IpBan ban;
     ban.ip = ip;
     ban.mask = 0xFFFFFFFF;
-    if (!dataClient_->Read(ban))
+    if (dataClient_->Read(ban))
+    {
+        AB::Entities::Ban _ban;
+        _ban.uuid = ban.banUuid;
+        if (dataClient_->Read(_ban))
+        {
+            if (_ban.active && (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000))
+                return false;
+        }
+    }
+
+    if (!requireAuth_)
         return true;
-    AB::Entities::Ban _ban;
-    _ban.uuid = ban.banUuid;
-    if (!dataClient_->Read(_ban))
-        return true;
-    if (!_ban.active)
-        return true;
-    return !(_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
+
+    // Check Auth
+    auto it = request->header.find("Auth");
+    if (it == request->header.end())
+    {
+        LOG_WARNING << "Missing Auth header" << std::endl;
+        return false;
+    }
+    std::vector<std::string> auth = Utils::Split((*it).second, ":");
+    if (auth.size() != 2)
+    {
+        LOG_ERROR << "Wrong Auth header " << (*it).second << std::endl;
+        return false;
+    }
+
+    AB::Entities::Account acc;
+    acc.uuid = auth[0];
+    if (!dataClient_->Read(acc))
+    {
+        LOG_ERROR << "Unable to read account " << auth[0] << std::endl;
+        return false;
+    }
+    if (acc.status != AB::Entities::AccountStatusActivated)
+        return false;
+
+    if (bcrypt_checkpass(auth[1].c_str(), acc.password.c_str()) != 0)
+        return false;
+
+    return true;
 }
 
-bool Application::IsHidden(const boost::filesystem::path& path)
+bool Application::IsHiddenFile(const boost::filesystem::path& path)
 {
     auto name = path.filename();
     if (name != ".." &&
@@ -142,6 +189,13 @@ bool Application::IsHidden(const boost::filesystem::path& path)
     }
 
     return false;
+}
+
+SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
+{
+    SimpleWeb::CaseInsensitiveMultimap result;
+    result.emplace("Server", "abfile");
+    return result;
 }
 
 void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
@@ -169,13 +223,13 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
             LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access a directory " << path.string() << std::endl;
             throw std::invalid_argument("not a file");
         }
-        if (IsHidden(path))
+        if (IsHiddenFile(path))
         {
             LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access a hidden file " << path.string() << std::endl;
-            throw std::invalid_argument("hidden a file");
+            throw std::invalid_argument("hidden file");
         }
 
-        SimpleWeb::CaseInsensitiveMultimap header;
+        SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
 
         // Uncomment the following line to enable Cache-Control
         // header.emplace("Cache-Control", "max-age=86400");
@@ -300,7 +354,9 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
 
     std::stringstream stream;
     doc.save(stream);
-    response->write(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    response->write(stream, header);
 }
 
 void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> response,
@@ -359,7 +415,9 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
 
     std::stringstream stream;
     doc.save(stream);
-    response->write(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    response->write(stream, header);
 }
 
 void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> response,
@@ -419,7 +477,9 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
 
     std::stringstream stream;
     doc.save(stream);
-    response->write(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    response->write(stream, header);
 }
 
 void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> response,
@@ -474,7 +534,66 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
 
     std::stringstream stream;
     doc.save(stream);
-    response->write(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    response->write(stream, header);
+}
+
+void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    AB::Entities::EffectList pl;
+    if (!dataClient_->Read(pl))
+    {
+        LOG_ERROR << "Error reading effect list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    AB::Entities::Version v;
+    v.name = "game_effects";
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading effect version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("effects");
+    root.append_attribute("version") = v.value;
+
+    for (const std::string& uuid : pl.effectUuids)
+    {
+        AB::Entities::Effect s;
+        s.uuid = uuid;
+        if (!dataClient_->Read(s))
+            continue;
+        auto gNd = root.append_child("effect");
+        gNd.append_attribute("uuid") = s.uuid.c_str();
+        gNd.append_attribute("index") = s.index;
+        gNd.append_attribute("name") = s.name.c_str();
+        gNd.append_attribute("category") = s.index;
+        gNd.append_attribute("icon") = s.icon.c_str();
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    response->write(stream, header);
 }
 
 void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
@@ -523,7 +642,9 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
 
     std::stringstream stream;
     stream << v.value;
-    response->write(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    response->write(stream, header);
 }
 
 void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const SimpleWeb::error_code&)

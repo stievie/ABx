@@ -296,12 +296,6 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         return;
     }
 
-    if (account.onlineStatus != AB::Entities::OnlineStatusOffline)
-    {
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
-        return;
-    }
     const auto player = Game::PlayerManager::Instance.GetPlayerByAccountUuid(account.uuid);
     if (player)
     {
@@ -316,6 +310,8 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
+
+    output->AddStringEncrypted(account.uuid);
 
     output->AddString(ConfigManager::Instance[ConfigManager::GameHost].GetString());
     output->Add<uint16_t>(static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::GamePort].GetInt()));

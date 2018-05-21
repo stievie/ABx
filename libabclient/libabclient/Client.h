@@ -64,7 +64,7 @@ public:
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
 
-    void OnLoggedIn() override;
+    void OnLoggedIn(const std::string& accountUuid) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnAccountCreated() override;
