@@ -23,44 +23,11 @@
 #include <AB/ProtocolCodes.h>
 #include <base64.h>
 #include "Profiler.h"
+#include "PlayerManager.h"
 
 #include "DebugNew.h"
 
 Application* Application::Instance = nullptr;
-
-#ifdef  _WIN32
-BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
-{
-    assert(Application::Instance);
-
-#ifdef _DEBUG
-    LOG_DEBUG << "Got signal " << dwCtrlType << std::endl;
-#endif
-
-    switch (dwCtrlType)
-    {
-    case CTRL_CLOSE_EVENT:                  // Close button or End Task
-        Application::Instance->Stop();
-        return TRUE;
-    case CTRL_C_EVENT:                      // Ctrl+C
-    {
-        // Either it stops or it crashes...
-        std::cout << "Stopping server? [y/n]: ";
-        std::string answer;
-        std::cin >> answer;
-        if (answer.compare("y") == 0)
-        {
-            Asynch::Dispatcher::Instance.Add(
-                Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance))
-            );
-        }
-        return TRUE;
-    }
-    default:
-        return FALSE;
-    }
-}
-#endif
 
 Application::Application() :
     loaderUniqueLock_(loaderLock_),
@@ -110,9 +77,6 @@ void Application::ParseCommandLine()
 bool Application::Initialize(int argc, char** argv)
 {
     using namespace std::chrono_literals;
-#ifdef _WIN32
-    SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandlerRoutine, TRUE);
-#endif
 #ifdef _WIN32
     char buff[MAX_PATH];
     GetModuleFileNameA(NULL, buff, MAX_PATH);
@@ -249,8 +213,8 @@ void Application::Run()
 void Application::Stop()
 {
     LOG_INFO << "Server is shutting down" << std::endl;
+    Game::PlayerManager::Instance.KickAllPlayers();
     // Before serviceManager_.Stop()
-    Net::ConnectionManager::Instance()->CloseAll();
     Maintenance::Instance.Stop();
 
     serviceManager_->Stop();

@@ -172,7 +172,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             charlistCallback_(chars);
         break;
     }
-    case AB::LoginProtocol::GameList:
+    case AB::LoginProtocol::OutpostList:
     {
         std::vector<AB::Entities::Game> games;
         int count = message->Get<uint16_t>();

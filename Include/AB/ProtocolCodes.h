@@ -86,7 +86,7 @@ enum LoginProtocolCodes : uint8_t
     DeletePlayerSuccess = 0x09,
     AddAccountKeySuccess = 0x0a,
     AddAccountKeyError = 0x0b,
-    GameList = 0x0c,                       // List of maps
+    OutpostList = 0x0c,                       // List of maps
 };
 
 }

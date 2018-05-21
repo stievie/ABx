@@ -4,6 +4,7 @@
 #include "Scheduler.h"
 #include "NetworkMessage.h"
 #include "Bans.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 
@@ -20,12 +21,12 @@ void ServiceManager::Stop()
 {
     if (!running_)
         return;
-
     for (const auto& sp : acceptors_)
     {
         ioService_.post(std::bind(&ServicePort::OnStopServer, sp.second));
     }
     acceptors_.clear();
+    running_ = false;
 }
 
 std::list<std::pair<uint32_t, uint16_t>> ServiceManager::GetPorts() const

@@ -101,10 +101,29 @@ void PlayerManager::CleanPlayers()
     {
         std::shared_ptr<Player> p = (*i).second;
         i++;
-        std::string name = p->GetName();
+//        std::string name = p->GetName();
         // Calls PlayerManager::RemovePlayer()
         p->Logout();
    }
+}
+
+void PlayerManager::KickPlayer(uint32_t playerId)
+{
+    auto it = players_.find(playerId);
+    if (it == players_.end())
+        return;
+    std::shared_ptr<Player> p = (*it).second;
+    p->Logout();
+}
+
+void PlayerManager::KickAllPlayers()
+{
+    while (!players_.empty())
+    {
+        auto it = players_.begin();
+        std::shared_ptr<Player> p = (*it).second;
+        p->Logout();
+    }
 }
 
 }

@@ -357,7 +357,7 @@ void ProtocolLogin::SendOutposts(const std::string& accountName, const std::stri
     }
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-    output->AddByte(AB::LoginProtocol::GameList);
+    output->AddByte(AB::LoginProtocol::OutpostList);
     const std::vector<AB::Entities::Game> games = IO::IOGame::GetGameList();
     output->Add<uint16_t>(static_cast<uint16_t>(games.size()));
     for (const AB::Entities::Game& game : games)

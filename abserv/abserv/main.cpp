@@ -12,6 +12,14 @@
 
 #include "DebugNew.h"
 
+namespace {
+std::function<void(int)> shutdown_handler;
+void signal_handler(int signal)
+{
+    shutdown_handler(signal);
+}
+} // namespace
+
 static void ShowLogo()
 {
     std::cout << "This is " << SERVER_PRODUCT_NAME << std::endl;
@@ -42,11 +50,19 @@ int main(int argc, char** argv)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+    signal(SIGINT, signal_handler);              // Ctrl+C
+    signal(SIGBREAK, signal_handler);            // X clicked
+
     ShowLogo();
 
     Application app;
     if (!app.Initialize(argc, argv))
         return EXIT_FAILURE;
+
+    shutdown_handler = [&](int /* signal */)
+    {
+        app.Stop();
+    };
 
     app.Run();
     return EXIT_SUCCESS;
