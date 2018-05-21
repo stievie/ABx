@@ -39,7 +39,7 @@ after `abdata`.
 You may want to increase `max_allowed_packet` in `my.cnf / my.ini`  in the `[mysqld]`
 section to e.g. `32M`, if the data server loses connection from time to time.
 
-~~~
+~~~ini
 [mysqld]
 # ...
 max_allowed_packet = 32M
@@ -47,7 +47,7 @@ max_allowed_packet = 32M
 
 Also adding `skip-name-resolve` to `[mysqld]` may be a good idea.
 
-~~~
+~~~ini
 [mysqld]
 # ...
 skip-name-resolve
