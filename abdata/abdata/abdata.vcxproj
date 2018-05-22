@@ -191,7 +191,6 @@
     <ClInclude Include="Server.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StorageProvider.h" />
-    <ClInclude Include="StringHash.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>

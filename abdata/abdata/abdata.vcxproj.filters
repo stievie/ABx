@@ -57,9 +57,6 @@
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="StringHash.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="DBCharacter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
