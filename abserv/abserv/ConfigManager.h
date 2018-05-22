@@ -2,8 +2,9 @@
 
 #include "Variant.h"
 #include <lua.hpp>
+#include "SimpleConfigManager.h"
 
-class ConfigManager
+class ConfigManager : public IO::SimpleConfigManager
 {
 public:
     enum Key
@@ -44,19 +45,9 @@ public:
 
         PlayerLevelCap,
     };
-private:
-    lua_State* L;
-    bool isLoaded;
-    std::string GetGlobal(const std::string& ident, const std::string& default);
-    int64_t GetGlobal(const std::string& ident, int64_t default);
-    bool GetGlobalBool(const std::string& ident, bool default);
 public:
     ConfigManager();
-    ~ConfigManager()
-    {
-        if (L)
-            lua_close(L);
-    }
+    ~ConfigManager() = default;
 
     Utils::Variant& operator[](Key key)
     {

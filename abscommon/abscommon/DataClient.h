@@ -48,7 +48,7 @@ public:
     template<typename E>
     bool Read(E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         SetEntity<E>(entity, data);
         if (!ReadData(aKey, data))
@@ -61,13 +61,13 @@ public:
     template<typename E>
     bool Delete(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         return DeleteData(aKey);
     }
     template<typename E>
     bool Update(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
@@ -76,7 +76,7 @@ public:
     template<typename E>
     bool Create(E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
@@ -85,13 +85,13 @@ public:
     template<typename E>
     bool Preload(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         return PreloadData(aKey);
     }
     template<typename E>
     bool Exists(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
@@ -101,7 +101,7 @@ public:
     template<typename E>
     bool Invalidate(const E& entity)
     {
-        std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
         return InvalidateData(aKey);
     }
     bool IsConnected() const

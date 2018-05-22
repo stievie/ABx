@@ -108,10 +108,24 @@ void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
 void FwClient::LoadData()
 {
     LoadGames();
+    LoadSkills();
     LoadAttributes();
     LoadProfessions();
     LoadSkills();
     LoadEffects();
+/*    WorkQueue* queue = GetSubsystem<WorkQueue>();
+    SharedPtr<WorkItem> item = queue->GetFreeItem();
+    item->aux_ = const_cast<FwClient*>(this);
+    item->workFunction_ = [](const WorkItem* item, unsigned threadIndex)
+    {
+        FwClient& self = *(reinterpret_cast<FwClient*>(item->aux_));
+        self.LoadSkills();
+        self.LoadAttributes();
+        self.LoadProfessions();
+        self.LoadSkills();
+        self.LoadEffects();
+    };
+    queue->AddWorkItem(item);*/
 }
 
 void FwClient::LoadGames()

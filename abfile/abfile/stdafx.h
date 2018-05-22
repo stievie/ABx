@@ -22,7 +22,7 @@
 // Decorated name length exceeded
 #pragma warning(disable: 4503)
 
-#define _PROFILING
+//#define _PROFILING
 // Used by the profiler to generate a unique identifier
 #define CONCAT(a, b) a ## b
 #define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)

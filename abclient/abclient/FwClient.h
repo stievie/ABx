@@ -32,6 +32,7 @@ private:
     std::map<std::string, AB::Entities::Profession> professions_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
+    Mutex mutex_;
     void LoadData();
     void LoadGames();
     void LoadSkills();

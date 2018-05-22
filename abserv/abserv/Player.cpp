@@ -6,6 +6,7 @@
 #include "MailBox.h"
 #include "PlayerManager.h"
 #include "IOMail.h"
+#include "StringUtils.h"
 
 #include "DebugNew.h"
 

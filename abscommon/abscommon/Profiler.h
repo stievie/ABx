@@ -23,6 +23,7 @@ public:
     }
     ~Profiler()
     {
+#if defined(_PROFILING)
         std::chrono::time_point<std::chrono::steady_clock> end = timer::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start_).count();
         if (!name_.empty())
@@ -35,6 +36,7 @@ public:
             LOG_PROFILE << duration / (1000 * 1000) << "ms" << std::endl;
         else
             LOG_PROFILE << duration / (1000 * 1000 * 1000) << "s" << std::endl;
+#endif
     }
 };
 

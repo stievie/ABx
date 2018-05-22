@@ -46,5 +46,10 @@ void OutpostLevel::CreateScene()
     WorldLevel::CreateScene();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/" + mapName_ + ".xml");
+    if (!sceneFile)
+    {
+        ShowError("Map \"" + mapName_ + "\" not found", "Error");
+        return;
+    }
     scene_->LoadXML(sceneFile->GetRoot());
 }

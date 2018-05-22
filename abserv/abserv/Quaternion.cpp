@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Quaternion.h"
 #include "Logger.h"
-#include "Utils.h"
+#include "StringUtils.h"
 
 #include "DebugNew.h"
 

@@ -9,7 +9,7 @@
 #include "ConfigManager.h"
 #include "Task.h"
 #include "Logger.h"
-#include "Utils.h"
+#include "StringUtils.h"
 #include "GameManager.h"
 #include <functional>
 #include "Random.h"
@@ -30,6 +30,7 @@
 Application* Application::Instance = nullptr;
 
 Application::Application() :
+    ServerApp::ServerApp(),
     loaderUniqueLock_(loaderLock_),
     ioService_()
 {
@@ -76,20 +77,9 @@ void Application::ParseCommandLine()
 
 bool Application::Initialize(int argc, char** argv)
 {
+    if (!ServerApp::Initialize(argc, argv))
+        return false;
     using namespace std::chrono_literals;
-#ifdef _WIN32
-    char buff[MAX_PATH];
-    GetModuleFileNameA(NULL, buff, MAX_PATH);
-    std::string aux(buff);
-#else
-    std::string aux(argv[0]);
-#endif
-    size_t pos = aux.find_last_of("\\/");
-    path_ = aux.substr(0, pos);
-    for (int i = 0; i < argc; i++)
-    {
-        arguments_.push_back(std::string(argv[i]));
-    }
     ParseCommandLine();
     if (!logDir_.empty())
     {

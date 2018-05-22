@@ -4,7 +4,7 @@
 #include "Logger.h"
 #include "Protocol.h"
 #include "Scheduler.h"
-#include "Utils.h"
+#include "StringUtils.h"
 #include "Service.h"
 #include "OutputMessage.h"
 #include "ConfigManager.h"

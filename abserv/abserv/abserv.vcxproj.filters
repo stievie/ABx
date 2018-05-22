@@ -21,12 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Task.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scheduler.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Config.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -34,9 +28,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Service.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Dispatcher.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Protocol.h">
@@ -57,9 +48,6 @@
     <ClInclude Include="ConfigManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ProtocolLogin.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -67,9 +55,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolAdmin.h">
@@ -225,9 +210,6 @@
     <ClInclude Include="Hull.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="StringHash.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Rect.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -241,12 +223,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Gjk.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Profiler.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="DataClient.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="FriendList.h">
@@ -263,16 +239,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scheduler.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Connection.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Service.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Dispatcher.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Protocol.cpp">
@@ -291,9 +261,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ConfigManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Logger.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolLogin.cpp">
@@ -369,9 +336,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="SkillManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="EffectManager.cpp">
@@ -453,9 +417,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Shape.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DataClient.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="FriendList.cpp">

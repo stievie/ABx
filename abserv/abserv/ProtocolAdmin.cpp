@@ -2,7 +2,7 @@
 #include "ProtocolAdmin.h"
 #include "ConfigManager.h"
 #include "Logger.h"
-#include "Utils.h"
+#include "StringUtils.h"
 #include "OutputMessage.h"
 #include "Dispatcher.h"
 #include "Application.h"

@@ -1,15 +1,14 @@
 #include "stdafx.h"
 #include "ConfigManager.h"
 #include "Logger.h"
-#include "Utils.h"
+#include "StringUtils.h"
 
 #include "DebugNew.h"
 
 ConfigManager ConfigManager::Instance;
 
 ConfigManager::ConfigManager() :
-    L(nullptr),
-    isLoaded(false)
+    IO::SimpleConfigManager()
 {
     config_[Key::ServerName] = "abserv";
     config_[Key::LoginPort] = 0;
@@ -29,70 +28,10 @@ ConfigManager::ConfigManager() :
     config_[Key::DataServerPort] = 2770;
 }
 
-std::string ConfigManager::GetGlobal(const std::string& ident, const std::string& default)
-{
-    lua_getglobal(L, ident.c_str());
-
-    if (!lua_isstring(L, -1)) {
-        lua_pop(L, 1);
-        return default;
-    }
-
-    int len = (int)luaL_len(L, -1);
-    std::string ret(lua_tostring(L, -1), len);
-    lua_pop(L, 1);
-
-    return ret;
-}
-
-int64_t ConfigManager::GetGlobal(const std::string& ident, int64_t default)
-{
-    lua_getglobal(L, ident.c_str());
-
-    if (!lua_isnumber(L, -1)) {
-        lua_pop(L, 1);
-        return default;
-    }
-
-    int64_t val = (int64_t)lua_tonumber(L, -1);
-    lua_pop(L, 1);
-
-    return val;
-}
-
-bool ConfigManager::GetGlobalBool(const std::string& ident, bool default)
-{
-    lua_getglobal(L, ident.c_str());
-
-    if (!lua_isboolean(L, -1)) {
-        lua_pop(L, 1);
-        return default;
-    }
-
-    bool val = lua_toboolean(L, -1) != 0;
-    lua_pop(L, 1);
-
-    return val;
-}
-
 bool ConfigManager::Load(const std::string& file)
 {
-    if (L)
-        lua_close(L);
-    L = luaL_newstate();
-    if (!L)
+    if (!IO::SimpleConfigManager::Load(file))
         return false;
-    luaL_openlibs(L);
-
-    if (luaL_dofile(L, file.c_str()) != 0)
-    {
-        int len = (int)luaL_len(L, -1);
-        std::string err(lua_tostring(L, -1), len);
-        LOG_ERROR << err << std::endl;
-        lua_close(L);
-        L = nullptr;
-        return false;
-    }
 
     config_[Key::ServerName] = GetGlobal("server_name", "abserv");
     config_[Key::ServerID] = GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
@@ -131,9 +70,6 @@ bool ConfigManager::Load(const std::string& file)
 
     config_[Key::PlayerLevelCap] = (int)GetGlobal("level_cap", 20);
 
-    lua_close(L);
-    L = nullptr;
-
-    isLoaded = true;
+    Close();
     return true;
 }

@@ -15,6 +15,7 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Game.h>
 #include <uuids.h>
+#include "StringUtils.h"
 
 #include "DebugNew.h"
 

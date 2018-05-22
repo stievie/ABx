@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Vector4.h"
-#include "Utils.h"
+#include "StringUtils.h"
 #include "Logger.h"
 
 #include "DebugNew.h"

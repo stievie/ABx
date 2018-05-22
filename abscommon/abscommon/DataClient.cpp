@@ -129,7 +129,7 @@ void DataClient::InternalConnect()
     if (connected_)
         return;
 
-    asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), host_, std::to_string(port_));
+    const asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), host_, std::to_string(port_));
     asio::ip::tcp::resolver::iterator endpoint = resolver_.resolve(query);
     asio::error_code error;
     socket_.connect(*endpoint, error);

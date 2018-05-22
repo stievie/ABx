@@ -6,7 +6,7 @@
 #include "IOPlayer.h"
 #include "IOAccount.h"
 #include "Bans.h"
-#include "Utils.h"
+#include "StringUtils.h"
 #include "GameManager.h"
 #include "Logger.h"
 #include "Game.h"

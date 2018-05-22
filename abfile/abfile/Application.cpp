@@ -18,7 +18,7 @@
 #include <AB/Entities/Ban.h>
 #include <AB/Entities/EffectList.h>
 #include <AB/Entities/Effect.h>
-#include <AB/Entities/Account.h>
+#include <AB/Entities/AccountBan.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 #include "Utils.h"
@@ -152,14 +152,16 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     const auto it = request->header.find("Auth");
     if (it == request->header.end())
     {
-        LOG_WARNING << "Missing Auth header" << std::endl;
+        LOG_WARNING << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            << "Missing Auth header" << std::endl;
         return false;
     }
     const std::string accId = (*it).second.substr(0, 36);
     const std::string passwd = (*it).second.substr(36);
     if (accId.empty() || passwd.empty())
     {
-        LOG_ERROR << "Wrong Auth header " << (*it).second << std::endl;
+        LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            << "Wrong Auth header " << (*it).second << std::endl;
         return false;
     }
 
@@ -167,16 +169,34 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     acc.uuid = accId;
     if (!dataClient_->Read(acc))
     {
-        LOG_ERROR << "Unable to read account " << accId << std::endl;
+        LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            << "Unable to read account " << accId << std::endl;
         return false;
     }
     if (acc.status != AB::Entities::AccountStatusActivated)
+        return false;
+    if (IsAccountBanned(acc))
         return false;
 
     if (bcrypt_checkpass(passwd.c_str(), acc.password.c_str()) != 0)
         return false;
 
     return true;
+}
+
+bool Application::IsAccountBanned(const AB::Entities::Account& acc)
+{
+    AB::Entities::AccountBan ban;
+    ban.accountUuid = acc.uuid;
+    if (!dataClient_->Read(ban))
+        return false;
+    AB::Entities::Ban _ban;
+    _ban.uuid = ban.banUuid;
+    if (!dataClient_->Read(_ban))
+        return false;
+    if (!_ban.active)
+        return false;
+    return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
 }
 
 bool Application::IsHiddenFile(const boost::filesystem::path& path)
@@ -216,17 +236,20 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))
         {
-            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access file outside root " << path.string() << std::endl;
+            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+                << "Trying to access file outside root " << path.string() << std::endl;
             throw std::invalid_argument("path must be within root path");
         }
         if (boost::filesystem::is_directory(path))
         {
-            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access a directory " << path.string() << std::endl;
+            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+                << "Trying to access a directory " << path.string() << std::endl;
             throw std::invalid_argument("not a file");
         }
         if (IsHiddenFile(path))
         {
-            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": " << "Trying to access a hidden file " << path.string() << std::endl;
+            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+                << "Trying to access a hidden file " << path.string() << std::endl;
             throw std::invalid_argument("hidden file");
         }
 
@@ -283,26 +306,6 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
             "Not found " + request->path);
     }
 }
-
-//void Application::GetHandlerInfo(std::shared_ptr<HttpsServer::Response> response,
-//    std::shared_ptr<HttpsServer::Request> request)
-//{
-//    std::stringstream stream;
-//    stream << "<h1>Request from " << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << "</h1>";
-//
-//    stream << request->method << " " << request->path << " HTTP/" << request->http_version;
-//
-//    stream << "<h2>Query Fields</h2>";
-//    auto query_fields = request->parse_query_string();
-//    for (auto &field : query_fields)
-//        stream << field.first << ": " << field.second << "<br>";
-//
-//    stream << "<h2>Header Fields</h2>";
-//    for (auto &field : request->header)
-//        stream << field.first << ": " << field.second << "<br>";
-//
-//    response->write(stream);
-//}
 
 void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)

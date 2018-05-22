@@ -2,8 +2,9 @@
 
 #include "Service.h"
 #include "DataClient.h"
+#include "ServerApp.h"
 
-class Application
+class Application : public ServerApp
 {
 private:
     std::mutex loaderLock_;
@@ -29,9 +30,6 @@ public:
     {
         return dataClient_.get();
     }
-
-    std::string path_;
-    std::vector<std::string> arguments_;
 
     static Application* Instance;
 };
