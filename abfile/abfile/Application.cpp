@@ -59,8 +59,8 @@ bool Application::Initialize(int argc, char** argv)
     size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 1);
     root_ = IO::SimpleConfigManager::Instance.GetGlobal("root_dir", "");
     logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
-    dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "localhost");
-    dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
+    dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
+    dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
     requireAuth_ = IO::SimpleConfigManager::Instance.GetGlobalBool("require_auth", false);
 
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
@@ -77,39 +77,54 @@ bool Application::Initialize(int argc, char** argv)
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
-    server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
+    bool haveData = !dataHost_.empty() && (dataPort_ != 0);
+
+    if (haveData)
+    {
+        server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_skills_$"]["GET"] = std::bind(&Application::GetHandlerSkills, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_professions_$"]["GET"] = std::bind(&Application::GetHandlerProfessions, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+    }
 
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
-    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
-
-    LOG_INFO << "Connecting to data server...";
-    dataClient_->Connect(dataHost_, dataPort_);
-    if (!dataClient_->IsConnected())
+    if (haveData)
     {
-        LOG_ERROR << "Failed to connect to data server" << std::endl;
-        return false;
+        dataClient_ = std::make_unique<IO::DataClient>(ioService_);
+
+        LOG_INFO << "Connecting to data server...";
+        dataClient_->Connect(dataHost_, dataPort_);
+        if (!dataClient_->IsConnected())
+        {
+            LOG_ERROR << "Failed to connect to data server" << std::endl;
+            return false;
+        }
+        LOG_INFO << "[done]" << std::endl;
     }
-    LOG_INFO << "[done]" << std::endl;
+    else
+    {
+        LOG_WARNING << "Not connected to data server" << std::endl;
+    }
 
     LOG_INFO << "Server config:" << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
-    LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+    if (haveData)
+        LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+    else
+        LOG_INFO << "  Data Server: (NONE)" << std::endl;
 
     return true;
 }
