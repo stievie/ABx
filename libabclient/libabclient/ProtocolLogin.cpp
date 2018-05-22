@@ -50,14 +50,14 @@ void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
 }
 
 void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
-    const std::string& account, const std::string& password,
+    const std::string& accountUuid, const std::string& password,
     const std::string& charName, const std::string& profUuid,
     AB::Entities::CharacterSex sex, bool isPvp,
     const CreatePlayerCallback& callback)
 {
     host_ = host;
     port_ = port;
-    accountName_ = account;
+    accountUuid_ = accountUuid;
     password_ = password;
     charName_ = charName;
     profUuid_ = profUuid;
@@ -69,12 +69,12 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
 }
 
 void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
-    const std::string& account, const std::string& password,
+    const std::string& accountUuid, const std::string& password,
     const GamelistCallback& callback)
 {
     host_ = host;
     port_ = port;
-    accountName_ = account;
+    accountUuid_ = accountUuid;
     password_ = password;
     gamelistCallback_ = callback;
     action_ = ActionGetOutposts;
@@ -114,7 +114,7 @@ void ProtocolLogin::SendCreatePlayerPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginCreateCharacter);
-    msg->AddStringEncrypted(accountName_);
+    msg->AddStringEncrypted(accountUuid_);
     msg->AddStringEncrypted(password_);
     msg->AddStringEncrypted(charName_);
     msg->Add<uint8_t>(static_cast<uint8_t>(sex_));
@@ -130,7 +130,7 @@ void ProtocolLogin::SendGetOutpostsPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
-    msg->AddStringEncrypted(accountName_);
+    msg->AddStringEncrypted(accountUuid_);
     msg->AddStringEncrypted(password_);
     Send(msg);
 }

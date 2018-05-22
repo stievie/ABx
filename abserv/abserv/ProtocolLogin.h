@@ -26,14 +26,15 @@ public:
 private:
     void DisconnectClient(uint8_t error);
     void SendCharacterList(const std::string& accountName, const std::string& password);
-    void SendOutposts(const std::string& accountName, const std::string& password);
+    void SendOutposts(const std::string& accountUuid, const std::string& password);
     void CreateAccount(const std::string& accountName, const std::string& password,
         const std::string& email, const std::string& accKey);
-    void CreatePlayer(const std::string& accountName, const std::string& password,
+    void CreatePlayer(const std::string& accountUuid, const std::string& password,
         const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp);
-    void AddAccountKey(const std::string& accountName, const std::string& password,
+    void AddAccountKey(const std::string& accountUuid, const std::string& password,
         const std::string& accKey);
-    void DeletePlayer(const std::string& accountName, const std::string& password, const std::string& playerUuid);
+    void DeletePlayer(const std::string& accountUuid, const std::string& password,
+        const std::string& playerUuid);
     void HandleLoginPacket(NetworkMessage& message);
     void HandleCreateAccountPacket(NetworkMessage& message);
     void HandleCreateCharacterPacket(NetworkMessage& message);

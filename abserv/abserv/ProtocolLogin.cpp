@@ -147,10 +147,10 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 {
-    const std::string accountName = message.GetStringEncrypted();
-    if (accountName.empty())
+    const std::string accountUuid = message.GetStringEncrypted();
+    if (accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::Errors::InvalidAccountKey);
         return;
     }
     const std::string password = message.GetStringEncrypted();
@@ -189,7 +189,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::CreatePlayer, thisPtr,
-            accountName, password,
+            accountUuid, password,
             charName, prof, sex, isPvp
         ))
     );
@@ -197,10 +197,10 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 {
-    const std::string accountName = message.GetStringEncrypted();
-    if (accountName.empty())
+    const std::string accountUuid = message.GetStringEncrypted();
+    if (accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
@@ -220,7 +220,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::DeletePlayer, thisPtr,
-            accountName, password,
+            accountUuid, password,
             charUuid
         ))
     );
@@ -228,10 +228,10 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
 {
-    const std::string accountName = message.GetStringEncrypted();
-    if (accountName.empty())
+    const std::string accountUuid = message.GetStringEncrypted();
+    if (accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
@@ -251,7 +251,7 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::AddAccountKey, thisPtr,
-            accountName, password,
+            accountUuid, password,
             accKey
         ))
     );
@@ -259,10 +259,10 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 {
-    const std::string accountName = message.GetStringEncrypted();
-    if (accountName.empty())
+    const std::string accountUuid = message.GetStringEncrypted();
+    if (accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
@@ -276,7 +276,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendOutposts, thisPtr,
-            accountName, password
+            accountUuid, password
         ))
     );
 }
@@ -284,7 +284,8 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     AB::Entities::Account account;
-    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    account.name = accountName;
+    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
     switch (res)
     {
     case IO::IOAccount::LoginInvalidAccount:
@@ -341,10 +342,11 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     Disconnect();
 }
 
-void ProtocolLogin::SendOutposts(const std::string& accountName, const std::string& password)
+void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::string& password)
 {
     AB::Entities::Account account;
-    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    account.uuid = accountUuid;
+    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
     switch (res)
     {
     case IO::IOAccount::LoginInvalidAccount:
@@ -407,11 +409,12 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
     Disconnect();
 }
 
-void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::string& password,
+void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::string& password,
     const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
 {
     AB::Entities::Account account;
-    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    account.uuid = accountUuid;
+    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
     switch (authRes)
     {
     case IO::IOAccount::LoginInvalidAccount:
@@ -464,11 +467,12 @@ void ProtocolLogin::CreatePlayer(const std::string& accountName, const std::stri
     Disconnect();
 }
 
-void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::string& password,
+void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::string& password,
     const std::string& accKey)
 {
     AB::Entities::Account account;
-    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    account.uuid = accountUuid;
+    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
     switch (authRes)
     {
     case IO::IOAccount::LoginInvalidAccount:
@@ -481,7 +485,7 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
         return;
     }
 
-    IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountName, password, accKey);
+    IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountUuid, password, accKey);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     if (res == IO::IOAccount::ResultOK)
@@ -512,11 +516,12 @@ void ProtocolLogin::AddAccountKey(const std::string& accountName, const std::str
     Disconnect();
 }
 
-void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::string& password,
+void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::string& password,
     const std::string& playerUuid)
 {
     AB::Entities::Account account;
-    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(accountName, password, account);
+    account.uuid = accountUuid;
+    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
     switch (authRes)
     {
     case IO::IOAccount::LoginInvalidAccount:
@@ -546,7 +551,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountName, const std::stri
     }
 
     LOG_INFO << Utils::ConvertIPToString(GetIP()) << ": "
-        << accountName << " deleted character with UUID " << playerUuid << std::endl;
+        << accountUuid << " deleted character with UUID " << playerUuid << std::endl;
 
     Send(output);
     Disconnect();

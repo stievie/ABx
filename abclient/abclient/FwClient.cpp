@@ -282,8 +282,8 @@ void FwClient::CreatePlayer(const String& name, const String& profUuid, AB::Enti
 {
     if (loggedIn_)
     {
-        client_.CreatePlayer(std::string(accountName_.CString()), std::string(accountPass_.CString()),
-            std::string(name.CString()), std::string(profUuid.CString()), sex, isPvp);
+        client_.CreatePlayer(std::string(name.CString()),
+            std::string(profUuid.CString()), sex, isPvp);
     }
 }
 

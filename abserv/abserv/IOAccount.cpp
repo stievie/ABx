@@ -77,13 +77,13 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     return ResultOK;
 }
 
-IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::string& pass,
+IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const std::string& pass,
     const std::string& accKey)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
-    acc.name = name;
+    acc.uuid = accountUuid;
     if (!client->Read(acc))
         return ResultInvalidAccount;
 
@@ -104,7 +104,7 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
         acc.charSlots++;
         if (!client->Update(acc))
         {
-            LOG_ERROR << "Account update failed " << name << std::endl;
+            LOG_ERROR << "Account update failed " << accountUuid << std::endl;
             return ResultInternalError;
         }
         break;
@@ -134,12 +134,11 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& name, const std::s
     return ResultOK;
 }
 
-IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& name, const std::string& pass,
+IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
     AB::Entities::Account& account)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
-    account.name = name;
     if (!client->Read(account))
         return LoginInvalidAccount;
     if (account.status != AB::Entities::AccountStatusActivated)
@@ -151,36 +150,36 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& name, const 
     return LoginOK;
 }
 
-uuids::uuid IOAccount::GameWorldAuth(const std::string& name, const std::string& pass,
+bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string& pass,
     const std::string& charUuid)
 {
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
-    acc.name = name;
+    acc.uuid = accountUuid;
     if (!client->Read(acc))
     {
         // At this point the account must exist.
-        LOG_ERROR << "Error reading account " << name << std::endl;
-        return uuids::uuid();
+        LOG_ERROR << "Error reading account " << accountUuid << std::endl;
+        return false;
     }
     if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
-        return uuids::uuid();
+        return false;
 
     AB::Entities::Character ch;
     ch.uuid = charUuid;
     if (!client->Read(ch))
     {
         LOG_ERROR << "Error reading character " << charUuid << std::endl;
-        return uuids::uuid();
+        return false;
     }
     if (ch.accountUuid.compare(acc.uuid) != 0)
     {
-        LOG_ERROR << "Character " << charUuid << " does not belong to account " << name << std::endl;
-        return uuids::uuid();
+        LOG_ERROR << "Character " << charUuid << " does not belong to account " << accountUuid << std::endl;
+        return false;
     }
 
-    return uuids::uuid(acc.uuid);
+    return true;
 }
 
 bool IOAccount::Save(const AB::Entities::Account& account)

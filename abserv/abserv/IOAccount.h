@@ -35,11 +35,11 @@ public:
     IOAccount() = delete;
     static Result CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
-    static Result AddAccountKey(const std::string& name, const std::string& pass,
+    static Result AddAccountKey(const std::string& accountUuid, const std::string& pass,
         const std::string& accKey);
-    static IOAccount::LoginError LoginServerAuth(const std::string& name, const std::string& pass,
+    static IOAccount::LoginError LoginServerAuth(const std::string& pass,
         AB::Entities::Account& account);
-    static uuids::uuid GameWorldAuth(const std::string& name, const std::string& pass,
+    static bool GameWorldAuth(const std::string& accountUuid, const std::string& pass,
         const std::string& charUuid);
     static bool Save(const AB::Entities::Account& account);
     static bool AccountLogout(const std::string& uuid);

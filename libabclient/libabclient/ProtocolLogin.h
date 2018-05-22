@@ -34,6 +34,7 @@ private:
     std::string host_;
     uint16_t port_;
     std::string accountName_;
+    std::string accountUuid_;
     std::string password_;
     std::string email_;
     std::string accKey_;
@@ -68,12 +69,12 @@ public:
         const std::string& email, const std::string& accKey,
         const CreateAccountCallback& callback);
     void CreatePlayer(std::string& host, uint16_t port,
-        const std::string& account, const std::string& password,
+        const std::string& accountUuid, const std::string& password,
         const std::string& charName, const std::string& profUuid,
         AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
     void GetOutposts(std::string& host, uint16_t port,
-        const std::string& account, const std::string& password,
+        const std::string& accountUuid, const std::string& password,
         const GamelistCallback& callback);
 
     std::string gameHost_;

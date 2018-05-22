@@ -229,14 +229,14 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         DisconnectClient(AB::Errors::WrongProtocolVersion);
         return;
     }
-    const std::string accountName = msg.GetString();
-    if (accountName.empty())
+    const std::string accountUuid = msg.GetString();
+    if (accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountName);
+        DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = msg.GetString();
-    const std::string characterName = msg.GetString();
+    const std::string characterUuid = msg.GetString();
     const std::string map = msg.GetString();
 
     if (Auth::BanManager::Instance.IsIpBanned(GetIP()))
@@ -245,8 +245,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    const uuids::uuid accountId = IO::IOAccount::GameWorldAuth(accountName, password, characterName);
-    if (accountId.nil())
+    if (!IO::IOAccount::GameWorldAuth(accountUuid, password, characterUuid))
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
@@ -254,7 +253,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
     Asynch::Dispatcher::Instance.Add(
         Asynch::CreateTask(
-            std::bind(&ProtocolGame::Login, GetThis(), characterName, accountId, map)
+            std::bind(&ProtocolGame::Login, GetThis(), characterUuid, uuids::uuid(accountUuid), map)
         )
     );
 }

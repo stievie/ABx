@@ -22,7 +22,7 @@ public:
     typedef std::function<void(uint32_t id)> DespawnCallback;
     typedef std::function<void(uint32_t id, const Vec3& pos)> ObjectPosCallback;
 private:
-    std::string accountName_;
+    std::string accountUuid_;
     std::string accountPass_;
     std::string charUuid_;
     std::string mapUuid_;
@@ -60,7 +60,7 @@ public:
 
     Receiver* receiver_;
 
-    void Login(const std::string& accountName, const std::string& accountPass,
+    void Login(const std::string& accountUuid, const std::string& accountPass,
         const std::string& charUuid, const std::string& map, const std::string& host, uint16_t port);
     void Logout();
     void Ping(const PingCallback& callback);

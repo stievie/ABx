@@ -17,12 +17,12 @@ ProtocolGame::ProtocolGame() :
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
 }
 
-void ProtocolGame::Login(const std::string& accountName,
+void ProtocolGame::Login(const std::string& accountUuid,
     const std::string& accountPass, const std::string& charUuid,
     const std::string& mapUuid,
     const std::string& host, uint16_t port)
 {
-    accountName_ = accountName;
+    accountUuid_ = accountUuid;
     accountPass_ = accountPass;
     charUuid_ = charUuid;
     mapUuid_ = mapUuid;
@@ -268,7 +268,7 @@ void ProtocolGame::SendLoginPacket()
     msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
-    msg->AddString(accountName_);
+    msg->AddString(accountUuid_);
     msg->AddString(accountPass_);
     msg->AddString(charUuid_);
     msg->AddString(mapUuid_);

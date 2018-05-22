@@ -53,6 +53,7 @@ Client::~Client()
 
 void Client::OnLoggedIn(const std::string& accountUuid)
 {
+    accountUuid_ = accountUuid;
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
         gameHost_ = protoLogin_->gameHost_;
@@ -73,9 +74,8 @@ void Client::OnLoggedIn(const std::string& accountUuid)
         ss << fileHost_ << ":" << filePort_;
         httpClient_ = new HttpsClient(ss.str(), false);
     }
-    accountUuid_ = accountUuid;
     if (receiver_)
-        receiver_->OnLoggedIn(accountUuid);
+        receiver_->OnLoggedIn(accountUuid_);
 }
 
 void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
@@ -238,17 +238,16 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
     Connection::Run();
 }
 
-void Client::CreatePlayer(const std::string& account, const std::string& password,
-    const std::string& charName, const std::string& profUuid,
+void Client::CreatePlayer(const std::string& charName, const std::string& profUuid,
     AB::Entities::CharacterSex sex, bool isPvp)
 {
     if (state_ != StateSelectChar)
         return;
 
-    accountName_ = account;
-    password_ = password;
+    if (accountUuid_.empty() || password_.empty())
+        return;
 
-    GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, account, password,
+    GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, password_,
         charName, profUuid, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
     Connection::Run();
@@ -269,16 +268,17 @@ void Client::Logout()
 
 void Client::GetOutposts()
 {
-    if (accountName_.empty() || password_.empty())
+    if (accountUuid_.empty() || password_.empty())
         return;
 
-    GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountName_, password_,
+    GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, password_,
         std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
     Connection::Run();
 }
 
 void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid)
 {
+    assert(!accountUuid_.empty());
     // Enter or changing the world
     if (state_ != StateSelectChar && state_ != StateWorld)
         return;
@@ -295,7 +295,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid)
         // If we came from the select character scene
         protoLogin_.reset();
 
-    protoGame_->Login(accountName_, password_, charUuid, mapUuid, gameHost_, gamePort_);
+    protoGame_->Login(accountUuid_, password_, charUuid, mapUuid, gameHost_, gamePort_);
 }
 
 void Client::Update(int timeElapsed)
