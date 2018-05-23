@@ -93,6 +93,7 @@ bool Application::Initialize(int argc, char** argv)
 
     if (!LoadMain())
         return false;
+
     std::this_thread::sleep_for(100ms);
 
     if (!serviceManager_->IsRunning())
@@ -163,7 +164,7 @@ bool Application::LoadMain()
     LOG_INFO << std::endl;
 
     Maintenance::Instance.Run();
-    Game::GameManager::Instance.Start(serviceManager_.get());
+    Game::GameManager::Instance.Start();
 
     return true;
 }

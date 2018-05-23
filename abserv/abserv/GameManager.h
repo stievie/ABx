@@ -18,7 +18,6 @@ public:
     };
 private:
     static void LuaErrorHandler(int errCode, const char* message);
-    Net::ServiceManager* serviceManager_;
     State state_;
     std::recursive_mutex lock_;
     std::map<uint32_t, std::shared_ptr<Game>> games_;
@@ -39,7 +38,7 @@ public:
         state_(ManagerStateTerminated)
     { }
 
-    void Start(Net::ServiceManager* serviceManager);
+    void Start();
     void Stop();
     /// Creates a new game instance, e.g. when a group of players enters an instance
     std::shared_ptr<Game> NewGame(const std::string& mapName)

@@ -12,10 +12,9 @@ namespace Game {
 
 GameManager GameManager::Instance;
 
-void GameManager::Start(Net::ServiceManager* serviceManager)
+void GameManager::Start()
 {
     // Main Thread
-    serviceManager_ = serviceManager;
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     state_ = State::ManagerStateRunning;
 }
