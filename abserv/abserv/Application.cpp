@@ -31,7 +31,6 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    loaderUniqueLock_(loaderLock_),
     ioService_()
 {
     assert(Application::Instance == nullptr);
@@ -92,8 +91,8 @@ bool Application::Initialize(int argc, char** argv)
     Asynch::Dispatcher::Instance.Start();
     Asynch::Scheduler::Instance.Start();
 
-    Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::MainLoader, this)));
-    loaderSignal_.wait(loaderUniqueLock_);
+    if (!LoadMain())
+        return false;
     std::this_thread::sleep_for(100ms);
 
     if (!serviceManager_->IsRunning())
@@ -102,7 +101,7 @@ bool Application::Initialize(int argc, char** argv)
     return serviceManager_->IsRunning();
 }
 
-void Application::MainLoader()
+bool Application::LoadMain()
 {
     int64_t startLoading = Utils::AbTick();
 
@@ -111,7 +110,11 @@ void Application::MainLoader()
     if (configFile_.empty())
         configFile_ = path_ + "/" + CONFIG_FILE;
     LOG_INFO << "Loading configuration: " << configFile_ << "...";
-    ConfigManager::Instance.Load(configFile_);
+    if (!ConfigManager::Instance.Load(configFile_))
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        return false;
+    }
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
@@ -124,8 +127,9 @@ void Application::MainLoader()
     dataClient_->Connect(dataHost, dataPort);
     if (!dataClient_->IsConnected())
     {
+        LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Failed to connect to data server" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
     }
     LOG_INFO << "[done]" << std::endl;
 
@@ -161,8 +165,7 @@ void Application::MainLoader()
     Maintenance::Instance.Run();
     Game::GameManager::Instance.Start(serviceManager_.get());
 
-    // Notify we are ready
-    loaderSignal_.notify_all();
+    return true;
 }
 
 void Application::PrintServerInfo()

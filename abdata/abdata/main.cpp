@@ -253,6 +253,16 @@ int main(int argc, char* argv[])
         IO::Logger::Close();
     try
     {
+        LOG_INFO << "Connecting to database...";
+        DB::Database* db = DB::Database::Instance();
+        if (db == nullptr || !db->IsConnected())
+        {
+            LOG_INFO << "[FAIL]" << std::endl;
+            LOG_ERROR << "Database connection failed" << std::endl;
+            return EXIT_FAILURE;
+        }
+        LOG_INFO << "[done]" << std::endl;
+
         LOG_INFO << "Server config:" << std::endl;
         LOG_INFO << "  Config file: " << (gConfigFile.empty() ? "(empty)" : gConfigFile) << std::endl;
         LOG_INFO << "  Listening: " << Utils::ConvertIPToString(gListenIp) << ":" << gPort << std::endl;
@@ -280,13 +290,6 @@ int main(int argc, char* argv[])
         LOG_INFO << "  Port: " << DB::Database::dbPort_ << std::endl;
         LOG_INFO << "  User: " << DB::Database::dbUser_ << std::endl;
         LOG_INFO << "  Password: " << (DB::Database::dbPass_.empty() ? "(empty)" : "***********") << std::endl;
-
-        DB::Database* db = DB::Database::Instance();
-        if (db == nullptr || !db->IsConnected())
-        {
-            LOG_ERROR << "Database connection failed" << std::endl;
-            return EXIT_FAILURE;
-        }
 
         signal(SIGINT, signal_handler);              // Ctrl+C
         signal(SIGBREAK, signal_handler);            // X clicked

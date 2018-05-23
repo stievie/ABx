@@ -106,6 +106,7 @@ bool Application::Initialize(int argc, char** argv)
         dataClient_->Connect(dataHost_, dataPort_);
         if (!dataClient_->IsConnected())
         {
+            LOG_INFO << "[FAIL]" << std::endl;
             LOG_ERROR << "Failed to connect to data server" << std::endl;
             return false;
         }
@@ -219,10 +220,8 @@ bool Application::IsHiddenFile(const boost::filesystem::path& path)
     auto name = path.filename();
     if (name != ".." &&
         name != "."  &&
-        name.string()[0] == '.')
-    {
+        (name.string()[0] == '.') || (name.string().find("/.") != std::string::npos))
         return true;
-    }
 
     return false;
 }

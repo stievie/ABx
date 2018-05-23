@@ -9,12 +9,11 @@ class Application : public ServerApp
 private:
     std::mutex loaderLock_;
     std::condition_variable loaderSignal_;
-    std::unique_lock<std::mutex> loaderUniqueLock_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<IO::DataClient> dataClient_;
     std::string configFile_;
     std::string logDir_;
-    void MainLoader();
+    bool LoadMain();
     void PrintServerInfo();
     void ParseCommandLine();
     asio::io_service ioService_;
