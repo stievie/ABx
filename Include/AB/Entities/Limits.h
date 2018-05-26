@@ -6,6 +6,10 @@ namespace Limits {
 // General
 static constexpr int MAX_UUID = 36;
 static constexpr int MAX_FILENAME = 260;
+// Service
+static constexpr int MAX_SERVICE_NAME = 64;
+static constexpr int MAX_SERVICE_HOST = 64;
+
 // Account
 static constexpr int MAX_ACCOUNT_NAME = 32;
 static constexpr int MAX_ACCOUNT_PASS = 61;

@@ -24,6 +24,7 @@ public:
         GameIP,
         StatusIP,
         AdminIP,
+
         LogDir,
         DataDir,
 

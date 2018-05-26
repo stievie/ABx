@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="ConnectionManager.h" />
     <ClInclude Include="Database.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="DBMailList.h" />
     <ClInclude Include="DBProfession.h" />
     <ClInclude Include="DBProfessionList.h" />
+    <ClInclude Include="DBService.h" />
     <ClInclude Include="DBSkill.h" />
     <ClInclude Include="DBSkillList.h" />
     <ClInclude Include="DBVersion.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="ConnectionManager.cpp" />
     <ClCompile Include="Database.cpp" />
@@ -220,6 +223,7 @@
     <ClCompile Include="DBMailList.cpp" />
     <ClCompile Include="DBProfession.cpp" />
     <ClCompile Include="DBProfessionList.cpp" />
+    <ClCompile Include="DBService.cpp" />
     <ClCompile Include="DBSkill.cpp" />
     <ClCompile Include="DBSkillList.cpp" />
     <ClCompile Include="DBVersion.cpp" />

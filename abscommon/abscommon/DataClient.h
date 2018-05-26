@@ -65,6 +65,13 @@ public:
         return DeleteData(aKey);
     }
     template<typename E>
+    bool UpdateOrCreate(E& entity)
+    {
+        if (Exists(entity))
+            return Update(entity);
+        return Create(entity);
+    }
+    template<typename E>
     bool Update(const E& entity)
     {
         const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));

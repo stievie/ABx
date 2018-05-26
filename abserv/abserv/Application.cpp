@@ -24,6 +24,7 @@
 #include <base64.h>
 #include "Profiler.h"
 #include "PlayerManager.h"
+#include <AB/Entities/Service.h>
 
 #include "DebugNew.h"
 
@@ -190,6 +191,16 @@ void Application::PrintServerInfo()
 
 void Application::Run()
 {
+    AB::Entities::Service serv;
+    serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    dataClient_->Read(serv);
+    serv.host = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
+    serv.name = "abserv";
+    serv.status = AB::Entities::ServiceStatusOnline;
+    serv.type = AB::Entities::ServiceTypeGameServer;
+    serv.startTime = Utils::AbTick();
+    dataClient_->UpdateOrCreate(serv);
+
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
     if (logDir_.empty())
@@ -207,6 +218,15 @@ void Application::Run()
 void Application::Stop()
 {
     LOG_INFO << "Server is shutting down" << std::endl;
+    AB::Entities::Service serv;
+    serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    dataClient_->Read(serv);
+    serv.status = AB::Entities::ServiceStatusOffline;
+    serv.stopTime = Utils::AbTick();
+    if (serv.startTime != 0)
+        serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+    dataClient_->UpdateOrCreate(serv);
+
     Game::PlayerManager::Instance.KickAllPlayers();
     // Before serviceManager_.Stop()
     Maintenance::Instance.Stop();

@@ -19,6 +19,7 @@
 #include <AB/Entities/EffectList.h>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/AccountBan.h>
+#include <AB/Entities/Service.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 #include "Utils.h"
@@ -132,6 +133,15 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
+    AB::Entities::Service serv;
+    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    dataClient_->Read(serv);
+    serv.name = "abfile";
+    serv.status = AB::Entities::ServiceStatusOnline;
+    serv.type = AB::Entities::ServiceTypeFileServer;
+    serv.startTime = Utils::AbTick();
+    dataClient_->UpdateOrCreate(serv);
+
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     server_->start();
@@ -140,6 +150,15 @@ void Application::Run()
 void Application::Stop()
 {
     running_ = false;
+    AB::Entities::Service serv;
+    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    dataClient_->Read(serv);
+    serv.status = AB::Entities::ServiceStatusOffline;
+    serv.stopTime = Utils::AbTick();
+    if (serv.startTime != 0)
+        serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+    dataClient_->UpdateOrCreate(serv);
+
     LOG_INFO << "Server shutdown..." << std::endl;
     server_->stop();
 }
@@ -268,9 +287,6 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         }
 
         SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
-
-        // Uncomment the following line to enable Cache-Control
-        // header.emplace("Cache-Control", "max-age=86400");
 
         auto ifs = std::make_shared<std::ifstream>();
         ifs->open(path.string(), std::ifstream::in | std::ios::binary | std::ios::ate);
@@ -665,8 +681,12 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
     response->write(stream, header);
 }
 
-void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const SimpleWeb::error_code&)
+void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const SimpleWeb::error_code& ec)
 {
     // Handle errors here
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
+    if (ec.value() == 995 || ec == SimpleWeb::errc::operation_canceled)
+        return;
+
+    LOG_ERROR << "(" << ec.value() << ") " << ec.message() << std::endl;
 }

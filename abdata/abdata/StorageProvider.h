@@ -38,7 +38,7 @@ public:
     /// Flush all
     void Shutdown();
 private:
-    /// first = dirty, second = data
+    /// first = flags, second = data
     using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;
 
     static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id);
