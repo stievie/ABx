@@ -4,8 +4,6 @@ Ancient Greece Multiplayer Online RPG.
 
 ## Architecture
 
-Uses a single TCP stream for the game protocol.
-
 ~~~
                                               +--------------------- File System
          +---------------- File Server1...N --+---- Data Server -+
@@ -15,6 +13,34 @@ Client1 -+                 +--- Game Server1 -+
 ClientN -+                 +--- Game ServerN -+
          +-----------------+
 ~~~
+
+### Data Server
+
+The Data server provides data from the database server and caches it. Connection
+to this server is required for:
+
+* File Server
+* Login Server
+* Game Server
+
+### File Server
+
+The file server is a simple HTTP server providing files and other information.
+The client my connect to it from time to time and download data.
+
+### Login Server
+
+Used by the client to login, create accounts and manage characters.
+
+It also tells the client to which Game and File Server to connect.
+
+### Game Server
+
+The game server simulates the games.
+
+### Client
+
+Uses a single TCP stream for the game protocol.
 
 ## Run Server
 
@@ -26,12 +52,6 @@ ClientN -+                 +--- Game ServerN -+
 ~~~
 abserv [-conf <config file>] [-log <log dir>]
 ~~~
-
-The Data server provides data from the database server and caches them. The Game
-Server connects to the Data server.
-
-The file server is a simple HTTP server providing files and other information.
-The client my connect to it from time to time and download data.
 
 ### Run as NT service
 
