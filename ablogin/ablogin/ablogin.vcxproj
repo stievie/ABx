@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F605AEFE-531E-4EEC-AE14-A4E3E4AB8F88}</ProjectGuid>
+    <ProjectGuid>{326A6FBB-46E5-4AFA-AAC0-5BC096703A8B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>abdata</RootNamespace>
+    <RootNamespace>ablogin</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,7 +72,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\Bin\</OutDir>
-    <TargetName>$(ProjectName)_x86_d</TargetName>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -82,7 +82,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\Bin\</OutDir>
-    <TargetName>$(ProjectName)_x86</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,11 +90,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,11 +105,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,14 +119,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,15 +138,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,86 +157,39 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Bans.h" />
     <ClInclude Include="Connection.h" />
-    <ClInclude Include="ConnectionManager.h" />
-    <ClInclude Include="Database.h" />
-    <ClInclude Include="DatabaseMysql.h" />
-    <ClInclude Include="DatabaseOdbc.h" />
-    <ClInclude Include="DatabasePgsql.h" />
-    <ClInclude Include="DatabaseSqlite.h" />
-    <ClInclude Include="DBAccount.h" />
-    <ClInclude Include="DBAccountBan.h" />
-    <ClInclude Include="DBAccountKey.h" />
-    <ClInclude Include="DBAccountKeyAccounts.h" />
-    <ClInclude Include="DBAll.h" />
-    <ClInclude Include="DBAttribute.h" />
-    <ClInclude Include="DBAttributeList.h" />
-    <ClInclude Include="DBBan.h" />
-    <ClInclude Include="DBCharacter.h" />
-    <ClInclude Include="DBEffect.h" />
-    <ClInclude Include="DBEffectList.h" />
-    <ClInclude Include="DBFriendList.h" />
-    <ClInclude Include="DBGame.h" />
-    <ClInclude Include="DBGameList.h" />
-    <ClInclude Include="DBIpBan.h" />
-    <ClInclude Include="DBMail.h" />
-    <ClInclude Include="DBMailList.h" />
-    <ClInclude Include="DBProfession.h" />
-    <ClInclude Include="DBProfessionList.h" />
-    <ClInclude Include="DBService.h" />
-    <ClInclude Include="DBServicelList.h" />
-    <ClInclude Include="DBSkill.h" />
-    <ClInclude Include="DBSkillList.h" />
-    <ClInclude Include="DBVersion.h" />
-    <ClInclude Include="EvictionStrategy.h" />
-    <ClInclude Include="Server.h" />
+    <ClInclude Include="IOAccount.h" />
+    <ClInclude Include="IOGame.h" />
+    <ClInclude Include="IOService.h" />
+    <ClInclude Include="NetworkMessage.h" />
+    <ClInclude Include="OutputMessage.h" />
+    <ClInclude Include="Protocol.h" />
+    <ClInclude Include="ProtocolLogin.h" />
+    <ClInclude Include="Service.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StorageProvider.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Connection.cpp" />
-    <ClCompile Include="ConnectionManager.cpp" />
-    <ClCompile Include="Database.cpp" />
-    <ClCompile Include="DatabaseMysql.cpp" />
-    <ClCompile Include="DatabaseOdbc.cpp" />
-    <ClCompile Include="DatabasePgsql.cpp" />
-    <ClCompile Include="DatabaseSqlite.cpp" />
-    <ClCompile Include="DBAccount.cpp" />
-    <ClCompile Include="DBAccountBan.cpp" />
-    <ClCompile Include="DBAccountKey.cpp" />
-    <ClCompile Include="DBAccountKeyAccounts.cpp" />
-    <ClCompile Include="DBAttribute.cpp" />
-    <ClCompile Include="DBAttributeList.cpp" />
-    <ClCompile Include="DBBan.cpp" />
-    <ClCompile Include="DBCharacter.cpp" />
-    <ClCompile Include="DBEffect.cpp" />
-    <ClCompile Include="DBEffectList.cpp" />
-    <ClCompile Include="DBFriendList.cpp" />
-    <ClCompile Include="DBGame.cpp" />
-    <ClCompile Include="DBGameList.cpp" />
-    <ClCompile Include="DBIpBan.cpp" />
-    <ClCompile Include="DBMail.cpp" />
-    <ClCompile Include="DBMailList.cpp" />
-    <ClCompile Include="DBProfession.cpp" />
-    <ClCompile Include="DBProfessionList.cpp" />
-    <ClCompile Include="DBService.cpp" />
-    <ClCompile Include="DBServicelList.cpp" />
-    <ClCompile Include="DBSkill.cpp" />
-    <ClCompile Include="DBSkillList.cpp" />
-    <ClCompile Include="DBVersion.cpp" />
+    <ClCompile Include="IOAccount.cpp" />
+    <ClCompile Include="IOGame.cpp" />
+    <ClCompile Include="IOService.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="OldestInsertionEviction.cpp" />
-    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="NetworkMessage.cpp" />
+    <ClCompile Include="OutputMessage.cpp" />
+    <ClCompile Include="Protocol.cpp" />
+    <ClCompile Include="ProtocolLogin.cpp" />
+    <ClCompile Include="Service.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StorageProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">

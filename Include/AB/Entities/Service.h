@@ -11,6 +11,7 @@ enum ServiceType : uint8_t
     ServiceTypeUnknown = 0,
     ServiceTypeDataServer,
     ServiceTypeFileServer,
+    ServiceTypeLoginServer,
     ServiceTypeGameServer
 };
 
@@ -35,6 +36,7 @@ struct Service : Entity
         s.text1b(name, Limits::MAX_SERVICE_NAME);
         s.value1b(type);
         s.text1b(host, Limits::MAX_SERVICE_HOST);
+        s.value2b(port);
         s.value1b(status);
         s.value8b(startTime);
         s.value8b(stopTime);
@@ -44,6 +46,7 @@ struct Service : Entity
     std::string name;
     ServiceType type = ServiceTypeUnknown;
     std::string host;
+    uint16_t port;
     ServiceStatus status = ServiceStatusOffline;
     int64_t startTime = 0;
     int64_t stopTime = 0;

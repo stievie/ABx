@@ -20,6 +20,7 @@
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/AccountBan.h>
 #include <AB/Entities/Service.h>
+#include <AB/Entities/ServiceList.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 #include "Utils.h"
@@ -73,6 +74,8 @@ bool Application::Initialize(int argc, char** argv)
 
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = port;
+    if (!address.empty())
+        server_->config.address = address;
     server_->config.thread_pool_size = threads;
 
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
@@ -137,10 +140,15 @@ void Application::Run()
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     dataClient_->Read(serv);
     serv.name = "abfile";
+    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("server_host", "");
+    serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeFileServer;
     serv.startTime = Utils::AbTick();
     dataClient_->UpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    dataClient_->Invalidate(sl);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
@@ -158,6 +166,9 @@ void Application::Stop()
     if (serv.startTime != 0)
         serv.runTime += (serv.stopTime - serv.startTime) / 1000;
     dataClient_->UpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    dataClient_->Invalidate(sl);
 
     LOG_INFO << "Server shutdown..." << std::endl;
     server_->stop();

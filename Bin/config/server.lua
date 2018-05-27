@@ -6,7 +6,8 @@ ip = "192.168.1.51"
 
 -- login server port
 -- This should be the port used for connecting with IP changers etc.
-login_port = 2748         -- 0xABC
+login_port = 0      -- Now we have a dedicated login server
+--login_port = 2748         -- 0xABC
 -- login_ip = ip
 
 -- game server port

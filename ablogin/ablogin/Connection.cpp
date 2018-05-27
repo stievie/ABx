@@ -8,8 +8,6 @@
 #include "Service.h"
 #include "OutputMessage.h"
 
-#include "DebugNew.h"
-
 namespace Net {
 
 uint32_t ConnectionManager::maxPacketsPerSec = 0;

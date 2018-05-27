@@ -25,6 +25,8 @@
 #include "Profiler.h"
 #include "PlayerManager.h"
 #include <AB/Entities/Service.h>
+#include <AB/Entities/ServiceList.h>
+#include "Connection.h"
 
 #include "DebugNew.h"
 
@@ -117,6 +119,7 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
@@ -195,11 +198,15 @@ void Application::Run()
     serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
     dataClient_->Read(serv);
     serv.host = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
+    serv.port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     serv.name = "abserv";
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeGameServer;
     serv.startTime = Utils::AbTick();
     dataClient_->UpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    dataClient_->Invalidate(sl);
 
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
@@ -226,6 +233,9 @@ void Application::Stop()
     if (serv.startTime != 0)
         serv.runTime += (serv.stopTime - serv.startTime) / 1000;
     dataClient_->UpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    dataClient_->Invalidate(sl);
 
     Game::PlayerManager::Instance.KickAllPlayers();
     // Before serviceManager_.Stop()

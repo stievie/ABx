@@ -33,6 +33,7 @@ static constexpr size_t KEY_PROFESSIONLIST_HASH = Utils::StringHash(AB::Entities
 static constexpr size_t KEY_VERSIONS_HASH = Utils::StringHash(AB::Entities::Version::KEY());
 static constexpr size_t KEY_ATTRIBUTELIST_HASH = Utils::StringHash(AB::Entities::AttributeList::KEY());
 static constexpr size_t KEY_SERVICE_HASH = Utils::StringHash(AB::Entities::Service::KEY());
+static constexpr size_t KEY_SERVICELIST_HASH = Utils::StringHash(AB::Entities::ServiceList::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -486,6 +487,8 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBAttributeList, AB::Entities::AttributeList>(id, *data);
     case KEY_SERVICE_HASH:
         return LoadFromDB<DB::DBService, AB::Entities::Service>(id, *data);
+    case KEY_SERVICELIST_HASH:
+        return LoadFromDB<DB::DBServicelList, AB::Entities::ServiceList>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -587,6 +590,9 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_SERVICE_HASH:
         succ = FlushRecord<DB::DBService, AB::Entities::Service>(data);
         break;
+    case KEY_SERVICELIST_HASH:
+        succ = FlushRecord<DB::DBServicelList, AB::Entities::ServiceList>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -651,6 +657,8 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBAttributeList, AB::Entities::AttributeList>(data);
     case KEY_SERVICE_HASH:
         return ExistsInDB<DB::DBService, AB::Entities::Service>(data);
+    case KEY_SERVICELIST_HASH:
+        return ExistsInDB<DB::DBServicelList, AB::Entities::ServiceList>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
