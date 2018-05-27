@@ -151,9 +151,11 @@ bool HeightMap::Collides(const ConvexHull& b2, Vector3& move) const
     return b2.Collides(*this, move);
 }
 
-bool HeightMap::Collides(const HeightMap& b2, Vector3& move) const
+bool HeightMap::Collides(const HeightMap&, Vector3&) const
 {
-    return b2.Collides(*this, move);
+    // Can not collide Heightmap with Heightmap
+    assert(false);
+    return false;
 }
 
 Point<int> HeightMap::WorldToHeightmap(const Vector3& world)

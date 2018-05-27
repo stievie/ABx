@@ -37,7 +37,7 @@ public:
     bool Collides(const Sphere& b2, Vector3& move) const;
     bool Collides(const BoundingBox& b2, Vector3& move) const;
     bool Collides(const ConvexHull& b2, Vector3& move) const;
-    bool Collides(const HeightMap& b2, Vector3& move) const;
+    bool Collides(const HeightMap&, Vector3&) const;
 
     Point<int> WorldToHeightmap(const Vector3& world);
     Vector3 HeightmapToWorld(const Point<int>& pixel);

@@ -5,6 +5,9 @@
 
 #pragma once
 
+// Decorated name length exceeded
+#pragma warning(disable: 4503)
+
 #include "targetver.h"
 
 #include <stdio.h>
@@ -18,9 +21,6 @@
 #pragma warning(disable: 4592)
 #include <SimpleWeb/server_https.hpp>
 #pragma warning(pop)
-
-// Decorated name length exceeded
-#pragma warning(disable: 4503)
 
 //#define _PROFILING
 // Used by the profiler to generate a unique identifier
