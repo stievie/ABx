@@ -3,7 +3,6 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "ProtocolGame.h"
-#include "ProtocolLogin.h"
 #include "ProtocolAdmin.h"
 #include "ProtocolStatus.h"
 #include "ConfigManager.h"
@@ -27,6 +26,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Connection.h"
+#include "Bans.h"
 
 #include "DebugNew.h"
 
@@ -139,22 +139,27 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     // Add Protocols
-    uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::LoginIP].GetInt());
-    uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::LoginPort].GetInt());
+    uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());
+    uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
     if (port != 0)
-        serviceManager_->Add<Net::ProtocolLogin>(ip, port);
-    ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());
-    port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
-    if (port != 0)
-        serviceManager_->Add<Net::ProtocolAdmin>(ip, port);
+        serviceManager_->Add<Net::ProtocolAdmin>(ip, port, [](uint32_t remoteIp) -> bool
+    {
+        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
+    });
     ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::StatusIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
     if (port != 0)
-        serviceManager_->Add<Net::ProtocolStatus>(ip, port);
+        serviceManager_->Add<Net::ProtocolStatus>(ip, port, [](uint32_t remoteIp) -> bool
+    {
+        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
+    });
     ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
     port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     if (port != 0)
-        serviceManager_->Add<Net::ProtocolGame>(ip, port);
+        serviceManager_->Add<Net::ProtocolGame>(ip, port, [](uint32_t remoteIp) -> bool
+    {
+        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
+    });
 
     int64_t loadingTime = (Utils::AbTick() - startLoading);
 

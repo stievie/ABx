@@ -9,8 +9,9 @@ Uses a single TCP stream for the game protocol.
 ## Run Server
 
 1. Run the data server `abdada`
-1. Run the file server `abfile`
-2. Run the game server `abserv`
+2. Run the file server `abfile`
+3. Run the login server `ablogin`
+4. Run the game server `abserv`
 
 ~~~
 abserv [-conf <config file>] [-log <log dir>]

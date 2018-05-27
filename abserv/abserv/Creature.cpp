@@ -263,7 +263,9 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             message.AddByte(AB::GameProtocol::GameObjectPositionChange);
             message.Add<uint32_t>(id_);
-            message.AddVector3(transformation_.position_);
+            message.Add<float>(transformation_.position_.x_);
+            message.Add<float>(transformation_.position_.y_);
+            message.Add<float>(transformation_.position_.z_);
         }
 
         if (!newDirection)

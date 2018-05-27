@@ -24,22 +24,7 @@
     <ClInclude Include="Application.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Connection.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkMessage.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputMessage.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ProtocolLogin.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Service.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Bans.h">
@@ -68,22 +53,7 @@
     <ClCompile Include="Application.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Connection.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkMessage.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputMessage.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ProtocolLogin.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Service.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Bans.cpp">

@@ -4,12 +4,6 @@
 -- server ip (the ip that server listens on)
 ip = "192.168.1.51"
 
--- login server port
--- This should be the port used for connecting with IP changers etc.
-login_port = 0      -- Now we have a dedicated login server
---login_port = 2748         -- 0xABC
--- login_ip = ip
-
 -- game server port
 -- game server must be on it's own port (due to limits of the protocol)
 game_port = 2749          -- 0xABE

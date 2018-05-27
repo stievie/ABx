@@ -19,6 +19,8 @@ std::pair<std::string, uint16_t> IOService::GetService(AB::Entities::ServiceType
         s.uuid = uuid;
         if (!dc->Read(s))
             continue;
+        if (s.status != AB::Entities::ServiceStatusOnline)
+            continue;
         if (s.type == type)
             return std::make_pair(s.host, s.port);
     }

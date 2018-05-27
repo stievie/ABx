@@ -301,9 +301,13 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
         object->transformation_.position_ = p.position;
         object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
     }
-    gameStatus_->AddVector3(object->transformation_.position_);
+    gameStatus_->Add<float>(object->transformation_.position_.x_);
+    gameStatus_->Add<float>(object->transformation_.position_.y_);
+    gameStatus_->Add<float>(object->transformation_.position_.z_);
     gameStatus_->Add<float>(object->transformation_.rotation_);
-    gameStatus_->AddVector3(object->transformation_.scale_);
+    gameStatus_->Add<float>(object->transformation_.scale_.x_);
+    gameStatus_->Add<float>(object->transformation_.scale_.y_);
+    gameStatus_->Add<float>(object->transformation_.scale_.z_);
 
     IO::PropWriteStream data;
     size_t dataSize;
@@ -336,9 +340,13 @@ void Game::SendSpawnAll(uint32_t playerId)
 
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         msg.Add<uint32_t>(o->id_);
-        msg.AddVector3(o->transformation_.position_);
+        msg.Add<float>(o->transformation_.position_.x_);
+        msg.Add<float>(o->transformation_.position_.y_);
+        msg.Add<float>(o->transformation_.position_.z_);
         msg.Add<float>(o->transformation_.rotation_);
-        msg.AddVector3(o->transformation_.scale_);
+        msg.Add<float>(o->transformation_.scale_.x_);
+        msg.Add<float>(o->transformation_.scale_.y_);
+        msg.Add<float>(o->transformation_.scale_.z_);
         IO::PropWriteStream data;
         size_t dataSize;
         o->Serialize(data);

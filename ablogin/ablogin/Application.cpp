@@ -9,6 +9,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Utils.h"
+#include "Bans.h"
 
 Application* Application::Instance = nullptr;
 
@@ -88,7 +89,10 @@ bool Application::LoadMain()
         IO::SimpleConfigManager::Instance.GetGlobal("login_port", 2748)
     );
     if (port != 0)
-        serviceManager_->Add<Net::ProtocolLogin>(ip, port);
+        serviceManager_->Add<Net::ProtocolLogin>(ip, port, [](uint32_t remoteIp) -> bool
+    {
+        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
+    });
 
     PrintServerInfo();
     return true;
