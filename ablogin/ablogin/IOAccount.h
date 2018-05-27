@@ -49,10 +49,6 @@ public:
         const std::string& accKey);
     static IOAccount::LoginError LoginServerAuth(const std::string& pass,
         AB::Entities::Account& account);
-    static bool GameWorldAuth(const std::string& accountUuid, const std::string& pass,
-        const std::string& charUuid);
-    static bool Save(const AB::Entities::Account& account);
-    static bool AccountLogout(const std::string& uuid);
     static IOAccount::CreatePlayerResult CreatePlayer(const std::string& accountUuid,
         const std::string& name, const std::string& profUuid, AB::Entities::CharacterSex sex, bool isPvp,
         std::string& uuid);

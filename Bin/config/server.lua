@@ -12,14 +12,14 @@ game_port = 2749          -- 0xABE
 -- game_ip = ip
 
 -- status port
--- Used by status protocol connections, should be same as login
+-- Used by status protocol connections, should be game_port + 1
 -- to work correctly with server lists etc.
-status_port = login_port
+status_port = game_port + 1
 -- status_ip = login_ip
 
 -- admin port
 -- Port used by the Admin protocol
-admin_port = 2750         -- 0xABF
+admin_port = game_port + 2
 -- admin_ip = ip
 
 -- The file server sent to the client. If host is empty the client uses the login host.

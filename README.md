@@ -6,6 +6,16 @@ Ancient Greece Multiplayer Online RPG.
 
 Uses a single TCP stream for the game protocol.
 
+~~~
+                                              +--------------------- File System
+         +---------------- File Server1...N --+---- Data Server -+
+         +-----------------+                  |                  +---- Database
+Client1 -+                 +--- Game Server1 -+
+  ...    + - Login Server -+        ...       |
+ClientN -+                 +--- Game ServerN -+
+         +-----------------+
+~~~
+
 ## Run Server
 
 1. Run the data server `abdada`

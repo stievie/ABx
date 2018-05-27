@@ -1,5 +1,6 @@
 # TODO
 
+* abserv: Status protocol
 * abdata: Create should not be blocking. New method Create/CreateSynch? Or synch flag for all methods?
 * Check https://github.com/im95able/Rea for FL?
 * all: /friend /ignore /flremove /fl commands
@@ -13,7 +14,4 @@
     https://github.com/cnjinhao/nana, 
     https://github.com/andlabs/libui,
     https://github.com/ocornut/imgui
-* all: Server discovery
-  https://github.com/beschulz/asio_service_discovery
-  https://github.com/truvorskameikin/udp-discovery-cpp
-* abdata, all: Add running server to DB
+* Process manager https://github.com/eidheim/tiny-process-library

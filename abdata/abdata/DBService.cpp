@@ -15,13 +15,14 @@ bool DBService::Create(AB::Entities::Service& s)
     Database* db = Database::Instance();
     std::ostringstream query;
 
-    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `host`, `port`, `status`, `start_time`, `stop_time`, `run_time`) VALUES (";
+    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `host`, `port`, `status_port`, `status`, `start_time`, `stop_time`, `run_time`) VALUES (";
 
     query << db->EscapeString(s.uuid) << ", ";
     query << db->EscapeString(s.name) << ", ";
     query << static_cast<int>(s.type) << ", ";
     query << db->EscapeString(s.host) << ", ";
     query << s.port << ", ";
+    query << s.statusPort << ", ";
     query << static_cast<int>(s.status) << ", ";
     query << s.startTime << ", ";
     query << s.stopTime << ", ";
@@ -47,8 +48,8 @@ bool DBService::Load(AB::Entities::Service& s)
 {
     if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
     {
-        return false;
         LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
     }
 
     DB::Database* db = DB::Database::Instance();
@@ -66,6 +67,7 @@ bool DBService::Load(AB::Entities::Service& s)
     s.type = static_cast<AB::Entities::ServiceType>(result->GetUInt("type"));
     s.host = result->GetString("host");
     s.port = static_cast<uint16_t>(result->GetUInt("port"));
+    s.statusPort = static_cast<uint16_t>(result->GetUInt("status_port"));
     s.status = static_cast<AB::Entities::ServiceStatus>(result->GetUInt("status"));
     s.startTime = result->GetLong("start_time");
     s.stopTime = result->GetLong("stop_time");
@@ -78,8 +80,8 @@ bool DBService::Save(const AB::Entities::Service& s)
 {
     if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
     {
-        return false;
         LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
     }
 
     Database* db = Database::Instance();
@@ -90,6 +92,7 @@ bool DBService::Save(const AB::Entities::Service& s)
     query << " `type` = " << static_cast<int>(s.type) << ", ";
     query << " `host` = " << db->EscapeString(s.host) << ", ";
     query << " `port` = " << s.port << ", ";
+    query << " `status_port` = " << s.statusPort << ", ";
     query << " `status` = " << static_cast<int>(s.status) << ", ";
     query << " `start_time` = " << s.startTime << ", ";
     query << " `stop_time` = " << s.stopTime << ", ";
@@ -134,8 +137,8 @@ bool DBService::Exists(const AB::Entities::Service& s)
 {
     if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
     {
-        return false;
         LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
     }
 
     DB::Database* db = DB::Database::Instance();
