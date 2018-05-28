@@ -41,10 +41,58 @@ Application::~Application()
         Stop();
 }
 
+bool Application::ParseCommandLine()
+{
+    for (int i = 0; i != arguments_.size(); i++)
+    {
+        const std::string& a = arguments_[i];
+        if (a.compare("-conf") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                configFile_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -conf" << std::endl;
+        }
+        else if (a.compare("-log") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                logDir_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -log" << std::endl;
+        }
+        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Application::ShowHelp()
+{
+    std::cout << "abserv [-<options> [<value>]]" << std::endl;
+    std::cout << "options:" << std::endl;
+    std::cout << "  conf <config file>: Use config file" << std::endl;
+    std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  h, help: Show help" << std::endl;
+}
+
 bool Application::Initialize(int argc, char** argv)
 {
     if (!ServerApp::Initialize(argc, argv))
         return false;
+
+    if (!ParseCommandLine())
+    {
+        ShowHelp();
+        return false;
+    }
 
     if (configFile_.empty())
         configFile_ = path_ + "/abfile.lua";

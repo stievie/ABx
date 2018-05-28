@@ -16,7 +16,7 @@
 * GJK https://github.com/xuzebin/gjk
 * https://github.com/fraillt/bitsery
 * https://github.com/brimzi/simple-cache
-* https://github.com/mariusbancila/stduuid (modified to cimplie with VC2015)
+* https://github.com/mariusbancila/stduuid (modified to compile with VC2015)
 
 ## Client
 

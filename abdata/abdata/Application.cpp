@@ -126,6 +126,10 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -dbport" << std::endl;
         }
+        else if (arg.compare("-h") == 0 || arg.compare("-help") == 0)
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -225,6 +229,7 @@ void Application::ShowHelp()
     std::cout << "  dbname <value>: Database name" << std::endl;
     std::cout << "  dbuser <value>: Database user" << std::endl;
     std::cout << "  dbpass <value>: Database password" << std::endl;
+    std::cout << "  h, help: Show help" << std::endl;
 }
 
 Application::~Application()

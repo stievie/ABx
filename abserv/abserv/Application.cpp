@@ -49,7 +49,7 @@ Application::~Application()
     Asynch::Dispatcher::Instance.Stop();
 }
 
-void Application::ParseCommandLine()
+bool Application::ParseCommandLine()
 {
     for (int i = 0; i != arguments_.size(); i++)
     {
@@ -74,15 +74,33 @@ void Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
         }
+        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
+        {
+            return false;
+        }
     }
+    return true;
+}
+
+void Application::ShowHelp()
+{
+    std::cout << "abserv [-<options> [<value>]]" << std::endl;
+    std::cout << "options:" << std::endl;
+    std::cout << "  conf <config file>: Use config file" << std::endl;
+    std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  h, help: Show help" << std::endl;
 }
 
 bool Application::Initialize(int argc, char** argv)
 {
     if (!ServerApp::Initialize(argc, argv))
         return false;
-    using namespace std::chrono_literals;
-    ParseCommandLine();
+
+    if (!ParseCommandLine())
+    {
+        ShowHelp();
+        return false;
+    }
     if (!logDir_.empty())
     {
         // From the command line
@@ -97,6 +115,7 @@ bool Application::Initialize(int argc, char** argv)
     if (!LoadMain())
         return false;
 
+    using namespace std::chrono_literals;
     std::this_thread::sleep_for(100ms);
 
     if (!serviceManager_->IsRunning())

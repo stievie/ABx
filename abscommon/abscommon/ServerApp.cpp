@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "ServerApp.h"
+#if !defined(_WIN32)
+#include <unistd.h>
+#endif
 
 ServerApp* ServerApp::Instance = nullptr;
 
@@ -20,7 +23,9 @@ bool ServerApp::Initialize(int argc, char** argv)
     GetModuleFileNameA(NULL, buff, MAX_PATH);
     std::string aux(buff);
 #else
-    std::string aux(argv[0]);
+    char buff[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
+    std::string aux(result, (count > 0) ? count : 0);
 #endif
     size_t pos = aux.find_last_of("\\/");
     path_ = aux.substr(0, pos);

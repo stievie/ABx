@@ -27,7 +27,7 @@ Application::~Application()
     Asynch::Dispatcher::Instance.Stop();
 }
 
-void Application::ParseCommandLine()
+bool Application::ParseCommandLine()
 {
     for (int i = 0; i != arguments_.size(); i++)
     {
@@ -52,7 +52,21 @@ void Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
         }
+        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
+        {
+            return false;
+        }
     }
+    return true;
+}
+
+void Application::ShowHelp()
+{
+    std::cout << "ablogin [-<options> [<value>]]" << std::endl;
+    std::cout << "options:" << std::endl;
+    std::cout << "  conf <config file>: Use config file" << std::endl;
+    std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  h, help: Show help" << std::endl;
 }
 
 bool Application::LoadMain()
@@ -121,7 +135,11 @@ bool Application::Initialize(int argc, char** argv)
     if (!ServerApp::Initialize(argc, argv))
         return false;
 
-    ParseCommandLine();
+    if (!ParseCommandLine())
+    {
+        ShowHelp();
+        return false;
+    }
     if (!logDir_.empty())
     {
         // From the command line

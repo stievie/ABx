@@ -59,7 +59,7 @@ int main(int argc, char** argv)
     if (!app.Initialize(argc, argv))
         return EXIT_FAILURE;
 
-    shutdown_handler = [&](int /* signal */)
+    shutdown_handler = [&app](int /* signal */)
     {
         app.Stop();
     };

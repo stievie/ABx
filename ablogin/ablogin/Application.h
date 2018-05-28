@@ -12,7 +12,8 @@ private:
     std::string configFile_;
     std::string logDir_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
-    void ParseCommandLine();
+    bool ParseCommandLine();
+    void ShowHelp();
     bool LoadMain();
     void PrintServerInfo();
 public:

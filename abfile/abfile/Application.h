@@ -23,6 +23,8 @@ private:
     uint16_t dataPort_;
     bool requireAuth_;
     bool running_;
+    bool ParseCommandLine();
+    void ShowHelp();
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     bool IsAccountBanned(const AB::Entities::Account& acc);
     static bool IsHiddenFile(const boost::filesystem::path& path);

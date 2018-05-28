@@ -15,7 +15,8 @@ private:
     std::string logDir_;
     bool LoadMain();
     void PrintServerInfo();
-    void ParseCommandLine();
+    bool ParseCommandLine();
+    void ShowHelp();
     asio::io_service ioService_;
 public:
     Application();
