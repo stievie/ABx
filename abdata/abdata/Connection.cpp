@@ -77,7 +77,7 @@ void Connection::StartCreateOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
+                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + maxDataSize_);
         }
         else
             connectionManager_.Stop(self);

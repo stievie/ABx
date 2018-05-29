@@ -35,6 +35,72 @@ public:
     bool Preload(const std::vector<uint8_t>& key);
     bool Exists(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
 
+    // Client compatible Methods
+    template<typename E>
+    bool EntityRead(E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        SetEntity<E>(entity, *data.get());
+        if (!Read(aKey, data))
+            return false;
+        if (GetEntity(*data.get(), entity))
+            return true;
+        return false;
+    }
+    template<typename E>
+    bool EntityDelete(const E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        return Delete(aKey);
+    }
+    template<typename E>
+    bool EntityUpdateOrCreate(E& entity)
+    {
+        if (EntityExists(entity))
+            return EntityUpdate(entity);
+        return EntityCreate(entity);
+    }
+    template<typename E>
+    bool EntityUpdate(const E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        if (SetEntity<E>(entity, *data.get()) == 0)
+            return false;
+        return Update(aKey, data);
+    }
+    template<typename E>
+    bool EntityCreate(E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        if (SetEntity<E>(entity, *data.get()) == 0)
+            return false;
+        return Create(aKey, data);
+    }
+    template<typename E>
+    bool EntityPreload(const E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        return Preload(aKey);
+    }
+    template<typename E>
+    bool EntityExists(const E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
+        if (SetEntity<E>(entity, *data.get()) == 0)
+            return false;
+        return Exists(aKey, data);
+    }
+    /// Flushes an entity and removes it from cache
+    template<typename E>
+    bool EntityInvalidate(const E& entity)
+    {
+        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        return Invalidate(aKey);
+    }
     /// Flush all
     void Shutdown();
 private:

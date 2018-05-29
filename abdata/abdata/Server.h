@@ -10,6 +10,11 @@ public:
         uint16_t port, size_t maxCacheSize, bool readonly);
     ~Server();
     void Shutdown();
+
+    StorageProvider* GetStorageProvider()
+    {
+        return &storageProvider_;
+    }
 private:
     void LogRotateTask();
 	void StartAccept();

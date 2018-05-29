@@ -5,6 +5,9 @@
 #include "SimpleConfigManager.h"
 #include "FileUtils.h"
 #include "Scheduler.h"
+#include <AB/Entities/Service.h>
+#include <AB/Entities/ServiceList.h>
+#include "Utils.h"
 
 bool Application::ParseCommandLine()
 {
@@ -279,6 +282,21 @@ void Application::Run()
     Asynch::Scheduler::Instance.Start();
 
     server_ = std::make_unique<Server>(ioService_, listenIp_, port_, maxSize_, readonly_);
+
+    AB::Entities::Service serv;
+    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    server_->GetStorageProvider()->EntityRead(serv);
+    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_ip", "");
+    serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
+    serv.name = "abdata";
+    serv.status = AB::Entities::ServiceStatusOnline;
+    serv.type = AB::Entities::ServiceTypeDataServer;
+    serv.startTime = Utils::AbTick();
+    server_->GetStorageProvider()->EntityUpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    server_->GetStorageProvider()->EntityInvalidate(sl);
+
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     ioService_.run();
@@ -287,6 +305,18 @@ void Application::Run()
 void Application::Stop()
 {
     running_ = false;
+
+    AB::Entities::Service serv;
+    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    server_->GetStorageProvider()->EntityRead(serv);
+    serv.status = AB::Entities::ServiceStatusOffline;
+    serv.stopTime = Utils::AbTick();
+    if (serv.startTime != 0)
+        serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+    server_->GetStorageProvider()->EntityUpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    server_->GetStorageProvider()->EntityInvalidate(sl);
 
     server_->Shutdown();
     Asynch::Scheduler::Instance.Stop();
