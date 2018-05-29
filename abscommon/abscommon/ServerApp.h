@@ -3,8 +3,8 @@
 class ServerApp
 {
 public:
-    ServerApp();
-    virtual ~ServerApp();
+    ServerApp() = default;
+    virtual ~ServerApp() = default;
     virtual bool Initialize(int argc, char** argv);
     virtual void Run()
     { }
@@ -12,8 +12,6 @@ public:
     { }
 
     std::string path_;
+    std::string exeFile_;
     std::vector<std::string> arguments_;
-
-    static ServerApp* Instance;
 };
-
