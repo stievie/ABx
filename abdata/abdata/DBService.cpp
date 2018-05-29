@@ -15,7 +15,9 @@ bool DBService::Create(AB::Entities::Service& s)
     Database* db = Database::Instance();
     std::ostringstream query;
 
-    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `host`, `port`, `status_port`, `status`, `start_time`, `stop_time`, `run_time`) VALUES (";
+    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `host`, `port`, " <<
+        "`status_port`, `status`, `start_time`, `stop_time`, `run_time`, " <<
+        " `file`, `path`, `arguments`) VALUES(";
 
     query << db->EscapeString(s.uuid) << ", ";
     query << db->EscapeString(s.name) << ", ";
@@ -26,7 +28,10 @@ bool DBService::Create(AB::Entities::Service& s)
     query << static_cast<int>(s.status) << ", ";
     query << s.startTime << ", ";
     query << s.stopTime << ", ";
-    query << s.runTime;
+    query << s.runTime << ", ";
+    query << db->EscapeString(s.file) << ", ";
+    query << db->EscapeString(s.path) << ", ";
+    query << db->EscapeString(s.arguments);
 
     query << ")";
 
@@ -72,6 +77,9 @@ bool DBService::Load(AB::Entities::Service& s)
     s.startTime = result->GetLong("start_time");
     s.stopTime = result->GetLong("stop_time");
     s.runTime = result->GetLong("run_time");
+    s.file = result->GetString("file");
+    s.path = result->GetString("path");
+    s.arguments = result->GetString("arguments");
 
     return true;
 }
@@ -96,7 +104,10 @@ bool DBService::Save(const AB::Entities::Service& s)
     query << " `status` = " << static_cast<int>(s.status) << ", ";
     query << " `start_time` = " << s.startTime << ", ";
     query << " `stop_time` = " << s.stopTime << ", ";
-    query << " `run_time` = " << s.runTime;
+    query << " `run_time` = " << s.runTime << ", ";
+    query << " `file` = " << db->EscapeString(s.file) << ", ";
+    query << " `path` = " << db->EscapeString(s.path) << ", ";
+    query << " `arguments` = " << db->EscapeString(s.arguments);
 
     query << " WHERE `uuid` = " << db->EscapeString(s.uuid);
 

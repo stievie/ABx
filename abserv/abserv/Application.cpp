@@ -225,6 +225,9 @@ void Application::Run()
     serv.port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     serv.statusPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
     serv.name = "abserv";
+    serv.file = exeFile_;
+    serv.path = path_;
+    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeGameServer;
     serv.startTime = Utils::AbTick();

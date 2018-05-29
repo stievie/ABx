@@ -17,7 +17,7 @@ bool ServerApp::Initialize(int argc, char** argv)
 #endif
     size_t pos = exeFile_.find_last_of("\\/");
     path_ = exeFile_.substr(0, pos);
-    for (int i = 0; i < argc; i++)
+    for (int i = 1; i < argc; i++)
     {
         arguments_.push_back(std::string(argv[i]));
     }

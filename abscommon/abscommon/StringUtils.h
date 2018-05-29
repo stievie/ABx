@@ -2,8 +2,29 @@
 
 namespace Utils {
 
-std::string Trim(const std::string& str, const std::string& whitespace = " \t");
-std::string LeftTrim(const std::string& str, const std::string& whitespace = " \t");
+template <typename charType>
+std::basic_string<charType> Trim(const std::basic_string<charType>& str,
+    const std::basic_string<charType>& whitespace = " \t")
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return std::basic_string<charType>(); // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+template <typename charType>
+std::basic_string<charType> LeftTrim(const std::basic_string<charType>& str,
+    const std::basic_string<charType>& whitespace = " \t")
+{
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::basic_string<charType>::npos)
+        return ""; // no content
+
+    return str.substr(strBegin, std::basic_string<charType>::npos);
+}
 std::vector<std::string> Split(const std::string& str, const std::string& delim);
 bool IsNumber(const std::string& s);
 std::string ConvertSize(size_t size);
@@ -27,6 +48,18 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
         result = true;
     }
     return result;
+}
+
+template <typename charType>
+std::basic_string<charType> CombineString(const std::vector<std::basic_string<charType>> strings,
+    const std::basic_string<charType>& delim)
+{
+    std::basic_string<charType> res;
+    for (const auto& s : strings)
+    {
+        res += s + delim;
+    }
+    return Trim(res, delim);
 }
 
 }

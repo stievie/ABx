@@ -168,6 +168,9 @@ void Application::Run()
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("login_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("login_port", 2748));
     serv.name = "ablogin";
+    serv.file = exeFile_;
+    serv.path = path_;
+    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeLoginServer;
     serv.startTime = Utils::AbTick();

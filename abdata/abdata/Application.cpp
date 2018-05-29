@@ -289,6 +289,9 @@ void Application::Run()
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_ip", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
     serv.name = "abdata";
+    serv.file = exeFile_;
+    serv.path = path_;
+    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeDataServer;
     serv.startTime = Utils::AbTick();

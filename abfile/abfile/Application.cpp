@@ -190,6 +190,9 @@ void Application::Run()
     serv.name = "abfile";
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("server_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
+    serv.file = exeFile_;
+    serv.path = path_;
+    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeFileServer;
     serv.startTime = Utils::AbTick();
