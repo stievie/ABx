@@ -63,23 +63,25 @@ void Maintenance::LogRotateTask()
 
 void Maintenance::UpdateServerLoadTask()
 {
-    static System::CpuUsage usage;
+    if (status_ != StatusRunnig)
+        return;
+
     AB::Entities::Service serv;
-    serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    serv.uuid = Application::GetServerId();
     IO::DataClient* cli = Application::Instance->GetDataClient();
-    cli->Read(serv);
-    short l = usage.GetUsage();
-    if (l != -1)
+    if (cli->Read(serv))
     {
-        serv.load = static_cast<uint8_t>(l);
-        cli->UpdateOrCreate(serv);
+        uint8_t load = Application::Instance->GetLoad();
+        if (load != serv.load)
+        {
+            serv.load = load;
+            cli->Update(serv);
+        }
     }
-    if (status_ == StatusRunnig)
-    {
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
-        );
-    }
+
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
+    );
 }
 
 void Maintenance::Run()

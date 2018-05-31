@@ -31,6 +31,10 @@ public:
     {
         return dataClient_.get();
     }
+    /// Returns a value between 0..100
+    uint8_t GetLoad() const;
+    /// Returns the Server UUID from the config file
+    static const std::string& GetServerId();
 
     static Application* Instance;
 };

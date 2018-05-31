@@ -27,6 +27,7 @@
 #include <AB/Entities/ServiceList.h>
 #include "Connection.h"
 #include "Bans.h"
+#include "CpuUsage.h"
 
 #include "DebugNew.h"
 
@@ -221,7 +222,7 @@ void Application::PrintServerInfo()
 void Application::Run()
 {
     AB::Entities::Service serv;
-    serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    serv.uuid = GetServerId();
     dataClient_->Read(serv);
     serv.host = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
     serv.port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
@@ -263,7 +264,7 @@ void Application::Stop()
     LOG_INFO << "Server shutdown...";
 
     AB::Entities::Service serv;
-    serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    serv.uuid = GetServerId();
     dataClient_->Read(serv);
     serv.status = AB::Entities::ServiceStatusOffline;
     serv.stopTime = Utils::AbTick();
@@ -280,4 +281,25 @@ void Application::Stop()
 
     ioService_.stop();
     LOG_INFO << "[done]" << std::endl;
+}
+
+uint8_t Application::GetLoad() const
+{
+    static System::CpuUsage usage;
+
+    size_t playerCount = Game::PlayerManager::Instance.GetPlayerCount();
+    float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
+    uint8_t load = static_cast<uint8_t>(ld);
+    short l = usage.GetUsage();
+    if (l > load)
+        // Use the higher value
+        load = static_cast<uint8_t>(l);
+    if (load > 100)
+        load = 100;
+    return load;
+}
+
+const std::string& Application::GetServerId()
+{
+    return ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
 }

@@ -37,6 +37,11 @@ public:
     void KickPlayer(uint32_t playerId);
     void KickAllPlayers();
 
+    size_t GetPlayerCount() const
+    {
+        return players_.size();
+    }
+
     static PlayerManager Instance;
 };
 

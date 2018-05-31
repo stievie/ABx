@@ -2,6 +2,7 @@
 #include "IOService.h"
 #include <AB/Entities/ServiceList.h>
 #include "Application.h"
+#include "Logger.h"
 
 namespace IO {
 
@@ -26,7 +27,7 @@ std::pair<std::string, uint16_t> IOService::GetService(AB::Entities::ServiceType
             continue;
         if (s.type == type)
         {
-            // Use preferred is possible
+            // Use preferred server is possible
             if (s.uuid.compare(preferredUuid) == 0 && s.load < 90)
                 return{ s.host, s.port };
             services.push_back(s);
@@ -43,6 +44,7 @@ std::pair<std::string, uint16_t> IOService::GetService(AB::Entities::ServiceType
         return{ services[0].host, services[0].port };
     }
 
+    LOG_WARNING << "No server of type " << static_cast<int>(type) << " online" << std::endl;
     return std::pair<std::string, uint16_t>();
 }
 
