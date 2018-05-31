@@ -61,7 +61,7 @@ public:
         acceptor_(nullptr),
         acceptConnection_(acceptConnection)
     {}
-    ~ServicePort() {}
+    ~ServicePort() = default;
 
     void Open(uint32_t ip, uint16_t port);
     void Close();
@@ -139,7 +139,6 @@ public:
         return servicePort->AddService(std::shared_ptr<ServiceBase>(new Service<T>()));
     }
 private:
-    void Die();
     asio::io_service& ioService_;
     bool running_;
     std::map<AcceptorKey, std::shared_ptr<ServicePort>> acceptors_;

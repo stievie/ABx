@@ -7,6 +7,7 @@
 #include <signal.h>     /* signal, raise, sig_atomic_t */
 #include <functional>
 #include "Application.h"
+#include "MiniDump.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -45,10 +46,14 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
+static std::mutex gTermLock;
 int main(int argc, char* argv[])
 {
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+#if defined(_MSC_VER) && defined(WRITE_MINIBUMP)
+    SetUnhandledExceptionFilter(UnhandledHandler);
 #endif
 
     ShowLogo();
@@ -56,15 +61,21 @@ int main(int argc, char* argv[])
     signal(SIGINT, signal_handler);              // Ctrl+C
     signal(SIGBREAK, signal_handler);            // X clicked
 
-    Application app;
-    if (!app.Initialize(argc, argv))
-        return EXIT_FAILURE;
-    shutdown_handler = [&app](int /*signal*/)
+    std::condition_variable termSignal;
     {
-        LOG_INFO << "Server shutdown..." << std::endl;
-        app.Stop();
-    };
-    app.Run();
+        Application app;
+        if (!app.Initialize(argc, argv))
+            return EXIT_FAILURE;
+        shutdown_handler = [&app, &termSignal](int /*signal*/)
+        {
+            std::unique_lock<std::mutex> lockUnique(gTermLock);
+            app.Stop();
+            termSignal.wait(lockUnique);
+        };
+        app.Run();
+    }
+
+    termSignal.notify_all();
 
     return EXIT_SUCCESS;
 }

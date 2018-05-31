@@ -13,6 +13,7 @@ private:
     std::unique_ptr<IO::DataClient> dataClient_;
     std::string configFile_;
     std::string logDir_;
+    bool running_;
     bool LoadMain();
     void PrintServerInfo();
     bool ParseCommandLine();

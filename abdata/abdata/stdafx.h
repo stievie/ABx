@@ -23,6 +23,8 @@
 
 #include <uuid.h>
 
+#define WRITE_MINIBUMP
+
 #include "Logger.h"
 
 #define USE_SQLITE

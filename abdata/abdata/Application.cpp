@@ -239,6 +239,8 @@ Application::~Application()
 {
     if (running_)
         Stop();
+    Asynch::Scheduler::Instance.Stop();
+    Asynch::Dispatcher::Instance.Stop();
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -307,7 +309,11 @@ void Application::Run()
 
 void Application::Stop()
 {
+    if (!running_)
+        return;
+
     running_ = false;
+    LOG_INFO << "Server shutdown...";
 
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
@@ -322,6 +328,5 @@ void Application::Stop()
     server_->GetStorageProvider()->EntityInvalidate(sl);
 
     server_->Shutdown();
-    Asynch::Scheduler::Instance.Stop();
-    Asynch::Dispatcher::Instance.Stop();
+    LOG_INFO << "[done]" << std::endl;
 }

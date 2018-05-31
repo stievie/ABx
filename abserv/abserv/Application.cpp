@@ -34,6 +34,7 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
+    running_(false),
     ioService_()
 {
     assert(Application::Instance == nullptr);
@@ -44,6 +45,7 @@ Application::Application() :
 
 Application::~Application()
 {
+    serviceManager_->Stop();
     Game::GameManager::Instance.Stop();
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
@@ -247,12 +249,19 @@ void Application::Run()
         IO::Logger::logDir_ = logDir_;
         IO::Logger::Close();
     }
+    running_ = true;
     serviceManager_->Run();
+    ioService_.run();
 }
 
 void Application::Stop()
 {
-    LOG_INFO << "Server is shutting down" << std::endl;
+    if (!running_)
+        return;
+
+    running_ = false;
+    LOG_INFO << "Server shutdown...";
+
     AB::Entities::Service serv;
     serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
     dataClient_->Read(serv);
@@ -269,5 +278,6 @@ void Application::Stop()
     // Before serviceManager_.Stop()
     Maintenance::Instance.Stop();
 
-    serviceManager_->Stop();
+    ioService_.stop();
+    LOG_INFO << "[done]" << std::endl;
 }

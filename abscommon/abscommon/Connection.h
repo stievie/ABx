@@ -44,8 +44,8 @@ public:
     Connection& operator=(const Connection&) = delete;
 
     Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort) :
-        socket_(ioService),
         ioService_(ioService),
+        socket_(ioService),
         servicePort_(servicPort),
         readTimer_(asio::steady_timer(ioService)),
         writeTimer_(asio::steady_timer(ioService))

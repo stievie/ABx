@@ -72,6 +72,9 @@
     <ClInclude Include="Service.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="MiniDump.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -117,6 +120,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Service.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniDump.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

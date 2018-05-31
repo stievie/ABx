@@ -13,7 +13,9 @@
 
 Application* Application::Instance = nullptr;
 
-Application::Application()
+Application::Application() :
+    ioService_(),
+    running_(false)
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
@@ -23,6 +25,7 @@ Application::Application()
 
 Application::~Application()
 {
+    serviceManager_->Stop();
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
 }
@@ -179,13 +182,20 @@ void Application::Run()
     AB::Entities::ServiceList sl;
     dataClient_->Invalidate(sl);
 
+    running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     serviceManager_->Run();
+    ioService_.run();
 }
 
 void Application::Stop()
 {
-    LOG_INFO << "Server is shutting down" << std::endl;
+    if (!running_)
+        return;
+
+    running_ = false;
+    LOG_INFO << "Server shutdown...";
+
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     dataClient_->Read(serv);
@@ -198,5 +208,6 @@ void Application::Stop()
     AB::Entities::ServiceList sl;
     dataClient_->Invalidate(sl);
 
-    serviceManager_->Stop();
+    ioService_.stop();
+    LOG_INFO << "[done]" << std::endl;
 }

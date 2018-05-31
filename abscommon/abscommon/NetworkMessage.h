@@ -34,7 +34,8 @@ protected:
     }
     bool CanRead(size_t size)
     {
-        if ((info_.position + size) > (info_.length + 8) || size >= (NETWORKMESSAGE_MAXSIZE - info_.position))
+        if ((info_.position + static_cast<uint16_t>(size)) > (info_.length + 8) ||
+            static_cast<uint16_t>(size) >= (NETWORKMESSAGE_MAXSIZE - info_.position))
         {
             return false;
         }

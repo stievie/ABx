@@ -1,5 +1,7 @@
 # TODO
 
+* ablogin, abserv: Crash on exit with Ctrl+C
+
 * abserv: Status protocol
 * abdata: Create should not be blocking. New method Create/CreateSynch? Or synch flag for all methods?
 * Check https://github.com/im95able/Rea for FL?

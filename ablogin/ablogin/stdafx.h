@@ -26,6 +26,7 @@
 
 #include <uuid.h>
 
+#define WRITE_MINIBUMP
 #define AB_UNUSED(P) (void)(P)
 
 #include "Logger.h"

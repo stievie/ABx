@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
+#include "MiniDump.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -42,26 +43,38 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
+static std::mutex gTermLock;
 int main(int argc, char** argv)
 {
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
-    ShowLogo();
-
-    Application app;
-    if (!app.Initialize(argc, argv))
-        return EXIT_FAILURE;
+#if defined(_MSC_VER) && defined(WRITE_MINIBUMP)
+    SetUnhandledExceptionFilter(UnhandledHandler);
+#endif
 
     signal(SIGINT, signal_handler);              // Ctrl+C
     signal(SIGBREAK, signal_handler);            // X clicked
-    shutdown_handler = [&app](int /*signal*/)
-    {
-        app.Stop();
-    };
 
-    app.Run();
+    ShowLogo();
+
+    std::condition_variable termSignal;
+    {
+        Application app;
+        if (!app.Initialize(argc, argv))
+            return EXIT_FAILURE;
+
+        shutdown_handler = [&app, &termSignal](int /*signal*/)
+        {
+            std::unique_lock<std::mutex> lockUnique(gTermLock);
+            app.Stop();
+            termSignal.wait(lockUnique);
+        };
+
+        app.Run();
+    }
+
+    termSignal.notify_all();
 
     return EXIT_SUCCESS;
 }

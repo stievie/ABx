@@ -9,6 +9,7 @@
 #include "Application.h"
 #include "Logger.h"
 #include "Version.h"
+#include "MiniDump.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -47,10 +48,14 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
+static std::mutex gTermLock;
 int main(int argc, char** argv)
 {
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+#if defined(_MSC_VER) && defined(WRITE_MINIBUMP)
+    SetUnhandledExceptionFilter(UnhandledHandler);
 #endif
 
     signal(SIGINT, signal_handler);              // Ctrl+C
@@ -58,15 +63,22 @@ int main(int argc, char** argv)
 
     ShowLogo();
 
-    std::shared_ptr<Application> app = std::make_shared<Application>();
-    if (!app->Initialize(argc, argv))
-        return EXIT_FAILURE;
-
-    shutdown_handler = [&](int /*signal*/)
+    std::condition_variable termSignal;
     {
-        app->Stop();
-    };
-    app->Run();
+        std::shared_ptr<Application> app = std::make_shared<Application>();
+        if (!app->Initialize(argc, argv))
+            return EXIT_FAILURE;
+
+        shutdown_handler = [&](int /*signal*/)
+        {
+            std::unique_lock<std::mutex> lockUnique(gTermLock);
+            app->Stop();
+            termSignal.wait(lockUnique);
+        };
+        app->Run();
+    }
+
+    termSignal.notify_all();
 
     return EXIT_SUCCESS;
 }

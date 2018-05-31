@@ -208,7 +208,11 @@ void Application::Run()
 
 void Application::Stop()
 {
+    if (!running_)
+        return;
+
     running_ = false;
+    LOG_INFO << "Server shutdown...";
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     dataClient_->Read(serv);
@@ -221,8 +225,8 @@ void Application::Stop()
     AB::Entities::ServiceList sl;
     dataClient_->Invalidate(sl);
 
-    LOG_INFO << "Server shutdown..." << std::endl;
     server_->stop();
+    LOG_INFO << "[done]" << std::endl;
 }
 
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)

@@ -11,7 +11,6 @@ void ServiceManager::Run()
 {
     assert(!running_);
     running_ = true;
-    ioService_.run();
 }
 
 void ServiceManager::Stop()
@@ -36,11 +35,6 @@ std::list<std::pair<uint32_t, uint16_t>> ServiceManager::GetPorts() const
     // Maps are ordered, so the elements are in order
     ports.unique();
     return ports;
-}
-
-void ServiceManager::Die()
-{
-    ioService_.stop();
 }
 
 void ServicePort::Open(uint32_t ip, uint16_t port)

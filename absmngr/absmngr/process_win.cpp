@@ -7,6 +7,7 @@
 #include <cstring>
 #include <TlHelp32.h>
 #include <stdexcept>
+#include <signal.h>
 
 namespace TinyProcessLib {
 
@@ -280,8 +281,9 @@ void Process::close_stdin() noexcept
     }
 }
 
+
 //Based on http://stackoverflow.com/a/1173396
-void Process::kill(bool /*force*/) noexcept
+void Process::kill(bool /* force */) noexcept
 {
     std::lock_guard<std::mutex> lock(close_mutex);
     if (data.id > 0 && !closed)

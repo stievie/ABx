@@ -134,6 +134,7 @@
     <ClInclude Include="Connection.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />
+    <ClInclude Include="MiniDump.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
     <ClInclude Include="Protocol.h" />
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
+    <ClCompile Include="MiniDump.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
     <ClCompile Include="Protocol.cpp" />
