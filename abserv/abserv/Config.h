@@ -47,6 +47,8 @@
 
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
+// Update server load every second
+#define UPDATE_SERVER_LOAD_MS (1000)
 // Clean assets cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
 // Clean games all 10 sec

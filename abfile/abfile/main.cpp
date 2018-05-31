@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 #if defined(_MSC_VER) && defined(WRITE_MINIBUMP)
-    SetUnhandledExceptionFilter(UnhandledHandler);
+    SetUnhandledExceptionFilter(System::UnhandledHandler);
 #endif
 
     signal(SIGINT, signal_handler);              // Ctrl+C

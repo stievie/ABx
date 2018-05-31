@@ -14,6 +14,7 @@ private:
     void CleanGamesTask();
     void CleanPlayersTask();
     void LogRotateTask();
+    void UpdateServerLoadTask();
 public:
     Maintenance() :
         status_(StatusTerminated)

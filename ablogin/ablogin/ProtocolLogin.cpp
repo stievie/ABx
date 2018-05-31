@@ -295,10 +295,15 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 
     output->AddStringEncrypted(account.uuid);
 
-    const std::pair<std::string, uint16_t> gameServer = IO::IOService::GetService(AB::Entities::ServiceTypeGameServer);
+    const std::pair<std::string, uint16_t> gameServer = IO::IOService::GetService(
+        AB::Entities::ServiceTypeGameServer,
+        account.currentServerUuid
+    );
     output->AddString(gameServer.first);
     output->Add<uint16_t>(gameServer.second);
-    const std::pair<std::string, uint16_t> fileServer = IO::IOService::GetService(AB::Entities::ServiceTypeFileServer);
+    const std::pair<std::string, uint16_t> fileServer = IO::IOService::GetService(
+        AB::Entities::ServiceTypeFileServer
+    );
     output->AddString(fileServer.first);
     output->Add<uint16_t>(fileServer.second);
 

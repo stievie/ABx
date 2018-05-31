@@ -59,6 +59,10 @@ struct Service : Entity
     std::string file;
     std::string path;
     std::string arguments;
+
+    /// Service load, something between 0..100. Not written to DB. The service
+    /// is responsible to update this value.
+    uint8_t load = 0;
 };
 
 }

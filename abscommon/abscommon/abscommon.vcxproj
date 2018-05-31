@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Connection.h" />
+    <ClInclude Include="CpuUsage.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="MiniDump.h" />
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
+    <ClCompile Include="CpuUsageWin.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="MiniDump.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />

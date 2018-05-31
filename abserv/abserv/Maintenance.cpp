@@ -5,6 +5,11 @@
 #include "GameManager.h"
 #include "PlayerManager.h"
 #include "Logger.h"
+#include "CpuUsage.h"
+#include "Application.h"
+#include <AB/Entities/Service.h>
+#include "ConfigManager.h"
+#include "DataClient.h"
 
 #include "DebugNew.h"
 
@@ -56,6 +61,27 @@ void Maintenance::LogRotateTask()
     }
 }
 
+void Maintenance::UpdateServerLoadTask()
+{
+    static System::CpuUsage usage;
+    AB::Entities::Service serv;
+    serv.uuid = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    IO::DataClient* cli = Application::Instance->GetDataClient();
+    cli->Read(serv);
+    short l = usage.GetUsage();
+    if (l != -1)
+    {
+        serv.load = static_cast<uint8_t>(l);
+        cli->UpdateOrCreate(serv);
+    }
+    if (status_ == StatusRunnig)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
+        );
+    }
+}
+
 void Maintenance::Run()
 {
     {
@@ -73,6 +99,9 @@ void Maintenance::Run()
     );
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Maintenance::LogRotateTask, this))
+    );
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );
 }
 
