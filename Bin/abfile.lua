@@ -20,3 +20,5 @@ require_auth = true
 -- Data server
 data_host = "localhost"
 data_port = 2770
+
+require("config/abfile_admin")

@@ -10,6 +10,15 @@ namespace IO {
 class DataClient;
 }
 
+template<typename T>
+inline size_t stream_size(T& s)
+{
+    s.seekg(0, std::ios::end);
+    size_t size = s.tellg();
+    s.seekg(0, std::ios::beg);
+    return size;
+}
+
 class Application : public ServerApp, public std::enable_shared_from_this<Application>
 {
 private:
@@ -21,11 +30,18 @@ private:
     asio::io_service ioService_;
     std::string dataHost_;
     uint16_t dataPort_;
+    std::string adminPassword_;
+    int64_t startTime_;
+    uint64_t bytesSent_;
+    uint32_t uptimeRound_;
+    int64_t statusMeasureTime_;
     bool requireAuth_;
     bool running_;
     bool ParseCommandLine();
     void ShowHelp();
+    void UpdateBytesSent(size_t bytes);
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
+    bool IsAdmin(std::shared_ptr<HttpsServer::Request> request);
     bool IsAccountBanned(const AB::Entities::Account& acc);
     static bool IsHiddenFile(const boost::filesystem::path& path);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
@@ -42,6 +58,8 @@ private:
     void GetHandlerEffects(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
+    void GetHandlerStatus(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);

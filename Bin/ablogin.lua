@@ -16,3 +16,5 @@ max_packets_per_second = 60
 -- Data server
 data_host = "localhost"
 data_port = 2770
+
+require("config/abfile_admin")

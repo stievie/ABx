@@ -31,7 +31,11 @@ Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
     requireAuth_(false),
-    ioService_()
+    ioService_(),
+    startTime_(0),
+    bytesSent_(0),
+    uptimeRound_(0),
+    statusMeasureTime_(0)
 {
 }
 
@@ -83,6 +87,17 @@ void Application::ShowHelp()
     std::cout << "  h, help: Show help" << std::endl;
 }
 
+void Application::UpdateBytesSent(size_t bytes)
+{
+    if (bytesSent_ + bytes > std::numeric_limits<uint64_t>::max())
+    {
+        bytesSent_ = 0;
+        statusMeasureTime_ = Utils::AbTick();
+        ++uptimeRound_;
+    }
+    bytesSent_ += bytes;
+}
+
 bool Application::Initialize(int argc, char** argv)
 {
     if (!ServerApp::Initialize(argc, argv))
@@ -112,6 +127,7 @@ bool Application::Initialize(int argc, char** argv)
     dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
     dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
     requireAuth_ = IO::SimpleConfigManager::Instance.GetGlobalBool("require_auth", false);
+    adminPassword_ = IO::SimpleConfigManager::Instance.GetGlobal("abfile_admin_pass", "");
 
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
@@ -146,6 +162,8 @@ bool Application::Initialize(int argc, char** argv)
         server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
     }
+    server_->resource["^/_status_$"]["GET"] = std::bind(&Application::GetHandlerStatus, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
 
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
@@ -184,6 +202,9 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
+    startTime_ = Utils::AbTick();
+    statusMeasureTime_ = startTime_;
+    uptimeRound_ = 1;
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     dataClient_->Read(serv);
@@ -195,7 +216,7 @@ void Application::Run()
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeFileServer;
-    serv.startTime = Utils::AbTick();
+    serv.startTime = startTime_;
     dataClient_->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
@@ -285,6 +306,30 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     return true;
 }
 
+bool Application::IsAdmin(std::shared_ptr<HttpsServer::Request> request)
+{
+    if (adminPassword_.empty())
+        return true;
+
+    // Check Auth
+    const auto it = request->header.find("AuthAdmin");
+    if (it == request->header.end())
+    {
+        LOG_WARNING << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            << "Missing AuthAdmin header" << std::endl;
+        return false;
+    }
+    const std::string& passwd = (*it).second;
+    if (passwd.empty())
+    {
+        LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            << "Wrong AuthAdmin header " << (*it).second << std::endl;
+        return false;
+    }
+
+    return passwd.compare(adminPassword_) == 0;
+}
+
 bool Application::IsAccountBanned(const AB::Entities::Account& acc)
 {
     AB::Entities::AccountBan ban;
@@ -361,6 +406,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
         {
             auto length = ifs->tellg();
             ifs->seekg(0, std::ios::beg);
+            UpdateBytesSent(length);
 
             header.emplace("Content-Length", to_string(length));
             response->write(header);
@@ -456,6 +502,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
     doc.save(stream);
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }
 
@@ -517,6 +564,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
     doc.save(stream);
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }
 
@@ -579,6 +627,7 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
     doc.save(stream);
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }
 
@@ -636,6 +685,7 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
     doc.save(stream);
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }
 
@@ -693,6 +743,7 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
     doc.save(stream);
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }
 
@@ -743,7 +794,55 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
     std::stringstream stream;
     stream << v.value;
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/plain");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
+}
+
+void Application::GetHandlerStatus(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAdmin(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("status");
+    root.append_attribute("version") = "1.0";
+
+    int64_t upTime = Utils::AbTick() - startTime_;
+    int64_t mesTime = Utils::AbTick() - statusMeasureTime_;
+    {
+        auto gNd = root.append_child("bytes_sent");
+        gNd.append_attribute("value") = bytesSent_;
+    }
+    {
+        auto gNd = root.append_child("up_time");
+        gNd.append_attribute("value") = upTime;
+    }
+    {
+        auto gNd = root.append_child("bytes_per_second");
+        if (mesTime != 0)
+            gNd.append_attribute("value") = static_cast<int>(bytesSent_ / (mesTime / 1000));
+        else
+            gNd.append_attribute("value") = 0;
+        gNd.append_attribute("time") = mesTime;
+        gNd.append_attribute("round") = uptimeRound_;
+    }
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }
 

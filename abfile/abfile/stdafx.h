@@ -15,6 +15,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <limits>
 
 #define USE_STANDALONE_ASIO
 #pragma warning(push)
