@@ -35,6 +35,7 @@ private:
     uint64_t bytesSent_;
     uint32_t uptimeRound_;
     int64_t statusMeasureTime_;
+    std::mutex mutex_;
     bool requireAuth_;
     bool running_;
     bool ParseCommandLine();

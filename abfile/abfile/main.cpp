@@ -49,6 +49,7 @@ static void ShowLogo()
 }
 
 static std::mutex gTermLock;
+static std::condition_variable termSignal;
 int main(int argc, char** argv)
 {
 #if defined(_MSC_VER) && defined(_DEBUG)
@@ -63,7 +64,6 @@ int main(int argc, char** argv)
 
     ShowLogo();
 
-    std::condition_variable termSignal;
     {
         std::shared_ptr<Application> app = std::make_shared<Application>();
         if (!app->Initialize(argc, argv))

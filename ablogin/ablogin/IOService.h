@@ -11,7 +11,8 @@ public:
     ~IOService() = delete;
 
     /// Get the service with the least load.
-    static std::pair<std::string, uint16_t> GetService(AB::Entities::ServiceType type,
+    static bool GetService(AB::Entities::ServiceType type,
+        AB::Entities::Service& service,
         const std::string& preferredUuid = "00000000-0000-0000-0000-000000000000");
 };
 

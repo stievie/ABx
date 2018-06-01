@@ -6,14 +6,15 @@
 
 namespace IO {
 
-std::pair<std::string, uint16_t> IOService::GetService(AB::Entities::ServiceType type,
+bool IOService::GetService(AB::Entities::ServiceType type,
+    AB::Entities::Service& service,
     const std::string& preferredUuid /* = "00000000-0000-0000-0000-000000000000" */)
 {
     DataClient* dc = Application::Instance->GetDataClient();
 
     AB::Entities::ServiceList sl;
     if (!dc->Read(sl))
-        return std::pair<std::string, uint16_t>();
+        return false;
 
     std::vector<AB::Entities::Service> services;
 
@@ -29,7 +30,10 @@ std::pair<std::string, uint16_t> IOService::GetService(AB::Entities::ServiceType
         {
             // Use preferred server is possible
             if (s.uuid.compare(preferredUuid) == 0 && s.load < 90)
-                return{ s.host, s.port };
+            {
+                service = s;
+                return true;
+            }
             services.push_back(s);
         }
     }
@@ -41,11 +45,15 @@ std::pair<std::string, uint16_t> IOService::GetService(AB::Entities::ServiceType
         {
             return a.load < b.load;
         });
-        return{ services[0].host, services[0].port };
+        if (services[0].type == AB::Entities::ServiceTypeFileServer || services[0].load < 100)
+        {
+            service = services[0];
+            return true;
+        }
     }
 
     LOG_WARNING << "No server of type " << static_cast<int>(type) << " online" << std::endl;
-    return std::pair<std::string, uint16_t>();
+    return false;
 }
 
 }

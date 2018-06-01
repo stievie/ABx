@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Dispatcher.h"
+#include "Utils.h"
 
 namespace Asynch {
 
@@ -69,6 +70,8 @@ void Dispatcher::DispatcherThread()
     {
         taskLockUnique.lock();
 
+        const int64_t observationStart = Utils::AbTick();
+
         if (tasks_.empty())
         {
             // List is empty, wait for signal
@@ -92,7 +95,15 @@ void Dispatcher::DispatcherThread()
             // Execute the task
             if (!task->IsExpired())
             {
+                const int64_t startExecTime = Utils::AbTick();
+
                 (*task)();
+
+                // https://technet.microsoft.com/en-us/library/cc181325.aspx
+                const int64_t busyTime = Utils::AbTick() - startExecTime;
+                const int64_t observationTime = Utils::AbTick() - observationStart;
+                if (observationTime != 0)
+                    utilization_ = static_cast<uint32_t>(busyTime / observationTime);
             }
 
             delete task;

@@ -286,26 +286,40 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         return;
     }
 
+    AB::Entities::Service gameServer;
+    if (!IO::IOService::GetService(
+        AB::Entities::ServiceTypeGameServer,
+        gameServer,
+        account.currentServerUuid))
+    {
+        DisconnectClient(AB::Errors::AllServersFull);
+        return;
+    }
+
+    AB::Entities::Service fileServer;
+    if (!IO::IOService::GetService(
+        AB::Entities::ServiceTypeFileServer,
+        fileServer))
+    {
+        DisconnectClient(AB::Errors::AllServersFull);
+        return;
+    }
+
+
     Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
 
     LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << accountName << " logged in" << std::endl;
+
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
     output->AddByte(AB::LoginProtocol::CharacterList);
 
     output->AddStringEncrypted(account.uuid);
 
-    const std::pair<std::string, uint16_t> gameServer = IO::IOService::GetService(
-        AB::Entities::ServiceTypeGameServer,
-        account.currentServerUuid
-    );
-    output->AddString(gameServer.first);
-    output->Add<uint16_t>(gameServer.second);
-    const std::pair<std::string, uint16_t> fileServer = IO::IOService::GetService(
-        AB::Entities::ServiceTypeFileServer
-    );
-    output->AddString(fileServer.first);
-    output->Add<uint16_t>(fileServer.second);
+    output->AddString(gameServer.host);
+    output->Add<uint16_t>(gameServer.port);
+    output->AddString(fileServer.host);
+    output->Add<uint16_t>(fileServer.port);
 
     output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots));
     output->Add<uint16_t>(static_cast<uint16_t>(account.characterUuids.size()));

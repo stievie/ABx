@@ -1,6 +1,7 @@
 # TODO
 
 * ablogin, abserv: Crash on exit with Ctrl+C
+* abfile: Load https://technet.microsoft.com/en-us/library/cc181325.aspx
 
 * abserv: Status protocol
 * abdata: Create should not be blocking. New method Create/CreateSynch? Or synch flag for all methods?

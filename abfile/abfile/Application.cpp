@@ -89,6 +89,7 @@ void Application::ShowHelp()
 
 void Application::UpdateBytesSent(size_t bytes)
 {
+    std::lock_guard<std::mutex> lock(mutex_);
     if (bytesSent_ + bytes > std::numeric_limits<uint64_t>::max())
     {
         bytesSent_ = 0;

@@ -36,6 +36,7 @@ Application* Application::Instance = nullptr;
 Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
+    lastLoadCalc_(0),
     ioService_()
 {
     assert(Application::Instance == nullptr);
@@ -283,20 +284,31 @@ void Application::Stop()
     LOG_INFO << "[done]" << std::endl;
 }
 
-uint8_t Application::GetLoad() const
+uint8_t Application::GetLoad()
 {
     static System::CpuUsage usage;
 
-    size_t playerCount = Game::PlayerManager::Instance.GetPlayerCount();
-    float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
-    uint8_t load = static_cast<uint8_t>(ld);
-    short l = usage.GetUsage();
-    if (l > load)
-        // Use the higher value
-        load = static_cast<uint8_t>(l);
-    if (load > 100)
-        load = 100;
-    return load;
+    if ((Utils::AbTick() - lastLoadCalc_) > 1000 || loads_.empty())
+    {
+        lastLoadCalc_ = Utils::AbTick();
+        size_t playerCount = Game::PlayerManager::Instance.GetPlayerCount();
+        float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
+        uint8_t load = static_cast<uint8_t>(ld);
+        uint8_t utilization = static_cast<uint8_t>(Asynch::Dispatcher::Instance.GetUtilization());
+        if (utilization > load)
+            load = utilization;
+        short l = usage.GetUsage();
+        if (l > load)
+            // Use the higher value
+            load = static_cast<uint8_t>(l);
+        if (load > 100)
+            load = 100;
+
+        while (loads_.size() > 9)
+            loads_.erase(loads_.begin());
+        loads_.push_back(static_cast<int>(load));
+    }
+    return GetAvgLoad();
 }
 
 const std::string& Application::GetServerId()

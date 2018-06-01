@@ -57,6 +57,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "You have no free character slots.";
     case AB::Errors::InvalidGame:
         return "Invalid Game.";
+    case AB::Errors::AllServersFull:
+        return "All Servers are full, please try again later.";
     default:
         return "";
     }

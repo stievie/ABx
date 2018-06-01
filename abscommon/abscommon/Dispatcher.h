@@ -8,7 +8,8 @@ class Dispatcher
 {
 public:
     Dispatcher() :
-        state_(State::Terminated)
+        state_(State::Terminated),
+        utilization_(0)
     {
         tasks_.clear();
     }
@@ -17,6 +18,11 @@ public:
     void Start();
     void Stop();
     void Add(Task* task, bool front = false);
+    /// CPU Utilization in % something between 0..100
+    uint32_t GetUtilization() const
+    {
+        return utilization_;
+    }
 
     enum State
     {
@@ -29,6 +35,7 @@ private:
     State state_;
     std::thread thread_;
     std::condition_variable signal_;
+    uint32_t utilization_;
     void DispatcherThread();
 public:
     static Dispatcher Instance;

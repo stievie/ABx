@@ -45,6 +45,7 @@ struct Service : Entity
         s.text1b(file, Limits::MAX_FILENAME);
         s.text1b(path, Limits::MAX_FILENAME);
         s.text1b(arguments, Limits::MAX_FILENAME);
+        s.value1b(load);
     }
 
     std::string name;

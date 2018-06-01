@@ -56,6 +56,7 @@ enum ErrorCodes : uint8_t
     InvalidCharactersInString = 0x15,
     NoMoreCharSlots = 0x16,
     InvalidGame = 0x17,
+    AllServersFull = 0x18,
 };
 
 }

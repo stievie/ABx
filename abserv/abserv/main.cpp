@@ -47,6 +47,7 @@ static void ShowLogo()
 }
 
 static std::mutex gTermLock;
+static std::condition_variable termSignal;
 int main(int argc, char** argv)
 {
 #if defined(_MSC_VER) && defined(_DEBUG)
@@ -61,13 +62,12 @@ int main(int argc, char** argv)
 
     ShowLogo();
 
-    std::condition_variable termSignal;
     {
         Application app;
         if (!app.Initialize(argc, argv))
             return EXIT_FAILURE;
 
-        shutdown_handler = [&app, &termSignal](int /* signal */)
+        shutdown_handler = [&app](int /* signal */)
         {
             std::unique_lock<std::mutex> lockUnique(gTermLock);
             app.Stop();
