@@ -169,9 +169,19 @@ void Player::HandleServerIdCommand(const std::string& command, Net::NetworkMessa
 {
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::ServerMessage);
-    nmsg.AddByte(AB::GameProtocol::ServerMessageTypeServerId);
-    nmsg.AddString(GetName());
-    nmsg.AddString(Application::GetServerId());
+    if (account_.type >= AB::Entities::AccountTypeGamemaster)
+    {
+        // Since it's more for debugging, it's only available for >= GM
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeServerId);
+        nmsg.AddString(GetName());
+        nmsg.AddString(Application::GetServerId());
+    }
+    else
+    {
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+        nmsg.AddString(GetName());
+        nmsg.AddString("");
+    }
     client_->WriteToOutput(nmsg);
 }
 

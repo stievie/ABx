@@ -12,6 +12,7 @@ private:
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleServerMessage(StringHash eventType, VariantMap& eventData);
+    void HandleServerMessageUnknownCommand(VariantMap&);
     void HandleServerMessageInfo(VariantMap& eventData);
     void HandleServerMessageRoll(VariantMap& eventData);
     void HandleServerMessageAge(VariantMap& eventData);

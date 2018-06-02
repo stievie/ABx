@@ -192,7 +192,15 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
     case AB::GameProtocol::ServerMessageTypeServerId:
         HandleServerMessageServerId(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypeUnknownCommand:
+        HandleServerMessageUnknownCommand(eventData);
+        break;
     }
+}
+
+void ChatWindow::HandleServerMessageUnknownCommand(VariantMap&)
+{
+    AddLine("Unknown command", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageInfo(VariantMap& eventData)

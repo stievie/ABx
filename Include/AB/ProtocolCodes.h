@@ -134,6 +134,8 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailboxFull,
     ServerMessageTypeMailDeleted,
     ServerMessageTypeServerId,
+
+    ServerMessageTypeUnknownCommand = 0xff
 };
 
 enum ChatMessageChannel : uint8_t

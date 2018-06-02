@@ -6,6 +6,7 @@
 #include "Effect.h"
 #include "Creature.h"
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Account.h>
 #include "FriendList.h"
 
 namespace Game {
@@ -62,6 +63,7 @@ public:
     void DeleteMail(const std::string mailUuid);
 
     AB::Entities::Character data_;
+    AB::Entities::Account account_;
     time_t loginTime_;
     time_t logoutTime_;
     int64_t lastPing_ = 0;

@@ -45,9 +45,8 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     }
 
     IO::DataClient* client = Application::Instance->GetDataClient();
-    AB::Entities::Account acc;
-    acc.uuid = player_->data_.accountUuid;
-    if (!client->Read(acc))
+    player_->account_.uuid = player_->data_.accountUuid;
+    if (!client->Read(player_->account_))
     {
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
@@ -62,10 +61,10 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    acc.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
-    acc.currentCharacterUuid = player_->data_.uuid;
-    acc.currentServerUuid = ConfigManager::Instance[ConfigManager::ServerID].GetString();
-    client->Update(acc);
+    player_->account_.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
+    player_->account_.currentCharacterUuid = player_->data_.uuid;
+    player_->account_.currentServerUuid = ConfigManager::Instance[ConfigManager::ServerID].GetString();
+    client->Update(player_->account_);
 
     player_->data_.currentMapUuid = mapUuid;
     client->Update(player_->data_);
