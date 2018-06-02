@@ -26,6 +26,7 @@ protected:
     }
     void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) override;
+    void HandleServerIdCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleSendMailCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);

@@ -133,6 +133,7 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailNotSent,
     ServerMessageTypeMailboxFull,
     ServerMessageTypeMailDeleted,
+    ServerMessageTypeServerId,
 };
 
 enum ChatMessageChannel : uint8_t
@@ -236,6 +237,7 @@ enum CommandTypes : uint8_t
     // Internal
     CommandTypeHelp,                 // /help
     CommandTypeIp,                   // /ip
+    CommandTypeServerId              // /id
 };
 
 }

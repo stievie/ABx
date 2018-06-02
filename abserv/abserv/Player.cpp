@@ -7,6 +7,7 @@
 #include "PlayerManager.h"
 #include "IOMail.h"
 #include "StringUtils.h"
+#include "Application.h"
 
 #include "DebugNew.h"
 
@@ -156,7 +157,22 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         HandleWhisperCommand(command, message);
         break;
     }
+    case AB::GameProtocol::CommandTypeServerId:
+    {
+        HandleServerIdCommand(command, message);
+        break;
     }
+    }
+}
+
+void Player::HandleServerIdCommand(const std::string& command, Net::NetworkMessage& message)
+{
+    Net::NetworkMessage nmsg;
+    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    nmsg.AddByte(AB::GameProtocol::ServerMessageTypeServerId);
+    nmsg.AddString(GetName());
+    nmsg.AddString(Application::GetServerId());
+    client_->WriteToOutput(nmsg);
 }
 
 void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessage&)

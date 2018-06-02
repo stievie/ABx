@@ -189,6 +189,9 @@ void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData
     case AB::GameProtocol::ServerMessageTypeMailDeleted:
         HandleServerMessageMailDeleted(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypeServerId:
+        HandleServerMessageServerId(eventData);
+        break;
     }
 }
 
@@ -396,6 +399,13 @@ void ChatWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventDa
     AddLine(String(mail.message.c_str(), (unsigned)mail.message.size()), "ChatLogMailText");
 }
 
+void ChatWindow::HandleServerMessageServerId(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    String id = eventData[P_DATA].GetString();
+    AddLine(id, "ChatLogServerInfoText");
+}
+
 void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
 {
     AB::GameProtocol::CommandTypes type = AB::GameProtocol::CommandTypeUnknown;
@@ -449,6 +459,8 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeHealth;
         else if (cmd.Compare("ip") == 0)
             type = AB::GameProtocol::CommandTypeIp;
+        else if (cmd.Compare("id") == 0)
+            type = AB::GameProtocol::CommandTypeServerId;
         else if (cmd.Compare("help") == 0)
             type = AB::GameProtocol::CommandTypeHelp;
     }

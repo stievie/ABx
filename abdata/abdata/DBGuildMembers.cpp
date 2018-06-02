@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBGuildMembers.h"
 #include "Database.h"
+#include "Utils.h"
 
 namespace DB {
 
@@ -30,6 +31,7 @@ bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
     std::ostringstream query;
     query << "SELECT * FROM `guild_members` WHERE ";
     query << "`uuid` = " << db->EscapeString(g.uuid);
+    query << " AND (`expires` = 0 OR `expires > " << Utils::AbTick() << ")";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
