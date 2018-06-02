@@ -180,6 +180,8 @@
     <ClInclude Include="DBFriendList.h" />
     <ClInclude Include="DBGame.h" />
     <ClInclude Include="DBGameList.h" />
+    <ClInclude Include="DBGuild.h" />
+    <ClInclude Include="DBGuildMembers.h" />
     <ClInclude Include="DBIpBan.h" />
     <ClInclude Include="DBMail.h" />
     <ClInclude Include="DBMailList.h" />
@@ -219,6 +221,8 @@
     <ClCompile Include="DBFriendList.cpp" />
     <ClCompile Include="DBGame.cpp" />
     <ClCompile Include="DBGameList.cpp" />
+    <ClCompile Include="DBGuild.cpp" />
+    <ClCompile Include="DBGuildMembers.cpp" />
     <ClCompile Include="DBIpBan.cpp" />
     <ClCompile Include="DBMail.cpp" />
     <ClCompile Include="DBMailList.cpp" />

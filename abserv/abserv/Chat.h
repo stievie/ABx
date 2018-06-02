@@ -8,8 +8,8 @@ class Player;
 enum ChatType : uint8_t
 {
     // Alliance chat
-    ChannelAlliance = 0x00,  // ID = AllianceID
-    ChannelGuild = 0x01,     // ID = GuildID
+    ChannelAlliance = 0x00,  // ID = StringHash(Alliance.uuid)
+    ChannelGuild = 0x01,     // ID = StringHash(Guild.uuid)
     // Local map chat
     ChannelMap = 0x02,       // ID = GameID
     ChannelTrade = 0x03,     // ID = GameID

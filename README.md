@@ -16,8 +16,9 @@ ClientN -+                 +--- Game ServerN -+
 
 ### Data Server
 
-The Data server provides data from the database server and caches it. Connection
-to this server is required for:
+The Data server provides data from the database server and caches it. It also
+acts as threadsafe interserver shared memory. Connection to this server is 
+required for:
 
 * File Server
 * Login Server
@@ -53,6 +54,9 @@ A game server usually needs three ports.
 
 Since all game server connect to the same data server, all game server share the
 same data.
+
+So, in theory, how many players and games this server can handle, depends only 
+on how much hardware you have.
 
 ### Client
 

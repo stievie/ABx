@@ -27,7 +27,7 @@ enum GuildRole : uint8_t
     GuildRoleMember,
     GuildRoleOfficer,
     GuildRoleLeader
-}
+};
 
 struct GuildMember
 {
@@ -56,15 +56,15 @@ struct GuildMembers : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.container(members, Limits::MAX_GUILD_MEMBERS, [&s](GuildMember& c)
         {
-            s.text1b(accountUuid, Limits::MAX_UUID);
-            s.text1b(inviteName, Limits::MAX_CHARACTER_NAME);
-            s.value1b(role);
-            s.value8b(invited);
-            s.value8b(joined);
-            s.value8b(expires);
+            s.text1b(c.accountUuid, Limits::MAX_UUID);
+            s.text1b(c.inviteName, Limits::MAX_CHARACTER_NAME);
+            s.value1b(c.role);
+            s.value8b(c.invited);
+            s.value8b(c.joined);
+            s.value8b(c.expires);
         });
     }
-    
+
     std::vector<GuildMember> members;
 };
 

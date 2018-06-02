@@ -23,3 +23,5 @@
 #include "DBAttributeList.h"
 #include "DBService.h"
 #include "DBServicelList.h"
+#include "DBGuild.h"
+#include "DBGuildMembers.h"

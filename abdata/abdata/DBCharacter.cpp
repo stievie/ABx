@@ -49,7 +49,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     return true;
 }
 
-bool DB::DBCharacter::Load(AB::Entities::Character& character)
+bool DBCharacter::Load(AB::Entities::Character& character)
 {
     DB::Database* db = DB::Database::Instance();
 
@@ -92,7 +92,7 @@ bool DB::DBCharacter::Load(AB::Entities::Character& character)
     return true;
 }
 
-bool DB::DBCharacter::Save(const AB::Entities::Character& character)
+bool DBCharacter::Save(const AB::Entities::Character& character)
 {
     if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
     {
@@ -131,7 +131,7 @@ bool DB::DBCharacter::Save(const AB::Entities::Character& character)
     return transaction.Commit();
 }
 
-bool DB::DBCharacter::Delete(const AB::Entities::Character& character)
+bool DBCharacter::Delete(const AB::Entities::Character& character)
 {
     if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
     {

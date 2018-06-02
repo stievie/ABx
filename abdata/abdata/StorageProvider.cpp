@@ -34,6 +34,8 @@ static constexpr size_t KEY_VERSIONS_HASH = Utils::StringHash(AB::Entities::Vers
 static constexpr size_t KEY_ATTRIBUTELIST_HASH = Utils::StringHash(AB::Entities::AttributeList::KEY());
 static constexpr size_t KEY_SERVICE_HASH = Utils::StringHash(AB::Entities::Service::KEY());
 static constexpr size_t KEY_SERVICELIST_HASH = Utils::StringHash(AB::Entities::ServiceList::KEY());
+static constexpr size_t KEY_GUILD_HASH = Utils::StringHash(AB::Entities::Guild::KEY());
+static constexpr size_t KEY_GUILDMEMBERS_HASH = Utils::StringHash(AB::Entities::GuildMembers::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -489,6 +491,10 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBService, AB::Entities::Service>(id, *data);
     case KEY_SERVICELIST_HASH:
         return LoadFromDB<DB::DBServicelList, AB::Entities::ServiceList>(id, *data);
+    case KEY_GUILD_HASH:
+        return LoadFromDB<DB::DBGuild, AB::Entities::Guild>(id, *data);
+    case KEY_GUILDMEMBERS_HASH:
+        return LoadFromDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -593,6 +599,12 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_SERVICELIST_HASH:
         succ = FlushRecord<DB::DBServicelList, AB::Entities::ServiceList>(data);
         break;
+    case KEY_GUILD_HASH:
+        succ = FlushRecord<DB::DBGuild, AB::Entities::Guild>(data);
+        break;
+    case KEY_GUILDMEMBERS_HASH:
+        succ = FlushRecord<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -659,6 +671,10 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBService, AB::Entities::Service>(data);
     case KEY_SERVICELIST_HASH:
         return ExistsInDB<DB::DBServicelList, AB::Entities::ServiceList>(data);
+    case KEY_GUILD_HASH:
+        return ExistsInDB<DB::DBGuild, AB::Entities::Guild>(data);
+    case KEY_GUILDMEMBERS_HASH:
+        return ExistsInDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
