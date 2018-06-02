@@ -20,7 +20,7 @@ root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin
 
 -- If true client must give Account UUID and password in HTTP header:
 -- Auth: UUID:password
-require_auth = false
+require_auth = true
 
 -- Data server
 data_host = "localhost"

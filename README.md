@@ -23,10 +23,18 @@ to this server is required for:
 * Login Server
 * Game Server
 
+There can be only *one* data server. It is the centeral point to which all other
+servers connect, and get their data from.
+
 ### File Server
 
 The file server is a simple HTTP server providing files and other information.
 The client my connect to it from time to time and download data.
+
+There can be any number of file servers. Usually you may want to have file servers
+in different regions, and not on the same machine. A file server does not need
+much resources, just bandwidth. But if they run on the same machine, they must
+listen on different ports.
 
 ### Login Server
 
@@ -34,9 +42,17 @@ Used by the client to login, create accounts and manage characters.
 
 It also tells the client to which Game and File Server to connect.
 
+There can be only *one* login server, since all clients connects to this server.
+Once the client is authenticated, the connection to the login server is closed.
+
 ### Game Server
 
-The game server simulates the games.
+The game server simulates the games. There can be any number of game servers, but
+if they run on the same machine, the game servers must listen on different ports.
+A game server usually needs three ports.
+
+Since all game server connect to the same data server, all game server share the
+same data.
 
 ### Client
 

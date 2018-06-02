@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------
 server_name = "Forgotten Wars"
 -- ID for this server
-server_id = "230a6dd3-907e-4193-87e5-a25789d68016"
+server_id = "14935aef-7cd9-4495-b704-ec9578411558"
 
 location = "AT"
 
@@ -13,7 +13,9 @@ data_port = 2770
 
 data_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/data"
 
-base_port = 2749          -- 0xABE
+-- 2nd Game server. Must listen of different ports. One Game server listens usually
+-- listens on 3 ports, so increase the base port by 3.
+base_port = 2749 + 3
 
 require("config/server")
 require("config/login")

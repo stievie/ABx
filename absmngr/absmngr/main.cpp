@@ -111,8 +111,12 @@ static void Run()
             int i = 0;
             for (const auto& p : gServices)
             {
-                std::cout << i++ << "\t" << p.first << "\t" << p.second.name;
+                std::cout << i++;
+                std::cout << "\t" << p.second.name;
+                std::cout << "\t" << p.second.location;
                 std::cout << "\t" << (p.second.status == AB::Entities::ServiceStatusOnline ? "online" : "offline");
+                if (p.second.status == AB::Entities::ServiceStatusOnline)
+                    std::cout << "\t" << static_cast<int>(p.second.load) << "%";
                 std::cout << std::endl;
             }
         }

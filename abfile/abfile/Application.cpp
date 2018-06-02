@@ -229,7 +229,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
-    LOG_INFO << "  Max. Throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
+    LOG_INFO << "  Max. throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
     if (haveData)
         LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     else
