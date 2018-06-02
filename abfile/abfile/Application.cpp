@@ -35,7 +35,8 @@ Application::Application() :
     startTime_(0),
     bytesSent_(0),
     uptimeRound_(0),
-    statusMeasureTime_(0)
+    statusMeasureTime_(0),
+    lastLoadCalc_(0)
 {
 }
 
@@ -97,6 +98,39 @@ void Application::UpdateBytesSent(size_t bytes)
         ++uptimeRound_;
     }
     bytesSent_ += bytes;
+
+    // Calculate load
+    if ((Utils::AbTick() - lastLoadCalc_) > 1000 || loads_.empty())
+    {
+        lastLoadCalc_ = Utils::AbTick();
+
+        uint8_t load = 0;
+        if (maxThroughput_ != 0)
+        {
+            int64_t mesTime = Utils::AbTick() - statusMeasureTime_;
+            int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
+            float ld = ((float)bytesPerSecond / (float)maxThroughput_) * 100.0f;
+            load = static_cast<uint8_t>(ld);
+            if (load > 100)
+                load = 100;
+        }
+
+        while (loads_.size() > 9)
+            loads_.erase(loads_.begin());
+        loads_.push_back(static_cast<int>(load));
+
+        AB::Entities::Service serv;
+        serv.uuid = serverId;
+        if (dataClient_->Read(serv))
+        {
+            uint8_t avgLoad = GetAvgLoad();
+            if (avgLoad != serv.load)
+            {
+                serv.load = avgLoad;
+                dataClient_->Update(serv);
+            }
+        }
+    }
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -118,6 +152,7 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
 
+    serverId = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
     std::string address = IO::SimpleConfigManager::Instance.GetGlobal("server_ip", "");
     uint16_t port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
     std::string key = IO::SimpleConfigManager::Instance.GetGlobal("server_key", "server.key");
@@ -129,6 +164,7 @@ bool Application::Initialize(int argc, char** argv)
     dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
     requireAuth_ = IO::SimpleConfigManager::Instance.GetGlobalBool("require_auth", false);
     adminPassword_ = IO::SimpleConfigManager::Instance.GetGlobal("abfile_admin_pass", "");
+    maxThroughput_ = IO::SimpleConfigManager::Instance.GetGlobal("max_throughput", 0);
 
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
@@ -193,6 +229,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
+    LOG_INFO << "  Max. Throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
     if (haveData)
         LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     else
@@ -207,9 +244,10 @@ void Application::Run()
     statusMeasureTime_ = startTime_;
     uptimeRound_ = 1;
     AB::Entities::Service serv;
-    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    serv.uuid = serverId;
     dataClient_->Read(serv);
     serv.name = "abfile";
+    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("server_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
     serv.file = exeFile_;
@@ -236,7 +274,7 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown...";
     AB::Entities::Service serv;
-    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    serv.uuid = serverId;
     dataClient_->Read(serv);
     serv.status = AB::Entities::ServiceStatusOffline;
     serv.stopTime = Utils::AbTick();
@@ -829,6 +867,10 @@ void Application::GetHandlerStatus(std::shared_ptr<HttpsServer::Response> respon
     {
         auto gNd = root.append_child("up_time");
         gNd.append_attribute("value") = upTime;
+    }
+    {
+        auto gNd = root.append_child("load");
+        gNd.append_attribute("value") = GetAvgLoad();
     }
     {
         auto gNd = root.append_child("bytes_per_second");

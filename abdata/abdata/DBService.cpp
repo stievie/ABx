@@ -15,13 +15,14 @@ bool DBService::Create(AB::Entities::Service& s)
     Database* db = Database::Instance();
     std::ostringstream query;
 
-    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `host`, `port`, " <<
+    query << "INSERT INTO `services` (`uuid`, `name`, `type`, `location`, `host`, `port`, " <<
         "`status_port`, `status`, `start_time`, `stop_time`, `run_time`, " <<
         " `file`, `path`, `arguments`) VALUES(";
 
     query << db->EscapeString(s.uuid) << ", ";
     query << db->EscapeString(s.name) << ", ";
     query << static_cast<int>(s.type) << ", ";
+    query << db->EscapeString(s.location) << ", ";
     query << db->EscapeString(s.host) << ", ";
     query << s.port << ", ";
     query << s.statusPort << ", ";
@@ -70,6 +71,7 @@ bool DBService::Load(AB::Entities::Service& s)
     s.uuid = result->GetString("uuid");
     s.name = result->GetString("name");
     s.type = static_cast<AB::Entities::ServiceType>(result->GetUInt("type"));
+    s.location = result->GetString("location");
     s.host = result->GetString("host");
     s.port = static_cast<uint16_t>(result->GetUInt("port"));
     s.statusPort = static_cast<uint16_t>(result->GetUInt("status_port"));
@@ -98,6 +100,7 @@ bool DBService::Save(const AB::Entities::Service& s)
     query << "UPDATE `services` SET ";
     query << " `name` = " << db->EscapeString(s.name) << ", ";
     query << " `type` = " << static_cast<int>(s.type) << ", ";
+    query << " `location` = " << db->EscapeString(s.location) << ", ";
     query << " `host` = " << db->EscapeString(s.host) << ", ";
     query << " `port` = " << s.port << ", ";
     query << " `status_port` = " << s.statusPort << ", ";

@@ -9,6 +9,7 @@ static constexpr int MAX_FILENAME = 260;
 // Service
 static constexpr int MAX_SERVICE_NAME = 64;
 static constexpr int MAX_SERVICE_HOST = 64;
+static constexpr int MAX_SERVICE_LOCATION = 10;
 static constexpr int MAX_SERVICES = 64;         // Max number of services in ServiceList
 
 // Account

@@ -33,8 +33,12 @@ private:
     std::string adminPassword_;
     int64_t startTime_;
     uint64_t bytesSent_;
+    uint64_t maxThroughput_;
     uint32_t uptimeRound_;
     int64_t statusMeasureTime_;
+    int64_t lastLoadCalc_;
+    std::string serverId;
+    std::vector<int> loads_;
     std::mutex mutex_;
     bool requireAuth_;
     bool running_;
@@ -64,6 +68,17 @@ private:
         std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
+
+    uint8_t GetAvgLoad() const
+    {
+        if (loads_.empty())
+            return 0;
+
+        float loads = 0.0f;
+        for (int p : loads_)
+            loads += static_cast<float>(p);
+        return static_cast<uint8_t>(loads / loads_.size());
+    }
 public:
     Application();
     ~Application();

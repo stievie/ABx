@@ -226,6 +226,7 @@ void Application::Run()
     serv.uuid = GetServerId();
     dataClient_->Read(serv);
     serv.host = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
+    serv.location = ConfigManager::Instance[ConfigManager::Key::Location].GetString();
     serv.port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
     serv.statusPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
     serv.name = "abserv";

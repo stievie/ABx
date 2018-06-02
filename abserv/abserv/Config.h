@@ -25,9 +25,7 @@
 #define HAVE_DIRECTX_MATH
 
 // Name of config file
-#define CONFIG_FILE "config.lua"
-// Servers DH keys
-#define DH_KEYS_FILE "server.key"
+#define CONFIG_FILE "abserv.lua"
 
 #define SCHEDULER_MINTICKS 10
 

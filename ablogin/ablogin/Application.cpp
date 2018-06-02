@@ -168,6 +168,7 @@ void Application::Run()
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     dataClient_->Read(serv);
+    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("login_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("login_port", 2748));
     serv.name = "ablogin";

@@ -288,6 +288,7 @@ void Application::Run()
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     server_->GetStorageProvider()->EntityRead(serv);
+    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_ip", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
     serv.name = "abdata";
