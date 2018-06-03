@@ -3,30 +3,20 @@
 #include "Dispatcher.h"
 #include "Scheduler.h"
 #include "SimpleConfigManager.h"
-#include "Connection.h"
 #include "StringUtils.h"
-#include "ProtocolLogin.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Utils.h"
-#include "Bans.h"
-
-Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
     ioService_(),
     running_(false)
 {
-    assert(Application::Instance == nullptr);
-    Application::Instance = this;
-    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
-    serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
 }
 
 Application::~Application()
 {
-    serviceManager_->Stop();
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
 }
@@ -66,7 +56,7 @@ bool Application::ParseCommandLine()
 
 void Application::ShowHelp()
 {
-    std::cout << "ablogin [-<options> [<value>]]" << std::endl;
+    std::cout << "abmsgs [-<options> [<value>]]" << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
@@ -76,7 +66,7 @@ void Application::ShowHelp()
 bool Application::LoadMain()
 {
     if (configFile_.empty())
-        configFile_ = path_ + "/ablogin.lua";
+        configFile_ = path_ + "/abmsgs.lua";
 
     LOG_INFO << "Loading configuration...";
     if (!IO::SimpleConfigManager::Instance.Load(configFile_))
@@ -84,10 +74,10 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
-    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("max_packets_per_second", 0));
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to data server...";
+    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
     const std::string& dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
     dataClient_->Connect(dataHost, dataPort);
@@ -101,16 +91,14 @@ bool Application::LoadMain()
 
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(
-        IO::SimpleConfigManager::Instance.GetGlobal("login_ip", "0.0.0.0")
+        IO::SimpleConfigManager::Instance.GetGlobal("message_ip", "0.0.0.0")
     ));
     uint16_t port = static_cast<uint16_t>(
-        IO::SimpleConfigManager::Instance.GetGlobal("login_port", 2748)
+        IO::SimpleConfigManager::Instance.GetGlobal("message_port", 2771)
     );
-    if (port != 0)
-        serviceManager_->Add<Net::ProtocolLogin>(ip, port, [](uint32_t remoteIp) -> bool
-    {
-        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
-    });
+
+    asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), port);
+    server_ = std::make_unique<MessageServer>(ioService_, endpoint);
 
     PrintServerInfo();
     return true;
@@ -120,15 +108,10 @@ void Application::PrintServerInfo()
 {
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
-    LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
-    std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_->GetPorts();
     LOG_INFO << "  Listening: ";
-    while (ports.size())
-    {
-        LOG_INFO << Utils::ConvertIPToString(ports.front().first) << ":" << ports.front().second << " ";
-        ports.pop_front();
-    }
+    LOG_INFO << IO::SimpleConfigManager::Instance.GetGlobal("message_ip", "0.0.0.0") << ":";
+    LOG_INFO << IO::SimpleConfigManager::Instance.GetGlobal("message_port", 2771);
     LOG_INFO << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
@@ -158,10 +141,7 @@ bool Application::Initialize(int argc, char** argv)
     if (!LoadMain())
         return false;
 
-    if (!serviceManager_->IsRunning())
-        LOG_ERROR << "No services running" << std::endl;
-
-    return serviceManager_->IsRunning();
+    return true;
 }
 
 void Application::Run()
@@ -170,14 +150,14 @@ void Application::Run()
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     dataClient_->Read(serv);
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
-    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("login_host", "");
-    serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("login_port", 2748));
-    serv.name = "ablogin";
+    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("message_host", "");
+    serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("message_port", 2771));
+    serv.name = "abmsgs";
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeLoginServer;
+    serv.type = AB::Entities::ServiceTypeMessageServer;
     serv.startTime = Utils::AbTick();
     dataClient_->UpdateOrCreate(serv);
 
@@ -186,7 +166,7 @@ void Application::Run()
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
-    serviceManager_->Run();
+
     ioService_.run();
 }
 

@@ -14,11 +14,11 @@ Server::Server(asio::io_service& io_service, uint32_t ip,
     ),
     running_(false),
     storageProvider_(maxCacheSize, readonly),
-	maxDataSize_(MAX_DATA_SIZE),
+    maxDataSize_(MAX_DATA_SIZE),
     maxKeySize_(MAX_KEY_SIZE)
 {
     acceptor_.set_option(asio::ip::tcp::no_delay(true));
-	StartAccept();
+    StartAccept();
     running_ = true;
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Server::LogRotateTask, this))

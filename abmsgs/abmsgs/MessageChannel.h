@@ -1,0 +1,49 @@
+#pragma once
+
+#include "MessageMsg.h"
+#include <set>
+
+class MessageParticipant
+{
+public:
+    virtual ~MessageParticipant() { }
+    virtual void Deliver(const Net::MessageMsg& msg) = 0;
+};
+
+class MessageChannel
+{
+private:
+    std::set<std::shared_ptr<MessageParticipant>> participants_;
+    enum { MaxRecentMsgs = 100 };
+    Net::MessageQueue recentMsgs_;
+public:
+    void Join(std::shared_ptr<MessageParticipant> participant);
+    void Leave(std::shared_ptr<MessageParticipant> participant);
+    void Deliver(const Net::MessageMsg& msg);
+};
+
+class MessageSession : public MessageParticipant, public std::enable_shared_from_this<MessageSession>
+{
+private:
+    asio::ip::tcp::socket socket_;
+    MessageChannel& channel_;
+    Net::MessageMsg readMsg_;
+    Net::MessageQueue writeMsgs_;
+    void HandleRead(const asio::error_code& error);
+    void HandleWrite(const asio::error_code& error);
+    void AnalyzeMessage(const Net::MessageMsg& msg);
+    std::string serverId_;
+public:
+    MessageSession(asio::io_service& io_service, MessageChannel& channel) :
+        socket_(io_service),
+        channel_(channel)
+    { }
+
+    asio::ip::tcp::socket& Socket()
+    {
+        return socket_;
+    }
+
+    void Start();
+    void Deliver(const Net::MessageMsg& msg) override;
+};

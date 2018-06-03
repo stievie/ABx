@@ -3,6 +3,7 @@
 #include "Service.h"
 #include "DataClient.h"
 #include "ServerApp.h"
+#include "MessageClient.h"
 
 class Application : public ServerApp
 {
@@ -12,6 +13,7 @@ private:
     std::condition_variable loaderSignal_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<IO::DataClient> dataClient_;
+    std::unique_ptr<Net::MessageClient> msgClient_;
     std::string configFile_;
     std::string logDir_;
     std::vector<int> loads_;

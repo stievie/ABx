@@ -10,6 +10,7 @@ enum ServiceType : uint8_t
 {
     ServiceTypeUnknown = 0,
     ServiceTypeDataServer,
+    ServiceTypeMessageServer,
     ServiceTypeFileServer,
     ServiceTypeLoginServer,
     ServiceTypeGameServer

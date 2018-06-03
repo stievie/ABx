@@ -30,6 +30,8 @@ public:
 
         DataServerHost,
         DataServerPort,
+        MessageServerHost,
+        MessageServerPort,
 
         StatusQueryTimeout,
         MaxPacketsPerSecond,

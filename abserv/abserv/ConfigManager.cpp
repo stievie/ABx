@@ -55,6 +55,8 @@ bool ConfigManager::Load(const std::string& file)
 
     config_[Key::DataServerHost] = GetGlobal("data_host", "localhost");
     config_[Key::DataServerPort] = (int)GetGlobal("data_port", 2770);
+    config_[Key::MessageServerHost] = GetGlobal("message_host", "localhost");
+    config_[Key::MessageServerPort] = (int)GetGlobal("message_port", 2771);
 
     config_[Key::StatusQueryTimeout] = GetGlobal("status_timeout", 30 * 1000);
     config_[Key::MaxPacketsPerSecond] = GetGlobal("max_packets_per_second", 25);
