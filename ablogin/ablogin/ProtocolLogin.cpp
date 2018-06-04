@@ -304,7 +304,6 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         return;
     }
 
-
     Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
 
     LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << accountName << " logged in" << std::endl;
@@ -558,7 +557,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
 }
 
 void ProtocolLogin::DisconnectClient(uint8_t error)
-{BanInfo
+{
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)
     {
