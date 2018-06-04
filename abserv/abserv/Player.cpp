@@ -165,7 +165,7 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     }
 }
 
-void Player::HandleServerIdCommand(const std::string& command, Net::NetworkMessage& message)
+void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
 {
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::ServerMessage);

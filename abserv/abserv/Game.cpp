@@ -48,7 +48,6 @@ void Game::Start()
 #endif // DEBUG_GAME
         startTime_ = Utils::AbTick();
         lastUpdate_ = 0;
-//        GameChatChannel* generalChannel = dynamic_cast<GameChatChannel*>(Chat::Instance.Get(ChannelMap, id_));
         SetState(ExecutionStateRunning);
 
         if (!queuedPlayers_.empty())

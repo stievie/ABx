@@ -141,14 +141,14 @@ private:
     void HandleMsgLogin(NetworkMessage& message, OutputMessage* output);
     void HandleMsgEncryption(NetworkMessage& message, OutputMessage* output);
     void HandleMsgKeyExchange(NetworkMessage& message, OutputMessage* output);
-    void HandleMsgPing(NetworkMessage& message, OutputMessage* output);
+    void HandleMsgPing(NetworkMessage&, OutputMessage* output);
     void HandleMsgCommand(NetworkMessage& message, OutputMessage* output);
     void CommandKickPlayer(const std::string& name);
     void CommandShutdownServer();
 public:
     explicit ProtocolAdmin(std::shared_ptr<Connection> connection);
 
-    void OnRecvFirstMessage(NetworkMessage& msg) final;
+    void OnRecvFirstMessage(NetworkMessage&) final;
     void ParsePacket(NetworkMessage& message) final;
 
     bool AllowIP(uint32_t clientIP);

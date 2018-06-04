@@ -23,7 +23,7 @@ ProtocolAdmin::ProtocolAdmin(std::shared_ptr<Connection> connection) :
     startTime_ = std::time(nullptr);
 }
 
-void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage& msg)
+void ProtocolAdmin::OnRecvFirstMessage(NetworkMessage&)
 {
 #ifdef DEBUG_NET
 //        LOG_DEBUG << std::endl;
@@ -290,7 +290,7 @@ void ProtocolAdmin::CommandShutdownServer()
     }
 }
 
-void ProtocolAdmin::HandleMsgPing(NetworkMessage& message, OutputMessage* output)
+void ProtocolAdmin::HandleMsgPing(NetworkMessage&, OutputMessage* output)
 {
 #ifdef DEBUG_NET
 //    LOG_DEBUG << std::endl;

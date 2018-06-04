@@ -35,11 +35,9 @@ void MessageClient::HandleRead(const asio::error_code& error, size_t)
 {
     if (!error)
     {
-        if (messageHandler_ && !readMsg_.Empty())
+        if (messageHandler_ && !readMsg_.IsEmpty())
             messageHandler_(readMsg_);
-        //            std::cout << ">> ";
-        //            std::cout.write(readMsg_.Body(), readMsg_.BodyLength());
-        //            std::cout << "\n";
+        readMsg_.Empty();
         this->async_receive(&readMsg_,
             std::bind(&MessageClient::HandleRead,
                 this, std::placeholders::_1, std::placeholders::_2));

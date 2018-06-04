@@ -5,7 +5,6 @@
 #include "NavigationMesh.h"
 #include "Utils.h"
 #include "NetworkMessage.h"
-#include "GameState.h"
 #include "Chat.h"
 #include <AB/Entities/Game.h>
 
@@ -28,7 +27,6 @@ private:
     std::recursive_mutex lock_;
     ExecutionState state_;
     /// Game Tick -> Game State
-    std::map<int64_t, std::unique_ptr<GameState>> gameStates_;
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
     int64_t lastUpdate_;
@@ -84,7 +82,6 @@ public:
     /// From GameProtocol (Dispatcher Thread)
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
-
 };
 
 }

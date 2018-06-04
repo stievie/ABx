@@ -128,6 +128,11 @@ bool Application::Initialize(int argc, char** argv)
     return serviceManager_->IsRunning();
 }
 
+void Application::HandleMessage(const Net::MessageMsg& msg)
+{
+    // TODO: Handle message
+}
+
 bool Application::LoadMain()
 {
     int64_t startLoading = Utils::AbTick();
@@ -140,6 +145,7 @@ bool Application::LoadMain()
     if (!ConfigManager::Instance.Load(configFile_))
     {
         LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to load configuration file" << std::endl;
         return false;
     }
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
@@ -166,14 +172,14 @@ bool Application::LoadMain()
     uint16_t msgPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::MessageServerPort].GetInt());
 
     msgClient_ = std::make_unique<Net::MessageClient>(ioService_);
-    msgClient_->Connect(msgHost, msgPort, [](const Net::MessageMsg msg)
-    {
-        // TODO: Handle message
-    });
+    msgClient_->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
     if (msgClient_->IsConnected())
         LOG_INFO << "[done]" << std::endl;
     else
+    {
         LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to connect to message server" << std::endl;
+    }
 
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());

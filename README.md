@@ -6,11 +6,11 @@ Ancient Greece Multiplayer Online RPG.
 
 ~~~
                                               +--------------------- File System
-         +---------------- File Server1...N --+---- Data Server -+
-         +-----------------+                  |                  +---- Database
-Client1 -+                 +--- Game Server1 -+
-  ...    + - Login Server -+        ...       |
-ClientN -+                 +--- Game ServerN -+
+         +---------------- File Server1...N --+-----+-- Data Server -+
+         +-----------------+                  |     |                +---- Database
+Client1 -+                 +--- Game Server1 -+--+  |
+  ...    + - Login Server -+        ...       |  +--+-- Message Server
+ClientN -+                 +--- Game ServerN -+--+
          +-----------------+
 ~~~
 
@@ -57,6 +57,11 @@ same data.
 
 So, in theory, how many players and games this server can handle, depends only 
 on how much hardware you have.
+
+### Message Server
+
+This one is for inter server communication, for example to deliver messages from
+a player to another player on a different game server.
 
 ### Client
 

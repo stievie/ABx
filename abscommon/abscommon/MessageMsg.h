@@ -45,9 +45,14 @@ public:
     {
         return HeaderLength + bodyLength_;
     }
-    bool Empty() const
+    bool IsEmpty() const
     {
         return bodyLength_ == 0;
+    }
+    void Empty()
+    {
+        bodyLength_ = 0;
+        type_ = MessageTypeUnknown;
     }
     const uint8_t* Body() const
     {

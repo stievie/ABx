@@ -141,9 +141,6 @@
     <ClInclude Include="InputQueue.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="GameState.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Matrix4.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -324,9 +321,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="InputQueue.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Matrix4.cpp">
