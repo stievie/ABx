@@ -18,4 +18,4 @@ to this running instance.
 ## If a players status changes to 'Online':
 
 1. Gets friendlist, guild list
-2. notrifies all game servers with interested parties
+2. notifies all game servers with interested parties
