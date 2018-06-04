@@ -21,6 +21,7 @@ Delete the extracted files.
 
 ## Chat commands
 
+~~~
 /a <message>: General chat
 /w <name>, <message>: Whisper to <name> a <message>
 /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>
@@ -31,3 +32,4 @@ Delete the extracted files.
 /age: Show Character age
 /ip: Show server IP
 /help: Show this help
+~~~
