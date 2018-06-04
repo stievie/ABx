@@ -329,5 +329,4 @@ void Application::Stop()
     server_->GetStorageProvider()->EntityInvalidate(sl);
 
     server_->Shutdown();
-    LOG_INFO << "[done]" << std::endl;
 }

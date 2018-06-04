@@ -10,7 +10,7 @@ namespace Net {
 enum MessageType : uint8_t
 {
     MessageTypeUnknown = 0,
-    MessageTypeServerId = 1,
+    MessageTypeServerId = 1,                      // Send the server the ID of this server
 
     MessageTypeLast = MessageTypeServerId
 };
@@ -27,7 +27,8 @@ private:
     uint8_t data_[HeaderLength + MaxBodyLength];
 public:
     MessageMsg() :
-        bodyLength_(0)
+        bodyLength_(0),
+        type_(MessageTypeUnknown)
     { }
     ~MessageMsg() = default;
 
@@ -43,6 +44,10 @@ public:
     size_t Length()
     {
         return HeaderLength + bodyLength_;
+    }
+    bool Empty() const
+    {
+        return bodyLength_ == 0;
     }
     const uint8_t* Body() const
     {

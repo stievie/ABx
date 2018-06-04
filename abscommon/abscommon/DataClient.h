@@ -119,7 +119,7 @@ public:
     {
         return host_;
     }
-    uint16_t GetPort()
+    uint16_t GetPort() const
     {
         return port_;
     }

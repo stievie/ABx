@@ -81,7 +81,8 @@ void MessageSession::AnalyzeMessage(const Net::MessageMsg& msg)
 
 void MessageSession::Start()
 {
-    LOG_INFO << "Start session" << std::endl;
+    auto endp = socket_.remote_endpoint();
+    LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;
     channel_.Join(shared_from_this());
     asio::async_read(socket_,
         asio::buffer(readMsg_.Data(), Net::MessageMsg::HeaderLength),

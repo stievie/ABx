@@ -165,11 +165,15 @@ bool Application::LoadMain()
     const std::string& msgHost = ConfigManager::Instance[ConfigManager::Key::MessageServerHost].GetString();
     uint16_t msgPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::MessageServerPort].GetInt());
 
-    asio::ip::tcp::resolver resolver(ioService_);
-    const asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), msgHost, std::to_string(msgPort));
-    asio::ip::tcp::resolver::iterator endpoint = resolver.resolve(query);
-    msgClient_ = std::make_unique<Net::MessageClient>(ioService_, endpoint);
-    LOG_INFO << "[done]" << std::endl;
+    msgClient_ = std::make_unique<Net::MessageClient>(ioService_);
+    msgClient_->Connect(msgHost, msgPort, [](const Net::MessageMsg msg)
+    {
+        // TODO: Handle message
+    });
+    if (msgClient_->IsConnected())
+        LOG_INFO << "[done]" << std::endl;
+    else
+        LOG_INFO << "[FAIL]" << std::endl;
 
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());
@@ -228,8 +232,7 @@ void Application::PrintServerInfo()
     LOG_INFO << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
-    LOG_INFO << "  Message Server: " << ConfigManager::Instance[ConfigManager::Key::MessageServerHost].GetString() <<
-        ":" << ConfigManager::Instance[ConfigManager::Key::MessageServerPort].GetInt() << std::endl;
+    LOG_INFO << "  Message Server: " << msgClient_->GetHost() << ":" << msgClient_->GetPort() << std::endl;
 }
 
 void Application::Run()
@@ -301,7 +304,6 @@ void Application::Stop()
 
     msgClient_->Close();
     ioService_.stop();
-    LOG_INFO << "[done]" << std::endl;
 }
 
 uint8_t Application::GetLoad()

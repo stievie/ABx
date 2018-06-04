@@ -286,7 +286,6 @@ void Application::Stop()
     dataClient_->Invalidate(sl);
 
     server_->stop();
-    LOG_INFO << "[done]" << std::endl;
 }
 
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)

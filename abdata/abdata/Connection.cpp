@@ -33,7 +33,7 @@ void Connection::Start()
             if (keySize <= (uint16_t)maxKeySize_)
                 StartReadKey(keySize);
             else
-                SendStatusAndRestart(KeyTooBig, "supplied key is too big.Maximum allowed key size is: " + maxKeySize_);
+                SendStatusAndRestart(KeyTooBig, "Supplied key is too big. Maximum allowed key size is: " + maxKeySize_);
         }
         else
             connectionManager_.Stop(self);
@@ -102,7 +102,7 @@ void Connection::StartUpdateDataOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
+                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + maxDataSize_);
         }
         else
             connectionManager_.Stop(self);
@@ -127,7 +127,7 @@ void Connection::StartReadOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big.Maximum data allowed is: " + maxDataSize_);
+                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + maxDataSize_);
         }
         else
             connectionManager_.Stop(self);

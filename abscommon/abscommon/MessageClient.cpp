@@ -3,8 +3,23 @@
 
 namespace Net {
 
-void MessageClient::HandleConnect(const asio::error_code& error)
+void MessageClient::Connect(const std::string& host, uint16_t port, const MessageHandler& messageHandler)
 {
+    host_ = host;
+    port_ = port;
+    messageHandler_ = messageHandler;
+    InternalConnect();
+}
+
+void MessageClient::InternalConnect()
+{
+    if (connected_)
+        return;
+
+    const asio::ip::tcp::resolver::query query(asio::ip::tcp::v4(), host_, std::to_string(port_));
+    asio::ip::tcp::resolver::iterator endpoint = resolver_.resolve(query);
+    asio::error_code error;
+    socket_.connect(*endpoint, error);
     if (!error)
     {
         connected_ = true;
@@ -13,14 +28,15 @@ void MessageClient::HandleConnect(const asio::error_code& error)
                 this, std::placeholders::_1, std::placeholders::_2));
     }
     else
-    {
         LOG_ERROR << "(" << error.value() << ") " << error.message() << std::endl;
-    }
 }
+
 void MessageClient::HandleRead(const asio::error_code& error, size_t)
 {
     if (!error)
     {
+        if (messageHandler_ && !readMsg_.Empty())
+            messageHandler_(readMsg_);
         //            std::cout << ">> ";
         //            std::cout.write(readMsg_.Body(), readMsg_.BodyLength());
         //            std::cout << "\n";

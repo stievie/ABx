@@ -191,5 +191,4 @@ void Application::Stop()
     dataClient_->Invalidate(sl);
 
     ioService_.stop();
-    LOG_INFO << "[done]" << std::endl;
 }
