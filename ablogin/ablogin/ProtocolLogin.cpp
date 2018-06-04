@@ -25,7 +25,6 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
         return;
     }
 
-    Auth::BanInfo banInfo;
     std::shared_ptr<Connection> conn = GetConnection();
     uint32_t clientIp = conn->GetIP();
     if (Auth::BanManager::Instance.IsIpBanned(clientIp))
@@ -559,7 +558,7 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
 }
 
 void ProtocolLogin::DisconnectClient(uint8_t error)
-{
+{BanInfo
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     if (output)
     {
