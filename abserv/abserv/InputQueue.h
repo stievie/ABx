@@ -5,20 +5,20 @@
 
 namespace Game {
 
-enum InputType
+enum class InputType
 {
-    InputTypeNone = 0,
-    InputTypeMove = 1,
-    InputTypeTurn = 2,
-    InputTypeUseSkill = 3,
-    InputTypeCancelSkill = 4,
-    InputTypeAttack = 5,
-    InputTypeCancelAttack = 6,
-    InputTypeSelect = 7,
-    InputTypeDirection = 8,
-    InputTypeCommand = 9,
-    InputTypeGoto = 10,
-    InputTypeFollow = 11
+    None = 0,
+    Move = 1,
+    Turn = 2,
+    UseSkill = 3,
+    CancelSkill = 4,
+    Attack = 5,
+    CancelAttack = 6,
+    Select = 7,
+    Direction = 8,
+    Command = 9,
+    Goto = 10,
+    Follow = 11
 };
 
 enum InputDataType

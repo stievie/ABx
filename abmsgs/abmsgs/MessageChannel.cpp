@@ -68,9 +68,9 @@ void MessageSession::AnalyzeMessage(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
     {
-    case Net::MessageTypeUnknown:
+    case Net::MessageType::Unknown:
         break;
-    case Net::MessageTypeServerId:
+    case Net::MessageType::ServerId:
         serverId_ = msg.GetBodyString();
         break;
     default:

@@ -69,10 +69,10 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
     {
-    case Net::MessageTypeGuildChat:
+    case Net::MessageType::GuildChat:
         DispatchGuildChat(msg);
         break;
-    case Net::MessageTypeWhipser:
+    case Net::MessageType::Whipser:
         DispatchWhipserChat(msg);
         break;
     }

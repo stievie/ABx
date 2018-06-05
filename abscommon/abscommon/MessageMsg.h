@@ -7,15 +7,15 @@
 
 namespace Net {
 
-enum MessageType : uint8_t
+enum class MessageType : uint8_t
 {
-    MessageTypeUnknown = 0,
-    MessageTypeServerId = 1,                      // Send the server the ID of this server
+    Unknown = 0,
+    ServerId = 1,                      // Send the server the ID of this server
 
-    MessageTypeGuildChat = 2,
-    MessageTypeWhipser,
+    GuildChat = 2,
+    Whipser,
 
-    MessageTypeLast
+    Last
 };
 
 /// Message server message
@@ -31,7 +31,7 @@ private:
 public:
     MessageMsg() :
         bodyLength_(0),
-        type_(MessageTypeUnknown)
+        type_(MessageType::Unknown)
     { }
     ~MessageMsg() = default;
 
@@ -55,7 +55,7 @@ public:
     void Empty()
     {
         bodyLength_ = 0;
-        type_ = MessageTypeUnknown;
+        type_ = MessageType::Unknown;
     }
     const uint8_t* Body() const
     {
@@ -94,9 +94,9 @@ public:
             bodyLength_ = 0;
             return false;
         }
-        if (type_ > MessageTypeLast)
+        if (type_ > MessageType::Last)
         {
-            type_ = MessageTypeUnknown;
+            type_ = MessageType::Unknown;
             return false;
         }
         return true;

@@ -53,7 +53,7 @@ struct TaskComparator
 class Scheduler
 {
 public:
-    enum State {
+    enum class State {
         Running,
         Terminated
     };

@@ -19,7 +19,7 @@ Maintenance Maintenance::Instance;
 void Maintenance::CleanCacheTask()
 {
     IO::DataProvider::Instance.CleanCache();
-    if (status_ == StatusRunnig)
+    if (status_ == MaintenanceStatus::Runnig)
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
@@ -30,7 +30,7 @@ void Maintenance::CleanCacheTask()
 void Maintenance::CleanGamesTask()
 {
     Game::GameManager::Instance.CleanGames();
-    if (status_ == StatusRunnig)
+    if (status_ == MaintenanceStatus::Runnig)
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(CLEAN_GAMES_MS, std::bind(&Maintenance::CleanGamesTask, this))
@@ -41,7 +41,7 @@ void Maintenance::CleanGamesTask()
 void Maintenance::CleanPlayersTask()
 {
     Game::PlayerManager::Instance.CleanPlayers();
-    if (status_ == StatusRunnig)
+    if (status_ == MaintenanceStatus::Runnig)
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
@@ -52,7 +52,7 @@ void Maintenance::CleanPlayersTask()
 void Maintenance::CleanChatsTask()
 {
     Game::Chat::Instance.CleanChats();
-    if (status_ == StatusRunnig)
+    if (status_ == MaintenanceStatus::Runnig)
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(CLEAN_CHATS_MS, std::bind(&Maintenance::CleanChatsTask, this))
@@ -65,7 +65,7 @@ void Maintenance::LogRotateTask()
     if (IO::Logger::Instance().logDir_.empty())
         return;
     IO::Logger::Instance().Close();
-    if (status_ == StatusRunnig)
+    if (status_ == MaintenanceStatus::Runnig)
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Maintenance::LogRotateTask, this))
@@ -75,7 +75,7 @@ void Maintenance::LogRotateTask()
 
 void Maintenance::UpdateServerLoadTask()
 {
-    if (status_ != StatusRunnig)
+    if (status_ != MaintenanceStatus::Runnig)
         return;
 
     AB::Entities::Service serv;
@@ -100,7 +100,7 @@ void Maintenance::Run()
 {
     {
         std::lock_guard<std::mutex> lock(lock_);
-        status_ = StatusRunnig;
+        status_ = MaintenanceStatus::Runnig;
     }
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
@@ -122,5 +122,5 @@ void Maintenance::Run()
 void Maintenance::Stop()
 {
     std::lock_guard<std::mutex> lock(lock_);
-    status_ = StatusTerminated;
+    status_ = MaintenanceStatus::Runnig;
 }

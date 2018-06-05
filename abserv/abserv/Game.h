@@ -16,12 +16,12 @@ class Npc;
 class Game : public std::enable_shared_from_this<Game>
 {
 public:
-    enum ExecutionState
+    enum class ExecutionState
     {
-        ExecutionStateStartup,
-        ExecutionStateRunning,
-        ExecutionStateShutdown,
-        ExecutionStateTerminated
+        Startup,
+        Running,
+        Shutdown,
+        Terminated
     };
 private:
     std::recursive_mutex lock_;

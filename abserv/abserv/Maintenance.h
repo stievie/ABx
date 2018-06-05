@@ -4,10 +4,10 @@ class Maintenance
 {
 private:
     std::mutex lock_;
-    enum MaintenanceStatus
+    enum class MaintenanceStatus
     {
-        StatusRunnig,
-        StatusTerminated
+        Runnig,
+        Terminated
     };
     MaintenanceStatus status_;
     void CleanCacheTask();
@@ -18,7 +18,7 @@ private:
     void UpdateServerLoadTask();
 public:
     Maintenance() :
-        status_(StatusTerminated)
+        status_(MaintenanceStatus::Terminated)
     {}
     ~Maintenance() = default;
 

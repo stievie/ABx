@@ -24,7 +24,7 @@ public:
         return utilization_;
     }
 
-    enum State
+    enum class State
     {
         Running,
         Terminated

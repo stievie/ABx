@@ -101,7 +101,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     {
         switch (input.type)
         {
-        case InputTypeMove:
+        case InputType::Move:
         {
             moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
             if (moveDir_ > AB::GameProtocol::MoveDirectionNone)
@@ -117,7 +117,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
-        case InputTypeTurn:
+        case InputType::Turn:
         {
             turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
             if (turnDir_ > AB::GameProtocol::TurnDirectionNone)
@@ -132,13 +132,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
-        case InputTypeDirection:
+        case InputType::Direction:
         {
             worldAngle = input.data[InputDataDirection].GetFloat();
             newDirection = true;
             break;
         }
-        case InputTypeGoto:
+        case InputType::Goto:
         {
             // TODO: Just adjust move direction to next points
             const Math::Vector3 dest = {
@@ -154,16 +154,16 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
-        case InputTypeFollow:
+        case InputType::Follow:
         {
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             followedObject_ = GetGame()->GetObjectById(targetId);
             break;
         }
-        case InputTypeAttack:
+        case InputType::Attack:
             newState = AB::GameProtocol::CreatureStateAttacking;
             break;
-        case InputTypeUseSkill:
+        case InputType::UseSkill:
         {
             skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
             skill = GetSkill(skillIndex);
@@ -181,7 +181,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
-        case InputTypeSelect:
+        case InputType::Select:
         {
             // If a player could control a NPC (e.g. Hero), the player can select
             // targets for this NPC, so we also need the source ID.
@@ -207,15 +207,15 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
-        case InputTypeCancelSkill:
+        case InputType::CancelSkill:
             if (creatureState_ == AB::GameProtocol::CreatureStateUsingSkill)
                 newState = AB::GameProtocol::CreatureStateIdle;
             break;
-        case InputTypeCancelAttack:
+        case InputType::CancelAttack:
             if (creatureState_ == AB::GameProtocol::CreatureStateAttacking)
                 newState = AB::GameProtocol::CreatureStateIdle;
             break;
-        case InputTypeCommand:
+        case InputType::Command:
         {
             AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
             const std::string& cmd = input.data[InputDataCommandData].GetString();
@@ -244,20 +244,20 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         float speed = GetActualMoveSpeed();
         if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         {
-            moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speed, Math::Vector3::UnitZ);
+            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitZ);
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
         {
             // Move slower backward
-            moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speed, Math::Vector3::Back / 2.0f);
+            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::Back / 2.0f);
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
         {
-            moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speed, Math::Vector3::Left / 2.0f);
+            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::Left / 2.0f);
         }
         if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
         {
-            moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speed, Math::Vector3::UnitX / 2.0f);
+            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitX / 2.0f);
         }
         if (moved)
         {

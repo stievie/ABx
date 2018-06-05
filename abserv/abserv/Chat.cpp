@@ -138,7 +138,7 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
 
     // Maybe not on this server
     Net::MessageMsg msg;
-    msg.type_ = Net::MessageTypeWhipser;
+    msg.type_ = Net::MessageType::Whipser;
     Net::MessageClient* cli = Application::Instance->GetMessageClient();
     std::stringstream ss;
     ss << playerUuid_ << "|" << player->GetName() << ":";
@@ -173,7 +173,7 @@ GuildChatChannel::GuildChatChannel(const std::string& guildUuid) :
 bool GuildChatChannel::Talk(Player* player, const std::string& text)
 {
     Net::MessageMsg msg;
-    msg.type_ = Net::MessageTypeGuildChat;
+    msg.type_ = Net::MessageType::GuildChat;
     Net::MessageClient* cli = Application::Instance->GetMessageClient();
     std::stringstream ss;
     ss << guildUuid_ << "|" << player->GetName() << ":";

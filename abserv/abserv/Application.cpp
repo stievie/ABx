@@ -276,7 +276,7 @@ void Application::Run()
     }
 
     Net::MessageMsg msg;
-    msg.type_ = Net::MessageTypeServerId;
+    msg.type_ = Net::MessageType::ServerId;
     msg.SetBodyString(GetServerId());
     msgClient_->Write(msg);
 
