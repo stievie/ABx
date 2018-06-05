@@ -30,8 +30,8 @@ bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
 
     std::ostringstream query;
     query << "SELECT * FROM `guild_members` WHERE ";
-    query << "`uuid` = " << db->EscapeString(g.uuid);
-    query << " AND (`expires` = 0 OR `expires > " << Utils::AbTick() << ")";
+    query << "`guild_uuid` = " << db->EscapeString(g.uuid);
+    query << " AND (`expires` = 0 OR `expires` > " << Utils::AbTick() << ")";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

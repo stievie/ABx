@@ -30,7 +30,7 @@ servers connect, and get their data from.
 ### File Server
 
 The file server is a simple HTTP server providing files and other information.
-The client my connect to it from time to time and download data.
+The client may connect to it from time to time and download data.
 
 There can be any number of file servers. Usually you may want to have file servers
 in different regions, and not on the same machine. A file server does not need

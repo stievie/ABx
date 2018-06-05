@@ -56,6 +56,7 @@ struct Account : Entity
         s.value4b(charSlots);
         s.text1b(currentCharacterUuid, Limits::MAX_UUID);
         s.value1b(onlineStatus);
+        s.text1b(guildUuid, Limits::MAX_UUID);
 
         // https://github.com/fraillt/bitsery/blob/master/examples/context_usage.cpp
         // https://github.com/fraillt/bitsery/blob/master/examples/basic_usage.cpp
@@ -78,6 +79,7 @@ struct Account : Entity
     std::string currentCharacterUuid;
     std::vector<std::string> characterUuids;
     OnlineStatus onlineStatus = OnlineStatusOffline;
+    std::string guildUuid;
 };
 
 }

@@ -13,6 +13,7 @@ private:
     void CleanCacheTask();
     void CleanGamesTask();
     void CleanPlayersTask();
+    void CleanChatsTask();
     void LogRotateTask();
     void UpdateServerLoadTask();
 public:

@@ -12,7 +12,10 @@ enum MessageType : uint8_t
     MessageTypeUnknown = 0,
     MessageTypeServerId = 1,                      // Send the server the ID of this server
 
-    MessageTypeLast = MessageTypeServerId
+    MessageTypeGuildChat = 2,
+    MessageTypeWhipser,
+
+    MessageTypeLast
 };
 
 /// Message server message

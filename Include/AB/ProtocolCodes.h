@@ -143,7 +143,6 @@ enum ChatMessageChannel : uint8_t
     ChatChannelGeneral,
     ChatChannelGuild,
     ChatChannelParty,
-    ChatChannelAlliance,
     ChatChannelTrade,
     ChatChannelWhisper,
 };
@@ -220,7 +219,6 @@ enum CommandTypes : uint8_t
     // Chat
     CommandTypeChatGeneral = 1,      // /a <message>
     CommandTypeChatGuild,            // /g <message>
-    CommandTypeChatAlliance,         // /ally <message>
     CommandTypeChatParty,            // /p <message>
     CommandTypeChatTrade,            // /trade <message>
     CommandTypeChatWhisper,          // /w <name>, <message>

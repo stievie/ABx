@@ -4,6 +4,7 @@
 #include "DataClient.h"
 #include "ServerApp.h"
 #include "MessageClient.h"
+#include "MessageDispatcher.h"
 
 class Application : public ServerApp
 {
@@ -14,6 +15,7 @@ private:
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<IO::DataClient> dataClient_;
     std::unique_ptr<Net::MessageClient> msgClient_;
+    std::unique_ptr<MessageDispatcher> msgDispatcher_;
     std::string configFile_;
     std::string logDir_;
     std::vector<int> loads_;
@@ -46,6 +48,10 @@ public:
     IO::DataClient* GetDataClient()
     {
         return dataClient_.get();
+    }
+    Net::MessageClient* GetMessageClient()
+    {
+        return msgClient_.get();
     }
     /// Returns a value between 0..100
     uint8_t GetLoad();

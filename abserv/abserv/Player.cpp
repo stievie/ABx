@@ -6,8 +6,10 @@
 #include "MailBox.h"
 #include "PlayerManager.h"
 #include "IOMail.h"
+#include "IOGuild.h"
 #include "StringUtils.h"
 #include "Application.h"
+#include <AB/Entities/Character.h>
 
 #include "DebugNew.h"
 
@@ -157,6 +159,11 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         HandleWhisperCommand(command, message);
         break;
     }
+    case AB::GameProtocol::CommandTypeChatGuild:
+    {
+        HandleChatGuildCommand(command, message);
+        break;
+    }
     case AB::GameProtocol::CommandTypeServerId:
     {
         HandleServerIdCommand(command, message);
@@ -225,36 +232,63 @@ void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessa
 void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)
 {
     size_t p = command.find(',');
-    if (p != std::string::npos)
+    if (p == std::string::npos)
+        return;
+
+    const std::string name = command.substr(0, p);
+    const std::string msg = Utils::LeftTrim(command.substr(p + 1, std::string::npos));
+    std::shared_ptr<Player> target = PlayerManager::Instance.GetPlayerByName(name);
+    if (target)
     {
-        const std::string name = command.substr(0, p);
-        const std::string msg = Utils::LeftTrim(command.substr(p + 1, std::string::npos));
-        std::shared_ptr<Player> target = PlayerManager::Instance.GetPlayerByName(name);
-        if (target)
+        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelWhisper, target->id_);
+        if (channel)
         {
-            std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelWhisper, target->id_);
-            if (channel)
+            if (channel->Talk(this, msg))
             {
-                if (channel->Talk(this, msg))
-                {
-                    Net::NetworkMessage nmsg;
-                    nmsg.AddByte(AB::GameProtocol::ServerMessage);
-                    nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
-                    nmsg.AddString(name);
-                    nmsg.AddString(msg);
-                    client_->WriteToOutput(nmsg);
-                }
+                Net::NetworkMessage nmsg;
+                nmsg.AddByte(AB::GameProtocol::ServerMessage);
+                nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
+                nmsg.AddString(name);
+                nmsg.AddString(msg);
+                client_->WriteToOutput(nmsg);
             }
         }
-        else
+        return;
+    }
+
+    IO::DataClient* cli = Application::Instance->GetDataClient();
+    AB::Entities::Character character;
+    character.name = name;
+    if (cli->Read(character) && (character.lastLogin > character.lastLogout))
+    {
+        // Is online
+        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelWhisper, character.uuid);
+        if (channel->Talk(this, msg))
         {
             Net::NetworkMessage nmsg;
             nmsg.AddByte(AB::GameProtocol::ServerMessage);
-            nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
-            nmsg.AddString(GetName());
+            nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
             nmsg.AddString(name);
+            nmsg.AddString(msg);
             client_->WriteToOutput(nmsg);
         }
+        return;
+    }
+
+    Net::NetworkMessage nmsg;
+    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
+    nmsg.AddString(GetName());
+    nmsg.AddString(name);
+    client_->WriteToOutput(nmsg);
+}
+
+void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
+{
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelGuild, account_.guildUuid);
+    if (channel)
+    {
+        channel->Talk(this, command);
     }
 }
 

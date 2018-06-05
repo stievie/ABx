@@ -16,7 +16,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
     Database* db = Database::Instance();
     std::ostringstream query;
     query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
-        "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`) VALUES ( ";
+        "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`) VALUES ( ";
 
     query << db->EscapeString(account.uuid) << ", ";
     query << db->EscapeString(account.name) << ", ";
@@ -27,7 +27,8 @@ bool DBAccount::Create(AB::Entities::Account& account)
     query << account.creation << ", ";
     query << account.charSlots << ", ";
     query << db->EscapeString(account.currentServerUuid) << ", ";
-    query << static_cast<int>(account.onlineStatus);
+    query << static_cast<int>(account.onlineStatus) << ", ";
+    query << db->EscapeString(account.guildUuid);
 
     query << ")";
     DBTransaction transaction(db);
@@ -75,6 +76,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.currentCharacterUuid = result->GetString("current_character_uuid");
     account.currentServerUuid = result->GetString("current_server_uuid");
     account.onlineStatus = static_cast<AB::Entities::OnlineStatus>(result->GetInt("online_status"));
+    account.guildUuid = result->GetString("guild_uuid");
 
     // load characters
     account.characterUuids.clear();
@@ -109,7 +111,8 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `char_slots` = " << account.charSlots << ",";
     query << " `current_character_uuid` = " << db->EscapeString(account.currentCharacterUuid) << ",";
     query << " `current_server_uuid` = " << db->EscapeString(account.currentServerUuid) << ",";
-    query << " `online_status` = " << static_cast<int>(account.onlineStatus);
+    query << " `online_status` = " << static_cast<int>(account.onlineStatus) << ",";
+    query << " `guild_uuid` = " << db->EscapeString(account.guildUuid);
 
     query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PlayerManager.h"
 #include "Player.h"
+#include "StringUtils.h"
 
 #include "DebugNew.h"
 
@@ -12,7 +13,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 {
     auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
     {
-        return current.second->data_.name.compare(name) == 0;
+        return Utils::StringEquals(current.second->data_.name, name);
     });
     if (it != players_.end())
         return (*it).second;

@@ -130,7 +130,7 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::HandleMessage(const Net::MessageMsg& msg)
 {
-    // TODO: Handle message
+    msgDispatcher_->Dispatch(msg);
 }
 
 bool Application::LoadMain()
@@ -173,6 +173,7 @@ bool Application::LoadMain()
 
     msgClient_ = std::make_unique<Net::MessageClient>(ioService_);
     msgClient_->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
+    msgDispatcher_ = std::make_unique<MessageDispatcher>();
     if (msgClient_->IsConnected())
         LOG_INFO << "[done]" << std::endl;
     else

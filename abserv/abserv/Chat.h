@@ -7,8 +7,6 @@ class Player;
 
 enum ChatType : uint8_t
 {
-    // Alliance chat
-    ChannelAlliance = 0x00,  // ID = StringHash(Alliance.uuid)
     ChannelGuild = 0x01,     // ID = StringHash(Guild.uuid)
     // Local map chat
     ChannelMap = 0x02,       // ID = GameID
@@ -22,9 +20,9 @@ enum ChatType : uint8_t
 class ChatChannel
 {
 protected:
-    uint32_t id_;
+    uint64_t id_;
 public:
-    ChatChannel(uint32_t id) :
+    ChatChannel(uint64_t id) :
         id_(id)
     {}
     virtual ~ChatChannel() = default;
@@ -40,24 +38,38 @@ class GameChatChannel : public ChatChannel
 private:
     std::weak_ptr<Game> game_;
 public:
-    GameChatChannel(uint32_t id);
+    GameChatChannel(uint64_t id);
     bool Talk(Player* player, const std::string& text) override;
 };
 
 class WhisperChatChannel : public ChatChannel
 {
 private:
+    /// The recipient
     std::weak_ptr<Player> player_;
+    std::string playerUuid_;
 public:
-    WhisperChatChannel(uint32_t id);
+    WhisperChatChannel(uint64_t id);
+    WhisperChatChannel(const std::string& playerUuid);
     bool Talk(Player* player, const std::string& text) override;
+    bool Talk(const std::string& playerName, const std::string& text);
+};
+
+class GuildChatChannel : public ChatChannel
+{
+private:
+    std::string guildUuid_;
+public:
+    GuildChatChannel(const std::string& guildUuid);
+    bool Talk(Player* player, const std::string& text) override;
+    void Broadcast(const std::string& playerName, const std::string& text);
 };
 
 class Chat
 {
 private:
     // Type | ID
-    std::map<uint64_t, std::shared_ptr<ChatChannel>> channels_;
+    std::map<std::pair<uint8_t, uint64_t>, std::shared_ptr<ChatChannel>> channels_;
 public:
     Chat() = default;
     ~Chat() = default;
@@ -65,8 +77,10 @@ public:
     Chat(const Chat&) = delete;
     Chat& operator=(const Chat&) = delete;
 
-    std::shared_ptr<ChatChannel> Get(uint8_t type, uint32_t id);
-    void Remove(uint8_t type, uint32_t id);
+    std::shared_ptr<ChatChannel> Get(uint8_t type, uint64_t id);
+    std::shared_ptr<ChatChannel> Get(uint8_t type, const std::string uuid);
+    void Remove(uint8_t type, uint64_t id);
+    void CleanChats();
 
     static Chat Instance;
 };

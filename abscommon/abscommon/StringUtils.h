@@ -2,6 +2,10 @@
 
 namespace Utils {
 
+/// Case insensitive string compare
+bool StringEquals(const std::string& l, const std::string& r);
+bool StringEquals(const std::wstring& l, const std::wstring& r);
+
 template <typename charType>
 std::basic_string<charType> Trim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")

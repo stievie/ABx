@@ -3,11 +3,10 @@
 * ablogin, abserv: Crash on exit with Ctrl+C
 
 * abdata: Clean expired guild members
-* abmsgs, abserv: Message relay server
 
-* abserv: Status protocol
-* abdata: Create should not be blocking. New method Create/CreateSynch? Or synch flag for all methods?
-* Check https://github.com/im95able/Rea for FL?
+* abserv: Remove Status protocol, add info to AB::Entities::Service
+* abserv: Admin protocol
+
 * all: /friend /ignore /flremove /fl commands
 * abserv: Lua API (Sphere) Octree query
 * abdata: status, admin virtual entity to query status do admin stuff
@@ -19,4 +18,3 @@
     https://github.com/cnjinhao/nana, 
     https://github.com/andlabs/libui,
     https://github.com/ocornut/imgui
-* Process manager https://github.com/eidheim/tiny-process-library

@@ -10,6 +10,7 @@
 #include <AB/Entities/Service.h>
 #include "ConfigManager.h"
 #include "DataClient.h"
+#include "Chat.h"
 
 #include "DebugNew.h"
 
@@ -44,6 +45,17 @@ void Maintenance::CleanPlayersTask()
     {
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
+        );
+    }
+}
+
+void Maintenance::CleanChatsTask()
+{
+    Game::Chat::Instance.CleanChats();
+    if (status_ == StatusRunnig)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(CLEAN_CHATS_MS, std::bind(&Maintenance::CleanChatsTask, this))
         );
     }
 }

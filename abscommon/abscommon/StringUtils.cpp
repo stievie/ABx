@@ -4,6 +4,26 @@
 
 namespace Utils {
 
+bool StringEquals(const std::string& l, const std::string& r)
+{
+    return l.size() == r.size()
+        && std::equal(l.cbegin(), l.cend(), r.cbegin(),
+            [](std::string::value_type l1, std::string::value_type r1)
+    {
+        return toupper(l1) == toupper(r1);
+    });
+}
+
+bool StringEquals(const std::wstring& l, const std::wstring& r)
+{
+    return l.size() == r.size()
+        && std::equal(l.cbegin(), l.cend(), r.cbegin(),
+            [](std::wstring::value_type l1, std::wstring::value_type r1)
+    {
+        return towupper(l1) == towupper(r1);
+    });
+}
+
 std::vector<std::string> Split(const std::string& str, const std::string& delim)
 {
     std::vector<std::string> parts;

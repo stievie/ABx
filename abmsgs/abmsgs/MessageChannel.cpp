@@ -17,7 +17,6 @@ void MessageChannel::Leave(std::shared_ptr<MessageParticipant> participant)
 
 void MessageChannel::Deliver(const Net::MessageMsg& msg)
 {
-
     recentMsgs_.push_back(msg);
     while (recentMsgs_.size() > MaxRecentMsgs)
         recentMsgs_.pop_front();

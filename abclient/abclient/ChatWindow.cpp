@@ -32,7 +32,6 @@ ChatWindow::ChatWindow(Context* context) :
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGeneral);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelParty);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGuild);
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelAlliance);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelWhisper);
 
     tabgroup_->SetEnabled(true);
@@ -81,9 +80,6 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
         break;
     case AB::GameProtocol::ChatChannelGuild:
         tabElement->tabText_->SetText("Guild");
-        break;
-    case AB::GameProtocol::ChatChannelAlliance:
-        tabElement->tabText_->SetText("Alliance");
         break;
     case AB::GameProtocol::ChatChannelTrade:
         tabElement->tabText_->SetText("Trade");
@@ -355,11 +351,11 @@ void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
 {
     using namespace Click;
     Text* text = dynamic_cast<Text*>(eventData[P_ELEMENT].GetPtr());
-    int id = text->GetVar("ID").GetInt();
-    if (id)
+    const String& name = text->GetVar("Name").GetString();
+    if (!name.Empty())
     {
         LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
-        nameEdit->SetText(text->GetVar("Name").GetString());
+        nameEdit->SetText(name);
         tabgroup_->SetSelectedIndex(tabIndexWhisper_);
     }
 }
@@ -442,8 +438,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeChatGuild;
         else if (cmd.Compare("p") == 0)
             type = AB::GameProtocol::CommandTypeChatParty;
-        else if (cmd.Compare("ally") == 0)
-            type = AB::GameProtocol::CommandTypeChatAlliance;
         else if (cmd.Compare("trade") == 0)
             type = AB::GameProtocol::CommandTypeChatTrade;
         else if (cmd.Compare("w") == 0)
@@ -480,10 +474,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeChatGuild;
             data = text;
             break;
-        case AB::GameProtocol::ChatChannelAlliance:
-            type = AB::GameProtocol::CommandTypeChatAlliance;
-            data = text;
-            break;
         case AB::GameProtocol::ChatChannelParty:
             type = AB::GameProtocol::CommandTypeChatParty;
             data = text;
@@ -512,6 +502,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     case AB::GameProtocol::CommandTypeHelp:
         AddLine("Available commands:", "ChatLogServerInfoText");
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
+        AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
         AddLine("  /inbox: Show your mail inbox", "ChatLogServerInfoText");
@@ -659,9 +650,6 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
         break;
     case AB::GameProtocol::ChatChannelParty:
         style = "ChatLogPartyChatText";
-        break;
-    case AB::GameProtocol::ChatChannelAlliance:
-        style = "ChatLogAllianceChatText";
         break;
     case AB::GameProtocol::ChatChannelWhisper:
         style = "ChatLogWhisperChatText";

@@ -67,6 +67,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     client->Update(player_->account_);
 
     player_->data_.currentMapUuid = mapUuid;
+    player_->data_.lastLogin = Utils::AbTick();
     client->Update(player_->data_);
     Connect(player_->id_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
