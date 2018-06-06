@@ -6,7 +6,7 @@
 * abserv: Add gamehost, gameport command line switches
 * abadmin: Admin HTTP server. Browser interface to admin all servers
 
-* ablogin, abserv: Crash on exit with Ctrl+C
+* ablogin, abserv: Crash on exit with Ctrl+C (maybe fixed)
 
 * abdata: Clean expired guild members
 
