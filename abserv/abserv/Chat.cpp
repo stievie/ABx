@@ -10,6 +10,7 @@
 #include <AB/Entities/GuildMembers.h>
 #include "DataClient.h"
 #include <uuid.h>
+#include "Profiler.h"
 
 namespace Game {
 
@@ -137,6 +138,7 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
     }
 
     // Maybe not on this server
+    AB_PROFILE;
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::Whipser;
     Net::MessageClient* cli = Application::Instance->GetMessageClient();
@@ -185,6 +187,7 @@ bool GuildChatChannel::Talk(Player* player, const std::string& text)
 
 void GuildChatChannel::Broadcast(const std::string& playerName, const std::string& text)
 {
+    AB_PROFILE;
     IO::DataClient* cli = Application::Instance->GetDataClient();
     AB::Entities::GuildMembers gs;
     gs.uuid = guildUuid_;

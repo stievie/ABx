@@ -1,7 +1,6 @@
 # TODO
 
 * abserv: Move Map::LoadScene() to new static class IOMap::Load(Game::Map& map, const std::string& name).
-* abdata: Somehow the data server should have a cache with player name -> player uuid.
 
 * abserv: Remove status, admin (?) protocol
 * abserv: Add gamehost, gameport command line switches

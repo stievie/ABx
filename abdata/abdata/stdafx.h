@@ -24,6 +24,7 @@
 #include <uuid.h>
 
 #define WRITE_MINIBUMP
+#define _PROFILING
 
 #include "Logger.h"
 
@@ -37,3 +38,10 @@
 #define SCHEDULER_MINTICKS 10
 #define MAX_DATA_SIZE (1024 * 1024)
 #define MAX_KEY_SIZE 256
+
+// Used by the profiler to generate a unique identifier
+#define CONCAT(a, b) a ## b
+#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)
+
+// Number of player names kept in cache
+#define MAX_PLAYERNAMES_CACHE 1000

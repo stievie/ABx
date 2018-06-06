@@ -10,6 +10,7 @@
 #include "StringUtils.h"
 #include "Application.h"
 #include <AB/Entities/Character.h>
+#include "Profiler.h"
 
 #include "DebugNew.h"
 
@@ -256,6 +257,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
         return;
     }
 
+    AB_PROFILE;
     IO::DataClient* cli = Application::Instance->GetDataClient();
     AB::Entities::Character character;
     character.name = name;

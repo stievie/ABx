@@ -114,10 +114,10 @@ private:
 
     bool EnoughSpace(size_t size);
     void CreateSpace(size_t size);
-    void CacheData(const std::vector<uint8_t>& key,
+    void CacheData(const std::string& table, const uuids::uuid& id,
         std::shared_ptr<std::vector<uint8_t>> data,
         bool modified, bool created);
-    bool RemoveData(const std::string& key);
+    bool RemoveData(const std::vector<uint8_t>& key);
     void PreloadTask(std::vector<uint8_t> key);
     bool ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
 
@@ -235,6 +235,7 @@ private:
     bool running_;
     std::mutex lock_;
     std::unordered_map<std::string, CacheItem> cache_;
+    std::map<std::string, std::string> playerNames_;
     size_t currentSize_;
     size_t maxSize_;
     std::unique_ptr<EvictionStrategy> evictor_;
