@@ -22,7 +22,7 @@ public:
 
     /// Check if an asset exists in cache or as file
     template<class T>
-    bool Exists(const std::wstring& name)
+    bool Exists(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
@@ -32,7 +32,7 @@ public:
         return FileExists(name);
     }
     template<class T>
-    bool IsCached(const std::wstring& name)
+    bool IsCached(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
