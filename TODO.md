@@ -1,6 +1,7 @@
 # TODO
 
-* abserv: Delete unused files `Connection.cpp`, `NetworkMessage.cpp`, `OutputMessage.cpp`. Moved to abscommon.
+* abserv: Delete unused files `Connection.cpp`, `NetworkMessage.cpp`, `OutputMessage.cpp`, `Service.cpp`, `Protocol.cpp`. Moved to abscommon.
+* abdata: Somehow the data server should have a cache with player name -> player uuid.
 * ablogin, abserv: Crash on exit with Ctrl+C
 
 * abdata: Clean expired guild members
