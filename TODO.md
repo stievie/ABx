@@ -1,5 +1,6 @@
 # TODO
 
+* abserv: Delete unused files `Connection.cpp`, `NetworkMessage.cpp`, `OutputMessage.cpp`. Moved to abscommon.
 * ablogin, abserv: Crash on exit with Ctrl+C
 
 * abdata: Clean expired guild members
