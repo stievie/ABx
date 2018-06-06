@@ -12,7 +12,6 @@
 * Kaguya https://github.com/satoren/kaguya
 * pugixml https://pugixml.org/
 * Recast & Detour https://github.com/recastnavigation/recastnavigation
-* SQLite https://sqlite.org/
 * GJK https://github.com/xuzebin/gjk
 * https://github.com/fraillt/bitsery
 * https://github.com/brimzi/simple-cache

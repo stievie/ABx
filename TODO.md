@@ -1,8 +1,12 @@
 # TODO
 
-* abserv: Delete unused files `Connection.cpp`, `NetworkMessage.cpp`, `OutputMessage.cpp`, `Service.cpp`, `Protocol.cpp`. Moved to abscommon.
 * abserv: Move Map::LoadScene() to new static class IOMap::Load(Game::Map& map, const std::string& name).
 * abdata: Somehow the data server should have a cache with player name -> player uuid.
+
+* abserv: Remove status, admin (?) protocol
+* abserv: Add gamehost, gameport command line switches
+* abadmin: Admin HTTP server. Browser interface to admin all servers
+
 * ablogin, abserv: Crash on exit with Ctrl+C
 
 * abdata: Clean expired guild members
