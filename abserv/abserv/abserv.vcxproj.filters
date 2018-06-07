@@ -96,9 +96,6 @@
     <ClInclude Include="Asset.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="PropStream.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Creature.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

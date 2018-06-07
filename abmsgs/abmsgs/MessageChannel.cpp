@@ -30,7 +30,7 @@ void MessageSession::HandleRead(const asio::error_code& error)
     {
         asio::read(socket_,
             asio::buffer(readMsg_.Body(), readMsg_.BodyLength()));
-        AnalyzeMessage(readMsg_);
+        HandleMessage(readMsg_);
 
         asio::async_read(socket_,
             asio::buffer(readMsg_.Data(), Net::MessageMsg::HeaderLength),
@@ -64,11 +64,12 @@ void MessageSession::HandleWrite(const asio::error_code& error)
     }
 }
 
-void MessageSession::AnalyzeMessage(const Net::MessageMsg& msg)
+void MessageSession::HandleMessage(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
     {
     case Net::MessageType::Unknown:
+        LOG_WARNING << "Unknown message type" << std::endl;
         break;
     case Net::MessageType::ServerId:
         serverId_ = msg.GetBodyString();

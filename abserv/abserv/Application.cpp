@@ -225,6 +225,8 @@ bool Application::LoadMain()
 void Application::PrintServerInfo()
 {
     LOG_INFO << "Server Info:" << std::endl;
+    LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
+    LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "  Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
     LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;

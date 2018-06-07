@@ -120,7 +120,7 @@ void Application::UpdateBytesSent(size_t bytes)
         loads_.push_back(static_cast<int>(load));
 
         AB::Entities::Service serv;
-        serv.uuid = serverId;
+        serv.uuid = serverId_;
         if (dataClient_->Read(serv))
         {
             uint8_t avgLoad = GetAvgLoad();
@@ -152,7 +152,7 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
 
-    serverId = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
+    serverId_ = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
     std::string address = IO::SimpleConfigManager::Instance.GetGlobal("server_ip", "");
     uint16_t port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
     std::string key = IO::SimpleConfigManager::Instance.GetGlobal("server_key", "server.key");
@@ -225,6 +225,8 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     LOG_INFO << "Server config:" << std::endl;
+    LOG_INFO << "  Server ID: " << serverId_ << std::endl;
+    LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -244,7 +246,7 @@ void Application::Run()
     statusMeasureTime_ = startTime_;
     uptimeRound_ = 1;
     AB::Entities::Service serv;
-    serv.uuid = serverId;
+    serv.uuid = serverId_;
     dataClient_->Read(serv);
     serv.name = "abfile";
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
@@ -274,7 +276,7 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown...";
     AB::Entities::Service serv;
-    serv.uuid = serverId;
+    serv.uuid = serverId_;
     dataClient_->Read(serv);
     serv.status = AB::Entities::ServiceStatusOffline;
     serv.stopTime = Utils::AbTick();

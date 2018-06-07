@@ -31,7 +31,7 @@ private:
     Net::MessageQueue writeMsgs_;
     void HandleRead(const asio::error_code& error);
     void HandleWrite(const asio::error_code& error);
-    void AnalyzeMessage(const Net::MessageMsg& msg);
+    void HandleMessage(const Net::MessageMsg& msg);
     std::string serverId_;
 public:
     MessageSession(asio::io_service& io_service, MessageChannel& channel) :

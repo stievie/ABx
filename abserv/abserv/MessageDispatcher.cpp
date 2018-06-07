@@ -4,6 +4,7 @@
 #include "StringUtils.h"
 #include "PlayerManager.h"
 #include "Player.h"
+#include "PropStream.h"
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
@@ -17,14 +18,11 @@ void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
         if (guildUuid.empty())
             return;
 
-        std::string name;
-        std::string message;
-
         if (p2 == std::string::npos)
             return;
 
-        name = Utils::Trim(text.substr(p + 1, p2 - p - 1));
-        message = Utils::Trim(text.substr(p2 + 1, std::string::npos));
+        const std::string name = Utils::Trim(text.substr(p + 1, p2 - p - 1));
+        const std::string message = Utils::Trim(text.substr(p2 + 1, std::string::npos));
 
         std::shared_ptr<Game::GuildChatChannel> chat =
             std::dynamic_pointer_cast<Game::GuildChatChannel>(Game::Chat::Instance.Get(Game::ChannelGuild, guildUuid));
@@ -45,14 +43,11 @@ void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
         if (playerUuid.empty())
             return;
 
-        std::string name;
-        std::string message;
-
         if (p2 == std::string::npos)
             return;
 
-        name = Utils::Trim(text.substr(p + 1, p2 - p - 1));
-        message = Utils::Trim(text.substr(p2 + 1, std::string::npos));
+        const std::string name = Utils::Trim(text.substr(p + 1, p2 - p - 1));
+        const std::string message = Utils::Trim(text.substr(p2 + 1, std::string::npos));
 
         std::shared_ptr<Game::Player> player = Game::PlayerManager::Instance.GetPlayerByUuid(playerUuid);
         if (!player)

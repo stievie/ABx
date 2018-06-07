@@ -273,10 +273,11 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
             nmsg.AddString(name);
             nmsg.AddString(msg);
             client_->WriteToOutput(nmsg);
+            return;
         }
-        return;
     }
 
+    // Send not online message
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::ServerMessage);
     nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);

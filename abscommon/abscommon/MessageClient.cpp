@@ -23,7 +23,7 @@ void MessageClient::InternalConnect()
     if (!error)
     {
         connected_ = true;
-        this->async_receive(&readMsg_,
+        async_receive(&readMsg_,
             std::bind(&MessageClient::HandleRead,
                 this, std::placeholders::_1, std::placeholders::_2));
     }
@@ -38,7 +38,7 @@ void MessageClient::HandleRead(const asio::error_code& error, size_t)
         if (messageHandler_ && !readMsg_.IsEmpty())
             messageHandler_(readMsg_);
         readMsg_.Empty();
-        this->async_receive(&readMsg_,
+        async_receive(&readMsg_,
             std::bind(&MessageClient::HandleRead,
                 this, std::placeholders::_1, std::placeholders::_2));
     }

@@ -37,7 +37,7 @@ private:
     uint32_t uptimeRound_;
     int64_t statusMeasureTime_;
     int64_t lastLoadCalc_;
-    std::string serverId;
+    std::string serverId_;
     std::vector<int> loads_;
     std::mutex mutex_;
     bool requireAuth_;

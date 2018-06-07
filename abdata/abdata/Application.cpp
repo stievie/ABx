@@ -188,6 +188,8 @@ bool Application::LoadConfig()
 void Application::PrintServerInfo()
 {
     LOG_INFO << "Server config:" << std::endl;
+    LOG_INFO << "  Server ID: " << IO::SimpleConfigManager::Instance.GetGlobal("server_id", "") << std::endl;
+    LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << port_ << std::endl;
     LOG_INFO << "  Cache size: " << Utils::ConvertSize(maxSize_) << std::endl;

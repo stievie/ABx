@@ -204,7 +204,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="PropStream.h" />
     <ClInclude Include="ProtocolAdmin.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="ProtocolStatus.h" />

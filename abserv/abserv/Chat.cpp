@@ -11,6 +11,7 @@
 #include "DataClient.h"
 #include <uuid.h>
 #include "Profiler.h"
+#include "PropStream.h"
 
 namespace Game {
 

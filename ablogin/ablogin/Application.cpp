@@ -119,6 +119,8 @@ bool Application::LoadMain()
 void Application::PrintServerInfo()
 {
     LOG_INFO << "Server Info:" << std::endl;
+    LOG_INFO << "  Server ID: " << IO::SimpleConfigManager::Instance.GetGlobal("server_id", "") << std::endl;
+    LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 

@@ -1,5 +1,8 @@
 # TODO
 
+* abserv, abmsgs: Use message server to notify emails, don't poll from data server.
+* abserv, abmsgs: Use propstream for messages
+
 * abserv: Move Map::LoadScene() to new static class IOMap::Load(Game::Map& map, const std::string& name).
 
 * abserv: Remove status, admin (?) protocol
