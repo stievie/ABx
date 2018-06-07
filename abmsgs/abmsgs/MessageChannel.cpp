@@ -2,6 +2,10 @@
 #include "MessageChannel.h"
 #include <functional>
 #include "Logger.h"
+#include "Application.h"
+#include "PropStream.h"
+#include <AB/Entities/Account.h>
+#include <AB/Entities/Character.h>
 
 void MessageChannel::Join(std::shared_ptr<MessageParticipant> participant)
 {
@@ -74,8 +78,45 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::ServerId:
         serverId_ = msg.GetBodyString();
         break;
+    case Net::MessageType::Whipser:
+        // Alternatively we could just use channel_.Deliver(msg)
+        HandleWhisperMessage(msg);
+        break;
     default:
         channel_.Deliver(msg);
+    }
+}
+
+void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
+{
+    IO::DataClient* cli = Application::Instance->GetDataClient();
+
+    std::string receiverUuid;
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    if (!stream.ReadString(receiverUuid))
+        return;
+
+    // Find the server this player is on
+    AB::Entities::Character ch;
+    ch.uuid = receiverUuid;
+    if (!cli->Read(ch))
+        return;
+    AB::Entities::Account acc;
+    acc.uuid = ch.accountUuid;
+    if (!cli->Read(acc))
+        return;
+
+    // No need to send this message to all servers
+    auto serv = std::find_if(channel_.participants_.begin(),
+        channel_.participants_.end(), [&acc](const std::shared_ptr<MessageParticipant>& current)
+    {
+        return current->serverId_.compare(acc.currentServerUuid) == 0;
+    });
+    if (serv != channel_.participants_.end())
+    {
+        (*serv)->Deliver(msg);
     }
 }
 

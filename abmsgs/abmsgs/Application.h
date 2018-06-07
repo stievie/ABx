@@ -25,5 +25,10 @@ public:
     bool Initialize(int argc, char** argv) override;
     void Run() override;
     void Stop() override;
+    IO::DataClient* GetDataClient()
+    {
+        return dataClient_.get();
+    }
+    static Application* Instance;
 };
 

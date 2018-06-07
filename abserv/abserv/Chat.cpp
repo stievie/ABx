@@ -142,10 +142,11 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::Whipser;
     Net::MessageClient* cli = Application::Instance->GetMessageClient();
-    std::stringstream ss;
-    ss << playerUuid_ << "|" << player->GetName() << ":";
-    ss << text;
-    msg.SetBodyString(ss.str());
+    IO::PropWriteStream stream;
+    stream.WriteString(playerUuid_);
+    stream.WriteString(player->GetName());
+    stream.WriteString(text);
+    msg.SetPropStream(stream);
     return cli->Write(msg);
 }
 
@@ -170,10 +171,11 @@ bool GuildChatChannel::Talk(Player* player, const std::string& text)
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::GuildChat;
     Net::MessageClient* cli = Application::Instance->GetMessageClient();
-    std::stringstream ss;
-    ss << guildUuid_ << "|" << player->GetName() << ":";
-    ss << text;
-    msg.SetBodyString(ss.str());
+    IO::PropWriteStream stream;
+    stream.WriteString(guildUuid_);
+    stream.WriteString(player->GetName());
+    stream.WriteString(text);
+    msg.SetPropStream(stream);
     return cli->Write(msg);
 }
 

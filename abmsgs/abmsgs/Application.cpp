@@ -8,11 +8,16 @@
 #include <AB/Entities/ServiceList.h>
 #include "Utils.h"
 
+Application* Application::Instance = nullptr;
+
 Application::Application() :
     ServerApp::ServerApp(),
     ioService_(),
     running_(false)
 {
+    assert(Application::Instance == nullptr);
+    Application::Instance = this;
+    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
 
 Application::~Application()
@@ -77,7 +82,6 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to data server...";
-    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
     const std::string& dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
     dataClient_->Connect(dataHost, dataPort);

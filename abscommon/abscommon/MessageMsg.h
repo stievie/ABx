@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <queue>
+#include "PropStream.h"
 
 namespace Net {
 
@@ -84,6 +85,22 @@ public:
         bodyLength_ = newLength;
         if (bodyLength_ > MaxBodyLength)
             bodyLength_ = MaxBodyLength;
+    }
+    bool SetPropStream(const IO::PropWriteStream& stream)
+    {
+        size_t size = 0;
+        const char* data = stream.GetStream(size);
+        SetBodyLength(size);
+        if (bodyLength_ != size)
+            return false;
+        memcpy(Body(), data, bodyLength_);
+        EncodeHeader();
+        return true;
+    }
+    bool GetPropStream(IO::PropReadStream& stream) const
+    {
+        stream.Init(reinterpret_cast<char const*>(Body()), bodyLength_);
+        return true;
     }
     bool DecodeHeader()
     {

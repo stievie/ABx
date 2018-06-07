@@ -8,18 +8,19 @@ class MessageParticipant
 public:
     virtual ~MessageParticipant() { }
     virtual void Deliver(const Net::MessageMsg& msg) = 0;
+    std::string serverId_;
 };
 
 class MessageChannel
 {
 private:
-    std::set<std::shared_ptr<MessageParticipant>> participants_;
     enum { MaxRecentMsgs = 100 };
     Net::MessageQueue recentMsgs_;
 public:
     void Join(std::shared_ptr<MessageParticipant> participant);
     void Leave(std::shared_ptr<MessageParticipant> participant);
     void Deliver(const Net::MessageMsg& msg);
+    std::set<std::shared_ptr<MessageParticipant>> participants_;
 };
 
 class MessageSession : public MessageParticipant, public std::enable_shared_from_this<MessageSession>
@@ -32,7 +33,7 @@ private:
     void HandleRead(const asio::error_code& error);
     void HandleWrite(const asio::error_code& error);
     void HandleMessage(const Net::MessageMsg& msg);
-    std::string serverId_;
+    void HandleWhisperMessage(const Net::MessageMsg& msg);
 public:
     MessageSession(asio::io_service& io_service, MessageChannel& channel) :
         socket_(io_service),
