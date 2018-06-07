@@ -58,12 +58,15 @@ public:
     ~MessageClient() = default;
 
     void Connect(const std::string& host, uint16_t port, const MessageHandler& messageHandler);
-    void Write(const MessageMsg& msg)
+    bool Write(const MessageMsg& msg)
     {
         if (connected_)
+        {
             ioService_.post(std::bind(&MessageClient::DoWrite, this, msg));
-        else
-            LOG_WARNING << "Writing message while not connected" << std::endl;
+            return true;
+        }
+        LOG_WARNING << "Writing message while not connected" << std::endl;
+        return false;
     }
     void Close()
     {

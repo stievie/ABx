@@ -4,7 +4,6 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "PlayerManager.h"
-#include "StringHash.h"
 #include "Application.h"
 #include "MessageMsg.h"
 #include <AB/Entities/GuildMembers.h>
@@ -38,7 +37,7 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
     return c;
 }
 
-std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, const std::string uuid)
+std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, const std::string& uuid)
 {
     if (uuid.empty() || uuids::uuid(uuid).nil())
         return std::shared_ptr<ChatChannel>();
@@ -147,8 +146,7 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
     ss << playerUuid_ << "|" << player->GetName() << ":";
     ss << text;
     msg.SetBodyString(ss.str());
-    cli->Write(msg);
-    return true;
+    return cli->Write(msg);
 }
 
 bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& text)
@@ -167,12 +165,6 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
     return false;
 }
 
-GuildChatChannel::GuildChatChannel(const std::string& guildUuid) :
-    ChatChannel(Utils::StringHashRt(guildUuid.c_str())),
-    guildUuid_(guildUuid)
-{
-}
-
 bool GuildChatChannel::Talk(Player* player, const std::string& text)
 {
     Net::MessageMsg msg;
@@ -182,8 +174,7 @@ bool GuildChatChannel::Talk(Player* player, const std::string& text)
     ss << guildUuid_ << "|" << player->GetName() << ":";
     ss << text;
     msg.SetBodyString(ss.str());
-    cli->Write(msg);
-    return true;
+    return cli->Write(msg);
 }
 
 void GuildChatChannel::Broadcast(const std::string& playerName, const std::string& text)
@@ -193,12 +184,16 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
     AB::Entities::GuildMembers gs;
     gs.uuid = guildUuid_;
     if (!cli->Read(gs))
+    {
+        LOG_WARNING << "Unable to read member for Guild " << guildUuid_ << std::endl;
         return;
+    }
 
     for (const auto& g : gs.members)
     {
         std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerByAccountUuid(g.accountUuid);
         if (!player)
+            // This player not on this server.
             continue;
 
         Net::NetworkMessage msg;

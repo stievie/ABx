@@ -1,5 +1,7 @@
 #pragma once
 
+#include "StringHash.h"
+
 namespace Game {
 
 class Game;
@@ -60,7 +62,10 @@ class GuildChatChannel : public ChatChannel
 private:
     std::string guildUuid_;
 public:
-    GuildChatChannel(const std::string& guildUuid);
+    GuildChatChannel(const std::string& guildUuid) :
+        ChatChannel(Utils::StringHashRt(guildUuid.c_str())),
+        guildUuid_(guildUuid)
+    { }
     bool Talk(Player* player, const std::string& text) override;
     void Broadcast(const std::string& playerName, const std::string& text);
 };
@@ -78,7 +83,7 @@ public:
     Chat& operator=(const Chat&) = delete;
 
     std::shared_ptr<ChatChannel> Get(uint8_t type, uint64_t id);
-    std::shared_ptr<ChatChannel> Get(uint8_t type, const std::string uuid);
+    std::shared_ptr<ChatChannel> Get(uint8_t type, const std::string& uuid);
     void Remove(uint8_t type, uint64_t id);
     void CleanChats();
 
