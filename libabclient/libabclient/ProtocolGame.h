@@ -31,7 +31,6 @@ private:
     int64_t clockDiff_;
     int lastPing_;
     bool firstRevc_;
-    PingCallback pingCallback_;
 
     void SendLoginPacket();
 protected:
@@ -63,7 +62,8 @@ public:
     void Login(const std::string& accountUuid, const std::string& accountPass,
         const std::string& charUuid, const std::string& map, const std::string& host, uint16_t port);
     void Logout();
-    void Ping(const PingCallback& callback);
+    /// Triggers OnPong()
+    void Ping();
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);

@@ -18,6 +18,7 @@ class Receiver
 public:
     virtual void OnNetworkError(const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;
+    virtual void OnPong(int lastPing) = 0;
 
     virtual void OnLoggedIn(const std::string& accountUuid) = 0;
     virtual void OnGetCharlist(const AB::Entities::CharacterList& chars) = 0;

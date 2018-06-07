@@ -10,7 +10,6 @@ namespace Client {
 
 ProtocolGame::ProtocolGame() :
     Protocol(),
-    pingCallback_(nullptr),
     updateTick_(0)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
@@ -211,8 +210,8 @@ void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
 {
     AB_UNUSED(message);
     lastPing_ = static_cast<int>(AbTick() - pingTick_);
-    if (pingCallback_)
-        pingCallback_(lastPing_);
+    if (receiver_)
+        receiver_->OnPong(lastPing_);
 }
 
 void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)
@@ -283,9 +282,8 @@ void ProtocolGame::Logout()
     Connection::Poll();
 }
 
-void ProtocolGame::Ping(const PingCallback& callback)
+void ProtocolGame::Ping()
 {
-    pingCallback_ = callback;
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();

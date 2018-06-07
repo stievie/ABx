@@ -85,6 +85,7 @@ public:
     void OnNetworkError(const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
+    void OnPong(int) override { }
 
     void OnLoggedIn(const std::string&) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;

@@ -36,7 +36,6 @@ private:
     int lastRun_;
     int lastPing_;
     bool gotPong_;
-    void OnPong(int ping);
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
 public:
     Client();
@@ -62,6 +61,7 @@ public:
     // Receiver
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
+    void OnPong(int lastPing) override;
 
     void OnLoggedIn(const std::string& accountUuid) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;

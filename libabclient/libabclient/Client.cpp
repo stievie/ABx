@@ -189,12 +189,12 @@ void Client::OnProtocolError(uint8_t err)
         receiver_->OnProtocolError(err);
 }
 
-void Client::OnPong(int ping)
+void Client::OnPong(int lastPing)
 {
     gotPong_ = true;
     while (pings_.size() > 9)
         pings_.erase(pings_.begin());
-    pings_.push_back(ping);
+    pings_.push_back(lastPing);
 }
 
 std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
@@ -307,7 +307,7 @@ void Client::Update(int timeElapsed)
             if (protoGame_)
             {
                 gotPong_ = false;
-                protoGame_->Ping(std::bind(&Client::OnPong, this, std::placeholders::_1));
+                protoGame_->Ping();
             }
             lastPing_ = 0;
         }
