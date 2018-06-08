@@ -272,7 +272,7 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
     String count = eventData[P_DATA].GetString();
-    kainjow::mustache::mustache tpl{ "You got {{count}} new mail(s)." };
+    kainjow::mustache::mustache tpl{ "You got a new mail, total {{count}} mail(s)." };
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
     std::string t = tpl.render(data);

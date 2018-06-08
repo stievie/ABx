@@ -10,21 +10,13 @@ class MailBox
 private:
     std::string accountUuid_;
     AB::Entities::MailList mailList_;
-    int oldMailCount_;
-    int newMail_;
 public:
     MailBox(const std::string& accountUuid) :
-        accountUuid_(accountUuid),
-        oldMailCount_(0),
-        newMail_(0)
+        accountUuid_(accountUuid)
     {}
     ~MailBox() = default;
 
     void Update();
-    int GetNewMailCount() const
-    {
-        return newMail_;
-    }
     int GetTotalMailCount() const
     {
         return static_cast<int>(mailList_.mails.size());

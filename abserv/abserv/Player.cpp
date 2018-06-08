@@ -53,14 +53,14 @@ void Player::UpdateMailBox()
     if (mailBox_)
     {
         mailBox_->Update();
-        if (mailBox_->GetNewMailCount() > 0)
+        if (mailBox_->GetTotalMailCount() > 0)
         {
             // Notify player there are new emails since last check.
             Net::NetworkMessage msg;
             msg.AddByte(AB::GameProtocol::ServerMessage);
             msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
             msg.AddString(GetName());
-            msg.AddString(std::to_string(mailBox_->GetNewMailCount()));
+            msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
             client_->WriteToOutput(msg);
         }
         if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)

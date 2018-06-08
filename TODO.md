@@ -1,7 +1,6 @@
 # TODO
 
-* abserv: Notify new mail not reliable?
-* Mail not marked as read
+* abserv: Mail not marked as read
 
 * abserv: Move Map::LoadScene() to new static class IOMap::Load(Game::Map& map, const std::string& name).
 

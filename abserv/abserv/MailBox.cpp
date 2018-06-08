@@ -7,25 +7,19 @@ namespace Game {
 
 void MailBox::Update()
 {
-    if (IO::IOMail::LoadMailList(mailList_, accountUuid_))
-    {
-        newMail_ = static_cast<int>(mailList_.mails.size()) - oldMailCount_;
-        oldMailCount_ = static_cast<int>(mailList_.mails.size());
-    }
+    IO::IOMail::LoadMailList(mailList_, accountUuid_);
 }
 
 bool MailBox::ReadMail(const std::string& uuid, AB::Entities::Mail& mail)
 {
     mail.uuid = uuid;
-    bool ret = IO::IOMail::ReadMail(mail);
-    return ret;
+    return IO::IOMail::ReadMail(mail);
 }
 
 bool MailBox::DeleteMail(const std::string& uuid, AB::Entities::Mail& mail)
 {
     mail.uuid = uuid;
-    bool ret = IO::IOMail::DeleteMail(mail);
-    return ret;
+    return IO::IOMail::DeleteMail(mail);
 }
 
 }
