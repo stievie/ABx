@@ -101,7 +101,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypePing:
         AddPlayerTask(&Game::Player::Ping);
         // Also update mailbox
-        AddPlayerTask(&Game::Player::UpdateMailBox);
+//        AddPlayerTask(&Game::Player::UpdateMailBox);
         break;
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);

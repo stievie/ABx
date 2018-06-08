@@ -54,6 +54,21 @@ void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
         chat->Talk(name, message);
 }
 
+void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
+{
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+
+    std::string recvAccUuid;
+    if (!stream.ReadString(recvAccUuid))
+        return;
+    std::shared_ptr<Game::Player> player = Game::PlayerManager::Instance.GetPlayerByAccountUuid(recvAccUuid);
+    if (!player)
+        return;
+    player->NotifyNewMail();
+}
+
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -63,6 +78,9 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
         break;
     case Net::MessageType::Whipser:
         DispatchWhipserChat(msg);
+        break;
+    case Net::MessageType::NewMail:
+        DispatchNewMail(msg);
         break;
     }
 }

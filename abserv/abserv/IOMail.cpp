@@ -62,6 +62,15 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
             false
         });
         client->Update(ml);
+
+        // Notify receiver
+        Net::MessageClient* msgCli = Application::Instance->GetMessageClient();
+        Net::MessageMsg msg;
+        msg.type_ = Net::MessageType::NewMail;
+        IO::PropWriteStream stream;
+        stream.WriteString(accountUuid);
+        msg.SetPropStream(stream);
+        msgCli->Write(msg);
     }
     return ret;
 }

@@ -343,7 +343,6 @@ void StorageProvider::CleanCache()
         return current.second.first.deleted;
     })) != cache_.end())
     {
-        ++removed;
         bool error = false;
         if ((*i).second.first.created)
         {
@@ -356,6 +355,7 @@ void StorageProvider::CleanCache()
             currentSize_ -= (*i).second.second->size();
             evictor_->DeleteKey((*i).first);
             cache_.erase(i++);
+            ++removed;
         }
         else
         {

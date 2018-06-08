@@ -53,10 +53,9 @@ void Player::UpdateMailBox()
     if (mailBox_)
     {
         mailBox_->Update();
-        if (mailBox_->GetNewMailCount() > 0 && !mailBox_->notifiedNewMail_)
+        if (mailBox_->GetNewMailCount() > 0)
         {
             // Notify player there are new emails since last check.
-            mailBox_->notifiedNewMail_ = true;
             Net::NetworkMessage msg;
             msg.AddByte(AB::GameProtocol::ServerMessage);
             msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
@@ -64,11 +63,9 @@ void Player::UpdateMailBox()
             msg.AddString(std::to_string(mailBox_->GetNewMailCount()));
             client_->WriteToOutput(msg);
         }
-        if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT &&
-            !mailBox_->notifiedFull_)
+        if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
         {
-            // Notify player that mailbox is full if not already done.
-            mailBox_->notifiedFull_ = true;
+            // Notify player that mailbox is full.
             Net::NetworkMessage msg;
             msg.AddByte(AB::GameProtocol::ServerMessage);
             msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
@@ -128,6 +125,11 @@ void Player::DeleteMail(const std::string mailUuid)
         msg.AddString(mailUuid);
         client_->WriteToOutput(msg);
     }
+}
+
+void Player::NotifyNewMail()
+{
+    UpdateMailBox();
 }
 
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,

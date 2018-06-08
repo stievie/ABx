@@ -57,8 +57,6 @@
 #define CLEAN_CHATS_MS (1000 * 60)
 // Remove player from PlayerManager after this time. Inactive means not Ping.
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
-// Check player mail interval, once a minute
-#define PLAYER_CHECK_MAIL_MS (1000 * 60)
 
 #define ROLL_MIN 2
 #define ROLL_MAX 100

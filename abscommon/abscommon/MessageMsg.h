@@ -15,6 +15,7 @@ enum class MessageType : uint8_t
 
     GuildChat = 2,
     Whipser,
+    NewMail,
 
     Last
 };

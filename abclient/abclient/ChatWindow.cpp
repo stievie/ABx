@@ -382,7 +382,9 @@ void ChatWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventD
         data.set("subject", header.subject);
         data.set("date", Client::format_tick(header.created));
         std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), header.isRead ? "ChatLogMailText" : "ChatLogMailUnreadText");
+        AddLine(String(header.fromName.c_str()),
+            String(t.c_str(), (unsigned)t.size()),
+            header.isRead ? "ChatLogMailText" : "ChatLogMailUnreadText");
     }
 }
 
@@ -597,6 +599,25 @@ void ChatWindow::AddLine(const String& text, const String& style)
     txt->SetMaxWidth(chatLog_->GetWidth() - 8);
     txt->SetWordwrap(true);
     txt->UpdateLayout();
+    chatLog_->AddItem(txt);
+    chatLog_->EnsureItemVisibility(txt);
+    chatLog_->EnableLayoutUpdate();
+    chatLog_->UpdateLayout();
+}
+
+void ChatWindow::AddLine(const String& name, const String& text, const String& style)
+{
+    Text* txt = chatLog_->CreateChild<Text>();
+
+    txt->SetVar("Name", name);
+    txt->SetText(text);
+    txt->SetStyle(style);
+    txt->EnableLayoutUpdate();
+    txt->SetMaxWidth(chatLog_->GetWidth() - 8);
+    txt->SetWordwrap(true);
+    txt->UpdateLayout();
+    SubscribeToEvent(txt, E_CLICK, URHO3D_HANDLER(ChatWindow, HandleNameClicked));
+
     chatLog_->AddItem(txt);
     chatLog_->EnsureItemVisibility(txt);
     chatLog_->EnableLayoutUpdate();

@@ -82,6 +82,9 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         // Alternatively we could just use channel_.Deliver(msg)
         HandleWhisperMessage(msg);
         break;
+    case Net::MessageType::NewMail:
+        HandleNewMailMessage(msg);
+        break;
     default:
         channel_.Deliver(msg);
     }
@@ -89,8 +92,6 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
 
 void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
 {
-    IO::DataClient* cli = Application::Instance->GetDataClient();
-
     std::string receiverUuid;
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
@@ -98,15 +99,47 @@ void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
     if (!stream.ReadString(receiverUuid))
         return;
 
+    MessageParticipant* server = GetServerWidthPlayer(receiverUuid);
+    if (server)
+    {
+        server->Deliver(msg);
+    }
+}
+
+void MessageSession::HandleNewMailMessage(const Net::MessageMsg& msg)
+{
+    std::string recvAccUuid;
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    if (!stream.ReadString(recvAccUuid))
+        return;
+
+    MessageParticipant* server = GetServerWidthAccount(recvAccUuid);
+    if (server)
+    {
+        server->Deliver(msg);
+    }
+}
+
+MessageParticipant* MessageSession::GetServerWidthPlayer(const std::string& playerUuid)
+{
+    IO::DataClient* cli = Application::Instance->GetDataClient();
     // Find the server this player is on
     AB::Entities::Character ch;
-    ch.uuid = receiverUuid;
+    ch.uuid = playerUuid;
     if (!cli->Read(ch))
-        return;
+        return nullptr;
+    return GetServerWidthAccount(ch.accountUuid);
+}
+
+MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& accountUuid)
+{
+    IO::DataClient* cli = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
-    acc.uuid = ch.accountUuid;
+    acc.uuid = accountUuid;
     if (!cli->Read(acc))
-        return;
+        return nullptr;
 
     // No need to send this message to all servers
     auto serv = std::find_if(channel_.participants_.begin(),
@@ -115,9 +148,8 @@ void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
         return current->serverId_.compare(acc.currentServerUuid) == 0;
     });
     if (serv != channel_.participants_.end())
-    {
-        (*serv)->Deliver(msg);
-    }
+        return (*serv).get();
+    return nullptr;
 }
 
 void MessageSession::Start()

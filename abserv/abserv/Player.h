@@ -62,6 +62,7 @@ public:
     void GetMailHeaders();
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
+    void NotifyNewMail();
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;

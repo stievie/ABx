@@ -12,15 +12,11 @@ private:
     AB::Entities::MailList mailList_;
     int oldMailCount_;
     int newMail_;
-    int64_t lastCheck_;
 public:
     MailBox(const std::string& accountUuid) :
         accountUuid_(accountUuid),
         oldMailCount_(0),
-        newMail_(0),
-        notifiedFull_(false),
-        notifiedNewMail_(true),
-        lastCheck_(0)
+        newMail_(0)
     {}
     ~MailBox() = default;
 
@@ -39,9 +35,6 @@ public:
     }
     bool ReadMail(const std::string& uuid, AB::Entities::Mail& mail);
     bool DeleteMail(const std::string& uuid, AB::Entities::Mail& mail);
-
-    bool notifiedFull_;
-    bool notifiedNewMail_;
 };
 
 }

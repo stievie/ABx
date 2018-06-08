@@ -34,6 +34,9 @@ private:
     void HandleWrite(const asio::error_code& error);
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleWhisperMessage(const Net::MessageMsg& msg);
+    void HandleNewMailMessage(const Net::MessageMsg& msg);
+    MessageParticipant* GetServerWidthPlayer(const std::string& playerUuid);
+    MessageParticipant* GetServerWidthAccount(const std::string& accountUuid);
 public:
     MessageSession(asio::io_service& io_service, MessageChannel& channel) :
         socket_(io_service),
