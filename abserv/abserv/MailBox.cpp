@@ -22,4 +22,14 @@ bool MailBox::DeleteMail(const std::string& uuid, AB::Entities::Mail& mail)
     return IO::IOMail::DeleteMail(mail);
 }
 
+void MailBox::DeleteAll()
+{
+    for (const AB::Entities::MailHeader& mh : mailList_.mails)
+    {
+        AB::Entities::Mail m;
+        m.uuid = mh.uuid;
+        IO::IOMail::DeleteMail(m);
+    }
+}
+
 }

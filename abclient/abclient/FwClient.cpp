@@ -322,7 +322,7 @@ void FwClient::ReadMail(const std::string& uuid)
         client_.GetMail(uuid);
 }
 
-void FwClient::DeleteMail(const std::string & uuid)
+void FwClient::DeleteMail(const std::string& uuid)
 {
     if (loggedIn_)
         client_.DeleteMail(uuid);

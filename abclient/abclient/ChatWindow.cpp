@@ -509,7 +509,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
         AddLine("  /inbox: Show your mail inbox", "ChatLogServerInfoText");
         AddLine("  /read <number>: Read mail with <number>", "ChatLogServerInfoText");
-        AddLine("  /delete <number>: Delete mail with <number>", "ChatLogServerInfoText");
+        AddLine("  /delete <number | all>: Delete mail with <number> or all", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
@@ -540,13 +540,20 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         {
             FwClient* client = context_->GetSubsystem<FwClient>();
             const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
-            int index = atoi(sIndex.CString());
-            if (index > 0 && index <= headers.size())
+            if (sIndex.Compare("all") == 0 && (type == AB::GameProtocol::CommandTypeMailDelete))
             {
-                if (type == AB::GameProtocol::CommandTypeMailRead)
-                    client->ReadMail(headers[index - 1].uuid);
-                else if (type == AB::GameProtocol::CommandTypeMailDelete)
-                    client->DeleteMail(headers[index - 1].uuid);
+                client->DeleteMail("all");
+            }
+            else
+            {
+                int index = atoi(sIndex.CString());
+                if (index > 0 && index <= headers.size())
+                {
+                    if (type == AB::GameProtocol::CommandTypeMailRead)
+                        client->ReadMail(headers[index - 1].uuid);
+                    else if (type == AB::GameProtocol::CommandTypeMailDelete)
+                        client->DeleteMail(headers[index - 1].uuid);
+                }
             }
         }
         break;

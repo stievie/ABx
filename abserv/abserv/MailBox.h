@@ -12,7 +12,8 @@ private:
     AB::Entities::MailList mailList_;
 public:
     MailBox(const std::string& accountUuid) :
-        accountUuid_(accountUuid)
+        accountUuid_(accountUuid),
+        mailList_()
     {}
     ~MailBox() = default;
 
@@ -27,6 +28,7 @@ public:
     }
     bool ReadMail(const std::string& uuid, AB::Entities::Mail& mail);
     bool DeleteMail(const std::string& uuid, AB::Entities::Mail& mail);
+    void DeleteAll();
 };
 
 }

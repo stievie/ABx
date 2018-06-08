@@ -53,31 +53,14 @@ void Player::UpdateMailBox()
     if (mailBox_)
     {
         mailBox_->Update();
-        if (mailBox_->GetTotalMailCount() > 0)
-        {
-            // Notify player there are new emails since last check.
-            Net::NetworkMessage msg;
-            msg.AddByte(AB::GameProtocol::ServerMessage);
-            msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
-            msg.AddString(GetName());
-            msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-            client_->WriteToOutput(msg);
-        }
-        if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
-        {
-            // Notify player that mailbox is full.
-            Net::NetworkMessage msg;
-            msg.AddByte(AB::GameProtocol::ServerMessage);
-            msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
-            msg.AddString(GetName());
-            msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-            client_->WriteToOutput(msg);
-        }
     }
 }
 
 void Player::GetMailHeaders()
 {
+    UpdateMailBox();
+    if (!mailBox_)
+        return;
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::MailHeaders);
     msg.Add<uint16_t>(static_cast<uint16_t>(mailBox_->GetTotalMailCount()));
@@ -95,6 +78,10 @@ void Player::GetMailHeaders()
 
 void Player::GetMail(const std::string mailUuid)
 {
+    UpdateMailBox();
+    if (!mailBox_)
+        return;
+
     // mailUuid must not be a reference!
     AB::Entities::Mail m;
     if (mailBox_->ReadMail(mailUuid, m))
@@ -115,6 +102,22 @@ void Player::GetMail(const std::string mailUuid)
 void Player::DeleteMail(const std::string mailUuid)
 {
     // mailUuid must not be a reference!
+    UpdateMailBox();
+    if (!mailBox_)
+        return;
+
+    if (mailUuid.compare("all") == 0)
+    {
+        mailBox_->DeleteAll();
+        Net::NetworkMessage msg;
+        msg.AddByte(AB::GameProtocol::ServerMessage);
+        msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
+        msg.AddString(GetName());
+        msg.AddString(mailUuid);
+        client_->WriteToOutput(msg);
+        return;
+    }
+
     AB::Entities::Mail m;
     if (mailBox_->DeleteMail(mailUuid, m))
     {
@@ -130,6 +133,29 @@ void Player::DeleteMail(const std::string mailUuid)
 void Player::NotifyNewMail()
 {
     UpdateMailBox();
+    if (!mailBox_)
+        return;
+
+    if (mailBox_->GetTotalMailCount() > 0)
+    {
+        // Notify player there are new emails since last check.
+        Net::NetworkMessage msg;
+        msg.AddByte(AB::GameProtocol::ServerMessage);
+        msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
+        msg.AddString(GetName());
+        msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
+        client_->WriteToOutput(msg);
+    }
+    if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
+    {
+        // Notify player that mailbox is full.
+        Net::NetworkMessage msg;
+        msg.AddByte(AB::GameProtocol::ServerMessage);
+        msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
+        msg.AddString(GetName());
+        msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
+        client_->WriteToOutput(msg);
+    }
 }
 
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
