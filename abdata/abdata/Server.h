@@ -16,7 +16,6 @@ public:
         return &storageProvider_;
     }
 private:
-    void LogRotateTask();
 	void StartAccept();
 	void HandleAccept(const asio::error_code& error);
     bool running_;

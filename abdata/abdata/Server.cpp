@@ -20,9 +20,6 @@ Server::Server(asio::io_service& io_service, uint32_t ip,
     acceptor_.set_option(asio::ip::tcp::no_delay(true));
     StartAccept();
     running_ = true;
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Server::LogRotateTask, this))
-    );
 }
 
 Server::~Server()
@@ -37,21 +34,6 @@ void Server::Shutdown()
     storageProvider_.Shutdown();
     io_service_.stop();
     running_ = false;
-}
-
-void Server::LogRotateTask()
-{
-    if (IO::Logger::Instance().logDir_.empty())
-        return;
-
-    IO::Logger::Instance().Close();
-
-    if (running_)
-    {
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Server::LogRotateTask, this))
-        );
-    }
 }
 
 void Server::StartAccept()

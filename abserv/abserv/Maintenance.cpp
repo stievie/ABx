@@ -60,19 +60,6 @@ void Maintenance::CleanChatsTask()
     }
 }
 
-void Maintenance::LogRotateTask()
-{
-    if (IO::Logger::Instance().logDir_.empty())
-        return;
-    IO::Logger::Instance().Close();
-    if (status_ == MaintenanceStatus::Runnig)
-    {
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Maintenance::LogRotateTask, this))
-        );
-    }
-}
-
 void Maintenance::UpdateServerLoadTask()
 {
     if (status_ != MaintenanceStatus::Runnig)
@@ -110,9 +97,6 @@ void Maintenance::Run()
     );
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
-    );
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(LOG_ROTATE_INTERVAL, std::bind(&Maintenance::LogRotateTask, this))
     );
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))

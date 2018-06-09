@@ -43,8 +43,6 @@
 // Most profession have 4 attribute but Warrior and Elementarist have 5
 #define PLAYER_MAX_ATTRIBUTES 5
 
-// All 24h rotate log
-#define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
 // Update server load every second
 #define UPDATE_SERVER_LOAD_MS (1000)
 // Clean assets cache every 10min

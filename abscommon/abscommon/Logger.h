@@ -3,12 +3,15 @@
 #include <fstream>
 #include <chrono>
 #include <ctime>
+#include "Utils.h"
 
 #if defined __GNUC__
 #define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__
 #elif defined _MSC_VER
 #define __AB_PRETTY_FUNCTION__ __FUNCTION__
 #endif
+// All 24h rotate log
+#define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
 
 namespace IO {
 
@@ -26,6 +29,7 @@ private:
     std::ofstream fstream_;
     bool nextIsBegin_;
     Mode mode_;
+    int64_t logStart_;
     using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
@@ -33,13 +37,15 @@ public:
     Logger(std::ostream& stream = std::cout) :
         stream_(stream),
         mode_(ModeStream),
-        nextIsBegin_(true)
+        nextIsBegin_(true),
+        logStart_(Utils::AbTick())
     {}
     Logger(const std::string& fileName) :
         fstream_(fileName),
         stream_(fstream_),
         mode_(ModeFile),
-        nextIsBegin_(true)
+        nextIsBegin_(true),
+        logStart_(Utils::AbTick())
     {}
     ~Logger()
     {
@@ -64,6 +70,8 @@ public:
     {
         if (nextIsBegin_)
         {
+            if (Utils::AbTick() - logStart_ > LOG_ROTATE_INTERVAL)
+                Logger::Rotate();
             //set time_point to current time
             std::chrono::time_point<std::chrono::system_clock> time_point;
             time_point = std::chrono::system_clock::now();
@@ -120,6 +128,14 @@ public:
     static void Close()
     {
         Logger::instance_.reset();
+    }
+    static void Rotate()
+    {
+        if (!Logger::logDir_.empty())
+        {
+            Close();
+            Logger::Instance();
+        }
     }
     static Logger& Instance();
 };
