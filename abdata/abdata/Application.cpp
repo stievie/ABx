@@ -291,7 +291,7 @@ void Application::Run()
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
     server_->GetStorageProvider()->EntityRead(serv);
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
-    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_ip", "");
+    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
     serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abdata");
     serv.file = exeFile_;

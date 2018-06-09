@@ -9,11 +9,13 @@ class Player;
 
 enum ChatType : uint8_t
 {
+    /// Guild messages get all guild members on all servers
     ChannelGuild = 0x01,     // ID = StringHash(Guild.uuid)
-    // Local map chat
+    /// Local map chat
     ChannelMap = 0x02,       // ID = GameID
-    ChannelTrade = 0x03,     // ID = GameID
-    // There may be allies on the map that do not belong to the party
+    /// Trade messages get all players on all servers
+    ChannelTrade = 0x03,     // ID = 0
+    /// There may be allies on the map that do not belong to the party
     ChannelAllies = 0x04,    //
     ChannelParty = 0x05,     // ID = PartyID
     ChannelWhisper = 0x06,   // ID = PlayerID

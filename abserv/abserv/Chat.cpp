@@ -18,6 +18,7 @@ Chat Chat::Instance;
 
 Chat::Chat()
 {
+    // Keep a reference to this chat so it doesn't get deleted.
     tradeChat_ = std::dynamic_pointer_cast<ChatChannel>(std::make_shared<TradeChatChannel>());
     std::pair<uint8_t, uint64_t> channelId = { ChannelTrade, 0 };
     channels_.emplace(channelId, tradeChat_);

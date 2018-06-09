@@ -77,6 +77,16 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
         }
+        else if (a.compare("-ip") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                gameIp_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -ip" << std::endl;
+        }
         else if (a.compare("-host") == 0)
         {
             if (i + 1 < arguments_.size())
@@ -85,7 +95,7 @@ bool Application::ParseCommandLine()
                 gameHost_ = arguments_[i];
             }
             else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
+                LOG_WARNING << "Missing argument for -host" << std::endl;
         }
         else if (a.compare("-port") == 0)
         {
@@ -95,7 +105,7 @@ bool Application::ParseCommandLine()
                 gamePort_ = static_cast<uint16_t>(atoi(arguments_[i].c_str()));
             }
             else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
+                LOG_WARNING << "Missing argument for -port" << std::endl;
         }
         else if (a.compare("-h") == 0 || a.compare("-help") == 0)
         {
@@ -111,6 +121,7 @@ void Application::ShowHelp()
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  ip <ip>: Game ip" << std::endl;
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
@@ -203,9 +214,11 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to connect to message server" << std::endl;
     }
 
+    if (gameHost_.empty())
+        gameHost_ = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
     uint32_t ip;
-    if (!gameHost_.empty())
-        ip = Utils::ConvertStringToIP(gameHost_);
+    if (!gameIp_.empty())
+        ip = Utils::ConvertStringToIP(gameIp_);
     else
         ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
     if (gamePort_ == 0)
@@ -259,7 +272,7 @@ void Application::Run()
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     dataClient_->Read(serv);
-    serv.host = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
+    serv.host = gameHost_;
     serv.location = ConfigManager::Instance[ConfigManager::Key::Location].GetString();
     serv.port = gamePort_;
     serv.name = ConfigManager::Instance[ConfigManager::Key::ServerName].GetString();

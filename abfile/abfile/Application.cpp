@@ -36,7 +36,8 @@ Application::Application() :
     bytesSent_(0),
     uptimeRound_(0),
     statusMeasureTime_(0),
-    lastLoadCalc_(0)
+    lastLoadCalc_(0),
+    filePort_(0)
 {
 }
 
@@ -70,6 +71,36 @@ bool Application::ParseCommandLine()
             }
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
+        }
+        else if (a.compare("-ip") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                fileIp_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -ip" << std::endl;
+        }
+        else if (a.compare("-host") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                fileHost_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -host" << std::endl;
+        }
+        else if (a.compare("-port") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                filePort_ = static_cast<uint16_t>(atoi(arguments_[i].c_str()));
+            }
+            else
+                LOG_WARNING << "Missing argument for -port" << std::endl;
         }
         else if (a.compare("-h") == 0 || a.compare("-help") == 0)
         {
@@ -153,8 +184,10 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     serverId_ = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
-    std::string address = IO::SimpleConfigManager::Instance.GetGlobal("server_ip", "");
-    uint16_t port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
+    if (fileIp_.empty())
+        fileIp_ = IO::SimpleConfigManager::Instance.GetGlobal("file_ip", "");
+    if (filePort_ == 0)
+        filePort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("file_port", 8081));
     std::string key = IO::SimpleConfigManager::Instance.GetGlobal("server_key", "server.key");
     std::string cert = IO::SimpleConfigManager::Instance.GetGlobal("server_cert", "server.crt");
     size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 1);
@@ -174,9 +207,9 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     server_ = std::make_unique<HttpsServer>(cert, key);
-    server_->config.port = port;
-    if (!address.empty())
-        server_->config.address = address;
+    server_->config.port = filePort_;
+    if (!fileIp_.empty())
+        server_->config.address = fileIp_;
     server_->config.thread_pool_size = threads;
 
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
@@ -228,7 +261,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Server ID: " << serverId_ << std::endl;
     LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
-    LOG_INFO << "  Listening: " << (address.empty() ? "0.0.0.0" : address) << ":" << port << std::endl;
+    LOG_INFO << "  Listening: " << (fileIp_.empty() ? "0.0.0.0" : fileIp_) << ":" << filePort_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Max. throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
@@ -250,8 +283,8 @@ void Application::Run()
     dataClient_->Read(serv);
     serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abfile");
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
-    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("server_host", "");
-    serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
+    serv.host = fileHost_;
+    serv.port = filePort_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));

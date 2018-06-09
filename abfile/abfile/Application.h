@@ -40,6 +40,9 @@ private:
     std::string serverId_;
     std::vector<int> loads_;
     std::mutex mutex_;
+    std::string fileIp_;
+    std::string fileHost_;
+    uint16_t filePort_;
     bool requireAuth_;
     bool running_;
     bool ParseCommandLine();

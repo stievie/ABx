@@ -13,8 +13,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ablogin", "..\ablogin\ablog
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abserv", "..\abserv\abserv\abserv.vcxproj", "{8344104E-C5F6-4998-94D0-3762C4ECD075}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmngr", "..\absmngr\absmngr\absmngr.vcxproj", "{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abmsgs", "..\abmsgs\abmsgs\abmsgs.vcxproj", "{E208FDE6-0D36-435B-943D-0AA2055BC009}"
 EndProject
 Global
@@ -65,14 +63,6 @@ Global
 		{8344104E-C5F6-4998-94D0-3762C4ECD075}.Release|x64.Build.0 = Release|x64
 		{8344104E-C5F6-4998-94D0-3762C4ECD075}.Release|x86.ActiveCfg = Release|Win32
 		{8344104E-C5F6-4998-94D0-3762C4ECD075}.Release|x86.Build.0 = Release|Win32
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Debug|x64.ActiveCfg = Debug|x64
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Debug|x64.Build.0 = Debug|x64
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Debug|x86.ActiveCfg = Debug|Win32
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Debug|x86.Build.0 = Debug|Win32
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Release|x64.ActiveCfg = Release|x64
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Release|x64.Build.0 = Release|x64
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Release|x86.ActiveCfg = Release|Win32
-		{C3FD362E-FBC7-476C-BDE1-4CAC60014B9D}.Release|x86.Build.0 = Release|Win32
 		{E208FDE6-0D36-435B-943D-0AA2055BC009}.Debug|x64.ActiveCfg = Debug|x64
 		{E208FDE6-0D36-435B-943D-0AA2055BC009}.Debug|x64.Build.0 = Debug|x64
 		{E208FDE6-0D36-435B-943D-0AA2055BC009}.Debug|x86.ActiveCfg = Debug|Win32

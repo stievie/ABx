@@ -12,7 +12,6 @@ public:
         ServerName,
         ServerID,
         Location,
-        IP,
         GamePort,
         GameHost,
         GameIP,
