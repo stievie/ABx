@@ -293,7 +293,7 @@ void Application::Run()
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_ip", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
-    serv.name = "abdata";
+    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abdata");
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));

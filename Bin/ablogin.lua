@@ -4,6 +4,7 @@
 
 server_id = "ef5ac3ec-45f9-40dc-8523-99c7937c69ba"
 location = "AT"
+server_name = "ablogin"
 
 -- login server port
 -- This should be the port used for connecting with IP changers etc.

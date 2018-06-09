@@ -158,7 +158,7 @@ void Application::Run()
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("message_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("message_port", 2771));
-    serv.name = "abmsgs";
+    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abmsgs");
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));

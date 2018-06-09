@@ -4,6 +4,7 @@
 
 server_id = "0e9cf876-bb63-4926-a1a9-271bcf4a1c39"
 location = "AT"
+server_name = "ATF1"
 
 -- server_host = "stievie.mooo.com"
 server_port = 8081

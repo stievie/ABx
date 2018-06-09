@@ -248,7 +248,7 @@ void Application::Run()
     AB::Entities::Service serv;
     serv.uuid = serverId_;
     dataClient_->Read(serv);
-    serv.name = "abfile";
+    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abfile");
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("server_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("server_port", 8081));
