@@ -2,8 +2,6 @@
 
 * abserv: Mail not marked as read
 
-* abserv: Move Map::LoadScene() to new static class IOMap::Load(Game::Map& map, const std::string& name).
-
 * abserv: Remove status, admin (?) protocol
 * abserv: Add gamehost, gameport command line switches
 * abadmin: Admin HTTP server. Browser interface to admin all servers

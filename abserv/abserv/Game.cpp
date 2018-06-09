@@ -17,6 +17,7 @@
 #include "ProtocolGame.h"
 #include "PropStream.h"
 #include "Random.h"
+#include "IOMap.h"
 
 #include "DebugNew.h"
 
@@ -256,7 +257,7 @@ void Game::InternalLoad()
 {
     // Game::Load() Thread
 
-    if (!map_->Load())
+    if (!IO::IOMap::Load(*map_.get()))
     {
         LOG_ERROR << "Error loading map with name " << map_->data_.name << std::endl;
         return;

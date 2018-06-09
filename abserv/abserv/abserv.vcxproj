@@ -187,6 +187,7 @@
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IOMail.h" />
+    <ClInclude Include="IOMap.h" />
     <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="IOTerrain.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOGuild.cpp" />
     <ClCompile Include="IOMail.cpp" />
+    <ClCompile Include="IOMap.cpp" />
     <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="IOTerrain.cpp" />

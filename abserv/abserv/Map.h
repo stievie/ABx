@@ -32,14 +32,11 @@ class Map
 private:
     std::mutex lock_;
     std::weak_ptr<Game> game_;
-    /// Load objects from Urho3D scene file
-    bool LoadScene(const std::string& name);
-    void LoadSceneNode(const pugi::xml_node& node);
 public:
     Map(std::shared_ptr<Game> game);
     virtual ~Map();
 
-    bool Load();
+    void LoadSceneNode(const pugi::xml_node& node);
     void Update(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
     MapData data_;
