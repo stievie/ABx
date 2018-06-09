@@ -54,6 +54,7 @@ public:
         std::string& uuid);
     static bool LoadCharacter(AB::Entities::Character& ch);
     static bool DeletePlayer(const std::string& accountUuid, const std::string& playerUuid);
+    static bool IsNameAvailable(const std::string& name);
 };
 
 }

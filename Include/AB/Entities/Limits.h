@@ -40,6 +40,8 @@ static constexpr int MAX_BAN_COMMENT = 255;
 // Version
 static constexpr int MAX_VERSION_NAME = 20;
 
+static constexpr int MAX_RESERVED_NAME = 40;
+
 // Friendlist
 static constexpr int MAX_FRIENDS = 1000;
 

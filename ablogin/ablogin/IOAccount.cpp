@@ -7,6 +7,7 @@
 #include <AB/Entities/AccountKeyAccounts.h>
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
+#include <AB/Entities/ReservedName.h>
 #include "Profiler.h"
 #include "Application.h"
 
@@ -167,12 +168,11 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     if (!client->Read(pro))
         return CreatePlayerResultInvalidProfession;
 
-    AB::Entities::Character ch;
-    ch.name = name;
-    if (client->Exists(ch))
+    if (!IsNameAvailable(name))
         return CreatePlayerResultNameExists;
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
+    AB::Entities::Character ch;
     ch.uuid = guid.to_string();
     ch.name = name;
     ch.profession = pro.abbr;
@@ -216,6 +216,20 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
     if (ch.accountUuid.compare(accountUuid) != 0)
         return false;
     return client->Delete(ch);
+}
+
+bool IOAccount::IsNameAvailable(const std::string& name)
+{
+    IO::DataClient* client = Application::Instance->GetDataClient();
+    AB::Entities::Character ch;
+    ch.name = name;
+    if (client->Exists(ch))
+        return false;
+
+    AB::Entities::ReservedName rn;
+    rn.name = name;
+    rn.isReserved = true;
+    return !client->Exists(rn);
 }
 
 }

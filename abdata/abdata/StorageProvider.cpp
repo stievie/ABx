@@ -37,6 +37,7 @@ static constexpr size_t KEY_SERVICE_HASH = Utils::StringHash(AB::Entities::Servi
 static constexpr size_t KEY_SERVICELIST_HASH = Utils::StringHash(AB::Entities::ServiceList::KEY());
 static constexpr size_t KEY_GUILD_HASH = Utils::StringHash(AB::Entities::Guild::KEY());
 static constexpr size_t KEY_GUILDMEMBERS_HASH = Utils::StringHash(AB::Entities::GuildMembers::KEY());
+static constexpr size_t KEY_RESERVEDNAME_HASH = Utils::StringHash(AB::Entities::ReservedName::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -482,8 +483,6 @@ bool StorageProvider::RemoveData(const std::vector<uint8_t>& key)
         cache_.erase(strKey);
         evictor_->DeleteKey(strKey);
 
-        // Remove from player names
-
         return true;
     }
     return false;
@@ -550,6 +549,8 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBGuild, AB::Entities::Guild>(id, *data);
     case KEY_GUILDMEMBERS_HASH:
         return LoadFromDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(id, *data);
+    case KEY_RESERVEDNAME_HASH:
+        return LoadFromDB<DB::DBReservedName, AB::Entities::ReservedName>(id, *data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -660,6 +661,9 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_GUILDMEMBERS_HASH:
         succ = FlushRecord<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
         break;
+    case KEY_RESERVEDNAME_HASH:
+        succ = FlushRecord<DB::DBReservedName, AB::Entities::ReservedName>(data);
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -730,6 +734,8 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBGuild, AB::Entities::Guild>(data);
     case KEY_GUILDMEMBERS_HASH:
         return ExistsInDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
+    case KEY_RESERVEDNAME_HASH:
+        return ExistsInDB<DB::DBReservedName, AB::Entities::ReservedName>(data);
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;

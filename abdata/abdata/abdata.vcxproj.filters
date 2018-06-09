@@ -135,6 +135,9 @@
     <ClInclude Include="DBGuildMembers.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBReservedName.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -249,6 +252,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBGuildMembers.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBReservedName.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
