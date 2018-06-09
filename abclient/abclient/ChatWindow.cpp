@@ -30,8 +30,9 @@ ChatWindow::ChatWindow(Context* context) :
     tabgroup_->SetColor(Color(0, 0, 0, 0));
     tabgroup_->SetStyleAuto();
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGeneral);
-    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelParty);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGuild);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelParty);
+    CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelTrade);
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelWhisper);
 
     tabgroup_->SetEnabled(true);
@@ -505,6 +506,9 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("Available commands:", "ChatLogServerInfoText");
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
+        AddLine("  /party <message>: Party chat", "ChatLogServerInfoText");
+        AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
+        AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
         AddLine("  /inbox: Show your mail inbox", "ChatLogServerInfoText");
@@ -632,12 +636,14 @@ void ChatWindow::AddLine(const String& name, const String& text, const String& s
 }
 
 void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
-    const String& style, const String& style2 /* = String::EMPTY */, bool isWhisper /* = false */)
+    const String& style, const String& style2 /* = String::EMPTY */,
+    AB::GameProtocol::ChatMessageChannel channel /* = AB::GameProtocol::ChatChannelUnknown */)
 {
     Text* nameText = chatLog_->CreateChild<Text>();
     nameText->SetVar("ID", id);
     nameText->SetVar("Name", name);
-    if (!isWhisper)
+    nameText->SetVar("Channel", channel);
+    if (!channel == AB::GameProtocol::ChatChannelWhisper)
         nameText->SetText(name + ":");
     else
         nameText->SetText("{" + name + "}");
@@ -668,6 +674,7 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
     const String& text, AB::GameProtocol::ChatMessageChannel channel)
 {
     String style;
+    String testStyle = "ChatLogChatText";
     switch (channel)
     {
     case AB::GameProtocol::ChatChannelGeneral:
@@ -682,9 +689,13 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
     case AB::GameProtocol::ChatChannelWhisper:
         style = "ChatLogWhisperChatText";
         break;
+    case AB::GameProtocol::ChatChannelTrade:
+        style = "ChatLogTradeChatText";
+        testStyle = "ChatLogTradeChatText";
+        break;
     default:
         style = "ChatLogChatText";
         break;
     }
-    AddLine(senderId, name, text, style, "ChatLogChatText", channel == AB::GameProtocol::ChatChannelWhisper);
+    AddLine(senderId, name, text, style, testStyle, channel);
 }

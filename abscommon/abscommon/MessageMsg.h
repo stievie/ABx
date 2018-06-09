@@ -14,6 +14,7 @@ enum class MessageType : uint8_t
     ServerId = 1,                      // Send the server the ID of this server
 
     GuildChat = 2,
+    TradeChat,
     Whipser,
     NewMail,
 

@@ -41,7 +41,8 @@ public:
     void AddLine(const String& text, const String& style);
     void AddLine(const String& name, const String& text, const String& style);
     void AddLine(uint32_t id, const String& name, const String& text,
-        const String& style, const String& style2 = String::EMPTY, bool isWhisper = false);
+        const String& style, const String& style2 = String::EMPTY,
+        AB::GameProtocol::ChatMessageChannel channel = AB::GameProtocol::ChatChannelUnknown);
 
     void AddChatLine(uint32_t senderId, const String& name, const String& text,
         AB::GameProtocol::ChatMessageChannel channel);

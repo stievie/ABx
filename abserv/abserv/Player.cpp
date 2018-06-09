@@ -193,6 +193,11 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         HandleChatGuildCommand(command, message);
         break;
     }
+    case AB::GameProtocol::CommandTypeChatTrade:
+    {
+        HandleChatTradeCommand(command, message);
+        break;
+    }
     case AB::GameProtocol::CommandTypeServerId:
     {
         HandleServerIdCommand(command, message);
@@ -317,6 +322,15 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
 void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelGuild, account_.guildUuid);
+    if (channel)
+    {
+        channel->Talk(this, command);
+    }
+}
+
+void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&)
+{
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelTrade, 0);
     if (channel)
     {
         channel->Talk(this, command);

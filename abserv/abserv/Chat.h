@@ -57,6 +57,17 @@ public:
     bool Talk(const std::string& playerName, const std::string& text);
 };
 
+/// Trade channel, all players on all servers will get it
+class TradeChatChannel : public ChatChannel
+{
+public:
+    TradeChatChannel() :
+        ChatChannel(0)
+    { }
+    bool Talk(Player* player, const std::string& text) override;
+    void Broadcast(const std::string& playerName, const std::string& text);
+};
+
 class GuildChatChannel : public ChatChannel
 {
 private:
@@ -75,8 +86,9 @@ class Chat
 private:
     // Type | ID
     std::map<std::pair<uint8_t, uint64_t>, std::shared_ptr<ChatChannel>> channels_;
+    std::shared_ptr<ChatChannel> tradeChat_;
 public:
-    Chat() = default;
+    Chat();
     ~Chat() = default;
     // non-copyable
     Chat(const Chat&) = delete;

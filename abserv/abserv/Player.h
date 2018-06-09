@@ -31,6 +31,7 @@ protected:
     void HandleSendMailCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
+    void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage& message);

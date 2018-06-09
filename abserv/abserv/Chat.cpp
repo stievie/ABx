@@ -16,10 +16,18 @@ namespace Game {
 
 Chat Chat::Instance;
 
+Chat::Chat()
+{
+    tradeChat_ = std::dynamic_pointer_cast<ChatChannel>(std::make_shared<TradeChatChannel>());
+    std::pair<uint8_t, uint64_t> channelId = { ChannelTrade, 0 };
+    channels_.emplace(channelId, tradeChat_);
+}
+
 std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
 {
-    if (type == ChannelWhisper)
+    switch (type)
     {
+    case ChannelWhisper:
         return std::make_shared<WhisperChatChannel>(id);
     }
 
@@ -29,10 +37,15 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
         return (*it).second;
 
     std::shared_ptr<ChatChannel> c;
-    if (type == ChannelMap || type == ChannelTrade)
+    switch (type)
+    {
+    case ChannelMap:
         c = std::make_shared<GameChatChannel>(id);
-    else
+        break;
+    default:
         c = std::make_shared<ChatChannel>(id);
+        break;
+    }
     channels_.emplace(channelId, c);
     return c;
 }
@@ -57,6 +70,7 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, const std::string& uuid)
     case ChannelWhisper:
         c = std::make_shared<WhisperChatChannel>(uuid);
         channels_.emplace(channelId, c);
+        break;
     }
     return c;
 }
@@ -205,6 +219,32 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
         msg.AddString(playerName);
         msg.AddString(text);
         player->client_->WriteToOutput(msg);
+    }
+}
+
+bool TradeChatChannel::Talk(Player* player, const std::string& text)
+{
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::TradeChat;
+    Net::MessageClient* cli = Application::Instance->GetMessageClient();
+    IO::PropWriteStream stream;
+    stream.WriteString(player->GetName());
+    stream.WriteString(text);
+    msg.SetPropStream(stream);
+    return cli->Write(msg);
+}
+
+void TradeChatChannel::Broadcast(const std::string& playerName, const std::string& text)
+{
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::ChatMessage);
+    msg.AddByte(AB::GameProtocol::ChatChannelTrade);
+    msg.Add<uint32_t>(0);
+    msg.AddString(playerName);
+    msg.AddString(text);
+    for (const auto& player : PlayerManager::Instance.GetPlayers())
+    {
+        player.second->client_->WriteToOutput(msg);
     }
 }
 

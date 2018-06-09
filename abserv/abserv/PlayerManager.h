@@ -25,6 +25,10 @@ public:
         players_.clear();
     }
 
+    std::map<uint32_t, std::shared_ptr<Player>>& GetPlayers()
+    {
+        return players_;
+    }
     std::shared_ptr<Player> GetPlayerByName(const std::string& name);
     std::shared_ptr<Player> GetPlayerByUuid(const std::string& uuid);
     std::shared_ptr<Player> GetPlayerById(uint32_t id);

@@ -28,6 +28,24 @@ void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
         chat->Broadcast(name, message);
 }
 
+void MessageDispatcher::DispatchTradeChat(const Net::MessageMsg& msg)
+{
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    std::string name;
+    if (!stream.ReadString(name))
+        return;
+    std::string message;
+    if (!stream.ReadString(message))
+        return;
+
+    std::shared_ptr<Game::TradeChatChannel> chat =
+        std::dynamic_pointer_cast<Game::TradeChatChannel>(Game::Chat::Instance.Get(Game::ChannelTrade, 0));
+    if (chat)
+        chat->Broadcast(name, message);
+}
+
 void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
 {
     IO::PropReadStream stream;
@@ -81,6 +99,9 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
         break;
     case Net::MessageType::NewMail:
         DispatchNewMail(msg);
+        break;
+    case Net::MessageType::TradeChat:
+        DispatchTradeChat(msg);
         break;
     }
 }
