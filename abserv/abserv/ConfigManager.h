@@ -15,15 +15,7 @@ public:
         IP,
         GamePort,
         GameHost,
-        FilePort,
-        FileHost,
-        AdminPort,
-        LoginPort,
-        StatusPort,
-        LoginIP,
         GameIP,
-        StatusIP,
-        AdminIP,
 
         LogDir,
         DataDir,
@@ -33,7 +25,6 @@ public:
         MessageServerHost,
         MessageServerPort,
 
-        StatusQueryTimeout,
         MaxPacketsPerSecond,
 
         AdminEnabled,

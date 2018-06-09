@@ -205,9 +205,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="ProtocolAdmin.h" />
     <ClInclude Include="ProtocolGame.h" />
-    <ClInclude Include="ProtocolStatus.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Ray.h" />
@@ -268,9 +266,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="Point.cpp" />
-    <ClCompile Include="ProtocolAdmin.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
-    <ClCompile Include="ProtocolStatus.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Ray.cpp" />

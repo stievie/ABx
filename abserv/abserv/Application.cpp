@@ -3,8 +3,6 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "ProtocolGame.h"
-#include "ProtocolAdmin.h"
-#include "ProtocolStatus.h"
 #include "ConfigManager.h"
 #include "Task.h"
 #include "Logger.h"
@@ -37,7 +35,8 @@ Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
     lastLoadCalc_(0),
-    ioService_()
+    ioService_(),
+    gamePort_(0)
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
@@ -78,6 +77,26 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
         }
+        else if (a.compare("-host") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                gameHost_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -log" << std::endl;
+        }
+        else if (a.compare("-port") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                gamePort_ = static_cast<uint16_t>(atoi(arguments_[i].c_str()));
+            }
+            else
+                LOG_WARNING << "Missing argument for -log" << std::endl;
+        }
         else if (a.compare("-h") == 0 || a.compare("-help") == 0)
         {
             return false;
@@ -92,6 +111,8 @@ void Application::ShowHelp()
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  host <host>: Game host" << std::endl;
+    std::cout << "  port <port>: Game port" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -182,25 +203,15 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to connect to message server" << std::endl;
     }
 
-    // Add Protocols
-    uint32_t ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::AdminIP].GetInt());
-    uint16_t port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::AdminPort].GetInt());
-    if (port != 0)
-        serviceManager_->Add<Net::ProtocolAdmin>(ip, port, [](uint32_t remoteIp) -> bool
-    {
-        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
-    });
-    ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::StatusIP].GetInt());
-    port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
-    if (port != 0)
-        serviceManager_->Add<Net::ProtocolStatus>(ip, port, [](uint32_t remoteIp) -> bool
-    {
-        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
-    });
-    ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
-    port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
-    if (port != 0)
-        serviceManager_->Add<Net::ProtocolGame>(ip, port, [](uint32_t remoteIp) -> bool
+    uint32_t ip;
+    if (!gameHost_.empty())
+        ip = Utils::ConvertStringToIP(gameHost_);
+    else
+        ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
+    if (gamePort_ == 0)
+        gamePort_ = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
+    if (gamePort_ != 0)
+        serviceManager_->Add<Net::ProtocolGame>(ip, gamePort_, [](uint32_t remoteIp) -> bool
     {
         return Auth::BanManager::Instance.AcceptConnection(remoteIp);
     });
@@ -226,7 +237,6 @@ void Application::PrintServerInfo()
 {
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
-    LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "  Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
     LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
@@ -251,9 +261,8 @@ void Application::Run()
     dataClient_->Read(serv);
     serv.host = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
     serv.location = ConfigManager::Instance[ConfigManager::Key::Location].GetString();
-    serv.port = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
-    serv.statusPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::StatusPort].GetInt());
-    serv.name = "abserv";
+    serv.port = gamePort_;
+    serv.name = ConfigManager::Instance[ConfigManager::Key::ServerName].GetString();
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));

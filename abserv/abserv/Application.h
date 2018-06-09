@@ -20,6 +20,8 @@ private:
     std::string logDir_;
     std::vector<int> loads_;
     int64_t lastLoadCalc_;
+    std::string gameHost_;
+    uint16_t gamePort_;
     bool running_;
     bool LoadMain();
     void PrintServerInfo();

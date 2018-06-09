@@ -2,8 +2,6 @@
 
 * abserv: Mail not marked as read
 
-* abserv: Remove status, admin (?) protocol
-* abserv: Add gamehost, gameport command line switches
 * abadmin: Admin HTTP server. Browser interface to admin all servers
 
 * ablogin, abserv: Crash on exit with Ctrl+C (maybe fixed, or not idk...)

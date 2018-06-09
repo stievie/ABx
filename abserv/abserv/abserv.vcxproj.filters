@@ -39,12 +39,6 @@
     <ClInclude Include="Game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ProtocolAdmin.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ProtocolStatus.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -234,12 +228,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ProtocolAdmin.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ProtocolStatus.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">

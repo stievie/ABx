@@ -11,22 +11,5 @@ game_port = base_port          -- 0xABE
 --game_host = "stievie.mooo.com"
 -- game_ip = ip
 
--- status port
--- Used by status protocol connections, should be game_port + 1
--- to work correctly with server lists etc.
-status_port = base_port + 1
--- status_ip = login_ip
-
--- admin port
--- Port used by the Admin protocol
-admin_port = base_port + 2
--- admin_ip = ip
-
--- The file server sent to the client. If host is empty the client uses the login host.
---file_host = "stievie.mooo.com"
-file_port = 8081
-
-status_timeout = 30 * 1000
-
 -- DOS prevention
 max_packets_per_second = 60

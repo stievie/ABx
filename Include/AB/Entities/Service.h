@@ -39,7 +39,6 @@ struct Service : Entity
         s.text1b(location, Limits::MAX_SERVICE_LOCATION);
         s.text1b(host, Limits::MAX_SERVICE_HOST);
         s.value2b(port);
-        s.value2b(statusPort);
         s.value1b(status);
         s.value8b(startTime);
         s.value8b(stopTime);
@@ -55,7 +54,6 @@ struct Service : Entity
     std::string location;
     std::string host;
     uint16_t port = 0;
-    uint16_t statusPort = 0;
     ServiceStatus status = ServiceStatusOffline;
     int64_t startTime = 0;
     int64_t stopTime = 0;
