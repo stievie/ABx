@@ -79,7 +79,12 @@ void Game::Stop()
 void Game::Update()
 {
     if (lastUpdate_ == 0)
+    {
         luaState_["onStart"](this);
+        // Add start tick at the beginning
+        gameStatus_->AddByte(AB::GameProtocol::GameStart);
+        gameStatus_->Add<int64_t>(startTime_);
+    }
 
     // Dispatcher Thread
     int64_t tick = Utils::AbTick();

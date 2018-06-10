@@ -643,7 +643,7 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
     nameText->SetVar("ID", id);
     nameText->SetVar("Name", name);
     nameText->SetVar("Channel", channel);
-    if (!channel == AB::GameProtocol::ChatChannelWhisper)
+    if (channel != AB::GameProtocol::ChatChannelWhisper)
         nameText->SetText(name + ":");
     else
         nameText->SetText("{" + name + "}");

@@ -50,7 +50,6 @@ Once the client is authenticated, the connection to the login server is closed.
 
 The game server simulates the games. There can be any number of game servers, but
 if they run on the same machine, the game servers must listen on different ports.
-A game server usually needs three ports.
 
 Since all game server connect to the same data server, all game server share the
 same data.
