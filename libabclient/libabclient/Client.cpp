@@ -94,6 +94,12 @@ void Client::OnGetOutposts(const std::vector<AB::Entities::Game>& games)
         receiver_->OnGetOutposts(games);
 }
 
+void Client::OnGetServices(const std::vector<AB::Entities::Service>& services)
+{
+    if (receiver_)
+        receiver_->OnGetServices(services);
+}
+
 void Client::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
 {
     if (receiver_)
@@ -106,12 +112,13 @@ void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
         receiver_->OnGetMail(updateTick, mail);
 }
 
-void Client::OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId)
+void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
+    const std::string& mapUuid, uint32_t playerId)
 {
     state_ = StateWorld;
     mapUuid_ = mapUuid;
     if (receiver_)
-        receiver_->OnEnterWorld(updateTick, mapUuid, playerId);
+        receiver_->OnEnterWorld(updateTick, serverId, mapUuid, playerId);
 }
 
 void Client::OnDespawnObject(int64_t updateTick, uint32_t id)
@@ -273,6 +280,16 @@ void Client::GetOutposts()
 
     GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, password_,
         std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
+    Connection::Run();
+}
+
+void Client::GetServers()
+{
+    if (accountUuid_.empty() || password_.empty())
+        return;
+
+    GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, password_,
+        std::bind(&Client::OnGetServices, this, std::placeholders::_1));
     Connection::Run();
 }
 

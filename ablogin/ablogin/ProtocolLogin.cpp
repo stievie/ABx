@@ -59,6 +59,9 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
     case AB::LoginProtocol::LoginGetOutposts:
         HandleGetOutpostsPacket(message);
         break;
+    case AB::LoginProtocol::LoginGetGameServers:
+        HandleGetServersPacket(message);
+        break;
     default:
         LOG_ERROR << Utils::ConvertIPToString(clientIp) << ": Unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
@@ -268,6 +271,30 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     );
 }
 
+void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
+{
+    const std::string accountUuid = message.GetStringEncrypted();
+    if (accountUuid.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidAccount);
+        return;
+    }
+    const std::string password = message.GetStringEncrypted();
+    if (password.empty())
+    {
+        DisconnectClient(AB::Errors::InvalidPassword);
+        return;
+    }
+
+    std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+    Asynch::Dispatcher::Instance.Add(
+        Asynch::CreateTask(std::bind(
+            &ProtocolLogin::SendServers, thisPtr,
+            accountUuid, password
+        ))
+    );
+}
+
 void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
 {
     AB::Entities::Account account;
@@ -370,6 +397,43 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
             output->AddStringEncrypted(game.name);
             output->AddByte(static_cast<uint8_t>(game.type));
         }
+    }
+
+    Send(output);
+    Disconnect();
+}
+
+void ProtocolLogin::SendServers(const std::string& accountUuid, const std::string& password)
+{
+    AB::Entities::Account account;
+    account.uuid = accountUuid;
+    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
+    switch (res)
+    {
+    case IO::IOAccount::LoginInvalidAccount:
+        DisconnectClient(AB::Errors::InvalidAccount);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    case IO::IOAccount::LoginPasswordMismatch:
+        DisconnectClient(AB::Errors::NamePasswordMismatch);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        return;
+    }
+
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    output->AddByte(AB::LoginProtocol::ServerList);
+
+    std::vector<AB::Entities::Service> services;
+    int count = IO::IOService::GetServices(AB::Entities::ServiceTypeGameServer, services);
+
+    output->Add<uint16_t>(static_cast<uint16_t>(count));
+    for (const AB::Entities::Service& service : services)
+    {
+        output->AddStringEncrypted(service.uuid);
+        output->AddStringEncrypted(service.host);
+        output->Add<uint16_t>(service.port);
+        output->AddStringEncrypted(service.location);
+        output->AddStringEncrypted(service.name);
     }
 
     Send(output);

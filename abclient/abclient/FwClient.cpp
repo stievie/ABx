@@ -84,6 +84,11 @@ FwClient::~FwClient()
     UnsubscribeFromAllEvents();
 }
 
+void FwClient::UpdateServers()
+{
+    client_.GetServers();
+}
+
 bool FwClient::Start()
 {
     return true;
@@ -395,6 +400,13 @@ void FwClient::OnGetOutposts(const std::vector<AB::Entities::Game>& games)
     }
 }
 
+void FwClient::OnGetServices(const std::vector<AB::Entities::Service>& services)
+{
+    services_.clear();
+    for (const auto & s : services)
+        services_[s.uuid] = s;
+}
+
 void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
 {
     mailHeaders_ = headers;
@@ -409,10 +421,12 @@ void FwClient::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
     SendEvent(AbEvents::E_MAILREAD, eData);
 }
 
-void FwClient::OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId)
+void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
+    const std::string& mapUuid, uint32_t playerId)
 {
     levelReady_ = false;
     playerId_ = playerId;
+    currentServerId_ = String(serverId.c_str());
     VariantMap& eData = GetEventDataMap();
     currentLevel_ = "OutpostLevel";
     currentMapUuid_ = String(mapUuid.c_str());

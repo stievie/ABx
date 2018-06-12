@@ -23,6 +23,7 @@ private:
     std::string gameIp_;
     std::string gameHost_;
     uint16_t gamePort_;
+    std::string serverId_;
     bool running_;
     bool LoadMain();
     void PrintServerInfo();
@@ -59,7 +60,10 @@ public:
     /// Returns a value between 0..100
     uint8_t GetLoad();
     /// Returns the Server UUID from the config file
-    static const std::string& GetServerId();
+    const std::string& GetServerId() const
+    {
+        return serverId_;
+    }
 
     static Application* Instance;
 };

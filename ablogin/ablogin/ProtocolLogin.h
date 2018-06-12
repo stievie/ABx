@@ -27,6 +27,7 @@ private:
     void DisconnectClient(uint8_t error);
     void SendCharacterList(const std::string& accountName, const std::string& password);
     void SendOutposts(const std::string& accountUuid, const std::string& password);
+    void SendServers(const std::string& accountUuid, const std::string& password);
     void CreateAccount(const std::string& accountName, const std::string& password,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& accountUuid, const std::string& password,
@@ -41,6 +42,7 @@ private:
     void HandleDeleteCharacterPacket(NetworkMessage& message);
     void HandleAddAccountKeyPacket(NetworkMessage& message);
     void HandleGetOutpostsPacket(NetworkMessage& message);
+    void HandleGetServersPacket(NetworkMessage& message);
 };
 
 }

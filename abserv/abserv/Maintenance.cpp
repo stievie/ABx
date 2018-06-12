@@ -66,7 +66,7 @@ void Maintenance::UpdateServerLoadTask()
         return;
 
     AB::Entities::Service serv;
-    serv.uuid = Application::GetServerId();
+    serv.uuid = Application::Instance->GetServerId();
     IO::DataClient* cli = Application::Instance->GetDataClient();
     if (cli->Read(serv))
     {

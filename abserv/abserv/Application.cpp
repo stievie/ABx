@@ -77,6 +77,16 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
         }
+        else if (a.compare("-id") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverId_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -id" << std::endl;
+        }
         else if (a.compare("-ip") == 0)
         {
             if (i + 1 < arguments_.size())
@@ -121,6 +131,7 @@ void Application::ShowHelp()
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  id <id>: Server ID" << std::endl;
     std::cout << "  ip <ip>: Game ip" << std::endl;
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port" << std::endl;
@@ -180,6 +191,8 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to load configuration file" << std::endl;
         return false;
     }
+    if (serverId_.empty())
+        serverId_ = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     LOG_INFO << "[done]" << std::endl;
 
@@ -362,9 +375,4 @@ uint8_t Application::GetLoad()
         loads_.push_back(static_cast<int>(load));
     }
     return GetAvgLoad();
-}
-
-const std::string& Application::GetServerId()
-{
-    return ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
 }

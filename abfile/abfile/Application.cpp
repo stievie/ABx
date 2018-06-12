@@ -72,6 +72,16 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -log" << std::endl;
         }
+        else if (a.compare("-id") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverId_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -id" << std::endl;
+        }
         else if (a.compare("-ip") == 0)
         {
             if (i + 1 < arguments_.size())
@@ -116,6 +126,10 @@ void Application::ShowHelp()
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
+    std::cout << "  id <id>: Server ID" << std::endl;
+    std::cout << "  ip <ip>: Game ip" << std::endl;
+    std::cout << "  host <host>: Game host" << std::endl;
+    std::cout << "  port <port>: Game port" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -183,7 +197,8 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
 
-    serverId_ = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
+    if (serverId_.empty())
+        serverId_ = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
     if (fileIp_.empty())
         fileIp_ = IO::SimpleConfigManager::Instance.GetGlobal("file_ip", "");
     if (filePort_ == 0)

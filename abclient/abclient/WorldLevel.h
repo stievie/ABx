@@ -60,6 +60,7 @@ private:
             return objects_[objectId];
         return SharedPtr<GameObject>();
     }
+    Text* CreateServerDropdownItem(const String& text, const String& value);
     SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);

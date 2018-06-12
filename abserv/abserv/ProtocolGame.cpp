@@ -324,6 +324,7 @@ void ProtocolGame::EnterGame()
     {
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
+        output->AddString(Application::Instance->GetServerId());
         output->AddString(player_->data_.currentMapUuid);
         output->Add<uint32_t>(player_->id_);
         Send(output);

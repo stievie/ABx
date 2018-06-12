@@ -215,7 +215,7 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
         // Since it's more for debugging, it's only available for >= GM
         nmsg.AddByte(AB::GameProtocol::ServerMessageTypeServerId);
         nmsg.AddString(GetName());
-        nmsg.AddString(Application::GetServerId());
+        nmsg.AddString(Application::Instance->GetServerId());
     }
     else
     {

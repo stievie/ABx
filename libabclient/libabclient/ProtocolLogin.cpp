@@ -81,6 +81,19 @@ void ProtocolLogin::GetOutposts(std::string& host, uint16_t port,
     Connect(host, port);
 }
 
+void ProtocolLogin::GetServers(std::string& host, uint16_t port,
+    const std::string& accountUuid, const std::string& password,
+    const ServerlistCallback& callback)
+{
+    host_ = host;
+    port_ = port;
+    accountUuid_ = accountUuid;
+    password_ = password;
+    serverlistCallback_ = callback;
+    action_ = ActionGetServers;
+    Connect(host, port);
+}
+
 void ProtocolLogin::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
@@ -130,6 +143,18 @@ void ProtocolLogin::SendGetOutpostsPacket()
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
     msg->Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
+    msg->AddStringEncrypted(accountUuid_);
+    msg->AddStringEncrypted(password_);
+    Send(msg);
+}
+
+void ProtocolLogin::SendGetServersPacket()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
+    msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
+    msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+    msg->Add<uint8_t>(AB::LoginProtocol::LoginGetGameServers);
     msg->AddStringEncrypted(accountUuid_);
     msg->AddStringEncrypted(password_);
     Send(msg);
@@ -188,6 +213,24 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             gamelistCallback_(games);
         break;
     }
+    case AB::LoginProtocol::ServerList:
+    {
+        std::vector<AB::Entities::Service> servers;
+        int count = message->Get<uint16_t>();
+        for (int i = 0; i < count; i++)
+        {
+            AB::Entities::Service s;
+            s.uuid = message->GetStringEncrypted();
+            s.host = message->GetStringEncrypted();
+            s.port = message->Get<uint16_t>();
+            s.location = message->GetStringEncrypted();
+            s.name = message->GetStringEncrypted();
+            servers.push_back(s);
+        }
+        if (serverlistCallback_)
+            serverlistCallback_(servers);
+        break;
+    }
     case AB::LoginProtocol::LoginError:
     case AB::LoginProtocol::CreateAccountError:
     case AB::LoginProtocol::CreatePlayerError:
@@ -233,6 +276,9 @@ void ProtocolLogin::OnConnect()
         break;
     case ActionGetOutposts:
         SendGetOutpostsPacket();
+        break;
+    case ActionGetServers:
+        SendGetServersPacket();
         break;
     default:
         return;

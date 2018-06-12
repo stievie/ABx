@@ -3,6 +3,7 @@
 #include "Protocol.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Game.h>
+#include <AB/Entities/Service.h>
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
 #include "Structs.h"
@@ -18,7 +19,8 @@ public:
     enum { UseChecksum = true };
     typedef std::function<void(const std::string& accountUuid)> LoggedInCallback;
     typedef std::function<void(const AB::Entities::CharacterList& chars)> CharlistCallback;
-    typedef std::function<void(const std::vector<AB::Entities::Game>& chars)> GamelistCallback;
+    typedef std::function<void(const std::vector<AB::Entities::Game>& outposts)> GamelistCallback;
+    typedef std::function<void(const std::vector<AB::Entities::Service>& services)> ServerlistCallback;
     typedef std::function<void()> CreateAccountCallback;
     typedef std::function<void(const std::string& uuid, const std::string& mapUuid)> CreatePlayerCallback;
 private:
@@ -28,7 +30,8 @@ private:
         ActionLogin,
         ActionCreateAccount,
         ActionCreatePlayer,
-        ActionGetOutposts
+        ActionGetOutposts,
+        ActionGetServers,
     };
     ProtocolAction action_;
     std::string host_;
@@ -46,12 +49,14 @@ private:
     LoggedInCallback loggedInCallback_;
     CharlistCallback charlistCallback_;
     GamelistCallback gamelistCallback_;
+    ServerlistCallback serverlistCallback_;
     CreateAccountCallback createAccCallback_;
     CreatePlayerCallback createPlayerCallback_;
     void SendLoginPacket();
     void SendCreateAccountPacket();
     void SendCreatePlayerPacket();
     void SendGetOutpostsPacket();
+    void SendGetServersPacket();
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
 protected:
     void OnConnect() override;
@@ -76,6 +81,9 @@ public:
     void GetOutposts(std::string& host, uint16_t port,
         const std::string& accountUuid, const std::string& password,
         const GamelistCallback& callback);
+    void GetServers(std::string& host, uint16_t port,
+        const std::string& accountUuid, const std::string& password,
+        const ServerlistCallback& callback);
 
     std::string gameHost_;
     uint16_t gamePort_;

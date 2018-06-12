@@ -34,6 +34,15 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
 }
 
+Text* WorldLevel::CreateServerDropdownItem(const String& text, const String& value)
+{
+    Text* result = new Text(context_);
+    result->SetText(text);
+    result->SetVar("String Value", value);
+    result->SetStyle("DropDownItemEnumText");
+    return result;
+}
+
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
 {
     Ray camRay = GetActiveViewportScreenRay(pos);

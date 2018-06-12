@@ -28,8 +28,10 @@ private:
     AB::Entities::CharacterList characters_;
     std::map<std::string, AB::Entities::Game> outposts_;
     std::map<std::string, AB::Entities::Game> games_;
+    std::map<std::string, AB::Entities::Service> services_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::map<std::string, AB::Entities::Profession> professions_;
+    String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
     Mutex mutex_;
@@ -62,6 +64,7 @@ public:
             return client_.GetClockDiff();
         return 0;
     }
+    void UpdateServers();
     bool Start();
     void Stop();
     void Login(const String& name, const String& pass);
@@ -90,12 +93,14 @@ public:
     void OnLoggedIn(const std::string&) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
+    void OnGetServices(const std::vector<AB::Entities::Service>& services) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
-    void OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId) override;
+    void OnEnterWorld(int64_t updateTick, const std::string& serverId,
+        const std::string& mapUuid, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;
@@ -113,6 +118,14 @@ public:
         if (state == Client::Client::StateDisconnected || state == Client::Client::StateCreateAccount)
             loggedIn_ = false;
         client_.state_ = state;
+    }
+    const std::map<std::string, AB::Entities::Service>& GetServices() const
+    {
+        return services_;
+    }
+    const String& GetCurrentServerId() const
+    {
+        return currentServerId_;
     }
     const String& GetCurrentCharacterUuid() const
     {

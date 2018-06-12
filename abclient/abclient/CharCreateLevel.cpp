@@ -84,7 +84,7 @@ Text* CharCreateLevel::CreateDropdownItem(const String& text, uint32_t value)
     return result;
 }
 
-Text * CharCreateLevel::CreateDropdownItem(const String& text, const String& value)
+Text* CharCreateLevel::CreateDropdownItem(const String& text, const String& value)
 {
     Text* result = new Text(context_);
     result->SetText(text);

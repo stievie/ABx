@@ -70,7 +70,8 @@ enum LoginPacketTypes : uint8_t
     LoginCreateCharacter = 0x04,
     LoginDeleteCharacter = 0x05,
     LoginAddAccountKey = 0x06,
-    LoginGetOutposts = 0x07
+    LoginGetOutposts = 0x07,
+    LoginGetGameServers = 0x08,
 };
 
 /// Returned by the server
@@ -88,6 +89,7 @@ enum LoginProtocolCodes : uint8_t
     AddAccountKeySuccess = 0x0a,
     AddAccountKeyError = 0x0b,
     OutpostList = 0x0c,                       // List of maps
+    ServerList = 0x0d,                        // List of running game server
 };
 
 }

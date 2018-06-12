@@ -32,17 +32,21 @@ void GameMenu::CreateMenuBar()
     menu_ = CreateMenu(menuBar_, "Menu");
     menuBar_->SetHeight(20);
     menuBar_->SetFixedWidth(menu_->GetWidth());
+    SubscribeToEvent(menu_, E_MENUSELECTED, URHO3D_HANDLER(GameMenu, HandleRootMenuUsed));
 
     Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
     CreateMenuItem(popup, "Exit", URHO3D_HANDLER(GameMenu, HandleExitUsed));
     CreateMenuItem(popup, "Logout", URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
     CreateMenuItem(popup, "Select Character", URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
+    serversMenu_ = CreateMenu(popup, "Server >");
     CreateSeparator(popup);
     CreateMenuItem(popup, "Options", URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
-//    CreateSeparator(popup);
-//    CreateMenuItem(popup, "Mail", URHO3D_HANDLER(GameMenu, HandleMailUsed));
+    //CreateSeparator(popup);
+    //    CreateMenuItem(popup, "Mail", URHO3D_HANDLER(GameMenu, HandleMailUsed));
 
     popup->SetWidth(40);
+
+    UpdateServers();
 }
 
 Menu* GameMenu::CreateMenu(UIElement* parent, const String& title)
@@ -89,10 +93,19 @@ Window* GameMenu::CreatePopup(Menu* baseMenu)
     return popup;
 }
 
+void GameMenu::HandleRootMenuUsed(StringHash eventType, VariantMap& eventData)
+{
+    UpdateServers();
+}
+
 void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
 {
     Engine* engine = context_->GetSubsystem<Engine>();
     engine->Exit();
+}
+
+void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
+{
 }
 
 void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)
@@ -122,4 +135,23 @@ void GameMenu::HandleMailUsed(StringHash eventType, VariantMap& eventData)
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(E_GAMEMENU_MAIL, e);
+}
+
+void GameMenu::UpdateServers()
+{
+    FwClient* client = GetSubsystem<FwClient>();
+    client->UpdateServers();
+    Window* popup = dynamic_cast<Window*>(serversMenu_->GetPopup());
+    popup->SetLayout(LM_VERTICAL, 1);
+    serversMenu_->SetPopupOffset(IntVector2(menu_->GetPopup()->GetWidth(), 0));
+    popup->RemoveAllChildren();
+    String cId = client->GetCurrentServerId();
+    const std::map<std::string, AB::Entities::Service>& servs = client->GetServices();
+    for (const auto& serv : servs)
+    {
+        String sId = String(serv.first.c_str());
+        Menu* mnu = CreateMenuItem(popup, String(serv.second.name.c_str()), URHO3D_HANDLER(GameMenu, HandleServerUsed));
+        mnu->SetSelected(sId.Compare(cId) == 0);
+        mnu->SetVar("Server ID", sId);
+    }
 }

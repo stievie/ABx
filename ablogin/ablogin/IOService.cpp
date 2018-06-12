@@ -56,4 +56,30 @@ bool IOService::GetService(AB::Entities::ServiceType type,
     return false;
 }
 
+int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entities::Service>& services)
+{
+    DataClient* dc = Application::Instance->GetDataClient();
+
+    AB::Entities::ServiceList sl;
+    if (!dc->Read(sl))
+        return 0;
+
+    int result = 0;
+    for (const std::string& uuid : sl.uuids)
+    {
+        AB::Entities::Service s;
+        s.uuid = uuid;
+        if (!dc->Read(s))
+            continue;
+        if (s.status != AB::Entities::ServiceStatusOnline)
+            continue;
+        if (s.type == type)
+        {
+            services.push_back(s);
+            ++result;
+        }
+    }
+    return result;
+}
+
 }

@@ -44,6 +44,7 @@ public:
     void Login(const std::string& name, const std::string& pass);
     void Logout();
     void GetOutposts();
+    void GetServers();
     void CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& charName, const std::string& profUuid,
@@ -66,12 +67,14 @@ public:
     void OnLoggedIn(const std::string& accountUuid) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
+    void OnGetServices(const std::vector<AB::Entities::Service>& services) override;
     void OnAccountCreated() override;
     void OnPlayerCreated(const std::string& uuid, const std::string& mapUuid) override;
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
-    void OnEnterWorld(int64_t updateTick, const std::string& mapUuid, uint32_t playerId) override;
+    void OnEnterWorld(int64_t updateTick, const std::string& serverId,
+        const std::string& mapUuid, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;
