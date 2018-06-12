@@ -51,8 +51,9 @@ public:
         AB::Entities::CharacterSex sex, bool isPvp);
 
     /// Connect to game server -> authenticate -> enter game
+    void EnterWorld(const std::string& charUuid, const std::string& mapUuid);
     void EnterWorld(const std::string& charUuid, const std::string& mapUuid,
-        const std::string& host = "", uint16_t port = 0);
+        const std::string& host, uint16_t port);
     void Update(int timeElapsed);
 
     bool HttpRequest(const std::string& path, std::ostream& out);
