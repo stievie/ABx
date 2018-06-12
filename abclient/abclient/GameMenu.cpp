@@ -106,6 +106,17 @@ void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
 
 void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
 {
+    menu_->ShowPopup(false);
+    SetVisible(false);
+    using namespace MenuSelected;
+    Menu* sender = static_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    FwClient* client = GetSubsystem<FwClient>();
+    const String& id = sender->GetVar("Server ID").GetString();
+    if (!id.Empty() && id.Compare(client->GetCurrentServerId()) != 0)
+    {
+        client->ChangeServer(id);
+        UpdateServers();
+    }
 }
 
 void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)

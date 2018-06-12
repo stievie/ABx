@@ -1,7 +1,5 @@
 # TODO
 
-* abclient, abserv, ablogin: Player should be able to change the server
-
 * abserv: Mail not marked as read
 
 * abadmin: Admin HTTP server. Browser interface to admin all servers

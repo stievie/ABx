@@ -72,6 +72,7 @@ public:
     void CreatePlayer(const String& name, const String& profUuid, AB::Entities::CharacterSex sex, bool isPvp);
     void EnterWorld(const String& charUuid, const String& mapUuid);
     void ChangeWorld(const String& mapUuid);
+    void ChangeServer(const String& serverId);
     void Logout();
     void GetMailHeaders();
     void ReadMail(const std::string& uuid);

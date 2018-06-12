@@ -309,6 +309,20 @@ void FwClient::ChangeWorld(const String& mapUuid)
         client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(mapUuid.CString()));
 }
 
+void FwClient::ChangeServer(const String& serverId)
+{
+    if (loggedIn_)
+    {
+        auto it = services_.find(std::string(serverId.CString()));
+        if (it != services_.end())
+        {
+            client_.EnterWorld(std::string(currentCharacterUuid_.CString()),
+                std::string(currentMapUuid_.CString()),
+                (*it).second.host, (*it).second.port);
+        }
+    }
+}
+
 void FwClient::Logout()
 {
     client_.Logout();

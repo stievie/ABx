@@ -293,7 +293,8 @@ void Client::GetServers()
     Connection::Run();
 }
 
-void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid)
+void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
+    const std::string& host /* = "" */, uint16_t port /* = 0 */)
 {
     assert(!accountUuid_.empty());
     // Enter or changing the world
@@ -303,6 +304,12 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid)
     if (state_ == StateWorld)
         // We are already logged in to some world so we must logout
         Logout();
+
+    // Maybe different server
+    if (!host.empty())
+        gameHost_ = host;
+    if (port != 0)
+        gamePort_ = port;
 
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();
