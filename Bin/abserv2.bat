@@ -1,4 +1,4 @@
 @echo off
 
 rem 2nd Game server
-start abserv.exe -conf abserv2.lua
+abserv.exe -conf abserv2.lua

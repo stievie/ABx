@@ -31,10 +31,13 @@ Game::Game() :
     InitializeLua();
     // Create gameStatus_ here, because we may already write it.
     ResetStatus();
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    instanceData_.uuid = guid.to_string();
 }
 
 Game::~Game()
 {
+    DeleteEntity(instanceData_);
     players_.clear();
     objects_.clear();
     Chat::Instance.Remove(ChannelMap, id_);
@@ -47,7 +50,12 @@ void Game::Start()
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 #endif // DEBUG_GAME
+
         startTime_ = Utils::AbTick();
+        instanceData_.startTime = startTime_;
+        instanceData_.serverUuid = Application::Instance->GetServerId();
+        CreateEntity(instanceData_);
+
         lastUpdate_ = 0;
         SetState(ExecutionState::Running);
 
@@ -66,14 +74,6 @@ void Game::Start()
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
         );
     }
-}
-
-void Game::Stop()
-{
-#ifdef DEBUG_GAME
-    LOG_DEBUG << "Stopping game " << id_ << ", " << map_->data_.name << std::endl;
-#endif // DEBUG_GAME
-    SetState(ExecutionState::Terminated);
 }
 
 void Game::Update()
@@ -370,8 +370,10 @@ void Game::PlayerJoin(uint32_t playerId)
         {
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
+            player->data_.instanceUuid = instanceData_.uuid;
             AddObject(player);
         }
+        UpdateEntity(player->data_);
 
         luaState_["onPlayerJoin"](this, player.get());
         Asynch::Scheduler::Instance.Add(
@@ -405,6 +407,8 @@ void Game::PlayerLeave(uint32_t playerId)
             players_.erase(it);
         }
         RemoveObject(player);
+        player->data_.instanceUuid = "";
+        UpdateEntity(player->data_);
 
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))

@@ -53,6 +53,7 @@ struct Character : Entity
 
         s.value8b(lastLogin);
         s.value8b(lastLogout);
+        s.text1b(instanceUuid, Limits::MAX_UUID);
     }
 
     std::string name;
@@ -77,6 +78,8 @@ struct Character : Entity
 
     int64_t lastLogin = 0;
     int64_t lastLogout = 0;
+    /// ID of AB::Entities::GameInstance
+    std::string instanceUuid;
 };
 
 typedef std::vector<Character> CharacterList;

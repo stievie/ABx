@@ -9,6 +9,7 @@
 #include "DBAll.h"
 #include "StringUtils.h"
 #include "Profiler.h"
+#include <AB/Entities/GameInstance.h>
 
 #pragma warning(push)
 #pragma warning(disable: 4307)
@@ -38,6 +39,7 @@ static constexpr size_t KEY_SERVICELIST_HASH = Utils::StringHash(AB::Entities::S
 static constexpr size_t KEY_GUILD_HASH = Utils::StringHash(AB::Entities::Guild::KEY());
 static constexpr size_t KEY_GUILDMEMBERS_HASH = Utils::StringHash(AB::Entities::GuildMembers::KEY());
 static constexpr size_t KEY_RESERVEDNAME_HASH = Utils::StringHash(AB::Entities::ReservedName::KEY());
+static constexpr size_t KEY_GAMEINSTANCES_HASH = Utils::StringHash(AB::Entities::GameInstance::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -80,16 +82,14 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
     if (_id.nil())
         return false;
 
-    // Mark modified since not in DB
-    CacheData(table, _id, data, true, false);
     // Unfortunately we must flush the data for create operations. Or we find a way
     // to check constraints, unique columns etc.
     if (!FlushData(key))
     {
-        // Failed -> remove from cache
-        RemoveData(key);
         return false;
     }
+    // Mark modified since not in DB
+    CacheData(table, _id, data, false, true);
     return true;
 }
 
@@ -242,6 +242,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
 
 bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 {
+    // You can only delete what you've loaded before
     std::string dataToRemove(key.begin(), key.end());
     auto data = cache_.find(dataToRemove);
     if (data == cache_.end())
@@ -551,6 +552,9 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
         return LoadFromDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(id, *data);
     case KEY_RESERVEDNAME_HASH:
         return LoadFromDB<DB::DBReservedName, AB::Entities::ReservedName>(id, *data);
+    case KEY_GAMEINSTANCES_HASH:
+        // Not written to DB
+        return false;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
@@ -664,6 +668,10 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     case KEY_RESERVEDNAME_HASH:
         succ = FlushRecord<DB::DBReservedName, AB::Entities::ReservedName>(data);
         break;
+    case KEY_GAMEINSTANCES_HASH:
+        // Not written to DB
+        succ = true;
+        break;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         return false;
@@ -736,6 +744,9 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
         return ExistsInDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
     case KEY_RESERVEDNAME_HASH:
         return ExistsInDB<DB::DBReservedName, AB::Entities::ReservedName>(data);
+    case KEY_GAMEINSTANCES_HASH:
+        // Not written to DB. If we are here its not in cache so does not exist
+        return false;
     default:
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;

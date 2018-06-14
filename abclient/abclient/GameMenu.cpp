@@ -107,7 +107,6 @@ void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
 void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
-    SetVisible(false);
     using namespace MenuSelected;
     Menu* sender = static_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
     FwClient* client = GetSubsystem<FwClient>();

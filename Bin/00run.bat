@@ -5,5 +5,5 @@ start abmsgs.exe
 start abfile.exe
 start ablogin.exe
 start abserv.exe
-start abserv2.bat
-start abserv3.bat
+start abserv.exe -conf abserv2.lua
+start abserv.exe -conf abserv3.lua

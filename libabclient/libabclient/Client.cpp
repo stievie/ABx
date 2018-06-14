@@ -29,11 +29,11 @@ public:
 
 Client::Client() :
     loginHost_("127.0.0.1"),
-    gameHost_("127.0.0.1"),
-    fileHost_("127.0.0.1"),
+    gameHost_(""),
+    fileHost_(""),
     loginPort_(2748),
-    gamePort_(2749),
-    filePort_(8081),
+    gamePort_(0),
+    filePort_(0),
     protoLogin_(nullptr),
     protoGame_(nullptr),
     state_(StateDisconnected),
@@ -293,33 +293,10 @@ void Client::GetServers()
     Connection::Run();
 }
 
-void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid)
-{
-    assert(!accountUuid_.empty());
-    // Enter or changing the world
-    if (state_ != StateSelectChar && state_ != StateWorld)
-        return;
-
-    if (state_ == StateWorld)
-        // We are already logged in to some world so we must logout
-        Logout();
-
-    // 2. Login to game server
-    protoGame_ = std::make_shared<ProtocolGame>();
-    protoGame_->receiver_ = this;
-
-    if (state_ == StateSelectChar && protoLogin_)
-        // If we came from the select character scene
-        protoLogin_.reset();
-
-    protoGame_->Login(accountUuid_, password_, charUuid, mapUuid, gameHost_, gamePort_);
-}
-
 void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
-    const std::string& host, uint16_t port)
+    const std::string& host /* = "" */, uint16_t port /* = 0 */)
 {
     assert(!accountUuid_.empty());
-    assert(port != 0);
     // Enter or changing the world
     if (state_ != StateSelectChar && state_ != StateWorld)
         return;
@@ -328,8 +305,11 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
         // We are already logged in to some world so we must logout
         Logout();
 
-    gameHost_ = host;
-    gamePort_ = port;
+    // Maybe different server
+    if (!host.empty())
+        gameHost_ = host;
+    if (port != 0)
+        gamePort_ = port;
 
     // 2. Login to game server
     protoGame_ = std::make_shared<ProtocolGame>();

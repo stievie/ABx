@@ -7,6 +7,7 @@
 #include "NetworkMessage.h"
 #include "Chat.h"
 #include <AB/Entities/Game.h>
+#include <AB/Entities/GameInstance.h>
 
 namespace Game {
 
@@ -40,6 +41,24 @@ private:
     void ResetStatus();
     /// Changes to the game are written to this message and sent to all players
     std::shared_ptr<Net::NetworkMessage> gameStatus_;
+    template<typename E>
+    bool UpdateEntity(const E& e)
+    {
+        IO::DataClient* cli = Application::Instance->GetDataClient();
+        return cli->Update(e);
+    }
+    template<typename E>
+    bool DeleteEntity(const E& e)
+    {
+        IO::DataClient* cli = Application::Instance->GetDataClient();
+        return cli->Delete(e);
+    }
+    template<typename E>
+    bool CreateEntity(const E& e)
+    {
+        IO::DataClient* cli = Application::Instance->GetDataClient();
+        return cli->Create(e);
+    }
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -47,9 +66,9 @@ public:
     ~Game();
 
     void Start();
-    void Stop();
 
     AB::Entities::Game data_;
+    AB::Entities::GameInstance instanceData_;
     /// Auto generated ID used by the GameManager
     uint32_t id_;
     int64_t startTime_;
