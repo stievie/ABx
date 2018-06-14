@@ -11,7 +11,7 @@ PlayerManager PlayerManager::Instance;
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 {
-    auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
+    auto it = std::find_if(players_.begin(), players_.end(), [&name](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
     {
         return Utils::StringEquals(current.second->data_.name, name);
     });
@@ -40,7 +40,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string& uuid)
 {
-    auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
+    auto it = std::find_if(players_.begin(), players_.end(), [&uuid](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
     {
         return current.second->data_.accountUuid.compare(uuid) == 0;
     });
@@ -52,9 +52,10 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string&
 
 uint32_t PlayerManager::GetPlayerIdByName(const std::string& name)
 {
-    auto it = std::find_if(players_.begin(), players_.end(), [&](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
+    auto it = std::find_if(players_.begin(), players_.end(), [&name](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
     {
-        return current.second->data_.name.compare(name) == 0;
+        // Player names are case insensitive
+        return Utils::StringEquals(current.second->data_.name, name);
     });
     if (it != players_.end())
         return (*it).first;
@@ -102,7 +103,6 @@ void PlayerManager::CleanPlayers()
     {
         std::shared_ptr<Player> p = (*i).second;
         i++;
-//        std::string name = p->GetName();
         // Calls PlayerManager::RemovePlayer()
         p->Logout();
    }

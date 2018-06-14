@@ -59,6 +59,7 @@ void Game::Start()
         lastUpdate_ = 0;
         SetState(ExecutionState::Running);
 
+        // Now that we are running we can spawn the queued players
         if (!queuedPlayers_.empty())
         {
             for (const auto& p : queuedPlayers_)
@@ -70,6 +71,7 @@ void Game::Start()
             queuedPlayers_.clear();
         }
 
+        // Initial game update
         Asynch::Dispatcher::Instance.Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
         );
@@ -119,7 +121,8 @@ void Game::Update()
     {
         if (state_ == ExecutionState::Shutdown && GetPlayerCount() == 0)
         {
-            // If all players left the game, delete it
+            // If all players left the game, delete it. Actually just mark as
+            // terminated, it'll be deleted in the next update.
             SetState(ExecutionState::Terminated);
             luaState_["onStop"](this);
         }
@@ -147,12 +150,8 @@ void Game::Update()
 
 void Game::SendStatus()
 {
-    if (gameStatus_->GetSize() == 0)
-    {
-        // If there is nothing, at least send a heard beat
-        gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
-        gameStatus_->Add<int64_t>(Utils::AbTick());
-    }
+    // Must not be empty. Update adds at least the time stamp.
+    assert(gameStatus_->GetSize() != 0);
 
     for (const auto& p : players_)
     {
@@ -164,7 +163,7 @@ void Game::SendStatus()
 
 void Game::ResetStatus()
 {
-    gameStatus_ = std::make_shared<Net::NetworkMessage>();
+    gameStatus_ = std::make_unique<Net::NetworkMessage>();
 }
 
 void Game::RegisterLua(kaguya::State& state)

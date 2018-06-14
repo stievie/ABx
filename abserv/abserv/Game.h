@@ -40,7 +40,7 @@ private:
     void SendStatus();
     void ResetStatus();
     /// Changes to the game are written to this message and sent to all players
-    std::shared_ptr<Net::NetworkMessage> gameStatus_;
+    std::unique_ptr<Net::NetworkMessage> gameStatus_;
     template<typename E>
     bool UpdateEntity(const E& e)
     {
