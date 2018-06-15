@@ -325,15 +325,19 @@ void Application::Stop()
     LOG_INFO << "Server shutdown...";
     AB::Entities::Service serv;
     serv.uuid = serverId_;
-    dataClient_->Read(serv);
-    serv.status = AB::Entities::ServiceStatusOffline;
-    serv.stopTime = Utils::AbTick();
-    if (serv.startTime != 0)
-        serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-    dataClient_->UpdateOrCreate(serv);
+    if (dataClient_->Read(serv))
+    {
+        serv.status = AB::Entities::ServiceStatusOffline;
+        serv.stopTime = Utils::AbTick();
+        if (serv.startTime != 0)
+            serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+        dataClient_->Update(serv);
 
-    AB::Entities::ServiceList sl;
-    dataClient_->Invalidate(sl);
+        AB::Entities::ServiceList sl;
+        dataClient_->Invalidate(sl);
+    }
+    else
+        LOG_ERROR << "Unable to read service" << std::endl;
 
     server_->stop();
 }

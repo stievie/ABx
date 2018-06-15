@@ -7,7 +7,6 @@ location = "AT"
 server_name = "ablogin"
 
 -- login server port
--- This should be the port used for connecting with IP changers etc.
 login_port = 2748         -- 0xABC
 login_ip = "192.168.1.51"
 --login_host = "stievie.mooo.com"
@@ -19,4 +18,4 @@ max_packets_per_second = 60
 data_host = "localhost"
 data_port = 2770
 
-require("config/abfile_admin")
+require("config/login")

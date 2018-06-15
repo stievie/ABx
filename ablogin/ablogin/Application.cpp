@@ -85,6 +85,9 @@ bool Application::LoadMain()
         return false;
     }
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("max_packets_per_second", 0));
+    Auth::BanManager::Instance.loginTries_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("login_tries", 5));
+    Auth::BanManager::Instance.retryTimeout_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("login_retrytimeout", 5000));
+    Auth::BanManager::Instance.loginTimeout_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("login_timeout", 60 * 1000));
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to data server...";
@@ -202,15 +205,19 @@ void Application::Stop()
 
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
-    dataClient_->Read(serv);
-    serv.status = AB::Entities::ServiceStatusOffline;
-    serv.stopTime = Utils::AbTick();
-    if (serv.startTime != 0)
-        serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-    dataClient_->UpdateOrCreate(serv);
+    if (dataClient_->Read(serv))
+    {
+        serv.status = AB::Entities::ServiceStatusOffline;
+        serv.stopTime = Utils::AbTick();
+        if (serv.startTime != 0)
+            serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+        dataClient_->Update(serv);
 
-    AB::Entities::ServiceList sl;
-    dataClient_->Invalidate(sl);
+        AB::Entities::ServiceList sl;
+        dataClient_->Invalidate(sl);
+    }
+    else
+        LOG_ERROR << "Unable to read service" << std::endl;
 
     ioService_.stop();
 }

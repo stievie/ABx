@@ -12,8 +12,7 @@ data_port = 2770
 
 data_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/data"
 
--- 2nd Game server. Must listen of different ports. One Game server listens usually
--- listens on 3 ports, so increase the base port by 3.
+-- 2nd Game server. Must listen of different ports.
 base_port = 2749 + 2
 
 require("config/server")
