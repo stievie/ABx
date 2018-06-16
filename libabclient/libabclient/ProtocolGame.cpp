@@ -107,7 +107,8 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
             ParseChatMessage(message);
             break;
         default:
-            // End of message
+            // End of message. Encryption adds some padding bytes, so after this
+            // its probably just junk.
             return;
         }
     }

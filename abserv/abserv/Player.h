@@ -36,7 +36,8 @@ protected:
     void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&);
+    void HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&);
 public:
     static void RegisterLua(kaguya::State& state);
 

@@ -6,6 +6,7 @@ namespace Game {
 
 class Game;
 class Player;
+class Party;
 
 enum ChatType : uint8_t
 {
@@ -44,6 +45,17 @@ private:
 public:
     GameChatChannel(uint64_t id);
     bool Talk(Player* player, const std::string& text) override;
+};
+
+class PartyChatChannel : public ChatChannel
+{
+public:
+    PartyChatChannel(uint64_t id) :
+        ChatChannel(id),
+        party_(nullptr)
+    { }
+    bool Talk(Player* player, const std::string& text) override;
+    Party* party_;
 };
 
 class WhisperChatChannel : public ChatChannel

@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "Party.h"
 #include "Player.h"
+#include "Chat.h"
 
 namespace Game {
+
+uint32_t Party::partyIds_ = 0;
 
 Party::Party(std::shared_ptr<Player> leader) :
     leader_(leader),
     maxMembers_(8)
 {
-    leader->SetParty(shared_from_this());
+    id_ = GetNewId();
+    chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(Chat::Instance.Get(ChannelParty, id_));
+    chatChannel_->party_ = this;
+    members_.push_back(leader);
 }
 
 bool Party::Add(std::shared_ptr<Player> player)
@@ -21,6 +27,7 @@ bool Party::Add(std::shared_ptr<Player> player)
     if (IsMember(player))
         return false;
 
+    // TODO: shared_from_this -> Exception?
     members_.push_back(player);
     player->SetParty(shared_from_this());
     RemoveInvite(player);
@@ -95,10 +102,10 @@ bool Party::Request(std::shared_ptr<Player> player)
     if (!player)
         return false;
 
-    if (IsMember(player) || IsRequestee(player))
+    if (IsMember(player) || IsRequester(player))
         return false;
 
-    requestees_.push_back(player);
+    requesters_.push_back(player);
     return true;
 }
 
@@ -107,7 +114,7 @@ bool Party::RemoveRequest(std::shared_ptr<Player> player)
     if (!player)
         return false;
 
-    auto it = std::find_if(requestees_.begin(), requestees_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(requesters_.begin(), requesters_.end(), [&player](const std::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -115,9 +122,9 @@ bool Party::RemoveRequest(std::shared_ptr<Player> player)
         }
         return false;
     });
-    if (it == requestees_.end())
+    if (it == requesters_.end())
         return false;
-    requestees_.erase(it);
+    requesters_.erase(it);
     return true;
 }
 
@@ -156,9 +163,9 @@ bool Party::IsInvited(std::shared_ptr<Player> player) const
     return it != invited_.end();
 }
 
-bool Party::IsRequestee(std::shared_ptr<Player> player) const
+bool Party::IsRequester(std::shared_ptr<Player> player) const
 {
-    auto it = std::find_if(requestees_.begin(), requestees_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(requesters_.begin(), requesters_.end(), [&player](const std::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -166,7 +173,7 @@ bool Party::IsRequestee(std::shared_ptr<Player> player) const
         }
         return false;
     });
-    return it != requestees_.end();
+    return it != requesters_.end();
 }
 
 }

@@ -340,7 +340,7 @@
         <attribute name="Color" value="0.94 0.78 0.78" />
     </element>
     <element type="ChatLogPartyChatText" style="ChatLogText" auto="false">
-        <attribute name="Color" value="0.16 0.29 0.78" />
+        <attribute name="Color" value="0.39 0.6 0.8" />
     </element>
     <element type="ChatLogAllianceChatText" style="ChatLogText" auto="false">
         <attribute name="Color" value="0.88 0.55 0.25" />

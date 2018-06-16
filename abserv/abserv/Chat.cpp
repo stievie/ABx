@@ -43,6 +43,9 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
     case ChannelMap:
         c = std::make_shared<GameChatChannel>(id);
         break;
+    case ChannelParty:
+        c = std::make_shared<PartyChatChannel>(id);
+        break;
     default:
         c = std::make_shared<ChatChannel>(id);
         break;
@@ -247,6 +250,27 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     {
         player.second->client_->WriteToOutput(msg);
     }
+}
+
+bool PartyChatChannel::Talk(Player* player, const std::string& text)
+{
+    if (party_)
+    {
+        Net::NetworkMessage msg;
+        const std::vector<std::weak_ptr<Player>>& players = party_->GetMembers();
+        msg.AddByte(AB::GameProtocol::ChatMessage);
+        msg.AddByte(AB::GameProtocol::ChatChannelParty);
+        msg.Add<uint32_t>(player->id_);
+        msg.AddString(player->GetName());
+        msg.AddString(text);
+        for (auto& wp : players)
+        {
+            if (auto sp = wp.lock())
+                sp->client_->WriteToOutput(msg);
+        }
+        return true;
+    }
+    return false;
 }
 
 }

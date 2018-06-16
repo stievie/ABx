@@ -674,7 +674,7 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
     const String& text, AB::GameProtocol::ChatMessageChannel channel)
 {
     String style;
-    String testStyle = "ChatLogChatText";
+    String textStyle = "ChatLogChatText";
     switch (channel)
     {
     case AB::GameProtocol::ChatChannelGeneral:
@@ -691,11 +691,11 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
         break;
     case AB::GameProtocol::ChatChannelTrade:
         style = "ChatLogTradeChatText";
-        testStyle = "ChatLogTradeChatText";
+        textStyle = "ChatLogTradeChatText";
         break;
     default:
         style = "ChatLogChatText";
         break;
     }
-    AddLine(senderId, name, text, style, testStyle, channel);
+    AddLine(senderId, name, text, style, textStyle, channel);
 }

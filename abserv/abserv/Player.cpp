@@ -203,6 +203,11 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         HandleGeneralChatCommand(command, message);
         break;
     }
+    case AB::GameProtocol::CommandTypeChatParty:
+    {
+        HandlePartyChatCommand(command, message);
+        break;
+    }
     case AB::GameProtocol::CommandTypeRoll:
     {
         HandleRollCommand(command, message);
@@ -407,6 +412,15 @@ void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& 
 void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelMap, GetGame()->id_);
+    if (channel)
+    {
+        channel->Talk(this, command);
+    }
+}
+
+void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&)
+{
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelParty, GetParty()->id_);
     if (channel)
     {
         channel->Talk(this, command);
