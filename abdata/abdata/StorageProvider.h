@@ -122,7 +122,7 @@ private:
     bool ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
 
     void CleanCache();
-    void CleanCacheTask();
+    void CleanTask();
     void FlushCache();
     void FlushCacheTask();
 

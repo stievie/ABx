@@ -54,7 +54,7 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
         Asynch::CreateScheduledTask(FLUSH_CACHE_MS, std::bind(&StorageProvider::FlushCacheTask, this))
     );
     Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanCacheTask, this))
+        Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanTask, this))
     );
 }
 
@@ -379,13 +379,14 @@ void StorageProvider::CleanCache()
     }
 }
 
-void StorageProvider::CleanCacheTask()
+void StorageProvider::CleanTask()
 {
     CleanCache();
+    DB::DBGuildMembers::DeleteExpired(this);
     if (running_)
     {
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanCacheTask, this))
+            Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanTask, this))
         );
     }
 }

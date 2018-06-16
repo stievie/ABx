@@ -2,6 +2,8 @@
 
 #include <AB/Entities/GuildMembers.h>
 
+class StorageProvider;
+
 namespace DB {
 
 class DBGuildMembers
@@ -15,6 +17,8 @@ public:
     static bool Save(const AB::Entities::GuildMembers& g);
     static bool Delete(const AB::Entities::GuildMembers& g);
     static bool Exists(const AB::Entities::GuildMembers& g);
+    /// Delete expired guild member from DB
+    static void DeleteExpired(StorageProvider* sp);
 };
 
 }

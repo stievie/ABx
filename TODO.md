@@ -7,8 +7,6 @@
 
 * ablogin, abserv: Crash on exit with Ctrl+C (maybe fixed, or not idk...)
 
-* abdata: Clean expired guild members
-
 * abserv: Remove Status protocol, add info to AB::Entities::Service
 
 * all: /friend /ignore /flremove /fl commands
