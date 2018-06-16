@@ -47,14 +47,11 @@ void Game::Start()
 {
     if (state_ == ExecutionState::Startup)
     {
-#ifdef DEBUG_GAME
-        LOG_DEBUG << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
-#endif // DEBUG_GAME
-
         startTime_ = Utils::AbTick();
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
         CreateEntity(instanceData_);
+        LOG_INFO << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 
         lastUpdate_ = 0;
         SetState(ExecutionState::Running);
@@ -140,6 +137,7 @@ void Game::Update()
     }
     case ExecutionState::Terminated:
         // Delete this game
+        LOG_INFO << "Stopping game " << id_ << ", " << map_->data_.name << std::endl;
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(500, std::bind(&GameManager::DeleteGameTask, &GameManager::Instance, id_))
         );

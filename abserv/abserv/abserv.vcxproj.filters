@@ -207,6 +207,9 @@
     <ClInclude Include="IOMap.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Party.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -378,6 +381,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOMap.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Party.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

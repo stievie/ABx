@@ -2,6 +2,7 @@
 
 * abserv: Mail not marked as read
 * abserv, ablogin, abclient: DH enc keys
+* abserv Party
 
 * abadmin: Admin HTTP server. Browser interface to admin all servers
 

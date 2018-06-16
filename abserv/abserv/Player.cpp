@@ -158,6 +158,41 @@ void Player::NotifyNewMail()
     }
 }
 
+void Player::PartyInvitePlayer(uint32_t playerId)
+{
+    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    if (player)
+        GetParty()->Invite(player);
+}
+
+void Player::PartyKickPlayer(uint32_t playerId)
+{
+    if (!party_)
+        return;
+    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    if (!player)
+        return;
+    party_->Remove(player);
+}
+
+void Player::PartyRequestJoin(uint32_t leaderId)
+{
+    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(leaderId);
+    if (!player)
+        return;
+    std::shared_ptr<Player> self = std::static_pointer_cast<Player>(shared_from_this());
+    player->GetParty()->Request(self);
+}
+
+void Player::PartyLeave()
+{
+    if (party_)
+    {
+        std::shared_ptr<Player> self = std::static_pointer_cast<Player>(shared_from_this());
+        party_->Remove(self);
+    }
+}
+
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     const std::string& command, Net::NetworkMessage& message)
 {

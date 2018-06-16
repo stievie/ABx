@@ -190,31 +190,36 @@ enum GamePacketTypes : uint8_t
 {
     PacketTypePing = 0x01,
 
-    PacketTypeLogout = 0x10,
+    PacketTypeLogout,
 
     // Mail
-    PacketTypeGetMailHeaders = 0x11,
-    PacketTypeGetMail = 0x12,
-    PacketTypeDeleteMail = 0x13,
+    PacketTypeGetMailHeaders,
+    PacketTypeGetMail,
+    PacketTypeDeleteMail,
 
     // Move
-    PacketTypeMove = 0x20,
-    PacketTypeTurn = 0x21,
-    PacketTypeSetDirection = 0x22,
-    PacketTypeGoto = 0x23,                  // Goto point
-    PacketTypeFollow = 0x24,                // Follow object
+    PacketTypeMove,
+    PacketTypeTurn,
+    PacketTypeSetDirection,
+    PacketTypeGoto,                  // Goto point
+    PacketTypeFollow,                // Follow object
 
     // Skills
-    PacketTypeUseSkill = 0x40,
-    PacketTypeCancelSkill = 0x42,
+    PacketTypeUseSkill,
+    PacketTypeCancelSkill,
     // Attack
-    PacketTypeAttack = 0x50,
-    PacketTypeCancelAttack = 0x51,
+    PacketTypeAttack,
+    PacketTypeCancelAttack,
     // Select
-    PacketTypeSelect = 0x60,
+    PacketTypeSelect,
     // Command
-    PacketTypeCommand = 0x70,
+    PacketTypeCommand,
 
+    // Party
+    PacketTypePartyInvitePlayer,
+    PacketTypePartyKickPlayer,
+    PacketTypePartyLeave,
+    PacketTypePartyRequestJoin,
 };
 
 enum CommandTypes : uint8_t

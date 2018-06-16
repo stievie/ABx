@@ -8,6 +8,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>
 #include "FriendList.h"
+#include "Party.h"
 
 namespace Game {
 
@@ -19,6 +20,7 @@ class Player final : public Creature
 private:
     std::unique_ptr<MailBox> mailBox_;
     std::unique_ptr<FriendList> friendList_;
+    std::shared_ptr<Party> party_;
 protected:
     friend class PlayerManager;
     std::shared_ptr<Player> GetThis()
@@ -64,6 +66,28 @@ public:
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
+
+    void SetParty(std::shared_ptr<Party> party)
+    {
+        party_ = party;
+    }
+    std::shared_ptr<Party> GetParty()
+    {
+        if (!party_)
+        {
+            party_ = std::make_shared<Party>(GetThis());
+            if (GetGame())
+                party_->SetPartySize(GetGame()->data_.partySize);
+        }
+        return party_;
+    }
+
+    void PartyInvitePlayer(uint32_t playerId);
+    void PartyKickPlayer(uint32_t playerId);
+    /// Need not be the leader, just a member of the party
+    void PartyRequestJoin(uint32_t leaderId);
+    /// Leave current party
+    void PartyLeave();
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;

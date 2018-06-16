@@ -56,10 +56,10 @@ void ProtocolGame::OnError(const asio::error_code& err)
 
 void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
 {
-    uint8_t opCode = 0;
+    AB::GameProtocol::GameProtocolCodes opCode = AB::GameProtocol::NoError;
     while (!message->Eof())
     {
-        opCode = message->Get<uint8_t>();
+        opCode = static_cast<AB::GameProtocol::GameProtocolCodes>(message->Get<uint8_t>());
 
         switch (opCode)
         {
@@ -106,6 +106,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::ChatMessage:
             ParseChatMessage(message);
             break;
+        default:
+            // End of message
+            return;
         }
     }
 }

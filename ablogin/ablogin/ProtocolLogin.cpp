@@ -377,11 +377,9 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
     {
     case IO::IOAccount::LoginInvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
 
@@ -396,6 +394,7 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
             output->AddStringEncrypted(game.uuid);
             output->AddStringEncrypted(game.name);
             output->AddByte(static_cast<uint8_t>(game.type));
+            output->AddByte(game.partySize);
         }
     }
 
@@ -412,11 +411,9 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
     {
     case IO::IOAccount::LoginInvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginPasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
     }
 

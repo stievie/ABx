@@ -41,6 +41,7 @@ struct Game : Entity
         s.text1b(script, Limits::MAX_FILENAME);
         s.value1b(type);
         s.value1b(landing);
+        s.value1b(partySize);
     }
 
     /// The name of the game
@@ -51,6 +52,7 @@ struct Game : Entity
     std::string script;
     GameType type = GameTypeUnknown;
     bool landing = false;
+    uint8_t partySize = 0;
 };
 
 }

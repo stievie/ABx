@@ -207,6 +207,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             g.uuid = message->GetStringEncrypted();
             g.name = message->GetStringEncrypted();
             g.type = static_cast<AB::Entities::GameType>(message->Get<uint8_t>());
+            g.partySize = message->Get<uint8_t>();
             games.push_back(g);
         }
         if (gamelistCallback_)
