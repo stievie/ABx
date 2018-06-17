@@ -90,7 +90,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ASIO_STANDALONE;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;TOLUA_RELEASE;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_IO;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;WIN32;_WINDOWS;ASIO_STANDALONE;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;TOLUA_RELEASE;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
@@ -151,7 +151,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ASIO_STANDALONE;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;TOLUA_RELEASE;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_IO;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;WIN32;_WINDOWS;ASIO_STANDALONE;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;TOLUA_RELEASE;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
@@ -209,7 +209,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;ASIO_STANDALONE;_DEBUG;URHO3D_MINIDUMPS;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;TOLUA_RELEASE;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_IO;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;WIN32;_WINDOWS;ASIO_STANDALONE;_DEBUG;URHO3D_MINIDUMPS;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;TOLUA_RELEASE;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
@@ -264,7 +264,7 @@
     <ClCompile Include="LoginLevel.cpp" />
     <ClCompile Include="MailWindow.cpp" />
     <ClCompile Include="MapWindow.cpp" />
-    <ClCompile Include="MultiLineEdit.cpp" />
+    <ClCompile Include="NuklearUI.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
     <ClCompile Include="PingDot.cpp" />
@@ -298,7 +298,7 @@
     <ClInclude Include="MailWindow.h" />
     <ClInclude Include="MapWindow.h" />
     <ClInclude Include="MathUtils.h" />
-    <ClInclude Include="MultiLineEdit.h" />
+    <ClInclude Include="NuklearUI.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="PingDot.h" />

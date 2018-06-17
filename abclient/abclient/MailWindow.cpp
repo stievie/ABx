@@ -7,49 +7,49 @@ void MailWindow::RegisterObject(Context* context)
 }
 
 MailWindow::MailWindow(Context* context) :
-    Object(context)
+    Object(context),
+    visible_(false)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    XMLFile* file = cache->GetResource<XMLFile>("UI/MailWindow.xml");
-    if (!file)
-        return;
-
-    UI* ui = GetSubsystem<UI>();
-    UIElement* root = ui->GetRoot();
-    {
-        SharedPtr<UIElement> holder = ui->LoadLayout(file, root->GetDefaultStyle());
-        if (!holder)    // Error is already logged
-            return;
-        window_ = holder;
-        root->AddChild(window_);    // Take ownership of the object before SharedPtr goes out of scope
-    }
-//    window_->SetStyleAuto();
-
-    previewEdit_ = window_->CreateChild<MultiLineEdit>();
-    previewEdit_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
-    previewEdit_->SetStyle("MultiLineEdit");
-    previewEdit_->SetLayoutMode(LM_FREE);
-    previewEdit_->SetAlignment(HA_LEFT, VA_TOP);
-    previewEdit_->SetEditable(true);
-    previewEdit_->SetMultiLine(true);
-    previewEdit_->SetMaxNumLines(0);
-    previewEdit_->SetClipBorder(IntRect(4, 4, 4, 4));
-    previewEdit_->SetMaxLength(255);
-    previewEdit_->SetText("is simply dummy text of the printing and typesetting industry.\n"
-        "been the industry's standard dummy text ever since the 1500s\n");
-    previewEdit_->ApplyAttributes();
-
-    Button* closeButton = dynamic_cast<Button*>(window_->GetChild("CloseButton", true));
-    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleCloseClicked));
-
-    window_->EnableLayoutUpdate();
-
-    // Increase reference count to keep Self alive
-    AddRef();
+    SubscribeToEvents();
+    windowPos_ = nk_vec2(50, 50);
+    windowSize_ = nk_vec2(220, 220);
 }
 
-void MailWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-    // Self destruct
-    ReleaseRef();
+    if (!visible_)
+        return;
+
+    NuklearUI* nuklear = GetSubsystem<NuklearUI>();
+
+    if (nk_begin(nuklear->GetNkContext(), "Mail",
+        nk_rect(windowPos_.x, windowPos_.y, windowSize_.x, windowSize_.y),
+        NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_CLOSABLE))
+    {
+        nk_layout_row_begin(nuklear->GetNkContext(), NK_DYNAMIC, 100, 1);
+        {
+            nk_layout_row_push(nuklear->GetNkContext(), 100);
+            if (nk_button_label(nuklear->GetNkContext(), "Write"))
+            {
+                /* event handling */
+            }
+
+
+            nk_layout_row_push(nuklear->GetNkContext(), 100);
+            // must be keep the fllow code between nk_begin... and nk_end...
+            nk_flags event = nk_edit_string_zero_terminated(nuklear->GetNkContext(),
+                NK_EDIT_BOX | NK_EDIT_AUTO_SELECT | NK_EDIT_MULTILINE, //fcous will auto select all text (NK_EDIT_BOX not sure)
+                buffer_, sizeof(buffer_), nk_filter_ascii);//nk_filter_ascii Text Edit accepts text types.
+        }
+        nk_layout_row_end(nuklear->GetNkContext());
+
+    }
+    nk_end(nuklear->GetNkContext());
+
+    visible_ = !nk_window_is_closed(nuklear->GetNkContext(), "Mail");
+}
+
+void MailWindow::SubscribeToEvents()
+{
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MailWindow, HandleUpdate));
 }

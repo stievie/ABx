@@ -14,9 +14,9 @@
 #include "PingDot.h"
 #include "TabGroup.h"
 #include "TargetWindow.h"
-#include "MultiLineEdit.h"
 #include "MailWindow.h"
 #include "PostProcessController.h"
+#include "NuklearUI.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -66,7 +66,6 @@ ClientApp::ClientApp(Context* context) :
 
     // UI
     TabGroup::RegisterObject(context);
-    MultiLineEdit::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved
@@ -125,13 +124,31 @@ void ClientApp::Setup()
 */
 void ClientApp::Start()
 {
+    auto nuklear = new NuklearUI(context_);
+    context_->RegisterSubsystem(nuklear);
+    // Initialize default font of your choice or use default one.
+//    nuklear->GetFontAtlas()->default_font = nk_font_atlas_add_default(nuklear->GetFontAtlas(), 13.f, 0);
+
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    {
+        SharedPtr<File> font = cache->GetFile("Fonts/ClearSans-Regular.ttf");
+        unsigned size = font->GetSize();
+        void* buff = malloc(size);
+        font->Read(buff, size);
+        nuklear->GetFontAtlas()->default_font = nk_font_atlas_add_from_memory(nuklear->GetFontAtlas(),
+            buff, size, 18.0f, 0);
+        free(buff);
+    }
+
+    // Additional font initialization here. See https://github.com/vurtun/nuklear/blob/master/demo/sdl_opengl3/main.c
+    nuklear->FinalizeFonts();
+
     SetRandomSeed(Time::GetSystemTime());
     SetWindowTitleAndIcon();
 
     GetSubsystem<Input>()->SetMouseVisible(true);
     GetSubsystem<Input>()->SetMouseGrabbed(false);
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
     // Let's use the default style that comes with Urho3D.
     GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml"));
 

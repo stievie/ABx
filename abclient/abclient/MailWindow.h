@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MultiLineEdit.h"
+#include "NuklearUI.h"
 
 class MailWindow : public Object
 {
@@ -11,18 +11,15 @@ public:
     MailWindow(Context* context);
     ~MailWindow()
     {
-        // This would remove the UI-element regardless of whether it is parented to UI's root or UI's modal-root
-        if (window_)
-            window_->Remove();
         UnsubscribeFromAllEvents();
     }
-    /// Return dialog window.
-    UIElement* GetWindow() const { return window_; }
-
+    bool visible_;
 private:
-    void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
-    /// UI element containing the whole UI layout. Typically it is a Window element type.
-    UIElement* window_;
-    SharedPtr<MultiLineEdit> previewEdit_;
+    void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void SubscribeToEvents();
+
+    char buffer_[256];
+    struct nk_vec2 windowPos_;
+    struct nk_vec2 windowSize_;
 };
 
