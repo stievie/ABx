@@ -68,7 +68,7 @@ public:
     {
         return game_.lock();
     }
-    void SetGame(std::shared_ptr<Game> game)
+    virtual void SetGame(std::shared_ptr<Game> game)
     {
         RemoveFromOctree();
         game_ = game;

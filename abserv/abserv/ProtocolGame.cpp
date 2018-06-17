@@ -131,15 +131,15 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::PartyKickPlayer, playerId);
         break;
     }
-    case AB::GameProtocol::PacketTypePartyRequestJoin:
-    {
-        uint32_t leaderPlayerId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyRequestJoin, leaderPlayerId);
-        break;
-    }
     case AB::GameProtocol::PacketTypePartyLeave:
     {
         AddPlayerTask(&Game::Player::PartyLeave);
+        break;
+    }
+    case AB::GameProtocol::PacketTypePartyAcceptInvite:
+    {
+        uint32_t playerId = message.Get<uint32_t>();
+        AddPlayerTask(&Game::Player::PartyAccept, playerId);
         break;
     }
     case AB::GameProtocol::PacketTypeMove:

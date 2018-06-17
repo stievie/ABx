@@ -1,5 +1,7 @@
 #pragma once
 
+#include "NetworkMessage.h"
+
 namespace Game {
 
 class Player;
@@ -12,7 +14,6 @@ private:
     std::vector<std::weak_ptr<Player>> members_;
     /// Used when forming a group. If the player accepts it is added to the members.
     std::vector<std::weak_ptr<Player>> invited_;
-    std::vector<std::weak_ptr<Player>> requesters_;
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
@@ -24,15 +25,16 @@ private:
         return ++partyIds_;
     }
 public:
-    Party(std::shared_ptr<Player> leader);
-    ~Party() = default;
+    explicit Party(std::shared_ptr<Player> leader);
+    ~Party();
 
     bool Add(std::shared_ptr<Player> player);
     bool Remove(std::shared_ptr<Player> player);
     bool Invite(std::shared_ptr<Player> player);
     bool RemoveInvite(std::shared_ptr<Player> player);
-    bool Request(std::shared_ptr<Player> player);
-    bool RemoveRequest(std::shared_ptr<Player> player);
+    void ClearInvites();
+
+    void WriteToMembers(const Net::NetworkMessage& message);
 
     void SetPartySize(uint32_t size);
     size_t GetMemberCount() const
@@ -45,7 +47,7 @@ public:
     }
     bool IsMember(std::shared_ptr<Player> player) const;
     bool IsInvited(std::shared_ptr<Player> player) const;
-    bool IsRequester(std::shared_ptr<Player> player) const;
+    bool IsLeader(const Player* const player);
 
     uint32_t id_;
 };

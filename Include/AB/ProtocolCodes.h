@@ -175,6 +175,11 @@ enum GameProtocolCodes : uint8_t
     GameObjectRotationChange,
     GameObjectSelectTarget,
     GameObjectStateChange,
+    // Party
+    PartyPlayerInvited,
+    PartyPlayerRemoved,
+    PartyPlayerAdded,
+    PartyInviteRemoved,
 };
 
 enum GameObjectType : uint8_t
@@ -219,7 +224,7 @@ enum GamePacketTypes : uint8_t
     PacketTypePartyInvitePlayer,
     PacketTypePartyKickPlayer,
     PacketTypePartyLeave,
-    PacketTypePartyRequestJoin,
+    PacketTypePartyAcceptInvite,
 };
 
 enum CommandTypes : uint8_t

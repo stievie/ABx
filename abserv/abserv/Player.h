@@ -23,7 +23,7 @@ private:
     std::shared_ptr<Party> party_;
 protected:
     friend class PlayerManager;
-    std::shared_ptr<Player> GetThis()
+    inline std::shared_ptr<Player> GetThis()
     {
         return std::static_pointer_cast<Player>(shared_from_this());
     }
@@ -47,9 +47,11 @@ public:
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
 
-    std::string GetName() const override { return data_.name; }
-    uint32_t GetLevel() const override { return data_.level; }
-    AB::GameProtocol::GameObjectType GetType() const override
+    /// We are entering a game
+    void SetGame(std::shared_ptr<Game> game) final override;
+    std::string GetName() const final override { return data_.name; }
+    uint32_t GetLevel() const final override { return data_.level; }
+    AB::GameProtocol::GameObjectType GetType() const final override
     {
         return AB::GameProtocol::ObjectTypePlayer;
     }
@@ -85,10 +87,9 @@ public:
 
     void PartyInvitePlayer(uint32_t playerId);
     void PartyKickPlayer(uint32_t playerId);
-    /// Need not be the leader, just a member of the party
-    void PartyRequestJoin(uint32_t leaderId);
     /// Leave current party
     void PartyLeave();
+    void PartyAccept(uint32_t playerId);
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;

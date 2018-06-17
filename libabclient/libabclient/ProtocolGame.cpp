@@ -106,6 +106,18 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::ChatMessage:
             ParseChatMessage(message);
             break;
+        case AB::GameProtocol::PartyPlayerInvited:
+            ParsePartyPlayerInvited(message);
+            break;
+        case AB::GameProtocol::PartyPlayerRemoved:
+            ParsePartyPlayerRemoved(message);
+            break;
+        case AB::GameProtocol::PartyPlayerAdded:
+            ParsePartyPlayerAdded(message);
+            break;
+        case AB::GameProtocol::PartyInviteRemoved:
+            ParsePartyInviteRemoved(message);
+            break;
         default:
             // End of message. Encryption adds some padding bytes, so after this
             // its probably just junk.
@@ -158,6 +170,26 @@ void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message
     std::string data = message->GetString();
     if (receiver_)
         receiver_->OnChatMessage(updateTick_, type, senderId, sender, data);
+}
+
+void ProtocolGame::ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t id = message->Get<uint32_t>();
+}
+
+void ProtocolGame::ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t id = message->Get<uint32_t>();
+}
+
+void ProtocolGame::ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t id = message->Get<uint32_t>();
+}
+
+void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t id = message->Get<uint32_t>();
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)

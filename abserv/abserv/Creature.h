@@ -30,6 +30,11 @@ public:
 
     Creature();
 
+    void SetGame(std::shared_ptr<Game> game) override
+    {
+        GameObject::SetGame(game);
+    }
+
     /// Move speed: 1 = normal speed
     float GetSpeed() const { return speed_; }
     void SetSpeed(float value) { speed_ = value; }

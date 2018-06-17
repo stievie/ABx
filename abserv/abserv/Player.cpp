@@ -31,10 +31,25 @@ Player::~Player()
 #endif
 }
 
+void Player::SetGame(std::shared_ptr<Game> game)
+{
+    Creature::SetGame(game);
+    std::shared_ptr<Party> party = GetParty();
+    // Changing the instance also clears any invites. The client should check that we
+    // leave the instance so don't send anything to invitees.
+    party->ClearInvites();
+    if (game)
+    {
+        if (party->IsLeader(this))
+            party->SetPartySize(game->data_.partySize);
+    }
+}
+
 void Player::Logout()
 {
     if (auto g = GetGame())
         g->PlayerLeave(id_);
+    GetParty()->Remove(GetThis());
     client_->Logout();
 }
 
@@ -160,36 +175,69 @@ void Player::NotifyNewMail()
 
 void Player::PartyInvitePlayer(uint32_t playerId)
 {
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
+
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
     if (player)
-        GetParty()->Invite(player);
+    {
+        if (GetParty()->Invite(player))
+        {
+            Net::NetworkMessage nmsg;
+            nmsg.AddByte(AB::GameProtocol::PartyPlayerInvited);
+            nmsg.Add<uint32_t>(playerId);
+            client_->WriteToOutput(nmsg);
+        }
+    }
 }
 
 void Player::PartyKickPlayer(uint32_t playerId)
 {
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
     if (!party_)
         return;
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
     if (!player)
         return;
-    party_->Remove(player);
-}
 
-void Player::PartyRequestJoin(uint32_t leaderId)
-{
-    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(leaderId);
-    if (!player)
-        return;
-    std::shared_ptr<Player> self = std::static_pointer_cast<Player>(shared_from_this());
-    player->GetParty()->Request(self);
+    Net::NetworkMessage nmsg;
+    nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+    nmsg.Add<uint32_t>(playerId);
+    party_->WriteToMembers(nmsg);
+    // Remove after
+    party_->Remove(player);
 }
 
 void Player::PartyLeave()
 {
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
     if (party_)
     {
-        std::shared_ptr<Player> self = std::static_pointer_cast<Player>(shared_from_this());
-        party_->Remove(self);
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+        nmsg.Add<uint32_t>(id_);
+        party_->WriteToMembers(nmsg);
+        party_->Remove(GetThis());
+    }
+}
+
+void Player::PartyAccept(uint32_t playerId)
+{
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
+
+    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    if (player)
+    {
+        if (GetParty()->Add(player))
+        {
+            Net::NetworkMessage nmsg;
+            nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
+            nmsg.Add<uint32_t>(playerId);
+            party_->WriteToMembers(nmsg);
+        }
     }
 }
 

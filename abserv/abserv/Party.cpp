@@ -9,12 +9,17 @@ uint32_t Party::partyIds_ = 0;
 
 Party::Party(std::shared_ptr<Player> leader) :
     leader_(leader),
-    maxMembers_(8)
+    maxMembers_(1)
 {
     id_ = GetNewId();
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(Chat::Instance.Get(ChannelParty, id_));
     chatChannel_->party_ = this;
     members_.push_back(leader);
+}
+
+Party::~Party()
+{
+    Chat::Instance.Remove(ChannelParty, id_);
 }
 
 bool Party::Add(std::shared_ptr<Player> player)
@@ -27,11 +32,12 @@ bool Party::Add(std::shared_ptr<Player> player)
     if (IsMember(player))
         return false;
 
+    // Remove from existing party
+    player->GetParty()->Remove(player);
     // TODO: shared_from_this -> Exception?
     members_.push_back(player);
     player->SetParty(shared_from_this());
     RemoveInvite(player);
-    RemoveRequest(player);
     return true;
 }
 
@@ -97,35 +103,18 @@ bool Party::RemoveInvite(std::shared_ptr<Player> player)
     return true;
 }
 
-bool Party::Request(std::shared_ptr<Player> player)
+void Party::ClearInvites()
 {
-    if (!player)
-        return false;
-
-    if (IsMember(player) || IsRequester(player))
-        return false;
-
-    requesters_.push_back(player);
-    return true;
+    invited_.clear();
 }
 
-bool Party::RemoveRequest(std::shared_ptr<Player> player)
+void Party::WriteToMembers(const Net::NetworkMessage& message)
 {
-    if (!player)
-        return false;
-
-    auto it = std::find_if(requesters_.begin(), requesters_.end(), [&player](const std::weak_ptr<Player>& current)
+    for (auto& wm : members_)
     {
-        if (const auto& c = current.lock())
-        {
-            return c->id_ == player->id_;
-        }
-        return false;
-    });
-    if (it == requesters_.end())
-        return false;
-    requesters_.erase(it);
-    return true;
+        if (auto sm = wm.lock())
+            sm->client_->WriteToOutput(message);
+    }
 }
 
 void Party::SetPartySize(uint32_t size)
@@ -163,17 +152,11 @@ bool Party::IsInvited(std::shared_ptr<Player> player) const
     return it != invited_.end();
 }
 
-bool Party::IsRequester(std::shared_ptr<Player> player) const
+bool Party::IsLeader(const Player* const player)
 {
-    auto it = std::find_if(requesters_.begin(), requesters_.end(), [&player](const std::weak_ptr<Player>& current)
-    {
-        if (const auto& c = current.lock())
-        {
-            return c->id_ == player->id_;
-        }
-        return false;
-    });
-    return it != requesters_.end();
+    if (auto l = leader_.lock())
+        return l.get() == player;
+    return false;
 }
 
 }
