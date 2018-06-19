@@ -389,6 +389,12 @@ void FwClient::FollowObject(uint32_t objectId)
         client_.FollowObject(objectId);
 }
 
+void FwClient::PartyInvite(uint32_t objectId)
+{
+    if (loggedIn_)
+        client_.PartyInvite(objectId);
+}
+
 void FwClient::OnLoggedIn(const std::string&)
 {
     LoadData();
@@ -417,7 +423,7 @@ void FwClient::OnGetOutposts(const std::vector<AB::Entities::Game>& games)
 void FwClient::OnGetServices(const std::vector<AB::Entities::Service>& services)
 {
     services_.clear();
-    for (const auto & s : services)
+    for (const auto& s : services)
         services_[s.uuid] = s;
 }
 
@@ -587,4 +593,40 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
     eData[P_DATA] = String(message.data(), (int)message.length());
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
+}
+
+void FwClient::OnPartyInvited(int64_t updateTick, uint32_t playerId)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PartyInvited;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_TARGETID] = playerId;
+    QueueEvent(AbEvents::E_PARTYINVITED, eData);
+}
+
+void FwClient::OnPartyRemoved(int64_t updateTick, uint32_t playerId)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PartyRemoved;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_TARGETID] = playerId;
+    QueueEvent(AbEvents::E_PARTYREMOVED, eData);
+}
+
+void FwClient::OnPartyAdded(int64_t updateTick, uint32_t playerId)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PartyAdded;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_TARGETID] = playerId;
+    QueueEvent(AbEvents::E_PARTYADDED, eData);
+}
+
+void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t playerId)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PartyInviteRemoved;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_TARGETID] = playerId;
+    QueueEvent(AbEvents::E_PARTYINVITEREMOVED, eData);
 }

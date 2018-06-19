@@ -16,8 +16,11 @@ private:
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
-    void HandleWindowResized(StringHash eventType, VariantMap& eventData);
-    void HandleWindowPositioned(StringHash eventType, VariantMap& eventData);
+    void HandlePartyInvited(StringHash eventType, VariantMap& eventData);
+    void HandlePartyAdded(StringHash eventType, VariantMap& eventData);
+    void HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData);
+    void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
+    void SubscribeEvents();
 public:
     static void RegisterObject(Context* context);
 

@@ -175,21 +175,29 @@ void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message
 void ProtocolGame::ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t id = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnPartyInvited(updateTick_, id);
 }
 
 void ProtocolGame::ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t id = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnPartyRemoved(updateTick_, id);
 }
 
 void ProtocolGame::ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t id = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnPartyAdded(updateTick_, id);
 }
 
 void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t id = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnPartyInviteRemoved(updateTick_, id);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
@@ -406,6 +414,14 @@ void ProtocolGame::Follow(uint32_t targetId)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
+    msg->Add<uint32_t>(targetId);
+    Send(msg);
+}
+
+void ProtocolGame::PartyInvite(uint32_t targetId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyInvitePlayer);
     msg->Add<uint32_t>(targetId);
     Send(msg);
 }

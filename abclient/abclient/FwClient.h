@@ -84,6 +84,7 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const String& data);
     void GotoPos(const Vector3& pos);
     void FollowObject(uint32_t objectId);
+    void PartyInvite(uint32_t objectId);
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
@@ -113,6 +114,14 @@ public:
         const std::string& senderName, const std::string& message) override;
     void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) override;
+    /// The player was invited into our party
+    void OnPartyInvited(int64_t updateTick, uint32_t playerId) override;
+    /// Player was removed from our party
+    void OnPartyRemoved(int64_t updateTick, uint32_t playerId) override;
+    /// Player was added to our party, i.e. the player accepted the invite
+    void OnPartyAdded(int64_t updateTick, uint32_t playerId) override;
+    /// The invite to our party was removed
+    void OnPartyInviteRemoved(int64_t updateTick, uint32_t playerId) override;
 
     void SetState(Client::Client::ClientState state)
     {

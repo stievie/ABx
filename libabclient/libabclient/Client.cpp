@@ -177,6 +177,30 @@ void Client::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChan
         receiver_->OnChatMessage(updateTick, channel, senderId, senderName, message);
 }
 
+void Client::OnPartyInvited(int64_t updateTick, uint32_t playerId)
+{
+    if (receiver_)
+        receiver_->OnPartyInvited(updateTick, playerId);
+}
+
+void Client::OnPartyRemoved(int64_t updateTick, uint32_t playerId)
+{
+    if (receiver_)
+        receiver_->OnPartyRemoved(updateTick, playerId);
+}
+
+void Client::OnPartyAdded(int64_t updateTick, uint32_t playerId)
+{
+    if (receiver_)
+        receiver_->OnPartyAdded(updateTick, playerId);
+}
+
+void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t playerId)
+{
+    if (receiver_)
+        receiver_->OnPartyInviteRemoved(updateTick, playerId);
+}
+
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
     PropReadStream& data, bool existing)
 {
@@ -455,6 +479,12 @@ void Client::GotoPos(const Vec3& pos)
 {
     if (state_ == StateWorld)
         protoGame_->GotoPos(pos);
+}
+
+void Client::PartyInvite(uint32_t targetId)
+{
+    if (state_ == StateWorld)
+        protoGame_->PartyInvite(targetId);
 }
 
 }

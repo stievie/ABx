@@ -40,6 +40,8 @@ PartyWindow::PartyWindow(Context* context) :
     SetVisible(true);
 
     SetStyleAuto();
+
+    SubscribeEvents();
 }
 
 PartyWindow::~PartyWindow()
@@ -49,6 +51,7 @@ PartyWindow::~PartyWindow()
 
 void PartyWindow::SetMode(PartyWindowMode mode)
 {
+    mode_ = mode;
     if (mode == PartyWindowMode::ModeOutpost)
     {
         addPlayerEdit_ = dynamic_cast<LineEdit*>(GetChild("AddPlayerEdit", true));
@@ -69,6 +72,12 @@ void PartyWindow::SetMode(PartyWindowMode mode)
 
 void PartyWindow::HandleAddTargetClicked(StringHash eventType, VariantMap& eventData)
 {
+    if (mode_ != PartyWindowMode::ModeOutpost)
+        return;
+
+    uint32_t targetId = addPlayerEdit_->GetVar("ID").GetUInt();
+    FwClient* client = GetSubsystem<FwClient>();
+    client->PartyInvite(targetId);
 }
 
 void PartyWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
@@ -78,6 +87,9 @@ void PartyWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData
 
 void PartyWindow::HandleObjectSelected(StringHash eventType, VariantMap& eventData)
 {
+    if (!addPlayerEdit_)
+        return;
+
     using namespace AbEvents::ObjectSelected;
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
 
@@ -92,23 +104,31 @@ void PartyWindow::HandleObjectSelected(StringHash eventType, VariantMap& eventDa
         if (a && a->objectType_ == ObjectTypePlayer)
         {
             addPlayerEdit_->SetText(a->name_);
+            addPlayerEdit_->SetVar("ID", targetId);
         }
     }
 }
 
-void PartyWindow::HandleWindowResized(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandlePartyInvited(StringHash eventType, VariantMap& eventData)
 {
-    using namespace Resized;
-    int width = eventData[P_WIDTH].GetInt();
-    int height = eventData[P_HEIGHT].GetInt();
-    SetSize(width, height);
 }
 
-void PartyWindow::HandleWindowPositioned(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandlePartyAdded(StringHash eventType, VariantMap& eventData)
 {
-    using namespace Positioned;
-    int x = eventData[P_X].GetInt();
-    int y = eventData[P_Y].GetInt();
-    SetPosition(x, y);
 }
 
+void PartyWindow::HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData)
+{
+}
+
+void PartyWindow::HandlePartyRemoved(StringHash eventType, VariantMap& eventData)
+{
+}
+
+void PartyWindow::SubscribeEvents()
+{
+    SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(PartyWindow, HandlePartyAdded));
+    SubscribeToEvent(AbEvents::E_PARTYINVITED, URHO3D_HANDLER(PartyWindow, HandlePartyInvited));
+    SubscribeToEvent(AbEvents::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));
+    SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyRemoved));
+}

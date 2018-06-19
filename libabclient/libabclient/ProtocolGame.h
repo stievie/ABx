@@ -79,6 +79,7 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void Follow(uint32_t targetId);
+    void PartyInvite(uint32_t targetId);
 
     int64_t GetUpdateTick() const
     {
