@@ -3,6 +3,7 @@
 static const StringHash E_GAMEMENU_LOGOUT = StringHash("GameMemu Logout");
 static const StringHash E_GAMEMENU_SELECTCHAR = StringHash("GameMemu SelectChar");
 static const StringHash E_GAMEMENU_MAIL = StringHash("GameMemu Mail");
+static const StringHash E_GAMEMENU_PARTYWINDOW = StringHash("GameMemu PartyWindow");
 
 class GameMenu : public UIElement
 {
@@ -23,6 +24,7 @@ private:
     void HandleSelectCharUsed(StringHash eventType, VariantMap& eventData);
     void HandleOptionsUsed(StringHash eventType, VariantMap& eventData);
     void HandleMailUsed(StringHash eventType, VariantMap& eventData);
+    void HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData);
     void UpdateServers();
 public:
     static void RegisterObject(Context* context);

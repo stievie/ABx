@@ -43,6 +43,7 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, "Options", URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
     CreateSeparator(popup);
     CreateMenuItem(popup, "Mail", URHO3D_HANDLER(GameMenu, HandleMailUsed));
+    CreateMenuItem(popup, "Party Window", URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
 
     popup->SetWidth(40);
 
@@ -145,6 +146,13 @@ void GameMenu::HandleMailUsed(StringHash eventType, VariantMap& eventData)
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(E_GAMEMENU_MAIL, e);
+}
+
+void GameMenu::HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(E_GAMEMENU_PARTYWINDOW , e);
 }
 
 void GameMenu::UpdateServers()

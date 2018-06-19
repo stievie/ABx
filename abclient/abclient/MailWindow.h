@@ -21,5 +21,6 @@ private:
     char buffer_[256];
     struct nk_vec2 windowPos_;
     struct nk_vec2 windowSize_;
+    struct nk_rect windowRect_;
 };
 

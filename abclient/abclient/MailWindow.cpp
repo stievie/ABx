@@ -13,18 +13,16 @@ MailWindow::MailWindow(Context* context) :
     SubscribeToEvents();
     windowPos_ = nk_vec2(50, 50);
     windowSize_ = nk_vec2(220, 220);
+    windowRect_ = nk_rect(50, 50, 220, 220);
 }
 
 void MailWindow::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-    if (!visible_)
-        return;
-
     NuklearUI* nuklear = GetSubsystem<NuklearUI>();
 
     if (nk_begin(nuklear->GetNkContext(), "Mail",
-        nk_rect(windowPos_.x, windowPos_.y, windowSize_.x, windowSize_.y),
-        NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_CLOSABLE))
+        windowRect_,
+        NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_CLOSABLE | NK_WINDOW_BACKGROUND))
     {
         nk_layout_row_begin(nuklear->GetNkContext(), NK_DYNAMIC, 100, 1);
         {

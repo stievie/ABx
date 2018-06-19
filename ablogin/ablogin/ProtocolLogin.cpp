@@ -32,11 +32,11 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
         DisconnectClient(AB::Errors::IPBanned);
         return;
     }
-    if (Auth::BanManager::Instance.IsIpDisabled(clientIp))
+/*    if (Auth::BanManager::Instance.IsIpDisabled(clientIp))
     {
         DisconnectClient(AB::Errors::TooManyConnectionsFromThisIP);
         return;
-    }
+    }*/
 
     uint8_t recvByte = message.GetByte();
     switch (recvByte)

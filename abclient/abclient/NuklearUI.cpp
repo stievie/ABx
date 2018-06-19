@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+
 #define NK_IMPLEMENTATION
 #include <string.h>
 #include <SDL/SDL.h>
@@ -65,12 +66,12 @@ NuklearUI::NuklearUI(Context* ctx)
     nk_buffer_init_default(&_commands);
     _index_buffer = new IndexBuffer(_graphics->GetContext());
     _vertex_buffer = new VertexBuffer(_graphics->GetContext());
-    Texture2D* nullTex = new Texture2D(_graphics->GetContext());
-    nullTex->SetNumLevels(1);
+    nullTex_ = new Texture2D(_graphics->GetContext());
+    nullTex_->SetNumLevels(1);
     unsigned whiteOpaque = 0xffffffff;
-    nullTex->SetSize(1, 1, Graphics::GetRGBAFormat());
-    nullTex->SetData(0, 0, 0, 1, 1, &whiteOpaque);
-    _null_texture.texture.ptr = nullTex;
+    nullTex_->SetSize(1, 1, Graphics::GetRGBAFormat());
+    nullTex_->SetData(0, 0, 0, 1, 1, &whiteOpaque);
+    _null_texture.texture.ptr = nullTex_;
 
     PODVector< VertexElement > elems;
     elems.Push(VertexElement(TYPE_VECTOR2, SEM_POSITION));
@@ -231,7 +232,7 @@ void NuklearUI::OnRawEvent(StringHash, VariantMap& args)
         nk_input_glyph(ctx, glyph);
     }
     else if (evt->type == SDL_MOUSEWHEEL)
-        nk_input_scroll(ctx, (float)evt->wheel.y);
+        nk_input_scroll(ctx, { 0, (float)evt->wheel.y });
 }
 
 void NuklearUI::OnInputEnd(StringHash, VariantMap&)

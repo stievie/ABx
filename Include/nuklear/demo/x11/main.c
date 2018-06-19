@@ -23,11 +23,6 @@
 #define WINDOW_WIDTH    800
 #define WINDOW_HEIGHT   600
 
-#define UNUSED(a) (void)a
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) < (b) ? (b) : (a))
-#define LEN(a) (sizeof(a)/sizeof(a)[0])
-
 typedef struct XWindow XWindow;
 struct XWindow {
     Display *dpy;
@@ -55,14 +50,6 @@ die(const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-static void*
-xcalloc(size_t siz, size_t n)
-{
-    void *ptr = calloc(siz, n);
-    if (!ptr) die("Out of memory\n");
-    return ptr;
-}
-
 static long
 timestamp(void)
 {
@@ -88,12 +75,32 @@ sleep_for(long t)
  *
  * ===============================================================*/
 /* This are some code examples to provide a small overview of what can be
- * done with this library. To try out an example uncomment the include
- * and the corresponding function. */
-/*#include "../style.c"*/
-/*#include "../calculator.c"*/
-/*#include "../overview.c"*/
-/*#include "../node_editor.c"*/
+ * done with this library. To try out an example uncomment the defines */
+/*#define INCLUDE_ALL */
+/*#define INCLUDE_STYLE */
+/*#define INCLUDE_CALCULATOR */
+/*#define INCLUDE_OVERVIEW */
+/*#define INCLUDE_NODE_EDITOR */
+
+#ifdef INCLUDE_ALL
+  #define INCLUDE_STYLE
+  #define INCLUDE_CALCULATOR
+  #define INCLUDE_OVERVIEW
+  #define INCLUDE_NODE_EDITOR
+#endif
+
+#ifdef INCLUDE_STYLE
+  #include "../style.c"
+#endif
+#ifdef INCLUDE_CALCULATOR
+  #include "../calculator.c"
+#endif
+#ifdef INCLUDE_OVERVIEW
+  #include "../overview.c"
+#endif
+#ifdef INCLUDE_NODE_EDITOR
+  #include "../node_editor.c"
+#endif
 
 /* ===============================================================
  *
@@ -113,11 +120,11 @@ main(void)
     memset(&xw, 0, sizeof xw);
     xw.dpy = XOpenDisplay(NULL);
     if (!xw.dpy) die("Could not open a display; perhaps $DISPLAY is not set?");
-
     xw.root = DefaultRootWindow(xw.dpy);
     xw.screen = XDefaultScreen(xw.dpy);
     xw.vis = XDefaultVisual(xw.dpy, xw.screen);
     xw.cmap = XCreateColormap(xw.dpy,xw.root,xw.vis,AllocNone);
+
     xw.swa.colormap = xw.cmap;
     xw.swa.event_mask =
         ExposureMask | KeyPressMask | KeyReleaseMask |
@@ -127,11 +134,11 @@ main(void)
     xw.win = XCreateWindow(xw.dpy, xw.root, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
         XDefaultDepth(xw.dpy, xw.screen), InputOutput,
         xw.vis, CWEventMask | CWColormap, &xw.swa);
+
     XStoreName(xw.dpy, xw.win, "X11");
     XMapWindow(xw.dpy, xw.win);
     xw.wm_delete_window = XInternAtom(xw.dpy, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(xw.dpy, xw.win, &xw.wm_delete_window, 1);
-
     XGetWindowAttributes(xw.dpy, xw.win, &xw.attr);
     xw.width = (unsigned int)xw.attr.width;
     xw.height = (unsigned int)xw.attr.height;
@@ -140,11 +147,13 @@ main(void)
     xw.font = nk_xfont_create(xw.dpy, "fixed");
     ctx = nk_xlib_init(xw.font, xw.dpy, xw.screen, xw.win, xw.width, xw.height);
 
-    /* style.c */
+    #ifdef INCLUDE_STYLE
     /*set_style(ctx, THEME_WHITE);*/
     /*set_style(ctx, THEME_RED);*/
     /*set_style(ctx, THEME_BLUE);*/
     /*set_style(ctx, THEME_DARK);*/
+    #endif
+
     while (running)
     {
         /* Input */
@@ -178,12 +187,18 @@ main(void)
             nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
         }
         nk_end(ctx);
-        if (nk_window_is_closed(ctx, "Demo")) break;
+        if (nk_window_is_hidden(ctx, "Demo")) break;
 
         /* -------------- EXAMPLES ---------------- */
-        /*calculator(ctx);*/
-        /*overview(ctx);*/
-        /*node_editor(ctx);*/
+        #ifdef INCLUDE_CALCULATOR
+          calculator(ctx);
+        #endif
+        #ifdef INCLUDE_OVERVIEW
+          overview(ctx);
+        #endif
+        #ifdef INCLUDE_NODE_EDITOR
+          node_editor(ctx);
+        #endif
         /* ----------------------------------------- */
 
         /* Draw */

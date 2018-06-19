@@ -16,6 +16,7 @@
 #include "TargetWindow.h"
 #include "MailWindow.h"
 #include "PostProcessController.h"
+#include "PartyWindow.h"
 #include "NuklearUI.h"
 
 #include <Urho3D/DebugNew.h>
@@ -76,6 +77,7 @@ ClientApp::ClientApp(Context* context) :
     PingDot::RegisterObject(context);
     TargetWindow::RegisterObject(context);
     MailWindow::RegisterObject(context);
+    PartyWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
 
     // Subscribe key down event

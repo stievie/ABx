@@ -27,8 +27,7 @@
 #include <Urho3D/Graphics/Texture2D.h>
 #include <nuklear/nuklear.h>
 
-class NuklearUI
-    : public Urho3D::Object
+class NuklearUI : public Urho3D::Object
 {
     URHO3D_OBJECT(NuklearUI, Urho3D::Object);
 public:
@@ -57,8 +56,9 @@ protected:
     struct nk_font_atlas _atlas;
     struct nk_buffer _commands;
     struct nk_draw_null_texture _null_texture;
-    Urho3D::VertexBuffer* _vertex_buffer;
-    Urho3D::IndexBuffer* _index_buffer;
+    SharedPtr<Urho3D::VertexBuffer> _vertex_buffer;
+    SharedPtr<Urho3D::IndexBuffer> _index_buffer;
+    SharedPtr<Texture2D> nullTex_;
     Urho3D::Vector<Urho3D::SharedPtr<Urho3D::Texture2D>> _font_textures;
     float _uiScale = 1.0f;
     struct nk_convert_config _config;

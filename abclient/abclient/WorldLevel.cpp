@@ -443,6 +443,11 @@ void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
     mailWindow_->visible_ = true;
 }
 
+void WorldLevel::HandleMenuPartyWindow(StringHash eventType, VariantMap& eventData)
+{
+    partyWindow_->SetVisible(!partyWindow_->IsVisible());
+}
+
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
 {
     SelectObject(0);
@@ -506,6 +511,9 @@ void WorldLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
+
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+
     chatWindow_ = uiRoot_->CreateChild<ChatWindow>();
     chatWindow_->SetAlignment(HA_LEFT, VA_BOTTOM);
 
@@ -514,11 +522,15 @@ void WorldLevel::CreateUI()
     SubscribeToEvent(gameMenu_, E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
     SubscribeToEvent(gameMenu_, E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
     SubscribeToEvent(gameMenu_, E_GAMEMENU_MAIL , URHO3D_HANDLER(WorldLevel, HandleMenuMail));
+    SubscribeToEvent(gameMenu_, E_GAMEMENU_PARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleMenuPartyWindow));
 
     targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
     targetWindow_->SetAlignment(HA_CENTER, VA_TOP);
     targetWindow_->SetVisible(false);
     SubscribeToEvent(targetWindow_, E_TARGETWINDOW_UNSELECT, URHO3D_HANDLER(WorldLevel, HandleTargetWindowUnselectObject));
+
+    partyWindow_ = uiRoot_->CreateChild<PartyWindow>();
+    partyWindow_->SetMode(PartyWindowMode::ModeOutpost);
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();
