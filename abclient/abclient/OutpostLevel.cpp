@@ -39,6 +39,8 @@ void OutpostLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     WorldLevel::CreateUI();
+    partyWindow_ = uiRoot_->CreateChild<PartyWindow>();
+    partyWindow_->SetMode(PartyWindowMode::ModeOutpost);
 }
 
 void OutpostLevel::CreateScene()

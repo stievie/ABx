@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "LevelManager.h"
 #include "BaseLevel.h"
+#include "WorldLevel.h"
+#include "GameMenu.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -184,4 +186,14 @@ void LevelManager::SetDrawDebugGeometry(bool draw)
         if (baseLevel)
             baseLevel->debugGeometry_ = drawDebugGeometry_;
     }
+}
+
+SharedPtr<GameObject> LevelManager::GetObjectById(uint32_t objectId)
+{
+    WorldLevel* lvl = dynamic_cast<WorldLevel*>(GetCurrentLevel());
+    if (lvl)
+    {
+        return lvl->GetObjectById(objectId);
+    }
+    return SharedPtr<GameObject>();
 }

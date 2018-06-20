@@ -33,7 +33,7 @@ PartyWindow::PartyWindow(Context* context) :
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
 
-    // TODO: Load size/position
+    // TODO: Load size/position from settings
     SetSize(272, 156);
     auto* graphics = GetSubsystem<Graphics>();
     SetPosition(graphics->GetWidth() - GetWidth() - 5, graphics->GetHeight() / 2 - (GetHeight() / 2));
@@ -94,12 +94,9 @@ void PartyWindow::HandleObjectSelected(StringHash eventType, VariantMap& eventDa
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
 
     LevelManager* lm = GetSubsystem<LevelManager>();
-    WorldLevel* lvl = dynamic_cast<WorldLevel*>(lm->GetCurrentLevel());
-    if (lvl)
+    SharedPtr<GameObject> o = lm->GetObjectById(targetId);
+    if (o)
     {
-        SharedPtr<GameObject> o = lvl->GetObjectById(targetId);
-        if (!o)
-            return;
         Actor* a = dynamic_cast<Actor*>(o.Get());
         if (a && a->objectType_ == ObjectTypePlayer)
         {

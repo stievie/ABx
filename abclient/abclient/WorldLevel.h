@@ -14,7 +14,7 @@
 #include "PartyWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
-/// These all have the Game UI.
+/// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
 class WorldLevel : public BaseLevel
 {
     URHO3D_OBJECT(WorldLevel, BaseLevel);
@@ -55,6 +55,7 @@ protected:
 private:
     IntVector2 mouseDownPos_;
     bool rmbDown_;
+    /// Local Node IDs are not the same as Object IDs on the server.
     SharedPtr<GameObject> GetObjectFromNode(Node* node)
     {
         unsigned id = node->GetID();
@@ -68,7 +69,6 @@ private:
             return objects_[objectId];
         return SharedPtr<GameObject>();
     }
-    Text* CreateServerDropdownItem(const String& text, const String& value);
     SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
@@ -87,7 +87,8 @@ private:
     void HandleMenuPartyWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
 
-    void SpawnObject(int64_t updateTick, uint32_t id, bool existing, const Vector3& position, const Vector3& scale,
+    void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
+        const Vector3& position, const Vector3& scale,
         const Quaternion& rot, PropReadStream& data);
 };
 

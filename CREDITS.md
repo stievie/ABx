@@ -15,7 +15,7 @@
 * GJK https://github.com/xuzebin/gjk
 * https://github.com/fraillt/bitsery
 * https://github.com/brimzi/simple-cache
-* https://github.com/mariusbancila/stduuid (modified to compile with VC2015)
+* https://github.com/mariusbancila/stduuid
 
 ## Client
 
@@ -24,4 +24,3 @@
 * PostProcessController https://gist.github.com/lezak
 * Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 * Entity Position Interpolation https://github.com/jwatte/EPIC
-* https://github.com/vurtun/nuklear

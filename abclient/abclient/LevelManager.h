@@ -6,6 +6,8 @@
 
 using namespace Urho3D;
 
+class GameObject;
+
 class LevelManager : public Object
 {
     URHO3D_OBJECT(LevelManager, Object);
@@ -41,4 +43,5 @@ public:
     {
         SetDrawDebugGeometry(!drawDebugGeometry_);
     }
+    SharedPtr<GameObject> GetObjectById(uint32_t objectId);
 };

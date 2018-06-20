@@ -14,7 +14,8 @@ WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
     rmbDown_(false),
     mailWindow_(nullptr),
-    mapWindow_(nullptr)
+    mapWindow_(nullptr),
+    partyWindow_(nullptr)
 {
 }
 
@@ -32,15 +33,6 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
     SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(WorldLevel, HandleMouseMove));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
-}
-
-Text* WorldLevel::CreateServerDropdownItem(const String& text, const String& value)
-{
-    Text* result = new Text(context_);
-    result->SetText(text);
-    result->SetVar("String Value", value);
-    result->SetStyle("DropDownItemEnumText");
-    return result;
 }
 
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
@@ -445,7 +437,8 @@ void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
 
 void WorldLevel::HandleMenuPartyWindow(StringHash eventType, VariantMap& eventData)
 {
-    partyWindow_->SetVisible(!partyWindow_->IsVisible());
+    if (partyWindow_)
+        partyWindow_->SetVisible(!partyWindow_->IsVisible());
 }
 
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
@@ -528,9 +521,6 @@ void WorldLevel::CreateUI()
     targetWindow_->SetAlignment(HA_CENTER, VA_TOP);
     targetWindow_->SetVisible(false);
     SubscribeToEvent(targetWindow_, E_TARGETWINDOW_UNSELECT, URHO3D_HANDLER(WorldLevel, HandleTargetWindowUnselectObject));
-
-    partyWindow_ = uiRoot_->CreateChild<PartyWindow>();
-    partyWindow_->SetMode(PartyWindowMode::ModeOutpost);
 
     // Ping
     pingDot_ = uiRoot_->CreateChild<PingDot>();
