@@ -92,24 +92,28 @@ URHO3D_EVENT(E_MAILREAD, MailRead)
 URHO3D_EVENT(E_PARTYINVITED, PartyInvited)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 
 URHO3D_EVENT(E_PARTYREMOVED, PartyRemoved)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 
 URHO3D_EVENT(E_PARTYADDED, PartyAdded)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 
 URHO3D_EVENT(E_PARTYINVITEREMOVED, PartyInviteRemoved)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 

@@ -17,6 +17,8 @@
 #include "MailWindow.h"
 #include "PostProcessController.h"
 #include "PartyWindow.h"
+#include "GameMenu.h"
+#include "HealthBar.h"
 #include "NuklearUI.h"
 
 #include <Urho3D/DebugNew.h>
@@ -67,6 +69,7 @@ ClientApp::ClientApp(Context* context) :
 
     // UI
     TabGroup::RegisterObject(context);
+    HealthBar::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved
@@ -78,10 +81,12 @@ ClientApp::ClientApp(Context* context) :
     TargetWindow::RegisterObject(context);
     MailWindow::RegisterObject(context);
     PartyWindow::RegisterObject(context);
+    OptionsWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
 
     // Subscribe key down event
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
+    SubscribeToEvent(E_GAMEMENU_OPTIONSWINDOW, URHO3D_HANDLER(ClientApp, HandleGameMenuOptionsClicked));
 }
 
 /**
@@ -210,6 +215,16 @@ void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
         GetSubsystem<LevelManager>()->ToggleDebugGeometry();
     }
 //#endif
+}
+
+void ClientApp::HandleGameMenuOptionsClicked(StringHash eventType, VariantMap& eventData)
+{
+    if (!optionsWindow_)
+    {
+        optionsWindow_ = GetSubsystem<UI>()->GetRoot()->CreateChild<OptionsWindow>();
+        return;
+    }
+    optionsWindow_->SetVisible(!optionsWindow_->IsVisible());
 }
 
 /**

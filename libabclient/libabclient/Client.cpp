@@ -177,28 +177,28 @@ void Client::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChan
         receiver_->OnChatMessage(updateTick, channel, senderId, senderName, message);
 }
 
-void Client::OnPartyInvited(int64_t updateTick, uint32_t playerId)
+void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     if (receiver_)
-        receiver_->OnPartyInvited(updateTick, playerId);
+        receiver_->OnPartyInvited(updateTick, sourceId, targetId);
 }
 
-void Client::OnPartyRemoved(int64_t updateTick, uint32_t playerId)
+void Client::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     if (receiver_)
-        receiver_->OnPartyRemoved(updateTick, playerId);
+        receiver_->OnPartyRemoved(updateTick, sourceId, targetId);
 }
 
-void Client::OnPartyAdded(int64_t updateTick, uint32_t playerId)
+void Client::OnPartyAdded(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     if (receiver_)
-        receiver_->OnPartyAdded(updateTick, playerId);
+        receiver_->OnPartyAdded(updateTick, sourceId, targetId);
 }
 
-void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t playerId)
+void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     if (receiver_)
-        receiver_->OnPartyInviteRemoved(updateTick, playerId);
+        receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId);
 }
 
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
@@ -481,10 +481,10 @@ void Client::GotoPos(const Vec3& pos)
         protoGame_->GotoPos(pos);
 }
 
-void Client::PartyInvite(uint32_t targetId)
+void Client::PartyInvitePlayer(uint32_t targetId)
 {
     if (state_ == StateWorld)
-        protoGame_->PartyInvite(targetId);
+        protoGame_->PartyInvitePlayer(targetId);
 }
 
 }

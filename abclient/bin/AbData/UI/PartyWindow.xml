@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="PartyWindow" />
 	<attribute name="Position" value="412 212" />
-	<attribute name="Size" value="272 156" />
+	<attribute name="Size" value="272 128" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.9" />
 	<attribute name="Is Selected" value="true" />
@@ -11,6 +11,7 @@
 	<attribute name="Is Movable" value="true" />
 	<attribute name="Is Resizable" value="true" />
 	<element>
+		<attribute name="Min Size" value="0 25" />
 		<attribute name="Max Size" value="2147483647 25" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
@@ -32,91 +33,79 @@
 		</element>
 	</element>
 	<element>
-		<attribute name="Name" value="PartyContainer" />
+		<attribute name="Name" value="WindowContainer" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Vertical" />
 		<element>
-			<attribute name="Name" value="MemberContainer" />
+			<attribute name="Name" value="PartyContainer" />
 			<attribute name="Pivot" value="0 0" />
+			<attribute name="Enable Anchor" value="true" />
 			<attribute name="Layout Mode" value="Vertical" />
-			<element type="ProgressBar">
+			<element>
+				<attribute name="Name" value="MemberContainer" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Mode" value="Vertical" />
+			</element>
+			<element>
+				<attribute name="Name" value="AddContainer" />
+				<attribute name="Min Size" value="0 25" />
 				<attribute name="Max Size" value="2147483647 25" />
 				<attribute name="Pivot" value="0 0" />
-				<attribute name="Is Enabled" value="false" />
-				<attribute name="Is Editable" value="false" />
-				<element type="BorderImage" internal="true" style="none">
+				<attribute name="Layout Mode" value="Horizontal" />
+				<attribute name="Layout Border" value="2 2 2 2" />
+				<element type="LineEdit">
+					<attribute name="Name" value="AddPlayerEdit" />
+					<attribute name="Max Size" value="2147483647 24" />
 					<attribute name="Pivot" value="0 0" />
+					<element type="Text" internal="true" style="none">
+						<attribute name="Min Anchor" value="0 0.5" />
+						<attribute name="Max Anchor" value="0 0.5" />
+						<attribute name="Pivot" value="0 0.5" />
+						<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+						<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+						<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+						<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+					</element>
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Size" value="4 15" />
+						<attribute name="Min Anchor" value="0 0.5" />
+						<attribute name="Max Anchor" value="0 0.5" />
+						<attribute name="Pivot" value="0 0.5" />
+					</element>
 				</element>
-				<element type="Text" internal="true" style="none">
-					<attribute name="Name" value="S_Text" />
-					<attribute name="Min Anchor" value="0.5 0.5" />
-					<attribute name="Max Anchor" value="0.5 0.5" />
-					<attribute name="Pivot" value="0.5 0.5" />
+				<element type="Button">
+					<attribute name="Name" value="AddPlayerButton" />
+					<attribute name="Max Size" value="20 20" />
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+					<attribute name="Image Rect" value="80 0 96 16" />
+				</element>
+			</element>
+		</element>
+		<element>
+			<attribute name="Name" value="ButtonContainer" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Enable Anchor" value="true" />
+			<attribute name="Layout Mode" value="Vertical" />
+			<attribute name="Layout Spacing" value="4" />
+			<attribute name="Layout Border" value="4 4 4 4" />
+			<element type="Button">
+				<attribute name="Max Size" value="2147483647 25" />
+				<attribute name="Min Anchor" value="0.5 0" />
+				<attribute name="Max Anchor" value="0.5 0" />
+				<attribute name="Pivot" value="0.5 0" />
+				<attribute name="Layout Mode" value="Horizontal" />
+				<element type="Text">
+					<attribute name="Min Anchor" value="0 0.5" />
+					<attribute name="Max Anchor" value="0 0.5" />
+					<attribute name="Pivot" value="0 0.5" />
 					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-					<attribute name="Text" value="0 %" />
+					<attribute name="Text" value="Leave" />
+					<attribute name="Text Alignment" value="Center" />
 				</element>
-			</element>
-		</element>
-		<element>
-			<attribute name="Name" value="AddContainer" />
-			<attribute name="Max Size" value="2147483647 25" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Layout Mode" value="Horizontal" />
-			<attribute name="Layout Border" value="2 2 2 2" />
-			<element type="LineEdit">
-				<attribute name="Name" value="AddPlayerEdit" />
-				<attribute name="Max Size" value="2147483647 24" />
-				<attribute name="Pivot" value="0 0" />
-				<element type="Text" internal="true" style="none">
-					<attribute name="Min Anchor" value="0 0.5" />
-					<attribute name="Max Anchor" value="0 0.5" />
-					<attribute name="Pivot" value="0 0.5" />
-					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
-					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
-					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
-					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
-				</element>
-				<element type="BorderImage" internal="true" style="none">
-					<attribute name="Size" value="4 15" />
-					<attribute name="Min Anchor" value="0 0.5" />
-					<attribute name="Max Anchor" value="0 0.5" />
-					<attribute name="Pivot" value="0 0.5" />
-				</element>
-			</element>
-			<element type="Button">
-				<attribute name="Name" value="AddPlayerButton" />
-				<attribute name="Max Size" value="20 20" />
-				<attribute name="Pivot" value="0 0" />
-				<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-				<attribute name="Image Rect" value="80 0 96 16" />
-			</element>
-		</element>
-	</element>
-	<element>
-		<attribute name="Name" value="ButtonContainer" />
-		<attribute name="Pivot" value="0 0" />
-		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Layout Spacing" value="4" />
-		<attribute name="Layout Border" value="4 4 4 4" />
-		<element type="Button">
-			<attribute name="Max Size" value="2147483647 25" />
-			<attribute name="Min Anchor" value="0.5 0" />
-			<attribute name="Max Anchor" value="0.5 0" />
-			<attribute name="Pivot" value="0.5 0" />
-			<attribute name="Layout Mode" value="Horizontal" />
-			<element type="Text">
-				<attribute name="Min Anchor" value="0 0.5" />
-				<attribute name="Max Anchor" value="0 0.5" />
-				<attribute name="Pivot" value="0 0.5" />
-				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-				<attribute name="Text" value="Leave" />
-				<attribute name="Text Alignment" value="Center" />
 			</element>
 		</element>
 	</element>

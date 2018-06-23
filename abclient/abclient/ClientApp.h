@@ -3,6 +3,7 @@
 #include "FwClient.h"
 #include "Options.h"
 #include "LevelManager.h"
+#include "OptionsWindow.h"
 
 using namespace Urho3D;
 
@@ -29,10 +30,12 @@ private:
     SharedPtr<Options> options_;
     SharedPtr<FwClient> client_;
     SharedPtr<LevelManager> levelManager_;
+    SharedPtr<OptionsWindow> optionsWindow_;
 
     void SetWindowTitleAndIcon();
     void SwitchScene(const String& sceneName);
     /// Handle the logic update event.
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+    void HandleGameMenuOptionsClicked(StringHash eventType, VariantMap& eventData);
 };

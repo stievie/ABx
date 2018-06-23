@@ -114,7 +114,7 @@ void LevelManager::HandleUpdate(StringHash eventType, VariantMap& eventData)
         levelName_ = levelData[P_NAME].GetString();
         mapUuid_ = levelData[P_MAPUUID].GetString();
         level_ = context_->CreateObject(StringHash(levelName_));
-        BaseLevel* baseLevel = dynamic_cast<BaseLevel*>(GetCurrentLevel());
+        BaseLevel* baseLevel = GetCurrentLevel<BaseLevel>();
         if (baseLevel)
         {
             baseLevel->debugGeometry_ = drawDebugGeometry_;
@@ -182,7 +182,7 @@ void LevelManager::SetDrawDebugGeometry(bool draw)
     if (drawDebugGeometry_ != draw)
     {
         drawDebugGeometry_ = draw;
-        BaseLevel* baseLevel = dynamic_cast<BaseLevel*>(GetCurrentLevel());
+        BaseLevel* baseLevel = GetCurrentLevel<BaseLevel>();
         if (baseLevel)
             baseLevel->debugGeometry_ = drawDebugGeometry_;
     }
@@ -190,10 +190,20 @@ void LevelManager::SetDrawDebugGeometry(bool draw)
 
 SharedPtr<GameObject> LevelManager::GetObjectById(uint32_t objectId)
 {
-    WorldLevel* lvl = dynamic_cast<WorldLevel*>(GetCurrentLevel());
+    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
     if (lvl)
     {
         return lvl->GetObjectById(objectId);
     }
     return SharedPtr<GameObject>();
+}
+
+SharedPtr<Player> LevelManager::GetPlayer()
+{
+    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
+    if (lvl)
+    {
+        return lvl->GetPlayer();
+    }
+    return SharedPtr<Player>();
 }

@@ -24,7 +24,7 @@ required for:
 * Login Server
 * Game Server
 
-There can be only *one* data server. It is the centeral point to which all other
+There can be only *one* data server. It is the central point to which all other
 servers connect, and get their data from.
 
 ### File Server

@@ -138,7 +138,8 @@ void GameMenu::HandleSelectCharUsed(StringHash eventType, VariantMap& eventData)
 void GameMenu::HandleOptionsUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
-
+    VariantMap& e = GetEventDataMap();
+    SendEvent(E_GAMEMENU_OPTIONSWINDOW, e);
 }
 
 void GameMenu::HandleMailUsed(StringHash eventType, VariantMap& eventData)

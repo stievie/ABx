@@ -138,8 +138,8 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypePartyAcceptInvite:
     {
-        uint32_t playerId = message.Get<uint32_t>();
-        AddPlayerTask(&Game::Player::PartyAccept, playerId);
+        uint32_t inviterId = message.Get<uint32_t>();
+        AddPlayerTask(&Game::Player::PartyAccept, inviterId);
         break;
     }
     case AB::GameProtocol::PacketTypeMove:

@@ -174,30 +174,34 @@ void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message
 
 void ProtocolGame::ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message)
 {
-    uint32_t id = message->Get<uint32_t>();
+    uint32_t sourceId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyInvited(updateTick_, id);
+        receiver_->OnPartyInvited(updateTick_, sourceId, targetId);
 }
 
 void ProtocolGame::ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message)
 {
-    uint32_t id = message->Get<uint32_t>();
+    uint32_t sourceId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyRemoved(updateTick_, id);
+        receiver_->OnPartyRemoved(updateTick_, sourceId, targetId);
 }
 
 void ProtocolGame::ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message)
 {
-    uint32_t id = message->Get<uint32_t>();
+    uint32_t sourceId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyAdded(updateTick_, id);
+        receiver_->OnPartyAdded(updateTick_, sourceId, targetId);
 }
 
 void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message)
 {
-    uint32_t id = message->Get<uint32_t>();
+    uint32_t sourceId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyInviteRemoved(updateTick_, id);
+        receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
@@ -418,11 +422,34 @@ void ProtocolGame::Follow(uint32_t targetId)
     Send(msg);
 }
 
-void ProtocolGame::PartyInvite(uint32_t targetId)
+void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyInvitePlayer);
     msg->Add<uint32_t>(targetId);
+    Send(msg);
+}
+
+void ProtocolGame::PartyKickPlayer(uint32_t targetId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyKickPlayer);
+    msg->Add<uint32_t>(targetId);
+    Send(msg);
+}
+
+void ProtocolGame::PartyLeave()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyLeave);
+    Send(msg);
+}
+
+void ProtocolGame::PartyAccept(uint32_t inviterId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyAcceptInvite);
+    msg->Add<uint32_t>(inviterId);
     Send(msg);
 }
 

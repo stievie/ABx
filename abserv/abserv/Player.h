@@ -89,7 +89,7 @@ public:
     void PartyKickPlayer(uint32_t playerId);
     /// Leave current party
     void PartyLeave();
-    void PartyAccept(uint32_t playerId);
+    void PartyAccept(uint32_t inviterId);
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;

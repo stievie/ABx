@@ -4,6 +4,7 @@
 #include "WorldLevel.h"
 #include "LevelManager.h"
 #include "FwClient.h"
+#include "HealthBar.h"
 
 void PartyWindow::RegisterObject(Context* context)
 {
@@ -11,7 +12,8 @@ void PartyWindow::RegisterObject(Context* context)
 }
 
 PartyWindow::PartyWindow(Context* context) :
-    Window(context)
+    Window(context),
+    memberCount_(0)
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -23,7 +25,7 @@ PartyWindow::PartyWindow(Context* context) :
     SetLayoutBorder(IntRect(4, 4, 4, 4));
     SetName("PartyWindow");
     SetPivot(0, 0);
-    SetOpacity(0.9);
+    SetOpacity(0.9f);
     SetResizable(true);
     SetMovable(true);
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
@@ -32,6 +34,9 @@ PartyWindow::PartyWindow(Context* context) :
     SetBorder(IntRect(4, 4, 4, 4));
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
+
+    memberContainer_ = dynamic_cast<UIElement*>(GetChild("MemberContainer", true));
+    partyContainer_ = dynamic_cast<UIElement*>(GetChild("PartyContainer", true));
 
     // TODO: Load size/position from settings
     SetSize(272, 156);
@@ -42,6 +47,10 @@ PartyWindow::PartyWindow(Context* context) :
     SetStyleAuto();
 
     SubscribeEvents();
+
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    SharedPtr<Actor> o = lm->GetPlayer();
+    AddActor(o);
 }
 
 PartyWindow::~PartyWindow()
@@ -57,8 +66,6 @@ void PartyWindow::SetMode(PartyWindowMode mode)
         addPlayerEdit_ = dynamic_cast<LineEdit*>(GetChild("AddPlayerEdit", true));
         Button* addPlayerButton = dynamic_cast<Button*>(GetChild("AddPlayerButton", true));
         SubscribeToEvent(addPlayerButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleAddTargetClicked));
-        Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
-        SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleCloseClicked));
         SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));
     }
     else
@@ -70,6 +77,17 @@ void PartyWindow::SetMode(PartyWindowMode mode)
     }
 }
 
+void PartyWindow::AddActor(SharedPtr<Actor> actor)
+{
+    HealthBar* hb = memberContainer_->CreateChild<HealthBar>();
+    hb->SetActor(actor);
+    hb->showName_ = true;
+    ++memberCount_;
+    memberContainer_->SetHeight(hb->GetHeight() * memberCount_);
+    partyContainer_->SetMinHeight(memberContainer_->GetHeight() + 25);
+    SetMinHeight(partyContainer_->GetHeight() + 33 + 30);
+}
+
 void PartyWindow::HandleAddTargetClicked(StringHash eventType, VariantMap& eventData)
 {
     if (mode_ != PartyWindowMode::ModeOutpost)
@@ -77,7 +95,7 @@ void PartyWindow::HandleAddTargetClicked(StringHash eventType, VariantMap& event
 
     uint32_t targetId = addPlayerEdit_->GetVar("ID").GetUInt();
     FwClient* client = GetSubsystem<FwClient>();
-    client->PartyInvite(targetId);
+    client->PartyInvitePlayer(targetId);
 }
 
 void PartyWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
@@ -108,6 +126,20 @@ void PartyWindow::HandleObjectSelected(StringHash eventType, VariantMap& eventDa
 
 void PartyWindow::HandlePartyInvited(StringHash eventType, VariantMap& eventData)
 {
+    if (mode_ != PartyWindowMode::ModeOutpost)
+        return;
+    using namespace AbEvents::PartyInvited;
+    uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    SharedPtr<GameObject> o = lm->GetObjectById(targetId);
+    if (o)
+    {
+        HealthBar* hb = memberContainer_->CreateChild<HealthBar>();
+        SharedPtr<Actor> a;
+        o.DynamicCast<Actor>(a);
+        AddActor(a);
+    }
 }
 
 void PartyWindow::HandlePartyAdded(StringHash eventType, VariantMap& eventData)
@@ -124,6 +156,8 @@ void PartyWindow::HandlePartyRemoved(StringHash eventType, VariantMap& eventData
 
 void PartyWindow::SubscribeEvents()
 {
+    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleCloseClicked));
     SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(PartyWindow, HandlePartyAdded));
     SubscribeToEvent(AbEvents::E_PARTYINVITED, URHO3D_HANDLER(PartyWindow, HandlePartyInvited));
     SubscribeToEvent(AbEvents::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));

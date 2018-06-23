@@ -33,6 +33,16 @@ static const StringHash COLLADJ_SUB("sub");
 static const StringHash COLLADJ_MUL("mul");
 static const StringHash COLLADJ_DIV("div");
 
+struct ActorStats
+{
+    unsigned health = 0;
+    unsigned maxHealth = 0;
+    int healthRegen = 0;
+    unsigned energy = 0;
+    unsigned maxEnergy = 0;
+    int energyRegen = 0;
+};
+
 /// Character component, responsible for physical movement according to controls, as well as animation.
 class Actor : public GameObject
 {
@@ -91,6 +101,7 @@ public:
     Quaternion rotateTo_;
     String name_;
     Extrapolator<3, float> posExtrapolator_;
+    ActorStats stats_;
     void SelectObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
 };

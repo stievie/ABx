@@ -7,6 +7,7 @@
 using namespace Urho3D;
 
 class GameObject;
+class Player;
 
 class LevelManager : public Object
 {
@@ -33,7 +34,8 @@ private:
     const float MAX_FADE_TIME = 0.7f;
 
 public:
-    Object* GetCurrentLevel() const { return level_; }
+    template<typename T>
+    T* GetCurrentLevel() const { return dynamic_cast<T*>(level_.Get()); }
     const String& GetLevelName() const { return levelName_ ; }
     const String& GetLastLevelName() const { return lastLevelName_; }
     String GetMapUuid() const { return mapUuid_; }
@@ -44,4 +46,5 @@ public:
         SetDrawDebugGeometry(!drawDebugGeometry_);
     }
     SharedPtr<GameObject> GetObjectById(uint32_t objectId);
+    SharedPtr<Player> GetPlayer();
 };

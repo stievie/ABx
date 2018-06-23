@@ -111,6 +111,12 @@
     <ClInclude Include="PartyWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OptionsWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -189,6 +195,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PartyWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

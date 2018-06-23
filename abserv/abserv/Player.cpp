@@ -177,6 +177,8 @@ void Player::PartyInvitePlayer(uint32_t playerId)
 {
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
+    if (id_ == playerId)
+        return;
 
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
     if (player)
@@ -185,8 +187,12 @@ void Player::PartyInvitePlayer(uint32_t playerId)
         {
             Net::NetworkMessage nmsg;
             nmsg.AddByte(AB::GameProtocol::PartyPlayerInvited);
+            nmsg.Add<uint32_t>(id_);
             nmsg.Add<uint32_t>(playerId);
-            client_->WriteToOutput(nmsg);
+            // Send us confirmation
+            party_->WriteToMembers(nmsg);
+            // Send player he was invited
+            player->client_->WriteToOutput(nmsg);
         }
     }
 }
@@ -194,6 +200,8 @@ void Player::PartyInvitePlayer(uint32_t playerId)
 void Player::PartyKickPlayer(uint32_t playerId)
 {
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
+    if (id_ == playerId)
         return;
     if (!party_)
         return;
@@ -203,6 +211,7 @@ void Player::PartyKickPlayer(uint32_t playerId)
 
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+    nmsg.Add<uint32_t>(id_);
     nmsg.Add<uint32_t>(playerId);
     party_->WriteToMembers(nmsg);
     // Remove after
@@ -217,6 +226,7 @@ void Player::PartyLeave()
     {
         Net::NetworkMessage nmsg;
         nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+        nmsg.Add<uint32_t>(party_->GetLeader()->id_);
         nmsg.Add<uint32_t>(id_);
         party_->WriteToMembers(nmsg);
         party_->Remove(GetThis());
@@ -231,10 +241,11 @@ void Player::PartyAccept(uint32_t playerId)
     std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
     if (player)
     {
-        if (GetParty()->Add(player))
+        if (player->GetParty()->Add(GetThis()))
         {
             Net::NetworkMessage nmsg;
             nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
+            nmsg.Add<uint32_t>(id_);
             nmsg.Add<uint32_t>(playerId);
             party_->WriteToMembers(nmsg);
         }

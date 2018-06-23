@@ -389,10 +389,10 @@ void FwClient::FollowObject(uint32_t objectId)
         client_.FollowObject(objectId);
 }
 
-void FwClient::PartyInvite(uint32_t objectId)
+void FwClient::PartyInvitePlayer(uint32_t objectId)
 {
     if (loggedIn_)
-        client_.PartyInvite(objectId);
+        client_.PartyInvitePlayer(objectId);
 }
 
 void FwClient::OnLoggedIn(const std::string&)
@@ -464,9 +464,9 @@ void FwClient::OnNetworkError(const std::error_code& err)
 {
     loggedIn_ = false;
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
-    BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
-
-    cl->OnNetworkError(err);
+    BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
+    if (cl)
+        cl->OnNetworkError(err);
 
     if (lm->GetLevelName() != "LoginLevel")
     {
@@ -489,8 +489,9 @@ void FwClient::QueueEvent(StringHash eventType, VariantMap& eventData)
 void FwClient::OnProtocolError(uint8_t err)
 {
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
-    BaseLevel* cl = static_cast<BaseLevel*>(lm->GetCurrentLevel());
-    cl->OnProtocolError(err);
+    BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
+    if (cl)
+        cl->OnProtocolError(err);
 }
 
 void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
@@ -595,38 +596,42 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
 }
 
-void FwClient::OnPartyInvited(int64_t updateTick, uint32_t playerId)
+void FwClient::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyInvited;
     eData[P_UPDATETICK] = updateTick;
-    eData[P_TARGETID] = playerId;
+    eData[P_SOURCEID] = sourceId;
+    eData[P_TARGETID] = targetId;
     QueueEvent(AbEvents::E_PARTYINVITED, eData);
 }
 
-void FwClient::OnPartyRemoved(int64_t updateTick, uint32_t playerId)
+void FwClient::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyRemoved;
     eData[P_UPDATETICK] = updateTick;
-    eData[P_TARGETID] = playerId;
+    eData[P_SOURCEID] = sourceId;
+    eData[P_TARGETID] = targetId;
     QueueEvent(AbEvents::E_PARTYREMOVED, eData);
 }
 
-void FwClient::OnPartyAdded(int64_t updateTick, uint32_t playerId)
+void FwClient::OnPartyAdded(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyAdded;
     eData[P_UPDATETICK] = updateTick;
-    eData[P_TARGETID] = playerId;
+    eData[P_SOURCEID] = sourceId;
+    eData[P_TARGETID] = targetId;
     QueueEvent(AbEvents::E_PARTYADDED, eData);
 }
 
-void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t playerId)
+void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyInviteRemoved;
     eData[P_UPDATETICK] = updateTick;
-    eData[P_TARGETID] = playerId;
+    eData[P_SOURCEID] = sourceId;
+    eData[P_TARGETID] = targetId;
     QueueEvent(AbEvents::E_PARTYINVITEREMOVED, eData);
 }

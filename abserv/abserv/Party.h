@@ -48,6 +48,10 @@ public:
     bool IsMember(std::shared_ptr<Player> player) const;
     bool IsInvited(std::shared_ptr<Player> player) const;
     bool IsLeader(const Player* const player);
+    std::shared_ptr<Player> GetLeader() const
+    {
+        return leader_.lock();
+    }
 
     uint32_t id_;
 };

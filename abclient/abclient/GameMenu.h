@@ -4,6 +4,7 @@ static const StringHash E_GAMEMENU_LOGOUT = StringHash("GameMemu Logout");
 static const StringHash E_GAMEMENU_SELECTCHAR = StringHash("GameMemu SelectChar");
 static const StringHash E_GAMEMENU_MAIL = StringHash("GameMemu Mail");
 static const StringHash E_GAMEMENU_PARTYWINDOW = StringHash("GameMemu PartyWindow");
+static const StringHash E_GAMEMENU_OPTIONSWINDOW = StringHash("GameMemu OptionsWindow");
 
 class GameMenu : public UIElement
 {

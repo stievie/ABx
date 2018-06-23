@@ -260,12 +260,14 @@
     <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="GameMenu.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LoginLevel.cpp" />
     <ClCompile Include="MailWindow.cpp" />
     <ClCompile Include="MapWindow.cpp" />
     <ClCompile Include="NuklearUI.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="OptionsWindow.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
     <ClCompile Include="PartyWindow.cpp" />
     <ClCompile Include="PingDot.cpp" />
@@ -294,6 +296,7 @@
     <ClInclude Include="FwClient.h" />
     <ClInclude Include="GameMenu.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HealthBar.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
     <ClInclude Include="MailWindow.h" />
@@ -301,6 +304,7 @@
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="NuklearUI.h" />
     <ClInclude Include="Options.h" />
+    <ClInclude Include="OptionsWindow.h" />
     <ClInclude Include="OutpostLevel.h" />
     <ClInclude Include="PartyWindow.h" />
     <ClInclude Include="PingDot.h" />

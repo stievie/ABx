@@ -1,5 +1,7 @@
 #pragma once
 
+class Actor;
+
 enum class PartyWindowMode
 {
     ModeOutpost,
@@ -13,6 +15,9 @@ private:
     PartyWindowMode mode_;
     SharedPtr<Window> window_;
     SharedPtr<LineEdit> addPlayerEdit_;
+    int memberCount_;
+    SharedPtr<UIElement> memberContainer_;
+    SharedPtr<UIElement> partyContainer_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
@@ -28,5 +33,6 @@ public:
     ~PartyWindow();
 
     void SetMode(PartyWindowMode mode);
+    void AddActor(SharedPtr<Actor> actor);
 };
 
