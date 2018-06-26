@@ -38,7 +38,4 @@
 #pragma warning( push )
 #pragma warning( disable : 4100 4305)
 #include <Urho3D/Urho3DAll.h>
-
 #pragma warning( pop )
-#include "NuklearUI.h"
-#define NK_MEMSET std::memset
