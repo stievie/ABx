@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,7 +123,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
@@ -144,7 +144,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
