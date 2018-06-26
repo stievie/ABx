@@ -1,4 +1,5 @@
--- https://github.com/lukaslaobeyer/libdrone/blob/master/premake5.lua
+-- Requirements
+--  * BOOST_DIR, BOOST_LIB_PATH environment variables
 
 workspace "absall"
   configurations { "Debug", "Release" }
@@ -7,7 +8,6 @@ workspace "absall"
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
   targetdir ("Bin")
   platforms { "x64" }
---  system "Windows"
   filter { "platforms:x64" }
     architecture "x64"
   filter "configurations:Debug"
@@ -26,8 +26,7 @@ workspace "absall"
     pchheader "stdafx.h"
     filter "action:vs*"
       pchsource "abscommon/abscommon/stdafx.cpp"
-    filter "configurations:Debug"
-      targetname "abscommon_d"
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
       
   project "abdata"
     kind "ConsoleApp"
