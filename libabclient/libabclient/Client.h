@@ -7,6 +7,7 @@
 #include "Structs.h"
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
+#include <memory>
 
 namespace Client {
 

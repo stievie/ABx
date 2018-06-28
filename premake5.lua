@@ -107,7 +107,7 @@ workspace "absall"
 workspace "abclient"
   configurations { "Debug", "Release" }
   location "build"
-  includedirs { ".", "Include" }
+  includedirs { "Include" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}" }
   platforms { "x64" }
   filter { "platforms:x64" }
@@ -128,12 +128,12 @@ workspace "abclient"
     pchheader "stdafx.h"
     filter "action:vs*"
       pchsource "libabclient/libabclient/stdafx.cpp"
-    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
 
   project "abclient"
     kind "WindowedApp"
-    includedirs { "libabclient/libabclient" }
-    links { "libabclient" }
+    includedirs { "libabclient/libabclient", "Include/Box2D", "Include/Bullet", "Include/Urho3D/ThirdParty", "Include/Urho3D/ThirdParty/Bullet", "Include/Urho3D/ThirdParty/Lua" }
+    defines { "URHO3D_MINIDUMPS", "URHO3D_FILEWATCHER", "URHO3D_PROFILING", "URHO3D_LOGGING", "URHO3D_THREADING", "URHO3D_ANGELSCRIPT", "URHO3D_LUA", "TOLUA_RELEASE", "URHO3D_NAVIGATION", "URHO3D_NETWORK", "URHO3D_PHYSICS", "URHO3D_URHO2D" }
+    links { "libabclient", "dbghelp", "d3dcompiler", "d3d11", "dxgi", "dxguid", "winmm", "imm32", "version" }
     dependson { "libabclient" }
     language "C++"
     files { "abclient/abclient/*.cpp", "abclient/abclient/*.h" }

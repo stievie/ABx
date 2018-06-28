@@ -13,6 +13,7 @@ bin
 *.cso
 *.ini
 *.key
+*.old
 
 # Precompiled header files
 *.gch/
