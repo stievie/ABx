@@ -130,7 +130,7 @@ workspace "absall"
 -- Client ----------------------------------------------------------------------
 --------------------------------------------------------------------------------
 workspace "abclient"
-  configurations { "Debug", "Release" }
+  configurations { "Debug", "Release", "RelWithSymbols" }
   location "build"
   includedirs { "Include" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}" }
@@ -140,7 +140,10 @@ workspace "abclient"
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
     symbols "On"
-  filter "configurations:Release"
+  filter "configurations:RelWithSymbols"
+    symbols "On"
+    libdirs { "Lib/%{cfg.platform}/Release" }
+  filter "configurations:Release or configurations:RelWithSymbols"
     defines { "NDEBUG" }
     flags { "LinkTimeOptimization" }
     optimize "Full"
