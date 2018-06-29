@@ -15,6 +15,7 @@ workspace "absall"
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
   targetdir ("Bin")
   platforms { "x64" }
+  warnings "Extra"
   filter { "platforms:x64" }
     architecture "x64"
   filter "configurations:Debug"
@@ -29,6 +30,10 @@ workspace "absall"
     kind "StaticLib"
     language "C++"
     files { "abscommon/abscommon/*.cpp", "abscommon/abscommon/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -39,6 +44,10 @@ workspace "absall"
     kind "ConsoleApp"
     language "C++"
     files { "abdata/abdata/*.cpp", "abdata/abdata/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
     includedirs { "Include/pgsql", "Include/mysql" }
     links { "abscommon" }
     dependson { "abscommon" }
@@ -47,12 +56,16 @@ workspace "absall"
     filter "action:vs*"
       pchsource "abdata/abdata/stdafx.cpp"
     filter "configurations:Debug"
-      targetname "abdata_d"
+      targetsuffix "_d"
     
   project "abfile"
     kind "ConsoleApp"
     language "C++"
     files { "abfile/abfile/*.cpp", "abfile/abfile/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
     links { "abscommon" }
     dependson { "abscommon" }
     defines { "_CONSOLE" }
@@ -60,12 +73,16 @@ workspace "absall"
     filter "action:vs*"
       pchsource "abfile/abfile/stdafx.cpp"
     filter "configurations:Debug"
-      targetname "abfile_d"
+      targetsuffix "_d"
 
   project "ablogin"
     kind "ConsoleApp"
     language "C++"
     files { "ablogin/ablogin/*.cpp", "ablogin/ablogin/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
     links { "abscommon" }
     dependson { "abscommon" }
     defines { "_CONSOLE" }
@@ -73,12 +90,16 @@ workspace "absall"
     filter "action:vs*"
       pchsource "ablogin/ablogin/stdafx.cpp"
     filter "configurations:Debug"
-      targetname "ablogin_d"
+      targetsuffix "_d"
 
   project "abmsgs"
     kind "ConsoleApp"
     language "C++"
     files { "abmsgs/abmsgs/*.cpp", "abmsgs/abmsgs/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
     links { "abscommon" }
     dependson { "abscommon" }
     defines { "_CONSOLE" }
@@ -86,12 +107,16 @@ workspace "absall"
     filter "action:vs*"
       pchsource "abmsgs/abmsgs/stdafx.cpp"
     filter "configurations:Debug"
-      targetname "abmsgs_d"
+      targetsuffix "_d"
 
   project "abserv"
     kind "ConsoleApp"
     language "C++"
     files { "abserv/abserv/*.cpp", "abserv/abserv/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
     links { "abscommon" }
     dependson { "abscommon" }
     defines { "_CONSOLE" }
@@ -99,7 +124,7 @@ workspace "absall"
     filter "action:vs*"
       pchsource "abserv/abserv/stdafx.cpp"
     filter "configurations:Debug"
-      targetname "abserv_d"
+      targetsuffix "_d"
 
 --------------------------------------------------------------------------------
 -- Client ----------------------------------------------------------------------
@@ -123,8 +148,14 @@ workspace "abclient"
   project "libabclient"
     kind "StaticLib"
     language "C++"
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     defines { "ASIO_STANDALONE" }
     files { "libabclient/libabclient/*.cpp", "libabclient/libabclient/*.h" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+    }
+    warnings "Extra"
     pchheader "stdafx.h"
     filter "action:vs*"
       pchsource "libabclient/libabclient/stdafx.cpp"
@@ -136,14 +167,19 @@ workspace "abclient"
     links { "libabclient", "dbghelp", "d3dcompiler", "d3d11", "dxgi", "dxguid", "winmm", "imm32", "version" }
     dependson { "libabclient" }
     language "C++"
-    files { "abclient/abclient/*.cpp", "abclient/abclient/*.h" }
+    files { "abclient/abclient/*.cpp", "abclient/abclient/*.h", "abclient/abclient/*.rc", "abclient/abclient/*.ico" }
+    vpaths {
+      ["Header Files"] = {"**.h"},
+      ["Source Files"] = {"**.cpp"},
+      ["Resource Files"] = {"**.rc", "**.rc2", "**.manifest", "**.bmp", "**.cur", "**.ico"},
+    }
     pchheader "stdafx.h"
+    targetname "fw"
     filter "action:vs*"
       pchsource "abclient/abclient/stdafx.cpp"
     targetdir "abclient/bin"
     filter "configurations:Debug"
-      targetname "fw_d"
+      targetsuffix "_d"
       links { "Urho3D_d" }
     filter "configurations:Release"
-      targetname "fw"
       links { "Urho3D" }

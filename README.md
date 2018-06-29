@@ -130,6 +130,13 @@ skip-name-resolve
 3. Create a character
 4. Enter world
 
+## Build
+
+Use premake5 to generate solutions for the server and the client.
+
+1. Server: Open `build/absall.sln` and compile.
+2. Client: Open `build/abclient.sln` and compile.
+
 ## Credits
 
 See `CREDITS.md`
