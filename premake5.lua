@@ -29,10 +29,17 @@ workspace "absall"
   project "abscommon"
     kind "StaticLib"
     language "C++"
-    files { "abscommon/abscommon/*.cpp", "abscommon/abscommon/*.h" }
+    files { 
+      "abscommon/abscommon/*.cpp",
+      "abscommon/abscommon/*.cxx",
+      "abscommon/abscommon/*.c",
+      "abscommon/abscommon/*.h",
+      "abscommon/abscommon/*.hpp",
+      "abscommon/abscommon/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
@@ -43,10 +50,17 @@ workspace "absall"
   project "abdata"
     kind "ConsoleApp"
     language "C++"
-    files { "abdata/abdata/*.cpp", "abdata/abdata/*.h" }
+    files { 
+      "abdata/abdata/*.cpp",
+      "abdata/abdata/*.c",
+      "abdata/abdata/*.cxx",
+      "abdata/abdata/*.h",
+      "abdata/abdata/*.hpp",
+      "abdata/abdata/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     includedirs { "Include/pgsql", "Include/mysql" }
     links { "abscommon" }
@@ -61,10 +75,17 @@ workspace "absall"
   project "abfile"
     kind "ConsoleApp"
     language "C++"
-    files { "abfile/abfile/*.cpp", "abfile/abfile/*.h" }
+    files { 
+      "abfile/abfile/*.cpp",
+      "abfile/abfile/*.c",
+      "abfile/abfile/*.cxx",
+      "abfile/abfile/*.h",
+      "abfile/abfile/*.hpp",
+      "abfile/abfile/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     links { "abscommon" }
     dependson { "abscommon" }
@@ -78,10 +99,17 @@ workspace "absall"
   project "ablogin"
     kind "ConsoleApp"
     language "C++"
-    files { "ablogin/ablogin/*.cpp", "ablogin/ablogin/*.h" }
+    files { 
+      "ablogin/ablogin/*.cpp",
+      "ablogin/ablogin/*.c",
+      "ablogin/ablogin/*.cxx",
+      "ablogin/ablogin/*.h",
+      "ablogin/ablogin/*.hpp",
+      "ablogin/ablogin/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     links { "abscommon" }
     dependson { "abscommon" }
@@ -95,10 +123,17 @@ workspace "absall"
   project "abmsgs"
     kind "ConsoleApp"
     language "C++"
-    files { "abmsgs/abmsgs/*.cpp", "abmsgs/abmsgs/*.h" }
+    files { 
+      "abmsgs/abmsgs/*.cpp",
+      "abmsgs/abmsgs/*.c",
+      "abmsgs/abmsgs/*.cxx",
+      "abmsgs/abmsgs/*.h",
+      "abmsgs/abmsgs/*.hpp",
+      "abmsgs/abmsgs/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     links { "abscommon" }
     dependson { "abscommon" }
@@ -112,10 +147,17 @@ workspace "absall"
   project "abserv"
     kind "ConsoleApp"
     language "C++"
-    files { "abserv/abserv/*.cpp", "abserv/abserv/*.h" }
+    files { 
+      "abserv/abserv/*.cpp",
+      "abserv/abserv/*.c",
+      "abserv/abserv/*.cxx",
+      "abserv/abserv/*.h",
+      "abserv/abserv/*.hpp",
+      "abserv/abserv/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     links { "abscommon" }
     dependson { "abscommon" }
@@ -153,10 +195,17 @@ workspace "abclient"
     language "C++"
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     defines { "ASIO_STANDALONE" }
-    files { "libabclient/libabclient/*.cpp", "libabclient/libabclient/*.h" }
+    files { 
+      "libabclient/libabclient/*.cpp",
+      "libabclient/libabclient/*.c",
+      "libabclient/libabclient/*.cxx",
+      "libabclient/libabclient/*.h",
+      "libabclient/libabclient/*.hpp",
+      "libabclient/libabclient/*.hxx",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     warnings "Extra"
     pchheader "stdafx.h"
@@ -170,10 +219,19 @@ workspace "abclient"
     links { "libabclient", "dbghelp", "d3dcompiler", "d3d11", "dxgi", "dxguid", "winmm", "imm32", "version" }
     dependson { "libabclient" }
     language "C++"
-    files { "abclient/abclient/*.cpp", "abclient/abclient/*.h", "abclient/abclient/*.rc", "abclient/abclient/*.ico" }
+    files { 
+      "abclient/abclient/*.cpp",
+      "abclient/abclient/*.c",
+      "abclient/abclient/*.cxx",
+      "abclient/abclient/*.h",
+      "abclient/abclient/*.hpp",
+      "abclient/abclient/*.hxx",
+      "abclient/abclient/*.rc",
+      "abclient/abclient/*.ico",
+    }
     vpaths {
-      ["Header Files"] = {"**.h"},
-      ["Source Files"] = {"**.cpp"},
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
       ["Resource Files"] = {"**.rc", "**.rc2", "**.manifest", "**.bmp", "**.cur", "**.ico"},
     }
     pchheader "stdafx.h"
@@ -184,5 +242,7 @@ workspace "abclient"
     filter "configurations:Debug"
       targetsuffix "_d"
       links { "Urho3D_d" }
-    filter "configurations:Release"
+    filter "configurations:RelWithSymbols"
+      targetsuffix "_r"
+    filter "configurations:Release or configurations:RelWithSymbols"
       links { "Urho3D" }
