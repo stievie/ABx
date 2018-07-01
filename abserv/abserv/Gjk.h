@@ -313,6 +313,12 @@ public:
     Gjk() = default;
     ~Gjk() = default;
 
+    static inline bool StaticIntersects(const Shape& shape1, const Shape& shape2)
+    {
+        Gjk gjk;
+        return gjk.Intersects(shape1, shape2);
+    }
+
     bool Intersects(const Shape& shape1, const Shape& shape2)
     {
         v = Vector3::Zero;
@@ -333,7 +339,7 @@ public:
 
         for (unsigned i = 0; i < MAX_ITERATIONS; ++i)
         {
-            Vector3 a = Support(shape1, shape2, v);
+            const Vector3 a = Support(shape1, shape2, v);
             if (a.DotProduct(v) < 0.0f)
                 // No intersection
                 return false;
@@ -346,8 +352,8 @@ public:
 
     Vector3 Support(const Shape& shape1, const Shape& shape2, const Vector3& _v) const
     {
-        Vector3 p1 = shape1.GetFarsetPointInDirection(_v);
-        Vector3 p2 = shape2.GetFarsetPointInDirection(-_v);//negate v
+        const Vector3 p1 = shape1.GetFarsetPointInDirection(_v);
+        const Vector3 p2 = shape2.GetFarsetPointInDirection(-_v);  //negate v
         return p1 - p2;
     }
 };

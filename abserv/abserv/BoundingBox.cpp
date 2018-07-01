@@ -4,6 +4,7 @@
 #include "ConvexHull.h"
 #include "Sphere.h"
 #include "Shape.h"
+#include "Gjk.h"
 
 namespace Math {
 
@@ -59,8 +60,8 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
         // No transformation needed when not defined
         return *this;
 
-    Vector3 newCenter = transform * Center();
-    Vector3 oldEdge = Size() * 0.5f;
+    const Vector3 newCenter = transform * Center();
+    const Vector3 oldEdge = Size() * 0.5f;
 
     Vector3 newEdge = Vector3(
         std::fabs(transform.m_[Matrix4::Index00]) * oldEdge.x_ +
@@ -82,14 +83,14 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
 Shape BoundingBox::GetShape() const
 {
     Shape s;
-    Vector3 boundPoint1 = min_;
-    Vector3 boundPoint2 = max_;
-    Vector3 boundPoint3 = Vector3(boundPoint1.x_, boundPoint1.y_, boundPoint2.z_);
-    Vector3 boundPoint4 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint1.z_);
-    Vector3 boundPoint5 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint1.z_);
-    Vector3 boundPoint6 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint2.z_);
-    Vector3 boundPoint7 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint2.z_);
-    Vector3 boundPoint8 = Vector3(boundPoint2.x_, boundPoint2.y_, boundPoint1.z_);
+    const Vector3& boundPoint1 = min_;
+    const Vector3& boundPoint2 = max_;
+    const Vector3 boundPoint3 = Vector3(boundPoint1.x_, boundPoint1.y_, boundPoint2.z_);
+    const Vector3 boundPoint4 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint1.z_);
+    const Vector3 boundPoint5 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint1.z_);
+    const Vector3 boundPoint6 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint2.z_);
+    const Vector3 boundPoint7 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint2.z_);
+    const Vector3 boundPoint8 = Vector3(boundPoint2.x_, boundPoint2.y_, boundPoint1.z_);
 
     s.vertexData_.push_back(boundPoint1);
     s.vertexData_.push_back(boundPoint2);
@@ -121,6 +122,8 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 
 bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 {
+//    return IsInside(b2) != OUTSIDE;
+
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
 
@@ -156,14 +159,14 @@ bool BoundingBox::Collides(const Sphere& b2) const
     return IsInside(b2) != OUTSIDE;
 }
 
-bool BoundingBox::Collides(const Sphere& b2, Vector3& move) const
+bool BoundingBox::Collides(const Sphere& b2, Vector3&) const
 {
     return IsInside(b2) != OUTSIDE;
 }
 
-bool BoundingBox::Collides(const ConvexHull& b2, Vector3& move) const
+bool BoundingBox::Collides(const ConvexHull& b2, Vector3&) const
 {
-    return false;
+    return IsInside(b2) != OUTSIDE;
 }
 
 bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
@@ -179,13 +182,20 @@ bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
 
 Intersection BoundingBox::IsInside(const HeightMap& shape) const
 {
-    // TODO
+    const float y = shape.GetHeight(min_);
+    if (y > min_.y_)
+    {
+        return INSIDE;
+    }
     return OUTSIDE;
 }
 
 Intersection BoundingBox::IsInside(const ConvexHull& shape) const
 {
-    // TODO
+    const Shape s = GetShape();
+
+    if (Gjk::StaticIntersects(s, shape))
+        return INSIDE;
     return OUTSIDE;
 }
 

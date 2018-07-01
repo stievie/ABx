@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "Gjk.h"
 #include "Sphere.h"
+#include "HeightMap.h"
 
 namespace Math {
 
@@ -28,36 +29,40 @@ ConvexHull ConvexHull::Transformed(const Matrix4& transform) const
     return result;
 }
 
-bool ConvexHull::Collides(const Sphere& b2, Vector3& move) const
+bool ConvexHull::Collides(const Sphere& b2, Vector3&) const
 {
     const Shape s = b2.GetShape();
 
-    Gjk gjk;
-    if (gjk.Intersects(*this, s))
+    if (Gjk::StaticIntersects(*this, s))
         return true;
     return false;
 }
 
-bool ConvexHull::Collides(const BoundingBox& b2, Vector3& move) const
+bool ConvexHull::Collides(const BoundingBox& b2, Vector3&) const
 {
     const Shape s = b2.GetShape();
 
-    Gjk gjk;
-    if (gjk.Intersects(*this, s))
+    if (Gjk::StaticIntersects(*this, s))
         return true;
     return false;
 }
 
-bool ConvexHull::Collides(const ConvexHull& b2, Vector3& move) const
+bool ConvexHull::Collides(const ConvexHull& b2, Vector3&) const
 {
-    Gjk gjk;
-    if (gjk.Intersects(*this, b2))
+    if (Gjk::StaticIntersects(*this, b2))
         return true;
     return false;
 }
 
 bool ConvexHull::Collides(const HeightMap& b2, Vector3& move) const
 {
+    const Vector3 pBottom = GetFarsetPointInDirection(Math::Vector3::Down);
+    const float y = b2.GetHeight(pBottom);
+    if (pBottom.y_ < y)
+    {
+        move.y_ = pBottom.y_ - y;
+        return true;
+    }
     return false;
 }
 

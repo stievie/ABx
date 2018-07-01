@@ -101,9 +101,12 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                     const pugi::xml_attribute& name_attr = attr.attribute("name");
                     const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
+                    const size_t value_hash = Utils::StringHash(value_attr.as_string());
                     switch (name_hash)
                     {
                     case IO::Map::AttrShapeType:
+                        // TODO: Take ShapeType, size of shape into account.
+                        // ATM we have only a fixed size BB
                         if (object)
                         {
                             object->SetCollisionShape(
