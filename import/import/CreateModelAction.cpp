@@ -84,7 +84,8 @@ void CreateModelAction::Execute()
             }
             else
                 // or we just don't draw it.
-                std::cout << "Invalid/unsupported number of indices, expected 3 but got %d" << ai_face->mNumIndices;
+                std::cout << "Invalid/unsupported number of indices, expected 3 but got " <<
+                    static_cast<int>(ai_face->mNumIndices) << std::endl;
         }
 
     }

@@ -68,6 +68,15 @@ public:
     }
 
     bool IsDefined() const { return min_.x_ != INFINITY; }
+    std::string ToString() const
+    {
+        if (!IsDefined())
+            return "Undefined";
+        std::stringstream ss;
+        ss << "min: " << min_.x_ << "," << min_.y_ << "," << min_.z_ << " ";
+        ss << "max: " << max_.x_ << "," << max_.y_ << "," << max_.z_;
+        return ss.str();
+    }
 
     /// AABB
     BoundingBox Transformed(const Matrix4& transform) const;

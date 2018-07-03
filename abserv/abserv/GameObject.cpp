@@ -26,6 +26,7 @@ GameObject::GameObject() :
     sortValue_(0.0f),
     occludee_(true),
     occluder_(false),
+    name_("Unknown"),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
     id_ = GetNewId();
@@ -48,27 +49,71 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = (BBoxShape*)other->GetCollisionShape();
         const Math::BoundingBox bbox = shape->shape_.Transformed(other->transformation_.GetMatrix());
+#if defined(DEBUG_COLLISION)
+        bool ret = false;
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
+        if (ret)
+        {
+            LOG_INFO << "ShapeTypeBoundingBox: this(" << GetName() <<
+                ") " << transformation_.position_.ToString() << " " <<
+                "collides with that(" << other->GetName() << ") " <<
+                bbox.ToString() <<
+                std::endl;
+        }
+        return ret;
+#else
         return collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
+#endif
     }
     case Math::ShapeTypeSphere:
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = (SphereShape*)other->GetCollisionShape();
         const Math::Sphere sphere = shape->shape_.Transformed(other->transformation_.GetMatrix());
+#if defined(DEBUG_COLLISION)
+        bool ret = false;
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
+        if (ret)
+        {
+            LOG_INFO << "ShapeTypeSphere: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
+        }
+        return ret;
+#else
         return collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
+#endif
     }
     case Math::ShapeTypeConvexHull:
     {
         using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
         HullShape* shape = (HullShape*)other->GetCollisionShape();
         const Math::ConvexHull hull = shape->shape_.Transformed(other->transformation_.GetMatrix());
+#if defined(DEBUG_COLLISION)
+        bool ret = false;
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
+        if (ret)
+        {
+            LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
+        }
+        return ret;
+#else
         return collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
+#endif
     }
     case Math::ShapeTypeHeightMap:
     {
         using HeightShape = Math::CollisionShapeImpl<Math::HeightMap>;
         HeightShape* shape = (HeightShape*)other->GetCollisionShape();
+#if defined(DEBUG_COLLISION)
+        bool ret = false;
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), shape->shape_, move);
+        if (ret)
+        {
+            LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
+        }
+        return ret;
+#else
         return collisionShape_->Collides(transformation_.GetMatrix(), shape->shape_, move);
+#endif
     }
     }
     return false;

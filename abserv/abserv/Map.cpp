@@ -31,6 +31,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
         Math::Vector3 pos;
         Math::Vector3 scale;
         Math::Quaternion rot;
+        std::string name;
         bool isSpawnPoint = false;
         for (const auto& attr : node.children("attribute"))
         {
@@ -50,6 +51,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 break;
             case IO::Map::AttrName:
                 isSpawnPoint = strcmp(value_attr.as_string(), "SpawnPoint") == 0;
+                name = value_attr.as_string();
                 break;
             default:
                 continue;
@@ -74,6 +76,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             case IO::Map::AttrStaticModel:
             {
                 object = std::make_shared<GameObject>();
+                object->name_ = name;
                 object->collisionMask_ = 0;
                 object->transformation_ = Math::Transformation(pos, scale, rot);
                 {

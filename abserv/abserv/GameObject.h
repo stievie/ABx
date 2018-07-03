@@ -104,10 +104,11 @@ public:
     /// Move into another octree octant.
     void SetOctant(Math::Octant* octant) { octant_ = octant; }
 
-    virtual std::string GetName() const { return "Unknown"; }
+    virtual std::string GetName() const { return name_; }
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;
+    std::string name_;
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_;
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.

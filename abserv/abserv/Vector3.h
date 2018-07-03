@@ -103,6 +103,12 @@ public:
     {
         return *this * (1.0f - i) + to * i;
     }
+    std::string ToString() const
+    {
+        std::stringstream ss;
+        ss << x_ << "," << y_ << "," << z_;
+        return ss.str();
+    }
 
     /// Return integer data.
     const float* Data() const { return &x_; }

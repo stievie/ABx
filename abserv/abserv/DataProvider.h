@@ -113,14 +113,14 @@ public:
             IOAssetImpl<T>* imp = static_cast<IOAssetImpl<T>*>(GetImporter<T>());
             if (!imp)
             {
-                LOG_WARNING << "No importer found for " << name;
+                LOG_WARNING << "No importer found for " << name << std::endl;
                 return false;
             }
             asset->fileName_ = file;
             return imp->Import(asset, file);
         }
         else
-            LOG_WARNING << "File not found " << name;
+            LOG_WARNING << "File not found " << name << std::endl;
         return false;
     }
 

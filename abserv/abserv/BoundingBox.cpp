@@ -122,8 +122,6 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 
 bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 {
-//    return IsInside(b2) != OUTSIDE;
-
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
 
