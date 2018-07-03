@@ -188,6 +188,7 @@
     <ClInclude Include="IOGuild.h" />
     <ClInclude Include="IOMail.h" />
     <ClInclude Include="IOMap.h" />
+    <ClInclude Include="IOModel.h" />
     <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="IOTerrain.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="MessageDispatcher.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="Npc.h" />
     <ClInclude Include="Octree.h" />
@@ -251,6 +253,7 @@
     <ClCompile Include="IOGuild.cpp" />
     <ClCompile Include="IOMail.cpp" />
     <ClCompile Include="IOMap.cpp" />
+    <ClCompile Include="IOModel.cpp" />
     <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="IOTerrain.cpp" />
@@ -260,6 +263,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="MessageDispatcher.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="Npc.cpp" />
     <ClCompile Include="Octree.cpp" />

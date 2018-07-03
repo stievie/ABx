@@ -7,7 +7,8 @@ private:
     {
         Unknown,
         CreateHull,
-        CreateHeightMap
+        CreateHeightMap,
+        CreateModel,
     };
     Action action_ = Unknown;
     bool ParseCommandLine();

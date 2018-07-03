@@ -160,6 +160,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="CreateHeightMapAction.h" />
     <ClInclude Include="CreateHullAction.h" />
+    <ClInclude Include="CreateModelAction.h" />
     <ClInclude Include="Hull.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="ObjWriter.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CreateHeightMapAction.cpp" />
     <ClCompile Include="CreateHullAction.cpp" />
+    <ClCompile Include="CreateModelAction.cpp" />
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjWriter.cpp" />

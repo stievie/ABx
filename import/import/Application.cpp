@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "CreateHullAction.h"
 #include "CreateHeightMapAction.h"
+#include "CreateModelAction.h"
 
 bool Application::ParseCommandLine()
 {
@@ -15,6 +16,10 @@ bool Application::ParseCommandLine()
         else if (a.compare("-hm") == 0)
         {
             action_ = CreateHeightMap;
+        }
+        else if (a.compare("-model") == 0)
+        {
+            action_ = CreateModel;
         }
         else if (a.compare("-h") == 0 || a.compare("-?") == 0)
         {
@@ -33,6 +38,7 @@ void Application::ShowHelp()
     std::cout << "  h, ?: Show help" << std::endl;
     std::cout << "  hull: Create hull shape from model" << std::endl;
     std::cout << "  hm: Create height (for terrain) map from image" << std::endl;
+    std::cout << "  model: Create model" << std::endl;
     std::cout << "  scene: Import scene" << std::endl;
 }
 
@@ -69,5 +75,13 @@ void Application::Run()
             action.Execute();
         }
         break;
+    case CreateModel:
+        for (const auto& file : files_)
+        {
+            CreateModelAction action(file);
+            action.Execute();
+        }
+        break;
+
     }
 }

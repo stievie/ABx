@@ -18,6 +18,10 @@ public:
         min_(Vector3(INFINITY, INFINITY, INFINITY)),
         max_(Vector3(-INFINITY, -INFINITY, -INFINITY))
     { }
+    BoundingBox(const BoundingBox& other) :
+        min_(other.min_),
+        max_(other.max_)
+    { }
     BoundingBox(const Vector3& min, const Vector3& max) :
         min_(min),
         max_(max)

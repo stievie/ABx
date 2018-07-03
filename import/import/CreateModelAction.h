@@ -2,24 +2,22 @@
 
 #include <assimp/vector3.h>
 
-class CreateHullAction
+class CreateModelAction
 {
 private:
     std::string file_;
-    unsigned vertexCount_;
-    unsigned indexCount_;
+    uint32_t vertexCount_;
+    uint32_t indexCount_;
     std::vector<aiVector3D> vertexData_;
     std::vector<unsigned> indexData_;
-    void BuildHull(const std::vector<aiVector3D>& vertices);
     void Save();
 public:
-    CreateHullAction(const std::string& file) :
+    CreateModelAction(const std::string& file) :
         vertexCount_(0),
         indexCount_(0),
         file_(file)
-    {}
-    ~CreateHullAction() = default;
-
+    { }
+    ~CreateModelAction() = default;
     void Execute();
 };
 

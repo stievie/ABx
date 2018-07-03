@@ -22,6 +22,8 @@ std::string NormalizeFilename(const std::string& filename)
     std::string normal_name(filename);
     ReplaceSubstring<char>(normal_name, "\\", "/");
     while (ReplaceSubstring<char>(normal_name, "//", "/"));
+    if (normal_name.size() && normal_name[0] != '/')
+        normal_name = "/" + normal_name;
     return normal_name;
 }
 

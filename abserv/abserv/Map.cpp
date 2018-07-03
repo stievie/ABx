@@ -7,6 +7,8 @@
 #include "StringHash.h"
 #include "Profiler.h"
 #include "IOMap.h"
+#include "Model.h"
+#include "StringUtils.h"
 
 namespace Game {
 
@@ -60,6 +62,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             return;
         }
 
+        std::shared_ptr<Model> model;
         std::shared_ptr<GameObject> object;
         for (const auto& comp : node.children("component"))
         {
@@ -84,6 +87,14 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                     const pugi::xml_attribute& value_attr = attr.attribute("value");
                     switch (name_hash)
                     {
+                    case IO::Map::AttrModel:
+                    {
+                        std::string modelValue = value_attr.as_string();
+                        std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
+                        if (modelFile.size() == 2)
+                            model = IO::DataProvider::Instance.GetAsset<Model>(modelFile[1]);
+                        break;
+                    }
                     case IO::Map::AttrIsOccluder:
                         object->occluder_ = value_attr.as_bool();
                         break;
@@ -96,27 +107,14 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             }
             case IO::Map::AttrCollisionShape:
             {
-                for (const auto& attr : comp.children())
+                if (object)
                 {
-                    const pugi::xml_attribute& name_attr = attr.attribute("name");
-                    const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
-                    const pugi::xml_attribute& value_attr = attr.attribute("value");
-                    const size_t value_hash = Utils::StringHash(value_attr.as_string());
-                    switch (name_hash)
+                    if (model)
                     {
-                    case IO::Map::AttrShapeType:
-                        // TODO: Take ShapeType, size of shape into account.
-                        // ATM we have only a fixed size BB
-                        if (object)
-                        {
-                            object->SetCollisionShape(
-                                std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                                    Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
-                            );
-                        }
-                        break;
-                    case IO::Map::AttrModel:
-                        break;
+                        object->SetCollisionShape(
+                            std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                                Math::ShapeTypeBoundingBox, model->GetBoundingBox())
+                        );
                     }
                 }
                 if (object && !object->GetCollisionShape())

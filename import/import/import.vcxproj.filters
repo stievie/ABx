@@ -42,6 +42,9 @@
     <ClInclude Include="MathUtils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CreateModelAction.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +66,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ObjWriter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateModelAction.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

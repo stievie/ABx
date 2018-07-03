@@ -6,6 +6,8 @@
 #include "Logger.h"
 #include "IOTerrain.h"
 #include "Terrain.h"
+#include "Model.h"
+#include "IOModel.h"
 
 #include "DebugNew.h"
 
@@ -18,6 +20,7 @@ DataProvider::DataProvider()
     // Add Importer
     IO::DataProvider::Instance.AddImporter<Game::NavigationMesh, IO::IONavMesh>();
     IO::DataProvider::Instance.AddImporter<Game::Terrain, IO::IOTerrain>();
+    IO::DataProvider::Instance.AddImporter<Game::Model, IO::IOModel>();
 }
 
 std::string DataProvider::GetDataFile(const std::string& name) const
