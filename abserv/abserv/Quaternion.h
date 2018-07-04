@@ -100,6 +100,13 @@ public:
     float LengthSqr() const;
     float Length() const;
 
+    std::string ToString() const
+    {
+        std::stringstream ss;
+        ss << x_ << " " << y_ << " " << z_ << " " << w_;
+        return ss.str();
+    }
+
     float x_;
     float y_;
     float z_;

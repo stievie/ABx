@@ -54,7 +54,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
         if (ret)
         {
-            LOG_INFO << "ShapeTypeBoundingBox: this(" << GetName() <<
+            LOG_DEBUG << "ShapeTypeBoundingBox: this(" << GetName() <<
                 ") " << transformation_.position_.ToString() << " " <<
                 "collides with that(" << other->GetName() << ") " <<
                 bbox.ToString() <<

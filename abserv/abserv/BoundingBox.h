@@ -73,8 +73,8 @@ public:
         if (!IsDefined())
             return "Undefined";
         std::stringstream ss;
-        ss << "min: " << min_.x_ << "," << min_.y_ << "," << min_.z_ << " ";
-        ss << "max: " << max_.x_ << "," << max_.y_ << "," << max_.z_;
+        ss << "min: " << min_.ToString() << " ";
+        ss << "max: " << max_.ToString();
         return ss.str();
     }
 

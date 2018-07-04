@@ -106,7 +106,7 @@ public:
     std::string ToString() const
     {
         std::stringstream ss;
-        ss << x_ << "," << y_ << "," << z_;
+        ss << x_ << " " << y_ << " " << z_;
         return ss.str();
     }
 
