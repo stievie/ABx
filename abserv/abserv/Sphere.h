@@ -81,7 +81,7 @@ public:
     }
 
     /// Return true if this sphere is defined via a previous call to Define() or Merge().
-    bool Defined() const
+    bool IsDefined() const
     {
         return radius_ >= 0.0f;
     }

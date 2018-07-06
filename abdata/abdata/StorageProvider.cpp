@@ -60,7 +60,7 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
 
 bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
     auto _data = cache_.find(keyString);
 
     if (_data != cache_.end())
@@ -107,7 +107,7 @@ bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<st
         // Does not exist
         return false;
 
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
     auto _data = cache_.find(keyString);
     // The only possibility to update a not yet created entity is when its in cache and not flushed.
     bool isCreated = true;
@@ -133,7 +133,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
 
     auto key = EncodeKey(table, id);
 
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
     // we check if its already in cache
     if (cache_.find(keyString) == cache_.end())
     {
@@ -164,7 +164,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
     std::shared_ptr<std::vector<uint8_t>> data)
 {
 //    AB_PROFILE;
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
 
     auto _data = cache_.find(keyString);
     if (_data != cache_.end())
@@ -221,7 +221,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
     auto newKey = EncodeKey(table, _id);
-    std::string newKeyString(newKey.begin(), newKey.end());
+    const std::string newKeyString(newKey.begin(), newKey.end());
     auto _newdata = cache_.find(newKeyString);
     if (_newdata == cache_.end())
     {
@@ -243,7 +243,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
 bool StorageProvider::Delete(const std::vector<uint8_t>& key)
 {
     // You can only delete what you've loaded before
-    std::string dataToRemove(key.begin(), key.end());
+    const std::string dataToRemove(key.begin(), key.end());
     auto data = cache_.find(dataToRemove);
     if (data == cache_.end())
     {
@@ -264,7 +264,7 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
 {
     // Dispatcher thread
 
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
 
     auto _data = cache_.find(keyString);
     if (_data == cache_.end())
@@ -286,7 +286,7 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
         _id = GetUuid(*data);
     auto newKey = EncodeKey(table, _id);
 
-    std::string newKeyString(newKey.begin(), newKey.end());
+    const std::string newKeyString(newKey.begin(), newKey.end());
     auto _newdata = cache_.find(newKeyString);
     if (_newdata == cache_.end())
     {
@@ -296,7 +296,7 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
 
 bool StorageProvider::Preload(const std::vector<uint8_t>& key)
 {
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
 
     auto _data = cache_.find(keyString);
     if (_data == cache_.end())
@@ -311,7 +311,7 @@ bool StorageProvider::Preload(const std::vector<uint8_t>& key)
 
 bool StorageProvider::Exists(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
     auto _data = cache_.find(keyString);
 
     if (_data != cache_.end())
@@ -337,6 +337,7 @@ void StorageProvider::CleanCache()
     // Delete deleted records from DB and remove them from cache.
     if (cache_.size() == 0)
         return;
+    AB_PROFILE;
     size_t oldSize = currentSize_;
     int removed = 0;
     auto i = cache_.begin();
@@ -349,7 +350,7 @@ void StorageProvider::CleanCache()
         if ((*i).second.first.created)
         {
             // No need to delete from DB when it's not in DB
-            std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
+            const std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
             error = FlushData(key);
         }
         if (!error)
@@ -381,6 +382,7 @@ void StorageProvider::CleanCache()
 
 void StorageProvider::CleanTask()
 {
+    AB_PROFILE;
     CleanCache();
     DB::DBGuildMembers::DeleteExpired(this);
     if (running_)
@@ -395,6 +397,7 @@ void StorageProvider::FlushCache()
 {
     if (cache_.size() == 0)
         return;
+    AB_PROFILE;
     int written = 0;
     auto i = cache_.begin();
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
@@ -405,7 +408,7 @@ void StorageProvider::FlushCache()
     })) != cache_.end())
     {
         ++written;
-        std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
+        const std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
         if (!FlushData(key))
             // Error, break for now and try  the next time.
             // In case of lost connection it would try forever.
@@ -466,7 +469,7 @@ void StorageProvider::CreateSpace(size_t size)
     while ((currentSize_ + sizeNeeded) > maxSize_)
     {
         std::string dataToRemove = evictor_->NextEviction();
-        std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
+        const std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
 
         if (FlushData(key))
             RemoveData(key);
@@ -477,7 +480,7 @@ void StorageProvider::CreateSpace(size_t size)
 
 bool StorageProvider::RemoveData(const std::vector<uint8_t>& key)
 {
-    std::string strKey(key.begin(), key.end());
+    const std::string strKey(key.begin(), key.end());
     auto data = cache_.find(strKey);
     if (data != cache_.end())
     {
@@ -572,7 +575,7 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
         return true;
     }
 
-    std::string keyString(key.begin(), key.end());
+    const std::string keyString(key.begin(), key.end());
 
     auto data = cache_.find(keyString);
     if (data == cache_.end())
