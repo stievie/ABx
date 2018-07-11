@@ -1,5 +1,6 @@
 # TODO
 
+* abclient: Use Urho HTTP client: 43_HttpRequestDemo
 * abserv: Mail not marked as read
 * abserv, ablogin, abclient: DH enc keys
 * abserv Party

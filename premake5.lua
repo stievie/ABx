@@ -9,7 +9,7 @@
 -- Server ----------------------------------------------------------------------
 --------------------------------------------------------------------------------
 workspace "absall"
-  configurations { "Debug", "Release", "ReleaseNoProfiling" }
+  configurations { "Debug", "Release", "RelNoProfiling" }
   location "build"
   includedirs { ".", "abscommon/abscommon", "Include", "$(BOOST_DIR)" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
@@ -21,11 +21,11 @@ workspace "absall"
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
     symbols "On"
-  filter "configurations:Release*"
+  filter "configurations:Rel*"
     defines { "NDEBUG" }
     flags { "LinkTimeOptimization" }
     optimize "Full"
-  filter "configurations:ReleaseNoProfiling"
+  filter "configurations:RelNoProfiling"
     defines { "_NPROFILING" }
   
   project "abscommon"

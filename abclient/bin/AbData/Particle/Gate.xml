@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<particleeffect>
+	<material name="Materials/GateParticle.xml" />
+	<numparticles value="10" />
+	<updateinvisible enable="false" />
+	<relative enable="false" />
+	<scaled enable="true" />
+	<sorted enable="false" />
+	<fixedscreensize enable="false" />
+	<animlodbias value="0" />
+	<emittertype value="Sphere" />
+	<emittersize value="0 0 0" />
+	<direction min="-1 0 -1" max="1 0 1" />
+	<constantforce value="0 0 0" />
+	<dampingforce value="1" />
+	<activetime value="20" />
+	<inactivetime value="5" />
+	<emissionrate min="5" max="1" />
+	<particlesize min="1 1" max="1 1" />
+	<timetolive min="1" max="1" />
+	<velocity min="0" max="0" />
+	<rotation min="5" max="0" />
+	<rotationspeed min="20" max="0" />
+	<sizedelta add="0" mul="1" />
+	<faceCameraMode value="Rotate XYZ" />
+	<color value="1 1 1 0.8" />
+</particleeffect>

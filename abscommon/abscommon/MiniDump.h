@@ -28,6 +28,7 @@ namespace System {
 LONG WINAPI UnhandledHandler(struct _EXCEPTION_POINTERS* apExceptionInfo);
 /// Write a minidump. Needs to be called from within a structured exception handler.
 int WriteMiniDump(const char* applicationName, EXCEPTION_POINTERS* exceptionPointers);
+void WriteStackTrace(const std::string& fileName, EXCEPTION_POINTERS* exceptionPointers);
 #endif
 
 }
