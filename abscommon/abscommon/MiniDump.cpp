@@ -39,6 +39,34 @@
 
 namespace System {
 
+static const char* GetExceptionDescription(DWORD code)
+{
+    switch (code)
+    {
+    case EXCEPTION_ACCESS_VIOLATION:         return "EXCEPTION_ACCESS_VIOLATION";
+    case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:    return "EXCEPTION_ARRAY_BOUNDS_EXCEEDED";
+    case EXCEPTION_BREAKPOINT:               return "EXCEPTION_BREAKPOINT";
+    case EXCEPTION_DATATYPE_MISALIGNMENT:    return "EXCEPTION_DATATYPE_MISALIGNMENT";
+    case EXCEPTION_FLT_DENORMAL_OPERAND:     return "EXCEPTION_FLT_DENORMAL_OPERAND";
+    case EXCEPTION_FLT_DIVIDE_BY_ZERO:       return "EXCEPTION_FLT_DIVIDE_BY_ZERO";
+    case EXCEPTION_FLT_INEXACT_RESULT:       return "EXCEPTION_FLT_INEXACT_RESULT";
+    case EXCEPTION_FLT_INVALID_OPERATION:    return "EXCEPTION_FLT_INVALID_OPERATION";
+    case EXCEPTION_FLT_OVERFLOW:             return "EXCEPTION_FLT_OVERFLOW";
+    case EXCEPTION_FLT_STACK_CHECK:          return "EXCEPTION_FLT_STACK_CHECK";
+    case EXCEPTION_FLT_UNDERFLOW:            return "EXCEPTION_FLT_UNDERFLOW";
+    case EXCEPTION_ILLEGAL_INSTRUCTION:      return "EXCEPTION_ILLEGAL_INSTRUCTION";
+    case EXCEPTION_IN_PAGE_ERROR:            return "EXCEPTION_IN_PAGE_ERROR";
+    case EXCEPTION_INT_DIVIDE_BY_ZERO:       return "EXCEPTION_INT_DIVIDE_BY_ZERO";
+    case EXCEPTION_INT_OVERFLOW:             return "EXCEPTION_INT_OVERFLOW";
+    case EXCEPTION_INVALID_DISPOSITION:      return "EXCEPTION_INVALID_DISPOSITION";
+    case EXCEPTION_NONCONTINUABLE_EXCEPTION: return "EXCEPTION_NONCONTINUABLE_EXCEPTION";
+    case EXCEPTION_PRIV_INSTRUCTION:         return "EXCEPTION_PRIV_INSTRUCTION";
+    case EXCEPTION_SINGLE_STEP:              return "EXCEPTION_SINGLE_STEP";
+    case EXCEPTION_STACK_OVERFLOW:           return "EXCEPTION_STACK_OVERFLOW";
+    default: return "UNKNOWN EXCEPTION";
+    }
+}
+
 LONG UnhandledHandler(struct _EXCEPTION_POINTERS* apExceptionInfo)
 {
     char fn[MAX_PATH];
@@ -121,6 +149,7 @@ void WriteStackTrace(const std::string& fileName, EXCEPTION_POINTERS* exceptionP
 
     std::ofstream out(fileName);
     out << "*** Exception 0x" << std::hex << exceptionPointers->ExceptionRecord->ExceptionCode <<
+        " " << GetExceptionDescription(exceptionPointers->ExceptionRecord->ExceptionCode) <<
         " at 0x" << std::hex << exceptionPointers->ExceptionRecord->ExceptionAddress <<
         " occurred ***" << std::endl << std::endl;
 
@@ -134,13 +163,31 @@ void WriteStackTrace(const std::string& fileName, EXCEPTION_POINTERS* exceptionP
     process = GetCurrentProcess();
     thread = GetCurrentThread();
     displacement = 0;
-#if !defined(_M_AMD64)
+#ifdef _M_IX86
     stack.AddrPC.Offset = (*ctx).Eip;
     stack.AddrPC.Mode = AddrModeFlat;
-    stack.AddrStack.Offset = (*ctx).Esp;
-    stack.AddrStack.Mode = AddrModeFlat;
     stack.AddrFrame.Offset = (*ctx).Ebp;
     stack.AddrFrame.Mode = AddrModeFlat;
+    stack.AddrStack.Offset = (*ctx).Esp;
+    stack.AddrStack.Mode = AddrModeFlat;
+#elif _M_X64
+    stack.AddrPC.Offset = (*ctx).Rip;
+    stack.AddrPC.Mode = AddrModeFlat;
+    stack.AddrFrame.Offset = (*ctx).Rsp;
+    stack.AddrFrame.Mode = AddrModeFlat;
+    stack.AddrStack.Offset = (*ctx).Rsp;
+    stack.AddrStack.Mode = AddrModeFlat;
+#elif _M_IA64
+    stack.AddrPC.Offset = (*ctx).StIIP;
+    stack.AddrPC.Mode = AddrModeFlat;
+    stack.AddrFrame.Offset = (*ctx).IntSp;
+    stack.AddrFrame.Mode = AddrModeFlat;
+    stack.AddrBStore.Offset = (*ctx).RsBSP;
+    stack.AddrBStore.Mode = AddrModeFlat;
+    stack.AddrStack.Offset = (*ctx).IntSp;
+    stack.AddrStack.Mode = AddrModeFlat;
+#else
+#error "Platform not supported!"
 #endif
 
     SymInitialize(process, NULL, TRUE); //load symbols
