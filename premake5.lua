@@ -122,6 +122,30 @@ workspace "absall"
     filter "configurations:Debug"
       targetsuffix "_d"
 
+  project "ablb"
+    kind "ConsoleApp"
+    language "C++"
+    files { 
+      "ablb/ablb/*.cpp",
+      "ablb/ablb/*.c",
+      "ablb/ablb/*.cxx",
+      "ablb/ablb/*.h",
+      "ablb/ablb/*.hpp",
+      "ablb/ablb/*.hxx",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    links { "abscommon" }
+    dependson { "abscommon" }
+    defines { "_CONSOLE" }
+    pchheader "stdafx.h"
+    filter "action:vs*"
+      pchsource "ablb/ablb/stdafx.cpp"
+    filter "configurations:Debug"
+      targetsuffix "_d"
+
   project "abmsgs"
     kind "ConsoleApp"
     language "C++"
