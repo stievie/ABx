@@ -333,14 +333,13 @@ void Creature::DoCollisions()
     Math::BoundingBox box = GetWorldBoundingBox();
     if (QueryObjects(c, box))
     {
-        for (auto ci : c)
+        for (auto& ci : c)
         {
             if (ci != this && ((collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
                 Math::Vector3 move;
                 if (Collides(ci, move))
                 {
-//                    move.y_ = 0.0f;
                     transformation_.position_ += move;
                 }
             }
