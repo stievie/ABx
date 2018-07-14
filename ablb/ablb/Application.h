@@ -1,6 +1,9 @@
 #pragma once
 
 #include "ServerApp.h"
+#include "DataClient.h"
+#include "Acceptor.h"
+#include <AB/Entities/Service.h>
 
 class Application : public ServerApp
 {
@@ -9,8 +12,16 @@ private:
     bool running_;
     std::string localHost_;
     uint16_t localPort_;
-    std::string remoteHost_;
-    uint16_t remotePort_;
+    AB::Entities::ServiceType lbType_;
+    std::unique_ptr<IO::DataClient> dataClient_;
+    std::unique_ptr<Acceptor> acceptor_;
+    std::string logDir_;
+    std::string configFile_;
+    bool ParseCommandLine();
+    void ShowHelp();
+    void PrintServerInfo();
+    bool LoadMain();
+    bool GetServiceCallback(AB::Entities::Service& svc);
 public:
     Application();
     ~Application();

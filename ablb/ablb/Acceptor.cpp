@@ -5,7 +5,9 @@ void Acceptor::HandleAccept(const std::error_code& error)
 {
     if (!error)
     {
-        session_->Start(upstreamHost_, upstreamPort_);
+        AB::Entities::Service svc;
+        if (getServiceCallback_(svc))
+            session_->Start(svc.host, svc.port);
 
         // Accept more connections
         if (!AcceptConnections())

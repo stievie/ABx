@@ -1,8 +1,6 @@
 // ablb.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
 //
 
-// https://github.com/ArashPartow/proxy/blob/master/tcpproxy_server.cpp
-
 #include "stdafx.h"
 #include "Version.h"
 #include <functional>
