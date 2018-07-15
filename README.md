@@ -43,7 +43,7 @@ Used by the client to login, create accounts and manage characters.
 
 It also tells the client to which Game and File Server to connect.
 
-There can be only *one* login server, since all clients connects to this server.
+There can be only *one* login server, since all clients connect to this server.
 Once the client is authenticated, the connection to the login server is closed.
 
 ### Game Server
@@ -65,7 +65,7 @@ a player to another player on a different game server.
 ### Load Balancer (`ablb`)
 
 An optional load balancer/proxy to make it possible to have several Login Server.
-It'll lookup running login Servers and forward client connections to one of them.
+It'll lookup running Login Servers and bridge client connections to one of them.
 
 ### Client
 

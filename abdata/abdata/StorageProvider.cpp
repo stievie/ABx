@@ -197,10 +197,10 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
             auto playerIt = playerNames_.find(ch.name);
             if (playerIt != playerNames_.end())
             {
-                std::string playerUuid = (*playerIt).second;
-                auto playerKey = EncodeKey(table, uuids::uuid(playerUuid));
+                const std::string& playerUuid = (*playerIt).second;
+                const auto playerKey = EncodeKey(table, uuids::uuid(playerUuid));
 
-                std::string playerKeyString(playerKey.begin(), playerKey.end());
+                const std::string playerKeyString(playerKey.begin(), playerKey.end());
 
                 _data = cache_.find(playerKeyString);
                 if (_data != cache_.end())
@@ -222,7 +222,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
     if (_id.nil())
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
-    auto newKey = EncodeKey(table, _id);
+    const auto newKey = EncodeKey(table, _id);
     const std::string newKeyString(newKey.begin(), newKey.end());
     auto _newdata = cache_.find(newKeyString);
     if (_newdata == cache_.end())
@@ -329,7 +329,7 @@ void StorageProvider::Shutdown()
     running_ = false;
     for (const auto& c : cache_)
     {
-        std::vector<uint8_t> key(c.first.begin(), c.first.end());
+        const std::vector<uint8_t> key(c.first.begin(), c.first.end());
         FlushData(key);
     }
 }
