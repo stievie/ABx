@@ -62,6 +62,11 @@ on how much hardware you have.
 This one is for inter server communication, for example to deliver messages from
 a player to another player on a different game server.
 
+### Load Balancer (`ablb`)
+
+An optional load balancer/proxy to make it possible to have several Login Server.
+It'll lookup running login Servers and forward client connections to one of them.
+
 ### Client
 
 Uses a single TCP stream for the game protocol.

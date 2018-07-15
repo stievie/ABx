@@ -89,7 +89,7 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
     if (!FlushData(key))
     {
         // Failed delete from cache
-        Delete(key);
+        RemoveData(key);
         return false;
     }
     return true;
@@ -384,7 +384,6 @@ void StorageProvider::CleanCache()
 
 void StorageProvider::CleanTask()
 {
-    AB_PROFILE;
     CleanCache();
     DB::DBGuildMembers::DeleteExpired(this);
     if (running_)
@@ -412,9 +411,12 @@ void StorageProvider::FlushCache()
         ++written;
         const std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
         if (!FlushData(key))
+        {
+            LOG_WARNING << "Error flushing " << (*i).first << std::endl;
             // Error, break for now and try  the next time.
             // In case of lost connection it would try forever.
             break;
+        }
     }
     if (written > 0)
     {
@@ -501,7 +503,11 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
     std::string table;
     uuids::uuid id;
     if (!DecodeKey(key, table, id))
+    {
+        const std::string keyString(key.begin(), key.end());
+        LOG_ERROR << "Unable to decode key " << keyString << std::endl;
         return false;
+    }
 
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
@@ -589,7 +595,10 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     std::string table;
     uuids::uuid id;
     if (!DecodeKey(key, table, id))
+    {
+        LOG_ERROR << "Unable to decode key " << keyString << std::endl;
         return false;
+    }
 
     size_t tableHash = Utils::StringHashRt(table.data());
     bool succ = false;
@@ -676,6 +685,9 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
         break;
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB
+        // Mark not modified and created or it will infinitely try to flush it
+        (*data).second.first.created = true;
+        (*data).second.first.modified = false;
         succ = true;
         break;
     default:
