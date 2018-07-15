@@ -91,7 +91,6 @@ void Bridge::HandleUpstreamWrite(const std::error_code& error)
 void Bridge::Close()
 {
     std::unique_lock<std::mutex> lock(mutex_);
-    opened_ = false;
     if (downstreamSocket_.is_open())
         downstreamSocket_.close();
     if (upstreamSocket_.is_open())
@@ -100,7 +99,6 @@ void Bridge::Close()
 
 void Bridge::Start(const std::string& upstreamHost, uint16_t unstreamPort)
 {
-    opened_ = true;
     // Connect to remote server, upstream
     upstreamSocket_.async_connect(
         asio::ip::tcp::endpoint(

@@ -10,7 +10,6 @@ private:
     std::mutex mutex_;
     socket_type downstreamSocket_;
     socket_type upstreamSocket_;
-    bool opened_;
     enum
     {
         max_data_length = 8192
@@ -29,8 +28,7 @@ private:
 public:
     explicit Bridge(asio::io_service& ioService) :
         downstreamSocket_(ioService),
-        upstreamSocket_(ioService),
-        opened_(false)
+        upstreamSocket_(ioService)
     { }
     ~Bridge() = default;
 
@@ -41,10 +39,6 @@ public:
     socket_type& GetUpstreamSocket()
     {
         return upstreamSocket_;
-    }
-    bool IsOpened() const
-    {
-        return opened_;
     }
     void Start(const std::string& upstreamHost, uint16_t unstreamPort);
 };

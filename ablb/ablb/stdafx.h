@@ -15,6 +15,8 @@
 #include <memory>
 #include <iostream>
 
+#define WRITE_MINIBUMP
+
 #define ASIO_STANDALONE
 
 #pragma warning(push)

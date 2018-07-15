@@ -3,6 +3,7 @@
 #include "Bridge.h"
 #include "SimpleConfigManager.h"
 #include <AB/Entities/ServiceList.h>
+#include "StringUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -173,6 +174,24 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
+    AB::Entities::Service serv;
+    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    dataClient_->Read(serv);
+    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
+    serv.host = localHost_;
+    serv.port = localPort_;
+    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "ablb");
+    serv.file = exeFile_;
+    serv.path = path_;
+    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
+    serv.status = AB::Entities::ServiceStatusOnline;
+    serv.type = AB::Entities::ServiceTypeLoadBalancer;
+    serv.startTime = Utils::AbTick();
+    dataClient_->UpdateOrCreate(serv);
+
+    AB::Entities::ServiceList sl;
+    dataClient_->Invalidate(sl);
+
     LOG_INFO << "Server is running" << std::endl;
 
     acceptor_->AcceptConnections();
@@ -188,5 +207,21 @@ void Application::Stop()
 
     running_ = false;
     LOG_INFO << "Server shutdown...";
+
+    AB::Entities::Service serv;
+    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    if (dataClient_->Read(serv))
+    {
+        serv.status = AB::Entities::ServiceStatusOffline;
+        serv.stopTime = Utils::AbTick();
+        if (serv.startTime != 0)
+            serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+        dataClient_->Update(serv);
+
+        AB::Entities::ServiceList sl;
+        dataClient_->Invalidate(sl);
+    }
+    else
+        LOG_ERROR << "Unable to read service" << std::endl;
     ioService_.stop();
 }

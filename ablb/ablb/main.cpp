@@ -8,6 +8,7 @@
 #include <condition_variable>
 #include <signal.h>
 #include "Application.h"
+#include "MiniDump.h"
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC

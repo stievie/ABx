@@ -82,14 +82,16 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
     if (_id.nil())
         return false;
 
+    CacheData(table, _id, data, false, false);
+
     // Unfortunately we must flush the data for create operations. Or we find a way
     // to check constraints, unique columns etc.
     if (!FlushData(key))
     {
+        // Failed delete from cache
+        Delete(key);
         return false;
     }
-    // Mark modified since not in DB
-    CacheData(table, _id, data, false, true);
     return true;
 }
 
@@ -581,7 +583,7 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     if (data == cache_.end())
         return false;
     // No need to save to DB when not modified
-    if (!(*data).second.first.modified && !(*data).second.first.deleted)
+    if (!(*data).second.first.modified && !(*data).second.first.deleted && (*data).second.first.created)
         return true;
 
     std::string table;

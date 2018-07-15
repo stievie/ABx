@@ -13,7 +13,10 @@ enum ServiceType : uint8_t
     ServiceTypeMessageServer,
     ServiceTypeFileServer,
     ServiceTypeLoginServer,
-    ServiceTypeGameServer
+    ServiceTypeGameServer,
+
+    // Must be last
+    ServiceTypeLoadBalancer = 255
 };
 
 enum ServiceStatus : uint8_t
