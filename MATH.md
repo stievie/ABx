@@ -9,3 +9,5 @@ So if you want to say that there's a 80% chance that they'll get the drop after 
 .8 = 1 - (1 - DropChance) ^ 10
 
 DropChance = .14866 (or 14.866% chance to drop for each try)
+
+### https://www.reddit.com/r/Unity3D/comments/1y7aqf/random_drop_chance_concepts/
