@@ -118,9 +118,10 @@ bool Application::LoadMain()
 
     localHost_ = IO::SimpleConfigManager::Instance.GetGlobal("lb_host", "0.0.0.0");
     localPort_ = static_cast<uint16_t>(
-        IO::SimpleConfigManager::Instance.GetGlobal("lb_port", 2700)
+        IO::SimpleConfigManager::Instance.GetGlobal("lb_port", 2740)
     );
     lbType_ = static_cast<AB::Entities::ServiceType>(
+        // Default is login server
         IO::SimpleConfigManager::Instance.GetGlobal("lb_type", 4)
     );
     if (dataPort != 0)

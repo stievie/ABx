@@ -8,7 +8,7 @@
 class Application : public ServerApp
 {
 private:
-    using ServiceItem = std::pair<std::string, uint16_t>;
+    typedef std::pair<std::string, uint16_t> ServiceItem;
     std::vector<ServiceItem> serviceList_;
     asio::io_service ioService_;
     bool running_;
