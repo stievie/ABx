@@ -8,6 +8,8 @@
 class Application : public ServerApp
 {
 private:
+    using ServiceItem = std::pair<std::string, uint16_t>;
+    std::vector<ServiceItem> serviceList_;
     asio::io_service ioService_;
     bool running_;
     std::string localHost_;
@@ -22,6 +24,8 @@ private:
     void PrintServerInfo();
     bool LoadMain();
     bool GetServiceCallback(AB::Entities::Service& svc);
+    bool GetServiceCallbackList(AB::Entities::Service& svc);
+    bool ParseServerList(const std::string& fileName);
 public:
     Application();
     ~Application();

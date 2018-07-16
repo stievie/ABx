@@ -4,6 +4,7 @@
 #include "SimpleConfigManager.h"
 #include <AB/Entities/ServiceList.h>
 #include "StringUtils.h"
+#include "Utils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -66,7 +67,17 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << localHost_ << ":" << static_cast<int>(localPort_) << std::endl;
-    LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+    if (dataClient_->IsConnected())
+        LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+    else
+    {
+        LOG_INFO << "  Upstream: ";
+        for (const auto& item : serviceList_)
+        {
+            LOG_INFO << item.first << ":" << item.second << " ";
+        }
+        LOG_INFO << std::endl;
+    }
 }
 
 bool Application::LoadMain()
@@ -81,17 +92,29 @@ bool Application::LoadMain()
         return false;
     }
 
-    LOG_INFO << "Connecting to data server...";
-    const std::string& dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
-    dataClient_->Connect(dataHost, dataPort);
-    if (!dataClient_->IsConnected())
+    if (dataPort != 0)
     {
-        LOG_INFO << "[FAIL]" << std::endl;
-        LOG_ERROR << "Failed to connect to data server" << std::endl;
-        return false;
+        LOG_INFO << "Connecting to data server...";
+        const std::string& dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
+        dataClient_->Connect(dataHost, dataPort);
+        if (!dataClient_->IsConnected())
+        {
+            LOG_INFO << "[FAIL]" << std::endl;
+            LOG_ERROR << "Failed to connect to data server" << std::endl;
+            return false;
+        }
+        LOG_INFO << "[done]" << std::endl;
     }
-    LOG_INFO << "[done]" << std::endl;
+    else
+    {
+        std::string serverList = IO::SimpleConfigManager::Instance.GetGlobal("server_list", "");
+        if (!ParseServerList(serverList))
+        {
+            LOG_ERROR << "Error parsing server list file " << serverList << std::endl;
+            return false;
+        }
+    }
 
     localHost_ = IO::SimpleConfigManager::Instance.GetGlobal("lb_host", "0.0.0.0");
     localPort_ = static_cast<uint16_t>(
@@ -100,8 +123,12 @@ bool Application::LoadMain()
     lbType_ = static_cast<AB::Entities::ServiceType>(
         IO::SimpleConfigManager::Instance.GetGlobal("lb_type", 4)
     );
-    acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
-        std::bind(&Application::GetServiceCallback, this, std::placeholders::_1));
+    if (dataPort != 0)
+        acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
+            std::bind(&Application::GetServiceCallback, this, std::placeholders::_1));
+    else
+        acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
+            std::bind(&Application::GetServiceCallbackList, this, std::placeholders::_1));
 
     PrintServerInfo();
     return true;
@@ -145,6 +172,48 @@ bool Application::GetServiceCallback(AB::Entities::Service& svc)
 
     LOG_WARNING << "No server of type " << static_cast<int>(lbType_) << " online" << std::endl;
     return false;
+}
+
+bool Application::GetServiceCallbackList(AB::Entities::Service& svc)
+{
+    if (serviceList_.size() == 0)
+    {
+        LOG_WARNING << "Service list is empty" << std::endl;
+        return false;
+    }
+
+    const auto& item = Utils::select_randomly(serviceList_.begin(), serviceList_.end());
+    svc.host = (*item).first;
+    svc.port = (*item).second;
+    return true;
+}
+
+bool Application::ParseServerList(const std::string& fileName)
+{
+    std::ifstream file(fileName);
+    if (!file.is_open())
+    {
+        LOG_ERROR << "Unable to open file " << fileName << std::endl;
+        return false;
+    }
+    std::string line;
+    // <host>:<port>\n
+    while (std::getline(file, line))
+    {
+        const std::vector<std::string> lineParts = Utils::Split(line, ":");
+        if (lineParts.size() == 2)
+        {
+            serviceList_.push_back({
+                lineParts[0],
+                static_cast<uint16_t>(std::atoi(lineParts[1].c_str()))
+            });
+        }
+        else
+        {
+            LOG_WARNING << "Error: Config line skipped: " << line << std::endl;
+        }
+    }
+    return true;
 }
 
 bool Application::Initialize(int argc, char** argv)
