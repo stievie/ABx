@@ -40,6 +40,3 @@
 // Used by the profiler to generate a unique identifier
 #define CONCAT(a, b) a ## b
 #define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)
-
-// Number of player names kept in cache
-#define MAX_PLAYERNAMES_CACHE 1000

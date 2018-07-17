@@ -349,14 +349,16 @@ void StorageProvider::CleanCache()
     })) != cache_.end())
     {
         bool error = false;
+        const std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
         if ((*i).second.first.created)
         {
-            // No need to delete from DB when it's not in DB
-            const std::vector<uint8_t> key((*i).first.begin(), (*i).first.end());
+            // If it's in DB (created == true) update changed data in DB
             error = FlushData(key);
         }
         if (!error)
         {
+            // Remove from players cache
+            RemovePlayerFromCache(key);
             currentSize_ -= (*i).second.second->size();
             evictor_->DeleteKey((*i).first);
             cache_.erase(i++);
@@ -369,10 +371,6 @@ void StorageProvider::CleanCache()
             break;
         }
     }
-
-    // Clean player names
-    while (playerNames_.size() > MAX_PLAYERNAMES_CACHE)
-        playerNames_.erase(playerNames_.begin());
 
     if (removed > 0)
     {
@@ -488,6 +486,8 @@ bool StorageProvider::RemoveData(const std::vector<uint8_t>& key)
     auto data = cache_.find(strKey);
     if (data != cache_.end())
     {
+        RemovePlayerFromCache(key);
+
         currentSize_ -= (*data).second.second->size();
         cache_.erase(strKey);
         evictor_->DeleteKey(strKey);
@@ -771,4 +771,30 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
     }
 
     return false;
+}
+
+void StorageProvider::RemovePlayerFromCache(const std::vector<uint8_t>& key)
+{
+    std::string table;
+    uuids::uuid playerUuid;
+    if (!DecodeKey(key, table, playerUuid))
+        return;
+
+    size_t tableHash = Utils::StringHashRt(table.data());
+    if (tableHash == KEY_CHARACTERS_HASH)
+    {
+        const std::string keyString(key.begin(), key.end());
+
+        auto _data = cache_.find(keyString);
+        if (_data == cache_.end())
+            return;
+
+        AB::Entities::Character ch;
+        if (GetEntity(*(*_data).second.second, ch))
+        {
+            auto it = playerNames_.find(ch.name);
+            if (it != playerNames_.end())
+                playerNames_.erase(it);
+        }
+    }
 }

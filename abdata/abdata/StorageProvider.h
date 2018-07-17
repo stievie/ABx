@@ -120,6 +120,8 @@ private:
     bool RemoveData(const std::vector<uint8_t>& key);
     void PreloadTask(std::vector<uint8_t> key);
     bool ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
+    /// If the data is a player and it's in playerNames_ remove it from playerNames_
+    void RemovePlayerFromCache(const std::vector<uint8_t>& key);
 
     void CleanCache();
     void CleanTask();
