@@ -25,7 +25,7 @@ enum class MessageType : uint8_t
 class MessageMsg
 {
 public:
-    // BodyLength (2B), MessageType (1B)
+    // BodyLength (2B), MessageType (1B), aligned to 4B so last byte is 0
     enum { HeaderLength = 4 };
     enum { MaxBodyLength = 512 };
 private:

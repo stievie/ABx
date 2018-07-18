@@ -52,7 +52,9 @@ The game server simulates the games. There can be any number of game servers, bu
 if they run on the same machine, the game servers must listen on different ports.
 
 Since all game server connect to the same data server, all game server share the
-same data.
+same data. Because this game is designed to have an instanced world, several game
+server instances appear to the player as one game server. It is even possible to
+change the game server with a simple menu click.
 
 So, in theory, how many players and games this server can handle, depends only 
 on how much hardware you have.

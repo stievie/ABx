@@ -5,6 +5,7 @@
 
 namespace Net {
 
+/// Client to send and receive messages from/to the Message Server.
 class MessageClient
 {
 public:
@@ -20,7 +21,7 @@ private:
     uint16_t port_;
     asio::ip::tcp::resolver resolver_;
     MessageHandler messageHandler_;
-    void handle_read_header(MessageMsg* msg, const ReadHandler& handler,
+    void HandleReadHeader(MessageMsg* msg, const ReadHandler& handler,
         const asio::error_code& error, size_t bytes_transferred)
     {
         if (!error && msg->DecodeHeader())
@@ -34,12 +35,12 @@ private:
             handler(error, bytes_transferred);
         }
     }
-    void async_receive(MessageMsg* msg, const ReadHandler& handler)
+    void AsyncReceive(MessageMsg* msg, const ReadHandler& handler)
     {
         asio::async_read(socket_,
             asio::buffer(msg->Data(), MessageMsg::HeaderLength),
             std::bind(
-                &MessageClient::handle_read_header,
+                &MessageClient::HandleReadHeader,
                 this, msg, handler, std::placeholders::_1, std::placeholders::_2));
     }
     void InternalConnect();

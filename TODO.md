@@ -9,7 +9,6 @@
 
 * ablogin, abserv: Crash on exit with Ctrl+C (maybe fixed, or not idk...)
 
-* abserv: Remove Status protocol, add info to AB::Entities::Service
 
 * all: /friend /ignore /flremove /fl commands
 * abserv: Lua API (Sphere) Octree query

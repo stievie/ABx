@@ -96,7 +96,7 @@ bool Application::LoadMain()
     if (dataPort != 0)
     {
         LOG_INFO << "Connecting to data server...";
-        const std::string& dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
+        const std::string dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
         dataClient_->Connect(dataHost, dataPort);
         if (!dataClient_->IsConnected())
         {
@@ -108,7 +108,7 @@ bool Application::LoadMain()
     }
     else
     {
-        std::string serverList = IO::SimpleConfigManager::Instance.GetGlobal("server_list", "");
+        const std::string serverList = IO::SimpleConfigManager::Instance.GetGlobal("server_list", "");
         if (!ParseServerList(serverList))
         {
             LOG_ERROR << "Error parsing server list file " << serverList << std::endl;

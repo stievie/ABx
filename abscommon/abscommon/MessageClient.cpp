@@ -23,7 +23,7 @@ void MessageClient::InternalConnect()
     if (!error)
     {
         connected_ = true;
-        async_receive(&readMsg_,
+        AsyncReceive(&readMsg_,
             std::bind(&MessageClient::HandleRead,
                 this, std::placeholders::_1, std::placeholders::_2));
     }
@@ -38,7 +38,7 @@ void MessageClient::HandleRead(const asio::error_code& error, size_t)
         if (messageHandler_ && !readMsg_.IsEmpty())
             messageHandler_(readMsg_);
         readMsg_.Empty();
-        async_receive(&readMsg_,
+        AsyncReceive(&readMsg_,
             std::bind(&MessageClient::HandleRead,
                 this, std::placeholders::_1, std::placeholders::_2));
     }
@@ -48,6 +48,7 @@ void MessageClient::HandleRead(const asio::error_code& error, size_t)
         Close();
     }
 }
+
 void MessageClient::DoWrite(MessageMsg msg)
 {
     bool write_in_progress = !writeMsgs_.empty();
@@ -61,6 +62,7 @@ void MessageClient::DoWrite(MessageMsg msg)
                 std::placeholders::_1));
     }
 }
+
 void MessageClient::HandleWrite(const asio::error_code& error)
 {
     if (!error)

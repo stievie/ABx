@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #if defined(_MSC_VER)
-#include <windows.h>
+
 #include "CpuUsage.h"
 
 namespace System {
@@ -105,7 +105,7 @@ ULONGLONG CpuUsage::SubtractTimes(const FILETIME& ftA, const FILETIME& ftB)
 
 bool CpuUsage::EnoughTimePassed()
 {
-    static const int minElapsedMS = 250;//milliseconds
+    static const int minElapsedMS = 250;   // milliseconds
 
     ULONGLONG dwCurrentTickCount = GetTickCount64();
     return (dwCurrentTickCount - lastRun_) > minElapsedMS;

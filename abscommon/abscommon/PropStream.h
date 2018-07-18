@@ -87,6 +87,7 @@ public:
         size_t len = add.length();
         if (len > std::numeric_limits<uint16_t>::max())
         {
+            // Error, too long
             Write<uint16_t>(0);
             return;
         }
