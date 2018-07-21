@@ -43,7 +43,12 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
     Actor* result = node->CreateComponent<Actor>();
     result->id_ = id;
 
+    result->prefabFile_ = "Objects/PC_Human_Mo_Female1_Base.xml";
     result->Init(scene, position, rotation);
+    result->animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
+    result->animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
+    result->animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
+
     result->PlayAnimation(ANIM_IDLE, true);
 
     return result;
