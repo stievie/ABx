@@ -1,9 +1,12 @@
 # TODO
 
-* abclient: Use Urho HTTP client: 43_HttpRequestDemo
+* abclient: Use Urho HTTP client (does it support HTTPS?): 43_HttpRequestDemo
 * abserv: Mail not marked as read
 * abserv, ablogin, abclient: DH enc keys
-* abserv Party
+* abserv: Party
+* abserv: Account Key itself expires and makes accounts that may expire (Trial Key)
+
++ abclient: Test https://github.com/rokups/Urho3D.git (https://github.com/TrevorCash/Urho3D)
 
 * abadmin: Admin HTTP server. Browser interface to admin all servers
 

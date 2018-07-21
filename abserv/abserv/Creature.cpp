@@ -227,7 +227,9 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     if (newState != creatureState_)
     {
-//        LOG_DEBUG << "New state " << (int)newState << std::endl;
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "New state " << (int)newState << std::endl;
+#endif
         creatureState_ = newState;
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);

@@ -17,7 +17,7 @@ Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
     castShadows_(true),
-    mesh_(String::EMPTY),
+    prefabFile_(String::EMPTY),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
@@ -36,38 +36,65 @@ void Actor::RegisterObject(Context* context)
     context->RegisterFactory<Actor>();
 }
 
-Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene)
+Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
+    const Vector3& position, const Quaternion& rotation)
 {
-    Node* objectNode = scene->CreateChild();
-    Actor* result = objectNode->CreateComponent<Actor>();
+    Node* node = scene->CreateChild(0, LOCAL);
+    Actor* result = node->CreateComponent<Actor>();
     result->id_ = id;
 
-    Node* adjustNode = result->GetNode()->CreateChild("AdjNode");
-    adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
-
-    result->Init();
-    adjustNode->CreateComponent<AnimationController>();
-    result->animatedModel_ = adjustNode->CreateComponent<AnimatedModel>();
-    result->animatedModel_->SetCastShadows(true);
-    adjustNode->CreateComponent<AnimationController>();
+    result->Init(scene, position, rotation);
+    result->PlayAnimation(ANIM_IDLE, true);
 
     return result;
-
 }
 
-void Actor::Init()
+void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotation)
 {
-    mesh_ = "Models/Sphere.mdl";
-    materials_.Push("Materials/Stone.xml");
-    if (!mesh_.Empty())
+    if (!prefabFile_.Empty())
     {
-        CreateModel();
+        ResourceCache* cache = GetSubsystem<ResourceCache>();
+
+        XMLFile* object = cache->GetResource<XMLFile>(prefabFile_);
+        if (!object)
+            return;
+
+        XMLElement& root = object->GetRoot();
+        unsigned nodeId = root.GetUInt("id");
+        SceneResolver resolver;
+        Node* adjNode = node_->CreateChild(0, LOCAL);
+        resolver.AddNode(nodeId, adjNode);
+        adjNode->SetRotation(Quaternion(270, Vector3(0, 1, 0)));
+        if (adjNode->LoadXML(root, resolver, true, true))
+        {
+            resolver.Resolve();
+            node_->SetTransform(position, rotation);
+            adjNode->ApplyAttributes();
+            if (adjNode->GetComponent<AnimatedModel>(true))
+            {
+                type_ = Actor::Animated;
+                animController_ = adjNode->CreateComponent<AnimationController>();
+                model_ = adjNode->GetComponent<AnimatedModel>(true);
+            }
+            else
+            {
+                type_ = Actor::Static;
+                model_ = adjNode->GetComponent<StaticModel>(true);
+            }
+        }
+        else
+        {
+            adjNode->Remove();
+        }
     }
 }
 
-void Actor::CreateModel()
+/*void Actor::CreateModel()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
+
+    SceneResolver resolver;
+
 
     // Create rigidbody, and set non-zero mass so that the body becomes dynamic
     RigidBody* body = GetNode()->CreateComponent<RigidBody>();
@@ -95,6 +122,8 @@ void Actor::CreateModel()
         model_ = adjustNode->CreateComponent<StaticModel>();
         model_->SetModel(cache->GetResource<Model>(mesh_));
     }
+    model_->SetCastShadows(castShadows_);
+
     int i = 0;
     for (Vector<String>::ConstIterator it = materials_.Begin(); it != materials_.End(); it++, i++)
     {
@@ -105,7 +134,7 @@ void Actor::CreateModel()
     CollisionShape* shape = node_->CreateComponent<CollisionShape>();
     const BoundingBox& bb = model_->GetBoundingBox();
     shape->SetCylinder(bb.Size().x_, bb.Size().y_);
-}
+}*/
 
 void Actor::FixedUpdate(float timeStep)
 {
@@ -125,7 +154,7 @@ void Actor::FixedUpdate(float timeStep)
         moveTo = moveToPos_;
     }
 
-    const Vector3& cp = GetNode()->GetPosition();
+    const Vector3& cp = node_->GetPosition();
     if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
     {
         // Try to make moves smoother...
@@ -133,10 +162,10 @@ void Actor::FixedUpdate(float timeStep)
         {
             // Seems to be the best result
             Vector3 pos = cp.Lerp(moveToPos_, 0.4f);
-            GetNode()->SetPosition(pos);
+            node_->SetPosition(pos);
         }
         else
-            GetNode()->SetPosition(moveToPos_);
+            node_->SetPosition(moveToPos_);
     }
 
     const Quaternion& rot = node_->GetRotation();
@@ -183,7 +212,7 @@ void Actor::Update(float timeStep)
     }
 
     nameLabel_->SetVisible(isLCtrlDown || hovered_ || playerSelected_);
-    hpBar_->SetVisible(hovered_ || playerSelected_);
+    hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
 }
 
 void Actor::MoveTo(int64_t time, const Vector3& newPos)
@@ -249,14 +278,45 @@ void Actor::SelectObject(SharedPtr<GameObject> object)
     }
 }
 
+void Actor::PlayAnimation(StringHash animation, bool looped)
+{
+    if (!animController_)
+        return;
+
+    const String& ani = animations_[animation];
+    if (!ani.Empty())
+    {
+        animController_->PlayExclusive(ani, 0, looped, 0.2f);
+    }
+    else
+        animController_->StopAll();
+}
+
 void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
 {
-    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+    GameObject::SetCreatureState(time, newState);
+
+    switch (creatureState_)
+    {
+    case AB::GameProtocol::CreatureStateIdle:
+        PlayAnimation(ANIM_IDLE, true);
+        break;
+    case AB::GameProtocol::CreatureStateMoving:
     {
         const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
         posExtrapolator_.Reset(GetServerTime(time), GetClientTime(), p);
+        PlayAnimation(ANIM_RUN, true);
+        break;
     }
-    GameObject::SetCreatureState(time, newState);
+    case AB::GameProtocol::CreatureStateUsingSkill:
+        break;
+    case AB::GameProtocol::CreatureStateAttacking:
+        break;
+    case AB::GameProtocol::CreatureStateEmote:
+        break;
+    default:
+        break;
+    }
 }
 
 void Actor::Unserialize(PropReadStream& data)
@@ -269,7 +329,7 @@ void Actor::Unserialize(PropReadStream& data)
     AddActorUI();
 }
 
-void Actor::LoadXML(const XMLElement& source)
+/*void Actor::LoadXML(const XMLElement& source)
 {
     assert(source.GetName() == "actor");
 
@@ -335,7 +395,7 @@ void Actor::LoadXML(const XMLElement& source)
             soundElem = soundElem.GetNext("sound");
         }
     }
-}
+}*/
 
 void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop /* = false */)
 {

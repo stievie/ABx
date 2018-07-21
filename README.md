@@ -78,11 +78,8 @@ Uses a single TCP stream for the game protocol.
 1. Run the data server `abdada`
 2. Run the file server `abfile`
 3. Run the login server `ablogin`
-4. Run the game server `abserv`
-
-~~~
-abserv [-conf <config file>] [-log <log dir>]
-~~~
+5. Run the message server `abmsgs`
+6. Run the game server `abserv`
 
 ### Run as NT service
 

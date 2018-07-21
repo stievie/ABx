@@ -16,6 +16,7 @@ static const StringHash ANIM_IDLE("Idle");
 static const StringHash ANIM_WALK("Walk");
 static const StringHash ANIM_RUN("Run");
 static const StringHash ANIM_JUMP("Jump");
+static const StringHash ANIM_SIT("Sit");
 static const StringHash ANIM_ATTACK_MELEE("Melee");
 static const StringHash ANIM_ATTACK_PISTOL("Shoot Pistol");
 static const StringHash ANIM_ATTACK_GUN("Shoot Gun");
@@ -59,7 +60,8 @@ public:
 
     static void RegisterObject(Context* context);
 
-    static Actor* CreateActor(uint32_t id, Context* context, Scene* scene);
+    static Actor* CreateActor(uint32_t id, Context* context, Scene* scene,
+        const Vector3& position, const Quaternion& rotation);
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep) override;
     virtual void Update(float timeStep) override;
@@ -71,11 +73,10 @@ public:
     void Unserialize(PropReadStream& data) override;
 
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
-    void Init() override;
-    void LoadXML(const XMLElement& source);
+    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation) override;
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
     /// Model file name
-    String mesh_;
+    String prefabFile_;
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
@@ -83,7 +84,6 @@ public:
 private:
     SharedPtr<Text> nameLabel_;
     SharedPtr<ProgressBar> hpBar_;
-    void CreateModel();
     void AddActorUI();
     void RemoveActorUI();
 protected:
@@ -104,4 +104,5 @@ public:
     ActorStats stats_;
     void SelectObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
+    void PlayAnimation(StringHash animation, bool looped);
 };

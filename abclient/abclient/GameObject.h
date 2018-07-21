@@ -21,7 +21,7 @@ public:
     GameObject(Context* context);
     ~GameObject();
 
-    virtual void Init() {}
+    virtual void Init(Scene* scene, const Vector3& position, const Quaternion& rotation) {}
 
     uint32_t id_;
     unsigned index_;

@@ -113,8 +113,12 @@ void ClientApp::Setup()
     engineParameters_[EP_MULTI_SAMPLE] = options->GetMultiSample();
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
     engineParameters_[EP_RESOURCE_PATHS] = "AbData;GameData;CoreData;Data";
-    engineParameters_[EP_LOG_NAME] = "abclient.log";
+    engineParameters_[EP_LOG_NAME] = "fw.log";
+#if defined(AB_CLIENT_LOGGING)    
     engineParameters_[EP_LOG_QUIET] = false;
+#else
+    engineParameters_[EP_LOG_QUIET] = true;
+#endif
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     engineParameters_[EP_RENDER_PATH] = options->GetRenderPath();

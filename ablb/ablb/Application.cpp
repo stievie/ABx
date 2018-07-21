@@ -71,7 +71,7 @@ void Application::PrintServerInfo()
         LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     else
     {
-        LOG_INFO << "  Upstream: ";
+        LOG_INFO << "  Upstreams: ";
         for (const auto& item : serviceList_)
         {
             LOG_INFO << item.first << ":" << item.second << " ";

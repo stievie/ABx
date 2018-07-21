@@ -448,10 +448,8 @@ void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantM
 
 Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
-    Actor* result = Actor::CreateActor(id, context_, scene_);
-    result->GetNode()->SetPosition(position);
+    Actor* result = Actor::CreateActor(id, context_, scene_, position, direction);
     result->moveToPos_ = position;
-    result->GetNode()->SetRotation(direction);
     result->rotateTo_ = direction;
     result->GetNode()->SetScale(scale);
     return result;
@@ -459,10 +457,8 @@ Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vecto
 
 void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
 {
-    player_ = Player::CreatePlayer(id, context_, scene_);
-    player_->GetNode()->SetPosition(position);
+    player_ = Player::CreatePlayer(id, context_, scene_, position, direction);
     player_->moveToPos_ = position;
-    player_->GetNode()->SetRotation(direction);
     player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);
     player_->UpdateYaw();

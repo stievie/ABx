@@ -24,20 +24,18 @@ void Player::RegisterObject(Context* context)
     URHO3D_ATTRIBUTE("Controls Pitch", float, controls_.pitch_, 0.0f, AM_DEFAULT);
 }
 
-Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
+Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
+    const Vector3& position, const Quaternion& rotation)
 {
-    Node* objectNode = scene->CreateChild();
-    Player* result = objectNode->CreateComponent<Player>();
+    Node* node = scene->CreateChild(0, LOCAL);
+    Player* result = node->CreateComponent<Player>();
     result->id_ = id;
 
-    Node* adjustNode = result->GetNode()->CreateChild("AdjNode");
-    adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
-    result->Init();
-
-    adjustNode->CreateComponent<AnimationController>();
-    result->animatedModel_ = adjustNode->CreateComponent<AnimatedModel>();
-    result->animatedModel_->SetCastShadows(true);
-    adjustNode->CreateComponent<AnimationController>();
+    result->prefabFile_ = "Objects/PC_Human_Mo_Female1_Base.xml";
+    result->Init(scene, position, rotation);
+    result->animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
+    result->animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
+    result->animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
 
     // Create camera
     result->cameraNode_ = scene->CreateChild("CameraNode");
@@ -45,35 +43,15 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene)
     Camera* camera = result->cameraNode_->CreateComponent<Camera>();
     camera->SetFarClip(300.0f);
 
+    result->PlayAnimation(ANIM_IDLE, true);
     return result;
 }
 
-void Player::Init()
+void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotation)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    // Load stuff...
-//    mesh_ = "/Models/Sphere.mdl";
-//    materials_.Push("/Materials/Stone.xml");
-
-    // Create the model
-    Actor::Init();
-
-/*
-    // Set the head bone for manual control
-    if (type_ == Actor::Animated)
-    {
-        AnimatedModel* animModel = dynamic_cast<AnimatedModel*>(GetModel());
-        assert(animModel);
-        Bone* headBone = animModel->GetSkeleton().GetBone("Head");
-        if (headBone)
-            headBone->animated_ = false;
-    }
-
-    Node* footstepNode = node_->CreateChild("FootstepsSoundNode");
-    footstepsSource_ = footstepNode->CreateComponent<SoundSource3D>();
-    footstepsSource_->SetSoundType(SOUND_EFFECT);
-    footstepsSource_->SetGain(0.3f);
-    */
+    Actor::Init(scene, position, rotation);
+    RigidBody* body = node_->GetComponent<RigidBody>(true);
+    body->SetCollisionLayer(1);
 }
 
 void Player::FixedUpdate(float timeStep)
@@ -182,7 +160,7 @@ void Player::PostUpdate(float timeStep)
     Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 
     // Third person camera: position behind the character
-    static const Vector3 CAM_POS(0.0f, 2.0f, 0.0f);
+    static const Vector3 CAM_POS(0.0f, 1.5f, 0.0f);
     Vector3 aimPoint = characterNode->GetPosition() + rot * CAM_POS;
 
     Vector3 rayDir = dir * Vector3::BACK;
