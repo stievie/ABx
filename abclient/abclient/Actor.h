@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Extrapolator.h"
+#include <AB/Entities/Character.h>
 
 using namespace Urho3D;
 
@@ -61,7 +62,8 @@ public:
     static void RegisterObject(Context* context);
 
     static Actor* CreateActor(uint32_t id, Context* context, Scene* scene,
-        const Vector3& position, const Quaternion& rotation);
+        const Vector3& position, const Quaternion& rotation,
+        PropReadStream& data);
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep) override;
     virtual void Update(float timeStep) override;
@@ -100,6 +102,7 @@ public:
     Vector3 moveToPos_;
     Quaternion rotateTo_;
     String name_;
+    AB::Entities::CharacterSex sex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
     void SelectObject(SharedPtr<GameObject> object);

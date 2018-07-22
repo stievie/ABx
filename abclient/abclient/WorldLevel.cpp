@@ -274,24 +274,23 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     case AB::GameProtocol::ObjectTypePlayer:
         if (playerId == id)
         {
-            CreatePlayer(id, position, scale, rot);
+            CreatePlayer(id, position, scale, rot, data);
             object = player_;
             object->objectType_ = ObjectTypeSelf;
         }
         else
         {
-            object = CreateActor(id, position, scale, rot);
+            object = CreateActor(id, position, scale, rot, data);
             object->objectType_ = ObjectTypePlayer;
         }
         break;
     case AB::GameProtocol::ObjectTypeNpc:
-        object = CreateActor(id, position, scale, rot);
+        object = CreateActor(id, position, scale, rot, data);
         object->objectType_ = ObjectTypeNpc;
         break;
     }
     if (object)
     {
-        object->Unserialize(data);
         object->spawnTickServer_ = updateTick;
         const float p[3] = { position.x_, position.y_, position.z_ };
         dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
@@ -446,18 +445,22 @@ void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantM
     SelectObject(0);
 }
 
-Actor* WorldLevel::CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
+Actor* WorldLevel::CreateActor(uint32_t id,
+    const Vector3& position, const Vector3& scale, const Quaternion& direction,
+    PropReadStream& data)
 {
-    Actor* result = Actor::CreateActor(id, context_, scene_, position, direction);
+    Actor* result = Actor::CreateActor(id, context_, scene_, position, direction, data);
     result->moveToPos_ = position;
     result->rotateTo_ = direction;
     result->GetNode()->SetScale(scale);
     return result;
 }
 
-void WorldLevel::CreatePlayer(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction)
+void WorldLevel::CreatePlayer(uint32_t id,
+    const Vector3& position, const Vector3& scale, const Quaternion& direction,
+    PropReadStream& data)
 {
-    player_ = Player::CreatePlayer(id, context_, scene_, position, direction);
+    player_ = Player::CreatePlayer(id, context_, scene_, position, direction, data);
     player_->moveToPos_ = position;
     player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);

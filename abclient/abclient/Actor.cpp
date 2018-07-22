@@ -21,7 +21,9 @@ Actor::Actor(Context* context) :
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
-    nameLabel_(nullptr)
+    nameLabel_(nullptr),
+    name_(""),
+    sex_(AB::Entities::CharacterSexUnknown)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_UPDATE);
@@ -37,18 +39,14 @@ void Actor::RegisterObject(Context* context)
 }
 
 Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
-    const Vector3& position, const Quaternion& rotation)
+    const Vector3& position, const Quaternion& rotation, PropReadStream& data)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Actor* result = node->CreateComponent<Actor>();
     result->id_ = id;
 
-    result->prefabFile_ = "Objects/PC_Human_Mo_Female1_Base.xml";
+    result->Unserialize(data);
     result->Init(scene, position, rotation);
-    result->animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
-    result->animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
-    result->animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
-
     result->PlayAnimation(ANIM_IDLE, true);
 
     return result;
@@ -56,6 +54,21 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
 
 void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotation)
 {
+    if (sex_ == AB::Entities::CharacterSexFemale)
+    {
+        prefabFile_ = "Objects/PC_Human_Mo_Female1_Base.xml";
+        animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
+        animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
+        animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
+    }
+    else
+    {
+        prefabFile_ = "Objects/PC_Human_Mo_Male1_Base.xml";
+        animations_[ANIM_RUN] = "Models/PC_Human_Mo_Male1_Running.ani";
+        animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Male1_Idle.ani";
+        animations_[ANIM_SIT] = "Models/PC_Human_Mo_Male1_Sitting.ani";
+    }
+
     if (!prefabFile_.Empty())
     {
         ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -330,7 +343,9 @@ void Actor::Unserialize(PropReadStream& data)
     std::string str;
     if (data.ReadString(str))
         name_ = String(str.data(), (unsigned)str.length());
-
+    uint8_t s;
+    if (data.Read(s))
+        sex_ = static_cast<AB::Entities::CharacterSex>(s);
     AddActorUI();
 }
 

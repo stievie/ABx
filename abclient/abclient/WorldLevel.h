@@ -20,8 +20,12 @@ class WorldLevel : public BaseLevel
     URHO3D_OBJECT(WorldLevel, BaseLevel);
 public:
     WorldLevel(Context* context);
-    void CreatePlayer(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction);
-    Actor* CreateActor(uint32_t id, const Vector3& position, const Vector3& scale, const Quaternion& direction);
+    void CreatePlayer(uint32_t id,
+        const Vector3& position, const Vector3& scale, const Quaternion& direction,
+        PropReadStream& data);
+    Actor* CreateActor(uint32_t id,
+        const Vector3& position, const Vector3& scale, const Quaternion& direction,
+        PropReadStream& data);
     void SelectObject(uint32_t objectId);
     SharedPtr<GameObject> GetObjectById(uint32_t id)
     {

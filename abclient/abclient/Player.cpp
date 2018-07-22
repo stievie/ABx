@@ -25,17 +25,14 @@ void Player::RegisterObject(Context* context)
 }
 
 Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
-    const Vector3& position, const Quaternion& rotation)
+    const Vector3& position, const Quaternion& rotation, PropReadStream& data)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Player* result = node->CreateComponent<Player>();
     result->id_ = id;
 
-    result->prefabFile_ = "Objects/PC_Human_Mo_Female1_Base.xml";
+    result->Unserialize(data);
     result->Init(scene, position, rotation);
-    result->animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
-    result->animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
-    result->animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
 
     // Create camera
     result->cameraNode_ = scene->CreateChild("CameraNode");

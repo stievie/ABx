@@ -27,7 +27,7 @@ public:
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
     static Player* CreatePlayer(uint32_t id, Context* context, Scene* scene,
-        const Vector3& position, const Quaternion& rotation);
+        const Vector3& position, const Quaternion& rotation, PropReadStream& data);
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation) override;
 
     /// Handle physics world update. Called by LogicComponent base class.

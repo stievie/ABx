@@ -10,6 +10,7 @@
 #include "BoundingBox.h"
 #include "Octree.h"
 #include "CollisionShape.h"
+#include "AB/Entities/Character.h"
 
 namespace Game {
 
@@ -105,6 +106,10 @@ public:
     void SetOctant(Math::Octant* octant) { octant_ = octant; }
 
     virtual std::string GetName() const { return name_; }
+    virtual AB::Entities::CharacterSex GetSex() const
+    {
+        return AB::Entities::CharacterSexUnknown;
+    }
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;

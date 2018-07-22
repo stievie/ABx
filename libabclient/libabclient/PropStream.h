@@ -54,6 +54,7 @@ public:
         memcpy_s(str, len, p_, len);
         str[len] = 0;
         r.assign(str, len);
+        p_ += len;
         delete[] str;
         return true;
     }
