@@ -60,6 +60,8 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
         animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
         animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
         animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
+        animations_[ANIM_DYING] = "Models/PC_Human_Mo_Female1_Dying.ani";
+        animations_[ANIM_CRY] = "Models/PC_Human_Mo_Female1_Crying.ani";
     }
     else
     {
@@ -67,6 +69,7 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
         animations_[ANIM_RUN] = "Models/PC_Human_Mo_Male1_Running.ani";
         animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Male1_Idle.ani";
         animations_[ANIM_SIT] = "Models/PC_Human_Mo_Male1_Sitting.ani";
+        animations_[ANIM_DYING] = "Models/PC_Human_Mo_Male1_Dying.ani";
     }
 
     if (!prefabFile_.Empty())
@@ -75,7 +78,10 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
 
         XMLFile* object = cache->GetResource<XMLFile>(prefabFile_);
         if (!object)
+        {
+            URHO3D_LOGERRORF("Prefab file not found: %s", prefabFile_);
             return;
+        }
 
         XMLElement& root = object->GetRoot();
         unsigned nodeId = root.GetUInt("id");
@@ -102,8 +108,16 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
         }
         else
         {
+            URHO3D_LOGERRORF("Error instantiating prefab %s", prefabFile_);
             adjNode->Remove();
         }
+    }
+    else
+        URHO3D_LOGERROR("Prefab file is empty");
+
+    if (model_)
+    {
+        model_->SetCastShadows(castShadows_);
     }
 }
 
@@ -296,7 +310,7 @@ void Actor::SelectObject(SharedPtr<GameObject> object)
     }
 }
 
-void Actor::PlayAnimation(StringHash animation, bool looped)
+void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float fadeTime /* = 0.2f */)
 {
     if (!animController_)
         return;
@@ -304,7 +318,7 @@ void Actor::PlayAnimation(StringHash animation, bool looped)
     const String& ani = animations_[animation];
     if (!ani.Empty())
     {
-        animController_->PlayExclusive(ani, 0, looped, 0.2f);
+        animController_->PlayExclusive(ani, 0, looped, fadeTime);
     }
     else
         animController_->StopAll();
@@ -312,12 +326,16 @@ void Actor::PlayAnimation(StringHash animation, bool looped)
 
 void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
 {
+    AB::GameProtocol::CreatureState prevState = creatureState_;
     GameObject::SetCreatureState(time, newState);
 
     switch (creatureState_)
     {
     case AB::GameProtocol::CreatureStateIdle:
-        PlayAnimation(ANIM_IDLE, true);
+        if (prevState != AB::GameProtocol::CreatureStateEmoteSit)
+            PlayAnimation(ANIM_IDLE, true, 0.0f);
+        else
+            PlayAnimation(ANIM_IDLE, true, 0.5f);
         break;
     case AB::GameProtocol::CreatureStateMoving:
     {
@@ -331,6 +349,12 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
     case AB::GameProtocol::CreatureStateAttacking:
         break;
     case AB::GameProtocol::CreatureStateEmote:
+        break;
+    case AB::GameProtocol::CreatureStateEmoteSit:
+        PlayAnimation(ANIM_SIT, true, 0.5f);
+        break;
+    case AB::GameProtocol::CreatureStateEmoteCry:
+        PlayAnimation(ANIM_CRY, false, 0.5f);
         break;
     default:
         break;

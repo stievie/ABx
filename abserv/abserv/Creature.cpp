@@ -35,6 +35,7 @@ Creature::Creature() :
     GameObject(),
     skills_(this),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
+    lastStateChange_(Utils::AbTick()),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone)
 {
@@ -95,6 +96,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     InputItem input;
     AB::GameProtocol::CreatureState newState = creatureState_;
+    if (newState == AB::GameProtocol::CreatureStateEmoteCry &&
+        lastStateChange_ + 10000 < Utils::AbTick())
+    {
+        // Reset some emotes after 10 seconds
+        newState = AB::GameProtocol::CreatureStateIdle;
+    }
 
     // Multiple inputs of the same type overwrite previous
     while (inputs_.Get(input))
@@ -219,7 +226,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
             const std::string& cmd = input.data[InputDataCommandData].GetString();
-            HandleCommand(type, cmd, message);
+            HandleCommand(type, cmd, message, newState);
             break;
         }
         }
@@ -230,6 +237,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 #ifdef DEBUG_GAME
         LOG_DEBUG << "New state " << (int)newState << std::endl;
 #endif
+        lastStateChange_ = Utils::AbTick();
         creatureState_ = newState;
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);

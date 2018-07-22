@@ -24,6 +24,7 @@ static const StringHash ANIM_ATTACK_GUN("Shoot Gun");
 static const StringHash ANIM_HURT("Hurt");
 static const StringHash ANIM_DYING("Dying");
 static const StringHash ANIM_DEAD("Dead");
+static const StringHash ANIM_CRY("Cry");
 
 /// Stop playing current sound
 static const StringHash SOUND_NONE("None");
@@ -107,5 +108,5 @@ public:
     ActorStats stats_;
     void SelectObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
-    void PlayAnimation(StringHash animation, bool looped);
+    void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
 };

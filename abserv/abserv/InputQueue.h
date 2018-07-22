@@ -18,7 +18,8 @@ enum class InputType
     Direction = 8,
     Command = 9,
     Goto = 10,
-    Follow = 11
+    Follow = 11,
+    Sit = 12,
 };
 
 enum InputDataType

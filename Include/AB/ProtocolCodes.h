@@ -120,6 +120,8 @@ enum CreatureState : uint8_t
     CreatureStateUsingSkill = 3,
     CreatureStateAttacking = 4,
     CreatureStateEmote = 5,
+    CreatureStateEmoteSit = 6,
+    CreatureStateEmoteCry = 7,
 };
 
 enum ServerMessageType : uint8_t
@@ -242,8 +244,6 @@ enum CommandTypes : uint8_t
     CommandTypeMailRead,             // /read <index>
     CommandTypeMailDelete,           // /delete <index>
 
-    // Other
-    CommandTypeRoll,                 // /roll <number>
     // Info
     CommandTypeAge,                  // /age
     CommandTypeDeaths,               // /deaths
@@ -251,7 +251,12 @@ enum CommandTypes : uint8_t
     // Internal
     CommandTypeHelp,                 // /help
     CommandTypeIp,                   // /ip
-    CommandTypeServerId              // /id
+    CommandTypeServerId,             // /id
+    // Emotes
+    CommandTypeRoll,                 // /roll <number>
+    CommandTypeSit,                  // /sit
+    CommandTypeStand,                // /sit -> Idle
+    CommandTypeCry,                  // /cry
 };
 
 }

@@ -20,10 +20,12 @@ private:
 protected:
     std::vector<Math::Vector3> wayPoints_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& command, Net::NetworkMessage& message) {
+        const std::string& command, Net::NetworkMessage& message,
+        AB::GameProtocol::CreatureState& newState) {
         AB_UNUSED(type);
         AB_UNUSED(command);
         AB_UNUSED(message);
+        AB_UNUSED(newState);
     }
 public:
     static void RegisterLua(kaguya::State& state);
@@ -78,6 +80,7 @@ public:
 
     InputQueue inputs_;
     AB::GameProtocol::CreatureState creatureState_;
+    int64_t lastStateChange_;
     std::weak_ptr<GameObject> selectedObject_;
     std::weak_ptr<GameObject> followedObject_;
 

@@ -447,6 +447,12 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeChatWhisper;
         else if (cmd.Compare("roll") == 0)
             type = AB::GameProtocol::CommandTypeRoll;
+        else if (cmd.Compare("sit") == 0)
+            type = AB::GameProtocol::CommandTypeSit;
+        else if (cmd.Compare("stand") == 0)
+            type = AB::GameProtocol::CommandTypeStand;
+        else if (cmd.Compare("cry") == 0)
+            type = AB::GameProtocol::CommandTypeCry;
         else if (cmd.Compare("mail") == 0)
             type = AB::GameProtocol::CommandTypeMailSend;
         else if (cmd.Compare("inbox") == 0)
