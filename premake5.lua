@@ -240,7 +240,7 @@ workspace "abclient"
 
   project "abclient"
     kind "WindowedApp"
-    includedirs { "libabclient/libabclient", "Include/Box2D", "Include/Bullet", "Include/Urho3D/ThirdParty", "Include/Urho3D/ThirdParty/Bullet", "Include/Urho3D/ThirdParty/Lua" }
+    includedirs { "libabclient/libabclient", "Include/Box2D", "Include/Bullet", "Include/Urho3D/ThirdParty", "Include/Urho3D/ThirdParty/Bullet", "Include/Urho3D/ThirdParty/kNet", "Include/Urho3D/ThirdParty/Lua" }
     defines { "URHO3D_MINIDUMPS", "URHO3D_FILEWATCHER", "URHO3D_PROFILING", "URHO3D_LOGGING", "URHO3D_THREADING", "URHO3D_ANGELSCRIPT", "URHO3D_LUA", "TOLUA_RELEASE", "URHO3D_NAVIGATION", "URHO3D_NETWORK", "URHO3D_PHYSICS", "URHO3D_URHO2D" }
     links { "libabclient", "dbghelp", "d3dcompiler", "d3d11", "dxgi", "dxguid", "winmm", "imm32", "version" }
     dependson { "libabclient" }

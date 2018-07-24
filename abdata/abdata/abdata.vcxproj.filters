@@ -138,6 +138,12 @@
     <ClInclude Include="DBReservedName.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBItem.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBItemList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -255,6 +261,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBReservedName.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBItem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBItemList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

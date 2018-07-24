@@ -41,6 +41,8 @@ private:
     void LoadAttributes();
     void LoadProfessions();
     void LoadEffects();
+    void LoadItems();
+    bool MakeHttpRequest(const String& path, const String& outFile);
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);

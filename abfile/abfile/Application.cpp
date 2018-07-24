@@ -21,6 +21,8 @@
 #include <AB/Entities/AccountBan.h>
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
+#include <AB/Entities/Item.h>
+#include <AB/Entities/ItemList.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 #include "Utils.h"
@@ -245,6 +247,8 @@ bool Application::Initialize(int argc, char** argv)
         server_->resource["^/_attributes_$"]["GET"] = std::bind(&Application::GetHandlerAttributes, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_items_$"]["GET"] = std::bind(&Application::GetHandlerItems, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
     }
     server_->resource["^/_status_$"]["GET"] = std::bind(&Application::GetHandlerStatus, shared_from_this(),
@@ -829,6 +833,67 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
         gNd.append_attribute("name") = s.name.c_str();
         gNd.append_attribute("category") = s.index;
         gNd.append_attribute("icon") = s.icon.c_str();
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
+}
+
+void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    AB::Entities::ItemList pl;
+    if (!dataClient_->Read(pl))
+    {
+        LOG_ERROR << "Error reading item list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    AB::Entities::Version v;
+    v.name = "game_items";
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading items version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("items");
+    root.append_attribute("version") = v.value;
+
+    for (const std::string& uuid : pl.itemUuids)
+    {
+        AB::Entities::Item s;
+        s.uuid = uuid;
+        if (!dataClient_->Read(s))
+            continue;
+        auto gNd = root.append_child("item");
+        gNd.append_attribute("uuid") = s.uuid.c_str();
+        gNd.append_attribute("index") = s.index;
+        gNd.append_attribute("name") = s.name.c_str();
+        gNd.append_attribute("type") = static_cast<int>(s.type);
+        gNd.append_attribute("model") = s.client_model.c_str();
+        gNd.append_attribute("icon") = s.client_icon.c_str();
+        gNd.append_attribute("remote_model") = s.server_model.c_str();
+        gNd.append_attribute("remote_icon") = s.server_icon.c_str();
     }
 
     std::stringstream stream;

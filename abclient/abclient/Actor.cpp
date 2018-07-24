@@ -47,7 +47,7 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
 
     result->Unserialize(data);
     result->Init(scene, position, rotation);
-    result->PlayAnimation(ANIM_IDLE, true);
+    result->PlayAnimation(ANIM_IDLE, true, 0.0f);
 
     return result;
 }

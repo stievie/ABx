@@ -68,6 +68,7 @@ static constexpr int MAX_EFFECT_NAME = 64;
 static constexpr int MAX_EFFECTS = 4096;                            // Max effects in game
 // Item
 static constexpr int MAX_ITEM_NAME = 64;
+static constexpr int MAX_ITEMS = 65536;
 
 }
 }

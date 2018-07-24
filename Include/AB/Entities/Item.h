@@ -6,16 +6,13 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ITEMS = "game_itemms";
+constexpr auto KEY_ITEMS = "game_items";
 
-enum ItemType : uint8_t
+enum ItemType : uint16_t
 {
-    ItemTypeItem = 0,
+    ItemTypeUnknown = 0,
+    ItemTypeCharacterModel = 1,
     ItemTypeModifier
-};
-
-enum ItemID : uint16_t
-{
 };
 
 struct Item : Entity
@@ -31,16 +28,20 @@ struct Item : Entity
         s.value4b(index);
         s.text1b(name, Limits::MAX_ITEM_NAME);
         s.text1b(script, Limits::MAX_FILENAME);
-        s.text1b(icon, Limits::MAX_FILENAME);
-        s.text1b(model, Limits::MAX_FILENAME);
-        s.value1b(type);
+        s.text1b(server_icon, Limits::MAX_FILENAME);
+        s.text1b(server_model, Limits::MAX_FILENAME);
+        s.text1b(client_icon, Limits::MAX_FILENAME);
+        s.text1b(client_model, Limits::MAX_FILENAME);
+        s.value2b(type);
     }
 
     uint32_t index = INVALID_INDEX;
     std::string name;
     std::string script;
-    std::string icon;
-    std::string model;
+    std::string server_icon;
+    std::string server_model;
+    std::string client_icon;
+    std::string client_model;
     ItemType type = ItemTypeUnknown;
 };
 

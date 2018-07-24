@@ -30,8 +30,6 @@ private:
     std::shared_ptr<ProtocolLogin> protoLogin_;
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
-    std::string accountUuid_;
-    std::string password_;
     std::string mapUuid_;
     std::vector<int> pings_;
     int lastRun_;
@@ -97,6 +95,8 @@ public:
     /// The invite to our party was removed
     void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
 
+    std::string accountUuid_;
+    std::string password_;
     std::string loginHost_;
     uint16_t loginPort_;
     std::string fileHost_;

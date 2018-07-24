@@ -26,3 +26,5 @@
 #include "DBGuild.h"
 #include "DBGuildMembers.h"
 #include "DBReservedName.h"
+#include "DBItem.h"
+#include "DBItemList.h"

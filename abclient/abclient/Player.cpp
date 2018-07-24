@@ -40,7 +40,7 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
     Camera* camera = result->cameraNode_->CreateComponent<Camera>();
     camera->SetFarClip(300.0f);
 
-    result->PlayAnimation(ANIM_IDLE, true);
+    result->PlayAnimation(ANIM_IDLE, true, 0.0f);
     return result;
 }
 

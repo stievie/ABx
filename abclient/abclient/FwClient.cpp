@@ -6,6 +6,10 @@
 #include <AB/ProtocolCodes.h>
 #include "Options.h"
 #include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
+#include <Urho3D/Network/Network.h>
+#include <Urho3D/Network/HttpRequest.h>
+#include <iostream>
+#include <fstream>
 
 #include <Urho3D/DebugNew.h>
 
@@ -120,6 +124,7 @@ void FwClient::LoadData()
     LoadProfessions();
     LoadSkills();
     LoadEffects();
+    LoadItems();
 /*    WorkQueue* queue = GetSubsystem<WorkQueue>();
     SharedPtr<WorkItem> item = queue->GetFreeItem();
     item->aux_ = const_cast<FwClient*>(this);
@@ -139,6 +144,7 @@ void FwClient::LoadGames()
 {
     if (!games_.empty())
         return;
+
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Games.xml");
     if (!file)
@@ -242,6 +248,61 @@ void FwClient::LoadEffects()
     file = cache->GetResource<XMLFile>("Effects.xml");
     if (!file)
         return;
+}
+
+void FwClient::LoadItems()
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Items.xml");
+    if (!file)
+    {
+        if (!client_.HttpDownload("/_items_", "GameData/Items.xml"))
+            return;
+    }
+}
+
+bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
+{
+    // No SSL :(
+    Urho3D::Network* network = GetSubsystem<Urho3D::Network>();
+    std::stringstream ss;
+    ss << "https://";
+    ss << client_.fileHost_;
+    ss << ":" << static_cast<int>(client_.filePort_);
+    ss << path.CString();
+    String url(ss.str().c_str());
+    Vector<String> headers;
+    std::stringstream hss;
+    hss << "Auth: " << client_.accountUuid_ << client_.password_;
+    headers.Push(hss.str().c_str());
+
+    std::remove(outFile.CString());
+    std::ofstream f;
+    f.open(outFile.CString());
+    if (!f.is_open())
+        return false;
+
+    SharedPtr<Urho3D::HttpRequest> request = network->MakeHttpRequest(url, "GET", headers);
+    for (;;)
+    {
+        if (request->GetState() == HTTP_INITIALIZING)
+        {
+            Time::Sleep(5);
+            continue;
+        }
+        if (request->GetState() == HTTP_ERROR)
+        {
+            URHO3D_LOGERRORF("HTTP request error: %s", request->GetError());
+            return false;
+        }
+
+        if (request->GetAvailableSize() > 0)
+            f << request->ReadBuffer().Buffer();
+        else
+            break;
+    }
+
+    return true;
 }
 
 void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
