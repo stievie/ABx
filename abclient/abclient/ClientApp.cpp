@@ -148,6 +148,8 @@ void ClientApp::Start()
     GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml"));
 
     GetSubsystem<Options>()->UpdateAudio();
+    // Oh what a difference!
+    GetSubsystem<Renderer>()->SetShadowQuality(SHADOWQUALITY_BLUR_VSM);
 
     // We subscribe to the events we'd like to handle.
     // In this example we will be showing what most of them do,

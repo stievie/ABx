@@ -121,55 +121,10 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
     if (model_)
     {
         model_->SetCastShadows(castShadows_);
+        model_->SetOccludee(true);
+        model_->SetOccluder(true);
     }
 }
-
-/*void Actor::CreateModel()
-{
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-
-    SceneResolver resolver;
-
-
-    // Create rigidbody, and set non-zero mass so that the body becomes dynamic
-    RigidBody* body = GetNode()->CreateComponent<RigidBody>();
-    body->SetMass(1.0f);
-    // Set zero angular factor so that physics doesn't turn the character on its own.
-    // Instead we will control the character yaw manually
-    body->SetAngularFactor(Vector3::ZERO);
-    body->SetLinearFactor(Vector3(1.0f, 0.0f, 1.0f));
-    body->SetCollisionMask(0);
-
-    // spin node
-    Node* adjustNode = GetNode()->GetChild("AdjNode");
-    adjustNode->SetRotation(Quaternion(180, Vector3(0, 1, 0)));
-
-    // Create the rendering component + animation controller
-    if (type_ == Actor::Animated)
-    {
-        AnimatedModel* animModel = adjustNode->CreateComponent<AnimatedModel>();
-        animModel->SetModel(cache->GetResource<Model>(mesh_));
-        model_ = animModel;
-        animController_ = adjustNode->CreateComponent<AnimationController>();
-    }
-    else
-    {
-        model_ = adjustNode->CreateComponent<StaticModel>();
-        model_->SetModel(cache->GetResource<Model>(mesh_));
-    }
-    model_->SetCastShadows(castShadows_);
-
-    int i = 0;
-    for (Vector<String>::ConstIterator it = materials_.Begin(); it != materials_.End(); it++, i++)
-    {
-        model_->SetMaterial(i, cache->GetResource<Material>((*it)));
-    }
-    model_->SetCastShadows(castShadows_);
-
-    CollisionShape* shape = node_->CreateComponent<CollisionShape>();
-    const BoundingBox& bb = model_->GetBoundingBox();
-    shape->SetCylinder(bb.Size().x_, bb.Size().y_);
-}*/
 
 void Actor::FixedUpdate(float timeStep)
 {

@@ -338,6 +338,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     for (const auto& o : objects_)
     {
         if (o.get() == player.get())
+            // Don't send spawn of our self
             continue;
 
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);

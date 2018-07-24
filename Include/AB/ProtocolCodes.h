@@ -115,8 +115,9 @@ enum TurnDirection : uint8_t
 
 enum CreatureState : uint8_t
 {
-    CreatureStateIdle = 0,
-    CreatureStateMoving = 1,
+    CreatureStateUnknown = 0,
+    CreatureStateIdle = 1,
+    CreatureStateMoving = 2,
     CreatureStateUsingSkill = 3,
     CreatureStateAttacking = 4,
     CreatureStateEmote = 5,

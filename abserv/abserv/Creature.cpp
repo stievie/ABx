@@ -96,6 +96,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     InputItem input;
     AB::GameProtocol::CreatureState newState = creatureState_;
+
     if (newState == AB::GameProtocol::CreatureStateEmoteCry &&
         lastStateChange_ + 10000 < Utils::AbTick())
     {
