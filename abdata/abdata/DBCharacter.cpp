@@ -16,7 +16,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     std::ostringstream query;
     query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `profession_uuid`, `profession2_uuid`, `name`, `pvp`, " <<
         "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
-        "`creation`";
+        "`model_index`, `creation`";
     query << ") VALUES (";
 
     query << db->EscapeString(character.uuid) << ", ";
@@ -31,6 +31,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     query << character.xp << ", ";
     query << character.skillPoints << ", ";
     query << static_cast<uint32_t>(character.sex) << ", ";
+    query << character.modelIndex << ", ";
     query << character.creation;
 
     query << ")";
@@ -82,6 +83,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
     character.xp = result->GetUInt("experience");
     character.skillPoints = result->GetUInt("skillpoints");
     character.sex = static_cast<AB::Entities::CharacterSex>(result->GetUInt("sex"));
+    character.modelIndex = result->GetUInt("model_index");
     character.lastLogin = result->GetLong("lastlogin");
     character.lastLogout = result->GetLong("lastlogout");
     character.creation = result->GetLong("creation");

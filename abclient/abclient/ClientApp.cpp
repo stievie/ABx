@@ -63,6 +63,8 @@ ClientApp::ClientApp(Context* context) :
 
     client_ = new FwClient(context);
     context->RegisterSubsystem(client_);
+    itemsCache_ = new ItemsCache(context);
+    context->RegisterSubsystem(itemsCache_);
     levelManager_ = new LevelManager(context);
     context->RegisterSubsystem(levelManager_);
 
@@ -114,7 +116,7 @@ void ClientApp::Setup()
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
     engineParameters_[EP_RESOURCE_PATHS] = "AbData;GameData;CoreData;Data";
     engineParameters_[EP_LOG_NAME] = "fw.log";
-#if defined(AB_CLIENT_LOGGING)    
+#if defined(AB_CLIENT_LOGGING)
     engineParameters_[EP_LOG_QUIET] = false;
 #else
     engineParameters_[EP_LOG_QUIET] = true;

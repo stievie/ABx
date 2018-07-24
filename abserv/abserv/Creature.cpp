@@ -335,6 +335,7 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     if (!GameObject::Serialize(stream))
         return false;
     stream.Write<uint8_t>(GetSex());
+    stream.Write<uint32_t>(GetModelIndex());
     return true;
 }
 

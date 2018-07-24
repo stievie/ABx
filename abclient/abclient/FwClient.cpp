@@ -10,6 +10,7 @@
 #include <Urho3D/Network/HttpRequest.h>
 #include <iostream>
 #include <fstream>
+#include "ItemsCache.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -258,6 +259,29 @@ void FwClient::LoadItems()
     {
         if (!client_.HttpDownload("/_items_", "GameData/Items.xml"))
             return;
+    }
+    file = cache->GetResource<XMLFile>("Items.xml");
+    if (!file)
+        return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("items");
+    if (!node)
+        return;
+
+    ItemsCache* items = GetSubsystem<ItemsCache>();
+    for (const auto& itm : node.children("item"))
+    {
+        auto item = items->Create();
+
+        item->uuid_ = itm.attribute("uuid").as_string();
+        item->index_ = itm.attribute("index").as_uint();
+        item->name_ = itm.attribute("name").as_string();
+        item->type_ = static_cast<AB::Entities::ItemType>(itm.attribute("type").as_uint());
+        item->modelFile_ = itm.attribute("model").as_string();
+        item->iconFile_ = itm.attribute("icon").as_string();
+
+        items->Add(item);
     }
 }
 

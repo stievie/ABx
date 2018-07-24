@@ -78,8 +78,6 @@ public:
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation) override;
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
-    /// Model file name
-    String prefabFile_;
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
@@ -104,6 +102,7 @@ public:
     Quaternion rotateTo_;
     String name_;
     AB::Entities::CharacterSex sex_;
+    uint32_t modelIndex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
     void SelectObject(SharedPtr<GameObject> object);

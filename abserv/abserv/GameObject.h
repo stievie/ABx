@@ -110,6 +110,10 @@ public:
     {
         return AB::Entities::CharacterSexUnknown;
     }
+    virtual uint32_t GetModelIndex() const
+    {
+        return 0;
+    }
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;

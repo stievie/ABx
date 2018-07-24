@@ -261,6 +261,8 @@
     <ClCompile Include="GameMenu.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HealthBar.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemsCache.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LoginLevel.cpp" />
     <ClCompile Include="MailWindow.cpp" />
@@ -296,6 +298,8 @@
     <ClInclude Include="GameMenu.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HealthBar.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemsCache.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LoginLevel.h" />
     <ClInclude Include="MailWindow.h" />

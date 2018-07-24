@@ -10,6 +10,7 @@
 #include "TimeUtils.h"
 #include <AB/ProtocolCodes.h>
 #include "FwClient.h"
+#include "ItemsCache.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -17,7 +18,6 @@ Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
     castShadows_(true),
-    prefabFile_(String::EMPTY),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
@@ -56,7 +56,6 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
 {
     if (sex_ == AB::Entities::CharacterSexFemale)
     {
-        prefabFile_ = "Objects/PC_Human_Mo_Female1_Base.xml";
         animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
         animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
         animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
@@ -65,21 +64,25 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
     }
     else
     {
-        prefabFile_ = "Objects/PC_Human_Mo_Male1_Base.xml";
         animations_[ANIM_RUN] = "Models/PC_Human_Mo_Male1_Running.ani";
         animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Male1_Idle.ani";
         animations_[ANIM_SIT] = "Models/PC_Human_Mo_Male1_Sitting.ani";
         animations_[ANIM_DYING] = "Models/PC_Human_Mo_Male1_Dying.ani";
     }
 
-    if (!prefabFile_.Empty())
+    if (modelIndex_ != 0)
     {
-        ResourceCache* cache = GetSubsystem<ResourceCache>();
-
-        XMLFile* object = cache->GetResource<XMLFile>(prefabFile_);
+        ItemsCache* items = GetSubsystem<ItemsCache>();
+        SharedPtr<Item> item = items->Get(modelIndex_);
+        if (!item)
+        {
+            URHO3D_LOGERRORF("Model Item not found: %d", modelIndex_);
+            return;
+        }
+        XMLFile* object = item->GetModelResource<XMLFile>();
         if (!object)
         {
-            URHO3D_LOGERRORF("Prefab file not found: %s", prefabFile_);
+            URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_);
             return;
         }
 
@@ -108,7 +111,7 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
         }
         else
         {
-            URHO3D_LOGERRORF("Error instantiating prefab %s", prefabFile_);
+            URHO3D_LOGERRORF("Error instantiating prefab %s", item->modelFile_);
             adjNode->Remove();
         }
     }
@@ -370,6 +373,7 @@ void Actor::Unserialize(PropReadStream& data)
     uint8_t s;
     if (data.Read(s))
         sex_ = static_cast<AB::Entities::CharacterSex>(s);
+    data.Read(modelIndex_);
     AddActorUI();
 }
 

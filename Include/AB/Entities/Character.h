@@ -45,6 +45,7 @@ struct Character : Entity
         s.value4b(skillPoints);
         s.value1b(sex);
         s.text1b(accountUuid, Limits::MAX_UUID);
+        s.value4b(modelIndex);
         s.text1b(skillTemplate, Limits::MAX_CHARACTER_SKILLTEMPLATE);
         s.value8b(onlineTime);
         s.value8b(deletedTime);
@@ -69,6 +70,8 @@ struct Character : Entity
     CharacterSex sex = CharacterSexUnknown;
     std::string currentMapUuid;
     std::string accountUuid;
+    // Index in game_items
+    uint32_t modelIndex = 0;
     std::string skillTemplate;
 
     int64_t onlineTime = 0;
