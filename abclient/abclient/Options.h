@@ -5,7 +5,7 @@ class Options : public Object
     URHO3D_OBJECT(Options, Object);
 public:
     Options(Context* context);
-    ~Options();
+    ~Options() = default;
 
     String loginHost_;
     uint16_t loginPort_;
@@ -14,24 +14,42 @@ public:
 
     void Load();
 
-    int GetWidth() { return width_; }
+    int GetWidth() const { return width_; }
     void SetWidth(int value);
-    int GetHeight() { return height_; }
+    int GetHeight() const { return height_; }
     void SetHeight(int value);
-    bool GetFullscreen() { return fullscreen_; }
+    bool GetFullscreen() const { return fullscreen_; }
     void SetFullscreen(bool value);
-    bool GetBorderless() { return borderless_; }
+    bool GetBorderless() const { return borderless_; }
     void SetBorderless(bool value);
-    bool GetResizeable() { return resizeable_; }
+    bool GetResizeable() const { return resizeable_; }
     void SetResizeable(bool value);
-    bool GetVSync() { return vSync_; }
+    bool GetVSync() const { return vSync_; }
     void SetVSync(bool value);
-    bool GetTripleBuffer() { return tripleBuffer_; }
+    bool GetTripleBuffer() const { return tripleBuffer_; }
     void SetTripleBuffer(bool value);
-    bool GetHighDPI() { return highDPI_; }
+    bool GetHighDPI() const { return highDPI_; }
     void SetHighDPI(bool value);
     void SetMultiSample(int value);
-    int GetMultiSample() { return multiSample_; }
+    int GetMultiSample() const { return multiSample_; }
+    void SetShadowQuality(ShadowQuality quality);
+    ShadowQuality GetShadowQuality() const
+    {
+        return shadowQuality_;
+    }
+    /// Set texture quality level. See the QUALITY constants in GraphicsDefs.h.
+    void SetTextureQuality(int quality);
+    int GetTextureQuality() const
+    {
+        return textureQuality_;
+    }
+    /// Set material quality level. See the QUALITY constants in GraphicsDefs.h.
+    void SetMaterialQuality(int quality);
+    int GetMaterialQuality() const
+    {
+        return materialQuality_;
+    }
+
     const String& GetRenderPath() const;
 
     void UpdateAudio();
@@ -45,6 +63,9 @@ private:
     bool tripleBuffer_;
     bool highDPI_;
     int multiSample_;
+    ShadowQuality shadowQuality_;
+    int textureQuality_;
+    int materialQuality_;
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     String renderPath_;

@@ -8,6 +8,8 @@
   <parameter name="HighDPI" type="bool" value="f" />
   <parameter name="VSync" type="bool" value="t" />
   <parameter name="TripleBuffer" type="bool" value="f" />
+  <parameter name="TextureQuality" type="int" value="15" />
+  <parameter name="MaterialQuality" type="int" value="15" />
   <!-- We use FXAA for antialiasing -->
   <parameter name="MultiSample" type="int" value="1" />
   <parameter name="LoginHost" type="string" value="stievie.mooo.com" />

@@ -13,6 +13,9 @@ Options::Options(Context* context) :
     highDPI_(false),
     vSync_(false),
     tripleBuffer_(false),
+    shadowQuality_(SHADOWQUALITY_BLUR_VSM),
+    textureQuality_(QUALITY_HIGH),
+    materialQuality_(QUALITY_HIGH),
     multiSample_(1),
     loginHost_("localhost"),
     renderPath_("RenderPaths/Prepass.xml"),
@@ -21,10 +24,6 @@ Options::Options(Context* context) :
     gainAmbient_(1.0f),
     gainVoice_(1.0f),
     gainMusic_(1.0f)
-{
-}
-
-Options::~Options()
 {
 }
 
@@ -72,6 +71,18 @@ void Options::Load()
         else if (name.Compare("TripleBuffer") == 0)
         {
             tripleBuffer_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("ShadowQuality") == 0)
+        {
+            shadowQuality_ = static_cast<ShadowQuality>(paramElem.GetUInt("value"));
+        }
+        else if (name.Compare("TextureQuality") == 0)
+        {
+            textureQuality_ = paramElem.GetInt("value");
+        }
+        else if (name.Compare("MaterialQuality") == 0)
+        {
+            materialQuality_ = paramElem.GetInt("value");
         }
         else if (name.Compare("MultiSample") == 0)
         {
@@ -128,6 +139,33 @@ void Options::SetMultiSample(int value)
     {
         multiSample_ = value;
         UpdateGraphicsMode();
+    }
+}
+
+void Options::SetShadowQuality(ShadowQuality quality)
+{
+    if (shadowQuality_ != quality)
+    {
+        shadowQuality_ = quality;
+        GetSubsystem<Renderer>()->SetShadowQuality(shadowQuality_);
+    }
+}
+
+void Options::SetTextureQuality(int quality)
+{
+    if (textureQuality_ != quality)
+    {
+        textureQuality_ = quality;
+        GetSubsystem<Renderer>()->SetTextureQuality(textureQuality_);
+    }
+}
+
+void Options::SetMaterialQuality(int quality)
+{
+    if (materialQuality_ != quality)
+    {
+        materialQuality_ = quality;
+        GetSubsystem<Renderer>()->SetMaterialQuality(materialQuality_);
     }
 }
 

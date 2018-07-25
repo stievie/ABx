@@ -147,9 +147,12 @@ void ClientApp::Start()
     // Let's use the default style that comes with Urho3D.
     GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/FwDefaultStyle.xml"));
 
-    GetSubsystem<Options>()->UpdateAudio();
+    Options* options = GetSubsystem<Options>();
+    options->UpdateAudio();
     // Oh what a difference!
-    GetSubsystem<Renderer>()->SetShadowQuality(SHADOWQUALITY_BLUR_VSM);
+    GetSubsystem<Renderer>()->SetShadowQuality(options->GetShadowQuality());
+    GetSubsystem<Renderer>()->SetTextureQuality(options->GetTextureQuality());
+    GetSubsystem<Renderer>()->SetMaterialQuality(options->GetMaterialQuality());
 
     // We subscribe to the events we'd like to handle.
     // In this example we will be showing what most of them do,
