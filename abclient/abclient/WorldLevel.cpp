@@ -45,13 +45,11 @@ SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
     world->Raycast(query);
     if (!result.Empty())
     {
-        for (unsigned i = 0; i < result.Size(); i++)
+        for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
         {
-            Node* nd = result[i].node_;
-            if (nd)
+            if (Node* nd = (*it).node_)
             {
-                SharedPtr<GameObject> obj = GetObjectFromNode(nd);
-                if (obj)
+                if (SharedPtr<GameObject> obj = GetObjectFromNode(nd))
                     return obj;
             }
         }
@@ -144,10 +142,9 @@ void WorldLevel::HandleMouseMove(StringHash eventType, VariantMap& eventData)
     world->Raycast(query);
     if (!result.Empty())
     {
-        for (unsigned i = 0; i < result.Size(); i++)
+        for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
         {
-            Node* nd = result[i].node_;
-            if (nd)
+            if (Node* nd = (*it).node_)
             {
                 SharedPtr<GameObject> obj = GetObjectFromNode(nd);
                 if (!obj)
@@ -291,11 +288,12 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     {
         object->spawnTickServer_ = updateTick;
         const float p[3] = { position.x_, position.y_, position.z_ };
+        // Here an object is always an Actor
         dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
+        object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
-        object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
         switch (object->objectType_)
         {
         case ObjectTypePlayer:
