@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "Actor.h"
 #include "Definitions.h"
-#include <SDL/SDL_timer.h>
 #include "LevelManager.h"
 #include "BaseLevel.h"
 #include "MathUtils.h"
@@ -177,7 +176,7 @@ void Actor::Update(float timeStep)
     bool isLCtrlDown = input->GetScancodeDown(SDL_SCANCODE_LCTRL);
     if (hovered_ || playerSelected_ || isLCtrlDown)
     {
-        Vector3 pos = node_->GetPosition();
+        const Vector3& pos = node_->GetPosition();
         IntVector2 screenPos = WorldToScreenPoint(pos);
         float sizeFac = 1.0f;
         if (screenPos != IntVector2::ZERO)
@@ -185,7 +184,7 @@ void Actor::Update(float timeStep)
             Node* camNode = GetScene()->GetChild("CameraNode");
             if (camNode)
             {
-                Vector3 dist = pos - camNode->GetPosition();
+                const Vector3& dist = pos - camNode->GetPosition();
                 sizeFac = 10.0f / dist.Length();
             }
 

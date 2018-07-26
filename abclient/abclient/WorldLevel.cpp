@@ -51,10 +51,8 @@ SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
             if (nd)
             {
                 SharedPtr<GameObject> obj = GetObjectFromNode(nd);
-                if (!obj)
-                    continue;
-
-                return obj;
+                if (obj)
+                    return obj;
             }
         }
     }
@@ -242,17 +240,17 @@ void WorldLevel::CreateScene()
 void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectSpawn;
-    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     if (objects_.Contains(objectId))
         return;
     int64_t tick = eventData[P_UPDATETICK].GetInt64();
-    Vector3 pos = eventData[P_POSITION].GetVector3();
+    const Vector3& pos = eventData[P_POSITION].GetVector3();
     float rot = eventData[P_ROTATION].GetFloat();
     Quaternion direction;
     float deg = -rot * (180.0f / (float)M_PI);
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
-    Vector3 scale = eventData[P_SCALE].GetVector3();
-    String d = eventData[P_DATA].GetString();
+    const Vector3& scale = eventData[P_SCALE].GetVector3();
+    const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
     PropReadStream data(d.CString(), d.Length());
     SpawnObject(tick, objectId, existing, pos, scale, direction, data);
@@ -311,10 +309,17 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
 void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectDespawn;
-    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
+    uint32_t objectId = eventData[P_OBJECTID].GetInt();
     SharedPtr<GameObject> object = objects_[objectId];
     if (object)
     {
+        SharedPtr<GameObject> selO = player_->GetSelectedObject();
+        if (selO && selO->id_ == object->id_)
+        {
+            // If the selected object leaves unselect it
+            player_->SelectObject(SharedPtr<GameObject>());
+            targetWindow_->SetTarget(SharedPtr<GameObject>());
+        }
         object->RemoveFromScene();
         object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
@@ -322,9 +327,6 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
             Actor* act = dynamic_cast<Actor*>(object.Get());
             chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");
         }
-        // If the player has selected this object -> unselect it
-        if (player_->GetSelectedObject() == object)
-            player_->SelectObject(SharedPtr<GameObject>());
         objects_.Erase(objectId);
     }
 }
@@ -332,12 +334,12 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
 void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectPosUpdate;
-    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
     {
         int64_t tick = eventData[P_UPDATETICK].GetInt64();
-        Vector3 pos = eventData[P_POSITION].GetVector3();
+        const Vector3& pos = eventData[P_POSITION].GetVector3();
         object->MoveTo(tick, pos);
     }
 }
@@ -345,7 +347,7 @@ void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventDa
 void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectRotUpdate;
-    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
     {
@@ -359,7 +361,7 @@ void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventDa
 void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectStateUpdate;
-    uint32_t objectId = static_cast<uint32_t>(eventData[P_OBJECTID].GetInt());
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     GameObject* object = objects_[objectId];
     if (object)
     {
@@ -372,8 +374,8 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
 void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectSelected;
-    uint32_t objectId = static_cast<uint32_t>(eventData[P_SOURCEID].GetInt());
-    uint32_t targetId = static_cast<uint32_t>(eventData[P_TARGETID].GetInt());
+    uint32_t objectId = eventData[P_SOURCEID].GetUInt();
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
     SharedPtr<GameObject> object = objects_[objectId];
     if (object)
     {
@@ -394,6 +396,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
             }
             else
             {
+                // Unselect
                 actor->SelectObject(SharedPtr<GameObject>());
                 if (actor->objectType_ == ObjectTypeSelf)
                 {

@@ -149,10 +149,11 @@ void ClientApp::Start()
 
     Options* options = GetSubsystem<Options>();
     options->UpdateAudio();
+    Renderer* renderer = GetSubsystem<Renderer>();
     // Oh what a difference!
-    GetSubsystem<Renderer>()->SetShadowQuality(options->GetShadowQuality());
-    GetSubsystem<Renderer>()->SetTextureQuality(options->GetTextureQuality());
-    GetSubsystem<Renderer>()->SetMaterialQuality(options->GetMaterialQuality());
+    renderer->SetShadowQuality(options->GetShadowQuality());
+    renderer->SetTextureQuality(options->GetTextureQuality());
+    renderer->SetMaterialQuality(options->GetMaterialQuality());
 
     // We subscribe to the events we'd like to handle.
     // In this example we will be showing what most of them do,
