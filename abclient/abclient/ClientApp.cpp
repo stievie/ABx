@@ -177,6 +177,8 @@ void ClientApp::Stop()
 {
     FwClient* cli = context_->GetSubsystem<FwClient>();
     cli->Logout();
+    Options* options = GetSubsystem<Options>();
+    options->Save();
 }
 
 void ClientApp::SetWindowTitleAndIcon()

@@ -19,3 +19,5 @@
 * all: Item Database
   https://github.com/jgoodman/MySQL-RPG-Schema   
   https://www.gamedev.net/forums/topic/465300-rpg-item-database/
+
+* all: Tests https://github.com/catchorg/Catch2

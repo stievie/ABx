@@ -91,7 +91,6 @@ void BaseLevel::OnProtocolError(uint8_t err)
 
 void BaseLevel::SetupViewport()
 {
-    Graphics* graphics = GetSubsystem<Graphics>();
     Renderer* renderer = GetSubsystem<Renderer>();
 
     viewport_ = new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>());

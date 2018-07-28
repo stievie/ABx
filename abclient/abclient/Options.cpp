@@ -133,6 +133,11 @@ void Options::Load()
     }
 }
 
+void Options::Save()
+{
+    // TODO
+}
+
 void Options::SetMultiSample(int value)
 {
     if (multiSample_ != value)

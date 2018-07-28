@@ -98,15 +98,19 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
             adjNode->ApplyAttributes();
             if (adjNode->GetComponent<AnimatedModel>(true))
             {
+                AnimatedModel* animModel = adjNode->GetComponent<AnimatedModel>(true);
                 type_ = Actor::Animated;
                 animController_ = adjNode->CreateComponent<AnimationController>();
-                model_ = adjNode->GetComponent<AnimatedModel>(true);
+                model_ = animModel;
             }
             else
             {
                 type_ = Actor::Static;
                 model_ = adjNode->GetComponent<StaticModel>(true);
             }
+            Node* soundSourceNode = node_->CreateChild("SoundSourceNode");
+            soundSource_ = soundSourceNode->CreateComponent<SoundSource3D>();
+            soundSource_->SetSoundType(SOUND_EFFECT);
         }
         else
         {
@@ -251,7 +255,7 @@ void Actor::RemoveActorUI()
         uiRoot->RemoveChild(hpBar_);
 }
 
-void Actor::SelectObject(SharedPtr<GameObject> object)
+void Actor::SetSelectedObject(SharedPtr<GameObject> object)
 {
     if (selectedObject_ == object)
         return;
@@ -323,7 +327,7 @@ void Actor::Unserialize(PropReadStream& data)
     GameObject::Unserialize(data);
     std::string str;
     if (data.ReadString(str))
-        name_ = String(str.data(), (unsigned)str.length());
+        name_ = String(str.data(), static_cast<unsigned>(str.length()));
     uint8_t s;
     if (data.Read(s))
         sex_ = static_cast<AB::Entities::CharacterSex>(s);

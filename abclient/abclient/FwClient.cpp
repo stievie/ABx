@@ -107,7 +107,6 @@ void FwClient::Stop()
 void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
 {
     using namespace AbEvents::LevelReady;
-    String levelName = eventData[P_NAME].GetString();
     levelReady_ = true;
     // Level loaded, send queued events
     for (auto& e : queuedEvents_)
@@ -459,7 +458,7 @@ void FwClient::SelectObject(uint32_t sourceId, uint32_t targetId)
 void FwClient::Command(AB::GameProtocol::CommandTypes type, const String& data)
 {
     if (loggedIn_)
-        client_.Command(type, std::string(data.CString()));
+        client_.Command(type, std::string(data.CString(), data.Length()));
 }
 
 void FwClient::GotoPos(const Vector3& pos)
@@ -663,8 +662,8 @@ void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessa
     using namespace AbEvents::ServerMessage;
     eData[P_UPDATETICK] = updateTick;
     eData[P_MESSAGETYPE] = type;
-    eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
-    eData[P_DATA] = String(message.data(), (int)message.length());
+    eData[P_SENDER] = String(senderName.data(), static_cast<int>(senderName.length()));
+    eData[P_DATA] = String(message.data(), static_cast<int>(message.length()));
     QueueEvent(AbEvents::E_SERVERMESSAGE, eData);
 }
 
@@ -676,8 +675,8 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     eData[P_UPDATETICK] = updateTick;
     eData[P_MESSAGETYPE] = channel;
     eData[P_SENDERID] = senderId;
-    eData[P_SENDER] = String(senderName.data(), (int)senderName.length());
-    eData[P_DATA] = String(message.data(), (int)message.length());
+    eData[P_SENDER] = String(senderName.data(), static_cast<int>(senderName.length()));
+    eData[P_DATA] = String(message.data(), static_cast<int>(message.length()));
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
 }
 

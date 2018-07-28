@@ -59,5 +59,5 @@ void PingDot::Update(float timeStep)
 
         lastUpdate_ = 0.0f;
     }
-    BorderImage::Update(timeStep);
+    Button::Update(timeStep);
 }

@@ -49,6 +49,15 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     Actor::Init(scene, position, rotation);
     RigidBody* body = node_->GetComponent<RigidBody>(true);
     body->SetCollisionLayer(1);
+#ifdef PLAYER_HEAD_ANIMATION
+    AnimatedModel* animModel = node_->GetComponent<AnimatedModel>(true);
+    if (animModel)
+    {
+        Bone* headBone = animModel->GetSkeleton().GetBone("Head");
+        if (headBone)
+            headBone->animated_ = false;
+    }
+#endif
 }
 
 void Player::FixedUpdate(float timeStep)
@@ -155,6 +164,21 @@ void Player::PostUpdate(float timeStep)
     // Get camera lookat dir from character yaw + pitch
     Quaternion rot = Quaternion(controls_.yaw_, Vector3::UP);
     Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
+
+#ifdef PLAYER_HEAD_ANIMATION
+    // Turn head to camera pitch, but limit to avoid unnatural animation
+    Node* headNode = characterNode->GetChild("Head", true);
+    float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
+    float _yaw = controls_.yaw_ - characterNode->GetRotation().YawAngle();
+    float yaw = _yaw - floor((_yaw + 180.0f) / 360.0f) * 360.0f;
+    float limitYaw = Clamp(yaw, -45.0f, 45.0f);
+    Quaternion headDir = characterNode->GetRotation() *
+        Quaternion(limitYaw, Vector3::UP) *
+        Quaternion(limitPitch, Vector3(1.0f, 0.0f, 0.0f));
+    // This could be expanded to look at an arbitrary target, now just look at a point in front
+    Vector3 headWorldTarget = headNode->GetWorldPosition() + headDir * Vector3(0.0f, 0.0f, -1.0f);
+    headNode->LookAt(headWorldTarget, Vector3(0.0f, 1.0f, 0.0f));
+#endif
 
     // Third person camera: position behind the character
     static const Vector3 CAM_POS(0.0f, 1.5f, 0.0f);

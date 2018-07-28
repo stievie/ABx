@@ -216,6 +216,10 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
 
             // Limit pitch
             player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
+            if (player_->controls_.yaw_ > 360.0f)
+                player_->controls_.yaw_ -= 360.0f;
+            else if (player_->controls_.yaw_ < 0.0f)
+                player_->controls_.yaw_ += 360.0f;
         }
     }
 }
@@ -232,6 +236,11 @@ void WorldLevel::CreateScene()
     NavigationMesh* navMesh = scene_->GetComponent<NavigationMesh>();
     if (navMesh)
         navMesh->Build();
+}
+
+void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
+{
+    BaseLevel::PostUpdate(eventType, eventData);
 }
 
 void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
@@ -315,7 +324,7 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
         if (selO && selO->id_ == object->id_)
         {
             // If the selected object leaves unselect it
-            player_->SelectObject(SharedPtr<GameObject>());
+            player_->SetSelectedObject(SharedPtr<GameObject>());
             targetWindow_->SetTarget(SharedPtr<GameObject>());
         }
         object->RemoveFromScene();
@@ -385,7 +394,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
                 SharedPtr<GameObject> target = objects_[targetId];
                 if (target)
                 {
-                    actor->SelectObject(target);
+                    actor->SetSelectedObject(target);
                     if (actor->objectType_ == ObjectTypeSelf)
                     {
                         targetWindow_->SetTarget(target);
@@ -395,7 +404,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
             else
             {
                 // Unselect
-                actor->SelectObject(SharedPtr<GameObject>());
+                actor->SetSelectedObject(SharedPtr<GameObject>());
                 if (actor->objectType_ == ObjectTypeSelf)
                 {
                     targetWindow_->SetTarget(SharedPtr<GameObject>());

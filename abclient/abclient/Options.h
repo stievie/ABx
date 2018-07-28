@@ -13,6 +13,7 @@ public:
     String password_;
 
     void Load();
+    void Save();
 
     int GetWidth() const { return width_; }
     void SetWidth(int value);

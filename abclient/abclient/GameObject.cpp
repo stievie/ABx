@@ -38,7 +38,7 @@ void GameObject::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState 
     creatureState_ = newState;
 }
 
-float GameObject::GetYRotation()
+float GameObject::GetYRotation() const
 {
     return DegToRad(GetNode()->GetRotation().YawAngle());
 }

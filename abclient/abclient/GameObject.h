@@ -26,11 +26,11 @@ public:
     unsigned index_;
     ObjectType objectType_;
     int64_t spawnTickServer_;
-//    int64_t spawnTickClient_;
     /// Player hovers
     bool hovered_;
     /// Player has selected this object
     bool playerSelected_;
+    SharedPtr<SoundSource3D> soundSource_;
 
     virtual void Unserialize(PropReadStream& data) {}
 
@@ -46,7 +46,7 @@ public:
     {
         return creatureState_;
     }
-    float GetYRotation();
+    float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
     IntVector2 WorldToScreenPoint();

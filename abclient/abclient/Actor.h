@@ -105,7 +105,7 @@ public:
     uint32_t modelIndex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
-    void SelectObject(SharedPtr<GameObject> object);
+    void SetSelectedObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
 };

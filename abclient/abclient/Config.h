@@ -12,3 +12,6 @@
 
 // Turn Urho3D logging on/off
 #define AB_CLIENT_LOGGING
+
+// Animate player head with mouse look
+//#define PLAYER_HEAD_ANIMATION
