@@ -369,12 +369,13 @@ void FwClient::CreateAccount(const String& name, const String& pass, const Strin
     }
 }
 
-void FwClient::CreatePlayer(const String& name, const String& profUuid, AB::Entities::CharacterSex sex, bool isPvp)
+void FwClient::CreatePlayer(const String& name, const String& profUuid, uint32_t modelIndex,
+    AB::Entities::CharacterSex sex, bool isPvp)
 {
     if (loggedIn_)
     {
         client_.CreatePlayer(std::string(name.CString()),
-            std::string(profUuid.CString()), sex, isPvp);
+            std::string(profUuid.CString()), modelIndex, sex, isPvp);
     }
 }
 

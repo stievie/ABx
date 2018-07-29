@@ -114,6 +114,14 @@ public:
     {
         return 0;
     }
+    virtual uint32_t GetProfIndex() const
+    {
+        return 0;
+    }
+    virtual uint32_t GetProf2Index() const
+    {
+        return 0;
+    }
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;

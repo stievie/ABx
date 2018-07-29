@@ -130,8 +130,26 @@ void CharCreateLevel::DoCreateCharacter()
         return;
     }
 
+    // TODO:
+    AB::Entities::CharacterSex _sex = static_cast<AB::Entities::CharacterSex>(sex);
+    uint32_t modelIndex = 1;
+    if (_sex == AB::Entities::CharacterSexFemale)
+    {
+        if (prof.Compare("Mo") == 0)
+            modelIndex = 1;
+        else if (prof.Compare("Me") == 0)
+            modelIndex = 3;
+        else if (prof.Compare("W"))
+            modelIndex = 4;
+    }
+    else
+    {
+        if (prof.Compare("Mo") == 0)
+            modelIndex = 2;
+    }
+
     FwClient* client = context_->GetSubsystem<FwClient>();
-    client->CreatePlayer(name, prof, static_cast<AB::Entities::CharacterSex>(sex), true);
+    client->CreatePlayer(name, prof, modelIndex, _sex, true);
 }
 
 void CharCreateLevel::DoCancel()

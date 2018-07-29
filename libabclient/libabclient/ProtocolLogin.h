@@ -43,6 +43,7 @@ private:
     std::string accKey_;
     std::string charName_;
     std::string profUuid_;
+    uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
     bool isPvp_;
     bool firstRecv_;
@@ -76,6 +77,7 @@ public:
     void CreatePlayer(std::string& host, uint16_t port,
         const std::string& accountUuid, const std::string& password,
         const std::string& charName, const std::string& profUuid,
+        uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
     void GetOutposts(std::string& host, uint16_t port,

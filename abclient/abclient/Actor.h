@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Extrapolator.h"
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Profession.h>
 
 using namespace Urho3D;
 
@@ -87,6 +88,7 @@ private:
     SharedPtr<ProgressBar> hpBar_;
     void AddActorUI();
     void RemoveActorUI();
+    String GetAnimation(const StringHash& hash);
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;
@@ -102,6 +104,9 @@ public:
     Quaternion rotateTo_;
     String name_;
     AB::Entities::CharacterSex sex_;
+    uint32_t level_;
+    AB::Entities::Profession* profession_;
+    AB::Entities::Profession* profession2_;
     uint32_t modelIndex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;

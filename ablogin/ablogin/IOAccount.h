@@ -50,7 +50,9 @@ public:
     static IOAccount::LoginError LoginServerAuth(const std::string& pass,
         AB::Entities::Account& account);
     static IOAccount::CreatePlayerResult CreatePlayer(const std::string& accountUuid,
-        const std::string& name, const std::string& profUuid, AB::Entities::CharacterSex sex, bool isPvp,
+        const std::string& name, const std::string& profUuid,
+        uint32_t modelIndex,
+        AB::Entities::CharacterSex sex, bool isPvp,
         std::string& uuid);
     static bool LoadCharacter(AB::Entities::Character& ch);
     static bool DeletePlayer(const std::string& accountUuid, const std::string& playerUuid);

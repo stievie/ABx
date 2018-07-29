@@ -270,6 +270,7 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
 }
 
 void Client::CreatePlayer(const std::string& charName, const std::string& profUuid,
+    uint32_t modelIndex,
     AB::Entities::CharacterSex sex, bool isPvp)
 {
     if (state_ != StateSelectChar)
@@ -279,7 +280,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
         return;
 
     GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, password_,
-        charName, profUuid, sex, isPvp,
+        charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
     Connection::Run();
 }

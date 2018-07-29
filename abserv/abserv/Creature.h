@@ -57,6 +57,14 @@ public:
 
     virtual uint32_t GetLevel() const { return 0; }
 
+    uint32_t GetProfIndex() const final override
+    {
+        return skills_.prof1_.index;
+    }
+    uint32_t GetProf2Index() const final override
+    {
+        return skills_.prof2_.index;
+    }
     Skill* GetSkill(uint32_t index)
     {
         if (index < PLAYER_MAX_SKILLS)

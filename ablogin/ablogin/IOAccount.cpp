@@ -151,7 +151,9 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
 }
 
 IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& accountUuid,
-    const std::string& name, const std::string& profUuid, AB::Entities::CharacterSex sex,
+    const std::string& name, const std::string& profUuid,
+    uint32_t modelIndex,
+    AB::Entities::CharacterSex sex,
     bool isPvp, std::string& uuid)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
@@ -175,6 +177,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     AB::Entities::Character ch;
     ch.uuid = guid.to_string();
     ch.name = name;
+    ch.modelIndex = modelIndex;
     ch.profession = pro.abbr;
     ch.professionUuid = pro.uuid;
     ch.sex = sex;

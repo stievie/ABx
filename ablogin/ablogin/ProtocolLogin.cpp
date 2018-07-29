@@ -161,6 +161,8 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
 
+    uint32_t modelIndex = message.Get<uint32_t>();
+
     AB::Entities::CharacterSex sex = static_cast<AB::Entities::CharacterSex>(message.GetByte());
     if (sex < AB::Entities::CharacterSex::CharacterSexFemale || sex > AB::Entities::CharacterSex::CharacterSexMale)
     {
@@ -180,7 +182,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::CreatePlayer, thisPtr,
             accountUuid, password,
-            charName, prof, sex, isPvp
+            charName, prof, modelIndex, sex, isPvp
         ))
     );
 }
@@ -471,7 +473,9 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 }
 
 void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::string& password,
-    const std::string& name, const std::string& prof, AB::Entities::CharacterSex sex, bool isPvp)
+    const std::string& name, const std::string& prof,
+    uint32_t modelIndex,
+    AB::Entities::CharacterSex sex, bool isPvp)
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
@@ -490,7 +494,7 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
 
     std::string uuid;
     IO::IOAccount::CreatePlayerResult res = IO::IOAccount::CreatePlayer(
-        account.uuid, name, prof, sex, isPvp, uuid
+        account.uuid, name, prof, modelIndex, sex, isPvp, uuid
     );
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();

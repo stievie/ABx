@@ -22,6 +22,8 @@ Actor::Actor(Context* context) :
     selectedObject_(nullptr),
     nameLabel_(nullptr),
     name_(""),
+    profession_(nullptr),
+    profession2_(nullptr),
     sex_(AB::Entities::CharacterSexUnknown)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
@@ -53,21 +55,11 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
 
 void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotation)
 {
-    if (sex_ == AB::Entities::CharacterSexFemale)
-    {
-        animations_[ANIM_RUN] = "Models/PC_Human_Mo_Female1_Running.ani";
-        animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Female1_Idle.ani";
-        animations_[ANIM_SIT] = "Models/PC_Human_Mo_Female1_Sitting.ani";
-        animations_[ANIM_DYING] = "Models/PC_Human_Mo_Female1_Dying.ani";
-        animations_[ANIM_CRY] = "Models/PC_Human_Mo_Female1_Crying.ani";
-    }
-    else
-    {
-        animations_[ANIM_RUN] = "Models/PC_Human_Mo_Male1_Running.ani";
-        animations_[ANIM_IDLE] = "Models/PC_Human_Mo_Male1_Idle.ani";
-        animations_[ANIM_SIT] = "Models/PC_Human_Mo_Male1_Sitting.ani";
-        animations_[ANIM_DYING] = "Models/PC_Human_Mo_Male1_Dying.ani";
-    }
+    animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
+    animations_[ANIM_IDLE] = GetAnimation(ANIM_IDLE);
+    animations_[ANIM_SIT] = GetAnimation(ANIM_SIT);
+    animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
+    animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
 
     if (modelIndex_ != 0)
     {
@@ -255,6 +247,31 @@ void Actor::RemoveActorUI()
         uiRoot->RemoveChild(hpBar_);
 }
 
+String Actor::GetAnimation(const StringHash& hash)
+{
+    String result;
+    result = "Animations/";
+    result += String(profession_->abbr.c_str()) + "/";
+    if (sex_ == AB::Entities::CharacterSexFemale)
+        result += "F/";
+    else
+        result += "M/";
+
+    if (hash == ANIM_IDLE)
+        result += "Idle.ani";
+    else if (hash == ANIM_DYING)
+        result += "Dying.ani";
+    else if (hash == ANIM_CRY)
+        result += "Crying.ani";
+    else if (hash == ANIM_RUN)
+        result += "Running.ani";
+    else if (hash == ANIM_SIT)
+        result += "Sitting.ani";
+    else
+        return "";
+    return result;
+}
+
 void Actor::SetSelectedObject(SharedPtr<GameObject> object)
 {
     if (selectedObject_ == object)
@@ -329,8 +346,20 @@ void Actor::Unserialize(PropReadStream& data)
     if (data.ReadString(str))
         name_ = String(str.data(), static_cast<unsigned>(str.length()));
     uint8_t s;
+    FwClient* client = GetSubsystem<FwClient>();
+    data.Read(level_);
     if (data.Read(s))
         sex_ = static_cast<AB::Entities::CharacterSex>(s);
+    {
+        uint32_t p;
+        data.Read(p);
+        profession_ = client->GetProfessionByIndex(p);
+    }
+    {
+        uint32_t p;
+        data.Read(p);
+        profession2_ = client->GetProfessionByIndex(p);
+    }
     data.Read(modelIndex_);
     AddActorUI();
 }

@@ -74,6 +74,7 @@ public:
     {
         return data_.modelIndex;
     }
+
     uint32_t GetLevel() const final override { return data_.level; }
     AB::GameProtocol::GameObjectType GetType() const final override
     {

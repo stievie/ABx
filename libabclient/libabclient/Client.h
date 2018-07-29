@@ -47,6 +47,7 @@ public:
     void CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
     void CreatePlayer(const std::string& charName, const std::string& profUuid,
+        uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp);
 
     /// Connect to game server -> authenticate -> enter game

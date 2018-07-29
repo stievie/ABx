@@ -71,7 +71,8 @@ public:
     void Stop();
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
-    void CreatePlayer(const String& name, const String& profUuid, AB::Entities::CharacterSex sex, bool isPvp);
+    void CreatePlayer(const String& name, const String& profUuid, uint32_t modelIndex,
+        AB::Entities::CharacterSex sex, bool isPvp);
     void EnterWorld(const String& charUuid, const String& mapUuid);
     void ChangeWorld(const String& mapUuid);
     void ChangeServer(const String& serverId);
@@ -169,6 +170,17 @@ public:
     const std::map<std::string, AB::Entities::Profession>& GetProfessions() const
     {
         return professions_;
+    }
+    AB::Entities::Profession* GetProfessionByIndex(uint32_t index)
+    {
+        auto it = std::find_if(professions_.begin(), professions_.end(), [&index](const auto& current) -> bool
+        {
+            return current.second.index == index;
+        });
+        if (it != professions_.end())
+            return &(*it).second;
+        static AB::Entities::Profession EMPTY;
+        return &EMPTY;
     }
 
     const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
