@@ -141,11 +141,15 @@ void CharCreateLevel::DoCreateCharacter()
             modelIndex = 3;
         else if (prof.Compare("W"))
             modelIndex = 4;
+        else if (prof.Compare("E") == 0)
+            modelIndex = 7;
     }
     else
     {
         if (prof.Compare("Mo") == 0)
             modelIndex = 2;
+        else if (prof.Compare("W") == 0)
+            modelIndex = 6;
     }
 
     FwClient* client = context_->GetSubsystem<FwClient>();

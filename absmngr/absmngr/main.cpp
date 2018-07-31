@@ -249,9 +249,8 @@ int main()
 #if _WIN32
         try
         {
-
-        WindowsKillLibrary::sendSignal((*it).second->GetData().id, WindowsKillLibrary::SIGNAL_TYPE_CTRL_C);
-        WaitForSingleObject((*it).second->GetData().handle, 1000);
+            WindowsKillLibrary::sendSignal((*it).second->GetData().id, WindowsKillLibrary::SIGNAL_TYPE_CTRL_C);
+            WaitForSingleObject((*it).second->GetData().handle, 1000);
         }
         catch (const std::invalid_argument& ex)
         {
