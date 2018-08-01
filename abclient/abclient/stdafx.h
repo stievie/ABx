@@ -33,6 +33,7 @@
 #include <string>
 #include <sstream>
 
+#include "Defines.h"
 #include "Config.h"
 
 #pragma warning( push )

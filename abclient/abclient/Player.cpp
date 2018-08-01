@@ -188,7 +188,8 @@ void Player::PostUpdate(float timeStep)
     float rayDistance = cameraDistance_;
     PhysicsRaycastResult result;
     // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
-    node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result, Ray(aimPoint, rayDir), rayDistance, 2);
+    node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,
+        Ray(aimPoint, rayDir), rayDistance, COLLISION_LAYER_CAMERA);
     if (result.body_)
         rayDistance = Min(rayDistance, result.distance_ - 1.0f);
     rayDistance = Clamp(rayDistance, CAMERA_MIN_DIST, CAMERA_MAX_DIST);

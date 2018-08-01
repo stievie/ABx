@@ -97,7 +97,7 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
                 // Don't collide moving with camera
                 RigidBody* body = adjNode->GetComponent<RigidBody>(true);
                 if (body)
-                    body->SetCollisionLayer(0);
+                    body->SetCollisionLayer(COLLISION_LAYER_CAMERA);
             }
             else
             {
