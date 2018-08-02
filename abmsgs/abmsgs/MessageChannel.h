@@ -37,6 +37,7 @@ private:
     void HandleNewMailMessage(const Net::MessageMsg& msg);
     MessageParticipant* GetServerWidthPlayer(const std::string& playerUuid);
     MessageParticipant* GetServerWidthAccount(const std::string& accountUuid);
+    MessageParticipant* GetServer(const std::string& serverUuid);
 public:
     MessageSession(asio::io_service& io_service, MessageChannel& channel) :
         socket_(io_service),

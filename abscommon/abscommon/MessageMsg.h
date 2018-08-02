@@ -11,9 +11,12 @@ namespace Net {
 enum class MessageType : uint8_t
 {
     Unknown = 0,
-    ServerId = 1,                      // Send the server the ID of this server
+    /// Send the server the ID of this server. Body contains the UUID as string.
+    ServerId = 1,
+    /// Shutdown server. Body contains UUID of server to shutdown.
+    Shutdown,
 
-    GuildChat = 2,
+    GuildChat,
     TradeChat,
     Whipser,
     NewMail,

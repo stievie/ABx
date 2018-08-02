@@ -1,6 +1,6 @@
 # TODO
 
-* abclient: Use Urho HTTP client (does it support HTTPS?): 43_HttpRequestDemo
+* abclient: Hide Player when camera too close
 * abserv: Mail not marked as read
 * abserv, ablogin, abclient: DH enc keys
 * abserv: Party

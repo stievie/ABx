@@ -173,6 +173,13 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::HandleMessage(const Net::MessageMsg& msg)
 {
+    if (msg.type_ == Net::MessageType::Shutdown)
+    {
+        std::string serverId = msg.GetBodyString();
+        if (serverId.compare(serverId_) == 0)
+            Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
+        return;
+    }
     msgDispatcher_->Dispatch(msg);
 }
 

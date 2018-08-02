@@ -78,6 +78,21 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::ServerId:
         serverId_ = msg.GetBodyString();
         break;
+    case Net::MessageType::Shutdown:
+    {
+        // Send shutdown message to server
+        std::string serverId = msg.GetBodyString();
+        if (!serverId.empty())
+        {
+            MessageParticipant* server = GetServer(serverId);
+            if (server)
+            {
+                LOG_INFO << "Sending shutdown message to server " << serverId << std::endl;
+                server->Deliver(msg);
+            }
+        }
+        break;
+    }
     case Net::MessageType::Whipser:
         // Alternatively we could just use channel_.Deliver(msg)
         HandleWhisperMessage(msg);
@@ -135,17 +150,22 @@ MessageParticipant* MessageSession::GetServerWidthPlayer(const std::string& play
 
 MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& accountUuid)
 {
+    // No need to send this message to all servers
     IO::DataClient* cli = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!cli->Read(acc))
         return nullptr;
 
-    // No need to send this message to all servers
+    return GetServer(acc.currentServerUuid);
+}
+
+MessageParticipant * MessageSession::GetServer(const std::string& serverUuid)
+{
     auto serv = std::find_if(channel_.participants_.begin(),
-        channel_.participants_.end(), [&acc](const std::shared_ptr<MessageParticipant>& current)
+        channel_.participants_.end(), [&serverUuid](const std::shared_ptr<MessageParticipant>& current)
     {
-        return current->serverId_.compare(acc.currentServerUuid) == 0;
+        return current->serverId_.compare(serverUuid) == 0;
     });
     if (serv != channel_.participants_.end())
         return (*serv).get();
