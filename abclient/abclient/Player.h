@@ -48,4 +48,5 @@ private:
     uint8_t lastMoveDir_;
     uint8_t lastTurnDir_;
     float lastYaw_;
+    bool stickCameraToHead_;
 };

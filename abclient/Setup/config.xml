@@ -12,6 +12,9 @@
   <parameter name="MaterialQuality" type="int" value="15" />
   <!-- We use FXAA for antialiasing -->
   <parameter name="MultiSample" type="int" value="1" />
+
+  <parameter name="StickCameraToHead" type="bool" value="t"/>
+
   <parameter name="LoginHost" type="string" value="stievie.mooo.com" />
   <parameter name="LoginPort" type="int" value="2748" />
 </config>

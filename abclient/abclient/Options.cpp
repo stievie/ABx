@@ -23,7 +23,8 @@ Options::Options(Context* context) :
     gainEffect_(1.0f),
     gainAmbient_(1.0f),
     gainVoice_(1.0f),
-    gainMusic_(1.0f)
+    gainMusic_(1.0f),
+    stickCameraToHead_(true)
 {
 }
 
@@ -127,6 +128,10 @@ void Options::Load()
         else if (name.Compare("GainMusic") == 0)
         {
             gainMusic_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("StickCameraToHead") == 0)
+        {
+            stickCameraToHead_ = paramElem.GetBool("value");
         }
 
         paramElem = paramElem.GetNext("parameter");

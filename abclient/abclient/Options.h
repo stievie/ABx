@@ -12,6 +12,8 @@ public:
     String username_;
     String password_;
 
+    bool stickCameraToHead_;
+
     void Load();
     void Save();
 

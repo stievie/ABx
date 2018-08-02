@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "FwClient.h"
 #include "MathUtils.h"
+#include "Options.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -9,9 +10,12 @@ Player::Player(Context* context) :
     Actor(context),
     lastMoveDir_(AB::GameProtocol::MoveDirectionNone),
     lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
-    cameraDistance_(CAMERA_INITIAL_DIST)
+    cameraDistance_(CAMERA_INITIAL_DIST),
+    stickCameraToHead_(false)
 {
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
+    Options* opt = GetSubsystem<Options>();
+    stickCameraToHead_ = opt->stickCameraToHead_;
 }
 
 void Player::RegisterObject(Context* context)
@@ -165,9 +169,10 @@ void Player::PostUpdate(float timeStep)
     Quaternion rot = Quaternion(controls_.yaw_, Vector3::UP);
     Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 
+    Node* headNode = characterNode->GetChild("Head", true);
+
 #ifdef PLAYER_HEAD_ANIMATION
     // Turn head to camera pitch, but limit to avoid unnatural animation
-    Node* headNode = characterNode->GetChild("Head", true);
     float limitPitch = Clamp(controls_.pitch_, -30.0f, 30.0f);
     float _yaw = controls_.yaw_ - characterNode->GetRotation().YawAngle();
     float yaw = _yaw - floor((_yaw + 180.0f) / 360.0f) * 360.0f;
@@ -181,8 +186,14 @@ void Player::PostUpdate(float timeStep)
 #endif
 
     // Third person camera: position behind the character
-    static const Vector3 CAM_POS(0.0f, 1.5f, 0.0f);
-    Vector3 aimPoint = characterNode->GetPosition() + rot * CAM_POS;
+    Vector3 aimPoint;
+    if (stickCameraToHead_ && headNode)
+        aimPoint = headNode->GetWorldPosition();
+    else
+    {
+        static const Vector3 CAM_POS(0.0f, 1.5f, 0.0f);
+        aimPoint = characterNode->GetWorldPosition() + rot * CAM_POS;
+    }
 
     Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;
