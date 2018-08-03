@@ -140,14 +140,17 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     if (!client->Read(account))
-        return LoginInvalidAccount;
+        return LoginError::InvalidAccount;
     if (account.status != AB::Entities::AccountStatusActivated)
-        return LoginInvalidAccount;
+        return LoginError::InvalidAccount;
 
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
-        return LoginPasswordMismatch;
+        return LoginError::PasswordMismatch;
 
-    return LoginOK;
+    if (account.onlineStatus != AB::Entities::OnlineStatusOffline)
+        return LoginError::AlreadyLoggedIn;
+
+    return LoginError::OK;
 }
 
 IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& accountUuid,

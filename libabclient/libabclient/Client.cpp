@@ -363,9 +363,9 @@ void Client::Update(int timeElapsed)
         }
     }
 
-    if (lastRun_ >= 16)
+    if (lastRun_ >= 10)
     {
-        // Don't send more than 60 updates to the server, it might DC.
+        // Don't send more than ~60 updates to the server, it might DC.
         Connection::Run();
         lastRun_ = 0;
     }

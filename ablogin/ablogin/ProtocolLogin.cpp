@@ -304,14 +304,18 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
     switch (res)
     {
-    case IO::IOAccount::LoginInvalidAccount:
+    case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginPasswordMismatch:
+    case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
+    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        break;
     }
 
     AB::Entities::Service gameServer;
@@ -378,10 +382,10 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
     switch (res)
     {
-    case IO::IOAccount::LoginInvalidAccount:
+    case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
-    case IO::IOAccount::LoginPasswordMismatch:
+    case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
     }
@@ -412,10 +416,10 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
     switch (res)
     {
-    case IO::IOAccount::LoginInvalidAccount:
+    case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
-    case IO::IOAccount::LoginPasswordMismatch:
+    case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
     }
@@ -482,14 +486,18 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
     IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
     switch (authRes)
     {
-    case IO::IOAccount::LoginInvalidAccount:
+    case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginPasswordMismatch:
+    case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
+    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        break;
     }
 
     std::string uuid;
@@ -540,14 +548,18 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
     IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
     switch (authRes)
     {
-    case IO::IOAccount::LoginInvalidAccount:
+    case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginPasswordMismatch:
+    case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
+    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        break;
     }
 
     IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountUuid, password, accKey);
@@ -589,14 +601,18 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
     IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
     switch (authRes)
     {
-    case IO::IOAccount::LoginInvalidAccount:
+    case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginPasswordMismatch:
+    case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
         return;
+    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        break;
     }
 
     bool res = IO::IOAccount::DeletePlayer(

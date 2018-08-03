@@ -200,6 +200,12 @@ void Player::PostUpdate(float timeStep)
 
     Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;
+
+    if (cameraDistance_ <= 0.0f)
+        model_->SetViewMask(0);
+    else if (model_->GetViewMask() == 0)
+        model_->SetViewMask((unsigned)-1);
+
     PhysicsRaycastResult result;
     // Collide camera ray with static physics objects (layer bitmask 2) to ensure we see the character properly
     node_->GetScene()->GetComponent<PhysicsWorld>()->RaycastSingle(result,

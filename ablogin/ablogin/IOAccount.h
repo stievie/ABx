@@ -8,11 +8,12 @@ namespace IO {
 class IOAccount
 {
 public:
-    enum LoginError
+    enum class LoginError
     {
-        LoginOK = 0,
-        LoginInvalidAccount,
-        LoginPasswordMismatch
+        OK = 0,
+        InvalidAccount,
+        AlreadyLoggedIn,
+        PasswordMismatch
     };
     enum AccountKeyStatus : uint8_t
     {

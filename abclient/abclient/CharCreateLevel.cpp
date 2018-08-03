@@ -139,7 +139,7 @@ void CharCreateLevel::DoCreateCharacter()
             modelIndex = 1;
         else if (prof.Compare("Me") == 0)
             modelIndex = 3;
-        else if (prof.Compare("W"))
+        else if (prof.Compare("W") == 0)
             modelIndex = 4;
         else if (prof.Compare("E") == 0)
             modelIndex = 7;
