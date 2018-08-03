@@ -10,7 +10,8 @@
 #include "BoundingBox.h"
 #include "Octree.h"
 #include "CollisionShape.h"
-#include "AB/Entities/Character.h"
+#include <AB/Entities/Character.h>
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 
@@ -126,6 +127,7 @@ public:
     /// Auto ID, not DB ID
     uint32_t id_;
     std::string name_;
+    AB::GameProtocol::CreatureState creatureState_;
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_;
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.

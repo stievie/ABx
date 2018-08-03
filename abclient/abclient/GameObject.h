@@ -20,7 +20,8 @@ public:
     GameObject(Context* context);
     ~GameObject();
 
-    virtual void Init(Scene* scene, const Vector3& position, const Quaternion& rotation) {}
+    virtual void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+        AB::GameProtocol::CreatureState state) {}
 
     uint32_t id_;
     unsigned index_;

@@ -40,20 +40,23 @@ void Actor::RegisterObject(Context* context)
 }
 
 Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
-    const Vector3& position, const Quaternion& rotation, PropReadStream& data)
+    const Vector3& position, const Quaternion& rotation,
+    AB::GameProtocol::CreatureState state,
+    PropReadStream& data)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Actor* result = node->CreateComponent<Actor>();
     result->id_ = id;
 
     result->Unserialize(data);
-    result->Init(scene, position, rotation);
-    result->PlayAnimation(ANIM_IDLE, true, 0.0f);
+    result->Init(scene, position, rotation, state);
+    result->PlayStateAnimation(0.0f);
 
     return result;
 }
 
-void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotation)
+void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+    AB::GameProtocol::CreatureState state)
 {
     animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
     animations_[ANIM_IDLE] = GetAnimation(ANIM_IDLE);
@@ -117,6 +120,7 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
     else
         URHO3D_LOGERROR("Prefab file is empty");
 
+    creatureState_ = state;
     if (model_)
     {
         model_->SetCastShadows(castShadows_);
@@ -306,24 +310,51 @@ void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float 
         animController_->StopAll();
 }
 
+void Actor::PlayStateAnimation(float fadeTime)
+{
+    switch (creatureState_)
+    {
+    case AB::GameProtocol::CreatureStateIdle:
+        PlayAnimation(ANIM_IDLE, true, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateMoving:
+        PlayAnimation(ANIM_RUN, true, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateUsingSkill:
+        break;
+    case AB::GameProtocol::CreatureStateAttacking:
+        break;
+    case AB::GameProtocol::CreatureStateEmote:
+        break;
+    case AB::GameProtocol::CreatureStateEmoteSit:
+        PlayAnimation(ANIM_SIT, true, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateEmoteCry:
+        PlayAnimation(ANIM_CRY, false, fadeTime);
+        break;
+    default:
+        break;
+    }
+}
+
 void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
 {
     AB::GameProtocol::CreatureState prevState = creatureState_;
     GameObject::SetCreatureState(time, newState);
 
+    float fadeTime = 0.2f;
     switch (creatureState_)
     {
     case AB::GameProtocol::CreatureStateIdle:
         if (prevState != AB::GameProtocol::CreatureStateEmoteSit)
-            PlayAnimation(ANIM_IDLE, true, 0.0f);
+            fadeTime = 0.0f;
         else
-            PlayAnimation(ANIM_IDLE, true, 0.5f);
+            fadeTime = 0.5f;
         break;
     case AB::GameProtocol::CreatureStateMoving:
     {
         const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
         posExtrapolator_.Reset(GetServerTime(time), GetClientTime(), p);
-        PlayAnimation(ANIM_RUN, true);
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:
@@ -333,14 +364,15 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
     case AB::GameProtocol::CreatureStateEmote:
         break;
     case AB::GameProtocol::CreatureStateEmoteSit:
-        PlayAnimation(ANIM_SIT, true, 0.5f);
+        fadeTime = 0.5f;
         break;
     case AB::GameProtocol::CreatureStateEmoteCry:
-        PlayAnimation(ANIM_CRY, false, 0.5f);
+        fadeTime = 0.5f;
         break;
     default:
         break;
     }
+    PlayStateAnimation(fadeTime);
 }
 
 void Actor::Unserialize(PropReadStream& data)

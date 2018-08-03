@@ -34,7 +34,6 @@ void Creature::RegisterLua(kaguya::State& state)
 Creature::Creature() :
     GameObject(),
     skills_(this),
-    creatureState_(AB::GameProtocol::CreatureStateIdle),
     lastStateChange_(Utils::AbTick()),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone)

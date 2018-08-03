@@ -241,11 +241,12 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
         message->Get<float>(),
         message->Get<float>()
     };
+    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
     std::string data = message->GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (receiver_)
-        receiver_->OnSpawnObject(updateTick_, objectId, pos, scale, rot, stream, existing);
+        receiver_->OnSpawnObject(updateTick_, objectId, pos, scale, rot, state, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)

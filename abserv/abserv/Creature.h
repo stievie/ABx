@@ -87,7 +87,6 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     InputQueue inputs_;
-    AB::GameProtocol::CreatureState creatureState_;
     int64_t lastStateChange_;
     std::weak_ptr<GameObject> selectedObject_;
     std::weak_ptr<GameObject> followedObject_;

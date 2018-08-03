@@ -580,6 +580,7 @@ void FwClient::OnProtocolError(uint8_t err)
 }
 
 void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
+    AB::GameProtocol::CreatureState state,
     PropReadStream& data, bool existing)
 {
     using namespace AbEvents::ObjectSpawn;
@@ -589,6 +590,7 @@ void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, c
     eData[P_OBJECTID] = id;
     eData[P_POSITION] = Vector3(pos.x, pos.y, pos.z);
     eData[P_ROTATION] = rot;
+    eData[P_STATE] = static_cast<uint32_t>(state);
     eData[P_SCALE] = Vector3(scale.x, scale.y, scale.z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
     eData[P_DATA] = d;

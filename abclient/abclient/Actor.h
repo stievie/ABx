@@ -65,6 +65,7 @@ public:
 
     static Actor* CreateActor(uint32_t id, Context* context, Scene* scene,
         const Vector3& position, const Quaternion& rotation,
+        AB::GameProtocol::CreatureState state,
         PropReadStream& data);
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep) override;
@@ -77,7 +78,8 @@ public:
     void Unserialize(PropReadStream& data) override;
 
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
-    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation) override;
+    void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+        AB::GameProtocol::CreatureState state) override;
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
     Vector<String> materials_;
     // Can pickup this thingy
@@ -113,4 +115,5 @@ public:
     void SetSelectedObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
+    void PlayStateAnimation(float fadeTime = 0.2f);
 };

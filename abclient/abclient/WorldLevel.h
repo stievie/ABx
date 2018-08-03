@@ -22,9 +22,11 @@ public:
     WorldLevel(Context* context);
     void CreatePlayer(uint32_t id,
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
+        AB::GameProtocol::CreatureState state,
         PropReadStream& data);
     Actor* CreateActor(uint32_t id,
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
+        AB::GameProtocol::CreatureState state,
         PropReadStream& data);
     void SelectObject(uint32_t objectId);
     SharedPtr<GameObject> GetObjectById(uint32_t id)
@@ -94,6 +96,7 @@ private:
 
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         const Vector3& position, const Vector3& scale,
-        const Quaternion& rot, PropReadStream& data);
+        const Quaternion& rot, AB::GameProtocol::CreatureState state,
+        PropReadStream& data);
 };
 

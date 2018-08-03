@@ -29,14 +29,16 @@ void Player::RegisterObject(Context* context)
 }
 
 Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
-    const Vector3& position, const Quaternion& rotation, PropReadStream& data)
+    const Vector3& position, const Quaternion& rotation,
+    AB::GameProtocol::CreatureState state,
+    PropReadStream& data)
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Player* result = node->CreateComponent<Player>();
     result->id_ = id;
 
     result->Unserialize(data);
-    result->Init(scene, position, rotation);
+    result->Init(scene, position, rotation, state);
 
     // Create camera
     result->cameraNode_ = scene->CreateChild("CameraNode");
@@ -48,9 +50,10 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
     return result;
 }
 
-void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotation)
+void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+    AB::GameProtocol::CreatureState state)
 {
-    Actor::Init(scene, position, rotation);
+    Actor::Init(scene, position, rotation, state);
     RigidBody* body = node_->GetComponent<RigidBody>(true);
     body->SetCollisionLayer(1);
 #ifdef PLAYER_HEAD_ANIMATION

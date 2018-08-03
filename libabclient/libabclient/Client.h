@@ -77,6 +77,7 @@ public:
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, uint32_t playerId) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
+        AB::GameProtocol::CreatureState state,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;
     void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) override;

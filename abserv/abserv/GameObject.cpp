@@ -27,6 +27,7 @@ GameObject::GameObject() :
     occludee_(true),
     occluder_(false),
     name_("Unknown"),
+    creatureState_(AB::GameProtocol::CreatureStateIdle),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
     id_ = GetNewId();

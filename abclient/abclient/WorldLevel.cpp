@@ -256,15 +256,17 @@ void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
     float deg = -rot * (180.0f / (float)M_PI);
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
     const Vector3& scale = eventData[P_SCALE].GetVector3();
+    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());
     const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction, data);
+    SpawnObject(tick, objectId, existing, pos, scale, direction, state, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     const Vector3& position, const Vector3& scale,
-    const Quaternion& rot, PropReadStream& data)
+    const Quaternion& rot, AB::GameProtocol::CreatureState state,
+    PropReadStream& data)
 {
     uint8_t objectType;
     if (!data.Read<uint8_t>(objectType))
@@ -278,18 +280,18 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     case AB::GameProtocol::ObjectTypePlayer:
         if (playerId == id)
         {
-            CreatePlayer(id, position, scale, rot, data);
+            CreatePlayer(id, position, scale, rot, state, data);
             object = player_;
             object->objectType_ = ObjectTypeSelf;
         }
         else
         {
-            object = CreateActor(id, position, scale, rot, data);
+            object = CreateActor(id, position, scale, rot, state, data);
             object->objectType_ = ObjectTypePlayer;
         }
         break;
     case AB::GameProtocol::ObjectTypeNpc:
-        object = CreateActor(id, position, scale, rot, data);
+        object = CreateActor(id, position, scale, rot, state, data);
         object->objectType_ = ObjectTypeNpc;
         break;
     }
@@ -457,9 +459,10 @@ void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantM
 
 Actor* WorldLevel::CreateActor(uint32_t id,
     const Vector3& position, const Vector3& scale, const Quaternion& direction,
+    AB::GameProtocol::CreatureState state,
     PropReadStream& data)
 {
-    Actor* result = Actor::CreateActor(id, context_, scene_, position, direction, data);
+    Actor* result = Actor::CreateActor(id, context_, scene_, position, direction, state, data);
     result->moveToPos_ = position;
     result->rotateTo_ = direction;
     result->GetNode()->SetScale(scale);
@@ -468,9 +471,10 @@ Actor* WorldLevel::CreateActor(uint32_t id,
 
 void WorldLevel::CreatePlayer(uint32_t id,
     const Vector3& position, const Vector3& scale, const Quaternion& direction,
+    AB::GameProtocol::CreatureState state,
     PropReadStream& data)
 {
-    player_ = Player::CreatePlayer(id, context_, scene_, position, direction, data);
+    player_ = Player::CreatePlayer(id, context_, scene_, position, direction, state, data);
     player_->moveToPos_ = position;
     player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);
