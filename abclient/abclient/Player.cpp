@@ -45,6 +45,7 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
     result->cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
     Camera* camera = result->cameraNode_->CreateComponent<Camera>();
     camera->SetFarClip(300.0f);
+    camera->SetNearClip(0.0f);
 
     result->PlayAnimation(ANIM_IDLE, true, 0.0f);
     return result;
@@ -138,9 +139,7 @@ void Player::SetYRotation(float rad, bool updateYaw)
 
 void Player::SetCameraDist(bool increase)
 {
-    float diff = cameraDistance_ / 10.0f;
-    if (diff < 0.5f)
-        diff = 0.5f;
+    float diff = Max(cameraDistance_ / 10.0f, 0.2f);
     if (increase)
         cameraDistance_ += diff;
     else
@@ -201,7 +200,7 @@ void Player::PostUpdate(float timeStep)
     Vector3 rayDir = dir * Vector3::BACK;
     float rayDistance = cameraDistance_;
 
-    if (cameraDistance_ <= 0.0f)
+    if (cameraDistance_ <= 0.2f)
         model_->SetViewMask(0);
     else if (model_->GetViewMask() == 0)
         model_->SetViewMask((unsigned)-1);

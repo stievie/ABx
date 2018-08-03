@@ -1,5 +1,7 @@
 # TODO
 
+* ? High ping when FPS < 60
+* abmsgs: Continues dispatching messages -> Delete after message has been dispached.
 * abclient: Hide Player when camera too close
 * abserv: Mail not marked as read
 * abserv, ablogin, abclient: DH enc keys

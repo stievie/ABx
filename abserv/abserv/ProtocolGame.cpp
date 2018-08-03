@@ -26,8 +26,17 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByUuid(playerUuid);
     if (foundPlayer)
     {
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        return;
+        // Maybe DC/crash, let player connect again
+        if (foundPlayer->GetInactiveTime() > 2000)
+        {
+            foundPlayer->Logout();
+            foundPlayer.reset();
+        }
+        else
+        {
+            DisconnectClient(AB::Errors::AlreadyLoggedIn);
+            return;
+        }
     }
 
     player_ = Game::PlayerManager::Instance.CreatePlayer(playerUuid, GetThis());
@@ -320,7 +329,9 @@ void ProtocolGame::Connect(uint32_t playerId)
     std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerById(playerId);
     if (!foundPlayer)
     {
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        DisconnectClient(AB::Errors::UnknownError);
+        // Shouldn't happen, player is created in ProtocolGame::Login
+        LOG_ERROR << "Player not found: " << playerId << std::endl;
         return;
     }
 
