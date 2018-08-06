@@ -90,6 +90,17 @@ public:
     int64_t lastStateChange_;
     std::weak_ptr<GameObject> selectedObject_;
     std::weak_ptr<GameObject> followedObject_;
+    uint32_t GetSelectedObjectId() const
+    {
+        if (auto sel = selectedObject_.lock())
+            return sel->GetId();
+        return 0;
+    }
+    std::shared_ptr<GameObject> GetSelectedObject() const
+    {
+        return selectedObject_.lock();
+    }
+    void SetSelectedObject(std::shared_ptr<GameObject> object);
 
     EffectList effects_;
     SkillBar skills_;
@@ -108,7 +119,7 @@ public:
 
     bool Serialize(IO::PropWriteStream& stream) override;
 
-    void OnSelected(Creature* selector) override;
+    void OnSelected(std::shared_ptr<Creature> selector) override;
 };
 
 }

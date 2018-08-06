@@ -143,7 +143,7 @@ public:
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
 
-    virtual void OnSelected(Creature*) { }
+    virtual void OnSelected(std::shared_ptr<Creature>) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

@@ -15,9 +15,10 @@ function onInit(self)
 end
 
 function onUpdate(self, timeElapsed)
+
 end
 
 -- self was selected by creature
 function onSelected(self, creature)
-  print(creature:GetName() .. " selected me :D")
+  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
 end

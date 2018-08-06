@@ -48,7 +48,7 @@ public:
         return sex_;
     }
 
-    void OnSelected(Creature* selector) override final;
+    void OnSelected(std::shared_ptr<Creature> selector) override final;
 };
 
 }

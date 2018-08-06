@@ -15,6 +15,8 @@ void Creature::RegisterLua(kaguya::State& state)
     state["Creature"].setClass(kaguya::UserdataMetatable<Creature, GameObject>()
         .addFunction("GetLevel", &Creature::GetLevel)
         .addFunction("GetSkillBar", &Creature::GetSkillBar)
+        .addFunction("GetSelectedObject", &Creature::GetSelectedObject)
+        .addFunction("SetSelectedObject", &Creature::SetSelectedObject)
 
         .addFunction("GetSpeed", &Creature::GetSpeed)
         .addFunction("SetSpeed", &Creature::SetSpeed)
@@ -203,17 +205,20 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
             if (source)
             {
-                source->selectedObject_ = GetGame()->GetObjectById(targetId);
-                message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-                message.Add<uint32_t>(source->id_);
-                if (auto sel = source->selectedObject_.lock())
+                if (targetId != source->GetSelectedObjectId())
                 {
-                    sel->OnSelected(source);
-                    message.Add<uint32_t>(sel->id_);
+                    source->selectedObject_ = GetGame()->GetObjectById(targetId);
+                    message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+                    message.Add<uint32_t>(source->id_);
+                    if (auto sel = source->selectedObject_.lock())
+                    {
+                        sel->OnSelected(source->GetThis<Creature>());
+                        message.Add<uint32_t>(sel->id_);
+                    }
+                    else
+                        // Clear Target
+                        message.Add<uint32_t>(0);
                 }
-                else
-                    // Clear Target
-                    message.Add<uint32_t>(0);
             }
             break;
         }
@@ -333,6 +338,17 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
 }
 
+void Creature::SetSelectedObject(std::shared_ptr<GameObject> object)
+{
+    Utils::VariantMap data;
+    data[InputDataObjectId] = GetId();    // Source
+    if (object)
+        data[InputDataObjectId2] = object->GetId();   // Target
+    else
+        data[InputDataObjectId2] = 0;   // Target
+    inputs_.Add(InputType::Select, data);
+}
+
 bool Creature::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
@@ -345,7 +361,7 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
-void Creature::OnSelected(Creature* selector)
+void Creature::OnSelected(std::shared_ptr<Creature> selector)
 {
     GameObject::OnSelected(selector);
 }

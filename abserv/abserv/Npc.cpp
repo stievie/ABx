@@ -66,7 +66,7 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     luaState_["onUpdate"](this, timeElapsed);
 }
 
-void Npc::OnSelected(Creature* selector)
+void Npc::OnSelected(std::shared_ptr<Creature> selector)
 {
     Creature::OnSelected(selector);
     luaState_["onSelected"](this, selector);
