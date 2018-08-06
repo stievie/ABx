@@ -57,15 +57,15 @@ void Game::Start()
         SetState(ExecutionState::Running);
 
         // Now that we are running we can spawn the queued players
-        if (!queuedPlayers_.empty())
+        if (!queuedObjects_.empty())
         {
-            for (const auto& p : queuedPlayers_)
+            for (const auto& p : queuedObjects_)
             {
                 Asynch::Scheduler::Instance.Add(
                     Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), p))
                 );
             }
-            queuedPlayers_.clear();
+            queuedObjects_.clear();
         }
 
         // Initial game update
@@ -243,6 +243,16 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
         return std::shared_ptr<Npc>();
     }
     AddObject(result);
+    if (GetState() == ExecutionState::Running)
+    {
+        // In worst case (i.e. the game data is still loading): will be sent as
+        // soon as the game runs and entered the Update loop.
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), result))
+        );
+    }
+    else
+        queuedObjects_.push_back(result);
     return result;
 }
 
@@ -389,7 +399,7 @@ void Game::PlayerJoin(uint32_t playerId)
             );
         }
         else
-            queuedPlayers_.push_back(player);
+            queuedObjects_.push_back(player);
     }
 }
 

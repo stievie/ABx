@@ -80,11 +80,12 @@ public:
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state) override;
+    /// Add a model like hair armor etc.
+    void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
-    bool castShadows_;
 private:
     SharedPtr<Text> nameLabel_;
     SharedPtr<ProgressBar> hpBar_;
@@ -101,7 +102,6 @@ protected:
     HashMap<StringHash, String> sounds_;
     WeakPtr<GameObject> selectedObject_;
 public:
-    StaticModel* GetModel() const { return model_; }
     Vector3 moveToPos_;
     Quaternion rotateTo_;
     String name_;

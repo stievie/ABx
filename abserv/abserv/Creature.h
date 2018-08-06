@@ -107,6 +107,8 @@ public:
     float attackSpeedFactor_ = 1.0f;
 
     bool Serialize(IO::PropWriteStream& stream) override;
+
+    void OnSelected(Creature* selector) override;
 };
 
 }

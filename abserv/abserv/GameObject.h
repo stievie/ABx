@@ -24,6 +24,7 @@ enum ObjerctAttr : uint8_t
 };
 
 class Game;
+class Creature;
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
@@ -141,6 +142,8 @@ public:
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
+
+    virtual void OnSelected(Creature*) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

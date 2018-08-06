@@ -25,4 +25,10 @@ T Fract(T value)
     return value - floor(value);
 }
 
+template <typename T>
+inline T DegToRad(T deg)
+{
+    return deg * (static_cast<T>(M_PI / 180.0));
+}
+
 }

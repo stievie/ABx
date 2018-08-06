@@ -16,7 +16,6 @@
 Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
-    castShadows_(true),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
@@ -97,10 +96,6 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
                 type_ = Actor::Animated;
                 animController_ = adjNode->CreateComponent<AnimationController>();
                 model_ = animModel;
-                // Don't collide moving with camera. Should be done in object file
-//                RigidBody* body = adjNode->GetComponent<RigidBody>(true);
-//                if (body)
-//                    body->SetCollisionLayer(body->GetCollisionLayer() & ~COLLISION_LAYER_CAMERA);
             }
             else
             {
@@ -123,9 +118,93 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
     creatureState_ = state;
     if (model_)
     {
-        model_->SetCastShadows(castShadows_);
+        model_->SetCastShadows(true);
         model_->SetOccludee(true);
-        model_->SetOccluder(true);
+        model_->SetOccluder(false);
+    }
+}
+
+void Actor::AddModel(uint32_t itemIndex)
+{
+    if (!model_)
+        return;
+    ItemsCache* items = GetSubsystem<ItemsCache>();
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    SharedPtr<Item> item = items->Get(itemIndex);
+    if (!item)
+    {
+        URHO3D_LOGERRORF("Model Item not found: %d", itemIndex);
+        return;
+    }
+    XMLFile* xml = item->GetModelResource<XMLFile>();
+    if (!xml)
+    {
+        URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_);
+        return;
+    }
+
+    XMLElement& root = xml->GetRoot();
+
+/*    unsigned nodeId = root.GetUInt("id");
+    SceneResolver resolver;
+    Node* adjNode = node_->CreateChild(0, LOCAL);
+    resolver.AddNode(nodeId, adjNode);
+    adjNode->SetRotation(Quaternion(270, Vector3(0, 1, 0)));
+    if (adjNode->LoadXML(root, resolver, true, true))
+    {
+        resolver.Resolve();
+        adjNode->ApplyAttributes();
+    }
+    else
+    {
+        URHO3D_LOGERRORF("Error instantiating prefab %s", item->modelFile_);
+        adjNode->Remove();
+    }*/
+
+    Node* node = model_->GetNode();
+
+    SharedPtr<StaticModel> model;
+
+    XMLElement compElem = root.GetChild("component");
+    while (compElem)
+    {
+        String compType = compElem.GetAttribute("type");
+        if (compType.Compare("AnimatedModel") == 0)
+            model = node->CreateComponent<AnimatedModel>(LOCAL);
+        else if (compType.Compare("StaticModel") == 0)
+            model = node->CreateComponent<StaticModel>(LOCAL);
+
+        if (model)
+        {
+            XMLElement attribElem = compElem.GetChild("attribute");
+            while (attribElem)
+            {
+                String attribName = attribElem.GetAttribute("name");
+                if (attribName.Compare("Model") == 0)
+                {
+                    String modelVal = attribElem.GetAttribute("value");
+                    StringVector modelVals = modelVal.Split(';');
+                    Model* resModel = cache->GetResource<Model>(modelVals[1]);
+                    model->SetModel(resModel);
+                    model->SetViewMask(model_->GetViewMask());
+                }
+                else if (attribName.Compare("Material") == 0)
+                {
+                    String matVal = attribElem.GetAttribute("value");
+                    StringVector matVals = matVal.Split(';');
+                    for (unsigned i = 1; i < matVals.Size(); ++i)
+                    {
+                        Material* mat = cache->GetResource<Material>(matVals[i]);
+                        model->SetMaterial(i - 1, mat);
+                    }
+                }
+                attribElem = attribElem.GetNext("attribute");
+            }
+
+            break;
+        }
+
+        compElem = compElem.GetNext("component");
     }
 }
 

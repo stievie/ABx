@@ -207,7 +207,10 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
                 message.Add<uint32_t>(source->id_);
                 if (auto sel = source->selectedObject_.lock())
+                {
+                    sel->OnSelected(source);
                     message.Add<uint32_t>(sel->id_);
+                }
                 else
                     // Clear Target
                     message.Add<uint32_t>(0);
@@ -340,6 +343,11 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint32_t>(GetProf2Index());
     stream.Write<uint32_t>(GetModelIndex());
     return true;
+}
+
+void Creature::OnSelected(Creature* selector)
+{
+    GameObject::OnSelected(selector);
 }
 
 void Creature::DoCollisions()
