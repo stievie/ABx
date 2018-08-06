@@ -1,14 +1,12 @@
-name = "Smith"
+name = "Merchant"
 level = 20
-modelIndex = 5     -- Smith body model
+modelIndex = 9     -- Merchant body model
 sex = 2            -- Male
 creatureState = 1  -- Idle
 prof1Index = 1     -- Warrior
 prof2Index = 0     -- None
 
 function onInit(self)
---  local pos = self:GetPosition()
---  print(pos[1], pos[2], pos[3])
   return true
 end
 
