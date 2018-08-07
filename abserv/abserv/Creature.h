@@ -28,6 +28,7 @@ protected:
         AB_UNUSED(newState);
     }
     kaguya::State luaState_;
+    bool luaInitialized_;
     virtual void InitializeLua();
 public:
     static void RegisterLua(kaguya::State& state);

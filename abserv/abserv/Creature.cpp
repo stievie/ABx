@@ -14,6 +14,7 @@ namespace Game {
 void Creature::InitializeLua()
 {
     GameManager::RegisterLuaAll(luaState_);
+    luaInitialized_ = true;
 }
 
 void Creature::RegisterLua(kaguya::State& state)
@@ -44,7 +45,8 @@ Creature::Creature() :
     skills_(this),
     lastStateChange_(Utils::AbTick()),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
-    turnDir_(AB::GameProtocol::TurnDirectionNone)
+    turnDir_(AB::GameProtocol::TurnDirectionNone),
+    luaInitialized_(false)
 {
     // Creature always collides
     SetCollisionShape(
@@ -370,13 +372,15 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
 void Creature::OnSelected(std::shared_ptr<Creature> selector)
 {
     GameObject::OnSelected(selector);
-    luaState_["onSelected"](this, selector);
+    if (luaInitialized_)
+        luaState_["onSelected"](this, selector);
 }
 
 void Creature::OnCollide(std::shared_ptr<Creature> other)
 {
     GameObject::OnCollide(other);
-    luaState_["onCollide"](this, other);
+    if (luaInitialized_)
+        luaState_["onCollide"](this, other);
 }
 
 void Creature::DoCollisions()
@@ -392,8 +396,11 @@ void Creature::DoCollisions()
                 Math::Vector3 move;
                 if (Collides(ci, move))
                 {
-                    ci->OnCollide(this->GetThis<Creature>());
                     transformation_.position_ += move;
+                    // Notify ci for colliding with us
+                    ci->OnCollide(GetThis<Creature>());
+                    // Notify us for colliding with ci
+                    OnCollide(ci->GetThis<Creature>());
                 }
             }
         }

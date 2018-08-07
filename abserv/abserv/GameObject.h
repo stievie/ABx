@@ -44,11 +44,6 @@ protected:
             objectIds_ = 0;
         return ++objectIds_;
     }
-    template <typename T>
-    std::shared_ptr<T> GetThis()
-    {
-        return std::static_pointer_cast<T>(shared_from_this());
-    }
     void AddToOctree();
     void RemoveFromOctree();
 public:
@@ -56,6 +51,12 @@ public:
 
     GameObject();
     virtual ~GameObject();
+
+    template <typename T>
+    std::shared_ptr<T> GetThis()
+    {
+        return std::static_pointer_cast<T>(shared_from_this());
+    }
 
     virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message) {
         AB_UNUSED(message);
