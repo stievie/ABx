@@ -50,6 +50,7 @@ void OutpostLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/" + mapName_ + ".xml");
     if (!sceneFile)
     {
+        URHO3D_LOGERRORF("Map %s not found", mapName_);
         ShowError("Map \"" + mapName_ + "\" not found", "Error");
         return;
     }
