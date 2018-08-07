@@ -18,3 +18,7 @@ end
 function onSelected(self, creature)
   print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
 end
+
+-- creature collides with self
+function onCollide(self, creature)
+end

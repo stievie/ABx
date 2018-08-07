@@ -7,7 +7,7 @@ namespace Game {
 
 void Npc::InitializeLua()
 {
-    GameManager::RegisterLuaAll(luaState_);
+    Creature::InitializeLua();
     luaState_["this"] = this;
 }
 
@@ -64,12 +64,6 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Creature::Update(timeElapsed, message);
     luaState_["onUpdate"](this, timeElapsed);
-}
-
-void Npc::OnSelected(std::shared_ptr<Creature> selector)
-{
-    Creature::OnSelected(selector);
-    luaState_["onSelected"](this, selector);
 }
 
 void Npc::_LuaSetPosition(float x, float y, float z)

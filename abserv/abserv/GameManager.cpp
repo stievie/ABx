@@ -142,6 +142,12 @@ void GameManager::RegisterLuaAll(kaguya::State& state)
         LOG_ERROR << "Lua GC not running" << std::endl;
     }
 #endif
+    // Some global function
+    state["GameTick"] = kaguya::function([]
+    {
+        return Utils::AbTick();
+    });
+
     // Register all used classes
     GameObject::RegisterLua(state);
     Creature::RegisterLua(state);

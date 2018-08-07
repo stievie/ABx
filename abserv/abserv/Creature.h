@@ -27,6 +27,8 @@ protected:
         AB_UNUSED(message);
         AB_UNUSED(newState);
     }
+    kaguya::State luaState_;
+    virtual void InitializeLua();
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -120,6 +122,7 @@ public:
     bool Serialize(IO::PropWriteStream& stream) override;
 
     void OnSelected(std::shared_ptr<Creature> selector) override;
+    void OnCollide(std::shared_ptr<Creature> other) override;
 };
 
 }

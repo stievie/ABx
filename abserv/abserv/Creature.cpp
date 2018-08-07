@@ -5,10 +5,16 @@
 #include <AB/ProtocolCodes.h>
 #include "Logger.h"
 #include "OctreeQuery.h"
+#include "GameManager.h"
 
 #include "DebugNew.h"
 
 namespace Game {
+
+void Creature::InitializeLua()
+{
+    GameManager::RegisterLuaAll(luaState_);
+}
 
 void Creature::RegisterLua(kaguya::State& state)
 {
@@ -364,6 +370,13 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
 void Creature::OnSelected(std::shared_ptr<Creature> selector)
 {
     GameObject::OnSelected(selector);
+    luaState_["onSelected"](this, selector);
+}
+
+void Creature::OnCollide(std::shared_ptr<Creature> other)
+{
+    GameObject::OnCollide(other);
+    luaState_["onCollide"](this, other);
 }
 
 void Creature::DoCollisions()
@@ -379,6 +392,7 @@ void Creature::DoCollisions()
                 Math::Vector3 move;
                 if (Collides(ci, move))
                 {
+                    ci->OnCollide(this->GetThis<Creature>());
                     transformation_.position_ += move;
                 }
             }

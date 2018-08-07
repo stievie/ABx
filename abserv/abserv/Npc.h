@@ -7,8 +7,6 @@ namespace Game {
 class Npc final : public Creature
 {
 private:
-    kaguya::State luaState_;
-    void InitializeLua();
     std::string name_;
     uint32_t level_;
     uint32_t modelIndex_;
@@ -20,6 +18,8 @@ private:
     std::vector<float> _LuaGetPosition() const;
     float _LuaGetRotation() const;
     std::vector<float> _LuaGetScale() const;
+protected:
+    void InitializeLua() override;
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -48,7 +48,6 @@ public:
         return sex_;
     }
 
-    void OnSelected(std::shared_ptr<Creature> selector) override final;
 };
 
 }

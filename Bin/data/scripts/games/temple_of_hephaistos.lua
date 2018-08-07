@@ -1,12 +1,12 @@
 function onStart(self)
   local smith = self:AddNpc("/scripts/creatures/npcs/smith.lua")
   if (smith ~= nil) then
-    smith:SetPosition(-6.71275, 25.3445, 16.5906)
+    smith:SetPosition(-6.71275, 25.3445, 12.5906)
     smith:SetRotation(180)
   end  
   local merchant = self:AddNpc("/scripts/creatures/npcs/merchant.lua")
   if (merchant ~= nil) then
-    merchant:SetPosition(4.92965, 25.3497, 20.2049)
+    merchant:SetPosition(4.92965, 25.3497, 12.2049)
     merchant:SetRotation(180)
   end  
 end

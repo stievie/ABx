@@ -16,3 +16,7 @@ end
 -- self was selected by creature
 function onSelected(self, creature)
 end
+
+-- creature collides with self
+function onCollide(self, creature)
+end

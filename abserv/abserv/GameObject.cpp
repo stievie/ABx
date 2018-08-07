@@ -172,6 +172,12 @@ void GameObject::AddToOctree()
         LOG_DEBUG << "Adding " << GetName() << " to Octree" << std::endl;
 #endif
         g->map_->octree_->InsertObject(this);
+        // Initial update.
+        if (octant_)
+        {
+            Math::Octree* octree = octant_->GetRoot();
+            octree->AddObjectUpdate(this);
+        }
     }
 }
 

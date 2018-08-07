@@ -7,8 +7,6 @@ prof1Index = 1     -- Warrior
 prof2Index = 0     -- None
 
 function onInit(self)
---  local pos = self:GetPosition()
---  print(pos[1], pos[2], pos[3])
   return true
 end
 
@@ -19,4 +17,8 @@ end
 -- self was selected by creature
 function onSelected(self, creature)
   print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
+end
+
+-- creature collides with self
+function onCollide(self, creature)
 end
