@@ -13,7 +13,7 @@ TargetWindow::TargetWindow(Context* context) :
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/TargetWindow.xml");
-    LoadChildXML(chatFile->GetRoot());
+    LoadChildXML(chatFile->GetRoot(), nullptr);
 
     targetText_ = dynamic_cast<Text*>(GetChild("TargetText", true));
     Button* clearTarget = dynamic_cast<Button*>(GetChild("ClearTargetButton", true));

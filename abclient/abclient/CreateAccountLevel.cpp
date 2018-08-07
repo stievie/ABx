@@ -113,7 +113,7 @@ void CreateAccountLevel::CreateUI()
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/CreateAccountWindow.xml");
-    uiRoot_->LoadChildXML(chatFile->GetRoot());
+    uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
     nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
     passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));

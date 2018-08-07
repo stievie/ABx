@@ -79,11 +79,11 @@ void Options::Load()
         }
         else if (name.Compare("TextureQuality") == 0)
         {
-            textureQuality_ = paramElem.GetInt("value");
+            textureQuality_ = static_cast<MaterialQuality>(paramElem.GetInt("value"));
         }
         else if (name.Compare("MaterialQuality") == 0)
         {
-            materialQuality_ = paramElem.GetInt("value");
+            materialQuality_ = static_cast<MaterialQuality>(paramElem.GetInt("value"));
         }
         else if (name.Compare("MultiSample") == 0)
         {
@@ -161,7 +161,7 @@ void Options::SetShadowQuality(ShadowQuality quality)
     }
 }
 
-void Options::SetTextureQuality(int quality)
+void Options::SetTextureQuality(MaterialQuality quality)
 {
     if (textureQuality_ != quality)
     {
@@ -170,7 +170,7 @@ void Options::SetTextureQuality(int quality)
     }
 }
 
-void Options::SetMaterialQuality(int quality)
+void Options::SetMaterialQuality(MaterialQuality quality)
 {
     if (materialQuality_ != quality)
     {

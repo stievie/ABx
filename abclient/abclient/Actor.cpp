@@ -256,7 +256,7 @@ void Actor::FixedUpdate(float timeStep)
 void Actor::Update(float timeStep)
 {
     Input* input = GetSubsystem<Input>();
-    bool isLCtrlDown = input->GetScancodeDown(SDL_SCANCODE_LCTRL);
+    bool isLCtrlDown = input->GetScancodeDown(SCANCODE_CTRL);
     if (hovered_ || playerSelected_ || isLCtrlDown)
     {
         const Vector3& pos = node_->GetPosition();

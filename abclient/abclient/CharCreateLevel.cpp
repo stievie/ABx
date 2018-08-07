@@ -47,7 +47,7 @@ void CharCreateLevel::CreateUI()
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/CreateCharacterWindow.xml");
-    uiRoot_->LoadChildXML(chatFile->GetRoot());
+    uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
     nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("CharacterNameEdit", true));
     professionDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("ProfessionDropDown", true));

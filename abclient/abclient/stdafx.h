@@ -37,6 +37,6 @@
 #include "Config.h"
 
 #pragma warning( push )
-#pragma warning( disable : 4100 4305)
+#pragma warning( disable : 4100 4305 4800 4244)
 #include <Urho3D/Urho3DAll.h>
 #pragma warning( pop )

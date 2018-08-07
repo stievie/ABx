@@ -80,13 +80,13 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
     Input* input = GetSubsystem<Input>();
-    if (input->GetMouseButtonDown(4))
+    if (input->GetMouseButtonDown(MOUSEB_RIGHT))
     {
         rmbDown_ = true;
         mouseDownPos_ = input->GetMousePosition();
         input->SetMouseMode(MM_RELATIVE);
     }
-    else if (input->GetMouseButtonDown(1))
+    else if (input->GetMouseButtonDown(MOUSEB_LEFT))
     {
         // Pick object
         SharedPtr<GameObject> object = GetObjectAt(input->GetMousePosition());
@@ -130,7 +130,7 @@ void WorldLevel::HandleMouseMove(StringHash eventType, VariantMap& eventData)
     using namespace MouseMove;
     // Hover object
     Input* input = GetSubsystem<Input>();
-    if (input->GetMouseButtonDown(1) || input->GetMouseButtonDown(4))
+    if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
         return;
 
     IntVector2 pos = input->GetMousePosition();
@@ -197,7 +197,7 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
             player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
 
-            if (input->GetMouseButtonDown(4))
+            if (input->GetMouseButtonDown(MOUSEB_RIGHT))
             {
                 player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
                     input->GetKeyDown(KEY_A));

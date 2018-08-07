@@ -41,14 +41,14 @@ public:
         return shadowQuality_;
     }
     /// Set texture quality level. See the QUALITY constants in GraphicsDefs.h.
-    void SetTextureQuality(int quality);
-    int GetTextureQuality() const
+    void SetTextureQuality(MaterialQuality quality);
+    MaterialQuality GetTextureQuality() const
     {
         return textureQuality_;
     }
     /// Set material quality level. See the QUALITY constants in GraphicsDefs.h.
-    void SetMaterialQuality(int quality);
-    int GetMaterialQuality() const
+    void SetMaterialQuality(MaterialQuality quality);
+    MaterialQuality GetMaterialQuality() const
     {
         return materialQuality_;
     }
@@ -67,8 +67,8 @@ private:
     bool highDPI_;
     int multiSample_;
     ShadowQuality shadowQuality_;
-    int textureQuality_;
-    int materialQuality_;
+    MaterialQuality textureQuality_;
+    MaterialQuality materialQuality_;
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     String renderPath_;

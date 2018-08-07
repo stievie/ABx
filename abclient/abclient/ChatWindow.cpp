@@ -15,7 +15,7 @@ ChatWindow::ChatWindow(Context* context) :
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/ChatWindow.xml");
-    LoadChildXML(chatFile->GetRoot());
+    LoadChildXML(chatFile->GetRoot(), nullptr);
 
     // Set self to same size as the window so align works
     Window* wnd = dynamic_cast<Window*>(GetChild("ChatWindow", true));
