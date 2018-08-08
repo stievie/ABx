@@ -1,4 +1,4 @@
-function onStart(self)
+function onStart()
 --  print(self:GetName())
 --  for i = 1, 100 do
 --    self:AddNpc("/objects/npcs/scripts/priest.lua")
@@ -6,26 +6,26 @@ function onStart(self)
 --  end
 end
 
-function onStop(self)
+function onStop()
 end
 
-function onAddObject(self, object)
+function onAddObject(object)
 --  print("Object added: " .. object:GetName())
 end
 
-function onRemoveObject(self, object)
+function onRemoveObject(object)
 --  print("Object added: " .. object:GetName())
 end
 
-function onPlayerJoin(self, player)
+function onPlayerJoin(player)
 --  print("Player joined: " .. player:GetName())
 end
 
-function onPlayerLeave(self, player)
+function onPlayerLeave(player)
 --  print("Player left: " .. player:GetName())
 end
 
 -- Game Update
-function onUpdate(self, timeElapsed)
+function onUpdate(timeElapsed)
 --  print(timeElapsed)
 end

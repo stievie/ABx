@@ -17,6 +17,12 @@ private:
     void DoCollisions();
     uint8_t moveDir_;
     uint8_t turnDir_;
+    void _LuaSetPosition(float x, float y, float z);
+    void _LuaSetRotation(float y);
+    void _LuaSetScale(float x, float y, float z);
+    std::vector<float> _LuaGetPosition() const;
+    float _LuaGetRotation() const;
+    std::vector<float> _LuaGetScale() const;
 protected:
     std::vector<Math::Vector3> wayPoints_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,

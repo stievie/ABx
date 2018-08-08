@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "OctreeQuery.h"
 #include "GameManager.h"
+#include "MathUtils.h"
 
 #include "DebugNew.h"
 
@@ -14,12 +15,20 @@ namespace Game {
 void Creature::InitializeLua()
 {
     GameManager::RegisterLuaAll(luaState_);
+    luaState_["self"] = this;
     luaInitialized_ = true;
 }
 
 void Creature::RegisterLua(kaguya::State& state)
 {
     state["Creature"].setClass(kaguya::UserdataMetatable<Creature, GameObject>()
+        .addFunction("SetPosition", &Creature::_LuaSetPosition)
+        .addFunction("SetRotation", &Creature::_LuaSetRotation)
+        .addFunction("SetScale", &Creature::_LuaSetScale)
+        .addFunction("GetPosition", &Creature::_LuaGetPosition)
+        .addFunction("GetRotation", &Creature::_LuaGetRotation)
+        .addFunction("GetScale", &Creature::_LuaGetScale)
+
         .addFunction("GetLevel", &Creature::GetLevel)
         .addFunction("GetSkillBar", &Creature::GetSkillBar)
         .addFunction("GetSelectedObject", &Creature::GetSelectedObject)
@@ -31,12 +40,6 @@ void Creature::RegisterLua(kaguya::State& state)
         .addFunction("SetEnergy", &Creature::SetEnergy)
         .addFunction("AddEffect", &Creature::AddEffect)
         .addFunction("RemoveEffect", &Creature::RemoveEffect)
-        /*        .addProperty("Energy", &Creature::GetEnergy, &Creature::SetEnergy)
-        .addProperty("Health", &Creature::GetHealth, &Creature::SetHealth)
-        .addProperty("Adrenaline", &Creature::GetAdrenaline, &Creature::SetAdrenaline)
-        .addProperty("Overcast", &Creature::GetOvercast, &Creature::SetOvercast)
-        .addProperty("Skills", &Creature::GetSkill)
-        .addFunction("AddEffect", &Creature::AddEffectByName)*/
     );
 }
 
@@ -373,14 +376,14 @@ void Creature::OnSelected(std::shared_ptr<Creature> selector)
 {
     GameObject::OnSelected(selector);
     if (luaInitialized_)
-        luaState_["onSelected"](this, selector);
+        luaState_["onSelected"](selector);
 }
 
 void Creature::OnCollide(std::shared_ptr<Creature> other)
 {
     GameObject::OnCollide(other);
     if (luaInitialized_)
-        luaState_["onCollide"](this, other);
+        luaState_["onCollide"](other);
 }
 
 void Creature::DoCollisions()
@@ -466,4 +469,45 @@ void Creature::SetDirection(float worldAngle)
         transformation_.rotation_ += 2.0f * (float)M_PI;
 }
 
+void Creature::_LuaSetPosition(float x, float y, float z)
+{
+    transformation_.position_.x_ = x;
+    transformation_.position_.y_ = y;
+    transformation_.position_.z_ = z;
+}
+
+void Creature::_LuaSetRotation(float y)
+{
+    transformation_.rotation_ = Math::DegToRad(y);
+}
+
+void Creature::_LuaSetScale(float x, float y, float z)
+{
+    transformation_.scale_.x_ = x;
+    transformation_.scale_.y_ = y;
+    transformation_.scale_.z_ = z;
+}
+
+std::vector<float> Creature::_LuaGetPosition() const
+{
+    std::vector<float> result;
+    result.push_back(transformation_.position_.x_);
+    result.push_back(transformation_.position_.y_);
+    result.push_back(transformation_.position_.z_);
+    return result;
+}
+
+float Creature::_LuaGetRotation() const
+{
+    return transformation_.rotation_;
+}
+
+std::vector<float> Creature::_LuaGetScale() const
+{
+    std::vector<float> result;
+    result.push_back(transformation_.scale_.x_);
+    result.push_back(transformation_.scale_.y_);
+    result.push_back(transformation_.scale_.z_);
+    return result;
+}
 }

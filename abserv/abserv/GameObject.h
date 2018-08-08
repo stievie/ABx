@@ -25,6 +25,8 @@ enum ObjerctAttr : uint8_t
 
 class Game;
 class Creature;
+class Npc;
+class Player;
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
@@ -33,6 +35,10 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 private:
     static uint32_t objectIds_;
     std::unique_ptr<Math::CollisionShape> collisionShape_;
+    std::vector<std::shared_ptr<GameObject>> _LuaQueryObjects(float radius);
+    std::shared_ptr<Creature> _LuaAsCreature();
+    std::shared_ptr<Npc> _LuaAsNpc();
+    std::shared_ptr<Player> _LuaAsPlayer();
 protected:
     std::weak_ptr<Game> game_;
     /// Octree octant.

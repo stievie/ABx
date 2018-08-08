@@ -1,38 +1,46 @@
-function onStart(self)
+-- Game start up
+function onStart()
   local smith = self:AddNpc("/scripts/creatures/npcs/smith.lua")
   if (smith ~= nil) then
-    smith:SetPosition(-6.71275, 25.3445, 12.5906)
+    local x = -6.71275
+    local z = 15.5906
+    local y = self:GetTerrainHeight(x, z)
+    smith:SetPosition(x, y, z)
     smith:SetRotation(180)
   end  
   local merchant = self:AddNpc("/scripts/creatures/npcs/merchant.lua")
   if (merchant ~= nil) then
-    merchant:SetPosition(4.92965, 25.3497, 12.2049)
+    local x = 4.92965
+    local z = 14.2049
+    local y = self:GetTerrainHeight(x, z)
+    merchant:SetPosition(x, y, z)
     merchant:SetRotation(180)
   end  
 end
 
-function onStop(self)
+-- Game stopping
+function onStop()
 end
 
-function onAddObject(self, object)
+function onAddObject(object)
   print("Object added: " .. object:GetName())
 end
 
-function onRemoveObject(self, object)
+function onRemoveObject(object)
   print("Object removed: " .. object:GetName())
 end
 
-function onPlayerJoin(self, player)
+function onPlayerJoin(player)
   player:AddEffect(empty, 1000, 0)
   print("Player joined: " .. player:GetName())
 end
 
-function onPlayerLeave(self, player)
+function onPlayerLeave(player)
   player:RemoveEffect(1000)
   print("Player left: " .. player:GetName())
 end
 
 -- Game Update
-function onUpdate(self, timeElapsed)
+function onUpdate(timeElapsed)
 --  print(timeElapsed)
 end

@@ -11,13 +11,6 @@ private:
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
-
-    void _LuaSetPosition(float x, float y, float z);
-    void _LuaSetRotation(float y);
-    void _LuaSetScale(float x, float y, float z);
-    std::vector<float> _LuaGetPosition() const;
-    float _LuaGetRotation() const;
-    std::vector<float> _LuaGetScale() const;
 protected:
     void InitializeLua() override;
 public:

@@ -18,6 +18,7 @@
 #include "PropStream.h"
 #include "Random.h"
 #include "IOMap.h"
+#include "Profiler.h"
 
 #include "DebugNew.h"
 
@@ -41,6 +42,29 @@ Game::~Game()
     players_.clear();
     objects_.clear();
     Chat::Instance.Remove(ChannelMap, id_);
+}
+
+void Game::RegisterLua(kaguya::State& state)
+{
+    state["Game"].setClass(kaguya::UserdataMetatable<Game>()
+        .addFunction("GetName", &Game::GetName)
+        // Get any game object by ID
+        .addFunction("GetObject", &Game::GetObjectById)
+        // Get player of game by ID or name
+        .addFunction("GetPlayer", &Game::GetPlayerById)
+
+        .addFunction("GetTerrainHeight", &Game::_LuaGetTerrainHeight)
+        .addFunction("GetStartTime", &Game::_LuaGetStartTime)
+        .addFunction("GetInstanceTime", &Game::GetInstanceTime)
+
+        .addFunction("AddNpc", &Game::AddNpc)
+    );
+}
+
+void Game::InitializeLua()
+{
+    GameManager::RegisterLuaAll(luaState_);
+    luaState_["self"] = this;
 }
 
 void Game::Start()
@@ -79,7 +103,7 @@ void Game::Update()
 {
     if (lastUpdate_ == 0)
     {
-        luaState_["onStart"](this);
+        luaState_["onStart"]();
         // Add start tick at the beginning
         gameStatus_->AddByte(AB::GameProtocol::GameStart);
         gameStatus_->Add<int64_t>(startTime_);
@@ -106,7 +130,7 @@ void Game::Update()
     map_->Update(delta);
 
     // Then call Lua Update function
-    luaState_["onUpdate"](this, delta);
+    luaState_["onUpdate"](delta);
 
     // Send game status to players
     SendStatus();
@@ -121,7 +145,7 @@ void Game::Update()
             // If all players left the game, delete it. Actually just mark as
             // terminated, it'll be deleted in the next update.
             SetState(ExecutionState::Terminated);
-            luaState_["onStop"](this);
+            luaState_["onStop"]();
         }
 
         // Schedule next update
@@ -164,24 +188,6 @@ void Game::ResetStatus()
     gameStatus_ = std::make_unique<Net::NetworkMessage>();
 }
 
-void Game::RegisterLua(kaguya::State& state)
-{
-    state["Game"].setClass(kaguya::UserdataMetatable<Game>()
-        .addFunction("GetName", &Game::GetName)
-        // Get any game object by ID
-        .addFunction("GetObject", &Game::GetObjectById)
-        // Get player of game by ID or name
-        .addFunction("GetPlayer", &Game::GetPlayerById)
-
-        .addFunction("AddNpc", &Game::AddNpc)
-    );
-}
-
-void Game::InitializeLua()
-{
-    GameManager::RegisterLuaAll(luaState_);
-}
-
 Player* Game::GetPlayerById(uint32_t playerId)
 {
     auto it = players_.find(playerId);
@@ -212,7 +218,7 @@ std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 void Game::AddObject(std::shared_ptr<GameObject> object)
 {
     AddObjectInternal(object);
-    luaState_["onAddObject"](this, object);
+    luaState_["onAddObject"]( object);
 }
 
 void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
@@ -223,7 +229,7 @@ void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
 
 void Game::RemoveObject(std::shared_ptr<GameObject> object)
 {
-    luaState_["onRemoveObject"](this, object);
+    luaState_["onRemoveObject"](object);
     object->SetGame(std::shared_ptr<Game>());
     auto ito = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
     {
@@ -385,7 +391,7 @@ void Game::PlayerJoin(uint32_t playerId)
         }
         UpdateEntity(player->data_);
 
-        luaState_["onPlayerJoin"](this, player.get());
+        luaState_["onPlayerJoin"](player.get());
         Asynch::Scheduler::Instance.Add(
             Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
         );
@@ -413,7 +419,7 @@ void Game::PlayerLeave(uint32_t playerId)
         auto it = players_.find(playerId);
         if (it != players_.end())
         {
-            luaState_["onPlayerLeave"](this, (*it).second);
+            luaState_["onPlayerLeave"]((*it).second);
             players_.erase(it);
         }
         RemoveObject(player);

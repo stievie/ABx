@@ -8,18 +8,11 @@ namespace Game {
 void Npc::InitializeLua()
 {
     Creature::InitializeLua();
-    luaState_["this"] = this;
 }
 
 void Npc::RegisterLua(kaguya::State& state)
 {
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Creature>()
-        .addFunction("SetPosition", &Npc::_LuaSetPosition)
-        .addFunction("SetRotation", &Npc::_LuaSetRotation)
-        .addFunction("SetScale", &Npc::_LuaSetScale)
-        .addFunction("GetPosition", &Npc::_LuaGetPosition)
-        .addFunction("GetRotation", &Npc::_LuaGetRotation)
-        .addFunction("GetScale", &Npc::_LuaGetScale)
     );
 }
 
@@ -57,55 +50,13 @@ bool Npc::LoadScript(const std::string& fileName)
         LOG_WARNING << "Unable to read secondary profession, index = " << skills_.prof2_.index << std::endl;
     }
 
-    return luaState_["onInit"](this);
+    return luaState_["onInit"]();
 }
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Creature::Update(timeElapsed, message);
-    luaState_["onUpdate"](this, timeElapsed);
-}
-
-void Npc::_LuaSetPosition(float x, float y, float z)
-{
-    transformation_.position_.x_ = x;
-    transformation_.position_.y_ = y;
-    transformation_.position_.z_ = z;
-}
-
-void Npc::_LuaSetRotation(float y)
-{
-    transformation_.rotation_ = Math::DegToRad(y);
-}
-
-void Npc::_LuaSetScale(float x, float y, float z)
-{
-    transformation_.scale_.x_ = x;
-    transformation_.scale_.y_ = y;
-    transformation_.scale_.z_ = z;
-}
-
-std::vector<float> Npc::_LuaGetPosition() const
-{
-    std::vector<float> result;
-    result.push_back(transformation_.position_.x_);
-    result.push_back(transformation_.position_.y_);
-    result.push_back(transformation_.position_.z_);
-    return result;
-}
-
-float Npc::_LuaGetRotation() const
-{
-    return transformation_.rotation_;
-}
-
-std::vector<float> Npc::_LuaGetScale() const
-{
-    std::vector<float> result;
-    result.push_back(transformation_.scale_.x_);
-    result.push_back(transformation_.scale_.y_);
-    result.push_back(transformation_.scale_.z_);
-    return result;
+    luaState_["onUpdate"](timeElapsed);
 }
 
 }

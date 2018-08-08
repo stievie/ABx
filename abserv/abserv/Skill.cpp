@@ -18,7 +18,7 @@ void Skill::RegisterLua(kaguya::State& state)
 void Skill::InitializeLua()
 {
     GameManager::RegisterLuaAll(luaState_);
-    luaState_["this"] = this;
+    luaState_["self"] = this;
 }
 
 bool Skill::LoadScript(const std::string& fileName)

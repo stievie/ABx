@@ -6,17 +6,17 @@ creatureState = 1  -- Idle
 prof1Index = 3     -- Monk
 prof2Index = 0     -- None
 
-function onInit(self)
+function onInit()
   return true
 end
 
-function onUpdate(self, timeElapsed)
+function onUpdate(timeElapsed)
 end
 
 -- self was selected by creature
-function onSelected(self, creature)
+function onSelected(creature)
 end
 
 -- creature collides with self
-function onCollide(self, creature)
+function onCollide(creature)
 end

@@ -1,18 +1,18 @@
 isPersistent = false
 
-function getDuration(self, source, target)
+function getDuration(source, target)
   return baseDuration
 end
 
-function onStart(self, source, target)
+function onStart(source, target)
   return true
 end
 
-function onEnd(self, source, target)
+function onEnd(source, target)
 end
 
-function onRemove(self, source, target)
+function onRemove(source, target)
 end
 
-function onUpdate(self, source, target, timeElapsed)
+function onUpdate(source, target, timeElapsed)
 end

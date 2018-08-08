@@ -16,7 +16,6 @@
 
 
 * all: /friend /ignore /flremove /fl commands
-* abserv: Lua API (Sphere) Octree query
 * abdata: status, admin virtual entity to query status do admin stuff
 * all: Item Database
   https://github.com/jgoodman/MySQL-RPG-Schema   

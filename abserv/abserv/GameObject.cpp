@@ -3,6 +3,9 @@
 #include "Game.h"
 #include "Logger.h"
 #include "ConvexHull.h"
+#include "Creature.h"
+#include "Npc.h"
+#include "Player.h"
 
 #include "DebugNew.h"
 
@@ -18,6 +21,11 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("GetName", &GameObject::GetName)
         .addFunction("GetCollisionMask", &GameObject::GetCollisionMask)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
+        .addFunction("QueryObjects", &GameObject::_LuaQueryObjects)
+        // Can return empty if up-cast is not possible
+        .addFunction("AsCreature", &GameObject::_LuaAsCreature)
+        .addFunction("AsNpc", &GameObject::_LuaAsNpc)
+        .addFunction("AsPlayer", &GameObject::_LuaAsPlayer)
     );
 }
 
@@ -162,6 +170,37 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
+}
+
+std::vector<std::shared_ptr<GameObject>> GameObject::_LuaQueryObjects(float radius)
+{
+    std::vector<GameObject*> res;
+    if (QueryObjects(res, radius))
+    {
+        std::vector<std::shared_ptr<GameObject>> result;
+        for (const auto& o : res)
+        {
+            if (o != this)
+                result.push_back(o->GetThis<GameObject>());
+        }
+        return result;
+    }
+    return std::vector<std::shared_ptr<GameObject>>();
+}
+
+std::shared_ptr<Creature> GameObject::_LuaAsCreature()
+{
+    return std::dynamic_pointer_cast<Creature>(shared_from_this());
+}
+
+std::shared_ptr<Npc> GameObject::_LuaAsNpc()
+{
+    return std::dynamic_pointer_cast<Npc>(shared_from_this());
+}
+
+std::shared_ptr<Player> GameObject::_LuaAsPlayer()
+{
+    return std::dynamic_pointer_cast<Player>(shared_from_this());
 }
 
 void GameObject::AddToOctree()

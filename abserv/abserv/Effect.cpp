@@ -18,6 +18,7 @@ void Effect::RegisterLua(kaguya::State& state)
 void Effect::InitializeLua()
 {
     GameManager::RegisterLuaAll(luaState_);
+    luaState_["self"] = this;
 }
 
 bool Effect::LoadScript(const std::string& fileName)
@@ -31,10 +32,10 @@ bool Effect::LoadScript(const std::string& fileName)
 
 void Effect::Update(uint32_t timeElapsed)
 {
-    luaState_["onUpdate"](this, source_.lock(), target_.lock(), timeElapsed);
+    luaState_["onUpdate"](source_.lock(), target_.lock(), timeElapsed);
     if (endTime_ <= Utils::AbTick())
     {
-        luaState_["onEnd"](this, source_.lock(), target_.lock());
+        luaState_["onEnd"](source_.lock(), target_.lock());
         ended_ = true;
     }
 }
@@ -44,14 +45,14 @@ void Effect::Start(std::shared_ptr<Creature> source, std::shared_ptr<Creature> t
     target_ = target;
     source_ = source;
     startTime_ = Utils::AbTick();
-    ticks_ = luaState_["getDuration"](this, source_.lock(), target_.lock(), baseDuration);
+    ticks_ = luaState_["getDuration"](source_.lock(), target_.lock(), baseDuration);
     endTime_ = startTime_ + ticks_;
-    luaState_["onStart"](this, source_.lock(), target_.lock());
+    luaState_["onStart"](source_.lock(), target_.lock());
 }
 
 void Effect::Remove()
 {
-    luaState_["onRemove"](this, source_.lock(), target_.lock());
+    luaState_["onRemove"](source_.lock(), target_.lock());
     cancelled_ = true;
 }
 
