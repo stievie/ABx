@@ -187,12 +187,14 @@ enum GameProtocolCodes : uint8_t
 
 enum GameObjectType : uint8_t
 {
-    ObjectTypeUnknown = 0x00,
-    ObjectTypeStatic = 0x01,
-    ObjectTypeNpc = 0x02,
-    ObjectTypePlayer = 0x03,
-    ObjectTypeProjectile = 0x04,
-    ObjectTypeTerrainPatch = 0x05,
+    ObjectTypeUnknown = 0,
+    ObjectTypeStatic,
+    ObjectTypeTerrainPatch,
+    // -- Bellow all objects are sent to player when they spawn ----------------
+    ObjectTypeSentToPlayer,
+    ObjectTypeNpc,
+    ObjectTypePlayer,
+    ObjectTypeProjectile,
 };
 
 enum GamePacketTypes : uint8_t

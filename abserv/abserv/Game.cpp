@@ -310,19 +310,15 @@ void Game::Load(const std::string& mapUuid)
 
 void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
 {
-    switch (object->GetType())
-    {
-    case AB::GameProtocol::ObjectTypeTerrainPatch:
-        // No need to send terrain patch to client
+    AB::GameProtocol::GameObjectType objectType = object->GetType();
+    if (objectType < AB::GameProtocol::ObjectTypeSentToPlayer)
         return;
-    case AB::GameProtocol::ObjectTypePlayer:
+    if (objectType == AB::GameProtocol::ObjectTypePlayer)
     {
         // Spawn points are loaded now
         const SpawnPoint& p = map_->GetFreeSpawnPoint();
         object->transformation_.position_ = p.position;
         object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
-        break;
-    }
     }
 
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
@@ -363,7 +359,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     Net::NetworkMessage msg;
     for (const auto& o : objects_)
     {
-        if (o->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch)
+        if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
             // No need to send terrain patch to client
             continue;
         if (o.get() == player.get())

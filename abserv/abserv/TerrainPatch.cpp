@@ -14,6 +14,8 @@ TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
     offset_(offset),
     size_(size)
 {
+    occluder_ = true;
+    occludee_ = false;
     Math::Vector3 pos((size.x_ / 2.0f) * offset.x_, 0.0f, (size.y_ / 2.0f) * offset.y_);
     pos.y_ = owner_->heightMap_->GetHeight(pos);
     transformation_.position_ = pos;
