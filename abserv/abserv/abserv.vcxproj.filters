@@ -216,6 +216,9 @@
     <ClInclude Include="IOModel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainPatch.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -396,6 +399,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOModel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPatch.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,6 +3,9 @@
 #include "DataProvider.h"
 #include <pugixml.hpp>
 #include "Logger.h"
+#include "CollisionShape.h"
+#include "GameObject.h"
+#include "TerrainPatch.h"
 
 namespace IO {
 
@@ -95,6 +98,14 @@ bool IOMap::Load(Game::Map& map)
         LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
         return false;
     }
+    // Add terrain patches as game objects
+    for (size_t i = 0; i < map.terrain_->GetPatchesCount(); ++i)
+    {
+        Game::TerrainPatch* patch = map.terrain_->GetPatch(static_cast<unsigned>(i));
+        std::shared_ptr<Game::GameObject> o(patch);
+        map.AddGameObject(o);
+    }
+
     map.navMesh_ = IO::DataProvider::Instance.GetAsset<Game::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
     if (!map.navMesh_)
     {

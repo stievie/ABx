@@ -20,7 +20,7 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     if (sig[0] != 'H' || sig[1] != 'M' || sig[2] != '\0' || sig[3] != '\0')
         return false;
 
-    asset->heightMap_ = std::make_unique<Math::HeightMap>();
+    asset->heightMap_ = std::make_shared<Math::HeightMap>();
 
     // Urho3D default spacing
     asset->heightMap_->spacing_ = Math::Vector3(1.0f, 0.25f, 1.0f);
@@ -41,6 +41,11 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     input.read((char*)asset->heightMap_->heightData_.data(), sizeof(float) * heightsCount);
 
     asset->heightMap_->ProcessData();
+    asset->CreatePatches();
+
+    asset->SetCollisionShape(
+        std::make_unique<Math::CollisionShapeImpl<Math::HeightMap>>(Math::ShapeTypeHeightMap, asset->heightMap_)
+    );
 
     return true;
 }

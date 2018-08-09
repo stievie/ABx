@@ -192,6 +192,7 @@ enum GameObjectType : uint8_t
     ObjectTypeNpc = 0x02,
     ObjectTypePlayer = 0x03,
     ObjectTypeProjectile = 0x04,
+    ObjectTypeTerrainPatch = 0x05,
 };
 
 enum GamePacketTypes : uint8_t

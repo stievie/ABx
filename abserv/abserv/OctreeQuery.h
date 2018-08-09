@@ -81,15 +81,6 @@ public:
     BoundingBox box_;
 };
 
-/// Graphics raycast detail level.
-enum RayQueryLevel
-{
-    RAY_AABB = 0,
-    RAY_OBB,
-    RAY_TRIANGLE,
-    RAY_TRIANGLE_UV
-};
-
 struct RayQueryResult
 {
     /// Construct with defaults.
@@ -120,12 +111,11 @@ class RayOctreeQuery
 {
 public:
     /// Construct with ray and query parameters.
-    RayOctreeQuery(std::vector<RayQueryResult>& result, const Ray& ray, RayQueryLevel level = RAY_TRIANGLE,
+    RayOctreeQuery(std::vector<RayQueryResult>& result, const Ray& ray,
         float maxDistance = INFINITY) :
         result_(result),
         ray_(ray),
-        maxDistance_(maxDistance),
-        level_(level)
+        maxDistance_(maxDistance)
     {}
 
     RayOctreeQuery(const RayOctreeQuery& rhs) = delete;
@@ -141,8 +131,6 @@ public:
     unsigned viewMask_;
     /// Maximum ray distance.
     float maxDistance_;
-    /// Raycast detail level.
-    RayQueryLevel level_;
 };
 
 }

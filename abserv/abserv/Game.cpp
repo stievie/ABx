@@ -310,15 +310,24 @@ void Game::Load(const std::string& mapUuid)
 
 void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
 {
-    gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
-    gameStatus_->Add<uint32_t>(object->id_);
-    if (object->GetType() == AB::GameProtocol::ObjectTypePlayer)
+    switch (object->GetType())
+    {
+    case AB::GameProtocol::ObjectTypeTerrainPatch:
+        // No need to send terrain patch to client
+        return;
+    case AB::GameProtocol::ObjectTypePlayer:
     {
         // Spawn points are loaded now
         const SpawnPoint& p = map_->GetFreeSpawnPoint();
         object->transformation_.position_ = p.position;
         object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
+        break;
     }
+    }
+
+    gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
+    gameStatus_->Add<uint32_t>(object->id_);
+
     gameStatus_->Add<float>(object->transformation_.position_.x_);
     gameStatus_->Add<float>(object->transformation_.position_.y_);
     gameStatus_->Add<float>(object->transformation_.position_.z_);
@@ -354,6 +363,9 @@ void Game::SendSpawnAll(uint32_t playerId)
     Net::NetworkMessage msg;
     for (const auto& o : objects_)
     {
+        if (o->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch)
+            // No need to send terrain patch to client
+            continue;
         if (o.get() == player.get())
             // Don't send spawn of our self
             continue;

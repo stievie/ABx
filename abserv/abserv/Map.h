@@ -37,6 +37,7 @@ public:
     virtual ~Map();
 
     void LoadSceneNode(const pugi::xml_node& node);
+    void AddGameObject(std::shared_ptr<GameObject> object);
     void Update(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
     MapData data_;

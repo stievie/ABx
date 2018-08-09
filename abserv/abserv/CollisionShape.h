@@ -29,6 +29,7 @@ public:
 
     /// AABB
     virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;
+    virtual BoundingBox GetBoundingBox() const = 0;
 
     virtual bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const = 0;
@@ -42,35 +43,46 @@ template <typename T>
 class CollisionShapeImpl : public CollisionShape
 {
 public:
+    /// Ctor. Create new shape
     template<typename... _CArgs>
-    CollisionShapeImpl(ShapeType type, _CArgs&&... _Args) :
+    explicit CollisionShapeImpl(ShapeType type, _CArgs&&... _Args) :
         CollisionShape(type),
-        shape_(std::forward<_CArgs>(_Args)...)
+        shape_(std::make_shared<T>(std::forward<_CArgs>(_Args)...))
+    { }
+    /// Ctor. Assign existing shape
+    explicit CollisionShapeImpl(ShapeType type, std::shared_ptr<T> ptr) :
+        CollisionShape(type),
+        shape_(ptr)
     { }
 
     BoundingBox GetWorldBoundingBox(const Matrix4& transform) const override
     {
-        return shape_.GetBoundingBox().Transformed(transform);
+        return shape_->GetBoundingBox().Transformed(transform);
+    }
+
+    BoundingBox GetBoundingBox() const override
+    {
+        return shape_->GetBoundingBox();
     }
 
     bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const override
     {
-        return shape_.Transformed(transformation).Collides(other, move);
+        return shape_->Transformed(transformation).Collides(other, move);
     }
     bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const override
     {
-        return shape_.Transformed(transformation).Collides(other, move);
+        return shape_->Transformed(transformation).Collides(other, move);
     }
     bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const override
     {
-        return shape_.Transformed(transformation).Collides(other, move);
+        return shape_->Transformed(transformation).Collides(other, move);
     }
     bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const override
     {
-        return shape_.Transformed(transformation).Collides(other, move);
+        return shape_->Transformed(transformation).Collides(other, move);
     }
 
-    T shape_;
+    std::shared_ptr<T> shape_;
 };
 
 }

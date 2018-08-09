@@ -36,9 +36,16 @@ private:
     static uint32_t objectIds_;
     std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::vector<std::shared_ptr<GameObject>> _LuaQueryObjects(float radius);
+    std::vector<std::shared_ptr<GameObject>> _LuaRaycast(float x, float y, float z);
     std::shared_ptr<Creature> _LuaAsCreature();
     std::shared_ptr<Npc> _LuaAsNpc();
     std::shared_ptr<Player> _LuaAsPlayer();
+    void _LuaSetPosition(float x, float y, float z);
+    void _LuaSetRotation(float y);
+    void _LuaSetScale(float x, float y, float z);
+    std::vector<float> _LuaGetPosition() const;
+    float _LuaGetRotation() const;
+    std::vector<float> _LuaGetScale() const;
 protected:
     std::weak_ptr<Game> game_;
     /// Octree octant.
@@ -100,19 +107,27 @@ public:
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {
-        return AB::GameProtocol::ObjectTypeUnknown;
+        return AB::GameProtocol::ObjectTypeStatic;
     }
     /// Process octree raycast. May be called from a worker thread.
     virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results);
     void SetSortValue(float value) { sortValue_ = value; }
     float GetSortValue() const { return sortValue_; }
 
-    virtual bool Serialize(IO::PropWriteStream& stream);
-
     /// Return octree octant.
-    Math::Octant* GetOctant() const { return octant_; }
+    Math::Octant* GetOctant() const
+    {
+        return octant_;
+    }
     /// Move into another octree octant.
-    void SetOctant(Math::Octant* octant) { octant_ = octant; }
+    void SetOctant(Math::Octant* octant)
+    {
+        octant_ = octant;
+    }
+
+    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction);
+
+    virtual bool Serialize(IO::PropWriteStream& stream);
 
     virtual std::string GetName() const { return name_; }
     virtual AB::Entities::CharacterSex GetSex() const
@@ -141,11 +156,17 @@ public:
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
     bool occludee_;
     uint32_t collisionMask_;
-    Math::BoundingBox GetWorldBoundingBox() const
+    virtual Math::BoundingBox GetWorldBoundingBox() const
     {
         if (!collisionShape_)
             return Math::BoundingBox();
         return collisionShape_->GetWorldBoundingBox(transformation_.GetMatrix());
+    }
+    virtual Math::BoundingBox GetBoundingBox() const
+    {
+        if (!collisionShape_)
+            return Math::BoundingBox();
+        return collisionShape_->GetBoundingBox();
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);

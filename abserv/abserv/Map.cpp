@@ -114,6 +114,10 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 {
                     if (model)
                     {
+#ifdef _DEBUG
+                        LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
+                            " " << model->GetBoundingBox().ToString() << std::endl;
+#endif
                         object->SetCollisionShape(
                             std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
                                 Math::ShapeTypeBoundingBox, model->GetBoundingBox())
@@ -123,6 +127,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 if (object && !object->GetCollisionShape())
                 {
                     // Unknown shape add default shape
+                    LOG_WARNING << "Setting default BB collision shape for " << object->GetName() << std::endl;
                     object->SetCollisionShape(
                         std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
                             Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
@@ -167,6 +172,12 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             }
         }
     }
+}
+
+void Map::AddGameObject(std::shared_ptr<GameObject> object)
+{
+    if (auto game = game_.lock())
+        game->AddObjectInternal(object);
 }
 
 void Map::Update(uint32_t delta)

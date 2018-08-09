@@ -6,6 +6,7 @@
 #include "Creature.h"
 #include "Npc.h"
 #include "Player.h"
+#include "MathUtils.h"
 
 #include "DebugNew.h"
 
@@ -22,6 +23,15 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("GetCollisionMask", &GameObject::GetCollisionMask)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
         .addFunction("QueryObjects", &GameObject::_LuaQueryObjects)
+        .addFunction("Raycast", &GameObject::_LuaRaycast)
+
+        .addFunction("SetPosition", &GameObject::_LuaSetPosition)
+        .addFunction("SetRotation", &GameObject::_LuaSetRotation)
+        .addFunction("SetScale", &GameObject::_LuaSetScale)
+        .addFunction("GetPosition", &GameObject::_LuaGetPosition)
+        .addFunction("GetRotation", &GameObject::_LuaGetRotation)
+        .addFunction("GetScale", &GameObject::_LuaGetScale)
+
         // Can return empty if up-cast is not possible
         .addFunction("AsCreature", &GameObject::_LuaAsCreature)
         .addFunction("AsNpc", &GameObject::_LuaAsNpc)
@@ -57,7 +67,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = (BBoxShape*)other->GetCollisionShape();
-        const Math::BoundingBox bbox = shape->shape_.Transformed(other->transformation_.GetMatrix());
+        const Math::BoundingBox bbox = shape->shape_->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
@@ -78,7 +88,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = (SphereShape*)other->GetCollisionShape();
-        const Math::Sphere sphere = shape->shape_.Transformed(other->transformation_.GetMatrix());
+        const Math::Sphere sphere = shape->shape_->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
@@ -95,7 +105,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     {
         using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
         HullShape* shape = (HullShape*)other->GetCollisionShape();
-        const Math::ConvexHull hull = shape->shape_.Transformed(other->transformation_.GetMatrix());
+        const Math::ConvexHull hull = shape->shape_->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
@@ -114,14 +124,14 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         HeightShape* shape = (HeightShape*)other->GetCollisionShape();
 #if defined(DEBUG_COLLISION)
         bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), shape->shape_, move);
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), *shape->shape_, move);
         if (ret)
         {
             LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), shape->shape_, move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), *shape->shape_, move);
 #endif
     }
     }
@@ -140,13 +150,6 @@ void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<
         result.object_ = this;
         results.push_back(result);
     }
-}
-
-bool GameObject::Serialize(IO::PropWriteStream& stream)
-{
-    stream.Write<uint8_t>(GetType());
-    stream.WriteString(GetName());
-    return true;
 }
 
 bool GameObject::QueryObjects(std::vector<GameObject*>& result, float radius)
@@ -172,6 +175,23 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     return true;
 }
 
+bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction)
+{
+    if (!octant_)
+        return false;
+
+    std::vector<Math::RayQueryResult> res;
+    Math::Ray ray(transformation_.position_, direction);
+    Math::RayOctreeQuery query(res, ray);
+    Math::Octree* octree = octant_->GetRoot();
+    octree->Raycast(query);
+    for (const auto& o : query.result_)
+    {
+        result.push_back(o.object_);
+    }
+    return true;
+}
+
 std::vector<std::shared_ptr<GameObject>> GameObject::_LuaQueryObjects(float radius)
 {
     std::vector<GameObject*> res;
@@ -188,6 +208,28 @@ std::vector<std::shared_ptr<GameObject>> GameObject::_LuaQueryObjects(float radi
     return std::vector<std::shared_ptr<GameObject>>();
 }
 
+std::vector<std::shared_ptr<GameObject>> GameObject::_LuaRaycast(float x, float y, float z)
+{
+    std::vector<std::shared_ptr<GameObject>> result;
+
+    if (!octant_)
+        return result;
+
+    const Math::Vector3& src = transformation_.position_;
+    const Math::Vector3 dest(x, y, z);
+    std::vector<Math::RayQueryResult> res;
+    Math::Ray ray(src, dest);
+    Math::RayOctreeQuery query(res, ray, src.Distance(dest));
+    Math::Octree* octree = octant_->GetRoot();
+    octree->Raycast(query);
+    for (const auto& o : query.result_)
+    {
+        if (o.object_ != this)
+            result.push_back(o.object_->GetThis<GameObject>());
+    }
+    return result;
+}
+
 std::shared_ptr<Creature> GameObject::_LuaAsCreature()
 {
     return std::dynamic_pointer_cast<Creature>(shared_from_this());
@@ -195,12 +237,58 @@ std::shared_ptr<Creature> GameObject::_LuaAsCreature()
 
 std::shared_ptr<Npc> GameObject::_LuaAsNpc()
 {
-    return std::dynamic_pointer_cast<Npc>(shared_from_this());
+    if (GetType() == AB::GameProtocol::ObjectTypeNpc)
+        return std::dynamic_pointer_cast<Npc>(shared_from_this());
+    return std::shared_ptr<Npc>();
 }
 
 std::shared_ptr<Player> GameObject::_LuaAsPlayer()
 {
-    return std::dynamic_pointer_cast<Player>(shared_from_this());
+    if (GetType() == AB::GameProtocol::ObjectTypePlayer)
+        return std::dynamic_pointer_cast<Player>(shared_from_this());
+    return std::shared_ptr<Player>();
+}
+
+void GameObject::_LuaSetPosition(float x, float y, float z)
+{
+    transformation_.position_.x_ = x;
+    transformation_.position_.y_ = y;
+    transformation_.position_.z_ = z;
+}
+
+void GameObject::_LuaSetRotation(float y)
+{
+    transformation_.rotation_ = Math::DegToRad(y);
+}
+
+void GameObject::_LuaSetScale(float x, float y, float z)
+{
+    transformation_.scale_.x_ = x;
+    transformation_.scale_.y_ = y;
+    transformation_.scale_.z_ = z;
+}
+
+std::vector<float> GameObject::_LuaGetPosition() const
+{
+    std::vector<float> result;
+    result.push_back(transformation_.position_.x_);
+    result.push_back(transformation_.position_.y_);
+    result.push_back(transformation_.position_.z_);
+    return result;
+}
+
+float GameObject::_LuaGetRotation() const
+{
+    return transformation_.rotation_;
+}
+
+std::vector<float> GameObject::_LuaGetScale() const
+{
+    std::vector<float> result;
+    result.push_back(transformation_.scale_.x_);
+    result.push_back(transformation_.scale_.y_);
+    result.push_back(transformation_.scale_.z_);
+    return result;
 }
 
 void GameObject::AddToOctree()
@@ -229,6 +317,13 @@ void GameObject::RemoveFromOctree()
 #endif
         octant_->RemoveObject(this);
     }
+}
+
+bool GameObject::Serialize(IO::PropWriteStream& stream)
+{
+    stream.Write<uint8_t>(GetType());
+    stream.WriteString(GetName());
+    return true;
 }
 
 }
