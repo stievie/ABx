@@ -266,9 +266,6 @@
     <ClCompile Include="OctreeQuery.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="MailBox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>

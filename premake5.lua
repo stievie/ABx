@@ -221,7 +221,7 @@ workspace "absall"
     kind "ConsoleApp"
     language "C++"
     targetdir ("import/bin")
-    includedirs { "Include", "Include/stb", "absmath/absmath" }
+    includedirs { "Include/stb", "absmath/absmath" }
     files { 
       "import/import/*.cpp",
       "import/import/*.c",
@@ -250,7 +250,7 @@ workspace "absall"
     targetdir ("genavmesh/bin")
     includedirs {  "genavmesh/genavmesh/DebugUtils/Include", "genavmesh/genavmesh/Detour/Include", 
       "genavmesh/genavmesh/DetourCrowd/Include", "genavmesh/genavmesh/DetourTileCache/Include", 
-      "genavmesh/genavmesh/Recast/Include", "Include", "Include/stb", "absmath/absmath" }
+      "genavmesh/genavmesh/Recast/Include", "Include/stb", "absmath/absmath" }
     files { 
       "genavmesh/genavmesh/**.cpp",
       "genavmesh/genavmesh/**.c",
