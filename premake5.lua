@@ -216,6 +216,59 @@ workspace "absall"
     filter "configurations:Debug"
       targetsuffix "_d"
 
+  -- Import utility. Binary import/bin
+  project "import"
+    kind "ConsoleApp"
+    language "C++"
+    targetdir ("import/bin")
+    includedirs { "Include", "Include/stb", "absmath/absmath" }
+    files { 
+      "import/import/*.cpp",
+      "import/import/*.c",
+      "import/import/*.cxx",
+      "import/import/*.h",
+      "import/import/*.hpp",
+      "import/import/*.hxx",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    links { "abscommon", "absmath" }
+    dependson { "abscommon", "absmath" }
+    defines { "_CONSOLE" }
+    pchheader "stdafx.h"
+    filter "action:vs*"
+      pchsource "import/import/stdafx.cpp"
+    filter "configurations:Debug"
+      targetsuffix "_d"
+
+  -- Navigation mesh generator. Binary genavmesh/bin
+  project "genavmesh"
+    kind "ConsoleApp"
+    language "C++"
+    targetdir ("genavmesh/bin")
+    includedirs {  "genavmesh/genavmesh/DebugUtils/Include", "genavmesh/genavmesh/Detour/Include", 
+      "genavmesh/genavmesh/DetourCrowd/Include", "genavmesh/genavmesh/DetourTileCache/Include", 
+      "genavmesh/genavmesh/Recast/Include", "Include", "Include/stb", "absmath/absmath" }
+    files { 
+      "genavmesh/genavmesh/**.cpp",
+      "genavmesh/genavmesh/**.c",
+      "genavmesh/genavmesh/**.cxx",
+      "genavmesh/genavmesh/**.h",
+      "genavmesh/genavmesh/**.hpp",
+      "genavmesh/genavmesh/**.hxx",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    links { "abscommon", "absmath" }
+    dependson { "abscommon", "absmath" }
+    defines { "_CONSOLE" }
+    filter "configurations:Debug"
+      targetsuffix "_d"
+
 --------------------------------------------------------------------------------
 -- Client ----------------------------------------------------------------------
 --------------------------------------------------------------------------------
