@@ -48,7 +48,28 @@ workspace "absall"
     filter "action:vs*"
       pchsource "abscommon/abscommon/stdafx.cpp"
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
-      
+
+  project "absmath"
+    kind "StaticLib"
+    language "C++"
+    files { 
+      "absmath/absmath/*.cpp",
+      "absmath/absmath/*.cxx",
+      "absmath/absmath/*.c",
+      "absmath/absmath/*.h",
+      "absmath/absmath/*.hpp",
+      "absmath/absmath/*.hxx",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    defines { "_CONSOLE" }
+    pchheader "stdafx.h"
+    filter "action:vs*"
+      pchsource "absmath/absmath/stdafx.cpp"
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+          
   project "abdata"
     kind "ConsoleApp"
     language "C++"
@@ -185,8 +206,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon" }
-    dependson { "abscommon" }
+    links { "abscommon", "absmath" }
+    dependson { "abscommon", "absmath" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"

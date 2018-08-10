@@ -95,7 +95,13 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         std::string modelValue = value_attr.as_string();
                         std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
                         if (modelFile.size() == 2)
+                        {
                             model = IO::DataProvider::Instance.GetAsset<Model>(modelFile[1]);
+#ifdef _DEBUG
+                            if (model)
+                                LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox().ToString() << std::endl;
+#endif
+                        }
                         break;
                     }
                     case IO::Map::AttrIsOccluder:

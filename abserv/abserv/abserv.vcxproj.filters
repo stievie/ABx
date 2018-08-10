@@ -57,19 +57,7 @@
     <ClInclude Include="Player.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Vector3.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Quaternion.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="IOAccount.h">
@@ -132,28 +120,10 @@
     <ClInclude Include="InputQueue.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix4.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Transformation.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundingBox.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Octree.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="OctreeQuery.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Ray.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="MathDefs.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="MailBox.h">
@@ -162,37 +132,10 @@
     <ClInclude Include="IOMail.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionShape.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ConvexHull.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Terrain.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="IOTerrain.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="HeightMap.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Hull.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Rect.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Point.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="MathUtils.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Shape.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Gjk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="FriendList.h">
@@ -257,15 +200,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector4.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -326,15 +260,6 @@
     <ClCompile Include="InputQueue.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix4.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Transformation.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="BoundingBox.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Octree.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -344,40 +269,16 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Ray.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="MailBox.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOMail.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionShape.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ConvexHull.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOTerrain.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="HeightMap.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Hull.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Rect.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Point.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Shape.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="FriendList.cpp">

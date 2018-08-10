@@ -3,8 +3,6 @@
 #include "StringUtils.h"
 #include "Logger.h"
 
-#include "DebugNew.h"
-
 namespace Math {
 
 const Vector3 Vector3::Zero;

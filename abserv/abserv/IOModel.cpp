@@ -22,7 +22,12 @@ bool IOModel::Import(Game::Model* asset, const std::string& name)
 
     input.read(reinterpret_cast<char*>(&asset->shape_->vertexCount_), sizeof(asset->shape_->vertexCount_));
     asset->shape_->vertexData_.resize(asset->shape_->vertexCount_);
-    input.read((char*)asset->shape_->vertexData_.data(), sizeof(float) * 3 * asset->shape_->vertexCount_);
+    for (unsigned i = 0; i < asset->shape_->vertexCount_; ++i)
+    {
+        Math::Vector3 vert;
+        input.read((char*)vert.Data(), sizeof(float) * 3);
+        asset->shape_->vertexData_[i] = vert;
+    }
 
     input.read(reinterpret_cast<char*>(&asset->shape_->indexCount_), sizeof(asset->shape_->indexCount_));
     asset->shape_->indexData_.resize(asset->shape_->indexCount_);

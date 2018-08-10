@@ -103,7 +103,7 @@ public:
     {
         return IsInsideFast(b2) != OUTSIDE;
     }
-    bool Collides(const Sphere& b2, Vector3& move) const;
+    bool Collides(const Sphere& b2, Vector3&) const;
     bool Collides(const ConvexHull& b2, Vector3& move) const;
     bool Collides(const HeightMap& b2, Vector3& move) const;
 

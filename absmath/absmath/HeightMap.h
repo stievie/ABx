@@ -28,9 +28,8 @@ public:
     {
         return boundingBox_;
     }
-    const HeightMap& Transformed(const Matrix4& transformation) const
+    const HeightMap& Transformed(const Matrix4&) const
     {
-        AB_UNUSED(transformation);
         return *this;
     }
 

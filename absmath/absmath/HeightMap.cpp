@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "HeightMap.h"
 #include "MathUtils.h"
-#include "Logger.h"
 #include "Sphere.h"
 #include "BoundingBox.h"
 #include "ConvexHull.h"

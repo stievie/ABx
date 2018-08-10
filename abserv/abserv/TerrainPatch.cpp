@@ -16,24 +16,29 @@ TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
 {
     occluder_ = true;
     occludee_ = false;
-    Math::Vector3 pos((size.x_ / 2.0f) * offset.x_, 0.0f, (size.y_ / 2.0f) * offset.y_);
-    pos.y_ = owner_->heightMap_->GetHeight(pos);
-    transformation_.position_ = pos;
-    float minY = std::numeric_limits<float>::infinity();
-    float maxY = -std::numeric_limits<float>::infinity();
 
+    transformation_.position_ = Math::Vector3(((float)size.x_ / 2.0f) * (float)offset.x_,
+        0.0f,
+        ((float)size.y_ / 2.0f) * (float)offset.y_);
+    transformation_.position_.y_ = owner_->heightMap_->GetHeight(transformation_.position_);
+
+    float minY = std::numeric_limits<float>::max();
+    float maxY = std::numeric_limits<float>::lowest();
     for (int y = 0; y < size.y_; ++y)
     {
         for (int x = 0; x < size.x_; ++x)
         {
-            minY = std::min(owner->heightMap_->GetRawHeight(x + offset.x_, y), minY);
-            maxY = std::max(owner->heightMap_->GetRawHeight(x + offset.x_, y), maxY);
+            const float currY = owner->heightMap_->GetRawHeight(x + offset.x_, y);
+            if (currY < minY)
+                minY = currY;
+            if (currY > maxY)
+                maxY = currY;
         }
     }
-
     boundingBox_ = Math::BoundingBox(
-        Math::Vector3(pos.x_ - size.x_, minY, pos.z_ - size.y_),
-        Math::Vector3(pos.x_ + size.x_, maxY, pos.z_ + size.y_));
+        Math::Vector3(transformation_.position_.x_ - size.x_, minY, transformation_.position_.z_ - size.y_),
+        Math::Vector3(transformation_.position_.x_ + size.x_, maxY, transformation_.position_.z_ + size.y_));
+
     char buff[64];
     int len = sprintf_s(buff, "TerrainPatch: %d,%d", offset.x_, offset.y_);
     name_ = std::string(buff, len);
