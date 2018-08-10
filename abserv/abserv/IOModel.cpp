@@ -18,15 +18,18 @@ bool IOModel::Import(Game::Model* asset, const std::string& name)
     if (sig[0] != 'M' || sig[1] != 'O' || sig[2] != 'D' || sig[3] != 'L')
         return false;
 
+    // Read bounding box
+    input.read((char*)asset->boundingBox_.min_.Data(), sizeof(float) * 3);
+    input.read((char*)asset->boundingBox_.max_.Data(), sizeof(float) * 3);
+
+    // Read shape data
     asset->shape_ = std::make_unique<Math::Shape>();
 
     input.read(reinterpret_cast<char*>(&asset->shape_->vertexCount_), sizeof(asset->shape_->vertexCount_));
     asset->shape_->vertexData_.resize(asset->shape_->vertexCount_);
     for (unsigned i = 0; i < asset->shape_->vertexCount_; ++i)
     {
-        Math::Vector3 vert;
-        input.read((char*)vert.Data(), sizeof(float) * 3);
-        asset->shape_->vertexData_[i] = vert;
+        input.read((char*)asset->shape_->vertexData_[i].Data(), sizeof(float) * 3);
     }
 
     input.read(reinterpret_cast<char*>(&asset->shape_->indexCount_), sizeof(asset->shape_->indexCount_));

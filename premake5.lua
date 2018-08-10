@@ -194,6 +194,7 @@ workspace "absall"
   project "abserv"
     kind "ConsoleApp"
     language "C++"
+    includedirs { "absmath/absmath" }
     files { 
       "abserv/abserv/*.cpp",
       "abserv/abserv/*.c",

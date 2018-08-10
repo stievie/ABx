@@ -1,6 +1,7 @@
 #pragma once
 
-#include <assimp/vector3.h>
+#include "Vector3.h"
+#include "BoundingBox.h"
 
 class CreateModelAction
 {
@@ -8,7 +9,8 @@ private:
     std::string file_;
     uint32_t vertexCount_;
     uint32_t indexCount_;
-    std::vector<aiVector3D> vertexData_;
+    Math::BoundingBox boundingBox_;
+    std::vector<Math::Vector3> vertexData_;
     std::vector<unsigned> indexData_;
     void Save();
 public:

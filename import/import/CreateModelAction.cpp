@@ -9,12 +9,20 @@ void CreateModelAction::Save()
     std::string fileName = file_ + ".model";
     std::ofstream output(fileName, std::ios::binary);
     output.write((char*)"MODL", 4);
+
+    output.write((char*)&boundingBox_.min_.x_, sizeof(float));
+    output.write((char*)&boundingBox_.min_.y_, sizeof(float));
+    output.write((char*)&boundingBox_.min_.z_, sizeof(float));
+    output.write((char*)&boundingBox_.max_.x_, sizeof(float));
+    output.write((char*)&boundingBox_.max_.y_, sizeof(float));
+    output.write((char*)&boundingBox_.max_.z_, sizeof(float));
+
     output.write((char*)&vertexCount_, sizeof(vertexCount_));
     for (const auto& v : vertexData_)
     {
-        output.write((char*)&v.x, sizeof(float));
-        output.write((char*)&v.y, sizeof(float));
-        output.write((char*)&v.z, sizeof(float));
+        output.write((char*)&v.x_, sizeof(float));
+        output.write((char*)&v.y_, sizeof(float));
+        output.write((char*)&v.z_, sizeof(float));
     }
     output.write((char*)&indexCount_, sizeof(indexCount_));
     for (const auto& i : indexData_)
@@ -65,7 +73,11 @@ void CreateModelAction::Execute()
         {
             if (ai_mesh->HasPositions())
             {
-                vertexData_.push_back(ai_mesh->mVertices[i]);
+                vertexData_.push_back({
+                    ai_mesh->mVertices[i].x,
+                    ai_mesh->mVertices[i].y,
+                    ai_mesh->mVertices[i].z,
+                });
                 vertexCount_++;
             }
         }
@@ -89,7 +101,11 @@ void CreateModelAction::Execute()
         }
 
     }
+    boundingBox_.Reset();
+    boundingBox_.Merge(vertexData_.data(), vertexCount_);
 
-    std::cout << "Mesh has " << vertexData_.size() << " vertices and " << indexData_.size() << " indices" << std::endl;
+    std::cout << "Mesh has " << vertexData_.size() << " vertices and " << indexData_.size() << " indices, " <<
+        " BB " << boundingBox_.ToString() <<
+        std::endl;
     Save();
 }

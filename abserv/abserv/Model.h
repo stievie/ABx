@@ -9,8 +9,6 @@ namespace Game {
 /// 3D Model
 class Model : public IO::AssetImpl<Model>
 {
-private:
-    Math::BoundingBox boundingBox_;
 public:
     Model();
     virtual ~Model();
@@ -26,6 +24,7 @@ public:
     }
 
     std::unique_ptr<Math::Shape> shape_;
+    Math::BoundingBox boundingBox_;
 };
 
 }

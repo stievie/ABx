@@ -4,6 +4,7 @@
 #include <fstream>
 #include "MathUtils.h"
 #include <limits>
+#include "ImportUtils.h"
 
 void CreateHeightMapAction::SaveObj()
 {
@@ -79,7 +80,7 @@ void CreateHeightMapAction::SaveHeightMap()
 void CreateHeightMapAction::CreateGeometry()
 {
     minHeight_ = std::numeric_limits<float>::max();
-    maxHeight_ = std::numeric_limits<float>::min();
+    maxHeight_ = std::numeric_limits<float>::lowest();
     vertices_.resize(width_ * height_);
     normals_.resize(width_ * height_);
     heightData_.resize(width_ * height_);
@@ -153,8 +154,8 @@ float CreateHeightMapAction::GetRawHeight(int x, int z) const
     if (!data_)
         return 0.0f;
 
-    x = Clamp(x, 0, width_ - 1);
-    z = Clamp(z, 0, height_ - 1);
+    x = Math::Clamp(x, 0, width_ - 1);
+    z = Math::Clamp(z, 0, height_ - 1);
     // From bottom to top
     int offset = ((height_ - z) * width_ + x) * components_;
     if (components_ == 1)

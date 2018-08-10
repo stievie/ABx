@@ -28,3 +28,5 @@
 #include <fstream>
 
 #include <stdint.h>
+
+#include <DirectXMath.h>

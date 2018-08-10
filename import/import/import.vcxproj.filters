@@ -39,10 +39,10 @@
     <ClInclude Include="ObjWriter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="MathUtils.h">
+    <ClInclude Include="CreateModelAction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="CreateModelAction.h">
+    <ClInclude Include="ImportUtils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
