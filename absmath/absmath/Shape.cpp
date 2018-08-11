@@ -4,6 +4,14 @@
 
 namespace Math {
 
+void Shape::Reset()
+{
+    vertexData_.clear();
+    vertexCount_ = 0;
+    indexData_.clear();
+    indexCount_ = 0;
+}
+
 void Shape::AddTriangle(unsigned i1, unsigned i2, unsigned i3)
 {
     indexData_.push_back(i1);

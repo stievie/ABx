@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2387.5" />
 	<attribute name="Next Replicated Node ID" value="30" />
 	<attribute name="Next Replicated Component ID" value="40" />
-	<attribute name="Next Local Node ID" value="16783550" />
-	<attribute name="Next Local Component ID" value="16784251" />
+	<attribute name="Next Local Node ID" value="16783650" />
+	<attribute name="Next Local Component ID" value="16784373" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -121,7 +121,7 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781727">
-			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Shape Type" value="ConvexHull" />
 			<attribute name="Model" value="Model;Models/Temple1.mdl" />
 		</component>
 	</node>
@@ -303,7 +303,6 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16782433">
-			<attribute name="Size" value="0.482762 0.82544 0.709132" />
 			<attribute name="Offset Position" value="0 0.432543 0.0375472" />
 			<attribute name="Model" value="Model;Models/Amboss.mdl" />
 		</component>

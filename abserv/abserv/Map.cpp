@@ -66,6 +66,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 
         std::shared_ptr<Model> model;
         std::shared_ptr<GameObject> object;
+        Math::Vector3 size;
         for (const auto& comp : node.children("component"))
         {
             const pugi::xml_attribute& type_attr = comp.attribute("type");
@@ -126,6 +127,9 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         const size_t value_hash = Utils::StringHashRt(value_attr.as_string());
                         switch (name_hash)
                         {
+                        case IO::Map::AttrSize:
+                            size = Math::Vector3(value_attr.as_string());
+                            break;
                         case IO::Map::AttrShapeType:
                         {
                             switch (value_hash)
@@ -149,17 +153,31 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         }
                     }
 
-                    if (object && !object->GetCollisionShape() && model)
+                    if (object && !object->GetCollisionShape())
                     {
                         // Default BoundingBox
+                        if (model)
+                        {
 #ifdef _DEBUG
-                        LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                            " " << model->GetBoundingBox().ToString() << std::endl;
+                            LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
+                                " to model BB " << model->GetBoundingBox().ToString() << std::endl;
 #endif
-                        object->SetCollisionShape(
-                            std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                                Math::ShapeTypeBoundingBox, model->GetBoundingBox())
-                        );
+                            object->SetCollisionShape(
+                                std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                                    Math::ShapeTypeBoundingBox, model->GetBoundingBox())
+                            );
+                        }
+                        else if (size != Math::Vector3::Zero)
+                        {
+#ifdef _DEBUG
+                            LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
+                                " to size +/- " << size.ToString() << std::endl;
+#endif
+                            object->SetCollisionShape(
+                                std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
+                                    Math::ShapeTypeBoundingBox, Math::BoundingBox(-size, size))
+                            );
+                        }
                     }
                 }
                 break;

@@ -169,7 +169,7 @@ bool BoundingBox::Collides(const ConvexHull& b2, Vector3&) const
 
 bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
 {
-    float y = b2.GetHeight(min_);
+    const float y = b2.GetHeight(min_);
     if (y > min_.y_)
     {
         move.y_ = min_.y_ - y;

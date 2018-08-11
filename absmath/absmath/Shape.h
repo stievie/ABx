@@ -37,6 +37,12 @@ public:
     {}
     ~Shape() = default;
 
+    bool IsDefined() const
+    {
+        return vertexCount_ != 0;
+    }
+    void Reset();
+
     void AddTriangle(unsigned i1, unsigned i2, unsigned i3);
     const Vector3& GetVertex(unsigned index) const
     {
