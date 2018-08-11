@@ -24,6 +24,14 @@ bool StringEquals(const std::wstring& l, const std::wstring& r)
     });
 }
 
+std::string ChangeFileExt(const std::string& fn, const std::string& ext)
+{
+    size_t pos = fn.find_last_of('.');
+    if (pos != std::string::npos)
+        return fn.substr(0, pos) + ext;
+    return fn + ext;
+}
+
 std::vector<std::string> Split(const std::string& str, const std::string& delim)
 {
     std::vector<std::string> parts;

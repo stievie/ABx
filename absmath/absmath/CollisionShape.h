@@ -2,6 +2,7 @@
 
 #include "MathDefs.h"
 #include "BoundingBox.h"
+#include "ConvexHull.h"
 
 namespace Math {
 

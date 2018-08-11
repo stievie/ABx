@@ -118,8 +118,40 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             {
                 if (object)
                 {
-                    if (model)
+                    for (const auto& attr : comp.children())
                     {
+                        const pugi::xml_attribute& name_attr = attr.attribute("name");
+                        const size_t name_hash = Utils::StringHashRt(name_attr.as_string());
+                        const pugi::xml_attribute& value_attr = attr.attribute("value");
+                        const size_t value_hash = Utils::StringHashRt(value_attr.as_string());
+                        switch (name_hash)
+                        {
+                        case IO::Map::AttrShapeType:
+                        {
+                            switch (value_hash)
+                            {
+                            case IO::Map::AttrTriangleMesh:
+                            case IO::Map::AttrConvexHull:
+                                if (model)
+                                {
+#ifdef _DEBUG
+                                    LOG_DEBUG << "Setting ConvexHull collision shape for " << object->GetName() << std::endl;
+#endif
+                                    object->SetCollisionShape(
+                                        std::make_unique<Math::CollisionShapeImpl<Math::ConvexHull>>(
+                                            Math::ShapeTypeConvexHull, model->shape_->vertexData_)
+                                    );
+                                }
+                                break;
+                            }
+                            break;
+                        }
+                        }
+                    }
+
+                    if (object && !object->GetCollisionShape() && model)
+                    {
+                        // Default BoundingBox
 #ifdef _DEBUG
                         LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
                             " " << model->GetBoundingBox().ToString() << std::endl;
@@ -129,15 +161,6 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                                 Math::ShapeTypeBoundingBox, model->GetBoundingBox())
                         );
                     }
-                }
-                if (object && !object->GetCollisionShape())
-                {
-                    // Unknown shape add default shape
-                    LOG_WARNING << "Setting default BB collision shape for " << object->GetName() << std::endl;
-                    object->SetCollisionShape(
-                        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                            Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
-                    );
                 }
                 break;
             }
@@ -161,7 +184,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             {
                 assert(terrain_);
                 terrain_->transformation_ = Math::Transformation(pos, scale, rot);
-                terrain_->heightMap_->matrix_ = terrain_->transformation_.GetMatrix();
+                terrain_->GetHeightMap()->matrix_ = terrain_->transformation_.GetMatrix();
                 for (const auto& attr : comp.children())
                 {
                     const pugi::xml_attribute& name_attr = attr.attribute("name");
@@ -170,7 +193,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                     switch (name_hash)
                     {
                     case IO::Map::AttrVertexSpacing:
-                        terrain_->heightMap_->spacing_ = Math::Vector3(value_attr.as_string());
+                        terrain_->GetHeightMap()->spacing_ = Math::Vector3(value_attr.as_string());
                         break;
                     }
                 }

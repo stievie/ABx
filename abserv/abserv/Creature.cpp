@@ -42,11 +42,15 @@ Creature::Creature() :
     lastStateChange_(Utils::AbTick()),
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone),
-    luaInitialized_(false)
+    luaInitialized_(false),
+    oldPosition_(Math::Vector3::Zero)
 {
     // Creature always collides
+    static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
+    static const Math::Vector3 CREATURTE_BB_MAX(0.2f, 1.7f, 0.2f);
     SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox, -0.5f, 0.5f)
+        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox,
+            CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
 }
@@ -392,7 +396,13 @@ void Creature::DoCollisions()
                 Math::Vector3 move;
                 if (Collides(ci, move))
                 {
-                    transformation_.position_ += move;
+#ifdef DEBUG_COLLISION
+                    LOG_DEBUG << GetName() << " collides with " << ci->GetName() << std::endl;
+#endif
+                    if (move != Math::Vector3::Zero)
+                        transformation_.position_ += move;
+                    else
+                        transformation_.position_ = oldPosition_;
                     // Notify ci for colliding with us
                     ci->OnCollide(GetThis<Creature>());
                     // Notify us for colliding with ci
@@ -411,7 +421,7 @@ bool Creature::Move(float speed, const Math::Vector3& amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
 
-    Math::Vector3 oldPos = transformation_.position_;
+    oldPosition_ = transformation_.position_;
 
     // It's as easy as:
     // 1. Create a matrix from the rotation,
@@ -432,7 +442,7 @@ bool Creature::Move(float speed, const Math::Vector3& amount)
 #endif
 
     DoCollisions();
-    bool moved = oldPos != transformation_.position_;
+    bool moved = oldPosition_ != transformation_.position_;
 
     if (moved && octant_)
     {

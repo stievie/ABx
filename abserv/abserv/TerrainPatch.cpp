@@ -20,7 +20,7 @@ TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
     transformation_.position_ = Math::Vector3(((float)size.x_ / 2.0f) * (float)offset.x_,
         0.0f,
         ((float)size.y_ / 2.0f) * (float)offset.y_);
-    transformation_.position_.y_ = owner_->heightMap_->GetHeight(transformation_.position_);
+    transformation_.position_.y_ = owner_->GetHeightMap()->GetHeight(transformation_.position_);
 
     float minY = std::numeric_limits<float>::max();
     float maxY = std::numeric_limits<float>::lowest();
@@ -28,7 +28,7 @@ TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
     {
         for (int x = 0; x < size.x_; ++x)
         {
-            const float currY = owner->heightMap_->GetRawHeight(x + offset.x_, y);
+            const float currY = owner->GetHeightMap()->GetRawHeight(x + offset.x_, y);
             if (currY < minY)
                 minY = currY;
             if (currY > maxY)

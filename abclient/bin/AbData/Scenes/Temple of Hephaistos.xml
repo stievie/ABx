@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2387.5" />
 	<attribute name="Next Replicated Node ID" value="30" />
 	<attribute name="Next Replicated Component ID" value="40" />
-	<attribute name="Next Local Node ID" value="16783350" />
-	<attribute name="Next Local Component ID" value="16784007" />
+	<attribute name="Next Local Node ID" value="16783550" />
+	<attribute name="Next Local Component ID" value="16784251" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -240,7 +240,7 @@
 		<attribute name="Tags" />
 		<attribute name="Position" value="-24.3243 24.3612 -1.18003" />
 		<attribute name="Rotation" value="0.996163 0 -0.0875206 0" />
-		<attribute name="Scale" value="1.01344 1 1" />
+		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="16781982">
 			<attribute name="Model" value="Model;Models/Pier1.mdl" />
@@ -251,12 +251,10 @@
 		<component type="RigidBody" id="16781983">
 			<attribute name="Physics Rotation" value="0.996163 0 -0.0875205 0" />
 			<attribute name="Physics Position" value="-24.3243 24.3612 -1.18003" />
-			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781984">
-			<attribute name="Size" value="7 1 2.5" />
-			<attribute name="Offset Position" value="0 0.3 0.4" />
+			<attribute name="Shape Type" value="ConvexHull" />
 			<attribute name="Model" value="Model;Models/Pier1.mdl" />
 		</component>
 	</node>
@@ -272,16 +270,6 @@
 			<attribute name="Model" value="Model;Models/EternalShield.mdl" />
 			<attribute name="Material" value="Material;Materials/EternalShield.xml" />
 		</component>
-		<component type="RigidBody" id="16782292">
-			<attribute name="Physics Rotation" value="-0.148517 -0.14524 0.977937 -0.0220573" />
-			<attribute name="Physics Position" value="-3.69556 25.7938 20.9703" />
-			<attribute name="Collision Layer" value="2" />
-			<attribute name="Use Gravity" value="false" />
-		</component>
-		<component type="CollisionShape" id="16782293">
-			<attribute name="Shape Type" value="TriangleMesh" />
-			<attribute name="Model" value="Model;Models/EternalShield.mdl" />
-		</component>
 	</node>
 	<node id="16781845">
 		<attribute name="Is Enabled" value="true" />
@@ -294,16 +282,6 @@
 		<component type="StaticModel" id="16782361">
 			<attribute name="Model" value="Model;Models/EternalBlade.mdl" />
 			<attribute name="Material" value="Material;Materials/EternalBlade.xml" />
-		</component>
-		<component type="RigidBody" id="16782362">
-			<attribute name="Physics Rotation" value="0.699162 0.697117 0.092761 0.128822" />
-			<attribute name="Physics Position" value="-3.78563 25.6985 18.6202" />
-			<attribute name="Collision Layer" value="2" />
-			<attribute name="Use Gravity" value="false" />
-		</component>
-		<component type="CollisionShape" id="16782363">
-			<attribute name="Shape Type" value="TriangleMesh" />
-			<attribute name="Model" value="Model;Models/EternalBlade.mdl" />
 		</component>
 	</node>
 	<node id="19">
@@ -343,16 +321,6 @@
 			<attribute name="Material" value="Material;Materials/SmithHammer1_Iron.xml;Materials/SmithHammer1_Wood.xml" />
 			<attribute name="Cast Shadows" value="true" />
 		</component>
-		<component type="RigidBody" id="16782929">
-			<attribute name="Physics Rotation" value="-0.0491966 0 0 0.998789" />
-			<attribute name="Physics Position" value="-7.89385 25.7985 15.8194" />
-			<attribute name="Collision Layer" value="2" />
-			<attribute name="Use Gravity" value="false" />
-		</component>
-		<component type="CollisionShape" id="16782930">
-			<attribute name="Size" value="0.0676499 0.571692 0.212188" />
-			<attribute name="Offset Position" value="-0.00123222 0.285307 0.0234151" />
-		</component>
 	</node>
 	<node id="16782408">
 		<attribute name="Is Enabled" value="true" />
@@ -366,16 +334,6 @@
 			<attribute name="Model" value="Model;Models/Xiphos.mdl" />
 			<attribute name="Material" value="Material;Materials/Xiphos_Wood.xml;Materials/Xiphos_Leather.xml;Materials/Xiphos_Steel.xml" />
 			<attribute name="Cast Shadows" value="true" />
-		</component>
-		<component type="RigidBody" id="16782993">
-			<attribute name="Physics Rotation" value="0.5078 0.759155 -0.313009 0.260478" />
-			<attribute name="Physics Position" value="-3.90283 25.6721 18.515" />
-			<attribute name="Collision Layer" value="2" />
-			<attribute name="Use Gravity" value="false" />
-		</component>
-		<component type="CollisionShape" id="16782994">
-			<attribute name="Shape Type" value="TriangleMesh" />
-			<attribute name="Model" value="Model;Models/Xiphos.mdl" />
 		</component>
 	</node>
 	<node id="16782609">
@@ -420,8 +378,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783308">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 	<node id="16782662">
@@ -444,8 +402,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783311">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 	<node id="16782663">
@@ -468,8 +426,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783314">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 	<node id="16782864">
@@ -492,8 +450,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783561">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 	<node id="16782865">
@@ -516,8 +474,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783564">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 	<node id="16782866">
@@ -541,8 +499,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783567">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 	<node id="16782867">
@@ -566,8 +524,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783570">
-			<attribute name="Size" value="0.395696 1.54728 2" />
-			<attribute name="Offset Position" value="2.98023e-08 0.789327 0" />
+			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
 </scene>

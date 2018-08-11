@@ -115,7 +115,7 @@ std::shared_ptr<Protocol> ServicePort::MakeProtocol(bool checksummed,
             return service->MakeProtocol(connection);
         }
     }
-    return nullptr;
+    return std::shared_ptr<Protocol>();
 }
 
 void ServicePort::Accept()

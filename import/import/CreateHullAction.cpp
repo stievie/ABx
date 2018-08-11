@@ -4,6 +4,7 @@
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>
+#include "StringUtils.h"
 
 void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
 {
@@ -43,7 +44,7 @@ void CreateHullAction::BuildHull(const std::vector<aiVector3D>& vertices)
 
 void CreateHullAction::Save()
 {
-    std::string fileName = file_ + ".hull";
+    std::string fileName = Utils::ChangeFileExt(file_, ".hull");
     std::ofstream output(fileName, std::ios::binary);
     output.write((char*)"HULL", 4);
     output.write((char*)&vertexCount_, sizeof(vertexCount_));

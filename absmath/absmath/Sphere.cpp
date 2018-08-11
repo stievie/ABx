@@ -117,8 +117,7 @@ bool Sphere::Collides(const Sphere& b2, Vector3&) const
 {
     const Shape s = b2.GetShape();
 
-    Gjk gjk;
-    if (gjk.Intersects(this->GetShape(), s))
+    if (Gjk::StaticIntersects(this->GetShape(), s))
         return true;
     return false;
 }

@@ -20,31 +20,32 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     if (sig[0] != 'H' || sig[1] != 'M' || sig[2] != '\0' || sig[3] != '\0')
         return false;
 
-    asset->heightMap_ = std::make_shared<Math::HeightMap>();
+    std::shared_ptr<Math::HeightMap> heightMap = std::make_shared<Math::HeightMap>();
+    asset->SetHeightMap(heightMap);
 
     // Urho3D default spacing
-    asset->heightMap_->spacing_ = Math::Vector3(1.0f, 0.25f, 1.0f);
+    heightMap->spacing_ = Math::Vector3(1.0f, 0.25f, 1.0f);
 
-    input.read((char*)&asset->heightMap_->numVertices_.x_, sizeof(int));
-    input.read((char*)&asset->heightMap_->numVertices_.y_, sizeof(int));
-    input.read((char*)&asset->heightMap_->minHeight_, sizeof(float));
-    input.read((char*)&asset->heightMap_->maxHeight_, sizeof(float));
+    input.read((char*)&heightMap->numVertices_.x_, sizeof(int));
+    input.read((char*)&heightMap->numVertices_.y_, sizeof(int));
+    input.read((char*)&heightMap->minHeight_, sizeof(float));
+    input.read((char*)&heightMap->maxHeight_, sizeof(float));
 
 #ifdef _DEBUG
-    LOG_DEBUG << "nX=" << asset->heightMap_->numVertices_.x_ << " nY=" << asset->heightMap_->numVertices_.y_ <<
-        " minHeight=" << asset->heightMap_->minHeight_ <<
-        " maxHeight=" << asset->heightMap_->maxHeight_ << std::endl;
+    LOG_DEBUG << "nX=" << heightMap->numVertices_.x_ << " nY=" << heightMap->numVertices_.y_ <<
+        " minHeight=" << heightMap->minHeight_ <<
+        " maxHeight=" << heightMap->maxHeight_ << std::endl;
 #endif
     unsigned heightsCount;
     input.read((char*)&heightsCount, sizeof(unsigned));
-    asset->heightMap_->heightData_.resize(heightsCount);
-    input.read((char*)asset->heightMap_->heightData_.data(), sizeof(float) * heightsCount);
+    heightMap->heightData_.resize(heightsCount);
+    input.read((char*)heightMap->heightData_.data(), sizeof(float) * heightsCount);
 
-    asset->heightMap_->ProcessData();
+    heightMap->ProcessData();
     asset->CreatePatches();
 
     asset->SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::HeightMap>>(Math::ShapeTypeHeightMap, asset->heightMap_)
+        std::make_unique<Math::CollisionShapeImpl<Math::HeightMap>>(Math::ShapeTypeHeightMap, heightMap)
     );
 
     return true;

@@ -3,10 +3,11 @@
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/postprocess.h>     // Post processing flags
 #include <assimp/scene.h>
+#include "StringUtils.h"
 
 void CreateModelAction::Save()
 {
-    std::string fileName = file_ + ".model";
+    std::string fileName = Utils::ChangeFileExt(file_, ".mdl");
     std::ofstream output(fileName, std::ios::binary);
     output.write((char*)"MODL", 4);
 

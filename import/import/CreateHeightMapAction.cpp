@@ -5,10 +5,11 @@
 #include "MathUtils.h"
 #include <limits>
 #include "ImportUtils.h"
+#include "StringUtils.h"
 
 void CreateHeightMapAction::SaveObj()
 {
-    std::string fileName = file_ + ".obj";
+    std::string fileName = Utils::ChangeFileExt(file_, ".obj");
     std::fstream f(fileName, std::fstream::out);
     ObjWriter writer(f);
     writer.Comment(file_);
@@ -44,7 +45,7 @@ void CreateHeightMapAction::SaveObj()
 
 void CreateHeightMapAction::SaveHeightMap()
 {
-    std::string fileName = file_ + ".terrain";
+    std::string fileName = Utils::ChangeFileExt(file_, ".hm");
     std::fstream output(fileName, std::ios::binary | std::fstream::out);
     output.write((char*)"HM\0\0", 4);
     // Height Data

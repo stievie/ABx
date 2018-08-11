@@ -8,16 +8,16 @@
 
 namespace Math {
 
-ConvexHull::ConvexHull(const std::vector<Vector3>& vertices)
+ConvexHull::ConvexHull(const std::vector<Vector3>& vertices) :
+    Shape()
 {
     BuildHull(vertices);
 }
 
 Intersection ConvexHull::IsInside(const Vector3& point) const
 {
-    Gjk gjk;
     Shape shape2(point);
-    if (gjk.Intersects(*this, shape2))
+    if (Gjk::StaticIntersects(*this, shape2))
         return INSIDE;
     return OUTSIDE;
 }
@@ -34,7 +34,9 @@ bool ConvexHull::Collides(const Sphere& b2, Vector3&) const
     const Shape s = b2.GetShape();
 
     if (Gjk::StaticIntersects(*this, s))
+    {
         return true;
+    }
     return false;
 }
 
@@ -43,7 +45,9 @@ bool ConvexHull::Collides(const BoundingBox& b2, Vector3&) const
     const Shape s = b2.GetShape();
 
     if (Gjk::StaticIntersects(*this, s))
+    {
         return true;
+    }
     return false;
 }
 

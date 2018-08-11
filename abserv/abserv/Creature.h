@@ -17,6 +17,7 @@ private:
     void DoCollisions();
     uint8_t moveDir_;
     uint8_t turnDir_;
+    Math::Vector3 oldPosition_;
 protected:
     std::vector<Math::Vector3> wayPoints_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,

@@ -5,6 +5,7 @@ namespace Utils {
 /// Case insensitive string compare
 bool StringEquals(const std::string& l, const std::string& r);
 bool StringEquals(const std::wstring& l, const std::wstring& r);
+std::string ChangeFileExt(const std::string& fn, const std::string& ext);
 
 template <typename charType>
 std::basic_string<charType> Trim(const std::basic_string<charType>& str,

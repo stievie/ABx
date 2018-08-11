@@ -25,7 +25,7 @@ void Terrain::CreatePatches()
         for (int x = 0; x < numPatches_.x_; ++x)
         {
             patches_.push_back(
-                std::make_unique<TerrainPatch>(this, Math::Point<int>(x, y),
+                std::make_shared<TerrainPatch>(this, Math::Point<int>(x, y),
                     Math::Point<int>(patchSize_, patchSize_))
             );
         }

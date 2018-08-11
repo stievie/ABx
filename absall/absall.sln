@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abmsgs", "..\abmsgs\abmsgs\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ablb", "..\ablb\ablb\ablb.vcxproj", "{682FE35E-A52C-4524-A2A7-FD6F448BEFE2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "absmath", "..\absmath\absmath\absmath.vcxproj", "{C7A029E7-B69C-43FF-8D8D-BA2A46283558}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{682FE35E-A52C-4524-A2A7-FD6F448BEFE2}.Release|x64.Build.0 = Release|x64
 		{682FE35E-A52C-4524-A2A7-FD6F448BEFE2}.Release|x86.ActiveCfg = Release|Win32
 		{682FE35E-A52C-4524-A2A7-FD6F448BEFE2}.Release|x86.Build.0 = Release|Win32
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x64.ActiveCfg = Debug|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x64.Build.0 = Debug|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x86.ActiveCfg = Debug|Win32
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Debug|x86.Build.0 = Debug|Win32
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x64.ActiveCfg = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x64.Build.0 = Release|x64
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x86.ActiveCfg = Release|Win32
+		{C7A029E7-B69C-43FF-8D8D-BA2A46283558}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

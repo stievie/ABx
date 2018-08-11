@@ -359,8 +359,7 @@ uint32_t Connection::GetIP() const
     asio::error_code err;
     const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
     if (!err)
-        return endpoint.address().to_v4().to_ulong();
-    LOG_ERROR << "Getting IP" << std::endl;
+        return endpoint.address().to_v4().to_uint();
     return 0;
 }
 
@@ -370,7 +369,6 @@ uint16_t Connection::GetPort() const
     const asio::ip::tcp::endpoint endpoint = socket_.remote_endpoint(err);
     if (!err)
         return endpoint.port();
-    LOG_ERROR << "Getting Port" << std::endl;
     return 0;
 }
 
