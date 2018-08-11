@@ -102,8 +102,7 @@ bool IOMap::Load(Game::Map& map)
     for (size_t i = 0; i < map.terrain_->GetPatchesCount(); ++i)
     {
         Game::TerrainPatch* patch = map.terrain_->GetPatch(static_cast<unsigned>(i));
-        std::shared_ptr<Game::GameObject> o(patch);
-        map.AddGameObject(o);
+        map.AddGameObject(patch->GetThis<Game::GameObject>());
     }
 
     map.navMesh_ = IO::DataProvider::Instance.GetAsset<Game::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
