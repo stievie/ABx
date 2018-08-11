@@ -237,7 +237,7 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     uint32_t uPlayTime = std::atoi(playTime.CString());
     Client::TimeSpan tAge(uAge);
     std::stringstream ss;
-    ss << "You have played this characters for ";
+    ss << "You have played this character for ";
     uint32_t hours = uPlayTime / 3600;
     if (hours > 0)
         uPlayTime -= hours * 3600;

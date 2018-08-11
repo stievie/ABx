@@ -2,6 +2,7 @@
 
 #include "Vector3.h"
 #include "Vector4.h"
+#include <string>
 
 namespace Math {
 
@@ -41,6 +42,8 @@ public:
     /// Parse from string
     explicit Quaternion(const std::string& str);
 
+    /// Create a Quaternion representing the rotation between two 3D vectors
+    static Quaternion FromTwoVectors(const Vector3& u, const Vector3& v);
     /// Create a Quaternion from Axis and Angle
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
 

@@ -6,6 +6,7 @@
 #include "CollisionShape.h"
 #include "GameObject.h"
 #include "TerrainPatch.h"
+#include "Profiler.h"
 
 namespace IO {
 
@@ -40,6 +41,7 @@ bool IOMap::LoadScene(Game::Map& map, const std::string& name)
 
 bool IOMap::Load(Game::Map& map)
 {
+    AB_PROFILE;
     // Game load thread
     std::string file = IO::DataProvider::Instance.GetDataFile(map.data_.directory + "/index.xml");
     pugi::xml_document doc;

@@ -55,6 +55,29 @@ Quaternion::Quaternion(const std::string& str)
     }
 }
 
+Quaternion Quaternion::FromTwoVectors(const Vector3& u, const Vector3& v)
+{
+    // http://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
+    float normUNormV = sqrt(u.DotProduct(u) * v.DotProduct(v));
+    float realPart = normUNormV + u.DotProduct(v);
+    Vector3 w;
+    if (realPart < 1.e-6f * normUNormV)
+    {
+        /* If u and v are exactly opposite, rotate 180 degrees
+        * around an arbitrary orthogonal axis. Axis normalisation
+        * can happen later, when we normalise the quaternion. */
+        realPart = 0.0f;
+        w = abs(u.x_) > abs(u.z_)
+            ? Vector3(-u.y_, u.x_, 0.0f)
+            : Vector3(0.0f, -u.z_, u.y_);
+    }
+    else
+    {
+        w = u.CrossProduct(v);
+    }
+    return Quaternion(w, realPart).Normal();
+}
+
 Quaternion Quaternion::FromAxisAngle(const Vector3& axis, float angle)
 {
     float factor = sin(angle / 2.0f);
@@ -185,7 +208,7 @@ Quaternion operator/(float n, const Quaternion& v)
 
 void Quaternion::Normalize()
 {
-    float length = Length();
+    const float length = Length();
     x_ /= length;
     y_ /= length;
     z_ /= length;
