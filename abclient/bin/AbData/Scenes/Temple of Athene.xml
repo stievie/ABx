@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="8" />
 	<attribute name="Next Replicated Component ID" value="28" />
-	<attribute name="Next Local Node ID" value="16781655" />
-	<attribute name="Next Local Component ID" value="16782148" />
+	<attribute name="Next Local Node ID" value="16781705" />
+	<attribute name="Next Local Component ID" value="16782209" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -140,30 +140,6 @@
 			<attribute name="Fog Color" value="0.5 0.5 0.5 1" />
 			<attribute name="Fog Start" value="100" />
 			<attribute name="Fog End" value="500" />
-		</component>
-	</node>
-	<node id="7">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="Temple" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="-47.3259 7.7 -23.99" />
-		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-		<component type="StaticModel" id="25">
-			<attribute name="Model" value="Model;Models/Temple1/Cube.mdl" />
-			<attribute name="Material" value="Material;Models/Temple1/Pillar.xml;Models/Temple1/Material.001.xml" />
-			<attribute name="Is Occluder" value="true" />
-			<attribute name="Cast Shadows" value="true" />
-		</component>
-		<component type="CollisionShape" id="26">
-			<attribute name="Shape Type" value="TriangleMesh" />
-			<attribute name="Model" value="Model;Models/Temple1/Cube.mdl" />
-		</component>
-		<component type="RigidBody" id="27">
-			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-			<attribute name="Physics Position" value="-47.3259 7.7 -23.99" />
-			<attribute name="Collision Layer" value="3" />
 		</component>
 	</node>
 </scene>

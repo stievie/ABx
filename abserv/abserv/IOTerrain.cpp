@@ -42,11 +42,6 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     input.read((char*)heightMap->heightData_.data(), sizeof(float) * heightsCount);
 
     heightMap->ProcessData();
-    asset->CreatePatches();
-
-    asset->SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::HeightMap>>(Math::ShapeTypeHeightMap, heightMap)
-    );
 
     return true;
 }

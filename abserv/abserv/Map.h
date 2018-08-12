@@ -32,9 +32,21 @@ class Map
 private:
     std::mutex lock_;
     std::weak_ptr<Game> game_;
+    // TerrainPatches are also owned by the game
+    std::vector<std::shared_ptr<TerrainPatch>> patches_;
 public:
     Map(std::shared_ptr<Game> game);
-    virtual ~Map();
+    ~Map();
+
+    void CreatePatches();
+    /// Return patch by index.
+    TerrainPatch* GetPatch(unsigned index) const;
+    /// Return patch by patch coordinates.
+    TerrainPatch* GetPatch(int x, int z) const;
+    size_t GetPatchesCount() const
+    {
+        return patches_.size();
+    }
 
     void LoadSceneNode(const pugi::xml_node& node);
     void AddGameObject(std::shared_ptr<GameObject> object);

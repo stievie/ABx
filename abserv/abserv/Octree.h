@@ -24,7 +24,7 @@ public:
     /// Return or create a child octant.
     Octant* GetOrCreateChild(unsigned index);
     /// Insert a drawable object by checking for fit recursively.
-    void InsertObject(Game::GameObject* drawable);
+    void InsertObject(Game::GameObject* object);
     /// Reset root pointer recursively. Called when the whole octree is being destroyed.
     void ResetRoot();
     /// Delete child octant.

@@ -74,7 +74,7 @@ public:
     void Merge(const BoundingBox& box);
 
     /// Clear to undefined state.
-    void Clear()
+    void Reset()
     {
         center_ = Vector3::Zero;
         radius_ = -INFINITY;

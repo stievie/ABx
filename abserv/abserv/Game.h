@@ -83,7 +83,7 @@ public:
     uint32_t id_;
     int64_t startTime_;
 
-    std::shared_ptr<Map> map_;
+    std::unique_ptr<Map> map_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     const std::map<uint32_t, Player*>& GetPlayers() const { return players_; }

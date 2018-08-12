@@ -9,6 +9,7 @@
 #include "IOMap.h"
 #include "Model.h"
 #include "StringUtils.h"
+#include "TerrainPatch.h"
 
 namespace Game {
 
@@ -21,6 +22,37 @@ Map::Map(std::shared_ptr<Game> game) :
 
 Map::~Map()
 {
+}
+
+void Map::CreatePatches()
+{
+    patches_.clear();
+    terrain_->numPatches_.x_ = (terrain_->GetHeightMap()->GetWidth() - 1) / terrain_->patchSize_;
+    terrain_->numPatches_.y_ = (terrain_->GetHeightMap()->GetHeight() - 1) / terrain_->patchSize_;
+    patches_.reserve(terrain_->numPatches_.x_ * terrain_->numPatches_.y_);
+    for (int y = 0; y < terrain_->numPatches_.y_; ++y)
+    {
+        for (int x = 0; x < terrain_->numPatches_.x_; ++x)
+        {
+            patches_.push_back(
+                std::make_shared<TerrainPatch>(terrain_, Math::Point<int>(x, y),
+                    Math::Point<int>(terrain_->patchSize_, terrain_->patchSize_))
+            );
+        }
+    }
+}
+
+TerrainPatch* Map::GetPatch(unsigned index) const
+{
+    return index < patches_.size() ? patches_[index].get() : nullptr;
+}
+
+TerrainPatch* Map::GetPatch(int x, int z) const
+{
+    if (x < 0 || x >= terrain_->numPatches_.x_ || z < 0 || z >= terrain_->numPatches_.y_)
+        return nullptr;
+    else
+        return GetPatch((unsigned)(z * terrain_->numPatches_.x_ + x));
 }
 
 void Map::LoadSceneNode(const pugi::xml_node& node)

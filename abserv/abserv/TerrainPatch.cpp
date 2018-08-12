@@ -7,7 +7,8 @@
 
 namespace Game {
 
-TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
+TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
+    const Math::Point<int>& offset,
     const Math::Point<int>& size) :
     GameObject(),
     owner_(owner),
@@ -15,12 +16,25 @@ TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
     size_(size)
 {
     occluder_ = true;
-    occludee_ = false;
+    occludee_ = true;
 
-    transformation_.position_ = Math::Vector3(((float)size.x_ / 2.0f) * (float)offset.x_,
-        0.0f,
-        ((float)size.y_ / 2.0f) * (float)offset.y_);
-    transformation_.position_.y_ = owner_->GetHeightMap()->GetHeight(transformation_.position_);
+    float originX = static_cast<float>(owner->numPatches_.x_ * size.x_) / 2.0f;
+    float originY = static_cast<float>(owner->numPatches_.y_ * size.y_) / 2.0f;
+
+    float halfSizeX = static_cast<float>(size.x_) / 2.0f;
+    float offsetSizeX = static_cast<float>(offset.x_) * static_cast<float>(size.x_);
+    float halfSizeY = static_cast<float>(size.y_) / 2.0f;
+    float offsetSizeY = static_cast<float>(offset.y_) * static_cast<float>(size.y_);
+
+    float _x = (halfSizeX + offsetSizeX) - originX;
+    float _y = (halfSizeY + offsetSizeY) - originY;
+
+    int rawX = static_cast<int>(_x + originX);
+    int rawY = static_cast<int>(_y + originY);
+
+    transformation_.position_.x_ = _x;
+    transformation_.position_.z_ = _y;
+    transformation_.position_.y_ = owner->GetHeightMap()->GetRawHeight(rawX, rawY);
 
     float minY = std::numeric_limits<float>::max();
     float maxY = std::numeric_limits<float>::lowest();
@@ -28,20 +42,34 @@ TerrainPatch::TerrainPatch(Terrain* owner, const Math::Point<int>& offset,
     {
         for (int x = 0; x < size.x_; ++x)
         {
-            const float currY = owner->GetHeightMap()->GetRawHeight(x + offset.x_, y);
+            const float currY = owner->GetHeightMap()->GetRawHeight(
+                x + (rawX - (size.x_ / 2)),
+                y + (rawY - (size.y_ / 2)));
             if (currY < minY)
                 minY = currY;
             if (currY > maxY)
                 maxY = currY;
         }
     }
-    boundingBox_ = Math::BoundingBox(
-        Math::Vector3(transformation_.position_.x_ - size.x_, minY, transformation_.position_.z_ - size.y_),
-        Math::Vector3(transformation_.position_.x_ + size.x_, maxY, transformation_.position_.z_ + size.y_));
+    const Math::Vector3 bbMin(transformation_.position_.x_ - ((float)size.x_ / 2.0f),
+        minY,
+        transformation_.position_.z_ - ((float)size.y_ / 2.0f));
+    const Math::Vector3 bbMax(transformation_.position_.x_ + ((float)size.x_ / 2.0f),
+        maxY,
+        transformation_.position_.z_ + ((float)size.y_ / 2.0f));
+    boundingBox_ = Math::BoundingBox(bbMin, bbMax);
 
+#ifdef _DEBUG
+    char buff[256];
+    int len = sprintf_s(buff, "TerrainPatch: %d,%d; pos %s; BB %s",
+        offset.x_, offset.y_, transformation_.position_.ToString().c_str(),
+        boundingBox_.ToString().c_str());
+    name_ = std::string(buff, len);
+#else
     char buff[64];
     int len = sprintf_s(buff, "TerrainPatch: %d,%d", offset.x_, offset.y_);
     name_ = std::string(buff, len);
+#endif
 }
 
 TerrainPatch::~TerrainPatch()
@@ -51,24 +79,43 @@ TerrainPatch::~TerrainPatch()
 void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
     std::vector<Math::RayQueryResult>& results)
 {
-    Math::Matrix4 matrix = transformation_.GetMatrix();
-    Math::Matrix4 inverse(matrix.Inverse());
-    Math::Ray localRay = query.ray_.Transformed(inverse);
-    float distance = localRay.HitDistance(boundingBox_);
-    Math::Vector3 normal = -query.ray_.direction_;
-
-    if (distance < query.maxDistance_)
+    if (auto o = owner_.lock())
     {
+        const Math::Matrix4& matrix = o->transformation_.GetMatrix();
+        Math::Matrix4 inverse(matrix.Inverse());
+        Math::Ray localRay = query.ray_.Transformed(inverse);
+        float distance = localRay.HitDistance(boundingBox_);
+        Math::Vector3 normal = -query.ray_.direction_;
+
+        if (distance < query.maxDistance_)
+        {
 #ifdef _DEBUG
-        LOG_DEBUG << "Raycast hit " << name_ << std::endl;
+//            LOG_DEBUG << "Raycast hit " << name_ << std::endl;
 #endif
-        Math::RayQueryResult result;
-        result.position_ = query.ray_.origin_ + distance * query.ray_.direction_;
-        result.normal_ = normal;
-        result.distance_ = distance;
-        result.object_ = this;
-        results.push_back(result);
+            Math::RayQueryResult result;
+            result.position_ = query.ray_.origin_ + distance * query.ray_.direction_;
+            result.normal_ = normal;
+            result.distance_ = distance;
+            result.object_ = this;
+            results.push_back(result);
+        }
+#ifdef _DEBUG
+        else
+        {
+            LOG_DEBUG << "Raycast no hit with " << name_ << " distance = " << distance <<
+                " BB " << GetWorldBoundingBox().ToString() << std::endl;
+            if (!octant_)
+                LOG_WARNING << "Octand = null" << std::endl;
+        }
+#endif
     }
+}
+
+Math::BoundingBox TerrainPatch::GetWorldBoundingBox() const
+{
+    if (auto t = owner_.lock())
+        return boundingBox_.Transformed(t->transformation_.GetMatrix());
+    return Math::BoundingBox();
 }
 
 }

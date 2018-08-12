@@ -256,8 +256,8 @@
 		</component>
 		<component type="CollisionShape" id="16781984">
 			<attribute name="Shape Type" value="ConvexHull" />
-			<attribute name="Size" value="7 1 2.5" />
-			<attribute name="Offset Position" value="0 0.3 0.4" />
+			<attribute name="Size" value="1 1 1" />
+			<attribute name="Offset Position" value="0 0 0" />
 			<attribute name="Model" value="Model;Models/Pier1.mdl" />
 		</component>
 	</node>

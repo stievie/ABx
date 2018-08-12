@@ -169,27 +169,27 @@ Octant* Octant::GetOrCreateChild(unsigned index)
     return children_[index];
 }
 
-void Octant::InsertObject(Game::GameObject* drawable)
+void Octant::InsertObject(Game::GameObject* object)
 {
-    const BoundingBox& box = drawable->GetWorldBoundingBox();
+    const BoundingBox& box = object->GetWorldBoundingBox();
 
     // If root octant, insert all non-occludees here, so that octant occlusion does not hide the drawable.
     // Also if drawable is outside the root octant bounds, insert to root
     bool insertHere;
     if (this == root_)
-        insertHere = !drawable->occludee_ || cullingBox_.IsInside(box) != INSIDE || CheckObjectFit(box);
+        insertHere = !object->occludee_ || cullingBox_.IsInside(box) != INSIDE || CheckObjectFit(box);
     else
         insertHere = CheckObjectFit(box);
 
     if (insertHere)
     {
-        Octant* oldOctant = drawable->octant_;
+        Octant* oldOctant = object->octant_;
         if (oldOctant != this)
         {
             // Add first, then remove, because drawable count going to zero deletes the octree branch in question
-            AddObject(drawable);
+            AddObject(object);
             if (oldOctant)
-                oldOctant->RemoveObject(drawable, false);
+                oldOctant->RemoveObject(object, false);
         }
     }
     else
@@ -199,7 +199,7 @@ void Octant::InsertObject(Game::GameObject* drawable)
         unsigned y = boxCenter.y_ < center_.y_ ? 0 : 2;
         unsigned z = boxCenter.z_ < center_.z_ ? 0 : 4;
 
-        GetOrCreateChild(x + y + z)->InsertObject(drawable);
+        GetOrCreateChild(x + y + z)->InsertObject(object);
     }
 }
 

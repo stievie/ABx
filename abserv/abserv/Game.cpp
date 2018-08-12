@@ -290,7 +290,7 @@ void Game::Load(const std::string& mapUuid)
 {
     AB_PROFILE;
     // Dispatcher Thread
-    map_ = std::make_shared<Map>(shared_from_this());
+    map_ = std::make_unique<Map>(shared_from_this());
     if (!IO::IOGame::LoadGameByUuid(this, mapUuid))
     {
         LOG_ERROR << "Error loading game " << mapUuid << std::endl;

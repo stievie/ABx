@@ -305,6 +305,12 @@ void GameObject::AddToOctree()
             Math::Octree* octree = octant_->GetRoot();
             octree->AddObjectUpdate(this);
         }
+#ifdef DEBUG_GAME
+        else
+        {
+            LOG_WARNING << "octant_ == null" << std::endl;
+        }
+#endif
     }
 }
 

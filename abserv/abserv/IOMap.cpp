@@ -100,12 +100,6 @@ bool IOMap::Load(Game::Map& map)
         LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
         return false;
     }
-    // Add terrain patches as game objects
-    for (size_t i = 0; i < map.terrain_->GetPatchesCount(); ++i)
-    {
-        Game::TerrainPatch* patch = map.terrain_->GetPatch(static_cast<unsigned>(i));
-        map.AddGameObject(patch->GetThis<Game::GameObject>());
-    }
 
     map.navMesh_ = IO::DataProvider::Instance.GetAsset<Game::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
     if (!map.navMesh_)
@@ -117,6 +111,16 @@ bool IOMap::Load(Game::Map& map)
     {
         LOG_ERROR << "Error loading scene " << navMeshFile << std::endl;
         return false;
+    }
+
+    map.CreatePatches();
+    // TODO: Make TerrainPatches part of Game::Map (Not Terrain)
+    // After loading the Scene add terrain patches as game objects
+    for (size_t i = 0; i < map.GetPatchesCount(); ++i)
+    {
+        // We need a copy of that
+        Game::TerrainPatch* patch = map.GetPatch(static_cast<unsigned>(i));
+        map.AddGameObject(patch->GetThis<Game::TerrainPatch>());
     }
 
     return true;

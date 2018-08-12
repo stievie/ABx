@@ -19,9 +19,6 @@ class TerrainPatch;
 class Terrain : public IO::AssetImpl<Terrain>
 {
 private:
-    std::unique_ptr<Math::CollisionShape> collisionShape_;
-    // TerrainPatches are also owned by the game
-    std::vector<std::shared_ptr<TerrainPatch>> patches_;
     // Must be shared_ptr CollisionShape may also own it
     std::shared_ptr<Math::HeightMap> heightMap_;
 public:
@@ -40,25 +37,6 @@ public:
     {
         heightMap_->matrix_ = transformation_.GetMatrix();
         return heightMap_->GetHeight(world);
-    }
-    void SetCollisionShape(std::unique_ptr<Math::CollisionShape> shape)
-    {
-        collisionShape_ = std::move(shape);
-    }
-    Math::CollisionShape* GetCollisionShape() const
-    {
-        if (!collisionShape_)
-            return nullptr;
-        return collisionShape_.get();
-    }
-    void CreatePatches();
-    /// Return patch by index.
-    TerrainPatch* GetPatch(unsigned index) const;
-    /// Return patch by patch coordinates.
-    TerrainPatch* GetPatch(int x, int z) const;
-    size_t GetPatchesCount() const
-    {
-        return patches_.size();
     }
 
     Math::Transformation transformation_;

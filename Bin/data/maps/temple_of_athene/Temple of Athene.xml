@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <scene id="1">
-	<attribute name="Name" value="" />
+	<attribute name="Name" value="Temple of Athene" />
 	<attribute name="Time Scale" value="1" />
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="8" />
-	<attribute name="Next Replicated Component ID" value="26" />
-	<attribute name="Next Local Node ID" value="16781172" />
-	<attribute name="Next Local Component ID" value="16781593" />
+	<attribute name="Next Replicated Component ID" value="28" />
+	<attribute name="Next Local Node ID" value="16781705" />
+	<attribute name="Next Local Component ID" value="16782209" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -20,10 +20,10 @@
 	<component type="PhysicsWorld" id="11" />
 	<node id="16779317">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="Sun" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="0 66.5 0" />
-		<attribute name="Rotation" value="0.707107 0.707107 0 0" />
+		<attribute name="Position" value="-71.5 66.5 21.5" />
+		<attribute name="Rotation" value="0.0999411 -0.191984 0.865985 -0.450803" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="16779339">
@@ -39,14 +39,14 @@
 	</node>
 	<node id="3">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="AthenaStatue" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="-31.542 7.5 -20.7317" />
 		<attribute name="Rotation" value="-0.707107 0 0.707107 -0" />
 		<attribute name="Scale" value="2 2 2" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="10">
-			<attribute name="Model" value="Model;Models/Athene/Athena.mdl" />
+			<attribute name="Model" value="Model;Models/Athena.mdl" />
 			<attribute name="Material" value="Material;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEPEDE1.xml;Materials/Athene/ATHEATHE.xml;Materials/Athene/ATHEATHE.xml" />
 			<attribute name="Is Occluder" value="true" />
 			<attribute name="Cast Shadows" value="true" />
@@ -56,29 +56,34 @@
 			<attribute name="Physics Position" value="-31.542 7.5 -20.7317" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
-		<component type="CollisionShape" id="24" />
+		<component type="CollisionShape" id="24">
+			<attribute name="Shape Type" value="Box" />
+		</component>
 	</node>
 	<node id="4">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="Rock" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.2646 8.1 -23.6192" />
+		<attribute name="Position" value="4.2646 7.6 -23.6192" />
 		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="13">
-			<attribute name="Model" value="Model;Models/Rock1/Models/Rock1.mdl" />
+			<attribute name="Model" value="Model;Models/Rock1.mdl" />
 			<attribute name="Material" value="Material;Models/Rock1/Materials/Rock.xml" />
 			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 			<attribute name="Max Lights" value="1" />
 		</component>
 		<component type="CollisionShape" id="17">
 			<attribute name="Shape Type" value="ConvexHull" />
-			<attribute name="Model" value="Model;Models/Rock1/Models/Rock1.mdl" />
+			<attribute name="Size" value="2.2 1.5 1.5" />
+			<attribute name="Offset Position" value="0 0.7 0" />
+			<attribute name="Model" value="Model;Models/Rock1.mdl" />
 		</component>
 		<component type="RigidBody" id="19">
 			<attribute name="Physics Rotation" value="0.707107 0 0.707107 0" />
-			<attribute name="Physics Position" value="4.2646 8.1 -23.6192" />
+			<attribute name="Physics Position" value="4.2646 7.6 -23.6192" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
 	</node>
@@ -112,6 +117,9 @@
 			<attribute name="Height Map" value="Image;Textures/plain.png" />
 			<attribute name="Material" value="Material;Materials/terrain_mtl.xml" />
 			<attribute name="Vertex Spacing" value="1 0.2 1" />
+			<attribute name="Smooth Height Map" value="true" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="CollisionShape" id="16780672">
 			<attribute name="Shape Type" value="Terrain" />
@@ -122,7 +130,7 @@
 	</node>
 	<node id="16781071">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
+		<attribute name="Name" value="Zone" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="0 0 0" />
 		<attribute name="Rotation" value="1 0 0 0" />
@@ -135,19 +143,6 @@
 			<attribute name="Fog Color" value="0.5 0.5 0.5 1" />
 			<attribute name="Fog Start" value="100" />
 			<attribute name="Fog End" value="500" />
-		</component>
-	</node>
-	<node id="7">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="-47.3259 7.41111 -23.99" />
-		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-		<component type="StaticModel" id="25">
-			<attribute name="Model" value="Model;Models/Temple1/Cube.mdl" />
-			<attribute name="Material" value="Material;Models/Temple1/Material.001.xml;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" />
 		</component>
 	</node>
 </scene>
