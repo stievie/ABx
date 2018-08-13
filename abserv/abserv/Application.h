@@ -24,6 +24,7 @@ private:
     std::string gameHost_;
     uint16_t gamePort_;
     std::string serverId_;
+    std::string serverName_;
     bool running_;
     bool LoadMain();
     void PrintServerInfo();
@@ -64,6 +65,8 @@ public:
     {
         return serverId_;
     }
+
+    void SpawnServer();
 
     bool autoTerminate_;
 

@@ -87,6 +87,11 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
     player->NotifyNewMail();
 }
 
+void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
+{
+    // TODO:
+}
+
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -102,6 +107,10 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
         break;
     case Net::MessageType::TradeChat:
         DispatchTradeChat(msg);
+        break;
+    case Net::MessageType::ServerJoined:
+    case Net::MessageType::ServerLeft:
+        DispatchServerChange(msg);
         break;
     }
 }

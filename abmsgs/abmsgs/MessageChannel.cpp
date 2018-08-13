@@ -75,8 +75,13 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::Unknown:
         LOG_WARNING << "Unknown message type" << std::endl;
         break;
-    case Net::MessageType::ServerId:
+    case Net::MessageType::ServerJoined:
         serverId_ = msg.GetBodyString();
+        channel_.Deliver(msg);
+        break;
+    case Net::MessageType::ServerLeft:
+        // Server was shut down
+        channel_.Deliver(msg);
         break;
     case Net::MessageType::Shutdown:
     {

@@ -91,9 +91,12 @@ void Maintenance::CheckAutoTerminate()
         Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
         return;
     }
-    Asynch::Scheduler::Instance.Add(
-        Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
-    );
+    if (status_ == MaintenanceStatus::Runnig)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
+        );
+    }
 }
 
 void Maintenance::Run()

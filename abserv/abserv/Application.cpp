@@ -129,6 +129,16 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -port" << std::endl;
         }
+        else if (a.compare("-name") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverName_ = arguments_[i].c_str();
+            }
+            else
+                LOG_WARNING << "Missing argument for -name" << std::endl;
+        }
         else if (a.compare("-autoterm") == 0)
         {
             // Must be set with command line argument. Can not be set with the config file.
@@ -149,10 +159,11 @@ void Application::ShowHelp()
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
+    std::cout << "  name <name>: Server name" << std::endl;
     std::cout << "  ip <ip>: Game ip" << std::endl;
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port" << std::endl;
-    std::cout << "  autoterm: If set terminates when all players left" << std::endl;
+    std::cout << "  autoterm: If set the server terminates itself when all players left" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -189,6 +200,32 @@ bool Application::Initialize(int argc, char** argv)
     return serviceManager_->IsRunning();
 }
 
+void Application::SpawnServer()
+{
+    std::stringstream ss;
+    ss << "\"" << exeFile_ << "\"";
+    // 1. Use same config file
+    // 2. Use dynamic server ID
+    // 3. Use random free port
+    // 4. Auto terminate
+    ss << " -conv \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -port 0 -autoterm";
+    if (!logDir_.empty())
+        ss << " -log \"" << logDir_ << "\"";
+    if (!gameIp_.empty())
+        ss << " -ip " << gameIp_;
+    if (!gameHost_.empty())
+        ss << " -host " << gameHost_;
+
+    const std::string cmdLine = ss.str();
+#if defined(_WIN32) && defined(UNICODE)
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring wcmdLine = converter.from_bytes(cmdLine);
+    System::Process process(wcmdLine);
+#else
+    System::Process process(cmdLine);
+#endif
+}
+
 void Application::HandleMessage(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -202,25 +239,18 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     }
     case Net::MessageType::SpawnGameServer:
     {
-        std::stringstream ss;
-        ss << "\"" << exeFile_ << "\"";
-        // 1. Use same config file
-        // 2. Use dynamic server ID
-        // 3. Use random free port
-        // 4. Auto terminate
-        ss << " -conv \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -port 0 -autoterm";
-        if (!logDir_.empty())
-            ss << " -log \"" << logDir_ << "\"";
-        if (!gameIp_.empty())
-            ss << " -ip " << gameIp_;
-        if (!gameHost_.empty())
-            ss << " -host " << gameHost_;
-
-        const std::string cmdLine = ss.str();
-        LOG_INFO << "Spawning server with command: " << exeFile_ << " " << cmdLine << std::endl;
-        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        std::wstring wcmdLine = converter.from_bytes(cmdLine);
-        System::Process process(wcmdLine);
+        Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::SpawnServer, this)));
+        break;
+    }
+    case Net::MessageType::ServerJoined:
+    case Net::MessageType::ServerLeft:
+    {
+        std::string serverId = msg.GetBodyString();
+        if (serverId.compare(serverId_) != 0)
+        {
+            // Notify players another game server left
+            msgDispatcher_->Dispatch(msg);
+        }
         break;
     }
     default:
@@ -246,6 +276,8 @@ bool Application::LoadMain()
     }
     if (serverId_.empty())
         serverId_ = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+    if (serverName_.empty())
+        serverName_ = ConfigManager::Instance[ConfigManager::Key::ServerName].GetString();
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     LOG_INFO << "[done]" << std::endl;
 
@@ -318,7 +350,7 @@ void Application::PrintServerInfo()
 {
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
-    LOG_INFO << "  Server name: " << ConfigManager::Instance[ConfigManager::Key::ServerName].GetString() << std::endl;
+    LOG_INFO << "  Server name: " << serverName_ << std::endl;
     LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
@@ -330,6 +362,7 @@ void Application::PrintServerInfo()
         ports.pop_front();
     }
     LOG_INFO << std::endl;
+    LOG_INFO << "  Auto terminate: " << (autoTerminate_ ? "true" : "false") << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     LOG_INFO << "  Message Server: " << msgClient_->GetHost() << ":" << msgClient_->GetPort() << std::endl;
@@ -343,7 +376,7 @@ void Application::Run()
     serv.host = gameHost_;
     serv.location = ConfigManager::Instance[ConfigManager::Key::Location].GetString();
     serv.port = gamePort_;
-    serv.name = ConfigManager::Instance[ConfigManager::Key::ServerName].GetString();
+    serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
@@ -368,7 +401,7 @@ void Application::Run()
     }
 
     Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ServerId;
+    msg.type_ = Net::MessageType::ServerJoined;
     msg.SetBodyString(GetServerId());
     msgClient_->Write(msg);
 
@@ -384,6 +417,11 @@ void Application::Stop()
 
     running_ = false;
     LOG_INFO << "Server shutdown...";
+
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::ServerLeft;
+    msg.SetBodyString(GetServerId());
+    msgClient_->Write(msg);
 
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
