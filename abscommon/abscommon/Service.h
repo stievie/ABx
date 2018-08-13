@@ -138,6 +138,8 @@ public:
         }
         return servicePort->AddService(std::shared_ptr<ServiceBase>(new Service<T>()));
     }
+    /// Get a free random port
+    static uint16_t GetFreePort();
 private:
     asio::io_service& ioService_;
     bool running_;

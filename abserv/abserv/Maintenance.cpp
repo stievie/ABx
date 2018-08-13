@@ -11,6 +11,7 @@
 #include "ConfigManager.h"
 #include "DataClient.h"
 #include "Chat.h"
+#include "Dispatcher.h"
 
 #include "DebugNew.h"
 
@@ -83,6 +84,18 @@ void Maintenance::UpdateServerLoadTask()
     );
 }
 
+void Maintenance::CheckAutoTerminate()
+{
+    if (Game::PlayerManager::Instance.GetPlayerCount() == 0)
+    {
+        Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
+        return;
+    }
+    Asynch::Scheduler::Instance.Add(
+        Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
+    );
+}
+
 void Maintenance::Run()
 {
     {
@@ -101,6 +114,12 @@ void Maintenance::Run()
     Asynch::Scheduler::Instance.Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );
+    if (Application::Instance->autoTerminate_)
+    {
+        Asynch::Scheduler::Instance.Add(
+            Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
+        );
+    }
 }
 
 void Maintenance::Stop()

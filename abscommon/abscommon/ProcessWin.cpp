@@ -2,14 +2,14 @@
 
 #ifdef _WIN32
 
-#include "process.hpp"
+#include "Process.hpp"
 #include <windows.h>
 #include <cstring>
 #include <TlHelp32.h>
 #include <stdexcept>
 #include <signal.h>
 
-namespace TinyProcessLib {
+namespace System {
 
 Process::Data::Data() noexcept : id(0), handle(NULL)
 {
@@ -348,6 +348,6 @@ void Process::kill(id_type id, bool /*force*/) noexcept
     if (process_handle) TerminateProcess(process_handle, 2);
 }
 
-} // TinyProsessLib
+} // System
 
 #endif

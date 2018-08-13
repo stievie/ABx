@@ -15,6 +15,7 @@ private:
     void CleanPlayersTask();
     void CleanChatsTask();
     void UpdateServerLoadTask();
+    void CheckAutoTerminate();
 public:
     Maintenance() :
         status_(MaintenanceStatus::Terminated)

@@ -142,6 +142,7 @@
     <ClInclude Include="MiniDump.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OutputMessage.h" />
+    <ClInclude Include="Process.hpp" />
     <ClInclude Include="PropStream.h" />
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="Scheduler.h" />
@@ -166,6 +167,9 @@
     <ClCompile Include="MiniDump.cpp" />
     <ClCompile Include="NetworkMessage.cpp" />
     <ClCompile Include="OutputMessage.cpp" />
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProcessUnix.cpp" />
+    <ClCompile Include="ProcessWin.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="ServerApp.cpp" />

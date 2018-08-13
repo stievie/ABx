@@ -21,9 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="process.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -33,15 +30,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="process.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="process_unix.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="process_win.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

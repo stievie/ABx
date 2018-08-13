@@ -93,6 +93,20 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         }
         break;
     }
+    case Net::MessageType::SpawnGameServer:
+    {
+        std::string serverId = msg.GetBodyString();
+        if (!serverId.empty())
+        {
+            MessageParticipant* server = GetServer(serverId);
+            if (server)
+            {
+                LOG_INFO << "Sending spawn message to server " << serverId << std::endl;
+                server->Deliver(msg);
+            }
+        }
+        break;
+    }
     case Net::MessageType::Whipser:
         // Alternatively we could just use channel_.Deliver(msg)
         HandleWhisperMessage(msg);
@@ -160,7 +174,7 @@ MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& acc
     return GetServer(acc.currentServerUuid);
 }
 
-MessageParticipant * MessageSession::GetServer(const std::string& serverUuid)
+MessageParticipant* MessageSession::GetServer(const std::string& serverUuid)
 {
     auto serv = std::find_if(channel_.participants_.begin(),
         channel_.participants_.end(), [&serverUuid](const std::shared_ptr<MessageParticipant>& current)

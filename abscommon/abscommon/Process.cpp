@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "process.hpp"
+#include "Process.hpp"
 
-namespace TinyProcessLib {
+namespace System {
 
 Process::Process(const string_type &command, const string_type &path,
     std::function<void(const char* bytes, size_t n)> read_stdout,
@@ -32,4 +32,4 @@ bool Process::write(const std::string &_data)
     return write(_data.c_str(), _data.size());
 }
 
-} // TinyProsessLib
+} // System

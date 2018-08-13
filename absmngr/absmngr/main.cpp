@@ -5,7 +5,7 @@
 #include "DataClient.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
-#include "process.hpp"
+#include "Process.hpp"
 #include "StringUtils.h"
 #include "Version.h"
 #include <map>
@@ -25,9 +25,9 @@ using namespace std::chrono_literals;
 
 bool gRunning = false;
 std::unique_ptr<IO::DataClient> gClient;
-std::vector<std::pair<std::string, std::unique_ptr<TinyProcessLib::Process>>> gProcesses;
+std::vector<std::pair<std::string, std::unique_ptr<System::Process>>> gProcesses;
 std::map<std::string, AB::Entities::Service> gServices;
-TinyProcessLib::Process* gDataServerProcess = nullptr;
+System::Process* gDataServerProcess = nullptr;
 
 static void ShowLogo()
 {
@@ -146,8 +146,8 @@ static void StartDataServer()
 {
     AB::Entities::Service s;
     s.name = "abdata";
-    std::unique_ptr<TinyProcessLib::Process> process =
-        std::make_unique<TinyProcessLib::Process>(L"abdata.exe", L"",
+    std::unique_ptr<System::Process> process =
+        std::make_unique<System::Process>(L"abdata.exe", L"",
         [](const char*, size_t)
         {
         },
@@ -175,8 +175,8 @@ static void StartServer(const AB::Entities::Service& s)
         cmd += L"\"" + std::wstring(a.begin(), a.end()) + L"\" ";
     }
     std::wstring path(s.path.begin(), s.path.end());
-    std::unique_ptr<TinyProcessLib::Process> process =
-        std::make_unique<TinyProcessLib::Process>(cmd, path,
+    std::unique_ptr<System::Process> process =
+        std::make_unique<System::Process>(cmd, path,
             [](const char*, size_t) { },
             [](const char*, size_t) { }
     );

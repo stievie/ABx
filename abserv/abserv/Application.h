@@ -65,5 +65,7 @@ public:
         return serverId_;
     }
 
+    bool autoTerminate_;
+
     static Application* Instance;
 };

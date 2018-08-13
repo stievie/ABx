@@ -35,7 +35,6 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::GamePort] = (int)GetGlobal("game_port", 0);
     config_[Key::GameHost] = GetGlobal("game_host", "");
 
-
     config_[Key::DataServerHost] = GetGlobal("data_host", "localhost");
     config_[Key::DataServerPort] = (int)GetGlobal("data_port", 2770);
     config_[Key::MessageServerHost] = GetGlobal("message_host", "localhost");

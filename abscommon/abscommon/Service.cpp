@@ -7,6 +7,22 @@
 
 namespace Net {
 
+uint16_t ServiceManager::GetFreePort()
+{
+    asio::io_service service;
+    asio::ip::tcp::acceptor acceptor(service);
+    unsigned short port(0);
+    asio::ip::tcp::endpoint endPoint(asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port));
+    acceptor.open(endPoint.protocol());
+    acceptor.set_option(asio::ip::tcp::acceptor::reuse_address(true));
+    acceptor.bind(endPoint);
+    acceptor.listen();        // NEEDED TO ADD THIS BIT!
+    asio::ip::tcp::endpoint le = acceptor.local_endpoint(); //THIS LINE SOLVES IT
+    port = le.port();
+    acceptor.close();
+    return port;
+}
+
 void ServiceManager::Run()
 {
     assert(!running_);

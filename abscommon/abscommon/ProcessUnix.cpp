@@ -2,13 +2,13 @@
 
 #if defined(__linux__) || defined(__unix__)
 
-#include "process.hpp"
+#include "Process.hpp"
 #include <cstdlib>
 #include <unistd.h>
 #include <signal.h>
 #include <stdexcept>
 
-namespace TinyProcessLib {
+namespace System {
 
 Process::Data::Data() noexcept : id(-1)
 {
@@ -286,6 +286,6 @@ void Process::kill(id_type id, bool force) noexcept
         ::kill(-id, SIGINT);
 }
 
-} // TinyProsessLib
+} // System
 
 #endif

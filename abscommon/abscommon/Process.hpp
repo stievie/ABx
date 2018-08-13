@@ -1,3 +1,4 @@
+#pragma once
 #ifndef TINY_PROCESS_LIBRARY_HPP_
 #define TINY_PROCESS_LIBRARY_HPP_
 
@@ -11,7 +12,7 @@
 #include <sys/wait.h>
 #endif
 
-namespace TinyProcessLib {
+namespace System {
 
 ///Platform independent class for creating processes
 class Process
@@ -102,6 +103,6 @@ private:
     void close_fds() noexcept;
 };
 
-} // TinyProsessLib
+} // System
 
 #endif  // TINY_PROCESS_LIBRARY_HPP_

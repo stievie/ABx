@@ -26,6 +26,11 @@
 #include "Connection.h"
 #include "Bans.h"
 #include "CpuUsage.h"
+#include <limits>
+#include <stdlib.h>
+#include "Process.hpp"
+#include <locale>
+#include <codecvt>
 
 #include "DebugNew.h"
 
@@ -34,9 +39,10 @@ Application* Application::Instance = nullptr;
 Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
+    autoTerminate_(false),
     lastLoadCalc_(0),
     ioService_(),
-    gamePort_(0)
+    gamePort_(std::numeric_limits<uint16_t>::max())
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
@@ -83,6 +89,12 @@ bool Application::ParseCommandLine()
             {
                 ++i;
                 serverId_ = arguments_[i];
+                if (uuids::uuid(serverId_).nil())
+                {
+                    const uuids::uuid guid = uuids::uuid_system_generator{}();
+                    serverId_ = guid.to_string();
+                    LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
+                }
             }
             else
                 LOG_WARNING << "Missing argument for -id" << std::endl;
@@ -117,6 +129,11 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -port" << std::endl;
         }
+        else if (a.compare("-autoterm") == 0)
+        {
+            // Must be set with command line argument. Can not be set with the config file.
+            autoTerminate_ = true;
+        }
         else if (a.compare("-h") == 0 || a.compare("-help") == 0)
         {
             return false;
@@ -135,6 +152,7 @@ void Application::ShowHelp()
     std::cout << "  ip <ip>: Game ip" << std::endl;
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port" << std::endl;
+    std::cout << "  autoterm: If set terminates when all players left" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -173,14 +191,42 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::HandleMessage(const Net::MessageMsg& msg)
 {
-    if (msg.type_ == Net::MessageType::Shutdown)
+    switch (msg.type_)
+    {
+    case Net::MessageType::Shutdown:
     {
         std::string serverId = msg.GetBodyString();
         if (serverId.compare(serverId_) == 0)
             Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
-        return;
+        break;
     }
-    msgDispatcher_->Dispatch(msg);
+    case Net::MessageType::SpawnGameServer:
+    {
+        std::stringstream ss;
+        ss << "\"" << exeFile_ << "\"";
+        // 1. Use same config file
+        // 2. Use dynamic server ID
+        // 3. Use random free port
+        // 4. Auto terminate
+        ss << " -conv \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -port 0 -autoterm";
+        if (!logDir_.empty())
+            ss << " -log \"" << logDir_ << "\"";
+        if (!gameIp_.empty())
+            ss << " -ip " << gameIp_;
+        if (!gameHost_.empty())
+            ss << " -host " << gameHost_;
+
+        const std::string cmdLine = ss.str();
+        LOG_INFO << "Spawning server with command: " << exeFile_ << " " << cmdLine << std::endl;
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        std::wstring wcmdLine = converter.from_bytes(cmdLine);
+        System::Process process(wcmdLine);
+        break;
+    }
+    default:
+        msgDispatcher_->Dispatch(msg);
+        break;
+    }
 }
 
 bool Application::LoadMain()
@@ -241,8 +287,10 @@ bool Application::LoadMain()
         ip = Utils::ConvertStringToIP(gameIp_);
     else
         ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
-    if (gamePort_ == 0)
+    if (gamePort_ == std::numeric_limits<uint16_t>::max())
         gamePort_ = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
+    else if (gamePort_ == 0)
+        gamePort_ = Net::ServiceManager::GetFreePort();
     if (gamePort_ != 0)
         serviceManager_->Add<Net::ProtocolGame>(ip, gamePort_, [](uint32_t remoteIp) -> bool
     {
@@ -345,7 +393,11 @@ void Application::Stop()
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-        dataClient_->Update(serv);
+        if (!autoTerminate_)
+            dataClient_->Update(serv);
+        else
+            // If autoterm -> temporary -> dynamically spawned -> delete from DB
+            dataClient_->Delete(serv);
 
         AB::Entities::ServiceList sl;
         dataClient_->Invalidate(sl);
