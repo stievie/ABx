@@ -7,7 +7,7 @@
   <parameter name="Resizeable" type="bool" value="t" />
   <parameter name="HighDPI" type="bool" value="f" />
   <parameter name="VSync" type="bool" value="t" />
-  <parameter name="TripleBuffer" type="bool" value="f" />
+  <parameter name="TripleBuffer" type="bool" value="t" />
   <parameter name="TextureQuality" type="int" value="15" />
   <parameter name="MaterialQuality" type="int" value="15" />
   <!-- We use FXAA for antialiasing -->

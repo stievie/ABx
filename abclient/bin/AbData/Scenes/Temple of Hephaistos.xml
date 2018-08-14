@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2387.5" />
 	<attribute name="Next Replicated Node ID" value="30" />
 	<attribute name="Next Replicated Component ID" value="40" />
-	<attribute name="Next Local Node ID" value="16783750" />
-	<attribute name="Next Local Component ID" value="16784495" />
+	<attribute name="Next Local Node ID" value="16783800" />
+	<attribute name="Next Local Component ID" value="16784556" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -54,6 +54,7 @@
 			<attribute name="Vertex Spacing" value="1 0.2 1" />
 			<attribute name="Smooth Height Map" value="true" />
 			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780673">
 			<attribute name="Collision Layer" value="2" />

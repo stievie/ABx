@@ -11,6 +11,7 @@ const int CTRL_MOVE_LEFT    = 1 << 2;
 const int CTRL_MOVE_RIGHT   = 1 << 4;
 const int CTRL_TURN_RIGHT   = 1 << 5;
 const int CTRL_TURN_LEFT    = 1 << 6;
+const int CTRL_MOVE_LOCK    = 1 << 7;
 
 const float CAMERA_MIN_DIST = 0.0f;
 const float CAMERA_INITIAL_DIST = 10.0f;
@@ -39,6 +40,7 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
     SharedPtr<Node> cameraNode_;
+    bool moveLock_;
     float cameraDistance_;
     void SetYRotation(float rad, bool updateYaw) override;
     void SetCameraDist(bool increase);

@@ -52,6 +52,33 @@ public:
     {
         return materialQuality_;
     }
+    TextureFilterMode GetTextureFilterMode() const
+    {
+        return textureFilterMode_;
+    }
+    void SetTextureFilterMode(TextureFilterMode value);
+    int GetTextureAnisotropyLevel() const
+    {
+        return textureAnisotropyLevel_;
+    }
+    void SetTextureAnisotropyLevel(int value);
+    bool GetShadows() const
+    {
+        return shadows_;
+    }
+    void SetShadows(bool value);
+    float GetCameraFarClip() const
+    {
+        return cameraFarClip_;
+    }
+    float GetCameraNearClip() const
+    {
+        return cameryNearClip_;
+    }
+    float GetCameraFov() const
+    {
+        return cameraFov_;
+    }
 
     const String& GetRenderPath() const;
 
@@ -66,9 +93,15 @@ private:
     bool tripleBuffer_;
     bool highDPI_;
     int multiSample_;
+    bool shadows_;
+    float cameraFarClip_;
+    float cameryNearClip_;
+    float cameraFov_;
     ShadowQuality shadowQuality_;
     MaterialQuality textureQuality_;
     MaterialQuality materialQuality_;
+    TextureFilterMode textureFilterMode_;
+    int textureAnisotropyLevel_;
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     String renderPath_;

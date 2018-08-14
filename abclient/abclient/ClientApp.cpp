@@ -113,6 +113,9 @@ void ClientApp::Setup()
     engineParameters_[EP_VSYNC] = options->GetVSync();
     engineParameters_[EP_TRIPLE_BUFFER] = options->GetTripleBuffer();
     engineParameters_[EP_MULTI_SAMPLE] = options->GetMultiSample();
+    engineParameters_[EP_TEXTURE_FILTER_MODE] = options->GetTextureFilterMode();
+    engineParameters_[EP_TEXTURE_ANISOTROPY] = options->GetTextureAnisotropyLevel();
+    engineParameters_[EP_SHADOWS] = options->GetShadows();
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
     engineParameters_[EP_RESOURCE_PATHS] = "AbData;GameData;CoreData;Data";
     engineParameters_[EP_LOG_NAME] = "fw.log";
@@ -154,6 +157,8 @@ void ClientApp::Start()
     renderer->SetShadowQuality(options->GetShadowQuality());
     renderer->SetTextureQuality(options->GetTextureQuality());
     renderer->SetMaterialQuality(options->GetMaterialQuality());
+    renderer->SetHDRRendering(true);
+    renderer->SetSpecularLighting(true);
 
     // We subscribe to the events we'd like to handle.
     // In this example we will be showing what most of them do,

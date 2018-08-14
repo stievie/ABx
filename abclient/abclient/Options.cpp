@@ -13,9 +13,15 @@ Options::Options(Context* context) :
     highDPI_(false),
     vSync_(false),
     tripleBuffer_(false),
+    cameraFarClip_(300.0f),
+    cameryNearClip_(0.0f),
+    cameraFov_(60.0f),
+    shadows_(true),
     shadowQuality_(SHADOWQUALITY_BLUR_VSM),
     textureQuality_(QUALITY_HIGH),
     materialQuality_(QUALITY_HIGH),
+    textureFilterMode_(FILTER_ANISOTROPIC),
+    textureAnisotropyLevel_(16),
     multiSample_(1),
     loginHost_("localhost"),
     renderPath_("RenderPaths/Prepass.xml"),
@@ -84,6 +90,18 @@ void Options::Load()
         else if (name.Compare("MaterialQuality") == 0)
         {
             materialQuality_ = static_cast<MaterialQuality>(paramElem.GetInt("value"));
+        }
+        else if (name.Compare("TextureFilterMode") == 0)
+        {
+            textureFilterMode_ = static_cast<TextureFilterMode>(paramElem.GetInt("value"));
+        }
+        else if (name.Compare("TextureAnisotropy") == 0)
+        {
+            textureAnisotropyLevel_ = paramElem.GetInt("value");
+        }
+        else if (name.Compare("Shadows") == 0)
+        {
+            shadows_ = paramElem.GetBool("value");
         }
         else if (name.Compare("MultiSample") == 0)
         {
@@ -176,6 +194,33 @@ void Options::SetMaterialQuality(MaterialQuality quality)
     {
         materialQuality_ = quality;
         GetSubsystem<Renderer>()->SetMaterialQuality(materialQuality_);
+    }
+}
+
+void Options::SetTextureFilterMode(TextureFilterMode value)
+{
+    if (textureFilterMode_ != value)
+    {
+        textureFilterMode_ = value;
+        GetSubsystem<Renderer>()->SetTextureFilterMode(textureFilterMode_);
+    }
+}
+
+void Options::SetTextureAnisotropyLevel(int value)
+{
+    if (textureAnisotropyLevel_ != value)
+    {
+        textureAnisotropyLevel_ = value;
+        GetSubsystem<Renderer>()->SetTextureAnisotropy(textureAnisotropyLevel_);
+    }
+}
+
+void Options::SetShadows(bool value)
+{
+    if (shadows_ != value)
+    {
+        shadows_ = false;
+        GetSubsystem<Renderer>()->SetDrawShadows(shadows_);
     }
 }
 

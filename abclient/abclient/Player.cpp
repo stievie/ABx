@@ -11,6 +11,7 @@ Player::Player(Context* context) :
     lastMoveDir_(AB::GameProtocol::MoveDirectionNone),
     lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
     cameraDistance_(CAMERA_INITIAL_DIST),
+    moveLock_(false),
     stickCameraToHead_(false)
 {
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
@@ -40,13 +41,6 @@ Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
     result->Unserialize(data);
     result->Init(scene, position, rotation, state);
 
-    // Create camera
-    result->cameraNode_ = scene->CreateChild("CameraNode");
-    result->cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
-    Camera* camera = result->cameraNode_->CreateComponent<Camera>();
-    camera->SetFarClip(300.0f);
-    camera->SetNearClip(0.0f);
-
     result->PlayAnimation(ANIM_IDLE, true, 0.0f);
     return result;
 }
@@ -66,6 +60,14 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
             headBone->animated_ = false;
     }
 #endif
+    // Create camera
+    Options* options = GetSubsystem<Options>();
+    cameraNode_ = scene->CreateChild("CameraNode");
+    cameraNode_->SetPosition(Vector3(0.0f, 2.0f, -5.0f));
+    Camera* camera = cameraNode_->CreateComponent<Camera>();
+    camera->SetFarClip(options->GetCameraFarClip());
+    camera->SetNearClip(options->GetCameraNearClip());
+    camera->SetFov(options->GetCameraFov());
 }
 
 void Player::FixedUpdate(float timeStep)
@@ -75,7 +77,7 @@ void Player::FixedUpdate(float timeStep)
     uint8_t moveDir = AB::GameProtocol::MoveDirectionNone;
     if (!(controls_.IsDown(CTRL_MOVE_FORWARD) && controls_.IsDown(CTRL_MOVE_BACK)))
     {
-        if (controls_.IsDown(CTRL_MOVE_FORWARD))
+        if (controls_.IsDown(CTRL_MOVE_FORWARD) || controls_.IsDown(CTRL_MOVE_LOCK))
             moveDir |= AB::GameProtocol::MoveDirectionNorth;
         if (controls_.IsDown(CTRL_MOVE_BACK))
             moveDir |= AB::GameProtocol::MoveDirectionSouth;

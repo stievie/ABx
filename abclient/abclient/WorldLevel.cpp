@@ -33,6 +33,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
     SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(WorldLevel, HandleMouseMove));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
+    SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(WorldLevel, HandleKeyUp));
 }
 
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
@@ -64,8 +65,12 @@ void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
         return;
 
     using namespace KeyDown;
-    int key = eventData[P_SCANCODE].GetInt();
-    switch (key)
+    bool repeat = eventData[P_REPEAT].GetBool();
+    if (repeat)
+        return;
+
+    int scanCode = eventData[P_SCANCODE].GetInt();
+    switch (scanCode)
     {
     case SDL_SCANCODE_M:
         ToggleMap();
@@ -74,6 +79,14 @@ void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
         player_->GotoSelected();
         break;
     }
+    int key = eventData[P_KEY].GetInt();
+    if (key == KEY_R)
+        player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
+}
+
+void WorldLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
+{
+    using namespace KeyUp;
 }
 
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
@@ -190,12 +203,20 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
         UI* ui = GetSubsystem<UI>();
         if (!ui->GetFocusElement())
         {
-            player_->controls_.Set(CTRL_MOVE_FORWARD, input->GetKeyDown(KEY_W) ||
-                input->GetKeyDown(KEY_UP));
-            player_->controls_.Set(CTRL_MOVE_BACK, input->GetKeyDown(KEY_S) ||
-                input->GetKeyDown(KEY_DOWN));
+            if (input->GetKeyDown(KEY_W) || input->GetKeyDown(KEY_UP))
+            {
+                player_->controls_.Set(CTRL_MOVE_FORWARD, true);
+                player_->controls_.Set(CTRL_MOVE_LOCK, false);
+            }
+            if (input->GetKeyDown(KEY_S) || input->GetKeyDown(KEY_DOWN))
+            {
+                player_->controls_.Set(CTRL_MOVE_BACK, true);
+                player_->controls_.Set(CTRL_MOVE_LOCK, false);
+            }
             player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
             player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
+            if (input->GetKeyDown(KEY_R))
+                player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
 
             if (input->GetMouseButtonDown(MOUSEB_RIGHT))
             {
@@ -227,6 +248,11 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
 void WorldLevel::SetupViewport()
 {
     BaseLevel::SetupViewport();
+    postProcess_->SetUseBloomHDR(true);
+    postProcess_->SetUseColorCorrection(true);
+//    postProcess_->SetAutoExposureLumRange(Vector2(0.5f, 1.0f));
+//    postProcess_->SetAutoExposureAdaptRate(0.5f);
+//    postProcess_->SetAutoExposureMidGrey(1.0f);
 //    postProcess_->SetUseAutoExposure(true);
 }
 
