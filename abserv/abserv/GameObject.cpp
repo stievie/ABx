@@ -12,7 +12,7 @@
 
 namespace Game {
 
-uint32_t GameObject::objectIds_ = 0;
+Utils::IdGenerator<uint32_t> GameObject::objectIds_;
 
 void GameObject::RegisterLua(kaguya::State& state)
 {
@@ -45,10 +45,10 @@ GameObject::GameObject() :
     occludee_(true),
     occluder_(false),
     name_("Unknown"),
+    id_(GetNewId()),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
-    id_ = GetNewId();
 }
 
 GameObject::~GameObject()

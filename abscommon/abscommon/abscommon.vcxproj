@@ -137,6 +137,7 @@
     <ClInclude Include="CpuUsage.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />
+    <ClInclude Include="IdGenerator.h" />
     <ClInclude Include="MessageClient.h" />
     <ClInclude Include="MessageMsg.h" />
     <ClInclude Include="MiniDump.h" />

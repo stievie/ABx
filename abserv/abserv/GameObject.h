@@ -12,6 +12,7 @@
 #include "CollisionShape.h"
 #include <AB/Entities/Character.h>
 #include <AB/ProtocolCodes.h>
+#include "IdGenerator.h"
 
 namespace Game {
 
@@ -33,7 +34,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     friend class Math::Octant;
     friend class Math::Octree;
 private:
-    static uint32_t objectIds_;
+    static Utils::IdGenerator<uint32_t> objectIds_;
     std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::vector<std::shared_ptr<GameObject>> _LuaQueryObjects(float radius);
     std::vector<std::shared_ptr<GameObject>> _LuaRaycast(float x, float y, float z);
@@ -53,9 +54,7 @@ protected:
     float sortValue_;
     uint32_t GetNewId()
     {
-        if (objectIds_ >= std::numeric_limits<uint32_t>::max())
-            objectIds_ = 0;
-        return ++objectIds_;
+        return objectIds_.Next();
     }
     void AddToOctree();
     void RemoveFromOctree();

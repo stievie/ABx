@@ -3,6 +3,7 @@
 #include "Service.h"
 #include "Game.h"
 #include <limits>
+#include "IdGenerator.h"
 
 namespace Game {
 
@@ -22,12 +23,10 @@ private:
     std::recursive_mutex lock_;
     std::map<uint32_t, std::shared_ptr<Game>> games_;
     std::map<std::string, std::vector<Game*>> maps_;
-    uint32_t gameIds_ = 0;
+    Utils::IdGenerator<uint32_t> gameIds_;
     uint32_t GetNewGameId()
     {
-        if (gameIds_ >= std::numeric_limits<uint32_t>::max())
-            gameIds_ = 0;
-        return ++gameIds_;
+        return gameIds_.Next();
     }
     std::shared_ptr<Game> CreateGame(const std::string& mapUuid);
 protected:
