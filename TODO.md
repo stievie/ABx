@@ -1,5 +1,6 @@
 # TODO
 
+* abclient: R Move lock
 * abserv: TerrainPatch raycast query
 * ? High ping when FPS < 60
 * abmsgs: Continues dispatching messages -> Delete after message has been dispached.

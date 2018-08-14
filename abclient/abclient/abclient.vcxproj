@@ -77,7 +77,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\Include\kNet;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -138,7 +138,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -197,7 +197,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;..\Urho3D\build\include\Urho3D\ThirdParty\Lua;..\Urho3D\Source\Samples;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\Urho3D;$(SolutionDir)..\Include\Urho3D\ThirdParty;$(SolutionDir)..\libabclient\libabclient;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
