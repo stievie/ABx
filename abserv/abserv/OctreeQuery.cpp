@@ -12,7 +12,7 @@ Intersection PointOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
         return box.IsInside(point_);
 }
 
-void PointOctreeQuery::TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside)
+void PointOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside)
 {
     while (start != end)
     {
@@ -31,7 +31,7 @@ Intersection SphereOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
         return sphere_.IsInside(box);
 }
 
-void SphereOctreeQuery::TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside)
+void SphereOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside)
 {
     while (start != end)
     {
@@ -50,7 +50,7 @@ Intersection BoxOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
         return box_.IsInside(box);
 }
 
-void BoxOctreeQuery::TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside)
+void BoxOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside)
 {
     while (start != end)
     {

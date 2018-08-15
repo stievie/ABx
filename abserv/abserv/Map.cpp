@@ -130,7 +130,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         if (modelFile.size() == 2)
                         {
                             model = IO::DataProvider::Instance.GetAsset<Model>(modelFile[1]);
-#ifdef _DEBUG
+#ifdef DEBUG_COLLISION
                             if (model)
                                 LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox().ToString() << std::endl;
 #endif
@@ -170,7 +170,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                             case IO::Map::AttrConvexHull:
                                 if (model)
                                 {
-#ifdef _DEBUG
+#ifdef DEBUG_COLLISION
                                     LOG_DEBUG << "Setting ConvexHull collision shape for " << object->GetName() << std::endl;
 #endif
                                     object->SetCollisionShape(
@@ -190,7 +190,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         // Default BoundingBox
                         if (model)
                         {
-#ifdef _DEBUG
+#ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
                                 " to model BB " << model->GetBoundingBox().ToString() << std::endl;
 #endif
@@ -201,7 +201,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         }
                         else if (size != Math::Vector3::Zero)
                         {
-#ifdef _DEBUG
+#ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
                                 " to size +/- " << size.ToString() << std::endl;
 #endif

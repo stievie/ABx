@@ -6,6 +6,7 @@
 #pragma warning(disable: 4244 4456)
 #include <stb_image.h>
 #pragma warning(pop)
+#include "Vector3.h"
 
 typedef aiVector2t<int> PointI;
 
@@ -13,15 +14,15 @@ typedef aiVector2t<int> PointI;
 class CreateHeightMapAction
 {
 private:
-    std::vector<aiVector3D> vertices_;
+    std::vector<Math::Vector3> vertices_;
     std::string file_;
     /// Vertex and height spacing.
-    aiVector3D spacing_;
+    Math::Vector3 spacing_;
     std::vector<float> heightData_;
     float minHeight_;
     float maxHeight_;
     std::vector<unsigned short> indices_;
-    std::vector<aiVector3D> normals_;
+    std::vector<Math::Vector3> normals_;
 
     PointI numVertices_;
     int width_;
@@ -32,13 +33,14 @@ private:
     void SaveHeightMap();
     void CreateGeometry();
     float GetRawHeight(int x, int z) const;
-    aiVector3D GetRawNormal(int x, int z) const;
+    Math::Vector3 GetRawNormal(int x, int z) const;
 public:
     CreateHeightMapAction(const std::string& file) :
         file_(file),
         data_(nullptr),
         width_(0),
-        height_(0)
+        height_(0),
+        spacing_(Math::Vector3(1.0f, 0.2f, 1.0f))
     {}
     ~CreateHeightMapAction()
     {

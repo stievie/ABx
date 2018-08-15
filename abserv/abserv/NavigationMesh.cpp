@@ -23,7 +23,7 @@ NavigationMesh::NavigationMesh() :
     AssetImpl<NavigationMesh>(),
     navMesh_(nullptr),
     navQuery_(nullptr),
-    queryFilter_(nullptr),
+    queryFilter_(std::make_unique<dtQueryFilter>()),
     pathData_(std::make_unique<FindPathData>())
 {
     navQuery_ = dtAllocNavMeshQuery();
@@ -38,7 +38,8 @@ NavigationMesh::~NavigationMesh()
 
 void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
-    const Math::Vector3& extends, const dtQueryFilter* filter)
+    const Math::Vector3& extends /* = Math::Vector3::One */,
+    const dtQueryFilter* filter /* = nullptr */)
 {
     dest.clear();
 
@@ -47,9 +48,60 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;
     dtPolyRef endRef = 0;
-    navQuery_->findNearestPoly(&start.x_, &extends.y_, queryFilter, &startRef, nullptr);
-    navQuery_->findNearestPoly(&end.x_, &extends.y_, queryFilter, &startRef, nullptr);
+#ifdef DEBUG_NAVIGATION
+    dtStatus startStatus =
+#endif
+        navQuery_->findNearestPoly(start.Data(), extends.Data(), queryFilter, &startRef, nullptr);
+#ifdef DEBUG_NAVIGATION
+    if (dtStatusFailed(startStatus))
+    {
+        LOG_WARNING << "findNearestPoly() Failed with startStatus " << startStatus;
+        if (dtStatusDetail(startStatus, DT_WRONG_MAGIC))
+            LOG_WARNING << " DT_WRONG_MAGIC";
+        if (dtStatusDetail(startStatus, DT_WRONG_VERSION))
+            LOG_WARNING << " DT_WRONG_VERSION";
+        if (dtStatusDetail(startStatus, DT_OUT_OF_MEMORY))
+            LOG_WARNING << " DT_OUT_OF_MEMORY";
+        if (dtStatusDetail(startStatus, DT_INVALID_PARAM))
+            LOG_WARNING << " DT_INVALID_PARAM";
+        if (dtStatusDetail(startStatus, DT_BUFFER_TOO_SMALL))
+            LOG_WARNING << " DT_BUFFER_TOO_SMALL";
+        if (dtStatusDetail(startStatus, DT_OUT_OF_NODES))
+            LOG_WARNING << " DT_OUT_OF_NODES";
+        if (dtStatusDetail(startStatus, DT_PARTIAL_RESULT))
+            LOG_WARNING << " DT_PARTIAL_RESULT";
+        LOG_WARNING << std::endl;
+    }
+#endif
+#ifdef DEBUG_NAVIGATION
+    dtStatus endStatus =
+#endif
+        navQuery_->findNearestPoly(end.Data(), extends.Data(), queryFilter, &endRef, nullptr);
+#ifdef DEBUG_NAVIGATION
+    if (dtStatusFailed(endStatus))
+    {
+        LOG_WARNING << "findNearestPoly() Failed with endStatus " << endStatus;
+        if (dtStatusDetail(endStatus, DT_WRONG_MAGIC))
+            LOG_WARNING << " DT_WRONG_MAGIC";
+        if (dtStatusDetail(endStatus, DT_WRONG_VERSION))
+            LOG_WARNING << " DT_WRONG_VERSION";
+        if (dtStatusDetail(endStatus, DT_OUT_OF_MEMORY))
+            LOG_WARNING << " DT_OUT_OF_MEMORY";
+        if (dtStatusDetail(endStatus, DT_INVALID_PARAM))
+            LOG_WARNING << " DT_INVALID_PARAM";
+        if (dtStatusDetail(endStatus, DT_BUFFER_TOO_SMALL))
+            LOG_WARNING << " DT_BUFFER_TOO_SMALL";
+        if (dtStatusDetail(endStatus, DT_OUT_OF_NODES))
+            LOG_WARNING << " DT_OUT_OF_NODES";
+        if (dtStatusDetail(endStatus, DT_PARTIAL_RESULT))
+            LOG_WARNING << " DT_PARTIAL_RESULT";
+        LOG_WARNING << std::endl;
+    }
+#endif
 
+#ifdef DEBUG_NAVIGATION
+    LOG_DEBUG << "startRef " << startRef << ", endRef " << endRef << std::endl;
+#endif
     if (!startRef || !endRef)
         return;
 
@@ -70,6 +122,7 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     navQuery_->findStraightPath(&start.x_, &actualEnd.x_, pathData_->polys_, numPolys,
         &pathData_->pathPoints_[0].x_, pathData_->pathFlags_, pathData_->pathPolys_, &numPathPoints, MAX_POLYS);
 
+    // First point is start point skip it
     for (int i = 0; i < numPathPoints; ++i)
     {
         dest.push_back(pathData_->pathPoints_[i]);

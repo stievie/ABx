@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MathDefs.h"
+
 namespace Math {
 
 class Vector3
@@ -86,7 +88,11 @@ public:
 
     float Angle(const Vector3& v) const
     {
-        return acos(DotProduct(v) / Length() / v.Length());
+        return acos(DotProduct(v) / (Length() * v.Length()));
+    }
+    float AngleY(const Vector3& v) const
+    {
+        return atan2((x_ - v.x_), (z_ - v.z_)) * 180.0f / Math::M_PIF;
     }
 
     float LengthSqr() const;

@@ -21,11 +21,12 @@ void CreateHeightMapAction::SaveObj()
     writer.Comment(std::to_string(vertices_.size()) + " vertices");
     for (const auto& v : vertices_)
     {
-        writer.Vertex(v.x, v.y, v.z);
+        const Math::Vector3 vec = v * spacing_;
+        writer.Vertex(vec.x_, vec.y_, vec.z_);
     }
     for (const auto& n : normals_)
     {
-        writer.Normal(n.x, n.y, n.z);
+        writer.Normal(n.x_, n.y_, n.z_);
     }
     writer.Comment(std::to_string(indices_.size()) + " indices");
     for (size_t i = 0; i < indices_.size(); )
@@ -63,9 +64,9 @@ void CreateHeightMapAction::SaveHeightMap()
     output.write((char*)&vertexCount, sizeof(vertexCount));
     for (const auto& v : vertices_)
     {
-        output.write((char*)&v.x, sizeof(float));
-        output.write((char*)&v.y, sizeof(float));
-        output.write((char*)&v.z, sizeof(float));
+        output.write((char*)&v.x_, sizeof(float));
+        output.write((char*)&v.y_, sizeof(float));
+        output.write((char*)&v.z_, sizeof(float));
     }
     unsigned indexCount = (unsigned)indices_.size();
     output.write((char*)&indexCount, sizeof(indexCount));
@@ -168,7 +169,7 @@ float CreateHeightMapAction::GetRawHeight(int x, int z) const
         (float)data_[offset + 1] / 256.0f;
 }
 
-aiVector3D CreateHeightMapAction::GetRawNormal(int x, int z) const
+Math::Vector3 CreateHeightMapAction::GetRawNormal(int x, int z) const
 {
     float baseHeight = GetRawHeight(x, z);
     float nSlope = GetRawHeight(x, z - 1) - baseHeight;
@@ -179,25 +180,16 @@ aiVector3D CreateHeightMapAction::GetRawNormal(int x, int z) const
     float swSlope = GetRawHeight(x - 1, z + 1) - baseHeight;
     float wSlope = GetRawHeight(x - 1, z) - baseHeight;
     float nwSlope = GetRawHeight(x - 1, z - 1) - baseHeight;
-    float up = 1.0f;
+    float up = 0.5f * (spacing_.x_ + spacing_.z_);
 
-    aiVector3D result = Vector3Add(aiVector3D(0.0f, up, nSlope), aiVector3D(-neSlope, up, neSlope));
-    result = Vector3Add(result, aiVector3D(-eSlope, up, 0.0f));
-    result = Vector3Add(result, aiVector3D(-seSlope, up, -seSlope));
-    result = Vector3Add(result, aiVector3D(0.0f, up, -sSlope));
-    result = Vector3Add(result, aiVector3D(swSlope, up, -swSlope));
-    result = Vector3Add(result, aiVector3D(wSlope, up, 0.0f));
-    result = Vector3Add(result, aiVector3D(nwSlope, up, nwSlope));
-    // Normalize
-    float length = sqrt(result.x * result.x + result.y * result.y + result.z * result.z);
-    if (length > 0.0f)
-    {
-        result.x /= length;
-        result.y /= length;
-        result.z /= length;
-    }
-//    result.Normalize
-    return result;
+    return (Math::Vector3(0.0f, up, nSlope) +
+        Math::Vector3(-neSlope, up, neSlope) +
+        Math::Vector3(-eSlope, up, 0.0f) +
+        Math::Vector3(-seSlope, up, -seSlope) +
+        Math::Vector3(0.0f, up, -sSlope) +
+        Math::Vector3(swSlope, up, -swSlope) +
+        Math::Vector3(wSlope, up, 0.0f) +
+        Math::Vector3(nwSlope, up, nwSlope)).Normal();
 }
 
 void CreateHeightMapAction::Execute()

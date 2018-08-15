@@ -31,4 +31,10 @@ inline T DegToRad(T deg)
     return deg * (static_cast<T>(M_PI / 180.0));
 }
 
+template <typename T>
+inline T RadToDeg(T rad)
+{
+    return (rad / static_cast<T>(M_PI)) * (static_cast<T>(180.0));
+}
+
 }

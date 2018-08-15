@@ -17,6 +17,8 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
 {
     occluder_ = true;
     occludee_ = true;
+    // Does not collide
+    collisionMask_ = 0;
 
     float originX = static_cast<float>(owner->numPatches_.x_ * size.x_) / 2.0f;
     float originY = static_cast<float>(owner->numPatches_.y_ * size.y_) / 2.0f;
@@ -51,10 +53,12 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
                 maxY = currY;
         }
     }
-    const Math::Vector3 bbMin(transformation_.position_.x_ - ((float)size.x_ / 2.0f),
+    const Math::Vector3 bbMin(
+        transformation_.position_.x_ - ((float)size.x_ / 2.0f),
         minY,
         transformation_.position_.z_ - ((float)size.y_ / 2.0f));
-    const Math::Vector3 bbMax(transformation_.position_.x_ + ((float)size.x_ / 2.0f),
+    const Math::Vector3 bbMax(
+        transformation_.position_.x_ + ((float)size.x_ / 2.0f),
         maxY,
         transformation_.position_.z_ + ((float)size.y_ / 2.0f));
     boundingBox_ = Math::BoundingBox(bbMin, bbMax);

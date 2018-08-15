@@ -24,7 +24,7 @@ public:
     /// Intersection test for an octant.
     virtual Intersection TestOctant(const BoundingBox& box, bool inside) = 0;
     /// Intersection test for objects.
-    virtual void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
+    virtual void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) = 0;
 
     std::vector<Game::GameObject*>& result_;
 };
@@ -40,7 +40,7 @@ public:
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
     /// Intersection test for objects.
-    void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) override;
+    void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) override;
 
     Vector3 point_;
 };
@@ -57,7 +57,7 @@ public:
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
     /// Intersection test for objects.
-    void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) override;
+    void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) override;
 
     /// Sphere.
     Sphere sphere_;
@@ -75,7 +75,7 @@ public:
     /// Intersection test for an octant.
     Intersection TestOctant(const BoundingBox& box, bool inside) override;
     /// Intersection test for objects.
-    void TestDrawables(Game::GameObject** start, Game::GameObject** end, bool inside) override;
+    void TestObjects(Game::GameObject** start, Game::GameObject** end, bool inside) override;
 
     /// Bounding box.
     BoundingBox box_;

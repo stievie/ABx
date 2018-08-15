@@ -101,39 +101,42 @@ void Game::Start()
 
 void Game::Update()
 {
-    if (lastUpdate_ == 0)
+    if (state_ != ExecutionState::Terminated)
     {
-        luaState_["onStart"]();
-        // Add start tick at the beginning
-        gameStatus_->AddByte(AB::GameProtocol::GameStart);
-        gameStatus_->Add<int64_t>(startTime_);
+        if (lastUpdate_ == 0)
+        {
+            luaState_["onStart"]();
+            // Add start tick at the beginning
+            gameStatus_->AddByte(AB::GameProtocol::GameStart);
+            gameStatus_->Add<int64_t>(startTime_);
+        }
+
+        // Dispatcher Thread
+        int64_t tick = Utils::AbTick();
+        if (lastUpdate_ == 0)
+            lastUpdate_ = tick - NETWORK_TICK;
+        uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
+        lastUpdate_ = tick;
+
+        // Add timestamp
+        gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
+        gameStatus_->Add<int64_t>(tick);
+
+        // First Update all objects
+        for (const auto& o : objects_)
+        {
+            o->Update(delta, *gameStatus_.get());
+        }
+
+        // Update Octree stuff
+        map_->Update(delta);
+
+        // Then call Lua Update function
+        luaState_["onUpdate"](delta);
+
+        // Send game status to players
+        SendStatus();
     }
-
-    // Dispatcher Thread
-    int64_t tick = Utils::AbTick();
-    if (lastUpdate_ == 0)
-        lastUpdate_ = tick - NETWORK_TICK;
-    uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
-    lastUpdate_ = tick;
-
-    // Add timestamp
-    gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
-    gameStatus_->Add<int64_t>(tick);
-
-    // First Update all objects
-    for (const auto& o : objects_)
-    {
-        o->Update(delta, *gameStatus_.get());
-    }
-
-    // Update Octree stuff
-    map_->Update(delta);
-
-    // Then call Lua Update function
-    luaState_["onUpdate"](delta);
-
-    // Send game status to players
-    SendStatus();
 
     switch (state_)
     {

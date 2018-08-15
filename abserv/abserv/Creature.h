@@ -8,6 +8,8 @@
 
 namespace Game {
 
+static constexpr float NAVIGATION_MIN_DIST = 2.0f;
+
 /// Player, NPC, Monster some such
 class Creature : public GameObject
 {
@@ -18,6 +20,7 @@ private:
     uint8_t moveDir_;
     uint8_t turnDir_;
     Math::Vector3 oldPosition_;
+    bool autoRun_;
 protected:
     std::vector<Math::Vector3> wayPoints_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,

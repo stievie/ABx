@@ -43,6 +43,7 @@ Creature::Creature() :
     moveDir_(AB::GameProtocol::MoveDirectionNone),
     turnDir_(AB::GameProtocol::TurnDirectionNone),
     luaInitialized_(false),
+    autoRun_(false),
     oldPosition_(Math::Vector3::Zero)
 {
     // Creature always collides
@@ -53,6 +54,77 @@ Creature::Creature() :
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
+}
+
+void Creature::SetSelectedObject(std::shared_ptr<GameObject> object)
+{
+    Utils::VariantMap data;
+    data[InputDataObjectId] = GetId();    // Source
+    if (object)
+        data[InputDataObjectId2] = object->GetId();   // Target
+    else
+        data[InputDataObjectId2] = 0;   // Target
+    inputs_.Add(InputType::Select, data);
+}
+
+bool Creature::Serialize(IO::PropWriteStream& stream)
+{
+    if (!GameObject::Serialize(stream))
+        return false;
+    stream.Write<uint32_t>(GetLevel());
+    stream.Write<uint8_t>(GetSex());
+    stream.Write<uint32_t>(GetProfIndex());
+    stream.Write<uint32_t>(GetProf2Index());
+    stream.Write<uint32_t>(GetModelIndex());
+    return true;
+}
+
+void Creature::OnSelected(std::shared_ptr<Creature> selector)
+{
+    GameObject::OnSelected(selector);
+    if (luaInitialized_)
+        luaState_["onSelected"](selector);
+}
+
+void Creature::OnCollide(std::shared_ptr<Creature> other)
+{
+    GameObject::OnCollide(other);
+    if (luaInitialized_)
+        luaState_["onCollide"](other);
+}
+
+void Creature::DoCollisions()
+{
+    std::vector<GameObject*> c;
+    Math::BoundingBox box = GetWorldBoundingBox();
+    if (QueryObjects(c, box))
+    {
+        for (auto& ci : c)
+        {
+            if (ci != this && ((collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
+            {
+                Math::Vector3 move;
+                if (Collides(ci, move))
+                {
+#ifdef DEBUG_COLLISION
+                    //                    LOG_DEBUG << GetName() << " collides with " << ci->GetName() << std::endl;
+#endif
+                    if (move != Math::Vector3::Zero)
+                        transformation_.position_ += move;
+                    else
+                        transformation_.position_ = oldPosition_;
+                    // Notify ci for colliding with us
+                    ci->OnCollide(GetThis<Creature>());
+                    // Notify us for colliding with ci
+                    OnCollide(ci->GetThis<Creature>());
+                }
+            }
+        }
+    }
+
+    // Keep on ground
+    float y = GetGame()->map_->terrain_->GetHeight(transformation_.position_);
+    transformation_.position_.y_ = y;
 }
 
 void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration)
@@ -132,6 +204,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     turnDir_ == AB::GameProtocol::TurnDirectionNone)
                     newState = AB::GameProtocol::CreatureStateIdle;
             }
+            wayPoints_.clear();
             break;
         }
         case InputType::Turn:
@@ -147,6 +220,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     moveDir_ == AB::GameProtocol::MoveDirectionNone)
                     newState = AB::GameProtocol::CreatureStateIdle;
             }
+            wayPoints_.clear();
             break;
         }
         case InputType::Direction:
@@ -165,9 +239,17 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             };
             GetGame()->map_->navMesh_->FindPath(wayPoints_, transformation_.position_,
                 dest);
+#ifdef DEBUG_NAVIGATION
+            LOG_DEBUG << "Goto from " << transformation_.position_.ToString() <<
+                " to " << dest.ToString() << " via " << wayPoints_.size() << " waypoints:";
+            for (const auto& wp : wayPoints_)
+                LOG_DEBUG << " " << wp.ToString();
+            LOG_DEBUG << std::endl;
+#endif
             if (wayPoints_.size() != 0)
             {
-
+                newState = AB::GameProtocol::CreatureStateMoving;
+                autoRun_ = true;
             }
             break;
         }
@@ -247,6 +329,11 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         }
     }
+    if (autoRun_ && wayPoints_.size() == 0)
+    {
+        newState = AB::GameProtocol::CreatureStateIdle;
+        autoRun_ = false;
+    }
 
     if (newState != creatureState_)
     {
@@ -285,6 +372,35 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitX / 2.0f);
         }
+        if (autoRun_ && wayPoints_.size() != 0)
+        {
+            const Math::Vector3& pt = wayPoints_[0];
+            const float distance = pt.Distance(transformation_.position_);
+
+            if (distance > NAVIGATION_MIN_DIST)
+            {
+                worldAngle = -Math::DegToRad(transformation_.position_.AngleY(pt) - 180.0f);
+                if (worldAngle < 0.0f)
+                    worldAngle += Math::M_PIF;
+#ifdef DEBUG_NAVIGATION
+                LOG_DEBUG << "From " << transformation_.position_.ToString() << " to " << pt.ToString() <<
+                    " angle " << worldAngle << " old angle " << Math::RadToDeg(transformation_.rotation_) <<
+                    ", distance " << distance << std::endl;
+#endif
+                if (fabs(transformation_.rotation_ - worldAngle) > 0.05f)
+                {
+                    newDirection = true;
+                    SetDirection(worldAngle);
+                    directionSet = true;
+                }
+                moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitZ);
+            }
+            else
+            {
+                // If we are close to this point remove it from the list
+                wayPoints_.erase(wayPoints_.begin());
+            }
+        }
         if (moved)
         {
             message.AddByte(AB::GameProtocol::GameObjectPositionChange);
@@ -309,7 +425,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         else
         {
-            if (transformation_.rotation_ != worldAngle)
+            if (!autoRun_ && transformation_.rotation_ != worldAngle)
             {
                 SetDirection(worldAngle);
                 directionSet = true;
@@ -344,77 +460,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         effect->Update(timeElapsed);
     }
-}
 
-void Creature::SetSelectedObject(std::shared_ptr<GameObject> object)
-{
-    Utils::VariantMap data;
-    data[InputDataObjectId] = GetId();    // Source
-    if (object)
-        data[InputDataObjectId2] = object->GetId();   // Target
-    else
-        data[InputDataObjectId2] = 0;   // Target
-    inputs_.Add(InputType::Select, data);
-}
-
-bool Creature::Serialize(IO::PropWriteStream& stream)
-{
-    if (!GameObject::Serialize(stream))
-        return false;
-    stream.Write<uint32_t>(GetLevel());
-    stream.Write<uint8_t>(GetSex());
-    stream.Write<uint32_t>(GetProfIndex());
-    stream.Write<uint32_t>(GetProf2Index());
-    stream.Write<uint32_t>(GetModelIndex());
-    return true;
-}
-
-void Creature::OnSelected(std::shared_ptr<Creature> selector)
-{
-    GameObject::OnSelected(selector);
-    if (luaInitialized_)
-        luaState_["onSelected"](selector);
-}
-
-void Creature::OnCollide(std::shared_ptr<Creature> other)
-{
-    GameObject::OnCollide(other);
-    if (luaInitialized_)
-        luaState_["onCollide"](other);
-}
-
-void Creature::DoCollisions()
-{
-    std::vector<GameObject*> c;
-    Math::BoundingBox box = GetWorldBoundingBox();
-    if (QueryObjects(c, box))
-    {
-        for (auto& ci : c)
-        {
-            if (ci != this && ((collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
-            {
-                Math::Vector3 move;
-                if (Collides(ci, move))
-                {
-#ifdef DEBUG_COLLISION
-                    LOG_DEBUG << GetName() << " collides with " << ci->GetName() << std::endl;
-#endif
-                    if (move != Math::Vector3::Zero)
-                        transformation_.position_ += move;
-                    else
-                        transformation_.position_ = oldPosition_;
-                    // Notify ci for colliding with us
-                    ci->OnCollide(GetThis<Creature>());
-                    // Notify us for colliding with ci
-                    OnCollide(ci->GetThis<Creature>());
-                }
-            }
-        }
-    }
-
-    // Keep on ground
-    float y = GetGame()->map_->terrain_->GetHeight(transformation_.position_);
-    transformation_.position_.y_ = y;
 }
 
 bool Creature::Move(float speed, const Math::Vector3& amount)
@@ -456,20 +502,20 @@ void Creature::Turn(float angle)
 {
     transformation_.rotation_ += angle;
     // Angle should be >= 0 and < 2 * PI
-    if (transformation_.rotation_ >= 2.0f * (float)M_PI)
-        transformation_.rotation_ -= 2.0f * (float)M_PI;
+    if (transformation_.rotation_ >= 2.0f * Math::M_PIF)
+        transformation_.rotation_ -= 2.0f * Math::M_PIF;
     else if (transformation_.rotation_ < 0.0f)
-        transformation_.rotation_ += 2.0f * (float)M_PI;
+        transformation_.rotation_ += 2.0f * Math::M_PIF;
 }
 
 void Creature::SetDirection(float worldAngle)
 {
     transformation_.rotation_ = worldAngle;
     // Angle should be >= 0 and < 2 * PI
-    if (transformation_.rotation_ >= 2.0f * (float)M_PI)
-        transformation_.rotation_ -= 2.0f * (float)M_PI;
+    if (transformation_.rotation_ >= 2.0f * Math::M_PIF)
+        transformation_.rotation_ -= 2.0f * Math::M_PIF;
     else if (transformation_.rotation_ < 0.0f)
-        transformation_.rotation_ += 2.0f * (float)M_PI;
+        transformation_.rotation_ += 2.0f * Math::M_PIF;
 }
 
 }

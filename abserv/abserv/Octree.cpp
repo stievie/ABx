@@ -173,8 +173,8 @@ void Octant::InsertObject(Game::GameObject* object)
 {
     const BoundingBox& box = object->GetWorldBoundingBox();
 
-    // If root octant, insert all non-occludees here, so that octant occlusion does not hide the drawable.
-    // Also if drawable is outside the root octant bounds, insert to root
+    // If root octant, insert all non-occludees here, so that octant occlusion does not hide the object.
+    // Also if object is outside the root octant bounds, insert to root
     bool insertHere;
     if (this == root_)
         insertHere = !object->occludee_ || cullingBox_.IsInside(box) != INSIDE || CheckObjectFit(box);
@@ -186,7 +186,7 @@ void Octant::InsertObject(Game::GameObject* object)
         Octant* oldOctant = object->octant_;
         if (oldOctant != this)
         {
-            // Add first, then remove, because drawable count going to zero deletes the octree branch in question
+            // Add first, then remove, because object count going to zero deletes the octree branch in question
             AddObject(object);
             if (oldOctant)
                 oldOctant->RemoveObject(object, false);
@@ -250,21 +250,21 @@ bool Octant::CheckObjectFit(const BoundingBox& box) const
     return false;
 }
 
-void Octant::AddObject(Game::GameObject* drawable)
+void Octant::AddObject(Game::GameObject* object)
 {
-    drawable->SetOctant(this);
-    objects_.push_back(drawable);
+    object->SetOctant(this);
+    objects_.push_back(object);
     IncObjectCount();
 }
 
-void Octant::RemoveObject(Game::GameObject* drawable, bool resetOctant /* = true */)
+void Octant::RemoveObject(Game::GameObject* object, bool resetOctant /* = true */)
 {
-    auto it = std::find(objects_.begin(), objects_.end(), drawable);
+    auto it = std::find(objects_.begin(), objects_.end(), object);
     if (it != objects_.end())
     {
         objects_.erase(it);
         if (resetOctant)
-            drawable->SetOctant(nullptr);
+            object->SetOctant(nullptr);
         DecObjectCount();
     }
 }
@@ -295,7 +295,7 @@ void Octant::GetObjectsInternal(OctreeQuery& query, bool inside) const
     {
         Game::GameObject** start = const_cast<Game::GameObject**>(&objects_[0]);
         Game::GameObject** end = start + objects_.size();
-        query.TestDrawables(start, end, inside);
+        query.TestObjects(start, end, inside);
     }
 
     for (unsigned i = 0; i < NUM_OCTANTS; ++i)

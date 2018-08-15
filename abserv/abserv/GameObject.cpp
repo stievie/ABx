@@ -295,7 +295,7 @@ void GameObject::AddToOctree()
 {
     if (auto g = game_.lock())
     {
-#ifdef DEBUG_GAME
+#ifdef DEBUG_OCTREE
         LOG_DEBUG << "Adding " << GetName() << " to Octree" << std::endl;
 #endif
         g->map_->octree_->InsertObject(this);
@@ -305,7 +305,7 @@ void GameObject::AddToOctree()
             Math::Octree* octree = octant_->GetRoot();
             octree->AddObjectUpdate(this);
         }
-#ifdef DEBUG_GAME
+#ifdef DEBUG_OCTREE
         else
         {
             LOG_WARNING << "octant_ == null" << std::endl;
@@ -318,7 +318,7 @@ void GameObject::RemoveFromOctree()
 {
     if (octant_)
     {
-#ifdef DEBUG_GAME
+#ifdef DEBUG_OCTREE
         LOG_DEBUG << "Removing " << GetName() << " from Octree" << std::endl;
 #endif
         octant_->RemoveObject(this);

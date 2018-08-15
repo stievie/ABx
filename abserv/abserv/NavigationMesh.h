@@ -19,7 +19,7 @@ private:
     std::unique_ptr<FindPathData> pathData_;
 public:
     NavigationMesh();
-    virtual ~NavigationMesh();
+    ~NavigationMesh() override;
 
     void SetNavMesh(dtNavMesh* value)
     {
