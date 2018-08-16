@@ -18,7 +18,7 @@ DataProvider DataProvider::Instance;
 DataProvider::DataProvider()
 {
     // Add Importer
-    IO::DataProvider::Instance.AddImporter<Game::NavigationMesh, IO::IONavMesh>();
+    IO::DataProvider::Instance.AddImporter<Navigation::NavigationMesh, IO::IONavMesh>();
     IO::DataProvider::Instance.AddImporter<Game::Terrain, IO::IOTerrain>();
     IO::DataProvider::Instance.AddImporter<Game::Model, IO::IOModel>();
 }

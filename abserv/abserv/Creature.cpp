@@ -237,7 +237,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 input.data[InputDataVertexY].GetFloat(),
                 input.data[InputDataVertexZ].GetFloat()
             };
-            GetGame()->map_->navMesh_->FindPath(wayPoints_, transformation_.position_,
+            bool succ = GetGame()->map_->FindPath(wayPoints_, transformation_.position_,
                 dest);
 #ifdef DEBUG_NAVIGATION
             LOG_DEBUG << "Goto from " << transformation_.position_.ToString() <<
@@ -246,7 +246,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 LOG_DEBUG << " " << wp.ToString();
             LOG_DEBUG << std::endl;
 #endif
-            if (wayPoints_.size() != 0)
+            if (succ && wayPoints_.size() != 0)
             {
                 newState = AB::GameProtocol::CreatureStateMoving;
                 autoRun_ = true;

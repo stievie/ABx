@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;$(SolutionDir)..\Include;$(SolutionDir)..\Include\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -161,6 +161,7 @@
     <ClInclude Include="CreateHeightMapAction.h" />
     <ClInclude Include="CreateHullAction.h" />
     <ClInclude Include="CreateModelAction.h" />
+    <ClInclude Include="CreateSceneAction.h" />
     <ClInclude Include="Hull.h" />
     <ClInclude Include="ImportUtils.h" />
     <ClInclude Include="ObjWriter.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="CreateHeightMapAction.cpp" />
     <ClCompile Include="CreateHullAction.cpp" />
     <ClCompile Include="CreateModelAction.cpp" />
+    <ClCompile Include="CreateSceneAction.cpp" />
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjWriter.cpp" />
@@ -183,6 +185,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
+      <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\absmath\absmath\absmath.vcxproj">
       <Project>{c7a029e7-b69c-43ff-8d8d-ba2a46283558}</Project>
     </ProjectReference>

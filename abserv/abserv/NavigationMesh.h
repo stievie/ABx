@@ -5,7 +5,7 @@
 #include "Asset.h"
 #include "Vector3.h"
 
-namespace Game {
+namespace Navigation {
 
 struct FindPathData;
 
@@ -35,7 +35,7 @@ public:
 
     /// Find a path between world space points. Return non-empty list of points if successful.
     /// Extents specifies how far off the navigation mesh the points can be.
-    void FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
+    bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
 };
 

@@ -22,7 +22,7 @@ struct NavMeshTileHeader
     int dataSize;
 };
 
-bool IONavMesh::Import(Game::NavigationMesh* asset, const std::string& fileName)
+bool IONavMesh::Import(Navigation::NavigationMesh* asset, const std::string& fileName)
 {
     AB_PROFILE;
 

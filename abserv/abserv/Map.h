@@ -52,9 +52,15 @@ public:
     void AddGameObject(std::shared_ptr<GameObject> object);
     void Update(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
+
+    /// Find a path between world space points. Return non-empty list of points if successful.
+    /// Extents specifies how far off the navigation mesh the points can be.
+    bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
+        const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
+
     MapData data_;
     std::vector<SpawnPoint> spawnPoints_;
-    std::shared_ptr<NavigationMesh> navMesh_;
+    std::shared_ptr<Navigation::NavigationMesh> navMesh_;
     std::shared_ptr<Terrain> terrain_;
     std::unique_ptr<Math::Octree> octree_;
 };

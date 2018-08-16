@@ -5,12 +5,12 @@
 
 namespace IO {
 
-class IONavMesh : public IOAssetImpl<Game::NavigationMesh>
+class IONavMesh : public IOAssetImpl<Navigation::NavigationMesh>
 {
 public:
     IONavMesh() = default;
 
-    bool Import(Game::NavigationMesh* asset, const std::string& name) override;
+    bool Import(Navigation::NavigationMesh* asset, const std::string& name) override;
 };
 
 }

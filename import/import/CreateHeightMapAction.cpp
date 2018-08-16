@@ -11,7 +11,7 @@ void CreateHeightMapAction::SaveObj()
 {
     std::string fileName = Utils::ChangeFileExt(file_, ".obj");
     std::fstream f(fileName, std::fstream::out);
-    ObjWriter writer(f);
+    ObjWriter writer(f, false);
     writer.Comment(file_);
     writer.Object("heightmap");
 
@@ -24,6 +24,7 @@ void CreateHeightMapAction::SaveObj()
         const Math::Vector3 vec = v * spacing_;
         writer.Vertex(vec.x_, vec.y_, vec.z_);
     }
+    writer.Comment(std::to_string(indices_.size()) + " normals");
     for (const auto& n : normals_)
     {
         writer.Normal(n.x_, n.y_, n.z_);
@@ -182,14 +183,15 @@ Math::Vector3 CreateHeightMapAction::GetRawNormal(int x, int z) const
     float nwSlope = GetRawHeight(x - 1, z - 1) - baseHeight;
     float up = 0.5f * (spacing_.x_ + spacing_.z_);
 
-    return (Math::Vector3(0.0f, up, nSlope) +
-        Math::Vector3(-neSlope, up, neSlope) +
-        Math::Vector3(-eSlope, up, 0.0f) +
-        Math::Vector3(-seSlope, up, -seSlope) +
-        Math::Vector3(0.0f, up, -sSlope) +
-        Math::Vector3(swSlope, up, -swSlope) +
-        Math::Vector3(wSlope, up, 0.0f) +
-        Math::Vector3(nwSlope, up, nwSlope)).Normal();
+    using namespace Math;
+    return (Vector3(0.0f, up, nSlope) +
+        Vector3(-neSlope, up, neSlope) +
+        Vector3(-eSlope, up, 0.0f) +
+        Vector3(-seSlope, up, -seSlope) +
+        Vector3(0.0f, up, -sSlope) +
+        Vector3(swSlope, up, -swSlope) +
+        Vector3(wSlope, up, 0.0f) +
+        Vector3(nwSlope, up, nwSlope)).Normal();
 }
 
 void CreateHeightMapAction::Execute()

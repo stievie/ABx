@@ -9,6 +9,7 @@ private:
         CreateHull,
         CreateHeightMap,
         CreateModel,
+        CreateScene
     };
     Action action_ = Unknown;
     bool ParseCommandLine();

@@ -301,4 +301,15 @@ SpawnPoint Map::GetFreeSpawnPoint()
     }
 }
 
+bool Map::FindPath(std::vector<Math::Vector3>& dest,
+    const Math::Vector3& start, const Math::Vector3& end,
+    const Math::Vector3& extends /* = Math::Vector3::One */,
+    const dtQueryFilter* filter /* = nullptr */)
+{
+    if (!navMesh_)
+        return false;
+
+    return navMesh_->FindPath(dest, start, end, extends, filter);
+}
+
 }

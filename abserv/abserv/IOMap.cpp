@@ -101,7 +101,7 @@ bool IOMap::Load(Game::Map& map)
         return false;
     }
 
-    map.navMesh_ = IO::DataProvider::Instance.GetAsset<Game::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
+    map.navMesh_ = IO::DataProvider::Instance.GetAsset<Navigation::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
     if (!map.navMesh_)
     {
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;

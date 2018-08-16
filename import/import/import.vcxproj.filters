@@ -45,6 +45,9 @@
     <ClInclude Include="ImportUtils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CreateSceneAction.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +72,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="CreateModelAction.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateSceneAction.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

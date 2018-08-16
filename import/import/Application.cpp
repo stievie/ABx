@@ -3,6 +3,7 @@
 #include "CreateHullAction.h"
 #include "CreateHeightMapAction.h"
 #include "CreateModelAction.h"
+#include "CreateSceneAction.h"
 
 bool Application::ParseCommandLine()
 {
@@ -20,6 +21,10 @@ bool Application::ParseCommandLine()
         else if (a.compare("-model") == 0)
         {
             action_ = CreateModel;
+        }
+        else if (a.compare("-scene") == 0)
+        {
+            action_ = CreateScene;
         }
         else if (a.compare("-h") == 0 || a.compare("-?") == 0)
         {
@@ -82,6 +87,12 @@ void Application::Run()
             action.Execute();
         }
         break;
-
+    case CreateScene:
+        for (const auto& file : files_)
+        {
+            CreateSceneAction action(file);
+            action.Execute();
+        }
+        break;
     }
 }

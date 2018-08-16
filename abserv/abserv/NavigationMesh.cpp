@@ -2,7 +2,7 @@
 #include "NavigationMesh.h"
 #include "Profiler.h"
 
-namespace Game {
+namespace Navigation {
 
 static const int MAX_POLYS = 2048;
 
@@ -22,21 +22,21 @@ struct FindPathData
 NavigationMesh::NavigationMesh() :
     AssetImpl<NavigationMesh>(),
     navMesh_(nullptr),
-    navQuery_(nullptr),
+    navQuery_(dtAllocNavMeshQuery()),
     queryFilter_(std::make_unique<dtQueryFilter>()),
     pathData_(std::make_unique<FindPathData>())
 {
-    navQuery_ = dtAllocNavMeshQuery();
 }
 
 
 NavigationMesh::~NavigationMesh()
 {
     dtFreeNavMeshQuery(navQuery_);
-    dtFreeNavMesh(navMesh_);
+    if (navMesh_)
+        dtFreeNavMesh(navMesh_);
 }
 
-void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
+bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     const Math::Vector3& start, const Math::Vector3& end,
     const Math::Vector3& extends /* = Math::Vector3::One */,
     const dtQueryFilter* filter /* = nullptr */)
@@ -48,13 +48,10 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;
     dtPolyRef endRef = 0;
-#ifdef DEBUG_NAVIGATION
-    dtStatus startStatus =
-#endif
-        navQuery_->findNearestPoly(start.Data(), extends.Data(), queryFilter, &startRef, nullptr);
-#ifdef DEBUG_NAVIGATION
+    dtStatus startStatus = navQuery_->findNearestPoly(start.Data(), extends.Data(), queryFilter, &startRef, nullptr);
     if (dtStatusFailed(startStatus))
     {
+#ifdef DEBUG_NAVIGATION
         LOG_WARNING << "findNearestPoly() Failed with startStatus " << startStatus;
         if (dtStatusDetail(startStatus, DT_WRONG_MAGIC))
             LOG_WARNING << " DT_WRONG_MAGIC";
@@ -71,15 +68,14 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
         if (dtStatusDetail(startStatus, DT_PARTIAL_RESULT))
             LOG_WARNING << " DT_PARTIAL_RESULT";
         LOG_WARNING << std::endl;
+#endif
+        return false;
     }
-#endif
-#ifdef DEBUG_NAVIGATION
-    dtStatus endStatus =
-#endif
-        navQuery_->findNearestPoly(end.Data(), extends.Data(), queryFilter, &endRef, nullptr);
-#ifdef DEBUG_NAVIGATION
+
+    dtStatus endStatus = navQuery_->findNearestPoly(end.Data(), extends.Data(), queryFilter, &endRef, nullptr);
     if (dtStatusFailed(endStatus))
     {
+#ifdef DEBUG_NAVIGATION
         LOG_WARNING << "findNearestPoly() Failed with endStatus " << endStatus;
         if (dtStatusDetail(endStatus, DT_WRONG_MAGIC))
             LOG_WARNING << " DT_WRONG_MAGIC";
@@ -96,22 +92,23 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
         if (dtStatusDetail(endStatus, DT_PARTIAL_RESULT))
             LOG_WARNING << " DT_PARTIAL_RESULT";
         LOG_WARNING << std::endl;
-    }
 #endif
+        return false;
+    }
 
 #ifdef DEBUG_NAVIGATION
     LOG_DEBUG << "startRef " << startRef << ", endRef " << endRef << std::endl;
 #endif
     if (!startRef || !endRef)
-        return;
+        return false;
 
     int numPolys = 0;
     int numPathPoints = 0;
 
-    navQuery_->findPath(startRef, endRef, &start.x_, &end.x_, queryFilter,
+    dtStatus findStatus = navQuery_->findPath(startRef, endRef, &start.x_, &end.x_, queryFilter,
         pathData_->polys_, &numPolys, MAX_POLYS);
-    if (!numPolys)
-        return;
+    if (dtStatusFailed(findStatus) || !numPolys)
+        return false;
 
     Math::Vector3 actualEnd = end;
 
@@ -127,6 +124,8 @@ void NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     {
         dest.push_back(pathData_->pathPoints_[i]);
     }
+
+    return true;
 }
 
 }
