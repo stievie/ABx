@@ -5,6 +5,9 @@
 #include "SkillBar.h"
 #include "InputQueue.h"
 #include <AB/ProtocolCodes.h>
+#include "MoveComp.h"
+#include "AutoRunComp.h"
+#include "CollisionComp.h"
 
 namespace Game {
 
@@ -13,23 +16,22 @@ static constexpr float NAVIGATION_MIN_DIST = 2.0f;
 /// Player, NPC, Monster some such
 class Creature : public GameObject
 {
+    friend class Components::MoveComp;
+    friend class Components::AutoRunComp;
+    friend class Components::CollisionComp;
 private:
-    static constexpr float BaseSpeed = 150.0f;
     void DeleteEffect(uint32_t index);
-    void DoCollisions();
-    uint8_t moveDir_;
-    uint8_t turnDir_;
-    Math::Vector3 oldPosition_;
-    bool autoRun_;
 protected:
+    Components::MoveComp moveComp_;
+    Components::AutoRunComp autorunComp_;
+    Components::CollisionComp collisionComp_;
+
     std::vector<Math::Vector3> wayPoints_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& command, Net::NetworkMessage& message,
-        AB::GameProtocol::CreatureState& newState) {
+        const std::string& command, Net::NetworkMessage& message) {
         AB_UNUSED(type);
         AB_UNUSED(command);
         AB_UNUSED(message);
-        AB_UNUSED(newState);
     }
     kaguya::State luaState_;
     bool luaInitialized_;
@@ -94,7 +96,6 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     InputQueue inputs_;
-    int64_t lastStateChange_;
     std::weak_ptr<GameObject> selectedObject_;
     std::weak_ptr<GameObject> followedObject_;
     uint32_t GetSelectedObjectId() const

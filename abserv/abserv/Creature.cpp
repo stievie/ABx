@@ -38,13 +38,11 @@ void Creature::RegisterLua(kaguya::State& state)
 
 Creature::Creature() :
     GameObject(),
+    moveComp_(*this),
+    autorunComp_(*this),
+    collisionComp_(*this),
     skills_(this),
-    lastStateChange_(Utils::AbTick()),
-    moveDir_(AB::GameProtocol::MoveDirectionNone),
-    turnDir_(AB::GameProtocol::TurnDirectionNone),
-    luaInitialized_(false),
-    autoRun_(false),
-    oldPosition_(Math::Vector3::Zero)
+    luaInitialized_(false)
 {
     // Creature always collides
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
@@ -93,40 +91,6 @@ void Creature::OnCollide(std::shared_ptr<Creature> other)
         luaState_["onCollide"](other);
 }
 
-void Creature::DoCollisions()
-{
-    std::vector<GameObject*> c;
-    Math::BoundingBox box = GetWorldBoundingBox();
-    if (QueryObjects(c, box))
-    {
-        for (auto& ci : c)
-        {
-            if (ci != this && ((collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
-            {
-                Math::Vector3 move;
-                if (Collides(ci, move))
-                {
-#ifdef DEBUG_COLLISION
-                    //                    LOG_DEBUG << GetName() << " collides with " << ci->GetName() << std::endl;
-#endif
-                    if (move != Math::Vector3::Zero)
-                        transformation_.position_ += move;
-                    else
-                        transformation_.position_ = oldPosition_;
-                    // Notify ci for colliding with us
-                    ci->OnCollide(GetThis<Creature>());
-                    // Notify us for colliding with ci
-                    OnCollide(ci->GetThis<Creature>());
-                }
-            }
-        }
-    }
-
-    // Keep on ground
-    float y = GetGame()->map_->terrain_->GetHeight(transformation_.position_);
-    transformation_.position_.y_ = y;
-}
-
 void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration)
 {
     RemoveEffect(index);
@@ -170,20 +134,15 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     Skill* skill = nullptr;
     int skillIndex = -1;
-    bool turned = false;
-    bool directionSet = false;
+    moveComp_.turned_ = false;
+    moveComp_.directionSet_ = false;
     bool newDirection = false;
     float worldAngle = 0.0f;
 
     InputItem input;
-    AB::GameProtocol::CreatureState newState = creatureState_;
+//    AB::GameProtocol::CreatureState newState = creatureState_;
 
-    if (newState == AB::GameProtocol::CreatureStateEmoteCry &&
-        lastStateChange_ + 10000 < Utils::AbTick())
-    {
-        // Reset some emotes after 10 seconds
-        newState = AB::GameProtocol::CreatureStateIdle;
-    }
+    stateComp_.Update(timeElapsed);
 
     // Multiple inputs of the same type overwrite previous
     while (inputs_.Get(input))
@@ -192,35 +151,35 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
         case InputType::Move:
         {
-            moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
-            if (moveDir_ > AB::GameProtocol::MoveDirectionNone)
+            moveComp_.moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
+            if (moveComp_.moveDir_ > AB::GameProtocol::MoveDirectionNone)
             {
-                newState = AB::GameProtocol::CreatureStateMoving;
+                stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
             }
             else
             {
                 // Reset to Idle when neither moving nor turning
-                if (creatureState_ == AB::GameProtocol::CreatureStateMoving &&
-                    turnDir_ == AB::GameProtocol::TurnDirectionNone)
-                    newState = AB::GameProtocol::CreatureStateIdle;
+                if (stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
+                    moveComp_.turnDir_ == AB::GameProtocol::TurnDirectionNone)
+                    stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             }
-            wayPoints_.clear();
+            autorunComp_.Reset();
             break;
         }
         case InputType::Turn:
         {
-            turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
-            if (turnDir_ > AB::GameProtocol::TurnDirectionNone)
+            moveComp_.turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
+            if (moveComp_.turnDir_ > AB::GameProtocol::TurnDirectionNone)
             {
-                newState = AB::GameProtocol::CreatureStateMoving;
+                stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
             }
             else
             {
-                if (creatureState_ == AB::GameProtocol::CreatureStateMoving &&
-                    moveDir_ == AB::GameProtocol::MoveDirectionNone)
-                    newState = AB::GameProtocol::CreatureStateIdle;
+                if (stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
+                    moveComp_.moveDir_ == AB::GameProtocol::MoveDirectionNone)
+                    stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             }
-            wayPoints_.clear();
+            autorunComp_.Reset();
             break;
         }
         case InputType::Direction:
@@ -237,20 +196,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 input.data[InputDataVertexY].GetFloat(),
                 input.data[InputDataVertexZ].GetFloat()
             };
-            bool succ = GetGame()->map_->FindPath(wayPoints_, transformation_.position_,
-                dest);
-#ifdef DEBUG_NAVIGATION
-            LOG_DEBUG << "Goto from " << transformation_.position_.ToString() <<
-                " to " << dest.ToString() << " via " << wayPoints_.size() << " waypoints:";
-            for (const auto& wp : wayPoints_)
-                LOG_DEBUG << " " << wp.ToString();
-            LOG_DEBUG << std::endl;
-#endif
-            if (succ && wayPoints_.size() != 0)
+            bool succ = autorunComp_.FindPath(dest);
+            if (succ)
             {
-                newState = AB::GameProtocol::CreatureStateMoving;
-                autoRun_ = true;
+                stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                autorunComp_.autoRun_ = true;
             }
+
             break;
         }
         case InputType::Follow:
@@ -260,7 +212,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             break;
         }
         case InputType::Attack:
-            newState = AB::GameProtocol::CreatureStateAttacking;
+            stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
             break;
         case InputType::UseSkill:
         {
@@ -275,7 +227,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     skills_.UseSkill(skillIndex, target);
                     // These do not change the state
                     if (skill->IsChangingState())
-                        newState = AB::GameProtocol::CreatureStateUsingSkill;
+                        stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
                 }
             }
             break;
@@ -313,95 +265,53 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             break;
         }
         case InputType::CancelSkill:
-            if (creatureState_ == AB::GameProtocol::CreatureStateUsingSkill)
-                newState = AB::GameProtocol::CreatureStateIdle;
+            if (stateComp_.GetState() == AB::GameProtocol::CreatureStateUsingSkill)
+                stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             break;
         case InputType::CancelAttack:
-            if (creatureState_ == AB::GameProtocol::CreatureStateAttacking)
-                newState = AB::GameProtocol::CreatureStateIdle;
+            if (stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
+                stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             break;
         case InputType::Command:
         {
             AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
             const std::string& cmd = input.data[InputDataCommandData].GetString();
-            HandleCommand(type, cmd, message, newState);
+            HandleCommand(type, cmd, message);
             break;
         }
         }
     }
-    if (autoRun_ && wayPoints_.size() == 0)
+    if (autorunComp_.autoRun_ && !autorunComp_.HasWaypoints())
     {
-        newState = AB::GameProtocol::CreatureStateIdle;
-        autoRun_ = false;
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+        autorunComp_.Reset();
     }
 
-    if (newState != creatureState_)
+    if (stateComp_.IsStateChanged())
     {
 #ifdef DEBUG_GAME
         LOG_DEBUG << "New state " << (int)newState << std::endl;
 #endif
-        lastStateChange_ = Utils::AbTick();
-        creatureState_ = newState;
+        stateComp_.Apply();
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);
-        message.AddByte(creatureState_);
+        message.AddByte(stateComp_.GetState());
     }
 
-    switch (creatureState_)
+    switch (stateComp_.GetState())
     {
     case AB::GameProtocol::CreatureStateIdle:
         break;
     case AB::GameProtocol::CreatureStateMoving:
     {
-        bool moved = false;
-        float speed = GetActualMoveSpeed();
-        if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
-        {
-            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitZ);
-        }
-        if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
-        {
-            // Move slower backward
-            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::Back / 2.0f);
-        }
-        if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
-        {
-            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::Left / 2.0f);
-        }
-        if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
-        {
-            moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitX / 2.0f);
-        }
-        if (autoRun_ && wayPoints_.size() != 0)
-        {
-            const Math::Vector3& pt = wayPoints_[0];
-            const float distance = pt.Distance(transformation_.position_);
+        moveComp_.moved_ = false;
+        moveComp_.MoveTo(timeElapsed);
 
-            if (distance > NAVIGATION_MIN_DIST)
-            {
-                worldAngle = -Math::DegToRad(transformation_.position_.AngleY(pt) - 180.0f);
-                if (worldAngle < 0.0f)
-                    worldAngle += Math::M_PIF;
-#ifdef DEBUG_NAVIGATION
-                LOG_DEBUG << "From " << transformation_.position_.ToString() << " to " << pt.ToString() <<
-                    " angle " << worldAngle << " old angle " << Math::RadToDeg(transformation_.rotation_) <<
-                    ", distance " << distance << std::endl;
-#endif
-                if (fabs(transformation_.rotation_ - worldAngle) > 0.05f)
-                {
-                    newDirection = true;
-                    SetDirection(worldAngle);
-                    directionSet = true;
-                }
-                moved |= Move(((float)(timeElapsed) / BaseSpeed) * speed, Math::Vector3::UnitZ);
-            }
-            else
-            {
-                // If we are close to this point remove it from the list
-                wayPoints_.erase(wayPoints_.begin());
-            }
+        if (autorunComp_.autoRun_ && autorunComp_.HasWaypoints())
+        {
+            autorunComp_.MoveToNext(timeElapsed);
         }
-        if (moved)
+        if (moveComp_.moved_)
         {
             message.AddByte(AB::GameProtocol::GameObjectPositionChange);
             message.Add<uint32_t>(id_);
@@ -412,23 +322,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
         if (!newDirection)
         {
-            if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
-            {
-                Turn(((float)(timeElapsed) / 2000.0f) * speed);
-                turned = true;
-            }
-            if ((turnDir_ & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
-            {
-                Turn(-((float)(timeElapsed) / 2000.0f) * speed);
-                turned = true;
-            }
+            moveComp_.TurnTo(timeElapsed);
         }
         else
         {
-            if (!autoRun_ && transformation_.rotation_ != worldAngle)
+            if (!autorunComp_.autoRun_ && transformation_.rotation_ != worldAngle)
             {
                 SetDirection(worldAngle);
-                directionSet = true;
             }
         }
         break;
@@ -442,12 +342,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
 
     // The rotation may change in 2 ways: Turn and SetWorldDirection
-    if (turned || directionSet)
+    if (moveComp_.turned_ || moveComp_.directionSet_)
     {
         message.AddByte(AB::GameProtocol::GameObjectRotationChange);
         message.Add<uint32_t>(id_);
         message.Add<float>(transformation_.rotation_);
-        message.Add<uint8_t>(directionSet ? 1 : 0);
+        message.Add<uint8_t>(moveComp_.directionSet_ ? 1 : 0);
     }
 
     skills_.Update(timeElapsed);
@@ -465,57 +365,17 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 bool Creature::Move(float speed, const Math::Vector3& amount)
 {
-    // new position = position + direction * speed (where speed = amount * speed)
-
-    oldPosition_ = transformation_.position_;
-
-    // It's as easy as:
-    // 1. Create a matrix from the rotation,
-    // 2. multiply this matrix with the moving vector and
-    // 3. add the resulting vector to the current position
-#ifdef HAVE_DIRECTX_MATH
-    DirectX::XMMATRIX m = DirectX::XMMatrixRotationAxis(Math::Vector3::UnitY, -transformation_.rotation_);
-    Math::Vector3 a = amount * speed;
-    DirectX::XMVECTOR v = DirectX::XMVector3Transform(a, m);
-    transformation_.position_.x_ += v.m128_f32[0];
-    transformation_.position_.y_ += v.m128_f32[1];
-    transformation_.position_.z_ += v.m128_f32[2];
-#else
-    Matrix4 m = Matrix4::CreateFromQuaternion(transformation_.GetQuaternion());
-    Vector3 a = amount * speed;
-    Vector3 v = m * a;
-    transformation_.position_ += v;
-#endif
-
-    DoCollisions();
-    bool moved = oldPosition_ != transformation_.position_;
-
-    if (moved && octant_)
-    {
-        Math::Octree* octree = octant_->GetRoot();
-        octree->AddObjectUpdate(this);
-    }
-    return moved;
+    return moveComp_.Move(speed, amount);
 }
 
 void Creature::Turn(float angle)
 {
-    transformation_.rotation_ += angle;
-    // Angle should be >= 0 and < 2 * PI
-    if (transformation_.rotation_ >= 2.0f * Math::M_PIF)
-        transformation_.rotation_ -= 2.0f * Math::M_PIF;
-    else if (transformation_.rotation_ < 0.0f)
-        transformation_.rotation_ += 2.0f * Math::M_PIF;
+    moveComp_.Turn(angle);
 }
 
 void Creature::SetDirection(float worldAngle)
 {
-    transformation_.rotation_ = worldAngle;
-    // Angle should be >= 0 and < 2 * PI
-    if (transformation_.rotation_ >= 2.0f * Math::M_PIF)
-        transformation_.rotation_ -= 2.0f * Math::M_PIF;
-    else if (transformation_.rotation_ < 0.0f)
-        transformation_.rotation_ += 2.0f * Math::M_PIF;
+    moveComp_.SetDirection(worldAngle);
 }
 
 }

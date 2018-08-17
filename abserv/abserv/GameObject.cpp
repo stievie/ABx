@@ -40,13 +40,13 @@ void GameObject::RegisterLua(kaguya::State& state)
 }
 
 GameObject::GameObject() :
+    stateComp_(*this),
     octant_(nullptr),
     sortValue_(0.0f),
     occludee_(true),
     occluder_(false),
     name_("Unknown"),
     id_(GetNewId()),
-    creatureState_(AB::GameProtocol::CreatureStateIdle),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
 }

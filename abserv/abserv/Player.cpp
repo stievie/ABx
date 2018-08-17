@@ -253,76 +253,74 @@ void Player::PartyAccept(uint32_t playerId)
 }
 
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
-    const std::string& command, Net::NetworkMessage& message,
-    AB::GameProtocol::CreatureState& newState)
+    const std::string& command, Net::NetworkMessage& message)
 {
     switch (type)
     {
     case AB::GameProtocol::CommandTypeChatGeneral:
     {
-        HandleGeneralChatCommand(command, message, newState);
+        HandleGeneralChatCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeChatParty:
     {
-        HandlePartyChatCommand(command, message, newState);
+        HandlePartyChatCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeRoll:
     {
-        HandleRollCommand(command, message, newState);
+        HandleRollCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeSit:
     {
-        HandleSitCommand(command, message, newState);
+        HandleSitCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeStand:
     {
-        HandleStandCommand(command, message, newState);
+        HandleStandCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeCry:
     {
-        HandleCryCommand(command, message, newState);
+        HandleCryCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeAge:
     {
-        HandleAgeCommand(command, message, newState);
+        HandleAgeCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeMailSend:
     {
-        HandleSendMailCommand(command, message, newState);
+        HandleSendMailCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeChatWhisper:
     {
-        HandleWhisperCommand(command, message, newState);
+        HandleWhisperCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeChatGuild:
     {
-        HandleChatGuildCommand(command, message, newState);
+        HandleChatGuildCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeChatTrade:
     {
-        HandleChatTradeCommand(command, message, newState);
+        HandleChatTradeCommand(command, message);
         break;
     }
     case AB::GameProtocol::CommandTypeServerId:
     {
-        HandleServerIdCommand(command, message, newState);
+        HandleServerIdCommand(command, message);
         break;
     }
     }
 }
 
-void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
 {
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::ServerMessage);
@@ -342,8 +340,7 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&,
     client_->WriteToOutput(nmsg);
 }
 
-void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessage&)
 {
     size_t p = command.find(',');
     if (p != std::string::npos)
@@ -380,8 +377,7 @@ void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessa
     }
 }
 
-void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)
 {
     size_t p = command.find(',');
     if (p == std::string::npos)
@@ -437,8 +433,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     client_->WriteToOutput(nmsg);
 }
 
-void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelGuild, account_.guildUuid);
     if (channel)
@@ -447,8 +442,7 @@ void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMess
     }
 }
 
-void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelTrade, 0);
     if (channel)
@@ -457,8 +451,7 @@ void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMess
     }
 }
 
-void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 {
     // In seconds
     uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) +
@@ -474,8 +467,7 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&,
     client_->WriteToOutput(nmsg);
 }
 
-void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& message,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& message)
 {
     if (Utils::IsNumber(command))
     {
@@ -491,27 +483,23 @@ void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& 
     }
 }
 
-void Player::HandleSitCommand(const std::string&, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState& newState)
+void Player::HandleSitCommand(const std::string&, Net::NetworkMessage&)
 {
-    newState = AB::GameProtocol::CreatureStateEmoteSit;
+    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteSit);
 }
 
-void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState & newState)
+void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (newState == AB::GameProtocol::CreatureStateEmoteSit)
-        newState = AB::GameProtocol::CreatureStateIdle;
+    if (stateComp_.GetState() == AB::GameProtocol::CreatureStateEmoteSit)
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
 }
 
-void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState & newState)
+void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 {
-    newState = AB::GameProtocol::CreatureStateEmoteCry;
+    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteCry);
 }
 
-void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelMap, GetGame()->id_);
     if (channel)
@@ -520,8 +508,7 @@ void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMe
     }
 }
 
-void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&,
-    AB::GameProtocol::CreatureState&)
+void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelParty, GetParty()->id_);
     if (channel)

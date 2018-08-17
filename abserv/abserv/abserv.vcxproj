@@ -161,8 +161,10 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
+    <ClInclude Include="AutoRunComp.h" />
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
@@ -191,6 +193,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="MessageDispatcher.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MoveComp.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="Npc.h" />
     <ClInclude Include="Octree.h" />
@@ -204,6 +207,7 @@
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillBar.h" />
     <ClInclude Include="SkillManager.h" />
+    <ClInclude Include="StateComp.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Terrain.h" />
@@ -213,8 +217,10 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Asset.cpp" />
+    <ClCompile Include="AutoRunComp.cpp" />
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
@@ -241,6 +247,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MessageDispatcher.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MoveComp.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="Npc.cpp" />
     <ClCompile Include="Octree.cpp" />
@@ -254,6 +261,7 @@
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillBar.cpp" />
     <ClCompile Include="SkillManager.cpp" />
+    <ClCompile Include="StateComp.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

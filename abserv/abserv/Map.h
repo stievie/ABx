@@ -47,6 +47,12 @@ public:
     {
         return patches_.size();
     }
+    float GetTerrainHeight(const Math::Vector3& world) const
+    {
+        if (terrain_)
+            return terrain_->GetHeight(world);
+        return 0.0f;
+    }
 
     void LoadSceneNode(const pugi::xml_node& node);
     void AddGameObject(std::shared_ptr<GameObject> object);

@@ -28,32 +28,19 @@ protected:
         return std::static_pointer_cast<Player>(shared_from_this());
     }
     void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& command, Net::NetworkMessage& message,
-        AB::GameProtocol::CreatureState& newState) override;
-    void HandleServerIdCommand(const std::string&, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState&);
-    void HandleSendMailCommand(const std::string& command, Net::NetworkMessage& message,
-        AB::GameProtocol::CreatureState&);
-    void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message,
-        AB::GameProtocol::CreatureState&);
-    void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState&);
-    void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState&);
-    void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message,
-        AB::GameProtocol::CreatureState&);
-    void HandleRollCommand(const std::string& command, Net::NetworkMessage& message,
-        AB::GameProtocol::CreatureState&);
-    void HandleSitCommand(const std::string&, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState& newState);
-    void HandleStandCommand(const std::string&, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState& newState);
-    void HandleCryCommand(const std::string&, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState& newState);
-    void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState&);
-    void HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&,
-        AB::GameProtocol::CreatureState&);
+        const std::string& command, Net::NetworkMessage& message) override;
+    void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
+    void HandleSendMailCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
+    void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
+    void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleSitCommand(const std::string&, Net::NetworkMessage&);
+    void HandleStandCommand(const std::string&, Net::NetworkMessage&);
+    void HandleCryCommand(const std::string&, Net::NetworkMessage&);
+    void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&);
+    void HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&);
 public:
     static void RegisterLua(kaguya::State& state);
 

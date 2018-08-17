@@ -165,6 +165,18 @@
     <ClInclude Include="OffMeshConnection.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="MoveComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoRunComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="StateComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -306,6 +318,18 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="OffMeshConnection.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoRunComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="StateComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

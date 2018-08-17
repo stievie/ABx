@@ -35,7 +35,7 @@ bool Npc::LoadScript(const std::string& fileName)
     level_ = luaState_["level"];
     modelIndex_ = luaState_["modelIndex"];
     sex_ = luaState_["sex"];
-    creatureState_ = luaState_["creatureState"];
+    stateComp_.SetState(luaState_["creatureState"], true);
 
     IO::DataClient* client = Application::Instance->GetDataClient();
 
