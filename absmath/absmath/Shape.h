@@ -18,24 +18,36 @@ public:
         vertexCount_(other.vertexCount_),
         indexCount_(other.indexCount_)
     { }
-    Shape(const Vector3& vector) :
+    explicit Shape(const Vector3& vector) :
         vertexCount_(1),
         indexCount_(0)
     {
         vertexData_.push_back(vector);
     }
-    Shape(const std::vector<Vector3>& vertices) :
+    explicit Shape(const std::vector<Vector3>& vertices) :
         vertexData_(vertices),
         vertexCount_((unsigned)vertexData_.size()),
         indexCount_(0)
     {}
-    Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
+    explicit Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
         vertexData_(vertices),
         vertexCount_((unsigned)vertexData_.size()),
         indexData_(indices),
         indexCount_((unsigned)indexData_.size())
     {}
     ~Shape() = default;
+
+    Shape& operator= (const Shape& other)
+    {
+        if (this != &other)
+        {
+            vertexData_ = other.vertexData_;
+            vertexCount_ = other.vertexCount_;
+            indexData_ = other.indexData_;
+            indexCount_ = other.indexCount_;
+        }
+        return *this;
+    }
 
     bool IsDefined() const
     {

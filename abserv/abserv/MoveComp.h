@@ -23,10 +23,12 @@ public:
         oldPosition_(Math::Vector3::Zero),
         moved_(false),
         turned_(false),
-        directionSet_(false)
+        directionSet_(false),
+        newAngle_(false)
     { }
     ~MoveComp() = default;
 
+    void Update(uint32_t timeElapsed);
     /// Move in direction of rotation
     bool Move(float speed, const Math::Vector3& amount);
     /// Move to moveDir_
@@ -47,6 +49,7 @@ public:
     bool turned_;
     /// Manual direction set
     bool directionSet_;
+    bool newAngle_;
 };
 
 }

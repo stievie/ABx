@@ -11,14 +11,14 @@
 
 namespace Game {
 
-static constexpr float NAVIGATION_MIN_DIST = 2.0f;
-
 /// Player, NPC, Monster some such
 class Creature : public GameObject
 {
     friend class Components::MoveComp;
     friend class Components::AutoRunComp;
     friend class Components::CollisionComp;
+public:
+    static constexpr float MAX_INTERACTION_DIST = 2.0f;
 private:
     void DeleteEffect(uint32_t index);
 protected:
@@ -87,11 +87,6 @@ public:
     void AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
-
-    /// Move in direction of rotation
-    bool Move(float speed, const Math::Vector3& amount);
-    void Turn(float angle);
-    void SetDirection(float worldAngle);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 

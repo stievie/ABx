@@ -19,12 +19,12 @@ public:
         scale_(Vector3(1.0f, 1.0f, 1.0f)),
         rotation_(0.0f)
     {}
-    Transformation(const Vector3& pos, const Vector3 scale, float rot) :
+    Transformation(const Vector3& pos, const Vector3& scale, float rot) :
         position_(pos),
         scale_(scale),
         rotation_(rot)
     {}
-    Transformation(const Vector3& pos, const Vector3 scale, const Quaternion& rot) :
+    Transformation(const Vector3& pos, const Vector3& scale, const Quaternion& rot) :
         position_(pos),
         scale_(scale)
     {

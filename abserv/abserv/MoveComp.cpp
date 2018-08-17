@@ -6,6 +6,12 @@
 namespace Game {
 namespace Components {
 
+void MoveComp::Update(uint32_t timeElapsed)
+{
+    MoveTo(timeElapsed);
+    TurnTo(timeElapsed);
+}
+
 bool MoveComp::Move(float speed, const Math::Vector3 & amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
@@ -96,13 +102,16 @@ void MoveComp::TurnTo(uint32_t timeElapsed)
 
 void MoveComp::SetDirection(float worldAngle)
 {
-    owner_.transformation_.rotation_ = worldAngle;
-    // Angle should be >= 0 and < 2 * PI
-    if (owner_.transformation_.rotation_ >= 2.0f * Math::M_PIF)
-        owner_.transformation_.rotation_ -= 2.0f * Math::M_PIF;
-    else if (owner_.transformation_.rotation_ < 0.0f)
-        owner_.transformation_.rotation_ += 2.0f * Math::M_PIF;
-    directionSet_ = true;
+    if (owner_.transformation_.rotation_ != worldAngle)
+    {
+        owner_.transformation_.rotation_ = worldAngle;
+        // Angle should be >= 0 and < 2 * PI
+        if (owner_.transformation_.rotation_ >= 2.0f * Math::M_PIF)
+            owner_.transformation_.rotation_ -= 2.0f * Math::M_PIF;
+        else if (owner_.transformation_.rotation_ < 0.0f)
+            owner_.transformation_.rotation_ += 2.0f * Math::M_PIF;
+        directionSet_ = true;
+    }
 }
 
 }

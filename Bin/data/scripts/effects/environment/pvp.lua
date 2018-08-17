@@ -6,7 +6,7 @@ function getDuration(source, target, baseDuration)
 end
 
 function onStart(source, target)
-  print("Add Effect PvP to " .. target:GetName())
+--  print("Add Effect PvP to " .. target:GetName())
   return true
 end
 
@@ -14,7 +14,7 @@ function onEnd(source, target)
 end
 
 function onRemove(source, target)
-  print("Remove Effect PvP from " .. target:GetName())
+--  print("Remove Effect PvP from " .. target:GetName())
 end
 
 function onUpdate(source, target, timeElapsed)

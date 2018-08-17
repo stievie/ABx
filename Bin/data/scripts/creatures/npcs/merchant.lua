@@ -16,14 +16,14 @@ end
 
 -- self was selected by creature
 function onSelected(creature)
-  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
+--  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
-  local pos = creature:GetPosition();
-  print("Raycast to " .. pos[1] .. "," .. pos[2] .. "," .. pos[3])
-  local objects = self:Raycast(pos[1], pos[2], pos[3]);
-  for i, v in ipairs(objects) do
-    print(i, v, v:GetName()) 
-  end
+--  local pos = creature:GetPosition();
+--  print("Raycast to " .. pos[1] .. "," .. pos[2] .. "," .. pos[3])
+--  local objects = self:Raycast(pos[1], pos[2], pos[3]);
+--  for i, v in ipairs(objects) do
+--    print(i, v, v:GetName()) 
+--  end
 end
 
 -- creature collides with self

@@ -80,7 +80,7 @@ public:
     friend Quaternion operator/(const Quaternion& v, float n);
     friend Quaternion operator/(float n, const Quaternion& v);
 
-    Vector3 operator *(const Vector3 rhs) const
+    Vector3 operator *(const Vector3& rhs) const
     {
         Vector3 qVec(x_, y_, z_);
         Vector3 cross1(qVec.CrossProduct(rhs));

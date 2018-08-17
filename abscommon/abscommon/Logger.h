@@ -34,13 +34,13 @@ private:
 public:
     static std::string logDir_;
 
-    Logger(std::ostream& stream = std::cout) :
+    explicit Logger(std::ostream& stream = std::cout) :
         stream_(stream),
         mode_(ModeStream),
         nextIsBegin_(true),
         logStart_(Utils::AbTick())
     {}
-    Logger(const std::string& fileName) :
+    explicit Logger(const std::string& fileName) :
         fstream_(fileName),
         stream_(fstream_),
         mode_(ModeFile),

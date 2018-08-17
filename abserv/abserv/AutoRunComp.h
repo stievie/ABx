@@ -13,6 +13,11 @@ class AutoRunComp
 private:
     Creature& owner_;
     std::vector<Math::Vector3> wayPoints_;
+    void Pop();
+    const Math::Vector3& Next() const
+    {
+        return wayPoints_[0];
+    }
 public:
     AutoRunComp(Creature& owner) :
         owner_(owner),
@@ -30,12 +35,7 @@ public:
     {
         return wayPoints_.size() != 0;
     }
-    const Math::Vector3& Next() const
-    {
-        return wayPoints_[0];
-    }
-    void Remove();
-    void MoveToNext(uint32_t timeElapsed);
+    void Update(uint32_t timeElapsed);
 
     bool autoRun_;
 };

@@ -26,17 +26,20 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     return false;
 }
 
-void AutoRunComp::Remove()
+void AutoRunComp::Pop()
 {
     wayPoints_.erase(wayPoints_.begin());
 }
 
-void AutoRunComp::MoveToNext(uint32_t timeElapsed)
+void AutoRunComp::Update(uint32_t timeElapsed)
 {
+    if (!autoRun_ || !HasWaypoints())
+        return;
+
     const Math::Vector3& pt = Next();
     const float distance = pt.Distance(owner_.transformation_.position_);
 
-    if (distance > NAVIGATION_MIN_DIST)
+    if (distance > Creature::MAX_INTERACTION_DIST)
     {
         float worldAngle = -Math::DegToRad(owner_.transformation_.position_.AngleY(pt) - 180.0f);
         if (worldAngle < 0.0f)
@@ -56,7 +59,7 @@ void AutoRunComp::MoveToNext(uint32_t timeElapsed)
     else
     {
         // If we are close to this point remove it from the list
-        Remove();
+        Pop();
     }
 }
 

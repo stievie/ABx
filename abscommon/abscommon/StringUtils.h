@@ -56,7 +56,7 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
 }
 
 template <typename charType>
-std::basic_string<charType> CombineString(const std::vector<std::basic_string<charType>> strings,
+std::basic_string<charType> CombineString(const std::vector<std::basic_string<charType>>& strings,
     const std::basic_string<charType>& delim)
 {
     std::basic_string<charType> res;

@@ -136,8 +136,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     int skillIndex = -1;
     moveComp_.turned_ = false;
     moveComp_.directionSet_ = false;
-    bool newDirection = false;
-    float worldAngle = 0.0f;
 
     InputItem input;
 //    AB::GameProtocol::CreatureState newState = creatureState_;
@@ -184,13 +182,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         case InputType::Direction:
         {
-            worldAngle = input.data[InputDataDirection].GetFloat();
-            newDirection = true;
+            autorunComp_.Reset();
+            moveComp_.SetDirection(input.data[InputDataDirection].GetFloat());
             break;
         }
         case InputType::Goto:
         {
-            // TODO: Just adjust move direction to next points
+            autorunComp_.Reset();
             const Math::Vector3 dest = {
                 input.data[InputDataVertexX].GetFloat(),
                 input.data[InputDataVertexY].GetFloat(),
@@ -305,12 +303,9 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     case AB::GameProtocol::CreatureStateMoving:
     {
         moveComp_.moved_ = false;
-        moveComp_.MoveTo(timeElapsed);
+        moveComp_.Update(timeElapsed);
+        autorunComp_.Update(timeElapsed);
 
-        if (autorunComp_.autoRun_ && autorunComp_.HasWaypoints())
-        {
-            autorunComp_.MoveToNext(timeElapsed);
-        }
         if (moveComp_.moved_)
         {
             message.AddByte(AB::GameProtocol::GameObjectPositionChange);
@@ -320,17 +315,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             message.Add<float>(transformation_.position_.z_);
         }
 
-        if (!newDirection)
-        {
-            moveComp_.TurnTo(timeElapsed);
-        }
-        else
-        {
-            if (!autorunComp_.autoRun_ && transformation_.rotation_ != worldAngle)
-            {
-                SetDirection(worldAngle);
-            }
-        }
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:
@@ -361,21 +345,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         effect->Update(timeElapsed);
     }
 
-}
-
-bool Creature::Move(float speed, const Math::Vector3& amount)
-{
-    return moveComp_.Move(speed, amount);
-}
-
-void Creature::Turn(float angle)
-{
-    moveComp_.Turn(angle);
-}
-
-void Creature::SetDirection(float worldAngle)
-{
-    moveComp_.SetDirection(worldAngle);
 }
 
 }
