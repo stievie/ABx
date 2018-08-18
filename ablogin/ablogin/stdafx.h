@@ -35,3 +35,5 @@
 // Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.
 // https://www.gamedev.net/forums/topic/319003-mmorpg-and-the-ol-udp-vs-tcp/?do=findComment&comment=3052256
 #define SERVER_MAX_CONNECTIONS 3000
+
+#include <AB/CommonConfig.h>

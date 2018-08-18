@@ -32,7 +32,9 @@ public:
         ResultNameExists,
         ResultInvalidAccountKey,
         ResultInvalidAccount,
-        ResultInternalError
+        ResultInternalError,
+        ResultEmailError,
+        ResultPasswordError,
     };
     enum CreatePlayerResult
     {

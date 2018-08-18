@@ -58,13 +58,29 @@ void CreateAccountLevel::DoCreateAccount()
         return;
     }
 
-    String repass = repeatPassEdit_->GetText();
     String email = emailEdit_->GetText().Trimmed();
-    String accKey = accKeyEdit_->GetText().Trimmed();
+#if defined(EMAIL_MANDATORY)
+    if (email.Empty())
+    {
+        ShowError("Please enter an Email address.");
+        emailEdit_->SetFocus(true);
+        return;
+    }
+#endif
+
+    String repass = repeatPassEdit_->GetText();
     if (pass.Compare(repass) != 0)
     {
         ShowError("Passwords do not match.");
         repeatPassEdit_->SetFocus(true);
+        return;
+    }
+
+    String accKey = accKeyEdit_->GetText().Trimmed();
+    if (accKey.Empty())
+    {
+        ShowError("Please enter an Account Key.");
+        accKeyEdit_->SetFocus(true);
         return;
     }
 

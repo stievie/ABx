@@ -15,3 +15,5 @@
 
 // Animate player head with mouse look
 //#define PLAYER_HEAD_ANIMATION
+
+#include <AB/CommonConfig.h>

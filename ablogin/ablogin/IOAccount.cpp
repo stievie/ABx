@@ -19,6 +19,14 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     AB_PROFILE;
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Account acc;
+    if (name.empty())
+        return ResultNameExists;
+    if (pass.empty())
+        return ResultPasswordError;
+#if defined(EMAIL_MANDATORY)
+    if (pass.empty())
+        return ResultEmailError;
+#endif
     acc.name = name;
     if (client->Exists(acc))
         return ResultNameExists;

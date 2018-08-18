@@ -466,6 +466,12 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
         case IO::IOAccount::ResultInvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
+        case IO::IOAccount::ResultPasswordError:
+            output->AddByte(AB::Errors::InvalidPassword);
+            break;
+        case IO::IOAccount::ResultEmailError:
+            output->AddByte(AB::Errors::InvalidEmail);
+            break;
         default:
             output->AddByte(AB::Errors::UnknownError);
             break;
