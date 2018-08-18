@@ -18,7 +18,8 @@ class Creature : public GameObject
     friend class Components::AutoRunComp;
     friend class Components::CollisionComp;
 public:
-    static constexpr float MAX_INTERACTION_DIST = 2.0f;
+    static constexpr float MAX_INTERACTION_DIST = 1.5f;
+    static constexpr float SWITCH_WAYPOINT_DIST = 6.0f;
 private:
     void DeleteEffect(uint32_t index);
 protected:

@@ -92,6 +92,7 @@ private:
     void AddActorUI();
     void RemoveActorUI();
     String GetAnimation(const StringHash& hash);
+    void HandleNameClicked(StringHash eventType, VariantMap& eventData);
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;

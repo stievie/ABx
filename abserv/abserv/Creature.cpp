@@ -138,7 +138,6 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     moveComp_.directionSet_ = false;
 
     InputItem input;
-//    AB::GameProtocol::CreatureState newState = creatureState_;
 
     stateComp_.Update(timeElapsed);
 
@@ -182,8 +181,10 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         case InputType::Direction:
         {
-            autorunComp_.Reset();
-            moveComp_.SetDirection(input.data[InputDataDirection].GetFloat());
+            // No aurorunComp_.Reset() because manually setting the camera does not
+            // stop autorunning
+            if (!autorunComp_.autoRun_)
+                moveComp_.SetDirection(input.data[InputDataDirection].GetFloat());
             break;
         }
         case InputType::Goto:
@@ -279,18 +280,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
         }
     }
-    if (autorunComp_.autoRun_ && !autorunComp_.HasWaypoints())
-    {
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-        autorunComp_.Reset();
-    }
 
     if (stateComp_.IsStateChanged())
     {
-#ifdef DEBUG_GAME
-        LOG_DEBUG << "New state " << (int)newState << std::endl;
-#endif
         stateComp_.Apply();
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "New state " << (int)stateComp_.GetState() << std::endl;
+#endif
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);
         message.AddByte(stateComp_.GetState());

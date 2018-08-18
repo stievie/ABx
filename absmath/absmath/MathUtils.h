@@ -37,4 +37,14 @@ inline T RadToDeg(T rad)
     return (rad / static_cast<T>(M_PI)) * (static_cast<T>(180.0));
 }
 
+/// Make angle between 0 and 2 * Pi.
+inline void NormalizeAngle(float& angle)
+{
+    // Angle should be >= 0 and < 2 * PI
+    if (angle >= 2.0f * Math::M_PIF)
+        angle -= 2.0f * Math::M_PIF;
+    else if (angle < 0.0f)
+        angle += 2.0f * Math::M_PIF;
+}
+
 }

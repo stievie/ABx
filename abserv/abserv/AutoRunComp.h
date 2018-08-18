@@ -13,11 +13,13 @@ class AutoRunComp
 private:
     Creature& owner_;
     std::vector<Math::Vector3> wayPoints_;
+    Math::Vector3 destination_;
     void Pop();
     const Math::Vector3& Next() const
     {
         return wayPoints_[0];
     }
+    void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
 public:
     AutoRunComp(Creature& owner) :
         owner_(owner),

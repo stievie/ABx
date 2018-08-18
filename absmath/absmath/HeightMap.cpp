@@ -12,9 +12,9 @@ HeightMap::HeightMap()
 }
 
 HeightMap::HeightMap(const std::vector<float>& data, const Point<int>& size) :
-    numVertices_(size)
+    numVertices_(size),
+    heightData_(data)
 {
-    heightData_ = data;
     ProcessData();
 }
 
@@ -102,8 +102,10 @@ float HeightMap::GetHeight(const Vector3& world) const
 
     /// \todo This assumes that the terrain scene node is upright
     float result = matrix_.Scaling().y_ * h + matrix_.Translation().y_;
+#ifdef _DEBUG
 //    LOG_DEBUG << "X=" << position.x_ << " Z=" << position.z_ << " H=" << result << std::endl;
 //    LOG_DEBUG << "X=" << (unsigned)xPos << " Y=" << (unsigned)zPos << " H=" << GetRawHeight((unsigned)xPos, (unsigned)zPos) << std::endl;
+#endif
     return result;
 }
 

@@ -257,22 +257,22 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
 void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String data = eventData[P_DATA].GetString();
+    const String& data = eventData[P_DATA].GetString();
     AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String name = eventData[P_SENDER].GetString();
-    String data = eventData[P_DATA].GetString();
+    const String& name = eventData[P_SENDER].GetString();
+    const String& data = eventData[P_DATA].GetString();
     AddLine("{" + name + "} " + data, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String count = eventData[P_DATA].GetString();
+    const String& count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "You got a new mail, total {{count}} mail(s)." };
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
@@ -283,7 +283,7 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
 void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String name = eventData[P_SENDER].GetString();
+    const String& name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was sent." };
     kainjow::mustache::data data;
     data.set("recipient", std::string(name.CString(), name.Length()));
@@ -294,7 +294,7 @@ void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
 void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String name = eventData[P_SENDER].GetString();
+    const String& name = eventData[P_SENDER].GetString();
     kainjow::mustache::mustache tpl{ "Mail to {{recipient}} was not sent. Please check the name, or the mail box is full." };
     kainjow::mustache::data data;
     data.set("recipient", std::string(name.CString(), name.Length()));
@@ -305,7 +305,7 @@ void ChatWindow::HandleServerMessageMailNotSent(VariantMap& eventData)
 void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String count = eventData[P_DATA].GetString();
+    const String& count = eventData[P_DATA].GetString();
     kainjow::mustache::mustache tpl{ "Your mailbox is full! You have {{count}} mails. Please delete some, so people are able to send you mails." };
     kainjow::mustache::data data;
     data.set("count", std::string(count.CString(), count.Length()));
@@ -323,8 +323,8 @@ void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)
     using namespace AbEvents::ChatMessage;
     AB::GameProtocol::ChatMessageChannel channel =
         static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[P_MESSAGETYPE].GetInt());
-    String message = eventData[P_DATA].GetString();
-    String sender = eventData[P_SENDER].GetString();
+    const String& message = eventData[P_DATA].GetString();
+    const String& sender = eventData[P_SENDER].GetString();
     uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
     AddChatLine(senderId, sender, message, channel);
 }
@@ -409,7 +409,7 @@ void ChatWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventDa
 void ChatWindow::HandleServerMessageServerId(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String id = eventData[P_DATA].GetString();
+    const String& id = eventData[P_DATA].GetString();
     AddLine(id, "ChatLogServerInfoText");
 }
 
@@ -594,7 +594,7 @@ void ChatWindow::HandleTextFinished(StringHash eventType, VariantMap& eventData)
 {
     using namespace TextFinished;
 
-    String line = eventData[P_TEXT].GetString();
+    const String& line = eventData[P_TEXT].GetString();
     LineEdit* sender = static_cast<LineEdit*>(eventData[P_ELEMENT].GetPtr());
     if (!line.Empty())
     {

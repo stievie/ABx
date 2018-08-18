@@ -105,15 +105,9 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
         SharedPtr<GameObject> object = GetObjectAt(input->GetMousePosition());
         if (object && object->IsSelectable())
         {
-            SelectObject(object->id_);
+            player_->SelectObject(object->id_);
         }
     }
-}
-
-void WorldLevel::SelectObject(uint32_t objectId)
-{
-    FwClient* client = context_->GetSubsystem<FwClient>();
-    client->SelectObject(player_->id_, objectId);
 }
 
 void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
@@ -206,17 +200,17 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             if (input->GetKeyDown(KEY_W) || input->GetKeyDown(KEY_UP))
             {
                 player_->controls_.Set(CTRL_MOVE_FORWARD, true);
-                player_->controls_.Set(CTRL_MOVE_LOCK, false);
+                if (!input->GetKeyDown(KEY_R))
+                    player_->controls_.Set(CTRL_MOVE_LOCK, false);
             }
             if (input->GetKeyDown(KEY_S) || input->GetKeyDown(KEY_DOWN))
             {
                 player_->controls_.Set(CTRL_MOVE_BACK, true);
-                player_->controls_.Set(CTRL_MOVE_LOCK, false);
+                if (!input->GetKeyDown(KEY_R))
+                    player_->controls_.Set(CTRL_MOVE_LOCK, false);
             }
             player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
             player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
-            if (input->GetKeyDown(KEY_R))
-                player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
 
             if (input->GetMouseButtonDown(MOUSEB_RIGHT))
             {
@@ -345,7 +339,7 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
 {
     using namespace AbEvents::ObjectDespawn;
     uint32_t objectId = eventData[P_OBJECTID].GetInt();
-    SharedPtr<GameObject> object = objects_[objectId];
+    GameObject* object = objects_[objectId];
     if (object)
     {
         SharedPtr<GameObject> selO = player_->GetSelectedObject();
@@ -359,7 +353,7 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
         object->GetNode()->Remove();
         if (object->objectType_ == ObjectTypePlayer)
         {
-            Actor* act = dynamic_cast<Actor*>(object.Get());
+            Actor* act = dynamic_cast<Actor*>(object);
             chatWindow_->AddLine(act->name_ + " left the game", "ChatLogServerInfoText");
         }
         objects_.Erase(objectId);
@@ -411,10 +405,10 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
     using namespace AbEvents::ObjectSelected;
     uint32_t objectId = eventData[P_SOURCEID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
-    SharedPtr<GameObject> object = objects_[objectId];
+    GameObject* object = objects_[objectId];
     if (object)
     {
-        Actor* actor = dynamic_cast<Actor*>(object.Get());
+        Actor* actor = dynamic_cast<Actor*>(object);
         if (actor)
         {
             if (targetId != 0)
@@ -480,7 +474,7 @@ void WorldLevel::HandleMenuPartyWindow(StringHash eventType, VariantMap& eventDa
 
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
 {
-    SelectObject(0);
+    player_->SelectObject(0);
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,

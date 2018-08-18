@@ -118,4 +118,8 @@ URHO3D_EVENT(E_PARTYINVITEREMOVED, PartyInviteRemoved)
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 
+URHO3D_EVENT(E_ACTORNAMECLICKED, ActorNameClicked)
+{
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
+}
 }

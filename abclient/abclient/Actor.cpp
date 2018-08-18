@@ -315,6 +315,8 @@ void Actor::AddActorUI()
     nameLabel_->SetStyle("ActorNameText");
     nameLabel_->SetText(name_);
     nameLabel_->SetVisible(false);
+    // TODO: Why not working?
+    SubscribeToEvent(nameLabel_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
 
     hpBar_ = uiRoot->CreateChild<ProgressBar>();
     hpBar_->SetShowPercentText(false);
@@ -329,9 +331,16 @@ void Actor::RemoveActorUI()
 {
     UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
     if (nameLabel_)
+    {
+        UnsubscribeFromEvent(nameLabel_, E_CLICK);
         uiRoot->RemoveChild(nameLabel_);
+        nameLabel_ = SharedPtr<Text>();
+    }
     if (hpBar_)
+    {
         uiRoot->RemoveChild(hpBar_);
+        hpBar_ = SharedPtr<ProgressBar>();
+    }
 }
 
 String Actor::GetAnimation(const StringHash& hash)
@@ -357,6 +366,17 @@ String Actor::GetAnimation(const StringHash& hash)
     else
         return "";
     return result;
+}
+
+void Actor::HandleNameClicked(StringHash eventType, VariantMap& eventData)
+{
+    if (nameLabel_->IsVisible())
+    {
+        VariantMap& eData = GetEventDataMap();
+        using namespace AbEvents::ActorNameClicked;
+        eData[P_SOURCEID] = id_;
+        SendEvent(AbEvents::E_ACTORNAMECLICKED, eData);
+    }
 }
 
 void Actor::SetSelectedObject(SharedPtr<GameObject> object)

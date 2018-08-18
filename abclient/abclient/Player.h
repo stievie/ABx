@@ -46,6 +46,7 @@ public:
     void SetCameraDist(bool increase);
     void UpdateYaw();
     void GotoSelected();
+    void SelectObject(uint32_t objectId);
 protected:
     void PostUpdate(float timeStep) override;
 private:
@@ -54,4 +55,5 @@ private:
     uint8_t lastTurnDir_;
     float lastYaw_;
     bool stickCameraToHead_;
+    void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
 };

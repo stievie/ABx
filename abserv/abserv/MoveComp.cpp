@@ -2,6 +2,7 @@
 #include "MoveComp.h"
 #include "Creature.h"
 #include "CollisionComp.h"
+#include "MathUtils.h"
 
 namespace Game {
 namespace Components {
@@ -12,7 +13,7 @@ void MoveComp::Update(uint32_t timeElapsed)
     TurnTo(timeElapsed);
 }
 
-bool MoveComp::Move(float speed, const Math::Vector3 & amount)
+bool MoveComp::Move(float speed, const Math::Vector3& amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
 
@@ -51,6 +52,9 @@ bool MoveComp::Move(float speed, const Math::Vector3 & amount)
 
 bool MoveComp::MoveTo(uint32_t timeElapsed)
 {
+    if (owner_.autorunComp_.autoRun_)
+        return false;
+
     float speed = owner_.GetActualMoveSpeed();
     bool moved = false;
     if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
@@ -78,11 +82,7 @@ bool MoveComp::MoveTo(uint32_t timeElapsed)
 void MoveComp::Turn(float angle)
 {
     owner_.transformation_.rotation_ += angle;
-    // Angle should be >= 0 and < 2 * PI
-    if (owner_.transformation_.rotation_ >= 2.0f * Math::M_PIF)
-        owner_.transformation_.rotation_ -= 2.0f * Math::M_PIF;
-    else if (owner_.transformation_.rotation_ < 0.0f)
-        owner_.transformation_.rotation_ += 2.0f * Math::M_PIF;
+    Math::NormalizeAngle(owner_.transformation_.rotation_);
 }
 
 void MoveComp::TurnTo(uint32_t timeElapsed)
@@ -105,11 +105,7 @@ void MoveComp::SetDirection(float worldAngle)
     if (owner_.transformation_.rotation_ != worldAngle)
     {
         owner_.transformation_.rotation_ = worldAngle;
-        // Angle should be >= 0 and < 2 * PI
-        if (owner_.transformation_.rotation_ >= 2.0f * Math::M_PIF)
-            owner_.transformation_.rotation_ -= 2.0f * Math::M_PIF;
-        else if (owner_.transformation_.rotation_ < 0.0f)
-            owner_.transformation_.rotation_ += 2.0f * Math::M_PIF;
+        Math::NormalizeAngle(owner_.transformation_.rotation_);
         directionSet_ = true;
     }
 }

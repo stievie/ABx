@@ -28,7 +28,6 @@ public:
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,
         PropReadStream& data);
-    void SelectObject(uint32_t objectId);
     SharedPtr<GameObject> GetObjectById(uint32_t id)
     {
         if (objects_.Contains(id))

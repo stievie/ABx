@@ -3,6 +3,7 @@
 #include "FwClient.h"
 #include "MathUtils.h"
 #include "Options.h"
+#include "AbEvents.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -17,6 +18,7 @@ Player::Player(Context* context) :
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
     Options* opt = GetSubsystem<Options>();
     stickCameraToHead_ = opt->stickCameraToHead_;
+    SubscribeToEvent(AbEvents::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
 }
 
 void Player::RegisterObject(Context* context)
@@ -165,6 +167,12 @@ void Player::GotoSelected()
     }
 }
 
+void Player::SelectObject(uint32_t objectId)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    client->SelectObject(id_, objectId);
+}
+
 void Player::PostUpdate(float timeStep)
 {
     Node* characterNode = GetNode();
@@ -217,5 +225,15 @@ void Player::PostUpdate(float timeStep)
 
     cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     cameraNode_->SetRotation(dir);
+}
+
+void Player::HandleActorNameClicked(StringHash eventType, VariantMap& eventData)
+{
+    using namespace AbEvents::ActorNameClicked;
+    uint32_t id = eventData[P_SOURCEID].GetUInt();
+    if (id != id_)
+    {
+        SelectObject(id);
+    }
 }
 
