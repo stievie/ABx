@@ -19,6 +19,19 @@ Delete the extracted files.
 3. Create a character
 4. Enter world
 
+## Key bindings
+
+Key bindings are not customizable yet.
+
+`W`, `Up`: Move forward
+`A`, `Left`: Turn left
+`S`, `Down`: Move backward
+`D`, `Right`: Turn right
+`Q`: Move left
+`E`: Move right
+`R`: Keep running
+`Space`: Goto selected object
+
 ## Chat commands
 
 ~~~
