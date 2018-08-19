@@ -208,6 +208,15 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             followedObject_ = GetGame()->GetObjectById(targetId);
+            if (auto f = followedObject_.lock())
+            {
+                bool succ = autorunComp_.Follow(f);
+                if (succ)
+                {
+                    stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                    autorunComp_.autoRun_ = true;
+                }
+            }
             break;
         }
         case InputType::Attack:

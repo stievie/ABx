@@ -7,26 +7,41 @@
 namespace Game {
 namespace Components {
 
+bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
+{
+    auto creature = object->GetThisDynamic<Creature>();
+    if (!creature)
+        return false;
+    following_ = creature;
+    if (auto f = following_.lock())
+        return FindPath(f->transformation_.position_);
+    return false;
+}
+
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
     destination_ = dest;
-    wayPoints_.clear();
-    static const Math::Vector3 extends(1.0f, 4.0f, 1.0f);
+    std::vector<Math::Vector3> wp;
+    static const Math::Vector3 extends(1.0f, 8.0f, 1.0f);
 
     const Math::Vector3& pos = owner_.transformation_.position_;
-    bool succ = owner_.GetGame()->map_->FindPath(wayPoints_, pos,
+    bool succ = owner_.GetGame()->map_->FindPath(wp, pos,
         dest, extends);
 #ifdef DEBUG_NAVIGATION
-    LOG_DEBUG << "Goto from " << pos.ToString() <<
+    std::stringstream ss;
+    ss << "Goto from " << pos.ToString() <<
         " to " << dest.ToString() << " via " << wayPoints_.size() << " waypoints:";
     for (const auto& wp : wayPoints_)
-        LOG_DEBUG << " " << wp.ToString();
-    LOG_DEBUG << std::endl;
+        ss << " " << wp.ToString();
+    LOG_DEBUG << ss.str() << std::endl;
 #endif
-    if (succ && wayPoints_.size() != 0)
+    if (succ && wp.size() != 0)
     {
+        wayPoints_ = wp;
+        lastCalc_ = Utils::AbTick();
         return true;
     }
+    lastCalc_ = 0;
     return false;
 }
 
@@ -63,6 +78,16 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         return;
 
     const Math::Vector3& pos = owner_.transformation_.position_;
+    if (auto f = following_.lock())
+    {
+        if ((lastCalc_ != 0 && (Utils::AbTick() - lastCalc_) > 1000)
+            && (destination_.Distance(f->transformation_.position_) > Creature::SWITCH_WAYPOINT_DIST))
+        {
+            // Find new path when following object moved and enough time passed
+            FindPath(f->transformation_.position_);
+        }
+    }
+
     if (!HasWaypoints())
     {
         // Still auto running but no more waypoints, move close to dest

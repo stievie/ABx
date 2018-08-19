@@ -17,9 +17,12 @@ private:
     dtNavMeshQuery* navQuery_;
     std::unique_ptr<dtQueryFilter> queryFilter_;
     std::unique_ptr<FindPathData> pathData_;
+    dtStatus pathFindState_;
 public:
     NavigationMesh();
     ~NavigationMesh() override;
+
+    static std::string GetStatusString(dtStatus status);
 
     void SetNavMesh(dtNavMesh* value)
     {
@@ -37,6 +40,7 @@ public:
     /// Extents specifies how far off the navigation mesh the points can be.
     bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
+
 };
 
 }

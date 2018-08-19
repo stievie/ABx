@@ -45,7 +45,8 @@ public:
     void SetYRotation(float rad, bool updateYaw) override;
     void SetCameraDist(bool increase);
     void UpdateYaw();
-    void GotoSelected();
+    void FollowSelected();
+    void GotoPosition(const Vector3& pos);
     void SelectObject(uint32_t objectId);
 protected:
     void PostUpdate(float timeStep) override;

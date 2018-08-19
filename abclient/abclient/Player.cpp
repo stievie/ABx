@@ -158,13 +158,19 @@ void Player::UpdateYaw()
     lastYaw_ = controls_.yaw_;
 }
 
-void Player::GotoSelected()
+void Player::FollowSelected()
 {
     if (selectedObject_)
     {
         FwClient* client = context_->GetSubsystem<FwClient>();
-        client->GotoPos(selectedObject_->GetNode()->GetPosition());
+        client->FollowObject(selectedObject_->id_);
     }
+}
+
+void Player::GotoPosition(const Vector3& pos)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    client->GotoPos(pos);
 }
 
 void Player::SelectObject(uint32_t objectId)

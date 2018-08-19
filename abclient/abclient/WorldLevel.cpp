@@ -76,7 +76,7 @@ void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
         ToggleMap();
         break;
     case SDL_SCANCODE_SPACE:
-        player_->GotoSelected();
+        player_->FollowSelected();
         break;
     }
     int key = eventData[P_KEY].GetInt();
