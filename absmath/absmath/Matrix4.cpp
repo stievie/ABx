@@ -33,7 +33,7 @@ Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, 
 {
     m_[Index00] = row0.x_; m_[Index01] = row0.y_; m_[Index02] = row0.z_; m_[Index03] = row0.w_;
     m_[Index10] = row1.x_; m_[Index11] = row1.y_; m_[Index12] = row1.z_; m_[Index13] = row1.w_;
-    m_[Index20] = row2.x_; m_[Index21] = row2.y_; m_[Index22] = row2.z_; m_[Index22] = row2.w_;
+    m_[Index20] = row2.x_; m_[Index21] = row2.y_; m_[Index22] = row2.z_; m_[Index23] = row2.w_;
     m_[Index30] = row3.x_; m_[Index31] = row3.y_; m_[Index32] = row3.z_; m_[Index33] = row3.w_;
 }
 

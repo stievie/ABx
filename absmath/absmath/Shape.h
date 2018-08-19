@@ -13,10 +13,10 @@ public:
         indexCount_(0)
     {}
     Shape(const Shape& other) :
-        vertexData_(other.vertexData_),
-        indexData_(other.indexData_),
         vertexCount_(other.vertexCount_),
-        indexCount_(other.indexCount_)
+        indexCount_(other.indexCount_),
+        vertexData_(other.vertexData_),
+        indexData_(other.indexData_)
     { }
     explicit Shape(const Vector3& vector) :
         vertexCount_(1),
@@ -25,15 +25,15 @@ public:
         vertexData_.push_back(vector);
     }
     explicit Shape(const std::vector<Vector3>& vertices) :
-        vertexData_(vertices),
         vertexCount_((unsigned)vertexData_.size()),
-        indexCount_(0)
+        indexCount_(0),
+        vertexData_(vertices)
     {}
     explicit Shape(const std::vector<Vector3>& vertices, const std::vector<unsigned>& indices) :
-        vertexData_(vertices),
         vertexCount_((unsigned)vertexData_.size()),
-        indexData_(indices),
-        indexCount_((unsigned)indexData_.size())
+        indexCount_((unsigned)indexData_.size()),
+        vertexData_(vertices),
+        indexData_(indices)
     {}
     ~Shape() = default;
 

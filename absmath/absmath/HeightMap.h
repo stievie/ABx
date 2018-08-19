@@ -51,10 +51,10 @@ public:
 
     /// Vertex and height spacing.
     Vector3 spacing_;
-    std::vector<float> heightData_;
     float minHeight_;
     float maxHeight_;
     Point<int> numVertices_;
+    std::vector<float> heightData_;
     BoundingBox boundingBox_;
     /// Transformation matrix
     Matrix4 matrix_ = Matrix4::Identity;

@@ -25,10 +25,10 @@ private:
         ModeFile
     };
     static std::unique_ptr<Logger> instance_;
-    std::ostream& stream_;
     std::ofstream fstream_;
-    bool nextIsBegin_;
+    std::ostream& stream_;
     Mode mode_;
+    bool nextIsBegin_;
     int64_t logStart_;
     using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
@@ -59,7 +59,6 @@ public:
     // Overload for std::endl only:
     Logger& operator << (endlType endl)
     {
-
         nextIsBegin_ = true;
         stream_ << endl;
         return *this;

@@ -13,7 +13,7 @@ private:
     /// Simplex size
     unsigned n;
     static constexpr int MAX_ITERATIONS = 30;
-    Vector3 TripleProduct(const Vector3& ab, const Vector3& _c) const
+    static Vector3 TripleProduct(const Vector3& ab, const Vector3& _c)
     {
         return ab.CrossProduct(_c).CrossProduct(ab);
     }
@@ -350,7 +350,7 @@ public:
         return true;
     }
 
-    Vector3 Support(const Shape& shape1, const Shape& shape2, const Vector3& _v) const
+    static Vector3 Support(const Shape& shape1, const Shape& shape2, const Vector3& _v)
     {
         const Vector3 p1 = shape1.GetFarsetPointInDirection(_v);
         const Vector3 p2 = shape2.GetFarsetPointInDirection(-_v);  //negate v

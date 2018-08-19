@@ -7,11 +7,15 @@
 
 namespace Math {
 
-HeightMap::HeightMap()
+HeightMap::HeightMap() :
+    minHeight_(std::numeric_limits<float>::max()),
+    maxHeight_(std::numeric_limits<float>::lowest())
 {
 }
 
 HeightMap::HeightMap(const std::vector<float>& data, const Point<int>& size) :
+    minHeight_(std::numeric_limits<float>::max()),
+    maxHeight_(std::numeric_limits<float>::lowest()),
     numVertices_(size),
     heightData_(data)
 {

@@ -93,7 +93,6 @@ bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     navQuery_->findStraightPath(&start.x_, &actualEnd.x_, pathData_->polys_, numPolys,
         &pathData_->pathPoints_[0].x_, pathData_->pathFlags_, pathData_->pathPolys_, &numPathPoints, MAX_POLYS);
 
-    // First point is start point skip it
     for (int i = 0; i < numPathPoints; ++i)
     {
         dest.push_back(pathData_->pathPoints_[i]);
