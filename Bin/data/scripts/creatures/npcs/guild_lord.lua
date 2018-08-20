@@ -13,6 +13,9 @@ end
 function onUpdate(timeElapsed)
 end
 
+function onClicked(creature)
+end
+
 -- self was selected by creature
 function onSelected(creature)
 end

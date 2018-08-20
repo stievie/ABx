@@ -115,6 +115,12 @@ public:
     ActorStats stats_;
     void SetSelectedObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
+    uint32_t GetSelectedObjectId() const
+    {
+        if (auto sel = selectedObject_.Lock())
+            return sel->id_;
+        return 0;
+    }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
     void PlayStateAnimation(float fadeTime = 0.2f);
 };

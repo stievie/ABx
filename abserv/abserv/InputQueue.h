@@ -8,18 +8,19 @@ namespace Game {
 enum class InputType
 {
     None = 0,
-    Move = 1,
-    Turn = 2,
-    UseSkill = 3,
-    CancelSkill = 4,
-    Attack = 5,
-    CancelAttack = 6,
-    Select = 7,
-    Direction = 8,
-    Command = 9,
-    Goto = 10,
-    Follow = 11,
-    Sit = 12,
+    Move,
+    Turn,
+    UseSkill,
+    CancelSkill,
+    Attack,
+    CancelAttack,
+    Select,
+    ClickObject,
+    Direction,
+    Command,
+    Goto,
+    Follow,
+    Sit,
 };
 
 enum InputDataType

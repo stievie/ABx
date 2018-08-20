@@ -8,11 +8,13 @@ namespace Game {
 void Npc::InitializeLua()
 {
     Creature::InitializeLua();
+    luaState_["self"] = this;
 }
 
 void Npc::RegisterLua(kaguya::State& state)
 {
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Creature>()
+        .addFunction("Say", &Npc::Say)
     );
 }
 
@@ -57,6 +59,26 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Creature::Update(timeElapsed, message);
     luaState_["onUpdate"](timeElapsed);
+}
+
+void Npc::Say(ChatType channel, const std::string& message)
+{
+    switch (channel)
+    {
+    case ChannelMap:
+    {
+        std::shared_ptr<ChatChannel> ch = Chat::Instance.Get(ChannelMap, static_cast<uint64_t>(GetGame()->id_));
+        if (ch)
+        {
+            ch->TalkNpc(this, message);
+        }
+        break;
+    }
+    case ChannelAllies:
+        break;
+    case ChannelParty:
+        break;
+    }
 }
 
 }

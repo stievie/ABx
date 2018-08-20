@@ -2,6 +2,7 @@
 #include "Chat.h"
 #include "Game.h"
 #include "Player.h"
+#include "Npc.h"
 #include "GameManager.h"
 #include "PlayerManager.h"
 #include "Application.h"
@@ -119,6 +120,26 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
         msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
         msg.Add<uint32_t>(player->id_);
         msg.AddString(player->GetName());
+        msg.AddString(text);
+        for (auto& p : players)
+        {
+            p.second->client_->WriteToOutput(msg);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool GameChatChannel::TalkNpc(Npc* npc, const std::string& text)
+{
+    if (auto g = game_.lock())
+    {
+        Net::NetworkMessage msg;
+        const std::map<uint32_t, Player*>& players = g->GetPlayers();
+        msg.AddByte(AB::GameProtocol::ChatMessage);
+        msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
+        msg.Add<uint32_t>(npc->id_);
+        msg.AddString(npc->GetName());
         msg.AddString(text);
         for (auto& p : players)
         {
@@ -262,6 +283,27 @@ bool PartyChatChannel::Talk(Player* player, const std::string& text)
         msg.AddByte(AB::GameProtocol::ChatChannelParty);
         msg.Add<uint32_t>(player->id_);
         msg.AddString(player->GetName());
+        msg.AddString(text);
+        for (auto& wp : players)
+        {
+            if (auto sp = wp.lock())
+                sp->client_->WriteToOutput(msg);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool PartyChatChannel::TalkNpc(Npc* npc, const std::string& text)
+{
+    if (party_)
+    {
+        Net::NetworkMessage msg;
+        const std::vector<std::weak_ptr<Player>>& players = party_->GetMembers();
+        msg.AddByte(AB::GameProtocol::ChatMessage);
+        msg.AddByte(AB::GameProtocol::ChatChannelParty);
+        msg.Add<uint32_t>(npc->id_);
+        msg.AddString(npc->GetName());
         msg.AddString(text);
         for (auto& wp : players)
         {

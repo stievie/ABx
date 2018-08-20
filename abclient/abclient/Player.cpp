@@ -173,8 +173,16 @@ void Player::GotoPosition(const Vector3& pos)
     client->GotoPos(pos);
 }
 
+void Player::ClickObject(uint32_t objectId)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    client->ClickObject(id_, objectId);
+}
+
 void Player::SelectObject(uint32_t objectId)
 {
+    if (objectId == GetSelectedObjectId())
+        return;
     FwClient* client = context_->GetSubsystem<FwClient>();
     client->SelectObject(id_, objectId);
 }

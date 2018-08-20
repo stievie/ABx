@@ -103,9 +103,11 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
     {
         // Pick object
         SharedPtr<GameObject> object = GetObjectAt(input->GetMousePosition());
-        if (object && object->IsSelectable())
+        if (object)
         {
-            player_->SelectObject(object->id_);
+            player_->ClickObject(object->id_);
+            if (object->IsSelectable())
+                player_->SelectObject(object->id_);
         }
     }
 }

@@ -1,3 +1,4 @@
+
 name = "Smith"
 level = 20
 modelIndex = 5     -- Smith body model
@@ -14,8 +15,13 @@ function onUpdate(timeElapsed)
 
 end
 
+function onClicked(creature)
+  self:FollowObject(creature)
+end
+
 -- self was selected by creature
 function onSelected(creature)
+  self:Say(2, "Hello " .. creature:GetName());
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
 --  local pos = creature:GetPosition();

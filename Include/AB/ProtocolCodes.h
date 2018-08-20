@@ -223,6 +223,7 @@ enum GamePacketTypes : uint8_t
     PacketTypeCancelAttack,
     // Select
     PacketTypeSelect,
+    PacketTypeClickObject,
     // Command
     PacketTypeCommand,
 

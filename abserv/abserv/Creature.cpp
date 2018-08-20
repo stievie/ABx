@@ -33,6 +33,9 @@ void Creature::RegisterLua(kaguya::State& state)
         .addFunction("SetEnergy", &Creature::SetEnergy)
         .addFunction("AddEffect", &Creature::AddEffect)
         .addFunction("RemoveEffect", &Creature::RemoveEffect)
+
+        .addFunction("GotoPosition", &Creature::_LuaGotoPosition)
+        .addFunction("FollowObject", &Creature::FollowObject)
     );
 }
 
@@ -65,6 +68,22 @@ void Creature::SetSelectedObject(std::shared_ptr<GameObject> object)
     inputs_.Add(InputType::Select, data);
 }
 
+void Creature::GotoPosition(const Math::Vector3& pos)
+{
+    Utils::VariantMap data;
+    data[InputDataVertexX] = pos.x_;
+    data[InputDataVertexY] = pos.y_;
+    data[InputDataVertexZ] = pos.z_;
+    inputs_.Add(InputType::Goto, data);
+}
+
+void Creature::FollowObject(std::shared_ptr<GameObject> object)
+{
+    Utils::VariantMap data;
+    data[InputDataObjectId] = object->id_;
+    inputs_.Add(InputType::Follow, data);
+}
+
 bool Creature::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
@@ -82,6 +101,13 @@ void Creature::OnSelected(std::shared_ptr<Creature> selector)
     GameObject::OnSelected(selector);
     if (luaInitialized_)
         luaState_["onSelected"](selector);
+}
+
+void Creature::OnClicked(std::shared_ptr<Creature> selector)
+{
+    GameObject::OnSelected(selector);
+    if (luaInitialized_)
+        luaState_["onClicked"](selector);
 }
 
 void Creature::OnCollide(std::shared_ptr<Creature> other)
@@ -113,6 +139,11 @@ void Creature::DeleteEffect(uint32_t index)
     {
         effects_.erase(it);
     }
+}
+
+void Creature::_LuaGotoPosition(float x, float y, float z)
+{
+    GotoPosition(Math::Vector3(x, y, z));
 }
 
 void Creature::RemoveEffect(uint32_t index)
@@ -228,14 +259,17 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             skill = GetSkill(skillIndex);
             if (skill)
             {
-                std::shared_ptr<Creature> target = std::dynamic_pointer_cast<Creature>(selectedObject_.lock());
-                if (target)
+                if (auto selObj = selectedObject_.lock())
                 {
-                    // Can use skills only on Creatures not all GameObjects
-                    skills_.UseSkill(skillIndex, target);
-                    // These do not change the state
-                    if (skill->IsChangingState())
-                        stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+                    std::shared_ptr<Creature> target = selObj->GetThisDynamic<Creature>();
+                    if (target)
+                    {
+                        // Can use skills only on Creatures not all GameObjects
+                        skills_.UseSkill(skillIndex, target);
+                        // These do not change the state
+                        if (skill->IsChangingState())
+                            stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+                    }
                 }
             }
             break;
@@ -268,6 +302,29 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     else
                         // Clear Target
                         message.Add<uint32_t>(0);
+                }
+            }
+            break;
+        }
+        case InputType::ClickObject:
+        {
+            // If a player could control a NPC (e.g. Hero), the player can select
+            // targets for this NPC, so we also need the source ID.
+            uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
+
+            Creature* source = nullptr;
+            if (sourceId == id_)
+                source = this;
+            else
+                source = dynamic_cast<Creature*>(GetGame()->GetObjectById(sourceId).get());
+
+            if (source)
+            {
+                auto clickedObj = GetGame()->GetObjectById(targetId);
+                if (clickedObj)
+                {
+                    clickedObj->OnClicked(source->GetThis<Creature>());
                 }
             }
             break;

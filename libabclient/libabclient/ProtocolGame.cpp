@@ -387,6 +387,15 @@ void ProtocolGame::SetDirection(float rad)
     Send(msg);
 }
 
+void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeClickObject);
+    msg->Add<uint32_t>(sourceId);
+    msg->Add<uint32_t>(targetId);
+    Send(msg);
+}
+
 void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();

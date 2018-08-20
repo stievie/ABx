@@ -450,6 +450,12 @@ void FwClient::SetDirection(float rad)
         client_.SetDirection(rad);
 }
 
+void FwClient::ClickObject(uint32_t sourceId, uint32_t targetId)
+{
+    if (loggedIn_)
+        client_.ClickObject(sourceId, targetId);
+}
+
 void FwClient::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
     if (loggedIn_)

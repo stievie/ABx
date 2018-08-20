@@ -177,6 +177,7 @@ public:
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
 
     virtual void OnSelected(std::shared_ptr<Creature>) { }
+    virtual void OnClicked(std::shared_ptr<Creature>) { }
     virtual void OnCollide(std::shared_ptr<Creature>) { }
 };
 

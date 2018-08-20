@@ -7,6 +7,7 @@ namespace Game {
 class Game;
 class Player;
 class Party;
+class Npc;
 
 enum ChatType : uint8_t
 {
@@ -36,6 +37,12 @@ public:
         AB_UNUSED(text);
         return false;
     }
+    virtual bool TalkNpc(Npc* npc, const std::string& text)
+    {
+        AB_UNUSED(npc);
+        AB_UNUSED(text);
+        return false;
+    }
 };
 
 class GameChatChannel : public ChatChannel
@@ -45,6 +52,7 @@ private:
 public:
     GameChatChannel(uint64_t id);
     bool Talk(Player* player, const std::string& text) override;
+    bool TalkNpc(Npc* npc, const std::string& text) override;
 };
 
 class PartyChatChannel : public ChatChannel
@@ -55,6 +63,7 @@ public:
         party_(nullptr)
     { }
     bool Talk(Player* player, const std::string& text) override;
+    bool TalkNpc(Npc* npc, const std::string& text) override;
     Party* party_;
 };
 

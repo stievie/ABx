@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Creature.h"
+#include "Chat.h"
 
 namespace Game {
 
@@ -40,6 +41,8 @@ public:
     {
         return sex_;
     }
+
+    void Say(ChatType channel, const std::string& message);
 
 };
 

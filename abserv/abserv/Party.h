@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NetworkMessage.h"
+#include "IdGenerator.h"
 
 namespace Game {
 
@@ -10,6 +11,7 @@ class PartyChatChannel;
 class Party : public std::enable_shared_from_this<Party>
 {
 private:
+    static Utils::IdGenerator<uint32_t> partyIds_;
     std::weak_ptr<Player> leader_;
     std::vector<std::weak_ptr<Player>> members_;
     /// Used when forming a group. If the player accepts it is added to the members.
@@ -17,12 +19,9 @@ private:
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
-    static uint32_t partyIds_;
     uint32_t GetNewId()
     {
-        if (partyIds_ >= std::numeric_limits<uint32_t>::max())
-            partyIds_ = 0;
-        return ++partyIds_;
+        return partyIds_.Next();
     }
 public:
     explicit Party(std::shared_ptr<Player> leader);

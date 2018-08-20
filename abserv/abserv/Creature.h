@@ -22,6 +22,7 @@ public:
     static constexpr float SWITCH_WAYPOINT_DIST = 6.0f;
 private:
     void DeleteEffect(uint32_t index);
+    void _LuaGotoPosition(float x, float y, float z);
 protected:
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
@@ -105,7 +106,8 @@ public:
         return selectedObject_.lock();
     }
     void SetSelectedObject(std::shared_ptr<GameObject> object);
-
+    void GotoPosition(const Math::Vector3& pos);
+    void FollowObject(std::shared_ptr<GameObject> object);
     EffectList effects_;
     SkillBar skills_;
     uint32_t energy_;
@@ -124,6 +126,7 @@ public:
     bool Serialize(IO::PropWriteStream& stream) override;
 
     void OnSelected(std::shared_ptr<Creature> selector) override;
+    void OnClicked(std::shared_ptr<Creature> selector) override;
     void OnCollide(std::shared_ptr<Creature> other) override;
 };
 

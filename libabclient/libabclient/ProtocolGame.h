@@ -75,6 +75,7 @@ public:
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
+    void ClickObject(uint32_t sourceId, uint32_t targetId);
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);

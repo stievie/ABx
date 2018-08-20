@@ -14,6 +14,9 @@ function onUpdate(timeElapsed)
 
 end
 
+function onClicked(creature)
+end
+
 -- self was selected by creature
 function onSelected(creature)
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")

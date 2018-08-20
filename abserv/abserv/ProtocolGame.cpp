@@ -225,6 +225,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         player_->inputs_.Add(Game::InputType::Select, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeClickObject:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
+        data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
+        player_->inputs_.Add(Game::InputType::ClickObject, data);
+        break;
+    }
     case AB::GameProtocol::PacketTypeCommand:
     {
         Utils::VariantMap data;

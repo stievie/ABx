@@ -459,6 +459,12 @@ void Client::SetDirection(float rad)
         protoGame_->SetDirection(rad);
 }
 
+void Client::ClickObject(uint32_t sourceId, uint32_t targetId)
+{
+    if (state_ == StateWorld)
+        protoGame_->ClickObject(sourceId, targetId);
+}
+
 void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
     if (state_ == StateWorld)

@@ -5,7 +5,7 @@
 
 namespace Game {
 
-uint32_t Party::partyIds_ = 0;
+Utils::IdGenerator<uint32_t> Party::partyIds_;
 
 Party::Party(std::shared_ptr<Player> leader) :
     leader_(leader),
