@@ -309,7 +309,13 @@ bool Map::FindPath(std::vector<Math::Vector3>& dest,
     if (!navMesh_)
         return false;
 
-    return navMesh_->FindPath(dest, start, end, extends, filter);
+    bool res = navMesh_->FindPath(dest, start, end, extends, filter);
+    if (res)
+    {
+        for (auto& v : dest)
+            v.y_ = GetTerrainHeight(v);
+    }
+    return res;
 }
 
 Math::Vector3 Map::FindNearestPoint(const Math::Vector3& point,
@@ -319,7 +325,9 @@ Math::Vector3 Map::FindNearestPoint(const Math::Vector3& point,
     if (!navMesh_)
         return point;
 
-    return navMesh_->FindNearestPoint(point, extents, filter, nearestRef);
+    Math::Vector3 res = navMesh_->FindNearestPoint(point, extents, filter, nearestRef);
+    res.y_ = GetTerrainHeight(res);
+    return res;
 }
 
 }

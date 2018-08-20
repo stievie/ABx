@@ -12,6 +12,13 @@ inline T Clamp(T value, T min, T max)
     return value;
 }
 
+/// Check whether two floating point values are equal within accuracy.
+template <class T>
+inline bool Equals(T lhs, T rhs)
+{
+    return lhs + std::numeric_limits<T>::epsilon() >= rhs && lhs - std::numeric_limits<T>::epsilon() <= rhs;
+}
+
 template <typename T, typename U>
 inline T Lerp(T lhs, T rhs, T i)
 {

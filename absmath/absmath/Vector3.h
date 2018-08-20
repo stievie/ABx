@@ -1,32 +1,33 @@
 #pragma once
 
 #include "MathDefs.h"
+#include "MathUtils.h"
 
 namespace Math {
 
 class Vector3
 {
 public:
-    Vector3() :
+    Vector3() noexcept :
         x_(0.0f),
         y_(0.0f),
         z_(0.0f)
     { }
 
-    Vector3(const Vector3& vector) :
+    Vector3(const Vector3& vector) noexcept :
         x_(vector.x_),
         y_(vector.y_),
         z_(vector.z_)
     { }
 
-    Vector3(float x, float y, float z) :
+    Vector3(float x, float y, float z) noexcept :
         x_(x),
         y_(y),
         z_(z)
     { }
 
 #ifdef HAVE_DIRECTX_MATH
-    Vector3(const DirectX::XMVECTOR& vector) :
+    Vector3(const DirectX::XMVECTOR& vector) noexcept :
         x_(vector.m128_f32[0]),
         y_(vector.m128_f32[1]),
         z_(vector.m128_f32[2])
@@ -109,6 +110,12 @@ public:
     {
         return *this * (1.0f - i) + to * i;
     }
+    /// Test for equality with another vector with epsilon.
+    bool Equals(const Vector3& rhs) const
+    {
+        return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_);
+    }
+
     std::string ToString() const
     {
         std::stringstream ss;

@@ -21,19 +21,20 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
 bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
     return FindPath(dest);
-    // TODO
-//    return FindPath(owner_.GetGame()->map_->FindNearestPoint(dest, Math::Vector3::One));
 }
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
     destination_ = dest;
-    std::vector<Math::Vector3> wp;
-    static const Math::Vector3 extends(1.0f, 8.0f, 1.0f);
+    static const Math::Vector3 EXTENDS(1.0f, 8.0f, 1.0f);
 
     const Math::Vector3& pos = owner_.transformation_.position_;
+    if (pos.Equals(dest))
+        return false;
+
+    std::vector<Math::Vector3> wp;
     bool succ = owner_.GetGame()->map_->FindPath(wp, pos,
-        dest, extends);
+        dest, EXTENDS);
 #ifdef DEBUG_NAVIGATION
     std::stringstream ss;
     ss << "Goto from " << pos.ToString() <<

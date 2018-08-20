@@ -7,28 +7,28 @@ namespace Math {
 class Vector4
 {
 public:
-    Vector4() :
+    Vector4() noexcept :
         x_(0.0f),
         y_(0.0f),
         z_(0.0f),
         w_(0.0f)
     { }
 
-    Vector4(const Vector4& vector) :
+    Vector4(const Vector4& vector) noexcept :
         x_(vector.x_),
         y_(vector.y_),
         z_(vector.z_),
         w_(vector.w_)
     { }
 
-    Vector4(float x, float y, float z, float w) :
+    Vector4(float x, float y, float z, float w) noexcept :
         x_(x),
         y_(y),
         z_(z),
         w_(w)
     { }
 
-    Vector4(const Vector3& vector, float w = 1.0f) :
+    Vector4(const Vector3& vector, float w = 1.0f) noexcept :
         x_(vector.x_),
         y_(vector.y_),
         z_(vector.z_),
@@ -36,7 +36,7 @@ public:
     { }
 
 #ifdef HAVE_DIRECTX_MATH
-    Vector4(const DirectX::XMVECTOR& vector) :
+    Vector4(const DirectX::XMVECTOR& vector) noexcept :
         x_(vector.m128_f32[0]),
         y_(vector.m128_f32[1]),
         z_(vector.m128_f32[2]),
