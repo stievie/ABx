@@ -18,6 +18,13 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
     return false;
 }
 
+bool AutoRunComp::Goto(const Math::Vector3& dest)
+{
+    return FindPath(dest);
+    // TODO
+//    return FindPath(owner_.GetGame()->map_->FindNearestPoint(dest, Math::Vector3::One));
+}
+
 bool AutoRunComp::FindPath(const Math::Vector3& dest)
 {
     destination_ = dest;

@@ -76,6 +76,7 @@ private:
         return SharedPtr<GameObject>();
     }
     SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
+    bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleKeyUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);

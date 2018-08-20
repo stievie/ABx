@@ -41,6 +41,9 @@ public:
     bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
 
+    /// Find the nearest point on the navigation mesh to a given point. Extents specifies how far out from the specified point to check along each axis.
+    Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents,
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
 };
 
 }

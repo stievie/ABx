@@ -28,7 +28,6 @@ NavigationMesh::NavigationMesh() :
 {
 }
 
-
 NavigationMesh::~NavigationMesh()
 {
     dtFreeNavMeshQuery(navQuery_);
@@ -99,6 +98,19 @@ bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
     }
 
     return true;
+}
+
+Math::Vector3 NavigationMesh::FindNearestPoint(const Math::Vector3& point,
+    const Math::Vector3& extents,
+    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+{
+    Math::Vector3 nearestPoint;
+
+    dtPolyRef pointRef;
+    if (!nearestRef)
+        nearestRef = &pointRef;
+    navQuery_->findNearestPoly(&point.x_, &extents.x_, filter ? filter : queryFilter_.get(), nearestRef, &nearestPoint.x_);
+    return *nearestRef ? nearestPoint : point;
 }
 
 std::string NavigationMesh::GetStatusString(dtStatus status)

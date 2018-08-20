@@ -23,6 +23,7 @@ private:
         return wayPoints_[0];
     }
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
+    bool FindPath(const Math::Vector3& dest);
 public:
     AutoRunComp(Creature& owner) :
         owner_(owner),
@@ -32,7 +33,7 @@ public:
     ~AutoRunComp() = default;
 
     bool Follow(std::shared_ptr<GameObject> object);
-    bool FindPath(const Math::Vector3& dest);
+    bool Goto(const Math::Vector3& dest);
     void Reset()
     {
         wayPoints_.clear();

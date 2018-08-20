@@ -19,7 +19,9 @@ Delete the extracted files.
 3. Create a character
 4. Enter world
 
-## Key bindings
+## Input
+
+### Keys
 
 Key bindings are not customizable yet.
 
@@ -31,6 +33,13 @@ Key bindings are not customizable yet.
 * `E`: Move right
 * `R`: Keep running
 * `Space`: Goto selected object or follow selected object when it's moving
+* `Ctrl`: Highlight objects
+
+### Mouse
+
+* LMB: Select object, goto point
+* RMB: Mouse look
+* Mouse wheel: Zoom
 
 ## Chat commands
 

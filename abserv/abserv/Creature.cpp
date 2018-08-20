@@ -226,7 +226,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 input.data[InputDataVertexY].GetFloat(),
                 input.data[InputDataVertexZ].GetFloat()
             };
-            bool succ = autorunComp_.FindPath(dest);
+            bool succ = autorunComp_.Goto(dest);
             if (succ)
             {
                 stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);

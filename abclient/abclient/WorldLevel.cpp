@@ -58,6 +58,28 @@ SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
     return SharedPtr<GameObject>();
 }
 
+bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
+{
+    Ray camRay = GetActiveViewportScreenRay(pos);
+    PODVector<RayQueryResult> result;
+    Octree* world = scene_->GetComponent<Octree>();
+    RayOctreeQuery query(result, camRay, RAY_TRIANGLE, M_INFINITY, DRAWABLE_GEOMETRY);
+    // Can not use RaycastSingle because it would also return drawables that are not game objects
+    world->RaycastSingle(query);
+    if (!result.Empty())
+    {
+        for (PODVector<RayQueryResult>::ConstIterator it = result.Begin(); it != result.End(); ++it)
+        {
+            if (dynamic_cast<TerrainPatch*>((*it).drawable_))
+            {
+                hitPos = (*it).position_;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
@@ -92,6 +114,13 @@ void WorldLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
+
+    auto* ui = GetSubsystem<UI>();
+    IntVector2 pos = ui->GetCursorPosition();
+    // Check the cursor is visible and there is no UI element in front of the cursor
+    if (ui->GetElementAt(pos, true))
+        return;
+
     Input* input = GetSubsystem<Input>();
     if (input->GetMouseButtonDown(MOUSEB_RIGHT))
     {
@@ -108,6 +137,15 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
             player_->ClickObject(object->id_);
             if (object->IsSelectable())
                 player_->SelectObject(object->id_);
+        }
+        else
+        {
+            // TODO: If not mouse move diabled
+            Vector3 p;
+            if (TerrainRaycast(input->GetMousePosition(), p))
+            {
+                player_->GotoPosition(p);
+            }
         }
     }
 }

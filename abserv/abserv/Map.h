@@ -63,6 +63,8 @@ public:
     /// Extents specifies how far off the navigation mesh the points can be.
     bool FindPath(std::vector<Math::Vector3>& dest, const Math::Vector3& start, const Math::Vector3& end,
         const Math::Vector3& extends = Math::Vector3::One, const dtQueryFilter* filter = nullptr);
+    Math::Vector3 FindNearestPoint(const Math::Vector3& point, const Math::Vector3& extents,
+        const dtQueryFilter* filter = nullptr, dtPolyRef* nearestRef = nullptr);
 
     MapData data_;
     std::vector<SpawnPoint> spawnPoints_;

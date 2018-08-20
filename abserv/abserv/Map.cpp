@@ -312,4 +312,14 @@ bool Map::FindPath(std::vector<Math::Vector3>& dest,
     return navMesh_->FindPath(dest, start, end, extends, filter);
 }
 
+Math::Vector3 Map::FindNearestPoint(const Math::Vector3& point,
+    const Math::Vector3& extents,
+    const dtQueryFilter* filter, dtPolyRef* nearestRef)
+{
+    if (!navMesh_)
+        return point;
+
+    return navMesh_->FindNearestPoint(point, extents, filter, nearestRef);
+}
+
 }
