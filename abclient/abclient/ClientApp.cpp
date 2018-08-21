@@ -126,7 +126,9 @@ void ClientApp::Setup()
 #endif
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
-    engineParameters_[EP_RENDER_PATH] = options->GetRenderPath();
+    const String& rp = options->GetRenderPath();
+    if (!rp.Empty())
+        engineParameters_[EP_RENDER_PATH] = options->GetRenderPath();
 
     GetSubsystem<UI>()->SetUseSystemClipboard(true);
 }

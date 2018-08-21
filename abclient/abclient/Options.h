@@ -84,6 +84,8 @@ public:
     const String& GetRenderPath() const;
 
     void UpdateAudio();
+
+    static String GetPrefPath();
 private:
     int width_;
     int height_;
@@ -114,5 +116,7 @@ private:
     float gainMusic_;
 
     void UpdateGraphicsMode();
+    void LoadSettings();
+    void LoadElements(const XMLElement& root);
 };
 

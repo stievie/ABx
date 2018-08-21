@@ -55,3 +55,7 @@ Key bindings are not customizable yet.
 /ip: Show server IP
 /help: Show this help
 ~~~
+
+## Settings
+
+It saves the settings on exit to the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7).

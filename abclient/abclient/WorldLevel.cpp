@@ -156,7 +156,7 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
         }
         else
         {
-            auto o = GetSubsystem<Options>();
+            Options* o = GetSubsystem<Options>();
             if (!o->disableMouseWalking_)
             {
                 Vector3 p;
