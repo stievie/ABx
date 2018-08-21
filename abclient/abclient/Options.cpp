@@ -30,7 +30,8 @@ Options::Options(Context* context) :
     gainAmbient_(1.0f),
     gainVoice_(1.0f),
     gainMusic_(1.0f),
-    stickCameraToHead_(true)
+    stickCameraToHead_(true),
+    disableMouseWalking_(false)
 {
 }
 
@@ -150,6 +151,10 @@ void Options::Load()
         else if (name.Compare("StickCameraToHead") == 0)
         {
             stickCameraToHead_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("DisableMouseWalking") == 0)
+        {
+            disableMouseWalking_ = paramElem.GetBool("value");
         }
 
         paramElem = paramElem.GetNext("parameter");

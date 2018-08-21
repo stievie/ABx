@@ -13,7 +13,10 @@
   <!-- We use FXAA for antialiasing -->
   <parameter name="MultiSample" type="int" value="1" />
 
+  <!-- Stick the camera to the head bonde -->
   <parameter name="StickCameraToHead" type="bool" value="t"/>
+  <!-- Disable walking with LMB click -->
+  <parameter name="DisableMouseWalking" type="bool" value="f"/>
 
   <parameter name="LoginHost" type="string" value="stievie.mooo.com" />
   <parameter name="LoginPort" type="int" value="2748" />

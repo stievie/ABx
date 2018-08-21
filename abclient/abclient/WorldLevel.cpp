@@ -7,6 +7,7 @@
 #include "LevelManager.h"
 #include "MathUtils.h"
 #include "TimeUtils.h"
+#include "Options.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -155,11 +156,14 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
         }
         else
         {
-            // TODO: If not mouse move diabled
-            Vector3 p;
-            if (TerrainRaycast(input->GetMousePosition(), p))
+            auto o = GetSubsystem<Options>();
+            if (!o->disableMouseWalking_)
             {
-                player_->GotoPosition(p);
+                Vector3 p;
+                if (TerrainRaycast(input->GetMousePosition(), p))
+                {
+                    player_->GotoPosition(p);
+                }
             }
         }
     }

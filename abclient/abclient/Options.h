@@ -13,6 +13,7 @@ public:
     String password_;
 
     bool stickCameraToHead_;
+    bool disableMouseWalking_;
 
     void Load();
     void Save();
