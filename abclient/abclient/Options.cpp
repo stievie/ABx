@@ -56,6 +56,8 @@ void Options::Save()
     String prefPath = GetPrefPath();
 #ifdef _WIN32
     CreateDirectoryW(WString(prefPath).CString(), nullptr);
+#else
+#error Implement this stuff
 #endif
     SharedPtr<XMLFile> xml(new XMLFile(context_));
 
