@@ -42,6 +42,7 @@ public:
     void CleanPlayers();
     void KickPlayer(uint32_t playerId);
     void KickAllPlayers();
+    void BroadcastNetMessage(const Net::NetworkMessage& msg);
 
     size_t GetPlayerCount() const
     {

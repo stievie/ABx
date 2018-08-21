@@ -127,4 +127,12 @@ void PlayerManager::KickAllPlayers()
     }
 }
 
+void PlayerManager::BroadcastNetMessage(const Net::NetworkMessage& msg)
+{
+    for (const auto& p : players_)
+    {
+        p.second->client_->WriteToOutput(msg);
+    }
+}
+
 }

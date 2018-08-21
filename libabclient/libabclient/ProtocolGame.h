@@ -39,6 +39,8 @@ protected:
     void OnError(const asio::error_code& err) override;
 
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
+    void ParseServerJoined(const std::shared_ptr<InputMessage>& message);
+    void ParseServerLeft(const std::shared_ptr<InputMessage>& message);
     void ParseError(const std::shared_ptr<InputMessage>& message);
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
     void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);

@@ -6,6 +6,20 @@ using namespace Urho3D;
 namespace AbEvents
 {
 
+URHO3D_EVENT(E_SERVERJOINED, ServerJoined)
+{
+    URHO3D_PARAM(P_SERVERID, ServerId);        // String
+}
+
+URHO3D_EVENT(E_SERVERLEFT, ServerLeft)
+{
+    URHO3D_PARAM(P_SERVERID, ServerId);        // String
+}
+
+URHO3D_EVENT(E_GOTSERVICES, GotServices)
+{
+}
+
 URHO3D_EVENT(E_SETLEVEL, SetLevel)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);

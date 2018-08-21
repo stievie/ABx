@@ -64,6 +64,8 @@ public:
     void OnNetworkError(const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
     void OnPong(int lastPing) override;
+    void OnServerJoined(const std::string& serverId) override;
+    void OnServerLeft(const std::string& serverId) override;
 
     void OnLoggedIn(const std::string& accountUuid) override;
     void OnGetCharlist(const AB::Entities::CharacterList& chars) override;

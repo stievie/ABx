@@ -248,8 +248,14 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         std::string serverId = msg.GetBodyString();
         if (serverId.compare(serverId_) != 0)
         {
-            // Notify players another game server left
-            msgDispatcher_->Dispatch(msg);
+            // Notify players another game server left. Wait some time until the
+            // service list is updated.
+            Asynch::Scheduler::Instance.Add(
+                Asynch::CreateScheduledTask(500, [=]()
+            {
+                msgDispatcher_->Dispatch(msg);
+            })
+            );
         }
         break;
     }
@@ -368,6 +374,14 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Message Server: " << msgClient_->GetHost() << ":" << msgClient_->GetPort() << std::endl;
 }
 
+void Application::SendServerJoined()
+{
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::ServerJoined;
+    msg.SetBodyString(GetServerId());
+    msgClient_->Write(msg);
+}
+
 void Application::Run()
 {
     AB::Entities::Service serv;
@@ -400,10 +414,7 @@ void Application::Run()
         IO::Logger::Close();
     }
 
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ServerJoined;
-    msg.SetBodyString(GetServerId());
-    msgClient_->Write(msg);
+    Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(500, std::bind(&Application::SendServerJoined, this)));
 
     running_ = true;
     serviceManager_->Run();
@@ -442,6 +453,9 @@ void Application::Stop()
     }
     else
         LOG_ERROR << "Unable to read service" << std::endl;
+
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(100ms);
 
     Game::PlayerManager::Instance.KickAllPlayers();
     // Before serviceManager_.Stop()

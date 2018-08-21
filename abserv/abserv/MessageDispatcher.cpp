@@ -5,6 +5,7 @@
 #include "PlayerManager.h"
 #include "Player.h"
 #include "PropStream.h"
+#include <AB/ProtocolCodes.h>
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
@@ -89,7 +90,17 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
-    // TODO:
+    Net::NetworkMessage nmsg;
+    if (msg.type_ == Net::MessageType::ServerJoined)
+        nmsg.AddByte(AB::GameProtocol::ServerJoined);
+    else if (msg.type_ == Net::MessageType::ServerLeft)
+        nmsg.AddByte(AB::GameProtocol::ServerLeft);
+    else
+        // Should never get here
+        return;
+
+    nmsg.AddString(msg.GetBodyString());    // Server ID
+    Game::PlayerManager::Instance.BroadcastNetMessage(nmsg);
 }
 
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)

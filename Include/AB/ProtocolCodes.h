@@ -158,6 +158,8 @@ enum GameProtocolCodes : uint8_t
     NoError = 0x00,
     Error = 0x01,
 
+    ServerJoined,
+    ServerLeft,
     WelcomeMessage,
     ServerMessage,
     ChatMessage,

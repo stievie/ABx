@@ -13,6 +13,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
     if (!creature)
         return false;
     following_ = creature;
+    maxDist_ = Creature::MAX_INTERACTION_DIST;
     if (auto f = following_.lock())
         return FindPath(f->transformation_.position_);
     return false;
@@ -20,6 +21,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
 
 bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
+    maxDist_ = 0.2f;
     return FindPath(dest);
 }
 
@@ -39,8 +41,8 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     std::stringstream ss;
     ss << "Goto from " << pos.ToString() <<
         " to " << dest.ToString() << " via " << wayPoints_.size() << " waypoints:";
-    for (const auto& wp : wayPoints_)
-        ss << " " << wp.ToString();
+    for (const auto& _wp : wayPoints_)
+        ss << " " << _wp.ToString();
     LOG_DEBUG << ss.str() << std::endl;
 #endif
     if (succ && wp.size() != 0)
@@ -101,7 +103,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         // Still auto running but no more waypoints, move close to dest
         const float distance = destination_.Distance(pos);
         // Remaining distance
-        if (distance > Creature::MAX_INTERACTION_DIST)
+        if (distance > maxDist_)
         {
             MoveTo(timeElapsed, destination_);
             return;

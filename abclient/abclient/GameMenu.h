@@ -26,6 +26,7 @@ private:
     void HandleOptionsUsed(StringHash eventType, VariantMap& eventData);
     void HandleMailUsed(StringHash eventType, VariantMap& eventData);
     void HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData);
+    void HandleGotServices(StringHash eventType, VariantMap& eventData);
     void UpdateServers();
 public:
     static void RegisterObject(Context* context);

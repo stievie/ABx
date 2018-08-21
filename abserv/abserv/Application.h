@@ -30,6 +30,7 @@ private:
     void PrintServerInfo();
     bool ParseCommandLine();
     void ShowHelp();
+    void SendServerJoined();
     void HandleMessage(const Net::MessageMsg& msg);
     uint8_t GetAvgLoad() const
     {

@@ -114,6 +114,7 @@ void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
         SendEvent(e.eventId, e.eventData);
     }
     queuedEvents_.Clear();
+    UpdateServers();
 }
 
 void FwClient::LoadData()
@@ -516,6 +517,8 @@ void FwClient::OnGetServices(const std::vector<AB::Entities::Service>& services)
     services_.clear();
     for (const auto& s : services)
         services_[s.uuid] = s;
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(AbEvents::E_GOTSERVICES, eData);
 }
 
 void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
@@ -583,6 +586,22 @@ void FwClient::OnProtocolError(uint8_t err)
     BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
     if (cl)
         cl->OnProtocolError(err);
+}
+
+void FwClient::OnServerJoined(const std::string& serverId)
+{
+    using namespace AbEvents::ServerJoined;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_SERVERID] = String(serverId.c_str());
+    QueueEvent(AbEvents::E_SERVERJOINED, eData);
+}
+
+void FwClient::OnServerLeft(const std::string& serverId)
+{
+    using namespace AbEvents::ServerLeft;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_SERVERID] = String(serverId.c_str());
+    QueueEvent(AbEvents::E_SERVERLEFT, eData);
 }
 
 void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,

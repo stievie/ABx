@@ -63,6 +63,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
 
         switch (opCode)
         {
+        case AB::GameProtocol::ServerJoined:
+            ParseServerJoined(message);
+            break;
+        case AB::GameProtocol::ServerLeft:
+            ParseServerLeft(message);
+            break;
         case AB::GameProtocol::Error:
             ParseError(message);
             break;
@@ -261,6 +267,20 @@ void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
     lastPing_ = static_cast<int>(AbTick() - pingTick_);
     if (receiver_)
         receiver_->OnPong(lastPing_);
+}
+
+void ProtocolGame::ParseServerJoined(const std::shared_ptr<InputMessage>& message)
+{
+    std::string serverId = message->GetString();
+    if (receiver_)
+        receiver_->OnServerJoined(serverId);
+}
+
+void ProtocolGame::ParseServerLeft(const std::shared_ptr<InputMessage>& message)
+{
+    std::string serverId = message->GetString();
+    if (receiver_)
+        receiver_->OnServerLeft(serverId);
 }
 
 void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)

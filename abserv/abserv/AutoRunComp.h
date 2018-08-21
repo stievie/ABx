@@ -13,10 +13,12 @@ class AutoRunComp
 {
 private:
     Creature& owner_;
+    int64_t lastCalc_;
+    /// Maximum distance to consider being there
+    float maxDist_;
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
     std::weak_ptr<Creature> following_;
-    int64_t lastCalc_;
     void Pop();
     const Math::Vector3& Next() const
     {
@@ -27,8 +29,9 @@ private:
 public:
     AutoRunComp(Creature& owner) :
         owner_(owner),
-        autoRun_(false),
-        lastCalc_(0)
+        lastCalc_(0),
+        maxDist_(1.0f),
+        autoRun_(false)
     { }
     ~AutoRunComp() = default;
 

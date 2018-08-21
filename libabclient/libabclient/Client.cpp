@@ -229,6 +229,18 @@ void Client::OnPong(int lastPing)
     pings_.push_back(lastPing);
 }
 
+void Client::OnServerJoined(const std::string& serverId)
+{
+    if (receiver_)
+        receiver_->OnServerJoined(serverId);
+}
+
+void Client::OnServerLeft(const std::string& serverId)
+{
+    if (receiver_)
+        receiver_->OnServerLeft(serverId);
+}
+
 std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
 {
     if (!protoLogin_)

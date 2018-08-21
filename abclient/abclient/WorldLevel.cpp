@@ -22,6 +22,9 @@ WorldLevel::WorldLevel(Context* context) :
 void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
+
+    SubscribeToEvent(AbEvents::E_SERVERJOINED, URHO3D_HANDLER(WorldLevel, HandleServerJoined));
+    SubscribeToEvent(AbEvents::E_SERVERLEFT, URHO3D_HANDLER(WorldLevel, HandleServerLeft));
     SubscribeToEvent(AbEvents::E_OBJECTSPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
     SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECTPOSUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
@@ -78,6 +81,18 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
         }
     }
     return false;
+}
+
+void WorldLevel::HandleServerJoined(StringHash eventType, VariantMap & eventData)
+{
+    FwClient* client = GetSubsystem<FwClient>();
+    client->UpdateServers();
+}
+
+void WorldLevel::HandleServerLeft(StringHash eventType, VariantMap & eventData)
+{
+    FwClient* client = GetSubsystem<FwClient>();
+    client->UpdateServers();
 }
 
 void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)

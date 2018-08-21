@@ -15,6 +15,7 @@ GameMenu::GameMenu(Context* context) :
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     CreateMenuBar();
+    SubscribeToEvent(AbEvents::E_GOTSERVICES, URHO3D_HANDLER(GameMenu, HandleGotServices));
 }
 
 GameMenu::~GameMenu()
@@ -47,7 +48,6 @@ void GameMenu::CreateMenuBar()
 
     popup->SetWidth(40);
 
-    UpdateServers();
 }
 
 Menu* GameMenu::CreateMenu(UIElement* parent, const String& title)
@@ -96,7 +96,6 @@ Window* GameMenu::CreatePopup(Menu* baseMenu)
 
 void GameMenu::HandleRootMenuUsed(StringHash eventType, VariantMap& eventData)
 {
-    UpdateServers();
 }
 
 void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
@@ -156,14 +155,18 @@ void GameMenu::HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData
     SendEvent(E_GAMEMENU_PARTYWINDOW , e);
 }
 
+void GameMenu::HandleGotServices(StringHash eventType, VariantMap & eventData)
+{
+    UpdateServers();
+}
+
 void GameMenu::UpdateServers()
 {
     FwClient* client = GetSubsystem<FwClient>();
-    client->UpdateServers();
     Window* popup = dynamic_cast<Window*>(serversMenu_->GetPopup());
+    popup->RemoveAllChildren();
     popup->SetLayout(LM_VERTICAL, 1);
     serversMenu_->SetPopupOffset(IntVector2(menu_->GetPopup()->GetWidth(), 0));
-    popup->RemoveAllChildren();
     String cId = client->GetCurrentServerId();
     const std::map<std::string, AB::Entities::Service>& servs = client->GetServices();
     for (const auto& serv : servs)
