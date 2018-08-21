@@ -31,7 +31,7 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     static const Math::Vector3 EXTENDS(1.0f, 8.0f, 1.0f);
 
     const Math::Vector3& pos = owner_.transformation_.position_;
-    if (pos.Equals(dest))
+    if (pos.Distance(dest) < maxDist_)
         return false;
 
     std::vector<Math::Vector3> wp;
@@ -63,13 +63,11 @@ void AutoRunComp::Pop()
 void AutoRunComp::MoveTo(uint32_t timeElapsed, const Math::Vector3& dest)
 {
     const Math::Vector3& pos = owner_.transformation_.position_;
-#ifdef DEBUG_NAVIGATION
-    const float distance = dest.Distance(pos);
-#endif
     float worldAngle = -Math::DegToRad(pos.AngleY(dest) - 180.0f);
     if (worldAngle < 0.0f)
         worldAngle += Math::M_PIF;
 #ifdef DEBUG_NAVIGATION
+    const float distance = dest.Distance(pos);
     LOG_DEBUG << "From " << pos.ToString() << " to " << dest.ToString() <<
         " angle " << worldAngle << " old angle " << Math::RadToDeg(owner_.transformation_.rotation_) <<
         ", distance " << distance << std::endl;
