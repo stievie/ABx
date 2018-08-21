@@ -152,12 +152,6 @@ void Options::Save()
     }
     {
         XMLElement param = root.CreateChild("parameter");
-        param.SetString("name", "MultiSample");
-        param.SetString("type", "int");
-        param.SetInt("value", multiSample_);
-    }
-    {
-        XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "RenderPath");
         param.SetString("type", "string");
         param.SetString("value", renderPath_);
