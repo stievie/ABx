@@ -57,6 +57,9 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterFactory<OutpostLevel>();
     context->RegisterFactory<PvpCombatLevel>();
 
+    shortcuts_ = new Shortcuts(context);
+    context->RegisterSubsystem(shortcuts_);
+
     options_ = new Options(context);
     options_->Load();
     context->RegisterSubsystem(options_);

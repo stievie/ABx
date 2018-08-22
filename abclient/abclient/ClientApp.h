@@ -5,6 +5,7 @@
 #include "LevelManager.h"
 #include "OptionsWindow.h"
 #include "ItemsCache.h"
+#include "Shortcuts.h"
 
 using namespace Urho3D;
 
@@ -30,6 +31,7 @@ protected:
 private:
     SharedPtr<Options> options_;
     SharedPtr<FwClient> client_;
+    SharedPtr<Shortcuts> shortcuts_;
     SharedPtr<ItemsCache> itemsCache_;
     SharedPtr<LevelManager> levelManager_;
     SharedPtr<OptionsWindow> optionsWindow_;

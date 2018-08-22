@@ -4,6 +4,7 @@
 #include "MathUtils.h"
 #include "Options.h"
 #include "AbEvents.h"
+#include "Shortcuts.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -190,9 +191,13 @@ void Player::SelectObject(uint32_t objectId)
 void Player::PostUpdate(float timeStep)
 {
     Node* characterNode = GetNode();
+    Shortcuts* scs = GetSubsystem<Shortcuts>();
 
+    float yaw = controls_.yaw_;
+    if (scs->Test(AbEvents::E_SC_REVERSECAMERA))
+        yaw += 180.0f;
     // Get camera lookat dir from character yaw + pitch
-    Quaternion rot = Quaternion(controls_.yaw_, Vector3::UP);
+    Quaternion rot = Quaternion(yaw, Vector3::UP);
     Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 
     Node* headNode = characterNode->GetChild("Head", true);

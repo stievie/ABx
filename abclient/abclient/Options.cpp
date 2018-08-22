@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Options.h"
 #include <SDL/SDL_filesystem.h>
+#include "Shortcuts.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -201,6 +202,10 @@ void Options::Save()
         param.SetBool("value", disableMouseWalking_);
     }
 
+    Shortcuts* sc = GetSubsystem<Shortcuts>();
+    if (sc)
+        sc->Save(root);
+
     xml->SaveFile(AddTrailingSlash(prefPath) + "settings.xml");
 }
 
@@ -361,6 +366,10 @@ void Options::LoadSettings()
 
     XMLElement root = xml->GetRoot();
     LoadElements(root);
+
+    Shortcuts* sc = GetSubsystem<Shortcuts>();
+    if (sc)
+        sc->Load(root);
 }
 
 void Options::LoadElements(const XMLElement& root)

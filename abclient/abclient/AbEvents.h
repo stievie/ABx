@@ -136,4 +136,54 @@ URHO3D_EVENT(E_ACTORNAMECLICKED, ActorNameClicked)
 {
     URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
 }
+
+// Shortcuts
+URHO3D_EVENT(E_SC_TOGGLEMAP, ToggleMap)
+{
+}
+
+URHO3D_EVENT(E_SC_MOVEFORWARD, MoveForward)
+{
+}
+
+URHO3D_EVENT(E_SC_MOVEBACKWARD, MoveBackward)
+{
+}
+
+URHO3D_EVENT(E_SC_MOVELEFT, MoveLeft)
+{
+}
+
+URHO3D_EVENT(E_SC_MOVERIGHT, MoveRight)
+{
+}
+
+URHO3D_EVENT(E_SC_TURNLEFT, TurnLeft)
+{
+}
+
+URHO3D_EVENT(E_SC_TURNRIGHT, TurnRight)
+{
+}
+
+URHO3D_EVENT(E_SC_KEEPRUNNING, KeepRunning)
+{
+}
+
+URHO3D_EVENT(E_SC_REVERSECAMERA, ReverseCamera)
+{
+}
+
+URHO3D_EVENT(E_SC_GOTOSELECTED, GotoSelected)
+{
+}
+
+URHO3D_EVENT(E_SC_HIGHLIGHTOBJECTS, HighlightObjects)
+{
+}
+
+URHO3D_EVENT(E_SC_MOUSELOOK, MouseLook)
+{
+}
+
 }

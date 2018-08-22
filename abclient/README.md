@@ -32,6 +32,7 @@ Key bindings are not customizable yet.
 * `Q`: Move left
 * `E`: Move right
 * `R`: Keep running
+* `Y`: Reverse camera
 * `Space`: Goto selected object or follow selected object when it's moving
 * `Ctrl`: Highlight objects
 

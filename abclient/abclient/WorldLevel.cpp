@@ -8,6 +8,7 @@
 #include "MathUtils.h"
 #include "TimeUtils.h"
 #include "Options.h"
+#include "Shortcuts.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -172,9 +173,9 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
 void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
 {
     using namespace MouseButtonUp;
-    Input* input = GetSubsystem<Input>();
     if (rmbDown_)
     {
+        Input* input = GetSubsystem<Input>();
         rmbDown_ = false;
         input->SetMousePosition(mouseDownPos_);
         input->SetMouseMode(MM_ABSOLUTE);
@@ -244,7 +245,10 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
 
     using namespace Update;
 
-    Input* input = GetSubsystem<Input>();
+    UI* ui = GetSubsystem<UI>();
+    if (ui->GetFocusElement())
+        return;
+    Shortcuts* sc = GetSubsystem<Shortcuts>();
 
     if (player_)
     {
@@ -253,48 +257,44 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             CTRL_TURN_LEFT | CTRL_TURN_RIGHT, false);
 
         // Update controls using keys
-        UI* ui = GetSubsystem<UI>();
-        if (!ui->GetFocusElement())
+        if (sc->Test(AbEvents::E_SC_MOVEFORWARD))
         {
-            if (input->GetKeyDown(KEY_W) || input->GetKeyDown(KEY_UP))
-            {
-                player_->controls_.Set(CTRL_MOVE_FORWARD, true);
-                if (!input->GetKeyDown(KEY_R))
-                    player_->controls_.Set(CTRL_MOVE_LOCK, false);
-            }
-            if (input->GetKeyDown(KEY_S) || input->GetKeyDown(KEY_DOWN))
-            {
-                player_->controls_.Set(CTRL_MOVE_BACK, true);
-                if (!input->GetKeyDown(KEY_R))
-                    player_->controls_.Set(CTRL_MOVE_LOCK, false);
-            }
-            player_->controls_.Set(CTRL_MOVE_LEFT, input->GetKeyDown(KEY_Q));
-            player_->controls_.Set(CTRL_MOVE_RIGHT, input->GetKeyDown(KEY_E));
-
-            if (input->GetMouseButtonDown(MOUSEB_RIGHT))
-            {
-                player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
-                    input->GetKeyDown(KEY_A));
-                player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
-                    input->GetKeyDown(KEY_D));
-                player_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
-                player_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
-            }
-            else
-            {
-                player_->controls_.Set(CTRL_TURN_LEFT, input->GetKeyDown(KEY_A) ||
-                    input->GetKeyDown(KEY_LEFT));
-                player_->controls_.Set(CTRL_TURN_RIGHT, input->GetKeyDown(KEY_D) ||
-                    input->GetKeyDown(KEY_RIGHT));
-            }
-
-            // Limit pitch
-            player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
-            if (player_->controls_.yaw_ > 360.0f)
-                player_->controls_.yaw_ -= 360.0f;
-            else if (player_->controls_.yaw_ < 0.0f)
-                player_->controls_.yaw_ += 360.0f;
+            player_->controls_.Set(CTRL_MOVE_FORWARD, true);
+            if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
+                player_->controls_.Set(CTRL_MOVE_LOCK, false);
         }
+        if (sc->Test(AbEvents::E_SC_MOVEBACKWARD))
+        {
+            player_->controls_.Set(CTRL_MOVE_BACK, true);
+            if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
+                player_->controls_.Set(CTRL_MOVE_LOCK, false);
+        }
+        player_->controls_.Set(CTRL_MOVE_LEFT, sc->Test(AbEvents::E_SC_MOVELEFT));
+        player_->controls_.Set(CTRL_MOVE_RIGHT, sc->Test(AbEvents::E_SC_MOVERIGHT));
+
+        if (sc->Test(AbEvents::E_SC_MOUSELOOK))
+        {
+            player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
+                sc->Test(AbEvents::E_SC_TURNLEFT));
+            player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
+                sc->Test(AbEvents::E_SC_TURNRIGHT));
+
+            Input* input = GetSubsystem<Input>();
+            player_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
+            player_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
+        }
+        else
+        {
+            player_->controls_.Set(CTRL_TURN_LEFT, sc->Test(AbEvents::E_SC_TURNLEFT));
+            player_->controls_.Set(CTRL_TURN_RIGHT, sc->Test(AbEvents::E_SC_TURNRIGHT));
+        }
+
+        // Limit pitch
+        player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
+        if (player_->controls_.yaw_ > 360.0f)
+            player_->controls_.yaw_ -= 360.0f;
+        else if (player_->controls_.yaw_ < 0.0f)
+            player_->controls_.yaw_ += 360.0f;
     }
 }
 
