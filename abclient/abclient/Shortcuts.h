@@ -28,20 +28,20 @@ struct Shortcut
         mouseButton_(MOUSEB_NONE),
         modifiers_(0)
     { }
-    Shortcut(const String& name, Trigger trigger, const StringHash& _event,
+    Shortcut(const StringHash& _event, const String& name = "Unknown", Trigger trigger = Trigger::None,
         Scancode scanCode = SCANCODE_UNKNOWN, Key key = KEY_UNKNOWN,
         MouseButton mb = MOUSEB_NONE, unsigned mods = 0) :
+        event_(_event),
         name_(name),
         trigger_(trigger),
-        event_(_event),
         scanCode_(scanCode),
         keyboardKey_(key),
         mouseButton_(mb),
         modifiers_(mods)
     { }
+    StringHash event_;
     String name_;
     Trigger trigger_;
-    StringHash event_;
     Scancode scanCode_;
     Key keyboardKey_;
     MouseButton mouseButton_;

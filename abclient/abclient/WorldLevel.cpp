@@ -33,12 +33,14 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
+    SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
+    SubscribeToEvent(AbEvents::E_SC_AUTORUN, URHO3D_HANDLER(WorldLevel, HandleAutoRun));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
     SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(WorldLevel, HandleMouseMove));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(WorldLevel, HandleKeyDown));
-    SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(WorldLevel, HandleKeyUp));
 }
 
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
@@ -95,37 +97,6 @@ void WorldLevel::HandleServerLeft(StringHash eventType, VariantMap & eventData)
 {
     FwClient* client = GetSubsystem<FwClient>();
     client->UpdateServers();
-}
-
-void WorldLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
-{
-    UI* ui = GetSubsystem<UI>();
-    if (ui->GetFocusElement())
-        return;
-
-    using namespace KeyDown;
-    bool repeat = eventData[P_REPEAT].GetBool();
-    if (repeat)
-        return;
-
-    int scanCode = eventData[P_SCANCODE].GetInt();
-    switch (scanCode)
-    {
-    case SDL_SCANCODE_M:
-        ToggleMap();
-        break;
-    case SDL_SCANCODE_SPACE:
-        player_->FollowSelected();
-        break;
-    }
-    int key = eventData[P_KEY].GetInt();
-    if (key == KEY_R)
-        player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
-}
-
-void WorldLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
-{
-    using namespace KeyUp;
 }
 
 void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
@@ -525,7 +496,7 @@ void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
     mailWindow_->visible_ = true;
 }
 
-void WorldLevel::HandleMenuPartyWindow(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData)
 {
     if (partyWindow_)
         partyWindow_->SetVisible(!partyWindow_->IsVisible());
@@ -534,6 +505,21 @@ void WorldLevel::HandleMenuPartyWindow(StringHash eventType, VariantMap& eventDa
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
 {
     player_->SelectObject(0);
+}
+
+void WorldLevel::HandleToggleMap(StringHash eventType, VariantMap& eventData)
+{
+    ToggleMap();
+}
+
+void WorldLevel::HandleDefaultAction(StringHash eventType, VariantMap& eventData)
+{
+    player_->FollowSelected();
+}
+
+void WorldLevel::HandleAutoRun(StringHash eventType, VariantMap& eventData)
+{
+    player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,
@@ -607,7 +593,7 @@ void WorldLevel::CreateUI()
     SubscribeToEvent(gameMenu_, E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
     SubscribeToEvent(gameMenu_, E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
     SubscribeToEvent(gameMenu_, E_GAMEMENU_MAIL , URHO3D_HANDLER(WorldLevel, HandleMenuMail));
-    SubscribeToEvent(gameMenu_, E_GAMEMENU_PARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleMenuPartyWindow));
+    SubscribeToEvent(gameMenu_, E_GAMEMENU_PARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
 
     targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
     targetWindow_->SetAlignment(HA_CENTER, VA_TOP);

@@ -80,8 +80,6 @@ private:
 
     void HandleServerJoined(StringHash eventType, VariantMap& eventData);
     void HandleServerLeft(StringHash eventType, VariantMap& eventData);
-    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-    void HandleKeyUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);
@@ -95,8 +93,11 @@ private:
     void HandleMenuLogout(StringHash eventType, VariantMap& eventData);
     void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleMenuMail(StringHash eventType, VariantMap& eventData);
-    void HandleMenuPartyWindow(StringHash eventType, VariantMap& eventData);
+    void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
+    void HandleToggleMap(StringHash eventType, VariantMap& eventData);
+    void HandleDefaultAction(StringHash eventType, VariantMap& eventData);
+    void HandleAutoRun(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         const Vector3& position, const Vector3& scale,

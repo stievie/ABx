@@ -202,9 +202,9 @@ void Options::Save()
         param.SetBool("value", disableMouseWalking_);
     }
 
-    Shortcuts* sc = GetSubsystem<Shortcuts>();
-    if (sc)
-        sc->Save(root);
+//    Shortcuts* sc = GetSubsystem<Shortcuts>();
+//    if (sc)
+//        sc->Save(root);
 
     xml->SaveFile(AddTrailingSlash(prefPath) + "settings.xml");
 }

@@ -29,23 +29,28 @@ void Shortcuts::Add(const Shortcut& sc)
 
 void Shortcuts::AddDefault()
 {
-    Add({ "Move forward", Trigger::None, AbEvents::E_SC_MOVEFORWARD, SCANCODE_UNKNOWN, KEY_W });
-    Add({ "Move forward", Trigger::None, AbEvents::E_SC_MOVEFORWARD, SCANCODE_UNKNOWN, KEY_UP });
-    Add({ "Move backward", Trigger::None, AbEvents::E_SC_MOVEBACKWARD, SCANCODE_UNKNOWN, KEY_S });
-    Add({ "Move backward", Trigger::None, AbEvents::E_SC_MOVEBACKWARD, SCANCODE_UNKNOWN, KEY_DOWN });
-    Add({ "Turn left", Trigger::None, AbEvents::E_SC_TURNLEFT, SCANCODE_UNKNOWN, KEY_A });
-    Add({ "Turn left", Trigger::None, AbEvents::E_SC_TURNLEFT, SCANCODE_UNKNOWN, KEY_LEFT });
-    Add({ "Turn right", Trigger::None, AbEvents::E_SC_TURNRIGHT, SCANCODE_UNKNOWN, KEY_D });
-    Add({ "Turn right", Trigger::None, AbEvents::E_SC_TURNRIGHT, SCANCODE_UNKNOWN, KEY_RIGHT });
-    Add({ "Move left", Trigger::None, AbEvents::E_SC_MOVELEFT, SCANCODE_UNKNOWN, KEY_Q });
-    Add({ "Move right", Trigger::None, AbEvents::E_SC_MOVERIGHT, SCANCODE_UNKNOWN, KEY_E });
+    Add({ AbEvents::E_SC_MOVEFORWARD, "Move forward", Trigger::None, SCANCODE_UNKNOWN, KEY_W });
+    Add({ AbEvents::E_SC_MOVEFORWARD, "Move forward", Trigger::None, SCANCODE_UNKNOWN, KEY_UP });
+    Add({ AbEvents::E_SC_MOVEBACKWARD, "Move backward", Trigger::None, SCANCODE_UNKNOWN, KEY_S });
+    Add({ AbEvents::E_SC_MOVEBACKWARD, "Move backward", Trigger::None, SCANCODE_UNKNOWN, KEY_DOWN });
+    Add({ AbEvents::E_SC_TURNLEFT, "Turn left", Trigger::None, SCANCODE_UNKNOWN, KEY_A });
+    Add({ AbEvents::E_SC_TURNLEFT, "Turn left", Trigger::None, SCANCODE_UNKNOWN, KEY_LEFT });
+    Add({ AbEvents::E_SC_TURNRIGHT, "Turn right", Trigger::None, SCANCODE_UNKNOWN, KEY_D });
+    Add({ AbEvents::E_SC_TURNRIGHT, "Turn right", Trigger::None, SCANCODE_UNKNOWN, KEY_RIGHT });
+    Add({ AbEvents::E_SC_MOVELEFT, "Move left", Trigger::None, SCANCODE_UNKNOWN, KEY_Q });
+    Add({ AbEvents::E_SC_MOVERIGHT, "Move right", Trigger::None, SCANCODE_UNKNOWN, KEY_E });
+    Add({ AbEvents::E_SC_AUTORUN, "Auto run", Trigger::Down, SCANCODE_UNKNOWN, KEY_R });
 
-    Add({ "Keep running", Trigger::Down, AbEvents::E_SC_KEEPRUNNING, SCANCODE_UNKNOWN, KEY_R });
-    Add({ "Reverse Camera", Trigger::None, AbEvents::E_SC_REVERSECAMERA, SCANCODE_UNKNOWN, KEY_Y });
-    Add({ "Goto selected", Trigger::Down, AbEvents::E_SC_REVERSECAMERA, SCANCODE_UNKNOWN, KEY_SPACE });
-    Add({ "Highlight objects", Trigger::None, AbEvents::E_SC_HIGHLIGHTOBJECTS, SCANCODE_LCTRL, KEY_UNKNOWN });
+    Add({ AbEvents::E_SC_KEEPRUNNING, "Keep running", Trigger::Down, SCANCODE_UNKNOWN, KEY_R });
+    Add({ AbEvents::E_SC_REVERSECAMERA, "Reverse Camera", Trigger::None, SCANCODE_UNKNOWN, KEY_Y });
+    Add({ AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None, SCANCODE_LCTRL, KEY_UNKNOWN });
 
-    Add({ "Mouse look", Trigger::None, AbEvents::E_SC_MOUSELOOK, SCANCODE_UNKNOWN, KEY_UNKNOWN, MOUSEB_RIGHT });
+    Add({ AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, SCANCODE_UNKNOWN, KEY_UNKNOWN, MOUSEB_RIGHT });
+
+    Add({ AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down, SCANCODE_UNKNOWN, KEY_SPACE });
+
+    Add({ AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down, SCANCODE_UNKNOWN, KEY_M });
+    Add({ AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party window", Trigger::Down, SCANCODE_UNKNOWN, KEY_P });
 }
 
 void Shortcuts::Load(const XMLElement& root)
@@ -134,13 +139,14 @@ void Shortcuts::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     {
         if (sc.trigger_ == Trigger::Down)
         {
-            if (sc.scanCode_ == scanCode || sc.keyboardKey_ == key)
-            {
-                if (sc.modifiers_ != 0 && !ModifiersMatch(sc.modifiers_))
-                    // If we have modifiers also these this
-                    continue;
-                SendEvent(sc.event_, e);
-            }
+            if (sc.keyboardKey_ != KEY_UNKNOWN && sc.keyboardKey_ != key)
+                continue;
+            if (sc.scanCode_ != SCANCODE_UNKNOWN && sc.scanCode_ != scanCode)
+                continue;
+            if (sc.modifiers_ != 0 && !ModifiersMatch(sc.modifiers_))
+                // If we have modifiers also these this
+                continue;
+            SendEvent(sc.event_, e);
         }
     }
 }
@@ -151,10 +157,7 @@ void Shortcuts::HandleKeyUp(StringHash eventType, VariantMap& eventData)
     if (ui->GetFocusElement())
         return;
 
-    using namespace KeyDown;
-    bool repeat = eventData[P_REPEAT].GetBool();
-    if (repeat)
-        return;
+    using namespace KeyUp;
 
     VariantMap& e = GetEventDataMap();
     int scanCode = eventData[P_SCANCODE].GetInt();
@@ -164,13 +167,14 @@ void Shortcuts::HandleKeyUp(StringHash eventType, VariantMap& eventData)
     {
         if (sc.trigger_ == Trigger::Up)
         {
-            if (sc.scanCode_ == scanCode || sc.keyboardKey_ == key)
-            {
-                if (sc.modifiers_ != 0 && !ModifiersMatch(sc.modifiers_))
-                    // If we have modifiers also these this
-                    continue;
-                SendEvent(sc.event_, e);
-            }
+            if (sc.keyboardKey_ != KEY_UNKNOWN && sc.keyboardKey_ != key)
+                continue;
+            if (sc.scanCode_ != SCANCODE_UNKNOWN && sc.scanCode_ != scanCode)
+                continue;
+            if (sc.modifiers_ != 0 && !ModifiersMatch(sc.modifiers_))
+                // If we have modifiers also these this
+                continue;
+            SendEvent(sc.event_, e);
         }
     }
 }
