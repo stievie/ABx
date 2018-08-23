@@ -2,6 +2,7 @@
 #include "GameMenu.h"
 #include "AbEvents.h"
 #include "FwClient.h"
+#include "Shortcuts.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -35,6 +36,9 @@ void GameMenu::CreateMenuBar()
     menuBar_->SetFixedWidth(menu_->GetWidth());
     SubscribeToEvent(menu_, E_MENUSELECTED, URHO3D_HANDLER(GameMenu, HandleRootMenuUsed));
 
+    Shortcuts* scs = GetSubsystem<Shortcuts>();
+    String caption;
+
     Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
     CreateMenuItem(popup, "Exit", URHO3D_HANDLER(GameMenu, HandleExitUsed));
     CreateMenuItem(popup, "Logout", URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
@@ -44,7 +48,9 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, "Options", URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
     CreateSeparator(popup);
     CreateMenuItem(popup, "Mail", URHO3D_HANDLER(GameMenu, HandleMailUsed));
-    CreateMenuItem(popup, "Party Window", URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
+
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party"),
+        URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
 
     popup->SetWidth(40);
 

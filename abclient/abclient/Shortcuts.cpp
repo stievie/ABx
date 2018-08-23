@@ -2,9 +2,12 @@
 #include "Shortcuts.h"
 #include "AbEvents.h"
 
+const Shortcut Shortcut::EMPTY;
+
 Shortcuts::Shortcuts(Context* context) :
     Object(context)
 {
+    AddDefault();
     SubscribeToEvents();
 }
 
@@ -20,10 +23,8 @@ bool Shortcuts::Test(const StringHash& e)
 
 void Shortcuts::Add(const Shortcut& sc)
 {
-    if (sc.keyboardKey_ == KEY_UNKNOWN && sc.scanCode_ == SCANCODE_UNKNOWN && sc.mouseButton_ == MOUSEB_NONE)
-        return;
-
     shortcuts_.Push(sc);
+    shortcuts_.Back().id = shortcuts_.Size();
     triggered_[sc.event_] = false;
 }
 
@@ -50,7 +51,7 @@ void Shortcuts::AddDefault()
     Add({ AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down, SCANCODE_UNKNOWN, KEY_SPACE });
 
     Add({ AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down, SCANCODE_UNKNOWN, KEY_M });
-    Add({ AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party window", Trigger::Down, SCANCODE_UNKNOWN, KEY_P });
+    Add({ AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", Trigger::Down, SCANCODE_UNKNOWN, KEY_P });
 
     Add({ AbEvents::E_SC_TAKESCREENSHOT, "Take Screenshot", Trigger::Down, SCANCODE_UNKNOWN, KEY_PRINTSCREEN });
 }
@@ -59,22 +60,19 @@ void Shortcuts::Load(const XMLElement& root)
 {
     XMLElement paramElem = root.GetChild("shortcut");
     if (!paramElem)
-    {
-        AddDefault();
         return;
-    }
 
     while (paramElem)
     {
+        unsigned id = paramElem.GetUInt("id");
         Shortcut sc;
-        sc.name_ = paramElem.GetAttribute("name");
-        sc.trigger_ = static_cast<Trigger>(paramElem.GetUInt("trigger"));
-        sc.event_ = StringHash(paramElem.GetUInt("event"));
-        sc.scanCode_ = static_cast<Scancode>(paramElem.GetUInt("scancode"));
-        sc.keyboardKey_ = static_cast<Key>(paramElem.GetUInt("key"));
-        sc.mouseButton_ = static_cast<MouseButton>(paramElem.GetUInt("mousebutton"));
-        sc.modifiers_ = paramElem.GetUInt("modifiers");
-        Add(sc);
+        if (Get(id, sc))
+        {
+            sc.scanCode_ = static_cast<Scancode>(paramElem.GetUInt("scancode"));
+            sc.keyboardKey_ = static_cast<Key>(paramElem.GetUInt("key"));
+            sc.mouseButton_ = static_cast<MouseButton>(paramElem.GetUInt("mousebutton"));
+            sc.modifiers_ = paramElem.GetUInt("modifiers");
+        }
 
         paramElem = paramElem.GetNext("shortcut");
     }
@@ -84,15 +82,43 @@ void Shortcuts::Save(XMLElement& root)
 {
     for (const auto& sc : shortcuts_)
     {
+        if (!sc.customizeable_)
+            continue;
+
         XMLElement param = root.CreateChild("shortcut");
-        param.SetString("name", sc.name_);
-        param.SetUInt("trigger", static_cast<unsigned>(sc.trigger_));
-        param.SetUInt("event", sc.event_.Value());
+        param.SetUInt("id", sc.id);
         param.SetUInt("scancode", static_cast<unsigned>(sc.scanCode_));
         param.SetUInt("key", static_cast<unsigned>(sc.keyboardKey_));
         param.SetUInt("mousebutton", static_cast<unsigned>(sc.mouseButton_));
         param.SetUInt("modifiers", sc.modifiers_);
     }
+}
+
+const Shortcut& Shortcuts::Get(const StringHash& _event) const
+{
+    for (const auto& sc : shortcuts_)
+        if (sc.event_ == _event)
+            return sc;
+    return Shortcut::EMPTY;
+}
+
+bool Shortcuts::Get(unsigned id, Shortcut& sc)
+{
+    for (const auto& _sc : shortcuts_)
+        if (_sc.id == id)
+        {
+            sc = _sc;
+            return true;
+        }
+    return false;
+}
+
+String Shortcuts::GetCaption(const StringHash& _event, const String& def /* = String::EMPTY */)
+{
+    const Shortcut& sc = Get(_event);
+    if (sc)
+        return sc.Caption();
+    return def;
 }
 
 void Shortcuts::SubscribeToEvents()
@@ -232,16 +258,16 @@ void Shortcuts::HandleMouseUp(StringHash eventType, VariantMap& eventData)
 bool Shortcuts::ModifiersMatch(unsigned mods)
 {
     Input* input = GetSubsystem<Input>();
-    return (((mods & SC_MOD_CTRL) == 0) || input->GetKeyPress(KEY_LCTRL) || input->GetKeyPress(KEY_RCTRL)) &&
-        (((mods & SC_MOD_LCTRL) == 0) || input->GetKeyPress(KEY_LCTRL)) &&
-        (((mods & SC_MOD_RCTRL) == 0) || input->GetKeyPress(KEY_RCTRL)) &&
+    return (((mods & SC_MOD_CTRL) == 0) || input->GetKeyDown(KEY_LCTRL) || input->GetKeyDown(KEY_RCTRL)) &&
+        (((mods & SC_MOD_LCTRL) == 0) || input->GetKeyDown(KEY_LCTRL)) &&
+        (((mods & SC_MOD_RCTRL) == 0) || input->GetKeyDown(KEY_RCTRL)) &&
 
-        (((mods & SC_MOD_SHIFT) == 0) || input->GetKeyPress(KEY_LSHIFT) || input->GetKeyPress(KEY_RSHIFT)) &&
-        (((mods & SC_MOD_LSHIFT) == 0) || input->GetKeyPress(KEY_LSHIFT)) &&
-        (((mods & SC_MOD_RSHIFT) == 0) || input->GetKeyPress(KEY_RSHIFT)) &&
+        (((mods & SC_MOD_SHIFT) == 0) || input->GetKeyDown(KEY_LSHIFT) || input->GetKeyDown(KEY_RSHIFT)) &&
+        (((mods & SC_MOD_LSHIFT) == 0) || input->GetKeyDown(KEY_LSHIFT)) &&
+        (((mods & SC_MOD_RSHIFT) == 0) || input->GetKeyDown(KEY_RSHIFT)) &&
 
-        (((mods & SC_MOD_ALT) == 0) || input->GetKeyPress(KEY_LALT) || input->GetKeyPress(KEY_RALT)) &&
-        (((mods & SC_MOD_LALT) == 0) || input->GetKeyPress(KEY_LALT)) &&
-        (((mods & SC_MOD_RALT) == 0) || input->GetKeyPress(KEY_RALT));
+        (((mods & SC_MOD_ALT) == 0) || input->GetKeyDown(KEY_LALT) || input->GetKeyDown(KEY_RALT)) &&
+        (((mods & SC_MOD_LALT) == 0) || input->GetKeyDown(KEY_LALT)) &&
+        (((mods & SC_MOD_RALT) == 0) || input->GetKeyDown(KEY_RALT));
 }
 

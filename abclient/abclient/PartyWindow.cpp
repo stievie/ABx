@@ -5,6 +5,7 @@
 #include "LevelManager.h"
 #include "FwClient.h"
 #include "HealthBar.h"
+#include "Shortcuts.h"
 
 void PartyWindow::RegisterObject(Context* context)
 {
@@ -34,6 +35,10 @@ PartyWindow::PartyWindow(Context* context) :
     SetBorder(IntRect(4, 4, 4, 4));
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
+
+    Shortcuts* scs = GetSubsystem<Shortcuts>();
+    Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
+    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party"));
 
     memberContainer_ = dynamic_cast<UIElement*>(GetChild("MemberContainer", true));
     partyContainer_ = dynamic_cast<UIElement*>(GetChild("PartyContainer", true));

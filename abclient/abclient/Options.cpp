@@ -149,7 +149,7 @@ void Options::Save()
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "Shadows");
         param.SetString("type", "bool");
-        param.SetInt("value", shadows_);
+        param.SetBool("value", shadows_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -206,9 +206,9 @@ void Options::Save()
         param.SetBool("value", disableMouseWalking_);
     }
 
-//    Shortcuts* sc = GetSubsystem<Shortcuts>();
-//    if (sc)
-//        sc->Save(root);
+    Shortcuts* sc = GetSubsystem<Shortcuts>();
+    if (sc)
+        sc->Save(root);
 
     xml->SaveFile(AddTrailingSlash(prefPath) + "settings.xml");
 }
