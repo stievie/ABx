@@ -172,9 +172,10 @@ void Shortcuts::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     VariantMap& e = GetEventDataMap();
     int scanCode = eventData[P_SCANCODE].GetInt();
     int key = eventData[P_KEY].GetInt();
-    int qualifiers = eventData[P_QUALIFIERS].GetInt();
     for (const auto& sc : shortcuts_)
     {
+        if (sc.keyboardKey_ == KEY_UNKNOWN && sc.scanCode_ == SCANCODE_UNKNOWN)
+            continue;
         if (sc.trigger_ == Trigger::Down)
         {
             if (sc.keyboardKey_ != KEY_UNKNOWN && sc.keyboardKey_ != key)
@@ -200,9 +201,10 @@ void Shortcuts::HandleKeyUp(StringHash eventType, VariantMap& eventData)
     VariantMap& e = GetEventDataMap();
     int scanCode = eventData[P_SCANCODE].GetInt();
     int key = eventData[P_KEY].GetInt();
-    int qualifiers = eventData[P_QUALIFIERS].GetInt();
     for (const auto& sc : shortcuts_)
     {
+        if (sc.keyboardKey_ == KEY_UNKNOWN && sc.scanCode_ == SCANCODE_UNKNOWN)
+            continue;
         if (sc.trigger_ == Trigger::Up)
         {
             if (sc.keyboardKey_ != KEY_UNKNOWN && sc.keyboardKey_ != key)
