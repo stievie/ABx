@@ -1,11 +1,5 @@
 #pragma once
 
-static const StringHash E_GAMEMENU_LOGOUT = StringHash("GameMemu Logout");
-static const StringHash E_GAMEMENU_SELECTCHAR = StringHash("GameMemu SelectChar");
-static const StringHash E_GAMEMENU_MAIL = StringHash("GameMemu Mail");
-static const StringHash E_GAMEMENU_PARTYWINDOW = StringHash("GameMemu PartyWindow");
-static const StringHash E_GAMEMENU_OPTIONSWINDOW = StringHash("GameMemu OptionsWindow");
-
 class GameMenu : public UIElement
 {
     URHO3D_OBJECT(GameMenu, UIElement);
@@ -26,6 +20,7 @@ private:
     void HandleOptionsUsed(StringHash eventType, VariantMap& eventData);
     void HandleMailUsed(StringHash eventType, VariantMap& eventData);
     void HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData);
+    void HandleMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleGotServices(StringHash eventType, VariantMap& eventData);
     void UpdateServers();
 public:

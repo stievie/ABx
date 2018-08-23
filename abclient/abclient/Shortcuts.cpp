@@ -46,7 +46,7 @@ void Shortcuts::AddDefault()
     Add({ AbEvents::E_SC_REVERSECAMERA, "Reverse Camera", Trigger::None, SCANCODE_UNKNOWN, KEY_Y });
     Add({ AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None, SCANCODE_LCTRL, KEY_UNKNOWN });
 
-    Add({ AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, SCANCODE_UNKNOWN, KEY_UNKNOWN, MOUSEB_RIGHT });
+    Add({ AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, SCANCODE_UNKNOWN, KEY_UNKNOWN, MOUSEB_RIGHT, 0, false });
 
     Add({ AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down, SCANCODE_UNKNOWN, KEY_SPACE });
 
@@ -54,6 +54,12 @@ void Shortcuts::AddDefault()
     Add({ AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", Trigger::Down, SCANCODE_UNKNOWN, KEY_P });
 
     Add({ AbEvents::E_SC_TAKESCREENSHOT, "Take Screenshot", Trigger::Down, SCANCODE_UNKNOWN, KEY_PRINTSCREEN });
+
+    Add({ AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down });
+    Add({ AbEvents::E_SC_LOGOUT, "Logout", Trigger::Down });
+    Add({ AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down });
+    Add({ AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down });
+    Add({ AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down });
 }
 
 void Shortcuts::Load(const XMLElement& root)
@@ -66,7 +72,7 @@ void Shortcuts::Load(const XMLElement& root)
     {
         unsigned id = paramElem.GetUInt("id");
         Shortcut sc;
-        if (Get(id, sc))
+        if (Get(id, sc) && sc.customizeable_)
         {
             sc.scanCode_ = static_cast<Scancode>(paramElem.GetUInt("scancode"));
             sc.keyboardKey_ = static_cast<Key>(paramElem.GetUInt("key"));
@@ -113,11 +119,11 @@ bool Shortcuts::Get(unsigned id, Shortcut& sc)
     return false;
 }
 
-String Shortcuts::GetCaption(const StringHash& _event, const String& def /* = String::EMPTY */)
+String Shortcuts::GetCaption(const StringHash& _event, const String& def /* = String::EMPTY */, unsigned align /* = 0 */)
 {
     const Shortcut& sc = Get(_event);
     if (sc)
-        return sc.Caption();
+        return sc.Caption(align);
     return def;
 }
 

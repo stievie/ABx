@@ -37,23 +37,27 @@ void GameMenu::CreateMenuBar()
     SubscribeToEvent(menu_, E_MENUSELECTED, URHO3D_HANDLER(GameMenu, HandleRootMenuUsed));
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
-    String caption;
 
     Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
-    CreateMenuItem(popup, "Exit", URHO3D_HANDLER(GameMenu, HandleExitUsed));
-    CreateMenuItem(popup, "Logout", URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
-    CreateMenuItem(popup, "Select Character", URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_EXITPROGRAM, "Exit", 18),
+        URHO3D_HANDLER(GameMenu, HandleExitUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_LOGOUT, "Logout", 18),
+        URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_SELECTCHARACTER, "Select character", 18),
+        URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
     serversMenu_ = CreateMenu(popup, "Server >");
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEOPTIONS, "Options", 18),
+        URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
     CreateSeparator(popup);
-    CreateMenuItem(popup, "Options", URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
-    CreateSeparator(popup);
-    CreateMenuItem(popup, "Mail", URHO3D_HANDLER(GameMenu, HandleMailUsed));
 
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party"),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", 18),
+        URHO3D_HANDLER(GameMenu, HandleMailUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", 18),
         URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAP, "Map", 18),
+        URHO3D_HANDLER(GameMenu, HandleMapUsed));
 
     popup->SetWidth(40);
-
 }
 
 Menu* GameMenu::CreateMenu(UIElement* parent, const String& title)
@@ -106,8 +110,10 @@ void GameMenu::HandleRootMenuUsed(StringHash eventType, VariantMap& eventData)
 
 void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
 {
-    Engine* engine = context_->GetSubsystem<Engine>();
-    engine->Exit();
+    menu_->ShowPopup(false);
+    SetVisible(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
 }
 
 void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
@@ -129,7 +135,7 @@ void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)
     menu_->ShowPopup(false);
     SetVisible(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(E_GAMEMENU_LOGOUT, e);
+    SendEvent(AbEvents::E_SC_LOGOUT, e);
 }
 
 void GameMenu::HandleSelectCharUsed(StringHash eventType, VariantMap& eventData)
@@ -137,28 +143,35 @@ void GameMenu::HandleSelectCharUsed(StringHash eventType, VariantMap& eventData)
     menu_->ShowPopup(false);
     SetVisible(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(E_GAMEMENU_SELECTCHAR, e);
+    SendEvent(AbEvents::E_SC_SELECTCHARACTER, e);
 }
 
 void GameMenu::HandleOptionsUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(E_GAMEMENU_OPTIONSWINDOW, e);
+    SendEvent(AbEvents::E_SC_TOGGLEOPTIONS, e);
 }
 
 void GameMenu::HandleMailUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(E_GAMEMENU_MAIL, e);
+    SendEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, e);
 }
 
 void GameMenu::HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
-    SendEvent(E_GAMEMENU_PARTYWINDOW , e);
+    SendEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW , e);
+}
+
+void GameMenu::HandleMapUsed(StringHash eventType, VariantMap& eventData)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(AbEvents::E_SC_TOGGLEMAP, e);
 }
 
 void GameMenu::HandleGotServices(StringHash eventType, VariantMap & eventData)

@@ -35,8 +35,11 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
     SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
     SubscribeToEvent(AbEvents::E_SC_AUTORUN, URHO3D_HANDLER(WorldLevel, HandleAutoRun));
+    SubscribeToEvent(AbEvents::E_SC_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleLogout));
+    SubscribeToEvent(AbEvents::E_SC_SELECTCHARACTER, URHO3D_HANDLER(WorldLevel, HandleSelectChar));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
@@ -457,7 +460,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
     }
 }
 
-void WorldLevel::HandleMenuLogout(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleLogout(StringHash eventType, VariantMap& eventData)
 {
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
@@ -469,22 +472,13 @@ void WorldLevel::HandleMenuLogout(StringHash eventType, VariantMap& eventData)
     SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
-void WorldLevel::HandleMenuSelectChar(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleSelectChar(StringHash eventType, VariantMap& eventData)
 {
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->Logout();
     net->Login(net->accountName_, net->accountPass_);
-}
-
-void WorldLevel::HandleMenuMail(StringHash eventType, VariantMap& eventData)
-{
-    if (!mailWindow_)
-        mailWindow_ = new MailWindow(context_);
-    FwClient* net = context_->GetSubsystem<FwClient>();
-    net->GetMailHeaders();
-    mailWindow_->visible_ = true;
 }
 
 void WorldLevel::HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData)
@@ -501,6 +495,15 @@ void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantM
 void WorldLevel::HandleToggleMap(StringHash eventType, VariantMap& eventData)
 {
     ToggleMap();
+}
+
+void WorldLevel::HandleToggleMail(StringHash eventType, VariantMap& eventData)
+{
+    if (!mailWindow_)
+        mailWindow_ = new MailWindow(context_);
+    FwClient* net = context_->GetSubsystem<FwClient>();
+    net->GetMailHeaders();
+    mailWindow_->visible_ = true;
 }
 
 void WorldLevel::HandleDefaultAction(StringHash eventType, VariantMap& eventData)
@@ -581,10 +584,6 @@ void WorldLevel::CreateUI()
 
     gameMenu_ = uiRoot_->CreateChild<GameMenu>();
     gameMenu_->SetAlignment(HA_LEFT, VA_TOP);
-    SubscribeToEvent(gameMenu_, E_GAMEMENU_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleMenuLogout));
-    SubscribeToEvent(gameMenu_, E_GAMEMENU_SELECTCHAR, URHO3D_HANDLER(WorldLevel, HandleMenuSelectChar));
-    SubscribeToEvent(gameMenu_, E_GAMEMENU_MAIL , URHO3D_HANDLER(WorldLevel, HandleMenuMail));
-    SubscribeToEvent(gameMenu_, E_GAMEMENU_PARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
 
     targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
     targetWindow_->SetAlignment(HA_CENTER, VA_TOP);

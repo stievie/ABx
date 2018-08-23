@@ -89,12 +89,12 @@ private:
     void HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
-    void HandleMenuLogout(StringHash eventType, VariantMap& eventData);
-    void HandleMenuSelectChar(StringHash eventType, VariantMap& eventData);
-    void HandleMenuMail(StringHash eventType, VariantMap& eventData);
+    void HandleLogout(StringHash eventType, VariantMap& eventData);
+    void HandleSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
     void HandleToggleMap(StringHash eventType, VariantMap& eventData);
+    void HandleToggleMail(StringHash eventType, VariantMap& eventData);
     void HandleDefaultAction(StringHash eventType, VariantMap& eventData);
     void HandleAutoRun(StringHash eventType, VariantMap& eventData);
 

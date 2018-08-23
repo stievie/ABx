@@ -41,6 +41,7 @@ private:
     /// Handle the logic update event.
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-    void HandleGameMenuOptionsClicked(StringHash eventType, VariantMap& eventData);
+    void HandleToggleOptions(StringHash eventType, VariantMap& eventData);
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
+    void HandleExitProgram(StringHash eventType, VariantMap& eventData);
 };

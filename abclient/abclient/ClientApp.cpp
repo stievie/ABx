@@ -93,8 +93,9 @@ ClientApp::ClientApp(Context* context) :
 
     // Subscribe key down event
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
-    SubscribeToEvent(E_GAMEMENU_OPTIONSWINDOW, URHO3D_HANDLER(ClientApp, HandleGameMenuOptionsClicked));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
+    SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
 }
 
 /**
@@ -227,7 +228,7 @@ void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 //#endif
 }
 
-void ClientApp::HandleGameMenuOptionsClicked(StringHash eventType, VariantMap& eventData)
+void ClientApp::HandleToggleOptions(StringHash eventType, VariantMap& eventData)
 {
     if (!optionsWindow_)
     {
@@ -264,6 +265,12 @@ void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData
     VariantMap& e = GetEventDataMap();
     e[P_FILENAME] = file;
     SendEvent(AbEvents::E_SCREENSHOTTAKEN, e);
+}
+
+void ClientApp::HandleExitProgram(StringHash eventType, VariantMap& eventData)
+{
+    Engine* engine = context_->GetSubsystem<Engine>();
+    engine->Exit();
 }
 
 /**
