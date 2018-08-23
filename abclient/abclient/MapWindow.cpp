@@ -23,7 +23,7 @@ MapWindow::MapWindow(Context* context) :
     SetAlignment(HA_CENTER, VA_CENTER);
     // Black color
     SetColor(Color::BLACK);
-    SetOpacity(0.7f);
+    SetOpacity(0.6f);
     // Make it top most
     SetBringToBack(false);
 

@@ -10,6 +10,7 @@
 #include <AB/ProtocolCodes.h>
 #include "FwClient.h"
 #include "ItemsCache.h"
+#include "Shortcuts.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -255,9 +256,10 @@ void Actor::FixedUpdate(float timeStep)
 
 void Actor::Update(float timeStep)
 {
-    Input* input = GetSubsystem<Input>();
-    bool isLCtrlDown = input->GetScancodeDown(SCANCODE_CTRL);
-    if (hovered_ || playerSelected_ || isLCtrlDown)
+    Shortcuts* sc = GetSubsystem<Shortcuts>();
+
+    bool highlight = sc->Test(AbEvents::E_SC_HIGHLIGHTOBJECTS);
+    if (hovered_ || playerSelected_ || highlight)
     {
         const Vector3& pos = node_->GetPosition();
         IntVector2 screenPos = WorldToScreenPoint(pos);
@@ -283,7 +285,7 @@ void Actor::Update(float timeStep)
         }
     }
 
-    nameLabel_->SetVisible(isLCtrlDown || hovered_ || playerSelected_);
+    nameLabel_->SetVisible(highlight || hovered_ || playerSelected_);
     hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
 }
 

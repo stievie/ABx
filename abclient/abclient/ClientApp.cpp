@@ -19,6 +19,9 @@
 #include "PartyWindow.h"
 #include "GameMenu.h"
 #include "HealthBar.h"
+#include <chrono>
+#include <ctime>
+#include "Options.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -91,6 +94,7 @@ ClientApp::ClientApp(Context* context) :
     // Subscribe key down event
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
     SubscribeToEvent(E_GAMEMENU_OPTIONSWINDOW, URHO3D_HANDLER(ClientApp, HandleGameMenuOptionsClicked));
+    SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
 }
 
 /**
@@ -231,6 +235,35 @@ void ClientApp::HandleGameMenuOptionsClicked(StringHash eventType, VariantMap& e
         return;
     }
     optionsWindow_->SetVisible(!optionsWindow_->IsVisible());
+}
+
+void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData)
+{
+    Graphics* graphics = GetSubsystem<Graphics>();
+    Image image(context_);
+    graphics->TakeScreenShot(image);
+    String path = AddTrailingSlash(Options::GetPrefPath()) + "screens/";
+
+    if (!Options::CreateDir(path))
+    {
+        URHO3D_LOGERRORF("Failed to create directory %s", path);
+        return;
+    }
+    std::chrono::time_point<std::chrono::system_clock> time_point;
+    time_point = std::chrono::system_clock::now();
+    std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
+    tm p;
+    localtime_s(&p, &ttp);
+    char chr[50];
+    strftime(chr, 50, "%Y-%m-%d-%H-%M-%S", (const tm*)&p);
+
+    String file = path + "fw" + String(chr) + ".png";
+    image.SavePNG(file);
+
+    using namespace AbEvents::ScreenshotTaken;
+    VariantMap& e = GetEventDataMap();
+    e[P_FILENAME] = file;
+    SendEvent(AbEvents::E_SCREENSHOTTAKEN, e);
 }
 
 /**

@@ -2,6 +2,10 @@
 #include "Options.h"
 #include <SDL/SDL_filesystem.h>
 #include "Shortcuts.h"
+#if defined(__linux__) || defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(__unix__) || defined(__unix)
+#include <sys/stat.h>
+#include <sys/types.h>
+#endif
 
 #include <Urho3D/DebugNew.h>
 
@@ -55,11 +59,11 @@ void Options::Save()
 {
     // TODO
     String prefPath = GetPrefPath();
-#ifdef _WIN32
-    CreateDirectoryW(WString(prefPath).CString(), nullptr);
-#else
-#error Implement this stuff
-#endif
+    if (!CreateDir(prefPath))
+    {
+        URHO3D_LOGERRORF("Failed to create directory %s", prefPath);
+        return;
+    }
     SharedPtr<XMLFile> xml(new XMLFile(context_));
 
     XMLElement root = xml->CreateRoot("settings");
@@ -512,4 +516,31 @@ String Options::GetPrefPath()
         return ret;
     }
     return String();
+}
+
+#if defined(__linux__) || defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(__unix__) || defined(__unix)
+static bool rek_makedir(char* path)
+{
+    char *sep = strrchr(path, '/');
+    if (sep != NULL)
+    {
+        *sep = 0;
+        if (!rek_mkdir(path))
+            return false;
+        *sep = '/';
+  }
+    if (mkdir(path, 0777) && errno != EEXIST)
+        return false;
+    return true;
+}
+#endif
+
+bool Options::CreateDir(const String& path)
+{
+#ifdef _WIN32
+    return (CreateDirectoryW(WString(path).CString(), nullptr) == TRUE) ||
+        GetLastError() == ERROR_ALREADY_EXISTS;
+#else
+    return (rek_makedir(path.CString());
+#endif
 }

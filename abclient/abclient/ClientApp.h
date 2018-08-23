@@ -42,4 +42,5 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleGameMenuOptionsClicked(StringHash eventType, VariantMap& eventData);
+    void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
 };

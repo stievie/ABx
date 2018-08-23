@@ -6,6 +6,11 @@ using namespace Urho3D;
 namespace AbEvents
 {
 
+URHO3D_EVENT(E_SCREENSHOTTAKEN, ScreenshotTaken)
+{
+    URHO3D_PARAM(P_FILENAME, Filename);        // String
+}
+
 URHO3D_EVENT(E_SERVERJOINED, ServerJoined)
 {
     URHO3D_PARAM(P_SERVERID, ServerId);        // String
@@ -191,6 +196,10 @@ URHO3D_EVENT(E_SC_DEFAULTACTION, DefaultAction)
 }
 
 URHO3D_EVENT(E_SC_AUTORUN, AutopRun)
+{
+}
+
+URHO3D_EVENT(E_SC_TAKESCREENSHOT, TakeScreenshot)
 {
 }
 

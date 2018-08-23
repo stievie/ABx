@@ -86,6 +86,7 @@ public:
     void UpdateAudio();
 
     static String GetPrefPath();
+    static bool CreateDir(const String& path);
 private:
     int width_;
     int height_;

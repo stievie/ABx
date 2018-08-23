@@ -78,8 +78,7 @@ private:
     SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
 
-    void HandleServerJoined(StringHash eventType, VariantMap& eventData);
-    void HandleServerLeft(StringHash eventType, VariantMap& eventData);
+    void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseWheel(StringHash eventType, VariantMap& eventData);

@@ -51,6 +51,8 @@ void Shortcuts::AddDefault()
 
     Add({ AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down, SCANCODE_UNKNOWN, KEY_M });
     Add({ AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party window", Trigger::Down, SCANCODE_UNKNOWN, KEY_P });
+
+    Add({ AbEvents::E_SC_TAKESCREENSHOT, "Take Screenshot", Trigger::Down, SCANCODE_UNKNOWN, KEY_PRINTSCREEN });
 }
 
 void Shortcuts::Load(const XMLElement& root)
@@ -106,6 +108,10 @@ void Shortcuts::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     for (auto& t : triggered_)
         t.second_ = false;
+
+    UI* ui = GetSubsystem<UI>();
+    if (ui->GetFocusElement())
+        return;
 
     Input* input = GetSubsystem<Input>();
     for (const auto& sc : shortcuts_)

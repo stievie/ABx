@@ -40,6 +40,7 @@ ChatWindow::ChatWindow(Context* context) :
 
     chatLog_ = dynamic_cast<ListView*>(GetChild("ChatLog", true));
 
+    SubscribeToEvent(AbEvents::E_SCREENSHOTTAKEN, URHO3D_HANDLER(ChatWindow, HandleScreenshotTaken));
     SubscribeToEvent(AbEvents::E_SERVERMESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
     SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
     SubscribeToEvent(AbEvents::E_MAILINBOX, URHO3D_HANDLER(ChatWindow, HandleMailInboxMessage));
@@ -578,6 +579,19 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         break;
     }
     }
+}
+
+void ChatWindow::HandleScreenshotTaken(StringHash eventType, VariantMap& eventData)
+{
+    using namespace AbEvents::ScreenshotTaken;
+    const String& file = eventData[P_FILENAME].GetString();
+
+    kainjow::mustache::mustache tpl{ "Screenshot saved to {{file}}" };
+    kainjow::mustache::data data;
+    data.set("file", std::string(file.CString()));
+    std::string t = tpl.render(data);
+
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleEditFocused(StringHash eventType, VariantMap& eventData)

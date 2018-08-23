@@ -35,6 +35,7 @@ Key bindings are not customizable yet.
 * `Y`: Reverse camera
 * `Space`: Goto selected object or follow selected object when it's moving
 * `Ctrl`: Highlight objects
+* `Print Screen`: Take screenshot
 
 ### Mouse
 

@@ -8,6 +8,7 @@ class ChatWindow : public UIElement
     URHO3D_OBJECT(ChatWindow, UIElement);
 private:
     SharedPtr<BorderImage> background_;
+    void HandleScreenshotTaken(StringHash eventType, VariantMap& eventData);
     void HandleEditFocused(StringHash eventType, VariantMap& eventData);
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);

@@ -25,8 +25,8 @@ void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
 
-    SubscribeToEvent(AbEvents::E_SERVERJOINED, URHO3D_HANDLER(WorldLevel, HandleServerJoined));
-    SubscribeToEvent(AbEvents::E_SERVERLEFT, URHO3D_HANDLER(WorldLevel, HandleServerLeft));
+    SubscribeToEvent(AbEvents::E_SERVERJOINED, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
+    SubscribeToEvent(AbEvents::E_SERVERLEFT, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
     SubscribeToEvent(AbEvents::E_OBJECTSPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectSpawn));
     SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECTPOSUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
@@ -87,13 +87,7 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
     return false;
 }
 
-void WorldLevel::HandleServerJoined(StringHash eventType, VariantMap & eventData)
-{
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UpdateServers();
-}
-
-void WorldLevel::HandleServerLeft(StringHash eventType, VariantMap & eventData)
+void WorldLevel::HandleServerJoinedLeft(StringHash eventType, VariantMap & eventData)
 {
     FwClient* client = GetSubsystem<FwClient>();
     client->UpdateServers();
@@ -216,57 +210,54 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
 
     using namespace Update;
 
-    UI* ui = GetSubsystem<UI>();
-    if (ui->GetFocusElement())
+    if (!player_)
         return;
+
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
-    if (player_)
+    // Clear previous controls
+    player_->controls_.Set(CTRL_MOVE_FORWARD | CTRL_MOVE_BACK | CTRL_MOVE_LEFT | CTRL_MOVE_RIGHT |
+        CTRL_TURN_LEFT | CTRL_TURN_RIGHT, false);
+
+    // Update controls using keys
+    if (sc->Test(AbEvents::E_SC_MOVEFORWARD))
     {
-        // Clear previous controls
-        player_->controls_.Set(CTRL_MOVE_FORWARD | CTRL_MOVE_BACK | CTRL_MOVE_LEFT | CTRL_MOVE_RIGHT |
-            CTRL_TURN_LEFT | CTRL_TURN_RIGHT, false);
-
-        // Update controls using keys
-        if (sc->Test(AbEvents::E_SC_MOVEFORWARD))
-        {
-            player_->controls_.Set(CTRL_MOVE_FORWARD, true);
-            if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
-                player_->controls_.Set(CTRL_MOVE_LOCK, false);
-        }
-        if (sc->Test(AbEvents::E_SC_MOVEBACKWARD))
-        {
-            player_->controls_.Set(CTRL_MOVE_BACK, true);
-            if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
-                player_->controls_.Set(CTRL_MOVE_LOCK, false);
-        }
-        player_->controls_.Set(CTRL_MOVE_LEFT, sc->Test(AbEvents::E_SC_MOVELEFT));
-        player_->controls_.Set(CTRL_MOVE_RIGHT, sc->Test(AbEvents::E_SC_MOVERIGHT));
-
-        if (sc->Test(AbEvents::E_SC_MOUSELOOK))
-        {
-            player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
-                sc->Test(AbEvents::E_SC_TURNLEFT));
-            player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
-                sc->Test(AbEvents::E_SC_TURNRIGHT));
-
-            Input* input = GetSubsystem<Input>();
-            player_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
-            player_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
-        }
-        else
-        {
-            player_->controls_.Set(CTRL_TURN_LEFT, sc->Test(AbEvents::E_SC_TURNLEFT));
-            player_->controls_.Set(CTRL_TURN_RIGHT, sc->Test(AbEvents::E_SC_TURNRIGHT));
-        }
-
-        // Limit pitch
-        player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
-        if (player_->controls_.yaw_ > 360.0f)
-            player_->controls_.yaw_ -= 360.0f;
-        else if (player_->controls_.yaw_ < 0.0f)
-            player_->controls_.yaw_ += 360.0f;
+        player_->controls_.Set(CTRL_MOVE_FORWARD, true);
+        if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
+            player_->controls_.Set(CTRL_MOVE_LOCK, false);
     }
+    if (sc->Test(AbEvents::E_SC_MOVEBACKWARD))
+    {
+        player_->controls_.Set(CTRL_MOVE_BACK, true);
+        if (!sc->Test(AbEvents::E_SC_KEEPRUNNING))
+            player_->controls_.Set(CTRL_MOVE_LOCK, false);
+    }
+    player_->controls_.Set(CTRL_MOVE_LEFT, sc->Test(AbEvents::E_SC_MOVELEFT));
+    player_->controls_.Set(CTRL_MOVE_RIGHT, sc->Test(AbEvents::E_SC_MOVERIGHT));
+
+    if (sc->Test(AbEvents::E_SC_MOUSELOOK))
+    {
+        player_->controls_.Set(CTRL_MOVE_LEFT, player_->controls_.IsDown(CTRL_MOVE_LEFT) ||
+            sc->Test(AbEvents::E_SC_TURNLEFT));
+        player_->controls_.Set(CTRL_MOVE_RIGHT, player_->controls_.IsDown(CTRL_MOVE_RIGHT) ||
+            sc->Test(AbEvents::E_SC_TURNRIGHT));
+
+        Input* input = GetSubsystem<Input>();
+        player_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
+        player_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
+    }
+    else
+    {
+        player_->controls_.Set(CTRL_TURN_LEFT, sc->Test(AbEvents::E_SC_TURNLEFT));
+        player_->controls_.Set(CTRL_TURN_RIGHT, sc->Test(AbEvents::E_SC_TURNRIGHT));
+    }
+
+    // Limit pitch
+    player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
+    if (player_->controls_.yaw_ > 360.0f)
+        player_->controls_.yaw_ -= 360.0f;
+    else if (player_->controls_.yaw_ < 0.0f)
+        player_->controls_.yaw_ += 360.0f;
 }
 
 void WorldLevel::SetupViewport()
