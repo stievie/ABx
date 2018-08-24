@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2387.5" />
-	<attribute name="Next Replicated Node ID" value="30" />
+	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16783850" />
-	<attribute name="Next Local Component ID" value="16784617" />
+	<attribute name="Next Local Node ID" value="16784000" />
+	<attribute name="Next Local Component ID" value="16784806" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -532,5 +532,40 @@
 			<attribute name="Shape Type" value="ConvexHull" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
+	</node>
+	<node id="30">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="grass_patch" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="52.8564 31.6983 31.0726" />
+		<attribute name="Rotation" value="0.986168 0.0520946 -0.135102 -0.0806545" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16784678">
+			<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+			<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+			<attribute name="Occlusion LOD Level" value="1" />
+		</component>
+	</node>
+	<node id="31">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="massive_swamptree" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-41.4223 33.4814 -61.8397" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16784803">
+			<attribute name="Model" value="Model;Models/massive_swamptree.mdl" />
+			<attribute name="Material" value="Material;Materials/massive_swamptree_01_bark.xml;Materials/massive_swamptree_01_bark.xml;Materials/massive_swamptree_01_branch.xml" />
+			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Occlusion LOD Level" value="1" />
+		</component>
+		<component type="RigidBody" id="16784804">
+			<attribute name="Physics Position" value="-41.4223 33.4814 -61.8397" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16784805" />
 	</node>
 </scene>

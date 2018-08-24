@@ -84,7 +84,7 @@ void Shortcuts::Load(const XMLElement& root)
         Shortcut sc;
         if (Get(id, sc) && sc.customizeable_)
         {
-            sc.scanCode_ = static_cast<Scancode>(paramElem.GetUInt("scancode"));
+            // Only key can be customized to scan code
             sc.keyboardKey_ = static_cast<Key>(paramElem.GetUInt("key"));
             sc.mouseButton_ = static_cast<MouseButton>(paramElem.GetUInt("mousebutton"));
             sc.modifiers_ = paramElem.GetUInt("modifiers");
@@ -103,7 +103,6 @@ void Shortcuts::Save(XMLElement& root)
 
         XMLElement param = root.CreateChild("shortcut");
         param.SetUInt("id", sc.id);
-        param.SetUInt("scancode", static_cast<unsigned>(sc.scanCode_));
         param.SetUInt("key", static_cast<unsigned>(sc.keyboardKey_));
         param.SetUInt("mousebutton", static_cast<unsigned>(sc.mouseButton_));
         param.SetUInt("modifiers", sc.modifiers_);
