@@ -34,7 +34,7 @@ Key bindings are not customizable yet.
 * `R`: Keep running
 * `Y`: Reverse camera
 * `Space`: Goto selected object or follow selected object when it's moving
-* `Ctrl`: Highlight objects
+* `LeftCtrl`: Highlight objects
 * `PrtScr`: Take screenshot
 * `^`: Show/hide chat window
 * `Backspace`: Hide UI
