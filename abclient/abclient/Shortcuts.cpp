@@ -44,7 +44,7 @@ void Shortcuts::AddDefault()
 
     Add({ AbEvents::E_SC_KEEPRUNNING, "Keep running", Trigger::Down, SCANCODE_UNKNOWN, KEY_R });
     Add({ AbEvents::E_SC_REVERSECAMERA, "Reverse Camera", Trigger::None, SCANCODE_UNKNOWN, KEY_Y });
-    Add({ AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None, SCANCODE_LCTRL, KEY_UNKNOWN });
+    Add({ AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None, SCANCODE_UNKNOWN, KEY_LCTRL });
 
     Add({ AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, SCANCODE_UNKNOWN, KEY_UNKNOWN, MOUSEB_RIGHT, 0, false });
 
@@ -60,6 +60,16 @@ void Shortcuts::AddDefault()
     Add({ AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down });
     Add({ AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down });
     Add({ AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down });
+
+    // Chat Window
+    Add({ AbEvents::E_SC_CHATGENERAL, "General", Trigger::Up, SCANCODE_UNKNOWN, KEY_1, MOUSEB_NONE, SC_MOD_SHIFT });
+    Add({ AbEvents::E_SC_CHATGUILD, "Guild", Trigger::Up, SCANCODE_UNKNOWN, KEY_2, MOUSEB_NONE, SC_MOD_SHIFT });
+    Add({ AbEvents::E_SC_CHATPARTY, "Party", Trigger::Up, SCANCODE_UNKNOWN, KEY_3, MOUSEB_NONE, SC_MOD_SHIFT });
+    Add({ AbEvents::E_SC_CHATTRADE, "Trade", Trigger::Up, SCANCODE_UNKNOWN, KEY_4, MOUSEB_NONE, SC_MOD_SHIFT });
+    Add({ AbEvents::E_SC_CHATWHISPER, "Whisper", Trigger::Up, SCANCODE_UNKNOWN, KEY_5, MOUSEB_NONE, SC_MOD_SHIFT });
+    Add({ AbEvents::E_SC_TOGGLECHATWINDOW, "Whisper", Trigger::Down, SCANCODE_UNKNOWN, KEY_CARET });
+
+    Add({ AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down, SCANCODE_UNKNOWN, KEY_BACKSPACE });
 }
 
 void Shortcuts::Load(const XMLElement& root)

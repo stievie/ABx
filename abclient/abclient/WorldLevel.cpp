@@ -37,6 +37,8 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
     SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLECHATWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleChatWindow));
+    SubscribeToEvent(AbEvents::E_SC_HIDEUI, URHO3D_HANDLER(WorldLevel, HandleHideUI));
     SubscribeToEvent(AbEvents::E_SC_AUTORUN, URHO3D_HANDLER(WorldLevel, HandleAutoRun));
     SubscribeToEvent(AbEvents::E_SC_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleLogout));
     SubscribeToEvent(AbEvents::E_SC_SELECTCHARACTER, URHO3D_HANDLER(WorldLevel, HandleSelectChar));
@@ -506,6 +508,11 @@ void WorldLevel::HandleToggleMail(StringHash eventType, VariantMap& eventData)
     mailWindow_->visible_ = true;
 }
 
+void WorldLevel::HandleHideUI(StringHash eventType, VariantMap& eventData)
+{
+    uiRoot_->SetVisible(!uiRoot_->IsVisible());
+}
+
 void WorldLevel::HandleDefaultAction(StringHash eventType, VariantMap& eventData)
 {
     player_->FollowSelected();
@@ -514,6 +521,11 @@ void WorldLevel::HandleDefaultAction(StringHash eventType, VariantMap& eventData
 void WorldLevel::HandleAutoRun(StringHash eventType, VariantMap& eventData)
 {
     player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
+}
+
+void WorldLevel::HandleToggleChatWindow(StringHash eventType, VariantMap& eventData)
+{
+    chatWindow_->SetVisible(!chatWindow_->IsVisible());
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,

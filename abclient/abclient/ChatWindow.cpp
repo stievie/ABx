@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include <TimeUtils.h>
 #include <Mustache/mustache.hpp>
+#include "Shortcuts.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -45,6 +46,11 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
     SubscribeToEvent(AbEvents::E_MAILINBOX, URHO3D_HANDLER(ChatWindow, HandleMailInboxMessage));
     SubscribeToEvent(AbEvents::E_MAILREAD, URHO3D_HANDLER(ChatWindow, HandleMailReadMessage));
+    SubscribeToEvent(AbEvents::E_SC_CHATGENERAL, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGeneral));
+    SubscribeToEvent(AbEvents::E_SC_CHATGUILD, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGuild));
+    SubscribeToEvent(AbEvents::E_SC_CHATPARTY, URHO3D_HANDLER(ChatWindow, HandleShortcutChatParty));
+    SubscribeToEvent(AbEvents::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
+    SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     static bool firstStart = true;
@@ -66,28 +72,29 @@ void ChatWindow::FocusEdit()
 
 void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel)
 {
-    static const IntVector2 tabSize(60, 20);
+    static const IntVector2 tabSize(90, 20);
     static const IntVector2 tabBodySize(500, 20);
 
+    Shortcuts* scs = GetSubsystem<Shortcuts>();
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     TabElement *tabElement = tabs->CreateTab(tabSize, tabBodySize);
     tabElement->tabText_->SetFont(cache->GetResource<Font>("Fonts/ClearSans-Regular.ttf"), 10);
     switch (channel)
     {
     case AB::GameProtocol::ChatChannelGeneral:
-        tabElement->tabText_->SetText("General");
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGENERAL, "General"));
         break;
     case AB::GameProtocol::ChatChannelParty:
-        tabElement->tabText_->SetText("Party");
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATPARTY, "Party"));
         break;
     case AB::GameProtocol::ChatChannelGuild:
-        tabElement->tabText_->SetText("Guild");
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGUILD, "Guild"));
         break;
     case AB::GameProtocol::ChatChannelTrade:
-        tabElement->tabText_->SetText("Trade");
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATTRADE, "Trade"));
         break;
     case AB::GameProtocol::ChatChannelWhisper:
-        tabElement->tabText_->SetText("Whisper");
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper"));
         tabIndexWhisper_ = tabs->GetTabCount() - 1;
         break;
     }
@@ -407,11 +414,41 @@ void ChatWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventDa
     AddLine(String(mail.message.c_str(), (unsigned)mail.message.size()), "ChatLogMailText");
 }
 
+void ChatWindow::HandleShortcutChatGeneral(StringHash eventType, VariantMap& eventData)
+{
+    tabgroup_->SetSelectedIndex(0);
+    FocusEdit();
+}
+
+void ChatWindow::HandleShortcutChatGuild(StringHash eventType, VariantMap& eventData)
+{
+    tabgroup_->SetSelectedIndex(1);
+    FocusEdit();
+}
+
 void ChatWindow::HandleServerMessageServerId(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
     const String& id = eventData[P_DATA].GetString();
     AddLine(id, "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleShortcutChatParty(StringHash eventType, VariantMap& eventData)
+{
+    tabgroup_->SetSelectedIndex(2);
+    FocusEdit();
+}
+
+void ChatWindow::HandleShortcutChatTrade(StringHash eventType, VariantMap& eventData)
+{
+    tabgroup_->SetSelectedIndex(3);
+    FocusEdit();
+}
+
+void ChatWindow::HandleShortcutChatWhisper(StringHash eventType, VariantMap& eventData)
+{
+    tabgroup_->SetSelectedIndex(tabIndexWhisper_);
+    FocusEdit();
 }
 
 void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)

@@ -36,6 +36,10 @@ Key bindings are not customizable yet.
 * `Space`: Goto selected object or follow selected object when it's moving
 * `Ctrl`: Highlight objects
 * `PrtScr`: Take screenshot
+* `^`: Show/hide chat window
+* `Backspace`: Hide UI
+
+Other shortcuts are shown in `[` `]`.
 
 ### Mouse
 

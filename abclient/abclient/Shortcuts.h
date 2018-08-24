@@ -74,7 +74,7 @@ struct Shortcut
             result += "RightAlt+";
         return result;
     }
-    String ShortcutName() const
+    String ShortcutNameLong() const
     {
         if (keyboardKey_ != KEY_UNKNOWN)
         {
@@ -96,6 +96,42 @@ struct Shortcut
             return "[" + ModName() + "X2MB]";
         }
         return "";
+    }
+    String ShortcutName() const
+    {
+#ifdef _WIN32
+        if (modifiers_ != 0)
+        {
+            unsigned char keyboardState[256] = {};
+            if (modifiers_ & SC_MOD_CTRL)
+                keyboardState[VK_CONTROL] = 0xff;
+            if (modifiers_ & SC_MOD_LCTRL)
+                keyboardState[VK_LCONTROL] = 0xff;
+            if (modifiers_ & SC_MOD_RCTRL)
+                keyboardState[VK_RCONTROL] = 0xff;
+            if (modifiers_ & SC_MOD_SHIFT)
+                keyboardState[VK_SHIFT] = 0xff;
+            if (modifiers_ & SC_MOD_LSHIFT)
+                keyboardState[VK_LSHIFT] = 0xff;
+            if (modifiers_ & SC_MOD_RSHIFT)
+                keyboardState[VK_RSHIFT] = 0xff;
+            if (modifiers_ & SC_MOD_ALT)
+                keyboardState[VK_MENU] = 0xff;
+            if (modifiers_ & SC_MOD_LALT)
+                keyboardState[VK_LMENU] = 0xff;
+            if (modifiers_ & SC_MOD_RALT)
+                keyboardState[VK_RMENU] = 0xff;
+            wchar_t buff[256];
+            int length = ToUnicode(static_cast<unsigned>(keyboardKey_), scanCode_, keyboardState, buff, 256, 0);
+            if (length > 0)
+            {
+                buff[length] = '\0';
+                String res(buff);
+                return "[" + res + "]";
+            }
+        }
+#endif
+        return ShortcutNameLong();
     }
     String Caption(unsigned align = 0) const
     {
