@@ -12,6 +12,7 @@ private:
     void SubscribeEvents();
     TabElement* CreateTab(TabGroup* tabs, const String& page);
     void CreatePageGeneral(TabElement* tabElement);
+    void LoadWindow(Window* wnd, const String& fileName);
 public:
     static void RegisterObject(Context* context);
 

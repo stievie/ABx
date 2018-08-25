@@ -7,7 +7,7 @@ const Shortcut Shortcut::EMPTY;
 Shortcuts::Shortcuts(Context* context) :
     Object(context)
 {
-    AddDefault();
+    Init();
     SubscribeToEvents();
 }
 
@@ -28,7 +28,7 @@ void Shortcuts::Add(const Shortcut& sc)
     triggered_[sc.event_] = false;
 }
 
-void Shortcuts::AddDefault()
+void Shortcuts::Init()
 {
     Add({ AbEvents::E_SC_MOVEFORWARD, "Move forward", Trigger::None, SCANCODE_UNKNOWN, KEY_W });
     Add({ AbEvents::E_SC_MOVEFORWARD, "Move forward", Trigger::None, SCANCODE_UNKNOWN, KEY_UP });
@@ -58,7 +58,7 @@ void Shortcuts::AddDefault()
     Add({ AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down });
     Add({ AbEvents::E_SC_LOGOUT, "Logout", Trigger::Down });
     Add({ AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down });
-    Add({ AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down });
+    Add({ AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down, SCANCODE_UNKNOWN, KEY_F12 });
     Add({ AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down });
 
     // Chat Window

@@ -176,7 +176,7 @@ private:
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void Add(const Shortcut& sc);
-    void AddDefault();
+    void Init();
     bool ModifiersMatch(unsigned mods);
 public:
     Shortcuts(Context* context);

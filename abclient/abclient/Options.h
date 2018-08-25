@@ -1,5 +1,12 @@
 #pragma once
 
+enum class WindowMode
+{
+    Windowed,
+    Fullcreeen,
+    Borderless
+};
+
 class Options : public Object
 {
     URHO3D_OBJECT(Options, Object);
@@ -18,6 +25,15 @@ public:
     void Load();
     void Save();
 
+    WindowMode GetWindowMode() const
+    {
+        if (fullscreen_)
+            return WindowMode::Fullcreeen;
+        if (borderless_)
+            return WindowMode::Borderless;
+        return WindowMode::Windowed;
+    }
+    void SetWindowMode(WindowMode mode);
     int GetWidth() const { return width_; }
     void SetWidth(int value);
     int GetHeight() const { return height_; }

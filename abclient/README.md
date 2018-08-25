@@ -10,12 +10,13 @@ Microsoft and install it.
 
 ## Uninstall
 
-Delete the extracted files.
+1. Delete the extracted files.
+2. Delete the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7)
 
 ## Run
 
 1. Start `fw.exe`
-2. Create an account
+2. Create an account (you can/should leave the Email field empty)
 3. Create a character
 4. Enter world
 

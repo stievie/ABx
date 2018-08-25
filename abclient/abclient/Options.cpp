@@ -281,6 +281,22 @@ const String& Options::GetRenderPath() const
     return renderPath_;
 }
 
+void Options::SetWindowMode(WindowMode mode)
+{
+    if (mode != GetWindowMode())
+    {
+        if (mode == WindowMode::Fullcreeen)
+            SetFullscreen(true);
+        else if (mode == WindowMode::Borderless)
+            SetBorderless(true);
+        else
+        {
+            SetFullscreen(false);
+            SetBorderless(false);
+        }
+    }
+}
+
 void Options::SetWidth(int value)
 {
     if (width_ != value)

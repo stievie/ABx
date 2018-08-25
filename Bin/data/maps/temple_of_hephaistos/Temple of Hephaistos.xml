@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2387.5" />
-	<attribute name="Next Replicated Node ID" value="30" />
-	<attribute name="Next Replicated Component ID" value="40" />
-	<attribute name="Next Local Node ID" value="16783500" />
-	<attribute name="Next Local Component ID" value="16784190" />
+	<attribute name="Next Replicated Node ID" value="32" />
+	<attribute name="Next Replicated Component ID" value="42" />
+	<attribute name="Next Local Node ID" value="16784000" />
+	<attribute name="Next Local Component ID" value="16784806" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -54,6 +54,7 @@
 			<attribute name="Vertex Spacing" value="1 0.2 1" />
 			<attribute name="Smooth Height Map" value="true" />
 			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16780673">
 			<attribute name="Collision Layer" value="2" />
@@ -83,6 +84,11 @@
 			<attribute name="Model" value="Model;Models/Plane.mdl" />
 			<attribute name="Material" value="Material;Materials/Water.xml" />
 		</component>
+		<component type="RigidBody" id="40">
+			<attribute name="Physics Position" value="0 24.54 0" />
+			<attribute name="Collision Layer" value="2" />
+		</component>
+		<component type="CollisionShape" id="41" />
 	</node>
 	<node id="16780421">
 		<attribute name="Is Enabled" value="true" />
@@ -121,7 +127,7 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781727">
-			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Shape Type" value="ConvexHull" />
 			<attribute name="Model" value="Model;Models/Temple1.mdl" />
 		</component>
 	</node>
@@ -240,7 +246,7 @@
 		<attribute name="Tags" />
 		<attribute name="Position" value="-24.3243 24.3612 -1.18003" />
 		<attribute name="Rotation" value="0.996163 0 -0.0875206 0" />
-		<attribute name="Scale" value="1.01344 1 1" />
+		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="16781982">
 			<attribute name="Model" value="Model;Models/Pier1.mdl" />
@@ -251,13 +257,10 @@
 		<component type="RigidBody" id="16781983">
 			<attribute name="Physics Rotation" value="0.996163 0 -0.0875205 0" />
 			<attribute name="Physics Position" value="-24.3243 24.3612 -1.18003" />
-			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781984">
 			<attribute name="Shape Type" value="ConvexHull" />
-			<attribute name="Size" value="1 1 1" />
-			<attribute name="Offset Position" value="0 0 0" />
 			<attribute name="Model" value="Model;Models/Pier1.mdl" />
 		</component>
 	</node>
@@ -306,7 +309,6 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16782433">
-			<attribute name="Size" value="0.482762 0.82544 0.709132" />
 			<attribute name="Offset Position" value="0 0.432543 0.0375472" />
 			<attribute name="Model" value="Model;Models/Amboss.mdl" />
 		</component>
@@ -530,5 +532,40 @@
 			<attribute name="Shape Type" value="ConvexHull" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
+	</node>
+	<node id="30">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="grass_patch" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="52.8564 31.6983 31.0726" />
+		<attribute name="Rotation" value="0.986168 0.0520946 -0.135102 -0.0806545" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16784678">
+			<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+			<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+			<attribute name="Occlusion LOD Level" value="1" />
+		</component>
+	</node>
+	<node id="31">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="massive_swamptree" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-41.4223 33.4814 -61.8397" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16784803">
+			<attribute name="Model" value="Model;Models/massive_swamptree.mdl" />
+			<attribute name="Material" value="Material;Materials/massive_swamptree_01_bark.xml;Materials/massive_swamptree_01_bark.xml;Materials/massive_swamptree_01_branch.xml" />
+			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Occlusion LOD Level" value="1" />
+		</component>
+		<component type="RigidBody" id="16784804">
+			<attribute name="Physics Position" value="-41.4223 33.4814 -61.8397" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16784805" />
 	</node>
 </scene>
