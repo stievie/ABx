@@ -36,7 +36,10 @@ OptionsWindow::OptionsWindow(Context* context) :
         TabElement* elem = CreateTab(tabgroup_, "General");
         CreatePageGeneral(elem);
     }
-    CreateTab(tabgroup_, "Graphics");
+    {
+        TabElement* elem = CreateTab(tabgroup_, "Graphics");
+        CreatePageGraphics(elem);
+    }
     CreateTab(tabgroup_, "Audio");
     CreateTab(tabgroup_, "Input");
 
@@ -115,7 +118,6 @@ TabElement* OptionsWindow::CreateTab(TabGroup* tabs, const String& page)
 
 void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
     BorderImage* page = tabElement->tabBody_;
 
     Window* wnd = page->CreateChild<Window>();
@@ -183,5 +185,18 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         Options* opt = GetSubsystem<Options>();
         opt->disableMouseWalking_ = checked;
     });
+}
+
+void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
+{
+    BorderImage* page = tabElement->tabBody_;
+
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/OptionPageGraphics.xml");
+    wnd->SetPosition(0, 0);
+    wnd->SetWidth(390);
+    wnd->UpdateLayout();
+
+    Options* opts = GetSubsystem<Options>();
 }
 
