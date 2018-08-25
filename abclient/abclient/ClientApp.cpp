@@ -170,15 +170,6 @@ void ClientApp::Start()
     renderer->SetHDRRendering(true);
     renderer->SetSpecularLighting(true);
 
-    // We subscribe to the events we'd like to handle.
-    // In this example we will be showing what most of them do,
-    // but in reality you would only subscribe to the events
-    // you really need to handle.
-    // These are sort of subscribed in the order in which the engine
-    // would send the events. Read each handler method's comment for
-    // details.
-    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(ClientApp, HandleUpdate));
-
     SwitchScene("LoginLevel");
 }
 
@@ -271,19 +262,4 @@ void ClientApp::HandleExitProgram(StringHash eventType, VariantMap& eventData)
 {
     Engine* engine = context_->GetSubsystem<Engine>();
     engine->Exit();
-}
-
-/**
-* Your non-rendering logic should be handled here.
-* This could be moving objects, checking collisions and reaction, etc.
-*/
-void ClientApp::HandleUpdate(StringHash eventType, VariantMap& eventData)
-{
-    Input* input = GetSubsystem<Input>();
-
-    if (input->GetKeyPress(KEY_F11))
-    {
-        Options* options = GetSubsystem<Options>();
-        options->SetFullscreen(!options->GetFullscreen());
-    }
 }

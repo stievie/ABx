@@ -271,7 +271,7 @@ void Options::SetShadows(bool value)
 {
     if (shadows_ != value)
     {
-        shadows_ = false;
+        shadows_ = value;
         GetSubsystem<Renderer>()->SetDrawShadows(shadows_);
     }
 }

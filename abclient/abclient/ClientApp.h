@@ -21,11 +21,11 @@ public:
     /// Construct.
     ClientApp(Context* context);
 
-    virtual void Setup();
+    void Setup() override;
 
     /// Setup after engine initialization and before running the main loop.
-    virtual void Start();
-    virtual void Stop();
+    void Start() override;
+    void Stop() override;
 protected:
 
 private:
@@ -38,8 +38,6 @@ private:
 
     void SetWindowTitleAndIcon();
     void SwitchScene(const String& sceneName);
-    /// Handle the logic update event.
-    void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleToggleOptions(StringHash eventType, VariantMap& eventData);
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
