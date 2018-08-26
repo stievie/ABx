@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Name" value="OptionPageGeneral" />
+	<attribute name="Position" value="500 300" />
+	<attribute name="Size" value="300 90" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Opacity" value="0.9" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Border" value="2 2 2 2" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="4 4 4 4" />
+	<attribute name="Resize Border" value="8 8 8 8" />
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Gain Master" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="GainMasterSlider" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="48 0 64 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Value" value="1" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="16 0 32 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+			</element>
+		</element>
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Gain Effect" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="GainEffectSlider" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="48 0 64 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Value" value="1" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="16 0 32 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+			</element>
+		</element>
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Gain Ambient" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="GainAmbientSlider" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="48 0 64 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Value" value="1" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="16 0 32 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+			</element>
+		</element>
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Gain Voice" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="GainVoiceSlider" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="48 0 64 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Value" value="1" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="16 0 32 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+			</element>
+		</element>
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Gain Music" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="GainMusicSlider" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="48 0 64 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Value" value="1" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="16 0 32 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+			</element>
+		</element>
+	</element>
+</element>

@@ -447,9 +447,10 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
     switch (creatureState_)
     {
     case AB::GameProtocol::CreatureStateIdle:
-        if (prevState != AB::GameProtocol::CreatureStateEmoteSit)
-            fadeTime = 0.0f;
-        else
+//        if (prevState != AB::GameProtocol::CreatureStateEmoteSit)
+//            fadeTime = 0.0f;
+//        else
+        if (prevState == AB::GameProtocol::CreatureStateEmoteSit)
             fadeTime = 0.5f;
         break;
     case AB::GameProtocol::CreatureStateMoving:

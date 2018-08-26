@@ -41,7 +41,10 @@ OptionsWindow::OptionsWindow(Context* context) :
         TabElement* elem = CreateTab(tabgroup_, "Graphics");
         CreatePageGraphics(elem);
     }
-    CreateTab(tabgroup_, "Audio");
+    {
+        TabElement* elem = CreateTab(tabgroup_, "Audio");
+        CreatePageAudio(elem);
+    }
     CreateTab(tabgroup_, "Input");
     CreateTab(tabgroup_, "Interface");
 
@@ -129,7 +132,6 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
     Options* opts = GetSubsystem<Options>();
 
     DropDownList* windowDropdown = dynamic_cast<DropDownList*>(wnd->GetChild("WindowDropdown", true));
-
     {
         Text* result = new Text(context_);
         result->SetText("Windowed");
@@ -451,5 +453,79 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         });
     }
 
+}
+
+void OptionsWindow::CreatePageAudio(TabElement* tabElement)
+{
+    BorderImage* page = tabElement->tabBody_;
+
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/OptionPageAudio.xml");
+    wnd->SetPosition(0, 0);
+    wnd->SetWidth(390);
+    wnd->UpdateLayout();
+
+    Options* opts = GetSubsystem<Options>();
+
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMasterSlider", true));
+        slider->SetValue(opts->gainMaster_);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            opt->gainMaster_ = value;
+            opt->UpdateAudio();
+        });
+    }
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainEffectSlider", true));
+        slider->SetValue(opts->gainEffect_);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            opt->gainEffect_ = value;
+            opt->UpdateAudio();
+        });
+    }
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainAmbientSlider", true));
+        slider->SetValue(opts->gainAmbient_);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            opt->gainAmbient_ = value;
+            opt->UpdateAudio();
+        });
+    }
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainVoiceSlider", true));
+        slider->SetValue(opts->gainVoice_);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            opt->gainVoice_ = value;
+            opt->UpdateAudio();
+        });
+    }
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMusicSlider", true));
+        slider->SetValue(opts->gainMusic_);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            opt->gainMusic_ = value;
+            opt->UpdateAudio();
+        });
+    }
 }
 

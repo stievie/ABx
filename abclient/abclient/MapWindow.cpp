@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MapWindow.h"
 #include "FwClient.h"
+#include "LevelManager.h"
 
 MapWindow::MapWindow(Context* context) :
     Window(context)
@@ -82,8 +83,12 @@ void MapWindow::HandleMapGameClicked(StringHash eventType, VariantMap& eventData
 {
     SetVisible(false);
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
-    FwClient* net = context_->GetSubsystem<FwClient>();
     const String uuid = sender->GetVar("uuid").GetString();
 
-    net->ChangeWorld(uuid);
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    if (lm->GetMapUuid().Compare(uuid) != 0)
+    {
+        FwClient* net = context_->GetSubsystem<FwClient>();
+        net->ChangeWorld(uuid);
+    }
 }

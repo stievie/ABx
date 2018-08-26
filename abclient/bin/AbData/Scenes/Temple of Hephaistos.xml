@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2387.5" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16784000" />
-	<attribute name="Next Local Component ID" value="16784806" />
+	<attribute name="Next Local Node ID" value="16784050" />
+	<attribute name="Next Local Component ID" value="16784867" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -163,9 +163,8 @@
 		</component>
 		<component type="SoundSource3D" id="16782107">
 			<attribute name="Sound" value="Sound;Sounds/FX/fireloop.wav" />
-			<attribute name="Type" value="Ambient" />
 			<attribute name="Frequency" value="44100" />
-			<attribute name="Gain" value="0.02" />
+			<attribute name="Gain" value="0.8" />
 			<attribute name="Is Playing" value="true" />
 			<attribute name="Play Position" value="13654" />
 			<attribute name="Far Distance" value="10" />

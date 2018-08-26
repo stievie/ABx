@@ -22,6 +22,12 @@ public:
     bool stickCameraToHead_;
     bool disableMouseWalking_;
 
+    float gainMaster_;
+    float gainEffect_;
+    float gainAmbient_;
+    float gainVoice_;
+    float gainMusic_;
+
     void Load();
     void Save();
 
@@ -125,12 +131,6 @@ private:
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     String renderPath_;
-
-    float gainMaster_;
-    float gainEffect_;
-    float gainAmbient_;
-    float gainVoice_;
-    float gainMusic_;
 
     void UpdateGraphicsMode();
     void LoadSettings();
