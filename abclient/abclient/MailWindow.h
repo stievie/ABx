@@ -1,8 +1,8 @@
 #pragma once
 
-class MailWindow : public Object
+class MailWindow : public Window
 {
-    URHO3D_OBJECT(MailWindow, Object);
+    URHO3D_OBJECT(MailWindow, Window);
 public:
     static void RegisterObject(Context* context);
 
@@ -11,9 +11,7 @@ public:
     {
         UnsubscribeFromAllEvents();
     }
-    bool visible_;
 private:
-    void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void SubscribeToEvents();
 };
 

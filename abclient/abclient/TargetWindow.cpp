@@ -18,6 +18,7 @@ TargetWindow::TargetWindow(Context* context) :
     targetText_ = dynamic_cast<Text*>(GetChild("TargetText", true));
     Button* clearTarget = dynamic_cast<Button*>(GetChild("ClearTargetButton", true));
     SubscribeToEvent(clearTarget, E_RELEASED, URHO3D_HANDLER(TargetWindow, HandleClearTargetClicked));
+    SetAlignment(HA_CENTER, VA_TOP);
 }
 
 TargetWindow::~TargetWindow()

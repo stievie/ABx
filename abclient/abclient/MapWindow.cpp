@@ -72,7 +72,6 @@ MapWindow::MapWindow(Context* context) :
         AddChild(button);
         i++;
     }
-    BringToFront();
 }
 
 MapWindow::~MapWindow()
@@ -81,6 +80,7 @@ MapWindow::~MapWindow()
 
 void MapWindow::HandleMapGameClicked(StringHash eventType, VariantMap& eventData)
 {
+    SetVisible(false);
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
     FwClient* net = context_->GetSubsystem<FwClient>();
     const String uuid = sender->GetVar("uuid").GetString();

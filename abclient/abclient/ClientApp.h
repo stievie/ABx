@@ -6,6 +6,7 @@
 #include "OptionsWindow.h"
 #include "ItemsCache.h"
 #include "Shortcuts.h"
+#include "WindowManager.h"
 
 using namespace Urho3D;
 
@@ -34,7 +35,7 @@ private:
     SharedPtr<Shortcuts> shortcuts_;
     SharedPtr<ItemsCache> itemsCache_;
     SharedPtr<LevelManager> levelManager_;
-    SharedPtr<OptionsWindow> optionsWindow_;
+    SharedPtr<WindowManager> windowManager_;
 
     void SetWindowTitleAndIcon();
     void SwitchScene(const String& sceneName);

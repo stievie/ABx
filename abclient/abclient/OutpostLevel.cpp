@@ -3,6 +3,7 @@
 #include "FwClient.h"
 #include "AbEvents.h"
 #include "LevelManager.h"
+#include "WindowManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -39,7 +40,10 @@ void OutpostLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     WorldLevel::CreateUI();
-    partyWindow_ = uiRoot_->CreateChild<PartyWindow>();
+
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    partyWindow_.DynamicCast(wm->GetWindow(WINDOW_PARTY));
+    uiRoot_->AddChild(partyWindow_);
     partyWindow_->SetMode(PartyWindowMode::ModeOutpost);
 }
 

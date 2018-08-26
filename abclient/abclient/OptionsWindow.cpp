@@ -43,6 +43,7 @@ OptionsWindow::OptionsWindow(Context* context) :
     }
     CreateTab(tabgroup_, "Audio");
     CreateTab(tabgroup_, "Input");
+    CreateTab(tabgroup_, "Interface");
 
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
@@ -98,7 +99,7 @@ void OptionsWindow::SubscribeEvents()
 
 TabElement* OptionsWindow::CreateTab(TabGroup* tabs, const String& page)
 {
-    static const IntVector2 tabSize(60, 20);
+    static const IntVector2 tabSize(65, 20);
     static const IntVector2 tabBodySize(500, 380);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();

@@ -17,6 +17,7 @@ GameMenu::GameMenu(Context* context) :
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     CreateMenuBar();
     SubscribeToEvent(AbEvents::E_GOTSERVICES, URHO3D_HANDLER(GameMenu, HandleGotServices));
+    SetAlignment(HA_LEFT, VA_TOP);
 }
 
 GameMenu::~GameMenu()

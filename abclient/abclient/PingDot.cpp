@@ -26,6 +26,9 @@ PingDot::PingDot(Context* context) :
     tooltipText_ = dynamic_cast<Text*>(GetChild("TooltipText", true));
     SetTexture(cache->GetResource<Texture2D>("Textures/ping3d.png"));
     SetImageRect(PingDot::PING_NONE);
+
+    SetSize(IntVector2(24, 24));
+    SetAlignment(HA_RIGHT, VA_BOTTOM);
 }
 
 PingDot::~PingDot()

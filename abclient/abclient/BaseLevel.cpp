@@ -4,6 +4,7 @@
 #include "LevelManager.h"
 #include <Urho3D/UI/MessageBox.h>
 #include "FwClient.h"
+#include "ClientApp.h"
 
 #include <Urho3D/DebugNew.h>
 

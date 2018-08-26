@@ -283,6 +283,7 @@
     </ClCompile>
     <ClCompile Include="TabGroup.cpp" />
     <ClCompile Include="TargetWindow.cpp" />
+    <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="CharCreateLevel.h" />
@@ -321,6 +322,7 @@
     <ClInclude Include="TabGroup.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TargetWindow.h" />
+    <ClInclude Include="WindowManager.h" />
     <ClInclude Include="WorldLevel.h" />
   </ItemGroup>
   <ItemGroup>

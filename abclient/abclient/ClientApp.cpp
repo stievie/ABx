@@ -67,6 +67,9 @@ ClientApp::ClientApp(Context* context) :
     options_->Load();
     context->RegisterSubsystem(options_);
 
+    windowManager_ = new WindowManager(context);
+    context->RegisterSubsystem(windowManager_);
+
     client_ = new FwClient(context);
     context->RegisterSubsystem(client_);
     itemsCache_ = new ItemsCache(context);
@@ -221,12 +224,9 @@ void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 
 void ClientApp::HandleToggleOptions(StringHash eventType, VariantMap& eventData)
 {
-    if (!optionsWindow_)
-    {
-        optionsWindow_ = GetSubsystem<UI>()->GetRoot()->CreateChild<OptionsWindow>();
-        return;
-    }
-    optionsWindow_->SetVisible(!optionsWindow_->IsVisible());
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS);
+    optionsWnd->SetVisible(!optionsWnd->IsVisible());
 }
 
 void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData)

@@ -3,6 +3,7 @@
 #include "FwClient.h"
 #include "AbEvents.h"
 #include "LevelManager.h"
+#include "WindowManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -39,8 +40,11 @@ void PvpCombatLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     WorldLevel::CreateUI();
-    partyWindow_ = uiRoot_->CreateChild<PartyWindow>();
-    partyWindow_->SetMode(PartyWindowMode::ModeGame);
+
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    partyWindow_.DynamicCast(wm->GetWindow(WINDOW_PARTY));
+    uiRoot_->AddChild(partyWindow_);
+    partyWindow_->SetMode(PartyWindowMode::ModeOutpost);
 }
 
 void PvpCombatLevel::CreateScene()

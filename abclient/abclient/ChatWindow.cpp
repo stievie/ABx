@@ -59,6 +59,8 @@ ChatWindow::ChatWindow(Context* context) :
         AddLine("Hi, type /help for available commands.", "ChatLogServerInfoText");
         firstStart = false;
     }
+
+    SetAlignment(HA_LEFT, VA_BOTTOM);
 }
 
 void ChatWindow::FocusEdit()

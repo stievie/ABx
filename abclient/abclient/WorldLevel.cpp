@@ -9,6 +9,7 @@
 #include "TimeUtils.h"
 #include "Options.h"
 #include "Shortcuts.h"
+#include "WindowManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -505,7 +506,7 @@ void WorldLevel::HandleToggleMail(StringHash eventType, VariantMap& eventData)
         mailWindow_ = new MailWindow(context_);
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->GetMailHeaders();
-    mailWindow_->visible_ = true;
+    mailWindow_->SetVisible(!mailWindow_->IsVisible());
 }
 
 void WorldLevel::HandleHideUI(StringHash eventType, VariantMap& eventData)
@@ -589,21 +590,20 @@ void WorldLevel::CreateUI()
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS);
+    uiRoot_->AddChild(optionsWnd);
 
-    chatWindow_ = uiRoot_->CreateChild<ChatWindow>();
-    chatWindow_->SetAlignment(HA_LEFT, VA_BOTTOM);
+    chatWindow_.DynamicCast(wm->GetWindow(WINDOW_CHAT));
+    uiRoot_->AddChild(chatWindow_);
 
-    gameMenu_ = uiRoot_->CreateChild<GameMenu>();
-    gameMenu_->SetAlignment(HA_LEFT, VA_TOP);
+    gameMenu_.DynamicCast(wm->GetWindow(WINDOW_GAMEMENU));
+    uiRoot_->AddChild(gameMenu_);
 
-    targetWindow_ = uiRoot_->CreateChild<TargetWindow>();
-    targetWindow_->SetAlignment(HA_CENTER, VA_TOP);
-    targetWindow_->SetVisible(false);
+    targetWindow_.DynamicCast(wm->GetWindow(WINDOW_TARGET));
+    uiRoot_->AddChild(targetWindow_);
     SubscribeToEvent(targetWindow_, E_TARGETWINDOW_UNSELECT, URHO3D_HANDLER(WorldLevel, HandleTargetWindowUnselectObject));
 
-    // Ping
-    pingDot_ = uiRoot_->CreateChild<PingDot>();
-    pingDot_->SetSize(IntVector2(24, 24));
-    pingDot_->SetAlignment(HA_RIGHT, VA_BOTTOM);
+    pingDot_.DynamicCast(wm->GetWindow(WINDOW_PINGDOT));
+    uiRoot_->AddChild(pingDot_);
 }
