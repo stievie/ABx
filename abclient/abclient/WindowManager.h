@@ -21,8 +21,12 @@ public:
     {
         return windows_;
     }
+    bool IsLoaded(const StringHash& hash) const
+    {
+        return windows_.Contains(hash);
+    }
 
-    SharedPtr<UIElement> GetWindow(const StringHash& hash);
+    SharedPtr<UIElement> GetWindow(const StringHash& hash, bool addToUi = false);
     void SaveWindows();
 };
 

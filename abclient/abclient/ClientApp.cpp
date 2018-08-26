@@ -226,7 +226,7 @@ void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 void ClientApp::HandleToggleOptions(StringHash eventType, VariantMap& eventData)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS);
+    SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS, true);
     optionsWnd->SetVisible(!optionsWnd->IsVisible());
 }
 

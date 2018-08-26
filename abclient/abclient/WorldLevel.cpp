@@ -591,9 +591,13 @@ void WorldLevel::CreateUI()
     BaseLevel::CreateUI();
 
     WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS);
-    uiRoot_->AddChild(optionsWnd);
 
+    if (wm->IsLoaded(WINDOW_OPTIONS))
+        uiRoot_->AddChild(wm->GetWindow(WINDOW_OPTIONS));
+    if (wm->IsLoaded(WINDOW_MAIL))
+        uiRoot_->AddChild(wm->GetWindow(WINDOW_MAIL));
+
+    // Alway add these windows, create if not yet done
     chatWindow_.DynamicCast(wm->GetWindow(WINDOW_CHAT));
     uiRoot_->AddChild(chatWindow_);
 

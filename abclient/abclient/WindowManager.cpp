@@ -19,7 +19,7 @@ WindowManager::~WindowManager()
 {
 }
 
-SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash)
+SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addToUi /* = false */)
 {
     Options* opts = GetSubsystem<Options>();
     if (!windows_.Contains(hash))
@@ -76,7 +76,16 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash)
     }
 
     if (windows_.Contains(hash))
-        return windows_[hash];
+    {
+        auto wnd = windows_[hash];
+        if (addToUi)
+        {
+            UIElement* root = GetSubsystem<UI>()->GetRoot();
+            if (!root->GetChild(wnd->GetName()))
+                root->AddChild(wnd);
+        }
+        return wnd;
+    }
     return SharedPtr<UIElement>();
 }
 
