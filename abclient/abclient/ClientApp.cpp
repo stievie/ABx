@@ -188,6 +188,7 @@ void ClientApp::Stop()
     cli->Logout();
     Options* options = GetSubsystem<Options>();
     options->Save();
+    windowManager_->SaveWindows();
 }
 
 void ClientApp::SetWindowTitleAndIcon()

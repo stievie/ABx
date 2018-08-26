@@ -10,6 +10,7 @@ MailWindow::MailWindow(Context* context) :
     Window(context)
 {
     SubscribeToEvents();
+    SetName("MailWindow");
 }
 
 void MailWindow::SubscribeToEvents()

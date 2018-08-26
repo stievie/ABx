@@ -43,7 +43,6 @@ PartyWindow::PartyWindow(Context* context) :
     memberContainer_ = dynamic_cast<UIElement*>(GetChild("MemberContainer", true));
     partyContainer_ = dynamic_cast<UIElement*>(GetChild("PartyContainer", true));
 
-    // TODO: Load size/position from settings
     SetSize(272, 156);
     auto* graphics = GetSubsystem<Graphics>();
     SetPosition(graphics->GetWidth() - GetWidth() - 5, graphics->GetHeight() / 2 - (GetHeight() / 2));

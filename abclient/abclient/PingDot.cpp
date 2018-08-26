@@ -19,6 +19,7 @@ PingDot::PingDot(Context* context) :
     Button(context),
     lastUpdate_(0.0f)
 {
+    SetName("PingDot");
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/PingTooltip.xml");

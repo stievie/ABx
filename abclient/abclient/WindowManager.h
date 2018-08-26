@@ -23,5 +23,6 @@ public:
     }
 
     SharedPtr<UIElement> GetWindow(const StringHash& hash);
+    void SaveWindows();
 };
 

@@ -10,6 +10,7 @@ void TargetWindow::RegisterObject(Context* context)
 TargetWindow::TargetWindow(Context* context) :
     UIElement(context)
 {
+    SetName("TargetWindow");
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/TargetWindow.xml");

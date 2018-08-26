@@ -14,6 +14,7 @@ void GameMenu::RegisterObject(Context* context)
 GameMenu::GameMenu(Context* context) :
     UIElement(context)
 {
+    SetName("GameMenu");
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     CreateMenuBar();
     SubscribeToEvent(AbEvents::E_GOTSERVICES, URHO3D_HANDLER(GameMenu, HandleGotServices));

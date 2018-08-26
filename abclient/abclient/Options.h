@@ -106,6 +106,8 @@ public:
     const String& GetRenderPath() const;
 
     void UpdateAudio();
+    void LoadWindow(UIElement* window);
+    void SaveWindow(UIElement* window);
 
     static String GetPrefPath();
     static bool CreateDir(const String& path);

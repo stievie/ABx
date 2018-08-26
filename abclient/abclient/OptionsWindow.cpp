@@ -51,7 +51,6 @@ OptionsWindow::OptionsWindow(Context* context) :
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
 
-    // TODO: Load size/position from settings
     SetSize(400, 433);
     auto* graphics = GetSubsystem<Graphics>();
     SetPosition(graphics->GetWidth() / 2 - (GetWidth() / 2), graphics->GetHeight() / 2 - (GetHeight() / 2));

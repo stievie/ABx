@@ -522,6 +522,43 @@ void Options::UpdateAudio()
     audio->SetMasterGain(SOUND_MUSIC, gainMusic_);
 }
 
+void Options::LoadWindow(UIElement* window)
+{
+    String prefPath = AddTrailingSlash(GetPrefPath());
+    File file(context_, prefPath + "settings.xml");
+    SharedPtr<XMLFile> xml(new XMLFile(context_));
+    if (!xml->Load(file))
+        return;
+
+    XMLElement root = xml->GetRoot();
+    XMLElement elem = root.GetChild(window->GetName());
+    if (!elem)
+        return;
+
+    window->SetPosition(elem.GetIntVector2("position"));
+    window->SetSize(elem.GetIntVector2("size"));
+    window->SetVisible(elem.GetBool("visible"));
+}
+
+void Options::SaveWindow(UIElement* window)
+{
+    String prefPath = AddTrailingSlash(GetPrefPath());
+    String fileName = prefPath + "settings.xml";
+    File file(context_, fileName);
+    SharedPtr<XMLFile> xml(new XMLFile(context_));
+    if (!xml->Load(file))
+        return;
+
+    XMLElement root = xml->GetRoot();
+    root.RemoveChild(window->GetName());
+    XMLElement param = root.CreateChild(window->GetName());
+    param.SetIntVector2("position", window->GetPosition());
+    param.SetIntVector2("size", window->GetSize());
+    param.SetBool("visible", window->IsVisible());
+
+    xml->SaveFile(fileName);
+}
+
 String Options::GetPrefPath()
 {
     char* pathName = SDL_GetPrefPath("Trill", "FW");

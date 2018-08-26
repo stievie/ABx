@@ -1,6 +1,5 @@
 # TODO
 
-* abclient: Chat window should be part of BaseLevel (or ClientApp?) and hidden on other lavels than WorldLevel to keep history
 * abserv: TerrainPatch raycast query
 * ? High ping when FPS < 60
 * abmsgs: Continues dispatching messages -> Delete after message has been dispached.
