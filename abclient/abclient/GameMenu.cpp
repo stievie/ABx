@@ -36,7 +36,6 @@ void GameMenu::CreateMenuBar()
     menu_ = CreateMenu(menuBar_, "Menu");
     menuBar_->SetHeight(20);
     menuBar_->SetFixedWidth(menu_->GetWidth());
-    SubscribeToEvent(menu_, E_MENUSELECTED, URHO3D_HANDLER(GameMenu, HandleRootMenuUsed));
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
@@ -106,14 +105,9 @@ Window* GameMenu::CreatePopup(Menu* baseMenu)
     return popup;
 }
 
-void GameMenu::HandleRootMenuUsed(StringHash eventType, VariantMap& eventData)
-{
-}
-
 void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
-    SetVisible(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
 }
@@ -135,7 +129,6 @@ void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
 void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
-    SetVisible(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_LOGOUT, e);
 }
@@ -143,7 +136,6 @@ void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)
 void GameMenu::HandleSelectCharUsed(StringHash eventType, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
-    SetVisible(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_SELECTCHARACTER, e);
 }

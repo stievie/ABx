@@ -34,6 +34,7 @@ Key bindings are not customizable yet.
 * `E`: Move right
 * `R`: Keep running
 * `Y`: Reverse camera
+* `F`: Select self
 * `Space`: Goto selected object or follow selected object when it's moving
 * `LeftCtrl`: Highlight objects
 * `PrtScr`: Take screenshot

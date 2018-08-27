@@ -6,7 +6,6 @@ static const StringHash WINDOW_MAIL("MailWindow");
 static const StringHash WINDOW_PARTY("PartyWindow");
 static const StringHash WINDOW_PINGDOT("PingDot");
 static const StringHash WINDOW_TARGET("TargetWindow");
-static const StringHash WINDOW_GAMEMENU("GameMenu");
 static const StringHash WINDOW_NEWMAIL("NewMailWindow");
 
 class WindowManager : public Object

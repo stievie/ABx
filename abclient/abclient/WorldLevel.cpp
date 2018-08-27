@@ -22,6 +22,10 @@ WorldLevel::WorldLevel(Context* context) :
 {
 }
 
+WorldLevel::~WorldLevel()
+{
+}
+
 void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
@@ -582,12 +586,15 @@ void WorldLevel::CreateUI()
 
     WindowManager* wm = GetSubsystem<WindowManager>();
 
+    Options* op = GetSubsystem<Options>();
+    gameMenu_ = SharedPtr<GameMenu>(new GameMenu(context_));
+    op->LoadWindow(gameMenu_);
+    gameMenu_->SetVisible(true);
+    uiRoot_->AddChild(gameMenu_);
+
     // Alway add these windows, create if not yet done
     chatWindow_.DynamicCast(wm->GetWindow(WINDOW_CHAT));
     uiRoot_->AddChild(chatWindow_);
-
-    gameMenu_.DynamicCast(wm->GetWindow(WINDOW_GAMEMENU));
-    uiRoot_->AddChild(gameMenu_);
 
     targetWindow_.DynamicCast(wm->GetWindow(WINDOW_TARGET));
     uiRoot_->AddChild(targetWindow_);

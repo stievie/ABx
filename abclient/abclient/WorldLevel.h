@@ -20,6 +20,7 @@ class WorldLevel : public BaseLevel
     URHO3D_OBJECT(WorldLevel, BaseLevel);
 public:
     WorldLevel(Context* context);
+    ~WorldLevel();
     void CreatePlayer(uint32_t id,
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,

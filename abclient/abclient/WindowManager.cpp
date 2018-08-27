@@ -74,13 +74,6 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
-        else if (hash == WINDOW_GAMEMENU)
-        {
-            SharedPtr<GameMenu> wnd = SharedPtr<GameMenu>(new GameMenu(context_));
-            wnd->SetVisible(true);
-            opts->LoadWindow(wnd);
-            windows_[hash] = wnd;
-        }
     }
 
     if (windows_.Contains(hash))

@@ -12,7 +12,6 @@ private:
     Menu* CreateMenuItem(UIElement* parent, const String& title, EventHandler* handler);
     BorderImage* CreateSeparator(UIElement* parent);
     Window* CreatePopup(Menu* baseMenu);
-    void HandleRootMenuUsed(StringHash eventType, VariantMap& eventData);
     void HandleExitUsed(StringHash eventType, VariantMap& eventData);
     void HandleServerUsed(StringHash eventType, VariantMap& eventData);
     void HandleLogoutUsed(StringHash eventType, VariantMap& eventData);
