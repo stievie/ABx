@@ -22,6 +22,7 @@
 #include <chrono>
 #include <ctime>
 #include "Options.h"
+#include "MultiLineEdit.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -52,6 +53,8 @@ URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
 ClientApp::ClientApp(Context* context) :
     Application(context)
 {
+    MultiLineEdit::RegisterObject(context);
+
     // Register levels
     context->RegisterFactory<LoginLevel>();
     context->RegisterFactory<CreateAccountLevel>();
@@ -99,6 +102,8 @@ ClientApp::ClientApp(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(ClientApp, HandleToggleMail));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(ClientApp, HandleToggleNewMail));
 }
 
 /**
@@ -228,6 +233,20 @@ void ClientApp::HandleToggleOptions(StringHash eventType, VariantMap& eventData)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS, true);
     optionsWnd->SetVisible(!optionsWnd->IsVisible());
+}
+
+void ClientApp::HandleToggleMail(StringHash eventType, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_MAIL, true);
+    wnd->SetVisible(!wnd->IsVisible());
+}
+
+void ClientApp::HandleToggleNewMail(StringHash eventType, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_NEWMAIL, true);
+    wnd->SetVisible(!wnd->IsVisible());
 }
 
 void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData)

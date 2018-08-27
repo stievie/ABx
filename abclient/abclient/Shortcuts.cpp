@@ -70,6 +70,8 @@ void Shortcuts::Init()
     Add({ AbEvents::E_SC_TOGGLECHATWINDOW, "Whisper", Trigger::Down, SCANCODE_UNKNOWN, KEY_CARET });
 
     Add({ AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down, SCANCODE_UNKNOWN, KEY_BACKSPACE });
+
+    Add({ AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down });
 }
 
 void Shortcuts::Load(const XMLElement& root)

@@ -137,6 +137,11 @@ URHO3D_EVENT(E_PARTYINVITEREMOVED, PartyInviteRemoved)
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 
+URHO3D_EVENT(E_NEWMAIL , NewMail)
+{
+    URHO3D_PARAM(P_COUNT, Count);           // int
+}
+
 URHO3D_EVENT(E_ACTORNAMECLICKED, ActorNameClicked)
 {
     URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
@@ -204,6 +209,10 @@ URHO3D_EVENT(E_SC_TAKESCREENSHOT, TakeScreenshot)
 }
 
 URHO3D_EVENT(E_SC_TOGGLEMAILWINDOW, ToggleMailWindow)
+{
+}
+
+URHO3D_EVENT(E_SC_TOGGLENEWMAILWINDOW, ToggleNewMailWindow)
 {
 }
 

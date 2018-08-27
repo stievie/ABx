@@ -29,8 +29,6 @@ private:
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
-    void HandleMailInboxMessage(StringHash eventType, VariantMap& eventData);
-    void HandleMailReadMessage(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatGeneral(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatGuild(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatParty(StringHash eventType, VariantMap& eventData);

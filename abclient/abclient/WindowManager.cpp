@@ -9,6 +9,7 @@
 #include "GameMenu.h"
 #include "MapWindow.h"
 #include "Options.h"
+#include "NewMailWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -27,8 +28,8 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         if (hash == WINDOW_OPTIONS)
         {
             SharedPtr<OptionsWindow> wnd = SharedPtr<OptionsWindow>(new OptionsWindow(context_));
-            wnd->SetVisible(false);
             opts->LoadWindow(wnd);
+            wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_CHAT)
@@ -41,8 +42,15 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         else if (hash == WINDOW_MAIL)
         {
             SharedPtr<MailWindow> wnd = SharedPtr<MailWindow>(new MailWindow(context_));
-            wnd->SetVisible(true);
             opts->LoadWindow(wnd);
+            wnd->SetVisible(false);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_NEWMAIL)
+        {
+            SharedPtr<NewMailWindow> wnd = SharedPtr<NewMailWindow>(new NewMailWindow(context_));
+            opts->LoadWindow(wnd);
+            wnd->SetVisible(false);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_PARTY)

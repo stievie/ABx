@@ -36,7 +36,6 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
     SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
     SubscribeToEvent(AbEvents::E_SC_TOGGLECHATWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleChatWindow));
     SubscribeToEvent(AbEvents::E_SC_HIDEUI, URHO3D_HANDLER(WorldLevel, HandleHideUI));
@@ -500,15 +499,6 @@ void WorldLevel::HandleToggleMap(StringHash eventType, VariantMap& eventData)
     ToggleMap();
 }
 
-void WorldLevel::HandleToggleMail(StringHash eventType, VariantMap& eventData)
-{
-    if (!mailWindow_)
-        mailWindow_ = new MailWindow(context_);
-    FwClient* net = context_->GetSubsystem<FwClient>();
-    net->GetMailHeaders();
-    mailWindow_->SetVisible(!mailWindow_->IsVisible());
-}
-
 void WorldLevel::HandleHideUI(StringHash eventType, VariantMap& eventData)
 {
     uiRoot_->SetVisible(!uiRoot_->IsVisible());
@@ -591,11 +581,6 @@ void WorldLevel::CreateUI()
     BaseLevel::CreateUI();
 
     WindowManager* wm = GetSubsystem<WindowManager>();
-
-    if (wm->IsLoaded(WINDOW_OPTIONS))
-        uiRoot_->AddChild(wm->GetWindow(WINDOW_OPTIONS));
-    if (wm->IsLoaded(WINDOW_MAIL))
-        uiRoot_->AddChild(wm->GetWindow(WINDOW_MAIL));
 
     // Alway add these windows, create if not yet done
     chatWindow_.DynamicCast(wm->GetWindow(WINDOW_CHAT));

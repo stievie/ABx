@@ -41,6 +41,8 @@ private:
     void SwitchScene(const String& sceneName);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleToggleOptions(StringHash eventType, VariantMap& eventData);
+    void HandleToggleMail(StringHash eventType, VariantMap& eventData);
+    void HandleToggleNewMail(StringHash eventType, VariantMap& eventData);
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
     void HandleExitProgram(StringHash eventType, VariantMap& eventData);
 };

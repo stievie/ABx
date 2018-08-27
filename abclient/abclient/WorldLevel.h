@@ -94,7 +94,6 @@ private:
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
     void HandleToggleMap(StringHash eventType, VariantMap& eventData);
-    void HandleToggleMail(StringHash eventType, VariantMap& eventData);
     void HandleHideUI(StringHash eventType, VariantMap& eventData);
     void HandleDefaultAction(StringHash eventType, VariantMap& eventData);
     void HandleAutoRun(StringHash eventType, VariantMap& eventData);

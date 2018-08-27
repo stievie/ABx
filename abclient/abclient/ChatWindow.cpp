@@ -45,8 +45,6 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SCREENSHOTTAKEN, URHO3D_HANDLER(ChatWindow, HandleScreenshotTaken));
     SubscribeToEvent(AbEvents::E_SERVERMESSAGE, URHO3D_HANDLER(ChatWindow, HandleServerMessage));
     SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(ChatWindow, HandleChatMessage));
-    SubscribeToEvent(AbEvents::E_MAILINBOX, URHO3D_HANDLER(ChatWindow, HandleMailInboxMessage));
-    SubscribeToEvent(AbEvents::E_MAILREAD, URHO3D_HANDLER(ChatWindow, HandleMailReadMessage));
     SubscribeToEvent(AbEvents::E_SC_CHATGENERAL, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGeneral));
     SubscribeToEvent(AbEvents::E_SC_CHATGUILD, URHO3D_HANDLER(ChatWindow, HandleShortcutChatGuild));
     SubscribeToEvent(AbEvents::E_SC_CHATPARTY, URHO3D_HANDLER(ChatWindow, HandleShortcutChatParty));
@@ -289,6 +287,11 @@ void ChatWindow::HandleServerMessageNewMail(VariantMap& eventData)
     data.set("count", std::string(count.CString(), count.Length()));
     std::string t = tpl.render(data);
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::NewMail;
+    eData[P_COUNT] = atoi(count.CString());
+    SendEvent(AbEvents::E_NEWMAIL, eData);
 }
 
 void ChatWindow::HandleServerMessageMailSent(VariantMap& eventData)
@@ -372,51 +375,6 @@ void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void ChatWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventData)
-{
-    FwClient* client = context_->GetSubsystem<FwClient>();
-    const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
-    {
-        kainjow::mustache::mustache tpl{ "You have {{count}} mails:" };
-        kainjow::mustache::data data;
-        data.set("count", std::to_string(headers.size()));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogChatText");
-    }
-    kainjow::mustache::mustache tpl{ "#{{index}}: <{{from}}> on {{date}}: {{subject}}" };
-    unsigned i = 0;
-    for (const auto& header : headers)
-    {
-        ++i;
-        kainjow::mustache::data data;
-        data.set("index", std::to_string(i));
-        data.set("from", header.fromName);
-        data.set("subject", header.subject);
-        data.set("date", Client::format_tick(header.created));
-        std::string t = tpl.render(data);
-        AddLine(String(header.fromName.c_str()),
-            String(t.c_str(), (unsigned)t.size()),
-            header.isRead ? "ChatLogMailText" : "ChatLogMailUnreadText");
-    }
-}
-
-void ChatWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventData)
-{
-    FwClient* client = context_->GetSubsystem<FwClient>();
-    const AB::Entities::Mail mail = client->GetCurrentMail();
-    {
-        kainjow::mustache::mustache tpl{ "{{from}} to {{to}} on {{date}}" };
-        kainjow::mustache::data data;
-        data.set("from", mail.fromName);
-        data.set("to", mail.toName);
-        data.set("date", Client::format_tick(mail.created));
-        std::string t = tpl.render(data);
-        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogMailText");
-    }
-    AddLine(String(mail.subject.c_str(), (unsigned)mail.subject.size()), "ChatLogMailText");
-    AddLine(String(mail.message.c_str(), (unsigned)mail.message.size()), "ChatLogMailText");
-}
-
 void ChatWindow::HandleShortcutChatGeneral(StringHash eventType, VariantMap& eventData)
 {
     tabgroup_->SetSelectedIndex(0);
@@ -496,10 +454,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeCry;
         else if (cmd.Compare("mail") == 0)
             type = AB::GameProtocol::CommandTypeMailSend;
-        else if (cmd.Compare("inbox") == 0)
-            type = AB::GameProtocol::CommandTypeMailInbox;
-        else if (cmd.Compare("read") == 0)
-            type = AB::GameProtocol::CommandTypeMailRead;
         else if (cmd.Compare("delete") == 0)
             type = AB::GameProtocol::CommandTypeMailDelete;
 
@@ -558,8 +512,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
-        AddLine("  /inbox: Show your mail inbox", "ChatLogServerInfoText");
-        AddLine("  /read <number>: Read mail with <number>", "ChatLogServerInfoText");
         AddLine("  /delete <number | all>: Delete mail with <number> or all", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
@@ -576,13 +528,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine(sIp, "ChatLogServerInfoText");
         break;
     }
-    case AB::GameProtocol::CommandTypeMailInbox:
-    {
-        FwClient* client = context_->GetSubsystem<FwClient>();
-        client->GetMailHeaders();
-        break;
-    }
-    case AB::GameProtocol::CommandTypeMailRead:
     case AB::GameProtocol::CommandTypeMailDelete:
     {
         unsigned p = data.Find(' ');
@@ -600,10 +545,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
                 int index = atoi(sIndex.CString());
                 if (index > 0 && index <= headers.size())
                 {
-                    if (type == AB::GameProtocol::CommandTypeMailRead)
-                        client->ReadMail(headers[index - 1].uuid);
-                    else if (type == AB::GameProtocol::CommandTypeMailDelete)
-                        client->DeleteMail(headers[index - 1].uuid);
+                    client->DeleteMail(headers[index - 1].uuid);
                 }
             }
         }
