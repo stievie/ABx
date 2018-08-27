@@ -72,6 +72,8 @@ void Shortcuts::Init()
     Add({ AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down, SCANCODE_UNKNOWN, KEY_BACKSPACE });
 
     Add({ AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down });
+
+    Add({ AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down, SCANCODE_UNKNOWN, KEY_F });
 }
 
 void Shortcuts::Load(const XMLElement& root)

@@ -20,6 +20,7 @@ Player::Player(Context* context) :
     Options* opt = GetSubsystem<Options>();
     stickCameraToHead_ = opt->stickCameraToHead_;
     SubscribeToEvent(AbEvents::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
+    SubscribeToEvent(AbEvents::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
 }
 
 void Player::RegisterObject(Context* context)
@@ -254,5 +255,10 @@ void Player::HandleActorNameClicked(StringHash eventType, VariantMap& eventData)
     {
         SelectObject(id);
     }
+}
+
+void Player::HandleSelectSelf(StringHash eventType, VariantMap& eventData)
+{
+    SelectObject(id_);
 }
 

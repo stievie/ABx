@@ -58,4 +58,5 @@ private:
     float lastYaw_;
     bool stickCameraToHead_;
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
 };
