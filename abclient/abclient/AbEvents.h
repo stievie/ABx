@@ -216,6 +216,12 @@ URHO3D_EVENT(E_SC_TOGGLENEWMAILWINDOW, ToggleNewMailWindow)
 {
 }
 
+URHO3D_EVENT(E_REPLYMAIL, ReplyMail)
+{
+    URHO3D_PARAM(P_RECIPIENT, Recipient);     // String
+    URHO3D_PARAM(P_SUBJECT, Subject);         // String
+}
+
 URHO3D_EVENT(E_SC_LOGOUT, Logout)
 {
 }

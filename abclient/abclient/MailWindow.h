@@ -23,6 +23,7 @@ private:
     void HandleMailInboxMessage(StringHash eventType, VariantMap& eventData);
     void HandleMailReadMessage(StringHash eventType, VariantMap& eventData);
     void HandleNewClicked(StringHash eventType, VariantMap& eventData);
+    void HandleReplyClicked(StringHash eventType, VariantMap& eventData);
     void HandleDeleteClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemSelected(StringHash eventType, VariantMap& eventData);
     void HandleItemUnselected(StringHash eventType, VariantMap& eventData);

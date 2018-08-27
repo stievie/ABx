@@ -107,3 +107,13 @@ void NewMailWindow::HandleSendClicked(StringHash eventType, VariantMap& eventDat
     subject_->SetText(String::EMPTY);
     mailBody_->SetText(String::EMPTY);
 }
+
+void NewMailWindow::SetRecipient(const String& value)
+{
+    recipient_->SetText(value);
+}
+
+void NewMailWindow::SetSubject(const String& value)
+{
+    subject_->SetText(value);
+}

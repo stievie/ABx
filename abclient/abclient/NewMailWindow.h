@@ -13,6 +13,8 @@ public:
     {
         UnsubscribeFromAllEvents();
     }
+    void SetRecipient(const String& value);
+    void SetSubject(const String& value);
 private:
     SharedPtr<MultiLineEdit> mailBody_;
     SharedPtr<LineEdit> recipient_;

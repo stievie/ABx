@@ -23,6 +23,7 @@
 #include <ctime>
 #include "Options.h"
 #include "MultiLineEdit.h"
+#include "NewMailWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -93,12 +94,14 @@ ClientApp::ClientApp(Context* context) :
     PingDot::RegisterObject(context);
     TargetWindow::RegisterObject(context);
     MailWindow::RegisterObject(context);
+    NewMailWindow::RegisterObject(context);
     PartyWindow::RegisterObject(context);
     OptionsWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
 
     // Subscribe key down event
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
+    SubscribeToEvent(AbEvents::E_REPLYMAIL, URHO3D_HANDLER(ClientApp, HandleReplyMail));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
@@ -240,6 +243,16 @@ void ClientApp::HandleToggleMail(StringHash eventType, VariantMap& eventData)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_MAIL, true);
     wnd->SetVisible(!wnd->IsVisible());
+}
+
+void ClientApp::HandleReplyMail(StringHash eventType, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
+    using namespace AbEvents::ReplyMail;
+    wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
+    wnd->SetSubject("Re. " + eventData[P_SUBJECT].GetString());
+    wnd->SetVisible(true);
 }
 
 void ClientApp::HandleToggleNewMail(StringHash eventType, VariantMap& eventData)

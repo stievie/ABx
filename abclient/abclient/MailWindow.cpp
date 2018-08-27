@@ -76,6 +76,8 @@ void MailWindow::SubscribeToEvents()
     SubscribeToEvent(newButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleNewClicked));
     Button* deleteButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
     SubscribeToEvent(deleteButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleDeleteClicked));
+    Button* replyButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+    SubscribeToEvent(replyButton, E_RELEASED, URHO3D_HANDLER(MailWindow, HandleReplyClicked));
     SubscribeToEvent(mailList_, E_ITEMSELECTED, URHO3D_HANDLER(MailWindow, HandleItemSelected));
     SubscribeToEvent(mailList_, E_ITEMDESELECTED, URHO3D_HANDLER(MailWindow, HandleItemSelected));
     SubscribeToEvent(AbEvents::E_NEWMAIL, URHO3D_HANDLER(MailWindow, HandleNewMail));
@@ -87,6 +89,8 @@ void MailWindow::AddItem(const String& text, const String& style, const AB::Enti
 
     txt->SetText(text);
     txt->SetVar("uuid", String(header.uuid.c_str()));
+    txt->SetVar("From Name", String(header.fromName.c_str()));
+    txt->SetVar("Subject", String(header.subject.c_str()));
     txt->SetStyle(style);
     txt->EnableLayoutUpdate();
     txt->SetWordwrap(false);
@@ -136,11 +140,24 @@ void MailWindow::HandleNewClicked(StringHash eventType, VariantMap& eventData)
     SendEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, e);
 }
 
+void MailWindow::HandleReplyClicked(StringHash eventType, VariantMap& eventData)
+{
+    Text* sel = dynamic_cast<Text*>(mailList_->GetSelectedItem());
+    if (sel)
+    {
+        String from = sel->GetVar("From Name").GetString();
+        String subject = sel->GetVar("Subject").GetString();
+        using namespace AbEvents::ReplyMail;
+        VariantMap& e = GetEventDataMap();
+        e[P_RECIPIENT] = from;
+        e[P_SUBJECT] = subject;
+        SendEvent(AbEvents::E_REPLYMAIL, e);
+    }
+}
+
 void MailWindow::HandleDeleteClicked(StringHash eventType, VariantMap& eventData)
 {
-    using namespace ItemSelected;
-    int selIndex = eventData[P_SELECTION].GetInt();
-    Text* sel = dynamic_cast<Text*>(mailList_->GetItem(selIndex));
+    Text* sel = dynamic_cast<Text*>(mailList_->GetSelectedItem());
     if (sel)
     {
         String uuid = sel->GetVar("uuid").GetString();
