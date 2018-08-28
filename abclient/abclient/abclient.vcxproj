@@ -267,6 +267,7 @@
     <ClCompile Include="LoginLevel.cpp" />
     <ClCompile Include="MailWindow.cpp" />
     <ClCompile Include="MapWindow.cpp" />
+    <ClCompile Include="MissionMapWindow.cpp" />
     <ClCompile Include="MultiLineEdit.cpp" />
     <ClCompile Include="NewMailWindow.cpp" />
     <ClCompile Include="Options.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="MailWindow.h" />
     <ClInclude Include="MapWindow.h" />
     <ClInclude Include="MathUtils.h" />
+    <ClInclude Include="MissionMapWindow.h" />
     <ClInclude Include="MultiLineEdit.h" />
     <ClInclude Include="NewMailWindow.h" />
     <ClInclude Include="Options.h" />

@@ -133,20 +133,23 @@ struct Shortcut
 #endif
         return ShortcutNameLong();
     }
-    String Caption(unsigned align = 0) const
+    String Caption(bool withShortcut, unsigned align = 0) const
     {
         String result = name_;
-        String scName = ShortcutName();
-        if (!scName.Empty())
+        if (withShortcut)
         {
-            if (align < result.Length())
-                result += "  ";
-            else
+            String scName = ShortcutName();
+            if (!scName.Empty())
             {
-                while (result.Length() < align)
-                    result += " ";
+                if (align < result.Length())
+                    result += "  ";
+                else
+                {
+                    while (result.Length() < align)
+                        result += " ";
+                }
+                result += scName;
             }
-            result += scName;
         }
         return result;
     }
@@ -187,6 +190,8 @@ public:
     void Save(XMLElement& root);
     const Shortcut& Get(const StringHash& _event) const;
     bool Get(unsigned id, Shortcut& sc);
-    String GetCaption(const StringHash& _event, const String& def = String::EMPTY, unsigned align = 0);
+    String GetCaption(const StringHash& _event, const String& def = String::EMPTY,
+        bool widthShortcut = false, unsigned align = 0);
+    String GetShortcutName(const StringHash& _event);
 };
 

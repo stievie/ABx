@@ -16,6 +16,7 @@ HealthBar::HealthBar(Context* context) :
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png");
     SetTexture(tex);
     SetImageRect(IntRect(16, 0, 32, 16));
+    SetBorder(IntRect(4, 4, 4, 4));
 
     SetMinHeight(25);
     SetMaxHeight(25);
@@ -25,6 +26,8 @@ HealthBar::HealthBar(Context* context) :
     nameText_->SetAlignment(HA_LEFT, VA_CENTER);
 
     SetStyle("HealthBar");
+
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(HealthBar, HandleUpdate));
 }
 
 HealthBar::~HealthBar()
@@ -32,7 +35,7 @@ HealthBar::~HealthBar()
     UnsubscribeFromAllEvents();
 }
 
-void HealthBar::Update(float timeStep)
+void HealthBar::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     if (SharedPtr<Actor> a = actor_.Lock())
     {
@@ -42,6 +45,4 @@ void HealthBar::Update(float timeStep)
     }
 
     nameText_->SetVisible(showName_);
-
-    ProgressBar::Update(timeStep);
 }

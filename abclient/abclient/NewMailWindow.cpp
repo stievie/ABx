@@ -35,7 +35,7 @@ NewMailWindow::NewMailWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail"));
+    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", true));
 
     SetSize(500, 400);
     auto* graphics = GetSubsystem<Graphics>();

@@ -10,6 +10,7 @@
 #include "MapWindow.h"
 #include "Options.h"
 #include "NewMailWindow.h"
+#include "MissionMapWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -71,6 +72,13 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         {
             SharedPtr<TargetWindow> wnd = SharedPtr<TargetWindow>(new TargetWindow(context_));
             wnd->SetVisible(false);
+            opts->LoadWindow(wnd);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_MISSIONMAP)
+        {
+            SharedPtr<MissionMapWindow> wnd = SharedPtr<MissionMapWindow>(new MissionMapWindow(context_));
+            wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }

@@ -8,8 +8,8 @@ private:
     SharedPtr<Menu> menu_;
     SharedPtr<Menu> serversMenu_;
     void CreateMenuBar();
-    Menu* CreateMenu(UIElement* parent, const String& title);
-    Menu* CreateMenuItem(UIElement* parent, const String& title, EventHandler* handler);
+    Menu* CreateMenu(UIElement* parent, const String& title, const String& shortcut);
+    Menu* CreateMenuItem(UIElement* parent, const String& title, const String& shortcut, EventHandler* handler);
     BorderImage* CreateSeparator(UIElement* parent);
     Window* CreatePopup(Menu* baseMenu);
     void HandleExitUsed(StringHash eventType, VariantMap& eventData);
@@ -20,6 +20,7 @@ private:
     void HandleMailUsed(StringHash eventType, VariantMap& eventData);
     void HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData);
     void HandleMapUsed(StringHash eventType, VariantMap& eventData);
+    void HandleMissionMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleGotServices(StringHash eventType, VariantMap& eventData);
     void UpdateServers();
 public:

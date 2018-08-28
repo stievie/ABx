@@ -12,6 +12,7 @@
 #include "MailWindow.h"
 #include "MapWindow.h"
 #include "PartyWindow.h"
+#include "MissionMapWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
@@ -43,6 +44,7 @@ protected:
     SharedPtr<MailWindow> mailWindow_;
     SharedPtr<MapWindow> mapWindow_;
     SharedPtr<PartyWindow> partyWindow_;
+    SharedPtr<MissionMapWindow> missionMap_;
     String mapUuid_;
     String mapName_;
     /// All objects in the scene
@@ -93,6 +95,7 @@ private:
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);
+    void HandleToggleMissionMapWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
     void HandleToggleMap(StringHash eventType, VariantMap& eventData);
     void HandleHideUI(StringHash eventType, VariantMap& eventData);

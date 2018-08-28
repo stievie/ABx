@@ -39,7 +39,7 @@ MailWindow::MailWindow(Context* context) :
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("CaptionText", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail"));
+    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", true));
 
     SetSize(500, 400);
     auto* graphics = GetSubsystem<Graphics>();

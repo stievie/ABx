@@ -39,6 +39,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
     SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
     SubscribeToEvent(AbEvents::E_SC_TOGGLECHATWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleChatWindow));
@@ -493,6 +494,12 @@ void WorldLevel::HandleTogglePartyWindow(StringHash eventType, VariantMap& event
         partyWindow_->SetVisible(!partyWindow_->IsVisible());
 }
 
+void WorldLevel::HandleToggleMissionMapWindow(StringHash eventType, VariantMap& eventData)
+{
+    if (missionMap_)
+        missionMap_->SetVisible(!missionMap_->IsVisible());
+}
+
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
 {
     player_->SelectObject(0);
@@ -597,9 +604,13 @@ void WorldLevel::CreateUI()
     uiRoot_->AddChild(chatWindow_);
 
     targetWindow_.DynamicCast(wm->GetWindow(WINDOW_TARGET));
+    targetWindow_->SetVisible(false);
     uiRoot_->AddChild(targetWindow_);
     SubscribeToEvent(targetWindow_, E_TARGETWINDOW_UNSELECT, URHO3D_HANDLER(WorldLevel, HandleTargetWindowUnselectObject));
 
     pingDot_.DynamicCast(wm->GetWindow(WINDOW_PINGDOT));
     uiRoot_->AddChild(pingDot_);
+
+    missionMap_.DynamicCast(wm->GetWindow(WINDOW_MISSIONMAP));
+    uiRoot_->AddChild(missionMap_);
 }

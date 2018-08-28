@@ -33,56 +33,78 @@ void GameMenu::CreateMenuBar()
     menuBar_->SetLayout(LM_HORIZONTAL);
     menuBar_->SetStyle("EditorMenuBar");
 
-    menu_ = CreateMenu(menuBar_, "Menu");
+    menu_ = CreateMenu(menuBar_, "Menu", String::EMPTY);
     menuBar_->SetHeight(20);
     menuBar_->SetFixedWidth(menu_->GetWidth());
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
 
     Window* popup = dynamic_cast<Window*>(menu_->GetPopup());
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_EXITPROGRAM, "Exit", 18),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_EXITPROGRAM, "Exit"),
+        scs->GetShortcutName(AbEvents::E_SC_EXITPROGRAM),
         URHO3D_HANDLER(GameMenu, HandleExitUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_LOGOUT, "Logout", 18),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_LOGOUT, "Logout"),
+        scs->GetShortcutName(AbEvents::E_SC_LOGOUT),
         URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_SELECTCHARACTER, "Select character", 18),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_SELECTCHARACTER, "Select character"),
+        scs->GetShortcutName(AbEvents::E_SC_SELECTCHARACTER),
         URHO3D_HANDLER(GameMenu, HandleSelectCharUsed));
-    serversMenu_ = CreateMenu(popup, "Server >");
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEOPTIONS, "Options", 18),
+    serversMenu_ = CreateMenu(popup, "Server", ">");
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEOPTIONS, "Options"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEOPTIONS),
         URHO3D_HANDLER(GameMenu, HandleOptionsUsed));
     CreateSeparator(popup);
 
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", 18),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEMAILWINDOW),
         URHO3D_HANDLER(GameMenu, HandleMailUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", 18),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEPARTYWINDOW),
         URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
-    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAP, "Map", 18),
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW),
+        URHO3D_HANDLER(GameMenu, HandleMissionMapUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAP, "Map"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEMAP),
         URHO3D_HANDLER(GameMenu, HandleMapUsed));
 
     popup->SetWidth(40);
 }
 
-Menu* GameMenu::CreateMenu(UIElement* parent, const String& title)
+Menu* GameMenu::CreateMenu(UIElement* parent, const String& title, const String& shortcut)
 {
-    Menu* result = CreateMenuItem(parent, title, nullptr);
-    auto menuText = result->GetChildren()[0];
-    result->SetMaxWidth(menuText->GetWidth() + 20);
+    Menu* result = CreateMenuItem(parent, title, shortcut, nullptr);
+//    auto menuText = result->GetChildren()[0];
+//    result->SetMaxWidth(menuText->GetWidth() + 20);
+    result->SetMinWidth(parent->GetWidth());
     CreatePopup(result);
 
     return result;
 }
 
-Menu* GameMenu::CreateMenuItem(UIElement* parent, const String& title, EventHandler* handler)
+Menu* GameMenu::CreateMenuItem(UIElement* parent, const String& title, const String& shortcut, EventHandler* handler)
 {
     Menu* menu = parent->CreateChild<Menu>();
     menu->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     menu->SetStyleAuto();
     menu->SetName(title);
+    menu->SetMinWidth(parent->GetWidth());
+    menu->SetWidth(parent->GetWidth());
     menu->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
     if (handler)
         SubscribeToEvent(menu, E_MENUSELECTED, handler);
     Text* menuText = menu->CreateChild<Text>();
     menuText->SetText(title);
     menuText->SetStyle("EditorMenuText");
+
+    if (!shortcut.Empty())
+    {
+        Text* shortcutText = menu->CreateChild<Text>();
+        shortcutText->SetText(shortcut);
+        shortcutText->SetHorizontalAlignment(HA_RIGHT);
+        shortcutText->SetTextAlignment(HA_RIGHT);
+        shortcutText->SetStyle("EditorMenuText");
+    }
 
     return menu;
 }
@@ -168,6 +190,13 @@ void GameMenu::HandleMapUsed(StringHash eventType, VariantMap& eventData)
     SendEvent(AbEvents::E_SC_TOGGLEMAP, e);
 }
 
+void GameMenu::HandleMissionMapUsed(StringHash eventType, VariantMap& eventData)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, e);
+}
+
 void GameMenu::HandleGotServices(StringHash eventType, VariantMap & eventData)
 {
     UpdateServers();
@@ -185,7 +214,8 @@ void GameMenu::UpdateServers()
     for (const auto& serv : servs)
     {
         String sId = String(serv.first.c_str());
-        Menu* mnu = CreateMenuItem(popup, String(serv.second.name.c_str()), URHO3D_HANDLER(GameMenu, HandleServerUsed));
+        Menu* mnu = CreateMenuItem(popup, String(serv.second.name.c_str()), String::EMPTY,
+            URHO3D_HANDLER(GameMenu, HandleServerUsed));
         mnu->SetSelected(sId.Compare(cId) == 0);
         mnu->SetVar("Server ID", sId);
     }

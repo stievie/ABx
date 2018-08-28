@@ -8,13 +8,13 @@ class HealthBar : public ProgressBar
 private:
     WeakPtr<Actor> actor_;
     SharedPtr<Text> nameText_;
+    void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 
     HealthBar(Context* context);
     ~HealthBar();
 
-    void Update(float timeStep) override;
     void SetActor(SharedPtr<Actor> actor)
     {
         actor_ = actor;

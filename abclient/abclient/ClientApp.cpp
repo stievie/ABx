@@ -24,6 +24,7 @@
 #include "Options.h"
 #include "MultiLineEdit.h"
 #include "NewMailWindow.h"
+#include "MissionMapWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -109,6 +110,7 @@ ClientApp::ClientApp(Context* context) :
     MailWindow::RegisterObject(context);
     NewMailWindow::RegisterObject(context);
     PartyWindow::RegisterObject(context);
+    MissionMapWindow::RegisterObject(context);
     OptionsWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
 

@@ -74,6 +74,7 @@ void Shortcuts::Init()
     Add({ AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down });
 
     Add({ AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down, SCANCODE_UNKNOWN, KEY_F });
+    Add({ AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down, SCANCODE_UNKNOWN, KEY_U });
 }
 
 void Shortcuts::Load(const XMLElement& root)
@@ -132,12 +133,21 @@ bool Shortcuts::Get(unsigned id, Shortcut& sc)
     return false;
 }
 
-String Shortcuts::GetCaption(const StringHash& _event, const String& def /* = String::EMPTY */, unsigned align /* = 0 */)
+String Shortcuts::GetCaption(const StringHash& _event, const String& def /* = String::EMPTY */,
+    bool widthShortcut /* = false */, unsigned align /* = 0 */)
 {
     const Shortcut& sc = Get(_event);
     if (sc)
-        return sc.Caption(align);
+        return sc.Caption(widthShortcut, align);
     return def;
+}
+
+String Shortcuts::GetShortcutName(const StringHash& _event)
+{
+    const Shortcut& sc = Get(_event);
+    if (sc)
+        return sc.ShortcutName();
+    return String();
 }
 
 void Shortcuts::SubscribeToEvents()
