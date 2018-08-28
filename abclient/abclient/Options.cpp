@@ -9,6 +9,8 @@
 
 #include <Urho3D/DebugNew.h>
 
+String Options::prefPath_;
+
 Options::Options(Context* context) :
     Object(context),
     width_(0),
@@ -559,16 +561,23 @@ void Options::SaveWindow(UIElement* window)
     xml->SaveFile(fileName);
 }
 
-String Options::GetPrefPath()
+const String& Options::GetPrefPath()
 {
-    char* pathName = SDL_GetPrefPath("Trill", "FW");
-    if (pathName)
+    if (prefPath_.Empty())
     {
-        String ret(pathName);
-        SDL_free(pathName);
-        return ret;
+        char* pathName = SDL_GetPrefPath("Trill", "FW");
+        if (pathName)
+        {
+            prefPath_ = String(pathName);
+            SDL_free(pathName);
+        }
     }
-    return String();
+    return prefPath_;
+}
+
+void Options::SetPrefPath(const String& value)
+{
+    prefPath_ = value;
 }
 
 #if defined(__linux__) || defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(__unix__) || defined(__unix)

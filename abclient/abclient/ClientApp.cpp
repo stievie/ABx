@@ -54,6 +54,19 @@ URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
 ClientApp::ClientApp(Context* context) :
     Application(context)
 {
+    const Vector<String>& args = GetArguments();
+    decltype(args.Size()) i = 0;
+    while (i < args.Size())
+    {
+        auto& arg = args[i];
+        if (arg == "-perfpath")
+        {
+            ++i;
+            Options::SetPrefPath(args[i].CString());
+        }
+        ++i;
+    }
+
     MultiLineEdit::RegisterObject(context);
 
     // Register levels

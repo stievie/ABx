@@ -173,6 +173,7 @@ void MailWindow::HandleItemSelected(StringHash eventType, VariantMap& eventData)
         String uuid = sel->GetVar("uuid").GetString();
         FwClient* net = context_->GetSubsystem<FwClient>();
         net->ReadMail(std::string(uuid.CString()));
+        // Mark read
         sel->SetStyle("MailListItem");
     }
 }

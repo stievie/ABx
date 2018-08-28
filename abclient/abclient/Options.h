@@ -109,9 +109,11 @@ public:
     void LoadWindow(UIElement* window);
     void SaveWindow(UIElement* window);
 
-    static String GetPrefPath();
+    static const String& GetPrefPath();
+    static void SetPrefPath(const String& value);
     static bool CreateDir(const String& path);
 private:
+    static String prefPath_;
     int width_;
     int height_;
     bool fullscreen_;

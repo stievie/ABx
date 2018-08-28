@@ -255,7 +255,8 @@ enum CommandTypes : uint8_t
     CommandTypeHelp,                 // /help
     CommandTypeIp,                   // /ip
     CommandTypeServerId,             // /id
-    // Emotes
+    CommandTypePrefPath,             // /prefpath
+                                     // Emotes
     CommandTypeRoll,                 // /roll <number>
     CommandTypeSit,                  // /sit
     CommandTypeStand,                // /sit -> Idle

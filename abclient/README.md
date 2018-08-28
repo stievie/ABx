@@ -64,6 +64,11 @@ Other shortcuts are shown in `[` `]`.
 /help: Show this help
 ~~~
 
+## Command line arguments
+
+* `-prefpath <directory>`: Preferecences path
+
 ## Settings
 
-It saves the settings on exit to the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7).
+It saves the settings on exit to the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7)
+or if the `-prefpath` command line argument is given to this directory.

@@ -6,6 +6,7 @@
 #include <TimeUtils.h>
 #include <Mustache/mustache.hpp>
 #include "Shortcuts.h"
+#include "Options.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -461,8 +462,10 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeHealth;
         else if (cmd.Compare("ip") == 0)
             type = AB::GameProtocol::CommandTypeIp;
-        else if (cmd.Compare("id") == 0)
-            type = AB::GameProtocol::CommandTypeServerId;
+        else if (cmd.Compare("ip") == 0)
+            type = AB::GameProtocol::CommandTypeIp;
+        else if (cmd.Compare("prefpath") == 0)
+            type = AB::GameProtocol::CommandTypePrefPath;
         else if (cmd.Compare("help") == 0)
             type = AB::GameProtocol::CommandTypeHelp;
     }
@@ -510,6 +513,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
+        AddLine("  /prefpath: Show preferences path", "ChatLogServerInfoText");
         AddLine("  /help: Show this help", "ChatLogServerInfoText");
         break;
     case AB::GameProtocol::CommandTypeIp:
@@ -520,6 +524,11 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
         String sIp(buffer);
         AddLine(sIp, "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandTypePrefPath:
+    {
+        AddLine(Options::GetPrefPath(), "ChatLogServerInfoText");
         break;
     }
     case AB::GameProtocol::CommandTypeUnknown:
