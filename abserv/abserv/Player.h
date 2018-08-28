@@ -30,7 +30,6 @@ protected:
     void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) override;
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
-    void HandleSendMailCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
     void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
@@ -78,6 +77,7 @@ public:
     void Ping();
     void UpdateMailBox();
     void GetMailHeaders();
+    void SendMail(const std::string recipient, const std::string subject, const std::string body);
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();

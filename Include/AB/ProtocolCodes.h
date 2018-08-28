@@ -206,6 +206,7 @@ enum GamePacketTypes : uint8_t
     PacketTypeLogout,
 
     // Mail
+    PacketTypeSendMail,
     PacketTypeGetMailHeaders,
     PacketTypeGetMail,
     PacketTypeDeleteMail,
@@ -245,9 +246,6 @@ enum CommandTypes : uint8_t
     CommandTypeChatParty,            // /p <message>
     CommandTypeChatTrade,            // /trade <message>
     CommandTypeChatWhisper,          // /w <name>, <message>
-    // Mail
-    CommandTypeMailSend,             // /mail <name>, <message>
-    CommandTypeMailDelete,           // /delete <index>
 
     // Info
     CommandTypeAge,                  // /age

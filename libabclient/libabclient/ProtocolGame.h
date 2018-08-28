@@ -73,6 +73,7 @@ public:
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
+    void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
 
     void Move(uint8_t direction);
     void Turn(uint8_t direction);

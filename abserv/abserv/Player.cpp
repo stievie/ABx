@@ -91,6 +91,19 @@ void Player::GetMailHeaders()
     client_->WriteToOutput(msg);
 }
 
+void Player::SendMail(const std::string recipient, const std::string subject, const std::string body)
+{
+    Net::NetworkMessage nmsg;
+    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    if (IO::IOMail::SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
+    else
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
+    nmsg.AddString(recipient);
+    nmsg.AddString("");                // Data
+    client_->WriteToOutput(nmsg);
+}
+
 void Player::GetMail(const std::string mailUuid)
 {
     UpdateMailBox();
@@ -292,11 +305,6 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         HandleAgeCommand(command, message);
         break;
     }
-    case AB::GameProtocol::CommandTypeMailSend:
-    {
-        HandleSendMailCommand(command, message);
-        break;
-    }
     case AB::GameProtocol::CommandTypeChatWhisper:
     {
         HandleWhisperCommand(command, message);
@@ -338,43 +346,6 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
         nmsg.AddString("");
     }
     client_->WriteToOutput(nmsg);
-}
-
-void Player::HandleSendMailCommand(const std::string& command, Net::NetworkMessage&)
-{
-    size_t p = command.find(',');
-    if (p != std::string::npos)
-    {
-        size_t p2 = command.find(':');
-        const std::string name = command.substr(0, p);
-        if (name.empty())
-            return;
-
-        std::string subject;
-        std::string mailmsg;
-
-        if (p2 != std::string::npos)
-        {
-            // We have a subject
-            subject = Utils::Trim(command.substr(p + 1, p2 - p - 1));
-            mailmsg = Utils::Trim(command.substr(p2 + 1, std::string::npos));
-        }
-        else
-            mailmsg = Utils::Trim(command.substr(p + 1, std::string::npos));
-
-        if (mailmsg.empty())
-            return;
-
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::ServerMessage);
-        if (IO::IOMail::SendMailToPlayer(name, data_.accountUuid, GetName(), subject, mailmsg))
-            nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
-        else
-            nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
-        nmsg.AddString(name);
-        nmsg.AddString("");                // Data
-        client_->WriteToOutput(nmsg);
-    }
 }
 
 void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)

@@ -113,6 +113,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);
         break;
+    case AB::GameProtocol::PacketTypeSendMail:
+    {
+        const std::string recipient = message.GetString();
+        const std::string subject = message.GetString();
+        const std::string body = message.GetString();
+        AddPlayerTask(&Game::Player::SendMail, recipient, subject, body);
+        break;
+    }
     case AB::GameProtocol::PacketTypeGetMailHeaders:
         AddPlayerTask(&Game::Player::GetMailHeaders);
         break;

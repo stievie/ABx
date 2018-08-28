@@ -251,7 +251,7 @@ void ClientApp::HandleReplyMail(StringHash eventType, VariantMap& eventData)
     NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
     using namespace AbEvents::ReplyMail;
     wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
-    wnd->SetSubject("Re. " + eventData[P_SUBJECT].GetString());
+    wnd->SetSubject("Re: " + eventData[P_SUBJECT].GetString());
     wnd->SetVisible(true);
 }
 

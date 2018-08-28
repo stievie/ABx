@@ -313,6 +313,11 @@ void ProtocolGame::ParseMailHeaders(const std::shared_ptr<InputMessage>& message
             message->Get<uint8_t>() != 0  // Read
         });
     }
+    // Sort Date Desc
+    std::sort(mailHeaders.begin(), mailHeaders.end(), [](const auto& lhs, const auto& rhs)
+    {
+        return lhs.created - rhs.created;
+    });
     if (receiver_)
         receiver_->OnGetMailHeaders(updateTick_, mailHeaders);
 }
@@ -380,6 +385,16 @@ void ProtocolGame::DeleteMail(const std::string& mailUuid)
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeDeleteMail);
     msg->AddString(mailUuid);
+    Send(msg);
+}
+
+void ProtocolGame::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSendMail);
+    msg->AddString(recipient);
+    msg->AddString(subject);
+    msg->AddString(body);
     Send(msg);
 }
 

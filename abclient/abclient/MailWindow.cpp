@@ -111,13 +111,10 @@ void MailWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventD
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
-    kainjow::mustache::mustache tpl{ "#{{index}}: <{{from}}> on {{date}}: {{subject}}" };
-    unsigned i = 0;
+    kainjow::mustache::mustache tpl{ "<{{from}}> on {{date}}: {{subject}}" };
     for (const auto& header : headers)
     {
-        ++i;
         kainjow::mustache::data data;
-        data.set("index", std::to_string(i));
         data.set("from", header.fromName);
         data.set("subject", (header.subject.empty() ? "(No Subject)" : header.subject));
         data.set("date", Client::format_tick(header.created));

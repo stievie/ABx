@@ -453,6 +453,12 @@ void Client::DeleteMail(const std::string& mailUuid)
         protoGame_->DeleteMail(mailUuid);
 }
 
+void Client::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
+{
+    if (state_ == StateWorld)
+        protoGame_->SendMail(recipient, subject, body);
+}
+
 void Client::Move(uint8_t direction)
 {
     if (state_ == StateWorld)

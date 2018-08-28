@@ -433,6 +433,12 @@ void FwClient::DeleteMail(const std::string& uuid)
         client_.DeleteMail(uuid);
 }
 
+void FwClient::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
+{
+    if (loggedIn_)
+        client_.SendMail(recipient, subject, body);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)

@@ -452,10 +452,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeStand;
         else if (cmd.Compare("cry") == 0)
             type = AB::GameProtocol::CommandTypeCry;
-        else if (cmd.Compare("mail") == 0)
-            type = AB::GameProtocol::CommandTypeMailSend;
-        else if (cmd.Compare("delete") == 0)
-            type = AB::GameProtocol::CommandTypeMailDelete;
 
         else if (cmd.Compare("age") == 0)
             type = AB::GameProtocol::CommandTypeAge;
@@ -511,8 +507,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
         AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
-        AddLine("  /mail <name>, [<subject>:] <message>: Send mail to <name> with <message>", "ChatLogServerInfoText");
-        AddLine("  /delete <number | all>: Delete mail with <number> or all", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
@@ -526,29 +520,6 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
         String sIp(buffer);
         AddLine(sIp, "ChatLogServerInfoText");
-        break;
-    }
-    case AB::GameProtocol::CommandTypeMailDelete:
-    {
-        unsigned p = data.Find(' ');
-        String sIndex = data.Substring(p + 1).Trimmed();
-        if (!sIndex.Empty())
-        {
-            FwClient* client = context_->GetSubsystem<FwClient>();
-            const std::vector<AB::Entities::MailHeader>& headers = client->GetCurrentMailHeaders();
-            if (sIndex.Compare("all") == 0 && (type == AB::GameProtocol::CommandTypeMailDelete))
-            {
-                client->DeleteMail("all");
-            }
-            else
-            {
-                int index = atoi(sIndex.CString());
-                if (index > 0 && index <= headers.size())
-                {
-                    client->DeleteMail(headers[index - 1].uuid);
-                }
-            }
-        }
         break;
     }
     case AB::GameProtocol::CommandTypeUnknown:

@@ -77,31 +77,25 @@ void NewMailWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventDa
 
 void NewMailWindow::HandleSendClicked(StringHash eventType, VariantMap& eventData)
 {
-    if (recipient_->GetText().Trimmed().Empty())
+    const String recipient = recipient_->GetText().Trimmed();
+    if (recipient.Empty())
     {
         recipient_->SetFocus(true);
         return;
     }
-    if (mailBody_->GetText().Trimmed().Empty())
+    const String body = mailBody_->GetText().Trimmed();
+    if (body.Empty())
     {
         mailBody_->SetFocus(true);
         return;
     }
+    const String subject = subject_->GetText();
 
-    AB::GameProtocol::CommandTypes type = AB::GameProtocol::CommandTypeMailSend;
-    // /mail <name>, [<subject>:] <message>
-    std::stringstream ss;
-    ss << std::string(recipient_->GetText().Trimmed().CString());
-    ss << ", ";
-    if (!subject_->GetText().Trimmed().Empty())
-    {
-        ss << std::string(subject_->GetText().Trimmed().CString());
-        ss << ": ";
-    }
-    ss << std::string(mailBody_->GetText().CString(), mailBody_->GetText().Length());
     FwClient* client = context_->GetSubsystem<FwClient>();
-    std::string cmd = ss.str();
-    client->Command(type, String(cmd.c_str(), (unsigned)cmd.length()).Substring(0, MAX_CHAT_MESSAGE));
+    client->SendMail(std::string(recipient.CString(), recipient.Length()),
+        std::string(subject.CString(), subject.Length()),
+        std::string(body.CString(), body.Length()));
+
     SetVisible(false);
     recipient_->SetText(String::EMPTY);
     subject_->SetText(String::EMPTY);
