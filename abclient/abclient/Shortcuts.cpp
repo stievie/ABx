@@ -150,6 +150,12 @@ String Shortcuts::GetShortcutName(const StringHash& _event)
     return String();
 }
 
+void Shortcuts::RestoreDefault()
+{
+    shortcuts_.Clear();
+    Init();
+}
+
 void Shortcuts::SubscribeToEvents()
 {
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Shortcuts, HandleUpdate));

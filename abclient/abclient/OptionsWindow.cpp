@@ -45,8 +45,14 @@ OptionsWindow::OptionsWindow(Context* context) :
         TabElement* elem = CreateTab(tabgroup_, "Audio");
         CreatePageAudio(elem);
     }
-    CreateTab(tabgroup_, "Input");
-    CreateTab(tabgroup_, "Interface");
+    {
+        TabElement* elem = CreateTab(tabgroup_, "Input");
+        CreatePageInput(elem);
+    }
+    {
+        TabElement* elem = CreateTab(tabgroup_, "Interface");
+        CreatePageInterface(elem);
+    }
 
     tabgroup_->SetEnabled(true);
     SubscribeToEvent(E_TABSELECTED, URHO3D_HANDLER(OptionsWindow, HandleTabSelected));
@@ -528,3 +534,62 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     }
 }
 
+void OptionsWindow::CreatePageInput(TabElement* tabElement)
+{
+    BorderImage* page = tabElement->tabBody_;
+
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/OptionPageInput.xml");
+    wnd->SetPosition(0, 0);
+    wnd->SetWidth(390);
+    wnd->SetHeight(page->GetHeight());
+    wnd->UpdateLayout();
+
+    ListView* lvw = dynamic_cast<ListView*>(wnd->GetChild("ShortcutsListView", true));
+    Shortcuts* scs = GetSubsystem<Shortcuts>();
+    for (const auto& sc : scs->shortcuts_)
+    {
+        Text* txt = new Text(context_);
+        txt->SetText(sc.name_);
+        txt->SetMaxWidth(lvw->GetWidth());
+        txt->SetWidth(lvw->GetWidth());
+        txt->SetWordwrap(false);
+        txt->SetStyle("DropDownItemEnumText");
+        lvw->AddItem(txt);
+    }
+    lvw->EnableLayoutUpdate();
+    lvw->UpdateLayout();
+
+    {
+        Button* button = dynamic_cast<Button*>(wnd->GetChild("AssignButton", true));
+        SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
+        {
+        });
+    }
+    {
+        Button* button = dynamic_cast<Button*>(wnd->GetChild("DeleteButton", true));
+        SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
+        {
+        });
+    }
+
+    {
+        Button* button = dynamic_cast<Button*>(wnd->GetChild("RestoreDefaultButton", true));
+        SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            scs->RestoreDefault();
+        });
+    }
+}
+
+void OptionsWindow::CreatePageInterface(TabElement* tabElement)
+{
+    BorderImage* page = tabElement->tabBody_;
+
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/OptionPageInterface.xml");
+    wnd->SetPosition(0, 0);
+    wnd->SetWidth(390);
+    wnd->SetHeight(page->GetHeight());
+    wnd->UpdateLayout();
+}

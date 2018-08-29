@@ -84,19 +84,19 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     switch (channel)
     {
     case AB::GameProtocol::ChatChannelGeneral:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGENERAL, "General"));
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGENERAL, "General", true));
         break;
     case AB::GameProtocol::ChatChannelParty:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATPARTY, "Party"));
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATPARTY, "Party", true));
         break;
     case AB::GameProtocol::ChatChannelGuild:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGUILD, "Guild"));
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGUILD, "Guild", true));
         break;
     case AB::GameProtocol::ChatChannelTrade:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATTRADE, "Trade"));
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATTRADE, "Trade", true));
         break;
     case AB::GameProtocol::ChatChannelWhisper:
-        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper"));
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper", true));
         tabIndexWhisper_ = tabs->GetTabCount() - 1;
         break;
     }

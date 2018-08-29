@@ -170,7 +170,6 @@ class Shortcuts : public Object
 {
     URHO3D_OBJECT(Shortcuts, Object);
 private:
-    Vector<Shortcut> shortcuts_;
     HashMap<StringHash, bool> triggered_;
     void SubscribeToEvents();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -193,5 +192,8 @@ public:
     String GetCaption(const StringHash& _event, const String& def = String::EMPTY,
         bool widthShortcut = false, unsigned align = 0);
     String GetShortcutName(const StringHash& _event);
+    void RestoreDefault();
+
+    Vector<Shortcut> shortcuts_;
 };
 

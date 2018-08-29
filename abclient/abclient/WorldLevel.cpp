@@ -159,6 +159,10 @@ void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
 
 void WorldLevel::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
 {
+    UI* ui = GetSubsystem<UI>();
+    if (ui->GetFocusElement())
+        return;
+
     using namespace MouseWheel;
     if (player_)
     {
