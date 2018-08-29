@@ -213,32 +213,12 @@
 					</element>
 				</element>
 			</element>
-			<element type="LineEdit">
-				<attribute name="Name" value="HotkeyEdit" />
+			<element>
+				<attribute name="Name" value="HotkeyEditContainer" />
 				<attribute name="Min Size" value="0 30" />
 				<attribute name="Max Size" value="2147483647 30" />
 				<attribute name="Pivot" value="0 0" />
-				<attribute name="Image Rect" value="64 0 80 16" />
-				<attribute name="Border" value="4 4 4 4" />
-				<attribute name="Hover Image Offset" value="0 16" />
-				<element type="Text" internal="true" style="none">
-					<attribute name="Min Anchor" value="0 0.5" />
-					<attribute name="Max Anchor" value="0 0.5" />
-					<attribute name="Pivot" value="0 0.5" />
-					<attribute name="Color" value="0.9 1 0.9 1" />
-					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
-					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
-					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
-					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
-					<attribute name="Selection Color" value="0.3 0.4 0.7 1" />
-				</element>
-				<element type="BorderImage" internal="true" style="none">
-					<attribute name="Size" value="4 15" />
-					<attribute name="Min Anchor" value="0 0.5" />
-					<attribute name="Max Anchor" value="0 0.5" />
-					<attribute name="Pivot" value="0 0.5" />
-					<attribute name="Image Rect" value="12 0 16 16" />
-				</element>
+				<attribute name="Layout Mode" value="Vertical" />
 			</element>
 			<element>
 				<attribute name="Min Size" value="0 4" />

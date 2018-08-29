@@ -3,6 +3,7 @@
 #include "Shortcuts.h"
 #include "AbEvents.h"
 #include "Options.h"
+#include "HotkeyEdit.h"
 
 void OptionsWindow::RegisterObject(Context* context)
 {
@@ -534,18 +535,10 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     }
 }
 
-void OptionsWindow::CreatePageInput(TabElement* tabElement)
+void OptionsWindow::FillShortcutsList()
 {
-    BorderImage* page = tabElement->tabBody_;
-
-    Window* wnd = page->CreateChild<Window>();
-    LoadWindow(wnd, "UI/OptionPageInput.xml");
-    wnd->SetPosition(0, 0);
-    wnd->SetWidth(390);
-    wnd->SetHeight(page->GetHeight());
-    wnd->UpdateLayout();
-
-    ListView* lvw = dynamic_cast<ListView*>(wnd->GetChild("ShortcutsListView", true));
+    ListView* lvw = dynamic_cast<ListView*>(GetChild("ShortcutsListView", true));
+    lvw->RemoveAllItems();
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     for (const auto& sc : scs->shortcuts_)
     {
@@ -559,6 +552,38 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     }
     lvw->EnableLayoutUpdate();
     lvw->UpdateLayout();
+}
+
+void OptionsWindow::CreatePageInput(TabElement* tabElement)
+{
+    BorderImage* page = tabElement->tabBody_;
+
+    Window* wnd = page->CreateChild<Window>();
+    LoadWindow(wnd, "UI/OptionPageInput.xml");
+    wnd->SetPosition(0, 0);
+    wnd->SetWidth(390);
+    wnd->SetHeight(page->GetHeight());
+
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    UIElement* hkContainer = dynamic_cast<UIElement*>(GetChild("HotkeyEditContainer", true));
+    HotkeyEdit* hkEdit = hkContainer->CreateChild<HotkeyEdit>();
+    hkEdit->SetLayoutBorder(IntRect(4, 4, 4, 4));
+    hkEdit->SetPivot(0, 0);
+    hkEdit->SetAlignment(HA_CENTER, VA_BOTTOM);
+    hkEdit->SetStyleAuto();
+    hkEdit->SetPosition(0, 0);
+    hkEdit->SetMinSize(140, 30);
+    hkEdit->SetSize(hkContainer->GetSize());
+    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
+    hkEdit->SetTexture(tex);
+    hkEdit->SetImageRect(IntRect(48, 0, 64, 16));
+    hkEdit->SetBorder(IntRect(4, 4, 4, 4));
+    hkEdit->SetImageBorder(IntRect(0, 0, 0, 0));
+    hkEdit->SetStyle("LineEdit");
+
+    wnd->UpdateLayout();
+
+    FillShortcutsList();
 
     {
         Button* button = dynamic_cast<Button*>(wnd->GetChild("AssignButton", true));
@@ -575,9 +600,11 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
 
     {
         Button* button = dynamic_cast<Button*>(wnd->GetChild("RestoreDefaultButton", true));
-        SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
+        SubscribeToEvent(button, E_RELEASED, [this](StringHash eventType, VariantMap& eventData)
         {
+            Shortcuts* scs = GetSubsystem<Shortcuts>();
             scs->RestoreDefault();
+            FillShortcutsList();
         });
     }
 }

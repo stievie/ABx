@@ -1,16 +1,7 @@
 #pragma once
 
 #include <SDL/SDL_keyboard.h>
-
-#define SC_MOD_LSHIFT  1               // Left Shift
-#define SC_MOD_RSHIFT  1 << 1          // Right Shift
-#define SC_MOD_SHIFT   1 << 2          // Left or right Shift
-#define SC_MOD_LCTRL   1 << 3          // Left Ctrl
-#define SC_MOD_RCTRL   1 << 4          // Right Ctrl
-#define SC_MOD_CTRL    1 << 5          // Left or right Ctrl
-#define SC_MOD_LALT    1 << 6          // Left Alt
-#define SC_MOD_RALT    1 << 7          // Right Alt
-#define SC_MOD_ALT     1 << 8          // Left or right Alt
+#include "HotkeyEdit.h"
 
 enum class Trigger
 {
@@ -177,7 +168,6 @@ private:
     void HandleKeyUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
-    void Add(const Shortcut& sc);
     void Init();
     bool ModifiersMatch(unsigned mods);
 public:
@@ -187,6 +177,7 @@ public:
     bool Test(const StringHash& e);
     void Load(const XMLElement& root);
     void Save(XMLElement& root);
+    void Add(const Shortcut& sc);
     const Shortcut& Get(const StringHash& _event) const;
     bool Get(unsigned id, Shortcut& sc);
     String GetCaption(const StringHash& _event, const String& def = String::EMPTY,

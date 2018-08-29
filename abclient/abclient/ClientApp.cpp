@@ -25,6 +25,7 @@
 #include "MultiLineEdit.h"
 #include "NewMailWindow.h"
 #include "MissionMapWindow.h"
+#include "HotkeyEdit.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -98,6 +99,7 @@ ClientApp::ClientApp(Context* context) :
     // UI
     TabGroup::RegisterObject(context);
     HealthBar::RegisterObject(context);
+    HotkeyEdit::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved

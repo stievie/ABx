@@ -40,7 +40,6 @@ void Shortcuts::Init()
     Add({ AbEvents::E_SC_TURNRIGHT, "Turn right", Trigger::None, SCANCODE_UNKNOWN, KEY_RIGHT });
     Add({ AbEvents::E_SC_MOVELEFT, "Move left", Trigger::None, SCANCODE_UNKNOWN, KEY_Q });
     Add({ AbEvents::E_SC_MOVERIGHT, "Move right", Trigger::None, SCANCODE_UNKNOWN, KEY_E });
-    Add({ AbEvents::E_SC_AUTORUN, "Auto run", Trigger::Down, SCANCODE_UNKNOWN, KEY_R });
 
     Add({ AbEvents::E_SC_KEEPRUNNING, "Keep running", Trigger::Down, SCANCODE_UNKNOWN, KEY_R });
     Add({ AbEvents::E_SC_REVERSECAMERA, "Reverse Camera", Trigger::None, SCANCODE_UNKNOWN, KEY_Y });

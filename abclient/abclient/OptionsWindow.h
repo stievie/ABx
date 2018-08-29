@@ -17,6 +17,7 @@ private:
     void CreatePageInput(TabElement* tabElement);
     void CreatePageInterface(TabElement* tabElement);
     void LoadWindow(Window* wnd, const String& fileName);
+    void FillShortcutsList();
 public:
     static void RegisterObject(Context* context);
 
