@@ -584,20 +584,20 @@ void OptionsWindow::HandleShortcutItemSelected(StringHash eventType, VariantMap&
         StringHash _event = sel->GetVar("Event").GetStringHash();
         Button* addButton = dynamic_cast<Button*>(GetChild("AddButton", true));
         addButton->SetVar("Event", _event);
-        ListView* lvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
-        lvw->RemoveAllItems();
+        ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+        hkLvw->RemoveAllItems();
         Shortcuts* scs = GetSubsystem<Shortcuts>();
         const auto& sc = scs->shortcuts_[_event];
         for (const auto& s : sc.shortcuts_)
         {
             Text* txt = new Text(context_);
             txt->SetText(s.ShortcutNameLong(true));
-            txt->SetMaxWidth(lvw->GetWidth());
-            txt->SetWidth(lvw->GetWidth());
+            txt->SetMaxWidth(hkLvw->GetWidth());
+            txt->SetWidth(hkLvw->GetWidth());
             txt->SetWordwrap(false);
             txt->SetVar("ID", s.id_);
             txt->SetStyle("DropDownItemEnumText");
-            lvw->AddItem(txt);
+            hkLvw->AddItem(txt);
         }
     }
 }
