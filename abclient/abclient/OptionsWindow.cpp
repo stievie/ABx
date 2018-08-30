@@ -558,14 +558,17 @@ void OptionsWindow::FillShortcutsList()
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     for (const auto& sc : scs->shortcuts_)
     {
-        Text* txt = new Text(context_);
-        txt->SetText(sc.second_.name_);
-        txt->SetMaxWidth(lvw->GetWidth());
-        txt->SetWidth(lvw->GetWidth());
-        txt->SetWordwrap(false);
-        txt->SetVar("Event", sc.first_);
-        txt->SetStyle("DropDownItemEnumText");
-        lvw->AddItem(txt);
+        if (sc.second_.customizeable_)
+        {
+            Text* txt = new Text(context_);
+            txt->SetText(sc.second_.name_);
+            txt->SetMaxWidth(lvw->GetWidth());
+            txt->SetWidth(lvw->GetWidth());
+            txt->SetWordwrap(false);
+            txt->SetVar("Event", sc.first_);
+            txt->SetStyle("DropDownItemEnumText");
+            lvw->AddItem(txt);
+        }
     }
     lvw->EnableLayoutUpdate();
     lvw->UpdateLayout();
@@ -588,7 +591,7 @@ void OptionsWindow::HandleShortcutItemSelected(StringHash eventType, VariantMap&
         for (const auto& s : sc.shortcuts_)
         {
             Text* txt = new Text(context_);
-            txt->SetText(s.ShortcutName(true));
+            txt->SetText(s.ShortcutNameLong(true));
             txt->SetMaxWidth(lvw->GetWidth());
             txt->SetWidth(lvw->GetWidth());
             txt->SetWordwrap(false);
