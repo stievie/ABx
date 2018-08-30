@@ -4,6 +4,7 @@
 #include "AbEvents.h"
 #include "Options.h"
 #include "HotkeyEdit.h"
+#include "LevelManager.h"
 
 void OptionsWindow::RegisterObject(Context* context)
 {
@@ -456,6 +457,22 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             bool checked = eventData[P_STATE].GetBool();
             Options* opt = GetSubsystem<Options>();
             opt->SetVSync(checked);
+        });
+    }
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("FovSlider", true));
+        slider->SetRange(MAX_FOV - MIN_FOV);
+        slider->SetValue(opts->GetCameraFov() - MIN_FOV);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash eventType, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            LevelManager* lm = GetSubsystem<LevelManager>();
+            opt->SetCameraFov(value + MIN_FOV);
+            Camera* cam = lm->GetCamera();
+            if (cam)
+                cam->SetFov(opt->GetCameraFov());
         });
     }
 

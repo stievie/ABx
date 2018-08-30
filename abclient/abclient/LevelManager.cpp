@@ -207,3 +207,11 @@ SharedPtr<Player> LevelManager::GetPlayer()
     }
     return SharedPtr<Player>();
 }
+
+Camera* LevelManager::GetCamera() const
+{
+    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
+    if (lvl)
+        return lvl->GetCamera();
+    return nullptr;
+}

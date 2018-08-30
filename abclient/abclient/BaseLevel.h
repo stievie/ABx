@@ -69,6 +69,12 @@ public:
     }
     virtual void ShowError(const String& message, const String& title = "Error");
     SharedPtr<Player> GetPlayer() const { return player_; }
+    Camera* GetCamera() const
+    {
+        if (cameraNode_)
+            return cameraNode_->GetComponent<Camera>();
+        return nullptr;
+    }
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

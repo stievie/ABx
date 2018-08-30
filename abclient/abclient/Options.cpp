@@ -167,6 +167,12 @@ void Options::Save()
     }
     {
         XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "FOV");
+        param.SetString("type", "float");
+        param.SetFloat("value", cameraFov_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "GainMaster");
         param.SetString("type", "float");
         param.SetFloat("value", gainMaster_);
@@ -460,6 +466,10 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("MultiSample") == 0)
         {
             multiSample_ = paramElem.GetInt("value");
+        }
+        else if (name.Compare("FOV") == 0)
+        {
+            cameraFov_ = paramElem.GetFloat("value");
         }
         else if (name.Compare("LoginPort") == 0)
         {

@@ -47,4 +47,5 @@ public:
     }
     SharedPtr<GameObject> GetObjectById(uint32_t objectId);
     SharedPtr<Player> GetPlayer();
+    Camera* GetCamera() const;
 };

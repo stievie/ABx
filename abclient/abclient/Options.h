@@ -7,6 +7,9 @@ enum class WindowMode
     Borderless
 };
 
+static constexpr float MIN_FOV = 60.0;
+static constexpr float MAX_FOV = 110.0;
+
 class Options : public Object
 {
     URHO3D_OBJECT(Options, Object);
@@ -101,6 +104,14 @@ public:
     float GetCameraFov() const
     {
         return cameraFov_;
+    }
+    void SetCameraFov(float value)
+    {
+        float fov = Clamp(value, MIN_FOV, MAX_FOV);
+        if (fov != cameraFov_)
+        {
+            cameraFov_ = fov;
+        }
     }
 
     const String& GetRenderPath() const;
