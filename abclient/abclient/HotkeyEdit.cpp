@@ -10,7 +10,7 @@ void HotkeyEdit::RegisterObject(Context* context)
 HotkeyEdit::HotkeyEdit(Context* context) :
     LineEdit(context),
     key_(KEY_UNKNOWN),
-    mouseButtons_(MOUSEB_NONE),
+    mouseButton_(MOUSEB_NONE),
     qualifiers_(0)
 {
     SetEditable(false);
@@ -37,7 +37,7 @@ void HotkeyEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     if (eventData[P_REPEAT].GetBool())
         return;
 
-    mouseButtons_ = MOUSEB_NONE;
+    mouseButton_ = MOUSEB_NONE;
     key_ = static_cast<Key>(eventData[P_KEY].GetInt());
     qualifiers_ = 0;
     if (key_ != KEY_LSHIFT && key_ != KEY_RSHIFT && key_ != KEY_LCTRL && key_ != KEY_RCTRL && key_ != KEY_LALT && key_ != KEY_RALT)
@@ -68,7 +68,7 @@ void HotkeyEdit::HandleMouseDown(StringHash eventType, VariantMap& eventData)
 
     key_ = KEY_UNKNOWN;
     using namespace MouseButtonDown;
-    mouseButtons_ = static_cast<MouseButtonFlags>(eventData[P_BUTTONS].GetInt());
+    mouseButton_ = static_cast<MouseButton>(eventData[P_BUTTON].GetInt());
     qualifiers_ = 0;
     Input* input = GetSubsystem<Input>();
     if (input->GetKeyDown(KEY_LSHIFT))
@@ -97,7 +97,7 @@ void HotkeyEdit::UpdateText()
             text += GetQualName();
         text += String(SDL_GetKeyName(key_));
     }
-    else if (mouseButtons_ != MOUSEB_NONE)
+    else if (mouseButton_ != MOUSEB_NONE)
         text += GetQualName() + GetMBName();
     SetText(text);
 }

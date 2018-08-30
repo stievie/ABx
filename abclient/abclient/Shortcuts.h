@@ -12,33 +12,16 @@ enum class Trigger
 
 struct Shortcut
 {
-    Shortcut() :
-        name_("Unknown"),
-        trigger_(Trigger::None),
-        event_(StringHash::ZERO),
-        scanCode_(SCANCODE_UNKNOWN),
-        keyboardKey_(KEY_UNKNOWN),
-        mouseButton_(MOUSEB_NONE),
-        modifiers_(0),
-        customizeable_(true),
-        id(0)
-    { }
-    Shortcut(const StringHash& _event, const String& name = "Unknown", Trigger trigger = Trigger::None,
-        Scancode scanCode = SCANCODE_UNKNOWN, Key key = KEY_UNKNOWN,
-        MouseButton mb = MOUSEB_NONE, unsigned mods = 0, bool customizeable = true) :
-        event_(_event),
-        name_(name),
-        trigger_(trigger),
-        scanCode_(scanCode),
+    Shortcut(Key key = KEY_UNKNOWN,
+        MouseButton mb = MOUSEB_NONE, unsigned mods = 0) :
         keyboardKey_(key),
         mouseButton_(mb),
         modifiers_(mods),
-        customizeable_(customizeable),
-        id(0)
+        id_(0)
     { }
     operator bool() const
     {
-        return event_ != StringHash::ZERO;
+        return keyboardKey_ != KEY_UNKNOWN && mouseButton_ != MOUSEB_NONE;
     }
     String ModName() const
     {
@@ -65,30 +48,42 @@ struct Shortcut
             result += "RightAlt+";
         return result;
     }
-    String ShortcutNameLong() const
+    String ShortcutNameLong(bool plain = false) const
     {
         if (keyboardKey_ != KEY_UNKNOWN)
         {
-            return "[" + ModName() + String(SDL_GetKeyName(keyboardKey_)) + "]";
+            String result = ModName() + String(SDL_GetKeyName(keyboardKey_));
+            if (plain)
+                return result;
+            return "[" + result + "]";
         }
-        if (scanCode_ != SCANCODE_UNKNOWN)
-            return "[" + ModName() + String(SDL_GetScancodeName(static_cast<SDL_Scancode>(scanCode_))) + "]";
+        String result;
         switch (mouseButton_)
         {
         case MOUSEB_LEFT:
-            return "[" + ModName() + "LMB]";
+            result = ModName() + "LMB";
+            break;
         case MOUSEB_MIDDLE:
-            return "[" + ModName() + "MMB]";
+            result = ModName() + "MMB";
+            break;
         case MOUSEB_RIGHT:
-            return "[" + ModName() + "RMB]";
+            result = ModName() + "RMB";
+            break;
         case MOUSEB_X1:
-            return "[" + ModName() + "X1MB]";
+            result = ModName() + "X1MB";
+            break;
         case MOUSEB_X2:
-            return "[" + ModName() + "X2MB]";
+            result = ModName() + "X2MB";
         }
-        return "";
+        if (!result.Empty())
+        {
+            if (plain)
+                return result;
+            return "[" + result + "]";
+        }
+        return String::EMPTY;
     }
-    String ShortcutName() const
+    String ShortcutName(bool plain = false) const
     {
 #ifdef _WIN32
         if (modifiers_ != 0)
@@ -113,48 +108,48 @@ struct Shortcut
             if (modifiers_ & SC_MOD_RALT)
                 keyboardState[VK_RMENU] = 0xff;
             wchar_t buff[256];
-            int length = ToUnicode(static_cast<unsigned>(keyboardKey_), scanCode_, keyboardState, buff, 256, 0);
+            int length = ToUnicode(static_cast<unsigned>(keyboardKey_), 0, keyboardState, buff, 256, 0);
             if (length > 0)
             {
                 buff[length] = '\0';
                 String res(buff);
+                if (plain)
+                    return res;
                 return "[" + res + "]";
             }
         }
 #endif
-        return ShortcutNameLong();
+        return ShortcutNameLong(plain);
     }
-    String Caption(bool withShortcut, unsigned align = 0) const
-    {
-        String result = name_;
-        if (withShortcut)
-        {
-            String scName = ShortcutName();
-            if (!scName.Empty())
-            {
-                if (align < result.Length())
-                    result += "  ";
-                else
-                {
-                    while (result.Length() < align)
-                        result += " ";
-                }
-                result += scName;
-            }
-        }
-        return result;
-    }
-    StringHash event_;
-    String name_;
-    Trigger trigger_;
-    Scancode scanCode_;
+
     Key keyboardKey_;
     MouseButton mouseButton_;
     unsigned modifiers_;
-    bool customizeable_;
-    unsigned id;
-
+    unsigned id_;
     static const Shortcut EMPTY;
+};
+
+struct ShortcutEvent
+{
+    ShortcutEvent() :
+        event_(StringHash::ZERO),
+        name_("Unknown"),
+        trigger_(Trigger::None),
+        customizeable_(false)
+    {}
+    ShortcutEvent(const StringHash& _event, const String& name, Trigger trigger, bool customizeable = true) :
+        event_(_event),
+        name_(name),
+        trigger_(trigger),
+        customizeable_(customizeable)
+    {
+    }
+
+    StringHash event_;
+    String name_;
+    Trigger trigger_;
+    bool customizeable_;
+    Vector<Shortcut> shortcuts_;
 };
 
 class Shortcuts : public Object
@@ -169,7 +164,9 @@ private:
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
     void Init();
+    void AddDefault();
     bool ModifiersMatch(unsigned mods);
+    static unsigned shortcutIds;
 public:
     Shortcuts(Context* context);
     ~Shortcuts();
@@ -177,14 +174,15 @@ public:
     bool Test(const StringHash& e);
     void Load(const XMLElement& root);
     void Save(XMLElement& root);
-    void Add(const Shortcut& sc);
+    /// Return ID
+    unsigned Add(const StringHash& _event, const Shortcut& sc);
     const Shortcut& Get(const StringHash& _event) const;
-    bool Get(unsigned id, Shortcut& sc);
     String GetCaption(const StringHash& _event, const String& def = String::EMPTY,
         bool widthShortcut = false, unsigned align = 0);
     String GetShortcutName(const StringHash& _event);
     void RestoreDefault();
+    void Delete(unsigned id);
 
-    Vector<Shortcut> shortcuts_;
+    HashMap<StringHash, ShortcutEvent> shortcuts_;
 };
 

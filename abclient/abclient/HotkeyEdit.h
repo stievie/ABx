@@ -15,23 +15,22 @@ class HotkeyEdit : public LineEdit
     URHO3D_OBJECT(HotkeyEdit, LineEdit);
 private:
     Key key_;
-    MouseButtonFlags mouseButtons_;
+    MouseButton mouseButton_;
     int qualifiers_;
     void UpdateText();
     String GetMBName() const
     {
-        String text;
-        if (mouseButtons_ & MOUSEB_LEFT)
-            text += "LMB";
-        if (mouseButtons_ & MOUSEB_MIDDLE)
-            text += String((!text.Empty() ? "+" : "")) + "MMB";
-        if (mouseButtons_ & MOUSEB_RIGHT)
-            text += String((!text.Empty() ? "+" : "")) + "RMB";
-        if (mouseButtons_ & MOUSEB_X1)
-            text += String((!text.Empty() ? "+" : "")) + "X1MB";
-        if (mouseButtons_ & MOUSEB_X2)
-            text += String((!text.Empty() ? "+" : "")) + "X2MB";
-        return text;
+        if (mouseButton_ == MOUSEB_LEFT)
+            return "LMB";
+        if (mouseButton_ == MOUSEB_MIDDLE)
+            return "MMB";
+        if (mouseButton_ == MOUSEB_RIGHT)
+            return "RMB";
+        if (mouseButton_ == MOUSEB_X1)
+            return "X1MB";
+        if (mouseButton_ == MOUSEB_X2)
+            return "X2MB";
+        return String::EMPTY;
     }
     String GetQualName() const
     {
@@ -70,9 +69,9 @@ public:
     {
         return key_;
     }
-    MouseButtonFlags GetMouseButtons() const
+    MouseButton GetMouseButton() const
     {
-        return mouseButtons_;
+        return mouseButton_;
     }
     int GetQualifiers() const
     {
@@ -86,11 +85,11 @@ public:
             UpdateText();
         }
     }
-    void SetMouseButtons(MouseButtonFlags buttons)
+    void SetMouseButtons(MouseButton button)
     {
-        if (mouseButtons_ != buttons)
+        if (mouseButton_ != button)
         {
-            mouseButtons_ = buttons;
+            mouseButton_ = button;
             UpdateText();
         }
     }

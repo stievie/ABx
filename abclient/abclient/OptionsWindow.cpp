@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "OptionsWindow.h"
-#include "Shortcuts.h"
 #include "AbEvents.h"
 #include "Options.h"
 #include "HotkeyEdit.h"
@@ -560,15 +559,44 @@ void OptionsWindow::FillShortcutsList()
     for (const auto& sc : scs->shortcuts_)
     {
         Text* txt = new Text(context_);
-        txt->SetText(sc.name_);
+        txt->SetText(sc.second_.name_);
         txt->SetMaxWidth(lvw->GetWidth());
         txt->SetWidth(lvw->GetWidth());
         txt->SetWordwrap(false);
+        txt->SetVar("Event", sc.first_);
         txt->SetStyle("DropDownItemEnumText");
         lvw->AddItem(txt);
     }
     lvw->EnableLayoutUpdate();
     lvw->UpdateLayout();
+}
+
+void OptionsWindow::HandleShortcutItemSelected(StringHash eventType, VariantMap& eventData)
+{
+    using namespace ItemSelected;
+    ListView* lvw = dynamic_cast<ListView*>(eventData[P_ELEMENT].GetPtr());
+    Text* sel = dynamic_cast<Text*>(lvw->GetSelectedItem());
+    if (sel)
+    {
+        StringHash _event = sel->GetVar("Event").GetStringHash();
+        Button* addButton = dynamic_cast<Button*>(GetChild("AddButton", true));
+        addButton->SetVar("Event", _event);
+        ListView* lvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+        lvw->RemoveAllItems();
+        Shortcuts* scs = GetSubsystem<Shortcuts>();
+        const auto& sc = scs->shortcuts_[_event];
+        for (const auto& s : sc.shortcuts_)
+        {
+            Text* txt = new Text(context_);
+            txt->SetText(s.ShortcutName(true));
+            txt->SetMaxWidth(lvw->GetWidth());
+            txt->SetWidth(lvw->GetWidth());
+            txt->SetWordwrap(false);
+            txt->SetVar("ID", s.id_);
+            txt->SetStyle("DropDownItemEnumText");
+            lvw->AddItem(txt);
+        }
+    }
 }
 
 void OptionsWindow::CreatePageInput(TabElement* tabElement)
@@ -583,7 +611,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     UIElement* hkContainer = dynamic_cast<UIElement*>(GetChild("HotkeyEditContainer", true));
-    HotkeyEdit* hkEdit = hkContainer->CreateChild<HotkeyEdit>();
+    HotkeyEdit* hkEdit = hkContainer->CreateChild<HotkeyEdit>("HotkeyEditor");
     hkEdit->SetLayoutBorder(IntRect(4, 4, 4, 4));
     hkEdit->SetPivot(0, 0);
     hkEdit->SetAlignment(HA_CENTER, VA_BOTTOM);
@@ -601,17 +629,47 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     wnd->UpdateLayout();
 
     FillShortcutsList();
+    ListView* lvw = dynamic_cast<ListView*>(GetChild("ShortcutsListView", true));
+    SubscribeToEvent(lvw, E_ITEMSELECTED, URHO3D_HANDLER(OptionsWindow, HandleShortcutItemSelected));
 
     {
-        Button* button = dynamic_cast<Button*>(wnd->GetChild("AssignButton", true));
+        Button* button = dynamic_cast<Button*>(wnd->GetChild("AddButton", true));
         SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
         {
+            using namespace Released;
+            Shortcut sc;
+            HotkeyEdit* hkEdit = dynamic_cast<HotkeyEdit*>(GetChild("HotkeyEditor", true));
+            Button* self = dynamic_cast<Button*>(eventData[P_ELEMENT].GetPtr());
+            StringHash _event = self->GetVar("Event").GetStringHash();
+            sc.keyboardKey_ = hkEdit->GetKey();
+            sc.modifiers_ = hkEdit->GetQualifiers();
+            sc.mouseButton_ = hkEdit->GetMouseButton();
+            Shortcuts* scs = GetSubsystem<Shortcuts>();
+            unsigned id = scs->Add(_event, sc);
+            ListView* lvwHk = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+            Text* txt = new Text(context_);
+            txt->SetText(sc.ShortcutName(true));
+            txt->SetMaxWidth(lvwHk->GetWidth());
+            txt->SetWidth(lvwHk->GetWidth());
+            txt->SetWordwrap(false);
+            txt->SetVar("ID", sc.id_);
+            txt->SetStyle("DropDownItemEnumText");
+            lvwHk->AddItem(txt);
         });
     }
     {
         Button* button = dynamic_cast<Button*>(wnd->GetChild("DeleteButton", true));
         SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
         {
+            ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+            Text* sel = dynamic_cast<Text*>(hkLvw->GetSelectedItem());
+            if (sel)
+            {
+                unsigned id = sel->GetVar("ID").GetUInt();
+                Shortcuts* scs = GetSubsystem<Shortcuts>();
+                scs->Delete(id);
+                hkLvw->RemoveItem(hkLvw->GetSelection());
+            }
         });
     }
 

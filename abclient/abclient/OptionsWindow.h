@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TabGroup.h"
+#include "Shortcuts.h"
 
 class OptionsWindow : public Window
 {
@@ -18,6 +19,7 @@ private:
     void CreatePageInterface(TabElement* tabElement);
     void LoadWindow(Window* wnd, const String& fileName);
     void FillShortcutsList();
+    void HandleShortcutItemSelected(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 
