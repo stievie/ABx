@@ -100,7 +100,7 @@ private:
     void HandleToggleMap(StringHash eventType, VariantMap& eventData);
     void HandleHideUI(StringHash eventType, VariantMap& eventData);
     void HandleDefaultAction(StringHash eventType, VariantMap& eventData);
-    void HandleAutoRun(StringHash eventType, VariantMap& eventData);
+    void HandleKeepRunning(StringHash eventType, VariantMap& eventData);
     void HandleToggleChatWindow(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,

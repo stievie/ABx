@@ -206,7 +206,6 @@ String Shortcuts::GetShortcutName(const StringHash& _event)
 
 void Shortcuts::RestoreDefault()
 {
-    shortcuts_.Clear();
     Init();
     AddDefault();
 }

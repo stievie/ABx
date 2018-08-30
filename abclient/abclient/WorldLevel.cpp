@@ -44,7 +44,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SC_DEFAULTACTION, URHO3D_HANDLER(WorldLevel, HandleDefaultAction));
     SubscribeToEvent(AbEvents::E_SC_TOGGLECHATWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleChatWindow));
     SubscribeToEvent(AbEvents::E_SC_HIDEUI, URHO3D_HANDLER(WorldLevel, HandleHideUI));
-    SubscribeToEvent(AbEvents::E_SC_AUTORUN, URHO3D_HANDLER(WorldLevel, HandleAutoRun));
+    SubscribeToEvent(AbEvents::E_SC_KEEPRUNNING, URHO3D_HANDLER(WorldLevel, HandleKeepRunning));
     SubscribeToEvent(AbEvents::E_SC_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleLogout));
     SubscribeToEvent(AbEvents::E_SC_SELECTCHARACTER, URHO3D_HANDLER(WorldLevel, HandleSelectChar));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
@@ -524,7 +524,7 @@ void WorldLevel::HandleDefaultAction(StringHash eventType, VariantMap& eventData
     player_->FollowSelected();
 }
 
-void WorldLevel::HandleAutoRun(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleKeepRunning(StringHash eventType, VariantMap& eventData)
 {
     player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
 }
