@@ -24,7 +24,8 @@ Microsoft and install it.
 
 ### Keys
 
-Key bindings are not customizable yet.
+Key bindings are fully customizeable with the Options -> Input window. The default
+bindings are:
 
 * `W`, `Up`: Move forward
 * `A`, `Left`: Turn left

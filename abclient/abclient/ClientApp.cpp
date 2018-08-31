@@ -118,12 +118,9 @@ ClientApp::ClientApp(Context* context) :
 
     // Subscribe key down event
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
-    SubscribeToEvent(AbEvents::E_REPLYMAIL, URHO3D_HANDLER(ClientApp, HandleReplyMail));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(ClientApp, HandleToggleMail));
-    SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(ClientApp, HandleToggleNewMail));
 }
 
 /**
@@ -253,30 +250,6 @@ void ClientApp::HandleToggleOptions(StringHash eventType, VariantMap& eventData)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS, true);
     optionsWnd->SetVisible(!optionsWnd->IsVisible());
-}
-
-void ClientApp::HandleToggleMail(StringHash eventType, VariantMap& eventData)
-{
-    WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_MAIL, true);
-    wnd->SetVisible(!wnd->IsVisible());
-}
-
-void ClientApp::HandleReplyMail(StringHash eventType, VariantMap& eventData)
-{
-    WindowManager* wm = GetSubsystem<WindowManager>();
-    NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
-    using namespace AbEvents::ReplyMail;
-    wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
-    wnd->SetSubject("Re: " + eventData[P_SUBJECT].GetString());
-    wnd->SetVisible(true);
-}
-
-void ClientApp::HandleToggleNewMail(StringHash eventType, VariantMap& eventData)
-{
-    WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_NEWMAIL, true);
-    wnd->SetVisible(!wnd->IsVisible());
 }
 
 void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData)

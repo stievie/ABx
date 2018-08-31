@@ -20,17 +20,21 @@ private:
     void UpdateText();
     String GetMBName() const
     {
-        if (mouseButton_ == MOUSEB_LEFT)
+        switch (mouseButton_)
+        {
+        case MOUSEB_LEFT:
             return "LMB";
-        if (mouseButton_ == MOUSEB_MIDDLE)
+        case MOUSEB_MIDDLE:
             return "MMB";
-        if (mouseButton_ == MOUSEB_RIGHT)
+        case MOUSEB_RIGHT:
             return "RMB";
-        if (mouseButton_ == MOUSEB_X1)
+        case MOUSEB_X1:
             return "X1MB";
-        if (mouseButton_ == MOUSEB_X2)
+        case MOUSEB_X2:
             return "X2MB";
-        return String::EMPTY;
+        default:
+            return String::EMPTY;
+        }
     }
     String GetQualName() const
     {
@@ -77,6 +81,10 @@ public:
     {
         return qualifiers_;
     }
+    bool Empty() const
+    {
+        return key_ == KEY_UNKNOWN && mouseButton_ == MOUSEB_NONE;
+    }
     void SetKey(Key key)
     {
         if (key_ != key)
@@ -85,7 +93,7 @@ public:
             UpdateText();
         }
     }
-    void SetMouseButtons(MouseButton button)
+    void SetMouseButton(MouseButton button)
     {
         if (mouseButton_ != button)
         {
@@ -93,7 +101,7 @@ public:
             UpdateText();
         }
     }
-    void GetQualifiers(int qualifiers)
+    void SetQualifiers(int qualifiers)
     {
         if (qualifiers_ != qualifiers)
         {

@@ -640,8 +640,12 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
         SubscribeToEvent(button, E_RELEASED, [&](StringHash eventType, VariantMap& eventData)
         {
             using namespace Released;
-            Shortcut sc;
+
             HotkeyEdit* hkEdit = dynamic_cast<HotkeyEdit*>(GetChild("HotkeyEditor", true));
+            if (hkEdit->Empty())
+                return;
+
+            Shortcut sc;
             Button* self = dynamic_cast<Button*>(eventData[P_ELEMENT].GetPtr());
             StringHash _event = self->GetVar("Event").GetStringHash();
             sc.keyboardKey_ = hkEdit->GetKey();
@@ -649,6 +653,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
             sc.mouseButton_ = hkEdit->GetMouseButton();
             Shortcuts* scs = GetSubsystem<Shortcuts>();
             unsigned id = scs->Add(_event, sc);
+
             ListView* lvwHk = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
             Text* txt = new Text(context_);
             txt->SetText(sc.ShortcutName(true));
@@ -683,6 +688,8 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
             Shortcuts* scs = GetSubsystem<Shortcuts>();
             scs->RestoreDefault();
             FillShortcutsList();
+            ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+            hkLvw->RemoveAllItems();
         });
     }
 }

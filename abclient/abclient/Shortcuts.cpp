@@ -125,12 +125,11 @@ void Shortcuts::Load(const XMLElement& root)
         ShortcutEvent& scEvent = shortcuts_[_event];
         if (scEvent.customizeable_)
         {
-            Shortcut sc;
-            // Only key can be customized to scan code
-            sc.keyboardKey_ = static_cast<Key>(paramElem.GetUInt("key"));
-            sc.mouseButton_ = static_cast<MouseButton>(paramElem.GetUInt("mousebutton"));
-            sc.modifiers_ = paramElem.GetUInt("modifiers");
-            scEvent.shortcuts_.Push(sc);
+            scEvent.shortcuts_.Push({
+                static_cast<Key>(paramElem.GetUInt("key")),
+                static_cast<MouseButton>(paramElem.GetUInt("mousebutton")),
+                paramElem.GetUInt("modifiers")
+            });
         }
 
         paramElem = paramElem.GetNext("shortcut");
@@ -140,6 +139,7 @@ void Shortcuts::Load(const XMLElement& root)
 
 void Shortcuts::Save(XMLElement& root)
 {
+    root.RemoveChildren("shortcut");
     for (const auto& sc : shortcuts_)
     {
         if (!sc.second_.customizeable_)
@@ -164,8 +164,10 @@ const Shortcut& Shortcuts::Get(const StringHash& _event) const
     return Shortcut::EMPTY;
 }
 
-String Shortcuts::GetCaption(const StringHash& _event, const String& def /* = String::EMPTY */,
-    bool widthShortcut /* = false */, unsigned align /* = 0 */)
+String Shortcuts::GetCaption(const StringHash& _event,
+    const String& def /* = String::EMPTY */,
+    bool widthShortcut /* = false */,
+    unsigned align /* = 0 */)
 {
     auto it = shortcuts_.Find(_event);
     if (it == shortcuts_.End())

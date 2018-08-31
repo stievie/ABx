@@ -62,6 +62,11 @@ MailWindow::MailWindow(Context* context) :
 
     SubscribeToEvents();
 
+    Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+    delButton->SetEnabled(false);
+    Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+    repButton->SetEnabled(false);
+
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->GetMailHeaders();
 }
@@ -148,7 +153,7 @@ void MailWindow::HandleReplyClicked(StringHash eventType, VariantMap& eventData)
         VariantMap& e = GetEventDataMap();
         e[P_RECIPIENT] = from;
         e[P_SUBJECT] = subject;
-        SendEvent(AbEvents::E_REPLYMAIL, e);
+        SendEvent(AbEvents::E_SC_REPLYMAIL, e);
     }
 }
 
@@ -175,12 +180,20 @@ void MailWindow::HandleItemSelected(StringHash eventType, VariantMap& eventData)
         net->ReadMail(std::string(uuid.CString()));
         // Mark read
         sel->SetStyle("MailListItem");
+        Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+        delButton->SetEnabled(true);
+        Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+        repButton->SetEnabled(true);
     }
 }
 
 void MailWindow::HandleItemUnselected(StringHash eventType, VariantMap& eventData)
 {
     mailBody_->SetText(String::EMPTY);
+    Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
+    delButton->SetEnabled(false);
+    Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
+    repButton->SetEnabled(false);
 }
 
 void MailWindow::HandleNewMail(StringHash eventType, VariantMap& eventData)

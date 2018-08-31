@@ -10,6 +10,7 @@
 #include "Options.h"
 #include "Shortcuts.h"
 #include "WindowManager.h"
+#include "NewMailWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -47,6 +48,9 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SC_KEEPRUNNING, URHO3D_HANDLER(WorldLevel, HandleKeepRunning));
     SubscribeToEvent(AbEvents::E_SC_LOGOUT, URHO3D_HANDLER(WorldLevel, HandleLogout));
     SubscribeToEvent(AbEvents::E_SC_SELECTCHARACTER, URHO3D_HANDLER(WorldLevel, HandleSelectChar));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleNewMail));
+    SubscribeToEvent(AbEvents::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
@@ -532,6 +536,30 @@ void WorldLevel::HandleKeepRunning(StringHash eventType, VariantMap& eventData)
 void WorldLevel::HandleToggleChatWindow(StringHash eventType, VariantMap& eventData)
 {
     chatWindow_->SetVisible(!chatWindow_->IsVisible());
+}
+
+void WorldLevel::HandleToggleMail(StringHash eventType, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_MAIL, true);
+    wnd->SetVisible(!wnd->IsVisible());
+}
+
+void WorldLevel::HandleReplyMail(StringHash eventType, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
+    using namespace AbEvents::ReplyMail;
+    wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
+    wnd->SetSubject("Re: " + eventData[P_SUBJECT].GetString());
+    wnd->SetVisible(true);
+}
+
+void WorldLevel::HandleToggleNewMail(StringHash eventType, VariantMap& eventData)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_NEWMAIL, true);
+    wnd->SetVisible(!wnd->IsVisible());
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,

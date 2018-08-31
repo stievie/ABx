@@ -216,7 +216,7 @@ URHO3D_EVENT(E_SC_TOGGLEMISSIONMAPWINDOW, ToggleMissionMapWindow)
 {
 }
 
-URHO3D_EVENT(E_REPLYMAIL, ReplyMail)
+URHO3D_EVENT(E_SC_REPLYMAIL, ReplyMail)
 {
     URHO3D_PARAM(P_RECIPIENT, Recipient);     // String
     URHO3D_PARAM(P_SUBJECT, Subject);         // String

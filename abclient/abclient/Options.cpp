@@ -59,16 +59,21 @@ void Options::Load()
 
 void Options::Save()
 {
-    // TODO
     String prefPath = GetPrefPath();
     if (!CreateDir(prefPath))
     {
         URHO3D_LOGERRORF("Failed to create directory %s", prefPath);
         return;
     }
+    String file = AddTrailingSlash(prefPath) + "settings.xml";
     SharedPtr<XMLFile> xml(new XMLFile(context_));
+    xml->LoadFile(file);
 
-    XMLElement root = xml->CreateRoot("settings");
+    XMLElement root = xml->GetRoot();
+    if (!root)
+        root = xml->CreateRoot("settings");
+    root.RemoveChildren("parameter");
+
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowWidth");
@@ -218,7 +223,7 @@ void Options::Save()
     if (sc)
         sc->Save(root);
 
-    xml->SaveFile(AddTrailingSlash(prefPath) + "settings.xml");
+    xml->SaveFile(file);
 }
 
 void Options::SetMultiSample(int value)
@@ -543,6 +548,8 @@ void Options::LoadWindow(UIElement* window)
         return;
 
     XMLElement root = xml->GetRoot();
+    if (!root)
+        return;
     XMLElement elem = root.GetChild(window->GetName());
     if (!elem)
         return;
