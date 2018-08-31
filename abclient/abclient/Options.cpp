@@ -478,7 +478,7 @@ void Options::LoadElements(const XMLElement& root)
         }
         else if (name.Compare("LoginPort") == 0)
         {
-            loginPort_ = paramElem.GetInt("value");
+            loginPort_ = static_cast<uint16_t>(paramElem.GetUInt("value"));
         }
         else if (name.Compare("LoginHost") == 0)
         {

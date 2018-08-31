@@ -104,7 +104,7 @@ void FwClient::Stop()
     Logout();
 }
 
-void FwClient::HandleLevelReady(StringHash eventType, VariantMap& eventData)
+void FwClient::HandleLevelReady(StringHash, VariantMap&)
 {
     using namespace AbEvents::LevelReady;
     levelReady_ = true;
@@ -329,7 +329,7 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
     return true;
 }
 
-void FwClient::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
 {
     using namespace Update;
     float timeStep = eventData[P_TIMESTEP].GetFloat();
@@ -527,14 +527,14 @@ void FwClient::OnGetServices(const std::vector<AB::Entities::Service>& services)
     SendEvent(AbEvents::E_GOTSERVICES, eData);
 }
 
-void FwClient::OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers)
+void FwClient::OnGetMailHeaders(int64_t, const std::vector<AB::Entities::MailHeader>& headers)
 {
     mailHeaders_ = headers;
     VariantMap& eData = GetEventDataMap();
     SendEvent(AbEvents::E_MAILINBOX, eData);
 }
 
-void FwClient::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
+void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
 {
     currentMail_ = mail;
     VariantMap& eData = GetEventDataMap();

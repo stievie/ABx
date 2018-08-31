@@ -101,13 +101,13 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
     return false;
 }
 
-void WorldLevel::HandleServerJoinedLeft(StringHash eventType, VariantMap & eventData)
+void WorldLevel::HandleServerJoinedLeft(StringHash, VariantMap&)
 {
     FwClient* client = GetSubsystem<FwClient>();
     client->UpdateServers();
 }
 
-void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
 {
     using namespace MouseButtonDown;
 
@@ -149,7 +149,7 @@ void WorldLevel::HandleMouseDown(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleMouseUp(StringHash, VariantMap&)
 {
     using namespace MouseButtonUp;
     if (rmbDown_)
@@ -161,7 +161,7 @@ void WorldLevel::HandleMouseUp(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void WorldLevel::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleMouseWheel(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement())
@@ -175,9 +175,8 @@ void WorldLevel::HandleMouseWheel(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void WorldLevel::HandleMouseMove(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
 {
-    using namespace MouseMove;
     // Hover object
     Input* input = GetSubsystem<Input>();
     if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))
@@ -302,7 +301,7 @@ void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)
     BaseLevel::PostUpdate(eventType, eventData);
 }
 
-void WorldLevel::HandleObjectSpawn(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectSpawn;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
@@ -374,7 +373,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     }
 }
 
-void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectDespawn;
     uint32_t objectId = eventData[P_OBJECTID].GetInt();
@@ -399,7 +398,7 @@ void WorldLevel::HandleObjectDespawn(StringHash eventType, VariantMap& eventData
     }
 }
 
-void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectPosUpdate(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectPosUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
@@ -412,7 +411,7 @@ void WorldLevel::HandleObjectPosUpdate(StringHash eventType, VariantMap& eventDa
     }
 }
 
-void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectRotUpdate(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectRotUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
@@ -426,7 +425,7 @@ void WorldLevel::HandleObjectRotUpdate(StringHash eventType, VariantMap& eventDa
     }
 }
 
-void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectStateUpdate(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectStateUpdate;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
@@ -439,7 +438,7 @@ void WorldLevel::HandleObjectStateUpdate(StringHash eventType, VariantMap& event
     }
 }
 
-void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectSelected;
     uint32_t objectId = eventData[P_SOURCEID].GetUInt();
@@ -475,7 +474,7 @@ void WorldLevel::HandleObjectSelected(StringHash eventType, VariantMap& eventDat
     }
 }
 
-void WorldLevel::HandleLogout(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleLogout(StringHash, VariantMap&)
 {
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
@@ -487,7 +486,7 @@ void WorldLevel::HandleLogout(StringHash eventType, VariantMap& eventData)
     SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
-void WorldLevel::HandleSelectChar(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
 {
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
@@ -496,56 +495,56 @@ void WorldLevel::HandleSelectChar(StringHash eventType, VariantMap& eventData)
     net->Login(net->accountName_, net->accountPass_);
 }
 
-void WorldLevel::HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleTogglePartyWindow(StringHash, VariantMap&)
 {
     if (partyWindow_)
         partyWindow_->SetVisible(!partyWindow_->IsVisible());
 }
 
-void WorldLevel::HandleToggleMissionMapWindow(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleToggleMissionMapWindow(StringHash, VariantMap&)
 {
     if (missionMap_)
         missionMap_->SetVisible(!missionMap_->IsVisible());
 }
 
-void WorldLevel::HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleTargetWindowUnselectObject(StringHash, VariantMap&)
 {
     player_->SelectObject(0);
 }
 
-void WorldLevel::HandleToggleMap(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleToggleMap(StringHash, VariantMap&)
 {
     ToggleMap();
 }
 
-void WorldLevel::HandleHideUI(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleHideUI(StringHash, VariantMap&)
 {
     uiRoot_->SetVisible(!uiRoot_->IsVisible());
 }
 
-void WorldLevel::HandleDefaultAction(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
 {
     player_->FollowSelected();
 }
 
-void WorldLevel::HandleKeepRunning(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleKeepRunning(StringHash, VariantMap&)
 {
     player_->controls_.Set(CTRL_MOVE_LOCK, !player_->controls_.IsDown(CTRL_MOVE_LOCK));
 }
 
-void WorldLevel::HandleToggleChatWindow(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleToggleChatWindow(StringHash, VariantMap&)
 {
     chatWindow_->SetVisible(!chatWindow_->IsVisible());
 }
 
-void WorldLevel::HandleToggleMail(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleToggleMail(StringHash, VariantMap&)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_MAIL, true);
     wnd->SetVisible(!wnd->IsVisible());
 }
 
-void WorldLevel::HandleReplyMail(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
     NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
@@ -555,7 +554,7 @@ void WorldLevel::HandleReplyMail(StringHash eventType, VariantMap& eventData)
     wnd->SetVisible(true);
 }
 
-void WorldLevel::HandleToggleNewMail(StringHash eventType, VariantMap& eventData)
+void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_NEWMAIL, true);
@@ -567,7 +566,7 @@ Actor* WorldLevel::CreateActor(uint32_t id,
     AB::GameProtocol::CreatureState state,
     PropReadStream& data)
 {
-    Actor* result = Actor::CreateActor(id, context_, scene_, position, direction, state, data);
+    Actor* result = Actor::CreateActor(id, scene_, position, direction, state, data);
     result->moveToPos_ = position;
     result->rotateTo_ = direction;
     result->GetNode()->SetScale(scale);
@@ -579,7 +578,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
     AB::GameProtocol::CreatureState state,
     PropReadStream& data)
 {
-    player_ = Player::CreatePlayer(id, context_, scene_, position, direction, state, data);
+    player_ = Player::CreatePlayer(id, scene_, position, direction, state, data);
     player_->moveToPos_ = position;
     player_->rotateTo_ = direction;
     player_->GetNode()->SetScale(scale);

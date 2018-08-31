@@ -35,7 +35,7 @@ HealthBar::~HealthBar()
     UnsubscribeFromAllEvents();
 }
 
-void HealthBar::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void HealthBar::HandleUpdate(StringHash, VariantMap&)
 {
     if (SharedPtr<Actor> a = actor_.Lock())
     {

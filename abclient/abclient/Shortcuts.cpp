@@ -45,29 +45,29 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_KEEPRUNNING] = ShortcutEvent(AbEvents::E_SC_KEEPRUNNING, "Keep running", Trigger::Down);
     shortcuts_[AbEvents::E_SC_REVERSECAMERA] = ShortcutEvent(AbEvents::E_SC_REVERSECAMERA, "Reverse Camera", Trigger::None);
     shortcuts_[AbEvents::E_SC_HIGHLIGHTOBJECTS] = ShortcutEvent(AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None);
-    shortcuts_[AbEvents::E_SC_MOUSELOOK] = ShortcutEvent(AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, false);
+    shortcuts_[AbEvents::E_SC_MOUSELOOK] = ShortcutEvent(AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, String::EMPTY, false);
     shortcuts_[AbEvents::E_SC_DEFAULTACTION] = ShortcutEvent(AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
 
-    shortcuts_[AbEvents::E_SC_TOGGLEMAP] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLEPARTYWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_TOGGLEMAP] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down, "Toggle Map window");
+    shortcuts_[AbEvents::E_SC_TOGGLEPARTYWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", Trigger::Down, "Toggle Party window");
     shortcuts_[AbEvents::E_SC_TAKESCREENSHOT] = ShortcutEvent(AbEvents::E_SC_TAKESCREENSHOT, "Take Screenshot", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLEMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_TOGGLEMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down, "Toggle Mail window");
     shortcuts_[AbEvents::E_SC_LOGOUT] = ShortcutEvent(AbEvents::E_SC_LOGOUT, "Logout", Trigger::Down);
     shortcuts_[AbEvents::E_SC_SELECTCHARACTER] = ShortcutEvent(AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLEOPTIONS] = ShortcutEvent(AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_TOGGLEOPTIONS] = ShortcutEvent(AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down, "Show Options window");
     shortcuts_[AbEvents::E_SC_EXITPROGRAM] = ShortcutEvent(AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down);
 
-    shortcuts_[AbEvents::E_SC_CHATGENERAL] = ShortcutEvent(AbEvents::E_SC_CHATGENERAL, "General", Trigger::Up);
-    shortcuts_[AbEvents::E_SC_CHATGUILD] = ShortcutEvent(AbEvents::E_SC_CHATGUILD, "Guild", Trigger::Up);
-    shortcuts_[AbEvents::E_SC_CHATPARTY] = ShortcutEvent(AbEvents::E_SC_CHATPARTY, "Party", Trigger::Up);
-    shortcuts_[AbEvents::E_SC_CHATTRADE] = ShortcutEvent(AbEvents::E_SC_CHATTRADE, "Trade", Trigger::Up);
-    shortcuts_[AbEvents::E_SC_CHATWHISPER] = ShortcutEvent(AbEvents::E_SC_CHATWHISPER, "Whisper", Trigger::Up);
-    shortcuts_[AbEvents::E_SC_TOGGLECHATWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLECHATWINDOW, "Chat", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_CHATGENERAL] = ShortcutEvent(AbEvents::E_SC_CHATGENERAL, "General", Trigger::Up, "General chat");
+    shortcuts_[AbEvents::E_SC_CHATGUILD] = ShortcutEvent(AbEvents::E_SC_CHATGUILD, "Guild", Trigger::Up, "Guild chat");
+    shortcuts_[AbEvents::E_SC_CHATPARTY] = ShortcutEvent(AbEvents::E_SC_CHATPARTY, "Party", Trigger::Up, "Party chat");
+    shortcuts_[AbEvents::E_SC_CHATTRADE] = ShortcutEvent(AbEvents::E_SC_CHATTRADE, "Trade", Trigger::Up, "Trade chat");
+    shortcuts_[AbEvents::E_SC_CHATWHISPER] = ShortcutEvent(AbEvents::E_SC_CHATWHISPER, "Whisper", Trigger::Up, "Whisper chat");
+    shortcuts_[AbEvents::E_SC_TOGGLECHATWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLECHATWINDOW, "Chat", Trigger::Down, "Toggle Chat window");
 
     shortcuts_[AbEvents::E_SC_HIDEUI] = ShortcutEvent(AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLENEWMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_TOGGLENEWMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down, "Show New Mail window");
     shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down, "Toggle Mission map");
 
     // Add non customizeable shortcuts
     Add(AbEvents::E_SC_MOUSELOOK, { KEY_UNKNOWN, MOUSEB_RIGHT });
@@ -237,7 +237,7 @@ void Shortcuts::SubscribeToEvents()
     SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Shortcuts, HandleKeyUp));
 }
 
-void Shortcuts::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void Shortcuts::HandleUpdate(StringHash, VariantMap&)
 {
     for (auto& t : triggered_)
         t.second_ = false;
@@ -261,7 +261,7 @@ void Shortcuts::HandleUpdate(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void Shortcuts::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement())
@@ -273,8 +273,7 @@ void Shortcuts::HandleKeyDown(StringHash eventType, VariantMap& eventData)
         return;
 
     VariantMap& e = GetEventDataMap();
-    int scanCode = eventData[P_SCANCODE].GetInt();
-    int key = eventData[P_KEY].GetInt();
+    Key key = static_cast<Key>(eventData[P_KEY].GetInt());
     for (const auto& sc : shortcuts_)
     {
         for (const auto& s : sc.second_.shortcuts_)
@@ -294,7 +293,7 @@ void Shortcuts::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void Shortcuts::HandleKeyUp(StringHash eventType, VariantMap& eventData)
+void Shortcuts::HandleKeyUp(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement())
@@ -303,8 +302,7 @@ void Shortcuts::HandleKeyUp(StringHash eventType, VariantMap& eventData)
     using namespace KeyUp;
 
     VariantMap& e = GetEventDataMap();
-    int scanCode = eventData[P_SCANCODE].GetInt();
-    int key = eventData[P_KEY].GetInt();
+    Key key = static_cast<Key>(eventData[P_KEY].GetInt());
     for (const auto& sc : shortcuts_)
     {
         for (const auto& s : sc.second_.shortcuts_)
@@ -324,7 +322,7 @@ void Shortcuts::HandleKeyUp(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void Shortcuts::HandleMouseDown(StringHash eventType, VariantMap& eventData)
+void Shortcuts::HandleMouseDown(StringHash, VariantMap& eventData)
 {
     using namespace MouseButtonDown;
 
@@ -349,7 +347,7 @@ void Shortcuts::HandleMouseDown(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void Shortcuts::HandleMouseUp(StringHash eventType, VariantMap& eventData)
+void Shortcuts::HandleMouseUp(StringHash, VariantMap& eventData)
 {
     using namespace MouseButtonUp;
 

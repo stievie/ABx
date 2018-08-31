@@ -147,10 +147,8 @@ void CreateAccountLevel::CreateUI()
     SubscribeToEvent(cancelButton, E_RELEASED, URHO3D_HANDLER(CreateAccountLevel, HandleCancelClicked));
 }
 
-void CreateAccountLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleUpdate(StringHash, VariantMap& eventData)
 {
-    UNREFERENCED_PARAMETER(eventType);
-
     using namespace Update;
 
     // Take the frame time step, which is stored as a float
@@ -160,7 +158,7 @@ void CreateAccountLevel::HandleUpdate(StringHash eventType, VariantMap& eventDat
     cameraNode_->Rotate(rot);
 }
 
-void CreateAccountLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleKeyUp(StringHash, VariantMap& eventData)
 {
     using namespace KeyUp;
 
@@ -175,7 +173,7 @@ void CreateAccountLevel::HandleKeyUp(StringHash eventType, VariantMap& eventData
         DoCancel();
 }
 
-void CreateAccountLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleKeyDown(StringHash, VariantMap&)
 {
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
@@ -185,24 +183,24 @@ void CreateAccountLevel::HandleKeyDown(StringHash eventType, VariantMap& eventDa
     button_->SetEnabled(!name.Empty() && !pass.Empty() && !repass.Empty() && !email.Empty() && !accKey.Empty());
 }
 
-void CreateAccountLevel::HandleAccKeyFocused(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleAccKeyFocused(StringHash, VariantMap&)
 {
     accKeyPlaceholder_->SetVisible(false);
 }
 
-void CreateAccountLevel::HandleAccKeyDefocused(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleAccKeyDefocused(StringHash, VariantMap&)
 {
     String accKey = accKeyEdit_->GetText();
     if (accKey.Empty())
         accKeyPlaceholder_->SetVisible(true);
 }
 
-void CreateAccountLevel::HandleCreateClicked(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleCreateClicked(StringHash, VariantMap&)
 {
     DoCreateAccount();
 }
 
-void CreateAccountLevel::HandleCancelClicked(StringHash eventType, VariantMap& eventData)
+void CreateAccountLevel::HandleCancelClicked(StringHash, VariantMap&)
 {
     DoCancel();
 }

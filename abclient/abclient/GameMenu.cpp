@@ -127,14 +127,14 @@ Window* GameMenu::CreatePopup(Menu* baseMenu)
     return popup;
 }
 
-void GameMenu::HandleExitUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleExitUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
 }
 
-void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleServerUsed(StringHash, VariantMap& eventData)
 {
     menu_->ShowPopup(false);
     using namespace MenuSelected;
@@ -148,56 +148,56 @@ void GameMenu::HandleServerUsed(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void GameMenu::HandleLogoutUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleLogoutUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_LOGOUT, e);
 }
 
-void GameMenu::HandleSelectCharUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleSelectCharUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_SELECTCHARACTER, e);
 }
 
-void GameMenu::HandleOptionsUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleOptionsUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLEOPTIONS, e);
 }
 
-void GameMenu::HandleMailUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleMailUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, e);
 }
 
-void GameMenu::HandlePartyWindowUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandlePartyWindowUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW , e);
 }
 
-void GameMenu::HandleMapUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleMapUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLEMAP, e);
 }
 
-void GameMenu::HandleMissionMapUsed(StringHash eventType, VariantMap& eventData)
+void GameMenu::HandleMissionMapUsed(StringHash, VariantMap&)
 {
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, e);
 }
 
-void GameMenu::HandleGotServices(StringHash eventType, VariantMap & eventData)
+void GameMenu::HandleGotServices(StringHash, VariantMap&)
 {
     UpdateServers();
 }

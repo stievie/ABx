@@ -172,10 +172,8 @@ void CharCreateLevel::CreateScene()
     scene_->LoadXML(sceneFile->GetRoot());
 }
 
-void CharCreateLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void CharCreateLevel::HandleUpdate(StringHash, VariantMap& eventData)
 {
-    UNREFERENCED_PARAMETER(eventType);
-
     using namespace Update;
 
     // Take the frame time step, which is stored as a float
@@ -185,12 +183,12 @@ void CharCreateLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
     cameraNode_->Rotate(rot);
 }
 
-void CharCreateLevel::HandleCreateClicked(StringHash eventType, VariantMap & eventData)
+void CharCreateLevel::HandleCreateClicked(StringHash, VariantMap&)
 {
     DoCreateCharacter();
 }
 
-void CharCreateLevel::HandleCancelClicked(StringHash eventType, VariantMap & eventData)
+void CharCreateLevel::HandleCancelClicked(StringHash, VariantMap&)
 {
     DoCancel();
 }

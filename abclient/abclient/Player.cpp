@@ -33,7 +33,7 @@ void Player::RegisterObject(Context* context)
     URHO3D_ATTRIBUTE("Controls Pitch", float, controls_.pitch_, 0.0f, AM_DEFAULT);
 }
 
-Player* Player::CreatePlayer(uint32_t id, Context* context, Scene* scene,
+Player* Player::CreatePlayer(uint32_t id, Scene* scene,
     const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state,
     PropReadStream& data)
@@ -189,7 +189,7 @@ void Player::SelectObject(uint32_t objectId)
     client->SelectObject(id_, objectId);
 }
 
-void Player::PostUpdate(float timeStep)
+void Player::PostUpdate(float)
 {
     Node* characterNode = GetNode();
     Shortcuts* scs = GetSubsystem<Shortcuts>();
@@ -247,7 +247,7 @@ void Player::PostUpdate(float timeStep)
     cameraNode_->SetRotation(dir);
 }
 
-void Player::HandleActorNameClicked(StringHash eventType, VariantMap& eventData)
+void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ActorNameClicked;
     uint32_t id = eventData[P_SOURCEID].GetUInt();
@@ -257,7 +257,7 @@ void Player::HandleActorNameClicked(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void Player::HandleSelectSelf(StringHash eventType, VariantMap& eventData)
+void Player::HandleSelectSelf(StringHash, VariantMap&)
 {
     SelectObject(id_);
 }

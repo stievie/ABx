@@ -65,8 +65,6 @@ ChatWindow::ChatWindow(Context* context) :
 
 void ChatWindow::FocusEdit()
 {
-    int sel = tabgroup_->GetSelectedIndex();
-    TabElement* elem = tabgroup_->GetTabElement(sel);
     LineEdit* edit = GetActiveLineEdit();
     if (edit && !edit->HasFocus())
         edit->SetFocus(true);
@@ -159,7 +157,7 @@ void ChatWindow::RegisterObject(Context* context)
     context->RegisterFactory<ChatWindow>();
 }
 
-void ChatWindow::HandleServerMessage(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
     AB::GameProtocol::ServerMessageType type =
@@ -328,12 +326,12 @@ void ChatWindow::HandleServerMessageMailboxFull(VariantMap& eventData)
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleServerMessageMailDeleted(VariantMap& eventData)
+void ChatWindow::HandleServerMessageMailDeleted(VariantMap&)
 {
     AddLine("The mail was deleted.", "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleChatMessage(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ChatMessage;
     AB::GameProtocol::ChatMessageChannel channel =
@@ -344,17 +342,16 @@ void ChatWindow::HandleChatMessage(StringHash eventType, VariantMap& eventData)
     AddChatLine(senderId, sender, message, channel);
 }
 
-void ChatWindow::HandleTabSelected(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleTabSelected(StringHash, VariantMap& eventData)
 {
     using namespace TabSelected;
     int idx = eventData[P_INDEX].GetInt();
-    int oldIdx = eventData[P_OLD_INDEX].GetInt();
     LineEdit* edit = GetLineEdit(idx);
     if (edit)
         edit->SetFocus(true);
 }
 
-void ChatWindow::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     using namespace KeyDown;
 
@@ -363,7 +360,7 @@ void ChatWindow::HandleKeyDown(StringHash eventType, VariantMap& eventData)
         FocusEdit();
 }
 
-void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleNameClicked(StringHash, VariantMap& eventData)
 {
     using namespace Click;
     Text* text = dynamic_cast<Text*>(eventData[P_ELEMENT].GetPtr());
@@ -376,13 +373,13 @@ void ChatWindow::HandleNameClicked(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void ChatWindow::HandleShortcutChatGeneral(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleShortcutChatGeneral(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(0);
     FocusEdit();
 }
 
-void ChatWindow::HandleShortcutChatGuild(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleShortcutChatGuild(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(1);
     FocusEdit();
@@ -395,19 +392,19 @@ void ChatWindow::HandleServerMessageServerId(VariantMap& eventData)
     AddLine(id, "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleShortcutChatParty(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleShortcutChatParty(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(2);
     FocusEdit();
 }
 
-void ChatWindow::HandleShortcutChatTrade(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleShortcutChatTrade(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(3);
     FocusEdit();
 }
 
-void ChatWindow::HandleShortcutChatWhisper(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleShortcutChatWhisper(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(tabIndexWhisper_);
     FocusEdit();
@@ -543,7 +540,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     }
 }
 
-void ChatWindow::HandleScreenshotTaken(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ScreenshotTaken;
     const String& file = eventData[P_FILENAME].GetString();
@@ -556,17 +553,17 @@ void ChatWindow::HandleScreenshotTaken(StringHash eventType, VariantMap& eventDa
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleEditFocused(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleEditFocused(StringHash, VariantMap&)
 {
     UnsubscribeFromEvent(E_KEYDOWN);
 }
 
-void ChatWindow::HandleEditDefocused(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleEditDefocused(StringHash, VariantMap&)
 {
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 }
 
-void ChatWindow::HandleTextFinished(StringHash eventType, VariantMap& eventData)
+void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)
 {
     using namespace TextFinished;
 

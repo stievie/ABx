@@ -105,12 +105,12 @@ void MailWindow::AddItem(const String& text, const String& style, const AB::Enti
     mailList_->UpdateLayout();
 }
 
-void MailWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
 }
 
-void MailWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleMailInboxMessage(StringHash, VariantMap&)
 {
     mailList_->RemoveAllItems();
 
@@ -129,20 +129,20 @@ void MailWindow::HandleMailInboxMessage(StringHash eventType, VariantMap& eventD
     }
 }
 
-void MailWindow::HandleMailReadMessage(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleMailReadMessage(StringHash, VariantMap&)
 {
     FwClient* client = context_->GetSubsystem<FwClient>();
     const AB::Entities::Mail mail = client->GetCurrentMail();
     mailBody_->SetText(String(mail.message.c_str(), (unsigned)mail.message.size()));
 }
 
-void MailWindow::HandleNewClicked(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleNewClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, e);
 }
 
-void MailWindow::HandleReplyClicked(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleReplyClicked(StringHash, VariantMap&)
 {
     Text* sel = dynamic_cast<Text*>(mailList_->GetSelectedItem());
     if (sel)
@@ -157,7 +157,7 @@ void MailWindow::HandleReplyClicked(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void MailWindow::HandleDeleteClicked(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleDeleteClicked(StringHash, VariantMap&)
 {
     Text* sel = dynamic_cast<Text*>(mailList_->GetSelectedItem());
     if (sel)
@@ -170,7 +170,7 @@ void MailWindow::HandleDeleteClicked(StringHash eventType, VariantMap& eventData
     }
 }
 
-void MailWindow::HandleItemSelected(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleItemSelected(StringHash, VariantMap&)
 {
     Text* sel = dynamic_cast<Text*>(mailList_->GetSelectedItem());
     if (sel)
@@ -187,7 +187,7 @@ void MailWindow::HandleItemSelected(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void MailWindow::HandleItemUnselected(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleItemUnselected(StringHash, VariantMap&)
 {
     mailBody_->SetText(String::EMPTY);
     Button* delButton = dynamic_cast<Button*>(GetChild("DeleteMailButton", true));
@@ -196,7 +196,7 @@ void MailWindow::HandleItemUnselected(StringHash eventType, VariantMap& eventDat
     repButton->SetEnabled(false);
 }
 
-void MailWindow::HandleNewMail(StringHash eventType, VariantMap& eventData)
+void MailWindow::HandleNewMail(StringHash, VariantMap&)
 {
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->GetMailHeaders();

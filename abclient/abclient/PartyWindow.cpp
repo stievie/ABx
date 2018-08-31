@@ -92,7 +92,7 @@ void PartyWindow::AddActor(SharedPtr<Actor> actor)
     SetMinHeight(partyContainer_->GetHeight() + 33 + 30);
 }
 
-void PartyWindow::HandleAddTargetClicked(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
 {
     if (mode_ != PartyWindowMode::ModeOutpost)
         return;
@@ -102,12 +102,12 @@ void PartyWindow::HandleAddTargetClicked(StringHash eventType, VariantMap& event
     client->PartyInvitePlayer(targetId);
 }
 
-void PartyWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
 }
 
-void PartyWindow::HandleObjectSelected(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
 {
     if (!addPlayerEdit_)
         return;
@@ -128,7 +128,7 @@ void PartyWindow::HandleObjectSelected(StringHash eventType, VariantMap& eventDa
     }
 }
 
-void PartyWindow::HandlePartyInvited(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
 {
     if (mode_ != PartyWindowMode::ModeOutpost)
         return;

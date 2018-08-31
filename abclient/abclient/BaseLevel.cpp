@@ -46,7 +46,7 @@ void BaseLevel::SubscribeToEvents()
 void BaseLevel::ShowError(const String& message, const String& title)
 {
     using MsgBox = Urho3D::MessageBox;
-    MsgBox* msgBox = new MsgBox(context_, message, title);
+    /* MsgBox* msgBox = */ new MsgBox(context_, message, title);
 }
 
 void BaseLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)

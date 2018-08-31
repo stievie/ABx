@@ -149,12 +149,11 @@ void TabGroup::SetSelectedIndex(int index)
     }
 }
 
-void TabGroup::HandleTabToggled(StringHash eventType, VariantMap& eventData)
+void TabGroup::HandleTabToggled(StringHash, VariantMap& eventData)
 {
     using namespace Toggled;
 
     CheckBox *element = (CheckBox*)eventData[P_ELEMENT].GetVoidPtr();
-    bool checked = eventData[P_STATE].GetBool();
     int checkedIdx = -1;
 
     for ( int i = 0; i < (int)childList_.Size(); ++i )

@@ -45,7 +45,10 @@
 * > return function;
 * > }
 */
+#pragma warning(push)
+#pragma warning( disable : 4701 4100)
 URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
+#pragma warning( pop )
 
 /**
 * This happens before the engine has been initialized
@@ -231,7 +234,7 @@ void ClientApp::SwitchScene(const String& sceneName)
     SendEvent(AbEvents::E_SETLEVEL, eventData);
 }
 
-void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void ClientApp::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     using namespace KeyDown;
     int key = eventData[P_KEY].GetInt();
@@ -245,14 +248,14 @@ void ClientApp::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 //#endif
 }
 
-void ClientApp::HandleToggleOptions(StringHash eventType, VariantMap& eventData)
+void ClientApp::HandleToggleOptions(StringHash, VariantMap&)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> optionsWnd = wm->GetWindow(WINDOW_OPTIONS, true);
     optionsWnd->SetVisible(!optionsWnd->IsVisible());
 }
 
-void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData)
+void ClientApp::HandleTakeScreenshot(StringHash, VariantMap&)
 {
     Graphics* graphics = GetSubsystem<Graphics>();
     Image image(context_);
@@ -281,7 +284,7 @@ void ClientApp::HandleTakeScreenshot(StringHash eventType, VariantMap& eventData
     SendEvent(AbEvents::E_SCREENSHOTTAKEN, e);
 }
 
-void ClientApp::HandleExitProgram(StringHash eventType, VariantMap& eventData)
+void ClientApp::HandleExitProgram(StringHash, VariantMap&)
 {
     Engine* engine = context_->GetSubsystem<Engine>();
     engine->Exit();

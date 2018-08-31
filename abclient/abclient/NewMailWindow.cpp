@@ -70,12 +70,12 @@ void NewMailWindow::SubscribeToEvents()
     SubscribeToEvent(sendButton, E_RELEASED, URHO3D_HANDLER(NewMailWindow, HandleSendClicked));
 }
 
-void NewMailWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
+void NewMailWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
 }
 
-void NewMailWindow::HandleSendClicked(StringHash eventType, VariantMap& eventData)
+void NewMailWindow::HandleSendClicked(StringHash, VariantMap&)
 {
     const String recipient = recipient_->GetText().Trimmed();
     if (recipient.Empty())

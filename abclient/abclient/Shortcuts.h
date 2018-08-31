@@ -135,19 +135,30 @@ struct ShortcutEvent
         event_(StringHash::ZERO),
         name_("Unknown"),
         trigger_(Trigger::None),
+        description_(String::EMPTY),
         customizeable_(false)
     {}
-    ShortcutEvent(const StringHash& _event, const String& name, Trigger trigger, bool customizeable = true) :
+    ShortcutEvent(const StringHash& _event, const String& name, Trigger trigger,
+        const String& description = String::EMPTY, bool customizeable = true) :
         event_(_event),
         name_(name),
         trigger_(trigger),
+        description_(description),
         customizeable_(customizeable)
     {
+    }
+
+    const String& GetDescription() const
+    {
+        if (!description_.Empty())
+            return description_;
+        return name_;
     }
 
     StringHash event_;
     String name_;
     Trigger trigger_;
+    String description_;
     bool customizeable_;
     Vector<Shortcut> shortcuts_;
 };

@@ -39,7 +39,7 @@ void Actor::RegisterObject(Context* context)
     context->RegisterFactory<Actor>();
 }
 
-Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
+Actor* Actor::CreateActor(uint32_t id, Scene* scene,
     const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state,
     PropReadStream& data)
@@ -55,7 +55,7 @@ Actor* Actor::CreateActor(uint32_t id, Context* context, Scene* scene,
     return result;
 }
 
-void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
+void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state)
 {
     animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
@@ -80,7 +80,7 @@ void Actor::Init(Scene* scene, const Vector3& position, const Quaternion& rotati
             return;
         }
 
-        XMLElement& root = object->GetRoot();
+        XMLElement root = object->GetRoot();
         unsigned nodeId = root.GetUInt("id");
         SceneResolver resolver;
         Node* adjNode = node_->CreateChild(0, LOCAL);
@@ -144,7 +144,7 @@ void Actor::AddModel(uint32_t itemIndex)
         return;
     }
 
-    XMLElement& root = xml->GetRoot();
+    XMLElement root = xml->GetRoot();
 
 /*    unsigned nodeId = root.GetUInt("id");
     SceneResolver resolver;
@@ -209,7 +209,7 @@ void Actor::AddModel(uint32_t itemIndex)
     }
 }
 
-void Actor::FixedUpdate(float timeStep)
+void Actor::FixedUpdate(float)
 {
     Vector3 moveTo;
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
@@ -254,7 +254,7 @@ void Actor::FixedUpdate(float timeStep)
     }
 }
 
-void Actor::Update(float timeStep)
+void Actor::Update(float)
 {
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
@@ -296,7 +296,7 @@ void Actor::MoveTo(int64_t time, const Vector3& newPos)
     posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
 }
 
-void Actor::SetYRotation(float rad, bool updateYaw)
+void Actor::SetYRotation(float rad, bool)
 {
     float deg = RadToDeg(rad);
     rotateTo_.FromAngleAxis(deg, Vector3::UP);
@@ -370,7 +370,7 @@ String Actor::GetAnimation(const StringHash& hash)
     return result;
 }
 
-void Actor::HandleNameClicked(StringHash eventType, VariantMap& eventData)
+void Actor::HandleNameClicked(StringHash, VariantMap&)
 {
     if (nameLabel_->IsVisible())
     {

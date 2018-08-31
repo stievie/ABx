@@ -20,8 +20,8 @@ public:
     GameObject(Context* context);
     ~GameObject();
 
-    virtual void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
-        AB::GameProtocol::CreatureState state) {}
+    virtual void Init(Scene*, const Vector3&, const Quaternion&,
+        AB::GameProtocol::CreatureState) {}
 
     uint32_t id_;
     unsigned index_;
@@ -33,7 +33,7 @@ public:
     bool playerSelected_;
     SharedPtr<SoundSource3D> soundSource_;
 
-    virtual void Unserialize(PropReadStream& data) {}
+    virtual void Unserialize(PropReadStream&) {}
 
     double GetServerTime(int64_t tick) const
     {

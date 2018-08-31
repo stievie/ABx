@@ -60,7 +60,7 @@ void MissionMapWindow::SubscribeToEvents()
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(MissionMapWindow, HandleCloseClicked));
 }
 
-void MissionMapWindow::HandleCloseClicked(StringHash eventType, VariantMap& eventData)
+void MissionMapWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
 }

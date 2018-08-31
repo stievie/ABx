@@ -63,7 +63,7 @@ public:
 
     static void RegisterObject(Context* context);
 
-    static Actor* CreateActor(uint32_t id, Context* context, Scene* scene,
+    static Actor* CreateActor(uint32_t id, Scene* scene,
         const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state,
         PropReadStream& data);

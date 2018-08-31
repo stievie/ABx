@@ -36,9 +36,9 @@ protected:
     virtual void SubscribeToEvents();
     virtual void SetupViewport();
     void CreateLogo();
-    virtual void Update(StringHash eventType, VariantMap& eventData) {}
-    virtual void PostUpdate(StringHash eventType, VariantMap & eventData) {}
-    virtual void PostRenderUpdate(StringHash eventType, VariantMap & eventData);
+    virtual void Update(StringHash, VariantMap&) {}
+    virtual void PostUpdate(StringHash, VariantMap&) {}
+    virtual void PostRenderUpdate(StringHash eventType, VariantMap& eventData);
 
     virtual void OnNetworkError(const std::error_code& err);
     virtual void OnProtocolError(uint8_t err);

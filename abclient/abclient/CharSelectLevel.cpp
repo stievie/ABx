@@ -43,8 +43,6 @@ void CharSelectLevel::CreateUI()
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-
     Window* window = new Window(context_);
     uiRoot_->AddChild(window);
     window->SetSize(400, 300);
@@ -144,7 +142,7 @@ void CharSelectLevel::CreateScene()
     scene_->LoadXML(sceneFile->GetRoot());
 }
 
-void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventData)
+void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
 {
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
     String uuid = sender->GetVar("uuid").GetString();
@@ -154,7 +152,7 @@ void CharSelectLevel::HandleCharClicked(StringHash eventType, VariantMap& eventD
     net->EnterWorld(uuid, mapUuid);
 }
 
-void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& eventData)
+void CharSelectLevel::HandleCreateCharClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
     using namespace AbEvents::SetLevel;
@@ -162,7 +160,7 @@ void CharSelectLevel::HandleCreateCharClicked(StringHash eventType, VariantMap& 
     SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
-void CharSelectLevel::HandleBackClicked(StringHash eventType, VariantMap& eventData)
+void CharSelectLevel::HandleBackClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
     using namespace AbEvents::SetLevel;
@@ -170,10 +168,8 @@ void CharSelectLevel::HandleBackClicked(StringHash eventType, VariantMap& eventD
     SendEvent(AbEvents::E_SETLEVEL, e);
 }
 
-void CharSelectLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void CharSelectLevel::HandleUpdate(StringHash, VariantMap& eventData)
 {
-    UNREFERENCED_PARAMETER(eventType);
-
     using namespace Update;
 
     // Take the frame time step, which is stored as a float

@@ -90,10 +90,8 @@ void LoginLevel::CreateUI()
     button_->SetEnabled(!(nameEdit_->GetText().Empty() || passEdit_->GetText().Empty()));
 }
 
-void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void LoginLevel::HandleUpdate(StringHash, VariantMap& eventData)
 {
-    UNREFERENCED_PARAMETER(eventType);
-
     using namespace Update;
 
     // Take the frame time step, which is stored as a float
@@ -103,12 +101,11 @@ void LoginLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
     cameraNode_->Rotate(rot);
 }
 
-void LoginLevel::HandleTextFinished(StringHash eventType, VariantMap& eventData)
+void LoginLevel::HandleTextFinished(StringHash, VariantMap&)
 {
     if (loggingIn_)
         return;
 
-    using namespace KeyDown;
     if (!button_->IsEnabled())
         return;
     String name = nameEdit_->GetText();
@@ -119,7 +116,7 @@ void LoginLevel::HandleTextFinished(StringHash eventType, VariantMap& eventData)
     DoLogin();
 }
 
-void LoginLevel::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void LoginLevel::HandleKeyDown(StringHash, VariantMap&)
 {
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
@@ -139,12 +136,12 @@ void LoginLevel::DoLogin()
     net->Login(name, pass);
 }
 
-void LoginLevel::HandleLoginClicked(StringHash eventType, VariantMap& eventData)
+void LoginLevel::HandleLoginClicked(StringHash, VariantMap&)
 {
     DoLogin();
 }
 
-void LoginLevel::HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData)
+void LoginLevel::HandleCreateAccountClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
     using namespace AbEvents::SetLevel;

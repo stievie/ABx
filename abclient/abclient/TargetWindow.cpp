@@ -27,7 +27,7 @@ TargetWindow::~TargetWindow()
     UnsubscribeFromAllEvents();
 }
 
-void TargetWindow::HandleClearTargetClicked(StringHash eventType, VariantMap& eventData)
+void TargetWindow::HandleClearTargetClicked(StringHash, VariantMap&)
 {
     VariantMap& e = GetEventDataMap();
     SendEvent(E_TARGETWINDOW_UNSELECT, e);

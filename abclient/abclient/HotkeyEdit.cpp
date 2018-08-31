@@ -26,7 +26,7 @@ HotkeyEdit::~HotkeyEdit()
     UnsubscribeFromAllEvents();
 }
 
-void HotkeyEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void HotkeyEdit::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement() != this)
@@ -60,7 +60,7 @@ void HotkeyEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
     UpdateText();
 }
 
-void HotkeyEdit::HandleMouseDown(StringHash eventType, VariantMap& eventData)
+void HotkeyEdit::HandleMouseDown(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement() != this)

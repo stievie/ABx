@@ -25,7 +25,7 @@ double GameObject::GetClientTime() const
     return (double)(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
 }
 
-void GameObject::SetYRotation(float rad, bool updateYaw)
+void GameObject::SetYRotation(float rad, bool)
 {
     Quaternion direction;
     float deg = RadToDeg(rad);
@@ -33,7 +33,7 @@ void GameObject::SetYRotation(float rad, bool updateYaw)
     GetNode()->SetRotation(direction);
 }
 
-void GameObject::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
+void GameObject::SetCreatureState(int64_t, AB::GameProtocol::CreatureState newState)
 {
     creatureState_ = newState;
 }
@@ -43,7 +43,7 @@ float GameObject::GetYRotation() const
     return DegToRad(GetNode()->GetRotation().YawAngle());
 }
 
-void GameObject::MoveTo(int64_t time, const Vector3 & newPos)
+void GameObject::MoveTo(int64_t, const Vector3& newPos)
 {
     GetNode()->SetPosition(newPos);
 }

@@ -27,7 +27,7 @@ public:
 
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
-    static Player* CreatePlayer(uint32_t id, Context* context, Scene* scene,
+    static Player* CreatePlayer(uint32_t id, Scene* scene,
         const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state,
         PropReadStream& data);

@@ -79,7 +79,7 @@ MapWindow::~MapWindow()
 {
 }
 
-void MapWindow::HandleMapGameClicked(StringHash eventType, VariantMap& eventData)
+void MapWindow::HandleMapGameClicked(StringHash, VariantMap& eventData)
 {
     SetVisible(false);
     Button* sender = static_cast<Button*>(eventData[Urho3D::Released::P_ELEMENT].GetPtr());
