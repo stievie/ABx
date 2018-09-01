@@ -23,6 +23,14 @@ struct Shortcut
     {
         return keyboardKey_ != KEY_UNKNOWN && mouseButton_ != MOUSEB_NONE;
     }
+    bool operator ==(const Shortcut& rhs) const
+    {
+        return keyboardKey_ == rhs.keyboardKey_ && mouseButton_ == rhs.modifiers_ && modifiers_ == rhs.modifiers_;
+    }
+    bool operator !=(const Shortcut& rhs) const
+    {
+        return keyboardKey_ != rhs.keyboardKey_ || mouseButton_ != rhs.modifiers_ || modifiers_ != rhs.modifiers_;
+    }
     String ModName() const
     {
         if (modifiers_ == 0)

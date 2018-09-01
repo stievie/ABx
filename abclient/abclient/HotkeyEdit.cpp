@@ -17,6 +17,7 @@ HotkeyEdit::HotkeyEdit(Context* context) :
     SetCursorMovable(false);
     SetTextCopyable(false);
     SetTextSelectable(false);
+    SetFocusMode(FM_FOCUSABLE);
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(HotkeyEdit, HandleMouseDown));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(HotkeyEdit, HandleKeyDown));
 }

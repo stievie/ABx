@@ -231,6 +231,7 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
         return;
 
     Shortcuts* sc = GetSubsystem<Shortcuts>();
+    Options* op = GetSubsystem<Options>();
 
     // Clear previous controls
     player_->controls_.Set(CTRL_MOVE_FORWARD | CTRL_MOVE_BACK | CTRL_MOVE_LEFT | CTRL_MOVE_RIGHT |
@@ -260,8 +261,8 @@ void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
             sc->Test(AbEvents::E_SC_TURNRIGHT));
 
         Input* input = GetSubsystem<Input>();
-        player_->controls_.yaw_ += (float)input->GetMouseMoveX() * YAW_SENSITIVITY;
-        player_->controls_.pitch_ += (float)input->GetMouseMoveY() * YAW_SENSITIVITY;
+        player_->controls_.yaw_ += (float)input->GetMouseMoveX() * op->mouseSensitivity_;
+        player_->controls_.pitch_ += (float)input->GetMouseMoveY() * op->mouseSensitivity_;
     }
     else
     {

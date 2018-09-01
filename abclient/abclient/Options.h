@@ -24,6 +24,7 @@ public:
 
     bool stickCameraToHead_;
     bool disableMouseWalking_;
+    float mouseSensitivity_;
 
     float gainMaster_;
     float gainEffect_;
@@ -113,6 +114,10 @@ public:
             cameraFov_ = fov;
         }
     }
+    const IntVector2& GetWindowPos() const
+    {
+        return windowPos_;
+    }
 
     const String& GetRenderPath() const;
 
@@ -125,6 +130,8 @@ public:
     static bool CreateDir(const String& path);
 private:
     static String prefPath_;
+    IntVector2 oldWindowPos_;
+    IntVector2 windowPos_;
     int width_;
     int height_;
     bool fullscreen_;

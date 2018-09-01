@@ -192,6 +192,17 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         Options* opt = GetSubsystem<Options>();
         opt->disableMouseWalking_ = checked;
     });
+    {
+        Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("MouseSensSlider", true));
+        slider->SetValue(opts->mouseSensitivity_);
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        {
+            using namespace SliderChanged;
+            float value = eventData[P_VALUE].GetFloat();
+            Options* opt = GetSubsystem<Options>();
+            opt->mouseSensitivity_ = value;
+        });
+    }
 }
 
 void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
@@ -473,6 +484,17 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
                 cam->SetFov(opt->GetCameraFov());
         });
     }
+    {
+        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("HighDPICheck", true));
+        check->SetChecked(opts->GetHighDPI());
+        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        {
+            using namespace Toggled;
+            bool checked = eventData[P_STATE].GetBool();
+            Options* opt = GetSubsystem<Options>();
+            opt->SetHighDPI(checked);
+        });
+    }
 
 }
 
@@ -653,15 +675,18 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
             Shortcuts* scs = GetSubsystem<Shortcuts>();
             unsigned id = scs->Add(_event, sc);
 
-            ListView* lvwHk = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
-            Text* txt = new Text(context_);
-            txt->SetText(sc.ShortcutName(true));
-            txt->SetMaxWidth(lvwHk->GetWidth());
-            txt->SetWidth(lvwHk->GetWidth());
-            txt->SetWordwrap(false);
-            txt->SetVar("ID", id);
-            txt->SetStyle("DropDownItemEnumText");
-            lvwHk->AddItem(txt);
+            if (id != 0)
+            {
+                ListView* lvwHk = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
+                Text* txt = new Text(context_);
+                txt->SetText(sc.ShortcutName(true));
+                txt->SetMaxWidth(lvwHk->GetWidth());
+                txt->SetWidth(lvwHk->GetWidth());
+                txt->SetWordwrap(false);
+                txt->SetVar("ID", id);
+                txt->SetStyle("DropDownItemEnumText");
+                lvwHk->AddItem(txt);
+            }
         });
     }
     {

@@ -39,7 +39,8 @@ Options::Options(Context* context) :
     gainVoice_(1.0f),
     gainMusic_(1.0f),
     stickCameraToHead_(true),
-    disableMouseWalking_(false)
+    disableMouseWalking_(false),
+    mouseSensitivity_(0.1f)
 {
 }
 
@@ -74,17 +75,31 @@ void Options::Save()
         root = xml->CreateRoot("settings");
     root.RemoveChildren("parameter");
 
+    Graphics* graphics = GetSubsystem<Graphics>();
+    IntVector2 windowPos = graphics->GetWindowPosition();
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowWidth");
         param.SetString("type", "int");
-        param.SetInt("value", width_);
+        param.SetInt("value", graphics->GetWidth());
     }
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowHeight");
         param.SetString("type", "int");
-        param.SetInt("value", height_);
+        param.SetInt("value", graphics->GetHeight());
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "WindowPosX");
+        param.SetString("type", "int");
+        param.SetInt("value", windowPos.x_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "WindowPosY");
+        param.SetString("type", "int");
+        param.SetInt("value", windowPos.y_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -175,6 +190,12 @@ void Options::Save()
         param.SetString("name", "FOV");
         param.SetString("type", "float");
         param.SetFloat("value", cameraFov_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "MouseSensitivity");
+        param.SetString("type", "float");
+        param.SetFloat("value", mouseSensitivity_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -342,6 +363,8 @@ void Options::SetFullscreen(bool value)
     if (fullscreen_ != value)
     {
         fullscreen_ = value;
+        if (fullscreen_)
+            borderless_ = false;
         UpdateGraphicsMode();
     }
 }
@@ -351,6 +374,8 @@ void Options::SetBorderless(bool value)
     if (borderless_ != value)
     {
         borderless_ = value;
+        if (borderless_)
+            fullscreen_ = false;
         UpdateGraphicsMode();
     }
 }
@@ -385,8 +410,32 @@ void Options::SetHighDPI(bool value)
 void Options::UpdateGraphicsMode()
 {
     Graphics* graphics = GetSubsystem<Graphics>();
-    graphics->SetMode(width_, height_, fullscreen_, borderless_, resizeable_,
+    bool bl = graphics->GetBorderless();
+    int width = 0;
+    int height = 0;
+    // When switching to borderless automatically size the window
+    if (!borderless_ && !fullscreen_)
+    {
+        height = graphics->GetHeight();
+        width = graphics->GetWidth();
+    }
+    bool blChange = bl != borderless_;
+    if (blChange)
+    {
+        if (borderless_)
+            // Store old window position
+            oldWindowPos_ = graphics->GetWindowPosition();
+    }
+    graphics->SetMode(width, height, fullscreen_, borderless_, resizeable_,
         highDPI_, vSync_, tripleBuffer_, multiSample_, 0, 0);
+    if (blChange)
+    {
+        if (GetWindowMode() == WindowMode::Windowed)
+            // Switching windowed set old position
+            graphics->SetWindowPosition(oldWindowPos_);
+        else if (GetWindowMode() == WindowMode::Borderless)
+            graphics->SetWindowPosition(0, 0);
+    }
 }
 
 void Options::LoadSettings()
@@ -419,6 +468,14 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("WindowHeight") == 0)
         {
             height_ = paramElem.GetInt("value");
+        }
+        else if (name.Compare("WindowPosX") == 0)
+        {
+            windowPos_.x_ = paramElem.GetInt("value");
+        }
+        else if (name.Compare("WindowPosY") == 0)
+        {
+            windowPos_.y_ = paramElem.GetInt("value");
         }
         else if (name.Compare("Fullscreen") == 0)
         {
@@ -475,6 +532,10 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("FOV") == 0)
         {
             cameraFov_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("MouseSensitivity") == 0)
+        {
+            mouseSensitivity_ = paramElem.GetFloat("value");
         }
         else if (name.Compare("LoginPort") == 0)
         {

@@ -24,6 +24,13 @@ bool Shortcuts::Test(const StringHash& e)
 
 unsigned Shortcuts::Add(const StringHash& _event, const Shortcut& sc)
 {
+    for (const auto& s : shortcuts_[_event].shortcuts_)
+    {
+        if (s == sc)
+            // Can not assign the same shortcut to the same event
+            return 0;
+    }
+
     unsigned id = ++shortcutIds;
     Shortcut _sc(sc);
     _sc.id_ = id;
@@ -125,11 +132,10 @@ void Shortcuts::Load(const XMLElement& root)
         ShortcutEvent& scEvent = shortcuts_[_event];
         if (scEvent.customizeable_)
         {
-            scEvent.shortcuts_.Push({
-                static_cast<Key>(paramElem.GetUInt("key")),
+            Shortcut sc{ static_cast<Key>(paramElem.GetUInt("key")),
                 static_cast<MouseButton>(paramElem.GetUInt("mousebutton")),
-                paramElem.GetUInt("modifiers")
-            });
+                paramElem.GetUInt("modifiers") };
+            Add(_event, sc);
         }
 
         paramElem = paramElem.GetNext("shortcut");

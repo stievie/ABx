@@ -11,7 +11,6 @@ const float MOVE_FORCE = 0.7f;
 const float INAIR_MOVE_FORCE = 0.02f;
 const float BRAKE_FORCE = 0.2f;
 const float JUMP_FORCE = 6.0f;
-const float YAW_SENSITIVITY = 0.1f;
 const float INAIR_THRESHOLD_TIME = 0.1f;
 
 static const StringHash ANIM_IDLE("Idle");

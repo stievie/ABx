@@ -39,7 +39,7 @@ private:
     String GetQualName() const
     {
         if (qualifiers_ == 0)
-            return "";
+            return String::EMPTY;
         String result;
         if (qualifiers_ & SC_MOD_CTRL)
             result += "Ctrl+";

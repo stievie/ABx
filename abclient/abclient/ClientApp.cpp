@@ -142,6 +142,8 @@ void ClientApp::Setup()
     engineParameters_[EP_WINDOW_WIDTH] = options->GetWidth();
     // Default 0 (use desktop resolution, or 768 in windowed mode.)
     engineParameters_[EP_WINDOW_HEIGHT] = options->GetHeight();
+    engineParameters_[EP_WINDOW_POSITION_X] = options->GetWindowPos().x_;
+    engineParameters_[EP_WINDOW_POSITION_Y] = options->GetWindowPos().y_;
     engineParameters_[EP_FULL_SCREEN] = options->GetFullscreen();
     engineParameters_[EP_BORDERLESS] = options->GetBorderless();
     engineParameters_[EP_WINDOW_RESIZABLE] = options->GetResizeable();
