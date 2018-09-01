@@ -119,8 +119,10 @@ ClientApp::ClientApp(Context* context) :
     OptionsWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
 
-    // Subscribe key down event
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ClientApp, HandleKeyDown));
+#ifdef DEBUG_HUD
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLECONSOLE, URHO3D_HANDLER(ClientApp, HandleToggleConsole));
+#endif
     SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
@@ -200,6 +202,10 @@ void ClientApp::Start()
     renderer->SetHDRRendering(true);
     renderer->SetSpecularLighting(true);
 
+#ifdef DEBUG_HUD
+    CreateHUD();
+#endif
+
     SwitchScene("LoginLevel");
 }
 
@@ -217,6 +223,23 @@ void ClientApp::Stop()
     options->Save();
     windowManager_->SaveWindows();
 }
+
+#ifdef DEBUG_HUD
+void ClientApp::CreateHUD()
+{
+    // Use fixed width font for HUD
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
+    // Create console
+    Console* console = engine_->CreateConsole();
+    console->SetDefaultStyle(xmlFile);
+    console->GetBackground()->SetOpacity(0.7f);
+
+    // Create debug HUD.
+    DebugHud* debugHud = engine_->CreateDebugHud();
+    debugHud->SetDefaultStyle(xmlFile);
+}
+#endif
 
 void ClientApp::SetWindowTitleAndIcon()
 {
@@ -236,19 +259,20 @@ void ClientApp::SwitchScene(const String& sceneName)
     SendEvent(AbEvents::E_SETLEVEL, eventData);
 }
 
-void ClientApp::HandleKeyDown(StringHash, VariantMap& eventData)
+#ifdef DEBUG_HUD
+void ClientApp::HandleToggleDebugHUD(StringHash, VariantMap&)
 {
-    using namespace KeyDown;
-    int key = eventData[P_KEY].GetInt();
-
-//#ifdef _DEBUG
-    // Toggle debug HUD with F2
-    if (key == KEY_F2)
-    {
-        GetSubsystem<LevelManager>()->ToggleDebugGeometry();
-    }
-//#endif
+    GetSubsystem<DebugHud>()->ToggleAll();
+    GetSubsystem<LevelManager>()->ToggleDebugGeometry();
 }
+#endif
+
+#ifdef DEBUG_HUD
+void ClientApp::HandleToggleConsole(StringHash, VariantMap&)
+{
+    GetSubsystem<Console>()->Toggle();
+}
+#endif
 
 void ClientApp::HandleToggleOptions(StringHash, VariantMap&)
 {

@@ -27,6 +27,9 @@ public:
     /// Setup after engine initialization and before running the main loop.
     void Start() override;
     void Stop() override;
+#ifdef DEBUG_HUD
+    void CreateHUD();
+#endif
 protected:
 
 private:
@@ -39,7 +42,10 @@ private:
 
     void SetWindowTitleAndIcon();
     void SwitchScene(const String& sceneName);
-    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+#ifdef DEBUG_HUD
+    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
+    void HandleToggleConsole(StringHash eventType, VariantMap& eventData);
+#endif
     void HandleToggleOptions(StringHash eventType, VariantMap& eventData);
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
     void HandleExitProgram(StringHash eventType, VariantMap& eventData);

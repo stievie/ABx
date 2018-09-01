@@ -177,6 +177,10 @@ void WorldLevel::HandleMouseWheel(StringHash, VariantMap& eventData)
 
 void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
 {
+    if (!viewport_)
+        // Not ready yet
+        return;
+
     // Hover object
     Input* input = GetSubsystem<Input>();
     if (input->GetMouseButtonDown(MOUSEB_LEFT) || input->GetMouseButtonDown(MOUSEB_RIGHT))

@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2387.5" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16784050" />
-	<attribute name="Next Local Component ID" value="16784867" />
+	<attribute name="Next Local Node ID" value="16784100" />
+	<attribute name="Next Local Component ID" value="16784928" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -20,8 +20,6 @@
 		<attribute name="Material" value="Material;Materials/Skybox.xml" />
 	</component>
 	<component type="PhysicsWorld" id="11" />
-	<component type="NavigationMesh" id="33" />
-	<component type="Navigable" id="34" />
 	<node id="16779317">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sun" />

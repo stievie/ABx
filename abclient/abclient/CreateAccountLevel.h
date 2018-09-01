@@ -30,7 +30,7 @@ private:
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyUp(StringHash eventType, VariantMap& eventData);
-    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
     void HandleAccKeyFocused(StringHash eventType, VariantMap& eventData);
     void HandleAccKeyDefocused(StringHash eventType, VariantMap& eventData);
 };

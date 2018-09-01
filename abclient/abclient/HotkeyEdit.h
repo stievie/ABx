@@ -61,7 +61,7 @@ private:
             result += "RightAlt+";
         return result;
     }
-    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);

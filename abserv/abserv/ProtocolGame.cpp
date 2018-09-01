@@ -192,7 +192,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeFollow:
     {
         Utils::VariantMap data;
-        data[Game::InputDataObjectId] = message.Get<uint8_t>();
+        data[Game::InputDataObjectId] = message.Get<uint32_t>();
         player_->inputs_.Add(Game::InputType::Follow, data);
         break;
     }

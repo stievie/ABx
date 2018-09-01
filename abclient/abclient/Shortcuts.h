@@ -178,7 +178,7 @@ private:
     HashMap<StringHash, bool> triggered_;
     void SubscribeToEvents();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
+    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
     void HandleKeyUp(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);

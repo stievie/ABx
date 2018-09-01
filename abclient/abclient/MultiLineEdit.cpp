@@ -76,7 +76,7 @@ MultiLineEdit::MultiLineEdit(Context* context) :
     SubscribeToEvent(this, E_FOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleFocused));
     SubscribeToEvent(this, E_DEFOCUSED, URHO3D_HANDLER(MultiLineEdit, HandleDefocused));
     SubscribeToEvent(this, E_LAYOUTUPDATED, URHO3D_HANDLER(MultiLineEdit, HandleLayoutUpdated));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(MultiLineEdit, HandleKeyDown));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(MultiLineEdit, HandleToggleDebugHUD));
 
     hasMaxLines = false;
     maxLines = 0;
@@ -827,7 +827,7 @@ void MultiLineEdit::HandleDefocused(StringHash eventType, VariantMap& eventData)
         GetSubsystem<Input>()->SetScreenKeyboardVisible(false);
 }
 
-void MultiLineEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void MultiLineEdit::HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData)
 {
     using namespace KeyDown;
     int key = eventData[P_KEY].GetInt();

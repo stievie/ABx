@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config.h"
+
 using namespace Urho3D;
 
 /// User defined events
@@ -269,5 +271,15 @@ URHO3D_EVENT(E_SC_HIDEUI, HideUI)
 URHO3D_EVENT(E_SC_SELECTSELF, SelectSelf)
 {
 }
+
+#ifdef DEBUG_HUD
+URHO3D_EVENT(E_SC_TOGGLEDEBUGHUD, ToggleDebugHUD)
+{
+}
+
+URHO3D_EVENT(E_SC_TOGGLECONSOLE, ToggleConsole)
+{
+}
+#endif
 
 }

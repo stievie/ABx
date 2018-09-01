@@ -248,6 +248,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     autorunComp_.autoRun_ = true;
                 }
             }
+#ifdef DEBUG_NAVIGATION
+            else
+            {
+                LOG_WARNING << "InputType::Follow: object with ID not found: " << targetId << std::endl;
+            }
+#endif
             break;
         }
         case InputType::Attack:

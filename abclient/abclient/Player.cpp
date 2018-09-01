@@ -162,10 +162,10 @@ void Player::UpdateYaw()
 
 void Player::FollowSelected()
 {
-    if (selectedObject_)
+    if (auto so = selectedObject_.Lock())
     {
         FwClient* client = context_->GetSubsystem<FwClient>();
-        client->FollowObject(selectedObject_->id_);
+        client->FollowObject(so->id_);
     }
 }
 

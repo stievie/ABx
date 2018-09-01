@@ -76,6 +76,10 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
     shortcuts_[AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down, "Toggle Mission map");
 
+#ifdef DEBUG_HUD
+    shortcuts_[AbEvents::E_SC_TOGGLEDEBUGHUD] = ShortcutEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, "Debug HUD", Trigger::Down, "Toggle Debug HUD");
+    shortcuts_[AbEvents::E_SC_TOGGLECONSOLE] = ShortcutEvent(AbEvents::E_SC_TOGGLECONSOLE, "Console", Trigger::Down, "Toggle Console");
+#endif
     // Add non customizeable shortcuts
     Add(AbEvents::E_SC_MOUSELOOK, { KEY_UNKNOWN, MOUSEB_RIGHT });
 }
@@ -115,6 +119,10 @@ void Shortcuts::AddDefault()
 
     Add(AbEvents::E_SC_SELECTSELF, { KEY_F });
     Add(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, { KEY_U });
+#ifdef DEBUG_HUD
+    Add(AbEvents::E_SC_TOGGLEDEBUGHUD, { KEY_F12 });
+    Add(AbEvents::E_SC_TOGGLECONSOLE, { KEY_F9 });
+#endif
 }
 
 void Shortcuts::Load(const XMLElement& root)
@@ -239,7 +247,7 @@ void Shortcuts::SubscribeToEvents()
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Shortcuts, HandleUpdate));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(Shortcuts, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(Shortcuts, HandleMouseUp));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Shortcuts, HandleKeyDown));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Shortcuts, HandleToggleDebugHUD));
     SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Shortcuts, HandleKeyUp));
 }
 
@@ -267,7 +275,7 @@ void Shortcuts::HandleUpdate(StringHash, VariantMap&)
     }
 }
 
-void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
+void Shortcuts::HandleToggleDebugHUD(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement())

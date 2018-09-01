@@ -116,7 +116,7 @@ void LoginLevel::HandleTextFinished(StringHash, VariantMap&)
     DoLogin();
 }
 
-void LoginLevel::HandleKeyDown(StringHash, VariantMap&)
+void LoginLevel::HandleToggleDebugHUD(StringHash, VariantMap&)
 {
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
@@ -153,5 +153,5 @@ void LoginLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(LoginLevel, HandleUpdate));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(LoginLevel, HandleKeyDown));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(LoginLevel, HandleToggleDebugHUD));
 }
