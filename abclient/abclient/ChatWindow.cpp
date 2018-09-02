@@ -7,12 +7,15 @@
 #include <Mustache/mustache.hpp>
 #include "Shortcuts.h"
 #include "Options.h"
+#include "LevelManager.h"
+#include "Player.h"
 
 #include <Urho3D/DebugNew.h>
 
 ChatWindow::ChatWindow(Context* context) :
     UIElement(context),
-    tabIndexWhisper_(-1)
+    tabIndexWhisper_(-1),
+    firstStart_(true)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
@@ -52,13 +55,6 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
     SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
-
-    static bool firstStart = true;
-    if (firstStart)
-    {
-        AddLine("Hi, type /help for available commands.", "ChatLogServerInfoText");
-        firstStart = false;
-    }
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
 }
@@ -677,4 +673,20 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
         break;
     }
     AddLine(senderId, name, text, style, textStyle, channel);
+}
+
+void ChatWindow::SayHello(Player* player)
+{
+    if (firstStart_)
+    {
+        kainjow::mustache::mustache tpl{ "Hi {{name}}, type /help for available commands." };
+        kainjow::mustache::data data;
+        if (player)
+            data.set("name", std::string(player->name_.CString(), player->name_.Length()));
+        else
+            data.set("name", "Unknown Soldier");
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        firstStart_ = false;
+    }
 }

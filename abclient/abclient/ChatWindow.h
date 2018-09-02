@@ -3,11 +3,14 @@
 #include <AB/ProtocolCodes.h>
 #include "TabGroup.h"
 
+class Player;
+
 class ChatWindow : public UIElement
 {
     URHO3D_OBJECT(ChatWindow, UIElement);
 private:
     SharedPtr<BorderImage> background_;
+    bool firstStart_;
     void HandleScreenshotTaken(StringHash eventType, VariantMap& eventData);
     void HandleEditFocused(StringHash eventType, VariantMap& eventData);
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
@@ -50,6 +53,7 @@ public:
 
     void AddChatLine(uint32_t senderId, const String& name, const String& text,
         AB::GameProtocol::ChatMessageChannel channel);
+    void SayHello(Player* player);
 
     ChatWindow(Context* context);
     ~ChatWindow()

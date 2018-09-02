@@ -597,6 +597,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
     SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
     GetSubsystem<Audio>()->SetListener(soundListener);
     SetupViewport();
+    chatWindow_->SayHello(player_);
 }
 
 void WorldLevel::ShowMap()
