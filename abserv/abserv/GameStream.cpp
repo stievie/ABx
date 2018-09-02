@@ -24,6 +24,8 @@ bool GameWriteStream::Open(const std::string& dir, Game::Game* game)
         // Placeholder for size
         static const uint32_t PLACEHOLDER = 0;
         stream_.write((char*)&PLACEHOLDER, sizeof(uint32_t));
+
+        stream_.write((char*)game->data_.uuid.c_str(), 36);
         stream_.write((char*)&game->startTime_, sizeof(decltype(game->startTime_)));
     }
     else
@@ -88,7 +90,10 @@ bool GameReadStream::Open(const std::string& dir, const std::string& instance)
             return false;
         }
         stream_.read((char*)&size_, sizeof(size_));
-        stream_.read((char*)&startTime_, sizeof(decltype(startTime_)));
+
+        gameUuid_.resize(36);
+        stream_.read((char*)gameUuid_.data(), 36);
+        stream_.read((char*)&startTime_, sizeof(startTime_));
     }
     else
         LOG_ERROR << "Unable to open file for reading: " << filename << std::endl;

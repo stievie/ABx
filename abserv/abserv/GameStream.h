@@ -7,6 +7,7 @@
 ///   4 Byte: Header == REC\0
 ///   sizeof(int16_t) Byte: File version == REC_FILE_VERSION
 ///   sizeof(uint32_t) Byte: overall size of network messages
+///   char[26]: Game UUID
 ///   sizeof(int64_t) Byte: Game start time
 ///  ================ Body ================
 ///   --------- Network message ----------
@@ -53,6 +54,7 @@ private:
     int64_t startTime_;
     uint32_t read_;
     uint32_t size_;
+    std::string gameUuid_;
 public:
     GameReadStream() :
         open_(false),
@@ -68,6 +70,10 @@ public:
     bool IsOpen() const
     {
         return open_;
+    }
+    const std::string& GetGameUuid() const
+    {
+        return gameUuid_;
     }
 };
 
