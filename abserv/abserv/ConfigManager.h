@@ -18,6 +18,8 @@ public:
 
         LogDir,
         DataDir,
+        RecordingsDir,
+        RecordGames,
 
         DataServerHost,
         DataServerPort,

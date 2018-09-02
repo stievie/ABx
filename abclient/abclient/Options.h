@@ -7,8 +7,8 @@ enum class WindowMode
     Borderless
 };
 
-static constexpr float MIN_FOV = 60.0;
-static constexpr float MAX_FOV = 110.0;
+static constexpr float MIN_FOV = 45.0;
+static constexpr float MAX_FOV = 120.0;
 
 class Options : public Object
 {

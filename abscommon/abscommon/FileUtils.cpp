@@ -33,4 +33,11 @@ bool FileExists(const std::string& name)
     return infile.good();
 }
 
+std::string AddSlash(const std::string& dir)
+{
+    if (dir.back() != '\\' && dir.back() != '/')
+        return dir + "/";
+    return dir;
+}
+
 }

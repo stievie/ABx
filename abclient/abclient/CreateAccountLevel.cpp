@@ -173,7 +173,7 @@ void CreateAccountLevel::HandleKeyUp(StringHash, VariantMap& eventData)
         DoCancel();
 }
 
-void CreateAccountLevel::HandleToggleDebugHUD(StringHash, VariantMap&)
+void CreateAccountLevel::HandleKeyDown(StringHash, VariantMap&)
 {
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
@@ -209,6 +209,6 @@ void CreateAccountLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(CreateAccountLevel, HandleUpdate));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(CreateAccountLevel, HandleToggleDebugHUD));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(CreateAccountLevel, HandleKeyDown));
     SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(CreateAccountLevel, HandleKeyUp));
 }

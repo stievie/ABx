@@ -77,6 +77,12 @@ void Game::Start()
         CreateEntity(instanceData_);
         LOG_INFO << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 
+        if (ConfigManager::Instance[ConfigManager::Key::RecordGames])
+        {
+            writeStream_ = std::make_unique<IO::GameWriteStream>();
+            writeStream_->Open(ConfigManager::Instance[ConfigManager::Key::RecordingsDir], this);
+        }
+
         lastUpdate_ = 0;
         SetState(ExecutionState::Running);
 
@@ -183,6 +189,10 @@ void Game::SendStatus()
         // Write to buffered, auto-sent output message
         p.second->client_->WriteToOutput(*gameStatus_.get());
     }
+
+    if (writeStream_ && writeStream_->IsOpen())
+        writeStream_->Write(*gameStatus_.get());
+
     ResetStatus();
 }
 

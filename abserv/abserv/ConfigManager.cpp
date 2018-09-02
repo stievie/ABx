@@ -32,6 +32,8 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::GameIP] = Utils::ConvertStringToIP(GetGlobal("game_ip", "0.0.0.0"));
     config_[Key::LogDir] = GetGlobal("log_dir", "");
     config_[Key::DataDir] = GetGlobal("data_dir", "");
+    config_[Key::RecordingsDir] = GetGlobal("recordings_dir", "");
+    config_[Key::RecordGames] = GetGlobalBool("record_games", false);
     config_[Key::GamePort] = (int)GetGlobal("game_port", 0);
     config_[Key::GameHost] = GetGlobal("game_host", "");
 

@@ -26,6 +26,6 @@ private:
     void HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
-    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
+    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void DoLogin();
 };

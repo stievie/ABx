@@ -51,7 +51,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_CHATPARTY, URHO3D_HANDLER(ChatWindow, HandleShortcutChatParty));
     SubscribeToEvent(AbEvents::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
     SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleToggleDebugHUD));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     static bool firstStart = true;
     if (firstStart)
@@ -351,7 +351,7 @@ void ChatWindow::HandleTabSelected(StringHash, VariantMap& eventData)
         edit->SetFocus(true);
 }
 
-void ChatWindow::HandleToggleDebugHUD(StringHash, VariantMap& eventData)
+void ChatWindow::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     using namespace KeyDown;
 
@@ -560,7 +560,7 @@ void ChatWindow::HandleEditFocused(StringHash, VariantMap&)
 
 void ChatWindow::HandleEditDefocused(StringHash, VariantMap&)
 {
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleToggleDebugHUD));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 }
 
 void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)

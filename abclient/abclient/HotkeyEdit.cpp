@@ -19,7 +19,7 @@ HotkeyEdit::HotkeyEdit(Context* context) :
     SetTextSelectable(false);
     SetFocusMode(FM_FOCUSABLE);
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(HotkeyEdit, HandleMouseDown));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(HotkeyEdit, HandleToggleDebugHUD));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(HotkeyEdit, HandleKeyDown));
 }
 
 HotkeyEdit::~HotkeyEdit()
@@ -27,7 +27,7 @@ HotkeyEdit::~HotkeyEdit()
     UnsubscribeFromAllEvents();
 }
 
-void HotkeyEdit::HandleToggleDebugHUD(StringHash, VariantMap& eventData)
+void HotkeyEdit::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement() != this)

@@ -11,6 +11,8 @@ data_host = "localhost"
 data_port = 2770
 
 data_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/data"
+recordings_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/recordings"
+record_games = true
 
 base_port = 2749          -- 0xABE
 

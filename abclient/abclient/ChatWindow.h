@@ -27,7 +27,7 @@ private:
     void HandleServerMessageServerId(VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
-    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
+    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatGeneral(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatGuild(StringHash eventType, VariantMap& eventData);

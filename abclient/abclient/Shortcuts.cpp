@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shortcuts.h"
 #include "AbEvents.h"
+#include <Urho3D/Container/Sort.h>
 
 const Shortcut Shortcut::EMPTY;
 unsigned Shortcuts::shortcutIds = 0;
@@ -42,45 +43,49 @@ unsigned Shortcuts::Add(const StringHash& _event, const Shortcut& sc)
 void Shortcuts::Init()
 {
     shortcuts_.Clear();
+    // Exit
+    shortcuts_[AbEvents::E_SC_EXITPROGRAM] = ShortcutEvent(AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_LOGOUT] = ShortcutEvent(AbEvents::E_SC_LOGOUT, "Logout", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTCHARACTER] = ShortcutEvent(AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down);
+
+    // Move
     shortcuts_[AbEvents::E_SC_MOVEFORWARD] = ShortcutEvent(AbEvents::E_SC_MOVEFORWARD, "Move forward", Trigger::None);
     shortcuts_[AbEvents::E_SC_MOVEBACKWARD] = ShortcutEvent(AbEvents::E_SC_MOVEBACKWARD, "Move backward", Trigger::None);
     shortcuts_[AbEvents::E_SC_TURNLEFT] = ShortcutEvent(AbEvents::E_SC_TURNLEFT, "Turn left", Trigger::None);
     shortcuts_[AbEvents::E_SC_TURNRIGHT] = ShortcutEvent(AbEvents::E_SC_TURNRIGHT, "Turn right", Trigger::None);
     shortcuts_[AbEvents::E_SC_MOVELEFT] = ShortcutEvent(AbEvents::E_SC_MOVELEFT, "Move left", Trigger::None);
     shortcuts_[AbEvents::E_SC_MOVERIGHT] = ShortcutEvent(AbEvents::E_SC_MOVERIGHT, "Move right", Trigger::None);
-
     shortcuts_[AbEvents::E_SC_KEEPRUNNING] = ShortcutEvent(AbEvents::E_SC_KEEPRUNNING, "Keep running", Trigger::Down);
+
     shortcuts_[AbEvents::E_SC_REVERSECAMERA] = ShortcutEvent(AbEvents::E_SC_REVERSECAMERA, "Reverse Camera", Trigger::None);
     shortcuts_[AbEvents::E_SC_HIGHLIGHTOBJECTS] = ShortcutEvent(AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None);
     shortcuts_[AbEvents::E_SC_MOUSELOOK] = ShortcutEvent(AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, String::EMPTY, false);
     shortcuts_[AbEvents::E_SC_DEFAULTACTION] = ShortcutEvent(AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
 
+    // UI
+    shortcuts_[AbEvents::E_SC_HIDEUI] = ShortcutEvent(AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down);
     shortcuts_[AbEvents::E_SC_TOGGLEMAP] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down, "Toggle Map window");
     shortcuts_[AbEvents::E_SC_TOGGLEPARTYWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", Trigger::Down, "Toggle Party window");
+    shortcuts_[AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down, "Toggle Mission map");
     shortcuts_[AbEvents::E_SC_TAKESCREENSHOT] = ShortcutEvent(AbEvents::E_SC_TAKESCREENSHOT, "Take Screenshot", Trigger::Down);
     shortcuts_[AbEvents::E_SC_TOGGLEMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down, "Toggle Mail window");
-    shortcuts_[AbEvents::E_SC_LOGOUT] = ShortcutEvent(AbEvents::E_SC_LOGOUT, "Logout", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_SELECTCHARACTER] = ShortcutEvent(AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_TOGGLENEWMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down, "Show New Mail window");
     shortcuts_[AbEvents::E_SC_TOGGLEOPTIONS] = ShortcutEvent(AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down, "Show Options window");
-    shortcuts_[AbEvents::E_SC_EXITPROGRAM] = ShortcutEvent(AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down);
-
+    // Chat
+    shortcuts_[AbEvents::E_SC_TOGGLECHATWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLECHATWINDOW, "Chat", Trigger::Down, "Toggle Chat window");
     shortcuts_[AbEvents::E_SC_CHATGENERAL] = ShortcutEvent(AbEvents::E_SC_CHATGENERAL, "General", Trigger::Up, "General chat");
     shortcuts_[AbEvents::E_SC_CHATGUILD] = ShortcutEvent(AbEvents::E_SC_CHATGUILD, "Guild", Trigger::Up, "Guild chat");
     shortcuts_[AbEvents::E_SC_CHATPARTY] = ShortcutEvent(AbEvents::E_SC_CHATPARTY, "Party", Trigger::Up, "Party chat");
     shortcuts_[AbEvents::E_SC_CHATTRADE] = ShortcutEvent(AbEvents::E_SC_CHATTRADE, "Trade", Trigger::Up, "Trade chat");
     shortcuts_[AbEvents::E_SC_CHATWHISPER] = ShortcutEvent(AbEvents::E_SC_CHATWHISPER, "Whisper", Trigger::Up, "Whisper chat");
-    shortcuts_[AbEvents::E_SC_TOGGLECHATWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLECHATWINDOW, "Chat", Trigger::Down, "Toggle Chat window");
-
-    shortcuts_[AbEvents::E_SC_HIDEUI] = ShortcutEvent(AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLENEWMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down, "Show New Mail window");
-    shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down, "Toggle Mission map");
 
 #ifdef DEBUG_HUD
     shortcuts_[AbEvents::E_SC_TOGGLEDEBUGHUD] = ShortcutEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, "Debug HUD", Trigger::Down, "Toggle Debug HUD");
     shortcuts_[AbEvents::E_SC_TOGGLECONSOLE] = ShortcutEvent(AbEvents::E_SC_TOGGLECONSOLE, "Console", Trigger::Down, "Toggle Console");
 #endif
-    // Add non customizeable shortcuts
+
+    // Add non customizable shortcuts
     Add(AbEvents::E_SC_MOUSELOOK, { KEY_UNKNOWN, MOUSEB_RIGHT });
 }
 
@@ -247,7 +252,7 @@ void Shortcuts::SubscribeToEvents()
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Shortcuts, HandleUpdate));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(Shortcuts, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(Shortcuts, HandleMouseUp));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Shortcuts, HandleToggleDebugHUD));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Shortcuts, HandleKeyDown));
     SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Shortcuts, HandleKeyUp));
 }
 
@@ -275,7 +280,7 @@ void Shortcuts::HandleUpdate(StringHash, VariantMap&)
     }
 }
 
-void Shortcuts::HandleToggleDebugHUD(StringHash, VariantMap& eventData)
+void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     UI* ui = GetSubsystem<UI>();
     if (ui->GetFocusElement())

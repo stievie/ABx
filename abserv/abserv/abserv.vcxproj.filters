@@ -177,6 +177,9 @@
     <ClInclude Include="StateComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="GameStream.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -330,6 +333,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="StateComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStream.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

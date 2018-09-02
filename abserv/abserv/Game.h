@@ -8,6 +8,7 @@
 #include "Chat.h"
 #include <AB/Entities/Game.h>
 #include <AB/Entities/GameInstance.h>
+#include "GameStream.h"
 
 namespace Game {
 
@@ -41,6 +42,7 @@ private:
     void ResetStatus();
     /// Changes to the game are written to this message and sent to all players
     std::unique_ptr<Net::NetworkMessage> gameStatus_;
+    std::unique_ptr<IO::GameWriteStream> writeStream_;
     template<typename E>
     bool UpdateEntity(const E& e)
     {

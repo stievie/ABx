@@ -208,6 +208,6 @@ private:
     /// Handle the element layout having been updated.
     void HandleLayoutUpdated(StringHash eventType, VariantMap& eventData);
     /// Handle key down.
-    void HandleToggleDebugHUD(StringHash eventType, VariantMap& eventData);
+    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 };
 }
