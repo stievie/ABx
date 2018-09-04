@@ -165,6 +165,8 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
+    <ClInclude Include="CrowdAgent.h" />
+    <ClInclude Include="CrowdManager.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
@@ -197,6 +199,7 @@
     <ClInclude Include="MoveComp.h" />
     <ClInclude Include="NavigationMesh.h" />
     <ClInclude Include="Npc.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="OctreeQuery.h" />
     <ClInclude Include="OffMeshConnection.h" />
@@ -222,6 +225,8 @@
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
+    <ClCompile Include="CrowdAgent.cpp" />
+    <ClCompile Include="CrowdManager.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
@@ -252,6 +257,7 @@
     <ClCompile Include="MoveComp.cpp" />
     <ClCompile Include="NavigationMesh.cpp" />
     <ClCompile Include="Npc.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="OctreeQuery.cpp" />
     <ClCompile Include="OffMeshConnection.cpp" />

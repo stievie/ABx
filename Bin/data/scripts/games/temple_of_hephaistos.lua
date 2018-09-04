@@ -16,6 +16,14 @@ function onStart()
     merchant:SetPosition(x, y, z)
     merchant:SetRotation(180)
   end  
+  local ped = self:AddNpc("/scripts/creatures/npcs/pedestrian.lua")
+  if (ped ~= nil) then
+    local x = 64.6874
+    local z = 22.0684
+    local y = self:GetTerrainHeight(x, z)
+    ped:SetPosition(x, y, z)
+    ped:SetRotation(90)
+  end  
 end
 
 -- Game stopping

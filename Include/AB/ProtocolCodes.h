@@ -180,6 +180,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectRotationChange,
     GameObjectSelectTarget,
     GameObjectStateChange,
+    GameObjectMoveSpeedChange,
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,

@@ -16,6 +16,7 @@ class GameObject : public LogicComponent
     URHO3D_OBJECT(GameObject, LogicComponent);
 protected:
     AB::GameProtocol::CreatureState creatureState_;
+    float speedFactor_;
 public:
     GameObject(Context* context);
     ~GameObject();
@@ -47,6 +48,11 @@ public:
     {
         return creatureState_;
     }
+    float GetSpeedFactor() const
+    {
+        return speedFactor_;
+    }
+    virtual void SetSpeedFactor(int64_t time, float value);
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }

@@ -73,6 +73,7 @@ public:
     void SetYRotation(float rad, bool updateYaw) override;
     void RemoveFromScene() override;
     void SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState) override;
+    void SetSpeedFactor(int64_t time, float value) override;
 
     void Unserialize(PropReadStream& data) override;
 

@@ -23,6 +23,7 @@ public:
 private:
     void DeleteEffect(uint32_t index);
     void _LuaGotoPosition(float x, float y, float z);
+    int _LuaGetState();
 protected:
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
@@ -49,8 +50,8 @@ public:
     }
 
     /// Move speed: 1 = normal speed
-    float GetSpeed() const { return speed_; }
-    void SetSpeed(float value) { speed_ = value; }
+    float GetSpeed() const override { return moveComp_.GetSpeedFactor(); }
+    void SetSpeed(float value) { moveComp_.SetSpeedFactor(value); }
     uint32_t GetEnergy() const { return energy_; }
     void SetEnergy(uint32_t value) { energy_ = value; }
     uint32_t GetHealth() const { return health_; }
@@ -59,12 +60,6 @@ public:
     void SetAdrenaline(uint32_t value) { adrenaline_ = value; }
     uint32_t GetOvercast() const { return overcast_; }
     void SetOvercast(uint32_t value) { overcast_ = value; }
-
-    float GetActualMoveSpeed() const
-    {
-        // TODO:
-        return speed_;
-    }
 
     virtual uint32_t GetLevel() const { return 0; }
 
@@ -115,7 +110,6 @@ public:
     uint32_t adrenaline_;
     uint32_t overcast_;
 
-    float speed_ = 1.0f;
     /// Effects may influence the cast spells speed
     float castSpeedFactor_ = 1.0f;
     /// For any skill

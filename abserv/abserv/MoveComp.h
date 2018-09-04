@@ -14,6 +14,7 @@ class MoveComp
 private:
     Creature& owner_;
     Math::Vector3 oldPosition_;
+    float speedFactor_;
 public:
     static constexpr float BaseSpeed = 150.0f;
     MoveComp(Creature& owner) :
@@ -21,10 +22,12 @@ public:
         moveDir_(AB::GameProtocol::MoveDirectionNone),
         turnDir_(AB::GameProtocol::TurnDirectionNone),
         oldPosition_(Math::Vector3::Zero),
+        speedFactor_(1.0f),
         moved_(false),
         turned_(false),
         directionSet_(false),
-        newAngle_(false)
+        newAngle_(false),
+        speedDirty_(false)
     { }
     ~MoveComp() = default;
 
@@ -37,6 +40,18 @@ public:
     /// Turn to turnDir_
     void TurnTo(uint32_t timeElapsed);
     void SetDirection(float worldAngle);
+    float GetSpeedFactor() const
+    {
+        return speedFactor_;
+    }
+    void SetSpeedFactor(float value)
+    {
+        if (speedFactor_ != value)
+        {
+            speedFactor_ = value;
+            speedDirty_ = true;
+        }
+    }
 
     const Math::Vector3& GetOldPosition() const
     {
@@ -47,6 +62,7 @@ public:
     uint32_t turnDir_;
     bool moved_;
     bool turned_;
+    bool speedDirty_;
     /// Manual direction set
     bool directionSet_;
     bool newAngle_;

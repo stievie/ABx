@@ -21,7 +21,7 @@ end
 
 -- self was selected by creature
 function onSelected(creature)
-  self:Say(2, "Hello " .. creature:GetName());
+  self:Say(2, "Hello " .. creature:GetName())
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
 --  local pos = creature:GetPosition();

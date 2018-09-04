@@ -36,6 +36,7 @@ void Creature::RegisterLua(kaguya::State& state)
 
         .addFunction("GotoPosition", &Creature::_LuaGotoPosition)
         .addFunction("FollowObject", &Creature::FollowObject)
+        .addFunction("GetState", &Creature::_LuaGetState)
     );
 }
 
@@ -143,7 +144,17 @@ void Creature::DeleteEffect(uint32_t index)
 
 void Creature::_LuaGotoPosition(float x, float y, float z)
 {
+    Math::Vector3 pos(x, y, z);
+    if (Math::Equals(y, 0.0f))
+    {
+        pos.y_ = GetGame()->map_->GetTerrainHeight(pos);
+    }
     GotoPosition(Math::Vector3(x, y, z));
+}
+
+int Creature::_LuaGetState()
+{
+    return static_cast<int>(stateComp_.GetState());
 }
 
 void Creature::RemoveEffect(uint32_t index)
@@ -362,6 +373,12 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);
         message.AddByte(stateComp_.GetState());
+    }
+    if (moveComp_.speedDirty_)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectMoveSpeedChange);
+        message.Add<uint32_t>(id_);
+        message.Add<float>(moveComp_.GetSpeedFactor());
     }
 
     switch (stateComp_.GetState())

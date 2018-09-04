@@ -180,6 +180,15 @@
     <ClInclude Include="GameStream.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CrowdManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="CrowdAgent.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -336,6 +345,15 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="GameStream.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowdManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowdAgent.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

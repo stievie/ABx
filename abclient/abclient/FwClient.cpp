@@ -611,7 +611,7 @@ void FwClient::OnServerLeft(const std::string& serverId)
 }
 
 void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-    AB::GameProtocol::CreatureState state,
+    AB::GameProtocol::CreatureState state, float speed,
     PropReadStream& data, bool existing)
 {
     using namespace AbEvents::ObjectSpawn;
@@ -622,6 +622,7 @@ void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, c
     eData[P_POSITION] = Vector3(pos.x, pos.y, pos.z);
     eData[P_ROTATION] = rot;
     eData[P_STATE] = static_cast<uint32_t>(state);
+    eData[P_SPEEDFACTOR] = speed;
     eData[P_SCALE] = Vector3(scale.x, scale.y, scale.z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
     eData[P_DATA] = d;
@@ -666,6 +667,16 @@ void FwClient::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProt
     eData[P_OBJECTID] = id;
     eData[P_STATE] = static_cast<unsigned>(state);
     QueueEvent(AbEvents::E_OBJECTSTATEUPDATE, eData);
+}
+
+void FwClient::OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectSpeedUpdate;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_SPEEDFACTOR] = speedFactor;
+    QueueEvent(AbEvents::E_OBJECTSPEEDUPDATE, eData);
 }
 
 void FwClient::OnAccountCreated()

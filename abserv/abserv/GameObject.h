@@ -151,6 +151,10 @@ public:
     {
         return 0;
     }
+    virtual float GetSpeed() const
+    {
+        return 1.0f;
+    }
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;

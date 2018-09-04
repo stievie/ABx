@@ -91,6 +91,7 @@ private:
     void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleObjectSpeedUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
@@ -108,7 +109,7 @@ private:
 
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         const Vector3& position, const Vector3& scale,
-        const Quaternion& rot, AB::GameProtocol::CreatureState state,
+        const Quaternion& rot, AB::GameProtocol::CreatureState state, float speed,
         PropReadStream& data);
 };
 

@@ -320,15 +320,16 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     direction.FromAngleAxis(deg, Vector3(0.0f, 1.0f, 0.0f));
     const Vector3& scale = eventData[P_SCALE].GetVector3();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());
+    float speed = eventData[P_SPEEDFACTOR].GetFloat();
     const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction, state, data);
+    SpawnObject(tick, objectId, existing, pos, scale, direction, state, speed, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     const Vector3& position, const Vector3& scale,
-    const Quaternion& rot, AB::GameProtocol::CreatureState state,
+    const Quaternion& rot, AB::GameProtocol::CreatureState state, float speed,
     PropReadStream& data)
 {
     uint8_t objectType;
@@ -366,6 +367,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
+        object->SetSpeedFactor(updateTick, speed);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
         switch (object->objectType_)
@@ -440,6 +442,18 @@ void WorldLevel::HandleObjectStateUpdate(StringHash, VariantMap& eventData)
         int64_t tick = eventData[P_UPDATETICK].GetInt64();
         object->SetCreatureState(tick,
             static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetInt()));
+    }
+}
+
+void WorldLevel::HandleObjectSpeedUpdate(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectSpeedUpdate;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        int64_t tick = eventData[P_UPDATETICK].GetInt64();
+        object->SetSpeedFactor(tick, eventData[P_SPEEDFACTOR].GetFloat());
     }
 }
 

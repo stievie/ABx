@@ -145,6 +145,12 @@ void Client::OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtoc
         receiver_->OnObjectStateChange(updateTick, id, state);
 }
 
+void Client::OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor)
+{
+    if (receiver_)
+        receiver_->OnObjectSpeedChange(updateTick, id, speedFactor);
+}
+
 void Client::OnAccountCreated()
 {
     if (receiver_)
@@ -202,11 +208,11 @@ void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_
 }
 
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-    AB::GameProtocol::CreatureState state,
+    AB::GameProtocol::CreatureState state, float speed,
     PropReadStream& data, bool existing)
 {
     if (receiver_)
-        receiver_->OnSpawnObject(updateTick, id, pos, scale, rot, state, data, existing);
+        receiver_->OnSpawnObject(updateTick, id, pos, scale, rot, state, speed, data, existing);
 }
 
 void Client::OnNetworkError(const std::error_code& err)

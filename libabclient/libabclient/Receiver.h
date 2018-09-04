@@ -35,12 +35,13 @@ public:
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, uint32_t playerId) = 0;
     virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-        AB::GameProtocol::CreatureState state,
+        AB::GameProtocol::CreatureState state, float speed,
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(int64_t updateTick, uint32_t id) = 0;
     virtual void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) = 0;
     virtual void OnObjectRot(int64_t updateTick, uint32_t id, float rot, bool manual) = 0;
     virtual void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) = 0;
+    virtual void OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor) = 0;
     virtual void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
     virtual void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
         const std::string& senderName, const std::string& message) = 0;

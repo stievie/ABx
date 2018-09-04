@@ -76,7 +76,7 @@ void AutoRunComp::MoveTo(uint32_t timeElapsed, const Math::Vector3& dest)
     {
         owner_.moveComp_.SetDirection(worldAngle);
     }
-    owner_.moveComp_.Move(((float)(timeElapsed) / owner_.moveComp_.BaseSpeed) * owner_.GetActualMoveSpeed(),
+    owner_.moveComp_.Move(((float)(timeElapsed) / owner_.moveComp_.BaseSpeed) * owner_.moveComp_.GetSpeedFactor(),
         Math::Vector3::UnitZ);
 }
 

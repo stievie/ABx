@@ -11,7 +11,8 @@ GameObject::GameObject(Context* context) :
     objectType_(ObjectTypeStatic),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
     hovered_(false),
-    playerSelected_(false)
+    playerSelected_(false),
+    speedFactor_(1.0f)
 {
 }
 
@@ -36,6 +37,11 @@ void GameObject::SetYRotation(float rad, bool)
 void GameObject::SetCreatureState(int64_t, AB::GameProtocol::CreatureState newState)
 {
     creatureState_ = newState;
+}
+
+void GameObject::SetSpeedFactor(int64_t, float value)
+{
+    speedFactor_ = value;
 }
 
 float GameObject::GetYRotation() const

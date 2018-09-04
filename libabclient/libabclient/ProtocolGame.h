@@ -52,6 +52,7 @@ protected:
     void ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseObjectStateChange(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectSpeedChange(const std::shared_ptr<InputMessage>& message);
     void ParseObjectSelected(const std::shared_ptr<InputMessage>& message);
     void ParseServerMessage(const std::shared_ptr<InputMessage>& message);
     void ParseChatMessage(const std::shared_ptr<InputMessage>& message);

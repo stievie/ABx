@@ -103,6 +103,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectStateChange:
             ParseObjectStateChange(message);
             break;
+        case AB::GameProtocol::GameObjectMoveSpeedChange:
+            ParseObjectSpeedChange(message);
+            break;
         case AB::GameProtocol::GameObjectSelectTarget:
             ParseObjectSelected(message);
             break;
@@ -147,6 +150,14 @@ void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& m
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectStateChange(updateTick_, objectId, state);
+}
+
+void ProtocolGame::ParseObjectSpeedChange(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    float speedFactor = message->Get<float>();
+    if (receiver_)
+        receiver_->OnObjectSpeedChange(updateTick_, objectId, speedFactor);
 }
 
 void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& message)
@@ -248,11 +259,12 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
         message->Get<float>()
     };
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
+    float speed = message->Get<float>();
     std::string data = message->GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (receiver_)
-        receiver_->OnSpawnObject(updateTick_, objectId, pos, scale, rot, state, stream, existing);
+        receiver_->OnSpawnObject(updateTick_, objectId, pos, scale, rot, state, speed, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)

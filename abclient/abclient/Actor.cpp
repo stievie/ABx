@@ -59,6 +59,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state)
 {
     animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
+    animations_[ANIM_WALK] = GetAnimation(ANIM_WALK);
     animations_[ANIM_IDLE] = GetAnimation(ANIM_IDLE);
     animations_[ANIM_SIT] = GetAnimation(ANIM_SIT);
     animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
@@ -363,6 +364,8 @@ String Actor::GetAnimation(const StringHash& hash)
         result += "Crying.ani";
     else if (hash == ANIM_RUN)
         result += "Running.ani";
+    else if (hash == ANIM_WALK)
+        result += "Walking.ani";
     else if (hash == ANIM_SIT)
         result += "Sitting.ani";
     else
@@ -419,8 +422,13 @@ void Actor::PlayStateAnimation(float fadeTime)
         PlayAnimation(ANIM_IDLE, true, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateMoving:
-        PlayAnimation(ANIM_RUN, true, fadeTime);
+    {
+        if (speedFactor_ > 0.5f)
+            PlayAnimation(ANIM_RUN, true, fadeTime);
+        else
+            PlayAnimation(ANIM_WALK, true, fadeTime);
         break;
+    }
     case AB::GameProtocol::CreatureStateUsingSkill:
         break;
     case AB::GameProtocol::CreatureStateAttacking:
@@ -475,6 +483,13 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
         break;
     }
     PlayStateAnimation(fadeTime);
+}
+
+void Actor::SetSpeedFactor(int64_t time, float value)
+{
+    GameObject::SetSpeedFactor(time, value);
+    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+        PlayStateAnimation(0.0f);
 }
 
 void Actor::Unserialize(PropReadStream& data)
