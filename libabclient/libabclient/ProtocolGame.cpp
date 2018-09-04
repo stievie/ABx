@@ -244,27 +244,26 @@ void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message
 void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
+    ObjectSpawn os;
+    os.pos = {
+        message->Get<float>(),
+        message->Get<float>(),
+        message->Get<float>()
+    };
+    os.rot = message->Get<float>();
+    os.scale = {
+        message->Get<float>(),
+        message->Get<float>(),
+        message->Get<float>()
+    };
+    os.state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
+    os.speed = message->Get<float>();
 
-    Vec3 pos
-    {
-        message->Get<float>(),
-        message->Get<float>(),
-        message->Get<float>()
-    };
-    float rot = message->Get<float>();
-    Vec3 scale
-    {
-        message->Get<float>(),
-        message->Get<float>(),
-        message->Get<float>()
-    };
-    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
-    float speed = message->Get<float>();
     std::string data = message->GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (receiver_)
-        receiver_->OnSpawnObject(updateTick_, objectId, pos, scale, rot, state, speed, stream, existing);
+        receiver_->OnSpawnObject(updateTick_, objectId, os, stream, existing);
 }
 
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)

@@ -14,6 +14,15 @@
 
 namespace Client {
 
+struct ObjectSpawn
+{
+    Vec3 pos;
+    Vec3 scale;
+    float rot;
+    AB::GameProtocol::CreatureState state;
+    float speed;
+};
+
 class Receiver
 {
 public:
@@ -34,8 +43,7 @@ public:
     virtual void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) = 0;
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, uint32_t playerId) = 0;
-    virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-        AB::GameProtocol::CreatureState state, float speed,
+    virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(int64_t updateTick, uint32_t id) = 0;
     virtual void OnObjectPos(int64_t updateTick, uint32_t id, const Vec3& pos) = 0;

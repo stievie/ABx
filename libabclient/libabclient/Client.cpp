@@ -207,12 +207,11 @@ void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_
         receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId);
 }
 
-void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-    AB::GameProtocol::CreatureState state, float speed,
+void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {
     if (receiver_)
-        receiver_->OnSpawnObject(updateTick, id, pos, scale, rot, state, speed, data, existing);
+        receiver_->OnSpawnObject(updateTick, id, objectSpawn, data, existing);
 }
 
 void Client::OnNetworkError(const std::error_code& err)

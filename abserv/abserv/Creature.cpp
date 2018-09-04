@@ -376,6 +376,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
     if (moveComp_.speedDirty_)
     {
+        moveComp_.speedDirty_ = false;
         message.AddByte(AB::GameProtocol::GameObjectMoveSpeedChange);
         message.Add<uint32_t>(id_);
         message.Add<float>(moveComp_.GetSpeedFactor());
