@@ -143,7 +143,7 @@ void Player::SetYRotation(float rad, bool updateYaw)
     Actor::SetYRotation(rad, updateYaw);
 }
 
-void Player::SetCameraDist(bool increase)
+void Player::CameraZoom(bool increase)
 {
     float diff = Max(cameraDistance_ / 10.0f, 0.2f);
     if (increase)
@@ -155,7 +155,7 @@ void Player::SetCameraDist(bool increase)
 
 void Player::UpdateYaw()
 {
-    Quaternion rot = node_->GetRotation();
+    const Quaternion& rot = node_->GetRotation();
     controls_.yaw_ = rot.YawAngle();
     lastYaw_ = controls_.yaw_;
 }
@@ -197,7 +197,7 @@ void Player::PostUpdate(float)
     float yaw = controls_.yaw_;
     if (scs->Test(AbEvents::E_SC_REVERSECAMERA))
         yaw += 180.0f;
-    // Get camera lookat dir from character yaw + pitch
+    // Get camera look at dir from character yaw + pitch
     Quaternion rot = Quaternion(yaw, Vector3::UP);
     Quaternion dir = rot * Quaternion(controls_.pitch_, Vector3::RIGHT);
 

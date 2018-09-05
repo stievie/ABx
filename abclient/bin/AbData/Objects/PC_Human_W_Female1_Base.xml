@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="PC_Human_W_Female1:Base"/>
+	<component id="16777216" type="AnimatedModel">
+		<attribute name="Model" value="Model;Models/PC_Human_W_Female1_Base.mdl"/>
+		<attribute name="Material" value="Material;Materials/PC_Human_W_Female1_Base.xml;Materials/PC_Human_W_Female1_Eyebrow010_Eyebrow010.xml;Materials/PC_Human_W_Female1_Eyelashes02_Bodymaterial.xml;Materials/PC_Human_W_Female1_Long_alpha7_Long.xml;Materials/PC_Human_W_Female1_Low-poly_Eye_brown.xml;Materials/PC_Human_W_Female1_String2_String2.xml;Materials/PC_Human_W_Female1_Transparent_bra_Transparent_bra.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="1"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.33218 1.80247 1.61074"/>
+		<attribute name="Offset Position" value="-0.03178 0.895975 0"/>
+	</component>
+</node>

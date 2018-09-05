@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="NPC_Merchant:Base"/>
+	<component id="16777216" type="AnimatedModel">
+		<attribute name="Model" value="Model;Models/NPC_Merchant_Base.mdl"/>
+		<attribute name="Material" value="Material;Materials/Merchant_Eyebrow009_Eyebrow009.xml;Materials/Merchant_Eyelashes01_Bodymaterial.xml;Materials/Merchant_Low-poly_Eye_brown.xml;Materials/Merchant_Male_chiton_Chitonmaterial.xml;Materials/Merchant_Male_muscle_13290_Middleage_cauasian_male.xml;Materials/Merchant_Short04_Short04.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="1"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.35458 1.7639 1.8059"/>
+		<attribute name="Offset Position" value="-0.03399 0.8808 0"/>
+	</component>
+</node>

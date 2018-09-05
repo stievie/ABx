@@ -43,7 +43,7 @@ public:
     bool moveLock_;
     float cameraDistance_;
     void SetYRotation(float rad, bool updateYaw) override;
-    void SetCameraDist(bool increase);
+    void CameraZoom(bool increase);
     void UpdateYaw();
     void FollowSelected();
     void GotoPosition(const Vector3& pos);

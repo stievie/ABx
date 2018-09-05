@@ -76,6 +76,8 @@ public:
     void SetSpeedFactor(int64_t time, float value) override;
 
     void Unserialize(PropReadStream& data) override;
+    /// Get position of head or to of the model in world coordinates.
+    Vector3 GetHeadPos() const;
 
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,

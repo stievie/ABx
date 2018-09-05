@@ -1,0 +1,16 @@
+<node id="16777216">
+	<attribute name="Name" value="NPC_Smith1:Beard_sigmund"/>
+	<component id="16777216" type="AnimatedModel">
+		<attribute name="Model" value="Model;Models/NPC_Smith1_Base.mdl"/>
+		<attribute name="Material" value="Material;Materials/NPC_Smith1_Beard_sigmund_Materialmaterial.001.xml;Materials/NPC_Smith1_Eyebrow009_Eyebrow009.001.xml;Materials/NPC_Smith1_Eyelashes01_Bodymaterial.001.xml;Materials/NPC_Smith1_Jesus_rag_Materialmaterial.001.xml;Materials/NPC_Smith1_Low-poly_Eye_brown.001.xml;Materials/NPC_Smith1_Male_muscle_13290_Middleage_cauasian_male.001.xml;Materials/NPC_Smith1_Short01_Mhair01black.001.xml"/>
+	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="1"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="0.31708 1.75474 1.8059"/>
+		<attribute name="Offset Position" value="-0.01524 0.87622 -1.19209e-07"/>
+	</component>
+</node>

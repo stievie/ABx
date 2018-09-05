@@ -255,6 +255,21 @@ void Actor::FixedUpdate(float)
     }
 }
 
+Vector3 Actor::GetHeadPos() const
+{
+    Node* headNode = node_->GetChild("Head", true);
+    Vector3 headPos;
+    if (headNode)
+        headPos = headNode->GetWorldPosition();
+    else
+    {
+        const BoundingBox& bb = model_->GetBoundingBox();
+        headPos = node_->GetWorldPosition();
+        headPos.y_ += bb.Size().y_;
+    }
+    return headPos;
+}
+
 void Actor::Update(float)
 {
     Shortcuts* sc = GetSubsystem<Shortcuts>();
@@ -263,6 +278,8 @@ void Actor::Update(float)
     if (hovered_ || playerSelected_ || highlight)
     {
         const Vector3& pos = node_->GetPosition();
+        Vector3 headPos = GetHeadPos();
+        headPos.y_ += 0.5f;
         IntVector2 screenPos = WorldToScreenPoint(pos);
         float sizeFac = 1.0f;
         if (screenPos != IntVector2::ZERO)
@@ -274,14 +291,12 @@ void Actor::Update(float)
                 sizeFac = 10.0f / dist.Length();
             }
 
-            const BoundingBox& bb = model_->GetBoundingBox();
-            Vector3 hpPos = pos + bb.Size();
-            IntVector2 hpTop = WorldToScreenPoint(hpPos);
             IntVector2 labelPos(screenPos.x_ - nameLabel_->GetWidth() / 2, screenPos.y_);
             nameLabel_->SetPosition(labelPos);
 
-            hpBar_->SetSize((int)(130.f * sizeFac), (int)(18.f * sizeFac));
-            IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_);
+            IntVector2 hpTop = WorldToScreenPoint(headPos);
+            hpBar_->SetSize(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac));
+            IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_ - hpBar_->GetHeight() - 5);
             hpBar_->SetPosition(ihpPos);
         }
     }

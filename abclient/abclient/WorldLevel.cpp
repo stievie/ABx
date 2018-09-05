@@ -127,7 +127,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
     else if (input->GetMouseButtonDown(MOUSEB_LEFT))
     {
         // Pick object
-        SharedPtr<GameObject> object = GetObjectAt(input->GetMousePosition());
+        GameObject* object = GetObjectAt(input->GetMousePosition());
         if (object)
         {
             player_->ClickObject(object->id_);
@@ -136,6 +136,7 @@ void WorldLevel::HandleMouseDown(StringHash, VariantMap&)
         }
         else
         {
+            // If not object to pick check for mouse walking
             Options* o = GetSubsystem<Options>();
             if (!o->disableMouseWalking_)
             {
@@ -171,7 +172,7 @@ void WorldLevel::HandleMouseWheel(StringHash, VariantMap& eventData)
     if (player_)
     {
         int delta = eventData[P_WHEEL].GetInt();
-        player_->SetCameraDist(delta < 0);
+        player_->CameraZoom(delta < 0);
     }
 }
 
