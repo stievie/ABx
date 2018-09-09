@@ -218,6 +218,7 @@ enum GamePacketTypes : uint8_t
     PacketTypeSetDirection,
     PacketTypeGoto,                  // Goto point
     PacketTypeFollow,                // Follow object
+    PacketTypeSetState,
 
     // Skills
     PacketTypeUseSkill,

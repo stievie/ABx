@@ -57,7 +57,9 @@
 		<attribute name="Name" value="Container" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Opacity" value="0.5" />
-		<attribute name="Image Rect" value="48 0 64 16" />
-		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Bring To Front" value="true" />
+		<attribute name="Bring To Back" value="false" />
+		<attribute name="Texture" value="Texture2D;" />
+		<attribute name="Image Rect" value="0 0 280 256" />
 	</element>
 </element>

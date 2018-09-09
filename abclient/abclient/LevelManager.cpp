@@ -3,6 +3,7 @@
 #include "BaseLevel.h"
 #include "WorldLevel.h"
 #include "GameMenu.h"
+#include "Actor.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -196,6 +197,16 @@ SharedPtr<GameObject> LevelManager::GetObjectById(uint32_t objectId)
         return lvl->GetObjectById(objectId);
     }
     return SharedPtr<GameObject>();
+}
+
+SharedPtr<Actor> LevelManager::GetActorByName(const String& name)
+{
+    WorldLevel* lvl = GetCurrentLevel<WorldLevel>();
+    if (lvl)
+    {
+        return lvl->GetActorByName(name);
+    }
+    return SharedPtr<Actor>();
 }
 
 SharedPtr<Player> LevelManager::GetPlayer()

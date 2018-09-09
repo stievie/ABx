@@ -61,7 +61,13 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_HIGHLIGHTOBJECTS] = ShortcutEvent(AbEvents::E_SC_HIGHLIGHTOBJECTS, "Highlight objects", Trigger::None);
     shortcuts_[AbEvents::E_SC_MOUSELOOK] = ShortcutEvent(AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, String::EMPTY, false);
     shortcuts_[AbEvents::E_SC_DEFAULTACTION] = ShortcutEvent(AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
+
+    // Select
     shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTNEXTFOE] = ShortcutEvent(AbEvents::E_SC_SELECTNEXTFOE, "Select next Foe", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTPREVFOE] = ShortcutEvent(AbEvents::E_SC_SELECTPREVFOE, "Select previous Foe", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTNEXTALLY] = ShortcutEvent(AbEvents::E_SC_SELECTNEXTALLY, "Select next Ally", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTPREVALLY] = ShortcutEvent(AbEvents::E_SC_SELECTPREVALLY, "Select previous Ally", Trigger::Down);
 
     // UI
     shortcuts_[AbEvents::E_SC_HIDEUI] = ShortcutEvent(AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down);
@@ -123,6 +129,9 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_HIDEUI, { KEY_BACKSPACE });
 
     Add(AbEvents::E_SC_SELECTSELF, { KEY_F });
+    Add(AbEvents::E_SC_SELECTNEXTFOE, { KEY_TAB });
+    Add(AbEvents::E_SC_SELECTPREVFOE, { KEY_TAB, MOUSEB_NONE, SC_MOD_SHIFT });
+
     Add(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, { KEY_U });
 #ifdef DEBUG_HUD
     Add(AbEvents::E_SC_TOGGLEDEBUGHUD, { KEY_F12 });

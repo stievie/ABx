@@ -24,6 +24,8 @@ HealthBar::HealthBar(Context* context) :
     SetAlignment(HA_LEFT, VA_CENTER);
     nameText_ = CreateChild<Text>();
     nameText_->SetAlignment(HA_LEFT, VA_CENTER);
+    nameText_->SetStyleAuto();
+    nameText_->SetPosition(5, 0);
 
     SetStyle("HealthBar");
 
@@ -35,11 +37,19 @@ HealthBar::~HealthBar()
     UnsubscribeFromAllEvents();
 }
 
+void HealthBar::SetActor(SharedPtr<Actor> actor)
+{
+    actor_ = actor;
+    if (actor)
+        nameText_->SetText(actor->name_);
+    else
+        nameText_->SetText(String::EMPTY);
+}
+
 void HealthBar::HandleUpdate(StringHash, VariantMap&)
 {
     if (SharedPtr<Actor> a = actor_.Lock())
     {
-        nameText_->SetText(a->name_);
         SetRange(static_cast<float>(a->stats_.maxHealth));
         SetValue(static_cast<float>(a->stats_.health));
     }

@@ -89,6 +89,7 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const String& data);
     void GotoPos(const Vector3& pos);
     void FollowObject(uint32_t objectId);
+    void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void PartyInvitePlayer(uint32_t objectId);
 
     /// asio network error

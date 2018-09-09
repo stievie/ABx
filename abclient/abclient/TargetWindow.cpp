@@ -17,9 +17,12 @@ TargetWindow::TargetWindow(Context* context) :
     LoadChildXML(chatFile->GetRoot(), nullptr);
 
     targetText_ = dynamic_cast<Text*>(GetChild("TargetText", true));
+    SetAlignment(HA_CENTER, VA_TOP);
+    healthBar_ = dynamic_cast<ProgressBar*>(GetChild("TargetHealthBar", true));
+
     Button* clearTarget = dynamic_cast<Button*>(GetChild("ClearTargetButton", true));
     SubscribeToEvent(clearTarget, E_RELEASED, URHO3D_HANDLER(TargetWindow, HandleClearTargetClicked));
-    SetAlignment(HA_CENTER, VA_TOP);
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(TargetWindow, HandleUpdate));
 }
 
 TargetWindow::~TargetWindow()
@@ -33,21 +36,22 @@ void TargetWindow::HandleClearTargetClicked(StringHash, VariantMap&)
     SendEvent(E_TARGETWINDOW_UNSELECT, e);
 }
 
-void TargetWindow::SetTarget(SharedPtr<GameObject> target)
+void TargetWindow::HandleUpdate(StringHash, VariantMap&)
 {
-    Actor* actor = dynamic_cast<Actor*>(target.Get());
-    if (actor)
+    if (SharedPtr<Actor> a = target_.Lock())
     {
-        target_ = target;
-        if (target.NotNull())
-        {
-            targetText_->SetText(actor->name_);
-            SetVisible(true);
-        }
-        else
-        {
-            SetVisible(false);
-        }
+        healthBar_->SetRange(static_cast<float>(a->stats_.maxHealth));
+        healthBar_->SetValue(static_cast<float>(a->stats_.health));
+    }
+}
+
+void TargetWindow::SetTarget(SharedPtr<Actor> target)
+{
+    target_ = target;
+    if (target.NotNull())
+    {
+        targetText_->SetText(target->name_);
+        SetVisible(true);
     }
     else
     {

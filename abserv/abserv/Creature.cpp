@@ -229,6 +229,13 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 moveComp_.SetDirection(input.data[InputDataDirection].GetFloat());
             break;
         }
+        case InputType::SetState:
+        {
+            AB::GameProtocol::CreatureState state =
+                static_cast<AB::GameProtocol::CreatureState>(input.data[InputDataState].GetInt());
+            stateComp_.SetState(state);
+            break;
+        }
         case InputType::Goto:
         {
             autorunComp_.Reset();

@@ -51,10 +51,6 @@ PartyWindow::PartyWindow(Context* context) :
     SetStyleAuto();
 
     SubscribeEvents();
-
-    LevelManager* lm = GetSubsystem<LevelManager>();
-    SharedPtr<Actor> o = lm->GetPlayer();
-    AddActor(o);
 }
 
 PartyWindow::~PartyWindow()
@@ -83,13 +79,36 @@ void PartyWindow::SetMode(PartyWindowMode mode)
 
 void PartyWindow::AddActor(SharedPtr<Actor> actor)
 {
-    HealthBar* hb = memberContainer_->CreateChild<HealthBar>();
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+
+    UIElement* cont = memberContainer_->CreateChild<UIElement>();
+    cont->SetLayoutMode(LM_HORIZONTAL);
+    HealthBar* hb = cont->CreateChild<HealthBar>();
+    hb->SetAlignment(HA_LEFT, VA_TOP);
+    cont->SetHeight(hb->GetHeight());
     hb->SetActor(actor);
     hb->showName_ = true;
+
+    if (mode_ == PartyWindowMode::ModeOutpost)
+    {
+        Button* kickButton = cont->CreateChild<Button>();
+        kickButton->SetSize(20, 20);
+        kickButton->SetMaxSize(20, 20);
+        kickButton->SetAlignment(HA_RIGHT, VA_CENTER);
+        kickButton->SetStyleAuto();
+        kickButton->SetTexture(cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png"));
+        kickButton->SetImageRect(IntRect(96, 0, 112, 16));
+        kickButton->SetHoverOffset(0, 16);
+        kickButton->SetPressedOffset(0, 0);
+    }
+    cont->UpdateLayout();
+
     ++memberCount_;
     memberContainer_->SetHeight(hb->GetHeight() * memberCount_);
+    memberContainer_->SetMaxHeight(hb->GetHeight() * memberCount_);
     partyContainer_->SetMinHeight(memberContainer_->GetHeight() + 25);
     SetMinHeight(partyContainer_->GetHeight() + 33 + 30);
+    UpdateLayout();
 }
 
 void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
@@ -97,9 +116,16 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
     if (mode_ != PartyWindowMode::ModeOutpost)
         return;
 
-    uint32_t targetId = addPlayerEdit_->GetVar("ID").GetUInt();
-    FwClient* client = GetSubsystem<FwClient>();
-    client->PartyInvitePlayer(targetId);
+    uint32_t targetId = 0;
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    SharedPtr<Actor> a = lm->GetActorByName(addPlayerEdit_->GetText());
+    if (a)
+        targetId = a->id_;
+    if (targetId != 0)
+    {
+        FwClient* client = GetSubsystem<FwClient>();
+        client->PartyInvitePlayer(targetId);
+    }
 }
 
 void PartyWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -123,7 +149,6 @@ void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
         if (a && a->objectType_ == ObjectTypePlayer)
         {
             addPlayerEdit_->SetText(a->name_);
-            addPlayerEdit_->SetVar("ID", targetId);
         }
     }
 }
@@ -136,25 +161,22 @@ void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
     uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
-    SharedPtr<GameObject> o = lm->GetObjectById(targetId);
+    GameObject* o = lm->GetObjectById(targetId);
     if (o)
     {
-        HealthBar* hb = memberContainer_->CreateChild<HealthBar>();
-        SharedPtr<Actor> a;
-        o.DynamicCast<Actor>(a);
-        AddActor(a);
+        AddActor(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
     }
 }
 
-void PartyWindow::HandlePartyAdded(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandlePartyAdded(StringHash, VariantMap& eventData)
 {
 }
 
-void PartyWindow::HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandlePartyInviteRemoved(StringHash, VariantMap& eventData)
 {
 }
 
-void PartyWindow::HandlePartyRemoved(StringHash eventType, VariantMap& eventData)
+void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
 {
 }
 

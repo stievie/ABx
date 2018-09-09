@@ -145,6 +145,7 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void PartyInvitePlayer(uint32_t targetId);
+    void SetPlayerState(AB::GameProtocol::CreatureState newState);
 };
 
 }

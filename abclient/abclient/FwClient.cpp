@@ -487,6 +487,12 @@ void FwClient::FollowObject(uint32_t objectId)
         client_.FollowObject(objectId);
 }
 
+void FwClient::SetPlayerState(AB::GameProtocol::CreatureState newState)
+{
+    if (loggedIn_)
+        client_.SetPlayerState(newState);
+}
+
 void FwClient::PartyInvitePlayer(uint32_t objectId)
 {
     if (loggedIn_)

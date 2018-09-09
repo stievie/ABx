@@ -1,14 +1,13 @@
 # TODO
 
+* abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap
+* abclient: https://urho3d.github.io/documentation/1.7/_lights.html
 * abserv: TerrainPatch raycast query
 * ? High ping when FPS < 60
 * abmsgs: Continues dispatching messages -> Delete after message has been dispached.
-* abserv: Mail not marked as read
 * abserv, ablogin, abclient: DH enc keys
-* abserv: Party
+* abserv, abclient: Party
 * abserv: Account Key itself expires and makes accounts that may expire (Trial Key)
-
-+ abclient: Test https://github.com/rokups/Urho3D.git (https://github.com/TrevorCash/Urho3D)
 
 * abadmin: Admin HTTP server. Browser interface to admin all servers
 

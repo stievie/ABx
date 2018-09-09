@@ -21,6 +21,7 @@ enum class InputType
     Goto,
     Follow,
     Sit,
+    SetState,
 };
 
 enum InputDataType
@@ -34,6 +35,7 @@ enum InputDataType
     InputDataVertexX     = 8,
     InputDataVertexY     = 9,
     InputDataVertexZ     = 10,
+    InputDataState       = 11,
 };
 
 struct InputItem

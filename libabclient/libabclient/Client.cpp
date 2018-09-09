@@ -518,4 +518,10 @@ void Client::PartyInvitePlayer(uint32_t targetId)
         protoGame_->PartyInvitePlayer(targetId);
 }
 
+void Client::SetPlayerState(AB::GameProtocol::CreatureState newState)
+{
+    if (state_ == StateWorld)
+        protoGame_->SetPlayerState(newState);
+}
+
 }

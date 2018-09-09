@@ -36,6 +36,7 @@ public:
             return objects_[id];
         return SharedPtr<GameObject>();
     }
+    SharedPtr<Actor> GetActorByName(const String& name, ObjectType type = ObjectTypePlayer);
 protected:
     SharedPtr<ChatWindow> chatWindow_;
     SharedPtr<PingDot> pingDot_;

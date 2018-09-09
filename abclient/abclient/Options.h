@@ -7,6 +7,17 @@ enum class WindowMode
     Borderless
 };
 
+/// @TODO:
+enum class AntiAliasingMode
+{
+    None,
+    FXAA3,             /// Fast approx. AA
+    MSAAx2,            /// 2x multi sample
+    MSAAx4,
+    MSAAx8,
+    MSAAx16
+};
+
 static constexpr float MIN_FOV = 45.0;
 static constexpr float MAX_FOV = 120.0;
 
@@ -60,8 +71,22 @@ public:
     void SetTripleBuffer(bool value);
     bool GetHighDPI() const { return highDPI_; }
     void SetHighDPI(bool value);
-    void SetMultiSample(int value);
-    int GetMultiSample() const { return multiSample_; }
+    int GetMultiSample() const
+    {
+        switch (antiAliasingMode_)
+        {
+        case AntiAliasingMode::MSAAx2:
+            return 2;
+        case AntiAliasingMode::MSAAx4:
+            return 4;
+        case AntiAliasingMode::MSAAx8:
+            return 8;
+        case AntiAliasingMode::MSAAx16:
+            return 16;
+        default:
+            return 1;
+        }
+    }
     void SetShadowQuality(ShadowQuality quality);
     ShadowQuality GetShadowQuality() const
     {
@@ -106,14 +131,12 @@ public:
     {
         return cameraFov_;
     }
-    void SetCameraFov(float value)
+    void SetCameraFov(float value);
+    AntiAliasingMode GetAntiAliasingMode() const
     {
-        float fov = Clamp(value, MIN_FOV, MAX_FOV);
-        if (fov != cameraFov_)
-        {
-            cameraFov_ = fov;
-        }
+        return antiAliasingMode_;
     }
+    void SetAntiAliasingMode(AntiAliasingMode mode);
     const IntVector2& GetWindowPos() const
     {
         return windowPos_;
@@ -140,7 +163,6 @@ private:
     bool vSync_;
     bool tripleBuffer_;
     bool highDPI_;
-    int multiSample_;
     bool shadows_;
     float cameraFarClip_;
     float cameryNearClip_;
@@ -149,6 +171,7 @@ private:
     MaterialQuality textureQuality_;
     MaterialQuality materialQuality_;
     TextureFilterMode textureFilterMode_;
+    AntiAliasingMode antiAliasingMode_;
     int textureAnisotropyLevel_;
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";

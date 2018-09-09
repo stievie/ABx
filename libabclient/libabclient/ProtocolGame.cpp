@@ -478,6 +478,14 @@ void ProtocolGame::Follow(uint32_t targetId)
     Send(msg);
 }
 
+void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetState);
+    msg->Add<uint8_t>(static_cast<uint8_t>(newState));
+    Send(msg);
+}
+
 void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();

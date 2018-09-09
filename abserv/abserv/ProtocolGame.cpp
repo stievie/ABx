@@ -180,6 +180,13 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         player_->inputs_.Add(Game::InputType::Direction, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeSetState:
+    {
+        Utils::VariantMap data;
+        data[Game::InputDataState] = message.Get<uint8_t>();
+        player_->inputs_.Add(Game::InputType::SetState, data);
+        break;
+    }
     case AB::GameProtocol::PacketTypeGoto:
     {
         Utils::VariantMap data;

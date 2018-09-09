@@ -75,6 +75,12 @@ public:
             return cameraNode_->GetComponent<Camera>();
         return nullptr;
     }
+    PostProcessController* GetPostProcessController() const
+    {
+        if (postProcess_)
+            return postProcess_.Get();
+        return nullptr;
+    }
 private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);

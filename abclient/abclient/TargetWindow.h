@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Actor.h"
 
 static const StringHash E_TARGETWINDOW_UNSELECT = StringHash("Target Window unselect object");
 
@@ -8,15 +8,17 @@ class TargetWindow : public UIElement
 {
     URHO3D_OBJECT(TargetWindow, UIElement);
 private:
-    WeakPtr<GameObject> target_;
+    WeakPtr<Actor> target_;
     SharedPtr<Text> targetText_;
+    SharedPtr<ProgressBar> healthBar_;
     void HandleClearTargetClicked(StringHash eventType, VariantMap& eventData);
+    void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 
     TargetWindow(Context* context);
     ~TargetWindow();
 
-    void SetTarget(SharedPtr<GameObject> target);
+    void SetTarget(SharedPtr<Actor> target);
 };
 

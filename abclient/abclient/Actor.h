@@ -95,6 +95,7 @@ private:
     void RemoveActorUI();
     String GetAnimation(const StringHash& hash);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
+    void HandleAnimationFinished(StringHash eventType, VariantMap& eventData);
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;

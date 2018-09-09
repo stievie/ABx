@@ -32,6 +32,7 @@ Actor::Actor(Context* context) :
 
 Actor::~Actor()
 {
+    UnsubscribeFromAllEvents();
 }
 
 void Actor::RegisterObject(Context* context)
@@ -123,6 +124,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
         model_->SetCastShadows(true);
         model_->SetOccludee(true);
         model_->SetOccluder(false);
+        SubscribeToEvent(model_->GetNode(), E_ANIMATIONFINISHED, URHO3D_HANDLER(Actor, HandleAnimationFinished));
     }
 }
 
@@ -274,6 +276,9 @@ void Actor::Update(float)
 {
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
+    hpBar_->SetRange(static_cast<float>(stats_.maxHealth));
+    hpBar_->SetValue(static_cast<float>(stats_.health));
+
     bool highlight = sc->Test(AbEvents::E_SC_HIGHLIGHTOBJECTS);
     if (hovered_ || playerSelected_ || highlight)
     {
@@ -396,6 +401,24 @@ void Actor::HandleNameClicked(StringHash, VariantMap&)
         using namespace AbEvents::ActorNameClicked;
         eData[P_SOURCEID] = id_;
         SendEvent(AbEvents::E_ACTORNAMECLICKED, eData);
+    }
+}
+
+void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
+{
+    if (objectType_ == ObjectTypeSelf)
+    {
+        using namespace AnimationFinished;
+        bool looped = eventData[P_LOOPED].GetBool();
+        if (!looped)
+        {
+            // Reset to idle when some emote animations ended
+            if (creatureState_ == AB::GameProtocol::CreatureStateEmoteCry)
+            {
+                FwClient* client = GetSubsystem<FwClient>();
+                client->SetPlayerState(AB::GameProtocol::CreatureStateIdle);
+            }
+        }
     }
 }
 

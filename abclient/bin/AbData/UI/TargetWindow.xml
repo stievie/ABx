@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Size" value="348 32" />
-	<attribute name="Opacity" value="0.8" />
 	<attribute name="Min Anchor" value="0.5 0" />
 	<attribute name="Max Anchor" value="0.5 0" />
 	<attribute name="Pivot" value="0.5 0" />
+	<attribute name="Opacity" value="0.8" />
 	<attribute name="Layout Mode" value="Horizontal" />
 	<attribute name="Layout Spacing" value="4" />
 	<attribute name="Layout Border" value="4 4 4 4" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="4 4 4 4" />
+	<attribute name="Resize Border" value="8 8 8 8" />
 	<element type="ProgressBar" style="HealthBar">
-		<attribute name="Name" value="TargetButton" />
+		<attribute name="Name" value="TargetHealthBar" />
 		<attribute name="Min Size" value="0 24" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Is Enabled" value="false" />
@@ -62,6 +65,9 @@
 		<attribute name="Pivot" value="0 0.5" />
 		<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
 		<attribute name="Image Rect" value="81 65 97 81" />
+		<attribute name="Border" value="4 4 4 4" />
 		<attribute name="Hover Image Offset" value="16 0" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 </element>

@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #endif
+#include "LevelManager.h"
+#include "BaseLevel.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -30,7 +32,7 @@ Options::Options(Context* context) :
     materialQuality_(QUALITY_HIGH),
     textureFilterMode_(FILTER_ANISOTROPIC),
     textureAnisotropyLevel_(16),
-    multiSample_(1),
+    antiAliasingMode_(AntiAliasingMode::FXAA3),
     loginHost_("localhost"),
     renderPath_("RenderPaths/Prepass.xml"),
     gainMaster_(1.0f),
@@ -175,9 +177,9 @@ void Options::Save()
     }
     {
         XMLElement param = root.CreateChild("parameter");
-        param.SetString("name", "MultiSample");
+        param.SetString("name", "AntiAliasing");
         param.SetString("type", "int");
-        param.SetInt("value", multiSample_);
+        param.SetInt("value", static_cast<int>(antiAliasingMode_));
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -247,15 +249,6 @@ void Options::Save()
     xml->SaveFile(file);
 }
 
-void Options::SetMultiSample(int value)
-{
-    if (multiSample_ != value)
-    {
-        multiSample_ = value;
-        UpdateGraphicsMode();
-    }
-}
-
 void Options::SetShadowQuality(ShadowQuality quality)
 {
     if (shadowQuality_ != quality)
@@ -307,6 +300,33 @@ void Options::SetShadows(bool value)
     {
         shadows_ = value;
         GetSubsystem<Renderer>()->SetDrawShadows(shadows_);
+    }
+}
+
+void Options::SetCameraFov(float value)
+{
+    float fov = Clamp(value, MIN_FOV, MAX_FOV);
+    if (fov != cameraFov_)
+    {
+        cameraFov_ = fov;
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        Camera* cam = lm->GetCamera();
+        if (cam)
+            cam->SetFov(cameraFov_);
+    }
+}
+
+void Options::SetAntiAliasingMode(AntiAliasingMode mode)
+{
+    if (antiAliasingMode_ != mode)
+    {
+        antiAliasingMode_ = mode;
+        UpdateGraphicsMode();
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        BaseLevel* lvl = lm->GetCurrentLevel<BaseLevel>();
+        auto pp = lvl->GetPostProcessController();
+        if (pp)
+            pp->SetUseFXAA3(antiAliasingMode_ == AntiAliasingMode::FXAA3);
     }
 }
 
@@ -427,7 +447,7 @@ void Options::UpdateGraphicsMode()
             oldWindowPos_ = graphics->GetWindowPosition();
     }
     graphics->SetMode(width, height, fullscreen_, borderless_, resizeable_,
-        highDPI_, vSync_, tripleBuffer_, multiSample_, 0, 0);
+        highDPI_, vSync_, tripleBuffer_, GetMultiSample(), 0, 0);
     if (blChange)
     {
         if (GetWindowMode() == WindowMode::Windowed)
@@ -525,9 +545,9 @@ void Options::LoadElements(const XMLElement& root)
         {
             shadows_ = paramElem.GetBool("value");
         }
-        else if (name.Compare("MultiSample") == 0)
+        else if (name.Compare("AntiAliasing") == 0)
         {
-            multiSample_ = paramElem.GetInt("value");
+            antiAliasingMode_ = static_cast<AntiAliasingMode>(paramElem.GetInt("value"));
         }
         else if (name.Compare("FOV") == 0)
         {

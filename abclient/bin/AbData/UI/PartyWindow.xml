@@ -99,7 +99,6 @@
 					<attribute name="Image Rect" value="80 0 96 16" />
 					<attribute name="Border" value="4 4 4 4" />
 					<attribute name="Hover Image Offset" value="0 16" />
-					<attribute name="Pressed Image Offset" value="16 0" />
 					<attribute name="Pressed Child Offset" value="-1 1" />
 				</element>
 			</element>

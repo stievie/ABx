@@ -4,6 +4,7 @@
 #include "Options.h"
 #include "HotkeyEdit.h"
 #include "LevelManager.h"
+#include "BaseLevel.h"
 
 void OptionsWindow::RegisterObject(Context* context)
 {
@@ -477,11 +478,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
             Options* opt = GetSubsystem<Options>();
-            LevelManager* lm = GetSubsystem<LevelManager>();
             opt->SetCameraFov(value + MIN_FOV);
-            Camera* cam = lm->GetCamera();
-            if (cam)
-                cam->SetFov(opt->GetCameraFov());
         });
     }
     {
@@ -493,6 +490,67 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             bool checked = eventData[P_STATE].GetBool();
             Options* opt = GetSubsystem<Options>();
             opt->SetHighDPI(checked);
+        });
+    }
+
+    {
+        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("AntiAliasingDropdown", true));
+        {
+            Text* result = new Text(context_);
+            result->SetText("None");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::None));
+            dropdown->AddItem(result);
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("FXAA3");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::FXAA3));
+            dropdown->AddItem(result);
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("MSAA x 2");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx2));
+            dropdown->AddItem(result);
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("MSAA x 4");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx4));
+            dropdown->AddItem(result);
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("MSAA x 8");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx8));
+            dropdown->AddItem(result);
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("MSAA x 16");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Mode", static_cast<unsigned>(AntiAliasingMode::MSAAx16));
+            dropdown->AddItem(result);
+        }
+        dropdown->SetSelection(static_cast<unsigned>(opts->GetAntiAliasingMode()));
+
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        {
+            using namespace ItemSelected;
+            unsigned sel = eventData[P_SELECTION].GetUInt();
+            DropDownList* list = dynamic_cast<DropDownList*>(eventData[P_ELEMENT].GetPtr());
+            UIElement* elem = list->GetItem(sel);
+            if (elem)
+            {
+                AntiAliasingMode mode = static_cast<AntiAliasingMode>(elem->GetVar("Mode").GetUInt());
+                Options* opt = GetSubsystem<Options>();
+                opt->SetAntiAliasingMode(mode);
+            }
         });
     }
 

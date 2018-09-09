@@ -8,6 +8,7 @@ using namespace Urho3D;
 
 class GameObject;
 class Player;
+class Actor;
 
 class LevelManager : public Object
 {
@@ -46,6 +47,7 @@ public:
         SetDrawDebugGeometry(!drawDebugGeometry_);
     }
     SharedPtr<GameObject> GetObjectById(uint32_t objectId);
+    SharedPtr<Actor> GetActorByName(const String& name);
     SharedPtr<Player> GetPlayer();
     Camera* GetCamera() const;
 };

@@ -99,7 +99,8 @@ void BaseLevel::SetupViewport()
 
     postProcess_ = scene_->CreateComponent<PostProcessController>();
     postProcess_->AddViewport(viewport_, true);
-    postProcess_->SetUseFXAA3(true);
+    Options* options = GetSubsystem<Options>();
+    postProcess_->SetUseFXAA3(options->GetAntiAliasingMode() == AntiAliasingMode::FXAA3);
 }
 
 void BaseLevel::CreateLogo()

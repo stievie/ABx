@@ -288,6 +288,7 @@ void WorldLevel::SetupViewport()
     BaseLevel::SetupViewport();
     postProcess_->SetUseBloomHDR(true);
     postProcess_->SetUseColorCorrection(true);
+//    postProcess_->SetUseGammaCorrection(true);
 //    postProcess_->SetAutoExposureLumRange(Vector2(0.5f, 1.0f));
 //    postProcess_->SetAutoExposureAdaptRate(0.5f);
 //    postProcess_->SetAutoExposureMidGrey(1.0f);
@@ -393,7 +394,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
         {
             // If the selected object leaves unselect it
             player_->SetSelectedObject(SharedPtr<GameObject>());
-            targetWindow_->SetTarget(SharedPtr<GameObject>());
+            targetWindow_->SetTarget(SharedPtr<Actor>());
         }
         object->RemoveFromScene();
         object->GetNode()->Remove();
@@ -471,13 +472,13 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
         {
             if (targetId != 0)
             {
-                SharedPtr<GameObject> target = objects_[targetId];
+                GameObject* target = objects_[targetId];
                 if (target)
                 {
-                    actor->SetSelectedObject(target);
+                    actor->SetSelectedObject(SharedPtr<GameObject>(target));
                     if (actor->objectType_ == ObjectTypeSelf)
                     {
-                        targetWindow_->SetTarget(target);
+                        targetWindow_->SetTarget(SharedPtr<Actor>(dynamic_cast<Actor*>(target)));
                     }
                 }
             }
@@ -487,7 +488,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                 actor->SetSelectedObject(SharedPtr<GameObject>());
                 if (actor->objectType_ == ObjectTypeSelf)
                 {
-                    targetWindow_->SetTarget(SharedPtr<GameObject>());
+                    targetWindow_->SetTarget(SharedPtr<Actor>());
                 }
             }
         }
@@ -593,6 +594,20 @@ Actor* WorldLevel::CreateActor(uint32_t id,
     return result;
 }
 
+SharedPtr<Actor> WorldLevel::GetActorByName(const String& name, ObjectType type /* = ObjectTypePlayer */)
+{
+    for (const auto& o : objects_)
+    {
+        if (o.second_->objectType_ == type)
+        {
+            Actor* a = dynamic_cast<Actor*>(o.second_.Get());
+            if (a && a->name_.Compare(name, false) == 0)
+                return SharedPtr<Actor>(a);
+        }
+    }
+    return SharedPtr<Actor>();
+}
+
 void WorldLevel::CreatePlayer(uint32_t id,
     const Vector3& position, const Vector3& scale, const Quaternion& direction,
     AB::GameProtocol::CreatureState state,
@@ -612,6 +627,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
     SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
     GetSubsystem<Audio>()->SetListener(soundListener);
     SetupViewport();
+    partyWindow_->AddActor(player_);
     chatWindow_->SayHello(player_);
 }
 
@@ -665,4 +681,5 @@ void WorldLevel::CreateUI()
 
     missionMap_.DynamicCast(wm->GetWindow(WINDOW_MISSIONMAP));
     uiRoot_->AddChild(missionMap_);
+    missionMap_->SetScene(scene_);
 }

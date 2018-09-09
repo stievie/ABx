@@ -15,10 +15,7 @@ public:
     HealthBar(Context* context);
     ~HealthBar();
 
-    void SetActor(SharedPtr<Actor> actor)
-    {
-        actor_ = actor;
-    }
+    void SetActor(SharedPtr<Actor> actor);
 
     bool showName_;
 };
