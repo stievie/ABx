@@ -27,6 +27,7 @@ MapWindow::MapWindow(Context* context) :
     SetOpacity(0.6f);
     // Make it top most
     SetBringToBack(false);
+    SetPriority(100);
 
     mapSprite_ = CreateChild<Sprite>();
 

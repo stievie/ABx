@@ -28,6 +28,7 @@ Actor::Actor(Context* context) :
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_UPDATE);
+    SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
 }
 
 Actor::~Actor()
@@ -272,20 +273,22 @@ Vector3 Actor::GetHeadPos() const
     return headPos;
 }
 
-void Actor::Update(float)
+void Actor::Update(float timeStep)
 {
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
     hpBar_->SetRange(static_cast<float>(stats_.maxHealth));
     hpBar_->SetValue(static_cast<float>(stats_.health));
 
+    const Vector3& pos = node_->GetPosition();
+    Vector3 headPos = GetHeadPos();
+    headPos.y_ += 0.5f;
+    IntVector2 screenPos = WorldToScreenPoint(pos);
+    IntVector2 hpTop = WorldToScreenPoint(headPos);
+
     bool highlight = sc->Test(AbEvents::E_SC_HIGHLIGHTOBJECTS);
-    if (hovered_ || playerSelected_ || highlight)
+    if (hovered_ || playerSelected_ || highlight || speechBubbleWindow_->IsVisible())
     {
-        const Vector3& pos = node_->GetPosition();
-        Vector3 headPos = GetHeadPos();
-        headPos.y_ += 0.5f;
-        IntVector2 screenPos = WorldToScreenPoint(pos);
         float sizeFac = 1.0f;
         if (screenPos != IntVector2::ZERO)
         {
@@ -296,18 +299,26 @@ void Actor::Update(float)
                 sizeFac = 10.0f / dist.Length();
             }
 
-            IntVector2 labelPos(screenPos.x_ - nameLabel_->GetWidth() / 2, screenPos.y_);
-            nameLabel_->SetPosition(labelPos);
+            IntVector2 labelPos(screenPos.x_ - nameWindow_->GetWidth() / 2, screenPos.y_);
+            nameWindow_->SetPosition(labelPos);
 
-            IntVector2 hpTop = WorldToScreenPoint(headPos);
             hpBar_->SetSize(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac));
             IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_ - hpBar_->GetHeight() - 5);
             hpBar_->SetPosition(ihpPos);
         }
     }
 
-    nameLabel_->SetVisible(highlight || hovered_ || playerSelected_);
+    nameWindow_->SetVisible(highlight || hovered_ || playerSelected_);
     hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
+
+    if (speechBubbleWindow_->IsVisible())
+    {
+        IntVector2 isbPos(screenPos.x_ - (speechBubbleWindow_->GetWidth() / 3), hpTop.y_ - 40);
+        speechBubbleWindow_->SetPosition(isbPos);
+        speechBubbleVisible_ += timeStep;
+        if (speechBubbleVisible_ > 3.0f)
+            speechBubbleWindow_->SetVisible(false);
+    }
 }
 
 void Actor::MoveTo(int64_t time, const Vector3& newPos)
@@ -333,13 +344,44 @@ void Actor::AddActorUI()
     if (name_.Empty())
         return;
 
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
     UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
-    nameLabel_ = uiRoot->CreateChild<Text>();
+
+    speechBubbleWindow_ = uiRoot->CreateChild<Window>();
+    speechBubbleWindow_->SetLayoutMode(LM_HORIZONTAL);
+    speechBubbleWindow_->SetLayoutBorder(IntRect(6, 3, 6, 3));
+    speechBubbleWindow_->SetPivot(0, 0);
+    speechBubbleWindow_->SetTexture(tex);
+    speechBubbleWindow_->SetImageRect(IntRect(48, 0, 64, 16));
+    speechBubbleWindow_->SetBorder(IntRect(3, 3, 3, 3));
+    speechBubbleWindow_->SetImageBorder(IntRect(0, 0, 0, 0));
+    speechBubbleWindow_->SetVisible(false);
+    speechBubbleWindow_->SetOpacity(0.8f);
+    speechBubbleText_ = speechBubbleWindow_->CreateChild<Text>("SpeechBubbleText");
+//    speechBubbleText_->SetWordwrap(true);
+    speechBubbleText_->SetMaxWidth(400);
+    speechBubbleText_->SetAlignment(HA_LEFT, VA_TOP);
+    speechBubbleText_->SetStyle("ActorNameText");
+    speechBubbleText_->SetVisible(true);
+
+    nameWindow_ = uiRoot->CreateChild<Window>();
+    nameWindow_->SetLayoutMode(LM_HORIZONTAL);
+    nameWindow_->SetLayoutBorder(IntRect(8, 4, 8, 4));
+    nameWindow_->SetPivot(0, 0);
+    nameWindow_->SetTexture(tex);
+    nameWindow_->SetImageRect(IntRect(48, 0, 64, 16));
+    nameWindow_->SetBorder(IntRect(4, 4, 4, 4));
+    nameWindow_->SetImageBorder(IntRect(0, 0, 0, 0));
+    nameWindow_->SetVisible(false);
+    nameWindow_->SetOpacity(0.5f);
+
+    nameLabel_ = nameWindow_->CreateChild<Text>();
+    nameLabel_->SetAlignment(HA_LEFT, VA_CENTER);
     nameLabel_->SetStyle("ActorNameText");
     nameLabel_->SetText(name_);
-    nameLabel_->SetVisible(false);
-    // TODO: Why not working?
-    SubscribeToEvent(nameLabel_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
+    nameLabel_->SetVisible(true);
+    SubscribeToEvent(nameWindow_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
 
     hpBar_ = uiRoot->CreateChild<ProgressBar>();
     hpBar_->SetShowPercentText(false);
@@ -353,16 +395,22 @@ void Actor::AddActorUI()
 void Actor::RemoveActorUI()
 {
     UIElement* uiRoot = GetSubsystem<UI>()->GetRoot();
-    if (nameLabel_)
+    if (nameWindow_)
     {
-        UnsubscribeFromEvent(nameLabel_, E_CLICK);
-        uiRoot->RemoveChild(nameLabel_);
+        UnsubscribeFromEvent(nameWindow_, E_CLICK);
+        uiRoot->RemoveChild(nameWindow_);
+        nameWindow_ = SharedPtr<Window>();
         nameLabel_ = SharedPtr<Text>();
     }
     if (hpBar_)
     {
         uiRoot->RemoveChild(hpBar_);
         hpBar_ = SharedPtr<ProgressBar>();
+    }
+    if (speechBubbleWindow_)
+    {
+        uiRoot->RemoveChild(speechBubbleWindow_);
+        speechBubbleWindow_ = SharedPtr<Window>();
     }
 }
 
@@ -419,6 +467,35 @@ void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
                 client->SetPlayerState(AB::GameProtocol::CreatureStateIdle);
             }
         }
+    }
+}
+
+void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ChatMessage;
+    uint32_t senderId = static_cast<uint32_t>(eventData[P_SENDERID].GetInt());
+    if (senderId != id_)
+        return;
+
+    // Show what we say in a bubble for certain channels
+    AB::GameProtocol::ChatMessageChannel channel =
+        static_cast<AB::GameProtocol::ChatMessageChannel>(eventData[P_MESSAGETYPE].GetInt());
+
+    if (channel == AB::GameProtocol::ChatChannelGeneral || channel == AB::GameProtocol::ChatChannelParty)
+    {
+        speechBubbleWindow_->SetSize(0, 0);
+        speechBubbleText_->SetSize(0, 0);
+        String message = eventData[P_DATA].GetString();
+        speechBubbleVisible_ = 0;
+        if (message.Length() > 53)
+            message = message.Substring(0, 50) + "...";
+        speechBubbleText_->SetText(message);
+
+        speechBubbleWindow_->UpdateLayout();
+
+        speechBubbleWindow_->SetWidth(speechBubbleText_->GetWidth());
+        speechBubbleWindow_->SetVisible(true);
+        speechBubbleWindow_->BringToFront();
     }
 }
 

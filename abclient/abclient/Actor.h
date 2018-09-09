@@ -90,12 +90,17 @@ public:
     bool pickable_;
 private:
     SharedPtr<Text> nameLabel_;
+    SharedPtr<Window> nameWindow_;
+    SharedPtr<Window> speechBubbleWindow_;
+    SharedPtr<Text> speechBubbleText_;
     SharedPtr<ProgressBar> hpBar_;
+    float speechBubbleVisible_;
     void AddActorUI();
     void RemoveActorUI();
     String GetAnimation(const StringHash& hash);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleAnimationFinished(StringHash eventType, VariantMap& eventData);
+    void HandleChatMessage(StringHash eventType, VariantMap& eventData);
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;

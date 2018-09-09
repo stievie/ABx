@@ -6,6 +6,7 @@ creatureState = 1  -- Idle
 prof1Index = 1     -- Warrior
 prof2Index = 0     -- None
 
+local clickCount = 0
 function onInit()
   return true
 end
@@ -15,10 +16,16 @@ function onUpdate(timeElapsed)
 end
 
 function onClicked(creature)
+  clickCount = clickCount + 1
+  if (clickCount > 3) then
+    self:Say(2, "WTF! Go away!")
+    clickCount = 0
+  end
 end
 
 -- self was selected by creature
 function onSelected(creature)
+  self:Say(2, "What do you want?!?")
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
 --  local pos = creature:GetPosition();

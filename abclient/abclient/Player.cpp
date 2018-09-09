@@ -189,7 +189,7 @@ void Player::SelectObject(uint32_t objectId)
     client->SelectObject(id_, objectId);
 }
 
-void Player::PostUpdate(float)
+void Player::PostUpdate(float timeStep)
 {
     Node* characterNode = GetNode();
     Shortcuts* scs = GetSubsystem<Shortcuts>();
@@ -245,6 +245,8 @@ void Player::PostUpdate(float)
 
     cameraNode_->SetPosition(aimPoint + rayDir * rayDistance);
     cameraNode_->SetRotation(dir);
+
+    Actor::PostUpdate(timeStep);
 }
 
 void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
@@ -253,6 +255,7 @@ void Player::HandleActorNameClicked(StringHash, VariantMap& eventData)
     uint32_t id = eventData[P_SOURCEID].GetUInt();
     if (id != id_)
     {
+        ClickObject(id);
         SelectObject(id);
     }
 }
