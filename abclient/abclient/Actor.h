@@ -97,6 +97,8 @@ private:
     float speechBubbleVisible_;
     void AddActorUI();
     void RemoveActorUI();
+    void ShowSpeechBubble(const String& text);
+    void HideSpeechBubble();
     String GetAnimation(const StringHash& hash);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleAnimationFinished(StringHash eventType, VariantMap& eventData);

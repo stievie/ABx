@@ -18,7 +18,8 @@
 		<attribute name="Is Enabled" value="false" />
 		<attribute name="Is Editable" value="false" />
 		<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Image Rect" value="128 16 144 32" />
+		<attribute name="Image Border" value="4 4 4 4" />
 		<attribute name="Range" value="100" />
 		<attribute name="Value" value="50" />
 		<attribute name="Show Percent Text" value="false" />
@@ -64,7 +65,7 @@
 		<attribute name="Max Anchor" value="0 0.5" />
 		<attribute name="Pivot" value="0 0.5" />
 		<attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-		<attribute name="Image Rect" value="81 65 97 81" />
+		<attribute name="Image Rect" value="80 64 96 80" />
 		<attribute name="Border" value="4 4 4 4" />
 		<attribute name="Hover Image Offset" value="16 0" />
 		<attribute name="Pressed Image Offset" value="16 0" />

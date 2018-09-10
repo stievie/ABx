@@ -94,12 +94,13 @@ void PartyWindow::AddActor(SharedPtr<Actor> actor)
         Button* kickButton = cont->CreateChild<Button>();
         kickButton->SetSize(20, 20);
         kickButton->SetMaxSize(20, 20);
+        kickButton->SetMinSize(20, 20);
         kickButton->SetAlignment(HA_RIGHT, VA_CENTER);
         kickButton->SetStyleAuto();
         kickButton->SetTexture(cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png"));
         kickButton->SetImageRect(IntRect(96, 0, 112, 16));
         kickButton->SetHoverOffset(0, 16);
-        kickButton->SetPressedOffset(0, 0);
+        kickButton->SetPressedOffset(16, 0);
     }
     cont->UpdateLayout();
 

@@ -317,7 +317,7 @@ void Actor::Update(float timeStep)
         speechBubbleWindow_->SetPosition(isbPos);
         speechBubbleVisible_ += timeStep;
         if (speechBubbleVisible_ > 3.0f)
-            speechBubbleWindow_->SetVisible(false);
+            HideSpeechBubble();
     }
 }
 
@@ -470,6 +470,32 @@ void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
     }
 }
 
+void Actor::ShowSpeechBubble(const String& text)
+{
+    if (text.Empty())
+        return;
+
+    speechBubbleWindow_->SetSize(0, 0);
+    speechBubbleText_->SetSize(0, 0);
+    String message(text);
+    speechBubbleVisible_ = 0;
+    if (message.Length() > 53)
+        message = message.Substring(0, 50) + "...";
+    speechBubbleText_->SetText(message);
+
+    speechBubbleWindow_->UpdateLayout();
+
+    speechBubbleWindow_->SetWidth(speechBubbleText_->GetWidth());
+    speechBubbleWindow_->SetVisible(true);
+    speechBubbleWindow_->BringToFront();
+}
+
+void Actor::HideSpeechBubble()
+{
+    speechBubbleWindow_->SetVisible(false);
+    speechBubbleText_->SetText(String::EMPTY);
+}
+
 void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ChatMessage;
@@ -483,19 +509,7 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
 
     if (channel == AB::GameProtocol::ChatChannelGeneral || channel == AB::GameProtocol::ChatChannelParty)
     {
-        speechBubbleWindow_->SetSize(0, 0);
-        speechBubbleText_->SetSize(0, 0);
-        String message = eventData[P_DATA].GetString();
-        speechBubbleVisible_ = 0;
-        if (message.Length() > 53)
-            message = message.Substring(0, 50) + "...";
-        speechBubbleText_->SetText(message);
-
-        speechBubbleWindow_->UpdateLayout();
-
-        speechBubbleWindow_->SetWidth(speechBubbleText_->GetWidth());
-        speechBubbleWindow_->SetVisible(true);
-        speechBubbleWindow_->BringToFront();
+        ShowSpeechBubble(eventData[P_DATA].GetString());
     }
 }
 
