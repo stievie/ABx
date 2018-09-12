@@ -35,3 +35,5 @@
 #ifdef HAVE_DIRECTX_MATH
 #include <DirectXMath.h>
 #endif
+
+#include "DebugConfig.h"

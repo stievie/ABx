@@ -14,6 +14,8 @@
 #include <map>
 #include <string>
 
+#include "DebugConfig.h"
+
 #define ASIO_STANDALONE
 
 #pragma warning(push)

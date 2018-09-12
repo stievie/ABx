@@ -13,6 +13,8 @@
 #include <memory>
 #include <iostream>
 
+#include "DebugConfig.h"
+
 #define ASIO_STANDALONE
 
 #pragma warning(push)

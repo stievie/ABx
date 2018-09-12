@@ -17,6 +17,8 @@
 #include <memory>
 #include <limits>
 
+#include "DebugConfig.h"
+
 #define USE_STANDALONE_ASIO
 #pragma warning(push)
 #pragma warning(disable: 4592)

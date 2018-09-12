@@ -17,6 +17,8 @@
 
 #define WRITE_MINIBUMP
 
+#include "DebugConfig.h"
+
 #define ASIO_STANDALONE
 
 #pragma warning(push)
