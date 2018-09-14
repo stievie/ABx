@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Effect.h"
 #include "Creature.h"
-#include "GameManager.h"
+#include "ScriptManager.h"
 #include "Utils.h"
 
 namespace Game {
@@ -17,7 +17,7 @@ void Effect::RegisterLua(kaguya::State& state)
 
 void Effect::InitializeLua()
 {
-    GameManager::RegisterLuaAll(luaState_);
+    ScriptManager::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 

@@ -19,12 +19,14 @@ ProtocolGame::ProtocolGame() :
 void ProtocolGame::Login(const std::string& accountUuid,
     const std::string& accountPass, const std::string& charUuid,
     const std::string& mapUuid,
+    const std::string& instanceUuid,
     const std::string& host, uint16_t port)
 {
     accountUuid_ = accountUuid;
     accountPass_ = accountPass;
     charUuid_ = charUuid;
     mapUuid_ = mapUuid;
+    instanceUuid_ = instanceUuid;
 
     Connect(host, port);
 }
@@ -71,6 +73,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
             break;
         case AB::GameProtocol::Error:
             ParseError(message);
+            break;
+        case AB::GameProtocol::ChangeInstance:
+            ParseChangeInstance(message);
             break;
         case AB::GameProtocol::GameEnter:
             ParseEnterWorld(message);
@@ -310,6 +315,16 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
         receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, playerId);
 }
 
+void ProtocolGame::ParseChangeInstance(const std::shared_ptr<InputMessage>& message)
+{
+    std::string serverId = message->GetString();
+    std::string mapUuid = message->GetString();
+    std::string instanceUuid = message->GetString();
+    std::string charUuid = message->GetString();
+    if (receiver_)
+        receiver_->OnChangeInstance(updateTick_, serverId, mapUuid, instanceUuid, charUuid);
+}
+
 void ProtocolGame::ParseMailHeaders(const std::shared_ptr<InputMessage>& message)
 {
     uint16_t mailCount = message->Get<uint16_t>();
@@ -357,6 +372,7 @@ void ProtocolGame::SendLoginPacket()
     msg->AddString(accountPass_);
     msg->AddString(charUuid_);
     msg->AddString(mapUuid_);
+    msg->AddString(instanceUuid_);
     Send(msg);
 }
 

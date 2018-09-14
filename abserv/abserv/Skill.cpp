@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Skill.h"
 #include "Creature.h"
-#include "GameManager.h"
+#include "ScriptManager.h"
 
 namespace Game {
 
@@ -17,7 +17,7 @@ void Skill::RegisterLua(kaguya::State& state)
 
 void Skill::InitializeLua()
 {
-    GameManager::RegisterLuaAll(luaState_);
+    ScriptManager::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 

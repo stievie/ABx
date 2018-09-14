@@ -4,11 +4,11 @@
 	<attribute name="Time Scale" value="1" />
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
-	<attribute name="Elapsed Time" value="2387.5" />
+	<attribute name="Elapsed Time" value="2409.44" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16784300" />
-	<attribute name="Next Local Component ID" value="16785172" />
+	<attribute name="Next Local Node ID" value="16784350" />
+	<attribute name="Next Local Component ID" value="16785233" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -165,7 +165,7 @@
 			<attribute name="Frequency" value="44100" />
 			<attribute name="Gain" value="0.8" />
 			<attribute name="Is Playing" value="true" />
-			<attribute name="Play Position" value="13654" />
+			<attribute name="Play Position" value="75246" />
 			<attribute name="Far Distance" value="10" />
 		</component>
 		<node id="16780923">
@@ -180,8 +180,8 @@
 				<attribute name="Effect" value="ParticleEffect;Particle/Fire.xml" />
 				<attribute name="Cast Shadows" value="true" />
 				<attribute name="Animation LOD Bias" value="0" />
-				<attribute name="Period Timer" value="1849.43" />
-				<attribute name="Emission Timer" value="-0.0125588" />
+				<attribute name="Period Timer" value="1849.44" />
+				<attribute name="Emission Timer" value="-0.0075588" />
 				<attribute name="Particles">
 					<variant type="Int" value="1000" />
 				</attribute>
@@ -201,8 +201,8 @@
 				<component type="ParticleEmitter" id="16781413">
 					<attribute name="Effect" value="ParticleEffect;Particle/SmokeSmall.xml" />
 					<attribute name="Animation LOD Bias" value="0" />
-					<attribute name="Period Timer" value="1377.22" />
-					<attribute name="Emission Timer" value="-0.0091084" />
+					<attribute name="Period Timer" value="1399.67" />
+					<attribute name="Emission Timer" value="-0.0231093" />
 					<attribute name="Particles">
 						<variant type="Int" value="10" />
 					</attribute>
@@ -337,28 +337,6 @@
 			<attribute name="Model" value="Model;Models/Xiphos.mdl" />
 			<attribute name="Material" value="Material;Materials/Xiphos_Wood.xml;Materials/Xiphos_Leather.xml;Materials/Xiphos_Steel.xml" />
 			<attribute name="Cast Shadows" value="true" />
-		</component>
-	</node>
-	<node id="16782609">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="Portal" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="60.4656 31.5703 19.032" />
-		<attribute name="Rotation" value="1 0 0 0" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-		<component type="ParticleEmitter" id="16783241">
-			<attribute name="Effect" value="ParticleEffect;Particle/Gate.xml" />
-			<attribute name="Animation LOD Bias" value="0" />
-			<attribute name="Period Timer" value="1.09949" />
-			<attribute name="Emission Timer" value="-0.07" />
-			<attribute name="Particles">
-				<variant type="Int" value="10" />
-			</attribute>
-			<attribute name="Billboards">
-				<variant type="Int" value="10" />
-			</attribute>
-			<attribute name="Serialize Particles" value="false" />
 		</component>
 	</node>
 	<node id="16782661">

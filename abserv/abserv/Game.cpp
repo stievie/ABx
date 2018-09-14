@@ -19,6 +19,7 @@
 #include "Random.h"
 #include "IOMap.h"
 #include "Profiler.h"
+#include "ScriptManager.h"
 
 #include "DebugNew.h"
 
@@ -63,7 +64,7 @@ void Game::RegisterLua(kaguya::State& state)
 
 void Game::InitializeLua()
 {
-    GameManager::RegisterLuaAll(luaState_);
+    ScriptManager::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
 }
 
@@ -111,6 +112,7 @@ void Game::Update()
     {
         if (lastUpdate_ == 0)
         {
+            noplayerTime_ = 0;
             luaState_["onStart"]();
             // Add start tick at the beginning
             gameStatus_->AddByte(AB::GameProtocol::GameStart);
@@ -142,6 +144,11 @@ void Game::Update()
 
         // Send game status to players
         SendStatus();
+
+        if (GetPlayerCount() == 0)
+            noplayerTime_ += delta;
+        else
+            noplayerTime_ = 0;
     }
 
     switch (state_)
@@ -149,10 +156,12 @@ void Game::Update()
     case ExecutionState::Running:
     case ExecutionState::Shutdown:
     {
-        if (state_ == ExecutionState::Shutdown && GetPlayerCount() == 0)
+        if (state_ == ExecutionState::Shutdown && IsInactive())
         {
             // If all players left the game, delete it. Actually just mark as
             // terminated, it'll be deleted in the next update.
+            // Kepp empty games for 10 seconds
+            LOG_INFO << "Shutting down game " << id_ << ", " << map_->data_.name << "no players for " << noplayerTime_ << std::endl;
             SetState(ExecutionState::Terminated);
             luaState_["onStop"]();
         }

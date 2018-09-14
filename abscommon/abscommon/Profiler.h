@@ -5,6 +5,14 @@
 
 // Undefine _PROFILING or define _NPROFILING to disable profiling
 
+// Used by the profiler to generate a unique identifier
+#if (!defined(CONCAT))
+#define CONCAT(a, b) a ## b
+#endif
+#if (!defined(UNIQUENAME))
+#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)
+#endif
+
 namespace Utils {
 
 class Profiler

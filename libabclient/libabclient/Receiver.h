@@ -41,6 +41,8 @@ public:
 
     virtual void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) = 0;
     virtual void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) = 0;
+    virtual void OnChangeInstance(int64_t updateTick, const std::string& serverId,
+        const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid) = 0;
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, uint32_t playerId) = 0;
     virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,

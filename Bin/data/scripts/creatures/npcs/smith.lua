@@ -35,8 +35,8 @@ end
 -- creature collides with self
 function onCollide(creature)
   -- Testing Octree query
---  local objects = self:QueryObjects(2.0)
---  for i, v in ipairs(objects) do
---    print(i, v, v:GetName()) 
---  end
+  local objects = self:QueryObjects(1.0)
+  for i, v in ipairs(objects) do
+    print(i, v, v:GetName()) 
+  end
 end

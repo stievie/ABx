@@ -311,6 +311,9 @@ void Connection::CloseSocket()
 std::shared_ptr<Connection> ConnectionManager::CreateConnection(
     asio::io_service& ioService, std::shared_ptr<ServicePort> servicer)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Creating connection" << std::endl;
+#endif
     if (connections_.size() >= SERVER_MAX_CONNECTIONS)
     {
         LOG_ERROR << "To many connections" << std::endl;

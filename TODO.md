@@ -1,6 +1,5 @@
 # TODO
 
-* abclient: New UI texture...
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap
 * abclient: https://urho3d.github.io/documentation/1.7/_lights.html
 * abserv: TerrainPatch raycast query
@@ -11,8 +10,6 @@
 * abserv: Account Key itself expires and makes accounts that may expire (Trial Key)
 
 * abadmin: Admin HTTP server. Browser interface to admin all servers
-
-* ablogin, abserv: Crash on exit with Ctrl+C (maybe fixed, or not idk...)
 
 
 * all: /friend /ignore /flremove /fl commands

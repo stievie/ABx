@@ -36,7 +36,6 @@ void Protocol::Disconnect()
     if (connection_)
     {
         connection_->Close();
-        connection_.reset();
     }
 }
 

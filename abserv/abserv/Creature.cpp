@@ -7,21 +7,18 @@
 #include "OctreeQuery.h"
 #include "GameManager.h"
 #include "MathUtils.h"
+#include "ScriptManager.h"
 
 #include "DebugNew.h"
 
 namespace Game {
 
-void Creature::InitializeLua()
-{
-    GameManager::RegisterLuaAll(luaState_);
-    luaState_["self"] = this;
-    luaInitialized_ = true;
-}
-
 void Creature::RegisterLua(kaguya::State& state)
 {
     state["Creature"].setClass(kaguya::UserdataMetatable<Creature, GameObject>()
+        .addFunction("IsTrigger", &Creature::IsTrigger)
+        .addFunction("SetTrigger", &Creature::SetTrigger)
+
         .addFunction("GetLevel", &Creature::GetLevel)
         .addFunction("GetSkillBar", &Creature::GetSkillBar)
         .addFunction("GetSelectedObject", &Creature::GetSelectedObject)
@@ -46,7 +43,7 @@ Creature::Creature() :
     autorunComp_(*this),
     collisionComp_(*this),
     skills_(this),
-    luaInitialized_(false)
+    retriggerTimeout_(1000)
 {
     // Creature always collides
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
@@ -95,27 +92,6 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint32_t>(GetProf2Index());
     stream.Write<uint32_t>(GetModelIndex());
     return true;
-}
-
-void Creature::OnSelected(std::shared_ptr<Creature> selector)
-{
-    GameObject::OnSelected(selector);
-    if (luaInitialized_)
-        luaState_["onSelected"](selector);
-}
-
-void Creature::OnClicked(std::shared_ptr<Creature> selector)
-{
-    GameObject::OnSelected(selector);
-    if (luaInitialized_)
-        luaState_["onClicked"](selector);
-}
-
-void Creature::OnCollide(std::shared_ptr<Creature> other)
-{
-    GameObject::OnCollide(other);
-    if (luaInitialized_)
-        luaState_["onCollide"](other);
 }
 
 void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration)

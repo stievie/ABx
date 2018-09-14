@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 namespace Utils {
 
 enum VariantType
@@ -59,6 +61,11 @@ public:
 
     VariantType GetType() const { return type_; }
     void SetType(VariantType value) { type_ = value; }
+    /// Check if it has a value
+    bool IsEmpty() const
+    {
+        return type_ != VAR_NONE;
+    }
 
     /// Assigning from other
     Variant& operator =(const Variant& other);

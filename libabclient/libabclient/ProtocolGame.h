@@ -26,6 +26,7 @@ private:
     std::string accountPass_;
     std::string charUuid_;
     std::string mapUuid_;
+    std::string instanceUuid_;
     int64_t pingTick_;
     int64_t updateTick_;
     int64_t clockDiff_;
@@ -43,6 +44,7 @@ protected:
     void ParseServerLeft(const std::shared_ptr<InputMessage>& message);
     void ParseError(const std::shared_ptr<InputMessage>& message);
     void ParseEnterWorld(const std::shared_ptr<InputMessage>& message);
+    void ParseChangeInstance(const std::shared_ptr<InputMessage>& message);
     void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);
     void ParseMailComplete(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
@@ -67,7 +69,8 @@ public:
     Receiver* receiver_;
 
     void Login(const std::string& accountUuid, const std::string& accountPass,
-        const std::string& charUuid, const std::string& map, const std::string& host, uint16_t port);
+        const std::string& charUuid, const std::string& mapUuid, const std::string& instanceUuid,
+        const std::string& host, uint16_t port);
     void Logout();
     /// Triggers OnPong()
     void Ping();

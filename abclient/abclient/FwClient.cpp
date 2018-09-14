@@ -566,6 +566,20 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     graphics->SetWindowTitle("FW - " + accountName_);
 }
 
+void FwClient::OnChangeInstance(int64_t, const std::string& serverId,
+    const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)
+{
+    if (loggedIn_)
+    {
+        auto it = services_.find(serverId);
+        if (it != services_.end())
+        {
+            currentCharacterUuid_ = String(charUuid.c_str());
+            client_.EnterInstance(charUuid, mapUuid, instanceUuid);
+        }
+    }
+}
+
 void FwClient::OnNetworkError(const std::error_code& err)
 {
     loggedIn_ = false;

@@ -261,16 +261,17 @@ void Actor::FixedUpdate(float)
 Vector3 Actor::GetHeadPos() const
 {
     Node* headNode = node_->GetChild("Head", true);
-    Vector3 headPos;
     if (headNode)
-        headPos = headNode->GetWorldPosition();
-    else
+        return headNode->GetWorldPosition();
+    if (model_)
     {
         const BoundingBox& bb = model_->GetBoundingBox();
+        Vector3 headPos;
         headPos = node_->GetWorldPosition();
         headPos.y_ += bb.Size().y_;
+        return headPos;
     }
-    return headPos;
+    return node_->GetWorldPosition();
 }
 
 void Actor::Update(float timeStep)

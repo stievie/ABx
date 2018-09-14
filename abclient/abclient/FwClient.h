@@ -111,6 +111,8 @@ public:
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, uint32_t playerId) override;
+    void OnChangeInstance(int64_t updateTick, const std::string& serverId,
+        const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Client::ObjectSpawn& objectSpawn,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;

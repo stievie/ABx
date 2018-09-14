@@ -11,6 +11,7 @@
 #include "Application.h"
 #include <AB/Entities/Character.h>
 #include "Profiler.h"
+#include "GameManager.h"
 
 #include "DebugNew.h"
 
@@ -488,9 +489,16 @@ void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMess
     }
 }
 
+void Player::ChangeGame(const std::string& mapUuid)
+{
+    auto game = GameManager::Instance.GetGame(mapUuid, true);
+    client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
+}
+
 void Player::RegisterLua(kaguya::State& state)
 {
     state["Player"].setClass(kaguya::UserdataMetatable<Player, Creature>()
+        .addFunction("ChangeGame", &Player::ChangeGame)
     );
 }
 

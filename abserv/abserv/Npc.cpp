@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "Npc.h"
 #include "GameManager.h"
+#include "ScriptManager.h"
 #include "MathUtils.h"
 
 namespace Game {
 
 void Npc::InitializeLua()
 {
-    Creature::InitializeLua();
+    ScriptManager::RegisterLuaAll(luaState_);
     luaState_["self"] = this;
+    luaInitialized_ = true;
 }
 
 void Npc::RegisterLua(kaguya::State& state)
@@ -19,7 +21,8 @@ void Npc::RegisterLua(kaguya::State& state)
 }
 
 Npc::Npc() :
-    Creature()
+    Creature(),
+    luaInitialized_(false)
 {
     InitializeLua();
 }
@@ -42,14 +45,20 @@ bool Npc::LoadScript(const std::string& fileName)
     IO::DataClient* client = Application::Instance->GetDataClient();
 
     skills_.prof1_.index = luaState_["prof1Index"];
-    if (!client->Read(skills_.prof1_))
+    if (skills_.prof1_.index != 0)
     {
-        LOG_WARNING << "Unable to read primary profession, index = " << skills_.prof1_.index << std::endl;
+        if (!client->Read(skills_.prof1_))
+        {
+            LOG_WARNING << "Unable to read primary profession, index = " << skills_.prof1_.index << std::endl;
+        }
     }
     skills_.prof2_.index = luaState_["prof1Index"];
-    if (!client->Read(skills_.prof2_))
+    if (skills_.prof2_.index != 0)
     {
-        LOG_WARNING << "Unable to read secondary profession, index = " << skills_.prof2_.index << std::endl;
+        if (!client->Read(skills_.prof2_))
+        {
+            LOG_WARNING << "Unable to read secondary profession, index = " << skills_.prof2_.index << std::endl;
+        }
     }
 
     return luaState_["onInit"]();
@@ -58,7 +67,8 @@ bool Npc::LoadScript(const std::string& fileName)
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Creature::Update(timeElapsed, message);
-    luaState_["onUpdate"](timeElapsed);
+    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onUpdate"))
+        luaState_["onUpdate"](timeElapsed);
 }
 
 void Npc::Say(ChatType channel, const std::string& message)
@@ -78,6 +88,53 @@ void Npc::Say(ChatType channel, const std::string& message)
         break;
     case ChannelParty:
         break;
+    }
+}
+
+void Npc::OnSelected(std::shared_ptr<Creature> selector)
+{
+    Creature::OnSelected(selector);
+    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onSelected"))
+        luaState_["onSelected"](selector);
+}
+
+void Npc::OnClicked(std::shared_ptr<Creature> selector)
+{
+    Creature::OnSelected(selector);
+    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onClicked"))
+        luaState_["onClicked"](selector);
+}
+
+void Npc::OnCollide(std::shared_ptr<Creature> other)
+{
+    Creature::OnCollide(other);
+
+    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onCollide"))
+        luaState_["onCollide"](other);
+
+    if (trigger_)
+        OnTrigger(other);
+}
+
+void Npc::OnTrigger(std::shared_ptr<Creature> other)
+{
+    Creature::OnTrigger(other);
+    int64_t tick = Utils::AbTick();
+    int64_t lasTrigger = triggered_[other->id_];
+    if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)
+    {
+        if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onTrigger"))
+            luaState_["onTrigger"](other);
+    }
+    triggered_[other->id_] = tick;
+
+    // Delete old
+    for (auto it = triggered_.begin(); it != triggered_.end(); )
+    {
+        if (tick - (*it).second > 10000)
+            triggered_.erase(it++);
+        else
+            ++it;
     }
 }
 

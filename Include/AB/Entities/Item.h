@@ -13,7 +13,8 @@ enum ItemType : uint16_t
     ItemTypeUnknown = 0,
     ItemTypeCharacterModel = 1,
     ItemTypeCharacterHair,
-    ItemTypeModifier
+    ItemTypeModifier,
+    ItemTypePortal,
 };
 
 struct Item : Entity

@@ -15,7 +15,7 @@ HealthBar::HealthBar(Context* context) :
 
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png");
     SetTexture(tex);
-    SetImageRect(IntRect(16, 0, 32, 16));
+    SetImageRect(IntRect(128, 16, 144, 32));
     SetBorder(IntRect(4, 4, 4, 4));
 
     SetMinHeight(25);

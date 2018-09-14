@@ -24,6 +24,11 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
         .addFunction("QueryObjects", &GameObject::_LuaQueryObjects)
         .addFunction("Raycast", &GameObject::_LuaRaycast)
+        .addFunction("SetBoundingBox", &GameObject::_LuaSetBoundingBox)
+        .addFunction("GetVarString", &GameObject::_LuaGetVarString)
+        .addFunction("SetVarString", &GameObject::_LuaSetVarString)
+        .addFunction("GetVarNumber", &GameObject::_LuaGetVarNumber)
+        .addFunction("SetVarNumber", &GameObject::_LuaSetVarNumber)
 
         .addFunction("SetPosition", &GameObject::_LuaSetPosition)
         .addFunction("SetRotation", &GameObject::_LuaSetRotation)
@@ -138,6 +143,19 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     return false;
 }
 
+const Utils::Variant& GameObject::GetVar(const std::string& name) const
+{
+    auto it = variables_.find(Utils::StringHashRt(name.c_str()));
+    if (it != variables_.end())
+        return (*it).second;
+    return Utils::Variant::Empty;
+}
+
+void GameObject::SetVar(const std::string& name, const Utils::Variant& val)
+{
+    variables_[Utils::StringHashRt(name.c_str())] = val;
+}
+
 void GameObject::ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results)
 {
     float distance = query.ray_.HitDistance(GetWorldBoundingBox());
@@ -173,6 +191,10 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     Math::Octree* octree = octant_->GetRoot();
     octree->GetObjects(query);
     return true;
+}
+
+void GameObject::OnCollide(std::shared_ptr<Creature> creature)
+{
 }
 
 bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction)
@@ -289,6 +311,37 @@ std::vector<float> GameObject::_LuaGetScale() const
     result.push_back(transformation_.scale_.y_);
     result.push_back(transformation_.scale_.z_);
     return result;
+}
+
+void GameObject::_LuaSetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+{
+    if (collisionShape_ && collisionShape_->shapeType_ == Math::ShapeTypeBoundingBox)
+    {
+        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        BBoxShape* shape = (BBoxShape*)GetCollisionShape();
+        shape->shape_->min_ = Math::Vector3(minX, minY, minZ);
+        shape->shape_->max_ = Math::Vector3(maxX, maxY, maxZ);
+    }
+}
+
+std::string GameObject::_LuaGetVarString(const std::string& name)
+{
+    return GetVar(name).GetString();
+}
+
+void GameObject::_LuaSetVarString(const std::string& name, const std::string& value)
+{
+    SetVar(name, Utils::Variant(value));
+}
+
+float GameObject::_LuaGetVarNumber(const std::string& name)
+{
+    return GetVar(name).GetFloat();
+}
+
+void GameObject::_LuaSetVarNumber(const std::string& name, float value)
+{
+    SetVar(name, Utils::Variant(value));
 }
 
 void GameObject::AddToOctree()

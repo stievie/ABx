@@ -30,15 +30,17 @@ protected:
     Components::CollisionComp collisionComp_;
 
     std::vector<Math::Vector3> wayPoints_;
+    /// Time in ms the same Creature can retrigger
+    uint32_t retriggerTimeout_;
+    std::map<uint32_t, int64_t> triggered_;
+    /// If true fires onTrigger
+    bool trigger_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) {
         AB_UNUSED(type);
         AB_UNUSED(command);
         AB_UNUSED(message);
     }
-    kaguya::State luaState_;
-    bool luaInitialized_;
-    virtual void InitializeLua();
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -47,6 +49,23 @@ public:
     void SetGame(std::shared_ptr<Game> game) override
     {
         GameObject::SetGame(game);
+    }
+
+    uint32_t GetRetriggerTimout() const
+    {
+        return retriggerTimeout_;
+    }
+    void SetRetriggerTimout(uint32_t value)
+    {
+        retriggerTimeout_ = value;
+    }
+    bool IsTrigger() const
+    {
+        return trigger_;
+    }
+    void SetTrigger(bool value)
+    {
+        trigger_ = value;
     }
 
     /// Move speed: 1 = normal speed
@@ -118,10 +137,6 @@ public:
     float attackSpeedFactor_ = 1.0f;
 
     bool Serialize(IO::PropWriteStream& stream) override;
-
-    void OnSelected(std::shared_ptr<Creature> selector) override;
-    void OnClicked(std::shared_ptr<Creature> selector) override;
-    void OnCollide(std::shared_ptr<Creature> other) override;
 };
 
 }

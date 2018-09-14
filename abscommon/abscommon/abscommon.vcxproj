@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="Connection.h" />
     <ClInclude Include="CpuUsage.h" />
+    <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="IdGenerator.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="Variant.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
@@ -187,6 +189,7 @@
     </ClCompile>
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Variant.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,25 +12,10 @@ function onInit()
   return true
 end
 
-function onUpdate(timeElapsed)
-
-end
-
-function onClicked(creature)
-end
-
--- self was selected by creature
-function onSelected(creature)
-end
-
--- creature collides with self
-function onCollide(creature)
-end
-
 function onTrigger(creature)
-  print(creature:GetName() .. " triggered")
   local player = creature:AsPlayer()
   if (player ~= nil) then
+    print(player:GetName() .. " triggered")
 --    player:ChangeGame(self:GetVarString("destination"))
   end
 end

@@ -14,6 +14,7 @@
 #include <AB/ProtocolCodes.h>
 #include "IdGenerator.h"
 #include "StateComp.h"
+#include "Variant.h"
 
 namespace Game {
 
@@ -48,7 +49,14 @@ private:
     std::vector<float> _LuaGetPosition() const;
     float _LuaGetRotation() const;
     std::vector<float> _LuaGetScale() const;
+    void _LuaSetBoundingBox(float minX, float minY, float minZ,
+        float maxX, float maxY, float maxZ);
+    std::string _LuaGetVarString(const std::string& name);
+    void _LuaSetVarString(const std::string& name, const std::string& value);
+    float _LuaGetVarNumber(const std::string& name);
+    void _LuaSetVarNumber(const std::string& name, float value);
 protected:
+    Utils::VariantMap variables_;
     std::weak_ptr<Game> game_;
     /// Octree octant.
     Math::Octant* octant_;
@@ -114,6 +122,9 @@ public:
     {
         return AB::GameProtocol::ObjectTypeStatic;
     }
+
+    const Utils::Variant& GetVar(const std::string& name) const;
+    void SetVar(const std::string& name, const Utils::Variant& val);
     /// Process octree raycast. May be called from a worker thread.
     virtual void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results);
     void SetSortValue(float value) { sortValue_ = value; }
@@ -182,7 +193,8 @@ public:
 
     virtual void OnSelected(std::shared_ptr<Creature>) { }
     virtual void OnClicked(std::shared_ptr<Creature>) { }
-    virtual void OnCollide(std::shared_ptr<Creature>) { }
+    virtual void OnCollide(std::shared_ptr<Creature> creature);
+    virtual void OnTrigger(std::shared_ptr<Creature>) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

@@ -45,7 +45,9 @@ protected:
 
     Ray GetActiveViewportScreenRay(const IntVector2& pos) const
     {
-        return viewport_->GetScreenRay(pos.x_, pos.y_);
+        if (viewport_)
+            return viewport_->GetScreenRay(pos.x_, pos.y_);
+        return Ray();
     }
 
     Urho3D::UIElement* uiRoot_;

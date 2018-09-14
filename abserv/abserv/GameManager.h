@@ -18,7 +18,6 @@ public:
         ManagerStateTerminated
     };
 private:
-    static void LuaErrorHandler(int errCode, const char* message);
     State state_;
     std::recursive_mutex lock_;
     std::map<uint32_t, std::shared_ptr<Game>> games_;
@@ -44,6 +43,7 @@ public:
     {
         return CreateGame(mapName);
     }
+    std::shared_ptr<Game> GetInstance(const std::string& instanceUuid);
     /// Returns the game with the mapName. If no such game exists it creates one.
     std::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
     std::shared_ptr<Game> Get(uint32_t gameId);
@@ -52,8 +52,6 @@ public:
     void CleanGames();
 
     GameManager::State GetState() const { return state_; }
-
-    static void RegisterLuaAll(kaguya::State& state);
 public:
     static GameManager Instance;
 };

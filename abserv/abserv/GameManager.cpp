@@ -68,6 +68,18 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     }
 }
 
+std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
+{
+    auto it = std::find_if(games_.begin(), games_.end(), [&](auto const& current)
+    {
+        return current.second->instanceData_.uuid.compare(instanceUuid) == 0;
+    });
+    if (it != games_.end())
+        return (*it).second;
+
+    return std::shared_ptr<Game>();
+}
+
 std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canCreate /* = false */)
 {
     const auto it = maps_.find(mapUuid);
@@ -123,40 +135,9 @@ void GameManager::CleanGames()
 {
     for (const auto& g : games_)
     {
-        if (g.second->GetPlayerCount() == 0)
+        if (g.second->IsInactive())
             g.second->SetState(Game::ExecutionState::Terminated);
     }
-}
-
-void GameManager::LuaErrorHandler(int errCode, const char* message)
-{
-    LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
-}
-
-void GameManager::RegisterLuaAll(kaguya::State& state)
-{
-    state.setErrorHandler(LuaErrorHandler);
-#ifdef DEBUG_GAME
-    if (!state.gc().isrunning())
-    {
-        LOG_ERROR << "Lua GC not running" << std::endl;
-    }
-#endif
-    // Some global function
-    state["GameTick"] = kaguya::function([]
-    {
-        return Utils::AbTick();
-    });
-
-    // Register all used classes
-    GameObject::RegisterLua(state);
-    Creature::RegisterLua(state);
-    Game::RegisterLua(state);
-    Effect::RegisterLua(state);
-    Skill::RegisterLua(state);
-    SkillBar::RegisterLua(state);
-    Player::RegisterLua(state);
-    Npc::RegisterLua(state);
 }
 
 }

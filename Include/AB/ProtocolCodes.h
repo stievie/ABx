@@ -167,6 +167,8 @@ enum GameProtocolCodes : uint8_t
     MailHeaders,
     MailComplete,
 
+    ChangeInstance,
+
     GameStart,                         // Start tick
     GameEnter,
     GameUpdate,

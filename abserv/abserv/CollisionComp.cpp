@@ -27,6 +27,8 @@ void CollisionComp::DoCollisions()
                         owner_.transformation_.position_ += move;
                     else
                         owner_.transformation_.position_ = owner_.moveComp_.GetOldPosition();
+
+                    // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us
                     ci->OnCollide(owner_.GetThis<Creature>());
                     // Notify us for colliding with ci

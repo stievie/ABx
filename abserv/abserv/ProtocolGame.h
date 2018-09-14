@@ -33,9 +33,10 @@ public:
     }
 
     void Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
-        const std::string& mapUuid);
+        const std::string& mapUuid, const std::string& instanceUuid);
     void Logout();
     void EnterGame();
+    void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void WriteToOutput(const NetworkMessage& message);
 private:
     // Helpers so we don't need to bind every time

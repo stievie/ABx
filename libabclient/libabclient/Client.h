@@ -41,7 +41,7 @@ public:
     ~Client();
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);
-    void Logout();
+    void Logout(bool run = true);
     void GetOutposts();
     void GetServers();
     void CreateAccount(const std::string& name, const std::string& pass,
@@ -52,6 +52,9 @@ public:
 
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charUuid, const std::string& mapUuid,
+        const std::string& host = "", uint16_t port = 0);
+    void EnterInstance(const std::string& charUuid, const std::string& mapUuid,
+        const std::string& instanceUuid,
         const std::string& host = "", uint16_t port = 0);
     void Update(int timeElapsed);
 
@@ -78,6 +81,8 @@ public:
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, uint32_t playerId) override;
+    void OnChangeInstance(int64_t updateTick, const std::string& serverId,
+        const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
         PropReadStream& data, bool existing) override;
     void OnDespawnObject(int64_t updateTick, uint32_t id) override;

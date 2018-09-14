@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Variant.h"
 
-#include "DebugNew.h"
-
 namespace Utils {
 
 const Variant Variant::Empty;

@@ -13,7 +13,9 @@ private:
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
 protected:
-    void InitializeLua() override;
+    kaguya::State luaState_;
+    bool luaInitialized_;
+    void InitializeLua();
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -44,6 +46,10 @@ public:
 
     void Say(ChatType channel, const std::string& message);
 
+    void OnSelected(std::shared_ptr<Creature> selector) override;
+    void OnClicked(std::shared_ptr<Creature> selector) override;
+    void OnCollide(std::shared_ptr<Creature> other) override;
+    void OnTrigger(std::shared_ptr<Creature> other) override;
 };
 
 }

@@ -1,5 +1,17 @@
 -- Game start up
 function onStart()
+  local portal = self:AddNpc("/scripts/creatures/logic/portal.lua")
+  if (portal ~= nil) then
+    -- Map ID where this portal leads to
+    portal:SetVarString("destination", "75e3dfcf-479a-11e8-ad09-02100700d6f0")
+    -- Will call onTrigger() when it collides
+    portal:SetTrigger(true)
+    local x = -20.059
+    local z = -0.00870347
+    local y = 26.7
+    portal:SetPosition(x, y, z)
+  end
+
   local smith = self:AddNpc("/scripts/creatures/npcs/smith.lua")
   if (smith ~= nil) then
     local x = -6.71275

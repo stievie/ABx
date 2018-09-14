@@ -208,6 +208,7 @@
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="ProtocolGame.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="ScriptManager.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillBar.h" />
     <ClInclude Include="SkillManager.h" />
@@ -216,7 +217,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainPatch.h" />
-    <ClInclude Include="Variant.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -266,6 +266,7 @@
     <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="ScriptManager.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillBar.cpp" />
     <ClCompile Include="SkillManager.cpp" />
@@ -278,7 +279,6 @@
     </ClCompile>
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainPatch.cpp" />
-    <ClCompile Include="Variant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">

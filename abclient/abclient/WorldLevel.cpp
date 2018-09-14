@@ -59,6 +59,9 @@ void WorldLevel::SubscribeToEvents()
 
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
 {
+    if (!viewport_)
+        return SharedPtr<GameObject>();
+
     Ray camRay = GetActiveViewportScreenRay(pos);
     PODVector<RayQueryResult> result;
     Octree* world = scene_->GetComponent<Octree>();

@@ -32,6 +32,7 @@ private:
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
     int64_t lastUpdate_;
+    uint32_t noplayerTime_;
     kaguya::State luaState_;
     /// First player(s) triggering the creation of this game
     std::vector<std::shared_ptr<GameObject>> queuedObjects_;
@@ -102,6 +103,10 @@ public:
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 
     ExecutionState GetState() const { return state_; }
+    bool IsInactive() const
+    {
+        return noplayerTime_ > 10000;
+    }
     const kaguya::State& GetLuaState() const { return luaState_; }
     void SetState(ExecutionState state);
     void Load(const std::string& mapUuid);

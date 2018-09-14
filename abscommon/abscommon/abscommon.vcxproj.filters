@@ -93,6 +93,12 @@
     <ClInclude Include="IdGenerator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Variant.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugConfig.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -156,6 +162,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProcessWin.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Variant.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
