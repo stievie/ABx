@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<node id="16777217">
+	<attribute name="Is Enabled" value="true" />
+	<attribute name="Name" value="Portal" />
+	<attribute name="Tags" />
+	<attribute name="Position" value="0 0 0" />
+	<attribute name="Rotation" value="1 0 0 0" />
+	<attribute name="Scale" value="2 2 2" />
+	<attribute name="Variables" />
+	<component type="ParticleEmitter" id="16777228">
+		<attribute name="Effect" value="ParticleEffect;Particle/Gate.xml" />
+		<attribute name="Animation LOD Bias" value="0" />
+		<attribute name="Period Timer" value="4.18025" />
+		<attribute name="Emission Timer" value="-0.125" />
+		<attribute name="Particles">
+			<variant type="Int" value="10" />
+		</attribute>
+		<attribute name="Billboards">
+			<variant type="Int" value="10" />
+		</attribute>
+		<attribute name="Serialize Particles" value="false" />
+	</component>
+</node>
