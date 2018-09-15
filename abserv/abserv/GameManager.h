@@ -4,6 +4,7 @@
 #include "Game.h"
 #include <limits>
 #include "IdGenerator.h"
+#include <AB/Entities/Game.h>
 
 namespace Game {
 
@@ -50,6 +51,7 @@ public:
     bool AddPlayer(const std::string& mapUuid, std::shared_ptr<Player> player);
     // Delete all games with no players
     void CleanGames();
+    AB::Entities::GameType GetGameType(const std::string& mapUuid);
 
     GameManager::State GetState() const { return state_; }
 public:

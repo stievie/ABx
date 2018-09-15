@@ -21,7 +21,7 @@ private:
     std::unique_ptr<MailBox> mailBox_;
     std::unique_ptr<FriendList> friendList_;
     std::shared_ptr<Party> party_;
-    void ChangeGame(const std::string& mapUuid);
+    void ChangeInstance(const std::string& mapUuid);
 protected:
     friend class PlayerManager;
     inline std::shared_ptr<Player> GetThis()

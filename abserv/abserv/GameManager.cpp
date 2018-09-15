@@ -5,6 +5,7 @@
 #include "Dispatcher.h"
 #include "Player.h"
 #include "Npc.h"
+#include "IOGame.h"
 
 #include "DebugNew.h"
 
@@ -82,10 +83,15 @@ std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
 
 std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canCreate /* = false */)
 {
+    AB::Entities::GameType gType = GameManager::Instance.GetGameType(mapUuid);
+    if (gType >= AB::Entities::GameTypePvPCombat)
+        // These games are exclusive
+        return CreateGame(mapUuid);
+
     const auto it = maps_.find(mapUuid);
     if (it == maps_.end())
     {
-        // Map does not exist
+        // No instance of this map exists
         if (!canCreate)
             return std::shared_ptr<Game>();
         return CreateGame(mapUuid);
@@ -138,6 +144,11 @@ void GameManager::CleanGames()
         if (g.second->IsInactive())
             g.second->SetState(Game::ExecutionState::Terminated);
     }
+}
+
+AB::Entities::GameType GameManager::GetGameType(const std::string& mapUuid)
+{
+    return IO::IOGame::GetGameType(mapUuid);
 }
 
 }

@@ -21,6 +21,7 @@ enum GameType : uint8_t
 {
     GameTypeUnknown = 0,
     GameTypeOutpost = 1,
+    // Above this games are exclusive and always created new
     GameTypePvPCombat,
     GameTypeExploreable,
     GameTypeMission,

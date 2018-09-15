@@ -489,16 +489,18 @@ void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMess
     }
 }
 
-void Player::ChangeGame(const std::string& mapUuid)
+void Player::ChangeInstance(const std::string& mapUuid)
 {
-    auto game = GameManager::Instance.GetGame(mapUuid, true);
-    client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
+    // TODO: all in the party must change to the same instance
+    std::shared_ptr<Game> game = GameManager::Instance.GetGame(mapUuid, true);
+    if (game)
+        client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
 }
 
 void Player::RegisterLua(kaguya::State& state)
 {
     state["Player"].setClass(kaguya::UserdataMetatable<Player, Creature>()
-        .addFunction("ChangeGame", &Player::ChangeGame)
+        .addFunction("ChangeInstance", &Player::ChangeInstance)
     );
 }
 
