@@ -15,8 +15,6 @@
 
 namespace Client {
 
-static const std::string EMPTY_GUID("00000000-0000-0000-0000-000000000000");
-
 class HttpsClient : public SimpleWeb::Client<SimpleWeb::HTTPS>
 {
 public:
@@ -51,6 +49,16 @@ Client::~Client()
     if (httpClient_)
         delete httpClient_;
     Connection::Terminate();
+}
+
+void Client::Poll()
+{
+    Connection::Poll();
+}
+
+void Client::Run()
+{
+    Connection::Run();
 }
 
 void Client::OnLoggedIn(const std::string& accountUuid)
@@ -312,15 +320,14 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     Connection::Run();
 }
 
-void Client::Logout(bool run /* = true */)
+void Client::Logout()
 {
     if (state_ != StateWorld)
         return;
     if (protoGame_)
     {
         protoGame_->Logout();
-        if (run)
-            Connection::Run();
+        Connection::Run();
         state_ = StateDisconnected;
     }
 }
@@ -346,7 +353,7 @@ void Client::GetServers()
 }
 
 void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
-    const std::string& host /* = "" */, uint16_t port /* = 0 */)
+    const std::string& host /* = "" */, uint16_t port /* = 0 */, const std::string& instanceId /* = "" */)
 {
     assert(!accountUuid_.empty());
     // Enter or changing the world
@@ -357,6 +364,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
     {
         // We are already logged in to some world so we must logout
         Logout();
+        gotPong_ = true;
     }
 
     // Maybe different server
@@ -372,36 +380,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
         protoGame_->receiver_ = this;
     }
 
-    protoGame_->Login(accountUuid_, password_, charUuid, mapUuid, EMPTY_GUID,
-        gameHost_, gamePort_);
-}
-
-void Client::EnterInstance(const std::string& charUuid, const std::string& mapUuid,
-    const std::string& instanceUuid, const std::string& host, uint16_t port)
-{
-    assert(!accountUuid_.empty());
-    // Enter or changing the world
-    if (state_ != StateSelectChar && state_ != StateWorld)
-        return;
-
-    if (state_ == StateWorld)
-        // We are already logged in to some world so we must logout
-        Logout(false);
-
-    // Maybe different server
-    if (!host.empty())
-        gameHost_ = host;
-    if (port != 0)
-        gamePort_ = port;
-
-    // 2. Login to game server
-    if (!protoGame_)
-    {
-        protoGame_ = std::make_shared<ProtocolGame>();
-        protoGame_->receiver_ = this;
-    }
-
-    protoGame_->Login(accountUuid_, password_, charUuid, mapUuid, instanceUuid,
+    protoGame_->Login(accountUuid_, password_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);
 }
 

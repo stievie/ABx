@@ -412,6 +412,8 @@ void FwClient::ChangeServer(const String& serverId)
 void FwClient::Logout()
 {
     client_.Logout();
+    client_.Poll();
+    client_.Run();
     loggedIn_ = false;
 }
 
@@ -550,6 +552,8 @@ void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, uint32_t playerId)
 {
+    URHO3D_LOGINFOF("FwClient::OnEnterWorld(): %s", String(mapUuid.c_str()));
+
     levelReady_ = false;
     playerId_ = playerId;
     currentServerId_ = String(serverId.c_str());
@@ -569,13 +573,19 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
 void FwClient::OnChangeInstance(int64_t, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)
 {
+    URHO3D_LOGINFOF("FwClient::OnChangeInstance(): %s", String(instanceUuid.c_str()));
     if (loggedIn_)
     {
         auto it = services_.find(serverId);
         if (it != services_.end())
         {
             currentCharacterUuid_ = String(charUuid.c_str());
-            client_.EnterInstance(charUuid, mapUuid, instanceUuid);
+            client_.EnterWorld(charUuid, mapUuid,
+                (*it).second.host, (*it).second.port, instanceUuid);
+        }
+        else
+        {
+            URHO3D_LOGERRORF("Server %s not found", serverId);
         }
     }
 }

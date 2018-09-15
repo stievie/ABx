@@ -39,9 +39,11 @@ private:
 public:
     Client();
     ~Client();
+    void Poll();
+    void Run();
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);
-    void Logout(bool run = true);
+    void Logout();
     void GetOutposts();
     void GetServers();
     void CreateAccount(const std::string& name, const std::string& pass,
@@ -52,10 +54,7 @@ public:
 
     /// Connect to game server -> authenticate -> enter game
     void EnterWorld(const std::string& charUuid, const std::string& mapUuid,
-        const std::string& host = "", uint16_t port = 0);
-    void EnterInstance(const std::string& charUuid, const std::string& mapUuid,
-        const std::string& instanceUuid,
-        const std::string& host = "", uint16_t port = 0);
+        const std::string& host = "", uint16_t port = 0, const std::string& instanceId = "");
     void Update(int timeElapsed);
 
     bool HttpRequest(const std::string& path, std::ostream& out);

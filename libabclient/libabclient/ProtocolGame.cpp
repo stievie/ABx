@@ -381,7 +381,6 @@ void ProtocolGame::Logout()
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
     Send(msg);
-    Connection::Poll();
 }
 
 void ProtocolGame::Ping()
