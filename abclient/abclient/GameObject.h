@@ -27,6 +27,7 @@ public:
     uint32_t id_;
     unsigned index_;
     ObjectType objectType_;
+    bool undestroyable_;
     int64_t spawnTickServer_;
     /// Player hovers
     bool hovered_;
@@ -53,6 +54,7 @@ public:
         return speedFactor_;
     }
     virtual void SetSpeedFactor(int64_t time, float value);
+
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }

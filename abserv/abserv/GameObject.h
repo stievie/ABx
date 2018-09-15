@@ -166,6 +166,11 @@ public:
     {
         return 1.0f;
     }
+    virtual bool IsUndestroyable() const
+    {
+        return true;
+    }
+
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;

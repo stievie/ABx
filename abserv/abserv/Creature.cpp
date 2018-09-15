@@ -24,6 +24,8 @@ void Creature::RegisterLua(kaguya::State& state)
         .addFunction("GetSelectedObject", &Creature::GetSelectedObject)
         .addFunction("SetSelectedObject", &Creature::SetSelectedObject)
 
+        .addFunction("IsUndestroyable", &Creature::IsUndestroyable)
+        .addFunction("SetUndestroyable", &Creature::SetUndestroyable)
         .addFunction("GetSpeed", &Creature::GetSpeed)
         .addFunction("SetSpeed", &Creature::SetSpeed)
         .addFunction("GetEnergy", &Creature::GetEnergy)
@@ -43,6 +45,7 @@ Creature::Creature() :
     autorunComp_(*this),
     collisionComp_(*this),
     skills_(this),
+    undestroyable_(false),
     retriggerTimeout_(1000)
 {
     // Creature always collides

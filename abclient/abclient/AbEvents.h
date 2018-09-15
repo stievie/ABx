@@ -46,6 +46,7 @@ URHO3D_EVENT(E_OBJECTSPAWN, ObjectSpawn)
     URHO3D_PARAM(P_OBJECTID, ObjectId);
     URHO3D_PARAM(P_POSITION, Position);
     URHO3D_PARAM(P_ROTATION, Rotation);
+    URHO3D_PARAM(P_UNDESTROYABLE, Undestroyable);  // bool
     URHO3D_PARAM(P_SCALE, Scale);
     URHO3D_PARAM(P_STATE, State);            // AB::GameProtocol::CreatureState
     URHO3D_PARAM(P_SPEEDFACTOR, SpeedFactor);  // float

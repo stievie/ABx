@@ -310,7 +310,8 @@ void Actor::Update(float timeStep)
     }
 
     nameWindow_->SetVisible(highlight || hovered_ || playerSelected_);
-    hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
+    if (!undestroyable_)
+        hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
 
     if (speechBubbleWindow_->IsVisible())
     {

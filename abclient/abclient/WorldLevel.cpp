@@ -328,13 +328,14 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     float speed = eventData[P_SPEEDFACTOR].GetFloat();
     const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
+    bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction, state, speed, data);
+    SpawnObject(tick, objectId, existing, pos, scale, direction, undestroyable, state, speed, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
-    const Vector3& position, const Vector3& scale,
-    const Quaternion& rot, AB::GameProtocol::CreatureState state, float speed,
+    const Vector3& position, const Vector3& scale, const Quaternion& rot,
+    bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
     PropReadStream& data)
 {
     uint8_t objectType;
@@ -372,6 +373,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
+        object->undestroyable_ = undestroyable;
         object->SetSpeedFactor(updateTick, speed);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;

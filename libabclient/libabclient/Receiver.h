@@ -19,6 +19,7 @@ struct ObjectSpawn
     Vec3 pos;
     Vec3 scale;
     float rot;
+    bool undestroyable;
     AB::GameProtocol::CreatureState state;
     float speed;
 };

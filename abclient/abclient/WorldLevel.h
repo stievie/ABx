@@ -109,8 +109,8 @@ private:
     void HandleToggleNewMail(StringHash eventType, VariantMap& eventData);
 
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
-        const Vector3& position, const Vector3& scale,
-        const Quaternion& rot, AB::GameProtocol::CreatureState state, float speed,
+        const Vector3& position, const Vector3& scale, const Quaternion& rot,
+        bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
         PropReadStream& data);
 };
 

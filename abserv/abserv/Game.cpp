@@ -354,6 +354,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
     gameStatus_->Add<float>(object->transformation_.scale_.x_);
     gameStatus_->Add<float>(object->transformation_.scale_.y_);
     gameStatus_->Add<float>(object->transformation_.scale_.z_);
+    gameStatus_->Add<uint8_t>(object->IsUndestroyable() ? 1 : 0);
     gameStatus_->Add<uint8_t>(object->stateComp_.GetState());
     gameStatus_->Add<float>(object->GetSpeed());
 
@@ -399,6 +400,7 @@ void Game::SendSpawnAll(uint32_t playerId)
         msg.Add<float>(o->transformation_.scale_.x_);
         msg.Add<float>(o->transformation_.scale_.y_);
         msg.Add<float>(o->transformation_.scale_.z_);
+        msg.Add<uint8_t>(o->IsUndestroyable() ? 1 : 0);
         msg.Add<uint8_t>(o->stateComp_.GetState());
         msg.Add<float>(o->GetSpeed());
         IO::PropWriteStream data;
