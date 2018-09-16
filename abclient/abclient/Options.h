@@ -4,7 +4,8 @@ enum class WindowMode
 {
     Windowed,
     Fullcreeen,
-    Borderless
+    Borderless,
+    Maximized
 };
 
 /// @TODO:
@@ -26,7 +27,7 @@ class Options : public Object
     URHO3D_OBJECT(Options, Object);
 public:
     Options(Context* context);
-    ~Options() = default;
+    ~Options();
 
     String loginHost_;
     uint16_t loginPort_;
@@ -46,14 +47,7 @@ public:
     void Load();
     void Save();
 
-    WindowMode GetWindowMode() const
-    {
-        if (fullscreen_)
-            return WindowMode::Fullcreeen;
-        if (borderless_)
-            return WindowMode::Borderless;
-        return WindowMode::Windowed;
-    }
+    WindowMode GetWindowMode() const;
     void SetWindowMode(WindowMode mode);
     int GetWidth() const { return width_; }
     void SetWidth(int value);
@@ -65,6 +59,7 @@ public:
     void SetBorderless(bool value);
     bool GetResizeable() const { return resizeable_; }
     void SetResizeable(bool value);
+    bool IsMiximized() const { return maximized_; }
     bool GetVSync() const { return vSync_; }
     void SetVSync(bool value);
     bool GetTripleBuffer() const { return tripleBuffer_; }
@@ -160,6 +155,8 @@ private:
     bool fullscreen_;
     bool borderless_;
     bool resizeable_;
+    bool maximized_;
+    bool internalMaximized_;
     bool vSync_;
     bool tripleBuffer_;
     bool highDPI_;
@@ -180,5 +177,6 @@ private:
     void UpdateGraphicsMode();
     void LoadSettings();
     void LoadElements(const XMLElement& root);
+    void HandleInputFocus(StringHash eventType, VariantMap& eventData);
 };
 

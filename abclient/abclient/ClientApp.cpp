@@ -128,6 +128,7 @@ ClientApp::ClientApp(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
+    SubscribeToEvent(E_EXITREQUESTED, URHO3D_HANDLER(ClientApp, HandleExitRequest));
 }
 
 /**
@@ -196,6 +197,10 @@ void ClientApp::Start()
 
     Options* options = GetSubsystem<Options>();
     options->UpdateAudio();
+    if (options->IsMiximized())
+    {
+        GetSubsystem<Graphics>()->Maximize();
+    }
     Renderer* renderer = GetSubsystem<Renderer>();
     // Oh what a difference!
     renderer->SetShadowQuality(options->GetShadowQuality());
@@ -219,11 +224,6 @@ void ClientApp::Start()
 */
 void ClientApp::Stop()
 {
-    FwClient* cli = context_->GetSubsystem<FwClient>();
-    cli->Logout();
-    Options* options = GetSubsystem<Options>();
-    options->Save();
-    windowManager_->SaveWindows();
 }
 
 #ifdef DEBUG_HUD
@@ -316,4 +316,13 @@ void ClientApp::HandleExitProgram(StringHash, VariantMap&)
 {
     Engine* engine = context_->GetSubsystem<Engine>();
     engine->Exit();
+}
+
+void ClientApp::HandleExitRequest(StringHash, VariantMap&)
+{
+    FwClient* cli = context_->GetSubsystem<FwClient>();
+    cli->Logout();
+    Options* options = GetSubsystem<Options>();
+    options->Save();
+    windowManager_->SaveWindows();
 }

@@ -20,6 +20,8 @@ Options::Options(Context* context) :
     fullscreen_(true),
     borderless_(false),
     resizeable_(false),
+    maximized_(false),
+    internalMaximized_(false),
     highDPI_(false),
     vSync_(false),
     tripleBuffer_(false),
@@ -44,6 +46,12 @@ Options::Options(Context* context) :
     disableMouseWalking_(false),
     mouseSensitivity_(0.1f)
 {
+    SubscribeToEvent(E_INPUTFOCUS, URHO3D_HANDLER(Options, HandleInputFocus));
+}
+
+Options::~Options()
+{
+    UnsubscribeFromAllEvents();
 }
 
 void Options::Load()
@@ -77,43 +85,52 @@ void Options::Save()
         root = xml->CreateRoot("settings");
     root.RemoveChildren("parameter");
 
+    maximized_ = internalMaximized_;
     Graphics* graphics = GetSubsystem<Graphics>();
+    WindowMode windowMode = GetWindowMode();
+
     IntVector2 windowPos = graphics->GetWindowPosition();
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowWidth");
         param.SetString("type", "int");
-        param.SetInt("value", graphics->GetWidth());
+        param.SetInt("value", windowMode == WindowMode::Windowed ? graphics->GetWidth() : width_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowHeight");
         param.SetString("type", "int");
-        param.SetInt("value", graphics->GetHeight());
+        param.SetInt("value", windowMode == WindowMode::Windowed ? graphics->GetHeight() : height_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowPosX");
         param.SetString("type", "int");
-        param.SetInt("value", windowPos.x_);
+        param.SetInt("value", windowMode == WindowMode::Windowed ? windowPos.x_ : windowPos_.x_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "WindowPosY");
         param.SetString("type", "int");
-        param.SetInt("value", windowPos.y_);
+        param.SetInt("value", windowMode == WindowMode::Windowed ? windowPos.y_ : windowPos_.y_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "Fullscreen");
         param.SetString("type", "bool");
-        param.SetBool("value", fullscreen_);
+        param.SetBool("value", windowMode == WindowMode::Fullcreeen);
     }
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "Borderless");
         param.SetString("type", "bool");
-        param.SetBool("value", borderless_);
+        param.SetBool("value", windowMode == WindowMode::Borderless);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "Maximized");
+        param.SetString("type", "bool");
+        param.SetBool("value", windowMode == WindowMode::Maximized);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -335,6 +352,17 @@ const String& Options::GetRenderPath() const
     return renderPath_;
 }
 
+WindowMode Options::GetWindowMode() const
+{
+    if (fullscreen_)
+        return WindowMode::Fullcreeen;
+    if (borderless_)
+        return WindowMode::Borderless;
+    if (internalMaximized_ || maximized_)
+        return WindowMode::Maximized;
+    return WindowMode::Windowed;
+}
+
 void Options::SetWindowMode(WindowMode mode)
 {
     if (mode != GetWindowMode())
@@ -509,6 +537,10 @@ void Options::LoadElements(const XMLElement& root)
         {
             resizeable_ = paramElem.GetBool("value");
         }
+        else if (name.Compare("Maximized") == 0)
+        {
+            maximized_ = paramElem.GetBool("value");
+        }
         else if (name.Compare("HighDPI") == 0)
         {
             highDPI_ = paramElem.GetBool("value");
@@ -608,6 +640,12 @@ void Options::LoadElements(const XMLElement& root)
 
         paramElem = paramElem.GetNext("parameter");
     }
+}
+
+void Options::HandleInputFocus(StringHash, VariantMap&)
+{
+    if (GetSubsystem<Graphics>()->GetWindow())
+        internalMaximized_ = GetSubsystem<Graphics>()->GetMaximized();
 }
 
 void Options::UpdateAudio()
