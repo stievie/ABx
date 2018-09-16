@@ -380,22 +380,20 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 
 void ProtocolGame::EnterGame()
 {
+    bool success = false;
     if (!uuids::uuid(player_->data_.instanceUuid).nil())
     {
         auto game = Game::GameManager::Instance.GetInstance(player_->data_.instanceUuid);
         if (game)
         {
             game->PlayerJoin(player_->id_);
-            std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-            output->AddByte(AB::GameProtocol::GameEnter);
-            output->AddString(Application::Instance->GetServerId());
-            output->AddString(player_->data_.currentMapUuid);
-            output->Add<uint32_t>(player_->id_);
-            Send(output);
-            return;
+            success = true;
         }
     }
     else if (Game::GameManager::Instance.AddPlayer(player_->data_.currentMapUuid, player_))
+        success = true;
+
+    if (success)
     {
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
@@ -403,10 +401,9 @@ void ProtocolGame::EnterGame()
         output->AddString(player_->data_.currentMapUuid);
         output->Add<uint32_t>(player_->id_);
         Send(output);
-        return;
     }
-
-    DisconnectClient(AB::Errors::CannotEnterGame);
+    else
+        DisconnectClient(AB::Errors::CannotEnterGame);
 }
 
 void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)

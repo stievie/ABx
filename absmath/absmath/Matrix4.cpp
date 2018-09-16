@@ -5,7 +5,7 @@ namespace Math {
 
 const Matrix4 Matrix4::Identity;
 
-Matrix4::Matrix4()
+Matrix4::Matrix4() noexcept
 {
     // Identity Matrix
     *this = Matrix4(
@@ -21,7 +21,7 @@ Matrix4::Matrix4(
     float v10, float v11, float v12, float v13,
     float v20, float v21, float v22, float v23,
     float v30, float v31, float v32, float v33
-)
+) noexcept
 {
     m_[Index00] = v00; m_[Index01] = v01; m_[Index02] = v02; m_[Index03] = v03;
     m_[Index10] = v10; m_[Index11] = v11; m_[Index12] = v12; m_[Index13] = v13;
@@ -29,7 +29,7 @@ Matrix4::Matrix4(
     m_[Index30] = v30; m_[Index31] = v31; m_[Index32] = v32; m_[Index33] = v33;
 }
 
-Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3)
+Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3) noexcept
 {
     m_[Index00] = row0.x_; m_[Index01] = row0.y_; m_[Index02] = row0.z_; m_[Index03] = row0.w_;
     m_[Index10] = row1.x_; m_[Index11] = row1.y_; m_[Index12] = row1.z_; m_[Index13] = row1.w_;
@@ -37,7 +37,7 @@ Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, 
     m_[Index30] = row3.x_; m_[Index31] = row3.y_; m_[Index32] = row3.z_; m_[Index33] = row3.w_;
 }
 
-Matrix4::Matrix4(const XMMATRIX& matrix)
+Matrix4::Matrix4(const XMMATRIX& matrix) noexcept
 {
     m_[Index00] = matrix.r[0].m128_f32[0]; m_[Index01] = matrix.r[0].m128_f32[1]; m_[Index02] = matrix.r[0].m128_f32[2]; m_[Index03] = matrix.r[0].m128_f32[3];
     m_[Index10] = matrix.r[1].m128_f32[0]; m_[Index11] = matrix.r[1].m128_f32[1]; m_[Index12] = matrix.r[1].m128_f32[2]; m_[Index13] = matrix.r[1].m128_f32[3];

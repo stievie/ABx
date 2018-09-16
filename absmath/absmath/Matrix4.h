@@ -31,15 +31,15 @@ public:
         Index33,
     };
 public:
-    Matrix4();
+    Matrix4() noexcept;
     Matrix4(
         float v00, float v01, float v02, float v03,                             // Row 1
         float v10, float v11, float v12, float v13,                             // Row 2
         float v20, float v21, float v22, float v23,                             // Row 3
         float v30, float v31, float v32, float v33                              // Row 4
-    );
-    Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3);
-    Matrix4(const XMMATRIX& matrix);
+    ) noexcept;
+    Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3) noexcept;
+    Matrix4(const XMMATRIX& matrix) noexcept;
 
     operator XMMATRIX() const
     {

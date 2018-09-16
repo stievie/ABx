@@ -146,30 +146,6 @@ public:
     virtual bool Serialize(IO::PropWriteStream& stream);
 
     virtual std::string GetName() const { return name_; }
-    virtual AB::Entities::CharacterSex GetSex() const
-    {
-        return AB::Entities::CharacterSexUnknown;
-    }
-    virtual uint32_t GetModelIndex() const
-    {
-        return 0;
-    }
-    virtual uint32_t GetProfIndex() const
-    {
-        return 0;
-    }
-    virtual uint32_t GetProf2Index() const
-    {
-        return 0;
-    }
-    virtual float GetSpeed() const
-    {
-        return 1.0f;
-    }
-    virtual bool IsUndestroyable() const
-    {
-        return true;
-    }
 
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
@@ -195,6 +171,8 @@ public:
     }
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
+
+    virtual void WriteSpawnData(Net::NetworkMessage&) { }
 
     virtual void OnSelected(std::shared_ptr<Creature>) { }
     virtual void OnClicked(std::shared_ptr<Creature>) { }

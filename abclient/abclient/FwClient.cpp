@@ -570,7 +570,7 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     graphics->SetWindowTitle("FW - " + accountName_);
 }
 
-void FwClient::OnChangeInstance(int64_t, const std::string& serverId,
+void FwClient::OnChangeInstance(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)
 {
     URHO3D_LOGINFOF("FwClient::OnChangeInstance(): %s", String(instanceUuid.c_str()));
@@ -579,6 +579,14 @@ void FwClient::OnChangeInstance(int64_t, const std::string& serverId,
         auto it = services_.find(serverId);
         if (it != services_.end())
         {
+            VariantMap& eData = GetEventDataMap();
+            using namespace AbEvents::ChangingInstance;
+            eData[P_UPDATETICK] = updateTick;
+            eData[P_SERVERUUID] = String(serverId.c_str());
+            eData[P_MAPUUID] = String(mapUuid.c_str());
+            eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
+            SendEvent(AbEvents::E_CHANGINGINSTANCE, eData);
+
             currentCharacterUuid_ = String(charUuid.c_str());
             client_.EnterWorld(charUuid, mapUuid,
                 (*it).second.host, (*it).second.port, instanceUuid);

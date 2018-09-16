@@ -99,6 +99,9 @@
     <ClInclude Include="DebugConfig.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="UuidUtils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -165,6 +168,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Variant.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="UuidUtils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

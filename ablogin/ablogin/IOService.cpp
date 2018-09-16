@@ -8,7 +8,7 @@ namespace IO {
 
 bool IOService::GetService(AB::Entities::ServiceType type,
     AB::Entities::Service& service,
-    const std::string& preferredUuid /* = "00000000-0000-0000-0000-000000000000" */)
+    const std::string& preferredUuid /* = Utils::Uuid::EMPTY_UUID */)
 {
     DataClient* dc = Application::Instance->GetDataClient();
 

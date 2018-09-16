@@ -160,6 +160,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="UuidUtils.h" />
     <ClInclude Include="Variant.h" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +190,7 @@
     </ClCompile>
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="UuidUtils.cpp" />
     <ClCompile Include="Variant.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

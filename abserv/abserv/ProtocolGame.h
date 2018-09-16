@@ -35,7 +35,9 @@ public:
     void Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
         const std::string& mapUuid, const std::string& instanceUuid);
     void Logout();
+    /// The client requests to enter a game. Find/create it, add the player and return success.
     void EnterGame();
+    /// Tells the client to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void WriteToOutput(const NetworkMessage& message);
 private:

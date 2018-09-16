@@ -69,7 +69,7 @@ public:
     }
 
     /// Move speed: 1 = normal speed
-    float GetSpeed() const override { return moveComp_.GetSpeedFactor(); }
+    float GetSpeed() const { return moveComp_.GetSpeedFactor(); }
     void SetSpeed(float value) { moveComp_.SetSpeedFactor(value); }
     uint32_t GetEnergy() const { return energy_; }
     void SetEnergy(uint32_t value) { energy_ = value; }
@@ -79,16 +79,24 @@ public:
     void SetAdrenaline(uint32_t value) { adrenaline_ = value; }
     uint32_t GetOvercast() const { return overcast_; }
     void SetOvercast(uint32_t value) { overcast_ = value; }
-    bool IsUndestroyable() const override { return undestroyable_; }
+    bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
 
     virtual uint32_t GetLevel() const { return 0; }
 
-    uint32_t GetProfIndex() const final override
+    virtual AB::Entities::CharacterSex GetSex() const
+    {
+        return AB::Entities::CharacterSexUnknown;
+    }
+    virtual uint32_t GetModelIndex() const
+    {
+        return 0;
+    }
+    uint32_t GetProfIndex() const
     {
         return skills_.prof1_.index;
     }
-    uint32_t GetProf2Index() const final override
+    uint32_t GetProf2Index() const
     {
         return skills_.prof2_.index;
     }
@@ -140,6 +148,7 @@ public:
     float attackSpeedFactor_ = 1.0f;
 
     bool Serialize(IO::PropWriteStream& stream) override;
+    void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 
 }

@@ -345,7 +345,8 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
     }
 
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
-    gameStatus_->Add<uint32_t>(object->id_);
+    object->WriteSpawnData(*gameStatus_);
+/*    gameStatus_->Add<uint32_t>(object->id_);
 
     gameStatus_->Add<float>(object->transformation_.position_.x_);
     gameStatus_->Add<float>(object->transformation_.position_.y_);
@@ -362,7 +363,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
     size_t dataSize;
     object->Serialize(data);
     const char* cData = data.GetStream(dataSize);
-    gameStatus_->AddString(std::string(cData, dataSize));
+    gameStatus_->AddString(std::string(cData, dataSize));   */
 }
 
 void Game::QueueLeaveObject(uint32_t objectId)
@@ -392,7 +393,9 @@ void Game::SendSpawnAll(uint32_t playerId)
             continue;
 
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
-        msg.Add<uint32_t>(o->id_);
+        o->WriteSpawnData(msg);
+
+/*        msg.Add<uint32_t>(o->id_);
         msg.Add<float>(o->transformation_.position_.x_);
         msg.Add<float>(o->transformation_.position_.y_);
         msg.Add<float>(o->transformation_.position_.z_);
@@ -407,7 +410,7 @@ void Game::SendSpawnAll(uint32_t playerId)
         size_t dataSize;
         o->Serialize(data);
         const char* cData = data.GetStream(dataSize);
-        msg.AddString(std::string(cData, dataSize));
+        msg.AddString(std::string(cData, dataSize));      */
     }
     if (msg.GetSize() != 0)
         player->client_->WriteToOutput(msg);

@@ -12,17 +12,17 @@ class Shape;
 class Sphere
 {
 public:
-    Sphere() :
+    Sphere() noexcept :
         center_(Vector3::Zero),
         radius_(-INFINITY)
     {}
     /// Copy-construct from another sphere.
-    Sphere(const Sphere& sphere) :
+    Sphere(const Sphere& sphere) noexcept :
         center_(sphere.center_),
         radius_(sphere.radius_)
     {}
     /// Construct from center and radius.
-    Sphere(const Vector3& center, float radius) :
+    Sphere(const Vector3& center, float radius) noexcept :
         center_(center),
         radius_(radius)
     {}

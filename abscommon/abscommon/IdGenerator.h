@@ -6,7 +6,7 @@ template <typename T>
 class IdGenerator
 {
 public:
-    IdGenerator() :
+    IdGenerator() noexcept :
         id_(std::numeric_limits<T>::min())
     { }
     ~IdGenerator() = default;

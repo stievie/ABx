@@ -13,6 +13,7 @@
 #include "MapWindow.h"
 #include "PartyWindow.h"
 #include "MissionMapWindow.h"
+#include "SkillBarWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
@@ -46,6 +47,7 @@ protected:
     SharedPtr<MapWindow> mapWindow_;
     SharedPtr<PartyWindow> partyWindow_;
     SharedPtr<MissionMapWindow> missionMap_;
+    SharedPtr<SkillBarWindow> skillBar_;
     String mapUuid_;
     String mapName_;
     /// All objects in the scene

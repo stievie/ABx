@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/Entities/Service.h>
+#include "UuidUtils.h"
 
 namespace IO {
 
@@ -13,7 +14,7 @@ public:
     /// Get the service with the least load.
     static bool GetService(AB::Entities::ServiceType type,
         AB::Entities::Service& service,
-        const std::string& preferredUuid = "00000000-0000-0000-0000-000000000000");
+        const std::string& preferredUuid = Utils::Uuid::EMPTY_UUID);
     static int GetServices(AB::Entities::ServiceType type,
         std::vector<AB::Entities::Service>& services);
 };

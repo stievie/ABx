@@ -676,6 +676,9 @@ void WorldLevel::CreateUI()
     chatWindow_.DynamicCast(wm->GetWindow(WINDOW_CHAT));
     uiRoot_->AddChild(chatWindow_);
 
+    skillBar_.DynamicCast(wm->GetWindow(WINDOW_SKILLBAR));
+    uiRoot_->AddChild(skillBar_);
+
     targetWindow_.DynamicCast(wm->GetWindow(WINDOW_TARGET));
     targetWindow_->SetVisible(false);
     uiRoot_->AddChild(targetWindow_);

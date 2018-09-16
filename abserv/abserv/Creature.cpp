@@ -97,6 +97,26 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
+void Creature::WriteSpawnData(Net::NetworkMessage& msg)
+{
+    msg.Add<uint32_t>(id_);
+    msg.Add<float>(transformation_.position_.x_);
+    msg.Add<float>(transformation_.position_.y_);
+    msg.Add<float>(transformation_.position_.z_);
+    msg.Add<float>(transformation_.rotation_);
+    msg.Add<float>(transformation_.scale_.x_);
+    msg.Add<float>(transformation_.scale_.y_);
+    msg.Add<float>(transformation_.scale_.z_);
+    msg.Add<uint8_t>(undestroyable_ ? 1 : 0);
+    msg.Add<uint8_t>(stateComp_.GetState());
+    msg.Add<float>(GetSpeed());
+    IO::PropWriteStream data;
+    size_t dataSize;
+    Serialize(data);
+    const char* cData = data.GetStream(dataSize);
+    msg.AddString(std::string(cData, dataSize));
+}
+
 void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration)
 {
     RemoveEffect(index);

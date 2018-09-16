@@ -8,6 +8,7 @@ static const StringHash WINDOW_PINGDOT("PingDot");
 static const StringHash WINDOW_TARGET("TargetWindow");
 static const StringHash WINDOW_NEWMAIL("NewMailWindow");
 static const StringHash WINDOW_MISSIONMAP("MissionMapWindow");
+static const StringHash WINDOW_SKILLBAR("SkillBarWindow");
 
 class WindowManager : public Object
 {

@@ -1,34 +1,85 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Name" value="SkillBar" />
-	<attribute name="Position" value="0 529" />
-	<attribute name="Size" value="480 60" />
-	<attribute name="Min Anchor" value="0.5 0" />
-	<attribute name="Max Anchor" value="0.5 0" />
-	<attribute name="Pivot" value="0.5 0" />
+	<attribute name="Size" value="400 50" />
+	<attribute name="Min Anchor" value="0.5 1" />
+	<attribute name="Max Anchor" value="0.5 1" />
+	<attribute name="Pivot" value="0.5 1" />
+	<attribute name="Bring To Back" value="false" />
 	<attribute name="Layout Mode" value="Horizontal" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="4 4 4 4" />
+	<attribute name="Resize Border" value="8 8 8 8" />
 	<element type="Button">
+		<attribute name="Name" value="Skill1" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill2" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill3" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill4" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill5" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill6" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill7" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 	<element type="Button">
+		<attribute name="Name" value="Skill8" />
 		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="16 0 32 16" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Hover Image Offset" value="0 16" />
+		<attribute name="Pressed Image Offset" value="16 0" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
 	</element>
 </element>

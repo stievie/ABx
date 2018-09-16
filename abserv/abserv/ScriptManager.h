@@ -8,6 +8,7 @@ private:
     static void LuaErrorHandler(int errCode, const char* message);
 public:
     ScriptManager() = delete;
+    ~ScriptManager() = delete;
 
     static void RegisterLuaAll(kaguya::State& state);
     static bool FunctionExists(kaguya::State& state, const std::string& name)

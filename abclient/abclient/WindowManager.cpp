@@ -11,6 +11,7 @@
 #include "Options.h"
 #include "NewMailWindow.h"
 #include "MissionMapWindow.h"
+#include "SkillBarWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -78,6 +79,13 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         else if (hash == WINDOW_MISSIONMAP)
         {
             SharedPtr<MissionMapWindow> wnd = SharedPtr<MissionMapWindow>(new MissionMapWindow(context_));
+            wnd->SetVisible(true);
+            opts->LoadWindow(wnd);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_SKILLBAR)
+        {
+            SharedPtr<SkillBarWindow> wnd = SharedPtr<SkillBarWindow>(new SkillBarWindow(context_));
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;

@@ -2,6 +2,7 @@
 #include "ConfigManager.h"
 #include "Logger.h"
 #include "StringUtils.h"
+#include "UuidUtils.h"
 
 #include "DebugNew.h"
 
@@ -27,7 +28,7 @@ bool ConfigManager::Load(const std::string& file)
         return false;
 
     config_[Key::ServerName] = GetGlobal("server_name", "abserv");
-    config_[Key::ServerID] = GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
+    config_[Key::ServerID] = GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
     config_[Key::Location] = GetGlobal("location", "--");
     config_[Key::GameIP] = Utils::ConvertStringToIP(GetGlobal("game_ip", "0.0.0.0"));
     config_[Key::LogDir] = GetGlobal("log_dir", "");

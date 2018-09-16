@@ -27,6 +27,14 @@ URHO3D_EVENT(E_GOTSERVICES, GotServices)
 {
 }
 
+URHO3D_EVENT(E_CHANGINGINSTANCE, ChangingInstance)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_SERVERUUID, ServerUuid);                // String
+    URHO3D_PARAM(P_MAPUUID, MapUuid);                      // String
+    URHO3D_PARAM(P_INSTANCEUUID, InstanceUuid);            // String
+}
+
 URHO3D_EVENT(E_SETLEVEL, SetLevel)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
@@ -294,6 +302,54 @@ URHO3D_EVENT(E_SC_SELECTNEXTALLY, SelectNextAlly)
 }
 
 URHO3D_EVENT(E_SC_SELECTPREVALLY, SelectPrevAlly)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL1, UseSkill1)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL2, UseSkill2)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL3, UseSkill3)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL4, UseSkill4)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL5, UseSkill5)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL6, UseSkill6)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL7, UseSkill7)
+{
+}
+
+URHO3D_EVENT(E_SC_USESKILL8, UseSkill8)
+{
+}
+
+URHO3D_EVENT(E_SC_WEAPONSET1, WeaponSet1)
+{
+}
+
+URHO3D_EVENT(E_SC_WEAPONSET2, WeaponSet2)
+{
+}
+
+URHO3D_EVENT(E_SC_WEAPONSET3, WeaponSet3)
+{
+}
+
+URHO3D_EVENT(E_SC_WEAPONSET4, WeaponSet4)
 {
 }
 

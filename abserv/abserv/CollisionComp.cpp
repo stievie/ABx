@@ -37,10 +37,6 @@ void CollisionComp::DoCollisions()
             }
         }
     }
-
-    // Keep on ground
-    float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
-    owner_.transformation_.position_.y_ = y;
 }
 
 }

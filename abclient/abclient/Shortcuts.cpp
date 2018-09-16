@@ -62,6 +62,21 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_MOUSELOOK] = ShortcutEvent(AbEvents::E_SC_MOUSELOOK, "Mouse look", Trigger::None, String::EMPTY, false);
     shortcuts_[AbEvents::E_SC_DEFAULTACTION] = ShortcutEvent(AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
 
+    // Skill
+    shortcuts_[AbEvents::E_SC_USESKILL1] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 1", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL2] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 2", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL3] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 3", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL4] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 4", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL5] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 5", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL6] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 6", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL7] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 7", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL8] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 8", Trigger::Down);
+
+    shortcuts_[AbEvents::E_SC_WEAPONSET1] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 1", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET2] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 2", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET3] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 3", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET4] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 4", Trigger::Down);
+
     // Select
     shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
     shortcuts_[AbEvents::E_SC_SELECTNEXTFOE] = ShortcutEvent(AbEvents::E_SC_SELECTNEXTFOE, "Select next Foe", Trigger::Down);
@@ -127,6 +142,19 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_TOGGLECHATWINDOW, { KEY_CARET });
 
     Add(AbEvents::E_SC_HIDEUI, { KEY_BACKSPACE });
+
+    Add(AbEvents::E_SC_USESKILL1, { KEY_1 });
+    Add(AbEvents::E_SC_USESKILL2, { KEY_2 });
+    Add(AbEvents::E_SC_USESKILL3, { KEY_3 });
+    Add(AbEvents::E_SC_USESKILL4, { KEY_4 });
+    Add(AbEvents::E_SC_USESKILL5, { KEY_5 });
+    Add(AbEvents::E_SC_USESKILL6, { KEY_6 });
+    Add(AbEvents::E_SC_USESKILL7, { KEY_7 });
+    Add(AbEvents::E_SC_USESKILL8, { KEY_8 });
+    Add(AbEvents::E_SC_WEAPONSET1, { KEY_F1 });
+    Add(AbEvents::E_SC_WEAPONSET2, { KEY_F2 });
+    Add(AbEvents::E_SC_WEAPONSET3, { KEY_F3 });
+    Add(AbEvents::E_SC_WEAPONSET4, { KEY_F4 });
 
     Add(AbEvents::E_SC_SELECTSELF, { KEY_F });
     Add(AbEvents::E_SC_SELECTNEXTFOE, { KEY_TAB });

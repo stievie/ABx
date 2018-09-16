@@ -9,19 +9,19 @@ namespace Math {
 class Quaternion
 {
 public:
-    Quaternion() :
+    Quaternion() noexcept :
         x_(0.0f),
         y_(0.0f),
         z_(0.0f),
         w_(0.0f)
     {}
-    Quaternion(const Vector3& v, float w) :
+    Quaternion(const Vector3& v, float w) noexcept :
         x_(v.x_),
         y_(v.y_),
         z_(v.z_),
         w_(w)
     {}
-    Quaternion(float x, float y, float z, float w) :
+    Quaternion(float x, float y, float z, float w) noexcept :
         x_(x),
         y_(y),
         z_(z),

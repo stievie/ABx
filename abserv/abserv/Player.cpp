@@ -494,7 +494,10 @@ void Player::ChangeInstance(const std::string& mapUuid)
     // TODO: all in the party must change to the same instance
     std::shared_ptr<Game> game = GameManager::Instance.GetGame(mapUuid, true);
     if (game)
+    {
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
         client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
+    }
 }
 
 void Player::RegisterLua(kaguya::State& state)
