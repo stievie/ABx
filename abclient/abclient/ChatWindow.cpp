@@ -418,7 +418,7 @@ void ChatWindow::HandleShortcutChatWhisper(StringHash, VariantMap&)
     FocusEdit();
 }
 
-void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
+bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
 {
     AB::GameProtocol::CommandTypes type = AB::GameProtocol::CommandTypeUnknown;
     String data;
@@ -494,7 +494,12 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         {
             type = AB::GameProtocol::CommandTypeChatWhisper;
             LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
-            String name = nameEdit->GetText();
+            String name = nameEdit->GetText().Trimmed();
+            if (name.Empty())
+            {
+                nameEdit->SetFocus(true);
+                return false;
+            }
             data = name + ", " + text;
             break;
         }
@@ -546,6 +551,7 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         break;
     }
     }
+    return true;
 }
 
 void ChatWindow::TrimLines()
@@ -593,9 +599,11 @@ void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)
     {
         AB::GameProtocol::ChatMessageChannel channel =
             static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetInt());
-        ParseChatCommand(line, channel);
+        if (ParseChatCommand(line, channel))
+        {
+            sender->SetText("");
+        }
     }
-    sender->SetText("");
     sender->SetFocus(false);
 }
 
