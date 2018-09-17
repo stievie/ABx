@@ -548,6 +548,12 @@ void ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     }
 }
 
+void ChatWindow::TrimLines()
+{
+    while (chatLog_->GetNumItems() > MAX_LINES)
+        chatLog_->RemoveItem((unsigned)0);
+}
+
 void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ScreenshotTaken;
@@ -604,6 +610,7 @@ void ChatWindow::AddLine(const String& text, const String& style)
     txt->SetWordwrap(true);
     txt->UpdateLayout();
     chatLog_->AddItem(txt);
+    TrimLines();
     chatLog_->EnsureItemVisibility(txt);
     chatLog_->EnableLayoutUpdate();
     chatLog_->UpdateLayout();
@@ -623,6 +630,7 @@ void ChatWindow::AddLine(const String& name, const String& text, const String& s
     SubscribeToEvent(txt, E_CLICK, URHO3D_HANDLER(ChatWindow, HandleNameClicked));
 
     chatLog_->AddItem(txt);
+    TrimLines();
     chatLog_->EnsureItemVisibility(txt);
     chatLog_->EnableLayoutUpdate();
     chatLog_->UpdateLayout();
@@ -658,6 +666,7 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
     textText->UpdateLayout();
 
     chatLog_->AddItem(nameText);
+    TrimLines();
     chatLog_->EnsureItemVisibility(nameText);
     chatLog_->EnableLayoutUpdate();
     chatLog_->UpdateLayout();

@@ -9,8 +9,10 @@ class ChatWindow : public UIElement
 {
     URHO3D_OBJECT(ChatWindow, UIElement);
 private:
+    static constexpr int MAX_LINES = 100;
     SharedPtr<BorderImage> background_;
     bool firstStart_;
+    void TrimLines();
     void HandleScreenshotTaken(StringHash eventType, VariantMap& eventData);
     void HandleEditFocused(StringHash eventType, VariantMap& eventData);
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
