@@ -107,6 +107,18 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
         nameEdit->SetAlignment(HA_LEFT, VA_CENTER);
         nameEdit->SetStyle("ChatLineEdit");
         nameEdit->SetSize(150, 20);
+        SubscribeToEvent(nameEdit, E_FOCUSED, [](StringHash, VariantMap& eventData)
+        {
+            using namespace Focused;
+            UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+            elem->SetOpacity(1.0f);
+        });
+        SubscribeToEvent(nameEdit, E_DEFOCUSED, [](StringHash, VariantMap& eventData)
+        {
+            using namespace Defocused;
+            UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+            elem->SetOpacity(0.7f);
+        });
         parent = container;
     }
 
@@ -549,14 +561,20 @@ void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleEditFocused(StringHash, VariantMap&)
+void ChatWindow::HandleEditFocused(StringHash, VariantMap& eventData)
 {
     UnsubscribeFromEvent(E_KEYDOWN);
+    using namespace Focused;
+    UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+    elem->SetOpacity(1.0f);
 }
 
-void ChatWindow::HandleEditDefocused(StringHash, VariantMap&)
+void ChatWindow::HandleEditDefocused(StringHash, VariantMap& eventData)
 {
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
+    using namespace Defocused;
+    UIElement* elem = dynamic_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+    elem->SetOpacity(0.7f);
 }
 
 void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)

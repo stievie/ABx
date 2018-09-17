@@ -49,5 +49,4 @@ private:
     void HandleToggleOptions(StringHash eventType, VariantMap& eventData);
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
     void HandleExitProgram(StringHash eventType, VariantMap& eventData);
-    void HandleExitRequest(StringHash eventType, VariantMap& eventData);
 };
