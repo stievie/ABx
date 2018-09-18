@@ -12,7 +12,7 @@ void SkillBar::RegisterLua(kaguya::State& state)
     );
 }
 
-void SkillBar::UseSkill(int index, std::shared_ptr<Creature> target)
+void SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 {
     Skill* s = skills_[index].get();
     if (s->IsChangingState())
@@ -42,7 +42,7 @@ void SkillBar::Update(uint32_t timeElapsed)
     }
     if (newSkill == -1 && !skillQueue_.empty())
     {
-        std::pair<uint32_t, std::weak_ptr<Creature>> sk = skillQueue_.front();
+        std::pair<uint32_t, std::weak_ptr<Actor>> sk = skillQueue_.front();
         skillQueue_.pop();
         std::shared_ptr<Skill> skill = GetSkill(sk.first);
         if (skill && skill->StartUse(owner_, sk.second.lock().get()))

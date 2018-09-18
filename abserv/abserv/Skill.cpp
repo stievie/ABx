@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Skill.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "ScriptManager.h"
 
 namespace Game {
@@ -48,7 +48,7 @@ void Skill::Update(uint32_t timeElapsed)
     }
 }
 
-bool Skill::StartUse(Creature* source, Creature* target)
+bool Skill::StartUse(Actor* source, Actor* target)
 {
     if (!IsUsing() ||
         !IsRecharged() ||

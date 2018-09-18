@@ -1,6 +1,6 @@
 -- Game start up
 function onStart()
-  local portal = self:AddNpc("/scripts/creatures/logic/portal.lua")
+  local portal = self:AddNpc("/scripts/actors/logic/portal.lua")
   if (portal ~= nil) then
     -- Map ID where this portal leads to
     portal:SetVarString("destination", "75e3dfcf-479a-11e8-ad09-02100700d6f0")
@@ -12,7 +12,7 @@ function onStart()
     portal:SetPosition(x, y, z)
   end
 
-  local smith = self:AddNpc("/scripts/creatures/npcs/smith.lua")
+  local smith = self:AddNpc("/scripts/actors/npcs/smith.lua")
   if (smith ~= nil) then
     local x = -6.71275
     local z = 15.5906
@@ -20,7 +20,7 @@ function onStart()
     smith:SetPosition(x, y, z)
     smith:SetRotation(180)
   end  
-  local merchant = self:AddNpc("/scripts/creatures/npcs/merchant.lua")
+  local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
     local x = 4.92965
     local z = 14.2049
@@ -28,7 +28,7 @@ function onStart()
     merchant:SetPosition(x, y, z)
     merchant:SetRotation(180)
   end  
-  local ped = self:AddNpc("/scripts/creatures/npcs/pedestrian.lua")
+  local ped = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
   if (ped ~= nil) then
     local x = 64.6874
     local z = 22.0684

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MoveComp.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "CollisionComp.h"
 #include "MathUtils.h"
 #include "Game.h"

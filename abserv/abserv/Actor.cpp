@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "EffectManager.h"
 #include "Game.h"
 #include <AB/ProtocolCodes.h>
@@ -13,33 +13,33 @@
 
 namespace Game {
 
-void Creature::RegisterLua(kaguya::State& state)
+void Actor::RegisterLua(kaguya::State& state)
 {
-    state["Creature"].setClass(kaguya::UserdataMetatable<Creature, GameObject>()
-        .addFunction("IsTrigger", &Creature::IsTrigger)
-        .addFunction("SetTrigger", &Creature::SetTrigger)
+    state["Actor"].setClass(kaguya::UserdataMetatable<Actor, GameObject>()
+        .addFunction("IsTrigger", &Actor::IsTrigger)
+        .addFunction("SetTrigger", &Actor::SetTrigger)
 
-        .addFunction("GetLevel", &Creature::GetLevel)
-        .addFunction("GetSkillBar", &Creature::GetSkillBar)
-        .addFunction("GetSelectedObject", &Creature::GetSelectedObject)
-        .addFunction("SetSelectedObject", &Creature::SetSelectedObject)
+        .addFunction("GetLevel", &Actor::GetLevel)
+        .addFunction("GetSkillBar", &Actor::GetSkillBar)
+        .addFunction("GetSelectedObject", &Actor::GetSelectedObject)
+        .addFunction("SetSelectedObject", &Actor::SetSelectedObject)
 
-        .addFunction("IsUndestroyable", &Creature::IsUndestroyable)
-        .addFunction("SetUndestroyable", &Creature::SetUndestroyable)
-        .addFunction("GetSpeed", &Creature::GetSpeed)
-        .addFunction("SetSpeed", &Creature::SetSpeed)
-        .addFunction("GetEnergy", &Creature::GetEnergy)
-        .addFunction("SetEnergy", &Creature::SetEnergy)
-        .addFunction("AddEffect", &Creature::AddEffect)
-        .addFunction("RemoveEffect", &Creature::RemoveEffect)
+        .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
+        .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
+        .addFunction("GetSpeed", &Actor::GetSpeed)
+        .addFunction("SetSpeed", &Actor::SetSpeed)
+        .addFunction("GetEnergy", &Actor::GetEnergy)
+        .addFunction("SetEnergy", &Actor::SetEnergy)
+        .addFunction("AddEffect", &Actor::AddEffect)
+        .addFunction("RemoveEffect", &Actor::RemoveEffect)
 
-        .addFunction("GotoPosition", &Creature::_LuaGotoPosition)
-        .addFunction("FollowObject", &Creature::FollowObject)
-        .addFunction("GetState", &Creature::_LuaGetState)
+        .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
+        .addFunction("FollowObject", &Actor::FollowObject)
+        .addFunction("GetState", &Actor::_LuaGetState)
     );
 }
 
-Creature::Creature() :
+Actor::Actor() :
     GameObject(),
     moveComp_(*this),
     autorunComp_(*this),
@@ -48,7 +48,7 @@ Creature::Creature() :
     undestroyable_(false),
     retriggerTimeout_(1000)
 {
-    // Creature always collides
+    // Actor always collides
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
     static const Math::Vector3 CREATURTE_BB_MAX(0.2f, 1.7f, 0.2f);
     SetCollisionShape(
@@ -58,7 +58,7 @@ Creature::Creature() :
     occluder_ = true;
 }
 
-void Creature::SetSelectedObject(std::shared_ptr<GameObject> object)
+void Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
 {
     Utils::VariantMap data;
     data[InputDataObjectId] = GetId();    // Source
@@ -69,7 +69,7 @@ void Creature::SetSelectedObject(std::shared_ptr<GameObject> object)
     inputs_.Add(InputType::Select, data);
 }
 
-void Creature::GotoPosition(const Math::Vector3& pos)
+void Actor::GotoPosition(const Math::Vector3& pos)
 {
     Utils::VariantMap data;
     data[InputDataVertexX] = pos.x_;
@@ -78,14 +78,14 @@ void Creature::GotoPosition(const Math::Vector3& pos)
     inputs_.Add(InputType::Goto, data);
 }
 
-void Creature::FollowObject(std::shared_ptr<GameObject> object)
+void Actor::FollowObject(std::shared_ptr<GameObject> object)
 {
     Utils::VariantMap data;
     data[InputDataObjectId] = object->id_;
     inputs_.Add(InputType::Follow, data);
 }
 
-bool Creature::Serialize(IO::PropWriteStream& stream)
+bool Actor::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
         return false;
@@ -97,7 +97,7 @@ bool Creature::Serialize(IO::PropWriteStream& stream)
     return true;
 }
 
-void Creature::WriteSpawnData(Net::NetworkMessage& msg)
+void Actor::WriteSpawnData(Net::NetworkMessage& msg)
 {
     msg.Add<uint32_t>(id_);
     msg.Add<float>(transformation_.position_.x_);
@@ -117,7 +117,7 @@ void Creature::WriteSpawnData(Net::NetworkMessage& msg)
     msg.AddString(std::string(cData, dataSize));
 }
 
-void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration)
+void Actor::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
 {
     RemoveEffect(index);
 
@@ -125,11 +125,11 @@ void Creature::AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint3
     if (effect)
     {
         effects_.push_back(effect);
-        effect->Start(source, GetThis<Creature>(), baseDuration);
+        effect->Start(source, GetThis<Actor>(), baseDuration);
     }
 }
 
-void Creature::DeleteEffect(uint32_t index)
+void Actor::DeleteEffect(uint32_t index)
 {
     auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
     {
@@ -141,7 +141,7 @@ void Creature::DeleteEffect(uint32_t index)
     }
 }
 
-void Creature::_LuaGotoPosition(float x, float y, float z)
+void Actor::_LuaGotoPosition(float x, float y, float z)
 {
     Math::Vector3 pos(x, y, z);
     if (Math::Equals(y, 0.0f))
@@ -151,12 +151,12 @@ void Creature::_LuaGotoPosition(float x, float y, float z)
     GotoPosition(Math::Vector3(x, y, z));
 }
 
-int Creature::_LuaGetState()
+int Actor::_LuaGetState()
 {
     return static_cast<int>(stateComp_.GetState());
 }
 
-void Creature::RemoveEffect(uint32_t index)
+void Actor::RemoveEffect(uint32_t index)
 {
     auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
     {
@@ -169,7 +169,7 @@ void Creature::RemoveEffect(uint32_t index)
     }
 }
 
-void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
+void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
 
@@ -284,7 +284,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             {
                 if (auto selObj = selectedObject_.lock())
                 {
-                    std::shared_ptr<Creature> target = selObj->GetThisDynamic<Creature>();
+                    std::shared_ptr<Actor> target = selObj->GetThisDynamic<Actor>();
                     if (target)
                     {
                         // Can use skills only on Creatures not all GameObjects
@@ -304,11 +304,11 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
 
-            Creature* source = nullptr;
+            Actor* source = nullptr;
             if (sourceId == id_)
                 source = this;
             else
-                source = dynamic_cast<Creature*>(GetGame()->GetObjectById(sourceId).get());
+                source = dynamic_cast<Actor*>(GetGame()->GetObjectById(sourceId).get());
 
             if (source)
             {
@@ -319,7 +319,7 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     message.Add<uint32_t>(source->id_);
                     if (auto sel = source->selectedObject_.lock())
                     {
-                        sel->OnSelected(source->GetThis<Creature>());
+                        sel->OnSelected(source->GetThis<Actor>());
                         message.Add<uint32_t>(sel->id_);
                     }
                     else
@@ -336,18 +336,18 @@ void Creature::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
 
-            Creature* source = nullptr;
+            Actor* source = nullptr;
             if (sourceId == id_)
                 source = this;
             else
-                source = dynamic_cast<Creature*>(GetGame()->GetObjectById(sourceId).get());
+                source = dynamic_cast<Actor*>(GetGame()->GetObjectById(sourceId).get());
 
             if (source)
             {
                 auto clickedObj = GetGame()->GetObjectById(targetId);
                 if (clickedObj)
                 {
-                    clickedObj->OnClicked(source->GetThis<Creature>());
+                    clickedObj->OnClicked(source->GetThis<Actor>());
                 }
             }
             break;

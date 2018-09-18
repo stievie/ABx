@@ -7,7 +7,7 @@
 
 namespace Game {
 
-class Creature;
+class Actor;
 
 struct AttributeValue
 {
@@ -20,20 +20,20 @@ class SkillBar
 private:
     std::array<std::shared_ptr<Skill>, PLAYER_MAX_SKILLS> skills_;
     std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> attributes_;
-    Creature* owner_;
-    std::queue<std::pair<int, std::weak_ptr<Creature>>> skillQueue_;
+    Actor* owner_;
+    std::queue<std::pair<int, std::weak_ptr<Actor>>> skillQueue_;
     int currentSkillIndex_;
 public:
     static void RegisterLua(kaguya::State& state);
 
-    SkillBar(Creature* owner) :
+    SkillBar(Actor* owner) :
         owner_(owner),
         currentSkillIndex_(-1)
     {
     };
     ~SkillBar() = default;
 
-    void UseSkill(int index, std::shared_ptr<Creature> target);
+    void UseSkill(int index, std::shared_ptr<Actor> target);
     Skill* GetCurrentSkill();
     void Update(uint32_t timeElapsed);
     std::string Encode();

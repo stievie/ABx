@@ -12,7 +12,7 @@
 namespace Game {
 
 /// Player, NPC, Monster some such
-class Creature : public GameObject
+class Actor : public GameObject
 {
     friend class Components::MoveComp;
     friend class Components::AutoRunComp;
@@ -30,7 +30,7 @@ protected:
     Components::CollisionComp collisionComp_;
 
     std::vector<Math::Vector3> wayPoints_;
-    /// Time in ms the same Creature can retrigger
+    /// Time in ms the same Actor can retrigger
     uint32_t retriggerTimeout_;
     std::map<uint32_t, int64_t> triggered_;
     /// If true fires onTrigger
@@ -44,7 +44,7 @@ protected:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Creature();
+    Actor();
 
     void SetGame(std::shared_ptr<Game> game) override
     {
@@ -110,7 +110,7 @@ public:
     {
         return &skills_;
     }
-    void AddEffect(std::shared_ptr<Creature> source, uint32_t index, uint32_t baseDuration);
+    void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
 

@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "Game.h"
 #include "Effect.h"
-#include "Creature.h"
+#include "Actor.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>
 #include "FriendList.h"
@@ -15,7 +15,7 @@ namespace Game {
 class PlayerManager;
 class MailBox;
 
-class Player final : public Creature
+class Player final : public Actor
 {
 private:
     std::unique_ptr<MailBox> mailBox_;

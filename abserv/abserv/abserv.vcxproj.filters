@@ -75,9 +75,6 @@
     <ClInclude Include="Asset.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Creature.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -189,6 +186,9 @@
     <ClInclude Include="ScriptManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -243,9 +243,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Asset.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Creature.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
@@ -354,6 +351,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ScriptManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

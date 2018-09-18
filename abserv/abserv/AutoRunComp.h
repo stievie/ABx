@@ -4,7 +4,7 @@
 
 namespace Game {
 
-class Creature;
+class Actor;
 class GameObject;
 
 namespace Components {
@@ -12,13 +12,13 @@ namespace Components {
 class AutoRunComp
 {
 private:
-    Creature& owner_;
+    Actor& owner_;
     int64_t lastCalc_;
     /// Maximum distance to consider being there
     float maxDist_;
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
-    std::weak_ptr<Creature> following_;
+    std::weak_ptr<Actor> following_;
     void Pop();
     const Math::Vector3& Next() const
     {
@@ -27,7 +27,7 @@ private:
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
 public:
-    AutoRunComp(Creature& owner) :
+    AutoRunComp(Actor& owner) :
         owner_(owner),
         lastCalc_(0),
         maxDist_(1.0f),

@@ -6,7 +6,7 @@
 
 namespace Game {
 
-class Creature;
+class Actor;
 
 enum EffectAttr : uint8_t
 {
@@ -21,8 +21,8 @@ class Effect
 {
 private:
     kaguya::State luaState_;
-    std::weak_ptr<Creature> target_;
-    std::weak_ptr<Creature> source_;
+    std::weak_ptr<Actor> target_;
+    std::weak_ptr<Actor> source_;
     bool persistent_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
@@ -50,7 +50,7 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    void Start(std::shared_ptr<Creature> source, std::shared_ptr<Creature> target, uint32_t baseDuration);
+    void Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t baseDuration);
     void Remove();
 
     bool Serialize(IO::PropWriteStream& stream);

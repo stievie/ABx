@@ -18,7 +18,7 @@
 namespace Game {
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
-    Creature(),
+    Actor(),
     client_(std::move(client)),
     lastPing_(0),
     mailBox_(nullptr)
@@ -34,7 +34,7 @@ Player::~Player()
 
 void Player::SetGame(std::shared_ptr<Game> game)
 {
-    Creature::SetGame(game);
+    Actor::SetGame(game);
     std::shared_ptr<Party> party = GetParty();
     // Changing the instance also clears any invites. The client should check that we
     // leave the instance so don't send anything to invitees.
@@ -502,7 +502,7 @@ void Player::ChangeInstance(const std::string& mapUuid)
 
 void Player::RegisterLua(kaguya::State& state)
 {
-    state["Player"].setClass(kaguya::UserdataMetatable<Player, Creature>()
+    state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
         .addFunction("ChangeInstance", &Player::ChangeInstance)
     );
 }

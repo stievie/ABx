@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Logger.h"
 #include "ConvexHull.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "Npc.h"
 #include "Player.h"
 #include "MathUtils.h"
@@ -38,7 +38,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("GetScale", &GameObject::_LuaGetScale)
 
         // Can return empty if up-cast is not possible
-        .addFunction("AsCreature", &GameObject::_LuaAsCreature)
+        .addFunction("AsActor", &GameObject::_LuaAsActor)
         .addFunction("AsNpc", &GameObject::_LuaAsNpc)
         .addFunction("AsPlayer", &GameObject::_LuaAsPlayer)
     );
@@ -193,7 +193,7 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     return true;
 }
 
-void GameObject::OnCollide(std::shared_ptr<Creature> creature)
+void GameObject::OnCollide(std::shared_ptr<Actor> actor)
 {
 }
 
@@ -252,9 +252,9 @@ std::vector<std::shared_ptr<GameObject>> GameObject::_LuaRaycast(float x, float 
     return result;
 }
 
-std::shared_ptr<Creature> GameObject::_LuaAsCreature()
+std::shared_ptr<Actor> GameObject::_LuaAsActor()
 {
-    return std::dynamic_pointer_cast<Creature>(shared_from_this());
+    return std::dynamic_pointer_cast<Actor>(shared_from_this());
 }
 
 std::shared_ptr<Npc> GameObject::_LuaAsNpc()

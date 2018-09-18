@@ -27,7 +27,7 @@ enum ObjerctAttr : uint8_t
 };
 
 class Game;
-class Creature;
+class Actor;
 class Npc;
 class Player;
 
@@ -40,7 +40,7 @@ private:
     std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::vector<std::shared_ptr<GameObject>> _LuaQueryObjects(float radius);
     std::vector<std::shared_ptr<GameObject>> _LuaRaycast(float x, float y, float z);
-    std::shared_ptr<Creature> _LuaAsCreature();
+    std::shared_ptr<Actor> _LuaAsActor();
     std::shared_ptr<Npc> _LuaAsNpc();
     std::shared_ptr<Player> _LuaAsPlayer();
     void _LuaSetPosition(float x, float y, float z);
@@ -174,10 +174,10 @@ public:
 
     virtual void WriteSpawnData(Net::NetworkMessage&) { }
 
-    virtual void OnSelected(std::shared_ptr<Creature>) { }
-    virtual void OnClicked(std::shared_ptr<Creature>) { }
-    virtual void OnCollide(std::shared_ptr<Creature> creature);
-    virtual void OnTrigger(std::shared_ptr<Creature>) { }
+    virtual void OnSelected(std::shared_ptr<Actor>) { }
+    virtual void OnClicked(std::shared_ptr<Actor>) { }
+    virtual void OnCollide(std::shared_ptr<Actor> actor);
+    virtual void OnTrigger(std::shared_ptr<Actor>) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

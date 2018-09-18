@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AutoRunComp.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "Game.h"
 #include "MathUtils.h"
 
@@ -9,11 +9,11 @@ namespace Components {
 
 bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
 {
-    auto creature = object->GetThisDynamic<Creature>();
-    if (!creature)
+    auto actor = object->GetThisDynamic<Actor>();
+    if (!actor)
         return false;
-    following_ = creature;
-    maxDist_ = Creature::MAX_INTERACTION_DIST;
+    following_ = actor;
+    maxDist_ = Actor::MAX_INTERACTION_DIST;
     if (auto f = following_.lock())
         return FindPath(f->transformation_.position_);
     return false;
@@ -89,7 +89,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     if (auto f = following_.lock())
     {
         if ((lastCalc_ != 0 && (Utils::AbTick() - lastCalc_) > 1000)
-            && (destination_.Distance(f->transformation_.position_) > Creature::SWITCH_WAYPOINT_DIST))
+            && (destination_.Distance(f->transformation_.position_) > Actor::SWITCH_WAYPOINT_DIST))
         {
             // Find new path when following object moved and enough time passed
             FindPath(f->transformation_.position_);
@@ -118,7 +118,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     const Math::Vector3& pt = Next();
     const float distance = pt.Distance(pos);
 
-    if (distance > Creature::SWITCH_WAYPOINT_DIST)
+    if (distance > Actor::SWITCH_WAYPOINT_DIST)
     {
         MoveTo(timeElapsed, pt);
     }

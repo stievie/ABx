@@ -15,13 +15,13 @@ void Npc::InitializeLua()
 
 void Npc::RegisterLua(kaguya::State& state)
 {
-    state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Creature>()
+    state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
         .addFunction("Say", &Npc::Say)
     );
 }
 
 Npc::Npc() :
-    Creature(),
+    Actor(),
     luaInitialized_(false)
 {
     InitializeLua();
@@ -66,7 +66,7 @@ bool Npc::LoadScript(const std::string& fileName)
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    Creature::Update(timeElapsed, message);
+    Actor::Update(timeElapsed, message);
     if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
 }
@@ -91,23 +91,23 @@ void Npc::Say(ChatType channel, const std::string& message)
     }
 }
 
-void Npc::OnSelected(std::shared_ptr<Creature> selector)
+void Npc::OnSelected(std::shared_ptr<Actor> selector)
 {
-    Creature::OnSelected(selector);
+    Actor::OnSelected(selector);
     if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onSelected"))
         luaState_["onSelected"](selector);
 }
 
-void Npc::OnClicked(std::shared_ptr<Creature> selector)
+void Npc::OnClicked(std::shared_ptr<Actor> selector)
 {
-    Creature::OnSelected(selector);
+    Actor::OnSelected(selector);
     if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onClicked"))
         luaState_["onClicked"](selector);
 }
 
-void Npc::OnCollide(std::shared_ptr<Creature> other)
+void Npc::OnCollide(std::shared_ptr<Actor> other)
 {
-    Creature::OnCollide(other);
+    Actor::OnCollide(other);
 
     if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onCollide"))
         luaState_["onCollide"](other);
@@ -116,9 +116,9 @@ void Npc::OnCollide(std::shared_ptr<Creature> other)
         OnTrigger(other);
 }
 
-void Npc::OnTrigger(std::shared_ptr<Creature> other)
+void Npc::OnTrigger(std::shared_ptr<Actor> other)
 {
-    Creature::OnTrigger(other);
+    Actor::OnTrigger(other);
     int64_t tick = Utils::AbTick();
     int64_t lasTrigger = triggered_[other->id_];
     if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)

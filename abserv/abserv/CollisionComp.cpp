@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CollisionComp.h"
 #include "GameObject.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "Game.h"
 
 namespace Game {
@@ -30,9 +30,9 @@ void CollisionComp::DoCollisions()
 
                     // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us
-                    ci->OnCollide(owner_.GetThis<Creature>());
+                    ci->OnCollide(owner_.GetThis<Actor>());
                     // Notify us for colliding with ci
-                    owner_.OnCollide(ci->GetThis<Creature>());
+                    owner_.OnCollide(ci->GetThis<Actor>());
                 }
             }
         }

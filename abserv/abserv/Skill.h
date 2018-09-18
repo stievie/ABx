@@ -5,7 +5,7 @@
 
 namespace Game {
 
-class Creature;
+class Actor;
 
 class Skill : public std::enable_shared_from_this<Skill>
 {
@@ -14,8 +14,8 @@ private:
     int64_t startUse_;
     int64_t recharged_;
     void InitializeLua();
-    Creature* source_;
-    Creature* target_;
+    Actor* source_;
+    Actor* target_;
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -39,7 +39,7 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    bool StartUse(Creature* source, Creature* target);
+    bool StartUse(Actor* source, Actor* target);
     void CancelUse();
     /// Disable a skill for some time
     void Disable(uint32_t ticks)
@@ -61,11 +61,11 @@ public:
             !IsType(AB::Entities::SkillTypeFlashEnchantment) &&
             !IsType(AB::Entities::SkillTypeShout);
     }
-    Creature* GetSource()
+    Actor* GetSource()
     {
         return source_;
     }
-    Creature* GetTarget()
+    Actor* GetTarget()
     {
         return target_;
     }

@@ -171,7 +171,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigManager.h" />
-    <ClInclude Include="Creature.h" />
+    <ClInclude Include="Actor.h" />
     <ClInclude Include="DebugNew.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="FriendList.h" />
@@ -230,7 +230,7 @@
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
-    <ClCompile Include="Creature.cpp" />
+    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="Game.cpp" />

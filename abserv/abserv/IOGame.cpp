@@ -60,7 +60,7 @@ AB::Entities::GameType IOGame::GetGameType(const std::string& mapUuid)
     g.uuid = mapUuid;
     if (!client->Read(g))
     {
-        LOG_ERROR << "Error reading game " << mapUuid << std::endl;
+        LOG_ERROR << "Error reading game with UUID " << mapUuid << std::endl;
         return AB::Entities::GameTypeUnknown;
     }
     return g.type;

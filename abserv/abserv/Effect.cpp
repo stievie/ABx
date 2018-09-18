@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Effect.h"
-#include "Creature.h"
+#include "Actor.h"
 #include "ScriptManager.h"
 #include "Utils.h"
 
@@ -40,7 +40,7 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
-void Effect::Start(std::shared_ptr<Creature> source, std::shared_ptr<Creature> target, uint32_t baseDuration)
+void Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t baseDuration)
 {
     target_ = target;
     source_ = source;

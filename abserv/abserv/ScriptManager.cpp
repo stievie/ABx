@@ -32,7 +32,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
 
     // Register all used classes
     GameObject::RegisterLua(state);
-    Creature::RegisterLua(state);
+    Actor::RegisterLua(state);
 
     Game::RegisterLua(state);
 

@@ -2,16 +2,16 @@
 
 namespace Game {
 
-class Creature;
+class Actor;
 
 namespace Components {
 
 class CollisionComp
 {
 private:
-    Creature& owner_;
+    Actor& owner_;
 public:
-    CollisionComp(Creature& owner) :
+    CollisionComp(Actor& owner) :
         owner_(owner)
     { }
     ~CollisionComp() = default;

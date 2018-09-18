@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Creature.h"
+#include "Actor.h"
 #include "Chat.h"
 
 namespace Game {
 
-class Npc final : public Creature
+class Npc final : public Actor
 {
 private:
     std::string name_;
@@ -46,10 +46,10 @@ public:
 
     void Say(ChatType channel, const std::string& message);
 
-    void OnSelected(std::shared_ptr<Creature> selector) override;
-    void OnClicked(std::shared_ptr<Creature> selector) override;
-    void OnCollide(std::shared_ptr<Creature> other) override;
-    void OnTrigger(std::shared_ptr<Creature> other) override;
+    void OnSelected(std::shared_ptr<Actor> selector) override;
+    void OnClicked(std::shared_ptr<Actor> selector) override;
+    void OnCollide(std::shared_ptr<Actor> other) override;
+    void OnTrigger(std::shared_ptr<Actor> other) override;
 };
 
 }

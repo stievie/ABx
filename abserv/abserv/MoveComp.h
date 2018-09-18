@@ -5,19 +5,19 @@
 
 namespace Game {
 
-class Creature;
+class Actor;
 
 namespace Components {
 
 class MoveComp
 {
 private:
-    Creature& owner_;
+    Actor& owner_;
     Math::Vector3 oldPosition_;
     float speedFactor_;
 public:
     static constexpr float BaseSpeed = 150.0f;
-    MoveComp(Creature& owner) :
+    MoveComp(Actor& owner) :
         owner_(owner),
         moveDir_(AB::GameProtocol::MoveDirectionNone),
         turnDir_(AB::GameProtocol::TurnDirectionNone),
