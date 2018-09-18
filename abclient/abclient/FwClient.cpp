@@ -169,6 +169,8 @@ void FwClient::LoadGames()
         game.name = pro.attribute("name").as_string();
         game.type = static_cast<AB::Entities::GameType>(pro.attribute("type").as_uint());
         game.landing = pro.attribute("landing").as_bool();
+        game.mapCoordX = pro.attribute("map_coord_x").as_int();
+        game.mapCoordY = pro.attribute("map_coord_y").as_int();
         games_.emplace(game.uuid, game);
     }
 }

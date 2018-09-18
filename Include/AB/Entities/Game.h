@@ -43,6 +43,8 @@ struct Game : Entity
         s.value1b(type);
         s.value1b(landing);
         s.value1b(partySize);
+        s.value4b(mapCoordX);
+        s.value4b(mapCoordY);
     }
 
     /// The name of the game
@@ -54,6 +56,8 @@ struct Game : Entity
     GameType type = GameTypeUnknown;
     bool landing = false;
     uint8_t partySize = 0;
+    int32_t mapCoordX = 0;
+    int32_t mapCoordY = 0;
 };
 
 }

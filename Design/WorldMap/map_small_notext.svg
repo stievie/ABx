@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- CreationDate: 09.18.2018 08:20:37 -->
+
+<!-- Creator: Martis Pro Version 1.4.0.145 -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1132px"
+   height="776px"
+   viewBox="0 0 1132 776"
+   version="1.1"
+   id="svg2"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="map_small_notext.svg"
+   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\map_small.png"
+   inkscape:export-xdpi="135"
+   inkscape:export-ydpi="135">
+  <defs
+     id="defs92" />
+  <sodipodi:namedview
+     pagecolor="#5e78f4"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     id="namedview90"
+     showgrid="false"
+     inkscape:zoom="0.86019175"
+     inkscape:cx="188.04309"
+     inkscape:cy="280.20999"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <metadata
+     id="metadata4">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:title>World detailed</dc:title>
+        <dc:date>10.10.2009 10:28:57</dc:date>
+        <dc:description>Detailed world map with country borders</dc:description>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Stefan Ascher</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>Stefan Ascher</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Copyright (C) 2009-2011, Stefan Ascher</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title6">World detailed</title>
+  <desc
+     id="desc8">Detailed world map with country borders</desc>
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;stroke-opacity:1;fill-opacity:1"
+     d="m 1132,551 -10,-5 -10,9 -6,16 5,9 -8,14 -3,7 -2,18 -22,-4 -7,0 -9,5 -26,-1 -11,10 -43,-12 -3,-1 -5,0 1,-3 -4,-1 -15,-10 0,-13 0,-11 -10,-10 1,4 -4,2 -6,0 -7,1 -7,-5 -13,0 -2,-14 -12,8 -4,-9 -10,3 -8,-4 -7,16 -13,9 -8,-6 8,-5 0,-8 -8,0 1,-15 8,-3 3,5 11,-10 11,-7 -11,0 -18,4 -24,2 -17,3 -24,2 -5,-9 -15,5 -8,-6 5,-5 9,-4 8,0 9,-3 5,-4 -2,-10 -19,-3 0,-6 -20,5 0,-7 0,-9 1,-12 -16,-3 3,-5 14,0 5,-8 1,-10 0,-7 -13,-3 -9,-5 -11,-5 -13,5 3,-11 -8,-6 -12,2 -13,5 -4,-5 -15,-6 -10,-2 0,-10 10,3 8,-1 5,-9 0,-3 -11,-2 -3,-9 -2,-10 9,-4 9,5 4,11 -2,9 7,7 11,7 2,-8 17,3 17,-3 19,-3 1,-7 -15,-3 -10,3 -6,2 -5,-15 -12,-2 1,-9 12,-4 12,-7 7,-7 -2,-9 -15,2 -10,-4 0,-7 16,-8 -14,-6 -9,-5 -9,-8 14,-14 16,-11 2,-9 -21,3 -23,5 -21,4 -11,-1 -16,4 -5,-8 11,-8 2,-9 -3,-15 2,-13 12,-6 11,-3 9,-13 16,-17 16,-8 14,-1 10,1 10,-2 16,-2 8,1 2,9 18,5 24,2 15,-5 2,-5 -4,-6 -9,-3 -7,-5 9,-3 14,2 9,3 -9,4 3,5 17,2 23,-2 30,-1 8,4 13,-2 10,-1 13,1 8,-4 4,-4 -11,-4 -7,3 -9,-3 -1,-6 9,-8 12,-2 18,0 10,-4 14,-2 18,0 18,-1 16,-2 -5,-7 -14,-1 -16,1 -15,0 -11,0 -10,-2 -5,-4 -3,-5 -7,-3 -6,-3 -7,-1 7,-8 4,-7 2,-6 7,-4 8,0 16,6 12,2 9,-2 9,-1 10,5 35,-2 6,-2 4,-6 9,1 7,6 14,3 27,6 z"
+     id="polygon10" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;stroke-opacity:1;fill-opacity:1"
+     d="m 109,125 2,-1 1,-8 14,1 11,-3 4,2 3,1 16,-6 10,0 5,5 0,1 9,-4 1,-3 3,-1 6,1 2,0 3,-4 8,-5 5,-8 12,-4 3,-3 7,4 6,-3 5,-1 9,2 3,1 7,0 3,2 13,-1 4,1 8,-6 5,4 4,-3 1,-15 6,-2 5,0 13,1 12,1 11,0 3,-1 1,-4 8,-3 4,4 6,-4 5,0 9,0 10,4 6,-4 10,0 3,-3 10,-2 3,-2 5,4 5,-3 1,2 3,-1 2,-1 -1,-6 4,-2 10,3 1,-2 7,-3 5,5 24,-5 0,1 3,9 5,5 4,0 1,1 7,0 6,8 5,-5 9,-1 15,5 6,2 7,4 3,2 3,5 9,0 15,-5 6,2 4,-5 10,1 5,2 3,-2 13,-2 3,3 2,0 8,-1 1,0 4,-3 11,-1 7,-8 -2,-5 2,-6 -3,-2 -1,-6 -4,-1 -3,-7 11,-5 20,4 9,2 9,7 6,2 1,13 4,9 -3,6 -2,1 -8,-1 -13,8 -8,1 -3,8 2,3 -2,3 2,0 -1,6 4,3 -1,3 -3,2 3,3 -7,2 0,3 -2,1 -1,-2 -2,3 -3,0 -2,4 2,1 -7,2 -5,8 -8,1 -16,9 -5,-11 -23,0 -28,-9 -17,-3 -11,2 -12,-3 -16,-1 -7,9 -18,1 -13,-6 -19,-5 -11,11 -14,11 -16,2 -12,-7 -16,3 -2,13 15,11 6,14 -12,5 -9,5 2,6 15,4 11,8 1,16 -20,-2 -10,-9 -5,-12 -18,-6 -17,-2 -2,6 -41,-17 2,-8 8,-10 -13,-8 -22,13 -13,6 4,8 -9,16 6,25 22,14 4,18 24,17 24,26 6,14 -14,1 -10,-14 -23,-4 -10,15 8,12 12,7 -2,11 -24,5 -29,0 24,15 24,-2 15,6 10,8 16,-5 7,11 2,12 16,-6 5,8 22,9 24,8 -9,19 5,13 5,19 -11,5 -13,-9 -13,-6 -10,-9 -8,-7 -27,4 -23,1 -19,-8 15,-8 19,-4 -10,-10 -26,-5 -13,-10 -14,7 -13,-15 -8,12 -30,2 -16,-7 -16,8 -14,-3 -14,2 -16,4 -2,-8 -13,-2 -5,8 -16,1 3,-14 -7,-9 -8,-11 -11,-8 -12,-5 8,-10 11,-6 12,5 11,-2 -1,-11 -10,-9 -9,3 -9,-3 -14,1 -33,-27 -16,-3 -5,-15 -4,-13 -16,-13 18,0 16,-7 5,-19 3,-3 0,-5 -4,-3 -6,-10 14,-1 1,-3 3,-4 13,1 11,-3 3,-8 3,-5 0,-5 3,-4 1,0 5,-6 0,-7 6,-5 10,1 4,-5 7,-6 2,-10 z"
+     id="polygon14" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+     d="m 203,404 25,10 45,9 19,12 21,6 16,14 7,7 -1,11 28,9 4,13 -30,3 -20,-9 -10,-8 -12,-7 -11,2 5,23 18,27 15,33 -4,11 6,16 8,10 -16,-7 -15,-13 -7,-11 -12,-5 -18,15 -3,11 7,11 -17,-6 0,-17 -13,-18 -9,-6 0,-9 -7,-14 -19,1 -6,18 5,12 -5,10 -8,-7 -13,0 -4,-9 0,-9 -13,-11 -1,-14 4,-12 14,6 -1,-24 -17,-14 -20,-6 -3,-11 -4,-7 -14,0 2,-11 14,-2 10,-13 3,-10 18,4 z"
+     id="polygon16" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+     d="m 640,751 -7,-7 -133,14 -3,-10 4,-8 -27,-7 -17,-7 -84,-4 5,-28 14,2 4,-8 -6,-11 5,3 7,8 1,6 23,3 16,2 2,9 14,3 19,-1 15,-10 45,3 1,8 16,2 22,4 24,-6 2,11 -2,10 16,2 14,-7 14,-4 18,8 -6,12 z"
+     id="polygon18" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+     d="m 319,339 6,-4 24,-3 13,16 26,2 7,11 19,8 19,3 6,22 8,14 24,19 32,6 15,14 3,12 -8,6 -17,-13 -7,-12 -20,-6 -22,-10 -13,-13 -6,-18 -22,1 -17,-7 2,-8 -38,-22 -12,-10 z"
+     id="polygon20" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+     d="m 615,300 17,-4 15,-5 10,-5 15,2 -2,8 9,8 4,13 -1,13 -24,0 -14,-3 -7,-6 -20,-6 z"
+     id="polygon22" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+     d="m 866,599 -3,13 -15,22 -12,0 -7,9 -4,9 -11,4 -4,-8 7,-15 -13,-2 11,-12 25,-13 z"
+     id="polygon24" />
+  <path
+     style="fill:#e8e7ab;stroke:#3739d5;stroke-width:1;fill-opacity:1;stroke-opacity:1"
+     d="m 81,427 -8,2 -8,-5 -13,0 -7,-11 -6,-8 10,0 7,-6 9,1 0,7 15,11 z"
+     id="polygon26" />
+  <path
+     style="fill:none;stroke:#c10000;stroke-width:1;stroke-dasharray:10, 5"
+     d="m 690,13 -74,149 -36,81 -21,62 -4,68 29,77 41,70 165,256"
+     id="polyline30" />
+  <path
+     style="fill:#e8e7ab;fill-opacity:1;stroke:#4f4dde;stroke-width:1;stroke-opacity:1"
+     d="m 633,147 16,-9 8,-1 5,-8 7,-2 -2,-1 2,-4 3,0 2,-3 1,2 2,-1 0,-3 7,-2 -3,-3 3,-2 1,-3 -4,-3 1,-6 -2,0 2,-3 -2,-3 3,-8 8,-1 13,-8 8,1 2,-1 3,-6 -4,-9 -1,-13 -6,-2 -9,-7 -1,-9 -7,-8 19,-5 17,-2 18,-9 23,-5 20,8 9,13 28,-6 17,-4 4,5 2,9 -9,5 0,4 7,10 6,11 16,10 24,8 4,10 13,-7 19,7 19,5 2,4 -6,12 -2,7 -12,8 -21,-1 -4,-8 -15,1 -21,-5 -20,3 -10,5 -7,3 -19,-6 -16,4 -9,7 -8,10 -9,10 -23,9 -19,5 -29,18 -22,15 -10,7 -12,11 -15,4 9,-9 4,-10 -6,-7 22,-9 18,-5 23,-8 3,-8 -18,-3 -14,2 -13,1 -19,1 -13.64407,-9.16525"
+     id="polyline34"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
+</svg>

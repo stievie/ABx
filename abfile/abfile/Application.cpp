@@ -592,6 +592,8 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("name") = g.name.c_str();
         gNd.append_attribute("type") = g.type;
         gNd.append_attribute("landing") = g.landing;
+        gNd.append_attribute("map_coord_x") = g.mapCoordX;
+        gNd.append_attribute("map_coord_y") = g.mapCoordY;
     }
 
     std::stringstream stream;

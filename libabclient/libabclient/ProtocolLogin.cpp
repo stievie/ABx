@@ -212,6 +212,8 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             g.name = message->GetStringEncrypted();
             g.type = static_cast<AB::Entities::GameType>(message->Get<uint8_t>());
             g.partySize = message->Get<uint8_t>();
+            g.mapCoordX = message->Get<int32_t>();
+            g.mapCoordY = message->Get<int32_t>();
             games.push_back(g);
         }
         if (gamelistCallback_)

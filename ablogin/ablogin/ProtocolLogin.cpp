@@ -402,6 +402,8 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
             output->AddStringEncrypted(game.name);
             output->AddByte(static_cast<uint8_t>(game.type));
             output->AddByte(game.partySize);
+            output->Add<int32_t>(game.mapCoordX);
+            output->Add<int32_t>(game.mapCoordY);
         }
     }
 

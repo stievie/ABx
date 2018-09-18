@@ -10,6 +10,18 @@
         <attribute name="Hover Image Offset" value="0 16" />
         <attribute name="Pressed Child Offset" value="-1 1" />
     </element>
+    <element type="MapButton" style="BorderImage">
+        <attribute name="Texture" value="Texture2D;Textures/map_city_icon.png" />
+        <attribute name="Image Rect" value="0 0 256 256" />
+        <attribute name="Border" value="0 0 0 0" />
+        <attribute name="Pressed Image Offset" value="513 0" />
+        <attribute name="Hover Image Offset" value="257 0" />
+        <element type="Text" internal="true">
+          <attribute name="Color" value="0 0 0" />
+          <attribute name="Text Effect" value="Shadow" />
+          <attribute name="Effect Color" value="0.5 0.5 0.5" />
+        </element>
+    </element>
     <element type="TabButton" style="BorderImage">
         <attribute name="Image Rect" value="208, 64, 224, 80" />
         <attribute name="Border" value="4 4 4 4" />

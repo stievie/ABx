@@ -37,6 +37,8 @@ bool DBGame::Load(AB::Entities::Game& game)
     game.script = result->GetString("script_file");
     game.landing = result->GetUInt("landing") != 0;
     game.partySize = static_cast<uint8_t>(result->GetUInt("party_size"));
+    game.mapCoordX = result->GetUInt("map_coord_x");
+    game.mapCoordY = result->GetUInt("map_coord_y");
 
     return true;
 }
