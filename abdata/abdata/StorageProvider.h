@@ -9,6 +9,7 @@
 #include <bitsery/traits/vector.h>
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
+#include "StringHash.h"
 
 // Clean cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
@@ -20,6 +21,15 @@ struct CacheFlags
     bool created;             // It exists in DB
     bool modified;
     bool deleted;
+};
+
+class KeyHash
+{
+public:
+    size_t operator()(const std::vector<uint8_t>& p) const
+    {
+        return Utils::StringHashRt((const char*)p.data(), p.size());
+    }
 };
 
 class StorageProvider
@@ -236,10 +246,11 @@ private:
     bool readonly_;
     bool running_;
     std::mutex lock_;
-    std::unordered_map<std::string, CacheItem> cache_;
-    std::map<std::string, std::string> playerNames_;
+    std::unordered_map<std::vector<uint8_t>, CacheItem, KeyHash> cache_;
+    /// Player name -> Cache Key
+    std::map<std::string, std::vector<uint8_t>> playerNames_;
     size_t currentSize_;
     size_t maxSize_;
-    std::unique_ptr<EvictionStrategy> evictor_;
+    OldestInsertionEviction evictor_;
 };
 

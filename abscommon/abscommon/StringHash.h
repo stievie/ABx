@@ -38,4 +38,15 @@ inline size_t StringHashRt(const char* str)
     return hash;
 }
 
+inline size_t StringHashRt(const char* str, size_t size)
+{
+    size_t hash = OFFSET;
+    for (size_t i = 0; i < size; ++i)
+    {
+        hash ^= str[i];
+        hash *= PRIME;
+    }
+    return hash;
+}
+
 }
