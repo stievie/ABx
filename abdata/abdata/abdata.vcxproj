@@ -167,6 +167,7 @@
     <ClInclude Include="DatabaseOdbc.h" />
     <ClInclude Include="DatabasePgsql.h" />
     <ClInclude Include="DatabaseSqlite.h" />
+    <ClInclude Include="DataKey.h" />
     <ClInclude Include="DBAccount.h" />
     <ClInclude Include="DBAccountBan.h" />
     <ClInclude Include="DBAccountKey.h" />

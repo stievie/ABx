@@ -44,7 +44,7 @@ void Connection::StartReadKey(uint16_t& keySize)
 {
     key_.resize(keySize);// .clear();//start fresh.TODO consider cost of this
     auto self = shared_from_this();
-    asio::async_read(socket_, asio::buffer(key_), asio::transfer_at_least(keySize),
+    asio::async_read(socket_, asio::buffer(key_.data_), asio::transfer_at_least(keySize),
         [this, self, keySize](const asio::error_code& error, size_t byteTransferred)
     {
         if (!error)

@@ -4,6 +4,7 @@
 #include <vector>
 #include "StorageProvider.h"
 #include "Dispatcher.h"
+#include "DataKey.h"
 
 class ConnectionManager;
 
@@ -80,7 +81,7 @@ private:
 
     asio::ip::tcp::socket socket_;
     uint8_t opcode_;
-    std::vector<uint8_t> key_;
+    DataKey key_;
     size_t maxDataSize_;
     size_t maxKeySize_;
     ConnectionManager& connectionManager_;

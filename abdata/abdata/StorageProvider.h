@@ -10,6 +10,7 @@
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
 #include "StringHash.h"
+#include "DataKey.h"
 
 // Clean cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
@@ -23,33 +24,24 @@ struct CacheFlags
     bool deleted;
 };
 
-class KeyHash
-{
-public:
-    size_t operator()(const std::vector<uint8_t>& p) const
-    {
-        return Utils::StringHashRt((const char*)p.data(), p.size());
-    }
-};
-
 class StorageProvider
 {
 public:
     StorageProvider(size_t maxSize, bool readonly);
 
-    bool Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
-    bool Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
-    bool Read(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
-    bool Delete(const std::vector<uint8_t>& key);
-    bool Invalidate(const std::vector<uint8_t>& key);
-    bool Preload(const std::vector<uint8_t>& key);
-    bool Exists(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Create(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Update(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Read(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Delete(const DataKey& key);
+    bool Invalidate(const DataKey& key);
+    bool Preload(const DataKey& key);
+    bool Exists(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
 
     // Client compatible Methods
     template<typename E>
     bool EntityRead(E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
         SetEntity<E>(entity, *data.get());
         if (!Read(aKey, data))
@@ -61,7 +53,7 @@ public:
     template<typename E>
     bool EntityDelete(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return Delete(aKey);
     }
     template<typename E>
@@ -74,7 +66,7 @@ public:
     template<typename E>
     bool EntityUpdate(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
         if (SetEntity<E>(entity, *data.get()) == 0)
             return false;
@@ -83,7 +75,7 @@ public:
     template<typename E>
     bool EntityCreate(E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
         if (SetEntity<E>(entity, *data.get()) == 0)
             return false;
@@ -92,13 +84,13 @@ public:
     template<typename E>
     bool EntityPreload(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return Preload(aKey);
     }
     template<typename E>
     bool EntityExists(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>();
         if (SetEntity<E>(entity, *data.get()) == 0)
             return false;
@@ -108,7 +100,7 @@ public:
     template<typename E>
     bool EntityInvalidate(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return Invalidate(aKey);
     }
     /// Flush all
@@ -117,8 +109,6 @@ private:
     /// first = flags, second = data
     using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;
 
-    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id);
-    static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id);
     /// Read UUID from data
     static uuids::uuid GetUuid(std::vector<uint8_t>& data);
 
@@ -127,11 +117,11 @@ private:
     void CacheData(const std::string& table, const uuids::uuid& id,
         std::shared_ptr<std::vector<uint8_t>> data,
         bool modified, bool created);
-    bool RemoveData(const std::vector<uint8_t>& key);
-    void PreloadTask(std::vector<uint8_t> key);
-    bool ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
+    bool RemoveData(const DataKey& key);
+    void PreloadTask(DataKey key);
+    bool ExistsData(const DataKey& key, std::vector<uint8_t>& data);
     /// If the data is a player and it's in playerNames_ remove it from playerNames_
-    void RemovePlayerFromCache(const std::vector<uint8_t>& key);
+    void RemovePlayerFromCache(const DataKey& key);
 
     void CleanCache();
     void CleanTask();
@@ -139,7 +129,7 @@ private:
     void FlushCacheTask();
 
     /// Loads Data from DB
-    bool LoadData(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool LoadData(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
     template<typename D, typename E>
     bool LoadFromDB(const uuids::uuid& id, std::vector<uint8_t>& data)
     {
@@ -161,7 +151,7 @@ private:
     /// Save data to DB or delete from DB.
     /// So synchronize this item with the DB. Depending on the data header calls
     /// CreateInDB(), SaveToDB() and/or DeleteFromDB()
-    bool FlushData(const std::vector<uint8_t>& key);
+    bool FlushData(const DataKey& key);
     template<typename D, typename E, typename I>
     bool FlushRecord(I& data)
     {
@@ -246,9 +236,9 @@ private:
     bool readonly_;
     bool running_;
     std::mutex lock_;
-    std::unordered_map<std::vector<uint8_t>, CacheItem, KeyHash> cache_;
+    std::unordered_map<DataKey, CacheItem, KeyHash> cache_;
     /// Player name -> Cache Key
-    std::map<std::string, std::vector<uint8_t>> playerNames_;
+    std::map<std::string, DataKey> playerNames_;
     size_t currentSize_;
     size_t maxSize_;
     OldestInsertionEviction evictor_;

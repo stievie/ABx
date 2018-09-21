@@ -59,7 +59,7 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     );
 }
 
-bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Create(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     auto _data = cache_.find(key);
 
@@ -74,7 +74,7 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
 
     std::string table;
     uuids::uuid _id;
-    if (!DecodeKey(key, table, _id))
+    if (!key.decode(table, _id))
     {
         LOG_ERROR << "Unable to decode key" << std::endl;
         return false;
@@ -95,11 +95,11 @@ bool StorageProvider::Create(const std::vector<uint8_t>& key, std::shared_ptr<st
     return true;
 }
 
-bool StorageProvider::Update(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Update(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
     uuids::uuid id;
-    if (!DecodeKey(key, table, id))
+    if (!key.decode(table, id))
     {
         LOG_ERROR << "Unable to decode key" << std::endl;
         return false;
@@ -132,9 +132,9 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
         );
     }
 
-    auto key = EncodeKey(table, id);
+    DataKey key(table, id);
 
-    const std::string keyString(key.begin(), key.end());
+    const std::string keyString = key.to_string();
     // we check if its already in cache
     if (cache_.find(key) == cache_.end())
     {
@@ -161,8 +161,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     }
 }
 
-bool StorageProvider::Read(const std::vector<uint8_t>& key,
-    std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Read(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
 //    AB_PROFILE;
 
@@ -178,7 +177,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
 
     std::string table;
     uuids::uuid _id;
-    if (!DecodeKey(key, table, _id))
+    if (!key.decode(table, _id))
     {
         LOG_ERROR << "Unable to decode key" << std::endl;
         return false;
@@ -216,7 +215,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
     if (_id.nil())
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
-    const auto newKey = EncodeKey(table, _id);
+    const DataKey newKey(table, _id);
     auto _newdata = cache_.find(newKey);
     if (_newdata == cache_.end())
     {
@@ -235,7 +234,7 @@ bool StorageProvider::Read(const std::vector<uint8_t>& key,
 
 }
 
-bool StorageProvider::Delete(const std::vector<uint8_t>& key)
+bool StorageProvider::Delete(const DataKey& key)
 {
     // You can only delete what you've loaded before
     auto data = cache_.find(key);
@@ -247,14 +246,14 @@ bool StorageProvider::Delete(const std::vector<uint8_t>& key)
     return true;
 }
 
-bool StorageProvider::Invalidate(const std::vector<uint8_t>& key)
+bool StorageProvider::Invalidate(const DataKey& key)
 {
     if (!FlushData(key))
         return false;
     return RemoveData(key);
 }
 
-void StorageProvider::PreloadTask(std::vector<uint8_t> key)
+void StorageProvider::PreloadTask(DataKey key)
 {
     // Dispatcher thread
 
@@ -264,10 +263,9 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
 
     std::string table;
     uuids::uuid _id;
-    if (!DecodeKey(key, table, _id))
+    if (!key.decode(table, _id))
     {
-        const std::string strKey(key.begin(), key.end());
-        LOG_ERROR << "Unable to decode key " << strKey << std::endl;
+        LOG_ERROR << "Unable to decode key " << key.format() << std::endl;
         return;
     }
     std::shared_ptr<std::vector<uint8_t>> data = std::make_shared<std::vector<uint8_t>>(0);
@@ -277,7 +275,7 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
     if (_id.nil())
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
-    auto newKey = EncodeKey(table, _id);
+    DataKey newKey(table, _id);
 
     auto _newdata = cache_.find(newKey);
     if (_newdata == cache_.end())
@@ -286,7 +284,7 @@ void StorageProvider::PreloadTask(std::vector<uint8_t> key)
     }
 }
 
-bool StorageProvider::Preload(const std::vector<uint8_t>& key)
+bool StorageProvider::Preload(const DataKey& key)
 {
     auto _data = cache_.find(key);
     if (_data == cache_.end())
@@ -299,7 +297,7 @@ bool StorageProvider::Preload(const std::vector<uint8_t>& key)
     return true;
 }
 
-bool StorageProvider::Exists(const std::vector<uint8_t>& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Exists(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     auto _data = cache_.find(key);
 
@@ -316,7 +314,7 @@ void StorageProvider::Shutdown()
     running_ = false;
     for (const auto& c : cache_)
     {
-        const std::vector<uint8_t> key(c.first.begin(), c.first.end());
+        const DataKey key(c.first);
         FlushData(key);
     }
 }
@@ -336,7 +334,7 @@ void StorageProvider::CleanCache()
     })) != cache_.end())
     {
         bool error = false;
-        const std::vector<uint8_t>& key = (*i).first;
+        const DataKey& key = (*i).first;
         if ((*i).second.first.created)
         {
             // If it's in DB (created == true) update changed data in DB
@@ -347,7 +345,7 @@ void StorageProvider::CleanCache()
             // Remove from players cache
             RemovePlayerFromCache(key);
             currentSize_ -= (*i).second.second->size();
-            const std::string keyString(key.begin(), key.end());
+            const std::string keyString = key.to_string();
             evictor_.DeleteKey(keyString);
             cache_.erase(i++);
             ++removed;
@@ -395,11 +393,10 @@ void StorageProvider::FlushCache()
     })) != cache_.end())
     {
         ++written;
-        const std::vector<uint8_t>& key = (*i).first;
+        const DataKey& key = (*i).first;
         if (!FlushData(key))
         {
-            const std::string strKey(key.begin(), key.end());
-            LOG_WARNING << "Error flushing " << strKey << std::endl;
+            LOG_WARNING << "Error flushing " << key.format() << std::endl;
             // Error, break for now and try  the next time.
             // In case of lost connection it would try forever.
             break;
@@ -422,24 +419,6 @@ void StorageProvider::FlushCacheTask()
     }
 }
 
-bool StorageProvider::DecodeKey(const std::vector<uint8_t>& key,
-    std::string& table, uuids::uuid& id)
-{
-    // key = <tablename><guid>
-    if (key.size() <= uuids::uuid::state_size)
-        return false;
-    table.assign(key.begin(), key.end() - uuids::uuid::state_size);
-    id = uuids::uuid(key.end() - uuids::uuid::state_size, key.end());
-    return true;
-}
-
-std::vector<uint8_t> StorageProvider::EncodeKey(const std::string& table, const uuids::uuid& id)
-{
-    std::vector<uint8_t> result(table.begin(), table.end());
-    result.insert(result.end(), id.begin(), id.end());
-    return result;
-}
-
 uuids::uuid StorageProvider::GetUuid(std::vector<uint8_t>& data)
 {
     // Get UUID from raw data. UUID is serialized first as string
@@ -460,7 +439,7 @@ void StorageProvider::CreateSpace(size_t size)
     while ((currentSize_ + sizeNeeded) > maxSize_)
     {
         std::string dataToRemove = evictor_.NextEviction();
-        const std::vector<uint8_t> key(dataToRemove.begin(), dataToRemove.end());
+        const DataKey key(dataToRemove);
 
         if (FlushData(key))
             RemoveData(key);
@@ -469,7 +448,7 @@ void StorageProvider::CreateSpace(size_t size)
     }
 }
 
-bool StorageProvider::RemoveData(const std::vector<uint8_t>& key)
+bool StorageProvider::RemoveData(const DataKey& key)
 {
     auto data = cache_.find(key);
     if (data != cache_.end())
@@ -478,7 +457,7 @@ bool StorageProvider::RemoveData(const std::vector<uint8_t>& key)
 
         currentSize_ -= (*data).second.second->size();
         cache_.erase(key);
-        const std::string strKey(key.begin(), key.end());
+        const std::string strKey = key.to_string();
         evictor_.DeleteKey(strKey);
 
         return true;
@@ -486,15 +465,14 @@ bool StorageProvider::RemoveData(const std::vector<uint8_t>& key)
     return false;
 }
 
-bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
+bool StorageProvider::LoadData(const DataKey& key,
     std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
     uuids::uuid id;
-    if (!DecodeKey(key, table, id))
+    if (!key.decode(table, id))
     {
-        const std::string keyString(key.begin(), key.end());
-        LOG_ERROR << "Unable to decode key " << keyString << std::endl;
+        LOG_ERROR << "Unable to decode key " << key.format() << std::endl;
         return false;
     }
 
@@ -568,7 +546,7 @@ bool StorageProvider::LoadData(const std::vector<uint8_t>& key,
     return false;
 }
 
-bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
+bool StorageProvider::FlushData(const DataKey& key)
 {
     if (readonly_)
     {
@@ -585,10 +563,9 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
 
     std::string table;
     uuids::uuid id;
-    if (!DecodeKey(key, table, id))
+    if (!key.decode(table, id))
     {
-        const std::string keyString(key.begin(), key.end());
-        LOG_ERROR << "Unable to decode key " << keyString << std::endl;
+        LOG_ERROR << "Unable to decode key " << key.format() << std::endl;
         return false;
     }
 
@@ -698,11 +675,11 @@ bool StorageProvider::FlushData(const std::vector<uint8_t>& key)
     return succ;
 }
 
-bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+bool StorageProvider::ExistsData(const DataKey& key, std::vector<uint8_t>& data)
 {
     std::string table;
     uuids::uuid id;
-    if (!DecodeKey(key, table, id))
+    if (!key.decode(table, id))
         return false;
 
     size_t tableHash = Utils::StringHashRt(table.data());
@@ -775,11 +752,11 @@ bool StorageProvider::ExistsData(const std::vector<uint8_t>& key, std::vector<ui
     return false;
 }
 
-void StorageProvider::RemovePlayerFromCache(const std::vector<uint8_t>& key)
+void StorageProvider::RemovePlayerFromCache(const DataKey& key)
 {
     std::string table;
     uuids::uuid playerUuid;
-    if (!DecodeKey(key, table, playerUuid))
+    if (!key.decode(table, playerUuid))
         return;
 
     size_t tableHash = Utils::StringHashRt(table.data());
