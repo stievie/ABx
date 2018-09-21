@@ -236,7 +236,7 @@ private:
     bool readonly_;
     bool running_;
     std::mutex lock_;
-    std::unordered_map<DataKey, CacheItem, KeyHash> cache_;
+    std::unordered_map<DataKey, CacheItem> cache_;
     /// Player name -> Cache Key
     std::map<std::string, DataKey> playerNames_;
     size_t currentSize_;

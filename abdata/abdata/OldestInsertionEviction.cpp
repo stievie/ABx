@@ -10,22 +10,22 @@ OldestInsertionEviction::OldestInsertionEviction() :
 {
 }
 
-std::string OldestInsertionEviction::NextEviction()
+DataKey OldestInsertionEviction::NextEviction()
 {
     DataItemContainer::nth_index<1>::type& rankIndex = dataItems_.get<1>();
 
     auto first = rankIndex.begin();
-    std::string retVal = first->key;
+    const DataKey& retVal = first->key;
     dataItems_.erase(retVal);
     return retVal;
 }
 
-void OldestInsertionEviction::AddKey(const std::string& key)
+void OldestInsertionEviction::AddKey(const DataKey& key)
 {
     dataItems_.insert(DataItem(key, GetNextRank()));
 }
 
-void OldestInsertionEviction::RefreshKey(const std::string& key)
+void OldestInsertionEviction::RefreshKey(const DataKey& key)
 {
     uint64_t next = GetNextRank();
     auto keyItr = dataItems_.find(key);
@@ -35,7 +35,7 @@ void OldestInsertionEviction::RefreshKey(const std::string& key)
     });
 }
 
-void OldestInsertionEviction::DeleteKey(const std::string& key)
+void OldestInsertionEviction::DeleteKey(const DataKey& key)
 {
     auto keyItr = dataItems_.find(key);
     if (keyItr != dataItems_.end())

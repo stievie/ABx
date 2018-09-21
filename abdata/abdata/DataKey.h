@@ -55,10 +55,7 @@ public:
         id = uuids::uuid(data_.end() - uuids::uuid::state_size, data_.end());
         return true;
     }
-    const std::string to_string() const
-    {
-        return std::string(data_.begin(), data_.end());
-    }
+    /// Pretty print key
     std::string format() const
     {
         std::string table;
@@ -76,11 +73,15 @@ inline bool operator==(const DataKey& lhs, const DataKey& rhs)
     return (lhs.data_ == rhs.data_);
 }
 
-class KeyHash
+namespace std
 {
-public:
-    size_t operator()(const DataKey& p) const
+template<> struct hash<DataKey>
+{
+    typedef DataKey argument_type;
+    typedef std::size_t result_type;
+    result_type operator()(argument_type const& s) const noexcept
     {
-        return Utils::StringHashRt((const char*)p.data(), p.size());
+        return Utils::StringHashRt((const char*)s.data(), s.size());
     }
 };
+}
