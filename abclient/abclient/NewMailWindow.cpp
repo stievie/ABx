@@ -111,3 +111,8 @@ void NewMailWindow::SetSubject(const String& value)
 {
     subject_->SetText(value);
 }
+
+const String& NewMailWindow::GetSubject() const
+{
+    return subject_->GetText();
+}

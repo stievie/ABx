@@ -576,8 +576,13 @@ void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
     NewMailWindow* wnd = dynamic_cast<NewMailWindow*>(wm->GetWindow(WINDOW_NEWMAIL, true).Get());
     using namespace AbEvents::ReplyMail;
     wnd->SetRecipient(eventData[P_RECIPIENT].GetString());
-    wnd->SetSubject("Re: " + eventData[P_SUBJECT].GetString());
+    const String& subj = eventData[P_SUBJECT].GetString();
+    if (!subj.StartsWith("Re: "))
+        wnd->SetSubject("Re: " + subj);
+    else
+        wnd->SetSubject(subj);
     wnd->SetVisible(true);
+    wnd->BringToFront();
 }
 
 void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
@@ -585,6 +590,8 @@ void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_NEWMAIL, true);
     wnd->SetVisible(!wnd->IsVisible());
+    if (wnd->IsVisible())
+        wnd->BringToFront();
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,
