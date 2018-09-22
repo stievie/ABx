@@ -59,7 +59,7 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     );
 }
 
-bool StorageProvider::Create(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     auto _data = cache_.find(key);
 
@@ -95,7 +95,7 @@ bool StorageProvider::Create(const DataKey& key, std::shared_ptr<std::vector<uin
     return true;
 }
 
-bool StorageProvider::Update(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Update(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
     uuids::uuid id;
@@ -132,7 +132,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
         );
     }
 
-    DataKey key(table, id);
+    const IO::DataKey key(table, id);
 
     // we check if its already in cache
     if (cache_.find(key) == cache_.end())
@@ -155,12 +155,13 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
         AB::Entities::Character ch;
         if (GetEntity(*data, ch))
         {
+            std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), ::tolower);
             playerNames_[ch.name] = key;
         }
     }
 }
 
-bool StorageProvider::Read(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
 //    AB_PROFILE;
 
@@ -190,6 +191,7 @@ bool StorageProvider::Read(const DataKey& key, std::shared_ptr<std::vector<uint8
         AB::Entities::Character ch;
         if (GetEntity(*data, ch) && !ch.name.empty())
         {
+            std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), ::tolower);
             auto playerIt = playerNames_.find(ch.name);
             if (playerIt != playerNames_.end())
             {
@@ -214,7 +216,7 @@ bool StorageProvider::Read(const DataKey& key, std::shared_ptr<std::vector<uint8
     if (_id.nil())
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
-    const DataKey newKey(table, _id);
+    const IO::DataKey newKey(table, _id);
     auto _newdata = cache_.find(newKey);
     if (_newdata == cache_.end())
     {
@@ -233,7 +235,7 @@ bool StorageProvider::Read(const DataKey& key, std::shared_ptr<std::vector<uint8
 
 }
 
-bool StorageProvider::Delete(const DataKey& key)
+bool StorageProvider::Delete(const IO::DataKey& key)
 {
     // You can only delete what you've loaded before
     auto data = cache_.find(key);
@@ -245,14 +247,14 @@ bool StorageProvider::Delete(const DataKey& key)
     return true;
 }
 
-bool StorageProvider::Invalidate(const DataKey& key)
+bool StorageProvider::Invalidate(const IO::DataKey& key)
 {
     if (!FlushData(key))
         return false;
     return RemoveData(key);
 }
 
-void StorageProvider::PreloadTask(DataKey key)
+void StorageProvider::PreloadTask(IO::DataKey key)
 {
     // Dispatcher thread
 
@@ -274,7 +276,7 @@ void StorageProvider::PreloadTask(DataKey key)
     if (_id.nil())
         // If no UUID given in key (e.g. when reading by name) cache with the proper key
         _id = GetUuid(*data);
-    DataKey newKey(table, _id);
+    IO::DataKey newKey(table, _id);
 
     auto _newdata = cache_.find(newKey);
     if (_newdata == cache_.end())
@@ -283,7 +285,7 @@ void StorageProvider::PreloadTask(DataKey key)
     }
 }
 
-bool StorageProvider::Preload(const DataKey& key)
+bool StorageProvider::Preload(const IO::DataKey& key)
 {
     auto _data = cache_.find(key);
     if (_data == cache_.end())
@@ -296,7 +298,7 @@ bool StorageProvider::Preload(const DataKey& key)
     return true;
 }
 
-bool StorageProvider::Exists(const DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
+bool StorageProvider::Exists(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
 {
     auto _data = cache_.find(key);
 
@@ -313,8 +315,7 @@ void StorageProvider::Shutdown()
     running_ = false;
     for (const auto& c : cache_)
     {
-        const DataKey key(c.first);
-        FlushData(key);
+        FlushData(c.first);
     }
 }
 
@@ -333,7 +334,7 @@ void StorageProvider::CleanCache()
     })) != cache_.end())
     {
         bool error = false;
-        const DataKey& key = (*i).first;
+        const IO::DataKey& key = (*i).first;
         if ((*i).second.first.created)
         {
             // If it's in DB (created == true) update changed data in DB
@@ -391,7 +392,7 @@ void StorageProvider::FlushCache()
     })) != cache_.end())
     {
         ++written;
-        const DataKey& key = (*i).first;
+        const IO::DataKey& key = (*i).first;
         if (!FlushData(key))
         {
             LOG_WARNING << "Error flushing " << key.format() << std::endl;
@@ -436,7 +437,7 @@ void StorageProvider::CreateSpace(size_t size)
     const size_t sizeNeeded = size * 2;
     while ((currentSize_ + sizeNeeded) > maxSize_)
     {
-        const DataKey key = evictor_.NextEviction();
+        const IO::DataKey key = evictor_.NextEviction();
         if (FlushData(key))
             RemoveData(key);
         else
@@ -444,7 +445,7 @@ void StorageProvider::CreateSpace(size_t size)
     }
 }
 
-bool StorageProvider::RemoveData(const DataKey& key)
+bool StorageProvider::RemoveData(const IO::DataKey& key)
 {
     auto data = cache_.find(key);
     if (data != cache_.end())
@@ -460,7 +461,7 @@ bool StorageProvider::RemoveData(const DataKey& key)
     return false;
 }
 
-bool StorageProvider::LoadData(const DataKey& key,
+bool StorageProvider::LoadData(const IO::DataKey& key,
     std::shared_ptr<std::vector<uint8_t>> data)
 {
     std::string table;
@@ -541,7 +542,7 @@ bool StorageProvider::LoadData(const DataKey& key,
     return false;
 }
 
-bool StorageProvider::FlushData(const DataKey& key)
+bool StorageProvider::FlushData(const IO::DataKey& key)
 {
     if (readonly_)
     {
@@ -670,7 +671,7 @@ bool StorageProvider::FlushData(const DataKey& key)
     return succ;
 }
 
-bool StorageProvider::ExistsData(const DataKey& key, std::vector<uint8_t>& data)
+bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& data)
 {
     std::string table;
     uuids::uuid id;
@@ -747,7 +748,7 @@ bool StorageProvider::ExistsData(const DataKey& key, std::vector<uint8_t>& data)
     return false;
 }
 
-void StorageProvider::RemovePlayerFromCache(const DataKey& key)
+void StorageProvider::RemovePlayerFromCache(const IO::DataKey& key)
 {
     std::string table;
     uuids::uuid playerUuid;

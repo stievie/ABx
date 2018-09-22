@@ -24,7 +24,7 @@ void DataClient::Connect(const std::string& host, uint16_t port)
     TryConnect(false);
 }
 
-bool DataClient::MakeRequest(OpCodes opCode, const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uint8_t>& data)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
@@ -32,7 +32,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const std::vector<uint8_t>& key, st
     if (!TryWrite(asio::buffer(header)))
         return false;
 
-    if (!TryWrite(asio::buffer(key)))
+    if (!TryWrite(asio::buffer(key.data_)))
         return false;
 
     uint8_t dsize4 = static_cast<uint8_t>(data.size() >> 24);
@@ -68,7 +68,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const std::vector<uint8_t>& key, st
     return true;
 }
 
-bool DataClient::MakeRequestNoData(OpCodes opCode, const std::vector<uint8_t>& key)
+bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
@@ -76,7 +76,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const std::vector<uint8_t>& k
     if (!TryWrite(asio::buffer(header)))
         return false;
 
-    if (!TryWrite(asio::buffer(key)))
+    if (!TryWrite(asio::buffer(key.data_)))
         return false;
 
     uint8_t result[128];
@@ -89,37 +89,37 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const std::vector<uint8_t>& k
     return false;
 }
 
-bool DataClient::ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+bool DataClient::ReadData(const DataKey& key, std::vector<uint8_t>& data)
 {
     return MakeRequest(OpCodes::Read, key, data);
 }
 
-bool DataClient::DeleteData(const std::vector<uint8_t>& key)
+bool DataClient::DeleteData(const DataKey& key)
 {
     return MakeRequestNoData(OpCodes::Delete, key);
 }
 
-bool DataClient::ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+bool DataClient::ExistsData(const DataKey& key, std::vector<uint8_t>& data)
 {
     return MakeRequest(OpCodes::Exists, key, data);
 }
 
-bool DataClient::UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+bool DataClient::UpdateData(const DataKey& key, std::vector<uint8_t>& data)
 {
     return MakeRequest(OpCodes::Update, key, data);
 }
 
-bool DataClient::CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data)
+bool DataClient::CreateData(const DataKey& key, std::vector<uint8_t>& data)
 {
     return MakeRequest(OpCodes::Create, key, data);
 }
 
-bool DataClient::PreloadData(const std::vector<uint8_t>& key)
+bool DataClient::PreloadData(const DataKey& key)
 {
     return MakeRequestNoData(OpCodes::Preload, key);
 }
 
-bool DataClient::InvalidateData(const std::vector<uint8_t>& key)
+bool DataClient::InvalidateData(const DataKey& key)
 {
     return MakeRequestNoData(OpCodes::Invalidate, key);
 }

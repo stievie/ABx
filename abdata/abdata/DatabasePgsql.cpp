@@ -231,7 +231,7 @@ int64_t PgsqlResult::GetLong(const std::string& col)
 
 uint64_t PgsqlResult::GetULong(const std::string& col)
 {
-    return strtoul(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())), nullptr, 0);
+    return strtoull(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())), nullptr, 0);
 }
 
 time_t PgsqlResult::GetTime(const std::string& col)

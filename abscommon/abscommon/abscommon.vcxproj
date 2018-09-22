@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="Connection.h" />
     <ClInclude Include="CpuUsage.h" />
+    <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />

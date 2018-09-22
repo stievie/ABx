@@ -1,5 +1,6 @@
 # TODO
 
+* abdata: Use bit set cache item flags, sot a struct
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap
 * abclient: https://urho3d.github.io/documentation/1.7/_lights.html
 * abserv: TerrainPatch raycast query

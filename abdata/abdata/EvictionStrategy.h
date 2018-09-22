@@ -11,9 +11,9 @@
 class DataItem
 {
 public:
-    DataKey key;
+    IO::DataKey key;
     uint64_t rank;
-    DataItem(const DataKey& k, uint64_t r) :
+    DataItem(const IO::DataKey& k, uint64_t r) :
         key(k),
         rank(r)
     { }
@@ -25,9 +25,9 @@ public:
 
 namespace boost
 {
-template<> struct hash<DataKey>
+template<> struct hash<IO::DataKey>
 {
-    typedef DataKey argument_type;
+    typedef IO::DataKey argument_type;
     typedef std::size_t result_type;
     result_type operator()(argument_type const& p) const noexcept
     {
@@ -41,7 +41,7 @@ typedef boost::multi_index::multi_index_container
     DataItem,
     boost::multi_index::indexed_by
     <
-        boost::multi_index::hashed_unique<boost::multi_index::member<DataItem, DataKey, &DataItem::key>>,
+        boost::multi_index::hashed_unique<boost::multi_index::member<DataItem, IO::DataKey, &DataItem::key>>,
         boost::multi_index::ordered_unique<boost::multi_index::member<DataItem, uint64_t, &DataItem::rank>>
     >
 > DataItemContainer;
@@ -50,20 +50,22 @@ class  EvictionStrategy
 {
 public:
     virtual ~EvictionStrategy() = default;
-    virtual DataKey NextEviction() = 0;
-    virtual void AddKey(const DataKey&) = 0;
-    virtual void RefreshKey(const DataKey&) = 0;
-    virtual void DeleteKey(const DataKey&) = 0;
+    virtual IO::DataKey NextEviction() = 0;
+    virtual void AddKey(const IO::DataKey&) = 0;
+    virtual void RefreshKey(const IO::DataKey&) = 0;
+    virtual void DeleteKey(const IO::DataKey&) = 0;
 };
 
 class OldestInsertionEviction : public EvictionStrategy
 {
 public:
-    OldestInsertionEviction();
-    DataKey NextEviction() override;
-    void AddKey(const DataKey&) override;
-    void RefreshKey(const DataKey&) override;
-    void DeleteKey(const DataKey&) override;
+    OldestInsertionEviction() :
+        currentRank_(0)
+    { }
+    IO::DataKey NextEviction() override;
+    void AddKey(const IO::DataKey&) override;
+    void RefreshKey(const IO::DataKey&) override;
+    void DeleteKey(const IO::DataKey&) override;
 private:
     uint64_t GetNextRank()
     {

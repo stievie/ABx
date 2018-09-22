@@ -5,27 +5,22 @@
 
 using namespace boost::multi_index;
 
-OldestInsertionEviction::OldestInsertionEviction() :
-    currentRank_(0)
-{
-}
-
-DataKey OldestInsertionEviction::NextEviction()
+IO::DataKey OldestInsertionEviction::NextEviction()
 {
     DataItemContainer::nth_index<1>::type& rankIndex = dataItems_.get<1>();
 
     auto first = rankIndex.begin();
-    const DataKey& retVal = first->key;
+    const IO::DataKey& retVal = first->key;
     dataItems_.erase(retVal);
     return retVal;
 }
 
-void OldestInsertionEviction::AddKey(const DataKey& key)
+void OldestInsertionEviction::AddKey(const IO::DataKey& key)
 {
     dataItems_.insert(DataItem(key, GetNextRank()));
 }
 
-void OldestInsertionEviction::RefreshKey(const DataKey& key)
+void OldestInsertionEviction::RefreshKey(const IO::DataKey& key)
 {
     uint64_t next = GetNextRank();
     auto keyItr = dataItems_.find(key);
@@ -35,7 +30,7 @@ void OldestInsertionEviction::RefreshKey(const DataKey& key)
     });
 }
 
-void OldestInsertionEviction::DeleteKey(const DataKey& key)
+void OldestInsertionEviction::DeleteKey(const IO::DataKey& key)
 {
     auto keyItr = dataItems_.find(key);
     if (keyItr != dataItems_.end())

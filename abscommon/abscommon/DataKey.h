@@ -4,22 +4,26 @@
 #include "StringHash.h"
 #include <uuids.h>
 
+namespace IO {
+
 class DataKey
 {
 public:
     DataKey() noexcept = default;
 
     DataKey(const DataKey& other) noexcept :
-        data_(other.data_)
-    { }
+    data_(other.data_)
+    {
+    }
     DataKey(const std::string& table, const uuids::uuid& id) noexcept
     {
         data_.assign(table.begin(), table.end());
         data_.insert(data_.end(), id.begin(), id.end());
     }
     explicit DataKey(const std::string& key) noexcept :
-        data_(key.begin(), key.end())
-    { }
+    data_(key.begin(), key.end())
+    {
+    }
     ~DataKey() noexcept = default;
 
     DataKey& operator =(const DataKey& other)
@@ -60,9 +64,9 @@ public:
     {
         std::string table;
         uuids::uuid id;
-        if (!decode(table, id))
-            return "";
-        return table + id.to_string();
+        if (decode(table, id))
+            return table + id.to_string();
+        return std::string(data_.begin(), data_.end());
     }
 
     std::vector<uint8_t> data_;
@@ -73,11 +77,13 @@ inline bool operator==(const DataKey& lhs, const DataKey& rhs)
     return (lhs.data_ == rhs.data_);
 }
 
+}
+
 namespace std
 {
-template<> struct hash<DataKey>
+template<> struct hash<IO::DataKey>
 {
-    typedef DataKey argument_type;
+    typedef IO::DataKey argument_type;
     typedef std::size_t result_type;
     result_type operator()(argument_type const& s) const noexcept
     {

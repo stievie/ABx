@@ -8,6 +8,7 @@
 #include <bitsery/traits/string.h>
 #pragma warning(pop)
 #include <uuid.h>
+#include "DataKey.h"
 
 namespace IO {
 
@@ -48,7 +49,7 @@ public:
     template<typename E>
     bool Read(E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         SetEntity<E>(entity, data);
         if (!ReadData(aKey, data))
@@ -61,7 +62,7 @@ public:
     template<typename E>
     bool Delete(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return DeleteData(aKey);
     }
     template<typename E>
@@ -74,7 +75,7 @@ public:
     template<typename E>
     bool Update(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
@@ -83,7 +84,7 @@ public:
     template<typename E>
     bool Create(E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
@@ -92,13 +93,13 @@ public:
     template<typename E>
     bool Preload(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return PreloadData(aKey);
     }
     template<typename E>
     bool Exists(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         std::vector<uint8_t> data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
@@ -108,7 +109,7 @@ public:
     template<typename E>
     bool Invalidate(const E& entity)
     {
-        const std::vector<uint8_t> aKey = EncodeKey(E::KEY(), uuids::uuid(entity.uuid));
+        const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return InvalidateData(aKey);
     }
     bool IsConnected() const
@@ -141,7 +142,7 @@ private:
         return writtenSize;
     }
 
-    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id)
+/*    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id)
     {
         // key = <tablename><guid>
         if (key.size() <= uuids::uuid::state_size)
@@ -155,7 +156,7 @@ private:
         std::vector<uint8_t> result(table.begin(), table.end());
         result.insert(result.end(), id.begin(), id.end());
         return result;
-    }
+    }*/
     static uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
         return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
@@ -165,15 +166,15 @@ private:
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
 
-    bool MakeRequest(OpCodes opCode, const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
-    bool MakeRequestNoData(OpCodes opCode, const std::vector<uint8_t>& key);
-    bool ReadData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
-    bool DeleteData(const std::vector<uint8_t>& key);
-    bool ExistsData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
-    bool UpdateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
-    bool CreateData(const std::vector<uint8_t>& key, std::vector<uint8_t>& data);
-    bool PreloadData(const std::vector<uint8_t>& key);
-    bool InvalidateData(const std::vector<uint8_t>& key);
+    bool MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uint8_t>& data);
+    bool MakeRequestNoData(OpCodes opCode, const DataKey& key);
+    bool ReadData(const DataKey& key, std::vector<uint8_t>& data);
+    bool DeleteData(const DataKey& key);
+    bool ExistsData(const DataKey& key, std::vector<uint8_t>& data);
+    bool UpdateData(const DataKey& key, std::vector<uint8_t>& data);
+    bool CreateData(const DataKey& key, std::vector<uint8_t>& data);
+    bool PreloadData(const DataKey& key);
+    bool InvalidateData(const DataKey& key);
     void InternalConnect();
     bool TryConnect(bool force);
     /// Try to send some data. If not connected tries to reconnect.

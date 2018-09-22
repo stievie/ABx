@@ -258,12 +258,7 @@ uint32_t MysqlResult::GetUInt(const std::string& col)
     if (it != listNames_.end())
     {
         if (row_[it->second])
-        {
-            std::istringstream os(row_[it->second]);
-            uint32_t res;
-            os >> res;
-            return res;
-        }
+            return strtoul(row_[it->second], nullptr, 0);
         return 0;
     }
 
@@ -291,7 +286,7 @@ uint64_t MysqlResult::GetULong(const std::string& col)
     if (it != listNames_.end())
     {
         if (row_[it->second])
-            return strtoul(row_[it->second], nullptr, 0);
+            return strtoull(row_[it->second], nullptr, 0);
         return 0;
     }
 

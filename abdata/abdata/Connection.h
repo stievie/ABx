@@ -70,18 +70,18 @@ private:
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
     void SendStatusAndRestart(ErrorCodes code, const std::string& message);
 
-    static uint32_t toInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
+    static inline uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
         return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
     }
-    static uint16_t toInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
+    static inline uint16_t ToInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
 
     asio::ip::tcp::socket socket_;
     uint8_t opcode_;
-    DataKey key_;
+    IO::DataKey key_;
     size_t maxDataSize_;
     size_t maxKeySize_;
     ConnectionManager& connectionManager_;

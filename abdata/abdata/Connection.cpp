@@ -29,7 +29,7 @@ void Connection::Start()
         if (!error)
         {
             opcode_ = data_->at(0);
-            uint16_t keySize = toInt16(*data_.get(), 1);
+            uint16_t keySize = ToInt16(*data_.get(), 1);
             if (keySize <= (uint16_t)maxKeySize_)
                 StartReadKey(keySize);
             else
@@ -68,7 +68,7 @@ void Connection::StartCreateOperation()
     {
         if (!error)
         {
-            uint32_t size = toInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_.get(), 0);
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
@@ -93,7 +93,7 @@ void Connection::StartUpdateDataOperation()
     {
         if (!error)
         {
-            uint32_t size = toInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_.get(), 0);
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
@@ -118,7 +118,7 @@ void Connection::StartReadOperation()
     {
         if (!error && bytes_transferred >= 4)
         {
-            uint32_t size = toInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_.get(), 0);
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
@@ -167,7 +167,7 @@ void Connection::StartExistsOperation()
     {
         if (!error)
         {
-            uint32_t size = toInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_.get(), 0);
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));

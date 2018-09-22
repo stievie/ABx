@@ -219,7 +219,7 @@ uint32_t SqliteResult::GetUInt(const std::string& col)
 {
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
-        return static_cast<uint32_t>(sqlite3_column_int64(handle_, it->second));
+        return static_cast<uint32_t>(sqlite3_column_int(handle_, it->second));
 
     LOG_ERROR << "Error during GetUInt(" << col << ")." << std::endl;
     return 0; // Failed
@@ -255,8 +255,7 @@ std::string SqliteResult::GetString(const std::string& col)
     ListNames::iterator it = listNames_.find(col);
     if (it != listNames_.end())
     {
-        std::string value = (const char*)sqlite3_column_text(handle_, it->second);
-        return value;
+        return std::string((const char*)sqlite3_column_text(handle_, it->second));
     }
 
     LOG_ERROR << "Error during GetString(" << col << ")." << std::endl;
