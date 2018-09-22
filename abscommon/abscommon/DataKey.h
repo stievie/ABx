@@ -12,20 +12,19 @@ public:
     DataKey() noexcept = default;
 
     DataKey(const DataKey& other) noexcept :
-    data_(other.data_)
-    {
-    }
+        data_(other.data_)
+    { }
     DataKey(const std::string& table, const uuids::uuid& id) noexcept
     {
         data_.assign(table.begin(), table.end());
         data_.insert(data_.end(), id.begin(), id.end());
     }
     explicit DataKey(const std::string& key) noexcept :
-    data_(key.begin(), key.end())
-    {
-    }
+        data_(key.begin(), key.end())
+    { }
     ~DataKey() noexcept = default;
 
+    /// Assignment
     DataKey& operator =(const DataKey& other)
     {
         data_ = other.data_;

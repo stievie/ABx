@@ -142,21 +142,6 @@ private:
         return writtenSize;
     }
 
-/*    static bool DecodeKey(const std::vector<uint8_t>& key, std::string& table, uuids::uuid& id)
-    {
-        // key = <tablename><guid>
-        if (key.size() <= uuids::uuid::state_size)
-            return false;
-        table.assign(key.begin(), key.end() - uuids::uuid::state_size);
-        id = uuids::uuid(key.end() - uuids::uuid::state_size, key.end());
-        return true;
-    }
-    static std::vector<uint8_t> EncodeKey(const std::string& table, const uuids::uuid& id)
-    {
-        std::vector<uint8_t> result(table.begin(), table.end());
-        result.insert(result.end(), id.begin(), id.end());
-        return result;
-    }*/
     static uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
         return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
