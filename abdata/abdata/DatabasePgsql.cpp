@@ -4,6 +4,8 @@
 
 #include "DatabasePgsql.h"
 
+#include "DebugNew.h"
+
 namespace DB {
 
 DatabasePgsql::DatabasePgsql() :

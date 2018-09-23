@@ -105,6 +105,9 @@
     <ClInclude Include="DataKey.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DebugNew.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

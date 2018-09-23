@@ -137,6 +137,7 @@
     <ClInclude Include="CpuUsage.h" />
     <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
+    <ClInclude Include="DebugNew.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="IdGenerator.h" />

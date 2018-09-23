@@ -43,6 +43,8 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     prof.index = result->GetUInt("idx");
     prof.name = result->GetString("name");
     prof.abbr = result->GetString("abbr");
+    prof.modelIndexFemale = result->GetUInt("model_index_female");
+    prof.modelIndexMale = result->GetUInt("model_index_male");
 
     // Get attributes
     query.str("");

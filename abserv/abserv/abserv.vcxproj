@@ -172,7 +172,6 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Actor.h" />
-    <ClInclude Include="DebugNew.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="Game.h" />

@@ -64,7 +64,8 @@ void CharCreateLevel::CreateUI()
     const auto& profs = client->GetProfessions();
     for (const auto& prof : profs)
     {
-        professionDropdown_->AddItem(CreateDropdownItem(String(prof.second.name.c_str()), String(prof.first.c_str())));
+        if (prof.second.index != 0)
+            professionDropdown_->AddItem(CreateDropdownItem(String(prof.second.name.c_str()), String(prof.first.c_str())));
     }
 
     sexDropdown_->GetPopup()->SetWidth(sexDropdown_->GetWidth());
@@ -130,29 +131,21 @@ void CharCreateLevel::DoCreateCharacter()
         return;
     }
 
-    // TODO:
+    FwClient* client = GetSubsystem<FwClient>();
+    const auto& profs = client->GetProfessions();
     AB::Entities::CharacterSex _sex = static_cast<AB::Entities::CharacterSex>(sex);
-    uint32_t modelIndex = 1;
-    if (_sex == AB::Entities::CharacterSexFemale)
+    uint32_t modelIndex = 0;
+    auto profIt = profs.find(std::string(prof.CString()));
+    if (profIt != profs.end())
     {
-        if (prof.Compare("Mo") == 0)
-            modelIndex = 1;
-        else if (prof.Compare("Me") == 0)
-            modelIndex = 3;
-        else if (prof.Compare("W") == 0)
-            modelIndex = 4;
-        else if (prof.Compare("E") == 0)
-            modelIndex = 7;
+        if (_sex == AB::Entities::CharacterSexFemale)
+            modelIndex = (*profIt).second.modelIndexFemale;
+        else
+            modelIndex = (*profIt).second.modelIndexMale;
     }
-    else
-    {
-        if (prof.Compare("Mo") == 0)
-            modelIndex = 2;
-        else if (prof.Compare("W") == 0)
-            modelIndex = 6;
-    }
+    if (modelIndex == 0)
+        modelIndex = 1;
 
-    FwClient* client = context_->GetSubsystem<FwClient>();
     client->CreatePlayer(name, prof, modelIndex, _sex, true);
 }
 

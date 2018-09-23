@@ -13,6 +13,8 @@
 #include "DatabaseSqlite.h"
 #endif
 
+#include "DebugNew.h"
+
 namespace DB {
 
 std::recursive_mutex DBQuery::lock_;

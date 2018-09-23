@@ -6,6 +6,8 @@
 #include <fstream>
 #include <base64.h>
 
+#include "DebugNew.h"
+
 namespace DB {
 
 DatabaseSqlite::DatabaseSqlite(const std::string& file) :

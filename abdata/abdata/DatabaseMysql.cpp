@@ -5,6 +5,8 @@
 #include "DatabaseMysql.h"
 #include <errmsg.h>
 
+#include "DebugNew.h"
+
 namespace DB {
 
 DatabaseMysql::DatabaseMysql() :

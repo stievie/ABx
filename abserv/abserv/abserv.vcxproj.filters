@@ -42,9 +42,6 @@
     <ClInclude Include="Random.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DebugNew.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Bans.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
