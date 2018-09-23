@@ -23,6 +23,7 @@
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ItemList.h>
+#include <AB/Entities/VersionList.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
 #include "Utils.h"
@@ -237,6 +238,8 @@ bool Application::Initialize(int argc, char** argv)
     if (haveData)
     {
         server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_versions_$"]["GET"] = std::bind(&Application::GetHandlerVersions, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_games_$"]["GET"] = std::bind(&Application::GetHandlerGames, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
@@ -956,6 +959,56 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
     stream << v.value;
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
     header.emplace("Content-Type", "text/plain");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
+}
+
+void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    AB::Entities::VersionList vl;
+    if (!dataClient_->Read(vl))
+    {
+        LOG_ERROR << "Error reading version list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("versions");
+
+    for (const std::string& uuid : vl.versionUuids)
+    {
+        AB::Entities::Version v;
+        v.uuid = uuid;
+        if (!dataClient_->Read(v))
+            continue;
+        if (v.isInternal)
+            continue;
+
+        auto gNd = root.append_child("version");
+        gNd.append_attribute("uuid") = v.uuid.c_str();
+        gNd.append_attribute("name") = v.name.c_str();
+        gNd.append_attribute("value") = v.value;
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
     UpdateBytesSent(stream_size(stream));
     response->write(stream, header);
 }

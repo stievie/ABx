@@ -41,7 +41,8 @@ static constexpr size_t KEY_GUILDMEMBERS_HASH = Utils::StringHash(AB::Entities::
 static constexpr size_t KEY_RESERVEDNAME_HASH = Utils::StringHash(AB::Entities::ReservedName::KEY());
 static constexpr size_t KEY_GAMEINSTANCES_HASH = Utils::StringHash(AB::Entities::GameInstance::KEY());
 static constexpr size_t KEY_ITEMS_HASH = Utils::StringHash(AB::Entities::Item::KEY());
-static constexpr size_t KEY_ITEMLISTS_HASH = Utils::StringHash(AB::Entities::ItemList::KEY());
+static constexpr size_t KEY_ITEMLIST_HASH = Utils::StringHash(AB::Entities::ItemList::KEY());
+static constexpr size_t KEY_VERSIONLIST_HASH = Utils::StringHash(AB::Entities::VersionList::KEY());
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
@@ -529,8 +530,10 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         return LoadFromDB<DB::DBReservedName, AB::Entities::ReservedName>(id, *data);
     case KEY_ITEMS_HASH:
         return LoadFromDB<DB::DBItem, AB::Entities::Item>(id, *data);
-    case KEY_ITEMLISTS_HASH:
+    case KEY_ITEMLIST_HASH:
         return LoadFromDB<DB::DBItemList, AB::Entities::ItemList>(id, *data);
+    case KEY_VERSIONLIST_HASH:
+        return LoadFromDB<DB::DBVersionList, AB::Entities::VersionList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB
         return false;
@@ -651,8 +654,11 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_ITEMS_HASH:
         succ = FlushRecord<DB::DBItem, AB::Entities::Item>(data);
         break;
-    case KEY_ITEMLISTS_HASH:
+    case KEY_ITEMLIST_HASH:
         succ = FlushRecord<DB::DBItemList, AB::Entities::ItemList>(data);
+        break;
+    case KEY_VERSIONLIST_HASH:
+        succ = FlushRecord<DB::DBVersionList, AB::Entities::VersionList>(data);
         break;
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB
@@ -735,8 +741,10 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
         return ExistsInDB<DB::DBReservedName, AB::Entities::ReservedName>(data);
     case KEY_ITEMS_HASH:
         return ExistsInDB<DB::DBItem, AB::Entities::Item>(data);
-    case KEY_ITEMLISTS_HASH:
+    case KEY_ITEMLIST_HASH:
         return ExistsInDB<DB::DBItemList, AB::Entities::ItemList>(data);
+    case KEY_VERSIONLIST_HASH:
+        return ExistsInDB<DB::DBVersionList, AB::Entities::VersionList>(data);
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
         return false;
