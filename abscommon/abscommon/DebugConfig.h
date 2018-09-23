@@ -6,6 +6,7 @@
 //#   define DEBUG_DISPATTCHER
 //#   define DEBUG_SCHEDULER
 #   define DEBUG_NET
+//#   define DEBUG_SQL
 //#   define DEBUG_MATH
 #   define DEBUG_GAME
 #   ifdef DEBUG_GAME
