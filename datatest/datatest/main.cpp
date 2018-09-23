@@ -13,7 +13,7 @@
 #define _PROFILING
 #include "Profiler.h"
 
-void TestCreate(DataClient* cli)
+void TestCreate(IO::DataClient* cli)
 {
     // Before Creating a record try Read it to check if such a record already exists.
     LOG_INFO << "TestCreate()" << std::endl;
@@ -29,7 +29,7 @@ void TestCreate(DataClient* cli)
     }
 }
 
-void TestReadCache(DataClient* cli)
+void TestReadCache(IO::DataClient* cli)
 {
     LOG_INFO << "TestReadCache()" << std::endl;
     AB::Entities::Account a{};
@@ -41,7 +41,7 @@ void TestReadCache(DataClient* cli)
     }
 }
 
-void TestReadDB(DataClient* cli)
+void TestReadDB(IO::DataClient* cli)
 {
     LOG_INFO << "TestReadDB()" << std::endl;
     AB::Entities::Account a{};
@@ -53,7 +53,7 @@ void TestReadDB(DataClient* cli)
     }
 }
 
-void TestDelete(DataClient* cli)
+void TestDelete(IO::DataClient* cli)
 {
     LOG_INFO << "TestDelete()" << std::endl;
     AB::Entities::Account a{};
@@ -80,7 +80,7 @@ void TestDelete(DataClient* cli)
     }
 }
 
-void TestUpdate(DataClient* cli)
+void TestUpdate(IO::DataClient* cli)
 {
     LOG_INFO << "TestUpdate()" << std::endl;
     AB::Entities::Account a{};
@@ -107,7 +107,7 @@ void TestUpdate(DataClient* cli)
 
 }
 
-void TestPreload(DataClient* cli)
+void TestPreload(IO::DataClient* cli)
 {
     LOG_INFO << "TestUpdate()" << std::endl;
     AB::Entities::Account a{};
@@ -141,7 +141,7 @@ int main()
 {
     std::cout << "Connecting..." << std::endl;
     asio::io_service io_service;
-    DataClient cli(io_service);
+    IO::DataClient cli(io_service);
     cli.Connect("localhost", 2770);
     if (!cli.IsConnected())
     {
