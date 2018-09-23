@@ -176,7 +176,7 @@ std::string DatabaseSqlite::EscapeString(const std::string &s)
     return r;
 }
 
-std::string DatabaseSqlite::EscapeBlob(const char* s, uint32_t length)
+std::string DatabaseSqlite::EscapeBlob(const char* s, size_t length)
 {
     std::stringstream r;
     r << "'" << base64::encode((const unsigned char*)s, length) << "'";

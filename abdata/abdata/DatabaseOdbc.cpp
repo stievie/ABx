@@ -121,11 +121,11 @@ std::string DatabaseOdbc::EscapeString(const std::string& s)
     return EscapeBlob(s.c_str(), (uint32_t)s.length());
 }
 
-std::string DatabaseOdbc::EscapeBlob(const char* s, uint32_t length)
+std::string DatabaseOdbc::EscapeBlob(const char* s, size_t length)
 {
     std::string buf = "'";
 
-    for (uint32_t i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
     {
         switch (s[i])
         {

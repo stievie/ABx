@@ -25,7 +25,7 @@ public:
     bool GetParam(DBParam param) final;
     uint64_t GetLastInsertId() final;
     std::string EscapeString(const std::string& s) final;
-    std::string EscapeBlob(const char* s, uint32_t length) final;
+    std::string EscapeBlob(const char* s, size_t length) final;
     void FreeResult(DBResult* res) final;
 };
 

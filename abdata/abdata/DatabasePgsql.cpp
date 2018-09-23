@@ -105,7 +105,7 @@ std::string DatabasePgsql::EscapeString(const std::string& s)
     return r.str();
 }
 
-std::string DatabasePgsql::EscapeBlob(const char* s, uint32_t length)
+std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
 {
     // remember to quote even empty stream!
     if (!s)
@@ -181,7 +181,7 @@ std::string DatabasePgsql::Parse(const std::string& s)
 
     bool inString = false;
     uint8_t ch;
-    for (uint32_t a = 0; a < s.length(); a++)
+    for (size_t a = 0; a < s.length(); a++)
     {
         ch = s[a];
 
@@ -246,15 +246,15 @@ std::string PgsqlResult::GetString(const std::string& col)
 
 std::string PgsqlResult::GetStream(const std::string& col)
 {
-    unsigned long size;
+    size_t size;
     char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
-    unsigned char* temp = PQunescapeBytea((const unsigned char*)buf, (size_t*)&size);
+    unsigned char* temp = PQunescapeBytea((const unsigned char*)buf, &size);
     std::string result((char*)temp, size);
     PQfreemem(temp);
     return result;
 }
 
-bool PgsqlResult::IsNull(const std::string & col)
+bool PgsqlResult::IsNull(const std::string& col)
 {
     return PQgetisnull(handle_, cursor_, PQfnumber(handle_, col.c_str())) != 0;
 }
