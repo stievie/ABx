@@ -57,6 +57,7 @@ void TestDelete(IO::DataClient* cli)
 {
     LOG_INFO << "TestDelete()" << std::endl;
     AB::Entities::Account a{};
+    // Previously created account
     a.uuid = "0d936635-3011-44ec-9df6-da3f25e6fd32";
     {
         AB_PROFILE;
@@ -137,6 +138,23 @@ void TestPreload(IO::DataClient* cli)
     }
 }
 
+void TestReadCharacter(IO::DataClient* cli)
+{
+    AB::Entities::Character ch;
+    ch.uuid = "6ae9f17f-4492-490b-8437-df244cc96dce";
+    {
+        AB_PROFILE;
+        if (!cli->Read(ch))
+            LOG_ERROR << "Error Read" << std::endl;
+        else
+        {
+            std::cout << "Name: " << ch.name << std::endl;
+            std::cout << "P1: " << ch.profession << std::endl;
+            std::cout << "P2: " << ch.profession2 << std::endl;
+        }
+    }
+}
+
 int main()
 {
     std::cout << "Connecting..." << std::endl;
@@ -156,6 +174,7 @@ run_it:
     TestDelete(&cli);
     TestUpdate(&cli);
     TestPreload(&cli);
+    TestReadCharacter(&cli);
 
     std::cout << "Run again? [y/n]: ";
     std::string answer;
