@@ -6,6 +6,7 @@
 
 namespace IO {
 
+/// Key used for data server cache.
 class DataKey
 {
 public:

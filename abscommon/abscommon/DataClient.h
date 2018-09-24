@@ -125,6 +125,10 @@ public:
         return port_;
     }
 private:
+    /// Unserialize Entitiy
+    /// @param[in] data Input data
+    /// @param[out] Resulting Entity
+    /// @return true on success
     template<typename E>
     static bool GetEntity(std::vector<uint8_t>& data, E& e)
     {
@@ -133,6 +137,10 @@ private:
         auto state = bitsery::quickDeserialization<InputAdapter, E>(ia, e);
         return state.first == bitsery::ReaderError::NoError;
     }
+    /// Serialize Entity.
+    /// @param[in] Input Entity
+    /// @param[out] Serialized data
+    /// @return Size needed
     template<typename E>
     static size_t SetEntity(const E& e, std::vector<uint8_t>& buffer)
     {
@@ -148,7 +156,7 @@ private:
     }
     static uint16_t ToInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
-        return  (intBytes[start + 1] << 8) | intBytes[start];
+        return (intBytes[start + 1] << 8) | intBytes[start];
     }
 
     bool MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uint8_t>& data);
@@ -161,6 +169,9 @@ private:
     bool PreloadData(const DataKey& key);
     bool InvalidateData(const DataKey& key);
     void InternalConnect();
+    /// Try connect to server. 
+    /// @param[in] force If force is true it disconnects first.
+    /// @return true on success.
     bool TryConnect(bool force);
     /// Try to send some data. If not connected tries to reconnect.
     template<typename B>

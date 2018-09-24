@@ -181,7 +181,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     if (!client->Read(pro))
         return CreatePlayerResultInvalidProfession;
 
-    if (!IsNameAvailable(name))
+    if (!IsNameAvailable(name, accountUuid))
         return CreatePlayerResultNameExists;
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
@@ -229,21 +229,59 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         return false;
     if (ch.accountUuid.compare(accountUuid) != 0)
         return false;
-    return client->Delete(ch);
+    bool succ = client->Delete(ch);
+    if (succ)
+    {
+        // Reserve the character name for some time for this user
+        AB::Entities::ReservedName rn;
+        rn.name = ch.name;
+        if (client->Read(rn))
+        {
+            client->Delete(rn);
+        }
+        const uuids::uuid guid = uuids::uuid_system_generator{}();
+        rn.uuid = guid.to_string();
+        rn.isReserved = true;
+        rn.reservedForAccountUuid = accountUuid;
+        rn.name = ch.name;
+        rn.reservedUntil = Utils::AbTick() + NAME_RESERVATION_EXPIRES_MS;
+        client->Create(rn);
+    }
+    return succ;
 }
 
-bool IOAccount::IsNameAvailable(const std::string& name)
+bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forAccountUuid)
 {
     IO::DataClient* client = Application::Instance->GetDataClient();
     AB::Entities::Character ch;
     ch.name = name;
+    // Check if player with the same name exists
     if (client->Exists(ch))
+    {
         return false;
+    }
 
     AB::Entities::ReservedName rn;
     rn.name = name;
     rn.isReserved = true;
-    return !client->Exists(rn);
+    if (client->Read(rn))
+    {
+        // Temporarily reserved for an account
+        if (rn.reservedUntil != 0)
+        {
+            if (rn.reservedUntil < Utils::AbTick())
+            {
+                // Expired -> Delete it
+                client->Delete(rn);
+                return true;
+            }
+            // Not expired yet
+            return forAccountUuid.compare(rn.reservedForAccountUuid) == 0;
+        }
+        // Exists in table and does not expire, so it's not available.
+        return false;
+    }
+    return true;
 }
 
 }

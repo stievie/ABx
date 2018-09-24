@@ -66,6 +66,8 @@ bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector
 
     if (_data != cache_.end())
     {
+        // If there is a deleted record we must delete it from DB now or we may get
+        // a constraint violation.
         if ((*_data).second.first.deleted)
             FlushData(key);
         else

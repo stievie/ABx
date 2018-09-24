@@ -20,10 +20,14 @@ struct ReservedName : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.text1b(name, Limits::MAX_RESERVED_NAME);
         s.value1b(isReserved);
+        s.text1b(reservedForAccountUuid, Limits::MAX_UUID);
+        s.value8b(reservedUntil);
     }
 
     std::string name;
     bool isReserved = false;
+    std::string reservedForAccountUuid;
+    int64_t reservedUntil = 0;
 };
 
 }
