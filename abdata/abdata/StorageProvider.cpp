@@ -50,6 +50,8 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     currentSize_(0),
     readonly_(readonly),
     running_(true),
+    flushInterval_(FLUSH_CACHE_MS),
+    cleanInterval_(CLEAN_CACHE_MS),
     cache_()
 {
     Asynch::Scheduler::Instance.Add(
@@ -375,7 +377,7 @@ void StorageProvider::CleanTask()
     if (running_)
     {
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanTask, this))
+            Asynch::CreateScheduledTask(cleanInterval_, std::bind(&StorageProvider::CleanTask, this))
         );
     }
 }
@@ -416,7 +418,7 @@ void StorageProvider::FlushCacheTask()
     if (running_)
     {
         Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(FLUSH_CACHE_MS, std::bind(&StorageProvider::FlushCacheTask, this))
+            Asynch::CreateScheduledTask(flushInterval_, std::bind(&StorageProvider::FlushCacheTask, this))
         );
     }
 }

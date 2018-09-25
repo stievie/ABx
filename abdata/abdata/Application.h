@@ -14,6 +14,8 @@ private:
     bool running_;
     asio::io_service ioService_;
     std::unique_ptr<Server> server_;
+    uint32_t flushInterval_;
+    uint32_t cleanInterval_;
     bool ParseCommandLine();
     bool LoadConfig();
     void PrintServerInfo();
@@ -27,7 +29,9 @@ public:
         readonly_(false),
         running_(false),
         ioService_(),
-        server_(nullptr)
+        server_(nullptr),
+        flushInterval_(FLUSH_CACHE_MS),
+        cleanInterval_(CLEAN_CACHE_MS)
     { }
     ~Application();
 

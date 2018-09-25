@@ -174,6 +174,9 @@ bool Application::LoadConfig()
     if (DB::Database::dbPort_ == 0)
         DB::Database::dbPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("db_port", 0));
 
+    flushInterval_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("flush_interval", (int64_t)flushInterval_));
+    cleanInterval_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("clean_interval", (int64_t)cleanInterval_));
+
     if (port_ == 0)
     {
         LOG_ERROR << "Port is 0" << std::endl;
@@ -286,10 +289,13 @@ void Application::Run()
     Asynch::Scheduler::Instance.Start();
 
     server_ = std::make_unique<Server>(ioService_, listenIp_, port_, maxSize_, readonly_);
+    StorageProvider* provider = server_->GetStorageProvider();
+    provider->flushInterval_ = flushInterval_;
+    provider->cleanInterval_ = cleanInterval_;
 
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
-    server_->GetStorageProvider()->EntityRead(serv);
+    provider->EntityRead(serv);
     serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
     serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
     serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
@@ -300,10 +306,10 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeDataServer;
     serv.startTime = Utils::AbTick();
-    server_->GetStorageProvider()->EntityUpdateOrCreate(serv);
+    provider->EntityUpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
-    server_->GetStorageProvider()->EntityInvalidate(sl);
+    provider->EntityInvalidate(sl);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;

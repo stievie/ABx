@@ -105,6 +105,8 @@ public:
     }
     /// Flush all
     void Shutdown();
+    uint32_t flushInterval_;
+    uint32_t cleanInterval_;
 private:
     /// first = flags, second = data
     using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;

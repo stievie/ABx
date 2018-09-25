@@ -16,5 +16,9 @@ data_host = ""
 
 -- Max memory size, 1GB
 max_size = 1024 * 1024 * 1024
+-- Flush cache every minute
+flush_interval = 1000 * 60
+-- Clean cache every 10min
+clean_interval = 1000 * 60 * 10
 
 require("config/db")
