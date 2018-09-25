@@ -119,13 +119,32 @@ void FwClient::HandleLevelReady(StringHash, VariantMap&)
 
 void FwClient::LoadData()
 {
-    LoadGames();
-    LoadSkills();
-    LoadAttributes();
-    LoadProfessions();
-    LoadSkills();
-    LoadEffects();
-    LoadItems();
+    std::stringstream ss;
+    if (!client_.HttpRequest("/_versions_", ss))
+        return;
+
+    pugi::xml_document doc;
+    std::string strVer = ss.str();
+    if (!doc.load_string(strVer.c_str(), (unsigned)strVer.length()))
+    {
+        return;
+    }
+
+    const pugi::xml_node& ver_node = doc.child("versions");
+    for (const auto& file_node : ver_node.children("version"))
+    {
+        const pugi::xml_attribute& name_attr = file_node.attribute("name");
+        const pugi::xml_attribute& value_attr = file_node.attribute("value");
+        std::string strName = name_attr.as_string();
+        versions_[String(name_attr.as_string())] = value_attr.as_uint();
+    }
+
+    LoadGames(versions_["game_maps"]);
+    LoadSkills(versions_["game_skills"]);
+    LoadAttributes(versions_["game_attributes"]);
+    LoadProfessions(versions_["game_professions"]);
+    LoadEffects(versions_["game_effects"]);
+    LoadItems(versions_["game_items"]);
 /*    WorkQueue* queue = GetSubsystem<WorkQueue>();
     SharedPtr<WorkItem> item = queue->GetFreeItem();
     item->aux_ = const_cast<FwClient*>(this);
@@ -141,19 +160,32 @@ void FwClient::LoadData()
     queue->AddWorkItem(item);*/
 }
 
-void FwClient::LoadGames()
+bool FwClient::IsOldData(uint32_t curVersion, XMLFile* file)
+{
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& root = doc->first_child();
+    const pugi::xml_attribute& verAttr = root.attribute("version");
+    if (verAttr.as_uint() != curVersion)
+        return true;
+    return false;
+}
+
+void FwClient::LoadGames(uint32_t curVersion)
 {
     if (!games_.empty())
         return;
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Games.xml");
-    if (!file)
+
+    if (!file || IsOldData(curVersion, file))
     {
         if (!client_.HttpDownload("/_games_", "GameData/Games.xml"))
             return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Games.xml");
     }
-    file = cache->GetResource<XMLFile>("Games.xml");
     if (!file)
         return;
 
@@ -175,46 +207,55 @@ void FwClient::LoadGames()
     }
 }
 
-void FwClient::LoadSkills()
+void FwClient::LoadSkills(uint32_t curVersion)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Skills.xml");
-    if (!file)
+
+    if (!file || IsOldData(curVersion, file))
     {
         if (!client_.HttpDownload("/_skills_", "GameData/Skills.xml"))
             return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Skills.xml");
     }
-    file = cache->GetResource<XMLFile>("Skills.xml");
     if (!file)
         return;
 }
 
-void FwClient::LoadAttributes()
+void FwClient::LoadAttributes(uint32_t curVersion)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Attributes.xml");
-    if (!file)
+
+    if (!file || IsOldData(curVersion, file))
     {
         if (!client_.HttpDownload("/_attributes_", "GameData/Attributes.xml"))
             return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Attributes.xml");
     }
-    file = cache->GetResource<XMLFile>("Attributes.xml");
     if (!file)
         return;
 }
 
-void FwClient::LoadProfessions()
+void FwClient::LoadProfessions(uint32_t curVersion)
 {
     if (!professions_.empty())
         return;
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Professions.xml");
-    if (!file)
+
+    if (!file || IsOldData(curVersion, file))
     {
         if (!client_.HttpDownload("/_professions_", "GameData/Professions.xml"))
             return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Professions.xml");
     }
-    file = cache->GetResource<XMLFile>("Professions.xml");
     if (!file)
         return;
 
@@ -240,30 +281,36 @@ void FwClient::LoadProfessions()
     }
 }
 
-void FwClient::LoadEffects()
+void FwClient::LoadEffects(uint32_t curVersion)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Effects.xml");
-    if (!file)
+
+    if (!file || IsOldData(curVersion, file))
     {
         if (!client_.HttpDownload("/_effects_", "GameData/Effects.xml"))
             return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Effects.xml");
     }
-    file = cache->GetResource<XMLFile>("Effects.xml");
     if (!file)
         return;
 }
 
-void FwClient::LoadItems()
+void FwClient::LoadItems(uint32_t curVersion)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Items.xml");
-    if (!file)
+
+    if (!file || IsOldData(curVersion, file))
     {
         if (!client_.HttpDownload("/_items_", "GameData/Items.xml"))
             return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Items.xml");
     }
-    file = cache->GetResource<XMLFile>("Items.xml");
     if (!file)
         return;
 
