@@ -37,13 +37,47 @@ enum ObstacleState
 	DT_OBSTACLE_REMOVING,
 };
 
+enum ObstacleType
+{
+	DT_OBSTACLE_CYLINDER,
+	DT_OBSTACLE_BOX, // AABB
+	DT_OBSTACLE_ORIENTED_BOX, // OBB
+};
+
+struct dtObstacleCylinder
+{
+	float pos[ 3 ];
+	float radius;
+	float height;
+};
+
+struct dtObstacleBox
+{
+	float bmin[ 3 ];
+	float bmax[ 3 ];
+};
+
+struct dtObstacleOrientedBox
+{
+	float center[ 3 ];
+	float halfExtents[ 3 ];
+	float rotAux[ 2 ]; //{ cos(0.5f*angle)*sin(-0.5f*angle); cos(0.5f*angle)*cos(0.5f*angle) - 0.5 }
+};
+
 static const int DT_MAX_TOUCHED_TILES = 8;
 struct dtTileCacheObstacle
 {
-	float pos[3], radius, height;
+	union
+	{
+		dtObstacleCylinder cylinder;
+		dtObstacleBox box;
+		dtObstacleOrientedBox orientedBox;
+	};
+
 	dtCompressedTileRef touched[DT_MAX_TOUCHED_TILES];
 	dtCompressedTileRef pending[DT_MAX_TOUCHED_TILES];
 	unsigned short salt;
+	unsigned char type;
 	unsigned char state;
 	unsigned char ntouched;
 	unsigned char npending;
@@ -107,13 +141,27 @@ public:
 	
 	dtStatus removeTile(dtCompressedTileRef ref, unsigned char** data, int* dataSize);
 	
+	// Cylinder obstacle.
 	dtStatus addObstacle(const float* pos, const float radius, const float height, dtObstacleRef* result);
+
+	// Aabb obstacle.
+	dtStatus addBoxObstacle(const float* bmin, const float* bmax, dtObstacleRef* result);
+
+	// Box obstacle: can be rotated in Y.
+	dtStatus addBoxObstacle(const float* center, const float* halfExtents, const float yRadians, dtObstacleRef* result);
+	
 	dtStatus removeObstacle(const dtObstacleRef ref);
 	
 	dtStatus queryTiles(const float* bmin, const float* bmax,
 						dtCompressedTileRef* results, int* resultCount, const int maxResults) const;
 	
-	dtStatus update(const float /*dt*/, class dtNavMesh* navmesh);
+	/// Updates the tile cache by rebuilding tiles touched by unfinished obstacle requests.
+	///  @param[in]		dt			The time step size. Currently not used.
+	///  @param[in]		navmesh		The mesh to affect when rebuilding tiles.
+	///  @param[out]	upToDate	Whether the tile cache is fully up to date with obstacle requests and tile rebuilds.
+	///  							If the tile cache is up to date another (immediate) call to update will have no effect;
+	///  							otherwise another call will continue processing obstacle requests and tile rebuilds.
+	dtStatus update(const float dt, class dtNavMesh* navmesh, bool* upToDate = 0);
 	
 	dtStatus buildNavMeshTilesAt(const int tx, const int ty, class dtNavMesh* navmesh);
 	
@@ -122,9 +170,9 @@ public:
 	void calcTightTileBounds(const struct dtTileCacheLayerHeader* header, float* bmin, float* bmax) const;
 	
 	void getObstacleBounds(const struct dtTileCacheObstacle* ob, float* bmin, float* bmax) const;
-	
-    // Urho3D: added function to know when we have too many obstacle requests without update
-    bool isObstacleQueueFull() const { return m_nreqs >= MAX_REQUESTS; }
+
+	// Urho3D: added function to know when we have too many obstacle requests without update
+	bool isObstacleQueueFull() const { return m_nreqs >= MAX_REQUESTS; }
 
 	/// Encodes a tile id.
 	inline dtCompressedTileRef encodeTileId(unsigned int salt, unsigned int it) const
@@ -168,7 +216,10 @@ public:
 	
 	
 private:
-	
+	// Explicitly disabled copy constructor and copy assignment operator.
+	dtTileCache(const dtTileCache&);
+	dtTileCache& operator=(const dtTileCache&);
+
 	enum ObstacleRequestAction
 	{
 		REQUEST_ADD,
@@ -207,7 +258,6 @@ private:
 	static const int MAX_UPDATE = 64;
 	dtCompressedTileRef m_update[MAX_UPDATE];
 	int m_nupdate;
-	
 };
 
 dtTileCache* dtAllocTileCache();
