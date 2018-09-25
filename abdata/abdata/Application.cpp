@@ -324,18 +324,19 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown...";
 
+    StorageProvider* provider = server_->GetStorageProvider();
     AB::Entities::Service serv;
     serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
-    if (server_->GetStorageProvider()->EntityRead(serv))
+    if (provider->EntityRead(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-        server_->GetStorageProvider()->EntityUpdate(serv);
+        provider->EntityUpdate(serv);
 
         AB::Entities::ServiceList sl;
-        server_->GetStorageProvider()->EntityInvalidate(sl);
+        provider->EntityInvalidate(sl);
     }
     else
         LOG_ERROR << "Error reading service" << std::endl;
