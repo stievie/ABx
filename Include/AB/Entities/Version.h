@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_VERSIONS = "versions";
+static constexpr auto KEY_VERSIONS = "versions";
 
 struct Version : Entity
 {

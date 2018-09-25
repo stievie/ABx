@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_VERSIONLIST = "version_list";
+static constexpr auto KEY_VERSIONLIST = "version_list";
 
 struct VersionList : Entity
 {

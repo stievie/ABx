@@ -162,6 +162,9 @@ void FwClient::LoadData()
 
 bool FwClient::IsOldData(uint32_t curVersion, XMLFile* file)
 {
+    if (!file)
+        return true;
+
     const pugi::xml_document* const doc = file->GetDocument();
     const pugi::xml_node& root = doc->first_child();
     const pugi::xml_attribute& verAttr = root.attribute("version");

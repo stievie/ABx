@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ACCOUNTS_KEYS = "account_keys";
+static constexpr auto KEY_ACCOUNTS_KEYS = "account_keys";
 
 enum AccountKeyStatus : uint8_t
 {

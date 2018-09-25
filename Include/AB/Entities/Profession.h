@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_PROFESSIONS = "game_professions";
+static constexpr auto KEY_PROFESSIONS = "game_professions";
 
 struct Profession : Entity
 {

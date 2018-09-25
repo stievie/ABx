@@ -16,6 +16,7 @@ namespace AB {
 namespace Entities {
 
 static constexpr uint32_t INVALID_INDEX = 9999;
+static constexpr auto EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
 /// Base class for entities.
 struct Entity
@@ -27,7 +28,7 @@ struct Entity
         s.text1b(uuid, Limits::MAX_UUID);
     }
 
-    std::string uuid = "00000000-0000-0000-0000-000000000000";
+    std::string uuid = EMPTY_GUID;
 };
 
 }

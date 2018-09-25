@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ACCOUNTKEYACCOUNTS = "account_account_keys";
+static constexpr auto KEY_ACCOUNTKEYACCOUNTS = "account_account_keys";
 
 /// Account key entity. The UUID is the key.
 struct AccountKeyAccounts : Entity
@@ -22,7 +22,7 @@ struct AccountKeyAccounts : Entity
         s.text1b(accountUuid, Limits::MAX_UUID);
     }
 
-    std::string accountUuid;
+    std::string accountUuid = EMPTY_GUID;
 };
 
 }

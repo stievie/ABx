@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ATTRIBUTES = "game_attributes";
+static constexpr auto KEY_ATTRIBUTES = "game_attributes";
 
 struct Attribute : Entity
 {
@@ -25,7 +25,7 @@ struct Attribute : Entity
     }
 
     uint32_t index = INVALID_INDEX;
-    std::string professionUuid;
+    std::string professionUuid = EMPTY_GUID;
     std::string name;
     bool isPrimary = false;
 };

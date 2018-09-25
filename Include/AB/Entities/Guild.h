@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_GUILD = "guilds";
+static constexpr auto KEY_GUILD = "guilds";
 
 struct Guild : Entity
 {
@@ -37,7 +37,7 @@ struct Guild : Entity
     uint32_t id;
     std::string name;
     std::string tag;
-    std::string creatorAccountUuid;
+    std::string creatorAccountUuid = EMPTY_GUID;
     int64_t creation;
 };
 

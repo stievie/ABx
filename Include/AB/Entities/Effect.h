@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_EFFECTS = "game_effects";
+static constexpr auto KEY_EFFECTS = "game_effects";
 
 enum EffectCategory : uint8_t
 {

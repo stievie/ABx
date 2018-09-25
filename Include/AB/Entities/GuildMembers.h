@@ -16,7 +16,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_GUILDMEMBERS = "guild_mebmers";
+static constexpr auto KEY_GUILDMEMBERS = "guild_mebmers";
 
 // 0 = Unknown, 1 = Guest, 2 = Invited, 3 = Member, 4 = Officer, 5 = Leader
 enum GuildRole : uint8_t

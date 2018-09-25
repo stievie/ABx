@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_MAILS = "mails";
+static constexpr auto KEY_MAILS = "mails";
 
 struct Mail : Entity
 {
@@ -28,8 +28,8 @@ struct Mail : Entity
         s.value1b(isRead);
     }
 
-    std::string fromAccountUuid;
-    std::string toAccountUuid;
+    std::string fromAccountUuid = EMPTY_GUID;
+    std::string toAccountUuid = EMPTY_GUID;
     std::string fromName;
     std::string toName;
     std::string subject;

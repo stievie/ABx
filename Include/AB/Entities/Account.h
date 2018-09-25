@@ -7,7 +7,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ACCOUNTS = "accounts";
+static constexpr auto KEY_ACCOUNTS = "accounts";
 static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
 
 enum AccountType : uint8_t
@@ -76,10 +76,10 @@ struct Account : Entity
     std::string currentServerUuid;
     uint32_t charSlots = ACCOUNT_DEF_CHARSLOTS;
     /// Last or current character
-    std::string currentCharacterUuid;
+    std::string currentCharacterUuid = EMPTY_GUID;
     std::vector<std::string> characterUuids;
     OnlineStatus onlineStatus = OnlineStatusOffline;
-    std::string guildUuid;
+    std::string guildUuid = EMPTY_GUID;
 };
 
 }

@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_EFFECTLIST = "effect_list";
+static constexpr auto KEY_EFFECTLIST = "effect_list";
 
 struct EffectList : Entity
 {

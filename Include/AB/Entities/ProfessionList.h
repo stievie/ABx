@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_PROFESSIONLIST = "profession_list";
+static constexpr auto KEY_PROFESSIONLIST = "profession_list";
 
 struct ProfessionList : Entity
 {

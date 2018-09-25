@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_SKILLS = "game_skills";
+static constexpr auto KEY_SKILLS = "game_skills";
 
 enum SkillType : uint32_t
 {
@@ -71,7 +71,7 @@ struct Skill : Entity
 
     uint32_t index = 0;
     std::string name;
-    std::string attributeUuid;
+    std::string attributeUuid = EMPTY_GUID;
     SkillType type = SkillTypeSkill;
     bool isElite = false;
     std::string description;

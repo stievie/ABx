@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_SERVICELIST = "service_list";
+static constexpr auto KEY_SERVICELIST = "service_list";
 
 struct ServiceList : Entity
 {

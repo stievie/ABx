@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ACCOUNTS_BANS = "account_bans";
+static constexpr auto KEY_ACCOUNTS_BANS = "account_bans";
 
 /// Account ban entity.
 struct AccountBan : Entity
@@ -23,8 +23,8 @@ struct AccountBan : Entity
         s.text1b(accountUuid, Limits::MAX_UUID);
     }
 
-    std::string banUuid;
-    std::string accountUuid;
+    std::string banUuid = EMPTY_GUID;
+    std::string accountUuid = EMPTY_GUID;
 };
 
 }

@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_ITEMS = "game_items";
+static constexpr auto KEY_ITEMS = "game_items";
 
 enum ItemType : uint16_t
 {

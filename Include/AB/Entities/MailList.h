@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_MAILLIST = "mail_list";
+static constexpr auto KEY_MAILLIST = "mail_list";
 
 struct MailHeader
 {

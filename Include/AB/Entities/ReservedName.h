@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_RESERVED_NAMES = "reserved_names";
+static constexpr auto KEY_RESERVED_NAMES = "reserved_names";
 
 struct ReservedName : Entity
 {
@@ -26,7 +26,7 @@ struct ReservedName : Entity
 
     std::string name;
     bool isReserved = false;
-    std::string reservedForAccountUuid;
+    std::string reservedForAccountUuid = EMPTY_GUID;
     int64_t expires = 0;
 };
 

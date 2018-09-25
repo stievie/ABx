@@ -22,7 +22,7 @@ enum CharacterSex : uint8_t
     CharacterSexMale = 2
 };
 
-constexpr auto KEY_CHARACTERS = "characters";
+static constexpr auto KEY_CHARACTERS = "characters";
 
 struct Character : Entity
 {
@@ -60,16 +60,16 @@ struct Character : Entity
     std::string name;
     std::string profession;
     std::string profession2;
-    std::string professionUuid;
-    std::string profession2Uuid;
+    std::string professionUuid = EMPTY_GUID;
+    std::string profession2Uuid = EMPTY_GUID;
     uint8_t level = 0;
     /// PvP only character
     bool pvp = false;
     uint32_t xp = 0;
     uint32_t skillPoints = 0;
     CharacterSex sex = CharacterSexUnknown;
-    std::string currentMapUuid;
-    std::string accountUuid;
+    std::string currentMapUuid = EMPTY_GUID;
+    std::string accountUuid = EMPTY_GUID;
     // Index in game_items
     uint32_t modelIndex = 0;
     std::string skillTemplate;
@@ -82,7 +82,7 @@ struct Character : Entity
     int64_t lastLogin = 0;
     int64_t lastLogout = 0;
     /// ID of AB::Entities::GameInstance
-    std::string instanceUuid;
+    std::string instanceUuid = EMPTY_GUID;
 };
 
 typedef std::vector<Character> CharacterList;

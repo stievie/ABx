@@ -15,7 +15,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_GAMELIST = "game_list";
+static constexpr auto KEY_GAMELIST = "game_list";
 
 struct GameList : Entity
 {

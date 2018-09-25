@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_BANS = "bans";
+static constexpr auto KEY_BANS = "bans";
 
 enum BanReason : uint8_t
 {
@@ -40,7 +40,7 @@ struct Ban : Entity
     int64_t added = 0;
     BanReason reason = BanReasonUnknown;
     bool active = false;
-    std::string adminUuid;
+    std::string adminUuid = EMPTY_GUID;
     std::string comment;
 };
 

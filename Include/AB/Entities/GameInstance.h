@@ -16,7 +16,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_GAMEINSTANCES = "game_instances";
+static constexpr auto KEY_GAMEINSTANCES = "game_instances";
 
 struct GameInstance : Entity
 {
@@ -34,9 +34,9 @@ struct GameInstance : Entity
         s.value2b(number);
     }
 
-    std::string gameUuid;
+    std::string gameUuid = EMPTY_GUID;
     /// Server running this instance
-    std::string serverUuid;
+    std::string serverUuid = EMPTY_GUID;
     int64_t startTime = 0;
     /// If there are more instances of the same game on the same server this is the number, e.g. District.
     uint16_t number = 0;

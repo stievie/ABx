@@ -6,7 +6,7 @@
 namespace AB {
 namespace Entities {
 
-constexpr auto KEY_IP_BANS = "ip_bans";
+static constexpr auto KEY_IP_BANS = "ip_bans";
 
 struct IpBan : Entity
 {

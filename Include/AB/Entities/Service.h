@@ -25,7 +25,7 @@ enum ServiceStatus : uint8_t
     ServiceStatusOnline
 };
 
-constexpr auto KEY_SERVICES = "services";
+static constexpr auto KEY_SERVICES = "services";
 
 struct Service : Entity
 {
