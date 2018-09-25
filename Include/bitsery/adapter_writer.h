@@ -20,8 +20,6 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-
-
 #ifndef BITSERY_ADAPTER_WRITER_H
 #define BITSERY_ADAPTER_WRITER_H
 
@@ -29,7 +27,6 @@
 
 #include <cassert>
 #include <utility>
-
 
 namespace bitsery {
 
@@ -99,7 +96,6 @@ namespace bitsery {
 
     //helper type for default config
     using MeasureSize = BasicMeasureSize<DefaultConfig>;
-
 
     template <typename TWriter>
     class AdapterWriterBitPackingWrapper;
@@ -172,10 +168,6 @@ namespace bitsery {
 
         void endSession() {
             _session.end(*this);
-        }
-
-        const OutputAdapter& adapter() const {
-            return _outputAdapter;
         }
 
     private:
@@ -303,7 +295,7 @@ namespace bitsery {
             auto value = v;
             auto bitsLeft = size;
             while (bitsLeft > 0) {
-                auto bits = std::min(bitsLeft, valueSize);
+                auto bits = (std::min)(bitsLeft, valueSize);
                 _scratch |= static_cast<ScratchType>( value ) << _scratchBits;
                 _scratchBits += bits;
                 if (_scratchBits >= valueSize) {
@@ -332,7 +324,7 @@ namespace bitsery {
             }
         }
 
-        const UnsignedType _MASK = std::numeric_limits<UnsignedType>::max();
+        const UnsignedType _MASK = (std::numeric_limits<UnsignedType>::max)();
         ScratchType _scratch{};
         size_t _scratchBits{};
         TWriter& _writer;

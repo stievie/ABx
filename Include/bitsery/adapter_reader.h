@@ -20,15 +20,12 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-
-
 #ifndef BITSERY_ADAPTER_READER_H
 #define BITSERY_ADAPTER_READER_H
 
 #include "details/sessions.h"
 #include <algorithm>
 #include <cstring>
-
 
 namespace bitsery {
 
@@ -62,7 +59,6 @@ namespace bitsery {
         AdapterReader &operator=(AdapterReader &&) = default;
 
         ~AdapterReader() noexcept = default;
-
 
         template<size_t SIZE, typename T>
         void readBytes(T &v) {
@@ -115,17 +111,13 @@ namespace bitsery {
             }
         }
 
-        const InputAdapter& adapter() const {
-            return _inputAdapter;
-        }
-
     private:
         friend class AdapterReaderBitPackingWrapper<AdapterReader<InputAdapter, Config>>;
 
         InputAdapter _inputAdapter;
         typename std::conditional<Config::BufferSessionsEnabled,
                 session::SessionsReader<AdapterReader<InputAdapter, Config>>,
-                session::DisabledSessionsReader<AdapterReader<InputAdapter, Config>>>::type
+        session::DisabledSessionsReader<AdapterReader<InputAdapter, Config>>>::type
                 _session;
 
         template<typename T>
@@ -201,7 +193,6 @@ namespace bitsery {
             }
         }
 
-
         template<typename T>
         void readBits(T &v, size_t bitsCount) {
             static_assert(std::is_integral<T>() && std::is_unsigned<T>(), "");
@@ -249,7 +240,7 @@ namespace bitsery {
             auto bitsLeft = size;
             T res{};
             while (bitsLeft > 0) {
-                auto bits = std::min(bitsLeft, details::BitsSize<UnsignedValue>::value);
+                auto bits = (std::min)(bitsLeft, details::BitsSize<UnsignedValue>::value);
                 if (m_scratchBits < bits) {
                     UnsignedValue tmp;
                     _reader.template readBytes<sizeof(UnsignedValue), UnsignedValue>(tmp);
