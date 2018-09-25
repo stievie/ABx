@@ -21,13 +21,13 @@ struct ReservedName : Entity
         s.text1b(name, Limits::MAX_RESERVED_NAME);
         s.value1b(isReserved);
         s.text1b(reservedForAccountUuid, Limits::MAX_UUID);
-        s.value8b(reservedUntil);
+        s.value8b(expires);
     }
 
     std::string name;
     bool isReserved = false;
     std::string reservedForAccountUuid;
-    int64_t reservedUntil = 0;
+    int64_t expires = 0;
 };
 
 }

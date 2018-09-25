@@ -66,6 +66,16 @@ public:
         return DeleteData(aKey);
     }
     template<typename E>
+    bool DeleteIfExists(E& entity)
+    {
+        // Can not use Exists(), because we can only delete records that are in cache,
+        // i.e. previously read.
+        if (Read(entity))
+            return Delete(entity);
+        // Doesn't exists -> success
+        return true;
+    }
+    template<typename E>
     bool UpdateOrCreate(E& entity)
     {
         if (Exists(entity))
@@ -169,7 +179,7 @@ private:
     bool PreloadData(const DataKey& key);
     bool InvalidateData(const DataKey& key);
     void InternalConnect();
-    /// Try connect to server. 
+    /// Try connect to server.
     /// @param[in] force If force is true it disconnects first.
     /// @return true on success.
     bool TryConnect(bool force);

@@ -34,7 +34,7 @@ bool DBReservedName::Load(AB::Entities::ReservedName& n)
     n.name = result->GetString("name");
     n.isReserved = result->GetInt("is_reserved") != 0;
     n.reservedForAccountUuid = result->GetString("reserved_for_account_uuid");
-    n.reservedUntil = result->GetLong("reserved_until");
+    n.expires = result->GetLong("expires");
 
     return true;
 }

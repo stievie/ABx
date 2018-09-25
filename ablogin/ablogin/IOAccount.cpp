@@ -204,6 +204,11 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     // To reload the character list
     client->Invalidate(acc);
 
+    // If in reserved names table we must delete it now
+    AB::Entities::ReservedName rn;
+    rn.name = ch.name;
+    client->DeleteIfExists(rn);
+
     uuid = ch.uuid;
     return CreatePlayerResultOK;
 }
@@ -235,16 +240,13 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         // Reserve the character name for some time for this user
         AB::Entities::ReservedName rn;
         rn.name = ch.name;
-        if (client->Read(rn))
-        {
-            client->Delete(rn);
-        }
+        client->DeleteIfExists(rn);
         const uuids::uuid guid = uuids::uuid_system_generator{}();
         rn.uuid = guid.to_string();
         rn.isReserved = true;
         rn.reservedForAccountUuid = accountUuid;
         rn.name = ch.name;
-        rn.reservedUntil = Utils::AbTick() + NAME_RESERVATION_EXPIRES_MS;
+        rn.expires = Utils::AbTick() + NAME_RESERVATION_EXPIRES_MS;
         client->Create(rn);
     }
     return succ;
@@ -267,9 +269,9 @@ bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forA
     if (client->Read(rn))
     {
         // Temporarily reserved for an account
-        if (rn.reservedUntil != 0)
+        if (rn.expires != 0)
         {
-            if (rn.reservedUntil < Utils::AbTick())
+            if (rn.expires < Utils::AbTick())
             {
                 // Expired -> Delete it
                 client->Delete(rn);
