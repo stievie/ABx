@@ -444,7 +444,7 @@ bool Application::IsAccountBanned(const AB::Entities::Account& acc)
     return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
 }
 
-bool Application::IsHiddenFile(const boost::filesystem::path& path)
+bool Application::IsHiddenFile(const fs::path& path)
 {
     auto name = path.filename();
     if (name != ".." &&
@@ -473,8 +473,8 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
     }
     try
     {
-        auto web_root_path = boost::filesystem::canonical(root_);
-        auto path = boost::filesystem::canonical(web_root_path / request->path);
+        auto web_root_path = fs::canonical(root_);
+        auto path = fs::canonical(web_root_path / request->path);
         // Check if path is within web_root_path
         if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))
@@ -483,7 +483,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
                 << "Trying to access file outside root " << path.string() << std::endl;
             throw std::invalid_argument("path must be within root path");
         }
-        if (boost::filesystem::is_directory(path))
+        if (fs::is_directory(path))
         {
             LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
                 << "Trying to access a directory " << path.string() << std::endl;

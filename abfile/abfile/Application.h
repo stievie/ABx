@@ -1,8 +1,16 @@
 #pragma once
 
 #include "ServerApp.h"
-#include <boost/filesystem.hpp>
 #include <AB/Entities/Account.h>
+#include <filesystem>
+
+#if __cplusplus < 201703L
+// C++14
+namespace fs = std::experimental::filesystem;
+#else
+// C++17
+namespace fs = std::filesystem;
+#endif
 
 using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
 
@@ -51,7 +59,7 @@ private:
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     bool IsAdmin(std::shared_ptr<HttpsServer::Request> request);
     bool IsAccountBanned(const AB::Entities::Account& acc);
-    static bool IsHiddenFile(const boost::filesystem::path& path);
+    static bool IsHiddenFile(const fs::path& path);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
