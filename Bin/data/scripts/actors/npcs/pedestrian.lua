@@ -27,7 +27,7 @@ end
 
 -- self was selected by creature
 function onSelected(creature)
-  self:Say(2, "Not now!")
+  self:Say(CHAT_CHANNEL_GENERAL, "Not now!")
 end
 
 -- creature collides with self

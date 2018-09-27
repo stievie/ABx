@@ -18,14 +18,14 @@ end
 function onClicked(creature)
   clickCount = clickCount + 1
   if (clickCount > 3) then
-    self:Say(2, "WTF! Go away!")
+    self:Say(CHAT_CHANNEL_GENERAL, "WTF! Go away!")
     clickCount = 0
   end
 end
 
 -- self was selected by creature
 function onSelected(creature)
-  self:Say(2, "What do you want?!?")
+  self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
 --  local pos = creature:GetPosition();

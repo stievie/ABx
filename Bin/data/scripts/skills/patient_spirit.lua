@@ -1,3 +1,5 @@
+require("skills/_types")
+
 costEnergy = -5
 costAdrenaline = 0
 activation = 250

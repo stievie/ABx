@@ -2,7 +2,7 @@
 name = "Smith"
 level = 20
 modelIndex = 5     -- Smith body model
-sex = 2            -- Male
+sex = SEX_MALE     -- Male
 creatureState = 1  -- Idle
 prof1Index = 1     -- Warrior
 prof2Index = 0     -- None
@@ -21,7 +21,7 @@ end
 
 -- self was selected by creature
 function onSelected(creature)
-  self:Say(2, "Hello " .. creature:GetName())
+  self:Say(CHAT_CHANNEL_GENERAL, "Hello " .. creature:GetName())
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
 --  local pos = creature:GetPosition();
