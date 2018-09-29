@@ -22,11 +22,11 @@ bool IOLuaScript::Import(Game::LuaScript* asset, const std::string& name)
     // https://stackoverflow.com/questions/17597816/lua-dump-in-c
     lua_State* L;
     L = luaL_newstate();
-    luaL_openlibs(L);
     int ret = luaL_loadfile(L, name.c_str());
     if (ret != LUA_OK)
     {
-        LOG_ERROR << lua_tostring(L, -1) << std::endl;
+        LOG_ERROR << "Compile error: " << lua_tostring(L, -1) << std::endl;
+        lua_close(L);
         return false;
     }
     lua_lock(L);

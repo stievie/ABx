@@ -5,6 +5,16 @@
 
 namespace Game {
 
+template<typename CharT, typename TraitsT = std::char_traits<CharT> >
+class vectorwrapbuf : public std::basic_streambuf<CharT, TraitsT>
+{
+public:
+    vectorwrapbuf(std::vector<CharT> &vec)
+    {
+        setg(vec.data(), vec.data(), vec.data() + vec.size());
+    }
+};
+
 bool LuaScript::Execute(kaguya::State& luaState)
 {
     vectorwrapbuf<char> databuf(buffer_);
