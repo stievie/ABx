@@ -8,6 +8,7 @@
 #include "Terrain.h"
 #include "Model.h"
 #include "IOModel.h"
+#include "IOLuaScript.h"
 
 #include "DebugNew.h"
 
@@ -21,6 +22,7 @@ DataProvider::DataProvider()
     IO::DataProvider::Instance.AddImporter<Navigation::NavigationMesh, IO::IONavMesh>();
     IO::DataProvider::Instance.AddImporter<Game::Terrain, IO::IOTerrain>();
     IO::DataProvider::Instance.AddImporter<Game::Model, IO::IOModel>();
+    IO::DataProvider::Instance.AddImporter<Game::LuaScript, IO::IOLuaScript>();
 }
 
 std::string DataProvider::GetDataFile(const std::string& name) const

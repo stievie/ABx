@@ -24,7 +24,7 @@ void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
         return;
 
     std::shared_ptr<Game::GuildChatChannel> chat =
-        std::dynamic_pointer_cast<Game::GuildChatChannel>(Game::Chat::Instance.Get(Game::ChannelGuild, guildUuid));
+        std::dynamic_pointer_cast<Game::GuildChatChannel>(Game::Chat::Instance.Get(Game::ChatType::Guild, guildUuid));
     if (chat)
         chat->Broadcast(name, message);
 }
@@ -42,7 +42,7 @@ void MessageDispatcher::DispatchTradeChat(const Net::MessageMsg& msg)
         return;
 
     std::shared_ptr<Game::TradeChatChannel> chat =
-        std::dynamic_pointer_cast<Game::TradeChatChannel>(Game::Chat::Instance.Get(Game::ChannelTrade, 0));
+        std::dynamic_pointer_cast<Game::TradeChatChannel>(Game::Chat::Instance.Get(Game::ChatType::Trade, 0));
     if (chat)
         chat->Broadcast(name, message);
 }
@@ -68,7 +68,7 @@ void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
         return;
 
     std::shared_ptr<Game::WhisperChatChannel> chat =
-        std::dynamic_pointer_cast<Game::WhisperChatChannel>(Game::Chat::Instance.Get(Game::ChannelWhisper, player->id_));
+        std::dynamic_pointer_cast<Game::WhisperChatChannel>(Game::Chat::Instance.Get(Game::ChatType::Whisper, player->id_));
     if (chat)
         chat->Talk(name, message);
 }

@@ -23,7 +23,7 @@ private:
     std::shared_ptr<Math::HeightMap> heightMap_;
 public:
     Terrain();
-    virtual ~Terrain();
+    ~Terrain() override;
 
     void SetHeightMap(std::shared_ptr<Math::HeightMap> val)
     {

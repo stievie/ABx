@@ -42,7 +42,7 @@ Game::~Game()
     DeleteEntity(instanceData_);
     players_.clear();
     objects_.clear();
-    Chat::Instance.Remove(ChannelMap, id_);
+    Chat::Instance.Remove(ChatType::Map, id_);
 }
 
 void Game::RegisterLua(kaguya::State& state)
@@ -266,7 +266,7 @@ void Game::RemoveObject(std::shared_ptr<GameObject> object)
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
-    if (!result->LoadScript(IO::DataProvider::Instance.GetDataFile(script)))
+    if (!result->LoadScript(script))
     {
         return std::shared_ptr<Npc>();
     }
@@ -322,9 +322,11 @@ void Game::Load(const std::string& mapUuid)
     map_->data_.directory = data_.directory;
 
     // Must be executed here because the player doesn't wait to fully load the game to join
-    std::string luaFile = IO::DataProvider::Instance.GetDataFile(data_.script);
     // Execute initialization code if any
-    if (!luaState_.dofile(luaFile.c_str()))
+    script_ = IO::DataProvider::Instance.GetAsset<LuaScript>(data_.script);
+    if (!script_)
+        return;
+    if (!script_->Execute(luaState_))
         return;
 
     // Load Assets

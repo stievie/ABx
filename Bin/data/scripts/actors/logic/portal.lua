@@ -1,7 +1,9 @@
+include("/scripts/actors/consts.lua")
+
 name = "Temple of Athene"
 level = 20
 modelIndex = 11
-sex = 0
+sex = SEX_UNKNOWN
 creatureState = 1
 prof1Index = 0
 prof2Index = 0

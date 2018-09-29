@@ -1,3 +1,4 @@
+include("/scripts/actors/consts.lua")
 
 name = "Smith"
 level = 20

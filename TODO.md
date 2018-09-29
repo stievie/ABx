@@ -1,6 +1,5 @@
 # TODO
 
-+ abserv: ScriptManager::LoadDirectory()
 ! abclient: Select self with Shift+Number?
 ! abclient: Showing mail window does not fetch mails
 + abdata: Maintenance, delete expired records: reserved_names, guild_members

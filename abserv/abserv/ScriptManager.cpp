@@ -6,6 +6,8 @@
 #include "DataProvider.h"
 #include "Profiler.h"
 #include <filesystem>
+#include "StringUtils.h"
+#include "LuaScript.h"
 
 namespace Game {
 
@@ -22,32 +24,10 @@ void ScriptManager::LuaErrorHandler(int errCode, const char* message)
     LOG_ERROR << "Lua Error (" << errCode << "): " << message << std::endl;
 }
 
-void ScriptManager::RequireDirectory(kaguya::State& state, const std::string& dir)
-{
-    LOG_INFO << "ScriptManager::LoadDirectory() " << dir << std::endl;
-    using namespace fs;
-    recursive_directory_iterator end_itr;
-
-    try
-    {
-        for (recursive_directory_iterator itr(dir); itr != end_itr; ++itr)
-        {
-            std::string s = itr->path().string();
-            s = (s.size() >= 4 ? s.substr(s.size() - 4) : "");
-            if (s == ".lua")
-                if (!state.dofile(itr->path().string()))
-                    return;
-        }
-    }
-    catch (filesystem_error&)
-    {
-        return;
-    }
-}
-
 void ScriptManager::RegisterLuaAll(kaguya::State& state)
 {
     AB_PROFILE;
+    state.openlibs();
     state.setErrorHandler(LuaErrorHandler);
 #ifdef DEBUG_GAME
     if (!state.gc().isrunning())
@@ -64,16 +44,23 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     {
         return Application::Instance->GetServerId();
     });
-    state["RequireDirectory"] = kaguya::function([&state](const std::string& dir)
+    state["include"] = kaguya::function([&state](const std::string& file)
     {
-        RequireDirectory(state, dir);
+        auto script = IO::DataProvider::Instance.GetAsset<LuaScript>(file);
+        if (script)
+        {
+            if (!script->Execute(state))
+            {
+                LOG_ERROR << lua_tostring(state.state(), -1) << std::endl;
+            }
+        }
+        else
+            LOG_ERROR << "Script " << file << " not found" << std::endl;
     });
 
     // Register all used classes
     GameObject::RegisterLua(state);
     Actor::RegisterLua(state);
-
-    Game::RegisterLua(state);
 
     Effect::RegisterLua(state);
     Skill::RegisterLua(state);
@@ -82,7 +69,11 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     Player::RegisterLua(state);
     Npc::RegisterLua(state);
 
-    state.dofile(IO::DataProvider::Instance.GetDataFile("/scripts/main.lua"));
+    Game::RegisterLua(state);
+
+    auto mainS = IO::DataProvider::Instance.GetAsset<LuaScript>("/scripts/main.lua");
+    if (mainS)
+        mainS->Execute(state);
 }
 
 }

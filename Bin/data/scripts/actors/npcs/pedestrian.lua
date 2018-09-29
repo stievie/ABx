@@ -1,7 +1,9 @@
+include("/scripts/actors/consts.lua")
+
 name = "Pedestrian"
 level = 20
 modelIndex = 10    -- Female Pedestrian 1 body model
-sex = 1            -- Female
+sex = SEX_FEMALE
 creatureState = 1  -- Idle
 prof1Index = 3     -- Monk
 prof2Index = 0     -- None

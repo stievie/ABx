@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "ScriptManager.h"
 #include "Utils.h"
+#include "DataProvider.h"
 
 namespace Game {
 
@@ -23,7 +24,10 @@ void Effect::InitializeLua()
 
 bool Effect::LoadScript(const std::string& fileName)
 {
-    if (!luaState_.dofile(fileName.c_str()))
+    script_ = IO::DataProvider::Instance.GetAsset<LuaScript>(fileName);
+    if (!script_)
+        return false;
+    if (!script_->Execute(luaState_))
         return false;
 
     persistent_ = luaState_["isPersistent"];

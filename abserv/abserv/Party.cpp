@@ -12,14 +12,14 @@ Party::Party(std::shared_ptr<Player> leader) :
     maxMembers_(1)
 {
     id_ = GetNewId();
-    chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(Chat::Instance.Get(ChannelParty, id_));
+    chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(Chat::Instance.Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
     members_.push_back(leader);
 }
 
 Party::~Party()
 {
-    Chat::Instance.Remove(ChannelParty, id_);
+    Chat::Instance.Remove(ChatType::Party, id_);
 }
 
 bool Party::Add(std::shared_ptr<Player> player)

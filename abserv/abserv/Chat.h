@@ -9,18 +9,18 @@ class Player;
 class Party;
 class Npc;
 
-enum ChatType : uint8_t
+enum class ChatType : uint8_t
 {
     /// Guild messages get all guild members on all servers
-    ChannelGuild = 0x01,     // ID = StringHash(Guild.uuid)
+    Guild = 0x01,     // ID = StringHash(Guild.uuid)
     /// Local map chat
-    ChannelMap = 0x02,       // ID = GameID
+    Map = 0x02,       // ID = GameID
     /// Trade messages get all players on all servers
-    ChannelTrade = 0x03,     // ID = 0
+    Trade = 0x03,     // ID = 0
     /// There may be allies on the map that do not belong to the party
-    ChannelAllies = 0x04,    //
-    ChannelParty = 0x05,     // ID = PartyID
-    ChannelWhisper = 0x06,   // ID = PlayerID
+    Allies = 0x04,    //
+    Party = 0x05,     // ID = PartyID
+    Whisper = 0x06,   // ID = PlayerID
 };
 
 class ChatChannel
@@ -108,7 +108,7 @@ class Chat
 {
 private:
     // Type | ID
-    std::map<std::pair<uint8_t, uint64_t>, std::shared_ptr<ChatChannel>> channels_;
+    std::map<std::pair<ChatType, uint64_t>, std::shared_ptr<ChatChannel>> channels_;
     std::shared_ptr<ChatChannel> tradeChat_;
 public:
     Chat();
@@ -117,9 +117,9 @@ public:
     Chat(const Chat&) = delete;
     Chat& operator=(const Chat&) = delete;
 
-    std::shared_ptr<ChatChannel> Get(uint8_t type, uint64_t id);
-    std::shared_ptr<ChatChannel> Get(uint8_t type, const std::string& uuid);
-    void Remove(uint8_t type, uint64_t id);
+    std::shared_ptr<ChatChannel> Get(ChatType type, uint64_t id);
+    std::shared_ptr<ChatChannel> Get(ChatType type, const std::string& uuid);
+    void Remove(ChatType type, uint64_t id);
     void CleanChats();
 
     static Chat Instance;

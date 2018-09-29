@@ -1,7 +1,9 @@
+include("/scripts/actors/consts.lua")
+
 name = "Priest"
 level = 20
 modelIndex = 5     -- Smith body model
-sex = 2            -- Male
+sex = SEX_MALE
 creatureState = 1  -- Idle
 prof1Index = 3     -- Monk
 prof2Index = 0     -- None

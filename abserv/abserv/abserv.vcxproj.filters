@@ -186,6 +186,12 @@
     <ClInclude Include="Actor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="LuaScript.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="IOLuaScript.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -351,6 +357,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Actor.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaScript.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOLuaScript.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

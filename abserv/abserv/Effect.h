@@ -3,6 +3,7 @@
 #include "PropStream.h"
 #include <forward_list>
 #include <AB/Entities/Effect.h>
+#include "LuaScript.h"
 
 namespace Game {
 
@@ -21,6 +22,7 @@ class Effect
 {
 private:
     kaguya::State luaState_;
+    std::shared_ptr<LuaScript> script_;
     std::weak_ptr<Actor> target_;
     std::weak_ptr<Actor> source_;
     bool persistent_;

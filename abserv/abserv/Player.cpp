@@ -360,7 +360,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     std::shared_ptr<Player> target = PlayerManager::Instance.GetPlayerByName(name);
     if (target)
     {
-        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelWhisper, target->id_);
+        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChatType::Whisper, target->id_);
         if (channel)
         {
             if (channel->Talk(this, msg))
@@ -383,7 +383,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     if (cli->Read(character) && (character.lastLogin > character.lastLogout))
     {
         // Is online
-        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelWhisper, character.uuid);
+        std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChatType::Whisper, character.uuid);
         if (channel->Talk(this, msg))
         {
             Net::NetworkMessage nmsg;
@@ -407,7 +407,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
 
 void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelGuild, account_.guildUuid);
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChatType::Guild, account_.guildUuid);
     if (channel)
     {
         channel->Talk(this, command);
@@ -416,7 +416,7 @@ void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMess
 
 void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelTrade, 0);
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChatType::Trade, 0);
     if (channel)
     {
         channel->Talk(this, command);
@@ -473,7 +473,7 @@ void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelMap, GetGame()->id_);
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChatType::Map, GetGame()->id_);
     if (channel)
     {
         channel->Talk(this, command);
@@ -482,7 +482,7 @@ void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMe
 
 void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&)
 {
-    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChannelParty, GetParty()->id_);
+    std::shared_ptr<ChatChannel> channel = Chat::Instance.Get(ChatType::Party, GetParty()->id_);
     if (channel)
     {
         channel->Talk(this, command);

@@ -67,8 +67,8 @@ bool Skill::StartUse(Actor* source, Actor* target)
         recharged_ = 0;
         return false;
     }
-    source->energy_ += energy_;
-    source->adrenaline_ += adrenaline_;
+    source->energy_ -= energy_;
+    source->adrenaline_ -= adrenaline_;
     source->overcast_ += overcast_;
     return true;
 }

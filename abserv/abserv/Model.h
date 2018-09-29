@@ -11,7 +11,7 @@ class Model : public IO::AssetImpl<Model>
 {
 public:
     Model();
-    virtual ~Model();
+    ~Model() override;
     Math::BoundingBox GetBoundingBox()
     {
         if (!shape_)

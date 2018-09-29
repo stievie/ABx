@@ -1,4 +1,3 @@
-package.path = "data/scripts/?.lua;" .. package.path
+--package.path = "data/scripts/?.lua;" .. package.path
 
-require("include")
-require("consts")
+include("/scripts/chat.lua")

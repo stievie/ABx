@@ -21,19 +21,19 @@ Chat::Chat()
 {
     // Keep a reference to this chat so it doesn't get deleted.
     tradeChat_ = std::dynamic_pointer_cast<ChatChannel>(std::make_shared<TradeChatChannel>());
-    static const std::pair<uint8_t, uint64_t> tradeChannelId = { ChannelTrade, 0ULL };
+    static const std::pair<ChatType, uint64_t> tradeChannelId = { ChatType::Trade, 0ULL };
     channels_.emplace(tradeChannelId, tradeChat_);
 }
 
-std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
+std::shared_ptr<ChatChannel> Chat::Get(ChatType type, uint64_t id)
 {
     switch (type)
     {
-    case ChannelWhisper:
+    case ChatType::Whisper:
         return std::make_shared<WhisperChatChannel>(id);
     }
 
-    std::pair<uint8_t, uint64_t> channelId = { type, id };
+    std::pair<ChatType, uint64_t> channelId = { type, id };
     auto it = channels_.find(channelId);
     if (it != channels_.end())
         return (*it).second;
@@ -41,10 +41,10 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
     std::shared_ptr<ChatChannel> c;
     switch (type)
     {
-    case ChannelMap:
+    case ChatType::Map:
         c = std::make_shared<GameChatChannel>(id);
         break;
-    case ChannelParty:
+    case ChatType::Party:
         c = std::make_shared<PartyChatChannel>(id);
         break;
     default:
@@ -55,12 +55,12 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, uint64_t id)
     return c;
 }
 
-std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, const std::string& uuid)
+std::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
 {
     if (uuid.empty() || uuids::uuid(uuid).nil())
         return std::shared_ptr<ChatChannel>();
 
-    std::pair<uint8_t, uint64_t> channelId = { type, Utils::StringHash(uuid.c_str()) };
+    std::pair<ChatType, uint64_t> channelId = { type, Utils::StringHash(uuid.c_str()) };
     auto it = channels_.find(channelId);
     if (it != channels_.end())
         return (*it).second;
@@ -68,11 +68,11 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, const std::string& uuid)
     std::shared_ptr<ChatChannel> c;
     switch (type)
     {
-    case ChannelGuild:
+    case ChatType::Guild:
         c = std::make_shared<GuildChatChannel>(uuid);
         channels_.emplace(channelId, c);
         break;
-    case ChannelWhisper:
+    case ChatType::Whisper:
         c = std::make_shared<WhisperChatChannel>(uuid);
         channels_.emplace(channelId, c);
         break;
@@ -80,9 +80,9 @@ std::shared_ptr<ChatChannel> Chat::Get(uint8_t type, const std::string& uuid)
     return c;
 }
 
-void Chat::Remove(uint8_t type, uint64_t id)
+void Chat::Remove(ChatType type, uint64_t id)
 {
-    std::pair<uint8_t, uint64_t> channelId = { type, id };
+    std::pair<ChatType, uint64_t> channelId = { type, id };
     auto it = channels_.find(channelId);
     if (it != channels_.end())
         channels_.erase(it);

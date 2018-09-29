@@ -3,6 +3,7 @@
 #include "GameManager.h"
 #include "ScriptManager.h"
 #include "MathUtils.h"
+#include "DataProvider.h"
 
 namespace Game {
 
@@ -33,7 +34,10 @@ Npc::~Npc()
 
 bool Npc::LoadScript(const std::string& fileName)
 {
-    if (!luaState_.dofile(fileName.c_str()))
+    script_ = IO::DataProvider::Instance.GetAsset<LuaScript>(fileName);
+    if (!script_)
+        return false;
+    if (!script_->Execute(luaState_))
         return false;
 
     name_ = (const char*)luaState_["name"];
@@ -75,18 +79,18 @@ void Npc::Say(ChatType channel, const std::string& message)
 {
     switch (channel)
     {
-    case ChannelMap:
+    case ChatType::Map:
     {
-        std::shared_ptr<ChatChannel> ch = Chat::Instance.Get(ChannelMap, static_cast<uint64_t>(GetGame()->id_));
+        std::shared_ptr<ChatChannel> ch = Chat::Instance.Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
         if (ch)
         {
             ch->TalkNpc(this, message);
         }
         break;
     }
-    case ChannelAllies:
+    case ChatType::Allies:
         break;
-    case ChannelParty:
+    case ChatType::Party:
         break;
     }
 }

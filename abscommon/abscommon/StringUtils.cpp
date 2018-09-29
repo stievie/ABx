@@ -32,6 +32,14 @@ std::string ChangeFileExt(const std::string& fn, const std::string& ext)
     return fn + ext;
 }
 
+std::string GetFileExt(const std::string& fn)
+{
+    size_t pos = fn.find_last_of('.');
+    if (pos != std::string::npos)
+        return fn.substr(pos);
+    return "";
+}
+
 std::vector<std::string> Split(const std::string& str, const std::string& delim)
 {
     std::vector<std::string> parts;

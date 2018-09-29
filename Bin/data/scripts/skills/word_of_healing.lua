@@ -6,11 +6,11 @@ activation = 750
 recharge = 3000
 overcast = 0
 
-function onStartUse(player, target)
+function onStartUse(source, target)
   return true
 end
 
-function onEndUse(player, target)
+function onEndUse(source, target)
 end
 
 function onCancelUse()
