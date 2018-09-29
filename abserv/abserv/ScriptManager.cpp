@@ -26,7 +26,6 @@ void ScriptManager::LuaErrorHandler(int errCode, const char* message)
 
 void ScriptManager::RegisterLuaAll(kaguya::State& state)
 {
-    AB_PROFILE;
     state.openlibs();
     state.setErrorHandler(LuaErrorHandler);
 #ifdef DEBUG_GAME
@@ -48,14 +47,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     {
         auto script = IO::DataProvider::Instance.GetAsset<LuaScript>(file);
         if (script)
-        {
-            if (!script->Execute(state))
-            {
-                LOG_ERROR << lua_tostring(state.state(), -1) << std::endl;
-            }
-        }
-        else
-            LOG_ERROR << "Script " << file << " not found" << std::endl;
+            script->Execute(state);
     });
 
     // Register all used classes

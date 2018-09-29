@@ -36,7 +36,7 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
 
     if (result)
     {
-        if (result->LoadScript(IO::DataProvider::Instance.GetDataFile(result->data_.script)))
+        if (result->LoadScript(result->data_.script))
             return result;
     }
 

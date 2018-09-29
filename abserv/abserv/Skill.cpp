@@ -2,6 +2,7 @@
 #include "Skill.h"
 #include "Actor.h"
 #include "ScriptManager.h"
+#include "DataProvider.h"
 
 namespace Game {
 
@@ -23,7 +24,10 @@ void Skill::InitializeLua()
 
 bool Skill::LoadScript(const std::string& fileName)
 {
-    if (!luaState_.dofile(fileName.c_str()))
+    script_ = IO::DataProvider::Instance.GetAsset<LuaScript>(fileName);
+    if (!script_)
+        return false;
+    if (!script_->Execute(luaState_))
         return false;
 
     energy_ = luaState_["costEnergy"];

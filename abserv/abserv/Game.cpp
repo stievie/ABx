@@ -108,6 +108,7 @@ void Game::Start()
 
 void Game::Update()
 {
+    // Dispatcher Thread
     if (state_ != ExecutionState::Terminated)
     {
         if (lastUpdate_ == 0)
@@ -119,7 +120,6 @@ void Game::Update()
             gameStatus_->Add<int64_t>(startTime_);
         }
 
-        // Dispatcher Thread
         int64_t tick = Utils::AbTick();
         if (lastUpdate_ == 0)
             lastUpdate_ = tick - NETWORK_TICK;
@@ -240,7 +240,7 @@ std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 void Game::AddObject(std::shared_ptr<GameObject> object)
 {
     AddObjectInternal(object);
-    luaState_["onAddObject"]( object);
+    luaState_["onAddObject"](object);
 }
 
 void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
@@ -348,24 +348,6 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
 
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
     object->WriteSpawnData(*gameStatus_);
-/*    gameStatus_->Add<uint32_t>(object->id_);
-
-    gameStatus_->Add<float>(object->transformation_.position_.x_);
-    gameStatus_->Add<float>(object->transformation_.position_.y_);
-    gameStatus_->Add<float>(object->transformation_.position_.z_);
-    gameStatus_->Add<float>(object->transformation_.rotation_);
-    gameStatus_->Add<float>(object->transformation_.scale_.x_);
-    gameStatus_->Add<float>(object->transformation_.scale_.y_);
-    gameStatus_->Add<float>(object->transformation_.scale_.z_);
-    gameStatus_->Add<uint8_t>(object->IsUndestroyable() ? 1 : 0);
-    gameStatus_->Add<uint8_t>(object->stateComp_.GetState());
-    gameStatus_->Add<float>(object->GetSpeed());
-
-    IO::PropWriteStream data;
-    size_t dataSize;
-    object->Serialize(data);
-    const char* cData = data.GetStream(dataSize);
-    gameStatus_->AddString(std::string(cData, dataSize));   */
 }
 
 void Game::QueueLeaveObject(uint32_t objectId)
@@ -396,23 +378,6 @@ void Game::SendSpawnAll(uint32_t playerId)
 
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         o->WriteSpawnData(msg);
-
-/*        msg.Add<uint32_t>(o->id_);
-        msg.Add<float>(o->transformation_.position_.x_);
-        msg.Add<float>(o->transformation_.position_.y_);
-        msg.Add<float>(o->transformation_.position_.z_);
-        msg.Add<float>(o->transformation_.rotation_);
-        msg.Add<float>(o->transformation_.scale_.x_);
-        msg.Add<float>(o->transformation_.scale_.y_);
-        msg.Add<float>(o->transformation_.scale_.z_);
-        msg.Add<uint8_t>(o->IsUndestroyable() ? 1 : 0);
-        msg.Add<uint8_t>(o->stateComp_.GetState());
-        msg.Add<float>(o->GetSpeed());
-        IO::PropWriteStream data;
-        size_t dataSize;
-        o->Serialize(data);
-        const char* cData = data.GetStream(dataSize);
-        msg.AddString(std::string(cData, dataSize));      */
     }
     if (msg.GetSize() != 0)
         player->client_->WriteToOutput(msg);
