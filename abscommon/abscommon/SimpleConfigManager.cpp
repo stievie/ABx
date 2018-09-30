@@ -6,14 +6,14 @@ namespace IO {
 
 SimpleConfigManager SimpleConfigManager::Instance;
 
-std::string SimpleConfigManager::GetGlobal(const std::string& ident, const std::string& default)
+std::string SimpleConfigManager::GetGlobal(const std::string& ident, const std::string& def)
 {
     lua_getglobal(L, ident.c_str());
 
     if (!lua_isstring(L, -1))
     {
         lua_pop(L, 1);
-        return default;
+        return def;
     }
 
     int len = (int)luaL_len(L, -1);
@@ -23,14 +23,14 @@ std::string SimpleConfigManager::GetGlobal(const std::string& ident, const std::
     return ret;
 }
 
-int64_t SimpleConfigManager::GetGlobal(const std::string& ident, int64_t default)
+int64_t SimpleConfigManager::GetGlobal(const std::string& ident, int64_t def)
 {
     lua_getglobal(L, ident.c_str());
 
     if (!lua_isnumber(L, -1))
     {
         lua_pop(L, 1);
-        return default;
+        return def;
     }
 
     int64_t val = (int64_t)lua_tonumber(L, -1);
@@ -39,14 +39,14 @@ int64_t SimpleConfigManager::GetGlobal(const std::string& ident, int64_t default
     return val;
 }
 
-bool SimpleConfigManager::GetGlobalBool(const std::string& ident, bool default)
+bool SimpleConfigManager::GetGlobalBool(const std::string& ident, bool def)
 {
     lua_getglobal(L, ident.c_str());
 
     if (!lua_isboolean(L, -1))
     {
         lua_pop(L, 1);
-        return default;
+        return def;
     }
 
     bool val = lua_toboolean(L, -1) != 0;
