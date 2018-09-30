@@ -19,7 +19,7 @@ class Profiler
 {
 private:
     using timer = std::chrono::high_resolution_clock;
-    std::chrono::time_point<std::chrono::steady_clock> start_;
+    std::chrono::time_point<timer> start_;
     std::string name_;
 public:
     Profiler() :
@@ -34,7 +34,7 @@ public:
     ~Profiler()
     {
 #if defined(_PROFILING) && !defined(_NPROFILING)
-        std::chrono::time_point<std::chrono::steady_clock> end = timer::now();
+        std::chrono::time_point<timer> end = timer::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start_).count();
         if (!name_.empty())
             LOG_PROFILE << name_ << ": ";

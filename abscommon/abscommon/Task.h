@@ -10,8 +10,8 @@ class Task
 {
 public:
     explicit Task(unsigned ms, const std::function<void(void)>& f) :
-        function_(f),
-        expires_(true)
+        expires_(true),
+        function_(f)
     {
         expiration_ = the_clock::now() + std::chrono::milliseconds(ms);
     }

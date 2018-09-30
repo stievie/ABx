@@ -135,8 +135,8 @@ private:
         StateStart,
         StateCommit
     };
-    TransactionState state_;
     Database* db_;
+    TransactionState state_;
 public:
     DBTransaction(Database* db) :
         db_(db),

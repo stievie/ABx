@@ -11,4 +11,5 @@ x. Install `sudo apt-get install uuid-dev`
 x. Install libmysqlclient-dev
 x. Install libpq-dev
 3. Clone repo `git -c http.sslVerify=false clone https://stievie.mooo.com/git/Trill/ABx.git`
-4. `~/premake-core/bin/release/premake5 gmake` `~/premake-core/bin/release/premake5 --cc=clang gmake`
+4. (GCC `~/premake-core/bin/release/premake5 gmake`)
+  CLang `~/premake-core/bin/release/premake5 --cc=clang gmake`
