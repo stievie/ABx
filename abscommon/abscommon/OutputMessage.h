@@ -67,7 +67,7 @@ public:
 #ifdef _MSC_VER
         memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg->GetBuffer() + 8), msgLen);
 #else
-        memcpy(buffer_ + info_.position, (msg.GetBuffer() + 8), msgLen);
+        memcpy(buffer_ + info_.position, (msg->GetBuffer() + 8), msgLen);
 #endif
         info_.length += static_cast<MsgSize_t>(msgLen);
         info_.position += static_cast<MsgSize_t>(msgLen);
