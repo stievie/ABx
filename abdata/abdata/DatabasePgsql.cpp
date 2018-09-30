@@ -205,8 +205,8 @@ std::string DatabasePgsql::Parse(const std::string& s)
 }
 
 PgsqlResult::PgsqlResult(PGresult* res) :
-    handle_(res),
-    cursor_(-1)
+    cursor_(-1),
+    handle_(res)
 {
     rows_ = PQntuples(handle_) - 1;
 }

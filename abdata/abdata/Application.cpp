@@ -11,7 +11,7 @@
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i < arguments_.size(); i++)
+    for (size_t i = 0; i < arguments_.size(); i++)
     {
         const std::string& arg = arguments_[i];
         if (arg.compare("-port") == 0)

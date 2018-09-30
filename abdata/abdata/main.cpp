@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Version.h"
 #include <signal.h>     /* signal, raise, sig_atomic_t */
+#include <csignal>
 #include <functional>
 #include "Application.h"
 #include "MiniDump.h"
