@@ -2,6 +2,7 @@
 
 #include "NetworkMessage.h"
 #include <unordered_set>
+#include <list>
 
 namespace Net {
 
