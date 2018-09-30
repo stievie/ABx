@@ -129,11 +129,11 @@ void CreateHeightMapAction::CreateGeometry()
                 int i2 = (z * width_) + x + 1;
                 int i3 = (z + 1) * width_ + (x + 1);
                 // P1
-                indices_.push_back(i1);
+                indices_.push_back(static_cast<unsigned short>(i1));
                 // P2
-                indices_.push_back(i2);
+                indices_.push_back(static_cast<unsigned short>(i2));
                 // P3
-                indices_.push_back(i3);
+                indices_.push_back(static_cast<unsigned short>(i3));
             }
 
             {
@@ -142,11 +142,11 @@ void CreateHeightMapAction::CreateGeometry()
                 int i2 = (z + 1) * width_ + x;
                 int i1 = z * width_ + x;
                 // P3
-                indices_.push_back(i3);
+                indices_.push_back(static_cast<unsigned short>(i3));
                 // P2
-                indices_.push_back(i2);
+                indices_.push_back(static_cast<unsigned short>(i2));
                 // P1
-                indices_.push_back(i1);
+                indices_.push_back(static_cast<unsigned short>(i1));
             }
         }
     }

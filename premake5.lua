@@ -265,7 +265,10 @@ workspace "absall"
     }
     links { "abscommon", "absmath" }
     dependson { "abscommon", "absmath" }
-    defines { "_CONSOLE" }
+    defines { 
+      "_CONSOLE", 
+      "_CRT_SECURE_NO_WARNINGS"     -- fopen()
+    }
     filter "configurations:Debug"
       targetsuffix "_d"
 

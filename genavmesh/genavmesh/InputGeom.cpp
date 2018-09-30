@@ -429,7 +429,7 @@ bool InputGeom::saveGeomSet(const BuildSettings* settings)
 	return true;
 }
 
-bool InputGeom::saveObj(const BuildSettings* settings, const std::string& filename)
+bool InputGeom::saveObj(const BuildSettings*, const std::string& filename)
 {
     if (!m_mesh || m_mesh->vertices_.size() < 3)
         return false;

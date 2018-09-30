@@ -218,9 +218,9 @@ bool MeshLoader::load(const std::string& fileName)
             // We triangulate the faces so it must be always 3 vertices per face.
             if (ai_face->mNumIndices == 3)
             {
-                indices_.push_back(ai_face->mIndices[0]);
-                indices_.push_back(ai_face->mIndices[1]);
-                indices_.push_back(ai_face->mIndices[2]);
+                indices_.push_back(static_cast<unsigned short>(ai_face->mIndices[0]));
+                indices_.push_back(static_cast<unsigned short>(ai_face->mIndices[1]));
+                indices_.push_back(static_cast<unsigned short>(ai_face->mIndices[2]));
                 addTriangle(ai_face->mIndices[0], ai_face->mIndices[1], ai_face->mIndices[2], tcap);
             }
         }
@@ -279,11 +279,11 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
                 int i2 = (z * width_) + x + 1;
                 int i3 = (z + 1) * width_ + (x + 1);
                 // P1
-                indices_.push_back(i1);
+                indices_.push_back(static_cast<unsigned short>(i1));
                 // P2
-                indices_.push_back(i2);
+                indices_.push_back(static_cast<unsigned short>(i2));
                 // P3
-                indices_.push_back(i3);
+                indices_.push_back(static_cast<unsigned short>(i3));
                 addTriangle(i1, i2, i3, tcap);
             }
 
@@ -293,11 +293,11 @@ bool MeshLoader::loadHeightmap(const std::string& fileName, float scaleX, float 
                 int i2 = (z + 1) * width_ + x;
                 int i1 = z * width_ + x;
                 // P3
-                indices_.push_back(i3);
+                indices_.push_back(static_cast<unsigned short>(i3));
                 // P2
-                indices_.push_back(i2);
+                indices_.push_back(static_cast<unsigned short>(i2));
                 // P1
-                indices_.push_back(i1);
+                indices_.push_back(static_cast<unsigned short>(i1));
                 addTriangle(i3, i2, i1, tcap);
             }
         }
