@@ -32,7 +32,9 @@
 #define USE_SQLITE
 #define USE_MYSQL
 #define USE_PGSQL
+#ifdef _WIN32
 #define USE_ODBC
+#endif
 
 #define SCHEDULER_MINTICKS 10
 #define MAX_DATA_SIZE (1024 * 1024)
