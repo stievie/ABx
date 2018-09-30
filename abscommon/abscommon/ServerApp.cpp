@@ -13,7 +13,7 @@ bool ServerApp::Initialize(int argc, char** argv)
 #else
     char buff[PATH_MAX];
     ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeFile_ = std::string(result, (count > 0) ? count : 0);
+    exeFile_ = std::string(buff, (count > 0) ? count : 0);
 #endif
     size_t pos = exeFile_.find_last_of("\\/");
     path_ = exeFile_.substr(0, pos);
