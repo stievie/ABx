@@ -1,4 +1,4 @@
-require("skills/_types")
+include("scripts/skills/consts.lua")
 
 costEnergy = 5
 costAdrenaline = 0

@@ -58,7 +58,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
         recursive_directory_iterator end_itr;
         try
         {
-            for (recursive_directory_iterator itr(dir); itr != end_itr; ++itr)
+            for (recursive_directory_iterator itr(absDir); itr != end_itr; ++itr)
             {
                 std::string s = itr->path().string();
                 std::string ext = itr->path().extension().string();

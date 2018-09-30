@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StringHash.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 
@@ -11,16 +12,16 @@ class Npc;
 
 enum class ChatType : uint8_t
 {
-    /// Guild messages get all guild members on all servers
-    Guild = 0x01,     // ID = StringHash(Guild.uuid)
     /// Local map chat
-    Map = 0x02,       // ID = GameID
-    /// Trade messages get all players on all servers
-    Trade = 0x03,     // ID = 0
+    Map = AB::GameProtocol::ChatChannelGeneral,       // ID = GameID
+    /// Guild messages get all guild members on all servers
+    Guild = AB::GameProtocol::ChatChannelGuild,     // ID = StringHash(Guild.uuid)
+    Party = AB::GameProtocol::ChatChannelParty,     // ID = PartyID
     /// There may be allies on the map that do not belong to the party
-    Allies = 0x04,    //
-    Party = 0x05,     // ID = PartyID
-    Whisper = 0x06,   // ID = PlayerID
+    Allies = AB::GameProtocol::ChatChannelAllies,    //
+    /// Trade messages get all players on all servers
+    Trade = AB::GameProtocol::ChatChannelTrade,     // ID = 0
+    Whisper = AB::GameProtocol::ChatChannelWhisper,   // ID = PlayerID
 };
 
 class ChatChannel

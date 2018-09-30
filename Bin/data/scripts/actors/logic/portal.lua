@@ -4,7 +4,7 @@ name = "Temple of Athene"
 level = 20
 modelIndex = 11
 sex = SEX_UNKNOWN
-creatureState = 1
+creatureState = CREATURESTATE_IDLE
 prof1Index = 0
 prof2Index = 0
 

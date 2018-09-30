@@ -1,10 +1,11 @@
+include("/scripts/includes/chat.lua")
 include("/scripts/actors/consts.lua")
 
 name = "Pedestrian"
 level = 20
 modelIndex = 10    -- Female Pedestrian 1 body model
 sex = SEX_FEMALE
-creatureState = 1  -- Idle
+creatureState = CREATURESTATE_IDLE
 prof1Index = 3     -- Monk
 prof2Index = 0     -- None
 

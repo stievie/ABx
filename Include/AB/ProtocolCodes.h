@@ -149,6 +149,7 @@ enum ChatMessageChannel : uint8_t
     ChatChannelGeneral,
     ChatChannelGuild,
     ChatChannelParty,
+    ChatChannelAllies,
     ChatChannelTrade,
     ChatChannelWhisper,
 };

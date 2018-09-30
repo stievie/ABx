@@ -42,7 +42,7 @@ void Connection::Start()
 
 void Connection::StartReadKey(uint16_t& keySize)
 {
-    key_.resize(keySize);// .clear();//start fresh.TODO consider cost of this
+    key_.resize(keySize);
     auto self = shared_from_this();
     asio::async_read(socket_, asio::buffer(key_.data_), asio::transfer_at_least(keySize),
         [this, self, keySize](const asio::error_code& error, size_t byteTransferred)
@@ -217,7 +217,6 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
         else
         {
             if (storageProvider_.Create(key_, data_))
-                // Returns the id of the created Entity so client can construct the key
                 SendStatusAndRestart(Ok, "OK");
             else
                 SendStatusAndRestart(OtherErrors, "Error");
@@ -283,7 +282,6 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
         else
         {
             if (storageProvider_.Exists(key_, data_))
-                // Returns the id of the created Entity so client can construct the key
                 SendStatusAndRestart(Ok, "OK");
             else
                 SendStatusAndRestart(NotExists, "Record does not exist");
