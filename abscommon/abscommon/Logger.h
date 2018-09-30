@@ -75,8 +75,13 @@ public:
             std::chrono::time_point<std::chrono::system_clock> time_point;
             time_point = std::chrono::system_clock::now();
             std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
+#if _MSC_VER
             tm p;
             localtime_s(&p, &ttp);
+#else
+            struct tm* p;
+            p = localtime(&ttp);
+#endif
             char chr[50];
             strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", (const tm*)&p);
 
