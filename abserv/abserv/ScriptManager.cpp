@@ -26,7 +26,6 @@ void ScriptManager::LuaErrorHandler(int errCode, const char* message)
 
 void ScriptManager::RegisterLuaAll(kaguya::State& state)
 {
-    state.openlibs();
     state.setErrorHandler(LuaErrorHandler);
 #ifdef DEBUG_GAME
     if (!state.gc().isrunning())
@@ -49,6 +48,34 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
         if (script)
             script->Execute(state);
     });
+    state["include_dir"] = kaguya::function([&state](const std::string& dir)
+    {
+        // directory must start with /
+        using namespace fs;
+        const std::string& dataDir = IO::DataProvider::Instance.GetDataDir();
+        size_t dataDirLen = dataDir.length();
+        std::string absDir = dataDir + Utils::NormalizeFilename(dir);
+        recursive_directory_iterator end_itr;
+        try
+        {
+            for (recursive_directory_iterator itr(dir); itr != end_itr; ++itr)
+            {
+                std::string s = itr->path().string();
+                std::string ext = itr->path().extension().string();
+                if (Utils::StringEquals(ext, ".lua"))
+                {
+                    std::string _s = Utils::NormalizeFilename(s.substr(dataDirLen));
+                    auto script = IO::DataProvider::Instance.GetAsset<LuaScript>(_s);
+                    if (script)
+                        script->Execute(state);
+                }
+            }
+        }
+        catch (filesystem_error& ex)
+        {
+            LOG_ERROR << ex.what() << std::endl;
+        }
+    });
 
     // Register all used classes
     GameObject::RegisterLua(state);
@@ -63,6 +90,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
 
     Game::RegisterLua(state);
 
+    // Execute main script with definitions, constants, etc.
     auto mainS = IO::DataProvider::Instance.GetAsset<LuaScript>("/scripts/main.lua");
     if (mainS)
         mainS->Execute(state);

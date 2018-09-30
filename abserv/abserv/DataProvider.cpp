@@ -31,6 +31,11 @@ std::string DataProvider::GetDataFile(const std::string& name) const
     return dataDir + name;
 }
 
+const std::string & DataProvider::GetDataDir() const
+{
+    return ConfigManager::Instance[ConfigManager::DataDir].GetString();
+}
+
 bool DataProvider::FileExists(const std::string& name) const
 {
     return Utils::FileExists(name);

@@ -6,10 +6,10 @@
 namespace Game {
 
 template<typename CharT, typename TraitsT = std::char_traits<CharT> >
-class vectorwrapbuf : public std::basic_streambuf<CharT, TraitsT>
+class vectorbuf : public std::basic_streambuf<CharT, TraitsT>
 {
 public:
-    vectorwrapbuf(std::vector<CharT> &vec)
+    vectorbuf(std::vector<CharT> &vec)
     {
         setg(vec.data(), vec.data(), vec.data() + vec.size());
     }
@@ -17,7 +17,7 @@ public:
 
 bool LuaScript::Execute(kaguya::State& luaState)
 {
-    vectorwrapbuf<char> databuf(buffer_);
+    vectorbuf<char> databuf(buffer_);
     std::istream is(&databuf);
     if (!luaState.dostream(is))
     {

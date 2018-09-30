@@ -4,19 +4,38 @@
 #include "IOAsset.h"
 #include "Logger.h"
 #include "FileUtils.h"
+#include <unordered_map>
+#include "StringUtils.h"
 
 namespace IO {
+
+typedef std::pair<const char*, std::string> CacheKey;
+
+struct KeyHasher
+{
+    size_t operator()(const CacheKey& s) const noexcept
+    {
+        // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
+        // Compute individual hash values for first, second and third
+        // http://stackoverflow.com/a/1646913/126995
+        size_t res = 17;
+        res = res * 31 + std::hash<std::string>()(s.first);
+        res = res * 31 + std::hash<std::string>()(s.second);
+        return res;
+    }
+};
 
 class DataProvider
 {
 private:
     std::map<const char*, std::unique_ptr<IOAsset>> importers_;
-    std::map<std::pair<const char*, std::string>, std::shared_ptr<Asset>> cache_;
+    std::unordered_map<CacheKey, std::shared_ptr<Asset>, KeyHasher> cache_;
 public:
     DataProvider();
     ~DataProvider() = default;
 
     std::string GetDataFile(const std::string& name) const;
+    const std::string& GetDataDir() const;
     bool FileExists(const std::string& name) const;
     std::string GetFile(const std::string& name) const;
 
@@ -25,7 +44,7 @@ public:
     bool Exists(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
+        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return true;
@@ -35,7 +54,7 @@ public:
     bool IsCached(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
+        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
         return (it != cache_.end());
     }
@@ -45,7 +64,7 @@ public:
     bool AddToCache(AssetImpl<T>* asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
+        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return false;
@@ -56,7 +75,7 @@ public:
     bool RemoveFromCache(AssetImpl<T>* asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
+        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end() && (*it).second.get() == asset)
         {
@@ -69,7 +88,7 @@ public:
     std::shared_ptr<T> GetCached(const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
+        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
@@ -128,7 +147,7 @@ public:
     std::shared_ptr<T> GetAsset(const std::string& name, bool cacheAble = true)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
-        const std::pair<const char*, std::string> key = std::make_pair(typeid(T).name(), normal_name);
+        const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         // Lookup in cache
         if (cacheAble)
         {
@@ -155,3 +174,4 @@ public:
 };
 
 }
+
