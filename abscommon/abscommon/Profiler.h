@@ -24,13 +24,11 @@ private:
 public:
     Profiler() :
         start_(timer::now())
-    {
-    }
+    { }
     Profiler(const std::string name) :
-        name_(name),
-        start_(timer::now())
-    {
-    }
+        start_(timer::now()),
+        name_(name)
+    { }
     ~Profiler()
     {
 #if defined(_PROFILING) && !defined(_NPROFILING)

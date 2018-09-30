@@ -11,19 +11,25 @@
 workspace "absall"
   configurations { "Debug", "Release", "RelNoProfiling" }
   location "build"
+  system ("windows")
   includedirs { ".", "abscommon/abscommon", "Include", "$(BOOST_DIR)" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
   targetdir ("Bin")
-  filter { 'system:windows' }
-    platforms { "x64" }
-  filter { 'system:linux' }
-    platforms { "armv7" }
-    cppdialect "C++14"
+  cppdialect "C++14"
   warnings "Extra"
-  filter { "platforms:x64" }
+
+  filter "system:windows"
+    platforms { "x64" }
+--  filter "system:linux"
+--    platforms { "x32", "x64", "armv7" }
+
+  filter "platforms:x64"
     architecture "x64"
-  filter { "platforms:armv7" }
-    architecture "armv7"
+--  filter "platforms:x32"
+--    architecture "x32"
+--  filter "platforms:armv7"
+--    architecture "armv7"
+    
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
     symbols "On"
