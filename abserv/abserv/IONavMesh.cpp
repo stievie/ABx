@@ -26,7 +26,7 @@ bool IONavMesh::Import(Navigation::NavigationMesh* asset, const std::string& fil
 {
     AB_PROFILE;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     FILE* fp;
     errno_t err = fopen_s(&fp, fileName.c_str(), "rb");
     if (err)

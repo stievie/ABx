@@ -30,7 +30,11 @@ std::string NetworkMessage::GetStringEncrypted()
     size_t len = encString.length();
     char* buff = new char[len + 1];
     memset(buff, 0, len + 1);
+#ifdef _MSC_VER
     memcpy_s((char*)(buff), len, encString.data(), len);
+#else
+    memcpy((char*)(buff), encString.data(), len);
+#endif
     uint32_t* buffer = (uint32_t*)(buff);
     xxtea_dec(buffer, (uint32_t)(len / 4), AB::ENC_KEY);
     std::string result(buff);
@@ -52,7 +56,11 @@ void NetworkMessage::AddBytes(const char* bytes, uint32_t size)
     if (!CanAdd(size) || size > 8192)
         return;
 
+#ifdef _MSC_VER
     memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, bytes, size);
+#else
+    memcpy(buffer_ + info_.position, bytes, size);
+#endif
     info_.position += static_cast<MsgSize_t>(size);
     info_.length += static_cast<MsgSize_t>(size);
 }
@@ -64,7 +72,11 @@ void NetworkMessage::AddString(const std::string& value)
         return;
     Add<uint16_t>(len);
     // Allows also \0
+#ifdef _MSC_VER
     memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value.data(), len);
+#else
+    memcpy(buffer_ + info_.position, value.data(), len);
+#endif
     info_.position += static_cast<MsgSize_t>(len);
     info_.length += static_cast<MsgSize_t>(len);
 }
@@ -76,7 +88,11 @@ void NetworkMessage::AddString(const char* value)
         return;
 
     Add<uint16_t>(len);
+#ifdef _MSC_VER
     memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, value, len);
+#else
+    memcpy(buffer_ + info_.position, value, len);
+#endif
     info_.position += static_cast<MsgSize_t>(len);
     info_.length += static_cast<MsgSize_t>(len);
 }
@@ -101,7 +117,11 @@ void NetworkMessage::AddStringEncrypted(const std::string& value)
     }
     char* buff = new char[len];
     memset(buff, 0, len);
+#ifdef _MSC_VER
     memcpy_s((char*)(buff), len, value.data(), len);
+#else
+    memcpy((char*)(buff), value.data(), len);
+#endif
     uint32_t* buffer = (uint32_t*)(buff);
     xxtea_enc(buffer, len / 4, AB::ENC_KEY);
     std::string encString(buff, len);
