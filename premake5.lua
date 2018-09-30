@@ -14,10 +14,15 @@ workspace "absall"
   includedirs { ".", "abscommon/abscommon", "Include", "$(BOOST_DIR)" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
   targetdir ("Bin")
-  platforms { "x64" }
+  filter { 'system:windows' }
+    platforms { "x64" }
+  filter { 'system:linux' }
+    platforms { "armv7" }
   warnings "Extra"
   filter { "platforms:x64" }
     architecture "x64"
+  filter { "platforms:armv7" }
+    architecture "armv7"
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
     symbols "On"
