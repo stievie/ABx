@@ -18,6 +18,7 @@ workspace "absall"
     platforms { "x64" }
   filter { 'system:linux' }
     platforms { "armv7" }
+    cppdialect "C++14"
   warnings "Extra"
   filter { "platforms:x64" }
     architecture "x64"
