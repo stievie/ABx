@@ -140,7 +140,7 @@ bool DBIpBan::Exists(const AB::Entities::IpBan& ban)
     query << "SELECT COUNT(*) AS `count` FROM `ip_bans` WHERE ";
     if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
         query << "`uuid` = " << db->EscapeString(ban.uuid);
-    else if (!ban.ip != 0)
+    else if (ban.ip != 0)
     {
         if (ban.mask == 0)
         {

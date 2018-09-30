@@ -80,7 +80,7 @@ bool DBSkill::Exists(const AB::Entities::Skill& skill)
     query << "SELECT COUNT(*) AS `count` FROM `game_skills` WHERE ";
     if (!skill.uuid.empty() && !uuids::uuid(skill.uuid).nil())
         query << "`uuid` = " << db->EscapeString(skill.uuid);
-    else if (!skill.index != 0)
+    else if (skill.index != 0)
         query << "`idx` = " << skill.index;
     else
     {
