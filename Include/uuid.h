@@ -893,7 +893,7 @@ public:
               bytes.byte15
            } };
         return uuid{ std::begin(bytes), std::end(bytes) };
-#elif
+#else
         return uuid{};
 #endif
     }
