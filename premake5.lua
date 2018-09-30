@@ -91,7 +91,7 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    includedirs { "Include/pgsql", "Include/mysql" }
+    includedirs { "Include/pgsql" }
     links { "abscommon" }
     dependson { "abscommon" }
     defines { "_CONSOLE" }

@@ -95,7 +95,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\Include\mysql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\local\boost_1_63_0;$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>

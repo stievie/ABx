@@ -7,5 +7,8 @@
   1.3. `make -f Bootstrap.mak linux`. premake5 is now bin/release  
 2. Install boost `sudo apt-get install libboost-all-dev`. Unfortunately the data server still needs some header files.
   (Set `BOOST_DIR` and `BOOST_LIB_PATH`)
+x. Install `sudo apt-get install uuid-dev`
+x. Install libmysqlclient-dev
+x. Install libpq-dev
 3. Clone repo `git -c http.sslVerify=false clone https://stievie.mooo.com/git/Trill/ABx.git`
 4. `~/premake-core/bin/release/premake5 gmake` `~/premake-core/bin/release/premake5 --cc=clang gmake`

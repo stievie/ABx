@@ -3,7 +3,7 @@
 #ifdef USE_MYSQL
 
 #include "DatabaseMysql.h"
-#include <errmsg.h>
+#include <mysql/errmsg.h>
 
 #include "DebugNew.h"
 
