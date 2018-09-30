@@ -53,7 +53,7 @@ public:
     void Append(const NetworkMessage& msg)
     {
         int32_t msgLen = msg.GetSize();
-#ifdef _WIN32
+#ifdef _MSC_VER
         memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg.GetBuffer() + 8), msgLen);
 #else
         memcpy(buffer_ + info_.position, (msg.GetBuffer() + 8), msgLen);
@@ -64,7 +64,7 @@ public:
     void Append(const std::shared_ptr<OutputMessage>& msg)
     {
         int32_t msgLen = msg->GetSize();
-#ifdef _WIN32
+#ifdef _MSC_VER
         memcpy_s(buffer_ + info_.position, NETWORKMESSAGE_MAXSIZE, (msg->GetBuffer() + 8), msgLen);
 #else
         memcpy(buffer_ + info_.position, (msg.GetBuffer() + 8), msgLen);

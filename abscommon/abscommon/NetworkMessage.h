@@ -63,7 +63,11 @@ public:
         if (!CanRead(sizeof(T)))
             return 0;
         T v;
+#ifdef _MSC_VER
         memcpy_s(&v, sizeof(T), buffer_ + info_.position, sizeof(T));
+#else
+        memcpy(&v, buffer_ + info_.position, sizeof(T));
+#endif
         info_.position += sizeof(T);
         return v;
     }
@@ -94,7 +98,11 @@ public:
         if (!CanAdd(sizeof(T)))
             return;
 
+#ifdef _MSC_VER
         memcpy_s(buffer_ + info_.position, sizeof(T), &value, sizeof(T));
+#else
+        memcpy(buffer_ + info_.position, &value, sizeof(T));
+#endif
         info_.position += sizeof(T);
         info_.length += sizeof(T);
     }
