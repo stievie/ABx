@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "StringHash.h"
-#include <uuids.h>
+#include <uuid.h>
 
 namespace IO {
 
