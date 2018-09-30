@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Version.h"
 #include <signal.h>     /* signal, raise, sig_atomic_t */
-#include <csignal>
 #include <functional>
 #include "Application.h"
 #include "MiniDump.h"
@@ -61,7 +60,9 @@ int main(int argc, char* argv[])
     ShowLogo();
 
     signal(SIGINT, signal_handler);              // Ctrl+C
+#ifdef _WIN32
     signal(SIGBREAK, signal_handler);            // X clicked
+#endif
 
     {
         Application app;

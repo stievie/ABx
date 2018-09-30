@@ -16,9 +16,9 @@ public:
         expiration_ = the_clock::now() + std::chrono::milliseconds(ms);
     }
     explicit Task(const std::function<void(void)>& f) :
-        function_(f),
         expiration_(the_clock::time_point::max()),
-        expires_(false)
+        expires_(false),
+        function_(f)
     {}
     ~Task() = default;
 
