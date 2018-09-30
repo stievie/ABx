@@ -31,7 +31,7 @@ private:
 
 inline ScheduledTask* CreateScheduledTask(const std::function<void(void)>& f)
 {
-    return CreateScheduledTask(SCHEDULER_MINTICKS, f);
+    return new ScheduledTask(SCHEDULER_MINTICKS, f);
 }
 
 inline ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<void(void)>& f)
