@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef _WIN32
 // Durch Einbeziehen von"SDKDDKVer.h" wird die höchste verfügbare Windows-Plattform definiert.
 
 // Wenn Sie die Anwendung für eine frühere Windows-Plattform erstellen möchten, schließen Sie "WinSDKVer.h" ein, und
@@ -12,3 +13,4 @@
 #define _WIN32_WINNT 0x0601
 
 #include <SDKDDKVer.h>
+#endif
