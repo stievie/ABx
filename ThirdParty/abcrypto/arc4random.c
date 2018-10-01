@@ -31,10 +31,11 @@
 
 #include "arc4random.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if defined(_WIN32) && (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <Windows.h>
 #endif
 
+#include <stdlib.h>
 #include <stdint.h>
 
 typedef uint8_t  u_int8_t;
