@@ -4,6 +4,8 @@
 #define __ABCRYPT_ARC4RANDOM_H__
 
 #include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
 
 #define CC_PLATFORM_WIN32 0
 #define CC_PLATFORM_LINUX 1

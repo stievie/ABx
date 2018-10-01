@@ -3,6 +3,9 @@
 #ifndef __ABCRYPT_DH_H__
 #define __ABCRYPT_DH_H__
 
+#include <stddef.h>
+#include <stdlib.h>
+
 // 128 Bit key
 #define DH_KEY_LENGTH	(16)
 

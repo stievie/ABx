@@ -37,6 +37,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 #include "safebfuns.h"
 #include "arc4random.h"
 #include "bcrypt.h"

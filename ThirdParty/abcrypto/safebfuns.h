@@ -5,6 +5,8 @@
 #ifndef __ABCRYPT_SAFEBFUNS_H__
 #define __ABCRYPT_SAFEBFUNS_H__
 
+#include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 void explicit_bzero( void * const buf, const size_t n );
