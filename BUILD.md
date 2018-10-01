@@ -2,9 +2,9 @@
 
 1. Install CLang
 2. Install premake5
-  2.1 Clone repo https://github.com/premake/premake-core
-  2.2. `cd` to premake-core
-  2.3. `make -f Bootstrap.mak linux`. premake5 is now bin/release  
+    1 Clone repo https://github.com/premake/premake-core
+    2. `cd` to premake-core
+    3. `make -f Bootstrap.mak linux`. premake5 is now bin/release  
 3. Install boost `sudo apt-get install libboost-all-dev`. Unfortunately the data server still needs some header files.
   (Set `BOOST_DIR` and `BOOST_LIB_PATH`)
 4. Install `sudo apt-get install uuid-dev`
@@ -20,3 +20,4 @@
 * Remove `#pragma comment` to link file. 
 * Link `lua`, `abcrypto`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist), `libmysqlclient` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev/filelist), `libsqlite3` (https://packages.debian.org/jessie/armhf/libsqlite3-dev/filelist)
 * Remove `#pragma once`, add include guards?
+* `#ifdef _MSC_VER` all `*-s` C functions
