@@ -34,9 +34,12 @@
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <Windows.h>
 #endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+#include <sys/sysctl.h>
+#endif
 
 #include <stddef.h>
-#include <stdint.h>
+#include <stdlib.h>
 
 typedef uint8_t  u_int8_t;
 typedef uint16_t u_int16_t;
@@ -147,6 +150,7 @@ static void arc4_stir(void)
 
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 
+    size_t	len = sizeof(rnd);
     int mib[2];
     // unix access to /dev/urandom even when urandom is accessable for some weird reason
     mib[0] = CTL_KERN;
