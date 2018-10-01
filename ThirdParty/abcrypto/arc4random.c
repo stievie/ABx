@@ -31,7 +31,7 @@
 
 #include "arc4random.h"
 
-#if defined(_WIN32) && (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <Windows.h>
 #endif
 

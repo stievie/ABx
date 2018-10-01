@@ -5,6 +5,10 @@
 
 #include <stdint.h>
 
+#define CC_PLATFORM_WIN32 0
+#define CC_PLATFORM_LINUX 1
+#define CC_PLATFORM_ANDROID 2
+
 /// Initialize
 void arc4random_stir(void);
 
