@@ -159,6 +159,7 @@ static void arc4_stir(void)
 
 #else
 
+    size_t	len = sizeof(rnd);
     fillRandom(rnd, len);
 
 #endif
