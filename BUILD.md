@@ -14,7 +14,7 @@
 7. Install `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
 3. Clone repo `git -c http.sslVerify=false clone https://stievie.mooo.com/git/Trill/ABx.git`
 4. Generate make files: GCC: `~/premake-core/bin/release/premake5 gmake`), CLang: `~/premake-core/bin/release/premake5 --cc=clang gmake`
-5. `cd ./build && make -f lua.make && make -f abcrypto.make && make && make -f abscommon.make -f abdata.make`
+5. `cd ./build && make -f lua.make && make -f abcrypto.make && make -f abscommon.make && make -f abdata.make`
 
 ## Fixes
 
