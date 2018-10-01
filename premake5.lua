@@ -15,14 +15,12 @@ workspace "abs3rd"
   warnings "Extra"
   if (_TARGET_OS == "windows") then
     platforms { "x32", "x64" }
+    filter "platforms:x64"
+      architecture "x86_64"
+    filter "platforms:x32"
+      architecture "x86"
   elseif (_TARGET_OS == "linux") then
-    platforms { "x32", "x64", "armv7" }
-  end
-  filter "platforms:x64"
-    architecture "x86_64"
-  filter "platforms:x32"
-    architecture "x86"
-  if (_TARGET_OS == "linux") then
+    platforms { "armv7" }
     filter "platforms:armv7"
       architecture "armv7"
   end
@@ -49,9 +47,11 @@ workspace "abs3rd"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+    if (_TARGET_OS == "linux") then
+      defines { "CC_TARGET_PLATFORM=5" }
+    end
     filter { "action:gmake*", "toolset:gcc" }
       buildoptions { "-std=c11" }
-    defines { "CC_TARGET_PLATFORM=5" }
 
   project "lua"
     kind "StaticLib"
