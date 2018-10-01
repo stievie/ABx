@@ -35,7 +35,7 @@
 #include <Windows.h>
 #endif
 
-#include <stdlib.h>
+#include <stddef.h>
 #include <stdint.h>
 
 typedef uint8_t  u_int8_t;
