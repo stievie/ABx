@@ -79,6 +79,3 @@ bool SimpleConfigManager::Load(const std::string& file)
 }
 
 }
-
-#pragma comment(lib, "lua53.lib")
-

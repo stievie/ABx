@@ -297,6 +297,4 @@ std::shared_ptr<DBResult> SqliteResult::Next()
 
 }
 
-#pragma comment(lib, "sqlite3.lib")
-
 #endif
