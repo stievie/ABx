@@ -51,6 +51,7 @@ workspace "abs3rd"
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     filter { "action:gmake*", "toolset:gcc" }
       buildoptions { "-std=c11" }
+    defines { "CC_TARGET_PLATFORM=5" }
 
   project "lua"
     kind "StaticLib"
