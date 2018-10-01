@@ -12,19 +12,21 @@ workspace "abs3rd"
   configurations { "Debug", "Release" }
   location "build"
   targetdir ("Bin")
-  cppdialect "C++14"
   warnings "Extra"
-  filter "system:windows"
-    platforms { "x64" }
---  filter "system:linux"
---    platforms { "x32", "x64", "armv7" }
-
+  if (_TARGET_OS == "windows") then
+    platforms { "x32", "x64" }
+  elseif (_TARGET_OS == "linux") then
+    platforms { "x32", "x64", "armv7" }
+  end
   filter "platforms:x64"
-    architecture "x64"
---  filter "platforms:x32"
---    architecture "x32"
---  filter "platforms:armv7"
---    architecture "armv7"
+    architecture "x86_64"
+  filter "platforms:x32"
+    architecture "x86"
+  if (_TARGET_OS == "linux") then
+    filter "platforms:armv7"
+      architecture "armv7"
+  end
+  
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
     symbols "On"
@@ -34,9 +36,10 @@ workspace "abs3rd"
     optimize "Full"
   filter "configurations:RelNoProfiling"
     defines { "_NPROFILING" }
+    
   project "abcrypto"
     kind "StaticLib"
-    language "C++"
+    language "C"
     files { 
       "ThirdParty/abcrypto/*.c",
       "ThirdParty/abcrypto/*.h",
@@ -46,10 +49,12 @@ workspace "abs3rd"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+    filter { "action:gmake*", "toolset:gcc" }
+      buildoptions { "-std=c11" }
 
   project "lua"
     kind "StaticLib"
-    language "C++"
+    language "C"
     files { 
       "ThirdParty/lua/lua/*.c",
       "ThirdParty/lua/lua/*.h",
@@ -63,6 +68,26 @@ workspace "abs3rd"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+    filter { "action:gmake*", "toolset:gcc" }
+      buildoptions { "-std=c11" }
+
+  project "sqlite3"
+    kind "StaticLib"
+    language "C"
+    files { 
+      "ThirdParty/sqlite3/*.c",
+      "ThirdParty/sqlite3/*.h",
+    }
+    removefiles { 
+      "ThirdParty/sqlite3/shell.c"
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+    filter { "action:gmake*", "toolset:gcc" }
+      buildoptions { "-std=c11" }
     
 --------------------------------------------------------------------------------
 -- Server ----------------------------------------------------------------------
@@ -77,17 +102,19 @@ workspace "absall"
   cppdialect "C++14"
   warnings "Extra"
 
-  filter "system:windows"
+  if (_TARGET_OS == "windows") then
     platforms { "x64" }
---  filter "system:linux"
---    platforms { "x32", "x64", "armv7" }
-
+  elseif (_TARGET_OS == "linux") then
+    platforms { "x32", "x64", "armv7" }
+  end
   filter "platforms:x64"
     architecture "x64"
---  filter "platforms:x32"
---    architecture "x32"
---  filter "platforms:armv7"
---    architecture "armv7"
+  filter "platforms:x32"
+    architecture "x32"
+  if (_TARGET_OS == "linux") then
+    filter { "system:linux", "platforms:armv7" }
+      architecture "armv7"
+  end
     
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
@@ -159,8 +186,8 @@ workspace "absall"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     includedirs { "Include/pgsql" }
-    links { "abscommon", "abcrypto", "lua" }
-    dependson { "abscommon", "abcrypto", "lua" }
+    links { "abscommon", "abcrypto", "lua", "sqlite3" }
+    dependson { "abscommon", "abcrypto", "lua", "sqlite3" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
