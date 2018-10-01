@@ -6,6 +6,65 @@
 --  * BOOST_DIR, BOOST_LIB_PATH environment variables
 
 --------------------------------------------------------------------------------
+-- 3rd Party -------------------------------------------------------------------
+--------------------------------------------------------------------------------
+workspace "abs3rd"
+  configurations { "Debug", "Release" }
+  location "build"
+  targetdir ("Bin")
+  cppdialect "C++14"
+  warnings "Extra"
+  filter "system:windows"
+    platforms { "x64" }
+--  filter "system:linux"
+--    platforms { "x32", "x64", "armv7" }
+
+  filter "platforms:x64"
+    architecture "x64"
+--  filter "platforms:x32"
+--    architecture "x32"
+--  filter "platforms:armv7"
+--    architecture "armv7"
+  filter "configurations:Debug"
+    defines { "DEBUG", "_DEBUG" }
+    symbols "On"
+  filter "configurations:Rel*"
+    defines { "NDEBUG" }
+    flags { "LinkTimeOptimization" }
+    optimize "Full"
+  filter "configurations:RelNoProfiling"
+    defines { "_NPROFILING" }
+  project "abcrypto"
+    kind "StaticLib"
+    language "C++"
+    files { 
+      "ThirdParty/abcrypto/*.c",
+      "ThirdParty/abcrypto/*.h",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+
+  project "lua"
+    kind "StaticLib"
+    language "C++"
+    files { 
+      "ThirdParty/lua/lua/*.c",
+      "ThirdParty/lua/lua/*.h",
+    }
+    removefiles { 
+      "ThirdParty/lua/lua/lua.c", 
+      "ThirdParty/lua/lua/luac.c" 
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+    
+--------------------------------------------------------------------------------
 -- Server ----------------------------------------------------------------------
 --------------------------------------------------------------------------------
 workspace "absall"
@@ -43,6 +102,8 @@ workspace "absall"
   project "abscommon"
     kind "StaticLib"
     language "C++"
+    links { "abcrypto", "lua" }
+    dependson { "abcrypto", "lua" }
     files { 
       "abscommon/abscommon/*.cpp",
       "abscommon/abscommon/*.cxx",
@@ -98,8 +159,8 @@ workspace "absall"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     includedirs { "Include/pgsql" }
-    links { "abscommon" }
-    dependson { "abscommon" }
+    links { "abscommon", "abcrypto", "lua" }
+    dependson { "abscommon", "abcrypto", "lua" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -122,8 +183,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon" }
-    dependson { "abscommon" }
+    links { "abscommon", "abcrypto", "lua" }
+    dependson { "abscommon", "abcrypto", "lua" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -146,8 +207,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon" }
-    dependson { "abscommon" }
+    links { "abscommon", "abcrypto", "lua" }
+    dependson { "abscommon", "abcrypto", "lua" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -170,8 +231,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon" }
-    dependson { "abscommon" }
+    links { "abscommon", "abcrypto", "lua" }
+    dependson { "abscommon", "abcrypto", "lua" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -194,8 +255,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon" }
-    dependson { "abscommon" }
+    links { "abscommon", "abcrypto", "lua" }
+    dependson { "abscommon", "abcrypto", "lua" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -219,8 +280,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "absmath" }
-    dependson { "abscommon", "absmath" }
+    links { "abscommon", "absmath", "abcrypto", "lua" }
+    dependson { "abscommon", "absmath", "abcrypto", "lua" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"

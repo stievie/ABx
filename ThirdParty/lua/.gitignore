@@ -1,0 +1,30 @@
+# Output directories
+Debug
+Release
+ipch
+.vs
+*.exe
+*.dll
+*.ilk
+*.pbd
+*.cso
+*.ini
+
+# Precompiled header files
+*.gch/
+*.pch/
+*.pch.*
+
+# Misc.
+configure*
+*~
+*.swp
+.DS_Store
+*.log
+*.bak
+Thumbs.db
+.directory
+*.opendb
+*.db
+/*.dll
+*.user
