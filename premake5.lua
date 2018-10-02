@@ -101,10 +101,10 @@ workspace "absall"
 
   if (_TARGET_OS == "windows") then
     platforms { "x64" }
-    links { "abscommon", "lua" }
+    links { "lua" }
   elseif (_TARGET_OS == "linux") then
     platforms { "x32", "x64", "armv7" }
-    links { "abscommon", "libuuid", "lua" }
+    links { "libuuid", "lua" }
   end
   filter "platforms:x64"
     architecture "x64"
@@ -186,9 +186,9 @@ workspace "absall"
     }
     includedirs { "Include/pgsql" }
     if (_TARGET_OS == "windows") then
-      links { "abcrypto", "sqlite3", "libpq", "libmysql" }
+      links { "abscommon", "abcrypto", "sqlite3", "libpq", "libmysql" }
     elseif (_TARGET_OS == "linux") then
-      links { "abcrypto", "sqlite3", "libpq", "libmysqlclient" }
+      links { "abscommon", "abcrypto", "sqlite3", "libpq", "libmysqlclient" }
     end
     dependson { "abscommon", "abcrypto", "lua", "sqlite3" }
     defines { "_CONSOLE" }
@@ -213,8 +213,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "abcrypto", "lua" }
-    dependson { "abscommon", "abcrypto", "lua" }
+    links { "abscommon", "abcrypto" }
+    dependson { "abscommon", "abcrypto" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -237,8 +237,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "abcrypto", "lua" }
-    dependson { "abscommon", "abcrypto", "lua" }
+    links { "abscommon", "abcrypto" }
+    dependson { "abscommon", "abcrypto" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -261,8 +261,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "abcrypto", "lua" }
-    dependson { "abscommon", "abcrypto", "lua" }
+    links { "abscommon", "abcrypto" }
+    dependson { "abscommon", "abcrypto" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -285,8 +285,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "abcrypto", "lua" }
-    dependson { "abscommon", "abcrypto", "lua" }
+    links { "abscommon", "abcrypto" }
+    dependson { "abscommon", "abcrypto" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -310,8 +310,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "absmath", "abcrypto", "lua" }
-    dependson { "abscommon", "absmath", "abcrypto", "lua" }
+    links { "abscommon", "absmath", "abcrypto" }
+    dependson { "abscommon", "absmath", "abcrypto" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
