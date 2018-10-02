@@ -45,6 +45,7 @@ std::vector<std::string> Split(const std::string& str, const std::string& delim)
     std::vector<std::string> parts;
     char* input = (char*)str.c_str();
     const char* d = delim.c_str();
+#ifdef _MSC_VER
     char* next;
     char* pos = strtok_s(input, d, &next);
     while (pos != NULL)
@@ -52,6 +53,14 @@ std::vector<std::string> Split(const std::string& str, const std::string& delim)
         parts.push_back(std::string(pos));
         pos = strtok_s(NULL, d, &next);
     }
+#else
+    char* pos = strtok(input, d);
+    while (pos != NULL)
+    {
+        parts.push_back(std::string(pos));
+        pos = strtok(NULL, d);
+    }
+#endif
     return parts;
 }
 
@@ -72,9 +81,17 @@ std::string ConvertIPToString(uint32_t ip, bool mask /* = false */)
 
     char buffer[INET_ADDRSTRLEN];
     if (!mask)
+#ifdef _MSC_VER
         sprintf_s(buffer, INET_ADDRSTRLEN, "%u.%u.%u.%u", bytes[3], bytes[2], bytes[1], bytes[0]);
+#else
+        sprintf(buffer, "%u.%u.%u.%u", bytes[3], bytes[2], bytes[1], bytes[0]);
+#endif
     else
+#ifdef _MSC_VER
         sprintf_s(buffer, INET_ADDRSTRLEN, "%u.%u.x.x", bytes[3], bytes[2]);
+#else
+        sprintf(buffer, "%u.%u.x.x", bytes[3], bytes[2]);
+#endif
     return buffer;
 }
 
@@ -85,7 +102,11 @@ uint32_t ConvertStringToIP(const std::string& ip)
     unsigned int byte1;
     unsigned int byte0;
 
+#ifdef _MSC_VER
     if (sscanf_s(ip.c_str(), "%u.%u.%u.%u", &byte3, &byte2, &byte1, &byte0) == 4)
+#else
+    if (sscanf(ip.c_str(), "%u.%u.%u.%u", &byte3, &byte2, &byte1, &byte0) == 4)
+#endif
     {
         if ((byte3 < 256)
             && (byte2 < 256)
