@@ -48,7 +48,7 @@ workspace "abs3rd"
     }
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     if (_TARGET_OS == "linux") then
-      defines { "CC_TARGET_PLATFORM=5" }
+--      defines { "CC_TARGET_PLATFORM=5" }
     end
     filter { "action:gmake*", "toolset:gcc" }
       buildoptions { "-std=c11" }
