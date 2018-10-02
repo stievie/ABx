@@ -12,5 +12,4 @@ lb_type = 4      -- Load balancer for Login Server (= type 4)
 -- If data_port is 0 a server list file must be given
 server_list = ""
 
-data_port = 2770
-data_host = "localhost"
+require("config/data_server")

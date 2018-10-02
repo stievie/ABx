@@ -11,7 +11,7 @@ read_only = false
 
 data_port = 2770
 -- IP it listens on
-data_ip = "127.0.0.1"
+data_ip = "0.0.0.0"
 data_host = ""
 
 -- Max memory size, 1GB

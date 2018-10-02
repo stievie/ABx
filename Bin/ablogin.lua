@@ -14,8 +14,5 @@ login_ip = "192.168.1.51"
 -- DOS prevention
 max_packets_per_second = 60
 
--- Data server
-data_host = "localhost"
-data_port = 2770
-
+require("config/data_server")
 require("config/login")

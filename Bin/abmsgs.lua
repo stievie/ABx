@@ -10,6 +10,4 @@ message_port = 2771
 message_ip = "192.168.1.51"
 --message_host = "stievie.mooo.com"
 
--- Data server
-data_host = "localhost"
-data_port = 2770
+require("config/data_server")
