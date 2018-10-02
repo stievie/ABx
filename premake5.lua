@@ -111,7 +111,6 @@ workspace "absall"
   end
   filter "platforms:x64"
     architecture "x64"
-    yes
   filter "platforms:x32"
     architecture "x32"
   if (_TARGET_OS == "linux") then
