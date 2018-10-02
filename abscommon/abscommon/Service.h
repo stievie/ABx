@@ -76,12 +76,13 @@ public:
 private:
     using ConstIt = std::vector<std::shared_ptr<ServiceBase>>::const_iterator;
     asio::io_service& service_;
-    std::unique_ptr<asio::ip::tcp::acceptor> acceptor_;
     uint16_t serverPort_;
     uint32_t serverIp_;
+    std::unique_ptr<asio::ip::tcp::acceptor> acceptor_;
+    AcceptConnection acceptConnection_;
+
     std::vector<std::shared_ptr<ServiceBase>> services_;
     bool pendingStart_;
-    AcceptConnection acceptConnection_;
 
     void Accept();
     void OnAccept(std::shared_ptr<Connection> connection, const asio::error_code& error);
