@@ -15,22 +15,13 @@ enum VariantType
     VAR_VOIDPTR
 };
 
-struct VariantValue
+union VariantValue
 {
-    union
-    {
-        int intValue;
-        int64_t int64Value;
-        bool boolValue;
-        float floatValue;
-        void* ptrValue;
-    };
-    VariantValue() :
-        intValue(0),
-        boolValue(false),
-        floatValue(0.0f),
-        ptrValue(nullptr)
-    { }
+    int intValue;
+    int64_t int64Value;
+    bool boolValue;
+    float floatValue;
+    void* ptrValue;
 };
 
 class Variant
@@ -42,6 +33,7 @@ private:
 public:
     Variant() :
         type_(VAR_NONE),
+        value_({ 0 }),
         stringValue_("")
     { }
     Variant(const Variant& variant) :
