@@ -7,12 +7,12 @@
 
 Server::Server(asio::io_service& io_service, uint32_t ip,
     uint16_t port, size_t maxCacheSize, bool readonly) :
+    running_(false),
     io_service_(io_service),
     acceptor_(
         io_service,
         asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(ip)), port)
     ),
-    running_(false),
     storageProvider_(maxCacheSize, readonly),
     maxDataSize_(MAX_DATA_SIZE),
     maxKeySize_(MAX_KEY_SIZE)

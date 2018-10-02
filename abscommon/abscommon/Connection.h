@@ -68,6 +68,8 @@ public:
     asio::ip::tcp::socket& GetSocket() { return socket_; }
     uint32_t GetIP() const;
     uint16_t GetPort() const;
+private:
+    asio::io_service& ioService_;
 protected:
     asio::ip::tcp::socket socket_;
 private:
@@ -81,7 +83,6 @@ private:
     void OnWriteOperation(const asio::error_code& error);
     void InternalSend(std::shared_ptr<OutputMessage> message);
 
-    asio::io_service& ioService_;
     std::shared_ptr<ServicePort> servicePort_;
     std::shared_ptr<Protocol> protocol_;
     std::recursive_mutex lock_;

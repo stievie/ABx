@@ -59,7 +59,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uin
     }
 
     // If we are here it returns data
-    const int size = ToInt32(dataheader, 1);
+    const size_t size = static_cast<size_t>(ToInt32(dataheader, 1));
     data.resize(size);
     size_t read2 = asio::read(socket_, asio::buffer(data), asio::transfer_at_least(size));
     if (read2 != size)

@@ -27,3 +27,4 @@
 * Remove `#pragma once`, add include guards?
 * `#ifdef _MSC_VER` all `*_s` C functions
 * Fix initialization order
+* Complie `make -f abdata.make -e config=release_armv7`
