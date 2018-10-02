@@ -47,9 +47,6 @@ workspace "abs3rd"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
-    if (_TARGET_OS == "linux") then
---      defines { "CC_TARGET_PLATFORM=5" }
-    end
     filter { "action:gmake*", "toolset:gcc" }
       buildoptions { "-std=c11" }
 
@@ -145,11 +142,11 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
       pchsource "abscommon/abscommon/stdafx.cpp"
-    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
 
   project "absmath"
     kind "StaticLib"
@@ -168,9 +165,9 @@ workspace "absall"
     }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     filter "action:vs*"
       pchsource "absmath/absmath/stdafx.cpp"
-    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
           
   project "abdata"
     kind "ConsoleApp"
