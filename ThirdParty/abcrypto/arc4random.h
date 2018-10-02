@@ -9,10 +9,11 @@
 
 #define CC_PLATFORM_WIN32 0
 #define CC_PLATFORM_LINUX 1
-#define CC_PLATFORM_ANDROID 2
 
 #if defined(_WIN32) && !defined(CC_TARGET_PLATFORM)
 #define CC_TARGET_PLATFORM CC_PLATFORM_WIN32
+#elif defined(__linux__) || defined(__unix__)
+#define CC_TARGET_PLATFORM CC_PLATFORM_LINUX
 #endif
 
 /// Initialize

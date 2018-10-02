@@ -10,5 +10,3 @@
 #define BASE64_IMPLEMENTATION
 #include <base64.h>
 #undef BASE64_IMPLEMENTATION
-
-#pragma comment(lib, "lua53.lib")

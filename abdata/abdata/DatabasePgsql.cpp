@@ -272,12 +272,4 @@ std::shared_ptr<DBResult> PgsqlResult::Next()
 
 }
 
-// Adds dependencies to
-// * libpq.dll
-// * ssleay32.dll
-// * libeay32.dll
-// * libintl-8.dll
-// * libiconv-2.dll
-#pragma comment(lib, "libpq.lib")
-
 #endif

@@ -20,7 +20,10 @@
 ## Fixes
 
 * Remove `#pragma comment` to link file. 
-* Link `lua`, `abcrypto`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist), `libmysqlclient` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev/filelist), `libsqlite3` (https://packages.debian.org/jessie/armhf/libsqlite3-dev/filelist), `libuuid` (https://packages.debian.org/jessie/armhf/uuid-dev/filelist)
+* Link `lua`, `abcrypto`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist), 
+`libmysqlclient` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev/filelist), 
+`libsqlite3` (https://packages.debian.org/jessie/armhf/libsqlite3-dev/filelist), 
+`libuuid` (https://packages.debian.org/jessie/armhf/uuid-dev/filelist)
 * Remove `#pragma once`, add include guards?
 * `#ifdef _MSC_VER` all `*_s` C functions
 * Fix initialization order

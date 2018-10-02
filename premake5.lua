@@ -96,7 +96,6 @@ workspace "abs3rd"
 workspace "absall"
   configurations { "Debug", "Release", "RelNoProfiling" }
   location "build"
-  system ("windows")
   includedirs { ".", "abscommon/abscommon", "Include", "$(BOOST_DIR)" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
   targetdir ("Bin")
@@ -105,11 +104,14 @@ workspace "absall"
 
   if (_TARGET_OS == "windows") then
     platforms { "x64" }
+    links { "abscommon", "lua" }
   elseif (_TARGET_OS == "linux") then
     platforms { "x32", "x64", "armv7" }
+    links { "abscommon", "libuuid", "lua" }
   end
   filter "platforms:x64"
     architecture "x64"
+    yes
   filter "platforms:x32"
     architecture "x32"
   if (_TARGET_OS == "linux") then
@@ -187,7 +189,11 @@ workspace "absall"
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
     includedirs { "Include/pgsql" }
-    links { "abscommon", "abcrypto", "lua", "sqlite3" }
+    if (_TARGET_OS == "windows") then
+      links { "abcrypto", "sqlite3", "libpq", "libmysql" }
+    elseif (_TARGET_OS == "linux") then
+      links { "abcrypto", "sqlite3", "libpq", "libmysqlclient" }
+    end
     dependson { "abscommon", "abcrypto", "lua", "sqlite3" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"

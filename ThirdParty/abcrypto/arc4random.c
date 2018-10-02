@@ -36,6 +36,8 @@
 #endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 #include <sys/sysctl.h>
+#include <sys/types.h>
+#include <sys/time.h>
 #endif
 
 typedef uint8_t  u_int8_t;
@@ -124,36 +126,49 @@ static void arc4_stir(void)
         FreeLibrary(hLib);
     }
 
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 
-    size_t	len = sizeof(rnd);
-    // open /dev/urandom and read 128 bytes
-    FILE *in = fopen(urandom, "r");
-    if (in == NULL)
+    if (gettimeofday(&tv, NULL) != (-1))
     {
-        CCLog("Couldn't open file %s", urandom);
-        fillRandom(rnd, len);
+
+        /* Initialize the first element so it's hopefully not '0',
+        * to help out the next loop. Tossing in some prime numbers
+        * probably can't hurt. */
+        rnd[0] = (tv.tv_sec % 10000) * 3 + tv.tv_usec * 7 + \
+            (getpid() % 1000) * 13;
+
+        for (n = 1; n < 127; n++)
+        {
+
+            /* Take advantage of the stack space. Only initialize
+            * elements equal to '0'. This will make the rnd[]
+            * array much less vulnerable to timing attacks. Here
+            * we'll stir getpid() into the value of the previous
+            * element. Approximately 1 in 128 elements will still
+            * become '0'. */
+
+            if (rnd[n] == 0)
+            {
+                rnd[n] = ((rnd[n - 1] + n) ^ \
+                    ((getpid() % 1000) * 17));
+            }
+        }
     }
     else
     {
-        size_t ret = fread(rnd, 1, len, in);
-        if (ret != len)
+        /* gettimeofday() failed? Do the same thing as above, but only
+        * with getpid(). */
+
+        rnd[0] = (getpid() % 1000) * 19;
+        for (n = 1; n < 127; n++)
         {
-            CCLog("%d != %d", ret, len);
-            fillRandom(rnd, len);
+            if (rnd[n] == 0)
+            {
+                rnd[n] = ((rnd[n - 1] + n) ^ \
+                    ((getpid() % 1000) * 23));
+            }
         }
-        fclose(in);
     }
-
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-
-    size_t	len = sizeof(rnd);
-    int mib[2];
-    // unix access to /dev/urandom even when urandom is accessable for some weird reason
-    mib[0] = CTL_KERN;
-    mib[1] = KERN_ARND;
-    sysctl(mib, 2, rnd, &len, NULL, 0);
-
 #else
 
     size_t	len = sizeof(rnd);
