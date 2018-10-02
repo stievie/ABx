@@ -13,13 +13,13 @@ public:
     typedef std::function<void(const MessageMsg& msg)> MessageHandler;
 private:
     asio::io_service& ioService_;
+    asio::ip::tcp::resolver resolver_;
     asio::ip::tcp::socket socket_;
     bool connected_;
     MessageMsg readMsg_;
     MessageQueue writeMsgs_;
     std::string host_;
     uint16_t port_;
-    asio::ip::tcp::resolver resolver_;
     MessageHandler messageHandler_;
     void HandleReadHeader(MessageMsg* msg, const ReadHandler& handler,
         const asio::error_code& error, size_t bytes_transferred)

@@ -30,7 +30,9 @@ workspace "abs3rd"
     symbols "On"
   filter "configurations:Rel*"
     defines { "NDEBUG" }
-    flags { "LinkTimeOptimization" }
+    if (_TARGET_OS == "windows") then
+      flags { "LinkTimeOptimization" }
+    end
     optimize "Full"
   filter "configurations:RelNoProfiling"
     defines { "_NPROFILING" }
@@ -85,7 +87,7 @@ workspace "abs3rd"
     }
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     filter { "action:gmake*", "toolset:gcc" }
-      buildoptions { "-std=c11" }
+      buildoptions { "-std=c11", "-pthread" }
     
 --------------------------------------------------------------------------------
 -- Server ----------------------------------------------------------------------
@@ -120,10 +122,15 @@ workspace "absall"
     symbols "On"
   filter "configurations:Rel*"
     defines { "NDEBUG" }
-    flags { "LinkTimeOptimization" }
+    if (_TARGET_OS == "windows") then
+      -- My compiler failes with LTO on :(
+      flags { "LinkTimeOptimization" }
+    end
     optimize "Full"
   filter "configurations:RelNoProfiling"
     defines { "_NPROFILING" }
+  filter { "action:gmake*", "toolset:gcc" }
+    buildoptions { "-pthread" }
   
   project "abscommon"
     kind "StaticLib"
@@ -188,7 +195,7 @@ workspace "absall"
     if (_TARGET_OS == "windows") then
       links { "abscommon", "abcrypto", "sqlite3", "libpq", "libmysql" }
     elseif (_TARGET_OS == "linux") then
-      links { "abscommon", "abcrypto", "sqlite3", "libpq", "libmysqlclient" }
+      links { "pthrerad", "abscommon", "abcrypto", "sqlite3", "dl", "pq", "ssl", "crypto", "mysqlclient", "z", "gssapi_krb5" }
     end
     dependson { "abscommon", "abcrypto", "lua", "sqlite3" }
     defines { "_CONSOLE" }
