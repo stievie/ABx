@@ -127,7 +127,8 @@ static void arc4_stir(void)
     }
 
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-
+    int n;
+    struct timeval tv;
     if (gettimeofday(&tv, NULL) != (-1))
     {
 
