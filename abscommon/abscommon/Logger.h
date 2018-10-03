@@ -77,10 +77,10 @@ public:
             std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
             struct tm* p;
             p = localtime(&ttp);
-            char chr[50];
+            char chr[50] = { 0 };
             strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", p);
 
-            stream_ << chr << ": " << data;
+            stream_ << std::string(chr) << ": " << data;
             nextIsBegin_ = false;
         }
         else
