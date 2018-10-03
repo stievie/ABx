@@ -122,12 +122,14 @@ bool Application::LoadMain()
     );
     lbType_ = static_cast<AB::Entities::ServiceType>(
         // Default is login server
-        IO::SimpleConfigManager::Instance.GetGlobal("lb_type", 4)
+        IO::SimpleConfigManager::Instance.GetGlobal("lb_type", static_cast<int64_t>(AB::Entities::ServiceTypeLoginServer))
     );
     if (dataPort != 0)
+        // We have a data port so we can query the data server
         acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
             std::bind(&Application::GetServiceCallback, this, std::placeholders::_1));
     else
+        // Get service list from config file
         acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
             std::bind(&Application::GetServiceCallbackList, this, std::placeholders::_1));
 

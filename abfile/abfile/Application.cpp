@@ -125,14 +125,14 @@ bool Application::ParseCommandLine()
 
 void Application::ShowHelp()
 {
-    std::cout << "abserv [-<options> [<value>]]" << std::endl;
+    std::cout << "abfile [-<options> [<value>]]" << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
-    std::cout << "  ip <ip>: Game ip" << std::endl;
-    std::cout << "  host <host>: Game host" << std::endl;
-    std::cout << "  port <port>: Game port" << std::endl;
+    std::cout << "  ip <ip>: File ip" << std::endl;
+    std::cout << "  host <host>: File host" << std::endl;
+    std::cout << "  port <port>: File port" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
