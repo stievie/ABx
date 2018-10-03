@@ -117,6 +117,8 @@ workspace "absall"
       architecture "armv7"
   end
     
+  filter "action:vs*"
+    defines { "_CRT_SECURE_NO_WARNINGS" }
   filter "configurations:Debug"
     defines { "DEBUG", "_DEBUG" }
     symbols "On"
