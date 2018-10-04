@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include "Version.h"
-#include <signal.h>     /* signal, raise, sig_atomic_t */
+#include <csignal>     /* signal, raise, sig_atomic_t */
 #include <functional>
 #include "Application.h"
 #include "MiniDump.h"
@@ -59,9 +59,10 @@ int main(int argc, char* argv[])
 
     ShowLogo();
 
-    signal(SIGINT, signal_handler);              // Ctrl+C
+    std::signal(SIGINT, signal_handler);              // Ctrl+C
+    std::signal(SIGTERM, signal_handler);              // Ctrl+C
 #ifdef _WIN32
-    signal(SIGBREAK, signal_handler);            // X clicked
+    std::signal(SIGBREAK, signal_handler);            // X clicked
 #endif
 
     {
