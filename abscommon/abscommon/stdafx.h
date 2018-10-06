@@ -17,10 +17,14 @@
 
 #define ASIO_STANDALONE
 
-#pragma warning(push)
-#pragma warning(disable: 4592)
+#if defined(_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 4592)
+#endif
 #include <asio.hpp>
-#pragma warning(pop)
+#if defined(_MSC_VER)
+#   pragma warning(pop)
+#endif
 
 #include <uuid.h>
 
