@@ -369,7 +369,7 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
         }
         if (request->GetState() == HTTP_ERROR)
         {
-            URHO3D_LOGERRORF("HTTP request error: %s", request->GetError());
+            URHO3D_LOGERRORF("HTTP request error: %s", request->GetError().CString());
             return false;
         }
 
@@ -605,8 +605,6 @@ void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, uint32_t playerId)
 {
-    URHO3D_LOGINFOF("FwClient::OnEnterWorld(): %s", String(mapUuid.c_str()));
-
     levelReady_ = false;
     playerId_ = playerId;
     currentServerId_ = String(serverId.c_str());
@@ -626,7 +624,6 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
 void FwClient::OnChangeInstance(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid)
 {
-    URHO3D_LOGINFOF("FwClient::OnChangeInstance(): %s", String(instanceUuid.c_str()));
     if (loggedIn_)
     {
         auto it = services_.find(serverId);
@@ -646,7 +643,7 @@ void FwClient::OnChangeInstance(int64_t updateTick, const std::string& serverId,
         }
         else
         {
-            URHO3D_LOGERRORF("Server %s not found", serverId);
+            URHO3D_LOGERRORF("Server %s not found", serverId.c_str());
         }
     }
 }

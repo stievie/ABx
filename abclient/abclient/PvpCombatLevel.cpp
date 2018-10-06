@@ -54,7 +54,7 @@ void PvpCombatLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/" + mapName_ + ".xml");
     if (!sceneFile)
     {
-        URHO3D_LOGERRORF("Map %s not found", mapName_);
+        URHO3D_LOGERRORF("Map %s not found", mapName_.CString());
         ShowError("Map \"" + mapName_ + "\" not found", "Error");
         return;
     }

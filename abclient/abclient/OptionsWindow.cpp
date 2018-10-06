@@ -470,6 +470,28 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         });
     }
     {
+        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("SpecularLightningCheck", true));
+        check->SetChecked(opts->GetSpecularLightning());
+        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        {
+            using namespace Toggled;
+            bool checked = eventData[P_STATE].GetBool();
+            Options* opt = GetSubsystem<Options>();
+            opt->SetSpecularLightning(checked);
+        });
+    }
+    {
+        CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("HDRRenderingCheck", true));
+        check->SetChecked(opts->GetHDRRendering());
+        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        {
+            using namespace Toggled;
+            bool checked = eventData[P_STATE].GetBool();
+            Options* opt = GetSubsystem<Options>();
+            opt->SetHDRRendering(checked);
+        });
+    }
+    {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("FovSlider", true));
         slider->SetRange(MAX_FOV - MIN_FOV);
         slider->SetValue(opts->GetCameraFov() - MIN_FOV);

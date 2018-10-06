@@ -34,6 +34,8 @@ Options::Options(Context* context) :
     materialQuality_(QUALITY_HIGH),
     textureFilterMode_(FILTER_ANISOTROPIC),
     textureAnisotropyLevel_(16),
+    specularLightning_(true),
+    hdrRendering_(true),
     antiAliasingMode_(AntiAliasingMode::FXAA3),
     loginHost_("localhost"),
     renderPath_("RenderPaths/Prepass.xml"),
@@ -73,7 +75,7 @@ void Options::Save()
     String prefPath = GetPrefPath();
     if (!CreateDir(prefPath))
     {
-        URHO3D_LOGERRORF("Failed to create directory %s", prefPath);
+        URHO3D_LOGERRORF("Failed to create directory %s", prefPath.CString());
         return;
     }
     String file = AddTrailingSlash(prefPath) + "settings.xml";
@@ -161,6 +163,18 @@ void Options::Save()
         param.SetString("name", "ShadowQuality");
         param.SetString("type", "int");
         param.SetInt("value", static_cast<int>(shadowQuality_));
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "SpecularLightning");
+        param.SetString("type", "bool");
+        param.SetBool("value", specularLightning_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "HDRRendering");
+        param.SetString("type", "bool");
+        param.SetBool("value", hdrRendering_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -299,6 +313,26 @@ void Options::SetTextureFilterMode(TextureFilterMode value)
     {
         textureFilterMode_ = value;
         GetSubsystem<Renderer>()->SetTextureFilterMode(textureFilterMode_);
+    }
+}
+
+void Options::SetSpecularLightning(bool value)
+{
+    if (value != specularLightning_)
+    {
+        specularLightning_ = value;
+        Renderer* renderer = GetSubsystem<Renderer>();
+        renderer->SetSpecularLighting(value);
+    }
+}
+
+void Options::SetHDRRendering(bool value)
+{
+    if (value != hdrRendering_)
+    {
+        hdrRendering_ = value;
+        Renderer* renderer = GetSubsystem<Renderer>();
+        renderer->SetHDRRendering(value);
     }
 }
 
@@ -548,6 +582,14 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("VSync") == 0)
         {
             vSync_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("SpecularLightning") == 0)
+        {
+            specularLightning_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("HDRRendering") == 0)
+        {
+            hdrRendering_ = paramElem.GetBool("value");
         }
         else if (name.Compare("TripleBuffer") == 0)
         {

@@ -79,7 +79,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
         XMLFile* object = item->GetModelResource<XMLFile>();
         if (!object)
         {
-            URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_);
+            URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_.CString());
             return;
         }
 
@@ -112,7 +112,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
         }
         else
         {
-            URHO3D_LOGERRORF("Error instantiating prefab %s", item->modelFile_);
+            URHO3D_LOGERRORF("Error instantiating prefab %s", item->modelFile_.CString());
             adjNode->Remove();
         }
     }
@@ -144,7 +144,7 @@ void Actor::AddModel(uint32_t itemIndex)
     XMLFile* xml = item->GetModelResource<XMLFile>();
     if (!xml)
     {
-        URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_);
+        URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_.CString());
         return;
     }
 

@@ -206,7 +206,7 @@ void ClientApp::Start()
     renderer->SetTextureQuality(options->GetTextureQuality());
     renderer->SetMaterialQuality(options->GetMaterialQuality());
     renderer->SetHDRRendering(true);
-    renderer->SetSpecularLighting(true);
+    renderer->SetSpecularLighting(options->GetSpecularLightning());
 
 #ifdef DEBUG_HUD
     CreateHUD();
@@ -296,7 +296,7 @@ void ClientApp::HandleTakeScreenshot(StringHash, VariantMap&)
 
     if (!Options::CreateDir(path))
     {
-        URHO3D_LOGERRORF("Failed to create directory %s", path);
+        URHO3D_LOGERRORF("Failed to create directory %s", path.CString());
         return;
     }
     std::chrono::time_point<std::chrono::system_clock> time_point;

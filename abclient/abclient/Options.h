@@ -49,22 +49,49 @@ public:
 
     WindowMode GetWindowMode() const;
     void SetWindowMode(WindowMode mode);
-    int GetWidth() const { return width_; }
+    int GetWidth() const
+    {
+        return width_;
+    }
     void SetWidth(int value);
-    int GetHeight() const { return height_; }
+    int GetHeight() const
+    {
+        return height_;
+    }
     void SetHeight(int value);
-    bool GetFullscreen() const { return fullscreen_; }
+    bool GetFullscreen() const
+    {
+        return fullscreen_;
+    }
     void SetFullscreen(bool value);
-    bool GetBorderless() const { return borderless_; }
+    bool GetBorderless() const
+    {
+        return borderless_;
+    }
     void SetBorderless(bool value);
-    bool GetResizeable() const { return resizeable_; }
+    bool GetResizeable() const
+    {
+        return resizeable_;
+    }
     void SetResizeable(bool value);
-    bool IsMiximized() const { return maximized_; }
-    bool GetVSync() const { return vSync_; }
+    bool IsMiximized() const
+    {
+        return maximized_;
+    }
+    bool GetVSync() const
+    {
+        return vSync_;
+    }
     void SetVSync(bool value);
-    bool GetTripleBuffer() const { return tripleBuffer_; }
+    bool GetTripleBuffer() const
+    {
+        return tripleBuffer_;
+    }
     void SetTripleBuffer(bool value);
-    bool GetHighDPI() const { return highDPI_; }
+    bool GetHighDPI() const
+    {
+        return highDPI_;
+    }
     void SetHighDPI(bool value);
     int GetMultiSample() const
     {
@@ -108,6 +135,16 @@ public:
     {
         return textureAnisotropyLevel_;
     }
+    bool GetSpecularLightning() const
+    {
+        return specularLightning_;
+    }
+    void SetSpecularLightning(bool value);
+    bool GetHDRRendering() const
+    {
+        return hdrRendering_;
+    }
+    void SetHDRRendering(bool value);
     void SetTextureAnisotropyLevel(int value);
     bool GetShadows() const
     {
@@ -170,6 +207,8 @@ private:
     TextureFilterMode textureFilterMode_;
     AntiAliasingMode antiAliasingMode_;
     int textureAnisotropyLevel_;
+    bool specularLightning_;
+    bool hdrRendering_;
     // "RenderPaths/Prepass.xml";
     // "RenderPaths/Deferred.xml";
     String renderPath_;
