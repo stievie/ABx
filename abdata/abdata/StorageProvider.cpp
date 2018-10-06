@@ -11,8 +11,10 @@
 #include "Profiler.h"
 #include <AB/Entities/GameInstance.h>
 
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4307)
+#endif
 static constexpr size_t KEY_ACCOUNTS_HASH = Utils::StringHash(AB::Entities::Account::KEY());
 static constexpr size_t KEY_CHARACTERS_HASH = Utils::StringHash(AB::Entities::Character::KEY());
 static constexpr size_t KEY_GAMES_HASH = Utils::StringHash(AB::Entities::Game::KEY());
@@ -43,7 +45,9 @@ static constexpr size_t KEY_GAMEINSTANCES_HASH = Utils::StringHash(AB::Entities:
 static constexpr size_t KEY_ITEMS_HASH = Utils::StringHash(AB::Entities::Item::KEY());
 static constexpr size_t KEY_ITEMLIST_HASH = Utils::StringHash(AB::Entities::ItemList::KEY());
 static constexpr size_t KEY_VERSIONLIST_HASH = Utils::StringHash(AB::Entities::VersionList::KEY());
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     flushInterval_(FLUSH_CACHE_MS),

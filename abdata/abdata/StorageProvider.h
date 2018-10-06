@@ -6,10 +6,16 @@
 #pragma warning(push)
 #pragma warning(disable: 4310 4100)
 #endif
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#endif
 #include <bitsery/bitsery.h>
 #include <bitsery/adapter/buffer.h>
 #include <bitsery/traits/vector.h>
 #include <bitsery/traits/string.h>
+#if defined(__clang__)
+#pragma clang diagnostic warning "-Wunused-parameter"
+#endif
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
