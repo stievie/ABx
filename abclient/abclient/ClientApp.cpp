@@ -205,7 +205,7 @@ void ClientApp::Start()
     renderer->SetShadowQuality(options->GetShadowQuality());
     renderer->SetTextureQuality(options->GetTextureQuality());
     renderer->SetMaterialQuality(options->GetMaterialQuality());
-    renderer->SetHDRRendering(true);
+    renderer->SetHDRRendering(options->GetHDRRendering());
     renderer->SetSpecularLighting(options->GetSpecularLightning());
 
 #ifdef DEBUG_HUD
