@@ -21,9 +21,9 @@ typedef union _uint128_t {
 } uint128_t;
 
 /* P =  2^128-159 = 0xffffffffffffffffffffffffffffff61 (The biggest 64bit prime) */
-static const uint128_t P = { 0xffffffffffffff61ULL, 0xffffffffffffffffULL };
-static const uint128_t INVERT_P = { 159 };
-static const uint128_t G = { 5 };
+static const uint128_t P = { { 0xffffffffffffff61ULL, 0xffffffffffffffffULL } };
+static const uint128_t INVERT_P = { {0, 159 } };
+static const uint128_t G = { { 0, 5 } };
 
 /*--------------------------------------------------------------------------*/
 static void INLINE

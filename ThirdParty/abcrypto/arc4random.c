@@ -37,6 +37,7 @@
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
 #include <sys/sysctl.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <sys/time.h>
 #endif
 
@@ -86,8 +87,7 @@ static inline void arc4_addrandom(u_char *dat, int datlen)
     rs.j = rs.i;
 }
 
-static const char * urandom = "/dev/urandom";
-
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_WIN32) && (CC_TARGET_PLATFORM != CC_PLATFORM_LINUX)
 static void fillRandom(u_char *rnd, size_t	len)
 {
     for (int i = 0; i < (int)len; ++i)
@@ -102,6 +102,7 @@ static void fillRandom(u_char *rnd, size_t	len)
         rnd[v2] = temp;
     }
 }
+#endif
 
 static void arc4_stir(void)
 {
