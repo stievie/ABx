@@ -6,11 +6,11 @@
 
 Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
     StorageProvider& storage, size_t maxData, size_t maxKey) :
+    maxDataSize_(maxData),
+    maxKeySize_(maxKey),
     socket_(io_service),
     connectionManager_(manager),
     storageProvider_(storage),
-    maxDataSize_(maxData),
-    maxKeySize_(maxKey),
     opcode_(0)
 { }
 

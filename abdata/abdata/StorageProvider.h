@@ -237,12 +237,13 @@ private:
 
     bool readonly_;
     bool running_;
-    std::mutex lock_;
+    size_t maxSize_;
+    size_t currentSize_;
+
     std::unordered_map<IO::DataKey, CacheItem> cache_;
+    std::mutex lock_;
     /// Player name -> Cache Key
     std::map<std::string, IO::DataKey> playerNames_;
-    size_t currentSize_;
-    size_t maxSize_;
     OldestInsertionEviction evictor_;
 };
 

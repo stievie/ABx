@@ -438,8 +438,9 @@ struct uuid
 
         self_type & operator+=(difference_type const offset)
         {
-            if (index + offset < 0 || index + offset > uuid::state_size)
-                throw std::out_of_range("Iterator cannot be incremented past the end of the data.");
+            if (static_cast<difference_type>(index) + offset < 0 ||
+                static_cast<difference_type>(index) + offset > 16)
+                throw std::out_of_range("Iterator cannot be incremented outside data bounds.");
 
             index += offset;
             return *this;

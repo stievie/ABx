@@ -79,13 +79,14 @@ private:
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }
 
-    asio::ip::tcp::socket socket_;
-    uint8_t opcode_;
-    IO::DataKey key_;
     size_t maxDataSize_;
     size_t maxKeySize_;
+    asio::ip::tcp::socket socket_;
     ConnectionManager& connectionManager_;
     StorageProvider& storageProvider_;
+    uint8_t opcode_;
+
+    IO::DataKey key_;
     std::shared_ptr<std::vector<uint8_t>> data_;
 };
 

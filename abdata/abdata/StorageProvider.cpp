@@ -46,12 +46,12 @@ static constexpr size_t KEY_VERSIONLIST_HASH = Utils::StringHash(AB::Entities::V
 #pragma warning(pop)
 
 StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
-    maxSize_(maxSize),
-    currentSize_(0),
-    readonly_(readonly),
-    running_(true),
     flushInterval_(FLUSH_CACHE_MS),
     cleanInterval_(CLEAN_CACHE_MS),
+    readonly_(readonly),
+    running_(true),
+    maxSize_(maxSize),
+    currentSize_(0),
     cache_()
 {
     Asynch::Scheduler::Instance.Add(
