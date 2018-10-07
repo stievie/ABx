@@ -4,6 +4,7 @@
 #include "Scheduler.h"
 #include "NetworkMessage.h"
 #include "Logger.h"
+#include <AB/CommonConfig.h>
 
 namespace Net {
 
@@ -64,7 +65,9 @@ void ServicePort::Open(uint32_t ip, uint16_t port)
     {
         acceptor_.reset(new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
             asio::ip::address(asio::ip::address_v4(serverIp_)), serverPort_)));
+#ifdef TCP_OPTION_NODELAY
         acceptor_->set_option(asio::ip::tcp::no_delay(true));
+#endif
         Accept();
     }
     catch (asio::system_error& e)

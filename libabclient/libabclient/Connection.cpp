@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Connection.h"
 #include "Logger.h"
+#include <AB/CommonConfig.h>
 
 #include "DebugNew.h"
 
@@ -118,10 +119,10 @@ void Connection::OnConnect(const asio::error_code& error)
     if (!error)
     {
         connected_ = true;
+#ifdef TCP_OPTION_NODELAY
         // disable nagle's algorithm, this make the game play smoother
-        asio::ip::tcp::no_delay option(true);
-        socket_.set_option(option);
-
+        socket_.set_option(asio::ip::tcp::no_delay(true));
+#endif
         if (connectCallback_)
             connectCallback_();
     }

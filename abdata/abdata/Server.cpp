@@ -4,6 +4,7 @@
 #include "ConnectionManager.h"
 #include "Connection.h"
 #include "Scheduler.h"
+#include <AB/CommonConfig.h>
 
 Server::Server(asio::io_service& io_service, uint32_t ip,
     uint16_t port, size_t maxCacheSize, bool readonly) :
@@ -17,7 +18,9 @@ Server::Server(asio::io_service& io_service, uint32_t ip,
     maxDataSize_(MAX_DATA_SIZE),
     maxKeySize_(MAX_KEY_SIZE)
 {
+#ifdef TCP_OPTION_NODELAY
     acceptor_.set_option(asio::ip::tcp::no_delay(true));
+#endif
     StartAccept();
     running_ = true;
 }

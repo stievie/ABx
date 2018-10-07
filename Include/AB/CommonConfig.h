@@ -5,3 +5,7 @@
 // Email is mandatory when creating an account
 //#define EMAIL_MANDATORY
 
+// If defined disable nagle's algorithm, this make the game play smoother
+// acceptor_.set_option(asio::ip::tcp::no_delay(true));
+// But I think this makes some problems
+//#define TCP_OPTION_NODELAY
