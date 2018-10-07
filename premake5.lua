@@ -88,7 +88,55 @@ workspace "abs3rd"
     targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
     filter { "action:gmake*", "toolset:gcc" }
       buildoptions { "-std=c11", "-pthread" }
-    
+      
+  project "pugixml"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++14"
+    files { 
+      "ThirdParty/PugiXml/src/*.cpp",
+      "ThirdParty/PugiXml/src/*.hpp",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+
+  project "recast"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++14"
+    files { 
+      "ThirdParty/Recast/Include/*.h",
+      "ThirdParty/Recast/Source/*.cpp",
+      "ThirdParty/DebugUtils/Include/*.h",
+      "ThirdParty/DebugUtils/Source/*.cpp",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+
+  project "detour"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++14"
+    files { 
+      "ThirdParty/DetourCrowd/Include/*.h",
+      "ThirdParty/DetourCrowd/Source/*.cpp",
+      "ThirdParty/DetourTileCache/Include/*.h",
+      "ThirdParty/DetourTileCache/Source/*.cpp",
+      "ThirdParty/Detour/Include/*.h",
+      "ThirdParty/Detour/Source/*.cpp",
+    }
+    vpaths {
+      ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
+      ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
+    }
+    targetdir "Lib/%{cfg.platform}/%{cfg.buildcfg}"
+          
 --------------------------------------------------------------------------------
 -- Server ----------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -222,8 +270,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "abcrypto" }
-    dependson { "abscommon", "abcrypto" }
+    links { "abscommon", "abcrypto", "pugixml" }
+    dependson { "abscommon", "abcrypto", "pugixml" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -319,8 +367,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "absmath", "abcrypto" }
-    dependson { "abscommon", "absmath", "abcrypto" }
+    links { "abscommon", "absmath", "abcrypto", "pugixml", "detour" }
+    dependson { "abscommon", "absmath", "abcrypto", "pugixml", "detour" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -328,6 +376,7 @@ workspace "absall"
     filter "configurations:Debug"
       targetsuffix "_d"
 
+  -- Tools ---------------------------------------------------------------------
   -- Import utility. Binary import/bin
   project "import"
     kind "ConsoleApp"
@@ -346,8 +395,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "absmath" }
-    dependson { "abscommon", "absmath" }
+    links { "abscommon", "absmath", "pugixml" }
+    dependson { "abscommon", "absmath", "pugixml" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
     filter "action:vs*"
@@ -375,8 +424,8 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "absmath" }
-    dependson { "abscommon", "absmath" }
+    links { "abscommon", "absmath", "detour", "recast" }
+    dependson { "abscommon", "absmath", "detour", "recast" }
     defines { 
       "_CONSOLE", 
       "_CRT_SECURE_NO_WARNINGS"     -- fopen()
