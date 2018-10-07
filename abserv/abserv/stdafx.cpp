@@ -7,7 +7,3 @@
 #define BASE64_IMPLEMENTATION
 #include <base64.h>
 #undef BASE64_IMPLEMENTATION
-
-#pragma comment(lib, "PugiXml.lib")
-#pragma comment(lib, "abcrypto.lib")
-#pragma comment(lib, "Detour.lib")
