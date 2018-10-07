@@ -195,9 +195,6 @@ workspace "absall"
     optimize "Full"
   filter "configurations:RelNoProfiling"
     defines { "_NPROFILING" }
-  filter { "action:gmake*", "toolset:gcc" }
-    buildoptions { "-pthread" }
-    linkoptions { "-pthread" }
   
   project "abscommon"
     kind "StaticLib"
@@ -262,7 +259,7 @@ workspace "absall"
     if (_TARGET_OS == "windows") then
       links { "abscommon", "abcrypto", "sqlite3", "libpq", "libmysql" }
     elseif (_TARGET_OS == "linux") then
-      links { "pthrerad", "abscommon", "abcrypto", "sqlite3", "dl", "pq", "ldap", "ssl", "crypto", "mysqlclient", "z", "gssapi_krb5" }
+      links { "abscommon", "abcrypto", "sqlite3", "dl", "pq", "ldap", "ssl", "crypto", "mysqlclient", "z", "gssapi_krb5" }
     end
     dependson { "abscommon", "abcrypto", "lua", "sqlite3" }
     defines { "_CONSOLE" }
@@ -271,6 +268,9 @@ workspace "absall"
       pchsource "abdata/abdata/stdafx.cpp"
     filter "configurations:Debug"
       targetsuffix "_d"
+    filter { "action:gmake*", "toolset:gcc" }
+      buildoptions { "-pthread" }
+      linkoptions { "-pthread" }
     
   project "abfile"
     kind "ConsoleApp"
