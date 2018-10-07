@@ -92,8 +92,7 @@ public:
         auto it = cache_.find(key);
         if (it != cache_.end())
         {
-            AssetImpl<T>* a = static_cast<AssetImpl<T>*>((*it).second.get());
-            return a->GetPtr();
+            return std::static_pointer_cast<T>((*it).second);
         }
         return nullptr;
     }
@@ -154,8 +153,7 @@ public:
             auto it = cache_.find(key);
             if (it != cache_.end())
             {
-                AssetImpl<T>* a = static_cast<AssetImpl<T>*>((*it).second.get());
-                return a->GetPtr();
+                return std::static_pointer_cast<T>((*it).second);
             }
         }
 
