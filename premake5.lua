@@ -107,11 +107,18 @@ workspace "abs3rd"
     kind "StaticLib"
     language "C++"
     cppdialect "C++14"
+    includedirs { ".", 
+      "ThirdParty/recastnavigation/Recast/Include",
+      "ThirdParty/recastnavigation/DebugUtils/Include",
+      "ThirdParty/recastnavigation/Detour/Include",
+      "ThirdParty/recastnavigation/DetourTileCache/Include",
+      "ThirdParty/recastnavigation/DetourCrowd/Include"
+    }
     files { 
-      "ThirdParty/Recast/Include/*.h",
-      "ThirdParty/Recast/Source/*.cpp",
-      "ThirdParty/DebugUtils/Include/*.h",
-      "ThirdParty/DebugUtils/Source/*.cpp",
+      "ThirdParty/recastnavigation/Recast/Include/*.h",
+      "ThirdParty/recastnavigation/Recast/Source/*.cpp",
+      "ThirdParty/recastnavigation/DebugUtils/Include/*.h",
+      "ThirdParty/recastnavigation/DebugUtils/Source/*.cpp",
     }
     vpaths {
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
@@ -123,13 +130,20 @@ workspace "abs3rd"
     kind "StaticLib"
     language "C++"
     cppdialect "C++14"
+    includedirs { ".", 
+      "ThirdParty/recastnavigation/Recast/Include",
+      "ThirdParty/recastnavigation/DebugUtils/Include",
+      "ThirdParty/recastnavigation/Detour/Include",
+      "ThirdParty/recastnavigation/DetourTileCache/Include",
+      "ThirdParty/recastnavigation/DetourCrowd/Include"
+    }
     files { 
-      "ThirdParty/DetourCrowd/Include/*.h",
-      "ThirdParty/DetourCrowd/Source/*.cpp",
-      "ThirdParty/DetourTileCache/Include/*.h",
-      "ThirdParty/DetourTileCache/Source/*.cpp",
-      "ThirdParty/Detour/Include/*.h",
-      "ThirdParty/Detour/Source/*.cpp",
+      "ThirdParty/recastnavigation/DetourCrowd/Include/*.h",
+      "ThirdParty/recastnavigation/DetourCrowd/Source/*.cpp",
+      "ThirdParty/recastnavigation/DetourTileCache/Include/*.h",
+      "ThirdParty/recastnavigation/DetourTileCache/Source/*.cpp",
+      "ThirdParty/recastnavigation/Detour/Include/*.h",
+      "ThirdParty/recastnavigation/Detour/Source/*.cpp",
     }
     vpaths {
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
@@ -376,7 +390,35 @@ workspace "absall"
     filter "configurations:Debug"
       targetsuffix "_d"
 
-  -- Tools ---------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- Tools -----------------------------------------------------------------------
+--------------------------------------------------------------------------------
+workspace "abtools"
+  configurations { "Debug", "Release", "RelNoProfiling" }
+  location "build"
+  includedirs { ".", "abscommon/abscommon", "Include", "$(BOOST_DIR)" }
+  libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
+  targetdir ("Bin")
+  cppdialect "C++14"
+  warnings "Extra"
+
+  platforms { "x64" }
+  links { "lua" }
+  filter "platforms:x64"
+    architecture "x64"
+    
+  filter "action:vs*"
+    defines { "_CRT_SECURE_NO_WARNINGS" }
+  filter "configurations:Debug"
+    defines { "DEBUG", "_DEBUG" }
+    symbols "On"
+  filter "configurations:Rel*"
+    defines { "NDEBUG" }
+    flags { "LinkTimeOptimization" }
+    optimize "Full"
+  filter "configurations:RelNoProfiling"
+    defines { "_NPROFILING" }
+
   -- Import utility. Binary import/bin
   project "import"
     kind "ConsoleApp"
@@ -409,16 +451,23 @@ workspace "absall"
     kind "ConsoleApp"
     language "C++"
     targetdir ("genavmesh/bin")
-    includedirs {  "genavmesh/genavmesh/DebugUtils/Include", "genavmesh/genavmesh/Detour/Include", 
-      "genavmesh/genavmesh/DetourCrowd/Include", "genavmesh/genavmesh/DetourTileCache/Include", 
-      "genavmesh/genavmesh/Recast/Include", "Include/stb", "absmath/absmath" }
+    includedirs {  
+      "Include",
+      "ThirdParty/recastnavigation/Recast/Include",
+      "ThirdParty/recastnavigation/DebugUtils/Include",
+      "ThirdParty/recastnavigation/Detour/Include",
+      "ThirdParty/recastnavigation/DetourTileCache/Include",
+      "ThirdParty/recastnavigation/DetourCrowd/Include",
+      "Include/stb", 
+      "absmath/absmath" 
+    }
     files { 
-      "genavmesh/genavmesh/**.cpp",
-      "genavmesh/genavmesh/**.c",
-      "genavmesh/genavmesh/**.cxx",
-      "genavmesh/genavmesh/**.h",
-      "genavmesh/genavmesh/**.hpp",
-      "genavmesh/genavmesh/**.hxx",
+      "genavmesh/genavmesh/*.cpp",
+      "genavmesh/genavmesh/*.c",
+      "genavmesh/genavmesh/*.cxx",
+      "genavmesh/genavmesh/*.h",
+      "genavmesh/genavmesh/*.hpp",
+      "genavmesh/genavmesh/*.hxx",
     }
     vpaths {
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
