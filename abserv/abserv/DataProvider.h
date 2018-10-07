@@ -61,18 +61,18 @@ public:
     /// Add an asset to the cache
     /// @return true if it was added, false if such an asset already exists in the cache
     template<class T>
-    bool AddToCache(AssetImpl<T>* asset, const std::string& name)
+    bool AddToCache(std::shared_ptr<T> asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
         if (it != cache_.end())
             return false;
-        cache_[key] = asset->GetPtr();
+        cache_[key] = asset;
         return true;
     }
     template<class T>
-    bool RemoveFromCache(AssetImpl<T>* asset, const std::string& name)
+    bool RemoveFromCache(std::shared_ptr<T> asset, const std::string& name)
     {
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
@@ -94,7 +94,7 @@ public:
         {
             return std::static_pointer_cast<T>((*it).second);
         }
-        return nullptr;
+        return std::shared_ptr<T>();
     }
     /// Remove all objects from the cache
     void ClearCache()
@@ -165,7 +165,7 @@ public:
                 cache_[key] = asset;
             return asset;
         }
-        return nullptr;
+        return std::shared_ptr<T>();
     }
 
     static DataProvider Instance;

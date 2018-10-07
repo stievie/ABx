@@ -14,13 +14,8 @@ public:
 };
 
 template<class T>
-class AssetImpl : public Asset, private std::enable_shared_from_this<T>
+class AssetImpl : public Asset, public std::enable_shared_from_this<T>
 {
-public:
-    std::shared_ptr<T> GetPtr()
-    {
-        return shared_from_this();
-    }
 };
 
 }
