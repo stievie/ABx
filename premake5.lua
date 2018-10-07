@@ -1,6 +1,8 @@
--- Creates two solutions in ./build directory
---  1. absall: Solution with all servers. Binaries go to ./Bin
---  2. abclient: Solution with the game client. Binaries go to ./abclient/bin
+-- Creates the folling solutions in ./build directory
+--  1. abs3rd: Third party libraries
+--  2. absall: Solution with all servers. Binaries go to ./Bin
+--  3. abclient: Solution with the game client. Binaries go to ./abclient/bin
+--  4. abtools: Some tools
 
 -- Requirements
 --  * BOOST_DIR, BOOST_LIB_PATH environment variables
@@ -168,7 +170,7 @@ workspace "absall"
     links { "lua" }
   elseif (_TARGET_OS == "linux") then
     platforms { "x32", "x64", "armv7" }
-    links { "libuuid", "lua" }
+    links { "pthread", "uuid", "lua" }
   end
   filter "platforms:x64"
     architecture "x64"
@@ -195,6 +197,7 @@ workspace "absall"
     defines { "_NPROFILING" }
   filter { "action:gmake*", "toolset:gcc" }
     buildoptions { "-pthread" }
+    linkoptions { "-pthread" }
   
   project "abscommon"
     kind "StaticLib"
@@ -259,7 +262,7 @@ workspace "absall"
     if (_TARGET_OS == "windows") then
       links { "abscommon", "abcrypto", "sqlite3", "libpq", "libmysql" }
     elseif (_TARGET_OS == "linux") then
-      links { "pthrerad", "abscommon", "abcrypto", "sqlite3", "dl", "pq", "ssl", "crypto", "mysqlclient", "z", "gssapi_krb5" }
+      links { "pthrerad", "abscommon", "abcrypto", "sqlite3", "dl", "pq", "ldap", "ssl", "crypto", "mysqlclient", "z", "gssapi_krb5" }
     end
     dependson { "abscommon", "abcrypto", "lua", "sqlite3" }
     defines { "_CONSOLE" }
