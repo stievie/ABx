@@ -91,13 +91,18 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
     Net::NetworkMessage nmsg;
-    if (msg.type_ == Net::MessageType::ServerJoined)
+    switch (msg.type_)
+    {
+    case Net::MessageType::ServerJoined:
         nmsg.AddByte(AB::GameProtocol::ServerJoined);
-    else if (msg.type_ == Net::MessageType::ServerLeft)
+        break;
+    case Net::MessageType::ServerLeft:
         nmsg.AddByte(AB::GameProtocol::ServerLeft);
-    else
+        break;
+    default:
         // Should never get here
         return;
+    }
 
     nmsg.AddString(msg.GetBodyString());    // Server ID
     Game::PlayerManager::Instance.BroadcastNetMessage(nmsg);

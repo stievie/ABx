@@ -13,9 +13,4 @@ public:
     std::string fileName_;
 };
 
-template<class T>
-class AssetImpl : public Asset, public std::enable_shared_from_this<T>
-{
-};
-
 }

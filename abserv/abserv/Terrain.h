@@ -16,14 +16,13 @@ static constexpr int MAX_PATCH_SIZE = 128;
 
 class TerrainPatch;
 
-class Terrain : public IO::AssetImpl<Terrain>
+class Terrain : public IO::Asset
 {
 private:
     // Must be shared_ptr CollisionShape may also own it
     std::shared_ptr<Math::HeightMap> heightMap_;
 public:
     Terrain();
-    ~Terrain() override;
 
     void SetHeightMap(std::shared_ptr<Math::HeightMap> val)
     {
@@ -31,10 +30,14 @@ public:
     }
     Math::HeightMap* GetHeightMap() const
     {
-        return heightMap_.get();
+        if (heightMap_)
+            return heightMap_.get();
+        return nullptr;
     }
     float GetHeight(const Math::Vector3& world) const
     {
+        if (!heightMap_)
+            return 0.0f;
         heightMap_->matrix_ = transformation_.GetMatrix();
         return heightMap_->GetHeight(world);
     }

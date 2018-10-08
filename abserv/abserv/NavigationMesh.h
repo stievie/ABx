@@ -10,7 +10,7 @@ namespace Navigation {
 struct FindPathData;
 
 /// Navigation Mesh constructed from Map and Obstacles
-class NavigationMesh : public IO::AssetImpl<NavigationMesh>
+class NavigationMesh : public IO::Asset
 {
 private:
     dtNavMesh* navMesh_;

@@ -4,11 +4,8 @@
 namespace Game {
 
 Model::Model() :
+    IO::Asset(),
     shape_(nullptr)
-{
-}
-
-Model::~Model()
 {
 }
 

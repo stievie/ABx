@@ -4,13 +4,13 @@
 
 namespace Game {
 
-class LuaScript : public IO::AssetImpl<LuaScript>
+class LuaScript : public IO::Asset
 {
 private:
     std::vector<char> buffer_;
 public:
-    LuaScript() = default;
-    ~LuaScript() override
+    LuaScript() :
+        IO::Asset()
     { }
 
     std::vector<char>& GetBuffer()

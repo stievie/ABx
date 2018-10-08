@@ -16,7 +16,7 @@ struct KeyHasher
     size_t operator()(const CacheKey& s) const noexcept
     {
         // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
-        // Compute individual hash values for first, second and third
+        // Compute individual hash values for first and second
         // http://stackoverflow.com/a/1646913/126995
         size_t res = 17;
         res = res * 31 + std::hash<std::string>()(s.first);
@@ -77,7 +77,7 @@ public:
         const std::string normal_name = GetFile(Utils::NormalizeFilename(name));
         const CacheKey key = std::make_pair(typeid(T).name(), normal_name);
         auto it = cache_.find(key);
-        if (it != cache_.end() && (*it).second.get() == asset)
+        if (it != cache_.end() && (*it).second.get() == asset.get())
         {
             cache_.erase(it);
             return true;

@@ -7,11 +7,11 @@
 namespace Game {
 
 /// 3D Model
-class Model : public IO::AssetImpl<Model>
+class Model : public IO::Asset
 {
 public:
     Model();
-    ~Model() override;
+
     Math::BoundingBox GetBoundingBox()
     {
         if (!shape_)

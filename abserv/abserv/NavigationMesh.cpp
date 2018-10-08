@@ -20,7 +20,7 @@ struct FindPathData
 };
 
 NavigationMesh::NavigationMesh() :
-    AssetImpl<NavigationMesh>(),
+    IO::Asset(),
     navMesh_(nullptr),
     navQuery_(dtAllocNavMeshQuery()),
     queryFilter_(std::make_unique<dtQueryFilter>()),
