@@ -66,7 +66,10 @@ MailWindow::MailWindow(Context* context) :
     delButton->SetEnabled(false);
     Button* repButton = dynamic_cast<Button*>(GetChild("ReplyMailButton", true));
     repButton->SetEnabled(false);
+}
 
+void MailWindow::GetHeaders()
+{
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->GetMailHeaders();
 }

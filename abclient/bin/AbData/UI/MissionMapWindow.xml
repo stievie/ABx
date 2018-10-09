@@ -18,8 +18,8 @@
 	<attribute name="Is Movable" value="true" />
 	<attribute name="Is Resizable" value="true" />
 	<element>
-		<attribute name="Min Size" value="0 30" />
-		<attribute name="Max Size" value="2147483647 30" />
+		<attribute name="Min Size" value="0 23" />
+		<attribute name="Max Size" value="2147483647 23" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="4" />
@@ -33,6 +33,7 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
 			<attribute name="Text" value="Mission Map" />
 			<attribute name="Text Alignment" value="Center" />
 		</element>

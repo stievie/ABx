@@ -22,6 +22,7 @@ private:
     void HandleMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleMissionMapUsed(StringHash eventType, VariantMap& eventData);
     void HandleGotServices(StringHash eventType, VariantMap& eventData);
+    void HandleFriendsUsed(StringHash eventType, VariantMap& eventData);
     void UpdateServers();
 public:
     static void RegisterObject(Context* context);

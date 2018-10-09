@@ -58,6 +58,9 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail"),
         scs->GetShortcutName(AbEvents::E_SC_TOGGLEMAILWINDOW),
         URHO3D_HANDLER(GameMenu, HandleMailUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW),
+        URHO3D_HANDLER(GameMenu, HandleFriendsUsed));
     CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party"),
         scs->GetShortcutName(AbEvents::E_SC_TOGGLEPARTYWINDOW),
         URHO3D_HANDLER(GameMenu, HandlePartyWindowUsed));
@@ -200,6 +203,13 @@ void GameMenu::HandleMissionMapUsed(StringHash, VariantMap&)
 void GameMenu::HandleGotServices(StringHash, VariantMap&)
 {
     UpdateServers();
+}
+
+void GameMenu::HandleFriendsUsed(StringHash, VariantMap&)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, e);
 }
 
 void GameMenu::UpdateServers()

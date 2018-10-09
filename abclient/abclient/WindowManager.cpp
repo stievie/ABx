@@ -12,6 +12,7 @@
 #include "NewMailWindow.h"
 #include "MissionMapWindow.h"
 #include "SkillBarWindow.h"
+#include "FriendListWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -58,6 +59,13 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         else if (hash == WINDOW_PARTY)
         {
             SharedPtr<PartyWindow> wnd = SharedPtr<PartyWindow>(new PartyWindow(context_));
+            wnd->SetVisible(true);
+            opts->LoadWindow(wnd);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_FRIENDLIST)
+        {
+            SharedPtr<FriendListWindow> wnd = SharedPtr<FriendListWindow>(new FriendListWindow(context_));
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;

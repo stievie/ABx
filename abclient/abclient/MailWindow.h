@@ -14,6 +14,7 @@ public:
     {
         UnsubscribeFromAllEvents();
     }
+    void GetHeaders();
 private:
     SharedPtr<ListView> mailList_;
     SharedPtr<MultiLineEdit> mailBody_;

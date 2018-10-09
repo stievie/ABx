@@ -144,6 +144,9 @@
     <ClInclude Include="SkillBarWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FriendListWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -252,6 +255,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SkillBarWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FriendListWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

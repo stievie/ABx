@@ -51,6 +51,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMail));
     SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleNewMail));
     SubscribeToEvent(AbEvents::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
@@ -566,8 +567,10 @@ void WorldLevel::HandleToggleChatWindow(StringHash, VariantMap&)
 void WorldLevel::HandleToggleMail(StringHash, VariantMap&)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
-    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_MAIL, true);
+    MailWindow* wnd = dynamic_cast<MailWindow*>(wm->GetWindow(WINDOW_MAIL, true).Get());
     wnd->SetVisible(!wnd->IsVisible());
+    if (wnd->IsVisible())
+        wnd->GetHeaders();
 }
 
 void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
@@ -592,6 +595,13 @@ void WorldLevel::HandleToggleNewMail(StringHash, VariantMap&)
     wnd->SetVisible(!wnd->IsVisible());
     if (wnd->IsVisible())
         wnd->BringToFront();
+}
+
+void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_FRIENDLIST, true);
+    wnd->SetVisible(!wnd->IsVisible());
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,

@@ -88,6 +88,7 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_HIDEUI] = ShortcutEvent(AbEvents::E_SC_HIDEUI, "Hide UI", Trigger::Down);
     shortcuts_[AbEvents::E_SC_TOGGLEMAP] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAP, "Map", Trigger::Down, "Toggle Map window");
     shortcuts_[AbEvents::E_SC_TOGGLEPARTYWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", Trigger::Down, "Toggle Party window");
+    shortcuts_[AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, "Friends", Trigger::Down, "Toggle Friendlist window");
     shortcuts_[AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, "Mission Map", Trigger::Down, "Toggle Mission map");
     shortcuts_[AbEvents::E_SC_TAKESCREENSHOT] = ShortcutEvent(AbEvents::E_SC_TAKESCREENSHOT, "Take Screenshot", Trigger::Down);
     shortcuts_[AbEvents::E_SC_TOGGLEMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down, "Toggle Mail window");
@@ -130,6 +131,7 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_DEFAULTACTION, { KEY_SPACE });
     Add(AbEvents::E_SC_TOGGLEMAP, { KEY_M });
     Add(AbEvents::E_SC_TOGGLEPARTYWINDOW, { KEY_P });
+    Add(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, { KEY_N });
     Add(AbEvents::E_SC_TAKESCREENSHOT, { KEY_PRINTSCREEN });
 
     Add(AbEvents::E_SC_TOGGLEOPTIONS, { KEY_F11 });

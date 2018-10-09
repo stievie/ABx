@@ -27,6 +27,7 @@
 #include "MissionMapWindow.h"
 #include "HotkeyEdit.h"
 #include "SkillBarWindow.h"
+#include "FriendListWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -120,6 +121,7 @@ ClientApp::ClientApp(Context* context) :
     OptionsWindow::RegisterObject(context);
     PostProcessController::RegisterObject(context);
     SkillBarWindow::RegisterObject(context);
+    FriendListWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));
