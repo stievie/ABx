@@ -36,7 +36,10 @@ void Connection::Start()
                 SendStatusAndRestart(KeyTooBig, "Supplied key is too big. Maximum allowed key size is: " + std::to_string(maxKeySize_));
         }
         else
+        {
+            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
             connectionManager_.Stop(self);
+        }
     });
 }
 
@@ -55,7 +58,10 @@ void Connection::StartReadKey(uint16_t& keySize)
                 StartClientRequestedOp();
         }
         else
+        {
+            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
             connectionManager_.Stop(self);
+        }
     });
 }
 
@@ -80,7 +86,10 @@ void Connection::StartCreateOperation()
                 SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
+        {
+            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
             connectionManager_.Stop(self);
+        }
     });
 }
 
@@ -105,7 +114,10 @@ void Connection::StartUpdateDataOperation()
                 SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
+        {
+            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
             connectionManager_.Stop(self);
+        }
     });
 }
 
@@ -130,7 +142,10 @@ void Connection::StartReadOperation()
                 SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
+        {
+            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
             connectionManager_.Stop(self);
+        }
     });
 }
 
@@ -179,7 +194,10 @@ void Connection::StartExistsOperation()
                 SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
+        {
+            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
             connectionManager_.Stop(self);
+        }
     });
 }
 
@@ -204,7 +222,10 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
         }
     }
     else
+    {
+        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+    }
 }
 
 void Connection::HandleCreateReadRawData(const asio::error_code& error,
@@ -223,13 +244,17 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
         }
     }
     else
+    {
+        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+    }
 }
 
 void Connection::HandleReadReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
 {
     if (error)
     {
+        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
         connectionManager_.Stop(shared_from_this());
         return;
     }
@@ -270,7 +295,10 @@ void Connection::HandleWriteReqResponse(const asio::error_code& error)
     if (!error)
         Start();
     else
+    {
+        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+    }
 }
 
 void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected)
@@ -288,7 +316,10 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
         }
     }
     else
+    {
+        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
         connectionManager_.Stop(shared_from_this());
+    }
 }
 
 void Connection::StartClientRequestedOp()
