@@ -641,11 +641,13 @@ void Options::LoadElements(const XMLElement& root)
         }
         else if (name.Compare("Username") == 0)
         {
-            username_ = paramElem.GetAttribute("value");
+            if (username_.Empty())
+                username_ = paramElem.GetAttribute("value");
         }
         else if (name.Compare("Password") == 0)
         {
-            password_ = paramElem.GetAttribute("value");
+            if (password_.Empty())
+                password_ = paramElem.GetAttribute("value");
         }
         else if (name.Compare("RenderPath") == 0)
         {

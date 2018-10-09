@@ -62,6 +62,8 @@ URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
 ClientApp::ClientApp(Context* context) :
     Application(context)
 {
+    options_ = new Options(context);
+
     const Vector<String>& args = GetArguments();
     decltype(args.Size()) i = 0;
     while (i < args.Size())
@@ -70,7 +72,20 @@ ClientApp::ClientApp(Context* context) :
         if (arg == "-perfpath")
         {
             ++i;
-            Options::SetPrefPath(args[i].CString());
+            if (i < args.Size())
+                Options::SetPrefPath(args[i].CString());
+        }
+        else if (arg == "-username")
+        {
+            ++i;
+            if (i < args.Size())
+                options_->username_ = args[i];
+        }
+        else if (arg == "-password")
+        {
+            ++i;
+            if (i < args.Size())
+                options_->password_ = args[i];
         }
         ++i;
     }
@@ -88,7 +103,6 @@ ClientApp::ClientApp(Context* context) :
     shortcuts_ = new Shortcuts(context);
     context->RegisterSubsystem(shortcuts_);
 
-    options_ = new Options(context);
     options_->Load();
     context->RegisterSubsystem(options_);
 

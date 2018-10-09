@@ -68,6 +68,8 @@ Other shortcuts are shown in `[` `]`.
 ## Command line arguments
 
 * `-prefpath <directory>`: Preferecences path
+* `-username <username>`: Username
+* `-password <password>`: Password
 
 ## Settings
 
