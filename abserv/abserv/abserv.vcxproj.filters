@@ -186,10 +186,10 @@
     <ClInclude Include="Actor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="LuaScript.h">
+    <ClInclude Include="Script.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IOLuaScript.h">
+    <ClInclude Include="IOScript.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -359,10 +359,10 @@
     <ClCompile Include="Actor.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="LuaScript.cpp">
+    <ClCompile Include="Script.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="IOLuaScript.cpp">
+    <ClCompile Include="IOScript.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

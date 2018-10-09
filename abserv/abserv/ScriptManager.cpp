@@ -7,7 +7,7 @@
 #include "Profiler.h"
 #include <filesystem>
 #include "StringUtils.h"
-#include "LuaScript.h"
+#include "Script.h"
 
 namespace Game {
 
@@ -44,7 +44,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     });
     state["include"] = kaguya::function([&state](const std::string& file)
     {
-        auto script = IO::DataProvider::Instance.GetAsset<LuaScript>(file);
+        auto script = IO::DataProvider::Instance.GetAsset<Script>(file);
         if (script)
             script->Execute(state);
     });
@@ -65,7 +65,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
                 if (Utils::StringEquals(ext, ".lua"))
                 {
                     std::string _s = Utils::NormalizeFilename(s.substr(dataDirLen));
-                    auto script = IO::DataProvider::Instance.GetAsset<LuaScript>(_s);
+                    auto script = IO::DataProvider::Instance.GetAsset<Script>(_s);
                     if (script)
                         script->Execute(state);
                 }
@@ -91,7 +91,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     Game::RegisterLua(state);
 
     // Execute main script with definitions, constants, etc.
-    auto mainS = IO::DataProvider::Instance.GetAsset<LuaScript>("/scripts/main.lua");
+    auto mainS = IO::DataProvider::Instance.GetAsset<Script>("/scripts/main.lua");
     if (mainS)
         mainS->Execute(state);
 }

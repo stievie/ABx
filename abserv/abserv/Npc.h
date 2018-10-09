@@ -2,7 +2,7 @@
 
 #include "Actor.h"
 #include "Chat.h"
-#include "LuaScript.h"
+#include "Script.h"
 
 namespace Game {
 
@@ -13,7 +13,7 @@ private:
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
-    std::shared_ptr<LuaScript> script_;
+    std::shared_ptr<Script> script_;
 protected:
     kaguya::State luaState_;
     bool luaInitialized_;

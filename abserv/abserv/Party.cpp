@@ -2,6 +2,7 @@
 #include "Party.h"
 #include "Player.h"
 #include "Chat.h"
+#include "GameManager.h"
 
 namespace Game {
 
@@ -124,6 +125,7 @@ void Party::SetPartySize(uint32_t size)
         auto it = members_.back();
         Remove(it.lock());
     }
+    maxMembers_ = size;
 }
 
 bool Party::IsMember(std::shared_ptr<Player> player) const
@@ -157,6 +159,18 @@ bool Party::IsLeader(const Player* const player)
     if (auto l = leader_.lock())
         return l.get() == player;
     return false;
+}
+
+void Party::ChangeInstance(const std::string& mapUuid)
+{
+    std::shared_ptr<Game> game = GameManager::Instance.GetGame(mapUuid, true);
+    for (const auto& member : members_)
+    {
+        if (auto mem = member.lock())
+        {
+            mem->client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
+        }
+    }
 }
 
 }

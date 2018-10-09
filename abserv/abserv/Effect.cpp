@@ -24,7 +24,7 @@ void Effect::InitializeLua()
 
 bool Effect::LoadScript(const std::string& fileName)
 {
-    script_ = IO::DataProvider::Instance.GetAsset<LuaScript>(fileName);
+    script_ = IO::DataProvider::Instance.GetAsset<Script>(fileName);
     if (!script_)
         return false;
     if (!script_->Execute(luaState_))

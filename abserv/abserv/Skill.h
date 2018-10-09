@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 #include <AB/Entities/Skill.h>
-#include "LuaScript.h"
+#include "Script.h"
 
 namespace Game {
 
@@ -12,7 +12,7 @@ class Skill : public std::enable_shared_from_this<Skill>
 {
 private:
     kaguya::State luaState_;
-    std::shared_ptr<LuaScript> script_;
+    std::shared_ptr<Script> script_;
     int64_t startUse_;
     int64_t recharged_;
     void InitializeLua();

@@ -9,7 +9,7 @@
 #include <AB/Entities/Game.h>
 #include <AB/Entities/GameInstance.h>
 #include "GameStream.h"
-#include "LuaScript.h"
+#include "Script.h"
 
 namespace Game {
 
@@ -35,7 +35,7 @@ private:
     int64_t lastUpdate_;
     uint32_t noplayerTime_;
     kaguya::State luaState_;
-    std::shared_ptr<LuaScript> script_;
+    std::shared_ptr<Script> script_;
     /// First player(s) triggering the creation of this game
     std::vector<std::shared_ptr<GameObject>> queuedObjects_;
     void InitializeLua();

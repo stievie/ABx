@@ -491,13 +491,13 @@ void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMess
 
 void Player::ChangeInstance(const std::string& mapUuid)
 {
-    // TODO: all in the party must change to the same instance
-    std::shared_ptr<Game> game = GameManager::Instance.GetGame(mapUuid, true);
-    if (game)
-    {
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-        client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
-    }
+    // If we are the leader tell all members to change the instance.
+    // If not, tell the leader to change the instance.
+    auto party = GetParty();
+    if (party->IsLeader(this))
+        party->ChangeInstance(mapUuid);
+    else
+        party->GetLeader()->ChangeInstance(mapUuid);
 }
 
 void Player::RegisterLua(kaguya::State& state)

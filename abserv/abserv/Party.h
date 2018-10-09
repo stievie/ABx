@@ -25,6 +25,11 @@ private:
     }
 public:
     explicit Party(std::shared_ptr<Player> leader);
+    Party() = delete;
+    // non-copyable
+    Party(const Party&) = delete;
+    Party& operator=(const Party&) = delete;
+
     ~Party();
 
     bool Add(std::shared_ptr<Player> player);
@@ -51,6 +56,8 @@ public:
     {
         return leader_.lock();
     }
+    /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.
+    void ChangeInstance(const std::string& mapUuid);
 
     uint32_t id_;
 };

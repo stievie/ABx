@@ -1,7 +1,6 @@
 # TODO
 
 ! abclient: Select self with Shift+Number?
-! abclient: Showing mail window does not fetch mails
 + abdata: Maintenance, delete expired records: reserved_names, guild_members
 ~ abdata: Use bit set cache item flags, sot a struct
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap

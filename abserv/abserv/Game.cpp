@@ -323,7 +323,7 @@ void Game::Load(const std::string& mapUuid)
 
     // Must be executed here because the player doesn't wait to fully load the game to join
     // Execute initialization code if any
-    script_ = IO::DataProvider::Instance.GetAsset<LuaScript>(data_.script);
+    script_ = IO::DataProvider::Instance.GetAsset<Script>(data_.script);
     if (!script_)
         return;
     if (!script_->Execute(luaState_))
