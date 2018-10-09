@@ -80,12 +80,14 @@ void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap& eventData)
 
 void BaseLevel::OnNetworkError(const std::error_code& err)
 {
+    URHO3D_LOGERRORF("Network error (%d): %s", err.value(), err.message().c_str());
     ShowError(String(err.message().c_str()), "Network Error");
 }
 
 void BaseLevel::OnProtocolError(uint8_t err)
 {
     String msg = FwClient::GetProtocolErrorMessage(err);
+    URHO3D_LOGERRORF("Protocol error (%d): %s", err, msg.CString());
     if (!msg.Empty())
         ShowError(msg, "Error");
 }

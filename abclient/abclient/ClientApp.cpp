@@ -28,6 +28,7 @@
 #include "HotkeyEdit.h"
 #include "SkillBarWindow.h"
 #include "FriendListWindow.h"
+#include "AntiRE.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -185,6 +186,12 @@ void ClientApp::Setup()
 */
 void ClientApp::Start()
 {
+#if defined(_WIN32) && !defined(_DEBUG)
+    if (AntiRE::IsDebuggee())
+    {
+        ErrorExit("Please don't debug this program.");
+    }
+#endif
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
     SetRandomSeed(Time::GetSystemTime());

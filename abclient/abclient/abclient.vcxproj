@@ -292,6 +292,7 @@
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="AntiRE.h" />
     <ClInclude Include="CharCreateLevel.h" />
     <ClInclude Include="CharSelectLevel.h" />
     <ClInclude Include="ChatWindow.h" />
