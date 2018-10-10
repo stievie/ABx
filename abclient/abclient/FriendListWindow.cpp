@@ -55,4 +55,11 @@ FriendListWindow::~FriendListWindow()
 
 void FriendListWindow::SubscribeEvents()
 {
+    Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
+    SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(FriendListWindow, HandleCloseClicked));
+}
+
+void FriendListWindow::HandleCloseClicked(StringHash, VariantMap&)
+{
+    SetVisible(false);
 }
