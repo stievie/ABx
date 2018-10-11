@@ -108,6 +108,12 @@
     <ClInclude Include="DebugNew.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadPool.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultThreadPool.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -177,6 +183,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="UuidUtils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultThreadPool.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

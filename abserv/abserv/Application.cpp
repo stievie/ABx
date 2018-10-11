@@ -31,6 +31,7 @@
 #include "Process.hpp"
 #include <locale>
 #include <codecvt>
+#include "DefaultThreadPool.h"
 
 #include "DebugNew.h"
 
@@ -54,6 +55,7 @@ Application::~Application()
 {
     serviceManager_->Stop();
     Game::GameManager::Instance.Stop();
+    Asynch::DefaultThreadPool::Instance.Stop();
     Asynch::Scheduler::Instance.Stop();
     Asynch::Dispatcher::Instance.Stop();
 }
@@ -187,6 +189,7 @@ bool Application::Initialize(int argc, char** argv)
 
     Asynch::Dispatcher::Instance.Start();
     Asynch::Scheduler::Instance.Start();
+    Asynch::DefaultThreadPool::Instance.Start();
 
     if (!LoadMain())
         return false;
