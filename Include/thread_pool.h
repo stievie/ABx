@@ -34,7 +34,7 @@ private:
 };
 
 // the constructor just launches some amount of workers
-inline thread_pool::ThreadPool(size_t threads)
+inline thread_pool::thread_pool(size_t threads)
     : stop(false)
 {
     for (size_t i = 0; i < threads; ++i)
@@ -93,7 +93,7 @@ auto thread_pool::enqueue(F&& f, Args&&... args)
 }
 
 // the destructor joins all threads
-inline thread_pool::~ThreadPool()
+inline thread_pool::~thread_pool()
 {
     {
         std::unique_lock<std::mutex> lock(queue_mutex);

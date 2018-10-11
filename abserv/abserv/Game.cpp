@@ -20,7 +20,7 @@
 #include "IOMap.h"
 #include "Profiler.h"
 #include "ScriptManager.h"
-#include "DefaultThreadPool.h"
+#include "ThreadPool.h"
 
 #include "DebugNew.h"
 
@@ -331,7 +331,7 @@ void Game::Load(const std::string& mapUuid)
         return;
 
     // Load Assets
-    Asynch::DefaultThreadPool::Instance.Enqueue(&Game::InternalLoad, shared_from_this());
+    Asynch::ThreadPool::Instance.Enqueue(&Game::InternalLoad, shared_from_this());
 }
 
 void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
