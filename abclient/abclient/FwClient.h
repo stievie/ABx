@@ -138,7 +138,7 @@ public:
 
     void SetState(Client::Client::ClientState state)
     {
-        if (state == Client::Client::StateDisconnected || state == Client::Client::StateCreateAccount)
+        if (state == Client::Client::ClientState::Disconnected || state == Client::Client::ClientState::CreateAccount)
             loggedIn_ = false;
         client_.state_ = state;
     }

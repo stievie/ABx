@@ -36,7 +36,7 @@ Client::Client() :
     filePort_(0),
     protoLogin_(nullptr),
     protoGame_(nullptr),
-    state_(StateDisconnected),
+    state_(ClientState::Disconnected),
     lastRun_(0),
     lastPing_(0),
     gotPong_(true),
@@ -90,7 +90,7 @@ void Client::OnLoggedIn(const std::string& accountUuid)
 
 void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
 {
-    state_ = StateSelectChar;
+    state_ = ClientState::SelectChar;
     if (receiver_)
         receiver_->OnGetCharlist(chars);
 
@@ -125,7 +125,7 @@ void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, uint32_t playerId)
 {
-    state_ = StateWorld;
+    state_ = ClientState::World;
     mapUuid_ = mapUuid;
     if (receiver_)
         receiver_->OnEnterWorld(updateTick, serverId, mapUuid, playerId);
@@ -233,7 +233,7 @@ void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& o
 
 void Client::OnNetworkError(const std::error_code& err)
 {
-    if (receiver_)
+    if (state_ != ClientState::Disconnected && receiver_)
         receiver_->OnNetworkError(err);
 }
 
@@ -276,7 +276,7 @@ std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
 
 void Client::Login(const std::string& name, const std::string& pass)
 {
-    if (!(state_ == StateDisconnected || state_ == StateCreateAccount))
+    if (!(state_ == ClientState::Disconnected || state_ == ClientState::CreateAccount))
         return;
 
     accountName_ = name;
@@ -292,7 +292,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 void Client::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
-    if (state_ != StateCreateAccount)
+    if (state_ != ClientState::CreateAccount)
         return;
 
     accountName_ = name;
@@ -308,7 +308,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     uint32_t modelIndex,
     AB::Entities::CharacterSex sex, bool isPvp)
 {
-    if (state_ != StateSelectChar)
+    if (state_ != ClientState::SelectChar)
         return;
 
     if (accountUuid_.empty() || password_.empty())
@@ -322,13 +322,13 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
 
 void Client::Logout()
 {
-    if (state_ != StateWorld)
+    if (state_ != ClientState::World)
         return;
     if (protoGame_)
     {
+        state_ = ClientState::Disconnected;
         protoGame_->Logout();
         Connection::Run();
-        state_ = StateDisconnected;
     }
 }
 
@@ -357,10 +357,10 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 {
     assert(!accountUuid_.empty());
     // Enter or changing the world
-    if (state_ != StateSelectChar && state_ != StateWorld)
+    if (state_ != ClientState::SelectChar && state_ != ClientState::World)
         return;
 
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
     {
         // We are already logged in to some world so we must logout
         Logout();
@@ -386,7 +386,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
 
 void Client::Update(int timeElapsed)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
     {
         if (lastPing_ >= 1000 && gotPong_)
         {
@@ -406,7 +406,7 @@ void Client::Update(int timeElapsed)
         lastRun_ = 0;
     }
     lastRun_ += timeElapsed;
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         lastPing_ += timeElapsed;
 }
 
@@ -461,85 +461,85 @@ int64_t Client::GetClockDiff() const
 
 void Client::GetMailHeaders()
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->GetMailHeaders();
 }
 
 void Client::GetMail(const std::string& mailUuid)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->GetMail(mailUuid);
 }
 
 void Client::DeleteMail(const std::string& mailUuid)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->DeleteMail(mailUuid);
 }
 
 void Client::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->SendMail(recipient, subject, body);
 }
 
 void Client::Move(uint8_t direction)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->Move(direction);
 }
 
 void Client::Turn(uint8_t direction)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->Turn(direction);
 }
 
 void Client::SetDirection(float rad)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->SetDirection(rad);
 }
 
 void Client::ClickObject(uint32_t sourceId, uint32_t targetId)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->ClickObject(sourceId, targetId);
 }
 
 void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->SelectObject(sourceId, targetId);
 }
 
 void Client::FollowObject(uint32_t targetId)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->Follow(targetId);
 }
 
 void Client::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->Command(type, data);
 }
 
 void Client::GotoPos(const Vec3& pos)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->GotoPos(pos);
 }
 
 void Client::PartyInvitePlayer(uint32_t targetId)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->PartyInvitePlayer(targetId);
 }
 
 void Client::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
-    if (state_ == StateWorld)
+    if (state_ == ClientState::World)
         protoGame_->SetPlayerState(newState);
 }
 

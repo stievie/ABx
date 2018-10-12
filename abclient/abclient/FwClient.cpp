@@ -393,10 +393,10 @@ void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
 
     switch (client_.state_)
     {
-    case Client::Client::StateSelectChar:
+    case Client::Client::ClientState::SelectChar:
         loggedIn_ = true;
         break;
-    case Client::Client::StateWorld:
+    case Client::Client::ClientState::World:
         break;
     }
     lastState_ = client_.state_;

@@ -18,13 +18,13 @@ class HttpsClient;
 class Client : public Receiver
 {
 public:
-    enum ClientState
+    enum class ClientState
     {
-        StateDisconnected,
-        StateCreateAccount,
-        StateCreateChar,
-        StateSelectChar,
-        StateWorld
+        Disconnected,
+        CreateAccount,
+        CreateChar,
+        SelectChar,
+        World
     };
 private:
     std::shared_ptr<ProtocolLogin> protoLogin_;
