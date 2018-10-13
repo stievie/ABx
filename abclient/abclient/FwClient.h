@@ -77,6 +77,8 @@ public:
         AB::Entities::CharacterSex sex, bool isPvp);
     void EnterWorld(const String& charUuid, const String& mapUuid);
     void ChangeWorld(const String& mapUuid);
+    /// Causes the server to change the map for the whole party
+    void ChangeMap(const String& mapUuid);
     void ChangeServer(const String& serverId);
     void Logout();
     void GetMailHeaders();

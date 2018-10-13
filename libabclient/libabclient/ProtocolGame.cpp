@@ -394,6 +394,14 @@ void ProtocolGame::Ping()
     Send(msg);
 }
 
+void ProtocolGame::ChangeMap(const std::string& mapUuid)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChangeMap);
+    msg->AddString(mapUuid);
+    Send(msg);
+}
+
 void ProtocolGame::GetMailHeaders()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();

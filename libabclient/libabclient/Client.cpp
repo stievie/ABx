@@ -459,6 +459,12 @@ int64_t Client::GetClockDiff() const
     return 0;
 }
 
+void Client::ChangeMap(const std::string& mapUuid)
+{
+    if (state_ == ClientState::World)
+        protoGame_->ChangeMap(mapUuid);
+}
+
 void Client::GetMailHeaders()
 {
     if (state_ == ClientState::World)

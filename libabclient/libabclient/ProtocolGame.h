@@ -74,6 +74,7 @@ public:
     void Logout();
     /// Triggers OnPong()
     void Ping();
+    void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);

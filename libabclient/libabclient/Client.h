@@ -136,6 +136,8 @@ public:
     }
     int64_t GetClockDiff() const;
 
+    /// Causes the server to change the map for the whole party
+    void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);

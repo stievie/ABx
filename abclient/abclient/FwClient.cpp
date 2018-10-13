@@ -448,6 +448,12 @@ void FwClient::ChangeWorld(const String& mapUuid)
         client_.EnterWorld(std::string(currentCharacterUuid_.CString()), std::string(mapUuid.CString()));
 }
 
+void FwClient::ChangeMap(const String& mapUuid)
+{
+    if (loggedIn_)
+        client_.ChangeMap(std::string(mapUuid.CString()));
+}
+
 void FwClient::ChangeServer(const String& serverId)
 {
     if (loggedIn_)

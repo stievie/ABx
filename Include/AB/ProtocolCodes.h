@@ -208,6 +208,7 @@ enum GamePacketTypes : uint8_t
     PacketTypePing = 0x01,
 
     PacketTypeLogout,
+    PacketTypeChangeMap,
 
     // Mail
     PacketTypeSendMail,

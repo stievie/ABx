@@ -164,6 +164,8 @@ bool Party::IsLeader(const Player* const player)
 void Party::ChangeInstance(const std::string& mapUuid)
 {
     std::shared_ptr<Game> game = GameManager::Instance.GetGame(mapUuid, true);
+    if (!game)
+        return;
     for (const auto& member : members_)
     {
         if (auto mem = member.lock())

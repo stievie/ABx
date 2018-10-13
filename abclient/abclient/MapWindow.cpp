@@ -91,7 +91,7 @@ void MapWindow::HandleMapGameClicked(StringHash, VariantMap& eventData)
     if (lm->GetMapUuid().Compare(uuid) != 0)
     {
         FwClient* net = context_->GetSubsystem<FwClient>();
-        net->ChangeWorld(uuid);
+        net->ChangeMap(uuid);
     }
 }
 

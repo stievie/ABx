@@ -115,6 +115,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);
         break;
+    case AB::GameProtocol::PacketTypeChangeMap:
+    {
+        const std::string mapUuid = message.GetString();
+        AddPlayerTask(&Game::Player::ChangeInstance, mapUuid);
+        break;
+    }
     case AB::GameProtocol::PacketTypeSendMail:
     {
         const std::string recipient = message.GetString();

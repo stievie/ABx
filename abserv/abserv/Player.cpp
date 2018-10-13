@@ -489,8 +489,10 @@ void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMess
     }
 }
 
-void Player::ChangeInstance(const std::string& mapUuid)
+void Player::ChangeInstance(const std::string mapUuid)
 {
+    // mapUuid No reference
+
     // If we are the leader tell all members to change the instance.
     // If not, tell the leader to change the instance.
     auto party = GetParty();
