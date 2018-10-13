@@ -2,7 +2,15 @@
 
 #include "ServerApp.h"
 #include <AB/Entities/Account.h>
+#if __cplusplus < 201703L
+#   if !defined(__clang__)
+#       include <filesystem>
+#   else
+#       include <experimental/filesystem>
+#   endif
+#else
 #include <filesystem>
+#endif
 
 #if __cplusplus < 201703L
 // C++14
