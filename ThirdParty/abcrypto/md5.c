@@ -30,12 +30,12 @@
 * memory accesses is just an optimization.  Nothing will break if it
 * doesn't work.
 */
-#if defined(__i386__) || defined(__x86_64__) || defined(__vax__)
-#define SET(n) \
-	(*(MD5_u32plus *)&ptr[(n) * 4])
-#define GET(n) \
-	SET(n)
-#else
+//#if defined(__i386__) || defined(__x86_64__) || defined(__vax__)
+//#define SET(n) \
+//	(*(MD5_u32plus *)&ptr[(n) * 4])
+//#define GET(n) \
+//	SET(n)
+//#else
 #define SET(n) \
 	(ctx->block[(n)] = \
 	(md5_u32)ptr[(n) * 4] | \
@@ -44,7 +44,7 @@
 	((md5_u32)ptr[(n) * 4 + 3] << 24))
 #define GET(n) \
 	(ctx->block[(n)])
-#endif
+//#endif
 
 /*
 * This processes one or more 64-byte data blocks, but does NOT update
