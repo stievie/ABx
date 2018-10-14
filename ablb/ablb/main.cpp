@@ -6,7 +6,7 @@
 #include <functional>
 #include <mutex>
 #include <condition_variable>
-#include <signal.h>
+#include <csignal>
 #include "Application.h"
 #include "MiniDump.h"
 
@@ -59,8 +59,11 @@ int main(int argc, char** argv)
     SetUnhandledExceptionFilter(System::UnhandledHandler);
 #endif
 
-    signal(SIGINT, signal_handler);              // Ctrl+C
-    signal(SIGBREAK, signal_handler);            // X clicked
+    std::signal(SIGINT, signal_handler);              // Ctrl+C
+    std::signal(SIGTERM, signal_handler);
+#ifdef _WIN32
+    std::signal(SIGBREAK, signal_handler);            // X clicked
+#endif
 
     ShowLogo();
 

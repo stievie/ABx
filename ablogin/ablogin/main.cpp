@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "Version.h"
 #include "MiniDump.h"
+#include <csignal>
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 #   define CRTDBG_MAP_ALLOC
@@ -54,9 +55,11 @@ int main(int argc, char** argv)
     SetUnhandledExceptionFilter(System::UnhandledHandler);
 #endif
 
-    signal(SIGINT, signal_handler);              // Ctrl+C
-    signal(SIGBREAK, signal_handler);            // X clicked
-
+    std::signal(SIGINT, signal_handler);              // Ctrl+C
+    std::signal(SIGTERM, signal_handler);
+#ifdef _WIN32
+    std::signal(SIGBREAK, signal_handler);            // X clicked
+#endif
     ShowLogo();
 
     {

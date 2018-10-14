@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Acceptor.h"
+#include <functional>
 
 void Acceptor::HandleAccept(const std::error_code& error)
 {

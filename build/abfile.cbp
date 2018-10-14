@@ -13,39 +13,20 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
-					<Add option="/D_UNICODE /DUNICODE" />
-					<Add option="/Zi" />
-					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="/DDEBUG" />
-					<Add option="/D_DEBUG" />
-					<Add option="/D_CONSOLE" />
-					<Add option="/std:c++14" />
-					<Add option="/Od" />
-					<Add option="/W4" />
+					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
 					<Add directory="../Include/" />
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
-					<Add option="/debug" />
-					<Add library="lua.lib" />
-					<Add library="abcrypto.lib" />
-					<Add library="pugixml.lib" />
-					<Add library="winmm.lib" />
-					<Add library="comctl32.lib" />
-					<Add library="kernel32.lib" />
-					<Add library="user32.lib" />
-					<Add library="gdi32.lib" />
-					<Add library="winspool.lib" />
-					<Add library="comdlg32.lib" />
-					<Add library="advapi32.lib" />
-					<Add library="shell32.lib" />
-					<Add library="ole32.lib" />
-					<Add library="oleaut32.lib" />
-					<Add library="uuid.lib" />
-					<Add library="odbc32.lib" />
-					<Add library="odbccp32.lib" />
+					<Add option="-pthread" />
+					<Add library="pthread" />
+					<Add library="libabscommon.a" />
+					<Add library="pugixml" />
+					<Add library="abcrypto" />
+					<Add library="lua" />
+					<Add library="uuid" />
 					<Add directory="../Lib/" />
 					<Add directory="../Lib/x64/Debug/" />
 					<Add directory="$(BOOST_LIB_PATH)/" />
@@ -58,37 +39,20 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
-					<Add option="/D_UNICODE /DUNICODE" />
-					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="/DNDEBUG" />
-					<Add option="/D_NPROFILING" />
-					<Add option="/D_CONSOLE" />
-					<Add option="/std:c++14" />
-					<Add option="/Ox" />
-					<Add option="/W4" />
+					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
 					<Add directory="../Include/" />
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
-					<Add library="lua.lib" />
-					<Add library="abcrypto.lib" />
-					<Add library="pugixml.lib" />
-					<Add library="winmm.lib" />
-					<Add library="comctl32.lib" />
-					<Add library="kernel32.lib" />
-					<Add library="user32.lib" />
-					<Add library="gdi32.lib" />
-					<Add library="winspool.lib" />
-					<Add library="comdlg32.lib" />
-					<Add library="advapi32.lib" />
-					<Add library="shell32.lib" />
-					<Add library="ole32.lib" />
-					<Add library="oleaut32.lib" />
-					<Add library="uuid.lib" />
-					<Add library="odbc32.lib" />
-					<Add library="odbccp32.lib" />
+					<Add option="-pthread" />
+					<Add library="pthread" />
+					<Add library="libabscommon.a" />
+					<Add library="pugixml" />
+					<Add library="abcrypto" />
+					<Add library="lua" />
+					<Add library="uuid" />
 					<Add directory="../Lib/" />
 					<Add directory="../Lib/x64/RelNoProfiling/" />
 					<Add directory="$(BOOST_LIB_PATH)/" />
@@ -101,36 +65,20 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
-					<Add option="/D_UNICODE /DUNICODE" />
-					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="/DNDEBUG" />
-					<Add option="/D_CONSOLE" />
-					<Add option="/std:c++14" />
-					<Add option="/Ox" />
-					<Add option="/W4" />
+					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
 					<Add directory="../Include/" />
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
-					<Add library="lua.lib" />
-					<Add library="abcrypto.lib" />
-					<Add library="pugixml.lib" />
-					<Add library="winmm.lib" />
-					<Add library="comctl32.lib" />
-					<Add library="kernel32.lib" />
-					<Add library="user32.lib" />
-					<Add library="gdi32.lib" />
-					<Add library="winspool.lib" />
-					<Add library="comdlg32.lib" />
-					<Add library="advapi32.lib" />
-					<Add library="shell32.lib" />
-					<Add library="ole32.lib" />
-					<Add library="oleaut32.lib" />
-					<Add library="uuid.lib" />
-					<Add library="odbc32.lib" />
-					<Add library="odbccp32.lib" />
+					<Add option="-pthread" />
+					<Add library="pthread" />
+					<Add library="libabscommon.a" />
+					<Add library="pugixml" />
+					<Add library="abcrypto" />
+					<Add library="lua" />
+					<Add library="uuid" />
 					<Add directory="../Lib/" />
 					<Add directory="../Lib/x64/Release/" />
 					<Add directory="$(BOOST_LIB_PATH)/" />
@@ -143,9 +91,6 @@
 		<ResourceCompiler>
 			<Add directory="." />
 		</ResourceCompiler>
-		<Linker>
-			<Add option="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb" />
-		</Linker>
 		<Unit filename="../abfile/abfile/Application.cpp" />
 		<Unit filename="../abfile/abfile/Application.h" />
 		<Unit filename="../abfile/abfile/Version.h" />

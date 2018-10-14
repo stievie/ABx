@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Bridge.h"
+#include <functional>
 
 void Bridge::HandleUpstreamConnect(const std::error_code& error)
 {
