@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="recast" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug x64">
+				<Option output="../Lib/x64/Debug/recast" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/Debug/recast/" />
+				<Option deps_output="../Lib/x64/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add directory="../" />
+					<Add directory="../ThirdParty/recastnavigation/Recast/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DebugUtils/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/Detour/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourTileCache/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourCrowd/Include/" />
+				</Compiler>
+				<Linker>
+					<Add option="/debug" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../Lib/x64/Release/recast" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/Release/recast/" />
+				<Option deps_output="../Lib/x64/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O4" />
+					<Add option="-Wall" />
+					<Add directory="../" />
+					<Add directory="../ThirdParty/recastnavigation/Recast/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DebugUtils/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/Detour/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourTileCache/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourCrowd/Include/" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="." />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="." />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb" />
+		</Linker>
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Include/DebugDraw.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Include/DetourDebugDraw.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Include/RecastDebugDraw.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Include/RecastDump.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Source/DebugDraw.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Source/DetourDebugDraw.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Source/RecastDebugDraw.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DebugUtils/Source/RecastDump.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Include/Recast.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Include/RecastAlloc.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Include/RecastAssert.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/Recast.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastAlloc.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastArea.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastAssert.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastContour.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastFilter.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastLayers.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastMesh.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastMeshDetail.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastRasterization.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Recast/Source/RecastRegion.cpp" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="abserv" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug x64">
+				<Option output="../Bin/abserv_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/x64/Debug/abserv/" />
+				<Option deps_output="../Bin/" />
+				<Option type="0" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="/D_UNICODE /DUNICODE" />
+					<Add option="/Zi" />
+					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="/DDEBUG" />
+					<Add option="/D_DEBUG" />
+					<Add option="/D_CONSOLE" />
+					<Add option="/std:c++14" />
+					<Add option="/Od" />
+					<Add option="/W4" />
+					<Add directory="../" />
+					<Add directory="../abscommon/abscommon/" />
+					<Add directory="../Include/" />
+					<Add directory="$(BOOST_DIR)/" />
+					<Add directory="../absmath/absmath/" />
+				</Compiler>
+				<Linker>
+					<Add option="/debug" />
+					<Add library="lua.lib" />
+					<Add library="abcrypto.lib" />
+					<Add library="pugixml.lib" />
+					<Add library="detour.lib" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+					<Add directory="../Lib/" />
+					<Add directory="../Lib/x64/Debug/" />
+					<Add directory="$(BOOST_LIB_PATH)/" />
+				</Linker>
+			</Target>
+			<Target title="RelNoProfiling x64">
+				<Option output="../Bin/abserv" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/x64/RelNoProfiling/abserv/" />
+				<Option deps_output="../Bin/" />
+				<Option type="0" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="/D_UNICODE /DUNICODE" />
+					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="/DNDEBUG" />
+					<Add option="/D_NPROFILING" />
+					<Add option="/D_CONSOLE" />
+					<Add option="/std:c++14" />
+					<Add option="/Ox" />
+					<Add option="/W4" />
+					<Add directory="../" />
+					<Add directory="../abscommon/abscommon/" />
+					<Add directory="../Include/" />
+					<Add directory="$(BOOST_DIR)/" />
+					<Add directory="../absmath/absmath/" />
+				</Compiler>
+				<Linker>
+					<Add library="lua.lib" />
+					<Add library="abcrypto.lib" />
+					<Add library="pugixml.lib" />
+					<Add library="detour.lib" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+					<Add directory="../Lib/" />
+					<Add directory="../Lib/x64/RelNoProfiling/" />
+					<Add directory="$(BOOST_LIB_PATH)/" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../Bin/abserv" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/x64/Release/abserv/" />
+				<Option deps_output="../Bin/" />
+				<Option type="0" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="/D_UNICODE /DUNICODE" />
+					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="/DNDEBUG" />
+					<Add option="/D_CONSOLE" />
+					<Add option="/std:c++14" />
+					<Add option="/Ox" />
+					<Add option="/W4" />
+					<Add directory="../" />
+					<Add directory="../abscommon/abscommon/" />
+					<Add directory="../Include/" />
+					<Add directory="$(BOOST_DIR)/" />
+					<Add directory="../absmath/absmath/" />
+				</Compiler>
+				<Linker>
+					<Add library="lua.lib" />
+					<Add library="abcrypto.lib" />
+					<Add library="pugixml.lib" />
+					<Add library="detour.lib" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+					<Add directory="../Lib/" />
+					<Add directory="../Lib/x64/Release/" />
+					<Add directory="$(BOOST_LIB_PATH)/" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="." />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="." />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb" />
+		</Linker>
+		<Unit filename="../abserv/abserv/Actor.cpp" />
+		<Unit filename="../abserv/abserv/Actor.h" />
+		<Unit filename="../abserv/abserv/Application.cpp" />
+		<Unit filename="../abserv/abserv/Application.h" />
+		<Unit filename="../abserv/abserv/Asset.cpp" />
+		<Unit filename="../abserv/abserv/Asset.h" />
+		<Unit filename="../abserv/abserv/AutoRunComp.cpp" />
+		<Unit filename="../abserv/abserv/AutoRunComp.h" />
+		<Unit filename="../abserv/abserv/Bans.cpp" />
+		<Unit filename="../abserv/abserv/Bans.h" />
+		<Unit filename="../abserv/abserv/Chat.cpp" />
+		<Unit filename="../abserv/abserv/Chat.h" />
+		<Unit filename="../abserv/abserv/CollisionComp.cpp" />
+		<Unit filename="../abserv/abserv/CollisionComp.h" />
+		<Unit filename="../abserv/abserv/Config.h" />
+		<Unit filename="../abserv/abserv/ConfigManager.cpp" />
+		<Unit filename="../abserv/abserv/ConfigManager.h" />
+		<Unit filename="../abserv/abserv/CrowdAgent.cpp" />
+		<Unit filename="../abserv/abserv/CrowdAgent.h" />
+		<Unit filename="../abserv/abserv/CrowdManager.cpp" />
+		<Unit filename="../abserv/abserv/CrowdManager.h" />
+		<Unit filename="../abserv/abserv/DataProvider.cpp" />
+		<Unit filename="../abserv/abserv/DataProvider.h" />
+		<Unit filename="../abserv/abserv/Effect.cpp" />
+		<Unit filename="../abserv/abserv/Effect.h" />
+		<Unit filename="../abserv/abserv/EffectManager.cpp" />
+		<Unit filename="../abserv/abserv/EffectManager.h" />
+		<Unit filename="../abserv/abserv/FriendList.cpp" />
+		<Unit filename="../abserv/abserv/FriendList.h" />
+		<Unit filename="../abserv/abserv/Game.cpp" />
+		<Unit filename="../abserv/abserv/Game.h" />
+		<Unit filename="../abserv/abserv/GameManager.cpp" />
+		<Unit filename="../abserv/abserv/GameManager.h" />
+		<Unit filename="../abserv/abserv/GameObject.cpp" />
+		<Unit filename="../abserv/abserv/GameObject.h" />
+		<Unit filename="../abserv/abserv/GameStream.cpp" />
+		<Unit filename="../abserv/abserv/GameStream.h" />
+		<Unit filename="../abserv/abserv/IOAccount.cpp" />
+		<Unit filename="../abserv/abserv/IOAccount.h" />
+		<Unit filename="../abserv/abserv/IOAsset.h" />
+		<Unit filename="../abserv/abserv/IOFriendList.cpp" />
+		<Unit filename="../abserv/abserv/IOFriendList.h" />
+		<Unit filename="../abserv/abserv/IOGame.cpp" />
+		<Unit filename="../abserv/abserv/IOGame.h" />
+		<Unit filename="../abserv/abserv/IOGuild.cpp" />
+		<Unit filename="../abserv/abserv/IOGuild.h" />
+		<Unit filename="../abserv/abserv/IOMail.cpp" />
+		<Unit filename="../abserv/abserv/IOMail.h" />
+		<Unit filename="../abserv/abserv/IOMap.cpp" />
+		<Unit filename="../abserv/abserv/IOMap.h" />
+		<Unit filename="../abserv/abserv/IOModel.cpp" />
+		<Unit filename="../abserv/abserv/IOModel.h" />
+		<Unit filename="../abserv/abserv/IONavMesh.cpp" />
+		<Unit filename="../abserv/abserv/IONavMesh.h" />
+		<Unit filename="../abserv/abserv/IOPlayer.cpp" />
+		<Unit filename="../abserv/abserv/IOPlayer.h" />
+		<Unit filename="../abserv/abserv/IOTerrain.cpp" />
+		<Unit filename="../abserv/abserv/IOTerrain.h" />
+		<Unit filename="../abserv/abserv/InputQueue.cpp" />
+		<Unit filename="../abserv/abserv/InputQueue.h" />
+		<Unit filename="../abserv/abserv/MailBox.cpp" />
+		<Unit filename="../abserv/abserv/MailBox.h" />
+		<Unit filename="../abserv/abserv/Maintenance.cpp" />
+		<Unit filename="../abserv/abserv/Maintenance.h" />
+		<Unit filename="../abserv/abserv/Map.cpp" />
+		<Unit filename="../abserv/abserv/Map.h" />
+		<Unit filename="../abserv/abserv/MessageDispatcher.cpp" />
+		<Unit filename="../abserv/abserv/MessageDispatcher.h" />
+		<Unit filename="../abserv/abserv/Model.cpp" />
+		<Unit filename="../abserv/abserv/Model.h" />
+		<Unit filename="../abserv/abserv/MoveComp.cpp" />
+		<Unit filename="../abserv/abserv/MoveComp.h" />
+		<Unit filename="../abserv/abserv/NavigationMesh.cpp" />
+		<Unit filename="../abserv/abserv/NavigationMesh.h" />
+		<Unit filename="../abserv/abserv/Npc.cpp" />
+		<Unit filename="../abserv/abserv/Npc.h" />
+		<Unit filename="../abserv/abserv/Obstacle.cpp" />
+		<Unit filename="../abserv/abserv/Obstacle.h" />
+		<Unit filename="../abserv/abserv/Octree.cpp" />
+		<Unit filename="../abserv/abserv/Octree.h" />
+		<Unit filename="../abserv/abserv/OctreeQuery.cpp" />
+		<Unit filename="../abserv/abserv/OctreeQuery.h" />
+		<Unit filename="../abserv/abserv/OffMeshConnection.cpp" />
+		<Unit filename="../abserv/abserv/OffMeshConnection.h" />
+		<Unit filename="../abserv/abserv/Party.cpp" />
+		<Unit filename="../abserv/abserv/Party.h" />
+		<Unit filename="../abserv/abserv/Player.cpp" />
+		<Unit filename="../abserv/abserv/Player.h" />
+		<Unit filename="../abserv/abserv/PlayerManager.cpp" />
+		<Unit filename="../abserv/abserv/PlayerManager.h" />
+		<Unit filename="../abserv/abserv/ProtocolGame.cpp" />
+		<Unit filename="../abserv/abserv/ProtocolGame.h" />
+		<Unit filename="../abserv/abserv/Random.cpp" />
+		<Unit filename="../abserv/abserv/Random.h" />
+		<Unit filename="../abserv/abserv/ScriptManager.cpp" />
+		<Unit filename="../abserv/abserv/ScriptManager.h" />
+		<Unit filename="../abserv/abserv/Skill.cpp" />
+		<Unit filename="../abserv/abserv/Skill.h" />
+		<Unit filename="../abserv/abserv/SkillBar.cpp" />
+		<Unit filename="../abserv/abserv/SkillBar.h" />
+		<Unit filename="../abserv/abserv/SkillManager.cpp" />
+		<Unit filename="../abserv/abserv/SkillManager.h" />
+		<Unit filename="../abserv/abserv/StateComp.cpp" />
+		<Unit filename="../abserv/abserv/StateComp.h" />
+		<Unit filename="../abserv/abserv/Terrain.cpp" />
+		<Unit filename="../abserv/abserv/Terrain.h" />
+		<Unit filename="../abserv/abserv/TerrainPatch.cpp" />
+		<Unit filename="../abserv/abserv/TerrainPatch.h" />
+		<Unit filename="../abserv/abserv/Version.h" />
+		<Unit filename="../abserv/abserv/main.cpp" />
+		<Unit filename="../abserv/abserv/stdafx.cpp" />
+		<Unit filename="../abserv/abserv/stdafx.h" />
+		<Unit filename="../abserv/abserv/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

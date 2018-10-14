@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="detour" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug x64">
+				<Option output="../Lib/x64/Debug/detour" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/Debug/detour/" />
+				<Option deps_output="../Lib/x64/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add directory="../" />
+					<Add directory="../ThirdParty/recastnavigation/Recast/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DebugUtils/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/Detour/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourTileCache/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourCrowd/Include/" />
+				</Compiler>
+				<Linker>
+					<Add option="/debug" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../Lib/x64/Release/detour" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/Release/detour/" />
+				<Option deps_output="../Lib/x64/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O4" />
+					<Add option="-Wall" />
+					<Add directory="../" />
+					<Add directory="../ThirdParty/recastnavigation/Recast/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DebugUtils/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/Detour/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourTileCache/Include/" />
+					<Add directory="../ThirdParty/recastnavigation/DetourCrowd/Include/" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="." />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="." />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb" />
+		</Linker>
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourAlloc.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourAssert.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourCommon.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourMath.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourNavMesh.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourNavMeshBuilder.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourNavMeshQuery.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourNode.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Include/DetourStatus.h" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourAlloc.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourAssert.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourCommon.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourNavMesh.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourNavMeshBuilder.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourNavMeshQuery.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/Detour/Source/DetourNode.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Include/DetourCrowd.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Include/DetourLocalBoundary.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Include/DetourObstacleAvoidance.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Include/DetourPathCorridor.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Include/DetourPathQueue.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Include/DetourProximityGrid.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Source/DetourCrowd.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Source/DetourLocalBoundary.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Source/DetourObstacleAvoidance.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Source/DetourPathCorridor.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Source/DetourPathQueue.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourCrowd/Source/DetourProximityGrid.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourTileCache/Include/DetourTileCache.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourTileCache/Include/DetourTileCacheBuilder.h" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourTileCache/Source/DetourTileCache.cpp" />
+		<Unit filename="../ThirdParty/recastnavigation/DetourTileCache/Source/DetourTileCacheBuilder.cpp" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

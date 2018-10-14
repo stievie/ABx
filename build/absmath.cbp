@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="absmath" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug x64">
+				<Option output="../Lib/x64/Debug/absmath" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/Debug/absmath/" />
+				<Option deps_output="../Lib/x64/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/D_UNICODE /DUNICODE" />
+					<Add option="/Zi" />
+					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="/DDEBUG" />
+					<Add option="/D_DEBUG" />
+					<Add option="/D_CONSOLE" />
+					<Add option="/std:c++14" />
+					<Add option="/Od" />
+					<Add option="/W4" />
+					<Add directory="../" />
+					<Add directory="../abscommon/abscommon/" />
+					<Add directory="../Include/" />
+					<Add directory="$(BOOST_DIR)/" />
+				</Compiler>
+				<Linker>
+					<Add option="/debug" />
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+				</Linker>
+			</Target>
+			<Target title="RelNoProfiling x64">
+				<Option output="../Lib/x64/RelNoProfiling/absmath" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/RelNoProfiling/absmath/" />
+				<Option deps_output="../Lib/x64/RelNoProfiling/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/D_UNICODE /DUNICODE" />
+					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="/DNDEBUG" />
+					<Add option="/D_NPROFILING" />
+					<Add option="/D_CONSOLE" />
+					<Add option="/std:c++14" />
+					<Add option="/Ox" />
+					<Add option="/W4" />
+					<Add directory="../" />
+					<Add directory="../abscommon/abscommon/" />
+					<Add directory="../Include/" />
+					<Add directory="$(BOOST_DIR)/" />
+				</Compiler>
+				<Linker>
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../Lib/x64/Release/absmath" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/x64/Release/absmath/" />
+				<Option deps_output="../Lib/x64/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/D_UNICODE /DUNICODE" />
+					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
+					<Add option="/DNDEBUG" />
+					<Add option="/D_CONSOLE" />
+					<Add option="/std:c++14" />
+					<Add option="/Ox" />
+					<Add option="/W4" />
+					<Add directory="../" />
+					<Add directory="../abscommon/abscommon/" />
+					<Add directory="../Include/" />
+					<Add directory="$(BOOST_DIR)/" />
+				</Compiler>
+				<Linker>
+					<Add library="winmm.lib" />
+					<Add library="comctl32.lib" />
+					<Add library="kernel32.lib" />
+					<Add library="user32.lib" />
+					<Add library="gdi32.lib" />
+					<Add library="winspool.lib" />
+					<Add library="comdlg32.lib" />
+					<Add library="advapi32.lib" />
+					<Add library="shell32.lib" />
+					<Add library="ole32.lib" />
+					<Add library="oleaut32.lib" />
+					<Add library="uuid.lib" />
+					<Add library="odbc32.lib" />
+					<Add library="odbccp32.lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="." />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="." />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb" />
+		</Linker>
+		<Unit filename="../absmath/absmath/BoundingBox.cpp" />
+		<Unit filename="../absmath/absmath/BoundingBox.h" />
+		<Unit filename="../absmath/absmath/CollisionShape.h" />
+		<Unit filename="../absmath/absmath/ConvexHull.cpp" />
+		<Unit filename="../absmath/absmath/ConvexHull.h" />
+		<Unit filename="../absmath/absmath/Gjk.h" />
+		<Unit filename="../absmath/absmath/HeightMap.cpp" />
+		<Unit filename="../absmath/absmath/HeightMap.h" />
+		<Unit filename="../absmath/absmath/Hull.cpp" />
+		<Unit filename="../absmath/absmath/Hull.h" />
+		<Unit filename="../absmath/absmath/MathDefs.h" />
+		<Unit filename="../absmath/absmath/MathUtils.h" />
+		<Unit filename="../absmath/absmath/Matrix4.cpp" />
+		<Unit filename="../absmath/absmath/Matrix4.h" />
+		<Unit filename="../absmath/absmath/Point.h" />
+		<Unit filename="../absmath/absmath/Quaternion.cpp" />
+		<Unit filename="../absmath/absmath/Quaternion.h" />
+		<Unit filename="../absmath/absmath/Ray.cpp" />
+		<Unit filename="../absmath/absmath/Ray.h" />
+		<Unit filename="../absmath/absmath/Rect.h" />
+		<Unit filename="../absmath/absmath/Shape.cpp" />
+		<Unit filename="../absmath/absmath/Shape.h" />
+		<Unit filename="../absmath/absmath/Sphere.cpp" />
+		<Unit filename="../absmath/absmath/Sphere.h" />
+		<Unit filename="../absmath/absmath/Transformation.cpp" />
+		<Unit filename="../absmath/absmath/Transformation.h" />
+		<Unit filename="../absmath/absmath/Vector3.cpp" />
+		<Unit filename="../absmath/absmath/Vector3.h" />
+		<Unit filename="../absmath/absmath/Vector4.cpp" />
+		<Unit filename="../absmath/absmath/Vector4.h" />
+		<Unit filename="../absmath/absmath/stdafx.cpp" />
+		<Unit filename="../absmath/absmath/stdafx.h" />
+		<Unit filename="../absmath/absmath/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
