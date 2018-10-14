@@ -22,6 +22,8 @@ public:
     { }
     ~ThreadPool();
 
+    size_t GetNumThreads() const { return numThreads_; }
+
     void Start();
     void Stop();
 

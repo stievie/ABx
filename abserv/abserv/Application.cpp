@@ -376,6 +376,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Recording games: " << (ConfigManager::Instance[ConfigManager::Key::RecordGames].GetBool() ? "true" : "false") << std::endl;
     const std::string& recDir = ConfigManager::Instance[ConfigManager::Key::RecordingsDir].GetString();
     LOG_INFO << "  Recording directory: " << (recDir.empty() ? "(empty)" : recDir) << std::endl;
+    LOG_INFO << "  Background threads: " << Asynch::ThreadPool::Instance.GetNumThreads() << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     LOG_INFO << "  Message Server: " << msgClient_->GetHost() << ":" << msgClient_->GetPort() << std::endl;

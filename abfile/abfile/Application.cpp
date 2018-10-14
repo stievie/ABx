@@ -208,7 +208,9 @@ bool Application::Initialize(int argc, char** argv)
         filePort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("file_port", 8081));
     std::string key = IO::SimpleConfigManager::Instance.GetGlobal("server_key", "server.key");
     std::string cert = IO::SimpleConfigManager::Instance.GetGlobal("server_cert", "server.crt");
-    size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 1);
+    size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 0);
+    if (threads == 0)
+        threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = IO::SimpleConfigManager::Instance.GetGlobal("root_dir", "");
     logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
     dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
@@ -287,6 +289,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Max. throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
+    LOG_INFO << "  Worker Threads: " << server_->config.thread_pool_size << std::endl;
     if (haveData)
         LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     else
