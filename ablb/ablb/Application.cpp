@@ -8,8 +8,8 @@
 
 Application::Application() :
     ServerApp::ServerApp(),
-    running_(false),
-    ioService_()
+    ioService_(),
+    running_(false)
 {
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
