@@ -272,60 +272,38 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     switch (type)
     {
     case AB::GameProtocol::CommandTypeChatGeneral:
-    {
         HandleGeneralChatCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeChatParty:
-    {
         HandlePartyChatCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeRoll:
-    {
         HandleRollCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeSit:
-    {
         HandleSitCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeStand:
-    {
         HandleStandCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeCry:
-    {
         HandleCryCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeAge:
-    {
         HandleAgeCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeChatWhisper:
-    {
         HandleWhisperCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeChatGuild:
-    {
         HandleChatGuildCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeChatTrade:
-    {
         HandleChatTradeCommand(command, message);
         break;
-    }
     case AB::GameProtocol::CommandTypeServerId:
-    {
         HandleServerIdCommand(command, message);
         break;
-    }
     }
 }
 

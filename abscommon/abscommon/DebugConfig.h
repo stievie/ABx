@@ -19,4 +19,7 @@
 #else
 #endif
 
+#if !defined(_NPROFILING)
 #define _PROFILING
+#endif
+

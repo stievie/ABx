@@ -467,8 +467,8 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             type = AB::GameProtocol::CommandTypeHealth;
         else if (cmd.Compare("ip") == 0)
             type = AB::GameProtocol::CommandTypeIp;
-        else if (cmd.Compare("ip") == 0)
-            type = AB::GameProtocol::CommandTypeIp;
+        else if (cmd.Compare("id") == 0)
+            type = AB::GameProtocol::CommandTypeServerId;
         else if (cmd.Compare("prefpath") == 0)
             type = AB::GameProtocol::CommandTypePrefPath;
         else if (cmd.Compare("help") == 0)
