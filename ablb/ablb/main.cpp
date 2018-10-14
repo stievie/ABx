@@ -47,8 +47,10 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
+#ifdef _WIN32
 static std::mutex gTermLock;
 static std::condition_variable termSignal;
+#endif
 
 int main(int argc, char** argv)
 {
@@ -74,14 +76,20 @@ int main(int argc, char** argv)
 
         shutdown_handler = [&app](int /*signal*/)
         {
+#ifdef _WIN32
             std::unique_lock<std::mutex> lockUnique(gTermLock);
+#endif
             app.Stop();
+#ifdef _WIN32
             termSignal.wait(lockUnique);
+#endif
         };
         app.Run();
     }
 
+#ifdef _WIN32
     termSignal.notify_all();
+#endif
 
     return EXIT_SUCCESS;
 }
