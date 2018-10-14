@@ -88,13 +88,8 @@ uint32_t Scheduler::Add(ScheduledTask* task)
     {
         // Check for valid ID
         if (task->GetEventId() == 0)
-        {
             // Generate new ID
-            if (lastEventId_ >= 0xFFFFFFFF)
-                lastEventId_ = 0;
-            ++lastEventId_;
-            task->SetEventId(lastEventId_);
-        }
+            task->SetEventId(idGenerator_.Next());
         // Insert this ID in the list of active events
         eventIds_.insert(task->GetEventId());
 

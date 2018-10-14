@@ -12,6 +12,26 @@
 
 #include <Urho3D/DebugNew.h>
 
+const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS = {
+    { "a", AB::GameProtocol::CommandTypeChatGeneral },
+    { "g", AB::GameProtocol::CommandTypeChatGuild },
+    { "p", AB::GameProtocol::CommandTypeChatParty },
+    { "trade", AB::GameProtocol::CommandTypeChatTrade },
+    { "w", AB::GameProtocol::CommandTypeChatWhisper },
+    { "roll", AB::GameProtocol::CommandTypeRoll },
+    { "sit", AB::GameProtocol::CommandTypeSit },
+    { "stand", AB::GameProtocol::CommandTypeStand },
+    { "cry", AB::GameProtocol::CommandTypeCry },
+    { "age", AB::GameProtocol::CommandTypeAge },
+    { "deaths", AB::GameProtocol::CommandTypeDeaths },
+    { "health", AB::GameProtocol::CommandTypeHealth },
+    { "ip", AB::GameProtocol::CommandTypeIp },
+    { "id", AB::GameProtocol::CommandTypeServerId },
+    { "prefpath", AB::GameProtocol::CommandTypePrefPath },
+
+    { "help", AB::GameProtocol::CommandTypeHelp }
+};
+
 ChatWindow::ChatWindow(Context* context) :
     UIElement(context),
     tabIndexWhisper_(-1),
@@ -440,39 +460,9 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
             }
             pos++;
         }
-        if (cmd.Compare("a") == 0)
-            type = AB::GameProtocol::CommandTypeChatGeneral;
-        else if (cmd.Compare("g") == 0)
-            type = AB::GameProtocol::CommandTypeChatGuild;
-        else if (cmd.Compare("p") == 0)
-            type = AB::GameProtocol::CommandTypeChatParty;
-        else if (cmd.Compare("trade") == 0)
-            type = AB::GameProtocol::CommandTypeChatTrade;
-        else if (cmd.Compare("w") == 0)
-            type = AB::GameProtocol::CommandTypeChatWhisper;
-        else if (cmd.Compare("roll") == 0)
-            type = AB::GameProtocol::CommandTypeRoll;
-        else if (cmd.Compare("sit") == 0)
-            type = AB::GameProtocol::CommandTypeSit;
-        else if (cmd.Compare("stand") == 0)
-            type = AB::GameProtocol::CommandTypeStand;
-        else if (cmd.Compare("cry") == 0)
-            type = AB::GameProtocol::CommandTypeCry;
-
-        else if (cmd.Compare("age") == 0)
-            type = AB::GameProtocol::CommandTypeAge;
-        else if (cmd.Compare("deaths") == 0)
-            type = AB::GameProtocol::CommandTypeDeaths;
-        else if (cmd.Compare("health") == 0)
-            type = AB::GameProtocol::CommandTypeHealth;
-        else if (cmd.Compare("ip") == 0)
-            type = AB::GameProtocol::CommandTypeIp;
-        else if (cmd.Compare("id") == 0)
-            type = AB::GameProtocol::CommandTypeServerId;
-        else if (cmd.Compare("prefpath") == 0)
-            type = AB::GameProtocol::CommandTypePrefPath;
-        else if (cmd.Compare("help") == 0)
-            type = AB::GameProtocol::CommandTypeHelp;
+        auto cmdIt = CHAT_COMMANDS.Find(cmd);
+        if (cmdIt != CHAT_COMMANDS.End())
+            type = (*cmdIt).second_;
     }
     else
     {

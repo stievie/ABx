@@ -3,6 +3,7 @@
 #include "Task.h"
 #include <set>
 #include <queue>
+#include "IdGenerator.h"
 
 namespace Asynch {
 
@@ -59,17 +60,16 @@ public:
     };
 private:
     State state_;
-    uint32_t lastEventId_;
     std::mutex lock_;
     std::condition_variable signal_;
     std::set<uint32_t> eventIds_;
     std::thread thread_;
     std::priority_queue<ScheduledTask*, std::deque<ScheduledTask*>, TaskComparator> events_;
+    Utils::IdGenerator<uint32_t> idGenerator_;
     void SchedulerThread();
 public:
     Scheduler() :
-        state_(State::Terminated),
-        lastEventId_(0)
+        state_(State::Terminated)
     {}
     ~Scheduler() = default;
 
