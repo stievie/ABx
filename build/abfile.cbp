@@ -13,6 +13,9 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-m64" />
+					<Add option="-Wall" />
+					<Add option="-g" />
 					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
@@ -20,13 +23,17 @@
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add option="-pthread" />
 					<Add library="pthread" />
+					<Add library="uuid" />
 					<Add library="libabscommon.a" />
 					<Add library="pugixml" />
 					<Add library="abcrypto" />
 					<Add library="lua" />
-					<Add library="uuid" />
+					<Add library="stdc++fs" />
+					<Add library="ssl" />
+					<Add library="crypto" />
 					<Add directory="../Lib/" />
 					<Add directory="../Lib/x64/Debug/" />
 					<Add directory="$(BOOST_LIB_PATH)/" />
@@ -39,6 +46,9 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-m64" />
+					<Add option="-O3" />
+					<Add option="-Wall" />
 					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
@@ -46,13 +56,17 @@
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add option="-pthread" />
 					<Add library="pthread" />
+					<Add library="uuid" />
 					<Add library="libabscommon.a" />
 					<Add library="pugixml" />
 					<Add library="abcrypto" />
 					<Add library="lua" />
-					<Add library="uuid" />
+					<Add library="stdc++fs" />
+					<Add library="ssl" />
+					<Add library="crypto" />
 					<Add directory="../Lib/" />
 					<Add directory="../Lib/x64/RelNoProfiling/" />
 					<Add directory="$(BOOST_LIB_PATH)/" />
@@ -65,6 +79,9 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-m64" />
+					<Add option="-O3" />
+					<Add option="-Wall" />
 					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
@@ -72,13 +89,17 @@
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add option="-pthread" />
 					<Add library="pthread" />
+					<Add library="uuid" />
 					<Add library="libabscommon.a" />
 					<Add library="pugixml" />
 					<Add library="abcrypto" />
 					<Add library="lua" />
-					<Add library="uuid" />
+					<Add library="stdc++fs" />
+					<Add library="ssl" />
+					<Add library="crypto" />
 					<Add directory="../Lib/" />
 					<Add directory="../Lib/x64/Release/" />
 					<Add directory="$(BOOST_LIB_PATH)/" />

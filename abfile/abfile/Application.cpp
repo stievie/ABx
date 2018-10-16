@@ -1040,11 +1040,11 @@ void Application::GetHandlerStatus(std::shared_ptr<HttpsServer::Response> respon
     int64_t mesTime = Utils::AbTick() - statusMeasureTime_;
     {
         auto gNd = root.append_child("bytes_sent");
-        gNd.append_attribute("value") = bytesSent_;
+        gNd.append_attribute("value") = (unsigned long long)bytesSent_;
     }
     {
         auto gNd = root.append_child("up_time");
-        gNd.append_attribute("value") = upTime;
+        gNd.append_attribute("value") = (long long)upTime;
     }
     {
         auto gNd = root.append_child("load");
@@ -1056,7 +1056,7 @@ void Application::GetHandlerStatus(std::shared_ptr<HttpsServer::Response> respon
             gNd.append_attribute("value") = static_cast<int>(bytesSent_ / (mesTime / 1000));
         else
             gNd.append_attribute("value") = 0;
-        gNd.append_attribute("time") = mesTime;
+        gNd.append_attribute("time") = (long long)mesTime;
         gNd.append_attribute("round") = uptimeRound_;
     }
     std::stringstream stream;

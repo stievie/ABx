@@ -13,6 +13,9 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-m64" />
+					<Add option="-Wall" />
+					<Add option="-g" />
 					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
@@ -20,6 +23,7 @@
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add option="-pthread" />
 					<Add library="pthread" />
 					<Add library="uuid" />
@@ -63,6 +67,9 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-m64" />
+					<Add option="-O3" />
+					<Add option="-Wall" />
 					<Add option="-pthread" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
@@ -70,6 +77,7 @@
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add option="-pthread" />
 					<Add library="pthread" />
 					<Add library="uuid" />
@@ -88,9 +96,6 @@
 		<ResourceCompiler>
 			<Add directory="." />
 		</ResourceCompiler>
-		<Linker>
-			<Add option="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb" />
-		</Linker>
 		<Unit filename="../ablogin/ablogin/Application.cpp" />
 		<Unit filename="../ablogin/ablogin/Application.h" />
 		<Unit filename="../ablogin/ablogin/Bans.cpp" />

@@ -15,18 +15,10 @@
 				<Option compiler="clang" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="/D_UNICODE /DUNICODE" />
-					<Add option="/Zi" />
-					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="/DDEBUG" />
-					<Add option="/D_DEBUG" />
-					<Add option="/D_CONSOLE" />
-					<Add option="/std:c++14" />
-					<Add option="/Od" />
-					<Add option="/W4" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
 					<Add directory="../Include/" />
+					<Add directory="../Include/DirectXMath" />
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
@@ -56,17 +48,10 @@
 				<Option compiler="clang" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="/D_UNICODE /DUNICODE" />
-					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="/DNDEBUG" />
-					<Add option="/D_NPROFILING" />
-					<Add option="/D_CONSOLE" />
-					<Add option="/std:c++14" />
-					<Add option="/Ox" />
-					<Add option="/W4" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
 					<Add directory="../Include/" />
+					<Add directory="../Include/DirectXMath" />
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
@@ -95,16 +80,10 @@
 				<Option compiler="clang" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="/D_UNICODE /DUNICODE" />
-					<Add option="/D_CRT_SECURE_NO_WARNINGS" />
-					<Add option="/DNDEBUG" />
-					<Add option="/D_CONSOLE" />
-					<Add option="/std:c++14" />
-					<Add option="/Ox" />
-					<Add option="/W4" />
 					<Add directory="../" />
 					<Add directory="../abscommon/abscommon/" />
 					<Add directory="../Include/" />
+					<Add directory="../Include/DirectXMath" />
 					<Add directory="$(BOOST_DIR)/" />
 				</Compiler>
 				<Linker>
