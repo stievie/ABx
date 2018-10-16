@@ -21,10 +21,14 @@
 #include "DebugConfig.h"
 
 #define USE_STANDALONE_ASIO
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4592)
+#endif
 #include <SimpleWeb/server_https.hpp>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 
 #define WRITE_MINIBUMP
 #define _PROFILING
