@@ -554,6 +554,18 @@ void FwClient::SetPlayerState(AB::GameProtocol::CreatureState newState)
         client_.SetPlayerState(newState);
 }
 
+void FwClient::UseSkill(uint32_t index)
+{
+    if (loggedIn_)
+        client_.UseSkill(index);
+}
+
+void FwClient::Cancel()
+{
+    if (loggedIn_)
+        client_.Cancel();
+}
+
 void FwClient::PartyInvitePlayer(uint32_t objectId)
 {
     if (loggedIn_)

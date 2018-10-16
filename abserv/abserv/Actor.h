@@ -132,6 +132,8 @@ public:
     void SetSelectedObject(std::shared_ptr<GameObject> object);
     void GotoPosition(const Math::Vector3& pos);
     void FollowObject(std::shared_ptr<GameObject> object);
+    void UseSkill(uint32_t index);
+
     EffectList effects_;
     SkillBar skills_;
     uint32_t energy_;

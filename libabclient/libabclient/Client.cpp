@@ -543,6 +543,18 @@ void Client::PartyInvitePlayer(uint32_t targetId)
         protoGame_->PartyInvitePlayer(targetId);
 }
 
+void Client::UseSkill(uint32_t index)
+{
+    if (state_ == ClientState::World)
+        protoGame_->UseSkill(index);
+}
+
+void Client::Cancel()
+{
+    if (state_ == ClientState::World)
+        protoGame_->Cancel();
+}
+
 void Client::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
     if (state_ == ClientState::World)

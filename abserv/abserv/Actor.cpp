@@ -23,6 +23,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetSkillBar", &Actor::GetSkillBar)
         .addFunction("GetSelectedObject", &Actor::GetSelectedObject)
         .addFunction("SetSelectedObject", &Actor::SetSelectedObject)
+        .addFunction("UseSkill", &Actor::UseSkill)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -83,6 +84,13 @@ void Actor::FollowObject(std::shared_ptr<GameObject> object)
     Utils::VariantMap data;
     data[InputDataObjectId] = object->id_;
     inputs_.Add(InputType::Follow, data);
+}
+
+void Actor::UseSkill(uint32_t index)
+{
+    Utils::VariantMap data;
+    data[InputDataSkillIndex] = static_cast<uint8_t>(index);
+    inputs_.Add(InputType::UseSkill, data);
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)
@@ -352,12 +360,10 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             }
             break;
         }
-        case InputType::CancelSkill:
+        case InputType::Cancel:
             if (stateComp_.GetState() == AB::GameProtocol::CreatureStateUsingSkill)
                 stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            break;
-        case InputType::CancelAttack:
-            if (stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
+            else if (stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
                 stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             break;
         case InputType::Command:

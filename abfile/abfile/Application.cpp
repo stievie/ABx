@@ -382,7 +382,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     }
     const std::string accId = (*it).second.substr(0, 36);
     const std::string passwd = (*it).second.substr(36);
-    if (accId.empty() || passwd.empty())
+    if (accId.empty() || passwd.empty() || uuids::uuid(accId).nil())
     {
         LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Wrong Auth header " << (*it).second << std::endl;
@@ -450,6 +450,8 @@ bool Application::IsAccountBanned(const AB::Entities::Account& acc)
 bool Application::IsHiddenFile(const fs::path& path)
 {
     auto name = path.filename();
+    if (name.string().empty())
+        return false;
     if ((name != "..") &&
         (name != ".")  &&
         ((name.string()[0] == '.') || (name.string().find("/.") != std::string::npos)))

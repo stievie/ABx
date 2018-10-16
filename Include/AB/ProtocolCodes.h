@@ -226,10 +226,9 @@ enum GamePacketTypes : uint8_t
 
     // Skills
     PacketTypeUseSkill,
-    PacketTypeCancelSkill,
     // Attack
     PacketTypeAttack,
-    PacketTypeCancelAttack,
+    PacketTypeCancel,                // Cancel skill/attack
     // Select
     PacketTypeSelect,
     PacketTypeClickObject,

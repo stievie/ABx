@@ -156,7 +156,7 @@ URHO3D_EVENT(E_PARTYINVITEREMOVED, PartyInviteRemoved)
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
 }
 
-URHO3D_EVENT(E_NEWMAIL , NewMail)
+URHO3D_EVENT(E_NEWMAIL, NewMail)
 {
     URHO3D_PARAM(P_COUNT, Count);           // int
 }
@@ -354,6 +354,10 @@ URHO3D_EVENT(E_SC_WEAPONSET3, WeaponSet3)
 }
 
 URHO3D_EVENT(E_SC_WEAPONSET4, WeaponSet4)
+{
+}
+
+URHO3D_EVENT(E_SC_CANCEL, Cancel)
 {
 }
 

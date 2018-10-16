@@ -94,6 +94,8 @@ public:
     void GotoPos(const Vector3& pos);
     void FollowObject(uint32_t objectId);
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
+    void UseSkill(uint32_t index);
+    void Cancel();
     void PartyInvitePlayer(uint32_t objectId);
 
     /// asio network error

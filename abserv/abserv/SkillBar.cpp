@@ -12,13 +12,18 @@ void SkillBar::RegisterLua(kaguya::State& state)
     );
 }
 
-void SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
+bool SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 {
     Skill* s = skills_[index].get();
     if (s->IsChangingState())
-        skillQueue_.push({ index, target });
-    else
-        s->StartUse(owner_, target.get());
+    {
+        // If changing state cancel old skill. Only one changing state skill at a time.
+        Skill* oldSkill = GetCurrentSkill();
+        if (oldSkill && oldSkill->IsUsing())
+            oldSkill->CancelUse();
+    }
+
+    return s->StartUse(owner_, target.get());
 }
 
 Skill* SkillBar::GetCurrentSkill()
@@ -30,25 +35,14 @@ Skill* SkillBar::GetCurrentSkill()
 
 void SkillBar::Update(uint32_t timeElapsed)
 {
-    int newSkill = -1;
     for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
     {
         if (skills_[i])
         {
-            skills_[i]->Update(timeElapsed);
             if (skills_[i]->IsUsing())
-                newSkill = i;
+                skills_[i]->Update(timeElapsed);
         }
     }
-    if (newSkill == -1 && !skillQueue_.empty())
-    {
-        std::pair<uint32_t, std::weak_ptr<Actor>> sk = skillQueue_.front();
-        skillQueue_.pop();
-        std::shared_ptr<Skill> skill = GetSkill(sk.first);
-        if (skill && skill->StartUse(owner_, sk.second.lock().get()))
-            newSkill = sk.first;
-    }
-    currentSkillIndex_ = newSkill;
 }
 
 // https://wiki.guildwars.com/wiki/Skill_template_format

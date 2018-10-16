@@ -21,7 +21,6 @@ private:
     std::array<std::shared_ptr<Skill>, PLAYER_MAX_SKILLS> skills_;
     std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> attributes_;
     Actor* owner_;
-    std::queue<std::pair<int, std::weak_ptr<Actor>>> skillQueue_;
     int currentSkillIndex_;
 public:
     static void RegisterLua(kaguya::State& state);
@@ -33,7 +32,7 @@ public:
     };
     ~SkillBar() = default;
 
-    void UseSkill(int index, std::shared_ptr<Actor> target);
+    bool UseSkill(int index, std::shared_ptr<Actor> target);
     Skill* GetCurrentSkill();
     void Update(uint32_t timeElapsed);
     std::string Encode();

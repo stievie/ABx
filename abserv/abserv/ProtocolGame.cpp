@@ -222,22 +222,16 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         }
         break;
     }
-    case AB::GameProtocol::PacketTypeCancelSkill:
+    case AB::GameProtocol::PacketTypeCancel:
     {
         Utils::VariantMap data;
-        player_->inputs_.Add(Game::InputType::CancelSkill, data);
+        player_->inputs_.Add(Game::InputType::Cancel, data);
         break;
     }
     case AB::GameProtocol::PacketTypeAttack:
     {
         Utils::VariantMap data;
         player_->inputs_.Add(Game::InputType::Attack, data);
-        break;
-    }
-    case AB::GameProtocol::PacketTypeCancelAttack:
-    {
-        Utils::VariantMap data;
-        player_->inputs_.Add(Game::InputType::CancelAttack, data);
         break;
     }
     case AB::GameProtocol::PacketTypeSelect:

@@ -504,6 +504,21 @@ void ProtocolGame::Follow(uint32_t targetId)
     Send(msg);
 }
 
+void ProtocolGame::UseSkill(uint32_t index)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUseSkill);
+    msg->Add<uint8_t>(static_cast<uint8_t>(index));
+    Send(msg);
+}
+
+void ProtocolGame::Cancel()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCancel);
+    Send(msg);
+}
+
 void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();

@@ -50,7 +50,7 @@ public:
     }
     void Interrupt();
 
-    bool IsUsing() const { return startUse_ != 0; }
+    bool IsUsing() const { return (startUse_ != 0) && (startUse_ - Utils::AbTick() >= activation_); }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
     bool IsType(AB::Entities::SkillType type)
     {

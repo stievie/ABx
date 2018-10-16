@@ -63,19 +63,21 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_DEFAULTACTION] = ShortcutEvent(AbEvents::E_SC_DEFAULTACTION, "Attack/Interact", Trigger::Down);
 
     // Skill
-    shortcuts_[AbEvents::E_SC_USESKILL1] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 1", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL2] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 2", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL3] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 3", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL4] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 4", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL5] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 5", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL6] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 6", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL7] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 7", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_USESKILL8] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Use Skill 8", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL1] = ShortcutEvent(AbEvents::E_SC_USESKILL1, "Use Skill 1", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL2] = ShortcutEvent(AbEvents::E_SC_USESKILL2, "Use Skill 2", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL3] = ShortcutEvent(AbEvents::E_SC_USESKILL3, "Use Skill 3", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL4] = ShortcutEvent(AbEvents::E_SC_USESKILL4, "Use Skill 4", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL5] = ShortcutEvent(AbEvents::E_SC_USESKILL5, "Use Skill 5", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL6] = ShortcutEvent(AbEvents::E_SC_USESKILL6, "Use Skill 6", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL7] = ShortcutEvent(AbEvents::E_SC_USESKILL7, "Use Skill 7", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_USESKILL8] = ShortcutEvent(AbEvents::E_SC_USESKILL8, "Use Skill 8", Trigger::Down);
 
-    shortcuts_[AbEvents::E_SC_WEAPONSET1] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 1", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_WEAPONSET2] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 2", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_WEAPONSET3] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 3", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_WEAPONSET4] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Weapon Set 4", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET1] = ShortcutEvent(AbEvents::E_SC_WEAPONSET1, "Weapon Set 1", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET2] = ShortcutEvent(AbEvents::E_SC_WEAPONSET2, "Weapon Set 2", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET3] = ShortcutEvent(AbEvents::E_SC_WEAPONSET3, "Weapon Set 3", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_WEAPONSET4] = ShortcutEvent(AbEvents::E_SC_WEAPONSET4, "Weapon Set 4", Trigger::Down);
+
+    shortcuts_[AbEvents::E_SC_CANCEL] = ShortcutEvent(AbEvents::E_SC_CANCEL, "Cancel skill/attack", Trigger::Down);
 
     // Select
     shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
@@ -157,6 +159,8 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_WEAPONSET2, { KEY_F2 });
     Add(AbEvents::E_SC_WEAPONSET3, { KEY_F3 });
     Add(AbEvents::E_SC_WEAPONSET4, { KEY_F4 });
+
+    Add(AbEvents::E_SC_CANCEL, { KEY_ESCAPE });
 
     Add(AbEvents::E_SC_SELECTSELF, { KEY_F });
     Add(AbEvents::E_SC_SELECTNEXTFOE, { KEY_TAB });
@@ -343,7 +347,7 @@ void Shortcuts::HandleKeyDown(StringHash, VariantMap& eventData)
                 if (s.keyboardKey_ != KEY_UNKNOWN && s.keyboardKey_ != key)
                     continue;
                 if (s.modifiers_ != 0 && !ModifiersMatch(s.modifiers_))
-                    // If we have modifiers also these this
+                    // If we have modifiers also these must match
                     continue;
                 SendEvent(sc.second_.event_, e);
             }
@@ -372,7 +376,7 @@ void Shortcuts::HandleKeyUp(StringHash, VariantMap& eventData)
                 if (s.keyboardKey_ != KEY_UNKNOWN && s.keyboardKey_ != key)
                     continue;
                 if (s.modifiers_ != 0 && !ModifiersMatch(s.modifiers_))
-                    // If we have modifiers also these this
+                    // If we have modifiers also these must match
                     continue;
                 SendEvent(sc.second_.event_, e);
             }
