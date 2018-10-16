@@ -364,7 +364,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         _ban.uuid = ban.banUuid;
         if (dataClient_->Read(_ban))
         {
-            if (_ban.active && (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000))
+            if (_ban.active && ((_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000)))
                 return false;
         }
     }
@@ -450,9 +450,9 @@ bool Application::IsAccountBanned(const AB::Entities::Account& acc)
 bool Application::IsHiddenFile(const fs::path& path)
 {
     auto name = path.filename();
-    if (name != ".." &&
-        name != "."  &&
-        (name.string()[0] == '.') || (name.string().find("/.") != std::string::npos))
+    if ((name != "..") &&
+        (name != ".")  &&
+        ((name.string()[0] == '.') || (name.string().find("/.") != std::string::npos)))
         return true;
 
     return false;
