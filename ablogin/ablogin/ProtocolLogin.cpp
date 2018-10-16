@@ -8,7 +8,7 @@
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Game.h>
-#include <uuids.h>
+#include <uuid.h>
 #include "StringUtils.h"
 #include "IOService.h"
 #include "IOGame.h"
