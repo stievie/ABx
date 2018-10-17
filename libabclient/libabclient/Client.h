@@ -8,6 +8,7 @@
 #include <AB/ProtocolCodes.h>
 #include "Structs.h"
 #include <memory>
+#include <AB/DHKeys.hpp>
 
 namespace Client {
 
@@ -35,6 +36,7 @@ private:
     int lastRun_;
     int lastPing_;
     bool gotPong_;
+    Crypto::DHKeys dhKeys_;
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
 public:
     Client();

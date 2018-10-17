@@ -2,6 +2,7 @@
 
 #include <abcrypto.hpp>
 #include <fstream>
+#include <mutex>
 
 namespace Crypto {
 

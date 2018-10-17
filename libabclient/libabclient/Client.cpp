@@ -42,6 +42,7 @@ Client::Client() :
     gotPong_(true),
     httpClient_(nullptr)
 {
+    dhKeys_.GenerateKeys();
 }
 
 Client::~Client()
