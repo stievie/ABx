@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DHKeys.hpp"
 #include <fstream>
 
@@ -43,7 +44,7 @@ bool DHKeys::SaveKeys(const std::string& fileName)
     if (!keysLoaded_)
         return false;
 
-    std::ofstream f(fileName);
+    std::ofstream f(fileName, std::ios::binary);
     if (!f.is_open())
     {
         return false;

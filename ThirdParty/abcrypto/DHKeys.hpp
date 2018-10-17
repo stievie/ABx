@@ -1,5 +1,7 @@
 #pragma once
 
+#include <abcrypto.hpp>
+
 namespace Crypto {
 
 class DHKeys
