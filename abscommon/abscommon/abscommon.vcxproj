@@ -112,6 +112,7 @@
     <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="DebugNew.h" />
+    <ClInclude Include="DHKeys.hpp" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="Dispatcher.h" />
     <ClInclude Include="FileUtils.h" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="CpuUsageWin.cpp" />
+    <ClCompile Include="DHKeys.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
     <ClCompile Include="MessageClient.cpp" />

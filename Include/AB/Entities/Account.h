@@ -3,6 +3,7 @@
 #include <AB/Entities/Entity.h>
 #include <AB/Entities/Limits.h>
 #include <bitsery/traits/vector.h>
+#include <bitsery/traits/array.h>
 
 namespace AB {
 namespace Entities {
@@ -57,6 +58,7 @@ struct Account : Entity
         s.text1b(currentCharacterUuid, Limits::MAX_UUID);
         s.value1b(onlineStatus);
         s.text1b(guildUuid, Limits::MAX_UUID);
+        s.container1b(clientPubKey);
 
         // https://github.com/fraillt/bitsery/blob/master/examples/context_usage.cpp
         // https://github.com/fraillt/bitsery/blob/master/examples/basic_usage.cpp
@@ -80,6 +82,8 @@ struct Account : Entity
     std::vector<std::string> characterUuids;
     OnlineStatus onlineStatus = OnlineStatusOffline;
     std::string guildUuid = EMPTY_GUID;
+    // Clients DH public key (16 byte)
+    std::array<uint8_t, 16> clientPubKey;
 };
 
 }

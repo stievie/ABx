@@ -32,6 +32,7 @@
 #include <locale>
 #include <codecvt>
 #include "ThreadPool.h"
+#include "DHKeys.hpp"
 
 #include "DebugNew.h"
 
@@ -40,6 +41,7 @@ Application* Application::Instance = nullptr;
 Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
+    genKeys_(false),
     autoTerminate_(false),
     lastLoadCalc_(0),
     ioService_(),
@@ -146,6 +148,10 @@ bool Application::ParseCommandLine()
             // Must be set with command line argument. Can not be set with the config file.
             autoTerminate_ = true;
         }
+        else if (a.compare("-genkeys") == 0)
+        {
+            genKeys_ = true;
+        }
         else if (a.compare("-h") == 0 || a.compare("-help") == 0)
         {
             return false;
@@ -166,6 +172,7 @@ void Application::ShowHelp()
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port" << std::endl;
     std::cout << "  autoterm: If set the server terminates itself when all players left" << std::endl;
+    std::cout << "  genkeys: Generate new encryption keys and terminate" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -179,6 +186,12 @@ bool Application::Initialize(int argc, char** argv)
         ShowHelp();
         return false;
     }
+    if (genKeys_)
+    {
+        GenNewKeys();
+        return false;
+    }
+
     if (!logDir_.empty())
     {
         // From the command line
@@ -390,6 +403,17 @@ void Application::SendServerJoined()
     msgClient_->Write(msg);
 }
 
+void Application::GenNewKeys()
+{
+    Crypto::DHKeys keys;
+    keys.GenerateKeys();
+    const std::string keyFile = GetKeysFile();
+    if (keys.SaveKeys(keyFile))
+        LOG_INFO << "Generated new keys: " << keyFile << std::endl;
+    else
+        LOG_ERROR << "Error generating keys: " << keyFile << std::endl;
+}
+
 void Application::Run()
 {
     AB::Entities::Service serv;
@@ -471,6 +495,11 @@ void Application::Stop()
 
     msgClient_->Close();
     ioService_.stop();
+}
+
+std::string Application::GetKeysFile() const
+{
+    return Utils::ChangeFileExt(exeFile_, ".keys");
 }
 
 uint8_t Application::GetLoad()

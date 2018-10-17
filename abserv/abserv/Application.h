@@ -26,11 +26,13 @@ private:
     std::string serverId_;
     std::string serverName_;
     bool running_;
+    bool genKeys_;
     bool LoadMain();
     void PrintServerInfo();
     bool ParseCommandLine();
     void ShowHelp();
     void SendServerJoined();
+    void GenNewKeys();
     void HandleMessage(const Net::MessageMsg& msg);
     uint8_t GetAvgLoad() const
     {
@@ -59,6 +61,7 @@ public:
     {
         return msgClient_.get();
     }
+    std::string GetKeysFile() const;
     /// Returns a value between 0..100
     uint8_t GetLoad();
     /// Returns the Server UUID from the config file
