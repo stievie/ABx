@@ -111,9 +111,6 @@
     <ClInclude Include="ThreadPool.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DHKeys.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -186,9 +183,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DHKeys.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
