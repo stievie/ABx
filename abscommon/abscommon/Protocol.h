@@ -15,6 +15,7 @@ protected:
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
     bool encryptionEnabled_;
+    DH_KEY encKey_;
     void XTEAEncrypt(OutputMessage& msg) const;
     bool XTEADecrypt(NetworkMessage& msg) const;
 
@@ -45,6 +46,11 @@ public:
 #endif
     Protocol(const Protocol&) = delete;
     Protocol& operator=(const Protocol&) = delete;
+
+    void SetEncKey(const uint32_t* key)
+    {
+        memcpy(&encKey_, key, sizeof(encKey_));
+    }
 
     virtual void OnSendMessage(const std::shared_ptr<OutputMessage>& message) const;
     void OnRecvMessage(NetworkMessage& message);

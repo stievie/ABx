@@ -15,6 +15,7 @@
 #include "IOGame.h"
 #include "stdafx.h"
 #include "ConfigManager.h"
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -72,7 +73,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 
     player_->account_.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
     player_->account_.currentCharacterUuid = player_->data_.uuid;
-    player_->account_.currentServerUuid = ConfigManager::Instance[ConfigManager::ServerID].GetString();
+    player_->account_.currentServerUuid = (*GetSubsystem<ConfigManager>())[ConfigManager::ServerID].GetString();
     client->Update(player_->account_);
 
     player_->data_.currentMapUuid = mapUuid;
@@ -268,6 +269,8 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
 void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 {
+    // TODO: Read Clients public key.
+    // The Login server sends the servers public key
     if (encryptionEnabled_)
     {
         if (!XTEADecrypt(msg))

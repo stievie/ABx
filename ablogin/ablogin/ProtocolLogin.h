@@ -20,6 +20,7 @@ public:
         Protocol(connection)
     {
         checksumEnabled_ = ProtocolLogin::UseChecksum;
+        SetEncKey(AB::ENC_KEY);
     }
 
     void OnRecvFirstMessage(NetworkMessage& message) final;

@@ -32,7 +32,6 @@
 #include <locale>
 #include <codecvt>
 #include "ThreadPool.h"
-#include <AB/DHKeys.hpp>
 
 #include "DebugNew.h"
 
@@ -200,6 +199,9 @@ bool Application::Initialize(int argc, char** argv)
         IO::Logger::Close();
     }
 
+    Subsystems::Instance.CreateSubsystem<Crypto::DHKeys>();
+    Subsystems::Instance.CreateSubsystem<ConfigManager>();
+
     Asynch::Dispatcher::Instance.Start();
     Asynch::Scheduler::Instance.Start();
     Asynch::ThreadPool::Instance.Start();
@@ -290,26 +292,50 @@ bool Application::LoadMain()
     if (configFile_.empty())
         configFile_ = path_ + "/" + CONFIG_FILE;
     LOG_INFO << "Loading configuration: " << configFile_ << "...";
-    if (!ConfigManager::Instance.Load(configFile_))
+    auto config = GetSubsystem<ConfigManager>();
+    if (!config)
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to get config manager" << std::endl;
+        return false;
+    }
+    if (!config->Load(configFile_))
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Failed to load configuration file" << std::endl;
         return false;
     }
     if (serverId_.empty())
-        serverId_ = ConfigManager::Instance[ConfigManager::Key::ServerID].GetString();
+        serverId_ = (*config)[ConfigManager::Key::ServerID].GetString();
+
     if (serverName_.empty())
-        serverName_ = ConfigManager::Instance[ConfigManager::Key::ServerName].GetString();
-    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
+        serverName_ = (*config)[ConfigManager::Key::ServerName].GetString();
+    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>((*config)[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
     Utils::Random::Instance.Initialize();
     LOG_INFO << "[done]" << std::endl;
 
+    LOG_INFO << "Loading encryption keys...";
+    auto keys = GetSubsystem<Crypto::DHKeys>();
+    if (!keys)
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to get encryption keys" << std::endl;
+        return false;
+    }
+    if (!keys->LoadKeys(GetKeysFile()))
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to load encryption keys from " << GetKeysFile() << std::endl;
+        return false;
+    }
+    LOG_INFO << "[done]" << std::endl;
+
     LOG_INFO << "Connecting to data server...";
-    const std::string& dataHost = ConfigManager::Instance[ConfigManager::Key::DataServerHost].GetString();
-    uint16_t dataPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::DataServerPort].GetInt());
+    const std::string& dataHost = (*config)[ConfigManager::Key::DataServerHost].GetString();
+    uint16_t dataPort = static_cast<uint16_t>((*config)[ConfigManager::Key::DataServerPort].GetInt());
     dataClient_->Connect(dataHost, dataPort);
     if (!dataClient_->IsConnected())
     {
@@ -320,8 +346,8 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to message server...";
-    const std::string& msgHost = ConfigManager::Instance[ConfigManager::Key::MessageServerHost].GetString();
-    uint16_t msgPort = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::MessageServerPort].GetInt());
+    const std::string& msgHost = (*config)[ConfigManager::Key::MessageServerHost].GetString();
+    uint16_t msgPort = static_cast<uint16_t>((*config)[ConfigManager::Key::MessageServerPort].GetInt());
 
     msgClient_ = std::make_unique<Net::MessageClient>(ioService_);
     msgClient_->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
@@ -335,14 +361,14 @@ bool Application::LoadMain()
     }
 
     if (gameHost_.empty())
-        gameHost_ = ConfigManager::Instance[ConfigManager::Key::GameHost].GetString();
+        gameHost_ = (*config)[ConfigManager::Key::GameHost].GetString();
     uint32_t ip;
     if (!gameIp_.empty())
         ip = Utils::ConvertStringToIP(gameIp_);
     else
-        ip = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::Key::GameIP].GetInt());
+        ip = static_cast<uint32_t>((*config)[ConfigManager::Key::GameIP].GetInt());
     if (gamePort_ == std::numeric_limits<uint16_t>::max())
-        gamePort_ = static_cast<uint16_t>(ConfigManager::Instance[ConfigManager::Key::GamePort].GetInt());
+        gamePort_ = static_cast<uint16_t>((*config)[ConfigManager::Key::GamePort].GetInt());
     else if (gamePort_ == 0)
         gamePort_ = Net::ServiceManager::GetFreePort();
     if (gamePort_ != 0)
@@ -370,10 +396,11 @@ bool Application::LoadMain()
 
 void Application::PrintServerInfo()
 {
+    auto config = GetSubsystem<ConfigManager>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Server name: " << serverName_ << std::endl;
-    LOG_INFO << "  Location: " << ConfigManager::Instance[ConfigManager::Key::Location].GetString() << std::endl;
+    LOG_INFO << "  Location: " << (*config)[ConfigManager::Key::Location].GetString() << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
     std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_->GetPorts();
@@ -386,8 +413,8 @@ void Application::PrintServerInfo()
     LOG_INFO << std::endl;
     LOG_INFO << "  Auto terminate: " << (autoTerminate_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
-    LOG_INFO << "  Recording games: " << (ConfigManager::Instance[ConfigManager::Key::RecordGames].GetBool() ? "true" : "false") << std::endl;
-    const std::string& recDir = ConfigManager::Instance[ConfigManager::Key::RecordingsDir].GetString();
+    LOG_INFO << "  Recording games: " << ((*config)[ConfigManager::Key::RecordGames].GetBool() ? "true" : "false") << std::endl;
+    const std::string& recDir = (*config)[ConfigManager::Key::RecordingsDir].GetString();
     LOG_INFO << "  Recording directory: " << (recDir.empty() ? "(empty)" : recDir) << std::endl;
     LOG_INFO << "  Background threads: " << Asynch::ThreadPool::Instance.GetNumThreads() << std::endl;
 
@@ -416,11 +443,12 @@ void Application::GenNewKeys()
 
 void Application::Run()
 {
+    auto config = GetSubsystem<ConfigManager>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     dataClient_->Read(serv);
     serv.host = gameHost_;
-    serv.location = ConfigManager::Instance[ConfigManager::Key::Location].GetString();
+    serv.location = (*config)[ConfigManager::Key::Location].GetString();
     serv.port = gamePort_;
     serv.name = serverName_;
     serv.file = exeFile_;
@@ -437,7 +465,7 @@ void Application::Run()
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
     if (logDir_.empty())
-        logDir_ = ConfigManager::Instance[ConfigManager::Key::LogDir].GetString();
+        logDir_ = (*config)[ConfigManager::Key::LogDir].GetString();
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
         // Different log dir
@@ -499,7 +527,10 @@ void Application::Stop()
 
 std::string Application::GetKeysFile() const
 {
-    return Utils::ChangeFileExt(exeFile_, ".keys");
+    const std::string& keys = (*GetSubsystem<ConfigManager>())[ConfigManager::ServerKeys].GetString();
+    if (!keys.empty())
+        return keys;
+    return Utils::AddSlash(path_) + "abserver.keys";
 }
 
 uint8_t Application::GetLoad()

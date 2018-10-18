@@ -162,7 +162,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     ch.professionUuid = pro.uuid;
     ch.sex = sex;
     ch.pvp = isPvp;
-    ch.level = isPvp ? static_cast<uint8_t>(ConfigManager::Instance[ConfigManager::Key::PlayerLevelCap].GetInt()) : 1;
+    ch.level = isPvp ? static_cast<uint8_t>((*GetSubsystem<ConfigManager>())[ConfigManager::Key::PlayerLevelCap].GetInt()) : 1;
     ch.creation = Utils::AbTick();
     ch.accountUuid = accountUuid;
     if (!client->Create(ch))

@@ -83,7 +83,8 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
     if (clientIP == 0)
         return false;
 
-    uint32_t loginTries = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginTries].GetInt());
+    auto config = GetSubsystem<ConfigManager>();
+    uint32_t loginTries = static_cast<uint32_t>((*config)[ConfigManager::LoginTries].GetInt());
     if (loginTries == 0)
         return false;
 
@@ -94,7 +95,7 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
 
     time_t currentTime = (Utils::AbTick() / 1000);
 
-    uint32_t loginTimeout = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginTimeout].GetInt()) / 1000;
+    uint32_t loginTimeout = static_cast<uint32_t>((*config)[ConfigManager::LoginTimeout].GetInt()) / 1000;
     if ((it->second.numberOfLogins >= loginTries) &&
         (uint32_t)currentTime < it->second.lastLoginTime + loginTimeout)
         return true;
@@ -124,6 +125,7 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
     if (clientIP == 0)
         return;
 
+    auto config = GetSubsystem<ConfigManager>();
     time_t currentTime = (Utils::AbTick() / 1000);
     std::lock_guard<std::recursive_mutex> lockGuard(lock_);
     std::map<uint32_t, LoginBlock>::iterator it = ipLogins_.find(clientIP);
@@ -134,11 +136,11 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
         it = ipLogins_.find(clientIP);
     }
 
-    uint32_t loginTries = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginTries].GetInt());
+    uint32_t loginTries = static_cast<uint32_t>((*config)[ConfigManager::LoginTries].GetInt());
     if (it->second.numberOfLogins >= loginTries)
         it->second.numberOfLogins = 0;
 
-    uint32_t retryTimeout = static_cast<uint32_t>(ConfigManager::Instance[ConfigManager::LoginRetryTimeout].GetInt()) / 1000;
+    uint32_t retryTimeout = static_cast<uint32_t>((*config)[ConfigManager::LoginRetryTimeout].GetInt()) / 1000;
     if (!success || (currentTime < it->second.lastLoginTime + retryTimeout))
         ++it->second.numberOfLogins;
     else

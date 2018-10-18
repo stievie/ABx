@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "IOModel.h"
 #include "IOScript.h"
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -27,13 +28,13 @@ DataProvider::DataProvider()
 
 std::string DataProvider::GetDataFile(const std::string& name) const
 {
-    static std::string dataDir = ConfigManager::Instance[ConfigManager::DataDir].GetString();
+    static std::string dataDir = (*GetSubsystem<ConfigManager>())[ConfigManager::DataDir].GetString();
     return dataDir + name;
 }
 
 const std::string& DataProvider::GetDataDir() const
 {
-    return ConfigManager::Instance[ConfigManager::DataDir].GetString();
+    return (*GetSubsystem<ConfigManager>())[ConfigManager::DataDir].GetString();
 }
 
 bool DataProvider::FileExists(const std::string& name) const

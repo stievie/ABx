@@ -5,6 +5,8 @@
 #include "ServerApp.h"
 #include "MessageClient.h"
 #include "MessageDispatcher.h"
+#include <AB/DHKeys.hpp>
+#include "Subsystems.h"
 
 class Application : public ServerApp
 {

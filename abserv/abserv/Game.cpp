@@ -73,16 +73,17 @@ void Game::Start()
 {
     if (state_ == ExecutionState::Startup)
     {
+        auto config = GetSubsystem<ConfigManager>();
         startTime_ = Utils::AbTick();
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
         CreateEntity(instanceData_);
         LOG_INFO << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 
-        if (ConfigManager::Instance[ConfigManager::Key::RecordGames])
+        if ((*config)[ConfigManager::Key::RecordGames])
         {
             writeStream_ = std::make_unique<IO::GameWriteStream>();
-            writeStream_->Open(ConfigManager::Instance[ConfigManager::Key::RecordingsDir], this);
+            writeStream_->Open((*config)[ConfigManager::Key::RecordingsDir], this);
         }
 
         lastUpdate_ = 0;

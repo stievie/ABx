@@ -1,5 +1,6 @@
 # TODO
 
+~ abserv, ablogin, abclient: DH enc keys
 + genkey: separate program to create DH keys for the server
 + abdata: Maintenance, delete expired records: reserved_names, guild_members
 ~ abdata: Use bit set cache item flags, sot a struct
@@ -8,7 +9,6 @@
 ! abserv: TerrainPatch raycast query
 ! ? High ping when FPS < 60
 ! abmsgs: Continues dispatching messages -> Delete after message has been dispached.
-~ abserv, ablogin, abclient: DH enc keys
 + abserv, abclient: Party
 + abserv: Account Key itself expires and makes accounts that may expire (Trial Key)
 

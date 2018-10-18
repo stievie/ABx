@@ -6,8 +6,6 @@
 
 #include "DebugNew.h"
 
-ConfigManager ConfigManager::Instance;
-
 ConfigManager::ConfigManager() :
     IO::SimpleConfigManager()
 {
@@ -37,6 +35,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::RecordGames] = GetGlobalBool("record_games", false);
     config_[Key::GamePort] = (int)GetGlobal("game_port", 0);
     config_[Key::GameHost] = GetGlobal("game_host", "");
+    config_[Key::ServerKeys] = GetGlobal("server_keys", "");
 
     config_[Key::DataServerHost] = GetGlobal("data_host", "localhost");
     config_[Key::DataServerPort] = (int)GetGlobal("data_port", 2770);

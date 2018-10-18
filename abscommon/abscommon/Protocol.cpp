@@ -13,13 +13,11 @@ void Protocol::XTEAEncrypt(OutputMessage& msg) const
     // The message must be a multiple of 8
     size_t paddingBytes = msg.GetSize() % 8;
     if (paddingBytes != 0)
-    {
         msg.AddPaddingBytes((uint32_t)(8 - paddingBytes));
-    }
 
     uint32_t* buffer = (uint32_t*)(msg.GetOutputBuffer());
     const size_t messageLength = msg.GetSize();
-    xxtea_enc(buffer, (uint32_t)(messageLength / 4), AB::ENC_KEY);
+    xxtea_enc(buffer, (uint32_t)(messageLength / 4), reinterpret_cast<const uint32_t*>(&encKey_));
 }
 
 bool Protocol::XTEADecrypt(NetworkMessage& msg) const
@@ -29,7 +27,7 @@ bool Protocol::XTEADecrypt(NetworkMessage& msg) const
         return false;
 
     uint32_t* buffer = (uint32_t*)(msg.GetBuffer() + 6);
-    xxtea_dec(buffer, length / 4, AB::ENC_KEY);
+    xxtea_dec(buffer, length / 4, reinterpret_cast<const uint32_t*>(&encKey_));
 
     return true;
 }
@@ -39,7 +37,6 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Sending message" << std::endl;
 #endif
-//    message->WriteMessageLength();
     if (encryptionEnabled_)
     {
         XTEAEncrypt(*message);

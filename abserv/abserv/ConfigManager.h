@@ -15,6 +15,7 @@ public:
         GamePort,
         GameHost,
         GameIP,
+        ServerKeys,
 
         LogDir,
         DataDir,
@@ -50,7 +51,6 @@ public:
     }
 
     bool Load(const std::string& file);
-    static ConfigManager Instance;
 
     Utils::VariantMap config_;
 };

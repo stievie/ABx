@@ -30,6 +30,8 @@ public:
     {
         checksumEnabled_ = ProtocolGame::UseChecksum;
         encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
+        // TODO:
+        SetEncKey(AB::ENC_KEY);
     }
 
     void Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
