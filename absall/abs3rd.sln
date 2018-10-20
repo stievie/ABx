@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abcrypto", "..\ThirdParty\abcrypto\abcrypto.vcxproj", "{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "..\ThirdParty\lua\lua\lua.vcxproj", "{462E7DF7-9644-45C4-AB0F-1259D3DB8307}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PugiXml", "..\ThirdParty\PugiXml\PugiXml.vcxproj", "{C607BB63-7946-4C45-B176-EE657B32E375}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Detour", "..\ThirdParty\recastnavigation\Projects\Detour.vcxproj", "{905981A8-6BE5-4E2C-885B-5AB96A022072}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recast", "..\ThirdParty\recastnavigation\Projects\Recast.vcxproj", "{B6C1A056-354B-4CAD-A760-15636E70FDFE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3", "..\ThirdParty\sqlite3\vc14\sqlite3.vcxproj", "{D8BF0AFF-3620-4652-82D6-0870DE48DC23}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}.Debug|x64.ActiveCfg = Debug|x64
+		{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}.Debug|x64.Build.0 = Debug|x64
+		{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}.Release|x64.ActiveCfg = Release|x64
+		{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}.Release|x64.Build.0 = Release|x64
+		{462E7DF7-9644-45C4-AB0F-1259D3DB8307}.Debug|x64.ActiveCfg = Debug|x64
+		{462E7DF7-9644-45C4-AB0F-1259D3DB8307}.Debug|x64.Build.0 = Debug|x64
+		{462E7DF7-9644-45C4-AB0F-1259D3DB8307}.Release|x64.ActiveCfg = Release|x64
+		{462E7DF7-9644-45C4-AB0F-1259D3DB8307}.Release|x64.Build.0 = Release|x64
+		{C607BB63-7946-4C45-B176-EE657B32E375}.Debug|x64.ActiveCfg = Debug|x64
+		{C607BB63-7946-4C45-B176-EE657B32E375}.Debug|x64.Build.0 = Debug|x64
+		{C607BB63-7946-4C45-B176-EE657B32E375}.Release|x64.ActiveCfg = Release|x64
+		{C607BB63-7946-4C45-B176-EE657B32E375}.Release|x64.Build.0 = Release|x64
+		{905981A8-6BE5-4E2C-885B-5AB96A022072}.Debug|x64.ActiveCfg = Debug|x64
+		{905981A8-6BE5-4E2C-885B-5AB96A022072}.Debug|x64.Build.0 = Debug|x64
+		{905981A8-6BE5-4E2C-885B-5AB96A022072}.Release|x64.ActiveCfg = Release|x64
+		{905981A8-6BE5-4E2C-885B-5AB96A022072}.Release|x64.Build.0 = Release|x64
+		{B6C1A056-354B-4CAD-A760-15636E70FDFE}.Debug|x64.ActiveCfg = Debug|x64
+		{B6C1A056-354B-4CAD-A760-15636E70FDFE}.Debug|x64.Build.0 = Debug|x64
+		{B6C1A056-354B-4CAD-A760-15636E70FDFE}.Release|x64.ActiveCfg = Release|x64
+		{B6C1A056-354B-4CAD-A760-15636E70FDFE}.Release|x64.Build.0 = Release|x64
+		{D8BF0AFF-3620-4652-82D6-0870DE48DC23}.Debug|x64.ActiveCfg = Debug|x64
+		{D8BF0AFF-3620-4652-82D6-0870DE48DC23}.Debug|x64.Build.0 = Debug|x64
+		{D8BF0AFF-3620-4652-82D6-0870DE48DC23}.Release|x64.ActiveCfg = Release|x64
+		{D8BF0AFF-3620-4652-82D6-0870DE48DC23}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

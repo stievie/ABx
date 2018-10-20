@@ -7,7 +7,7 @@ pool:
   vmImage: 'VS2017-Win2016'
 
 variables:
-  solution: 'absall/absall.sln'
+  solution: 'absall/*.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'Release'
 
