@@ -183,16 +183,16 @@ bool Application::ParseCommandLine()
 
 void Application::ShowHelp()
 {
-    std::cout << "abserv [-<options> [<value>]]" << std::endl;
-    std::cout << "options:" << std::endl;
+    std::cout << "abserv [-<option> [<value>] ...]" << std::endl;
+    std::cout << "option:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
     std::cout << "  name <name>: Server name" << std::endl;
     std::cout << "  ip <ip>: Game ip" << std::endl;
     std::cout << "  host <host>: Game host" << std::endl;
-    std::cout << "  port <port>: Game port" << std::endl;
-    std::cout << "  autoterm: If set the server terminates itself when all players left" << std::endl;
+    std::cout << "  port <port>: Game port, when 0 it uses a free port" << std::endl;
+    std::cout << "  autoterm: If set, the server terminates itself when all players left" << std::endl;
     std::cout << "  genkeys: Generate new encryption keys and terminate" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
