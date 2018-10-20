@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ServerApp.h"
-#include "DataClient.h"
 #include "Service.h"
 
 class Application : public ServerApp
@@ -23,5 +22,6 @@ public:
     bool Initialize(int argc, char** argv) override;
     void Run() override;
     void Stop() override;
+    std::string GetKeysFile() const;
 };
 

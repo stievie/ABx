@@ -2,6 +2,8 @@
 
 #include <AB/Entities/ReservedName.h>
 
+class StorageProvider;
+
 namespace DB {
 
 class DBReservedName
@@ -15,6 +17,8 @@ public:
     static bool Save(const AB::Entities::ReservedName&);
     static bool Delete(const AB::Entities::ReservedName&);
     static bool Exists(const AB::Entities::ReservedName& n);
+    /// Delete expiredreserved names from DB
+    static void DeleteExpired(StorageProvider* sp);
 };
 
 }

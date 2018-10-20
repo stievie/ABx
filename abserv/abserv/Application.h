@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Service.h"
-#include "DataClient.h"
 #include "ServerApp.h"
 #include "MessageClient.h"
 #include "MessageDispatcher.h"
-#include <AB/DHKeys.hpp>
-#include "Subsystems.h"
 #include "Maintenance.h"
+#include "Subsystems.h"
 
 class Application : public ServerApp
 {

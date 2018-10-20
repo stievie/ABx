@@ -11,6 +11,7 @@
 #include "GameStream.h"
 #include "Script.h"
 #include "Subsystems.h"
+#include "DataClient.h"
 
 namespace Game {
 

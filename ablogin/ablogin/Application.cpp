@@ -11,6 +11,10 @@
 #include "Utils.h"
 #include "Bans.h"
 #include "Subsystems.h"
+#include "Random.h"
+#include <AB/DHKeys.hpp>
+#include "FileUtils.h"
+#include "DataClient.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -22,6 +26,8 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
+    Subsystems::Instance.CreateSubsystem<Crypto::Random>();
+    Subsystems::Instance.CreateSubsystem<Crypto::DHKeys>();
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
 }
@@ -92,6 +98,26 @@ bool Application::LoadMain()
     banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobal("login_tries", 5));
     banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000));
     banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_timeout", 60 * 1000));
+    LOG_INFO << "[done]" << std::endl;
+
+    LOG_INFO << "Initializing RNG...";
+    GetSubsystem<Crypto::Random>()->Initialize();
+    LOG_INFO << "[done]" << std::endl;
+
+    LOG_INFO << "Loading encryption keys...";
+    auto keys = GetSubsystem<Crypto::DHKeys>();
+    if (!keys)
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to get encryption keys" << std::endl;
+        return false;
+    }
+    if (!keys->LoadKeys(GetKeysFile()))
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to load encryption keys from " << GetKeysFile() << std::endl;
+        return false;
+    }
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to data server...";
@@ -230,4 +256,13 @@ void Application::Stop()
         LOG_ERROR << "Unable to read service" << std::endl;
 
     ioService_.stop();
+}
+
+std::string Application::GetKeysFile() const
+{
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    const std::string keys = config->GetGlobal("server_keys", "");
+    if (!keys.empty())
+        return keys;
+    return Utils::AddSlash(path_) + "abserver.keys";
 }

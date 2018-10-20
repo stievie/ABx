@@ -2,7 +2,6 @@
 
 ~ abserv, ablogin, abclient: DH enc keys
 + genkey: separate program to create DH keys for the server
-+ abdata: Maintenance, delete expired records: reserved_names, guild_members
 ~ abdata: Use bit set cache item flags, sot a struct
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap
 * abclient: https://urho3d.github.io/documentation/1.7/_lights.html

@@ -29,8 +29,14 @@ std::string NormalizeFilename(const std::string& filename)
 
 bool FileExists(const std::string& name)
 {
+#if defined(_WIN32)
+    DWORD dwAttrib = ::GetFileAttributesA(name.c_str());
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+        !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
     std::ifstream infile(name.c_str());
     return infile.good();
+#endif
 }
 
 std::string AddSlash(const std::string& dir)

@@ -335,7 +335,6 @@ void StorageProvider::CleanCache()
     // Delete deleted records from DB and remove them from cache.
     if (cache_.size() == 0)
         return;
-    AB_PROFILE;
     size_t oldSize = currentSize_;
     int removed = 0;
     auto i = cache_.begin();
@@ -378,8 +377,10 @@ void StorageProvider::CleanCache()
 
 void StorageProvider::CleanTask()
 {
+    AB_PROFILE;
     CleanCache();
     DB::DBGuildMembers::DeleteExpired(this);
+    DB::DBReservedName::DeleteExpired(this);
     if (running_)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(

@@ -33,6 +33,8 @@
 #include <codecvt>
 #include "ThreadPool.h"
 #include "EffectManager.h"
+#include "DataClient.h"
+#include <AB/DHKeys.hpp>
 
 #include "DebugNew.h"
 

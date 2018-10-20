@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Logger.h"
 #include "Subsystems.h"
+#include "DataClient.h"
 
 namespace IO {
 

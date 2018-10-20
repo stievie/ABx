@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBReservedName.h"
 #include "Database.h"
+#include "StorageProvider.h"
 
 namespace DB {
 
@@ -73,6 +74,47 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
     if (!result)
         return false;
     return result->GetUInt("count") != 0;
+}
+
+void DBReservedName::DeleteExpired(StorageProvider* sp)
+{
+    DB::Database* db = DB::Database::Instance();
+    std::ostringstream query;
+    query << "SELECT `uuid` FROM `reserved_names` WHERE ";
+    query << "(`expires` <> 0 AND `expires` < " << Utils::AbTick() << ")";
+
+    std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
+    if (!result)
+        // No matches
+        return;
+
+    std::vector<std::string> rns;
+    for (result = db->StoreQuery(query.str()); result; result = result->Next())
+    {
+        rns.push_back(result->GetString("uuid"));
+    }
+
+    query.str("");
+    query << "DELETE FROM `reserved_names` WHERE ";
+    query << "(`expires` <> 0 AND `expires` < " << Utils::AbTick() << ")";
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return;
+
+    if (!db->ExecuteQuery(query.str()))
+        return;
+
+    // End transaction
+    if (!transaction.Commit())
+        return;
+
+    for (const std::string& g : rns)
+    {
+        AB::Entities::ReservedName rn;
+        rn.uuid = g;
+        sp->EntityInvalidate(rn);
+    }
 }
 
 }
