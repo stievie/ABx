@@ -3,7 +3,7 @@
 // Used by several projects
 
 #if defined(_DEBUG)
-//#   define DEBUG_DISPATTCHER
+//#   define DEBUG_DISPATCHER
 //#   define DEBUG_SCHEDULER
 #   define DEBUG_NET
 //#   define DEBUG_SQL

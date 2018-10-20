@@ -57,7 +57,7 @@ void Dispatcher::Add(Task* task, bool front /* = false */)
 
 void Dispatcher::DispatcherThread()
 {
-#ifdef DEBUG_DISPATTCHER
+#ifdef DEBUG_DISPATCHER
     LOG_DEBUG << "Dispatcher threat started" << std::endl;
 #endif
 
@@ -74,12 +74,12 @@ void Dispatcher::DispatcherThread()
         {
             // List is empty, wait for signal
             signal_.wait(taskLockUnique);
-#ifdef DEBUG_DISPATTCHER
+#ifdef DEBUG_DISPATCHER
             LOG_DEBUG << "Waiting for task" << std::endl;
 #endif
         }
 
-#ifdef DEBUG_DISPATTCHER
+#ifdef DEBUG_DISPATCHER
         LOG_DEBUG << "Dispatcher signaled" << std::endl;
 #endif
 
@@ -106,14 +106,14 @@ void Dispatcher::DispatcherThread()
 
             delete task;
 
-#ifdef DEBUG_DISPATTCHER
+#ifdef DEBUG_DISPATCHER
             LOG_DEBUG << "Executing task" << std::endl;
 #endif
         }
         else
             taskLockUnique.unlock();
     }
-#ifdef DEBUG_DISPATTCHER
+#ifdef DEBUG_DISPATCHER
     LOG_DEBUG << "Dispatcher threat stopped" << std::endl;
 #endif
 }

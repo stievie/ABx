@@ -11,7 +11,7 @@ private:
     std::mutex lock_;
 public:
     Random() = default;
-    ~Random() {}
+    ~Random() = default;
 
     void Initialize();
     bool GetBool();
@@ -22,9 +22,10 @@ public:
     T Get()
     {
         T r;
+        // Random pool must be locked
         std::lock_guard<std::mutex> lock(lock_);
         arc4random_buf(&r, sizeof(T));
-        return static_cast<T>(r);
+        return r;
     }
     void GetBuff(void* buff, size_t len)
     {
