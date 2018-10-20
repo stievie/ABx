@@ -15,7 +15,9 @@
 
 #include "DebugConfig.h"
 
+#if !defined(ASIO_STANDALONE)
 #define ASIO_STANDALONE
+#endif
 
 #if defined(_MSC_VER)
 #pragma warning(push)

@@ -20,7 +20,9 @@
 
 #include "DebugConfig.h"
 
+#if !defined(USE_STANDALONE_ASIO)
 #define USE_STANDALONE_ASIO
+#endif
 #if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4592)

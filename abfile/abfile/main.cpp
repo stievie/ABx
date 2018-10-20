@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include <sstream>
 #include <fstream>
-#include <boost/filesystem.hpp>
 #include "SimpleConfigManager.h"
 #include "Application.h"
 #include "Logger.h"
