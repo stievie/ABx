@@ -2,10 +2,9 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "Logger.h"
+#include "Subsystems.h"
 
 namespace Asynch {
-
-Scheduler Scheduler::Instance;
 
 void Scheduler::SchedulerThread()
 {
@@ -68,7 +67,7 @@ void Scheduler::SchedulerThread()
             lockUnique.unlock();
 
             task->SetDontExpires();
-            Asynch::Dispatcher::Instance.Add(task, true);
+            GetSubsystem<Asynch::Dispatcher>()->Add(task, true);
         }
         else
             lockUnique.unlock();

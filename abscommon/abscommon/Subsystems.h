@@ -20,35 +20,49 @@ private:
     std::map<const char*, std::unique_ptr<_Subsystem>> systems_;
 public:
     Subsystems() = default;
-    ~Subsystems() = default;
+    ~Subsystems() noexcept
+    {
+        // Reverse delete subsystems
+        std::map<const char*, std::unique_ptr<_Subsystem>>::reverse_iterator itr;
+        for (itr = systems_.rbegin(); itr != systems_.rend(); ++itr)
+            (*itr).second.reset();
+    }
 
     template<typename T, typename... _CArgs>
-    T* CreateSubsystem(_CArgs&&... _Args)
+    bool CreateSubsystem(_CArgs&&... _Args)
     {
-        auto i = systems_.find(typeid(T).name());
+        static const auto key = typeid(T).name();
+        auto i = systems_.find(key);
         if (i != systems_.end())
-            return nullptr;
+            return false;
 
         T* system = new T(std::forward<_CArgs>(_Args)...);
-        RegisterSubsystem<T>(system);
-        return system;
+        if (system && RegisterSubsystem<T>(system))
+            return true;
+        if (system)
+            delete system;
+        return false;
     }
 
     /// Takes ownership of the object
     template<typename T>
-    void RegisterSubsystem(T* system)
+    bool RegisterSubsystem(T* system)
     {
-        auto i = systems_.find(typeid(T).name());
+        static const auto key = typeid(T).name();
+        auto i = systems_.find(key);
         if (i == systems_.end())
         {
-            systems_[typeid(T).name()] = std::make_unique<_SubystemWrapper<T>>(system);
+            systems_[key] = std::make_unique<_SubystemWrapper<T>>(system);
+            return true;
         }
+        return false;
     }
 
     template<typename T>
     void RemoveSubsystem()
     {
-        auto i = systems_.find(typeid(T).name());
+        static const auto key = typeid(T).name();
+        auto i = systems_.find(key);
         if (i != systems_.end())
             systems_.erase(i);
     }
@@ -56,7 +70,8 @@ public:
     template<typename T>
     T* GetSubsystem()
     {
-        auto i = systems_.find(typeid(T).name());
+        static const auto key = typeid(T).name();
+        auto i = systems_.find(key);
         if (i != systems_.end())
         {
             auto wrapper = static_cast<_SubystemWrapper<T>*>((*i).second.get());

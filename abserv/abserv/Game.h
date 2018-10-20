@@ -10,6 +10,7 @@
 #include <AB/Entities/GameInstance.h>
 #include "GameStream.h"
 #include "Script.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -49,19 +50,19 @@ private:
     template<typename E>
     bool UpdateEntity(const E& e)
     {
-        IO::DataClient* cli = Application::Instance->GetDataClient();
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
         return cli->Update(e);
     }
     template<typename E>
     bool DeleteEntity(const E& e)
     {
-        IO::DataClient* cli = Application::Instance->GetDataClient();
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
         return cli->Delete(e);
     }
     template<typename E>
     bool CreateEntity(const E& e)
     {
-        IO::DataClient* cli = Application::Instance->GetDataClient();
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
         return cli->Create(e);
     }
     float _LuaGetTerrainHeight(float x, float z) const

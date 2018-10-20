@@ -15,9 +15,6 @@ public:
     ~EffectManager() = default;
 
     std::shared_ptr<Effect> Get(uint32_t index);
-public:
-    static EffectManager Instance;
-
 };
 
 }

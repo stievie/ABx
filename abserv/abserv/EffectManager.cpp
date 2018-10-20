@@ -3,10 +3,9 @@
 #include "Effect.h"
 #include "DataProvider.h"
 #include "DataClient.h"
+#include "Subsystems.h"
 
 namespace Game {
-
-EffectManager EffectManager::Instance;
 
 std::shared_ptr<Effect> EffectManager::Get(uint32_t index)
 {
@@ -18,7 +17,7 @@ std::shared_ptr<Effect> EffectManager::Get(uint32_t index)
     }
     else
     {
-        IO::DataClient* client = Application::Instance->GetDataClient();
+        IO::DataClient* client = GetSubsystem<IO::DataClient>();
         AB::Entities::Effect effect;
         effect.index = index;
         if (!client->Read(effect))

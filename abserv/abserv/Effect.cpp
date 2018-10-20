@@ -4,6 +4,7 @@
 #include "ScriptManager.h"
 #include "Utils.h"
 #include "DataProvider.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -24,7 +25,7 @@ void Effect::InitializeLua()
 
 bool Effect::LoadScript(const std::string& fileName)
 {
-    script_ = IO::DataProvider::Instance.GetAsset<Script>(fileName);
+    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
     if (!script_)
         return false;
     if (!script_->Execute(luaState_))

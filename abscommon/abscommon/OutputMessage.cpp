@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "Dispatcher.h"
 #include "Scheduler.h"
+#include "Subsystems.h"
 
 namespace Net {
 
@@ -27,7 +28,7 @@ void OutputMessagePool::SendAll()
 
 void OutputMessagePool::ScheduleSendAll()
 {
-    Asynch::Scheduler::Instance.Add(
+    GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(static_cast<uint32_t>(OUTPUTMESSAGE_AUTOSEND_DELAY.count()),
             std::bind(&OutputMessagePool::SendAll, this))
     );

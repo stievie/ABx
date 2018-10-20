@@ -4,8 +4,6 @@
 
 namespace IO {
 
-SimpleConfigManager SimpleConfigManager::Instance;
-
 std::string SimpleConfigManager::GetGlobal(const std::string& ident, const std::string& def)
 {
     lua_getglobal(L, ident.c_str());

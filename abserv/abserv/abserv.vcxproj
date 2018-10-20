@@ -183,7 +183,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="ProtocolGame.h" />
-    <ClInclude Include="Random.h" />
     <ClInclude Include="ScriptManager.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillBar.h" />
@@ -243,7 +242,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="ProtocolGame.cpp" />
-    <ClCompile Include="Random.cpp" />
     <ClCompile Include="ScriptManager.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillBar.cpp" />

@@ -7,10 +7,9 @@
 #include "DataClient.h"
 #include "Profiler.h"
 #include "Application.h"
+#include "Subsystems.h"
 
 namespace Auth {
-
-BanManager BanManager::Instance;
 
 bool BanManager::AcceptConnection(uint32_t clientIP)
 {
@@ -61,7 +60,7 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
         return false;
 
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::IpBan ban;
     ban.ip = clientIP;
     ban.mask = mask;
@@ -101,7 +100,7 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
 bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::AccountBan ban;
     ban.accountUuid = accountUuid.to_string();
     if (!client->Read(ban))
@@ -147,7 +146,7 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std
         return false;
 
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Ban ban;
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     ban.uuid = guid.to_string();
@@ -173,7 +172,7 @@ bool BanManager::AddAccountBan(const std::string& accountUuid, int32_t expires, 
         return false;
 
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Ban ban;
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     ban.uuid = guid.to_string();

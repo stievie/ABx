@@ -29,6 +29,7 @@
 #include "Utils.h"
 #include <abcrypto.hpp>
 #include "StringUtils.h"
+#include "Subsystems.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -42,6 +43,7 @@ Application::Application() :
     lastLoadCalc_(0),
     filePort_(0)
 {
+    Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
 }
 
 Application::~Application()
@@ -192,32 +194,33 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
 
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     if (configFile_.empty())
         configFile_ = path_ + "/abfile.lua";
-    if (!IO::SimpleConfigManager::Instance.Load(configFile_))
+    if (!config->Load(configFile_))
     {
         LOG_ERROR << "Error loading config file " << configFile_ << std::endl;
         return false;
     }
 
     if (serverId_.empty())
-        serverId_ = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
+        serverId_ = config->GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
     if (fileIp_.empty())
-        fileIp_ = IO::SimpleConfigManager::Instance.GetGlobal("file_ip", "");
+        fileIp_ = config->GetGlobal("file_ip", "");
     if (filePort_ == 0)
-        filePort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("file_port", 8081));
-    std::string key = IO::SimpleConfigManager::Instance.GetGlobal("server_key", "server.key");
-    std::string cert = IO::SimpleConfigManager::Instance.GetGlobal("server_cert", "server.crt");
-    size_t threads = IO::SimpleConfigManager::Instance.GetGlobal("num_threads", 0);
+        filePort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081));
+    std::string key = config->GetGlobal("server_key", "server.key");
+    std::string cert = config->GetGlobal("server_cert", "server.crt");
+    size_t threads = config->GetGlobal("num_threads", 0);
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
-    root_ = IO::SimpleConfigManager::Instance.GetGlobal("root_dir", "");
-    logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
-    dataHost_ = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
-    dataPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
-    requireAuth_ = IO::SimpleConfigManager::Instance.GetGlobalBool("require_auth", false);
-    adminPassword_ = IO::SimpleConfigManager::Instance.GetGlobal("abfile_admin_pass", "");
-    maxThroughput_ = IO::SimpleConfigManager::Instance.GetGlobal("max_throughput", 0);
+    root_ = config->GetGlobal("root_dir", "");
+    logDir_ = config->GetGlobal("log_dir", "");
+    dataHost_ = config->GetGlobal("data_host", "");
+    dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
+    requireAuth_ = config->GetGlobalBool("require_auth", false);
+    adminPassword_ = config->GetGlobal("abfile_admin_pass", "");
+    maxThroughput_ = config->GetGlobal("max_throughput", 0);
 
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
@@ -283,7 +286,7 @@ bool Application::Initialize(int argc, char** argv)
 
     LOG_INFO << "Server config:" << std::endl;
     LOG_INFO << "  Server ID: " << serverId_ << std::endl;
-    LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (fileIp_.empty() ? "0.0.0.0" : fileIp_) << ":" << filePort_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -300,14 +303,15 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     startTime_ = Utils::AbTick();
     statusMeasureTime_ = startTime_;
     uptimeRound_ = 1;
     AB::Entities::Service serv;
     serv.uuid = serverId_;
     dataClient_->Read(serv);
-    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abfile");
-    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
+    serv.name = config->GetGlobal("server_name", "abfile");
+    serv.location = config->GetGlobal("location", "--");
     serv.host = fileHost_;
     serv.port = filePort_;
     serv.file = exeFile_;

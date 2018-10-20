@@ -7,6 +7,7 @@
 #include "MessageDispatcher.h"
 #include <AB/DHKeys.hpp>
 #include "Subsystems.h"
+#include "Maintenance.h"
 
 class Application : public ServerApp
 {
@@ -15,8 +16,6 @@ private:
     std::mutex loaderLock_;
     std::condition_variable loaderSignal_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
-    std::unique_ptr<IO::DataClient> dataClient_;
-    std::unique_ptr<Net::MessageClient> msgClient_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
     std::string configFile_;
     std::string logDir_;
@@ -29,6 +28,7 @@ private:
     std::string serverName_;
     bool running_;
     bool genKeys_;
+    Maintenance maintenance_;
     bool LoadMain();
     void PrintServerInfo();
     bool ParseCommandLine();
@@ -55,14 +55,6 @@ public:
     void Run();
     void Stop();
 
-    IO::DataClient* GetDataClient()
-    {
-        return dataClient_.get();
-    }
-    Net::MessageClient* GetMessageClient()
-    {
-        return msgClient_.get();
-    }
     std::string GetKeysFile() const;
     /// Returns a value between 0..100
     uint8_t GetLoad();

@@ -54,8 +54,6 @@ public:
     uint32_t loginTries_;
     uint32_t loginTimeout_;
     uint32_t retryTimeout_;
-
-    static BanManager Instance;
 };
 
 }

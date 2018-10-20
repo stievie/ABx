@@ -8,6 +8,7 @@
 #include <filesystem>
 #include "StringUtils.h"
 #include "Script.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -44,15 +45,16 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     });
     state["include"] = kaguya::function([&state](const std::string& file)
     {
-        auto script = IO::DataProvider::Instance.GetAsset<Script>(file);
+        auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(file);
         if (script)
             script->Execute(state);
     });
     state["include_dir"] = kaguya::function([&state](const std::string& dir)
     {
         // directory must start with /
+        auto dataProv = GetSubsystem<IO::DataProvider>();
         using namespace fs;
-        const std::string& dataDir = IO::DataProvider::Instance.GetDataDir();
+        const std::string& dataDir = dataProv->GetDataDir();
         size_t dataDirLen = dataDir.length();
         std::string absDir = dataDir + Utils::NormalizeFilename(dir);
         recursive_directory_iterator end_itr;
@@ -65,7 +67,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
                 if (Utils::StringEquals(ext, ".lua"))
                 {
                     std::string _s = Utils::NormalizeFilename(s.substr(dataDirLen));
-                    auto script = IO::DataProvider::Instance.GetAsset<Script>(_s);
+                    auto script = dataProv->GetAsset<Script>(_s);
                     if (script)
                         script->Execute(state);
                 }
@@ -91,7 +93,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     Game::RegisterLua(state);
 
     // Execute main script with definitions, constants, etc.
-    auto mainS = IO::DataProvider::Instance.GetAsset<Script>("/scripts/main.lua");
+    auto mainS = GetSubsystem<IO::DataProvider>()->GetAsset<Script>("/scripts/main.lua");
     if (mainS)
         mainS->Execute(state);
 }

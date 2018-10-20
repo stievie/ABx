@@ -15,7 +15,6 @@
 #include "IOGame.h"
 #include "stdafx.h"
 #include "ConfigManager.h"
-#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -24,7 +23,8 @@ namespace Net {
 void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
     const std::string& mapUuid, const std::string& instanceUuid)
 {
-    std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerByUuid(playerUuid);
+    auto gameMan = GetSubsystem<Game::PlayerManager>();
+    std::shared_ptr<Game::Player> foundPlayer = gameMan->GetPlayerByUuid(playerUuid);
     if (foundPlayer)
     {
         // Maybe DC/crash, let player connect again
@@ -40,9 +40,9 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         }
     }
 
-    player_ = Game::PlayerManager::Instance.CreatePlayer(playerUuid, GetThis());
+    player_ = gameMan->CreatePlayer(playerUuid, GetThis());
 
-    if (Auth::BanManager::Instance.IsAccountBanned(accountUuid))
+    if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(accountUuid))
     {
         DisconnectClient(AB::Errors::AccountBanned);
         return;
@@ -54,7 +54,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     player_->account_.uuid = player_->data_.accountUuid;
     if (!client->Read(player_->account_))
     {
@@ -93,7 +93,7 @@ void ProtocolGame::Logout()
     player_->logoutTime_ = Utils::AbTick();
     IO::IOPlayer::SavePlayer(player_.get());
     IO::IOAccount::AccountLogout(player_->data_.accountUuid);
-    Game::PlayerManager::Instance.RemovePlayer(player_->id_);
+    GetSubsystem<Game::PlayerManager>()->RemovePlayer(player_->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
     player_.reset();
@@ -102,7 +102,7 @@ void ProtocolGame::Logout()
 void ProtocolGame::ParsePacket(NetworkMessage& message)
 {
     if (!acceptPackets_ ||
-        Game::GameManager::Instance.GetState() != Game::GameManager::ManagerStateRunning ||
+        GetSubsystem<Game::GameManager>()->GetState() != Game::GameManager::ManagerStateRunning ||
         message.GetSize() == 0)
         return;
 
@@ -298,7 +298,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     const std::string map = msg.GetString();
     const std::string instance = msg.GetString();
 
-    if (Auth::BanManager::Instance.IsIpBanned(GetIP()))
+    if (GetSubsystem<Auth::BanManager>()->IsIpBanned(GetIP()))
     {
         DisconnectClient(AB::Errors::IPBanned);
         return;
@@ -310,7 +310,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
             std::bind(&ProtocolGame::Login, GetThis(), characterUuid, uuids::uuid(accountUuid), map, instance)
         )
@@ -355,7 +355,7 @@ void ProtocolGame::Connect(uint32_t playerId)
         // no longer exists, so we return to prevent leakage of the Player.
         return;
 
-    std::shared_ptr<Game::Player> foundPlayer = Game::PlayerManager::Instance.GetPlayerById(playerId);
+    std::shared_ptr<Game::Player> foundPlayer = GetSubsystem<Game::PlayerManager>()->GetPlayerById(playerId);
     if (!foundPlayer)
     {
         DisconnectClient(AB::Errors::UnknownError);
@@ -369,7 +369,7 @@ void ProtocolGame::Connect(uint32_t playerId)
 
     acceptPackets_ = true;
 
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(
             std::bind(&ProtocolGame::EnterGame, GetThis())
         )
@@ -383,17 +383,18 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 
 void ProtocolGame::EnterGame()
 {
+    auto gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
     if (!uuids::uuid(player_->data_.instanceUuid).nil())
     {
-        auto game = Game::GameManager::Instance.GetInstance(player_->data_.instanceUuid);
+        auto game = gameMan->GetInstance(player_->data_.instanceUuid);
         if (game)
         {
             game->PlayerJoin(player_->id_);
             success = true;
         }
     }
-    else if (Game::GameManager::Instance.AddPlayer(player_->data_.currentMapUuid, player_))
+    else if (gameMan->AddPlayer(player_->data_.currentMapUuid, player_))
         success = true;
 
     if (success)

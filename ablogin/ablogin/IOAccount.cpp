@@ -10,6 +10,7 @@
 #include <AB/Entities/ReservedName.h>
 #include "Profiler.h"
 #include "Application.h"
+#include "Subsystems.h"
 
 namespace IO {
 
@@ -17,7 +18,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     const std::string& email, const std::string& accKey)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     if (name.empty())
         return ResultNameExists;
@@ -89,7 +90,7 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
     const std::string& accKey)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!client->Read(acc))
@@ -146,7 +147,7 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
     AB::Entities::Account& account)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))
         return LoginError::InvalidAccount;
     if (account.status != AB::Entities::AccountStatusActivated)
@@ -167,7 +168,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     AB::Entities::CharacterSex sex,
     bool isPvp, std::string& uuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
@@ -216,7 +217,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
 bool IOAccount::LoadCharacter(AB::Entities::Character& ch)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(ch))
     {
         LOG_ERROR << "Error reading player data" << std::endl;
@@ -227,7 +228,7 @@ bool IOAccount::LoadCharacter(AB::Entities::Character& ch)
 
 bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Character ch;
     ch.uuid = playerUuid;
     if (!client->Read(ch))
@@ -254,7 +255,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
 
 bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forAccountUuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Character ch;
     ch.name = name;
     // Check if player with the same name exists

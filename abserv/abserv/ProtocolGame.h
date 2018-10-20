@@ -4,6 +4,7 @@
 #include "Connection.h"
 #include "Dispatcher.h"
 #include <AB/ProtocolCodes.h>
+#include "Subsystems.h"
 
 namespace Game {
 class Player;
@@ -61,7 +62,7 @@ private:
     template <typename Callable, typename... Args>
     void AddPlayerTask(Callable function, Args&&... args)
     {
-        Asynch::Dispatcher::Instance.Add(
+        GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateTask(std::bind(function, player_, std::forward<Args>(args)...))
         );
     }

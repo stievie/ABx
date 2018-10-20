@@ -13,8 +13,6 @@ public:
     ~SkillManager() = default;
 
     std::shared_ptr<Skill> Get(uint32_t index);
-public:
-    static SkillManager Instance;
 };
 
 }

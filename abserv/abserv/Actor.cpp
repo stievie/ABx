@@ -129,7 +129,7 @@ void Actor::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t ba
 {
     RemoveEffect(index);
 
-    auto effect = EffectManager::Instance.Get(index);
+    auto effect = GetSubsystem<EffectManager>()->Get(index);
     if (effect)
     {
         effects_.push_back(effect);

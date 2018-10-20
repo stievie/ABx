@@ -4,6 +4,7 @@
 #include <AB/Entities/GameList.h>
 #include "Logger.h"
 #include "UuidUtils.h"
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -11,7 +12,7 @@ namespace IO {
 
 bool IOGame::LoadGame(AB::Entities::Game& game)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     return client->Read(game);
 }
 
@@ -29,7 +30,7 @@ bool IOGame::LoadGameByUuid(Game::Game* game, const std::string& uuid)
 
 std::string IOGame::GetLandingGameUuid()
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
     {
@@ -55,7 +56,7 @@ std::string IOGame::GetLandingGameUuid()
 
 AB::Entities::GameType IOGame::GetGameType(const std::string& mapUuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Game g;
     g.uuid = mapUuid;
     if (!client->Read(g))
@@ -70,7 +71,7 @@ std::vector<AB::Entities::Game> IOGame::GetGameList()
 {
     std::vector<AB::Entities::Game> result;
 
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
     {

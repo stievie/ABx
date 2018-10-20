@@ -7,8 +7,6 @@
 
 namespace Game {
 
-PlayerManager PlayerManager::Instance;
-
 std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 {
     auto it = std::find_if(players_.begin(), players_.end(), [&name](const std::pair<uint32_t, std::shared_ptr<Player>>& current)

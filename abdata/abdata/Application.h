@@ -21,18 +21,7 @@ private:
     void PrintServerInfo();
     void ShowHelp();
 public:
-    Application() :
-        ServerApp::ServerApp(),
-        port_(0),
-        listenIp_(0),
-        maxSize_(0),
-        readonly_(false),
-        running_(false),
-        ioService_(),
-        server_(nullptr),
-        flushInterval_(FLUSH_CACHE_MS),
-        cleanInterval_(CLEAN_CACHE_MS)
-    { }
+    Application();
     ~Application();
 
     bool Initialize(int argc, char** argv) override;

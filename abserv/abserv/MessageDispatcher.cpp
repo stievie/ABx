@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "PropStream.h"
 #include <AB/ProtocolCodes.h>
+#include "Subsystems.h"
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
@@ -24,7 +25,7 @@ void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
         return;
 
     std::shared_ptr<Game::GuildChatChannel> chat =
-        std::dynamic_pointer_cast<Game::GuildChatChannel>(Game::Chat::Instance.Get(Game::ChatType::Guild, guildUuid));
+        std::dynamic_pointer_cast<Game::GuildChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Guild, guildUuid));
     if (chat)
         chat->Broadcast(name, message);
 }
@@ -42,7 +43,7 @@ void MessageDispatcher::DispatchTradeChat(const Net::MessageMsg& msg)
         return;
 
     std::shared_ptr<Game::TradeChatChannel> chat =
-        std::dynamic_pointer_cast<Game::TradeChatChannel>(Game::Chat::Instance.Get(Game::ChatType::Trade, 0));
+        std::dynamic_pointer_cast<Game::TradeChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Trade, 0));
     if (chat)
         chat->Broadcast(name, message);
 }
@@ -63,12 +64,12 @@ void MessageDispatcher::DispatchWhipserChat(const Net::MessageMsg& msg)
     if (!stream.ReadString(message))
         return;
 
-    std::shared_ptr<Game::Player> player = Game::PlayerManager::Instance.GetPlayerByUuid(playerUuid);
+    std::shared_ptr<Game::Player> player = GetSubsystem<Game::PlayerManager>()->GetPlayerByUuid(playerUuid);
     if (!player)
         return;
 
     std::shared_ptr<Game::WhisperChatChannel> chat =
-        std::dynamic_pointer_cast<Game::WhisperChatChannel>(Game::Chat::Instance.Get(Game::ChatType::Whisper, player->id_));
+        std::dynamic_pointer_cast<Game::WhisperChatChannel>(GetSubsystem<Game::Chat>()->Get(Game::ChatType::Whisper, player->id_));
     if (chat)
         chat->Talk(name, message);
 }
@@ -82,7 +83,7 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
     std::string recvAccUuid;
     if (!stream.ReadString(recvAccUuid))
         return;
-    std::shared_ptr<Game::Player> player = Game::PlayerManager::Instance.GetPlayerByAccountUuid(recvAccUuid);
+    std::shared_ptr<Game::Player> player = GetSubsystem<Game::PlayerManager>()->GetPlayerByAccountUuid(recvAccUuid);
     if (!player)
         return;
     player->NotifyNewMail();
@@ -105,7 +106,7 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
     }
 
     nmsg.AddString(msg.GetBodyString());    // Server ID
-    Game::PlayerManager::Instance.BroadcastNetMessage(nmsg);
+    GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(nmsg);
 }
 
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)

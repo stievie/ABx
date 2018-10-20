@@ -12,10 +12,9 @@
 #include <uuid.h>
 #include "Profiler.h"
 #include "PropStream.h"
+#include "Subsystems.h"
 
 namespace Game {
-
-Chat Chat::Instance;
 
 Chat::Chat()
 {
@@ -107,7 +106,7 @@ void Chat::CleanChats()
 GameChatChannel::GameChatChannel(uint64_t id) :
     ChatChannel(id)
 {
-    game_ = GameManager::Instance.Get(static_cast<uint32_t>(id));
+    game_ = GetSubsystem<GameManager>()->Get(static_cast<uint32_t>(id));
 }
 
 bool GameChatChannel::Talk(Player* player, const std::string& text)
@@ -153,7 +152,7 @@ bool GameChatChannel::TalkNpc(Npc* npc, const std::string& text)
 WhisperChatChannel::WhisperChatChannel(uint64_t id) :
     ChatChannel(id)
 {
-    player_ = PlayerManager::Instance.GetPlayerById(static_cast<uint32_t>(id));
+    player_ = GetSubsystem<PlayerManager>()->GetPlayerById(static_cast<uint32_t>(id));
 }
 
 WhisperChatChannel::WhisperChatChannel(const std::string& playerUuid) :
@@ -180,7 +179,7 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
     AB_PROFILE;
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::Whipser;
-    Net::MessageClient* cli = Application::Instance->GetMessageClient();
+    Net::MessageClient* cli = GetSubsystem<Net::MessageClient>();
     IO::PropWriteStream stream;
     stream.WriteString(playerUuid_);
     stream.WriteString(player->GetName());
@@ -209,7 +208,7 @@ bool GuildChatChannel::Talk(Player* player, const std::string& text)
 {
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::GuildChat;
-    Net::MessageClient* cli = Application::Instance->GetMessageClient();
+    Net::MessageClient* cli = GetSubsystem<Net::MessageClient>();
     IO::PropWriteStream stream;
     stream.WriteString(guildUuid_);
     stream.WriteString(player->GetName());
@@ -221,7 +220,7 @@ bool GuildChatChannel::Talk(Player* player, const std::string& text)
 void GuildChatChannel::Broadcast(const std::string& playerName, const std::string& text)
 {
     AB_PROFILE;
-    IO::DataClient* cli = Application::Instance->GetDataClient();
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     AB::Entities::GuildMembers gs;
     gs.uuid = guildUuid_;
     if (!cli->Read(gs))
@@ -232,7 +231,7 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
 
     for (const auto& g : gs.members)
     {
-        std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerByAccountUuid(g.accountUuid);
+        std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerByAccountUuid(g.accountUuid);
         if (!player)
             // This player not on this server.
             continue;
@@ -251,7 +250,7 @@ bool TradeChatChannel::Talk(Player* player, const std::string& text)
 {
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::TradeChat;
-    Net::MessageClient* cli = Application::Instance->GetMessageClient();
+    Net::MessageClient* cli = GetSubsystem<Net::MessageClient>();
     IO::PropWriteStream stream;
     stream.WriteString(player->GetName());
     stream.WriteString(text);
@@ -267,7 +266,7 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     msg.Add<uint32_t>(0);
     msg.AddString(playerName);
     msg.AddString(text);
-    for (const auto& player : PlayerManager::Instance.GetPlayers())
+    for (const auto& player : GetSubsystem<PlayerManager>()->GetPlayers())
     {
         player.second->client_->WriteToOutput(msg);
     }

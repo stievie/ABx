@@ -4,8 +4,6 @@
 
 namespace Asynch {
 
-Dispatcher Dispatcher::Instance;
-
 void Dispatcher::Start()
 {
     if (state_ != State::Running)

@@ -32,6 +32,7 @@
 #include <locale>
 #include <codecvt>
 #include "ThreadPool.h"
+#include "EffectManager.h"
 
 #include "DebugNew.h"
 
@@ -48,17 +49,36 @@ Application::Application() :
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
-    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
+
+    Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
+    Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
+    Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>();
+    Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(ioService_);
+
+    Subsystems::Instance.CreateSubsystem<Crypto::Random>();
+    Subsystems::Instance.CreateSubsystem<Crypto::DHKeys>();
+    Subsystems::Instance.CreateSubsystem<ConfigManager>();
+    Subsystems::Instance.CreateSubsystem<IO::DataProvider>();
+
+    Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
+    Subsystems::Instance.CreateSubsystem<Game::GameManager>();
+    Subsystems::Instance.CreateSubsystem<Game::PlayerManager>();
+
+    Subsystems::Instance.CreateSubsystem<Game::EffectManager>();
+    Subsystems::Instance.CreateSubsystem<Game::Chat>();
+    Subsystems::Instance.CreateSubsystem<Game::SkillManager>();
+
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
 }
 
 Application::~Application()
 {
     serviceManager_->Stop();
-    Game::GameManager::Instance.Stop();
-    Asynch::ThreadPool::Instance.Stop();
-    Asynch::Scheduler::Instance.Stop();
-    Asynch::Dispatcher::Instance.Stop();
+    GetSubsystem<Game::GameManager>()->Stop();
+    GetSubsystem<Asynch::ThreadPool>()->Stop();
+    GetSubsystem<Asynch::Scheduler>()->Stop();
+    GetSubsystem<Asynch::Dispatcher>()->Stop();
 }
 
 bool Application::ParseCommandLine()
@@ -199,12 +219,9 @@ bool Application::Initialize(int argc, char** argv)
         IO::Logger::Close();
     }
 
-    Subsystems::Instance.CreateSubsystem<Crypto::DHKeys>();
-    Subsystems::Instance.CreateSubsystem<ConfigManager>();
-
-    Asynch::Dispatcher::Instance.Start();
-    Asynch::Scheduler::Instance.Start();
-    Asynch::ThreadPool::Instance.Start();
+    GetSubsystem<Asynch::Dispatcher>()->Start();
+    GetSubsystem<Asynch::Scheduler>()->Start();
+    GetSubsystem<Asynch::ThreadPool>()->Start();
 
     if (!LoadMain())
         return false;
@@ -252,12 +269,12 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     {
         std::string serverId = msg.GetBodyString();
         if (serverId.compare(serverId_) == 0)
-            Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
+            GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
         break;
     }
     case Net::MessageType::SpawnGameServer:
     {
-        Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::SpawnServer, this)));
+        GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::SpawnServer, this)));
         break;
     }
     case Net::MessageType::ServerJoined:
@@ -268,7 +285,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         {
             // Notify players another game server left. Wait some time until the
             // service list is updated.
-            Asynch::Scheduler::Instance.Add(
+            GetSubsystem<Asynch::Scheduler>()->Add(
                 Asynch::CreateScheduledTask(500, [=]()
             {
                 msgDispatcher_->Dispatch(msg);
@@ -314,7 +331,7 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
-    Utils::Random::Instance.Initialize();
+    GetSubsystem<Crypto::Random>()->Initialize();
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Loading encryption keys...";
@@ -336,8 +353,9 @@ bool Application::LoadMain()
     LOG_INFO << "Connecting to data server...";
     const std::string& dataHost = (*config)[ConfigManager::Key::DataServerHost].GetString();
     uint16_t dataPort = static_cast<uint16_t>((*config)[ConfigManager::Key::DataServerPort].GetInt());
-    dataClient_->Connect(dataHost, dataPort);
-    if (!dataClient_->IsConnected())
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    dataClient->Connect(dataHost, dataPort);
+    if (!dataClient->IsConnected())
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Failed to connect to data server" << std::endl;
@@ -349,10 +367,10 @@ bool Application::LoadMain()
     const std::string& msgHost = (*config)[ConfigManager::Key::MessageServerHost].GetString();
     uint16_t msgPort = static_cast<uint16_t>((*config)[ConfigManager::Key::MessageServerPort].GetInt());
 
-    msgClient_ = std::make_unique<Net::MessageClient>(ioService_);
-    msgClient_->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
+    auto msgClient = GetSubsystem<Net::MessageClient>();
+    msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
     msgDispatcher_ = std::make_unique<MessageDispatcher>();
-    if (msgClient_->IsConnected())
+    if (msgClient->IsConnected())
         LOG_INFO << "[done]" << std::endl;
     else
     {
@@ -374,7 +392,7 @@ bool Application::LoadMain()
     if (gamePort_ != 0)
         serviceManager_->Add<Net::ProtocolGame>(ip, gamePort_, [](uint32_t remoteIp) -> bool
     {
-        return Auth::BanManager::Instance.AcceptConnection(remoteIp);
+        return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
     });
 
     int64_t loadingTime = (Utils::AbTick() - startLoading);
@@ -388,8 +406,8 @@ bool Application::LoadMain()
         LOG_INFO << (loadingTime / 1000) << " s";
     LOG_INFO << std::endl;
 
-    Maintenance::Instance.Run();
-    Game::GameManager::Instance.Start();
+    maintenance_.Run();
+    GetSubsystem<Game::GameManager>()->Start();
 
     return true;
 }
@@ -397,6 +415,8 @@ bool Application::LoadMain()
 void Application::PrintServerInfo()
 {
     auto config = GetSubsystem<ConfigManager>();
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Server name: " << serverName_ << std::endl;
@@ -416,10 +436,10 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Recording games: " << ((*config)[ConfigManager::Key::RecordGames].GetBool() ? "true" : "false") << std::endl;
     const std::string& recDir = (*config)[ConfigManager::Key::RecordingsDir].GetString();
     LOG_INFO << "  Recording directory: " << (recDir.empty() ? "(empty)" : recDir) << std::endl;
-    LOG_INFO << "  Background threads: " << Asynch::ThreadPool::Instance.GetNumThreads() << std::endl;
+    LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
 
-    LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
-    LOG_INFO << "  Message Server: " << msgClient_->GetHost() << ":" << msgClient_->GetPort() << std::endl;
+    LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
+    LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
 }
 
 void Application::SendServerJoined()
@@ -427,7 +447,7 @@ void Application::SendServerJoined()
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerJoined;
     msg.SetBodyString(GetServerId());
-    msgClient_->Write(msg);
+    GetSubsystem<Net::MessageClient>()->Write(msg);
 }
 
 void Application::GenNewKeys()
@@ -444,9 +464,10 @@ void Application::GenNewKeys()
 void Application::Run()
 {
     auto config = GetSubsystem<ConfigManager>();
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
-    dataClient_->Read(serv);
+    dataClient->Read(serv);
     serv.host = gameHost_;
     serv.location = (*config)[ConfigManager::Key::Location].GetString();
     serv.port = gamePort_;
@@ -457,10 +478,10 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeGameServer;
     serv.startTime = Utils::AbTick();
-    dataClient_->UpdateOrCreate(serv);
+    dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
-    dataClient_->Invalidate(sl);
+    dataClient->Invalidate(sl);
 
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
@@ -474,7 +495,7 @@ void Application::Run()
         IO::Logger::Close();
     }
 
-    Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(500, std::bind(&Application::SendServerJoined, this)));
+    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(500, std::bind(&Application::SendServerJoined, this)));
 
     running_ = true;
     serviceManager_->Run();
@@ -486,30 +507,32 @@ void Application::Stop()
     if (!running_)
         return;
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     running_ = false;
     LOG_INFO << "Server shutdown...";
 
+    auto msgClient = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerLeft;
     msg.SetBodyString(GetServerId());
-    msgClient_->Write(msg);
+    msgClient->Write(msg);
 
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
-    if (dataClient_->Read(serv))
+    if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
         if (!autoTerminate_)
-            dataClient_->Update(serv);
+            dataClient->Update(serv);
         else
             // If autoterm -> temporary -> dynamically spawned -> delete from DB
-            dataClient_->Delete(serv);
+            dataClient->Delete(serv);
 
         AB::Entities::ServiceList sl;
-        dataClient_->Invalidate(sl);
+        dataClient->Invalidate(sl);
     }
     else
         LOG_ERROR << "Unable to read service" << std::endl;
@@ -517,11 +540,11 @@ void Application::Stop()
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(100ms);
 
-    Game::PlayerManager::Instance.KickAllPlayers();
+    GetSubsystem<Game::PlayerManager>()->KickAllPlayers();
     // Before serviceManager_.Stop()
-    Maintenance::Instance.Stop();
+    maintenance_.Stop();
 
-    msgClient_->Close();
+    msgClient->Close();
     ioService_.stop();
 }
 
@@ -540,10 +563,10 @@ uint8_t Application::GetLoad()
     if ((Utils::AbTick() - lastLoadCalc_) > 1000 || loads_.empty())
     {
         lastLoadCalc_ = Utils::AbTick();
-        size_t playerCount = Game::PlayerManager::Instance.GetPlayerCount();
+        size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
         float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
         uint8_t load = static_cast<uint8_t>(ld);
-        uint8_t utilization = static_cast<uint8_t>(Asynch::Dispatcher::Instance.GetUtilization());
+        uint8_t utilization = static_cast<uint8_t>(GetSubsystem<Asynch::Dispatcher>()->GetUtilization());
         if (utilization > load)
             load = utilization;
         short l = usage.GetUsage();

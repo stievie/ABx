@@ -12,6 +12,7 @@
 #include "StringUtils.h"
 #include "IOService.h"
 #include "IOGame.h"
+#include "Subsystems.h"
 
 namespace Net {
 
@@ -27,7 +28,8 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
     std::shared_ptr<Connection> conn = GetConnection();
     uint32_t clientIp = conn->GetIP();
-    if (Auth::BanManager::Instance.IsIpBanned(clientIp))
+    auto banMan = GetSubsystem<Auth::BanManager>();
+    if (banMan->IsIpBanned(clientIp))
     {
         DisconnectClient(AB::Errors::IPBanned);
         return;
@@ -85,7 +87,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
     }
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendCharacterList, thisPtr,
             accountName, password
@@ -126,7 +128,7 @@ void ProtocolLogin::HandleCreateAccountPacket(NetworkMessage& message)
     }
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::CreateAccount, thisPtr,
             accountName, password,
@@ -178,7 +180,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
     bool isPvp = message.GetByte() != 0;
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::CreatePlayer, thisPtr,
             accountUuid, password,
@@ -209,7 +211,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     }
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::DeletePlayer, thisPtr,
             accountUuid, password,
@@ -240,7 +242,7 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     }
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::AddAccountKey, thisPtr,
             accountUuid, password,
@@ -265,7 +267,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     }
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendOutposts, thisPtr,
             accountUuid, password
@@ -289,7 +291,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
     }
 
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendServers, thisPtr,
             accountUuid, password
@@ -302,19 +304,20 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     AB::Entities::Account account;
     account.name = accountName;
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
+    auto banMan = GetSubsystem<Auth::BanManager>();
     switch (res)
     {
     case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         break;
     }
 
@@ -337,7 +340,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         return;
     }
 
-    Auth::BanManager::Instance.AddLoginAttempt(GetIP(), true);
+    banMan->AddLoginAttempt(GetIP(), true);
 
     LOG_INFO << Utils::ConvertIPToString(GetIP(), true) << ": " << accountName << " logged in" << std::endl;
 
@@ -492,19 +495,20 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
     AB::Entities::Account account;
     account.uuid = accountUuid;
     IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
+    auto banMan = GetSubsystem<Auth::BanManager>();
     switch (authRes)
     {
     case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         break;
     }
 
@@ -554,19 +558,20 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
     AB::Entities::Account account;
     account.uuid = accountUuid;
     IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
+    auto banMan = GetSubsystem<Auth::BanManager>();
     switch (authRes)
     {
     case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         break;
     }
 
@@ -607,19 +612,20 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
     AB::Entities::Account account;
     account.uuid = accountUuid;
     IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
+    auto banMan = GetSubsystem<Auth::BanManager>();
     switch (authRes)
     {
     case IO::IOAccount::LoginError::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         return;
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        Auth::BanManager::Instance.AddLoginAttempt(GetIP(), false);
+        banMan->AddLoginAttempt(GetIP(), false);
         break;
     }
 

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "IOMail.h"
 #include "IOPlayer.h"
+#include "Subsystems.h"
 
 namespace IO {
 
 bool IOMail::LoadMailList(AB::Entities::MailList& ml, const std::string& accountUuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     ml.uuid = accountUuid;
     return client->Read(ml);
 }
@@ -30,7 +31,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     const std::string& fromName, const std::string& toName,
     const std::string& subject, const std::string& message)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::MailList ml;
     ml.uuid = accountUuid;
     // Check quota
@@ -64,7 +65,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
         client->Update(ml);
 
         // Notify receiver
-        Net::MessageClient* msgCli = Application::Instance->GetMessageClient();
+        Net::MessageClient* msgCli = GetSubsystem<Net::MessageClient>();
         Net::MessageMsg msg;
         msg.type_ = Net::MessageType::NewMail;
         IO::PropWriteStream stream;
@@ -77,7 +78,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
 
 bool IOMail::ReadMail(AB::Entities::Mail& mail)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     bool ret = client->Read(mail);
     if (ret)
     {
@@ -104,7 +105,7 @@ bool IOMail::ReadMail(AB::Entities::Mail& mail)
 
 bool IOMail::DeleteMail(AB::Entities::Mail& mail)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(mail))
         return false;
 

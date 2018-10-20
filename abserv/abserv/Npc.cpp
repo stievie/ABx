@@ -4,6 +4,7 @@
 #include "ScriptManager.h"
 #include "MathUtils.h"
 #include "DataProvider.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -34,7 +35,7 @@ Npc::~Npc()
 
 bool Npc::LoadScript(const std::string& fileName)
 {
-    script_ = IO::DataProvider::Instance.GetAsset<Script>(fileName);
+    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
     if (!script_)
         return false;
     if (!script_->Execute(luaState_))
@@ -46,7 +47,7 @@ bool Npc::LoadScript(const std::string& fileName)
     sex_ = luaState_["sex"];
     stateComp_.SetState(luaState_["creatureState"], true);
 
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
     skills_.prof1_.index = luaState_["prof1Index"];
     if (skills_.prof1_.index != 0)
@@ -81,7 +82,7 @@ void Npc::Say(ChatType channel, const std::string& message)
     {
     case ChatType::Map:
     {
-        std::shared_ptr<ChatChannel> ch = Chat::Instance.Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
+        std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
         if (ch)
         {
             ch->TalkNpc(this, message);

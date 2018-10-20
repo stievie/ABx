@@ -15,15 +15,13 @@
 
 namespace IO {
 
-DataProvider DataProvider::Instance;
-
 DataProvider::DataProvider()
 {
     // Add Importer
-    IO::DataProvider::Instance.AddImporter<Navigation::NavigationMesh, IO::IONavMesh>();
-    IO::DataProvider::Instance.AddImporter<Game::Terrain, IO::IOTerrain>();
-    IO::DataProvider::Instance.AddImporter<Game::Model, IO::IOModel>();
-    IO::DataProvider::Instance.AddImporter<Game::Script, IO::IOScript>();
+    AddImporter<Navigation::NavigationMesh, IO::IONavMesh>();
+    AddImporter<Game::Terrain, IO::IOTerrain>();
+    AddImporter<Game::Model, IO::IOModel>();
+    AddImporter<Game::Script, IO::IOScript>();
 }
 
 std::string DataProvider::GetDataFile(const std::string& name) const

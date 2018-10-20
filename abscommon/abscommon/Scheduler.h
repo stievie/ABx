@@ -79,7 +79,6 @@ public:
 
     void Start();
     void Stop();
-    static Scheduler Instance;
 };
 
 }

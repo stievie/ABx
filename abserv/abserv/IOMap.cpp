@@ -7,13 +7,14 @@
 #include "GameObject.h"
 #include "TerrainPatch.h"
 #include "Profiler.h"
+#include "Subsystems.h"
 
 namespace IO {
 
 bool IOMap::LoadScene(Game::Map& map, const std::string& name)
 {
     // Game load thread
-    std::string file = IO::DataProvider::Instance.GetDataFile(map.data_.directory + "/" + name);
+    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(map.data_.directory + "/" + name);
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
@@ -43,7 +44,7 @@ bool IOMap::Load(Game::Map& map)
 {
     AB_PROFILE;
     // Game load thread
-    std::string file = IO::DataProvider::Instance.GetDataFile(map.data_.directory + "/index.xml");
+    std::string file = GetSubsystem<IO::DataProvider>()->GetDataFile(map.data_.directory + "/index.xml");
     pugi::xml_document doc;
     const pugi::xml_parse_result& result = doc.load_file(file.c_str());
     if (result.status != pugi::status_ok)
@@ -52,6 +53,7 @@ bool IOMap::Load(Game::Map& map)
     if (!index_node)
         return false;
 
+    auto dataProv = GetSubsystem<IO::DataProvider>();
     std::string sceneFile;
     std::string navMeshFile;
     std::string terrainFile;
@@ -94,14 +96,14 @@ bool IOMap::Load(Game::Map& map)
     }
 
     // Before scene
-    map.terrain_ = IO::DataProvider::Instance.GetAsset<Game::Terrain>(map.data_.directory + "/" + terrainFile);
+    map.terrain_ = dataProv->GetAsset<Game::Terrain>(map.data_.directory + "/" + terrainFile);
     if (!map.terrain_)
     {
         LOG_ERROR << "Error loading terrain " << terrainFile << std::endl;
         return false;
     }
 
-    map.navMesh_ = IO::DataProvider::Instance.GetAsset<Navigation::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
+    map.navMesh_ = dataProv->GetAsset<Navigation::NavigationMesh>(map.data_.directory + "/" + navMeshFile);
     if (!map.navMesh_)
     {
         LOG_ERROR << "Error loading nav mesh " << navMeshFile << std::endl;

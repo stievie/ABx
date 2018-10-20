@@ -41,8 +41,6 @@ public:
             throw std::runtime_error("ThreadPool not running");
         return pool_->enqueue(f, args...);
     }
-
-    static ThreadPool Instance;
 };
 
 }

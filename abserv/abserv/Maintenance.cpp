@@ -12,17 +12,16 @@
 #include "DataClient.h"
 #include "Chat.h"
 #include "Dispatcher.h"
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
-Maintenance Maintenance::Instance;
-
 void Maintenance::CleanCacheTask()
 {
-    IO::DataProvider::Instance.CleanCache();
+    GetSubsystem<IO::DataProvider>()->CleanCache();
     if (status_ == MaintenanceStatus::Runnig)
     {
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
         );
     }
@@ -30,10 +29,10 @@ void Maintenance::CleanCacheTask()
 
 void Maintenance::CleanGamesTask()
 {
-    Game::GameManager::Instance.CleanGames();
+    GetSubsystem<Game::GameManager>()->CleanGames();
     if (status_ == MaintenanceStatus::Runnig)
     {
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_GAMES_MS, std::bind(&Maintenance::CleanGamesTask, this))
         );
     }
@@ -41,10 +40,10 @@ void Maintenance::CleanGamesTask()
 
 void Maintenance::CleanPlayersTask()
 {
-    Game::PlayerManager::Instance.CleanPlayers();
+    GetSubsystem<Game::PlayerManager>()->CleanPlayers();
     if (status_ == MaintenanceStatus::Runnig)
     {
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
         );
     }
@@ -52,10 +51,10 @@ void Maintenance::CleanPlayersTask()
 
 void Maintenance::CleanChatsTask()
 {
-    Game::Chat::Instance.CleanChats();
+    GetSubsystem<Game::Chat>()->CleanChats();
     if (status_ == MaintenanceStatus::Runnig)
     {
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_CHATS_MS, std::bind(&Maintenance::CleanChatsTask, this))
         );
     }
@@ -68,7 +67,7 @@ void Maintenance::UpdateServerLoadTask()
 
     AB::Entities::Service serv;
     serv.uuid = Application::Instance->GetServerId();
-    IO::DataClient* cli = Application::Instance->GetDataClient();
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     if (cli->Read(serv))
     {
         uint8_t load = Application::Instance->GetLoad();
@@ -79,21 +78,22 @@ void Maintenance::UpdateServerLoadTask()
         }
     }
 
-    Asynch::Scheduler::Instance.Add(
+    GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );
 }
 
 void Maintenance::CheckAutoTerminate()
 {
-    if (Game::PlayerManager::Instance.GetPlayerCount() == 0)
+    auto dispatcher = GetSubsystem<Asynch::Dispatcher>();
+    if (GetSubsystem<Game::PlayerManager>()->GetPlayerCount() == 0)
     {
-        Asynch::Dispatcher::Instance.Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
+        dispatcher->Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
         return;
     }
     if (status_ == MaintenanceStatus::Runnig)
     {
-        Asynch::Scheduler::Instance.Add(
+        dispatcher->Add(
             Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
         );
     }
@@ -105,21 +105,22 @@ void Maintenance::Run()
         std::lock_guard<std::mutex> lock(lock_);
         status_ = MaintenanceStatus::Runnig;
     }
-    Asynch::Scheduler::Instance.Add(
+    auto shed = GetSubsystem<Asynch::Scheduler>();
+    shed->Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
     );
-    Asynch::Scheduler::Instance.Add(
+    shed->Add(
         Asynch::CreateScheduledTask(CLEAN_GAMES_MS, std::bind(&Maintenance::CleanGamesTask, this))
     );
-    Asynch::Scheduler::Instance.Add(
+    shed->Add(
         Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
     );
-    Asynch::Scheduler::Instance.Add(
+    shed->Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );
     if (Application::Instance->autoTerminate_)
     {
-        Asynch::Scheduler::Instance.Add(
+        shed->Add(
             Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
         );
     }

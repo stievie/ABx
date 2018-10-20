@@ -8,6 +8,32 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Utils.h"
+#include "Subsystems.h"
+
+Application::Application() :
+    ServerApp::ServerApp(),
+    port_(0),
+    listenIp_(0),
+    maxSize_(0),
+    readonly_(false),
+    running_(false),
+    ioService_(),
+    server_(nullptr),
+    flushInterval_(FLUSH_CACHE_MS),
+    cleanInterval_(CLEAN_CACHE_MS)
+{
+    Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
+    Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
+    Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+}
+
+Application::~Application()
+{
+    if (running_)
+        Stop();
+    GetSubsystem<Asynch::Scheduler>()->Stop();
+    GetSubsystem<Asynch::Dispatcher>()->Stop();
+}
 
 bool Application::ParseCommandLine()
 {
@@ -142,9 +168,10 @@ bool Application::LoadConfig()
     if (configFile_.empty())
         configFile_ = path_ + "/" + "abdata.lua";
 
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     if (Utils::FileExists(configFile_))
     {
-        if (!IO::SimpleConfigManager::Instance.Load(configFile_))
+        if (!config->Load(configFile_))
         {
             LOG_ERROR << "Error loading config file" << std::endl;
             return false;
@@ -152,30 +179,30 @@ bool Application::LoadConfig()
     }
 
     if (port_ == 0)
-        port_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
+        port_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     if (listenIp_ == 0)
-        listenIp_ = Utils::ConvertStringToIP(IO::SimpleConfigManager::Instance.GetGlobal("data_ip", ""));
+        listenIp_ = Utils::ConvertStringToIP(config->GetGlobal("data_ip", ""));
     if (maxSize_ == 0)
-        maxSize_ = IO::SimpleConfigManager::Instance.GetGlobal("max_size", 0);
+        maxSize_ = config->GetGlobal("max_size", 0);
     if (!readonly_)
-        readonly_ = IO::SimpleConfigManager::Instance.GetGlobalBool("read_only", false);
+        readonly_ = config->GetGlobalBool("read_only", false);
     if (IO::Logger::logDir_.empty())
-        IO::Logger::logDir_ = IO::SimpleConfigManager::Instance.GetGlobal("log_dir", "");
+        IO::Logger::logDir_ = config->GetGlobal("log_dir", "");
     if (DB::Database::driver_.empty())
-        DB::Database::driver_ = IO::SimpleConfigManager::Instance.GetGlobal("db_driver", "");
+        DB::Database::driver_ = config->GetGlobal("db_driver", "");
     if (DB::Database::dbHost_.empty())
-        DB::Database::dbHost_ = IO::SimpleConfigManager::Instance.GetGlobal("db_host", "");
+        DB::Database::dbHost_ = config->GetGlobal("db_host", "");
     if (DB::Database::dbName_.empty())
-        DB::Database::dbName_ = IO::SimpleConfigManager::Instance.GetGlobal("db_name", "");
+        DB::Database::dbName_ = config->GetGlobal("db_name", "");
     if (DB::Database::dbUser_.empty())
-        DB::Database::dbUser_ = IO::SimpleConfigManager::Instance.GetGlobal("db_user", "");
+        DB::Database::dbUser_ = config->GetGlobal("db_user", "");
     if (DB::Database::dbPass_.empty())
-        DB::Database::dbPass_ = IO::SimpleConfigManager::Instance.GetGlobal("db_pass", "");
+        DB::Database::dbPass_ = config->GetGlobal("db_pass", "");
     if (DB::Database::dbPort_ == 0)
-        DB::Database::dbPort_ = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("db_port", 0));
+        DB::Database::dbPort_ = static_cast<uint16_t>(config->GetGlobal("db_port", 0));
 
-    flushInterval_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("flush_interval", (int64_t)flushInterval_));
-    cleanInterval_ = static_cast<uint32_t>(IO::SimpleConfigManager::Instance.GetGlobal("clean_interval", (int64_t)cleanInterval_));
+    flushInterval_ = static_cast<uint32_t>(config->GetGlobal("flush_interval", (int64_t)flushInterval_));
+    cleanInterval_ = static_cast<uint32_t>(config->GetGlobal("clean_interval", (int64_t)cleanInterval_));
 
     if (port_ == 0)
     {
@@ -190,9 +217,10 @@ bool Application::LoadConfig()
 
 void Application::PrintServerInfo()
 {
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Server config:" << std::endl;
-    LOG_INFO << "  Server ID: " << IO::SimpleConfigManager::Instance.GetGlobal("server_id", "") << std::endl;
-    LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << config->GetGlobal("server_id", "") << std::endl;
+    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << port_ << std::endl;
     LOG_INFO << "  Cache size: " << Utils::ConvertSize(maxSize_) << std::endl;
@@ -240,14 +268,6 @@ void Application::ShowHelp()
     std::cout << "  h, help: Show help" << std::endl;
 }
 
-Application::~Application()
-{
-    if (running_)
-        Stop();
-    Asynch::Scheduler::Instance.Stop();
-    Asynch::Dispatcher::Instance.Stop();
-}
-
 bool Application::Initialize(int argc, char** argv)
 {
     if (!ServerApp::Initialize(argc, argv))
@@ -285,21 +305,22 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
-    Asynch::Dispatcher::Instance.Start();
-    Asynch::Scheduler::Instance.Start();
+    GetSubsystem<Asynch::Dispatcher>()->Start();
+    GetSubsystem<Asynch::Scheduler>()->Start();
 
     server_ = std::make_unique<Server>(ioService_, listenIp_, port_, maxSize_, readonly_);
     StorageProvider* provider = server_->GetStorageProvider();
     provider->flushInterval_ = flushInterval_;
     provider->cleanInterval_ = cleanInterval_;
 
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     AB::Entities::Service serv;
-    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    serv.uuid = config->GetGlobal("server_id", "");
     provider->EntityRead(serv);
-    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
-    serv.host = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
-    serv.port = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 2770));
-    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "abdata");
+    serv.location = config->GetGlobal("location", "--");
+    serv.host = config->GetGlobal("data_host", "");
+    serv.port = static_cast<uint16_t>(config->GetGlobal("data_port", 2770));
+    serv.name = config->GetGlobal("server_name", "abdata");
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
@@ -326,7 +347,7 @@ void Application::Stop()
 
     StorageProvider* provider = server_->GetStorageProvider();
     AB::Entities::Service serv;
-    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobal("server_id", "");
     if (provider->EntityRead(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;

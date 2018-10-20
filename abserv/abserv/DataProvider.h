@@ -167,8 +167,6 @@ public:
         }
         return std::shared_ptr<T>();
     }
-
-    static DataProvider Instance;
 };
 
 }

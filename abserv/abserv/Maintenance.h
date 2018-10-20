@@ -24,7 +24,5 @@ public:
 
     void Run();
     void Stop();
-
-    static Maintenance Instance;
 };
 

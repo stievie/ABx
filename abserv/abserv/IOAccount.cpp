@@ -8,6 +8,7 @@
 #include <AB/Entities/AccountKeyAccounts.h>
 #include <AB/Entities/Character.h>
 #include "Profiler.h"
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -17,7 +18,7 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
     const std::string& charUuid)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!client->Read(acc))
@@ -48,14 +49,14 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
 bool IOAccount::Save(const AB::Entities::Account& account)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     return client->Update(account);
 }
 
 bool IOAccount::AccountLogout(const std::string& uuid)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     acc.uuid = uuid;
     if (!client->Read(acc))

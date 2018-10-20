@@ -31,7 +31,6 @@ public:
             L = nullptr;
         }
     }
-    static SimpleConfigManager Instance;
 };
 
 }

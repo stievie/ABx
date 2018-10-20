@@ -3,7 +3,7 @@
 #include <limits>
 #include <abcrypto.hpp>
 
-namespace Utils {
+namespace Crypto {
 
 class Random
 {
@@ -44,8 +44,6 @@ public:
         assert(max > min);
         return static_cast<T>(GetFloat() * (float)(max - min)) + min;
     }
-
-    static Random Instance;
 };
 
 }

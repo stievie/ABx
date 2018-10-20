@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Chat.h"
 #include "GameManager.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -13,14 +14,14 @@ Party::Party(std::shared_ptr<Player> leader) :
     maxMembers_(1)
 {
     id_ = GetNewId();
-    chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(Chat::Instance.Get(ChatType::Party, id_));
+    chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
     members_.push_back(leader);
 }
 
 Party::~Party()
 {
-    Chat::Instance.Remove(ChatType::Party, id_);
+    GetSubsystem<Chat>()->Remove(ChatType::Party, id_);
 }
 
 bool Party::Add(std::shared_ptr<Player> player)
@@ -163,7 +164,7 @@ bool Party::IsLeader(const Player* const player)
 
 void Party::ChangeInstance(const std::string& mapUuid)
 {
-    std::shared_ptr<Game> game = GameManager::Instance.GetGame(mapUuid, true);
+    std::shared_ptr<Game> game = GetSubsystem<GameManager>()->GetGame(mapUuid, true);
     if (!game)
         return;
     for (const auto& member : members_)

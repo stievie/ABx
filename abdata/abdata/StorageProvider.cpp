@@ -10,6 +10,7 @@
 #include "StringUtils.h"
 #include "Profiler.h"
 #include <AB/Entities/GameInstance.h>
+#include "Subsystems.h"
 
 #if defined(_MSC_VER)
 #pragma warning(push)
@@ -58,10 +59,11 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     currentSize_(0),
     cache_()
 {
-    Asynch::Scheduler::Instance.Add(
+    auto sched = GetSubsystem<Asynch::Scheduler>();
+    sched->Add(
         Asynch::CreateScheduledTask(FLUSH_CACHE_MS, std::bind(&StorageProvider::FlushCacheTask, this))
     );
-    Asynch::Scheduler::Instance.Add(
+    sched->Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanTask, this))
     );
 }
@@ -136,7 +138,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     if (!EnoughSpace(sizeNeeded))
     {
         // Create space later
-        Asynch::Dispatcher::Instance.Add(
+        GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateTask(std::bind(&StorageProvider::CreateSpace, this, sizeNeeded))
         );
     }
@@ -301,7 +303,7 @@ bool StorageProvider::Preload(const IO::DataKey& key)
         return true;
 
     // Load later
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(&StorageProvider::PreloadTask, this, key))
     );
     return true;
@@ -380,7 +382,7 @@ void StorageProvider::CleanTask()
     DB::DBGuildMembers::DeleteExpired(this);
     if (running_)
     {
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(cleanInterval_, std::bind(&StorageProvider::CleanTask, this))
         );
     }
@@ -421,7 +423,7 @@ void StorageProvider::FlushCacheTask()
     FlushCache();
     if (running_)
     {
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(flushInterval_, std::bind(&StorageProvider::FlushCacheTask, this))
         );
     }

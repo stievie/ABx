@@ -50,8 +50,6 @@ public:
         AB::Entities::BanReason reason = AB::Entities::BanReasonOther);
     bool AddAccountBan(const std::string& accountUuid, int32_t expires, const std::string& adminUuid, const std::string& comment,
         AB::Entities::BanReason reason = AB::Entities::BanReasonOther);
-
-    static BanManager Instance;
 };
 
 }

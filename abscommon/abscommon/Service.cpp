@@ -5,6 +5,7 @@
 #include "NetworkMessage.h"
 #include "Logger.h"
 #include <AB/CommonConfig.h>
+#include "Subsystems.h"
 
 namespace Net {
 
@@ -79,7 +80,7 @@ void ServicePort::Open(uint32_t ip, uint16_t port)
 #endif
         // Reschedule
         pendingStart_ = true;
-        Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(
             5000,
             std::bind(&ServicePort::OpenAcceptor,
                 std::weak_ptr<ServicePort>(shared_from_this()),
@@ -203,7 +204,7 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
         {
             Close();
             pendingStart_ = true;
-            Asynch::Scheduler::Instance.Add(Asynch::CreateScheduledTask(
+            GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(
                 5000,
                 std::bind(&ServicePort::OpenAcceptor,
                     std::weak_ptr<ServicePort>(shared_from_this()),

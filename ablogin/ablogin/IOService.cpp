@@ -3,6 +3,7 @@
 #include <AB/Entities/ServiceList.h>
 #include "Application.h"
 #include "Logger.h"
+#include "Subsystems.h"
 
 namespace IO {
 
@@ -10,7 +11,7 @@ bool IOService::GetService(AB::Entities::ServiceType type,
     AB::Entities::Service& service,
     const std::string& preferredUuid /* = Utils::Uuid::EMPTY_UUID */)
 {
-    DataClient* dc = Application::Instance->GetDataClient();
+    DataClient* dc = GetSubsystem<IO::DataClient>();
 
     AB::Entities::ServiceList sl;
     if (!dc->Read(sl))
@@ -58,7 +59,7 @@ bool IOService::GetService(AB::Entities::ServiceType type,
 
 int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entities::Service>& services)
 {
-    DataClient* dc = Application::Instance->GetDataClient();
+    DataClient* dc = GetSubsystem<IO::DataClient>();
 
     AB::Entities::ServiceList sl;
     if (!dc->Read(sl))

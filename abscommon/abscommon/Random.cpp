@@ -3,9 +3,7 @@
 
 #include "DebugNew.h"
 
-namespace Utils {
-
-Random Random::Instance;
+namespace Crypto {
 
 void Random::Initialize()
 {

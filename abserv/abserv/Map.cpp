@@ -129,7 +129,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
                         if (modelFile.size() == 2)
                         {
-                            model = IO::DataProvider::Instance.GetAsset<Model>(modelFile[1]);
+                            model = GetSubsystem<IO::DataProvider>()->GetAsset<Model>(modelFile[1]);
 #ifdef DEBUG_COLLISION
                             if (model)
                                 LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox().ToString() << std::endl;

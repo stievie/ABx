@@ -10,6 +10,7 @@
 #include <AB/Entities/Profession.h>
 #include "Logger.h"
 #include <uuids.h>
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -18,7 +19,7 @@ namespace IO {
 bool IOPlayer::LoadPlayer(Game::Player* player)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(player->data_))
     {
         LOG_ERROR << "Error reading player data" << std::endl;
@@ -55,7 +56,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
 bool IOPlayer::LoadCharacter(AB::Entities::Character& ch)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(ch))
     {
         LOG_ERROR << "Error reading player data" << std::endl;
@@ -79,7 +80,7 @@ bool IOPlayer::LoadPlayerByUuid(Game::Player* player, const std::string& uuid)
 bool IOPlayer::SavePlayer(Game::Player* player)
 {
     AB_PROFILE;
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     player->data_.lastLogin = player->loginTime_;
     player->data_.lastLogout = player->logoutTime_;
     player->data_.profession2 = player->skills_.prof2_.abbr;
@@ -136,7 +137,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
     const std::string& name, const std::string& profUuid, AB::Entities::CharacterSex sex, bool isPvp,
     std::string& uuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
@@ -179,7 +180,7 @@ IOPlayer::CreatePlayerResult IOPlayer::CreatePlayer(const std::string& accountUu
 
 bool IOPlayer::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Character ch;
     ch.uuid = playerUuid;
     if (!client->Read(ch))

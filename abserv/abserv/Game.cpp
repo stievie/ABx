@@ -21,6 +21,7 @@
 #include "Profiler.h"
 #include "ScriptManager.h"
 #include "ThreadPool.h"
+#include "Subsystems.h"
 
 #include "DebugNew.h"
 
@@ -43,7 +44,7 @@ Game::~Game()
     DeleteEntity(instanceData_);
     players_.clear();
     objects_.clear();
-    Chat::Instance.Remove(ChatType::Map, id_);
+    GetSubsystem<Chat>()->Remove(ChatType::Map, id_);
 }
 
 void Game::RegisterLua(kaguya::State& state)
@@ -94,7 +95,7 @@ void Game::Start()
         {
             for (const auto& p : queuedObjects_)
             {
-                Asynch::Scheduler::Instance.Add(
+                GetSubsystem<Asynch::Scheduler>()->Add(
                     Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), p))
                 );
             }
@@ -102,7 +103,7 @@ void Game::Start()
         }
 
         // Initial game update
-        Asynch::Dispatcher::Instance.Add(
+        GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
         );
     }
@@ -173,7 +174,7 @@ void Game::Update()
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         // At least SCHEDULER_MINTICKS
         const int32_t sleepTime = std::max<int32_t>(SCHEDULER_MINTICKS, NETWORK_TICK - duration);
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, this))
         );
 
@@ -182,8 +183,9 @@ void Game::Update()
     case ExecutionState::Terminated:
         // Delete this game
         LOG_INFO << "Stopping game " << id_ << ", " << map_->data_.name << std::endl;
-        Asynch::Scheduler::Instance.Add(
-            Asynch::CreateScheduledTask(500, std::bind(&GameManager::DeleteGameTask, &GameManager::Instance, id_))
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(500, std::bind(&GameManager::DeleteGameTask,
+                GetSubsystem<GameManager>(), id_))
         );
         break;
     }
@@ -222,7 +224,7 @@ Player* Game::GetPlayerById(uint32_t playerId)
 
 Player* Game::GetPlayerByName(const std::string& name)
 {
-    uint32_t playerId = PlayerManager::Instance.GetPlayerIdByName(name);
+    uint32_t playerId = GetSubsystem<PlayerManager>()->GetPlayerIdByName(name);
     if (playerId != 0)
         return GetPlayerById(playerId);
     return nullptr;
@@ -277,7 +279,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     {
         // In worst case (i.e. the game data is still loading): will be sent as
         // soon as the game runs and entered the Update loop.
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), result))
         );
     }
@@ -325,14 +327,14 @@ void Game::Load(const std::string& mapUuid)
 
     // Must be executed here because the player doesn't wait to fully load the game to join
     // Execute initialization code if any
-    script_ = IO::DataProvider::Instance.GetAsset<Script>(data_.script);
+    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(data_.script);
     if (!script_)
         return;
     if (!script_->Execute(luaState_))
         return;
 
     // Load Assets
-    Asynch::ThreadPool::Instance.Enqueue(&Game::InternalLoad, shared_from_this());
+    GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Game::InternalLoad, shared_from_this());
 }
 
 void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
@@ -360,7 +362,7 @@ void Game::QueueLeaveObject(uint32_t objectId)
 
 void Game::SendSpawnAll(uint32_t playerId)
 {
-    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (!player)
         return;
 
@@ -387,9 +389,10 @@ void Game::SendSpawnAll(uint32_t playerId)
 
 void Game::PlayerJoin(uint32_t playerId)
 {
-    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
+        auto shed = GetSubsystem<Asynch::Scheduler>();
         {
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
@@ -399,7 +402,7 @@ void Game::PlayerJoin(uint32_t playerId)
         UpdateEntity(player->data_);
 
         luaState_["onPlayerJoin"](player.get());
-        Asynch::Scheduler::Instance.Add(
+        shed->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
         );
 
@@ -407,7 +410,7 @@ void Game::PlayerJoin(uint32_t playerId)
         {
             // In worst case (i.e. the game data is still loading): will be sent as
             // soon as the game runs and entered the Update loop.
-            Asynch::Scheduler::Instance.Add(
+            shed->Add(
                 Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
             );
         }
@@ -418,7 +421,7 @@ void Game::PlayerJoin(uint32_t playerId)
 
 void Game::PlayerLeave(uint32_t playerId)
 {
-    std::shared_ptr<Player> player = PlayerManager::Instance.GetPlayerById(playerId);
+    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -433,7 +436,7 @@ void Game::PlayerLeave(uint32_t playerId)
         player->data_.instanceUuid = "";
         UpdateEntity(player->data_);
 
-        Asynch::Scheduler::Instance.Add(
+        GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
         );
     }

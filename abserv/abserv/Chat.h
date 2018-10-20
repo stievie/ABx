@@ -122,8 +122,6 @@ public:
     std::shared_ptr<ChatChannel> Get(ChatType type, const std::string& uuid);
     void Remove(ChatType type, uint64_t id);
     void CleanChats();
-
-    static Chat Instance;
 };
 
 }

@@ -38,8 +38,6 @@ private:
     std::condition_variable signal_;
     uint32_t utilization_;
     void DispatcherThread();
-public:
-    static Dispatcher Instance;
 };
 
 }

@@ -5,8 +5,6 @@
 
 namespace Game {
 
-SkillManager SkillManager::Instance;
-
 SkillManager::SkillManager()
 {
 }
@@ -21,7 +19,7 @@ std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
     }
     else
     {
-        IO::DataClient* client = Application::Instance->GetDataClient();
+        IO::DataClient* client = GetSubsystem<IO::DataClient>();
         AB::Entities::Skill skill;
         skill.index = index;
         if (!client->Read(skill))

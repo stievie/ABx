@@ -7,6 +7,7 @@
 #include "StringUtils.h"
 #include "Service.h"
 #include "OutputMessage.h"
+#include "Subsystems.h"
 
 namespace Net {
 
@@ -87,7 +88,7 @@ void Connection::Close(bool force /* = false */)
     state_ = State::Closed;
     if (protocol_)
     {
-        Asynch::Dispatcher::Instance.Add(
+        GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateTask(std::bind(&Protocol::Release, protocol_))
         );
     }
@@ -99,7 +100,7 @@ void Connection::Close(bool force /* = false */)
 void Connection::Accept(std::shared_ptr<Protocol> protocol)
 {
     protocol_ = protocol;
-    Asynch::Dispatcher::Instance.Add(
+    GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(&Protocol::OnConnect, protocol))
     );
     Accept();

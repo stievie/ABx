@@ -3,8 +3,6 @@
 
 namespace Asynch {
 
-ThreadPool ThreadPool::Instance;
-
 ThreadPool::~ThreadPool()
 {
     Stop();

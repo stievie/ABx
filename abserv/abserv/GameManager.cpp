@@ -11,8 +11,6 @@
 
 namespace Game {
 
-GameManager GameManager::Instance;
-
 void GameManager::Start()
 {
     // Main Thread
@@ -83,7 +81,7 @@ std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
 
 std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canCreate /* = false */)
 {
-    AB::Entities::GameType gType = GameManager::Instance.GetGameType(mapUuid);
+    AB::Entities::GameType gType = GetGameType(mapUuid);
     if (gType >= AB::Entities::GameTypePvPCombat && canCreate)
         // These games are exclusive
         return CreateGame(mapUuid);

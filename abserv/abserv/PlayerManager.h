@@ -48,8 +48,6 @@ public:
     {
         return players_.size();
     }
-
-    static PlayerManager Instance;
 };
 
 }

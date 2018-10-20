@@ -5,12 +5,13 @@
 #include "Logger.h"
 #include "Application.h"
 #include "UuidUtils.h"
+#include "Subsystems.h"
 
 namespace IO {
 
 std::string IOGame::GetLandingGameUuid()
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
     {
@@ -36,7 +37,7 @@ std::string IOGame::GetLandingGameUuid()
 
 AB::Entities::GameType IOGame::GetGameType(const std::string& mapName)
 {
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Game g;
     g.name = mapName;
     if (!client->Read(g))
@@ -51,7 +52,7 @@ std::vector<AB::Entities::Game> IOGame::GetGameList()
 {
     std::vector<AB::Entities::Game> result;
 
-    IO::DataClient* client = Application::Instance->GetDataClient();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
     if (!client->Read(gl))
     {

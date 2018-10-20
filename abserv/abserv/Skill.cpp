@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "ScriptManager.h"
 #include "DataProvider.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -24,7 +25,7 @@ void Skill::InitializeLua()
 
 bool Skill::LoadScript(const std::string& fileName)
 {
-    script_ = IO::DataProvider::Instance.GetAsset<Script>(fileName);
+    script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
     if (!script_)
         return false;
     if (!script_->Execute(luaState_))

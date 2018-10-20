@@ -5,12 +5,14 @@
 #include <AB/Entities/ServiceList.h>
 #include "StringUtils.h"
 #include "Utils.h"
+#include "Subsystems.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
     ioService_(),
     running_(false)
 {
+    Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
 
@@ -62,9 +64,10 @@ void Application::ShowHelp()
 
 void Application::PrintServerInfo()
 {
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Server Info:" << std::endl;
-    LOG_INFO << "  Server ID: " << IO::SimpleConfigManager::Instance.GetGlobal("server_id", "") << std::endl;
-    LOG_INFO << "  Location: " << IO::SimpleConfigManager::Instance.GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << config->GetGlobal("server_id", "") << std::endl;
+    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << localHost_ << ":" << static_cast<int>(localPort_) << std::endl;
     if (dataClient_->IsConnected())
@@ -85,18 +88,20 @@ bool Application::LoadMain()
     if (configFile_.empty())
         configFile_ = path_ + "/ablb.lua";
 
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
-    if (!IO::SimpleConfigManager::Instance.Load(configFile_))
+    if (!config->Load(configFile_))
     {
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    LOG_INFO << "[done]" << std::endl;
 
-    uint16_t dataPort = static_cast<uint16_t>(IO::SimpleConfigManager::Instance.GetGlobal("data_port", 0));
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     if (dataPort != 0)
     {
         LOG_INFO << "Connecting to data server...";
-        const std::string dataHost = IO::SimpleConfigManager::Instance.GetGlobal("data_host", "");
+        const std::string dataHost = config->GetGlobal("data_host", "");
         dataClient_->Connect(dataHost, dataPort);
         if (!dataClient_->IsConnected())
         {
@@ -108,7 +113,7 @@ bool Application::LoadMain()
     }
     else
     {
-        const std::string serverList = IO::SimpleConfigManager::Instance.GetGlobal("server_list", "");
+        const std::string serverList = config->GetGlobal("server_list", "");
         if (!ParseServerList(serverList))
         {
             LOG_ERROR << "Error parsing server list file " << serverList << std::endl;
@@ -116,13 +121,13 @@ bool Application::LoadMain()
         }
     }
 
-    localHost_ = IO::SimpleConfigManager::Instance.GetGlobal("lb_host", "0.0.0.0");
+    localHost_ = config->GetGlobal("lb_host", "0.0.0.0");
     localPort_ = static_cast<uint16_t>(
-        IO::SimpleConfigManager::Instance.GetGlobal("lb_port", 2740)
+        config->GetGlobal("lb_port", 2740)
     );
     lbType_ = static_cast<AB::Entities::ServiceType>(
         // Default is login server
-        IO::SimpleConfigManager::Instance.GetGlobal("lb_type", static_cast<int64_t>(AB::Entities::ServiceTypeLoginServer))
+        config->GetGlobal("lb_type", static_cast<int64_t>(AB::Entities::ServiceTypeLoginServer))
     );
     if (dataPort != 0)
         // We have a data port so we can query the data server
@@ -246,13 +251,14 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
+    auto config = GetSubsystem<IO::SimpleConfigManager>();
     AB::Entities::Service serv;
-    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    serv.uuid = config->GetGlobal("server_id", "");
     dataClient_->Read(serv);
-    serv.location = IO::SimpleConfigManager::Instance.GetGlobal("location", "--");
+    serv.location = config->GetGlobal("location", "--");
     serv.host = localHost_;
     serv.port = localPort_;
-    serv.name = IO::SimpleConfigManager::Instance.GetGlobal("server_name", "ablb");
+    serv.name = config->GetGlobal("server_name", "ablb");
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
@@ -281,7 +287,7 @@ void Application::Stop()
     LOG_INFO << "Server shutdown...";
 
     AB::Entities::Service serv;
-    serv.uuid = IO::SimpleConfigManager::Instance.GetGlobal("server_id", "");
+    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobal("server_id", "");
     if (dataClient_->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;

@@ -54,8 +54,6 @@ public:
     AB::Entities::GameType GetGameType(const std::string& mapUuid);
 
     GameManager::State GetState() const { return state_; }
-public:
-    static GameManager Instance;
 };
 
 }

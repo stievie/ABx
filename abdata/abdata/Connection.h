@@ -5,6 +5,7 @@
 #include "StorageProvider.h"
 #include "Dispatcher.h"
 #include "DataKey.h"
+#include "Subsystems.h"
 
 class ConnectionManager;
 
@@ -47,7 +48,7 @@ private:
     template <typename Callable, typename... Args>
     void AddTask(Callable function, Args&&... args)
     {
-        Asynch::Dispatcher::Instance.Add(
+        GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateTask(std::bind(function, this, std::forward<Args>(args)...))
         );
     }

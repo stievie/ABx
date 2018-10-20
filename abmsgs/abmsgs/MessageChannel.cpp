@@ -6,6 +6,7 @@
 #include "PropStream.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
+#include "Subsystems.h"
 
 void MessageChannel::Join(std::shared_ptr<MessageParticipant> participant)
 {
@@ -158,7 +159,7 @@ void MessageSession::HandleNewMailMessage(const Net::MessageMsg& msg)
 
 MessageParticipant* MessageSession::GetServerWidthPlayer(const std::string& playerUuid)
 {
-    IO::DataClient* cli = Application::Instance->GetDataClient();
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     // Find the server this player is on
     AB::Entities::Character ch;
     ch.uuid = playerUuid;
@@ -170,7 +171,7 @@ MessageParticipant* MessageSession::GetServerWidthPlayer(const std::string& play
 MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& accountUuid)
 {
     // No need to send this message to all servers
-    IO::DataClient* cli = Application::Instance->GetDataClient();
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!cli->Read(acc))
