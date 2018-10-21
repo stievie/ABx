@@ -35,6 +35,8 @@
 #include "EffectManager.h"
 #include "DataClient.h"
 #include <AB/DHKeys.hpp>
+#include <time.h>
+#include <stdlib.h>
 
 #include "DebugNew.h"
 
@@ -333,6 +335,7 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
+    srand((unsigned)time(NULL));
     GetSubsystem<Crypto::Random>()->Initialize();
     LOG_INFO << "[done]" << std::endl;
 

@@ -29,6 +29,8 @@
 #include "SkillBarWindow.h"
 #include "FriendListWindow.h"
 #include "AntiRE.h"
+#include <time.h>
+#include <stdlib.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -208,6 +210,8 @@ void ClientApp::Start()
 #endif
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
+    // For DHKeys
+    srand((unsigned)time(NULL));
     SetRandomSeed(Time::GetSystemTime());
     SetWindowTitleAndIcon();
 
