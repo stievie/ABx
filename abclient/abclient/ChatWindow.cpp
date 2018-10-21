@@ -704,7 +704,7 @@ void ChatWindow::SayHello(Player* player)
 {
     if (firstStart_)
     {
-        kainjow::mustache::mustache tpl{ "Hi {{name}}, type /help for available commands." };
+        kainjow::mustache::mustache tpl{ "Hello {{name}}, type /help for available commands." };
         kainjow::mustache::data data;
         if (player)
             data.set("name", std::string(player->name_.CString(), player->name_.Length()));
