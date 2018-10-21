@@ -25,6 +25,7 @@ private:
     std::shared_ptr<Game::Player> player_;
     uint32_t challengeTimestamp_ = 0;
     uint8_t challengeRandom_ = 0;
+    DH_KEY clientKey_;
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)

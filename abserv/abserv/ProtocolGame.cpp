@@ -15,6 +15,8 @@
 #include "IOGame.h"
 #include "stdafx.h"
 #include "ConfigManager.h"
+#include "Subsystems.h"
+#include <AB/DHKeys.hpp>
 
 #include "DebugNew.h"
 
@@ -287,6 +289,14 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         DisconnectClient(AB::Errors::WrongProtocolVersion);
         return;
     }
+    for (int i = 0; i < DH_KEY_LENGTH; ++i)
+        clientKey_[i] = msg.GetByte();
+    auto keys = GetSubsystem<Crypto::DHKeys>();
+    keys->GetSharedKey(clientKey_, encKey_);
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Client key received" << std::endl;
+#endif // DEBUG_NET
+
     const std::string accountUuid = msg.GetString();
     if (accountUuid.empty())
     {
@@ -319,24 +329,14 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 
 void ProtocolGame::OnConnect()
 {
-/*    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
-
-    // Skip checksum
-//    output->Skip(sizeof(uint32_t));
-
-    // Packet length & type
-    output->Add<uint16_t>(0x0006);
-    output->AddByte(0x1F);
-
-    // Add timestamp & random number
-    challengeTimestamp_ = static_cast<uint32_t>(time(nullptr));
-    output->Add<uint32_t>(challengeTimestamp_);
-
-    challengeRandom_ = Utils::Random::Instance.Get<uint8_t>();
-    output->AddByte(challengeRandom_);
-
+    std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
+    output->AddByte(AB::GameProtocol::KeyExchange);
+    auto keys = GetSubsystem<Crypto::DHKeys>();
+    output->AddBytes((const char*)&keys->GetPublickKey(), DH_KEY_LENGTH);
     Send(output);
-    */
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Server key sent" << std::endl;
+#endif // DEBUG_NET
 }
 
 void ProtocolGame::DisconnectClient(uint8_t error)

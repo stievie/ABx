@@ -63,7 +63,7 @@ protected:
     void OnConnect() override;
     void OnReceive(const std::shared_ptr<InputMessage>& message) override;
 public:
-    ProtocolLogin();
+    ProtocolLogin(Crypto::DHKeys& keys);
     ~ProtocolLogin() {}
 
     void Login(std::string& host, uint16_t port,

@@ -64,6 +64,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "Invalid Game.";
     case AB::Errors::AllServersFull:
         return "All Servers are full, please try again later.";
+    case AB::Errors::ErrorException:
+        return "Exception";
     default:
         return "";
     }

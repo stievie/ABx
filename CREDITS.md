@@ -5,6 +5,7 @@
 * asio https://think-async.com/Asio/AsioStandalone
 * SimpleWeb https://github.com/eidheim/Simple-Web-Server
 * OpenSSL https://www.openssl.org/
+* DH key exchange https://github.com/thejinchao/dhexchange
 
 ## Server
 
@@ -16,6 +17,7 @@
 * https://github.com/fraillt/bitsery
 * https://github.com/brimzi/simple-cache
 * https://github.com/mariusbancila/stduuid
+* boost https://www.boost.org/
 
 ## Client
 

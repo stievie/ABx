@@ -9,10 +9,11 @@
 
 namespace Client {
 
-Protocol::Protocol() :
+Protocol::Protocol(Crypto::DHKeys& keys) :
     connection_(nullptr),
     checksumEnabled_(false),
     encryptEnabled_(false),
+    keys_(keys),
     errorCallback_(nullptr),
     protocolErrorCallback_(nullptr)
 {
@@ -129,7 +130,7 @@ bool Protocol::XTEADecrypt(const std::shared_ptr<InputMessage>& inputMessage)
     }
 
     uint32_t* buffer = (uint32_t*)(inputMessage->GetReadBuffer());
-    xxtea_dec(buffer, encryptedSize / 4, AB::ENC_KEY);
+    xxtea_dec(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
 
     return true;
 }
@@ -147,7 +148,7 @@ void Protocol::XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage)
     }
 
     uint32_t* buffer = (uint32_t*)(outputMessage->GetDataBuffer());
-    xxtea_enc(buffer, encryptedSize / 4, AB::ENC_KEY);
+    xxtea_enc(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
 }
 
 void Protocol::OnError(const asio::error_code& err)

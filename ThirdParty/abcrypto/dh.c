@@ -3,7 +3,6 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <memory.h>
-#include "arc4random.h"
 
 #ifdef _MSC_VER
 #define INLINE __inline
@@ -21,9 +20,9 @@ typedef union _uint128_t {
 } uint128_t;
 
 /* P =  2^128-159 = 0xffffffffffffffffffffffffffffff61 (The biggest 64bit prime) */
-static const uint128_t P = { { 0xffffffffffffff61ULL, 0xffffffffffffffffULL } };
-static const uint128_t INVERT_P = { {0, 159 } };
-static const uint128_t G = { { 0, 5 } };
+static const uint128_t P = { 0xffffffffffffff61ULL, 0xffffffffffffffffULL };
+static const uint128_t INVERT_P = { 159 };
+static const uint128_t G = { 5 };
 
 /*--------------------------------------------------------------------------*/
 static void INLINE
@@ -179,15 +178,6 @@ _powmodp(uint128_t* r, uint128_t a, uint128_t b)
     _powmodp_r(r, a, b);
 }
 
-void DH_rand_buf(void* buf, size_t length)
-{
-    unsigned char *_buf = (unsigned char*)buf;
-    for (size_t i = 0; i < length; i++)
-    {
-        _buf[i] = rand() & 0xFF;
-    }
-}
-
 /*--------------------------------------------------------------------------*/
 void DH_generate_key_pair(DH_KEY public_key, DH_KEY private_key)
 {
@@ -195,7 +185,10 @@ void DH_generate_key_pair(DH_KEY public_key, DH_KEY private_key)
     uint128_t public_k;
 
     /* generate random private key */
-    arc4random_buf(private_key, DH_KEY_LENGTH);
+    int i;
+    for (i = 0; i < DH_KEY_LENGTH; i++) {
+        private_key[i] = rand() & 0xFF;
+    }
 
     /* pub_key = G^prv_key mod P*/
     _u128_make(&private_k, private_key);

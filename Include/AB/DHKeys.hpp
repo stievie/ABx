@@ -1,8 +1,11 @@
 #pragma once
 
+// https://github.com/thejinchao/dhexchange
+
 #include <abcrypto.hpp>
 #include <fstream>
 #include <mutex>
+#include <cassert>
 
 namespace Crypto {
 
@@ -18,6 +21,31 @@ public:
         keysLoaded_(false)
     {}
     ~DHKeys() {}
+
+    static void Test()
+    {
+        DH_KEY alice_private, alice_public;
+        DH_generate_key_pair(alice_public, alice_private);
+        DH_KEY bob_private, bob_public;
+        DH_generate_key_pair(bob_public, bob_private);
+
+        DH_KEY alice_secret;
+        DH_generate_key_secret(alice_secret, alice_private, bob_public);
+        DH_KEY bob_secret;
+        DH_generate_key_secret(bob_secret, bob_private, alice_public);
+        assert(memcmp(bob_secret, alice_secret, DH_KEY_LENGTH) == 0);
+
+        DHKeys alice;
+        DHKeys bob;
+        alice.GenerateKeys();
+        bob.GenerateKeys();
+
+        DH_KEY aliceShared;
+        alice.GetSharedKey(bob.GetPublickKey(), aliceShared);
+        DH_KEY bobShared;
+        bob.GetSharedKey(alice.GetPublickKey(), bobShared);
+        assert(memcmp(aliceShared, bobShared, DH_KEY_LENGTH) == 0);
+    }
 
     /// Generate new public and private keys
     void GenerateKeys()

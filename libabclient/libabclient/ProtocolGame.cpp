@@ -8,12 +8,13 @@
 
 namespace Client {
 
-ProtocolGame::ProtocolGame() :
-    Protocol(),
+ProtocolGame::ProtocolGame(Crypto::DHKeys& keys) :
+    Protocol(keys),
     updateTick_(0)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
+    SetEncKey(AB::ENC_KEY);
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
@@ -43,12 +44,20 @@ void ProtocolGame::OnConnect()
 
 void ProtocolGame::OnReceive(const std::shared_ptr<InputMessage>& message)
 {
+    try
+    {
+        ParseMessage(message);
+        Receive();
+    }
+    catch (const std::exception&)
+    {
+        ProtocolError(AB::Errors::ErrorException);
+    }
     if (firstRevc_)
     {
         firstRevc_ = false;
+        keys_.GetSharedKey(serverKey_, encKey_);
     }
-    ParseMessage(message);
-    Receive();
 }
 
 void ProtocolGame::OnError(const asio::error_code& err)
@@ -67,6 +76,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
 
         switch (opCode)
         {
+        case AB::GameProtocol::KeyExchange:
+            ParseKeyExchange(message);
+            break;
         case AB::GameProtocol::ServerJoined:
             ParseServerJoined(message);
             break;
@@ -140,6 +152,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
             return;
         }
     }
+}
+
+void ProtocolGame::ParseKeyExchange(const std::shared_ptr<InputMessage>& message)
+{
+    for (int i = 0; i < DH_KEY_LENGTH; ++i)
+        serverKey_[i] = message->Get<uint8_t>();
 }
 
 void ProtocolGame::ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message)
@@ -371,6 +389,9 @@ void ProtocolGame::SendLoginPacket()
     msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
+    const DH_KEY& key = keys_.GetPublickKey();
+    for (int i = 0; i < DH_KEY_LENGTH; ++i)
+        msg->Add<uint8_t>(key[i]);
     msg->AddString(accountUuid_);
     msg->AddString(accountPass_);
     msg->AddString(charUuid_);

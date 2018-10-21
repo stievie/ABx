@@ -1,6 +1,5 @@
 # TODO
 
-~ abserv, ablogin, abclient: DH enc keys
 + genkey: separate program to create DH keys for the server
 ~ abdata: Use bit set cache item flags, sot a struct
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap

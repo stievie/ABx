@@ -5,6 +5,7 @@
 #include "InputMessage.h"
 #include "OutputMessage.h"
 #include <abcrypto.hpp>
+#include <AB/DHKeys.hpp>
 
 namespace Client {
 
@@ -20,9 +21,12 @@ private:
     bool XTEADecrypt(const std::shared_ptr<InputMessage>& inputMessage);
     void XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage);
 protected:
+    std::shared_ptr<Connection> connection_;
     bool checksumEnabled_;
     bool encryptEnabled_;
-    std::shared_ptr<Connection> connection_;
+    Crypto::DHKeys& keys_;
+    /// Shared key
+    DH_KEY encKey_;
     ErrorCallback errorCallback_;
     ProtocolErrorCallback protocolErrorCallback_;
     virtual void OnError(const asio::error_code& err);
@@ -36,7 +40,8 @@ protected:
             protocolErrorCallback_(err);
     }
 public:
-    Protocol();
+    Protocol(Crypto::DHKeys& keys);
+    Protocol(const Protocol&) = delete;
     ~Protocol();
 
     void Connect(const std::string& host, uint16_t port);
@@ -55,6 +60,11 @@ public:
         if (IsConnected())
             return connection_->GetIp();
         return 0;
+    }
+
+    void SetEncKey(const uint32_t* key)
+    {
+        memcpy(&encKey_, key, sizeof(encKey_));
     }
 
     virtual void Send(const std::shared_ptr<OutputMessage>& message);

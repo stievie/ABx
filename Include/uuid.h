@@ -331,7 +331,7 @@ struct uuid
         }
 
     public:
-        explicit uuid_const_iterator(pointer ptr, size_t const index) :
+        constexpr explicit uuid_const_iterator(pointer ptr, size_t const index) :
             ptr(ptr), index(index)
         {
         }
@@ -809,7 +809,7 @@ inline void swap(uuids::uuid & lhs, uuids::uuid & rhs)
 class uuid_system_generator
 {
 public:
-    typedef uuid result_type;
+    using result_type = uuid;
 
     uuid operator()()
     {
@@ -905,7 +905,7 @@ template <typename UniformRandomNumberGenerator>
 class basic_uuid_random_generator
 {
 public:
-    typedef uuid result_type;
+    using result_type = uuid;
 
     basic_uuid_random_generator()
         :generator(new UniformRandomNumberGenerator)
@@ -952,7 +952,7 @@ using uuid_random_generator = basic_uuid_random_generator<std::mt19937>;
 class uuid_name_generator
 {
 public:
-    typedef uuid result_type;
+    using result_type = uuid;
 
     explicit uuid_name_generator(uuid const& namespace_uuid) noexcept
         : nsuuid(namespace_uuid)
@@ -1028,8 +1028,8 @@ namespace std
 template <>
 struct hash<uuids::uuid>
 {
-    typedef uuids::uuid argument_type;
-    typedef std::size_t result_type;
+    using argument_type = uuids::uuid;
+    using result_type = std::size_t;
 
     result_type operator()(argument_type const &uuid) const
     {

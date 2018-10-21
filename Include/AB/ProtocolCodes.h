@@ -57,6 +57,8 @@ enum ErrorCodes : uint8_t
     NoMoreCharSlots = 0x16,
     InvalidGame = 0x17,
     AllServersFull = 0x18,
+
+    ErrorException = 0xff
 };
 
 }
@@ -158,10 +160,10 @@ enum GameProtocolCodes : uint8_t
 {
     NoError = 0x00,
     Error = 0x01,
+    KeyExchange,
 
     ServerJoined,
     ServerLeft,
-    WelcomeMessage,
     ServerMessage,
     ChatMessage,
     // Mail

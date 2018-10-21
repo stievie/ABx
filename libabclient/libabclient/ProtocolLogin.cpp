@@ -7,8 +7,8 @@
 
 namespace Client {
 
-ProtocolLogin::ProtocolLogin() :
-    Protocol(),
+ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys) :
+    Protocol(keys),
     charlistCallback_(nullptr),
     gamelistCallback_(nullptr),
     createAccCallback_(nullptr),
@@ -16,6 +16,7 @@ ProtocolLogin::ProtocolLogin() :
 {
     checksumEnabled_ = ProtocolLogin::UseChecksum;
     encryptEnabled_ = false;
+    SetEncKey(AB::ENC_KEY);
 }
 
 void ProtocolLogin::Login(std::string& host, uint16_t port,

@@ -32,6 +32,7 @@ private:
     int64_t clockDiff_;
     int lastPing_;
     bool firstRevc_;
+    DH_KEY serverKey_;
 
     void SendLoginPacket();
 protected:
@@ -40,6 +41,7 @@ protected:
     void OnError(const asio::error_code& err) override;
 
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
+    void ParseKeyExchange(const std::shared_ptr<InputMessage>& message);
     void ParseServerJoined(const std::shared_ptr<InputMessage>& message);
     void ParseServerLeft(const std::shared_ptr<InputMessage>& message);
     void ParseError(const std::shared_ptr<InputMessage>& message);
@@ -63,7 +65,7 @@ protected:
     void ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message);
     void ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message);
 public:
-    ProtocolGame();
+    ProtocolGame(Crypto::DHKeys& keys);
     ~ProtocolGame() = default;
 
     Receiver* receiver_;
