@@ -271,8 +271,6 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
 
 void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
 {
-    // TODO: Read Clients public key.
-    // The Login server sends the servers public key
     if (encryptionEnabled_)
     {
         if (!XTEADecrypt(msg))

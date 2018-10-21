@@ -37,6 +37,8 @@ void ProtocolGame::OnConnect()
     firstRevc_ = true;
     Protocol::OnConnect();
 
+    // Login packet uses the default key
+    SetEncKey(AB::ENC_KEY);
     SendLoginPacket();
 
     Receive();
