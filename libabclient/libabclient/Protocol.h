@@ -24,6 +24,7 @@ protected:
     std::shared_ptr<Connection> connection_;
     bool checksumEnabled_;
     bool encryptEnabled_;
+    // Our (client) key pair
     Crypto::DHKeys& keys_;
     /// Shared key
     DH_KEY encKey_;

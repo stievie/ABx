@@ -555,7 +555,7 @@ std::string Application::GetKeysFile() const
     const std::string& keys = (*GetSubsystem<ConfigManager>())[ConfigManager::ServerKeys].GetString();
     if (!keys.empty())
         return keys;
-    return Utils::AddSlash(path_) + "abserver.keys";
+    return Utils::AddSlash(path_) + "abserver.dh";
 }
 
 uint8_t Application::GetLoad()

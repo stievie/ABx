@@ -292,6 +292,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
         clientKey_[i] = msg.GetByte();
     auto keys = GetSubsystem<Crypto::DHKeys>();
+    // Switch now to the shared key
     keys->GetSharedKey(clientKey_, encKey_);
 #ifdef DEBUG_NET
     LOG_DEBUG << "Client key received" << std::endl;

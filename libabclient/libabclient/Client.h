@@ -36,6 +36,7 @@ private:
     int lastRun_;
     int lastPing_;
     bool gotPong_;
+    // Our (client) key pair
     Crypto::DHKeys dhKeys_;
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
 public:

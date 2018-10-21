@@ -56,6 +56,7 @@ void ProtocolGame::OnReceive(const std::shared_ptr<InputMessage>& message)
     if (firstRevc_)
     {
         firstRevc_ = false;
+        // Switch now to the shared key
         keys_.GetSharedKey(serverKey_, encKey_);
     }
 }

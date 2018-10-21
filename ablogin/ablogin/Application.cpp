@@ -264,5 +264,5 @@ std::string Application::GetKeysFile() const
     const std::string keys = config->GetGlobal("server_keys", "");
     if (!keys.empty())
         return keys;
-    return Utils::AddSlash(path_) + "abserver.keys";
+    return Utils::AddSlash(path_) + "abserver.dh";
 }
