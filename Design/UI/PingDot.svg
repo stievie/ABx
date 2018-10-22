@@ -11,14 +11,14 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="256"
-   height="127.99999"
-   viewBox="0 0 256.00001 127.99999"
+   width="128"
+   height="32"
+   viewBox="0 0 128.00001 31.999999"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="PingDot.svg"
-   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\UI\Fw-UI-Ex.png"
+   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\UI\PingDot.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <title
@@ -30,9 +30,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4"
-     inkscape:cx="113.5435"
-     inkscape:cy="96.446199"
+     inkscape:zoom="8"
+     inkscape:cx="59.315575"
+     inkscape:cy="40.765577"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -76,7 +76,7 @@
          offset="0"
          id="stop4402" />
       <stop
-         style="stop-color:#cb0000;stop-opacity:0.78767121"
+         style="stop-color:#980000;stop-opacity:1"
          offset="1"
          id="stop4404" />
     </linearGradient>
@@ -88,7 +88,7 @@
          offset="0"
          id="stop4370" />
       <stop
-         style="stop-color:#8f3900;stop-opacity:0.76078433"
+         style="stop-color:#8f3900;stop-opacity:1"
          offset="1"
          id="stop4372" />
     </linearGradient>
@@ -100,12 +100,11 @@
          offset="0"
          id="stop4334" />
       <stop
-         style="stop-color:#003100;stop-opacity:0.79215688"
+         style="stop-color:#003100;stop-opacity:1"
          offset="1"
          id="stop4336" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient4322"
        osb:paint="gradient">
       <stop
@@ -194,7 +193,7 @@
     <linearGradient
        y2="3.9999897"
        x2="23"
-       y1="-1.0332724e-05"
+       y1="-1.0332724e-005"
        x1="23"
        gradientUnits="userSpaceOnUse"
        id="linearGradient4852-2"
@@ -440,33 +439,35 @@
        inkscape:collect="always"
        xlink:href="#linearGradient4332"
        id="radialGradient4340"
-       cx="856.95428"
-       cy="878.56671"
-       fx="856.95428"
-       fy="878.56671"
+       cx="859.58997"
+       cy="878.73669"
+       fx="859.58997"
+       fy="878.73669"
        r="16.000006"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0062507,0.00298571,-0.00294856,0.99373443,-2.7661118,2.9461274)" />
+       gradientTransform="matrix(0.84596153,0.01232201,-0.01455485,0.99925662,145.21572,86.068277)" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4368"
        id="radialGradient4374"
-       cx="889.22266"
+       cx="892.05109"
        cy="878.65985"
-       fx="889.22266"
+       fx="892.05109"
        fy="878.65985"
-       r="16.000005"
-       gradientUnits="userSpaceOnUse" />
+       r="16.000006"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.81769842,9.8314919e-8,-1.1956948e-7,0.99447537,162.62244,100.8542)" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4400"
        id="radialGradient4408"
-       cx="921.22241"
-       cy="878.65686"
-       fx="921.22241"
-       fy="878.65686"
+       cx="923.16693"
+       cy="878.74524"
+       fx="923.16693"
+       fy="878.74524"
        r="16.000006"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.87294142,0,0,1,117.29628,96.000022)" />
   </defs>
   <metadata
      id="metadata7">
@@ -515,33 +516,35 @@
   </metadata>
   <g
      style="display:inline"
-     transform="translate(-809.14288,-862.64795)"
+     transform="translate(-809.14288,-958.64796)"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
     <circle
        style="fill:none;fill-opacity:1;stroke:#786721;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4266"
-       cx="825.14288"
-       cy="878.64795"
-       r="16" />
-    <circle
-       style="display:inline;fill:url(#radialGradient4340);fill-opacity:1;stroke:#4e4316;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       cx="825.15015"
+       cy="974.64984"
+       r="16.011049" />
+    <ellipse
+       style="display:inline;fill:url(#radialGradient4340);fill-opacity:1;stroke:#112716;stroke-width:1.00000012;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;fill-rule:nonzero"
        id="path4266-3"
-       cx="857.1311"
-       cy="878.67029"
-       r="16" />
-    <circle
-       style="display:inline;fill:url(#radialGradient4374);fill-opacity:1;stroke:#4e4316;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       cx="857.17908"
+       cy="974.64661"
+       rx="15.535961"
+       ry="15.558058" />
+    <ellipse
+       style="display:inline;fill:url(#radialGradient4374);fill-opacity:1;stroke:#682b16;stroke-width:1.00000012;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4266-3-3"
-       cx="889.22266"
-       cy="878.65985"
-       r="16" />
+       cx="889.16016"
+       cy="974.68042"
+       rx="15.425475"
+       ry="15.513864" />
     <circle
-       style="display:inline;fill:url(#radialGradient4408);fill-opacity:1;stroke:#4e4316;stroke-width:0;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="display:inline;fill:url(#radialGradient4408);fill-opacity:1;stroke:#6b0002;stroke-width:1.00000015;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.99356914"
        id="path4266-3-3-0"
-       cx="921.22241"
-       cy="878.65686"
-       r="16" />
+       cx="921.15991"
+       cy="974.67737"
+       r="15.513864" />
   </g>
 </svg>

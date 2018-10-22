@@ -31,7 +31,6 @@
 #include "AntiRE.h"
 #include <time.h>
 #include <stdlib.h>
-#include <abcrypto.hpp>
 
 #include <Urho3D/DebugNew.h>
 
@@ -212,7 +211,6 @@ void ClientApp::Start()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
     // For DHKeys
-    arc4random_stir();
     SetRandomSeed(Time::GetSystemTime());
     SetWindowTitleAndIcon();
 

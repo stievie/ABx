@@ -43,6 +43,7 @@ Client::Client() :
     httpClient_(nullptr)
 {
     // Always create new keys
+    arc4random_stir();
     dhKeys_.GenerateKeys();
 }
 
