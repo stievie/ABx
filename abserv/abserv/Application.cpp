@@ -456,6 +456,7 @@ void Application::SendServerJoined()
 
 void Application::GenNewKeys()
 {
+    GetSubsystem<Crypto::Random>()->Initialize();
     Crypto::DHKeys keys;
     keys.GenerateKeys();
     const std::string keyFile = GetKeysFile();

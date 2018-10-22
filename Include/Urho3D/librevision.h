@@ -1,1 +1,1 @@
-const char* revision="1.7-582-gcc25bef60";
+const char* revision="1.7-594-g57bb8b7f2";

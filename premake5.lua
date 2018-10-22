@@ -287,7 +287,7 @@ workspace "absall"
       ["Header Files"] = {"**.h", "**.hpp", "**.hxx"},
       ["Source Files"] = {"**.cpp", "**.c", "**.cxx"},
     }
-    links { "abscommon", "abcrypto", "pugixml" }
+    links { "abscommon", "abcrypto", "pugixml", "libeay32.lib", "ssleay32.lib" }
     dependson { "abscommon", "abcrypto", "pugixml" }
     defines { "_CONSOLE" }
     pchheader "stdafx.h"
