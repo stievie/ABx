@@ -9,6 +9,7 @@
 #include <AB/Entities/ServiceList.h>
 #include "Utils.h"
 #include "Subsystems.h"
+#include "ThreadPool.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -24,6 +25,7 @@ Application::Application() :
 {
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
+    Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>(1);
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
 }
 
@@ -223,6 +225,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << port_ << std::endl;
+    LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
     LOG_INFO << "  Cache size: " << Utils::ConvertSize(maxSize_) << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Readonly mode: " << (readonly_ ? "TRUE" : "false") << std::endl;
@@ -307,6 +310,7 @@ void Application::Run()
 {
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
+    GetSubsystem<Asynch::ThreadPool>()->Start();
 
     server_ = std::make_unique<Server>(ioService_, listenIp_, port_, maxSize_, readonly_);
     StorageProvider* provider = server_->GetStorageProvider();

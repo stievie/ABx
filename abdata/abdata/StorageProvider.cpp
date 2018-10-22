@@ -11,6 +11,7 @@
 #include "Profiler.h"
 #include <AB/Entities/GameInstance.h>
 #include "Subsystems.h"
+#include "ThreadPool.h"
 
 #if defined(_MSC_VER)
 #pragma warning(push)
@@ -396,6 +397,7 @@ void StorageProvider::FlushCache()
     AB_PROFILE;
     int written = 0;
     auto i = cache_.begin();
+    auto tp = GetSubsystem<Asynch::ThreadPool>();
     while ((i = std::find_if(i, cache_.end(), [](const auto& current) -> bool
     {
         // Don't return deleted, these are flushed in CleanCache()
@@ -405,7 +407,15 @@ void StorageProvider::FlushCache()
     {
         ++written;
         const IO::DataKey& key = (*i).first;
-        if (!FlushData(key))
+        // TOTO: Check this
+        auto res = tp->EnqueueWithResult(&StorageProvider::FlushData, this, key);
+        bool bRes = false;
+        {
+            std::lock_guard<std::mutex> lock(lock_);
+            bRes = res.get();
+        }
+        if (!bRes)
+//        if (!FlushData(key))
         {
             LOG_WARNING << "Error flushing " << key.format() << std::endl;
             // Error, break for now and try  the next time.
