@@ -335,7 +335,6 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
-    srand((unsigned)time(NULL));
     GetSubsystem<Crypto::Random>()->Initialize();
     LOG_INFO << "[done]" << std::endl;
 

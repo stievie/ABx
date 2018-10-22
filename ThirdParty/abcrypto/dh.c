@@ -3,6 +3,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <memory.h>
+#include "arc4random.h"
 
 #ifdef _MSC_VER
 #define INLINE __inline
@@ -185,10 +186,11 @@ void DH_generate_key_pair(DH_KEY public_key, DH_KEY private_key)
     uint128_t public_k;
 
     /* generate random private key */
-    int i;
+/*    int i;
     for (i = 0; i < DH_KEY_LENGTH; i++) {
         private_key[i] = rand() & 0xFF;
-    }
+    }*/
+    arc4random_buf(private_key, DH_KEY_LENGTH);
 
     /* pub_key = G^prv_key mod P*/
     _u128_make(&private_k, private_key);
