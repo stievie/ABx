@@ -106,6 +106,7 @@ std::shared_ptr<Game> GameManager::GetGame(const std::string& mapUuid, bool canC
     }
     if (canCreate)
         return CreateGame(mapUuid);
+    LOG_WARNING << "No game with UUID " << mapUuid << std::endl;
     return std::shared_ptr<Game>();
 }
 

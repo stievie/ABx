@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<index>
+  <file type="Scene" src="Rhodes Arena.xml" />
+  <file type="NavMesh" src="RhodesArena_HF.obj.navmesh" />
+  <file type="Terrain" src="RhodesArena_HF.hm" />
+</index>

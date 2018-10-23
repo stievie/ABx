@@ -166,7 +166,10 @@ void Party::ChangeInstance(const std::string& mapUuid)
 {
     std::shared_ptr<Game> game = GetSubsystem<GameManager>()->GetGame(mapUuid, true);
     if (!game)
+    {
+        LOG_ERROR << "Failed to get game " << mapUuid << std::endl;
         return;
+    }
     for (const auto& member : members_)
     {
         if (auto mem = member.lock())

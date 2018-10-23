@@ -1,6 +1,6 @@
 include("/scripts/actors/consts.lua")
 
-name = "Temple of Athene"
+name = ""
 level = 20
 modelIndex = 11
 sex = SEX_UNKNOWN

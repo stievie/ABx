@@ -18,6 +18,7 @@ void Npc::InitializeLua()
 void Npc::RegisterLua(kaguya::State& state)
 {
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
+        .addFunction("SetName", &Npc::SetName)
         .addFunction("Say", &Npc::Say)
     );
 }

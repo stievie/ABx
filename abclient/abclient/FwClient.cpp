@@ -628,8 +628,28 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     levelReady_ = false;
     playerId_ = playerId;
     currentServerId_ = String(serverId.c_str());
+    const AB::Entities::Game& game = games_[mapUuid];
     VariantMap& eData = GetEventDataMap();
-    currentLevel_ = "OutpostLevel";
+    switch (game.type)
+    {
+    case AB::Entities::GameType::GameTypeOutpost:
+        currentLevel_ = "OutpostLevel";
+        break;
+    case AB::Entities::GameType::GameTypePvPCombat:
+        currentLevel_ = "PvpCombatLevel";
+        break;
+    case AB::Entities::GameType::GameTypeExploreable:
+        // TODO:
+        currentLevel_ = "PvpCombatLevel";
+        break;
+    case AB::Entities::GameType::GameTypeMission:
+        // TODO:
+        currentLevel_ = "PvpCombatLevel";
+        break;
+    default:
+        URHO3D_LOGERRORF("Unknown game type %d, %s", game.type, mapUuid.c_str());
+        return;
+    }
     currentMapUuid_ = String(mapUuid.c_str());
     using namespace AbEvents::SetLevel;
     eData[P_UPDATETICK] = updateTick;

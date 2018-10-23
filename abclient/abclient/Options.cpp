@@ -2,12 +2,17 @@
 #include "Options.h"
 #include <SDL/SDL_filesystem.h>
 #include "Shortcuts.h"
-#if defined(__linux__) || defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(__unix__) || defined(__unix)
-#include <sys/stat.h>
-#include <sys/types.h>
-#endif
 #include "LevelManager.h"
 #include "BaseLevel.h"
+#if __cplusplus < 201703L
+#   if !defined(__clang__)
+#       include <filesystem>
+#   else
+#       include <experimental/filesystem>
+#   endif
+#else
+#   include <filesystem>
+#endif
 
 #include <Urho3D/DebugNew.h>
 
@@ -760,29 +765,17 @@ void Options::SetPrefPath(const String& value)
     prefPath_ = value;
 }
 
-#if defined(__linux__) || defined(__APPLE__) && defined(__MACH__) || defined(unix) || defined(__unix__) || defined(__unix)
-static bool rek_makedir(char* path)
-{
-    char *sep = strrchr(path, '/');
-    if (sep != NULL)
-    {
-        *sep = 0;
-        if (!rek_mkdir(path))
-            return false;
-        *sep = '/';
-  }
-    if (mkdir(path, 0777) && errno != EEXIST)
-        return false;
-    return true;
-}
-#endif
-
 bool Options::CreateDir(const String& path)
 {
-#ifdef _WIN32
-    return (CreateDirectoryW(WString(path).CString(), nullptr) == TRUE) ||
-        GetLastError() == ERROR_ALREADY_EXISTS;
+#if __cplusplus < 201703L
+    // C++14
+    namespace fs = std::experimental::filesystem;
 #else
-    return (rek_makedir(path.CString());
+    // C++17
+    namespace fs = std::filesystem;
 #endif
+    fs::path p(std::string(path.CString()));
+    if (fs::exists(p))
+        return true;
+    return fs::create_directories(p);
 }

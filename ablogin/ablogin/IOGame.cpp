@@ -48,7 +48,7 @@ AB::Entities::GameType IOGame::GetGameType(const std::string& mapName)
     return g.type;
 }
 
-std::vector<AB::Entities::Game> IOGame::GetGameList()
+std::vector<AB::Entities::Game> IOGame::GetGameList(AB::Entities::GameType type)
 {
     std::vector<AB::Entities::Game> result;
 
@@ -66,7 +66,8 @@ std::vector<AB::Entities::Game> IOGame::GetGameList()
         g.uuid = uuid;
         if (!client->Read(g))
             continue;
-        result.push_back(g);
+        if (type == AB::Entities::GameType::GameTypeUnknown || g.type == type)
+            result.push_back(g);
     }
 
     if (result.size() == 0)

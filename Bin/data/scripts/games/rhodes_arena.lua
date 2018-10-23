@@ -1,15 +1,11 @@
 function onStart()
-  local portal = self:AddNpc("/scripts/actors/logic/portal.lua")
-  if (portal ~= nil) then
-    portal:SetName("Rhodes Arena")
-    -- Map ID where this portal leads to
-    portal:SetVarString("destination", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
-    -- Will call onTrigger() when it collides
-    portal:SetTrigger(true)
-    local x = 93.8996
-    local z = -35.5445
-    local y = 32.1627
-    portal:SetPosition(x, y, z)
+  local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
+  if (priest ~= nil) then
+    local x = -6.71275
+    local z = 15.5906
+    local y = self:GetTerrainHeight(x, z)
+    priest:SetPosition(x, y, z)
+    priest:SetRotation(180)
   end
 end
 

@@ -36,6 +36,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     std::string GetName() const override { return name_; }
+    void SetName(const std::string& name) { name_ = name; }
     uint32_t GetLevel() const override { return level_; }
     uint32_t GetModelIndex() const final override
     {
