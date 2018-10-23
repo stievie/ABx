@@ -111,6 +111,13 @@ void Npc::OnClicked(std::shared_ptr<Actor> selector)
         luaState_["onClicked"](selector);
 }
 
+void Npc::OnArrived()
+{
+    Actor::OnArrived();
+    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onArrived"))
+        luaState_["onArrived"]();
+}
+
 void Npc::OnCollide(std::shared_ptr<Actor> other)
 {
     Actor::OnCollide(other);

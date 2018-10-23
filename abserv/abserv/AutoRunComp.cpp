@@ -111,6 +111,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
             // If at dest reset
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             autoRun_ = false;
+            owner_.OnArrived();
         }
         return;
     }

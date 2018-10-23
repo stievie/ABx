@@ -37,6 +37,13 @@ function onStart()
     ped:SetPosition(x, y, z)
     ped:SetRotation(90)
   end  
+  local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian2.lua")
+  if (ped2 ~= nil) then
+    local x = 4.92965
+    local z = 11.2049
+    local y = self:GetTerrainHeight(x, z)
+    ped2:SetPosition(x, y, z)
+  end  
 end
 
 -- Game stopping

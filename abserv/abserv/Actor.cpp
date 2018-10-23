@@ -37,6 +37,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::FollowObject)
         .addFunction("GetState", &Actor::_LuaGetState)
+        .addFunction("SetState", &Actor::_LuaSetState)
     );
 }
 
@@ -91,6 +92,13 @@ void Actor::UseSkill(uint32_t index)
     Utils::VariantMap data;
     data[InputDataSkillIndex] = static_cast<uint8_t>(index);
     inputs_.Add(InputType::UseSkill, data);
+}
+
+void Actor::_LuaSetState(int state)
+{
+    Utils::VariantMap data;
+    data[InputDataState] = static_cast<uint8_t>(state);
+    inputs_.Add(InputType::SetState, data);
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)
@@ -156,7 +164,7 @@ void Actor::_LuaGotoPosition(float x, float y, float z)
     {
         pos.y_ = GetGame()->map_->GetTerrainHeight(pos);
     }
-    GotoPosition(Math::Vector3(x, y, z));
+    GotoPosition(pos);
 }
 
 int Actor::_LuaGetState()

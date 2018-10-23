@@ -24,6 +24,7 @@ private:
     void DeleteEffect(uint32_t index);
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
+    void _LuaSetState(int state);
 protected:
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
@@ -41,6 +42,7 @@ protected:
         AB_UNUSED(command);
         AB_UNUSED(message);
     }
+    virtual void OnArrived() {}
 public:
     static void RegisterLua(kaguya::State& state);
 

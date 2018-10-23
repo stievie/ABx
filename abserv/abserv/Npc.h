@@ -18,6 +18,7 @@ protected:
     kaguya::State luaState_;
     bool luaInitialized_;
     void InitializeLua();
+    void OnArrived() override;
 public:
     static void RegisterLua(kaguya::State& state);
 
