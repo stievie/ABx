@@ -21,7 +21,7 @@ private:
     bool running_;
 	asio::io_service& io_service_;
 	asio::ip::tcp::acceptor acceptor_;
-	ConnectionPtr newConnection_;
+    std::shared_ptr<Connection> newConnection_;
 	ConnectionManager connectionManager_;
 	StorageProvider storageProvider_;
 	size_t maxDataSize_;

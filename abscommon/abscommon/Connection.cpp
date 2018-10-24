@@ -80,7 +80,7 @@ void Connection::Close(bool force /* = false */)
 #ifdef DEBUG_NET
     LOG_DEBUG << "Closing connection" << std::endl;
 #endif
-    ConnectionManager::Instance()->ReleaseConnection(shared_from_this());
+    GetSubsystem<ConnectionManager>()->ReleaseConnection(shared_from_this());
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     if (state_ != State::Open)
@@ -344,16 +344,9 @@ void ConnectionManager::CloseAll()
 #endif
 
     std::lock_guard<std::mutex> lockClass(lock_);
-
     for (const auto& conn : connections_)
     {
-        try
-        {
-            asio::error_code err;
-            conn->socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
-            conn->socket_.close(err);
-        }
-        catch (asio::system_error&) {}
+        conn->CloseSocket();
     }
     connections_.clear();
 }

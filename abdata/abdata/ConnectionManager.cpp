@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "ConnectionManager.h"
 
-void ConnectionManager::Start(ConnectionPtr c)
+void ConnectionManager::Start(std::shared_ptr<Connection> c)
 {
 	connections_.insert(c);
 	c->Start();
 }
 
-void ConnectionManager::Stop(ConnectionPtr c)
+void ConnectionManager::Stop(std::shared_ptr<Connection> c)
 {
 	connections_.erase(c);
 	c->Stop();

@@ -11,16 +11,14 @@ public:
     ConnectionManager& operator=(const ConnectionManager&) = delete;
 
     /// Add the specified connection to the manager and start it.
-	void Start(ConnectionPtr c);
+	void Start(std::shared_ptr<Connection> c);
 
 	/// Stop the specified connection.
-	void Stop(ConnectionPtr c);
+	void Stop(std::shared_ptr<Connection> c);
 
 	/// Stop all connections.
 	void StopAll();
 
 private:
-
-	std::set<ConnectionPtr> connections_;
-
+	std::set<std::shared_ptr<Connection>> connections_;
 };

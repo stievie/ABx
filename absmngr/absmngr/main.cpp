@@ -252,7 +252,7 @@ int main()
             WindowsKillLibrary::sendSignal((*it).second->GetData().id, WindowsKillLibrary::SIGNAL_TYPE_CTRL_C);
             WaitForSingleObject((*it).second->GetData().handle, 1000);
         }
-        catch (const std::invalid_argument& ex)
+        catch (const std::exception& ex)
         {
             std::cout << "Error: " << ex.what() << " PID " << (*it).second->GetData().id << std::endl;
         }
@@ -272,7 +272,7 @@ int main()
             WindowsKillLibrary::sendSignal(gDataServerProcess->GetData().id, WindowsKillLibrary::SIGNAL_TYPE_CTRL_C);
             WaitForSingleObject(gDataServerProcess->GetData().handle, 1000);
         }
-        catch (const std::invalid_argument& ex)
+        catch (const std::exception& ex)
         {
             std::cout << "Error: " << ex.what() << " PID " << gDataServerProcess->GetData().id << std::endl;
         }

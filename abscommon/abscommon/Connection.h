@@ -14,18 +14,15 @@ class Connection;
 class ConnectionManager
 {
 public:
-    static ConnectionManager* Instance()
-    {
-        static ConnectionManager instance;
-        return &instance;
-    }
     static uint32_t maxPacketsPerSec;
+
+    ConnectionManager() = default;
+    ConnectionManager(const ConnectionManager&) = delete;
+    ConnectionManager& operator=(const ConnectionManager&) = delete;
 
     std::shared_ptr<Connection> CreateConnection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicer);
     void ReleaseConnection(std::shared_ptr<Connection> connection);
     void CloseAll();
-protected:
-    ConnectionManager() {}
 private:
     std::unordered_set<std::shared_ptr<Connection>> connections_;
     std::mutex lock_;

@@ -90,5 +90,3 @@ private:
     IO::DataKey key_;
     std::shared_ptr<std::vector<uint8_t>> data_;
 };
-
-typedef std::shared_ptr<Connection> ConnectionPtr;

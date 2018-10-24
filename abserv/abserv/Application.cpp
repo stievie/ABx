@@ -57,6 +57,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>();
+    Subsystems::Instance.CreateSubsystem<Net::ConnectionManager>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
     Subsystems::Instance.CreateSubsystem<Net::MessageClient>(ioService_);
 
@@ -80,6 +81,7 @@ Application::~Application()
 {
     serviceManager_->Stop();
     GetSubsystem<Game::GameManager>()->Stop();
+    GetSubsystem<Net::ConnectionManager>()->CloseAll();
     GetSubsystem<Asynch::ThreadPool>()->Stop();
     GetSubsystem<Asynch::Scheduler>()->Stop();
     GetSubsystem<Asynch::Dispatcher>()->Stop();

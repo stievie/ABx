@@ -23,6 +23,7 @@ Application::Application() :
 {
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
+    Subsystems::Instance.CreateSubsystem<Net::ConnectionManager>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
@@ -37,6 +38,7 @@ Application::~Application()
     serviceManager_->Stop();
     GetSubsystem<Asynch::Scheduler>()->Stop();
     GetSubsystem<Asynch::Dispatcher>()->Stop();
+    GetSubsystem<Net::ConnectionManager>()->CloseAll();
 }
 
 bool Application::ParseCommandLine()
