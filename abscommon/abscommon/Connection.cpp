@@ -80,7 +80,13 @@ void Connection::Close(bool force /* = false */)
 #ifdef DEBUG_NET
     LOG_DEBUG << "Closing connection" << std::endl;
 #endif
-    GetSubsystem<ConnectionManager>()->ReleaseConnection(shared_from_this());
+    auto connMngr = GetSubsystem<ConnectionManager>();
+    if (!connMngr)
+    {
+        LOG_ERROR << "No ConnectionManager subsystem." << std::endl;
+        return;
+    }
+    connMngr->ReleaseConnection(shared_from_this());
 
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     if (state_ != State::Open)

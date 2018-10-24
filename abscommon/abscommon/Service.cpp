@@ -152,7 +152,10 @@ void ServicePort::Accept()
     {
         auto connMan = GetSubsystem<ConnectionManager>();
         if (!connMan)
+        {
+            LOG_ERROR << "No ConnectionManager subsystem!" << std::endl;
             return;
+        }
         std::shared_ptr<Connection> conn = connMan->CreateConnection(
             service_, shared_from_this()
         );
