@@ -10,7 +10,7 @@
 + abserv, abclient: Party
 + abserv: Account Key itself expires and makes accounts that may expire (Trial Key)
 
-* abadmin: Admin HTTP server. Browser interface to admin all servers
+* absadmin: Admin HTTP server. Browser interface to admin all servers
 
 
 * all: /friend /ignore /flremove /fl commands

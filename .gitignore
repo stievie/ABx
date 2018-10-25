@@ -1,6 +1,7 @@
 # Output directories
 Debug
 Release
+RelNoProfiling
 Debug Static
 Release Static
 ipch

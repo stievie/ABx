@@ -94,6 +94,15 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
         rns.push_back(result->GetString("uuid"));
     }
 
+    // First invalidate them
+    for (const std::string& g : rns)
+    {
+        AB::Entities::ReservedName rn;
+        rn.uuid = g;
+        sp->EntityInvalidate(rn);
+    }
+
+    // Then delete from DB
     query.str("");
     query << "DELETE FROM `reserved_names` WHERE ";
     query << "(`expires` <> 0 AND `expires` < " << Utils::AbTick() << ")";
@@ -108,13 +117,6 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
     // End transaction
     if (!transaction.Commit())
         return;
-
-    for (const std::string& g : rns)
-    {
-        AB::Entities::ReservedName rn;
-        rn.uuid = g;
-        sp->EntityInvalidate(rn);
-    }
 }
 
 }
