@@ -15,6 +15,8 @@ enum ServiceType : uint8_t
     ServiceTypeLoginServer,
     ServiceTypeGameServer,
 
+    ServiceTypeAdminServer,
+
     // Must be last
     ServiceTypeLoadBalancer = 255
 };
