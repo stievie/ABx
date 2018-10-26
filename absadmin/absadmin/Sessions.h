@@ -8,12 +8,16 @@ namespace HTTP {
 struct Session
 {
     static uint32_t sessionLifetime_;
-    int64_t expires_;
+    time_t expires_;
     Utils::VariantMap values_;
 
-    Session() :
-        expires_(Utils::AbTick() + sessionLifetime_)     // 10 mins
-    { }
+    Session()
+    {
+        time(&expires_);
+        struct tm* tm = localtime(&expires_);
+        tm->tm_sec += sessionLifetime_ / 1000;
+        expires_ = mktime(tm);
+    }
 };
 
 class Sessions

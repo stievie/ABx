@@ -31,6 +31,7 @@ void Controller::MakeRequest(std::shared_ptr<HttpsServer::Response> response,
     session_ = sess;
     HTTP::Cookie respSessCookie;
     respSessCookie.content_ = sessId;
+    respSessCookie.expires_ = sess->expires_;
     respSessCookie.domain_ = Application::Instance->GetHost();
     responseCookies_->Add("SESSION_ID", respSessCookie);
 }
