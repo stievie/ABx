@@ -2,13 +2,14 @@
 
 #include "Cookie.h"
 #include "Variant.h"
+#include "Sessions.h"
 
 class Controller
 {
 protected:
-    std::unique_ptr<Cookies> requestCookies_;
-    std::unique_ptr<Cookies> responseCookies_;
-    std::weak_ptr<Utils::VariantMap> session_;
+    std::unique_ptr<HTTP::Cookies> requestCookies_;
+    std::unique_ptr<HTTP::Cookies> responseCookies_;
+    std::weak_ptr<HTTP::Session> session_;
 public:
     Controller() = default;
     Controller(const Controller&) = delete;
@@ -26,3 +27,4 @@ class GetController : public Controller
 class PostController : public Controller
 {
 };
+

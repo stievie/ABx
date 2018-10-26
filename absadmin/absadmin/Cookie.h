@@ -1,5 +1,7 @@
 #pragma once
 
+namespace HTTP {
+
 class Cookie
 {
 public:
@@ -25,3 +27,5 @@ public:
     void Add(const std::string& name, const Cookie& cookie);
     Cookie* Get(const std::string& name);
 };
+
+}

@@ -2,6 +2,8 @@
 #include "Cookie.h"
 #include "StringUtils.h"
 
+namespace HTTP {
+
 Cookie::Cookie() :
     path_("/"),
     httpOnly_(false)
@@ -81,4 +83,6 @@ Cookie* Cookies::Get(const std::string& name)
     if (it == cookies_.end())
         return nullptr;
     return &(*it).second;
+}
+
 }

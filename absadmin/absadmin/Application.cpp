@@ -24,7 +24,7 @@ Application::Application() :
     assert(Application::Instance == nullptr);
     Application::Instance = this;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
-    Subsystems::Instance.CreateSubsystem<Sessions>();
+    Subsystems::Instance.CreateSubsystem<HTTP::Sessions>();
 }
 
 Application::~Application()
@@ -167,6 +167,7 @@ bool Application::Initialize(int argc, char** argv)
         adminPort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8888));
     if (adminHost_.empty())
         adminHost_ = config->GetGlobal("admin_host", "");
+    HTTP::Session::sessionLifetime_ = static_cast<uint32_t>(config->GetGlobal("session_lifetime", HTTP::Session::sessionLifetime_));
     std::string key = config->GetGlobal("server_key", "server.key");
     std::string cert = config->GetGlobal("server_cert", "server.crt");
     size_t threads = config->GetGlobal("num_threads", 0);
@@ -271,7 +272,13 @@ SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 void Application::GetHandler(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
-    auto ext = Utils::GetFileExt(request->path);
+    std::string filename = request->path;
+    if (filename.empty())
+        filename = "/";
+    if (filename[filename.length() - 1] == '/')
+        filename += "index.html";
+    request->path = filename;
+    auto ext = Utils::GetFileExt(filename);
     auto it = getController_.find(ext);
     if (it == getController_.end())
     {
@@ -291,7 +298,13 @@ void Application::GetHandler(std::shared_ptr<HttpsServer::Response> response,
 void Application::PostHandler(std::shared_ptr<HttpsServer::Response> response,
     std::shared_ptr<HttpsServer::Request> request)
 {
-    auto ext = Utils::GetFileExt(request->path);
+    std::string filename = request->path;
+    if (filename.empty())
+        filename = "/";
+    if (filename[filename.length() - 1] == '/')
+        filename += "index.html";
+    request->path = filename;
+    auto ext = Utils::GetFileExt(filename);
     auto it = postController_.find(ext);
     if (it == postController_.end())
     {
