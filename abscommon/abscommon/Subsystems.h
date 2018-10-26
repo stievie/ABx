@@ -2,6 +2,8 @@
 
 #include <map>
 
+#include "DebugNew.h"
+
 class Subsystems
 {
 private:
@@ -22,10 +24,16 @@ public:
     Subsystems() = default;
     ~Subsystems() noexcept
     {
+        Clear();
+    }
+
+    void Clear() noexcept
+    {
         // Reverse delete subsystems
         std::map<const char*, std::unique_ptr<_Subsystem>>::reverse_iterator itr;
         for (itr = systems_.rbegin(); itr != systems_.rend(); ++itr)
             (*itr).second.reset();
+        systems_.clear();
     }
 
     template<typename T, typename... _CArgs>

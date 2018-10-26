@@ -46,4 +46,16 @@ std::string AddSlash(const std::string& dir)
     return dir;
 }
 
+bool IsHiddenFile(const std::string& path)
+{
+    if (path.empty())
+        return false;
+    if ((path != "..") &&
+        (path != ".") &&
+        ((path[0] == '.') || (path.find("/.") != std::string::npos)))
+        return true;
+
+    return false;
+}
+
 }

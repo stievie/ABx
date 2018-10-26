@@ -12,6 +12,8 @@
 #   include <filesystem>
 #endif
 #include "DataClient.h"
+#include <map>
+#include "Controller.h"
 
 #if __cplusplus < 201703L
 // C++14
@@ -20,8 +22,6 @@ namespace fs = std::experimental::filesystem;
 // C++17
 namespace fs = std::filesystem;
 #endif
-
-using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
 
 class Application : public ServerApp, public std::enable_shared_from_this<Application>
 {
@@ -40,6 +40,17 @@ private:
     asio::io_service ioService_;
     std::unique_ptr<HttpsServer> server_;
     std::unique_ptr<IO::DataClient> dataClient_;
+    std::map<std::string, std::unique_ptr<GetController>> getController_;
+    std::map<std::string, std::unique_ptr<PostController>> postController_;
+    bool ParseCommandLine();
+    void ShowHelp();
+    void PrintServerInfo();
+    void GetHandler(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
+    void PostHandler(std::shared_ptr<HttpsServer::Response> response,
+        std::shared_ptr<HttpsServer::Request> request);
+    void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
+        const SimpleWeb::error_code& ec);
 public:
     Application();
     ~Application();
@@ -47,5 +58,11 @@ public:
     bool Initialize(int argc, char** argv) override;
     void Run() override;
     void Stop() override;
+
+    const std::string& GetRoot() const { return root_; }
+    const std::string& GetHost() const { return adminHost_; }
+
+    static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
+    static Application* Instance;
 };
 

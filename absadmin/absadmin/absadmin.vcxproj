@@ -74,7 +74,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_STANDALONE_ASIO;ASIO_DISABLE_BOOST_REGEX;ASIO_DISABLE_BOOST_DATE_TIME;ASIO_DISABLE_BOOST_THROW_EXCEPTION;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;USE_STANDALONE_ASIO;ASIO_DISABLE_BOOST_REGEX;ASIO_DISABLE_BOOST_DATE_TIME;ASIO_DISABLE_BOOST_THROW_EXCEPTION;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
@@ -92,7 +92,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_STANDALONE_ASIO;ASIO_DISABLE_BOOST_REGEX;ASIO_DISABLE_BOOST_DATE_TIME;ASIO_DISABLE_BOOST_THROW_EXCEPTION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;USE_STANDALONE_ASIO;ASIO_DISABLE_BOOST_REGEX;ASIO_DISABLE_BOOST_DATE_TIME;ASIO_DISABLE_BOOST_THROW_EXCEPTION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
@@ -112,7 +112,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;USE_STANDALONE_ASIO;ASIO_DISABLE_BOOST_REGEX;ASIO_DISABLE_BOOST_DATE_TIME;ASIO_DISABLE_BOOST_THROW_EXCEPTION;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;USE_STANDALONE_ASIO;ASIO_DISABLE_BOOST_REGEX;ASIO_DISABLE_BOOST_DATE_TIME;ASIO_DISABLE_BOOST_THROW_EXCEPTION;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
     </ClCompile>
@@ -126,17 +126,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Cookie.h" />
+    <ClInclude Include="GetFileController.h" />
+    <ClInclude Include="GetHTMLController.h" />
+    <ClInclude Include="Sessions.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Cookie.cpp" />
+    <ClCompile Include="GetFileController.cpp" />
+    <ClCompile Include="GetHTMLController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Sessions.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

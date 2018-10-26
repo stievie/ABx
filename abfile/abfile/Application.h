@@ -68,7 +68,6 @@ private:
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     bool IsAdmin(std::shared_ptr<HttpsServer::Request> request);
     bool IsAccountBanned(const AB::Entities::Account& acc);
-    static bool IsHiddenFile(const fs::path& path);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);

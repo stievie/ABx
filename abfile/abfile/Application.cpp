@@ -30,6 +30,7 @@
 #include <abcrypto.hpp>
 #include "StringUtils.h"
 #include "Subsystems.h"
+#include "FileUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -127,14 +128,14 @@ bool Application::ParseCommandLine()
 
 void Application::ShowHelp()
 {
-    std::cout << "abfile [-<options> [<value>]]" << std::endl;
+    std::cout << "abfile [-<option> [<value>]]" << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
-    std::cout << "  ip <ip>: File ip" << std::endl;
-    std::cout << "  host <host>: File host" << std::endl;
-    std::cout << "  port <port>: File port" << std::endl;
+    std::cout << "  ip <ip>: File IP" << std::endl;
+    std::cout << "  host <host>: File Host" << std::endl;
+    std::cout << "  port <port>: File Port" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -451,19 +452,6 @@ bool Application::IsAccountBanned(const AB::Entities::Account& acc)
     return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
 }
 
-bool Application::IsHiddenFile(const fs::path& path)
-{
-    auto name = path.filename();
-    if (name.string().empty())
-        return false;
-    if ((name != "..") &&
-        (name != ".")  &&
-        ((name.string()[0] == '.') || (name.string().find("/.") != std::string::npos)))
-        return true;
-
-    return false;
-}
-
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 {
     SimpleWeb::CaseInsensitiveMultimap result;
@@ -498,7 +486,7 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
                 << "Trying to access a directory " << path.string() << std::endl;
             throw std::invalid_argument("not a file");
         }
-        if (IsHiddenFile(path))
+        if (Utils::IsHiddenFile(path.string()))
         {
             LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
                 << "Trying to access a hidden file " << path.string() << std::endl;

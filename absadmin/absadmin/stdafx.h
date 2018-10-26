@@ -31,6 +31,16 @@
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
+using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
+
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4701 4800)
+#endif
+#include <ginger.h>
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
 #define WRITE_MINIBUMP
 #define _PROFILING

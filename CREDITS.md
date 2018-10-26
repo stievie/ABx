@@ -18,6 +18,7 @@
 * https://github.com/brimzi/simple-cache
 * https://github.com/mariusbancila/stduuid
 * boost https://www.boost.org/
+* ginger Template Engine https://github.com/melpon/ginger
 
 ## Client
 
