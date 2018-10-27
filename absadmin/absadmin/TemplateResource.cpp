@@ -33,6 +33,8 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
     header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".html")));
+    // Don't cache templates
+    header.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
     responseCookies_->Write(header);
 
     auto ifs = std::make_shared<std::ifstream>();

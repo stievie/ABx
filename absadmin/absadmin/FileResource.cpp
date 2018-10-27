@@ -43,6 +43,7 @@ void FileResource::Render(std::shared_ptr<HttpsServer::Response> response)
         responseCookies_->Write(header);
         auto contT = GetSubsystem<ContentTypes>();
         header.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
+        header.emplace("Cache-Control", "max-age=2592000, public");             //30days (60sec * 60min * 24hours * 30days)
 
         auto ifs = std::make_shared<std::ifstream>();
         ifs->open(path.string(), std::ifstream::in | std::ios::binary | std::ios::ate);

@@ -2,12 +2,14 @@
 #include "ServicesResource.h"
 #include "StringHash.h"
 #include "Application.h"
+#include "Version.h"
 
 namespace Resources {
 
 bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
     objects["title"] = "ABS Admin";
+    objects["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(Utils::StringHashRt("username"));
     if (it != session_->values_.end())
         objects["user"] = (*it).second.GetString();

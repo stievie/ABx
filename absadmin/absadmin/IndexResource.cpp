@@ -9,12 +9,14 @@
 #include "DataClient.h"
 #include "Variant.h"
 #include "StringHash.h"
+#include "Version.h"
 
 namespace Resources {
 
 bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
     objects["title"] = "ABS Admin";
+    objects["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(Utils::StringHashRt("username"));
     if (it != session_->values_.end())
         objects["user"] = (*it).second.GetString();
