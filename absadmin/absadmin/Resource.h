@@ -12,6 +12,7 @@ protected:
     std::unique_ptr<HTTP::Cookies> requestCookies_;
     std::unique_ptr<HTTP::Cookies> responseCookies_;
     std::shared_ptr<HTTP::Session> session_;
+    void Redirect(std::shared_ptr<HttpsServer::Response> response, const std::string& url);
 public:
     explicit Resource(std::shared_ptr<HttpsServer::Request> request);
     Resource() = default;

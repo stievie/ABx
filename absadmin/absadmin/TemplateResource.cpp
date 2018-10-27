@@ -6,6 +6,7 @@
 #include "StringUtils.h"
 #include "Subsystems.h"
 #include "ContentTypes.h"
+#include "Profiler.h"
 
 namespace Resources {
 
@@ -28,6 +29,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         throw std::invalid_argument("hidden file");
     }
 
+    AB_PROFILE;
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
     header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".html")));
@@ -51,8 +53,11 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     try
     {
         ginger::parse(buffer, t, ginger::from_ios(ss));
-        header.emplace("Content-Length", std::to_string(ss.str().length()));
-        response->write(ss.str(), header);
+        ss.seekg(0, std::ios::end);
+        size_t ssize = ss.tellg();
+        ss.seekg(0, std::ios::beg);
+        header.emplace("Content-Length", std::to_string(ssize));
+        response->write(ss, header);
     }
     catch (const ginger::parse_error& ex)
     {

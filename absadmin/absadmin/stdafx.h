@@ -42,6 +42,8 @@ using HttpsServer = SimpleWeb::Server<SimpleWeb::HTTPS>;
 #pragma warning(pop)
 #endif
 
+#include <json.hpp>
+
 #define WRITE_MINIBUMP
 #define _PROFILING
 

@@ -6,6 +6,14 @@
 
 namespace Resources {
 
+void Resource::Redirect(std::shared_ptr<HttpsServer::Response> response, const std::string& url)
+{
+    auto header = Application::Instance->GetDefaultHeader();
+    header.emplace("Location", url);
+    responseCookies_->Write(header);
+    response->write(SimpleWeb::StatusCode::redirection_found, "Found", header);
+}
+
 Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
     request_(request)
 {

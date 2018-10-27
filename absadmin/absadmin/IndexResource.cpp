@@ -14,7 +14,13 @@ namespace Resources {
 
 bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
-    objects["title"] = "AB Admin";
+    objects["title"] = "ABS Admin";
+    auto it = session_->values_.find(Utils::StringHashRt("username"));
+    if (it != session_->values_.end())
+        objects["user"] = (*it).second.GetString();
+    else
+        objects["user"] = "";
+
     std::vector<std::map<std::string, ginger::object>> xs;
 
     auto dataClient = GetSubsystem<IO::DataClient>();

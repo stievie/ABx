@@ -6,6 +6,7 @@
 #include "ContentTypes.h"
 #include "Subsystems.h"
 #include "StringUtils.h"
+#include "Profiler.h"
 
 namespace Resources {
 

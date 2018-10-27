@@ -132,7 +132,9 @@
     <ClInclude Include="FileResource.h" />
     <ClInclude Include="IndexResource.h" />
     <ClInclude Include="LoginResource.h" />
+    <ClInclude Include="LogoutResource.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ServicesResource.h" />
     <ClInclude Include="Sessions.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -145,9 +147,11 @@
     <ClCompile Include="FileResource.cpp" />
     <ClCompile Include="IndexResource.cpp" />
     <ClCompile Include="LoginResource.cpp" />
+    <ClCompile Include="LogoutResource.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ServicesResource.cpp" />
     <ClCompile Include="Sessions.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

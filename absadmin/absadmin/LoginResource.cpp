@@ -4,7 +4,6 @@
 #include "Subsystems.h"
 #include "StringUtils.h"
 #include "ContentTypes.h"
-#include <json.hpp>
 #include "Logger.h"
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
@@ -21,7 +20,7 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
         return false;
     if (account.status != AB::Entities::AccountStatusActivated)
         return false;
-    if (account.type != AB::Entities::AccountTypeGod)
+    if (account.type < AB::Entities::AccountTypeGod)
         return false;
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
         return false;
@@ -51,19 +50,15 @@ void LoginResource::Render(std::shared_ptr<HttpsServer::Response> response)
     auto passIt = form.find("password");
     if (userIt == form.end() || passIt == form.end())
     {
-        response->write(SimpleWeb::StatusCode::client_error_unauthorized,
-            "Unauthorized " + request_->path);
-        return;
+        obj["status"] = "Failed";
     }
-
-    if (!Auth((*userIt).second, (*passIt).second))
+    else
     {
-        response->write(SimpleWeb::StatusCode::client_error_unauthorized,
-            "Unauthorized " + request_->path);
-        return;
+        if (Auth((*userIt).second, (*passIt).second))
+            obj["status"] = "OK";
+        else
+            obj["status"] = "Failed";
     }
-
-    obj["status"] = "OK";
 
     response->write(obj.dump(), header);
 }
