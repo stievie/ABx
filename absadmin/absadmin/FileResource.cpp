@@ -1,45 +1,47 @@
 #include "stdafx.h"
-#include "GetFileController.h"
-#include "Subsystems.h"
-#include "SimpleConfigManager.h"
-#include "Logger.h"
+#include "FileResource.h"
 #include "Application.h"
+#include "Logger.h"
 #include "FileUtils.h"
+#include "ContentTypes.h"
+#include "Subsystems.h"
+#include "StringUtils.h"
 
-void GetFileController::MakeRequest(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request> request)
+namespace Resources {
+
+void FileResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    GetController::MakeRequest(response, request);
-
     const std::string& root = Application::Instance->GetRoot();
 
     try
     {
         auto web_root_path = fs::canonical(root);
-        auto path = fs::canonical(web_root_path / request->path);
+        auto path = fs::canonical(web_root_path / request_->path);
         // Check if path is within web_root_path
         if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))
         {
-            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            LOG_ERROR << request_->remote_endpoint_address() << ":" << request_->remote_endpoint_port() << ": "
                 << "Trying to access file outside root " << path.string() << std::endl;
             throw std::invalid_argument("path must be within root path");
         }
         if (fs::is_directory(path))
         {
-            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            LOG_ERROR << request_->remote_endpoint_address() << ":" << request_->remote_endpoint_port() << ": "
                 << "Trying to access a directory " << path.string() << std::endl;
             throw std::invalid_argument("not a file");
         }
         if (Utils::IsHiddenFile(path.string()))
         {
-            LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
+            LOG_ERROR << request_->remote_endpoint_address() << ":" << request_->remote_endpoint_port() << ": "
                 << "Trying to access a hidden file " << path.string() << std::endl;
             throw std::invalid_argument("hidden file");
         }
 
         SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
         responseCookies_->Write(header);
+        auto contT = GetSubsystem<ContentTypes>();
+        header.emplace("Content-Type", contT->Get(Utils::GetFileExt(request_->path)));
 
         auto ifs = std::make_shared<std::ifstream>();
         ifs->open(path.string(), std::ifstream::in | std::ios::binary | std::ios::ate);
@@ -86,6 +88,8 @@ void GetFileController::MakeRequest(std::shared_ptr<HttpsServer::Response> respo
     catch (const std::exception&)
     {
         response->write(SimpleWeb::StatusCode::client_error_not_found,
-            "Not found " + request->path);
+            "Not found " + request_->path);
     }
+}
+
 }

@@ -15,7 +15,9 @@ std::shared_ptr<Session> Sessions::Get(const std::string& id)
     auto it = sessions_.find(id);
     if (it == sessions_.end())
         return std::shared_ptr<Session>();
-    if ((*it).second->expires_ < Utils::AbTick())
+    time_t now;
+    time(&now);
+    if ((*it).second->expires_ < now)
     {
         sessions_.erase(it);
         return std::shared_ptr<Session>();

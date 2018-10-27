@@ -13,6 +13,11 @@ struct Session
 
     Session()
     {
+        Touch();
+    }
+
+    void Touch()
+    {
         time(&expires_);
         struct tm* tm = localtime(&expires_);
         tm->tm_sec += sessionLifetime_ / 1000;

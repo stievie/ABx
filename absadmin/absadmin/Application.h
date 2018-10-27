@@ -11,9 +11,7 @@
 #else
 #   include <filesystem>
 #endif
-#include "DataClient.h"
 #include <map>
-#include "Controller.h"
 
 #if __cplusplus < 201703L
 // C++14
@@ -39,18 +37,31 @@ private:
     std::string adminHost_;
     asio::io_service ioService_;
     std::unique_ptr<HttpsServer> server_;
-    std::unique_ptr<IO::DataClient> dataClient_;
-    std::map<std::string, std::unique_ptr<GetController>> getController_;
-    std::map<std::string, std::unique_ptr<PostController>> postController_;
     bool ParseCommandLine();
     void ShowHelp();
     void PrintServerInfo();
-    void GetHandler(std::shared_ptr<HttpsServer::Response> response,
-        std::shared_ptr<HttpsServer::Request> request);
-    void PostHandler(std::shared_ptr<HttpsServer::Response> response,
-        std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
+    template<typename C>
+    void Route(const std::string& method, const std::string& pattern)
+    {
+        server_->resource[pattern][method] = [](std::shared_ptr<HttpsServer::Response> response,
+            std::shared_ptr<HttpsServer::Request> request)
+        {
+            C c(request);
+            c.Render(response);
+        };
+    }
+    template<typename C>
+    void DefaultRoute(const std::string& method)
+    {
+        server_->default_resource[method] = [](std::shared_ptr<HttpsServer::Response> response,
+            std::shared_ptr<HttpsServer::Request> request)
+        {
+            C c(request);
+            c.Render(response);
+        };
+    }
 public:
     Application();
     ~Application();

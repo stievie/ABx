@@ -15,6 +15,8 @@
 
 namespace ginger {
 
+static constexpr char IDENT = '|';
+
 class object {
     struct holder {
         virtual ~holder() { }
@@ -318,7 +320,7 @@ namespace internal {
     template<class Iterator, class Dictionary, class F>
     static void block(parser<Iterator>& p, const Dictionary& dic, tmpl_context& ctx, bool skip, F& out) {
         while (p) {
-            auto r = p.read_while_or_eof([](char c) { return c != '}' && c != '$'; });
+            auto r = p.read_while_or_eof([](char c) { return c != '}' && c != IDENT; });
             if (!skip)
                 out.put(r.first, r.second);
             if (!p)
@@ -336,10 +338,10 @@ namespace internal {
                         output_string(out, "}");
                 }
             }
-            else if (c == '$') {
+            else if (c == IDENT) {
                 p.read();
                 c = p.peek();
-                if (c == '$') {
+                if (c == IDENT) {
                     // $$
                     p.read();
                     if (!skip)
@@ -435,7 +437,7 @@ namespace internal {
                                 break;
                             }
                             c = p.peek();
-                            if (c == '$') {
+                            if (c == IDENT) {
                                 p.read();
                                 auto command2 = p.read_ident();
                                 if (p.equal(command2, "elseif")) {

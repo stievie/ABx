@@ -19,6 +19,7 @@
 * https://github.com/mariusbancila/stduuid
 * boost https://www.boost.org/
 * ginger Template Engine https://github.com/melpon/ginger
+* https://github.com/nbsdx/SimpleJSON
 
 ## Client
 

@@ -1,12 +1,13 @@
 #include "stdafx.h"
-#include "Controller.h"
+#include "Resource.h"
 #include <uuid.h>
-#include "Application.h"
 #include "Subsystems.h"
-#include "Sessions.h"
+#include "Application.h"
 
-void Controller::MakeRequest(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request> request)
+namespace Resources {
+
+Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
+    request_(request)
 {
     responseCookies_ = std::make_unique<HTTP::Cookies>();
     requestCookies_ = std::make_unique<HTTP::Cookies>(*request);
@@ -21,18 +22,21 @@ void Controller::MakeRequest(std::shared_ptr<HttpsServer::Response> response,
         sessId = sessCookie->content_;
 
     auto sessions = GetSubsystem<HTTP::Sessions>();
-    std::shared_ptr<HTTP::Session> sess = sessions->Get(sessId);
-    if (!sess)
+    session_ = sessions->Get(sessId);
+    if (!session_)
     {
         // Create a session with this ID
-        sess = std::make_shared<HTTP::Session>();
-        sessions->Add(sessId, sess);
+        session_ = std::make_shared<HTTP::Session>();
+        sessions->Add(sessId, session_);
     }
-    session_ = sess;
+    // Update expiry date/time
+    session_->Touch();
     HTTP::Cookie respSessCookie;
     respSessCookie.content_ = sessId;
-    respSessCookie.expires_ = sess->expires_;
+    respSessCookie.expires_ = session_->expires_;
     respSessCookie.domain_ = Application::Instance->GetHost();
     respSessCookie.httpOnly_ = true;
     responseCookies_->Add("SESSION_ID", respSessCookie);
+}
+
 }

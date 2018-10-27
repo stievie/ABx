@@ -6,10 +6,13 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "StringUtils.h"
-#include "GetFileController.h"
-#include "GetHTMLController.h"
 #include "Profiler.h"
 #include "Sessions.h"
+#include "DataClient.h"
+#include "FileResource.h"
+#include "IndexResource.h"
+#include "ContentTypes.h"
+#include "LoginResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -25,6 +28,8 @@ Application::Application() :
     Application::Instance = this;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<HTTP::Sessions>();
+    Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
+    Subsystems::Instance.CreateSubsystem<ContentTypes>();
 }
 
 Application::~Application()
@@ -122,6 +127,7 @@ void Application::ShowHelp()
 void Application::PrintServerInfo()
 {
     auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server config:" << std::endl;
     LOG_INFO << "  Server ID: " << serverId_ << std::endl;
     LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
@@ -129,7 +135,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Listening: " << (adminIp_.empty() ? "0.0.0.0" : adminIp_) << ":" << adminPort_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Worker Threads: " << server_->config.thread_pool_size << std::endl;
-    LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+    LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
 bool Application::Initialize(int argc, char** argv)
@@ -178,10 +184,10 @@ bool Application::Initialize(int argc, char** argv)
     dataHost_ = config->GetGlobal("data_host", "");
     dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
 
-    dataClient_ = std::make_unique<IO::DataClient>(ioService_);
+    auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
-    dataClient_->Connect(dataHost_, dataPort_);
-    if (!dataClient_->IsConnected())
+    dataClient->Connect(dataHost_, dataPort_);
+    if (!dataClient->IsConnected())
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Failed to connect to data server" << std::endl;
@@ -189,20 +195,32 @@ bool Application::Initialize(int argc, char** argv)
     }
     LOG_INFO << "[done]" << std::endl;
 
+    // https://www.freeformatter.com/mime-types-list.html
+    auto conT = GetSubsystem<ContentTypes>();
+    conT->map_[".css"] = "text/css";
+    conT->map_[".html"] = "text/html";
+    conT->map_[".js"] = "application/javascript";
+    conT->map_[".json"] = "application/json";
+    conT->map_[".pdf"] = "application/pdf";
+    conT->map_[".zip"] = "application/zip";
+    conT->map_[".gif"] = "image/gif";
+    conT->map_[".jpg"] = "image/jpeg";
+    conT->map_[".jpeg"] = "image/jpeg";
+    conT->map_[".png"] = "image/png";
+    conT->map_[".svg"] = "image/svg+xml";
+    conT->map_[".ico"] = "image/x-icon";
+
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = adminPort_;
     if (!adminIp_.empty())
         server_->config.address = adminIp_;
     server_->config.thread_pool_size = threads;
-    server_->default_resource["GET"] = std::bind(&Application::GetHandler, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->default_resource["POST"] = std::bind(&Application::PostHandler, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
-    getController_["!!DEFAULT!!"] = std::make_unique<GetFileController>();
-    getController_[".html"] = std::make_unique<GetHTMLController>();
+    DefaultRoute<Resources::FileResource>("GET");
+    Route<Resources::IndexResource>("GET", "^/$");
+    Route<Resources::LoginResource>("POST", "^/post/login$");
 
     PrintServerInfo();
 
@@ -212,10 +230,11 @@ bool Application::Initialize(int argc, char** argv)
 void Application::Run()
 {
     auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto dataClient = GetSubsystem<IO::DataClient>();
     startTime_ = Utils::AbTick();
     AB::Entities::Service serv;
     serv.uuid = serverId_;
-    dataClient_->Read(serv);
+    dataClient->Read(serv);
     serv.name = config->GetGlobal("server_name", "absadmin");
     serv.location = config->GetGlobal("location", "--");
     serv.host = adminHost_;
@@ -226,10 +245,10 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = AB::Entities::ServiceTypeAdminServer;
     serv.startTime = startTime_;
-    dataClient_->UpdateOrCreate(serv);
+    dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
-    dataClient_->Invalidate(sl);
+    dataClient->Invalidate(sl);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
@@ -242,19 +261,20 @@ void Application::Stop()
         return;
 
     running_ = false;
+    auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server shutdown...";
     AB::Entities::Service serv;
     serv.uuid = serverId_;
-    if (dataClient_->Read(serv))
+    if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-        dataClient_->Update(serv);
+        dataClient->Update(serv);
 
         AB::Entities::ServiceList sl;
-        dataClient_->Invalidate(sl);
+        dataClient->Invalidate(sl);
     }
     else
         LOG_ERROR << "Unable to read service" << std::endl;
@@ -267,53 +287,6 @@ SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
     SimpleWeb::CaseInsensitiveMultimap result;
     result.emplace("Server", "absadmin");
     return result;
-}
-
-void Application::GetHandler(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request> request)
-{
-    std::string filename = request->path;
-    if (filename.empty())
-        filename = "/";
-    if (filename[filename.length() - 1] == '/')
-        filename += "index.html";
-    request->path = filename;
-    auto ext = Utils::GetFileExt(filename);
-    auto it = getController_.find(ext);
-    if (it == getController_.end())
-    {
-        // Default file get controller
-        it = getController_.find("!!DEFAULT!!");
-    }
-    if (it == getController_.end())
-    {
-        LOG_ERROR << "Unknown path " << request->path << std::endl;
-        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found", GetDefaultHeader());
-        return;
-    }
-    AB_PROFILE;
-    (*it).second->MakeRequest(response, request);
-}
-
-void Application::PostHandler(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request> request)
-{
-    std::string filename = request->path;
-    if (filename.empty())
-        filename = "/";
-    if (filename[filename.length() - 1] == '/')
-        filename += "index.html";
-    request->path = filename;
-    auto ext = Utils::GetFileExt(filename);
-    auto it = postController_.find(ext);
-    if (it == postController_.end())
-    {
-        LOG_ERROR << "Unknown path " << request->path << std::endl;
-        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found", GetDefaultHeader());
-        return;
-    }
-    AB_PROFILE;
-    (*it).second->MakeRequest(response, request);
 }
 
 void Application::HandleError(std::shared_ptr<HttpsServer::Request>,

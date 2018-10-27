@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>|{title}</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <h1>Services</h1>
+    <ul>
+    |for x in xs {{
+        <li><a href="|{x.uuid}">|{x.name}</a></li>
+    }}
+    </ul>
+  </body>
+</html>
