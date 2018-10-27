@@ -97,7 +97,7 @@ public:
     template<class T>
     void operator=(T v) { holder_.reset(new holder_impl<T>(std::move(v))); }
 
-    explicit operator bool() const { return holder_->cond(); }
+    explicit operator bool() const { return holder_ && holder_->cond(); }
     void map(const std::function<void(object)>& f) const { holder_->map(f); }
     std::string str() const { return holder_->str(); }
     object operator[](std::string name) { return holder_->get(std::move(name)); }
