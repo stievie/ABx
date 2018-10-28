@@ -32,6 +32,7 @@ void ServicesJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
     }
 
     json::JSON obj;
+    obj["uuids"] = json::Array();
     obj["services"] = json::Array();
     for (const std::string& uuid : sl.uuids)
     {
@@ -53,6 +54,7 @@ void ServicesJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
         serv["online"] = s.status == AB::Entities::ServiceStatusOnline;
         serv["type"] = static_cast<int>(s.type);
 
+        obj["uuids"].append(s.uuid);
         obj["services"].append(serv);
     }
 

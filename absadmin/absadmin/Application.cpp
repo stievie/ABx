@@ -23,7 +23,6 @@ Application::Application() :
     ServerApp::ServerApp(),
     running_(false),
     startTime_(0),
-    dataPort_(0),
     adminPort_(0),
     ioService_()
 {
@@ -33,6 +32,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<HTTP::Sessions>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
     Subsystems::Instance.CreateSubsystem<ContentTypes>();
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(ioService_);
 }
 
 Application::~Application()
@@ -141,6 +141,10 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
+void Application::HandleMessage(const Net::MessageMsg& msg)
+{
+}
+
 bool Application::Initialize(int argc, char** argv)
 {
     if (!ServerApp::Initialize(argc, argv))
@@ -184,12 +188,12 @@ bool Application::Initialize(int argc, char** argv)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = config->GetGlobal("root_dir", "");
     logDir_ = config->GetGlobal("log_dir", "");
-    dataHost_ = config->GetGlobal("data_host", "");
-    dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
+    std::string dataHost = config->GetGlobal("data_host", "");
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
-    dataClient->Connect(dataHost_, dataPort_);
+    dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
     {
         LOG_INFO << "[FAIL]" << std::endl;
@@ -197,6 +201,19 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
+
+    std::string msgHost = config->GetGlobal("message_host", "");
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", 0));
+    auto msgClient = GetSubsystem<Net::MessageClient>();
+    LOG_INFO << "Connecting to message server...";
+    msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
+    if (msgClient->IsConnected())
+        LOG_INFO << "[done]" << std::endl;
+    else
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to connect to message server" << std::endl;
+    }
 
     // https://www.freeformatter.com/mime-types-list.html
     auto conT = GetSubsystem<ContentTypes>();

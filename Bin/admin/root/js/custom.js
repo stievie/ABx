@@ -745,19 +745,19 @@ if (typeof NProgress != 'undefined') {
       pointer: {
         length: 0.75,
         strokeWidth: 0.042,
-        color: '#1D212A'
+        color: '#1D212A',
       },
       limitMax: 'false',
       colorStart: '#1ABC9C',
       colorStop: '#1ABC9C',
       strokeColor: '#F0F3F3',
-      generateGradient: true
+      generateGradient: true,
     };
 
     $.each($('.gauge-chart'), function(index, value) {
       var chart_gauge = new Gauge(value).setOptions(chart_gauge_settings);
       chart_gauge.maxValue = 100;
-      chart_gauge.animationSpeed = 32;
+      chart_gauge.animationSpeed = 1;
       var val = $(this).data("value");
       chart_gauge.set(val);
     });

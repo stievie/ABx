@@ -19,3 +19,4 @@ root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin
 session_lifetime = 1000 * 60 * 10
 
 require("config/data_server")
+require("config/msg_server")

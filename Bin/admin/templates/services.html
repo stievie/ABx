@@ -98,36 +98,7 @@
         <!-- page content -->
         <div class="right_col" role="main">
           <div class="row" id="services_container">
-          $for serv in services {{
-            <div id="service_${serv.uuid}" class="col-md-3 col-xs-12 widget widget_tally_box">
-              <div class="x_panel">
-                <div class="x_title">
-                  <h2>
-                    <a href="service?id=${serv.uuid}">${serv.name}</a>
-                  </h2>
-                  $if serv.online {{
-                  <span id="onlinebadge_${serv.uuid}" class="badge bg-green">Online</span>
-                  }}
-                  $else {{
-                  <span id="onlinebadge_${serv.uuid}" class="badge bg-red">Offline</span>
-                  }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                  <div style="text-align: center; margin-bottom: 17px">
-                  $if serv.online {{
-                    <canvas width="150" height="80" data-value="${serv.load}" class="gauge-chart" style="width: 160px; height: 100px;"></canvas>
-                    <div>${serv.load}% Load</div>
-                  }}
-                  $else {{
-                    <canvas width="150" height="80" style="width: 160px; height: 100px;"></canvas>
-                    <div>Offline</div>
-                  }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          }}
+
           </div>
         </div>
         <!-- /page content -->
@@ -162,12 +133,59 @@
 
         function getServices() {
           $$.get('get/services', function(data) {
-            // TODO
+            $$.each($$("#services_container > .widget"), function(index, value) {
+              if ($$.inArray($$(value).data("uuid"), data.uuids) === -1)
+              {
+                $$(value).remove();
+              }
+            });
             $$.each(data.services, function(index, value) {
               var elem = $$("#services_container > #service_" + value.uuid);
               if (elem.length === 0)
               {
+                var html =
+                  "<div id='' class='col-md-3 col-xs-12 widget widget_tally_box'>" +
+                  "  <div class='x_panel'>" +
+                  "    <div class='x_title'>" +
+                  "      <h2>" +
+                  "        <a href=''></a>" +
+                  "      </h2>" +
+                  "      <span id='' class='badge'></span>" +
+                  "      <div class='clearfix'></div>" +
+                  "    </div>" +
+                  "    <div class='x_content'>" +
+                  "      <div style='text-align: center; margin-bottom: 17px'>" +
+                  "        <canvas width='150' height='80' style='width: 160px; height: 100px;' data-value=''></canvas>" +
+                  "        <div class='load_text'></div>" +
+                  "      </div>" +
+                  "    </div>" +
+                  "  </div>" +
+                  "</div>";
+
+                  elem = $$(html).appendTo("#services_container");
+                  elem.attr("id", "service_" + value.uuid);
+                  elem.attr("data-uuid", value.uuid);
+                  elem.find("h2 a").attr("href", "service?id=" + value.uuid);
+                  elem.find("h2 a").text(value.name);
               }
+              if (value.online)
+              {
+                elem.find(".badge").removeClass("bg-red");
+                elem.find(".badge").addClass("bg-green");
+                elem.find(".badge").text("Online");
+                elem.find("canvas").addClass("gauge-chart");
+                elem.find("canvas").attr("data-value", value.load + 50);
+                elem.find(".load_text").text(value.load + "% Load");
+              }
+              else
+              {
+                elem.find(".badge").removeClass("bg-green");
+                elem.find(".badge").addClass("bg-red");
+                elem.find(".badge").text("Offline");
+                elem.find("canvas").removeClass("gauge-chart");
+                elem.find(".load_text").text("Offline");
+              }
+
             });
             init_gauge();
             setTimeout(getServices, 1000);

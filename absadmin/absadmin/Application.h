@@ -12,6 +12,7 @@
 #   include <filesystem>
 #endif
 #include <map>
+#include "MessageClient.h"
 
 #if __cplusplus < 201703L
 // C++14
@@ -30,8 +31,6 @@ private:
     std::string logDir_;
     std::string serverId_;
     std::string root_;
-    std::string dataHost_;
-    uint16_t dataPort_;
     uint16_t adminPort_;
     std::string adminIp_;
     std::string adminHost_;
@@ -40,6 +39,7 @@ private:
     bool ParseCommandLine();
     void ShowHelp();
     void PrintServerInfo();
+    void HandleMessage(const Net::MessageMsg& msg);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
     template<typename C>
