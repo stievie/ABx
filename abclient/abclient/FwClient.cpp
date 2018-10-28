@@ -579,7 +579,7 @@ void FwClient::OnLoggedIn(const std::string&)
     LoadData();
 }
 
-void FwClient::OnGetCharlist(const AB::Entities::CharacterList& chars)
+void FwClient::OnGetCharlist(const AB::Entities::CharList& chars)
 {
     levelReady_ = false;
     characters_ = chars;

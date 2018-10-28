@@ -7,8 +7,60 @@
 #include "Subsystems.h"
 #include "ContentTypes.h"
 #include "Profiler.h"
+#include "Version.h"
+#include "StringHash.h"
 
 namespace Resources {
+
+bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects)
+{
+    objects["title"] = "ABS Admin";
+    objects["copy_year"] = SERVER_YEAR;
+    auto it = session_->values_.find(Utils::StringHashRt("username"));
+    if (it != session_->values_.end())
+        objects["user"] = (*it).second.GetString();
+    else
+        objects["user"] = "";
+
+    std::vector<std::map<std::string, ginger::object>> s;
+    for (const auto& f : styles_)
+    {
+        s.push_back({
+            { "url", f }
+        });
+    }
+    objects["styles"] = s;
+
+    std::vector<std::map<std::string, ginger::object>> hs;
+    for (const auto& f : headerScripts_)
+    {
+        hs.push_back({
+            { "url", f }
+        });
+    }
+    objects["header_scripts"] = hs;
+
+    std::vector<std::map<std::string, ginger::object>> fs;
+    for (const auto& f : footerScripts_)
+    {
+        fs.push_back({
+            { "url", f }
+        });
+    }
+    objects["footer_scripts"] = fs;
+
+    return true;
+}
+
+TemplateResource::TemplateResource(std::shared_ptr<HttpsServer::Request> request) :
+    Resource(request)
+{
+    styles_.push_back("vendors/bootstrap/dist/css/bootstrap.min.css");
+    styles_.push_back("vendors/font-awesome/css/font-awesome.min.css");
+    styles_.push_back("css/custom.min.css");
+    styles_.push_back("css/icon-trill.css");
+    footerScripts_.push_back("vendors/jquery/dist/jquery.min.js");
+}
 
 void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
@@ -51,9 +103,9 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     if (!GetObjects(t))
         return;
 
-    std::stringstream ss;
     try
     {
+        std::stringstream ss;
         ginger::parse(buffer, t, ginger::from_ios(ss));
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
@@ -63,7 +115,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     }
     catch (const ginger::parse_error& ex)
     {
-        LOG_ERROR << "Parse Error(" << ex.line1() << "):" << ex.long_error() << std::endl;
+        LOG_ERROR << "Parse Error: " << ex.long_error() << std::endl;
         response->write(SimpleWeb::StatusCode::server_error_internal_server_error,
             "Parse Error " + request_->path);
     }

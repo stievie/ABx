@@ -97,37 +97,36 @@
 
         <!-- page content -->
         <div class="right_col" role="main">
-          <div class="row" id="services_container">
-          $for serv in services {{
-            <div id="service_${serv.uuid}" class="col-md-3 col-xs-12 widget widget_tally_box">
-              <div class="x_panel">
-                <div class="x_title">
-                  <h2>
-                    <a href="service?id=${serv.uuid}">${serv.name}</a>
-                  </h2>
-                  $if serv.online {{
-                  <span id="onlinebadge_${serv.uuid}" class="badge bg-green">Online</span>
-                  }}
-                  $else {{
-                  <span id="onlinebadge_${serv.uuid}" class="badge bg-red">Offline</span>
-                  }}
-                  <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                  <div style="text-align: center; margin-bottom: 17px">
-                  $if serv.online {{
-                    <canvas width="150" height="80" data-value="${serv.load}" class="gauge-chart" style="width: 160px; height: 100px;"></canvas>
-                    <div>${serv.load}% Load</div>
-                  }}
-                  $else {{
-                    <canvas width="150" height="80" style="width: 160px; height: 100px;"></canvas>
-                    <div>Offline</div>
-                  }}
-                  </div>
-                </div>
-              </div>
+          <!-- top tiles -->
+          <div class="row tile_count">
+            <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
+              <span class="count_top"><i class="fa fa-user"></i> Total Accounts</span>
+              <div class="count">${total_accounts}</div>
+              <span class="count_bottom">with ${total_chars} Characters</span>
             </div>
-          }}
+            <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
+              <span class="count_top"><i class="fa fa-clock-o"></i> Total Uptime</span>
+              <div class="count">123.50</div>
+              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
+              <span class="count_top"><i class="fa fa-trophy"></i> Total Games</span>
+              <div class="count green">2,500</div>
+              <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span>
+            </div>
+          </div>
+          <!-- /top tiles -->
+
+          <div class="row">
+
+          </div>
+
+          <div class="row">
+
+          </div>
+
+          <div class="row">
+
           </div>
         </div>
         <!-- /page content -->
@@ -159,22 +158,6 @@
             }
           });
         });
-
-        function getServices() {
-          $$.get('get/services', function(data) {
-            // TODO
-            $$.each(data.services, function(index, value) {
-              var elem = $$("#services_container > #service_" + value.uuid);
-              if (elem.length === 0)
-              {
-              }
-            });
-            init_gauge();
-            setTimeout(getServices, 1000);
-          });
-        }
-
-        getServices();
       });
     </script>
   </body>

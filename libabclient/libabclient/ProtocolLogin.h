@@ -18,7 +18,7 @@ public:
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
     typedef std::function<void(const std::string& accountUuid)> LoggedInCallback;
-    typedef std::function<void(const AB::Entities::CharacterList& chars)> CharlistCallback;
+    typedef std::function<void(const AB::Entities::CharList& chars)> CharlistCallback;
     typedef std::function<void(const std::vector<AB::Entities::Game>& outposts)> GamelistCallback;
     typedef std::function<void(const std::vector<AB::Entities::Service>& services)> ServerlistCallback;
     typedef std::function<void()> CreateAccountCallback;

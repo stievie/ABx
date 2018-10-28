@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 namespace AB {
 namespace Entities {
 namespace Limits {
@@ -17,6 +19,7 @@ static constexpr int MAX_ACCOUNT_NAME = 32;
 static constexpr int MAX_ACCOUNT_PASS = 61;
 static constexpr int MAX_ACCOUNT_EMAIL = 60;
 static constexpr int MAX_ACCOUNT_CHARACTERS = 50;
+static constexpr int MAX_ACCOUNTS = std::numeric_limits<int>::max();
 // AccountKey
 static constexpr int MAX_ACCOUNTKEY_DESCRIPTION = 255;
 
@@ -24,6 +27,7 @@ static constexpr int MAX_ACCOUNTKEY_DESCRIPTION = 255;
 static constexpr int MAX_CHARACTER_NAME = 20;
 static constexpr int MAX_CHARACTER_PROF = 2;
 static constexpr int MAX_CHARACTER_SKILLTEMPLATE = 36;
+static constexpr int MAX_CHARACTERS = std::numeric_limits<int>::max();
 
 // Map
 static constexpr int MAX_MAP_NAME = 50;

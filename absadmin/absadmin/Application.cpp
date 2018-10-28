@@ -15,6 +15,7 @@
 #include "LoginResource.h"
 #include "LogoutResource.h"
 #include "ServicesResource.h"
+#include "ServicesJsonResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -223,6 +224,7 @@ bool Application::Initialize(int argc, char** argv)
     DefaultRoute<Resources::FileResource>("GET");
     Route<Resources::IndexResource>("GET", "^/$");
     Route<Resources::ServicesResource>("GET", "^/services$");
+    Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout");
 

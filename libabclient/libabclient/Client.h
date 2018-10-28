@@ -73,7 +73,7 @@ public:
     void OnServerLeft(const std::string& serverId) override;
 
     void OnLoggedIn(const std::string& accountUuid) override;
-    void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
+    void OnGetCharlist(const AB::Entities::CharList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;
     void OnAccountCreated() override;

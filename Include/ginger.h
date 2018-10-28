@@ -15,7 +15,7 @@
 
 namespace ginger {
 
-static constexpr char IDENT = '|';
+static constexpr char IDENT = '$';
 
 class object {
     struct holder {

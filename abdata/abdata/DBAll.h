@@ -29,3 +29,5 @@
 #include "DBItem.h"
 #include "DBItemList.h"
 #include "DBVersionList.h"
+#include "DBAccountList.h"
+#include "DBCharacterList.h"

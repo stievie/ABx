@@ -85,7 +85,7 @@ struct Character : Entity
     std::string instanceUuid = EMPTY_GUID;
 };
 
-typedef std::vector<Character> CharacterList;
+typedef std::vector<Character> CharList;
 
 }
 }

@@ -417,18 +417,18 @@ class JSON
         Class Type = Class::Null;
 };
 
-JSON Array() {
+inline JSON Array() {
     return std::move( JSON::Make( JSON::Class::Array ) );
 }
 
 template <typename... T>
-JSON Array( T... args ) {
+inline JSON Array( T... args ) {
     JSON arr = JSON::Make( JSON::Class::Array );
     arr.append( args... );
     return std::move( arr );
 }
 
-JSON Object() {
+inline JSON Object() {
     return std::move( JSON::Make( JSON::Class::Object ) );
 }
 

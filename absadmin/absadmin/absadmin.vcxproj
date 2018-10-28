@@ -134,6 +134,7 @@
     <ClInclude Include="LoginResource.h" />
     <ClInclude Include="LogoutResource.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ServicesJsonResource.h" />
     <ClInclude Include="ServicesResource.h" />
     <ClInclude Include="Sessions.h" />
     <ClInclude Include="stdafx.h" />
@@ -151,6 +152,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ServicesJsonResource.cpp" />
     <ClCompile Include="ServicesResource.cpp" />
     <ClCompile Include="Sessions.cpp" />
     <ClCompile Include="stdafx.cpp">

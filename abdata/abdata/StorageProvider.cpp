@@ -47,6 +47,8 @@ static constexpr size_t KEY_GAMEINSTANCES_HASH = Utils::StringHash(AB::Entities:
 static constexpr size_t KEY_ITEMS_HASH = Utils::StringHash(AB::Entities::Item::KEY());
 static constexpr size_t KEY_ITEMLIST_HASH = Utils::StringHash(AB::Entities::ItemList::KEY());
 static constexpr size_t KEY_VERSIONLIST_HASH = Utils::StringHash(AB::Entities::VersionList::KEY());
+static constexpr size_t KEY_ACCOUNTLIST_HASH = Utils::StringHash(AB::Entities::AccountList::KEY());
+static constexpr size_t KEY_CHARACTERLIST_HASH = Utils::StringHash(AB::Entities::CharacterList::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -539,6 +541,10 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         return LoadFromDB<DB::DBVersion, AB::Entities::Version>(id, *data);
     case KEY_ATTRIBUTELIST_HASH:
         return LoadFromDB<DB::DBAttributeList, AB::Entities::AttributeList>(id, *data);
+    case KEY_ACCOUNTLIST_HASH:
+        return LoadFromDB<DB::DBAccountList, AB::Entities::AccountList>(id, *data);
+    case KEY_CHARACTERLIST_HASH:
+        return LoadFromDB<DB::DBCharacterList, AB::Entities::CharacterList>(id, *data);
     case KEY_SERVICE_HASH:
         return LoadFromDB<DB::DBService, AB::Entities::Service>(id, *data);
     case KEY_SERVICELIST_HASH:
@@ -657,6 +663,12 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_ATTRIBUTELIST_HASH:
         succ = FlushRecord<DB::DBAttributeList, AB::Entities::AttributeList>(data);
         break;
+    case KEY_ACCOUNTLIST_HASH:
+        succ = FlushRecord<DB::DBAccountList, AB::Entities::AccountList>(data);
+        break;
+    case KEY_CHARACTERLIST_HASH:
+        succ = FlushRecord<DB::DBCharacterList, AB::Entities::CharacterList>(data);
+        break;
     case KEY_SERVICE_HASH:
         succ = FlushRecord<DB::DBService, AB::Entities::Service>(data);
         break;
@@ -750,6 +762,10 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
         return ExistsInDB<DB::DBVersion, AB::Entities::Version>(data);
     case KEY_ATTRIBUTELIST_HASH:
         return ExistsInDB<DB::DBAttributeList, AB::Entities::AttributeList>(data);
+    case KEY_ACCOUNTLIST_HASH:
+        return ExistsInDB<DB::DBAccountList, AB::Entities::AccountList>(data);
+    case KEY_CHARACTERLIST_HASH:
+        return ExistsInDB<DB::DBCharacterList, AB::Entities::CharacterList>(data);
     case KEY_SERVICE_HASH:
         return ExistsInDB<DB::DBService, AB::Entities::Service>(data);
     case KEY_SERVICELIST_HASH:

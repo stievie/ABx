@@ -37,5 +37,4 @@ void OldestInsertionEviction::DeleteKey(const IO::DataKey& key)
     {
         dataItems_.erase(keyItr);
     }
-
 }

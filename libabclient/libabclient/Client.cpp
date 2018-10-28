@@ -91,7 +91,7 @@ void Client::OnLoggedIn(const std::string& accountUuid)
         receiver_->OnLoggedIn(accountUuid_);
 }
 
-void Client::OnGetCharlist(const AB::Entities::CharacterList& chars)
+void Client::OnGetCharlist(const AB::Entities::CharList& chars)
 {
     state_ = ClientState::SelectChar;
     if (receiver_)

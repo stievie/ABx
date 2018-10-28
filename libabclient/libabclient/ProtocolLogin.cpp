@@ -183,7 +183,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         loggedInCallback_(accountUuid);
 
         /* int charSlots = */ message->Get<uint16_t>();
-        AB::Entities::CharacterList chars;
+        AB::Entities::CharList chars;
         int count = message->Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {

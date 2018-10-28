@@ -147,6 +147,12 @@
     <ClInclude Include="DBVersionList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBAccountList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBCharacterList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -273,6 +279,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBVersionList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBAccountList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBCharacterList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

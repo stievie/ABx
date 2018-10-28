@@ -55,7 +55,7 @@ void CharSelectLevel::CreateUI()
     window->SetStyleAuto();
 
     FwClient* client = context_->GetSubsystem<FwClient>();
-    const AB::Entities::CharacterList& chars = client->GetCharacters();
+    const AB::Entities::CharList& chars = client->GetCharacters();
     int i = 0;
     for (const auto& ch : chars)
     {

@@ -34,7 +34,7 @@ public:
     virtual void OnServerLeft(const std::string& serverId) = 0;
 
     virtual void OnLoggedIn(const std::string& accountUuid) = 0;
-    virtual void OnGetCharlist(const AB::Entities::CharacterList& chars) = 0;
+    virtual void OnGetCharlist(const AB::Entities::CharList& chars) = 0;
     virtual void OnGetOutposts(const std::vector<AB::Entities::Game>& games) = 0;
     virtual void OnGetServices(const std::vector<AB::Entities::Service>& services) = 0;
     virtual void OnAccountCreated() = 0;

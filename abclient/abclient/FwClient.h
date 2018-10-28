@@ -25,7 +25,7 @@ private:
     uint32_t playerId_;
     Client::Client client_;
     Client::Client::ClientState lastState_;
-    AB::Entities::CharacterList characters_;
+    AB::Entities::CharList characters_;
     std::map<std::string, AB::Entities::Game> outposts_;
     std::map<std::string, AB::Entities::Game> games_;
     std::map<std::string, AB::Entities::Service> services_;
@@ -107,7 +107,7 @@ public:
     void OnServerLeft(const std::string& serverId) override;
 
     void OnLoggedIn(const std::string&) override;
-    void OnGetCharlist(const AB::Entities::CharacterList& chars) override;
+    void OnGetCharlist(const AB::Entities::CharList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;
     void OnAccountCreated() override;
@@ -158,7 +158,7 @@ public:
     {
         return currentCharacterUuid_;
     }
-    const AB::Entities::CharacterList& GetCharacters() const
+    const AB::Entities::CharList& GetCharacters() const
     {
         return characters_;
     }

@@ -8,28 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="favicon.ico"/>
 
-    <title>|{title}</title>
+    <title>${title}</title>
 
-    <!-- Bootstrap -->
-    <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    $for hs in styles {{
+      <link href="${hs.url}" rel="stylesheet">
+    }}
 
-    <!-- bootstrap-progressbar -->
-    <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
-    <!-- JQVMap -->
-    <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
-    <!-- bootstrap-daterangepicker -->
-    <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="css/custom.min.css" rel="stylesheet">
-    <link href="css/icon-trill.css" rel="stylesheet">
-
+    $for hs in header_scripts {{
+      <script src="${hs.url}"></script>
+    }}
   </head>
   <body class="login">
     <div>
@@ -51,8 +38,8 @@
               <div class="clearfix"></div>
               <div class="separator">
                 <div>
-                  <h1>|{title}</h1>
-                  <p>©|{copy_year} <i class="icon-trill"></i></p>
+                  <h1>${title}</h1>
+                  <p>&copy;${copy_year} <i class="icon-trill"></i></p>
                 </div>
               </div>
             </form>
@@ -61,13 +48,14 @@
       </div>
     </div>
 
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
+    $for hs in footer_scripts {{
+      <script src="${hs.url}"></script>
+    }}
     <script>
-      $(document).ready(function() {
-        $("#id_login_form").bind("submit", function(e) {
+      $$(document).ready(function() {
+        $$("#id_login_form").bind("submit", function(e) {
           e.preventDefault();
-          console.log($(this).serialize());
-          $.post($(this).attr("action"), $(this).serialize(), function(data, textStatus, xhr)
+          $$.post($$(this).attr("action"), $$(this).serialize(), function(data, textStatus, xhr)
           {
             if (xhr.status == 200 && data.status === "OK")
             {
