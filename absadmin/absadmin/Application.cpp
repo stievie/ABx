@@ -212,7 +212,7 @@ bool Application::Initialize(int argc, char** argv)
     else
     {
         LOG_INFO << "[FAIL]" << std::endl;
-        LOG_ERROR << "Failed to connect to message server" << std::endl;
+        LOG_WARNING << "Not connected to message server" << std::endl;
     }
 
     // https://www.freeformatter.com/mime-types-list.html
