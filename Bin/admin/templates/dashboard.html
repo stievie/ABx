@@ -1,24 +1,3 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="favicon.ico"/>
-
-    <title>${title}</title>
-    $for hs in styles {{
-      <link href="${hs.url}" rel="stylesheet">
-    }}
-
-    $for hs in header_scripts {{
-      <script src="${hs.url}"></script>
-    }}
-  </head>
-
-  <body class="nav-md">
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col menu_fixed">
@@ -142,12 +121,9 @@
       </div>
     </div>
 
-    $for hs in footer_scripts {{
-      <script src="${hs.url}"></script>
-    }}
-
     <script>
       $$(document).ready(function() {
+        $$("body").addClass("nav-md");
         $$(".logout-button").bind("click", function(e) {
           e.preventDefault();
           $$.post("post/logout", function(data, textStatus, xhr)
@@ -160,5 +136,3 @@
         });
       });
     </script>
-  </body>
-</html>

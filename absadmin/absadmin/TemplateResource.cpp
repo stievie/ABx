@@ -55,19 +55,55 @@ bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects
 TemplateResource::TemplateResource(std::shared_ptr<HttpsServer::Request> request) :
     Resource(request)
 {
+    headerTemplate_ = "../templates/_header.html";
+    footerTemplate_ = "../templates/_footer.html";
+
     styles_.push_back("vendors/bootstrap/dist/css/bootstrap.min.css");
     styles_.push_back("vendors/font-awesome/css/font-awesome.min.css");
     styles_.push_back("css/custom.min.css");
     styles_.push_back("css/icon-trill.css");
-    footerScripts_.push_back("vendors/jquery/dist/jquery.min.js");
+    headerScripts_.push_back("vendors/jquery/dist/jquery.min.js");
 }
 
-void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
+void TemplateResource::LoadTemplates(std::string& result)
 {
+    std::string header = GetTemplateFile(headerTemplate_);
+    if (!header.empty())
+        AppendFile(header, result);
+    std::string body = GetTemplateFile(template_);
+    if (!body.empty())
+        AppendFile(body, result);
+    std::string footer = GetTemplateFile(footerTemplate_);
+    if (!footer.empty())
+        AppendFile(footer, result);
+}
+
+void TemplateResource::AppendFile(const std::string& fileName, std::string& result)
+{
+    std::ifstream ifs(fileName, std::ifstream::in | std::ios::binary);
+    if (!ifs)
+    {
+        LOG_ERROR << "Unable to open file " << fileName << std::endl;
+        throw std::invalid_argument("Error opening file");
+    }
+
+    ifs.seekg(0, std::ios::end);
+    size_t size = ifs.tellg();
+    size_t currSize = result.length();
+    result.resize(currSize + size);
+    ifs.seekg(0, std::ios::beg);
+    ifs.read(&result[currSize], size);
+}
+
+std::string TemplateResource::GetTemplateFile(const std::string& templ)
+{
+    if (templ.empty())
+        return "";
+
     const std::string& root = Application::Instance->GetRoot();
 
     auto web_root_path = fs::canonical(root);
-    auto path = fs::canonical(web_root_path / GetTemplate());
+    auto path = fs::canonical(web_root_path / templ);
     if (fs::is_directory(path))
     {
         LOG_ERROR << request_->remote_endpoint_address() << ":" << request_->remote_endpoint_port() << ": "
@@ -81,23 +117,30 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         throw std::invalid_argument("hidden file");
     }
 
+    return path.string();
+}
+
+void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
+{
     AB_PROFILE;
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
-    header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".html")));
     // Don't cache templates
     header.emplace("Cache-Control", "no-cache, no-store, must-revalidate");
     responseCookies_->Write(header);
 
-    auto ifs = std::make_shared<std::ifstream>();
-    ifs->open(path.string(), std::ifstream::in | std::ios::ate);
-
-    ifs->seekg(0, std::ios::end);
-    size_t size = ifs->tellg();
     std::string buffer;
-    buffer.resize(size);
-    ifs->seekg(0);
-    ifs->read(&buffer[0], size);
+    try
+    {
+        LoadTemplates(buffer);
+    }
+    catch (const std::exception& ex)
+    {
+        LOG_ERROR << "Template Load Error: " << ex.what() << std::endl;
+        response->write(SimpleWeb::StatusCode::server_error_internal_server_error,
+            "Internal Server Error " + request_->path);
+        return;
+    }
 
     std::map<std::string, ginger::object> t;
     if (!GetObjects(t))
@@ -110,6 +153,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
         ss.seekg(0, std::ios::beg);
+        header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".html")));
         header.emplace("Content-Length", std::to_string(ssize));
         response->write(ss, header);
     }
@@ -117,7 +161,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     {
         LOG_ERROR << "Parse Error: " << ex.long_error() << std::endl;
         response->write(SimpleWeb::StatusCode::server_error_internal_server_error,
-            "Parse Error " + request_->path);
+            "Internal Server Error " + request_->path);
     }
 }
 

@@ -49,14 +49,11 @@ bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects
     return true;
 }
 
-std::string ServicesResource::GetTemplate()
-{
-    return "../templates/services.html";
-}
-
 ServicesResource::ServicesResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
+    template_ = "../templates/services.html";
+
     styles_.push_back("vendors/nprogress/nprogress.css");
     styles_.push_back("vendors/iCheck/skins/flat/green.css");
     styles_.push_back("vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css");

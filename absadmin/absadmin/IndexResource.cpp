@@ -36,18 +36,15 @@ bool IndexResource::GetObjects(std::map<std::string, ginger::object>& objects)
     return true;
 }
 
-std::string IndexResource::GetTemplate()
-{
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
-    if (loggedIn)
-        return "../templates/dashboard.html";
-    return "../templates/login.html";
-}
-
 IndexResource::IndexResource(std::shared_ptr<HttpsServer::Request> request) :
     TemplateResource(request)
 {
     bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
+    if (loggedIn)
+        template_ = "../templates/dashboard.html";
+    else
+        template_ = "../templates/login.html";
+
     if (!loggedIn)
         return;
 
