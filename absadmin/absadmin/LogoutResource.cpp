@@ -18,8 +18,6 @@ void LogoutResource::Render(std::shared_ptr<HttpsServer::Response> response)
     std::stringstream ss;
     ss << request_->content.rdbuf();
 
-    SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-
     session_->values_[Utils::StringHashRt("logged_in")] = false;
 
     json::JSON obj;

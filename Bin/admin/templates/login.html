@@ -38,7 +38,15 @@
             {
               window.location.reload(false);
             }
+            else
+              alert("Wrong user name of password");
           });
         });
       });
     </script>
+    $for hs in footer_scripts {{
+      <script src="${hs.url}"></script>
+    }}
+
+  </body>
+</html>

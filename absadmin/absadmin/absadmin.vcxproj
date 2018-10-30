@@ -133,6 +133,9 @@
     <ClInclude Include="IndexResource.h" />
     <ClInclude Include="LoginResource.h" />
     <ClInclude Include="LogoutResource.h" />
+    <ClInclude Include="PasswordPostResource.h" />
+    <ClInclude Include="ProfilePostResource.h" />
+    <ClInclude Include="ProfileResource.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ServicesJsonResource.h" />
     <ClInclude Include="ServicesResource.h" />
@@ -151,6 +154,9 @@
     <ClCompile Include="LogoutResource.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="PasswordPostResource.cpp" />
+    <ClCompile Include="ProfilePostResource.cpp" />
+    <ClCompile Include="ProfileResource.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ServicesJsonResource.cpp" />
     <ClCompile Include="ServicesResource.cpp" />

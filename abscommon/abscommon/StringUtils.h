@@ -68,4 +68,8 @@ std::basic_string<charType> CombineString(const std::vector<std::basic_string<ch
     return Trim(res, delim);
 }
 
+std::string HtmlEncode(const std::string& data);
+std::string UrlEncode(const std::string& str);
+std::string UrlDecode(const std::string& str);
+
 }

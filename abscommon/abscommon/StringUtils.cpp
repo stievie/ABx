@@ -151,4 +151,79 @@ std::string ConvertSize(size_t size)
     return result;
 }
 
+std::string HtmlEncode(const std::string& data)
+{
+    std::string buffer;
+    buffer.reserve(data.size());
+    for (size_t pos = 0; pos != data.size(); ++pos) {
+        switch (data[pos]) {
+        case '&':  buffer.append("&amp;");       break;
+        case '\"': buffer.append("&quot;");      break;
+        case '\'': buffer.append("&apos;");      break;
+        case '<':  buffer.append("&lt;");        break;
+        case '>':  buffer.append("&gt;");        break;
+        default:   buffer.append(&data[pos], 1); break;
+        }
+    }
+    return buffer;
+}
+
+std::string UrlEncode(const std::string& str)
+{
+    std::string new_str = "";
+    char c;
+    int ic;
+    const char* chars = str.c_str();
+    char bufHex[10];
+    size_t len = strlen(chars);
+
+    for (size_t i = 0; i<len; i++)
+    {
+        c = chars[i];
+        ic = c;
+        // uncomment this if you want to encode spaces with +
+        if (c == ' ')
+            new_str += '+';
+        else if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
+            new_str += c;
+        else
+        {
+            sprintf(bufHex, "%X", c);
+            if (ic < 16)
+                new_str += "%0";
+            else
+                new_str += "%";
+            new_str += bufHex;
+        }
+    }
+    return new_str;
+}
+
+std::string UrlDecode(const std::string& str)
+{
+    std::string ret;
+    char ch;
+    size_t i, len = str.length();
+    unsigned ii;
+
+    for (i = 0; i < len; i++)
+    {
+        if (str[i] != '%')
+        {
+            if (str[i] == '+')
+                ret += ' ';
+            else
+                ret += str[i];
+        }
+        else
+        {
+            sscanf(str.substr(i + 1, 2).c_str(), "%x", &ii);
+            ch = static_cast<char>(ii);
+            ret += ch;
+            i = i + 2;
+        }
+    }
+    return ret;
+}
+
 }

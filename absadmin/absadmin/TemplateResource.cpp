@@ -9,6 +9,7 @@
 #include "Profiler.h"
 #include "Version.h"
 #include "StringHash.h"
+#include "StringUtils.h"
 
 namespace Resources {
 
@@ -18,7 +19,9 @@ bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects
     objects["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(Utils::StringHashRt("username"));
     if (it != session_->values_.end())
-        objects["user"] = (*it).second.GetString();
+    {
+        objects["user"] = Utils::HtmlEncode((*it).second.GetString());
+    }
     else
         objects["user"] = "";
 

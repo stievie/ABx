@@ -16,6 +16,9 @@
 #include "LogoutResource.h"
 #include "ServicesResource.h"
 #include "ServicesJsonResource.h"
+#include "ProfileResource.h"
+#include "ProfilePostResource.h"
+#include "PasswordPostResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -141,7 +144,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
-void Application::HandleMessage(const Net::MessageMsg& msg)
+void Application::HandleMessage(const Net::MessageMsg&)
 {
 }
 
@@ -175,9 +178,9 @@ bool Application::Initialize(int argc, char** argv)
     if (serverId_.empty())
         serverId_ = config->GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
     if (adminIp_.empty())
-        adminIp_ = config->GetGlobal("file_ip", "");
+        adminIp_ = config->GetGlobal("admin_ip", "");
     if (adminPort_ == 0)
-        adminPort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8888));
+        adminPort_ = static_cast<uint16_t>(config->GetGlobal("admin_port", 443));
     if (adminHost_.empty())
         adminHost_ = config->GetGlobal("admin_host", "");
     HTTP::Session::sessionLifetime_ = static_cast<uint32_t>(config->GetGlobal("session_lifetime", HTTP::Session::sessionLifetime_));
@@ -242,8 +245,11 @@ bool Application::Initialize(int argc, char** argv)
     Route<Resources::IndexResource>("GET", "^/$");
     Route<Resources::ServicesResource>("GET", "^/services$");
     Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
+    Route<Resources::ProfileResource>("GET", "^/profile$");
     Route<Resources::LoginResource>("POST", "^/post/login$");
-    Route<Resources::LogoutResource>("POST", "^/post/logout");
+    Route<Resources::LogoutResource>("POST", "^/post/logout$");
+    Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
+    Route<Resources::PasswordPostResource>("POST", "^/post/password$");
 
     PrintServerInfo();
 

@@ -8,7 +8,7 @@ server_name = "Admin"
 
 admin_ip = ""         -- Listen on all
 admin_host = ""       -- emtpy use same host as for login
-admin_port = 8081
+admin_port = 443
 
 server_key = "server.key"
 server_cert = "server.crt"
