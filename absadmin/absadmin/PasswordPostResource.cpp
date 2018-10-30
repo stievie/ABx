@@ -10,7 +10,7 @@
 
 namespace Resources {
 
-bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultimap & form)
+bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultimap& form, std::string& error)
 {
     auto oldPwIt = form.find("old_password");
     auto newPwIt = form.find("new_password");
@@ -23,24 +23,37 @@ bool PasswordPostResource::ChangePassword(const SimpleWeb::CaseInsensitiveMultim
     account.uuid = uuid;
     auto dataClient = GetSubsystem<IO::DataClient>();
     if (!dataClient->Read(account))
+    {
+        error = "Invalid Account";
         return false;
+    }
 
     if (bcrypt_checkpass((*oldPwIt).second.c_str(), account.password.c_str()) != 0)
+    {
+        error = "Password check failed";
         return false;
+    }
     if ((*newPwIt) != (*new2PwIt))
+    {
+        error = "Password repeat check failed";
         return false;
+    }
 
     // Create the account
     char pwhash[61];
     if (bcrypt_newhash((*newPwIt).second.c_str(), 10, pwhash, 61) != 0)
     {
         LOG_ERROR << "bcrypt_newhash() failed" << std::endl;
+        error = "Don't ask!";
         return false;
     }
     std::string passwordHash(pwhash, 61);
     account.password = passwordHash;
     if (!dataClient->Update(account))
+    {
+        error = "Update failed";
         return false;
+    }
 
     return true;
 }
@@ -57,10 +70,14 @@ void PasswordPostResource::Render(std::shared_ptr<HttpsServer::Response> respons
 
     json::JSON obj;
     SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    if (ChangePassword(form))
+    std::string error;
+    if (ChangePassword(form, error))
         obj["status"] = "OK";
     else
+    {
         obj["status"] = "Failed";
+        obj["message"] = error;
+    }
 
     response->write(obj.dump(), header);
 }

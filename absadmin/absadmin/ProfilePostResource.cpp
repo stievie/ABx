@@ -25,6 +25,7 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
     if (emailIt == form.end())
     {
         obj["status"] = "Failed";
+        obj["message"] = "Missing Email field";
     }
     else
     {
@@ -33,14 +34,20 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
         account.uuid = uuid;
         auto dataClient = GetSubsystem<IO::DataClient>();
         if (!dataClient->Read(account))
+        {
             obj["status"] = "Failed";
+            obj["message"] = "Invalid Account";
+        }
         else
         {
             account.email = (*emailIt).second;
             if (dataClient->Update(account))
                 obj["status"] = "OK";
             else
+            {
                 obj["status"] = "Failed";
+                obj["message"] = "Update failed";
+            }
         }
     }
 

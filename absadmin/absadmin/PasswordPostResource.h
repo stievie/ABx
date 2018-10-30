@@ -7,7 +7,7 @@ namespace Resources {
 class PasswordPostResource : public Resource
 {
 private:
-    bool ChangePassword(const SimpleWeb::CaseInsensitiveMultimap& form);
+    bool ChangePassword(const SimpleWeb::CaseInsensitiveMultimap& form, std::string& error);
 public:
     explicit PasswordPostResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)

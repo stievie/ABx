@@ -130,6 +130,7 @@
     <ClInclude Include="ContentTypes.h" />
     <ClInclude Include="Cookie.h" />
     <ClInclude Include="FileResource.h" />
+    <ClInclude Include="FriendsResource.h" />
     <ClInclude Include="IndexResource.h" />
     <ClInclude Include="LoginResource.h" />
     <ClInclude Include="LogoutResource.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="ContentTypes.cpp" />
     <ClCompile Include="Cookie.cpp" />
     <ClCompile Include="FileResource.cpp" />
+    <ClCompile Include="FriendsResource.cpp" />
     <ClCompile Include="IndexResource.cpp" />
     <ClCompile Include="LoginResource.cpp" />
     <ClCompile Include="LogoutResource.cpp" />

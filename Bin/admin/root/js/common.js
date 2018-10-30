@@ -1,3 +1,29 @@
+function setCookie(name, value, days)
+{
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name)
+{
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
+function eraseCookie(name)
+{
+  document.cookie = name+'=; Max-Age=-99999999;';
+}
+
 /* Usage:
  * $(window).smartresize(function(){
  *     // code here
@@ -59,7 +85,7 @@ function initSidebar()
       contentHeight = bodyHeight < leftColHeight ? leftColHeight : bodyHeight;
 
     // normalize content
-    contentHeight -= $NAV_MENU.height() + footerHeight;
+    contentHeight -= $NAV_MENU.height() + footerHeight - 23;
 
     $RIGHT_COL.css('min-height', contentHeight);
   };
@@ -108,9 +134,11 @@ function initSidebar()
     if ($BODY.hasClass('nav-md')) {
       $SIDEBAR_MENU.find('li.active ul').hide();
       $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
+      setCookie('sidebar', 'small', 360);
     } else {
       $SIDEBAR_MENU.find('li.active-sm ul').show();
       $SIDEBAR_MENU.find('li.active-sm').addClass('active').removeClass('active-sm');
+      eraseCookie('sidebar');
     }
 
     $BODY.toggleClass('nav-md nav-sm');
@@ -132,6 +160,9 @@ function initSidebar()
     setContentHeight();
   });
 
+  if (getCookie("sidebar"))
+    $BODY.toggleClass('nav-md nav-sm');
+
   setContentHeight();
 
   // fixed sidebar
@@ -146,6 +177,11 @@ function initSidebar()
 // /Sidebar
 
 $(document).ready(function() {
+  NProgress.start();
   initSidebar();
   initAutosize();
+});
+
+$(window).load(function () {
+  NProgress.done();
 });

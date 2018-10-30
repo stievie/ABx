@@ -11,8 +11,7 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_info">
-                <span>Welcome,</span>
-                <h2>${user}</h2>
+                <span>Welcome,</span> ${user}
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -23,10 +22,16 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <li><a href="/"><i class="fa fa-home"></i>Home</a>
+                  <li><a href="friends"><i class="fa fa-users"></i>Friends</a></li>
+                </ul>
+                $if is_god {{
+                <h3>Admin</h3>
+                <ul class="nav side-menu">
                   <li><a href="services"><i class="fa fa-server"></i>Server</a></li>
                   <li><a href="games"><i class="fa fa-trophy"></i>Games</a></li>
                   <li><a href="accounts"><i class="fa fa-user"></i>Accounts</a></li>
                 </ul>
+                }}
               </div>
             </div>
             <!-- /sidebar menu -->
@@ -49,7 +54,7 @@
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a href="/profile">Profile</a></li>
+                    <li><a href="/profile"><i class="fa fa-edit pull-right"></i> Profile</a></li>
                     <li><a href="#" class="logout-button"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                   </ul>
                 </li>
@@ -93,7 +98,7 @@
                       "    </div>" +
                       "    <div class='x_content'>" +
                       "      <div style='text-align: center; margin-bottom: 17px'>" +
-                      "        <canvas width='150' height='80' style='width: 160px; height: 100px;' data-value=''></canvas>" +
+                      "        <canvas style='width: 200px; height: 100px;' data-value=''></canvas>" +
                       "        <div class='load_text'></div>" +
                       "      </div>" +
                       "    </div>" +
@@ -112,7 +117,7 @@
                     elem.find(".badge").addClass("bg-green");
                     elem.find(".badge").text("Online");
                     elem.find("canvas").addClass("gauge-chart");
-                    elem.find("canvas").attr("data-value", value.load + 50);
+                    elem.find("canvas").attr("data-value", value.load + 1);
                     elem.find(".load_text").text(value.load + "% Load");
                   }
                   else
@@ -150,6 +155,7 @@
 
               $$.each($$('.gauge-chart'), function(index, value) {
                 var chart_gauge = new Gauge(value).setOptions(chart_gauge_settings);
+                chart_gauge.minValue = 0;
                 chart_gauge.maxValue = 100;
                 chart_gauge.animationSpeed = 1;
                 var val = $$(this).data("value");

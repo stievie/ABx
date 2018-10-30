@@ -20,7 +20,7 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
         return false;
     if (account.status != AB::Entities::AccountStatusActivated)
         return false;
-    if (account.type < AB::Entities::AccountTypeGod)
+    if (account.type < AB::Entities::AccountTypeNormal)
         return false;
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
         return false;
@@ -28,6 +28,7 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
     session_->values_[Utils::StringHashRt("logged_in")] = true;
     session_->values_[Utils::StringHashRt("username")] = user;
     session_->values_[Utils::StringHashRt("account_uuid")] = account.uuid;
+    session_->values_[Utils::StringHashRt("account_type")] = static_cast<int>(account.type);
 
     return true;
 }

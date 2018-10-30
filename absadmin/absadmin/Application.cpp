@@ -19,6 +19,7 @@
 #include "ProfileResource.h"
 #include "ProfilePostResource.h"
 #include "PasswordPostResource.h"
+#include "FriendsResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -232,6 +233,11 @@ bool Application::Initialize(int argc, char** argv)
     conT->map_[".png"] = "image/png";
     conT->map_[".svg"] = "image/svg+xml";
     conT->map_[".ico"] = "image/x-icon";
+    conT->map_[".otf"] = "font/otf";
+    conT->map_[".sfnt"] = "font/sfnt";
+    conT->map_[".ttf"] = "font/ttf";
+    conT->map_[".woff"] = "font/woff";
+    conT->map_[".woff2"] = "font/woff2";
 
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = adminPort_;
@@ -246,6 +252,7 @@ bool Application::Initialize(int argc, char** argv)
     Route<Resources::ServicesResource>("GET", "^/services$");
     Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
     Route<Resources::ProfileResource>("GET", "^/profile$");
+    Route<Resources::FriendsResource>("GET", "^/friends$");
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
     Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
