@@ -1,5 +1,7 @@
 # TODO
 
++ abdata: Add instance number for services with the same name. Concat with name.
+  Or generate generic name when no name is given: (Location)(Type)(Num): AFG1
 + genkey: separate program to create DH keys for the server
 ~ abdata: Use bit set cache item flags, sot a struct
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap

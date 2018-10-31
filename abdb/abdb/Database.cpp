@@ -12,6 +12,7 @@
 #ifdef USE_SQLITE
 #include "DatabaseSqlite.h"
 #endif
+#include "Logger.h"
 
 #include "DebugNew.h"
 

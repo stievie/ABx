@@ -5,6 +5,7 @@
 #include "DatabaseSqlite.h"
 #include <fstream>
 #include <base64.h>
+#include "Logger.h"
 
 #include "DebugNew.h"
 

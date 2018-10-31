@@ -1,5 +1,8 @@
 #pragma once
 
+#include <mutex>
+#include <sstream>
+
 namespace DB {
 
 class DBTransaction;

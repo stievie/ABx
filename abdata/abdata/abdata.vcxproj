@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,7 +94,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
@@ -115,7 +115,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ASIO_STANDALONE;ASIO_DISABLE_BOOST_THROW_EXCEPTION;BOOST_MULTI_INDEX_DISABLE_SERIALIZATION;_NPROFILING;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\pgsql;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\abdb\abdb</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
@@ -131,11 +131,6 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="ConnectionManager.h" />
-    <ClInclude Include="Database.h" />
-    <ClInclude Include="DatabaseMysql.h" />
-    <ClInclude Include="DatabaseOdbc.h" />
-    <ClInclude Include="DatabasePgsql.h" />
-    <ClInclude Include="DatabaseSqlite.h" />
     <ClInclude Include="DBAccount.h" />
     <ClInclude Include="DBAccountBan.h" />
     <ClInclude Include="DBAccountKey.h" />
@@ -179,11 +174,6 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="ConnectionManager.cpp" />
-    <ClCompile Include="Database.cpp" />
-    <ClCompile Include="DatabaseMysql.cpp" />
-    <ClCompile Include="DatabaseOdbc.cpp" />
-    <ClCompile Include="DatabasePgsql.cpp" />
-    <ClCompile Include="DatabaseSqlite.cpp" />
     <ClCompile Include="DBAccount.cpp" />
     <ClCompile Include="DBAccountBan.cpp" />
     <ClCompile Include="DBAccountKey.cpp" />
@@ -226,6 +216,9 @@
     <ClCompile Include="StorageProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\abdb\abdb\abdb.vcxproj">
+      <Project>{58cbca6a-2750-40b2-a1f7-bf8a33b653b6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
       <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
     </ProjectReference>

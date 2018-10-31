@@ -7,6 +7,7 @@
 #endif
 
 #include "DatabaseOdbc.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 

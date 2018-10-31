@@ -253,7 +253,7 @@ private:
     std::unordered_map<IO::DataKey, CacheItem> cache_;
     std::mutex lock_;
     /// Player name -> Cache Key
-    std::map<std::string, IO::DataKey> playerNames_;
+    std::unordered_map<std::string, IO::DataKey> playerNames_;
     OldestInsertionEviction evictor_;
 };
 

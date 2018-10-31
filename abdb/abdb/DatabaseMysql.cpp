@@ -4,6 +4,7 @@
 
 #include "DatabaseMysql.h"
 #include <mysql/errmsg.h>
+#include "Logger.h"
 
 #include "DebugNew.h"
 

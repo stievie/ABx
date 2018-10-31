@@ -3,6 +3,7 @@
 #ifdef USE_PGSQL
 
 #include "DatabasePgsql.h"
+#include "Logger.h"
 
 #include "DebugNew.h"
 
