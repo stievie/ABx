@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBProfession.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -17,7 +18,7 @@ bool DBProfession::Create(AB::Entities::Profession& prof)
 
 bool DBProfession::Load(AB::Entities::Profession& prof)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `game_professions` WHERE ";
@@ -87,7 +88,7 @@ bool DBProfession::Delete(const AB::Entities::Profession& prof)
 
 bool DBProfession::Exists(const AB::Entities::Profession& prof)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_professions` WHERE ";

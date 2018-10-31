@@ -19,7 +19,6 @@
 namespace DB {
 
 std::recursive_mutex DBQuery::lock_;
-std::unique_ptr<Database> Database::instance_ = nullptr;
 std::string Database::driver_ = "";
 std::string Database::dbHost_ = "";
 std::string Database::dbName_ = "";
@@ -27,40 +26,35 @@ std::string Database::dbUser_ = "";
 std::string Database::dbPass_ = "";
 uint16_t Database::dbPort_ = 0;
 
-Database* Database::Instance()
+Database* Database::CreateInstance(const std::string& driver,
+    const std::string& host, uint16_t port,
+    const std::string& user, const std::string& pass,
+    const std::string& name)
 {
-    if (!instance_)
-    {
-        const std::string& driver = Database::driver_;
+    Database::driver_ = driver;
+    Database::dbHost_ = host;
+    Database::dbName_ = name;
+    Database::dbUser_ = user;
+    Database::dbPass_ = pass;
+    Database::dbPort_ = port;
 #ifdef USE_MYSQL
-        if (driver.compare("mysql") == 0)
-            instance_ = std::make_unique<DatabaseMysql>();
+    if (driver.compare("mysql") == 0)
+        return new DatabaseMysql();
 #endif
 #ifdef USE_PGSQL
-        if (driver.compare("pgsql") == 0)
-            instance_ = std::make_unique<DatabasePgsql>();
+    if (driver.compare("pgsql") == 0)
+        return new DatabasePgsql();
 #endif
 #ifdef USE_ODBC
-        if (driver.compare("odbc") == 0)
-            instance_ = std::make_unique<DatabaseOdbc>();
+    if (driver.compare("odbc") == 0)
+        return new DatabaseOdbc();
 #endif
 #ifdef USE_SQLITE
-        if (driver.compare("sqlite") == 0)
-            instance_ = std::make_unique<DatabaseSqlite>(Database::dbName_);
+    if (driver.compare("sqlite") == 0)
+        return new DatabaseSqlite(Database::dbName_);
 #endif
-        if (!instance_)
-        {
-            LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;
-            return nullptr;
-        }
-    }
-    return instance_.get();
-}
-
-void Database::Reset()
-{
-    if (instance_)
-        instance_.reset();
+    LOG_ERROR << "Unknown/unsupported database driver " << driver << std::endl;
+    return nullptr;
 }
 
 bool Database::ExecuteQuery(const std::string& query)

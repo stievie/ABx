@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBVersion.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBVersion::Create(AB::Entities::Version&)
 
 bool DBVersion::Load(AB::Entities::Version& v)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `versions` WHERE ";
@@ -52,7 +53,7 @@ bool DBVersion::Delete(const AB::Entities::Version&)
 
 bool DBVersion::Exists(const AB::Entities::Version& v)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `versions` WHERE ";

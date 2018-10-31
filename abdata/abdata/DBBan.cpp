@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBBan.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBBan::Create(AB::Entities::Ban& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `bans` (`uuid`, `expires`, `added`, `reason`, `active`, `admin_uuid`, `comment`) VALUES (";
     query << db->EscapeString(ban.uuid) << ", ";
@@ -47,7 +48,7 @@ bool DBBan::Load(AB::Entities::Ban& ban)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
@@ -75,7 +76,7 @@ bool DBBan::Save(const AB::Entities::Ban& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `bans` SET ";
@@ -107,7 +108,7 @@ bool DBBan::Delete(const AB::Entities::Ban& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
     DBTransaction transaction(db);
@@ -129,7 +130,7 @@ bool DBBan::Exists(const AB::Entities::Ban& ban)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);

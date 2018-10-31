@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBServicelList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -11,7 +12,7 @@ bool DBServicelList::Create(AB::Entities::ServiceList&)
 
 bool DBServicelList::Load(AB::Entities::ServiceList& sl)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `services` ORDER BY `type`";

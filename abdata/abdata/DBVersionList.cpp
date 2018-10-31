@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBVersionList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -11,7 +12,7 @@ bool DBVersionList::Create(AB::Entities::VersionList&)
 
 bool DBVersionList::Load(AB::Entities::VersionList& vl)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `versions`";

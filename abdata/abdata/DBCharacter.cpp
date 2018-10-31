@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBCharacter.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `profession_uuid`, `profession2_uuid`, `name`, `pvp`, " <<
         "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
@@ -52,7 +53,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
 
 bool DBCharacter::Load(AB::Entities::Character& character)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `players` WHERE ";
@@ -102,7 +103,7 @@ bool DBCharacter::Save(const AB::Entities::Character& character)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `players` SET ";
@@ -141,7 +142,7 @@ bool DBCharacter::Delete(const AB::Entities::Character& character)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `players` WHERE `uuid` = " << db->EscapeString(character.uuid);
     DBTransaction transaction(db);
@@ -157,7 +158,7 @@ bool DBCharacter::Delete(const AB::Entities::Character& character)
 
 bool DBCharacter::Exists(const AB::Entities::Character& character)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `players` WHERE ";

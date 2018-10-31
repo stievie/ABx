@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBItem.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -17,7 +18,7 @@ bool DBItem::Create(AB::Entities::Item& item)
 
 bool DBItem::Load(AB::Entities::Item& item)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `game_items` WHERE ";
@@ -72,7 +73,7 @@ bool DBItem::Delete(const AB::Entities::Item& item)
 
 bool DBItem::Exists(const AB::Entities::Item& item)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_effects` WHERE ";

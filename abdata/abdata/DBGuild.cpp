@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBGuild.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBGuild::Create(AB::Entities::Guild& g)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `guilds` (`uuid`, `name`, `tag`, `creator_account_uuid`, `creation`";
     query << ") VALUES (";
@@ -41,7 +42,7 @@ bool DBGuild::Create(AB::Entities::Guild& g)
 
 bool DBGuild::Load(AB::Entities::Guild& g)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `guilds` WHERE ";
@@ -76,7 +77,7 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `guilds` SET ";
@@ -108,7 +109,7 @@ bool DBGuild::Delete(const AB::Entities::Guild& g)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `guilds` WHERE `uuid` = " << db->EscapeString(g.uuid);
     DBTransaction transaction(db);
@@ -124,7 +125,7 @@ bool DBGuild::Delete(const AB::Entities::Guild& g)
 
 bool DBGuild::Exists(const AB::Entities::Guild& g)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `guilds` WHERE ";

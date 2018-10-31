@@ -16,8 +16,6 @@ enum DBParam
 
 class Database
 {
-private:
-    static std::unique_ptr<Database> instance_;
 protected:
     Database() :
         connected_(false)
@@ -42,8 +40,10 @@ public:
     static uint16_t dbPort_;
 
     virtual ~Database() {}
-    static Database* Instance();
-    static void Reset();
+    static Database* CreateInstance(const std::string& driver,
+        const std::string& host, uint16_t port,
+        const std::string& user, const std::string& pass,
+        const std::string& name);
 
     virtual bool GetParam(DBParam) {
         return false;

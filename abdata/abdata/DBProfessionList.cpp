@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBProfessionList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -11,7 +12,7 @@ bool DBProfessionList::Create(AB::Entities::ProfessionList&)
 
 bool DBProfessionList::Load(AB::Entities::ProfessionList& pl)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `game_professions`";

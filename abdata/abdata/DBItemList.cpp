@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBItemList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -11,7 +12,7 @@ bool DBItemList::Create(AB::Entities::ItemList&)
 
 bool DBItemList::Load(AB::Entities::ItemList& il)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `game_items`";

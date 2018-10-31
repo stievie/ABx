@@ -3,6 +3,7 @@
 #include "Database.h"
 #include "Utils.h"
 #include "StorageProvider.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -25,7 +26,7 @@ bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     g.members.clear();
 
@@ -89,7 +90,7 @@ bool DBGuildMembers::Exists(const AB::Entities::GuildMembers& g)
 
 void DBGuildMembers::DeleteExpired(StorageProvider* sp)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `guild_uuid` FROM `guild_members` WHERE ";

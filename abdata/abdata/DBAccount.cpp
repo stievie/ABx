@@ -2,6 +2,7 @@
 #include "DBAccount.h"
 #include "Database.h"
 #include <uuid.h>
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -13,7 +14,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
         "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`) VALUES ( ";
@@ -47,7 +48,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
 
 bool DBAccount::Load(AB::Entities::Account& account)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `accounts` WHERE ";
@@ -99,7 +100,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `accounts` SET ";
@@ -135,7 +136,7 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `accounts` WHERE `uuid` = " << db->EscapeString(account.uuid);
 
@@ -152,7 +153,7 @@ bool DBAccount::Delete(const AB::Entities::Account& account)
 
 bool DBAccount::Exists(const AB::Entities::Account& account)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `accounts` WHERE ";

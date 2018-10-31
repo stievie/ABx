@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBAccountBan.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `account_bans` (`uuid`, `ban_uuid`, `account_uuid`) VALUES (";
     query << db->EscapeString(ban.uuid) << ", ";
@@ -37,7 +38,7 @@ bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
 
 bool DBAccountBan::Load(AB::Entities::AccountBan& ban)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT * FROM `account_bans` WHERE ";
     if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
@@ -69,7 +70,7 @@ bool DBAccountBan::Save(const AB::Entities::AccountBan& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `account_bans` SET ";
@@ -97,7 +98,7 @@ bool DBAccountBan::Delete(const AB::Entities::AccountBan& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `account_bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
     DBTransaction transaction(db);
@@ -113,7 +114,7 @@ bool DBAccountBan::Delete(const AB::Entities::AccountBan& ban)
 
 bool DBAccountBan::Exists(const AB::Entities::AccountBan& ban)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `account_bans` WHERE ";
     if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())

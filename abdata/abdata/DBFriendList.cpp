@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBFriendList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -23,7 +24,7 @@ bool DBFriendList::Load(AB::Entities::FriendList& fl)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     fl.friends.clear();
     std::ostringstream query;
@@ -53,7 +54,7 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     DBTransaction transaction(db);
     if (!transaction.Begin())

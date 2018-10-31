@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBEffect.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -17,7 +18,7 @@ bool DBEffect::Create(AB::Entities::Effect& effect)
 
 bool DBEffect::Load(AB::Entities::Effect& effect)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `game_effects` WHERE ";
@@ -69,7 +70,7 @@ bool DBEffect::Delete(const AB::Entities::Effect& effect)
 
 bool DBEffect::Exists(const AB::Entities::Effect& effect)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_effects` WHERE ";

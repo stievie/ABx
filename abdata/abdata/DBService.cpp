@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBService.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBService::Create(AB::Entities::Service& s)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "INSERT INTO `services` (`uuid`, `name`, `type`, `location`, `host`, `port`, " <<
@@ -57,7 +58,7 @@ bool DBService::Load(AB::Entities::Service& s)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `services` WHERE ";
@@ -92,7 +93,7 @@ bool DBService::Save(const AB::Entities::Service& s)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `services` SET ";
@@ -130,7 +131,7 @@ bool DBService::Delete(const AB::Entities::Service& s)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `services` WHERE `uuid` = " << db->EscapeString(s.uuid);
     DBTransaction transaction(db);
@@ -152,7 +153,7 @@ bool DBService::Exists(const AB::Entities::Service& s)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `services` WHERE ";

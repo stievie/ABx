@@ -2,6 +2,7 @@
 #include "DBReservedName.h"
 #include "Database.h"
 #include "StorageProvider.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -13,7 +14,7 @@ bool DBReservedName::Create(AB::Entities::ReservedName&)
 
 bool DBReservedName::Load(AB::Entities::ReservedName& n)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `reserved_names` WHERE ";
@@ -54,7 +55,7 @@ bool DBReservedName::Delete(const AB::Entities::ReservedName&)
 
 bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `reserved_names` WHERE ";
@@ -78,7 +79,7 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
 
 void DBReservedName::DeleteExpired(StorageProvider* sp)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT `uuid` FROM `reserved_names` WHERE ";
     query << "(`expires` <> 0 AND `expires` < " << Utils::AbTick() << ")";

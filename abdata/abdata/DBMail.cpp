@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBMail.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBMail::Create(AB::Entities::Mail& mail)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     // Check if exceeding mail limit, if yes fail
@@ -62,7 +63,7 @@ bool DBMail::Load(AB::Entities::Mail& mail)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `mails` WHERE `uuid` = " << db->EscapeString(mail.uuid);
@@ -90,7 +91,7 @@ bool DBMail::Save(const AB::Entities::Mail& mail)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `mails` SET ";
@@ -124,7 +125,7 @@ bool DBMail::Delete(const AB::Entities::Mail& mail)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `mails` WHERE `uuid` = " << db->EscapeString(mail.uuid);
     DBTransaction transaction(db);
@@ -146,7 +147,7 @@ bool DBMail::Exists(const AB::Entities::Mail& mail)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `mails` WHERE `uuid` = " << db->EscapeString(mail.uuid);

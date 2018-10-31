@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBAccountKeyAccounts.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -13,7 +14,7 @@ bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `account_account_keys` (`account_uuid`, `account_key_uuid`) VALUES ( ";
     query << db->EscapeString(ak.accountUuid) << ",";
@@ -43,7 +44,7 @@ bool DBAccountKeyAccounts::Load(AB::Entities::AccountKeyAccounts& ak)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `account_account_keys` WHERE ";
@@ -80,7 +81,7 @@ bool DBAccountKeyAccounts::Exists(const AB::Entities::AccountKeyAccounts& ak)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `account_account_keys` WHERE ";

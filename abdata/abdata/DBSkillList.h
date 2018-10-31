@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/Entities/SkillList.h>
+
 namespace DB {
 
 class DBSkillList

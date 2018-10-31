@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBSkillList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -11,7 +12,7 @@ bool DBSkillList::Create(AB::Entities::SkillList&)
 
 bool DBSkillList::Load(AB::Entities::SkillList& sl)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `game_skills`";

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBSkill.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -17,7 +18,7 @@ bool DBSkill::Create(AB::Entities::Skill& skill)
 
 bool DBSkill::Load(AB::Entities::Skill& skill)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `game_skills` WHERE ";
@@ -74,7 +75,7 @@ bool DBSkill::Delete(const AB::Entities::Skill& skill)
 
 bool DBSkill::Exists(const AB::Entities::Skill& skill)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_skills` WHERE ";

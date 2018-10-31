@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBEffectList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -11,7 +12,7 @@ bool DBEffectList::Create(AB::Entities::EffectList&)
 
 bool DBEffectList::Load(AB::Entities::EffectList& el)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `game_effects`";

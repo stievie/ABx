@@ -292,13 +292,18 @@ bool Application::Initialize(int argc, char** argv)
         IO::Logger::Close();
 
     LOG_INFO << "Connecting to database...";
-    DB::Database* db = DB::Database::Instance();
-    if (db == nullptr || !db->IsConnected())
+    DB::Database* db = DB::Database::CreateInstance(DB::Database::driver_,
+        DB::Database::dbHost_, DB::Database::dbPort_,
+        DB::Database::dbUser_, DB::Database::dbPass_,
+        DB::Database::dbName_
+    );
+    if (!db || !db->IsConnected())
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Database connection failed" << std::endl;
         return false;
     }
+    Subsystems::Instance.RegisterSubsystem<DB::Database>(db);
     LOG_INFO << "[done]" << std::endl;
 
     PrintServerInfo();

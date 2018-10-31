@@ -2,6 +2,7 @@
 #include "DBAttribute.h"
 #include "Database.h"
 #include "Logger.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -13,7 +14,7 @@ bool DBAttribute::Create(AB::Entities::Attribute&)
 
 bool DBAttribute::Load(AB::Entities::Attribute& attr)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `game_attributes` WHERE ";
@@ -54,7 +55,7 @@ bool DBAttribute::Delete(const AB::Entities::Attribute&)
 
 bool DBAttribute::Exists(const AB::Entities::Attribute& attr)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) FROM `game_attributes` WHERE ";

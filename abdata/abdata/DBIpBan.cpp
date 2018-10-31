@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBIpBan.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -12,7 +13,7 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     DB::DBQuery dbQuery;
     dbQuery << "SELECT COUNT(*) as `count` FROM `ip_bans` WHERE ";
     dbQuery << "((" << ban.ip << " & " << ban.mask << " & `mask`) = (`ip` & `mask` & " << ban.mask << "))";
@@ -48,7 +49,7 @@ bool DBIpBan::Create(AB::Entities::IpBan& ban)
 
 bool DBIpBan::Load(AB::Entities::IpBan& ban)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT * FROM `ip_bans` WHERE ";
@@ -89,7 +90,7 @@ bool DBIpBan::Save(const AB::Entities::IpBan& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
 
     query << "UPDATE `ip_bans` SET ";
@@ -118,7 +119,7 @@ bool DBIpBan::Delete(const AB::Entities::IpBan& ban)
         return false;
     }
 
-    Database* db = Database::Instance();
+    Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "DELETE FROM `ip_bans` WHERE `uuid` = " << db->EscapeString(ban.uuid);
     DBTransaction transaction(db);
@@ -134,7 +135,7 @@ bool DBIpBan::Delete(const AB::Entities::IpBan& ban)
 
 bool DBIpBan::Exists(const AB::Entities::IpBan& ban)
 {
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `ip_bans` WHERE ";

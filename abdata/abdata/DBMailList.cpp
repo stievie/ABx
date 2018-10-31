@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DBMailList.h"
 #include "Database.h"
+#include "Subsystems.h"
 
 namespace DB {
 
@@ -22,7 +23,7 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
         return false;
     }
 
-    DB::Database* db = DB::Database::Instance();
+    Database* db = GetSubsystem<Database>();
 
     ml.mails.clear();
     std::ostringstream query;
