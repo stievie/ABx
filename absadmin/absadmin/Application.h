@@ -30,7 +30,7 @@ private:
     uint16_t adminPort_;
     std::string adminIp_;
     std::string adminHost_;
-    asio::io_service ioService_;
+    std::shared_ptr<asio::io_service> ioService_;
     std::unique_ptr<HttpsServer> server_;
     bool ParseCommandLine();
     void ShowHelp();

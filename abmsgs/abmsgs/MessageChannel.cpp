@@ -99,7 +99,7 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         }
         break;
     }
-    case Net::MessageType::SpawnGameServer:
+    case Net::MessageType::Spawn:
     {
         std::string serverId = msg.GetBodyString();
         if (!serverId.empty())

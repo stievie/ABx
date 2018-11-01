@@ -160,7 +160,12 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     std::map<std::string, ginger::object> t;
     if (!GetObjects(t))
+    {
+        LOG_ERROR << "Failed to get objects" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found,
+            "Not found " + request_->path);
         return;
+    }
 
     try
     {

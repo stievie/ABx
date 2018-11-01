@@ -20,25 +20,27 @@
 #include "ProfilePostResource.h"
 #include "PasswordPostResource.h"
 #include "FriendsResource.h"
+#include "ServiceResource.h"
+#include "SpawnResource.h"
 
 Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
     startTime_(0),
-    adminPort_(0),
-    ioService_()
+    adminPort_(0)
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
 
     serverType_ = AB::Entities::ServiceTypeAdminServer;
 
+    ioService_ = std::make_shared<asio::io_service>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<HTTP::Sessions>();
-    Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
+    Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_.get());
     Subsystems::Instance.CreateSubsystem<ContentTypes>();
-    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(ioService_);
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_.get());
 }
 
 Application::~Application()
@@ -260,10 +262,12 @@ bool Application::Initialize(int argc, char** argv)
     server_->config.thread_pool_size = threads;
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->io_service = ioService_;
 
     DefaultRoute<Resources::FileResource>("GET");
     Route<Resources::IndexResource>("GET", "^/$");
     Route<Resources::ServicesResource>("GET", "^/services$");
+    Route<Resources::ServiceResource>("GET", "^/service$");
     Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
     Route<Resources::ProfileResource>("GET", "^/profile$");
     Route<Resources::FriendsResource>("GET", "^/friends$");
@@ -271,6 +275,7 @@ bool Application::Initialize(int argc, char** argv)
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
     Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
     Route<Resources::PasswordPostResource>("POST", "^/post/password$");
+    Route<Resources::SpawnResource>("POST", "^/post/spawn$");
 
     PrintServerInfo();
 
@@ -302,6 +307,7 @@ void Application::Run()
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     server_->start();
+    ioService_->run();
 }
 
 void Application::Stop()
@@ -329,6 +335,7 @@ void Application::Stop()
         LOG_ERROR << "Unable to read service" << std::endl;
 
     server_->stop();
+    ioService_->stop();
 }
 
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()

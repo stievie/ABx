@@ -17,7 +17,7 @@ enum class MessageType : uint8_t
     /// Shutdown server. Body contains UUID of server to shutdown.
     Shutdown,
     /// Tell a game server to spawn a new instance. Body contains UUID of the server which should spawn a new server.
-    SpawnGameServer,
+    Spawn,
 
     GuildChat,
     TradeChat,

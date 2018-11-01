@@ -138,9 +138,11 @@
     <ClInclude Include="ProfilePostResource.h" />
     <ClInclude Include="ProfileResource.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ServiceResource.h" />
     <ClInclude Include="ServicesJsonResource.h" />
     <ClInclude Include="ServicesResource.h" />
     <ClInclude Include="Sessions.h" />
+    <ClInclude Include="SpawnResource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TemplateResource.h" />
@@ -160,9 +162,11 @@
     <ClCompile Include="ProfilePostResource.cpp" />
     <ClCompile Include="ProfileResource.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ServiceResource.cpp" />
     <ClCompile Include="ServicesJsonResource.cpp" />
     <ClCompile Include="ServicesResource.cpp" />
     <ClCompile Include="Sessions.cpp" />
+    <ClCompile Include="SpawnResource.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

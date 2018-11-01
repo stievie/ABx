@@ -72,6 +72,12 @@
     <ClInclude Include="FriendsResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ServiceResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -126,6 +132,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="FriendsResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

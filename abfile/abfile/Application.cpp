@@ -5,6 +5,8 @@
 #include <fstream>
 #include "Logger.h"
 #include "DataClient.h"
+#include "Process.hpp"
+#include "Service.h"
 #include <AB/Entities/GameList.h>
 #include <AB/Entities/Game.h>
 #include <AB/Entities/Skill.h>
@@ -35,22 +37,36 @@
 Application::Application() :
     ServerApp::ServerApp(),
     requireAuth_(false),
-    ioService_(),
     startTime_(0),
     bytesSent_(0),
     uptimeRound_(0),
     statusMeasureTime_(0),
     lastLoadCalc_(0),
-    filePort_(0)
+    filePort_(std::numeric_limits<uint16_t>::max())
 {
     serverType_ = AB::Entities::ServiceTypeFileServer;
+    ioService_ = std::make_shared<asio::io_service>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_.get());
 }
 
 Application::~Application()
 {
     if (running_)
         Stop();
+}
+
+void Application::HandleMessage(const Net::MessageMsg& msg)
+{
+    switch (msg.type_)
+    {
+    case Net::MessageType::Shutdown:
+        Stop();
+        break;
+    case Net::MessageType::Spawn:
+        SpawnServer();
+        break;
+    }
 }
 
 bool Application::ParseCommandLine()
@@ -84,6 +100,12 @@ bool Application::ParseCommandLine()
             {
                 ++i;
                 serverId_ = arguments_[i];
+                if (uuids::uuid(serverId_).nil())
+                {
+                    const uuids::uuid guid = uuids::uuid_system_generator{}();
+                    serverId_ = guid.to_string();
+                    LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
+                }
             }
             else
                 LOG_WARNING << "Missing argument for -id" << std::endl;
@@ -237,6 +259,9 @@ bool Application::Initialize(int argc, char** argv)
         fileIp_ = config->GetGlobal("file_ip", "");
     if (filePort_ == 0)
         filePort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081));
+    else if (filePort_ == 0)
+        filePort_ = Net::ServiceManager::GetFreePort();
+
     std::string key = config->GetGlobal("server_key", "server.key");
     std::string cert = config->GetGlobal("server_cert", "server.crt");
     size_t threads = config->GetGlobal("num_threads", 0);
@@ -292,10 +317,11 @@ bool Application::Initialize(int argc, char** argv)
 
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->io_service = ioService_;
 
     if (haveData)
     {
-        dataClient_ = std::make_unique<IO::DataClient>(ioService_);
+        dataClient_ = std::make_unique<IO::DataClient>(*ioService_.get());
 
         LOG_INFO << "Connecting to data server...";
         dataClient_->Connect(dataHost_, dataPort_);
@@ -314,6 +340,19 @@ bool Application::Initialize(int argc, char** argv)
     else
     {
         LOG_WARNING << "Not connected to data server" << std::endl;
+    }
+
+    std::string msgHost = config->GetGlobal("message_host", "");
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", 0));
+    auto msgClient = GetSubsystem<Net::MessageClient>();
+    LOG_INFO << "Connecting to message server...";
+    msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
+    if (msgClient->IsConnected())
+        LOG_INFO << "[done]" << std::endl;
+    else
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_WARNING << "Not connected to message server" << std::endl;
     }
 
     LOG_INFO << "Server config:" << std::endl;
@@ -360,6 +399,7 @@ void Application::Run()
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     server_->start();
+    ioService_->run();
 }
 
 void Application::Stop()
@@ -386,6 +426,34 @@ void Application::Stop()
         LOG_ERROR << "Unable to read service" << std::endl;
 
     server_->stop();
+    ioService_->stop();
+}
+
+void Application::SpawnServer()
+{
+    std::stringstream ss;
+    ss << "\"" << exeFile_ << "\"";
+    // 1. Use same config file
+    // 2. Use dynamic server ID
+    // 3. Use generic server name
+    // 4. Use random free port
+    // 5. Auto terminate
+    ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0";
+    if (!logDir_.empty())
+        ss << " -log \"" << logDir_ << "\"";
+    if (!fileIp_.empty())
+        ss << " -ip " << fileIp_;
+    if (!fileHost_.empty())
+        ss << " -host " << fileHost_;
+
+    const std::string cmdLine = ss.str();
+#if defined(_WIN32) && defined(UNICODE)
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring wcmdLine = converter.from_bytes(cmdLine);
+    System::Process process(wcmdLine);
+#else
+    System::Process process(cmdLine);
+#endif
 }
 
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)

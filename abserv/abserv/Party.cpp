@@ -164,6 +164,7 @@ bool Party::IsLeader(const Player* const player)
 
 void Party::ChangeInstance(const std::string& mapUuid)
 {
+    // Get or create a game. The client gets an instance UUID to change to.
     std::shared_ptr<Game> game = GetSubsystem<GameManager>()->GetGame(mapUuid, true);
     if (!game)
     {

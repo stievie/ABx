@@ -291,9 +291,9 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
             GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
         break;
     }
-    case Net::MessageType::SpawnGameServer:
+    case Net::MessageType::Spawn:
     {
-        GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::SpawnServer, this)));
+        GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::SpawnServer, this);
         break;
     }
     case Net::MessageType::ServerJoined:

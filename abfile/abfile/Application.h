@@ -11,6 +11,7 @@
 #else
 #   include <filesystem>
 #endif
+#include "MessageClient.h"
 
 #if __cplusplus < 201703L
 // C++14
@@ -39,7 +40,7 @@ class Application : public ServerApp, public std::enable_shared_from_this<Applic
 {
 private:
     bool requireAuth_;
-    asio::io_service ioService_;
+    std::shared_ptr<asio::io_service> ioService_;
     int64_t startTime_;
     uint64_t bytesSent_;
     uint32_t uptimeRound_;
@@ -58,6 +59,7 @@ private:
     uint64_t maxThroughput_;
     std::vector<int> loads_;
     std::mutex mutex_;
+    void HandleMessage(const Net::MessageMsg& msg);
     bool ParseCommandLine();
     void ShowHelp();
     void UpdateBytesSent(size_t bytes);
@@ -105,5 +107,6 @@ public:
     bool Initialize(int argc, char** argv) override;
     void Run() override;
     void Stop() override;
+    void SpawnServer();
 };
 
