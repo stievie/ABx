@@ -4,7 +4,7 @@
 
 server_id = "0e9cf876-bb63-4926-a1a9-271bcf4a1c39"
 location = "AT"
-server_name = "ATF1"
+server_name = "generic"
 
 file_ip = ""         -- Listen on all
 file_host = ""       -- emtpy use same host as for login

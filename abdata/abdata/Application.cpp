@@ -17,12 +17,12 @@ Application::Application() :
     listenIp_(0),
     maxSize_(0),
     readonly_(false),
-    running_(false),
     ioService_(),
     server_(nullptr),
     flushInterval_(FLUSH_CACHE_MS),
     cleanInterval_(CLEAN_CACHE_MS)
 {
+    serverType_ = AB::Entities::ServiceTypeDataServer;
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Asynch::ThreadPool>(1);
@@ -180,6 +180,13 @@ bool Application::LoadConfig()
         }
     }
 
+    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+    if (serverName_.empty())
+        serverName_ = config->GetGlobal("server_name", "abdata");
+    if (serverLocation_.empty())
+        serverLocation_ = config->GetGlobal("location", "--");
+
     if (port_ == 0)
         port_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     if (listenIp_ == 0)
@@ -219,10 +226,10 @@ bool Application::LoadConfig()
 
 void Application::PrintServerInfo()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Server config:" << std::endl;
-    LOG_INFO << "  Server ID: " << config->GetGlobal("server_id", "") << std::endl;
-    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
+    LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << port_ << std::endl;
     LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
@@ -324,17 +331,17 @@ void Application::Run()
 
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     AB::Entities::Service serv;
-    serv.uuid = config->GetGlobal("server_id", "");
+    serv.uuid = GetServerId();
     provider->EntityRead(serv);
-    serv.location = config->GetGlobal("location", "--");
+    serv.location = serverLocation_;
     serv.host = config->GetGlobal("data_host", "");
-    serv.port = static_cast<uint16_t>(config->GetGlobal("data_port", 2770));
-    serv.name = config->GetGlobal("server_name", "abdata");
+    serv.port = port_;
+    serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeDataServer;
+    serv.type = serverType_;
     serv.startTime = Utils::AbTick();
     provider->EntityUpdateOrCreate(serv);
 

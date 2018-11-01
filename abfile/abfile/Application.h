@@ -38,7 +38,6 @@ inline size_t stream_size(T& s)
 class Application : public ServerApp, public std::enable_shared_from_this<Application>
 {
 private:
-    bool running_;
     bool requireAuth_;
     asio::io_service ioService_;
     int64_t startTime_;
@@ -52,14 +51,11 @@ private:
 
     std::unique_ptr<HttpsServer> server_;
     std::string root_;
-    std::string configFile_;
-    std::string logDir_;
     std::unique_ptr<IO::DataClient> dataClient_;
     std::string dataHost_;
     uint16_t dataPort_;
     std::string adminPassword_;
     uint64_t maxThroughput_;
-    std::string serverId_;
     std::vector<int> loads_;
     std::mutex mutex_;
     bool ParseCommandLine();

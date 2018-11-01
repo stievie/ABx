@@ -44,7 +44,6 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    running_(false),
     genKeys_(false),
     autoTerminate_(false),
     lastLoadCalc_(0),
@@ -53,6 +52,8 @@ Application::Application() :
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
+
+    serverType_ = AB::Entities::ServiceTypeGameServer;
 
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
@@ -128,6 +129,26 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -id" << std::endl;
         }
+        else if (a.compare("-name") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverName_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -name" << std::endl;
+        }
+        else if (a.compare("-loc") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverLocation_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -loc" << std::endl;
+        }
         else if (a.compare("-ip") == 0)
         {
             if (i + 1 < arguments_.size())
@@ -158,16 +179,6 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -port" << std::endl;
         }
-        else if (a.compare("-name") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverName_ = arguments_[i].c_str();
-            }
-            else
-                LOG_WARNING << "Missing argument for -name" << std::endl;
-        }
         else if (a.compare("-autoterm") == 0)
         {
             // Must be set with command line argument. Can not be set with the config file.
@@ -192,7 +203,8 @@ void Application::ShowHelp()
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
-    std::cout << "  name <name>: Server name" << std::endl;
+    std::cout << "  name (<name> | generic): Server name" << std::endl;
+    std::cout << "  loc <location>: Server location" << std::endl;
     std::cout << "  ip <ip>: Game ip" << std::endl;
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port, when 0 it uses a free port" << std::endl;
@@ -247,9 +259,10 @@ void Application::SpawnServer()
     ss << "\"" << exeFile_ << "\"";
     // 1. Use same config file
     // 2. Use dynamic server ID
-    // 3. Use random free port
-    // 4. Auto terminate
-    ss << " -conv \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -port 0 -autoterm";
+    // 3. Use generic server name
+    // 4. Use random free port
+    // 5. Auto terminate
+    ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0 -autoterm";
     if (!logDir_.empty())
         ss << " -log \"" << logDir_ << "\"";
     if (!gameIp_.empty())
@@ -328,11 +341,14 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to load configuration file" << std::endl;
         return false;
     }
-    if (serverId_.empty())
+    if (serverId_.empty() || uuids::uuid(serverId_).nil())
         serverId_ = (*config)[ConfigManager::Key::ServerID].GetString();
 
     if (serverName_.empty())
         serverName_ = (*config)[ConfigManager::Key::ServerName].GetString();
+    if (serverLocation_.empty())
+        serverLocation_ = (*config)[ConfigManager::Key::Location].GetString();
+
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>((*config)[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     LOG_INFO << "[done]" << std::endl;
 
@@ -368,6 +384,10 @@ bool Application::LoadMain()
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
+    if (serverName_.empty() || serverName_.compare("generic") == 0)
+    {
+        serverName_ = GetFreeName(dataClient);
+    }
 
     LOG_INFO << "Connecting to message server...";
     const std::string& msgHost = (*config)[ConfigManager::Key::MessageServerHost].GetString();
@@ -425,8 +445,8 @@ void Application::PrintServerInfo()
     auto msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
-    LOG_INFO << "  Server name: " << serverName_ << std::endl;
-    LOG_INFO << "  Location: " << (*config)[ConfigManager::Key::Location].GetString() << std::endl;
+    LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
     std::list<std::pair<uint32_t, uint16_t>> ports = serviceManager_->GetPorts();
@@ -476,14 +496,14 @@ void Application::Run()
     serv.uuid = GetServerId();
     dataClient->Read(serv);
     serv.host = gameHost_;
-    serv.location = (*config)[ConfigManager::Key::Location].GetString();
+    serv.location = serverLocation_;
     serv.port = gamePort_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeGameServer;
+    serv.type = serverType_;
     serv.startTime = Utils::AbTick();
     dataClient->UpdateOrCreate(serv);
 

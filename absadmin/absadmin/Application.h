@@ -25,11 +25,7 @@ namespace fs = std::filesystem;
 class Application : public ServerApp, public std::enable_shared_from_this<Application>
 {
 private:
-    bool running_;
     int64_t startTime_;
-    std::string configFile_;
-    std::string logDir_;
-    std::string serverId_;
     std::string root_;
     uint16_t adminPort_;
     std::string adminIp_;

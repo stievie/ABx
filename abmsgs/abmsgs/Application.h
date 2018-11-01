@@ -9,10 +9,7 @@ class Application : public ServerApp
 {
 private:
     asio::io_service ioService_;
-    std::string configFile_;
-    std::string logDir_;
     std::unique_ptr<MessageServer> server_;
-    bool running_;
     bool ParseCommandLine();
     void ShowHelp();
     bool LoadMain();

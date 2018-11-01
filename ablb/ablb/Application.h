@@ -11,14 +11,11 @@ private:
     typedef std::pair<std::string, uint16_t> ServiceItem;
     std::vector<ServiceItem> serviceList_;
     asio::io_service ioService_;
-    bool running_;
     std::string localHost_;
     uint16_t localPort_;
     AB::Entities::ServiceType lbType_;
     std::unique_ptr<IO::DataClient> dataClient_;
     std::unique_ptr<Acceptor> acceptor_;
-    std::string logDir_;
-    std::string configFile_;
     bool ParseCommandLine();
     void ShowHelp();
     void PrintServerInfo();

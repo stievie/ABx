@@ -9,9 +9,7 @@ private:
     uint16_t port_;
     uint32_t listenIp_;
     size_t maxSize_;
-    std::string configFile_;
     bool readonly_;
-    bool running_;
     asio::io_service ioService_;
     std::unique_ptr<Server> server_;
     uint32_t flushInterval_;

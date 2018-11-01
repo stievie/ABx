@@ -16,7 +16,8 @@ namespace Resources {
 
 bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
-    objects["title"] = "AB Admin";
+    assert(Application::Instance);
+    objects["title"] = Application::Instance->GetServerName();
     objects["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(Utils::StringHashRt("username"));
     if (it != session_->values_.end())

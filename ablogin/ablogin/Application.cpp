@@ -18,9 +18,10 @@
 
 Application::Application() :
     ServerApp::ServerApp(),
-    ioService_(),
-    running_(false)
+    ioService_()
 {
+    serverType_ = AB::Entities::ServiceTypeLoginServer;
+
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<Net::ConnectionManager>();
@@ -95,6 +96,14 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+
+    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+    if (serverName_.empty())
+        serverName_ = config->GetGlobal("server_name", "ablogin");
+    if (serverLocation_.empty())
+        serverLocation_ = config->GetGlobal("location", "--");
+
     auto banMan = GetSubsystem<Auth::BanManager>();
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobal("max_packets_per_second", 0));
     banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobal("login_tries", 5));
@@ -134,6 +143,10 @@ bool Application::LoadMain()
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
+    if (serverName_.empty() || serverName_.compare("generic") == 0)
+    {
+        serverName_ = GetFreeName(dataClient);
+    }
 
     // Add Protocols
     uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(
@@ -157,8 +170,9 @@ void Application::PrintServerInfo()
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server Info:" << std::endl;
-    LOG_INFO << "  Server ID: " << config->GetGlobal("server_id", "") << std::endl;
-    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
+    LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
@@ -209,17 +223,17 @@ void Application::Run()
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
-    serv.uuid = config->GetGlobal("server_id", "");
+    serv.uuid = GetServerId();
     dataClient->Read(serv);
-    serv.location = config->GetGlobal("location", "--");
+    serv.location = serverLocation_;
     serv.host = config->GetGlobal("login_host", "");
     serv.port = static_cast<uint16_t>(config->GetGlobal("login_port", 2748));
-    serv.name = config->GetGlobal("server_name", "ablogin");
+    serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeLoginServer;
+    serv.type = serverType_;
     serv.startTime = Utils::AbTick();
     dataClient->UpdateOrCreate(serv);
 
@@ -242,7 +256,7 @@ void Application::Stop()
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
-    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobal("server_id", "");
+    serv.uuid = GetServerId();
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;

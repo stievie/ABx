@@ -34,7 +34,6 @@
 
 Application::Application() :
     ServerApp::ServerApp(),
-    running_(false),
     requireAuth_(false),
     ioService_(),
     startTime_(0),
@@ -44,6 +43,7 @@ Application::Application() :
     lastLoadCalc_(0),
     filePort_(0)
 {
+    serverType_ = AB::Entities::ServiceTypeFileServer;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
 }
 
@@ -87,6 +87,26 @@ bool Application::ParseCommandLine()
             }
             else
                 LOG_WARNING << "Missing argument for -id" << std::endl;
+        }
+        else if (a.compare("-name") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverName_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -name" << std::endl;
+        }
+        else if (a.compare("-loc") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                serverLocation_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -loc" << std::endl;
         }
         else if (a.compare("-ip") == 0)
         {
@@ -133,6 +153,8 @@ void Application::ShowHelp()
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
+    std::cout << "  name (<name> | generic): Server name" << std::endl;
+    std::cout << "  loc <location>: Server location" << std::endl;
     std::cout << "  ip <ip>: File IP" << std::endl;
     std::cout << "  host <host>: File Host" << std::endl;
     std::cout << "  port <port>: File Port" << std::endl;
@@ -204,8 +226,13 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
 
-    if (serverId_.empty())
-        serverId_ = config->GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
+    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+    if (serverName_.empty())
+        serverName_ = config->GetGlobal("server_name", "abfile");
+    if (serverLocation_.empty())
+        serverLocation_ = config->GetGlobal("location", "--");
+
     if (fileIp_.empty())
         fileIp_ = config->GetGlobal("file_ip", "");
     if (filePort_ == 0)
@@ -279,6 +306,10 @@ bool Application::Initialize(int argc, char** argv)
             return false;
         }
         LOG_INFO << "[done]" << std::endl;
+        if (serverName_.empty() || serverName_.compare("generic") == 0)
+        {
+            serverName_ = GetFreeName(dataClient_.get());
+        }
     }
     else
     {
@@ -286,8 +317,9 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     LOG_INFO << "Server config:" << std::endl;
-    LOG_INFO << "  Server ID: " << serverId_ << std::endl;
-    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
+    LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (fileIp_.empty() ? "0.0.0.0" : fileIp_) << ":" << filePort_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -304,22 +336,21 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     startTime_ = Utils::AbTick();
     statusMeasureTime_ = startTime_;
     uptimeRound_ = 1;
     AB::Entities::Service serv;
     serv.uuid = serverId_;
     dataClient_->Read(serv);
-    serv.name = config->GetGlobal("server_name", "abfile");
-    serv.location = config->GetGlobal("location", "--");
+    serv.name = serverName_;
+    serv.location = serverLocation_;
     serv.host = fileHost_;
     serv.port = filePort_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeFileServer;
+    serv.type = serverType_;
     serv.startTime = startTime_;
     dataClient_->UpdateOrCreate(serv);
 

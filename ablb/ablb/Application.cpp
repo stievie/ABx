@@ -9,9 +9,9 @@
 
 Application::Application() :
     ServerApp::ServerApp(),
-    ioService_(),
-    running_(false)
+    ioService_()
 {
+    serverType_ = AB::Entities::ServiceTypeLoadBalancer;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
@@ -64,10 +64,10 @@ void Application::ShowHelp()
 
 void Application::PrintServerInfo()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Server Info:" << std::endl;
-    LOG_INFO << "  Server ID: " << config->GetGlobal("server_id", "") << std::endl;
-    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
+    LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << localHost_ << ":" << static_cast<int>(localPort_) << std::endl;
     if (dataClient_->IsConnected())
@@ -97,6 +97,13 @@ bool Application::LoadMain()
     }
     LOG_INFO << "[done]" << std::endl;
 
+    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+    if (serverName_.empty())
+        serverName_ = config->GetGlobal("server_name", "ablb");
+    if (serverLocation_.empty())
+        serverLocation_ = config->GetGlobal("location", "--");
+
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     if (dataPort != 0)
     {
@@ -110,6 +117,10 @@ bool Application::LoadMain()
             return false;
         }
         LOG_INFO << "[done]" << std::endl;
+        if (serverName_.empty() || serverName_.compare("generic") == 0)
+        {
+            serverName_ = GetFreeName(dataClient_.get());
+        }
     }
     else
     {
@@ -251,19 +262,18 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     AB::Entities::Service serv;
-    serv.uuid = config->GetGlobal("server_id", "");
+    serv.uuid = GetServerId();
     dataClient_->Read(serv);
-    serv.location = config->GetGlobal("location", "--");
+    serv.location = serverLocation_;
     serv.host = localHost_;
     serv.port = localPort_;
-    serv.name = config->GetGlobal("server_name", "ablb");
+    serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeLoadBalancer;
+    serv.type = serverType_;
     serv.startTime = Utils::AbTick();
     dataClient_->UpdateOrCreate(serv);
 
@@ -287,7 +297,7 @@ void Application::Stop()
     LOG_INFO << "Server shutdown...";
 
     AB::Entities::Service serv;
-    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobal("server_id", "");
+    serv.uuid = GetServerId();
     if (dataClient_->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;

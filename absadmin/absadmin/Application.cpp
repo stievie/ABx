@@ -25,13 +25,15 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    running_(false),
     startTime_(0),
     adminPort_(0),
     ioService_()
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
+
+    serverType_ = AB::Entities::ServiceTypeAdminServer;
+
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<HTTP::Sessions>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
@@ -133,11 +135,11 @@ void Application::ShowHelp()
 
 void Application::PrintServerInfo()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server config:" << std::endl;
-    LOG_INFO << "  Server ID: " << serverId_ << std::endl;
-    LOG_INFO << "  Location: " << config->GetGlobal("location", "--") << std::endl;
+    LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
+    LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (adminIp_.empty() ? "0.0.0.0" : adminIp_) << ":" << adminPort_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -161,10 +163,12 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     auto config = GetSubsystem<IO::SimpleConfigManager>();
+    LOG_INFO << "Loading configuration...";
     if (configFile_.empty())
         configFile_ = path_ + "/absadmin.lua";
     if (!config->Load(configFile_))
     {
+        LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Error loading config file " << configFile_ << std::endl;
         return false;
     }
@@ -176,8 +180,13 @@ bool Application::Initialize(int argc, char** argv)
         IO::Logger::Close();
     }
 
-    if (serverId_.empty())
-        serverId_ = config->GetGlobal("server_id", "00000000-0000-0000-0000-000000000000");
+    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+    if (serverName_.empty())
+        serverName_ = config->GetGlobal("server_name", "absadmin");
+    if (serverLocation_.empty())
+        serverLocation_ = config->GetGlobal("location", "--");
+
     if (adminIp_.empty())
         adminIp_ = config->GetGlobal("admin_ip", "");
     if (adminPort_ == 0)
@@ -194,6 +203,7 @@ bool Application::Initialize(int argc, char** argv)
     logDir_ = config->GetGlobal("log_dir", "");
     std::string dataHost = config->GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
+    LOG_INFO << "[done]" << std::endl;
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
@@ -205,6 +215,10 @@ bool Application::Initialize(int argc, char** argv)
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
+    if (serverName_.empty() || serverName_.compare("generic") == 0)
+    {
+        serverName_ = GetFreeName(dataClient);
+    }
 
     std::string msgHost = config->GetGlobal("message_host", "");
     uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", 0));
@@ -265,21 +279,20 @@ bool Application::Initialize(int argc, char** argv)
 
 void Application::Run()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     auto dataClient = GetSubsystem<IO::DataClient>();
     startTime_ = Utils::AbTick();
     AB::Entities::Service serv;
-    serv.uuid = serverId_;
+    serv.uuid = GetServerId();
     dataClient->Read(serv);
-    serv.name = config->GetGlobal("server_name", "absadmin");
-    serv.location = config->GetGlobal("location", "--");
+    serv.name = serverName_;
+    serv.location = serverLocation_;
     serv.host = adminHost_;
     serv.port = adminPort_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = AB::Entities::ServiceTypeAdminServer;
+    serv.type = serverType_;
     serv.startTime = startTime_;
     dataClient->UpdateOrCreate(serv);
 
@@ -300,7 +313,7 @@ void Application::Stop()
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server shutdown...";
     AB::Entities::Service serv;
-    serv.uuid = serverId_;
+    serv.uuid = GetServerId();
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
@@ -320,8 +333,9 @@ void Application::Stop()
 
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
 {
+    assert(Application::Instance);
     SimpleWeb::CaseInsensitiveMultimap result;
-    result.emplace("Server", "absadmin");
+    result.emplace("Server", Application::Instance->serverName_);
     return result;
 }
 

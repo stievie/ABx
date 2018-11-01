@@ -15,16 +15,11 @@ private:
     std::condition_variable loaderSignal_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
-    std::string configFile_;
-    std::string logDir_;
     std::vector<int> loads_;
     int64_t lastLoadCalc_;
     std::string gameIp_;
     std::string gameHost_;
     uint16_t gamePort_;
-    std::string serverId_;
-    std::string serverName_;
-    bool running_;
     bool genKeys_;
     Maintenance maintenance_;
     bool LoadMain();
@@ -56,11 +51,6 @@ public:
     std::string GetKeysFile() const;
     /// Returns a value between 0..100
     uint8_t GetLoad();
-    /// Returns the Server UUID from the config file
-    const std::string& GetServerId() const
-    {
-        return serverId_;
-    }
 
     void SpawnServer();
 
