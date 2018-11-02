@@ -308,17 +308,24 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::ServerJoined:
     case Net::MessageType::ServerLeft:
     {
-        std::string serverId = msg.GetBodyString();
-        if (serverId.compare(serverId_) != 0)
+        IO::PropReadStream prop;
+        if (msg.GetPropStream(prop))
         {
-            // Notify players another game server left. Wait some time until the
-            // service list is updated.
-            GetSubsystem<Asynch::Scheduler>()->Add(
-                Asynch::CreateScheduledTask(500, [=]()
+            AB::Entities::ServiceType t;
+            prop.Read<AB::Entities::ServiceType>(t);
+            std::string serverId;
+            prop.ReadString(serverId);
+            if ((serverId.compare(serverId_) != 0) && (t == AB::Entities::ServiceTypeGameServer))
             {
-                msgDispatcher_->Dispatch(msg);
-            })
-            );
+                // Notify players another game server joined/left. Wait some time until the
+                // service list is updated.
+                GetSubsystem<Asynch::Scheduler>()->Add(
+                    Asynch::CreateScheduledTask(500, [=]()
+                {
+                    msgDispatcher_->Dispatch(msg);
+                })
+                );
+            }
         }
         break;
     }
@@ -482,7 +489,12 @@ void Application::SendServerJoined()
 {
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerJoined;
-    msg.SetBodyString(GetServerId());
+
+    IO::PropWriteStream stream;
+    stream.Write<uint8_t>(serverType_);
+    stream.WriteString(GetServerId());
+    msg.SetPropStream(stream);
+
     GetSubsystem<Net::MessageClient>()->Write(msg);
 }
 
@@ -551,7 +563,10 @@ void Application::Stop()
     auto msgClient = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerLeft;
-    msg.SetBodyString(GetServerId());
+    IO::PropWriteStream stream;
+    stream.Write<AB::Entities::ServiceType>(serverType_);
+    stream.WriteString(GetServerId());
+    msg.SetPropStream(stream);
     msgClient->Write(msg);
 
     AB::Entities::Service serv;

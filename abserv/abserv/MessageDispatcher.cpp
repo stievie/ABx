@@ -91,34 +91,24 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
-    std::string uuid = msg.GetBodyString();
-
     Net::NetworkMessage nmsg;
-    switch (msg.type_)
-    {
-    case Net::MessageType::ServerJoined:
-    {
-        auto dataClient = GetSubsystem<IO::DataClient>();
-        AB::Entities::Service s;
-        s.uuid = uuid;
-        if (!dataClient->Read(s))
-            return;
-        if (s.type != AB::Entities::ServiceTypeGameServer)
-            // Player only interested in Game Server
-            return;
-
-        nmsg.AddByte(AB::GameProtocol::ServerJoined);
-        break;
-    }
-    case Net::MessageType::ServerLeft:
-        nmsg.AddByte(AB::GameProtocol::ServerLeft);
-        break;
-    default:
-        // Should never get here
+    IO::PropReadStream prop;
+    if (!msg.GetPropStream(prop))
         return;
-    }
 
-    nmsg.AddString(uuid);    // Server ID
+    AB::Entities::ServiceType t;
+    prop.Read<AB::Entities::ServiceType>(t);
+    std::string serverId;
+    prop.ReadString(serverId);
+    if (t != AB::Entities::ServiceTypeGameServer)
+        return;
+
+    if (msg.type_ == Net::MessageType::ServerJoined)
+        nmsg.AddByte(AB::GameProtocol::ServerJoined);
+    else
+        nmsg.AddByte(AB::GameProtocol::ServerLeft);
+
+    nmsg.AddString(serverId);    // Server ID
     GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(nmsg);
 }
 

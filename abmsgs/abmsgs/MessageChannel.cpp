@@ -6,6 +6,7 @@
 #include "PropStream.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Service.h>
 #include "Subsystems.h"
 
 void MessageChannel::Join(std::shared_ptr<MessageParticipant> participant)
@@ -77,9 +78,17 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         LOG_WARNING << "Unknown message type" << std::endl;
         break;
     case Net::MessageType::ServerJoined:
-        serverId_ = msg.GetBodyString();
-        channel_.Deliver(msg);
+    {
+        IO::PropReadStream prop;
+        if (msg.GetPropStream(prop))
+        {
+            AB::Entities::ServiceType t;
+            prop.Read<AB::Entities::ServiceType>(t);
+            prop.ReadString(serverId_);
+            channel_.Deliver(msg);
+        }
         break;
+    }
     case Net::MessageType::ServerLeft:
         // Server was shut down
         channel_.Deliver(msg);

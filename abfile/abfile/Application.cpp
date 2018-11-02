@@ -403,6 +403,7 @@ void Application::Run()
     AB::Entities::ServiceList sl;
     dataClient_->Invalidate(sl);
 
+    // If we want to receive messages, we need to send our ServerID to the message server.
     SendServerJoined();
 
     running_ = true;
@@ -422,7 +423,10 @@ void Application::Stop()
     auto msgClient = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerLeft;
-    msg.SetBodyString(GetServerId());
+    IO::PropWriteStream stream;
+    stream.Write<AB::Entities::ServiceType>(serverType_);
+    stream.WriteString(GetServerId());
+    msg.SetPropStream(stream);
     msgClient->Write(msg);
 
     AB::Entities::Service serv;
@@ -575,7 +579,12 @@ void Application::SendServerJoined()
 {
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::ServerJoined;
-    msg.SetBodyString(GetServerId());
+
+    IO::PropWriteStream stream;
+    stream.Write<AB::Entities::ServiceType>(serverType_);
+    stream.WriteString(GetServerId());
+    msg.SetPropStream(stream);
+
     GetSubsystem<Net::MessageClient>()->Write(msg);
 }
 
