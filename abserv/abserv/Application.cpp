@@ -46,6 +46,7 @@ Application::Application() :
     ServerApp::ServerApp(),
     genKeys_(false),
     autoTerminate_(false),
+    temporary_(false),
     lastLoadCalc_(0),
     ioService_(),
     gamePort_(std::numeric_limits<uint16_t>::max())
@@ -183,6 +184,13 @@ bool Application::ParseCommandLine()
         {
             // Must be set with command line argument. Can not be set with the config file.
             autoTerminate_ = true;
+            // Implies temporary
+            temporary_ = true;
+        }
+        else if (a.compare("-temp") == 0)
+        {
+            // Must be set with command line argument. Can not be set with the config file.
+            temporary_ = true;
         }
         else if (a.compare("-genkeys") == 0)
         {
@@ -209,6 +217,7 @@ void Application::ShowHelp()
     std::cout << "  host <host>: Game host" << std::endl;
     std::cout << "  port <port>: Game port, when 0 it uses a free port" << std::endl;
     std::cout << "  autoterm: If set, the server terminates itself when all players left" << std::endl;
+    std::cout << "  temp: If set, the server is temporary" << std::endl;
     std::cout << "  genkeys: Generate new encryption keys and terminate" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
@@ -458,6 +467,7 @@ void Application::PrintServerInfo()
     }
     LOG_INFO << std::endl;
     LOG_INFO << "  Auto terminate: " << (autoTerminate_ ? "true" : "false") << std::endl;
+    LOG_INFO << "  Temporary: " << (temporary_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Recording games: " << ((*config)[ConfigManager::Key::RecordGames].GetBool() ? "true" : "false") << std::endl;
     const std::string& recDir = (*config)[ConfigManager::Key::RecordingsDir].GetString();
@@ -552,7 +562,7 @@ void Application::Stop()
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-        if (!autoTerminate_)
+        if (!temporary_)
             dataClient->Update(serv);
         else
             // If autoterm -> temporary -> dynamically spawned -> delete from DB

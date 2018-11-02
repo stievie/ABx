@@ -46,6 +46,7 @@ private:
     uint32_t uptimeRound_;
     int64_t statusMeasureTime_;
     int64_t lastLoadCalc_;
+    bool temporary_;
     uint16_t filePort_;
     std::string fileIp_;
     std::string fileHost_;
@@ -66,6 +67,7 @@ private:
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     bool IsAdmin(std::shared_ptr<HttpsServer::Request> request);
     bool IsAccountBanned(const AB::Entities::Account& acc);
+    void SendServerJoined();
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);

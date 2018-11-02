@@ -55,6 +55,7 @@ public:
     void SpawnServer();
 
     bool autoTerminate_;
+    bool temporary_;
 
     static Application* Instance;
 };

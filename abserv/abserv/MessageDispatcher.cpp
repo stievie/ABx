@@ -91,12 +91,25 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
+    std::string uuid = msg.GetBodyString();
+
     Net::NetworkMessage nmsg;
     switch (msg.type_)
     {
     case Net::MessageType::ServerJoined:
+    {
+        auto dataClient = GetSubsystem<IO::DataClient>();
+        AB::Entities::Service s;
+        s.uuid = uuid;
+        if (!dataClient->Read(s))
+            return;
+        if (s.type != AB::Entities::ServiceTypeGameServer)
+            // Player only interested in Game Server
+            return;
+
         nmsg.AddByte(AB::GameProtocol::ServerJoined);
         break;
+    }
     case Net::MessageType::ServerLeft:
         nmsg.AddByte(AB::GameProtocol::ServerLeft);
         break;
@@ -105,7 +118,7 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
         return;
     }
 
-    nmsg.AddString(msg.GetBodyString());    // Server ID
+    nmsg.AddString(uuid);    // Server ID
     GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(nmsg);
 }
 

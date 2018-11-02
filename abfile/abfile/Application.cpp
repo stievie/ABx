@@ -42,6 +42,7 @@ Application::Application() :
     uptimeRound_(0),
     statusMeasureTime_(0),
     lastLoadCalc_(0),
+    temporary_(false),
     filePort_(std::numeric_limits<uint16_t>::max())
 {
     serverType_ = AB::Entities::ServiceTypeFileServer;
@@ -160,6 +161,11 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -port" << std::endl;
         }
+        else if (a.compare("-temp") == 0)
+        {
+            // Must be set with command line argument. Can not be set with the config file.
+            temporary_ = true;
+        }
         else if (a.compare("-h") == 0 || a.compare("-help") == 0)
         {
             return false;
@@ -180,6 +186,7 @@ void Application::ShowHelp()
     std::cout << "  ip <ip>: File IP" << std::endl;
     std::cout << "  host <host>: File Host" << std::endl;
     std::cout << "  port <port>: File Port" << std::endl;
+    std::cout << "  temp: If set, the server is temporary" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -257,7 +264,7 @@ bool Application::Initialize(int argc, char** argv)
 
     if (fileIp_.empty())
         fileIp_ = config->GetGlobal("file_ip", "");
-    if (filePort_ == 0)
+    if (filePort_ == std::numeric_limits<uint16_t>::max())
         filePort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081));
     else if (filePort_ == 0)
         filePort_ = Net::ServiceManager::GetFreePort();
@@ -287,7 +294,10 @@ bool Application::Initialize(int argc, char** argv)
     if (!fileIp_.empty())
         server_->config.address = fileIp_;
     server_->config.thread_pool_size = threads;
+    server_->io_service = ioService_;
 
+    server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
@@ -314,10 +324,6 @@ bool Application::Initialize(int argc, char** argv)
     }
     server_->resource["^/_status_$"]["GET"] = std::bind(&Application::GetHandlerStatus, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
-
-    server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
-    server_->io_service = ioService_;
 
     if (haveData)
     {
@@ -361,6 +367,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (fileIp_.empty() ? "0.0.0.0" : fileIp_) << ":" << filePort_ << std::endl;
+    LOG_INFO << "  Temporary: " << (temporary_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Max. throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
@@ -396,6 +403,8 @@ void Application::Run()
     AB::Entities::ServiceList sl;
     dataClient_->Invalidate(sl);
 
+    SendServerJoined();
+
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     server_->start();
@@ -409,6 +418,13 @@ void Application::Stop()
 
     running_ = false;
     LOG_INFO << "Server shutdown...";
+
+    auto msgClient = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::ServerLeft;
+    msg.SetBodyString(GetServerId());
+    msgClient->Write(msg);
+
     AB::Entities::Service serv;
     serv.uuid = serverId_;
     if (dataClient_->Read(serv))
@@ -417,7 +433,11 @@ void Application::Stop()
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-        dataClient_->Update(serv);
+        if (!temporary_)
+            dataClient_->Update(serv);
+        else
+            // If autoterm -> temporary -> dynamically spawned -> delete from DB
+            dataClient_->Delete(serv);
 
         AB::Entities::ServiceList sl;
         dataClient_->Invalidate(sl);
@@ -437,8 +457,8 @@ void Application::SpawnServer()
     // 2. Use dynamic server ID
     // 3. Use generic server name
     // 4. Use random free port
-    // 5. Auto terminate
-    ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0";
+    // 5. Temporary
+    ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0 -temp";
     if (!logDir_.empty())
         ss << " -log \"" << logDir_ << "\"";
     if (!fileIp_.empty())
@@ -549,6 +569,14 @@ bool Application::IsAccountBanned(const AB::Entities::Account& acc)
     if (!_ban.active)
         return false;
     return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
+}
+
+void Application::SendServerJoined()
+{
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::ServerJoined;
+    msg.SetBodyString(GetServerId());
+    GetSubsystem<Net::MessageClient>()->Write(msg);
 }
 
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
