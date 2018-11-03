@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FriendsResource.h"
 #include "StringHash.h"
+#include <AB/Entities/Account.h>
 
 namespace Resources {
 
@@ -16,11 +17,12 @@ FriendsResource::FriendsResource(std::shared_ptr<HttpsServer::Request> request) 
 
 void FriendsResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
-    if (loggedIn)
+    if (!IsAllowed(AB::Entities::AccountTypeNormal))
     {
-    }
-    else
         Redirect(response, "/");
+        return;
+    }
+
+    TemplateResource::Render(response);
 }
 }

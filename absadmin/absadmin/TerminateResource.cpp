@@ -1,17 +1,28 @@
 #include "stdafx.h"
-#include "ProfilePostResource.h"
+#include "TerminateResource.h"
 #include "Application.h"
-#include "Subsystems.h"
 #include "ContentTypes.h"
 #include "StringUtils.h"
 #include "DataClient.h"
 #include "Subsystems.h"
+#include "MessageClient.h"
 
 namespace Resources {
 
-void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response)
+bool TerminateResource::Terminate(const std::string& uuid)
 {
-    if (!IsAllowed(AB::Entities::AccountTypeNormal))
+    auto msgClient = GetSubsystem<Net::MessageClient>();
+    if (!msgClient)
+        return false;
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::Shutdown;
+    msg.SetBodyString(uuid);
+    return msgClient->Write(msg);
+}
+
+void TerminateResource::Render(std::shared_ptr<HttpsServer::Response> response)
+{
+    if (!IsAllowed(AB::Entities::AccountTypeGod))
     {
         response->write(SimpleWeb::StatusCode::client_error_unauthorized,
             "Unauthorized");
@@ -28,33 +39,22 @@ void ProfilePostResource::Render(std::shared_ptr<HttpsServer::Response> response
 
     json::JSON obj;
     SimpleWeb::CaseInsensitiveMultimap form = SimpleWeb::QueryString::parse(ss.str());
-    auto emailIt = form.find("email");
-    if (emailIt == form.end())
+    auto uuidIt = form.find("uuid");
+    if (uuidIt == form.end())
     {
         obj["status"] = "Failed";
-        obj["message"] = "Missing Email field";
+        obj["message"] = "Missing UUID field";
     }
     else
     {
-        std::string uuid = session_->values_[Utils::StringHashRt("account_uuid")].GetString();
-        AB::Entities::Account account;
-        account.uuid = uuid;
-        auto dataClient = GetSubsystem<IO::DataClient>();
-        if (!dataClient->Read(account))
+        if (!Terminate((*uuidIt).second))
         {
             obj["status"] = "Failed";
-            obj["message"] = "Invalid Account";
+            obj["message"] = "Failed";
         }
         else
         {
-            account.email = (*emailIt).second;
-            if (dataClient->Update(account))
-                obj["status"] = "OK";
-            else
-            {
-                obj["status"] = "Failed";
-                obj["message"] = "Update failed";
-            }
+            obj["status"] = "OK";
         }
     }
 

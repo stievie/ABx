@@ -14,8 +14,7 @@ namespace Resources {
 
 void ServicesJsonResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
-    if (!loggedIn)
+    if (!IsAllowed(AB::Entities::AccountTypeGod))
     {
         response->write(SimpleWeb::StatusCode::client_error_unauthorized,
             "Unauthorized");

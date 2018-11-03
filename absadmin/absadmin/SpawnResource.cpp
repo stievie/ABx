@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SpawnResource.h"
 #include "Application.h"
-#include "Subsystems.h"
 #include "ContentTypes.h"
 #include "StringUtils.h"
 #include "DataClient.h"
@@ -23,6 +22,13 @@ bool SpawnResource::Spawn(const std::string& uuid)
 
 void SpawnResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
+    if (!IsAllowed(AB::Entities::AccountTypeGod))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_unauthorized,
+            "Unauthorized");
+        return;
+    }
+
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
     header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".json")));
@@ -53,7 +59,6 @@ void SpawnResource::Render(std::shared_ptr<HttpsServer::Response> response)
     }
 
     response->write(obj.dump(), header);
-
 }
 
 }

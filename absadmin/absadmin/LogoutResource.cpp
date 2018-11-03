@@ -10,6 +10,13 @@ namespace Resources {
 
 void LogoutResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
+    if (!IsAllowed(AB::Entities::AccountTypeNormal))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_unauthorized,
+            "Unauthorized");
+        return;
+    }
+
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
     header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".json")));

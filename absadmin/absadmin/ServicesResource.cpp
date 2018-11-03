@@ -63,26 +63,13 @@ ServicesResource::ServicesResource(std::shared_ptr<HttpsServer::Request> request
 
 void ServicesResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
-    if (loggedIn)
+    if (!IsAllowed(AB::Entities::AccountTypeGod))
     {
-        auto accIt = session_->values_.find(Utils::StringHashRt("account_type"));
-        AB::Entities::AccountType accType = AB::Entities::AccountTypeUnknown;
-        if (accIt != session_->values_.end())
-            accType = static_cast<AB::Entities::AccountType>((*accIt).second.GetInt());
-
-        bool allowed = accType >= AB::Entities::AccountTypeGod;
-        if (allowed)
-            TemplateResource::Render(response);
-        else
-        {
-            response->write(SimpleWeb::StatusCode::client_error_unauthorized,
-                "Unauthorized " + request_->path);
-            return;
-        }
-    }
-    else
         Redirect(response, "/");
+        return;
+    }
+
+    TemplateResource::Render(response);
 }
 
 }

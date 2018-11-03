@@ -32,6 +32,9 @@ private:
     std::string adminHost_;
     std::shared_ptr<asio::io_service> ioService_;
     std::unique_ptr<HttpsServer> server_;
+    std::unique_ptr<HttpServer> httpServer_;
+    void HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
+        std::shared_ptr<HttpServer::Request> request);
     bool ParseCommandLine();
     void ShowHelp();
     void PrintServerInfo();

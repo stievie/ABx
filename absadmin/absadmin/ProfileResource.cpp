@@ -40,11 +40,13 @@ bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
 
 void ProfileResource::Render(std::shared_ptr<HttpsServer::Response> response)
 {
-    bool loggedIn = session_->values_[Utils::StringHashRt("logged_in")].GetBool();
-    if (loggedIn)
-        TemplateResource::Render(response);
-    else
+    if (!IsAllowed(AB::Entities::AccountTypeNormal))
+    {
         Redirect(response, "/");
+        return;
+    }
+
+    TemplateResource::Render(response);
 }
 
 }

@@ -22,6 +22,7 @@
 #include "FriendsResource.h"
 #include "ServiceResource.h"
 #include "SpawnResource.h"
+#include "TerminateResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -47,6 +48,30 @@ Application::~Application()
 {
     if (running_)
         Stop();
+}
+
+void Application::HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
+    std::shared_ptr<HttpServer::Request> request)
+{
+    auto header = GetDefaultHeader();
+    std::string url = "https://";
+    const SimpleWeb::CaseInsensitiveMultimap& _header = request->header;
+    auto it = _header.find("Host");
+    if (it == _header.end())
+    {
+        response->write(SimpleWeb::StatusCode::server_error_internal_server_error,
+            "Internal Server Error");
+        return;
+    }
+    auto hHeader = (*it).second;
+    url += hHeader;
+    if (server_->config.port != 443)
+        url += ":" + std::to_string(server_->config.port);
+    url += request->path;
+    if (!request->query_string.empty())
+        url += "?" + request->query_string;
+    header.emplace("Location", url);
+    response->write(SimpleWeb::StatusCode::redirection_moved_permanently, "Moved Permanently", header);
 }
 
 bool Application::ParseCommandLine()
@@ -255,6 +280,15 @@ bool Application::Initialize(int argc, char** argv)
     conT->map_[".woff"] = "font/woff";
     conT->map_[".woff2"] = "font/woff2";
 
+    // Redirect to HTTPS
+    httpServer_ = std::make_unique<HttpServer>();
+    httpServer_->config.port = 80;
+    if (!adminIp_.empty())
+        httpServer_->config.address = adminIp_;
+    httpServer_->io_service = ioService_;
+    httpServer_->default_resource["GET"] = std::bind(&Application::HtttpsRedirect, shared_from_this(),
+        std::placeholders::_1, std::placeholders::_2);
+
     server_ = std::make_unique<HttpsServer>(cert, key);
     server_->config.port = adminPort_;
     if (!adminIp_.empty())
@@ -276,6 +310,7 @@ bool Application::Initialize(int argc, char** argv)
     Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
     Route<Resources::PasswordPostResource>("POST", "^/post/password$");
     Route<Resources::SpawnResource>("POST", "^/post/spawn$");
+    Route<Resources::TerminateResource>("POST", "^/post/terminate");
 
     PrintServerInfo();
 
@@ -307,6 +342,7 @@ void Application::Run()
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
     server_->start();
+    httpServer_->start();
     ioService_->run();
 }
 
@@ -334,6 +370,7 @@ void Application::Stop()
     else
         LOG_ERROR << "Unable to read service" << std::endl;
 
+    httpServer_->stop();
     server_->stop();
     ioService_->stop();
 }
