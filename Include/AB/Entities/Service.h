@@ -48,9 +48,11 @@ struct Service : Entity
         s.value8b(startTime);
         s.value8b(stopTime);
         s.value8b(runTime);
+        s.text1b(machine, Limits::MAX_FILENAME);
         s.text1b(file, Limits::MAX_FILENAME);
         s.text1b(path, Limits::MAX_FILENAME);
         s.text1b(arguments, Limits::MAX_FILENAME);
+        s.value1b(temporary);
         s.value1b(load);
     }
 
@@ -63,10 +65,14 @@ struct Service : Entity
     int64_t startTime = 0;
     int64_t stopTime = 0;
     int64_t runTime = 0;
+    /// Machine the server is running on
+    std::string machine;
     std::string file;
     std::string path;
     std::string arguments;
 
+    /// Temporary service, not written to DB
+    bool temporary = false;
     /// Service load, something between 0..100. Not written to DB. The service
     /// is responsible to update this value.
     uint8_t load = 0;

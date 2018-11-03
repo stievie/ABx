@@ -25,6 +25,7 @@ bool ConfigManager::Load(const std::string& file)
     if (!IO::SimpleConfigManager::Load(file))
         return false;
 
+    config_[Key::Machine] = GetGlobal("machine", "");
     config_[Key::ServerName] = GetGlobal("server_name", "abserv");
     config_[Key::ServerID] = GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
     config_[Key::Location] = GetGlobal("location", "--");

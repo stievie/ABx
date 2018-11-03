@@ -130,6 +130,16 @@ bool Application::ParseCommandLine()
             else
                 LOG_WARNING << "Missing argument for -id" << std::endl;
         }
+        else if (a.compare("-machine") == 0)
+        {
+            if (i + 1 < arguments_.size())
+            {
+                ++i;
+                machine_ = arguments_[i];
+            }
+            else
+                LOG_WARNING << "Missing argument for -machine" << std::endl;
+        }
         else if (a.compare("-name") == 0)
         {
             if (i + 1 < arguments_.size())
@@ -211,6 +221,7 @@ void Application::ShowHelp()
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
     std::cout << "  id <id>: Server ID" << std::endl;
+    std::cout << "  machine <name>: Machine the server is running on" << std::endl;
     std::cout << "  name (<name> | generic): Server name" << std::endl;
     std::cout << "  loc <location>: Server location" << std::endl;
     std::cout << "  ip <ip>: Game ip" << std::endl;
@@ -278,6 +289,8 @@ void Application::SpawnServer()
         ss << " -ip " << gameIp_;
     if (!gameHost_.empty())
         ss << " -host " << gameHost_;
+    if (!machine_.empty())
+        ss << " -machine " << machine_;
 
     const std::string cmdLine = ss.str();
 #if defined(_WIN32) && defined(UNICODE)
@@ -359,6 +372,8 @@ bool Application::LoadMain()
     }
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
         serverId_ = (*config)[ConfigManager::Key::ServerID].GetString();
+    if (machine_.empty())
+        machine_ = (*config)[ConfigManager::Key::Machine].GetString();
 
     if (serverName_.empty())
         serverName_ = (*config)[ConfigManager::Key::ServerName].GetString();
@@ -517,6 +532,10 @@ void Application::Run()
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     dataClient->Read(serv);
+    if (!machine_.empty())
+        serv.machine = machine_;
+    else
+        machine_ = serv.machine;
     serv.host = gameHost_;
     serv.location = serverLocation_;
     serv.port = gamePort_;
@@ -526,6 +545,7 @@ void Application::Run()
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
+    serv.temporary = temporary_;
     serv.startTime = Utils::AbTick();
     dataClient->UpdateOrCreate(serv);
 

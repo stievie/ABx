@@ -18,7 +18,7 @@ bool DBService::Create(AB::Entities::Service& s)
 
     query << "INSERT INTO `services` (`uuid`, `name`, `type`, `location`, `host`, `port`, " <<
         "`status`, `start_time`, `stop_time`, `run_time`, " <<
-        " `file`, `path`, `arguments`) VALUES(";
+        " `machine`, `file`, `path`, `arguments`) VALUES(";
 
     query << db->EscapeString(s.uuid) << ", ";
     query << db->EscapeString(s.name) << ", ";
@@ -30,6 +30,7 @@ bool DBService::Create(AB::Entities::Service& s)
     query << s.startTime << ", ";
     query << s.stopTime << ", ";
     query << s.runTime << ", ";
+    query << db->EscapeString(s.machine) << ", ";
     query << db->EscapeString(s.file) << ", ";
     query << db->EscapeString(s.path) << ", ";
     query << db->EscapeString(s.arguments);
@@ -78,6 +79,7 @@ bool DBService::Load(AB::Entities::Service& s)
     s.startTime = result->GetLong("start_time");
     s.stopTime = result->GetLong("stop_time");
     s.runTime = result->GetLong("run_time");
+    s.machine = result->GetString("machine");
     s.file = result->GetString("file");
     s.path = result->GetString("path");
     s.arguments = result->GetString("arguments");
@@ -106,6 +108,7 @@ bool DBService::Save(const AB::Entities::Service& s)
     query << " `start_time` = " << s.startTime << ", ";
     query << " `stop_time` = " << s.stopTime << ", ";
     query << " `run_time` = " << s.runTime << ", ";
+    query << " `machine` = " << db->EscapeString(s.machine) << ", ";
     query << " `file` = " << db->EscapeString(s.file) << ", ";
     query << " `path` = " << db->EscapeString(s.path) << ", ";
     query << " `arguments` = " << db->EscapeString(s.arguments);

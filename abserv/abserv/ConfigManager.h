@@ -9,6 +9,7 @@ class ConfigManager : public IO::SimpleConfigManager
 public:
     enum Key
     {
+        Machine,
         ServerName,
         ServerID,
         Location,

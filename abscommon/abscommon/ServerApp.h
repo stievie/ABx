@@ -13,6 +13,7 @@ protected:
     bool running_;
     std::string serverId_;
     AB::Entities::ServiceType serverType_;
+    std::string machine_;
     std::string serverName_;
     std::string serverLocation_;
     std::string configFile_;
@@ -24,6 +25,7 @@ public:
         running_(false),
         serverId_(Utils::Uuid::EMPTY_UUID),
         serverType_(AB::Entities::ServiceTypeUnknown),
+        machine_(""),
         serverName_(""),
         serverLocation_("")
     { }
