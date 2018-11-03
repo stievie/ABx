@@ -11,6 +11,9 @@ namespace Resources {
 
 bool SpawnResource::Spawn(const std::string& uuid)
 {
+    if (uuid.empty() || uuids::uuid(uuid).nil())
+        return false;
+
     auto msgClient = GetSubsystem<Net::MessageClient>();
     if (!msgClient)
         return false;

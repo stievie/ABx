@@ -11,6 +11,18 @@ namespace Resources {
 
 bool TerminateResource::Terminate(const std::string& uuid)
 {
+    if (uuid.empty() || uuids::uuid(uuid).nil())
+        return false;
+
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    AB::Entities::Service s;
+    s.uuid = uuid;
+    if (!dataClient->Read(s))
+        return false;
+    // Can only terminate temporary services
+    if (!s.temporary)
+        return false;
+
     auto msgClient = GetSubsystem<Net::MessageClient>();
     if (!msgClient)
         return false;
