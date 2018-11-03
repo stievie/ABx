@@ -7,6 +7,7 @@
 #include <AB/Entities/Service.h>
 #include "DataClient.h"
 #include <uuid.h>
+#include "TimeUtils.h"
 
 namespace Resources {
 
@@ -38,6 +39,15 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
     objects["online"] = s.status == AB::Entities::ServiceStatusOnline;
     // Temporary are always running
     objects["termable"] = s.temporary;
+    Utils::TimeSpan ts(static_cast<uint32_t>(s.runTime));
+    std::stringstream ss;
+    if (ts.months > 0)
+        ss << ts.months << " month(s) ";
+    if (ts.days > 0)
+        ss << ts.days << " day(s) ";
+    ss << ts.hours << "h " << ts.minutes << "m " << ts.seconds << "s";
+
+    objects["uptime"] = ss.str();
 
     return true;
 }

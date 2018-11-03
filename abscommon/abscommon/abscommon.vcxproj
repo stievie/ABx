@@ -112,6 +112,7 @@
     <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="DebugNew.h" />
+    <ClInclude Include="TimeUtils.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Subsystems.h" />
     <ClInclude Include="ThreadPool.h" />

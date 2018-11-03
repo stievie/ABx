@@ -64,6 +64,7 @@ struct Service : Entity
     ServiceStatus status = ServiceStatusOffline;
     int64_t startTime = 0;
     int64_t stopTime = 0;
+    /// Runtime in seconds
     int64_t runTime = 0;
     /// Machine the server is running on
     std::string machine;

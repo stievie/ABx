@@ -54,7 +54,8 @@ void Application::HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
     std::shared_ptr<HttpServer::Request> request)
 {
     auto header = GetDefaultHeader();
-    std::string url = "https://";
+    std::stringstream url;
+    url << "https://";
     const SimpleWeb::CaseInsensitiveMultimap& _header = request->header;
     auto it = _header.find("Host");
     if (it == _header.end())
@@ -64,13 +65,13 @@ void Application::HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
         return;
     }
     auto hHeader = (*it).second;
-    url += hHeader;
+    url << hHeader;
     if (server_->config.port != 443)
-        url += ":" + std::to_string(server_->config.port);
-    url += request->path;
+        url << ":" << std::to_string(server_->config.port);
+    url << request->path;
     if (!request->query_string.empty())
-        url += "?" + request->query_string;
-    header.emplace("Location", url);
+        url << "?" << request->query_string;
+    header.emplace("Location", url.str());
     response->write(SimpleWeb::StatusCode::redirection_moved_permanently, "Moved Permanently", header);
 }
 
