@@ -311,7 +311,7 @@ bool Application::Initialize(int argc, char** argv)
     Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
     Route<Resources::PasswordPostResource>("POST", "^/post/password$");
     Route<Resources::SpawnResource>("POST", "^/post/spawn$");
-    Route<Resources::TerminateResource>("POST", "^/post/terminate");
+    Route<Resources::TerminateResource>("POST", "^/post/terminate$");
 
     PrintServerInfo();
 

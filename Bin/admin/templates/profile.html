@@ -75,12 +75,14 @@
                 </div>
                 <div class="x_content">
                   <form id="account_form" class="form-horizontal form-label-left" method="POST" action="post/profile">
+                    $if is_tutor {{
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Account type</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input id="name" name="name" required="required" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="$if is_god {{God}} $elseif is_gm {{Gamemaster}} $elseif is_sentutor {{Senior Tutor}} $elseif is_tutor {{Tutor}} $elseif is_user {{User}} $else {{Unknown}}">
                       </div>
                     </div>
+                    }}
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">User name</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
