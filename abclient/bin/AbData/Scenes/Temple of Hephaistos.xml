@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2409.44" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16784350" />
-	<attribute name="Next Local Component ID" value="16785233" />
+	<attribute name="Next Local Node ID" value="16784400" />
+	<attribute name="Next Local Component ID" value="16785294" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -36,6 +36,8 @@
 			<attribute name="Light Shape Texture" value="Texture2D;Textures/temple_of_athene_SpecLM.png" />
 			<attribute name="Can Be Occluded" value="false" />
 			<attribute name="Cast Shadows" value="true" />
+			<attribute name="Shadow Distance" value="125" />
+			<attribute name="Shadow Fade Distance" value="100" />
 		</component>
 	</node>
 	<node id="16779919">

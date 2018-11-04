@@ -233,6 +233,8 @@ void ClientApp::Start()
     renderer->SetMaterialQuality(options->GetMaterialQuality());
     renderer->SetHDRRendering(options->GetHDRRendering());
     renderer->SetSpecularLighting(options->GetSpecularLightning());
+    // https://discourse.urho3d.io/t/shadow-on-slopes/4629/5
+    renderer->SetShadowMapSize(4096);
 
 #ifdef DEBUG_HUD
     CreateHUD();

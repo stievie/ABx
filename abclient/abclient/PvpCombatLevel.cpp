@@ -69,6 +69,8 @@ void PvpCombatLevel::CreateScene()
         return;
     }
     scene_->LoadXML(sceneFile->GetRoot());
+
+    SetSunProperties();
 }
 
 void PvpCombatLevel::HandleUseSkill(StringHash eventType, VariantMap&)

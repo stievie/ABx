@@ -59,4 +59,6 @@ void OutpostLevel::CreateScene()
         return;
     }
     scene_->LoadXML(sceneFile->GetRoot());
+
+    SetSunProperties();
 }

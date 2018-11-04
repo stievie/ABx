@@ -49,6 +49,7 @@ protected:
             return viewport_->GetScreenRay(pos.x_, pos.y_);
         return Ray();
     }
+    void SetSunProperties();
 
     Urho3D::UIElement* uiRoot_;
     SharedPtr<Scene> scene_;
