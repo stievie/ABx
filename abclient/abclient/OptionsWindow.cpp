@@ -469,6 +469,89 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             opt->SetVSync(checked);
         });
     }
+
+    {
+        unsigned selection = 0;
+        DropDownList* dropdown = dynamic_cast<DropDownList*>(wnd->GetChild("MaxFPSDropdown", true));
+        {
+            Text* result = new Text(context_);
+            result->SetText("Unlimited");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 200);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 200 || GetSubsystem<Options>()->GetMaxFps() == 0)
+                selection = 0;
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("30");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 30);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 30)
+                selection = 1;
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("40");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 40);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 40)
+                selection = 2;
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("60");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 60);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 60)
+                selection = 3;
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("120");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 120);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 120)
+                selection = 4;
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("140");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 140);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 140)
+                selection = 5;
+        }
+        {
+            Text* result = new Text(context_);
+            result->SetText("144");
+            result->SetStyle("DropDownItemEnumText");
+            result->SetVar("Value", 144);
+            dropdown->AddItem(result);
+            if (GetSubsystem<Options>()->GetMaxFps() == 144)
+                selection = 6;
+        }
+        dropdown->SetSelection(selection);
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        {
+            using namespace ItemSelected;
+            unsigned sel = eventData[P_SELECTION].GetUInt();
+            DropDownList* list = dynamic_cast<DropDownList*>(eventData[P_ELEMENT].GetPtr());
+            UIElement* elem = list->GetItem(sel);
+            if (elem)
+            {
+                int value = static_cast<int>(elem->GetVar("Value").GetUInt());
+                Options* opt = GetSubsystem<Options>();
+                opt->SetMaxFps(value);
+            }
+        });
+    }
+
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("SpecularLightningCheck", true));
         check->SetChecked(opts->GetSpecularLightning());

@@ -235,6 +235,8 @@ void ClientApp::Start()
     renderer->SetSpecularLighting(options->GetSpecularLightning());
     // https://discourse.urho3d.io/t/shadow-on-slopes/4629/5
     renderer->SetShadowMapSize(4096);
+    Engine* engine = context_->GetSubsystem<Engine>();
+    engine->SetMaxFps(options->GetMaxFps());
 
 #ifdef DEBUG_HUD
     CreateHUD();

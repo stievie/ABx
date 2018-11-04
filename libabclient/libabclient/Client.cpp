@@ -402,13 +402,14 @@ void Client::Update(int timeElapsed)
         }
     }
 
-    if (lastRun_ >= 10)
+    lastRun_ += timeElapsed;
+    if (lastRun_ >= 12)
     {
         // Don't send more than ~60 updates to the server, it might DC.
-        Connection::Run();
+        // If running @144Hz every 2nd Update. If running @60Hz every update
         lastRun_ = 0;
+        Connection::Run();
     }
-    lastRun_ += timeElapsed;
     if (state_ == ClientState::World)
         lastPing_ += timeElapsed;
 }

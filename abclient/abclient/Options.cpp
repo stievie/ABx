@@ -29,12 +29,13 @@ Options::Options(Context* context) :
     internalMaximized_(false),
     highDPI_(false),
     vSync_(false),
+    maxFps_(200),
     tripleBuffer_(false),
     cameraFarClip_(300.0f),
     cameryNearClip_(0.0f),
     cameraFov_(60.0f),
     shadows_(true),
-    shadowQuality_(SHADOWQUALITY_BLUR_VSM),
+    shadowQuality_(SHADOWQUALITY_VSM),
     textureQuality_(QUALITY_HIGH),
     materialQuality_(QUALITY_HIGH),
     textureFilterMode_(FILTER_ANISOTROPIC),
@@ -156,6 +157,12 @@ void Options::Save()
         param.SetString("name", "VSync");
         param.SetString("type", "bool");
         param.SetBool("value", vSync_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "MaxFps");
+        param.SetString("type", "int");
+        param.SetInt("value", maxFps_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -445,6 +452,16 @@ void Options::SetVSync(bool value)
     }
 }
 
+void Options::SetMaxFps(int value)
+{
+    if (maxFps_ != value)
+    {
+        Engine* engine = context_->GetSubsystem<Engine>();
+        engine->SetMaxFps(value);
+        maxFps_ = value;
+    }
+}
+
 void Options::SetFullscreen(bool value)
 {
     if (fullscreen_ != value)
@@ -587,6 +604,12 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("VSync") == 0)
         {
             vSync_ = paramElem.GetBool("value");
+        }
+        else if (name.Compare("MaxFps") == 0)
+        {
+            maxFps_ = paramElem.GetInt("value");
+            if (maxFps_ > 200)
+                maxFps_ = 200;
         }
         else if (name.Compare("SpecularLightning") == 0)
         {

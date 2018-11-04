@@ -8,7 +8,6 @@ enum class WindowMode
     Maximized
 };
 
-/// @TODO:
 enum class AntiAliasingMode
 {
     None,
@@ -83,6 +82,11 @@ public:
         return vSync_;
     }
     void SetVSync(bool value);
+    int GetMaxFps() const
+    {
+        return maxFps_ > 0 ? maxFps_ : 200;
+    }
+    void SetMaxFps(int value);
     bool GetTripleBuffer() const
     {
         return tripleBuffer_;
@@ -195,6 +199,7 @@ private:
     bool maximized_;
     bool internalMaximized_;
     bool vSync_;
+    int maxFps_;
     bool tripleBuffer_;
     bool highDPI_;
     bool shadows_;
