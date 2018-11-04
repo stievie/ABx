@@ -71,6 +71,7 @@ public:
     void UpdateServers();
     bool Start();
     void Stop();
+    void Update(float timeStep);
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
     void CreatePlayer(const String& name, const String& profUuid, uint32_t modelIndex,

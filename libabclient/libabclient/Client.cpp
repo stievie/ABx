@@ -403,7 +403,7 @@ void Client::Update(int timeElapsed)
     }
 
     lastRun_ += timeElapsed;
-    if (lastRun_ >= 12)
+    if (lastRun_ >= 15)
     {
         // Don't send more than ~60 updates to the server, it might DC.
         // If running @144Hz every 2nd Update. If running @60Hz every update

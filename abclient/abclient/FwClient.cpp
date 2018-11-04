@@ -385,11 +385,8 @@ bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
     return true;
 }
 
-void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
+void FwClient::Update(float timeStep)
 {
-    using namespace Update;
-    float timeStep = eventData[P_TIMESTEP].GetFloat();
-
     client_.Update(static_cast<int>(timeStep * 1000));
     if (lastState_ == client_.state_)
         return;
@@ -403,6 +400,13 @@ void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
         break;
     }
     lastState_ = client_.state_;
+}
+
+void FwClient::HandleUpdate(StringHash, VariantMap& eventData)
+{
+    using namespace Update;
+    float timeStep = eventData[P_TIMESTEP].GetFloat();
+    Update(timeStep);
 }
 
 void FwClient::Login(const String& name, const String& pass)
