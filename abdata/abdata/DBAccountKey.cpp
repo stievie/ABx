@@ -5,8 +5,39 @@
 
 namespace DB {
 
-bool DBAccountKey::Create(AB::Entities::AccountKey&)
+bool DBAccountKey::Create(AB::Entities::AccountKey& ak)
 {
+    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil())
+    {
+        LOG_ERROR << "UUID is empty" << std::endl;
+        return false;
+    }
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "INSERT INTO `account_keys` (`uuid`, `used`, `total`, `description`, `status`, " <<
+        "`key_type`, `email`) VALUES ( ";
+
+    query << db->EscapeString(ak.uuid) << ", ";
+    query << static_cast<int>(ak.used) << ", ";
+    query << static_cast<int>(ak.total) << ", ";
+    query << db->EscapeString(ak.description) << ", ";
+    query << static_cast<int>(ak.status) << ", ";
+    query << static_cast<int>(ak.type) << ", ";
+    query << db->EscapeString(ak.email);
+
+    query << ")";
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    if (!transaction.Commit())
+        return false;
+
     return true;
 }
 

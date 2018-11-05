@@ -49,6 +49,7 @@ static constexpr size_t KEY_ITEMLIST_HASH = Utils::StringHash(AB::Entities::Item
 static constexpr size_t KEY_VERSIONLIST_HASH = Utils::StringHash(AB::Entities::VersionList::KEY());
 static constexpr size_t KEY_ACCOUNTLIST_HASH = Utils::StringHash(AB::Entities::AccountList::KEY());
 static constexpr size_t KEY_CHARACTERLIST_HASH = Utils::StringHash(AB::Entities::CharacterList::KEY());
+static constexpr size_t KEY_ACCOUNTKEYLIST_HASH = Utils::StringHash(AB::Entities::AccountKeyList::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -561,6 +562,8 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         return LoadFromDB<DB::DBItemList, AB::Entities::ItemList>(id, *data);
     case KEY_VERSIONLIST_HASH:
         return LoadFromDB<DB::DBVersionList, AB::Entities::VersionList>(id, *data);
+    case KEY_ACCOUNTKEYLIST_HASH:
+        return LoadFromDB<DB::DBAccountKeyList, AB::Entities::AccountKeyList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB
         return false;
@@ -693,6 +696,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_VERSIONLIST_HASH:
         succ = FlushRecord<DB::DBVersionList, AB::Entities::VersionList>(data);
         break;
+    case KEY_ACCOUNTKEYLIST_HASH:
+        succ = FlushRecord<DB::DBAccountKeyList, AB::Entities::AccountKeyList>(data);
+        break;
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB
         // Mark not modified and created or it will infinitely try to flush it
@@ -782,6 +788,8 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
         return ExistsInDB<DB::DBItemList, AB::Entities::ItemList>(data);
     case KEY_VERSIONLIST_HASH:
         return ExistsInDB<DB::DBVersionList, AB::Entities::VersionList>(data);
+    case KEY_ACCOUNTKEYLIST_HASH:
+        return ExistsInDB<DB::DBAccountKeyList, AB::Entities::AccountKeyList>(data);
     case KEY_GAMEINSTANCES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
         return false;

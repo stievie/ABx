@@ -22,6 +22,7 @@ static constexpr int MAX_ACCOUNT_CHARACTERS = 50;
 static constexpr int MAX_ACCOUNTS = std::numeric_limits<int>::max();
 // AccountKey
 static constexpr int MAX_ACCOUNTKEY_DESCRIPTION = 255;
+static constexpr int MAX_ACCOUNTKEYS = std::numeric_limits<int>::max();
 
 // Character
 static constexpr int MAX_CHARACTER_NAME = 20;

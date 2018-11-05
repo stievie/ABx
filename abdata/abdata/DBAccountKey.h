@@ -10,7 +10,7 @@ public:
     DBAccountKey() = delete;
     ~DBAccountKey() = delete;
 
-    static bool Create(AB::Entities::AccountKey&);
+    static bool Create(AB::Entities::AccountKey& ak);
     static bool Load(AB::Entities::AccountKey& ak);
     static bool Save(const AB::Entities::AccountKey& ak);
     static bool Delete(const AB::Entities::AccountKey&);

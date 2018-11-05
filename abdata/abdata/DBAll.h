@@ -31,3 +31,4 @@
 #include "DBVersionList.h"
 #include "DBAccountList.h"
 #include "DBCharacterList.h"
+#include "DBAccountKeyList.h"
