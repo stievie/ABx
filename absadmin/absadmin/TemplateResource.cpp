@@ -74,10 +74,12 @@ TemplateResource::TemplateResource(std::shared_ptr<HttpsServer::Request> request
 
     styles_.push_back("vendors/bootstrap/dist/css/bootstrap.min.css");
     styles_.push_back("vendors/font-awesome/css/font-awesome.min.css");
-    styles_.push_back("css/custom.css");
     styles_.push_back("css/icon-trill.css");
     styles_.push_back("vendors/nprogress/nprogress.css");
+    styles_.push_back("css/custom.css");
+
     headerScripts_.push_back("vendors/jquery/dist/jquery.min.js");
+    footerScripts_.push_back("vendors/bootstrap/dist/js/bootstrap.min.js");
     footerScripts_.push_back("vendors/nprogress/nprogress.js");
     footerScripts_.push_back("js/common.js");
 }

@@ -60,11 +60,11 @@ AccountKeysResource::AccountKeysResource(std::shared_ptr<HttpsServer::Request> r
 {
     template_ = "../templates/accountkeys.html";
 
-    styles_.push_back("vendors/datatables.net-bs/css/dataTables.bootstrap.min.css");
-    styles_.push_back("vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css");
-    styles_.push_back("vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css");
-    styles_.push_back("vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css");
-    styles_.push_back("vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css");
+    styles_.insert(styles_.begin(), "vendors/datatables.net-bs/css/dataTables.bootstrap.min.css");
+    styles_.insert(styles_.begin(), "vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css");
+    styles_.insert(styles_.begin(), "vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css");
+    styles_.insert(styles_.begin(), "vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css");
+    styles_.insert(styles_.begin(), "vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css");
 
     // Datatables
     footerScripts_.push_back("vendors/datatables.net/js/jquery.dataTables.min.js");
