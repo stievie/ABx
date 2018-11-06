@@ -12,14 +12,21 @@ bin
 *.ilk
 *.pbd
 *.cso
+*.obj
 *.ini
 *.key
 *.old
+*.tlog
+*.exp
+*.lib
+*.res
+*.cache
 
 # Precompiled header files
 *.gch/
 *.pch/
 *.pch.*
+*.pch
 
 # Misc.
 configure*
@@ -34,7 +41,15 @@ Thumbs.db
 *.db
 /*.dll
 *.user
+*.pak
+*cppcheck*
 
 *.crt
 *.key
 *.csr
+*.cer
+*.pvk
+
+build/*
+Design/*
+Tools/*
