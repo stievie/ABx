@@ -35,6 +35,8 @@ private:
     std::unique_ptr<HttpServer> httpServer_;
     void HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
         std::shared_ptr<HttpServer::Request> request);
+    void InitContentTypes();
+    void InitRoutes();
     bool ParseCommandLine();
     void ShowHelp();
     void PrintServerInfo();

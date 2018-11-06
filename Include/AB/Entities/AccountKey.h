@@ -10,10 +10,10 @@ static constexpr auto KEY_ACCOUNTS_KEYS = "account_keys";
 
 enum AccountKeyStatus : uint8_t
 {
-    Unknown = 0,
-    NotActivated = 1,
-    ReadyForUse = 2,
-    Banned = 3
+    KeyStatusUnknown = 0,
+    KeyStatusNotActivated = 1,
+    KeryStatusReadyForUse = 2,
+    KeyStatusBanned = 3
 };
 enum AccountKeyType : uint8_t
 {
@@ -44,7 +44,7 @@ struct AccountKey : Entity
     AccountKeyType type = KeyTypeUnknown;
     uint16_t total = 1;
     uint16_t used = 0;
-    AccountKeyStatus status = Unknown;
+    AccountKeyStatus status = KeyStatusUnknown;
     std::string email;
     std::string description;
 };

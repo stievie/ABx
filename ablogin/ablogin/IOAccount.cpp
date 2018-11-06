@@ -34,7 +34,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
 
     AB::Entities::AccountKey akey;
     akey.uuid = accKey;
-    akey.status = AB::Entities::AccountKeyStatus::ReadyForUse;
+    akey.status = AB::Entities::AccountKeyStatus::KeryStatusReadyForUse;
     akey.type = AB::Entities::AccountKeyType::KeyTypeAccount;
     if (!client->Read(akey))
         return ResultInvalidAccountKey;

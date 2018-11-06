@@ -55,10 +55,7 @@ ServicesResource::ServicesResource(std::shared_ptr<HttpsServer::Request> request
 {
     template_ = "../templates/services.html";
 
-    // Bootstrap
-    footerScripts_.push_back("vendors/bootstrap/dist/js/bootstrap.min.js");
     footerScripts_.push_back("vendors/gauge.js/dist/gauge.min.js");
-    footerScripts_.push_back("js/common.js");
 }
 
 void ServicesResource::Render(std::shared_ptr<HttpsServer::Response> response)

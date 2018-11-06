@@ -23,6 +23,9 @@
 #include "ServiceResource.h"
 #include "SpawnResource.h"
 #include "TerminateResource.h"
+#include "AccountKeysResource.h"
+#include "UpdateAccountKeyResource.h"
+#include "CreateKeyResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -179,6 +182,50 @@ void Application::HandleMessage(const Net::MessageMsg&)
 {
 }
 
+void Application::InitContentTypes()
+{
+    // https://www.freeformatter.com/mime-types-list.html
+    auto conT = GetSubsystem<ContentTypes>();
+    conT->map_[".css"] = "text/css";
+    conT->map_[".html"] = "text/html";
+    conT->map_[".js"] = "application/javascript";
+    conT->map_[".json"] = "application/json";
+    conT->map_[".pdf"] = "application/pdf";
+    conT->map_[".zip"] = "application/zip";
+    conT->map_[".gif"] = "image/gif";
+    conT->map_[".jpg"] = "image/jpeg";
+    conT->map_[".jpeg"] = "image/jpeg";
+    conT->map_[".png"] = "image/png";
+    conT->map_[".svg"] = "image/svg+xml";
+    conT->map_[".ico"] = "image/x-icon";
+    conT->map_[".otf"] = "font/otf";
+    conT->map_[".sfnt"] = "font/sfnt";
+    conT->map_[".ttf"] = "font/ttf";
+    conT->map_[".woff"] = "font/woff";
+    conT->map_[".woff2"] = "font/woff2";
+}
+
+void Application::InitRoutes()
+{
+    DefaultRoute<Resources::FileResource>("GET");
+    Route<Resources::IndexResource>("GET", "^/$");
+    Route<Resources::ServicesResource>("GET", "^/services$");
+    Route<Resources::ServiceResource>("GET", "^/service$");
+    Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
+    Route<Resources::ProfileResource>("GET", "^/profile$");
+    Route<Resources::FriendsResource>("GET", "^/friends$");
+    Route<Resources::AccountKeysResource>("GET", "^/accountkeys$");
+
+    Route<Resources::LoginResource>("POST", "^/post/login$");
+    Route<Resources::LogoutResource>("POST", "^/post/logout$");
+    Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
+    Route<Resources::PasswordPostResource>("POST", "^/post/password$");
+    Route<Resources::SpawnResource>("POST", "^/post/spawn$");
+    Route<Resources::TerminateResource>("POST", "^/post/terminate$");
+    Route<Resources::UpdateAccountKeyResource>("POST", "^/post/updateaccountkey$");
+    Route<Resources::CreateKeyResource>("POST", "^/post/createkey$");
+}
+
 bool Application::Initialize(int argc, char** argv)
 {
     if (!ServerApp::Initialize(argc, argv))
@@ -261,26 +308,6 @@ bool Application::Initialize(int argc, char** argv)
         LOG_WARNING << "Not connected to message server" << std::endl;
     }
 
-    // https://www.freeformatter.com/mime-types-list.html
-    auto conT = GetSubsystem<ContentTypes>();
-    conT->map_[".css"] = "text/css";
-    conT->map_[".html"] = "text/html";
-    conT->map_[".js"] = "application/javascript";
-    conT->map_[".json"] = "application/json";
-    conT->map_[".pdf"] = "application/pdf";
-    conT->map_[".zip"] = "application/zip";
-    conT->map_[".gif"] = "image/gif";
-    conT->map_[".jpg"] = "image/jpeg";
-    conT->map_[".jpeg"] = "image/jpeg";
-    conT->map_[".png"] = "image/png";
-    conT->map_[".svg"] = "image/svg+xml";
-    conT->map_[".ico"] = "image/x-icon";
-    conT->map_[".otf"] = "font/otf";
-    conT->map_[".sfnt"] = "font/sfnt";
-    conT->map_[".ttf"] = "font/ttf";
-    conT->map_[".woff"] = "font/woff";
-    conT->map_[".woff2"] = "font/woff2";
-
     // Redirect to HTTPS
     httpServer_ = std::make_unique<HttpServer>();
     httpServer_->config.port = 80;
@@ -299,19 +326,8 @@ bool Application::Initialize(int argc, char** argv)
         std::placeholders::_1, std::placeholders::_2);
     server_->io_service = ioService_;
 
-    DefaultRoute<Resources::FileResource>("GET");
-    Route<Resources::IndexResource>("GET", "^/$");
-    Route<Resources::ServicesResource>("GET", "^/services$");
-    Route<Resources::ServiceResource>("GET", "^/service$");
-    Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
-    Route<Resources::ProfileResource>("GET", "^/profile$");
-    Route<Resources::FriendsResource>("GET", "^/friends$");
-    Route<Resources::LoginResource>("POST", "^/post/login$");
-    Route<Resources::LogoutResource>("POST", "^/post/logout$");
-    Route<Resources::ProfilePostResource>("POST", "^/post/profile$");
-    Route<Resources::PasswordPostResource>("POST", "^/post/password$");
-    Route<Resources::SpawnResource>("POST", "^/post/spawn$");
-    Route<Resources::TerminateResource>("POST", "^/post/terminate$");
+    InitContentTypes();
+    InitRoutes();
 
     PrintServerInfo();
 

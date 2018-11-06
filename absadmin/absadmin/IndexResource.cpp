@@ -47,13 +47,6 @@ IndexResource::IndexResource(std::shared_ptr<HttpsServer::Request> request) :
         template_ = "../templates/login.html";
         footerTemplate_ = "";
     }
-
-    if (!loggedIn)
-        return;
-
-    // Bootstrap
-    footerScripts_.push_back("vendors/bootstrap/dist/js/bootstrap.min.js");
-    footerScripts_.push_back("js/common.js");
 }
 
 }

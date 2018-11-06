@@ -58,10 +58,7 @@ ServiceResource::ServiceResource(std::shared_ptr<HttpsServer::Request> request) 
 {
     template_ = "../templates/service.html";
 
-    // Bootstrap
-    footerScripts_.push_back("vendors/bootstrap/dist/js/bootstrap.min.js");
     footerScripts_.push_back("vendors/gauge.js/dist/gauge.min.js");
-    footerScripts_.push_back("js/common.js");
 
     SimpleWeb::CaseInsensitiveMultimap form = request->parse_query_string();
     auto it = form.find("id");

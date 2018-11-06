@@ -79,6 +79,7 @@ TemplateResource::TemplateResource(std::shared_ptr<HttpsServer::Request> request
     styles_.push_back("vendors/nprogress/nprogress.css");
     headerScripts_.push_back("vendors/jquery/dist/jquery.min.js");
     footerScripts_.push_back("vendors/nprogress/nprogress.js");
+    footerScripts_.push_back("js/common.js");
 }
 
 void TemplateResource::LoadTemplates(std::string& result)

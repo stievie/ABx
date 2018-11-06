@@ -11,10 +11,6 @@ ProfileResource::ProfileResource(std::shared_ptr<HttpsServer::Request> request) 
     TemplateResource(request)
 {
     template_ = "../templates/profile.html";
-
-    // Bootstrap
-    footerScripts_.push_back("vendors/bootstrap/dist/js/bootstrap.min.js");
-    footerScripts_.push_back("js/common.js");
 }
 
 bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)

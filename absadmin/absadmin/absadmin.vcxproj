@@ -126,9 +126,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AccountKeysResource.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ContentTypes.h" />
     <ClInclude Include="Cookie.h" />
+    <ClInclude Include="CreateKeyResource.h" />
     <ClInclude Include="FileResource.h" />
     <ClInclude Include="FriendsResource.h" />
     <ClInclude Include="IndexResource.h" />
@@ -147,11 +149,14 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TemplateResource.h" />
     <ClInclude Include="TerminateResource.h" />
+    <ClInclude Include="UpdateAccountKeyResource.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AccountKeysResource.cpp" />
     <ClCompile Include="ContentTypes.cpp" />
     <ClCompile Include="Cookie.cpp" />
+    <ClCompile Include="CreateKeyResource.cpp" />
     <ClCompile Include="FileResource.cpp" />
     <ClCompile Include="FriendsResource.cpp" />
     <ClCompile Include="IndexResource.cpp" />
@@ -175,6 +180,7 @@
     </ClCompile>
     <ClCompile Include="TemplateResource.cpp" />
     <ClCompile Include="TerminateResource.cpp" />
+    <ClCompile Include="UpdateAccountKeyResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
