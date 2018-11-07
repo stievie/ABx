@@ -1884,6 +1884,11 @@ table.jambo_table tbody tr.selected td
   zoom: 1;
 }
 
+.dataTables_wrapper button, .dataTables_wrapper input, .dataTables_wrapper select {
+  height: 24px;
+  padding: 2px;
+}
+
 .dataTables_processing
 {
   position: absolute;

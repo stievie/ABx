@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\css\CssParser.cpp" />
+    <ClCompile Include="src\css\CssPrettyWriter.cpp" />
+    <ClCompile Include="src\css\CssSelectorParser.cpp" />
+    <ClCompile Include="src\css\CssTokenizer.cpp" />
+    <ClCompile Include="src\css\CssWriter.cpp" />
+    <ClCompile Include="src\css\ParseException.cpp" />
+    <ClCompile Include="src\css\SourceMapWriter.cpp" />
+    <ClCompile Include="src\LessException.cpp" />
+    <ClCompile Include="src\lessstylesheet\Closure.cpp" />
+    <ClCompile Include="src\lessstylesheet\Extension.cpp" />
+    <ClCompile Include="src\lessstylesheet\LessAtRule.cpp" />
+    <ClCompile Include="src\lessstylesheet\LessDeclaration.cpp" />
+    <ClCompile Include="src\lessstylesheet\LessMediaQuery.cpp" />
+    <ClCompile Include="src\lessstylesheet\LessRuleset.cpp" />
+    <ClCompile Include="src\lessstylesheet\LessSelector.cpp" />
+    <ClCompile Include="src\lessstylesheet\LessStylesheet.cpp" />
+    <ClCompile Include="src\lessstylesheet\MediaQueryRuleset.cpp" />
+    <ClCompile Include="src\lessstylesheet\Mixin.cpp" />
+    <ClCompile Include="src\lessstylesheet\MixinArguments.cpp" />
+    <ClCompile Include="src\lessstylesheet\MixinCall.cpp" />
+    <ClCompile Include="src\lessstylesheet\MixinException.cpp" />
+    <ClCompile Include="src\lessstylesheet\ProcessingContext.cpp" />
+    <ClCompile Include="src\less\LessParser.cpp" />
+    <ClCompile Include="src\less\LessSelectorParser.cpp" />
+    <ClCompile Include="src\less\LessTokenizer.cpp" />
+    <ClCompile Include="src\stylesheet\AtRule.cpp" />
+    <ClCompile Include="src\stylesheet\CssComment.cpp" />
+    <ClCompile Include="src\stylesheet\Declaration.cpp" />
+    <ClCompile Include="src\stylesheet\MediaQuery.cpp" />
+    <ClCompile Include="src\stylesheet\Ruleset.cpp" />
+    <ClCompile Include="src\stylesheet\RulesetStatement.cpp" />
+    <ClCompile Include="src\stylesheet\Selector.cpp" />
+    <ClCompile Include="src\stylesheet\Stylesheet.cpp" />
+    <ClCompile Include="src\stylesheet\StylesheetStatement.cpp" />
+    <ClCompile Include="src\Token.cpp" />
+    <ClCompile Include="src\TokenList.cpp" />
+    <ClCompile Include="src\value\BooleanValue.cpp" />
+    <ClCompile Include="src\value\Color.cpp" />
+    <ClCompile Include="src\value\ColorFunctions.cpp" />
+    <ClCompile Include="src\value\FunctionLibrary.cpp" />
+    <ClCompile Include="src\value\NumberFunctions.cpp" />
+    <ClCompile Include="src\value\NumberValue.cpp" />
+    <ClCompile Include="src\value\StringFunctions.cpp" />
+    <ClCompile Include="src\value\StringValue.cpp" />
+    <ClCompile Include="src\value\UnitValue.cpp" />
+    <ClCompile Include="src\value\UrlFunctions.cpp" />
+    <ClCompile Include="src\value\UrlValue.cpp" />
+    <ClCompile Include="src\value\Value.cpp" />
+    <ClCompile Include="src\value\ValueProcessor.cpp" />
+    <ClCompile Include="src\VariableMap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\less\css\CssParser.h" />
+    <ClInclude Include="include\less\css\CssPrettyWriter.h" />
+    <ClInclude Include="include\less\css\CssSelectorParser.h" />
+    <ClInclude Include="include\less\css\CssTokenizer.h" />
+    <ClInclude Include="include\less\css\CssWriter.h" />
+    <ClInclude Include="include\less\css\IOException.h" />
+    <ClInclude Include="include\less\css\ParseException.h" />
+    <ClInclude Include="include\less\css\SourceMapWriter.h" />
+    <ClInclude Include="include\less\LessException.h" />
+    <ClInclude Include="include\less\lessstylesheet\Closure.h" />
+    <ClInclude Include="include\less\lessstylesheet\Extension.h" />
+    <ClInclude Include="include\less\lessstylesheet\Function.h" />
+    <ClInclude Include="include\less\lessstylesheet\LessAtRule.h" />
+    <ClInclude Include="include\less\lessstylesheet\LessDeclaration.h" />
+    <ClInclude Include="include\less\lessstylesheet\LessMediaQuery.h" />
+    <ClInclude Include="include\less\lessstylesheet\LessRuleset.h" />
+    <ClInclude Include="include\less\lessstylesheet\LessSelector.h" />
+    <ClInclude Include="include\less\lessstylesheet\LessStylesheet.h" />
+    <ClInclude Include="include\less\lessstylesheet\MediaQueryRuleset.h" />
+    <ClInclude Include="include\less\lessstylesheet\Mixin.h" />
+    <ClInclude Include="include\less\lessstylesheet\MixinArguments.h" />
+    <ClInclude Include="include\less\lessstylesheet\MixinCall.h" />
+    <ClInclude Include="include\less\lessstylesheet\MixinException.h" />
+    <ClInclude Include="include\less\lessstylesheet\ProcessingContext.h" />
+    <ClInclude Include="include\less\less\LessParser.h" />
+    <ClInclude Include="include\less\less\LessSelectorParser.h" />
+    <ClInclude Include="include\less\less\LessTokenizer.h" />
+    <ClInclude Include="include\less\stylesheet\AtRule.h" />
+    <ClInclude Include="include\less\stylesheet\CssComment.h" />
+    <ClInclude Include="include\less\stylesheet\CssWritable.h" />
+    <ClInclude Include="include\less\stylesheet\Declaration.h" />
+    <ClInclude Include="include\less\stylesheet\MediaQuery.h" />
+    <ClInclude Include="include\less\stylesheet\Ruleset.h" />
+    <ClInclude Include="include\less\stylesheet\RulesetStatement.h" />
+    <ClInclude Include="include\less\stylesheet\Selector.h" />
+    <ClInclude Include="include\less\stylesheet\Stylesheet.h" />
+    <ClInclude Include="include\less\stylesheet\StylesheetStatement.h" />
+    <ClInclude Include="include\less\Token.h" />
+    <ClInclude Include="include\less\TokenList.h" />
+    <ClInclude Include="include\less\value\BooleanValue.h" />
+    <ClInclude Include="include\less\value\Color.h" />
+    <ClInclude Include="include\less\value\ColorFunctions.h" />
+    <ClInclude Include="include\less\value\FunctionLibrary.h" />
+    <ClInclude Include="include\less\value\NumberFunctions.h" />
+    <ClInclude Include="include\less\value\NumberValue.h" />
+    <ClInclude Include="include\less\value\StringFunctions.h" />
+    <ClInclude Include="include\less\value\StringValue.h" />
+    <ClInclude Include="include\less\value\UnitValue.h" />
+    <ClInclude Include="include\less\value\UrlFunctions.h" />
+    <ClInclude Include="include\less\value\UrlValue.h" />
+    <ClInclude Include="include\less\value\Value.h" />
+    <ClInclude Include="include\less\value\ValueException.h" />
+    <ClInclude Include="include\less\value\ValueProcessor.h" />
+    <ClInclude Include="include\less\value\ValueScope.h" />
+    <ClInclude Include="include\less\VariableMap.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6E4F31D7-4676-47D2-8925-264D2D850DF4}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libless</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)..\..\Lib\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)..\..\Lib\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
