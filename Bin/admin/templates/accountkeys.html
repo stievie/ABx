@@ -204,6 +204,7 @@
           });
 
           $$(document.body).on("change", "select[name='table_key_type']", function() {
+            NProgress.start();
             $$.post("post/updateaccountkey", {field: "type", uuid: $$(this).data("uuid"), value: $$(this).val()}, function(data, textStatus, xhr)
             {
               NProgress.done();
@@ -218,6 +219,7 @@
             });
           });
           $$(document.body).on("input", "input[name='table_count']", function() {
+            NProgress.start();
             $$.post("post/updateaccountkey", {field: "count", uuid: $$(this).data("uuid"), value: $$(this).val()}, function(data, textStatus, xhr)
             {
               NProgress.done();
@@ -232,6 +234,7 @@
             });
           });
           $$(document.body).on("change", "select[name='table_key_status']", function() {
+            NProgress.start();
             $$.post("post/updateaccountkey", {field: "status", uuid: $$(this).data("uuid"), value: $$(this).val()}, function(data, textStatus, xhr)
             {
               NProgress.done();
