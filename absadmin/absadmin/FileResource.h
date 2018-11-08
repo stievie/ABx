@@ -10,7 +10,7 @@ public:
     explicit FileResource(std::shared_ptr<HttpsServer::Request> request) :
         Resource(request)
     { }
-    void Render(std::shared_ptr<HttpsServer::Response> response) override final;
+    void Render(std::shared_ptr<HttpsServer::Response> response) override;
 };
 
 }

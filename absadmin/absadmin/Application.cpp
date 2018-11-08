@@ -26,6 +26,7 @@
 #include "AccountKeysResource.h"
 #include "UpdateAccountKeyResource.h"
 #include "CreateKeyResource.h"
+#include "LessFileResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -208,6 +209,7 @@ void Application::InitContentTypes()
 void Application::InitRoutes()
 {
     DefaultRoute<Resources::FileResource>("GET");
+    Route<Resources::LessFileResource>("GET", "^/.+\\.less$");
     Route<Resources::IndexResource>("GET", "^/$");
     Route<Resources::ServicesResource>("GET", "^/services$");
     Route<Resources::ServiceResource>("GET", "^/service$");

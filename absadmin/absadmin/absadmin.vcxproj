@@ -134,6 +134,7 @@
     <ClInclude Include="FileResource.h" />
     <ClInclude Include="FriendsResource.h" />
     <ClInclude Include="IndexResource.h" />
+    <ClInclude Include="LessFileResource.h" />
     <ClInclude Include="LoginResource.h" />
     <ClInclude Include="LogoutResource.h" />
     <ClInclude Include="PasswordPostResource.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="FileResource.cpp" />
     <ClCompile Include="FriendsResource.cpp" />
     <ClCompile Include="IndexResource.cpp" />
+    <ClCompile Include="LessFileResource.cpp" />
     <ClCompile Include="LoginResource.cpp" />
     <ClCompile Include="LogoutResource.cpp" />
     <ClCompile Include="main.cpp" />
