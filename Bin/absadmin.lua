@@ -16,7 +16,8 @@ server_cert = "server.crt"
 -- Thread pool size
 num_threads = 4
 root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/admin/root"
-session_lifetime = 1000 * 60 * 10
+-- 60min
+session_lifetime = 1000 * 60 * 60
 
 require("config/data_server")
 require("config/msg_server")
