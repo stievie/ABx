@@ -254,6 +254,16 @@ namespace internal {
             auto r = read_variable();
             return std::string(r.first, r.second);
         }
+        range_t read_filename() {
+            auto r = read_while([](char c) { return c > 32 && c != '{' && c != '}'; });
+            if (r.first == r.second)
+                throw "Did not find variable at read_filename().";
+            return r;
+        }
+        std::string read_filename_str() {
+            auto r = read_filename();
+            return std::string(r.first, r.second);
+        }
 
         void eat(char c) {
             if (peek() != c)
@@ -471,6 +481,37 @@ namespace internal {
                             }
                         }
                     }
+                    else if (p.equal(command, "include")) {
+                        // $include {{ <block> }}
+                        p.eat_with_whitespace("{{");
+
+                        if (skip) {
+                            block(p, dic, ctx, true, out);
+                        }
+                        else {
+                            auto it2 = dic.find("__template_path__");
+                            std::string include_file = p.read_filename_str();
+                            if (it2 != dic.end())
+                            {
+                                object obj = it2->second;
+                                include_file = obj.str() + "/" + include_file;
+                            }
+                            std::stringstream buff;
+                            std::ifstream file(include_file);
+                            if (!file.is_open()) {
+                                throw "can not open html template " + include_file;
+                            }
+                            buff << file.rdbuf();
+                            std::stringstream result;
+                            ginger::parse(buff.str(), dic, ginger::from_ios(result));
+                            std::string str = result.str();
+                            out.put(str.begin(), str.end());
+//                            out << result;
+                        }
+                        p.skip_whitespace();
+                        p.eat("}}");
+                    }
+
                     else {
                         throw "Unexpected command " + std::string(command.first, command.second) + ". It must be \"for\" or \"if\"";
                     }

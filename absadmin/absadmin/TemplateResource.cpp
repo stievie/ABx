@@ -69,9 +69,6 @@ bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects
 TemplateResource::TemplateResource(std::shared_ptr<HttpsServer::Request> request) :
     Resource(request)
 {
-    headerTemplate_ = "../templates/_header.html";
-    footerTemplate_ = "../templates/_footer.html";
-
     styles_.push_back("vendors/bootstrap/dist/css/bootstrap.min.css");
     styles_.push_back("vendors/font-awesome/css/font-awesome.min.css");
     styles_.push_back("css/icon-trill.css");
@@ -162,6 +159,11 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
     }
 
     std::map<std::string, ginger::object> t;
+    std::string templFile = GetTemplateFile(template_);
+    t["__template__"] = GetTemplateFile(templFile);
+    size_t pos = templFile.find_last_of("\\/");
+    t["__template_path__"] = templFile.substr(0, pos);
+
     if (!GetObjects(t))
     {
         LOG_ERROR << "Failed to get objects" << std::endl;

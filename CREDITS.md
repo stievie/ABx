@@ -20,6 +20,7 @@
 * boost https://www.boost.org/
 * ginger Template Engine https://github.com/melpon/ginger
 * https://github.com/nbsdx/SimpleJSON
+* https://github.com/BramvdKroef/clessc
 
 ## Client
 
