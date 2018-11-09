@@ -7,7 +7,6 @@
 #include "Subsystems.h"
 #include "StringUtils.h"
 #include "Profiler.h"
-#include "DebugNew.h"
 
 #include <less/less/LessTokenizer.h>
 #include <less/less/LessParser.h>
@@ -17,19 +16,22 @@
 #include <less/css/IOException.h>
 #include <less/lessstylesheet/LessStylesheet.h>
 
+#include "DebugNew.h"
+
 namespace Resources {
 
-static bool parseInput(LessStylesheet &stylesheet,
-    istream &in,
-    const char* source,
-    std::list<const char*> &sources,
-    std::list<const char*> &includePaths)
+static bool ParseInput(LessStylesheet& stylesheet,
+    istream& in,
+    const std::string& source,
+    std::list<const char*>& sources,
+    std::list<const char*>& includePaths)
 {
-    LessTokenizer tokenizer(in, source);
+    LessTokenizer tokenizer(in, source.c_str());
     LessParser parser(tokenizer, sources);
     parser.includePaths = &includePaths;
 
-    try {
+    try
+    {
         parser.parseStylesheet(stylesheet);
     }
     catch (ParseException* e)
@@ -49,12 +51,11 @@ static bool parseInput(LessStylesheet &stylesheet,
     return true;
 }
 
-static bool processStylesheet(const LessStylesheet &stylesheet,
-    Stylesheet &css)
+static bool ProcessStylesheet(const LessStylesheet& stylesheet, Stylesheet& css)
 {
     ProcessingContext context;
-
-    try {
+    try
+    {
         stylesheet.process(css, &context);
     }
     catch (ParseException* e)
@@ -82,26 +83,14 @@ static bool processStylesheet(const LessStylesheet &stylesheet,
     return true;
 }
 
-static void writeOutput(Stylesheet &css,
-    const char* output,
-    bool formatoutput,
-    const char* rootpath)
+static void WriteOutput(Stylesheet& css, const std::string& output, const char* rootpath)
 {
-    CssWriter* writer;
-
-    std::list<const char*> relative_sources;
-    std::list<const char*>::iterator it;
-
     ofstream out(output);
 
-    writer = formatoutput ?
-        new CssPrettyWriter(out) :
-        new CssWriter(out);
-    writer->rootpath = rootpath;
+    CssWriter writer(out);
+    writer.rootpath = rootpath;
 
-    css.write(*writer);
-
-    delete writer;
+    css.write(writer);
 }
 
 void LessFileResource::CompileFile(const std::string& source, const std::string& dest)
@@ -118,15 +107,12 @@ void LessFileResource::CompileFile(const std::string& source, const std::string&
 
     sources.push_back(source.c_str());
 
-    if (parseInput(stylesheet, in, source.c_str(), sources, includePaths))
+    if (ParseInput(stylesheet, in, source, sources, includePaths))
     {
-        if (!processStylesheet(stylesheet, css))
+        if (!ProcessStylesheet(stylesheet, css))
             throw std::invalid_argument("Parsing error");
 
-        writeOutput(css,
-            dest.c_str(),
-            false,
-            nullptr);
+        WriteOutput(css, dest, nullptr);
     }
 }
 
@@ -160,8 +146,9 @@ void LessFileResource::Render(std::shared_ptr<HttpsServer::Response> response)
         request_->path = Utils::ChangeFileExt(request_->path, ".css");
         FileResource::Render(response);
     }
-    catch (const std::exception&)
+    catch (const std::exception& ex)
     {
+        LOG_ERROR << ex.what() << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found,
             "Not found " + request_->path);
     }
