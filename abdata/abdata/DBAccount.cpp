@@ -64,7 +64,10 @@ bool DBAccount::Load(AB::Entities::Account& account)
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
+    {
+        LOG_ERROR << "No record found for " << query.str() << std::endl;
         return false;
+    }
 
     account.uuid = result->GetString("uuid");
     account.name = result->GetString("name");

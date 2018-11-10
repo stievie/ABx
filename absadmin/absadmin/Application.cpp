@@ -27,6 +27,8 @@
 #include "UpdateAccountKeyResource.h"
 #include "CreateKeyResource.h"
 #include "LessFileResource.h"
+#include "AccountsResource.h"
+#include "AccountsJsonResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -216,6 +218,8 @@ void Application::InitRoutes()
     Route<Resources::ServicesJsonResource>("GET", "^/get/services$");
     Route<Resources::ProfileResource>("GET", "^/profile$");
     Route<Resources::FriendsResource>("GET", "^/friends$");
+    Route<Resources::AccountsResource>("GET", "^/accounts$");
+    Route<Resources::AccountsJsonResource>("GET", "^/get/accounts$");
     Route<Resources::AccountKeysResource>("GET", "^/accountkeys$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");

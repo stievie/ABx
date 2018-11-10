@@ -2,6 +2,7 @@
 #include "CreateAccountLevel.h"
 #include "AbEvents.h"
 #include "FwClient.h"
+#include <AB/Entities/Limits.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -132,10 +133,12 @@ void CreateAccountLevel::CreateUI()
     uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
     nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
+    nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_ACCOUNT_NAME);
     passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));
     repeatPassEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("RepeatPassEdit", true));
     emailEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("EmailEdit", true));
     accKeyEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("AccountKeyEdit", true));
+    accKeyEdit_->SetMaxLength(AB::Entities::Limits::MAX_UUID);
     SubscribeToEvent(accKeyEdit_, E_FOCUSED, URHO3D_HANDLER(CreateAccountLevel, HandleAccKeyFocused));
     SubscribeToEvent(accKeyEdit_, E_DEFOCUSED, URHO3D_HANDLER(CreateAccountLevel, HandleAccKeyDefocused));
     accKeyPlaceholder_ = dynamic_cast<Text*>(uiRoot_->GetChild("AccountKeyPlaceHolder", true));
@@ -178,9 +181,13 @@ void CreateAccountLevel::HandleKeyDown(StringHash, VariantMap&)
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
     String repass = repeatPassEdit_->GetText();
-    String email = emailEdit_->GetText();
     String accKey = accKeyEdit_->GetText();
+#if defined(EMAIL_MANDATORY)
+    String email = emailEdit_->GetText();
     button_->SetEnabled(!name.Empty() && !pass.Empty() && !repass.Empty() && !email.Empty() && !accKey.Empty());
+#else
+    button_->SetEnabled(!name.Empty() && !pass.Empty() && !repass.Empty() && !accKey.Empty());
+#endif
 }
 
 void CreateAccountLevel::HandleAccKeyFocused(StringHash, VariantMap&)

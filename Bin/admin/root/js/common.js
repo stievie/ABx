@@ -228,13 +228,6 @@ $(document).ready(function() {
   NProgress.start();
   initSidebar();
   initAutosize();
-  // Initialize as last
-  if (typeof $.fn.dataTable !== 'undefined')
-  {
-    $(".data-table").dataTable({
-      responsive: true,
-    });
-  }
 });
 
 $(window).load(function () {

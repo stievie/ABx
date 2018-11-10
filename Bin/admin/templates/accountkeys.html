@@ -139,6 +139,22 @@ $include {{_header.html}}
         </div>
         <!-- /page content -->
         <script type="text/javascript">
+          $$(window).load(function () {
+            // Initialize as last
+            if (typeof $$.fn.dataTable !== 'undefined')
+            {
+              $$('.data-table').each(function() {
+                var rows = 10;
+                if ($$(this).data("rows"))
+                  rows = parseInt($$(this).data("rows"));
+                $$(this).dataTable({
+                  responsive: true,
+                  pageLength: rows,
+                });
+              })
+            };
+          });
+
           $$("#new_key_form").bind("submit", function(e) {
             e.preventDefault();
             NProgress.start();

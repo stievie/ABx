@@ -4,6 +4,7 @@
 #include "Structs.h"
 #include "FwClient.h"
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Limits.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -50,6 +51,7 @@ void CharCreateLevel::CreateUI()
     uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
     nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("CharacterNameEdit", true));
+    nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_CHARACTER_NAME);
     professionDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("ProfessionDropDown", true));
     sexDropdown_ = dynamic_cast<DropDownList*>(uiRoot_->GetChild("GenderDropDown", true));
     createButton_ = dynamic_cast<Button*>(uiRoot_->GetChild("CreateButton", true));

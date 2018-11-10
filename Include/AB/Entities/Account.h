@@ -75,7 +75,7 @@ struct Account : Entity
     std::string password;
     std::string email;
     /// The server currently logged in. Required for cross server chat etc.
-    std::string currentServerUuid;
+    std::string currentServerUuid = EMPTY_GUID;
     uint32_t charSlots = ACCOUNT_DEF_CHARSLOTS;
     /// Last or current character
     std::string currentCharacterUuid = EMPTY_GUID;

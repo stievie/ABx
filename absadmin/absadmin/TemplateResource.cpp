@@ -83,23 +83,14 @@ TemplateResource::TemplateResource(std::shared_ptr<HttpsServer::Request> request
 
 void TemplateResource::LoadTemplates(std::string& result)
 {
-    std::string header = GetTemplateFile(headerTemplate_);
-    if (!header.empty())
-        AppendFile(header, result);
     std::string body = GetTemplateFile(template_);
-    if (!body.empty())
-        AppendFile(body, result);
-    std::string footer = GetTemplateFile(footerTemplate_);
-    if (!footer.empty())
-        AppendFile(footer, result);
-}
+    if (body.empty())
+        return;
 
-void TemplateResource::AppendFile(const std::string& fileName, std::string& result)
-{
-    std::ifstream ifs(fileName, std::ifstream::in | std::ios::binary);
+    std::ifstream ifs(body, std::ifstream::in | std::ios::binary);
     if (!ifs)
     {
-        LOG_ERROR << "Unable to open file " << fileName << std::endl;
+        LOG_ERROR << "Unable to open file " << body << std::endl;
         throw std::invalid_argument("Error opening file");
     }
 

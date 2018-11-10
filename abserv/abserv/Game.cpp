@@ -78,6 +78,7 @@ void Game::Start()
         startTime_ = Utils::AbTick();
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
+        instanceData_.gameUuid = data_.uuid;
         CreateEntity(instanceData_);
         LOG_INFO << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 

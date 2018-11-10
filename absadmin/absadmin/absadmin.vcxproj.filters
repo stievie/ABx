@@ -93,6 +93,12 @@
     <ClInclude Include="LessFileResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AccountsResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountsJsonResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -168,6 +174,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="LessFileResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountsResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountsJsonResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

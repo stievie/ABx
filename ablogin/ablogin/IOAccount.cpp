@@ -8,6 +8,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/ReservedName.h>
+#include <AB/Entities/AccountList.h>
 #include "Profiler.h"
 #include "Application.h"
 #include "Subsystems.h"
@@ -82,6 +83,9 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
         client->Delete(acc);
         return ResultInternalError;
     }
+
+    AB::Entities::AccountList al;
+    client->Invalidate(al);
 
     return ResultOK;
 }

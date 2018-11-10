@@ -3,6 +3,7 @@
 #include "AbEvents.h"
 #include "FwClient.h"
 #include "Options.h"
+#include <AB/Entities/Limits.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -63,6 +64,7 @@ void LoginLevel::CreateUI()
     uiRoot_->LoadChildXML(chatFile->GetRoot(), nullptr);
 
     nameEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("NameEdit", true));
+    nameEdit_->SetMaxLength(AB::Entities::Limits::MAX_ACCOUNT_NAME);
     passEdit_ = dynamic_cast<LineEdit*>(uiRoot_->GetChild("PassEdit", true));
     button_ = dynamic_cast<Button*>(uiRoot_->GetChild("LoginButton", true));
     button_->SetEnabled(false);

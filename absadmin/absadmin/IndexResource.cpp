@@ -43,10 +43,7 @@ IndexResource::IndexResource(std::shared_ptr<HttpsServer::Request> request) :
     if (loggedIn)
         template_ = "../templates/dashboard.html";
     else
-    {
         template_ = "../templates/login.html";
-        footerTemplate_ = "";
-    }
 }
 
 }
