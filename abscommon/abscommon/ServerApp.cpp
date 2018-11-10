@@ -7,6 +7,7 @@
 #include "DataClient.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
+#include "StringUtils.h"
 
 std::string ServerApp::GetFreeName(IO::DataClient* client)
 {
@@ -78,8 +79,7 @@ bool ServerApp::Initialize(int argc, char** argv)
     ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
     exeFile_ = std::string(buff, (count > 0) ? count : 0);
 #endif
-    size_t pos = exeFile_.find_last_of("\\/");
-    path_ = exeFile_.substr(0, pos);
+    path_ = Utils::ExtractFileDir(exeFile_);
     for (int i = 1; i < argc; i++)
     {
         arguments_.push_back(std::string(argv[i]));

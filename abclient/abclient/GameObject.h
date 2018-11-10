@@ -19,7 +19,7 @@ protected:
     float speedFactor_;
 public:
     GameObject(Context* context);
-    ~GameObject();
+    ~GameObject() override;
 
     virtual void Init(Scene*, const Vector3&, const Quaternion&,
         AB::GameProtocol::CreatureState) {}

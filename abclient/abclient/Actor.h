@@ -58,7 +58,7 @@ public:
 public:
     /// Construct.
     Actor(Context* context);
-    ~Actor();
+    ~Actor() override;
 
     static void RegisterObject(Context* context);
 

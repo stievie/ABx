@@ -151,9 +151,8 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     std::map<std::string, ginger::object> t;
     std::string templFile = GetTemplateFile(template_);
-    t["__template__"] = GetTemplateFile(templFile);
-    size_t pos = templFile.find_last_of("\\/");
-    t["__template_path__"] = templFile.substr(0, pos);
+    t["__template__"] = templFile;
+    t["__template_path__"] = Utils::ExtractFileDir(templFile);
 
     if (!GetObjects(t))
     {

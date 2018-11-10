@@ -23,6 +23,8 @@ Player::Player(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
 }
 
+Player::~Player() = default;
+
 void Player::RegisterObject(Context* context)
 {
     context->RegisterFactory<Player>();

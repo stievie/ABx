@@ -40,6 +40,12 @@ std::string GetFileExt(const std::string& fn)
     return "";
 }
 
+std::string ExtractFileDir(const std::string& fn)
+{
+    size_t pos = fn.find_last_of("\\/");
+    return fn.substr(0, pos);
+}
+
 std::vector<std::string> Split(const std::string& str, const std::string& delim)
 {
     std::vector<std::string> parts;

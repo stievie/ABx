@@ -24,6 +24,7 @@ class Player : public Actor
 public:
     /// Construct.
     Player(Context* context);
+    ~Player() override;
 
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
