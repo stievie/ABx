@@ -55,37 +55,27 @@ std::list<std::pair<uint32_t, uint16_t>> ServiceManager::GetPorts() const
     return ports;
 }
 
-void ServicePort::Open(uint32_t ip, uint16_t port)
+bool ServicePort::Open(uint32_t ip, uint16_t port)
 {
     Close();
 
     serverPort_ = port;
     serverIp_ = ip;
-    pendingStart_ = false;
     try
     {
+        // No reuse address
         acceptor_.reset(new asio::ip::tcp::acceptor(service_, asio::ip::tcp::endpoint(
-            asio::ip::address(asio::ip::address_v4(serverIp_)), serverPort_)));
+            asio::ip::address(asio::ip::address_v4(serverIp_)), serverPort_), false));
 #ifdef TCP_OPTION_NODELAY
         acceptor_->set_option(asio::ip::tcp::no_delay(true));
 #endif
         Accept();
+        return true;
     }
     catch (asio::system_error& e)
     {
-#ifdef DEBUG_NET
-        LOG_ERROR << "Network " << e.what() << std::endl;
-#else
-        AB_UNUSED(e);
-#endif
-        // Reschedule
-        pendingStart_ = true;
-        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(
-            5000,
-            std::bind(&ServicePort::OpenAcceptor,
-                std::weak_ptr<ServicePort>(shared_from_this()),
-                serverIp_, serverPort_))
-        );
+        LOG_ERROR << "Network (" << e.code().value() << "): " << e.what() << std::endl;
+        return false;
     }
 }
 
@@ -114,7 +104,7 @@ bool ServicePort::AddService(std::shared_ptr<ServiceBase> service)
     }
 
     services_.push_back(service);
-    return false;
+    return true;
 }
 
 void ServicePort::OnStopServer()
@@ -206,30 +196,11 @@ void ServicePort::OnAccept(std::shared_ptr<Connection> connection, const asio::e
     }
     else if (error != asio::error::operation_aborted)
     {
-        if (!pendingStart_)
-        {
-            Close();
-            pendingStart_ = true;
-            GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(
-                5000,
-                std::bind(&ServicePort::OpenAcceptor,
-                    std::weak_ptr<ServicePort>(shared_from_this()),
-                    serverIp_, serverPort_))
-            );
-        }
     }
 #ifdef DEBUG_NET
     else
         LOG_ERROR << "Operation aborted" << std::endl;
 #endif
-}
-
-void ServicePort::OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint32_t ip, uint16_t port)
-{
-    if (auto s = weakService.lock())
-    {
-        s->Open(ip, port);
-    }
 }
 
 }

@@ -64,7 +64,10 @@ int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entit
 
     AB::Entities::ServiceList sl;
     if (!dc->Read(sl))
+    {
+        LOG_ERROR << "Error reading service list" << std::endl;
         return 0;
+    }
 
     int result = 0;
     for (const std::string& uuid : sl.uuids)
@@ -72,7 +75,10 @@ int IOService::GetServices(AB::Entities::ServiceType type, std::vector<AB::Entit
         AB::Entities::Service s;
         s.uuid = uuid;
         if (!dc->Read(s))
+        {
+            LOG_ERROR << "Error service with UUID " << uuid << std::endl;
             continue;
+        }
         if (s.status != AB::Entities::ServiceStatusOnline)
             continue;
         if (s.type == type)

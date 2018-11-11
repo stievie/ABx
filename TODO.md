@@ -1,5 +1,8 @@
 # TODO
 
+! ablogin: Somethings wrong getting server list when more clients are connected.
+  ablogin messing up data server!
+! abdata: Create operation with size = 0 ?
 + ablogin: Monitor server load and spawn new server if needed
 + genkey: separate program to create DH keys for the server
 ~ abdata: Use bit set cache item flags, sot a struct

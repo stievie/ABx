@@ -104,9 +104,19 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
         return;
 
     if (msg.type_ == Net::MessageType::ServerJoined)
+    {
+#ifdef _DEBUG
+        LOG_DEBUG << "Sending server joined message" << std::endl;
+#endif
         nmsg.AddByte(AB::GameProtocol::ServerJoined);
+    }
     else
+    {
+#ifdef _DEBUG
+        LOG_DEBUG << "Sending server left message" << std::endl;
+#endif
         nmsg.AddByte(AB::GameProtocol::ServerLeft);
+    }
 
     nmsg.AddString(serverId);    // Server ID
     GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(nmsg);

@@ -156,10 +156,18 @@ bool Application::LoadMain()
         config->GetGlobal("login_port", 2748)
     );
     if (port != 0)
-        serviceManager_->Add<Net::ProtocolLogin>(ip, port, [](uint32_t remoteIp) -> bool
     {
-        return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
-    });
+        if (!serviceManager_->Add<Net::ProtocolLogin>(ip, port, [](uint32_t remoteIp) -> bool
+        {
+            return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
+        }))
+            return false;
+    }
+    else
+    {
+        LOG_ERROR << "Port can not be 0" << std::endl;
+        return false;
+    }
 
     PrintServerInfo();
     return true;

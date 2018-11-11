@@ -76,12 +76,18 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
     const std::string accountName = message.GetStringEncrypted();
     if (accountName.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid account name " << accountName << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidAccountName);
         return;
     }
     const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid password " << password << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
@@ -142,12 +148,18 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
     const std::string accountUuid = message.GetStringEncrypted();
     if (accountUuid.empty())
     {
-        DisconnectClient(AB::Errors::InvalidAccountKey);
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+#endif
+        DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid password " << password << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
@@ -194,12 +206,18 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
     const std::string accountUuid = message.GetStringEncrypted();
     if (accountUuid.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid password " << password << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
@@ -256,12 +274,18 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     const std::string accountUuid = message.GetStringEncrypted();
     if (accountUuid.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid password " << password << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
@@ -277,15 +301,24 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
 
 void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Sending server list" << std::endl;
+#endif
     const std::string accountUuid = message.GetStringEncrypted();
     if (accountUuid.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
     const std::string password = message.GetStringEncrypted();
     if (password.empty())
     {
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid password " << password << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
     }
@@ -416,18 +449,24 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
 
 void ProtocolLogin::SendServers(const std::string& accountUuid, const std::string& password)
 {
+    // FIXME: Somehow this sends a Create operation to the data server...
+/*
     AB::Entities::Account account;
     account.uuid = accountUuid;
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
     switch (res)
     {
     case IO::IOAccount::LoginError::InvalidAccount:
+#ifdef DEBUG_NET
+        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
+#endif
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
     }
+*/
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::LoginProtocol::ServerList);

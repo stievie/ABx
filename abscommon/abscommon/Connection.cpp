@@ -328,8 +328,10 @@ std::shared_ptr<Connection> ConnectionManager::CreateConnection(
     }
 
     std::shared_ptr<Connection> connection = std::make_shared<Connection>(ioService, servicer);
-    std::lock_guard<std::mutex> lock(lock_);
-    connections_.insert(connection);
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        connections_.insert(connection);
+    }
 
     return connection;
 }

@@ -153,9 +153,15 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))
+    {
+        LOG_ERROR << "Unable to read account UUID " << account.uuid << std::endl;
         return LoginError::InvalidAccount;
+    }
     if (account.status != AB::Entities::AccountStatusActivated)
+    {
+        LOG_ERROR << "Account not activated UUID " << account.uuid << std::endl;
         return LoginError::InvalidAccount;
+    }
 
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
         return LoginError::PasswordMismatch;

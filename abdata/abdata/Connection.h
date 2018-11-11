@@ -49,7 +49,7 @@ private:
     void AddTask(Callable function, Args&&... args)
     {
         GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask(std::bind(function, this, std::forward<Args>(args)...))
+            Asynch::CreateTask(std::bind(function, shared_from_this(), std::forward<Args>(args)...))
         );
     }
 

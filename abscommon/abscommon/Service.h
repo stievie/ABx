@@ -63,7 +63,7 @@ public:
     {}
     ~ServicePort() = default;
 
-    void Open(uint32_t ip, uint16_t port);
+    bool Open(uint32_t ip, uint16_t port);
     void Close();
     bool AddService(std::shared_ptr<ServiceBase> service);
     bool IsSingleSocket() const
@@ -82,11 +82,9 @@ private:
     AcceptConnection acceptConnection_;
 
     std::vector<std::shared_ptr<ServiceBase>> services_;
-    bool pendingStart_;
 
     void Accept();
     void OnAccept(std::shared_ptr<Connection> connection, const asio::error_code& error);
-    static void OpenAcceptor(std::weak_ptr<ServicePort> weakService, uint32_t ip, uint16_t port);
 };
 
 class ServiceManager
@@ -126,7 +124,8 @@ public:
         if (finder == acceptors_.end())
         {
             servicePort = std::make_shared<ServicePort>(ioService_, acceptConnection);
-            servicePort->Open(ip, port);
+            if (!servicePort->Open(ip, port))
+                return false;
             acceptors_[key] = servicePort;
         }
         else

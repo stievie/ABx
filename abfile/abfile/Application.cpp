@@ -62,8 +62,12 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     switch (msg.type_)
     {
     case Net::MessageType::Shutdown:
-        Stop();
+    {
+        std::string serverId = msg.GetBodyString();
+        if (serverId.compare(serverId_) == 0)
+            Stop();
         break;
+    }
     case Net::MessageType::Spawn:
         SpawnServer();
         break;
@@ -400,7 +404,14 @@ void Application::Run()
     uptimeRound_ = 1;
     AB::Entities::Service serv;
     serv.uuid = serverId_;
-    dataClient_->Read(serv);
+    if (!dataClient_->Read(serv))
+    {
+        if (!temporary_)
+        {
+            // Temporary services do not exist in DB
+            LOG_WARNING << "Unable to read service with UUID " << serv.uuid << std::endl;
+        }
+    }
     if (!machine_.empty())
         serv.machine = machine_;
     else

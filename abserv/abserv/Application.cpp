@@ -448,10 +448,18 @@ bool Application::LoadMain()
     else if (gamePort_ == 0)
         gamePort_ = Net::ServiceManager::GetFreePort();
     if (gamePort_ != 0)
-        serviceManager_->Add<Net::ProtocolGame>(ip, gamePort_, [](uint32_t remoteIp) -> bool
     {
-        return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
-    });
+        if (!serviceManager_->Add<Net::ProtocolGame>(ip, gamePort_, [](uint32_t remoteIp) -> bool
+        {
+            return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
+        }))
+            return false;
+    }
+    else
+    {
+        LOG_ERROR << "Port can not be 0" << std::endl;
+    }
+
 
     int64_t loadingTime = (Utils::AbTick() - startLoading);
 
@@ -532,7 +540,14 @@ void Application::Run()
     auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
-    dataClient->Read(serv);
+    if (!dataClient->Read(serv))
+    {
+        if (!temporary_)
+        {
+            // Temporary services do not exist in DB
+            LOG_WARNING << "Unable to read service with UUID " << serv.uuid << std::endl;
+        }
+    }
     if (!machine_.empty())
         serv.machine = machine_;
     else
