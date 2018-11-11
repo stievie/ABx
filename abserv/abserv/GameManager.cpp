@@ -122,14 +122,12 @@ std::shared_ptr<Game> GameManager::Get(uint32_t gameId)
 
 bool GameManager::AddPlayer(const std::string& mapUuid, std::shared_ptr<Player> player)
 {
-    std::shared_ptr<Game> game;
-    {
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        game = GetGame(mapUuid, true);
-    }
-
+    std::shared_ptr<Game> game = GetGame(mapUuid, true);
     if (!game)
+    {
+        LOG_ERROR << "Unable to get game, Map UUID: " << mapUuid << std::endl;
         return false;
+    }
 
     // No need to wait until assets loaded
     game->PlayerJoin(player->id_);

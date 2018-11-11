@@ -109,7 +109,7 @@ public:
     ExecutionState GetState() const { return state_; }
     bool IsInactive() const
     {
-        return noplayerTime_ > 10000;
+        return noplayerTime_ > GAME_INACTIVE_TIME;
     }
     const kaguya::State& GetLuaState() const { return luaState_; }
     void SetState(ExecutionState state);

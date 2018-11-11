@@ -17,10 +17,13 @@
 #include "ConfigManager.h"
 #include "Subsystems.h"
 #include <AB/DHKeys.hpp>
+#include "UuidUtils.h"
 
 #include "DebugNew.h"
 
 namespace Net {
+
+std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;
 
 void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
     const std::string& mapUuid, const std::string& instanceUuid)
@@ -75,7 +78,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 
     player_->account_.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
     player_->account_.currentCharacterUuid = player_->data_.uuid;
-    player_->account_.currentServerUuid = (*GetSubsystem<ConfigManager>())[ConfigManager::ServerID].GetString();
+    player_->account_.currentServerUuid = ProtocolGame::serverId_;
     client->Update(player_->account_);
 
     player_->data_.currentMapUuid = mapUuid;

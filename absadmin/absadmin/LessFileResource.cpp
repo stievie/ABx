@@ -39,7 +39,6 @@ static bool ParseInput(LessStylesheet& stylesheet,
 
         LOG_ERROR << e->getSource() << ": Line " << e->getLineNumber() << ", Column " <<
             e->getColumn() << " Parse Error: " << e->what() << endl;
-
         return false;
     }
     catch (exception* e)

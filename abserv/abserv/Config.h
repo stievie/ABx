@@ -40,6 +40,8 @@
 #define CHECK_AUTOTERMINATE_MS (1000 * 60)
 // Remove player from PlayerManager after this time. Inactive means not Ping.
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
+// Game is inactive and will be stopped when it didnt have a player for this time.
+#define GAME_INACTIVE_TIME (1000 * 60)
 
 #define ROLL_MIN 2
 #define ROLL_MAX 100

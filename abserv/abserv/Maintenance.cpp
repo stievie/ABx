@@ -86,7 +86,8 @@ void Maintenance::UpdateServerLoadTask()
 void Maintenance::CheckAutoTerminate()
 {
     auto dispatcher = GetSubsystem<Asynch::Dispatcher>();
-    if (GetSubsystem<Game::PlayerManager>()->GetPlayerCount() == 0)
+    if (GetSubsystem<Game::PlayerManager>()->GetPlayerCount() == 0 &&
+        GetSubsystem<Game::GameManager>()->GetGameCount() == 0)
     {
         dispatcher->Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
         return;

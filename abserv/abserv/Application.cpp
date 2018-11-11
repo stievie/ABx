@@ -379,6 +379,7 @@ bool Application::LoadMain()
         serverName_ = (*config)[ConfigManager::Key::ServerName].GetString();
     if (serverLocation_.empty())
         serverLocation_ = (*config)[ConfigManager::Key::Location].GetString();
+    Net::ProtocolGame::serverId_ = GetServerId();
 
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>((*config)[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
     LOG_INFO << "[done]" << std::endl;

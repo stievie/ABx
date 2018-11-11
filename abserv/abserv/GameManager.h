@@ -54,6 +54,7 @@ public:
     AB::Entities::GameType GetGameType(const std::string& mapUuid);
 
     GameManager::State GetState() const { return state_; }
+    size_t GetGameCount() const { return games_.size(); }
 };
 
 }

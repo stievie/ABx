@@ -21,6 +21,7 @@ public:
     enum { UseChecksum = true };
     static const char* ProtocolName() { return "Game Protocol"; };
     friend class Game::Player;
+    static std::string serverId_;
 private:
     std::shared_ptr<Game::Player> player_;
     uint32_t challengeTimestamp_ = 0;

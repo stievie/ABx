@@ -63,7 +63,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
         query << "`name` = " << db->EscapeString(character.name);
     else
     {
-        LOG_ERROR << "UUID and name are empty" << std::endl;
+        LOG_ERROR << "UUID (" << character.uuid << ") and name (" << character.name << ") are empty" << std::endl;
         return false;
     }
 

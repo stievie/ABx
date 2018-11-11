@@ -91,11 +91,14 @@ bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector
     uuids::uuid _id;
     if (!key.decode(table, _id))
     {
-        LOG_ERROR << "Unable to decode key" << std::endl;
+        LOG_ERROR << "Unable to decode key, key size " << key.data_.size() << std::endl;
         return false;
     }
     if (_id.nil())
+    {
+        LOG_ERROR << "UUID is nil, table is " << table << std::endl;
         return false;
+    }
 
     CacheData(table, _id, data, false, false);
 
