@@ -6,7 +6,7 @@
 namespace IO {
 
 DataClient::DataClient(asio::io_service& io_service) :
-    host_(0),
+    host_(""),
     port_(0),
     socket_(io_service),
     resolver_(io_service),
@@ -30,7 +30,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uin
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
-    const uint8_t header[] = { opCode, ksize1, ksize2 };
+    const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
     if (!TryWrite(asio::buffer(header)))
         return false;
 
@@ -51,13 +51,13 @@ bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uin
 
     std::vector<uint8_t> dataheader(5);
     /* size_t read = */ asio::read(socket_, asio::buffer(dataheader, 5), asio::transfer_at_least(5));
-    if (dataheader[0] == OpCodes::Status)
+    if (static_cast<OpCodes>(dataheader[0]) == OpCodes::Status)
     {
         // Does not return data
         uint8_t result[128];
         // Read the rest of the status
         socket_.read_some(asio::buffer(result));
-        return dataheader[1] == ErrorCodes::Ok;
+        return dataheader[1] == static_cast<unsigned char>(ErrorCodes::Ok);
     }
 
     // If we are here it returns data
@@ -74,7 +74,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
 {
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
-    const uint8_t header[] = { opCode, ksize1, ksize2 };
+    const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
     if (!TryWrite(asio::buffer(header)))
         return false;
 
@@ -86,7 +86,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
     if (read < 2)
         return false;
 
-    if (result[0] == OpCodes::Status && result[1] == ErrorCodes::Ok)
+    if (static_cast<OpCodes>(result[0]) == OpCodes::Status && static_cast<ErrorCodes>(result[1]) == ErrorCodes::Ok)
         return true;
     return false;
 }

@@ -107,8 +107,9 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
 
 void WorldLevel::HandleServerJoinedLeft(StringHash, VariantMap&)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    client->UpdateServers();
+    // Tell GameMenu to update servers
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(AbEvents::E_GOTSERVICES, eData);
 }
 
 void WorldLevel::HandleMouseDown(StringHash, VariantMap&)

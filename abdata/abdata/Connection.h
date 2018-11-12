@@ -6,41 +6,15 @@
 #include "Dispatcher.h"
 #include "DataKey.h"
 #include "Subsystems.h"
+#include "DataCodes.h"
 
 class ConnectionManager;
-
-enum OpCodes : uint8_t
-{
-    // Requests
-    Create = 0,
-    Update = 1,
-    Read = 2,
-    Delete = 3,
-    // Invalidate a cache item. Flushes modified data. Next read will load it from the DB.
-    // TODO: Check if needed.
-    Invalidate = 4,
-    Preload = 5,
-    Exists = 6,
-    // Responses
-    Status,
-    Data
-};
-
-enum ErrorCodes : uint8_t
-{
-    Ok,
-    NoSuchKey,
-    KeyTooBig,
-    DataTooBig,
-    OtherErrors,
-    NotExists
-};
 
 class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
 	explicit Connection(asio::io_service& io_service, ConnectionManager& manager,
-        StorageProvider& storage, size_t maxData, size_t maxKeySize_);
+        StorageProvider& storage, size_t maxData, uint16_t maxKeySize_);
     asio::ip::tcp::socket& socket();
 	void Start();
 	void Stop();
@@ -69,7 +43,7 @@ private:
     void StartClientRequestedOp();
     void StartReadKey(uint16_t& keySize);
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
-    void SendStatusAndRestart(ErrorCodes code, const std::string& message);
+    void SendStatusAndRestart(IO::ErrorCodes code, const std::string& message);
 
     static inline uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
     {
@@ -81,11 +55,11 @@ private:
     }
 
     size_t maxDataSize_;
-    size_t maxKeySize_;
+    uint16_t maxKeySize_;
     asio::ip::tcp::socket socket_;
     ConnectionManager& connectionManager_;
     StorageProvider& storageProvider_;
-    uint8_t opcode_;
+    IO::OpCodes opcode_;
 
     IO::DataKey key_;
     std::shared_ptr<std::vector<uint8_t>> data_;

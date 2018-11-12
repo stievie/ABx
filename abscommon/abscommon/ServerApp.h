@@ -7,6 +7,10 @@ namespace IO {
 class DataClient;
 }
 
+namespace Net {
+class MessageClient;
+}
+
 class ServerApp
 {
 protected:
@@ -44,6 +48,8 @@ public:
     {
         return serverName_;
     }
+    bool SendServerJoined(Net::MessageClient* client, const AB::Entities::Service& service);
+    bool SendServerLeft(Net::MessageClient* client, const AB::Entities::Service& service);
 
     std::string path_;
     std::string exeFile_;

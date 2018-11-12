@@ -106,8 +106,8 @@ public:
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
     void OnPong(int) override { }
-    void OnServerJoined(const std::string& serverId) override;
-    void OnServerLeft(const std::string& serverId) override;
+    void OnServerJoined(const AB::Entities::Service& service) override;
+    void OnServerLeft(const AB::Entities::Service& service) override;
 
     void OnLoggedIn(const std::string&) override;
     void OnGetCharlist(const AB::Entities::CharList& chars) override;

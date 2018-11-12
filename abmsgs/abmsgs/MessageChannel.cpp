@@ -83,6 +83,7 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         if (msg.GetPropStream(prop))
         {
             AB::Entities::ServiceType t;
+            // Just to get the server UUID
             prop.Read<AB::Entities::ServiceType>(t);
             prop.ReadString(serverId_);
             channel_.Deliver(msg);

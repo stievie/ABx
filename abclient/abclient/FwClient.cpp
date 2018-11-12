@@ -127,7 +127,9 @@ void FwClient::HandleLevelReady(StringHash, VariantMap&)
         SendEvent(e.eventId, e.eventData);
     }
     queuedEvents_.Clear();
-    UpdateServers();
+    // Initial update of services
+    if (services_.size() == 0)
+        UpdateServers();
 }
 
 void FwClient::LoadData()
@@ -737,19 +739,24 @@ void FwClient::OnProtocolError(uint8_t err)
         cl->OnProtocolError(err);
 }
 
-void FwClient::OnServerJoined(const std::string& serverId)
+void FwClient::OnServerJoined(const AB::Entities::Service& service)
 {
+    services_[service.uuid] = service;
     using namespace AbEvents::ServerJoined;
     VariantMap& eData = GetEventDataMap();
-    eData[P_SERVERID] = String(serverId.c_str());
+    eData[P_SERVERID] = String(service.uuid.c_str());
     QueueEvent(AbEvents::E_SERVERJOINED, eData);
 }
 
-void FwClient::OnServerLeft(const std::string& serverId)
+void FwClient::OnServerLeft(const AB::Entities::Service& service)
 {
+    auto it = services_.find(service.uuid);
+    if (it != services_.end())
+        services_.erase(service.uuid);
+
     using namespace AbEvents::ServerLeft;
     VariantMap& eData = GetEventDataMap();
-    eData[P_SERVERID] = String(serverId.c_str());
+    eData[P_SERVERID] = String(service.uuid.c_str());
     QueueEvent(AbEvents::E_SERVERLEFT, eData);
 }
 

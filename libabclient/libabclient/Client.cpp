@@ -254,16 +254,16 @@ void Client::OnPong(int lastPing)
     pings_.push_back(lastPing);
 }
 
-void Client::OnServerJoined(const std::string& serverId)
+void Client::OnServerJoined(const AB::Entities::Service& service)
 {
     if (receiver_)
-        receiver_->OnServerJoined(serverId);
+        receiver_->OnServerJoined(service);
 }
 
-void Client::OnServerLeft(const std::string& serverId)
+void Client::OnServerLeft(const AB::Entities::Service& service)
 {
     if (receiver_)
-        receiver_->OnServerLeft(serverId);
+        receiver_->OnServerLeft(service);
 }
 
 std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()

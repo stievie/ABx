@@ -324,11 +324,11 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         IO::PropReadStream prop;
         if (msg.GetPropStream(prop))
         {
-            AB::Entities::ServiceType t;
-            prop.Read<AB::Entities::ServiceType>(t);
-            std::string serverId;
-            prop.ReadString(serverId);
-            if ((serverId.compare(serverId_) != 0) && (t == AB::Entities::ServiceTypeGameServer))
+            AB::Entities::Service s;
+            prop.Read<AB::Entities::ServiceType>(s.type);
+            prop.ReadString(s.uuid);
+
+            if ((s.uuid.compare(serverId_) != 0) && (s.type == AB::Entities::ServiceTypeGameServer))
             {
                 // Notify players another game server joined/left. Wait some time until the
                 // service list is updated.
@@ -509,19 +509,6 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
 }
 
-void Application::SendServerJoined()
-{
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ServerJoined;
-
-    IO::PropWriteStream stream;
-    stream.Write<uint8_t>(serverType_);
-    stream.WriteString(GetServerId());
-    msg.SetPropStream(stream);
-
-    GetSubsystem<Net::MessageClient>()->Write(msg);
-}
-
 void Application::GenNewKeys()
 {
     GetSubsystem<Crypto::Random>()->Initialize();
@@ -580,7 +567,7 @@ void Application::Run()
         IO::Logger::Close();
     }
 
-    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(500, std::bind(&Application::SendServerJoined, this)));
+    SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
 
     running_ = true;
     serviceManager_->Run();
@@ -596,23 +583,20 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown...";
 
-    auto msgClient = GetSubsystem<Net::MessageClient>();
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ServerLeft;
-    IO::PropWriteStream stream;
-    stream.Write<AB::Entities::ServiceType>(serverType_);
-    stream.WriteString(GetServerId());
-    msg.SetPropStream(stream);
-    msgClient->Write(msg);
-
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
+
+    auto msgClient = GetSubsystem<Net::MessageClient>();
+
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+
+        SendServerLeft(msgClient, serv);
+
         if (!temporary_)
             dataClient->Update(serv);
         else
@@ -623,7 +607,9 @@ void Application::Stop()
         dataClient->Invalidate(sl);
     }
     else
+    {
         LOG_ERROR << "Unable to read service" << std::endl;
+    }
 
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(100ms);

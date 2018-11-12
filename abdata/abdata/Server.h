@@ -25,5 +25,5 @@ private:
 	ConnectionManager connectionManager_;
 	StorageProvider storageProvider_;
 	size_t maxDataSize_;
-	size_t maxKeySize_;
+    uint16_t maxKeySize_;
 };

@@ -13,34 +13,9 @@
 #endif
 #include <uuid.h>
 #include "DataKey.h"
+#include "DataCodes.h"
 
 namespace IO {
-
-enum OpCodes : uint8_t
-{
-    // Requests
-    Create = 0,
-    Update = 1,
-    Read = 2,
-    Delete = 3,
-    // Invalidate a cache item. Does NOT flush modified data. Next read will load it from the DB.
-    Invalidate = 4,
-    Preload = 5,
-    Exists = 6,
-    // Responses
-    Status,
-    Data
-};
-
-enum ErrorCodes : uint8_t
-{
-    Ok,
-    NoSuchKey,
-    KeyTooBig,
-    DataTooBig,
-    OtherErrors,
-    NotExists
-};
 
 class DataClient
 {

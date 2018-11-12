@@ -30,8 +30,8 @@ public:
     virtual void OnNetworkError(const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;
     virtual void OnPong(int lastPing) = 0;
-    virtual void OnServerJoined(const std::string& serverId) = 0;
-    virtual void OnServerLeft(const std::string& serverId) = 0;
+    virtual void OnServerJoined(const AB::Entities::Service& service) = 0;
+    virtual void OnServerLeft(const AB::Entities::Service& service) = 0;
 
     virtual void OnLoggedIn(const std::string& accountUuid) = 0;
     virtual void OnGetCharlist(const AB::Entities::CharList& chars) = 0;

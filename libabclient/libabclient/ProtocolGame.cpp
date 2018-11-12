@@ -311,16 +311,28 @@ void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
 
 void ProtocolGame::ParseServerJoined(const std::shared_ptr<InputMessage>& message)
 {
-    std::string serverId = message->GetString();
+    AB::Entities::Service s;
+    s.type = message->Get<AB::Entities::ServiceType>();
+    s.uuid = message->GetString();
+    s.host = message->GetString();
+    s.port = message->Get<uint16_t>();
+    s.location = message->GetString();
+    s.name = message->GetString();
     if (receiver_)
-        receiver_->OnServerJoined(serverId);
+        receiver_->OnServerJoined(s);
 }
 
 void ProtocolGame::ParseServerLeft(const std::shared_ptr<InputMessage>& message)
 {
-    std::string serverId = message->GetString();
+    AB::Entities::Service s;
+    s.type = message->Get<AB::Entities::ServiceType>();
+    s.uuid = message->GetString();
+    s.host = message->GetString();
+    s.port = message->Get<uint16_t>();
+    s.location = message->GetString();
+    s.name = message->GetString();
     if (receiver_)
-        receiver_->OnServerLeft(serverId);
+        receiver_->OnServerLeft(s);
 }
 
 void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)

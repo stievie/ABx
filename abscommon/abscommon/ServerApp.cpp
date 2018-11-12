@@ -8,6 +8,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "StringUtils.h"
+#include "MessageClient.h"
 
 std::string ServerApp::GetFreeName(IO::DataClient* client)
 {
@@ -41,7 +42,7 @@ std::string ServerApp::GetFreeName(IO::DataClient* client)
         prefix += "F";
         break;
     case AB::Entities::ServiceTypeLoginServer:
-        prefix += "F";
+        prefix += "L";
         break;
     case AB::Entities::ServiceTypeGameServer:
         // No type prefix for game server: AT1, AT2
@@ -66,6 +67,45 @@ std::string ServerApp::GetFreeName(IO::DataClient* client)
         result = prefix + std::to_string(i);
     }
     return result;
+}
+
+bool ServerApp::SendServerJoined(Net::MessageClient* client, const AB::Entities::Service& service)
+{
+    if (!client)
+        return false;
+
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::ServerJoined;
+
+    IO::PropWriteStream stream;
+    stream.Write<AB::Entities::ServiceType>(service.type);
+    stream.WriteString(service.uuid);
+    stream.WriteString(service.host);
+    stream.Write<uint16_t>(service.port);
+    stream.WriteString(service.location);
+    stream.WriteString(service.name);
+    stream.WriteString(service.machine);
+    msg.SetPropStream(stream);
+    return client->Write(msg);
+}
+
+bool ServerApp::SendServerLeft(Net::MessageClient* client, const AB::Entities::Service& service)
+{
+    if (!client)
+        return false;
+
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::ServerLeft;
+    IO::PropWriteStream stream;
+    stream.Write<AB::Entities::ServiceType>(service.type);
+    stream.WriteString(service.uuid);
+    stream.WriteString(service.host);
+    stream.Write<uint16_t>(service.port);
+    stream.WriteString(service.location);
+    stream.WriteString(service.name);
+    stream.WriteString(service.machine);
+    msg.SetPropStream(stream);
+    return client->Write(msg);
 }
 
 bool ServerApp::Initialize(int argc, char** argv)

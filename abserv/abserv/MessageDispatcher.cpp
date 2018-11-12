@@ -96,11 +96,16 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
     if (!msg.GetPropStream(prop))
         return;
 
-    AB::Entities::ServiceType t;
-    prop.Read<AB::Entities::ServiceType>(t);
-    std::string serverId;
-    prop.ReadString(serverId);
-    if (t != AB::Entities::ServiceTypeGameServer)
+    AB::Entities::Service s;
+    prop.Read<AB::Entities::ServiceType>(s.type);
+    prop.ReadString(s.uuid);
+    prop.ReadString(s.host);
+    prop.Read<uint16_t>(s.port);
+    prop.ReadString(s.location);
+    prop.ReadString(s.name);
+    prop.ReadString(s.machine);
+
+    if (s.type != AB::Entities::ServiceTypeGameServer)
         return;
 
     if (msg.type_ == Net::MessageType::ServerJoined)
@@ -118,7 +123,22 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
         nmsg.AddByte(AB::GameProtocol::ServerLeft);
     }
 
-    nmsg.AddString(serverId);    // Server ID
+    nmsg.Add<AB::Entities::ServiceType>(s.type);
+
+    /*
+    The client expects the following
+    output->AddStringEncrypted(service.uuid);
+    output->AddStringEncrypted(service.host);
+    output->Add<uint16_t>(service.port);
+    output->AddStringEncrypted(service.location);
+    output->AddStringEncrypted(service.name);
+    */
+
+    nmsg.AddString(s.uuid);
+    nmsg.AddString(s.host);
+    nmsg.Add<uint16_t>(s.port);
+    nmsg.AddString(s.location);
+    nmsg.AddString(s.name);
     GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(nmsg);
 }
 

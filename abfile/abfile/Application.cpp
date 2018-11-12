@@ -433,7 +433,7 @@ void Application::Run()
     dataClient_->Invalidate(sl);
 
     // If we want to receive messages, we need to send our ServerID to the message server.
-    SendServerJoined();
+    SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
@@ -449,23 +449,18 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown...";
 
-    auto msgClient = GetSubsystem<Net::MessageClient>();
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ServerLeft;
-    IO::PropWriteStream stream;
-    stream.Write<AB::Entities::ServiceType>(serverType_);
-    stream.WriteString(GetServerId());
-    msg.SetPropStream(stream);
-    msgClient->Write(msg);
-
     AB::Entities::Service serv;
     serv.uuid = serverId_;
+
     if (dataClient_->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::AbTick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+
+        SendServerLeft(GetSubsystem<Net::MessageClient>(), serv);
+
         if (!temporary_)
             dataClient_->Update(serv);
         else
@@ -604,19 +599,6 @@ bool Application::IsAccountBanned(const AB::Entities::Account& acc)
     if (!_ban.active)
         return false;
     return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
-}
-
-void Application::SendServerJoined()
-{
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ServerJoined;
-
-    IO::PropWriteStream stream;
-    stream.Write<AB::Entities::ServiceType>(serverType_);
-    stream.WriteString(GetServerId());
-    msg.SetPropStream(stream);
-
-    GetSubsystem<Net::MessageClient>()->Write(msg);
 }
 
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()

@@ -5,13 +5,13 @@
 #include "StorageProvider.h"
 
 Connection::Connection(asio::io_service& io_service, ConnectionManager& manager,
-    StorageProvider& storage, size_t maxData, size_t maxKey) :
+    StorageProvider& storage, size_t maxData, uint16_t maxKey) :
     maxDataSize_(maxData),
     maxKeySize_(maxKey),
     socket_(io_service),
     connectionManager_(manager),
     storageProvider_(storage),
-    opcode_(0)
+    opcode_(IO::OpCodes::None)
 { }
 
 asio::ip::tcp::socket& Connection::socket()
@@ -28,12 +28,12 @@ void Connection::Start()
     {
         if (!error)
         {
-            opcode_ = data_->at(0);
+            opcode_ = static_cast<IO::OpCodes>(data_->at(0));
             uint16_t keySize = ToInt16(*data_.get(), 1);
-            if (keySize <= (uint16_t)maxKeySize_)
+            if (keySize <= maxKeySize_)
                 StartReadKey(keySize);
             else
-                SendStatusAndRestart(KeyTooBig, "Supplied key is too big. Maximum allowed key size is: " + std::to_string(maxKeySize_));
+                SendStatusAndRestart(IO::ErrorCodes::KeyTooBig, "Supplied key is too big. Maximum allowed key size is: " + std::to_string(maxKeySize_));
         }
         else
         {
@@ -52,8 +52,8 @@ void Connection::StartReadKey(uint16_t& keySize)
     {
         if (!error)
         {
-            if ((uint16_t)byteTransferred != keySize)
-                SendStatusAndRestart(OtherErrors, "Data sent is not equal to the expected size");
+            if (static_cast<uint16_t>(byteTransferred) != keySize)
+                SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data sent is not equal to the expected size");
             else
                 StartClientRequestedOp();
         }
@@ -77,9 +77,7 @@ void Connection::StartCreateOperation()
             uint32_t size = ToInt32(*data_.get(), 0);
             if (size == 0)
             {
-                const auto ep = socket_.remote_endpoint();
-                LOG_ERROR << "Size = 0, bytes_transferred = " << bytes_transferred << " from " <<
-                    ep.address().to_string() << ":" << ep.port() << std::endl;
+                LOG_ERROR << "Size = 0, bytes_transferred = " << bytes_transferred << std::endl;
                 return;
             }
             if (size <= maxDataSize_)
@@ -90,7 +88,7 @@ void Connection::StartCreateOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -123,7 +121,7 @@ void Connection::StartUpdateDataOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -156,7 +154,7 @@ void Connection::StartReadOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -169,25 +167,25 @@ void Connection::StartReadOperation()
 void Connection::StartDeleteOperation()
 {
     if (storageProvider_.Delete(key_))
-        SendStatusAndRestart(Ok, "OK");
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
-        SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
 }
 
 void Connection::StartInvalidateOperation()
 {
     if (storageProvider_.Invalidate(key_))
-        SendStatusAndRestart(Ok, "OK");
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
-        SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
 }
 
 void Connection::StartPreloadOperation()
 {
     if (storageProvider_.Preload(key_))
-        SendStatusAndRestart(Ok, "OK");
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
     else
-        SendStatusAndRestart(OtherErrors, "Supplied key not found in cache");
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Supplied key not found in cache");
 }
 
 void Connection::StartExistsOperation()
@@ -213,7 +211,7 @@ void Connection::StartExistsOperation()
                         std::placeholders::_1, std::placeholders::_2, size));
             }
             else
-                SendStatusAndRestart(DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
+                SendStatusAndRestart(IO::ErrorCodes::DataTooBig, "The data sent is too big. Maximum data allowed is: " + std::to_string(maxDataSize_));
         }
         else
         {
@@ -234,13 +232,13 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
     if (!error)
     {
         if (bytes_transferred != expected)
-            SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+            SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         else
         {
             if (storageProvider_.Update(key_, data_))
-                SendStatusAndRestart(Ok, "OK");
+                SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
             else
-                SendStatusAndRestart(OtherErrors, "Error");
+                SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
         }
     }
     else
@@ -256,13 +254,13 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
     if (!error)
     {
         if (bytes_transferred != expected)
-            SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+            SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         else
         {
             if (storageProvider_.Create(key_, data_))
-                SendStatusAndRestart(Ok, "OK");
+                SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
             else
-                SendStatusAndRestart(OtherErrors, "Error");
+                SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
         }
     }
     else
@@ -282,23 +280,23 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
     }
     if (!data_)
     {
-        SendStatusAndRestart(NoSuchKey, "Requested data not in cache");
+        SendStatusAndRestart(IO::ErrorCodes::NoSuchKey, "Requested data not in cache");
         return;
     }
     if (bytes_transferred != expected)
     {
-        SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         return;
     }
 
     if (!storageProvider_.Read(key_, data_))
     {
-        SendStatusAndRestart(OtherErrors, "Error");
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Error");
         return;
     }
 
     uint8_t header[] = {
-        (uint8_t)OpCodes::Data,
+        (uint8_t)IO::OpCodes::Data,
         (uint8_t)data_->size(),
         (uint8_t)(data_->size() >> 8),
         (uint8_t)(data_->size() >> 16),
@@ -328,13 +326,13 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
     if (!error)
     {
         if (bytes_transferred != expected)
-            SendStatusAndRestart(OtherErrors, "Data size sent is not equal to data expected");
+            SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Data size sent is not equal to data expected");
         else
         {
             if (storageProvider_.Exists(key_, data_))
-                SendStatusAndRestart(Ok, "OK");
+                SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
             else
-                SendStatusAndRestart(NotExists, "Record does not exist");
+                SendStatusAndRestart(IO::ErrorCodes::NotExists, "Record does not exist");
         }
     }
     else
@@ -349,42 +347,48 @@ void Connection::StartClientRequestedOp()
     // All this executed in dispatcher thread
     switch (opcode_)
     {
-    case OpCodes::Create:
+    case IO::OpCodes::Create:
         AddTask(&Connection::StartCreateOperation);
         break;
-    case OpCodes::Update:
+    case IO::OpCodes::Update:
         AddTask(&Connection::StartUpdateDataOperation);
         break;
-    case OpCodes::Read:
+    case IO::OpCodes::Read:
         AddTask(&Connection::StartReadOperation);
         break;
-    case OpCodes::Delete:
+    case IO::OpCodes::Delete:
         AddTask(&Connection::StartDeleteOperation);
         break;
-    case OpCodes::Invalidate:
+    case IO::OpCodes::Invalidate:
         AddTask(&Connection::StartInvalidateOperation);
         break;
-    case OpCodes::Preload:
+    case IO::OpCodes::Preload:
         AddTask(&Connection::StartPreloadOperation);
         break;
-    case OpCodes::Exists:
+    case IO::OpCodes::Exists:
         AddTask(&Connection::StartExistsOperation);
         break;
-    case OpCodes::Status:
-    case OpCodes::Data:
-        AddTask(&Connection::SendStatusAndRestart, OtherErrors, "Invalid Opcode");
+    case IO::OpCodes::Status:
+    case IO::OpCodes::Data:
+        LOG_ERROR << "Status and Data OP Codes are invalid here" << std::endl;
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Invalid Opcode");
         break;
     default:
-        AddTask(&Connection::SendStatusAndRestart, OtherErrors, "Invalid Opcode");
+    {
+        const auto ep = socket_.remote_endpoint();
+        LOG_ERROR << "Invalid OP Code " << static_cast<int>(opcode_) << " from " <<
+            ep.address().to_string() << ":" << ep.port() << std::endl;
+        AddTask(&Connection::SendStatusAndRestart, IO::ErrorCodes::OtherErrors, "Invalid Opcode");
         break;
+    }
     }
 }
 
-void Connection::SendStatusAndRestart(ErrorCodes code, const std::string& message)
+void Connection::SendStatusAndRestart(IO::ErrorCodes code, const std::string& message)
 {
     data_.reset(new std::vector<uint8_t>);
-    data_->push_back(OpCodes::Status);
-    data_->push_back(code);
+    data_->push_back(static_cast<uint8_t>(IO::OpCodes::Status));
+    data_->push_back(static_cast<uint8_t>(code));
     data_->push_back(0);
     data_->push_back(0);
     data_->push_back(0);
