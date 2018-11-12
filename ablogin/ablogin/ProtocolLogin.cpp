@@ -449,8 +449,6 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
 
 void ProtocolLogin::SendServers(const std::string& accountUuid, const std::string& password)
 {
-    // FIXME: Somehow this sends a Create operation to the data server...
-/*
     AB::Entities::Account account;
     account.uuid = accountUuid;
     IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
@@ -466,7 +464,6 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
     }
-*/
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::LoginProtocol::ServerList);
@@ -477,6 +474,7 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
     output->Add<uint16_t>(static_cast<uint16_t>(count));
     for (const AB::Entities::Service& service : services)
     {
+        output->Add<AB::Entities::ServiceType>(service.type);
         output->AddStringEncrypted(service.uuid);
         output->AddStringEncrypted(service.host);
         output->Add<uint16_t>(service.port);

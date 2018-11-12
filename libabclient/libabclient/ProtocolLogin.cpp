@@ -228,6 +228,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         for (int i = 0; i < count; i++)
         {
             AB::Entities::Service s;
+            s.type = message->Get<AB::Entities::ServiceType>();
             s.uuid = message->GetStringEncrypted();
             s.host = message->GetStringEncrypted();
             s.port = message->Get<uint16_t>();
