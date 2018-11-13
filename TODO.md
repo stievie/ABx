@@ -1,7 +1,5 @@
 # TODO
 
-~ ab*: AB::Entities::Service ServerApp::service_ remove other member vaiables
-+ abclient: Add /updateservices command
 + ablogin: Monitor server load and spawn new server if needed
 + genkey: separate program to create DH keys for the server
 ~ abdata: Use bit set cache item flags, sot a struct

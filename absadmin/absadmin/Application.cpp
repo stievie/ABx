@@ -80,11 +80,6 @@ void Application::HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
     response->write(SimpleWeb::StatusCode::redirection_moved_permanently, "Moved Permanently", header);
 }
 
-bool Application::ParseCommandLine()
-{
-    return ServerApp::ParseCommandLine();
-}
-
 void Application::ShowHelp()
 {
     std::cout << "absadmin [-<option> [<value>]]" << std::endl;

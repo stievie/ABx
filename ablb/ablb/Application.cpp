@@ -16,17 +16,7 @@ Application::Application() :
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
 
-Application::~Application()
-{
-}
-
-bool Application::ParseCommandLine()
-{
-    if (!ServerApp::ParseCommandLine())
-        return false;
-
-    return true;
-}
+Application::~Application() = default;
 
 void Application::ShowHelp()
 {

@@ -27,11 +27,6 @@ Application::~Application()
     GetSubsystem<Asynch::Dispatcher>()->Stop();
 }
 
-bool Application::ParseCommandLine()
-{
-    return ServerApp::ParseCommandLine();
-}
-
 void Application::ShowHelp()
 {
     std::cout << "abmsgs [-<options> [<value>]]" << std::endl;

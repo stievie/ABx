@@ -101,7 +101,7 @@ protected:
     bool ParseCommandLine() override;
 public:
     Application();
-    ~Application();
+    ~Application() override;
 
     bool Initialize(int argc, char** argv) override;
     void Run() override;

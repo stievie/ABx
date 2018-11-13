@@ -67,6 +67,7 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
             if (!uuids::uuid(gi.uuid).nil() && dataClient->Read(gi))
             {
                 AB::Entities::Game game;
+                // If there is an instance the Game UUID must not be nil, so skip checking
                 game.uuid = gi.gameUuid;
                 if (dataClient->Read(game))
                     instanceName = game.name;

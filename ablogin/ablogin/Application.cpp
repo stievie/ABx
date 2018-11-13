@@ -42,14 +42,6 @@ Application::~Application()
     GetSubsystem<Net::ConnectionManager>()->CloseAll();
 }
 
-bool Application::ParseCommandLine()
-{
-    if (!ServerApp::ParseCommandLine())
-        return false;
-
-    return true;
-}
-
 void Application::ShowHelp()
 {
     std::cout << "ablogin [-<options> [<value>]]" << std::endl;
