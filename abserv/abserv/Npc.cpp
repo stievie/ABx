@@ -25,7 +25,8 @@ void Npc::RegisterLua(kaguya::State& state)
 
 Npc::Npc() :
     Actor(),
-    luaInitialized_(false)
+    luaInitialized_(false),
+    aiCharacter_(nullptr)
 {
     InitializeLua();
 }
@@ -67,7 +68,41 @@ bool Npc::LoadScript(const std::string& fileName)
         }
     }
 
-    return luaState_["onInit"]();
+    behaviours_ = "/scripts/actors/npcs/behaviours.lua";
+
+    bool ret = luaState_["onInit"]();
+    if (ret)
+    {
+        if (!behaviours_.empty())
+        {
+            IO::AiLoader loader;
+            auto dp = GetSubsystem<IO::DataProvider>();
+            std::string btFile = dp->GetDataFile(behaviours_);
+            if (loader.init(btFile))
+            {
+                std::vector<std::string> trees;
+                loader.getTrees(trees);
+                auto randomIter = ai::randomElement(trees.begin(), trees.end());
+//                const ai::TreeNodePtr& root = loader.load(*randomIter);
+                const ai::TreeNodePtr& root = loader.load("wander");
+                ai_ = std::make_shared<ai::AI>(root);
+            }
+            else
+                LOG_ERROR << "could not load the tree: " << loader.getError();
+        }
+
+    }
+    return ret;
+}
+
+std::shared_ptr<ai::AI> Npc::GetAi()
+{
+    if (!aiCharacter_)
+    {
+        aiCharacter_ = std::make_shared<AiCharacter>(*this, GetGame()->map_.get());
+        ai_->setCharacter(aiCharacter_);
+    }
+    return ai_;
 }
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
@@ -75,6 +110,14 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
+    if (aiCharacter_)
+    {
+        const Math::Vector3& pos = transformation_.position_;
+        aiCharacter_->setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
+        aiCharacter_->setOrientation(transformation_.rotation_);
+        aiCharacter_->setSpeed(GetSpeed());
+        aiCharacter_->update(timeElapsed, false);
+    }
 }
 
 void Npc::Say(ChatType channel, const std::string& message)
@@ -149,6 +192,55 @@ void Npc::OnTrigger(std::shared_ptr<Actor> other)
         else
             ++it;
     }
+}
+
+AiCharacter::AiCharacter(Npc& owner, const Map* map) :
+    ai::ICharacter(owner.id_),
+    owner_(owner),
+    map_(map)
+{
+    const Math::Vector3& pos = owner.transformation_.position_;
+    setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
+    setOrientation(owner.transformation_.rotation_);
+    setSpeed(owner.GetSpeed());
+}
+
+void AiCharacter::update(int64_t, bool)
+{
+    const float sizeF = static_cast<float>(map_->GetSize());
+    const glm::vec3& currentPos = _position;
+    glm::vec3 newPos(currentPos);
+    if (currentPos.x < -sizeF) {
+        newPos.x = sizeF;
+    }
+    else if (currentPos.x > sizeF) {
+        newPos.x = -sizeF;
+    }
+    if (currentPos.z < -sizeF) {
+        newPos.z = sizeF;
+    }
+    else if (currentPos.z > sizeF) {
+        newPos.z = -sizeF;
+    }
+    setPosition(newPos);
+}
+
+void AiCharacter::setPosition(const glm::vec3& position)
+{
+    ai::ICharacter::setPosition(position);
+    owner_.autorunComp_.Goto(Math::Vector3(position.x, position.y, position.z));
+}
+
+void AiCharacter::setOrientation(float orientation)
+{
+    ai::ICharacter::setOrientation(-orientation);
+    owner_.transformation_.rotation_ = orientation;
+}
+
+void AiCharacter::setSpeed(float speed)
+{
+    ai::ICharacter::setSpeed(speed);
+    owner_.SetSpeed(speed);
 }
 
 }

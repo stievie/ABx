@@ -189,6 +189,9 @@
     <ClInclude Include="IOScript.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AiLoader.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

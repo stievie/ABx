@@ -53,6 +53,10 @@
 #pragma warning(disable: 4702 4127)
 #include <kaguya/kaguya.hpp>
 #pragma warning(pop)
+#pragma warning(push)
+#pragma warning(disable: 4201 4267 4244)
+#include <ai/SimpleAI.h>
+#pragma warning(pop)
 
 #include <uuid.h>
 

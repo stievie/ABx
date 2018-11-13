@@ -8,6 +8,7 @@ sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 3     -- Monk
 prof2Index = 0     -- None
+behaviours = "/scripts/actors/npcs/behaviours.lua"
 
 function onInit()
   return true

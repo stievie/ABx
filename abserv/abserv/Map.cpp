@@ -15,14 +15,14 @@ namespace Game {
 
 Map::Map(std::shared_ptr<Game> game) :
     game_(game),
+    zone_(game->data_.name),
+    aiLock_("gamemap"),
     navMesh_(nullptr)
 {
     octree_ = std::make_unique<Math::Octree>();
 }
 
-Map::~Map()
-{
-}
+Map::~Map() = default;
 
 void Map::CreatePatches()
 {
@@ -262,6 +262,7 @@ void Map::AddGameObject(std::shared_ptr<GameObject> object)
 void Map::Update(uint32_t delta)
 {
     AB_UNUSED(delta);
+    zone_.update(delta);
     octree_->Update();
 }
 
