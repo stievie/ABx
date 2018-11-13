@@ -53,7 +53,7 @@ $include {{_header.html}}
                 var rows = 10;
                 if ($$(this).data("rows"))
                   rows = parseInt($$(this).data("rows"));
-                $$(this).dataTable({
+                var table = $$(this).dataTable({
                   responsive: true,
                   pageLength: rows,
                   "ajax": "get/accounts",
@@ -129,6 +129,9 @@ $include {{_header.html}}
                   },
                   ]
                 });
+                setInterval(function() {
+                  table.api().ajax.reload(null, false);
+                }, 10000);
               })
             };
           });
