@@ -27,9 +27,6 @@ class Application : public ServerApp, public std::enable_shared_from_this<Applic
 private:
     int64_t startTime_;
     std::string root_;
-    uint16_t adminPort_;
-    std::string adminIp_;
-    std::string adminHost_;
     std::shared_ptr<asio::io_service> ioService_;
     std::unique_ptr<HttpsServer> server_;
     std::unique_ptr<HttpServer> httpServer_;
@@ -37,7 +34,6 @@ private:
         std::shared_ptr<HttpServer::Request> request);
     void InitContentTypes();
     void InitRoutes();
-    bool ParseCommandLine();
     void ShowHelp();
     void PrintServerInfo();
     void HandleMessage(const Net::MessageMsg& msg);
@@ -63,6 +59,8 @@ private:
             c.Render(response);
         };
     }
+protected:
+    bool ParseCommandLine() override;
 public:
     Application();
     ~Application();
@@ -72,7 +70,7 @@ public:
     void Stop() override;
 
     const std::string& GetRoot() const { return root_; }
-    const std::string& GetHost() const { return adminHost_; }
+    const std::string& GetHost() const { return serverHost_; }
 
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     static Application* Instance;

@@ -108,6 +108,69 @@ bool ServerApp::SendServerLeft(Net::MessageClient* client, const AB::Entities::S
     return client->Write(msg);
 }
 
+bool ServerApp::ParseCommandLine()
+{
+    std::string value;
+    if (GetCommandLineValue("-h") || GetCommandLineValue("-help"))
+        return false;
+
+    GetCommandLineValue("-conf", configFile_);
+    GetCommandLineValue("-log", logDir_);
+    if (GetCommandLineValue("-id", serverId_))
+    {
+        // There was an argument
+        if (uuids::uuid(serverId_).nil())
+        {
+            const uuids::uuid guid = uuids::uuid_system_generator{}();
+            serverId_ = guid.to_string();
+            LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
+        }
+    }
+    GetCommandLineValue("-machine", machine_);
+    GetCommandLineValue("-ip", serverIp_);
+    GetCommandLineValue("-host", serverHost_);
+    if (GetCommandLineValue("-port", value))
+    {
+        serverPort_ = static_cast<uint16_t>(atoi(value.c_str()));
+    }
+    GetCommandLineValue("-name", serverName_);
+    GetCommandLineValue("-loc", serverLocation_);
+    return true;
+}
+
+bool ServerApp::GetCommandLineValue(const std::string& name, std::string& value)
+{
+    bool found = false;
+    for (size_t i = 0; i < arguments_.size(); ++i)
+    {
+        if (arguments_[i].compare(name) == 0)
+        {
+            found = true;
+            ++i;
+            if (i < arguments_.size())
+                value = arguments_[i];
+            else
+            {
+                LOG_WARNING << "Missing argument for " << name << std::endl;
+            }
+            break;
+        }
+    }
+    return found;
+}
+
+bool ServerApp::GetCommandLineValue(const std::string& name)
+{
+    for (size_t i = 0; i < arguments_.size(); ++i)
+    {
+        if (arguments_[i].compare(name) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ServerApp::Initialize(int argc, char** argv)
 {
 #ifdef _WIN32

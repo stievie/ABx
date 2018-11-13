@@ -48,8 +48,7 @@ Application::Application() :
     autoTerminate_(false),
     temporary_(false),
     lastLoadCalc_(0),
-    ioService_(),
-    gamePort_(std::numeric_limits<uint16_t>::max())
+    ioService_()
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
@@ -91,125 +90,23 @@ Application::~Application()
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i != arguments_.size(); i++)
+    if (!ServerApp::ParseCommandLine())
+        return false;
+
+    if (GetCommandLineValue("-autoterm"))
     {
-        const std::string& a = arguments_[i];
-        if (a.compare("-conf") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                configFile_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -conf" << std::endl;
-        }
-        else if (a.compare("-log") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                logDir_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (a.compare("-id") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverId_ = arguments_[i];
-                if (uuids::uuid(serverId_).nil())
-                {
-                    const uuids::uuid guid = uuids::uuid_system_generator{}();
-                    serverId_ = guid.to_string();
-                    LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
-                }
-            }
-            else
-                LOG_WARNING << "Missing argument for -id" << std::endl;
-        }
-        else if (a.compare("-machine") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                machine_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -machine" << std::endl;
-        }
-        else if (a.compare("-name") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverName_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -name" << std::endl;
-        }
-        else if (a.compare("-loc") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverLocation_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -loc" << std::endl;
-        }
-        else if (a.compare("-ip") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                gameIp_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -ip" << std::endl;
-        }
-        else if (a.compare("-host") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                gameHost_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -host" << std::endl;
-        }
-        else if (a.compare("-port") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                gamePort_ = static_cast<uint16_t>(atoi(arguments_[i].c_str()));
-            }
-            else
-                LOG_WARNING << "Missing argument for -port" << std::endl;
-        }
-        else if (a.compare("-autoterm") == 0)
-        {
-            // Must be set with command line argument. Can not be set with the config file.
-            autoTerminate_ = true;
-            // Implies temporary
-            temporary_ = true;
-        }
-        else if (a.compare("-temp") == 0)
-        {
-            // Must be set with command line argument. Can not be set with the config file.
-            temporary_ = true;
-        }
-        else if (a.compare("-genkeys") == 0)
-        {
-            genKeys_ = true;
-        }
-        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
-        {
-            return false;
-        }
+        // Must be set with command line argument. Can not be set with the config file.
+        autoTerminate_ = true;
+        // Implies temporary
+        temporary_ = true;
+    }
+    if (GetCommandLineValue("-temp"))
+    {
+        temporary_ = true;
+    }
+    if (GetCommandLineValue("-genkeys"))
+    {
+        genKeys_ = true;
     }
     return true;
 }
@@ -285,10 +182,10 @@ void Application::SpawnServer()
     ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0 -autoterm";
     if (!logDir_.empty())
         ss << " -log \"" << logDir_ << "\"";
-    if (!gameIp_.empty())
-        ss << " -ip " << gameIp_;
-    if (!gameHost_.empty())
-        ss << " -host " << gameHost_;
+    if (!serverIp_.empty())
+        ss << " -ip " << serverIp_;
+    if (!serverHost_.empty())
+        ss << " -host " << serverHost_;
     if (!machine_.empty())
         ss << " -machine " << machine_;
 
@@ -436,20 +333,20 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to connect to message server" << std::endl;
     }
 
-    if (gameHost_.empty())
-        gameHost_ = (*config)[ConfigManager::Key::GameHost].GetString();
+    if (serverHost_.empty())
+        serverHost_ = (*config)[ConfigManager::Key::GameHost].GetString();
     uint32_t ip;
-    if (!gameIp_.empty())
-        ip = Utils::ConvertStringToIP(gameIp_);
+    if (!serverIp_.empty())
+        ip = Utils::ConvertStringToIP(serverIp_);
     else
         ip = static_cast<uint32_t>((*config)[ConfigManager::Key::GameIP].GetInt());
-    if (gamePort_ == std::numeric_limits<uint16_t>::max())
-        gamePort_ = static_cast<uint16_t>((*config)[ConfigManager::Key::GamePort].GetInt());
-    else if (gamePort_ == 0)
-        gamePort_ = Net::ServiceManager::GetFreePort();
-    if (gamePort_ != 0)
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+        serverPort_ = static_cast<uint16_t>((*config)[ConfigManager::Key::GamePort].GetInt());
+    else if (serverPort_ == 0)
+        serverPort_ = Net::ServiceManager::GetFreePort();
+    if (serverPort_ != 0)
     {
-        if (!serviceManager_->Add<Net::ProtocolGame>(ip, gamePort_, [](uint32_t remoteIp) -> bool
+        if (!serviceManager_->Add<Net::ProtocolGame>(ip, serverPort_, [](uint32_t remoteIp) -> bool
         {
             return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
         }))
@@ -539,9 +436,9 @@ void Application::Run()
         serv.machine = machine_;
     else
         machine_ = serv.machine;
-    serv.host = gameHost_;
+    serv.host = serverHost_;
     serv.location = serverLocation_;
-    serv.port = gamePort_;
+    serv.port = serverPort_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

@@ -17,14 +17,10 @@ private:
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
     std::vector<int> loads_;
     int64_t lastLoadCalc_;
-    std::string gameIp_;
-    std::string gameHost_;
-    uint16_t gamePort_;
     bool genKeys_;
     Maintenance maintenance_;
     bool LoadMain();
     void PrintServerInfo();
-    bool ParseCommandLine();
     void ShowHelp();
     void GenNewKeys();
     void HandleMessage(const Net::MessageMsg& msg);
@@ -38,7 +34,8 @@ private:
             loads += static_cast<float>(p);
         return static_cast<uint8_t>(loads / loads_.size());
     }
-
+protected:
+    bool ParseCommandLine() override;
 public:
     Application();
     ~Application();

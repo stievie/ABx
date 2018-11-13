@@ -10,10 +10,11 @@ class Application : public ServerApp
 private:
     asio::io_service ioService_;
     std::unique_ptr<MessageServer> server_;
-    bool ParseCommandLine();
     void ShowHelp();
     bool LoadMain();
     void PrintServerInfo();
+protected:
+    bool ParseCommandLine() override;
 public:
     Application();
     ~Application();

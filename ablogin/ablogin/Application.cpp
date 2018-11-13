@@ -44,34 +44,9 @@ Application::~Application()
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i != arguments_.size(); i++)
-    {
-        const std::string& a = arguments_[i];
-        if (a.compare("-conf") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                configFile_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -conf" << std::endl;
-        }
-        else if (a.compare("-log") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                logDir_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
-        {
-            return false;
-        }
-    }
+    if (!ServerApp::ParseCommandLine())
+        return false;
+
     return true;
 }
 

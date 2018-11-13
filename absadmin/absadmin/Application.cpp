@@ -34,8 +34,7 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    startTime_(0),
-    adminPort_(0)
+    startTime_(0)
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
@@ -83,75 +82,7 @@ void Application::HtttpsRedirect(std::shared_ptr<HttpServer::Response> response,
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i != arguments_.size(); i++)
-    {
-        const std::string& a = arguments_[i];
-        if (a.compare("-conf") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                configFile_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -conf" << std::endl;
-        }
-        else if (a.compare("-log") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                logDir_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (a.compare("-id") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverId_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -id" << std::endl;
-        }
-        else if (a.compare("-ip") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                adminIp_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -ip" << std::endl;
-        }
-        else if (a.compare("-host") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                adminHost_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -host" << std::endl;
-        }
-        else if (a.compare("-port") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                adminPort_ = static_cast<uint16_t>(atoi(arguments_[i].c_str()));
-            }
-            else
-                LOG_WARNING << "Missing argument for -port" << std::endl;
-        }
-        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
-        {
-            return false;
-        }
-    }
-    return true;
+    return ServerApp::ParseCommandLine();
 }
 
 void Application::ShowHelp()
@@ -175,7 +106,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Name: " << serverName_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
-    LOG_INFO << "  Listening: " << (adminIp_.empty() ? "0.0.0.0" : adminIp_) << ":" << adminPort_ << std::endl;
+    LOG_INFO << "  Listening: " << (serverIp_.empty() ? "0.0.0.0" : serverIp_) << ":" << serverPort_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Worker Threads: " << server_->config.thread_pool_size << std::endl;
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
@@ -268,12 +199,12 @@ bool Application::Initialize(int argc, char** argv)
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobal("location", "--");
 
-    if (adminIp_.empty())
-        adminIp_ = config->GetGlobal("admin_ip", "");
-    if (adminPort_ == 0)
-        adminPort_ = static_cast<uint16_t>(config->GetGlobal("admin_port", 443));
-    if (adminHost_.empty())
-        adminHost_ = config->GetGlobal("admin_host", "");
+    if (serverIp_.empty())
+        serverIp_ = config->GetGlobal("admin_ip", "");
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("admin_port", 443));
+    if (serverHost_.empty())
+        serverHost_ = config->GetGlobal("admin_host", "");
     HTTP::Session::sessionLifetime_ = static_cast<uint32_t>(config->GetGlobal("session_lifetime", HTTP::Session::sessionLifetime_));
     std::string key = config->GetGlobal("server_key", "server.key");
     std::string cert = config->GetGlobal("server_cert", "server.crt");
@@ -281,7 +212,8 @@ bool Application::Initialize(int argc, char** argv)
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = config->GetGlobal("root_dir", "");
-    logDir_ = config->GetGlobal("log_dir", "");
+    if (logDir_.empty())
+        logDir_ = config->GetGlobal("log_dir", "");
     std::string dataHost = config->GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     LOG_INFO << "[done]" << std::endl;
@@ -317,16 +249,16 @@ bool Application::Initialize(int argc, char** argv)
     // Redirect to HTTPS
     httpServer_ = std::make_unique<HttpServer>();
     httpServer_->config.port = 80;
-    if (!adminIp_.empty())
-        httpServer_->config.address = adminIp_;
+    if (!serverIp_.empty())
+        httpServer_->config.address = serverIp_;
     httpServer_->io_service = ioService_;
     httpServer_->default_resource["GET"] = std::bind(&Application::HtttpsRedirect, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
     server_ = std::make_unique<HttpsServer>(cert, key);
-    server_->config.port = adminPort_;
-    if (!adminIp_.empty())
-        server_->config.address = adminIp_;
+    server_->config.port = serverPort_;
+    if (!serverIp_.empty())
+        server_->config.address = serverIp_;
     server_->config.thread_pool_size = threads;
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
@@ -349,8 +281,8 @@ void Application::Run()
     dataClient->Read(serv);
     serv.name = serverName_;
     serv.location = serverLocation_;
-    serv.host = adminHost_;
-    serv.port = adminPort_;
+    serv.host = serverHost_;
+    serv.port = serverPort_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));

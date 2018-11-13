@@ -13,6 +13,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/GameInstance.h>
 #include <AB/Entities/Game.h>
+#include <uuid.h>
 
 namespace Resources {
 
@@ -48,13 +49,13 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
 
         AB::Entities::Character ch;
         ch.uuid = a.currentCharacterUuid;
-        if (!dataClient->Read(ch))
+        if (uuids::uuid(ch.uuid).nil() || !dataClient->Read(ch))
         {
             ch.name = "None";
         }
         AB::Entities::Service serv;
         serv.uuid = a.currentServerUuid;
-        if (!dataClient->Read(serv))
+        if (uuids::uuid(serv.uuid).nil() || !dataClient->Read(serv))
         {
             serv.name = "None";
         }
@@ -63,7 +64,7 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
         {
             AB::Entities::GameInstance gi;
             gi.uuid = ch.instanceUuid;
-            if (dataClient->Read(gi))
+            if (!uuids::uuid(gi.uuid).nil() && dataClient->Read(gi))
             {
                 AB::Entities::Game game;
                 game.uuid = gi.gameUuid;

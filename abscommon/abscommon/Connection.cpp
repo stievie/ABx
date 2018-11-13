@@ -158,8 +158,7 @@ void Connection::ParseHeader(const asio::error_code& error)
 
     uint32_t timePassed = std::max<uint32_t>(1, static_cast<uint32_t>(time(nullptr) - timeConnected_) + 1);
     ++packetsSent_;
-    static uint32_t maxPackets = ConnectionManager::maxPacketsPerSec;
-    if ((maxPackets != 0) && (packetsSent_ / timePassed) > maxPackets)
+    if ((ConnectionManager::maxPacketsPerSec != 0) && (packetsSent_ / timePassed) > ConnectionManager::maxPacketsPerSec)
     {
         LOG_ERROR << Utils::ConvertIPToString(GetIP()) << " disconnected for exceeding packet per second limit." << std::endl;
         Close(true);
@@ -300,18 +299,17 @@ void Connection::CloseSocket()
 #ifdef DEBUG_NET
         LOG_DEBUG << "Closing socket" << std::endl;
 #endif
-        try
-        {
-            readTimer_.cancel();
-            writeTimer_.cancel();
-            asio::error_code err;
-            socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
-            socket_.close(err);
-        }
-        catch (asio::system_error& e)
-        {
-            LOG_ERROR << "Network " << e.code() << " " << e.what() << std::endl;
-        }
+        readTimer_.cancel();
+        writeTimer_.cancel();
+        asio::error_code err;
+        socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
+        if (err)
+            LOG_ERROR << "Network " << err.value() << " " << err.message() << std::endl;
+
+        asio::error_code err2;
+        socket_.close(err2);
+        if (err2)
+            LOG_ERROR << "Network " << err2.value() << " " << err2.message() << std::endl;
     }
 }
 

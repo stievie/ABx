@@ -6,7 +6,6 @@
 class Application : public ServerApp
 {
 private:
-    uint16_t port_;
     uint32_t listenIp_;
     size_t maxSize_;
     bool readonly_;
@@ -14,10 +13,11 @@ private:
     std::unique_ptr<Server> server_;
     uint32_t flushInterval_;
     uint32_t cleanInterval_;
-    bool ParseCommandLine();
     bool LoadConfig();
     void PrintServerInfo();
     void ShowHelp();
+protected:
+    bool ParseCommandLine();
 public:
     Application();
     ~Application();

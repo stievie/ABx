@@ -47,9 +47,6 @@ private:
     int64_t statusMeasureTime_;
     int64_t lastLoadCalc_;
     bool temporary_;
-    uint16_t filePort_;
-    std::string fileIp_;
-    std::string fileHost_;
 
     std::unique_ptr<HttpsServer> server_;
     std::string root_;
@@ -61,7 +58,6 @@ private:
     std::vector<int> loads_;
     std::mutex mutex_;
     void HandleMessage(const Net::MessageMsg& msg);
-    bool ParseCommandLine();
     void ShowHelp();
     void UpdateBytesSent(size_t bytes);
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
@@ -101,6 +97,8 @@ private:
             loads += static_cast<float>(p);
         return static_cast<uint8_t>(loads / loads_.size());
     }
+protected:
+    bool ParseCommandLine() override;
 public:
     Application();
     ~Application();

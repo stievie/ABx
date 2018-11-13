@@ -22,34 +22,9 @@ Application::~Application()
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i != arguments_.size(); i++)
-    {
-        const std::string& a = arguments_[i];
-        if (a.compare("-conf") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                configFile_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -conf" << std::endl;
-        }
-        else if (a.compare("-log") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                logDir_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
-        {
-            return false;
-        }
-    }
+    if (!ServerApp::ParseCommandLine())
+        return false;
+
     return true;
 }
 
@@ -69,7 +44,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Name: " << serverName_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
-    LOG_INFO << "  Listening: " << localHost_ << ":" << static_cast<int>(localPort_) << std::endl;
+    LOG_INFO << "  Listening: " << serverHost_ << ":" << static_cast<int>(serverPort_) << std::endl;
     if (dataClient_->IsConnected())
         LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
     else
@@ -132,21 +107,23 @@ bool Application::LoadMain()
         }
     }
 
-    localHost_ = config->GetGlobal("lb_host", "0.0.0.0");
-    localPort_ = static_cast<uint16_t>(
-        config->GetGlobal("lb_port", 2740)
-    );
+    if (serverHost_.empty())
+        serverHost_ = config->GetGlobal("lb_host", "0.0.0.0");
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+    {
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("lb_port", 2740));
+    }
     lbType_ = static_cast<AB::Entities::ServiceType>(
         // Default is login server
         config->GetGlobal("lb_type", static_cast<int64_t>(AB::Entities::ServiceTypeLoginServer))
     );
     if (dataPort != 0)
         // We have a data port so we can query the data server
-        acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
+        acceptor_ = std::make_unique<Acceptor>(ioService_, serverHost_, serverPort_,
             std::bind(&Application::GetServiceCallback, this, std::placeholders::_1));
     else
         // Get service list from config file
-        acceptor_ = std::make_unique<Acceptor>(ioService_, localHost_, localPort_,
+        acceptor_ = std::make_unique<Acceptor>(ioService_, serverHost_, serverPort_,
             std::bind(&Application::GetServiceCallbackList, this, std::placeholders::_1));
 
     PrintServerInfo();
@@ -266,8 +243,8 @@ void Application::Run()
     serv.uuid = GetServerId();
     dataClient_->Read(serv);
     serv.location = serverLocation_;
-    serv.host = localHost_;
-    serv.port = localPort_;
+    serv.host = serverHost_;
+    serv.port = serverPort_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

@@ -22,8 +22,12 @@ protected:
     std::string serverLocation_;
     std::string configFile_;
     std::string logDir_;
+    std::string serverHost_;
+    std::string serverIp_;
+    uint16_t serverPort_;
     /// Get a generic currently unique server name
     std::string GetFreeName(IO::DataClient* client);
+    virtual bool ParseCommandLine();
 public:
     ServerApp() :
         running_(false),
@@ -31,7 +35,8 @@ public:
         serverType_(AB::Entities::ServiceTypeUnknown),
         machine_(""),
         serverName_(""),
-        serverLocation_("")
+        serverLocation_(""),
+        serverPort_(std::numeric_limits<uint16_t>::max())
     { }
     virtual ~ServerApp() = default;
     virtual bool Initialize(int argc, char** argv);
@@ -50,6 +55,8 @@ public:
     }
     bool SendServerJoined(Net::MessageClient* client, const AB::Entities::Service& service);
     bool SendServerLeft(Net::MessageClient* client, const AB::Entities::Service& service);
+    bool GetCommandLineValue(const std::string& name, std::string& value);
+    bool GetCommandLineValue(const std::string& name);
 
     std::string path_;
     std::string exeFile_;

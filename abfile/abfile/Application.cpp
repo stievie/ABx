@@ -42,8 +42,7 @@ Application::Application() :
     uptimeRound_(0),
     statusMeasureTime_(0),
     lastLoadCalc_(0),
-    temporary_(false),
-    filePort_(std::numeric_limits<uint16_t>::max())
+    temporary_(false)
 {
     serverType_ = AB::Entities::ServiceTypeFileServer;
     ioService_ = std::make_shared<asio::io_service>();
@@ -76,114 +75,12 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
 
 bool Application::ParseCommandLine()
 {
-    for (int i = 0; i != arguments_.size(); i++)
+    if (!ServerApp::ParseCommandLine())
+        return false;
+
+    if (GetCommandLineValue("-temp"))
     {
-        const std::string& a = arguments_[i];
-        if (a.compare("-conf") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                configFile_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -conf" << std::endl;
-        }
-        else if (a.compare("-log") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                logDir_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (a.compare("-id") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverId_ = arguments_[i];
-                if (uuids::uuid(serverId_).nil())
-                {
-                    const uuids::uuid guid = uuids::uuid_system_generator{}();
-                    serverId_ = guid.to_string();
-                    LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
-                }
-            }
-            else
-                LOG_WARNING << "Missing argument for -id" << std::endl;
-        }
-        else if (a.compare("-machine") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                machine_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -machine" << std::endl;
-        }
-        else if (a.compare("-name") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverName_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -name" << std::endl;
-        }
-        else if (a.compare("-loc") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                serverLocation_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -loc" << std::endl;
-        }
-        else if (a.compare("-ip") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                fileIp_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -ip" << std::endl;
-        }
-        else if (a.compare("-host") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                fileHost_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -host" << std::endl;
-        }
-        else if (a.compare("-port") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                ++i;
-                filePort_ = static_cast<uint16_t>(atoi(arguments_[i].c_str()));
-            }
-            else
-                LOG_WARNING << "Missing argument for -port" << std::endl;
-        }
-        else if (a.compare("-temp") == 0)
-        {
-            // Must be set with command line argument. Can not be set with the config file.
-            temporary_ = true;
-        }
-        else if (a.compare("-h") == 0 || a.compare("-help") == 0)
-        {
-            return false;
-        }
+        temporary_ = true;
     }
     return true;
 }
@@ -279,12 +176,12 @@ bool Application::Initialize(int argc, char** argv)
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobal("location", "--");
 
-    if (fileIp_.empty())
-        fileIp_ = config->GetGlobal("file_ip", "");
-    if (filePort_ == std::numeric_limits<uint16_t>::max())
-        filePort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081));
-    else if (filePort_ == 0)
-        filePort_ = Net::ServiceManager::GetFreePort();
+    if (serverIp_.empty())
+        serverIp_ = config->GetGlobal("file_ip", "");
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081));
+    else if (serverPort_ == 0)
+        serverPort_ = Net::ServiceManager::GetFreePort();
 
     std::string key = config->GetGlobal("server_key", "server.key");
     std::string cert = config->GetGlobal("server_cert", "server.crt");
@@ -307,9 +204,9 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     server_ = std::make_unique<HttpsServer>(cert, key);
-    server_->config.port = filePort_;
-    if (!fileIp_.empty())
-        server_->config.address = fileIp_;
+    server_->config.port = serverPort_;
+    if (!serverIp_.empty())
+        server_->config.address = serverIp_;
     server_->config.thread_pool_size = threads;
     server_->io_service = ioService_;
 
@@ -383,7 +280,7 @@ bool Application::Initialize(int argc, char** argv)
     LOG_INFO << "  Name: " << serverName_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
-    LOG_INFO << "  Listening: " << (fileIp_.empty() ? "0.0.0.0" : fileIp_) << ":" << filePort_ << std::endl;
+    LOG_INFO << "  Listening: " << (serverIp_.empty() ? "0.0.0.0" : serverIp_) << ":" << serverPort_ << std::endl;
     LOG_INFO << "  Temporary: " << (temporary_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
@@ -418,8 +315,8 @@ void Application::Run()
         machine_ = serv.machine;
     serv.name = serverName_;
     serv.location = serverLocation_;
-    serv.host = fileHost_;
-    serv.port = filePort_;
+    serv.host = serverHost_;
+    serv.port = serverPort_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
@@ -489,10 +386,10 @@ void Application::SpawnServer()
     ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0 -temp";
     if (!logDir_.empty())
         ss << " -log \"" << logDir_ << "\"";
-    if (!fileIp_.empty())
-        ss << " -ip " << fileIp_;
-    if (!fileHost_.empty())
-        ss << " -host " << fileHost_;
+    if (!serverIp_.empty())
+        ss << " -ip " << serverIp_;
+    if (!serverHost_.empty())
+        ss << " -host " << serverHost_;
     if (!machine_.empty())
         ss << " -machine " << machine_;
 

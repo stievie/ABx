@@ -13,7 +13,6 @@
 
 Application::Application() :
     ServerApp::ServerApp(),
-    port_(0),
     listenIp_(0),
     maxSize_(0),
     readonly_(false),
@@ -39,129 +38,34 @@ Application::~Application()
 
 bool Application::ParseCommandLine()
 {
-    for (size_t i = 0; i < arguments_.size(); i++)
+    if (!ServerApp::ParseCommandLine())
+        return false;
+
+    if (!serverIp_.empty())
+        listenIp_ = Utils::ConvertStringToIP(serverIp_);
+    std::string value;
+    if (GetCommandLineValue("-maxsize", value))
     {
-        const std::string& arg = arguments_[i];
-        if (arg.compare("-port") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                port_ = static_cast<uint16_t>(std::atoi(arguments_[i].c_str()));
-            }
-            else
-                LOG_WARNING << "Missing argument for -port" << std::endl;
-        }
-        if (arg.compare("-ip") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                listenIp_ = Utils::ConvertStringToIP(arguments_[i]);
-            }
-            else
-                LOG_WARNING << "Missing argument for -port" << std::endl;
-        }
-        else if (arg.compare("-maxsize") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                maxSize_ = static_cast<size_t>(std::atoi(arguments_[i].c_str()));
-            }
-            else
-                LOG_WARNING << "Missing argument for -maxsize" << std::endl;
-        }
-        else if (arg.compare("-readonly") == 0)
-        {
-            readonly_ = true;
-            i++;
-        }
-        else if (arg.compare("-log") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                IO::Logger::logDir_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (arg.compare("-conf") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                configFile_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -log" << std::endl;
-        }
-        else if (arg.compare("-dbdriver") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                DB::Database::driver_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbdriver" << std::endl;
-        }
-        else if (arg.compare("-dbhost") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                DB::Database::dbHost_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbhost" << std::endl;
-        }
-        else if (arg.compare("-dbname") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                DB::Database::dbName_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbname" << std::endl;
-        }
-        else if (arg.compare("-dbuser") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                DB::Database::dbUser_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbuser" << std::endl;
-        }
-        else if (arg.compare("-dbpass") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                DB::Database::dbPass_ = arguments_[i];
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbpass" << std::endl;
-        }
-        else if (arg.compare("-dbport") == 0)
-        {
-            if (i + 1 < arguments_.size())
-            {
-                i++;
-                DB::Database::dbPort_ = static_cast<uint16_t>(std::atoi(arguments_[i].c_str()));
-            }
-            else
-                LOG_WARNING << "Missing argument for -dbport" << std::endl;
-        }
-        else if (arg.compare("-h") == 0 || arg.compare("-help") == 0)
-        {
-            return false;
-        }
+        maxSize_ = static_cast<size_t>(std::atoi(value.c_str()));
     }
+    if (GetCommandLineValue("-readonly"))
+        readonly_ = true;
+
+    if (!logDir_.empty())
+        IO::Logger::logDir_ = logDir_;
+
+    GetCommandLineValue("-dbdriver", DB::Database::driver_);
+    GetCommandLineValue("-dbhost", DB::Database::dbHost_);
+    GetCommandLineValue("-dbname", DB::Database::dbName_);
+    GetCommandLineValue("-dbuser", DB::Database::dbUser_);
+    GetCommandLineValue("-dbpass", DB::Database::dbPass_);
+    value.clear();
+    if (GetCommandLineValue("-dbport", value))
+    {
+        if (!value.empty())
+            DB::Database::dbPort_ = static_cast<uint16_t>(std::atoi(value.c_str()));
+    }
+
     return true;
 }
 
@@ -187,8 +91,8 @@ bool Application::LoadConfig()
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobal("location", "--");
 
-    if (port_ == 0)
-        port_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     if (listenIp_ == 0)
         listenIp_ = Utils::ConvertStringToIP(config->GetGlobal("data_ip", ""));
     if (maxSize_ == 0)
@@ -213,7 +117,7 @@ bool Application::LoadConfig()
     flushInterval_ = static_cast<uint32_t>(config->GetGlobal("flush_interval", (int64_t)flushInterval_));
     cleanInterval_ = static_cast<uint32_t>(config->GetGlobal("clean_interval", (int64_t)cleanInterval_));
 
-    if (port_ == 0)
+    if (serverPort_ == 0)
     {
         LOG_ERROR << "Port is 0" << std::endl;
     }
@@ -221,7 +125,7 @@ bool Application::LoadConfig()
     {
         LOG_ERROR << "Cache size is 0" << std::endl;
     }
-    return (port_ != 0) && (maxSize_ != 0);
+    return (serverPort_ != 0) && (maxSize_ != 0);
 }
 
 void Application::PrintServerInfo()
@@ -231,7 +135,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Name: " << serverName_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
-    LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << port_ << std::endl;
+    LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << serverPort_ << std::endl;
     LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
     LOG_INFO << "  Cache size: " << Utils::ConvertSize(maxSize_) << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -324,7 +228,7 @@ void Application::Run()
     GetSubsystem<Asynch::Scheduler>()->Start();
     GetSubsystem<Asynch::ThreadPool>()->Start();
 
-    server_ = std::make_unique<Server>(ioService_, listenIp_, port_, maxSize_, readonly_);
+    server_ = std::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_);
     StorageProvider* provider = server_->GetStorageProvider();
     provider->flushInterval_ = flushInterval_;
     provider->cleanInterval_ = cleanInterval_;
@@ -335,7 +239,7 @@ void Application::Run()
     provider->EntityRead(serv);
     serv.location = serverLocation_;
     serv.host = config->GetGlobal("data_host", "");
-    serv.port = port_;
+    serv.port = serverPort_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
