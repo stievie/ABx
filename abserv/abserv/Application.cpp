@@ -37,6 +37,8 @@
 #include <AB/DHKeys.hpp>
 #include <time.h>
 #include <stdlib.h>
+#include "AiRegistry.h"
+#include "AiLoader.h"
 
 #include "DebugNew.h"
 
@@ -74,6 +76,9 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::EffectManager>();
     Subsystems::Instance.CreateSubsystem<Game::Chat>();
     Subsystems::Instance.CreateSubsystem<Game::SkillManager>();
+    Subsystems::Instance.CreateSubsystem<AI::AiRegistry>();
+    auto reg = GetSubsystem<AI::AiRegistry>();
+    Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
 }
@@ -283,6 +288,7 @@ bool Application::LoadMain()
 
     LOG_INFO << "Initializing RNG...";
     GetSubsystem<Crypto::Random>()->Initialize();
+    ai::randomSeed(1);
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Loading encryption keys...";
@@ -297,6 +303,20 @@ bool Application::LoadMain()
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Failed to load encryption keys from " << GetKeysFile() << std::endl;
+        return false;
+    }
+    LOG_INFO << "[done]" << std::endl;
+
+    LOG_INFO << "Loading behavior tree...";
+    auto aiReg = GetSubsystem<AI::AiRegistry>();
+    aiReg->Initialize();
+    static const auto btFile = "/scripts/actors/npcs/behaviours.lua";
+    auto dp = GetSubsystem<IO::DataProvider>();
+    std::string absBtFile = dp->GetDataFile(btFile);
+    auto aiLoader = GetSubsystem<AI::AiLoader>();
+    if (!aiLoader->init(absBtFile))
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
     LOG_INFO << "[done]" << std::endl;

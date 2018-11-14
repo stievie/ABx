@@ -4,36 +4,23 @@
 #include "Chat.h"
 #include "Script.h"
 #include "AiLoader.h"
+#include "AiCharacter.h"
 
 namespace Game {
 
 class Npc;
 class Map;
 
-class AiCharacter : public ai::ICharacter
-{
-private:
-    Npc& owner_;
-    const Map* map_;
-public:
-    explicit AiCharacter(Npc& owner, const Map* map);
-    void update(int64_t deltaTime, bool debuggingActive) override;
-    void setPosition(const glm::vec3& position) override;
-    void setOrientation(float orientation) override;
-    void setSpeed(float speed) override;
-};
-
 class Npc final : public Actor
 {
 private:
-    friend class AiCharacter;
+    friend class AI::AiCharacter;
     std::string name_;
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
     std::shared_ptr<Script> script_;
-    std::string behaviours_;
-    std::shared_ptr<AiCharacter> aiCharacter_;
+    std::shared_ptr<AI::AiCharacter> aiCharacter_;
     std::shared_ptr<ai::AI> ai_;
 protected:
     kaguya::State luaState_;
@@ -57,6 +44,7 @@ public:
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
     std::shared_ptr<ai::AI> GetAi();
+    void Shutdown();
 
     std::string GetName() const override { return name_; }
     void SetName(const std::string& name) { name_ = name; }

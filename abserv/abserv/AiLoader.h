@@ -5,34 +5,41 @@
 #include <ai/tree/loaders/lua/LUATreeLoader.h>
 #pragma warning(pop)
 
-namespace IO {
+namespace AI {
 
 class AiLoader
 {
 private:
-    ai::AIRegistry _registry;
+    ai::AIRegistry& registry_;
     // add your own tasks and conditions here
-    ai::LUATreeLoader _loader;
+    ai::LUATreeLoader loader_;
 public:
-    AiLoader() :
-        _loader(_registry) {
+    explicit AiLoader(ai::AIRegistry& registry) :
+        registry_(registry),
+        loader_(registry)
+    {
     }
 
-    ai::TreeNodePtr load(const std::string &name) {
-        return _loader.load(name);
+    ai::TreeNodePtr load(const std::string& name)
+    {
+        return loader_.load(name);
     }
 
-    operator ai::AIRegistry& () {
-        return _registry;
+    operator ai::AIRegistry& ()
+    {
+        return registry_;
     }
 
-    void getTrees(std::vector<std::string>& trees) const {
-        _loader.getTrees(trees);
+    void getTrees(std::vector<std::string>& trees) const
+    {
+        loader_.getTrees(trees);
     }
 
-    bool init(const std::string& filename) {
+    bool init(const std::string& filename)
+    {
         std::ifstream btStream(filename);
-        if (!btStream) {
+        if (!btStream)
+        {
             LOG_ERROR << "could not load " << filename << std::endl;
             return false;
         }
@@ -41,15 +48,17 @@ public:
         buffer << btStream.rdbuf();
         const std::string& str = buffer.str();
 
-        if (!_loader.init(str)) {
-            LOG_ERROR << "could not load the tree: " << _loader.getError() << std::endl;
+        if (!loader_.init(str))
+        {
+            LOG_ERROR << "could not load the tree: " << loader_.getError() << std::endl;
             return false;
         }
         return true;
     }
 
-    inline std::string getError() const {
-        return _loader.getError();
+    inline std::string getError() const
+    {
+        return loader_.getError();
     }
 };
 

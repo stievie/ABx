@@ -192,6 +192,18 @@
     <ClInclude Include="AiLoader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AiCharacter.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AiRegistry.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AiAttackOnSelection.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AiTask.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -360,6 +372,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOScript.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AiCharacter.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AiRegistry.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

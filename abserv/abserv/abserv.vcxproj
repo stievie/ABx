@@ -177,7 +177,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AiAttackOnSelection.h" />
+    <ClInclude Include="AiCharacter.h" />
     <ClInclude Include="AiLoader.h" />
+    <ClInclude Include="AiRegistry.h" />
+    <ClInclude Include="AiTask.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AutoRunComp.h" />
@@ -238,6 +242,8 @@
     <ClInclude Include="TerrainPatch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AiCharacter.cpp" />
+    <ClCompile Include="AiRegistry.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AutoRunComp.cpp" />

@@ -26,10 +26,6 @@ private:
     int _LuaGetState();
     void _LuaSetState(int state);
 protected:
-    Components::MoveComp moveComp_;
-    Components::AutoRunComp autorunComp_;
-    Components::CollisionComp collisionComp_;
-
     std::vector<Math::Vector3> wayPoints_;
     /// Time in ms the same Actor can retrigger
     uint32_t retriggerTimeout_;
@@ -135,6 +131,10 @@ public:
     void GotoPosition(const Math::Vector3& pos);
     void FollowObject(std::shared_ptr<GameObject> object);
     void UseSkill(uint32_t index);
+
+    Components::MoveComp moveComp_;
+    Components::AutoRunComp autorunComp_;
+    Components::CollisionComp collisionComp_;
 
     EffectList effects_;
     SkillBar skills_;
