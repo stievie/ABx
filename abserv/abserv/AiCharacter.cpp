@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include "Npc.h"
 #include "Map.h"
+#include "Game.h"
 
 namespace AI {
 
@@ -28,20 +29,30 @@ void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 
 void AiCharacter::setPosition(const glm::vec3& position)
 {
-    Super::setPosition(position);
-    owner_.transformation_.position_ = Math::Vector3(position.x, position.y, position.z);
+    auto pos = Math::Vector3(position.x, position.y, position.z);
+    pos.y_ = owner_.GetGame()->map_->GetTerrainHeight(pos);
+    Super::setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
+//    owner_.transformation_.position_ = pos;
+//    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+//    owner_.moveComp_.moved_ = true;
+    owner_.GotoPosition(pos);
+    {
+//        LOG_INFO << owner_.GetName() << " going to " << pos.ToString() << std::endl;
+//        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+//        owner_.autorunComp_.autoRun_ = true;
+    }
 }
 
 void AiCharacter::setOrientation(float orientation)
 {
-    Super::setOrientation(-orientation);
-    owner_.transformation_.rotation_ = orientation;
+    Super::setOrientation(orientation);
+    owner_.moveComp_.SetDirection(orientation);
 }
 
 void AiCharacter::setSpeed(float speed)
 {
-    Super::setSpeed(speed);
     owner_.SetSpeed(speed);
+    Super::setSpeed(speed);
 }
 
 }

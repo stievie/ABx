@@ -19,6 +19,7 @@ private:
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
+    std::string bevaviorTree_;
     std::shared_ptr<Script> script_;
     std::shared_ptr<AI::AiCharacter> aiCharacter_;
     std::shared_ptr<ai::AI> ai_;

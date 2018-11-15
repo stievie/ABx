@@ -259,10 +259,14 @@ void Map::AddGameObject(std::shared_ptr<GameObject> object)
         game->AddObjectInternal(object);
 }
 
+void Map::UpdateAi(uint32_t delta)
+{
+    zone_.update(delta);
+}
+
 void Map::Update(uint32_t delta)
 {
     AB_UNUSED(delta);
-    zone_.update(delta);
     octree_->Update();
 }
 

@@ -22,7 +22,21 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
 bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
     maxDist_ = 0.2f;
-    return FindPath(dest);
+    bool succ = FindPath(dest);
+    if (!succ || wayPoints_.size() == 0)
+    {
+        const Math::Vector3& pos = owner_.transformation_.position_;
+        if (pos.Distance(dest) > maxDist_)
+        {
+#ifdef DEBUG_NAVIGATION
+            LOG_DEBUG << "Going directly to " << dest.ToString() << std::endl;
+#endif
+            wayPoints_.clear();
+            wayPoints_.push_back(dest);
+            return true;
+        }
+    }
+    return succ;
 }
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)

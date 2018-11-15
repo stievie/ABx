@@ -20,7 +20,7 @@ public:
     {
     }
 
-    ai::TreeNodePtr load(const std::string& name)
+    ai::TreeNodePtr Load(const std::string& name)
     {
         return loader_.load(name);
     }
@@ -30,12 +30,12 @@ public:
         return registry_;
     }
 
-    void getTrees(std::vector<std::string>& trees) const
+    void GetTrees(std::vector<std::string>& trees) const
     {
         loader_.getTrees(trees);
     }
 
-    bool init(const std::string& filename)
+    bool Init(const std::string& filename)
     {
         std::ifstream btStream(filename);
         if (!btStream)

@@ -26,6 +26,7 @@ void Npc::RegisterLua(kaguya::State& state)
 
 Npc::Npc() :
     Actor(),
+    bevaviorTree_("none"),
     luaInitialized_(false),
     aiCharacter_(nullptr)
 {
@@ -50,6 +51,8 @@ bool Npc::LoadScript(const std::string& fileName)
     modelIndex_ = luaState_["modelIndex"];
     sex_ = luaState_["sex"];
     stateComp_.SetState(luaState_["creatureState"], true);
+    if (ScriptManager::IsString(luaState_, "behavior"))
+        bevaviorTree_ = (const char*)luaState_["behavior"];
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
@@ -75,17 +78,19 @@ bool Npc::LoadScript(const std::string& fileName)
     {
         auto loader = GetSubsystem<AI::AiLoader>();
         std::vector<std::string> trees;
-        loader->getTrees(trees);
-        auto randomIter = ai::randomElement(trees.begin(), trees.end());
-//                const ai::TreeNodePtr& root = loader.load(*randomIter);
-        const ai::TreeNodePtr& root = loader->load("wander");
-        ai_ = std::make_shared<ai::AI>(root);
+        loader->GetTrees(trees);
+        const ai::TreeNodePtr& root = loader->Load(bevaviorTree_);
+        if (root)
+            ai_ = std::make_shared<ai::AI>(root);
     }
     return ret;
 }
 
 std::shared_ptr<ai::AI> Npc::GetAi()
 {
+    if (!ai_)
+        return std::shared_ptr<ai::AI>();
+
     if (!aiCharacter_)
     {
         aiCharacter_ = std::make_shared<AI::AiCharacter>(*this, GetGame()->map_.get());
@@ -96,12 +101,15 @@ std::shared_ptr<ai::AI> Npc::GetAi()
 
 void Npc::Shutdown()
 {
-    ai::Zone* zone = ai_->getZone();
-    if (zone == nullptr) {
-        return;
+    if (ai_)
+    {
+        ai::Zone* zone = ai_->getZone();
+        if (zone == nullptr) {
+            return;
+        }
+        zone->destroyAI(id_);
+        ai_->setZone(nullptr);
     }
-    zone->destroyAI(id_);
-    ai_->setZone(nullptr);
 }
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
@@ -109,14 +117,18 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
-    const ai::ICharacterPtr& character = ai_->getCharacter();
-    if (character)
+
+    if (ai_)
     {
-        const Math::Vector3& pos = transformation_.position_;
-        character->setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
-        character->setOrientation(transformation_.rotation_);
-        character->setSpeed(GetSpeed());
-        //aiCharacter_->update(timeElapsed, false);
+        const ai::ICharacterPtr& character = ai_->getCharacter();
+        if (character)
+        {
+/*            const Math::Vector3& pos = transformation_.position_;
+            character->setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
+            character->setOrientation(transformation_.rotation_);
+            character->setSpeed(GetSpeed());*/
+            //aiCharacter_->update(timeElapsed, false);
+        }
     }
 }
 

@@ -67,10 +67,6 @@ public:
     {
         return zone_;
     }
-    inline int GetSize() const {
-        // ???
-        return 600;
-    }
 
     inline void AddEntity(const ai::AIPtr& entity, uint32_t groupId)
     {
@@ -94,9 +90,20 @@ public:
             e->setReduceByValue(1.0f + reductionVal);
         }
     }
+    inline bool RemoveEntity(const ai::CharacterId& id)
+    {
+        ai::ScopedReadLock lock(aiLock_);
+        auto iter = entities_.find(id);
+        if (iter == entities_.end())
+            return false;
+        zone_.removeAI(iter->second);
+        entities_.erase(iter);
+        return true;
+    }
 
     void LoadSceneNode(const pugi::xml_node& node);
     void AddGameObject(std::shared_ptr<GameObject> object);
+    void UpdateAi(uint32_t delta);
     void Update(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
 

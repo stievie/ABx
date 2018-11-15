@@ -15,6 +15,15 @@ public:
     {
         return state[name].type() == LUA_TFUNCTION;
     }
+    static bool VariableExists(kaguya::State& state, const std::string& name)
+    {
+        auto t = state[name].type();
+        return t == LUA_TBOOLEAN || t == LUA_TNUMBER || t == LUA_TSTRING;
+    }
+    static bool IsString(kaguya::State& state, const std::string& name)
+    {
+        return state[name].type() == LUA_TSTRING;
+    }
 };
 
 }

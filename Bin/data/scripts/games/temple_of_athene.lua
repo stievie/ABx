@@ -1,9 +1,11 @@
 function onStart()
---  print(self:GetName())
---  for i = 1, 100 do
---    self:AddNpc("/objects/npcs/scripts/priest.lua")
---    self:AddNpc("/objects/npcs/scripts/guild_lord.lua")
---  end
+  local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
+  if (ped2 ~= nil) then
+    local x = 4.92965
+    local z = 5.2049
+    local y = self:GetTerrainHeight(x, z)
+    ped2:SetPosition(x, y, z)
+  end  
 end
 
 function onStop()

@@ -134,6 +134,8 @@ void Game::Update()
         gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
         gameStatus_->Add<int64_t>(tick);
 
+        map_->UpdateAi(delta);
+
         // First Update all objects
         for (const auto& o : objects_)
         {

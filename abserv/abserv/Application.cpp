@@ -314,7 +314,7 @@ bool Application::LoadMain()
     auto dp = GetSubsystem<IO::DataProvider>();
     std::string absBtFile = dp->GetDataFile(btFile);
     auto aiLoader = GetSubsystem<AI::AiLoader>();
-    if (!aiLoader->init(absBtFile))
+    if (!aiLoader->Init(absBtFile))
     {
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
