@@ -95,6 +95,8 @@ bool Application::LoadConfig()
         serverPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
     if (listenIp_ == 0)
         listenIp_ = Utils::ConvertStringToIP(config->GetGlobal("data_ip", ""));
+    if (serverHost_.empty())
+        serverHost_ = config->GetGlobal("data_host", "");
     if (maxSize_ == 0)
         maxSize_ = config->GetGlobal("max_size", 0);
     if (!readonly_)
@@ -233,13 +235,13 @@ void Application::Run()
     provider->flushInterval_ = flushInterval_;
     provider->cleanInterval_ = cleanInterval_;
 
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     provider->EntityRead(serv);
     serv.location = serverLocation_;
-    serv.host = config->GetGlobal("data_host", "");
+    serv.host = serverHost_;
     serv.port = serverPort_;
+    serv.ip = serverIp_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

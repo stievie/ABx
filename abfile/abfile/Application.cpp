@@ -317,6 +317,7 @@ void Application::Run()
     serv.location = serverLocation_;
     serv.host = serverHost_;
     serv.port = serverPort_;
+    serv.ip = serverIp_;
     serv.file = exeFile_;
     serv.path = path_;
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));

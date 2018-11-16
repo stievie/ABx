@@ -55,7 +55,13 @@ $include {{_header.html}}
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Host:Port</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input id="host" name="host" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${host}:${port}">
+                        <input id="host" name="host" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${host}">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">Listening</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input id="listening" name="listening" readonly="readonly" class="form-control col-md-7 col-xs-12" type="text" value="${ip}:${port}">
                       </div>
                     </div>
                     <div class="form-group">

@@ -31,6 +31,7 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
     objects["location"] = s.location;
     objects["host"] = s.host;
     objects["port"] = std::to_string(s.port);
+    objects["ip"] = s.ip.empty() ? "0.0.0.0" : s.ip;
     objects["file"] = s.file;
     objects["path"] = s.path;
     objects["arguments"] = s.arguments;

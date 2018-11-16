@@ -26,7 +26,7 @@ bool AutoRunComp::Goto(const Math::Vector3& dest)
     if (!succ || wayPoints_.size() == 0)
     {
         const Math::Vector3& pos = owner_.transformation_.position_;
-        if (pos.Distance(dest) > maxDist_)
+//        if (pos.Distance(dest) > maxDist_)
         {
 #ifdef DEBUG_NAVIGATION
             LOG_DEBUG << "Going directly to " << dest.ToString() << std::endl;

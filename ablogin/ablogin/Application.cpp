@@ -70,6 +70,8 @@ bool Application::LoadMain()
         serverName_ = config->GetGlobal("server_name", "ablogin");
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobal("location", "--");
+    if (serverHost_.empty())
+        serverHost_ = config->GetGlobal("login_host", "");
 
     auto banMan = GetSubsystem<Auth::BanManager>();
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobal("max_packets_per_second", 0));
@@ -115,16 +117,18 @@ bool Application::LoadMain()
         serverName_ = GetFreeName(dataClient);
     }
 
+    if (serverIp_.empty())
+        serverIp_ = config->GetGlobal("login_ip", "0.0.0.0");
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("login_port", 2748));
+    else if (serverPort_ == 0)
+        serverPort_ = Net::ServiceManager::GetFreePort();
+
     // Add Protocols
-    uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(
-        config->GetGlobal("login_ip", "0.0.0.0")
-    ));
-    uint16_t port = static_cast<uint16_t>(
-        config->GetGlobal("login_port", 2748)
-    );
-    if (port != 0)
+    uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(serverIp_));
+    if (serverPort_ != 0)
     {
-        if (!serviceManager_->Add<Net::ProtocolLogin>(ip, port, [](uint32_t remoteIp) -> bool
+        if (!serviceManager_->Add<Net::ProtocolLogin>(ip, serverPort_, [](uint32_t remoteIp) -> bool
         {
             return GetSubsystem<Auth::BanManager>()->AcceptConnection(remoteIp);
         }))
@@ -201,8 +205,9 @@ void Application::Run()
     serv.uuid = GetServerId();
     dataClient->Read(serv);
     serv.location = serverLocation_;
-    serv.host = config->GetGlobal("login_host", "");
-    serv.port = static_cast<uint16_t>(config->GetGlobal("login_port", 2748));
+    serv.host = serverHost_;
+    serv.port = serverPort_;
+    serv.ip = serverIp_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

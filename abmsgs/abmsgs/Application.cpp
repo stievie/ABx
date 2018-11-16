@@ -54,6 +54,8 @@ bool Application::LoadMain()
         serverName_ = config->GetGlobal("server_name", "abmsgs");
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobal("location", "--");
+    if (serverHost_.empty())
+        serverHost_ = config->GetGlobal("message_host", "");
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to data server...";
@@ -74,14 +76,13 @@ bool Application::LoadMain()
     }
 
     // Add Protocols
-    uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(
-        config->GetGlobal("message_ip", "0.0.0.0")
-    ));
-    uint16_t port = static_cast<uint16_t>(
-        config->GetGlobal("message_port", 2771)
-    );
+    if (serverIp_.empty())
+        serverIp_ = config->GetGlobal("message_ip", "0.0.0.0");
+    uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(serverIp_));
+    if (serverPort_ == std::numeric_limits<uint16_t>::max())
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("message_port", 2771));
 
-    asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), port);
+    asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), serverPort_);
     server_ = std::make_unique<MessageServer>(ioService_, endpoint);
 
     PrintServerInfo();
@@ -99,9 +100,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
 
     LOG_INFO << "  Listening: ";
-    LOG_INFO << config->GetGlobal("message_ip", "0.0.0.0") << ":";
-    LOG_INFO << config->GetGlobal("message_port", 2771);
-    LOG_INFO << std::endl;
+    LOG_INFO << serverIp_ << ":" << static_cast<int>(serverPort_) << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
@@ -141,8 +140,9 @@ void Application::Run()
     serv.uuid = GetServerId();
     dataClient->Read(serv);
     serv.location = serverLocation_;
-    serv.host = config->GetGlobal("message_host", "");
-    serv.port = static_cast<uint16_t>(config->GetGlobal("message_port", 2771));
+    serv.host = serverHost_;
+    serv.port = serverPort_;
+    serv.ip = serverIp_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

@@ -459,6 +459,7 @@ void Application::Run()
     serv.host = serverHost_;
     serv.location = serverLocation_;
     serv.port = serverPort_;
+    serv.ip = serverIp_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

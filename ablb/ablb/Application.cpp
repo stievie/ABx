@@ -97,6 +97,8 @@ bool Application::LoadMain()
         }
     }
 
+    if (serverIp_.empty())
+        serverHost_ = config->GetGlobal("lb_ip", "0.0.0.0");
     if (serverHost_.empty())
         serverHost_ = config->GetGlobal("lb_host", "0.0.0.0");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
@@ -235,6 +237,7 @@ void Application::Run()
     serv.location = serverLocation_;
     serv.host = serverHost_;
     serv.port = serverPort_;
+    serv.ip = serverIp_;
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;
