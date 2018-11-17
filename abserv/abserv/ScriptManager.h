@@ -11,11 +11,12 @@ public:
     ~ScriptManager() = delete;
 
     static void RegisterLuaAll(kaguya::State& state);
-    static bool FunctionExists(kaguya::State& state, const std::string& name)
+    /// Check if a function exists
+    static bool IsFunction(kaguya::State& state, const std::string& name)
     {
         return state[name].type() == LUA_TFUNCTION;
     }
-    static bool VariableExists(kaguya::State& state, const std::string& name)
+    static bool IsVariable(kaguya::State& state, const std::string& name)
     {
         auto t = state[name].type();
         return t == LUA_TBOOLEAN || t == LUA_TNUMBER || t == LUA_TSTRING;
@@ -23,6 +24,18 @@ public:
     static bool IsString(kaguya::State& state, const std::string& name)
     {
         return state[name].type() == LUA_TSTRING;
+    }
+    static bool IsBool(kaguya::State& state, const std::string& name)
+    {
+        return state[name].type() == LUA_TBOOLEAN;
+    }
+    static bool IsNumber(kaguya::State& state, const std::string& name)
+    {
+        return state[name].type() == LUA_TNUMBER;
+    }
+    static bool IsNil(kaguya::State& state, const std::string& name)
+    {
+        return state[name].type() == LUA_TNIL;
     }
 };
 

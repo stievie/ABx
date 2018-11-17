@@ -89,6 +89,31 @@ public:
         }
         return *this;
     }
+
+    void AddError(const std::string& msg)
+    {
+        Error() << msg << std::endl;
+    }
+    void AddInfo(const std::string& msg)
+    {
+        Info() << msg << std::endl;
+    }
+    void AddWarning(const std::string& msg)
+    {
+        Warning() << msg << std::endl;
+    }
+#if defined(_PROFILING)
+    void AddProfile(const std::string& msg)
+    {
+        Profile() << msg << std::endl;
+    }
+#endif
+#if defined(_DEBUG)
+    void AddDebug(const std::string& msg)
+    {
+        Debug() << msg << std::endl;
+    }
+#endif
     Logger& Error()
     {
         if (nextIsBegin_)

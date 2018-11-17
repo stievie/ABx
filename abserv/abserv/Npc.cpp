@@ -26,7 +26,7 @@ void Npc::RegisterLua(kaguya::State& state)
 
 Npc::Npc() :
     Actor(),
-    bevaviorTree_("none"),
+    bevaviorTree_(""),
     luaInitialized_(false),
     aiCharacter_(nullptr)
 {
@@ -64,24 +64,30 @@ bool Npc::LoadScript(const std::string& fileName)
             LOG_WARNING << "Unable to read primary profession, index = " << skills_.prof1_.index << std::endl;
         }
     }
-    skills_.prof2_.index = luaState_["prof1Index"];
-    if (skills_.prof2_.index != 0)
+    if (ScriptManager::IsNumber(luaState_, "prof2Index"))
     {
-        if (!client->Read(skills_.prof2_))
+        skills_.prof2_.index = luaState_["prof2Index"];
+        if (skills_.prof2_.index != 0)
         {
-            LOG_WARNING << "Unable to read secondary profession, index = " << skills_.prof2_.index << std::endl;
+            if (!client->Read(skills_.prof2_))
+            {
+                LOG_WARNING << "Unable to read secondary profession, index = " << skills_.prof2_.index << std::endl;
+            }
         }
     }
 
     bool ret = luaState_["onInit"]();
     if (ret)
     {
-        auto loader = GetSubsystem<AI::AiLoader>();
-        std::vector<std::string> trees;
-        loader->GetTrees(trees);
-        const ai::TreeNodePtr& root = loader->Load(bevaviorTree_);
-        if (root)
-            ai_ = std::make_shared<ai::AI>(root);
+        if (!bevaviorTree_.empty())
+        {
+            auto loader = GetSubsystem<AI::AiLoader>();
+            std::vector<std::string> trees;
+            loader->GetTrees(trees);
+            const ai::TreeNodePtr& root = loader->Load(bevaviorTree_);
+            if (root)
+                ai_ = std::make_shared<ai::AI>(root);
+        }
     }
     return ret;
 }
@@ -104,9 +110,8 @@ void Npc::Shutdown()
     if (ai_)
     {
         ai::Zone* zone = ai_->getZone();
-        if (zone == nullptr) {
+        if (zone == nullptr)
             return;
-        }
         zone->destroyAI(id_);
         ai_->setZone(nullptr);
     }
@@ -115,7 +120,7 @@ void Npc::Shutdown()
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
-    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onUpdate"))
+    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
 
     if (ai_)
@@ -155,21 +160,21 @@ void Npc::Say(ChatType channel, const std::string& message)
 void Npc::OnSelected(std::shared_ptr<Actor> selector)
 {
     Actor::OnSelected(selector);
-    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onSelected"))
+    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onSelected"))
         luaState_["onSelected"](selector);
 }
 
 void Npc::OnClicked(std::shared_ptr<Actor> selector)
 {
     Actor::OnSelected(selector);
-    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onClicked"))
+    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onClicked"))
         luaState_["onClicked"](selector);
 }
 
 void Npc::OnArrived()
 {
     Actor::OnArrived();
-    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onArrived"))
+    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onArrived"))
         luaState_["onArrived"]();
 }
 
@@ -177,7 +182,7 @@ void Npc::OnCollide(std::shared_ptr<Actor> other)
 {
     Actor::OnCollide(other);
 
-    if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onCollide"))
+    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onCollide"))
         luaState_["onCollide"](other);
 
     if (trigger_)
@@ -191,7 +196,7 @@ void Npc::OnTrigger(std::shared_ptr<Actor> other)
     int64_t lasTrigger = triggered_[other->id_];
     if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)
     {
-        if (luaInitialized_ && ScriptManager::FunctionExists(luaState_, "onTrigger"))
+        if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onTrigger"))
             luaState_["onTrigger"](other);
     }
     triggered_[other->id_] = tick;

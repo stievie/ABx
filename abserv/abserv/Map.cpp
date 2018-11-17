@@ -264,7 +264,7 @@ void Map::UpdateAi(uint32_t delta)
     zone_.update(delta);
 }
 
-void Map::Update(uint32_t delta)
+void Map::UpdateOctree(uint32_t delta)
 {
     AB_UNUSED(delta);
     octree_->Update();

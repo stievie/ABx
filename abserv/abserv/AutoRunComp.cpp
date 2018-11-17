@@ -23,19 +23,19 @@ bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
     maxDist_ = 0.2f;
     bool succ = FindPath(dest);
-    if (!succ || wayPoints_.size() == 0)
+/*    if (!succ || wayPoints_.size() == 0)
     {
         const Math::Vector3& pos = owner_.transformation_.position_;
 //        if (pos.Distance(dest) > maxDist_)
         {
 #ifdef DEBUG_NAVIGATION
-            LOG_DEBUG << "Going directly to " << dest.ToString() << std::endl;
+            LOG_DEBUG << "Going directly from " << pos.ToString() << " to " << dest.ToString() << std::endl;
 #endif
             wayPoints_.clear();
             wayPoints_.push_back(dest);
             return true;
         }
-    }
+    }*/
     return succ;
 }
 
@@ -49,8 +49,7 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
         return false;
 
     std::vector<Math::Vector3> wp;
-    bool succ = owner_.GetGame()->map_->FindPath(wp, pos,
-        dest, EXTENDS);
+    bool succ = owner_.GetGame()->map_->FindPath(wp, pos, dest, EXTENDS);
 #ifdef DEBUG_NAVIGATION
     std::stringstream ss;
     ss << "Goto from " << pos.ToString() <<
@@ -76,20 +75,12 @@ void AutoRunComp::Pop()
 
 void AutoRunComp::MoveTo(uint32_t timeElapsed, const Math::Vector3& dest)
 {
-    const Math::Vector3& pos = owner_.transformation_.position_;
-    float worldAngle = -Math::DegToRad(pos.AngleY(dest) - 180.0f);
-    if (worldAngle < 0.0f)
-        worldAngle += Math::M_PIF;
 #ifdef DEBUG_NAVIGATION
     const float distance = dest.Distance(pos);
     LOG_DEBUG << "From " << pos.ToString() << " to " << dest.ToString() <<
-        " angle " << worldAngle << " old angle " << Math::RadToDeg(owner_.transformation_.rotation_) <<
         ", distance " << distance << std::endl;
 #endif
-    if (fabs(owner_.transformation_.rotation_ - worldAngle) > 0.02f)
-    {
-        owner_.moveComp_.SetDirection(worldAngle);
-    }
+    owner_.moveComp_.HeadTo(dest);
     owner_.moveComp_.Move(((float)(timeElapsed) / owner_.moveComp_.BaseSpeed) * owner_.moveComp_.GetSpeedFactor(),
         Math::Vector3::UnitZ);
 }

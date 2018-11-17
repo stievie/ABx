@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\Actions">
+      <UniqueIdentifier>{b26b870b-8672-40fc-aaf1-327d5cb59b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Consitions">
+      <UniqueIdentifier>{3840a0ad-b5d6-4c79-87a9-2afcc935877a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Filters">
+      <UniqueIdentifier>{add958c5-fea7-446f-9e9c-2491726f409e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Filters">
+      <UniqueIdentifier>{5553eeb7-b00c-498a-8ce8-60b72a0b3ba4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -198,11 +210,26 @@
     <ClInclude Include="AiRegistry.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="AiAttackOnSelection.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="AiTask.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiAttackOnSelection.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiDie.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsSelectionAlive.h">
+      <Filter>Headerdateien\Consitions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsCloseToSelection.h">
+      <Filter>Headerdateien\Consitions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectVisible.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiGoHome.h">
+      <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -379,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="AiRegistry.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectVisible.cpp">
+      <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

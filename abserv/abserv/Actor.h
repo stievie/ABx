@@ -25,6 +25,8 @@ private:
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
     void _LuaSetState(int state);
+    void _LuaSetHomePos(float x, float y, float z);
+    std::vector<float> _LuaGetHomePos();
 protected:
     std::vector<Math::Vector3> wayPoints_;
     /// Time in ms the same Actor can retrigger
@@ -32,6 +34,7 @@ protected:
     std::map<uint32_t, int64_t> triggered_;
     /// If true fires onTrigger
     bool trigger_;
+    Math::Vector3 homePos_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) {
         AB_UNUSED(type);
@@ -49,6 +52,12 @@ public:
         GameObject::SetGame(game);
     }
 
+    void SetHomePos(const Math::Vector3& pos)
+    {
+        homePos_ = pos;
+    }
+    const Math::Vector3& GetHomePos() const { return homePos_; }
+    bool GotoHomePos();
     uint32_t GetRetriggerTimout() const
     {
         return retriggerTimeout_;
@@ -113,6 +122,9 @@ public:
     void RemoveEffect(uint32_t index);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+
+    bool Die();
+    bool IsDead() const { return health_ == 0; }
 
     InputQueue inputs_;
     std::weak_ptr<GameObject> selectedObject_;

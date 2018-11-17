@@ -104,7 +104,7 @@ public:
     void LoadSceneNode(const pugi::xml_node& node);
     void AddGameObject(std::shared_ptr<GameObject> object);
     void UpdateAi(uint32_t delta);
-    void Update(uint32_t delta);
+    void UpdateOctree(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
 
     /// Find a path between world space points. Return non-empty list of points if successful.

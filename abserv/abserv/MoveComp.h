@@ -32,6 +32,8 @@ public:
     ~MoveComp() = default;
 
     void Update(uint32_t timeElapsed);
+    bool SetPosition(const Math::Vector3& pos);
+    void HeadTo(const Math::Vector3& pos);
     /// Move in direction of rotation
     bool Move(float speed, const Math::Vector3& amount);
     /// Move to moveDir_

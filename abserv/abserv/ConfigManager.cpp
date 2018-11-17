@@ -56,6 +56,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::LoginRetryTimeout] = (int)GetGlobal("login_retrytimeout", 5000);
 
     config_[Key::PlayerLevelCap] = (int)GetGlobal("level_cap", 20);
+    config_[Key::Behaviours] = GetGlobal("behaviours", "/scripts/ai/behaviours.lua");
 
     Close();
     return true;

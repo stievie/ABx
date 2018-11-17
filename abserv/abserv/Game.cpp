@@ -143,7 +143,7 @@ void Game::Update()
         }
 
         // Update Octree stuff
-        map_->Update(delta);
+        map_->UpdateOctree(delta);
 
         // Then call Lua Update function
         luaState_["onUpdate"](delta);

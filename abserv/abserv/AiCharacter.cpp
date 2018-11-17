@@ -24,6 +24,10 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 
 void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
+/*    const Math::Vector3& pos = owner_.transformation_.position_;
+    setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
+    setOrientation(owner_.transformation_.rotation_);
+    setSpeed(owner_.GetSpeed());*/
     Super::update(deltaTime, debuggingActive);
 }
 
@@ -32,14 +36,9 @@ void AiCharacter::setPosition(const glm::vec3& position)
     auto pos = Math::Vector3(position.x, position.y, position.z);
     pos.y_ = owner_.GetGame()->map_->GetTerrainHeight(pos);
     Super::setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
-//    owner_.transformation_.position_ = pos;
-//    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-//    owner_.moveComp_.moved_ = true;
-    owner_.GotoPosition(pos);
+    if (owner_.moveComp_.SetPosition(pos))
     {
-//        LOG_INFO << owner_.GetName() << " going to " << pos.ToString() << std::endl;
-//        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-//        owner_.autorunComp_.autoRun_ = true;
+        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
     }
 }
 

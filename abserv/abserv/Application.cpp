@@ -287,8 +287,9 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
-    GetSubsystem<Crypto::Random>()->Initialize();
-    ai::randomSeed(1);
+    auto rnd = GetSubsystem<Crypto::Random>();
+    rnd->Initialize();
+    ai::randomSeed(rnd->Get<uint32_t>());
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Loading encryption keys...";
@@ -310,7 +311,7 @@ bool Application::LoadMain()
     LOG_INFO << "Loading behavior tree...";
     auto aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
-    static const auto btFile = "/scripts/actors/npcs/behaviours.lua";
+    const std::string& btFile = (*config)[ConfigManager::Key::Behaviours].GetString();
     auto dp = GetSubsystem<IO::DataProvider>();
     std::string absBtFile = dp->GetDataFile(btFile);
     auto aiLoader = GetSubsystem<AI::AiLoader>();

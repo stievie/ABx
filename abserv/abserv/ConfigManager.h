@@ -41,6 +41,7 @@ public:
         LoginRetryTimeout,
 
         PlayerLevelCap,
+        Behaviours,
     };
 public:
     ConfigManager();

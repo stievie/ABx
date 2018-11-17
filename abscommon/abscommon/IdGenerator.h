@@ -18,7 +18,7 @@ public:
         return ++id_;
     }
 private:
-    T id_;
+    std::atomic<T> id_;
 };
 
 }

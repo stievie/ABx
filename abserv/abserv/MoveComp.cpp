@@ -4,6 +4,7 @@
 #include "CollisionComp.h"
 #include "MathUtils.h"
 #include "Game.h"
+#include "MathUtils.h"
 
 namespace Game {
 namespace Components {
@@ -12,6 +13,38 @@ void MoveComp::Update(uint32_t timeElapsed)
 {
     MoveTo(timeElapsed);
     TurnTo(timeElapsed);
+}
+
+bool MoveComp::SetPosition(const Math::Vector3& pos)
+{
+    oldPosition_ = owner_.transformation_.position_;
+
+    HeadTo(pos);
+    owner_.transformation_.position_ = pos;
+    owner_.collisionComp_.DoCollisions();
+    // Keep on ground
+    float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
+    owner_.transformation_.position_.y_ = y;
+
+    bool moved = oldPosition_ != owner_.transformation_.position_;
+
+    if (moved && owner_.octant_)
+    {
+        Math::Octree* octree = owner_.octant_->GetRoot();
+        octree->AddObjectUpdate(&owner_);
+    }
+
+    if (moved)
+        moved_ = true;
+    return moved;
+}
+
+void MoveComp::HeadTo(const Math::Vector3& pos)
+{
+    float worldAngle = -Math::DegToRad(oldPosition_.AngleY(pos) - 180.0f);
+    if (worldAngle < 0.0f)
+        worldAngle += Math::M_PIF;
+    SetDirection(worldAngle);
 }
 
 bool MoveComp::Move(float speed, const Math::Vector3& amount)
@@ -106,7 +139,7 @@ void MoveComp::TurnTo(uint32_t timeElapsed)
 
 void MoveComp::SetDirection(float worldAngle)
 {
-    if (owner_.transformation_.rotation_ != worldAngle)
+    if (!Math::Equals(owner_.transformation_.rotation_, worldAngle))
     {
         owner_.transformation_.rotation_ = worldAngle;
         Math::NormalizeAngle(owner_.transformation_.rotation_);

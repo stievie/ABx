@@ -19,14 +19,14 @@ function onInit()
 end
 
 function onUpdate(timeElapsed)  
-  if (GameTick() - startTick > 10000 and self:GetState() == 1) then
+--  if (GameTick() - startTick > 10000 and self:GetState() == 1) then
 --    print("going")
 --    self:GotoPosition(4.92965, 0.0, 14.2049)
-  end
+--  end
 end
 
 function onClicked(creature)
-  self:FollowObject(creature)
+--  self:FollowObject(creature)
 end
 
 -- self was selected by creature

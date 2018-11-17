@@ -38,6 +38,10 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("FollowObject", &Actor::FollowObject)
         .addFunction("GetState", &Actor::_LuaGetState)
         .addFunction("SetState", &Actor::_LuaSetState)
+
+        .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
+        .addFunction("SetHomePos", &Actor::_LuaSetHomePos)
+        .addFunction("GotoHomePos", &Actor::GotoHomePos)
     );
 }
 
@@ -58,6 +62,16 @@ Actor::Actor() :
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
+}
+
+bool Actor::GotoHomePos()
+{
+    if (!homePos_.Equals(transformation_.position_))
+    {
+        GotoPosition(homePos_);
+        return true;
+    }
+    return false;
 }
 
 void Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
@@ -99,6 +113,24 @@ void Actor::_LuaSetState(int state)
     Utils::VariantMap data;
     data[InputDataState] = static_cast<uint8_t>(state);
     inputs_.Add(InputType::SetState, data);
+}
+
+void Actor::_LuaSetHomePos(float x, float y, float z)
+{
+    homePos_ = { x, y, z };
+    if (Math::Equals(homePos_.y_, 0.0f))
+    {
+        homePos_.y_ = GetGame()->map_->GetTerrainHeight(homePos_);
+    }
+}
+
+std::vector<float> Actor::_LuaGetHomePos()
+{
+    std::vector<float> result;
+    result.push_back(homePos_.x_);
+    result.push_back(homePos_.y_);
+    result.push_back(homePos_.z_);
+    return result;
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)
@@ -408,7 +440,6 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         break;
     case AB::GameProtocol::CreatureStateMoving:
     {
-        moveComp_.moved_ = false;
         moveComp_.Update(timeElapsed);
         autorunComp_.Update(timeElapsed);
 
@@ -419,6 +450,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             message.Add<float>(transformation_.position_.x_);
             message.Add<float>(transformation_.position_.y_);
             message.Add<float>(transformation_.position_.z_);
+            moveComp_.moved_ = false;
         }
 
         break;
@@ -451,6 +483,16 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         effect->Update(timeElapsed);
     }
 
+}
+
+bool Actor::Die()
+{
+    if (health_ > 0)
+    {
+        health_ = 0;
+        return true;
+    }
+    return false;
 }
 
 }
