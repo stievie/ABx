@@ -56,6 +56,7 @@ private:
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
 protected:
+    std::mutex lock_;
     Utils::VariantMap variables_;
     std::weak_ptr<Game> game_;
     /// Octree octant.
@@ -121,6 +122,12 @@ public:
     virtual AB::GameProtocol::GameObjectType GetType() const
     {
         return AB::GameProtocol::ObjectTypeStatic;
+    }
+
+    Math::Vector3 GetPosition()
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        return transformation_.position_;
     }
 
     const Utils::Variant& GetVar(const std::string& name) const;

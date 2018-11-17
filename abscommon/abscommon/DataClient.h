@@ -19,6 +19,8 @@ namespace IO {
 
 class DataClient
 {
+private:
+    std::mutex lock_;
 public:
     explicit DataClient(asio::io_service& io_service);
     ~DataClient();

@@ -32,8 +32,8 @@ public:
         for (ai::CharacterId id : selection)
         {
             const ai::AIPtr& ai = zone->getAI(id);
-            const Game::Npc& npc = ai->getCharacterCast<AiCharacter>().GetNpc();
-            const Math::Vector3 _pos = npc.transformation_.position_;
+            Game::Npc& npc = ai->getCharacterCast<AiCharacter>().GetNpc();
+            Math::Vector3 _pos = npc.GetPosition();
             const glm::vec3 pos(_pos.x_, _pos.y_, _pos.z_);
             const glm::vec3& ownPos = entity->getCharacter()->getPosition();
             const float distance = glm::distance(pos, ownPos);

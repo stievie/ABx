@@ -13,9 +13,9 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
     map_(map)
 {
     const Math::Vector3& pos = owner.transformation_.position_;
-    setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
-    setOrientation(owner.transformation_.rotation_);
-    setSpeed(owner.GetSpeed());
+    Super::setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
+    Super::setOrientation(owner.transformation_.rotation_);
+    Super::setSpeed(owner.GetSpeed() * 2.0f);
     std::stringstream ss;
     ss << owner.GetName() << " " << owner.id_;
     setAttribute(ai::attributes::NAME, ss.str());
@@ -24,33 +24,29 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 
 void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
-/*    const Math::Vector3& pos = owner_.transformation_.position_;
-    setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
-    setOrientation(owner_.transformation_.rotation_);
-    setSpeed(owner_.GetSpeed());*/
     Super::update(deltaTime, debuggingActive);
 }
 
 void AiCharacter::setPosition(const glm::vec3& position)
 {
     auto pos = Math::Vector3(position.x, position.y, position.z);
-    pos.y_ = owner_.GetGame()->map_->GetTerrainHeight(pos);
-    Super::setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
     if (owner_.moveComp_.SetPosition(pos))
     {
         owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+        Math::Vector3 realPos = owner_.GetPosition();
+        Super::setPosition(glm::vec3(realPos.x_, realPos.y_, realPos.z_));
     }
 }
 
 void AiCharacter::setOrientation(float orientation)
 {
     Super::setOrientation(orientation);
-    owner_.moveComp_.SetDirection(orientation);
+//    owner_.moveComp_.SetDirection(orientation);
 }
 
 void AiCharacter::setSpeed(float speed)
 {
-    owner_.SetSpeed(speed);
+    owner_.SetSpeed(speed / 2.0f);
     Super::setSpeed(speed);
 }
 

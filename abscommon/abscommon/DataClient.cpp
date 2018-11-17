@@ -43,6 +43,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uin
     uint8_t dsize1 = static_cast<uint8_t>(data.size());
 
     const uint8_t data_header[] = { dsize1, dsize2, dsize3, dsize4 };
+    std::lock_guard<std::mutex> lock(lock_);
     if (!TryWrite(asio::buffer(data_header)))
         return false;
 
@@ -75,6 +76,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
     uint8_t ksize1 = static_cast<uint8_t>(key.size());
     uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
+    std::lock_guard<std::mutex> lock(lock_);
     if (!TryWrite(asio::buffer(header)))
         return false;
 

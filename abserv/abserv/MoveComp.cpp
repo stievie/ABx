@@ -21,10 +21,10 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
 
     HeadTo(pos);
     owner_.transformation_.position_ = pos;
-    owner_.collisionComp_.DoCollisions();
     // Keep on ground
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
+    owner_.collisionComp_.DoCollisions();
 
     bool moved = oldPosition_ != owner_.transformation_.position_;
 
@@ -71,10 +71,11 @@ bool MoveComp::Move(float speed, const Math::Vector3& amount)
     transformation_.position_ += v;
 #endif
 
-    owner_.collisionComp_.DoCollisions();
     // Keep on ground
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
+
+    owner_.collisionComp_.DoCollisions();
 
     bool moved = oldPosition_ != owner_.transformation_.position_;
 
@@ -141,6 +142,7 @@ void MoveComp::SetDirection(float worldAngle)
 {
     if (!Math::Equals(owner_.transformation_.rotation_, worldAngle))
     {
+
         owner_.transformation_.rotation_ = worldAngle;
         Math::NormalizeAngle(owner_.transformation_.rotation_);
         directionSet_ = true;

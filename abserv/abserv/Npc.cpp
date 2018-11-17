@@ -51,8 +51,6 @@ bool Npc::LoadScript(const std::string& fileName)
     modelIndex_ = luaState_["modelIndex"];
     sex_ = luaState_["sex"];
     stateComp_.SetState(luaState_["creatureState"], true);
-    if (ScriptManager::IsString(luaState_, "behavior"))
-        bevaviorTree_ = (const char*)luaState_["behavior"];
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
@@ -61,7 +59,7 @@ bool Npc::LoadScript(const std::string& fileName)
     {
         if (!client->Read(skills_.prof1_))
         {
-            LOG_WARNING << "Unable to read primary profession, index = " << skills_.prof1_.index << std::endl;
+            LOG_WARNING << "Unable to read primary profession of " << GetName() << ", index = " << skills_.prof1_.index << std::endl;
         }
     }
     if (ScriptManager::IsNumber(luaState_, "prof2Index"))
@@ -71,10 +69,13 @@ bool Npc::LoadScript(const std::string& fileName)
         {
             if (!client->Read(skills_.prof2_))
             {
-                LOG_WARNING << "Unable to read secondary profession, index = " << skills_.prof2_.index << std::endl;
+                LOG_WARNING << "Unable to read secondary profession of " << GetName() << ", index = " << skills_.prof2_.index << std::endl;
             }
         }
     }
+
+    if (ScriptManager::IsString(luaState_, "behavior"))
+        bevaviorTree_ = (const char*)luaState_["behavior"];
 
     bool ret = luaState_["onInit"]();
     if (ret)

@@ -223,8 +223,6 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     Skill* skill = nullptr;
     int skillIndex = -1;
-    moveComp_.turned_ = false;
-    moveComp_.directionSet_ = false;
 
     InputItem input;
 
@@ -470,6 +468,8 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         message.Add<uint32_t>(id_);
         message.Add<float>(transformation_.rotation_);
         message.Add<uint8_t>(moveComp_.directionSet_ ? 1 : 0);
+        moveComp_.turned_ = false;
+        moveComp_.directionSet_ = false;
     }
 
     skills_.Update(timeElapsed);
