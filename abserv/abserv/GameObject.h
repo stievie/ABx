@@ -15,6 +15,7 @@
 #include "IdGenerator.h"
 #include "StateComp.h"
 #include "Variant.h"
+#include <unordered_set>
 
 namespace Game {
 
@@ -30,6 +31,8 @@ class Game;
 class Actor;
 class Npc;
 class Player;
+
+typedef std::vector<std::shared_ptr<GameObject>> GameObjectList;
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
@@ -70,6 +73,9 @@ protected:
     void RemoveFromOctree();
 public:
     static void RegisterLua(kaguya::State& state);
+    /// The head is not on the ground.
+    static const Math::Vector3 HeadOffset;
+    static const Math::Vector3 BodyOffset;
 
     GameObject();
     virtual ~GameObject();
@@ -85,10 +91,7 @@ public:
         return std::dynamic_pointer_cast<T>(shared_from_this());
     }
 
-    virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message) {
-        AB_UNUSED(message);
-        AB_UNUSED(timeElapsed);
-    }
+    virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 
     void SetCollisionShape(std::unique_ptr<Math::CollisionShape> shape)
     {

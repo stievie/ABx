@@ -7,12 +7,16 @@
 #include "Npc.h"
 #include "Player.h"
 #include "MathUtils.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
 namespace Game {
 
 Utils::IdGenerator<uint32_t> GameObject::objectIds_;
+// Let's make the head 1.6m above the ground
+const Math::Vector3 Actor::HeadOffset(0.0f, 1.8f, 0.0f);
+const Math::Vector3 Actor::BodyOffset(0.0f, 1.0f, 0.0f);
 
 void GameObject::RegisterLua(kaguya::State& state)
 {
@@ -59,6 +63,10 @@ GameObject::GameObject() :
 GameObject::~GameObject()
 {
     RemoveFromOctree();
+}
+
+void GameObject::Update(uint32_t, Net::NetworkMessage&)
+{
 }
 
 bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
@@ -203,7 +211,7 @@ bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& 
         return false;
 
     std::vector<Math::RayQueryResult> res;
-    Math::Ray ray(transformation_.position_, direction);
+    Math::Ray ray(transformation_.position_ + HeadOffset, direction);
     Math::RayOctreeQuery query(res, ray);
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);

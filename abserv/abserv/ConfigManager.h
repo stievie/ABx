@@ -42,6 +42,7 @@ public:
 
         PlayerLevelCap,
         Behaviours,
+        RangeVisible,
     };
 public:
     ConfigManager();

@@ -31,7 +31,23 @@ int64_t SimpleConfigManager::GetGlobal(const std::string& ident, int64_t def)
         return def;
     }
 
-    int64_t val = (int64_t)lua_tonumber(L, -1);
+    int64_t val = static_cast<int64_t>(lua_tonumber(L, -1));
+    lua_pop(L, 1);
+
+    return val;
+}
+
+float SimpleConfigManager::GetGlobal(const std::string& ident, float def)
+{
+    lua_getglobal(L, ident.c_str());
+
+    if (!lua_isnumber(L, -1))
+    {
+        lua_pop(L, 1);
+        return def;
+    }
+
+    float val = static_cast<float>(lua_tonumber(L, -1));
     lua_pop(L, 1);
 
     return val;

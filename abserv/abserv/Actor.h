@@ -27,8 +27,11 @@ private:
     void _LuaSetState(int state);
     void _LuaSetHomePos(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
+    void UpdateVisible();
 protected:
     std::vector<Math::Vector3> wayPoints_;
+    GameObjectList visible_;
+
     /// Time in ms the same Actor can retrigger
     uint32_t retriggerTimeout_;
     std::map<uint32_t, int64_t> triggered_;
@@ -73,6 +76,19 @@ public:
     void SetTrigger(bool value)
     {
         trigger_ = value;
+    }
+    /**
+    * @brief Allows to execute a functor/lambda on the visible objects
+    * @note This is thread safe
+    */
+    template<typename Func>
+    void VisitVisible(Func&& func)
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        for (const auto& e : visible_)
+        {
+            func(e);
+        }
     }
 
     /// Move speed: 1 = normal speed
@@ -120,7 +136,6 @@ public:
     void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);
-
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     bool Die();

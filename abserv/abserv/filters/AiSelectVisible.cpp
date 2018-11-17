@@ -9,10 +9,11 @@ void SelectVisible::filter(const ai::AIPtr& entity)
 {
     ai::FilteredEntities& entities = getFilteredEntities(entity);
     Game::Npc& chr = getNpc(entity);
-    // So, raycast to all objects in range?
-//	chr.visitVisible([&] (const EntityPtr& e) {
-//		entities.push_back(e->id());
-//	});
+    // So, raycast to all objects in range
+	chr.VisitVisible([&] (const std::shared_ptr<Game::GameObject>& e)
+    {
+        entities.push_back(e->id_);
+    });
 }
 
 }

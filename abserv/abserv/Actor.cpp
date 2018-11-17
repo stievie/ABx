@@ -8,6 +8,7 @@
 #include "GameManager.h"
 #include "MathUtils.h"
 #include "ScriptManager.h"
+#include "ConfigManager.h"
 
 #include "DebugNew.h"
 
@@ -217,9 +218,33 @@ void Actor::RemoveEffect(uint32_t index)
     }
 }
 
+void Actor::UpdateVisible()
+{
+    visible_.clear();
+    std::vector<GameObject*> res;
+    static const float VISIBLE_RANGE = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeVisible];
+    // Visible radius
+    if (QueryObjects(res, VISIBLE_RANGE))
+    {
+        for (const auto& o : res)
+        {
+            if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
+            {
+                std::vector<GameObject*> inView;
+                if (Raycast(inView, o->transformation_.position_ + BodyOffset))
+                {
+                    if (inView.size() == 0)
+                        visible_.push_back(o->GetThis<GameObject>());
+                }
+            }
+        }
+    }
+}
+
 void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
+    UpdateVisible();
 
     Skill* skill = nullptr;
     int skillIndex = -1;

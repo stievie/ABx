@@ -8,5 +8,6 @@ level_cap = 20
 
 -- Ranges
 
-radius_melee = 0.1
-radius_adjacent = 0.2
+range_melee = 0.1
+range_adjacent = 0.2
+range_visible = 20.0
