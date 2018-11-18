@@ -92,13 +92,13 @@ bool Application::LoadConfig()
         serverLocation_ = config->GetGlobal("location", "--");
 
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", (int64_t)0));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
     if (listenIp_ == 0)
         listenIp_ = Utils::ConvertStringToIP(config->GetGlobal("data_ip", ""));
     if (serverHost_.empty())
         serverHost_ = config->GetGlobal("data_host", "");
     if (maxSize_ == 0)
-        maxSize_ = config->GetGlobal("max_size", (int64_t)0);
+        maxSize_ = config->GetGlobal("max_size", 0ll);
     if (!readonly_)
         readonly_ = config->GetGlobalBool("read_only", false);
     if (IO::Logger::logDir_.empty())
@@ -114,7 +114,7 @@ bool Application::LoadConfig()
     if (DB::Database::dbPass_.empty())
         DB::Database::dbPass_ = config->GetGlobal("db_pass", "");
     if (DB::Database::dbPort_ == 0)
-        DB::Database::dbPort_ = static_cast<uint16_t>(config->GetGlobal("db_port", (int64_t)0));
+        DB::Database::dbPort_ = static_cast<uint16_t>(config->GetGlobal("db_port", 0ll));
 
     flushInterval_ = static_cast<uint32_t>(config->GetGlobal("flush_interval", (int64_t)flushInterval_));
     cleanInterval_ = static_cast<uint32_t>(config->GetGlobal("clean_interval", (int64_t)cleanInterval_));

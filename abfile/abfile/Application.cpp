@@ -179,22 +179,22 @@ bool Application::Initialize(int argc, char** argv)
     if (serverIp_.empty())
         serverIp_ = config->GetGlobal("file_ip", "");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("file_port", (int64_t)8081));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081ll));
     else if (serverPort_ == 0)
         serverPort_ = Net::ServiceManager::GetFreePort();
 
     std::string key = config->GetGlobal("server_key", "server.key");
     std::string cert = config->GetGlobal("server_cert", "server.crt");
-    size_t threads = static_cast<size_t>(config->GetGlobal("num_threads", (int64_t)0));
+    size_t threads = static_cast<size_t>(config->GetGlobal("num_threads", 0ll));
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = config->GetGlobal("root_dir", "");
     logDir_ = config->GetGlobal("log_dir", "");
     dataHost_ = config->GetGlobal("data_host", "");
-    dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", (int64_t)0));
+    dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
     requireAuth_ = config->GetGlobalBool("require_auth", false);
     adminPassword_ = config->GetGlobal("abfile_admin_pass", "");
-    maxThroughput_ = static_cast<uint64_t>(config->GetGlobal("max_throughput", (int64_t)0));
+    maxThroughput_ = static_cast<uint64_t>(config->GetGlobal("max_throughput", 0ll));
 
     if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
     {
@@ -263,7 +263,7 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     std::string msgHost = config->GetGlobal("message_host", "");
-    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", (int64_t)0));
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", 0ll));
     auto msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Connecting to message server...";
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));

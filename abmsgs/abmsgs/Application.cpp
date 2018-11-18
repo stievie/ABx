@@ -61,7 +61,7 @@ bool Application::LoadMain()
     LOG_INFO << "Connecting to data server...";
     auto dataClient = GetSubsystem<IO::DataClient>();
     const std::string& dataHost = config->GetGlobal("data_host", "");
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", (int64_t)0));
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
     {
@@ -80,7 +80,7 @@ bool Application::LoadMain()
         serverIp_ = config->GetGlobal("message_ip", "0.0.0.0");
     uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(serverIp_));
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("message_port", (int64_t)2771));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("message_port", 2771ll));
 
     asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), serverPort_);
     server_ = std::make_unique<MessageServer>(ioService_, endpoint);

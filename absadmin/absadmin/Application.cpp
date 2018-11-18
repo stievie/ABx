@@ -197,20 +197,20 @@ bool Application::Initialize(int argc, char** argv)
     if (serverIp_.empty())
         serverIp_ = config->GetGlobal("admin_ip", "");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("admin_port", (int64_t)443));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("admin_port", 443ll));
     if (serverHost_.empty())
         serverHost_ = config->GetGlobal("admin_host", "");
     HTTP::Session::sessionLifetime_ = static_cast<uint32_t>(config->GetGlobal("session_lifetime", (int64_t)HTTP::Session::sessionLifetime_));
     std::string key = config->GetGlobal("server_key", "server.key");
     std::string cert = config->GetGlobal("server_cert", "server.crt");
-    size_t threads = config->GetGlobal("num_threads", (int64_t)0);
+    size_t threads = config->GetGlobal("num_threads", 0ll);
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = config->GetGlobal("root_dir", "");
     if (logDir_.empty())
         logDir_ = config->GetGlobal("log_dir", "");
     std::string dataHost = config->GetGlobal("data_host", "");
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", (int64_t)0));
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
     LOG_INFO << "[done]" << std::endl;
 
     auto dataClient = GetSubsystem<IO::DataClient>();
@@ -229,7 +229,7 @@ bool Application::Initialize(int argc, char** argv)
     }
 
     std::string msgHost = config->GetGlobal("message_host", "");
-    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", (int64_t)0));
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", 0ll));
     auto msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Connecting to message server...";
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
