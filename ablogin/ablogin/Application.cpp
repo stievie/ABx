@@ -74,10 +74,10 @@ bool Application::LoadMain()
         serverHost_ = config->GetGlobal("login_host", "");
 
     auto banMan = GetSubsystem<Auth::BanManager>();
-    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobal("max_packets_per_second", 0));
-    banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobal("login_tries", 5));
-    banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000));
-    banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_timeout", 60 * 1000));
+    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobal("max_packets_per_second", (int64_t)0));
+    banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobal("login_tries", (int64_t)5));
+    banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", (int64_t)5000));
+    banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_timeout", (int64_t)(60 * 1000)));
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
@@ -103,7 +103,7 @@ bool Application::LoadMain()
     LOG_INFO << "Connecting to data server...";
     auto dataClient = GetSubsystem<IO::DataClient>();
     const std::string& dataHost = config->GetGlobal("data_host", "");
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0));
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", (int64_t)0));
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
     {
@@ -120,7 +120,7 @@ bool Application::LoadMain()
     if (serverIp_.empty())
         serverIp_ = config->GetGlobal("login_ip", "0.0.0.0");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("login_port", 2748));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobal("login_port", (int64_t)2748));
     else if (serverPort_ == 0)
         serverPort_ = Net::ServiceManager::GetFreePort();
 
