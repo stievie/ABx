@@ -24,14 +24,13 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 
 void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
-/*    ai::AIPtr ai = owner_.GetAi();
-    auto aggroMngr = ai->getAggroMgr();
-    owner_.VisitInRange(Game::Ranges::Aggro, [&](Game::GameObject* o)
+    // https://github.com/mgerhardy/engine/blob/a3ebd511c9009f8b58937599df03d86ed6efdbf1/src/modules/backend/entity/ai/AICharacter.cpp
+    owner_.VisitInRange(Game::Ranges::Aggro, [&](Game::GameObject* e)
     {
-        Game::Actor* actor = dynamic_cast<Game::Actor*>(o);
-        if (owner_.IsEnemy(actor))
-            aggroMngr.addAggro(o->id_, owner_.GetAggro(actor));
-    });*/
+        ai::AggroMgr& aggro = owner_.GetAi()->getAggroMgr();
+        float aggroValue = owner_.GetAggro(dynamic_cast<Game::Actor*>(e));
+        aggro.addAggro(e->id_, aggroValue);
+    });
 
     Super::update(deltaTime, debuggingActive);
 }

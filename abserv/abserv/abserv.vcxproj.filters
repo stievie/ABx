@@ -231,9 +231,6 @@
     <ClInclude Include="actions\AiGoHome.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="conditions\AiHasEnenies.h">
-      <Filter>Headerdateien\Consitions</Filter>
-    </ClInclude>
     <ClInclude Include="filters\AiSelectAggro.h">
       <Filter>Headerdateien\Filters</Filter>
     </ClInclude>

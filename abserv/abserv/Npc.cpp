@@ -84,14 +84,7 @@ bool Npc::LoadScript(const std::string& fileName)
     if (ret)
     {
         if (!behaviorTree_.empty())
-        {
-            auto loader = GetSubsystem<AI::AiLoader>();
-            std::vector<std::string> trees;
-            loader->GetTrees(trees);
-            const ai::TreeNodePtr& root = loader->Load(behaviorTree_);
-            if (root)
-                ai_ = std::make_shared<ai::AI>(root);
-        }
+            SetBehaviour(behaviorTree_);
     }
     return ret;
 }
@@ -142,6 +135,7 @@ bool Npc::SetBehaviour(const std::string& name)
         else
         {
             ai_ = std::make_shared<ai::AI>(root);
+            ai_->getAggroMgr().setReduceByValue(0.1f);
             GetGame()->map_->AddEntity(GetAi(), 0);
         }
     }

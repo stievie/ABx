@@ -8,7 +8,6 @@
 #include "actions/AiMoveTo.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsCloseToSelection.h"
-#include "conditions/AiHasEnenies.h"
 #include "filters/AiSelectVisible.h"
 #include "filters/AiSelectAggro.h"
 #pragma warning(pop)
@@ -25,7 +24,6 @@ void AiRegistry::Initialize()
 
     registerConditionFactory("IsSelectionAlive", IsSelectionAlive::getFactory());
     registerConditionFactory("IsCloseToSelection", IsCloseToSelection::getFactory());
-    registerConditionFactory("HasEnemies", HasEnemies::getFactory());
 
     registerFilterFactory("SelectVisible", SelectVisible::getFactory());
     registerFilterFactory("SelectAggro", SelectAggro::getFactory());

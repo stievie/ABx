@@ -1,8 +1,13 @@
+-- https://github.com/mgerhardy/engine/blob/master/src/server/lua/ai
+
+require("data/scripts/ai/shared")
+require("data/scripts/ai/smith")
+
 function subtreeExample (tree)
 	tree:createRoot("Steer(Wander)", tree:getName())
 end
 
-function init ()
+function init()
 	subtreeExample(AI.createTree("wander"))
 
 	local example = AI.createTree("example")
@@ -31,4 +36,6 @@ function init ()
     prioSelector:addNode("MoveTo", "movetoaggro"):setCondition("Filter(SelectHighestAggro)")
     prioSelector:addNode("Idle{1000}", "idle1000")
   patrolRoot:addNode("Idle{20}", "idle20")
+  
+  initSmith()
 end

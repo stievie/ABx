@@ -191,7 +191,6 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
-    <ClInclude Include="conditions\AiHasEnenies.h" />
     <ClInclude Include="conditions\AiIsCloseToSelection.h" />
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
     <ClInclude Include="CrowdAgent.h" />
