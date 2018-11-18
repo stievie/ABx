@@ -30,6 +30,7 @@ function onStart()
     merchant:SetPosition(x, y, z)
     merchant:SetRotation(180)
     merchant:SetHomePos(x, y, z)
+    merchant:SetBehaviour("patrol")
   end  
   local ped = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
   if (ped ~= nil) then

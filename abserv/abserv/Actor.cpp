@@ -36,7 +36,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("RemoveEffect", &Actor::RemoveEffect)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
-        .addFunction("FollowObject", &Actor::FollowObject)
+        .addFunction("FollowObject", &Actor::_LuaFollowObject)
         .addFunction("GetState", &Actor::_LuaGetState)
         .addFunction("SetState", &Actor::_LuaSetState)
 
@@ -97,8 +97,13 @@ void Actor::GotoPosition(const Math::Vector3& pos)
 
 void Actor::FollowObject(std::shared_ptr<GameObject> object)
 {
+    FollowObject(object->id_);
+}
+
+void Actor::FollowObject(uint32_t objectId)
+{
     Utils::VariantMap data;
-    data[InputDataObjectId] = object->id_;
+    data[InputDataObjectId] = objectId;
     inputs_.Add(InputType::Follow, data);
 }
 
@@ -132,6 +137,11 @@ std::vector<float> Actor::_LuaGetHomePos()
     result.push_back(homePos_.y_);
     result.push_back(homePos_.z_);
     return result;
+}
+
+void Actor::_LuaFollowObject(std::shared_ptr<GameObject> object)
+{
+    FollowObject(object);
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)
@@ -218,24 +228,52 @@ void Actor::RemoveEffect(uint32_t index)
     }
 }
 
-void Actor::UpdateVisible()
+void Actor::UpdateRanges()
 {
-    visible_.clear();
+    ranges_.clear();
     std::vector<GameObject*> res;
-    static const float VISIBLE_RANGE = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeVisible];
-    // Visible radius
-    if (QueryObjects(res, VISIBLE_RANGE))
+
+    static const float RANGE_AGGRO = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeAggro];
+    static const float RANGE_COMPASS = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeCompass];
+    static const float RANGE_SPIRIT = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeSpirit];
+    static const float RANGE_EARSHOT = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeEarshot];
+    static const float RANGE_CASTING = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeCasting];
+    static const float RANGE_PROJECTILE = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeProjectile];
+    static const float RANGE_HALF = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeHalf];
+    static const float RANGE_TOUCH = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeTouch];
+    static const float RANGE_ADJECENT = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeAdjecent];
+
+    static const float RANGE_VISIBLE = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeVisible];
+
+    // Compass radius
+    if (QueryObjects(res, RANGE_COMPASS))
     {
         for (const auto& o : res)
         {
             if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
             {
-                std::vector<GameObject*> inView;
-                if (Raycast(inView, o->transformation_.position_ + BodyOffset))
-                {
-                    if (inView.size() == 0)
-                        visible_.push_back(o->GetThis<GameObject>());
-                }
+                Math::Vector3 objectPos = o->GetPosition();
+                Math::Vector3 myPos = GetPosition();
+                if (myPos.Distance(objectPos) <= RANGE_AGGRO)
+                    ranges_[Ranges::Aggro].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_COMPASS)
+                    ranges_[Ranges::Compass].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_SPIRIT)
+                    ranges_[Ranges::Spirit].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_EARSHOT)
+                    ranges_[Ranges::Earshot].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_CASTING)
+                    ranges_[Ranges::Casting].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_PROJECTILE)
+                    ranges_[Ranges::Projectile].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_HALF)
+                    ranges_[Ranges::HalfCompass].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_TOUCH)
+                    ranges_[Ranges::Touch].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_ADJECENT)
+                    ranges_[Ranges::Adjecent].push_back(o);
+                if (myPos.Distance(objectPos) <= RANGE_VISIBLE)
+                    ranges_[Ranges::Visible].push_back(o);
             }
         }
     }
@@ -244,7 +282,7 @@ void Actor::UpdateVisible()
 void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
-    UpdateVisible();
+    UpdateRanges();
 
     Skill* skill = nullptr;
     int skillIndex = -1;
@@ -518,6 +556,12 @@ bool Actor::Die()
         return true;
     }
     return false;
+}
+
+bool Actor::IsEnemy(Actor* other)
+{
+    // TODO:
+    return true;
 }
 
 }

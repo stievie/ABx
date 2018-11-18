@@ -32,7 +32,19 @@ class Actor;
 class Npc;
 class Player;
 
-typedef std::vector<std::shared_ptr<GameObject>> GameObjectList;
+enum class Ranges
+{
+    Aggro,
+    Compass,
+    Spirit,
+    Earshot,
+    Casting,
+    Projectile,
+    HalfCompass,
+    Touch,
+    Adjecent,
+    Visible
+};
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {

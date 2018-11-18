@@ -180,6 +180,7 @@
     <ClInclude Include="actions\AiAttackOnSelection.h" />
     <ClInclude Include="actions\AiDie.h" />
     <ClInclude Include="actions\AiGoHome.h" />
+    <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="AiCharacter.h" />
     <ClInclude Include="AiLoader.h" />
     <ClInclude Include="AiRegistry.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
+    <ClInclude Include="conditions\AiHasEnenies.h" />
     <ClInclude Include="conditions\AiIsCloseToSelection.h" />
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
     <ClInclude Include="CrowdAgent.h" />
@@ -200,6 +202,7 @@
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="filters\AiSelectAggro.h" />
     <ClInclude Include="filters\AiSelectVisible.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="Game.h" />
@@ -262,6 +265,7 @@
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="filters\AiSelectAggro.cpp" />
     <ClCompile Include="filters\AiSelectVisible.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="Game.cpp" />

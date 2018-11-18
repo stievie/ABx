@@ -5,11 +5,11 @@ namespace AI {
 /**
  * @ingroup AI
  */
-class SelectVisible : public ai::IFilter
+class SelectAggro : public ai::IFilter
 {
 public:
-    FILTER_FACTORY(SelectVisible)
-    FILTER_CLASS(SelectVisible)
+    FILTER_FACTORY(SelectAggro)
+    FILTER_CLASS(SelectAggro)
 
     void filter(const ai::AIPtr& entity) override;
 };

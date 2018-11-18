@@ -5,9 +5,12 @@
 #include "actions/AiAttackOnSelection.h"
 #include "actions/AiDie.h"
 #include "actions/AiGoHome.h"
+#include "actions/AiMoveTo.h"
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsCloseToSelection.h"
+#include "conditions/AiHasEnenies.h"
 #include "filters/AiSelectVisible.h"
+#include "filters/AiSelectAggro.h"
 #pragma warning(pop)
 
 namespace AI {
@@ -18,11 +21,14 @@ void AiRegistry::Initialize()
     registerNodeFactory("GoHome", GoHome::getFactory());
     registerNodeFactory("AttackOnSelection", AttackOnSelection::getFactory());
     registerNodeFactory("Die", Die::getFactory());
+    registerNodeFactory("MoveTo", MoveTo::getFactory());
 
     registerConditionFactory("IsSelectionAlive", IsSelectionAlive::getFactory());
     registerConditionFactory("IsCloseToSelection", IsCloseToSelection::getFactory());
+    registerConditionFactory("HasEnemies", HasEnemies::getFactory());
 
     registerFilterFactory("SelectVisible", SelectVisible::getFactory());
+    registerFilterFactory("SelectAggro", SelectAggro::getFactory());
 }
 
 }

@@ -8,7 +8,7 @@ sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 5
 prof2Index = 0     -- None
---behavior = "example"
+--behavior = "patrol"
 
 local startTick;
 

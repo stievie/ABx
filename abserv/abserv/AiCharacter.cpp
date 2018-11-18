@@ -24,6 +24,15 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 
 void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
+/*    ai::AIPtr ai = owner_.GetAi();
+    auto aggroMngr = ai->getAggroMgr();
+    owner_.VisitInRange(Game::Ranges::Aggro, [&](Game::GameObject* o)
+    {
+        Game::Actor* actor = dynamic_cast<Game::Actor*>(o);
+        if (owner_.IsEnemy(actor))
+            aggroMngr.addAggro(o->id_, owner_.GetAggro(actor));
+    });*/
+
     Super::update(deltaTime, debuggingActive);
 }
 

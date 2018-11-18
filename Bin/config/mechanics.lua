@@ -2,12 +2,33 @@
 -- Game mechanics Settings -----------------------------------------------------
 --------------------------------------------------------------------------------
 
+require("config/functions")
+
 behaviours = "/scripts/ai/behaviours.lua"
 
 level_cap = 20
 
--- Ranges
+-- Ranges ----------------------------------------------------------------------
+range_base = 60   -- 100% Slightly larger than the compass
 
-range_melee = 0.1
-range_adjacent = 0.2
-range_visible = 20.0
+range_aggro = GetValue(range_base, 24.0)
+
+-- Long Range
+range_compass = GetValue(range_base, 95.0)
+range_spirit = range_aggro * 1.6  -- Longbow, spirits
+-- Mid Range
+range_earshot = range_aggro
+range_casting = range_aggro * 1.35
+range_projectile = range_aggro
+range_half_compass = range_compass / 2.0
+-- Close Range
+range_touch = 1.0
+range_adjacent = GetValue(range_base, 3.0)
+
+range_visible = range_aggro
+
+-- print("range_aggro " .. range_aggro)
+-- print("range_compass " .. range_compass)
+-- print("range_adjacent " .. range_adjacent)
+-- print("range_spirit " .. range_spirit)
+-- print("range_casting " .. range_casting)

@@ -19,7 +19,7 @@ private:
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
-    std::string bevaviorTree_;
+    std::string behaviorTree_;
     std::shared_ptr<Script> script_;
     std::shared_ptr<AI::AiCharacter> aiCharacter_;
     std::shared_ptr<ai::AI> ai_;
@@ -58,6 +58,9 @@ public:
     {
         return sex_;
     }
+    bool SetBehaviour(const std::string& name);
+    const std::string& GetBehaviour() const { return behaviorTree_; }
+    float GetAggro(Actor* other);
 
     void Say(ChatType channel, const std::string& message);
 

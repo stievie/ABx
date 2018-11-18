@@ -231,6 +231,15 @@
     <ClInclude Include="actions\AiGoHome.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiHasEnenies.h">
+      <Filter>Headerdateien\Consitions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectAggro.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiMoveTo.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -408,6 +417,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="filters\AiSelectVisible.cpp">
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectAggro.cpp">
       <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,7 +18,6 @@ class Actor : public GameObject
     friend class Components::AutoRunComp;
     friend class Components::CollisionComp;
 public:
-    static constexpr float MAX_INTERACTION_DIST = 1.0f;
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
 private:
     void DeleteEffect(uint32_t index);
@@ -27,10 +26,11 @@ private:
     void _LuaSetState(int state);
     void _LuaSetHomePos(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
-    void UpdateVisible();
+    void _LuaFollowObject(std::shared_ptr<GameObject> object);
+    void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;
-    GameObjectList visible_;
+    std::map<Ranges, std::vector<GameObject*>> ranges_;
 
     /// Time in ms the same Actor can retrigger
     uint32_t retriggerTimeout_;
@@ -82,13 +82,11 @@ public:
     * @note This is thread safe
     */
     template<typename Func>
-    void VisitVisible(Func&& func)
+    void VisitInRange(Ranges range, Func&& func)
     {
         std::lock_guard<std::mutex> lock(lock_);
-        for (const auto& e : visible_)
-        {
-            func(e);
-        }
+        for (const auto o : ranges_[range])
+            func(o);
     }
 
     /// Move speed: 1 = normal speed
@@ -140,6 +138,7 @@ public:
 
     bool Die();
     bool IsDead() const { return health_ == 0; }
+    bool IsEnemy(Actor* other);
 
     InputQueue inputs_;
     std::weak_ptr<GameObject> selectedObject_;
@@ -157,6 +156,7 @@ public:
     void SetSelectedObject(std::shared_ptr<GameObject> object);
     void GotoPosition(const Math::Vector3& pos);
     void FollowObject(std::shared_ptr<GameObject> object);
+    void FollowObject(uint32_t objectId);
     void UseSkill(uint32_t index);
 
     Components::MoveComp moveComp_;

@@ -3,17 +3,19 @@
 #include "Actor.h"
 #include "Game.h"
 #include "MathUtils.h"
+#include "ConfigManager.h"
 
 namespace Game {
 namespace Components {
 
 bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
 {
+    static const float RANGE_TOUCH = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeTouch];
     auto actor = object->GetThisDynamic<Actor>();
     if (!actor)
         return false;
     following_ = actor;
-    maxDist_ = Actor::MAX_INTERACTION_DIST;
+    maxDist_ = RANGE_TOUCH;
     if (auto f = following_.lock())
         return FindPath(f->transformation_.position_);
     return false;

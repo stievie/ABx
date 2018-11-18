@@ -6,6 +6,7 @@
 #include "DataProvider.h"
 #include "Subsystems.h"
 #include "AiCharacter.h"
+#include "Random.h"
 
 namespace Game {
 
@@ -20,13 +21,15 @@ void Npc::RegisterLua(kaguya::State& state)
 {
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
         .addFunction("SetName", &Npc::SetName)
+        .addFunction("SetBehaviour", &Npc::SetBehaviour)
+        .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
     );
 }
 
 Npc::Npc() :
     Actor(),
-    bevaviorTree_(""),
+    behaviorTree_(""),
     luaInitialized_(false),
     aiCharacter_(nullptr)
 {
@@ -75,17 +78,17 @@ bool Npc::LoadScript(const std::string& fileName)
     }
 
     if (ScriptManager::IsString(luaState_, "behavior"))
-        bevaviorTree_ = (const char*)luaState_["behavior"];
+        behaviorTree_ = (const char*)luaState_["behavior"];
 
     bool ret = luaState_["onInit"]();
     if (ret)
     {
-        if (!bevaviorTree_.empty())
+        if (!behaviorTree_.empty())
         {
             auto loader = GetSubsystem<AI::AiLoader>();
             std::vector<std::string> trees;
             loader->GetTrees(trees);
-            const ai::TreeNodePtr& root = loader->Load(bevaviorTree_);
+            const ai::TreeNodePtr& root = loader->Load(behaviorTree_);
             if (root)
                 ai_ = std::make_shared<ai::AI>(root);
         }
@@ -123,19 +126,34 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
+}
 
-    if (ai_)
+bool Npc::SetBehaviour(const std::string& name)
+{
+    if (behaviorTree_.compare(name) != 0)
     {
-        const ai::ICharacterPtr& character = ai_->getCharacter();
-        if (character)
+        behaviorTree_ = name;
+        auto loader = GetSubsystem<AI::AiLoader>();
+        const ai::TreeNodePtr& root = loader->Load(behaviorTree_);
+        if (!root)
+            return false;
+        if (ai_)
+            ai_->setBehaviour(root);
+        else
         {
-/*            const Math::Vector3& pos = transformation_.position_;
-            character->setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
-            character->setOrientation(transformation_.rotation_);
-            character->setSpeed(GetSpeed());*/
-            //aiCharacter_->update(timeElapsed, false);
+            ai_ = std::make_shared<ai::AI>(root);
+            GetGame()->map_->AddEntity(GetAi(), 0);
         }
     }
+    return true;
+}
+
+float Npc::GetAggro(Actor* other)
+{
+    auto random = GetSubsystem<Crypto::Random>();
+    float dist = GetPosition().Distance(other->GetPosition());
+    float rval = random->GetFloat();
+    return (1.0f / dist) * rval;
 }
 
 void Npc::Say(ChatType channel, const std::string& message)

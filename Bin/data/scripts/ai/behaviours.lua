@@ -22,10 +22,13 @@ function init ()
 		local everythingElseNode = rootNodeExample:addNode("PrioritySelector", "otherornogroup")
 			everythingElseNode:addNode("Steer(Wander)", "wander")
 
---	rootNode:addNode("Idle{3000}", "idle3000")
---	local prioSelector = rootNode:addNode("PrioritySelector", "prio2");
---	prioSelector:addNode("Idle{3000}", "idle3000"):setCondition("HasEnemies")
---	prioSelector:addNode("MoveTo", "movetoaggro"):setCondition("Filter(SelectHighestAggro)")
---	prioSelector:addNode("Idle{1000}", "idle1000")
---	rootNode:addNode("Idle{20}", "idle20")
+
+  local patrol = AI.createTree("patrol")
+	local patrolRoot = patrol:createRoot("PrioritySelector", "root")
+    patrolRoot:addNode("Idle{3000}", "idle3000")
+  local prioSelector = patrolRoot:addNode("PrioritySelector", "prio2");
+    prioSelector:addNode("Idle{3000}", "idle3000"):setCondition("HasEnemies")
+    prioSelector:addNode("MoveTo", "movetoaggro"):setCondition("Filter(SelectHighestAggro)")
+    prioSelector:addNode("Idle{1000}", "idle1000")
+  patrolRoot:addNode("Idle{20}", "idle20")
 end
