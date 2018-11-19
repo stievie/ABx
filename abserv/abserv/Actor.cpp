@@ -298,109 +298,130 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
         case InputType::Move:
         {
-            moveComp_.moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
-            if (moveComp_.moveDir_ > AB::GameProtocol::MoveDirectionNone)
+            if (!IsDead())
             {
-                stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                moveComp_.moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
+                if (moveComp_.moveDir_ > AB::GameProtocol::MoveDirectionNone)
+                {
+                    stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                }
+                else
+                {
+                    // Reset to Idle when neither moving nor turning
+                    if (stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
+                        moveComp_.turnDir_ == AB::GameProtocol::TurnDirectionNone)
+                        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+                }
+                autorunComp_.Reset();
             }
-            else
-            {
-                // Reset to Idle when neither moving nor turning
-                if (stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
-                    moveComp_.turnDir_ == AB::GameProtocol::TurnDirectionNone)
-                    stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            }
-            autorunComp_.Reset();
             break;
         }
         case InputType::Turn:
         {
-            moveComp_.turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
-            if (moveComp_.turnDir_ > AB::GameProtocol::TurnDirectionNone)
+            if (!IsDead())
             {
-                stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                moveComp_.turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
+                if (moveComp_.turnDir_ > AB::GameProtocol::TurnDirectionNone)
+                {
+                    stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                }
+                else
+                {
+                    if (stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
+                        moveComp_.moveDir_ == AB::GameProtocol::MoveDirectionNone)
+                        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+                }
+                autorunComp_.Reset();
             }
-            else
-            {
-                if (stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
-                    moveComp_.moveDir_ == AB::GameProtocol::MoveDirectionNone)
-                    stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            }
-            autorunComp_.Reset();
             break;
         }
         case InputType::Direction:
         {
-            // No aurorunComp_.Reset() because manually setting the camera does not
-            // stop autorunning
-            if (!autorunComp_.autoRun_)
-                moveComp_.SetDirection(input.data[InputDataDirection].GetFloat());
+            if (!IsDead())
+            {
+                // No aurorunComp_.Reset() because manually setting the camera does not
+                // stop autorunning
+                if (!autorunComp_.autoRun_)
+                    moveComp_.SetDirection(input.data[InputDataDirection].GetFloat());
+            }
             break;
         }
         case InputType::SetState:
         {
-            AB::GameProtocol::CreatureState state =
-                static_cast<AB::GameProtocol::CreatureState>(input.data[InputDataState].GetInt());
-            stateComp_.SetState(state);
+            if (!IsDead())
+            {
+                AB::GameProtocol::CreatureState state =
+                    static_cast<AB::GameProtocol::CreatureState>(input.data[InputDataState].GetInt());
+                stateComp_.SetState(state);
+            }
             break;
         }
         case InputType::Goto:
         {
-            autorunComp_.Reset();
-            const Math::Vector3 dest = {
-                input.data[InputDataVertexX].GetFloat(),
-                input.data[InputDataVertexY].GetFloat(),
-                input.data[InputDataVertexZ].GetFloat()
-            };
-            bool succ = autorunComp_.Goto(dest);
-            if (succ)
+            if (!IsDead())
             {
-                stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                autorunComp_.autoRun_ = true;
-            }
-
-            break;
-        }
-        case InputType::Follow:
-        {
-            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
-            followedObject_ = GetGame()->GetObjectById(targetId);
-            if (auto f = followedObject_.lock())
-            {
-                bool succ = autorunComp_.Follow(f);
+                autorunComp_.Reset();
+                const Math::Vector3 dest = {
+                    input.data[InputDataVertexX].GetFloat(),
+                    input.data[InputDataVertexY].GetFloat(),
+                    input.data[InputDataVertexZ].GetFloat()
+                };
+                bool succ = autorunComp_.Goto(dest);
                 if (succ)
                 {
                     stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                     autorunComp_.autoRun_ = true;
                 }
             }
-#ifdef DEBUG_NAVIGATION
-            else
+            break;
+        }
+        case InputType::Follow:
+        {
+            if (!IsDead())
             {
-                LOG_WARNING << "InputType::Follow: object with ID not found: " << targetId << std::endl;
-            }
+                uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+                followedObject_ = GetGame()->GetObjectById(targetId);
+                if (auto f = followedObject_.lock())
+                {
+                    bool succ = autorunComp_.Follow(f);
+                    if (succ)
+                    {
+                        stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                        autorunComp_.autoRun_ = true;
+                    }
+                }
+#ifdef DEBUG_NAVIGATION
+                else
+                {
+                    LOG_WARNING << "InputType::Follow: object with ID not found: " << targetId << std::endl;
+                }
 #endif
+        }
             break;
         }
         case InputType::Attack:
-            stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
+            if (!IsDead())
+                stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
             break;
         case InputType::UseSkill:
         {
-            skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
-            skill = GetSkill(skillIndex);
-            if (skill)
+            if (!IsDead())
             {
-                if (auto selObj = selectedObject_.lock())
+                skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
+                skill = GetSkill(skillIndex);
+                if (skill)
                 {
-                    std::shared_ptr<Actor> target = selObj->GetThisDynamic<Actor>();
-                    if (target)
+                    if (auto selObj = selectedObject_.lock())
                     {
-                        // Can use skills only on Creatures not all GameObjects
-                        skills_.UseSkill(skillIndex, target);
-                        // These do not change the state
-                        if (skill->IsChangingState())
-                            stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+                        std::shared_ptr<Actor> target = selObj->GetThisDynamic<Actor>();
+                        if (target)
+                        {
+                            // Can use skills only on Creatures not all GameObjects
+                            skills_.UseSkill(skillIndex, target);
+                            // These do not change the state
+                            if (skill->IsChangingState())
+                                stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+                        }
                     }
                 }
             }
