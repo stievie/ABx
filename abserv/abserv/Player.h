@@ -38,6 +38,7 @@ protected:
     void HandleSitCommand(const std::string&, Net::NetworkMessage&);
     void HandleStandCommand(const std::string&, Net::NetworkMessage&);
     void HandleCryCommand(const std::string&, Net::NetworkMessage&);
+    void HandleDieCommand(const std::string&, Net::NetworkMessage&);
     void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&);
     void HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&);
 public:

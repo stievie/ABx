@@ -550,9 +550,10 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 bool Actor::Die()
 {
-    if (health_ > 0)
+    if (health_ > 0 || stateComp_.GetState() != AB::GameProtocol::CreatureStateDead)
     {
         health_ = 0;
+        stateComp_.SetState(AB::GameProtocol::CreatureStateDead);
         return true;
     }
     return false;

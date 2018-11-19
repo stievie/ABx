@@ -125,6 +125,8 @@ enum CreatureState : uint8_t
     CreatureStateEmote = 5,
     CreatureStateEmoteSit = 6,
     CreatureStateEmoteCry = 7,
+
+    CreatureStateDead = 255,
 };
 
 enum ServerMessageType : uint8_t
@@ -268,6 +270,7 @@ enum CommandTypes : uint8_t
     CommandTypeSit,                  // /sit
     CommandTypeStand,                // /sit -> Idle
     CommandTypeCry,                  // /cry
+    CommandTypeDie,                  // /die (only admin)
 };
 
 }

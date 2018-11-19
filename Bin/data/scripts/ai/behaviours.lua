@@ -3,7 +3,7 @@
 require("data/scripts/ai/shared")
 require("data/scripts/ai/smith")
 
-function subtreeExample (tree)
+function subtreeExample(tree)
 	tree:createRoot("Steer(Wander)", tree:getName())
 end
 

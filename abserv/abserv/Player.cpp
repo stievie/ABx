@@ -304,6 +304,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeServerId:
         HandleServerIdCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeDie:
+        HandleDieCommand(command, message);
+        break;
     }
 }
 
@@ -447,6 +450,23 @@ void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&)
 void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 {
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteCry);
+}
+
+void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
+{
+    if (account_.type >= AB::Entities::AccountTypeGamemaster)
+    {
+        Die();
+    }
+    else
+    {
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::ServerMessage);
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+        nmsg.AddString(GetName());
+        nmsg.AddString("");
+        client_->WriteToOutput(nmsg);
+    }
 }
 
 void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&)

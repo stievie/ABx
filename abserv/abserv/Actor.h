@@ -137,7 +137,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     bool Die();
-    bool IsDead() const { return health_ == 0; }
+    bool IsDead() const { return stateComp_.GetState() == AB::GameProtocol::CreatureStateDead; }
     bool IsEnemy(Actor* other);
 
     InputQueue inputs_;

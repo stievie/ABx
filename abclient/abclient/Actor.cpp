@@ -572,6 +572,9 @@ void Actor::PlayStateAnimation(float fadeTime)
     case AB::GameProtocol::CreatureStateEmoteCry:
         PlayAnimation(ANIM_CRY, false, fadeTime);
         break;
+    case AB::GameProtocol::CreatureStateDead:
+        PlayAnimation(ANIM_DYING, false, fadeTime);
+        break;
     default:
         break;
     }
