@@ -28,7 +28,7 @@
 namespace Game {
 
 Game::Game() :
-    state_(ExecutionState::Terminated),
+    state_(ExecutionState::Startup),
     lastUpdate_(0),
     startTime_(0)
 {
@@ -108,6 +108,11 @@ void Game::Start()
             Asynch::CreateTask(std::bind(&Game::Update, shared_from_this()))
         );
     }
+#ifdef DEBUG_GAME
+    else
+        LOG_DEBUG << "Game state is not Startup it is " << static_cast<int>(state_) << std::endl;
+#endif // DEBUG_GAME
+
 }
 
 void Game::Update()
@@ -311,9 +316,8 @@ void Game::InternalLoad()
         return;
     }
 
-    if (state_ == ExecutionState::Startup)
-        // Loading done -> start it
-        Start();
+    // Loading done -> start it
+    Start();
 }
 
 void Game::Load(const std::string& mapUuid)
