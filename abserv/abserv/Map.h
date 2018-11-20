@@ -68,6 +68,13 @@ public:
         return zone_;
     }
 
+    inline void SetEntityGroupId(const ai::AIPtr& entity, uint32_t oldGroupId, uint32_t groupId)
+    {
+        ai::GroupMgr& groupMgr = zone_.getGroupMgr();
+        groupMgr.remove(oldGroupId, entity);
+        entity->getCharacter()->setAttribute(ai::attributes::GROUP, std::to_string(groupId));
+        groupMgr.add(groupId, entity);
+    }
     inline void AddEntity(const ai::AIPtr& entity, uint32_t groupId)
     {
         if (!entity)

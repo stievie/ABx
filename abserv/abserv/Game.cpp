@@ -278,7 +278,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
         return std::shared_ptr<Npc>();
     }
     AddObject(result);
-    map_->AddEntity(result->GetAi(), 0);
+    map_->AddEntity(result->GetAi(), result->GetGroupId());
     if (GetState() == ExecutionState::Running)
     {
         // In worst case (i.e. the game data is still loading): will be sent as

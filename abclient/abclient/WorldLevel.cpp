@@ -39,6 +39,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
+    SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
@@ -498,6 +499,23 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                     targetWindow_->SetTarget(SharedPtr<Actor>());
                 }
             }
+        }
+    }
+}
+
+void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectResourceChanged;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(eventData[P_RESTYPE].GetUInt());
+    int32_t value = eventData[P_VALUE].GetUInt();
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        Actor* actor = dynamic_cast<Actor*>(object);
+        if (actor)
+        {
+            actor->ChangeResource(resType, value);
         }
     }
 }

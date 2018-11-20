@@ -189,6 +189,13 @@ void Client::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t ta
         receiver_->OnObjectSelected(updateTick, sourceId, targetId);
 }
 
+void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
+    AB::GameProtocol::ResourceType resType, int16_t value)
+{
+    if (receiver_)
+        receiver_->OnResourceChanged(updateTick, id, resType, value);
+}
+
 void Client::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {

@@ -21,7 +21,8 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(std::move(client)),
     lastPing_(0),
-    mailBox_(nullptr)
+    mailBox_(nullptr),
+    party_(nullptr)
 {
 }
 
@@ -35,22 +36,26 @@ Player::~Player()
 void Player::SetGame(std::shared_ptr<Game> game)
 {
     Actor::SetGame(game);
-    std::shared_ptr<Party> party = GetParty();
     // Changing the instance also clears any invites. The client should check that we
     // leave the instance so don't send anything to invitees.
-    party->ClearInvites();
+    party_->ClearInvites();
     if (game)
     {
-        if (party->IsLeader(this))
-            party->SetPartySize(game->data_.partySize);
+        if (party_->IsLeader(this))
+            party_->SetPartySize(game->data_.partySize);
     }
+}
+
+void Player::Initialize()
+{
+    party_ = std::make_shared<Party>(GetThis());
 }
 
 void Player::Logout()
 {
     if (auto g = GetGame())
         g->PlayerLeave(id_);
-    GetParty()->Remove(GetThis());
+    party_->Remove(GetThis());
     client_->Logout();
 }
 

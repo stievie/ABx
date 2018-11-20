@@ -59,7 +59,6 @@ bool Party::Remove(std::shared_ptr<Player> player)
     if (it == members_.end())
         return false;
     members_.erase(it);
-    player->SetParty(std::shared_ptr<Party>());
     if (auto l = leader_.lock())
     {
         if (player->id_ == l->id_)
@@ -71,6 +70,9 @@ bool Party::Remove(std::shared_ptr<Player> player)
             }
         }
     }
+
+    // Lastly, this may call the destructor
+    player->SetParty(std::shared_ptr<Party>());
     return true;
 }
 

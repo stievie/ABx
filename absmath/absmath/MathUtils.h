@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MathDefs.h"
+
 namespace Math {
 
 template <typename T>

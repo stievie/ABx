@@ -149,6 +149,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::PartyInviteRemoved:
             ParsePartyInviteRemoved(message);
             break;
+        case AB::GameProtocol::GameObjectResourceChange:
+            ParseResourceChanged(opCode, message);
+            break;
         default:
             // End of message. Encryption adds some padding bytes, so after this
             // its probably just junk.
@@ -247,6 +250,34 @@ void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& 
     uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId);
+}
+
+void ProtocolGame::ParseResourceChanged(AB::GameProtocol::GameProtocolCodes opCode,
+    const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(message->Get<uint8_t>());
+    switch (resType)
+    {
+    case AB::GameProtocol::ResourceTypeHealth:
+    case AB::GameProtocol::ResourceTypeEnergy:
+    case AB::GameProtocol::ResourceTypeAdrenaline:
+    case AB::GameProtocol::ResourceTypeOvercast:
+    {
+        int16_t value = message->Get<int16_t>();
+        if (receiver_)
+            receiver_->OnResourceChanged(updateTick_, objectId, resType, value);
+        break;
+    }
+    case AB::GameProtocol::ResourceTypeHealthRegen:
+    case AB::GameProtocol::ResourceTypeEnergyRegen:
+    {
+        int8_t value = message->Get<int16_t>();
+        if (receiver_)
+            receiver_->OnResourceChanged(updateTick_, objectId, resType, static_cast<int16_t>(value));
+        break;
+    }
+    }
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)

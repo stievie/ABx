@@ -19,11 +19,12 @@ private:
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
-    uint32_t GetNewId()
+public:
+    static uint32_t GetNewId()
     {
         return partyIds_.Next();
     }
-public:
+
     explicit Party(std::shared_ptr<Player> leader);
     Party() = delete;
     // non-copyable

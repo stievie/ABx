@@ -19,6 +19,9 @@ private:
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
+    // Group is like a party and they need unique IDs.
+    // If this NPC belongs to a party with players this must be the PartyID.
+    uint32_t groupId_;
     std::string behaviorTree_;
     std::shared_ptr<Script> script_;
     std::shared_ptr<AI::AiCharacter> aiCharacter_;
@@ -58,6 +61,11 @@ public:
     {
         return sex_;
     }
+    uint32_t GetGroupId() const final override
+    {
+        return groupId_;
+    }
+    void SetGroupId(uint32_t value);
     bool SetBehaviour(const std::string& name);
     const std::string& GetBehaviour() const { return behaviorTree_; }
     float GetAggro(Actor* other);

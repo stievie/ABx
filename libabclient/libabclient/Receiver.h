@@ -54,6 +54,8 @@ public:
     virtual void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) = 0;
     virtual void OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor) = 0;
     virtual void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
+    virtual void OnResourceChanged(int64_t updateTick, uint32_t id,
+        AB::GameProtocol::ResourceType resType, int16_t value) = 0;
     virtual void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
         const std::string& senderName, const std::string& message) = 0;
     virtual void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,

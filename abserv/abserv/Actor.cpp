@@ -30,8 +30,6 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
         .addFunction("GetSpeed", &Actor::GetSpeed)
         .addFunction("SetSpeed", &Actor::SetSpeed)
-        .addFunction("GetEnergy", &Actor::GetEnergy)
-        .addFunction("SetEnergy", &Actor::SetEnergy)
         .addFunction("AddEffect", &Actor::AddEffect)
         .addFunction("RemoveEffect", &Actor::RemoveEffect)
 
@@ -51,6 +49,7 @@ Actor::Actor() :
     moveComp_(*this),
     autorunComp_(*this),
     collisionComp_(*this),
+    resourceComp_(*this),
     skills_(this),
     undestroyable_(false),
     retriggerTimeout_(1000)
@@ -290,6 +289,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     InputItem input;
 
     stateComp_.Update(timeElapsed);
+    resourceComp_.Update(timeElapsed);
 
     // Multiple inputs of the same type overwrite previous
     while (inputs_.Get(input))
@@ -515,6 +515,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         message.Add<uint32_t>(id_);
         message.Add<float>(moveComp_.GetSpeedFactor());
     }
+    resourceComp_.Write(message);
 
     switch (stateComp_.GetState())
     {
@@ -571,9 +572,11 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 bool Actor::Die()
 {
-    if (health_ > 0 || stateComp_.GetState() != AB::GameProtocol::CreatureStateDead)
+    if (!IsDead())
     {
-        health_ = 0;
+        resourceComp_.SetHealth(Components::SetValueType::Absolute, 0);
+        resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
+        resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
         stateComp_.SetState(AB::GameProtocol::CreatureStateDead);
         return true;
     }

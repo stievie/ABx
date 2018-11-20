@@ -7,6 +7,7 @@
 #include <AB/ProtocolCodes.h>
 #include "MoveComp.h"
 #include "AutoRunComp.h"
+#include "ResourceComp.h"
 #include "CollisionComp.h"
 
 namespace Game {
@@ -17,6 +18,7 @@ class Actor : public GameObject
     friend class Components::MoveComp;
     friend class Components::AutoRunComp;
     friend class Components::CollisionComp;
+    friend class Components::ResourceComp;
 public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
 private:
@@ -92,14 +94,6 @@ public:
     /// Move speed: 1 = normal speed
     float GetSpeed() const { return moveComp_.GetSpeedFactor(); }
     void SetSpeed(float value) { moveComp_.SetSpeedFactor(value); }
-    uint32_t GetEnergy() const { return energy_; }
-    void SetEnergy(uint32_t value) { energy_ = value; }
-    uint32_t GetHealth() const { return health_; }
-    void SetHealth(uint32_t value) { health_ = value; }
-    uint32_t GetAdrenaline() const { return adrenaline_; }
-    void SetAdrenaline(uint32_t value) { adrenaline_ = value; }
-    uint32_t GetOvercast() const { return overcast_; }
-    void SetOvercast(uint32_t value) { overcast_ = value; }
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
 
@@ -113,6 +107,7 @@ public:
     {
         return 0;
     }
+    virtual uint32_t GetGroupId() const { return 0; }
     uint32_t GetProfIndex() const
     {
         return skills_.prof1_.index;
@@ -162,13 +157,10 @@ public:
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
     Components::CollisionComp collisionComp_;
+    Components::ResourceComp resourceComp_;
 
     EffectList effects_;
     SkillBar skills_;
-    uint32_t energy_;
-    uint32_t health_;
-    uint32_t adrenaline_;
-    uint32_t overcast_;
     bool undestroyable_;
 
     /// Effects may influence the cast spells speed

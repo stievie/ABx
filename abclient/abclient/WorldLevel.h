@@ -96,6 +96,7 @@ private:
     void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSpeedUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
+    void HandleObjectResourceChange(StringHash eventType, VariantMap& eventData);
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);

@@ -188,11 +188,22 @@ enum GameProtocolCodes : uint8_t
     GameObjectSelectTarget,
     GameObjectStateChange,
     GameObjectMoveSpeedChange,
+    GameObjectResourceChange,
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,
     PartyPlayerAdded,
     PartyInviteRemoved,
+};
+
+enum ResourceType : uint8_t
+{
+    ResourceTypeHealth = 1,
+    ResourceTypeEnergy,
+    ResourceTypeAdrenaline,
+    ResourceTypeOvercast,
+    ResourceTypeHealthRegen,
+    ResourceTypeEnergyRegen,
 };
 
 enum GameObjectType : uint8_t

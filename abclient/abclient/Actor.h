@@ -44,6 +44,8 @@ struct ActorStats
     unsigned energy = 0;
     unsigned maxEnergy = 0;
     int energyRegen = 0;
+    unsigned adrenaline = 0;
+    unsigned overcast = 0;
 };
 
 /// Character component, responsible for physical movement according to controls, as well as animation.
@@ -133,4 +135,6 @@ public:
     }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
     void PlayStateAnimation(float fadeTime = 0.2f);
+
+    void ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value);
 };

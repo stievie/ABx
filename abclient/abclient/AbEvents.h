@@ -103,6 +103,14 @@ URHO3D_EVENT(E_OBJECTSELECTED, ObjectSelected)
     URHO3D_PARAM(P_TARGETID, TargetId);
 }
 
+URHO3D_EVENT(E_OBJECTRESOURCECHANGED, ObjectResourceChanged)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_RESTYPE, ResType);              // uint32_t
+    URHO3D_PARAM(P_VALUE, Value);                  // int32_t
+}
+
 URHO3D_EVENT(E_SERVERMESSAGE, ServerMessage)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);

@@ -580,6 +580,31 @@ void Actor::PlayStateAnimation(float fadeTime)
     }
 }
 
+void Actor::ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value)
+{
+    switch (resType)
+    {
+    case AB::GameProtocol::ResourceTypeHealth:
+        stats_.health = static_cast<unsigned>(Max(0, value));
+        break;
+    case AB::GameProtocol::ResourceTypeEnergy:
+        stats_.energy = static_cast<unsigned>(Max(0, value));
+        break;
+    case AB::GameProtocol::ResourceTypeAdrenaline:
+        stats_.adrenaline = static_cast<unsigned>(Max(0, value));
+        break;
+    case AB::GameProtocol::ResourceTypeOvercast:
+        stats_.overcast = static_cast<unsigned>(Max(0, value));
+        break;
+    case AB::GameProtocol::ResourceTypeHealthRegen:
+        stats_.healthRegen = value;
+        break;
+    case AB::GameProtocol::ResourceTypeEnergyRegen:
+        stats_.energyRegen = value;
+        break;
+    }
+}
+
 void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState)
 {
     AB::GameProtocol::CreatureState prevState = creatureState_;

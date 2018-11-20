@@ -850,6 +850,18 @@ void FwClient::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t 
     QueueEvent(AbEvents::E_OBJECTSELECTED, eData);
 }
 
+void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
+    AB::GameProtocol::ResourceType resType, int16_t value)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectResourceChanged;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_RESTYPE] = static_cast<uint32_t>(resType);
+    eData[P_VALUE] = static_cast<int32_t>(value);
+    QueueEvent(AbEvents::E_OBJECTRESOURCECHANGED, eData);
+}
+
 void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {

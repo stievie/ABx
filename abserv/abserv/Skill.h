@@ -74,11 +74,11 @@ public:
 
     AB::Entities::Skill data_;
 
-    uint32_t energy_;
-    uint32_t adrenaline_;
-    uint32_t activation_;
-    uint32_t recharge_;
-    uint32_t overcast_;
+    int16_t energy_;
+    int16_t adrenaline_;
+    int16_t activation_;
+    int16_t recharge_;
+    int16_t overcast_;
 };
 
 }

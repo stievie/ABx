@@ -237,6 +237,9 @@
     <ClInclude Include="actions\AiMoveTo.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -418,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="filters\AiSelectAggro.cpp">
       <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceComp.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

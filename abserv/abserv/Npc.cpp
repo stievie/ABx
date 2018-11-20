@@ -7,6 +7,7 @@
 #include "Subsystems.h"
 #include "AiCharacter.h"
 #include "Random.h"
+#include "Party.h"
 
 namespace Game {
 
@@ -24,6 +25,8 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
+        .addFunction("GetGroupId", &Npc::GetGroupId)
+        .addFunction("SetGroupId", &Npc::SetGroupId)
     );
 }
 
@@ -33,6 +36,7 @@ Npc::Npc() :
     luaInitialized_(false),
     aiCharacter_(nullptr)
 {
+    groupId_ = Party::GetNewId();
     InitializeLua();
 }
 
@@ -53,6 +57,9 @@ bool Npc::LoadScript(const std::string& fileName)
     level_ = luaState_["level"];
     modelIndex_ = luaState_["modelIndex"];
     sex_ = luaState_["sex"];
+    if (ScriptManager::IsNumber(luaState_, "group_id"))
+        groupId_ = luaState_["group_id"];
+
     stateComp_.SetState(luaState_["creatureState"], true);
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
@@ -119,6 +126,15 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onUpdate"))
         luaState_["onUpdate"](timeElapsed);
+}
+
+void Npc::SetGroupId(uint32_t value)
+{
+    if (groupId_ != value)
+    {
+        GetGame()->map_->SetEntityGroupId(GetAi(), groupId_, value);
+        groupId_ = value;
+    }
 }
 
 bool Npc::SetBehaviour(const std::string& name)

@@ -4,6 +4,7 @@
 #include "ScriptManager.h"
 #include "DataProvider.h"
 #include "Subsystems.h"
+#include "ResourceComp.h"
 
 namespace Game {
 
@@ -57,8 +58,8 @@ bool Skill::StartUse(Actor* source, Actor* target)
 {
     if (!IsUsing() ||
         !IsRecharged() ||
-        source->energy_ < energy_ ||
-        source->adrenaline_ < adrenaline_)
+        source->resourceComp_.GetEnergy() < energy_ ||
+        source->resourceComp_.GetAdrenaline() < adrenaline_)
         return false;
 
     startUse_ = Utils::AbTick();
@@ -72,9 +73,9 @@ bool Skill::StartUse(Actor* source, Actor* target)
         recharged_ = 0;
         return false;
     }
-    source->energy_ -= energy_;
-    source->adrenaline_ -= adrenaline_;
-    source->overcast_ += overcast_;
+    source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, energy_);
+    source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, adrenaline_);
+    source->resourceComp_.SetOvercast(Components::SetValueType::Increase, overcast_);
     return true;
 }
 

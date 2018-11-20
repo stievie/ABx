@@ -61,6 +61,10 @@ public:
     {
         return data_.modelIndex;
     }
+    uint32_t GetGroupId() const final override
+    {
+        return party_->id_;
+    }
 
     uint32_t GetLevel() const final override { return data_.level; }
     AB::GameProtocol::GameObjectType GetType() const final override
@@ -74,6 +78,7 @@ public:
         return static_cast<uint32_t>(Utils::AbTick() - lastPing_);
     }
 
+    void Initialize();
     void Logout();
     void Ping();
     void ChangeInstance(const std::string mapUuid);
@@ -88,14 +93,8 @@ public:
     {
         party_ = party;
     }
-    std::shared_ptr<Party> GetParty()
+    std::shared_ptr<Party> GetParty() const
     {
-        if (!party_)
-        {
-            party_ = std::make_shared<Party>(GetThis());
-            if (GetGame())
-                party_->SetPartySize(GetGame()->data_.partySize);
-        }
         return party_;
     }
 
