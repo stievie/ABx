@@ -62,8 +62,19 @@ void ResourceComp::SetMaxEnergy(int16_t value)
 
 void ResourceComp::Update(uint32_t timeElapsed)
 {
-    SetValue(SetValueType::Increase, healthRegen_ * timeElapsed, health_);
-    SetValue(SetValueType::Increase, energyRegen_ * timeElapsed, energy_);
+    // 2 regen per sec
+    const float sec = static_cast<float>(timeElapsed) / 1000.0f;
+    if (!owner_.IsDead())
+    {
+        // Jeder Pfeil erhöht oder senkt die Lebenspunkte um genau zwei pro Sekunde.
+        if (SetValue(SetValueType::Increase, (healthRegen_ * 2.0f) * sec, health_))
+            dirtyFlags_ |= ResourceDirty::DirtyHealth;
+        // Also bedeutet 1 Pfeil eine Regeneration (oder Degeneration) von 0,33 Energiepunkten pro Sekunde.
+        if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, energy_))
+            dirtyFlags_ |= ResourceDirty::DirtyEnergy;
+        if (health_ <= 0.0f)
+            owner_.Die();
+    }
 }
 
 void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = false */)

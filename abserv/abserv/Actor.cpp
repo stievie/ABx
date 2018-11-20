@@ -62,6 +62,10 @@ Actor::Actor() :
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
+    resourceComp_.SetMaxHealth(500);
+    resourceComp_.SetMaxEnergy(50);
+    resourceComp_.SetHealth(Components::SetValueType::Absolute, 500);
+    resourceComp_.SetEnergy(Components::SetValueType::Absolute, 50);
 }
 
 bool Actor::GotoHomePos()
