@@ -49,6 +49,11 @@ void Player::SetGame(std::shared_ptr<Game> game)
 void Player::Initialize()
 {
     party_ = std::make_shared<Party>(GetThis());
+    // TODO
+    resourceComp_.SetMaxEnergy(50);
+    resourceComp_.SetMaxHealth(500);
+    resourceComp_.SetHealth(Components::SetValueType::Absolute, 500);
+    resourceComp_.SetEnergy(Components::SetValueType::Absolute, 50);
 }
 
 void Player::Logout()

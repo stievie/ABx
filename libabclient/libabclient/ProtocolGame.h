@@ -64,8 +64,7 @@ protected:
     void ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message);
     void ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message);
     void ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message);
-    void ParseResourceChanged(AB::GameProtocol::GameProtocolCodes opCode,
-        const std::shared_ptr<InputMessage>& message);
+    void ParseResourceChanged(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame(Crypto::DHKeys& keys);
     ~ProtocolGame() = default;

@@ -42,52 +42,94 @@ void ResourceComp::SetEnergyRegen(SetValueType t, int8_t value)
         dirtyFlags_ |= ResourceDirty::DirtyEnergyRegen;
 }
 
+void ResourceComp::SetMaxHealth(int16_t value)
+{
+    if (maxHealth_ != value)
+    {
+        maxHealth_ = value;
+        dirtyFlags_ |= ResourceDirty::DirtyMaxHealth;
+    }
+}
+
+void ResourceComp::SetMaxEnergy(int16_t value)
+{
+    if (maxEnergy_ != value)
+    {
+        maxEnergy_ = value;
+        dirtyFlags_ |= ResourceDirty::DirtyMaxEnergy;
+    }
+}
+
 void ResourceComp::Update(uint32_t timeElapsed)
 {
     SetValue(SetValueType::Increase, healthRegen_ * timeElapsed, health_);
     SetValue(SetValueType::Increase, energyRegen_ * timeElapsed, energy_);
 }
 
-void ResourceComp::Write(Net::NetworkMessage& message)
+void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = false */)
 {
-    if (dirtyFlags_ == 0)
+    if (!ignoreDirty && dirtyFlags_ == 0)
         return;
 
-    message.AddByte(AB::GameProtocol::GameObjectResourceChange);
-    message.Add<uint32_t>(owner_.id_);
-
-    if ((dirtyFlags_ & ResourceDirty::DirtyHealth) == ResourceDirty::DirtyHealth)
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyHealth) == ResourceDirty::DirtyHealth)
     {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeHealth);
         message.Add<int16_t>(static_cast<int16_t>(health_));
     }
-    if ((dirtyFlags_ & ResourceDirty::DirtyEnergy) == ResourceDirty::DirtyEnergy)
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyEnergy) == ResourceDirty::DirtyEnergy)
     {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeEnergy);
         message.Add<int16_t>(static_cast<int16_t>(energy_));
     }
-    if ((dirtyFlags_ & ResourceDirty::DirtyAdrenaline) == ResourceDirty::DirtyAdrenaline)
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyAdrenaline) == ResourceDirty::DirtyAdrenaline)
     {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeAdrenaline);
         message.Add<int16_t>(static_cast<int16_t>(adrenaline_));
     }
-    if ((dirtyFlags_ & ResourceDirty::DirtyOvercast) == ResourceDirty::DirtyOvercast)
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyOvercast) == ResourceDirty::DirtyOvercast)
     {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeOvercast);
         message.Add<int16_t>(static_cast<int16_t>(overcast_));
     }
-    if ((dirtyFlags_ & ResourceDirty::DirtyHealthRegen) == ResourceDirty::DirtyHealthRegen)
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyHealthRegen) == ResourceDirty::DirtyHealthRegen)
     {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeHealthRegen);
         message.Add<int8_t>(static_cast<int8_t>(healthRegen_));
     }
-    if ((dirtyFlags_ & ResourceDirty::DirtyEnergyRegen) == ResourceDirty::DirtyEnergyRegen)
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyEnergyRegen) == ResourceDirty::DirtyEnergyRegen)
     {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeEnergyRegen);
         message.Add<int8_t>(static_cast<int8_t>(energyRegen_));
     }
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyMaxHealth) == ResourceDirty::DirtyMaxHealth)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.AddByte(AB::GameProtocol::ResourceTypeMaxHealth);
+        message.Add<int16_t>(maxHealth_);
+    }
+    if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyMaxEnergy) == ResourceDirty::DirtyMaxEnergy)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectResourceChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.AddByte(AB::GameProtocol::ResourceTypeMaxEnergy);
+        message.Add<int16_t>(maxEnergy_);
+    }
 
-    dirtyFlags_ = 0;
+    if (!ignoreDirty)
+        dirtyFlags_ = 0;
 }
 
 }

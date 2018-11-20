@@ -204,6 +204,8 @@ enum ResourceType : uint8_t
     ResourceTypeOvercast,
     ResourceTypeHealthRegen,
     ResourceTypeEnergyRegen,
+    ResourceTypeMaxHealth,
+    ResourceTypeMaxEnergy,
 };
 
 enum GameObjectType : uint8_t

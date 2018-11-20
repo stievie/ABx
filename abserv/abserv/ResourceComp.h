@@ -24,6 +24,8 @@ enum ResourceDirty
     DirtyOvercast = 1 << 3,
     DirtyHealthRegen = 1 << 4,
     DirtyEnergyRegen = 1 << 5,
+    DirtyMaxHealth = 1 << 6,
+    DirtyMaxEnergy = 1 << 7
 };
 
 class ResourceComp
@@ -36,6 +38,8 @@ private:
     float overcast_;
     float healthRegen_;
     float energyRegen_;
+    int16_t maxHealth_;
+    int16_t maxEnergy_;
     uint32_t dirtyFlags_;
     bool SetValue(SetValueType t, float value, float& out)
     {
@@ -90,9 +94,13 @@ public:
     void SetHealthRegen(SetValueType t, int8_t value);
     int8_t GetEnergyRegen() const { return static_cast<int8_t>(energyRegen_); }
     void SetEnergyRegen(SetValueType t, int8_t value);
+    int16_t GetMaxHealth() const { return static_cast<int16_t>(maxHealth_); }
+    void SetMaxHealth(int16_t value);
+    int16_t GetMaxEnergy() const { return static_cast<int16_t>(maxEnergy_); }
+    void SetMaxEnergy(int16_t value);
 
     void Update(uint32_t timeElapsed);
-    void Write(Net::NetworkMessage& message);
+    void Write(Net::NetworkMessage& message, bool ignoreDirty = false);
 };
 
 }

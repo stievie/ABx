@@ -173,6 +173,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     Serialize(data);
     const char* cData = data.GetStream(dataSize);
     msg.AddString(std::string(cData, dataSize));
+    resourceComp_.Write(msg, true);
 }
 
 void Actor::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
@@ -515,7 +516,6 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         message.Add<uint32_t>(id_);
         message.Add<float>(moveComp_.GetSpeedFactor());
     }
-    resourceComp_.Write(message);
 
     switch (stateComp_.GetState())
     {
@@ -568,6 +568,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         effect->Update(timeElapsed);
     }
 
+    resourceComp_.Write(message);
 }
 
 bool Actor::Die()
@@ -585,7 +586,9 @@ bool Actor::Die()
 
 bool Actor::IsEnemy(Actor* other)
 {
-    // TODO:
+    if (GetGroupId() == other->GetGroupId())
+        return false;
+    // TODO: What if different groups are allies
     return true;
 }
 
