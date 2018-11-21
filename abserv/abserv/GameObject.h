@@ -32,9 +32,10 @@ class Actor;
 class Npc;
 class Player;
 
-enum class Ranges
+/// Ranges. Distance is defined in ./config/meschanics.lus
+enum class Ranges : uint8_t
 {
-    Aggro,
+    Aggro = 0,
     Compass,
     Spirit,
     Earshot,

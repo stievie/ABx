@@ -1,5 +1,5 @@
 include("/scripts/includes/chat.lua")
-include("/scripts/actors/consts.lua")
+include("/scripts/includes/consts.lua")
 
 name = "Pedestrian"
 level = 20

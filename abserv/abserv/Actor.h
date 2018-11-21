@@ -29,6 +29,7 @@ private:
     void _LuaSetHomePos(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
     void _LuaFollowObject(std::shared_ptr<GameObject> object);
+    std::vector<std::shared_ptr<Actor>> _LuaGetActorsInRange(Ranges range);
     void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;

@@ -46,9 +46,8 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
         game->id_ = GetNewGameId();
         games_[game->id_] = game;
         maps_[mapUuid].push_back(game.get());
-        game->instanceData_.number = static_cast<uint16_t>(maps_[mapUuid].size());
     }
-    game->SetState(Game::ExecutionState::Startup);
+    game->instanceData_.number = static_cast<uint16_t>(maps_[mapUuid].size());
     game->Load(mapUuid);
     return game;
 }

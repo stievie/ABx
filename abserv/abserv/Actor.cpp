@@ -44,6 +44,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GotoHomePos", &Actor::GotoHomePos)
         .addFunction("IsDead", &Actor::IsDead)
         .addFunction("Die", &Actor::Die)
+        .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
     );
 }
 
@@ -148,6 +149,18 @@ std::vector<float> Actor::_LuaGetHomePos()
 void Actor::_LuaFollowObject(std::shared_ptr<GameObject> object)
 {
     FollowObject(object);
+}
+
+std::vector<std::shared_ptr<Actor>> Actor::_LuaGetActorsInRange(Ranges range)
+{
+    std::vector<std::shared_ptr<Actor>> result;
+    VisitInRange(range, [&](GameObject* const o)
+    {
+        AB::GameProtocol::GameObjectType t = o->GetType();
+        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            result.push_back(o->GetThisDynamic<Actor>());
+    });
+    return result;
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)

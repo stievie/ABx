@@ -1,4 +1,4 @@
-include("/scripts/actors/consts.lua")
+include("/scripts/includes/consts.lua")
 
 name = ""
 level = 20
