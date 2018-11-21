@@ -71,6 +71,7 @@ public:
     {
         return target_;
     }
+    void AddRecharge(int16_t ms);
 
     AB::Entities::Skill data_;
 

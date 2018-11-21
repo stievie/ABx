@@ -74,4 +74,4 @@ Other shortcuts are shown in `[` `]`.
 ## Settings
 
 It saves the settings on exit to the directory `c:\Users\<username>\AppData\Roaming\Trill\FW\` (Win7)
-or if the `-prefpath` command line argument is given to this directory.
+or if the `-prefpath` command line argument is given, to this directory.

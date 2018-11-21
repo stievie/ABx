@@ -25,6 +25,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetSelectedObject", &Actor::GetSelectedObject)
         .addFunction("SetSelectedObject", &Actor::SetSelectedObject)
         .addFunction("UseSkill", &Actor::UseSkill)
+        .addFunction("GetCurrentSkill", &Actor::GetCurrentSkill)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -41,6 +42,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
         .addFunction("SetHomePos", &Actor::_LuaSetHomePos)
         .addFunction("GotoHomePos", &Actor::GotoHomePos)
+        .addFunction("IsDead", &Actor::IsDead)
+        .addFunction("Die", &Actor::Die)
     );
 }
 
@@ -178,6 +181,14 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     const char* cData = data.GetStream(dataSize);
     msg.AddString(std::string(cData, dataSize));
     resourceComp_.Write(msg, true);
+}
+
+Skill* Actor::GetCurrentSkill() const
+{
+    Skill* skill = skills_.GetCurrentSkill();
+    if (!skill || !skill->IsUsing())
+        return nullptr;
+    return skill;
 }
 
 void Actor::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)

@@ -33,7 +33,7 @@ public:
     ~SkillBar() = default;
 
     bool UseSkill(int index, std::shared_ptr<Actor> target);
-    Skill* GetCurrentSkill();
+    Skill* GetCurrentSkill() const;
     void Update(uint32_t timeElapsed);
     std::string Encode();
     bool Decode(const std::string& str);

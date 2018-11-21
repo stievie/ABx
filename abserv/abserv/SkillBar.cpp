@@ -26,7 +26,7 @@ bool SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
     return s->StartUse(owner_, target.get());
 }
 
-Skill* SkillBar::GetCurrentSkill()
+Skill* SkillBar::GetCurrentSkill() const
 {
     if (currentSkillIndex_ > -1 && currentSkillIndex_ < PLAYER_MAX_SKILLS)
         return skills_[currentSkillIndex_].get();

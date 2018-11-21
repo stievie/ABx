@@ -126,6 +126,7 @@ public:
     {
         return &skills_;
     }
+    Skill* GetCurrentSkill() const;
     void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);

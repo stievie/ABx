@@ -73,6 +73,10 @@ void ResourceComp::Update(uint32_t timeElapsed)
     // Also bedeutet 1 Pfeil eine Regeneration (oder Degeneration) von 0,33 Energiepunkten pro Sekunde.
     if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, energy_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergy;
+    // Überzaubert wird alle drei Sekunden um einen Punkt abgebaut
+    if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, overcast_))
+        dirtyFlags_ |= ResourceDirty::DirtyOvercast;
+
     if (health_ <= 0.0f)
         owner_.Die();
 }

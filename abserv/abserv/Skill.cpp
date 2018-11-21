@@ -15,6 +15,7 @@ void Skill::RegisterLua(kaguya::State& state)
         .addFunction("Interrupt", &Skill::Interrupt)
         .addFunction("GetSource", &Skill::GetSource)
         .addFunction("GetTarget", &Skill::GetTarget)
+        .addFunction("AddRecharge", &Skill::AddRecharge)
     );
 }
 
@@ -83,6 +84,7 @@ void Skill::CancelUse()
 {
     luaState_["onCancelUse"]();
     startUse_ = 0;
+    // No recharging when canceled
     recharged_ = 0;
     source_ = nullptr;
     target_ = nullptr;
@@ -95,6 +97,11 @@ void Skill::Interrupt()
     source_ = nullptr;
     target_ = nullptr;
     // recharged_ remains
+}
+
+void Skill::AddRecharge(int16_t ms)
+{
+    recharge_ += ms;
 }
 
 }
