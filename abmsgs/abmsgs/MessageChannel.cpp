@@ -95,6 +95,8 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         channel_.Deliver(msg);
         break;
     case Net::MessageType::Shutdown:
+    case Net::MessageType::Spawn:
+    case Net::MessageType::ClearCache:
     {
         // Send shutdown message to server
         std::string serverId = msg.GetBodyString();
@@ -102,38 +104,7 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         {
             MessageParticipant* server = GetServer(serverId);
             if (server)
-            {
-                LOG_INFO << "Sending shutdown message to server " << serverId << std::endl;
                 server->Deliver(msg);
-            }
-        }
-        break;
-    }
-    case Net::MessageType::Spawn:
-    {
-        std::string serverId = msg.GetBodyString();
-        if (!serverId.empty())
-        {
-            MessageParticipant* server = GetServer(serverId);
-            if (server)
-            {
-                LOG_INFO << "Sending spawn message to server " << serverId << std::endl;
-                server->Deliver(msg);
-            }
-        }
-        break;
-    }
-    case Net::MessageType::ClearCache:
-    {
-        std::string serverId = msg.GetBodyString();
-        if (!serverId.empty())
-        {
-            MessageParticipant* server = GetServer(serverId);
-            if (server)
-            {
-                LOG_INFO << "Sending clear cache message to server " << serverId << std::endl;
-                server->Deliver(msg);
-            }
         }
         break;
     }
