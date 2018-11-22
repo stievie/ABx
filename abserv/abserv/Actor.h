@@ -11,6 +11,8 @@
 #include "CollisionComp.h"
 #include "AttackComp.h"
 #include "EffectsComp.h"
+#include "EquipComp.h"
+#include "SkillsComp.h"
 
 namespace Game {
 
@@ -23,10 +25,11 @@ class Actor : public GameObject
     friend class Components::ResourceComp;
     friend class Components::AttackComp;
     friend class Components::EffectsComp;
+    friend class Components::EquipComp;
+    friend class Components::SkillsComp;
 public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
 private:
-    void DeleteEffect(uint32_t index);
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
     void _LuaSetState(int state);
@@ -34,6 +37,8 @@ private:
     std::vector<float> _LuaGetHomePos();
     void _LuaFollowObject(std::shared_ptr<GameObject> object);
     std::vector<std::shared_ptr<Actor>> _LuaGetActorsInRange(Ranges range);
+    void _LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
+    void _LuaRemoveEffect(uint32_t index);
     void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;
@@ -132,9 +137,6 @@ public:
         return &skills_;
     }
     Skill* GetCurrentSkill() const;
-    void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
-    /// Remove effect before it ended
-    void RemoveEffect(uint32_t index);
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     bool Die();
@@ -160,15 +162,17 @@ public:
     void FollowObject(uint32_t objectId);
     void UseSkill(uint32_t index);
 
+    SkillBar skills_;
+
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
     Components::CollisionComp collisionComp_;
     Components::ResourceComp resourceComp_;
     Components::AttackComp attackComp_;
     Components::EffectsComp effectsComp_;
+    Components::EquipComp equipComp_;
+    Components::SkillsComp skillsComp_;
 
-    EffectList effects_;
-    SkillBar skills_;
     bool undestroyable_;
 
     /// Effects may influence the cast spells speed

@@ -203,6 +203,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectsComp.h" />
+    <ClInclude Include="EquipComp.h" />
     <ClInclude Include="filters\AiSelectAggro.h" />
     <ClInclude Include="filters\AiSelectVisible.h" />
     <ClInclude Include="FriendList.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="Skill.h" />
     <ClInclude Include="SkillBar.h" />
     <ClInclude Include="SkillManager.h" />
+    <ClInclude Include="SkillsComp.h" />
     <ClInclude Include="StateComp.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -269,6 +271,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EffectsComp.cpp" />
+    <ClCompile Include="EquipComp.cpp" />
     <ClCompile Include="filters\AiSelectAggro.cpp" />
     <ClCompile Include="filters\AiSelectVisible.cpp" />
     <ClCompile Include="FriendList.cpp" />
@@ -311,6 +314,7 @@
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="SkillBar.cpp" />
     <ClCompile Include="SkillManager.cpp" />
+    <ClCompile Include="SkillsComp.cpp" />
     <ClCompile Include="StateComp.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

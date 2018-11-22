@@ -246,6 +246,12 @@
     <ClInclude Include="EffectsComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="EquipComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillsComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -435,6 +441,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="EffectsComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillsComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

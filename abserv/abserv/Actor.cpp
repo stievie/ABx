@@ -31,8 +31,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
         .addFunction("GetSpeed", &Actor::GetSpeed)
         .addFunction("SetSpeed", &Actor::SetSpeed)
-        .addFunction("AddEffect", &Actor::AddEffect)
-        .addFunction("RemoveEffect", &Actor::RemoveEffect)
+        .addFunction("AddEffect", &Actor::_LuaAddEffect)
+        .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
@@ -50,13 +50,15 @@ void Actor::RegisterLua(kaguya::State& state)
 
 Actor::Actor() :
     GameObject(),
+    skills_(this),
     moveComp_(*this),
     autorunComp_(*this),
     collisionComp_(*this),
     resourceComp_(*this),
     attackComp_(*this),
     effectsComp_(*this),
-    skills_(this),
+    equipComp_(*this),
+    skillsComp_(*this),
     undestroyable_(false),
     retriggerTimeout_(1000)
 {
@@ -165,6 +167,16 @@ std::vector<std::shared_ptr<Actor>> Actor::_LuaGetActorsInRange(Ranges range)
     return result;
 }
 
+void Actor::_LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
+{
+    effectsComp_.AddEffect(source, index, baseDuration);
+}
+
+void Actor::_LuaRemoveEffect(uint32_t index)
+{
+    effectsComp_.RemoveEffect(index);
+}
+
 bool Actor::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
@@ -203,30 +215,6 @@ Skill* Actor::GetCurrentSkill() const
     return skills_.GetCurrentSkill();
 }
 
-void Actor::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
-{
-    RemoveEffect(index);
-
-    auto effect = GetSubsystem<EffectManager>()->Get(index);
-    if (effect)
-    {
-        effects_.push_back(effect);
-        effect->Start(source, GetThis<Actor>(), baseDuration);
-    }
-}
-
-void Actor::DeleteEffect(uint32_t index)
-{
-    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
-    {
-        return current->data_.index == index;
-    });
-    if (it != effects_.end())
-    {
-        effects_.erase(it);
-    }
-}
-
 void Actor::_LuaGotoPosition(float x, float y, float z)
 {
     Math::Vector3 pos(x, y, z);
@@ -240,19 +228,6 @@ void Actor::_LuaGotoPosition(float x, float y, float z)
 int Actor::_LuaGetState()
 {
     return static_cast<int>(stateComp_.GetState());
-}
-
-void Actor::RemoveEffect(uint32_t index)
-{
-    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
-    {
-        return current->data_.index == index;
-    });
-    if (it != effects_.end())
-    {
-        (*it)->Remove();
-        DeleteEffect((*it)->data_.index);
-    }
 }
 
 void Actor::UpdateRanges()
@@ -585,16 +560,9 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
 
     attackComp_.Update(timeElapsed);
+    skillsComp_.Update(timeElapsed);
     skills_.Update(timeElapsed);
-    for (const auto& effect : effects_)
-    {
-        if (effect->cancelled_ || effect->ended_)
-        {
-            DeleteEffect(effect->data_.index);
-            continue;
-        }
-        effect->Update(timeElapsed);
-    }
+    effectsComp_.Update(timeElapsed);
 
     resourceComp_.Write(message);
 }

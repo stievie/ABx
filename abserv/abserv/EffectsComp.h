@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Effect.h"
+
 namespace Game {
 
 class Actor;
@@ -15,7 +17,14 @@ public:
         owner_(owner)
     { }
     ~EffectsComp() = default;
+
+    void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
+    void DeleteEffect(uint32_t index);
+    /// Remove effect before it ended
+    void RemoveEffect(uint32_t index);
     void Update(uint32_t timeElapsed);
+
+    EffectList effects_;
 };
 
 }
