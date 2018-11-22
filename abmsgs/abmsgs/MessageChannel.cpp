@@ -123,6 +123,20 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         }
         break;
     }
+    case Net::MessageType::ClearCache:
+    {
+        std::string serverId = msg.GetBodyString();
+        if (!serverId.empty())
+        {
+            MessageParticipant* server = GetServer(serverId);
+            if (server)
+            {
+                LOG_INFO << "Sending clear cache message to server " << serverId << std::endl;
+                server->Deliver(msg);
+            }
+        }
+        break;
+    }
     case Net::MessageType::Whipser:
         // Alternatively we could just use channel_.Deliver(msg)
         HandleWhisperMessage(msg);
