@@ -6,17 +6,16 @@ class Actor;
 
 namespace Components {
 
-class CollisionComp
+class EffectsComp
 {
 private:
     Actor& owner_;
 public:
-    explicit CollisionComp(Actor& owner) :
+    explicit EffectsComp(Actor& owner) :
         owner_(owner)
     { }
-    ~CollisionComp() = default;
-
-    void DoCollisions();
+    ~EffectsComp() = default;
+    void Update(uint32_t timeElapsed);
 };
 
 }

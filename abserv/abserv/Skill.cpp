@@ -16,6 +16,11 @@ void Skill::RegisterLua(kaguya::State& state)
         .addFunction("GetSource", &Skill::GetSource)
         .addFunction("GetTarget", &Skill::GetTarget)
         .addFunction("AddRecharge", &Skill::AddRecharge)
+        .addFunction("IsUsing", &Skill::IsUsing)
+        .addFunction("IsRecharged", &Skill::IsRecharged)
+        .addFunction("GetType", &Skill::_LuaGetType)
+        .addFunction("GetIndex", &Skill::_LuaGetIndex)
+        .addFunction("IsElite", &Skill::_LuaIsElite)
     );
 }
 

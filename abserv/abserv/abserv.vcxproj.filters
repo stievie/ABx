@@ -240,6 +240,12 @@
     <ClInclude Include="ResourceComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AttackComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectsComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -423,6 +429,12 @@
       <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
     <ClCompile Include="ResourceComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectsComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

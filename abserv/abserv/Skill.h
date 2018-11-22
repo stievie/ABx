@@ -18,6 +18,9 @@ private:
     void InitializeLua();
     Actor* source_;
     Actor* target_;
+    int _LuaGetType() const { return static_cast<int>(data_.type); }
+    uint32_t _LuaGetIndex() const { return data_.index; }
+    bool _LuaIsElite() const { return data_.isElite; }
 public:
     static void RegisterLua(kaguya::State& state);
 

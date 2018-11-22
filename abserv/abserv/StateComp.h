@@ -16,7 +16,7 @@ private:
     AB::GameProtocol::CreatureState newState_;
     int64_t lastStateChange_;
 public:
-    StateComp(GameObject& owner) :
+    explicit StateComp(GameObject& owner) :
         owner_(owner),
         newState_(AB::GameProtocol::CreatureStateIdle),
         currentState_(AB::GameProtocol::CreatureStateIdle),

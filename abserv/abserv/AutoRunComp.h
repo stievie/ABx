@@ -27,7 +27,7 @@ private:
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
 public:
-    AutoRunComp(Actor& owner) :
+    explicit AutoRunComp(Actor& owner) :
         owner_(owner),
         lastCalc_(0),
         maxDist_(1.0f),

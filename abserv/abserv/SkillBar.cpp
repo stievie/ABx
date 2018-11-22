@@ -9,6 +9,7 @@ void SkillBar::RegisterLua(kaguya::State& state)
     state["SkillBar"].setClass(kaguya::UserdataMetatable<SkillBar>()
         .addFunction("GetSkill", &SkillBar::GetSkill)
         .addFunction("GetCurrentSkill", &SkillBar::GetCurrentSkill)
+        .addFunction("UseSkill", &SkillBar::UseSkill)
     );
 }
 
@@ -29,7 +30,11 @@ bool SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 Skill* SkillBar::GetCurrentSkill() const
 {
     if (currentSkillIndex_ > -1 && currentSkillIndex_ < PLAYER_MAX_SKILLS)
-        return skills_[currentSkillIndex_].get();
+    {
+        Skill* skill = skills_[currentSkillIndex_].get();
+        if (skill && skill->IsUsing())
+            return skill;
+    }
     return nullptr;
 }
 
@@ -38,10 +43,7 @@ void SkillBar::Update(uint32_t timeElapsed)
     for (int i = 0; i < PLAYER_MAX_SKILLS; ++i)
     {
         if (skills_[i])
-        {
-            if (skills_[i]->IsUsing())
-                skills_[i]->Update(timeElapsed);
-        }
+            skills_[i]->Update(timeElapsed);
     }
 }
 

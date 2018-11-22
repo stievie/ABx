@@ -17,7 +17,7 @@ private:
     float speedFactor_;
 public:
     static constexpr float BaseSpeed = 150.0f;
-    MoveComp(Actor& owner) :
+    explicit MoveComp(Actor& owner) :
         owner_(owner),
         moveDir_(AB::GameProtocol::MoveDirectionNone),
         turnDir_(AB::GameProtocol::TurnDirectionNone),

@@ -9,6 +9,8 @@
 #include "AutoRunComp.h"
 #include "ResourceComp.h"
 #include "CollisionComp.h"
+#include "AttackComp.h"
+#include "EffectsComp.h"
 
 namespace Game {
 
@@ -19,6 +21,8 @@ class Actor : public GameObject
     friend class Components::AutoRunComp;
     friend class Components::CollisionComp;
     friend class Components::ResourceComp;
+    friend class Components::AttackComp;
+    friend class Components::EffectsComp;
 public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
 private:
@@ -160,6 +164,8 @@ public:
     Components::AutoRunComp autorunComp_;
     Components::CollisionComp collisionComp_;
     Components::ResourceComp resourceComp_;
+    Components::AttackComp attackComp_;
+    Components::EffectsComp effectsComp_;
 
     EffectList effects_;
     SkillBar skills_;

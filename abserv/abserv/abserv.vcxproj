@@ -187,6 +187,7 @@
     <ClInclude Include="AiTask.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
+    <ClInclude Include="AttackComp.h" />
     <ClInclude Include="AutoRunComp.h" />
     <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="EffectsComp.h" />
     <ClInclude Include="filters\AiSelectAggro.h" />
     <ClInclude Include="filters\AiSelectVisible.h" />
     <ClInclude Include="FriendList.h" />
@@ -254,6 +256,7 @@
     <ClCompile Include="AiRegistry.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Asset.cpp" />
+    <ClCompile Include="AttackComp.cpp" />
     <ClCompile Include="AutoRunComp.cpp" />
     <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Chat.cpp" />
@@ -265,6 +268,7 @@
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="EffectsComp.cpp" />
     <ClCompile Include="filters\AiSelectAggro.cpp" />
     <ClCompile Include="filters\AiSelectVisible.cpp" />
     <ClCompile Include="FriendList.cpp" />

@@ -54,6 +54,8 @@ Actor::Actor() :
     autorunComp_(*this),
     collisionComp_(*this),
     resourceComp_(*this),
+    attackComp_(*this),
+    effectsComp_(*this),
     skills_(this),
     undestroyable_(false),
     retriggerTimeout_(1000)
@@ -198,10 +200,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
 
 Skill* Actor::GetCurrentSkill() const
 {
-    Skill* skill = skills_.GetCurrentSkill();
-    if (!skill || !skill->IsUsing())
-        return nullptr;
-    return skill;
+    return skills_.GetCurrentSkill();
 }
 
 void Actor::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
@@ -585,6 +584,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         moveComp_.directionSet_ = false;
     }
 
+    attackComp_.Update(timeElapsed);
     skills_.Update(timeElapsed);
     for (const auto& effect : effects_)
     {

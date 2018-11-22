@@ -70,7 +70,7 @@ private:
         return false;
     }
 public:
-    ResourceComp(Actor& owner) :
+    explicit ResourceComp(Actor& owner) :
         owner_(owner),
         energy_(0.0f),
         health_(0.0f),
