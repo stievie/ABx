@@ -218,6 +218,19 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::Spawn:
     {
         GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::SpawnServer, this);
+        std::string serverId = msg.GetBodyString();
+        if (serverId.compare(serverId_) == 0)
+            GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
+        break;
+    }
+    case Net::MessageType::ClearCache:
+    {
+        std::string serverId = msg.GetBodyString();
+        if (serverId.compare(serverId_) == 0)
+        {
+            auto dataProvider = GetSubsystem<IO::DataProvider>();
+            GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&IO::DataProvider::ClearCache, dataProvider)));
+        }
         break;
     }
     case Net::MessageType::ServerJoined:

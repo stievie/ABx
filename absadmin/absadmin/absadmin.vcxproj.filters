@@ -99,6 +99,9 @@
     <ClInclude Include="AccountsJsonResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ClearCacheResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -180,6 +183,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="AccountsJsonResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ClearCacheResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

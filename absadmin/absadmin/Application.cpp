@@ -29,6 +29,7 @@
 #include "LessFileResource.h"
 #include "AccountsResource.h"
 #include "AccountsJsonResource.h"
+#include "ClearCacheResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -154,6 +155,7 @@ void Application::InitRoutes()
     Route<Resources::PasswordPostResource>("POST", "^/post/password$");
     Route<Resources::SpawnResource>("POST", "^/post/spawn$");
     Route<Resources::TerminateResource>("POST", "^/post/terminate$");
+    Route<Resources::ClearCacheResource>("POST", "^/post/clear_cache$");
     Route<Resources::UpdateAccountKeyResource>("POST", "^/post/updateaccountkey$");
     Route<Resources::CreateKeyResource>("POST", "^/post/createkey$");
 }

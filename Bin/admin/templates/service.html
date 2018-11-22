@@ -91,6 +91,9 @@ $include {{_header.html}}
                     <div class="ln_solid"></div>
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        $if has_cache {{
+                        <input type="button" id="clearcache_button" data-uuid="${uuid}" data-name="${name}" class="btn btn-warning" value="Clear Cache">
+                        }}
                         $if spawnable {{
                         <input type="button" id="spawn_button" data-uuid="${uuid}" class="btn btn-success" value="Spawn">
                         }}
@@ -110,6 +113,21 @@ $include {{_header.html}}
 
 <script>
 $$(document).ready(function() {
+  $if has_cache {{
+  $$("#clearcache_button").click(function() {
+    var _uuid = $$(this).data("uuid");
+    $$.post("post/clear_cache", { uuid: _uuid }, function(data, textStatus, xhr)
+    {
+      if (xhr.status == 200 && data.status === "OK")
+      {
+      }
+      else
+        alert(data.message);
+    });
+
+  });
+  }}
+
   $if spawnable {{
   $$("#spawn_button").click(function() {
     var _uuid = $$(this).data("uuid");
