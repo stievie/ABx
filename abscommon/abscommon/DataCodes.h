@@ -16,6 +16,8 @@ enum class OpCodes : uint8_t
     Invalidate,
     Preload,
     Exists,
+    // Clear all cache
+    Clear,
     // Responses
     Status,
     Data

@@ -46,6 +46,7 @@ public:
     bool Invalidate(const IO::DataKey& key);
     bool Preload(const IO::DataKey& key);
     bool Exists(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data);
+    bool Clear(const IO::DataKey& key);
 
     // Client compatible Methods
     template<typename E>

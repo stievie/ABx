@@ -6,6 +6,7 @@
 #include "DataClient.h"
 #include "Subsystems.h"
 #include "MessageClient.h"
+#include <AB/Entities/Service.h>
 
 namespace Resources {
 
@@ -14,13 +15,30 @@ bool ClearCacheResource::ClearCache(const std::string& uuid)
     if (uuid.empty() || uuids::uuid(uuid).nil())
         return false;
 
-    auto msgClient = GetSubsystem<Net::MessageClient>();
-    if (!msgClient)
+
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    AB::Entities::Service s;
+    s.uuid = uuid;
+    if (!dataClient->Read(s))
         return false;
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::ClearCache;
-    msg.SetBodyString(uuid);
-    return msgClient->Write(msg);
+
+    if (s.type == AB::Entities::ServiceTypeGameServer)
+    {
+        auto msgClient = GetSubsystem<Net::MessageClient>();
+        if (!msgClient)
+            return false;
+        Net::MessageMsg msg;
+        msg.type_ = Net::MessageType::ClearCache;
+        msg.SetBodyString(uuid);
+        return msgClient->Write(msg);
+    }
+
+    if (s.type == AB::Entities::ServiceTypeDataServer)
+    {
+        return dataClient->Clear();
+    }
+
+    return false;
 }
 
 void ClearCacheResource::Render(std::shared_ptr<HttpsServer::Response> response)

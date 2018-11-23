@@ -103,6 +103,8 @@ public:
         const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
         return InvalidateData(aKey);
     }
+    /// Clears all cache
+    bool Clear();
     bool IsConnected() const
     {
         return connected_;

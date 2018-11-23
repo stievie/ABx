@@ -34,6 +34,7 @@ private:
     void StartInvalidateOperation();
     void StartPreloadOperation();
     void StartExistsOperation();
+    void StartClearOperation();
 
     void HandleUpdateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);
     void HandleCreateReadRawData(const asio::error_code& error, size_t bytes_transferred, size_t expected);

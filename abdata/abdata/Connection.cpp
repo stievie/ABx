@@ -221,6 +221,14 @@ void Connection::StartExistsOperation()
     });
 }
 
+void Connection::StartClearOperation()
+{
+    if (storageProvider_.Clear(key_))
+        SendStatusAndRestart(IO::ErrorCodes::Ok, "OK");
+    else
+        SendStatusAndRestart(IO::ErrorCodes::OtherErrors, "Other Error");
+}
+
 void Connection::Stop()
 {
     socket_.close();
@@ -367,6 +375,9 @@ void Connection::StartClientRequestedOp()
         break;
     case IO::OpCodes::Exists:
         AddTask(&Connection::StartExistsOperation);
+        break;
+    case IO::OpCodes::Clear:
+        AddTask(&Connection::StartClearOperation);
         break;
     case IO::OpCodes::Status:
     case IO::OpCodes::Data:

@@ -38,3 +38,9 @@ void OldestInsertionEviction::DeleteKey(const IO::DataKey& key)
         dataItems_.erase(keyItr);
     }
 }
+
+void OldestInsertionEviction::Clear()
+{
+    dataItems_.clear();
+    currentRank_ = 0;
+}

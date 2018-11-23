@@ -326,6 +326,45 @@ bool StorageProvider::Exists(const IO::DataKey& key, std::shared_ptr<std::vector
     return ExistsData(key, *data);
 }
 
+bool StorageProvider::Clear(const IO::DataKey&)
+{
+    std::vector<IO::DataKey> toDelete;
+
+    for (auto& ci : cache_)
+    {
+        bool ok = true;
+        const IO::DataKey& key = ci.first;
+        std::string table;
+        uuids::uuid id;
+        if (!key.decode(table, id))
+            return false;
+        size_t tableHash = Utils::StringHashRt(table.data());
+        if (tableHash == KEY_GAMEINSTANCES_HASH || tableHash == KEY_SERVICE_HASH)
+            // Can not delete these
+            continue;
+
+        if (ci.second.first.created)
+        {
+            // If it's in DB (created == true) update changed data in DB
+            ok = FlushData(key);
+        }
+        if (ok)
+        {
+            currentSize_ -= ci.second.second->size();
+            toDelete.push_back(key);
+        }
+    }
+    for (const auto& k : toDelete)
+    {
+        cache_.erase(k);
+        evictor_.DeleteKey(k);
+        evictor_.Clear();
+    }
+    playerNames_.clear();
+    LOG_INFO << "Cleared cache, removed " << toDelete.size() << " items" << std::endl;
+    return true;
+}
+
 void StorageProvider::Shutdown()
 {
     // The only thing that not called from the dispatcher thread, so lock it.
@@ -350,14 +389,14 @@ void StorageProvider::CleanCache()
         return current.second.first.deleted;
     })) != cache_.end())
     {
-        bool error = false;
+        bool ok = true;
         const IO::DataKey& key = (*i).first;
         if ((*i).second.first.created)
         {
             // If it's in DB (created == true) update changed data in DB
-            error = FlushData(key);
+            ok = FlushData(key);
         }
-        if (!error)
+        if (ok)
         {
             // Remove from players cache
             RemovePlayerFromCache(key);

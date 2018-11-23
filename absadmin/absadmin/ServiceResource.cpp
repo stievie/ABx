@@ -37,7 +37,8 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
     objects["arguments"] = s.arguments;
     objects["spawnable"] = (s.type == AB::Entities::ServiceTypeFileServer ||
         s.type == AB::Entities::ServiceTypeGameServer) && (s.status == AB::Entities::ServiceStatusOnline);
-    objects["has_cache"] = (s.type == AB::Entities::ServiceTypeGameServer) && (s.status == AB::Entities::ServiceStatusOnline);
+    objects["has_cache"] = (s.type == AB::Entities::ServiceTypeGameServer || s.type == AB::Entities::ServiceTypeDataServer) &&
+        (s.status == AB::Entities::ServiceStatusOnline);
     objects["online"] = s.status == AB::Entities::ServiceStatusOnline;
     // Temporary are always running
     objects["termable"] = s.temporary;

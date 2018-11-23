@@ -54,6 +54,7 @@ public:
     virtual void AddKey(const IO::DataKey&) = 0;
     virtual void RefreshKey(const IO::DataKey&) = 0;
     virtual void DeleteKey(const IO::DataKey&) = 0;
+    virtual void Clear() = 0;
 };
 
 class OldestInsertionEviction : public EvictionStrategy
@@ -66,6 +67,7 @@ public:
     void AddKey(const IO::DataKey&) override;
     void RefreshKey(const IO::DataKey&) override;
     void DeleteKey(const IO::DataKey&) override;
+    void Clear() override;
 private:
     uint64_t GetNextRank()
     {

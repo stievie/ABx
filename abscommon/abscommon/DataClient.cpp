@@ -128,6 +128,14 @@ bool DataClient::InvalidateData(const DataKey& key)
     return MakeRequestNoData(OpCodes::Invalidate, key);
 }
 
+bool DataClient::Clear()
+{
+    // Need a key
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    DataKey key("__DUMMY__", guid);
+    return MakeRequestNoData(OpCodes::Clear, key);
+}
+
 void DataClient::InternalConnect()
 {
     if (connected_)
