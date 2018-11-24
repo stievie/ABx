@@ -47,6 +47,8 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+    bool Die() override;
+    bool Resurrect(int16_t precentHealth, int16_t percentEnergy) override;
     std::shared_ptr<ai::AI> GetAi();
     void Shutdown();
 

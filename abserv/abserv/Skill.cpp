@@ -53,13 +53,16 @@ bool Skill::LoadScript(const std::string& fileName)
 void Skill::Update(uint32_t timeElapsed)
 {
     AB_UNUSED(timeElapsed);
-    if (startUse_ != 0 && startUse_ + activation_ <= Utils::AbTick())
+    if (startUse_ != 0)
     {
-        recharged_ = Utils::AbTick() + recharge_;
-        luaState_["onEndUse"](source_, target_);
-        startUse_ = 0;
-        source_ = nullptr;
-        target_ = nullptr;
+        if (startUse_ + activation_ <= Utils::AbTick())
+        {
+            recharged_ = Utils::AbTick() + recharge_;
+            luaState_["onEndUse"](source_, target_);
+            startUse_ = 0;
+            source_ = nullptr;
+            target_ = nullptr;
+        }
     }
 }
 

@@ -22,11 +22,12 @@ function onStartUse(source, target)
   if (target:IsDead() == false) then
     return false
   end
-  print("Using Instant Rezz on " .. target:GetName())
-  return target:Resurrect(100, 100)
+  return true
 end
 
 function onEndUse(source, target)
+  print("Using Instant Rezz on " .. target:GetName())
+  return target:Resurrect(100, 100)
 end
 
 function onCancelUse()

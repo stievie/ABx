@@ -22,7 +22,7 @@ range_casting = range_aggro * 1.35
 range_projectile = range_aggro
 range_half_compass = range_compass / 2.0
 -- Close Range
-range_touch = 1.0
+range_touch = 1.1
 range_adjacent = GetValue(range_base, 3.0)
 
 range_visible = range_aggro

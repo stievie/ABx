@@ -24,11 +24,12 @@ function onStartUse(source, target)
     -- Can not kill what's already dead :(
     return false
   end
-  print("Using Instant Kill on " .. target:GetName())
-  return target:Die()
+  return true
 end
 
 function onEndUse(source, target)
+  print("Using Instant Kill on " .. target:GetName())
+  return target:Die()
 end
 
 function onCancelUse()

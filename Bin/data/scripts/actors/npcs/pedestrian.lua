@@ -37,3 +37,11 @@ end
 -- creature collides with self
 function onCollide(creature)
 end
+
+function onDied()
+  self:Say(CHAT_CHANNEL_GENERAL, "Aaaaarrrrrrggghhh")
+end
+
+function onResurrected()
+  self:Say(CHAT_CHANNEL_GENERAL, "Oh, ty")
+end

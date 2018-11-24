@@ -128,6 +128,28 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         luaState_["onUpdate"](timeElapsed);
 }
 
+bool Npc::Die()
+{
+    bool res = Actor::Die();
+    if (res)
+    {
+        if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onDied"))
+            luaState_["onDied"]();
+    }
+    return res;
+}
+
+bool Npc::Resurrect(int16_t precentHealth, int16_t percentEnergy)
+{
+    bool res = Actor::Resurrect(precentHealth, percentEnergy);
+    if (res)
+    {
+        if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onResurrected"))
+            luaState_["onResurrected"]();
+    }
+    return res;
+}
+
 void Npc::SetGroupId(uint32_t value)
 {
     if (groupId_ != value)

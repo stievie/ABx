@@ -152,9 +152,9 @@ public:
     Skill* GetCurrentSkill() const;
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
-    bool Die();
-    bool Resurrect(int16_t precentHealth, int16_t percentEnergy);
-    bool IsDead() const { return stateComp_.GetState() == AB::GameProtocol::CreatureStateDead; }
+    virtual bool Die();
+    virtual bool Resurrect(int16_t precentHealth, int16_t percentEnergy);
+    bool IsDead() const { return stateComp_.IsDead(); }
     bool IsEnemy(Actor* other);
 
     InputQueue inputs_;

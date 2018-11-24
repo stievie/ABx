@@ -47,3 +47,9 @@ end
 -- creature collides with self
 function onCollide(creature)
 end
+
+function onDied()
+end
+
+function onResurrected()
+end

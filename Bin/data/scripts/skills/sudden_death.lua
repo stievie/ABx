@@ -11,11 +11,12 @@ function onStartUse(source, target)
   if (source:IsDead()) then
     return false
   end
-  print("Using Sudden Death")
-  return source:Die()
+  return true
 end
 
 function onEndUse(source, target)
+  print("Using Sudden Death")
+  return source:Die()
 end
 
 function onCancelUse()

@@ -77,7 +77,7 @@ void ResourceComp::Update(uint32_t timeElapsed)
     if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, overcast_))
         dirtyFlags_ |= ResourceDirty::DirtyOvercast;
 
-    if (health_ <= 0.0f)
+    if (health_ <= 0.0f && !owner_.IsDead())
         owner_.Die();
 }
 
