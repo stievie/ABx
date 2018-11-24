@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include <AB/Entities/Skill.h>
 #include "Script.h"
+#include "GameObject.h"
 
 namespace Game {
 
@@ -15,6 +16,7 @@ private:
     std::shared_ptr<Script> script_;
     int64_t startUse_;
     int64_t recharged_;
+    Ranges range_;
     void InitializeLua();
     Actor* source_;
     Actor* target_;
@@ -28,6 +30,7 @@ public:
     explicit Skill(const AB::Entities::Skill& skill) :
         startUse_(0),
         recharged_(0),
+        range_(Ranges::Aggro),
         source_(nullptr),
         target_(nullptr),
         energy_(0),

@@ -34,7 +34,7 @@ bool SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
             oldSkill->CancelUse();
     }
 
-    return s->StartUse(owner_, target.get());
+    return s->StartUse(owner_, (bool)target ? target.get() : nullptr);
 }
 
 Skill* SkillBar::GetCurrentSkill() const

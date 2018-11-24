@@ -6,8 +6,16 @@ costAdrenaline = 0
 activation = 0
 recharge = 0
 overcast = 0
+range = RANGE_TOUCH
 
 function onStartUse(source, target)
+  if (target == nil) then
+    return false
+  end
+  if (source:GetId() == target:GetId()) then
+    -- Can not use this skill on self
+    return false
+  end;
   if (target:IsDead() == false) then
     return false
   end

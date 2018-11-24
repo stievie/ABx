@@ -44,7 +44,8 @@ enum class Ranges : uint8_t
     HalfCompass,
     Touch,
     Adjecent,
-    Visible
+    Visible,
+    Map                        // Whole map
 };
 
 class GameObject : public std::enable_shared_from_this<GameObject>

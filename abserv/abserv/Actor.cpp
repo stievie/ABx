@@ -418,18 +418,16 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                 skill = GetSkill(skillIndex);
                 if (skill)
                 {
+                    std::shared_ptr<Actor> target;
                     if (auto selObj = selectedObject_.lock())
-                    {
-                        std::shared_ptr<Actor> target = selObj->GetThisDynamic<Actor>();
-                        if (target)
-                        {
-                            // Can use skills only on Creatures not all GameObjects
-                            skills_.UseSkill(skillIndex, target);
-                            // These do not change the state
-                            if (skill->IsChangingState())
-                                stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
-                        }
-                    }
+                        target = selObj->GetThisDynamic<Actor>();
+                    // Can use skills only on Creatures not all GameObjects.
+                    // But a target is not mandatory, the Skill script will decide
+                    // if it needs a target, and may fail.
+                    bool succ = skills_.UseSkill(skillIndex, target);
+                    // These do not change the state
+                    if (succ && skill->IsChangingState())
+                        stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
                 }
             }
             break;

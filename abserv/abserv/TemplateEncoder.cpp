@@ -47,7 +47,7 @@ std::string TemplateEncoder::Encode(const Game::SkillBar& skills)
 
 bool TemplateEncoder::Decode(const std::string& templ,
     AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-    Game::Attributes attributes, std::array<uint32_t, PLAYER_MAX_SKILLS>& skills)
+    Game::Attributes& attributes, std::array<uint32_t, PLAYER_MAX_SKILLS>& skills)
 {
     if (templ.empty())
         return false;

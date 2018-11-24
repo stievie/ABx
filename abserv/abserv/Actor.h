@@ -100,6 +100,18 @@ public:
         for (const auto o : ranges_[range])
             func(o);
     }
+    bool IsInRange(Ranges range, Actor* actor)
+    {
+        if (!actor)
+            return false;
+        if (range == Ranges::Map)
+            return true;
+        std::lock_guard<std::mutex> lock(lock_);
+        for (const auto& o : ranges_[range])
+            if (o->id_ == actor->id_)
+                return true;
+        return false;
+    }
 
     /// Move speed: 1 = normal speed
     float GetSpeed() const { return moveComp_.GetSpeedFactor(); }

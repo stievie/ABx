@@ -43,6 +43,8 @@ bool Skill::LoadScript(const std::string& fileName)
     activation_ = luaState_["activation"];
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
+    if (ScriptManager::IsNumber(luaState_, "range"))
+        range_ = static_cast<Ranges>(luaState_["range"]);
 
     return true;
 }
@@ -66,6 +68,8 @@ bool Skill::StartUse(Actor* source, Actor* target)
         !IsRecharged() ||
         source->resourceComp_.GetEnergy() < energy_ ||
         source->resourceComp_.GetAdrenaline() < adrenaline_)
+        return false;
+    if (!source->IsInRange(range_, target))
         return false;
 
     startUse_ = Utils::AbTick();
