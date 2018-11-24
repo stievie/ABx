@@ -76,6 +76,7 @@ private:
     {
         return startTime_;
     }
+    int _LuaGetType() const { return data_.type; }
 public:
     static void RegisterLua(kaguya::State& state);
 

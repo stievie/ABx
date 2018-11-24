@@ -51,6 +51,7 @@ void Game::RegisterLua(kaguya::State& state)
 {
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
         .addFunction("GetName", &Game::GetName)
+        .addFunction("GetType", &Game::_LuaGetType)
         // Get any game object by ID
         .addFunction("GetObject", &Game::GetObjectById)
         // Get player of game by ID or name

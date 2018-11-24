@@ -29,7 +29,11 @@ end
 
 -- self was selected by creature
 function onSelected(creature)
-  self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
+  if (creature:IsDead()) then
+    self:Say(CHAT_CHANNEL_GENERAL, "Wow, how did you manage to die here? Noob!")
+  else
+    self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
+  end
 --  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
   -- Testing Raycast
 --  local pos = creature:GetPosition();

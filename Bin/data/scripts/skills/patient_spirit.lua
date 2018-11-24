@@ -1,4 +1,5 @@
-include("scripts/skills/consts.lua")
+include("/scripts/includes/consts.lua")
+include("/scripts/includes/skill_consts.lua")
 
 costEnergy = -5
 costAdrenaline = 0
