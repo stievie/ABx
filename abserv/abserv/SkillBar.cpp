@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "SkillBar.h"
-#include <base64.h>
+#include "TemplateEncoder.h"
+#include "Subsystems.h"
+#include "DataClient.h"
+#include "UuidUtils.h"
+#include "SkillManager.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -15,7 +20,12 @@ void SkillBar::RegisterLua(kaguya::State& state)
 
 bool SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 {
+    if (index < 0 || index >= PLAYER_MAX_SKILLS)
+        return false;
     Skill* s = skills_[index].get();
+    if (!s)
+        return false;
+
     if (s->IsChangingState())
     {
         // If changing state cancel old skill. Only one changing state skill at a time.
@@ -47,25 +57,41 @@ void SkillBar::Update(uint32_t timeElapsed)
     }
 }
 
-// https://wiki.guildwars.com/wiki/Skill_template_format
-// https://wiki.guildwars.com/wiki/Equipment_template_format
-// OgUUcRrg1MT6WOBqGIG/aKHXi+G
 std::string SkillBar::Encode()
 {
-    // TODO:
-    std::vector<uint8_t> buff;
-    // Type, version
-    buff.push_back((0xe << 4) | 0);
-
-    return base64::encode(buff.data(), buff.size());
+    return IO::TemplateEncoder::Encode(*this);
 }
 
-bool SkillBar::Decode(const std::string& str)
+bool SkillBar::Load(const std::string& str, bool locked)
 {
-    // TODO:
-    std::string s = base64::decode(str);
-    if (s[0] != ((0xe << 4) | 0))
+    AB::Entities::Profession p1;
+    AB::Entities::Profession p2;
+    Attributes attribs;
+    std::array<uint32_t, PLAYER_MAX_SKILLS> skills;
+    if (!IO::TemplateEncoder::Decode(str, p1, p2, attribs, skills))
         return false;
+
+    prof2_.uuid = Utils::Uuid::EMPTY_UUID;
+    prof2_.index = p2.index;
+    prof2_.attributeUuids.clear();
+
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    if (p2.index != AB::Entities::INVALID_INDEX)
+    {
+        if (!dataClient->Read(prof2_))
+        {
+            LOG_WARNING << "Error loading secondary profession with index " << prof2_.index << std::endl;
+        }
+    }
+    attributes_ = attribs;
+    auto skillMan = GetSubsystem<SkillManager>();
+    for (int i = 0; i < PLAYER_MAX_SKILLS; i++)
+    {
+        skills_[i] = skillMan->Get(skills[i]);
+        if (skills_[i] && skills_[i]->data_.isLocked && !locked)
+            // This player can not have locked skills
+            skills_[i] = skillMan->Get(0);
+    }
 
     return true;
 }

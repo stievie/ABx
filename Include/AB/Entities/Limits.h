@@ -28,7 +28,7 @@ static constexpr int MAX_ACCOUNTKEYS = std::numeric_limits<int>::max();
 // Character
 static constexpr int MAX_CHARACTER_NAME = 32;
 static constexpr int MAX_CHARACTER_PROF = 2;
-static constexpr int MAX_CHARACTER_SKILLTEMPLATE = 36;
+static constexpr int MAX_CHARACTER_SKILLTEMPLATE = 64;
 static constexpr int MAX_CHARACTERS = std::numeric_limits<int>::max();
 
 // Map

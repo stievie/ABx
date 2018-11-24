@@ -330,25 +330,19 @@ bool StorageProvider::Clear(const IO::DataKey&)
 {
     std::vector<IO::DataKey> toDelete;
 
-    for (auto& ci : cache_)
+    for (const auto& ci : cache_)
     {
-        bool ok = true;
         const IO::DataKey& key = ci.first;
         std::string table;
         uuids::uuid id;
         if (!key.decode(table, id))
-            return false;
+            continue;
         size_t tableHash = Utils::StringHashRt(table.data());
         if (tableHash == KEY_GAMEINSTANCES_HASH || tableHash == KEY_SERVICE_HASH)
             // Can not delete these
             continue;
 
-        if (ci.second.first.created)
-        {
-            // If it's in DB (created == true) update changed data in DB
-            ok = FlushData(key);
-        }
-        if (ok)
+        if (FlushData(key))
         {
             currentSize_ -= ci.second.second->size();
             toDelete.push_back(key);
@@ -358,7 +352,6 @@ bool StorageProvider::Clear(const IO::DataKey&)
     {
         cache_.erase(k);
         evictor_.DeleteKey(k);
-        evictor_.Clear();
     }
     playerNames_.clear();
     LOG_INFO << "Cleared cache, removed " << toDelete.size() << " items" << std::endl;

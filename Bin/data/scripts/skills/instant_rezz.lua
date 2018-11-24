@@ -7,11 +7,11 @@ recharge = 0
 overcast = 0
 
 function onStartUse(source, target)
-  if (target:IsDead()) then
+  if (target:IsDead() == false) then
     return false
   end
-  print("Using Instant Kill on " .. target:GetName())
-  return target:Die()
+  print("Using Instant Rezz on " .. target:GetName())
+  return target:Resurrect(100, 100)
 end
 
 function onEndUse(source, target)

@@ -12,6 +12,9 @@ SkillManager::SkillManager()
 
 std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
 {
+    if (index == 0)
+        return std::shared_ptr<Skill>();
+
     std::shared_ptr<Skill> result;
     auto it = skillCache_.find(index);
     if (it != skillCache_.end())

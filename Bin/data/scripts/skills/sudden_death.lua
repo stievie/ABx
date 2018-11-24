@@ -7,8 +7,10 @@ recharge = 0
 overcast = 0
 
 function onStartUse(source, target)
-  if (source:IsDead())
-    return false;
+  if (source:IsDead()) then
+    return false
+  end
+  print("Using Sudden Death")
   return source:Die()
 end
 

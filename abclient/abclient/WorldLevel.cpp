@@ -57,6 +57,17 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
     SubscribeToEvent(E_MOUSEMOVE, URHO3D_HANDLER(WorldLevel, HandleMouseMove));
+
+    SubscribeToEvent(AbEvents::E_SC_USESKILL1, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL2, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL3, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL4, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL5, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL6, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL7, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+    SubscribeToEvent(AbEvents::E_SC_USESKILL8, URHO3D_HANDLER(WorldLevel, HandleUseSkill));
+
+    SubscribeToEvent(AbEvents::E_SC_CANCEL, URHO3D_HANDLER(WorldLevel, HandleCancel));
 }
 
 SharedPtr<GameObject> WorldLevel::GetObjectAt(const IntVector2& pos)
@@ -621,6 +632,37 @@ void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_FRIENDLIST, true);
     wnd->SetVisible(!wnd->IsVisible());
+}
+
+void WorldLevel::HandleUseSkill(StringHash eventType, VariantMap&)
+{
+    FwClient* client = GetSubsystem<FwClient>();
+    uint32_t index = 0;
+    if (eventType == AbEvents::E_SC_USESKILL1)
+        index = 1;
+    else if (eventType == AbEvents::E_SC_USESKILL2)
+        index = 2;
+    else if (eventType == AbEvents::E_SC_USESKILL3)
+        index = 3;
+    else if (eventType == AbEvents::E_SC_USESKILL4)
+        index = 4;
+    else if (eventType == AbEvents::E_SC_USESKILL5)
+        index = 5;
+    else if (eventType == AbEvents::E_SC_USESKILL6)
+        index = 6;
+    else if (eventType == AbEvents::E_SC_USESKILL7)
+        index = 7;
+    else if (eventType == AbEvents::E_SC_USESKILL8)
+        index = 8;
+    else
+        return;
+    client->UseSkill(index);
+}
+
+void WorldLevel::HandleCancel(StringHash, VariantMap&)
+{
+    FwClient* client = GetSubsystem<FwClient>();
+    client->Cancel();
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,

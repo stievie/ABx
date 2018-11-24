@@ -24,13 +24,9 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
     query << "SELECT * FROM `game_skills` WHERE ";
     if (!skill.uuid.empty() && !uuids::uuid(skill.uuid).nil())
         query << "`uuid` = " << db->EscapeString(skill.uuid);
-    else if (skill.index != 0)
-        query << "`idx` = " << skill.index;
     else
-    {
-        LOG_ERROR << "UUID and index are empty" << std::endl;
-        return false;
-    }
+        // 0 is a valid index, it is the None skill
+        query << "`idx` = " << skill.index;
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)

@@ -11,6 +11,7 @@
 #include "Logger.h"
 #include <uuids.h>
 #include "Subsystems.h"
+#include "SkillManager.h"
 
 #include "DebugNew.h"
 
@@ -25,6 +26,13 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         LOG_ERROR << "Error reading player data" << std::endl;
         return false;
     }
+    player->account_.uuid = player->data_.accountUuid;
+    if (!client->Read(player->account_))
+    {
+        LOG_ERROR << "Error reading player account" << std::endl;
+        return false;
+    }
+
     if (uuids::uuid(player->data_.professionUuid).nil())
     {
         LOG_ERROR << "Error primary profession is nil" << std::endl;
@@ -46,9 +54,18 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         }
     }
     // After loading professions we can load the skills
-    if (!player->skills_.Decode(player->data_.skillTemplate))
+    if (!player->skills_.Load(player->data_.skillTemplate, player->account_.type >= AB::Entities::AccountTypeGamemaster))
     {
         LOG_WARNING << "Unable to decode skill template " << player->data_.skillTemplate << std::endl;
+        // TODO: Remove
+        if (player->account_.type >= AB::Entities::AccountTypeGamemaster)
+        {
+            LOG_INFO << "Adding GM skills" << std::endl;
+            auto skillsMan = GetSubsystem<Game::SkillManager>();
+            player->skills_.SetSkill(0, skillsMan->Get(9998));
+            player->skills_.SetSkill(1, skillsMan->Get(9997));
+            player->skills_.SetSkill(2, skillsMan->Get(9996));
+        }
     }
     return true;
 }
@@ -85,6 +102,7 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     player->data_.lastLogout = player->logoutTime_;
     player->data_.profession2 = player->skills_.prof2_.abbr;
     player->data_.profession2Uuid = player->skills_.prof2_.uuid;
+    player->data_.skillTemplate = player->skills_.Encode();
     player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
     return client->Update(player->data_);
 

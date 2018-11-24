@@ -34,7 +34,6 @@ SkillBarWindow::SkillBarWindow(Context* context) :
     auto* graphics = GetSubsystem<Graphics>();
     SetPosition(graphics->GetWidth() / 2 - GetWidth() / 2, graphics->GetHeight() - GetHeight());
     SetVisible(true);
-    
 
     SetStyleAuto();
 

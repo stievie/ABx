@@ -12,8 +12,5 @@ protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
     void CreateScene() override;
-private:
-    void HandleUseSkill(StringHash eventType, VariantMap& eventData);
-    void HandleCancel(StringHash eventType, VariantMap& eventData);
 };
 

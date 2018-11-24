@@ -302,6 +302,10 @@ void Game::SetState(ExecutionState state)
     if (state_ != state)
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
+#ifdef DEBUG_GAME
+        if (state == ExecutionState::Terminated)
+            LOG_DEBUG << "Setting Execution state to terminated" << std::endl;
+#endif
         state_ = state;
     }
 }
@@ -322,6 +326,7 @@ void Game::InternalLoad()
 
 void Game::Load(const std::string& mapUuid)
 {
+    state_ = ExecutionState::Startup;
     AB_PROFILE;
     // Dispatcher Thread
     map_ = std::make_unique<Map>(shared_from_this());

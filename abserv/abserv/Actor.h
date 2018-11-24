@@ -126,6 +126,7 @@ public:
     {
         return skills_.prof2_.index;
     }
+    /// 0 Based
     Skill* GetSkill(uint32_t index)
     {
         if (index < PLAYER_MAX_SKILLS)
@@ -140,6 +141,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     bool Die();
+    bool Resurrect(int16_t precentHealth, int16_t percentEnergy);
     bool IsDead() const { return stateComp_.GetState() == AB::GameProtocol::CreatureStateDead; }
     bool IsEnemy(Actor* other);
 

@@ -44,6 +44,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GotoHomePos", &Actor::GotoHomePos)
         .addFunction("IsDead", &Actor::IsDead)
         .addFunction("Die", &Actor::Die)
+        .addFunction("Resurrect", &Actor::Resurrect)
         .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
     );
 }
@@ -411,6 +412,9 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             if (!IsDead())
             {
                 skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
+#ifdef DEBUG_GAME
+                LOG_DEBUG << GetName() << " is using skill " << skillIndex << std::endl;
+#endif
                 skill = GetSkill(skillIndex);
                 if (skill)
                 {
@@ -575,6 +579,20 @@ bool Actor::Die()
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
         stateComp_.SetState(AB::GameProtocol::CreatureStateDead);
+        return true;
+    }
+    return false;
+}
+
+bool Actor::Resurrect(int16_t precentHealth, int16_t percentEnergy)
+{
+    if (IsDead())
+    {
+        int16_t health = (resourceComp_.GetMaxHealth() / 100) * precentHealth;
+        resourceComp_.SetHealth(Components::SetValueType::Absolute, health);
+        int16_t energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
+        resourceComp_.SetEnergy(Components::SetValueType::Absolute, energy);
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
         return true;
     }
     return false;

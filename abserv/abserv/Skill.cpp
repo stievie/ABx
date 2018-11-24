@@ -62,7 +62,7 @@ void Skill::Update(uint32_t timeElapsed)
 
 bool Skill::StartUse(Actor* source, Actor* target)
 {
-    if (!IsUsing() ||
+    if (IsUsing() ||
         !IsRecharged() ||
         source->resourceComp_.GetEnergy() < energy_ ||
         source->resourceComp_.GetAdrenaline() < adrenaline_)

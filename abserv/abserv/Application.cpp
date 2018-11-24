@@ -218,9 +218,6 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::Spawn:
     {
         GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::SpawnServer, this);
-        std::string serverId = msg.GetBodyString();
-        if (serverId.compare(serverId_) == 0)
-            GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
         break;
     }
     case Net::MessageType::ClearCache:

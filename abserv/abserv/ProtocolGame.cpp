@@ -60,13 +60,6 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     }
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    player_->account_.uuid = player_->data_.accountUuid;
-    if (!client->Read(player_->account_))
-    {
-        DisconnectClient(AB::Errors::InvalidAccount);
-        return;
-    }
-
     // Check if game exists.
     AB::Entities::Game g;
     g.uuid = mapUuid;
@@ -220,10 +213,11 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeUseSkill:
     {
         Utils::VariantMap data;
+        // 1 based -> convert to 0 based
         uint8_t index = message.Get<uint8_t>();
-        if (index < PLAYER_MAX_SKILLS)
+        if (index > 0 && index <= PLAYER_MAX_SKILLS)
         {
-            data[Game::InputDataSkillIndex] = message.Get<uint8_t>();
+            data[Game::InputDataSkillIndex] = index - 1;
             player_->inputs_.Add(Game::InputType::UseSkill, data);
         }
         break;

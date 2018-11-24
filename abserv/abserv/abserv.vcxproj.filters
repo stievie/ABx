@@ -252,6 +252,9 @@
     <ClInclude Include="SkillsComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="TemplateEncoder.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -447,6 +450,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="SkillsComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TemplateEncoder.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -24,7 +24,7 @@
 #define SERVER_MAX_CONNECTIONS 3000
 #define PLAYER_MAX_SKILLS 8
 // Most profession have 4 attribute but Warrior and Elementarist have 5
-#define PLAYER_MAX_ATTRIBUTES 5
+#define PLAYER_MAX_ATTRIBUTES 10
 
 // Update server load every second
 #define UPDATE_SERVER_LOAD_MS (1000)
