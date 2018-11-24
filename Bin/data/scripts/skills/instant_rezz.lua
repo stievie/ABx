@@ -16,6 +16,9 @@ function onStartUse(source, target)
     -- Can not use this skill on self
     return false
   end;
+  if (self:IsInRange(target) == false) then
+    return false
+  end
   if (target:IsDead() == false) then
     return false
   end

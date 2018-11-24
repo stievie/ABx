@@ -69,6 +69,7 @@ public:
             !IsType(AB::Entities::SkillTypeFlashEnchantment) &&
             !IsType(AB::Entities::SkillTypeShout);
     }
+    bool IsInRange(Actor* target);
     Actor* GetSource()
     {
         return source_;

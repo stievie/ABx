@@ -16,7 +16,12 @@ function onStartUse(source, target)
     -- Can not use this skill on self
     return false
   end;
+  if (self:IsInRange(target) == false) then
+    -- This skill needs a target and it must be in range
+    return false
+  end  
   if (target:IsDead()) then
+    -- Can not kill what's already dead :(
     return false
   end
   print("Using Instant Kill on " .. target:GetName())

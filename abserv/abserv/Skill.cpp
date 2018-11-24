@@ -21,6 +21,7 @@ void Skill::RegisterLua(kaguya::State& state)
         .addFunction("GetType", &Skill::_LuaGetType)
         .addFunction("GetIndex", &Skill::_LuaGetIndex)
         .addFunction("IsElite", &Skill::_LuaIsElite)
+        .addFunction("IsInRange", &Skill::IsInRange)
     );
 }
 
@@ -69,8 +70,6 @@ bool Skill::StartUse(Actor* source, Actor* target)
         source->resourceComp_.GetEnergy() < energy_ ||
         source->resourceComp_.GetAdrenaline() < adrenaline_)
         return false;
-    if (!source->IsInRange(range_, target))
-        return false;
 
     startUse_ = Utils::AbTick();
 
@@ -106,6 +105,13 @@ void Skill::Interrupt()
     source_ = nullptr;
     target_ = nullptr;
     // recharged_ remains
+}
+
+bool Skill::IsInRange(Actor* target)
+{
+    if (!source_ || !target)
+        return false;
+    return source_->IsInRange(range_, target);
 }
 
 void Skill::AddRecharge(int16_t ms)
