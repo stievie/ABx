@@ -68,6 +68,7 @@ public:
     RefCounted(const RefCounted& rhs) = delete;
     /// Prevent assignment.
     RefCounted& operator =(const RefCounted& rhs) = delete;
+
     /// Increment reference count. Can also be called outside of a SharedPtr for traditional reference counting.
     void AddRef();
     /// Decrement reference count and delete self if no more references. Can also be called outside of a SharedPtr for traditional reference counting.
