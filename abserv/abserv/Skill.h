@@ -9,7 +9,24 @@ namespace Game {
 
 class Actor;
 
-class Skill : public std::enable_shared_from_this<Skill>
+enum SkillEffect : uint16_t
+{
+    SkillEffectNone = 0,
+    SkillEffectResurrect = 1,
+    SkillEffectHeal = 2,
+    SkillEffectProtect = 3,
+    SkillEffectDamage = 4,
+};
+
+enum SkillTarget : uint16_t
+{
+    SkillTargetNone = 0,
+    SkillTargetSelf = 1 << 8,
+    SkillTargetTarget = 2 << 8,
+    SkillTargetAoe = 3 << 8,
+};
+
+class Skill
 {
 private:
     kaguya::State luaState_;
@@ -17,12 +34,14 @@ private:
     int64_t startUse_;
     int64_t recharged_;
     Ranges range_;
+    uint32_t skillEffect_;
     void InitializeLua();
     Actor* source_;
     Actor* target_;
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
+    std::string _LuaGetName() const { return data_.name; }
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -31,6 +50,7 @@ public:
         startUse_(0),
         recharged_(0),
         range_(Ranges::Aggro),
+        skillEffect_(0),
         source_(nullptr),
         target_(nullptr),
         energy_(0),
@@ -69,6 +89,8 @@ public:
             !IsType(AB::Entities::SkillTypeFlashEnchantment) &&
             !IsType(AB::Entities::SkillTypeShout);
     }
+    bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
+    bool HasTarget(SkillTarget t) const { return (skillEffect_ & t) == t; }
     bool IsInRange(Actor* target);
     Actor* GetSource()
     {

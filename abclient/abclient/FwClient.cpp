@@ -240,6 +240,27 @@ void FwClient::LoadSkills(uint32_t curVersion)
     }
     if (!file)
         return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("skills");
+    if (!node)
+        return;
+
+    for (const auto& pro : node.children("skill"))
+    {
+        AB::Entities::Skill skill;
+        skill.uuid = pro.attribute("uuid").as_string();
+        skill.index = pro.attribute("index").as_uint();
+        skill.name = pro.attribute("name").as_string();
+        skill.attributeUuid = pro.attribute("attribute").as_string();
+        skill.type = static_cast<AB::Entities::SkillType>(pro.attribute("type").as_uint());
+        skill.isElite = pro.attribute("elite").as_bool();
+        skill.description = pro.attribute("description").as_string();
+        skill.shortDescription = pro.attribute("short_description").as_string();
+        skill.icon = pro.attribute("icon").as_string();
+
+        skills_.emplace(skill.index, skill);
+    }
 }
 
 void FwClient::LoadAttributes(uint32_t curVersion)

@@ -95,7 +95,7 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         {
             SharedPtr<SkillBarWindow> wnd = SharedPtr<SkillBarWindow>(new SkillBarWindow(context_));
             wnd->SetVisible(true);
-            opts->LoadWindow(wnd);
+//            opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
     }

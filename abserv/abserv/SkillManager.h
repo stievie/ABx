@@ -7,7 +7,7 @@ namespace Game {
 class SkillManager
 {
 private:
-    std::map<uint32_t, AB::Entities::Skill> skillCache_;
+    std::unordered_map<uint32_t, AB::Entities::Skill> skillCache_;
 public:
     SkillManager();
     ~SkillManager() = default;

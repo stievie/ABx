@@ -11,6 +11,7 @@ namespace Game {
 void Skill::RegisterLua(kaguya::State& state)
 {
     state["Skill"].setClass(kaguya::UserdataMetatable<Skill>()
+        .addFunction("GetName", &Skill::_LuaGetName)
         .addFunction("Disable", &Skill::Disable)
         .addFunction("Interrupt", &Skill::Interrupt)
         .addFunction("GetSource", &Skill::GetSource)
@@ -22,6 +23,8 @@ void Skill::RegisterLua(kaguya::State& state)
         .addFunction("GetIndex", &Skill::_LuaGetIndex)
         .addFunction("IsElite", &Skill::_LuaIsElite)
         .addFunction("IsInRange", &Skill::IsInRange)
+        .addFunction("HasEffect", &Skill::HasEffect)
+        .addFunction("HasTarget", &Skill::HasTarget)
     );
 }
 
@@ -46,6 +49,8 @@ bool Skill::LoadScript(const std::string& fileName)
     overcast_ = luaState_["overcast"];
     if (ScriptManager::IsNumber(luaState_, "range"))
         range_ = static_cast<Ranges>(luaState_["range"]);
+    if (ScriptManager::IsNumber(luaState_, "effect"))
+        skillEffect_ = luaState_["effect"];
 
     return true;
 }
@@ -60,6 +65,7 @@ void Skill::Update(uint32_t timeElapsed)
             recharged_ = Utils::AbTick() + recharge_;
             luaState_["onEndUse"](source_, target_);
             startUse_ = 0;
+            source_->OnEndUseSkill();
             source_ = nullptr;
             target_ = nullptr;
         }
@@ -83,17 +89,21 @@ bool Skill::StartUse(Actor* source, Actor* target)
     {
         startUse_ = 0;
         recharged_ = 0;
+        source_ = nullptr;
+        target_ = nullptr;
         return false;
     }
     source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, energy_);
     source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, adrenaline_);
     source->resourceComp_.SetOvercast(Components::SetValueType::Increase, overcast_);
+    source->OnStartUseSkill(this);
     return true;
 }
 
 void Skill::CancelUse()
 {
     luaState_["onCancelUse"]();
+    source_->OnEndUseSkill();
     startUse_ = 0;
     // No recharging when canceled
     recharged_ = 0;
@@ -104,6 +114,7 @@ void Skill::CancelUse()
 void Skill::Interrupt()
 {
     luaState_["onEndUse"](source_, target_);
+    source_->OnEndUseSkill();
     startUse_ = 0;
     source_ = nullptr;
     target_ = nullptr;

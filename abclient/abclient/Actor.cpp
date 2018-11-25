@@ -679,6 +679,9 @@ void Actor::Unserialize(PropReadStream& data)
         profession2_ = client->GetProfessionByIndex(p);
     }
     data.Read(modelIndex_);
+    std::string skills;
+    data.ReadString(skills);
+    LoadSkillTemplate(skills);
     AddActorUI();
 }
 
@@ -695,4 +698,19 @@ void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, 
     {
         soundSource->Stop();
     }
+}
+
+bool Actor::LoadSkillTemplate(const std::string& templ)
+{
+    AB::Entities::Profession p1;
+    AB::Entities::Profession p2;
+    AB::Attributes attribs;
+    AB::SkillIndices skills;
+    if (!AB::TemplEncoder::Decode(templ, p1, p2, attribs, skills))
+        return false;
+    FwClient* client = GetSubsystem<FwClient>();
+    attributes_ = attribs;
+    skills_ = skills;
+    profession2_ = client->GetProfessionByIndex(p2.index);
+    return true;
 }

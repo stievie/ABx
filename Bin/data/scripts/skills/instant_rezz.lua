@@ -6,7 +6,8 @@ costAdrenaline = 0
 activation = 0
 recharge = 0
 overcast = 0
-range = RANGE_TOUCH
+range = RANGE_ADJECENT
+effect = SkillEffectResurrect | SkillTargetTarget
 
 function onStartUse(source, target)
   if (target == nil) then
@@ -26,7 +27,7 @@ function onStartUse(source, target)
 end
 
 function onEndUse(source, target)
-  print("Using Instant Rezz on " .. target:GetName())
+  --print("Using Instant Rezz on " .. target:GetName())
   return target:Resurrect(100, 100)
 end
 

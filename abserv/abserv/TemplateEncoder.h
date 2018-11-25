@@ -2,13 +2,12 @@
 
 #include <AB/Entities/Profession.h>
 #include "SkillBar.h"
+#include <AB/CommonConfig.h>
+#include <AB/TemplEncoder.h>
 
 namespace Game {
 class SkillBar;
 }
-
-#define SKILLS_TEMPLATE_HEADER_VERSION (0)
-#define SKILLS_TEMPLATE_HEADER_TYPE (0xe)
 
 namespace IO {
 
@@ -23,7 +22,7 @@ public:
 
     static bool Decode(const std::string& templ,
         AB::Entities::Profession& prof1, AB::Entities::Profession& prof2,
-        Game::Attributes& attributes, std::array<uint32_t, PLAYER_MAX_SKILLS>& skills);
+        AB::Attributes& attributes, AB::SkillIndices& skills);
 };
 
 }

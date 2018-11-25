@@ -22,9 +22,6 @@
 // Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.
 // https://www.gamedev.net/forums/topic/319003-mmorpg-and-the-ol-udp-vs-tcp/?do=findComment&comment=3052256
 #define SERVER_MAX_CONNECTIONS 3000
-#define PLAYER_MAX_SKILLS 8
-// Most profession have 4 attribute but Warrior and Elementarist have 5
-#define PLAYER_MAX_ATTRIBUTES 10
 
 // Update server load every second
 #define UPDATE_SERVER_LOAD_MS (1000)

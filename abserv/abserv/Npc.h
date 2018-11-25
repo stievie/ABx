@@ -78,6 +78,8 @@ public:
     void OnClicked(std::shared_ptr<Actor> selector) override;
     void OnCollide(std::shared_ptr<Actor> other) override;
     void OnTrigger(std::shared_ptr<Actor> other) override;
+    void OnEndUseSkill() override;
+    void OnStartUseSkill(Skill* skill) override;
 };
 
 }

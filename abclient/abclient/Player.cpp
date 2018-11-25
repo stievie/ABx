@@ -5,6 +5,8 @@
 #include "Options.h"
 #include "AbEvents.h"
 #include "Shortcuts.h"
+#include "WindowManager.h"
+#include "SkillBarWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -74,6 +76,11 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     camera->SetFarClip(options->GetCameraFarClip());
     camera->SetNearClip(options->GetCameraNearClip());
     camera->SetFov(options->GetCameraFov());
+
+    // Set skills
+    WindowManager* winMan = GetSubsystem<WindowManager>();
+    SkillBarWindow* skillsWin = dynamic_cast<SkillBarWindow*>(winMan->GetWindow(WINDOW_SKILLBAR).Get());
+    skillsWin->SetSkills(skills_);
 }
 
 void Player::FixedUpdate(float timeStep)

@@ -9,6 +9,7 @@
 #include "MathUtils.h"
 #include "ScriptManager.h"
 #include "ConfigManager.h"
+#include "TemplateEncoder.h"
 
 #include "DebugNew.h"
 
@@ -187,6 +188,8 @@ bool Actor::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint32_t>(GetProfIndex());
     stream.Write<uint32_t>(GetProf2Index());
     stream.Write<uint32_t>(GetModelIndex());
+    const std::string skills = IO::TemplateEncoder::Encode(skills_);
+    stream.WriteString(skills);
     return true;
 }
 

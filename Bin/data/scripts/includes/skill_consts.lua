@@ -34,4 +34,15 @@ SkillTypeSpell = 10
     SkillTypeWellSpell           = SkillTypeSpell | 6 << 8
 SkillTypeStance = 11
 SkillTypeTrap = 12
-    
+
+-- Effects skills can have
+SkillEffectNone         = 0
+SkillEffectResurrect    = 1
+SkillEffectHeal         = 2
+SkillEffectProtect      = 3
+SkillEffectDamage       = 4
+
+SkillTargetNone         = 0
+SkillTargetSelf         = 1 << 8
+SkillTargetTarget       = 2 << 8
+SkillTargetAoe          = 3 << 8

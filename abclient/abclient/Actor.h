@@ -4,6 +4,7 @@
 #include "Extrapolator.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
+#include <AB/TemplEncoder.h>
 
 using namespace Urho3D;
 
@@ -87,6 +88,8 @@ public:
     /// Add a model like hair armor etc.
     void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
+    bool LoadSkillTemplate(const std::string& templ);
+
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
@@ -122,6 +125,8 @@ public:
     uint32_t level_;
     AB::Entities::Profession* profession_;
     AB::Entities::Profession* profession2_;
+    AB::SkillIndices skills_;
+    AB::Attributes attributes_;
     uint32_t modelIndex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;

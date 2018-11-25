@@ -6,6 +6,7 @@
 #include "Structs.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
+#include <AB/Entities/Skill.h>
 #include <map>
 
 struct EventItem
@@ -31,6 +32,7 @@ private:
     std::map<std::string, AB::Entities::Service> services_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::map<std::string, AB::Entities::Profession> professions_;
+    std::map<uint32_t, AB::Entities::Skill> skills_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -202,6 +204,14 @@ public:
         return &EMPTY;
     }
 
+    const std::map<uint32_t, AB::Entities::Skill>& GetSkills() const { return skills_; }
+    AB::Entities::Skill* GetSkillByIndex(uint32_t index)
+    {
+        auto it = skills_.find(index);
+        if (it == skills_.end())
+            return nullptr;
+        return &(*it).second;
+    }
     const std::vector<AB::Entities::MailHeader>& GetCurrentMailHeaders() const
     {
         return mailHeaders_;
