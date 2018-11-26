@@ -42,13 +42,13 @@ int SkillBar::_LuaAddSkill(uint32_t skillIndex)
     return -1;
 }
 
-bool SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
+SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 {
     if (index < 0 || index >= PLAYER_MAX_SKILLS)
-        return false;
+        return SkillErrorInvalidSkill;
     Skill* s = skills_[index].get();
     if (!s)
-        return false;
+        return SkillErrorInvalidSkill;
 
     if (s->IsChangingState())
     {

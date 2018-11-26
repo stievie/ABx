@@ -37,12 +37,20 @@ SkillTypeTrap = 12
 
 -- Effects skills can have
 SkillEffectNone         = 0
-SkillEffectResurrect    = 1
-SkillEffectHeal         = 2
-SkillEffectProtect      = 3
-SkillEffectDamage       = 4
-
+SkillEffectResurrect    = 1 << 1
+SkillEffectHeal         = 1 << 2
+SkillEffectProtect      = 1 << 3
+SkillEffectDamage       = 1 << 4
+-- What the skill targets
 SkillTargetNone         = 0
-SkillTargetSelf         = 1 << 8
-SkillTargetTarget       = 2 << 8
-SkillTargetAoe          = 3 << 8
+SkillTargetSelf         = 1 << 1
+SkillTargetTarget       = 2 << 2
+SkillTargetAoe          = 3 << 3
+-- Error codes
+SkillErrorNone          = 0
+SkillErrorInvalidSkill  = 1
+SkillErrorInvalidTarget = 2
+SkillErrorOutOfRange    = 3
+SkillErrorNoEnergy      = 4
+SkillErrorNoAdrenaline  = 5
+SkillErrorRecharging    = 6

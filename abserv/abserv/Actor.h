@@ -112,8 +112,8 @@ public:
                 return true;
         return false;
     }
-    virtual void OnEndUseSkill() { }
-    virtual void OnStartUseSkill(Skill*) { }
+    virtual void OnEndUseSkill(Skill* skill);
+    virtual void OnStartUseSkill(Skill* skill);
 
     /// Move speed: 1 = normal speed
     float GetSpeed() const { return moveComp_.GetSpeedFactor(); }

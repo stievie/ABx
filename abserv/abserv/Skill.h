@@ -12,18 +12,29 @@ class Actor;
 enum SkillEffect : uint16_t
 {
     SkillEffectNone = 0,
-    SkillEffectResurrect = 1,
-    SkillEffectHeal = 2,
-    SkillEffectProtect = 3,
-    SkillEffectDamage = 4,
+    SkillEffectResurrect = 1 << 1,
+    SkillEffectHeal = 1 << 2,
+    SkillEffectProtect = 1 << 3,
+    SkillEffectDamage = 1 << 4,
 };
 
 enum SkillTarget : uint16_t
 {
     SkillTargetNone = 0,
-    SkillTargetSelf = 1 << 8,
-    SkillTargetTarget = 2 << 8,
-    SkillTargetAoe = 3 << 8,
+    SkillTargetSelf = 1 << 1,
+    SkillTargetTarget = 1 << 2,
+    SkillTargetAoe = 1 << 3,
+};
+
+enum SkillError : uint8_t
+{
+    SkillErrorNone = 0,
+    SkillErrorInvalidSkill,
+    SkillErrorInvalidTarget,
+    SkillErrorOutOfRange,
+    SkillErrorNoEnergy,
+    SkillErrorNoAdrenaline,
+    SkillErrorRecharging
 };
 
 class Skill
@@ -34,7 +45,8 @@ private:
     int64_t startUse_;
     int64_t recharged_;
     Ranges range_;
-    uint32_t skillEffect_;
+    SkillEffect skillEffect_;
+    SkillTarget effectTarget;
     void InitializeLua();
     Actor* source_;
     Actor* target_;
@@ -50,7 +62,8 @@ public:
         startUse_(0),
         recharged_(0),
         range_(Ranges::Aggro),
-        skillEffect_(0),
+        skillEffect_(SkillEffectNone),
+        effectTarget(SkillTargetNone),
         source_(nullptr),
         target_(nullptr),
         energy_(0),
@@ -67,11 +80,13 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    bool StartUse(Actor* source, Actor* target);
+    SkillError StartUse(Actor* source, Actor* target);
     void CancelUse();
     /// Disable a skill for some time
     void Disable(uint32_t ticks)
     {
+        if (recharged_ == 0)
+            recharged_ = Utils::AbTick();
         recharged_ += ticks;
     }
     void Interrupt();
@@ -90,7 +105,7 @@ public:
             !IsType(AB::Entities::SkillTypeShout);
     }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
-    bool HasTarget(SkillTarget t) const { return (skillEffect_ & t) == t; }
+    bool HasTarget(SkillTarget t) const { return (effectTarget & t) == t; }
     bool IsInRange(Actor* target);
     Actor* GetSource()
     {

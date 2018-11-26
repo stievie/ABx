@@ -63,9 +63,9 @@ function onArrived()
   end
 end
 
-function onEndUseSkill()
+function onEndUseSkill(skill)
   rezzTarget = nil
-  self:SetState(CREATURESTATE_IDLE)
+  self:Say(CHAT_CHANNEL_GENERAL, "Phew!")
 end
 
 function onStartUseSkill(skill)

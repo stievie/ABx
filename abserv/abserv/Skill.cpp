@@ -50,7 +50,9 @@ bool Skill::LoadScript(const std::string& fileName)
     if (ScriptManager::IsNumber(luaState_, "range"))
         range_ = static_cast<Ranges>(luaState_["range"]);
     if (ScriptManager::IsNumber(luaState_, "effect"))
-        skillEffect_ = luaState_["effect"];
+        skillEffect_ = static_cast<SkillEffect>(luaState_["effect"]);
+    if (ScriptManager::IsNumber(luaState_, "effectTarget"))
+        effectTarget = static_cast<SkillTarget>(luaState_["effectTarget"]);
 
     return true;
 }
@@ -65,45 +67,47 @@ void Skill::Update(uint32_t timeElapsed)
             recharged_ = Utils::AbTick() + recharge_;
             luaState_["onEndUse"](source_, target_);
             startUse_ = 0;
-            source_->OnEndUseSkill();
+            source_->OnEndUseSkill(this);
             source_ = nullptr;
             target_ = nullptr;
         }
     }
 }
 
-bool Skill::StartUse(Actor* source, Actor* target)
+SkillError Skill::StartUse(Actor* source, Actor* target)
 {
-    if (IsUsing() ||
-        !IsRecharged() ||
-        source->resourceComp_.GetEnergy() < energy_ ||
-        source->resourceComp_.GetAdrenaline() < adrenaline_)
-        return false;
+    if (IsUsing() || !IsRecharged())
+        return SkillErrorRecharging;
+    if (source->resourceComp_.GetEnergy() < energy_)
+        return SkillErrorNoEnergy;
+    if (source->resourceComp_.GetAdrenaline() < adrenaline_)
+        return SkillErrorNoAdrenaline;
 
     startUse_ = Utils::AbTick();
 
     source_ = source;
     target_ = target;
 
-    if (!luaState_["onStartUse"](source, target))
+    SkillError err = luaState_["onStartUse"](source, target);
+    if (err != SkillErrorNone)
     {
         startUse_ = 0;
         recharged_ = 0;
         source_ = nullptr;
         target_ = nullptr;
-        return false;
+        return err;
     }
     source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, energy_);
     source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, adrenaline_);
     source->resourceComp_.SetOvercast(Components::SetValueType::Increase, overcast_);
     source->OnStartUseSkill(this);
-    return true;
+    return SkillErrorNone;
 }
 
 void Skill::CancelUse()
 {
     luaState_["onCancelUse"]();
-    source_->OnEndUseSkill();
+    source_->OnEndUseSkill(this);
     startUse_ = 0;
     // No recharging when canceled
     recharged_ = 0;
@@ -114,7 +118,7 @@ void Skill::CancelUse()
 void Skill::Interrupt()
 {
     luaState_["onEndUse"](source_, target_);
-    source_->OnEndUseSkill();
+    source_->OnEndUseSkill(this);
     startUse_ = 0;
     source_ = nullptr;
     target_ = nullptr;

@@ -214,6 +214,20 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     resourceComp_.Write(msg, true);
 }
 
+void Actor::OnEndUseSkill(Skill* skill)
+{
+    // These change the state
+    if (skill->IsChangingState())
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+}
+
+void Actor::OnStartUseSkill(Skill* skill)
+{
+    // These change the state
+    if (skill->IsChangingState())
+        stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+}
+
 Skill* Actor::GetCurrentSkill() const
 {
     return skills_.GetCurrentSkill();
@@ -427,10 +441,8 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
                     // Can use skills only on Creatures not all GameObjects.
                     // But a target is not mandatory, the Skill script will decide
                     // if it needs a target, and may fail.
-                    bool succ = skills_.UseSkill(skillIndex, target);
-                    // These do not change the state
-                    if (succ && skill->IsChangingState())
-                        stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+                    /* SkillError err = */ skills_.UseSkill(skillIndex, target);
+                    // TODO: Send result to client
                 }
             }
             break;

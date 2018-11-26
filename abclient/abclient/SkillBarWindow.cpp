@@ -91,7 +91,7 @@ void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
                 tip += "\n" + String(skill->shortDescription.c_str());
                 tooltip->SetText(tip);
                 ToolTip* tt = dynamic_cast<ToolTip*>(btn->GetChild("SkillTooltip", true));
-                tt->SetPosition(IntVector2(10, -(tooltip->GetHeight() + 10)));
+                tt->SetPosition(IntVector2(0, -(tooltip->GetHeight() + 10)));
                 iconSet = true;
             }
             btn->SetEnabled(true);

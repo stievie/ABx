@@ -262,12 +262,12 @@ void Npc::OnTrigger(std::shared_ptr<Actor> other)
     }
 }
 
-void Npc::OnEndUseSkill()
+void Npc::OnEndUseSkill(Skill* skill)
 {
-    Actor::OnEndUseSkill();
+    Actor::OnEndUseSkill(skill);
 
     if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onEndUseSkill"))
-        luaState_["onEndUseSkill"]();
+        luaState_["onEndUseSkill"](skill);
 }
 
 void Npc::OnStartUseSkill(Skill* skill)

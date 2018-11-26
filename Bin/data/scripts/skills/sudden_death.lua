@@ -6,18 +6,19 @@ costAdrenaline = 0
 activation = 0
 recharge = 0
 overcast = 0
-effect = SkillEffectDamage | SkillTargetSelf
+effect = SkillEffectDamage
+effectTarget = SkillTargetSelf
 
 function onStartUse(source, target)
   if (source:IsDead()) then
     -- Redundant check, because you can't use skills when you are dead
-    return false
+    return SkillErrorInvalidTarget
   end
-  return true
+  return SkillErrorNone
 end
 
 function onEndUse(source, target)
-  return source:Die()
+  source:Die()
 end
 
 function onCancelUse()
