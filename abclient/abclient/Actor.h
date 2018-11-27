@@ -31,6 +31,7 @@ static const StringHash ANIM_CRY("Cry");
 static const StringHash SOUND_NONE("None");
 static const StringHash SOUND_FOOTSTEPS("Footsteps");
 static const StringHash SOUND_JUMP("Jump");
+static const StringHash SOUND_SKILLFAILURE("SkillFailure");
 
 static const StringHash COLLADJ_ADD("add");
 static const StringHash COLLADJ_SUB("sub");
@@ -88,7 +89,9 @@ public:
     /// Add a model like hair armor etc.
     void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
+    void PlaySoundEffect(const StringHash& type, bool loop = false);
     bool LoadSkillTemplate(const std::string& templ);
+    void OnSkillError(AB::GameProtocol::SkillError error) override;
 
     Vector<String> materials_;
     // Can pickup this thingy

@@ -523,6 +523,8 @@ void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
     GameObject* object = objects_[objectId];
     if (object)
     {
+        AB::GameProtocol::SkillError error = static_cast<AB::GameProtocol::SkillError>(eventData[P_ERROR].GetUInt());
+        object->OnSkillError(error);
         if (object->objectType_ == ObjectTypeSelf)
         {
             const String& msg = eventData[P_ERRORMSG].GetString();

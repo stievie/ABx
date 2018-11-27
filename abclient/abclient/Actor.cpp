@@ -66,6 +66,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_SIT] = GetAnimation(ANIM_SIT);
     animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
     animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
+    sounds_[SOUND_SKILLFAILURE] = "Sounds/FX/skill_failure.wav";
 
     if (modelIndex_ != 0)
     {
@@ -109,6 +110,8 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
             Node* soundSourceNode = node_->CreateChild("SoundSourceNode");
             soundSource_ = soundSourceNode->CreateComponent<SoundSource3D>();
             soundSource_->SetSoundType(SOUND_EFFECT);
+            soundSource_->SetNearDistance(2.0f);
+            soundSource_->SetFarDistance(15.0f);
         }
         else
         {
@@ -687,6 +690,9 @@ void Actor::Unserialize(PropReadStream& data)
 
 void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop /* = false */)
 {
+    if (!soundSource)
+        return;
+
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     if (sounds_.Contains(type) && cache->Exists(sounds_[type]))
     {
@@ -698,6 +704,11 @@ void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, 
     {
         soundSource->Stop();
     }
+}
+
+void Actor::PlaySoundEffect(const StringHash& type, bool loop)
+{
+    PlaySoundEffect(soundSource_, type, loop);
 }
 
 bool Actor::LoadSkillTemplate(const std::string& templ)
@@ -713,4 +724,9 @@ bool Actor::LoadSkillTemplate(const std::string& templ)
     skills_ = skills;
     profession2_ = client->GetProfessionByIndex(p2.index);
     return true;
+}
+
+void Actor::OnSkillError(AB::GameProtocol::SkillError)
+{
+    PlaySoundEffect(SOUND_SKILLFAILURE);
 }

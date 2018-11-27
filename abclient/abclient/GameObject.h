@@ -54,6 +54,7 @@ public:
         return speedFactor_;
     }
     virtual void SetSpeedFactor(int64_t time, float value);
+    virtual void OnSkillError(AB::GameProtocol::SkillError) { }
 
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
