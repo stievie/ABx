@@ -67,6 +67,8 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
     animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
     sounds_[SOUND_SKILLFAILURE] = "Sounds/FX/skill_failure.wav";
+    sounds_[SOUND_FOOTSTEPS] = "Sounds/FX/footsteps_run1.wav";
+    sounds_[SOUND_DIE] = "Sounds/FX/scream_female1.wav";
 
     if (modelIndex_ != 0)
     {
@@ -628,11 +630,13 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
 //        else
         if (prevState == AB::GameProtocol::CreatureStateEmoteSit)
             fadeTime = 0.5f;
+        PlaySoundEffect(SOUND_NONE, true);
         break;
     case AB::GameProtocol::CreatureStateMoving:
     {
         const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
         posExtrapolator_.Reset(GetServerTime(time), GetClientTime(), p);
+        PlaySoundEffect(SOUND_FOOTSTEPS, true);
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:
@@ -640,12 +644,18 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
     case AB::GameProtocol::CreatureStateAttacking:
         break;
     case AB::GameProtocol::CreatureStateEmote:
+        PlaySoundEffect(SOUND_NONE);
         break;
     case AB::GameProtocol::CreatureStateEmoteSit:
         fadeTime = 0.5f;
+        PlaySoundEffect(SOUND_NONE);
         break;
     case AB::GameProtocol::CreatureStateEmoteCry:
+        PlaySoundEffect(SOUND_NONE);
         fadeTime = 0.5f;
+        break;
+    case AB::GameProtocol::CreatureStateDead:
+        PlaySoundEffect(SOUND_DIE);
         break;
     default:
         break;

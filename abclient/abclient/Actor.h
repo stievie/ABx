@@ -32,6 +32,7 @@ static const StringHash SOUND_NONE("None");
 static const StringHash SOUND_FOOTSTEPS("Footsteps");
 static const StringHash SOUND_JUMP("Jump");
 static const StringHash SOUND_SKILLFAILURE("SkillFailure");
+static const StringHash SOUND_DIE("Die");
 
 static const StringHash COLLADJ_ADD("add");
 static const StringHash COLLADJ_SUB("sub");
