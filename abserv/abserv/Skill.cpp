@@ -62,7 +62,7 @@ void Skill::Update(uint32_t timeElapsed)
     AB_UNUSED(timeElapsed);
     if (startUse_ != 0)
     {
-        if (startUse_ + activation_ <= Utils::AbTick())
+        if (startUse_ + realActivation_ <= Utils::AbTick())
         {
             recharged_ = Utils::AbTick() + recharge_;
             luaState_["onEndUse"](source_, target_);
@@ -74,22 +74,29 @@ void Skill::Update(uint32_t timeElapsed)
     }
 }
 
-SkillError Skill::StartUse(Actor* source, Actor* target)
+AB::GameProtocol::SkillError Skill::StartUse(Actor* source, Actor* target)
 {
     if (IsUsing() || !IsRecharged())
-        return SkillErrorRecharging;
-    if (source->resourceComp_.GetEnergy() < energy_)
-        return SkillErrorNoEnergy;
-    if (source->resourceComp_.GetAdrenaline() < adrenaline_)
-        return SkillErrorNoAdrenaline;
+        return AB::GameProtocol::SkillErrorRecharging;
+
+    // TODO:
+    realEnergy_ = energy_;
+    realAdrenaline_ = adrenaline_;
+    realActivation_ = activation_;
+    realOvercast_ = overcast_;
+
+    if (source->resourceComp_.GetEnergy() < realEnergy_)
+        return AB::GameProtocol::SkillErrorNoEnergy;
+    if (source->resourceComp_.GetAdrenaline() < realAdrenaline_)
+        return AB::GameProtocol::SkillErrorNoAdrenaline;
 
     startUse_ = Utils::AbTick();
 
     source_ = source;
     target_ = target;
 
-    SkillError err = luaState_["onStartUse"](source, target);
-    if (err != SkillErrorNone)
+    AB::GameProtocol::SkillError err = luaState_["onStartUse"](source, target);
+    if (err != AB::GameProtocol::SkillErrorNone)
     {
         startUse_ = 0;
         recharged_ = 0;
@@ -97,11 +104,11 @@ SkillError Skill::StartUse(Actor* source, Actor* target)
         target_ = nullptr;
         return err;
     }
-    source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, energy_);
-    source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, adrenaline_);
-    source->resourceComp_.SetOvercast(Components::SetValueType::Increase, overcast_);
+    source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, realEnergy_);
+    source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
+    source->resourceComp_.SetOvercast(Components::SetValueType::Increase, realOvercast_);
     source->OnStartUseSkill(this);
-    return SkillErrorNone;
+    return AB::GameProtocol::SkillErrorNone;
 }
 
 void Skill::CancelUse()

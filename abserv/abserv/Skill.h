@@ -4,6 +4,7 @@
 #include <AB/Entities/Skill.h>
 #include "Script.h"
 #include "GameObject.h"
+#include <AB/ProtocolCodes.h>
 
 namespace Game {
 
@@ -26,17 +27,6 @@ enum SkillTarget : uint16_t
     SkillTargetAoe = 1 << 3,
 };
 
-enum SkillError : uint8_t
-{
-    SkillErrorNone = 0,
-    SkillErrorInvalidSkill,
-    SkillErrorInvalidTarget,
-    SkillErrorOutOfRange,
-    SkillErrorNoEnergy,
-    SkillErrorNoAdrenaline,
-    SkillErrorRecharging
-};
-
 class Skill
 {
 private:
@@ -50,6 +40,12 @@ private:
     void InitializeLua();
     Actor* source_;
     Actor* target_;
+    // The real cos may be influenced by skills, armor, effects etc.
+    int16_t realEnergy_;
+    int16_t realAdrenaline_;
+    int16_t realActivation_;
+    int16_t realOvercast_;
+
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
@@ -66,6 +62,10 @@ public:
         effectTarget(SkillTargetNone),
         source_(nullptr),
         target_(nullptr),
+        realEnergy_(0),
+        realAdrenaline_(0),
+        realActivation_(0),
+        realOvercast_(0),
         energy_(0),
         adrenaline_(0),
         activation_(0),
@@ -80,7 +80,7 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    SkillError StartUse(Actor* source, Actor* target);
+    AB::GameProtocol::SkillError StartUse(Actor* source, Actor* target);
     void CancelUse();
     /// Disable a skill for some time
     void Disable(uint32_t ticks)
@@ -115,6 +115,11 @@ public:
     {
         return target_;
     }
+    int16_t GetRealEnergy() const { return realEnergy_; }
+    int16_t GetRealAdrenaline() const { return realAdrenaline_; }
+    int16_t GetRealActivation() const { return realActivation_; }
+    int16_t GetRealOvercast() const { return realOvercast_; }
+
     void AddRecharge(int16_t ms);
 
     AB::Entities::Skill data_;

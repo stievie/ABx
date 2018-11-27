@@ -13,6 +13,7 @@
 #include "MissionMapWindow.h"
 #include "SkillBarWindow.h"
 #include "FriendListWindow.h"
+#include "GameMessagesWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -82,6 +83,13 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
             SharedPtr<TargetWindow> wnd = SharedPtr<TargetWindow>(new TargetWindow(context_));
             wnd->SetVisible(false);
             opts->LoadWindow(wnd);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_GAMEMESSAGES)
+        {
+            SharedPtr<GameMessagesWindow> wnd = SharedPtr<GameMessagesWindow>(new GameMessagesWindow(context_));
+            wnd->SetVisible(false);
+//            opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_MISSIONMAP)

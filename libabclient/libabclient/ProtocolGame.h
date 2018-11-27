@@ -58,6 +58,9 @@ protected:
     void ParseObjectStateChange(const std::shared_ptr<InputMessage>& message);
     void ParseObjectSpeedChange(const std::shared_ptr<InputMessage>& message);
     void ParseObjectSelected(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectSkillFailure(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectUseSkill(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message);
     void ParseServerMessage(const std::shared_ptr<InputMessage>& message);
     void ParseChatMessage(const std::shared_ptr<InputMessage>& message);
     void ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message);

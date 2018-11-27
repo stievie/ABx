@@ -28,6 +28,7 @@
 #include "HotkeyEdit.h"
 #include "SkillBarWindow.h"
 #include "FriendListWindow.h"
+#include "GameMessagesWindow.h"
 #include "AntiRE.h"
 #include <time.h>
 #include <stdlib.h>
@@ -139,6 +140,7 @@ ClientApp::ClientApp(Context* context) :
     PostProcessController::RegisterObject(context);
     SkillBarWindow::RegisterObject(context);
     FriendListWindow::RegisterObject(context);
+    GameMessagesWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));

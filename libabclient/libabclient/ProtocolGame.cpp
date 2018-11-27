@@ -131,6 +131,15 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectSelectTarget:
             ParseObjectSelected(message);
             break;
+        case AB::GameProtocol::GameObjectSkillFailure:
+            ParseObjectSkillFailure(message);
+            break;
+        case AB::GameProtocol::GameObjectUseSkill:
+            ParseObjectUseSkill(message);
+            break;
+        case AB::GameProtocol::GameObjectEndUseSkill:
+            ParseObjectEndUseSkill(message);
+            break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
@@ -197,6 +206,36 @@ void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& mess
     uint32_t targetId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnObjectSelected(updateTick_, sourceId, targetId);
+}
+
+void ProtocolGame::ParseObjectSkillFailure(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    int skillIndex = message->Get<int>();
+    AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message->Get<uint8_t>());
+    if (receiver_)
+        receiver_->OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
+}
+
+void ProtocolGame::ParseObjectUseSkill(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    int skillIndex = message->Get<int>();
+    uint16_t energy = message->Get<uint16_t>();
+    uint16_t adrenaline = message->Get<uint16_t>();
+    uint16_t activation = message->Get<uint16_t>();
+    uint16_t overcast = message->Get<uint16_t>();
+    if (receiver_)
+        receiver_->OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast);
+}
+
+void ProtocolGame::ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    int skillIndex = message->Get<int>();
+    uint16_t recharge = message->Get<uint16_t>();
+    if (receiver_)
+        receiver_->OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

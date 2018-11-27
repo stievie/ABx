@@ -189,6 +189,25 @@ void Client::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t ta
         receiver_->OnObjectSelected(updateTick, sourceId, targetId);
 }
 
+void Client::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error)
+{
+    if (receiver_)
+        receiver_->OnObjectSkillFailure(updateTick, id, skillIndex, error);
+}
+
+void Client::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
+    uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast)
+{
+    if (receiver_)
+        receiver_->OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast);
+}
+
+void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
+{
+    if (receiver_)
+        receiver_->OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
+}
+
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {

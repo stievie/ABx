@@ -11,6 +11,7 @@
 #include "Shortcuts.h"
 #include "WindowManager.h"
 #include "NewMailWindow.h"
+#include "GameMessagesWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -39,6 +40,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
+    SubscribeToEvent(AbEvents::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
     SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
@@ -510,6 +512,23 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                     targetWindow_->SetTarget(SharedPtr<Actor>());
                 }
             }
+        }
+    }
+}
+
+void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::SkillFailure;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        if (object->objectType_ == ObjectTypeSelf)
+        {
+            const String& msg = eventData[P_ERRORMSG].GetString();
+            WindowManager* wm = GetSubsystem<WindowManager>();
+            GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
+            wnd->ShowError(msg);
         }
     }
 }

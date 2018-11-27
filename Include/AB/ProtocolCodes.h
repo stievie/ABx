@@ -189,6 +189,9 @@ enum GameProtocolCodes : uint8_t
     GameObjectStateChange,
     GameObjectMoveSpeedChange,
     GameObjectResourceChange,
+    GameObjectUseSkill,           // Actor successfully activated a skill, returns resources needed etc.
+    GameObjectEndUseSkill,        // Actor successfully finished a skill, returns recharge.
+    GameObjectSkillFailure,       // Failed activating a skill, returns some error code
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,
@@ -206,6 +209,17 @@ enum ResourceType : uint8_t
     ResourceTypeEnergyRegen,
     ResourceTypeMaxHealth,
     ResourceTypeMaxEnergy,
+};
+
+enum SkillError : uint8_t
+{
+    SkillErrorNone = 0,
+    SkillErrorInvalidSkill,
+    SkillErrorInvalidTarget,
+    SkillErrorOutOfRange,
+    SkillErrorNoEnergy,
+    SkillErrorNoAdrenaline,
+    SkillErrorRecharging
 };
 
 enum GameObjectType : uint8_t

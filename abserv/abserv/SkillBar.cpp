@@ -42,13 +42,13 @@ int SkillBar::_LuaAddSkill(uint32_t skillIndex)
     return -1;
 }
 
-SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
+AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor> target)
 {
     if (index < 0 || index >= PLAYER_MAX_SKILLS)
-        return SkillErrorInvalidSkill;
+        return AB::GameProtocol::SkillErrorInvalidSkill;
     Skill* s = skills_[index].get();
     if (!s)
-        return SkillErrorInvalidSkill;
+        return AB::GameProtocol::SkillErrorInvalidSkill;
 
     if (s->IsChangingState())
     {

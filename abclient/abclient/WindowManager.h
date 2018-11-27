@@ -10,6 +10,7 @@ static const StringHash WINDOW_NEWMAIL("NewMailWindow");
 static const StringHash WINDOW_MISSIONMAP("MissionMapWindow");
 static const StringHash WINDOW_SKILLBAR("SkillBarWindow");
 static const StringHash WINDOW_FRIENDLIST("FriendListWindow");
+static const StringHash WINDOW_GAMEMESSAGES("GameMessagesWindow");
 
 class WindowManager : public Object
 {

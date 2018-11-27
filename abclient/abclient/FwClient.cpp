@@ -72,6 +72,27 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
     }
 }
 
+String FwClient::GetSkillErrorMessage(AB::GameProtocol::SkillError err)
+{
+    switch (err)
+    {
+    case AB::GameProtocol::SkillErrorInvalidSkill:
+        return "Invalid Skill";
+    case AB::GameProtocol::SkillErrorInvalidTarget:
+        return "Invalid Skill Target";
+    case AB::GameProtocol::SkillErrorOutOfRange:
+        return "Target out of reach";
+    case AB::GameProtocol::SkillErrorNoEnergy:
+        return "Not enough Energy";
+    case AB::GameProtocol::SkillErrorNoAdrenaline:
+        return "Not enough Adrenaline";
+    case AB::GameProtocol::SkillErrorRecharging:
+        return "Skill recharging";
+    default:
+        return String::EMPTY;
+    }
+}
+
 FwClient::FwClient(Context* context) :
     Object(context),
     loggedIn_(false),
@@ -869,6 +890,48 @@ void FwClient::OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t 
     eData[P_SOURCEID] = sourceId;
     eData[P_TARGETID] = targetId;
     QueueEvent(AbEvents::E_OBJECTSELECTED, eData);
+}
+
+void FwClient::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error)
+{
+    String errorMsg = GetSkillErrorMessage(error);
+    URHO3D_LOGINFOF("Object %d skill error %d: %s", id, skillIndex, errorMsg.CString());
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::SkillFailure;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_SKILLINDEX] = skillIndex;
+    eData[P_ERROR] = static_cast<uint8_t>(error);
+    eData[P_ERRORMSG] = errorMsg;
+    QueueEvent(AbEvents::E_SKILLFAILURE, eData);
+}
+
+void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
+    uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast)
+{
+    URHO3D_LOGINFOF("Object %d using skill %d", id, skillIndex);
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectUseSkill;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_SKILLINDEX] = skillIndex;
+    eData[P_ENERGY] = energy;
+    eData[P_ADRENALINE] = adrenaline;
+    eData[P_ACTIVATION] = activation;
+    eData[P_OVERCAST] = overcast;
+    QueueEvent(AbEvents::E_OBJECTUSESKILL, eData);
+}
+
+void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
+{
+    URHO3D_LOGINFOF("Object %d used skill %d", id, skillIndex);
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectEndUseSkill;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_SKILLINDEX] = skillIndex;
+    eData[P_RECHARGE] = recharge;
+    QueueEvent(AbEvents::E_OBJECTENDUSESKILL, eData);
 }
 
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,

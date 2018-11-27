@@ -337,6 +337,10 @@
         <attribute name="Color" value="0.95 0.95 0.95" />
     </element>
 
+    <element type="GameMessageError" style="Text" auto="false">
+        <attribute name="Color" value="0.8 0.1 0.1" />
+    </element>
+
     <!-- Chat -->
     <element type="ChatLogText" style="Text" auto="false">
         <attribute name="Font Size" value="10" />

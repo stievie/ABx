@@ -18,11 +18,11 @@ function onStartUse(source, target)
     -- Can not use this skill on self
     return SkillErrorInvalidTarget
   end;
-  if (self:IsInRange(target) == false) then
-    return SkillErrorOutOfRange
-  end
   if (target:IsDead() == false) then
     return SkillErrorInvalidTarget
+  end
+  if (self:IsInRange(target) == false) then
+    return SkillErrorOutOfRange
   end
   return SkillErrorNone
 end

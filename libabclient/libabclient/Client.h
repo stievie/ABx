@@ -93,6 +93,10 @@ public:
     void OnObjectStateChange(int64_t updateTick, uint32_t id, AB::GameProtocol::CreatureState state) override;
     void OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor) override;
     void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
+    void OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error) override;
+    void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
+        uint16_t activation, uint16_t overcast) override;
+    void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) override;
     void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,

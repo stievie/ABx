@@ -217,7 +217,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
 void Actor::OnEndUseSkill(Skill* skill)
 {
     // These change the state
-    if (skill->IsChangingState())
+    if (skill->IsChangingState() && !stateComp_.IsDead())
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
 }
 
@@ -303,9 +303,6 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
     UpdateRanges();
-
-    Skill* skill = nullptr;
-    int skillIndex = -1;
 
     InputItem input;
 
@@ -428,22 +425,11 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             if (!IsDead())
             {
-                skillIndex = static_cast<uint32_t>(input.data[InputDataSkillIndex].GetInt());
+                int skillIndex = input.data[InputDataSkillIndex].GetInt();
 #ifdef DEBUG_GAME
                 LOG_DEBUG << GetName() << " is using skill " << skillIndex << std::endl;
 #endif
-                skill = GetSkill(skillIndex);
-                if (skill)
-                {
-                    std::shared_ptr<Actor> target;
-                    if (auto selObj = selectedObject_.lock())
-                        target = selObj->GetThisDynamic<Actor>();
-                    // Can use skills only on Creatures not all GameObjects.
-                    // But a target is not mandatory, the Skill script will decide
-                    // if it needs a target, and may fail.
-                    /* SkillError err = */ skills_.UseSkill(skillIndex, target);
-                    // TODO: Send result to client
-                }
+                skillsComp_.UseSkill(skillIndex);
             }
             break;
         }
@@ -518,11 +504,14 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         }
     }
 
+    attackComp_.Update(timeElapsed);
+    skillsComp_.Update(timeElapsed);
+
     if (stateComp_.IsStateChanged())
     {
         stateComp_.Apply();
 #ifdef DEBUG_GAME
-        LOG_DEBUG << "New state " << (int)stateComp_.GetState() << std::endl;
+        LOG_DEBUG << "New state of " << id_ << ":" << (int)stateComp_.GetState() << std::endl;
 #endif
         message.AddByte(AB::GameProtocol::GameObjectStateChange);
         message.Add<uint32_t>(id_);
@@ -576,11 +565,9 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         moveComp_.directionSet_ = false;
     }
 
-    attackComp_.Update(timeElapsed);
-    skillsComp_.Update(timeElapsed);
-    skills_.Update(timeElapsed);
     effectsComp_.Update(timeElapsed);
 
+    skillsComp_.Write(message);
     resourceComp_.Write(message);
 }
 

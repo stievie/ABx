@@ -34,7 +34,7 @@ public:
     ~SkillBar() = default;
 
     /// 0 Based
-    SkillError UseSkill(int index, std::shared_ptr<Actor> target);
+    AB::GameProtocol::SkillError UseSkill(int index, std::shared_ptr<Actor> target);
     Skill* GetCurrentSkill() const;
     void Update(uint32_t timeElapsed);
     std::string Encode();
