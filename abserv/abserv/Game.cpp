@@ -28,7 +28,7 @@
 namespace Game {
 
 Game::Game() :
-    state_(ExecutionState::Startup),
+    state_(ExecutionState::Terminated),
     lastUpdate_(0),
     startTime_(0)
 {
@@ -111,7 +111,7 @@ void Game::Start()
     }
 #ifdef DEBUG_GAME
     else
-        LOG_DEBUG << "Game state is not Startup it is " << static_cast<int>(state_) << std::endl;
+        LOG_DEBUG << "Game state is not Startup it is " << static_cast<int>(state_.load()) << std::endl;
 #endif // DEBUG_GAME
 
 }
@@ -285,7 +285,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     }
     AddObject(result);
     map_->AddEntity(result->GetAi(), result->GetGroupId());
-    if (GetState() == ExecutionState::Running)
+    if (state_ == ExecutionState::Running)
     {
         // In worst case (i.e. the game data is still loading): will be sent as
         // soon as the game runs and entered the Update loop.
@@ -302,7 +302,7 @@ void Game::SetState(ExecutionState state)
 {
     if (state_ != state)
     {
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
+//        std::lock_guard<std::recursive_mutex> lockClass(lock_);
 #ifdef DEBUG_GAME
         if (state == ExecutionState::Terminated)
             LOG_DEBUG << "Setting Execution state to terminated" << std::endl;

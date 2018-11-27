@@ -30,7 +30,7 @@ public:
     };
 private:
     std::recursive_mutex lock_;
-    ExecutionState state_;
+    std::atomic<ExecutionState> state_;
     /// Game Tick -> Game State
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
@@ -110,6 +110,8 @@ public:
     ExecutionState GetState() const { return state_; }
     bool IsInactive() const
     {
+        if (state_ == ExecutionState::Startup)
+            return false;
         return noplayerTime_ > GAME_INACTIVE_TIME;
     }
     const kaguya::State& GetLuaState() const { return luaState_; }
