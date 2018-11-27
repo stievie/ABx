@@ -9,7 +9,7 @@ behaviours = "/scripts/ai/behaviours.lua"
 level_cap = 20
 
 -- Ranges ----------------------------------------------------------------------
-range_base = 60   -- 100% Slightly larger than the compass
+range_base = 80   -- 100% Slightly larger than the compass
 
 range_aggro = GetValue(range_base, 24.0)
 
@@ -22,7 +22,7 @@ range_casting = range_aggro * 1.35
 range_projectile = range_aggro
 range_half_compass = range_compass / 2.0
 -- Close Range
-range_touch = 1.1
+range_touch = 1.5
 range_adjacent = GetValue(range_base, 3.0)
 
 range_visible = range_aggro
