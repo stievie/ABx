@@ -30,6 +30,7 @@ namespace Game {
 Game::Game() :
     state_(ExecutionState::Terminated),
     lastUpdate_(0),
+    noplayerTime_(0),
     startTime_(0)
 {
     InitializeLua();
