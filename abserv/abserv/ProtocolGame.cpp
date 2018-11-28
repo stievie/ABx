@@ -104,7 +104,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         message.GetSize() == 0)
         return;
 
-    uint8_t recvByte = message.GetByte();
+    const uint8_t recvByte = message.GetByte();
 
     switch (recvByte)
     {
@@ -170,28 +170,28 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<uint8_t>();
-        player_->inputs_.Add(Game::InputType::Move, data);
+        player_->AddInput(Game::InputType::Move, data);
         break;
     }
     case AB::GameProtocol::PacketTypeTurn:
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<uint8_t>();   // None | Left | Right
-        player_->inputs_.Add(Game::InputType::Turn, data);
+        player_->AddInput(Game::InputType::Turn, data);
         break;
     }
     case AB::GameProtocol::PacketTypeSetDirection:
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
-        player_->inputs_.Add(Game::InputType::Direction, data);
+        player_->AddInput(Game::InputType::Direction, data);
         break;
     }
     case AB::GameProtocol::PacketTypeSetState:
     {
         Utils::VariantMap data;
         data[Game::InputDataState] = message.Get<uint8_t>();
-        player_->inputs_.Add(Game::InputType::SetState, data);
+        player_->AddInput(Game::InputType::SetState, data);
         break;
     }
     case AB::GameProtocol::PacketTypeGoto:
@@ -200,38 +200,36 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         data[Game::InputDataVertexX] = message.Get<float>();
         data[Game::InputDataVertexY] = message.Get<float>();
         data[Game::InputDataVertexZ] = message.Get<float>();
-        player_->inputs_.Add(Game::InputType::Goto, data);
+        player_->AddInput(Game::InputType::Goto, data);
         break;
     }
     case AB::GameProtocol::PacketTypeFollow:
     {
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();
-        player_->inputs_.Add(Game::InputType::Follow, data);
+        player_->AddInput(Game::InputType::Follow, data);
         break;
     }
     case AB::GameProtocol::PacketTypeUseSkill:
     {
-        Utils::VariantMap data;
         // 1 based -> convert to 0 based
         uint8_t index = message.Get<uint8_t>();
         if (index > 0 && index <= PLAYER_MAX_SKILLS)
         {
+            Utils::VariantMap data;
             data[Game::InputDataSkillIndex] = index - 1;
-            player_->inputs_.Add(Game::InputType::UseSkill, data);
+            player_->AddInput(Game::InputType::UseSkill, data);
         }
         break;
     }
     case AB::GameProtocol::PacketTypeCancel:
     {
-        Utils::VariantMap data;
-        player_->inputs_.Add(Game::InputType::Cancel, data);
+        player_->AddInput(Game::InputType::Cancel);
         break;
     }
     case AB::GameProtocol::PacketTypeAttack:
     {
-        Utils::VariantMap data;
-        player_->inputs_.Add(Game::InputType::Attack, data);
+        player_->AddInput(Game::InputType::Attack);
         break;
     }
     case AB::GameProtocol::PacketTypeSelect:
@@ -239,7 +237,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
         data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
-        player_->inputs_.Add(Game::InputType::Select, data);
+        player_->AddInput(Game::InputType::Select, data);
         break;
     }
     case AB::GameProtocol::PacketTypeClickObject:
@@ -247,7 +245,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
         data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
-        player_->inputs_.Add(Game::InputType::ClickObject, data);
+        player_->AddInput(Game::InputType::ClickObject, data);
         break;
     }
     case AB::GameProtocol::PacketTypeCommand:
@@ -255,7 +253,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         Utils::VariantMap data;
         data[Game::InputDataCommandType] = message.GetByte();
         data[Game::InputDataCommandData] = message.GetString();
-        player_->inputs_.Add(Game::InputType::Command, data);
+        player_->AddInput(Game::InputType::Command, data);
         break;
     }
     default:

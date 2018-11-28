@@ -178,5 +178,7 @@ public:
 };
 
 typedef std::map<size_t, Variant> VariantMap;
+/// Empty variant map
+const VariantMap VariantMapEmpty;
 
 }

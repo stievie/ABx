@@ -160,8 +160,15 @@ public:
     virtual bool Resurrect(int16_t precentHealth, int16_t percentEnergy);
     bool IsDead() const { return stateComp_.IsDead(); }
     bool IsEnemy(Actor* other);
+    inline void AddInput(InputType type, const Utils::VariantMap& data)
+    {
+        inputComp_.Add(type, data);
+    }
+    inline void AddInput(InputType type)
+    {
+        inputComp_.Add(type);
+    }
 
-    InputQueue inputs_;
     std::weak_ptr<GameObject> selectedObject_;
     std::weak_ptr<GameObject> followedObject_;
     uint32_t GetSelectedObjectId() const

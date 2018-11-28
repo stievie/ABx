@@ -30,12 +30,13 @@ GameMessagesWindow::~GameMessagesWindow()
     UnsubscribeFromAllEvents();
 }
 
-void GameMessagesWindow::ShowError(const String & message)
+void GameMessagesWindow::ShowError(const String& message)
 {
     visibleTime_ = 0.0f;
     text_->SetText(message);
     text_->SetStyle("GameMessageError");
     SetVisible(true);
+    BringToFront();
 }
 
 void GameMessagesWindow::HandleUpdate(StringHash, VariantMap& eventData)

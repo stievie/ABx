@@ -97,7 +97,7 @@ void Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
         data[InputDataObjectId2] = object->GetId();   // Target
     else
         data[InputDataObjectId2] = 0;   // Target
-    inputs_.Add(InputType::Select, data);
+    inputComp_.Add(InputType::Select, data);
 }
 
 void Actor::GotoPosition(const Math::Vector3& pos)
@@ -106,7 +106,7 @@ void Actor::GotoPosition(const Math::Vector3& pos)
     data[InputDataVertexX] = pos.x_;
     data[InputDataVertexY] = pos.y_;
     data[InputDataVertexZ] = pos.z_;
-    inputs_.Add(InputType::Goto, data);
+    inputComp_.Add(InputType::Goto, data);
 }
 
 void Actor::FollowObject(std::shared_ptr<GameObject> object)
@@ -118,21 +118,21 @@ void Actor::FollowObject(uint32_t objectId)
 {
     Utils::VariantMap data;
     data[InputDataObjectId] = objectId;
-    inputs_.Add(InputType::Follow, data);
+    inputComp_.Add(InputType::Follow, data);
 }
 
 void Actor::UseSkill(uint32_t index)
 {
     Utils::VariantMap data;
     data[InputDataSkillIndex] = static_cast<uint8_t>(index);
-    inputs_.Add(InputType::UseSkill, data);
+    inputComp_.Add(InputType::UseSkill, data);
 }
 
 void Actor::_LuaSetState(int state)
 {
     Utils::VariantMap data;
     data[InputDataState] = static_cast<uint8_t>(state);
-    inputs_.Add(InputType::SetState, data);
+    inputComp_.Add(InputType::SetState, data);
 }
 
 void Actor::_LuaSetHomePos(float x, float y, float z)

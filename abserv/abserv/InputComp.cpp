@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "InputComp.h"
 #include "Actor.h"
-#include "InputQueue.h"
 #include "Game.h"
 
 namespace Game {
@@ -11,7 +10,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
 {
     InputItem input;
     // Multiple inputs of the same type overwrite previous
-    while (owner_.inputs_.Get(input))
+    while (inputs_.Get(input))
     {
         switch (input.type)
         {
