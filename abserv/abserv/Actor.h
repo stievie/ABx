@@ -13,6 +13,7 @@
 #include "EffectsComp.h"
 #include "EquipComp.h"
 #include "SkillsComp.h"
+#include "InputComp.h"
 
 namespace Game {
 
@@ -27,6 +28,7 @@ class Actor : public GameObject
     friend class Components::EffectsComp;
     friend class Components::EquipComp;
     friend class Components::SkillsComp;
+    friend class Components::InputComp;
 public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
 private:
@@ -188,6 +190,7 @@ public:
     Components::EffectsComp effectsComp_;
     Components::EquipComp equipComp_;
     Components::SkillsComp skillsComp_;
+    Components::InputComp inputComp_;
 
     bool undestroyable_;
 

@@ -63,6 +63,7 @@ public:
     {
         return oldPosition_;
     }
+    void Write(Net::NetworkMessage& message);
 
     uint32_t moveDir_;
     uint32_t turnDir_;

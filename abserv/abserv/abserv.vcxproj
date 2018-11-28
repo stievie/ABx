@@ -211,6 +211,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameStream.h" />
+    <ClInclude Include="InputComp.h" />
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameStream.cpp" />
+    <ClCompile Include="InputComp.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOFriendList.cpp" />

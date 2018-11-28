@@ -255,6 +255,9 @@
     <ClInclude Include="TemplateEncoder.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="InputComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -453,6 +456,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TemplateEncoder.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="InputComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

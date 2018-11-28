@@ -31,5 +31,19 @@ void StateComp::Update(uint32_t)
     }
 }
 
+void StateComp::Write(Net::NetworkMessage& message)
+{
+    if (IsStateChanged())
+    {
+        Apply();
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "New state of " << owner_.id_ << ":" << (int)GetState() << std::endl;
+#endif
+        message.AddByte(AB::GameProtocol::GameObjectStateChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.AddByte(GetState());
+    }
+}
+
 }
 }

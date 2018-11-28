@@ -11,6 +11,9 @@ namespace Components {
 
 void MoveComp::Update(uint32_t timeElapsed)
 {
+    if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureStateMoving)
+        return;
+
     MoveTo(timeElapsed);
     TurnTo(timeElapsed);
 }
@@ -146,6 +149,38 @@ void MoveComp::SetDirection(float worldAngle)
         owner_.transformation_.rotation_ = worldAngle;
         Math::NormalizeAngle(owner_.transformation_.rotation_);
         directionSet_ = true;
+    }
+}
+
+void MoveComp::Write(Net::NetworkMessage& message)
+{
+    if (speedDirty_)
+    {
+        speedDirty_ = false;
+        message.AddByte(AB::GameProtocol::GameObjectMoveSpeedChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.Add<float>(GetSpeedFactor());
+    }
+
+    if (moved_)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectPositionChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.Add<float>(owner_.transformation_.position_.x_);
+        message.Add<float>(owner_.transformation_.position_.y_);
+        message.Add<float>(owner_.transformation_.position_.z_);
+        moved_ = false;
+    }
+
+    // The rotation may change in 2 ways: Turn and SetWorldDirection
+    if (turned_ || directionSet_)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectRotationChange);
+        message.Add<uint32_t>(owner_.id_);
+        message.Add<float>(owner_.transformation_.rotation_);
+        message.Add<uint8_t>(directionSet_ ? 1 : 0);
+        turned_ = false;
+        directionSet_ = false;
     }
 }
 

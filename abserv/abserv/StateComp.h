@@ -36,6 +36,7 @@ public:
     bool IsDead() const { return newState_ == AB::GameProtocol::CreatureStateDead; }
     void Apply();
     void Update(uint32_t timeElapsed);
+    void Write(Net::NetworkMessage& message);
 };
 
 }
