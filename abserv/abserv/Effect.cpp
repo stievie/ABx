@@ -32,12 +32,14 @@ bool Effect::LoadScript(const std::string& fileName)
         return false;
 
     persistent_ = luaState_["isPersistent"];
+    haveUpdate_ = ScriptManager::IsFunction(luaState_, "onUpdate");
     return true;
 }
 
 void Effect::Update(uint32_t timeElapsed)
 {
-    luaState_["onUpdate"](source_.lock(), target_.lock(), timeElapsed);
+    if (haveUpdate_)
+        luaState_["onUpdate"](source_.lock(), target_.lock(), timeElapsed);
     if (endTime_ <= Utils::AbTick())
     {
         luaState_["onEnd"](source_.lock(), target_.lock());

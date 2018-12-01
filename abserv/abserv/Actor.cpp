@@ -48,6 +48,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("Die", &Actor::Die)
         .addFunction("Resurrect", &Actor::Resurrect)
         .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
+
+        .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
     );
 }
 

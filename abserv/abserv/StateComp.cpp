@@ -7,7 +7,7 @@ namespace Components {
 
 void StateComp::SetState(AB::GameProtocol::CreatureState state, bool apply /* = false */)
 {
-    if (state != currentState_)
+    if (state != newState_)
     {
         newState_ = state;
         if (apply)

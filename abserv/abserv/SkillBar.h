@@ -47,7 +47,7 @@ public:
             return;
         skills_[index] = skill;
     }
-    AB::AttributeValue* GetAttribute(uint32_t index);
+    const AB::AttributeValue* GetAttribute(uint32_t index) const;
     const AB::Attributes& GetAttributes() const { return attributes_; }
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect) const;

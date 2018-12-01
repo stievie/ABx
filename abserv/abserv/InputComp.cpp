@@ -127,7 +127,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             {
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();
 #ifdef DEBUG_GAME
-                LOG_DEBUG << GetName() << " is using skill " << skillIndex << std::endl;
+                LOG_DEBUG << owner_.GetName() << " is using skill " << skillIndex << std::endl;
 #endif
                 owner_.skillsComp_.UseSkill(skillIndex);
             }

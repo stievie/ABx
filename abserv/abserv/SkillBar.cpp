@@ -127,7 +127,7 @@ std::shared_ptr<Skill> SkillBar::GetSkill(uint32_t index)
     return std::shared_ptr<Skill>();
 }
 
-AB::AttributeValue* SkillBar::GetAttribute(uint32_t index)
+const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 {
     if (index < PLAYER_MAX_ATTRIBUTES)
         return &attributes_[index];

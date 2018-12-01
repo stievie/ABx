@@ -1,11 +1,10 @@
 -- Morale is forever but can change
-baseDuration = (2 ^ 32) - 1
 isPersistent = false
 
 currentMorale = 0
 
 function getDuration(source, target)
-  return baseDuration
+  return (2 ^ 32) - 1
 end
 
 function onStart(source, target)

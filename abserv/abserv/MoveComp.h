@@ -59,10 +59,6 @@ public:
         speedFactor_ += value;
         speedDirty_ = true;
     }
-    float GetSpeed() const
-    {
-        return BaseSpeed * speedFactor_;
-    }
 
     const Math::Vector3& GetOldPosition() const
     {

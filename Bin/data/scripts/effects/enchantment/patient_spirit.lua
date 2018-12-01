@@ -1,8 +1,8 @@
 -- 2 Sec
 isPersistent = false
 
-function getDuration(source, target, baseDuration)
-  return baseDuration
+function getDuration(source, target)
+  return 2000
 end
 
 function onStart(source, target)
@@ -10,7 +10,7 @@ function onStart(source, target)
 end
 
 function onEnd(source, target)
-  target:Health = target:Health + 120
+--  target:Health = target:Health + 120
 end
 
 -- Effect was removed before ended

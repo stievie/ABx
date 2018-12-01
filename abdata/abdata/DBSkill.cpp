@@ -37,7 +37,7 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
     skill.name = result->GetString("name");
     skill.attributeUuid = result->GetString("attribute_uuid");
     skill.professionUuid = result->GetString("profession_uuid");
-    skill.type = static_cast<AB::Entities::SkillType>(result->GetUInt("type"));
+    skill.type = static_cast<AB::Entities::SkillType>(result->GetULong("type"));
     skill.isElite = result->GetUInt("is_elite") != 0;
     skill.description = result->GetString("description");
     skill.shortDescription = result->GetString("short_description");

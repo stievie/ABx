@@ -26,6 +26,7 @@ static const StringHash ANIM_HURT("Hurt");
 static const StringHash ANIM_DYING("Dying");
 static const StringHash ANIM_DEAD("Dead");
 static const StringHash ANIM_CRY("Cry");
+static const StringHash ANIM_CASTING("Casting");
 
 /// Stop playing current sound
 static const StringHash SOUND_NONE("None");

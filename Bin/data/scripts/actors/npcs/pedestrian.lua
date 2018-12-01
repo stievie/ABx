@@ -69,12 +69,6 @@ function onEndUseSkill(skill)
 end
 
 function onStartUseSkill(skill)
-  local targetName = "Everything!"
-  local target = skill:GetTarget()
-  if (target ~= nil) then
-    targetName = target:GetName()
-  end
-  print("Using skill " .. skill:GetName() .. " on " .. targetName)
 end
 
 function onDied()

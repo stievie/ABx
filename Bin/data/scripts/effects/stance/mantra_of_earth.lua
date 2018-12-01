@@ -1,7 +1,8 @@
 isPersistent = false
 
 function getDuration(source, target)
-  return 10
+  local attrib = source:GetAttributeValue(3)
+  return 30 + (4 * attrib)
 end
 
 function onStart(source, target)

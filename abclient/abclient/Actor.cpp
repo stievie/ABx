@@ -66,6 +66,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_SIT] = GetAnimation(ANIM_SIT);
     animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
     animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
+    animations_[ANIM_CASTING] = GetAnimation(ANIM_CASTING);
     sounds_[SOUND_SKILLFAILURE] = "Sounds/FX/skill_failure.wav";
     sounds_[SOUND_FOOTSTEPS] = "Sounds/FX/footsteps_run1.wav";
     sounds_[SOUND_DIE] = "Sounds/FX/scream_female1.wav";
@@ -443,6 +444,8 @@ String Actor::GetAnimation(const StringHash& hash)
         result += "Walking.ani";
     else if (hash == ANIM_SIT)
         result += "Sitting.ani";
+    else if (hash == ANIM_CASTING)
+        result += "Casting.ani";
     else
         return "";
     return result;
@@ -566,6 +569,8 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:
+        // Loop for extremely long spells
+        PlayAnimation(ANIM_CASTING, true, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateAttacking:
         break;

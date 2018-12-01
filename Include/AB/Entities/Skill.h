@@ -8,43 +8,43 @@ namespace Entities {
 
 static constexpr auto KEY_SKILLS = "game_skills";
 
-enum SkillType : uint32_t
+enum SkillType : uint64_t
 {
-    SkillTypeSkill = 0,
-    SkillTypeAttack = 1,
-        SkillTypeRangedAttack        = SkillTypeAttack | 1 << 8,
-            SkillTypeBowAttack           = SkillTypeRangedAttack | 1 << 16,
-            SkillTypeSpearAttack         = SkillTypeRangedAttack | 2 << 16,
-        SkillTypeMeleeAttack         = SkillTypeAttack | 2 << 8,
-            SkillTypeAxeAttack           = SkillTypeMeleeAttack | 1 << 16,
-            SkillTypeDaggerAttack        = SkillTypeMeleeAttack | 2 << 16,
-                SkillTypeLeadAttack          = SkillTypeDaggerAttack | 1 << 24,
-                SkillTypeOffHandAttack       = SkillTypeDaggerAttack | 2 << 24,
-                SkillTypeDualAttack          = SkillTypeDaggerAttack | 3 << 24,
-            SkillTypeHammerAttack        = SkillTypeMeleeAttack | 3 << 16,
-            SkillTypeScyteAttack         = SkillTypeMeleeAttack | 4 << 16,
-            SkillTypeSwordAttack         = SkillTypeMeleeAttack | 5 << 16,
-        SkillTypePetAttack           = SkillTypeAttack | 3 << 8,
-    SkillTypeShout = 2,
-    SkillTypeChant = 3,
-    SkillTypeEcho = 4,
-    SkillTypeForm = 5,
-    SkillTypeGlypthe = 6,
-    SkillTypePreparation = 7,
-    SkillTypeRitual = 8,
-        SkillTypeBindingRitual       = SkillTypeRitual | 1 << 8,
-        SkillTypeNatureRitual        = SkillTypeRitual | 2 << 8,
-    SkillTypeSignet = 9,
-    SkillTypeSpell = 10,
-        SkillTypeEnchantment         = SkillTypeSpell | 1 << 8,
-            SkillTypeFlashEnchantment    = SkillTypeEnchantment | 1 << 16,
-        SkillTypeHex                 = SkillTypeSpell | 2 << 8,
-        SkillTypeItemSpell           = SkillTypeSpell | 3 << 8,
-        SkillTypeWardSpell           = SkillTypeSpell | 4 << 8,
-        SkillTypeWeaponSpell         = SkillTypeSpell | 5 << 8,
-        SkillTypeWellSpell           = SkillTypeSpell | 6 << 8,
-    SkillTypeStance = 11,
-    SkillTypeTrap = 12
+    SkillTypeSkill = 0ll,
+    SkillTypeAttack = 1ll,
+        SkillTypeRangedAttack        = SkillTypeAttack | 1ll << 16,
+            SkillTypeBowAttack           = SkillTypeRangedAttack | 1ll << 32,
+            SkillTypeSpearAttack         = SkillTypeRangedAttack | 2ll << 32,
+        SkillTypeMeleeAttack         = SkillTypeAttack | 2ll << 16,
+            SkillTypeAxeAttack           = SkillTypeMeleeAttack | 1ll << 32,
+            SkillTypeDaggerAttack        = SkillTypeMeleeAttack | 2ll << 32,
+                SkillTypeLeadAttack          = SkillTypeDaggerAttack | 1ll << 48,
+                SkillTypeOffHandAttack       = SkillTypeDaggerAttack | 2ll << 48,
+                SkillTypeDualAttack          = SkillTypeDaggerAttack | 4ll << 48,
+            SkillTypeHammerAttack        = SkillTypeMeleeAttack | 4ll << 16,
+            SkillTypeScyteAttack         = SkillTypeMeleeAttack | 8ll << 16,
+            SkillTypeSwordAttack         = SkillTypeMeleeAttack | 16ll << 16,
+        SkillTypePetAttack           = SkillTypeAttack | 4ll << 16,
+    SkillTypeShout = 2ll,
+    SkillTypeChant = 4ll,
+    SkillTypeEcho = 8ll,
+    SkillTypeForm = 16ll,
+    SkillTypeGlypthe = 32ll,
+    SkillTypePreparation = 64ll,
+    SkillTypeRitual = 128ll,
+        SkillTypeBindingRitual       = SkillTypeRitual | 1ll << 16,
+        SkillTypeNatureRitual        = SkillTypeRitual | 2ll << 16,
+    SkillTypeSignet = 256ll,
+    SkillTypeSpell = 512ll,
+        SkillTypeEnchantment         = SkillTypeSpell | 1ll << 16,
+            SkillTypeFlashEnchantment    = SkillTypeEnchantment | 1ll << 32,
+        SkillTypeHex                 = SkillTypeSpell | 2ll << 16,
+        SkillTypeItemSpell           = SkillTypeSpell | 4ll << 16,
+        SkillTypeWardSpell           = SkillTypeSpell | 8ll << 16,
+        SkillTypeWeaponSpell         = SkillTypeSpell | 16ll << 16,
+        SkillTypeWellSpell           = SkillTypeSpell | 32ll << 16,
+    SkillTypeStance = 1024ll,
+    SkillTypeTrap = 2048ll
 };
 
 struct Skill : Entity
@@ -61,7 +61,7 @@ struct Skill : Entity
         s.text1b(name, Limits::MAX_SKILL_NAME);
         s.text1b(attributeUuid, Limits::MAX_UUID);
         s.text1b(professionUuid, Limits::MAX_UUID);
-        s.value4b(type);
+        s.value8b(type);
         s.value1b(isElite);
         s.text1b(description, Limits::MAX_SKILL_DESCRIPTION);
         s.text1b(shortDescription, Limits::MAX_SKILL_SHORT_DESCRIPTION);

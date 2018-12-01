@@ -19,7 +19,6 @@ void SkillsComp::Update(uint32_t timeElapsed)
                 usingSkill_ = false;
                 endDirty_ = true;
                 newRecharge_ = ls->recharge_;
-                lastSkill_.reset();
             }
         }
     }

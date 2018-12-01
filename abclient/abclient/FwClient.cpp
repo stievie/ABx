@@ -909,7 +909,8 @@ void FwClient::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIn
 void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
     uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast)
 {
-    URHO3D_LOGINFOF("Object %d using skill %d", id, skillIndex);
+    URHO3D_LOGINFOF("Object %d using skill %d: Energy = %d, Adrenaline = %d, Activation = %d, Overcast = %d",
+        id, skillIndex, energy, adrenaline, activation, overcast);
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::ObjectUseSkill;
     eData[P_UPDATETICK] = updateTick;
@@ -924,7 +925,7 @@ void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
 
 void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
 {
-    URHO3D_LOGINFOF("Object %d used skill %d", id, skillIndex);
+    URHO3D_LOGINFOF("Object %d used skill %d: Recharge = %d", id, skillIndex, recharge);
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::ObjectEndUseSkill;
     eData[P_UPDATETICK] = updateTick;

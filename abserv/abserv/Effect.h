@@ -26,6 +26,7 @@ private:
     std::weak_ptr<Actor> target_;
     std::weak_ptr<Actor> source_;
     bool persistent_;
+    bool haveUpdate_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
 public:
@@ -33,6 +34,8 @@ public:
 
     Effect() = delete;
     explicit Effect(const AB::Entities::Effect& effect) :
+        persistent_(false),
+        haveUpdate_(false),
         data_(effect),
         startTime_(0),
         endTime_(0),
