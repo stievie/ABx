@@ -18,7 +18,7 @@ public:
     { }
     ~EffectsComp() = default;
 
-    void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration);
+    void AddEffect(std::shared_ptr<Actor> source, uint32_t index);
     void DeleteEffect(uint32_t index);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);

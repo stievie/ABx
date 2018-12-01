@@ -32,6 +32,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
         .addFunction("GetSpeed", &Actor::GetSpeed)
         .addFunction("SetSpeed", &Actor::SetSpeed)
+        .addFunction("AddSpeed", &Actor::AddSpeed)
         .addFunction("AddEffect", &Actor::_LuaAddEffect)
         .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
 
@@ -170,9 +171,9 @@ std::vector<std::shared_ptr<Actor>> Actor::_LuaGetActorsInRange(Ranges range)
     return result;
 }
 
-void Actor::_LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
+void Actor::_LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index)
 {
-    effectsComp_.AddEffect(source, index, baseDuration);
+    effectsComp_.AddEffect(source, index);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)

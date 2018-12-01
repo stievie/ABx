@@ -60,6 +60,7 @@ struct Skill : Entity
         s.value4b(index);
         s.text1b(name, Limits::MAX_SKILL_NAME);
         s.text1b(attributeUuid, Limits::MAX_UUID);
+        s.text1b(professionUuid, Limits::MAX_UUID);
         s.value4b(type);
         s.value1b(isElite);
         s.text1b(description, Limits::MAX_SKILL_DESCRIPTION);
@@ -72,6 +73,7 @@ struct Skill : Entity
     uint32_t index = 0;
     std::string name;
     std::string attributeUuid = EMPTY_GUID;
+    std::string professionUuid = EMPTY_GUID;
     SkillType type = SkillTypeSkill;
     bool isElite = false;
     std::string description;

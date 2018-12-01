@@ -87,7 +87,7 @@ String FwClient::GetSkillErrorMessage(AB::GameProtocol::SkillError err)
     case AB::GameProtocol::SkillErrorNoAdrenaline:
         return "Not enough Adrenaline";
     case AB::GameProtocol::SkillErrorRecharging:
-        return "Skill recharging";
+        return "Skill is recharging";
     default:
         return String::EMPTY;
     }

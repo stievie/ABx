@@ -698,6 +698,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("index") = s.index;
         gNd.append_attribute("name") = s.name.c_str();
         gNd.append_attribute("attribute") = s.attributeUuid.c_str();
+        gNd.append_attribute("profession") = s.professionUuid.c_str();
         gNd.append_attribute("type") = s.type;
         gNd.append_attribute("elite") = s.isElite;
         gNd.append_attribute("description") = s.description.c_str();

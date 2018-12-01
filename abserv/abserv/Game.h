@@ -31,7 +31,6 @@ public:
 private:
     std::recursive_mutex lock_;
     std::atomic<ExecutionState> state_;
-    /// Game Tick -> Game State
     std::vector<std::shared_ptr<GameObject>> objects_;
     std::map<uint32_t, Player*> players_;
     int64_t lastUpdate_;
@@ -47,6 +46,7 @@ private:
     void ResetStatus();
     /// Changes to the game are written to this message and sent to all players
     std::unique_ptr<Net::NetworkMessage> gameStatus_;
+    /// Stream to record games
     std::unique_ptr<IO::GameWriteStream> writeStream_;
     template<typename E>
     bool UpdateEntity(const E& e)

@@ -64,7 +64,7 @@ function onRemoveObject(object)
 end
 
 function onPlayerJoin(player)
-  player:AddEffect(empty, 1000, 0)
+  player:AddEffect(empty, 1000)
 --  print("Player joined: " .. player:GetName())
 end
 

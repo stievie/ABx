@@ -20,7 +20,7 @@ public:
     };
 private:
     State state_;
-    std::recursive_mutex lock_;
+    std::mutex lock_;
     std::map<uint32_t, std::shared_ptr<Game>> games_;
     std::map<std::string, std::vector<Game*>> maps_;
     Utils::IdGenerator<uint32_t> gameIds_;

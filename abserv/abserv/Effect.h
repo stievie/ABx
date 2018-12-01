@@ -52,7 +52,7 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    void Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t baseDuration);
+    void Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
     void Remove();
 
     bool Serialize(IO::PropWriteStream& stream);

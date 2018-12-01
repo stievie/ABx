@@ -77,7 +77,7 @@ public:
         adrenaline_(0.0f),
         overcast_(0.0f),
         healthRegen_(0.0f),
-        energyRegen_(0.0f),
+        energyRegen_(2.0f),
         dirtyFlags_(0)
     { }
     ~ResourceComp() = default;

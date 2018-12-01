@@ -149,7 +149,7 @@ enum ServerMessageType : uint8_t
 
 enum ChatMessageChannel : uint8_t
 {
-    ChatChannelUnknown,
+    ChatChannelUnknown = 0,
     ChatChannelGeneral,
     ChatChannelGuild,
     ChatChannelParty,

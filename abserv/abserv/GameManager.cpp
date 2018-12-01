@@ -14,7 +14,7 @@ namespace Game {
 void GameManager::Start()
 {
     // Main Thread
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
+    std::lock_guard<std::mutex> lockClass(lock_);
     state_ = State::ManagerStateRunning;
 }
 
@@ -24,7 +24,7 @@ void GameManager::Stop()
     if (state_ == State::ManagerStateRunning)
     {
         {
-            std::lock_guard<std::recursive_mutex> lockClass(lock_);
+            std::lock_guard<std::mutex> lockClass(lock_);
             state_ = State::ManagerStateTerminated;
         }
         for (const auto& g : games_)
@@ -42,7 +42,7 @@ std::shared_ptr<Game> GameManager::CreateGame(const std::string& mapUuid)
 #endif
     std::shared_ptr<Game> game = std::make_shared<Game>();
     {
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
+        std::lock_guard<std::mutex> lockClass(lock_);
         game->id_ = GetNewGameId();
         games_[game->id_] = game;
         maps_[mapUuid].push_back(game.get());

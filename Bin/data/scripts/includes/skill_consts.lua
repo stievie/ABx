@@ -41,6 +41,7 @@ SkillEffectResurrect    = 1 << 1
 SkillEffectHeal         = 1 << 2
 SkillEffectProtect      = 1 << 3
 SkillEffectDamage       = 1 << 4
+SkillEffecSpeed         = 1 << 5
 -- What the skill targets
 SkillTargetNone         = 0
 SkillTargetSelf         = 1 << 1

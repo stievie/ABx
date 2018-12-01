@@ -87,7 +87,7 @@ void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
                 btn->SetHoverOffset(IntVector2(4, 4));
                 btn->SetPressedOffset(IntVector2(-4, -4));
                 Text* tooltip = dynamic_cast<Text*>(btn->GetChild("SkillTooltipText", true));
-                String tip = String(skill->description.c_str());
+                String tip = String(skill->name.c_str());
                 tip += "\n" + String(skill->shortDescription.c_str());
                 tooltip->SetText(tip);
                 ToolTip* tt = dynamic_cast<ToolTip*>(btn->GetChild("SkillTooltip", true));

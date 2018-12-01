@@ -18,8 +18,8 @@ private:
 public:
     explicit StateComp(GameObject& owner) :
         owner_(owner),
-        newState_(AB::GameProtocol::CreatureStateIdle),
         currentState_(AB::GameProtocol::CreatureStateIdle),
+        newState_(AB::GameProtocol::CreatureStateIdle),
         lastStateChange_(Utils::AbTick())
     { }
     ~StateComp() = default;

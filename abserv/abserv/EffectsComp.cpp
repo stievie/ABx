@@ -7,15 +7,17 @@
 namespace Game {
 namespace Components {
 
-void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t baseDuration)
+void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index)
 {
     RemoveEffect(index);
 
     auto effect = GetSubsystem<EffectManager>()->Get(index);
     if (effect)
     {
+        // Effects are not stackable, are they?
+        RemoveEffect(index);
         effects_.push_back(effect);
-        effect->Start(source, owner_.GetThis<Actor>(), baseDuration);
+        effect->Start(source, owner_.GetThis<Actor>());
     }
 }
 
@@ -40,7 +42,7 @@ void EffectsComp::RemoveEffect(uint32_t index)
     if (it != effects_.end())
     {
         (*it)->Remove();
-        DeleteEffect((*it)->data_.index);
+        effects_.erase(it);
     }
 }
 

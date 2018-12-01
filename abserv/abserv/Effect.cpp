@@ -45,12 +45,12 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
-void Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t baseDuration)
+void Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
     target_ = target;
     source_ = source;
     startTime_ = Utils::AbTick();
-    ticks_ = luaState_["getDuration"](source_.lock(), target_.lock(), baseDuration);
+    ticks_ = luaState_["getDuration"](source_.lock(), target_.lock());
     endTime_ = startTime_ + ticks_;
     luaState_["onStart"](source_.lock(), target_.lock());
 }

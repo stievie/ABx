@@ -17,6 +17,7 @@ enum SkillEffect : uint16_t
     SkillEffectHeal = 1 << 2,
     SkillEffectProtect = 1 << 3,
     SkillEffectDamage = 1 << 4,
+    SkillEffectSpeed = 1 << 5,
 };
 
 enum SkillTarget : uint16_t

@@ -54,6 +54,11 @@ public:
             speedDirty_ = true;
         }
     }
+    void AddSpeed(float value)
+    {
+        speedFactor_ += value;
+        speedDirty_ = true;
+    }
     float GetSpeed() const
     {
         return BaseSpeed * speedFactor_;
