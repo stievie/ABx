@@ -13,11 +13,19 @@ private:
     static const HashMap<String, AB::GameProtocol::CommandTypes> CHAT_COMMANDS;
     SharedPtr<BorderImage> background_;
     bool firstStart_;
+    Vector<String> history_;
+    /// Command auto complete current position.
+    unsigned historyRows_;
+    /// Store the original line which is being auto-completed
+    unsigned historyPosition_;
+    /// Current row being edited.
+    String currentRow_;
     void TrimLines();
     void HandleScreenshotTaken(StringHash eventType, VariantMap& eventData);
     void HandleEditFocused(StringHash eventType, VariantMap& eventData);
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
+    void HandleEditKey(StringHash eventType, VariantMap& eventData);
     void HandleServerMessage(StringHash eventType, VariantMap& eventData);
     void HandleServerMessageUnknownCommand(VariantMap&);
     void HandleServerMessageInfo(VariantMap& eventData);

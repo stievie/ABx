@@ -270,6 +270,7 @@ void ClientApp::CreateHUD()
     XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
     // Create console
     Console* console = engine_->CreateConsole();
+    console->SetFocusOnShow(false);
     console->SetDefaultStyle(xmlFile);
     console->GetBackground()->SetOpacity(0.7f);
 

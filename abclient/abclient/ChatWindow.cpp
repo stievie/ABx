@@ -35,6 +35,7 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
 
 ChatWindow::ChatWindow(Context* context) :
     UIElement(context),
+    historyRows_(20),
     tabIndexWhisper_(-1),
     firstStart_(true)
 {
@@ -163,6 +164,7 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     SubscribeToEvent(edit, E_TEXTFINISHED, URHO3D_HANDLER(ChatWindow, HandleTextFinished));
     SubscribeToEvent(edit, E_FOCUSED, URHO3D_HANDLER(ChatWindow, HandleEditFocused));
     SubscribeToEvent(edit, E_DEFOCUSED, URHO3D_HANDLER(ChatWindow, HandleEditDefocused));
+    SubscribeToEvent(edit, E_UNHANDLEDKEY, URHO3D_HANDLER(ChatWindow, HandleEditKey));
 
     tabElement->tabText_->SetColor(Color(1.0f, 1.0f, 1.0f));
 }
@@ -592,10 +594,72 @@ void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)
             static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetInt());
         if (ParseChatCommand(line, channel))
         {
+            // Make sure the line isn't the same as the last one
+            if (history_.Empty() || line != history_.Back())
+            {
+                auto it = history_.Find(line);
+                if (it != history_.End())
+                    history_.Erase(it);
+
+                // Store to history, then clear the lineedit
+                history_.Push(line);
+                if (history_.Size() > historyRows_)
+                    history_.Erase(history_.Begin());
+            }
+            historyPosition_ = history_.Size(); // Reset
             sender->SetText("");
+            currentRow_.Clear();
         }
     }
     sender->SetFocus(false);
+}
+
+void ChatWindow::HandleEditKey(StringHash, VariantMap& eventData)
+{
+    if (!historyRows_)
+        return;
+
+    using namespace UnhandledKey;
+
+    bool changed = false;
+
+    LineEdit* edit = dynamic_cast<LineEdit*>(eventData[P_ELEMENT].GetPtr());
+
+    switch (eventData[P_KEY].GetInt())
+    {
+    case KEY_UP:
+        if (historyPosition_ > 0)
+        {
+            --historyPosition_;
+            changed = true;
+        }
+        break;
+
+    case KEY_DOWN:
+        // If history options left
+        if (historyPosition_ < history_.Size())
+        {
+            // Use the next option
+            ++historyPosition_;
+            changed = true;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    if (changed)
+    {
+        // Set text to history option
+        if (historyPosition_ < history_.Size())
+            edit->SetText(history_[historyPosition_]);
+        else // restore the original line value before it was set to history values
+        {
+            edit->SetText(currentRow_);
+        }
+    }
+
 }
 
 void ChatWindow::AddLine(const String& text, const String& style)
