@@ -28,6 +28,9 @@ enum ResourceDirty
     DirtyMaxEnergy = 1 << 7
 };
 
+static constexpr float MAX_HEALTH_REGEN = 10.0f;
+static constexpr float MAX_ENERGY_REGEN = 10.0f;
+
 class ResourceComp
 {
 private:
@@ -41,7 +44,7 @@ private:
     int16_t maxHealth_;
     int16_t maxEnergy_;
     uint32_t dirtyFlags_;
-    bool SetValue(SetValueType t, float value, float& out)
+    bool SetValue(SetValueType t, float value, float maxVal, float& out)
     {
         switch (t)
         {
@@ -62,7 +65,10 @@ private:
         case SetValueType::Increase:
             if (!Math::Equals(value, 0.0f))
             {
+                if (!Math::Equals(maxVal, 0.0f) && Math::Equals(out, maxVal))
+                    return false;
                 out += value;
+                out = std::max(out, maxVal);
                 return true;
             }
             break;

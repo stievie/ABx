@@ -14,7 +14,6 @@ function onStartUse(source, target)
 end
 
 function onEndUse(source, target)
-  --print("Using Instant Rezz on " .. target:GetName())
   source:AddEffect(source, 1043)
 end
 

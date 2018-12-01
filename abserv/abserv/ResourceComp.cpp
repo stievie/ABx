@@ -8,37 +8,37 @@ namespace Components {
 
 void ResourceComp::SetHealth(SetValueType t, int16_t value)
 {
-    if (SetValue(t, value, health_))
+    if (SetValue(t, value, maxHealth_, health_))
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
 }
 
 void ResourceComp::SetEnergy(SetValueType t, int16_t value)
 {
-    if (SetValue(t, value, energy_))
+    if (SetValue(t, value, maxEnergy_, energy_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergy;
 }
 
 void ResourceComp::SetAdrenaline(SetValueType t, int16_t value)
 {
-    if (SetValue(t, value, adrenaline_))
+    if (SetValue(t, value, 0.0f, adrenaline_))
         dirtyFlags_ |= ResourceDirty::DirtyAdrenaline;
 }
 
 void ResourceComp::SetOvercast(SetValueType t, int16_t value)
 {
-    if (SetValue(t, value, overcast_))
+    if (SetValue(t, value, maxEnergy_, overcast_))
         dirtyFlags_ |= ResourceDirty::DirtyOvercast;
 }
 
 void ResourceComp::SetHealthRegen(SetValueType t, int8_t value)
 {
-    if (SetValue(t, value, healthRegen_))
+    if (SetValue(t, value, MAX_HEALTH_REGEN, healthRegen_))
         dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
 }
 
 void ResourceComp::SetEnergyRegen(SetValueType t, int8_t value)
 {
-    if (SetValue(t, value, energyRegen_))
+    if (SetValue(t, value, MAX_ENERGY_REGEN, energyRegen_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergyRegen;
 }
 
@@ -68,13 +68,13 @@ void ResourceComp::Update(uint32_t timeElapsed)
     // 2 regen per sec
     const float sec = static_cast<float>(timeElapsed) / 1000.0f;
     // Jeder Pfeil erhöht oder senkt die Lebenspunkte um genau zwei pro Sekunde.
-    if (SetValue(SetValueType::Increase, (healthRegen_ * 2.0f) * sec, health_))
+    if (SetValue(SetValueType::Increase, (healthRegen_ * 2.0f) * sec, maxHealth_, health_))
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
     // Also bedeutet 1 Pfeil eine Regeneration (oder Degeneration) von 0,33 Energiepunkten pro Sekunde.
-    if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, energy_))
+    if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, maxEnergy_, energy_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergy;
     // Überzaubert wird alle drei Sekunden um einen Punkt abgebaut
-    if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, overcast_))
+    if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, maxEnergy_, overcast_))
         dirtyFlags_ |= ResourceDirty::DirtyOvercast;
 
     if (health_ <= 0.0f && !owner_.IsDead())
