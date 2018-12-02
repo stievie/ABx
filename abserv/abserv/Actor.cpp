@@ -35,6 +35,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("AddSpeed", &Actor::AddSpeed)
         .addFunction("AddEffect", &Actor::_LuaAddEffect)
         .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
+        .addFunction("GetLastEffect", &Actor::_LuaGetLastEffect)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
@@ -183,6 +184,11 @@ void Actor::_LuaRemoveEffect(uint32_t index)
     effectsComp_.RemoveEffect(index);
 }
 
+std::shared_ptr<Effect> Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
+{
+    return effectsComp_.GetLast(category);
+}
+
 bool Actor::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
@@ -322,6 +328,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     moveComp_.Write(message);
 
     skillsComp_.Write(message);
+    effectsComp_.Write(message);
     resourceComp_.Write(message);
 }
 

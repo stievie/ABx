@@ -208,6 +208,18 @@ void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex
         receiver_->OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
 }
 
+void Client::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
+{
+    if (receiver_)
+        receiver_->OnObjectEffectAdded(updateTick, id, effectIndex, ticks);
+}
+
+void Client::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex)
+{
+    if (receiver_)
+        receiver_->OnObjectEffectRemoved(updateTick, id, effectIndex);
+}
+
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {

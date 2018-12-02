@@ -4,14 +4,31 @@ include("/scripts/includes/skill_consts.lua")
 costEnergy = 0
 costAdrenaline = 0
 activation = 3000
-recharge = (2 ^ 32) - 1    -- Infinite until morale boost
+recharge = TIME_FOREVER    -- Infinite until morale boost
 overcast = 0
+range = RANGE_CASTING
+effect = SkillEffectResurrect
+effectTarget = SkillTargetTarget
 
 function onStartUse(source, target)
-  return true
+  if (target == nil) then
+    return SkillErrorInvalidTarget
+  end
+  if (source:GetId() == target:GetId()) then
+    -- Can not use this skill on self
+    return SkillErrorInvalidTarget
+  end;
+  if (target:IsDead() == false) then
+    return SkillErrorInvalidTarget
+  end
+  if (self:IsInRange(target) == false) then
+    return SkillErrorOutOfRange
+  end
+  return SkillErrorNone
 end
 
 function onEndUse(source, target)
+  target:Resurrect(100, 25)
 end
 
 function onCancelUse()

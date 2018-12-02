@@ -75,7 +75,7 @@ void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
     {
         bool iconSet = false;
         Button* btn = GetButtonFromIndex(i);
-        AB::Entities::Skill* skill = client->GetSkillByIndex(s);
+        const AB::Entities::Skill* skill = client->GetSkillByIndex(s);
         if (skill)
         {
             Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));

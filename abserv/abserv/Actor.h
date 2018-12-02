@@ -29,8 +29,6 @@ class Actor : public GameObject
     friend class Components::EquipComp;
     friend class Components::SkillsComp;
     friend class Components::InputComp;
-public:
-    static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
 private:
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
@@ -41,6 +39,7 @@ private:
     std::vector<std::shared_ptr<Actor>> _LuaGetActorsInRange(Ranges range);
     void _LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index);
     void _LuaRemoveEffect(uint32_t index);
+    std::shared_ptr<Effect> _LuaGetLastEffect(AB::Entities::EffectCategory category);
     void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;

@@ -356,6 +356,23 @@ void FwClient::LoadEffects(uint32_t curVersion)
     }
     if (!file)
         return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("effects");
+    if (!node)
+        return;
+
+    for (const auto& pro : node.children("effect"))
+    {
+        AB::Entities::Effect effect;
+        effect.uuid = pro.attribute("uuid").as_string();
+        effect.index = pro.attribute("index").as_uint();
+        effect.name = pro.attribute("name").as_string();
+        effect.category = static_cast<AB::Entities::EffectCategory>(pro.attribute("category").as_uint());
+        effect.icon = pro.attribute("icon").as_string();
+
+        effects_.emplace(effect.index, effect);
+    }
 }
 
 void FwClient::LoadItems(uint32_t curVersion)
@@ -933,6 +950,29 @@ void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillInd
     eData[P_SKILLINDEX] = skillIndex;
     eData[P_RECHARGE] = recharge;
     QueueEvent(AbEvents::E_OBJECTENDUSESKILL, eData);
+}
+
+void FwClient::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
+{
+    URHO3D_LOGINFOF("Effect %d added: Object %d, Ticks = %d", effectIndex, id, ticks);
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectEffectAdded;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_EFFECTINDEX] = effectIndex;
+    eData[P_TICKS] = ticks;
+    QueueEvent(AbEvents::E_OBJECTEFFECTADDED, eData);
+}
+
+void FwClient::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex)
+{
+    URHO3D_LOGINFOF("Effect %d removed: Object %d", effectIndex, id);
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectEffectRemoved;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_EFFECTINDEX] = effectIndex;
+    QueueEvent(AbEvents::E_OBJECTEFFECTREMOVED, eData);
 }
 
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,

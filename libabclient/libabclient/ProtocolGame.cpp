@@ -140,6 +140,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectEndUseSkill:
             ParseObjectEndUseSkill(message);
             break;
+        case AB::GameProtocol::GameObjectEffectAdded:
+            ParseObjectEffectAdded(message);
+            break;
+        case AB::GameProtocol::GameObjectEffectRemoved:
+            ParseObjectEffectRemoved(message);
+            break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
@@ -236,6 +242,23 @@ void ProtocolGame::ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& m
     uint16_t recharge = message->Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
+}
+
+void ProtocolGame::ParseObjectEffectAdded(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t effectIndex = message->Get<uint32_t>();
+    uint32_t ticks = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnObjectEffectAdded(updateTick_, objectId, effectIndex, ticks);
+}
+
+void ProtocolGame::ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t effectIndex = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnObjectEffectRemoved(updateTick_, objectId, effectIndex);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

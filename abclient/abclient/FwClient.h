@@ -7,6 +7,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/Skill.h>
+#include <AB/Entities/Effect.h>
 #include <map>
 
 struct EventItem
@@ -33,6 +34,7 @@ private:
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::map<std::string, AB::Entities::Profession> professions_;
     std::map<uint32_t, AB::Entities::Skill> skills_;
+    std::map<uint32_t, AB::Entities::Effect> effects_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -137,6 +139,8 @@ public:
     void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
         uint16_t activation, uint16_t overcast) override;
     void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
+    void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) override;
+    void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) override;
     void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
@@ -210,10 +214,17 @@ public:
     }
 
     const std::map<uint32_t, AB::Entities::Skill>& GetSkills() const { return skills_; }
-    AB::Entities::Skill* GetSkillByIndex(uint32_t index)
+    const AB::Entities::Skill* GetSkillByIndex(uint32_t index) const
     {
         auto it = skills_.find(index);
         if (it == skills_.end())
+            return nullptr;
+        return &(*it).second;
+    }
+    const AB::Entities::Effect* GetEffectByIndex(uint32_t index) const
+    {
+        auto it = effects_.find(index);
+        if (it == effects_.end())
             return nullptr;
         return &(*it).second;
     }

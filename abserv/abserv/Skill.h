@@ -94,6 +94,7 @@ public:
 
     bool IsUsing() const { return (startUse_ != 0) && (startUse_ - Utils::AbTick() >= activation_); }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
+    void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type)
     {
         return (data_.type & type) == type;

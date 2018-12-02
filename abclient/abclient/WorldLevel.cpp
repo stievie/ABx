@@ -41,6 +41,8 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
+    SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectAdded));
+    SubscribeToEvent(AbEvents::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
     SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
@@ -535,6 +537,44 @@ void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
     }
 }
 
+void WorldLevel::HandleObjectEffectAdded(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectEffectAdded;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
+        uint32_t ticks = eventData[P_TICKS].GetUInt();
+        object->OnEffectAdded(effectIndex, ticks);
+        if (object->objectType_ == ObjectTypeSelf)
+        {
+            WindowManager* wm = GetSubsystem<WindowManager>();
+            EffectsWindow* wnd = dynamic_cast<EffectsWindow*>(wm->GetWindow(WINDOW_EFFECTS, true).Get());
+            wnd->SetVisible(true);
+            wnd->EffectAdded(effectIndex, ticks);
+        }
+    }
+}
+
+void WorldLevel::HandleObjectEffectRemoved(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectEffectRemoved;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
+        object->OnEffectRemoved(effectIndex);
+        if (object->objectType_ == ObjectTypeSelf)
+        {
+            WindowManager* wm = GetSubsystem<WindowManager>();
+            EffectsWindow* wnd = dynamic_cast<EffectsWindow*>(wm->GetWindow(WINDOW_EFFECTS, true).Get());
+            wnd->EffectRemoved(effectIndex);
+        }
+    }
+}
+
 void WorldLevel::HandleObjectResourceChange(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ObjectResourceChanged;
@@ -777,6 +817,9 @@ void WorldLevel::CreateUI()
 
     skillBar_.DynamicCast(wm->GetWindow(WINDOW_SKILLBAR));
     uiRoot_->AddChild(skillBar_);
+
+    effectsWindow_.DynamicCast(wm->GetWindow(WINDOW_EFFECTS));
+    uiRoot_->AddChild(effectsWindow_);
 
     targetWindow_.DynamicCast(wm->GetWindow(WINDOW_TARGET));
     targetWindow_->SetVisible(false);

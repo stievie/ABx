@@ -32,6 +32,7 @@
 #include "AntiRE.h"
 #include <time.h>
 #include <stdlib.h>
+#include "EffectsWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -141,6 +142,7 @@ ClientApp::ClientApp(Context* context) :
     SkillBarWindow::RegisterObject(context);
     FriendListWindow::RegisterObject(context);
     GameMessagesWindow::RegisterObject(context);
+    EffectsWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));

@@ -2,7 +2,7 @@
 #include "GameMessagesWindow.h"
 
 
-void GameMessagesWindow::RegisterObject(Context * context)
+void GameMessagesWindow::RegisterObject(Context* context)
 {
     context->RegisterFactory<GameMessagesWindow>();
 }

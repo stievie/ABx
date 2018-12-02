@@ -55,6 +55,8 @@ public:
     }
     virtual void SetSpeedFactor(int64_t time, float value);
     virtual void OnSkillError(AB::GameProtocol::SkillError) { }
+    virtual void OnEffectAdded(uint32_t, uint32_t) { }
+    virtual void OnEffectRemoved(uint32_t) { }
 
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);

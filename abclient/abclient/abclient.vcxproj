@@ -257,6 +257,7 @@
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
+    <ClCompile Include="EffectsWindow.cpp" />
     <ClCompile Include="FriendListWindow.cpp" />
     <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="GameMenu.cpp" />
@@ -304,6 +305,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="EffectsWindow.h" />
     <ClInclude Include="Extrapolator.h" />
     <ClInclude Include="FriendListWindow.h" />
     <ClInclude Include="FwClient.h" />

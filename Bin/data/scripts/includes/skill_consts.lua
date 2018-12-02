@@ -1,3 +1,5 @@
+MAX_SKILLS = 8
+
 -- Skill type tree
 SkillTypeSkill = 0
 SkillTypeAttack = 1
@@ -55,3 +57,17 @@ SkillErrorOutOfRange    = 3
 SkillErrorNoEnergy      = 4
 SkillErrorNoAdrenaline  = 5
 SkillErrorRecharging    = 6
+
+-- Effect categories
+EffectCategoryNone        = 0
+EffectCategoryCondition   = 1
+EffectCategoryEnchantment = 2
+EffectCategoryHex         = 3
+EffectCategoryPreparation = 4
+EffectCategoryShout       = 5
+EffectCategorySpirit      = 6
+EffectCategoryStance      = 7
+EffectCategoryWard        = 8
+EffectCategortyWell       = 9
+EffectCategoryGeneral     = 20
+EffectCategoryEnvironment = 245

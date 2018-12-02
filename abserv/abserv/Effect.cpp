@@ -59,6 +59,7 @@ void Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 
 void Effect::Remove()
 {
+    // The Effect was removed before it ended
     luaState_["onRemove"](source_.lock(), target_.lock());
     cancelled_ = true;
 }

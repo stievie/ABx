@@ -27,6 +27,7 @@ private:
     void MoveTo(uint32_t timeElapsed, const Math::Vector3& dest);
     bool FindPath(const Math::Vector3& dest);
 public:
+    static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
     explicit AutoRunComp(Actor& owner) :
         owner_(owner),
         lastCalc_(0),

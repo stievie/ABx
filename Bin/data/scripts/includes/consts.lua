@@ -1,3 +1,5 @@
+TIME_FOREVER = (2 ^ 32) - 1    -- Largets possible int 32 value
+
 -- Actor properties
 SEX_UNKNOWN = 0
 SEX_FEMALE = 1

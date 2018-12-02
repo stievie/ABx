@@ -192,6 +192,8 @@ enum GameProtocolCodes : uint8_t
     GameObjectUseSkill,           // Actor successfully activated a skill, returns resources needed etc.
     GameObjectEndUseSkill,        // Actor successfully finished a skill, returns recharge.
     GameObjectSkillFailure,       // Failed activating a skill, returns some error code
+    GameObjectEffectAdded,
+    GameObjectEffectRemoved,
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,

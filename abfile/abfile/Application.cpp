@@ -699,7 +699,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("name") = s.name.c_str();
         gNd.append_attribute("attribute") = s.attributeUuid.c_str();
         gNd.append_attribute("profession") = s.professionUuid.c_str();
-        gNd.append_attribute("type") = s.type;
+        gNd.append_attribute("type") = static_cast<uint64_t>(s.type);
         gNd.append_attribute("elite") = s.isElite;
         gNd.append_attribute("description") = s.description.c_str();
         gNd.append_attribute("short_description") = s.shortDescription.c_str();
@@ -883,7 +883,7 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
         gNd.append_attribute("uuid") = s.uuid.c_str();
         gNd.append_attribute("index") = s.index;
         gNd.append_attribute("name") = s.name.c_str();
-        gNd.append_attribute("category") = s.index;
+        gNd.append_attribute("category") = s.category;
         gNd.append_attribute("icon") = s.icon.c_str();
     }
 

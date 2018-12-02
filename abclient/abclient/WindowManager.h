@@ -11,6 +11,7 @@ static const StringHash WINDOW_MISSIONMAP("MissionMapWindow");
 static const StringHash WINDOW_SKILLBAR("SkillBarWindow");
 static const StringHash WINDOW_FRIENDLIST("FriendListWindow");
 static const StringHash WINDOW_GAMEMESSAGES("GameMessagesWindow");
+static const StringHash WINDOW_EFFECTS("EffectsWindow");
 
 class WindowManager : public Object
 {
@@ -19,7 +20,7 @@ private:
     HashMap<StringHash, SharedPtr<UIElement>> windows_;
 public:
     WindowManager(Context* context);
-    ~WindowManager();
+    ~WindowManager() = default;
 
     const HashMap<StringHash, SharedPtr<UIElement>>& GetWindows() const
     {

@@ -91,7 +91,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     if (auto f = following_.lock())
     {
         if ((lastCalc_ != 0 && (Utils::AbTick() - lastCalc_) > 1000)
-            && (destination_.Distance(f->transformation_.position_) > Actor::SWITCH_WAYPOINT_DIST))
+            && (destination_.Distance(f->transformation_.position_) > SWITCH_WAYPOINT_DIST))
         {
             // Find new path when following object moved and enough time passed
             FindPath(f->transformation_.position_);
@@ -121,7 +121,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     const Math::Vector3& pt = Next();
     const float distance = pt.Distance(pos);
 
-    if (distance > Actor::SWITCH_WAYPOINT_DIST)
+    if (distance > SWITCH_WAYPOINT_DIST)
     {
         MoveTo(timeElapsed, pt);
     }

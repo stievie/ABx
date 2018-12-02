@@ -14,6 +14,7 @@
 #include "PartyWindow.h"
 #include "MissionMapWindow.h"
 #include "SkillBarWindow.h"
+#include "EffectsWindow.h"
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
@@ -48,6 +49,7 @@ protected:
     SharedPtr<PartyWindow> partyWindow_;
     SharedPtr<MissionMapWindow> missionMap_;
     SharedPtr<SkillBarWindow> skillBar_;
+    SharedPtr<EffectsWindow> effectsWindow_;
     String mapUuid_;
     String mapName_;
     /// All objects in the scene
@@ -97,6 +99,8 @@ private:
     void HandleObjectSpeedUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleObjectSkillFailure(StringHash eventType, VariantMap& eventData);
+    void HandleObjectEffectAdded(StringHash eventType, VariantMap& eventData);
+    void HandleObjectEffectRemoved(StringHash eventType, VariantMap& eventData);
     void HandleObjectResourceChange(StringHash eventType, VariantMap& eventData);
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
