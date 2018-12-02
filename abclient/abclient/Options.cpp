@@ -653,7 +653,7 @@ void Options::LoadElements(const XMLElement& root)
         }
         else if (name.Compare("FOV") == 0)
         {
-            cameraFov_ = paramElem.GetFloat("value");
+            cameraFov_ = static_cast<float>(paramElem.GetInt("value"));
         }
         else if (name.Compare("MouseSensitivity") == 0)
         {
