@@ -100,6 +100,18 @@ void OptionsWindow::HandleTabSelected(StringHash, VariantMap& eventData)
 {
 }
 
+void OptionsWindow::HandleFovSliderChanged(StringHash, VariantMap& eventData)
+{
+    using namespace SliderChanged;
+    float value = eventData[P_VALUE].GetFloat();
+    Options* opt = GetSubsystem<Options>();
+    opt->SetCameraFov(value + MIN_FOV);
+    Text* fovText = dynamic_cast<Text*>(GetChild("FovText", true));
+    char buff[255] = { 0 };
+    sprintf(buff, "FOV %d Deg", static_cast<int>(opt->GetCameraFov()));
+    fovText->SetText(String(buff));
+}
+
 void OptionsWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
@@ -578,13 +590,13 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("FovSlider", true));
         slider->SetRange(MAX_FOV - MIN_FOV);
         slider->SetValue(opts->GetCameraFov() - MIN_FOV);
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
         {
-            using namespace SliderChanged;
-            float value = eventData[P_VALUE].GetFloat();
-            Options* opt = GetSubsystem<Options>();
-            opt->SetCameraFov(value + MIN_FOV);
-        });
+            Text* fovText = dynamic_cast<Text*>(wnd->GetChild("FovText", true));
+            char buff[255] = { 0 };
+            sprintf(buff, "FOV %d Deg", static_cast<int>(opts->GetCameraFov()));
+            fovText->SetText(String(buff));
+        }
+        SubscribeToEvent(slider, E_SLIDERCHANGED, URHO3D_HANDLER(OptionsWindow, HandleFovSliderChanged));
     }
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("HighDPICheck", true));

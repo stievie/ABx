@@ -10,6 +10,7 @@ private:
     SharedPtr<TabGroup> tabgroup_;
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
+    void HandleFovSliderChanged(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     TabElement* CreateTab(TabGroup* tabs, const String& page);
     void CreatePageGeneral(TabElement* tabElement);

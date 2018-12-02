@@ -233,8 +233,8 @@ void Options::Save()
     {
         XMLElement param = root.CreateChild("parameter");
         param.SetString("name", "FOV");
-        param.SetString("type", "float");
-        param.SetFloat("value", cameraFov_);
+        param.SetString("type", "int");
+        param.SetInt("value", static_cast<int>(cameraFov_));
     }
     {
         XMLElement param = root.CreateChild("parameter");
