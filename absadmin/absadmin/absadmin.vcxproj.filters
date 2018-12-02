@@ -102,6 +102,12 @@
     <ClInclude Include="ClearCacheResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AccountResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountPostResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -186,6 +192,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ClearCacheResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AccountPostResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

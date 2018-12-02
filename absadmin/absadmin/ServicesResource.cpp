@@ -36,7 +36,6 @@ bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects
             { "load", std::to_string(s.load) },
             { "location", Utils::HtmlEncode(s.location) },
             { "path", s.path },
-//            { "ip", s. },
             { "port", s.port },
             { "run_time", s.runTime },
             { "start_time", s.startTime },

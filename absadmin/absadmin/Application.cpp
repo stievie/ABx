@@ -30,6 +30,8 @@
 #include "AccountsResource.h"
 #include "AccountsJsonResource.h"
 #include "ClearCacheResource.h"
+#include "AccountResource.h"
+#include "AccountPostResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -147,6 +149,7 @@ void Application::InitRoutes()
     Route<Resources::FriendsResource>("GET", "^/friends$");
     Route<Resources::AccountsResource>("GET", "^/accounts$");
     Route<Resources::AccountsJsonResource>("GET", "^/get/accounts$");
+    Route<Resources::AccountResource>("GET", "^/account$");
     Route<Resources::AccountKeysResource>("GET", "^/accountkeys$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
@@ -158,6 +161,7 @@ void Application::InitRoutes()
     Route<Resources::ClearCacheResource>("POST", "^/post/clear_cache$");
     Route<Resources::UpdateAccountKeyResource>("POST", "^/post/updateaccountkey$");
     Route<Resources::CreateKeyResource>("POST", "^/post/createkey$");
+    Route<Resources::AccountPostResource>("POST", "^/post/account");
 }
 
 bool Application::Initialize(int argc, char** argv)

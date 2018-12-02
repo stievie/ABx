@@ -167,6 +167,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AccountKeysResource.h" />
+    <ClInclude Include="AccountPostResource.h" />
+    <ClInclude Include="AccountResource.h" />
     <ClInclude Include="AccountsJsonResource.h" />
     <ClInclude Include="AccountsResource.h" />
     <ClInclude Include="Application.h" />
@@ -198,6 +200,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AccountKeysResource.cpp" />
+    <ClCompile Include="AccountPostResource.cpp" />
+    <ClCompile Include="AccountResource.cpp" />
     <ClCompile Include="AccountsJsonResource.cpp" />
     <ClCompile Include="AccountsResource.cpp" />
     <ClCompile Include="ClearCacheResource.cpp" />
