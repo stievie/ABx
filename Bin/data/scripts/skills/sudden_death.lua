@@ -17,9 +17,6 @@ function onStartUse(source, target)
   return SkillErrorNone
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   source:Die()
-end
-
-function onCancelUse()
 end

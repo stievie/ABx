@@ -27,9 +27,6 @@ function onStartUse(source, target)
   return SkillErrorNone
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   target:Resurrect(100, 25)
-end
-
-function onCancelUse()
 end

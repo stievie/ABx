@@ -14,8 +14,8 @@ void MoveComp::Update(uint32_t timeElapsed)
     if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureStateMoving)
         return;
 
-    MoveTo(timeElapsed);
-    TurnTo(timeElapsed);
+    UpdateMove(timeElapsed);
+    UpdateTurn(timeElapsed);
 }
 
 bool MoveComp::SetPosition(const Math::Vector3& pos)
@@ -93,7 +93,7 @@ bool MoveComp::Move(float speed, const Math::Vector3& amount)
     return moved;
 }
 
-bool MoveComp::MoveTo(uint32_t timeElapsed)
+bool MoveComp::UpdateMove(uint32_t timeElapsed)
 {
     if (owner_.autorunComp_.autoRun_)
         return false;
@@ -127,7 +127,7 @@ void MoveComp::Turn(float angle)
     Math::NormalizeAngle(owner_.transformation_.rotation_);
 }
 
-void MoveComp::TurnTo(uint32_t timeElapsed)
+void MoveComp::UpdateTurn(uint32_t timeElapsed)
 {
     if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
     {

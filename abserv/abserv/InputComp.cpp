@@ -189,10 +189,11 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Cancel:
-            if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateUsingSkill)
-                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            else if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
-                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+            // Either skill or attack
+            if (owner_.skillsComp_.IsUsing())
+                owner_.skillsComp_.Cancel();
+            else if (owner_.attackComp_.IsAttacking())
+                owner_.attackComp_.Cancel();
             break;
         case InputType::Command:
         {

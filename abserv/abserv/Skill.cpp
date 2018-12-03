@@ -54,6 +54,8 @@ bool Skill::LoadScript(const std::string& fileName)
         skillEffect_ = static_cast<SkillEffect>(luaState_["effect"]);
     if (ScriptManager::IsNumber(luaState_, "effectTarget"))
         effectTarget = static_cast<SkillTarget>(luaState_["effectTarget"]);
+    haveOnCancelled_ = ScriptManager::IsFunction(luaState_, "onCancelled");
+    haveOnInterrupted_ = ScriptManager::IsFunction(luaState_, "onInterrupted");
 
     return true;
 }
@@ -66,7 +68,7 @@ void Skill::Update(uint32_t timeElapsed)
         if (startUse_ + realActivation_ <= Utils::AbTick())
         {
             recharged_ = Utils::AbTick() + recharge_;
-            luaState_["onEndUse"](source_, target_);
+            luaState_["onSuccess"](source_, target_);
             startUse_ = 0;
             source_->OnEndUseSkill(this);
             source_ = nullptr;
@@ -114,7 +116,8 @@ AB::GameProtocol::SkillError Skill::StartUse(Actor* source, Actor* target)
 
 void Skill::CancelUse()
 {
-    luaState_["onCancelUse"]();
+    if (haveOnCancelled_)
+        luaState_["onCancelled"]();
     source_->OnEndUseSkill(this);
     startUse_ = 0;
     // No recharging when canceled
@@ -125,7 +128,8 @@ void Skill::CancelUse()
 
 void Skill::Interrupt()
 {
-    luaState_["onEndUse"](source_, target_);
+    if (haveOnInterrupted_)
+        luaState_["onInterrupted"](source_, target_);
     source_->OnEndUseSkill(this);
     startUse_ = 0;
     source_ = nullptr;

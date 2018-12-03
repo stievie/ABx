@@ -11,8 +11,5 @@ function onStartUse(source, target)
   return true
 end
 
-function onEndUse(source, target)
-end
-
-function onCancelUse()
+function onSuccess(source, target)
 end

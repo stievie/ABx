@@ -340,6 +340,7 @@ bool Actor::Die()
         resourceComp_.SetHealth(Components::SetValueType::Absolute, 0);
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
+        autorunComp_.autoRun_ = false;
         return true;
     }
     return false;

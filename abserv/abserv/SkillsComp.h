@@ -33,6 +33,8 @@ public:
     ~SkillsComp() = default;
     void Update(uint32_t timeElapsed);
     AB::GameProtocol::SkillError UseSkill(int index);
+    void Cancel();
+    bool IsUsing();
     void Write(Net::NetworkMessage& message);
 };
 

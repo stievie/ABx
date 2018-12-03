@@ -11,11 +11,8 @@ function onStartUse(source, target)
   return true
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   target:AddEffect("Patient Spirit", duration)
-end
-
-function onCancelUse()
 end
 
 function getDuration(source, target)

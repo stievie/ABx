@@ -3,8 +3,8 @@ include("/scripts/includes/skill_consts.lua")
 
 costEnergy = 10
 costAdrenaline = 0
-activation = 1000
-recharge = 5000
+activation = 3000
+recharge = 10000
 overcast = 0
 range = RANGE_ADJECENT
 effect = SkillEffectResurrect
@@ -27,10 +27,13 @@ function onStartUse(source, target)
   return SkillErrorNone
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   --print("Using Instant Rezz on " .. target:GetName())
   target:Resurrect(100, 100)
 end
 
-function onCancelUse()
+function onCancelled()
+end
+
+function onInterrupted()
 end

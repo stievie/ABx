@@ -47,6 +47,9 @@ private:
     int16_t realActivation_;
     int16_t realOvercast_;
 
+    bool haveOnCancelled_;
+    bool haveOnInterrupted_;
+
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
@@ -67,6 +70,8 @@ public:
         realAdrenaline_(0),
         realActivation_(0),
         realOvercast_(0),
+        haveOnCancelled_(false),
+        haveOnInterrupted_(false),
         energy_(0),
         adrenaline_(0),
         activation_(0),
@@ -92,7 +97,7 @@ public:
     }
     void Interrupt();
 
-    bool IsUsing() const { return (startUse_ != 0) && (startUse_ - Utils::AbTick() >= activation_); }
+    bool IsUsing() const { return (startUse_ != 0) && (Utils::AbTick() - startUse_ < activation_); }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type)

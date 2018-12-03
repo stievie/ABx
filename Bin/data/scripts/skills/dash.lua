@@ -13,9 +13,6 @@ function onStartUse(source, target)
   return SkillErrorNone
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   source:AddEffect(source, 1043)
-end
-
-function onCancelUse()
 end

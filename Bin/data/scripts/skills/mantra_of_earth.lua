@@ -11,9 +11,6 @@ function onStartUse(source, target)
   return true
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   source:AddEffect(source, 6, 0)
-end
-
-function onCancelUse()
 end

@@ -42,6 +42,30 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index)
     return lastError_;
 }
 
+void SkillsComp::Cancel()
+{
+    if (usingSkill_)
+    {
+        if (auto ls = lastSkill_.lock())
+        {
+            if (ls->IsUsing())
+            {
+                usingSkill_ = false;
+                endDirty_ = true;
+                newRecharge_ = 0;
+                ls->CancelUse();
+            }
+        }
+    }
+}
+
+bool SkillsComp::IsUsing()
+{
+    if (auto ls = lastSkill_.lock())
+        return ls->IsUsing();
+    return false;
+}
+
 void SkillsComp::Write(Net::NetworkMessage& message)
 {
     // The server has 0 based skill indices but for the client these are 1 based

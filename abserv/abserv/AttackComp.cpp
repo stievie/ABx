@@ -9,5 +9,12 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
 {
 }
 
+void AttackComp::Cancel()
+{
+    attacking_ = false;
+    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
+        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+}
+
 }
 }

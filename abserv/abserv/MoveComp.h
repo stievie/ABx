@@ -15,6 +15,10 @@ private:
     Actor& owner_;
     Math::Vector3 oldPosition_;
     float speedFactor_;
+    /// Move to moveDir_
+    bool UpdateMove(uint32_t timeElapsed);
+    /// Turn to turnDir_
+    void UpdateTurn(uint32_t timeElapsed);
 public:
     static constexpr float BaseSpeed = 150.0f;
     explicit MoveComp(Actor& owner) :
@@ -36,11 +40,7 @@ public:
     void HeadTo(const Math::Vector3& pos);
     /// Move in direction of rotation
     bool Move(float speed, const Math::Vector3& amount);
-    /// Move to moveDir_
-    bool MoveTo(uint32_t timeElapsed);
     void Turn(float angle);
-    /// Turn to turnDir_
-    void TurnTo(uint32_t timeElapsed);
     void SetDirection(float worldAngle);
     float GetSpeedFactor() const
     {

@@ -30,10 +30,7 @@ function onStartUse(source, target)
   return SkillErrorNone
 end
 
-function onEndUse(source, target)
+function onSuccess(source, target)
   -- print("Using Instant Kill on " .. target:GetName())
   target:Die()
-end
-
-function onCancelUse()
 end
