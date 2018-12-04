@@ -41,6 +41,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
         .addFunction("GetState", &Actor::_LuaGetState)
         .addFunction("SetState", &Actor::_LuaSetState)
+        .addFunction("FaceObject", &Actor::FaceObject)
+        .addFunction("HeadTo", &Actor::_LuaHeadTo)
 
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
         .addFunction("SetHomePos", &Actor::_LuaSetHomePos)
@@ -148,6 +150,11 @@ void Actor::_LuaSetHomePos(float x, float y, float z)
     }
 }
 
+void Actor::_LuaHeadTo(float x, float y, float z)
+{
+    HeadTo(Math::Vector3(x, y, z));
+}
+
 std::vector<float> Actor::_LuaGetHomePos()
 {
     std::vector<float> result;
@@ -236,6 +243,17 @@ void Actor::OnStartUseSkill(Skill* skill)
     // These change the state
     if (skill->IsChangingState())
         stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+}
+
+void Actor::HeadTo(const Math::Vector3& pos)
+{
+    moveComp_.HeadTo(pos);
+}
+
+void Actor::FaceObject(GameObject* object)
+{
+    if (object)
+        HeadTo(object->transformation_.position_);
 }
 
 Skill* Actor::GetCurrentSkill() const

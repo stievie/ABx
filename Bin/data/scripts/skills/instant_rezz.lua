@@ -24,6 +24,7 @@ function onStartUse(source, target)
   if (self:IsInRange(target) == false) then
     return SkillErrorOutOfRange
   end
+  source:FaceObject(target)
   return SkillErrorNone
 end
 

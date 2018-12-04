@@ -34,6 +34,7 @@ private:
     int _LuaGetState();
     void _LuaSetState(int state);
     void _LuaSetHomePos(float x, float y, float z);
+    void _LuaHeadTo(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
     void _LuaFollowObject(std::shared_ptr<GameObject> object);
     std::vector<std::shared_ptr<Actor>> _LuaGetActorsInRange(Ranges range);
@@ -116,6 +117,8 @@ public:
     virtual void OnEndUseSkill(Skill* skill);
     virtual void OnStartUseSkill(Skill* skill);
 
+    void HeadTo(const Math::Vector3& pos);
+    void FaceObject(GameObject* object);
     /// Move speed: 1 = normal speed
     float GetSpeed() const { return moveComp_.GetSpeedFactor(); }
     void SetSpeed(float value) { moveComp_.SetSpeedFactor(value); }

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="256"
+   height="256"
+   viewBox="0 0 256 256"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="Sanctuary.svg"
+   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\Maps\Icons\Sanctuary.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5598">
+      <stop
+         style="stop-color:#ffd700;stop-opacity:0.98713827"
+         offset="0"
+         id="stop5600" />
+      <stop
+         style="stop-color:#ffb000;stop-opacity:0.98039216"
+         offset="1"
+         id="stop5602" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4158"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ffcc00;stop-opacity:1;"
+         offset="0"
+         id="stop4160" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5598"
+       id="radialGradient5608"
+       cx="-32.175087"
+       cy="208.67621"
+       fx="-32.175087"
+       fy="208.67621"
+       r="123.00693"
+       gradientTransform="matrix(0.97157806,-0.09255096,0.09584111,1.0048467,133.20899,31.120348)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-2.5646102"
+     inkscape:cy="207.13347"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     units="px" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-796.36216)">
+    <path
+       sodipodi:type="star"
+       style="fill:url(#radialGradient5608);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.01568627"
+       id="path4140"
+       sodipodi:sides="5"
+       sodipodi:cx="122.85714"
+       sodipodi:cy="192.3622"
+       sodipodi:r1="129.55182"
+       sodipodi:r2="64.775909"
+       sodipodi:arg1="0.84781697"
+       sodipodi:arg2="1.4761355"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 208.57143,289.50506 -79.5917,-32.65695 -72.023767,47.05201 6.463417,-85.78775 -67.0056942,-53.9588 83.5863102,-20.3628 30.611964,-80.400389 45.19577,73.202859 85.92493,4.26862 -55.65379,65.60465 z"
+       inkscape:transform-center-x="0.19649389"
+       inkscape:transform-center-y="-12.581211"
+       transform="matrix(1.01638,0.09262661,-0.09156958,1.0281126,20.80041,726.43514)" />
+  </g>
+</svg>

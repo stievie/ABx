@@ -27,6 +27,7 @@ function onStartUse(source, target)
     -- Can not kill what's already dead :(
     return SkillErrorInvalidTarget
   end
+  source:FaceObject(target)
   return SkillErrorNone
 end
 

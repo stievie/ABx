@@ -31,3 +31,7 @@
 * Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 * Entity Position Interpolation https://github.com/jwatte/EPIC
 * http://kenney.nl/assets/particle-pack
+
+## Assets
+
+* World Map https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg

@@ -5,10 +5,11 @@
 
 MapWindow::MapWindow(Context* context) :
     Window(context),
-    scale_(1.0f)
+    scale_(1.0f),
+    zoom_(1.0f)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    mapTexture_ = cache->GetResource<Texture2D>("Textures/world_map.png");
+    mapTexture_ = cache->GetResource<Texture2D>("Textures/Map/MapPlain.png");
     if (!mapTexture_)
         return;
 
@@ -35,6 +36,7 @@ MapWindow::MapWindow(Context* context) :
     mapSprite_->SetTexture(mapTexture_);
     mapSprite_->SetPosition(0, 0);
     mapSprite_->SetFullImageRect();
+//    SubscribeToEvent(mapSprite_, E_CLICKEND, URHO3D_HANDLER(MapWindow, HandleClicked));
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     const std::map<std::string, AB::Entities::Game>& games = client->GetOutposts();
@@ -42,12 +44,12 @@ MapWindow::MapWindow(Context* context) :
     for (const auto& game : games)
     {
         Button* button = new Button(context_);
-        button->SetMinHeight(40);
-        button->SetMinWidth(40);
-        button->SetMaxHeight(40);
-        button->SetMaxWidth(40);
-        button->SetHeight(40);
-        button->SetWidth(40);
+        button->SetMinHeight(BUTTON_SIZE);
+        button->SetMinWidth(BUTTON_SIZE);
+        button->SetMaxHeight(BUTTON_SIZE);
+        button->SetMaxWidth(BUTTON_SIZE);
+        button->SetHeight(BUTTON_SIZE);
+        button->SetWidth(BUTTON_SIZE);
         button->SetName(String(game.first.c_str()));    // not required
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
@@ -95,6 +97,15 @@ void MapWindow::HandleMapGameClicked(StringHash, VariantMap& eventData)
     }
 }
 
+void MapWindow::HandleClicked(StringHash, VariantMap&)
+{
+    if (Equals(zoom_, 1.0f))
+        zoom_ = 2.0f;
+    else
+        zoom_ = 1.0f;
+    FitMap();
+}
+
 void MapWindow::HandleScreenMode(StringHash, VariantMap& eventData)
 {
     using namespace ScreenMode;
@@ -110,7 +121,7 @@ void MapWindow::FitMap()
     int windowHeight = GetHeight();
     float scaleX = (float)mapTexture_->GetWidth() / (float)windowWidth;
     float scaleY = (float)mapTexture_->GetHeight() / (float)windowHeight;
-    scale_ = Max(scaleX, scaleY);
+    scale_ = Max(scaleX, scaleY) / zoom_;
     mapSprite_->SetSize(static_cast<int>((float)mapTexture_->GetWidth() / scale_),
         static_cast<int>((float)mapTexture_->GetHeight() / scale_));
 
