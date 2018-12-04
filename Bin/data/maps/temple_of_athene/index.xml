@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<index>
-  <file type="Scene" src="Temple of Athene.xml" />
-  <file type="NavMesh" src="all_tiles_navmesh.bin" />
-  <!-- <file type="TileCache" src="all_tiles_tilecache.bin" /> -->
-  <file type="Terrain" src="plain.hm" />
-</index>
