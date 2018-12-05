@@ -9,4 +9,4 @@ Instead of `require()` we must use the custom function `include()`.
 * `GameTick()`
 * `ServerId()`
 * `include(string)`
-* `include_dir(string)`
+* `include_dir(string)` (should be avoided)
