@@ -11,9 +11,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="256"
+   width="786"
    height="256"
-   viewBox="0 0 256 256"
+   viewBox="0 0 786 256"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -27,11 +27,11 @@
        inkscape:collect="always"
        id="linearGradient5612">
       <stop
-         style="stop-color:#ffd700;stop-opacity:0.98039216"
+         style="stop-color:#ffd100;stop-opacity:1"
          offset="0"
          id="stop5614" />
       <stop
-         style="stop-color:#d4af37;stop-opacity:0.97254902"
+         style="stop-color:#d4af37;stop-opacity:1"
          offset="1"
          id="stop5616" />
     </linearGradient>
@@ -47,12 +47,34 @@
        inkscape:collect="always"
        xlink:href="#linearGradient5612"
        id="radialGradient5618"
-       cx="61.619305"
-       cy="112.41526"
-       fx="61.619305"
-       fy="112.41526"
+       cx="39.53001"
+       cy="106.23678"
+       fx="39.53001"
+       fy="106.23678"
        r="125.90869"
-       gradientTransform="matrix(1.2175056,-0.38562632,0.32558345,1.0700383,-18.405435,13.715498)"
+       gradientTransform="matrix(0.97023928,-0.31310883,0.31027527,1.0005191,-10.953546,19.475787)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5612"
+       id="radialGradient5618-7"
+       cx="39.53001"
+       cy="106.23678"
+       fx="39.53001"
+       fy="106.23678"
+       r="125.90869"
+       gradientTransform="matrix(0.97023928,-0.31310883,0.31027527,1.0005191,-267.95514,100.37571)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5612"
+       id="radialGradient5618-7-1"
+       cx="39.53001"
+       cy="106.23678"
+       fx="39.53001"
+       fy="106.23678"
+       r="125.90869"
+       gradientTransform="matrix(0.97023928,-0.31310883,0.31027527,1.0005191,-525.57776,180.94465)"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -63,8 +85,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="213.25992"
-     inkscape:cy="138.23985"
+     inkscape:cx="377.33295"
+     inkscape:cy="216.656"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -106,6 +128,38 @@
        inkscape:rounded="0"
        inkscape:randomized="0"
        d="M 158.59394,201.81376 32.685256,241.09701 -64.289382,151.69851 -35.355333,23.016765 90.553354,-16.266487 187.52799,73.132008 Z"
-       transform="matrix(0.92513286,0.28748545,-0.27935735,0.91447388,102.39521,802.63111)" />
+       transform="matrix(0.92513286,0.28748545,-0.27935735,0.91447388,106.39521,802.63111)" />
+    <path
+       sodipodi:type="star"
+       style="fill:url(#radialGradient5618-7);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.01568627"
+       id="path5610-5"
+       sodipodi:sides="6"
+       sodipodi:cx="61.619305"
+       sodipodi:cy="112.41526"
+       sodipodi:r1="131.89455"
+       sodipodi:r2="114.22403"
+       sodipodi:arg1="0.74477013"
+       sodipodi:arg2="1.2683689"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 158.59394,201.81376 32.685256,241.09701 -64.289382,151.69851 -35.355333,23.016765 90.553354,-16.266487 187.52799,73.132008 Z"
+       transform="matrix(0.92513286,0.28748545,-0.27935735,0.91447388,366.75593,802.53451)" />
+    <path
+       sodipodi:type="star"
+       style="fill:url(#radialGradient5618-7-1);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.01568627"
+       id="path5610-5-6"
+       sodipodi:sides="6"
+       sodipodi:cx="61.619305"
+       sodipodi:cy="112.41526"
+       sodipodi:r1="131.89455"
+       sodipodi:r2="114.22403"
+       sodipodi:arg1="0.74477013"
+       sodipodi:arg2="1.2683689"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 158.59394,201.81376 32.685256,241.09701 -64.289382,151.69851 -35.355333,23.016765 90.553354,-16.266487 187.52799,73.132008 Z"
+       transform="matrix(0.92513286,0.28748545,-0.27935735,0.91447388,627.59874,802.91901)" />
   </g>
 </svg>
