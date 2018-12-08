@@ -942,7 +942,7 @@ void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
 
 void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
 {
-    URHO3D_LOGINFOF("Object %d used skill %d: Recharge = %d", id, skillIndex, recharge);
+    URHO3D_LOGINFOF("Object %u used skill %u: Recharge = %u", id, skillIndex, recharge);
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::ObjectEndUseSkill;
     eData[P_UPDATETICK] = updateTick;
@@ -954,7 +954,7 @@ void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillInd
 
 void FwClient::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
 {
-    URHO3D_LOGINFOF("Effect %d added: Object %d, Ticks = %d", effectIndex, id, ticks);
+    URHO3D_LOGINFOF("Effect %d added: Object %d, Ticks = %u", effectIndex, id, ticks);
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::ObjectEffectAdded;
     eData[P_UPDATETICK] = updateTick;
