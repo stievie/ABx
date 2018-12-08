@@ -43,6 +43,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetState", &Actor::_LuaSetState)
         .addFunction("FaceObject", &Actor::FaceObject)
         .addFunction("HeadTo", &Actor::_LuaHeadTo)
+        .addFunction("IsEnemy", &Actor::IsEnemy)
 
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
         .addFunction("SetHomePos", &Actor::_LuaSetHomePos)
@@ -58,7 +59,7 @@ void Actor::RegisterLua(kaguya::State& state)
 
 Actor::Actor() :
     GameObject(),
-    skills_(this),
+    skills_(std::make_unique<SkillBar>(*this)),
     moveComp_(*this),
     autorunComp_(*this),
     collisionComp_(*this),
@@ -183,6 +184,9 @@ std::vector<std::shared_ptr<Actor>> Actor::_LuaGetActorsInRange(Ranges range)
 
 void Actor::_LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index)
 {
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
+#endif
     effectsComp_.AddEffect(source, index);
 }
 
@@ -205,7 +209,7 @@ bool Actor::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint32_t>(GetProfIndex());
     stream.Write<uint32_t>(GetProf2Index());
     stream.Write<uint32_t>(GetModelIndex());
-    const std::string skills = IO::TemplateEncoder::Encode(skills_);
+    const std::string skills = IO::TemplateEncoder::Encode(*skills_);
     stream.WriteString(skills);
     return true;
 }
@@ -229,6 +233,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     const char* cData = data.GetStream(dataSize);
     msg.AddString(std::string(cData, dataSize));
     resourceComp_.Write(msg, true);
+    effectsComp_.Write(msg);
 }
 
 void Actor::OnEndUseSkill(Skill* skill)
@@ -258,7 +263,7 @@ void Actor::FaceObject(GameObject* object)
 
 Skill* Actor::GetCurrentSkill() const
 {
-    return skills_.GetCurrentSkill();
+    return skills_->GetCurrentSkill();
 }
 
 void Actor::_LuaGotoPosition(float x, float y, float z)

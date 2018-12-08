@@ -18,5 +18,9 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
+  if (source:IsDead()) then
+    return SkillErrorInvalidTarget
+  end
   source:Die()
+  return SkillErrorNone
 end

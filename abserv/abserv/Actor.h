@@ -139,22 +139,22 @@ public:
     virtual uint32_t GetGroupId() const { return 0; }
     uint32_t GetProfIndex() const
     {
-        return skills_.prof1_.index;
+        return skills_->prof1_.index;
     }
     uint32_t GetProf2Index() const
     {
-        return skills_.prof2_.index;
+        return skills_->prof2_.index;
     }
     /// 0 Based
     Skill* GetSkill(uint32_t index)
     {
         if (index < PLAYER_MAX_SKILLS)
-            return skills_[index];
+            return (*skills_)[index];
         return nullptr;
     }
     SkillBar* GetSkillBar()
     {
-        return &skills_;
+        return skills_.get();
     }
     Skill* GetCurrentSkill() const;
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
@@ -173,7 +173,7 @@ public:
     }
     uint32_t GetAttributeValue(uint32_t index) const
     {
-        const AB::AttributeValue* val = skills_.GetAttribute(index);
+        const AB::AttributeValue* val = skills_->GetAttribute(index);
         if (val == nullptr)
             return 0;
         return val->value;
@@ -197,7 +197,7 @@ public:
     void FollowObject(uint32_t objectId);
     void UseSkill(uint32_t index);
 
-    SkillBar skills_;
+    std::unique_ptr<SkillBar> skills_;
 
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;

@@ -64,22 +64,22 @@ bool Npc::LoadScript(const std::string& fileName)
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
-    skills_.prof1_.index = luaState_["prof1Index"];
-    if (skills_.prof1_.index != 0)
+    skills_->prof1_.index = luaState_["prof1Index"];
+    if (skills_->prof1_.index != 0)
     {
-        if (!client->Read(skills_.prof1_))
+        if (!client->Read(skills_->prof1_))
         {
-            LOG_WARNING << "Unable to read primary profession of " << GetName() << ", index = " << skills_.prof1_.index << std::endl;
+            LOG_WARNING << "Unable to read primary profession of " << GetName() << ", index = " << skills_->prof1_.index << std::endl;
         }
     }
     if (ScriptManager::IsNumber(luaState_, "prof2Index"))
     {
-        skills_.prof2_.index = luaState_["prof2Index"];
-        if (skills_.prof2_.index != 0)
+        skills_->prof2_.index = luaState_["prof2Index"];
+        if (skills_->prof2_.index != 0)
         {
-            if (!client->Read(skills_.prof2_))
+            if (!client->Read(skills_->prof2_))
             {
-                LOG_WARNING << "Unable to read secondary profession of " << GetName() << ", index = " << skills_.prof2_.index << std::endl;
+                LOG_WARNING << "Unable to read secondary profession of " << GetName() << ", index = " << skills_->prof2_.index << std::endl;
             }
         }
     }

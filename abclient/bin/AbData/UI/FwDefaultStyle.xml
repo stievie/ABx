@@ -11,7 +11,7 @@
         <attribute name="Pressed Child Offset" value="-1 1" />
     </element>
     <element type="MapButton" style="BorderImage">
-        <attribute name="Texture" value="Texture2D;Textures/Map/Sanctuary.png" />
+        <attribute name="Texture" value="Texture2D;Textures/Map/Oracle.png" />
         <attribute name="Image Rect" value="0 0 256 256" />
         <attribute name="Border" value="0 0 0 0" />
         <attribute name="Pressed Image Offset" value="513 0" />

@@ -1,8 +1,10 @@
+include("/scripts/includes/consts.lua")
+
 -- PvP is forever on this map
 isPersistent = false
 
 function getDuration(source, target)
-  return (2 ^ 32) - 1
+  return TIME_FOREVER
 end
 
 function onStart(source, target)

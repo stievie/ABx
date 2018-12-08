@@ -68,19 +68,28 @@ void Skill::Update(uint32_t timeElapsed)
         if (startUse_ + realActivation_ <= Utils::AbTick())
         {
             recharged_ = Utils::AbTick() + recharge_;
-            luaState_["onSuccess"](source_, target_);
+            auto source = source_.lock();
+            auto target = target_.lock();
+            // A Skill may even fail here, e.g. when resurrecting an already resurrected target
+            lastError_ = luaState_["onSuccess"](source, target);
             startUse_ = 0;
-            source_->OnEndUseSkill(this);
-            source_ = nullptr;
-            target_ = nullptr;
+            if (lastError_ != AB::GameProtocol::SkillErrorNone)
+                recharged_ = 0;
+            if (auto s = source_.lock())
+                s->OnEndUseSkill(this);
+            source_.reset();
+            target_.reset();
         }
     }
 }
 
-AB::GameProtocol::SkillError Skill::StartUse(Actor* source, Actor* target)
+AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
+    lastError_ = AB::GameProtocol::SkillErrorNone;
     if (IsUsing() || !IsRecharged())
-        return AB::GameProtocol::SkillErrorRecharging;
+        lastError_ = AB::GameProtocol::SkillErrorRecharging;
+    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+        return lastError_;
 
     // TODO:
     realEnergy_ = energy_;
@@ -89,59 +98,75 @@ AB::GameProtocol::SkillError Skill::StartUse(Actor* source, Actor* target)
     realOvercast_ = overcast_;
 
     if (source->resourceComp_.GetEnergy() < realEnergy_)
-        return AB::GameProtocol::SkillErrorNoEnergy;
+        lastError_ = AB::GameProtocol::SkillErrorNoEnergy;
+    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+        return lastError_;
     if (source->resourceComp_.GetAdrenaline() < realAdrenaline_)
-        return AB::GameProtocol::SkillErrorNoAdrenaline;
+        lastError_ = AB::GameProtocol::SkillErrorNoAdrenaline;
+    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+        return lastError_;
 
     startUse_ = Utils::AbTick();
 
     source_ = source;
     target_ = target;
 
-    AB::GameProtocol::SkillError err = luaState_["onStartUse"](source, target);
-    if (err != AB::GameProtocol::SkillErrorNone)
+    lastError_ = luaState_["onStartUse"](source, target);
+    if (lastError_ != AB::GameProtocol::SkillErrorNone)
     {
         startUse_ = 0;
         recharged_ = 0;
-        source_ = nullptr;
-        target_ = nullptr;
-        return err;
+        source_.reset();
+        target_.reset();
+        return lastError_;
     }
     source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, realEnergy_);
     source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
     source->resourceComp_.SetOvercast(Components::SetValueType::Increase, realOvercast_);
     source->OnStartUseSkill(this);
-    return AB::GameProtocol::SkillErrorNone;
+    return lastError_;
 }
 
 void Skill::CancelUse()
 {
     if (haveOnCancelled_)
-        luaState_["onCancelled"]();
-    source_->OnEndUseSkill(this);
+    {
+        auto source = source_.lock();
+        auto target = target_.lock();
+        luaState_["onCancelled"](source, target);
+    }
+    if (auto s = source_.lock())
+        s->OnEndUseSkill(this);
     startUse_ = 0;
     // No recharging when canceled
     recharged_ = 0;
-    source_ = nullptr;
-    target_ = nullptr;
+    source_.reset();
+    target_.reset();
 }
 
 void Skill::Interrupt()
 {
     if (haveOnInterrupted_)
-        luaState_["onInterrupted"](source_, target_);
-    source_->OnEndUseSkill(this);
+    {
+        auto source = source_.lock();
+        auto target = target_.lock();
+        luaState_["onInterrupted"](source, target);
+    }
+    if (auto s = source_.lock())
+        s->OnEndUseSkill(this);
     startUse_ = 0;
-    source_ = nullptr;
-    target_ = nullptr;
+    source_.reset();
+    target_.reset();
     // recharged_ remains
 }
 
-bool Skill::IsInRange(Actor* target)
+bool Skill::IsInRange(std::shared_ptr<Actor> target)
 {
-    if (!source_ || !target)
-        return false;
-    return source_->IsInRange(range_, target);
+    if (auto s = source_.lock())
+    {
+        return s->IsInRange(range_, target.get());
+    }
+    return false;
 }
 
 void Skill::AddRecharge(int16_t ms)

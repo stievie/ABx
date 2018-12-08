@@ -1,7 +1,7 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
 
-name = "Smith"
+name = "Cos the Scared (Smith)"
 level = 20
 modelIndex = 5     -- Smith body model
 sex = SEX_MALE     -- Male

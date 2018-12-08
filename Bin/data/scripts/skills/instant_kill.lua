@@ -33,5 +33,9 @@ end
 
 function onSuccess(source, target)
   -- print("Using Instant Kill on " .. target:GetName())
+  if (target:IsDead()) then
+    return SkillErrorInvalidTarget
+  end
   target:Die()
+  return SkillErrorNone
 end

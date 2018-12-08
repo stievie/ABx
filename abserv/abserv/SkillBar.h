@@ -18,7 +18,7 @@ class SkillBar
 private:
     SkillsArray skills_;
     AB::Attributes attributes_;
-    Actor* owner_;
+    Actor& owner_;
     int currentSkillIndex_;
     int _LuaAddSkill(uint32_t skillIndex);
     std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const { return GetSkillsWithEffect(static_cast<SkillEffect>(effect)); }
@@ -26,7 +26,7 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    SkillBar(Actor* owner) :
+    SkillBar(Actor& owner) :
         owner_(owner),
         currentSkillIndex_(-1)
     {

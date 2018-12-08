@@ -61,14 +61,19 @@ std::shared_ptr<Effect> EffectsComp::GetLast(AB::Entities::EffectCategory catego
 
 void EffectsComp::Update(uint32_t timeElapsed)
 {
-    for (const auto& effect : effects_)
+    auto it = effects_.begin();
+    while (it != effects_.end())
     {
-        if (effect->cancelled_ || effect->ended_)
+        if ((*it)->cancelled_ || (*it)->ended_)
         {
-            DeleteEffect(effect->data_.index);
-            continue;
+            removedEffects_.push_back((*it));
+            it = effects_.erase(it);
         }
-        effect->Update(timeElapsed);
+        else
+        {
+            (*it)->Update(timeElapsed);
+            ++it;
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 	<attribute name="Min Anchor" value="0.5 1" />
 	<attribute name="Max Anchor" value="0.5 1" />
 	<attribute name="Pivot" value="0.5 1" />
+	<attribute name="Opacity" value="0.8" />
 	<attribute name="Bring To Back" value="false" />
 	<attribute name="Layout Mode" value="Horizontal" />
 	<attribute name="Image Rect" value="0 16 16 32" />

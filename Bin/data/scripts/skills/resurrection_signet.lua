@@ -29,5 +29,10 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
+  if (target:IsDead() == false) then
+    return SkillErrorInvalidTarget
+  end
+    
   target:Resurrect(100, 25)
+  return SkillErrorNone
 end

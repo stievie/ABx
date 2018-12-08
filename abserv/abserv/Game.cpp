@@ -284,10 +284,10 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     {
         return std::shared_ptr<Npc>();
     }
-    AddObject(result);
     map_->AddEntity(result->GetAi(), result->GetGroupId());
     if (state_ == ExecutionState::Running)
     {
+        AddObject(result);
         // In worst case (i.e. the game data is still loading): will be sent as
         // soon as the game runs and entered the Update loop.
         GetSubsystem<Asynch::Scheduler>()->Add(
@@ -367,6 +367,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
 
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);
     object->WriteSpawnData(*gameStatus_);
+    AddObject(object);
 }
 
 void Game::QueueLeaveObject(uint32_t objectId)
@@ -412,11 +413,10 @@ void Game::PlayerJoin(uint32_t playerId)
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
             player->data_.instanceUuid = instanceData_.uuid;
-            AddObject(player);
         }
         UpdateEntity(player->data_);
 
-        luaState_["onPlayerJoin"](player.get());
+        luaState_["onPlayerJoin"](player);
         shed->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
         );
@@ -444,7 +444,7 @@ void Game::PlayerLeave(uint32_t playerId)
         auto it = players_.find(playerId);
         if (it != players_.end())
         {
-            luaState_["onPlayerLeave"]((*it).second);
+            luaState_["onPlayerLeave"](player);
             players_.erase(it);
         }
         RemoveObject(player);

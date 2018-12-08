@@ -6,6 +6,7 @@
 #include "UuidUtils.h"
 #include "SkillManager.h"
 #include "Subsystems.h"
+#include "Actor.h"
 
 namespace Game {
 
@@ -58,7 +59,7 @@ AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor
             oldSkill->CancelUse();
     }
 
-    return s->StartUse(owner_, (bool)target ? target.get() : nullptr);
+    return s->StartUse(owner_.GetThis<Actor>(), target);
 }
 
 Skill* SkillBar::GetCurrentSkill() const

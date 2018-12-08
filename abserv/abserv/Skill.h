@@ -39,8 +39,8 @@ private:
     SkillEffect skillEffect_;
     SkillTarget effectTarget;
     void InitializeLua();
-    Actor* source_;
-    Actor* target_;
+    std::weak_ptr<Actor> source_;
+    std::weak_ptr<Actor> target_;
     // The real cos may be influenced by skills, armor, effects etc.
     int16_t realEnergy_;
     int16_t realAdrenaline_;
@@ -49,10 +49,12 @@ private:
 
     bool haveOnCancelled_;
     bool haveOnInterrupted_;
+    AB::GameProtocol::SkillError lastError_;
 
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
+
     std::string _LuaGetName() const { return data_.name; }
 public:
     static void RegisterLua(kaguya::State& state);
@@ -64,14 +66,13 @@ public:
         range_(Ranges::Aggro),
         skillEffect_(SkillEffectNone),
         effectTarget(SkillTargetNone),
-        source_(nullptr),
-        target_(nullptr),
         realEnergy_(0),
         realAdrenaline_(0),
         realActivation_(0),
         realOvercast_(0),
         haveOnCancelled_(false),
         haveOnInterrupted_(false),
+        lastError_(AB::GameProtocol::SkillErrorNone),
         energy_(0),
         adrenaline_(0),
         activation_(0),
@@ -86,7 +87,7 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    AB::GameProtocol::SkillError StartUse(Actor* source, Actor* target);
+    AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
     void CancelUse();
     /// Disable a skill for some time
     void Disable(uint32_t ticks)
@@ -96,6 +97,7 @@ public:
         recharged_ += ticks;
     }
     void Interrupt();
+    AB::GameProtocol::SkillError GetLastError() const { return lastError_; }
 
     bool IsUsing() const { return (startUse_ != 0) && (Utils::AbTick() - startUse_ < activation_); }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
@@ -113,14 +115,18 @@ public:
     }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
     bool HasTarget(SkillTarget t) const { return (effectTarget & t) == t; }
-    bool IsInRange(Actor* target);
+    bool IsInRange(std::shared_ptr<Actor> target);
     Actor* GetSource()
     {
-        return source_;
+        if (auto s = source_.lock())
+            return s.get();
+        return nullptr;
     }
     Actor* GetTarget()
     {
-        return target_;
+        if (auto t = target_.lock())
+            return t.get();
+        return nullptr;
     }
     int16_t GetRealEnergy() const { return realEnergy_; }
     int16_t GetRealAdrenaline() const { return realAdrenaline_; }

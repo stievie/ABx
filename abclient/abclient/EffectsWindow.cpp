@@ -25,6 +25,7 @@ EffectsWindow::EffectsWindow(Context* context) :
     SetPivot(0, 0);
     SetOpacity(0.9f);
     SetMinSize(50, 50);
+    SetVisible(false);
 }
 
 EffectsWindow::~EffectsWindow()
@@ -56,9 +57,10 @@ void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
     effectIcon->SetTexture(icon);
     effectIcon->SetImageRect(IntRect(0, 0, 256, 256));
     effectIcon->SetBorder(IntRect(4, 4, 4, 4));
-    effectIcon->SetPosition((effectCount_ - 1) * 50, 0);
+//    effectIcon->SetPosition((effectCount_ - 1) * 50, 0);
     SetWidth(50 * effectCount_);
-    SetHeight(50);
+//    SetHeight(50);
+    SetVisible(effectCount_ != 0);
     UpdateLayout();
 }
 
@@ -70,5 +72,8 @@ void EffectsWindow::EffectRemoved(uint32_t effectIndex)
     {
         --effectCount_;
         RemoveChild(effectIcon);
+        SetWidth(50 * effectCount_);
+        SetVisible(effectCount_ != 0);
+        UpdateLayout();
     }
 }

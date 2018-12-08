@@ -29,12 +29,16 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
-  --print("Using Instant Rezz on " .. target:GetName())
+  if (target:IsDead() == false) then
+    return SkillErrorInvalidTarget
+  end
+    
   target:Resurrect(100, 100)
+  return SkillErrorNone
 end
 
-function onCancelled()
+function onCancelled(source, target)
 end
 
-function onInterrupted()
+function onInterrupted(source, target)
 end

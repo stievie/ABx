@@ -14,5 +14,10 @@ function onStartUse(source, target)
 end
 
 function onSuccess(source, target)
+  if (source:IsDead()) then
+    return SkillErrorInvalidTarget
+  end
+  
   source:AddEffect(source, 1043)
+  return SkillErrorNone
 end

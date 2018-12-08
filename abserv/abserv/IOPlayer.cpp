@@ -38,23 +38,23 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         LOG_ERROR << "Error primary profession is nil" << std::endl;
         return false;
     }
-    player->skills_.prof1_.uuid = player->data_.professionUuid;
-    if (!client->Read(player->skills_.prof1_))
+    player->skills_->prof1_.uuid = player->data_.professionUuid;
+    if (!client->Read(player->skills_->prof1_))
     {
         LOG_ERROR << "Error reading player profession1" << std::endl;
         return false;
     }
     if (!uuids::uuid(player->data_.profession2Uuid).nil())
     {
-        player->skills_.prof2_.uuid = player->data_.profession2Uuid;
-        if (!client->Read(player->skills_.prof2_))
+        player->skills_->prof2_.uuid = player->data_.profession2Uuid;
+        if (!client->Read(player->skills_->prof2_))
         {
             LOG_ERROR << "Error reading player profession2" << std::endl;
             return false;
         }
     }
     // After loading professions we can load the skills
-    if (!player->skills_.Load(player->data_.skillTemplate, player->account_.type >= AB::Entities::AccountTypeGamemaster))
+    if (!player->skills_->Load(player->data_.skillTemplate, player->account_.type >= AB::Entities::AccountTypeGamemaster))
     {
         LOG_WARNING << "Unable to decode skill template " << player->data_.skillTemplate << std::endl;
         // TODO: Remove
@@ -62,10 +62,10 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         {
             LOG_INFO << "Adding GM skills" << std::endl;
             auto skillsMan = GetSubsystem<Game::SkillManager>();
-            player->skills_.SetSkill(0, skillsMan->Get(9998));
-            player->skills_.SetSkill(1, skillsMan->Get(9997));
-            player->skills_.SetSkill(2, skillsMan->Get(9996));
-            player->skills_.SetSkill(7, skillsMan->Get(1043));
+            player->skills_->SetSkill(0, skillsMan->Get(9998));
+            player->skills_->SetSkill(1, skillsMan->Get(9997));
+            player->skills_->SetSkill(2, skillsMan->Get(9996));
+            player->skills_->SetSkill(7, skillsMan->Get(1043));
         }
     }
     return true;
@@ -101,9 +101,9 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     player->data_.lastLogin = player->loginTime_;
     player->data_.lastLogout = player->logoutTime_;
-    player->data_.profession2 = player->skills_.prof2_.abbr;
-    player->data_.profession2Uuid = player->skills_.prof2_.uuid;
-    player->data_.skillTemplate = player->skills_.Encode();
+    player->data_.profession2 = player->skills_->prof2_.abbr;
+    player->data_.profession2Uuid = player->skills_->prof2_.uuid;
+    player->data_.skillTemplate = player->skills_->Encode();
     player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
     return client->Update(player->data_);
 

@@ -8,8 +8,9 @@ recharge = 4000
 overcast = 0
 
 function onStartUse(source, target)
-  return true
+  return SkillErrorNone
 end
 
 function onSuccess(source, target)
+  return SkillErrorNone
 end

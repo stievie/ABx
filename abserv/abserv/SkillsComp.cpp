@@ -18,6 +18,7 @@ void SkillsComp::Update(uint32_t timeElapsed)
             {
                 usingSkill_ = false;
                 endDirty_ = true;
+                lastError_ = ls->GetLastError();
                 newRecharge_ = ls->recharge_;
             }
         }
@@ -105,10 +106,20 @@ void SkillsComp::Write(Net::NetworkMessage& message)
 
     if (endDirty_)
     {
-        message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<int>(lastSkillIndex_ + 1);
-        message.Add<uint16_t>(newRecharge_);
+        if (lastError_ == AB::GameProtocol::SkillErrorNone)
+        {
+            message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
+            message.Add<uint32_t>(owner_.id_);
+            message.Add<int>(lastSkillIndex_ + 1);
+            message.Add<uint16_t>(newRecharge_);
+        }
+        else
+        {
+            message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
+            message.Add<uint32_t>(owner_.id_);
+            message.Add<int>(lastSkillIndex_ + 1);
+            message.AddByte(lastError_);
+        }
         endDirty_ = false;
     }
 }
