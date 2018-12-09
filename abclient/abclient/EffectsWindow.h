@@ -13,5 +13,6 @@ public:
 
     void EffectAdded(uint32_t effectIndex, uint32_t ticks);
     void EffectRemoved(uint32_t effectIndex);
+    void Clear();
 };
 

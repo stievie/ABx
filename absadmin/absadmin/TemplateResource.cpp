@@ -11,18 +11,19 @@
 #include "StringHash.h"
 #include "StringUtils.h"
 #include <AB/Entities/Account.h>
+#include "Xml.h"
 
 namespace Resources {
 
 bool TemplateResource::GetObjects(std::map<std::string, ginger::object>& objects)
 {
     assert(Application::Instance);
-    objects["title"] = Application::Instance->GetServerName();
+    objects["title"] = Utils::XML::Escape(Application::Instance->GetServerName());
     objects["copy_year"] = SERVER_YEAR;
     auto it = session_->values_.find(Utils::StringHashRt("username"));
     if (it != session_->values_.end())
     {
-        objects["user"] = Utils::HtmlEncode((*it).second.GetString());
+        objects["user"] = Utils::XML::Escape((*it).second.GetString());
     }
     else
         objects["user"] = "";

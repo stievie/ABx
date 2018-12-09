@@ -14,6 +14,7 @@
 #include <AB/Entities/GameInstance.h>
 #include <AB/Entities/Game.h>
 #include <uuid.h>
+#include "Xml.h"
 
 namespace Resources {
 
@@ -78,16 +79,16 @@ void AccountsJsonResource::Render(std::shared_ptr<HttpsServer::Response> respons
         account["uuid"] = a.uuid;
         account["type"] = static_cast<int>(a.type);
         account["status"] = static_cast<int>(a.status);
-        account["name"] = a.name;
-        account["name_link"] = "<a href=\"account?id=" + a.uuid + "\">" + a.name + "</a>";;
+        account["name"] = Utils::XML::Escape(a.name);
+        account["name_link"] = "<a href=\"account?id=" + a.uuid + "\">" + Utils::XML::Escape(a.name) + "</a>";;
         account["email"] = a.email;
         account["current_server"] = a.currentServerUuid;
-        account["current_server_name"] = serv.name;
-        account["current_server_link"] = "<a href=\"service?id=" + a.currentServerUuid + "\">" + serv.name + "</a>";
+        account["current_server_name"] = Utils::XML::Escape(serv.name);
+        account["current_server_link"] = "<a href=\"service?id=" + a.currentServerUuid + "\">" + Utils::XML::Escape(serv.name) + "</a>";
         account["current_character"] = a.currentCharacterUuid;
-        account["current_character_link"] = "<a href=\"character?id=" + a.currentCharacterUuid + "\">" + ch.name + "</a>";
+        account["current_character_link"] = "<a href=\"character?id=" + a.currentCharacterUuid + "\">" + Utils::XML::Escape(ch.name) + "</a>";
         account["current_instance"] = ch.instanceUuid;
-        account["current_instance_link"] = "<a href=\"game?id=" + ch.instanceUuid + "\">" + instanceName + "</a>";
+        account["current_instance_link"] = "<a href=\"game?id=" + ch.instanceUuid + "\">" + Utils::XML::Escape(instanceName) + "</a>";
         account["online"] = static_cast<int>(a.onlineStatus);
 
         obj["data"].append(account);

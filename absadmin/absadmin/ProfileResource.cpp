@@ -4,6 +4,7 @@
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
 #include "Subsystems.h"
+#include "Xml.h"
 
 namespace Resources {
 
@@ -27,8 +28,8 @@ bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
 
     std::map<std::string, ginger::object> xs;
     xs["uuid"] = account.uuid;
-    xs["name"] = account.name;
-    xs["email"] = account.email;
+    xs["name"] = Utils::XML::Escape(account.name);
+    xs["email"] = Utils::XML::Escape(account.email);
 
     objects["account"] = xs;
     return true;

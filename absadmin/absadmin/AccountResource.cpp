@@ -13,6 +13,7 @@
 #include <AB/Entities/GameInstance.h>
 #include <AB/Entities/Game.h>
 #include "UuidUtils.h"
+#include "Xml.h"
 
 namespace Resources {
 
@@ -31,7 +32,7 @@ bool AccountResource::GetObjects(std::map<std::string, ginger::object>& objects)
         return false;
 
     objects["uuid"] = acc.uuid;
-    objects["name"] = acc.name;
+    objects["name"] = Utils::XML::Escape(acc.name);
     objects["type"] = static_cast<int>(acc.type);
 
     objects["type_unknown"] = acc.type == AB::Entities::AccountTypeUnknown;

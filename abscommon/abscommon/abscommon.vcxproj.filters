@@ -123,6 +123,9 @@
     <ClInclude Include="DataCodes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Xml.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -201,6 +204,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

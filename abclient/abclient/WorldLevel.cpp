@@ -819,6 +819,7 @@ void WorldLevel::CreateUI()
     uiRoot_->AddChild(skillBar_);
 
     effectsWindow_.DynamicCast(wm->GetWindow(WINDOW_EFFECTS));
+    effectsWindow_->Clear();
     uiRoot_->AddChild(effectsWindow_);
 
     targetWindow_.DynamicCast(wm->GetWindow(WINDOW_TARGET));

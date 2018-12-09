@@ -282,6 +282,10 @@ Vector3 Actor::GetHeadPos() const
 
 void Actor::Update(float timeStep)
 {
+    if (!hpBar_)
+        // TODO: UI not yet created
+        return;
+
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
     hpBar_->SetRange(static_cast<float>(stats_.maxHealth));

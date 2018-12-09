@@ -8,6 +8,7 @@
 #include "DataClient.h"
 #include <uuid.h>
 #include "TimeUtils.h"
+#include "Xml.h"
 
 namespace Resources {
 
@@ -26,15 +27,15 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
         return false;
 
     objects["uuid"] = s.uuid;
-    objects["machine"] = s.machine;
-    objects["name"] = s.name;
-    objects["location"] = s.location;
-    objects["host"] = s.host;
+    objects["machine"] = Utils::XML::Escape(s.machine);
+    objects["name"] = Utils::XML::Escape(s.name);
+    objects["location"] = Utils::XML::Escape(s.location);
+    objects["host"] = Utils::XML::Escape(s.host);
     objects["port"] = std::to_string(s.port);
     objects["ip"] = s.ip.empty() ? "0.0.0.0" : s.ip;
-    objects["file"] = s.file;
-    objects["path"] = s.path;
-    objects["arguments"] = s.arguments;
+    objects["file"] = Utils::XML::Escape(s.file);
+    objects["path"] = Utils::XML::Escape(s.path);
+    objects["arguments"] = Utils::XML::Escape(s.arguments);
     objects["spawnable"] = (s.type == AB::Entities::ServiceTypeFileServer ||
         s.type == AB::Entities::ServiceTypeGameServer) && (s.status == AB::Entities::ServiceStatusOnline);
     objects["has_cache"] = (s.type == AB::Entities::ServiceTypeGameServer || s.type == AB::Entities::ServiceTypeDataServer) &&
@@ -50,7 +51,7 @@ bool ServiceResource::GetObjects(std::map<std::string, ginger::object>& objects)
         ss << ts.days << " day(s) ";
     ss << ts.hours << "h " << ts.minutes << "m " << ts.seconds << "s";
 
-    objects["uptime"] = ss.str();
+    objects["uptime"] = Utils::XML::Escape(ss.str());
 
     return true;
 }

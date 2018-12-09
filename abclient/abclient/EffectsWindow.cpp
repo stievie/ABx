@@ -77,3 +77,11 @@ void EffectsWindow::EffectRemoved(uint32_t effectIndex)
         UpdateLayout();
     }
 }
+
+void EffectsWindow::Clear()
+{
+    SetVisible(false);
+    RemoveAllChildren();
+    effectCount_ = 0;
+    SetWidth(0);
+}

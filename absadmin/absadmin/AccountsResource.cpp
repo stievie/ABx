@@ -13,6 +13,7 @@
 #include <AB/Entities/GameInstance.h>
 #include <AB/Entities/Game.h>
 #include "UuidUtils.h"
+#include "Xml.h"
 
 namespace Resources {
 

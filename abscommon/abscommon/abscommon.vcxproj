@@ -176,6 +176,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="UuidUtils.h" />
     <ClInclude Include="Variant.h" />
+    <ClInclude Include="Xml.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UuidUtils.cpp" />
     <ClCompile Include="Variant.cpp" />
+    <ClCompile Include="Xml.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

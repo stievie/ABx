@@ -8,6 +8,7 @@
 #include "Subsystems.h"
 #include "DataClient.h"
 #include "StringUtils.h"
+#include "Xml.h"
 
 namespace Resources {
 
@@ -43,8 +44,8 @@ bool AccountKeysResource::GetObjects(std::map<std::string, ginger::object>& obje
             { "is_status_notactivated", ak.status == AB::Entities::KeyStatusNotActivated },
             { "is_status_activated", ak.status == AB::Entities::KeryStatusReadyForUse },
             { "is_status_banned", ak.status == AB::Entities::KeyStatusBanned },
-            { "email", ak.email },
-            { "description", ak.description },
+            { "email", Utils::XML::Escape(ak.email) },
+            { "description", Utils::XML::Escape(ak.description) },
         });
     }
 

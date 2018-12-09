@@ -8,6 +8,7 @@
 #include <AB/Entities/Service.h>
 #include "DataClient.h"
 #include "StringUtils.h"
+#include "Xml.h"
 
 namespace Resources {
 
@@ -30,12 +31,12 @@ bool ServicesResource::GetObjects(std::map<std::string, ginger::object>& objects
             continue;
         xs.push_back({
             { "uuid", s.uuid },
-            { "name", Utils::HtmlEncode(s.name) },
-            { "file", s.file },
-            { "host", s.host },
+            { "name", Utils::XML::Escape(s.name) },
+            { "file", Utils::XML::Escape(s.file) },
+            { "host", Utils::XML::Escape(s.host) },
             { "load", std::to_string(s.load) },
-            { "location", Utils::HtmlEncode(s.location) },
-            { "path", s.path },
+            { "location", Utils::XML::Escape(s.location) },
+            { "path", Utils::XML::Escape(s.path) },
             { "port", s.port },
             { "run_time", s.runTime },
             { "start_time", s.startTime },

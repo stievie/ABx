@@ -96,13 +96,12 @@ void Game::Start()
         // Now that we are running we can spawn the queued players
         if (!queuedObjects_.empty())
         {
-            for (const auto& p : queuedObjects_)
+            auto it = queuedObjects_.begin();
+            while (it != queuedObjects_.end())
             {
-                GetSubsystem<Asynch::Scheduler>()->Add(
-                    Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), p))
-                );
+                QueueSpawnObject((*it));
+                it = queuedObjects_.erase(it);
             }
-            queuedObjects_.clear();
         }
 
         // Initial game update
@@ -284,18 +283,15 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     {
         return std::shared_ptr<Npc>();
     }
+    result->SetGame(shared_from_this());
     map_->AddEntity(result->GetAi(), result->GetGroupId());
-    if (state_ == ExecutionState::Running)
-    {
-        AddObject(result);
-        // In worst case (i.e. the game data is still loading): will be sent as
-        // soon as the game runs and entered the Update loop.
-        GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), result))
-        );
-    }
-    else
-        queuedObjects_.push_back(result);
+
+    // After all initialization is done, we can call this
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+            shared_from_this(), result))
+    );
+
     return result;
 }
 
@@ -399,6 +395,20 @@ void Game::SendSpawnAll(uint32_t playerId)
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         o->WriteSpawnData(msg);
     }
+    // Also send queued objects
+    for (const auto& o : queuedObjects_)
+    {
+        if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
+            // No need to send terrain patch to client
+            continue;
+        if (o.get() == player.get())
+            // Don't send spawn of our self
+            continue;
+
+        msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
+        o->WriteSpawnData(msg);
+    }
+
     if (msg.GetSize() != 0)
         player->client_->WriteToOutput(msg);
 }
@@ -408,7 +418,6 @@ void Game::PlayerJoin(uint32_t playerId)
     std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
-        auto shed = GetSubsystem<Asynch::Scheduler>();
         {
             std::lock_guard<std::recursive_mutex> lockClass(lock_);
             players_[player->id_] = player.get();
@@ -417,17 +426,13 @@ void Game::PlayerJoin(uint32_t playerId)
         UpdateEntity(player->data_);
 
         luaState_["onPlayerJoin"](player);
-        shed->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::SendSpawnAll, shared_from_this(), playerId))
-        );
+        SendSpawnAll(playerId);
 
         if (GetState() == ExecutionState::Running)
         {
             // In worst case (i.e. the game data is still loading): will be sent as
             // soon as the game runs and entered the Update loop.
-            shed->Add(
-                Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject, shared_from_this(), player))
-            );
+            QueueSpawnObject(player);
         }
         else
             queuedObjects_.push_back(player);
