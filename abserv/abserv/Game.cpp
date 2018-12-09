@@ -279,11 +279,11 @@ void Game::RemoveObject(std::shared_ptr<GameObject> object)
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
+    result->SetGame(shared_from_this());
     if (!result->LoadScript(script))
     {
         return std::shared_ptr<Npc>();
     }
-    result->SetGame(shared_from_this());
     map_->AddEntity(result->GetAi(), result->GetGroupId());
 
     // After all initialization is done, we can call this
@@ -383,30 +383,27 @@ void Game::SendSpawnAll(uint32_t playerId)
     // Only called when the player enters a game. All spawns during the game are sent
     // when they happen.
     Net::NetworkMessage msg;
-    for (const auto& o : objects_)
+    auto write = [&](const std::shared_ptr<GameObject> const& o)
     {
         if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
             // No need to send terrain patch to client
-            continue;
+            return;
         if (o.get() == player.get())
             // Don't send spawn of our self
-            continue;
+            return;
 
         msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
         o->WriteSpawnData(msg);
+    };
+
+    for (const auto& o : objects_)
+    {
+        write(o);
     }
     // Also send queued objects
     for (const auto& o : queuedObjects_)
     {
-        if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
-            // No need to send terrain patch to client
-            continue;
-        if (o.get() == player.get())
-            // Don't send spawn of our self
-            continue;
-
-        msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
-        o->WriteSpawnData(msg);
+        write(o);
     }
 
     if (msg.GetSize() != 0)

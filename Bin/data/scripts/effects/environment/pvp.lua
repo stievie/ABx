@@ -16,6 +16,3 @@ end
 
 function onRemove(source, target)
 end
-
-function onUpdate(source, target, timeElapsed)
-end

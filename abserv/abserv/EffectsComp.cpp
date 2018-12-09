@@ -7,18 +7,45 @@
 namespace Game {
 namespace Components {
 
+void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory categroy)
+{
+    auto check = [&](std::shared_ptr<Effect> const& current)
+    {
+        return current->data_.category == categroy;
+    };
+
+    auto it = std::find_if(effects_.begin(), effects_.end(), check);
+    while (it != effects_.end())
+    {
+        (*it)->Remove();
+        removedEffects_.push_back((*it));
+        effects_.erase(it);
+        it = std::find_if(effects_.begin(), effects_.end(), check);
+    }
+}
+
 void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index)
 {
-    RemoveEffect(index);
-
     auto effect = GetSubsystem<EffectManager>()->Get(index);
     if (effect)
     {
-        // Effects are not stackable, are they?
+        // Effects are not stackable:
+        /*
+         * Eine Fertigkeit kann nicht mit sich selbst gestapelt werden, beispielsweise
+         * kann man einen Gegner also nicht zweimal mit der gleichen Verhexung belegen,
+         * sich selbst mehrfach durch ein und dieselbe Verzauberung schützen oder
+         * den Bonus eines Schreis mehrfach erhalten.
+         * https://www.guildwiki.de/wiki/Effektstapelung
+         */
         RemoveEffect(index);
-        effects_.push_back(effect);
-        effect->Start(source, owner_.GetThis<Actor>());
-        addedEffects_.push_back(effect);
+        // E.g. only one stance allowed
+        if (effect->data_.category >= SINGLEEFFECT_START && effect->data_.category <= SINGLEEFFECT_END)
+            RemoveAllOfCategory(effect->data_.category);
+        if (effect->Start(source, owner_.GetThis<Actor>()))
+        {
+            effects_.push_back(effect);
+            addedEffects_.push_back(effect);
+        }
     }
 }
 

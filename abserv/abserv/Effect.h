@@ -55,7 +55,7 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    void Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
+    bool Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
     /// Remove Effect before it ends
     void Remove();
 

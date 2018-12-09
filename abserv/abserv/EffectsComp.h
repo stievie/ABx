@@ -11,9 +11,12 @@ namespace Components {
 class EffectsComp
 {
 private:
+    static constexpr AB::Entities::EffectCategory SINGLEEFFECT_START = AB::Entities::EffectPreparation;
+    static constexpr AB::Entities::EffectCategory SINGLEEFFECT_END = AB::Entities::EffectWeaponSpell;
     Actor& owner_;
     EffectList addedEffects_;
     EffectList removedEffects_;
+    void RemoveAllOfCategory(AB::Entities::EffectCategory categroy);
 public:
     explicit EffectsComp(Actor& owner) :
         owner_(owner)

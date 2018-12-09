@@ -11,17 +11,23 @@ static constexpr auto KEY_EFFECTS = "game_effects";
 enum EffectCategory : uint8_t
 {
     EffectNone = 0,
-    // From skills ---------------
+    // From skills -------------------------------------------------------------
     EffectCondition = 1,
     EffectEnchantment = 2,
     EffectHex = 3,
-    EffectPreparation = 4,
-    EffectShout = 5,
-    EffectSpirit = 6,
-    EffectStance = 7,
-    EffectWard = 8,
-    EffectWell = 9,
-    // ---------------------------
+    EffectShout = 4,
+    EffectSpirit = 5,
+    EffectWard = 6,
+    EffectWell = 7,
+    // Single
+    EffectPreparation = 8,
+    EffectStance = 9,
+    EffectForm = 10,
+    EffectGlyphe = 11,
+    EffectPetAttack = 12,
+    EffectWeaponSpell = 13,
+    // /Single
+    // Other -------------------------------------------------------------------
     EffectGeneral = 20,
     EffectEnvironment = 254
 };

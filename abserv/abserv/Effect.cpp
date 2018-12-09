@@ -38,6 +38,9 @@ bool Effect::LoadScript(const std::string& fileName)
 
 void Effect::Update(uint32_t timeElapsed)
 {
+    if (endTime_ == 0)
+        return;
+
     if (haveUpdate_)
         luaState_["onUpdate"](source_.lock(), target_.lock(), timeElapsed);
     if (endTime_ <= Utils::AbTick())
@@ -47,14 +50,19 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
-void Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
+bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
     target_ = target;
     source_ = source;
     startTime_ = Utils::AbTick();
     ticks_ = luaState_["getDuration"](source_.lock(), target_.lock());
     endTime_ = startTime_ + ticks_;
-    luaState_["onStart"](source_.lock(), target_.lock());
+    bool succ = luaState_["onStart"](source_.lock(), target_.lock());
+    if (!succ)
+    {
+        endTime_ = 0;
+    }
+    return succ;
 }
 
 void Effect::Remove()
