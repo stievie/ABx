@@ -448,6 +448,8 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
 
 void ProtocolGame::ParseChangeInstance(const std::shared_ptr<InputMessage>& message)
 {
+    // The server is telling us to change the instance.
+    // We should reply with an EnterWorld message.
     std::string serverId = message->GetString();
     std::string mapUuid = message->GetString();
     std::string instanceUuid = message->GetString();
