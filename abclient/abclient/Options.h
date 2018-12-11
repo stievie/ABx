@@ -35,6 +35,7 @@ public:
 
     bool stickCameraToHead_;
     bool disableMouseWalking_;
+    bool enableMumble_;
     float mouseSensitivity_;
 
     float gainMaster_;

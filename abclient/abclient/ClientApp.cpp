@@ -119,6 +119,8 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterSubsystem(itemsCache_);
     levelManager_ = new LevelManager(context);
     context->RegisterSubsystem(levelManager_);
+    mumble_ = new Mumble(context);
+    context->RegisterSubsystem(mumble_);
 
     // UI
     TabGroup::RegisterObject(context);
@@ -230,6 +232,9 @@ void ClientApp::Start()
     {
         GetSubsystem<Graphics>()->Maximize();
     }
+    if (options->enableMumble_)
+        GetSubsystem<Mumble>()->Initialize();
+
     Renderer* renderer = GetSubsystem<Renderer>();
     // Oh what a difference!
     renderer->SetShadowQuality(options->GetShadowQuality());

@@ -52,6 +52,7 @@ Options::Options(Context* context) :
     gainMusic_(1.0f),
     stickCameraToHead_(true),
     disableMouseWalking_(false),
+    enableMumble_(false),
     mouseSensitivity_(0.1f)
 {
     SubscribeToEvent(E_INPUTFOCUS, URHO3D_HANDLER(Options, HandleInputFocus));
@@ -241,6 +242,12 @@ void Options::Save()
         param.SetString("name", "MouseSensitivity");
         param.SetString("type", "float");
         param.SetFloat("value", mouseSensitivity_);
+    }
+    {
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "EnableMumble");
+        param.SetString("type", "bool");
+        param.SetBool("value", enableMumble_);
     }
     {
         XMLElement param = root.CreateChild("parameter");
@@ -658,6 +665,10 @@ void Options::LoadElements(const XMLElement& root)
         else if (name.Compare("MouseSensitivity") == 0)
         {
             mouseSensitivity_ = paramElem.GetFloat("value");
+        }
+        else if (name.Compare("EnableMumble") == 0)
+        {
+            enableMumble_ = paramElem.GetBool("value");
         }
         else if (name.Compare("LoginPort") == 0)
         {

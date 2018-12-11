@@ -38,8 +38,9 @@ URHO3D_EVENT(E_CHANGINGINSTANCE, ChangingInstance)
 URHO3D_EVENT(E_SETLEVEL, SetLevel)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
-    URHO3D_PARAM(P_NAME, Name);        // String
+    URHO3D_PARAM(P_NAME, Name);                  // String
     URHO3D_PARAM(P_MAPUUID, MapUuid);            // String
+    URHO3D_PARAM(P_INSTANCEUUID, InstanceUuid);  // String
 }
 
 URHO3D_EVENT(E_LEVELREADY, LevelReady)

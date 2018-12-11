@@ -383,7 +383,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     // Only called when the player enters a game. All spawns during the game are sent
     // when they happen.
     Net::NetworkMessage msg;
-    auto write = [&](const std::shared_ptr<GameObject> const& o)
+    auto write = [&](const std::shared_ptr<GameObject>& o)
     {
         if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
             // No need to send terrain patch to client

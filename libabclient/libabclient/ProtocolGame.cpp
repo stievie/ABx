@@ -440,9 +440,10 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
 {
     std::string serverId = message->GetString();
     std::string mapUuid = message->GetString();
+    std::string instanceUuid = message->GetString();
     uint32_t playerId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, playerId);
+        receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId);
 }
 
 void ProtocolGame::ParseChangeInstance(const std::shared_ptr<InputMessage>& message)

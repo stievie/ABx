@@ -4,6 +4,7 @@
 #include "WorldLevel.h"
 #include "GameMenu.h"
 #include "Actor.h"
+#include "Mumble.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -114,12 +115,19 @@ void LevelManager::HandleUpdate(StringHash eventType, VariantMap& eventData)
         using namespace AbEvents::SetLevel;
         levelName_ = levelData[P_NAME].GetString();
         mapUuid_ = levelData[P_MAPUUID].GetString();
+        const String& instanceUuid = levelData[P_INSTANCEUUID].GetString();
         level_ = context_->CreateObject(StringHash(levelName_));
         BaseLevel* baseLevel = GetCurrentLevel<BaseLevel>();
         if (baseLevel)
         {
             baseLevel->debugGeometry_ = drawDebugGeometry_;
         }
+        Mumble* mumble = GetSubsystem<Mumble>();
+        if (mumble)
+        {
+            mumble->SetContext(instanceUuid);
+        }
+
         // Add a fade layer
         if (!fadeWindow_)
             AddFadeLayer();

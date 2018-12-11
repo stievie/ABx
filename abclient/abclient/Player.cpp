@@ -7,6 +7,7 @@
 #include "Shortcuts.h"
 #include "WindowManager.h"
 #include "SkillBarWindow.h"
+#include "Mumble.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -76,6 +77,16 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     camera->SetFarClip(options->GetCameraFarClip());
     camera->SetNearClip(options->GetCameraNearClip());
     camera->SetFov(options->GetCameraFov());
+
+    // Update Mumble
+    Mumble* mumble = GetSubsystem<Mumble>();
+    if (mumble)
+    {
+        SharedPtr<Node> charNode = SharedPtr<Node>(GetNode());
+        mumble->SetAvatar(charNode);
+        mumble->SetCamera(cameraNode_);
+        mumble->SetIdentity(name_);
+    }
 
     // Set skills
     WindowManager* winMan = GetSubsystem<WindowManager>();

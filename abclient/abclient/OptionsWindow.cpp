@@ -5,6 +5,7 @@
 #include "HotkeyEdit.h"
 #include "LevelManager.h"
 #include "BaseLevel.h"
+#include "Mumble.h"
 
 void OptionsWindow::RegisterObject(Context* context)
 {
@@ -216,6 +217,26 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
             opt->mouseSensitivity_ = value;
         });
     }
+    CheckBox* mumbleCheck = dynamic_cast<CheckBox*>(wnd->GetChild("EnableMumbleCheck", true));
+    mumbleCheck->SetChecked(opts->enableMumble_);
+    SubscribeToEvent(mumbleCheck, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+    {
+        using namespace Toggled;
+        bool checked = eventData[P_STATE].GetBool();
+        Options* opt = GetSubsystem<Options>();
+        Mumble* mumble = GetSubsystem<Mumble>();
+        opt->enableMumble_ = checked;
+        if (checked)
+        {
+            if (!mumble->IsInitialized())
+                mumble->Initialize();
+        }
+        else
+        {
+            if (mumble->IsInitialized())
+                mumble->Shutdown();
+        }
+    });
 }
 
 void OptionsWindow::CreatePageGraphics(TabElement* tabElement)

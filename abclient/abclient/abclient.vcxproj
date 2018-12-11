@@ -273,6 +273,7 @@
     <ClCompile Include="MapWindow.cpp" />
     <ClCompile Include="MissionMapWindow.cpp" />
     <ClCompile Include="MultiLineEdit.cpp" />
+    <ClCompile Include="Mumble.cpp" />
     <ClCompile Include="NewMailWindow.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OptionsWindow.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="MissionMapWindow.h" />
     <ClInclude Include="MultiLineEdit.h" />
+    <ClInclude Include="Mumble.h" />
     <ClInclude Include="NewMailWindow.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OptionsWindow.h" />

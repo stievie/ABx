@@ -699,7 +699,7 @@ void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
-    const std::string& mapUuid, uint32_t playerId)
+    const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId)
 {
     levelReady_ = false;
     playerId_ = playerId;
@@ -731,6 +731,7 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     eData[P_UPDATETICK] = updateTick;
     eData[P_MAPUUID] = currentMapUuid_;
     eData[P_NAME] = currentLevel_;
+    eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
     SendEvent(AbEvents::E_SETLEVEL, eData);
 
     Graphics* graphics = GetSubsystem<Graphics>();

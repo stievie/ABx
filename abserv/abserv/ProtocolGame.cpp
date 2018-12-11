@@ -397,6 +397,7 @@ void ProtocolGame::EnterGame()
         output->AddByte(AB::GameProtocol::GameEnter);
         output->AddString(Application::Instance->GetServerId());
         output->AddString(player_->data_.currentMapUuid);
+        output->AddString(player_->data_.instanceUuid);
         output->Add<uint32_t>(player_->id_);
         Send(output);
     }
