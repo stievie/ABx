@@ -46,16 +46,21 @@ private:
 public:
     Mumble(Context* context);
     ~Mumble();
+    /// Connect to Mumble
     void Initialize();
+    /// Disconnect from Mumble
     void Shutdown();
+    /// Character Node
     void SetAvatar(SharedPtr<Node> avatar)
     {
         avatar_ = avatar;
     }
+    /// Camera Node
     void SetCamera(SharedPtr<Node> camera)
     {
         camera_ = camera;
     }
+    /// Your identity, e.g. ingame name
     void SetIdentity(const String& identity)
     {
         if (identity_.Compare(identity) != 0)

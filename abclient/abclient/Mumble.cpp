@@ -10,6 +10,7 @@ Mumble::Mumble(Context* context) :
     avatar_(nullptr),
     camera_(nullptr),
     identityDirty_(false),
+    contextDirty_(false),
     initialized_(false)
 {
 }
@@ -21,17 +22,21 @@ Mumble::~Mumble()
 
 void Mumble::Initialize()
 {
-#ifdef _WIN32
-    HANDLE hMapObject = OpenFileMappingW(FILE_MAP_ALL_ACCESS, FALSE, L"MumbleLink");
-    if (hMapObject == NULL)
+    if (initialized_)
         return;
 
-    lm_ = (LinkedMem *)MapViewOfFile(hMapObject, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkedMem));
+#ifdef _WIN32
+    hMapObject_ = OpenFileMappingW(FILE_MAP_ALL_ACCESS, FALSE, L"MumbleLink");
+    if (hMapObject_ == NULL)
+        // Mumble is not running
+        return;
+
+    lm_ = (LinkedMem *)MapViewOfFile(hMapObject_, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkedMem));
 
     if (lm_ == NULL)
     {
-        CloseHandle(hMapObject);
-        hMapObject = NULL;
+        CloseHandle(hMapObject_);
+        hMapObject_ = NULL;
         return;
     }
 #else
@@ -86,8 +91,8 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
 
     if (lm_->uiVersion != 2)
     {
-        wcsncpy(lm_->name, L"Urho3D", 256);
-        wcsncpy(lm_->description, L"Urho3D Link plugin.", 2048);
+        wcsncpy(lm_->name, L"FW", 256);
+        wcsncpy(lm_->description, L"FW Link plugin.", 2048);
         lm_->uiVersion = 2;
     }
 
@@ -104,13 +109,13 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
 
         const Quaternion& rot = avatar->GetWorldRotation();
         // Unit vector pointing out of the avatar's eyes aka "At"-vector.
-        Vector3 targetForward = rot * Vector3::FORWARD;
+        const Vector3 targetForward = rot * Vector3::FORWARD;
         lm_->fAvatarFront[0] = targetForward.x_;
         lm_->fAvatarFront[1] = targetForward.y_;
         lm_->fAvatarFront[2] = targetForward.z_;
 
         // Unit vector pointing out of the top of the avatar's head aka "Up"-vector (here Top points straight up).
-        Vector3 targetUp = rot * Vector3::UP;
+        const Vector3 targetUp = rot * Vector3::UP;
         lm_->fAvatarTop[0] = targetUp.x_;
         lm_->fAvatarTop[1] = targetUp.y_;
         lm_->fAvatarTop[2] = targetUp.z_;
@@ -131,12 +136,12 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
         lm_->fCameraPosition[2] = worldPos.z_;
 
         const Quaternion& rot = camera->GetWorldRotation();
-        Vector3 targetForward = rot * Vector3::FORWARD;
+        const Vector3 targetForward = rot * Vector3::FORWARD;
         lm_->fCameraFront[0] = targetForward.x_;
         lm_->fCameraFront[1] = targetForward.y_;
         lm_->fCameraFront[2] = targetForward.z_;
 
-        Vector3 targetUp = rot * Vector3::UP;
+        const Vector3 targetUp = rot * Vector3::UP;
         lm_->fCameraTop[0] = targetUp.x_;
         lm_->fCameraTop[1] = targetUp.y_;
         lm_->fCameraTop[2] = targetUp.z_;
@@ -146,7 +151,7 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
     {
         // Identifier which uniquely identifies a certain player in a context (e.g. the ingame name).
         WString identity(identity_);
-        wcsncpy(lm_->identity, identity.CString(), Max(256u, identity.Length()));
+        wcsncpy(lm_->identity, identity.CString(), Min(256u, identity.Length()));
         identityDirty_ = false;
     }
 
@@ -155,7 +160,7 @@ void Mumble::HandleUpdate(StringHash, VariantMap&)
         // Context should be equal for players which should be able to hear each other positional and
         // differ for those who shouldn't (e.g. it could contain the server+port and team)
         // E.g. Map instance ID
-        unsigned length = Max(256u, context_.Length());
+        unsigned length = Min(256u, context_.Length());
         memcpy(lm_->context, context_.CString(), length);
         lm_->context_len = length;
         contextDirty_ = false;

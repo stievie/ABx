@@ -172,7 +172,10 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
         result->SetVar("Mode", static_cast<unsigned>(WindowMode::Borderless));
         windowDropdown->AddItem(result);
     }
-    windowDropdown->SetSelection(static_cast<unsigned>(opts->GetWindowMode()));
+    if (opts->GetWindowMode() == WindowMode::Maximized)
+        windowDropdown->SetSelection(0u);
+    else
+        windowDropdown->SetSelection(static_cast<unsigned>(opts->GetWindowMode()));
 
     SubscribeToEvent(windowDropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
     {
