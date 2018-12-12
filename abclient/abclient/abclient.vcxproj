@@ -252,6 +252,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BaseLevel.cpp" />
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
@@ -296,6 +297,7 @@
     <ClCompile Include="WorldLevel.cpp" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AntiRE.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="CharCreateLevel.h" />
     <ClInclude Include="CharSelectLevel.h" />
     <ClInclude Include="ChatWindow.h" />

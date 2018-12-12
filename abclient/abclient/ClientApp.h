@@ -8,6 +8,7 @@
 #include "Shortcuts.h"
 #include "WindowManager.h"
 #include "Mumble.h"
+#include "AudioManager.h"
 
 using namespace Urho3D;
 
@@ -40,6 +41,7 @@ private:
     SharedPtr<ItemsCache> itemsCache_;
     SharedPtr<LevelManager> levelManager_;
     SharedPtr<WindowManager> windowManager_;
+    SharedPtr<AudioManager> audioManager_;
     SharedPtr<Mumble> mumble_;
 
     void SetWindowTitleAndIcon();

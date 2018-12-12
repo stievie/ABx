@@ -34,4 +34,16 @@
 
 ## Assets
 
-* World Map https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg
+World Map https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg
+Creative Commons Attribution-Share Alike 3.0 Unported License
+https://creativecommons.org/licenses/by-sa/3.0/deed.en
+
+### Music
+
+"Virtutes Instrumenti" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 3.0 License
+http://creativecommons.org/licenses/by/3.0/
+
+"Virtutes Vocis" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 3.0 License
+http://creativecommons.org/licenses/by/3.0/

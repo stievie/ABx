@@ -119,6 +119,8 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterSubsystem(itemsCache_);
     levelManager_ = new LevelManager(context);
     context->RegisterSubsystem(levelManager_);
+    audioManager_ = new AudioManager(context);
+    context->RegisterSubsystem(audioManager_);
     mumble_ = new Mumble(context);
     context->RegisterSubsystem(mumble_);
 

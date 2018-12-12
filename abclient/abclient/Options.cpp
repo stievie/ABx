@@ -49,7 +49,7 @@ Options::Options(Context* context) :
     gainEffect_(1.0f),
     gainAmbient_(1.0f),
     gainVoice_(1.0f),
-    gainMusic_(1.0f),
+    gainMusic_(0.1f),
     stickCameraToHead_(true),
     disableMouseWalking_(false),
     enableMumble_(false),

@@ -413,6 +413,23 @@ URHO3D_EVENT(E_SC_CANCEL, Cancel)
 {
 }
 
+// Audio
+URHO3D_EVENT(E_AUDIOPLAY, AudioPlay)
+{
+    URHO3D_PARAM(P_NAME, Name);     // String
+    URHO3D_PARAM(P_TYPE, Type);     // String
+}
+
+URHO3D_EVENT(E_AUDIOSTOP, AudioStop)
+{
+    URHO3D_PARAM(P_NAME, Name);     // String
+    URHO3D_PARAM(P_TYPE, Type);     // String
+}
+
+URHO3D_EVENT(E_AUDIOSTOPALL, AudioStopAll)
+{
+}
+
 #ifdef DEBUG_HUD
 URHO3D_EVENT(E_SC_TOGGLEDEBUGHUD, ToggleDebugHUD)
 {
