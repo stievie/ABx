@@ -196,6 +196,8 @@
     <ClInclude Include="DBItemList.h" />
     <ClInclude Include="DBMail.h" />
     <ClInclude Include="DBMailList.h" />
+    <ClInclude Include="DBMusic.h" />
+    <ClInclude Include="DBMusicList.h" />
     <ClInclude Include="DBProfession.h" />
     <ClInclude Include="DBProfessionList.h" />
     <ClInclude Include="DBReservedName.h" />
@@ -239,6 +241,8 @@
     <ClCompile Include="DBItemList.cpp" />
     <ClCompile Include="DBMail.cpp" />
     <ClCompile Include="DBMailList.cpp" />
+    <ClCompile Include="DBMusic.cpp" />
+    <ClCompile Include="DBMusicList.cpp" />
     <ClCompile Include="DBProfession.cpp" />
     <ClCompile Include="DBProfessionList.cpp" />
     <ClCompile Include="DBReservedName.cpp" />

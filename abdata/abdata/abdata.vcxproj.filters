@@ -141,6 +141,12 @@
     <ClInclude Include="DBAccountKeyList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBMusic.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBMusicList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -261,6 +267,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBAccountKeyList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBMusic.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBMusicList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

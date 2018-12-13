@@ -25,6 +25,8 @@
 #include <AB/Entities/ServiceList.h>
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ItemList.h>
+#include <AB/Entities/Music.h>
+#include <AB/Entities/MusicList.h>
 #include <AB/Entities/VersionList.h>
 #include <pugixml.hpp>
 #include "Profiler.h"
@@ -234,6 +236,8 @@ bool Application::Initialize(int argc, char** argv)
         server_->resource["^/_effects_$"]["GET"] = std::bind(&Application::GetHandlerEffects, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_items_$"]["GET"] = std::bind(&Application::GetHandlerItems, shared_from_this(),
+            std::placeholders::_1, std::placeholders::_2);
+        server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
     }
     server_->resource["^/_status_$"]["GET"] = std::bind(&Application::GetHandlerStatus, shared_from_this(),
@@ -946,6 +950,65 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("icon") = s.client_icon.c_str();
         gNd.append_attribute("remote_model") = s.server_model.c_str();
         gNd.append_attribute("remote_icon") = s.server_icon.c_str();
+    }
+
+    std::stringstream stream;
+    doc.save(stream);
+    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
+    header.emplace("Content-Type", "text/xml");
+    UpdateBytesSent(stream_size(stream));
+    response->write(stream, header);
+}
+
+void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> response,
+    std::shared_ptr<HttpsServer::Request> request)
+{
+    AB_PROFILE;
+
+    if (!IsAllowed(request))
+    {
+        response->write(SimpleWeb::StatusCode::client_error_forbidden,
+            "Forbidden");
+        return;
+    }
+
+    AB::Entities::MusicList pl;
+    if (!dataClient_->Read(pl))
+    {
+        LOG_ERROR << "Error reading music list" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+    AB::Entities::Version v;
+    v.name = "game_music";
+    if (!dataClient_->Read(v))
+    {
+        LOG_ERROR << "Error reading music version" << std::endl;
+        response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
+        return;
+    }
+
+    pugi::xml_document doc;
+    auto declarationNode = doc.append_child(pugi::node_declaration);
+    declarationNode.append_attribute("version") = "1.0";
+    declarationNode.append_attribute("encoding") = "UTF-8";
+    declarationNode.append_attribute("standalone") = "yes";
+    auto root = doc.append_child("music_list");
+    root.append_attribute("version") = v.value;
+
+    for (const std::string& uuid : pl.musicUuids)
+    {
+        AB::Entities::Music s;
+        s.uuid = uuid;
+        if (!dataClient_->Read(s))
+            continue;
+        auto gNd = root.append_child("music");
+        gNd.append_attribute("uuid") = s.uuid.c_str();
+        gNd.append_attribute("map_uuid") = s.mapUuid.c_str();
+        gNd.append_attribute("local_file") = s.localFile.c_str();
+        gNd.append_attribute("remote_file") = s.remoteFile.c_str();
+        gNd.append_attribute("sorting") = s.sorting;
+        gNd.append_attribute("style") = static_cast<uint32_t>(s.style);
     }
 
     std::stringstream stream;

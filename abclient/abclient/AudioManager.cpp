@@ -4,8 +4,9 @@
 
 AudioManager::AudioManager(Context* context) :
     Object(context),
-    multipleMusicTracks_(true),
-    multipleAmbientTracks_(true)
+    multipleMusicTracks_(false),
+    multipleAmbientTracks_(true),
+    currentIndex_(-1)
 {
     SubscribeToEvents();
 }
@@ -13,6 +14,18 @@ AudioManager::AudioManager(Context* context) :
 AudioManager::~AudioManager()
 {
     UnsubscribeFromAllEvents();
+}
+
+void AudioManager::StartMusic()
+{
+    if (!multipleMusicTracks_)
+        StopMusic();
+    PlaySound(GetNextMusic(), SOUND_MUSIC);
+}
+
+void AudioManager::StopMusic()
+{
+    musicNodes_.Clear();
 }
 
 void AudioManager::PlaySound(const String& filename, const String& type)
@@ -35,7 +48,7 @@ void AudioManager::PlaySound(const String& filename, const String& type)
             soundSource->SetAutoRemoveMode(REMOVE_NODE);
         else
         {
-            sound->SetLooped(true);
+            SubscribeToEvent(E_SOUNDFINISHED, URHO3D_HANDLER(AudioManager, HandleSoundFinished));
             if (type == SOUND_MUSIC)
             {
                 if (!multipleMusicTracks_)
@@ -44,6 +57,7 @@ void AudioManager::PlaySound(const String& filename, const String& type)
             }
             else if (type == SOUND_AMBIENT)
             {
+                sound->SetLooped(true);
                 if (!multipleMusicTracks_)
                     ambientNodes_.Clear();
                 ambientNodes_[filename] = node;
@@ -109,4 +123,33 @@ void AudioManager::HandleAudioStopAll(StringHash, VariantMap&)
 {
     musicNodes_.Clear();
     ambientNodes_.Clear();
+}
+
+void AudioManager::HandleSoundFinished(StringHash, VariantMap& eventData)
+{
+    using namespace SoundFinished;
+    Node* node = static_cast<Node*>(eventData[P_NODE].GetPtr());
+    Sound* sound = static_cast<Sound*>(eventData[P_SOUND].GetPtr());
+    if (sound->GetType() == SOUND_MUSIC)
+    {
+        for (const auto& nd : musicNodes_)
+        {
+            if (nd.second_ == node)
+            {
+                musicNodes_.Erase(nd.first_);
+                break;
+            }
+        }
+        PlaySound(GetNextMusic(), SOUND_MUSIC);
+    }
+}
+
+String AudioManager::GetNextMusic()
+{
+    if (playList_.Size() == 0)
+        return String::EMPTY;
+    ++currentIndex_;
+    if (currentIndex_ >= (int)playList_.Size())
+        currentIndex_ = 0;
+    return playList_[currentIndex_];
 }

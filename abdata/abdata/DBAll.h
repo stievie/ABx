@@ -32,3 +32,5 @@
 #include "DBAccountList.h"
 #include "DBCharacterList.h"
 #include "DBAccountKeyList.h"
+#include "DBMusic.h"
+#include "DBMusicList.h"
