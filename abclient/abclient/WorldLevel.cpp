@@ -12,6 +12,7 @@
 #include "WindowManager.h"
 #include "NewMailWindow.h"
 #include "GameMessagesWindow.h"
+#include "AudioManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -322,6 +323,11 @@ void WorldLevel::CreateScene()
     NavigationMesh* navMesh = scene_->GetComponent<NavigationMesh>();
     if (navMesh)
         navMesh->Build();
+
+    FwClient* client = GetSubsystem<FwClient>();
+    AudioManager* am = GetSubsystem<AudioManager>();
+    am->SetPlayList(client->GetMapPlaylist(mapUuid_));
+    am->StartMusic();
 }
 
 void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)

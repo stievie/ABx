@@ -181,6 +181,7 @@ void FwClient::LoadData()
     LoadProfessions(versions_["game_professions"]);
     LoadEffects(versions_["game_effects"]);
     LoadItems(versions_["game_items"]);
+    LoadMusic(versions_["game_music"]);
 /*    WorkQueue* queue = GetSubsystem<WorkQueue>();
     SharedPtr<WorkItem> item = queue->GetFreeItem();
     item->aux_ = const_cast<FwClient*>(this);
@@ -409,6 +410,38 @@ void FwClient::LoadItems(uint32_t curVersion)
         item->iconFile_ = itm.attribute("icon").as_string();
 
         items->Add(item);
+    }
+}
+
+void FwClient::LoadMusic(uint32_t curVersion)
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    XMLFile* file = cache->GetResource<XMLFile>("Music.xml");
+
+    if (!file || IsOldData(curVersion, file))
+    {
+        if (!client_.HttpDownload("/_music_", "GameData/Music.xml"))
+            return;
+        if (file)
+            cache->ReloadResource(file);
+        file = cache->GetResource<XMLFile>("Music.xml");
+    }
+    if (!file)
+        return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("music_list");
+    if (!node)
+        return;
+
+    for (const auto& pro : node.children("music"))
+    {
+        // <uuid1>;<uuid2>...
+        String mapStr(pro.attribute("map_uuid").as_string());
+        StringVector maps = mapStr.Split(';');
+        String localFile(pro.attribute("local_file").as_string());
+        for (const auto& map : maps)
+            musicList_[map].Push(localFile);
     }
 }
 
@@ -648,6 +681,27 @@ void FwClient::PartyInvitePlayer(uint32_t objectId)
 {
     if (loggedIn_)
         client_.PartyInvitePlayer(objectId);
+}
+
+Vector<String> FwClient::GetMapPlaylist(const String& mapUuid)
+{
+    Vector<String> result;
+    if (mapUuid.Compare("00000000-0000-0000-0000-000000000000") != 0)
+    {
+        for (const auto& m : musicList_[mapUuid])
+        {
+            result.Push(m);
+        }
+    }
+    if (result.Size() == 0)
+    {
+        // General
+        for (const auto& m : musicList_["00000000-0000-0000-0000-000000000000"])
+        {
+            result.Push(m);
+        }
+    }
+    return result;
 }
 
 void FwClient::OnLoggedIn(const std::string&)

@@ -25,7 +25,7 @@ struct Music : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.text1b(mapUuid, Limits::MAX_UUID);
+        s.text1b(mapUuid, Limits::MAX_MUSIC_MAPS);
         s.text1b(localFile, Limits::MAX_FILENAME);
         s.text1b(remoteFile, Limits::MAX_FILENAME);
         s.value1b(sorting);

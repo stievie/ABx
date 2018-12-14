@@ -16,6 +16,7 @@ static constexpr int MAX_SERVICE_LOCATION = 10;
 static constexpr int MAX_SERVICES = 64;         // Max number of services in ServiceList
 
 static constexpr int MAX_MUSIC = 65536;
+static constexpr int MAX_MUSIC_MAPS = 5000;
 
 // Account
 static constexpr int MAX_ACCOUNT_NAME = 32;

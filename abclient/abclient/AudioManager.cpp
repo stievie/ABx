@@ -20,7 +20,11 @@ void AudioManager::StartMusic()
 {
     if (!multipleMusicTracks_)
         StopMusic();
-    PlaySound(GetNextMusic(), SOUND_MUSIC);
+
+    String nextTrack = GetNextMusic();
+    URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
+    if (!nextTrack.Empty())
+        PlaySound(nextTrack, SOUND_MUSIC);
 }
 
 void AudioManager::StopMusic()
@@ -48,7 +52,7 @@ void AudioManager::PlaySound(const String& filename, const String& type)
             soundSource->SetAutoRemoveMode(REMOVE_NODE);
         else
         {
-            SubscribeToEvent(E_SOUNDFINISHED, URHO3D_HANDLER(AudioManager, HandleSoundFinished));
+            SubscribeToEvent(node, E_SOUNDFINISHED, URHO3D_HANDLER(AudioManager, HandleSoundFinished));
             if (type == SOUND_MUSIC)
             {
                 if (!multipleMusicTracks_)
@@ -129,8 +133,8 @@ void AudioManager::HandleSoundFinished(StringHash, VariantMap& eventData)
 {
     using namespace SoundFinished;
     Node* node = static_cast<Node*>(eventData[P_NODE].GetPtr());
-    Sound* sound = static_cast<Sound*>(eventData[P_SOUND].GetPtr());
-    if (sound->GetType() == SOUND_MUSIC)
+    SoundSource* sound = static_cast<SoundSource*>(eventData[P_SOUNDSOURCE].GetPtr());
+    if (sound->GetSoundType() == SOUND_MUSIC)
     {
         for (const auto& nd : musicNodes_)
         {
@@ -140,7 +144,10 @@ void AudioManager::HandleSoundFinished(StringHash, VariantMap& eventData)
                 break;
             }
         }
-        PlaySound(GetNextMusic(), SOUND_MUSIC);
+        String nextTrack = GetNextMusic();
+        URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
+        if (!nextTrack.Empty())
+            PlaySound(nextTrack, SOUND_MUSIC);
     }
 }
 

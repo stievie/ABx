@@ -35,6 +35,7 @@ private:
     std::map<std::string, AB::Entities::Profession> professions_;
     std::map<uint32_t, AB::Entities::Skill> skills_;
     std::map<uint32_t, AB::Entities::Effect> effects_;
+    HashMap<String, Vector<String>> musicList_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -48,6 +49,7 @@ private:
     void LoadProfessions(uint32_t curVersion);
     void LoadEffects(uint32_t curVersion);
     void LoadItems(uint32_t curVersion);
+    void LoadMusic(uint32_t curVersion);
     bool MakeHttpRequest(const String& path, const String& outFile);
     bool loggedIn_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -105,6 +107,7 @@ public:
     void UseSkill(uint32_t index);
     void Cancel();
     void PartyInvitePlayer(uint32_t objectId);
+    Vector<String> GetMapPlaylist(const String& mapUuid);
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;

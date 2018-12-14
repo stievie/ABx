@@ -61,10 +61,4 @@ void PvpCombatLevel::CreateScene()
     scene_->LoadXML(sceneFile->GetRoot());
 
     SetSunProperties();
-
-    VariantMap& eData = GetEventDataMap();
-    using namespace AbEvents::AudioPlay;
-    eData[P_NAME] = "Sounds/Music/Virtutes Vocis.ogg";
-    eData[P_TYPE] = SOUND_MUSIC;
-    SendEvent(AbEvents::E_AUDIOPLAY, eData);
 }
