@@ -24,6 +24,7 @@ public:
     ~AudioManager();
 
     void StartMusic();
+    void ContinuePlaylist();
     void StopMusic();
     void PlaySound(const String& filename, const String& type = SOUND_EFFECT);
     void AllowMultipleMusicTracks(bool enabled)

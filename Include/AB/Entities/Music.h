@@ -13,6 +13,12 @@ enum MusicStyle : uint32_t
     MusicStyleUnknown = 0,
     MusicStyleEastern = 1 << 1,
     MusicSttyleWestern = 1 << 2,
+    MusicStyleSlow = 1 << 3,
+    MusicStyleDriving = 1 << 4,
+    MusicStyleEpic = 1 << 5,
+    MusicStyleAction = 1 << 6,
+    MusicStyleMystic = 1 << 7,
+    MusicStyleIntense = 1 << 8,
 };
 
 struct Music : Entity

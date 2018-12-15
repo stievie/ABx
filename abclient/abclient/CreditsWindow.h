@@ -12,7 +12,7 @@ private:
     void CreateUI();
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-    void CreateSingleLine(const String& content, int fontSize);
+    void CreateSingleLine(const String& content, int fontSize, bool bold = false);
     void AddCredits();
 public:
     static void RegisterObject(Context* context);

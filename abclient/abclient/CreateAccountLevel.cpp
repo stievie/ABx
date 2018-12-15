@@ -107,7 +107,7 @@ void CreateAccountLevel::CreateScene()
 
     FwClient* client = GetSubsystem<FwClient>();
     AudioManager* am = GetSubsystem<AudioManager>();
-    am->SetPlayList(client->GetMapPlaylist("00000000-0000-0000-0000-000000000000"));
+    am->SetPlayList(client->GetMapPlaylist("CreateAccount"));
     am->StartMusic();
 }
 

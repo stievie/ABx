@@ -706,7 +706,7 @@ void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
 void WorldLevel::HandleShowCredits(StringHash, VariantMap&)
 {
     auto* ui = GetSubsystem<UI>();
-    CreditsWindow* wnd = dynamic_cast<CreditsWindow*>(ui->GetRoot()->GetChild(CreditsWindow::NAME, true));
+    CreditsWindow* wnd = dynamic_cast<CreditsWindow*>(ui->GetRoot()->GetChild(CreditsWindow::NAME));
     if (wnd)
     {
         ui->GetRoot()->RemoveChild(wnd);

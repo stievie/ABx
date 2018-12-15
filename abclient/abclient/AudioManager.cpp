@@ -32,6 +32,16 @@ void AudioManager::StartMusic()
         PlaySound(nextTrack, SOUND_MUSIC);
 }
 
+void AudioManager::ContinuePlaylist()
+{
+    if (!multipleMusicTracks_)
+        StopMusic();
+    String nextTrack = GetNextMusic();
+    URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
+    if (!nextTrack.Empty())
+        PlaySound(nextTrack, SOUND_MUSIC);
+}
+
 void AudioManager::StopMusic()
 {
     musicNodes_.Clear();

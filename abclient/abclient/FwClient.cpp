@@ -442,6 +442,7 @@ void FwClient::LoadMusic(uint32_t curVersion)
         String localFile(pro.attribute("local_file").as_string());
         for (const auto& map : maps)
             musicList_[map].Push(localFile);
+        musicStyles_[localFile] = static_cast<AB::Entities::MusicStyle>(pro.attribute("style").as_uint());
     }
 }
 
@@ -688,6 +689,16 @@ const Vector<String>& FwClient::GetMapPlaylist(const String& mapUuid) const
     if (musicList_.Contains(mapUuid))
         return *musicList_[mapUuid];
     return *musicList_["00000000-0000-0000-0000-000000000000"];
+}
+
+const String& FwClient::GetMusicWidthStyle(const Vector<String>& playList, AB::Entities::MusicStyle style)
+{
+    for (const auto& file : playList)
+    {
+        if ((musicStyles_[file] & style) == style)
+            return file;
+    }
+    return String::EMPTY;
 }
 
 void FwClient::OnLoggedIn(const std::string&)

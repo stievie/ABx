@@ -84,12 +84,14 @@ void CreditsWindow::HandleKeyDown(StringHash, VariantMap& eventData)
         Close();
 }
 
-void CreditsWindow::CreateSingleLine(const String& content, int fontSize)
+void CreditsWindow::CreateSingleLine(const String& content, int fontSize, bool bold /* = false */)
 {
     totalCreditsHeight_ += static_cast<int>(static_cast<float>(fontSize) / 1.5f);
 
     auto cache = GetSubsystem<ResourceCache>();
-    auto* font = cache->GetResource<Font>("Fonts/ClearSans-Regular.ttf");
+    auto* font = bold ?
+        cache->GetResource<Font>("Fonts/ClearSans-Bold.ttf") :
+        cache->GetResource<Font>("Fonts/ClearSans-Regular.ttf");
 
     SharedPtr<Text> text(creditsBase_->CreateChild<Text>());
     text->SetPosition(IntVector2(0, totalCreditsHeight_));
@@ -103,15 +105,15 @@ void CreditsWindow::CreateSingleLine(const String& content, int fontSize)
 
 void CreditsWindow::AddCredits()
 {
-    CreateSingleLine("Creator", 30);
+    CreateSingleLine("Creator", 30, true);
     CreateSingleLine("sa", 15);
 
-    CreateSingleLine("Common", 30);
+    CreateSingleLine("Common", 30, true);
     CreateSingleLine("asio: https://think-async.com/Asio/AsioStandalone", 15);
     CreateSingleLine("OpenSSL: https://www.openssl.org/", 15);
     CreateSingleLine("DH key exchange: https://github.com/thejinchao/dhexchange", 15);
 
-    CreateSingleLine("Server", 30);
+    CreateSingleLine("Server", 30, true);
     CreateSingleLine("Recast & Detour: https://github.com/recastnavigation/recastnavigation", 15);
     CreateSingleLine("SimpleAI: https://github.com/mgerhardy/simpleai", 15);
     CreateSingleLine("SimpleWeb: https://github.com/eidheim/Simple-Web-Server", 15);
@@ -127,7 +129,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("SimpleJSON: https://github.com/nbsdx/SimpleJSON", 15);
     CreateSingleLine("LESS complier: https://github.com/BramvdKroef/clessc", 15);
 
-    CreateSingleLine("Client", 30);
+    CreateSingleLine("Client", 30, true);
     CreateSingleLine("Urho3D: https://urho3d.github.io/", 15);
     CreateSingleLine("Mustache: https://github.com/kainjow/Mustache", 15);
     CreateSingleLine("PostProcessController: https://gist.github.com/lezak", 15);
@@ -136,14 +138,15 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Particles: http://kenney.nl/assets/particle-pack", 15);
     CreateSingleLine("Urho3D-Empty-Project: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
 
-    CreateSingleLine("Assets", 30);
+    CreateSingleLine("Assets", 30, true);
     CreateSingleLine("Human Models: MakeHuman http://www.makehumancommunity.org", 15);
     CreateSingleLine("Animations: mixamo https://www.mixamo.com/", 15);
     CreateSingleLine("World Map: https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg", 15);
     CreateSingleLine("Creative Commons Attribution-Share Alike 3.0 Unported License", 10);
     CreateSingleLine("https://creativecommons.org/licenses/by-sa/3.0/deed.en", 10);
+    CreateSingleLine("Fonts: ClearSans, Anonymous Pro (Urho3Ds default font)", 15);
 
-    CreateSingleLine("Music", 25);
+    CreateSingleLine("Music", 25, true);
     CreateSingleLine("Mostly by Kevin MacLeod (incompetech.com):", 15);
     CreateSingleLine("\"Virtutes Instrumenti\" Kevin MacLeod (incompetech.com)", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
@@ -200,6 +203,42 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
     CreateSingleLine("\"Ghost Dance\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Twisting\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Hiding Your Reality\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Outfoxing the Fox\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Hot Pursuit\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"I Can Feel it Coming\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Aggressor\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Ghost Dance\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Unholy Knight\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Burnt Spirit\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Killers\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Rynos Theme\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("\"Curse of the Scarab\" Kevin MacLeod (incompetech.com)", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
 
