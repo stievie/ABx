@@ -107,7 +107,7 @@ public:
     void UseSkill(uint32_t index);
     void Cancel();
     void PartyInvitePlayer(uint32_t objectId);
-    Vector<String> GetMapPlaylist(const String& mapUuid);
+    const Vector<String>& GetMapPlaylist(const String& mapUuid) const;
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;

@@ -13,6 +13,7 @@ private:
     BorderImage* CreateSeparator(UIElement* parent);
     Window* CreatePopup(Menu* baseMenu);
     void HandleExitUsed(StringHash eventType, VariantMap& eventData);
+    void HandleCreditsUsed(StringHash eventType, VariantMap& eventData);
     void HandleServerUsed(StringHash eventType, VariantMap& eventData);
     void HandleLogoutUsed(StringHash eventType, VariantMap& eventData);
     void HandleSelectCharUsed(StringHash eventType, VariantMap& eventData);

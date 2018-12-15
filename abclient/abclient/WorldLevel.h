@@ -116,6 +116,7 @@ private:
     void HandleReplyMail(StringHash eventType, VariantMap& eventData);
     void HandleToggleNewMail(StringHash eventType, VariantMap& eventData);
     void HandleToggleFriendList(StringHash eventType, VariantMap& eventData);
+    void HandleShowCredits(StringHash eventType, VariantMap& eventData);
     void HandleUseSkill(StringHash eventType, VariantMap& eventData);
     void HandleCancel(StringHash eventType, VariantMap& eventData);
 

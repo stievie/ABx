@@ -5,6 +5,7 @@
 #include "FwClient.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Limits.h>
+#include "AudioManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -165,6 +166,11 @@ void CharCreateLevel::CreateScene()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateCharacter.xml");
     scene_->LoadXML(sceneFile->GetRoot());
+
+    FwClient* client = GetSubsystem<FwClient>();
+    AudioManager* am = GetSubsystem<AudioManager>();
+    am->SetPlayList(client->GetMapPlaylist("00000000-0000-0000-0000-000000000000"));
+    am->StartMusic();
 }
 
 void CharCreateLevel::HandleUpdate(StringHash, VariantMap& eventData)

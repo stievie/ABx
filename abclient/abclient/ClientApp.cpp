@@ -33,6 +33,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "EffectsWindow.h"
+#include "CreditsWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -147,6 +148,7 @@ ClientApp::ClientApp(Context* context) :
     FriendListWindow::RegisterObject(context);
     GameMessagesWindow::RegisterObject(context);
     EffectsWindow::RegisterObject(context);
+    CreditsWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));

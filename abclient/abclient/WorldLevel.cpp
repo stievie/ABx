@@ -13,6 +13,7 @@
 #include "NewMailWindow.h"
 #include "GameMessagesWindow.h"
 #include "AudioManager.h"
+#include "CreditsWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -58,6 +59,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleNewMail));
     SubscribeToEvent(AbEvents::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
+    SubscribeToEvent(AbEvents::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
     SubscribeToEvent(E_MOUSEWHEEL, URHO3D_HANDLER(WorldLevel, HandleMouseWheel));
@@ -699,6 +701,18 @@ void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_FRIENDLIST, true);
     wnd->SetVisible(!wnd->IsVisible());
+}
+
+void WorldLevel::HandleShowCredits(StringHash, VariantMap&)
+{
+    auto* ui = GetSubsystem<UI>();
+    CreditsWindow* wnd = dynamic_cast<CreditsWindow*>(ui->GetRoot()->GetChild(CreditsWindow::NAME, true));
+    if (wnd)
+    {
+        ui->GetRoot()->RemoveChild(wnd);
+    }
+    wnd = ui->GetRoot()->CreateChild<CreditsWindow>(CreditsWindow::NAME);
+    wnd->SetVisible(true);
 }
 
 void WorldLevel::HandleUseSkill(StringHash eventType, VariantMap&)

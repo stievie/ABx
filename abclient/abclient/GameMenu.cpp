@@ -43,6 +43,9 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_EXITPROGRAM, "Exit"),
         scs->GetShortcutName(AbEvents::E_SC_EXITPROGRAM),
         URHO3D_HANDLER(GameMenu, HandleExitUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_SHOWCREDITS, "Credits"),
+        scs->GetShortcutName(AbEvents::E_SC_SHOWCREDITS),
+        URHO3D_HANDLER(GameMenu, HandleCreditsUsed));
     CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_LOGOUT, "Logout"),
         scs->GetShortcutName(AbEvents::E_SC_LOGOUT),
         URHO3D_HANDLER(GameMenu, HandleLogoutUsed));
@@ -135,6 +138,13 @@ void GameMenu::HandleExitUsed(StringHash, VariantMap&)
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
+}
+
+void GameMenu::HandleCreditsUsed(StringHash, VariantMap&)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(AbEvents::E_SC_SHOWCREDITS, e);
 }
 
 void GameMenu::HandleServerUsed(StringHash, VariantMap& eventData)

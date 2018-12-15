@@ -4,6 +4,7 @@
 
 AudioManager::AudioManager(Context* context) :
     Object(context),
+    playlistDirty_(false),
     multipleMusicTracks_(false),
     multipleAmbientTracks_(true),
     currentIndex_(-1)
@@ -18,9 +19,13 @@ AudioManager::~AudioManager()
 
 void AudioManager::StartMusic()
 {
+    if (!playlistDirty_ && musicNodes_.Size() > 0)
+        // If we are playing a play list and it didn't change, continue with it
+        return;
+
     if (!multipleMusicTracks_)
         StopMusic();
-
+    playlistDirty_ = false;
     String nextTrack = GetNextMusic();
     URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
     if (!nextTrack.Empty())

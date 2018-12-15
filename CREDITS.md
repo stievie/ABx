@@ -3,7 +3,6 @@
 ## Common
 
 * asio https://think-async.com/Asio/AsioStandalone
-* SimpleWeb https://github.com/eidheim/Simple-Web-Server
 * OpenSSL https://www.openssl.org/
 * DH key exchange https://github.com/thejinchao/dhexchange
 
@@ -22,6 +21,7 @@
 * https://github.com/nbsdx/SimpleJSON
 * https://github.com/BramvdKroef/clessc
 * https://github.com/mgerhardy/simpleai
+* SimpleWeb https://github.com/eidheim/Simple-Web-Server
 
 ## Client
 
@@ -31,6 +31,7 @@
 * Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 * Entity Position Interpolation https://github.com/jwatte/EPIC
 * http://kenney.nl/assets/particle-pack
+* Urho3D-Empty-Project https://github.com/ArnisLielturks/Urho3D-Empty-Project
 
 ## Assets
 

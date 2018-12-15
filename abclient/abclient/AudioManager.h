@@ -6,6 +6,7 @@ class AudioManager : public Object
 {
     URHO3D_OBJECT(AudioManager, Object);
 private:
+    bool playlistDirty_;
     bool multipleMusicTracks_;
     bool multipleAmbientTracks_;
     HashMap<String, SharedPtr<Node>> musicNodes_;
@@ -35,8 +36,23 @@ public:
     }
     void SetPlayList(const Vector<String>& playList)
     {
+        if (playList_.Size() == playList.Size())
+        {
+            bool equal = true;
+            for (unsigned i = 0; i < playList.Size(); ++i)
+            {
+                if (playList_[i].Compare(playList[i]) != 0)
+                {
+                    equal = false;
+                    break;
+                }
+            }
+            if (equal)
+                return;
+        }
         currentIndex_ = -1;
         playList_ = playList;
+        playlistDirty_ = true;
     }
 };
 

@@ -3,6 +3,7 @@
 #include "AbEvents.h"
 #include "FwClient.h"
 #include <AB/Entities/Limits.h>
+#include "AudioManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -103,6 +104,11 @@ void CreateAccountLevel::CreateScene()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateAccount.xml");
     scene_->LoadXML(sceneFile->GetRoot());
+
+    FwClient* client = GetSubsystem<FwClient>();
+    AudioManager* am = GetSubsystem<AudioManager>();
+    am->SetPlayList(client->GetMapPlaylist("00000000-0000-0000-0000-000000000000"));
+    am->StartMusic();
 }
 
 void CreateAccountLevel::CreateCamera()

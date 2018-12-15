@@ -683,25 +683,11 @@ void FwClient::PartyInvitePlayer(uint32_t objectId)
         client_.PartyInvitePlayer(objectId);
 }
 
-Vector<String> FwClient::GetMapPlaylist(const String& mapUuid)
+const Vector<String>& FwClient::GetMapPlaylist(const String& mapUuid) const
 {
-    Vector<String> result;
-    if (mapUuid.Compare("00000000-0000-0000-0000-000000000000") != 0)
-    {
-        for (const auto& m : musicList_[mapUuid])
-        {
-            result.Push(m);
-        }
-    }
-    if (result.Size() == 0)
-    {
-        // General
-        for (const auto& m : musicList_["00000000-0000-0000-0000-000000000000"])
-        {
-            result.Push(m);
-        }
-    }
-    return result;
+    if (musicList_.Contains(mapUuid))
+        return *musicList_[mapUuid];
+    return *musicList_["00000000-0000-0000-0000-000000000000"];
 }
 
 void FwClient::OnLoggedIn(const std::string&)

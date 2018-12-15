@@ -1,6 +1,5 @@
 # TODO
 
-+ all: Game Music table
 ! ?: Server list
 * abserv: https://github.com/mgerhardy/engine/tree/master/src/modules/backend/entity/ai
 + ablogin: Monitor server load and spawn new server if needed

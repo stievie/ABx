@@ -171,7 +171,8 @@ void LevelManager::AddFadeLayer()
     fadeWindow_ = new Window(context_);
     // Make the window a child of the root element, which fills the whole screen.
     GetSubsystem<UI>()->GetRoot()->AddChild(fadeWindow_);
-    fadeWindow_->SetSize(GetSubsystem<Graphics>()->GetWidth(), GetSubsystem<Graphics>()->GetHeight());
+    auto* graphics = GetSubsystem<Graphics>();
+    fadeWindow_->SetSize(graphics->GetWidth(), graphics->GetHeight());
     fadeWindow_->SetLayout(LM_FREE);
     // Urho has three layouts: LM_FREE, LM_HORIZONTAL and LM_VERTICAL.
     // In LM_FREE the child elements of this window can be arranged freely.

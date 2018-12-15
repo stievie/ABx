@@ -2,6 +2,7 @@
 #include "CharSelectLevel.h"
 #include "FwClient.h"
 #include "AbEvents.h"
+#include "AudioManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -140,6 +141,11 @@ void CharSelectLevel::CreateScene()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CharSelect.xml");
     scene_->LoadXML(sceneFile->GetRoot());
+
+    FwClient* client = GetSubsystem<FwClient>();
+    AudioManager* am = GetSubsystem<AudioManager>();
+    am->SetPlayList(client->GetMapPlaylist("00000000-0000-0000-0000-000000000000"));
+    am->StartMusic();
 }
 
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)
