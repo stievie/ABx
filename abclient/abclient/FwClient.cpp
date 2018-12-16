@@ -12,6 +12,7 @@
 #include <fstream>
 #include "ItemsCache.h"
 #include "TimeUtils.h"
+#include "AudioManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -429,21 +430,8 @@ void FwClient::LoadMusic(uint32_t curVersion)
     if (!file)
         return;
 
-    const pugi::xml_document* const doc = file->GetDocument();
-    const pugi::xml_node& node = doc->child("music_list");
-    if (!node)
-        return;
-
-    for (const auto& pro : node.children("music"))
-    {
-        // <uuid1>;<uuid2>...
-        String mapStr(pro.attribute("map_uuid").as_string());
-        StringVector maps = mapStr.Split(';');
-        String localFile(pro.attribute("local_file").as_string());
-        for (const auto& map : maps)
-            musicList_[map].Push(localFile);
-        musicStyles_[localFile] = static_cast<AB::Entities::MusicStyle>(pro.attribute("style").as_uint());
-    }
+    AudioManager* am = GetSubsystem<AudioManager>();
+    am->LoadMusic(file);
 }
 
 bool FwClient::MakeHttpRequest(const String& path, const String& outFile)
@@ -682,23 +670,6 @@ void FwClient::PartyInvitePlayer(uint32_t objectId)
 {
     if (loggedIn_)
         client_.PartyInvitePlayer(objectId);
-}
-
-const Vector<String>& FwClient::GetMapPlaylist(const String& mapUuid) const
-{
-    if (musicList_.Contains(mapUuid))
-        return *musicList_[mapUuid];
-    return *musicList_["00000000-0000-0000-0000-000000000000"];
-}
-
-const String& FwClient::GetMusicWidthStyle(const Vector<String>& playList, AB::Entities::MusicStyle style)
-{
-    for (const auto& file : playList)
-    {
-        if ((musicStyles_[file] & style) == style)
-            return file;
-    }
-    return String::EMPTY;
 }
 
 void FwClient::OnLoggedIn(const std::string&)

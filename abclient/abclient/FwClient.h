@@ -36,8 +36,6 @@ private:
     std::map<std::string, AB::Entities::Profession> professions_;
     std::map<uint32_t, AB::Entities::Skill> skills_;
     std::map<uint32_t, AB::Entities::Effect> effects_;
-    HashMap<String, Vector<String>> musicList_;
-    HashMap<String, AB::Entities::MusicStyle> musicStyles_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -109,9 +107,6 @@ public:
     void UseSkill(uint32_t index);
     void Cancel();
     void PartyInvitePlayer(uint32_t objectId);
-    const Vector<String>& GetMapPlaylist(const String& mapUuid) const;
-    /// Get a music file with a certain file
-    const String& GetMusicWidthStyle(const Vector<String>& playList, AB::Entities::MusicStyle style);
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;

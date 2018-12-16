@@ -434,6 +434,17 @@ URHO3D_EVENT(E_AUDIOSTOPALL, AudioStopAll)
 {
 }
 
+URHO3D_EVENT(E_AUDIOPLAYMAPMUSIC, AudioPlayMapMusic)
+{
+    URHO3D_PARAM(P_MAPUUID, MapUuid);     // String
+}
+
+/// Play style from current play list
+URHO3D_EVENT(E_AUDIOPLAYMUSICSTYLE, AudioPlayMusicStyle)
+{
+    URHO3D_PARAM(P_STYLE, Style);     // uintt32_t
+}
+
 #ifdef DEBUG_HUD
 URHO3D_EVENT(E_SC_TOGGLEDEBUGHUD, ToggleDebugHUD)
 {

@@ -1,13 +1,16 @@
 #include "stdafx.h"
 #include "AudioManager.h"
 #include "AbEvents.h"
+#include <Urho3D/ThirdParty/PugiXml/pugixml.hpp>
+#include <AB/Entities/Music.h>
 
 AudioManager::AudioManager(Context* context) :
     Object(context),
     playlistDirty_(false),
     multipleMusicTracks_(false),
     multipleAmbientTracks_(true),
-    currentIndex_(-1)
+    currentIndex_(-1),
+    playList_(nullptr)
 {
     SubscribeToEvents();
 }
@@ -15,6 +18,65 @@ AudioManager::AudioManager(Context* context) :
 AudioManager::~AudioManager()
 {
     UnsubscribeFromAllEvents();
+}
+
+void AudioManager::LoadMusic(XMLFile* file)
+{
+    if (!file)
+        return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("music_list");
+    if (!node)
+        return;
+
+    for (const auto& pro : node.children("music"))
+    {
+        // <uuid1>;<uuid2>...
+        String mapStr(pro.attribute("map_uuid").as_string());
+        StringVector maps = mapStr.Split(';');
+        String localFile(pro.attribute("local_file").as_string());
+        for (const auto& map : maps)
+            musicList_[map].Push(localFile);
+        musicStyles_[localFile] = static_cast<AB::Entities::MusicStyle>(pro.attribute("style").as_uint());
+    }
+}
+
+Vector<String>* AudioManager::GetMapPlaylist(const String& mapUuid)
+{
+    if (musicList_.Contains(mapUuid))
+        return &musicList_[mapUuid];
+    if (musicList_.Contains("00000000-0000-0000-0000-000000000000"))
+        return &musicList_["00000000-0000-0000-0000-000000000000"];
+    return nullptr;
+}
+
+const String& AudioManager::GetMusicWidthStyle(AB::Entities::MusicStyle style)
+{
+    if (!playList_)
+        return String::EMPTY;
+
+    for (const auto& file : *playList_)
+    {
+        if ((musicStyles_[file] & style) == style)
+            return file;
+    }
+    return String::EMPTY;
+}
+
+bool AudioManager::IsPlayingFile(const String& file) const
+{
+    for (const auto& nd : musicNodes_)
+    {
+        if (nd.first_.Compare(file) == 0)
+            return true;
+    }
+    for (const auto& nd : ambientNodes_)
+    {
+        if (nd.first_.Compare(file) == 0)
+            return true;
+    }
+    return false;
 }
 
 void AudioManager::StartMusic()
@@ -26,7 +88,7 @@ void AudioManager::StartMusic()
     if (!multipleMusicTracks_)
         StopMusic();
     playlistDirty_ = false;
-    String nextTrack = GetNextMusic();
+    const String& nextTrack = GetNextMusic();
     URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
     if (!nextTrack.Empty())
         PlaySound(nextTrack, SOUND_MUSIC);
@@ -36,7 +98,7 @@ void AudioManager::ContinuePlaylist()
 {
     if (!multipleMusicTracks_)
         StopMusic();
-    String nextTrack = GetNextMusic();
+    const String& nextTrack = GetNextMusic();
     URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
     if (!nextTrack.Empty())
         PlaySound(nextTrack, SOUND_MUSIC);
@@ -93,6 +155,8 @@ void AudioManager::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_AUDIOPLAY, URHO3D_HANDLER(AudioManager, HandleAudioPlay));
     SubscribeToEvent(AbEvents::E_AUDIOSTOP, URHO3D_HANDLER(AudioManager, HandleAudioStop));
     SubscribeToEvent(AbEvents::E_AUDIOSTOPALL, URHO3D_HANDLER(AudioManager, HandleAudioStopAll));
+    SubscribeToEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, URHO3D_HANDLER(AudioManager, HandlePlayMapMusic));
+    SubscribeToEvent(AbEvents::E_AUDIOPLAYMUSICSTYLE, URHO3D_HANDLER(AudioManager, HandlePlayMusicStyle));
 }
 
 void AudioManager::HandleAudioPlay(StringHash, VariantMap& eventData)
@@ -144,6 +208,25 @@ void AudioManager::HandleAudioStopAll(StringHash, VariantMap&)
     ambientNodes_.Clear();
 }
 
+void AudioManager::HandlePlayMapMusic(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::AudioPlayMapMusic;
+    const String& uuid = eventData[P_MAPUUID].GetString();
+    SetMapPlayList(uuid);
+    StartMusic();
+}
+
+void AudioManager::HandlePlayMusicStyle(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::AudioPlayMusicStyle;
+    AB::Entities::MusicStyle style = static_cast<AB::Entities::MusicStyle>(eventData[P_STYLE].GetUInt());
+    if (style == AB::Entities::MusicStyleUnknown)
+        return;
+    const String& file = GetMusicWidthStyle(style);
+    if (!file.Empty() && !IsPlayingFile(file))
+        PlaySound(file, SOUND_MUSIC);
+}
+
 void AudioManager::HandleSoundFinished(StringHash, VariantMap& eventData)
 {
     using namespace SoundFinished;
@@ -159,19 +242,22 @@ void AudioManager::HandleSoundFinished(StringHash, VariantMap& eventData)
                 break;
             }
         }
-        String nextTrack = GetNextMusic();
+        const String& nextTrack = GetNextMusic();
         URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
         if (!nextTrack.Empty())
             PlaySound(nextTrack, SOUND_MUSIC);
     }
 }
 
-String AudioManager::GetNextMusic()
+const String& AudioManager::GetNextMusic()
 {
-    if (playList_.Size() == 0)
+    if (!playList_)
+        return String::EMPTY;
+
+    if (playList_->Size() == 0)
         return String::EMPTY;
     ++currentIndex_;
-    if (currentIndex_ >= (int)playList_.Size())
+    if (currentIndex_ >= (int)playList_->Size())
         currentIndex_ = 0;
-    return playList_[currentIndex_];
+    return (*playList_)[currentIndex_];
 }

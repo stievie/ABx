@@ -326,10 +326,10 @@ void WorldLevel::CreateScene()
     if (navMesh)
         navMesh->Build();
 
-    FwClient* client = GetSubsystem<FwClient>();
-    AudioManager* am = GetSubsystem<AudioManager>();
-    am->SetPlayList(client->GetMapPlaylist(mapUuid_));
-    am->StartMusic();
+    using namespace AbEvents::AudioPlayMapMusic;
+    VariantMap& e = GetEventDataMap();
+    e[P_MAPUUID] = mapUuid_;
+    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void WorldLevel::PostUpdate(StringHash eventType, VariantMap& eventData)

@@ -9,7 +9,9 @@ void CreditsWindow::RegisterObject(Context* context)
 }
 
 CreditsWindow::CreditsWindow(Context* context) :
-    Window(context)
+    Window(context),
+    totalCreditsHeight_(0),
+    creditLengthInSeconds_(0)
 {
     SetName(CreditsWindow::NAME);
     auto* graphics = GetSubsystem<Graphics>();
@@ -39,6 +41,11 @@ CreditsWindow::~CreditsWindow()
 void CreditsWindow::Close()
 {
     UnsubscribeFromEvent(E_UPDATE);
+    totalCreditsHeight_ = 0;
+    creditLengthInSeconds_ = 0;
+    creditsBase_.Reset();
+    credits_.Clear();
+
     GetSubsystem<UI>()->GetRoot()->RemoveChild(this);
 }
 
@@ -103,10 +110,36 @@ void CreditsWindow::CreateSingleLine(const String& content, int fontSize, bool b
     totalCreditsHeight_ += static_cast<int>(static_cast<float>(fontSize) * 1.5f);
 }
 
+void CreditsWindow::CreateLogo(const String& file, float scale)
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Texture2D* logoTexture = cache->GetResource<Texture2D>(file);
+    if (!logoTexture)
+        return;
+
+    totalCreditsHeight_ += 5;
+    // Create logo sprite and add to the UI layout
+    SharedPtr<BorderImage> logoSprite(creditsBase_->CreateChild<BorderImage>());
+
+    // Set logo sprite texture
+    logoSprite->SetTexture(logoTexture);
+    int textureWidth = logoTexture->GetWidth();
+    int textureHeight = logoTexture->GetHeight();
+    int width = static_cast<int>((float)textureWidth * scale);
+    int height = static_cast<int>((float)textureHeight * scale);
+    logoSprite->SetFullImageRect();
+    logoSprite->SetPosition(IntVector2(0, totalCreditsHeight_));
+    logoSprite->SetSize(IntVector2(width, height));
+    logoSprite->SetAlignment(HA_CENTER, VA_TOP);
+    credits_.Push(logoSprite);
+    totalCreditsHeight_ += height;
+}
+
 void CreditsWindow::AddCredits()
 {
     CreateSingleLine("Creator", 30, true);
     CreateSingleLine("sa", 15);
+    CreateLogo("Textures/Trill.png", 0.05f);
 
     CreateSingleLine("Common", 30, true);
     CreateSingleLine("asio: https://think-async.com/Asio/AsioStandalone", 15);
@@ -119,6 +152,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("SimpleWeb: https://github.com/eidheim/Simple-Web-Server", 15);
     CreateSingleLine("Simple cache: https://github.com/brimzi/simple-cache", 15);
     CreateSingleLine("Lua 5.3.4: https://www.lua.org/", 15);
+    CreateLogo("Textures/powered-by-lua.png", 0.5f);
     CreateSingleLine("Kaguya: https://github.com/satoren/kaguya", 15);
     CreateSingleLine("pugixml: https://pugixml.org/", 15);
     CreateSingleLine("GJK: https://github.com/xuzebin/gjk", 15);
@@ -128,18 +162,25 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("ginger Template Engine: https://github.com/melpon/ginger", 15);
     CreateSingleLine("SimpleJSON: https://github.com/nbsdx/SimpleJSON", 15);
     CreateSingleLine("LESS complier: https://github.com/BramvdKroef/clessc", 15);
+    CreateSingleLine("Password hash: bcrypt OpenBSD https://www.openbsd.org/", 15);
+    CreateSingleLine("PRNG: arc4random OpenBSD https://www.openbsd.org/", 15);
+    CreateSingleLine("AES: tiny-AES-c https://github.com/kokke/tiny-AES-c", 15);
+    CreateSingleLine("Database: PostgreSQL https://www.postgresql.org/", 15);
+    CreateLogo("Textures/PostgreSQL_logo.png", 0.5f);
 
     CreateSingleLine("Client", 30, true);
     CreateSingleLine("Urho3D: https://urho3d.github.io/", 15);
+    CreateLogo("Textures/FishBoneLogo.png", 0.5f);
     CreateSingleLine("Mustache: https://github.com/kainjow/Mustache", 15);
     CreateSingleLine("PostProcessController: https://gist.github.com/lezak", 15);
     CreateSingleLine("Level manager: https://urho3d.prophpbb.com/topic2367.html", 15);
     CreateSingleLine("Entity Position Interpolation: https://github.com/jwatte/EPIC", 15);
     CreateSingleLine("Particles: http://kenney.nl/assets/particle-pack", 15);
-    CreateSingleLine("Urho3D-Empty-Project: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
+    CreateSingleLine("Some code: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
 
     CreateSingleLine("Assets", 30, true);
     CreateSingleLine("Human Models: MakeHuman http://www.makehumancommunity.org", 15);
+    CreateLogo("Textures/makehuman_logo.png", 0.5f);
     CreateSingleLine("Animations: mixamo https://www.mixamo.com/", 15);
     CreateSingleLine("World Map: https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg", 15);
     CreateSingleLine("Creative Commons Attribution-Share Alike 3.0 Unported License", 10);
@@ -150,40 +191,13 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("By Kevin MacLeod (incompetech.com):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
-    CreateSingleLine("\"Virtutes Instrumenti\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Virtutes Vocis\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Relent\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Return of the Mummy\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"The Pyre\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Chee Zee Caves V2\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Mystery Bazaar\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Hidden Wonders\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Naraina\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Lord of the Land\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Teller of the Tales\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Jalandhar\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Tabuk\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Ibn Al-Noor\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Chee Zee Jungle\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Desert City\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"String Impromptu Number 1\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Agnus Dei X\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Ghost Dance\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Twisting\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Hiding Your Reality\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Outfoxing the Fox\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Hot Pursuit\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"I Can Feel it Coming\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Aggressor\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Ghost Dance\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Unholy Knight\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Burnt Spirit\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Killers\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Rynos Theme\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Curse of the Scarab\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Prelude and Action\" Kevin MacLeod (incompetech.com)", 15);
-    CreateSingleLine("\"Five Armies\" Kevin MacLeod (incompetech.com)", 15);
+    CreateSingleLine("James Richardson (kingjamesroyaltyfreemusic.blogspot.co.uk):", 15);
+    CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0", 10);
+    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("For complete list see CREDITS.md", 20);
 
-    CreateSingleLine("", 15);
-    CreateSingleLine("See CREDITS.md", 20);
+    CreateSingleLine("Tools", 30, true);
+    CreateSingleLine("Complier, IDE: MSVC, Visual Studio https://visualstudio.microsoft.com/", 15);
+    CreateSingleLine("3D Modeling: Blender https://www.blender.org", 15);
+    CreateLogo("Textures/blender_logo.png", 0.8f);
 }

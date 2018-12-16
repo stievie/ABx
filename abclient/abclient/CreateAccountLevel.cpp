@@ -105,10 +105,10 @@ void CreateAccountLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateAccount.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 
-    FwClient* client = GetSubsystem<FwClient>();
-    AudioManager* am = GetSubsystem<AudioManager>();
-    am->SetPlayList(client->GetMapPlaylist("CreateAccount"));
-    am->StartMusic();
+    using namespace AbEvents::AudioPlayMapMusic;
+    VariantMap& e = GetEventDataMap();
+    e[P_MAPUUID] = "CreateAccount";
+    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void CreateAccountLevel::CreateCamera()

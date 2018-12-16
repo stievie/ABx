@@ -142,10 +142,10 @@ void CharSelectLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CharSelect.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 
-    FwClient* client = GetSubsystem<FwClient>();
-    AudioManager* am = GetSubsystem<AudioManager>();
-    am->SetPlayList(client->GetMapPlaylist("SelectCharacter"));
-    am->StartMusic();
+    using namespace AbEvents::AudioPlayMapMusic;
+    VariantMap& e = GetEventDataMap();
+    e[P_MAPUUID] = "SelectCharacter";
+    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void CharSelectLevel::HandleCharClicked(StringHash, VariantMap& eventData)

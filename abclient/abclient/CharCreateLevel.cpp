@@ -167,10 +167,10 @@ void CharCreateLevel::CreateScene()
     XMLFile *sceneFile = cache->GetResource<XMLFile>("Scenes/CreateCharacter.xml");
     scene_->LoadXML(sceneFile->GetRoot());
 
-    FwClient* client = GetSubsystem<FwClient>();
-    AudioManager* am = GetSubsystem<AudioManager>();
-    am->SetPlayList(client->GetMapPlaylist("CreateCharacter"));
-    am->StartMusic();
+    using namespace AbEvents::AudioPlayMapMusic;
+    VariantMap& e = GetEventDataMap();
+    e[P_MAPUUID] = "CreateCharacter";
+    SendEvent(AbEvents::E_AUDIOPLAYMAPMUSIC, e);
 }
 
 void CharCreateLevel::HandleUpdate(StringHash, VariantMap& eventData)
