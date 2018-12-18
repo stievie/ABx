@@ -1,10 +1,13 @@
 # Credits
 
+Creator: sa 2017-2018
+
 ## Common
 
 * asio https://think-async.com/Asio/AsioStandalone
 * OpenSSL https://www.openssl.org/
 * DH key exchange https://github.com/thejinchao/dhexchange
+* Catch2 https://github.com/catchorg/Catch2
 
 ## Server
 

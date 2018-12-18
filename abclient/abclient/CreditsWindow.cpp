@@ -145,6 +145,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("asio: https://think-async.com/Asio/AsioStandalone", 15);
     CreateSingleLine("OpenSSL: https://www.openssl.org/", 15);
     CreateSingleLine("DH key exchange: https://github.com/thejinchao/dhexchange", 15);
+    CreateSingleLine("Catch2: https://github.com/catchorg/Catch2", 15);
 
     CreateSingleLine("Server", 30, true);
     CreateSingleLine("Recast & Detour: https://github.com/recastnavigation/recastnavigation", 15);
@@ -152,7 +153,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("SimpleWeb: https://github.com/eidheim/Simple-Web-Server", 15);
     CreateSingleLine("Simple cache: https://github.com/brimzi/simple-cache", 15);
     CreateSingleLine("Lua 5.3.4: https://www.lua.org/", 15);
-    CreateLogo("Textures/powered-by-lua.png", 0.5f);
+    CreateLogo("Textures/lua-logo.png", 0.5f);
     CreateSingleLine("Kaguya: https://github.com/satoren/kaguya", 15);
     CreateSingleLine("pugixml: https://pugixml.org/", 15);
     CreateSingleLine("GJK: https://github.com/xuzebin/gjk", 15);
@@ -191,7 +192,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("By Kevin MacLeod (incompetech.com):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
-    CreateSingleLine("James Richardson (kingjamesroyaltyfreemusic.blogspot.co.uk):", 15);
+    CreateSingleLine("By James Richardson (kingjamesroyaltyfreemusic.blogspot.co.uk):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
     CreateSingleLine("For complete list see CREDITS.md", 20);
