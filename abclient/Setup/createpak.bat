@@ -6,3 +6,4 @@ rem These do not change
 ..\Tools\PackageTool.exe ..\bin\Autoload\ Autoload.pak
 
 ..\Tools\PackageTool.exe ..\bin\AbData\ AbData.pak
+..\Tools\PackageTool.exe ..\bin\SoundData\ SoundData.pak

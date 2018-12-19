@@ -188,7 +188,7 @@ void ClientApp::Setup()
     engineParameters_[EP_TEXTURE_ANISOTROPY] = options->GetTextureAnisotropyLevel();
     engineParameters_[EP_SHADOWS] = options->GetShadows();
     engineParameters_[EP_AUTOLOAD_PATHS] = "Autoload";
-    engineParameters_[EP_RESOURCE_PATHS] = "AbData;GameData;CoreData;Data";
+    engineParameters_[EP_RESOURCE_PATHS] = "AbData;SoundData;GameData;CoreData;Data";
     engineParameters_[EP_LOG_NAME] = "fw.log";
 #if defined(AB_CLIENT_LOGGING)
     engineParameters_[EP_LOG_QUIET] = false;

@@ -177,7 +177,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("PostProcessController: https://gist.github.com/lezak", 15);
     CreateSingleLine("Level manager: https://urho3d.prophpbb.com/topic2367.html", 15);
     CreateSingleLine("Entity Position Interpolation: https://github.com/jwatte/EPIC", 15);
-    CreateSingleLine("Particles: http://kenney.nl/assets/particle-pack", 15);
+    CreateSingleLine("Particles: https://kenney.nl/assets/particle-pack", 15);
     CreateSingleLine("Some code: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
 
     CreateSingleLine("Assets", 30, true);
@@ -192,10 +192,10 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Music", 25, true);
     CreateSingleLine("Kevin MacLeod (incompetech.com):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
-    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("https://creativecommons.org/licenses/by/3.0/", 10);
     CreateSingleLine("James Richardson (kingjamesroyaltyfreemusic.blogspot.co.uk):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0", 10);
-    CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
+    CreateSingleLine("https://creativecommons.org/licenses/by/3.0/", 10);
     CreateSingleLine("For complete list see CREDITS.md", 20);
 
     CreateSingleLine("Tools", 30, true);
