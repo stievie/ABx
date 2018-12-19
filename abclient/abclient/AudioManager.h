@@ -9,7 +9,6 @@ class AudioManager : public Object
     URHO3D_OBJECT(AudioManager, Object);
 private:
     bool playlistDirty_;
-    bool multipleMusicTracks_;
     bool multipleAmbientTracks_;
     HashMap<String, SharedPtr<Node>> musicNodes_;
     HashMap<String, SharedPtr<Node>> ambientNodes_;
@@ -17,6 +16,7 @@ private:
     Vector<String>* playList_;
     HashMap<String, Vector<String>> musicList_;
     HashMap<String, AB::Entities::MusicStyle> musicStyles_;
+    SharedPtr<SoundStream> musicStream_;
     void SubscribeToEvents();
     void HandleAudioPlay(StringHash eventType, VariantMap& eventData);
     void HandleAudioStop(StringHash eventType, VariantMap& eventData);
@@ -69,10 +69,6 @@ public:
     void ContinuePlaylist();
     void StopMusic();
     void PlaySound(const String& filename, const String& type = SOUND_EFFECT);
-    void AllowMultipleMusicTracks(bool enabled)
-    {
-        multipleMusicTracks_ = enabled;
-    }
     void AllowMultipleAmbientTracks(bool enabled)
     {
         multipleAmbientTracks_ = enabled;

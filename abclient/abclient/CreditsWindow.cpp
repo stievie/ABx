@@ -146,6 +146,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("OpenSSL: https://www.openssl.org/", 15);
     CreateSingleLine("DH key exchange: https://github.com/thejinchao/dhexchange", 15);
     CreateSingleLine("Catch2: https://github.com/catchorg/Catch2", 15);
+    CreateSingleLine("stb: https://github.com/nothings/stb", 15);
 
     CreateSingleLine("Server", 30, true);
     CreateSingleLine("Recast & Detour: https://github.com/recastnavigation/recastnavigation", 15);
@@ -189,10 +190,10 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Fonts: ClearSans, Anonymous Pro (Urho3Ds default font)", 15);
 
     CreateSingleLine("Music", 25, true);
-    CreateSingleLine("By Kevin MacLeod (incompetech.com):", 15);
+    CreateSingleLine("Kevin MacLeod (incompetech.com):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0 License", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
-    CreateSingleLine("By James Richardson (kingjamesroyaltyfreemusic.blogspot.co.uk):", 15);
+    CreateSingleLine("James Richardson (kingjamesroyaltyfreemusic.blogspot.co.uk):", 15);
     CreateSingleLine("Licensed under Creative Commons: By Attribution 3.0", 10);
     CreateSingleLine("http://creativecommons.org/licenses/by/3.0/", 10);
     CreateSingleLine("For complete list see CREDITS.md", 20);

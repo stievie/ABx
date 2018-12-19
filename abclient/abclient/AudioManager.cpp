@@ -7,10 +7,10 @@
 AudioManager::AudioManager(Context* context) :
     Object(context),
     playlistDirty_(false),
-    multipleMusicTracks_(false),
     multipleAmbientTracks_(true),
     currentIndex_(-1),
-    playList_(nullptr)
+    playList_(nullptr),
+    musicStream_(nullptr)
 {
     SubscribeToEvents();
 }
@@ -85,8 +85,7 @@ void AudioManager::StartMusic()
         // If we are playing a play list and it didn't change, continue with it
         return;
 
-    if (!multipleMusicTracks_)
-        StopMusic();
+    StopMusic();
     playlistDirty_ = false;
     const String& nextTrack = GetNextMusic();
     URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
@@ -96,8 +95,7 @@ void AudioManager::StartMusic()
 
 void AudioManager::ContinuePlaylist()
 {
-    if (!multipleMusicTracks_)
-        StopMusic();
+    StopMusic();
     const String& nextTrack = GetNextMusic();
     URHO3D_LOGINFOF("Playing now %s", nextTrack.CString());
     if (!nextTrack.Empty())
@@ -116,7 +114,7 @@ void AudioManager::PlaySound(const String& filename, const String& type)
 
     // Get the sound resource
     auto* cache = GetSubsystem<ResourceCache>();
-    auto* sound = cache->GetResource<Sound>(filename);
+    Sound* sound = cache->GetResource<Sound>(filename);
     if (sound)
     {
         Node* node = new Node(context_);
@@ -124,6 +122,9 @@ void AudioManager::PlaySound(const String& filename, const String& type)
         // non-positional audio, so its 3D position in the scene does not matter. For positional sounds the
         // SoundSource3D component would be used instead
         auto* soundSource = node->CreateComponent<SoundSource>();
+        soundSource->SetSoundType(type);
+        if (type == SOUND_MUSIC)
+            musicStream_.Reset();
         if (type == SOUND_EFFECT || type == SOUND_VOICE)
             // Component will automatically remove itself when the sound finished playing
             soundSource->SetAutoRemoveMode(REMOVE_NODE);
@@ -132,21 +133,25 @@ void AudioManager::PlaySound(const String& filename, const String& type)
             SubscribeToEvent(node, E_SOUNDFINISHED, URHO3D_HANDLER(AudioManager, HandleSoundFinished));
             if (type == SOUND_MUSIC)
             {
-                if (!multipleMusicTracks_)
-                    musicNodes_.Clear();
+                musicNodes_.Clear();
                 musicNodes_[filename] = node;
+                if (filename.EndsWith(".ogg", false))
+                {
+                    musicStream_ = SharedPtr<OggVorbisSoundStream>(new OggVorbisSoundStream(sound));
+                }
             }
             else if (type == SOUND_AMBIENT)
             {
                 sound->SetLooped(true);
-                if (!multipleMusicTracks_)
+                if (!multipleAmbientTracks_)
                     ambientNodes_.Clear();
                 ambientNodes_[filename] = node;
             }
         }
-
-        soundSource->SetSoundType(type);
-        soundSource->Play(sound);
+        if (musicStream_ && type == SOUND_MUSIC)
+            soundSource->Play(musicStream_);
+        else
+            soundSource->Play(sound);
     }
 }
 
@@ -193,6 +198,7 @@ void AudioManager::HandleAudioStop(StringHash, VariantMap& eventData)
     }
     else if (type == SOUND_MUSIC)
     {
+        musicStream_.Reset();
         // Disable only specific music
         if (musicNodes_[name])
             musicNodes_.Erase(name);
@@ -205,6 +211,7 @@ void AudioManager::HandleAudioStop(StringHash, VariantMap& eventData)
 void AudioManager::HandleAudioStopAll(StringHash, VariantMap&)
 {
     musicNodes_.Clear();
+    musicStream_.Reset();
     ambientNodes_.Clear();
 }
 
@@ -234,6 +241,7 @@ void AudioManager::HandleSoundFinished(StringHash, VariantMap& eventData)
     SoundSource* sound = static_cast<SoundSource*>(eventData[P_SOUNDSOURCE].GetPtr());
     if (sound->GetSoundType() == SOUND_MUSIC)
     {
+        musicStream_.Reset();
         for (const auto& nd : musicNodes_)
         {
             if (nd.second_ == node)
