@@ -28,7 +28,6 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "ip", AB::GameProtocol::CommandTypeIp },
     { "id", AB::GameProtocol::CommandTypeServerId },
     { "prefpath", AB::GameProtocol::CommandTypePrefPath },
-    { "die", AB::GameProtocol::CommandTypeDie },
 
     { "help", AB::GameProtocol::CommandTypeHelp }
 };
@@ -550,7 +549,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
 void ChatWindow::TrimLines()
 {
     while (chatLog_->GetNumItems() > MAX_LINES)
-        chatLog_->RemoveItem((unsigned)0);
+        chatLog_->RemoveItem(0u);
 }
 
 void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
@@ -767,14 +766,11 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name,
 
 void ChatWindow::SayHello(Player* player)
 {
-    if (firstStart_)
+    if (firstStart_ && player)
     {
         kainjow::mustache::mustache tpl{ "Hello {{name}}, type /help for available commands." };
         kainjow::mustache::data data;
-        if (player)
-            data.set("name", std::string(player->name_.CString(), player->name_.Length()));
-        else
-            data.set("name", "Unknown Soldier");
+        data.set("name", std::string(player->name_.CString(), player->name_.Length()));
         std::string t = tpl.render(data);
         AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
         firstStart_ = false;
