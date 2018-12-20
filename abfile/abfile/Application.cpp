@@ -571,11 +571,11 @@ void Application::GetHandlerDefault(std::shared_ptr<HttpsServer::Response> respo
                     if ((read_length = ifs->read(&buffer[0], static_cast<std::streamsize>(buffer.size())).gcount()) > 0)
                     {
                         response->write(&buffer[0], read_length);
-                        if (maxBitsPerSec > 0)
-                            // Throttle to meet max throughput
-                            std::this_thread::sleep_for(std::chrono::milliseconds((read_length * 8 * 1000) / maxBitsPerSec));
                         if (read_length == static_cast<std::streamsize>(buffer.size()))
                         {
+                            if (maxBitsPerSec > 0)
+                                // Throttle to meet max throughput
+                                std::this_thread::sleep_for(std::chrono::milliseconds((read_length * 8 * 1000) / maxBitsPerSec));
                             response->send([maxBitsPerSec, response, ifs](const SimpleWeb::error_code &ec)
                             {
                                 if (!ec)
