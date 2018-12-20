@@ -54,6 +54,7 @@ private:
     std::string dataHost_;
     uint16_t dataPort_;
     std::string adminPassword_;
+    /// Byte/sec
     uint64_t maxThroughput_;
     std::vector<int> loads_;
     std::mutex mutex_;

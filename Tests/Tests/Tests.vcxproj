@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,9 @@
     <ProjectReference Include="..\..\absmath\absmath\absmath.vcxproj">
       <Project>{c7a029e7-b69c-43ff-8d8d-ba2a46283558}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

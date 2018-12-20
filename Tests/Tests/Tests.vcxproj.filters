@@ -18,5 +18,13 @@
     <ClCompile Include="Math.Vector3.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Tests.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

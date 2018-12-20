@@ -2,6 +2,7 @@
 
 #include "MathDefs.h"
 #include "MathUtils.h"
+#include <sstream>
 
 namespace Math {
 

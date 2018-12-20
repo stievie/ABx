@@ -169,7 +169,7 @@ void TemplateResource::Render(std::shared_ptr<HttpsServer::Response> response)
         ss.seekg(0, std::ios::end);
         size_t ssize = ss.tellg();
         ss.seekg(0, std::ios::beg);
-        header.emplace("Content-Type", contT->Get(".html"));
+        header.emplace("Content-Type", contT->Get(Utils::GetFileExt(template_)));
         header.emplace("Content-Length", std::to_string(ssize));
         response->write(ss, header);
     }
