@@ -2,7 +2,7 @@
 
 #include "Vector3.h"
 
-TEST_CASE("Vector3 Construct", "[vector3_construct]")
+TEST_CASE("Vector3 Construct", "[vector3]")
 {
     SECTION("Parse from string")
     {
@@ -13,7 +13,7 @@ TEST_CASE("Vector3 Construct", "[vector3_construct]")
     }
 }
 
-TEST_CASE("Vector3 Compare", "[vector3_compare]")
+TEST_CASE("Vector3 Compare", "[vector3]")
 {
     SECTION("Compare equality")
     {
@@ -29,7 +29,7 @@ TEST_CASE("Vector3 Compare", "[vector3_compare]")
     }
 }
 
-TEST_CASE("Vector3 Arithmetic", "[vector3_arithmetic]")
+TEST_CASE("Vector3 Arithmetic", "[vector3]")
 {
     SECTION("Negate")
     {
