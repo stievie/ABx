@@ -68,6 +68,8 @@ struct Skill : Entity
         s.text1b(icon, Limits::MAX_FILENAME);
         s.text1b(script, Limits::MAX_FILENAME);
         s.value1b(isLocked);
+        s.text1b(soundEffect, Limits::MAX_FILENAME);
+        s.text1b(particleEffect, Limits::MAX_FILENAME);
     }
 
     uint32_t index = 0;
@@ -81,6 +83,8 @@ struct Skill : Entity
     std::string icon;
     std::string script;
     bool isLocked = false;
+    std::string soundEffect;
+    std::string particleEffect;
 };
 
 }

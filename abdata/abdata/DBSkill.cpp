@@ -44,6 +44,8 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
     skill.icon = result->GetString("icon");
     skill.script = result->GetString("script");
     skill.isLocked = result->GetUInt("is_locked") != 0;
+    skill.soundEffect = result->GetString("sound_effect");
+    skill.particleEffect = result->GetString("particle_effect");
 
     return true;
 }

@@ -711,6 +711,8 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("description") = s.description.c_str();
         gNd.append_attribute("short_description") = s.shortDescription.c_str();
         gNd.append_attribute("icon") = s.icon.c_str();
+        gNd.append_attribute("sound_effect") = s.soundEffect.c_str();
+        gNd.append_attribute("particle_effect") = s.particleEffect.c_str();
     }
 
     std::stringstream stream;
