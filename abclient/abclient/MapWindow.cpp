@@ -29,6 +29,7 @@ MapWindow::MapWindow(Context* context) :
     // Make it top most
     SetBringToBack(false);
     SetPriority(100);
+    SetFocusMode(FM_NOTFOCUSABLE);
 
     mapSprite_ = CreateChild<Sprite>();
 
@@ -36,42 +37,39 @@ MapWindow::MapWindow(Context* context) :
     mapSprite_->SetTexture(mapTexture_);
     mapSprite_->SetPosition(0, 0);
     mapSprite_->SetFullImageRect();
-//    SubscribeToEvent(mapSprite_, E_CLICKEND, URHO3D_HANDLER(MapWindow, HandleClicked));
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     const std::map<std::string, AB::Entities::Game>& games = client->GetOutposts();
     int i = 0;
     for (const auto& game : games)
     {
-        Button* button = new Button(context_);
+        Button* button = CreateChild<Button>(String(game.first.c_str()));
+        button->BringToFront();
+        button->SetPriority(101);
+        button->SetFocusMode(FM_NOTFOCUSABLE);
         button->SetMinHeight(BUTTON_SIZE);
         button->SetMinWidth(BUTTON_SIZE);
         button->SetMaxHeight(BUTTON_SIZE);
         button->SetMaxWidth(BUTTON_SIZE);
         button->SetHeight(BUTTON_SIZE);
         button->SetWidth(BUTTON_SIZE);
-        button->SetName(String(game.first.c_str()));    // not required
         button->SetOpacity(1.0f);     // transparency
         button->SetLayoutMode(LM_FREE);
         button->SetAlignment(HA_LEFT, VA_TOP);
-        button->SetPosition(100, 40 * (i + 1) + 5);
-        button->SetStyleAuto();
-        button->SetStyle("MapButton");
         button->SetVar("uuid", String(game.first.c_str()));
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(MapWindow, HandleMapGameClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
-            Text* t = new Text(context_);
-            t->SetName("GameName");
+            Text* t = button->CreateChild<Text>("GameName");
             t->SetText(String(game.second.name.c_str()));
             t->SetStyle("Text");
             t->SetAlignment(HA_LEFT, VA_TOP);
             t->SetPosition(35, 20);
             t->SetInternal(true);
             t->SetStyleAuto();
-            button->AddChild(t);
         }
-        AddChild(button);
+        button->SetStyleAuto();
+        button->SetStyle("MapButton");
         i++;
     }
     FitMap();

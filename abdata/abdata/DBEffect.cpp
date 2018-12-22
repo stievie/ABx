@@ -42,6 +42,8 @@ bool DBEffect::Load(AB::Entities::Effect& effect)
     effect.category = static_cast<AB::Entities::EffectCategory>(result->GetUInt("category"));
     effect.script = result->GetString("script");
     effect.icon = result->GetString("icon");
+    effect.soundEffect = result->GetString("sound_effect");
+    effect.particleEffect = result->GetString("particle_effect");
 
     return true;
 }

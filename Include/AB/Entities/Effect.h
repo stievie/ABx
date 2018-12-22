@@ -47,6 +47,8 @@ struct Effect : Entity
         s.value1b(category);
         s.text1b(script, Limits::MAX_FILENAME);
         s.text1b(icon, Limits::MAX_FILENAME);
+        s.text1b(soundEffect, Limits::MAX_FILENAME);
+        s.text1b(particleEffect, Limits::MAX_FILENAME);
     }
 
     uint32_t index = 0;
@@ -54,6 +56,8 @@ struct Effect : Entity
     EffectCategory category;
     std::string script;
     std::string icon;
+    std::string soundEffect;
+    std::string particleEffect;
 };
 
 }

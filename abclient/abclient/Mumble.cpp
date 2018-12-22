@@ -28,8 +28,11 @@ void Mumble::Initialize()
 #ifdef _WIN32
     hMapObject_ = OpenFileMappingW(FILE_MAP_ALL_ACCESS, FALSE, L"MumbleLink");
     if (hMapObject_ == NULL)
+    {
         // Mumble is not running
+        URHO3D_LOGWARNING("Mumble client not running");
         return;
+    }
 
     lm_ = (LinkedMem *)MapViewOfFile(hMapObject_, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkedMem));
 
@@ -44,7 +47,10 @@ void Mumble::Initialize()
 
     shmfd_ = shm_open(memname_, O_RDWR, S_IRUSR | S_IWUSR);
     if (shmfd_ < 0)
+    {
+        URHO3D_LOGWARNING("Mumble client not running");
         return;
+    }
 
     lm_ = (LinkedMem *)(mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd_, 0));
     if (lm_ == (void *)(-1))

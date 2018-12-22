@@ -134,6 +134,12 @@ skip-name-resolve
 3. Create a character
 4. Enter world
 
+## Encoding
+
+Everything is UTF-8 encoded. The Client sends only UTF-8 encooded strings to the
+server. All files on the server are UTF-8 encoded. So there is no additional 
+conversion required.
+
 ## Build
 
 Use premake5 to generate solutions for the server and the client.

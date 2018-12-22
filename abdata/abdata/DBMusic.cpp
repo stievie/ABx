@@ -13,6 +13,34 @@ bool DBMusic::Create(AB::Entities::Music& item)
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+
+    query << "INSERT INTO `game_music` (`uuid`, `map_uuid`, `local_file`, `remote_file`, `sorting`, " <<
+        "`style`";
+    query << ") VALUES (";
+
+    query << db->EscapeString(item.uuid) << ", ";
+    query << db->EscapeString(item.mapUuid) << ", ";
+    query << db->EscapeString(item.localFile) << ", ";
+    query << db->EscapeString(item.remoteFile) << ", ";
+    query << static_cast<int>(item.sorting) << ", ";
+    query << static_cast<int>(item.style);
+
+    query << ")";
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    if (!transaction.Commit())
+        return false;
+
     return true;
 }
 
@@ -46,24 +74,55 @@ bool DBMusic::Load(AB::Entities::Music& item)
 
 bool DBMusic::Save(const AB::Entities::Music& item)
 {
-    // Do nothing
     if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
-    return true;
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+
+    query << "UPDATE `game_music` SET ";
+    query << " `map_uuid` = " << db->EscapeString(item.mapUuid) << ", ";
+    query << " `local_file` = " << db->EscapeString(item.localFile) << ", ";
+    query << " `remote_file` = " << db->EscapeString(item.remoteFile) << ", ";
+    query << " `sorting` = " << static_cast<int>(item.sorting) << ", ";
+    query << " `style` = " << static_cast<int>(item.style);
+
+    query << " WHERE `uuid` = " << db->EscapeString(item.uuid);
+
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
 }
 
 bool DBMusic::Delete(const AB::Entities::Music& item)
 {
-    // Do nothing
     if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
-    return true;
+
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "DELETE FROM `game_music` WHERE `uuid` = " << db->EscapeString(item.uuid);
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
 }
 
 bool DBMusic::Exists(const AB::Entities::Music& item)

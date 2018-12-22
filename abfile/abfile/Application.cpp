@@ -892,6 +892,8 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
         gNd.append_attribute("name") = s.name.c_str();
         gNd.append_attribute("category") = s.category;
         gNd.append_attribute("icon") = s.icon.c_str();
+        gNd.append_attribute("sound_effect") = s.soundEffect.c_str();
+        gNd.append_attribute("particle_effect") = s.particleEffect.c_str();
     }
 
     std::stringstream stream;

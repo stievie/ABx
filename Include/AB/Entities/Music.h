@@ -19,7 +19,9 @@ enum MusicStyle : uint32_t
     MusicStyleAction = 1 << 6,
     MusicStyleMystic = 1 << 7,
     MusicStyleIntense = 1 << 8,
-    MusicStyleAggressive = 1 << 9
+    MusicStyleAggressive = 1 << 9,
+    MusicStyleRelaxed = 1 << 10,
+    MusicStyleHumorous = 1 << 11
 };
 
 struct Music : Entity
