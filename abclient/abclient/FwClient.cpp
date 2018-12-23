@@ -281,6 +281,8 @@ void FwClient::LoadSkills(uint32_t curVersion)
         skill.description = pro.attribute("description").as_string();
         skill.shortDescription = pro.attribute("short_description").as_string();
         skill.icon = pro.attribute("icon").as_string();
+        skill.soundEffect = pro.attribute("sound_effect").as_string();
+        skill.particleEffect = pro.attribute("particle_effect").as_string();
 
         skills_.emplace(skill.index, skill);
     }
@@ -372,6 +374,8 @@ void FwClient::LoadEffects(uint32_t curVersion)
         effect.name = pro.attribute("name").as_string();
         effect.category = static_cast<AB::Entities::EffectCategory>(pro.attribute("category").as_uint());
         effect.icon = pro.attribute("icon").as_string();
+        effect.soundEffect = pro.attribute("sound_effect").as_string();
+        effect.particleEffect = pro.attribute("particle_effect").as_string();
 
         effects_.emplace(effect.index, effect);
     }

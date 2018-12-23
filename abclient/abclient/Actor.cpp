@@ -11,6 +11,7 @@
 #include "FwClient.h"
 #include "ItemsCache.h"
 #include "Shortcuts.h"
+#include <AB/Entities/Skill.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -29,6 +30,8 @@ Actor::Actor(Context* context) :
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_UPDATE);
     SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
+    SubscribeToEvent(AbEvents::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
+    SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(Actor, HandleEffectAdded));
 }
 
 Actor::~Actor()
@@ -527,6 +530,47 @@ void Actor::HandleChatMessage(StringHash, VariantMap& eventData)
     }
 }
 
+void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectUseSkill;
+    uint32_t id = eventData[P_OBJECTID].GetUInt();
+    if (id != id_)
+        return;
+    int skillIndex = eventData[P_SKILLINDEX].GetInt();
+    if (skillIndex < 1 || skillIndex > PLAYER_MAX_SKILLS)
+        return;
+    uint32_t skill = skills_[skillIndex - 1];
+    FwClient* client = GetSubsystem<FwClient>();
+    const AB::Entities::Skill* pSkill = client->GetSkillByIndex(skill);
+    if (pSkill)
+    {
+        if (!pSkill->soundEffect.empty())
+        {
+            const String s(pSkill->soundEffect.c_str(), static_cast<unsigned>(pSkill->soundEffect.length()));
+            PlaySoundEffect(s);
+        }
+    }
+}
+
+void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectEffectAdded;
+    uint32_t id = eventData[P_OBJECTID].GetUInt();
+    if (id != id_)
+        return;
+    uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
+    FwClient* client = GetSubsystem<FwClient>();
+    const AB::Entities::Effect* pEffect = client->GetEffectByIndex(effectIndex);
+    if (pEffect)
+    {
+        if (!pEffect->soundEffect.empty())
+        {
+            const String s(pEffect->soundEffect.c_str(), static_cast<unsigned>(pEffect->soundEffect.length()));
+            PlaySoundEffect(s);
+        }
+    }
+}
+
 void Actor::SetSelectedObject(SharedPtr<GameObject> object)
 {
     if (selectedObject_ == object)
@@ -728,6 +772,20 @@ void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, 
 void Actor::PlaySoundEffect(const StringHash& type, bool loop)
 {
     PlaySoundEffect(soundSource_, type, loop);
+}
+
+void Actor::PlaySoundEffect(const String& fileName)
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    Sound* sound = cache->GetResource<Sound>(fileName);
+    if (!sound)
+        return;
+
+    Node* nd = node_->CreateChild();
+    auto* soundSource = nd->CreateComponent<SoundSource3D>();
+    soundSource->SetSoundType(SOUND_EFFECT);
+    soundSource->SetAutoRemoveMode(REMOVE_NODE);
+    soundSource->Play(sound);
 }
 
 bool Actor::LoadSkillTemplate(const std::string& templ)
