@@ -31,6 +31,7 @@ Actor::Actor(Context* context) :
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_UPDATE);
     SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
     SubscribeToEvent(AbEvents::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
+    SubscribeToEvent(AbEvents::E_OBJECTENDUSESKILL, URHO3D_HANDLER(Actor, HandleEndSkillUse));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(Actor, HandleEffectAdded));
 }
 
@@ -70,9 +71,9 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
     animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
     animations_[ANIM_CASTING] = GetAnimation(ANIM_CASTING);
-    sounds_[SOUND_SKILLFAILURE] = "Sounds/FX/skill_failure.wav";
-    sounds_[SOUND_FOOTSTEPS] = "Sounds/FX/footsteps_run1.wav";
-    sounds_[SOUND_DIE] = "Sounds/FX/scream_female1.wav";
+    sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
+    sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
+    sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
 
     if (modelIndex_ != 0)
     {
@@ -458,6 +459,33 @@ String Actor::GetAnimation(const StringHash& hash)
     return result;
 }
 
+String Actor::GetSoundEffect(const StringHash& hash)
+{
+    String result;
+    result = "Sounds/FX/";
+    if (hash == SOUND_SKILLFAILURE)
+    {
+        return result + "SkillFailure.wav";
+    }
+    else if (hash == SOUND_FOOTSTEPS)
+    {
+        return result + "footsteps_run1.wav";
+    }
+
+    result += "Characters/";
+    result += String(profession_->abbr.c_str()) + "/";
+    if (sex_ == AB::Entities::CharacterSexFemale)
+        result += "F/";
+    else
+        result += "M/";
+
+    if (hash == SOUND_DIE)
+        result += "Dying.wav";
+    else
+        return "";
+    return result;
+}
+
 void Actor::HandleNameClicked(StringHash, VariantMap&)
 {
     if (nameLabel_->IsVisible())
@@ -547,9 +575,28 @@ void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
         if (!pSkill->soundEffect.empty())
         {
             const String s(pSkill->soundEffect.c_str(), static_cast<unsigned>(pSkill->soundEffect.length()));
-            PlaySoundEffect(s);
+            const String name("Skill_" + String(pSkill->index));
+            PlaySoundEffect(s, name);
         }
     }
+}
+
+void Actor::HandleEndSkillUse(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectEndUseSkill;
+    uint32_t id = eventData[P_OBJECTID].GetUInt();
+    if (id != id_)
+        return;
+/*    int skillIndex = eventData[P_SKILLINDEX].GetInt();
+    if (skillIndex < 1 || skillIndex > PLAYER_MAX_SKILLS)
+        return;
+    uint32_t skill = skills_[skillIndex - 1];
+    const String name("Skill_" + String(skill));
+    Node* nd = node_->GetChild(name);
+    if (nd)
+    {
+        nd->Remove();
+    }*/
 }
 
 void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
@@ -566,7 +613,8 @@ void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
         if (!pEffect->soundEffect.empty())
         {
             const String s(pEffect->soundEffect.c_str(), static_cast<unsigned>(pEffect->soundEffect.length()));
-            PlaySoundEffect(s);
+            const String name("Effect_" + String(pEffect->index));
+            PlaySoundEffect(s, name);
         }
     }
 }
@@ -708,8 +756,10 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
         fadeTime = 0.5f;
         break;
     case AB::GameProtocol::CreatureStateDead:
+    {
         PlaySoundEffect(SOUND_DIE);
         break;
+    }
     default:
         break;
     }
@@ -771,17 +821,26 @@ void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, 
 
 void Actor::PlaySoundEffect(const StringHash& type, bool loop)
 {
-    PlaySoundEffect(soundSource_, type, loop);
+    if (loop)
+        PlaySoundEffect(soundSource_, type, loop);
+    else
+    {
+        ResourceCache* cache = GetSubsystem<ResourceCache>();
+        if (sounds_.Contains(type) && cache->Exists(sounds_[type]))
+        {
+            PlaySoundEffect(sounds_[type]);
+        }
+    }
 }
 
-void Actor::PlaySoundEffect(const String& fileName)
+void Actor::PlaySoundEffect(const String& fileName, const String& name /* = String::EMPTY */)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Sound* sound = cache->GetResource<Sound>(fileName);
     if (!sound)
         return;
 
-    Node* nd = node_->CreateChild();
+    Node* nd = node_->CreateChild(name);
     auto* soundSource = nd->CreateComponent<SoundSource3D>();
     soundSource->SetSoundType(SOUND_EFFECT);
     soundSource->SetAutoRemoveMode(REMOVE_NODE);

@@ -89,6 +89,38 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
     player->NotifyNewMail();
 }
 
+void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
+{
+    // TODO:
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    std::string accUuid;
+    if (!stream.ReadString(accUuid))
+        return;
+    std::string charUuid;
+    if (!stream.ReadString(charUuid))
+        return;
+
+    // Inform interested players: Friends, Guild members
+}
+
+void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
+{
+    // TODO:
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    std::string accUuid;
+    if (!stream.ReadString(accUuid))
+        return;
+    std::string charUuid;
+    if (!stream.ReadString(charUuid))
+        return;
+
+    // Inform interested players: Friends, Guild members
+}
+
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
     Net::NetworkMessage nmsg;
@@ -161,6 +193,12 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
     case Net::MessageType::ServerJoined:
     case Net::MessageType::ServerLeft:
         DispatchServerChange(msg);
+        break;
+    case Net::MessageType::PlayerLoggedIn:
+        DispatchPlayerLoggedIn(msg);
+        break;
+    case Net::MessageType::PlayerLoggedOut:
+        DispatchPlayerLoggedOut(msg);
         break;
     }
 }

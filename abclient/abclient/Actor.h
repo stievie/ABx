@@ -92,7 +92,7 @@ public:
     void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
     void PlaySoundEffect(const StringHash& type, bool loop = false);
-    void PlaySoundEffect(const String& fileName);
+    void PlaySoundEffect(const String& fileName, const String& name = String::EMPTY);
     bool LoadSkillTemplate(const std::string& templ);
     void OnSkillError(AB::GameProtocol::SkillError error) override;
 
@@ -111,10 +111,12 @@ private:
     void ShowSpeechBubble(const String& text);
     void HideSpeechBubble();
     String GetAnimation(const StringHash& hash);
+    String GetSoundEffect(const StringHash& hash);
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleAnimationFinished(StringHash eventType, VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleSkillUse(StringHash eventType, VariantMap& eventData);
+    void HandleEndSkillUse(StringHash eventType, VariantMap& eventData);
     void HandleEffectAdded(StringHash eventType, VariantMap& eventData);
 protected:
     AnimatedModel* animatedModel_;

@@ -48,6 +48,32 @@ Game::~Game()
     GetSubsystem<Chat>()->Remove(ChatType::Map, id_);
 }
 
+void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
+{
+    auto client = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::PlayerLoggedIn;
+
+    IO::PropWriteStream stream;
+    stream.WriteString(player->account_.uuid);   // Account
+    stream.WriteString(player->data_.uuid);      // Character
+    msg.SetPropStream(stream);
+    client->Write(msg);
+}
+
+void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
+{
+    auto client = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::PlayerLoggedOut;
+
+    IO::PropWriteStream stream;
+    stream.WriteString(player->account_.uuid);   // Account
+    stream.WriteString(player->data_.uuid);      // Character
+    msg.SetPropStream(stream);
+    client->Write(msg);
+}
+
 void Game::RegisterLua(kaguya::State& state)
 {
     state["Game"].setClass(kaguya::UserdataMetatable<Game>()
@@ -433,6 +459,11 @@ void Game::PlayerJoin(uint32_t playerId)
         }
         else
             queuedObjects_.push_back(player);
+
+        // Notify other servers that a player joined, e.g. for friend list
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedIn, shared_from_this(), player))
+        );
     }
 }
 
@@ -455,6 +486,10 @@ void Game::PlayerLeave(uint32_t playerId)
 
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
+        );
+        // Notify other servers that a player left, e.g. for friend list
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut, shared_from_this(), player))
         );
     }
 }

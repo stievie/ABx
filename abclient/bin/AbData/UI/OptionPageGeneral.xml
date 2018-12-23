@@ -6,6 +6,7 @@
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Opacity" value="0.9" />
 	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Spacing" value="4" />
 	<attribute name="Layout Border" value="2 2 2 2" />
 	<attribute name="Image Rect" value="48 0 64 16" />
 	<attribute name="Border" value="4 4 4 4" />

@@ -199,4 +199,5 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Complier, IDE: MSVC, Visual Studio https://visualstudio.microsoft.com/", 15);
     CreateSingleLine("3D Modeling: Blender https://www.blender.org", 15);
     CreateLogo("Textures/blender_logo.png", 0.8f);
+    CreateSingleLine("Sounds: Audacity https://www.audacityteam.org/", 15);
 }

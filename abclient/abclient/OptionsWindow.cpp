@@ -97,7 +97,7 @@ void OptionsWindow::HandleCloseClicked(StringHash, VariantMap&)
     SetVisible(false);
 }
 
-void OptionsWindow::HandleTabSelected(StringHash, VariantMap& eventData)
+void OptionsWindow::HandleTabSelected(StringHash, VariantMap&)
 {
 }
 
@@ -711,61 +711,66 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
 
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMasterSlider", true));
-        slider->SetValue(opts->gainMaster_);
+        slider->SetValue(opts->gainMaster_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
+            Slider* _s = static_cast<Slider*>(eventData[P_ELEMENT].GetPtr());
             Options* opt = GetSubsystem<Options>();
-            opt->gainMaster_ = value;
+            opt->gainMaster_ = value / _s->GetRange();
             opt->UpdateAudio();
         });
     }
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainEffectSlider", true));
-        slider->SetValue(opts->gainEffect_);
+        slider->SetValue(opts->gainEffect_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
+            Slider* _s = static_cast<Slider*>(eventData[P_ELEMENT].GetPtr());
             Options* opt = GetSubsystem<Options>();
-            opt->gainEffect_ = value;
+            opt->gainEffect_ = value / _s->GetRange();
             opt->UpdateAudio();
         });
     }
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainAmbientSlider", true));
-        slider->SetValue(opts->gainAmbient_);
+        slider->SetValue(opts->gainAmbient_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
+            Slider* _s = static_cast<Slider*>(eventData[P_ELEMENT].GetPtr());
             Options* opt = GetSubsystem<Options>();
-            opt->gainAmbient_ = value;
+            opt->gainAmbient_ = value / _s->GetRange();
             opt->UpdateAudio();
         });
     }
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainVoiceSlider", true));
-        slider->SetValue(opts->gainVoice_);
+        slider->SetValue(opts->gainVoice_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
+            Slider* _s = static_cast<Slider*>(eventData[P_ELEMENT].GetPtr());
             Options* opt = GetSubsystem<Options>();
-            opt->gainVoice_ = value;
+            opt->gainVoice_ = value / _s->GetRange();
             opt->UpdateAudio();
         });
     }
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMusicSlider", true));
-        slider->SetValue(opts->gainMusic_);
+        slider->SetValue(opts->gainMusic_ * slider->GetRange());
         SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
+            Slider* _s = static_cast<Slider*>(eventData[P_ELEMENT].GetPtr());
             Options* opt = GetSubsystem<Options>();
-            opt->gainMusic_ = value;
+            opt->gainMusic_ = value / _s->GetRange();
             opt->UpdateAudio();
         });
     }

@@ -77,6 +77,8 @@ private:
         return startTime_;
     }
     int _LuaGetType() const { return data_.type; }
+    void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
+    void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
 public:
     static void RegisterLua(kaguya::State& state);
 
