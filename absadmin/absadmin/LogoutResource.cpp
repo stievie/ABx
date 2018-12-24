@@ -19,7 +19,7 @@ void LogoutResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     SimpleWeb::CaseInsensitiveMultimap header = Application::GetDefaultHeader();
     auto contT = GetSubsystem<ContentTypes>();
-    header.emplace("Content-Type", contT->Get(Utils::GetFileExt(".json")));
+    header.emplace("Content-Type", contT->Get(".json"));
     responseCookies_->Write(header);
 
     std::stringstream ss;
