@@ -4,6 +4,7 @@
 #include <chrono>
 #include <ctime>
 #include "Utils.h"
+#include <stdarg.h>
 
 #if defined __GNUC__
 #define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__
@@ -28,11 +29,11 @@ private:
     std::ofstream fstream_;
     std::ostream& stream_;
     Mode mode_;
-    bool nextIsBegin_;
     int64_t logStart_;
     using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
+    bool nextIsBegin_;
 
     explicit Logger(std::ostream& stream = std::cout) :
         stream_(stream),
@@ -148,6 +149,7 @@ public:
         return *this;
     }
 #endif
+    static int PrintF(const char *__restrict __format, ...);
 
     static void Close()
     {

@@ -30,5 +30,31 @@ Logger& Logger::Instance()
     return *instance_.get();
 }
 
+int Logger::PrintF(const char *__restrict __format, ...)
+{
+    int ret;
+
+    /* Declare a va_list type variable */
+    va_list myargs;
+
+    /* Initialise the va_list variable with the ... after fmt */
+
+    va_start(myargs, __format);
+
+    char buff[1024] = { 0 };
+    /* Forward the '...' to vprintf */
+    ret = vsprintf(buff, __format, myargs);
+
+    std::string msg(buff, ret);
+    Instance() << msg;
+    if (msg.find('\n') != std::string::npos)
+        Instance().nextIsBegin_ = true;
+
+    /* Clean up the va_list */
+    va_end(myargs);
+
+    return ret;
+}
+
 }
 
