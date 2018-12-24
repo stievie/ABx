@@ -47,7 +47,7 @@ int Logger::PrintF(const char *__restrict __format, ...)
 
     std::string msg(buff, ret);
     Instance() << msg;
-    if (msg.find('\n') != std::string::npos)
+    if (msg.back() == '\n')
         Instance().nextIsBegin_ = true;
 
     /* Clean up the va_list */

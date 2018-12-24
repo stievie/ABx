@@ -23,6 +23,21 @@ $include {{_header.html}}
               <div class="x_panel">
                 <div class="x_title">
                   <h2>Account Details</h2>
+                  $if online_offline {{
+                  <span class="badge bg-red pull-right">Offline</span>
+                  }}
+                  $if online_away {{
+                  <span class="badge bg-orange pull-right">Away</span>
+                  }}
+                  $if online_dnd {{
+                  <span class="badge bg-orange pull-right">Do not disturb</span>
+                  }}
+                  $if online_online {{
+                  <span class="badge bg-green pull-right">Online</span>
+                  }}
+                  $if online_invisible {{
+                  <span class="badge bg-purple pull-right">Invisible</span>
+                  }}
                   <div class="clearfix"></div>
                 </div>
 
@@ -68,6 +83,9 @@ $include {{_header.html}}
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                         <input type="submit" class="btn btn-success" value="Submit">
+                        $if is_online {{
+                        <input type="button" id="logout_button" data-uuid="${uuid}" class="btn btn-danger" value="Log out">
+                        }}
                       </div>
                     </div>
                   </form>
@@ -80,6 +98,22 @@ $include {{_header.html}}
         <!-- /page content -->
 
 <script>
+  $if is_online {{
+  $$("#logout_button").click(function() {
+    var _uuid = $$(this).data("uuid");
+    $$.post("post/account_logout", { uuid: _uuid }, function(data, textStatus, xhr)
+    {
+      if (xhr.status == 200 && data.status === "OK")
+      {
+        window.location.reload();
+      }
+      else
+        alert(data.message);
+    });
+
+  });
+  }}
+
   $$("#account_form").bind("submit", function(e) {
     e.preventDefault();
     NProgress.start();

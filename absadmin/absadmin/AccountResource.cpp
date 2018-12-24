@@ -47,6 +47,13 @@ bool AccountResource::GetObjects(std::map<std::string, ginger::object>& objects)
     objects["status_activated"] = acc.status == AB::Entities::AccountStatusActivated;
     objects["status_deleted"] = acc.status == AB::Entities::AccountStatusDeleted;
 
+    objects["online_offline"] = acc.onlineStatus == AB::Entities::OnlineStatusOffline;
+    objects["online_away"] = acc.onlineStatus == AB::Entities::OnlineStatusAway;
+    objects["online_dnd"] = acc.onlineStatus == AB::Entities::OnlineStatusDoNotDisturb;
+    objects["online_online"] = acc.onlineStatus == AB::Entities::OnlineStatusOnline;
+    objects["online_invisible"] = acc.onlineStatus == AB::Entities::OnlineStatusInvisible;
+    objects["is_online"] = acc.onlineStatus != AB::Entities::OnlineStatusOffline;
+
     return true;
 }
 

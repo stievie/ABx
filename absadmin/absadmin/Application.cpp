@@ -32,6 +32,7 @@
 #include "ClearCacheResource.h"
 #include "AccountResource.h"
 #include "AccountPostResource.h"
+#include "AccountLogoutResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -161,7 +162,8 @@ void Application::InitRoutes()
     Route<Resources::ClearCacheResource>("POST", "^/post/clear_cache$");
     Route<Resources::UpdateAccountKeyResource>("POST", "^/post/updateaccountkey$");
     Route<Resources::CreateKeyResource>("POST", "^/post/createkey$");
-    Route<Resources::AccountPostResource>("POST", "^/post/account");
+    Route<Resources::AccountPostResource>("POST", "^/post/account$");
+    Route<Resources::AccountLogoutResource>("POST", "^/post/account_logout$");
 }
 
 bool Application::Initialize(int argc, char** argv)
