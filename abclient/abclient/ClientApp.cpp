@@ -157,6 +157,7 @@ ClientApp::ClientApp(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_TOGGLEOPTIONS, URHO3D_HANDLER(ClientApp, HandleToggleOptions));
     SubscribeToEvent(AbEvents::E_SC_TAKESCREENSHOT, URHO3D_HANDLER(ClientApp, HandleTakeScreenshot));
     SubscribeToEvent(AbEvents::E_SC_EXITPROGRAM, URHO3D_HANDLER(ClientApp, HandleExitProgram));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEMUTEAUDIO, URHO3D_HANDLER(ClientApp, HandleToggleMuteAudio));
 }
 
 /**
@@ -364,4 +365,10 @@ void ClientApp::HandleExitProgram(StringHash, VariantMap&)
 {
     Engine* engine = context_->GetSubsystem<Engine>();
     engine->Exit();
+}
+
+void ClientApp::HandleToggleMuteAudio(StringHash, VariantMap&)
+{
+    Options* opt = GetSubsystem<Options>();
+    opt->MuteAudio();
 }

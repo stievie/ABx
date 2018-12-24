@@ -741,6 +741,15 @@ void Options::UpdateAudio()
     audio->SetMasterGain(SOUND_MUSIC, gainMusic_);
 }
 
+void Options::MuteAudio()
+{
+    Audio* audio = GetSubsystem<Audio>();
+    if (audio->GetMasterGain(SOUND_MASTER) == gainMaster_)
+        audio->SetMasterGain(SOUND_MASTER, 0.0f);
+    else
+        audio->SetMasterGain(SOUND_MASTER, gainMaster_);
+}
+
 void Options::LoadWindow(UIElement* window)
 {
     String prefPath = AddTrailingSlash(GetPrefPath());

@@ -45,9 +45,10 @@ void Shortcuts::Init()
     shortcuts_.Clear();
     // Exit
     shortcuts_[AbEvents::E_SC_EXITPROGRAM] = ShortcutEvent(AbEvents::E_SC_EXITPROGRAM, "Exit", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SHOWCREDITS] = ShortcutEvent(AbEvents::E_SC_LOGOUT, "Credits", Trigger::Down, String::EMPTY, false);
+    shortcuts_[AbEvents::E_SC_TOGGLEMUTEAUDIO] = ShortcutEvent(AbEvents::E_SC_TOGGLEMUTEAUDIO, "Mute", Trigger::Down, "Mute Audio");
     shortcuts_[AbEvents::E_SC_LOGOUT] = ShortcutEvent(AbEvents::E_SC_LOGOUT, "Logout", Trigger::Down);
     shortcuts_[AbEvents::E_SC_SELECTCHARACTER] = ShortcutEvent(AbEvents::E_SC_SELECTCHARACTER, "Select character", Trigger::Down);
-    shortcuts_[AbEvents::E_SC_SHOWCREDITS] = ShortcutEvent(AbEvents::E_SC_LOGOUT, "Credits", Trigger::Down, String::EMPTY, false);
 
     // Move
     shortcuts_[AbEvents::E_SC_MOVEFORWARD] = ShortcutEvent(AbEvents::E_SC_MOVEFORWARD, "Move forward", Trigger::None);

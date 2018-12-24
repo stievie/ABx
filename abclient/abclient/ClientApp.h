@@ -53,4 +53,5 @@ private:
     void HandleToggleOptions(StringHash eventType, VariantMap& eventData);
     void HandleTakeScreenshot(StringHash eventType, VariantMap& eventData);
     void HandleExitProgram(StringHash eventType, VariantMap& eventData);
+    void HandleToggleMuteAudio(StringHash eventType, VariantMap& eventData);
 };

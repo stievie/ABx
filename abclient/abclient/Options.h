@@ -182,6 +182,8 @@ public:
     const String& GetRenderPath() const;
 
     void UpdateAudio();
+    /// Toggle
+    void MuteAudio();
     void LoadWindow(UIElement* window);
     void SaveWindow(UIElement* window);
 
