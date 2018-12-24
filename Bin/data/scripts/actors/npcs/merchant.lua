@@ -22,7 +22,9 @@ end
 function onClicked(creature)
   clickCount = clickCount + 1
   if (clickCount > 3) then
+    self:FaceObject(creature)
     self:Say(CHAT_CHANNEL_GENERAL, "WTF! Go away!")
+    self:SetState(CREATURESTATE_EMOTE_TAUNT)
     clickCount = 0
   end
 end

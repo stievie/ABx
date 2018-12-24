@@ -71,6 +71,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_DYING] = GetAnimation(ANIM_DYING);
     animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
     animations_[ANIM_CASTING] = GetAnimation(ANIM_CASTING);
+    animations_[ANIM_TAUNTING] = GetAnimation(ANIM_TAUNTING);
     sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
@@ -454,6 +455,8 @@ String Actor::GetAnimation(const StringHash& hash)
         result += "Sitting.ani";
     else if (hash == ANIM_CASTING)
         result += "Casting.ani";
+    else if (hash == ANIM_TAUNTING)
+        result += "Taunting.ani";
     else
         return "";
     return result;
@@ -506,7 +509,8 @@ void Actor::HandleAnimationFinished(StringHash, VariantMap& eventData)
         if (!looped)
         {
             // Reset to idle when some emote animations ended
-            if (creatureState_ == AB::GameProtocol::CreatureStateEmoteCry)
+            if (creatureState_ > AB::GameProtocol::CreatureStateEmoteStart &&
+                creatureState_ < AB::GameProtocol::CreatureStateEmoteEnd)
             {
                 FwClient* client = GetSubsystem<FwClient>();
                 client->SetPlayerState(AB::GameProtocol::CreatureStateIdle);
@@ -677,6 +681,9 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     case AB::GameProtocol::CreatureStateEmoteCry:
         PlayAnimation(ANIM_CRY, false, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateEmoteTaunt:
+        PlayAnimation(ANIM_TAUNTING, false, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateDead:
         PlayAnimation(ANIM_DYING, false, fadeTime);

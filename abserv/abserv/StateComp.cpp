@@ -23,10 +23,11 @@ void StateComp::Apply()
 
 void StateComp::Update(uint32_t)
 {
-    if (currentState_ == AB::GameProtocol::CreatureStateEmoteCry &&
-        lastStateChange_ + 10000 < Utils::AbTick())
+    if ((currentState_ > AB::GameProtocol::CreatureStateEmoteStart &&
+        currentState_ < AB::GameProtocol::CreatureStateEmoteEnd)
+        && lastStateChange_ + 4000 < Utils::AbTick())
     {
-        // Reset some emotes after 10 seconds
+        // Reset some emotes after 4 seconds
         SetState(AB::GameProtocol::CreatureStateIdle);
     }
 }

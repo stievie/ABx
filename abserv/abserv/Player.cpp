@@ -294,6 +294,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeCry:
         HandleCryCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeTaunt:
+        HandleTauntCommand(command, message);
+        break;
     case AB::GameProtocol::CommandTypeAge:
         HandleAgeCommand(command, message);
         break;
@@ -455,6 +458,11 @@ void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&)
 void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 {
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteCry);
+}
+
+void Player::HandleTauntCommand(const std::string&, Net::NetworkMessage&)
+{
+    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteTaunt);
 }
 
 void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
