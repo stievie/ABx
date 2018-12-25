@@ -129,6 +129,8 @@ enum CreatureState : uint8_t
     CreatureStateEmoteStart,
     CreatureStateEmoteCry,
     CreatureStateEmoteTaunt,
+    CreatureStateEmotePonder,
+    CreatureStateEmoteWave,
     CreatureStateEmoteEnd,
     // /Emotes -----------------------------------------------------------------
 
@@ -306,6 +308,8 @@ enum CommandTypes : uint8_t
     CommandTypeStand,                // /sit -> Idle
     CommandTypeCry,                  // /cry
     CommandTypeTaunt,                // /taunt
+    CommandTypePonder,               // /ponder
+    CommandTypeWave,                 // /wave
     CommandTypeDie,                  // /die (only admin)
 };
 

@@ -29,6 +29,8 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "id", AB::GameProtocol::CommandTypeServerId },
     { "prefpath", AB::GameProtocol::CommandTypePrefPath },
     { "taunt", AB::GameProtocol::CommandTypeTaunt },
+    { "ponder", AB::GameProtocol::CommandTypePonder },
+    { "wave", AB::GameProtocol::CommandTypeWave },
 
     { "help", AB::GameProtocol::CommandTypeHelp }
 };

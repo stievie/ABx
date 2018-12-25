@@ -72,6 +72,8 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_CRY] = GetAnimation(ANIM_CRY);
     animations_[ANIM_CASTING] = GetAnimation(ANIM_CASTING);
     animations_[ANIM_TAUNTING] = GetAnimation(ANIM_TAUNTING);
+    animations_[ANIM_PONDER] = GetAnimation(ANIM_PONDER);
+    animations_[ANIM_WAVE] = GetAnimation(ANIM_WAVE);
     sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
@@ -457,6 +459,10 @@ String Actor::GetAnimation(const StringHash& hash)
         result += "Casting.ani";
     else if (hash == ANIM_TAUNTING)
         result += "Taunting.ani";
+    else if (hash == ANIM_PONDER)
+        result += "Ponder.ani";
+    else if (hash == ANIM_WAVE)
+        result += "Wave.ani";
     else
         return "";
     return result;
@@ -684,6 +690,12 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     case AB::GameProtocol::CreatureStateEmoteTaunt:
         PlayAnimation(ANIM_TAUNTING, false, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateEmotePonder:
+        PlayAnimation(ANIM_PONDER, false, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateEmoteWave:
+        PlayAnimation(ANIM_WAVE, false, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateDead:
         PlayAnimation(ANIM_DYING, false, fadeTime);

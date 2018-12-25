@@ -28,6 +28,8 @@ static const StringHash ANIM_DEAD("Dead");
 static const StringHash ANIM_CRY("Cry");
 static const StringHash ANIM_CASTING("Casting");
 static const StringHash ANIM_TAUNTING("Taunting");
+static const StringHash ANIM_PONDER("Ponder");
+static const StringHash ANIM_WAVE("Wave");
 
 /// Stop playing current sound
 static const StringHash SOUND_NONE("None");
