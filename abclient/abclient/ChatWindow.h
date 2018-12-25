@@ -20,7 +20,14 @@ private:
     unsigned historyPosition_;
     /// Current row being edited.
     String currentRow_;
+    bool visibleGeneral_;
+    bool visibleGuild_;
+    bool visibleParty_;
+    bool visibleTrade_;
+    bool visibleWhisper_;
     void TrimLines();
+    void UpdatevisibleItems();
+    void HandleFilterClick(StringHash eventType, VariantMap& eventData);
     void HandleScreenshotTaken(StringHash eventType, VariantMap& eventData);
     void HandleEditFocused(StringHash eventType, VariantMap& eventData);
     void HandleEditDefocused(StringHash eventType, VariantMap& eventData);

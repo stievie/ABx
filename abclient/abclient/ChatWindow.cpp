@@ -39,7 +39,12 @@ ChatWindow::ChatWindow(Context* context) :
     UIElement(context),
     historyRows_(20),
     tabIndexWhisper_(-1),
-    firstStart_(true)
+    firstStart_(true),
+    visibleGeneral_(true),
+    visibleGuild_(true),
+    visibleParty_(true),
+    visibleTrade_(true),
+    visibleWhisper_(true)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
@@ -49,14 +54,48 @@ ChatWindow::ChatWindow(Context* context) :
 
     // Set self to same size as the window so align works
     Window* wnd = dynamic_cast<Window*>(GetChild("ChatWindow", true));
+    wnd->SetPosition(0, 0);
     SetSize(wnd->GetSize());
     wnd->SetBringToBack(false);
     wnd->SetPriority(200);
 
-    tabgroup_ = wnd->CreateChild<TabGroup>();
+    // Chat filter
+    UIElement* filterContainer = wnd->GetChild("ChatFilter", false);
+    {
+        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterGeneral", true));
+        filterCheck->SetChecked(visibleGeneral_);
+        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelGeneral);
+        SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
+    }
+    {
+        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterGuild", true));
+        filterCheck->SetChecked(visibleGuild_);
+        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelGuild);
+        SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
+    }
+    {
+        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterParty", true));
+        filterCheck->SetChecked(visibleParty_);
+        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelParty);
+        SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
+    }
+    {
+        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterTrade", true));
+        filterCheck->SetChecked(visibleTrade_);
+        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelTrade);
+        SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
+    }
+    {
+        CheckBox* filterCheck = dynamic_cast<CheckBox*>(filterContainer->GetChild("ChatFilterWhisper", true));
+        filterCheck->SetChecked(visibleWhisper_);
+        filterCheck->SetVar("Channel", AB::GameProtocol::ChatChannelWhisper);
+        SubscribeToEvent(filterCheck, E_TOGGLED, URHO3D_HANDLER(ChatWindow, HandleFilterClick));
+    }
+
+    UIElement* container = dynamic_cast<UIElement*>(wnd->GetChild("ChatTextContainer", false));
+    tabgroup_ = container->CreateChild<TabGroup>();
     tabgroup_->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     tabgroup_->SetAlignment(HA_CENTER, VA_BOTTOM);
-    tabgroup_->SetSize(500, 40);
     tabgroup_->SetColor(Color(0, 0, 0, 0));
     tabgroup_->SetStyleAuto();
     CreateChatTab(tabgroup_, AB::GameProtocol::ChatChannelGeneral);
@@ -555,6 +594,62 @@ void ChatWindow::TrimLines()
         chatLog_->RemoveItem(0u);
 }
 
+void ChatWindow::UpdatevisibleItems()
+{
+    for (unsigned i = 0; i < chatLog_->GetNumItems(); ++i)
+    {
+        UIElement* elem = chatLog_->GetItem(i);
+        AB::GameProtocol::ChatMessageChannel channel = static_cast<AB::GameProtocol::ChatMessageChannel>(elem->GetVar("Channel").GetUInt());
+        switch (channel)
+        {
+        case AB::GameProtocol::ChatChannelGeneral:
+            elem->SetVisible(visibleGeneral_);
+            break;
+        case AB::GameProtocol::ChatChannelGuild:
+            elem->SetVisible(visibleGuild_);
+            break;
+        case AB::GameProtocol::ChatChannelParty:
+            elem->SetVisible(visibleParty_);
+            break;
+        case AB::GameProtocol::ChatChannelTrade:
+            elem->SetVisible(visibleTrade_);
+            break;
+        case AB::GameProtocol::ChatChannelWhisper:
+            elem->SetVisible(visibleWhisper_);
+            break;
+        }
+    }
+}
+
+void ChatWindow::HandleFilterClick(StringHash, VariantMap& eventData)
+{
+    using namespace Toggled;
+    CheckBox* sender = dynamic_cast<CheckBox*>(eventData[P_ELEMENT].GetPtr());
+    bool state = eventData[P_STATE].GetBool();
+    AB::GameProtocol::ChatMessageChannel channel = static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetUInt());
+    switch (channel)
+    {
+    case AB::GameProtocol::ChatChannelGeneral:
+        visibleGeneral_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        visibleGuild_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        visibleParty_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        visibleTrade_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        visibleWhisper_ = state;
+        break;
+    default:
+        return;
+    }
+    UpdatevisibleItems();
+}
+
 void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::ScreenshotTaken;
@@ -713,6 +808,27 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
         nameText->SetText(name + ":");
     else
         nameText->SetText("{" + name + "}");
+    switch (channel)
+    {
+    case AB::GameProtocol::ChatChannelGeneral:
+        nameText->SetVisible(visibleGeneral_);
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        nameText->SetVisible(visibleGuild_);
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        nameText->SetVisible(visibleParty_);
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        nameText->SetVisible(visibleTrade_);
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        nameText->SetVisible(visibleWhisper_);
+        break;
+    default:
+        nameText->SetVisible(true);
+        break;
+    }
     SubscribeToEvent(nameText, E_CLICK, URHO3D_HANDLER(ChatWindow, HandleNameClicked));
     nameText->SetStyle(style);
     nameText->EnableLayoutUpdate();

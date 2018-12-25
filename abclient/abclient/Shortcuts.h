@@ -185,6 +185,7 @@ private:
     void Init();
     void AddDefault();
     bool ModifiersMatch(unsigned mods);
+    unsigned GetModifiers() const;
     static unsigned shortcutIds;
 public:
     Shortcuts(Context* context);
