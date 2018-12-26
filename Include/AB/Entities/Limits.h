@@ -55,6 +55,9 @@ static constexpr int MAX_RESERVED_NAME = 40;
 // Friendlist
 static constexpr int MAX_FRIENDS = 1000;
 
+// Party
+static constexpr int MAX_PARTY_MEMBERS = 12;
+
 // Mail
 static constexpr int MAX_MAIL_SUBJECT = 60;
 static constexpr int MAX_MAIL_MESSAGE = 255;

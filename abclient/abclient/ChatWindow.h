@@ -26,7 +26,7 @@ private:
     bool visibleTrade_;
     bool visibleWhisper_;
     void TrimLines();
-    void UpdatevisibleItems();
+    void UpdateVisibleItems();
     void HandleFilterClick(StringHash eventType, VariantMap& eventData);
     void HandleScreenshotTaken(StringHash eventType, VariantMap& eventData);
     void HandleEditFocused(StringHash eventType, VariantMap& eventData);

@@ -95,6 +95,8 @@ public:
     void SetParty(std::shared_ptr<Party> party)
     {
         party_ = party;
+        if (party)
+            data_.partyUuid = party->data_.uuid;
     }
     std::shared_ptr<Party> GetParty() const
     {

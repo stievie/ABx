@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include "AiRegistry.h"
 #include "AiLoader.h"
+#include "PartyManager.h"
 
 #include "DebugNew.h"
 
@@ -72,6 +73,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
     Subsystems::Instance.CreateSubsystem<Game::GameManager>();
     Subsystems::Instance.CreateSubsystem<Game::PlayerManager>();
+    Subsystems::Instance.CreateSubsystem<Game::PartyManager>();
 
     Subsystems::Instance.CreateSubsystem<Game::EffectManager>();
     Subsystems::Instance.CreateSubsystem<Game::Chat>();

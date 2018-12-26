@@ -12,6 +12,7 @@
 #include <AB/Entities/Character.h>
 #include "Profiler.h"
 #include "GameManager.h"
+#include "PartyManager.h"
 
 #include "DebugNew.h"
 
@@ -48,7 +49,8 @@ void Player::SetGame(std::shared_ptr<Game> game)
 
 void Player::Initialize()
 {
-    party_ = std::make_shared<Party>(GetThis());
+    party_ = GetSubsystem<PartyManager>()->GetParty(GetThis(), data_.partyUuid);
+    data_.partyUuid = party_->data_.uuid;
 }
 
 void Player::Logout()

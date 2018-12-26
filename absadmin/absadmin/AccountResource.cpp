@@ -54,6 +54,43 @@ bool AccountResource::GetObjects(std::map<std::string, ginger::object>& objects)
     objects["online_invisible"] = acc.onlineStatus == AB::Entities::OnlineStatusInvisible;
     objects["is_online"] = acc.onlineStatus != AB::Entities::OnlineStatusOffline;
 
+    AB::Entities::Character ch;
+    ch.uuid = acc.currentCharacterUuid;
+    if (uuids::uuid(ch.uuid).nil() || !dataClient->Read(ch))
+    {
+        ch.name = "None";
+    }
+    objects["curr_char"] = ch.uuid;
+    objects["curr_char_name"] = ch.name;
+
+    AB::Entities::Service serv;
+    serv.uuid = acc.currentServerUuid;
+    if (uuids::uuid(serv.uuid).nil() || !dataClient->Read(serv))
+    {
+        serv.name = "None";
+    }
+    objects["curr_server"] = serv.uuid;
+    objects["curr_server_name"] = serv.name;
+
+    std::string instanceName = "None";
+    std::string instanceUuid = Utils::Uuid::EMPTY_UUID;
+    if (acc.onlineStatus != AB::Entities::OnlineStatusOffline)
+    {
+        AB::Entities::GameInstance gi;
+        gi.uuid = ch.instanceUuid;
+        if (!uuids::uuid(gi.uuid).nil() && dataClient->Read(gi))
+        {
+            instanceUuid = gi.uuid;
+            AB::Entities::Game game;
+            // If there is an instance the Game UUID must not be nil, so skip checking
+            game.uuid = gi.gameUuid;
+            if (dataClient->Read(game))
+                instanceName = game.name;
+        }
+    }
+    objects["curr_inst"] = instanceUuid;
+    objects["curr_inst_name"] = instanceName;
+
     return true;
 }
 

@@ -277,7 +277,7 @@ bool PartyChatChannel::Talk(Player* player, const std::string& text)
     if (party_)
     {
         Net::NetworkMessage msg;
-        const std::vector<std::weak_ptr<Player>>& players = party_->GetMembers();
+        const auto& players = party_->GetMembers();
         msg.AddByte(AB::GameProtocol::ChatMessage);
         msg.AddByte(AB::GameProtocol::ChatChannelParty);
         msg.Add<uint32_t>(player->id_);
@@ -298,7 +298,7 @@ bool PartyChatChannel::TalkNpc(Npc* npc, const std::string& text)
     if (party_)
     {
         Net::NetworkMessage msg;
-        const std::vector<std::weak_ptr<Player>>& players = party_->GetMembers();
+        const auto& players = party_->GetMembers();
         msg.AddByte(AB::GameProtocol::ChatMessage);
         msg.AddByte(AB::GameProtocol::ChatChannelParty);
         msg.Add<uint32_t>(npc->id_);

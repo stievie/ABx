@@ -10,6 +10,7 @@
 #include "StringUtils.h"
 #include "Profiler.h"
 #include <AB/Entities/GameInstance.h>
+#include <AB/Entities/Party.h>
 #include "Subsystems.h"
 #include "ThreadPool.h"
 
@@ -52,6 +53,7 @@ static constexpr size_t KEY_CHARACTERLIST_HASH = Utils::StringHash(AB::Entities:
 static constexpr size_t KEY_ACCOUNTKEYLIST_HASH = Utils::StringHash(AB::Entities::AccountKeyList::KEY());
 static constexpr size_t KEY_MUSIC_HASH = Utils::StringHash(AB::Entities::Music::KEY());
 static constexpr size_t KEY_MUSICLIST_HASH = Utils::StringHash(AB::Entities::MusicList::KEY());
+static constexpr size_t KEY_PARTIES_HASH = Utils::StringHash(AB::Entities::Party::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -606,6 +608,7 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     case KEY_MUSICLIST_HASH:
         return LoadFromDB<DB::DBMusicList, AB::Entities::MusicList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
+    case KEY_PARTIES_HASH:
         // Not written to DB
         return false;
     default:
@@ -747,6 +750,7 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         succ = FlushRecord<DB::DBMusicList, AB::Entities::MusicList>(data);
         break;
     case KEY_GAMEINSTANCES_HASH:
+    case KEY_PARTIES_HASH:
         // Not written to DB
         // Mark not modified and created or it will infinitely try to flush it
         (*data).second.first.created = true;
@@ -842,6 +846,7 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     case KEY_MUSICLIST_HASH:
         return ExistsInDB<DB::DBMusicList, AB::Entities::MusicList>(data);
     case KEY_GAMEINSTANCES_HASH:
+    case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
         return false;
     default:

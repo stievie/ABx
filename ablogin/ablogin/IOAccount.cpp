@@ -12,6 +12,7 @@
 #include "Profiler.h"
 #include "Application.h"
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 namespace IO {
 
@@ -233,6 +234,10 @@ bool IOAccount::LoadCharacter(AB::Entities::Character& ch)
         LOG_ERROR << "Error reading player data" << std::endl;
         return false;
     }
+    // HACK: Reset party ID here :(
+    // Otherwise people may find themselves in the same party days after.
+    ch.partyUuid = Utils::Uuid::EMPTY_UUID;
+    client->Update(ch);
     return true;
 }
 

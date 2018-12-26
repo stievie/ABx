@@ -594,7 +594,7 @@ void ChatWindow::TrimLines()
         chatLog_->RemoveItem(0u);
 }
 
-void ChatWindow::UpdatevisibleItems()
+void ChatWindow::UpdateVisibleItems()
 {
     for (unsigned i = 0; i < chatLog_->GetNumItems(); ++i)
     {
@@ -647,7 +647,7 @@ void ChatWindow::HandleFilterClick(StringHash, VariantMap& eventData)
     default:
         return;
     }
-    UpdatevisibleItems();
+    UpdateVisibleItems();
 }
 
 void ChatWindow::HandleScreenshotTaken(StringHash, VariantMap& eventData)

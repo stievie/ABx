@@ -14,6 +14,7 @@
 #include "EquipComp.h"
 #include "SkillsComp.h"
 #include "InputComp.h"
+#include "UuidUtils.h"
 
 namespace Game {
 

@@ -764,18 +764,19 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
     case AB::GameProtocol::CreatureStateAttacking:
         break;
     case AB::GameProtocol::CreatureStateEmote:
-        PlaySoundEffect(SOUND_NONE);
+        PlaySoundEffect(SOUND_NONE, true);
         break;
     case AB::GameProtocol::CreatureStateEmoteSit:
         fadeTime = 0.5f;
-        PlaySoundEffect(SOUND_NONE);
+        PlaySoundEffect(SOUND_NONE, true);
         break;
     case AB::GameProtocol::CreatureStateEmoteCry:
-        PlaySoundEffect(SOUND_NONE);
+        PlaySoundEffect(SOUND_NONE, true);
         fadeTime = 0.5f;
         break;
     case AB::GameProtocol::CreatureStateDead:
     {
+        PlaySoundEffect(SOUND_NONE, true);
         PlaySoundEffect(SOUND_DIE);
         break;
     }

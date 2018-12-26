@@ -45,13 +45,13 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         }
     }
 
-    player_ = gameMan->CreatePlayer(playerUuid, GetThis());
-
     if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(accountUuid))
     {
         DisconnectClient(AB::Errors::AccountBanned);
         return;
     }
+
+    player_ = gameMan->CreatePlayer(playerUuid, GetThis());
 
     if (!IO::IOPlayer::LoadPlayerByUuid(player_.get(), playerUuid))
     {
@@ -74,6 +74,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     player_->account_.currentServerUuid = ProtocolGame::serverId_;
     client->Update(player_->account_);
 
+    player_->Initialize();
     player_->data_.currentMapUuid = mapUuid;
     player_->data_.lastLogin = Utils::AbTick();
     if (!uuids::uuid(instanceUuid).nil())

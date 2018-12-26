@@ -11,12 +11,15 @@ Utils::IdGenerator<uint32_t> Party::partyIds_;
 
 Party::Party(std::shared_ptr<Player> leader) :
     leader_(leader),
-    maxMembers_(1)
+    maxMembers_(1),
+    numMembers_(0)
 {
     id_ = GetNewId();
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
-    members_.push_back(leader);
+    members_[0] = leader;
+    ++numMembers_;
+    data_.members.push_back(leader->data_.uuid);
 }
 
 Party::~Party()
@@ -37,7 +40,8 @@ bool Party::Add(std::shared_ptr<Player> player)
     // Remove from existing party
     player->GetParty()->Remove(player);
     // TODO: shared_from_this -> Exception?
-    members_.push_back(player);
+    members_[numMembers_] = player;
+    ++numMembers_;
     player->SetParty(shared_from_this());
     RemoveInvite(player);
     return true;
@@ -48,17 +52,29 @@ bool Party::Remove(std::shared_ptr<Player> player)
     if (!player)
         return false;
 
-    auto it = std::find_if(members_.begin(), members_.end(), [&player](const std::weak_ptr<Player>& current)
+    bool found = false;
+    for (size_t i = 0; i < AB::Entities::Limits::MAX_PARTY_MEMBERS; ++i)
     {
-        if (const auto& c = current.lock())
+        if (auto p = members_[i].lock())
         {
-            return c->id_ == player->id_;
+            if (!found)
+            {
+                if (p->id_ == player->id_)
+                {
+                    members_[i].reset();
+                    found = true;
+                }
+            }
+            else
+            {
+                // Move bellow up
+                if (i <  AB::Entities::Limits::MAX_PARTY_MEMBERS - 1)
+                    members_[i] = members_[i + 1];
+            }
         }
-        return false;
-    });
-    if (it == members_.end())
-        return false;
-    members_.erase(it);
+    }
+    members_.back().reset();
+
     if (auto l = leader_.lock())
     {
         if (player->id_ == l->id_)
@@ -121,14 +137,17 @@ void Party::WriteToMembers(const Net::NetworkMessage& message)
     }
 }
 
-void Party::SetPartySize(uint32_t size)
+void Party::SetPartySize(size_t size)
 {
-    while (members_.size() > size)
+    for (size_t i = size; i < AB::Entities::Limits::MAX_PARTY_MEMBERS; ++i)
     {
-        auto it = members_.back();
-        Remove(it.lock());
+        if (auto p = members_[i].lock())
+        {
+            p->SetParty(std::shared_ptr<Party>());
+            members_[i].reset();
+        }
     }
-    maxMembers_ = size;
+    maxMembers_ = static_cast<uint32_t>(size);
 }
 
 bool Party::IsMember(std::shared_ptr<Player> player) const

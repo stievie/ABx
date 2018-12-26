@@ -2,6 +2,7 @@
 
 #include "NetworkMessage.h"
 #include "IdGenerator.h"
+#include <AB/Entities/Party.h>
 
 namespace Game {
 
@@ -13,12 +14,13 @@ class Party : public std::enable_shared_from_this<Party>
 private:
     static Utils::IdGenerator<uint32_t> partyIds_;
     std::weak_ptr<Player> leader_;
-    std::vector<std::weak_ptr<Player>> members_;
+    std::array<std::weak_ptr<Player>, AB::Entities::Limits::MAX_PARTY_MEMBERS> members_;
     /// Used when forming a group. If the player accepts it is added to the members.
     std::vector<std::weak_ptr<Player>> invited_;
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
+    size_t numMembers_;
 public:
     static uint32_t GetNewId()
     {
@@ -41,12 +43,12 @@ public:
 
     void WriteToMembers(const Net::NetworkMessage& message);
 
-    void SetPartySize(uint32_t size);
+    void SetPartySize(size_t size);
     size_t GetMemberCount() const
     {
         return members_.size();
     }
-    const std::vector<std::weak_ptr<Player>>& GetMembers() const
+    const std::array<std::weak_ptr<Player>, AB::Entities::Limits::MAX_PARTY_MEMBERS>& GetMembers() const
     {
         return members_;
     }
@@ -61,6 +63,7 @@ public:
     void ChangeInstance(const std::string& mapUuid);
 
     uint32_t id_;
+    AB::Entities::Party data_;
 };
 
 }
