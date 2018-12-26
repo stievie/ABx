@@ -864,6 +864,8 @@ void Actor::PlaySoundEffect(const String& fileName, const String& name /* = Stri
     auto* soundSource = nd->CreateComponent<SoundSource3D>();
     soundSource->SetSoundType(SOUND_EFFECT);
     soundSource->SetAutoRemoveMode(REMOVE_NODE);
+    soundSource->SetNearDistance(2.0f);
+    soundSource->SetFarDistance(15.0f);
     soundSource->Play(sound);
 }
 
