@@ -34,5 +34,6 @@ public:
 
     void SetMode(PartyWindowMode mode);
     void AddActor(SharedPtr<Actor> actor);
+    void Clear();
 };
 

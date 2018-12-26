@@ -859,6 +859,7 @@ void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Client::Obje
     eData[P_UNDESTROYABLE] = objectSpawn.undestroyable;
     eData[P_STATE] = static_cast<uint32_t>(objectSpawn.state);
     eData[P_SPEEDFACTOR] = objectSpawn.speed;
+    eData[P_GROUPID] = objectSpawn.groupId;
     eData[P_SCALE] = Vector3(objectSpawn.scale.x, objectSpawn.scale.y, objectSpawn.scale.z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
     eData[P_DATA] = d;

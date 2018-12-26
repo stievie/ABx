@@ -89,7 +89,7 @@ void PartyWindow::AddActor(SharedPtr<Actor> actor)
     hb->SetActor(actor);
     hb->showName_ = true;
 
-    if (mode_ == PartyWindowMode::ModeOutpost)
+    if (mode_ == PartyWindowMode::ModeOutpost && actor->objectType_ != ObjectTypeSelf)
     {
         Button* kickButton = cont->CreateChild<Button>();
         kickButton->SetSize(20, 20);
@@ -110,6 +110,11 @@ void PartyWindow::AddActor(SharedPtr<Actor> actor)
     partyContainer_->SetMinHeight(memberContainer_->GetHeight() + 25);
     SetMinHeight(partyContainer_->GetHeight() + 33 + 30);
     UpdateLayout();
+}
+
+void PartyWindow::Clear()
+{
+    memberContainer_->RemoveAllChildren();
 }
 
 void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)

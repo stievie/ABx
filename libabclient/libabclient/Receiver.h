@@ -22,6 +22,7 @@ struct ObjectSpawn
     bool undestroyable;
     AB::GameProtocol::CreatureState state;
     float speed;
+    uint32_t groupId;
 };
 
 class Receiver

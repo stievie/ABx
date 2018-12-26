@@ -352,16 +352,18 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     const Vector3& scale = eventData[P_SCALE].GetVector3();
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());
     float speed = eventData[P_SPEEDFACTOR].GetFloat();
+    uint32_t groupId = eventData[P_GROUPID].GetUInt();
     const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
     bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction, undestroyable, state, speed, data);
+    SpawnObject(tick, objectId, existing, pos, scale, direction, undestroyable, state, speed, groupId, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     const Vector3& position, const Vector3& scale, const Quaternion& rot,
     bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
+    uint32_t groupId,
     PropReadStream& data)
 {
     uint8_t objectType;
@@ -394,6 +396,8 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     if (object)
     {
         object->spawnTickServer_ = updateTick;
+        object->groupId_ = groupId;
+
         const float p[3] = { position.x_, position.y_, position.z_ };
         // Here an object is always an Actor
         dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
@@ -403,6 +407,10 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         object->SetSpeedFactor(updateTick, speed);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
+
+        if (player_ && player_->groupId_ == groupId)
+            partyWindow_->AddActor(SharedPtr<Actor>(dynamic_cast<Actor*>(object)));
+
         switch (object->objectType_)
         {
         case ObjectTypePlayer:
@@ -791,7 +799,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
     SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
     GetSubsystem<Audio>()->SetListener(soundListener);
     SetupViewport();
-    partyWindow_->AddActor(player_);
+    partyWindow_->Clear();
     chatWindow_->SayHello(player_);
 }
 

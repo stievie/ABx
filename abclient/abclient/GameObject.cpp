@@ -12,7 +12,8 @@ GameObject::GameObject(Context* context) :
     creatureState_(AB::GameProtocol::CreatureStateIdle),
     hovered_(false),
     playerSelected_(false),
-    speedFactor_(1.0f)
+    speedFactor_(1.0f),
+    groupId_(0)
 {
 }
 

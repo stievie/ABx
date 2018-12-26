@@ -102,6 +102,7 @@ public:
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
+    uint32_t partyId_;
 private:
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;

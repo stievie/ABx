@@ -381,6 +381,7 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
     os.undestroyable = message->Get<uint8_t>() != 0;
     os.state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
     os.speed = message->Get<float>();
+    os.groupId = message->Get<uint32_t>();
 
     std::string data = message->GetString();
     PropReadStream stream;

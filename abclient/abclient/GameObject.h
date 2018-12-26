@@ -33,6 +33,7 @@ public:
     bool hovered_;
     /// Player has selected this object
     bool playerSelected_;
+    uint32_t groupId_;
     SharedPtr<SoundSource3D> soundSource_;
 
     virtual void Unserialize(PropReadStream&) {}

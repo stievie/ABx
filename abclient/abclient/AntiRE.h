@@ -71,7 +71,8 @@ bool IsRmtDbgPresent()
 
 bool IsDebuggee()
 {
-    return IsDebuggerPresent() || IsRmtDbgPresent() || (CheckHardwareBreakpoints() > 0) || CheckDbgPresentCloseHandle();
+    return false;
+//    return IsDebuggerPresent() || IsRmtDbgPresent() || (CheckHardwareBreakpoints() > 0) || CheckDbgPresentCloseHandle();
 }
 
 }
