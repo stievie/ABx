@@ -305,6 +305,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeWave:
         HandleWaveCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeLaugh:
+        HandleLaughCommand(command, message);
+        break;
     case AB::GameProtocol::CommandTypeAge:
         HandleAgeCommand(command, message);
         break;
@@ -481,6 +484,11 @@ void Player::HandlePonderCommand(const std::string&, Net::NetworkMessage&)
 void Player::HandleWaveCommand(const std::string&, Net::NetworkMessage&)
 {
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteWave);
+}
+
+void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
+{
+    stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteLaugh);
 }
 
 void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)

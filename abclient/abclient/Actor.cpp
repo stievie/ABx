@@ -75,6 +75,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_TAUNTING] = GetAnimation(ANIM_TAUNTING);
     animations_[ANIM_PONDER] = GetAnimation(ANIM_PONDER);
     animations_[ANIM_WAVE] = GetAnimation(ANIM_WAVE);
+    animations_[ANIM_LAUGH] = GetAnimation(ANIM_LAUGH);
     sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
@@ -464,6 +465,8 @@ String Actor::GetAnimation(const StringHash& hash)
         result += "Ponder.ani";
     else if (hash == ANIM_WAVE)
         result += "Wave.ani";
+    else if (hash == ANIM_LAUGH)
+        result += "Laugh.ani";
     else
         return "";
     return result;
@@ -697,6 +700,9 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     case AB::GameProtocol::CreatureStateEmoteWave:
         PlayAnimation(ANIM_WAVE, false, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateEmoteLaugh:
+        PlayAnimation(ANIM_LAUGH, false, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateDead:
         PlayAnimation(ANIM_DYING, false, fadeTime);

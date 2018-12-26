@@ -31,6 +31,7 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "taunt", AB::GameProtocol::CommandTypeTaunt },
     { "ponder", AB::GameProtocol::CommandTypePonder },
     { "wave", AB::GameProtocol::CommandTypeWave },
+    { "laugh", AB::GameProtocol::CommandTypeLaugh },
 
     { "help", AB::GameProtocol::CommandTypeHelp }
 };
