@@ -39,7 +39,7 @@ $include {{_header.html}}
                       $for ak in accountkeys {{
                         <tr>
                           <td>
-                            ${ak.uuid}
+                            <input type="text" id="key-${ak.uuid}" readonly value="${ak.uuid}" style="width:95%;"></input> <a href="#" class="copy-key" data-key="${ak.uuid}" title="Copy"><i class="fa fa-copy"></i></a>
                           </td>
                           <td>
                             <select name="table_key_type" class="" data-uuid="${ak.uuid}">
@@ -139,6 +139,13 @@ $include {{_header.html}}
         </div>
         <!-- /page content -->
         <script type="text/javascript">
+          $$(".copy-key").on("click", function(e) {
+            e.preventDefault();
+            var key = $$(this).data("key");
+            $$("#key-" + key).select();
+            document.execCommand('copy');
+          });
+
           $$(window).load(function () {
             // Initialize as last
             if (typeof $$.fn.dataTable !== 'undefined')
