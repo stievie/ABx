@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Party.h"
 #include "Player.h"
+#include "Actor.h"
 #include "Chat.h"
 #include "GameManager.h"
 #include "Subsystems.h"
@@ -181,6 +182,19 @@ bool Party::IsLeader(const Player* const player)
     if (auto l = leader_.lock())
         return l.get() == player;
     return false;
+}
+
+uint8_t Party::GetPosition(const Actor* actor) const
+{
+    for (size_t i = 0; i < members_.size(); ++i)
+    {
+        if (auto sm = members_[i].lock())
+        {
+            if (sm->id_ == actor->id_)
+                return (static_cast<uint8_t>(i + 1));
+        }
+    }
+    return 0;
 }
 
 void Party::ChangeInstance(const std::string& mapUuid)

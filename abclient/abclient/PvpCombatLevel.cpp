@@ -12,6 +12,8 @@ PvpCombatLevel::PvpCombatLevel(Context* context) :
 {
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
     mapUuid_ = lm->GetMapUuid();
+    mapType_ = lm->GetMapType();
+    partySize_ = lm->GetPartySize();
     FwClient* cli = context_->GetSubsystem<FwClient>();
     mapName_ = cli->GetGameName(mapUuid_);
     // Create the scene content

@@ -380,17 +380,23 @@ void ProtocolGame::EnterGame()
 {
     auto gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
+    std::shared_ptr<Game::Game> instance;
     if (!uuids::uuid(player_->data_.instanceUuid).nil())
     {
-        auto game = gameMan->GetInstance(player_->data_.instanceUuid);
-        if (game)
+        // Enter an existing instance
+        instance = gameMan->GetInstance(player_->data_.instanceUuid);
+        if (instance)
         {
-            game->PlayerJoin(player_->id_);
+            instance->PlayerJoin(player_->id_);
             success = true;
         }
     }
     else if (gameMan->AddPlayer(player_->data_.currentMapUuid, player_))
+    {
+        // Create new instance
         success = true;
+        instance = gameMan->GetInstance(player_->data_.instanceUuid);
+    }
 
     if (success)
     {
@@ -400,6 +406,8 @@ void ProtocolGame::EnterGame()
         output->AddString(player_->data_.currentMapUuid);
         output->AddString(player_->data_.instanceUuid);
         output->Add<uint32_t>(player_->id_);
+        output->Add<uint8_t>(static_cast<uint8_t>(instance->data_.type));
+        output->Add<uint8_t>(instance->data_.partySize);
         Send(output);
     }
     else

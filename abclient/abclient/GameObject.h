@@ -34,6 +34,7 @@ public:
     /// Player has selected this object
     bool playerSelected_;
     uint32_t groupId_;
+    uint8_t groupPos_;
     SharedPtr<SoundSource3D> soundSource_;
 
     virtual void Unserialize(PropReadStream&) {}

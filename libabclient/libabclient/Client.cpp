@@ -126,12 +126,13 @@ void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
 }
 
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
-    const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId)
+    const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
+    AB::Entities::GameType type, uint8_t partySize)
 {
     state_ = ClientState::World;
     mapUuid_ = mapUuid;
     if (receiver_)
-        receiver_->OnEnterWorld(updateTick, serverId, mapUuid, instanceUuid, playerId);
+        receiver_->OnEnterWorld(updateTick, serverId, mapUuid, instanceUuid, playerId, type, partySize);
 }
 
 void Client::OnChangeInstance(int64_t updateTick, const std::string& serverId,

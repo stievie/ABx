@@ -725,7 +725,8 @@ void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
-    const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId)
+    const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
+    AB::Entities::GameType type, uint8_t partySize)
 {
     levelReady_ = false;
     playerId_ = playerId;
@@ -758,6 +759,8 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     eData[P_MAPUUID] = currentMapUuid_;
     eData[P_NAME] = currentLevel_;
     eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
+    eData[P_TYPE] = type;
+    eData[P_PARTYSIZE] = partySize;
     SendEvent(AbEvents::E_SETLEVEL, eData);
 
     Graphics* graphics = GetSubsystem<Graphics>();
@@ -860,6 +863,7 @@ void FwClient::OnSpawnObject(int64_t updateTick, uint32_t id, const Client::Obje
     eData[P_STATE] = static_cast<uint32_t>(objectSpawn.state);
     eData[P_SPEEDFACTOR] = objectSpawn.speed;
     eData[P_GROUPID] = objectSpawn.groupId;
+    eData[P_GROUPPOS] = objectSpawn.groupPos;
     eData[P_SCALE] = Vector3(objectSpawn.scale.x, objectSpawn.scale.y, objectSpawn.scale.z);
     String d(data.Buffer(), static_cast<unsigned>(data.GetSize()));
     eData[P_DATA] = d;

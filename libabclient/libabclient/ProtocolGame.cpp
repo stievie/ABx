@@ -382,6 +382,7 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
     os.state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
     os.speed = message->Get<float>();
     os.groupId = message->Get<uint32_t>();
+    os.groupPos = message->Get<uint8_t>();
 
     std::string data = message->GetString();
     PropReadStream stream;
@@ -443,8 +444,10 @@ void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
     std::string mapUuid = message->GetString();
     std::string instanceUuid = message->GetString();
     uint32_t playerId = message->Get<uint32_t>();
+    AB::Entities::GameType type = static_cast<AB::Entities::GameType>(message->Get<uint8_t>());
+    uint8_t partySize = message->Get<uint8_t>();
     if (receiver_)
-        receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId);
+        receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId, type, partySize);
 }
 
 void ProtocolGame::ParseChangeInstance(const std::shared_ptr<InputMessage>& message)

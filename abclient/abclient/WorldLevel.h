@@ -15,6 +15,7 @@
 #include "MissionMapWindow.h"
 #include "SkillBarWindow.h"
 #include "EffectsWindow.h"
+#include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
@@ -52,6 +53,8 @@ protected:
     SharedPtr<EffectsWindow> effectsWindow_;
     String mapUuid_;
     String mapName_;
+    AB::Entities::GameType mapType_;
+    uint8_t partySize_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
     /// Urho3D NodeIDs -> AB Object IDs given from the server
@@ -86,6 +89,7 @@ private:
     SharedPtr<GameObject> GetObjectAt(const IntVector2& pos);
     bool TerrainRaycast(const IntVector2& pos, Vector3& hitPos);
 
+    void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void HandleServerJoinedLeft(StringHash eventType, VariantMap& eventData);
     void HandleMouseDown(StringHash eventType, VariantMap& eventData);
     void HandleMouseUp(StringHash eventType, VariantMap& eventData);
@@ -123,7 +127,7 @@ private:
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         const Vector3& position, const Vector3& scale, const Quaternion& rot,
         bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
-        uint32_t groupId,
+        uint32_t groupId, uint8_t groupPos,
         PropReadStream& data);
 };
 

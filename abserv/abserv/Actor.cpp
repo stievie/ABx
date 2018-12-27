@@ -228,6 +228,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(GetSpeed());
     msg.Add<uint32_t>(GetGroupId());
+    msg.Add<uint8_t>(GetGroupPos());
     IO::PropWriteStream data;
     size_t dataSize;
     Serialize(data);

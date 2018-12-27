@@ -181,9 +181,6 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Some code: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
 
     CreateSingleLine("Assets", 30, true);
-    CreateSingleLine("Human Models: MakeHuman http://www.makehumancommunity.org", 15);
-    CreateLogo("Textures/makehuman_logo.png", 0.5f);
-    CreateSingleLine("Animations: mixamo https://www.mixamo.com/", 15);
     CreateSingleLine("World Map: https://en.wikipedia.org/wiki/File:Map_greek_sanctuaries-en.svg", 15);
     CreateSingleLine("Creative Commons Attribution-Share Alike 3.0 Unported License", 10);
     CreateSingleLine("https://creativecommons.org/licenses/by-sa/3.0/deed.en", 10);
@@ -196,8 +193,10 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("For complete list see CREDITS.md", 20);
 
     CreateSingleLine("Tools", 30, true);
-    CreateSingleLine("Complier, IDE: MSVC, Visual Studio https://visualstudio.microsoft.com/", 15);
     CreateSingleLine("3D Modeling: Blender https://www.blender.org", 15);
     CreateLogo("Textures/blender_logo.png", 0.8f);
+    CreateSingleLine("Human Models: MakeHuman http://www.makehumancommunity.org", 15);
+    CreateLogo("Textures/makehuman_logo.png", 0.5f);
+    CreateSingleLine("Animations: mixamo https://www.mixamo.com/", 15);
     CreateSingleLine("Sounds: Audacity https://www.audacityteam.org/", 15);
 }

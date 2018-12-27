@@ -16,6 +16,7 @@ private:
     SharedPtr<Window> window_;
     SharedPtr<LineEdit> addPlayerEdit_;
     int memberCount_;
+    uint8_t partySize_;
     SharedPtr<UIElement> memberContainer_;
     SharedPtr<UIElement> partyContainer_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
@@ -26,12 +27,14 @@ private:
     void HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
+    void UpdateCaption();
 public:
     static void RegisterObject(Context* context);
 
     PartyWindow(Context* context);
     ~PartyWindow();
 
+    void SetPartySize(uint8_t value);
     void SetMode(PartyWindowMode mode);
     void AddActor(SharedPtr<Actor> actor);
     void Clear();

@@ -41,6 +41,8 @@ URHO3D_EVENT(E_SETLEVEL, SetLevel)
     URHO3D_PARAM(P_NAME, Name);                  // String
     URHO3D_PARAM(P_MAPUUID, MapUuid);            // String
     URHO3D_PARAM(P_INSTANCEUUID, InstanceUuid);  // String
+    URHO3D_PARAM(P_TYPE, Type);                  // uint8_t
+    URHO3D_PARAM(P_PARTYSIZE, PartySize);        // uint8_t
 }
 
 URHO3D_EVENT(E_LEVELREADY, LevelReady)
@@ -60,6 +62,7 @@ URHO3D_EVENT(E_OBJECTSPAWN, ObjectSpawn)
     URHO3D_PARAM(P_STATE, State);            // AB::GameProtocol::CreatureState
     URHO3D_PARAM(P_SPEEDFACTOR, SpeedFactor);  // float
     URHO3D_PARAM(P_GROUPID, GroupId);  // uint32_t
+    URHO3D_PARAM(P_GROUPPOS, GroupPos);  // uint32_t
     URHO3D_PARAM(P_DATA, Data);
 }
 

@@ -22,17 +22,22 @@ WorldLevel::WorldLevel(Context* context) :
     rmbDown_(false),
     mailWindow_(nullptr),
     mapWindow_(nullptr),
-    partyWindow_(nullptr)
+    partyWindow_(nullptr),
+    mapType_(AB::Entities::GameTypeUnknown),
+    partySize_(1)
 {
 }
 
 WorldLevel::~WorldLevel()
 {
+    UnsubscribeFromAllEvents();
 }
 
 void WorldLevel::SubscribeToEvents()
 {
     BaseLevel::SubscribeToEvents();
+
+    SubscribeToEvent(AbEvents::E_LEVELREADY, URHO3D_HANDLER(WorldLevel, HandleLevelReady));
 
     SubscribeToEvent(AbEvents::E_SERVERJOINED, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
     SubscribeToEvent(AbEvents::E_SERVERLEFT, URHO3D_HANDLER(WorldLevel, HandleServerJoinedLeft));
@@ -122,6 +127,13 @@ bool WorldLevel::TerrainRaycast(const IntVector2& pos, Vector3& hitPos)
         }
     }
     return false;
+}
+
+void WorldLevel::HandleLevelReady(StringHash, VariantMap&)
+{
+    partyWindow_->SetPartySize(partySize_);
+    partyWindow_->SetMode(mapType_ == AB::Entities::GameTypeOutpost ?
+        PartyWindowMode::ModeOutpost : PartyWindowMode::ModeGame);
 }
 
 void WorldLevel::HandleServerJoinedLeft(StringHash, VariantMap&)
@@ -353,17 +365,19 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(eventData[P_STATE].GetUInt());
     float speed = eventData[P_SPEEDFACTOR].GetFloat();
     uint32_t groupId = eventData[P_GROUPID].GetUInt();
+    uint8_t groupPos = static_cast<uint8_t>(eventData[P_GROUPPOS].GetUInt());
     const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
     bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction, undestroyable, state, speed, groupId, data);
+    SpawnObject(tick, objectId, existing, pos, scale, direction, undestroyable,
+        state, speed, groupId, groupPos, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     const Vector3& position, const Vector3& scale, const Quaternion& rot,
     bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
-    uint32_t groupId,
+    uint32_t groupId, uint8_t groupPos,
     PropReadStream& data)
 {
     uint8_t objectType;
@@ -397,6 +411,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     {
         object->spawnTickServer_ = updateTick;
         object->groupId_ = groupId;
+        object->groupPos_ = groupPos;
 
         const float p[3] = { position.x_, position.y_, position.z_ };
         // Here an object is always an Actor

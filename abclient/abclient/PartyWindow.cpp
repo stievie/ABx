@@ -14,7 +14,8 @@ void PartyWindow::RegisterObject(Context* context)
 
 PartyWindow::PartyWindow(Context* context) :
     Window(context),
-    memberCount_(0)
+    memberCount_(0),
+    partySize_(1)
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -36,12 +37,11 @@ PartyWindow::PartyWindow(Context* context) :
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
 
-    Shortcuts* scs = GetSubsystem<Shortcuts>();
-    Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
-    caption->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", true));
+    UpdateCaption();
 
     memberContainer_ = dynamic_cast<UIElement*>(GetChild("MemberContainer", true));
     partyContainer_ = dynamic_cast<UIElement*>(GetChild("PartyContainer", true));
+    addPlayerEdit_ = dynamic_cast<LineEdit*>(GetChild("AddPlayerEdit", true));
 
     SetSize(272, 156);
     auto* graphics = GetSubsystem<Graphics>();
@@ -58,23 +58,36 @@ PartyWindow::~PartyWindow()
     UnsubscribeFromAllEvents();
 }
 
+void PartyWindow::SetPartySize(uint8_t value)
+{
+    if (partySize_ != value)
+    {
+        partySize_ = value;
+        UpdateCaption();
+    }
+}
+
 void PartyWindow::SetMode(PartyWindowMode mode)
 {
     mode_ = mode;
+    auto* addContainer = dynamic_cast<UIElement*>(GetChild("AddContainer", true));
+    auto* buttonContainer = dynamic_cast<UIElement*>(GetChild("ButtonContainer", true));
+    Button* addPlayerButton = dynamic_cast<Button*>(GetChild("AddPlayerButton", true));
     if (mode == PartyWindowMode::ModeOutpost)
     {
-        addPlayerEdit_ = dynamic_cast<LineEdit*>(GetChild("AddPlayerEdit", true));
-        Button* addPlayerButton = dynamic_cast<Button*>(GetChild("AddPlayerButton", true));
+        addContainer->SetVisible(true);
+        buttonContainer->SetVisible(true);
         SubscribeToEvent(addPlayerButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleAddTargetClicked));
         SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));
     }
     else
     {
-        auto* addContainer = dynamic_cast<UIElement*>(GetChild("AddContainer", true));
-        RemoveChild(addContainer);
-        auto* buttonContainer = dynamic_cast<UIElement*>(GetChild("ButtonContainer", true));
-        RemoveChild(buttonContainer);
+        UnsubscribeFromEvent(addPlayerButton, E_RELEASED);
+        UnsubscribeFromEvent(AbEvents::E_OBJECTSELECTED);
+        addContainer->SetVisible(false);
+        buttonContainer->SetVisible(false);
     }
+    UpdateCaption();
 }
 
 void PartyWindow::AddActor(SharedPtr<Actor> actor)
@@ -109,12 +122,14 @@ void PartyWindow::AddActor(SharedPtr<Actor> actor)
     memberContainer_->SetMaxHeight(hb->GetHeight() * memberCount_);
     partyContainer_->SetMinHeight(memberContainer_->GetHeight() + 25);
     SetMinHeight(partyContainer_->GetHeight() + 33 + 30);
+    UpdateCaption();
     UpdateLayout();
 }
 
 void PartyWindow::Clear()
 {
     memberContainer_->RemoveAllChildren();
+    memberCount_ = 0;
 }
 
 void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
@@ -194,4 +209,14 @@ void PartyWindow::SubscribeEvents()
     SubscribeToEvent(AbEvents::E_PARTYINVITED, URHO3D_HANDLER(PartyWindow, HandlePartyInvited));
     SubscribeToEvent(AbEvents::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));
     SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyRemoved));
+}
+
+void PartyWindow::UpdateCaption()
+{
+    Shortcuts* scs = GetSubsystem<Shortcuts>();
+    Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));
+    String s(scs->GetCaption(AbEvents::E_SC_TOGGLEPARTYWINDOW, "Party", true));
+    if (mode_ == PartyWindowMode::ModeOutpost)
+        s += "  " + String(memberCount_) + "/" + String(static_cast<int>(partySize_));
+    caption->SetText(s);
 }

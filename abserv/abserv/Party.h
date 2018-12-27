@@ -7,6 +7,7 @@
 namespace Game {
 
 class Player;
+class Actor;
 class PartyChatChannel;
 
 class Party : public std::enable_shared_from_this<Party>
@@ -59,6 +60,8 @@ public:
     {
         return leader_.lock();
     }
+    /// Get position of actor in party, 1-based, 0 = not found
+    uint8_t GetPosition(const Actor* actor) const;
     /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid);
 

@@ -15,7 +15,9 @@ LevelManager::LevelManager(Context* context) :
     lastLevelName_(""),
     level_(nullptr),
     drawDebugGeometry_(false),
-    fadeStatus_(0)
+    fadeStatus_(0),
+    mapType_(AB::Entities::GameTypeUnknown),
+    partySize_(0)
 {
     // Listen to set level event
     SubscribeToEvent(AbEvents::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));
@@ -116,6 +118,8 @@ void LevelManager::HandleUpdate(StringHash eventType, VariantMap& eventData)
         levelName_ = levelData[P_NAME].GetString();
         mapUuid_ = levelData[P_MAPUUID].GetString();
         const String& instanceUuid = levelData[P_INSTANCEUUID].GetString();
+        mapType_ = static_cast<AB::Entities::GameType>(levelData[P_TYPE].GetUInt());
+        partySize_ = static_cast<uint8_t>(levelData[P_PARTYSIZE].GetUInt());
         level_ = context_->CreateObject(StringHash(levelName_));
         BaseLevel* baseLevel = GetCurrentLevel<BaseLevel>();
         if (baseLevel)

@@ -47,6 +47,11 @@ void Player::SetGame(std::shared_ptr<Game> game)
     }
 }
 
+uint8_t Player::GetGroupPos() const
+{
+    return party_->GetPosition(const_cast<const Player*>(this));
+}
+
 void Player::Initialize()
 {
     party_ = GetSubsystem<PartyManager>()->GetParty(GetThis(), data_.partyUuid);

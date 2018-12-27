@@ -13,7 +13,8 @@ GameObject::GameObject(Context* context) :
     hovered_(false),
     playerSelected_(false),
     speedFactor_(1.0f),
-    groupId_(0)
+    groupId_(0),
+    groupPos_(0)
 {
 }
 

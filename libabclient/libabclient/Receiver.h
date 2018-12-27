@@ -23,6 +23,7 @@ struct ObjectSpawn
     AB::GameProtocol::CreatureState state;
     float speed;
     uint32_t groupId;
+    uint8_t groupPos;
 };
 
 class Receiver
@@ -46,7 +47,8 @@ public:
     virtual void OnChangeInstance(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid) = 0;
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,
-        const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId) = 0;
+        const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
+        AB::Entities::GameType type, uint8_t partySize) = 0;
     virtual void OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
         PropReadStream& data, bool existing) = 0;
     virtual void OnDespawnObject(int64_t updateTick, uint32_t id) = 0;

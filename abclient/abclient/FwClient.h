@@ -126,7 +126,8 @@ public:
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
-        const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId) override;
+        const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
+        AB::Entities::GameType type, uint8_t partySize) override;
     void OnChangeInstance(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid) override;
     void OnSpawnObject(int64_t updateTick, uint32_t id, const Client::ObjectSpawn& objectSpawn,
@@ -180,7 +181,7 @@ public:
     {
         return characters_;
     }
-    const AB::Entities::Game* const GetGame(const String& uuid) const
+    const AB::Entities::Game* GetGame(const String& uuid) const
     {
         auto it = games_.find(std::string(uuid.CString()));
         if (it == games_.end())
@@ -198,6 +199,13 @@ public:
         if (it == games_.end())
             return "";
         return String((*it).second.name.c_str());
+    }
+    uint8_t GetPartySize(const String& uuid) const
+    {
+        auto it = games_.find(std::string(uuid.CString()));
+        if (it == games_.end())
+            return 1;
+        return (*it).second.partySize;
     }
     const std::map<std::string, AB::Entities::Profession>& GetProfessions() const
     {
