@@ -13,7 +13,7 @@
   <!-- We use FXAA for antialiasing -->
   <parameter name="MultiSample" type="int" value="1" />
 
-  <!-- Stick the camera to the head bonde -->
+  <!-- Stick the camera to the head bone -->
   <parameter name="StickCameraToHead" type="bool" value="t"/>
   <!-- Disable walking with LMB click -->
   <parameter name="DisableMouseWalking" type="bool" value="f"/>
