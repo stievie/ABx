@@ -28,7 +28,7 @@ double GameObject::GetClientTime() const
     return (double)(Client::AbTick() - c->GetClockDiff() - spawnTickServer_) / 1000.0;
 }
 
-void GameObject::SetYRotation(float rad, bool)
+void GameObject::SetYRotation(int64_t, float rad, bool)
 {
     Quaternion direction;
     float deg = RadToDeg(rad);

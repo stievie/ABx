@@ -21,6 +21,7 @@ private:
     void LoadWindow(Window* wnd, const String& fileName);
     void FillShortcutsList();
     void HandleShortcutItemSelected(StringHash eventType, VariantMap& eventData);
+    void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
 

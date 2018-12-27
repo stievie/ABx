@@ -45,7 +45,7 @@ public:
     }
     double GetClientTime() const;
 
-    virtual void SetYRotation(float rad, bool updateYaw);
+    virtual void SetYRotation(int64_t time, float rad, bool updateYaw);
     virtual void SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState);
     AB::GameProtocol::CreatureState GetCreatureState() const
     {

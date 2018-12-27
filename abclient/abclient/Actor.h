@@ -77,10 +77,9 @@ public:
         AB::GameProtocol::CreatureState state,
         PropReadStream& data);
     /// Handle physics world update. Called by LogicComponent base class.
-    virtual void FixedUpdate(float timeStep) override;
-    virtual void Update(float timeStep) override;
+    void Update(float timeStep) override;
     void MoveTo(int64_t time, const Vector3& newPos) override;
-    void SetYRotation(float rad, bool updateYaw) override;
+    void SetYRotation(int64_t time, float rad, bool updateYaw) override;
     void RemoveFromScene() override;
     void SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newState) override;
     void SetSpeedFactor(int64_t time, float value) override;
@@ -100,6 +99,10 @@ public:
     bool LoadSkillTemplate(const std::string& templ);
     void OnSkillError(AB::GameProtocol::SkillError error) override;
 
+    String GetClasses() const;
+    String GetClassLevel() const;
+    String GetClassLevelName() const;
+
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
@@ -111,6 +114,7 @@ private:
     SharedPtr<Text> speechBubbleText_;
     SharedPtr<ProgressBar> hpBar_;
     float speechBubbleVisible_;
+    void UpdateTransformation();
     void AddActorUI();
     void RemoveActorUI();
     void ShowSpeechBubble(const String& text);

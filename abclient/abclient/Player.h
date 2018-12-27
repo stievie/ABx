@@ -43,7 +43,7 @@ public:
     SharedPtr<Node> cameraNode_;
     bool moveLock_;
     float cameraDistance_;
-    void SetYRotation(float rad, bool updateYaw) override;
+    void SetYRotation(int64_t time, float rad, bool updateYaw) override;
     void CameraZoom(bool increase);
     void UpdateYaw();
     void FollowSelected();

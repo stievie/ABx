@@ -41,7 +41,7 @@ void HealthBar::SetActor(SharedPtr<Actor> actor)
 {
     actor_ = actor;
     if (actor)
-        nameText_->SetText(actor->name_);
+        nameText_->SetText(actor->GetClassLevelName());
     else
         nameText_->SetText(String::EMPTY);
 }

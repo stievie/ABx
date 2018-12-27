@@ -29,7 +29,7 @@ Actor::Actor(Context* context) :
     sex_(AB::Entities::CharacterSexUnknown)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
-    SetUpdateEventMask(USE_FIXEDUPDATE | USE_UPDATE);
+    SetUpdateEventMask(USE_UPDATE);
     SubscribeToEvent(AbEvents::E_CHATMESSAGE, URHO3D_HANDLER(Actor, HandleChatMessage));
     SubscribeToEvent(AbEvents::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
     SubscribeToEvent(AbEvents::E_OBJECTENDUSESKILL, URHO3D_HANDLER(Actor, HandleEndSkillUse));
@@ -228,14 +228,14 @@ void Actor::AddModel(uint32_t itemIndex)
     }
 }
 
-void Actor::FixedUpdate(float)
+void Actor::UpdateTransformation()
 {
     Vector3 moveTo;
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
     {
-        float p[3];
         FwClient* c = context_->GetSubsystem<FwClient>();
         double diff = (double)c->GetLastPing();
+        float p[3];
         if (posExtrapolator_.ReadPosition(GetClientTime() - diff, p))
             moveTo = Vector3(p[0], p[1], p[2]);
         else
@@ -247,25 +247,25 @@ void Actor::FixedUpdate(float)
     }
 
     const Vector3& cp = node_->GetPosition();
-    if (moveToPos_ != Vector3::ZERO && moveToPos_ != cp)
+    if (moveTo != Vector3::ZERO && moveTo != cp)
     {
         // Try to make moves smoother...
         if ((cp - moveToPos_).LengthSquared() > 0.01f)
         {
             // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveToPos_, 0.4f);
+            Vector3 pos = cp.Lerp(moveTo, 0.4f);
             node_->SetPosition(pos);
         }
         else
-            node_->SetPosition(moveToPos_);
+            node_->SetPosition(moveTo);
     }
 
     const Quaternion& rot = node_->GetRotation();
     if (rotateTo_ != rot)
     {
-        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 0.1f)
+        if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 1.0f)
         {
-            Quaternion r = rot.Slerp(rotateTo_, 0.3f);
+            Quaternion r = rot.Slerp(rotateTo_, 0.4f);
             node_->SetRotation(r);
         }
         else
@@ -291,6 +291,7 @@ Vector3 Actor::GetHeadPos() const
 
 void Actor::Update(float timeStep)
 {
+    UpdateTransformation();
     if (!hpBar_)
         // TODO: UI not yet created
         return;
@@ -349,7 +350,7 @@ void Actor::MoveTo(int64_t time, const Vector3& newPos)
     posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
 }
 
-void Actor::SetYRotation(float rad, bool)
+void Actor::SetYRotation(int64_t, float rad, bool)
 {
     float deg = RadToDeg(rad);
     rotateTo_.FromAngleAxis(deg, Vector3::UP);
@@ -894,4 +895,33 @@ bool Actor::LoadSkillTemplate(const std::string& templ)
 void Actor::OnSkillError(AB::GameProtocol::SkillError)
 {
     PlaySoundEffect(SOUND_SKILLFAILURE);
+}
+
+String Actor::GetClasses() const
+{
+    if (!profession_ || profession_->abbr.empty() || profession_->abbr.compare("NA") == 0)
+        return String::EMPTY;
+    String result = String(profession_->abbr.c_str());
+    if (profession2_ && !profession2_->abbr.empty() && profession2_->abbr.compare("NA") != 0)
+        result += "/" + String(profession2_->abbr.c_str());
+    return result;
+}
+
+String Actor::GetClassLevel() const
+{
+    String result = GetClasses();
+    if (result.Empty() && level_ == 0)
+        return String::EMPTY;
+    if (result.Empty())
+        result = "Lvl";
+    result += String(level_);
+    return result;
+}
+
+String Actor::GetClassLevelName() const
+{
+    String result = GetClassLevel();
+    if (result.Empty())
+        return name_;
+    return result + " " + name_;
 }

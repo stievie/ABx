@@ -152,7 +152,7 @@ void Player::FixedUpdate(float timeStep)
     Actor::FixedUpdate(timeStep);
 }
 
-void Player::SetYRotation(float rad, bool updateYaw)
+void Player::SetYRotation(int64_t time, float rad, bool updateYaw)
 {
     if (updateYaw)
     {
@@ -162,7 +162,7 @@ void Player::SetYRotation(float rad, bool updateYaw)
     }
     lastYaw_ = controls_.yaw_;
 
-    Actor::SetYRotation(rad, updateYaw);
+    Actor::SetYRotation(time, rad, updateYaw);
 }
 
 void Player::CameraZoom(bool increase)

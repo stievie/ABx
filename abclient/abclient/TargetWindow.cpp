@@ -50,7 +50,7 @@ void TargetWindow::SetTarget(SharedPtr<Actor> target)
     target_ = target;
     if (target.NotNull())
     {
-        targetText_->SetText(target->name_);
+        targetText_->SetText(target->GetClassLevelName());
         SetVisible(true);
     }
     else

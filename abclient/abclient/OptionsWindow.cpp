@@ -117,6 +117,7 @@ void OptionsWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(OptionsWindow, HandleCloseClicked));
+    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(OptionsWindow, HandleKeyDown));
 }
 
 TabElement* OptionsWindow::CreateTab(TabGroup* tabs, const String& page)
@@ -825,6 +826,15 @@ void OptionsWindow::HandleShortcutItemSelected(StringHash, VariantMap& eventData
             hkLvw->AddItem(txt);
         }
     }
+}
+
+void OptionsWindow::HandleKeyDown(StringHash, VariantMap& eventData)
+{
+    using namespace KeyDown;
+    Key key = static_cast<Key>(eventData[P_KEY].GetInt());
+    if (key == KEY_ESCAPE)
+        if (IsVisible())
+            SetVisible(false);
 }
 
 void OptionsWindow::CreatePageInput(TabElement* tabElement)

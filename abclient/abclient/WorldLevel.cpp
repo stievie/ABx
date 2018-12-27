@@ -415,7 +415,8 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
 
         const float p[3] = { position.x_, position.y_, position.z_ };
         // Here an object is always an Actor
-        dynamic_cast<Actor*>(object)->posExtrapolator_.Reset(object->GetServerTime(updateTick),
+        Actor* actor = dynamic_cast<Actor*>(object);
+        actor->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
         object->undestroyable_ = undestroyable;
@@ -483,8 +484,9 @@ void WorldLevel::HandleObjectRotUpdate(StringHash, VariantMap& eventData)
     {
         float rot = eventData[P_ROTATION].GetFloat();
         bool manual = eventData[P_MANUAL].GetBool();
+        int64_t tick = eventData[P_UPDATETICK].GetInt64();
         // Manual SetDirection -> don't update camera yaw because it comes from camera move
-        object->SetYRotation(rot, !manual);
+        object->SetYRotation(tick, rot, !manual);
     }
 }
 
