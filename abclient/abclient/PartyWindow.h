@@ -26,6 +26,7 @@ private:
     void HandlePartyAdded(StringHash eventType, VariantMap& eventData);
     void HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
+    void HandleActorClicked(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
 public:

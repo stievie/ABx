@@ -96,11 +96,13 @@ void PartyWindow::AddActor(SharedPtr<Actor> actor)
 
     UIElement* cont = memberContainer_->CreateChild<UIElement>();
     cont->SetLayoutMode(LM_HORIZONTAL);
+    cont->SetVar("ActorID", actor->id_);
     HealthBar* hb = cont->CreateChild<HealthBar>();
     hb->SetAlignment(HA_LEFT, VA_TOP);
     cont->SetHeight(hb->GetHeight());
     hb->SetActor(actor);
     hb->showName_ = true;
+    SubscribeToEvent(hb, E_CLICK, URHO3D_HANDLER(PartyWindow, HandleActorClicked));
 
     if (mode_ == PartyWindowMode::ModeOutpost && actor->objectType_ != ObjectTypeSelf)
     {
@@ -159,17 +161,21 @@ void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
     if (!addPlayerEdit_)
         return;
 
+    // An object was selected in the world
     using namespace AbEvents::ObjectSelected;
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
 
-    LevelManager* lm = GetSubsystem<LevelManager>();
-    SharedPtr<GameObject> o = lm->GetObjectById(targetId);
-    if (o)
+    if (mode_ != PartyWindowMode::ModeOutpost)
     {
-        Actor* a = dynamic_cast<Actor*>(o.Get());
-        if (a && a->objectType_ == ObjectTypePlayer)
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        SharedPtr<GameObject> o = lm->GetObjectById(targetId);
+        if (o && o->objectType_ == ObjectTypePlayer)
         {
-            addPlayerEdit_->SetText(a->name_);
+            Actor* a = dynamic_cast<Actor*>(o.Get());
+            if (a)
+            {
+                addPlayerEdit_->SetText(a->name_);
+            }
         }
     }
 }
@@ -183,7 +189,7 @@ void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
     GameObject* o = lm->GetObjectById(targetId);
-    if (o)
+    if (o && o->objectType_ == ObjectTypePlayer)
     {
         AddActor(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
     }
@@ -199,6 +205,20 @@ void PartyWindow::HandlePartyInviteRemoved(StringHash, VariantMap& eventData)
 
 void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
 {
+}
+
+void PartyWindow::HandleActorClicked(StringHash, VariantMap& eventData)
+{
+    // An actor was clicked in the Party window
+    using namespace Click;
+    HealthBar* hb = dynamic_cast<HealthBar*>(eventData[P_ELEMENT].GetPtr());
+    SharedPtr<Actor> actor = hb->GetActor();
+    if (actor)
+    {
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        Player* player = lm->GetCurrentLevel<BaseLevel>()->GetPlayer();
+        player->SelectObject(actor->id_);
+    }
 }
 
 void PartyWindow::SubscribeEvents()

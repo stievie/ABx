@@ -16,6 +16,10 @@ public:
     ~HealthBar();
 
     void SetActor(SharedPtr<Actor> actor);
+    SharedPtr<Actor> GetActor()
+    {
+        return actor_.Lock();
+    }
 
     bool showName_;
 };

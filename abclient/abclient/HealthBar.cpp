@@ -10,6 +10,7 @@ HealthBar::HealthBar(Context* context) :
     ProgressBar(context),
     showName_(false)
 {
+    SetEnabled(true);
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
 
@@ -23,6 +24,7 @@ HealthBar::HealthBar(Context* context) :
     SetShowPercentText(false);
     SetAlignment(HA_LEFT, VA_CENTER);
     nameText_ = CreateChild<Text>();
+    nameText_->SetInternal(true);
     nameText_->SetAlignment(HA_LEFT, VA_CENTER);
     nameText_->SetStyleAuto();
     nameText_->SetPosition(5, 0);
