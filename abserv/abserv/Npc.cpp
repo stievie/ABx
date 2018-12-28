@@ -36,6 +36,7 @@ Npc::Npc() :
     luaInitialized_(false),
     aiCharacter_(nullptr)
 {
+    // Party and GRoups must be unique
     groupId_ = Party::GetNewId();
     InitializeLua();
 }

@@ -286,32 +286,36 @@ void ProtocolGame::ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& 
 {
     uint32_t sourceId = message->Get<uint32_t>();
     uint32_t targetId = message->Get<uint32_t>();
+    uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyInvited(updateTick_, sourceId, targetId);
+        receiver_->OnPartyInvited(updateTick_, sourceId, targetId, partyId);
 }
 
 void ProtocolGame::ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t sourceId = message->Get<uint32_t>();
     uint32_t targetId = message->Get<uint32_t>();
+    uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyRemoved(updateTick_, sourceId, targetId);
+        receiver_->OnPartyRemoved(updateTick_, sourceId, targetId, partyId);
 }
 
 void ProtocolGame::ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message)
 {
-    uint32_t sourceId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
+    uint32_t acceptorId = message->Get<uint32_t>();
+    uint32_t leaderId = message->Get<uint32_t>();
+    uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyAdded(updateTick_, sourceId, targetId);
+        receiver_->OnPartyAdded(updateTick_, acceptorId, leaderId, partyId);
 }
 
 void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t sourceId = message->Get<uint32_t>();
     uint32_t targetId = message->Get<uint32_t>();
+    uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
-        receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId);
+        receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId, partyId);
 }
 
 void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& message)

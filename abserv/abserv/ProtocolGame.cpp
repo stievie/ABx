@@ -167,6 +167,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::PartyAccept, inviterId);
         break;
     }
+    case AB::GameProtocol::PacketTypePartyRemoveInvite:
+    {
+        uint32_t invitedId = message.Get<uint32_t>();
+        AddPlayerTask(&Game::Player::PartyRemoveInvite, invitedId);
+        break;
+    }
     case AB::GameProtocol::PacketTypeMove:
     {
         Utils::VariantMap data;

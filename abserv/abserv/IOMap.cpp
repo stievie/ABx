@@ -37,6 +37,9 @@ bool IOMap::LoadScene(Game::Map& map, const std::string& name)
         p.position.y_ = map.terrain_->GetHeight(p.position);
     }
 
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Spawn points: " << map.spawnPoints_.size() << std::endl;
+#endif
     return true;
 }
 

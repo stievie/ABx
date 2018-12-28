@@ -1044,42 +1044,46 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
 }
 
-void FwClient::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void FwClient::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyInvited;
     eData[P_UPDATETICK] = updateTick;
     eData[P_SOURCEID] = sourceId;
     eData[P_TARGETID] = targetId;
+    eData[P_PARTYID] = partyId;
     QueueEvent(AbEvents::E_PARTYINVITED, eData);
 }
 
-void FwClient::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void FwClient::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyRemoved;
     eData[P_UPDATETICK] = updateTick;
     eData[P_SOURCEID] = sourceId;
     eData[P_TARGETID] = targetId;
+    eData[P_PARTYID] = partyId;
     QueueEvent(AbEvents::E_PARTYREMOVED, eData);
 }
 
-void FwClient::OnPartyAdded(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void FwClient::OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyAdded;
     eData[P_UPDATETICK] = updateTick;
-    eData[P_SOURCEID] = sourceId;
-    eData[P_TARGETID] = targetId;
+    eData[P_PLAYERID] = acceptorId;
+    eData[P_LEADERID] = leaderId;
+    eData[P_PARTYID] = partyId;
     QueueEvent(AbEvents::E_PARTYADDED, eData);
 }
 
-void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     VariantMap& eData = GetEventDataMap();
     using namespace AbEvents::PartyInviteRemoved;
     eData[P_UPDATETICK] = updateTick;
     eData[P_SOURCEID] = sourceId;
     eData[P_TARGETID] = targetId;
+    eData[P_PARTYID] = partyId;
     QueueEvent(AbEvents::E_PARTYINVITEREMOVED, eData);
 }

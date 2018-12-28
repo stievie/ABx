@@ -107,13 +107,13 @@ public:
     void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) override;
     /// The player was invited into our party
-    void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
+    void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
     /// Player was removed from our party
-    void OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
+    void OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
     /// Player was added to our party, i.e. the player accepted the invite
-    void OnPartyAdded(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
+    void OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId) override;
     /// The invite to our party was removed
-    void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
+    void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
 
     std::string accountUuid_;
     std::string password_;

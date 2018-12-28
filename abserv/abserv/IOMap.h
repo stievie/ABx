@@ -20,6 +20,9 @@ static constexpr size_t AttrStaticModel = Utils::StringHash("StaticModel");
 static constexpr size_t AttrRigidBody = Utils::StringHash("RigidBody");
 static constexpr size_t AttrCollisionShape = Utils::StringHash("CollisionShape");
 static constexpr size_t AttrTerrain = Utils::StringHash("Terrain");
+static constexpr size_t AttrVariables = Utils::StringHash("Variables");
+
+static constexpr size_t VarGroup = 3316982911;
 
 // Components
 static constexpr size_t CompStaticModel = Utils::StringHash("StaticModel");

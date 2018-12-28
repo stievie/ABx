@@ -64,6 +64,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
         Math::Vector3 scale;
         Math::Quaternion rot;
         std::string name;
+        std::string group;
         bool isSpawnPoint = false;
         for (const auto& attr : node.children("attribute"))
         {
@@ -85,6 +86,18 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 isSpawnPoint = strcmp(value_attr.as_string(), "SpawnPoint") == 0;
                 name = value_attr.as_string();
                 break;
+            case IO::Map::AttrVariables:
+            {
+                for (const auto& var : attr)
+                {
+                    if (var.attribute("hash").as_ullong() == IO::Map::VarGroup)
+                    {
+                        group = var.attribute("value").as_string();
+                        break;
+                    }
+                }
+                break;
+            }
             default:
                 continue;
             }
@@ -92,7 +105,10 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 
         if (isSpawnPoint)
         {
-            spawnPoints_.push_back({ pos, rot });
+#ifdef DEBUG_GAME
+            LOG_DEBUG << "Spawn point: " << group << "; Pos: " << pos.ToString() << std::endl;
+#endif
+            spawnPoints_.push_back({ pos, rot, group });
             return;
         }
 
@@ -272,16 +288,44 @@ void Map::UpdateOctree(uint32_t delta)
 
 SpawnPoint Map::GetFreeSpawnPoint()
 {
-    if (spawnPoints_.size() == 0)
-        return{ Math::Vector3::Zero, Math::Quaternion::Identity };
+    return GetFreeSpawnPoint(spawnPoints_);
+}
+
+SpawnPoint Map::GetFreeSpawnPoint(const std::string& group)
+{
+    auto sps = GetSpawnPoints(group);
+    if (sps.size() == 0)
+        // Nothing found, return any spawn point
+        return GetFreeSpawnPoint();
+
+    return GetFreeSpawnPoint(sps);
+}
+
+SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
+{
+    if (points.size() == 0)
+        return EmtpySpawnPoint;
+
+    auto cleanObjects = [](std::vector<GameObject*>& objects)
+    {
+        if (objects.size() == 0)
+            return;
+        // Remove all objects that are not interesting
+        objects.erase(std::remove_if(objects.begin(), objects.end(), [](GameObject* current)
+        {
+            return (current->GetCollisionMask() == 0) ||
+                (current->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch);
+        }));
+    };
 
     size_t minObjects = INFINITE;
     SpawnPoint minPos;
-    for (const auto& p : spawnPoints_)
+    for (const auto& p : points)
     {
         std::vector<GameObject*> result;
         Math::SphereOctreeQuery query(result, Math::Sphere(p.position, 5.0f));
         octree_->GetObjects(query);
+        cleanObjects(result);
         if (result.size() < minObjects)
         {
             minPos = p;
@@ -295,15 +339,44 @@ SpawnPoint Map::GetFreeSpawnPoint()
         std::vector<GameObject*> result;
         Math::SphereOctreeQuery query(result, Math::Sphere(minPos.position, 1.0f));
         octree_->GetObjects(query);
+        cleanObjects(result);
         while (result.size() != 0)
         {
-            query.sphere_.center_.x_ += 0.5f;
-            query.sphere_.center_.z_ += 0.5f;
+#ifdef DEBUG_GAME
+            LOG_DEBUG << "In place " << result.size() << " Object: " << result.front()->GetName() <<
+                " Type: " << static_cast<int>(result.front()->GetType()) << std::endl;
+#endif
+            query.sphere_.center_.x_ += 0.2f;
+            query.sphere_.center_.z_ += 0.2f;
             query.sphere_.center_.y_ = terrain_->GetHeight(query.sphere_.center_);
             octree_->GetObjects(query);
+            cleanObjects(result);
         }
-        return{ query.sphere_.center_, minPos.rotation };
+        return{ query.sphere_.center_, minPos.rotation, minPos.group };
     }
+}
+
+const SpawnPoint& Map::GetSpawnPoint(const std::string& group) const
+{
+    if (spawnPoints_.size() == 0)
+        return EmtpySpawnPoint;
+    for (const auto& sp : spawnPoints_)
+    {
+        if (sp.group.compare(group) == 0)
+            return sp;
+    }
+    return EmtpySpawnPoint;
+}
+
+std::vector<SpawnPoint> Map::GetSpawnPoints(const std::string& group)
+{
+    std::vector<SpawnPoint> result;
+    for (const auto& sp : spawnPoints_)
+    {
+        if (sp.group.compare(group) == 0)
+            result.push_back(sp);
+    }
+    return result;
 }
 
 bool Map::FindPath(std::vector<Math::Vector3>& dest,

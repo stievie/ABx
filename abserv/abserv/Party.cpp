@@ -177,7 +177,7 @@ bool Party::IsInvited(std::shared_ptr<Player> player) const
     return it != invited_.end();
 }
 
-bool Party::IsLeader(const Player* const player)
+bool Party::IsLeader(Player* player)
 {
     if (auto l = leader_.lock())
         return l.get() == player;

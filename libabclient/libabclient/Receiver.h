@@ -70,13 +70,13 @@ public:
     virtual void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) = 0;
     /// The player was invited into our party
-    virtual void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
+    virtual void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
     /// Player was removed from our party
-    virtual void OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
+    virtual void OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
     /// Player was added to our party, i.e. the player accepted the invite
-    virtual void OnPartyAdded(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
+    virtual void OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId) = 0;
     /// The invite to our party was removed
-    virtual void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId) = 0;
+    virtual void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
 };
 
 }

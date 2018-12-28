@@ -199,22 +199,42 @@ void Player::NotifyNewMail()
     }
 }
 
+void Player::SetParty(std::shared_ptr<Party> party)
+{
+    if (party)
+    {
+        party_ = party;
+        data_.partyUuid = party->data_.uuid;
+    }
+    else
+    {
+        // Create new party
+        data_.partyUuid.clear();
+        party_ = GetSubsystem<PartyManager>()->GetParty(GetThis(), data_.partyUuid);
+        data_.partyUuid = party_->data_.uuid;
+    }
+}
+
 void Player::PartyInvitePlayer(uint32_t playerId)
 {
+    // The leader invited a player
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
     if (id_ == playerId)
+        return;
+    if (!party_->IsLeader(this))
         return;
 
     std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
-        if (GetParty()->Invite(player))
+        if (party_->Invite(player))
         {
             Net::NetworkMessage nmsg;
             nmsg.AddByte(AB::GameProtocol::PartyPlayerInvited);
             nmsg.Add<uint32_t>(id_);
             nmsg.Add<uint32_t>(playerId);
+            nmsg.Add<uint32_t>(party_->id_);
             // Send us confirmation
             party_->WriteToMembers(nmsg);
             // Send player he was invited
@@ -223,14 +243,44 @@ void Player::PartyInvitePlayer(uint32_t playerId)
     }
 }
 
-void Player::PartyKickPlayer(uint32_t playerId)
+void Player::PartyRemoveInvite(uint32_t playerId)
 {
+    // The leader remove an invited player
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
     if (id_ == playerId)
         return;
-    if (!party_)
+    if (!party_->IsLeader(this))
         return;
+
+    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    if (player)
+    {
+        if (party_->RemoveInvite(player))
+        {
+            Net::NetworkMessage nmsg;
+            nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
+            nmsg.Add<uint32_t>(id_);
+            nmsg.Add<uint32_t>(playerId);
+            nmsg.Add<uint32_t>(party_->id_);
+            // Send us confirmation
+            party_->WriteToMembers(nmsg);
+            // Send player the invite was removed
+            player->client_->WriteToOutput(nmsg);
+        }
+    }
+}
+
+void Player::PartyKickPlayer(uint32_t playerId)
+{
+    // The leader kicks a player from the party
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
+    if (id_ == playerId)
+        return;
+    if (!party_->IsLeader(this))
+        return;
+
     std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (!player)
         return;
@@ -239,6 +289,7 @@ void Player::PartyKickPlayer(uint32_t playerId)
     nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
     nmsg.Add<uint32_t>(id_);
     nmsg.Add<uint32_t>(playerId);
+    nmsg.Add<uint32_t>(party_->id_);
     party_->WriteToMembers(nmsg);
     // Remove after
     party_->Remove(player);
@@ -246,6 +297,7 @@ void Player::PartyKickPlayer(uint32_t playerId)
 
 void Player::PartyLeave()
 {
+    // A player leaves the party
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
     if (party_)
@@ -254,6 +306,7 @@ void Player::PartyLeave()
         nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
         nmsg.Add<uint32_t>(party_->GetLeader()->id_);
         nmsg.Add<uint32_t>(id_);
+        nmsg.Add<uint32_t>(party_->id_);
         party_->WriteToMembers(nmsg);
         party_->Remove(GetThis());
     }
@@ -261,18 +314,22 @@ void Player::PartyLeave()
 
 void Player::PartyAccept(uint32_t playerId)
 {
+    // Sent by the acceptor to the leader of the party that a player accepted
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
 
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
-    if (player)
+    // Leave current party
+    PartyLeave();
+    std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    if (leader)
     {
-        if (player->GetParty()->Add(GetThis()))
+        if (leader->GetParty()->Add(GetThis()))
         {
             Net::NetworkMessage nmsg;
             nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
-            nmsg.Add<uint32_t>(id_);
-            nmsg.Add<uint32_t>(playerId);
+            nmsg.Add<uint32_t>(id_);                           // Acceptor
+            nmsg.Add<uint32_t>(playerId);                      // Leader
+            nmsg.Add<uint32_t>(party_->id_);
             party_->WriteToMembers(nmsg);
         }
     }
@@ -540,8 +597,16 @@ void Player::ChangeInstance(const std::string mapUuid)
     auto party = GetParty();
     if (party->IsLeader(this))
         party->ChangeInstance(mapUuid);
-    else
+    else if (GetGame()->data_.type == AB::Entities::GameTypeOutpost)
+        // Only in outposts
         party->GetLeader()->ChangeInstance(mapUuid);
+    else
+    {
+        // The player leaves the party and changes the instance
+        PartyLeave();
+        // Now we are the leader of a new party
+        party_->ChangeInstance(mapUuid);
+    }
 }
 
 void Player::RegisterLua(kaguya::State& state)

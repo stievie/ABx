@@ -94,18 +94,14 @@ public:
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
 
-    void SetParty(std::shared_ptr<Party> party)
-    {
-        party_ = party;
-        if (party)
-            data_.partyUuid = party->data_.uuid;
-    }
+    void SetParty(std::shared_ptr<Party> party);
     std::shared_ptr<Party> GetParty() const
     {
         return party_;
     }
 
     void PartyInvitePlayer(uint32_t playerId);
+    void PartyRemoveInvite(uint32_t playerId);
     void PartyKickPlayer(uint32_t playerId);
     /// Leave current party
     void PartyLeave();

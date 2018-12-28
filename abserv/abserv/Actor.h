@@ -70,6 +70,7 @@ public:
         GameObject::SetGame(game);
     }
 
+    bool SetSpawnPoint(const std::string& group);
     void SetHomePos(const Math::Vector3& pos)
     {
         homePos_ = pos;

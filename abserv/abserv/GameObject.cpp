@@ -49,6 +49,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 }
 
 GameObject::GameObject() :
+    collisionShape_(nullptr),
     stateComp_(*this),
     octant_(nullptr),
     sortValue_(0.0f),

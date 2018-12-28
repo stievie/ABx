@@ -242,28 +242,28 @@ void Client::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChan
         receiver_->OnChatMessage(updateTick, channel, senderId, senderName, message);
 }
 
-void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     if (receiver_)
-        receiver_->OnPartyInvited(updateTick, sourceId, targetId);
+        receiver_->OnPartyInvited(updateTick, sourceId, targetId, partyId);
 }
 
-void Client::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void Client::OnPartyRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     if (receiver_)
-        receiver_->OnPartyRemoved(updateTick, sourceId, targetId);
+        receiver_->OnPartyRemoved(updateTick, sourceId, targetId, partyId);
 }
 
-void Client::OnPartyAdded(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void Client::OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId)
 {
     if (receiver_)
-        receiver_->OnPartyAdded(updateTick, sourceId, targetId);
+        receiver_->OnPartyAdded(updateTick, acceptorId, leaderId, partyId);
 }
 
-void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId)
+void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     if (receiver_)
-        receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId);
+        receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId, partyId);
 }
 
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,

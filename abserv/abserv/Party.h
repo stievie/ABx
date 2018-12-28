@@ -55,7 +55,7 @@ public:
     }
     bool IsMember(std::shared_ptr<Player> player) const;
     bool IsInvited(std::shared_ptr<Player> player) const;
-    bool IsLeader(const Player* const player);
+    bool IsLeader(Player* player);
     std::shared_ptr<Player> GetLeader() const
     {
         return leader_.lock();

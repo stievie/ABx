@@ -18,14 +18,15 @@ HealthBar::HealthBar(Context* context) :
     SetImageRect(IntRect(128, 16, 144, 32));
     SetBorder(IntRect(4, 4, 4, 4));
 
-    SetMinHeight(25);
-    SetMaxHeight(25);
+    SetMinHeight(23);
+    SetMaxHeight(23);
     SetShowPercentText(false);
     SetAlignment(HA_LEFT, VA_CENTER);
     nameText_ = CreateChild<Text>();
     nameText_->SetAlignment(HA_LEFT, VA_CENTER);
     nameText_->SetStyleAuto();
     nameText_->SetPosition(5, 0);
+    nameText_->SetFontSize(10);
 
     SetStyle("HealthBar");
 

@@ -24,7 +24,21 @@ struct SpawnPoint
 {
     Math::Vector3 position;
     Math::Quaternion rotation;
+    std::string group;
+    // equality comparison. doesn't modify object. therefore const.
+    bool operator==(const SpawnPoint& rhs) const
+    {
+        return (position == rhs.position && rotation == rhs.rotation);
+    }
+    inline bool Empty() const;
 };
+
+static const SpawnPoint EmtpySpawnPoint{ Math::Vector3::Zero, Math::Quaternion::Identity, "" };
+inline bool SpawnPoint::Empty() const
+{
+    return *this == EmtpySpawnPoint;
+}
+
 
 /// Holds all the map data, static objects, NavMesh.
 class Map
@@ -113,6 +127,10 @@ public:
     void UpdateAi(uint32_t delta);
     void UpdateOctree(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
+    SpawnPoint GetFreeSpawnPoint(const std::string& group);;
+    SpawnPoint GetFreeSpawnPoint(const std::vector<SpawnPoint>& points);
+    const SpawnPoint& GetSpawnPoint(const std::string& group) const;
+    std::vector<SpawnPoint> GetSpawnPoints(const std::string& group);
 
     /// Find a path between world space points. Return non-empty list of points if successful.
     /// Extents specifies how far off the navigation mesh the points can be.

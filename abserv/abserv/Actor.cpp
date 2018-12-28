@@ -45,6 +45,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("HeadTo", &Actor::_LuaHeadTo)
         .addFunction("IsEnemy", &Actor::IsEnemy)
 
+        .addFunction("SetSpawnPoint", &Actor::SetSpawnPoint)
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
         .addFunction("SetHomePos", &Actor::_LuaSetHomePos)
         .addFunction("GotoHomePos", &Actor::GotoHomePos)
@@ -84,6 +85,22 @@ Actor::Actor() :
     resourceComp_.SetMaxEnergy(50);
     resourceComp_.SetHealth(Components::SetValueType::Absolute, 500);
     resourceComp_.SetEnergy(Components::SetValueType::Absolute, 50);
+}
+
+bool Actor::SetSpawnPoint(const std::string& group)
+{
+    auto game = GetGame();
+    if (!game)
+        return false;
+    auto sps = game->map_->GetSpawnPoints(group);
+    auto sp = game->map_->GetFreeSpawnPoint(sps);
+    if (sp.Empty())
+        return false;
+
+    transformation_.position_ = sp.position;
+    transformation_.position_.y_ = game->map_->GetTerrainHeight(transformation_.position_);
+    transformation_.rotation_ = sp.rotation.EulerAngles().y_;
+    return true;
 }
 
 bool Actor::GotoHomePos()

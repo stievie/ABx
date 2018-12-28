@@ -7,10 +7,10 @@
 	<attribute name="Elapsed Time" value="2409.44" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16785052" />
-	<attribute name="Next Local Component ID" value="16786093" />
+	<attribute name="Next Local Node ID" value="16785253" />
+	<attribute name="Next Local Component ID" value="16786337" />
 	<attribute name="Variables" />
-	<attribute name="Variable Names" value="" />
+	<attribute name="Variable Names" value="Group" />
 	<component type="Octree" id="1" />
 	<component type="DebugRenderer" id="2">
 		<attribute name="Line Antialias" value="true" />
@@ -70,7 +70,9 @@
 		<attribute name="Position" value="-13 25.775 -8" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
+		<attribute name="Variables">
+			<variant hash="3316982911" type="String" value="Player" />
+		</attribute>
 	</node>
 	<node id="7">
 		<attribute name="Is Enabled" value="true" />
@@ -578,5 +580,16 @@
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
+	</node>
+	<node id="16785202">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SpawnPoint" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-46.6756 31.4525 -60.4956" />
+		<attribute name="Rotation" value="-4.37114e-08 0 1 -0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables">
+			<variant hash="3316982911" type="String" value="Player" />
+		</attribute>
 	</node>
 </scene>

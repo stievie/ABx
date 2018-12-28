@@ -282,6 +282,7 @@ enum GamePacketTypes : uint8_t
     PacketTypePartyKickPlayer,
     PacketTypePartyLeave,
     PacketTypePartyAcceptInvite,
+    PacketTypePartyRemoveInvite,
 };
 
 enum CommandTypes : uint8_t
