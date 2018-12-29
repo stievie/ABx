@@ -125,7 +125,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     else
     {
         invitees_[actor->id_] = actor;
-        hb->SetStyle("HealthBarInvited");
+        hb->SetStyle("HealthBarGreen");
     }
 
     if (mode_ == PartyWindowMode::ModeOutpost && actor->objectType_ != ObjectTypeSelf)
