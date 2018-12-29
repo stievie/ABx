@@ -280,6 +280,7 @@
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OptionsWindow.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
+    <ClCompile Include="PartyItem.cpp" />
     <ClCompile Include="PartyWindow.cpp" />
     <ClCompile Include="PingDot.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="Options.h" />
     <ClInclude Include="OptionsWindow.h" />
     <ClInclude Include="OutpostLevel.h" />
+    <ClInclude Include="PartyItem.h" />
     <ClInclude Include="PartyWindow.h" />
     <ClInclude Include="PingDot.h" />
     <ClInclude Include="Player.h" />

@@ -425,7 +425,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         nodeIds_[object->GetNode()->GetID()] = id;
 
         if (player_ && player_->groupId_ == groupId)
-            partyWindow_->AddActor(SharedPtr<Actor>(dynamic_cast<Actor*>(object)));
+            partyWindow_->AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(object)));
 
         switch (object->objectType_)
         {
@@ -535,6 +535,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                     if (actor->objectType_ == ObjectTypeSelf)
                     {
                         targetWindow_->SetTarget(SharedPtr<Actor>(dynamic_cast<Actor*>(target)));
+                        partyWindow_->SelectItem(targetId);
                     }
                 }
             }
@@ -545,6 +546,7 @@ void WorldLevel::HandleObjectSelected(StringHash, VariantMap& eventData)
                 if (actor->objectType_ == ObjectTypeSelf)
                 {
                     targetWindow_->SetTarget(SharedPtr<Actor>());
+                    partyWindow_->UnselectItem(targetId);
                 }
             }
         }
@@ -817,6 +819,7 @@ void WorldLevel::CreatePlayer(uint32_t id,
     GetSubsystem<Audio>()->SetListener(soundListener);
     SetupViewport();
     partyWindow_->Clear();
+    partyWindow_->SetPlayer(player_);
     chatWindow_->SayHello(player_);
 }
 

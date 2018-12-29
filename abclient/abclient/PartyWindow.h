@@ -1,6 +1,10 @@
 #pragma once
 
+#include "PartyItem.h"
+
 class Actor;
+class Player;
+class PartyItem;
 
 enum class PartyWindowMode
 {
@@ -15,10 +19,14 @@ private:
     PartyWindowMode mode_;
     SharedPtr<Window> window_;
     SharedPtr<LineEdit> addPlayerEdit_;
-    int memberCount_;
     uint8_t partySize_;
     SharedPtr<UIElement> memberContainer_;
     SharedPtr<UIElement> partyContainer_;
+    SharedPtr<UIElement> addContainer_;
+    SharedPtr<UIElement> inviteContainer_;
+    WeakPtr<Player> player_;
+    HashMap<uint32_t, WeakPtr<Actor>> members_;
+    HashMap<uint32_t, WeakPtr<Actor>> invitees_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
@@ -29,15 +37,24 @@ private:
     void HandleActorClicked(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
+    PartyItem* GetItem(uint32_t actorId);
+    void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type);
 public:
     static void RegisterObject(Context* context);
 
     PartyWindow(Context* context);
     ~PartyWindow();
 
+    void SetPlayer(SharedPtr<Player> player);
     void SetPartySize(uint8_t value);
     void SetMode(PartyWindowMode mode);
-    void AddActor(SharedPtr<Actor> actor);
+    void AddMember(SharedPtr<Actor> actor);
+    void RemoveMember(uint32_t actorId);
+    void AddInvite(SharedPtr<Actor> actor);
+    void RemoveInvite(uint32_t actorId);
     void Clear();
+    void UnselectAll();
+    bool SelectItem(uint32_t actorId);
+    bool UnselectItem(uint32_t actorId);
 };
 

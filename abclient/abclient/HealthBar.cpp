@@ -8,19 +8,21 @@ void HealthBar::RegisterObject(Context* context)
 
 HealthBar::HealthBar(Context* context) :
     ProgressBar(context),
-    showName_(false)
+    showName_(false),
+    selected_(false)
 {
-    SetEnabled(true);
+    SetRange(0.0f);
+    SetValue(0.0f);
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
 
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png");
     SetTexture(tex);
-    SetImageRect(IntRect(128, 16, 144, 32));
-    SetBorder(IntRect(4, 4, 4, 4));
 
     SetMinHeight(23);
     SetMaxHeight(23);
+    SetImageRect(IntRect(0, 16, 16, 32));
+    SetBorder(IntRect(4, 4, 4, 4));
     SetShowPercentText(false);
     SetAlignment(HA_LEFT, VA_CENTER);
     nameText_ = CreateChild<Text>();
@@ -49,12 +51,29 @@ void HealthBar::SetActor(SharedPtr<Actor> actor)
         nameText_->SetText(String::EMPTY);
 }
 
+void HealthBar::SetSelected(bool value)
+{
+    if (selected_ != value)
+    {
+        selected_ = value;
+    }
+}
+
+void HealthBar::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)
+{
+    static const IntVector2 selOffset(0, 16);
+    ProgressBar::GetBatches(batches, vertexData, currentScissor, selected_ ? selOffset : IntVector2::ZERO);
+}
+
 void HealthBar::HandleUpdate(StringHash, VariantMap&)
 {
     if (SharedPtr<Actor> a = actor_.Lock())
     {
         SetRange(static_cast<float>(a->stats_.maxHealth));
         SetValue(static_cast<float>(a->stats_.health));
+        if (a->stats_.health == 0)
+        {
+        }
     }
 
     nameText_->SetVisible(showName_);

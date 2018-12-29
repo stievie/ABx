@@ -408,7 +408,7 @@ void Actor::AddActorUI()
     hpBar_ = uiRoot->CreateChild<ProgressBar>();
     hpBar_->SetShowPercentText(false);
     hpBar_->SetRange(100.0f);
-    hpBar_->SetStyle("HealthBar");
+    hpBar_->SetStyle("HealthBarGreen");
     hpBar_->SetSize(100, 20);
     hpBar_->SetValue(50.0f);
     hpBar_->SetVisible(false);

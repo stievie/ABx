@@ -60,6 +60,11 @@
 				<attribute name="Layout Mode" value="Vertical" />
 			</element>
 			<element>
+				<attribute name="Name" value="InviteContainer" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Layout Mode" value="Vertical" />
+			</element>
+			<element>
 				<attribute name="Name" value="AddContainer" />
 				<attribute name="Min Size" value="0 25" />
 				<attribute name="Max Size" value="2147483647 25" />

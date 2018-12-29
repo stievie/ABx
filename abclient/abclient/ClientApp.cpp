@@ -34,6 +34,8 @@
 #include <stdlib.h>
 #include "EffectsWindow.h"
 #include "CreditsWindow.h"
+#include "PartyItem.h"
+#include "HealthBar.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -129,6 +131,7 @@ ClientApp::ClientApp(Context* context) :
     TabGroup::RegisterObject(context);
     HealthBar::RegisterObject(context);
     HotkeyEdit::RegisterObject(context);
+    PartyItem::RegisterObject(context);
 
     // Register factory and attributes for the Character component so it can
     // be created via CreateComponent, and loaded / saved
