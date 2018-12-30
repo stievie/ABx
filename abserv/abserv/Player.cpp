@@ -224,7 +224,8 @@ void Player::PartyInvitePlayer(uint32_t playerId)
         return;
     if (!party_->IsLeader(this))
         return;
-
+    if (party_->IsFull())
+        return;
     std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
@@ -243,42 +244,16 @@ void Player::PartyInvitePlayer(uint32_t playerId)
     }
 }
 
-void Player::PartyRemoveInvite(uint32_t playerId)
-{
-    // The leader remove an invited player
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
-        return;
-    if (id_ == playerId)
-        return;
-    if (!party_->IsLeader(this))
-        return;
-
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
-    if (player)
-    {
-        if (party_->RemoveInvite(player))
-        {
-            Net::NetworkMessage nmsg;
-            nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
-            nmsg.Add<uint32_t>(id_);
-            nmsg.Add<uint32_t>(playerId);
-            nmsg.Add<uint32_t>(party_->id_);
-            // Send us confirmation
-            party_->WriteToMembers(nmsg);
-            // Send player the invite was removed
-            player->client_->WriteToOutput(nmsg);
-        }
-    }
-}
-
 void Player::PartyKickPlayer(uint32_t playerId)
 {
     // The leader kicks a player from the party
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
     if (id_ == playerId)
+        // Can not kick myself
         return;
     if (!party_->IsLeader(this))
+        // Only leader can kick
         return;
 
     std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
@@ -286,13 +261,29 @@ void Player::PartyKickPlayer(uint32_t playerId)
         return;
 
     Net::NetworkMessage nmsg;
-    nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+    if (party_->IsMember(player))
+    {
+        if (!party_->Remove(player))
+            return;
+        nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+    }
+    else if (party_->IsInvited(player))
+    {
+        if (!party_->RemoveInvite(player))
+            return;
+        nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
+    }
+    else
+        return;
+
     nmsg.Add<uint32_t>(id_);
     nmsg.Add<uint32_t>(playerId);
     nmsg.Add<uint32_t>(party_->id_);
     party_->WriteToMembers(nmsg);
     // Remove after
     party_->Remove(player);
+    // Inform the player
+    player->client_->WriteToOutput(nmsg);
 }
 
 void Player::PartyLeave()
@@ -310,6 +301,15 @@ void Player::PartyLeave()
         party_->WriteToMembers(nmsg);
         party_->Remove(GetThis());
     }
+
+    // We need a new party
+    SetParty(std::shared_ptr<Party>());
+    Net::NetworkMessage nmsg;
+    nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
+    nmsg.Add<uint32_t>(id_);                           // Acceptor
+    nmsg.Add<uint32_t>(id_);                           // Leader
+    nmsg.Add<uint32_t>(party_->id_);
+    party_->WriteToMembers(nmsg);
 }
 
 void Player::PartyAccept(uint32_t playerId)
@@ -318,11 +318,11 @@ void Player::PartyAccept(uint32_t playerId)
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
 
-    // Leave current party
-    PartyLeave();
     std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (leader)
     {
+        // Leave current party
+        PartyLeave();
         if (leader->GetParty()->Add(GetThis()))
         {
             Net::NetworkMessage nmsg;
@@ -330,8 +330,65 @@ void Player::PartyAccept(uint32_t playerId)
             nmsg.Add<uint32_t>(id_);                           // Acceptor
             nmsg.Add<uint32_t>(playerId);                      // Leader
             nmsg.Add<uint32_t>(party_->id_);
+            // TODO: All current members
+            const size_t memberCount = party_->GetMemberCount();
+            nmsg.Add<uint8_t>(static_cast<uint8_t>(memberCount));
+            const auto& members = party_->GetMembers();
+            for (size_t i = 0; i < memberCount; ++i)
+            {
+                if (auto m = members[i].lock())
+                {
+                    nmsg.Add<uint32_t>(m->id_);
+                }
+            }
             party_->WriteToMembers(nmsg);
         }
+        // else party maybe full
+    }
+}
+
+void Player::PartyRejectInvite(uint32_t inviterId)
+{
+    // We are the rejector
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+        return;
+    std::shared_ptr<Player> leader = GetSubsystem<PlayerManager>()->GetPlayerById(inviterId);
+    if (leader)
+    {
+        if (leader->GetParty()->RemoveInvite(GetThis()))
+        {
+            Net::NetworkMessage nmsg;
+            nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
+            nmsg.Add<uint32_t>(inviterId);                // Leader
+            nmsg.Add<uint32_t>(id_);                      // We
+            nmsg.Add<uint32_t>(leader->GetParty()->id_);
+            // Inform the party
+            leader->GetParty()->WriteToMembers(nmsg);
+            // Inform us
+            client_->WriteToOutput(nmsg);
+        }
+    }
+}
+
+void Player::PartyGetMembers(uint32_t partyId)
+{
+    std::shared_ptr<Party> party = GetSubsystem<PartyManager>()->GetPartyById(partyId);
+    if (party)
+    {
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::PartyInfoMembers);
+        nmsg.Add<uint32_t>(partyId);
+        size_t count = party->GetMemberCount();
+        const auto& members = party->GetMembers();
+        nmsg.AddByte(static_cast<uint8_t>(count));
+        for (size_t i = 0; i < count; i++)
+        {
+            if (auto m = members[i].lock())
+                nmsg.Add<uint32_t>(m->id_);
+            else
+                nmsg.Add<uint32_t>(0);
+        }
+        client_->WriteToOutput(nmsg);
     }
 }
 

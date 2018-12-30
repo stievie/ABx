@@ -164,6 +164,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::PartyInviteRemoved:
             ParsePartyInviteRemoved(message);
             break;
+        case AB::GameProtocol::PartyInfoMembers:
+            ParsePartyInfoMembers(message);
+            break;
         case AB::GameProtocol::GameObjectResourceChange:
             ParseResourceChanged(message);
             break;
@@ -316,6 +319,20 @@ void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& 
     uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId, partyId);
+}
+
+void ProtocolGame::ParsePartyInfoMembers(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t partyId = message->Get<uint32_t>();
+    size_t count = message->Get<uint8_t>();
+    std::vector<uint32_t> members;
+    members.resize(count);
+    for (size_t i = 0; i < count; i++)
+    {
+        members[i] = message->Get<uint32_t>();
+    }
+    if (receiver_)
+        receiver_->OnPartyInfoMembers(partyId, members);
 }
 
 void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& message)
@@ -691,10 +708,18 @@ void ProtocolGame::PartyLeave()
     Send(msg);
 }
 
-void ProtocolGame::PartyAccept(uint32_t inviterId)
+void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyAcceptInvite);
+    msg->Add<uint32_t>(inviterId);
+    Send(msg);
+}
+
+void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyRejectInvite);
     msg->Add<uint32_t>(inviterId);
     Send(msg);
 }

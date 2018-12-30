@@ -41,8 +41,12 @@ private:
     void HandleAcceptInvitationClicked(StringHash eventType, VariantMap& eventData);
     void HandleRejectInvitationClicked(StringHash eventType, VariantMap& eventData);
     void HandleKickClicked(StringHash eventType, VariantMap& eventData);
+    void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
+    void UpdateAll();
+    void ShowError(const String& msg);
+    bool IsFull() const { return members_.Size() >= partySize_; }
     PartyItem* GetItem(uint32_t actorId);
     void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type);
 public:
@@ -60,6 +64,7 @@ public:
     void AddInvitation(SharedPtr<Actor> leader);
     void RemoveInvite(uint32_t actorId);
     void RemoveInvitation(uint32_t actorId);
+    void RemoveActor(uint32_t actorId);
     void Clear();
     void UnselectAll();
     bool SelectItem(uint32_t actorId);

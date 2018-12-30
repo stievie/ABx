@@ -676,6 +676,24 @@ void FwClient::PartyInvitePlayer(uint32_t objectId)
         client_.PartyInvitePlayer(objectId);
 }
 
+void FwClient::PartyKickPlayer(uint32_t objectId)
+{
+    if (loggedIn_)
+        client_.PartyKickPlayer(objectId);
+}
+
+void FwClient::PartyAcceptInvite(uint32_t inviterId)
+{
+    if (loggedIn_)
+        client_.PartyAcceptInvite(inviterId);
+}
+
+void FwClient::PartyRejectInvite(uint32_t inviterId)
+{
+    if (loggedIn_)
+        client_.PartyRejectInvite(inviterId);
+}
+
 void FwClient::OnLoggedIn(const std::string&)
 {
     LoadData();
@@ -1086,4 +1104,16 @@ void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint3
     eData[P_TARGETID] = targetId;
     eData[P_PARTYID] = partyId;
     QueueEvent(AbEvents::E_PARTYINVITEREMOVED, eData);
+}
+
+void FwClient::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PartyInfoMembers;
+    eData[P_PARTYID] = partyId;
+    VariantVector _members;
+    _members.Resize(static_cast<unsigned>(members.size()));
+    for (unsigned i = 0; i < static_cast<unsigned>(members.size()); i++)
+        _members[i] = members[i];
+    eData[P_MEMBERS] = _members;
 }

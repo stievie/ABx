@@ -69,6 +69,7 @@ protected:
     void ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message);
     void ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message);
     void ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message);
+    void ParsePartyInfoMembers(const std::shared_ptr<InputMessage>& message);
     void ParseResourceChanged(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame(Crypto::DHKeys& keys);
@@ -102,7 +103,8 @@ public:
     void PartyInvitePlayer(uint32_t targetId);
     void PartyKickPlayer(uint32_t targetId);
     void PartyLeave();
-    void PartyAccept(uint32_t inviterId);
+    void PartyAcceptInvite(uint32_t inviterId);
+    void PartyRejectInvite(uint32_t inviterId);
 
     int64_t GetUpdateTick() const
     {

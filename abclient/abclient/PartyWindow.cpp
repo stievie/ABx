@@ -7,6 +7,8 @@
 #include "PartyItem.h"
 #include "Shortcuts.h"
 #include "Player.h"
+#include "WindowManager.h"
+#include "GameMessagesWindow.h"
 
 void PartyWindow::RegisterObject(Context* context)
 {
@@ -187,11 +189,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     if (auto p = player_.Lock())
         if (p->GetSelectedObjectId() == actor->id_)
             SelectItem(actor->id_);
-
-    partyContainer_->SetMinHeight(memberContainer_->GetHeight() + inviteContainer_->GetHeight() + 25);
-    SetMinHeight(partyContainer_->GetHeight() + invitationContainer_->GetHeight() + 33 + 30);
-    UpdateCaption();
-    UpdateLayout();
+    UpdateAll();
 }
 
 void PartyWindow::AddMember(SharedPtr<Actor> actor)
@@ -216,6 +214,7 @@ void PartyWindow::RemoveMember(uint32_t actorId)
     {
         item->GetParent()->Remove();
         members_.Erase(actorId);
+        UpdateAll();
     }
 }
 
@@ -226,6 +225,7 @@ void PartyWindow::RemoveInvite(uint32_t actorId)
     {
         item->GetParent()->Remove();
         invitees_.Erase(actorId);
+        UpdateAll();
     }
 }
 
@@ -236,6 +236,29 @@ void PartyWindow::RemoveInvitation(uint32_t actorId)
     {
         item->GetParent()->Remove();
         invitations_.Erase(actorId);
+        UpdateAll();
+    }
+}
+
+void PartyWindow::RemoveActor(uint32_t actorId)
+{
+    auto item = GetItem(actorId);
+    if (item)
+    {
+        switch (item->type_)
+        {
+        case MemberType::Invitation:
+            invitations_.Erase(actorId);
+            break;
+        case MemberType::Invitee:
+            invitees_.Erase(actorId);
+            break;
+        case MemberType::Member:
+            members_.Erase(actorId);
+            break;
+        }
+        item->GetParent()->Remove();
+        UpdateAll();
     }
 }
 
@@ -247,13 +270,18 @@ void PartyWindow::Clear()
     members_.Clear();
     invitees_.Clear();
     invitations_.Clear();
+    UpdateAll();
 }
 
 void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
 {
     if (mode_ != PartyWindowMode::ModeOutpost)
         return;
-
+    if (IsFull())
+    {
+        ShowError("The party id full.");
+        return;
+    }
     uint32_t targetId = 0;
     LevelManager* lm = GetSubsystem<LevelManager>();
     SharedPtr<Actor> a = lm->GetActorByName(addPlayerEdit_->GetText());
@@ -264,6 +292,8 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
         FwClient* client = GetSubsystem<FwClient>();
         client->PartyInvitePlayer(targetId);
     }
+    else
+        ShowError("This player is not online.");
 }
 
 void PartyWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -275,6 +305,16 @@ void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
 {
     // An object was selected in the world
     using namespace AbEvents::ObjectSelected;
+    uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
+    if (auto p = player_.Lock())
+    {
+        // This object was not selected by us
+        if (sourceId != p->id_)
+            return;
+    }
+    else
+        return;
+
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     if (SelectItem(targetId))
         return;
@@ -358,11 +398,27 @@ void PartyWindow::HandlePartyInviteRemoved(StringHash, VariantMap& eventData)
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
     URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
 */
-
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+    if (auto p = player_.Lock())
+    {
+        if (p->id_ == targetId)
+        {
+            // Removed our invitation
+            uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
+            RemoveInvitation(sourceId);
+        }
+        else
+        {
+            // Removed someone else's  invitation
+            RemoveInvite(targetId);
+        }
+        UpdateAll();
+    }
 }
 
 void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
 {
+    // Party member was removed
 }
 
 void PartyWindow::HandleActorClicked(StringHash, VariantMap& eventData)
@@ -382,14 +438,48 @@ void PartyWindow::HandleActorClicked(StringHash, VariantMap& eventData)
 
 void PartyWindow::HandleAcceptInvitationClicked(StringHash, VariantMap& eventData)
 {
+    using namespace Released;
+    auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+    uint32_t actorId = elem->GetVar("ID").GetUInt();
+    auto item = GetItem(actorId);
+    if (!item)
+        return;
+
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->PartyAcceptInvite(actorId);
 }
 
 void PartyWindow::HandleRejectInvitationClicked(StringHash, VariantMap& eventData)
 {
+    using namespace Released;
+    auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+    uint32_t actorId = elem->GetVar("ID").GetUInt();
+    auto item = GetItem(actorId);
+    if (!item)
+        return;
+
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->PartyRejectInvite(actorId);
 }
 
 void PartyWindow::HandleKickClicked(StringHash, VariantMap& eventData)
 {
+    using namespace Released;
+    auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
+    uint32_t actorId = elem->GetVar("ID").GetUInt();
+    auto item = GetItem(actorId);
+    if (!item)
+        return;
+
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->PartyKickPlayer(actorId);
+}
+
+void PartyWindow::HandleObjectDespawn(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectDespawn;
+    uint32_t objectId = eventData[P_OBJECTID].GetInt();
+    RemoveActor(objectId);
 }
 
 void PartyWindow::SubscribeEvents()
@@ -401,6 +491,7 @@ void PartyWindow::SubscribeEvents()
     SubscribeToEvent(AbEvents::E_PARTYINVITED, URHO3D_HANDLER(PartyWindow, HandlePartyInvited));
     SubscribeToEvent(AbEvents::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));
     SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyRemoved));
+    SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(PartyWindow, HandleObjectDespawn));
 }
 
 void PartyWindow::UpdateCaption()
@@ -411,6 +502,21 @@ void PartyWindow::UpdateCaption()
     if (mode_ == PartyWindowMode::ModeOutpost)
         s += "  " + String(members_.Size()) + "/" + String(static_cast<int>(partySize_));
     caption->SetText(s);
+}
+
+void PartyWindow::UpdateAll()
+{
+    partyContainer_->SetMinHeight(memberContainer_->GetHeight() + inviteContainer_->GetHeight() + 25);
+    SetMinHeight(partyContainer_->GetHeight() + invitationContainer_->GetHeight() + 33 + 30);
+    UpdateCaption();
+    UpdateLayout();
+}
+
+void PartyWindow::ShowError(const String& msg)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
+    wnd->ShowError(msg);
 }
 
 PartyItem* PartyWindow::GetItem(uint32_t actorId)

@@ -47,12 +47,13 @@ public:
     void SetPartySize(size_t size);
     size_t GetMemberCount() const
     {
-        return members_.size();
+        return numMembers_;
     }
     const std::array<std::weak_ptr<Player>, AB::Entities::Limits::MAX_PARTY_MEMBERS>& GetMembers() const
     {
         return members_;
     }
+    bool IsFull() const { return numMembers_ >= maxMembers_; }
     bool IsMember(std::shared_ptr<Player> player) const;
     bool IsInvited(std::shared_ptr<Player> player) const;
     bool IsLeader(Player* player);

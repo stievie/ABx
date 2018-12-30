@@ -20,4 +20,16 @@ std::shared_ptr<Party> PartyManager::GetParty(std::shared_ptr<Player> leader, co
     return result;
 }
 
+std::shared_ptr<Party> PartyManager::GetPartyById(uint32_t partyId)
+{
+    auto it = std::find_if(parties_.begin(), parties_.end(), [&](const auto& o) -> bool
+    {
+        return o.second->id_ == partyId;
+    });
+    if (it != parties_.end())
+        return (*it).second;
+
+    return std::shared_ptr<Party>();
+}
+
 }

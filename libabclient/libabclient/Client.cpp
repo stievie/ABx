@@ -266,6 +266,12 @@ void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_
         receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId, partyId);
 }
 
+void Client::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
+{
+    if (receiver_)
+        receiver_->OnPartyInfoMembers(partyId, members);
+}
+
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {
@@ -584,6 +590,24 @@ void Client::PartyInvitePlayer(uint32_t targetId)
 {
     if (state_ == ClientState::World)
         protoGame_->PartyInvitePlayer(targetId);
+}
+
+void Client::PartyKickPlayer(uint32_t targetId)
+{
+    if (state_ == ClientState::World)
+        protoGame_->PartyKickPlayer(targetId);
+}
+
+void Client::PartyAcceptInvite(uint32_t inviterId)
+{
+    if (state_ == ClientState::World)
+        protoGame_->PartyAcceptInvite(inviterId);
+}
+
+void Client::PartyRejectInvite(uint32_t inviterId)
+{
+    if (state_ == ClientState::World)
+        protoGame_->PartyRejectInvite(inviterId);
 }
 
 void Client::UseSkill(uint32_t index)

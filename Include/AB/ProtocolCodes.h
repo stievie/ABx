@@ -208,6 +208,7 @@ enum GameProtocolCodes : uint8_t
     PartyPlayerRemoved,
     PartyPlayerAdded,
     PartyInviteRemoved,
+    PartyInfoMembers,
 };
 
 enum ResourceType : uint8_t
@@ -282,7 +283,8 @@ enum GamePacketTypes : uint8_t
     PacketTypePartyKickPlayer,
     PacketTypePartyLeave,
     PacketTypePartyAcceptInvite,
-    PacketTypePartyRemoveInvite,
+    PacketTypePartyRejectInvite,
+    PacektTypeGetPartyMembers,
 };
 
 enum CommandTypes : uint8_t

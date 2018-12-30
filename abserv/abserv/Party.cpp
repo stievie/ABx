@@ -33,14 +33,11 @@ bool Party::Add(std::shared_ptr<Player> player)
     if (!player)
         return false;
 
-    if (members_.size() == maxMembers_)
+    if (IsFull())
         return false;
     if (IsMember(player))
         return false;
 
-    // Remove from existing party
-    player->GetParty()->Remove(player);
-    // TODO: shared_from_this -> Exception?
     members_[numMembers_] = player;
     ++numMembers_;
     player->SetParty(shared_from_this());
@@ -75,6 +72,7 @@ bool Party::Remove(std::shared_ptr<Player> player)
         }
     }
     members_.back().reset();
+    --numMembers_;
 
     if (auto l = leader_.lock())
     {

@@ -107,6 +107,10 @@ public:
     void UseSkill(uint32_t index);
     void Cancel();
     void PartyInvitePlayer(uint32_t objectId);
+    /// Remove as party member or remove invitation
+    void PartyKickPlayer(uint32_t objectId);
+    void PartyAcceptInvite(uint32_t inviterId);
+    void PartyRejectInvite(uint32_t inviterId);
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;
@@ -158,6 +162,7 @@ public:
     void OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId) override;
     /// The invite to our party was removed
     void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
+    void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
 
     void SetState(Client::Client::ClientState state)
     {

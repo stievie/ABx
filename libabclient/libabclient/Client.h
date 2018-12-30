@@ -114,6 +114,7 @@ public:
     void OnPartyAdded(int64_t updateTick, uint32_t acceptorId, uint32_t leaderId, uint32_t partyId) override;
     /// The invite to our party was removed
     void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
+    void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
 
     std::string accountUuid_;
     std::string password_;
@@ -163,6 +164,10 @@ public:
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void PartyInvitePlayer(uint32_t targetId);
+    /// Kick player from party or remove invitation
+    void PartyKickPlayer(uint32_t targetId);
+    void PartyAcceptInvite(uint32_t inviterId);
+    void PartyRejectInvite(uint32_t inviterId);
     void UseSkill(uint32_t index);
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
