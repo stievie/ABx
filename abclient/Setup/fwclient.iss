@@ -46,10 +46,7 @@ Source: "{#_SrcPath}\bin\fw.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\bin\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\bin\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#_SrcPath}\Setup\config.xml"; DestDir: "{app}"; DestName: "config.xml"; Flags: ignoreversion
-Source: "{#_SrcPath}\Setup\AbData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#_SrcPath}\Setup\Autoload.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#_SrcPath}\Setup\CoreData.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#_SrcPath}\Setup\Data.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#_SrcPath}\Setup\*.pak"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#_SrcPath}\bin\d3dcompiler_47.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
