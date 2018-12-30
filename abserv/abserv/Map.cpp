@@ -306,7 +306,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
     if (points.size() == 0)
         return EmtpySpawnPoint;
 
-    auto cleanObjects = [](std::vector<GameObject*>& objects)
+    static auto cleanObjects = [](std::vector<GameObject*>& objects)
     {
         if (objects.size() == 0)
             return;
@@ -315,7 +315,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
         {
             return (current->GetCollisionMask() == 0) ||
                 (current->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch);
-        }));
+        }), objects.end());
     };
 
     size_t minObjects = INFINITE;

@@ -143,4 +143,9 @@
 			</element>
 		</element>
 	</element>
+	<element>
+		<attribute name="Name" value="InvitationsContainer" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Vertical" />
+	</element>
 </element>

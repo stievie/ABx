@@ -5,7 +5,8 @@
 enum class MemberType
 {
     Invitee,
-    Member
+    Member,
+    Invitation
 };
 
 class PartyItem : public HealthBar

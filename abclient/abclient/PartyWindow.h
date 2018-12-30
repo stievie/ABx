@@ -24,9 +24,12 @@ private:
     SharedPtr<UIElement> partyContainer_;
     SharedPtr<UIElement> addContainer_;
     SharedPtr<UIElement> inviteContainer_;
+    SharedPtr<UIElement> invitationContainer_;
     WeakPtr<Player> player_;
     HashMap<uint32_t, WeakPtr<Actor>> members_;
     HashMap<uint32_t, WeakPtr<Actor>> invitees_;
+    HashMap<uint32_t, WeakPtr<Actor>> invitations_;
+    uint32_t leaderId_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
@@ -35,6 +38,9 @@ private:
     void HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
     void HandleActorClicked(StringHash eventType, VariantMap& eventData);
+    void HandleAcceptInvitationClicked(StringHash eventType, VariantMap& eventData);
+    void HandleRejectInvitationClicked(StringHash eventType, VariantMap& eventData);
+    void HandleKickClicked(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
     PartyItem* GetItem(uint32_t actorId);
@@ -50,11 +56,15 @@ public:
     void SetMode(PartyWindowMode mode);
     void AddMember(SharedPtr<Actor> actor);
     void RemoveMember(uint32_t actorId);
-    void AddInvite(SharedPtr<Actor> actor);
+    void AddInvitee(SharedPtr<Actor> actor);
+    void AddInvitation(SharedPtr<Actor> leader);
     void RemoveInvite(uint32_t actorId);
+    void RemoveInvitation(uint32_t actorId);
     void Clear();
     void UnselectAll();
     bool SelectItem(uint32_t actorId);
     bool UnselectItem(uint32_t actorId);
+    // Check if we are the party leader
+    bool IsLeader();
 };
 

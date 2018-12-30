@@ -239,7 +239,7 @@ enum GameObjectType : uint8_t
     ObjectTypeStatic,
     ObjectTypeTerrainPatch,
     // -- Bellow all objects are sent to player when they spawn ----------------
-    ObjectTypeSentToPlayer,
+    ObjectTypeSentToPlayer,          // Not an actual object type, all bellow is sent to the player
     ObjectTypeNpc,
     ObjectTypePlayer,
     ObjectTypeProjectile,
