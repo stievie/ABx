@@ -752,11 +752,17 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
     AB::Entities::GameType type, uint8_t partySize)
 {
+    {
+        using namespace AbEvents::LeaveInstance;
+        VariantMap& eData = GetEventDataMap();
+        eData[P_UPDATETICK] = updateTick;
+        SendEvent(AbEvents::E_LEAVEINSTANCE, eData);
+    }
+
     levelReady_ = false;
     playerId_ = playerId;
     currentServerId_ = String(serverId.c_str());
     const AB::Entities::Game& game = games_[mapUuid];
-    VariantMap& eData = GetEventDataMap();
     switch (game.type)
     {
     case AB::Entities::GameType::GameTypeOutpost:
@@ -778,14 +784,17 @@ void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,
         return;
     }
     currentMapUuid_ = String(mapUuid.c_str());
-    using namespace AbEvents::SetLevel;
-    eData[P_UPDATETICK] = updateTick;
-    eData[P_MAPUUID] = currentMapUuid_;
-    eData[P_NAME] = currentLevel_;
-    eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
-    eData[P_TYPE] = type;
-    eData[P_PARTYSIZE] = partySize;
-    SendEvent(AbEvents::E_SETLEVEL, eData);
+    {
+        using namespace AbEvents::SetLevel;
+        VariantMap& eData = GetEventDataMap();
+        eData[P_UPDATETICK] = updateTick;
+        eData[P_MAPUUID] = currentMapUuid_;
+        eData[P_NAME] = currentLevel_;
+        eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
+        eData[P_TYPE] = type;
+        eData[P_PARTYSIZE] = partySize;
+        SendEvent(AbEvents::E_SETLEVEL, eData);
+    }
 
     Graphics* graphics = GetSubsystem<Graphics>();
     graphics->SetWindowTitle("FW - " + accountName_);

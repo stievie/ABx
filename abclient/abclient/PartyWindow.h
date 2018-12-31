@@ -30,6 +30,7 @@ private:
     HashMap<uint32_t, WeakPtr<Actor>> invitees_;
     HashMap<uint32_t, WeakPtr<Actor>> invitations_;
     uint32_t leaderId_;
+    uint32_t groupId_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
@@ -43,6 +44,7 @@ private:
     void HandleKickClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
     void HandlePartyInfoMembers(StringHash eventType, VariantMap& eventData);
+    void HandleLeaveInstance(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
     void UpdateAll();
@@ -51,7 +53,7 @@ private:
     void ShowError(const String& msg);
     bool IsFull() const { return members_.Size() >= partySize_; }
     PartyItem* GetItem(uint32_t actorId);
-    void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type);
+    void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type, unsigned pos = 0);
 public:
     static void RegisterObject(Context* context);
 
@@ -61,7 +63,7 @@ public:
     void SetPlayer(SharedPtr<Player> player);
     void SetPartySize(uint8_t value);
     void SetMode(PartyWindowMode mode);
-    void AddMember(SharedPtr<Actor> actor);
+    void AddMember(SharedPtr<Actor> actor, unsigned pos = 0);
     void RemoveMember(uint32_t actorId);
     void AddInvitee(SharedPtr<Actor> actor);
     void AddInvitation(SharedPtr<Actor> leader);
@@ -74,5 +76,6 @@ public:
     bool UnselectItem(uint32_t actorId);
     // Check if we are the party leader
     bool IsLeader();
+    void OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t groupPos);
 };
 

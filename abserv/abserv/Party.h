@@ -3,6 +3,8 @@
 #include "NetworkMessage.h"
 #include "IdGenerator.h"
 #include <AB/Entities/Party.h>
+#include "Subsystems.h"
+#include "DataClient.h"
 
 namespace Game {
 
@@ -14,28 +16,37 @@ class Party : public std::enable_shared_from_this<Party>
 {
 private:
     static Utils::IdGenerator<uint32_t> partyIds_;
-    std::weak_ptr<Player> leader_;
     std::vector<std::weak_ptr<Player>> members_;
     /// Used when forming a group. If the player accepts it is added to the members.
     std::vector<std::weak_ptr<Player>> invited_;
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
+    template<typename E>
+    bool UpdateEntity(const E& e)
+    {
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+        return cli->Update(e);
+    }
+    /// 1-base position
+    size_t GetDataPos(Player* player);
 public:
     static uint32_t GetNewId()
     {
         return partyIds_.Next();
     }
 
-    explicit Party(std::shared_ptr<Player> leader);
-    Party() = delete;
+    Party();
     // non-copyable
     Party(const Party&) = delete;
     Party& operator=(const Party&) = delete;
 
     ~Party();
 
+    /// Append player
     bool Add(std::shared_ptr<Player> player);
+    /// Insert at the position in data_
+    bool Set(std::shared_ptr<Player> player);
     bool Remove(Player* player, bool newParty = true);
     bool Invite(std::shared_ptr<Player> player);
     bool RemoveInvite(std::shared_ptr<Player> player);
@@ -58,10 +69,12 @@ public:
     bool IsLeader(Player* player);
     std::shared_ptr<Player> GetLeader() const
     {
-        return leader_.lock();
+        if (members_.size() == 0)
+            return std::shared_ptr<Player>();
+        return members_[0].lock();
     }
     /// Get position of actor in party, 1-based, 0 = not found
-    uint8_t GetPosition(const Actor* actor) const;
+    uint8_t GetPosition(Actor* actor);
     /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid);
 

@@ -19,7 +19,8 @@ PartyWindow::PartyWindow(Context* context) :
     Window(context),
     partySize_(1),
     player_(nullptr),
-    leaderId_(0)
+    leaderId_(0),
+    groupId_(0)
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     ResourceCache* cache = GetSubsystem<ResourceCache>();
@@ -100,7 +101,7 @@ void PartyWindow::SetMode(PartyWindowMode mode)
     UpdateCaption();
 }
 
-void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type)
+void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type, unsigned pos /* = 0 */)
 {
     if (!actor)
         return;
@@ -109,9 +110,9 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
     if (type == MemberType::Member)
         RemoveInvite(actor->id_);
-    UIElement* cont = container->CreateChild<UIElement>();
+    UIElement* cont = container->CreateChild<UIElement>(actor->name_ + String(actor->id_),
+        pos == 0 ? M_MAX_UNSIGNED : pos - 1);
     cont->SetLayoutMode(LM_HORIZONTAL);
-    cont->SetName(actor->name_ + String(actor->id_));
     cont->SetVar("ActorID", actor->id_);
     PartyItem* hb = cont->CreateChild<PartyItem>("HealthBar");
     hb->type_ = type;
@@ -192,9 +193,9 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     UpdateAll();
 }
 
-void PartyWindow::AddMember(SharedPtr<Actor> actor)
+void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
 {
-    AddItem(memberContainer_, actor, MemberType::Member);
+    AddItem(memberContainer_, actor, MemberType::Member, pos);
 }
 
 void PartyWindow::AddInvitee(SharedPtr<Actor> actor)
@@ -387,13 +388,14 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
         if (o->objectType_ == ObjectTypePlayer)
         {
             Actor* actor = dynamic_cast<Actor*>(o);
-            actor->partyId_ = eventData[P_PARTYID].GetUInt();
+            actor->groupId_ = eventData[P_PARTYID].GetUInt();
             AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
         }
         else if (o->objectType_ == ObjectTypeSelf)
         {
             if (auto p = player_.Lock())
-                p->partyId_ = partyId;
+                p->groupId_ = partyId;
+            groupId_ = partyId;
             // We was added to a party
             ClearInvitations();
             // Get full list of members
@@ -442,6 +444,7 @@ void PartyWindow::HandlePartyRemoved(StringHash, VariantMap& eventData)
         if (o->objectType_ == ObjectTypeSelf)
         {
             // We get a new party
+            groupId_ = 0;
             ClearMembers();
             return;
         }
@@ -519,7 +522,7 @@ void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
         return;
     if (auto p = player_.Lock())
     {
-        if (p->partyId_ != partyId)
+        if (p->groupId_ != partyId)
             return;
     }
     else
@@ -533,16 +536,22 @@ void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
         if (o)
         {
             Actor* actor = dynamic_cast<Actor*>(o);
-            actor->partyId_ = eventData[P_PARTYID].GetUInt();
+            actor->groupId_ = eventData[P_PARTYID].GetUInt();
             AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
         }
     }
+}
+
+void PartyWindow::HandleLeaveInstance(StringHash, VariantMap&)
+{
+    Clear();
 }
 
 void PartyWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleCloseClicked));
+    SubscribeToEvent(AbEvents::E_LEAVEINSTANCE, URHO3D_HANDLER(PartyWindow, HandleLeaveInstance));
     SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(PartyWindow, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(PartyWindow, HandlePartyAdded));
@@ -681,4 +690,22 @@ bool PartyWindow::IsLeader()
     if (auto p = player_.Lock())
         return p->id_ == leaderId_;
     return false;
+}
+
+void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t groupPos)
+{
+    if (object)
+    {
+        if (object->objectType_ == ObjectTypeSelf)
+            groupId_ = groupId;
+
+        URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->id_, groupId, groupPos, groupId_);
+        if ((object->objectType_ == ObjectTypePlayer || object->objectType_ == ObjectTypeSelf) && groupId == groupId_)
+        {
+/*            ClearMembers();
+            FwClient* cli = GetSubsystem<FwClient>();
+            cli->PartyGetMembers(groupId);*/
+            AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(object)), groupPos);
+        }
+    }
 }

@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "PartyManager.h"
+#include "Subsystems.h"
+#include "DataClient.h"
 
 namespace Game {
 
-std::shared_ptr<Party> PartyManager::GetParty(std::shared_ptr<Player> leader, const std::string& uuid)
+std::shared_ptr<Party> PartyManager::GetParty(const std::string& uuid)
 {
     auto it = parties_.find(uuid);
     if (it != parties_.end())
@@ -15,8 +17,14 @@ std::shared_ptr<Party> PartyManager::GetParty(std::shared_ptr<Player> leader, co
         const uuids::uuid guid = uuids::uuid_system_generator{}();
         _uuid = guid.to_string();
     }
-    std::shared_ptr<Party> result = std::make_shared<Party>(leader);
-    result->data_.uuid = _uuid;
+    AB::Entities::Party p;
+    p.uuid = _uuid;
+    auto cli = GetSubsystem<IO::DataClient>();
+    if (!cli->Read(p))
+        cli->Create(p);
+
+    std::shared_ptr<Party> result = std::make_shared<Party>();
+    result->data_ = p;
     parties_[_uuid] = result;
     return result;
 }

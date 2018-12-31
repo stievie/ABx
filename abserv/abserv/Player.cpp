@@ -49,15 +49,14 @@ void Player::SetGame(std::shared_ptr<Game> game)
     }
 }
 
-uint8_t Player::GetGroupPos() const
+uint8_t Player::GetGroupPos()
 {
-    return party_->GetPosition(const_cast<const Player*>(this));
+    return party_->GetPosition(this);
 }
 
 void Player::Initialize()
 {
-    party_ = GetSubsystem<PartyManager>()->GetParty(GetThis(), data_.partyUuid);
-    data_.partyUuid = party_->data_.uuid;
+    SetParty(GetSubsystem<PartyManager>()->GetParty(data_.partyUuid));
 }
 
 void Player::Logout()
@@ -212,9 +211,10 @@ void Player::SetParty(std::shared_ptr<Party> party)
     {
         // Create new party
         data_.partyUuid.clear();
-        party_ = GetSubsystem<PartyManager>()->GetParty(GetThis(), data_.partyUuid);
+        party_ = GetSubsystem<PartyManager>()->GetParty(data_.partyUuid);
         data_.partyUuid = party_->data_.uuid;
     }
+    party_->Set(GetThis());
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)

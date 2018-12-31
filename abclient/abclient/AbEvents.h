@@ -45,6 +45,11 @@ URHO3D_EVENT(E_SETLEVEL, SetLevel)
     URHO3D_PARAM(P_PARTYSIZE, PartySize);        // uint8_t
 }
 
+URHO3D_EVENT(E_LEAVEINSTANCE, LeaveInstance)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+}
+
 URHO3D_EVENT(E_LEVELREADY, LevelReady)
 {
     URHO3D_PARAM(P_NAME, Name);        // String

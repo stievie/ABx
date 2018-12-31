@@ -434,6 +434,9 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
                 chatWindow_->AddLine(dynamic_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
         }
+
+        // Update party window
+        partyWindow_->OnObjectSpawned(object, groupId, groupPos);
     }
 }
 
@@ -818,7 +821,6 @@ void WorldLevel::CreatePlayer(uint32_t id,
     SoundListener* soundListener = listenerNode->CreateComponent<SoundListener>();
     GetSubsystem<Audio>()->SetListener(soundListener);
     SetupViewport();
-    partyWindow_->Clear();
     partyWindow_->SetPlayer(player_);
     chatWindow_->SayHello(player_);
 }

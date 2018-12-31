@@ -69,7 +69,7 @@ public:
     {
         return party_->id_;
     }
-    uint8_t GetGroupPos() const final override;
+    uint8_t GetGroupPos() final override;
 
     uint32_t GetLevel() const final override { return data_.level; }
     AB::GameProtocol::GameObjectType GetType() const final override

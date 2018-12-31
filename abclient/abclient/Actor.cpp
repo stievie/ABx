@@ -18,7 +18,6 @@
 Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
-    partyId_(0),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
