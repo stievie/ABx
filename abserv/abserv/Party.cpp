@@ -12,14 +12,13 @@ Utils::IdGenerator<uint32_t> Party::partyIds_;
 
 Party::Party(std::shared_ptr<Player> leader) :
     leader_(leader),
-    maxMembers_(1),
-    numMembers_(0)
+    maxMembers_(1)
 {
     id_ = GetNewId();
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
-    members_[0] = leader;
-    ++numMembers_;
+    members_.reserve(AB::Entities::Limits::MAX_PARTY_MEMBERS);
+    members_.push_back(leader);
     data_.members.push_back(leader->data_.uuid);
 }
 
@@ -38,41 +37,23 @@ bool Party::Add(std::shared_ptr<Player> player)
     if (IsMember(player))
         return false;
 
-    members_[numMembers_] = player;
-    ++numMembers_;
+    members_.push_back(player);
     player->SetParty(shared_from_this());
     RemoveInvite(player);
     return true;
 }
 
-bool Party::Remove(std::shared_ptr<Player> player)
+bool Party::Remove(Player* player, bool newParty /* = true */)
 {
     if (!player)
         return false;
 
-    bool found = false;
-    for (size_t i = 0; i < AB::Entities::Limits::MAX_PARTY_MEMBERS; ++i)
+    members_.erase(std::remove_if(members_.begin(), members_.end(), [&player](std::weak_ptr<Player>& current)
     {
-        if (auto p = members_[i].lock())
-        {
-            if (!found)
-            {
-                if (p->id_ == player->id_)
-                {
-                    members_[i].reset();
-                    found = true;
-                }
-            }
-            else
-            {
-                // Move bellow up
-                if (i <  AB::Entities::Limits::MAX_PARTY_MEMBERS - 1)
-                    members_[i] = members_[i + 1];
-            }
-        }
-    }
-    members_.back().reset();
-    --numMembers_;
+        if (auto p = current.lock())
+            return (p->id_ == player->id_);
+        return true;
+    }), members_.end());
 
     if (auto l = leader_.lock())
     {
@@ -86,8 +67,9 @@ bool Party::Remove(std::shared_ptr<Player> player)
         }
     }
 
-    // Lastly, this may call the destructor
-    player->SetParty(std::shared_ptr<Party>());
+    if (newParty)
+        // Lastly, this may call the destructor
+        player->SetParty(std::shared_ptr<Party>());
     return true;
 }
 
@@ -138,14 +120,9 @@ void Party::WriteToMembers(const Net::NetworkMessage& message)
 
 void Party::SetPartySize(size_t size)
 {
-    for (size_t i = size; i < AB::Entities::Limits::MAX_PARTY_MEMBERS; ++i)
-    {
-        if (auto p = members_[i].lock())
-        {
-            p->SetParty(std::shared_ptr<Party>());
-            members_[i].reset();
-        }
-    }
+    while (members_.size() > size)
+        members_.erase(members_.end());
+
     maxMembers_ = static_cast<uint32_t>(size);
 }
 

@@ -154,7 +154,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("SimpleWeb: https://github.com/eidheim/Simple-Web-Server", 15);
     CreateSingleLine("Simple cache: https://github.com/brimzi/simple-cache", 15);
     CreateSingleLine("Lua 5.3.4: https://www.lua.org/", 15);
-    CreateLogo("Textures/lua-logo.png", 0.5f);
+    CreateLogo("Textures/lua-official.png", 0.25f);
     CreateSingleLine("Kaguya: https://github.com/satoren/kaguya", 15);
     CreateSingleLine("pugixml: https://pugixml.org/", 15);
     CreateSingleLine("GJK: https://github.com/xuzebin/gjk", 15);
@@ -199,4 +199,7 @@ void CreditsWindow::AddCredits()
     CreateLogo("Textures/makehuman_logo.png", 0.5f);
     CreateSingleLine("Animations: mixamo https://www.mixamo.com/", 15);
     CreateSingleLine("Sounds: Audacity https://www.audacityteam.org/", 15);
+    CreateLogo("Textures/Audacity_Logo.png", 0.5f);
+    CreateSingleLine("Inkscape https://inkscape.org/", 15);
+    CreateLogo("Textures/inkscape.png", 1.0f);
 }

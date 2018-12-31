@@ -8,8 +8,7 @@ void HealthBar::RegisterObject(Context* context)
 
 HealthBar::HealthBar(Context* context) :
     ProgressBar(context),
-    showName_(false),
-    selected_(false)
+    showName_(false)
 {
     SetRange(0.0f);
     SetValue(0.0f);
@@ -49,14 +48,6 @@ void HealthBar::SetActor(SharedPtr<Actor> actor)
         nameText_->SetText(actor->GetClassLevelName());
     else
         nameText_->SetText(String::EMPTY);
-}
-
-void HealthBar::SetSelected(bool value)
-{
-    if (selected_ != value)
-    {
-        selected_ = value;
-    }
 }
 
 void HealthBar::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)

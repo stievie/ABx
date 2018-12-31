@@ -33,6 +33,8 @@
 #define CLEAN_PLAYERS_MS (1000 * 10)
 // Clean empty chats all minutes
 #define CLEAN_CHATS_MS (1000 * 60)
+// Clean parties all 10 sec
+#define CLEAN_PARTIES_MS (1000 * 10)
 // Check to terminate if the are no players left
 #define CHECK_AUTOTERMINATE_MS (1000 * 60)
 // Remove player from PlayerManager after this time. Inactive means not Ping.

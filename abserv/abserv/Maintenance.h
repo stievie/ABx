@@ -14,6 +14,7 @@ private:
     void CleanGamesTask();
     void CleanPlayersTask();
     void CleanChatsTask();
+    void CleanPartiesTask();
     void UpdateServerLoadTask();
     void CheckAutoTerminate();
 public:

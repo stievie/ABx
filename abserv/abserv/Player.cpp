@@ -29,6 +29,8 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
 
 Player::~Player()
 {
+    if (party_)
+        party_->Remove(this, false);
 #ifdef DEBUG_GAME
 //    LOG_DEBUG << std::endl;
 #endif
@@ -62,7 +64,7 @@ void Player::Logout()
 {
     if (auto g = GetGame())
         g->PlayerLeave(id_);
-    party_->Remove(GetThis());
+    party_->Remove(this, false);
     client_->Logout();
 }
 
@@ -260,30 +262,45 @@ void Player::PartyKickPlayer(uint32_t playerId)
     if (!player)
         return;
 
-    Net::NetworkMessage nmsg;
-    if (party_->IsMember(player))
+    bool removedMember = false;
     {
-        if (!party_->Remove(player))
+        Net::NetworkMessage nmsg;
+        if (party_->IsMember(player))
+        {
+            if (!party_->Remove(player.get()))
+                return;
+            nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+            removedMember = true;
+        }
+        else if (party_->IsInvited(player))
+        {
+            if (!party_->RemoveInvite(player))
+                return;
+            nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
+        }
+        else
             return;
-        nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
-    }
-    else if (party_->IsInvited(player))
-    {
-        if (!party_->RemoveInvite(player))
-            return;
-        nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
-    }
-    else
-        return;
 
-    nmsg.Add<uint32_t>(id_);
-    nmsg.Add<uint32_t>(playerId);
-    nmsg.Add<uint32_t>(party_->id_);
-    party_->WriteToMembers(nmsg);
-    // Remove after
-    party_->Remove(player);
-    // Inform the player
-    player->client_->WriteToOutput(nmsg);
+        nmsg.Add<uint32_t>(id_);
+        nmsg.Add<uint32_t>(playerId);
+        nmsg.Add<uint32_t>(party_->id_);
+        party_->WriteToMembers(nmsg);
+
+        // Also send to player which is removed already
+        player->client_->WriteToOutput(nmsg);
+    }
+
+    if (removedMember)
+    {
+        // The kicked player needs a new party
+        player->SetParty(std::shared_ptr<Party>());
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
+        nmsg.Add<uint32_t>(player->id_);                           // Acceptor
+        nmsg.Add<uint32_t>(player->id_);                           // Leader
+        nmsg.Add<uint32_t>(player->GetParty()->id_);
+        player->GetParty()->WriteToMembers(nmsg);
+    }
 }
 
 void Player::PartyLeave()
@@ -299,7 +316,7 @@ void Player::PartyLeave()
         nmsg.Add<uint32_t>(id_);
         nmsg.Add<uint32_t>(party_->id_);
         party_->WriteToMembers(nmsg);
-        party_->Remove(GetThis());
+        party_->Remove(this);
     }
 
     // We need a new party
@@ -330,18 +347,10 @@ void Player::PartyAccept(uint32_t playerId)
             nmsg.Add<uint32_t>(id_);                           // Acceptor
             nmsg.Add<uint32_t>(playerId);                      // Leader
             nmsg.Add<uint32_t>(party_->id_);
-            // TODO: All current members
-            const size_t memberCount = party_->GetMemberCount();
-            nmsg.Add<uint8_t>(static_cast<uint8_t>(memberCount));
-            const auto& members = party_->GetMembers();
-            for (size_t i = 0; i < memberCount; ++i)
-            {
-                if (auto m = members[i].lock())
-                {
-                    nmsg.Add<uint32_t>(m->id_);
-                }
-            }
             party_->WriteToMembers(nmsg);
+#ifdef DEBUG_GAME
+            LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->id_ << std::endl;
+#endif
         }
         // else party maybe full
     }
@@ -381,15 +390,22 @@ void Player::PartyGetMembers(uint32_t partyId)
         size_t count = party->GetMemberCount();
         const auto& members = party->GetMembers();
         nmsg.AddByte(static_cast<uint8_t>(count));
-        for (size_t i = 0; i < count; i++)
+        for (auto& m : members)
         {
-            if (auto m = members[i].lock())
-                nmsg.Add<uint32_t>(m->id_);
+            if (auto sm = m.lock())
+                nmsg.Add<uint32_t>(sm->id_);
             else
                 nmsg.Add<uint32_t>(0);
         }
         client_->WriteToOutput(nmsg);
+#ifdef DEBUG_GAME
+        LOG_DEBUG << "Player: " << id_ << ", Party: " << partyId << ", Count: " << static_cast<int>(count) << std::endl;
+#endif
     }
+#ifdef DEBUG_GAME
+    else
+        LOG_DEBUG << "Party not found: " << partyId << std::endl;
+#endif
 }
 
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,

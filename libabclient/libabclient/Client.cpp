@@ -610,6 +610,12 @@ void Client::PartyRejectInvite(uint32_t inviterId)
         protoGame_->PartyRejectInvite(inviterId);
 }
 
+void Client::PartyGetMembers(uint32_t partyId)
+{
+    if (state_ == ClientState::World)
+        protoGame_->PartyGetMembers(partyId);
+}
+
 void Client::UseSkill(uint32_t index)
 {
     if (state_ == ClientState::World)

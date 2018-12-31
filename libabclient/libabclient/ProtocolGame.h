@@ -15,12 +15,6 @@ public:
     enum { ServerSendsFirst = true };
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
     enum { UseChecksum = true };
-    typedef std::function<void(const std::string& mapName, uint32_t)> EnterWorldCallback;
-    typedef std::function<void(int)> PingCallback;
-    typedef std::function<void(uint32_t id, const Vec3& pos, const Vec3& scale, float rot,
-        PropReadStream& data, bool existing)> SpawnCallback;
-    typedef std::function<void(uint32_t id)> DespawnCallback;
-    typedef std::function<void(uint32_t id, const Vec3& pos)> ObjectPosCallback;
 private:
     std::string accountUuid_;
     std::string accountPass_;
@@ -105,6 +99,7 @@ public:
     void PartyLeave();
     void PartyAcceptInvite(uint32_t inviterId);
     void PartyRejectInvite(uint32_t inviterId);
+    void PartyGetMembers(uint32_t partyId);
 
     int64_t GetUpdateTick() const
     {

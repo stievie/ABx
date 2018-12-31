@@ -694,6 +694,12 @@ void FwClient::PartyRejectInvite(uint32_t inviterId)
         client_.PartyRejectInvite(inviterId);
 }
 
+void FwClient::PartyGetMembers(uint32_t partyId)
+{
+    if (loggedIn_)
+        client_.PartyGetMembers(partyId);
+}
+
 void FwClient::OnLoggedIn(const std::string&)
 {
     LoadData();
@@ -1116,4 +1122,5 @@ void FwClient::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>&
     for (unsigned i = 0; i < static_cast<unsigned>(members.size()); i++)
         _members[i] = members[i];
     eData[P_MEMBERS] = _members;
+    QueueEvent(AbEvents::E_PARTYINFOMEMBERS, eData);
 }

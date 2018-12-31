@@ -219,7 +219,7 @@ URHO3D_EVENT(E_PARTYINVITEREMOVED, PartyInviteRemoved)
 URHO3D_EVENT(E_PARTYINFOMEMBERS, PartyInfoMembers)
 {
     URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
-    URHO3D_PARAM(P_MEMBERS, Members);       // unit32_t
+    URHO3D_PARAM(P_MEMBERS, Members);       // VariantVector
 }
 
 URHO3D_EVENT(E_NEWMAIL, NewMail)

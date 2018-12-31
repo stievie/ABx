@@ -111,6 +111,7 @@ public:
     void PartyKickPlayer(uint32_t objectId);
     void PartyAcceptInvite(uint32_t inviterId);
     void PartyRejectInvite(uint32_t inviterId);
+    void PartyGetMembers(uint32_t partyId);
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;

@@ -1,5 +1,7 @@
 # TODO
 
++ abserv, abclient: Party
+! abclient, abserv: PartyAdd wrong network message
 ! ?: Server list?
 * abserv: https://github.com/mgerhardy/engine/tree/master/src/modules/backend/entity/ai
 + ablogin: Monitor server load and spawn new server if needed
@@ -8,12 +10,10 @@
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap
 * abclient: https://urho3d.github.io/documentation/1.7/_lights.html
 ! abserv: TerrainPatch raycast query
-+ abserv, abclient: Party
 + abserv: Account Key itself expires and makes accounts that may expire (Trial Key)
 + Account location preference (read possible values from services table)
 
 
-* all: /friend /ignore /flremove /fl commands
 * all: Item Database
   https://github.com/jgoodman/MySQL-RPG-Schema   
   https://www.gamedev.net/forums/topic/465300-rpg-item-database/

@@ -168,6 +168,7 @@ public:
     void PartyKickPlayer(uint32_t targetId);
     void PartyAcceptInvite(uint32_t inviterId);
     void PartyRejectInvite(uint32_t inviterId);
+    void PartyGetMembers(uint32_t partyId);
     void UseSkill(uint32_t index);
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);

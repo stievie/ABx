@@ -17,6 +17,7 @@ std::shared_ptr<Party> PartyManager::GetParty(std::shared_ptr<Player> leader, co
     }
     std::shared_ptr<Party> result = std::make_shared<Party>(leader);
     result->data_.uuid = _uuid;
+    parties_[_uuid] = result;
     return result;
 }
 
@@ -30,6 +31,22 @@ std::shared_ptr<Party> PartyManager::GetPartyById(uint32_t partyId)
         return (*it).second;
 
     return std::shared_ptr<Party>();
+}
+
+void PartyManager::CleanParties()
+{
+    if (parties_.size() == 0)
+        return;
+
+#ifdef _DEBUG
+    LOG_DEBUG << "Cleaning parties" << std::endl;
+#endif
+    auto i = parties_.begin();
+    while ((i = std::find_if(i, parties_.end(), [](const auto& current) -> bool
+    {
+        return (current.second->GetMemberCount() == 0);
+    })) != parties_.end())
+        parties_.erase(i++);
 }
 
 }

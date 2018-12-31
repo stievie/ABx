@@ -42,9 +42,12 @@ private:
     void HandleRejectInvitationClicked(StringHash eventType, VariantMap& eventData);
     void HandleKickClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
+    void HandlePartyInfoMembers(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
     void UpdateAll();
+    void ClearMembers();
+    void ClearInvitations();
     void ShowError(const String& msg);
     bool IsFull() const { return members_.Size() >= partySize_; }
     PartyItem* GetItem(uint32_t actorId);

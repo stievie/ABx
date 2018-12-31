@@ -724,4 +724,12 @@ void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
     Send(msg);
 }
 
+void ProtocolGame::PartyGetMembers(uint32_t partyId)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacektTypeGetPartyMembers);
+    msg->Add<uint32_t>(partyId);
+    Send(msg);
+}
+
 }
