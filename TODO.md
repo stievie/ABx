@@ -1,5 +1,6 @@
 # TODO
 
+~ abclient, abserv: Just an IsLreader flag instead of leader ID
 + abserv, abclient: Party
 ! abclient, abserv: PartyAdd wrong network message
 ! ?: Server list?

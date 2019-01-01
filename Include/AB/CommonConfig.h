@@ -2,6 +2,8 @@
 
 // Configurations shared by the server and client
 
+#define CURRENT_YEAR 2019
+
 // Email is mandatory when creating an account
 //#define EMAIL_MANDATORY
 

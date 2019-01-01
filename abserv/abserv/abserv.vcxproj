@@ -255,6 +255,7 @@
     <ClInclude Include="TemplateEncoder.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainPatch.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AiCharacter.cpp" />
