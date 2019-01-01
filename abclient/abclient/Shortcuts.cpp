@@ -318,10 +318,18 @@ void Shortcuts::HandleUpdate(StringHash, VariantMap&)
         {
             if (triggered_[sc.first_])
                 continue;
-            triggered_[sc.first_] = (
-                (s.keyboardKey_ != KEY_UNKNOWN ? input->GetKeyDown(s.keyboardKey_) : false) ||
-                (s.mouseButton_ != MOUSEB_NONE ? input->GetMouseButtonDown(s.mouseButton_) : false)) &&
-                (ModifiersMatch(s.modifiers_));
+            if (!IsModifier(s.keyboardKey_))
+            {
+                triggered_[sc.first_] = (
+                    (s.keyboardKey_ != KEY_UNKNOWN ? input->GetKeyDown(s.keyboardKey_) : false) ||
+                    (s.mouseButton_ != MOUSEB_NONE ? input->GetMouseButtonDown(s.mouseButton_) : false)) &&
+                    (ModifiersMatch(s.modifiers_));
+            }
+            else
+            {
+                // Don't check for modifiers when the key itself is a modifier
+                triggered_[sc.first_] = input->GetKeyDown(s.keyboardKey_);
+            }
         }
     }
 }
@@ -494,5 +502,12 @@ unsigned Shortcuts::GetModifiers() const
         result |= SC_MOD_RALT;
     }
     return result;
+}
+
+bool Shortcuts::IsModifier(Key key)
+{
+    return (key == KEY_CTRL || key == KEY_SHIFT || key == KEY_ALT ||
+        key == KEY_LCTRL || key == KEY_LSHIFT || key == KEY_LALT ||
+        key == KEY_RCTRL || key == KEY_RSHIFT || key == KEY_RALT);
 }
 

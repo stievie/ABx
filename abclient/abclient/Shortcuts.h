@@ -187,6 +187,7 @@ private:
     bool ModifiersMatch(unsigned mods);
     unsigned GetModifiers() const;
     static unsigned shortcutIds;
+    static bool IsModifier(Key key);
 public:
     Shortcuts(Context* context);
     ~Shortcuts();
