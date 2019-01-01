@@ -79,7 +79,7 @@ public:
     bool Start();
     void Stop();
     void UnsubscribeUpdate();
-    void SubscibeUpdate();
+    void SubscribeUpdate();
     void Update(float timeStep);
     void Login(const String& name, const String& pass);
     void CreateAccount(const String& name, const String& pass, const String& email, const String& accKey);
@@ -112,6 +112,7 @@ public:
     void PartyAcceptInvite(uint32_t inviterId);
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
+    void PartyLeave();
 
     /// asio network error
     void OnNetworkError(const std::error_code& err) override;

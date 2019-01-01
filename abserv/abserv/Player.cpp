@@ -212,6 +212,7 @@ void Player::SetParty(std::shared_ptr<Party> party)
         // Create new party
         data_.partyUuid.clear();
         party_ = GetSubsystem<PartyManager>()->GetParty(data_.partyUuid);
+        party_->SetPartySize(GetGame()->data_.partySize);
         data_.partyUuid = party_->data_.uuid;
     }
     party_->Set(GetThis());
@@ -235,8 +236,8 @@ void Player::PartyInvitePlayer(uint32_t playerId)
         {
             Net::NetworkMessage nmsg;
             nmsg.AddByte(AB::GameProtocol::PartyPlayerInvited);
-            nmsg.Add<uint32_t>(id_);
-            nmsg.Add<uint32_t>(playerId);
+            nmsg.Add<uint32_t>(id_);                             // Leader
+            nmsg.Add<uint32_t>(playerId);                        // Invitee
             nmsg.Add<uint32_t>(party_->id_);
             // Send us confirmation
             party_->WriteToMembers(nmsg);
@@ -281,8 +282,8 @@ void Player::PartyKickPlayer(uint32_t playerId)
         else
             return;
 
-        nmsg.Add<uint32_t>(id_);
-        nmsg.Add<uint32_t>(playerId);
+        nmsg.Add<uint32_t>(id_);                 // Leader
+        nmsg.Add<uint32_t>(playerId);            // Member
         nmsg.Add<uint32_t>(party_->id_);
         party_->WriteToMembers(nmsg);
 
@@ -308,7 +309,10 @@ void Player::PartyLeave()
     // A player leaves the party
     if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
         return;
-    if (party_)
+    if (party_->IsLeader(this) && party_->GetMemberCount() == 1)
+        // Just we
+        return;
+
     {
         Net::NetworkMessage nmsg;
         nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
@@ -319,14 +323,16 @@ void Player::PartyLeave()
         party_->Remove(this);
     }
 
-    // We need a new party
-    SetParty(std::shared_ptr<Party>());
-    Net::NetworkMessage nmsg;
-    nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
-    nmsg.Add<uint32_t>(id_);                           // Acceptor
-    nmsg.Add<uint32_t>(id_);                           // Leader
-    nmsg.Add<uint32_t>(party_->id_);
-    party_->WriteToMembers(nmsg);
+    {
+        // We need a new party
+        SetParty(std::shared_ptr<Party>());
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
+        nmsg.Add<uint32_t>(id_);                           // Acceptor
+        nmsg.Add<uint32_t>(id_);                           // Leader
+        nmsg.Add<uint32_t>(party_->id_);
+        party_->WriteToMembers(nmsg);
+    }
 }
 
 void Player::PartyAccept(uint32_t playerId)

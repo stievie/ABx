@@ -33,6 +33,7 @@ private:
     uint32_t groupId_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
+    void HandleLeaveButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandlePartyInvited(StringHash eventType, VariantMap& eventData);
     void HandlePartyAdded(StringHash eventType, VariantMap& eventData);

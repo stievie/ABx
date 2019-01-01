@@ -280,7 +280,7 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
         return;
     if (IsFull())
     {
-        ShowError("The party id full.");
+        ShowError("The party is full.");
         return;
     }
     uint32_t targetId = 0;
@@ -300,6 +300,12 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
 void PartyWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
+}
+
+void PartyWindow::HandleLeaveButtonClicked(StringHash, VariantMap&)
+{
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->PartyLeave();
 }
 
 void PartyWindow::HandleObjectSelected(StringHash, VariantMap& eventData)
@@ -379,7 +385,9 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
     // A player accepted
     using namespace AbEvents::PartyAdded;
     uint32_t actorId = eventData[P_PLAYERID].GetUInt();
-    leaderId_ = eventData[P_LEADERID].GetUInt();
+    uint32_t leaderId = eventData[P_LEADERID].GetUInt();
+    if (leaderId != 0)
+        leaderId_ = leaderId;
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
     GameObject* o = lm->GetObjectById(actorId);
@@ -388,7 +396,7 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
         if (o->objectType_ == ObjectTypePlayer)
         {
             Actor* actor = dynamic_cast<Actor*>(o);
-            actor->groupId_ = eventData[P_PARTYID].GetUInt();
+            actor->groupId_ = partyId;
             AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(o)));
         }
         else if (o->objectType_ == ObjectTypeSelf)
@@ -396,8 +404,8 @@ URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
             if (auto p = player_.Lock())
                 p->groupId_ = partyId;
             groupId_ = partyId;
-            // We was added to a party
-            ClearInvitations();
+            // We was added to a new party
+            Clear();
             // Get full list of members
             FwClient* cli = GetSubsystem<FwClient>();
             cli->PartyGetMembers(partyId);
@@ -551,6 +559,8 @@ void PartyWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleCloseClicked));
+    Button* leaveButton = dynamic_cast<Button*>(GetChild("LeaveButton", true));
+    SubscribeToEvent(leaveButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleLeaveButtonClicked));
     SubscribeToEvent(AbEvents::E_LEAVEINSTANCE, URHO3D_HANDLER(PartyWindow, HandleLeaveInstance));
     SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(PartyWindow, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));

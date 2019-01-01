@@ -105,7 +105,7 @@ FwClient::FwClient(Context* context) :
     client_.receiver_ = this;
     lastState_ = client_.state_;
     SubscribeToEvent(AbEvents::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
-    SubscibeUpdate();
+    SubscribeUpdate();
 }
 
 FwClient::~FwClient()
@@ -131,11 +131,13 @@ void FwClient::Stop()
 
 void FwClient::UnsubscribeUpdate()
 {
+    URHO3D_LOGINFO("FwClient::UnsubscribeUpdate()");
     UnsubscribeFromEvent(E_UPDATE);
 }
 
-void FwClient::SubscibeUpdate()
+void FwClient::SubscribeUpdate()
 {
+    URHO3D_LOGINFO("FwClient::SubscribeUpdate()");
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
 
@@ -698,6 +700,12 @@ void FwClient::PartyGetMembers(uint32_t partyId)
 {
     if (loggedIn_)
         client_.PartyGetMembers(partyId);
+}
+
+void FwClient::PartyLeave()
+{
+    if (loggedIn_)
+        client_.PartyLeave();
 }
 
 void FwClient::OnLoggedIn(const std::string&)

@@ -616,6 +616,12 @@ void Client::PartyGetMembers(uint32_t partyId)
         protoGame_->PartyGetMembers(partyId);
 }
 
+void Client::PartyLeave()
+{
+    if (state_ == ClientState::World)
+        protoGame_->PartyLeave();
+}
+
 void Client::UseSkill(uint32_t index)
 {
     if (state_ == ClientState::World)

@@ -24,9 +24,16 @@ Player::Player(Context* context) :
     stickCameraToHead_ = opt->stickCameraToHead_;
     SubscribeToEvent(AbEvents::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(AbEvents::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->UnsubscribeUpdate();
 }
 
-Player::~Player() = default;
+Player::~Player()
+{
+    FwClient* cli = GetSubsystem<FwClient>();
+    if (cli)
+        cli->SubscribeUpdate();
+}
 
 void Player::RegisterObject(Context* context)
 {

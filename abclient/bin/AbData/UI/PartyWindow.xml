@@ -118,6 +118,8 @@
 			<attribute name="Layout Spacing" value="4" />
 			<attribute name="Layout Border" value="4 4 4 4" />
 			<element type="Button">
+				<attribute name="Name" value="LeaveButton" />
+				<attribute name="Min Size" value="0 23" />
 				<attribute name="Max Size" value="2147483647 23" />
 				<attribute name="Min Anchor" value="0.5 0" />
 				<attribute name="Max Anchor" value="0.5 0" />

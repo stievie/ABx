@@ -128,9 +128,9 @@ void Maintenance::Run()
     shed->Add(
         Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
     );
-    shed->Add(
+/*    shed->Add(
         Asynch::CreateScheduledTask(CLEAN_PARTIES_MS, std::bind(&Maintenance::CleanPartiesTask, this))
-    );
+    );*/
     shed->Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );

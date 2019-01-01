@@ -287,8 +287,8 @@ void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message
 
 void ProtocolGame::ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message)
 {
-    uint32_t sourceId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
+    uint32_t sourceId = message->Get<uint32_t>();         // Inviter (source)
+    uint32_t targetId = message->Get<uint32_t>();         // Invitee (target)
     uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyInvited(updateTick_, sourceId, targetId, partyId);

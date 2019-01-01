@@ -142,7 +142,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     {
 #ifdef DEBUG_NET
         // Maybe disconnect
-        if (error.value() != 995)
+//        if (error.value() != 995)
             LOG_ERROR << "Network " << error.value() << " " << error.message() << std::endl;
 #endif
         Close(true);
@@ -283,7 +283,7 @@ void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::e
     // It needs a constant stream of packets or the connection will be closed.
     // Send at least a ping once in a while.
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Timeout, closing connection" << std::endl;
+    LOG_DEBUG << "Timeout, closing connection. Error " << error.message() << std::endl;
 #endif
 
     if (auto conn = weakConn.lock())
