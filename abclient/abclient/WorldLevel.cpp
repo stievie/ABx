@@ -424,9 +424,6 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
 
-        if (player_ && player_->groupId_ == groupId)
-            partyWindow_->AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(object)));
-
         switch (object->objectType_)
         {
         case ObjectTypePlayer:

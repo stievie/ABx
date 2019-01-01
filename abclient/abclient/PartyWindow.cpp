@@ -17,9 +17,9 @@ void PartyWindow::RegisterObject(Context* context)
 
 PartyWindow::PartyWindow(Context* context) :
     Window(context),
-    partySize_(1),
     player_(nullptr),
     leaderId_(0),
+    partySize_(0),
     groupId_(0)
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
@@ -50,6 +50,7 @@ PartyWindow::PartyWindow(Context* context) :
     addContainer_ = dynamic_cast<UIElement*>(GetChild("AddContainer", true));
     addPlayerEdit_ = dynamic_cast<LineEdit*>(GetChild("AddPlayerEdit", true));
     invitationContainer_ = dynamic_cast<UIElement*>(GetChild("InvitationsContainer", true));
+    SetPartySize(1);
 
     SetSize(272, 156);
     auto* graphics = GetSubsystem<Graphics>();
@@ -69,7 +70,8 @@ PartyWindow::~PartyWindow()
 void PartyWindow::SetPlayer(SharedPtr<Player> player)
 {
     player_ = player;
-    leaderId_ = player->id_;
+    if (leaderId_ == 0)
+        leaderId_ = player->id_;
 }
 
 void PartyWindow::SetPartySize(uint8_t value)
@@ -77,6 +79,13 @@ void PartyWindow::SetPartySize(uint8_t value)
     if (partySize_ != value)
     {
         partySize_ = value;
+        memberContainers_.Clear();
+        memberContainers_.Resize(partySize_);
+        for (unsigned i = 0; i < partySize_; i++)
+        {
+            memberContainers_[i] = memberContainer_->CreateChild<UIElement>();
+            memberContainers_[i]->SetLayoutMode(LM_VERTICAL);
+        }
         UpdateCaption();
     }
 }
@@ -101,7 +110,7 @@ void PartyWindow::SetMode(PartyWindowMode mode)
     UpdateCaption();
 }
 
-void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type, unsigned pos /* = 0 */)
+void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type)
 {
     if (!actor)
         return;
@@ -110,8 +119,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
     if (type == MemberType::Member)
         RemoveInvite(actor->id_);
-    UIElement* cont = container->CreateChild<UIElement>(actor->name_ + String(actor->id_),
-        pos == 0 ? M_MAX_UNSIGNED : pos - 1);
+    UIElement* cont = container->CreateChild<UIElement>(actor->name_ + String(actor->id_));
     cont->SetLayoutMode(LM_HORIZONTAL);
     cont->SetVar("ActorID", actor->id_);
     PartyItem* hb = cont->CreateChild<PartyItem>("HealthBar");
@@ -195,7 +203,12 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
 void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
 {
-    AddItem(memberContainer_, actor, MemberType::Member, pos);
+    unsigned p = (pos != 0) ? pos - 1 : members_.Size();
+    if (p < memberContainers_.Size())
+    {
+        UIElement* cont = memberContainers_[p];
+        AddItem(cont, actor, MemberType::Member);
+    }
 }
 
 void PartyWindow::AddInvitee(SharedPtr<Actor> actor)
@@ -265,7 +278,9 @@ void PartyWindow::RemoveActor(uint32_t actorId)
 
 void PartyWindow::Clear()
 {
-    memberContainer_->RemoveAllChildren();
+    const auto& children = memberContainer_->GetChildren();
+    for (auto& child : children)
+        child->RemoveAllChildren();
     inviteContainer_->RemoveAllChildren();
     invitationContainer_->RemoveAllChildren();
     members_.Clear();
@@ -537,8 +552,11 @@ void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
         return;
 
     ClearMembers();
+    leaderId_ = 0;
     for (auto m : members)
     {
+        if (leaderId_ == 0)
+            leaderId_ = m.GetUInt();                       // First is leader
         LevelManager* lm = GetSubsystem<LevelManager>();
         GameObject* o = lm->GetObjectById(m.GetUInt());
         if (o)
@@ -591,7 +609,9 @@ void PartyWindow::UpdateAll()
 
 void PartyWindow::ClearMembers()
 {
-    memberContainer_->RemoveAllChildren();
+    const auto& children = memberContainer_->GetChildren();
+    for (auto& child : children)
+        child->RemoveAllChildren();
     members_.Clear();
 }
 
@@ -613,7 +633,7 @@ PartyItem* PartyWindow::GetItem(uint32_t actorId)
     if (members_.Contains(actorId))
     {
         auto actor = members_[actorId].Lock();
-        UIElement* cont = memberContainer_->GetChild(actor->name_ + String(actor->id_));
+        UIElement* cont = memberContainer_->GetChild(actor->name_ + String(actor->id_), true);
         if (cont)
         {
             auto pi = cont->GetChild("HealthBar", true);
@@ -652,7 +672,7 @@ void PartyWindow::UnselectAll()
     auto members = memberContainer_->GetChildren();
     for (auto& cont : members)
     {
-        auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", false));
+        auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", true));
         if (pi)
             pi->SetSelected(false);
     }
@@ -695,13 +715,6 @@ bool PartyWindow::UnselectItem(uint32_t actorId)
     return false;
 }
 
-bool PartyWindow::IsLeader()
-{
-    if (auto p = player_.Lock())
-        return p->id_ == leaderId_;
-    return false;
-}
-
 void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t groupPos)
 {
     if (object)
@@ -710,12 +723,25 @@ void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t 
             groupId_ = groupId;
 
         URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->id_, groupId, groupPos, groupId_);
-        if ((object->objectType_ == ObjectTypePlayer || object->objectType_ == ObjectTypeSelf) && groupId == groupId_)
+        if (groupId == groupId_)
         {
-/*            ClearMembers();
+            // Need to get full list
+            ClearMembers();
             FwClient* cli = GetSubsystem<FwClient>();
-            cli->PartyGetMembers(groupId);*/
-            AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(object)), groupPos);
+            cli->PartyGetMembers(groupId);
         }
     }
+}
+
+bool PartyWindow::IsLeader()
+{
+    UIElement* elem = memberContainers_[0];
+    auto pi = elem->GetChild("HealthBar", true);
+    if (pi)
+    {
+        PartyItem* item = dynamic_cast<PartyItem*>(pi);
+        if (item)
+            return item->GetActor()->id_ == player_->id_;
+    }
+    return false;
 }

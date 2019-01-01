@@ -15,9 +15,9 @@ public:
     {
         parties_.clear();
     }
-    std::shared_ptr<Party> GetParty(const std::string& uuid);
-    std::shared_ptr<Party> GetPartyById(uint32_t partyId);
-    void CleanParties();
+    std::shared_ptr<Party> GetByUuid(const std::string& uuid);
+    std::shared_ptr<Party> Get(uint32_t partyId);
+    void Remove(uint32_t partyId);
 };
 
 }

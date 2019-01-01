@@ -13,7 +13,6 @@
 #include "Chat.h"
 #include "Dispatcher.h"
 #include "Subsystems.h"
-#include "PartyManager.h"
 
 #include "DebugNew.h"
 
@@ -57,17 +56,6 @@ void Maintenance::CleanChatsTask()
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(CLEAN_CHATS_MS, std::bind(&Maintenance::CleanChatsTask, this))
-        );
-    }
-}
-
-void Maintenance::CleanPartiesTask()
-{
-    GetSubsystem<Game::PartyManager>()->CleanParties();
-    if (status_ == MaintenanceStatus::Runnig)
-    {
-        GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(CLEAN_PARTIES_MS, std::bind(&Maintenance::CleanPartiesTask, this))
         );
     }
 }
@@ -128,9 +116,6 @@ void Maintenance::Run()
     shed->Add(
         Asynch::CreateScheduledTask(CLEAN_PLAYERS_MS, std::bind(&Maintenance::CleanPlayersTask, this))
     );
-/*    shed->Add(
-        Asynch::CreateScheduledTask(CLEAN_PARTIES_MS, std::bind(&Maintenance::CleanPartiesTask, this))
-    );*/
     shed->Add(
         Asynch::CreateScheduledTask(UPDATE_SERVER_LOAD_MS, std::bind(&Maintenance::UpdateServerLoadTask, this))
     );

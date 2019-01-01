@@ -5,7 +5,7 @@
 
 namespace Game {
 
-std::shared_ptr<Party> PartyManager::GetParty(const std::string& uuid)
+std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
 {
     auto it = parties_.find(uuid);
     if (it != parties_.end())
@@ -29,7 +29,7 @@ std::shared_ptr<Party> PartyManager::GetParty(const std::string& uuid)
     return result;
 }
 
-std::shared_ptr<Party> PartyManager::GetPartyById(uint32_t partyId)
+std::shared_ptr<Party> PartyManager::Get(uint32_t partyId)
 {
     auto it = std::find_if(parties_.begin(), parties_.end(), [&](const auto& o) -> bool
     {
@@ -41,20 +41,14 @@ std::shared_ptr<Party> PartyManager::GetPartyById(uint32_t partyId)
     return std::shared_ptr<Party>();
 }
 
-void PartyManager::CleanParties()
+void PartyManager::Remove(uint32_t partyId)
 {
-    if (parties_.size() == 0)
-        return;
-
-#ifdef _DEBUG
-    LOG_DEBUG << "Cleaning parties" << std::endl;
-#endif
-    auto i = parties_.begin();
-    while ((i = std::find_if(i, parties_.end(), [](const auto& current) -> bool
+    auto it = std::find_if(parties_.begin(), parties_.end(), [&](const auto& o) -> bool
     {
-        return (current.second->GetMemberCount() == 0);
-    })) != parties_.end())
-        parties_.erase(i++);
+        return o.second->id_ == partyId;
+    });
+    if (it != parties_.end())
+        parties_.erase(it);
 }
 
 }

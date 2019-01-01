@@ -5,6 +5,7 @@
 #include "Chat.h"
 #include "GameManager.h"
 #include "Subsystems.h"
+#include "PartyManager.h"
 
 namespace Game {
 
@@ -98,6 +99,13 @@ bool Party::Remove(Player* player, bool newParty /* = true */)
     if (dataIt != data_.members.end())
         data_.members.erase(dataIt);
     UpdateEntity(data_);
+
+    if (members_.size() == 0)
+    {
+        PartyManager* pm = GetSubsystem<PartyManager>();
+        if (pm)
+            pm->Remove(id_);
+    }
 
     if (newParty)
     {

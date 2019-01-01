@@ -25,6 +25,7 @@ private:
     SharedPtr<UIElement> addContainer_;
     SharedPtr<UIElement> inviteContainer_;
     SharedPtr<UIElement> invitationContainer_;
+    Vector<SharedPtr<UIElement>> memberContainers_;
     WeakPtr<Player> player_;
     HashMap<uint32_t, WeakPtr<Actor>> members_;
     HashMap<uint32_t, WeakPtr<Actor>> invitees_;
@@ -54,7 +55,7 @@ private:
     void ShowError(const String& msg);
     bool IsFull() const { return members_.Size() >= partySize_; }
     PartyItem* GetItem(uint32_t actorId);
-    void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type, unsigned pos = 0);
+    void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type);
 public:
     static void RegisterObject(Context* context);
 
@@ -75,8 +76,7 @@ public:
     void UnselectAll();
     bool SelectItem(uint32_t actorId);
     bool UnselectItem(uint32_t actorId);
-    // Check if we are the party leader
-    bool IsLeader();
     void OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t groupPos);
+    bool IsLeader();
 };
 

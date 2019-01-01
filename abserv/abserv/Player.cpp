@@ -30,10 +30,9 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
 Player::~Player()
 {
     if (party_)
+    {
         party_->Remove(this, false);
-#ifdef DEBUG_GAME
-//    LOG_DEBUG << std::endl;
-#endif
+    }
 }
 
 void Player::SetGame(std::shared_ptr<Game> game)
@@ -56,7 +55,7 @@ uint8_t Player::GetGroupPos()
 
 void Player::Initialize()
 {
-    SetParty(GetSubsystem<PartyManager>()->GetParty(data_.partyUuid));
+    SetParty(GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid));
 }
 
 void Player::Logout()
@@ -202,6 +201,13 @@ void Player::NotifyNewMail()
 
 void Player::SetParty(std::shared_ptr<Party> party)
 {
+    if (party_)
+    {
+        if (party && (party_->id_ == party->id_))
+            return;
+        party_->Remove(this, false);
+    }
+
     if (party)
     {
         party_ = party;
@@ -211,7 +217,7 @@ void Player::SetParty(std::shared_ptr<Party> party)
     {
         // Create new party
         data_.partyUuid.clear();
-        party_ = GetSubsystem<PartyManager>()->GetParty(data_.partyUuid);
+        party_ = GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid);
         party_->SetPartySize(GetGame()->data_.partySize);
         data_.partyUuid = party_->data_.uuid;
     }
@@ -387,7 +393,7 @@ void Player::PartyRejectInvite(uint32_t inviterId)
 
 void Player::PartyGetMembers(uint32_t partyId)
 {
-    std::shared_ptr<Party> party = GetSubsystem<PartyManager>()->GetPartyById(partyId);
+    std::shared_ptr<Party> party = GetSubsystem<PartyManager>()->Get(partyId);
     if (party)
     {
         Net::NetworkMessage nmsg;
