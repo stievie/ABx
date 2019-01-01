@@ -342,7 +342,7 @@ bool StorageProvider::Clear(const IO::DataKey&)
         if (!key.decode(table, id))
             continue;
         size_t tableHash = Utils::StringHashRt(table.data());
-        if (tableHash == KEY_GAMEINSTANCES_HASH || tableHash == KEY_SERVICE_HASH)
+        if (tableHash == KEY_GAMEINSTANCES_HASH || tableHash == KEY_SERVICE_HASH || tableHash == KEY_PARTIES_HASH)
             // Can not delete these
             continue;
 
