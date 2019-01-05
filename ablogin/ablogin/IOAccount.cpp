@@ -195,6 +195,8 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
 
     if (!IsNameAvailable(name, accountUuid))
         return CreatePlayerResultNameExists;
+    if (name.find_first_of(RESTRICTED_NAME_CHARS, 0) != std::string::npos)
+        return CreatePlayerResultInvalidName;
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     AB::Entities::Character ch;

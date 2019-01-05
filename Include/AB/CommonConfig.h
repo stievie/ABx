@@ -15,3 +15,5 @@
 #define PLAYER_MAX_SKILLS 8
 // Most profession have 4 attribute but Warrior and Elementarist have 5
 #define PLAYER_MAX_ATTRIBUTES 10
+
+static constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"§$%&/()=?\´`,.-;:_+*~#'|)";

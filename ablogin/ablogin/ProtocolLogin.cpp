@@ -579,6 +579,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
         case IO::IOAccount::CreatePlayerResultInvalidProfession:
             output->AddByte(AB::Errors::InvalidProfession);
             break;
+        case IO::IOAccount::CreatePlayerResultInvalidName:
+            output->AddByte(AB::Errors::InvalidCharacterName);
+            break;
         default:
             output->AddByte(AB::Errors::UnknownError);
             break;

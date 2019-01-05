@@ -118,6 +118,16 @@ void CharCreateLevel::DoCreateCharacter()
         nameEdit_->SetFocus(true);
         return;
     }
+    String restircted(RESTRICTED_NAME_CHARS);
+    for (unsigned i = 0; i < restircted.Length(); ++i)
+    {
+        if (name.Contains(restircted.At(i)))
+        {
+            ShowError("The name contains invalid characters. A name must not contain " + restircted);
+            nameEdit_->SetFocus(true);
+            return;
+        }
+    }
     Text* profTxt = dynamic_cast<Text*>(professionDropdown_->GetSelectedItem());
     String prof = profTxt->GetVar("String Value").GetString();
     if (prof.Empty())

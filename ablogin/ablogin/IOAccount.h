@@ -43,7 +43,8 @@ public:
         CreatePlayerResultInvalidAccount,
         CreatePlayerResultNoMoreCharSlots,
         CreatePlayerResultInvalidProfession,
-        CreatePlayerResultInternalError
+        CreatePlayerResultInternalError,
+        CreatePlayerResultInvalidName
     };
     IOAccount() = delete;
     static Result CreateAccount(const std::string& name, const std::string& pass,
