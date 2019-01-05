@@ -23,32 +23,32 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     if (name.empty())
-        return ResultNameExists;
+        return Result::NameExists;
     if (pass.empty())
-        return ResultPasswordError;
+        return Result::PasswordError;
 #if defined(EMAIL_MANDATORY)
     if (pass.empty())
-        return ResultEmailError;
+        return Result::EmailError;
 #endif
     acc.name = name;
     if (client->Exists(acc))
-        return ResultNameExists;
+        return Result::NameExists;
 
     AB::Entities::AccountKey akey;
     akey.uuid = accKey;
     akey.status = AB::Entities::AccountKeyStatus::KeryStatusReadyForUse;
     akey.type = AB::Entities::AccountKeyType::KeyTypeAccount;
     if (!client->Read(akey))
-        return ResultInvalidAccountKey;
+        return Result::InvalidAccountKey;
     if (akey.used + 1 > akey.total)
-        return ResultInvalidAccountKey;
+        return Result::InvalidAccountKey;
 
     // Create the account
     char pwhash[61];
     if (bcrypt_newhash(pass.c_str(), 10, pwhash, 61) != 0)
     {
         LOG_ERROR << "bcrypt_newhash() failed" << std::endl;
-        return ResultInternalError;
+        return Result::InternalError;
     }
     std::string passwordHash(pwhash, 61);
     const uuids::uuid guid = uuids::uuid_system_generator{}();
@@ -61,7 +61,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     if (!client->Create(acc))
     {
         LOG_ERROR << "Creating account with name " << name << " failed" << std::endl;
-        return ResultInternalError;
+        return Result::InternalError;
     }
 
     // Bind account to key
@@ -72,7 +72,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     {
         LOG_ERROR << "Creating account - account key failed" << std::endl;
         client->Delete(acc);
-        return ResultInternalError;
+        return Result::InternalError;
     }
 
     // Update account key
@@ -82,13 +82,13 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
         LOG_ERROR << "Updating account key failed" << std::endl;
         client->Delete(aka);
         client->Delete(acc);
-        return ResultInternalError;
+        return Result::InternalError;
     }
 
     AB::Entities::AccountList al;
     client->Invalidate(al);
 
-    return ResultOK;
+    return Result::OK;
 }
 
 IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const std::string& pass,
@@ -99,17 +99,17 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!client->Read(acc))
-        return ResultInvalidAccount;
+        return Result::InvalidAccount;
 
     if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
-        return ResultInvalidAccount;
+        return Result::InvalidAccount;
 
     AB::Entities::AccountKey ak;
     ak.uuid = accKey;
     if (!client->Read(ak))
-        return ResultInvalidAccountKey;
+        return Result::InvalidAccountKey;
     if (ak.used + 1 > ak.total)
-        return ResultInvalidAccountKey;
+        return Result::InvalidAccountKey;
 
     switch (ak.type)
     {
@@ -119,12 +119,12 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
         if (!client->Update(acc))
         {
             LOG_ERROR << "Account update failed " << accountUuid << std::endl;
-            return ResultInternalError;
+            return Result::InternalError;
         }
         break;
     }
     default:
-        return ResultInvalidAccountKey;
+        return Result::InvalidAccountKey;
     }
 
     // Bind account to key
@@ -134,7 +134,7 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
     if (!client->Create(aka))
     {
         LOG_ERROR << "Creating account - account key failed" << std::endl;
-        return ResultInternalError;
+        return Result::InternalError;
     }
 
     // Update account key
@@ -142,10 +142,10 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
     if (!client->Update(ak))
     {
         LOG_ERROR << "Updating account key failed" << std::endl;
-        return ResultInternalError;
+        return Result::InternalError;
     }
 
-    return ResultOK;
+    return Result::OK;
 }
 
 IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
@@ -184,19 +184,19 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!client->Read(acc))
-        return CreatePlayerResultInvalidAccount;
+        return CreatePlayerResult::InvalidAccount;
     if (acc.characterUuids.size() + 1 > acc.charSlots)
-        return CreatePlayerResultNoMoreCharSlots;
+        return CreatePlayerResult::NoMoreCharSlots;
 
     AB::Entities::Profession pro;
     pro.uuid = profUuid;
     if (!client->Read(pro))
-        return CreatePlayerResultInvalidProfession;
+        return CreatePlayerResult::InvalidProfession;
 
     if (!IsNameAvailable(name, accountUuid))
-        return CreatePlayerResultNameExists;
+        return CreatePlayerResult::NameExists;
     if (name.find_first_of(RESTRICTED_NAME_CHARS, 0) != std::string::npos)
-        return CreatePlayerResultInvalidName;
+        return CreatePlayerResult::InvalidName;
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     AB::Entities::Character ch;
@@ -213,7 +213,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     if (!client->Create(ch))
     {
         LOG_ERROR << "Create character failed" << std::endl;
-        return CreatePlayerResultInternalError;
+        return CreatePlayerResult::InternalError;
     }
     // To reload the character list
     client->Invalidate(acc);
@@ -224,7 +224,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     client->DeleteIfExists(rn);
 
     uuid = ch.uuid;
-    return CreatePlayerResultOK;
+    return CreatePlayerResult::OK;
 }
 
 bool IOAccount::LoadCharacter(AB::Entities::Character& ch)

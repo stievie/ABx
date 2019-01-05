@@ -493,7 +493,7 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == IO::IOAccount::ResultOK)
+    if (res == IO::IOAccount::Result::OK)
     {
         output->AddByte(AB::LoginProtocol::CreateAccountSuccess);
     }
@@ -502,16 +502,16 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
         output->AddByte(AB::LoginProtocol::CreateAccountError);
         switch (res)
         {
-        case IO::IOAccount::ResultNameExists:
+        case IO::IOAccount::Result::NameExists:
             output->AddByte(AB::Errors::AccountNameExists);
             break;
-        case IO::IOAccount::ResultInvalidAccountKey:
+        case IO::IOAccount::Result::InvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
-        case IO::IOAccount::ResultPasswordError:
+        case IO::IOAccount::Result::PasswordError:
             output->AddByte(AB::Errors::InvalidPassword);
             break;
-        case IO::IOAccount::ResultEmailError:
+        case IO::IOAccount::Result::EmailError:
             output->AddByte(AB::Errors::InvalidEmail);
             break;
         default:
@@ -556,7 +556,7 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == IO::IOAccount::CreatePlayerResultOK)
+    if (res == IO::IOAccount::CreatePlayerResult::OK)
     {
         output->AddByte(AB::LoginProtocol::CreatePlayerSuccess);
         output->AddStringEncrypted(uuid);
@@ -567,19 +567,19 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
         output->AddByte(AB::LoginProtocol::CreatePlayerError);
         switch (res)
         {
-        case IO::IOAccount::CreatePlayerResultNameExists:
+        case IO::IOAccount::CreatePlayerResult::NameExists:
             output->AddByte(AB::Errors::PlayerNameExists);
             break;
-        case IO::IOAccount::CreatePlayerResultInvalidAccount:
+        case IO::IOAccount::CreatePlayerResult::InvalidAccount:
             output->AddByte(AB::Errors::InvalidAccount);
             break;
-        case IO::IOAccount::CreatePlayerResultNoMoreCharSlots:
+        case IO::IOAccount::CreatePlayerResult::NoMoreCharSlots:
             output->AddByte(AB::Errors::NoMoreCharSlots);
             break;
-        case IO::IOAccount::CreatePlayerResultInvalidProfession:
+        case IO::IOAccount::CreatePlayerResult::InvalidProfession:
             output->AddByte(AB::Errors::InvalidProfession);
             break;
-        case IO::IOAccount::CreatePlayerResultInvalidName:
+        case IO::IOAccount::CreatePlayerResult::InvalidName:
             output->AddByte(AB::Errors::InvalidCharacterName);
             break;
         default:
@@ -618,7 +618,7 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
     IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountUuid, password, accKey);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == IO::IOAccount::ResultOK)
+    if (res == IO::IOAccount::Result::OK)
     {
         output->AddByte(AB::LoginProtocol::AddAccountKeySuccess);
     }
@@ -627,13 +627,13 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
         output->AddByte(AB::LoginProtocol::AddAccountKeyError);
         switch (res)
         {
-        case IO::IOAccount::ResultNameExists:
+        case IO::IOAccount::Result::NameExists:
             output->AddByte(AB::Errors::AccountNameExists);
             break;
-        case IO::IOAccount::ResultInvalidAccountKey:
+        case IO::IOAccount::Result::InvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
-        case IO::IOAccount::ResultInvalidAccount:
+        case IO::IOAccount::Result::InvalidAccount:
             output->AddByte(AB::Errors::InvalidAccount);
             break;
         default:

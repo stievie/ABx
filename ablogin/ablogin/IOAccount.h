@@ -26,25 +26,25 @@ public:
         KeyTypeAccount = 0,
         KeyTypeCharSlot = 1,
     };
-    enum Result
+    enum class Result
     {
-        ResultOK,
-        ResultNameExists,
-        ResultInvalidAccountKey,
-        ResultInvalidAccount,
-        ResultInternalError,
-        ResultEmailError,
-        ResultPasswordError,
+        OK,
+        NameExists,
+        InvalidAccountKey,
+        InvalidAccount,
+        InternalError,
+        EmailError,
+        PasswordError,
     };
-    enum CreatePlayerResult
+    enum class CreatePlayerResult
     {
-        CreatePlayerResultOK,
-        CreatePlayerResultNameExists,
-        CreatePlayerResultInvalidAccount,
-        CreatePlayerResultNoMoreCharSlots,
-        CreatePlayerResultInvalidProfession,
-        CreatePlayerResultInternalError,
-        CreatePlayerResultInvalidName
+        OK,
+        NameExists,
+        InvalidAccount,
+        NoMoreCharSlots,
+        InvalidProfession,
+        InternalError,
+        InvalidName
     };
     IOAccount() = delete;
     static Result CreateAccount(const std::string& name, const std::string& pass,
