@@ -168,6 +168,9 @@
     <ClInclude Include="PartyItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HealthBarPlain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -297,6 +300,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PartyItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthBarPlain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

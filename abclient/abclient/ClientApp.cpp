@@ -130,6 +130,7 @@ ClientApp::ClientApp(Context* context) :
     // UI
     TabGroup::RegisterObject(context);
     HealthBar::RegisterObject(context);
+    HealthBarPlain::RegisterObject(context);
     HotkeyEdit::RegisterObject(context);
     PartyItem::RegisterObject(context);
 

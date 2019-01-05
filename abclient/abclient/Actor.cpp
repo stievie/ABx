@@ -12,6 +12,7 @@
 #include "ItemsCache.h"
 #include "Shortcuts.h"
 #include <AB/Entities/Skill.h>
+#include "HealthBar.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -297,8 +298,7 @@ void Actor::Update(float timeStep)
 
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 
-    hpBar_->SetRange(static_cast<float>(stats_.maxHealth));
-    hpBar_->SetValue(static_cast<float>(stats_.health));
+    hpBar_->SetValues(stats_.maxHealth, stats_.health);
 
     const Vector3& pos = node_->GetPosition();
     Vector3 headPos = GetHeadPos();
@@ -404,8 +404,7 @@ void Actor::AddActorUI()
     nameLabel_->SetVisible(true);
     SubscribeToEvent(nameWindow_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
 
-    hpBar_ = uiRoot->CreateChild<ProgressBar>();
-    hpBar_->SetShowPercentText(false);
+    hpBar_ = uiRoot->CreateChild<HealthBarPlain>();
     hpBar_->SetRange(100.0f);
     hpBar_->SetStyle("HealthBarGreen");
     hpBar_->SetSize(100, 20);
@@ -426,7 +425,7 @@ void Actor::RemoveActorUI()
     if (hpBar_)
     {
         uiRoot->RemoveChild(hpBar_);
-        hpBar_ = SharedPtr<ProgressBar>();
+        hpBar_ = SharedPtr<HealthBarPlain>();
     }
     if (speechBubbleWindow_)
     {

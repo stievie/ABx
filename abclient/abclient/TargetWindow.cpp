@@ -18,7 +18,7 @@ TargetWindow::TargetWindow(Context* context) :
 
     targetText_ = dynamic_cast<Text*>(GetChild("TargetText", true));
     SetAlignment(HA_CENTER, VA_TOP);
-    healthBar_ = dynamic_cast<ProgressBar*>(GetChild("TargetHealthBar", true));
+    healthBar_ = dynamic_cast<HealthBarPlain*>(GetChild("TargetHealthBar", true));
     healthBar_->SetStyle("HealthBar");
 
     Button* clearTarget = dynamic_cast<Button*>(GetChild("ClearTargetButton", true));
@@ -41,8 +41,7 @@ void TargetWindow::HandleUpdate(StringHash, VariantMap&)
 {
     if (SharedPtr<Actor> a = target_.Lock())
     {
-        healthBar_->SetRange(static_cast<float>(a->stats_.maxHealth));
-        healthBar_->SetValue(static_cast<float>(a->stats_.health));
+        healthBar_->SetValues(a->stats_.maxHealth, a->stats_.health);
     }
 }
 

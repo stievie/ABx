@@ -5,6 +5,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
 #include <AB/TemplEncoder.h>
+#include "HealthBarPlain.h"
 
 using namespace Urho3D;
 
@@ -111,7 +112,7 @@ private:
     SharedPtr<Window> nameWindow_;
     SharedPtr<Window> speechBubbleWindow_;
     SharedPtr<Text> speechBubbleText_;
-    SharedPtr<ProgressBar> hpBar_;
+    SharedPtr<HealthBarPlain> hpBar_;
     float speechBubbleVisible_;
     void UpdateTransformation();
     void AddActorUI();

@@ -1,13 +1,15 @@
 #pragma once
 
+#include "HealthBarPlain.h"
 #include "Actor.h"
 
-class HealthBar : public ProgressBar
+class HealthBar : public HealthBarPlain
 {
-    URHO3D_OBJECT(HealthBar, ProgressBar);
+    URHO3D_OBJECT(HealthBar, HealthBarPlain);
 private:
     WeakPtr<Actor> actor_;
     SharedPtr<Text> nameText_;
+    bool showName_;
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
 public:
     static void RegisterObject(Context* context);
@@ -16,12 +18,7 @@ public:
     ~HealthBar();
 
     void SetActor(SharedPtr<Actor> actor);
-    SharedPtr<Actor> GetActor()
-    {
-        return actor_.Lock();
-    }
-
-    void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor) override;
-    bool showName_;
+    SharedPtr<Actor> GetActor();
+    void SetShowName(bool value);
 };
 

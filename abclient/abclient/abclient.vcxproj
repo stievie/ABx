@@ -266,6 +266,7 @@
     <ClCompile Include="GameMessagesWindow.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HealthBar.cpp" />
+    <ClCompile Include="HealthBarPlain.cpp" />
     <ClCompile Include="HotkeyEdit.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemsCache.cpp" />
@@ -319,6 +320,7 @@
     <ClInclude Include="GameMessagesWindow.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HealthBar.h" />
+    <ClInclude Include="HealthBarPlain.h" />
     <ClInclude Include="HotkeyEdit.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemsCache.h" />

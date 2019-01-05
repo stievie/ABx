@@ -235,30 +235,25 @@
             <attribute name="Hover Image Offset" value="0 16" />
         </element>
     </element>
-    <element type="HealthBarInvited" style="BorderImage">
-        <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-        <attribute name="Image Rect" value="0 16 16 32" />
-        <attribute name="Border" value="4 4 4 4" />
-        <element type="BorderImage" internal="true">
-            <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-        <attribute name="Image Rect" value="0 16 16 32" />
-            <attribute name="Border" value="4 4 4 4" />
-        </element>
-    </element>
     <element type="HealthBar" style="BorderImage">
         <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
         <attribute name="Image Rect" value="0 16 16 32" />
         <attribute name="Border" value="4 4 4 4" />
+        <attribute name="Layout Border" value="4 4 4 4" />
         <element type="BorderImage" internal="true">
             <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
             <attribute name="Image Rect" value="144 16 160 32" />
             <attribute name="Border" value="4 4 4 4" />
         </element>
     </element>
+    <element type="HealthBarInvited" style="HealthBar">
+        <element type="BorderImage" internal="true">
+            <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
+            <attribute name="Image Rect" value="0 16 16 32" />
+            <attribute name="Border" value="4 4 4 4" />
+        </element>
+    </element>
     <element type="HealthBarGreen" style="HealthBar">
-        <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-        <attribute name="Image Rect" value="0 16 16 32" />
-        <attribute name="Border" value="4 4 4 4" />
         <element type="BorderImage" internal="true">
             <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
             <attribute name="Image Rect" value="128 16 144 32" />
@@ -266,9 +261,6 @@
         </element>
     </element>
     <element type="HealthBarGrey" style="HealthBar">
-        <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
-        <attribute name="Image Rect" value="0 16 16 32" />
-        <attribute name="Border" value="4 4 4 4" />
         <element type="BorderImage" internal="true">
             <attribute name="Texture" value="Texture2D;Textures/Fw-UI-Ex.png" />
             <attribute name="Image Rect" value="128 32 144 48" />

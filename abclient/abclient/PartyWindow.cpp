@@ -128,7 +128,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     cont->SetHeight(hb->GetHeight());
     cont->SetMaxHeight(hb->GetHeight());
     hb->SetActor(actor);
-    hb->showName_ = true;
+    hb->SetShowName(true);
     SubscribeToEvent(hb, E_CLICK, URHO3D_HANDLER(PartyWindow, HandleActorClicked));
     switch (type)
     {
