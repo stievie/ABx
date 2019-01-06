@@ -79,12 +79,19 @@ void PartyWindow::SetPartySize(uint8_t value)
     if (partySize_ != value)
     {
         partySize_ = value;
-        memberContainers_.Clear();
-        memberContainers_.Resize(partySize_);
+        while (memberContainers_.Size() > partySize_)
+        {
+            memberContainers_.Erase(memberContainers_.End());
+        }
+        if (memberContainers_.Size() < partySize_)
+            memberContainers_.Resize(partySize_);
         for (unsigned i = 0; i < partySize_; i++)
         {
-            memberContainers_[i] = memberContainer_->CreateChild<UIElement>();
-            memberContainers_[i]->SetLayoutMode(LM_VERTICAL);
+            if (!memberContainers_[i])
+            {
+                memberContainers_[i] = memberContainer_->CreateChild<UIElement>();
+                memberContainers_[i]->SetLayoutMode(LM_VERTICAL);
+            }
         }
         UpdateCaption();
     }
@@ -119,7 +126,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
     if (type == MemberType::Member)
         RemoveInvite(actor->id_);
-    UIElement* cont = container->CreateChild<UIElement>(actor->name_ + String(actor->id_));
+    UIElement* cont = container->CreateChild<UIElement>(actor->name_);
     cont->SetLayoutMode(LM_HORIZONTAL);
     cont->SetVar("ActorID", actor->id_);
     PartyItem* hb = cont->CreateChild<PartyItem>("HealthBar");
@@ -203,6 +210,20 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
 void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
 {
+    {
+        UIElement* cont = memberContainer_->GetChild(actor->name_, true);
+        if (cont)
+        {
+            auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", true));
+            if (pi)
+            {
+                pi->SetActor(actor);
+                pi->SetEnabled(true);
+                return;
+            }
+        }
+    }
+
     unsigned p = (pos != 0) ? pos - 1 : members_.Size();
     if (p < memberContainers_.Size())
     {
@@ -570,7 +591,8 @@ void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
 
 void PartyWindow::HandleLeaveInstance(StringHash, VariantMap&)
 {
-    Clear();
+    ClearInvitations();
+    ClearInvites();
 }
 
 void PartyWindow::SubscribeEvents()
@@ -621,6 +643,12 @@ void PartyWindow::ClearInvitations()
     invitations_.Clear();
 }
 
+void PartyWindow::ClearInvites()
+{
+    inviteContainer_->RemoveAllChildren();
+    invitees_.Clear();
+}
+
 void PartyWindow::ShowError(const String& msg)
 {
     WindowManager* wm = GetSubsystem<WindowManager>();
@@ -633,7 +661,7 @@ PartyItem* PartyWindow::GetItem(uint32_t actorId)
     if (members_.Contains(actorId))
     {
         auto actor = members_[actorId].Lock();
-        UIElement* cont = memberContainer_->GetChild(actor->name_ + String(actor->id_), true);
+        UIElement* cont = memberContainer_->GetChild(actor->name_, true);
         if (cont)
         {
             auto pi = cont->GetChild("HealthBar", true);
@@ -644,7 +672,7 @@ PartyItem* PartyWindow::GetItem(uint32_t actorId)
     if (invitees_.Contains(actorId))
     {
         auto actor = invitees_[actorId].Lock();
-        UIElement* cont = inviteContainer_->GetChild(actor->name_ + String(actor->id_));
+        UIElement* cont = inviteContainer_->GetChild(actor->name_);
         if (cont)
         {
             auto pi = cont->GetChild("HealthBar", true);
@@ -655,7 +683,7 @@ PartyItem* PartyWindow::GetItem(uint32_t actorId)
     if (invitations_.Contains(actorId))
     {
         auto actor = invitations_[actorId].Lock();
-        UIElement* cont = invitationContainer_->GetChild(actor->name_ + String(actor->id_));
+        UIElement* cont = invitationContainer_->GetChild(actor->name_);
         if (cont)
         {
             auto pi = cont->GetChild("HealthBar", true);
@@ -725,10 +753,7 @@ void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t 
         URHO3D_LOGINFOF("Object spawned: objectId = %d, groupId = %d, pos = %d, My groupid = %d", object->id_, groupId, groupPos, groupId_);
         if (groupId == groupId_)
         {
-            // Need to get full list
-            ClearMembers();
-            FwClient* cli = GetSubsystem<FwClient>();
-            cli->PartyGetMembers(groupId);
+            AddMember(SharedPtr<Actor>(dynamic_cast<Actor*>(object)), groupPos);
         }
     }
 }

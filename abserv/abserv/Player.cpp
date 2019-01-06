@@ -29,10 +29,6 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
 
 Player::~Player()
 {
-    if (party_)
-    {
-        party_->Remove(this, false);
-    }
 }
 
 void Player::SetGame(std::shared_ptr<Game> game)
@@ -62,7 +58,6 @@ void Player::Logout()
 {
     if (auto g = GetGame())
         g->PlayerLeave(id_);
-    party_->Remove(this, false);
     client_->Logout();
 }
 
@@ -673,31 +668,35 @@ void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMess
     }
 }
 
-void Player::ChangeInstance(const std::string mapUuid)
+void Player::ChangeMap(const std::string mapUuid)
 {
     // mapUuid No reference
 
     // If we are the leader tell all members to change the instance.
     // If not, tell the leader to change the instance.
     auto party = GetParty();
-    if (party->IsLeader(this))
-        party->ChangeInstance(mapUuid);
-    else if (GetGame()->data_.type == AB::Entities::GameTypeOutpost)
-        // Only in outposts
-        party->GetLeader()->ChangeInstance(mapUuid);
-    else
+    if (!party)
+        return;
+
+    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
     {
         // The player leaves the party and changes the instance
         PartyLeave();
-        // Now we are the leader of a new party
-        party_->ChangeInstance(mapUuid);
+        party = GetParty();
     }
+    if (party->IsLeader(this))
+        party->ChangeInstance(mapUuid);
+}
+
+void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
+{
+    client_->ChangeInstance(mapUuid, instanceUuid);
 }
 
 void Player::RegisterLua(kaguya::State& state)
 {
     state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
-        .addFunction("ChangeInstance", &Player::ChangeInstance)
+        .addFunction("ChangeMap", &Player::ChangeMap)
     );
 }
 

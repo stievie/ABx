@@ -28,6 +28,9 @@ std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;
 void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
     const std::string& mapUuid, const std::string& instanceUuid)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Player " << playerUuid << " logging in" << std::endl;
+#endif
     auto gameMan = GetSubsystem<Game::PlayerManager>();
     std::shared_ptr<Game::Player> foundPlayer = gameMan->GetPlayerByUuid(playerUuid);
     if (foundPlayer)
@@ -35,11 +38,17 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         // Maybe DC/crash, let player connect again
         if (foundPlayer->GetInactiveTime() > 2000)
         {
+#ifdef DEBUG_NET
+            LOG_DEBUG << "Found inactive player" << std::endl;
+#endif
             foundPlayer->Logout();
             foundPlayer.reset();
         }
         else
         {
+#ifdef DEBUG_NET
+            LOG_DEBUG << "Player already logged in" << std::endl;
+#endif
             DisconnectClient(AB::Errors::AlreadyLoggedIn);
             return;
         }
@@ -89,6 +98,10 @@ void ProtocolGame::Logout()
     if (!player_)
         return;
 
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Player " << player_->data_.uuid << " logging out" << std::endl;
+#endif
+
     player_->logoutTime_ = Utils::AbTick();
     IO::IOPlayer::SavePlayer(player_.get());
     IO::IOAccount::AccountLogout(player_->data_.accountUuid);
@@ -117,8 +130,9 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         break;
     case AB::GameProtocol::PacketTypeChangeMap:
     {
+        // Called by the client when clicking on the map
         const std::string mapUuid = message.GetString();
-        AddPlayerTask(&Game::Player::ChangeInstance, mapUuid);
+        AddPlayerTask(&Game::Player::ChangeMap, mapUuid);
         break;
     }
     case AB::GameProtocol::PacketTypeSendMail:
@@ -362,6 +376,10 @@ void ProtocolGame::Connect(uint32_t playerId)
         // no longer exists, so we return to prevent leakage of the Player.
         return;
 
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Player with ID " << playerId << " connecting" << std::endl;
+#endif
+
     std::shared_ptr<Game::Player> foundPlayer = GetSubsystem<Game::PlayerManager>()->GetPlayerById(playerId);
     if (!foundPlayer)
     {
@@ -428,11 +446,20 @@ void ProtocolGame::EnterGame()
 
 void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
+#ifdef DEBUG_NET
+    LOG_DEBUG << "Player changing instance to " << mapUuid << std::endl;
+#endif
+
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::GameProtocol::ChangeInstance);
     output->AddString(Application::Instance->GetServerId());
     output->AddString(mapUuid);
     output->AddString(instanceUuid);
+    if (!player_)
+    {
+        LOG_ERROR << "Player == empty" << std::endl;
+        return;
+    }
     output->AddString(player_->data_.uuid);
     Send(output);
 }

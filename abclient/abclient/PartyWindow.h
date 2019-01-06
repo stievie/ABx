@@ -52,6 +52,7 @@ private:
     void UpdateAll();
     void ClearMembers();
     void ClearInvitations();
+    void ClearInvites();
     void ShowError(const String& msg);
     bool IsFull() const { return members_.Size() >= partySize_; }
     PartyItem* GetItem(uint32_t actorId);

@@ -100,13 +100,6 @@ bool Party::Remove(Player* player, bool newParty /* = true */)
         data_.members.erase(dataIt);
     UpdateEntity(data_);
 
-    if (members_.size() == 0)
-    {
-        PartyManager* pm = GetSubsystem<PartyManager>();
-        if (pm)
-            pm->Remove(id_);
-    }
-
     if (newParty)
     {
         // Lastly, this may call the destructor
@@ -237,7 +230,7 @@ void Party::ChangeInstance(const std::string& mapUuid)
     {
         if (auto mem = member.lock())
         {
-            mem->client_->ChangeInstance(mapUuid, game->instanceData_.uuid);
+            mem->ChangeInstance(mapUuid, game->instanceData_.uuid);
         }
     }
 }

@@ -4,6 +4,8 @@
 #include "FwClient.h"
 #include "Options.h"
 #include <AB/Entities/Limits.h>
+#include "WindowManager.h"
+#include "PartyWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -58,6 +60,10 @@ void LoginLevel::CreateUI()
 {
     uiRoot_->RemoveAllChildren();
     BaseLevel::CreateUI();
+
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    PartyWindow* partyWindow = dynamic_cast<PartyWindow*>(wm->GetWindow(WINDOW_PARTY).Get());
+    partyWindow->Clear();
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile *chatFile = cache->GetResource<XMLFile>("UI/LoginWindow.xml");

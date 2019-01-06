@@ -86,7 +86,8 @@ public:
     void Initialize();
     void Logout();
     void Ping();
-    void ChangeInstance(const std::string mapUuid);
+    void ChangeMap(const std::string mapUuid);
+    void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void UpdateMailBox();
     void GetMailHeaders();
     void SendMail(const std::string recipient, const std::string subject, const std::string body);
