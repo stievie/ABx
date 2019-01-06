@@ -146,6 +146,7 @@
     <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="DebugNew.h" />
+    <ClInclude Include="ServiceInstaller.h" />
     <ClInclude Include="TimeUtils.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Subsystems.h" />
@@ -176,12 +177,14 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="UuidUtils.h" />
     <ClInclude Include="Variant.h" />
+    <ClInclude Include="WinServiceBase.h" />
     <ClInclude Include="Xml.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="CpuUsageWin.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="ServiceInstaller.cpp" />
     <ClCompile Include="Subsystems.cpp" />
     <ClCompile Include="ThreadPool.cpp" />
     <ClCompile Include="Dispatcher.cpp" />
@@ -210,6 +213,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UuidUtils.cpp" />
     <ClCompile Include="Variant.cpp" />
+    <ClCompile Include="WinServiceBase.cpp" />
     <ClCompile Include="Xml.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
