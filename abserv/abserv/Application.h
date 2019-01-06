@@ -40,7 +40,7 @@ public:
     Application();
     ~Application() override;
 
-    bool Initialize(int argc, char** argv);
+    bool Initialize(const std::vector<std::string>& args) override;
     void Run();
     void Stop();
 

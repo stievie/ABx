@@ -149,9 +149,9 @@ void Application::UpdateBytesSent(size_t bytes)
     }
 }
 
-bool Application::Initialize(int argc, char** argv)
+bool Application::Initialize(const std::vector<std::string>& args)
 {
-    if (!ServerApp::Initialize(argc, argv))
+    if (!ServerApp::Initialize(args))
         return false;
 
     if (!ParseCommandLine())

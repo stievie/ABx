@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
     {
         std::shared_ptr<Application> app = std::make_shared<Application>();
-        if (!app->Initialize(argc, argv))
+        if (!app->InitializeA(argc, argv))
             return EXIT_FAILURE;
 
         shutdown_handler = [&](int /*signal*/)

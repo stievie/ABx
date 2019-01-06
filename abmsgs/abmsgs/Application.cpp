@@ -105,9 +105,9 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
-bool Application::Initialize(int argc, char** argv)
+bool Application::Initialize(const std::vector<std::string>& args)
 {
-    if (!ServerApp::Initialize(argc, argv))
+    if (!ServerApp::Initialize(args))
         return false;
 
     if (!ParseCommandLine())

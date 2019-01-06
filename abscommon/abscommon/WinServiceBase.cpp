@@ -30,12 +30,22 @@ void WinServiceBase::ServiceCtrlHandler(DWORD dwCtrl)
 {
     switch (dwCtrl)
     {
-    case SERVICE_CONTROL_STOP: s_service->Stop(); break;
-    case SERVICE_CONTROL_PAUSE: s_service->Pause(); break;
-    case SERVICE_CONTROL_CONTINUE: s_service->Continue(); break;
-    case SERVICE_CONTROL_SHUTDOWN: s_service->Shutdown(); break;
-    case SERVICE_CONTROL_INTERROGATE: break;
-    default: break;
+    case SERVICE_CONTROL_STOP:
+        s_service->Stop();
+        break;
+    case SERVICE_CONTROL_PAUSE:
+        s_service->Pause();
+        break;
+    case SERVICE_CONTROL_CONTINUE:
+        s_service->Continue();
+        break;
+    case SERVICE_CONTROL_SHUTDOWN:
+        s_service->Shutdown();
+        break;
+    case SERVICE_CONTROL_INTERROGATE:
+        break;
+    default:
+        break;
     }
 }
 

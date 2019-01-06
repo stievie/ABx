@@ -106,7 +106,7 @@ public:
     Application();
     ~Application() override;
 
-    bool Initialize(int argc, char** argv) override;
+    bool Initialize(const std::vector<std::string>& args) override;
     void Run() override;
     void Stop() override;
     void SpawnServer();

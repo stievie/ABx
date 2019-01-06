@@ -137,9 +137,9 @@ void Application::ShowHelp()
     std::cout << "  h, help: Show help" << std::endl;
 }
 
-bool Application::Initialize(int argc, char** argv)
+bool Application::Initialize(const std::vector<std::string>& args)
 {
-    if (!ServerApp::Initialize(argc, argv))
+    if (!ServerApp::Initialize(args))
         return false;
 
     if (!ParseCommandLine())

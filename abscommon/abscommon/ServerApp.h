@@ -13,6 +13,8 @@ class MessageClient;
 
 class ServerApp
 {
+private:
+    void Init();
 protected:
     bool running_;
     std::string serverId_;
@@ -39,7 +41,9 @@ public:
         serverPort_(std::numeric_limits<uint16_t>::max())
     { }
     virtual ~ServerApp() = default;
-    virtual bool Initialize(int argc, char** argv);
+    bool InitializeW(int argc, wchar_t** argv);
+    bool InitializeA(int argc, char** argv);
+    virtual bool Initialize(const std::vector<std::string>& args);
     virtual void Run()
     { }
     virtual void Stop()

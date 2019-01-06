@@ -171,7 +171,7 @@ bool ServerApp::GetCommandLineValue(const std::string& name)
     return false;
 }
 
-bool ServerApp::Initialize(int argc, char** argv)
+void ServerApp::Init()
 {
 #ifdef _WIN32
     char buff[MAX_PATH];
@@ -183,10 +183,38 @@ bool ServerApp::Initialize(int argc, char** argv)
     exeFile_ = std::string(buff, (count > 0) ? count : 0);
 #endif
     path_ = Utils::ExtractFileDir(exeFile_);
+}
+
+bool ServerApp::InitializeW(int argc, wchar_t** argv)
+{
+    std::vector<std::string> args;
     for (int i = 1; i < argc; i++)
     {
-        arguments_.push_back(std::string(argv[i]));
+        char buffer[500];
+        // First arg is the pointer to destination char, second arg is
+        // the pointer to source wchar_t, last arg is the size of char buffer
+        wcstombs(buffer, argv[i], 500);
+        args.push_back(buffer);
     }
+
+    return Initialize(args);
+}
+
+bool ServerApp::InitializeA(int argc, char** argv)
+{
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; i++)
+    {
+        args.push_back(argv[i]);
+    }
+
+    return Initialize(args);
+}
+
+bool ServerApp::Initialize(const std::vector<std::string>& args)
+{
+    Init();
+    arguments_ = args;
 
     return true;
 }
