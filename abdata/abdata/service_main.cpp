@@ -23,34 +23,10 @@
 #pragma region Includes
 #include <stdio.h>
 #include <windows.h>
+#include "AppService.h"
 #include "ServiceInstaller.h"
 #include "WinServiceBase.h"
-#include "SampleService.h"
 #pragma endregion
-
-
-//
-// Settings of the service
-//
-
-// Internal name of the service
-#define SERVICE_NAME             L"CppWindowsService"
-
-// Displayed name of the service
-#define SERVICE_DISPLAY_NAME     L"CppWindowsService Sample Service"
-
-// Service start options.
-#define SERVICE_START_TYPE       SERVICE_DEMAND_START
-
-// List of service dependencies - "dep1\0dep2\0\0"
-#define SERVICE_DEPENDENCIES     L""
-
-// The name of the account under which the service should run
-#define SERVICE_ACCOUNT          L"NT AUTHORITY\\LocalService"
-
-// The password to the service account name
-#define SERVICE_PASSWORD         NULL
-
 
 //
 //  FUNCTION: wmain(int, wchar_t *[])
@@ -75,7 +51,7 @@ int wmain(int argc, wchar_t* argv[])
         {
             // Install the service when the command is
             // "-install" or "/install".
-            InstallService(
+            System::InstallService(
                 SERVICE_NAME,               // Name of service
                 SERVICE_DISPLAY_NAME,       // Name to display
                 SERVICE_START_TYPE,         // Service start type
@@ -88,7 +64,7 @@ int wmain(int argc, wchar_t* argv[])
         {
             // Uninstall the service when the command is
             // "-remove" or "/remove".
-            UninstallService(SERVICE_NAME);
+            System::UninstallService(SERVICE_NAME);
         }
     }
     else
@@ -96,15 +72,16 @@ int wmain(int argc, wchar_t* argv[])
         wprintf(L"Parameters:\n");
         wprintf(L" -install  to install the service.\n");
         wprintf(L" -remove   to remove the service.\n");
-
-        CSampleService service(SERVICE_NAME);
-        if (!CServiceBase::Run(service))
+        AppService service;
+        if (!System::WinServiceBase::Run(service))
         {
             wprintf(L"Service failed to run w/err 0x%08lx\n", GetLastError());
         }
+
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 #endif

@@ -281,5 +281,8 @@
     <ClCompile Include="AppService.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="service_main.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

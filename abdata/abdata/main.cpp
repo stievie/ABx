@@ -2,6 +2,8 @@
 //
 
 #include "stdafx.h"
+#if !defined(WIN_SERVICE)
+
 #include <iostream>
 #include "Version.h"
 #include <csignal>     /* signal, raise, sig_atomic_t */
@@ -91,3 +93,4 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
+#endif // !defined(WIN_SERVICE)

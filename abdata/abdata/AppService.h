@@ -1,8 +1,6 @@
 #pragma once
 
-//#define WIN_SERVICE
-
-#if defined(_WIN32) && defined (WIN_SERVICE)
+#if defined(_WIN32) && defined(WIN_SERVICE)
 #include "WinServiceBase.h"
 #include "Application.h"
 

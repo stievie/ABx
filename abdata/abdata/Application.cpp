@@ -72,7 +72,13 @@ bool Application::ParseCommandLine()
 bool Application::LoadConfig()
 {
     if (configFile_.empty())
+    {
+#if defined(WIN_SERVICE)
+        configFile_ = path_ + "/" + "abdata_svc.lua";
+#else
         configFile_ = path_ + "/" + "abdata.lua";
+#endif
+    }
 
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     if (Utils::FileExists(configFile_))
