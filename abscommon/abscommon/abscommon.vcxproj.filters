@@ -126,10 +126,10 @@
     <ClInclude Include="Xml.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="WinServiceBase.h">
+    <ClInclude Include="ServiceInstaller.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ServiceInstaller.h">
+    <ClInclude Include="WinService.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -215,10 +215,10 @@
     <ClCompile Include="Xml.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="WinServiceBase.cpp">
+    <ClCompile Include="ServiceInstaller.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="ServiceInstaller.cpp">
+    <ClCompile Include="WinService.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

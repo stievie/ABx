@@ -147,9 +147,6 @@
     <ClInclude Include="DBMusicList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="AppService.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -276,12 +273,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBMusicList.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="AppService.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="service_main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

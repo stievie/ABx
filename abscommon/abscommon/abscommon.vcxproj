@@ -177,7 +177,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="UuidUtils.h" />
     <ClInclude Include="Variant.h" />
-    <ClInclude Include="WinServiceBase.h" />
+    <ClInclude Include="WinService.h" />
     <ClInclude Include="Xml.h" />
   </ItemGroup>
   <ItemGroup>
@@ -218,7 +218,7 @@
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="UuidUtils.cpp" />
     <ClCompile Include="Variant.cpp" />
-    <ClCompile Include="WinServiceBase.cpp" />
+    <ClCompile Include="WinService.cpp" />
     <ClCompile Include="Xml.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

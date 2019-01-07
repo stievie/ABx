@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "WinServiceBase.h"
+#include "WinService.h"
 
 #ifdef _WIN32
 
