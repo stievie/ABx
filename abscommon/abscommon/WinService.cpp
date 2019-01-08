@@ -57,10 +57,11 @@ void WinServiceBase::Start(DWORD dwArgc, PWSTR* pszArgv)
         SetServiceStatus(SERVICE_START_PENDING);
 
         // Perform service-specific initialization.
-        OnStart(dwArgc, pszArgv);
-
-        // Tell SCM that the service is started.
-        SetServiceStatus(SERVICE_RUNNING);
+        if (OnStart(dwArgc, pszArgv))
+            // Tell SCM that the service is started.
+            SetServiceStatus(SERVICE_RUNNING);
+        else
+            SetServiceStatus(SERVICE_STOPPED);
     }
     catch (DWORD dwError)
     {

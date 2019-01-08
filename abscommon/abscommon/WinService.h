@@ -37,7 +37,7 @@ protected:
     // sent to the service by the SCM or when the operating system starts
     // (for a service that starts automatically). Specifies actions to take
     // when the service starts.
-    virtual void OnStart(DWORD /* dwArgc */, PWSTR* /* pszArgv */) { }
+    virtual bool OnStart(DWORD /* dwArgc */, PWSTR* /* pszArgv */) { }
     // When implemented in a derived class, executes when a Stop command is
     // sent to the service by the SCM. Specifies actions to take when a
     // service stops running.
@@ -89,16 +89,17 @@ private:
     std::shared_ptr<T> app_;
     std::thread thread_;
 protected:
-    void OnStart(DWORD dwArgc, PWSTR* pszArgv) override
+    bool OnStart(DWORD dwArgc, PWSTR* pszArgv) override
     {
         app_ = std::make_shared<T>();
         if (!app_->InitializeW(dwArgc, pszArgv))
         {
             WriteEventLogEntry(L"Application initialization failed", EVENTLOG_ERROR_TYPE);
             app_.reset();
-            return;
+            return false;
         }
         thread_ = std::thread(&T::Run, app_);
+        return true;
     }
     void OnStop() override
     {
