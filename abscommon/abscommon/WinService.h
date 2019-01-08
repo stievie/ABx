@@ -136,6 +136,7 @@ int wmain(int argc, wchar_t* argv[])                                           \
             System::InstallService(                                            \
                 SERVICE_NAME,                                                  \
                 SERVICE_DISPLAY_NAME,                                          \
+                SERVICE_DESCRIPTION,                                           \
                 SERVICE_START_TYPE,                                            \
                 SERVICE_DEPENDENCIES,                                          \
                 SERVICE_ACCOUNT,                                               \

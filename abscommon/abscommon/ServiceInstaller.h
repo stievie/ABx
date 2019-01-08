@@ -43,11 +43,11 @@ namespace System {
 //
 void InstallService(PWSTR pszServiceName,
     PWSTR pszDisplayName,
+    PWSTR pszDescription,
     DWORD dwStartType,
     PWSTR pszDependencies,
     PWSTR pszAccount,
     PWSTR pszPassword);
-
 
 //
 //   FUNCTION: UninstallService

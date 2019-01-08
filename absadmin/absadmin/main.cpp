@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "Application.h"
+#include "Version.h"
+#if !defined(WIN_SERVICE)
 #include <sstream>
 #include <fstream>
 #include "SimpleConfigManager.h"
-#include "Application.h"
 #include "Logger.h"
-#include "Version.h"
 #include "MiniDump.h"
 #include <csignal>
 
@@ -91,3 +92,23 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
+
+#else   // !defined(WIN_SERVICE)
+// Internal name of the service
+#define SERVICE_NAME             L"ABAdminServer"
+// Displayed name of the service
+#define SERVICE_DISPLAY_NAME     L"AB Admin Server"
+#define SERVICE_DESCRIPTION      L"Forgotten Wars Web Admin"
+// Service start options.
+#define SERVICE_START_TYPE       SERVICE_AUTO_START
+// List of service dependencies - "dep1\0dep2\0\0"
+#define SERVICE_DEPENDENCIES     L""
+// The name of the account under which the service should run
+// LocalService may not start because it does not have access to the directory
+#define SERVICE_ACCOUNT          L"NT AUTHORITY\\LocalService"
+// The password to the service account name
+#define SERVICE_PASSWORD         NULL
+
+#include "WinService.h"
+AB_SERVICE_MAIN(System::WinService<Application>)
+#endif // !defined(WIN_SERVICE)

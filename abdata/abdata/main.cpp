@@ -3,10 +3,10 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "Version.h"
 #if !defined(WIN_SERVICE)
 
 #include <iostream>
-#include "Version.h"
 #include <csignal>     /* signal, raise, sig_atomic_t */
 #include <functional>
 #include "MiniDump.h"
@@ -95,14 +95,16 @@ int main(int argc, char* argv[])
 
 #else   // !defined(WIN_SERVICE)
 // Internal name of the service
-#define SERVICE_NAME             L"ABDataService"
+#define SERVICE_NAME             L"ABDataServer"
 // Displayed name of the service
-#define SERVICE_DISPLAY_NAME     L"AB Data Service"
+#define SERVICE_DISPLAY_NAME     L"AB Data Server"
+#define SERVICE_DESCRIPTION      L"Forgotten Wars Data Server"
 // Service start options.
-#define SERVICE_START_TYPE       SERVICE_DEMAND_START
+#define SERVICE_START_TYPE       SERVICE_AUTO_START
 // List of service dependencies - "dep1\0dep2\0\0"
 #define SERVICE_DEPENDENCIES     L""
 // The name of the account under which the service should run
+// LocalService may not start because it does not have access to the directory
 #define SERVICE_ACCOUNT          L"NT AUTHORITY\\LocalService"
 // The password to the service account name
 #define SERVICE_PASSWORD         NULL

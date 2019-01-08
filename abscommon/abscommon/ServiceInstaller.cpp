@@ -48,6 +48,7 @@ namespace System {
 //
 void InstallService(PWSTR pszServiceName,
     PWSTR pszDisplayName,
+    PWSTR pszDescription,
     DWORD dwStartType,
     PWSTR pszDependencies,
     PWSTR pszAccount,
@@ -72,12 +73,16 @@ void InstallService(PWSTR pszServiceName,
         goto Cleanup;
     }
 
+    DWORD dwDesiredAccess = SERVICE_QUERY_STATUS;
+    if (pszDescription != NULL)
+        dwDesiredAccess |= SERVICE_CHANGE_CONFIG;
+
     // Install the service into SCM by calling CreateService
     schService = CreateService(
         schSCManager,                   // SCManager database
         pszServiceName,                 // Name of service
         pszDisplayName,                 // Name to display
-        SERVICE_QUERY_STATUS,           // Desired access
+        dwDesiredAccess,                // Desired access
         SERVICE_WIN32_OWN_PROCESS,      // Service type
         dwStartType,                    // Service start type
         SERVICE_ERROR_NORMAL,           // Error control type
@@ -92,6 +97,15 @@ void InstallService(PWSTR pszServiceName,
     {
         wprintf(L"CreateService failed w/err 0x%08lx\n", GetLastError());
         goto Cleanup;
+    }
+    if (pszDescription != NULL)
+    {
+        SERVICE_DESCRIPTION descr;
+        descr.lpDescription = pszDescription;
+        if (!ChangeServiceConfig2(schService, SERVICE_CONFIG_DESCRIPTION, &descr))
+        {
+            wprintf(L"ChangeServiceConfig2 failed w/err 0x%08lx\n", GetLastError());
+        }
     }
 
     wprintf(L"%s is installed.\n", pszServiceName);
