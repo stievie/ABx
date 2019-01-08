@@ -132,6 +132,9 @@
     <ClInclude Include="WinService.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ServiceConfig.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

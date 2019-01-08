@@ -51,7 +51,13 @@ void Application::PrintServerInfo()
 bool Application::LoadMain()
 {
     if (configFile_.empty())
-        configFile_ = path_ + "/ablb.lua";
+    {
+#if defined(WIN_SERVICE)
+        configFile_ = path_ + "/" + "ablb_svc.lua";
+#else
+        configFile_ = path_ + "/" + "ablb.lua";
+#endif
+    }
 
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
@@ -68,6 +74,8 @@ bool Application::LoadMain()
         serverName_ = config->GetGlobal("server_name", "ablb");
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobal("location", "--");
+    if (logDir_.empty())
+        logDir_ = config->GetGlobal("log_dir", "");
 
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
     if (dataPort != 0)
@@ -215,6 +223,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     }
 
+    if (!LoadMain())
+        return false;
+
     if (!logDir_.empty())
     {
         // From the command line
@@ -222,9 +233,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
         IO::Logger::logDir_ = logDir_;
         IO::Logger::Close();
     }
-
-    if (!LoadMain())
-        return false;
 
     return true;
 }

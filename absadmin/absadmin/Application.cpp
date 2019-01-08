@@ -180,15 +180,25 @@ bool Application::Initialize(const std::vector<std::string>& args)
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
     if (configFile_.empty())
-        configFile_ = path_ + "/absadmin.lua";
+    {
+#if defined(WIN_SERVICE)
+        configFile_ = path_ + "/" + "absadmin_svc.lua";
+#else
+        configFile_ = path_ + "/" + "absadmin.lua";
+#endif
+    }
+
     if (!config->Load(configFile_))
     {
         LOG_INFO << "[FAIL]" << std::endl;
         LOG_ERROR << "Error loading config file " << configFile_ << std::endl;
         return false;
     }
+    LOG_INFO << "[done]" << std::endl;
 
-    if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
+    if (logDir_.empty())
+        logDir_ = config->GetGlobal("log_dir", "");
+    if (!logDir_.empty())
     {
         // Different log dir
         IO::Logger::logDir_ = logDir_;
@@ -215,11 +225,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = config->GetGlobal("root_dir", "");
-    if (logDir_.empty())
-        logDir_ = config->GetGlobal("log_dir", "");
     std::string dataHost = config->GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
-    LOG_INFO << "[done]" << std::endl;
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
@@ -258,7 +265,15 @@ bool Application::Initialize(const std::vector<std::string>& args)
     httpServer_->default_resource["GET"] = std::bind(&Application::HtttpsRedirect, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
-    server_ = std::make_unique<HttpsServer>(cert, key);
+    try
+    {
+        server_ = std::make_unique<HttpsServer>(cert, key);
+    }
+    catch (const std::exception& ex)
+    {
+        LOG_ERROR << ex.what() << std::endl;
+        return false;
+    }
     server_->config.port = serverPort_;
     if (!serverIp_.empty())
         server_->config.address = serverIp_;

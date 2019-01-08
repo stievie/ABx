@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 #define SERVICE_DISPLAY_NAME     L"AB Data Server"
 #define SERVICE_DESCRIPTION      L"Forgotten Wars Data Server"
 // Service start options.
-#define SERVICE_START_TYPE       SERVICE_AUTO_START
+#define SERVICE_START_TYPE       SERVICE_DEMAND_START
 // List of service dependencies - "dep1\0dep2\0\0"
 #define SERVICE_DEPENDENCIES     L""
 // The name of the account under which the service should run

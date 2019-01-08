@@ -17,6 +17,7 @@
 #include <unordered_set>
 #include <iostream>
 
+#include "ServiceConfig.h"
 #include "DebugConfig.h"
 
 #define ASIO_STANDALONE

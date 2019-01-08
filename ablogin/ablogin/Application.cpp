@@ -54,7 +54,13 @@ void Application::ShowHelp()
 bool Application::LoadMain()
 {
     if (configFile_.empty())
-        configFile_ = path_ + "/ablogin.lua";
+    {
+#if defined(WIN_SERVICE)
+        configFile_ = path_ + "/" + "ablogin_svc.lua";
+#else
+        configFile_ = path_ + "/" + "ablogin.lua";
+#endif
+    }
 
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
@@ -63,6 +69,7 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    LOG_INFO << "[done]" << std::endl;
 
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
         serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
@@ -72,13 +79,14 @@ bool Application::LoadMain()
         serverLocation_ = config->GetGlobal("location", "--");
     if (serverHost_.empty())
         serverHost_ = config->GetGlobal("login_host", "");
+    if (logDir_.empty())
+        logDir_ = config->GetGlobal("log_dir", "");
 
     auto banMan = GetSubsystem<Auth::BanManager>();
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobal("max_packets_per_second", 0ll));
     banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobal("login_tries", 5ll));
     banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000ll));
     banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_timeout", 60ll * 1000ll));
-    LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
     GetSubsystem<Crypto::Random>()->Initialize();
@@ -177,6 +185,10 @@ bool Application::Initialize(const std::vector<std::string>& args)
         ShowHelp();
         return false;
     }
+
+    if (!LoadMain())
+        return false;
+
     if (!logDir_.empty())
     {
         // From the command line
@@ -187,9 +199,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
-
-    if (!LoadMain())
-        return false;
 
     if (!serviceManager_->IsRunning())
         LOG_ERROR << "No services running" << std::endl;

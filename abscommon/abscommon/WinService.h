@@ -105,6 +105,7 @@ protected:
         if (app_)
         {
             app_->Stop();
+            app_.reset();
             thread_.join();
         }
     }
@@ -113,6 +114,7 @@ protected:
         if (app_)
         {
             app_->Stop();
+            app_.reset();
             thread_.join();
         }
     }

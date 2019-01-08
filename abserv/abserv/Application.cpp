@@ -269,7 +269,13 @@ bool Application::LoadMain()
     LOG_INFO << "Loading..." << std::endl;
 
     if (configFile_.empty())
+    {
+#if defined(WIN_SERVICE)
+        configFile_ = path_ + "/" + "abserv_svc.lua";
+#else
         configFile_ = path_ + "/" + CONFIG_FILE;
+#endif
+    }
     LOG_INFO << "Loading configuration: " << configFile_ << "...";
     auto config = GetSubsystem<ConfigManager>();
     if (!config)

@@ -39,7 +39,13 @@ void Application::ShowHelp()
 bool Application::LoadMain()
 {
     if (configFile_.empty())
-        configFile_ = path_ + "/abmsgs.lua";
+    {
+#if defined(WIN_SERVICE)
+        configFile_ = path_ + "/" + "abmsgs_svc.lua";
+#else
+        configFile_ = path_ + "/" + "abmsgs.lua";
+#endif
+    }
 
     auto config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
@@ -48,6 +54,8 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    LOG_INFO << "[done]" << std::endl;
+
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
         serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
@@ -56,7 +64,8 @@ bool Application::LoadMain()
         serverLocation_ = config->GetGlobal("location", "--");
     if (serverHost_.empty())
         serverHost_ = config->GetGlobal("message_host", "");
-    LOG_INFO << "[done]" << std::endl;
+    if (logDir_.empty())
+        logDir_ = config->GetGlobal("log_dir", "");
 
     LOG_INFO << "Connecting to data server...";
     auto dataClient = GetSubsystem<IO::DataClient>();
@@ -115,6 +124,10 @@ bool Application::Initialize(const std::vector<std::string>& args)
         ShowHelp();
         return false;
     }
+
+    if (!LoadMain())
+        return false;
+
     if (!logDir_.empty())
     {
         // From the command line
@@ -125,9 +138,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
     GetSubsystem<Asynch::Dispatcher>()->Start();
     GetSubsystem<Asynch::Scheduler>()->Start();
-
-    if (!LoadMain())
-        return false;
 
     return true;
 }

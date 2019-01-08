@@ -99,9 +99,9 @@ int main(int argc, char** argv)
 #define SERVICE_DISPLAY_NAME     L"AB Login Server"
 #define SERVICE_DESCRIPTION      L"Forgotten Wars Login Server"
 // Service start options.
-#define SERVICE_START_TYPE       SERVICE_AUTO_START
+#define SERVICE_START_TYPE       SERVICE_DEMAND_START
 // List of service dependencies - "dep1\0dep2\0\0"
-#define SERVICE_DEPENDENCIES     L""
+#define SERVICE_DEPENDENCIES     L"ABDataServer\0\0"
 // The name of the account under which the service should run
 // LocalService may not start because it does not have access to the directory
 #define SERVICE_ACCOUNT          L"NT AUTHORITY\\LocalService"
