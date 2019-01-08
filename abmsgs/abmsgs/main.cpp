@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Version.h"
 #include "Application.h"
+#include "ServiceConfig.h"
 #if !defined(WIN_SERVICE)
 #include <csignal>
 #include "MiniDump.h"

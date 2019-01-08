@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
+#include "ServiceConfig.h"
 #if !defined(WIN_SERVICE)
 #include <functional>
 #include <mutex>

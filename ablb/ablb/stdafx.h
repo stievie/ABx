@@ -16,7 +16,6 @@
 
 #define WRITE_MINIBUMP
 
-#include "ServiceConfig.h"
 #include "DebugConfig.h"
 
 #define ASIO_STANDALONE

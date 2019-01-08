@@ -13,7 +13,6 @@
 #include <map>
 #include <string>
 
-#include "ServiceConfig.h"
 #include "DebugConfig.h"
 
 #if !defined(ASIO_STANDALONE)

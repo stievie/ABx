@@ -1,6 +1,5 @@
 # TODO
 
-! abserv: Player can not call party->Remove because it would save it to data server...
 + abserv, abclient: Party
 ! abclient, abserv: PartyAdd wrong network message
 ! ?: Server list?

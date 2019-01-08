@@ -18,7 +18,6 @@
 #include <memory>
 #include <limits>
 
-#include "ServiceConfig.h"
 #include "DebugConfig.h"
 
 #if !defined(USE_STANDALONE_ASIO)
