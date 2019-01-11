@@ -35,6 +35,8 @@
 #define CLEAN_CHATS_MS (1000 * 60)
 // Check to terminate if the are no players left
 #define CHECK_AUTOTERMINATE_MS (1000 * 60)
+// Server must be idle for 10min to automatically terminate
+#define CHECK_AUTOTERMINATE_IDLE_MS (1000 * 60 * 10)
 // Remove player from PlayerManager after this time. Inactive means not Ping.
 #define PLAYER_INACTIVE_TIME_KICK (1000 * 15)
 // Game is inactive and will be stopped when it didnt have a player for this time.

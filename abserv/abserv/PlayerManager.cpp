@@ -82,6 +82,9 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
         playerUuids_.erase(uuid);
         players_.erase(it);
+
+        if (players_.size() == 0)
+            idleTime_ = Utils::AbTick();
     }
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include "Utils.h"
 
 namespace Net {
 class ProtocolGame;
@@ -15,10 +16,13 @@ class PlayerManager
 private:
     std::recursive_mutex lock_;
     std::map<std::string, Player*> playerUuids_;
+    int64_t idleTime_;
     /// The owner of players
     std::map<uint32_t, std::shared_ptr<Player>> players_;
 public:
-    PlayerManager() = default;
+    PlayerManager() :
+        idleTime_(Utils::AbTick())
+    {}
     ~PlayerManager()
     {
         playerUuids_.clear();
@@ -47,6 +51,13 @@ public:
     size_t GetPlayerCount() const
     {
         return players_.size();
+    }
+
+    int64_t GetIdleTime() const
+    {
+        if (players_.size() != 0)
+            return 0;
+        return Utils::AbTick() - idleTime_;
     }
 };
 
