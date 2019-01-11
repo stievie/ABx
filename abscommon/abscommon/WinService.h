@@ -37,7 +37,7 @@ protected:
     // sent to the service by the SCM or when the operating system starts
     // (for a service that starts automatically). Specifies actions to take
     // when the service starts.
-    virtual bool OnStart(DWORD /* dwArgc */, PWSTR* /* pszArgv */) { }
+    virtual bool OnStart(DWORD /* dwArgc */, PWSTR* /* pszArgv */) { return false; }
     // When implemented in a derived class, executes when a Stop command is
     // sent to the service by the SCM. Specifies actions to take when a
     // service stops running.
