@@ -53,7 +53,6 @@ private:
     std::unique_ptr<IO::DataClient> dataClient_;
     std::string dataHost_;
     uint16_t dataPort_;
-    std::string adminPassword_;
     /// Byte/sec
     uint64_t maxThroughput_;
     std::vector<int> loads_;
@@ -62,7 +61,6 @@ private:
     void ShowHelp();
     void UpdateBytesSent(size_t bytes);
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
-    bool IsAdmin(std::shared_ptr<HttpsServer::Request> request);
     bool IsAccountBanned(const AB::Entities::Account& acc);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
@@ -84,8 +82,6 @@ private:
     void GetHandlerVersion(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void GetHandlerVersions(std::shared_ptr<HttpsServer::Response> response,
-        std::shared_ptr<HttpsServer::Request> request);
-    void GetHandlerStatus(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);

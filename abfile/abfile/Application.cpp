@@ -203,7 +203,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
     dataHost_ = config->GetGlobal("data_host", "");
     dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
     requireAuth_ = config->GetGlobalBool("require_auth", false);
-    adminPassword_ = config->GetGlobal("abfile_admin_pass", "");
     maxThroughput_ = static_cast<uint64_t>(config->GetGlobal("max_throughput", 0ll));
 
     if (!logDir_.empty())
@@ -257,8 +256,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
         server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
     }
-    server_->resource["^/_status_$"]["GET"] = std::bind(&Application::GetHandlerStatus, shared_from_this(),
-        std::placeholders::_1, std::placeholders::_2);
 
     if (haveData)
     {
@@ -479,30 +476,6 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         return false;
 
     return true;
-}
-
-bool Application::IsAdmin(std::shared_ptr<HttpsServer::Request> request)
-{
-    if (adminPassword_.empty())
-        return true;
-
-    // Check Auth
-    const auto it = request->header.find("AuthAdmin");
-    if (it == request->header.end())
-    {
-        LOG_WARNING << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
-            << "Missing AuthAdmin header" << std::endl;
-        return false;
-    }
-    const std::string& passwd = (*it).second;
-    if (passwd.empty())
-    {
-        LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
-            << "Wrong AuthAdmin header " << (*it).second << std::endl;
-        return false;
-    }
-
-    return passwd.compare(adminPassword_) == 0;
 }
 
 bool Application::IsAccountBanned(const AB::Entities::Account& acc)
@@ -1137,57 +1110,6 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
         gNd.append_attribute("value") = v.value;
     }
 
-    std::stringstream stream;
-    doc.save(stream);
-    SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();
-    header.emplace("Content-Type", "text/xml");
-    UpdateBytesSent(stream_size(stream));
-    response->write(stream, header);
-}
-
-void Application::GetHandlerStatus(std::shared_ptr<HttpsServer::Response> response,
-    std::shared_ptr<HttpsServer::Request> request)
-{
-    AB_PROFILE;
-
-    if (!IsAdmin(request))
-    {
-        response->write(SimpleWeb::StatusCode::client_error_forbidden,
-            "Forbidden");
-        return;
-    }
-
-    pugi::xml_document doc;
-    auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
-    auto root = doc.append_child("status");
-    root.append_attribute("version") = "1.0";
-
-    int64_t upTime = Utils::AbTick() - startTime_;
-    int64_t mesTime = Utils::AbTick() - statusMeasureTime_;
-    {
-        auto gNd = root.append_child("bytes_sent");
-        gNd.append_attribute("value") = (unsigned long long)bytesSent_;
-    }
-    {
-        auto gNd = root.append_child("up_time");
-        gNd.append_attribute("value") = (long long)upTime;
-    }
-    {
-        auto gNd = root.append_child("load");
-        gNd.append_attribute("value") = GetAvgLoad();
-    }
-    {
-        auto gNd = root.append_child("bytes_per_second");
-        if (mesTime != 0)
-            gNd.append_attribute("value") = static_cast<int>(bytesSent_ / (mesTime / 1000));
-        else
-            gNd.append_attribute("value") = 0;
-        gNd.append_attribute("time") = (long long)mesTime;
-        gNd.append_attribute("round") = uptimeRound_;
-    }
     std::stringstream stream;
     doc.save(stream);
     SimpleWeb::CaseInsensitiveMultimap header = GetDefaultHeader();

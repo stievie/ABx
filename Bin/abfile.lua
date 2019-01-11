@@ -25,5 +25,4 @@ root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin
 require_auth = true
 
 require("config/data_server")
-require("config/abfile_admin")
 require("config/msg_server")
