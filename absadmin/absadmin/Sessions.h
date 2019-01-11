@@ -35,7 +35,6 @@ public:
 
     void Add(const std::string& id, std::shared_ptr<Session> session);
     std::shared_ptr<Session> Get(const std::string& id);
-
 };
 
 }
