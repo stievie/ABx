@@ -66,6 +66,15 @@ bool Application::LoadMain()
         serverHost_ = config->GetGlobal("message_host", "");
     if (logDir_.empty())
         logDir_ = config->GetGlobal("log_dir", "");
+    std::string ips = config->GetGlobal("allowed_ips", "");
+    if (!ips.empty())
+    {
+        std::vector<std::string> ipVec = Utils::Split(ips, ";");
+        for (const std::string& ip : ipVec)
+        {
+            whiteList_.Add(ip);
+        }
+    }
 
     LOG_INFO << "Connecting to data server...";
     auto dataClient = GetSubsystem<IO::DataClient>();
@@ -87,12 +96,8 @@ bool Application::LoadMain()
     // Add Protocols
     if (serverIp_.empty())
         serverIp_ = config->GetGlobal("message_ip", "0.0.0.0");
-    uint32_t ip = static_cast<uint32_t>(Utils::ConvertStringToIP(serverIp_));
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
         serverPort_ = static_cast<uint16_t>(config->GetGlobal("message_port", 2771ll));
-
-    asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), serverPort_);
-    server_ = std::make_unique<MessageServer>(ioService_, endpoint);
 
     PrintServerInfo();
     return true;
@@ -110,6 +115,17 @@ void Application::PrintServerInfo()
 
     LOG_INFO << "  Listening: ";
     LOG_INFO << serverIp_ << ":" << static_cast<int>(serverPort_) << std::endl;
+
+    LOG_INFO << "  Allowed IPs: ";
+    if (whiteList_.IsEmpty())
+    {
+        LOG_INFO << "(all)";
+    }
+    else
+    {
+        LOG_INFO << whiteList_.ToString();
+    }
+    LOG_INFO << std::endl;
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
@@ -164,6 +180,10 @@ void Application::Run()
 
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
+
+    uint32_t ip = Utils::ConvertStringToIP(serverIp_);
+    asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), serverPort_);
+    server_ = std::make_unique<MessageServer>(ioService_, endpoint, whiteList_);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;

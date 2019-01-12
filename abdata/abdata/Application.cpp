@@ -107,6 +107,17 @@ bool Application::LoadConfig()
         maxSize_ = config->GetGlobal("max_size", 0ll);
     if (!readonly_)
         readonly_ = config->GetGlobalBool("read_only", false);
+
+    std::string ips = config->GetGlobal("allowed_ips", "");
+    if (!ips.empty())
+    {
+        std::vector<std::string> ipVec = Utils::Split(ips, ";");
+        for (const std::string& ip : ipVec)
+        {
+            whiteList_.Add(ip);
+        }
+    }
+
     if (IO::Logger::logDir_.empty())
         IO::Logger::logDir_ = config->GetGlobal("log_dir", "");
     if (DB::Database::driver_.empty())
@@ -148,6 +159,16 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Cache size: " << Utils::ConvertSize(maxSize_) << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
     LOG_INFO << "  Readonly mode: " << (readonly_ ? "TRUE" : "false") << std::endl;
+    LOG_INFO << "  Allowed IPs: ";
+    if (whiteList_.IsEmpty())
+    {
+        LOG_INFO << "(all)";
+    }
+    else
+    {
+        LOG_INFO << whiteList_.ToString();
+    }
+    LOG_INFO << std::endl;
     LOG_INFO << "Database drivers:";
 #ifdef USE_SQLITE
     LOG_INFO << " SQLite";
@@ -236,7 +257,7 @@ void Application::Run()
     GetSubsystem<Asynch::Scheduler>()->Start();
     GetSubsystem<Asynch::ThreadPool>()->Start();
 
-    server_ = std::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_);
+    server_ = std::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_, whiteList_);
     StorageProvider* provider = server_->GetStorageProvider();
     provider->flushInterval_ = flushInterval_;
     provider->cleanInterval_ = cleanInterval_;

@@ -135,6 +135,9 @@
     <ClInclude Include="ServiceConfig.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IpList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -222,6 +225,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="WinService.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IpList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

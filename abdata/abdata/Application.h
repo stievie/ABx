@@ -2,6 +2,7 @@
 
 #include "ServerApp.h"
 #include "Server.h"
+#include "IpList.h"
 
 class Application : public ServerApp
 {
@@ -13,6 +14,7 @@ private:
     std::unique_ptr<Server> server_;
     uint32_t flushInterval_;
     uint32_t cleanInterval_;
+    Net::IpList whiteList_;
     bool LoadConfig();
     void PrintServerInfo();
     void ShowHelp();

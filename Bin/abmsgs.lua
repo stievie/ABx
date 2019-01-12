@@ -10,4 +10,6 @@ message_port = 2771
 message_ip = "192.168.1.51"
 --message_host = "stievie.mooo.com"
 
+allowed_ips = "127.0.0.1;192.168.1.51"
+
 require("config/data_server")

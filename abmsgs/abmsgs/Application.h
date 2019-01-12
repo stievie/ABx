@@ -4,12 +4,14 @@
 #include "Service.h"
 #include "DataClient.h"
 #include "MessageServer.h"
+#include "IpList.h"
 
 class Application : public ServerApp
 {
 private:
     asio::io_service ioService_;
     std::unique_ptr<MessageServer> server_;
+    Net::IpList whiteList_;
     void ShowHelp();
     bool LoadMain();
     void PrintServerInfo();

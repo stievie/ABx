@@ -146,6 +146,7 @@
     <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="DebugNew.h" />
+    <ClInclude Include="IpList.h" />
     <ClInclude Include="ServiceConfig.h" />
     <ClInclude Include="ServiceInstaller.h" />
     <ClInclude Include="TimeUtils.h" />
@@ -184,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="CpuUsageWin.cpp" />
+    <ClCompile Include="IpList.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ServiceInstaller.cpp" />
     <ClCompile Include="Subsystems.cpp" />

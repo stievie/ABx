@@ -136,7 +136,7 @@ skip-name-resolve
 
 ## Encoding
 
-Everything is UTF-8 encoded. The Client sends only UTF-8 encooded strings to the
+Everything is UTF-8 encoded. The Client sends only UTF-8 encoded strings to the
 server. All files on the server are UTF-8 encoded. So there is no additional 
 conversion required.
 

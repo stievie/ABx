@@ -14,6 +14,8 @@ data_port = 2770
 data_ip = "0.0.0.0"
 data_host = ""
 
+allowed_ips = "127.0.0.1;192.168.1.51"
+
 -- Max memory size, 1GB
 max_size = 1024 * 1024 * 1024
 -- Flush cache every minute
