@@ -32,4 +32,37 @@ uint32_t AdlerChecksum(uint8_t* data, int32_t len)
     return (b << 16) | a;
 }
 
+bool GetCommandLineValue(const std::vector<std::string>& values, const std::string & name)
+{
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        if (values[i].compare(name) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool GetCommandLineValue(const std::vector<std::string>& values, const std::string& name, std::string& value)
+{
+    bool found = false;
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        if (values[i].compare(name) == 0)
+        {
+            found = true;
+            ++i;
+            if (i < values.size())
+                value = values[i];
+            else
+            {
+                LOG_WARNING << "Missing argument for " << name << std::endl;
+            }
+            break;
+        }
+    }
+    return found;
+}
+
 }

@@ -32,4 +32,7 @@ Iter select_randomly(Iter start, Iter end)
     return select_randomly(start, end, gen);
 }
 
+bool GetCommandLineValue(const std::vector<std::string>& values, const std::string& name);
+bool GetCommandLineValue(const std::vector<std::string>& values, const std::string& name, std::string& value);
+
 }

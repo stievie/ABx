@@ -140,35 +140,12 @@ bool ServerApp::ParseCommandLine()
 
 bool ServerApp::GetCommandLineValue(const std::string& name, std::string& value)
 {
-    bool found = false;
-    for (size_t i = 0; i < arguments_.size(); ++i)
-    {
-        if (arguments_[i].compare(name) == 0)
-        {
-            found = true;
-            ++i;
-            if (i < arguments_.size())
-                value = arguments_[i];
-            else
-            {
-                LOG_WARNING << "Missing argument for " << name << std::endl;
-            }
-            break;
-        }
-    }
-    return found;
+    return Utils::GetCommandLineValue(arguments_, name, value);
 }
 
 bool ServerApp::GetCommandLineValue(const std::string& name)
 {
-    for (size_t i = 0; i < arguments_.size(); ++i)
-    {
-        if (arguments_[i].compare(name) == 0)
-        {
-            return true;
-        }
-    }
-    return false;
+    return Utils::GetCommandLineValue(arguments_, name);
 }
 
 void ServerApp::Init()

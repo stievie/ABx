@@ -13,6 +13,7 @@
 #include "FileUtils.h"
 #include "Random.h"
 #include <AB/DHKeys.hpp>
+#include "Utils.h"
 
 static bool GenerateKeys(const std::string& outFile)
 {
@@ -45,6 +46,15 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
+static void ShowHelp()
+{
+    std::cout << "This program generates a Diffie Hellman key pair for the server." << std::endl << std::endl;
+    std::cout << "keygen [<options>]" << std::endl;
+    std::cout << "options:" << std::endl;
+    std::cout << "  -o <file>: Out file. Default as given in abserv.lua" << std::endl;
+    std::cout << "  -h: Show this help" << std::endl;
+}
+
 int main(int argc, char** argv)
 {
     ShowLogo();
@@ -64,6 +74,12 @@ int main(int argc, char** argv)
     {
         args.push_back(argv[i]);
     }
+    if (Utils::GetCommandLineValue(args, "-h"))
+    {
+        ShowHelp();
+        return EXIT_SUCCESS;
+    }
+
     std::string cfgFile = path + "/abserv.lua";
     IO::SimpleConfigManager cfg;
     if (!cfg.Load(cfgFile))
@@ -74,6 +90,7 @@ int main(int argc, char** argv)
     std::string keyFile = cfg.GetGlobal("server_keys", "");
     if (keyFile.empty())
         keyFile = Utils::AddSlash(path) + "abserver.dh";
+    Utils::GetCommandLineValue(args, "-o", keyFile);
 
     if (!GenerateKeys(keyFile))
     {
