@@ -17,12 +17,10 @@ private:
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
     std::vector<int> loads_;
     int64_t lastLoadCalc_;
-    bool genKeys_;
     Maintenance maintenance_;
     bool LoadMain();
     void PrintServerInfo();
     void ShowHelp();
-    void GenNewKeys();
     void HandleMessage(const Net::MessageMsg& msg);
     uint8_t GetAvgLoad() const
     {

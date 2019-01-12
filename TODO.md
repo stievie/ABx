@@ -1,12 +1,10 @@
 # TODO
 
-+ abdata, abmsgs: Allowed IPs
 + abserv, abclient: Party
 ! abclient, abserv: PartyAdd wrong network message
 ! ?: Server list?
 * abserv: https://github.com/mgerhardy/engine/tree/master/src/modules/backend/entity/ai
 + ablogin: Monitor server load and spawn new server if needed
-+ genkey: separate program to create DH keys for the server
 ~ abdata: Use bit set cache item flags, sot a struct
 * abclient: Mini map https://github.com/HasKha/GWToolboxpp/tree/master/GWToolbox/GWToolbox/Widgets/Minimap
 * abclient: https://urho3d.github.io/documentation/1.7/_lights.html

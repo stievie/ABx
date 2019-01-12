@@ -47,7 +47,6 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    genKeys_(false),
     autoTerminate_(false),
     temporary_(false),
     lastLoadCalc_(0),
@@ -111,10 +110,6 @@ bool Application::ParseCommandLine()
     {
         temporary_ = true;
     }
-    if (GetCommandLineValue("-genkeys"))
-    {
-        genKeys_ = true;
-    }
     return true;
 }
 
@@ -133,7 +128,6 @@ void Application::ShowHelp()
     std::cout << "  port <port>: Game port, when 0 it uses a free port" << std::endl;
     std::cout << "  autoterm: If set, the server terminates itself when all players left" << std::endl;
     std::cout << "  temp: If set, the server is temporary" << std::endl;
-    std::cout << "  genkeys: Generate new encryption keys and terminate" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -145,11 +139,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
     if (!ParseCommandLine())
     {
         ShowHelp();
-        return false;
-    }
-    if (genKeys_)
-    {
-        GenNewKeys();
         return false;
     }
 
@@ -443,18 +432,6 @@ void Application::PrintServerInfo()
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
     LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
-}
-
-void Application::GenNewKeys()
-{
-    GetSubsystem<Crypto::Random>()->Initialize();
-    Crypto::DHKeys keys;
-    keys.GenerateKeys();
-    const std::string keyFile = GetKeysFile();
-    if (keys.SaveKeys(keyFile))
-        LOG_INFO << "Generated new keys: " << keyFile << std::endl;
-    else
-        LOG_ERROR << "Error generating keys: " << keyFile << std::endl;
 }
 
 void Application::Run()

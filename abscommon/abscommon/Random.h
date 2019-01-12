@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <abcrypto.hpp>
+#include <mutex>
 
 namespace Crypto {
 
