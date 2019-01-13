@@ -39,7 +39,7 @@ using namespace Urho3D;
 
 //=============================================================================
 //=============================================================================
-struct vertex_ocean 
+struct vertex_ocean
 {
 	float   x,   y,   z; // vertex
 	float  nx,  ny,  nz; // normal
@@ -49,7 +49,7 @@ struct vertex_ocean
 };
 
 // structure used with discrete fourier transform
-struct complex_vector_normal 
+struct complex_vector_normal
 {
 	complex h; // wave height
 	Vector2 D; // displacement
@@ -141,7 +141,7 @@ protected:
     // ocean
     cOcean *pCOcean;
     int     N;
-    int     Nplus1;	
+    int     Nplus1;
 
     Mesh             m_mesh;
     SharedPtr<Model> m_pModelOcean;
