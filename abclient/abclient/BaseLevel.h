@@ -6,6 +6,24 @@
 #include "PostProcessController.h"
 
 class FwClient;
+class Ocean;
+
+class DStaticModel : public StaticModel
+{
+    URHO3D_OBJECT(DStaticModel, StaticModel);
+public:
+    static void RegisterObject(Context *context)
+    {
+        context->RegisterFactory<DStaticModel>();
+    }
+
+    DStaticModel(Context *context) : StaticModel(context) {}
+
+    void DSetBoundingBox(const BoundingBox& box)
+    {
+        SetBoundingBox(box);
+    }
+};
 
 class BaseLevel : public Object
 {
@@ -50,6 +68,7 @@ protected:
         return Ray();
     }
     void SetSunProperties();
+    void InitOcean();
 
     Urho3D::UIElement* uiRoot_;
     SharedPtr<Scene> scene_;
@@ -63,6 +82,22 @@ protected:
     float pitch_;
     SharedPtr<Sprite> logoSprite_;
 
+    // Ocean stuff
+    /// Reflection camera scene node.
+    SharedPtr<Node> reflectionCameraNode_;
+    /// Water body scene node.
+    SharedPtr<Node> waterNode_;
+    /// Reflection plane representing the water surface.
+    Plane waterPlane_;
+    /// Clipping plane for reflection rendering. Slightly biased downward from the reflection plane to avoid artifacts.
+    Plane waterClipPlane_;
+
+    // ocean
+    Ocean *ocean_;
+    SharedPtr<Node> oceanNode_;
+
+    SharedPtr<DStaticModel> staticModelOcean_;
+    BoundingBox boundingBox_;
 public:
     bool debugGeometry_;
     /// If this level has a player call this to create it

@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2409.44" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16785253" />
-	<attribute name="Next Local Component ID" value="16786337" />
+	<attribute name="Next Local Node ID" value="16785303" />
+	<attribute name="Next Local Component ID" value="16786398" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group" />
 	<component type="Octree" id="1" />
@@ -76,7 +76,7 @@
 	</node>
 	<node id="7">
 		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="Sea" />
+		<attribute name="Name" value="Ocean" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="0 24.54 0" />
 		<attribute name="Rotation" value="1 0 0 0" />

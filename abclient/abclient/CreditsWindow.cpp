@@ -177,6 +177,7 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("PostProcessController: https://gist.github.com/lezak", 15);
     CreateSingleLine("Level manager: https://urho3d.prophpbb.com/topic2367.html", 15);
     CreateSingleLine("Entity Position Interpolation: https://github.com/jwatte/EPIC", 15);
+    CreateSingleLine("Ocean Simulation: https://github.com/Lumak/Urho3D-Ocean-Simulation", 15);
     CreateSingleLine("Particles: https://kenney.nl/assets/particle-pack", 15);
     CreateSingleLine("Some code: https://github.com/ArnisLielturks/Urho3D-Empty-Project", 15);
 

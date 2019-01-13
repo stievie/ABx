@@ -257,6 +257,7 @@
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
+    <ClCompile Include="ComplexFFT.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
@@ -278,6 +279,7 @@
     <ClCompile Include="MultiLineEdit.cpp" />
     <ClCompile Include="Mumble.cpp" />
     <ClCompile Include="NewMailWindow.cpp" />
+    <ClCompile Include="Ocean.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OptionsWindow.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
@@ -308,6 +310,7 @@
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="AbEvents.h" />
     <ClInclude Include="BaseLevel.h" />
+    <ClInclude Include="ComplexFFT.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="CreditsWindow.h" />
@@ -321,6 +324,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="HealthBarPlain.h" />
+    <ClInclude Include="HelperThread.h" />
     <ClInclude Include="HotkeyEdit.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemsCache.h" />
@@ -333,6 +337,7 @@
     <ClInclude Include="MultiLineEdit.h" />
     <ClInclude Include="Mumble.h" />
     <ClInclude Include="NewMailWindow.h" />
+    <ClInclude Include="Ocean.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OptionsWindow.h" />
     <ClInclude Include="OutpostLevel.h" />

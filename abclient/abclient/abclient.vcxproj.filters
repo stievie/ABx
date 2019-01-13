@@ -171,6 +171,15 @@
     <ClInclude Include="HealthBarPlain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ComplexFFT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HelperThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ocean.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -303,6 +312,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HealthBarPlain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComplexFFT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ocean.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
