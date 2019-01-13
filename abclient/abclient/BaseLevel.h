@@ -83,6 +83,7 @@ protected:
     SharedPtr<Sprite> logoSprite_;
 
     // Ocean stuff
+#ifdef ADD_WATER_REFLECTION
     /// Reflection camera scene node.
     SharedPtr<Node> reflectionCameraNode_;
     /// Water body scene node.
@@ -91,9 +92,9 @@ protected:
     Plane waterPlane_;
     /// Clipping plane for reflection rendering. Slightly biased downward from the reflection plane to avoid artifacts.
     Plane waterClipPlane_;
-
+#endif
     // ocean
-    Ocean *ocean_;
+    Ocean* ocean_;
     SharedPtr<Node> oceanNode_;
 
     SharedPtr<DStaticModel> staticModelOcean_;

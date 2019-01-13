@@ -34,6 +34,7 @@ Creator: sa 2017-2019
 * PostProcessController https://gist.github.com/lezak
 * Level manager, fading [artgolf1000](https://urho3d.prophpbb.com/topic2367.html)
 * Entity Position Interpolation https://github.com/jwatte/EPIC
+* Ocean Simulation: https://github.com/Lumak/Urho3D-Ocean-Simulation
 * http://kenney.nl/assets/particle-pack
 * Urho3D-Empty-Project https://github.com/ArnisLielturks/Urho3D-Empty-Project
 * Font: ClearSans

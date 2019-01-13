@@ -108,7 +108,7 @@ void BaseLevel::SetSunProperties()
 {
     // https://discourse.urho3d.io/t/better-shadows-possible-three-issues/1013/3
     // https://discourse.urho3d.io/t/shadow-on-slopes/4629
-    Node* sunNode = scene_->GetChild("Sun", true);
+    Node* sunNode = scene_->GetChild("Sun", false);
     if (sunNode)
     {
         Light* sun = sunNode->GetComponent<Light>();
@@ -131,7 +131,7 @@ void BaseLevel::SetSunProperties()
 
 void BaseLevel::InitOcean()
 {
-    oceanNode_ = scene_->GetChild("Ocean", true);
+    oceanNode_ = scene_->GetChild("Ocean", false);
     if (oceanNode_)
     {
 #ifdef ADD_WATER_REFLECTION
