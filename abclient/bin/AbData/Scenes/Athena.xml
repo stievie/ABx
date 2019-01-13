@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16785407" />
-	<attribute name="Next Local Component ID" value="16786528" />
+	<attribute name="Next Local Node ID" value="16785457" />
+	<attribute name="Next Local Component ID" value="16786589" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group" />
 	<component type="Octree" id="1" />
@@ -24,18 +24,20 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Sun" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="0 85.7091 0" />
-		<attribute name="Rotation" value="0.801689 0.429798 0.356855 -0.212659" />
+		<attribute name="Position" value="-64.7732 83.8265 0" />
+		<attribute name="Rotation" value="0.690694 0.68907 0.159545 -0.150565" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="16779339">
 			<attribute name="Light Type" value="Directional" />
+			<attribute name="Color" value="0.9 0.9 0.9 1" />
 			<attribute name="Specular Intensity" value="0.5" />
 			<attribute name="Temperature" value="4000" />
+			<attribute name="Range" value="1000" />
 			<attribute name="Spot FOV" value="60" />
 			<attribute name="Can Be Occluded" value="false" />
 			<attribute name="Cast Shadows" value="true" />
-			<attribute name="Shadow Distance" value="125" />
+			<attribute name="Shadow Distance" value="200" />
 			<attribute name="Shadow Fade Distance" value="100" />
 		</component>
 	</node>
@@ -602,7 +604,7 @@
 		<attribute name="Variables" />
 		<component type="AnimatedModel" id="16786523">
 			<attribute name="Model" value="Model;Models/Ship1.mdl" />
-			<attribute name="Material" value="Material;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_sail_marble.jpg.xml" />
+			<attribute name="Material" value="Material;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_sail_marble.jpg.xml" />
 			<attribute name="Cast Shadows" value="true" />
 			<attribute name="Bone Animation Enabled">
 				<variant type="Bool" value="true" />
