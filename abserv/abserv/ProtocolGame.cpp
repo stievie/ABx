@@ -31,8 +31,8 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 #ifdef DEBUG_NET
     LOG_DEBUG << "Player " << playerUuid << " logging in" << std::endl;
 #endif
-    auto gameMan = GetSubsystem<Game::PlayerManager>();
-    std::shared_ptr<Game::Player> foundPlayer = gameMan->GetPlayerByUuid(playerUuid);
+    auto payerMan = GetSubsystem<Game::PlayerManager>();
+    std::shared_ptr<Game::Player> foundPlayer = payerMan->GetPlayerByUuid(playerUuid);
     if (foundPlayer)
     {
         // Maybe DC/crash, let player connect again
@@ -60,7 +60,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    player_ = gameMan->CreatePlayer(playerUuid, GetThis());
+    player_ = payerMan->CreatePlayer(playerUuid, GetThis());
 
     if (!IO::IOPlayer::LoadPlayerByUuid(player_.get(), playerUuid))
     {

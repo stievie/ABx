@@ -51,6 +51,7 @@ struct Character : Entity
         s.value8b(deletedTime);
         s.value8b(creation);
         s.text1b(currentMapUuid, Limits::MAX_UUID);
+        s.text1b(lastOutpostUuid, Limits::MAX_UUID);
 
         s.value8b(lastLogin);
         s.value8b(lastLogout);
@@ -70,6 +71,7 @@ struct Character : Entity
     uint32_t skillPoints = 0;
     CharacterSex sex = CharacterSexUnknown;
     std::string currentMapUuid = EMPTY_GUID;
+    std::string lastOutpostUuid = EMPTY_GUID;
     std::string accountUuid = EMPTY_GUID;
     // Index in game_items
     uint32_t modelIndex = 0;

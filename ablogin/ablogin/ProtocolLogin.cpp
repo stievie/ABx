@@ -388,6 +388,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     output->AddString(fileServer.host);
     output->Add<uint16_t>(fileServer.port);
 
+    const std::string landingGame = IO::IOGame::GetLandingGameUuid();
     output->Add<uint16_t>(static_cast<uint16_t>(account.charSlots));
     output->Add<uint16_t>(static_cast<uint16_t>(account.characterUuids.size()));
     for (const std::string& characterUuid : account.characterUuids)
@@ -404,7 +405,10 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         output->AddStringEncrypted(character.profession2);
         output->AddByte(static_cast<uint8_t>(character.sex));
         output->Add<uint32_t>(character.modelIndex);
-        output->AddStringEncrypted(character.currentMapUuid);
+        if (!uuids::uuid(character.lastOutpostUuid).nil())
+            output->AddStringEncrypted(character.lastOutpostUuid);
+        else
+            output->AddStringEncrypted(landingGame);
     }
 
     Send(output);

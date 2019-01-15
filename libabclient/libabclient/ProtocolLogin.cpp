@@ -195,7 +195,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
             cData.profession2 = message->GetStringEncrypted();
             cData.sex = static_cast<AB::Entities::CharacterSex>(message->Get<uint8_t>());
             cData.modelIndex = message->Get<uint32_t>();
-            cData.currentMapUuid = message->GetStringEncrypted();
+            cData.lastOutpostUuid = message->GetStringEncrypted();
             chars.push_back(cData);
         }
         if (charlistCallback_)

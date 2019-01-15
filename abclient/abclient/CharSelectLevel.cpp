@@ -68,7 +68,7 @@ void CharSelectLevel::CreateUI()
         button->SetLayoutMode(LM_FREE);
         button->SetVar("uuid", String(ch.uuid.c_str()));
         button->SetVar("char_name", String(ch.name.c_str()));
-        button->SetVar("map_uuid", String(ch.currentMapUuid.c_str()));
+        button->SetVar("map_uuid", String(ch.lastOutpostUuid.c_str()));
         SubscribeToEvent(button, E_RELEASED, URHO3D_HANDLER(CharSelectLevel, HandleCharClicked));
         {
             // buttons don't have a text by itself, a text needs to be added as a child
