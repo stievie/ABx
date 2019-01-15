@@ -16,11 +16,11 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="Athena.svg"
-   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\Flags\Troy.png"
+   inkscape:export-filename="C:\Users\Stefan Ascher\Documents\Visual Studio 2015\Projects\ABx\Design\Flags\Athena.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <title
-     id="title4155">Troy Flag</title>
+     id="title4155">Athena Flag</title>
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -30,9 +30,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="1740.5546"
-     inkscape:cy="311.99223"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="1248.5562"
+     inkscape:cy="1458.4503"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -50,7 +50,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>Troy Flag</dc:title>
+        <dc:title>Athena Flag</dc:title>
         <dc:creator>
           <cc:Agent>
             <dc:title>sa</dc:title>
@@ -72,8 +72,8 @@
     <rect
        style="fill:#0d61af;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.01568627"
        id="rect4136"
-       width="3634.1824"
-       height="2585.9905"
+       width="3638.468"
+       height="2593.1333"
        x="-4.0406103"
        y="-1533.6284"
        rx="3.99999"
@@ -81,13 +81,13 @@
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:50;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4153-9"
-       width="2589.1072"
+       width="2594.8186"
        height="517.19763"
-       x="-1059.337"
-       y="1581.3491"
+       x="-1063.9601"
+       y="1581.2053"
        rx="3.9999852"
        ry="3.9999893"
-       transform="matrix(-9.7176904e-4,-0.99999953,0.99999726,-0.0023419,0,0)" />
+       transform="matrix(-3.722425e-4,-0.99999993,0.99999847,-0.00174967,0,0)" />
     <rect
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:50;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4153"
