@@ -76,26 +76,24 @@ Uses a single TCP stream for the game protocol.
 ## Run Server
 
 1. Run the data server `abdada`
-2. Run the file server `abfile`
-3. Run the login server `ablogin`
-5. Run the message server `abmsgs`
-6. Run the game server `abserv`
+2. Run the message server `abmsgs`
+3. Run the file server `abfile`
+4. Run the login server `ablogin`
+5. Run the game server `abserv`
+
+Optional run `absadmin`.
 
 ### Run as NT service
 
-Use NSSM: The Non-Sucking Service Manager. Install `abdata` as service with automatic 
-start. Install `abserv` as service with *Delayed* automatic start. `abserv` must start
-after `abdata`.
+Define `WIN_SERVICE` and recompile the server. I will create a Windows Service
+application. Use the `_svc.lua` configuration files instead.
 
-`abdata` Arguments
-: `-conf "<Path To>/Bin/abdata_svc.lua"`
-
-`abserv` Arguments
-: `-conf "<Path To>/Bin/config_svc.lua" -log "<Path To>/Bin/logs/abserv"`
+Install the services with the `-install` command line switch. Use `-remove` to
+uninstall it.
 
 ### MySQL
 
-You may want to increase `max_allowed_packet` in `my.cnf / my.ini`  in the `[mysqld]`
+You may want to increase `max_allowed_packet` in `my.cnf` / `my.ini`  in the `[mysqld]`
 section to e.g. `32M`, if the data server loses connection from time to time.
 
 ~~~ini
@@ -111,6 +109,10 @@ Also adding `skip-name-resolve` to `[mysqld]` may be a good idea.
 # ...
 skip-name-resolve
 ~~~
+
+### PostgreSQL
+
+Doesn't need any special attention. Works with PostreSQL 9 to 11.
 
 ### Structure of `data` directory
 
