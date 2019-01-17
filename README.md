@@ -69,6 +69,10 @@ a player to another player on a different game server.
 An optional load balancer/proxy to make it possible to have several Login Server.
 It'll lookup running Login Servers and bridge client connections to one of them.
 
+### Admin Server
+
+A Web interface.
+
 ### Client
 
 Uses a single TCP stream for the game protocol.
@@ -85,8 +89,9 @@ Optional run `absadmin`.
 
 ### Run as NT service
 
-Define `WIN_SERVICE` and recompile the server. I will create a Windows Service
-application. Use the `_svc.lua` configuration files instead.
+Define `WIN_SERVICE` and recompile the server. It will create a Windows Service
+application. Use the `_svc.lua` configuration files instead to log to a file instead of
+StdOut.
 
 Install the services with the `-install` command line switch. Use `-remove` to
 uninstall it.
