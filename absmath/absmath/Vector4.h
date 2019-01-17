@@ -35,8 +35,8 @@ public:
         w_(w)
     { }
 
-#ifdef HAVE_DIRECTX_MATH
-    Vector4(const DirectX::XMVECTOR& vector) noexcept :
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+        Vector4(const XMath::XMVECTOR& vector) noexcept :
         x_(vector.m128_f32[0]),
         y_(vector.m128_f32[1]),
         z_(vector.m128_f32[2]),
@@ -56,11 +56,11 @@ public:
         return *this;
     }
 
-#ifdef HAVE_DIRECTX_MATH
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     /// Cast to XMVECTOR
-    operator DirectX::XMVECTOR() const
+    operator XMath::XMVECTOR() const
     {
-        return DirectX::XMVectorSet(x_, y_, z_, w_);
+        return XMath::XMVectorSet(x_, y_, z_, w_);
     }
 #endif
 

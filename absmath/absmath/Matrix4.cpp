@@ -37,24 +37,33 @@ Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, 
     m_[Index30] = row3.x_; m_[Index31] = row3.y_; m_[Index32] = row3.z_; m_[Index33] = row3.w_;
 }
 
-Matrix4::Matrix4(const XMMATRIX& matrix) noexcept
+Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
 {
+#if defined(HAVE_DIRECTX_MATH)
+    // Row major
     m_[Index00] = matrix.r[0].m128_f32[0]; m_[Index01] = matrix.r[0].m128_f32[1]; m_[Index02] = matrix.r[0].m128_f32[2]; m_[Index03] = matrix.r[0].m128_f32[3];
     m_[Index10] = matrix.r[1].m128_f32[0]; m_[Index11] = matrix.r[1].m128_f32[1]; m_[Index12] = matrix.r[1].m128_f32[2]; m_[Index13] = matrix.r[1].m128_f32[3];
     m_[Index20] = matrix.r[2].m128_f32[0]; m_[Index21] = matrix.r[2].m128_f32[1]; m_[Index22] = matrix.r[2].m128_f32[2]; m_[Index23] = matrix.r[2].m128_f32[3];
     m_[Index30] = matrix.r[3].m128_f32[0]; m_[Index31] = matrix.r[3].m128_f32[1]; m_[Index32] = matrix.r[3].m128_f32[2]; m_[Index33] = matrix.r[3].m128_f32[3];
+#elif defined(HAVE_X_MATH)
+    // Col major
+    m_[Index00] = matrix.c[0].m128_f32[0]; m_[Index01] = matrix.c[1].m128_f32[0]; m_[Index02] = matrix.c[2].m128_f32[0]; m_[Index03] = matrix.c[3].m128_f32[0];
+    m_[Index10] = matrix.c[0].m128_f32[1]; m_[Index11] = matrix.c[1].m128_f32[1]; m_[Index12] = matrix.c[2].m128_f32[1]; m_[Index13] = matrix.c[3].m128_f32[1];
+    m_[Index20] = matrix.c[0].m128_f32[2]; m_[Index21] = matrix.c[1].m128_f32[2]; m_[Index22] = matrix.c[2].m128_f32[2]; m_[Index23] = matrix.c[3].m128_f32[2];
+    m_[Index30] = matrix.c[0].m128_f32[3]; m_[Index31] = matrix.c[1].m128_f32[3]; m_[Index32] = matrix.c[2].m128_f32[3]; m_[Index33] = matrix.c[3].m128_f32[3];
+#endif
 }
 
 const Matrix4 Matrix4::operator*(const Matrix4& rhs) const
 {
-    XMMATRIX result = XMMatrixMultiply(
-        XMMatrixSet(
+    XMath::XMMATRIX result = XMath::XMMatrixMultiply(
+        XMath::XMMatrixSet(
             m_[0], m_[4], m_[8], m_[12],
             m_[1], m_[5], m_[9], m_[13],
             m_[2], m_[6], m_[10], m_[14],
             m_[3], m_[7], m_[11], m_[15]
         ),
-        XMMatrixSet(
+        XMath::XMMatrixSet(
             rhs.m_[0], rhs.m_[4], rhs.m_[8], rhs.m_[12],
             rhs.m_[1], rhs.m_[5], rhs.m_[9], rhs.m_[13],
             rhs.m_[2], rhs.m_[6], rhs.m_[10], rhs.m_[14],
@@ -66,9 +75,9 @@ const Matrix4 Matrix4::operator*(const Matrix4& rhs) const
 
 const Vector3 Matrix4::operator*(const Vector3& rhs) const
 {
-    XMVECTOR v = XMVector3Transform(
-        XMVectorSet(rhs.x_, rhs.y_, rhs.z_, 0.0f),
-        XMMatrixSet(
+    XMath::XMVECTOR v = XMath::XMVector3Transform(
+        XMath::XMVectorSet(rhs.x_, rhs.y_, rhs.z_, 0.0f),
+        XMath::XMMatrixSet(
             m_[0], m_[4], m_[8], m_[12],
             m_[1], m_[5], m_[9], m_[13],
             m_[2], m_[6], m_[10], m_[14],
@@ -80,9 +89,9 @@ const Vector3 Matrix4::operator*(const Vector3& rhs) const
 
 const Vector4 Matrix4::operator*(const Vector4& rhs) const
 {
-    XMVECTOR v = XMVector3Transform(
-        XMVectorSet(rhs.x_, rhs.y_, rhs.z_, rhs.w_),
-        XMMatrixSet(
+    XMath::XMVECTOR v = XMath::XMVector3Transform(
+        XMath::XMVectorSet(rhs.x_, rhs.y_, rhs.z_, rhs.w_),
+        XMath::XMMatrixSet(
             m_[0], m_[4], m_[8], m_[12],
             m_[1], m_[5], m_[9], m_[13],
             m_[2], m_[6], m_[10], m_[14],

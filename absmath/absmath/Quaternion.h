@@ -28,8 +28,8 @@ public:
         w_(w)
     {}
     Quaternion(float pitch, float yaw, float roll);
-#ifdef HAVE_DIRECTX_MATH
-    Quaternion(const DirectX::XMVECTOR& q) :
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    Quaternion(const XMath::XMVECTOR& q) :
         x_(q.m128_f32[0]),
         y_(q.m128_f32[1]),
         z_(q.m128_f32[2]),
@@ -47,11 +47,11 @@ public:
     /// Create a Quaternion from Axis and Angle
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
 
-#ifdef HAVE_DIRECTX_MATH
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     /// Cast to XMVECTOR
-    operator DirectX::XMVECTOR() const
+    operator XMath::XMVECTOR() const
     {
-        return DirectX::XMVectorSet(x_, y_, z_, w_);
+        return XMath::XMVectorSet(x_, y_, z_, w_);
     }
 #endif
 

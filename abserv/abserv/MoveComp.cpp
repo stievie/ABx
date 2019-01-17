@@ -60,18 +60,18 @@ bool MoveComp::Move(float speed, const Math::Vector3& amount)
     // 1. Create a matrix from the rotation,
     // 2. multiply this matrix with the moving vector and
     // 3. add the resulting vector to the current position
-#ifdef HAVE_DIRECTX_MATH
-    DirectX::XMMATRIX m = DirectX::XMMatrixRotationAxis(Math::Vector3::UnitY, -owner_.transformation_.rotation_);
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -owner_.transformation_.rotation_);
     Math::Vector3 a = amount * speed;
-    DirectX::XMVECTOR v = DirectX::XMVector3Transform(a, m);
+    XMath::XMVECTOR v = XMath::XMVector3Transform(a, m);
     owner_.transformation_.position_.x_ += v.m128_f32[0];
     owner_.transformation_.position_.y_ += v.m128_f32[1];
     owner_.transformation_.position_.z_ += v.m128_f32[2];
 #else
-    Matrix4 m = Matrix4::CreateFromQuaternion(transformation_.GetQuaternion());
-    Vector3 a = amount * speed;
-    Vector3 v = m * a;
-    transformation_.position_ += v;
+    Math::Matrix4 m = Math::Matrix4::FromQuaternion(owner_.transformation_.GetQuaternion());
+    Math::Vector3 a = amount * speed;
+    Math::Vector3 v = m * a;
+    owner_.transformation_.position_ += v;
 #endif
 
     // Keep on ground

@@ -38,12 +38,9 @@
 
 #include <stdint.h>
 
-#ifdef HAVE_DIRECTX_MATH
-#include <DirectXMath.h>
-#endif
-
 #define WRITE_MINIBUMP
 
+#include "MathConfig.h"
 #include <pugixml.hpp>
 #pragma warning(push)
 #pragma warning(disable: 4592)

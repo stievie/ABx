@@ -6,8 +6,6 @@
 
 namespace Math {
 
-using namespace DirectX;
-
 class Matrix4
 {
 public:
@@ -39,11 +37,11 @@ public:
         float v30, float v31, float v32, float v33                              // Row 4
     ) noexcept;
     Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3) noexcept;
-    Matrix4(const XMMATRIX& matrix) noexcept;
+    Matrix4(const XMath::XMMATRIX& matrix) noexcept;
 
-    operator XMMATRIX() const
+    operator XMath::XMMATRIX() const
     {
-        return XMMatrixSet(
+        return XMath::XMMatrixSet(
             m_[0], m_[4], m_[8], m_[12],
             m_[1], m_[5], m_[9], m_[13],
             m_[2], m_[6], m_[10], m_[14],
@@ -135,8 +133,8 @@ public:
     Vector3 Scaling() const;
     void Decompose(Vector3* scale, Quaternion* rotation, Vector3* translation) const
     {
-        XMVECTOR s, r, t;
-        XMMatrixDecompose(&s, &r, &t, *this);
+        XMath::XMVECTOR s, r, t;
+        XMath::XMMatrixDecompose(&s, &r, &t, *this);
         scale->x_ = s.m128_f32[0];
         scale->y_ = s.m128_f32[1];
         scale->z_ = s.m128_f32[2];

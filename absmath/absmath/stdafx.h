@@ -12,8 +12,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#define HAVE_DIRECTX_MATH
-
 // STL
 #include <vector>
 #include <map>
@@ -32,8 +30,5 @@
 
 #include <stdint.h>
 
-#ifdef HAVE_DIRECTX_MATH
-#include <DirectXMath.h>
-#endif
-
+#include "MathConfig.h"
 #include "DebugConfig.h"

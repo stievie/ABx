@@ -38,7 +38,7 @@ public:
         return Quaternion::FromAxisAngle(Vector3::UnitY, rotation_);
     }
 
-    DirectX::XMMATRIX GetMatrix() const;
+    XMath::XMMATRIX GetMatrix() const;
 };
 
 }

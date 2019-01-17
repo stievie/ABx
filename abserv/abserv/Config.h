@@ -5,8 +5,6 @@
 #   define NOMINMAX
 #endif
 
-#define HAVE_DIRECTX_MATH
-
 // Name of config file
 #define CONFIG_FILE "abserv.lua"
 
