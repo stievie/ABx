@@ -155,7 +155,7 @@ conversion required.
 
 Use premake5 to generate solutions for the server and the client.
 
-1. Server: Open `build/absall.sln` and compile.
+1. Server: Open `build/abs3rd.sln` and `build/absall.sln` and compile.
 2. Client: Open `build/abclient.sln` and compile.
 
 ## Credits
