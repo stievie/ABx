@@ -118,15 +118,24 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
 
 ~~~
   data
+   - maps
+     - (Map)
+       - index.xml
+       - NavMesh.bin
+       - Scene.xml
+       - HeightField.terrain
+   - models
    - scripts
-     - creatures
+     - actors
+       - logic
+       - npcs
+     - ai
      - effects
        - conditions
        - ...
      - games
      - items (armor, mods etc.)
      - skills
-   - maps (navmesh, terrain etc.)
 ~~~
 
 ## Run Client
