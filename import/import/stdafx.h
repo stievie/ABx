@@ -31,4 +31,4 @@
 
 #include <stdint.h>
 
-#include <DirectXMath.h>
+#include "MathConfig.h"

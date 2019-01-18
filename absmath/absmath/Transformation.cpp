@@ -6,8 +6,8 @@ namespace Math {
 
 XMath::XMMATRIX Transformation::GetMatrix() const
 {
-    const XMath::XMVECTOR vZero = { 0 };
-    const XMath::XMVECTOR qId = { 0.0f, 0.0f, 0.0f, 1.0f };
+    static const XMath::XMVECTOR vZero = { 0 };
+    static const XMath::XMVECTOR qId = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     Quaternion rot = GetQuaternion();
     XMath::XMVECTOR scale = XMath::XMVectorSet(scale_.x_, scale_.y_, scale_.z_, 0.0f);

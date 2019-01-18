@@ -8,7 +8,6 @@
 #include <stdio.h>
 
 #define ASIO_STANDALONE
-#define HAVE_DIRECTX_MATH
 
 #define AB_UNUSED(P) (void)(P)
 
@@ -32,9 +31,7 @@
 
 #include <stdint.h>
 
-#ifdef HAVE_DIRECTX_MATH
-#include <DirectXMath.h>
-#endif
+#include "MathConfig.h"
 
 #define WRITE_MINIBUMP
 

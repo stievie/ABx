@@ -31,13 +31,14 @@ public:
         rotation_ = rot.EulerAngles().y_;
     }
 
-    ~Transformation() {};
+    ~Transformation() = default;
 
     Quaternion GetQuaternion() const
     {
         return Quaternion::FromAxisAngle(Vector3::UnitY, rotation_);
     }
 
+    /// Get transformation matrix
     XMath::XMMATRIX GetMatrix() const;
 };
 
