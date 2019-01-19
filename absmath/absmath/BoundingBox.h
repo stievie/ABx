@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include "Matrix4.h"
 #include "MathDefs.h"
+#include "MathConfig.h"
 
 namespace Math {
 
@@ -37,6 +38,13 @@ public:
     { }
     ~BoundingBox() {}
 
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    operator XMath::BoundingBox() const
+    {
+        return XMath::BoundingBox(Center(), Extends());
+    }
+#endif
+
     void Define(float min, float max)
     {
         min_ = Vector3(min, min, min);
@@ -65,6 +73,11 @@ public:
     float Depth() const
     {
         return max_.z_ - min_.z_;
+    }
+    /// Distance from the center to each side
+    Vector3 Extends() const
+    {
+        return { (max_ - min_) * 0.5f };
     }
 
     bool IsDefined() const { return min_.x_ != INFINITY; }

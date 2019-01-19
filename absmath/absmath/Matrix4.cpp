@@ -37,6 +37,7 @@ Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, 
     m_[Index30] = row3.x_; m_[Index31] = row3.y_; m_[Index32] = row3.z_; m_[Index33] = row3.w_;
 }
 
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
 Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
 {
 #if defined(HAVE_DIRECTX_MATH)
@@ -53,6 +54,7 @@ Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
     m_[Index30] = matrix.c[0].m128_f32[3]; m_[Index31] = matrix.c[1].m128_f32[3]; m_[Index32] = matrix.c[2].m128_f32[3]; m_[Index33] = matrix.c[3].m128_f32[3];
 #endif
 }
+#endif
 
 const Matrix4 Matrix4::operator*(const Matrix4& rhs) const
 {
@@ -168,6 +170,9 @@ Matrix4& Matrix4::Rotate(const Vector3& axis, float ang)
 
 Matrix4 Matrix4::Transpose() const
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    return XMath::XMMatrixTranspose(*this);
+#else
     Matrix4 res;
 
     res.m_[0] = m_[0];
@@ -191,6 +196,7 @@ Matrix4 Matrix4::Transpose() const
     res.m_[15] = m_[15];
 
     return res;
+#endif
 }
 
 float Matrix4::Determinant() const
@@ -205,6 +211,10 @@ float Matrix4::Determinant() const
 
 Matrix4 Matrix4::Inverse() const
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    XMath::XMVECTOR det;
+    return XMath::XMMatrixInverse(&det, *this);
+#else
     float det = Determinant();
 
     Matrix4 res;
@@ -240,6 +250,7 @@ Matrix4 Matrix4::Inverse() const
     res.m_[15] = (m_[8] * t3 - m_[9] * t1 + m_[10] * t0) / det;
 
     return res;
+#endif
 }
 
 Matrix4 Matrix4::FromFrustum(float left, float right, float bottom, float top, float _near, float _far)

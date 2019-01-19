@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <catch.hpp>
 
 #include "Vector3.h"

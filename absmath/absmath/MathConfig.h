@@ -14,6 +14,7 @@
 
 #if defined(HAVE_DIRECTX_MATH)
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 namespace XMath = DirectX;
 #elif defined(HAVE_X_MATH)
 
@@ -44,5 +45,6 @@ namespace XMath = DirectX;
 #endif
 //#define _XM_NO_INTRINSICS_
 
+#include <XCollision.h>
 #include <XMath.h>
 #endif

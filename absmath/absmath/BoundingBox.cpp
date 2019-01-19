@@ -142,12 +142,22 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
     move.z_ = abs(front) < back ? front : back;
 
     // return the smallest
-    if (abs(move.x_) > abs(move.y_) || abs(move.x_) > abs(move.z_))
-        move.x_ = 0.0f;
-    if (abs(move.y_) > abs(move.z_))
+    if (abs(move.x_) >= abs(move.y_) && abs(move.x_) >= abs(move.z_))
+    {
+        // X Largest
         move.y_ = 0.0f;
-    else
         move.z_ = 0.0f;
+    }
+    else if (abs(move.y_) >= abs(move.z_))
+    {
+        move.x_ = 0.0f;
+        move.z_ = 0.0f;
+    }
+    else
+    {
+        move.x_ = 0.0f;
+        move.y_ = 0.0f;
+    }
 
     return true;
 }
@@ -169,7 +179,9 @@ bool BoundingBox::Collides(const ConvexHull& b2, Vector3&) const
 
 bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
 {
-    const float y = b2.GetHeight(min_);
+    Vector3 centerBottom = Center();
+    centerBottom.y_ -= Extends().y_;
+    const float y = b2.GetHeight(centerBottom);
     if (y > min_.y_)
     {
         move.y_ = min_.y_ - y;
@@ -180,7 +192,9 @@ bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
 
 Intersection BoundingBox::IsInside(const HeightMap& shape) const
 {
-    const float y = shape.GetHeight(min_);
+    Vector3 centerBottom = Center();
+    centerBottom.y_ -= Extends().y_;
+    const float y = shape.GetHeight(centerBottom);
     if (y > min_.y_)
     {
         return INSIDE;

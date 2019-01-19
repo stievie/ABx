@@ -37,8 +37,11 @@ public:
         float v30, float v31, float v32, float v33                              // Row 4
     ) noexcept;
     Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, const Vector4& row3) noexcept;
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     Matrix4(const XMath::XMMATRIX& matrix) noexcept;
+#endif
 
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     operator XMath::XMMATRIX() const
     {
         return XMath::XMMatrixSet(
@@ -48,6 +51,7 @@ public:
             m_[3], m_[7], m_[11], m_[15]
         );
     }
+#endif
 
     const Vector3 operator *(const Vector3& rhs) const;
     const Vector4 operator *(const Vector4& rhs) const;

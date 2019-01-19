@@ -29,14 +29,21 @@ public:
 
     ~Sphere() = default;
 
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    operator XMath::BoundingSphere() const
+    {
+        return XMath::BoundingSphere(center_, radius_);
+    }
+#endif
+
     /// Define from another sphere.
-    void Define(const Sphere& sphere)
+    void Define(const Sphere& sphere) noexcept
     {
         Define(sphere.center_, sphere.radius_);
     }
 
     /// Define from center and radius.
-    void Define(const Vector3& center, float radius)
+    void Define(const Vector3& center, float radius) noexcept
     {
         center_ = center;
         radius_ = radius;

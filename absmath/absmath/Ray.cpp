@@ -34,11 +34,19 @@ float Ray::HitDistance(const BoundingBox& box) const
     if (!box.IsDefined())
         return INFINITY;
 
+    float dist = INFINITY;
+
+#if (defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH))
+    // TODO: Check!
+    const XMath::BoundingBox xbb = (XMath::BoundingBox)box;
+    if (xbb.Intersects(origin_, direction_, dist))
+        return dist;
+    else
+        return INFINITY;
+#else
     // Check for ray origin being inside the box
     if (box.IsInside(origin_))
         return 0.0f;
-
-    float dist = INFINITY;
 
     // Check for intersecting in the X-direction
     if (origin_.x_ < box.min_.x_ && direction_.x_ > 0.0f)
@@ -105,6 +113,7 @@ float Ray::HitDistance(const BoundingBox& box) const
     }
 
     return dist;
+#endif
 }
 
 float Ray::HitDistance(const Sphere& sphere) const

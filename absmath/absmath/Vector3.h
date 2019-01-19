@@ -52,6 +52,10 @@ public:
     {
         return XMath::XMVectorSet(x_, y_, z_, 0.0f);
     }
+    operator XMath::XMFLOAT3() const
+    {
+        return{ x_, y_, z_ };
+    }
 #endif
 
     bool operator ==(const Vector3& vector) const { return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_; }
