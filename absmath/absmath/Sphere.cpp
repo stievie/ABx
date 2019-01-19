@@ -4,6 +4,8 @@
 #include "ConvexHull.h"
 #include "Gjk.h"
 #include "HeightMap.h"
+#include "BoundingBox.h"
+#include "Matrix4.h"
 
 namespace Math {
 
@@ -32,6 +34,26 @@ void Sphere::Define(const BoundingBox& box)
     Merge(max);
 }
 
+void Sphere::Merge(const Vector3& point)
+{
+    if (radius_ < 0.0f)
+    {
+        center_ = point;
+        radius_ = 0.0f;
+        return;
+    }
+
+    Vector3 offset = point - center_;
+    float dist = offset.Length();
+
+    if (dist > radius_)
+    {
+        float half = (dist - radius_) * 0.5f;
+        radius_ += half;
+        center_ += (half / dist) * offset;
+    }
+}
+
 void Sphere::Merge(const Vector3* vertices, unsigned count)
 {
     while (count--)
@@ -51,6 +73,11 @@ void Sphere::Merge(const BoundingBox& box)
     Merge(Vector3(max.x_, min.y_, max.z_));
     Merge(Vector3(min.x_, max.y_, max.z_));
     Merge(max);
+}
+
+BoundingBox Sphere::GetBoundingBox() const
+{
+    return BoundingBox(center_ - radius_, center_ + radius_);
 }
 
 Shape Sphere::GetShape() const
@@ -106,6 +133,11 @@ Shape Sphere::GetShape() const
 Sphere Sphere::Transformed(const Matrix4& transform) const
 {
     return Sphere(transform * center_, radius_);
+}
+
+bool Sphere::Collides(const BoundingBox& b2) const
+{
+    return IsInsideFast(b2) != OUTSIDE;
 }
 
 bool Sphere::Collides(const BoundingBox& b2, Vector3& move) const

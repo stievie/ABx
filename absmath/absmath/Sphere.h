@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Vector3.h"
-#include "BoundingBox.h"
 
 namespace Math {
 
 class HeightMap;
 class ConvexHull;
 class Shape;
+class BoundingBox;
+class Matrix4;
 
 class Sphere
 {
@@ -55,26 +56,7 @@ public:
     void Define(const BoundingBox& box);
 
     /// Merge a point.
-    void Merge(const Vector3& point)
-    {
-        if (radius_ < 0.0f)
-        {
-            center_ = point;
-            radius_ = 0.0f;
-            return;
-        }
-
-        Vector3 offset = point - center_;
-        float dist = offset.Length();
-
-        if (dist > radius_)
-        {
-            float half = (dist - radius_) * 0.5f;
-            radius_ += half;
-            center_ += (half / dist) * offset;
-        }
-    }
-
+    void Merge(const Vector3& point);
     /// Merge an array of vertices.
     void Merge(const Vector3* vertices, unsigned count);
     /// Merge a bounding box.
@@ -93,18 +75,12 @@ public:
         return radius_ >= 0.0f;
     }
 
-    BoundingBox GetBoundingBox() const
-    {
-        return BoundingBox(center_ - radius_, center_ + radius_);
-    }
+    BoundingBox GetBoundingBox() const;
     Shape GetShape() const;
 
     Sphere Transformed(const Matrix4& transform) const;
 
-    bool Collides(const BoundingBox& b2) const
-    {
-        return IsInsideFast(b2) != OUTSIDE;
-    }
+    bool Collides(const BoundingBox& b2) const;
     bool Collides(const BoundingBox& b2, Vector3& move) const;
     bool Collides(const Sphere& b2) const
     {

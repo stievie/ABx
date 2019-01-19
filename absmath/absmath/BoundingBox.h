@@ -1,9 +1,7 @@
 #pragma once
 
 #include "Vector3.h"
-#include "Matrix4.h"
 #include "MathDefs.h"
-#include "MathConfig.h"
 
 namespace Math {
 
@@ -11,6 +9,7 @@ class ConvexHull;
 class HeightMap;
 class Sphere;
 class Shape;
+class Matrix4;
 
 class BoundingBox
 {

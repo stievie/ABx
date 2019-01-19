@@ -16,6 +16,7 @@
 #include "StateComp.h"
 #include "Variant.h"
 #include <unordered_set>
+#include "Matrix4.h"
 
 namespace Game {
 

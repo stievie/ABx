@@ -3,6 +3,7 @@
 #include "MathDefs.h"
 #include "BoundingBox.h"
 #include "Sphere.h"
+#include "Matrix4.h"
 
 namespace Math {
 

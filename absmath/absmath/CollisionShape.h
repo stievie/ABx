@@ -1,16 +1,14 @@
 #pragma once
 
+#include "Vector3.h"
+#include "Matrix4.h"
 #include "MathDefs.h"
 #include "BoundingBox.h"
+#include "Sphere.h"
+#include "HeightMap.h"
 #include "ConvexHull.h"
 
 namespace Math {
-
-class Vector3;
-class ConvexHull;
-class HeightMap;
-class Sphere;
-class Matrix4;
 
 enum ShapeType
 {

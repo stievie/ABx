@@ -5,6 +5,7 @@
 #include "Sphere.h"
 #include "Shape.h"
 #include "Gjk.h"
+#include "Matrix4.h"
 
 namespace Math {
 
@@ -138,7 +139,12 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 
     // find the offset
     move.x_ = abs(left) < right ? left : right;
+#if 0
     move.y_ = abs(top) < bottom ? top : bottom;
+#else
+    // Y is taken from the terrain, so only X and Z direction is possible
+    move.y_ = 0.0f;
+#endif
     move.z_ = abs(front) < back ? front : back;
 
     // return the smallest

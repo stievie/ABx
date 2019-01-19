@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Vector3.h"
-#include "Matrix4.h"
 
 namespace Math {
 
 class BoundingBox;
 class Sphere;
+class Matrix4;
 
 /// Infinite straight line in three-dimensional space.
 class Ray
