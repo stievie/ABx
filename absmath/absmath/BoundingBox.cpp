@@ -147,14 +147,15 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 #endif
     move.z_ = abs(front) < back ? front : back;
 
+#if 0
     // return the smallest
-    if (abs(move.x_) >= abs(move.y_) && abs(move.x_) >= abs(move.z_))
+    if (abs(move.x_) <= abs(move.y_) && abs(move.x_) <= abs(move.z_))
     {
         // X Largest
         move.y_ = 0.0f;
         move.z_ = 0.0f;
     }
-    else if (abs(move.y_) >= abs(move.z_))
+    else if (abs(move.y_) <= abs(move.z_))
     {
         move.x_ = 0.0f;
         move.z_ = 0.0f;
@@ -164,7 +165,17 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         move.x_ = 0.0f;
         move.y_ = 0.0f;
     }
-
+#else
+    if (abs(move.x_) <= abs(move.z_))
+    {
+        // X Largest
+        move.z_ = 0.0f;
+    }
+    else
+    {
+        move.x_ = 0.0f;
+    }
+#endif
     return true;
 }
 
