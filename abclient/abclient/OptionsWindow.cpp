@@ -851,9 +851,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     UIElement* hkContainer = dynamic_cast<UIElement*>(GetChild("HotkeyEditContainer", true));
     HotkeyEdit* hkEdit = hkContainer->CreateChild<HotkeyEdit>("HotkeyEditor");
     hkEdit->SetLayoutBorder(IntRect(4, 4, 4, 4));
-    hkEdit->SetPivot(0, 0);
     hkEdit->SetAlignment(HA_CENTER, VA_BOTTOM);
-    hkEdit->SetStyleAuto();
     hkEdit->SetPosition(0, 0);
     hkEdit->SetMinSize(140, 30);
     hkEdit->SetSize(hkContainer->GetSize());
@@ -861,7 +859,6 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     hkEdit->SetTexture(tex);
     hkEdit->SetImageRect(IntRect(48, 0, 64, 16));
     hkEdit->SetBorder(IntRect(4, 4, 4, 4));
-    hkEdit->SetImageBorder(IntRect(0, 0, 0, 0));
     hkEdit->SetStyle("LineEdit");
 
     wnd->UpdateLayout();
