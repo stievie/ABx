@@ -117,13 +117,13 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
     const bool o1 = IsOriented();
     const bool o2 = b2.IsOriented();
     if (o1 && o2)
-        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT;
+        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingOrientedBox)b2) != XMath::DISJOINT;
     else if (o1)
-        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingBox)b2) == XMath::DISJOINT;
+        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingBox)b2) != XMath::DISJOINT;
     else if (o2)
-        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT;
+        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) != XMath::DISJOINT;
     else
-        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingBox)b2) == XMath::DISJOINT;
+        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingBox)b2) != XMath::DISJOINT;
 #else
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
@@ -140,6 +140,7 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 
 bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     const bool o1 = IsOriented();
     const bool o2 = b2.IsOriented();
     if (o1 && o2)
@@ -157,7 +158,7 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         if (((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT)
             return false;
     }
-
+#endif
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
 
