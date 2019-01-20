@@ -38,7 +38,7 @@
     <ProjectGuid>{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>abcrypto</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
