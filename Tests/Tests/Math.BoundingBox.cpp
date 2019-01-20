@@ -94,7 +94,7 @@ TEST_CASE("XMath::BoundingBox Collisions", "[boundingbox]")
         Math::BoundingBox bb2(-1.0f, 1.0f);
         XMath::BoundingBox xbb1 = (XMath::BoundingBox)bb1;
         XMath::BoundingBox xbb2 = (XMath::BoundingBox)bb2;
-        REQUIRE(xbb1.Intersects(bb2));
+        REQUIRE(xbb1.Intersects(xbb2));
     }
     SECTION("BoundingBox outside")
     {
@@ -102,7 +102,7 @@ TEST_CASE("XMath::BoundingBox Collisions", "[boundingbox]")
         Math::BoundingBox bb2(0.0f, 2.0f);
         XMath::BoundingBox xbb1 = (XMath::BoundingBox)bb1;
         XMath::BoundingBox xbb2 = (XMath::BoundingBox)bb2;
-        REQUIRE(!xbb1.Intersects(bb2));
+        REQUIRE(!xbb1.Intersects(xbb2));
     }
 }
 
