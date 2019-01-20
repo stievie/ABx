@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16785457" />
-	<attribute name="Next Local Component ID" value="16786589" />
+	<attribute name="Next Local Node ID" value="16785557" />
+	<attribute name="Next Local Component ID" value="16786711" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group" />
 	<component type="Octree" id="1" />
@@ -231,7 +231,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16781856">
-			<attribute name="Shape Type" value="TriangleMesh" />
+			<attribute name="Size" value="6.5 6 9" />
+			<attribute name="Offset Position" value="0 3 1" />
 			<attribute name="Model" value="Model;Models/Tend1.mdl" />
 		</component>
 	</node>
@@ -356,7 +357,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783308">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
@@ -380,7 +382,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783311">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
@@ -404,7 +407,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783314">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
@@ -428,7 +432,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783561">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
@@ -452,7 +457,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783564">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
@@ -477,7 +483,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783567">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
@@ -502,7 +509,8 @@
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16783570">
-			<attribute name="Shape Type" value="ConvexHull" />
+			<attribute name="Size" value="0.5 1.6 3" />
+			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>

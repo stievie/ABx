@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="12.9417" />
 	<attribute name="Next Replicated Node ID" value="8" />
 	<attribute name="Next Replicated Component ID" value="28" />
-	<attribute name="Next Local Node ID" value="16781705" />
-	<attribute name="Next Local Component ID" value="16782209" />
+	<attribute name="Next Local Node ID" value="16781755" />
+	<attribute name="Next Local Component ID" value="16782270" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="SpawnPoint" />
 	<component type="Octree" id="1" />
@@ -42,7 +42,7 @@
 		<attribute name="Name" value="AthenaStatue" />
 		<attribute name="Tags" />
 		<attribute name="Position" value="-31.542 7.5 -20.7317" />
-		<attribute name="Rotation" value="-0.707107 0 0.707107 -0" />
+		<attribute name="Rotation" value="0.866025 0 -0.5 0" />
 		<attribute name="Scale" value="2 2 2" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="10">
@@ -52,11 +52,14 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="18">
-			<attribute name="Physics Rotation" value="0.707107 -0 -0.707107 0" />
+			<attribute name="Physics Rotation" value="0.866025 0 -0.5 0" />
 			<attribute name="Physics Position" value="-31.542 7.5 -20.7317" />
 			<attribute name="Collision Layer" value="3" />
 		</component>
-		<component type="CollisionShape" id="24" />
+		<component type="CollisionShape" id="24">
+			<attribute name="Size" value="0.7 1.8 0.7" />
+			<attribute name="Offset Position" value="0 0.9 0" />
+		</component>
 	</node>
 	<node id="4">
 		<attribute name="Is Enabled" value="true" />

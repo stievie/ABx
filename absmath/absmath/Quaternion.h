@@ -53,6 +53,10 @@ public:
     {
         return XMath::XMVectorSet(x_, y_, z_, w_);
     }
+    operator XMath::XMFLOAT4() const
+    {
+        return { x_, y_, z_, w_ };
+    }
 #endif
 
     /// Test for equality

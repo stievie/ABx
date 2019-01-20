@@ -2,6 +2,7 @@
 
 #include "Vector3.h"
 #include "MathDefs.h"
+#include "Quaternion.h"
 
 namespace Math {
 
@@ -16,24 +17,29 @@ class BoundingBox
 public:
     BoundingBox() noexcept :
         min_(Vector3(INFINITY, INFINITY, INFINITY)),
-        max_(Vector3(-INFINITY, -INFINITY, -INFINITY))
+        max_(Vector3(-INFINITY, -INFINITY, -INFINITY)),
+        orientation_(Quaternion::Identity)
     { }
     BoundingBox(const BoundingBox& other) noexcept :
         min_(other.min_),
-        max_(other.max_)
+        max_(other.max_),
+        orientation_(other.orientation_)
     { }
     BoundingBox(const Vector3& min, const Vector3& max) noexcept :
         min_(min),
-        max_(max)
+        max_(max),
+        orientation_(Quaternion::Identity)
     { }
     BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
         min_({ minX, minY, minZ }),
-        max_({ maxX, maxY, maxZ })
+        max_({ maxX, maxY, maxZ }),
+        orientation_(Quaternion::Identity)
     { }
     /// Construct from minimum and maximum floats (all dimensions same.)
     BoundingBox(float min, float max) noexcept :
         min_(Vector3(min, min, min)),
-        max_(Vector3(max, max, max))
+        max_(Vector3(max, max, max)),
+        orientation_(Quaternion::Identity)
     { }
     ~BoundingBox() = default;
 
@@ -41,6 +47,10 @@ public:
     operator XMath::BoundingBox() const
     {
         return XMath::BoundingBox(Center(), Extends());
+    }
+    operator XMath::BoundingOrientedBox() const
+    {
+        return XMath::BoundingOrientedBox(Center(), Extends(), orientation_);
     }
 #endif
 
@@ -80,6 +90,7 @@ public:
     }
 
     bool IsDefined() const { return min_.x_ != INFINITY; }
+    bool IsOriented() const { return orientation_ != Quaternion::Identity; }
     std::string ToString() const
     {
         if (!IsDefined())
@@ -146,6 +157,7 @@ public:
     float dummyMin_; // This is never used, but exists to pad the min_ value to four floats.
     Vector3 max_;
     float dummyMax_; // This is never used, but exists to pad the max_ value to four floats.
+    Quaternion orientation_;
 };
 
 }

@@ -115,6 +115,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
         std::shared_ptr<Model> model;
         std::shared_ptr<GameObject> object;
         Math::Vector3 size;
+        Math::Vector3 offset;
         for (const auto& comp : node.children("component"))
         {
             const pugi::xml_attribute& type_attr = comp.attribute("type");
@@ -178,6 +179,9 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         case IO::Map::AttrSize:
                             size = Math::Vector3(value_attr.as_string());
                             break;
+                        case IO::Map::AttrOffsetPos:
+                            offset = Math::Vector3(value_attr.as_string());
+                            break;
                         case IO::Map::AttrShapeType:
                         {
                             switch (value_hash)
@@ -210,20 +214,25 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
                                 " to model BB " << model->GetBoundingBox().ToString() << std::endl;
 #endif
+                            auto bb = model->GetBoundingBox();
+                            bb.orientation_ = rot;
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                                    Math::ShapeTypeBoundingBox, model->GetBoundingBox())
+                                    Math::ShapeTypeBoundingBox, bb)
                             );
                         }
                         else if (size != Math::Vector3::Zero)
                         {
+                            Math::Vector3 halfSize = (size / 2.0f) + offset;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " to size +/- " << size.ToString() << std::endl;
+                                " to size +/- " << halfSize.ToString() << std::endl;
 #endif
+                            Math::BoundingBox bb(-halfSize, halfSize);
+                            bb.orientation_ = rot;
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                                    Math::ShapeTypeBoundingBox, Math::BoundingBox(-size, size))
+                                    Math::ShapeTypeBoundingBox, bb)
                             );
                         }
                     }

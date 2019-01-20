@@ -6,6 +6,7 @@
 #include "Shape.h"
 #include "Gjk.h"
 #include "Matrix4.h"
+#include "Logger.h"
 
 namespace Math {
 
@@ -53,6 +54,7 @@ void BoundingBox::Reset()
 {
     min_ = { INFINITY, INFINITY, INFINITY };
     max_ = { -INFINITY, -INFINITY, -INFINITY };
+    orientation_ = Quaternion::Identity;
 }
 
 BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
@@ -78,7 +80,9 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
         std::fabs(transform.m_[Matrix4::Index22]) * oldEdge.z_
     );
 
-    return BoundingBox(newCenter - newEdge, newCenter + newEdge);
+    BoundingBox result = BoundingBox(newCenter - newEdge, newCenter + newEdge);
+    result.orientation_ = orientation_;
+    return result;
 }
 
 Shape BoundingBox::GetShape() const
@@ -109,6 +113,18 @@ Shape BoundingBox::GetShape() const
 
 bool BoundingBox::Collides(const BoundingBox& b2) const
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    const bool o1 = IsOriented();
+    const bool o2 = b2.IsOriented();
+    if (o1 && o2)
+        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT;
+    else if (o1)
+        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingBox)b2) == XMath::DISJOINT;
+    else if (o2)
+        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT;
+    else
+        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingBox)b2) == XMath::DISJOINT;
+#else
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
     return !(
@@ -119,10 +135,29 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
         min_.z_ + size1.z_ < b2.min_.z_ ||
         min_.z_ > b2.min_.z_ + size2.z_
         );
+#endif
 }
 
 bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 {
+    const bool o1 = IsOriented();
+    const bool o2 = b2.IsOriented();
+    if (o1 && o2)
+    {
+        if (((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT)
+            return false;
+    }
+    else if (o1)
+    {
+        if (((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingBox)b2) == XMath::DISJOINT)
+            return false;
+    }
+    else if (o2)
+    {
+        if (((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT)
+            return false;
+    }
+
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
 
@@ -181,11 +216,19 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 
 bool BoundingBox::Collides(const Sphere& b2) const
 {
+    if (IsOriented())
+    {
+        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingSphere)b2) > XMath::DISJOINT;
+    }
     return IsInside(b2) != OUTSIDE;
 }
 
 bool BoundingBox::Collides(const Sphere& b2, Vector3&) const
 {
+    if (IsOriented())
+    {
+        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingSphere)b2) > XMath::DISJOINT;
+    }
     return IsInside(b2) != OUTSIDE;
 }
 

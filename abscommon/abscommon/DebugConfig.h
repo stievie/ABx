@@ -13,7 +13,7 @@
 #       define DEBUG_NAVIGATION
 #       define DEBUG_PROTOCOL
 //#       define DEBUG_OCTREE
-//#       define DEBUG_COLLISION
+#       define DEBUG_COLLISION
 #       define DEBUG_AI
 #   endif
 #   define DEGUB_ENCRYPTION
