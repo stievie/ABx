@@ -35,7 +35,7 @@ public:
         min_(Vector3(min, min, min)),
         max_(Vector3(max, max, max))
     { }
-    ~BoundingBox() {}
+    ~BoundingBox() = default;
 
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     operator XMath::BoundingBox() const
@@ -76,7 +76,7 @@ public:
     /// Distance from the center to each side
     Vector3 Extends() const
     {
-        return { (max_ - min_) * 0.5f };
+        return (max_ - min_) * 0.5f;
     }
 
     bool IsDefined() const { return min_.x_ != INFINITY; }

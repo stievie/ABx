@@ -2,6 +2,7 @@
 #include <catch.hpp>
 
 #include "BoundingBox.h"
+#include "Matrix4.h"
 
 TEST_CASE("BoundingBox Basic", "[boundingbox]")
 {
@@ -28,6 +29,35 @@ TEST_CASE("BoundingBox Basic", "[boundingbox]")
         REQUIRE(extends.x_ == 2.0f);
         REQUIRE(extends.y_ == 2.0f);
         REQUIRE(extends.z_ == 2.0f);
+    }
+
+}
+
+TEST_CASE("BoundingBox Transform", "[boundingbox]")
+{
+    SECTION("Scale")
+    {
+        Math::BoundingBox bb(-2.0f, 2.0f);
+        Math::Matrix4 trans = Math::Matrix4::FromScale(Math::Vector3(1.0f, 0.5f, 1.0f));
+        Math::BoundingBox transformed = bb.Transformed(trans);
+        REQUIRE(transformed.min_.x_ == -2.0f);
+        REQUIRE(transformed.min_.y_ == -1.0f);
+        REQUIRE(transformed.min_.z_ == -2.0f);
+        REQUIRE(transformed.max_.x_ == 2.0f);
+        REQUIRE(transformed.max_.y_ == 1.0f);
+        REQUIRE(transformed.max_.z_ == 2.0f);
+    }
+    SECTION("Translation")
+    {
+        Math::BoundingBox bb(-2.0f, 2.0f);
+        Math::Matrix4 trans = Math::Matrix4::FromTranslation(Math::Vector3(1.0f, 1.0f, 1.0f));
+        Math::BoundingBox transformed = bb.Transformed(trans);
+        REQUIRE(transformed.min_.x_ == -1.0f);
+        REQUIRE(transformed.min_.y_ == -1.0f);
+        REQUIRE(transformed.min_.z_ == -1.0f);
+        REQUIRE(transformed.max_.x_ == 3.0f);
+        REQUIRE(transformed.max_.y_ == 3.0f);
+        REQUIRE(transformed.max_.z_ == 3.0f);
     }
 
 }

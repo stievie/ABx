@@ -143,6 +143,7 @@
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="CollisionShape.h" />
     <ClInclude Include="ConvexHull.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="Gjk.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Hull.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="MathDefs.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Matrix4.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Ray.h" />
@@ -165,9 +167,11 @@
   <ItemGroup>
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="ConvexHull.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Hull.cpp" />
     <ClCompile Include="Matrix4.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Shape.cpp" />

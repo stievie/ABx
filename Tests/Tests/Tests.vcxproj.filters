@@ -15,16 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Math.Vector3.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Math.BoundingBox.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Math.Ray.cpp">
@@ -33,12 +27,12 @@
     <ClCompile Include="Math.Sphere.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Math.Vector3.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

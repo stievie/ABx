@@ -10,7 +10,6 @@ namespace Math {
 
 class HeightMap
 {
-private:
 public:
     HeightMap();
     HeightMap(const std::vector<float>& data, const Point<int>& size);

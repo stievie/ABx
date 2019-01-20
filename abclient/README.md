@@ -4,9 +4,9 @@
 
 Extract the archive to a location of your choice.
 
-If it doesn't run download the Visual C++ Redistributable for Visual Studio 2015
-package (https://www.microsoft.com/en-us/download/details.aspx?id=48145) from 
-Microsoft and install it.
+If it doesn't run download the Visual C++ Redistributable for Visual Studio 2017
+package (https://visualstudio.microsoft.com/downloads/ -> Other Tools and Frameworks)
+from Microsoft and install it.
 
 ## Uninstall
 

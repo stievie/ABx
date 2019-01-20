@@ -78,6 +78,12 @@
     <ClInclude Include="MathConfig.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -117,6 +123,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Vector4.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Frustum.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
