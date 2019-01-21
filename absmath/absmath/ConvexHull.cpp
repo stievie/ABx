@@ -102,7 +102,9 @@ void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)
     }
     else
     {
+        vertexData_.clear();
         vertexCount_ = 0;
+        indexData_.clear();
         indexCount_ = 0;
     }
 }

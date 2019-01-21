@@ -133,6 +133,7 @@ struct Shortcut
     Key keyboardKey_;
     MouseButton mouseButton_;
     unsigned modifiers_;
+    /// Temporary ID needed for customization
     unsigned id_;
     static const Shortcut EMPTY;
 };

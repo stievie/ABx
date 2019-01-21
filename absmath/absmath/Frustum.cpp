@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Frustum.h"
 #include "BoundingBox.h"
+#include "Shape.h"
+#include "Sphere.h"
 
 namespace Math {
 
-Frustum::Frustum(const Frustum& other)
+Frustum::Frustum(const Frustum& other) noexcept
 {
     for (unsigned i = 0; i < 8; ++i)
         vertices_[i] = other.vertices_[i];
@@ -95,6 +97,57 @@ Intersection Frustum::Intersects(const BoundingBox& bbox)
         //return false; //with flag works faster
     }
     return inside ? INSIDE : OUTSIDE;
+}
+
+Intersection Frustum::Intersects(const Sphere& sphere) const
+{
+    bool allInside = true;
+    for (const auto& plane : planes_)
+    {
+        float dist = plane.Distance(sphere.center_);
+        if (dist < -sphere.radius_)
+            return OUTSIDE;
+        else if (dist < sphere.radius_)
+            allInside = false;
+    }
+
+    return allInside ? INSIDE : INTERSECTS;
+}
+
+Shape Frustum::GetShape() const
+{
+    Shape s;
+    for (unsigned i = 0; i < 8; ++i)
+        s.vertexData_.push_back(vertices_[i]);
+    s.vertexCount_ = 8;
+
+    // Near
+    s.indexData_.push_back(2);
+    s.indexData_.push_back(1);
+    s.indexData_.push_back(0);
+    // Left
+    s.indexData_.push_back(3);
+    s.indexData_.push_back(7);
+    s.indexData_.push_back(6);
+    // Right
+    s.indexData_.push_back(1);
+    s.indexData_.push_back(5);
+    s.indexData_.push_back(4);
+    // Up
+    s.indexData_.push_back(0);
+    s.indexData_.push_back(4);
+    s.indexData_.push_back(7);
+    // Down
+    s.indexData_.push_back(6);
+    s.indexData_.push_back(5);
+    s.indexData_.push_back(1);
+    // Far
+    s.indexData_.push_back(5);
+    s.indexData_.push_back(6);
+    s.indexData_.push_back(7);
+
+    s.indexCount_ = 18;
+    return s;
 }
 
 }

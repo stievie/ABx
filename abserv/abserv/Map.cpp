@@ -17,10 +17,9 @@ Map::Map(std::shared_ptr<Game> game) :
     game_(game),
     zone_(game->data_.name),
     aiLock_("gamemap"),
-    navMesh_(nullptr)
-{
-    octree_ = std::make_unique<Math::Octree>();
-}
+    navMesh_(nullptr),
+    octree_(std::make_unique<Math::Octree>())
+{ }
 
 Map::~Map() = default;
 
@@ -223,7 +222,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         }
                         else if (size != Math::Vector3::Zero)
                         {
-                            Math::Vector3 halfSize = (size / 2.0f) + offset;
+                            Math::Vector3 halfSize = (size * 0.5f) + offset;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
                                 " to size +/- " << halfSize.ToString() << std::endl;

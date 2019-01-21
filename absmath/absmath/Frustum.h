@@ -8,11 +8,13 @@
 namespace Math {
 
 class BoundingBox;
+class Shape;
+class Sphere;
 
 class Frustum
 {
 public:
-    enum FrustumPlanes : uint8_t
+    enum FrustumPlanes
     {
         PlaneNear = 0,
         PlaneLeft,
@@ -27,7 +29,7 @@ private:
 public:
     Frustum() noexcept
     { };
-    Frustum(const Frustum& other);
+    Frustum(const Frustum& other) noexcept;
 
     ~Frustum() = default;
 
@@ -40,6 +42,30 @@ public:
     Frustum Transformed(const Matrix4& transform) const;
 
     Intersection Intersects(const BoundingBox& bbox);
+    /// Test if a point is inside or outside.
+    Intersection Intersects(const Vector3& point) const
+    {
+        for (const auto& plane : planes_)
+        {
+            if (plane.Distance(point) < 0.0f)
+                return OUTSIDE;
+        }
+
+        return INSIDE;
+    }
+    /// Test if a sphere is inside, outside or intersects.
+    Intersection Intersects(const Sphere& sphere) const;
+    /// Return distance of a point to the frustum, or 0 if inside.
+    float Distance(const Vector3& point) const
+    {
+        float distance = 0.0f;
+        for (const auto& plane : planes_)
+            distance = std::max(-plane.Distance(point), distance);
+
+        return distance;
+    }
+
+    Shape GetShape() const;
 
     Vector3 vertices_[8];
     Plane planes_[FrustumPlanes::CountPlanes];
