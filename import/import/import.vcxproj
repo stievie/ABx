@@ -154,16 +154,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="CreateHeightMapAction.h" />
     <ClInclude Include="CreateHullAction.h" />
     <ClInclude Include="CreateModelAction.h" />
     <ClInclude Include="CreateSceneAction.h" />
     <ClInclude Include="Hull.h" />
-    <ClInclude Include="ImportUtils.h" />
     <ClInclude Include="ObjWriter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

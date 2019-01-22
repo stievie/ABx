@@ -1,14 +1,11 @@
 #pragma once
 
-#include <assimp/vector3.h>
-#include <assimp/vector2.h>
 #pragma warning(push)
 #pragma warning(disable: 4244 4456)
 #include <stb_image.h>
 #pragma warning(pop)
 #include "Vector3.h"
-
-typedef aiVector2t<int> PointI;
+#include "Point.h"
 
 /// Creates Heightmap and Mesh from Image
 class CreateHeightMapAction
@@ -24,7 +21,6 @@ private:
     std::vector<unsigned short> indices_;
     std::vector<Math::Vector3> normals_;
 
-    PointI numVertices_;
     int width_;
     int height_;
     int components_;

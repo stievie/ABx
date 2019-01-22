@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -40,9 +37,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="CreateModelAction.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ImportUtils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="CreateSceneAction.h">

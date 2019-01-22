@@ -4,7 +4,6 @@
 #include <fstream>
 #include "MathUtils.h"
 #include <limits>
-#include "ImportUtils.h"
 #include "StringUtils.h"
 
 void CreateHeightMapAction::SaveObj()
