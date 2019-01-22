@@ -230,7 +230,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                             bb.orientation_ = rot * offsetRot;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " to model BB " << model->GetBoundingBox().ToString() << std::endl;
+                                " to model BB " << model->GetBoundingBox().ToString() << " orientation " << bb.orientation_.ToString() << std::endl;
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(

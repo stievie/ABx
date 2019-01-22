@@ -2,7 +2,6 @@
 
 #include "Vector3.h"
 #include "Quaternion.h"
-#include <DirectXMath.h>
 
 namespace Math {
 

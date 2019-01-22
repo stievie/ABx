@@ -10,3 +10,5 @@
 #include <stdint.h>
 
 #include "MathConfig.h"
+#include "Transformation.h"
+#include "Matrix4.h"

@@ -2,7 +2,6 @@
 #include <catch.hpp>
 
 #include "BoundingBox.h"
-#include "Matrix4.h"
 
 TEST_CASE("BoundingBox Basic", "[boundingbox]")
 {
@@ -92,6 +91,48 @@ TEST_CASE("BoundingBox Collisions", "[boundingbox]")
         bb2.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, 1.570796f);
         Math::Vector3 move;
         REQUIRE(bb1.Collides(bb2, move));
+    }
+}
+
+TEST_CASE("BoundingBox moving Collisions", "[boundingbox]")
+{
+    SECTION("BoundingBox oriented moving")
+    {
+        // First is moving, second is oriented
+        Math::BoundingBox bb1(-1.0f, 1.0f);
+        Math::BoundingBox bb2(-2.0f, 2.0f);
+        // 90 Deg
+        bb2.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, 1.570796f);
+        Math::Transformation trans;
+        for (unsigned i = 0; i < 5; ++i)
+        {
+            Math::Vector3 move;
+            trans.position_.x_ += (float)i;
+            Math::BoundingBox bbTrans = bb1.Transformed(trans.GetMatrix());
+            INFO("i = " << i);
+            if (i < 3)
+                REQUIRE(bbTrans.Collides(bb2, move));
+            else
+                REQUIRE(!bbTrans.Collides(bb2, move));
+        }
+    }
+    SECTION("BoundingBox oriented rotating")
+    {
+        // First is moving, second is oriented
+        Math::BoundingBox bb1(2.0f, 4.0f);
+        Math::BoundingBox bb2(-2.0f, 2.0f);
+        Math::Transformation trans;
+        for (unsigned i = 0; i < 4; ++i)
+        {
+            Math::Vector3 move;
+            bb1.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, (float)i);
+
+            INFO("i = " << i);
+            if (i < 1)
+                REQUIRE(bb1.Collides(bb2, move));
+            else
+                REQUIRE(!bb1.Collides(bb2, move));
+        }
     }
 }
 
