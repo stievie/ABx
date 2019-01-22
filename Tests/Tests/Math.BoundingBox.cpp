@@ -84,6 +84,15 @@ TEST_CASE("BoundingBox Collisions", "[boundingbox]")
         REQUIRE(move.y_ == 0.0f);
         REQUIRE(move.z_ == 0.0f);
     }
+    SECTION("BoundingBox oriented inside")
+    {
+        Math::BoundingBox bb1(-2.0f, 2.0f);
+        Math::BoundingBox bb2(-1.0f, 1.0f);
+        // 90 Deg
+        bb2.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, 1.570796f);
+        Math::Vector3 move;
+        REQUIRE(bb1.Collides(bb2, move));
+    }
 }
 
 TEST_CASE("XMath::BoundingBox Collisions", "[boundingbox]")

@@ -7,6 +7,7 @@
 #include "Gjk.h"
 #include "Matrix4.h"
 #include "Logger.h"
+#include "Profiler.h"
 
 namespace Math {
 
@@ -117,13 +118,21 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
     const bool o1 = IsOriented();
     const bool o2 = b2.IsOriented();
     if (o1 && o2)
-        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingOrientedBox)b2) != XMath::DISJOINT;
+    {
+        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+    }
     else if (o1)
-        return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingBox)b2) != XMath::DISJOINT;
+    {
+        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
+    }
     else if (o2)
-        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) != XMath::DISJOINT;
+    {
+        return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+    }
     else
-        return ((XMath::BoundingBox)*this).Contains((XMath::BoundingBox)b2) != XMath::DISJOINT;
+    {
+        return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingBox)b2);
+    }
 #else
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
@@ -145,29 +154,27 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
     const bool o2 = b2.IsOriented();
     if (o1 && o2)
     {
-        if (((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT)
-            return false;
+        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
     }
     else if (o1)
     {
-        if (((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingBox)b2) == XMath::DISJOINT)
-            return false;
+        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
     }
     else if (o2)
     {
-        if (((XMath::BoundingBox)*this).Contains((XMath::BoundingOrientedBox)b2) == XMath::DISJOINT)
-            return false;
+        return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
     }
+    // None is oriented
 #endif
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
 
-    float left = b2.min_.x_ - (min_.x_ + size1.x_);
-    float right = (b2.min_.x_ + size2.x_) - min_.x_;
-    float top = b2.min_.y_ - (min_.y_ + size1.y_);
-    float bottom = (b2.min_.y_ + size2.y_) - min_.y_;
-    float front = b2.min_.z_ - (min_.z_ + size1.z_);
-    float back = (b2.min_.z_ + size2.z_) - min_.z_;
+    const float left = b2.min_.x_ - (min_.x_ + size1.x_);
+    const float right = (b2.min_.x_ + size2.x_) - min_.x_;
+    const float top = b2.min_.y_ - (min_.y_ + size1.y_);
+    const float bottom = (b2.min_.y_ + size2.y_) - min_.y_;
+    const float front = b2.min_.z_ - (min_.z_ + size1.z_);
+    const float back = (b2.min_.z_ + size2.z_) - min_.z_;
 
     // check that there was a collision
     if (left > 0 || right < 0 || top > 0 || bottom < 0 || front > 0 || back < 0)

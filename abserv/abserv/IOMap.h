@@ -32,9 +32,11 @@ static constexpr size_t CompTerrain = Utils::StringHash("Terrain");
 
 static constexpr size_t AttrSize = Utils::StringHash("Size");
 static constexpr size_t AttrOffsetPos = Utils::StringHash("Offset Position");
+static constexpr size_t AttrOffsetRot = Utils::StringHash("Offset Rotation");
 static constexpr size_t AttrShapeType = Utils::StringHash("Shape Type");
-static constexpr size_t AttrConvexHull = Utils::StringHash("ConvexHull");
-static constexpr size_t AttrTriangleMesh = Utils::StringHash("TriangleMesh");
+static constexpr size_t AttrCollisionShapeTypeConvexHull = Utils::StringHash("ConvexHull");
+static constexpr size_t AttrCollisionShapeTypeTriangleMesh = Utils::StringHash("TriangleMesh");
+static constexpr size_t AttrCollisionShapeTypeBox = Utils::StringHash("Box");   // Default
 static constexpr size_t AttrModel = Utils::StringHash("Model");
 static constexpr size_t AttrVertexSpacing = Utils::StringHash("Vertex Spacing");
 static constexpr size_t AttrIsOccluder = Utils::StringHash("Is Occluder");

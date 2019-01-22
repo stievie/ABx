@@ -5,6 +5,7 @@
 
 namespace Math {
 
+/// A 3D Mesh
 class Shape
 {
 public:
@@ -68,6 +69,7 @@ public:
             return indexCount_;
         return vertexCount_;
     }
+    /// World Coordinates, that's why we need a transformation matrix
     Vector3 GetFarsetPointInDirection(const Vector3& v) const;
 
     /// Transformation matrix

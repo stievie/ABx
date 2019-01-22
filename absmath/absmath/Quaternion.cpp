@@ -9,6 +9,9 @@ const Quaternion Quaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
 
 Quaternion::Quaternion(float pitch, float yaw, float roll)
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    *this = Quaternion(XMath::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
+#else
     yaw *= 0.5f;
     pitch *= 0.5f;
     roll *= 0.5f;
@@ -24,6 +27,7 @@ Quaternion::Quaternion(float pitch, float yaw, float roll)
     x_ = s1 * s2 * c3 + c1 * c2 * s3;
     y_ = s1 * c2 * c3 + c1 * s2 * s3;
     z_ = c1 * s2 * c3 - s1 * c2 * s3;
+#endif
 }
 
 Quaternion::Quaternion(const std::string& str)
@@ -48,7 +52,7 @@ Quaternion::Quaternion(const std::string& str)
         x_ = 0.0f;
         y_ = 0.0f;
         z_ = 0.0f;
-        w_ = 0.0f;
+        w_ = 1.0f;
 #ifdef DEBUG_MATH
         LOG_ERROR << "Malformed Quaternion string: " << str << std::endl;
 #endif

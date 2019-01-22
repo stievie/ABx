@@ -61,7 +61,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
     {
         Math::Vector3 pos;
         Math::Vector3 scale;
-        Math::Quaternion rot;
+        Math::Quaternion rot = Math::Quaternion::Identity;
         std::string name;
         std::string group;
         bool isSpawnPoint = false;
@@ -115,6 +115,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
         std::shared_ptr<GameObject> object;
         Math::Vector3 size;
         Math::Vector3 offset;
+        Math::Quaternion offsetRot = Math::Quaternion::Identity;
         for (const auto& comp : node.children("component"))
         {
             const pugi::xml_attribute& type_attr = comp.attribute("type");
@@ -165,6 +166,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             }
             case IO::Map::AttrCollisionShape:
             {
+                size_t coll_shape = IO::Map::AttrCollisionShapeTypeBox;
                 if (object)
                 {
                     for (const auto& attr : comp.children())
@@ -181,54 +183,55 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         case IO::Map::AttrOffsetPos:
                             offset = Math::Vector3(value_attr.as_string());
                             break;
+                        case IO::Map::AttrOffsetRot:
+                            offsetRot = Math::Quaternion(value_attr.as_string());
+                            break;
                         case IO::Map::AttrShapeType:
                         {
-                            switch (value_hash)
-                            {
-                            case IO::Map::AttrTriangleMesh:
-                            case IO::Map::AttrConvexHull:
-                                if (model)
-                                {
-#ifdef DEBUG_COLLISION
-                                    LOG_DEBUG << "Setting ConvexHull collision shape for " << object->GetName() << std::endl;
-#endif
-                                    object->SetCollisionShape(
-                                        std::make_unique<Math::CollisionShapeImpl<Math::ConvexHull>>(
-                                            Math::ShapeTypeConvexHull, model->shape_->vertexData_)
-                                    );
-                                }
-                                break;
-                            }
-                            break;
+                            coll_shape = value_hash;
                         }
                         }
                     }
 
                     if (object && !object->GetCollisionShape())
                     {
-                        // Default BoundingBox
-                        if (model)
+                        if (coll_shape == IO::Map::AttrCollisionShapeTypeTriangleMesh || coll_shape == IO::Map::AttrCollisionShapeTypeConvexHull)
                         {
+                            if (model)
+                            {
+#ifdef DEBUG_COLLISION
+                                LOG_DEBUG << "Setting ConvexHull collision shape for " << object->GetName() << std::endl;
+#endif
+                                object->SetCollisionShape(
+                                    std::make_unique<Math::CollisionShapeImpl<Math::ConvexHull>>(
+                                        Math::ShapeTypeConvexHull, model->shape_->vertexData_)
+                                );
+                            }
+                        }
+                        else if (coll_shape == IO::Map::AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
+                        {
+                            Math::Vector3 halfSize = (size * 0.5f) + offset;
+                            Math::BoundingBox bb(-halfSize, halfSize);
+                            // Add Node and Offset rotation
+                            bb.orientation_ = rot * offsetRot;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " to model BB " << model->GetBoundingBox().ToString() << std::endl;
+                                " to size +/- " << halfSize.ToString() << " orientation " << bb.orientation_.ToString() << std::endl;
 #endif
-                            auto bb = model->GetBoundingBox();
-                            bb.orientation_ = rot;
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
                                     Math::ShapeTypeBoundingBox, bb)
                             );
                         }
-                        else if (size != Math::Vector3::Zero)
+                        else if (model)
                         {
-                            Math::Vector3 halfSize = (size * 0.5f) + offset;
+                            // If none of the above set to model bounding box
+                            auto bb = model->GetBoundingBox();
+                            bb.orientation_ = rot * offsetRot;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " to size +/- " << halfSize.ToString() << std::endl;
+                                " to model BB " << model->GetBoundingBox().ToString() << std::endl;
 #endif
-                            Math::BoundingBox bb(-halfSize, halfSize);
-                            bb.orientation_ = rot;
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
                                     Math::ShapeTypeBoundingBox, bb)

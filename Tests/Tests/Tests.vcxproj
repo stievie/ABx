@@ -66,10 +66,12 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>$(OutDir)$(TargetFileName) -s -d yes</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Run Tests</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -91,7 +93,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>$(OutDir)$(TargetFileName) -s -d yes</Command>
+      <Command>$(OutDir)$(TargetFileName) -d yes</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Run Tests</Message>

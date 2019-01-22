@@ -3,6 +3,7 @@
 #include "BoundingBox.h"
 #include "Shape.h"
 #include "Sphere.h"
+#include "Profiler.h"
 
 namespace Math {
 
@@ -121,32 +122,35 @@ Shape Frustum::GetShape() const
         s.vertexData_.push_back(vertices_[i]);
     s.vertexCount_ = 8;
 
+    // TODO:
+/*
+        7------------4
+      / |          / |
+    3------------0   |
+    |   |        |   |
+    |   6------------5
+    | /          | /
+    2------------1
+*/
     // Near
-    s.indexData_.push_back(2);
-    s.indexData_.push_back(1);
-    s.indexData_.push_back(0);
+    s.AddTriangle(0, 1, 2);
+    s.AddTriangle(2, 3, 0);
     // Left
-    s.indexData_.push_back(3);
-    s.indexData_.push_back(7);
-    s.indexData_.push_back(6);
+    s.AddTriangle(2, 3, 6);
+    s.AddTriangle(6, 7, 3);
     // Right
-    s.indexData_.push_back(1);
-    s.indexData_.push_back(5);
-    s.indexData_.push_back(4);
+    s.AddTriangle(1, 0, 4);
+    s.AddTriangle(4, 5, 1);
     // Up
-    s.indexData_.push_back(0);
-    s.indexData_.push_back(4);
-    s.indexData_.push_back(7);
+    s.AddTriangle(0, 4, 7);
+    s.AddTriangle(7, 3, 0);
     // Down
-    s.indexData_.push_back(6);
-    s.indexData_.push_back(5);
-    s.indexData_.push_back(1);
+    s.AddTriangle(6, 5, 1);
+    s.AddTriangle(1, 2, 6);
     // Far
-    s.indexData_.push_back(5);
-    s.indexData_.push_back(6);
-    s.indexData_.push_back(7);
+    s.AddTriangle(5, 6, 7);
+    s.AddTriangle(7, 4, 5);
 
-    s.indexCount_ = 18;
     return s;
 }
 
