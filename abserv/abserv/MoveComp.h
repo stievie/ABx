@@ -31,7 +31,8 @@ public:
         turned_(false),
         directionSet_(false),
         newAngle_(false),
-        speedDirty_(false)
+        speedDirty_(false),
+        velocity_(Math::Vector3::Zero)
     { }
     ~MoveComp() = default;
 
@@ -74,6 +75,8 @@ public:
     /// Manual direction set
     bool directionSet_;
     bool newAngle_;
+    /// Velocity in Units/s. For Doppler effect.
+    Math::Vector3 velocity_;
 };
 
 }

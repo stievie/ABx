@@ -14,8 +14,12 @@ void MoveComp::Update(uint32_t timeElapsed)
     if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureStateMoving)
         return;
 
+    oldPosition_ = owner_.transformation_.position_;
+
     UpdateMove(timeElapsed);
     UpdateTurn(timeElapsed);
+
+    velocity_ = (oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000);
 }
 
 bool MoveComp::SetPosition(const Math::Vector3& pos)
@@ -53,8 +57,6 @@ void MoveComp::HeadTo(const Math::Vector3& pos)
 bool MoveComp::Move(float speed, const Math::Vector3& amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
-
-    oldPosition_ = owner_.transformation_.position_;
 
     // It's as easy as:
     // 1. Create a matrix from the rotation,
