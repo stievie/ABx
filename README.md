@@ -2,6 +2,9 @@
 
 Ancient Greece Multiplayer Online RPG.
 
+* https://www.gamedev.net/blogs/blog/3042-abx-online-rpg/
+* https://dev.azure.com/trill42/ABx
+
 ## Architecture
 
 ~~~
