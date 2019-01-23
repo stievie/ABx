@@ -65,6 +65,7 @@ public:
     {
         return oldPosition_;
     }
+    bool IsMoving() const { return velocity_ != Math::Vector3::Zero; }
     void Write(Net::NetworkMessage& message);
 
     uint32_t moveDir_;
