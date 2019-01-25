@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "abcrypto", "..\ThirdParty\abcrypto\abcrypto.vcxproj", "{C87C69FA-1952-403E-BFA6-2B6C2CAA6324}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3", "..\ThirdParty\sqlite3\vc14\sqlite3.vcxproj", "{D8BF0AFF-3620-4652-82D6-0870DE48DC23}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libless", "..\ThirdParty\libless\libless.vcxproj", "{6E4F31D7-4676-47D2-8925-264D2D850DF4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freeglut", "..\ThirdParty\freeglut\freeglut.vcxproj", "{20DB6C0A-8F93-4A01-8C47-6CFE20549D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,8 +53,15 @@ Global
 		{6E4F31D7-4676-47D2-8925-264D2D850DF4}.Debug|x64.Build.0 = Debug|x64
 		{6E4F31D7-4676-47D2-8925-264D2D850DF4}.Release|x64.ActiveCfg = Release|x64
 		{6E4F31D7-4676-47D2-8925-264D2D850DF4}.Release|x64.Build.0 = Release|x64
+		{20DB6C0A-8F93-4A01-8C47-6CFE20549D86}.Debug|x64.ActiveCfg = Debug|x64
+		{20DB6C0A-8F93-4A01-8C47-6CFE20549D86}.Debug|x64.Build.0 = Debug|x64
+		{20DB6C0A-8F93-4A01-8C47-6CFE20549D86}.Release|x64.ActiveCfg = Release|x64
+		{20DB6C0A-8F93-4A01-8C47-6CFE20549D86}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA973C99-8C48-40C0-B68F-EFE6DED942B7}
 	EndGlobalSection
 EndGlobal
