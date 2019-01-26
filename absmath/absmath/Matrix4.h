@@ -154,6 +154,7 @@ public:
     Matrix4 Transpose() const;
     float Determinant() const;
     Matrix4 Inverse() const;
+    const float* Data() const { return &m_[0]; }
 
     static Matrix4 FromFrustum(float left, float right, float bottom, float top, float _near, float _far);
     static Matrix4 FromPerspective(float fovy, float aspect, float _near, float _far);

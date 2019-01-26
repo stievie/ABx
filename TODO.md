@@ -1,5 +1,6 @@
 # TODO
 
++ Indices for Boundingbox Shape
 + abserv, abclient: Party
 ! abclient, abserv: PartyAdd wrong network message
 ! ?: Server list?

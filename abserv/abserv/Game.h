@@ -102,6 +102,7 @@ public:
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);
+    const std::vector<std::shared_ptr<GameObject>>& GetObjects() const { return objects_; }
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);

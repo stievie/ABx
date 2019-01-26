@@ -264,6 +264,9 @@
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="SceneViewer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -468,6 +471,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="PartyManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneViewer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

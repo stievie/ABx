@@ -67,7 +67,9 @@ void Scheduler::SchedulerThread()
             lockUnique.unlock();
 
             task->SetDontExpires();
-            GetSubsystem<Asynch::Dispatcher>()->Add(task, true);
+            auto disp = GetSubsystem<Asynch::Dispatcher>();
+            if (disp)
+                disp->Add(task, true);
         }
         else
             lockUnique.unlock();

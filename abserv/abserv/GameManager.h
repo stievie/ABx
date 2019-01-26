@@ -55,6 +55,7 @@ public:
 
     GameManager::State GetState() const { return state_; }
     size_t GetGameCount() const { return games_.size(); }
+    const std::map<uint32_t, std::shared_ptr<Game>>& GetGames() const { return games_; }
 };
 
 }

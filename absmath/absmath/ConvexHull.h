@@ -32,6 +32,8 @@ public:
     bool Collides(const ConvexHull& b2, Vector3& move) const;
     bool Collides(const HeightMap& b2, Vector3& move) const;
 
+    Shape GetShape() const { return *this; }
+
     BoundingBox boundingBox_;
 };
 

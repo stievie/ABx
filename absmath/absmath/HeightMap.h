@@ -8,6 +8,8 @@
 
 namespace Math {
 
+class Shape;
+
 class HeightMap
 {
 public:
@@ -36,6 +38,8 @@ public:
     bool Collides(const BoundingBox& b2, Vector3& move) const;
     bool Collides(const ConvexHull& b2, Vector3& move) const;
     bool Collides(const HeightMap&, Vector3&) const;
+
+    Shape GetShape() const;
 
     Point<int> WorldToHeightmap(const Vector3& world);
     Vector3 HeightmapToWorld(const Point<int>& pixel);

@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "BoundingBox.h"
 #include "ConvexHull.h"
+#include "Shape.h"
 
 namespace Math {
 
@@ -161,6 +162,60 @@ bool HeightMap::Collides(const HeightMap&, Vector3&) const
     // Can not collide Heightmap with Heightmap
     assert(false);
     return false;
+}
+
+Shape HeightMap::GetShape() const
+{
+    Shape s;
+    s.vertexData_.resize(numVertices_.x_ + numVertices_.y_);
+    for (int x = 0; x < numVertices_.x_; x++)
+    {
+        for (int z = 0; z < numVertices_.y_; z++)
+        {
+            float fy = GetRawHeight(x, z);
+            float fx = (float)x - (float)numVertices_.x_ / 2.0f;
+            float fz = (float)z - (float)numVertices_.y_ / 2.0f;
+            s.vertexData_[z * numVertices_.y_ + x] = {
+                fx,
+                fy,
+                fz
+            };
+        }
+    }
+
+    // Create index data
+    for (int x = 0; x < numVertices_.x_ - 1; x++)
+    {
+        for (int z = 0; z < numVertices_.y_ - 1; z++)
+        {
+            /*
+            Normal edge:
+            +----+----+
+            |\ 1 |\   |
+            | \  | \  |
+            |  \ |  \ |
+            | 2 \|   \|
+            +----+----+
+            */
+            {
+                // First triangle
+                int i1 = z * numVertices_.x_ + x;
+                int i2 = (z * numVertices_.x_) + x + 1;
+                int i3 = (z + 1) * numVertices_.x_ + (x + 1);
+                s.AddTriangle(i1, i2, i3);
+            }
+
+            {
+                // Second triangle
+                int i3 = (z + 1) * numVertices_.x_ + (x + 1);
+                int i2 = (z + 1) * numVertices_.x_ + x;
+                int i1 = z * numVertices_.x_ + x;
+                s.AddTriangle(i3, i2, i1);
+            }
+        }
+    }
+
+    return s;
 }
 
 Point<int> HeightMap::WorldToHeightmap(const Vector3& world)

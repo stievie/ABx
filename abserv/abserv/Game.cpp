@@ -198,7 +198,7 @@ void Game::Update()
         {
             // If all players left the game, delete it. Actually just mark as
             // terminated, it'll be deleted in the next update.
-            // Kepp empty games for 10 seconds
+            // Keep empty games for 10 seconds
             LOG_INFO << "Shutting down game " << id_ << ", " << map_->data_.name << "no players for " << noplayerTime_ << std::endl;
             SetState(ExecutionState::Terminated);
             luaState_["onStop"]();
@@ -210,7 +210,7 @@ void Game::Update()
         // At least SCHEDULER_MINTICKS
         const int32_t sleepTime = std::max<int32_t>(SCHEDULER_MINTICKS, NETWORK_TICK - duration);
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, this))
+            Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, shared_from_this()))
         );
 
         break;

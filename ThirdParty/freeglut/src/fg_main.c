@@ -179,7 +179,7 @@ static void fghcbCheckJoystickPolls( SFG_Window *window,
                                      SFG_Enumerator *enumerator )
 {
     fg_time_t checkTime;
-    
+
     if (window->State.JoystickPollRate > 0 && FETCH_WCB( *window, Joystick ))
     {
         /* This window has a joystick to be polled (if pollrate <= 0, user needs to poll manually with glutForceJoystickFunc */
@@ -200,7 +200,7 @@ static void fghcbCheckJoystickPolls( SFG_Window *window,
 
 /*
  * Check all windows for joystick polling
- * 
+ *
  * The real way to do this is to make use of the glutTimer() API
  * to more cleanly re-implement the joystick API.  Then, this code
  * and all other "joystick timer" code can be yanked.
@@ -237,18 +237,18 @@ static void fghCheckTimers( void )
     }
 }
 
- 
+
 /* Platform-dependent time in milliseconds, as an unsigned 64-bit integer.
  * This doesn't overflow in any reasonable time, so no need to worry about
  * that. The GLUT API return value will however overflow after 49.7 days,
  * which means you will still get in trouble when running the
  * application for more than 49.7 days.
- */  
+ */
 fg_time_t fgSystemTime(void)
 {
 	return fgPlatformSystemTime();
 }
-  
+
 /*
  * Elapsed Time
  */
@@ -376,7 +376,7 @@ static void fghSleepForEvents( void )
     msec = fghNextTimer( );
     /* XXX Should use GLUT timers for joysticks... */
     /* XXX Dumb; forces granularity to .01sec */
-    if( fgState.NumActiveJoysticks>0 && ( msec > 10 ) )     
+    if( fgState.NumActiveJoysticks>0 && ( msec > 10 ) )
         msec = 10;
 
 	fgPlatformSleepForEvents ( msec );
@@ -465,6 +465,69 @@ void FGAPIENTRY glutMainLoopEvent( void )
 
     fgCloseWindows( );
 }
+
+void FGAPIENTRY glutMainLoopEnter()
+{
+    FREEGLUT_EXIT_IF_NOT_INITIALISED("glutMainLoopEnter");
+
+    if (!fgStructure.Windows.First)
+        fgError(" ERROR:  glutMainLoop called with no windows created.");
+
+    fgPlatformMainLoopPreliminaryWork();
+    fgState.ExecState = GLUT_EXEC_STATE_RUNNING;
+}
+
+void FGAPIENTRY glutMainLoopExit()
+{
+    /*
+     * When this loop terminates, destroy the display, state and structure
+     * of a freeglut session, so that another glutInit() call can happen
+     *
+     * Save the "ActionOnWindowClose" because "fgDeinitialize" resets it.
+     */
+    int action = fgState.ActionOnWindowClose;
+    fgDeinitialize();
+    if (action == GLUT_ACTION_EXIT)
+        exit(0);
+}
+
+void FGAPIENTRY glutMainLoopStep()
+{
+    FREEGLUT_EXIT_IF_NOT_INITIALISED("glutMainLoopStep");
+
+    if (fgState.ExecState != GLUT_EXEC_STATE_RUNNING)
+        return;
+
+    SFG_Window *window;
+
+    glutMainLoopEvent();
+    /*
+     * Step through the list of windows, seeing if there are any
+     * that are not menus
+     */
+    for (window = (SFG_Window *)fgStructure.Windows.First;
+        window;
+        window = (SFG_Window *)window->Node.Next)
+        if (!(window->IsMenu))
+            break;
+
+    if (!window)
+        fgState.ExecState = GLUT_EXEC_STATE_STOP;
+    else
+    {
+        if (fgState.IdleCallback)
+        {
+            if (fgStructure.CurrentWindow &&
+                fgStructure.CurrentWindow->IsMenu)
+                /* fail safe */
+                fgSetWindow(window);
+            fgState.IdleCallback();
+        }
+//        else
+//            fghSleepForEvents();
+    }
+}
+
 
 /*
  * Enters the freeglut processing loop.

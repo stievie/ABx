@@ -6,6 +6,9 @@
 #include "MessageDispatcher.h"
 #include "Maintenance.h"
 #include "Subsystems.h"
+#if defined(SCENE_VIEWER)
+#include "SceneViewer.h"
+#endif
 
 class Application : public ServerApp
 {
@@ -18,6 +21,9 @@ private:
     std::vector<int> loads_;
     int64_t lastLoadCalc_;
     Maintenance maintenance_;
+#if defined(SCENE_VIEWER)
+    std::shared_ptr<Debug::SceneViewer> sceneViewer_;
+#endif
     bool LoadMain();
     void PrintServerInfo();
     void ShowHelp();

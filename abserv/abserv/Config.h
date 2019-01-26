@@ -10,6 +10,14 @@
 
 #define SCHEDULER_MINTICKS 10
 
+// Compiled with Debug::SceneViewer
+#define SCENE_VIEWER
+#if defined(SCENE_VIEWER)
+#   define FREEGLUT_STATIC
+#   define HAVE_CONFIG_H
+#   define GLEW_STATIC
+#endif
+
 // ms = 20 network ticks/second. Update game state each 50ms (= 20 Updates/sec)
 #define NETWORK_TICK 50
 // Update game state each 33ms (= 30 Updates/sec)

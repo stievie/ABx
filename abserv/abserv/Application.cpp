@@ -157,6 +157,14 @@ bool Application::Initialize(const std::vector<std::string>& args)
     if (!LoadMain())
         return false;
 
+#if defined(SCENE_VIEWER)
+    sceneViewer_ = std::make_shared<Debug::SceneViewer>();
+    if (!sceneViewer_->Initialize())
+    {
+        return false;
+    }
+#endif
+
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(100ms);
 
@@ -469,6 +477,10 @@ void Application::Run()
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
 
+#if defined(SCENE_VIEWER)
+    sceneViewer_->Run();
+#endif
+
     LOG_INFO << "Server is running" << std::endl;
     // If we use a log file close current and reopen as file logger
     if (logDir_.empty())
@@ -492,6 +504,10 @@ void Application::Stop()
 {
     if (!running_)
         return;
+
+#if defined(SCENE_VIEWER)
+    sceneViewer_->Stop();
+#endif
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     running_ = false;

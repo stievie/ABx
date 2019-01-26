@@ -7,6 +7,7 @@
 #include "Sphere.h"
 #include "HeightMap.h"
 #include "ConvexHull.h"
+#include "Shape.h"
 
 namespace Math {
 
@@ -34,6 +35,8 @@ public:
     virtual bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const = 0;
     virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const = 0;
+
+    virtual Shape GetShape() const = 0;
 
     ShapeType shapeType_;
 };
@@ -80,6 +83,12 @@ public:
     {
         return shape_->Transformed(transformation).Collides(other, move);
     }
+
+    Shape GetShape() const override
+    {
+        return shape_->GetShape();
+    }
+
 
     std::shared_ptr<T> shape_;
 };
