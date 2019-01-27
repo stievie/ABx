@@ -122,7 +122,6 @@ Shape Frustum::GetShape() const
         s.vertexData_.push_back(vertices_[i]);
     s.vertexCount_ = 8;
 
-    // TODO:
 /*
         7------------4
       / |          / |

@@ -168,6 +168,11 @@ Matrix4& Matrix4::Rotate(const Vector3& axis, float ang)
     );
 }
 
+Matrix4& Matrix4::Rotate(const Vector4& axisAngle)
+{
+    return Rotate(Vector3(axisAngle), axisAngle.w_);
+}
+
 Matrix4 Matrix4::Transpose() const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
@@ -212,8 +217,7 @@ float Matrix4::Determinant() const
 Matrix4 Matrix4::Inverse() const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    XMath::XMVECTOR det;
-    return XMath::XMMatrixInverse(&det, *this);
+    return XMath::XMMatrixInverse(nullptr, *this);
 #else
     float det = Determinant();
 

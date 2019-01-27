@@ -107,7 +107,34 @@ Shape BoundingBox::GetShape() const
     s.vertexData_.push_back(boundPoint7);
     s.vertexData_.push_back(boundPoint8);
     s.vertexCount_ = 8;
-    s.indexCount_ = 0;
+
+    /*
+        5------------1 max
+      / |          / |
+    3------------7   |
+    |   |        |   |
+    |   2------------6
+    | /          | /
+min 0------------4
+*/
+    // Front
+    s.AddTriangle(7, 4, 0);
+    s.AddTriangle(0, 3, 7);
+    // Left
+    s.AddTriangle(0, 3, 2);
+    s.AddTriangle(2, 5, 3);
+    // Right
+    s.AddTriangle(4, 7, 1);
+    s.AddTriangle(1, 6, 4);
+    // Up
+    s.AddTriangle(7, 1, 5);
+    s.AddTriangle(5, 3, 7);
+    // Down
+    s.AddTriangle(2, 6, 4);
+    s.AddTriangle(4, 0, 2);
+    // Back
+    s.AddTriangle(6, 2, 5);
+    s.AddTriangle(5, 1, 6);
 
     return s;
 }

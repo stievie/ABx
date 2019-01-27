@@ -310,7 +310,7 @@ std::vector<float> GameObject::_LuaGetPosition() const
 
 float GameObject::_LuaGetRotation() const
 {
-    return transformation_.rotation_;
+    return Math::RadToDeg(transformation_.rotation_);
 }
 
 std::vector<float> GameObject::_LuaGetScale() const

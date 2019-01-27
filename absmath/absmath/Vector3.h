@@ -6,6 +6,8 @@
 
 namespace Math {
 
+class Vector4;
+
 class Vector3
 {
 public:
@@ -20,6 +22,8 @@ public:
         y_(vector.y_),
         z_(vector.z_)
     { }
+    /// Create from Vector4, drop w_
+    Vector3(const Vector4& vector) noexcept;
 
     Vector3(float x, float y, float z) noexcept :
         x_(x),

@@ -128,6 +128,7 @@ public:
     Matrix4& RotateY(float ang);
     Matrix4& RotateZ(float ang);
     Matrix4& Rotate(const Vector3& axis, float ang);
+    Matrix4& Rotate(const Vector4& axisAngle);
 
     /// Get rotation part
     Quaternion Rotation(bool rowNormalize = true) const;

@@ -171,6 +171,8 @@ void Game::Update()
         // First Update all objects
         for (const auto& o : objects_)
         {
+            if (!o)
+                return;
             o->Update(delta, *gameStatus_.get());
         }
 

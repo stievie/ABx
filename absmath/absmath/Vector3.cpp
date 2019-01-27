@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "StringUtils.h"
 #include "Logger.h"
+#include "Vector4.h"
 
 namespace Math {
 
@@ -13,6 +14,12 @@ const Vector3 Vector3::UnitZ(0.0f, 0.0f, 1.0f);           // Forward
 const Vector3 Vector3::Back(0.0f, 0.0f, -1.0f);
 const Vector3 Vector3::Down(0.0f, -1.0f, 0.0f);
 const Vector3 Vector3::Left(-1.0f, 0.0f, 0.0f);
+
+Vector3::Vector3(const Vector4& vector) noexcept :
+    x_(vector.x_),
+    y_(vector.y_),
+    z_(vector.z_)
+{ }
 
 Vector3::Vector3(const std::string& str)
 {

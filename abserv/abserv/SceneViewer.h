@@ -18,14 +18,14 @@ class Camera
 public:
     Camera();
 
-    void Zoom(int dir);
     void Resize(int w, int h);
-    void Position();
+    Math::Matrix4 GetMatrix();
 
-    Math::Vector3 position_;
-    Math::Vector3 rotation_;
+    Math::Transformation transformation_;
+    float near_;
+    float far_;
+    float fov_;
     float zoom_;
-    float ratio_;
 };
 
 class SceneViewer : public std::enable_shared_from_this<SceneViewer>
@@ -41,11 +41,13 @@ private:
     GLuint fragmentShader_;
     GLuint shaderProgram_;
     int projectionModelviewMatrixLoc_;
+    float ratio_;
     static void StaticRenderScene();
     static void StaticChangeSize(GLsizei w, GLsizei h);
     static void StaticMouse(int button, int state, int x, int y);
     static void StaticMouseWheel(int button, int dir, int x, int y);
     static void StaticMenu(int id);
+    static void StaticKeyboard(unsigned char key, int x, int y);
     void Update();
     void UpdateMenu();
     void InternalInitialize();
@@ -54,6 +56,7 @@ private:
     void Mouse(int button, int state, int x, int y);
     void MouseWheel(int button, int dir, int x, int y);
     void Menu(int id);
+    void Keyboard(unsigned char key, int x, int y);
 public:
     SceneViewer();
     ~SceneViewer();

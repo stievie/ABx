@@ -6,6 +6,7 @@
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include <cassert>
+#include "Player.h"
 
 // http://www.alecjacobson.com/weblog/?p=4307
 
@@ -26,10 +27,10 @@ void main()
 )glsl";
 const char* fragmentShaderString = R"glsl(
 #version 330 core
-out vec3 color;
+out vec4 color;
 void main()
 {
-  color = vec3(0.8,0.4,0.0);
+  color = vec4(1.0, 1.0, 1.0, 1.0);
 }
 )glsl";
 
@@ -78,8 +79,17 @@ void SceneViewer::StaticMenu(int id)
     SceneViewer::instance_->Menu(id);
 }
 
+void SceneViewer::StaticKeyboard(unsigned char key, int x, int y)
+{
+    assert(SceneViewer::instance_ != nullptr);
+    SceneViewer::instance_->Keyboard(key, x, y);
+}
+
 void SceneViewer::Update()
 {
+    if (!running_)
+        return;
+
     if (initialized_)
     {
         if (GetSubsystem<Game::GameManager>()->GetGameCount() != 0)
@@ -88,16 +98,22 @@ void SceneViewer::Update()
             game_ = (*games.begin()).second;
         }
 
+        if (std::shared_ptr<Game::Game> g = game_.lock())
+        {
+            if (g->GetPlayerCount() != 0)
+            {
+                auto p = g->GetPlayers().begin()->second;
+                camera_.transformation_ = p->transformation_;
+                camera_.transformation_.position_.y_ += 1.0f;
+            }
+        }
         glutMainLoopStep();
         Render();
     }
 
-    if (running_)
-    {
-        GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(20, std::bind(&SceneViewer::Update, shared_from_this()))
-        );
-    }
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(20, std::bind(&SceneViewer::Update, shared_from_this()))
+    );
 }
 
 void SceneViewer::UpdateMenu()
@@ -119,14 +135,14 @@ void SceneViewer::InternalInitialize()
     int argc = 1;
     char *argv[1] = { (char*)"Something" };
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitContextVersion(3, 3);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitContextVersion(3, 2);
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
     glutInitWindowSize(768, 480);
     glutCreateWindow("Scene Viewer");
-
+    ratio_ = 768.0f / 480.0f;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -135,7 +151,7 @@ void SceneViewer::InternalInitialize()
     glewInit();
 
     // Compile each shader
-    const auto & compile_shader = [](const GLint type, const char* str) -> GLuint
+    const auto& compile_shader = [](const GLint type, const char* str) -> GLuint
     {
         GLuint id = glCreateShader(type);
         glShaderSource(id, 1, &str, NULL);
@@ -158,6 +174,7 @@ void SceneViewer::InternalInitialize()
     glutReshapeFunc(SceneViewer::StaticChangeSize);
     glutMouseFunc(SceneViewer::StaticMouse);
     glutMouseWheelFunc(SceneViewer::StaticMouseWheel);
+    glutKeyboardFunc(SceneViewer::StaticKeyboard);
 
     menuId_ = glutCreateMenu(SceneViewer::StaticMenu);
     glutSetMenu(menuId_);
@@ -171,6 +188,10 @@ void SceneViewer::DrawScene()
     if (auto g = game_.lock())
     {
         glUseProgram(shaderProgram_);
+        // select program and attach uniforms
+        GLint proj_loc = glGetUniformLocation(shaderProgram_, "proj");
+        glUniformMatrix4fv(proj_loc, 1, GL_FALSE, camera_.GetMatrix().Transpose().Data());
+
         auto objects = g->GetObjects();
         for (const auto& object : objects)
         {
@@ -184,11 +205,20 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
     auto collShape = object->GetCollisionShape();
     if (!collShape)
         return;
-    const Math::Transformation& trans = object->transformation_;
+    Math::Transformation trans = object->transformation_;
     Math::Shape s = collShape->GetShape();
-    Math::Matrix4 matrix = trans.GetMatrix();
     if (s.indexCount_ == 0)
         return;
+
+    Math::Matrix4 matrix = trans.GetMatrix();
+/*    if (collShape->shapeType_ == Math::ShapeTypeBoundingBox)
+    {
+        trans.rotation_ = 0.0f;
+        matrix = trans.GetMatrix();
+        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        BBoxShape* shape = (BBoxShape*)collShape;
+        matrix.Rotate(shape->shape_->orientation_.AxisAngle());
+    }*/
 
     // Generate and attach buffers to vertex array
     GLuint VAO;
@@ -198,21 +228,16 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
     glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * s.VertexDataSize(), s.VertexData(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * s.VertexDataSize(), s.VertexData(), GL_STREAM_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * s.indexCount_, s.indexData_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * s.indexCount_, s.indexData_.data(), GL_STREAM_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-
-    // select program and attach uniforms
-    glUseProgram(shaderProgram_);
-    GLint proj_loc = glGetUniformLocation(shaderProgram_, "proj");
-    glUniformMatrix4fv(proj_loc, 1, GL_FALSE, Math::Matrix4::Identity.Data());
     GLint model_loc = glGetUniformLocation(shaderProgram_, "model");
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, matrix.Data());
+    glUniformMatrix4fv(model_loc, 1, GL_FALSE, matrix.Transpose().Data());
 
     // Draw mesh as wireframe
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -230,13 +255,49 @@ void SceneViewer::Mouse(int button, int state, int x, int y)
 
 void SceneViewer::MouseWheel(int, int dir, int, int)
 {
-    camera_.Zoom(dir);
+    if (dir > 0)
+        camera_.zoom_ += 0.1f;
+    else
+        camera_.zoom_ -= 0.1f;
+    if (camera_.zoom_ < 0.1f)
+        camera_.zoom_ = 0.1f;
 }
 
 void SceneViewer::Menu(int id)
 {
     if (id == menuId_)
         UpdateMenu();
+}
+
+void SceneViewer::Keyboard(unsigned char key, int, int)
+{
+/*    switch (key)
+    {
+    case 'w':
+    case 'W':
+        camera_.transformation_.position_.z_ += 0.5f;
+        break;
+    case 's':
+    case 'S':
+        camera_.transformation_.position_.z_ -= 0.5f;
+        break;
+    case 'a':
+    case 'A':
+        camera_.transformation_.position_.x_ -= 0.5f;
+        break;
+    case 'd':
+    case 'D':
+        camera_.transformation_.position_.x_ += 0.5f;
+        break;
+    case 'q':
+    case 'Q':
+        camera_.transformation_.position_.y_ += 0.5f;
+        break;
+    case 'y':
+    case 'Y':
+        camera_.transformation_.position_.y_ -= 0.5f;
+        break;
+    }*/
 }
 
 bool SceneViewer::Initialize()
@@ -271,14 +332,25 @@ void SceneViewer::Stop()
 
 void SceneViewer::Render()
 {
+    if (!initialized_)
+        return;
+
     //    auto gm = GetSubsystem<Game::GameManager>();
     //    std::shared_ptr<Game::Game> g = gm->GetInstance(SceneViewer::instanceUuid);
     //    if (!g)
     //        return;
-    camera_.Position();
-    glClearColor(0.0, 0.4, 0.7, 0.);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     //Clear all the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(camera_.fov_, ratio_, camera_.near_, camera_.far_);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0, -1000 * camera_.zoom_, 0,
+        camera_.transformation_.position_.x_, camera_.transformation_.position_.y_, camera_.transformation_.position_.z_,
+        0, 0, 1);
 
     DrawScene();
 
@@ -289,42 +361,24 @@ void SceneViewer::Render()
 void SceneViewer::ChangeSize(GLsizei w, GLsizei h)
 {
     camera_.Resize(w, h);
+    ratio_ = static_cast<float>(w) / static_cast<float>(h);
 }
 
 Camera::Camera() :
-    zoom_(2.0f),
-    position_(300.0f, 0.0f, 0.0f),
-    rotation_(45.0f, 45.0f, 45.0f)
+    near_(0.1f),
+    far_(20000.f),
+    fov_(90.0f),
+    zoom_(1.0f)
 { }
-
-void Camera::Zoom(int dir)
-{
-    if (dir > 0)
-        zoom_ += 0.1f;
-    else
-        zoom_ -= 0.1f;
-    if (zoom_ < 0.1f)
-        zoom_ = 0.1f;
-    glutPostRedisplay();
-}
 
 void Camera::Resize(int w, int h)
 {
     glViewport(0, 0, w, h);
-    ratio_ = static_cast<float>(w / h);
-    glutPostRedisplay();
 }
 
-void Camera::Position()
+Math::Matrix4 Camera::GetMatrix()
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(50.0, ratio_, 10, 200000);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, -1000 * zoom_, 0,
-        position_.x_, position_.y_, position_.z_,
-        0, 0, 1);
+    return XMath::XMMatrixInverse(nullptr, transformation_.GetMatrix());
 }
 
 }
