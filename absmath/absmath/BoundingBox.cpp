@@ -11,6 +11,12 @@
 
 namespace Math {
 
+void BoundingBox::Define(float min, float max)
+{
+    min_ = Vector3(min, min, min);
+    max_ = Vector3(max, max, max);
+}
+
 void BoundingBox::Merge(float x, float y, float z)
 {
     if (min_.x_ > x)

@@ -36,9 +36,15 @@ public:
     {
         return Quaternion::FromAxisAngle(Vector3::UnitY, rotation_);
     }
+    void SetQuaternion(const Quaternion& rot)
+    {
+        rotation_ = rot.EulerAngles().y_;
+    }
 
     /// Get transformation matrix
     XMath::XMMATRIX GetMatrix() const;
+    /// Use rot instead of rotation_
+    XMath::XMMATRIX GetMatrix(const Quaternion& rot) const;
 };
 
 }

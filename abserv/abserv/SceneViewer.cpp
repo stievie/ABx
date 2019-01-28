@@ -7,10 +7,15 @@
 #include "Dispatcher.h"
 #include <cassert>
 #include "Player.h"
+#include "MathUtils.h"
 
 // http://www.alecjacobson.com/weblog/?p=4307
 
 namespace Debug {
+
+const float CAMERA_MIN_DIST = 0.0f;
+const float CAMERA_INITIAL_DIST = 1.0f;
+const float CAMERA_MAX_DIST = 40.0f;
 
 SceneViewer* SceneViewer::instance_ = nullptr;
 
@@ -37,7 +42,12 @@ void main()
 SceneViewer::SceneViewer() :
     running_(false),
     initialized_(false),
-    menuId_(0)
+    menuId_(0),
+    yaw_(0.0f),
+    pitch_(0.0f),
+    cameraDistance_(CAMERA_INITIAL_DIST),
+    mouseLook_(false),
+    mousePos_({0, 0})
 {
     assert(SceneViewer::instance_ == nullptr);
     SceneViewer::instance_ = this;
@@ -65,6 +75,12 @@ void SceneViewer::StaticMouse(int button, int state, int x, int y)
 {
     assert(SceneViewer::instance_ != nullptr);
     SceneViewer::instance_->Mouse(button, state, x, y);
+}
+
+void SceneViewer::StaticMouseMove(int x, int y)
+{
+    assert(SceneViewer::instance_ != nullptr);
+    SceneViewer::instance_->MouseMove(x, y);
 }
 
 void SceneViewer::StaticMouseWheel(int button, int dir, int x, int y)
@@ -103,8 +119,17 @@ void SceneViewer::Update()
             if (g->GetPlayerCount() != 0)
             {
                 auto p = g->GetPlayers().begin()->second;
-                camera_.transformation_ = p->transformation_;
-                camera_.transformation_.position_.y_ += 1.0f;
+
+                // Get camera look at dir from character yaw + pitch
+                Math::Quaternion rot = Math::Quaternion(Math::Vector3::UnitY, yaw_);
+                Math::Quaternion dir = rot * Math::Quaternion(Math::Vector3::UnitX, pitch_);
+                Math::Vector3 aimPoint;
+                static const Math::Vector3 CAM_POS(0.0f, 1.0f, 1.5f);
+                aimPoint = p->transformation_.position_ + CAM_POS;// +rot * CAM_POS;
+                Math::Vector3 rayDir = dir * Math::Vector3::Back;
+
+                camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
+                camera_.rotation_ = dir;
             }
         }
         glutMainLoopStep();
@@ -175,6 +200,7 @@ void SceneViewer::InternalInitialize()
     glutMouseFunc(SceneViewer::StaticMouse);
     glutMouseWheelFunc(SceneViewer::StaticMouseWheel);
     glutKeyboardFunc(SceneViewer::StaticKeyboard);
+    glutMotionFunc(SceneViewer::StaticMouseMove);
 
     menuId_ = glutCreateMenu(SceneViewer::StaticMenu);
     glutSetMenu(menuId_);
@@ -190,7 +216,11 @@ void SceneViewer::DrawScene()
         glUseProgram(shaderProgram_);
         // select program and attach uniforms
         GLint proj_loc = glGetUniformLocation(shaderProgram_, "proj");
-        glUniformMatrix4fv(proj_loc, 1, GL_FALSE, camera_.GetMatrix().Transpose().Data());
+        Math::Matrix4 matrix = camera_.GetMatrix();
+        // https://www.gamedev.net/forums/topic/698812-leftright-coordinate-system-and-rotation/?tab=comments#comment-5390101
+        matrix.Scale(Math::Vector3(1.0f, 1.0f, 2.0f));
+        matrix.Translate(Math::Vector3(0.0f, 0.0f, -1.0f));
+        glUniformMatrix4fv(proj_loc, 1, GL_FALSE, matrix.Transpose().Data());
 
         auto objects = g->GetObjects();
         for (const auto& object : objects)
@@ -205,20 +235,26 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
     auto collShape = object->GetCollisionShape();
     if (!collShape)
         return;
-    Math::Transformation trans = object->transformation_;
+    const Math::Transformation& trans = object->transformation_;
     Math::Shape s = collShape->GetShape();
     if (s.indexCount_ == 0)
         return;
 
-    Math::Matrix4 matrix = trans.GetMatrix();
-/*    if (collShape->shapeType_ == Math::ShapeTypeBoundingBox)
+    Math::Matrix4 matrix;
+    if (collShape->shapeType_ == Math::ShapeTypeBoundingBox)
     {
-        trans.rotation_ = 0.0f;
-        matrix = trans.GetMatrix();
+        // There is 1 special case, an oriented BB
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
-        BBoxShape* shape = (BBoxShape*)collShape;
-        matrix.Rotate(shape->shape_->orientation_.AxisAngle());
-    }*/
+        BBoxShape* shape = static_cast<BBoxShape*>(collShape);
+        if (shape->shape_->IsOriented())
+            matrix = trans.GetMatrix(shape->shape_->orientation_);
+        else
+            matrix = trans.GetMatrix();
+    }
+    else
+        matrix = trans.GetMatrix();
+    // https://www.gamedev.net/forums/topic/698812-leftright-coordinate-system-and-rotation/?tab=comments#comment-5390101
+    matrix.Scale(Math::Vector3(-1.0f, 1.0f, 1.0f));
 
     // Generate and attach buffers to vertex array
     GLuint VAO;
@@ -228,9 +264,9 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
     glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * s.VertexDataSize(), s.VertexData(), GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * s.VertexDataSize(), s.VertexData(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * s.indexCount_, s.indexData_.data(), GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * s.indexCount_, s.indexData_.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -247,20 +283,55 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
 
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+    glDeleteVertexArrays(1, &VAO);
 }
 
 void SceneViewer::Mouse(int button, int state, int x, int y)
 {
+    switch (button)
+    {
+    case GLUT_LEFT_BUTTON:
+        if (state == GLUT_UP)
+        {
+            mouseLook_ = false;
+        }
+        else if (state == GLUT_DOWN)
+        {
+            mousePos_.x_ = x;
+            mousePos_.y_ = y;
+            mouseLook_ = true;
+        }
+        break;
+    case GLUT_RIGHT_BUTTON:
+        if (state == GLUT_DOWN)
+        {
+            yaw_ = 0.0f;
+            pitch_ = 0.0f;
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void SceneViewer::MouseMove(int x, int y)
+{
+    if (mouseLook_)
+    {
+        yaw_ += (float)(mousePos_.x_ - x) * 0.001f;
+        pitch_ += (float)(mousePos_.y_ - y) * 0.001f;
+        mousePos_.x_ = x;
+        mousePos_.y_ = y;
+    }
 }
 
 void SceneViewer::MouseWheel(int, int dir, int, int)
 {
     if (dir > 0)
-        camera_.zoom_ += 0.1f;
+        cameraDistance_ -= 0.1f;
     else
-        camera_.zoom_ -= 0.1f;
-    if (camera_.zoom_ < 0.1f)
-        camera_.zoom_ = 0.1f;
+        cameraDistance_ += 0.1f;
+    cameraDistance_ = Math::Clamp(cameraDistance_, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
 }
 
 void SceneViewer::Menu(int id)
@@ -269,7 +340,7 @@ void SceneViewer::Menu(int id)
         UpdateMenu();
 }
 
-void SceneViewer::Keyboard(unsigned char key, int, int)
+void SceneViewer::Keyboard(unsigned char /* key */, int, int)
 {
 /*    switch (key)
     {
@@ -343,15 +414,6 @@ void SceneViewer::Render()
     //Clear all the buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(camera_.fov_, ratio_, camera_.near_, camera_.far_);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, -1000 * camera_.zoom_, 0,
-        camera_.transformation_.position_.x_, camera_.transformation_.position_.y_, camera_.transformation_.position_.z_,
-        0, 0, 1);
-
     DrawScene();
 
     glutSwapBuffers();
@@ -368,7 +430,8 @@ Camera::Camera() :
     near_(0.1f),
     far_(20000.f),
     fov_(90.0f),
-    zoom_(1.0f)
+    zoom_(1.0f),
+    rotation_(Math::Quaternion::Identity)
 { }
 
 void Camera::Resize(int w, int h)
@@ -378,6 +441,8 @@ void Camera::Resize(int w, int h)
 
 Math::Matrix4 Camera::GetMatrix()
 {
+    if (rotation_ != Math::Quaternion::Identity)
+        return XMath::XMMatrixInverse(nullptr, transformation_.GetMatrix(rotation_));
     return XMath::XMMatrixInverse(nullptr, transformation_.GetMatrix());
 }
 

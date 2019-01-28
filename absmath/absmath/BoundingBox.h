@@ -54,11 +54,7 @@ public:
     }
 #endif
 
-    void Define(float min, float max)
-    {
-        min_ = Vector3(min, min, min);
-        max_ = Vector3(max, max, max);
-    }
+    void Define(float min, float max);
 
     Vector3 Center() const { return (max_ + min_) * 0.5; }
     Vector3 Size() const { return max_ - min_; }

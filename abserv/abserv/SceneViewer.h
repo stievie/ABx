@@ -10,6 +10,7 @@ extern "C" {
 
 #include "Vector3.h"
 #include "Game.h"
+#include "Point.h"
 
 namespace Debug {
 
@@ -22,6 +23,7 @@ public:
     Math::Matrix4 GetMatrix();
 
     Math::Transformation transformation_;
+    Math::Quaternion rotation_;
     float near_;
     float far_;
     float fov_;
@@ -42,9 +44,15 @@ private:
     GLuint shaderProgram_;
     int projectionModelviewMatrixLoc_;
     float ratio_;
+    float yaw_;
+    float pitch_;
+    float cameraDistance_;
+    bool mouseLook_;
+    Math::Point<int> mousePos_;
     static void StaticRenderScene();
     static void StaticChangeSize(GLsizei w, GLsizei h);
     static void StaticMouse(int button, int state, int x, int y);
+    static void StaticMouseMove(int x, int y);
     static void StaticMouseWheel(int button, int dir, int x, int y);
     static void StaticMenu(int id);
     static void StaticKeyboard(unsigned char key, int x, int y);
@@ -54,6 +62,7 @@ private:
     void DrawScene();
     void DrawObject(const std::shared_ptr<Game::GameObject>& object);
     void Mouse(int button, int state, int x, int y);
+    void MouseMove(int x, int y);
     void MouseWheel(int button, int dir, int x, int y);
     void Menu(int id);
     void Keyboard(unsigned char key, int x, int y);

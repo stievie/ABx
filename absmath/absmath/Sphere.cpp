@@ -100,7 +100,7 @@ Shape Sphere::GetShape() const
         {  0.000f, -1.000f,  0.000f }   // Bottom-most point.
     };
 
-    for (unsigned i = 0; i < 12; i++)
+    for (unsigned i = 0; i < 12; ++i)
     {
         s.vertexData_.push_back(Vector3(
             v[i] * radius_ + center_
