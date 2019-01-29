@@ -122,7 +122,7 @@ Shape BoundingBox::GetShape() const
     |   2------------6
     | /          | /
 min 0------------4
-*/
+    */
     // Front
     s.AddTriangle(7, 4, 0);
     s.AddTriangle(0, 3, 7);

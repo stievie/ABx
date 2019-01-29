@@ -73,7 +73,7 @@ public:
     {
         return reinterpret_cast<const float*>(&vertexData_[0]);
     }
-    size_t VertexDataSize() const { return vertexCount_ * 3; }
+    size_t VertexDataSize() const { return vertexCount_ * sizeof(float) * 3; }
     /// World Coordinates, that's why we need a transformation matrix
     Vector3 GetFarsetPointInDirection(const Vector3& v) const;
 

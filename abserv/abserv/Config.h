@@ -13,16 +13,14 @@
 #if !defined(WIN_SERVICE)
     // Compiled with Debug::SceneViewer
 #   if !defined(SCENE_VIEWER)
-#      define SCENE_VIEWER
+//#      define SCENE_VIEWER
 #   endif
 #else
 #   undef SCENE_VIEWER
 #endif
-#if defined(SCENE_VIEWER)
-#   define FREEGLUT_STATIC
-#   define HAVE_CONFIG_H
-#   define GLEW_STATIC
-#endif
+#define FREEGLUT_STATIC
+#define HAVE_CONFIG_H
+#define GLEW_STATIC
 
 // ms = 20 network ticks/second. Update game state each 50ms (= 20 Updates/sec)
 #define NETWORK_TICK 50
