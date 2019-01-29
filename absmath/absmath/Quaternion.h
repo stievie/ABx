@@ -92,6 +92,8 @@ public:
 
         return rhs + 2.0f * (cross1 * w_ + cross2);
     }
+    Quaternion Inverse() const;
+    Quaternion Conjugate() const;
 
     /// Return Axis and Angle
     /// x, y, z -> Axis

@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
-#include "ServiceConfig.h"
+
 #if !defined(WIN_SERVICE)
 #include "Dispatcher.h"
 #include "MiniDump.h"

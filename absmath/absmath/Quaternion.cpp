@@ -143,6 +143,29 @@ Vector3 Quaternion::EulerAngles() const
     return Vector3(roll, pitch, yaw);
 }
 
+Quaternion Quaternion::Inverse() const
+{
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    return XMath::XMQuaternionInverse(*this);
+#else
+    float lenSquared = LengthSqr();
+    if (lenSquared == 1.0f)
+        return Conjugate();
+    else if (lenSquared >= M_EPSILON)
+        return Conjugate() * (1.0f / lenSquared);
+    else
+        return Identity;
+#endif
+}
+Quaternion Quaternion::Conjugate() const
+{
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    return XMath::XMQuaternionConjugate(*this);
+#else
+    return Quaternion(w_, -x_, -y_, -z_);
+#endif
+}
+
 Quaternion& Quaternion::operator+=(const Quaternion& v)
 {
     x_ += v.x_;

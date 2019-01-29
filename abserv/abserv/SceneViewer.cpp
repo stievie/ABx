@@ -124,12 +124,14 @@ void SceneViewer::Update()
                 Math::Quaternion rot = Math::Quaternion(Math::Vector3::UnitY, yaw_);
                 Math::Quaternion dir = rot * Math::Quaternion(Math::Vector3::UnitX, pitch_);
                 Math::Vector3 aimPoint;
-                static const Math::Vector3 CAM_POS(0.0f, 1.0f, 1.5f);
-                aimPoint = p->transformation_.position_ + CAM_POS;// +rot * CAM_POS;
+                static const Math::Vector3 CAM_POS(0.0f, 0.5f, 0.0f);
+                aimPoint = p->transformation_.position_ - CAM_POS;// +rot * CAM_POS;
                 Math::Vector3 rayDir = dir * Math::Vector3::Back;
 
                 camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
-                camera_.rotation_ = dir;
+                Math::Quaternion quat = p->transformation_.GetQuaternion() * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI));
+
+                camera_.rotation_ = quat * dir;
             }
         }
         glutMainLoopStep();
@@ -254,7 +256,7 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
     else
         matrix = trans.GetMatrix();
     // https://www.gamedev.net/forums/topic/698812-leftright-coordinate-system-and-rotation/?tab=comments#comment-5390101
-    matrix.Scale(Math::Vector3(-1.0f, 1.0f, 1.0f));
+//    matrix.Scale(Math::Vector3(1.0f, -1.0f, 1.0f));
 
     // Generate and attach buffers to vertex array
     GLuint VAO;

@@ -10,8 +10,14 @@
 
 #define SCHEDULER_MINTICKS 10
 
-// Compiled with Debug::SceneViewer
-#define SCENE_VIEWER
+#if !defined(WIN_SERVICE)
+    // Compiled with Debug::SceneViewer
+#   if !defined(SCENE_VIEWER)
+#      define SCENE_VIEWER
+#   endif
+#else
+#   undef SCENE_VIEWER
+#endif
 #if defined(SCENE_VIEWER)
 #   define FREEGLUT_STATIC
 #   define HAVE_CONFIG_H
