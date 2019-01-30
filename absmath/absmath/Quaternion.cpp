@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Quaternion.h"
-#include "Logger.h"
-#include "StringUtils.h"
+#include "MathUtils.h"
 
 namespace Math {
 
@@ -32,7 +31,7 @@ Quaternion::Quaternion(float pitch, float yaw, float roll)
 
 Quaternion::Quaternion(const std::string& str)
 {
-    std::vector<std::string> parts = Utils::Split(str, " ");
+    std::vector<std::string> parts = Math::Split(str, ' ');
 
     if (parts.size() > 2)
     {
@@ -53,9 +52,6 @@ Quaternion::Quaternion(const std::string& str)
         y_ = 0.0f;
         z_ = 0.0f;
         w_ = 1.0f;
-#ifdef DEBUG_MATH
-        LOG_ERROR << "Malformed Quaternion string: " << str << std::endl;
-#endif
     }
 }
 

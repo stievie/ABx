@@ -6,8 +6,6 @@
 #include "Shape.h"
 #include "Gjk.h"
 #include "Matrix4.h"
-#include "Logger.h"
-#include "Profiler.h"
 
 namespace Math {
 
@@ -119,7 +117,7 @@ Shape BoundingBox::GetShape() const
       / |          / |
     3------------7   |
     |   |        |   |
-    |   2------------6
+    |   2--------|---6
     | /          | /
 min 0------------4
     */

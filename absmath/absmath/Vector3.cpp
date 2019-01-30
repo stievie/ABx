@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Vector3.h"
-#include "StringUtils.h"
-#include "Logger.h"
+#include "MathUtils.h"
 #include "Vector4.h"
 
 namespace Math {
@@ -23,7 +22,7 @@ Vector3::Vector3(const Vector4& vector) noexcept :
 
 Vector3::Vector3(const std::string& str)
 {
-    std::vector<std::string> parts = Utils::Split(str, " ");
+    std::vector<std::string> parts = Math::Split(str, ' ');
     if (parts.size() == 3)
     {
         x_ = std::stof(parts.at(0));
@@ -35,9 +34,6 @@ Vector3::Vector3(const std::string& str)
         x_ = 0.0f;
         y_ = 0.0f;
         z_ = 0.0f;
-#ifdef DEBUG_MATH
-        LOG_ERROR << "Malformed Vector3 string: " << str << std::endl;
-#endif
     }
 }
 

@@ -6,7 +6,6 @@
 #include "HeightMap.h"
 #include "BoundingBox.h"
 #include "Matrix4.h"
-#include "Profiler.h"
 
 namespace Math {
 

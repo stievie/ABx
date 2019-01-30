@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Vector4.h"
-#include "StringUtils.h"
-#include "Logger.h"
+#include "MathUtils.h"
 
 namespace Math {
 
@@ -14,7 +13,7 @@ const Vector4 Vector4::UnitW(0.0f, 0.0f, 0.0f, 1.0f);
 
 Vector4::Vector4(const std::string& str)
 {
-    std::vector<std::string> parts = Utils::Split(str, " ");
+    std::vector<std::string> parts = Math::Split(str, ' ');
     if (parts.size() > 2)
     {
         x_ = std::stof(parts.at(0));
@@ -31,9 +30,6 @@ Vector4::Vector4(const std::string& str)
         y_ = 0.0f;
         z_ = 0.0f;
         w_ = 0.0f;
-#ifdef DEBUG_MATH
-        LOG_ERROR << "Malformed Vector4 string: " << str << std::endl;
-#endif
     }
 }
 

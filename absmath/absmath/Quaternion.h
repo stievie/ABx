@@ -44,7 +44,7 @@ public:
 
     /// Create a Quaternion representing the rotation between two 3D vectors
     static Quaternion FromTwoVectors(const Vector3& u, const Vector3& v);
-    /// Create a Quaternion from Axis and Angle
+    /// Create a Quaternion from Axis and Angle. Angle is Rad
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
 
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
