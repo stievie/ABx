@@ -8,9 +8,6 @@ const Quaternion Quaternion::Identity(1.0f, 0.0f, 0.0f, 0.0f);
 
 Quaternion::Quaternion(float x, float y, float z)
 {
-//#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-//    *this = Quaternion(XMath::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
-//#else
     x *= 0.5f;
     y *= 0.5f;
     z *= 0.5f;
@@ -26,7 +23,6 @@ Quaternion::Quaternion(float x, float y, float z)
     x_ = cosY * sinX * cosZ + sinY * cosX * sinZ;
     y_ = sinY * cosX * cosZ - cosY * sinX * sinZ;
     z_ = cosY * cosX * sinZ - sinY * sinX * cosZ;
-//#endif
 }
 
 Quaternion::Quaternion(const std::string& str)
@@ -35,10 +31,10 @@ Quaternion::Quaternion(const std::string& str)
 
     if (parts.size() < 3)
     {
+        w_ = 1.0f;
         x_ = 0.0f;
         y_ = 0.0f;
         z_ = 0.0f;
-        w_ = 1.0f;
         return;
     }
     if (parts.size() < 4)
@@ -79,7 +75,7 @@ Quaternion Quaternion::FromTwoVectors(const Vector3& u, const Vector3& v)
 
 Quaternion Quaternion::FromAxisAngle(const Vector3& axis, float angle)
 {
-    Math::Vector3 normalAxis = axis.Normal();
+    const Math::Vector3 normalAxis = axis.Normal();
     float factor = sin(angle * 0.5f);
     float x = normalAxis.x_ * factor;
     float y = normalAxis.y_ * factor;
