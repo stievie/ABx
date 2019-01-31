@@ -93,7 +93,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\Lib\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>$(OutDir)$(TargetFileName) -d yes</Command>
+      <Command>$(OutDir)$(TargetFileName)</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Run Tests</Message>
@@ -102,14 +102,12 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.BoundingBox.cpp" />
+    <ClCompile Include="Math.Quaternion.cpp" />
     <ClCompile Include="Math.Ray.cpp" />
     <ClCompile Include="Math.Sphere.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
-      <Project>{2482b1c7-086b-4968-aa1e-2ea0d4d71225}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\absmath\absmath\absmath.vcxproj">
       <Project>{c7a029e7-b69c-43ff-8d8d-ba2a46283558}</Project>
     </ProjectReference>

@@ -10,33 +10,28 @@ class Quaternion
 {
 public:
     Quaternion() noexcept :
+        w_(1.0f),
         x_(0.0f),
         y_(0.0f),
-        z_(0.0f),
-        w_(0.0f)
+        z_(0.0f)
     {}
-    Quaternion(const Vector3& v, float w) noexcept :
-        x_(v.x_),
-        y_(v.y_),
-        z_(v.z_),
-        w_(w)
-    {}
-    Quaternion(float x, float y, float z, float w) noexcept :
+    Quaternion(float w, float x, float y, float z) noexcept :
+        w_(w),
         x_(x),
         y_(y),
-        z_(z),
-        w_(w)
+        z_(z)
     {}
-    Quaternion(float pitch, float yaw, float roll);
+    Quaternion(float x, float y, float z);
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     Quaternion(const XMath::XMVECTOR& q) :
+        w_(q.m128_f32[3]),
         x_(q.m128_f32[0]),
         y_(q.m128_f32[1]),
-        z_(q.m128_f32[2]),
-        w_(q.m128_f32[3])
+        z_(q.m128_f32[2])
     { }
 #endif
     explicit Quaternion(const Vector3& eulerAngles) :
+        // x = Pitch, y = Yaw, z = Roll
         Quaternion(eulerAngles.x_, eulerAngles.y_, eulerAngles.z_)
     {}
     /// Parse from string
@@ -92,6 +87,12 @@ public:
 
         return rhs + 2.0f * (cross1 * w_ + cross2);
     }
+    /// Test for equality with another vector with epsilon.
+    bool Equals(const Quaternion& rhs) const
+    {
+        return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_) && Math::Equals(w_, rhs.w_);
+    }
+
     Quaternion Inverse() const;
     Quaternion Conjugate() const;
 
@@ -116,10 +117,10 @@ public:
         return ss.str();
     }
 
+    float w_;
     float x_;
     float y_;
     float z_;
-    float w_;
 
     static const Quaternion Identity;
 };

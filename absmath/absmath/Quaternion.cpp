@@ -4,55 +4,54 @@
 
 namespace Math {
 
-const Quaternion Quaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
+const Quaternion Quaternion::Identity(1.0f, 0.0f, 0.0f, 0.0f);
 
-Quaternion::Quaternion(float pitch, float yaw, float roll)
+Quaternion::Quaternion(float x, float y, float z)
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    *this = Quaternion(XMath::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
-#else
-    yaw *= 0.5f;
-    pitch *= 0.5f;
-    roll *= 0.5f;
+//#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+//    *this = Quaternion(XMath::XMQuaternionRotationRollPitchYaw(pitch, yaw, roll));
+//#else
+    x *= 0.5f;
+    y *= 0.5f;
+    z *= 0.5f;
 
-    float c1 = cos(yaw);
-    float c2 = cos(pitch);
-    float c3 = cos(roll);
-    float s1 = sin(yaw);
-    float s2 = sin(pitch);
-    float s3 = sin(roll);
+    float sinX = sinf(x);
+    float cosX = cosf(x);
+    float sinY = sinf(y);
+    float cosY = cosf(y);
+    float sinZ = sinf(z);
+    float cosZ = cosf(z);
 
-    w_ = c1 * c2 * c3 - s1 * s2 * s3;
-    x_ = s1 * s2 * c3 + c1 * c2 * s3;
-    y_ = s1 * c2 * c3 + c1 * s2 * s3;
-    z_ = c1 * s2 * c3 - s1 * c2 * s3;
-#endif
+    w_ = cosY * cosX * cosZ + sinY * sinX * sinZ;
+    x_ = cosY * sinX * cosZ + sinY * cosX * sinZ;
+    y_ = sinY * cosX * cosZ - cosY * sinX * sinZ;
+    z_ = cosY * cosX * sinZ - sinY * sinX * cosZ;
+//#endif
 }
 
 Quaternion::Quaternion(const std::string& str)
 {
     std::vector<std::string> parts = Math::Split(str, ' ');
 
-    if (parts.size() > 2)
-    {
-        x_ = std::stof(parts.at(0));
-        y_ = std::stof(parts.at(1));
-        z_ = std::stof(parts.at(2));
-        if (parts.size() > 3)
-            w_ = std::stof(parts.at(3));
-        else
-        {
-            // Euler angles
-            *this = Quaternion(x_, y_, z_);
-        }
-    }
-    else
+    if (parts.size() < 3)
     {
         x_ = 0.0f;
         y_ = 0.0f;
         z_ = 0.0f;
         w_ = 1.0f;
+        return;
     }
+    if (parts.size() < 4)
+    {
+        // Euler angles
+        *this = Quaternion(x_, y_, z_);
+        return;
+    }
+
+    w_ = std::stof(parts.at(0));
+    x_ = std::stof(parts.at(1));
+    y_ = std::stof(parts.at(2));
+    z_ = std::stof(parts.at(3));
 }
 
 Quaternion Quaternion::FromTwoVectors(const Vector3& u, const Vector3& v)
@@ -75,23 +74,24 @@ Quaternion Quaternion::FromTwoVectors(const Vector3& u, const Vector3& v)
     {
         w = u.CrossProduct(v);
     }
-    return Quaternion(w, realPart).Normal();
+    return Quaternion::FromAxisAngle(w, realPart);
 }
 
 Quaternion Quaternion::FromAxisAngle(const Vector3& axis, float angle)
 {
-    float factor = sin(angle / 2.0f);
-    float x = axis.x_ * factor;
-    float y = axis.y_ * factor;
-    float z = axis.z_ * factor;
+    Math::Vector3 normalAxis = axis.Normal();
+    float factor = sin(angle * 0.5f);
+    float x = normalAxis.x_ * factor;
+    float y = normalAxis.y_ * factor;
+    float z = normalAxis.z_ * factor;
 
     float w = cos(angle / 2.0f);
-    return Quaternion(x, y, z, w).Normal();
+    return Quaternion(w, x, y, z);
 }
 
 Vector4 Quaternion::AxisAngle() const
 {
-    Quaternion q(x_, y_, z_, w_);
+    Quaternion q(w_, x_, y_, z_);
     if (abs(q.w_) > 1.0f)
         q.Normalize();
 
@@ -118,25 +118,34 @@ Vector4 Quaternion::AxisAngle() const
 
 Vector3 Quaternion::EulerAngles() const
 {
-    float ysqr = y_ * y_;
+    // Derivation from http://www.geometrictools.com/Documentation/EulerAngles.pdf
+    // Order of rotations: Z first, then X, then Y
+    float check = 2.0f * (-y_ * z_ + w_ * x_);
 
-    // roll (x-axis rotation)
-    float t0 = +2.0f * (w_ * x_ + y_ * z_);
-    float t1 = +1.0f - 2.0f * (x_ * x_ + ysqr);
-    float roll = std::atan2(t0, t1);
-
-    // pitch (y-axis rotation)
-    float t2 = +2.0f * (w_ * y_ - z_ * x_);
-    t2 = t2 > 1.0f ? 1.0f : t2;
-    t2 = t2 < -1.0f ? -1.0f : t2;
-    float pitch = std::asin(t2);
-
-    // yaw (z-axis rotation)
-    float t3 = +2.0f * (w_ * z_ + x_ * y_);
-    float t4 = +1.0f - 2.0f * (ysqr + z_ * z_);
-    float yaw = std::atan2(t3, t4);
-
-    return Vector3(roll, pitch, yaw);
+    if (check < -0.995f)
+    {
+        return Vector3(
+            -float(M_PI_2),
+            0.0f,
+            -atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_))
+        );
+    }
+    else if (check > 0.995f)
+    {
+        return Vector3(
+            float(M_PI_2),
+            0.0f,
+            atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_))
+        );
+    }
+    else
+    {
+        return Vector3(
+            asinf(check),
+            atan2f(2.0f * (x_ * z_ + w_ * y_), 1.0f - 2.0f * (x_ * x_ + y_ * y_)),
+            atan2f(2.0f * (x_ * y_ + w_ * z_), 1.0f - 2.0f * (x_ * x_ + z_ * z_))
+        );
+    }
 }
 
 Quaternion Quaternion::Inverse() const
@@ -158,7 +167,7 @@ Quaternion Quaternion::Conjugate() const
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     return XMath::XMQuaternionConjugate(*this);
 #else
-    return Quaternion(w_, -x_, -y_, -z_);
+    return Quaternion(-x_, -y_, -z_, w_);
 #endif
 }
 

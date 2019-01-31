@@ -1,0 +1,42 @@
+#include "stdafx.h"
+#include <catch.hpp>
+
+#include "Quaternion.h"
+#include "Matrix4.h"
+
+// https://github.com/gareth-cross/quat/blob/master/test/quaternion_test.cpp
+
+TEST_CASE("Quaternion")
+{
+    SECTION("Construct")
+    {
+        Math::Quaternion quat(0.0f, 1.0f, 2.0f, 3.0f);
+        REQUIRE(quat.w_ == 0.0f);
+        REQUIRE(quat.x_ == 1.0f);
+        REQUIRE(quat.y_ == 2.0f);
+        REQUIRE(quat.z_ == 3.0f);
+    }
+    SECTION("Euler")
+    {
+        Math::Quaternion quat(0.92388f, 0.0f, 0.382683f, 0.0f);
+        Math::Quaternion quat2(0.0f, Math::DegToRad(45.0f), 0.0f);
+        Math::Vector3 euler = quat.EulerAngles();
+        REQUIRE(euler.x_ == 0.0f);
+        REQUIRE(fabs(Math::RadToDeg(euler.y_) - 45.0f) < 0.00006f);
+        REQUIRE(euler.z_ == 0.0f);
+    }
+
+    SECTION("Multiply")
+    {
+        Math::Quaternion quat = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitX, float(M_PI));
+        Math::Vector3 v = Math::Matrix4::FromQuaternion(quat) * Math::Vector3::UnitY;
+
+//        REQUIRE(v.Equals(Math::Vector3::UnitY));
+    }
+    SECTION("Conjugate")
+    {
+        Math::Quaternion quat(1.0f, 1.0f, 1.0f, 1.0f);
+        Math::Quaternion con = quat.Conjugate();
+        REQUIRE(con.Equals(Math::Quaternion(1.0f, -1.0f, -1.0f, -1.0f)));
+    }
+}
