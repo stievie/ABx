@@ -168,7 +168,6 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("LESS complier: https://github.com/BramvdKroef/clessc", 15);
     CreateSingleLine("Password hash: bcrypt OpenBSD https://www.openbsd.org/", 15);
     CreateSingleLine("PRNG: arc4random OpenBSD https://www.openbsd.org/", 15);
-    CreateSingleLine("AES: tiny-AES-c https://github.com/kokke/tiny-AES-c", 15);
     CreateSingleLine("Database: PostgreSQL https://www.postgresql.org/", 15);
     CreateLogo("Textures/PostgreSQL_logo.png", 0.5f);
 
