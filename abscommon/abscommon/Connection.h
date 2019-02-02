@@ -72,7 +72,8 @@ protected:
 private:
     friend class ConnectionManager;
 
-    static void HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error);
+    static void HandleReadTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error);
+    static void HandleWriteTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error);
 
     void ParseHeader(const asio::error_code& error);
     void ParsePacket(const asio::error_code& error);
@@ -80,6 +81,10 @@ private:
     void OnWriteOperation(const asio::error_code& error);
     void InternalSend(std::shared_ptr<OutputMessage> message);
 
+#ifdef DEBUG_NET
+    int64_t lastReadHeader_;
+    int64_t lastReadBody_;
+#endif
     std::shared_ptr<ServicePort> servicePort_;
     std::shared_ptr<Protocol> protocol_;
     std::recursive_mutex lock_;

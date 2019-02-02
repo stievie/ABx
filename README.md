@@ -93,7 +93,7 @@ Optional run `absadmin`.
 ### Run as NT service
 
 Define `WIN_SERVICE` and recompile the server. It will create a Windows Service
-application. Use the `_svc.lua` configuration files instead to log to a file instead of
+application. Use the `*_svc.lua` configuration files instead to log to a file instead of
 StdOut.
 
 Install the services with the `-install` command line switch. Use `-remove` to

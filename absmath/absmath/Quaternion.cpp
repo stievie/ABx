@@ -40,7 +40,10 @@ Quaternion::Quaternion(const std::string& str)
     if (parts.size() < 4)
     {
         // Euler angles
-        *this = Quaternion(x_, y_, z_);
+        *this = Quaternion(
+            std::stof(parts.at(1)),   // x
+            std::stof(parts.at(2)),   // y
+            std::stof(parts.at(3)));  // z
         return;
     }
 

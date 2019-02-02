@@ -6,6 +6,7 @@
 #include "Shape.h"
 #include "Gjk.h"
 #include "Matrix4.h"
+#include <array>
 
 namespace Math {
 
@@ -13,6 +14,30 @@ void BoundingBox::Define(float min, float max)
 {
     min_ = Vector3(min, min, min);
     max_ = Vector3(max, max, max);
+}
+
+std::array<Vector3, 8> BoundingBox::GetCorners() const
+{
+    std::array<Vector3, 8> result;
+    const Vector3& boundPoint1 = min_;
+    const Vector3& boundPoint2 = max_;
+    const Vector3 boundPoint3 = Vector3(boundPoint1.x_, boundPoint1.y_, boundPoint2.z_);
+    const Vector3 boundPoint4 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint1.z_);
+    const Vector3 boundPoint5 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint1.z_);
+    const Vector3 boundPoint6 = Vector3(boundPoint1.x_, boundPoint2.y_, boundPoint2.z_);
+    const Vector3 boundPoint7 = Vector3(boundPoint2.x_, boundPoint1.y_, boundPoint2.z_);
+    const Vector3 boundPoint8 = Vector3(boundPoint2.x_, boundPoint2.y_, boundPoint1.z_);
+
+    result[0] = boundPoint1;
+    result[1] = boundPoint2;
+    result[2] = boundPoint3;
+    result[3] = boundPoint4;
+    result[4] = boundPoint5;
+    result[5] = boundPoint6;
+    result[6] = boundPoint7;
+    result[7] = boundPoint8;
+
+    return result;
 }
 
 void BoundingBox::Merge(float x, float y, float z)
@@ -183,19 +208,10 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     const bool o1 = IsOriented();
     const bool o2 = b2.IsOriented();
-    if (o1 && o2)
+    if (o1 || o2)
     {
         return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
     }
-    else if (o1)
-    {
-        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
-    }
-    else if (o2)
-    {
-        return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-    }
-    // None is oriented
 #endif
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();

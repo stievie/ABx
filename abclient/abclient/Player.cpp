@@ -154,6 +154,7 @@ void Player::FixedUpdate(float timeStep)
         lastYaw_ = controls_.yaw_;
     }
 
+//    URHO3D_LOGINFO("FixedUpdate");
     // Also Update here. The client takes care that it doesn't send too often.
     client->Update(timeStep);
     Actor::FixedUpdate(timeStep);

@@ -50,7 +50,7 @@ public:
     }
     operator XMath::BoundingOrientedBox() const
     {
-        return XMath::BoundingOrientedBox(Center(), Extends(), orientation_);
+        return XMath::BoundingOrientedBox(Center(), Extends(), orientation_.Inverse());
     }
 #endif
 
@@ -62,6 +62,7 @@ public:
     {
         return *this;
     }
+    std::array<Vector3, 8> GetCorners() const;
     void Merge(float x, float y, float z);
     void Merge(const Vector3& vertex);
     void Merge(const Vector3* vertices, unsigned count);
@@ -94,6 +95,8 @@ public:
         std::stringstream ss;
         ss << "min: " << min_.ToString() << " ";
         ss << "max: " << max_.ToString();
+        if (IsOriented())
+            ss << " o: " << orientation_.ToString();
         return ss.str();
     }
 

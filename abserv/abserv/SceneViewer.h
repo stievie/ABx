@@ -49,6 +49,7 @@ private:
     float cameraDistance_;
     bool mouseLook_;
     Math::Point<int> mousePos_;
+    GLuint VAO_;
     static void StaticRenderScene();
     static void StaticChangeSize(GLsizei w, GLsizei h);
     static void StaticMouse(int button, int state, int x, int y);

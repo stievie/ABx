@@ -45,10 +45,12 @@ public:
             return false;
 
         T* system = new T(std::forward<_CArgs>(_Args)...);
-        if (system && RegisterSubsystem<T>(system))
-            return true;
         if (system)
+        {
+            if (RegisterSubsystem<T>(system))
+                return true;
             delete system;
+        }
         return false;
     }
 

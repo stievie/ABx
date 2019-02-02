@@ -41,9 +41,9 @@ public:
 
     Frustum Transformed(const Matrix4& transform) const;
 
-    Intersection Intersects(const BoundingBox& bbox);
+    Intersection IsInside(const BoundingBox& bbox);
     /// Test if a point is inside or outside.
-    Intersection Intersects(const Vector3& point) const
+    Intersection IsInside(const Vector3& point) const
     {
         for (const auto& plane : planes_)
         {
@@ -54,7 +54,7 @@ public:
         return INSIDE;
     }
     /// Test if a sphere is inside, outside or intersects.
-    Intersection Intersects(const Sphere& sphere) const;
+    Intersection IsInside(const Sphere& sphere) const;
     /// Return distance of a point to the frustum, or 0 if inside.
     float Distance(const Vector3& point) const
     {

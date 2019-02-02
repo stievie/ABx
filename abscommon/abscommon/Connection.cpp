@@ -39,7 +39,7 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
     try
     {
         writeTimer_.expires_from_now(std::chrono::seconds(Connection::WriteTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
+        writeTimer_.async_wait(std::bind(&Connection::HandleWriteTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         asio::async_write(socket_,
@@ -118,7 +118,7 @@ void Connection::Accept()
     try
     {
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
+        readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Read size of packet
@@ -137,6 +137,9 @@ void Connection::ParseHeader(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
+#ifdef DEBUG_NET
+    lastReadHeader_ = Utils::AbTick();
+#endif
 
     if (error)
     {
@@ -184,7 +187,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     try
     {
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
+        readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Read content
@@ -205,6 +208,9 @@ void Connection::ParsePacket(const asio::error_code& error)
 {
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
+#ifdef DEBUG_NET
+    lastReadBody_ = Utils::AbTick();
+#endif
 
     if (error)
     {
@@ -260,7 +266,7 @@ void Connection::ParsePacket(const asio::error_code& error)
     try
     {
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
-        readTimer_.async_wait(std::bind(&Connection::HandleTimeout,
+        readTimer_.async_wait(std::bind(&Connection::HandleReadTimeout,
             std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
         // Wait for the next packet
@@ -275,7 +281,28 @@ void Connection::ParsePacket(const asio::error_code& error)
     }
 }
 
-void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
+void Connection::HandleReadTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
+{
+    if (error == asio::error::operation_aborted)
+        return;
+
+    // It needs a constant stream of packets or the connection will be closed.
+    // Send at least a ping once in a while.
+
+    if (auto conn = weakConn.lock())
+    {
+#ifdef DEBUG_NET
+        int64_t now = Utils::AbTick();
+        LOG_DEBUG << "Read Timeout, closing connection. Error(" << error.value() << ") " << error.message()
+            << ", lastreadheader " << (now - conn->lastReadHeader_)
+            << ", lastreadbody " << (now - conn->lastReadBody_)
+            << std::endl;
+#endif
+        conn->Close(true);
+    }
+}
+
+void Connection::HandleWriteTimeout(std::weak_ptr<Connection> weakConn, const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
         return;
@@ -283,7 +310,7 @@ void Connection::HandleTimeout(std::weak_ptr<Connection> weakConn, const asio::e
     // It needs a constant stream of packets or the connection will be closed.
     // Send at least a ping once in a while.
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Timeout, closing connection. Error " << error.message() << std::endl;
+    LOG_DEBUG << "Write Timeout, closing connection. Error(" << error.value() << ") " << error.message() << std::endl;
 #endif
 
     if (auto conn = weakConn.lock())

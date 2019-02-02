@@ -80,7 +80,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     case Math::ShapeTypeBoundingBox:
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
-        BBoxShape* shape = (BBoxShape*)other->GetCollisionShape();
+        BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
         const Math::BoundingBox bbox = shape->shape_->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;

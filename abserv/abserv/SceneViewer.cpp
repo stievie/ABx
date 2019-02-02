@@ -139,7 +139,7 @@ void SceneViewer::Update()
     }
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(20, std::bind(&SceneViewer::Update, shared_from_this()))
+        Asynch::CreateScheduledTask(NETWORK_TICK, std::bind(&SceneViewer::Update, shared_from_this()))
     );
 }
 
@@ -207,6 +207,7 @@ void SceneViewer::InternalInitialize()
     menuId_ = glutCreateMenu(SceneViewer::StaticMenu);
     glutSetMenu(menuId_);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
+    glGenVertexArrays(1, &VAO_);
 
     initialized_ = true;
 }
@@ -259,12 +260,10 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
 //    matrix.Scale(Math::Vector3(1.0f, -1.0f, 1.0f));
 
     // Generate and attach buffers to vertex array
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
     GLuint VBO, EBO;
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-    glBindVertexArray(VAO);
+    glBindVertexArray(VAO_);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, s.VertexDataSize(), s.VertexData(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -279,13 +278,12 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
 
     // Draw mesh as wireframe
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glBindVertexArray(VAO);
+    glBindVertexArray(VAO_);
     glDrawElements(GL_TRIANGLES, s.indexCount_, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteVertexArrays(1, &VAO);
 }
 
 void SceneViewer::Mouse(int button, int state, int x, int y)
@@ -399,6 +397,7 @@ void SceneViewer::Stop()
 {
     initialized_ = false;
     glutMainLoopExit();
+    glDeleteVertexArrays(1, &VAO_);
     glDeleteProgram(shaderProgram_);
     running_ = false;
 }

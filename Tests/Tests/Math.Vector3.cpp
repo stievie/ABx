@@ -36,7 +36,7 @@ TEST_CASE("Vector3 Arithmetic", "[vector3]")
     {
         Math::Vector3 vec1(1.0f, 2.0f, 1.0f);
         Math::Vector3 vec2 = -vec1;
-        REQUIRE(vec1 == -vec2);
+        REQUIRE(vec2 == Math::Vector3(-1.0f, -2.0f, -1.0f));
     }
     SECTION("Increment +=")
     {

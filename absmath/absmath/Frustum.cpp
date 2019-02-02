@@ -78,7 +78,7 @@ Frustum Frustum::Transformed(const Matrix4& transform) const
     return transformed;
 }
 
-Intersection Frustum::Intersects(const BoundingBox& bbox)
+Intersection Frustum::IsInside(const BoundingBox& bbox)
 {
     // https://www.gamedev.net/resources/_/technical/general-programming/frustum-culling-r4613
     bool inside = true;
@@ -99,7 +99,7 @@ Intersection Frustum::Intersects(const BoundingBox& bbox)
     return inside ? INSIDE : OUTSIDE;
 }
 
-Intersection Frustum::Intersects(const Sphere& sphere) const
+Intersection Frustum::IsInside(const Sphere& sphere) const
 {
     bool allInside = true;
     for (const auto& plane : planes_)
