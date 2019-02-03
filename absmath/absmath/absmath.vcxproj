@@ -148,6 +148,7 @@
     <ClInclude Include="Gjk.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Hull.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="MathConfig.h" />
     <ClInclude Include="MathDefs.h" />
     <ClInclude Include="MathUtils.h" />

@@ -84,6 +84,9 @@
     <ClInclude Include="Frustum.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

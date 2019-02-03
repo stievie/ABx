@@ -4,6 +4,8 @@
 #include "BoundingBox.h"
 #include "Matrix4.h"
 #include "Transformation.h"
+#include "Plane.h"
+#include "Line.h"
 
 TEST_CASE("BoundingBox Basic", "[boundingbox]")
 {
@@ -130,7 +132,7 @@ TEST_CASE("BoundingBox moving Collisions", "[boundingbox]")
             bb1.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, (float)i);
 
             INFO("i = " << i);
-            if (i < 1)
+            if (i < 4)
                 REQUIRE(bb1.Collides(bb2, move));
             else
                 REQUIRE(!bb1.Collides(bb2, move));
@@ -173,5 +175,49 @@ TEST_CASE("BoundingBox Intersections", "[boundingbox]")
         Math::Vector3 inside(3.0f, 1.0f, 1.0f);
         Math::Intersection in = bb1.IsInside(inside);
         REQUIRE(in == Math::OUTSIDE);
+    }
+}
+
+TEST_CASE("BoundingBox Conversion", "[boundingbox]")
+{
+    SECTION("Planes")
+    {
+        Math::BoundingBox bb1(-2.0f, 2.0f);
+        auto planes = bb1.GetPlanes();
+        REQUIRE(planes[0].normal_ == Math::Vector3::UnitX);
+        REQUIRE(planes[0].d_ == 2.0f);
+        REQUIRE(planes[1].normal_ == -Math::Vector3::UnitX);
+        REQUIRE(planes[1].d_ == 2.0f);
+        REQUIRE(planes[2].normal_ == Math::Vector3::UnitY);
+        REQUIRE(planes[2].d_ == 2.0f);
+        REQUIRE(planes[3].normal_ == -Math::Vector3::UnitY);
+        REQUIRE(planes[3].d_ == 2.0f);
+        REQUIRE(planes[4].normal_ == Math::Vector3::UnitZ);
+        REQUIRE(planes[4].d_ == 2.0f);
+        REQUIRE(planes[5].normal_ == -Math::Vector3::UnitZ);
+        REQUIRE(planes[5].d_ == 2.0f);
+    }
+
+    SECTION("Edges")
+    {
+        Math::BoundingBox bb1(-2.0f, 2.0f);
+        auto edges = bb1.GetEdges();
+
+        /*
+            5-----12-----1 max
+          7 |          8 |
+        3------3-----7   9
+        |   |        |   |
+        1   2-----10-4---6
+        | 5          | 6
+    min 0------2-----4
+        */
+
+        REQUIRE(edges[0].start_ == Math::Vector3(-2.0f, -2.0f, -2.0f));
+        REQUIRE(edges[0].end_ == Math::Vector3(-2.0f, 2.0f, -2.0f));
+
+//        bb1.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::DegToRad(90.0f));
+//        auto edges2 = bb1.Transformed(bb1.orientation_.GetMatrix()).GetEdges();
+//        REQUIRE(edges2[0].start_ == Math::Vector3::UnitX);
     }
 }

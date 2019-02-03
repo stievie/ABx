@@ -61,10 +61,10 @@ TEST_CASE("Quaternion Operations")
         Math::Quaternion quat2(1.0f, -2.0f, 3.0f, -4.0f);
         Math::Quaternion add = quat1 + quat2;
 
-        REQUIRE(add.w_ == 0.0f);
-        REQUIRE(add.x_ == 6.0f);
-        REQUIRE(add.y_ == 0.0f);
-        REQUIRE(add.z_ == 2.0f);
+        REQUIRE(add.w_ == 2.0f);
+        REQUIRE(add.x_ == 0.0f);
+        REQUIRE(add.y_ == 6.0f);
+        REQUIRE(add.z_ == 0.0f);
     }
 
     SECTION("Multiply")
@@ -80,10 +80,10 @@ TEST_CASE("Quaternion Operations")
 
         mul = quat1 * quat1.Conjugate();
 
-        REQUIRE(mul.w_ == Approx(0.0f));
+        REQUIRE(mul.w_ == Approx(1.0f));
         REQUIRE(mul.x_ == Approx(0.0f));
         REQUIRE(mul.y_ == Approx(0.0f));
-        REQUIRE(mul.z_ == Approx(1.0f));
+        REQUIRE(mul.z_ == Approx(0.0f));
     }
     SECTION("Conjugate")
     {
@@ -97,6 +97,17 @@ TEST_CASE("Quaternion Operations")
         Math::Quaternion inv = quat.Inverse();
         REQUIRE(inv.Equals(Math::Quaternion(0.25f, -0.25f, -0.25f, -0.25f)));
     }
+    SECTION("GetMatrix")
+    {
+        Math::Quaternion quat(1.0f, 2.0f, 3.0f, 4.0f);
+        Math::Matrix4 mat = quat.GetMatrix();
+        Math::Quaternion q = mat.Rotation(false);
+        float diff = quat.w_ / q.w_;
+        REQUIRE(q.w_ * diff == quat.w_);
+        REQUIRE(q.x_ * diff == quat.x_);
+        REQUIRE(q.y_ * diff == quat.y_);
+        REQUIRE(q.z_ * diff == quat.z_);
+    }
 }
 
 TEST_CASE("Quaternion Methods")
@@ -105,22 +116,22 @@ TEST_CASE("Quaternion Methods")
     {
         Math::Quaternion quat(1.0f, 2.0f, 3.0f, 4.0f);
         quat = quat * 2.0f;
-        REQUIRE(quat.w_ == Approx(4.0f));
-        REQUIRE(quat.x_ == Approx(6.0f));
-        REQUIRE(quat.y_ == Approx(8.0f));
-        REQUIRE(quat.z_ == Approx(2.0f));
+        REQUIRE(quat.w_ == Approx(2.0f));
+        REQUIRE(quat.x_ == Approx(4.0f));
+        REQUIRE(quat.y_ == Approx(6.0f));
+        REQUIRE(quat.z_ == Approx(8.0f));
 
         quat = quat * 0.5f;
-        REQUIRE(quat.w_ == Approx(3.0f));
-        REQUIRE(quat.x_ == Approx(4.0f));
-        REQUIRE(quat.y_ == Approx(1.0f));
-        REQUIRE(quat.z_ == Approx(2.0f));
+        REQUIRE(quat.w_ == Approx(1.0f));
+        REQUIRE(quat.x_ == Approx(2.0f));
+        REQUIRE(quat.y_ == Approx(3.0f));
+        REQUIRE(quat.z_ == Approx(4.0f));
 
         quat = quat / 2.0f;
-        REQUIRE(quat.w_ == Approx(2.0f));
-        REQUIRE(quat.x_ == Approx(0.5f));
-        REQUIRE(quat.y_ == Approx(1.0f));
-        REQUIRE(quat.z_ == Approx(1.5f));
+        REQUIRE(quat.w_ == Approx(0.5f));
+        REQUIRE(quat.x_ == Approx(1.0f));
+        REQUIRE(quat.y_ == Approx(1.5f));
+        REQUIRE(quat.z_ == Approx(2.0f));
     }
     SECTION("Scaling")
     {

@@ -11,9 +11,27 @@ class HeightMap;
 class Sphere;
 class Shape;
 class Matrix4;
+class Plane;
+class Line;
 
 class BoundingBox
 {
+private:
+    enum Orientations : uint32_t
+    {
+        OrientationsNone = 0,
+        OrientationsO1 = 1 << 1,
+        OrientationsO2 = 1 << 2
+    };
+    inline uint32_t GetOrientations(const BoundingBox& b2) const
+    {
+        uint32_t o = OrientationsNone;
+        if (IsOriented())
+            o |= OrientationsO1;
+        if (b2.IsOriented())
+            o |= OrientationsO2;
+        return o;
+    }
 public:
     BoundingBox() noexcept :
         min_(Vector3(INFINITY, INFINITY, INFINITY)),
@@ -50,7 +68,7 @@ public:
     }
     operator XMath::BoundingOrientedBox() const
     {
-        return XMath::BoundingOrientedBox(Center(), Extends(), orientation_.Inverse());
+        return XMath::BoundingOrientedBox(Center(), Extends(), orientation_);
     }
 #endif
 
@@ -63,6 +81,8 @@ public:
         return *this;
     }
     std::array<Vector3, 8> GetCorners() const;
+    std::vector<Plane> GetPlanes() const;
+    std::vector<Line> GetEdges() const;
     void Merge(float x, float y, float z);
     void Merge(const Vector3& vertex);
     void Merge(const Vector3* vertices, unsigned count);

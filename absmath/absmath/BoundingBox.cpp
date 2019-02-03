@@ -7,6 +7,8 @@
 #include "Gjk.h"
 #include "Matrix4.h"
 #include <array>
+#include "Plane.h"
+#include "Line.h"
 
 namespace Math {
 
@@ -37,6 +39,60 @@ std::array<Vector3, 8> BoundingBox::GetCorners() const
     result[6] = boundPoint7;
     result[7] = boundPoint8;
 
+    return result;
+}
+
+std::vector<Plane> BoundingBox::GetPlanes() const
+{
+    // Transformed (OBB)
+    const Vector3 c = Center();
+    const Vector3 e = Extends();
+    const Matrix4 orientation = orientation_.GetMatrix();
+    const Vector3 a[] = {
+        Vector3(orientation.m_[Matrix4::Index00], orientation.m_[Matrix4::Index01], orientation.m_[Matrix4::Index02]),
+        Vector3(orientation.m_[Matrix4::Index10], orientation.m_[Matrix4::Index11], orientation.m_[Matrix4::Index12]),
+        Vector3(orientation.m_[Matrix4::Index20], orientation.m_[Matrix4::Index21], orientation.m_[Matrix4::Index22])
+    };
+
+    std::vector<Plane> result;
+    result.resize(6);
+    result[0] = Plane(a[0],          a[0].DotProduct(c + a[0] * e.x_));
+    result[1] = Plane(a[0] * -1.0f, -a[0].DotProduct(c - a[0] * e.x_));
+    result[2] = Plane(a[1],          a[1].DotProduct(c + a[1] * e.y_));
+    result[3] = Plane(a[1] * -1.0f, -a[1].DotProduct(c - a[1] * e.y_));
+    result[4] = Plane(a[2],          a[2].DotProduct(c + a[2] * e.z_));
+    result[5] = Plane(a[2] * -1.0f, -a[2].DotProduct(c - a[2] * e.z_));
+
+    return result;
+}
+
+std::vector<Line> BoundingBox::GetEdges() const
+{
+    // Not transformed (AABB)
+    std::vector<Line> result;
+    result.reserve(12);
+    const auto v = GetCorners();
+
+    /*
+        5-----12-----1 max
+      7 |          8 |
+    3------3-----7   9
+    |   |        |   |
+    1   2-----10-4---6
+    | 5          | 6
+min 0------2-----4
+    */
+
+    const int index[][2] = {
+        { 0, 3 },{ 0, 4 },{ 3, 7 },{ 4, 7 },{ 0, 2 },{ 4, 6 },
+        { 3, 5 },{ 7, 1 },{ 1, 6 },{ 6, 2 },{ 2, 5 },{ 5, 1 }
+    };
+    for (int j = 0; j < 12; ++j)
+    {
+        result.push_back(Line(
+            v[index[j][0]], v[index[j][1]]
+        ));
+    }
     return result;
 }
 
@@ -171,22 +227,15 @@ min 0------------4
 bool BoundingBox::Collides(const BoundingBox& b2) const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    const bool o1 = IsOriented();
-    const bool o2 = b2.IsOriented();
-    if (o1 && o2)
+    switch (GetOrientations(b2))
     {
+    case OrientationsO1 | OrientationsO2:
         return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-    }
-    else if (o1)
-    {
+    case OrientationsO1:
         return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
-    }
-    else if (o2)
-    {
+    case OrientationsO2:
         return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-    }
-    else
-    {
+    default:
         return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingBox)b2);
     }
 #else
@@ -206,11 +255,41 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    const bool o1 = IsOriented();
-    const bool o2 = b2.IsOriented();
-    if (o1 || o2)
+    uint32_t o = GetOrientations(b2);
+    if (o != OrientationsNone)
     {
-        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+        bool result = false;
+        switch (o)
+        {
+        case OrientationsO1 | OrientationsO2:
+            result = ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+        case OrientationsO1:
+            result = ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
+        case OrientationsO2:
+            result = ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+        }
+/*        if (result)
+        {
+            const Vector3 center = Center();
+            const auto planes = b2.GetPlanes();
+            const Plane* minPlane = nullptr;
+            float minDist = std::numeric_limits<float>::max();
+            for (const auto& plane : planes)
+            {
+                float dist = plane.Distance(center);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    minPlane = &plane;
+                }
+            }
+            if (minPlane)
+            {
+                move = minPlane->normal_.Normal();
+                std::cout << "Min Plane " << minPlane->normal_.ToString() << std::endl;
+            }
+        }*/
+        return result;
     }
 #endif
     const Vector3 size1 = Size();

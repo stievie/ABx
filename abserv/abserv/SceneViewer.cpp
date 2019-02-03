@@ -14,8 +14,8 @@
 namespace Debug {
 
 const float CAMERA_MIN_DIST = 0.0f;
-const float CAMERA_INITIAL_DIST = 1.0f;
-const float CAMERA_MAX_DIST = 40.0f;
+const float CAMERA_INITIAL_DIST = 2.0f;
+const float CAMERA_MAX_DIST = 80.0f;
 
 SceneViewer* SceneViewer::instance_ = nullptr;
 
@@ -121,15 +121,15 @@ void SceneViewer::Update()
                 auto p = g->GetPlayers().begin()->second;
 
                 // Get camera look at dir from character yaw + pitch
-                Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_);
+                Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_ + float(M_PI));
                 Math::Quaternion dir = rot * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitX, pitch_);
                 Math::Vector3 aimPoint;
-                static const Math::Vector3 CAM_POS(0.0f, 0.5f, 0.0f);
-                aimPoint = p->transformation_.position_ - CAM_POS;// +rot * CAM_POS;
+                static const Math::Vector3 CAM_POS(0.0f, 0.0f, 0.0f);
+                aimPoint = p->transformation_.position_;// +rot * CAM_POS;
                 Math::Vector3 rayDir = dir * Math::Vector3::Back;
 
                 camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
-                Math::Quaternion quat = p->transformation_.GetQuaternion() * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI));
+                Math::Quaternion quat = p->transformation_.GetQuaternion();// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI));
 
                 camera_.rotation_ = quat * dir;
             }
@@ -257,7 +257,7 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
     else
         matrix = trans.GetMatrix();
     // https://www.gamedev.net/forums/topic/698812-leftright-coordinate-system-and-rotation/?tab=comments#comment-5390101
-//    matrix.Scale(Math::Vector3(1.0f, -1.0f, 1.0f));
+    matrix.Scale(Math::Vector3(-1.0f, -1.0f, 1.0f));
 
     // Generate and attach buffers to vertex array
     GLuint VBO, EBO;

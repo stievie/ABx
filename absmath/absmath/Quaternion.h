@@ -6,6 +6,8 @@
 
 namespace Math {
 
+class Matrix4;
+
 class Quaternion
 {
 public:
@@ -109,6 +111,8 @@ public:
     void Normalize();
     float LengthSqr() const;
     float Length() const;
+    /// Return rotation matrix
+    Matrix4 GetMatrix() const;
 
     std::string ToString() const
     {

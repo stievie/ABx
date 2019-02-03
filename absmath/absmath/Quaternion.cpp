@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Quaternion.h"
 #include "MathUtils.h"
+#include "Matrix4.h"
 
 namespace Math {
 
@@ -166,7 +167,7 @@ Quaternion Quaternion::Conjugate() const
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     return XMath::XMQuaternionConjugate(*this);
 #else
-    return Quaternion(-x_, -y_, -z_, w_);
+    return Quaternion(w_, -x_, -y_, -z_);
 #endif
 }
 
@@ -190,51 +191,59 @@ Quaternion& Quaternion::operator-=(const Quaternion& v)
 
 Quaternion& Quaternion::operator*=(const Quaternion& rhs)
 {
-    x_ = x_ * rhs.w_ + y_ * rhs.z_ - z_ * rhs.y_ + w_ * rhs.x_;
-    y_ = -x_ * rhs.z_ + y_ * rhs.w_ + z_ * rhs.x_ + w_ * rhs.y_;
-    z_ = x_ * rhs.y_ - y_ * rhs.x_ + z_ * rhs.w_ + w_ * rhs.z_;
-    w_ = -x_ * rhs.x_ - y_ * rhs.y_ - z_ * rhs.z_ + w_ * rhs.w_;
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    *this = XMath::XMQuaternionMultiply(rhs, *this);
+#else
+    w_ = w_ * rhs.w_ - x_ * rhs.x_ - y_ * rhs.y_ - z_ * rhs.z_;
+    x_ = w_ * rhs.x_ + x_ * rhs.w_ + y_ * rhs.z_ - z_ * rhs.y_;
+    y_ = w_ * rhs.y_ + y_ * rhs.w_ + z_ * rhs.x_ - x_ * rhs.z_;
+    z_ = w_ * rhs.z_ + z_ * rhs.w_ + x_ * rhs.y_ - y_ * rhs.x_;
+#endif
     return *this;
 }
 
 const Quaternion Quaternion::operator+(const Quaternion& v) const
 {
-    return Quaternion(x_ + v.x_, y_ + v.y_, z_ + v.z_, w_ + v.w_);
+    return Quaternion(w_ + v.w_, x_ + v.x_, y_ + v.y_, z_ + v.z_);
 }
 
 const Quaternion Quaternion::operator-(const Quaternion& v) const
 {
-    return Quaternion(x_ - v.x_, y_ - v.y_, z_ - v.z_, w_ - v.w_);
+    return Quaternion(w_ - v.w_, x_ - v.x_, y_ - v.y_, z_ - v.z_);
 }
 
 Quaternion operator*(const Quaternion& v, float n)
 {
-    return Quaternion(v.x_ * n, v.y_ * n, v.z_ * n, v.w_ * n);
+    return Quaternion(v.w_ * n, v.x_ * n, v.y_ * n, v.z_ * n);
 }
 
 Quaternion operator*(float n, const Quaternion& v)
 {
-    return Quaternion(v.x_ * n, v.y_ * n, v.z_ * n, v.w_ * n);
+    return Quaternion(v.w_ * n, v.x_ * n, v.y_ * n, v.z_ * n);
 }
 
 Quaternion operator*(const Quaternion& lhs, const Quaternion& rhs)
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    return XMath::XMQuaternionMultiply(rhs, lhs);
+#else
     return Quaternion(
-        lhs.x_ * rhs.w_ + lhs.y_ * rhs.z_ - lhs.z_ * rhs.y_ + lhs.w_ * rhs.x_,
-        -lhs.x_ * rhs.z_ + lhs.y_ * rhs.w_ + lhs.z_ * rhs.x_ + lhs.w_ * rhs.y_,
-        lhs.x_ * rhs.y_ - lhs.y_ * rhs.x_ + lhs.z_ * rhs.w_ + lhs.w_ * rhs.z_,
-        -lhs.x_ * rhs.x_ - lhs.y_ * rhs.y_ - lhs.z_ * rhs.z_ + lhs.w_ * rhs.w_
+        lhs.w_ * rhs.w_ - lhs.x_ * rhs.x_ - lhs.y_ * rhs.y_ - lhs.z_ * rhs.z_,
+        lhs.w_ * rhs.x_ + lhs.x_ * rhs.w_ + lhs.y_ * rhs.z_ - lhs.z_ * rhs.y_,
+        lhs.w_ * rhs.y_ + lhs.y_ * rhs.w_ + lhs.z_ * rhs.x_ - lhs.x_ * rhs.z_,
+        lhs.w_ * rhs.z_ + lhs.z_ * rhs.w_ + lhs.x_ * rhs.y_ - lhs.y_ * rhs.x_
     );
+#endif
 }
 
 Quaternion operator/(const Quaternion& v, float n)
 {
-    return Quaternion(v.x_ / n, v.y_ / n, v.z_ / n, v.w_ / n);
+    return Quaternion(v.w_ / n, v.x_ / n, v.y_ / n, v.z_ / n);
 }
 
 Quaternion operator/(float n, const Quaternion& v)
 {
-    return Quaternion(v.x_ / n, v.y_ / n, v.z_ / n, v.w_ / n);
+    return Quaternion(v.w_ / n, v.x_ / n, v.y_ / n, v.z_ / n);
 }
 
 void Quaternion::Normalize()
@@ -254,6 +263,28 @@ const Quaternion Quaternion::Normal() const
 float Quaternion::Length() const
 {
     return sqrt(w_*w_ + x_*x_ + y_*y_ + z_*z_);
+}
+
+Matrix4 Quaternion::GetMatrix() const
+{
+    return Matrix4(
+        Vector4(
+            1.0f - 2.0f * y_ * y_ - 2.0f * z_ * z_,
+            2.0f * x_ * y_ - 2.0f * w_ * z_,
+            2.0f * x_ * z_ + 2.0f * w_ * y_,
+            0.0f),
+        Vector4(
+            2.0f * x_ * y_ + 2.0f * w_ * z_,
+            1.0f - 2.0f * x_ * x_ - 2.0f * z_ * z_,
+            2.0f * y_ * z_ - 2.0f * w_ * x_,
+            0.0f),
+        Vector4(
+            2.0f * x_ * z_ - 2.0f * w_ * y_,
+            2.0f * y_ * z_ + 2.0f * w_ * x_,
+            1.0f - 2.0f * x_ * x_ - 2.0f * y_ * y_,
+            0.0f),
+        Vector4::UnitW
+    );
 }
 
 float Quaternion::LengthSqr() const

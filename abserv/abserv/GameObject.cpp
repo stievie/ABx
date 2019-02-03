@@ -101,7 +101,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     case Math::ShapeTypeSphere:
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
-        SphereShape* shape = (SphereShape*)other->GetCollisionShape();
+        SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
         const Math::Sphere sphere = shape->shape_->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
@@ -118,7 +118,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     case Math::ShapeTypeConvexHull:
     {
         using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
-        HullShape* shape = (HullShape*)other->GetCollisionShape();
+        HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
         const Math::ConvexHull hull = shape->shape_->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
@@ -135,7 +135,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     case Math::ShapeTypeHeightMap:
     {
         using HeightShape = Math::CollisionShapeImpl<Math::HeightMap>;
-        HeightShape* shape = (HeightShape*)other->GetCollisionShape();
+        HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), *shape->shape_, move);

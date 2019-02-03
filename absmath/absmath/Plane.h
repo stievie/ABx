@@ -10,6 +10,10 @@ public:
     Plane() :
         d_(0.0f)
     {}
+    Plane(const Vector3& normal, float distance) :
+        normal_(normal),
+        d_(distance)
+    { }
     ~Plane() = default;
 
     /// Define from 3 vertices.
