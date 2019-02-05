@@ -14,7 +14,7 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 {
     const Math::Vector3& pos = owner.transformation_.position_;
     Super::setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));
-    Super::setOrientation(owner.transformation_.rotation_);
+    Super::setOrientation(owner.transformation_.GetYRotation());
     Super::setSpeed(owner.GetSpeed() * 2.0f);
     std::stringstream ss;
     ss << owner.GetName() << " " << owner.id_;

@@ -389,7 +389,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
         LOG_DEBUG << "Spawn point: " << p.group << "; Pos: " << p.position.ToString() << std::endl;
 #endif
         object->transformation_.position_ = p.position;
-        object->transformation_.rotation_ = p.rotation.EulerAngles().y_;
+        object->transformation_.SetYRotation(p.rotation.EulerAngles().y_);
     }
 
     gameStatus_->AddByte(AB::GameProtocol::GameSpawnObject);

@@ -32,6 +32,7 @@ private:
             o |= OrientationsO2;
         return o;
     }
+    bool ResolveCollision(const BoundingBox& b2, Vector3& result) const;
 public:
     BoundingBox() noexcept :
         min_(Vector3(INFINITY, INFINITY, INFINITY)),
@@ -100,7 +101,7 @@ public:
     {
         return max_.z_ - min_.z_;
     }
-    /// Distance from the center to each side
+    /// Distance from the center to each side, or half size
     Vector3 Extends() const
     {
         return (max_ - min_) * 0.5f;

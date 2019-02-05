@@ -129,7 +129,7 @@ void SceneViewer::Update()
                 Math::Vector3 rayDir = dir * Math::Vector3::Back;
 
                 camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
-                Math::Quaternion quat = p->transformation_.GetQuaternion();// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI));
+                Math::Quaternion quat = p->transformation_.oriention_;// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI));
 
                 camera_.rotation_ = quat * dir;
             }

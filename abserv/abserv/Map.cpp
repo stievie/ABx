@@ -60,7 +60,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
     if (auto game = game_.lock())
     {
         Math::Vector3 pos;
-        Math::Vector3 scale;
+        Math::Vector3 scale = Math::Vector3::One;
         Math::Quaternion rot = Math::Quaternion::Identity;
         std::string name;
         std::string group;
@@ -76,7 +76,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                 pos = Math::Vector3(value_attr.as_string());
                 break;
             case IO::Map::AttrRotation:
-                rot = Math::Quaternion(value_attr.as_string());
+                rot = Math::Quaternion(value_attr.as_string()).Normal();
                 break;
             case IO::Map::AttrScale:
                 scale = Math::Vector3(value_attr.as_string());
@@ -113,8 +113,8 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 
         std::shared_ptr<Model> model;
         std::shared_ptr<GameObject> object;
-        Math::Vector3 size;
-        Math::Vector3 offset;
+        Math::Vector3 size = Math::Vector3::One;
+        Math::Vector3 offset = Math::Vector3::Zero;
         Math::Quaternion offsetRot = Math::Quaternion::Identity;
         for (const auto& comp : node.children("component"))
         {
@@ -184,7 +184,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                             offset = Math::Vector3(value_attr.as_string());
                             break;
                         case IO::Map::AttrOffsetRot:
-                            offsetRot = Math::Quaternion(value_attr.as_string());
+                            offsetRot = Math::Quaternion(value_attr.as_string()).Normal();
                             break;
                         case IO::Map::AttrShapeType:
                         {
@@ -210,13 +210,17 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         }
                         else if (coll_shape == IO::Map::AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
                         {
-                            Math::Vector3 halfSize = (size * 0.5f) + offset;
+                            // The object has the scaling.
+                            const Math::Vector3 halfSize = (size * 0.5f) + offset;
                             Math::BoundingBox bb(-halfSize, halfSize);
-                            // Add Node and Offset rotation
+                            // Add Node and Offset rotation -> absolute orientation
                             bb.orientation_ = rot * offsetRot;
+                            // Object has then no rotation
+                            object->transformation_.oriention_ = Math::Quaternion::Identity;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
-                                " to size +/- " << halfSize.ToString() << " orientation " << bb.orientation_.ToString() << std::endl;
+                                " min/max " << bb.ToString() <<
+                                ", size +/- " << halfSize.ToString() << ", orientation " << bb.orientation_.ToString() << std::endl;
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
@@ -228,6 +232,8 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                             // If none of the above set to model bounding box
                             auto bb = model->GetBoundingBox();
                             bb.orientation_ = rot * offsetRot;
+                            // Object has then no rotation
+                            object->transformation_.oriention_ = Math::Quaternion::Identity;
 #ifdef DEBUG_COLLISION
                             LOG_DEBUG << "Setting BB collision shape for " << object->GetName() <<
                                 " to model BB " << model->GetBoundingBox().ToString() << " orientation " << bb.orientation_.ToString() << std::endl;

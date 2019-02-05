@@ -63,7 +63,7 @@ bool MoveComp::Move(float speed, const Math::Vector3& amount)
     // 2. multiply this matrix with the moving vector and
     // 3. add the resulting vector to the current position
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -owner_.transformation_.rotation_);
+    XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -owner_.transformation_.GetYRotation());
     Math::Vector3 a = amount * speed;
     XMath::XMVECTOR v = XMath::XMVector3Transform(a, m);
     owner_.transformation_.position_.x_ += v.m128_f32[0];
@@ -125,8 +125,10 @@ bool MoveComp::UpdateMove(uint32_t timeElapsed)
 
 void MoveComp::Turn(float angle)
 {
-    owner_.transformation_.rotation_ += angle;
-    Math::NormalizeAngle(owner_.transformation_.rotation_);
+    float ang = owner_.transformation_.GetYRotation();
+    ang += angle;
+    Math::NormalizeAngle(ang);
+    owner_.transformation_.SetYRotation(ang);
 }
 
 void MoveComp::UpdateTurn(uint32_t timeElapsed)
@@ -145,11 +147,13 @@ void MoveComp::UpdateTurn(uint32_t timeElapsed)
 
 void MoveComp::SetDirection(float worldAngle)
 {
-    if (!Math::Equals(owner_.transformation_.rotation_, worldAngle))
+    float ang = owner_.transformation_.GetYRotation();
+    if (!Math::Equals(ang, worldAngle))
     {
 
-        owner_.transformation_.rotation_ = worldAngle;
-        Math::NormalizeAngle(owner_.transformation_.rotation_);
+        ang = worldAngle;
+        Math::NormalizeAngle(ang);
+        owner_.transformation_.SetYRotation(ang);
         directionSet_ = true;
     }
 }
@@ -179,7 +183,7 @@ void MoveComp::Write(Net::NetworkMessage& message)
     {
         message.AddByte(AB::GameProtocol::GameObjectRotationChange);
         message.Add<uint32_t>(owner_.id_);
-        message.Add<float>(owner_.transformation_.rotation_);
+        message.Add<float>(owner_.transformation_.GetYRotation());
         message.Add<uint8_t>(directionSet_ ? 1 : 0);
         turned_ = false;
         directionSet_ = false;

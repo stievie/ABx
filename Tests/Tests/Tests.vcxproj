@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.BoundingBox.cpp" />
+    <ClCompile Include="Math.Collisions.cpp" />
     <ClCompile Include="Math.Quaternion.cpp" />
     <ClCompile Include="Math.Ray.cpp" />
     <ClCompile Include="Math.Sphere.cpp" />

@@ -37,6 +37,11 @@ public:
         y_(vector.m128_f32[1]),
         z_(vector.m128_f32[2])
     { }
+    Vector3(const XMath::XMFLOAT3& vector) noexcept :
+        x_(vector.x),
+        y_(vector.y),
+        z_(vector.z)
+    { }
 #endif
 
     /// Parse from string

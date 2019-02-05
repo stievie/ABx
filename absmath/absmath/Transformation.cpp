@@ -6,7 +6,7 @@ namespace Math {
 
 XMath::XMMATRIX Transformation::GetMatrix() const
 {
-    return GetMatrix(GetQuaternion());
+    return GetMatrix(oriention_);
 }
 
 XMath::XMMATRIX Transformation::GetMatrix(const Quaternion& rot) const
@@ -17,6 +17,16 @@ XMath::XMMATRIX Transformation::GetMatrix(const Quaternion& rot) const
     XMath::XMVECTOR rotation = XMath::XMVectorSet(rot.x_, rot.y_, rot.z_, rot.w_);
     XMath::XMVECTOR position = XMath::XMVectorSet(position_.x_, position_.y_, position_.z_, 0.0f);
     return XMath::XMMatrixTransformation(vZero, qId, scale, vZero, rotation, position);
+}
+
+float Transformation::GetYRotation() const
+{
+    return oriention_.EulerAngles().y_;
+}
+
+void Transformation::SetYRotation(float rad)
+{
+    oriention_ = Quaternion(oriention_.x_, rad, oriention_.z_);
 }
 
 }

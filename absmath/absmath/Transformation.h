@@ -10,40 +10,32 @@ class Transformation
 public:
     Vector3 position_;
     Vector3 scale_;
-    /// Angle in rad Y axis
-    float rotation_;
+    Quaternion oriention_;
 
     Transformation() :
         position_(Vector3(0.0f, 0.0f, 0.0f)),
         scale_(Vector3(1.0f, 1.0f, 1.0f)),
-        rotation_(0.0f)
+        oriention_(Quaternion::Identity)
     {}
     Transformation(const Vector3& pos, const Vector3& scale, float rot) :
         position_(pos),
         scale_(scale),
-        rotation_(rot)
+        oriention_(Quaternion::FromAxisAngle(Vector3::UnitY, rot))
     {}
     Transformation(const Vector3& pos, const Vector3& scale, const Quaternion& rot) :
         position_(pos),
-        scale_(scale)
-    {
-        rotation_ = rot.EulerAngles().y_;
-    }
+        scale_(scale),
+        oriention_(rot)
+    {}
 
     ~Transformation() = default;
 
-    Quaternion GetQuaternion() const
-    {
-        return Quaternion::FromAxisAngle(Vector3::UnitY, rotation_);
-    }
-    void SetQuaternion(const Quaternion& rot)
-    {
-        rotation_ = rot.EulerAngles().y_;
-    }
+    float GetYRotation() const;
+    void SetYRotation(float rad);
 
     /// Get transformation matrix
     XMath::XMMATRIX GetMatrix() const;
-    /// Use rot instead of rotation_
+    /// Use rot instead of oriention_
     XMath::XMMATRIX GetMatrix(const Quaternion& rot) const;
 };
 

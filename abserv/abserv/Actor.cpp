@@ -99,7 +99,7 @@ bool Actor::SetSpawnPoint(const std::string& group)
 
     transformation_.position_ = sp.position;
     transformation_.position_.y_ = game->map_->GetTerrainHeight(transformation_.position_);
-    transformation_.rotation_ = sp.rotation.EulerAngles().y_;
+    transformation_.SetYRotation(sp.rotation.EulerAngles().y_);
     return true;
 }
 
@@ -237,7 +237,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.position_.x_);
     msg.Add<float>(transformation_.position_.y_);
     msg.Add<float>(transformation_.position_.z_);
-    msg.Add<float>(transformation_.rotation_);
+    msg.Add<float>(transformation_.GetYRotation());
     msg.Add<float>(transformation_.scale_.x_);
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);

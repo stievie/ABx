@@ -148,9 +148,15 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
     if (!IsDefined())
         // No transformation needed when not defined
         return *this;
-
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    XMath::BoundingBox _result;
+    ((XMath::BoundingBox)*this).Transform(_result, transform);
+    BoundingBox result(Vector3(_result.Center) - Vector3(_result.Extents), Vector3(_result.Center) + Vector3(_result.Extents));
+    result.orientation_ = orientation_;
+    return result;
+#else
     const Vector3 newCenter = transform * Center();
-    const Vector3 oldEdge = Size() * 0.5f;
+    const Vector3 oldEdge = Extends();
 
     Vector3 newEdge = Vector3(
         std::fabs(transform.m_[Matrix4::Index00]) * oldEdge.x_ +
@@ -169,6 +175,7 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
     BoundingBox result = BoundingBox(newCenter - newEdge, newCenter + newEdge);
     result.orientation_ = orientation_;
     return result;
+#endif
 }
 
 Shape BoundingBox::GetShape() const
@@ -252,43 +259,34 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 #endif
 }
 
+bool BoundingBox::ResolveCollision(const BoundingBox& b2, Vector3& result) const
+{
+    return true;
+}
+
 bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    uint32_t o = GetOrientations(b2);
+    const uint32_t o = GetOrientations(b2);
     if (o != OrientationsNone)
     {
         bool result = false;
         switch (o)
         {
-        case OrientationsO1 | OrientationsO2:
-            result = ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-        case OrientationsO1:
-            result = ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
         case OrientationsO2:
             result = ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+            break;
+        default:
+            // Only AABB (this) vs. OBB is possible
+            assert(false);
+            return false;
         }
-/*        if (result)
+        if (result)
         {
-            const Vector3 center = Center();
-            const auto planes = b2.GetPlanes();
-            const Plane* minPlane = nullptr;
-            float minDist = std::numeric_limits<float>::max();
-            for (const auto& plane : planes)
-            {
-                float dist = plane.Distance(center);
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    minPlane = &plane;
-                }
-            }
-            if (minPlane)
-            {
-                move = minPlane->normal_.Normal();
-                std::cout << "Min Plane " << minPlane->normal_.ToString() << std::endl;
-            }
-        }*/
+            std::cout << "This: " << ToString() << "; C " << Center().ToString() << "; E " << Extends().ToString() << std::endl <<
+                "That: " << b2.ToString() << "; C " << b2.Center().ToString() << "; E " << b2.Extends().ToString() << std::endl;
+            result = ResolveCollision(b2, move);
+        }
         return result;
     }
 #endif

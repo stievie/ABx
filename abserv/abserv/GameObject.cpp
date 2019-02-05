@@ -289,7 +289,9 @@ void GameObject::_LuaSetPosition(float x, float y, float z)
 
 void GameObject::_LuaSetRotation(float y)
 {
-    transformation_.rotation_ = Math::DegToRad(y);
+    float ang = Math::DegToRad(y);
+    Math::NormalizeAngle(ang);
+    transformation_.SetYRotation(ang);
 }
 
 void GameObject::_LuaSetScale(float x, float y, float z)
@@ -310,7 +312,7 @@ std::vector<float> GameObject::_LuaGetPosition() const
 
 float GameObject::_LuaGetRotation() const
 {
-    return Math::RadToDeg(transformation_.rotation_);
+    return Math::RadToDeg(transformation_.GetYRotation());
 }
 
 std::vector<float> GameObject::_LuaGetScale() const
