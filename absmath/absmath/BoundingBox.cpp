@@ -274,8 +274,11 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         switch (o)
         {
         case OrientationsO2:
-            result = ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
+        {
+            XMath::BoundingOrientedBox xb2(b2);
+            result = ((XMath::BoundingBox)*this).Intersects(xb2);
             break;
+        }
         default:
             // Only AABB (this) vs. OBB is possible
             assert(false);
@@ -290,6 +293,7 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         return result;
     }
 #endif
+
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
 

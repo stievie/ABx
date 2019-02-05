@@ -211,8 +211,8 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         else if (coll_shape == IO::Map::AttrCollisionShapeTypeBox && size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
-                            const Math::Vector3 halfSize = (size * 0.5f) + offset;
-                            Math::BoundingBox bb(-halfSize, halfSize);
+                            const Math::Vector3 halfSize = (size * 0.5f);
+                            Math::BoundingBox bb(-halfSize + offset, halfSize + offset);
                             // Add Node and Offset rotation -> absolute orientation
                             bb.orientation_ = rot * offsetRot;
                             // Object has then no rotation

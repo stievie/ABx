@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16785958" />
-	<attribute name="Next Local Component ID" value="16787202" />
+	<attribute name="Next Local Node ID" value="16786011" />
+	<attribute name="Next Local Component ID" value="16787272" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group" />
 	<component type="Octree" id="1" />
@@ -658,9 +658,9 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="StoneWall" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="10.5647 25.2481 15.8408" />
+		<attribute name="Position" value="9.14594 25.2481 17.2245" />
 		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
-		<attribute name="Scale" value="1 1 3" />
+		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="16786955">
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
@@ -670,11 +670,89 @@
 		</component>
 		<component type="RigidBody" id="16786956">
 			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
-			<attribute name="Physics Position" value="10.5647 25.2481 15.8408" />
+			<attribute name="Physics Position" value="9.14594 25.2481 17.2245" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
 		<component type="CollisionShape" id="16786957">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786008">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="15.0987 25.2481 10.0666" />
+		<attribute name="Rotation" value="0.92388 0 0.382683 0" />
+		<attribute name="Scale" value="1 1 4" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787263">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787264">
+			<attribute name="Physics Rotation" value="0.92388 0 0.382683 0" />
+			<attribute name="Physics Position" value="15.0987 25.2481 10.0666" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787265">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786009">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="10.539 25.2481 15.8309" />
+		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787266">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787267">
+			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Physics Position" value="10.539 25.2481 15.8309" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787268">
+			<attribute name="Size" value="0.5 1.6 2" />
+			<attribute name="Offset Position" value="0 0.8 0" />
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786010">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="StoneWall" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="11.9612 25.2481 14.4343" />
+		<attribute name="Rotation" value="0.92388 0 -0.382683 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787269">
+			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+			<attribute name="Material" value="Material;Materials/SoneWall.xml" />
+			<attribute name="Is Occluder" value="true" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16787270">
+			<attribute name="Physics Rotation" value="0.92388 0 -0.382683 0" />
+			<attribute name="Physics Position" value="11.9612 25.2481 14.4343" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787271">
 			<attribute name="Size" value="0.5 1.6 2" />
 			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
