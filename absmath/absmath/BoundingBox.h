@@ -151,6 +151,13 @@ public:
     /// Test if another bounding box is inside, outside or intersects.
     Intersection IsInside(const BoundingBox& box) const
     {
+        if (IsOriented() || box.IsOriented())
+        {
+            XMath::BoundingOrientedBox me = (XMath::BoundingOrientedBox)(*this);
+            XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
+            return ct == XMath::DISJOINT ? OUTSIDE : (ct == XMath::INTERSECTS ? INTERSECTS : INSIDE);
+        }
+
         if (box.max_.x_ < min_.x_ || box.min_.x_ > max_.x_ || box.max_.y_ < min_.y_ || box.min_.y_ > max_.y_ ||
             box.max_.z_ < min_.z_ || box.min_.z_ > max_.z_)
             return OUTSIDE;
@@ -167,6 +174,9 @@ public:
     /// Test if another bounding box is (partially) inside or outside.
     Intersection IsInsideFast(const BoundingBox& box) const
     {
+        if (box.IsOriented())
+            return IsInside(box);
+
         if (box.max_.x_ < min_.x_ || box.min_.x_ > max_.x_ || box.max_.y_ < min_.y_ || box.min_.y_ > max_.y_ ||
             box.max_.z_ < min_.z_ || box.min_.z_ > max_.z_)
             return OUTSIDE;

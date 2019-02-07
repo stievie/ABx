@@ -234,17 +234,8 @@ min 0------------4
 bool BoundingBox::Collides(const BoundingBox& b2) const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    switch (GetOrientations(b2))
-    {
-    case OrientationsO1 | OrientationsO2:
+    if (GetOrientations(b2) != OrientationsNone)
         return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-    case OrientationsO1:
-        return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingBox)b2);
-    case OrientationsO2:
-        return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-    default:
-        return ((XMath::BoundingBox)*this).Intersects((XMath::BoundingBox)b2);
-    }
 #else
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
@@ -286,8 +277,6 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         }
         if (result)
         {
-            std::cout << "This: " << ToString() << "; C " << Center().ToString() << "; E " << Extends().ToString() << std::endl <<
-                "That: " << b2.ToString() << "; C " << b2.Center().ToString() << "; E " << b2.Extends().ToString() << std::endl;
             result = ResolveCollision(b2, move);
         }
         return result;

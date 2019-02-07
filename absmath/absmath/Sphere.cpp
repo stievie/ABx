@@ -179,6 +179,14 @@ Intersection Sphere::IsInside(const ConvexHull& sphere) const
 
 Intersection Sphere::IsInside(const BoundingBox& box) const
 {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    if (box.IsOriented())
+    {
+        XMath::BoundingSphere me(center_, radius_);
+        XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
+        return ct == XMath::DISJOINT ? OUTSIDE : (ct == XMath::INTERSECTS ? INTERSECTS : INSIDE);
+    }
+#endif
     float radiusSquared = radius_ * radius_;
     float distSquared = 0;
     float temp;
@@ -252,6 +260,9 @@ Intersection Sphere::IsInside(const BoundingBox& box) const
 
 Intersection Sphere::IsInsideFast(const BoundingBox& box) const
 {
+    if (box.IsOriented())
+        return IsInside(box);
+
     float radiusSquared = radius_ * radius_;
     float distSquared = 0;
     float temp;
