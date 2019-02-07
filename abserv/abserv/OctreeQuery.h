@@ -125,10 +125,6 @@ public:
     std::vector<RayQueryResult>& result_;
     /// Ray.
     Ray ray_;
-    /// Drawable flags to include.
-    unsigned char drawableFlags_;
-    /// Drawable layers to include.
-    unsigned viewMask_;
     /// Maximum ray distance.
     float maxDistance_;
 };

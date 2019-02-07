@@ -32,9 +32,9 @@ public:
     /// Check if a drawable object fits.
     bool CheckObjectFit(const BoundingBox& box) const;
     /// Add a drawable object to this octant.
-    void AddObject(Game::GameObject* drawable);
+    void AddObject(Game::GameObject* object);
     /// Remove a drawable object from this octant.
-    void RemoveObject(Game::GameObject* drawable, bool resetOctant = true);
+    void RemoveObject(Game::GameObject* object, bool resetOctant = true);
     Octree* GetRoot() const { return root_; }
     const BoundingBox& GetCullingBox() const { return cullingBox_; }
 protected:
