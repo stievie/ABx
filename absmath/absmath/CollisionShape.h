@@ -89,7 +89,6 @@ public:
         return shape_->GetShape();
     }
 
-
     std::shared_ptr<T> shape_;
 };
 
