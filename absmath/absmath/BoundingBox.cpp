@@ -250,8 +250,9 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 #endif
 }
 
-bool BoundingBox::ResolveCollision(const BoundingBox& b2, Vector3& result) const
+bool BoundingBox::ResolveCollision(const BoundingBox& /* b2 */, Vector3& /* result */) const
 {
+    // TODO: Implement
     return true;
 }
 
