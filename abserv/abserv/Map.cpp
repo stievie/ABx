@@ -195,7 +195,9 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 
                     if (object && !object->GetCollisionShape())
                     {
-                        if (coll_shape == IO::Map::AttrCollisionShapeTypeTriangleMesh || coll_shape == IO::Map::AttrCollisionShapeTypeConvexHull)
+                        if (coll_shape == IO::Map::AttrCollisionShapeTypeTriangleMesh ||
+                            coll_shape == IO::Map::AttrCollisionShapeTypeConvexHull ||
+                            coll_shape == IO::Map::AttrCollisionShapeTypeCapsule)
                         {
                             if (model)
                             {
@@ -227,7 +229,8 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                                     Math::ShapeTypeBoundingBox, bb)
                             );
                         }
-                        else if (coll_shape == IO::Map::AttrCollisionShapeTypeSphere && size != Math::Vector3::Zero)
+                        else if ((coll_shape == IO::Map::AttrCollisionShapeTypeSphere || coll_shape == IO::Map::AttrCollisionShapeTypeCylinder) &&
+                            size != Math::Vector3::Zero)
                         {
                             // The object has the scaling.
                             float radius = size.x_ * 0.5f;
