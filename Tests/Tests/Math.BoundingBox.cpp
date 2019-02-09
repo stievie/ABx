@@ -72,7 +72,7 @@ TEST_CASE("BoundingBox Collisions", "[boundingbox]")
         Math::BoundingBox bb1(-2.0f, 2.0f);
         Math::BoundingBox bb2(-1.0f, 1.0f);
         Math::Vector3 move;
-        REQUIRE(bb1.Collides(bb2, move));
+        REQUIRE(bb1.Collides(bb2, Math::Vector3::Zero, move));
         REQUIRE(move.x_ == 3.0f);
         REQUIRE(move.y_ == 0.0f);
         REQUIRE(move.z_ == 0.0f);
@@ -82,7 +82,7 @@ TEST_CASE("BoundingBox Collisions", "[boundingbox]")
         Math::BoundingBox bb1(-4.0f, -1.0f);
         Math::BoundingBox bb2(0.0f, 2.0f);
         Math::Vector3 move;
-        REQUIRE(!bb1.Collides(bb2, move));
+        REQUIRE(!bb1.Collides(bb2, Math::Vector3::Zero, move));
         REQUIRE(move.x_ == 0.0f);
         REQUIRE(move.y_ == 0.0f);
         REQUIRE(move.z_ == 0.0f);
@@ -94,7 +94,7 @@ TEST_CASE("BoundingBox Collisions", "[boundingbox]")
         // 90 Deg
         bb2.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, 1.570796f);
         Math::Vector3 move;
-        REQUIRE(bb1.Collides(bb2, move));
+        REQUIRE(bb1.Collides(bb2, Math::Vector3::Zero, move));
     }
 }
 
@@ -115,9 +115,9 @@ TEST_CASE("BoundingBox moving Collisions", "[boundingbox]")
             Math::BoundingBox bbTrans = bb1.Transformed(trans.GetMatrix());
             INFO("i = " << i);
             if (i < 3)
-                REQUIRE(bbTrans.Collides(bb2, move));
+                REQUIRE(bbTrans.Collides(bb2, Math::Vector3::Zero, move));
             else
-                REQUIRE(!bbTrans.Collides(bb2, move));
+                REQUIRE(!bbTrans.Collides(bb2, Math::Vector3::Zero, move));
         }
     }
     SECTION("BoundingBox oriented rotating")
@@ -133,7 +133,7 @@ TEST_CASE("BoundingBox moving Collisions", "[boundingbox]")
 
             INFO("i = " << i);
             if (i < 1)
-                REQUIRE(bb1.Collides(bb2, move));
+                REQUIRE(bb1.Collides(bb2, Math::Vector3::Zero, move));
         }
     }
 }
