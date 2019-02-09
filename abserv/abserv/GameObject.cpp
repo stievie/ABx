@@ -81,7 +81,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
-        const Math::BoundingBox bbox = shape->shape_->Transformed(other->transformation_.GetMatrix());
+        const Math::BoundingBox bbox = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
@@ -102,7 +102,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
-        const Math::Sphere sphere = shape->shape_->Transformed(other->transformation_.GetMatrix());
+        const Math::Sphere sphere = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
@@ -119,7 +119,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
     {
         using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
         HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
-        const Math::ConvexHull hull = shape->shape_->Transformed(other->transformation_.GetMatrix());
+        const Math::ConvexHull hull = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
         ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
@@ -145,7 +145,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), *shape->shape_, move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), *shape->Object(), move);
 #endif
     }
     }
@@ -329,9 +329,10 @@ void GameObject::_LuaSetBoundingBox(float minX, float minY, float minZ, float ma
     if (collisionShape_ && collisionShape_->shapeType_ == Math::ShapeTypeBoundingBox)
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
-        BBoxShape* shape = (BBoxShape*)GetCollisionShape();
-        shape->shape_->min_ = Math::Vector3(minX, minY, minZ);
-        shape->shape_->max_ = Math::Vector3(maxX, maxY, maxZ);
+        BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
+        auto obj = shape->Object();
+        obj->min_ = Math::Vector3(minX, minY, minZ);
+        obj->max_ = Math::Vector3(maxX, maxY, maxZ);
     }
 }
 

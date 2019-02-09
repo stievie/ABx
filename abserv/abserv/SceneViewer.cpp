@@ -249,8 +249,9 @@ void SceneViewer::DrawObject(const std::shared_ptr<Game::GameObject>& object)
         // There is 1 special case, an oriented BB
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(collShape);
-        if (shape->shape_->IsOriented())
-            matrix = trans.GetMatrix(shape->shape_->orientation_);
+        auto obj = shape->Object();
+        if (obj->IsOriented())
+            matrix = trans.GetMatrix(obj->orientation_);
         else
             matrix = trans.GetMatrix();
     }

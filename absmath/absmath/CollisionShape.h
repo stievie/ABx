@@ -44,52 +44,59 @@ public:
 template <typename T>
 class CollisionShapeImpl : public CollisionShape
 {
+private:
+    std::shared_ptr<T> object_;
 public:
     /// Ctor. Create new shape
     template<typename... _CArgs>
     explicit CollisionShapeImpl(ShapeType type, _CArgs&&... _Args) :
         CollisionShape(type),
-        shape_(std::make_shared<T>(std::forward<_CArgs>(_Args)...))
+        object_(std::make_shared<T>(std::forward<_CArgs>(_Args)...))
     { }
     /// Ctor. Assign existing shape
     explicit CollisionShapeImpl(ShapeType type, std::shared_ptr<T> ptr) :
         CollisionShape(type),
-        shape_(ptr)
+        object_(ptr)
     { }
 
     BoundingBox GetWorldBoundingBox(const Matrix4& transform) const override
     {
-        return shape_->GetBoundingBox().Transformed(transform);
+        return object_->GetBoundingBox().Transformed(transform);
     }
 
     BoundingBox GetBoundingBox() const override
     {
-        return shape_->GetBoundingBox();
+        return object_->GetBoundingBox();
     }
 
     bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const override
     {
-        return shape_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, move);
     }
     bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const override
     {
-        return shape_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, move);
     }
     bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const override
     {
-        return shape_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, move);
     }
     bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const override
     {
-        return shape_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, move);
+    }
+
+    T* Object() const
+    {
+        if (object_)
+            return object_.get();
+        return nullptr;
     }
 
     Shape GetShape() const override
     {
-        return shape_->GetShape();
+        return object_->GetShape();
     }
-
-    std::shared_ptr<T> shape_;
 };
 
 }
