@@ -39,7 +39,7 @@ float Ray::HitDistance(const BoundingBox& box) const
 
 #if (defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH))
     // TODO: Check!
-    const XMath::BoundingBox xbb = (XMath::BoundingBox)box;
+    const XMath::BoundingOrientedBox xbb = (XMath::BoundingOrientedBox)box;
     if (xbb.Intersects(origin_, direction_, dist))
         return dist;
     else

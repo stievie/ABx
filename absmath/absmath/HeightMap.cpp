@@ -142,22 +142,22 @@ Vector3 HeightMap::GetNormal(const Vector3& world) const
     return matrix_.Rotation() * n;
 }
 
-bool HeightMap::Collides(const Sphere& b2, Vector3& move) const
+bool HeightMap::Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const
 {
-    return b2.Collides(*this, move);
+    return b2.Collides(*this, velocity, move);
 }
 
-bool HeightMap::Collides(const BoundingBox& b2, Vector3& move) const
+bool HeightMap::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
 {
-    return b2.Collides(*this, move);
+    return b2.Collides(*this, velocity, move);
 }
 
-bool HeightMap::Collides(const ConvexHull& b2, Vector3& move) const
+bool HeightMap::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const
 {
-    return b2.Collides(*this, move);
+    return b2.Collides(*this, velocity, move);
 }
 
-bool HeightMap::Collides(const HeightMap&, Vector3&) const
+bool HeightMap::Collides(const HeightMap&, const Vector3&, Vector3&) const
 {
     // Can not collide Heightmap with Heightmap
     assert(false);

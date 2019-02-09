@@ -76,18 +76,13 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
 #endif
 }
 
-TerrainPatch::~TerrainPatch()
-{
-}
-
 void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
     std::vector<Math::RayQueryResult>& results)
 {
     if (auto o = owner_.lock())
     {
         const Math::Matrix4& matrix = o->transformation_.GetMatrix();
-        Math::Matrix4 inverse(matrix.Inverse());
-        Math::Ray localRay = query.ray_.Transformed(inverse);
+        Math::Ray localRay = query.ray_.Transformed(matrix.Inverse());
         float distance = localRay.HitDistance(boundingBox_);
         Math::Vector3 normal = -query.ray_.direction_;
 

@@ -236,7 +236,8 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     if (GetOrientations(b2) != OrientationsNone)
         return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
-#else
+#endif
+
     const Vector3 size1 = Size();
     const Vector3 size2 = b2.Size();
     return !(
@@ -247,16 +248,15 @@ bool BoundingBox::Collides(const BoundingBox& b2) const
         min_.z_ + size1.z_ < b2.min_.z_ ||
         min_.z_ > b2.min_.z_ + size2.z_
         );
-#endif
 }
 
-bool BoundingBox::ResolveCollision(const BoundingBox& /* b2 */, Vector3& /* result */) const
+bool BoundingBox::ResolveCollision(const BoundingBox& /* b2 */, const Vector3& /* velocity */, Vector3& /* result */) const
 {
     // TODO: Implement
     return true;
 }
 
-bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
+bool BoundingBox::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
 {
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     const uint32_t o = GetOrientations(b2);
@@ -278,7 +278,7 @@ bool BoundingBox::Collides(const BoundingBox& b2, Vector3& move) const
         }
         if (result)
         {
-            result = ResolveCollision(b2, move);
+            result = ResolveCollision(b2, velocity, move);
         }
         return result;
     }
@@ -349,7 +349,7 @@ bool BoundingBox::Collides(const Sphere& b2) const
     return IsInside(b2) != OUTSIDE;
 }
 
-bool BoundingBox::Collides(const Sphere& b2, Vector3&) const
+bool BoundingBox::Collides(const Sphere& b2, const Vector3&, Vector3&) const
 {
     if (IsOriented())
     {
@@ -358,12 +358,12 @@ bool BoundingBox::Collides(const Sphere& b2, Vector3&) const
     return IsInside(b2) != OUTSIDE;
 }
 
-bool BoundingBox::Collides(const ConvexHull& b2, Vector3&) const
+bool BoundingBox::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const
 {
     return IsInside(b2) != OUTSIDE;
 }
 
-bool BoundingBox::Collides(const HeightMap& b2, Vector3& move) const
+bool BoundingBox::Collides(const HeightMap& b2, const Vector3&, Vector3& move) const
 {
     Vector3 centerBottom = Center();
     centerBottom.y_ -= Extends().y_;

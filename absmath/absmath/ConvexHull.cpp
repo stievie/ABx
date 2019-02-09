@@ -29,7 +29,7 @@ ConvexHull ConvexHull::Transformed(const Matrix4& transform) const
     return result;
 }
 
-bool ConvexHull::Collides(const Sphere& b2, Vector3&) const
+bool ConvexHull::Collides(const Sphere& b2, const Vector3&, Vector3&) const
 {
     const Shape s = b2.GetShape();
 
@@ -40,7 +40,7 @@ bool ConvexHull::Collides(const Sphere& b2, Vector3&) const
     return false;
 }
 
-bool ConvexHull::Collides(const BoundingBox& b2, Vector3&) const
+bool ConvexHull::Collides(const BoundingBox& b2, const Vector3&, Vector3&) const
 {
     const Shape s = b2.GetShape();
 
@@ -51,14 +51,14 @@ bool ConvexHull::Collides(const BoundingBox& b2, Vector3&) const
     return false;
 }
 
-bool ConvexHull::Collides(const ConvexHull& b2, Vector3&) const
+bool ConvexHull::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const
 {
     if (Gjk::StaticIntersects(*this, b2))
         return true;
     return false;
 }
 
-bool ConvexHull::Collides(const HeightMap& b2, Vector3& move) const
+bool ConvexHull::Collides(const HeightMap& b2, const Vector3&, Vector3& move) const
 {
     const Vector3 pBottom = GetFarsetPointInDirection(Math::Vector3::Down);
     const float y = b2.GetHeight(pBottom);

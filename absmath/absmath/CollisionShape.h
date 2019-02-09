@@ -31,10 +31,10 @@ public:
     virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;
     virtual BoundingBox GetBoundingBox() const = 0;
 
-    virtual bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const = 0;
-    virtual bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const = 0;
-    virtual bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const = 0;
-    virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const BoundingBox& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const Sphere& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const HeightMap& other, const Vector3& velocity, Vector3& move) const = 0;
+    virtual bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const = 0;
 
     virtual Shape GetShape() const = 0;
 
@@ -69,21 +69,21 @@ public:
         return object_->GetBoundingBox();
     }
 
-    bool Collides(const Matrix4& transformation, const BoundingBox& other, Vector3& move) const override
+    bool Collides(const Matrix4& transformation, const BoundingBox& other, const Vector3& velocity, Vector3& move) const override
     {
-        return object_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, velocity, move);
     }
-    bool Collides(const Matrix4& transformation, const Sphere& other, Vector3& move) const override
+    bool Collides(const Matrix4& transformation, const Sphere& other, const Vector3& velocity, Vector3& move) const override
     {
-        return object_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, velocity, move);
     }
-    bool Collides(const Matrix4& transformation, const HeightMap& other, Vector3& move) const override
+    bool Collides(const Matrix4& transformation, const HeightMap& other, const Vector3& velocity, Vector3& move) const override
     {
-        return object_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, velocity, move);
     }
-    bool Collides(const Matrix4& transformation, const ConvexHull& other, Vector3& move) const override
+    bool Collides(const Matrix4& transformation, const ConvexHull& other, const Vector3& velocity, Vector3& move) const override
     {
-        return object_->Transformed(transformation).Collides(other, move);
+        return object_->Transformed(transformation).Collides(other, velocity, move);
     }
 
     T* Object() const

@@ -227,6 +227,21 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                                     Math::ShapeTypeBoundingBox, bb)
                             );
                         }
+                        else if (coll_shape == IO::Map::AttrCollisionShapeTypeSphere && size != Math::Vector3::Zero)
+                        {
+                            // The object has the scaling.
+                            float radius = size.x_ * 0.5f;
+                            Math::Sphere sphere(offset, radius);
+#ifdef DEBUG_COLLISION
+                            LOG_DEBUG << "Setting Sphere collision shape for " << object->GetName() <<
+                                " Center " << offset.ToString() <<
+                                ", Radius " << radius << std::endl;
+#endif
+                            object->SetCollisionShape(
+                                std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(
+                                    Math::ShapeTypeSphere, sphere)
+                            );
+                        }
                         else if (model)
                         {
                             // If none of the above set to model bounding box

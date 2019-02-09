@@ -132,7 +132,8 @@ Shape Sphere::GetShape() const
 
 Sphere Sphere::Transformed(const Matrix4& transform) const
 {
-    return Sphere(transform * center_, radius_);
+    // Urho3D uses x from the size component to scale the radius.
+    return Sphere(transform * center_, transform.Scaling().x_ * radius_);
 }
 
 bool Sphere::Collides(const BoundingBox& b2) const
@@ -140,12 +141,12 @@ bool Sphere::Collides(const BoundingBox& b2) const
     return IsInsideFast(b2) != OUTSIDE;
 }
 
-bool Sphere::Collides(const BoundingBox& b2, Vector3& move) const
+bool Sphere::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
 {
-    return b2.Collides(*this, move);
+    return b2.Collides(*this, velocity, move);
 }
 
-bool Sphere::Collides(const Sphere& b2, Vector3&) const
+bool Sphere::Collides(const Sphere& b2, const Vector3&, Vector3&) const
 {
     const Shape s = b2.GetShape();
 
@@ -154,27 +155,27 @@ bool Sphere::Collides(const Sphere& b2, Vector3&) const
     return false;
 }
 
-bool Sphere::Collides(const ConvexHull& b2, Vector3& move) const
+bool Sphere::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const
 {
-    return b2.Collides(*this, move);
+    return b2.Collides(*this, velocity, move);
 }
 
-bool Sphere::Collides(const HeightMap& b2, Vector3& move) const
+bool Sphere::Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const
 {
     BoundingBox bbox = GetBoundingBox();
-    return bbox.Collides(b2, move);
+    return bbox.Collides(b2, velocity, move);
 }
 
 Intersection Sphere::IsInside(const HeightMap& sphere) const
 {
     Vector3 move;
-    return Collides(sphere, move) ? INSIDE : OUTSIDE;
+    return Collides(sphere, Vector3::Zero, move) ? INSIDE : OUTSIDE;
 }
 
 Intersection Sphere::IsInside(const ConvexHull& sphere) const
 {
     Vector3 move;
-    return Collides(sphere, move) ? INSIDE : OUTSIDE;
+    return Collides(sphere, Vector3::Zero, move) ? INSIDE : OUTSIDE;
 }
 
 Intersection Sphere::IsInside(const BoundingBox& box) const

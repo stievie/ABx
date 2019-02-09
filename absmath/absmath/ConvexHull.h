@@ -27,10 +27,10 @@ public:
     }
     Intersection IsInside(const Vector3& point) const;
     ConvexHull Transformed(const Matrix4& transform) const;
-    bool Collides(const Sphere& b2, Vector3& move) const;
-    bool Collides(const BoundingBox& b2, Vector3& move) const;
-    bool Collides(const ConvexHull& b2, Vector3& move) const;
-    bool Collides(const HeightMap& b2, Vector3& move) const;
+    bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const;
 
     Shape GetShape() const { return *this; }
 

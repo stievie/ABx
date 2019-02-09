@@ -16,7 +16,7 @@ private:
 public:
     TerrainPatch(std::shared_ptr<Terrain> owner, const Math::Point<int>& offset,
         const Math::Point<int>& size);
-    ~TerrainPatch() override;
+    ~TerrainPatch() override = default;
 
     /// Process octree raycast. May be called from a worker thread.
     void ProcessRayQuery(const Math::RayOctreeQuery& query, std::vector<Math::RayQueryResult>& results) override;

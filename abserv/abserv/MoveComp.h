@@ -76,7 +76,7 @@ public:
     /// Manual direction set
     bool directionSet_;
     bool newAngle_;
-    /// Velocity in Units/s. For Doppler effect.
+    /// Velocity in Units/s.
     Math::Vector3 velocity_;
 };
 

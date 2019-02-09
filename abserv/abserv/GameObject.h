@@ -135,7 +135,7 @@ public:
             return nullptr;
         return collisionShape_.get();
     }
-    bool Collides(GameObject* other, Math::Vector3& move) const;
+    bool Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {

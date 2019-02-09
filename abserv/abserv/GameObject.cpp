@@ -70,7 +70,7 @@ void GameObject::Update(uint32_t, Net::NetworkMessage&)
 {
 }
 
-bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
+bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
 {
     if (!collisionShape_ || !other->GetCollisionShape())
         return false;
@@ -84,7 +84,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         const Math::BoundingBox bbox = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
         if (ret)
         {
             LOG_DEBUG << "ShapeTypeBoundingBox: this(" << GetName() <<
@@ -95,7 +95,7 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), bbox, move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
 #endif
     }
     case Math::ShapeTypeSphere:
@@ -105,14 +105,14 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         const Math::Sphere sphere = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity, move);
         if (ret)
         {
             LOG_INFO << "ShapeTypeSphere: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), sphere, move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity,  move);
 #endif
     }
     case Math::ShapeTypeConvexHull:
@@ -122,14 +122,14 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         const Math::ConvexHull hull = shape->Object()->Transformed(other->transformation_.GetMatrix());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
         if (ret)
         {
             LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), hull, move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
 #endif
     }
     case Math::ShapeTypeHeightMap:
@@ -138,14 +138,14 @@ bool GameObject::Collides(GameObject* other, Math::Vector3& move) const
         HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
 #if defined(DEBUG_COLLISION)
         bool ret = false;
-        ret = collisionShape_->Collides(transformation_.GetMatrix(), *shape->shape_, move);
+        ret = collisionShape_->Collides(transformation_.GetMatrix(), *shape->Object(), velocity, move);
         if (ret)
         {
             LOG_INFO << "ShapeTypeConvexHull: this(" << GetName() << ") collides with that(" << other->GetName() << ")" << std::endl;
         }
         return ret;
 #else
-        return collisionShape_->Collides(transformation_.GetMatrix(), *shape->Object(), move);
+        return collisionShape_->Collides(transformation_.GetMatrix(), *shape->Object(), velocity, move);
 #endif
     }
     }

@@ -18,7 +18,7 @@ void CollisionComp::DoCollisions()
             if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
                 Math::Vector3 move;
-                if (owner_.Collides(ci, move))
+                if (owner_.Collides(ci, owner_.moveComp_.velocity_, move))
                 {
 #ifdef DEBUG_COLLISION
                     //                    LOG_DEBUG << GetName() << " collides with " << ci->GetName() << std::endl;

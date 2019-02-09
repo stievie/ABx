@@ -34,10 +34,10 @@ public:
         return *this;
     }
 
-    bool Collides(const Sphere& b2, Vector3& move) const;
-    bool Collides(const BoundingBox& b2, Vector3& move) const;
-    bool Collides(const ConvexHull& b2, Vector3& move) const;
-    bool Collides(const HeightMap&, Vector3&) const;
+    bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const HeightMap&, const Vector3&, Vector3&) const;
 
     Shape GetShape() const;
 

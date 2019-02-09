@@ -33,7 +33,7 @@ private:
             o |= OrientationsO2;
         return o;
     }
-    bool ResolveCollision(const BoundingBox& b2, Vector3& result) const;
+    bool ResolveCollision(const BoundingBox& b2, const Vector3& velocity, Vector3& result) const;
 public:
     BoundingBox() noexcept :
         min_(Vector3(INFINITY, INFINITY, INFINITY)),
@@ -132,11 +132,11 @@ public:
     bool Collides(const BoundingBox& b2) const;
     /// Returns true if the boxes are colliding (velocities are not used)
     /// move will return the movement the b1 must move to avoid the collision
-    bool Collides(const BoundingBox& b2, Vector3& move) const;
+    bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const Sphere& b2) const;
-    bool Collides(const Sphere& b2, Vector3& move) const;
-    bool Collides(const ConvexHull& b2, Vector3& move) const;
-    bool Collides(const HeightMap& b2, Vector3& move) const;
+    bool Collides(const Sphere& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
+    bool Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const;
 
     /// Test if a point is inside.
     Intersection IsInside(const Vector3& point) const
