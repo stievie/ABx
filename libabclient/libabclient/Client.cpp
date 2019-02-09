@@ -436,8 +436,9 @@ void Client::Update(int timeElapsed)
 {
     if (state_ == ClientState::World)
     {
-        if (lastPing_ >= 1000 && gotPong_)
+        if ((lastPing_ >= 1000 && gotPong_) || (lastPing_ > 5000))
         {
+            // Send every second a Ping. If we didn't get a pong the last 5 seconds also send a ping.
             if (protoGame_)
             {
                 gotPong_ = false;
@@ -448,7 +449,7 @@ void Client::Update(int timeElapsed)
     }
 
     lastRun_ += timeElapsed;
-    if (lastRun_ >= 15)
+    if (lastRun_ >= 16)
     {
         // Don't send more than ~60 updates to the server, it might DC.
         // If running @144Hz every 2nd Update. If running @60Hz every update
