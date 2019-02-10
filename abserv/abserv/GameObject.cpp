@@ -15,8 +15,8 @@ namespace Game {
 
 Utils::IdGenerator<uint32_t> GameObject::objectIds_;
 // Let's make the head 1.6m above the ground
-const Math::Vector3 Actor::HeadOffset(0.0f, 1.7f, 0.0f);
-const Math::Vector3 Actor::BodyOffset(0.0f, 1.0f, 0.0f);
+const Math::Vector3 GameObject::HeadOffset(0.0f, 1.7f, 0.0f);
+const Math::Vector3 GameObject::BodyOffset(0.0f, 1.0f, 0.0f);
 
 void GameObject::RegisterLua(kaguya::State& state)
 {
