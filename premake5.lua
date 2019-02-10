@@ -22,9 +22,13 @@ workspace "abs3rd"
     filter "platforms:x32"
       architecture "x86"
   elseif (_TARGET_OS == "linux") then
-    platforms { "armv7" }
+    platforms { "armv7", "x32", "x64" }
     filter "platforms:armv7"
       architecture "armv7"
+    filter "platforms:x64"
+      architecture "x86_64"
+    filter "platforms:x32"
+      architecture "x86"
   end
   
   filter "configurations:Debug"
@@ -159,7 +163,7 @@ workspace "abs3rd"
 workspace "absall"
   configurations { "Debug", "Release", "RelNoProfiling" }
   location "build"
-  includedirs { ".", "abscommon/abscommon", "Include", "$(BOOST_DIR)" }
+  includedirs { ".", "abscommon/abscommon", "Include", "Include/DirectXMath", "Include/XMath", "$(BOOST_DIR)" }
   libdirs { "Lib", "Lib/%{cfg.platform}/%{cfg.buildcfg}", "$(BOOST_LIB_PATH)" }
   targetdir ("Bin")
   cppdialect "C++14"
