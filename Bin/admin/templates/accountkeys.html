@@ -82,8 +82,10 @@ $include {{_header.html}}
                   <form id="new_key_form" class="form-horizontal form-label-left" method="POST" action="post/createkey">
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Key</label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input name="uuid" required="required" readonly="" class="form-control col-md-7 col-xs-12" type="text" value="${new_id}">
+                      <div class="col-md-6 col-sm-6 col-xs-12 input-group">
+                        <input name="uuid" required="required" readonly="" class="form-control col-md-7 col-xs-12" type="text" value="${new_id}" id="key-${new_id}">
+
+                        <a href="#" class="copy-key input-group-addon btn btn-info" data-key="${new_id}" title="Copy"><i class="fa fa-copy"></i></a>
                       </div>
                     </div>
                     <div class="form-group">
