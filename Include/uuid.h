@@ -737,7 +737,7 @@ private:
 
             if (index >= 16 || !detail::is_hex(str[i]))
             {
-                std::fill(std::begin(data), std::end(data), 0);
+                std::fill(std::begin(data), std::end(data), static_cast<uint8_t>(0u));
                 return;
             }
 
@@ -755,7 +755,7 @@ private:
 
         if (index < 16)
         {
-            std::fill(std::begin(data), std::end(data), 0);
+            std::fill(std::begin(data), std::end(data), static_cast<uint8_t>(0u));
         }
     }
 };
