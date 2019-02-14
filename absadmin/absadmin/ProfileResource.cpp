@@ -19,7 +19,7 @@ bool ProfileResource::GetObjects(std::map<std::string, ginger::object>& objects)
     if (!TemplateResource::GetObjects(objects))
         return false;
 
-    std::string uuid = session_->values_[Utils::StringHashRt("account_uuid")].GetString();
+    const std::string& uuid = session_->values_[Utils::StringHashRt("account_uuid")].GetString();
     AB::Entities::Account account;
     account.uuid = uuid;
     auto dataClient = GetSubsystem<IO::DataClient>();
