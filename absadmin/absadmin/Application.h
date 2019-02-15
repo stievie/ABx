@@ -39,6 +39,7 @@ private:
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
+    bool HandleOnAccept(const asio::ip::tcp::endpoint& endpoint);
     template<typename C>
     void Route(const std::string& method, const std::string& pattern)
     {

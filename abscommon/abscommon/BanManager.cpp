@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include "Bans.h"
-#include "Utils.h"
-#include "ConfigManager.h"
+#include "BanManager.h"
 #include "Utils.h"
 #include <AB/Entities/IpBan.h>
 #include <AB/Entities/AccountBan.h>
@@ -12,6 +10,9 @@
 #include "DebugNew.h"
 
 namespace Auth {
+
+uint32_t BanManager::LoginTries = 5;
+uint32_t BanManager::LoginRetryTimeout = 5000;
 
 bool BanManager::AcceptConnection(uint32_t clientIP)
 {
@@ -63,6 +64,9 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
 
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    if (!client)
+        return false;
+
     AB::Entities::IpBan ban;
     ban.ip = clientIP;
     ban.mask = mask;
@@ -82,9 +86,7 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
     if (clientIP == 0)
         return false;
 
-    auto config = GetSubsystem<ConfigManager>();
-    uint32_t loginTries = static_cast<uint32_t>((*config)[ConfigManager::LoginTries].GetInt());
-    if (loginTries == 0)
+    if (BanManager::LoginTries == 0)
         return false;
 
     std::lock_guard<std::recursive_mutex> lockGuard(lock_);
@@ -94,9 +96,8 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
 
     time_t currentTime = (Utils::AbTick() / 1000);
 
-    uint32_t loginTimeout = static_cast<uint32_t>((*config)[ConfigManager::LoginTimeout].GetInt()) / 1000;
-    if ((it->second.numberOfLogins >= loginTries) &&
-        (uint32_t)currentTime < it->second.lastLoginTime + loginTimeout)
+    if ((it->second.numberOfLogins >= BanManager::LoginTries) &&
+        (uint32_t)currentTime < it->second.lastLoginTime + BanManager::LoginRetryTimeout)
         return true;
 
     return false;
@@ -106,6 +107,9 @@ bool BanManager::IsAccountBanned(const uuids::uuid& accountUuid)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    if (!client)
+        return false;
+
     AB::Entities::AccountBan ban;
     ban.accountUuid = accountUuid.to_string();
     if (!client->Read(ban))
@@ -124,7 +128,6 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
     if (clientIP == 0)
         return;
 
-    auto config = GetSubsystem<ConfigManager>();
     time_t currentTime = (Utils::AbTick() / 1000);
     std::lock_guard<std::recursive_mutex> lockGuard(lock_);
     std::map<uint32_t, LoginBlock>::iterator it = ipLogins_.find(clientIP);
@@ -135,12 +138,10 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
         it = ipLogins_.find(clientIP);
     }
 
-    uint32_t loginTries = static_cast<uint32_t>((*config)[ConfigManager::LoginTries].GetInt());
-    if (it->second.numberOfLogins >= loginTries)
+    if (it->second.numberOfLogins >= BanManager::LoginTries)
         it->second.numberOfLogins = 0;
 
-    uint32_t retryTimeout = static_cast<uint32_t>((*config)[ConfigManager::LoginRetryTimeout].GetInt()) / 1000;
-    if (!success || (currentTime < it->second.lastLoginTime + retryTimeout))
+    if (!success || (currentTime < it->second.lastLoginTime + BanManager::LoginRetryTimeout))
         ++it->second.numberOfLogins;
     else
         it->second.numberOfLogins = 0;
@@ -155,6 +156,9 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std
 
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    if (!client)
+        return false;
+
     AB::Entities::Ban ban;
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     ban.uuid = guid.to_string();

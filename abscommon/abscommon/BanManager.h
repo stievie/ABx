@@ -1,6 +1,8 @@
 #pragma once
 
 #include <AB/Entities/Ban.h>
+#include <map>
+#include <uuid.h>
 
 namespace Auth {
 
@@ -36,6 +38,9 @@ private:
     std::map<uint32_t, LoginBlock> ipLogins_;
     std::map<uint32_t, ConnectBlock> ipConnects_;
 public:
+    static uint32_t LoginTries;
+    static uint32_t LoginRetryTimeout;
+
     BanManager() = default;
     ~BanManager() {}
 

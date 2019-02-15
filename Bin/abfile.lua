@@ -26,3 +26,4 @@ require_auth = true
 
 require("config/data_server")
 require("config/msg_server")
+require("config/login")

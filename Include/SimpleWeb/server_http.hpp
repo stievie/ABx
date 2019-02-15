@@ -330,6 +330,7 @@ namespace SimpleWeb {
     std::function<void(std::shared_ptr<typename ServerBase<socket_type>::Request>, const error_code &)> on_error;
 
     std::function<void(std::unique_ptr<socket_type> &, std::shared_ptr<typename ServerBase<socket_type>::Request>)> on_upgrade;
+    std::function<bool(const asio::ip::tcp::endpoint& endpoint)> on_accept;
 
     /// If you have your own asio::io_service, store its pointer here before running start().
     std::shared_ptr<asio::io_service> io_service;
@@ -722,8 +723,18 @@ namespace SimpleWeb {
           return;
 
         // Immediately start accepting a new connection (unless io_service has been stopped)
-        if(ec != asio::error::operation_aborted)
-          this->accept();
+        if (ec != asio::error::operation_aborted)
+        {
+            if (this->on_accept)
+            {
+                if (!this->on_accept(connection->socket->lowest_layer().remote_endpoint()))
+                {
+                    connection->close();
+                    return;
+                }
+            }
+            this->accept();
+        }
 
         auto session = std::make_shared<Session>(config.max_request_streambuf_size, connection);
 

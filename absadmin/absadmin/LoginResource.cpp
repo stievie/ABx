@@ -8,11 +8,14 @@
 #include "DataClient.h"
 #include <AB/Entities/Account.h>
 #include <abcrypto.hpp>
+#include "BanManager.h"
 
 namespace Resources {
 
 bool LoginResource::Auth(const std::string& user, const std::string& pass)
 {
+    uint32_t ip = request_->remote_endpoint->address().to_v4().to_uint();
+
     AB::Entities::Account account;
     account.name = user;
     auto dataClient = GetSubsystem<IO::DataClient>();
@@ -22,8 +25,18 @@ bool LoginResource::Auth(const std::string& user, const std::string& pass)
         return false;
     if (account.type < AB::Entities::AccountTypeNormal)
         return false;
-    if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
+    auto banMan = GetSubsystem<Auth::BanManager>();
+    if (banMan->IsAccountBanned(uuids::uuid(account.uuid)))
+    {
+        banMan->AddLoginAttempt(ip, false);
         return false;
+    }
+    if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
+    {
+        banMan->AddLoginAttempt(ip, false);
+        return false;
+    }
+    banMan->AddLoginAttempt(ip, true);
 
     session_->values_[Utils::StringHashRt("logged_in")] = true;
     session_->values_[Utils::StringHashRt("username")] = user;

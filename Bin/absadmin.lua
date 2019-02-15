@@ -21,3 +21,4 @@ session_lifetime = 1000 * 60 * 60
 
 require("config/data_server")
 require("config/msg_server")
+require("config/login")

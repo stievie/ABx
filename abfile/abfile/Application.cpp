@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Logger.h"
 #include "DataClient.h"
+#include "BanManager.h"
 #include "Process.hpp"
 #include "Service.h"
 #include <AB/Entities/GameList.h>
@@ -49,6 +50,8 @@ Application::Application() :
     serverType_ = AB::Entities::ServiceTypeFileServer;
     ioService_ = std::make_shared<asio::io_service>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+    Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_.get());
+    Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
     Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_.get());
 }
 
@@ -135,15 +138,19 @@ void Application::UpdateBytesSent(size_t bytes)
             loads_.erase(loads_.begin());
         loads_.push_back(static_cast<int>(load));
 
-        AB::Entities::Service serv;
-        serv.uuid = serverId_;
-        if (dataClient_->Read(serv))
+        auto dataClient = GetSubsystem<IO::DataClient>();
+        if (dataClient->IsConnected())
         {
-            uint8_t avgLoad = GetAvgLoad();
-            if (avgLoad != serv.load)
+            AB::Entities::Service serv;
+            serv.uuid = serverId_;
+            if (dataClient->Read(serv))
             {
-                serv.load = avgLoad;
-                dataClient_->Update(serv);
+                uint8_t avgLoad = GetAvgLoad();
+                if (avgLoad != serv.load)
+                {
+                    serv.load = avgLoad;
+                    dataClient->Update(serv);
+                }
             }
         }
     }
@@ -205,6 +212,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
     requireAuth_ = config->GetGlobalBool("require_auth", false);
     maxThroughput_ = static_cast<uint64_t>(config->GetGlobal("max_throughput", 0ll));
 
+    Auth::BanManager::LoginTries = static_cast<uint32_t>(config->GetGlobal("login_tries", 5ll));
+    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000ll));
+
     if (!logDir_.empty())
     {
         // Different log dir
@@ -232,11 +242,16 @@ bool Application::Initialize(const std::vector<std::string>& args)
         std::placeholders::_1, std::placeholders::_2);
     server_->default_resource["GET"] = std::bind(&Application::GetHandlerDefault, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->on_accept = std::bind(&Application::HandleOnAccept, shared_from_this(),
+        std::placeholders::_1);
 
     bool haveData = !dataHost_.empty() && (dataPort_ != 0);
-
-    if (haveData)
+    if (!haveData)
     {
+        LOG_ERROR << "No data server configured" << std::endl;
+        return false;
+    }
+
         server_->resource["^/_version_$"]["GET"] = std::bind(&Application::GetHandlerVersion, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_versions_$"]["GET"] = std::bind(&Application::GetHandlerVersions, shared_from_this(),
@@ -255,29 +270,20 @@ bool Application::Initialize(const std::vector<std::string>& args)
             std::placeholders::_1, std::placeholders::_2);
         server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
-    }
 
-    if (haveData)
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    LOG_INFO << "Connecting to data server...";
+    dataClient->Connect(dataHost_, dataPort_);
+    if (!dataClient->IsConnected())
     {
-        dataClient_ = std::make_unique<IO::DataClient>(*ioService_.get());
-
-        LOG_INFO << "Connecting to data server...";
-        dataClient_->Connect(dataHost_, dataPort_);
-        if (!dataClient_->IsConnected())
-        {
-            LOG_INFO << "[FAIL]" << std::endl;
-            LOG_ERROR << "Failed to connect to data server" << std::endl;
-            return false;
-        }
-        LOG_INFO << "[done]" << std::endl;
-        if (serverName_.empty() || serverName_.compare("generic") == 0)
-        {
-            serverName_ = GetFreeName(dataClient_.get());
-        }
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to connect to data server" << std::endl;
+        return false;
     }
-    else
+    LOG_INFO << "[done]" << std::endl;
+    if (serverName_.empty() || serverName_.compare("generic") == 0)
     {
-        LOG_WARNING << "Not connected to data server" << std::endl;
+        serverName_ = GetFreeName(dataClient);
     }
 
     std::string msgHost = config->GetGlobal("message_host", "");
@@ -305,7 +311,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
     LOG_INFO << "  Max. throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
     LOG_INFO << "  Worker Threads: " << server_->config.thread_pool_size << std::endl;
     if (haveData)
-        LOG_INFO << "  Data Server: " << dataClient_->GetHost() << ":" << dataClient_->GetPort() << std::endl;
+        LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
     else
         LOG_INFO << "  Data Server: (NONE)" << std::endl;
 
@@ -319,7 +325,8 @@ void Application::Run()
     uptimeRound_ = 1;
     AB::Entities::Service serv;
     serv.uuid = serverId_;
-    if (!dataClient_->Read(serv))
+    auto dataClient = GetSubsystem<IO::DataClient>();
+    if (!dataClient->Read(serv))
     {
         if (!temporary_)
         {
@@ -327,6 +334,7 @@ void Application::Run()
             LOG_WARNING << "Unable to read service with UUID " << serv.uuid << std::endl;
         }
     }
+
     if (!machine_.empty())
         serv.machine = machine_;
     else
@@ -343,10 +351,10 @@ void Application::Run()
     serv.type = serverType_;
     serv.startTime = startTime_;
     serv.temporary = temporary_;
-    dataClient_->UpdateOrCreate(serv);
+    dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
-    dataClient_->Invalidate(sl);
+    dataClient->Invalidate(sl);
 
     // If we want to receive messages, we need to send our ServerID to the message server.
     SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
@@ -368,7 +376,9 @@ void Application::Stop()
     AB::Entities::Service serv;
     serv.uuid = serverId_;
 
-    if (dataClient_->Read(serv))
+    auto dataClient = GetSubsystem<IO::DataClient>();
+
+    if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::AbTick();
@@ -378,13 +388,13 @@ void Application::Stop()
         SendServerLeft(GetSubsystem<Net::MessageClient>(), serv);
 
         if (!temporary_)
-            dataClient_->Update(serv);
+            dataClient->Update(serv);
         else
             // If autoterm -> temporary -> dynamically spawned -> delete from DB
-            dataClient_->Delete(serv);
+            dataClient->Delete(serv);
 
         AB::Entities::ServiceList sl;
-        dataClient_->Invalidate(sl);
+        dataClient->Invalidate(sl);
     }
     else
         LOG_ERROR << "Unable to read service" << std::endl;
@@ -425,22 +435,14 @@ void Application::SpawnServer()
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
 {
     uint32_t ip = request->remote_endpoint->address().to_v4().to_uint();
-    AB::Entities::IpBan ban;
-    ban.ip = ip;
-    ban.mask = 0xFFFFFFFF;
-    if (dataClient_->Read(ban))
-    {
-        AB::Entities::Ban _ban;
-        _ban.uuid = ban.banUuid;
-        if (dataClient_->Read(_ban))
-        {
-            if (_ban.active && ((_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000)))
-                return false;
-        }
-    }
+    auto banMan = GetSubsystem<Auth::BanManager>();
+    if (banMan->IsIpBanned(ip))
+        return false;
 
     if (!requireAuth_)
         return true;
+
+    auto dataClient = GetSubsystem<IO::DataClient>();
 
     // Check Auth
     const auto it = request->header.find("Auth");
@@ -448,6 +450,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     {
         LOG_WARNING << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Missing Auth header" << std::endl;
+        banMan->AddLoginAttempt(ip, false);
         return false;
     }
     const std::string accId = (*it).second.substr(0, 36);
@@ -456,12 +459,13 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     {
         LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Wrong Auth header " << (*it).second << std::endl;
+        banMan->AddLoginAttempt(ip, false);
         return false;
     }
 
     AB::Entities::Account acc;
     acc.uuid = accId;
-    if (!dataClient_->Read(acc))
+    if (!dataClient->Read(acc))
     {
         LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Unable to read account " << accId << std::endl;
@@ -469,28 +473,20 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     }
     if (acc.status != AB::Entities::AccountStatusActivated)
         return false;
-    if (IsAccountBanned(acc))
+    if (banMan->IsAccountBanned(uuids::uuid(acc.uuid)))
+    {
+        banMan->AddLoginAttempt(ip, false);
         return false;
+    }
 
     if (bcrypt_checkpass(passwd.c_str(), acc.password.c_str()) != 0)
+    {
+        banMan->AddLoginAttempt(ip, false);
         return false;
+    }
+    banMan->AddLoginAttempt(ip, true);
 
     return true;
-}
-
-bool Application::IsAccountBanned(const AB::Entities::Account& acc)
-{
-    AB::Entities::AccountBan ban;
-    ban.accountUuid = acc.uuid;
-    if (!dataClient_->Read(ban))
-        return false;
-    AB::Entities::Ban _ban;
-    _ban.uuid = ban.banUuid;
-    if (!dataClient_->Read(_ban))
-        return false;
-    if (!_ban.active)
-        return false;
-    return (_ban.expires <= 0) || (_ban.expires >= Utils::AbTick() / 1000);
 }
 
 SimpleWeb::CaseInsensitiveMultimap Application::GetDefaultHeader()
@@ -601,8 +597,9 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
-    if (!dataClient_->Read(gl))
+    if (!dataClient->Read(gl))
     {
         LOG_ERROR << "Error reading game list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -611,7 +608,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
 
     AB::Entities::Version gamesVersion;
     gamesVersion.name = "game_maps";
-    if (!dataClient_->Read(gamesVersion))
+    if (!dataClient->Read(gamesVersion))
     {
         LOG_ERROR << "Error reading game version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -629,7 +626,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
     {
         AB::Entities::Game g;
         g.uuid = uuid;
-        if (!dataClient_->Read(g))
+        if (!dataClient->Read(g))
             continue;
         auto gNd = root.append_child("game");
         gNd.append_attribute("uuid") = g.uuid.c_str();
@@ -660,8 +657,9 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::SkillList sl;
-    if (!dataClient_->Read(sl))
+    if (!dataClient->Read(sl))
     {
         LOG_ERROR << "Error reading skill list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -669,7 +667,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
     }
     AB::Entities::Version v;
     v.name = "game_skills";
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading skill version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -688,7 +686,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
     {
         AB::Entities::Skill s;
         s.uuid = uuid;
-        if (!dataClient_->Read(s))
+        if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("skill");
         gNd.append_attribute("uuid") = s.uuid.c_str();
@@ -725,8 +723,9 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::ProfessionList pl;
-    if (!dataClient_->Read(pl))
+    if (!dataClient->Read(pl))
     {
         LOG_ERROR << "Error reading profession list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -734,7 +733,7 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
     }
     AB::Entities::Version v;
     v.name = "game_professions";
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading profession version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -753,7 +752,7 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
     {
         AB::Entities::Profession s;
         s.uuid = uuid;
-        if (!dataClient_->Read(s))
+        if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("prof");
         gNd.append_attribute("uuid") = s.uuid.c_str();
@@ -790,8 +789,9 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::AttributeList pl;
-    if (!dataClient_->Read(pl))
+    if (!dataClient->Read(pl))
     {
         LOG_ERROR << "Error reading attribute list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -799,7 +799,7 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
     }
     AB::Entities::Version v;
     v.name = "game_attributes";
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading attribute version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -818,7 +818,7 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
     {
         AB::Entities::Attribute s;
         s.uuid = uuid;
-        if (!dataClient_->Read(s))
+        if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("attrib");
         gNd.append_attribute("uuid") = s.uuid.c_str();
@@ -848,8 +848,9 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::EffectList pl;
-    if (!dataClient_->Read(pl))
+    if (!dataClient->Read(pl))
     {
         LOG_ERROR << "Error reading effect list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -857,7 +858,7 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
     }
     AB::Entities::Version v;
     v.name = "game_effects";
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading effect version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -876,7 +877,7 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
     {
         AB::Entities::Effect s;
         s.uuid = uuid;
-        if (!dataClient_->Read(s))
+        if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("effect");
         gNd.append_attribute("uuid") = s.uuid.c_str();
@@ -908,8 +909,9 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::ItemList pl;
-    if (!dataClient_->Read(pl))
+    if (!dataClient->Read(pl))
     {
         LOG_ERROR << "Error reading item list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -917,7 +919,7 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
     }
     AB::Entities::Version v;
     v.name = "game_items";
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading items version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -936,7 +938,7 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
     {
         AB::Entities::Item s;
         s.uuid = uuid;
-        if (!dataClient_->Read(s))
+        if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("item");
         gNd.append_attribute("uuid") = s.uuid.c_str();
@@ -969,8 +971,9 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::MusicList pl;
-    if (!dataClient_->Read(pl))
+    if (!dataClient->Read(pl))
     {
         LOG_ERROR << "Error reading music list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -978,7 +981,7 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
     }
     AB::Entities::Version v;
     v.name = "game_music";
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading music version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -997,7 +1000,7 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
     {
         AB::Entities::Music s;
         s.uuid = uuid;
-        if (!dataClient_->Read(s))
+        if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("music");
         gNd.append_attribute("uuid") = s.uuid.c_str();
@@ -1045,9 +1048,10 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Version v;
     v.name = table;
-    if (!dataClient_->Read(v))
+    if (!dataClient->Read(v))
     {
         LOG_ERROR << "Error reading version" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -1080,8 +1084,9 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
         return;
     }
 
+    auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::VersionList vl;
-    if (!dataClient_->Read(vl))
+    if (!dataClient->Read(vl))
     {
         LOG_ERROR << "Error reading version list" << std::endl;
         response->write(SimpleWeb::StatusCode::client_error_not_found, "Not found");
@@ -1099,7 +1104,7 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
     {
         AB::Entities::Version v;
         v.uuid = uuid;
-        if (!dataClient_->Read(v))
+        if (!dataClient->Read(v))
             continue;
         if (v.isInternal)
             continue;
@@ -1126,4 +1131,10 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const Simpl
         return;
 
     LOG_ERROR << "(" << ec.value() << ") " << ec.message() << std::endl;
+}
+
+bool Application::HandleOnAccept(const asio::ip::tcp::endpoint & endpoint)
+{
+    auto banMan = GetSubsystem<Auth::BanManager>();
+    return banMan->AcceptConnection(endpoint.address().to_v4().to_ulong());
 }

@@ -189,7 +189,6 @@
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AttackComp.h" />
     <ClInclude Include="AutoRunComp.h" />
-    <ClInclude Include="Bans.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="conditions\AiIsCloseToSelection.h" />
@@ -265,7 +264,6 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AttackComp.cpp" />
     <ClCompile Include="AutoRunComp.cpp" />
-    <ClCompile Include="Bans.cpp" />
     <ClCompile Include="Chat.cpp" />
     <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="CrowdAgent.cpp" />

@@ -51,9 +51,6 @@
     <ClInclude Include="Application.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Bans.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -288,9 +285,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Bans.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="PlayerManager.cpp">

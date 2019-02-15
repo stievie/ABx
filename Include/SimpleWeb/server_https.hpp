@@ -53,8 +53,18 @@ namespace SimpleWeb {
         if(!lock)
           return;
 
-        if(ec != asio::error::operation_aborted)
-          this->accept();
+        if (ec != asio::error::operation_aborted)
+        {
+            if (this->on_accept)
+            {
+                if (!this->on_accept(connection->socket->lowest_layer().remote_endpoint()))
+                {
+                    connection->close();
+                    return;
+                }
+            }
+            this->accept();
+        }
 
         auto session = std::make_shared<Session>(config.max_request_streambuf_size, connection);
 

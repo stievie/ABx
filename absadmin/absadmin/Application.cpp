@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Subsystems.h"
 #include "SimpleConfigManager.h"
+#include "BanManager.h"
 #include "Logger.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
@@ -49,6 +50,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<HTTP::Sessions>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_.get());
+    Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
     Subsystems::Instance.CreateSubsystem<ContentTypes>();
     Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_.get());
 }
@@ -228,6 +230,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
     std::string dataHost = config->GetGlobal("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
 
+    Auth::BanManager::LoginTries = static_cast<uint32_t>(config->GetGlobal("login_tries", 5ll));
+    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000ll));
+
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
     dataClient->Connect(dataHost, dataPort);
@@ -262,6 +267,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
     if (!serverIp_.empty())
         httpServer_->config.address = serverIp_;
     httpServer_->io_service = ioService_;
+    httpServer_->on_accept = std::bind(&Application::HandleOnAccept, shared_from_this(),
+        std::placeholders::_1);
     httpServer_->default_resource["GET"] = std::bind(&Application::HtttpsRedirect, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
 
@@ -280,6 +287,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
     server_->config.thread_pool_size = threads;
     server_->on_error = std::bind(&Application::HandleError, shared_from_this(),
         std::placeholders::_1, std::placeholders::_2);
+    server_->on_accept = std::bind(&Application::HandleOnAccept, shared_from_this(),
+        std::placeholders::_1);
     server_->io_service = ioService_;
 
     InitContentTypes();
@@ -366,4 +375,10 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>,
         return;
 
     LOG_ERROR << "(" << ec.value() << ") " << ec.message() << std::endl;
+}
+
+bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
+{
+    auto banMan = GetSubsystem<Auth::BanManager>();
+    return banMan->AcceptConnection(endpoint.address().to_v4().to_ulong());
 }

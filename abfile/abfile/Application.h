@@ -50,7 +50,6 @@ private:
 
     std::unique_ptr<HttpsServer> server_;
     std::string root_;
-    std::unique_ptr<IO::DataClient> dataClient_;
     std::string dataHost_;
     uint16_t dataPort_;
     /// Byte/sec
@@ -61,7 +60,6 @@ private:
     void ShowHelp();
     void UpdateBytesSent(size_t bytes);
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
-    bool IsAccountBanned(const AB::Entities::Account& acc);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,
         std::shared_ptr<HttpsServer::Request> request);
@@ -85,6 +83,7 @@ private:
         std::shared_ptr<HttpsServer::Request> request);
     void HandleError(std::shared_ptr<HttpsServer::Request> /*request*/,
         const SimpleWeb::error_code& ec);
+    bool HandleOnAccept(const asio::ip::tcp::endpoint& endpoint);
 
     uint8_t GetAvgLoad() const
     {

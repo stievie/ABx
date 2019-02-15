@@ -24,7 +24,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Connection.h"
-#include "Bans.h"
+#include "BanManager.h"
 #include "CpuUsage.h"
 #include <limits>
 #include <stdlib.h>
@@ -299,6 +299,9 @@ bool Application::LoadMain()
     Net::ProtocolGame::serverId_ = GetServerId();
 
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>((*config)[ConfigManager::Key::MaxPacketsPerSecond].GetInt64());
+    Auth::BanManager::LoginTries = static_cast<uint32_t>((*config)[ConfigManager::Key::LoginTries].GetInt64());
+    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>((*config)[ConfigManager::Key::LoginRetryTimeout].GetInt64());
+
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
@@ -560,7 +563,7 @@ std::string Application::GetKeysFile() const
     return Utils::AddSlash(path_) + "abserver.dh";
 }
 
-uint8_t Application::GetLoad()
+unsigned Application::GetLoad()
 {
     static System::CpuUsage usage;
 
@@ -569,20 +572,20 @@ uint8_t Application::GetLoad()
         lastLoadCalc_ = Utils::AbTick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
         float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
-        uint8_t load = static_cast<uint8_t>(ld);
-        uint8_t utilization = static_cast<uint8_t>(GetSubsystem<Asynch::Dispatcher>()->GetUtilization());
+        unsigned load = static_cast<uint8_t>(ld);
+        unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
         if (utilization > load)
             load = utilization;
-        short l = usage.GetUsage();
+        unsigned l = static_cast<unsigned>(usage.GetUsage());
         if (l > load)
             // Use the higher value
-            load = static_cast<uint8_t>(l);
+            load = l;
         if (load > 100)
             load = 100;
 
         while (loads_.size() > 9)
             loads_.erase(loads_.begin());
-        loads_.push_back(static_cast<int>(load));
+        loads_.push_back(load);
     }
     return GetAvgLoad();
 }
