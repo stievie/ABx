@@ -40,7 +40,7 @@ public:
     bool CreateSubsystem(_CArgs&&... _Args)
     {
         static const auto key = typeid(T).name();
-        auto i = systems_.find(key);
+        const auto i = systems_.find(key);
         if (i != systems_.end())
             return false;
 
@@ -59,7 +59,7 @@ public:
     bool RegisterSubsystem(T* system)
     {
         static const auto key = typeid(T).name();
-        auto i = systems_.find(key);
+        const auto i = systems_.find(key);
         if (i == systems_.end())
         {
             systems_[key] = std::make_unique<_SubystemWrapper<T>>(system);
@@ -72,7 +72,7 @@ public:
     void RemoveSubsystem()
     {
         static const auto key = typeid(T).name();
-        auto i = systems_.find(key);
+        const auto i = systems_.find(key);
         if (i != systems_.end())
             systems_.erase(i);
     }
@@ -81,10 +81,10 @@ public:
     T* GetSubsystem()
     {
         static const auto key = typeid(T).name();
-        auto i = systems_.find(key);
+        const auto i = systems_.find(key);
         if (i != systems_.end())
         {
-            auto wrapper = static_cast<_SubystemWrapper<T>*>((*i).second.get());
+            const auto wrapper = static_cast<_SubystemWrapper<T>*>((*i).second.get());
             return wrapper->object_.get();
         }
         return nullptr;
