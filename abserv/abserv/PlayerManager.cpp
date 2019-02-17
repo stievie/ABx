@@ -23,7 +23,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByUuid(const std::string& uuid)
 {
     auto it = playerUuids_.find(uuid);
     if (it != playerUuids_.end())
-        return (*it).second->GetThis();
+        return GetPlayerById((*it).second);
     return std::shared_ptr<Player>();
 }
 
@@ -65,7 +65,7 @@ std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& playerUui
 {
     std::shared_ptr<Player> result = std::make_shared<Player>(client);
     players_[result->id_] = result;
-    playerUuids_[playerUuid] = result.get();
+    playerUuids_[playerUuid] = result->id_;
 
     return result;
 }
@@ -98,22 +98,17 @@ void PlayerManager::CleanPlayers()
     })) != players_.end())
     {
         std::shared_ptr<Player> p = (*i).second;
-        i++;
+        ++i;
         // Calls PlayerManager::RemovePlayer()
         p->Logout();
    }
-
-    if (players_.size() == 0)
-        idleTime_ = Utils::AbTick();
 }
 
 void PlayerManager::KickPlayer(uint32_t playerId)
 {
     auto it = players_.find(playerId);
-    if (it == players_.end())
-        return;
-    std::shared_ptr<Player> p = (*it).second;
-    p->Logout();
+    if (it != players_.end())
+        (*it).second->Logout();
 }
 
 void PlayerManager::KickAllPlayers()

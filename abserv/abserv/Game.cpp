@@ -48,6 +48,22 @@ Game::~Game()
     GetSubsystem<Chat>()->Remove(ChatType::Map, id_);
 }
 
+GameObject* Game::_LuaGetObjectById(uint32_t objectId)
+{
+    auto o = GetObjectById(objectId);
+    if (o)
+        return o.get();
+    return nullptr;
+}
+
+Npc* Game::_LuaAddNpc(const std::string& script)
+{
+    auto o = AddNpc(script);
+    if (o)
+        return o.get();
+    return nullptr;
+}
+
 void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
 {
     auto client = GetSubsystem<Net::MessageClient>();
@@ -61,15 +77,15 @@ void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
     client->Write(msg);
 }
 
-void Game::BroadcastPlayerLoggedOut(const std::string accountUuid, const std::string charUuid)
+void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
 {
     auto client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerLoggedOut;
 
     IO::PropWriteStream stream;
-    stream.WriteString(accountUuid);   // Account
-    stream.WriteString(charUuid);      // Character
+    stream.WriteString(player->account_.uuid);   // Account
+    stream.WriteString(player->data_.uuid);      // Character
     msg.SetPropStream(stream);
     client->Write(msg);
 }
@@ -80,7 +96,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("GetName", &Game::GetName)
         .addFunction("GetType", &Game::_LuaGetType)
         // Get any game object by ID
-        .addFunction("GetObject", &Game::GetObjectById)
+        .addFunction("GetObject", &Game::_LuaGetObjectById)
         // Get player of game by ID or name
         .addFunction("GetPlayer", &Game::GetPlayerById)
 
@@ -88,7 +104,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("GetStartTime", &Game::_LuaGetStartTime)
         .addFunction("GetInstanceTime", &Game::GetInstanceTime)
 
-        .addFunction("AddNpc", &Game::AddNpc)
+        .addFunction("AddNpc", &Game::_LuaAddNpc)
     );
 }
 
@@ -468,7 +484,9 @@ void Game::PlayerJoin(uint32_t playerId)
 
         // Notify other servers that a player joined, e.g. for friend list
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedIn, shared_from_this(), player))
+            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedIn,
+                shared_from_this(),
+                player))
         );
     }
 }
@@ -497,8 +515,7 @@ void Game::PlayerLeave(uint32_t playerId)
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut,
                 shared_from_this(),
-                player->account_.uuid,
-                player->data_.uuid))
+                player->GetThis()))
         );
         RemoveObject(player);
     }

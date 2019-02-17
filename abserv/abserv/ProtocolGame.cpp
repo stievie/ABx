@@ -61,7 +61,6 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     }
 
     std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(playerUuid, GetThis());
-    player_ = player;
 
     if (!IO::IOPlayer::LoadPlayerByUuid(player.get(), playerUuid))
     {
@@ -91,6 +90,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         player->data_.instanceUuid = instanceUuid;
     client->Update(player->data_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
+    player_ = player;
     Connect();
 }
 
@@ -319,9 +319,6 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     auto keys = GetSubsystem<Crypto::DHKeys>();
     // Switch now to the shared key
     keys->GetSharedKey(clientKey_, encKey_);
-#ifdef DEBUG_NET
-//    LOG_DEBUG << "Client key received" << std::endl;
-#endif // DEBUG_NET
 
     const std::string accountUuid = msg.GetString();
     if (accountUuid.empty())
@@ -360,9 +357,6 @@ void ProtocolGame::OnConnect()
     auto keys = GetSubsystem<Crypto::DHKeys>();
     output->AddBytes((const char*)&keys->GetPublickKey(), DH_KEY_LENGTH);
     Send(output);
-#ifdef DEBUG_NET
-//    LOG_DEBUG << "Server key sent" << std::endl;
-#endif // DEBUG_NET
 }
 
 void ProtocolGame::DisconnectClient(uint8_t error)
