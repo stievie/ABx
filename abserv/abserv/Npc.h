@@ -74,10 +74,10 @@ public:
 
     void Say(ChatType channel, const std::string& message);
 
-    void OnSelected(std::shared_ptr<Actor> selector) override;
-    void OnClicked(std::shared_ptr<Actor> selector) override;
-    void OnCollide(std::shared_ptr<Actor> other) override;
-    void OnTrigger(std::shared_ptr<Actor> other) override;
+    void OnSelected(Actor* selector) override;
+    void OnClicked(Actor* selector) override;
+    void OnCollide(Actor* other) override;
+    void OnTrigger(Actor* other) override;
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
 };

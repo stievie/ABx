@@ -5,7 +5,7 @@
 #include "OutputMessage.h"
 #include "IOPlayer.h"
 #include "IOAccount.h"
-#include "Bans.h"
+#include "BanManager.h"
 #include "StringUtils.h"
 #include "GameManager.h"
 #include "Logger.h"
@@ -25,33 +25,33 @@ namespace Net {
 
 std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;
 
+void ProtocolGame::AddPlayerInput(Game::InputType type, const Utils::VariantMap& data)
+{
+    if (auto p = player_.lock())
+        p->AddInput(type, data);
+}
+
+void ProtocolGame::AddPlayerInput(Game::InputType type)
+{
+    if (auto p = player_.lock())
+        p->AddInput(type);
+}
+
 void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accountUuid,
     const std::string& mapUuid, const std::string& instanceUuid)
 {
 #ifdef DEBUG_NET
     LOG_DEBUG << "Player " << playerUuid << " logging in" << std::endl;
 #endif
-    auto payerMan = GetSubsystem<Game::PlayerManager>();
-    std::shared_ptr<Game::Player> foundPlayer = payerMan->GetPlayerByUuid(playerUuid);
+    auto playerMan = GetSubsystem<Game::PlayerManager>();
+    std::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(playerUuid);
     if (foundPlayer)
     {
-        // Maybe DC/crash, let player connect again
-        if (foundPlayer->GetInactiveTime() > 2000)
-        {
 #ifdef DEBUG_NET
-            LOG_DEBUG << "Found inactive player" << std::endl;
+        LOG_DEBUG << "Player " << foundPlayer->GetName() << " already logged in" << std::endl;
 #endif
-            foundPlayer->Logout();
-            foundPlayer.reset();
-        }
-        else
-        {
-#ifdef DEBUG_NET
-            LOG_DEBUG << "Player already logged in" << std::endl;
-#endif
-            DisconnectClient(AB::Errors::AlreadyLoggedIn);
-            return;
-        }
+        DisconnectClient(AB::Errors::AlreadyLoggedIn);
+        return;
     }
 
     if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(accountUuid))
@@ -60,9 +60,10 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    player_ = payerMan->CreatePlayer(playerUuid, GetThis());
+    std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(playerUuid, GetThis());
+    player_ = player;
 
-    if (!IO::IOPlayer::LoadPlayerByUuid(player_.get(), playerUuid))
+    if (!IO::IOPlayer::LoadPlayerByUuid(player.get(), playerUuid))
     {
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
@@ -78,34 +79,35 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    player_->account_.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
-    player_->account_.currentCharacterUuid = player_->data_.uuid;
-    player_->account_.currentServerUuid = ProtocolGame::serverId_;
-    client->Update(player_->account_);
+    player->account_.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOnline;
+    player->account_.currentCharacterUuid = player->data_.uuid;
+    player->account_.currentServerUuid = ProtocolGame::serverId_;
+    client->Update(player->account_);
 
-    player_->Initialize();
-    player_->data_.currentMapUuid = mapUuid;
-    player_->data_.lastLogin = Utils::AbTick();
+    player->Initialize();
+    player->data_.currentMapUuid = mapUuid;
+    player->data_.lastLogin = Utils::AbTick();
     if (!uuids::uuid(instanceUuid).nil())
-        player_->data_.instanceUuid = instanceUuid;
-    client->Update(player_->data_);
-    Connect(player_->id_);
+        player->data_.instanceUuid = instanceUuid;
+    client->Update(player->data_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
+    Connect();
 }
 
 void ProtocolGame::Logout()
 {
-    if (!player_)
+    auto player = GetPlayer();
+    if (!player)
         return;
 
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Player " << player_->data_.uuid << " logging out" << std::endl;
+//    LOG_DEBUG << "Player " << player->data_.uuid << " logging out" << std::endl;
 #endif
 
-    player_->logoutTime_ = Utils::AbTick();
-    IO::IOPlayer::SavePlayer(player_.get());
-    IO::IOAccount::AccountLogout(player_->data_.accountUuid);
-    GetSubsystem<Game::PlayerManager>()->RemovePlayer(player_->id_);
+    player->logoutTime_ = Utils::AbTick();
+    IO::IOPlayer::SavePlayer(player.get());
+    IO::IOAccount::AccountLogout(player->data_.accountUuid);
+    GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
     player_.reset();
@@ -197,28 +199,28 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<uint8_t>();
-        player_->AddInput(Game::InputType::Move, data);
+        AddPlayerInput(Game::InputType::Move, data);
         break;
     }
     case AB::GameProtocol::PacketTypeTurn:
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<uint8_t>();   // None | Left | Right
-        player_->AddInput(Game::InputType::Turn, data);
+        AddPlayerInput(Game::InputType::Turn, data);
         break;
     }
     case AB::GameProtocol::PacketTypeSetDirection:
     {
         Utils::VariantMap data;
         data[Game::InputDataDirection] = message.Get<float>();   // World angle Rad
-        player_->AddInput(Game::InputType::Direction, data);
+        AddPlayerInput(Game::InputType::Direction, data);
         break;
     }
     case AB::GameProtocol::PacketTypeSetState:
     {
         Utils::VariantMap data;
         data[Game::InputDataState] = message.Get<uint8_t>();
-        player_->AddInput(Game::InputType::SetState, data);
+        AddPlayerInput(Game::InputType::SetState, data);
         break;
     }
     case AB::GameProtocol::PacketTypeGoto:
@@ -227,14 +229,14 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         data[Game::InputDataVertexX] = message.Get<float>();
         data[Game::InputDataVertexY] = message.Get<float>();
         data[Game::InputDataVertexZ] = message.Get<float>();
-        player_->AddInput(Game::InputType::Goto, data);
+        AddPlayerInput(Game::InputType::Goto, data);
         break;
     }
     case AB::GameProtocol::PacketTypeFollow:
     {
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();
-        player_->AddInput(Game::InputType::Follow, data);
+        AddPlayerInput(Game::InputType::Follow, data);
         break;
     }
     case AB::GameProtocol::PacketTypeUseSkill:
@@ -245,18 +247,18 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         {
             Utils::VariantMap data;
             data[Game::InputDataSkillIndex] = index - 1;
-            player_->AddInput(Game::InputType::UseSkill, data);
+            AddPlayerInput(Game::InputType::UseSkill, data);
         }
         break;
     }
     case AB::GameProtocol::PacketTypeCancel:
     {
-        player_->AddInput(Game::InputType::Cancel);
+        AddPlayerInput(Game::InputType::Cancel);
         break;
     }
     case AB::GameProtocol::PacketTypeAttack:
     {
-        player_->AddInput(Game::InputType::Attack);
+        AddPlayerInput(Game::InputType::Attack);
         break;
     }
     case AB::GameProtocol::PacketTypeSelect:
@@ -264,7 +266,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
         data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
-        player_->AddInput(Game::InputType::Select, data);
+        AddPlayerInput(Game::InputType::Select, data);
         break;
     }
     case AB::GameProtocol::PacketTypeClickObject:
@@ -272,7 +274,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();    // Source
         data[Game::InputDataObjectId2] = message.Get<uint32_t>();   // Target
-        player_->AddInput(Game::InputType::ClickObject, data);
+        AddPlayerInput(Game::InputType::ClickObject, data);
         break;
     }
     case AB::GameProtocol::PacketTypeCommand:
@@ -280,14 +282,17 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         Utils::VariantMap data;
         data[Game::InputDataCommandType] = message.GetByte();
         data[Game::InputDataCommandData] = message.GetString();
-        player_->AddInput(Game::InputType::Command, data);
+        AddPlayerInput(Game::InputType::Command, data);
         break;
     }
     default:
-        LOG_ERROR << Utils::ConvertIPToString(GetIP()) << ": Player " << player_->GetName() <<
+    {
+        auto player = GetPlayer();
+        LOG_ERROR << Utils::ConvertIPToString(GetIP()) << ": Player " << (player ? player->GetName() : "null") <<
             " sent an unknown packet header: 0x" <<
             std::hex << static_cast<uint16_t>(recvByte) << std::dec << std::endl;
         break;
+    }
     }
 }
 
@@ -315,7 +320,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     // Switch now to the shared key
     keys->GetSharedKey(clientKey_, encKey_);
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Client key received" << std::endl;
+//    LOG_DEBUG << "Client key received" << std::endl;
 #endif // DEBUG_NET
 
     const std::string accountUuid = msg.GetString();
@@ -356,7 +361,7 @@ void ProtocolGame::OnConnect()
     output->AddBytes((const char*)&keys->GetPublickKey(), DH_KEY_LENGTH);
     Send(output);
 #ifdef DEBUG_NET
-    LOG_DEBUG << "Server key sent" << std::endl;
+//    LOG_DEBUG << "Server key sent" << std::endl;
 #endif // DEBUG_NET
 }
 
@@ -369,28 +374,20 @@ void ProtocolGame::DisconnectClient(uint8_t error)
     Disconnect();
 }
 
-void ProtocolGame::Connect(uint32_t playerId)
+void ProtocolGame::Connect()
 {
     if (IsConnectionExpired())
         // ProtocolGame::release() has been called at this point and the Connection object
         // no longer exists, so we return to prevent leakage of the Player.
         return;
-
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Player with ID " << playerId << " connecting" << std::endl;
-#endif
-
-    std::shared_ptr<Game::Player> foundPlayer = GetSubsystem<Game::PlayerManager>()->GetPlayerById(playerId);
-    if (!foundPlayer)
+    auto player = player_.lock();
+    if (!player)
     {
-        DisconnectClient(AB::Errors::UnknownError);
-        // Shouldn't happen, player is created in ProtocolGame::Login
-        LOG_ERROR << "Player not found: " << playerId << std::endl;
+        LOG_ERROR << "Player expired" << std::endl;
         return;
     }
 
-    player_ = foundPlayer;
-    player_->loginTime_ = Utils::AbTick();
+    player->loginTime_ = Utils::AbTick();
 
     acceptPackets_ = true;
 
@@ -408,34 +405,41 @@ void ProtocolGame::WriteToOutput(const NetworkMessage& message)
 
 void ProtocolGame::EnterGame()
 {
+    auto player = GetPlayer();
+    if (!player)
+    {
+        LOG_ERROR << "GetPlayer returned null" << std::endl;
+        DisconnectClient(AB::Errors::CannotEnterGame);
+        return;
+    }
     auto gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
     std::shared_ptr<Game::Game> instance;
-    if (!uuids::uuid(player_->data_.instanceUuid).nil())
+    if (!uuids::uuid(player->data_.instanceUuid).nil())
     {
         // Enter an existing instance
-        instance = gameMan->GetInstance(player_->data_.instanceUuid);
+        instance = gameMan->GetInstance(player->data_.instanceUuid);
         if (instance)
         {
-            instance->PlayerJoin(player_->id_);
+            instance->PlayerJoin(player->id_);
             success = true;
         }
     }
-    else if (gameMan->AddPlayer(player_->data_.currentMapUuid, player_))
+    else if (gameMan->AddPlayer(player->data_.currentMapUuid, player->GetThis()))
     {
         // Create new instance
         success = true;
-        instance = gameMan->GetInstance(player_->data_.instanceUuid);
+        instance = gameMan->GetInstance(player->data_.instanceUuid);
     }
 
     if (success)
     {
         std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
         output->AddByte(AB::GameProtocol::GameEnter);
-        output->AddString(Application::Instance->GetServerId());
-        output->AddString(player_->data_.currentMapUuid);
-        output->AddString(player_->data_.instanceUuid);
-        output->Add<uint32_t>(player_->id_);
+        output->AddString(ProtocolGame::serverId_);
+        output->AddString(player->data_.currentMapUuid);
+        output->AddString(player->data_.instanceUuid);
+        output->Add<uint32_t>(player->id_);
         output->Add<uint8_t>(static_cast<uint8_t>(instance->data_.type));
         output->Add<uint8_t>(instance->data_.partySize);
         Send(output);
@@ -446,21 +450,24 @@ void ProtocolGame::EnterGame()
 
 void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
+    auto player = GetPlayer();
+    if (!player)
+    {
+        LOG_ERROR << "Player == null" << std::endl;
+        return;
+    }
+
 #ifdef DEBUG_NET
     LOG_DEBUG << "Player changing instance to " << mapUuid << std::endl;
 #endif
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::GameProtocol::ChangeInstance);
-    output->AddString(Application::Instance->GetServerId());
+    output->AddString(ProtocolGame::serverId_);
     output->AddString(mapUuid);
     output->AddString(instanceUuid);
-    if (!player_)
-    {
-        LOG_ERROR << "Player == empty" << std::endl;
-        return;
-    }
-    output->AddString(player_->data_.uuid);
+
+    output->AddString(player->data_.uuid);
     Send(output);
 }
 

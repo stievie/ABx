@@ -32,9 +32,9 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
     input.read((char*)&heightMap->maxHeight_, sizeof(float));
 
 #ifdef _DEBUG
-    LOG_DEBUG << "nX=" << heightMap->numVertices_.x_ << " nY=" << heightMap->numVertices_.y_ <<
-        " minHeight=" << heightMap->minHeight_ <<
-        " maxHeight=" << heightMap->maxHeight_ << std::endl;
+//    LOG_DEBUG << "nX=" << heightMap->numVertices_.x_ << " nY=" << heightMap->numVertices_.y_ <<
+//        " minHeight=" << heightMap->minHeight_ <<
+//        " maxHeight=" << heightMap->maxHeight_ << std::endl;
 #endif
     unsigned heightsCount;
     input.read((char*)&heightsCount, sizeof(unsigned));

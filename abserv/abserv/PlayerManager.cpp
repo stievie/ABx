@@ -64,11 +64,8 @@ std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& playerUui
     std::shared_ptr<Net::ProtocolGame> client)
 {
     std::shared_ptr<Player> result = std::make_shared<Player>(client);
-    {
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
-        players_[result->id_] = result;
-        playerUuids_[playerUuid] = result.get();
-    }
+    players_[result->id_] = result;
+    playerUuids_[playerUuid] = result.get();
 
     return result;
 }
@@ -79,7 +76,6 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
     if (it != players_.end())
     {
         const std::string& uuid = (*it).second->data_.uuid;
-        std::lock_guard<std::recursive_mutex> lockClass(lock_);
         playerUuids_.erase(uuid);
         players_.erase(it);
 
@@ -106,6 +102,9 @@ void PlayerManager::CleanPlayers()
         // Calls PlayerManager::RemovePlayer()
         p->Logout();
    }
+
+    if (players_.size() == 0)
+        idleTime_ = Utils::AbTick();
 }
 
 void PlayerManager::KickPlayer(uint32_t playerId)
@@ -131,7 +130,7 @@ void PlayerManager::BroadcastNetMessage(const Net::NetworkMessage& msg)
 {
     for (const auto& p : players_)
     {
-        p.second->client_->WriteToOutput(msg);
+        p.second->WriteToOutput(msg);
     }
 }
 

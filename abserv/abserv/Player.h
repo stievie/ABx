@@ -21,12 +21,10 @@ private:
     std::unique_ptr<MailBox> mailBox_;
     std::unique_ptr<FriendList> friendList_;
     std::shared_ptr<Party> party_;
+    // The player owns the client. The client has a weak ref of the player.
+    std::shared_ptr<Net::ProtocolGame> client_;
 protected:
     friend class PlayerManager;
-    inline std::shared_ptr<Player> GetThis()
-    {
-        return std::static_pointer_cast<Player>(shared_from_this());
-    }
     void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message) override;
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
@@ -53,6 +51,10 @@ public:
     // non-copyable
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
+    inline std::shared_ptr<Player> GetThis()
+    {
+        return std::static_pointer_cast<Player>(shared_from_this());
+    }
 
     /// We are entering a game
     void SetGame(std::shared_ptr<Game> game) final override;
@@ -94,6 +96,7 @@ public:
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
+    void WriteToOutput(const Net::NetworkMessage& message);
 
     void SetParty(std::shared_ptr<Party> party);
     std::shared_ptr<Party> GetParty() const
@@ -115,8 +118,6 @@ public:
     time_t loginTime_;
     time_t logoutTime_;
     int64_t lastPing_ = 0;
-    std::shared_ptr<Net::ProtocolGame> client_;
-
 };
 
 }

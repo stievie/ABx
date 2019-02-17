@@ -23,8 +23,8 @@ void Actor::RegisterLua(kaguya::State& state)
 
         .addFunction("GetLevel", &Actor::GetLevel)
         .addFunction("GetSkillBar", &Actor::GetSkillBar)
-        .addFunction("GetSelectedObject", &Actor::GetSelectedObject)
-        .addFunction("SetSelectedObject", &Actor::SetSelectedObject)
+        .addFunction("GetSelectedObject", &Actor::_LuaGetSelectedObject)
+        .addFunction("SetSelectedObject", &Actor::_LuaSetSelectedObject)
         .addFunction("UseSkill", &Actor::UseSkill)
         .addFunction("GetCurrentSkill", &Actor::GetCurrentSkill)
 
@@ -135,7 +135,10 @@ void Actor::GotoPosition(const Math::Vector3& pos)
 
 void Actor::FollowObject(std::shared_ptr<GameObject> object)
 {
-    FollowObject(object->id_);
+    if (object)
+        FollowObject(object->id_);
+    else
+        FollowObject(0);
 }
 
 void Actor::FollowObject(uint32_t objectId)
@@ -182,29 +185,32 @@ std::vector<float> Actor::_LuaGetHomePos()
     return result;
 }
 
-void Actor::_LuaFollowObject(std::shared_ptr<GameObject> object)
+void Actor::_LuaFollowObject(GameObject* object)
 {
-    FollowObject(object);
+    if (object)
+        FollowObject(object->id_);
+    else
+        FollowObject(0);
 }
 
-std::vector<std::shared_ptr<Actor>> Actor::_LuaGetActorsInRange(Ranges range)
+std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
 {
-    std::vector<std::shared_ptr<Actor>> result;
+    std::vector<Actor*> result;
     VisitInRange(range, [&](GameObject* const o)
     {
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
-            result.push_back(o->GetThisDynamic<Actor>());
+            result.push_back(dynamic_cast<Actor*>(o));
     });
     return result;
 }
 
-void Actor::_LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index)
+void Actor::_LuaAddEffect(Actor* source, uint32_t index)
 {
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
-    effectsComp_.AddEffect(source, index);
+    effectsComp_.AddEffect(source ? source->GetThisDynamic<Actor>() : nullptr, index);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)
@@ -212,9 +218,30 @@ void Actor::_LuaRemoveEffect(uint32_t index)
     effectsComp_.RemoveEffect(index);
 }
 
-std::shared_ptr<Effect> Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
+Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
 {
-    return effectsComp_.GetLast(category);
+    auto effect = effectsComp_.GetLast(category);
+    if (effect)
+        return effect.get();
+    return nullptr;
+}
+
+GameObject* Actor::_LuaGetSelectedObject()
+{
+    if (auto o = selectedObject_.lock())
+        return o.get();
+    return nullptr;
+}
+
+void Actor::_LuaSetSelectedObject(GameObject* object)
+{
+    Utils::VariantMap data;
+    data[InputDataObjectId] = GetId();    // Source
+    if (object)
+        data[InputDataObjectId2] = object->GetId();   // Target
+    else
+        data[InputDataObjectId2] = 0;   // Target
+    inputComp_.Add(InputType::Select, data);
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)

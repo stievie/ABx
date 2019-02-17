@@ -70,7 +70,7 @@ void Maintenance::UpdateServerLoadTask()
     IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     if (cli->Read(serv))
     {
-        uint8_t load = Application::Instance->GetLoad();
+        uint8_t load = static_cast<uint8_t>(Application::Instance->GetLoad());
         if (load != serv.load)
         {
             serv.load = load;

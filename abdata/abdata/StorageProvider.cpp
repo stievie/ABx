@@ -177,7 +177,8 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
         AB::Entities::Character ch;
         if (GetEntity(*data, ch))
         {
-            std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), ::tolower);
+            // Avoid warning: https://developercommunity.visualstudio.com/content/problem/23811/stdtransform-with-toupper-fails-at-warning-level-4.html
+            std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), [](char c) -> char { return static_cast<char>(std::tolower(static_cast<int>(c))); });
             playerNames_[ch.name] = key;
         }
     }

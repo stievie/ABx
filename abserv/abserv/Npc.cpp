@@ -209,17 +209,17 @@ void Npc::Say(ChatType channel, const std::string& message)
     }
 }
 
-void Npc::OnSelected(std::shared_ptr<Actor> selector)
+void Npc::OnSelected(Actor* selector)
 {
     Actor::OnSelected(selector);
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onSelected"))
+    if (luaInitialized_ && selector && ScriptManager::IsFunction(luaState_, "onSelected"))
         luaState_["onSelected"](selector);
 }
 
-void Npc::OnClicked(std::shared_ptr<Actor> selector)
+void Npc::OnClicked(Actor* selector)
 {
     Actor::OnSelected(selector);
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onClicked"))
+    if (luaInitialized_ && selector && ScriptManager::IsFunction(luaState_, "onClicked"))
         luaState_["onClicked"](selector);
 }
 
@@ -230,20 +230,23 @@ void Npc::OnArrived()
         luaState_["onArrived"]();
 }
 
-void Npc::OnCollide(std::shared_ptr<Actor> other)
+void Npc::OnCollide(Actor* other)
 {
     Actor::OnCollide(other);
 
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onCollide"))
+    if (luaInitialized_ && other && ScriptManager::IsFunction(luaState_, "onCollide"))
         luaState_["onCollide"](other);
 
-    if (trigger_)
+    if (trigger_ && other)
         OnTrigger(other);
 }
 
-void Npc::OnTrigger(std::shared_ptr<Actor> other)
+void Npc::OnTrigger(Actor* other)
 {
     Actor::OnTrigger(other);
+    if (!other)
+        return;
+
     int64_t tick = Utils::AbTick();
     int64_t lasTrigger = triggered_[other->id_];
     if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)

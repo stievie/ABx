@@ -155,7 +155,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                     message.Add<uint32_t>(source->id_);
                     if (auto sel = source->selectedObject_.lock())
                     {
-                        sel->OnSelected(source->GetThis<Actor>());
+                        sel->OnSelected(source);
                         message.Add<uint32_t>(sel->id_);
                     }
                     else
@@ -183,7 +183,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 auto clickedObj = owner_.GetGame()->GetObjectById(targetId);
                 if (clickedObj)
                 {
-                    clickedObj->OnClicked(source->GetThis<Actor>());
+                    clickedObj->OnClicked(source);
                 }
             }
             break;

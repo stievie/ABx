@@ -30,9 +30,9 @@ void CollisionComp::DoCollisions()
 
                     // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us
-                    ci->OnCollide(owner_.GetThis<Actor>());
+                    ci->OnCollide(&owner_);
                     // Notify us for colliding with ci
-                    owner_.OnCollide(ci->GetThis<Actor>());
+                    owner_.OnCollide(dynamic_cast<Actor*>(ci));
                 }
             }
         }

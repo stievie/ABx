@@ -56,11 +56,11 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 private:
     static Utils::IdGenerator<uint32_t> objectIds_;
     std::unique_ptr<Math::CollisionShape> collisionShape_;
-    std::vector<std::shared_ptr<GameObject>> _LuaQueryObjects(float radius);
-    std::vector<std::shared_ptr<GameObject>> _LuaRaycast(float x, float y, float z);
-    std::shared_ptr<Actor> _LuaAsActor();
-    std::shared_ptr<Npc> _LuaAsNpc();
-    std::shared_ptr<Player> _LuaAsPlayer();
+    std::vector<GameObject*> _LuaQueryObjects(float radius);
+    std::vector<GameObject*> _LuaRaycast(float x, float y, float z);
+    Actor* _LuaAsActor();
+    Npc* _LuaAsNpc();
+    Player* _LuaAsPlayer();
     void _LuaSetPosition(float x, float y, float z);
     void _LuaSetRotation(float y);
     void _LuaSetScale(float x, float y, float z);
@@ -73,6 +73,7 @@ private:
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
+    Game* _LuaGetGame();
 protected:
     std::mutex lock_;
     Utils::VariantMap variables_;
@@ -199,10 +200,10 @@ public:
 
     virtual void WriteSpawnData(Net::NetworkMessage&) { }
 
-    virtual void OnSelected(std::shared_ptr<Actor>) { }
-    virtual void OnClicked(std::shared_ptr<Actor>) { }
-    virtual void OnCollide(std::shared_ptr<Actor> actor);
-    virtual void OnTrigger(std::shared_ptr<Actor>) { }
+    virtual void OnSelected(Actor*) { }
+    virtual void OnClicked(Actor*) { }
+    virtual void OnCollide(Actor*) { };
+    virtual void OnTrigger(Actor*) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

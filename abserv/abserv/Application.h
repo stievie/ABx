@@ -18,7 +18,7 @@ private:
     std::condition_variable loaderSignal_;
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
-    std::vector<int> loads_;
+    std::vector<unsigned> loads_;
     int64_t lastLoadCalc_;
     Maintenance maintenance_;
 #if defined(SCENE_VIEWER)
@@ -28,7 +28,7 @@ private:
     void PrintServerInfo();
     void ShowHelp();
     void HandleMessage(const Net::MessageMsg& msg);
-    uint8_t GetAvgLoad() const
+    unsigned GetAvgLoad() const
     {
         if (loads_.empty())
             return 0;
@@ -36,7 +36,7 @@ private:
         float loads = 0.0f;
         for (int p : loads_)
             loads += static_cast<float>(p);
-        return static_cast<uint8_t>(loads / loads_.size());
+        return static_cast<unsigned>(loads / loads_.size());
     }
 protected:
     bool ParseCommandLine() override;
@@ -50,7 +50,7 @@ public:
 
     std::string GetKeysFile() const;
     /// Returns a value between 0..100
-    uint8_t GetLoad();
+    unsigned GetLoad();
 
     void SpawnServer();
 

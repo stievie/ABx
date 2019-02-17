@@ -64,9 +64,9 @@ public:
         return members_;
     }
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
-    bool IsMember(std::shared_ptr<Player> player) const;
-    bool IsInvited(std::shared_ptr<Player> player) const;
-    bool IsLeader(Player* player);
+    bool IsMember(Player* player) const;
+    bool IsInvited(Player* player) const;
+    bool IsLeader(Player* player) const;
     std::shared_ptr<Player> GetLeader() const
     {
         if (members_.size() == 0)

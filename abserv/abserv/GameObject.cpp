@@ -22,7 +22,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 {
     state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
         .addFunction("GetId", &GameObject::GetId)
-        .addFunction("GetGame", &GameObject::GetGame)
+        .addFunction("GetGame", &GameObject::_LuaGetGame)
         .addFunction("GetName", &GameObject::GetName)
         .addFunction("GetCollisionMask", &GameObject::GetCollisionMask)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
@@ -202,10 +202,6 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     return true;
 }
 
-void GameObject::OnCollide(std::shared_ptr<Actor> actor)
-{
-}
-
 bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction)
 {
     if (!octant_)
@@ -223,25 +219,25 @@ bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& 
     return true;
 }
 
-std::vector<std::shared_ptr<GameObject>> GameObject::_LuaQueryObjects(float radius)
+std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
 {
     std::vector<GameObject*> res;
     if (QueryObjects(res, radius))
     {
-        std::vector<std::shared_ptr<GameObject>> result;
+        std::vector<GameObject*> result;
         for (const auto& o : res)
         {
             if (o != this)
-                result.push_back(o->GetThis<GameObject>());
+                result.push_back(o);
         }
         return result;
     }
-    return std::vector<std::shared_ptr<GameObject>>();
+    return std::vector<GameObject*>();
 }
 
-std::vector<std::shared_ptr<GameObject>> GameObject::_LuaRaycast(float x, float y, float z)
+std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)
 {
-    std::vector<std::shared_ptr<GameObject>> result;
+    std::vector<GameObject*> result;
 
     if (!octant_)
         return result;
@@ -256,28 +252,28 @@ std::vector<std::shared_ptr<GameObject>> GameObject::_LuaRaycast(float x, float 
     for (const auto& o : query.result_)
     {
         if (o.object_ != this)
-            result.push_back(o.object_->GetThis<GameObject>());
+            result.push_back(o.object_);
     }
     return result;
 }
 
-std::shared_ptr<Actor> GameObject::_LuaAsActor()
+Actor* GameObject::_LuaAsActor()
 {
-    return std::dynamic_pointer_cast<Actor>(shared_from_this());
+    return dynamic_cast<Actor*>(this);
 }
 
-std::shared_ptr<Npc> GameObject::_LuaAsNpc()
+Npc* GameObject::_LuaAsNpc()
 {
     if (GetType() == AB::GameProtocol::ObjectTypeNpc)
-        return std::dynamic_pointer_cast<Npc>(shared_from_this());
-    return std::shared_ptr<Npc>();
+        return dynamic_cast<Npc*>(this);
+    return nullptr;
 }
 
-std::shared_ptr<Player> GameObject::_LuaAsPlayer()
+Player* GameObject::_LuaAsPlayer()
 {
     if (GetType() == AB::GameProtocol::ObjectTypePlayer)
-        return std::dynamic_pointer_cast<Player>(shared_from_this());
-    return std::shared_ptr<Player>();
+        return dynamic_cast<Player*>(this);
+    return nullptr;
 }
 
 void GameObject::_LuaSetPosition(float x, float y, float z)
@@ -354,6 +350,13 @@ float GameObject::_LuaGetVarNumber(const std::string& name)
 void GameObject::_LuaSetVarNumber(const std::string& name, float value)
 {
     SetVar(name, Utils::Variant(value));
+}
+
+Game* GameObject::_LuaGetGame()
+{
+    if (auto g = game_.lock())
+        return g.get();
+    return nullptr;
 }
 
 void GameObject::AddToOctree()

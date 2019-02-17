@@ -78,7 +78,7 @@ private:
     }
     int _LuaGetType() const { return data_.type; }
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
-    void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
+    void BroadcastPlayerLoggedOut(const std::string accountUuid, const std::string charUuid);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -106,7 +106,7 @@ public:
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);
-    void RemoveObject(std::shared_ptr<GameObject> object);
+    void RemoveObject(GameObject* object);
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
 

@@ -5,6 +5,7 @@
 #include "Dispatcher.h"
 #include <AB/ProtocolCodes.h>
 #include "Subsystems.h"
+#include "InputQueue.h"
 
 namespace Game {
 class Player;
@@ -23,14 +24,23 @@ public:
     friend class Game::Player;
     static std::string serverId_;
 private:
-    std::shared_ptr<Game::Player> player_;
+    std::weak_ptr<Game::Player> player_;
     uint32_t challengeTimestamp_ = 0;
     uint8_t challengeRandom_ = 0;
     DH_KEY clientKey_;
+    std::shared_ptr<Game::Player> GetPlayer()
+    {
+        return player_.lock();
+    }
+    void AddPlayerInput(Game::InputType type, const Utils::VariantMap& data);
+    void AddPlayerInput(Game::InputType type);
 public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)
     {
+#ifdef DEBUG_NET
+        LOG_DEBUG << "ProtocolGame::ProtocolGame()" << std::endl;
+#endif
         checksumEnabled_ = ProtocolGame::UseChecksum;
         encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
         // TODO:
@@ -50,22 +60,31 @@ private:
     template <typename Callable, typename... Args>
     void AddGameTask(Callable function, Args&&... args)
     {
+        auto player = GetPlayer();
+        if (!player)
+            return;
         Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(std::bind(function, player_->GetGame(), std::forward<Args>(args)...))
+            Asynch::CreateTask(std::bind(function, player->GetGame(), std::forward<Args>(args)...))
         );
     }
     template <typename Callable, typename... Args>
     void AddGameTaskTimed(uint32_t delay, Callable function, Args&&... args)
     {
+        auto player = GetPlayer();
+        if (!player)
+            return;
         Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(delay, std::bind(function, player_->GetGame(), std::forward<Args>(args)...))
+            Asynch::CreateTask(delay, std::bind(function, player->GetGame(), std::forward<Args>(args)...))
         );
     }
     template <typename Callable, typename... Args>
     void AddPlayerTask(Callable function, Args&&... args)
     {
+        auto player = GetPlayer();
+        if (!player)
+            return;
         GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask(std::bind(function, player_, std::forward<Args>(args)...))
+            Asynch::CreateTask(std::bind(function, player, std::forward<Args>(args)...))
         );
     }
 
@@ -78,7 +97,7 @@ private:
     void OnConnect() final;
 
     void DisconnectClient(uint8_t error);
-    void Connect(uint32_t playerId);
+    void Connect();
 
     bool acceptPackets_ = false;
 };

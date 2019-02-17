@@ -11,7 +11,7 @@ class OutputMessage;
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 protected:
-    const std::weak_ptr<Connection> connection_;
+    std::weak_ptr<Connection> connection_;
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
     bool encryptionEnabled_;
@@ -38,7 +38,7 @@ public:
     virtual ~Protocol()
     {
 #ifdef DEBUG_NET
-//        LOG_DEBUG << std::endl;
+        LOG_DEBUG << "Protocol::~Protocol()" << std::endl;
 #endif
     }
 #else
@@ -58,8 +58,7 @@ public:
     virtual void OnRecvFirstMessage(NetworkMessage& msg) = 0;
     virtual void OnConnect() {}
 
-    virtual void ParsePacket(NetworkMessage&) {
-    }
+    virtual void ParsePacket(NetworkMessage&) {}
 
     bool IsConnectionExpired() const { return connection_.expired(); }
     std::shared_ptr<Connection> GetConnection() const { return connection_.lock(); }

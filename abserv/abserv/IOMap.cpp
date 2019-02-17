@@ -38,7 +38,7 @@ bool IOMap::LoadScene(Game::Map& map, const std::string& name)
     }
 
 #ifdef DEBUG_GAME
-    LOG_DEBUG << "Spawn points: " << map.spawnPoints_.size() << std::endl;
+//    LOG_DEBUG << "Spawn points: " << map.spawnPoints_.size() << std::endl;
 #endif
     return true;
 }

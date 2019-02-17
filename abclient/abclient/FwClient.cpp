@@ -824,6 +824,7 @@ void FwClient::OnChangeInstance(int64_t updateTick, const std::string& serverId,
             eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
             SendEvent(AbEvents::E_CHANGINGINSTANCE, eData);
 
+            URHO3D_LOGINFOF("Changing instance %s", instanceUuid.c_str());
             currentCharacterUuid_ = String(charUuid.c_str());
             client_.EnterWorld(charUuid, mapUuid,
                 (*it).second.host, (*it).second.port, instanceUuid);

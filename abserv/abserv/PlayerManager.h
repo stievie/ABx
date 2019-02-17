@@ -14,7 +14,6 @@ class Player;
 class PlayerManager
 {
 private:
-    std::recursive_mutex lock_;
     std::map<std::string, Player*> playerUuids_;
     int64_t idleTime_;
     /// The owner of players

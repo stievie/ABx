@@ -37,11 +37,14 @@ private:
     void _LuaSetHomePos(float x, float y, float z);
     void _LuaHeadTo(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
-    void _LuaFollowObject(std::shared_ptr<GameObject> object);
-    std::vector<std::shared_ptr<Actor>> _LuaGetActorsInRange(Ranges range);
-    void _LuaAddEffect(std::shared_ptr<Actor> source, uint32_t index);
+    void _LuaFollowObject(GameObject* object);
+    std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
+    void _LuaAddEffect(Actor* source, uint32_t index);
     void _LuaRemoveEffect(uint32_t index);
-    std::shared_ptr<Effect> _LuaGetLastEffect(AB::Entities::EffectCategory category);
+    Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
+    GameObject* _LuaGetSelectedObject();
+    void _LuaSetSelectedObject(GameObject* object);
+
     void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;

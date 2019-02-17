@@ -61,15 +61,15 @@ void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
     client->Write(msg);
 }
 
-void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
+void Game::BroadcastPlayerLoggedOut(const std::string accountUuid, const std::string charUuid)
 {
     auto client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerLoggedOut;
 
     IO::PropWriteStream stream;
-    stream.WriteString(player->account_.uuid);   // Account
-    stream.WriteString(player->data_.uuid);      // Character
+    stream.WriteString(accountUuid);   // Account
+    stream.WriteString(charUuid);      // Character
     msg.SetPropStream(stream);
     client->Write(msg);
 }
@@ -237,7 +237,7 @@ void Game::SendStatus()
     for (const auto& p : players_)
     {
         // Write to buffered, auto-sent output message
-        p.second->client_->WriteToOutput(*gameStatus_.get());
+        p.second->WriteToOutput(*gameStatus_.get());
     }
 
     if (writeStream_ && writeStream_->IsOpen())
@@ -281,7 +281,7 @@ std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 void Game::AddObject(std::shared_ptr<GameObject> object)
 {
     AddObjectInternal(object);
-    luaState_["onAddObject"](object);
+    luaState_["onAddObject"](object.get());
 }
 
 void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
@@ -290,7 +290,7 @@ void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
     object->SetGame(shared_from_this());
 }
 
-void Game::RemoveObject(std::shared_ptr<GameObject> object)
+void Game::RemoveObject(GameObject* object)
 {
     luaState_["onRemoveObject"](object);
     object->SetGame(std::shared_ptr<Game>());
@@ -327,7 +327,6 @@ void Game::SetState(ExecutionState state)
 {
     if (state_ != state)
     {
-//        std::lock_guard<std::recursive_mutex> lockClass(lock_);
 #ifdef DEBUG_GAME
         if (state == ExecutionState::Terminated)
             LOG_DEBUG << "Setting Execution state to terminated" << std::endl;
@@ -386,7 +385,7 @@ void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)
         // Spawn points are loaded now
         const SpawnPoint p = map_->GetFreeSpawnPoint("Player");
 #ifdef DEBUG_GAME
-        LOG_DEBUG << "Spawn point: " << p.group << "; Pos: " << p.position.ToString() << std::endl;
+//        LOG_DEBUG << "Spawn point: " << p.group << "; Pos: " << p.position.ToString() << std::endl;
 #endif
         object->transformation_.position_ = p.position;
         object->transformation_.SetYRotation(p.rotation.EulerAngles().y_);
@@ -438,7 +437,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     }
 
     if (msg.GetSize() != 0)
-        player->client_->WriteToOutput(msg);
+        player->WriteToOutput(msg);
 }
 
 void Game::PlayerJoin(uint32_t playerId)
@@ -455,7 +454,7 @@ void Game::PlayerJoin(uint32_t playerId)
         }
         UpdateEntity(player->data_);
 
-        luaState_["onPlayerJoin"](player);
+        luaState_["onPlayerJoin"](player.get());
         SendSpawnAll(playerId);
 
         if (GetState() == ExecutionState::Running)
@@ -476,7 +475,8 @@ void Game::PlayerJoin(uint32_t playerId)
 
 void Game::PlayerLeave(uint32_t playerId)
 {
-    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
+    Player* player = GetPlayerById(playerId);
+//    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);
@@ -487,7 +487,6 @@ void Game::PlayerLeave(uint32_t playerId)
             luaState_["onPlayerLeave"](player);
             players_.erase(it);
         }
-        RemoveObject(player);
         player->data_.instanceUuid = "";
         UpdateEntity(player->data_);
 
@@ -496,9 +495,17 @@ void Game::PlayerLeave(uint32_t playerId)
         );
         // Notify other servers that a player left, e.g. for friend list
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut, shared_from_this(), player))
+            Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut,
+                shared_from_this(),
+                player->account_.uuid,
+                player->data_.uuid))
         );
+        RemoveObject(player);
     }
+#ifdef DEBUG_GAME
+    else
+        LOG_ERROR << "No player with ID " << playerId << std::endl;
+#endif
 }
 
 }

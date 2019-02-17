@@ -20,16 +20,13 @@ namespace Game {
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
-    client_(std::move(client)),
+    client_(client),
     lastPing_(0),
     mailBox_(nullptr),
     party_(nullptr)
-{
-}
+{ }
 
-Player::~Player()
-{
-}
+Player::~Player() = default;
 
 void Player::SetGame(std::shared_ptr<Game> game)
 {
@@ -56,9 +53,15 @@ void Player::Initialize()
 
 void Player::Logout()
 {
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Player logging out " << GetName() << std::endl;
+#endif // DEBUG_GAME
+
     if (auto g = GetGame())
         g->PlayerLeave(id_);
     client_->Logout();
+//    if (auto c = client_.lock())
+//        c->Logout();
 }
 
 void Player::Ping()
@@ -66,7 +69,7 @@ void Player::Ping()
     lastPing_ = Utils::AbTick();
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::GamePong);
-    client_->WriteToOutput(msg);
+    WriteToOutput(msg);
 }
 
 void Player::UpdateMailBox()
@@ -96,7 +99,7 @@ void Player::GetMailHeaders()
         msg.Add<int64_t>(mail.created);
         msg.AddByte(mail.isRead ? 1 : 0);
     }
-    client_->WriteToOutput(msg);
+    WriteToOutput(msg);
 }
 
 void Player::SendMail(const std::string recipient, const std::string subject, const std::string body)
@@ -109,7 +112,7 @@ void Player::SendMail(const std::string recipient, const std::string subject, co
         nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
     nmsg.AddString(recipient);
     nmsg.AddString("");                // Data
-    client_->WriteToOutput(nmsg);
+    WriteToOutput(nmsg);
 }
 
 void Player::GetMail(const std::string mailUuid)
@@ -131,7 +134,7 @@ void Player::GetMail(const std::string mailUuid)
         msg.AddString(m.message);
         msg.Add<int64_t>(m.created);
         msg.AddByte(m.isRead ? 1 : 0);
-        client_->WriteToOutput(msg);
+        WriteToOutput(msg);
     }
 }
 
@@ -150,7 +153,7 @@ void Player::DeleteMail(const std::string mailUuid)
         msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
         msg.AddString(GetName());
         msg.AddString(mailUuid);
-        client_->WriteToOutput(msg);
+        WriteToOutput(msg);
         return;
     }
 
@@ -162,7 +165,7 @@ void Player::DeleteMail(const std::string mailUuid)
         msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
         msg.AddString(GetName());
         msg.AddString(mailUuid);
-        client_->WriteToOutput(msg);
+        WriteToOutput(msg);
     }
 }
 
@@ -180,7 +183,7 @@ void Player::NotifyNewMail()
         msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
         msg.AddString(GetName());
         msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-        client_->WriteToOutput(msg);
+        WriteToOutput(msg);
     }
     if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
     {
@@ -190,8 +193,20 @@ void Player::NotifyNewMail()
         msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
         msg.AddString(GetName());
         msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-        client_->WriteToOutput(msg);
+        WriteToOutput(msg);
     }
+}
+
+void Player::WriteToOutput(const Net::NetworkMessage& message)
+{
+    if (client_)
+        client_->WriteToOutput(message);
+#ifdef DEBUG_GAME
+    else
+        LOG_ERROR << "client_ expired" << std::endl;
+#endif
+//    if (auto c = client_.lock())
+//        c->WriteToOutput(message);
 }
 
 void Player::SetParty(std::shared_ptr<Party> party)
@@ -243,7 +258,7 @@ void Player::PartyInvitePlayer(uint32_t playerId)
             // Send us confirmation
             party_->WriteToMembers(nmsg);
             // Send player he was invited
-            player->client_->WriteToOutput(nmsg);
+            player->WriteToOutput(nmsg);
         }
     }
 }
@@ -267,14 +282,14 @@ void Player::PartyKickPlayer(uint32_t playerId)
     bool removedMember = false;
     {
         Net::NetworkMessage nmsg;
-        if (party_->IsMember(player))
+        if (party_->IsMember(player.get()))
         {
             if (!party_->Remove(player.get()))
                 return;
             nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
             removedMember = true;
         }
-        else if (party_->IsInvited(player))
+        else if (party_->IsInvited(player.get()))
         {
             if (!party_->RemoveInvite(player))
                 return;
@@ -289,7 +304,7 @@ void Player::PartyKickPlayer(uint32_t playerId)
         party_->WriteToMembers(nmsg);
 
         // Also send to player which is removed already
-        player->client_->WriteToOutput(nmsg);
+        player->WriteToOutput(nmsg);
     }
 
     if (removedMember)
@@ -381,7 +396,7 @@ void Player::PartyRejectInvite(uint32_t inviterId)
             // Inform the party
             leader->GetParty()->WriteToMembers(nmsg);
             // Inform us
-            client_->WriteToOutput(nmsg);
+            WriteToOutput(nmsg);
         }
     }
 }
@@ -404,7 +419,7 @@ void Player::PartyGetMembers(uint32_t partyId)
             else
                 nmsg.Add<uint32_t>(0);
         }
-        client_->WriteToOutput(nmsg);
+        WriteToOutput(nmsg);
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Player: " << id_ << ", Party: " << partyId << ", Count: " << static_cast<int>(count) << std::endl;
 #endif
@@ -488,7 +503,7 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
         nmsg.AddString(GetName());
         nmsg.AddString("");
     }
-    client_->WriteToOutput(nmsg);
+    WriteToOutput(nmsg);
 }
 
 void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)
@@ -512,7 +527,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
                 nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
                 nmsg.AddString(name);
                 nmsg.AddString(msg);
-                client_->WriteToOutput(nmsg);
+                WriteToOutput(nmsg);
             }
         }
         return;
@@ -533,7 +548,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
             nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
             nmsg.AddString(name);
             nmsg.AddString(msg);
-            client_->WriteToOutput(nmsg);
+            WriteToOutput(nmsg);
             return;
         }
     }
@@ -544,7 +559,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
     nmsg.AddString(GetName());
     nmsg.AddString(name);
-    client_->WriteToOutput(nmsg);
+    WriteToOutput(nmsg);
 }
 
 void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
@@ -578,7 +593,7 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
     nmsg.AddByte(AB::GameProtocol::ServerMessageTypeAge);
     nmsg.AddString(GetName());
     nmsg.AddString(std::to_string(age) + ":" + std::to_string(playTime));
-    client_->WriteToOutput(nmsg);
+    WriteToOutput(nmsg);
 }
 
 void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& message)
@@ -646,7 +661,7 @@ void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
         nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
         nmsg.AddString(GetName());
         nmsg.AddString("");
-        client_->WriteToOutput(nmsg);
+        WriteToOutput(nmsg);
     }
 }
 
@@ -690,7 +705,8 @@ void Player::ChangeMap(const std::string mapUuid)
 
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
-    client_->ChangeInstance(mapUuid, instanceUuid);
+    if (client_)
+        client_->ChangeInstance(mapUuid, instanceUuid);
 }
 
 void Player::RegisterLua(kaguya::State& state)

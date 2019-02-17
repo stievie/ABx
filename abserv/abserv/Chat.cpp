@@ -122,7 +122,7 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
         msg.AddString(text);
         for (auto& p : players)
         {
-            p.second->client_->WriteToOutput(msg);
+            p.second->WriteToOutput(msg);
         }
         return true;
     }
@@ -142,7 +142,7 @@ bool GameChatChannel::TalkNpc(Npc* npc, const std::string& text)
         msg.AddString(text);
         for (auto& p : players)
         {
-            p.second->client_->WriteToOutput(msg);
+            p.second->WriteToOutput(msg);
         }
         return true;
     }
@@ -171,7 +171,7 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
         msg.Add<uint32_t>(player->id_);
         msg.AddString(player->GetName());
         msg.AddString(text);
-        p->client_->WriteToOutput(msg);
+        p->WriteToOutput(msg);
         return true;
     }
 
@@ -198,7 +198,7 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
         msg.Add<uint32_t>(0);
         msg.AddString(playerName);
         msg.AddString(text);
-        p->client_->WriteToOutput(msg);
+        p->WriteToOutput(msg);
         return true;
     }
     return false;
@@ -242,7 +242,7 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
         msg.Add<uint32_t>(0);
         msg.AddString(playerName);
         msg.AddString(text);
-        player->client_->WriteToOutput(msg);
+        player->WriteToOutput(msg);
     }
 }
 
@@ -268,7 +268,7 @@ void TradeChatChannel::Broadcast(const std::string& playerName, const std::strin
     msg.AddString(text);
     for (const auto& player : GetSubsystem<PlayerManager>()->GetPlayers())
     {
-        player.second->client_->WriteToOutput(msg);
+        player.second->WriteToOutput(msg);
     }
 }
 
@@ -286,7 +286,7 @@ bool PartyChatChannel::Talk(Player* player, const std::string& text)
         for (auto& wp : players)
         {
             if (auto sp = wp.lock())
-                sp->client_->WriteToOutput(msg);
+                sp->WriteToOutput(msg);
         }
         return true;
     }
@@ -307,7 +307,7 @@ bool PartyChatChannel::TalkNpc(Npc* npc, const std::string& text)
         for (auto& wp : players)
         {
             if (auto sp = wp.lock())
-                sp->client_->WriteToOutput(msg);
+                sp->WriteToOutput(msg);
         }
         return true;
     }

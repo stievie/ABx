@@ -31,7 +31,7 @@ size_t Party::GetDataPos(Player* player)
     if (!player)
         return 0;
     std::vector<std::string>::iterator iter = std::find_if(data_.members.begin(),
-        data_.members.end(), [&player](const std::string& current)
+        data_.members.end(), [player](const std::string& current)
     {
         return player->data_.uuid.compare(current) == 0;
     });
@@ -51,7 +51,7 @@ bool Party::Add(std::shared_ptr<Player> player)
 
     if (IsFull())
         return false;
-    if (IsMember(player))
+    if (IsMember(player.get()))
         return false;
 
     members_.push_back(player);
@@ -88,11 +88,11 @@ bool Party::Remove(Player* player, bool newParty /* = true */)
     if (!player)
         return false;
 
-    members_.erase(std::remove_if(members_.begin(), members_.end(), [&player](std::weak_ptr<Player>& current)
+    members_.erase(std::remove_if(members_.begin(), members_.end(), [player](std::weak_ptr<Player>& current)
     {
         if (auto p = current.lock())
             return (p->id_ == player->id_);
-        return true;
+        return false;
     }), members_.end());
 
     auto dataIt = std::find(data_.members.begin(), data_.members.end(), player->data_.uuid);
@@ -113,7 +113,7 @@ bool Party::Invite(std::shared_ptr<Player> player)
     if (!player)
         return false;
 
-    if (IsMember(player) || IsInvited(player))
+    if (IsMember(player.get()) || IsInvited(player.get()))
         return false;
 
     invited_.push_back(player);
@@ -149,7 +149,7 @@ void Party::WriteToMembers(const Net::NetworkMessage& message)
     for (auto& wm : members_)
     {
         if (auto sm = wm.lock())
-            sm->client_->WriteToOutput(message);
+            sm->WriteToOutput(message);
     }
 }
 
@@ -161,9 +161,9 @@ void Party::SetPartySize(size_t size)
     maxMembers_ = static_cast<uint32_t>(size);
 }
 
-bool Party::IsMember(std::shared_ptr<Player> player) const
+bool Party::IsMember(Player* player) const
 {
-    auto it = std::find_if(members_.begin(), members_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(members_.begin(), members_.end(), [player](const std::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -174,9 +174,9 @@ bool Party::IsMember(std::shared_ptr<Player> player) const
     return it != members_.end();
 }
 
-bool Party::IsInvited(std::shared_ptr<Player> player) const
+bool Party::IsInvited(Player* player) const
 {
-    auto it = std::find_if(invited_.begin(), invited_.end(), [&player](const std::weak_ptr<Player>& current)
+    auto it = std::find_if(invited_.begin(), invited_.end(), [player](const std::weak_ptr<Player>& current)
     {
         if (const auto& c = current.lock())
         {
@@ -187,12 +187,13 @@ bool Party::IsInvited(std::shared_ptr<Player> player) const
     return it != invited_.end();
 }
 
-bool Party::IsLeader(Player* player)
+bool Party::IsLeader(Player* player) const
 {
     if (members_.size() == 0)
         return false;
     if (auto p = members_[0].lock())
-        return p->id_ == player->id_;
+        // Must use UUID because IDs are not the same as from the last game
+        return p->data_.uuid.compare(player->data_.uuid) == 0;
     return false;
 }
 
