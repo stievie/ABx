@@ -32,7 +32,7 @@ void CssWriter::newline() {
 
 void CssWriter::writeStr(const char *str, size_t len) {
   out->write(str, len);
-  column += len;
+  column += static_cast<unsigned>(len);
 }
 void CssWriter::writeToken(const Token &token) {
   std::string url;
@@ -46,10 +46,10 @@ void CssWriter::writeToken(const Token &token) {
 
       writeStr(url.c_str(), url.size());
       writeStr("\")", 2);
-    } else 
+    } else
       writeStr(token.c_str(), token.size());
 
-  } else 
+  } else
     writeStr(token.c_str(), token.size());
 
 }
@@ -74,9 +74,9 @@ void CssWriter::writeSelector(const Selector &selector) {
         writeStr(",", 1);
 
     for (token = (*s_it).begin(); token != (*s_it).end(); token++) {
-      if (sourcemap != NULL && token == (*s_it).begin()) 
+      if (sourcemap != NULL && token == (*s_it).begin())
         sourcemap->writeMapping(column, *token);
-      
+
       writeToken(*token);
     }
   }
@@ -124,7 +124,7 @@ void CssWriter::writeAtRule(const Token &keyword, const TokenList &rule) {
 
 void CssWriter::writeRulesetStart(const Selector &selector) {
   writeSelector(selector);
-  
+
   writeStr("{", 1);
 }
 
@@ -153,7 +153,7 @@ void CssWriter::writeComment(const Token &comment) {
     newline();
 
   writeToken(comment);
-  
+
   // Check comments for newlines and compensate in source map and column
   // attribute.
   if (sourcemap != NULL) {
@@ -169,9 +169,9 @@ void CssWriter::writeMediaQueryStart(const TokenList &selector) {
   TokenList::const_iterator token;
 
   for (token = selector.begin(); token != selector.end(); token++) {
-    if (sourcemap != NULL && token == selector.begin()) 
+    if (sourcemap != NULL && token == selector.begin())
       sourcemap->writeMapping(column, *token);
-      
+
     writeToken(*token);
   }
 

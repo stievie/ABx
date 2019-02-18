@@ -64,12 +64,12 @@ bool SourceMapWriter::writeMapping(unsigned int column, const Token& source) {
   if (len > 0) {
     if (firstSegment)
       firstSegment = false;
-    else 
+    else
       sourcemap_h.write(",", 1);
     sourcemap_h.write(buffer, len);
 
     return true;
-  } else 
+  } else
     return false;
 }
 
@@ -93,19 +93,19 @@ size_t SourceMapWriter::sourceFileIndex(const char* file) {
 size_t SourceMapWriter::encodeMapping(unsigned int column,
                                       const Token& source,
                                       char* buffer) {
-  unsigned int srcFileIndex = sourceFileIndex(source.source);
+  size_t srcFileIndex = sourceFileIndex(source.source);
   char* start = buffer;
 
   if (srcFileIndex == sources.size())
     return 0;
 
   buffer += encodeField(column - lastDstColumn, buffer);
-  buffer += encodeField(srcFileIndex - lastSrcFile, buffer);
+  buffer += encodeField(static_cast<unsigned>(srcFileIndex) - lastSrcFile, buffer);
   buffer += encodeField(source.line - lastSrcLine, buffer);
   buffer += encodeField(source.column - lastSrcColumn, buffer);
 
   lastDstColumn = column;
-  lastSrcFile = srcFileIndex;
+  lastSrcFile = static_cast<unsigned>(srcFileIndex);
   lastSrcLine = source.line;
   lastSrcColumn = source.column;
 

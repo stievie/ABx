@@ -49,7 +49,7 @@ void Color::convert_hcm_rgb(float hue, float chroma, float match,
   float x = chroma * (1 - abs(std::fmod(h, 2.0f) - 1));
 
   const int (* matrix)[2] = conversion_matrices[(int)h];
-  
+
   for (int i = 0; i < 3; i++) {
     rgb[i] = (unsigned int)((matrix[i][0] * chroma +
                              matrix[i][1] * x +
@@ -57,9 +57,9 @@ void Color::convert_hcm_rgb(float hue, float chroma, float match,
   }
 }
 void Color::convert_hsl_rgb(const float hsl[3], unsigned int rgb[3]) const {
-  float c = (1.0 - abs(2.0 * hsl[HSL_LIGHTNESS] - 1))
+  float c = (1.0f - abs(2.0f * hsl[HSL_LIGHTNESS] - 1))
     * hsl[HSL_SATURATION];
-  float m = hsl[HSL_LIGHTNESS] - .5 * c;
+  float m = hsl[HSL_LIGHTNESS] - 0.5f * c;
 
   convert_hcm_rgb(hsl[HSL_HUE], c, m, rgb);
 
@@ -77,15 +77,15 @@ float Color::convert_rgb_hue(const float rgb[3], float chroma,
   float hue = 0;
   if (chroma == 0) {
     hue = 0;
-    
+
   } else if (max == rgb[RGB_RED]) {
-    hue = std::fmod((rgb[RGB_GREEN] - rgb[RGB_BLUE]) / chroma, 6);
-    
+    hue = static_cast<float>(std::fmod((rgb[RGB_GREEN] - rgb[RGB_BLUE]) / chroma, 6));
+
   } else if (max == rgb[RGB_GREEN]) {
-    hue = (rgb[RGB_BLUE] - rgb[RGB_RED]) / chroma + 2.0;
-  
+    hue = (rgb[RGB_BLUE] - rgb[RGB_RED]) / chroma + 2.0f;
+
   } else if (max == rgb[RGB_BLUE])
-    hue = (rgb[RGB_RED] - rgb[RGB_GREEN]) / chroma + 4.0;
+    hue = (rgb[RGB_RED] - rgb[RGB_GREEN]) / chroma + 4.0f;
 
   hue = 60 * hue;
   return hue;
@@ -103,13 +103,13 @@ void Color::convert_rgb_hsl(const unsigned int rgb[3], float hsl[3]) const {
   c = max - min;
 
   hsl[HSL_HUE] = convert_rgb_hue(_rgb, c, max);
-  
-  hsl[HSL_LIGHTNESS] = (max + min) * .5;
+
+  hsl[HSL_LIGHTNESS] = (max + min) * 0.5f;
 
   if (hsl[HSL_LIGHTNESS] == 1)
     hsl[HSL_SATURATION] = 0;
   else
-    hsl[HSL_SATURATION] = c / (1.0 - abs(2.0 * hsl[HSL_LIGHTNESS] - 1.0));
+    hsl[HSL_SATURATION] = c / (1.0f - abs(2.0f * hsl[HSL_LIGHTNESS] - 1.0f));
 }
 
 void Color::convert_rgb_hsv(const unsigned int rgb[3], float hsv[3]) const {
@@ -124,7 +124,7 @@ void Color::convert_rgb_hsv(const unsigned int rgb[3], float hsv[3]) const {
   c = max - min;
 
   hsv[HSV_HUE] = convert_rgb_hue(_rgb, c, max);
-  
+
   hsv[HSV_VALUE] = max;
 
   if (hsv[HSV_VALUE] == 0)
@@ -138,7 +138,7 @@ Color::Color(const Token &hash) : Value() {
   token = hash;
   type = Value::COLOR;
   color_type = TOKEN;
-  
+
   if (!parseHash(hash.c_str())) {
     throw new ValueException("A color value requires either three, four, "
                              "six or eight hexadecimal characters.",
@@ -151,7 +151,7 @@ Color::Color(const Token &name, const char* hash) : Value() {
   token = name;
   type = Value::COLOR;
   color_type = TOKEN;
-  
+
   if (!parseHash(hash)) {
     cerr << "Hash for builtin color " <<
       name << "(" << hash << ") failed to parse." << endl;
@@ -177,10 +177,10 @@ Color::Color(float hue, float saturation, float lightness, float alpha)
 
   type = COLOR;
   color_type = HSL;
-  hsl[HSL_HUE] = std::fmod(hue, 360);
+  hsl[HSL_HUE] = static_cast<float>(std::fmod(hue, 360));
   if (hsl[HSL_HUE] < 0)
     hsl[HSL_HUE] += 360;
-  
+
   hsl[HSL_SATURATION] = max(min(saturation, 1), 0);
   hsl[HSL_LIGHTNESS] = max(min(lightness, 1), 0);
   this->alpha = alpha;
@@ -191,13 +191,13 @@ Color::Color(float hue, float saturation, float lightness, float alpha)
 Color::Color(bool _hsv, float hue, float saturation, float value, float alpha)
   : Value() {
   (void)_hsv;
-  
+
   type = COLOR;
   color_type = HSV;
-  hsv[HSV_HUE] = std::fmod(hue, 360);
+  hsv[HSV_HUE] = static_cast<float>(std::fmod(hue, 360));
   if (hsv[HSV_HUE] < 0)
     hsv[HSV_HUE] += 360;
-  
+
   hsv[HSV_SATURATION] = max(min(saturation, 1), 0);
   hsv[HSV_VALUE] = max(min(value, 1), 0);
   this->alpha = alpha;
@@ -213,21 +213,21 @@ Color::Color(const Color &color) : Value() {
     token = color.token;
     tokens.push_back(token);
     break;
-    
+
   case RGB:
     break;
-    
+
   case HSL:
     color.getHSL(hsl);
     break;
-    
+
   case HSV:
     color.getHSV(hsv);
     break;
   }
 
   color.getRGB(rgb);
-  
+
   alpha = color.getAlpha();
 }
 
@@ -248,7 +248,7 @@ bool Color::parseHash(const char* hash) {
   case 4:
     len = 1;
     break;
-    
+
   case 9:
     alpha = 0;
     len = 2;
@@ -256,16 +256,16 @@ bool Color::parseHash(const char* hash) {
   case 7:
     len = 2;
     break;
-    
+
   default:
     return false;
-    
+
   }
   hash++;
-  
+
   if (alpha == 0) {
     memcpy(hex, hash, len);
-    alpha = strtoul(hex, NULL, 16);
+    alpha = static_cast<float>(strtoul(hex, NULL, 16));
     if (len == 1)
       alpha = alpha * 0x11;
     hash += len;
@@ -284,7 +284,7 @@ bool Color::parseHash(const char* hash) {
 Color* Color::fromName(const Token &name) {
   std::map<std::string, const char*>::iterator it;
   it = ColorNames.find(name);
-  
+
   if (it != ColorNames.end())
     return new Color(name, (*it).second);
   else
@@ -324,9 +324,9 @@ void Color::getHSV(float hsv[3]) const {
 void Color::setRGB(unsigned int red,
                    unsigned int green,
                    unsigned int blue) {
-  if (color_type != RGB) 
+  if (color_type != RGB)
     color_type = RGB;
-  
+
   rgb[RGB_RED] = min(red, 255);
   rgb[RGB_GREEN] = min(green, 255);
   rgb[RGB_BLUE] = min(blue, 255);
@@ -334,9 +334,9 @@ void Color::setRGB(unsigned int red,
 void Color::increaseRGB(int red,
                         int green,
                         int blue) {
-  if (color_type != RGB) 
+  if (color_type != RGB)
     color_type = RGB;
-  
+
   rgb[RGB_RED] = min(rgb[RGB_RED] + red, 255);
   rgb[RGB_GREEN] = min(rgb[RGB_GREEN] + green, 255);
   rgb[RGB_BLUE] = min(rgb[RGB_BLUE] + blue, 255);
@@ -344,12 +344,12 @@ void Color::increaseRGB(int red,
 void Color::multiplyRGB(float red,
                         float green,
                         float blue) {
-  if (color_type != RGB) 
+  if (color_type != RGB)
     color_type = RGB;
-  
-  rgb[RGB_RED] = min(rgb[RGB_RED] * red, 255);
-  rgb[RGB_GREEN] = min(rgb[RGB_GREEN] * green, 255);
-  rgb[RGB_BLUE] = min(rgb[RGB_BLUE] * blue, 255);
+
+  rgb[RGB_RED] = min(rgb[RGB_RED] * static_cast<unsigned>(red), 255);
+  rgb[RGB_GREEN] = min(rgb[RGB_GREEN] * static_cast<unsigned>(green), 255);
+  rgb[RGB_BLUE] = min(rgb[RGB_BLUE] * static_cast<unsigned>(blue), 255);
 }
 
 void Color::lighten(float lightness) {
@@ -385,10 +385,10 @@ void Color::spin(float hue) {
     convert_rgb_hsl(rgb, hsl);
     color_type = HSL;
   }
-  hsl[HSL_HUE] = std::fmod(hsl[HSL_HUE] + hue, 360);
+  hsl[HSL_HUE] = static_cast<float>(std::fmod(hsl[HSL_HUE] + hue, 360));
   if (hsl[HSL_HUE] < 0)
     hsl[HSL_HUE] += 360;
-  
+
   convert_hsl_rgb(hsl, rgb);
 }
 
@@ -398,11 +398,11 @@ void Color::mix(const Color &color, float weight) {
   color.getRGB(rgb2);
 
   // move weight by the relative alpha.
-  float cweight = weight + (color.getAlpha() - getAlpha()) * .5;
-  
+  float cweight = weight + (color.getAlpha() - getAlpha()) * 0.5f;
+
   for (int i = 0; i < 3; i++) {
     // move color by difference x weight ( and round ).
-    rgb1[i] = (int)rgb1[i] + ((int)rgb2[i] - (int)rgb1[i]) * cweight + .5;
+    rgb1[i] = (int)rgb1[i] + ((int)rgb2[i] - (int)rgb1[i]) * static_cast<int>(cweight + 0.5f);
   }
   setRGB(rgb1[0], rgb1[1], rgb1[2]);
 
@@ -423,7 +423,7 @@ void Color::blend(const Color &color, blendtype blend) {
       rgb1[i] = (unsigned int)(.5 + (float)(rgb1[i] * rgb2[i]) / 0xFF);
     }
     break;
-    
+
   case BT_SCREEN:
     // 1 - (1 - base) x (1 - blend)
     for(i = 0; i < 3; i++) {
@@ -433,77 +433,77 @@ void Color::blend(const Color &color, blendtype blend) {
                        + .5);
     }
     break;
-    
+
   case BT_OVERLAY:
     // 2 x base x blend                  if base < 1/2
     // 1 - 2 x (1 - base) x (1 - blend)  otherwise
-    
+
     for(i = 0; i < 3; i++) {
       if (rgb1[i] < 128)
         rgb1[i] = (unsigned int)(.5 + (float)(2 * rgb1[i] * rgb2[i]) / 0xFF);
-      else 
+      else
         rgb1[i] = 0xFF -
           (unsigned int)((float)(2 * (0xFF - rgb1[i]) * (0xFF - rgb2[i]))
                          / 0xFF
                          + .5);
     }
     break;
-    
+
   case BT_SOFTLIGHT:
     // TODO: doesn't work yet.
     // base x blend                  if base < 1/2
     // 1 - 2 x (1 - base) x (1 - blend)  otherwise
-    
+
     for(i = 0; i < 3; i++) {
       if (rgb2[i] < 128)
         rgb1[i] = (unsigned int)(.5 + (float)((int)rgb1[i] * ((int)rgb2[i] - 128)) / 0xFF);
-      else 
+      else
         rgb1[i] = 0xFF -
           (unsigned int)((float)((0xFF - rgb1[i]) * (int)(0xFF - rgb2[i] - 128))
                          / 0xFF
                          + .5);
     }
-    
+
     break;
-    
+
   case BT_HARDLIGHT:
     // 2 x base x blend                  if blend < 1/2
     // 1 - 2 x (1 - base) x (1 - blend)  otherwise
-    
+
     for(i = 0; i < 3; i++) {
       if (rgb2[i] < 128)
         rgb1[i] = (unsigned int)(.5 + (float)(2 * rgb1[i] * rgb2[i]) / 0xFF);
-      else 
+      else
         rgb1[i] = 0xFF -
           (unsigned int)((float)(2 * (0xFF - rgb1[i]) * (0xFF - rgb2[i]))
                          / 0xFF
                          + .5);
     }
     break;
-    
+
   case BT_DIFFERENCE:
     // R = | base - blend |
     for(i = 0; i < 3; i++) {
       rgb1[i] = rgb1[i] < rgb2[i] ? rgb2[i] - rgb1[i] : rgb1[i] - rgb2[i];
     }
     break;
-    
+
   case BT_EXCLUSION:
     // R = 1/2 - 2 x (base - 1/2) x (blend - 1/2)
     for(i = 0; i < 3; i++) {
-      rgb1[i] = (127.5 - (2 * ((float)rgb1[i] - 127.5) * ((float)rgb2[i] -
-    127.5)) / 256) + .5;
+      rgb1[i] = static_cast<unsigned>((127.5f - (2 * ((float)rgb1[i] - 127.5f) * ((float)rgb2[i] -
+    127.5f)) / 256.0f) + 0.5f);
     }
 
     break;
-    
+
   case BT_AVERAGE:
     // R = ( base + blend ) / 2
     for(i = 0; i < 3; i++) {
-      rgb1[i] = ((float)(rgb1[i] + rgb2[i]) * .5 + .5);
+      rgb1[i] = static_cast<unsigned>((float)(rgb1[i] + rgb2[i]) * 0.5f + 0.5f);
     }
     break;
-    
+
   case BT_NEGATION:
     // TODO: Doesn't work; no documentation found.
     for(i = 0; i < 3; i++) {
@@ -513,7 +513,7 @@ void Color::blend(const Color &color, blendtype blend) {
     break;
   }
   setRGB(rgb1[0], rgb1[1], rgb1[2]);
-  
+
 }
 
 void Color::setAlpha(float alpha) {
@@ -531,13 +531,13 @@ float Color::getLuma() const {
   getRGB(rgb);
   for (int i = 0; i < 3; i++) {
     _rgb[i] = ((float)rgb[i] / 0xFF);
-    if (_rgb[i] <= 0.03928) {
-      _rgb[i] = _rgb[i] / 12.92;
+    if (_rgb[i] <= 0.03928f) {
+      _rgb[i] = _rgb[i] / 12.92f;
     } else {
-      _rgb[i] = pow(((_rgb[i] + 0.055) / 1.055), 2.4);
+      _rgb[i] = pow(((_rgb[i] + 0.055f) / 1.055f), 2.4f);
     }
   }
-  return 0.2126 * _rgb[0] + 0.7152 * _rgb[1] + 0.0722 * _rgb[2];
+  return 0.2126f * _rgb[0] + 0.7152f * _rgb[1] + 0.0722f * _rgb[2];
 }
 
 float Color::getLuminance() const {
@@ -547,7 +547,7 @@ float Color::getLuminance() const {
   for (int i = 0; i < 3; i++) {
     _rgb[i] = ((float)rgb[i] / 0xFF);
   }
-  return 0.2126 * _rgb[0] + 0.7152 * _rgb[1] + 0.0722 * _rgb[2];
+  return 0.2126f * _rgb[0] + 0.7152f * _rgb[1] + 0.0722f * _rgb[2];
 }
 
 const TokenList* Color::getTokens() const {
@@ -625,13 +625,13 @@ Value* Color::operator+(const Value& v) const {
       cret = new Color(*this);
       cret->increaseRGB(rgb[RGB_RED], rgb[RGB_GREEN], rgb[RGB_BLUE]);
       return cret;
-      
+
     case NUMBER:
     case PERCENTAGE:
     case DIMENSION:
       n = static_cast<const NumberValue*>(&v);
       cret = new Color(*this);
-      cret->increaseRGB(n->getValue(), n->getValue(), n->getValue());
+      cret->increaseRGB(static_cast<int>(n->getValue()), static_cast<int>(n->getValue()), static_cast<int>(n->getValue()));
       return cret;
 
   case STRING:
@@ -660,13 +660,13 @@ Value* Color::operator-(const Value& v) const {
       cret = new Color(*this);
       cret->increaseRGB(-(int)rgb[RGB_RED], -(int)rgb[RGB_GREEN], -(int)rgb[RGB_BLUE]);
       return cret;
-      
+
     case NUMBER:
     case PERCENTAGE:
     case DIMENSION:
       n = static_cast<const NumberValue*>(&v);
       cret = new Color(*this);
-      cret->increaseRGB(-n->getValue(), -n->getValue(), -n->getValue());
+      cret->increaseRGB(static_cast<int>(-n->getValue()), static_cast<int>(-n->getValue()), static_cast<int>(-n->getValue()));
       return cret;
 
   default:
@@ -688,15 +688,15 @@ Value* Color::operator*(const Value& v) const {
       c = static_cast<const Color*>(&v);
       c->getRGB(rgb);
       cret = new Color(*this);
-      cret->multiplyRGB(rgb[RGB_RED], rgb[RGB_GREEN], rgb[RGB_BLUE]);
+      cret->multiplyRGB(static_cast<float>(rgb[RGB_RED]), static_cast<float>(rgb[RGB_GREEN]), static_cast<float>(rgb[RGB_BLUE]));
       return cret;
-      
+
     case NUMBER:
     case PERCENTAGE:
     case DIMENSION:
       n = static_cast<const NumberValue*>(&v);
       cret = new Color(*this);
-      cret->multiplyRGB(n->getValue(), n->getValue(), n->getValue());
+      cret->multiplyRGB(static_cast<float>(n->getValue()), static_cast<float>(n->getValue()), static_cast<float>(n->getValue()));
       return cret;
 
     default:
@@ -726,9 +726,9 @@ Value* Color::operator/(const Value& v) const {
     case DIMENSION:
       n = static_cast<const NumberValue*>(&v);
       cret = new Color(*this);
-      cret->multiplyRGB((float)1 / n->getValue(),
-                        (float)1 / n->getValue(),
-                        (float)1 / n->getValue());
+      cret->multiplyRGB((float)1 / static_cast<float>(n->getValue()),
+                        (float)1 / static_cast<float>(n->getValue()),
+                        (float)1 / static_cast<float>(n->getValue()));
       return cret;
     default:
       throw new ValueException(
@@ -747,7 +747,7 @@ bool Color::operator==(const Value& v) const {
     case COLOR:
       c = static_cast<const Color*>(&v);
       c->getRGB(rgb);
-      
+
       return (this->rgb[RGB_RED] == rgb[RGB_RED] &&
               this->rgb[RGB_GREEN] == rgb[RGB_GREEN] &&
               this->rgb[RGB_BLUE] == rgb[RGB_BLUE]);
@@ -756,7 +756,7 @@ bool Color::operator==(const Value& v) const {
     // any color is falsy.
     b = static_cast<const BooleanValue*>(&v);
     return false == b->getValue();
-    
+
   default:
       throw new ValueException("You can only compare a color with a *color*.",
                                *this->getTokens());

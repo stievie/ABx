@@ -62,13 +62,13 @@ Value* ColorFunctions::rgba(const vector<const Value*>& arguments) {
                      (unsigned int)((const NumberValue*)arguments[0])->getValue(),
                      (unsigned int)((const NumberValue*)arguments[1])->getValue(),
                      (unsigned int)((const NumberValue*)arguments[2])->getValue(),
-                     ((const NumberValue*)arguments[3])->getValue());
+                     ((float)((const NumberValue*)arguments[3])->getValue()));
   } else if (arguments[3]->type == Value::PERCENTAGE) {
     return new Color(
                      (unsigned int)((const NumberValue*)arguments[0])->getValue(),
                      (unsigned int)((const NumberValue*)arguments[1])->getValue(),
                      (unsigned int)((const NumberValue*)arguments[2])->getValue(),
-                     ((const NumberValue*)arguments[3])->getValue() * .01);
+                     ((float)((const NumberValue*)arguments[3])->getValue()) * 0.01f);
   } else {
     throw new ValueException(
                              "Argument 3 needs to be a number "
@@ -78,61 +78,61 @@ Value* ColorFunctions::rgba(const vector<const Value*>& arguments) {
 }
 Value* ColorFunctions::lighten(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->lighten(value * .01);
+  c->lighten(value * 0.01f);
   return c;
 }
 Value* ColorFunctions::darken(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->darken(value * .01);
+  c->darken(value * 0.01f);
   return c;
 }
 
 Value* ColorFunctions::saturate(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->saturate(value * .01);
+  c->saturate(value * 0.01f);
   return c;
 }
 Value* ColorFunctions::desaturate(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->desaturate(value * .01);
+  c->desaturate(value * 0.01f);
   return c;
 }
 
 Value* ColorFunctions::fade(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->setAlpha(value * .01);
+  c->setAlpha(value * 0.01f);
   return c;
 }
 
 Value* ColorFunctions::fadein(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->setAlpha(c->getAlpha() + (value * .01));
+  c->setAlpha(c->getAlpha() + (value * 0.01f));
   return c;
 }
 
 Value* ColorFunctions::fadeout(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float value = ((const NumberValue*)arguments[1])->getValue();
+  float value = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
-  c->setAlpha(c->getAlpha() - (value * .01));
+  c->setAlpha(c->getAlpha() - (value * 0.01f));
   return c;
 }
 
 Value* ColorFunctions::spin(const vector<const Value*>& arguments) {
   Color *c = new Color(*(const Color*)arguments[0]);
-  float degrees = ((const NumberValue*)arguments[1])->getValue();
+  float degrees = static_cast<float>(((const NumberValue*)arguments[1])->getValue());
 
   c->spin(degrees);
   return c;
@@ -147,9 +147,9 @@ Value* ColorFunctions::hsl(const vector<const Value*>& arguments) {
 Value* ColorFunctions::hsla(const vector<const Value*>& arguments) {
   float alpha;
   if (arguments[3]->type == Value::NUMBER) {
-    alpha = ((const NumberValue*)arguments[3])->getValue();
+    alpha = static_cast<float>(((const NumberValue*)arguments[3])->getValue());
   } else if (arguments[3]->type == Value::PERCENTAGE) {
-    alpha = ((const NumberValue*)arguments[3])->getValue() * .01;
+    alpha = static_cast<float>(((const NumberValue*)arguments[3])->getValue()) * 0.01f;
   } else {
     throw new ValueException(
                              "Argument 3 needs to be a number "
@@ -172,9 +172,9 @@ Value* ColorFunctions::hsv(const vector<const Value*>& arguments) {
 Value* ColorFunctions::hsva(const vector<const Value*>& arguments) {
   float alpha;
   if (arguments[3]->type == Value::NUMBER) {
-    alpha = ((const NumberValue*)arguments[3])->getValue();
+    alpha = static_cast<float>(((const NumberValue*)arguments[3])->getValue());
   } else if (arguments[3]->type == Value::PERCENTAGE) {
-    alpha = ((const NumberValue*)arguments[3])->getValue() * .01;
+    alpha = static_cast<float>(((const NumberValue*)arguments[3])->getValue()) * 0.01f;
   } else {
     throw new ValueException(
                              "Argument 3 needs to be a number "
@@ -239,7 +239,7 @@ Value* ColorFunctions::argb(const vector<const Value*>& arguments) {
   int i;
   Token t;
 
-  color[0] = c->getAlpha() * 0xFF + 0.5;
+  color[0] = static_cast<unsigned>(c->getAlpha() * 0xFF + 0.5);
   c->getRGB(color + 1);
 
   for (i = 0; i < 4; i++) {

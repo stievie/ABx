@@ -23,7 +23,7 @@ bool FunctionLibrary::checkArguments(
     const FuncInfo* fi, const vector<const Value*>& arguments) const {
   const char* types = fi->parameterTypes;
   vector<const Value*>::const_iterator it = arguments.begin();
-  unsigned int i, len = strlen(types);
+  unsigned int i, len = static_cast<unsigned>(strlen(types));
 
   for (i = 0; i < len; i++) {
     if (it == arguments.end()) {
@@ -67,7 +67,7 @@ const char* FunctionLibrary::functionDefToString(const char* functionName,
 
   string str(functionName);
   const char* types = fi->parameterTypes;
-  unsigned int i, len = strlen(types);
+  unsigned int i, len = static_cast<unsigned>(strlen(types));
   char* retstr;
 
   str.append("(");
