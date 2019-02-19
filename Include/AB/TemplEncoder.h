@@ -15,7 +15,7 @@ namespace AB {
 struct AttributeValue
 {
     uint32_t index = 99;    // No attribute
-    uint32_t value = 0;
+    uint32_t value = 0;     // How many points
 };
 
 typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;

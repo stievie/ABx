@@ -1,7 +1,7 @@
 MAX_SKILLS = 8
 
 -- Skill type tree
-SkillTypeSkill = 0
+SkillTypeSkill = 0          -- Everything is a skill
 SkillTypeAttack = 1
     SkillTypeRangedAttack        = SkillTypeAttack | 1 << 16
         SkillTypeBowAttack           = SkillTypeRangedAttack | 1 << 32

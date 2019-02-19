@@ -8,6 +8,7 @@ namespace Entities {
 
 static constexpr auto KEY_SKILLS = "game_skills";
 
+/// Skill type Tree
 enum SkillType : uint64_t
 {
     SkillTypeSkill = 0ll,
