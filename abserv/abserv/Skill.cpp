@@ -11,21 +11,22 @@ namespace Game {
 void Skill::RegisterLua(kaguya::State& state)
 {
     state["Skill"].setClass(kaguya::UserdataMetatable<Skill>()
-        .addFunction("GetName", &Skill::_LuaGetName)
-        .addFunction("Disable", &Skill::Disable)
-        .addFunction("Interrupt", &Skill::Interrupt)
-        .addFunction("GetSource", &Skill::GetSource)
-        .addFunction("GetTarget", &Skill::GetTarget)
-        .addFunction("AddRecharge", &Skill::AddRecharge)
+        .addFunction("GetName",      &Skill::_LuaGetName)
+        .addFunction("Disable",      &Skill::Disable)
+        .addFunction("Interrupt",    &Skill::Interrupt)
+        .addFunction("GetSource",    &Skill::GetSource)
+        .addFunction("GetTarget",    &Skill::GetTarget)
+        .addFunction("AddRecharge",  &Skill::AddRecharge)
         .addFunction("SetRecharged", &Skill::SetRecharged)
-        .addFunction("IsUsing", &Skill::IsUsing)
-        .addFunction("IsRecharged", &Skill::IsRecharged)
-        .addFunction("GetType", &Skill::_LuaGetType)
-        .addFunction("GetIndex", &Skill::_LuaGetIndex)
-        .addFunction("IsElite", &Skill::_LuaIsElite)
-        .addFunction("IsInRange", &Skill::IsInRange)
-        .addFunction("HasEffect", &Skill::HasEffect)
-        .addFunction("HasTarget", &Skill::HasTarget)
+        .addFunction("IsUsing",      &Skill::IsUsing)
+        .addFunction("IsRecharged",  &Skill::IsRecharged)
+        .addFunction("GetType",      &Skill::_LuaGetType)
+        .addFunction("GetIndex",     &Skill::_LuaGetIndex)
+        .addFunction("IsElite",      &Skill::_LuaIsElite)
+        .addFunction("IsInRange",    &Skill::IsInRange)
+        .addFunction("HasEffect",    &Skill::HasEffect)
+        .addFunction("HasTarget",    &Skill::HasTarget)
+        .addFunction("IsType",       &Skill::IsType)
     );
 }
 
@@ -71,12 +72,12 @@ void Skill::Update(uint32_t timeElapsed)
             auto source = source_.lock();
             auto target = target_.lock();
             // A Skill may even fail here, e.g. when resurrecting an already resurrected target
-            lastError_ = luaState_["onSuccess"](source, target);
+            lastError_ = luaState_["onSuccess"](source ? source.get() : nullptr, target ? target.get() : nullptr);
             startUse_ = 0;
             if (lastError_ != AB::GameProtocol::SkillErrorNone)
                 recharged_ = 0;
-            if (auto s = source_.lock())
-                s->OnEndUseSkill(this);
+            if (source)
+                source->OnEndUseSkill(this);
             source_.reset();
             target_.reset();
         }
@@ -111,7 +112,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     source_ = source;
     target_ = target;
 
-    lastError_ = luaState_["onStartUse"](source, target);
+    lastError_ = luaState_["onStartUse"](source ? source.get() : nullptr, target ? target.get() : nullptr);
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
     {
         startUse_ = 0;
@@ -129,14 +130,14 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
 
 void Skill::CancelUse()
 {
+    auto source = source_.lock();
     if (haveOnCancelled_)
     {
-        auto source = source_.lock();
         auto target = target_.lock();
-        luaState_["onCancelled"](source, target);
+        luaState_["onCancelled"](source ? source.get() : nullptr, target ? target.get() : nullptr);
     }
-    if (auto s = source_.lock())
-        s->OnEndUseSkill(this);
+    if (source)
+        source->OnEndUseSkill(this);
     startUse_ = 0;
     // No recharging when canceled
     recharged_ = 0;
@@ -146,25 +147,27 @@ void Skill::CancelUse()
 
 void Skill::Interrupt()
 {
+    auto source = source_.lock();
     if (haveOnInterrupted_)
     {
-        auto source = source_.lock();
         auto target = target_.lock();
-        luaState_["onInterrupted"](source, target);
+        luaState_["onInterrupted"](source ? source.get() : nullptr, target ? target.get() : nullptr);
     }
-    if (auto s = source_.lock())
-        s->OnEndUseSkill(this);
+    if (source)
+        source->OnEndUseSkill(this);
     startUse_ = 0;
     source_.reset();
     target_.reset();
     // recharged_ remains
 }
 
-bool Skill::IsInRange(std::shared_ptr<Actor> target)
+bool Skill::IsInRange(Actor* target)
 {
+    if (!target)
+        return false;
     if (auto s = source_.lock())
     {
-        return s->IsInRange(range_, target.get());
+        return s->IsInRange(range_, target);
     }
     return false;
 }

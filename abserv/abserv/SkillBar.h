@@ -23,14 +23,18 @@ private:
     int _LuaAddSkill(uint32_t skillIndex);
     std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const { return GetSkillsWithEffect(static_cast<SkillEffect>(effect)); }
     std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const { return GetSkillsWithTarget(static_cast<SkillTarget>(target)); }
+    Skill* _LuaGetSkill(uint32_t index);
 public:
     static void RegisterLua(kaguya::State& state);
 
-    SkillBar(Actor& owner) :
+    SkillBar() = delete;
+    explicit SkillBar(Actor& owner) :
         owner_(owner),
         currentSkillIndex_(-1)
-    {
-    };
+    { };
+    // non-copyable
+    SkillBar(const SkillBar&) = delete;
+    SkillBar& operator=(const SkillBar&) = delete;
     ~SkillBar() = default;
 
     /// 0 Based

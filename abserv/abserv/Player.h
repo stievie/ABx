@@ -21,7 +21,7 @@ private:
     std::unique_ptr<MailBox> mailBox_;
     std::unique_ptr<FriendList> friendList_;
     std::shared_ptr<Party> party_;
-    // The player owns the client. The client has a weak ref of the player.
+    // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
     std::shared_ptr<Net::ProtocolGame> client_;
 protected:
     friend class PlayerManager;

@@ -10,22 +10,22 @@ namespace Game {
 
 class Actor;
 
-enum SkillEffect : uint16_t
+enum SkillEffect
 {
-    SkillEffectNone = 0,
+    SkillEffectNone      = 0,
     SkillEffectResurrect = 1 << 1,
-    SkillEffectHeal = 1 << 2,
-    SkillEffectProtect = 1 << 3,
-    SkillEffectDamage = 1 << 4,
-    SkillEffectSpeed = 1 << 5,
+    SkillEffectHeal      = 1 << 2,
+    SkillEffectProtect   = 1 << 3,
+    SkillEffectDamage    = 1 << 4,
+    SkillEffectSpeed     = 1 << 5,
 };
 
-enum SkillTarget : uint16_t
+enum SkillTarget
 {
-    SkillTargetNone = 0,
-    SkillTargetSelf = 1 << 1,
-    SkillTargetTarget = 1 << 2,
-    SkillTargetAoe = 1 << 3,
+    SkillTargetNone    = 0,
+    SkillTargetSelf    = 1 << 1,
+    SkillTargetTarget  = 1 << 2,
+    SkillTargetAoe     = 1 << 3,
 };
 
 class Skill
@@ -38,10 +38,9 @@ private:
     Ranges range_;
     SkillEffect skillEffect_;
     SkillTarget effectTarget;
-    void InitializeLua();
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
-    // The real cos may be influenced by skills, armor, effects etc.
+    // The real cost may be influenced by skills, armor, effects etc.
     int16_t realEnergy_;
     int16_t realAdrenaline_;
     int16_t realActivation_;
@@ -51,10 +50,10 @@ private:
     bool haveOnInterrupted_;
     AB::GameProtocol::SkillError lastError_;
 
+    void InitializeLua();
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
-
     std::string _LuaGetName() const { return data_.name; }
 public:
     static void RegisterLua(kaguya::State& state);
@@ -82,6 +81,9 @@ public:
     {
         InitializeLua();
     }
+    // non-copyable
+    Skill(const Skill&) = delete;
+    Skill& operator=(const Skill&) = delete;
     ~Skill() = default;
 
     bool LoadScript(const std::string& fileName);
@@ -102,12 +104,12 @@ public:
     bool IsUsing() const { return (startUse_ != 0) && (Utils::AbTick() - startUse_ < activation_); }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
-    bool IsType(AB::Entities::SkillType type)
+    bool IsType(AB::Entities::SkillType type) const
     {
         return (data_.type & type) == type;
     }
     /// Does a skill change the creature state.
-    bool IsChangingState()
+    bool IsChangingState() const
     {
         return !IsType(AB::Entities::SkillTypeStance) &&
             !IsType(AB::Entities::SkillTypeFlashEnchantment) &&
@@ -115,7 +117,7 @@ public:
     }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
     bool HasTarget(SkillTarget t) const { return (effectTarget & t) == t; }
-    bool IsInRange(std::shared_ptr<Actor> target);
+    bool IsInRange(Actor* target);
     Actor* GetSource()
     {
         if (auto s = source_.lock())

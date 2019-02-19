@@ -36,7 +36,7 @@ Npc::Npc() :
     luaInitialized_(false),
     aiCharacter_(nullptr)
 {
-    // Party and GRoups must be unique
+    // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Party::GetNewId();
     InitializeLua();
 }
@@ -202,10 +202,15 @@ void Npc::Say(ChatType channel, const std::string& message)
         }
         break;
     }
-    case ChatType::Allies:
-        break;
     case ChatType::Party:
+    {
+        std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Party, GetGroupId());
+        if (ch)
+        {
+            ch->TalkNpc(this, message);
+        }
         break;
+    }
     }
 }
 

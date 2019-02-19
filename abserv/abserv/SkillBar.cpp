@@ -10,10 +10,18 @@
 
 namespace Game {
 
+Skill * SkillBar::_LuaGetSkill(uint32_t index)
+{
+    auto s = GetSkill(index);
+    if (s)
+        return s.get();
+    return nullptr;
+}
+
 void SkillBar::RegisterLua(kaguya::State& state)
 {
     state["SkillBar"].setClass(kaguya::UserdataMetatable<SkillBar>()
-        .addFunction("GetSkill", &SkillBar::GetSkill)
+        .addFunction("GetSkill", &SkillBar::_LuaGetSkill)
         .addFunction("GetCurrentSkill", &SkillBar::GetCurrentSkill)
         .addFunction("UseSkill", &SkillBar::UseSkill)
         .addFunction("GetSkillsWithEffect", &SkillBar::_LuaGetSkillsWithEffect)

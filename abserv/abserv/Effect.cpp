@@ -41,11 +41,13 @@ void Effect::Update(uint32_t timeElapsed)
     if (endTime_ == 0)
         return;
 
+    auto source = source_.lock();
+    auto target = target_.lock();
     if (haveUpdate_)
-        luaState_["onUpdate"](source_.lock(), target_.lock(), timeElapsed);
+        luaState_["onUpdate"](source ? source.get() : nullptr, target ? target.get() : nullptr, timeElapsed);
     if (endTime_ <= Utils::AbTick())
     {
-        luaState_["onEnd"](source_.lock(), target_.lock());
+        luaState_["onEnd"](source ? source.get() : nullptr, target ? target.get() : nullptr);
         ended_ = true;
     }
 }
@@ -55,9 +57,9 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
     target_ = target;
     source_ = source;
     startTime_ = Utils::AbTick();
-    ticks_ = luaState_["getDuration"](source_.lock(), target_.lock());
+    ticks_ = luaState_["getDuration"](source ? source.get() : nullptr, target ? target.get() : nullptr);
     endTime_ = startTime_ + ticks_;
-    bool succ = luaState_["onStart"](source_.lock(), target_.lock());
+    bool succ = luaState_["onStart"](source ? source.get() : nullptr, target ? target.get() : nullptr);
     if (!succ)
     {
         endTime_ = 0;
@@ -68,7 +70,9 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 void Effect::Remove()
 {
     // The Effect was removed before it ended
-    luaState_["onRemove"](source_.lock(), target_.lock());
+    auto source = source_.lock();
+    auto target = target_.lock();
+    luaState_["onRemove"](source ? source.get() : nullptr, target ? target.get() : nullptr);
     cancelled_ = true;
 }
 
