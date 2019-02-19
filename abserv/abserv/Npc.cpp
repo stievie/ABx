@@ -125,8 +125,8 @@ void Npc::Shutdown()
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onUpdate"))
-        luaState_["onUpdate"](timeElapsed);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
 }
 
 bool Npc::Die()
@@ -134,8 +134,8 @@ bool Npc::Die()
     bool res = Actor::Die();
     if (res)
     {
-        if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onDied"))
-            luaState_["onDied"]();
+        if (luaInitialized_)
+            ScriptManager::CallFunction(luaState_, "onDied");
     }
     return res;
 }
@@ -145,8 +145,8 @@ bool Npc::Resurrect(int16_t precentHealth, int16_t percentEnergy)
     bool res = Actor::Resurrect(precentHealth, percentEnergy);
     if (res)
     {
-        if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onResurrected"))
-            luaState_["onResurrected"]();
+        if (luaInitialized_)
+            ScriptManager::CallFunction(luaState_, "onResurrected");
     }
     return res;
 }
@@ -200,18 +200,14 @@ void Npc::Say(ChatType channel, const std::string& message)
     {
         std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Map, static_cast<uint64_t>(GetGame()->id_));
         if (ch)
-        {
             ch->TalkNpc(this, message);
-        }
         break;
     }
     case ChatType::Party:
     {
         std::shared_ptr<ChatChannel> ch = GetSubsystem<Chat>()->Get(ChatType::Party, GetGroupId());
         if (ch)
-        {
             ch->TalkNpc(this, message);
-        }
         break;
     }
     }
@@ -220,8 +216,8 @@ void Npc::Say(ChatType channel, const std::string& message)
 void Npc::OnSelected(Actor* selector)
 {
     Actor::OnSelected(selector);
-    if (luaInitialized_ && selector && ScriptManager::IsFunction(luaState_, "onSelected"))
-        luaState_["onSelected"](selector);
+    if (luaInitialized_ && selector)
+        ScriptManager::CallFunction(luaState_, "onSelected", selector);
 }
 
 void Npc::OnClicked(Actor* selector)
@@ -259,8 +255,8 @@ void Npc::OnTrigger(Actor* other)
     int64_t lasTrigger = triggered_[other->id_];
     if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)
     {
-        if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onTrigger"))
-            luaState_["onTrigger"](other);
+        if (luaInitialized_)
+            ScriptManager::CallFunction(luaState_, "onTrigger", other);
     }
     triggered_[other->id_] = tick;
 
@@ -278,16 +274,16 @@ void Npc::OnEndUseSkill(Skill* skill)
 {
     Actor::OnEndUseSkill(skill);
 
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onEndUseSkill"))
-        luaState_["onEndUseSkill"](skill);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onEndUseSkill", skill);
 }
 
 void Npc::OnStartUseSkill(Skill* skill)
 {
     Actor::OnStartUseSkill(skill);
 
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onStartUseSkill"))
-        luaState_["onStartUseSkill"](skill);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onStartUseSkill", skill);
 }
 
 }

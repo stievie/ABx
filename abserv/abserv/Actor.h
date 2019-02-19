@@ -44,9 +44,9 @@ private:
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
+    void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;
-    /// Actors in range, stores actor ID
     std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
 
     /// Time in ms the same Actor can retrigger
@@ -56,7 +56,8 @@ protected:
     bool trigger_;
     Math::Vector3 homePos_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& command, Net::NetworkMessage& message) {
+        const std::string& command, Net::NetworkMessage& message)
+    {
         AB_UNUSED(type);
         AB_UNUSED(command);
         AB_UNUSED(message);
@@ -67,7 +68,6 @@ public:
 
     Actor();
 
-    void UpdateRanges();
     void SetGame(std::shared_ptr<Game> game) override
     {
         GameObject::SetGame(game);
@@ -103,6 +103,7 @@ public:
     template<typename Func>
     void VisitInRange(Ranges range, Func&& func)
     {
+        // May be called from the AI thread so lock it
         std::lock_guard<std::mutex> lock(lock_);
         for (const auto o : ranges_[range])
         {
@@ -116,7 +117,6 @@ public:
             return false;
         if (range == Ranges::Map)
             return true;
-        std::lock_guard<std::mutex> lock(lock_);
         for (const auto& o : ranges_[range])
         {
             if (auto so = o.lock())

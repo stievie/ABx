@@ -56,6 +56,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 
     if (GetSubsystem<Auth::BanManager>()->IsAccountBanned(accountUuid))
     {
+        LOG_INFO << "Login attempt from banned account " << accountUuid.to_string() << std::endl;
         DisconnectClient(AB::Errors::AccountBanned);
         return;
     }
@@ -64,6 +65,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 
     if (!IO::IOPlayer::LoadPlayerByUuid(player.get(), playerUuid))
     {
+        LOG_ERROR << "Error loading player " << playerUuid << std::endl;
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
@@ -74,6 +76,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     g.uuid = mapUuid;
     if (!client->Read(g))
     {
+        LOG_ERROR << "Invalid game with map " << mapUuid << std::endl;
         DisconnectClient(AB::Errors::InvalidGame);
         return;
     }
@@ -323,6 +326,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     const std::string accountUuid = msg.GetString();
     if (accountUuid.empty())
     {
+        LOG_ERROR << "Invalid account " << accountUuid << std::endl;
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
@@ -331,8 +335,10 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     const std::string map = msg.GetString();
     const std::string instance = msg.GetString();
 
-    if (GetSubsystem<Auth::BanManager>()->IsIpBanned(GetIP()))
+    const uint32_t ip = GetIP();
+    if (GetSubsystem<Auth::BanManager>()->IsIpBanned(ip))
     {
+        LOG_ERROR << "Connection attempt from banned IP " << Utils::ConvertIPToString(ip, true) << std::endl;
         DisconnectClient(AB::Errors::IPBanned);
         return;
     }
@@ -418,6 +424,8 @@ void ProtocolGame::EnterGame()
             instance->PlayerJoin(player->id_);
             success = true;
         }
+        else
+            LOG_ERROR << "Game instance not found " << player->data_.instanceUuid << std::endl;
     }
     else if (gameMan->AddPlayer(player->data_.currentMapUuid, player->GetThis()))
     {
@@ -457,11 +465,10 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::GameProtocol::ChangeInstance);
-    output->AddString(ProtocolGame::serverId_);
-    output->AddString(mapUuid);
-    output->AddString(instanceUuid);
-
-    output->AddString(player->data_.uuid);
+    output->AddString(ProtocolGame::serverId_);  // Server UUID
+    output->AddString(mapUuid);                  // Map UUID
+    output->AddString(instanceUuid);             // Instance UUID
+    output->AddString(player->data_.uuid);       // Character UUID
     Send(output);
 }
 
