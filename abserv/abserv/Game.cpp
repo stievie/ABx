@@ -494,7 +494,6 @@ void Game::PlayerJoin(uint32_t playerId)
 void Game::PlayerLeave(uint32_t playerId)
 {
     Player* player = GetPlayerById(playerId);
-//    std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerById(playerId);
     if (player)
     {
         std::lock_guard<std::recursive_mutex> lockClass(lock_);

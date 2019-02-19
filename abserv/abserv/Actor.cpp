@@ -196,11 +196,11 @@ void Actor::_LuaFollowObject(GameObject* object)
 std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
 {
     std::vector<Actor*> result;
-    VisitInRange(range, [&](GameObject* const o)
+    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
     {
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
-            result.push_back(dynamic_cast<Actor*>(o));
+            result.push_back(dynamic_cast<Actor*>(o.get()));
     });
     return result;
 }
@@ -351,28 +351,29 @@ void Actor::UpdateRanges()
         {
             if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
             {
+                auto so = o->shared_from_this();
                 Math::Vector3 objectPos = o->GetPosition();
                 Math::Vector3 myPos = GetPosition();
                 if (myPos.Distance(objectPos) <= RANGE_AGGRO)
-                    ranges_[Ranges::Aggro].push_back(o);
+                    ranges_[Ranges::Aggro].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_COMPASS)
-                    ranges_[Ranges::Compass].push_back(o);
+                    ranges_[Ranges::Compass].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_SPIRIT)
-                    ranges_[Ranges::Spirit].push_back(o);
+                    ranges_[Ranges::Spirit].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_EARSHOT)
-                    ranges_[Ranges::Earshot].push_back(o);
+                    ranges_[Ranges::Earshot].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_CASTING)
-                    ranges_[Ranges::Casting].push_back(o);
+                    ranges_[Ranges::Casting].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_PROJECTILE)
-                    ranges_[Ranges::Projectile].push_back(o);
+                    ranges_[Ranges::Projectile].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_HALF)
-                    ranges_[Ranges::HalfCompass].push_back(o);
+                    ranges_[Ranges::HalfCompass].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_TOUCH)
-                    ranges_[Ranges::Touch].push_back(o);
+                    ranges_[Ranges::Touch].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_ADJECENT)
-                    ranges_[Ranges::Adjecent].push_back(o);
+                    ranges_[Ranges::Adjecent].push_back(so);
                 if (myPos.Distance(objectPos) <= RANGE_VISIBLE)
-                    ranges_[Ranges::Visible].push_back(o);
+                    ranges_[Ranges::Visible].push_back(so);
             }
         }
     }

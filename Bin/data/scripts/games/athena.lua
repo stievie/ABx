@@ -64,12 +64,16 @@ function onRemoveObject(object)
 end
 
 function onPlayerJoin(player)
-  player:AddEffect(empty, 1000)
+  if (player ~= nil) then
+    player:AddEffect(empty, 1000)
+  end
 --  print("Player joined: " .. player:GetName())
 end
 
 function onPlayerLeave(player)
-  player:RemoveEffect(1000)
+  if (player ~= nil) then
+    player:RemoveEffect(1000)
+  end
 --  print("Player left: " .. player:GetName())
 end
 

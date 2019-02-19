@@ -24,12 +24,17 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 
 void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
+    ai::AggroMgr& aggro = owner_.GetAi()->getAggroMgr();
+    auto game = owner_.GetGame();
     // https://github.com/mgerhardy/engine/blob/a3ebd511c9009f8b58937599df03d86ed6efdbf1/src/modules/backend/entity/ai/AICharacter.cpp
-    owner_.VisitInRange(Game::Ranges::Aggro, [&](Game::GameObject* e)
+    owner_.VisitInRange(Game::Ranges::Aggro, [&](const std::shared_ptr<Game::GameObject>& o)
     {
-        ai::AggroMgr& aggro = owner_.GetAi()->getAggroMgr();
-        float aggroValue = owner_.GetAggro(dynamic_cast<Game::Actor*>(e));
-        aggro.addAggro(e->id_, aggroValue);
+        auto a = o->GetThisDynamic<Game::Actor>();
+        if (a)
+        {
+            float aggroValue = owner_.GetAggro(a.get());
+            aggro.addAggro(a->id_, aggroValue);
+        }
     });
 
     Super::update(deltaTime, debuggingActive);

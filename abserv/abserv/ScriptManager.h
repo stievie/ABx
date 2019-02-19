@@ -37,6 +37,14 @@ public:
     {
         return state[name].type() == LUA_TNIL;
     }
+    template<typename... _CArgs>
+    static void CallFunction(kaguya::State& state, const std::string& name, _CArgs&&... _Args)
+    {
+        if (IsFunction(state, name))
+        {
+            state[name](std::forward<_CArgs>(_Args)...);
+        }
+    }
 };
 
 }

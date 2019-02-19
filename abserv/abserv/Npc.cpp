@@ -183,6 +183,9 @@ bool Npc::SetBehaviour(const std::string& name)
 
 float Npc::GetAggro(Actor* other)
 {
+    if (!other)
+        return 0.0f;
+
     auto random = GetSubsystem<Crypto::Random>();
     float dist = GetPosition().Distance(other->GetPosition());
     float rval = random->GetFloat();
@@ -224,23 +227,23 @@ void Npc::OnSelected(Actor* selector)
 void Npc::OnClicked(Actor* selector)
 {
     Actor::OnSelected(selector);
-    if (luaInitialized_ && selector && ScriptManager::IsFunction(luaState_, "onClicked"))
-        luaState_["onClicked"](selector);
+    if (luaInitialized_ && selector)
+        ScriptManager::CallFunction(luaState_, "onClicked", selector);
 }
 
 void Npc::OnArrived()
 {
     Actor::OnArrived();
-    if (luaInitialized_ && ScriptManager::IsFunction(luaState_, "onArrived"))
-        luaState_["onArrived"]();
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onArrived");
 }
 
 void Npc::OnCollide(Actor* other)
 {
     Actor::OnCollide(other);
 
-    if (luaInitialized_ && other && ScriptManager::IsFunction(luaState_, "onCollide"))
-        luaState_["onCollide"](other);
+    if (luaInitialized_ && other)
+        ScriptManager::CallFunction(luaState_, "onCollide", other);
 
     if (trigger_ && other)
         OnTrigger(other);

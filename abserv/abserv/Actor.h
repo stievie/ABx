@@ -44,11 +44,10 @@ private:
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
-
-    void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;
-    std::map<Ranges, std::vector<GameObject*>> ranges_;
+    /// Actors in range, stores actor ID
+    std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
 
     /// Time in ms the same Actor can retrigger
     uint32_t retriggerTimeout_;
@@ -68,6 +67,7 @@ public:
 
     Actor();
 
+    void UpdateRanges();
     void SetGame(std::shared_ptr<Game> game) override
     {
         GameObject::SetGame(game);
@@ -105,7 +105,10 @@ public:
     {
         std::lock_guard<std::mutex> lock(lock_);
         for (const auto o : ranges_[range])
-            func(o);
+        {
+            if (auto so = o.lock())
+                func(so);
+        }
     }
     bool IsInRange(Ranges range, Actor* actor)
     {
@@ -115,8 +118,13 @@ public:
             return true;
         std::lock_guard<std::mutex> lock(lock_);
         for (const auto& o : ranges_[range])
-            if (o->id_ == actor->id_)
-                return true;
+        {
+            if (auto so = o.lock())
+            {
+                if (so->id_ == actor->id_)
+                    return true;
+            }
+        }
         return false;
     }
     virtual void OnEndUseSkill(Skill* skill);
