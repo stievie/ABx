@@ -25,7 +25,6 @@ AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
 void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
     ai::AggroMgr& aggro = owner_.GetAi()->getAggroMgr();
-    auto game = owner_.GetGame();
     // https://github.com/mgerhardy/engine/blob/a3ebd511c9009f8b58937599df03d86ed6efdbf1/src/modules/backend/entity/ai/AICharacter.cpp
     owner_.VisitInRange(Game::Ranges::Aggro, [&](const std::shared_ptr<Game::GameObject>& o)
     {
