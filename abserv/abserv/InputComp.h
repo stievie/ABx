@@ -13,6 +13,9 @@ class InputComp
 private:
     Actor& owner_;
     InputQueue inputs_;
+    void SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message);
+    void ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message);
+    void FollowObject(uint32_t targetId, Net::NetworkMessage& message);
 public:
     explicit InputComp(Actor& owner) :
         owner_(owner),

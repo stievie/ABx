@@ -6,6 +6,74 @@
 namespace Game {
 namespace Components {
 
+void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message)
+{
+    Actor* source = nullptr;
+    if (sourceId == owner_.id_)
+        source = &owner_;
+    else
+        source = dynamic_cast<Actor*>(owner_.GetGame()->GetObjectById(sourceId).get());
+
+    if (source)
+    {
+        if (targetId != source->GetSelectedObjectId())
+        {
+            source->selectedObject_ = owner_.GetGame()->GetObjectById(targetId);
+            message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+            message.Add<uint32_t>(source->id_);
+            if (auto sel = source->selectedObject_.lock())
+            {
+                sel->OnSelected(source);
+                message.Add<uint32_t>(sel->id_);
+            }
+            else
+                // Clear Target
+                message.Add<uint32_t>(0);
+        }
+    }
+}
+
+void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage&)
+{
+    Actor* source = nullptr;
+    if (sourceId == owner_.id_)
+        source = &owner_;
+    else
+        source = dynamic_cast<Actor*>(owner_.GetGame()->GetObjectById(sourceId).get());
+
+    if (source)
+    {
+        auto clickedObj = owner_.GetGame()->GetObjectById(targetId);
+        if (clickedObj)
+        {
+            clickedObj->OnClicked(source);
+        }
+    }
+}
+
+void InputComp::FollowObject(uint32_t targetId, Net::NetworkMessage&)
+{
+    if (!owner_.IsDead())
+    {
+        owner_.followedObject_ = owner_.GetGame()->GetObjectById(targetId);
+        if (auto f = owner_.followedObject_.lock())
+        {
+            bool succ = owner_.autorunComp_.Follow(f);
+            if (succ)
+            {
+                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                owner_.autorunComp_.autoRun_ = true;
+            }
+        }
+#ifdef DEBUG_NAVIGATION
+        else
+        {
+            LOG_WARNING << "InputType::Follow: object with ID not found: " << targetId << std::endl;
+        }
+#endif
+    }
+}
+
 void InputComp::Update(uint32_t, Net::NetworkMessage& message)
 {
     InputItem input;
@@ -95,26 +163,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Follow:
         {
-            if (!owner_.IsDead())
-            {
-                uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
-                owner_.followedObject_ = owner_.GetGame()->GetObjectById(targetId);
-                if (auto f = owner_.followedObject_.lock())
-                {
-                    bool succ = owner_.autorunComp_.Follow(f);
-                    if (succ)
-                    {
-                        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                        owner_.autorunComp_.autoRun_ = true;
-                    }
-                }
-#ifdef DEBUG_NAVIGATION
-                else
-                {
-                    LOG_WARNING << "InputType::Follow: object with ID not found: " << targetId << std::endl;
-                }
-#endif
-            }
+            uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
+            FollowObject(targetId, message);
             break;
         }
         case InputType::Attack:
@@ -139,30 +189,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             // targets for this NPC, so we also need the source ID.
             uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
-
-            Actor* source = nullptr;
-            if (sourceId == owner_.id_)
-                source = &owner_;
-            else
-                source = dynamic_cast<Actor*>(owner_.GetGame()->GetObjectById(sourceId).get());
-
-            if (source)
-            {
-                if (targetId != source->GetSelectedObjectId())
-                {
-                    source->selectedObject_ = owner_.GetGame()->GetObjectById(targetId);
-                    message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-                    message.Add<uint32_t>(source->id_);
-                    if (auto sel = source->selectedObject_.lock())
-                    {
-                        sel->OnSelected(source);
-                        message.Add<uint32_t>(sel->id_);
-                    }
-                    else
-                        // Clear Target
-                        message.Add<uint32_t>(0);
-                }
-            }
+            SelectObject(sourceId, targetId, message);
             break;
         }
         case InputType::ClickObject:
@@ -171,21 +198,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             // targets for this NPC, so we also need the source ID.
             uint32_t sourceId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId2].GetInt());
-
-            Actor* source = nullptr;
-            if (sourceId == owner_.id_)
-                source = &owner_;
-            else
-                source = dynamic_cast<Actor*>(owner_.GetGame()->GetObjectById(sourceId).get());
-
-            if (source)
-            {
-                auto clickedObj = owner_.GetGame()->GetObjectById(targetId);
-                if (clickedObj)
-                {
-                    clickedObj->OnClicked(source);
-                }
-            }
+            ClickObject(sourceId, targetId, message);
             break;
         }
         case InputType::Cancel:
