@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "Xml.h"
 
-std::string Utils::XML::Escape(const std::string& content)
+namespace Utils {
+namespace XML {
+
+std::string Escape(const std::string& content)
 {
     std::string result;
     result.reserve(content.size());
@@ -9,9 +12,12 @@ std::string Utils::XML::Escape(const std::string& content)
     return (result);
 }
 
-void Utils::XML::Escape(std::istream& in, std::ostream& out)
+void Escape(std::istream& in, std::ostream& out)
 {
     Escape(std::istreambuf_iterator<char>(in),
         std::istreambuf_iterator<char>(),
         std::ostreambuf_iterator<char>(out));
+}
+
+}
 }

@@ -320,9 +320,6 @@ void Connection::CloseSocket()
 {
     if (socket_.is_open())
     {
-#ifdef DEBUG_NET
-        LOG_DEBUG << "Closing socket" << std::endl;
-#endif
         readTimer_.cancel();
         writeTimer_.cancel();
         asio::error_code err;
@@ -340,12 +337,9 @@ void Connection::CloseSocket()
 std::shared_ptr<Connection> ConnectionManager::CreateConnection(
     asio::io_service& ioService, std::shared_ptr<ServicePort> servicer)
 {
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Creating connection" << std::endl;
-#endif
     if (connections_.size() >= SERVER_MAX_CONNECTIONS)
     {
-        LOG_ERROR << "To many connections" << std::endl;
+        LOG_ERROR << "Too many connections" << std::endl;
         return std::shared_ptr<Connection>();
     }
 
@@ -360,24 +354,15 @@ std::shared_ptr<Connection> ConnectionManager::CreateConnection(
 
 void ConnectionManager::ReleaseConnection(std::shared_ptr<Connection> connection)
 {
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Releasing connection" << std::endl;
-#endif
     std::lock_guard<std::mutex> lockClass(lock_);
     connections_.erase(connection);
 }
 
 void ConnectionManager::CloseAll()
 {
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Closing all connections" << std::endl;
-#endif
-
     std::lock_guard<std::mutex> lockClass(lock_);
     for (const auto& conn : connections_)
-    {
         conn->CloseSocket();
-    }
     connections_.clear();
 }
 

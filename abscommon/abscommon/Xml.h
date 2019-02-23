@@ -8,9 +8,8 @@ namespace XML {
 template<typename InIter, typename OutIter>
 OutIter CopyAsciiz(InIter begin, OutIter out)
 {
-    while (*begin != '\0') {
+    while (*begin != '\0')
         *out++ = *begin++;
-    }
     return (out);
 }
 
@@ -19,9 +18,9 @@ OutIter CopyAsciiz(InIter begin, OutIter out)
 template<typename InIter, typename OutIter>
 OutIter Escape(InIter begin, InIter end, OutIter out)
 {
-    static const char bad[] = "&<>";
-    static const char* rep[] = { "&amp;", "&lt;", "&gt;" };
-    static const std::size_t n = sizeof(bad) / sizeof(bad[0]);
+    constexpr char bad[] = "&<>";
+    constexpr const char* rep[] = { "&amp;", "&lt;", "&gt;" };
+    constexpr std::size_t n = sizeof(bad) / sizeof(bad[0]);
 
     for (; (begin != end); ++begin)
     {
@@ -30,13 +29,11 @@ OutIter Escape(InIter begin, InIter end, OutIter out)
             std::distance(bad, std::find(bad, bad + n, *begin));
 
         // No need for escaping.
-        if (i == n) {
+        if (i == n)
             *out++ = *begin;
-        }
         // Escape the character.
-        else {
+        else
             out = CopyAsciiz(rep[i], out);
-        }
     }
     return (out);
 }
