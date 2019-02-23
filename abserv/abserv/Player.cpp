@@ -707,6 +707,8 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
 {
     if (client_)
         client_->ChangeInstance(mapUuid, instanceUuid);
+    else
+        LOG_ERROR << "Client null" << std::endl;
 }
 
 void Player::RegisterLua(kaguya::State& state)

@@ -34,16 +34,8 @@ public:
         encryptionEnabled_(false)
     {
     }
-#if defined(_DEBUG)
-    virtual ~Protocol()
-    {
-#ifdef DEBUG_NET
-        LOG_DEBUG << "Protocol::~Protocol()" << std::endl;
-#endif
-    }
-#else
     virtual ~Protocol() = default;
-#endif
+
     Protocol(const Protocol&) = delete;
     Protocol& operator=(const Protocol&) = delete;
 

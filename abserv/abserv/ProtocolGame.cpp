@@ -377,9 +377,12 @@ void ProtocolGame::DisconnectClient(uint8_t error)
 void ProtocolGame::Connect()
 {
     if (IsConnectionExpired())
+    {
         // ProtocolGame::release() has been called at this point and the Connection object
         // no longer exists, so we return to prevent leakage of the Player.
+        LOG_ERROR << "Connection expired" << std::endl;
         return;
+    }
     auto player = player_.lock();
     if (!player)
     {

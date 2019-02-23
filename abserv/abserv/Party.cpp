@@ -192,21 +192,12 @@ bool Party::IsLeader(Player* player) const
     if (members_.size() == 0)
         return false;
     if (auto p = members_[0].lock())
-        // Must use UUID because IDs are not the same as from the last game
-        return p->data_.uuid.compare(player->data_.uuid) == 0;
+        return p->id_ == player->id_;
     return false;
 }
 
 uint8_t Party::GetPosition(Actor* actor)
 {
-    Player* p = dynamic_cast<Player*>(actor);
-    if (p)
-    {
-        uint8_t dataPos = static_cast<uint8_t>(GetDataPos(p));
-        if (dataPos != 0)
-            return dataPos;
-    }
-
     for (size_t i = 0; i < members_.size(); ++i)
     {
         if (auto sm = members_[i].lock())
