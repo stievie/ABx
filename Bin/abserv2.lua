@@ -18,5 +18,4 @@ base_port = 2749 + 1
 require("config/server")
 require("config/login")
 require("config/mechanics")
-require("config/admin")
 require("config/msg_server")

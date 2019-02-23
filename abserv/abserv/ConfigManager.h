@@ -30,12 +30,6 @@ public:
 
         MaxPacketsPerSecond,
 
-        AdminEnabled,
-        AdminRequireLogin,
-        AdminLocalhostOnly,
-        AdminRequireEncryption,
-        AdminPassword,
-
         LoginTries,
         LoginTimeout,
         LoginRetryTimeout,
