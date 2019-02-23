@@ -38,9 +38,6 @@ public:
     explicit ProtocolGame(std::shared_ptr<Connection> connection) :
         Protocol(connection)
     {
-#ifdef DEBUG_NET
-        LOG_DEBUG << "ProtocolGame::ProtocolGame()" << std::endl;
-#endif
         checksumEnabled_ = ProtocolGame::UseChecksum;
         encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
         // TODO:

@@ -150,7 +150,7 @@ public:
         return 0;
     }
     virtual uint32_t GetGroupId() const { return 0u; }
-    virtual uint8_t GetGroupPos() { return 0u; }
+    virtual size_t GetGroupPos() { return 0u; }
     uint32_t GetProfIndex() const
     {
         return skills_->prof1_.index;

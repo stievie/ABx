@@ -72,7 +72,8 @@ void Effect::Remove()
     // The Effect was removed before it ended
     auto source = source_.lock();
     auto target = target_.lock();
-    luaState_["onRemove"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+    ScriptManager::CallFunction(luaState_, "onRemove",
+        source ? source.get() : nullptr, target ? target.get() : nullptr);
     cancelled_ = true;
 }
 

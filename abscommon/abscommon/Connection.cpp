@@ -77,9 +77,6 @@ void Connection::OnWriteOperation(const asio::error_code& error)
 
 void Connection::Close(bool force /* = false */)
 {
-#ifdef DEBUG_NET
-    LOG_DEBUG << "Closing connection" << std::endl;
-#endif
     auto connMngr = GetSubsystem<ConnectionManager>();
     if (!connMngr)
     {

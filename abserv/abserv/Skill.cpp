@@ -134,7 +134,8 @@ void Skill::CancelUse()
     if (haveOnCancelled_)
     {
         auto target = target_.lock();
-        luaState_["onCancelled"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+        ScriptManager::CallFunction(luaState_, "onCancelled",
+            source ? source.get() : nullptr, target ? target.get() : nullptr);
     }
     if (source)
         source->OnEndUseSkill(this);
@@ -151,7 +152,8 @@ void Skill::Interrupt()
     if (haveOnInterrupted_)
     {
         auto target = target_.lock();
-        luaState_["onInterrupted"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+        ScriptManager::CallFunction(luaState_, "onInterrupted",
+            source ? source.get() : nullptr, target ? target.get() : nullptr);
     }
     if (source)
         source->OnEndUseSkill(this);

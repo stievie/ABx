@@ -41,7 +41,7 @@ void Player::SetGame(std::shared_ptr<Game> game)
     }
 }
 
-uint8_t Player::GetGroupPos()
+size_t Player::GetGroupPos()
 {
     return party_->GetPosition(this);
 }
@@ -60,8 +60,6 @@ void Player::Logout()
     if (auto g = GetGame())
         g->PlayerLeave(id_);
     client_->Logout();
-//    if (auto c = client_.lock())
-//        c->Logout();
 }
 
 void Player::Ping()
@@ -77,9 +75,7 @@ void Player::UpdateMailBox()
     if (!mailBox_ && !data_.accountUuid.empty() && !uuids::uuid(data_.accountUuid).nil())
         mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
     if (mailBox_)
-    {
         mailBox_->Update();
-    }
 }
 
 void Player::GetMailHeaders()
@@ -201,12 +197,8 @@ void Player::WriteToOutput(const Net::NetworkMessage& message)
 {
     if (client_)
         client_->WriteToOutput(message);
-#ifdef DEBUG_GAME
     else
         LOG_ERROR << "client_ expired" << std::endl;
-#endif
-//    if (auto c = client_.lock())
-//        c->WriteToOutput(message);
 }
 
 void Player::SetParty(std::shared_ptr<Party> party)
@@ -566,18 +558,14 @@ void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMess
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Guild, account_.guildUuid);
     if (channel)
-    {
         channel->Talk(this, command);
-    }
 }
 
 void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Trade, 0);
     if (channel)
-    {
         channel->Talk(this, command);
-    }
 }
 
 void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
@@ -651,9 +639,7 @@ void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
 void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
 {
     if (account_.type >= AB::Entities::AccountTypeGamemaster)
-    {
         Die();
-    }
     else
     {
         Net::NetworkMessage nmsg;
@@ -669,18 +655,14 @@ void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMe
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Map, GetGame()->id_);
     if (channel)
-    {
         channel->Talk(this, command);
-    }
 }
 
 void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->id_);
     if (channel)
-    {
         channel->Talk(this, command);
-    }
 }
 
 void Player::ChangeMap(const std::string mapUuid)
@@ -693,13 +675,15 @@ void Player::ChangeMap(const std::string mapUuid)
     if (!party)
         return;
 
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
+    auto game = GetGame();
+    if (game && game->data_.type != AB::Entities::GameTypeOutpost)
     {
         // The player leaves the party and changes the instance
         PartyLeave();
         party = GetParty();
     }
     if (party->IsLeader(this))
+        // If we are the leader tell all members to change the instance.
         party->ChangeInstance(mapUuid);
 }
 
@@ -708,7 +692,7 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
     if (client_)
         client_->ChangeInstance(mapUuid, instanceUuid);
     else
-        LOG_ERROR << "Client null" << std::endl;
+        LOG_ERROR << "client_ = null" << std::endl;
 }
 
 void Player::RegisterLua(kaguya::State& state)
