@@ -64,7 +64,6 @@ bool IOAccount::AccountLogout(const std::string& uuid)
         LOG_ERROR << "Error reading account " << uuid << std::endl;
         return false;
     }
-    LOG_INFO << acc.name << " logged out" << std::endl;
     acc.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOffline;
     return client->Update(acc);
 }
