@@ -21,6 +21,7 @@ bin
 *.lib
 *.res
 *.cache
+*.layout
 
 # Precompiled header files
 *.gch/
