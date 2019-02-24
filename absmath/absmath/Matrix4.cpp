@@ -42,16 +42,28 @@ Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
 {
 #if defined(HAVE_DIRECTX_MATH)
     // Row major
-    m_[Index00] = matrix.r[0].m128_f32[0]; m_[Index01] = matrix.r[0].m128_f32[1]; m_[Index02] = matrix.r[0].m128_f32[2]; m_[Index03] = matrix.r[0].m128_f32[3];
-    m_[Index10] = matrix.r[1].m128_f32[0]; m_[Index11] = matrix.r[1].m128_f32[1]; m_[Index12] = matrix.r[1].m128_f32[2]; m_[Index13] = matrix.r[1].m128_f32[3];
-    m_[Index20] = matrix.r[2].m128_f32[0]; m_[Index21] = matrix.r[2].m128_f32[1]; m_[Index22] = matrix.r[2].m128_f32[2]; m_[Index23] = matrix.r[2].m128_f32[3];
-    m_[Index30] = matrix.r[3].m128_f32[0]; m_[Index31] = matrix.r[3].m128_f32[1]; m_[Index32] = matrix.r[3].m128_f32[2]; m_[Index33] = matrix.r[3].m128_f32[3];
+#   define XMMG(m, i) (XMath::XMVectorGetByIndex(m, i))
+    const XMath::XMVECTOR& row0 = matrix.r[0];
+    const XMath::XMVECTOR& row1 = matrix.r[1];
+    const XMath::XMVECTOR& row2 = matrix.r[2];
+    const XMath::XMVECTOR& row3 = matrix.r[3];
+    m_[Index00] = XMMG(row0, 0); m_[Index01] = XMMG(row0, 1); m_[Index02] = XMMG(row0, 2); m_[Index03] = XMMG(row0, 3);
+    m_[Index10] = XMMG(row1, 0); m_[Index11] = XMMG(row1, 1); m_[Index12] = XMMG(row1, 2); m_[Index13] = XMMG(row1, 3);
+    m_[Index20] = XMMG(row2, 0); m_[Index21] = XMMG(row2, 1); m_[Index22] = XMMG(row2, 2); m_[Index23] = XMMG(row2, 3);
+    m_[Index30] = XMMG(row3, 0); m_[Index31] = XMMG(row3, 1); m_[Index32] = XMMG(row3, 2); m_[Index33] = XMMG(row3, 3);
+#   undef XMMG
 #elif defined(HAVE_X_MATH)
     // Col major
-    m_[Index00] = matrix.c[0].m128_f32[0]; m_[Index01] = matrix.c[1].m128_f32[0]; m_[Index02] = matrix.c[2].m128_f32[0]; m_[Index03] = matrix.c[3].m128_f32[0];
-    m_[Index10] = matrix.c[0].m128_f32[1]; m_[Index11] = matrix.c[1].m128_f32[1]; m_[Index12] = matrix.c[2].m128_f32[1]; m_[Index13] = matrix.c[3].m128_f32[1];
-    m_[Index20] = matrix.c[0].m128_f32[2]; m_[Index21] = matrix.c[1].m128_f32[2]; m_[Index22] = matrix.c[2].m128_f32[2]; m_[Index23] = matrix.c[3].m128_f32[2];
-    m_[Index30] = matrix.c[0].m128_f32[3]; m_[Index31] = matrix.c[1].m128_f32[3]; m_[Index32] = matrix.c[2].m128_f32[3]; m_[Index33] = matrix.c[3].m128_f32[3];
+#   define XMMG(m, i) (XMath::XMVectorGetByIndex(m, i))
+    const XMath::XMVECTOR& row0 = matrix.c[0];
+    const XMath::XMVECTOR& row1 = matrix.c[1];
+    const XMath::XMVECTOR& row2 = matrix.c[2];
+    const XMath::XMVECTOR& row3 = matrix.c[3];
+    m_[Index00] = XMMG(row0, 0); m_[Index01] = XMMG(row1, 0); m_[Index02] = XMMG(row2, 0); m_[Index03] = XMMG(row3, 0);
+    m_[Index10] = XMMG(row0, 1); m_[Index11] = XMMG(row1, 1); m_[Index12] = XMMG(row2, 1); m_[Index13] = XMMG(row3, 1);
+    m_[Index20] = XMMG(row0, 2); m_[Index21] = XMMG(row1, 2); m_[Index22] = XMMG(row2, 2); m_[Index23] = XMMG(row3, 2);
+    m_[Index30] = XMMG(row0, 3); m_[Index31] = XMMG(row1, 3); m_[Index32] = XMMG(row2, 3); m_[Index33] = XMMG(row3, 3);
+#   undef XMMG
 #endif
 }
 #endif

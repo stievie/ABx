@@ -66,9 +66,9 @@ bool MoveComp::Move(float speed, const Math::Vector3& amount)
     XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -owner_.transformation_.GetYRotation());
     Math::Vector3 a = amount * speed;
     XMath::XMVECTOR v = XMath::XMVector3Transform(a, m);
-    owner_.transformation_.position_.x_ += v.m128_f32[0];
-    owner_.transformation_.position_.y_ += v.m128_f32[1];
-    owner_.transformation_.position_.z_ += v.m128_f32[2];
+    owner_.transformation_.position_.x_ += XMath::XMVectorGetX(v);
+    owner_.transformation_.position_.y_ += XMath::XMVectorGetY(v);
+    owner_.transformation_.position_.z_ += XMath::XMVectorGetZ(v);
 #else
     Math::Matrix4 m = Math::Matrix4::FromQuaternion(owner_.transformation_.GetQuaternion());
     Math::Vector3 a = amount * speed;

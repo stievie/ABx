@@ -140,16 +140,16 @@ public:
     {
         XMath::XMVECTOR s, r, t;
         XMath::XMMatrixDecompose(&s, &r, &t, *this);
-        scale->x_ = s.m128_f32[0];
-        scale->y_ = s.m128_f32[1];
-        scale->z_ = s.m128_f32[2];
-        rotation->x_ = r.m128_f32[0];
-        rotation->y_ = r.m128_f32[1];
-        rotation->z_ = r.m128_f32[2];
-        rotation->w_ = r.m128_f32[3];
-        translation->x_ = t.m128_f32[0];
-        translation->y_ = t.m128_f32[1];
-        translation->z_ = t.m128_f32[2];
+        scale->x_ = XMath::XMVectorGetX(s);
+        scale->y_ = XMath::XMVectorGetY(s);
+        scale->z_ = XMath::XMVectorGetZ(s);
+        rotation->x_ = XMath::XMVectorGetX(r);
+        rotation->y_ = XMath::XMVectorGetY(r);
+        rotation->z_ = XMath::XMVectorGetZ(r);
+        rotation->w_ = XMath::XMVectorGetW(r);
+        translation->x_ = XMath::XMVectorGetX(t);
+        translation->y_ = XMath::XMVectorGetY(t);
+        translation->z_ = XMath::XMVectorGetZ(t);
     }
 
     Matrix4 Transpose() const;

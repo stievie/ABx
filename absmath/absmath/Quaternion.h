@@ -26,10 +26,10 @@ public:
     Quaternion(float x, float y, float z);
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     Quaternion(const XMath::XMVECTOR& q) :
-        w_(q.m128_f32[3]),
-        x_(q.m128_f32[0]),
-        y_(q.m128_f32[1]),
-        z_(q.m128_f32[2])
+        w_(XMath::XMVectorGetW(q)),
+        x_(XMath::XMVectorGetX(q)),
+        y_(XMath::XMVectorGetY(q)),
+        z_(XMath::XMVectorGetZ(q))
     { }
 #endif
     explicit Quaternion(const Vector3& eulerAngles) :

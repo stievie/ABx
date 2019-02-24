@@ -33,9 +33,9 @@ public:
 
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
         Vector3(const XMath::XMVECTOR& vector) noexcept :
-        x_(vector.m128_f32[0]),
-        y_(vector.m128_f32[1]),
-        z_(vector.m128_f32[2])
+        x_(XMath::XMVectorGetX(vector)),
+        y_(XMath::XMVectorGetY(vector)),
+        z_(XMath::XMVectorGetZ(vector))
     { }
     Vector3(const XMath::XMFLOAT3& vector) noexcept :
         x_(vector.x),

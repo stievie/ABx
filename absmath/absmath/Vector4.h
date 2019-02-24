@@ -37,10 +37,10 @@ public:
 
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
         Vector4(const XMath::XMVECTOR& vector) noexcept :
-        x_(vector.m128_f32[0]),
-        y_(vector.m128_f32[1]),
-        z_(vector.m128_f32[2]),
-        w_(vector.m128_f32[3])
+        x_(XMath::XMVectorGetX(vector)),
+        y_(XMath::XMVectorGetY(vector)),
+        z_(XMath::XMVectorGetZ(vector)),
+        w_(XMath::XMVectorGetW(vector))
     { }
 #endif
 
