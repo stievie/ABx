@@ -5,6 +5,7 @@
 #include "Gjk.h"
 #include "Sphere.h"
 #include "HeightMap.h"
+#include <cstring>
 
 namespace Math {
 
@@ -93,8 +94,8 @@ void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)
         indexData_.resize(indexCount_);
 
         // Copy vertex data & index data
-        memcpy(vertexData_.data(), result.mOutputVertices, vertexCount_ * sizeof(Vector3));
-        memcpy(indexData_.data(), result.mIndices, indexCount_ * sizeof(unsigned));
+        std::memcpy(vertexData_.data(), result.mOutputVertices, vertexCount_ * sizeof(Vector3));
+        std::memcpy(indexData_.data(), result.mIndices, indexCount_ * sizeof(unsigned));
 
         lib.ReleaseResult(result);
 

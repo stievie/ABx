@@ -3,18 +3,20 @@
 #if defined(_WIN32)
 // DirectXMath also works on Windows on ARM
 #   define HAVE_DIRECTX_MATH
+#   if !defined(BUILD_INTRINSICS_LEVEL)
+#       define BUILD_INTRINSICS_LEVEL 3
+#   endif
 #else
 #   define HAVE_X_MATH
-// TODO: Check what defines needed for a certain platform
+#   if !defined(BUILD_INTRINSICS_LEVEL)
+#       define BUILD_INTRINSICS_LEVEL 1
+#   endif
 #endif
 
 #if !defined(HAVE_DIRECTX_MATH) && !defined(HAVE_X_MATH)
 #error HAVE_DIRECTX_MATH or HAVE_X_MATH must be defined
 #endif
 
-#if !defined(BUILD_INTRINSICS_LEVEL)
-#define BUILD_INTRINSICS_LEVEL 3
-#endif
 #if defined(BUILD_ARCH_ARM)
 #	if defined(__ARM_NEON) && BUILD_INTRINSICS_LEVEL > 0
 #		define _XM_ARM_NEON_INTRINSICS_

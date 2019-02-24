@@ -51,8 +51,8 @@ public:
         orientation_(Quaternion::Identity)
     { }
     BoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) noexcept :
-        min_({ minX, minY, minZ }),
-        max_({ maxX, maxY, maxZ }),
+        min_(Vector3(minX, minY, minZ)),
+        max_(Vector3(maxX, maxY, maxZ)),
         orientation_(Quaternion::Identity)
     { }
     /// Construct from minimum and maximum floats (all dimensions same.)
