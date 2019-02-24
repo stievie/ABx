@@ -19,8 +19,8 @@ template<typename InIter, typename OutIter>
 OutIter Escape(InIter begin, InIter end, OutIter out)
 {
     constexpr char bad[] = "&<>";
-    constexpr const char* rep[] = { "&amp;", "&lt;", "&gt;" };
     constexpr std::size_t n = sizeof(bad) / sizeof(bad[0]);
+    static const char* rep[] = { "&amp;", "&lt;", "&gt;" };
 
     for (; (begin != end); ++begin)
     {
