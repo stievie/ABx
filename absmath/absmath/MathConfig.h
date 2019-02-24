@@ -12,12 +12,9 @@
 #error HAVE_DIRECTX_MATH or HAVE_X_MATH must be defined
 #endif
 
-#if defined(HAVE_DIRECTX_MATH)
-#include <DirectXMath.h>
-#include <DirectXCollision.h>
-namespace XMath = DirectX;
-#elif defined(HAVE_X_MATH)
-
+#if !defined(BUILD_INTRINSICS_LEVEL)
+#define BUILD_INTRINSICS_LEVEL 3
+#endif
 #if defined(BUILD_ARCH_ARM)
 #	if defined(__ARM_NEON) && BUILD_INTRINSICS_LEVEL > 0
 #		define _XM_ARM_NEON_INTRINSICS_
@@ -45,6 +42,11 @@ namespace XMath = DirectX;
 #endif
 //#define _XM_NO_INTRINSICS_
 
-#include <XCollision.h>
+#if defined(HAVE_DIRECTX_MATH)
+#include <DirectXMath.h>
+#include <DirectXCollision.h>
+namespace XMath = DirectX;
+#elif defined(HAVE_X_MATH)
 #include <XMath.h>
+#include <XCollision.h>
 #endif
