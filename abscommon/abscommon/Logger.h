@@ -38,15 +38,15 @@ public:
     explicit Logger(std::ostream& stream = std::cout) :
         stream_(stream),
         mode_(ModeStream),
-        nextIsBegin_(true),
-        logStart_(Utils::AbTick())
+        logStart_(Utils::AbTick()),
+        nextIsBegin_(true)
     {}
     explicit Logger(const std::string& fileName) :
         fstream_(fileName),
         stream_(fstream_),
         mode_(ModeFile),
-        nextIsBegin_(true),
-        logStart_(Utils::AbTick())
+        logStart_(Utils::AbTick()),
+        nextIsBegin_(true)
     {}
     ~Logger()
     {
