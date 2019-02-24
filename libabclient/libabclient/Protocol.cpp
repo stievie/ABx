@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Protocol.h"
 #include <ctime>
-#include "Logger.h"
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
 
@@ -79,9 +78,6 @@ void Protocol::InternalRecvHeader(uint8_t* buffer, uint16_t size)
 
     inputMessage_->FillBuffer(buffer, size);
     uint16_t remainingSize = inputMessage_->ReadSize();
-#ifdef _LOGGING
-    LOG_DEBUG << "size = " << size << ", remaining size = " << remainingSize << std::endl;
-#endif
 
     // read remaining message data
     if (connection_)
@@ -94,26 +90,16 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     if (!IsConnected())
         return;
 
-#ifdef _LOGGING
-    LOG_DEBUG << "size = " << size << std::endl;
-#endif
-
     inputMessage_->FillBuffer(buffer, size);
 
     if (checksumEnabled_ && !inputMessage_->ReadChecksum())
     {
-#ifdef _LOGGING
-        LOG_ERROR << "Invalid checksum" << std::endl;
-#endif
         return;
     }
     if (encryptEnabled_)
     {
         if (!XTEADecrypt(inputMessage_))
         {
-#ifdef _LOGGING
-            LOG_ERROR << "Decryption failed" << std::endl;
-#endif
             return;
         }
     }
@@ -153,9 +139,6 @@ void Protocol::XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage)
 
 void Protocol::OnError(const asio::error_code& err)
 {
-#ifdef _LOGGING
-    LOG_ERROR << err.value() << " " << err.message();
-#endif
     if (errorCallback_)
         errorCallback_(err);
     Disconnect();

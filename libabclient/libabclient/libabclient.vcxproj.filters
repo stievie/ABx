@@ -33,9 +33,6 @@
     <ClInclude Include="Protocol.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -84,9 +81,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Protocol.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Logger.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
