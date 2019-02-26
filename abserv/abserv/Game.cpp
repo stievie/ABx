@@ -341,13 +341,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 void Game::SetState(ExecutionState state)
 {
     if (state_ != state)
-    {
-#ifdef DEBUG_GAME
-        if (state == ExecutionState::Terminated)
-            LOG_DEBUG << "Setting Execution state to terminated" << std::endl;
-#endif
         state_ = state;
-    }
 }
 
 void Game::InternalLoad()
@@ -428,7 +422,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     // Only called when the player enters a game. All spawns during the game are sent
     // when they happen.
     Net::NetworkMessage msg;
-    auto write = [&](const std::shared_ptr<GameObject>& o)
+    const auto write = [&msg, &player](const std::shared_ptr<GameObject>& o)
     {
         if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
             // No need to send terrain patch to client
@@ -517,10 +511,6 @@ void Game::PlayerLeave(uint32_t playerId)
         );
         RemoveObject(player);
     }
-#ifdef DEBUG_GAME
-    else
-        LOG_ERROR << "No player with ID " << playerId << std::endl;
-#endif
 }
 
 }

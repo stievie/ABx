@@ -42,7 +42,6 @@ public:
     Connection& operator=(const Connection&) = delete;
 
     Connection(asio::io_service& ioService, std::shared_ptr<ServicePort> servicPort) :
-        ioService_(ioService),
         socket_(ioService),
         servicePort_(servicPort),
         readTimer_(asio::steady_timer(ioService)),
@@ -65,8 +64,6 @@ public:
     asio::ip::tcp::socket& GetSocket() { return socket_; }
     uint32_t GetIP() const;
     uint16_t GetPort() const;
-private:
-    asio::io_service& ioService_;
 protected:
     asio::ip::tcp::socket socket_;
 private:
