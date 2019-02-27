@@ -26,11 +26,12 @@ void DataClient::Connect(const std::string& host, uint16_t port)
     TryConnect(false);
 }
 
-bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uint8_t>& data)
+bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, DataBuff& data)
 {
     const uint8_t ksize1 = static_cast<uint8_t>(key.size());
     const uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
+    // All data must be sent at once. Multiple threads must not send different requests at the same time.
     std::lock_guard<std::mutex> lock(lock_);
     if (!TryWrite(asio::buffer(header)))
         return false;
@@ -64,7 +65,7 @@ bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uin
     // If we are here it returns data
     const size_t size = static_cast<size_t>(ToInt32(dataheader, 1));
     data.resize(size);
-    size_t read2 = asio::read(socket_, asio::buffer(data), asio::transfer_at_least(size));
+    const size_t read2 = asio::read(socket_, asio::buffer(data), asio::transfer_at_least(size));
     if (read2 != size)
         return false;
 
@@ -76,6 +77,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
     const uint8_t ksize1 = static_cast<uint8_t>(key.size());
     const uint8_t ksize2 = static_cast<uint8_t>(key.size() >> 8);
     const uint8_t header[] = { static_cast<uint8_t>(opCode), ksize1, ksize2 };
+    // All data must be sent at once. Multiple threads must not send different requests at the same time.
     std::lock_guard<std::mutex> lock(lock_);
     if (!TryWrite(asio::buffer(header)))
         return false;
@@ -84,7 +86,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
         return false;
 
     uint8_t result[128];
-    size_t read = socket_.read_some(asio::buffer(result));
+    const size_t read = socket_.read_some(asio::buffer(result));
     if (read < 2)
         return false;
 
@@ -93,7 +95,7 @@ bool DataClient::MakeRequestNoData(OpCodes opCode, const DataKey& key)
     return false;
 }
 
-bool DataClient::ReadData(const DataKey& key, std::vector<uint8_t>& data)
+bool DataClient::ReadData(const DataKey& key, DataBuff& data)
 {
     return MakeRequest(OpCodes::Read, key, data);
 }
@@ -103,17 +105,17 @@ bool DataClient::DeleteData(const DataKey& key)
     return MakeRequestNoData(OpCodes::Delete, key);
 }
 
-bool DataClient::ExistsData(const DataKey& key, std::vector<uint8_t>& data)
+bool DataClient::ExistsData(const DataKey& key, DataBuff& data)
 {
     return MakeRequest(OpCodes::Exists, key, data);
 }
 
-bool DataClient::UpdateData(const DataKey& key, std::vector<uint8_t>& data)
+bool DataClient::UpdateData(const DataKey& key, DataBuff& data)
 {
     return MakeRequest(OpCodes::Update, key, data);
 }
 
-bool DataClient::CreateData(const DataKey& key, std::vector<uint8_t>& data)
+bool DataClient::CreateData(const DataKey& key, DataBuff& data)
 {
     return MakeRequest(OpCodes::Create, key, data);
 }

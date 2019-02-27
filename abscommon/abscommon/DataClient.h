@@ -17,6 +17,8 @@
 
 namespace IO {
 
+using DataBuff = std::vector<uint8_t>;
+
 class DataClient
 {
 private:
@@ -31,7 +33,7 @@ public:
     bool Read(E& entity)
     {
         const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::vector<uint8_t> data;
+        DataBuff data;
         SetEntity<E>(entity, data);
         if (!ReadData(aKey, data))
             return false;
@@ -67,7 +69,7 @@ public:
     bool Update(const E& entity)
     {
         const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::vector<uint8_t> data;
+        DataBuff data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
         return UpdateData(aKey, data);
@@ -76,7 +78,7 @@ public:
     bool Create(E& entity)
     {
         const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::vector<uint8_t> data;
+        DataBuff data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
         return CreateData(aKey, data);
@@ -91,7 +93,7 @@ public:
     bool Exists(const E& entity)
     {
         const DataKey aKey(E::KEY(), uuids::uuid(entity.uuid));
-        std::vector<uint8_t> data;
+        DataBuff data;
         if (SetEntity<E>(entity, data) == 0)
             return false;
         return ExistsData(aKey, data);
@@ -123,9 +125,9 @@ private:
     /// @param[out] Resulting Entity
     /// @return true on success
     template<typename E>
-    static bool GetEntity(std::vector<uint8_t>& data, E& e)
+    static bool GetEntity(DataBuff& data, E& e)
     {
-        using InputAdapter = bitsery::InputBufferAdapter<std::vector<uint8_t>>;
+        using InputAdapter = bitsery::InputBufferAdapter<DataBuff>;
         InputAdapter ia(data.begin(), data.size());
         auto state = bitsery::quickDeserialization<InputAdapter, E>(ia, e);
         return state.first == bitsery::ReaderError::NoError;
@@ -135,30 +137,29 @@ private:
     /// @param[out] Serialized data
     /// @return Size needed
     template<typename E>
-    static size_t SetEntity(const E& e, std::vector<uint8_t>& buffer)
+    static size_t SetEntity(const E& e, DataBuff& buffer)
     {
-        using Buffer = std::vector<uint8_t>;
-        using OutputAdapter = bitsery::OutputBufferAdapter<Buffer>;
+        using OutputAdapter = bitsery::OutputBufferAdapter<DataBuff>;
         auto writtenSize = bitsery::quickSerialization<OutputAdapter, E>(buffer, e);
         return writtenSize;
     }
 
-    static uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
+    static uint32_t ToInt32(const DataBuff& intBytes, uint32_t start)
     {
         return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
     }
-    static uint16_t ToInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
+    static uint16_t ToInt16(const DataBuff& intBytes, uint32_t start)
     {
         return (intBytes[start + 1] << 8) | intBytes[start];
     }
 
-    bool MakeRequest(OpCodes opCode, const DataKey& key, std::vector<uint8_t>& data);
+    bool MakeRequest(OpCodes opCode, const DataKey& key, DataBuff& data);
     bool MakeRequestNoData(OpCodes opCode, const DataKey& key);
-    bool ReadData(const DataKey& key, std::vector<uint8_t>& data);
+    bool ReadData(const DataKey& key, DataBuff& data);
     bool DeleteData(const DataKey& key);
-    bool ExistsData(const DataKey& key, std::vector<uint8_t>& data);
-    bool UpdateData(const DataKey& key, std::vector<uint8_t>& data);
-    bool CreateData(const DataKey& key, std::vector<uint8_t>& data);
+    bool ExistsData(const DataKey& key, DataBuff& data);
+    bool UpdateData(const DataKey& key, DataBuff& data);
+    bool CreateData(const DataKey& key, DataBuff& data);
     bool PreloadData(const DataKey& key);
     bool InvalidateData(const DataKey& key);
     void InternalConnect();
