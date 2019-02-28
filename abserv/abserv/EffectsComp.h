@@ -5,6 +5,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 namespace Components {
 
@@ -30,6 +31,7 @@ public:
     std::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
+    void GetSkillCost(Skill* skill, int16_t& energy, int16_t& adrenaline, int16_t& activation, int16_t& overcast);
 
     EffectList effects_;
 };

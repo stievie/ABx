@@ -6,6 +6,8 @@ class Actor;
 
 namespace Components {
 
+/// Equipment, like Armor, weapons, weapon mods etc.
+/// All this stuff adds effects to the actor. These effects are not visible in the clients effects window.
 class EquipComp
 {
 private:

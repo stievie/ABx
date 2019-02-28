@@ -7,6 +7,7 @@
 #include "SkillManager.h"
 #include "Subsystems.h"
 #include "Actor.h"
+#include "EffectsComp.h"
 
 namespace Game {
 
@@ -67,7 +68,13 @@ AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor
             oldSkill->CancelUse();
     }
 
-    return s->StartUse(owner_.GetThis<Actor>(), target);
+    return s->StartUse(owner_.GetThis<Actor>(), target,
+        std::bind(&Components::EffectsComp::GetSkillCost, &owner_.effectsComp_,
+        std::placeholders::_1,   // skill
+        std::placeholders::_2,   // energy
+        std::placeholders::_3,   // adrenaline
+        std::placeholders::_4,   // activation time
+        std::placeholders::_5)); // overcast
 }
 
 Skill* SkillBar::GetCurrentSkill() const

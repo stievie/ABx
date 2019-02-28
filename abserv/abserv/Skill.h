@@ -9,6 +9,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 enum SkillEffect
 {
@@ -27,6 +28,8 @@ enum SkillTarget
     SkillTargetTarget  = 1 << 2,
     SkillTargetAoe     = 1 << 3,
 };
+
+typedef std::function<void(Skill* skill, int16_t& energy, int16_t& adrenaline, int16_t& activation, int16_t& overcast)> SkillCostCallback;
 
 class Skill
 {
@@ -89,7 +92,7 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
 
-    AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
+    AB::GameProtocol::SkillError StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, const SkillCostCallback& callback);
     void CancelUse();
     /// Disable a skill for some time
     void Disable(uint32_t ticks)

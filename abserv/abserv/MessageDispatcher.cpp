@@ -91,7 +91,6 @@ void MessageDispatcher::DispatchNewMail(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
 {
-    // TODO:
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
@@ -102,12 +101,11 @@ void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
     if (!stream.ReadString(charUuid))
         return;
 
-    // Inform interested players: Friends, Guild members
+    // TODO: Inform interested players: Friends, Guild members
 }
 
 void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
 {
-    // TODO:
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
         return;
@@ -118,7 +116,7 @@ void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
     if (!stream.ReadString(charUuid))
         return;
 
-    // Inform interested players: Friends, Guild members
+    // TODO: Inform interested players: Friends, Guild members
 }
 
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)

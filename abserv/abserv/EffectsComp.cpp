@@ -106,22 +106,35 @@ void EffectsComp::Update(uint32_t timeElapsed)
 
 void EffectsComp::Write(Net::NetworkMessage& message)
 {
-    for (const auto& effect : removedEffects_)
+    if (removedEffects_.size() != 0)
     {
-        message.AddByte(AB::GameProtocol::GameObjectEffectRemoved);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<uint32_t>(effect->data_.index);
+        for (const auto& effect : removedEffects_)
+        {
+            message.AddByte(AB::GameProtocol::GameObjectEffectRemoved);
+            message.Add<uint32_t>(owner_.id_);
+            message.Add<uint32_t>(effect->data_.index);
+        }
+        removedEffects_.clear();
     }
-    removedEffects_.clear();
 
-    for (const auto& effect : addedEffects_)
+    if (addedEffects_.size() != 0)
     {
-        message.AddByte(AB::GameProtocol::GameObjectEffectAdded);
-        message.Add<uint32_t>(owner_.id_);
-        message.Add<uint32_t>(effect->data_.index);
-        message.Add<uint32_t>(effect->GetTicks());
+        for (const auto& effect : addedEffects_)
+        {
+            message.AddByte(AB::GameProtocol::GameObjectEffectAdded);
+            message.Add<uint32_t>(owner_.id_);
+            message.Add<uint32_t>(effect->data_.index);
+            message.Add<uint32_t>(effect->GetTicks());
+        }
+        addedEffects_.clear();
     }
-    addedEffects_.clear();
+}
+
+void EffectsComp::GetSkillCost(Skill* skill, int16_t& energy, int16_t& adrenaline, int16_t& activation, int16_t& overcast)
+{
+    // Since equipments add effects to the actor we need only ask the effects component, I think...
+
+    // TODO: Calculate effective skill cost. It depends on equipment, effects etc of the owner.
 }
 
 }

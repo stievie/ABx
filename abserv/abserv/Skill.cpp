@@ -84,7 +84,8 @@ void Skill::Update(uint32_t timeElapsed)
     }
 }
 
-AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
+AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target,
+    const SkillCostCallback& callback)
 {
     lastError_ = AB::GameProtocol::SkillErrorNone;
     if (IsUsing() || !IsRecharged())
@@ -92,11 +93,11 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
         return lastError_;
 
-    // TODO:
     realEnergy_ = energy_;
     realAdrenaline_ = adrenaline_;
     realActivation_ = activation_;
     realOvercast_ = overcast_;
+    callback(this, realEnergy_, realAdrenaline_, realActivation_, realOvercast_);
 
     if (source->resourceComp_.GetEnergy() < realEnergy_)
         lastError_ = AB::GameProtocol::SkillErrorNoEnergy;
