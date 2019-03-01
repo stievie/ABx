@@ -72,7 +72,7 @@ void Skill::Update(uint32_t timeElapsed)
             auto source = source_.lock();
             auto target = target_.lock();
             // A Skill may even fail here, e.g. when resurrecting an already resurrected target
-            lastError_ = luaState_["onSuccess"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+            lastError_ = luaState_["onSuccess"](source.get(), target.get());
             startUse_ = 0;
             if (lastError_ != AB::GameProtocol::SkillErrorNone)
                 recharged_ = 0;
@@ -113,7 +113,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     source_ = source;
     target_ = target;
 
-    lastError_ = luaState_["onStartUse"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+    lastError_ = luaState_["onStartUse"](source.get(), target.get());
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
     {
         startUse_ = 0;
@@ -136,7 +136,7 @@ void Skill::CancelUse()
     {
         auto target = target_.lock();
         ScriptManager::CallFunction(luaState_, "onCancelled",
-            source ? source.get() : nullptr, target ? target.get() : nullptr);
+            source.get(), target.get());
     }
     if (source)
         source->OnEndUseSkill(this);
@@ -154,7 +154,7 @@ void Skill::Interrupt()
     {
         auto target = target_.lock();
         ScriptManager::CallFunction(luaState_, "onInterrupted",
-            source ? source.get() : nullptr, target ? target.get() : nullptr);
+            source.get(), target.get());
     }
     if (source)
         source->OnEndUseSkill(this);

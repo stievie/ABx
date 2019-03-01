@@ -210,7 +210,7 @@ void Actor::_LuaAddEffect(Actor* source, uint32_t index)
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
-    effectsComp_.AddEffect(source ? source->GetThisDynamic<Actor>() : nullptr, index);
+    effectsComp_.AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)

@@ -44,10 +44,10 @@ void Effect::Update(uint32_t timeElapsed)
     auto source = source_.lock();
     auto target = target_.lock();
     if (haveUpdate_)
-        luaState_["onUpdate"](source ? source.get() : nullptr, target ? target.get() : nullptr, timeElapsed);
+        luaState_["onUpdate"](source.get(), target.get(), timeElapsed);
     if (endTime_ <= Utils::AbTick())
     {
-        luaState_["onEnd"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+        luaState_["onEnd"](source.get(), target.get());
         ended_ = true;
     }
 }
@@ -57,9 +57,9 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
     target_ = target;
     source_ = source;
     startTime_ = Utils::AbTick();
-    ticks_ = luaState_["getDuration"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+    ticks_ = luaState_["getDuration"](source.get(), target.get());
     endTime_ = startTime_ + ticks_;
-    bool succ = luaState_["onStart"](source ? source.get() : nullptr, target ? target.get() : nullptr);
+    bool succ = luaState_["onStart"](source.get(), target.get());
     if (!succ)
     {
         endTime_ = 0;
@@ -73,7 +73,7 @@ void Effect::Remove()
     auto source = source_.lock();
     auto target = target_.lock();
     ScriptManager::CallFunction(luaState_, "onRemove",
-        source ? source.get() : nullptr, target ? target.get() : nullptr);
+        source.get(), target.get());
     cancelled_ = true;
 }
 
