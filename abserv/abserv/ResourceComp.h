@@ -104,17 +104,17 @@ public:
     { }
     ~ResourceComp() = default;
 
-    int GetHealth() const { return static_cast<int16_t>(health_); }
+    int GetHealth() const { return static_cast<int>(health_); }
     void SetHealth(SetValueType t, int value);
-    int GetEnergy() const { return static_cast<int16_t>(energy_); }
+    int GetEnergy() const { return static_cast<int>(energy_); }
     void SetEnergy(SetValueType t, int value);
-    int GetAdrenaline() const { return static_cast<int16_t>(adrenaline_); }
+    int GetAdrenaline() const { return static_cast<int>(adrenaline_); }
     void SetAdrenaline(SetValueType t, int value);
-    int GetOvercast() const { return static_cast<int16_t>(overcast_); }
+    int GetOvercast() const { return static_cast<int>(overcast_); }
     void SetOvercast(SetValueType t, int value);
-    int GetHealthRegen() const { return static_cast<int8_t>(healthRegen_); }
+    int GetHealthRegen() const { return static_cast<int>(healthRegen_); }
     void SetHealthRegen(SetValueType t, int value);
-    int GetEnergyRegen() const { return static_cast<int8_t>(energyRegen_); }
+    int GetEnergyRegen() const { return static_cast<int>(energyRegen_); }
     void SetEnergyRegen(SetValueType t, int value);
     int GetMaxHealth() const { return maxHealth_; }
     void SetMaxHealth(int value);
