@@ -17,4 +17,7 @@
 // Animate player head with mouse look
 //#define PLAYER_HEAD_ANIMATION
 
+//#define OCEAN_SIMULATION
+//#define ADD_WATER_REFLECTION
+
 #include <AB/CommonConfig.h>

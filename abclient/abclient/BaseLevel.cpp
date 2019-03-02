@@ -131,6 +131,7 @@ void BaseLevel::SetSunProperties()
 
 void BaseLevel::InitOcean()
 {
+#ifdef OCEAN_SIMULATION
     oceanNode_ = scene_->GetChild("Ocean", false);
     if (oceanNode_)
     {
@@ -150,6 +151,7 @@ void BaseLevel::InitOcean()
         staticModelOcean_->SetMaterial(cache->GetResource<Material>("Materials/Ocean.xml"));
         staticModelOcean_->SetViewMask(0x80000000);
     }
+#endif
 }
 
 void BaseLevel::SetupViewport()
@@ -159,7 +161,7 @@ void BaseLevel::SetupViewport()
     viewport_ = new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>());
     renderer->SetViewport(0, viewport_);
 
-#ifdef ADD_WATER_REFLECTION
+#if defined(OCEAN_SIMULATION) && defined(ADD_WATER_REFLECTION)
     // Ocean Water reflection
     Graphics* graphics = GetSubsystem<Graphics>();
     ResourceCache* cache = GetSubsystem<ResourceCache>();

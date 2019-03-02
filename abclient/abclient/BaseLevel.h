@@ -83,7 +83,7 @@ protected:
     SharedPtr<Sprite> logoSprite_;
 
     // Ocean stuff
-#ifdef ADD_WATER_REFLECTION
+#if defined(OCEAN_SIMULATION) && defined(ADD_WATER_REFLECTION)
     /// Reflection camera scene node.
     SharedPtr<Node> reflectionCameraNode_;
     /// Water body scene node.
