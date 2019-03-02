@@ -21,6 +21,7 @@ private:
     int32_t newRecharge_;
     std::weak_ptr<Skill> lastSkill_;
 public:
+    SkillsComp() = delete;
     explicit SkillsComp(Actor& owner) :
         owner_(owner),
         lastError_(AB::GameProtocol::SkillErrorNone),

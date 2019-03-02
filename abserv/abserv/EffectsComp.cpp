@@ -139,5 +139,10 @@ void EffectsComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energ
     }
 }
 
+int EffectsComp::GetDamage(DamageType type, int value)
+{
+    return 0;
+}
+
 }
 }

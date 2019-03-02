@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Effect.h"
+#include "Damage.h"
 
 namespace Game {
 
@@ -19,6 +20,7 @@ private:
     EffectList removedEffects_;
     void RemoveAllOfCategory(AB::Entities::EffectCategory categroy);
 public:
+    EffectsComp() = delete;
     explicit EffectsComp(Actor& owner) :
         owner_(owner)
     { }
@@ -39,6 +41,7 @@ public:
     /// \param overcast Causes overcast
     /// \param hp HP scarifies in percent of max health
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
+    int GetDamage(DamageType type, int value);
 
     EffectList effects_;
 };

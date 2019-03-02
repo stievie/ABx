@@ -43,8 +43,8 @@ private:
     float overcast_;
     float healthRegen_;     // How many arrows right or left
     float energyRegen_;
-    int32_t maxHealth_;
-    int32_t maxEnergy_;
+    int maxHealth_;
+    int maxEnergy_;
     uint32_t dirtyFlags_;
     template <typename T>
     static bool SetValue(SetValueType t, T value, T maxVal, T& out)
@@ -61,7 +61,7 @@ private:
         case SetValueType::Decrease:
             // Must be positive value
             if (value < static_cast<T>(0))
-                return false;
+                return SetValue(SetValueType::Increase, -value, maxVal, out);
             if (!Math::Equals(value, static_cast<T>(0)))
             {
                 T oldVal = out;
@@ -74,7 +74,7 @@ private:
         case SetValueType::Increase:
             // Must be positive value
             if (value < static_cast<T>(0))
-                return false;
+                return SetValue(SetValueType::Decrease, -value, maxVal, out);
             if (!Math::Equals(value, static_cast<T>(0)))
             {
                 if (!Math::Equals(maxVal, static_cast<T>(0)) && Math::Equals(out, maxVal))
@@ -91,6 +91,7 @@ private:
         return false;
     }
 public:
+    ResourceComp() = delete;
     explicit ResourceComp(Actor& owner) :
         owner_(owner),
         energy_(0.0f),
@@ -103,22 +104,22 @@ public:
     { }
     ~ResourceComp() = default;
 
-    int16_t GetHealth() const { return static_cast<int16_t>(health_); }
-    void SetHealth(SetValueType t, int16_t value);
-    int16_t GetEnergy() const { return static_cast<int16_t>(energy_); }
-    void SetEnergy(SetValueType t, int16_t value);
-    int16_t GetAdrenaline() const { return static_cast<int16_t>(adrenaline_); }
-    void SetAdrenaline(SetValueType t, int16_t value);
-    int16_t GetOvercast() const { return static_cast<int16_t>(overcast_); }
-    void SetOvercast(SetValueType t, int16_t value);
-    int8_t GetHealthRegen() const { return static_cast<int8_t>(healthRegen_); }
-    void SetHealthRegen(SetValueType t, int8_t value);
-    int8_t GetEnergyRegen() const { return static_cast<int8_t>(energyRegen_); }
-    void SetEnergyRegen(SetValueType t, int8_t value);
-    int16_t GetMaxHealth() const { return static_cast<int16_t>(maxHealth_); }
-    void SetMaxHealth(int16_t value);
-    int16_t GetMaxEnergy() const { return static_cast<int16_t>(maxEnergy_); }
-    void SetMaxEnergy(int16_t value);
+    int GetHealth() const { return static_cast<int16_t>(health_); }
+    void SetHealth(SetValueType t, int value);
+    int GetEnergy() const { return static_cast<int16_t>(energy_); }
+    void SetEnergy(SetValueType t, int value);
+    int GetAdrenaline() const { return static_cast<int16_t>(adrenaline_); }
+    void SetAdrenaline(SetValueType t, int value);
+    int GetOvercast() const { return static_cast<int16_t>(overcast_); }
+    void SetOvercast(SetValueType t, int value);
+    int GetHealthRegen() const { return static_cast<int8_t>(healthRegen_); }
+    void SetHealthRegen(SetValueType t, int value);
+    int GetEnergyRegen() const { return static_cast<int8_t>(energyRegen_); }
+    void SetEnergyRegen(SetValueType t, int value);
+    int GetMaxHealth() const { return maxHealth_; }
+    void SetMaxHealth(int value);
+    int GetMaxEnergy() const { return maxEnergy_; }
+    void SetMaxEnergy(int value);
 
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message, bool ignoreDirty = false);

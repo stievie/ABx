@@ -264,6 +264,12 @@
     <ClInclude Include="SceneViewer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DamageComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Damage.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -468,6 +474,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="SceneViewer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

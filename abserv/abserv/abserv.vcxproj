@@ -195,6 +195,8 @@
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
     <ClInclude Include="CrowdAgent.h" />
     <ClInclude Include="CrowdManager.h" />
+    <ClInclude Include="Damage.h" />
+    <ClInclude Include="DamageComp.h" />
     <ClInclude Include="DataProvider.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Config.h" />
@@ -268,6 +270,7 @@
     <ClCompile Include="CollisionComp.cpp" />
     <ClCompile Include="CrowdAgent.cpp" />
     <ClCompile Include="CrowdManager.cpp" />
+    <ClCompile Include="DamageComp.cpp" />
     <ClCompile Include="DataProvider.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ConfigManager.cpp" />

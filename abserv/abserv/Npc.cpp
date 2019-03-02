@@ -140,7 +140,7 @@ bool Npc::Die()
     return res;
 }
 
-bool Npc::Resurrect(int16_t precentHealth, int16_t percentEnergy)
+bool Npc::Resurrect(int precentHealth, int percentEnergy)
 {
     bool res = Actor::Resurrect(precentHealth, percentEnergy);
     if (res)

@@ -6,43 +6,43 @@
 namespace Game {
 namespace Components {
 
-void ResourceComp::SetHealth(SetValueType t, int16_t value)
+void ResourceComp::SetHealth(SetValueType t, int value)
 {
     if (SetValue(t, static_cast<float>(value), static_cast<float>(maxHealth_), health_))
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
 }
 
-void ResourceComp::SetEnergy(SetValueType t, int16_t value)
+void ResourceComp::SetEnergy(SetValueType t, int value)
 {
     if (SetValue(t, static_cast<float>(value), static_cast<float>(maxEnergy_), energy_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergy;
 }
 
-void ResourceComp::SetAdrenaline(SetValueType t, int16_t value)
+void ResourceComp::SetAdrenaline(SetValueType t, int value)
 {
     if (SetValue(t, static_cast<float>(value), 0.0f, adrenaline_))
         dirtyFlags_ |= ResourceDirty::DirtyAdrenaline;
 }
 
-void ResourceComp::SetOvercast(SetValueType t, int16_t value)
+void ResourceComp::SetOvercast(SetValueType t, int value)
 {
     if (SetValue(t, static_cast<float>(value), static_cast<float>(maxEnergy_), overcast_))
         dirtyFlags_ |= ResourceDirty::DirtyOvercast;
 }
 
-void ResourceComp::SetHealthRegen(SetValueType t, int8_t value)
+void ResourceComp::SetHealthRegen(SetValueType t, int value)
 {
     if (SetValue(t, static_cast<float>(value), MAX_HEALTH_REGEN, healthRegen_))
         dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
 }
 
-void ResourceComp::SetEnergyRegen(SetValueType t, int8_t value)
+void ResourceComp::SetEnergyRegen(SetValueType t, int value)
 {
     if (SetValue(t, static_cast<float>(value), MAX_ENERGY_REGEN, energyRegen_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergyRegen;
 }
 
-void ResourceComp::SetMaxHealth(int16_t value)
+void ResourceComp::SetMaxHealth(int value)
 {
     if (maxHealth_ != value)
     {
@@ -51,7 +51,7 @@ void ResourceComp::SetMaxHealth(int16_t value)
     }
 }
 
-void ResourceComp::SetMaxEnergy(int16_t value)
+void ResourceComp::SetMaxEnergy(int value)
 {
     if (maxEnergy_ != value)
     {

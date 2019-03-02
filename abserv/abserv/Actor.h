@@ -14,6 +14,7 @@
 #include "EquipComp.h"
 #include "SkillsComp.h"
 #include "InputComp.h"
+#include "DamageComp.h"
 #include "UuidUtils.h"
 
 namespace Game {
@@ -30,6 +31,7 @@ class Actor : public GameObject
     friend class Components::EquipComp;
     friend class Components::SkillsComp;
     friend class Components::InputComp;
+    friend class Components::DamageComp;
 private:
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
@@ -174,7 +176,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     virtual bool Die();
-    virtual bool Resurrect(int16_t precentHealth, int16_t percentEnergy);
+    virtual bool Resurrect(int precentHealth, int percentEnergy);
     bool IsDead() const { return stateComp_.IsDead(); }
     bool IsEnemy(Actor* other);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
@@ -222,6 +224,7 @@ public:
     Components::EquipComp equipComp_;
     Components::SkillsComp skillsComp_;
     Components::InputComp inputComp_;
+    Components::DamageComp damageComp_;
 
     bool undestroyable_;
 

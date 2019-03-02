@@ -70,6 +70,7 @@ Actor::Actor() :
     equipComp_(*this),
     skillsComp_(*this),
     inputComp_(*this),
+    damageComp_(*this),
     undestroyable_(false),
     retriggerTimeout_(1000)
 {
@@ -384,6 +385,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     GameObject::Update(timeElapsed, message);
     UpdateRanges();
 
+    // Update all
     stateComp_.Update(timeElapsed);
     resourceComp_.Update(timeElapsed);
     inputComp_.Update(timeElapsed, message);
@@ -391,9 +393,11 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     attackComp_.Update(timeElapsed);
     skillsComp_.Update(timeElapsed);
     effectsComp_.Update(timeElapsed);
+    damageComp_.Update(timeElapsed);
     moveComp_.Update(timeElapsed);
     autorunComp_.Update(timeElapsed);
 
+    // Write all
     stateComp_.Write(message);
     moveComp_.Write(message);
 
@@ -416,13 +420,13 @@ bool Actor::Die()
     return false;
 }
 
-bool Actor::Resurrect(int16_t precentHealth, int16_t percentEnergy)
+bool Actor::Resurrect(int precentHealth, int percentEnergy)
 {
     if (IsDead())
     {
-        int16_t health = (resourceComp_.GetMaxHealth() / 100) * precentHealth;
+        int health = (resourceComp_.GetMaxHealth() / 100) * precentHealth;
         resourceComp_.SetHealth(Components::SetValueType::Absolute, health);
-        int16_t energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
+        int energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, energy);
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
         return true;
