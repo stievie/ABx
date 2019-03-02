@@ -6,6 +6,7 @@ costAdrenaline = 0
 activation = 3000
 recharge = 10000
 overcast = 0
+hp = 50
 range = RANGE_ADJECENT
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget

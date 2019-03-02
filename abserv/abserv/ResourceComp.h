@@ -13,7 +13,9 @@ enum class SetValueType
 {
     Absolute,
     Increase,
-    Decrease
+    IncreasePercent,
+    Decrease,
+    DecreasePercent,
 };
 
 enum ResourceDirty
@@ -51,27 +53,34 @@ private:
         case SetValueType::Absolute:
             if (!Math::Equals(out, value))
             {
+                float oldVal = out;
                 out = value;
-                return true;
+                return !Math::Equals(oldVal, out);
             }
             break;
         case SetValueType::Decrease:
             if (!Math::Equals(value, 0.0f))
             {
+                float oldVal = out;
                 out -= value;
-                return true;
+                return !Math::Equals(oldVal, out);
             }
             break;
+        case SetValueType::DecreasePercent:
+            return SetValue(SetValueType::Decrease, (maxVal / 100.0f) * value, maxVal, out);
         case SetValueType::Increase:
             if (!Math::Equals(value, 0.0f))
             {
                 if (!Math::Equals(maxVal, 0.0f) && Math::Equals(out, maxVal))
                     return false;
+                float oldVal = out;
                 out += value;
-                out = std::max(out, maxVal);
-                return true;
+                out = std::min(out, maxVal);
+                return !Math::Equals(oldVal, out);
             }
             break;
+        case SetValueType::IncreasePercent:
+            return SetValue(SetValueType::Increase, (maxVal / 100.0f) * value, maxVal, out);
         }
         return false;
     }
@@ -82,7 +91,7 @@ public:
         health_(0.0f),
         adrenaline_(0.0f),
         overcast_(0.0f),
-        healthRegen_(0.0f),
+        healthRegen_(1.0f),
         energyRegen_(2.0f),
         dirtyFlags_(0)
     { }
