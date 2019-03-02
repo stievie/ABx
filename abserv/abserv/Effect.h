@@ -8,6 +8,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 enum EffectAttr : uint8_t
 {
@@ -27,6 +28,7 @@ private:
     std::weak_ptr<Actor> source_;
     bool persistent_;
     bool haveUpdate_;
+    bool haveSkillCost_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
 public:
@@ -36,6 +38,7 @@ public:
     explicit Effect(const AB::Entities::Effect& effect) :
         persistent_(false),
         haveUpdate_(false),
+        haveSkillCost_(false),
         data_(effect),
         startTime_(0),
         endTime_(0),
@@ -58,6 +61,14 @@ public:
     bool Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
     /// Remove Effect before it ends
     void Remove();
+    /// Get real cost of a skill
+    /// \param skill The Skill
+    /// \param activation Activation time
+    /// \param energy Energy cost
+    /// \param adrenaline Adrenaline cost
+    /// \param overcast Causes overcast
+    /// \param hp HP scarifies in percent of max health
+    void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

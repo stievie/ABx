@@ -234,8 +234,9 @@ void ProtocolGame::ParseObjectUseSkill(const std::shared_ptr<InputMessage>& mess
     uint16_t adrenaline = message->Get<uint16_t>();
     uint16_t activation = message->Get<uint16_t>();
     uint16_t overcast = message->Get<uint16_t>();
+    uint16_t hpScarifies = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast);
+        receiver_->OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast, hpScarifies);
 }
 
 void ProtocolGame::ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message)

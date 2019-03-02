@@ -6,6 +6,8 @@ costAdrenaline = 0
 activation = 0
 recharge = 0
 overcast = 0
+-- HP cost
+hp = 0
 range = RANGE_MAP
 effect = SkillEffectDamage
 effectTarget = SkillTargetTarget

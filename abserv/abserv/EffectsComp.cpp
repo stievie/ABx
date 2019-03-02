@@ -130,11 +130,13 @@ void EffectsComp::Write(Net::NetworkMessage& message)
     }
 }
 
-void EffectsComp::GetSkillCost(Skill* skill, int16_t& energy, int16_t& adrenaline, int16_t& activation, int16_t& overcast)
+void EffectsComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
-    // Since equipments add effects to the actor we need only ask the effects component, I think...
-
-    // TODO: Calculate effective skill cost. It depends on equipment, effects etc of the owner.
+    // Since equipments, attributes etc. add (hidden) effects to the actor, we need only ask the effects component, I think...
+    for (const auto& effect : effects_)
+    {
+        effect->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+    }
 }
 
 }

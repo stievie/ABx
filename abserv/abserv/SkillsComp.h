@@ -18,7 +18,7 @@ private:
     bool startDirty_;
     bool endDirty_;
     bool usingSkill_;
-    int16_t newRecharge_;
+    int32_t newRecharge_;
     std::weak_ptr<Skill> lastSkill_;
 public:
     explicit SkillsComp(Actor& owner) :

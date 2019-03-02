@@ -31,7 +31,14 @@ public:
     std::shared_ptr<Effect> GetLast(AB::Entities::EffectCategory category);
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
-    void GetSkillCost(Skill* skill, int16_t& energy, int16_t& adrenaline, int16_t& activation, int16_t& overcast);
+    /// Get real cost of a skill
+    /// \param skill The Skill
+    /// \param activation Activation time
+    /// \param energy Energy cost
+    /// \param adrenaline Adrenaline cost
+    /// \param overcast Causes overcast
+    /// \param hp HP scarifies in percent of max health
+    void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
 
     EffectList effects_;
 };

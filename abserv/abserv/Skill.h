@@ -41,10 +41,11 @@ private:
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
     // The real cost may be influenced by skills, armor, effects etc.
-    int16_t realEnergy_;
-    int16_t realAdrenaline_;
-    int16_t realActivation_;
-    int16_t realOvercast_;
+    int32_t realEnergy_;
+    int32_t realAdrenaline_;
+    int32_t realActivation_;
+    int32_t realOvercast_;
+    int32_t realHp_;
 
     bool haveOnCancelled_;
     bool haveOnInterrupted_;
@@ -77,6 +78,7 @@ public:
         activation_(0),
         recharge_(0),
         overcast_(0),
+        hp_(0),
         data_(skill)
     {
         InitializeLua();
@@ -130,20 +132,22 @@ public:
             return t.get();
         return nullptr;
     }
-    int16_t GetRealEnergy() const { return realEnergy_; }
-    int16_t GetRealAdrenaline() const { return realAdrenaline_; }
-    int16_t GetRealActivation() const { return realActivation_; }
-    int16_t GetRealOvercast() const { return realOvercast_; }
+    int32_t GetRealEnergy() const { return realEnergy_; }
+    int32_t GetRealAdrenaline() const { return realAdrenaline_; }
+    int32_t GetRealActivation() const { return realActivation_; }
+    int32_t GetRealOvercast() const { return realOvercast_; }
+    int32_t GetRealHp() const { return realHp_; }
 
     void AddRecharge(int16_t ms);
 
     AB::Entities::Skill data_;
 
-    int16_t energy_;
-    int16_t adrenaline_;
-    int16_t activation_;
-    int16_t recharge_;
-    int16_t overcast_;
+    int32_t energy_;
+    int32_t adrenaline_;
+    int32_t activation_;
+    int32_t recharge_;
+    int32_t overcast_;
+    int32_t hp_;
 };
 
 }

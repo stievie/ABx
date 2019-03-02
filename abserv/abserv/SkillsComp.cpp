@@ -81,13 +81,15 @@ void SkillsComp::Write(Net::NetworkMessage& message)
             message.Add<int>(lastSkillIndex_ + 1);
             if (auto ls = lastSkill_.lock())
             {
-                message.Add<uint16_t>(ls->GetRealEnergy());
-                message.Add<uint16_t>(ls->GetRealAdrenaline());
-                message.Add<uint16_t>(ls->GetRealActivation());
-                message.Add<uint16_t>(ls->GetRealOvercast());
+                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealEnergy()));
+                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealAdrenaline()));
+                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealActivation()));
+                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealOvercast()));
+                message.Add<uint16_t>(static_cast<uint16_t>(ls->GetRealHp()));
             }
             else
             {
+                message.Add<uint16_t>(0);
                 message.Add<uint16_t>(0);
                 message.Add<uint16_t>(0);
                 message.Add<uint16_t>(0);
@@ -111,7 +113,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
             message.Add<uint32_t>(owner_.id_);
             message.Add<int>(lastSkillIndex_ + 1);
-            message.Add<uint16_t>(newRecharge_);
+            message.Add<uint16_t>(static_cast<uint16_t>(newRecharge_));
         }
         else
         {

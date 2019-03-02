@@ -49,6 +49,9 @@ bool Skill::LoadScript(const std::string& fileName)
     activation_ = luaState_["activation"];
     recharge_ = luaState_["recharge"];
     overcast_ = luaState_["overcast"];
+    if (ScriptManager::IsNumber(luaState_, "hp"))
+        hp_ = luaState_["hp"];
+
     if (ScriptManager::IsNumber(luaState_, "range"))
         range_ = static_cast<Ranges>(luaState_["range"]);
     if (ScriptManager::IsNumber(luaState_, "effect"))
@@ -96,8 +99,9 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     realAdrenaline_ = adrenaline_;
     realActivation_ = activation_;
     realOvercast_ = overcast_;
+    realHp_ = hp_;
     // Get real skill cost, which depends on the effects of the source (e.g. equipment)
-    source->effectsComp_.GetSkillCost(this, realEnergy_, realAdrenaline_, realActivation_, realOvercast_);
+    source->effectsComp_.GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
 
     if (source->resourceComp_.GetEnergy() < realEnergy_)
         lastError_ = AB::GameProtocol::SkillErrorNoEnergy;
@@ -122,9 +126,9 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
         target_.reset();
         return lastError_;
     }
-    source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, realEnergy_);
-    source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
-    source->resourceComp_.SetOvercast(Components::SetValueType::Increase, realOvercast_);
+    source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, static_cast<uint16_t>(realEnergy_));
+    source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, static_cast<uint16_t>(realAdrenaline_));
+    source->resourceComp_.SetOvercast(Components::SetValueType::Increase, static_cast<uint16_t>(realOvercast_));
     source->OnStartUseSkill(this);
     return lastError_;
 }

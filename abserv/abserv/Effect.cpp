@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "DataProvider.h"
 #include "Subsystems.h"
+#include "Skill.h"
 
 namespace Game {
 
@@ -33,6 +34,7 @@ bool Effect::LoadScript(const std::string& fileName)
 
     persistent_ = luaState_["isPersistent"];
     haveUpdate_ = ScriptManager::IsFunction(luaState_, "onUpdate");
+    haveSkillCost_ = ScriptManager::IsFunction(luaState_, "getSkillCost");
     return true;
 }
 
@@ -75,6 +77,15 @@ void Effect::Remove()
     ScriptManager::CallFunction(luaState_, "onRemove",
         source.get(), target.get());
     cancelled_ = true;
+}
+
+void Effect::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+{
+    if (!haveSkillCost_)
+        return;
+
+    kaguya::tie(activation, energy, adrenaline, overcast, hp) =
+        luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

@@ -197,10 +197,10 @@ void Client::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillInde
 }
 
 void Client::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
-    uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast)
+    uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast, uint16_t hp)
 {
     if (receiver_)
-        receiver_->OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast);
+        receiver_->OnObjectUseSkill(updateTick, id, skillIndex, energy, adrenaline, activation, overcast, hp);
 }
 
 void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge)
