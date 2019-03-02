@@ -104,7 +104,7 @@ void BaseLevel::OnProtocolError(uint8_t err)
         ShowError(msg, "Error");
 }
 
-void BaseLevel::SetSunProperties()
+void BaseLevel::InitSunProperties()
 {
     // https://discourse.urho3d.io/t/better-shadows-possible-three-issues/1013/3
     // https://discourse.urho3d.io/t/shadow-on-slopes/4629
@@ -152,6 +152,23 @@ void BaseLevel::InitOcean()
         staticModelOcean_->SetViewMask(0x80000000);
     }
 #endif
+}
+
+void BaseLevel::InitModelAnimations()
+{
+    PODVector<Node*> nodes;
+    if (scene_->GetNodesWithTag(nodes, "HasAnimation"))
+    {
+        for (const auto node : nodes)
+        {
+            const String& fileName = node->GetVar("AnimationFile").GetString();
+            AnimationController* animCtrl = node->GetComponent<AnimationController>();
+            if (animCtrl)
+            {
+                animCtrl->PlayExclusive(fileName, 0, true);
+            }
+        }
+    }
 }
 
 void BaseLevel::SetupViewport()

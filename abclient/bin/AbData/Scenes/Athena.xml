@@ -7,10 +7,10 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16786011" />
-	<attribute name="Next Local Component ID" value="16787272" />
+	<attribute name="Next Local Node ID" value="16786111" />
+	<attribute name="Next Local Component ID" value="16787394" />
 	<attribute name="Variables" />
-	<attribute name="Variable Names" value="Group" />
+	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
 	<component type="DebugRenderer" id="2">
 		<attribute name="Line Antialias" value="true" />
@@ -604,11 +604,15 @@
 	<node id="16785404">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Ship1" />
-		<attribute name="Tags" />
+		<attribute name="Tags">
+			<string value="HasAnimation" />
+		</attribute>
 		<attribute name="Position" value="-102.104 25.0588 -5.29618" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
+		<attribute name="Variables">
+			<variant hash="2570276288" type="String" value="Models/Ship1.ani" />
+		</attribute>
 		<component type="AnimatedModel" id="16786523">
 			<attribute name="Model" value="Model;Models/Ship1.mdl" />
 			<attribute name="Material" value="Material;Materials/Ship1_flag_logo_texture.JPG.xml;Materials/Ship1_wood.001_WoodPlanksBa.xml;Materials/Ship1_wood_details_wood_pla.xml;Materials/Ship1_wood_details.002_wood.xml;Materials/Ship1_sail_marble.jpg.xml" />
