@@ -48,6 +48,9 @@ public:
     {
         InitializeLua();
     }
+    // non-copyable
+    Effect(const Effect&) = delete;
+    Effect& operator=(const Effect&) = delete;
     ~Effect() = default;
 
     /// Gets saved to the DB when player logs out

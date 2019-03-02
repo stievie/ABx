@@ -147,6 +147,7 @@ public:
     int32_t activation_;
     int32_t recharge_;
     int32_t overcast_;
+    /// HP sacrifice
     int32_t hp_;
 };
 

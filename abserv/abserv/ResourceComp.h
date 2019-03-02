@@ -41,46 +41,52 @@ private:
     float health_;
     float adrenaline_;
     float overcast_;
-    float healthRegen_;
+    float healthRegen_;     // How many arrows right or left
     float energyRegen_;
-    int16_t maxHealth_;
-    int16_t maxEnergy_;
+    int32_t maxHealth_;
+    int32_t maxEnergy_;
     uint32_t dirtyFlags_;
-    bool SetValue(SetValueType t, float value, float maxVal, float& out)
+    template <typename T>
+    static bool SetValue(SetValueType t, T value, T maxVal, T& out)
     {
         switch (t)
         {
         case SetValueType::Absolute:
             if (!Math::Equals(out, value))
             {
-                float oldVal = out;
                 out = value;
-                return !Math::Equals(oldVal, out);
+                return true;
             }
             break;
         case SetValueType::Decrease:
-            if (!Math::Equals(value, 0.0f))
+            // Must be positive value
+            if (value < static_cast<T>(0))
+                return false;
+            if (!Math::Equals(value, static_cast<T>(0)))
             {
-                float oldVal = out;
+                T oldVal = out;
                 out -= value;
                 return !Math::Equals(oldVal, out);
             }
             break;
         case SetValueType::DecreasePercent:
-            return SetValue(SetValueType::Decrease, (maxVal / 100.0f) * value, maxVal, out);
+            return SetValue(SetValueType::Decrease, static_cast<T>((static_cast<float>(maxVal) / 100.0f) * static_cast<float>(value)), maxVal, out);
         case SetValueType::Increase:
-            if (!Math::Equals(value, 0.0f))
+            // Must be positive value
+            if (value < static_cast<T>(0))
+                return false;
+            if (!Math::Equals(value, static_cast<T>(0)))
             {
-                if (!Math::Equals(maxVal, 0.0f) && Math::Equals(out, maxVal))
+                if (!Math::Equals(maxVal, static_cast<T>(0)) && Math::Equals(out, maxVal))
                     return false;
-                float oldVal = out;
+                T oldVal = out;
                 out += value;
                 out = std::min(out, maxVal);
                 return !Math::Equals(oldVal, out);
             }
             break;
         case SetValueType::IncreasePercent:
-            return SetValue(SetValueType::Increase, (maxVal / 100.0f) * value, maxVal, out);
+            return SetValue(SetValueType::Increase, static_cast<T>((static_cast<float>(maxVal) / 100.0f) * static_cast<float>(value)), maxVal, out);
         }
         return false;
     }
