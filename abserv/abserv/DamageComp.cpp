@@ -20,7 +20,7 @@ void DamageComp::Touch()
 
 uint32_t DamageComp::NoDamageTime() const
 {
-    return static_cast<uint32_t>(Utils::AbTick() - lastDamage_);
+    return Utils::TimePassed(lastDamage_);
 }
 
 }

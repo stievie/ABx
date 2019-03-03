@@ -82,7 +82,7 @@ public:
     {
         if (lastPing_ == 0)
             return 0;
-        return static_cast<uint32_t>(Utils::AbTick() - lastPing_);
+        return Utils::TimePassed(lastPing_);
     }
 
     void Initialize();

@@ -397,7 +397,7 @@ bool Application::LoadMain()
     }
 
 
-    int64_t loadingTime = (Utils::AbTick() - startLoading);
+    uint32_t loadingTime = Utils::TimePassed(startLoading);
 
     PrintServerInfo();
 
@@ -567,7 +567,7 @@ unsigned Application::GetLoad()
 {
     static System::CpuUsage usage;
 
-    if ((Utils::AbTick() - lastLoadCalc_) > 1000 || loads_.empty())
+    if (Utils::TimePassed(lastLoadCalc_) > 1000 || loads_.empty())
     {
         lastLoadCalc_ = Utils::AbTick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();

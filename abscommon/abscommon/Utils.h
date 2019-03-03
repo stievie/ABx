@@ -16,6 +16,11 @@ inline int64_t AbTick()
     return int64_t(t.millitm) + int64_t(t.time) * 1000;
 }
 
+inline uint32_t TimePassed(int64_t last)
+{
+    return static_cast<uint32_t>(Utils::AbTick() - last);
+}
+
 template<typename Iter, typename RandomGenerator>
 Iter select_randomly(Iter start, Iter end, RandomGenerator& g)
 {

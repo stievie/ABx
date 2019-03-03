@@ -22,35 +22,18 @@ void Scheduler::SchedulerThread()
 
         if (events_.empty())
         {
-#ifdef DEBUG_SCHEDULER
-//            LOG_DEBUG << "No events" << std::endl;
-#endif
             signal_.wait(lockUnique);
         }
         else
         {
-#ifdef DEBUG_SCHEDULER
-//            LOG_DEBUG << "Waiting for event" << std::endl;
-            int64_t waitStart = Utils::AbTick();
-#endif
             ret = signal_.wait_until(
                 lockUnique,
                 events_.top()->GetCycle()
             );
-#ifdef DEBUG_SCHEDULER
-//            LOG_DEBUG << "Waited " << (Utils::AbTick() - waitStart) << std::endl;
-#endif
         }
-
-#ifdef DEBUG_SCHEDULER
-//        LOG_DEBUG << "Scheduler signaled" << std::endl;
-#endif
 
         if (ret == std::cv_status::timeout)
         {
-#ifdef DEBUG_SCHEDULER
-//            LOG_DEBUG << "Timeout" << std::endl;
-#endif
             // Timeout
             task = events_.top();
             events_.pop();

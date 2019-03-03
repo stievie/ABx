@@ -103,7 +103,7 @@ public:
     void Interrupt();
     AB::GameProtocol::SkillError GetLastError() const { return lastError_; }
 
-    bool IsUsing() const { return (startUse_ != 0) && (Utils::AbTick() - startUse_ < activation_); }
+    bool IsUsing() const { return (startUse_ != 0) && (Utils::TimePassed(startUse_) < static_cast<uint32_t>(activation_)); }
     bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type) const

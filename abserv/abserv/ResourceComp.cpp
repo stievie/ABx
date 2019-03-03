@@ -76,7 +76,7 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
             GetLastHpDecrease());
         if (lastDamage > 5000 && healthRegen_ >= 0.0f)
         {
-            if ((Utils::AbTick() - lastRegenIncrease_ > 2000) && GetHealthRegen() < 7)
+            if ((Utils::TimePassed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
             {
                 ++naturalHealthRegen_;
                 lastRegenIncrease_ = Utils::AbTick();
@@ -92,7 +92,7 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
 
 uint32_t ResourceComp::GetLastHpDecrease() const
 {
-    return static_cast<uint32_t>(Utils::AbTick() - lastHpDecrease_);
+    return Utils::TimePassed(lastHpDecrease_);
 }
 
 void ResourceComp::Update(uint32_t timeElapsed)
