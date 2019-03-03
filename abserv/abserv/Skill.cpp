@@ -79,6 +79,8 @@ void Skill::Update(uint32_t timeElapsed)
             startUse_ = 0;
             if (lastError_ != AB::GameProtocol::SkillErrorNone)
                 recharged_ = 0;
+            // On success sacrifice the HP
+            source->resourceComp_.SetHealth(Components::SetValueType::DecreasePercent, static_cast<uint16_t>(realHp_));
             if (source)
                 source->OnEndUseSkill(this);
             source_.reset();
@@ -129,7 +131,6 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, static_cast<uint16_t>(realEnergy_));
     source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, static_cast<uint16_t>(realAdrenaline_));
     source->resourceComp_.SetOvercast(Components::SetValueType::Increase, static_cast<uint16_t>(realOvercast_));
-    source->resourceComp_.SetHealth(Components::SetValueType::DecreasePercent, static_cast<uint16_t>(realHp_));
     source->OnStartUseSkill(this);
     return lastError_;
 }

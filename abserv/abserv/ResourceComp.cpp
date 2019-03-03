@@ -8,8 +8,13 @@ namespace Components {
 
 void ResourceComp::SetHealth(SetValueType t, int value)
 {
+    float oldVal = health_;
     if (SetValue(t, static_cast<float>(value), static_cast<float>(maxHealth_), health_))
+    {
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
+        if (health_ < oldVal)
+            lastHpDecrease_ = Utils::AbTick();
+    }
 }
 
 void ResourceComp::SetEnergy(SetValueType t, int value)
@@ -32,7 +37,7 @@ void ResourceComp::SetOvercast(SetValueType t, int value)
 
 void ResourceComp::SetHealthRegen(SetValueType t, int value)
 {
-    if (SetValue(t, static_cast<float>(value), MAX_HEALTH_REGEN, healthRegen_))
+    if (SetValue(t, static_cast<float>(value), static_cast<float>(MAX_HEALTH_REGEN), healthRegen_))
         dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
 }
 
@@ -60,15 +65,46 @@ void ResourceComp::SetMaxEnergy(int value)
     }
 }
 
+void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
+{
+    // When the actor didn't get damage or lost HP for 5 seconds, increase natural HP regen by 1 every 2 seconds.
+    // Maximum regen through natural regen is 7.
+    // https://wiki.guildwars.com/wiki/Health
+    if (!owner_.IsDead() && health_ < maxHealth_)
+    {
+        uint32_t lastDamage = std::min(owner_.damageComp_.NoDamageTime(),
+            GetLastHpDecrease());
+        if (lastDamage > 5000 && healthRegen_ >= 0.0f)
+        {
+            if ((Utils::AbTick() - lastRegenIncrease_ > 2000) && GetHealthRegen() < 7)
+            {
+                ++naturalHealthRegen_;
+                lastRegenIncrease_ = Utils::AbTick();
+                dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
+            }
+        }
+        else
+            naturalHealthRegen_ = 0;
+    }
+    else
+        naturalHealthRegen_ = 0;
+}
+
+uint32_t ResourceComp::GetLastHpDecrease() const
+{
+    return static_cast<uint32_t>(Utils::AbTick() - lastHpDecrease_);
+}
+
 void ResourceComp::Update(uint32_t timeElapsed)
 {
     if (owner_.undestroyable_ || owner_.IsDead())
         return;
 
+    UpdateRegen(timeElapsed);
     // 2 regen per sec
     const float sec = static_cast<float>(timeElapsed) / 1000.0f;
     // Jeder Pfeil erhöht oder senkt die Lebenspunkte um genau zwei pro Sekunde.
-    if (SetValue(SetValueType::Increase, (healthRegen_ * 2.0f) * sec, static_cast<float>(maxHealth_), health_))
+    if (SetValue(SetValueType::Increase, (static_cast<float>(GetHealthRegen()) * 2.0f) * sec, static_cast<float>(maxHealth_), health_))
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
     // Also bedeutet 1 Pfeil eine Regeneration (oder Degeneration) von 0,33 Energiepunkten pro Sekunde.
     if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, static_cast<float>(maxEnergy_), energy_))
@@ -119,7 +155,7 @@ void ResourceComp::Write(Net::NetworkMessage& message, bool ignoreDirty /* = fal
         message.AddByte(AB::GameProtocol::GameObjectResourceChange);
         message.Add<uint32_t>(owner_.id_);
         message.AddByte(AB::GameProtocol::ResourceTypeHealthRegen);
-        message.Add<int8_t>(static_cast<int8_t>(healthRegen_));
+        message.Add<int8_t>(static_cast<int8_t>(GetHealthRegen()));
     }
     if (ignoreDirty || (dirtyFlags_ & ResourceDirty::DirtyEnergyRegen) == ResourceDirty::DirtyEnergyRegen)
     {

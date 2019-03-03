@@ -328,6 +328,7 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->PartyInvitePlayer(targetId);
+        addPlayerEdit_->SetText(String::EMPTY);
     }
     else
         ShowError("This player is not online.");

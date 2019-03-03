@@ -34,7 +34,7 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
     
-  target:Resurrect(100, 100)
+  target:Resurrect(25, 100)
   return SkillErrorNone
 end
 

@@ -705,7 +705,7 @@ void ChatWindow::HandleTextFinished(StringHash, VariantMap& eventData)
                     history_.Erase(history_.Begin());
             }
             historyPosition_ = history_.Size(); // Reset
-            sender->SetText("");
+            sender->SetText(String::EMPTY);
             currentRow_.Clear();
         }
     }

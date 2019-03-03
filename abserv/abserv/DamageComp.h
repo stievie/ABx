@@ -22,8 +22,9 @@ public:
 
     void Update(uint32_t /* timeElapsed */) { }
     void ApplyDamage(DamageType type, int value);
+    void Touch();
     /// How long the actor didn't get damage in ms
-    inline uint32_t NoDamageTime() const;
+    uint32_t NoDamageTime() const;
 
     int64_t lastDamage_;
 };

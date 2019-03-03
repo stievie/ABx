@@ -13,7 +13,12 @@ void DamageComp::ApplyDamage(DamageType type, int value)
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, damage);
 }
 
-inline uint32_t DamageComp::NoDamageTime() const
+void DamageComp::Touch()
+{
+    lastDamage_ = Utils::AbTick();
+}
+
+uint32_t DamageComp::NoDamageTime() const
 {
     return static_cast<uint32_t>(Utils::AbTick() - lastDamage_);
 }

@@ -30,7 +30,7 @@ enum ResourceDirty
     DirtyMaxEnergy = 1 << 7
 };
 
-static constexpr float MAX_HEALTH_REGEN = 10.0f;
+static constexpr int MAX_HEALTH_REGEN = 10;
 static constexpr float MAX_ENERGY_REGEN = 10.0f;
 
 class ResourceComp
@@ -43,9 +43,12 @@ private:
     float overcast_;
     float healthRegen_;     // How many arrows right or left
     float energyRegen_;
+    int naturalHealthRegen_;
     int maxHealth_;
     int maxEnergy_;
     uint32_t dirtyFlags_;
+    int64_t lastHpDecrease_;
+    int64_t lastRegenIncrease_;
     template <typename T>
     static bool SetValue(SetValueType t, T value, T maxVal, T& out)
     {
@@ -70,7 +73,8 @@ private:
             }
             break;
         case SetValueType::DecreasePercent:
-            return SetValue(SetValueType::Decrease, static_cast<T>((static_cast<float>(maxVal) / 100.0f) * static_cast<float>(value)), maxVal, out);
+            // Percent of current value
+            return SetValue(SetValueType::Decrease, static_cast<T>((static_cast<float>(out) / 100.0f) * static_cast<float>(value)), maxVal, out);
         case SetValueType::Increase:
             // Must be positive value
             if (value < static_cast<T>(0))
@@ -86,10 +90,13 @@ private:
             }
             break;
         case SetValueType::IncreasePercent:
-            return SetValue(SetValueType::Increase, static_cast<T>((static_cast<float>(maxVal) / 100.0f) * static_cast<float>(value)), maxVal, out);
+            // Percent of current value
+            return SetValue(SetValueType::Increase, static_cast<T>((static_cast<float>(out) / 100.0f) * static_cast<float>(value)), maxVal, out);
         }
         return false;
     }
+    void UpdateRegen(uint32_t timeElapsed);
+    uint32_t GetLastHpDecrease() const;
 public:
     ResourceComp() = delete;
     explicit ResourceComp(Actor& owner) :
@@ -98,9 +105,12 @@ public:
         health_(0.0f),
         adrenaline_(0.0f),
         overcast_(0.0f),
-        healthRegen_(1.0f),
+        healthRegen_(0.0f),
         energyRegen_(2.0f),
-        dirtyFlags_(0)
+        naturalHealthRegen_(0),
+        dirtyFlags_(0),
+        lastHpDecrease_(0),
+        lastRegenIncrease_(0)
     { }
     ~ResourceComp() = default;
 
@@ -112,7 +122,7 @@ public:
     void SetAdrenaline(SetValueType t, int value);
     int GetOvercast() const { return static_cast<int>(overcast_); }
     void SetOvercast(SetValueType t, int value);
-    int GetHealthRegen() const { return static_cast<int>(healthRegen_); }
+    int GetHealthRegen() const { return static_cast<int>(healthRegen_) + naturalHealthRegen_; }
     void SetHealthRegen(SetValueType t, int value);
     int GetEnergyRegen() const { return static_cast<int>(energyRegen_); }
     void SetEnergyRegen(SetValueType t, int value);

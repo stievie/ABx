@@ -414,6 +414,7 @@ bool Actor::Die()
         resourceComp_.SetHealth(Components::SetValueType::Absolute, 0);
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
+        damageComp_.Touch();
         autorunComp_.autoRun_ = false;
         return true;
     }
@@ -428,6 +429,7 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
         resourceComp_.SetHealth(Components::SetValueType::Absolute, health);
         int energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, energy);
+        damageComp_.Touch();
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
         return true;
     }
