@@ -10,6 +10,7 @@
 	<attribute name="Image Rect" value="48 0 64 16" />
 	<attribute name="Border" value="4 4 4 4" />
 	<attribute name="Resize Border" value="8 8 8 8" />
+	<attribute name="Is Movable" value="true" />
 	<attribute name="Is Resizable" value="true" />
 	<element>
 		<attribute name="Name" value="ChatFilter" />
@@ -17,6 +18,7 @@
 		<attribute name="Max Size" value="2147483647 20" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Border" value="2 0 0 0" />
 		<element>
 			<attribute name="Min Anchor" value="0 0.5" />
 			<attribute name="Max Anchor" value="0 0.5" />
