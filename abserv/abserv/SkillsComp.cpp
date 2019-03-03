@@ -40,6 +40,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index)
     lastError_ = sb->UseSkill(index, target);
     usingSkill_ = lastError_ == AB::GameProtocol::SkillErrorNone;
     lastSkillIndex_ = index;
+    lastSkillTime_ = Utils::AbTick();
     startDirty_ = true;
     endDirty_ = false;
     return lastError_;

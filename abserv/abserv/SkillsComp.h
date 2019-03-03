@@ -19,6 +19,7 @@ private:
     bool endDirty_;
     bool usingSkill_;
     int32_t newRecharge_;
+    int64_t lastSkillTime_;
     std::weak_ptr<Skill> lastSkill_;
 public:
     SkillsComp() = delete;
@@ -29,7 +30,8 @@ public:
         startDirty_(false),
         endDirty_(false),
         usingSkill_(false),
-        newRecharge_(0)
+        newRecharge_(0),
+        lastSkillTime_(0)
     { }
     ~SkillsComp() = default;
     void Update(uint32_t timeElapsed);
@@ -37,6 +39,7 @@ public:
     void Cancel();
     bool IsUsing();
     void Write(Net::NetworkMessage& message);
+    int64_t GetLastSkillTime() const { return lastSkillTime_; }
 };
 
 }

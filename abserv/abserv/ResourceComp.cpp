@@ -72,9 +72,14 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
     // https://wiki.guildwars.com/wiki/Health
     if (!owner_.IsDead() && health_ < maxHealth_)
     {
-        uint32_t lastDamage = std::min(owner_.damageComp_.NoDamageTime(),
+        // Time last HP was reduced
+        uint32_t last = std::min(owner_.damageComp_.NoDamageTime(),
             GetLastHpDecrease());
-        if (lastDamage > 5000 && healthRegen_ >= 0.0f)
+        // Not using skills
+        last = std::min(Utils::TimePassed(owner_.skillsComp_.GetLastSkillTime()), last);
+        // Not attacking
+        last = std::min(Utils::TimePassed(owner_.attackComp_.GetLastAttackTime()), last);
+        if (last > 5000 && healthRegen_ >= 0.0f)
         {
             if ((Utils::TimePassed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
             {
