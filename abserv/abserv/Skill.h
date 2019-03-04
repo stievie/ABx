@@ -138,7 +138,7 @@ public:
     int32_t GetRealOvercast() const { return realOvercast_; }
     int32_t GetRealHp() const { return realHp_; }
 
-    void AddRecharge(int16_t ms);
+    void AddRecharge(int32_t ms);
 
     AB::Entities::Skill data_;
 

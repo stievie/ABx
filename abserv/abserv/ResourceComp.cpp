@@ -87,12 +87,16 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
                 lastRegenIncrease_ = Utils::AbTick();
                 dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
             }
+            return;
         }
-        else
-            naturalHealthRegen_ = 0;
     }
-    else
+
+    // Either we lost HP or HP regen is smaller 0 (Hex or something) -> no natural regen
+    if (naturalHealthRegen_ != 0)
+    {
         naturalHealthRegen_ = 0;
+        dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
+    }
 }
 
 uint32_t ResourceComp::GetLastHpDecrease() const

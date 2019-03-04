@@ -181,7 +181,7 @@ bool Skill::IsInRange(Actor* target)
     return false;
 }
 
-void Skill::AddRecharge(int16_t ms)
+void Skill::AddRecharge(int32_t ms)
 {
     recharge_ += ms;
 }
