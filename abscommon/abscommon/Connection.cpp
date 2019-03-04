@@ -135,7 +135,7 @@ void Connection::ParseHeader(const asio::error_code& error)
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 #ifdef DEBUG_NET
-    lastReadHeader_ = Utils::AbTick();
+    lastReadHeader_ = Utils::Tick();
 #endif
 
     if (error)
@@ -206,7 +206,7 @@ void Connection::ParsePacket(const asio::error_code& error)
     std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 #ifdef DEBUG_NET
-    lastReadBody_ = Utils::AbTick();
+    lastReadBody_ = Utils::Tick();
 #endif
 
     if (error)
@@ -289,7 +289,7 @@ void Connection::HandleReadTimeout(std::weak_ptr<Connection> weakConn, const asi
     if (auto conn = weakConn.lock())
     {
 #ifdef DEBUG_NET
-        int64_t now = Utils::AbTick();
+        int64_t now = Utils::Tick();
         LOG_DEBUG << "Read Timeout, closing connection. Error(" << error.value() << ") " << error.message()
             << ", lastreadheader " << (now - conn->lastReadHeader_)
             << ", lastreadbody " << (now - conn->lastReadBody_)

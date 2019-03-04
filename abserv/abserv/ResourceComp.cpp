@@ -13,7 +13,7 @@ void ResourceComp::SetHealth(SetValueType t, int value)
     {
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
         if (health_ < oldVal)
-            lastHpDecrease_ = Utils::AbTick();
+            lastHpDecrease_ = Utils::Tick();
     }
 }
 
@@ -84,7 +84,7 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
             if ((Utils::TimePassed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
             {
                 ++naturalHealthRegen_;
-                lastRegenIncrease_ = Utils::AbTick();
+                lastRegenIncrease_ = Utils::Tick();
                 dirtyFlags_ |= ResourceDirty::DirtyHealthRegen;
             }
             return;

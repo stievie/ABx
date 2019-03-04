@@ -9,13 +9,13 @@ namespace Components {
 void DamageComp::ApplyDamage(DamageType type, int value)
 {
     int damage = owner_.effectsComp_.GetDamage(type, value);
-    lastDamage_ = Utils::AbTick();
+    lastDamage_ = Utils::Tick();
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, damage);
 }
 
 void DamageComp::Touch()
 {
-    lastDamage_ = Utils::AbTick();
+    lastDamage_ = Utils::Tick();
 }
 
 uint32_t DamageComp::NoDamageTime() const

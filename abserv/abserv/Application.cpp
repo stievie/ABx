@@ -261,7 +261,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
 
 bool Application::LoadMain()
 {
-    int64_t startLoading = Utils::AbTick();
+    int64_t startLoading = Utils::Tick();
 
     LOG_INFO << "Loading..." << std::endl;
 
@@ -474,7 +474,7 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
     serv.temporary = temporary_;
-    serv.startTime = Utils::AbTick();
+    serv.startTime = Utils::Tick();
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
@@ -524,7 +524,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::AbTick();
+        serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
 
@@ -569,7 +569,7 @@ unsigned Application::GetLoad()
 
     if (Utils::TimePassed(lastLoadCalc_) > 1000 || loads_.empty())
     {
-        lastLoadCalc_ = Utils::AbTick();
+        lastLoadCalc_ = Utils::Tick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
         float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
         unsigned load = static_cast<uint8_t>(ld);

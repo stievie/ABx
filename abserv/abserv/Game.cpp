@@ -119,7 +119,7 @@ void Game::Start()
     if (state_ == ExecutionState::Startup)
     {
         auto config = GetSubsystem<ConfigManager>();
-        startTime_ = Utils::AbTick();
+        startTime_ = Utils::Tick();
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
         instanceData_.gameUuid = data_.uuid;
@@ -172,7 +172,7 @@ void Game::Update()
             gameStatus_->Add<int64_t>(startTime_);
         }
 
-        int64_t tick = Utils::AbTick();
+        int64_t tick = Utils::Tick();
         if (lastUpdate_ == 0)
             lastUpdate_ = tick - NETWORK_TICK;
         uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
@@ -223,7 +223,7 @@ void Game::Update()
         }
 
         // Schedule next update
-        const int64_t end = Utils::AbTick();
+        const int64_t end = Utils::Tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         // At least SCHEDULER_MINTICKS
         const int32_t sleepTime = std::max<int32_t>(SCHEDULER_MINTICKS, NETWORK_TICK - duration);

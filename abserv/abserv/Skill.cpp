@@ -69,9 +69,9 @@ void Skill::Update(uint32_t timeElapsed)
     AB_UNUSED(timeElapsed);
     if (startUse_ != 0)
     {
-        if (startUse_ + realActivation_ <= Utils::AbTick())
+        if (startUse_ + realActivation_ <= Utils::Tick())
         {
-            recharged_ = Utils::AbTick() + recharge_;
+            recharged_ = Utils::Tick() + recharge_;
             auto source = source_.lock();
             auto target = target_.lock();
             // A Skill may even fail here, e.g. when resurrecting an already resurrected target
@@ -114,7 +114,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
         return lastError_;
 
-    startUse_ = Utils::AbTick();
+    startUse_ = Utils::Tick();
 
     source_ = source;
     target_ = target;

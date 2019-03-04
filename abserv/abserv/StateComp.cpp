@@ -17,7 +17,7 @@ void StateComp::SetState(AB::GameProtocol::CreatureState state, bool apply /* = 
 
 void StateComp::Apply()
 {
-    lastStateChange_ = Utils::AbTick();
+    lastStateChange_ = Utils::Tick();
     currentState_ = newState_;
 }
 
@@ -25,7 +25,7 @@ void StateComp::Update(uint32_t)
 {
     if ((currentState_ > AB::GameProtocol::CreatureStateEmoteStart &&
         currentState_ < AB::GameProtocol::CreatureStateEmoteEnd)
-        && lastStateChange_ + 4000 < Utils::AbTick())
+        && lastStateChange_ + 4000 < Utils::Tick())
     {
         // Reset some emotes after 4 seconds
         SetState(AB::GameProtocol::CreatureStateIdle);

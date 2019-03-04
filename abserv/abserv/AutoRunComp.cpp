@@ -63,7 +63,7 @@ bool AutoRunComp::FindPath(const Math::Vector3& dest)
     if (succ && wp.size() != 0)
     {
         wayPoints_ = wp;
-        lastCalc_ = Utils::AbTick();
+        lastCalc_ = Utils::Tick();
         return true;
     }
     lastCalc_ = 0;

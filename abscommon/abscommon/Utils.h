@@ -9,7 +9,7 @@ namespace Utils {
 
 uint32_t AdlerChecksum(uint8_t* data, int32_t len);
 
-inline int64_t AbTick()
+inline int64_t Tick()
 {
     timeb t;
     ftime(&t);
@@ -18,7 +18,7 @@ inline int64_t AbTick()
 
 inline uint32_t TimePassed(int64_t last)
 {
-    return static_cast<uint32_t>(Utils::AbTick() - last);
+    return static_cast<uint32_t>(Utils::Tick() - last);
 }
 
 template<typename Iter, typename RandomGenerator>

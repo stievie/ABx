@@ -20,7 +20,7 @@ public:
         owner_(owner),
         currentState_(AB::GameProtocol::CreatureStateIdle),
         newState_(AB::GameProtocol::CreatureStateIdle),
-        lastStateChange_(Utils::AbTick())
+        lastStateChange_(Utils::Tick())
     { }
     ~StateComp() = default;
 

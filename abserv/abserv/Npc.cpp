@@ -251,7 +251,7 @@ void Npc::OnTrigger(Actor* other)
     if (!other)
         return;
 
-    int64_t tick = Utils::AbTick();
+    int64_t tick = Utils::Tick();
     int64_t lasTrigger = triggered_[other->id_];
     if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)
     {

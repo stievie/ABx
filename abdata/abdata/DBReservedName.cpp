@@ -82,7 +82,7 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT `uuid` FROM `reserved_names` WHERE ";
-    query << "(`expires` <> 0 AND `expires` < " << Utils::AbTick() << ")";
+    query << "(`expires` <> 0 AND `expires` < " << Utils::Tick() << ")";
 
     std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str());
     if (!result)
@@ -106,7 +106,7 @@ void DBReservedName::DeleteExpired(StorageProvider* sp)
     // Then delete from DB
     query.str("");
     query << "DELETE FROM `reserved_names` WHERE ";
-    query << "(`expires` <> 0 AND `expires` < " << Utils::AbTick() << ")";
+    query << "(`expires` <> 0 AND `expires` < " << Utils::Tick() << ")";
 
     DBTransaction transaction(db);
     if (!transaction.Begin())

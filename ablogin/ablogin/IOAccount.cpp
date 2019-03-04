@@ -57,7 +57,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     acc.email = email;
     acc.type = AB::Entities::AccountType::AccountTypeNormal;
     acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
-    acc.creation = Utils::AbTick();
+    acc.creation = Utils::Tick();
     if (!client->Create(acc))
     {
         LOG_ERROR << "Creating account with name " << name << " failed" << std::endl;
@@ -208,7 +208,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     ch.sex = sex;
     ch.pvp = isPvp;
     ch.level = 1;
-    ch.creation = Utils::AbTick();
+    ch.creation = Utils::Tick();
     ch.accountUuid = accountUuid;
     if (!client->Create(ch))
     {
@@ -264,7 +264,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         rn.isReserved = true;
         rn.reservedForAccountUuid = accountUuid;
         rn.name = ch.name;
-        rn.expires = Utils::AbTick() + NAME_RESERVATION_EXPIRES_MS;
+        rn.expires = Utils::Tick() + NAME_RESERVATION_EXPIRES_MS;
         client->Create(rn);
     }
     return succ;
@@ -289,7 +289,7 @@ bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forA
         // Temporarily reserved for an account
         if (rn.expires != 0)
         {
-            if (rn.expires < Utils::AbTick())
+            if (rn.expires < Utils::Tick())
             {
                 // Expired -> Delete it
                 client->Delete(rn);

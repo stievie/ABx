@@ -159,7 +159,6 @@
     <ClInclude Include="CreateHullAction.h" />
     <ClInclude Include="CreateModelAction.h" />
     <ClInclude Include="CreateSceneAction.h" />
-    <ClInclude Include="Hull.h" />
     <ClInclude Include="ObjWriter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -170,7 +169,6 @@
     <ClCompile Include="CreateHullAction.cpp" />
     <ClCompile Include="CreateModelAction.cpp" />
     <ClCompile Include="CreateSceneAction.cpp" />
-    <ClCompile Include="Hull.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjWriter.cpp" />
     <ClCompile Include="stdafx.cpp">

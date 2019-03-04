@@ -80,7 +80,7 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
         players_.erase(it);
 
         if (players_.size() == 0)
-            idleTime_ = Utils::AbTick();
+            idleTime_ = Utils::Tick();
     }
 }
 

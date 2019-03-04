@@ -49,7 +49,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
     m.toName = toName;
     m.subject = subject;
     m.message = message;
-    m.created = Utils::AbTick();
+    m.created = Utils::Tick();
 
     bool ret = client->Create(m);
     if (ret)

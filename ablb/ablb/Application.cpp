@@ -252,7 +252,7 @@ void Application::Run()
     serv.arguments = Utils::CombineString(arguments_, std::string(" "));
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
-    serv.startTime = Utils::AbTick();
+    serv.startTime = Utils::Tick();
     dataClient_->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
@@ -279,7 +279,7 @@ void Application::Stop()
     if (dataClient_->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::AbTick();
+        serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
         dataClient_->Update(serv);

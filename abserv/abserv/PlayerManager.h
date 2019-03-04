@@ -21,7 +21,7 @@ private:
     std::map<uint32_t, std::shared_ptr<Player>> players_;
 public:
     PlayerManager() :
-        idleTime_(Utils::AbTick())
+        idleTime_(Utils::Tick())
     {}
     ~PlayerManager()
     {
@@ -57,7 +57,7 @@ public:
     {
         if (players_.size() != 0)
             return 0;
-        return Utils::AbTick() - idleTime_;
+        return Utils::Tick() - idleTime_;
     }
 };
 

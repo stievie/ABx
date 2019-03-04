@@ -68,7 +68,7 @@ void Dispatcher::DispatcherThread()
     {
         taskLockUnique.lock();
 
-        const int64_t observationStart = Utils::AbTick();
+        const int64_t observationStart = Utils::Tick();
 
         if (tasks_.empty())
         {
@@ -93,7 +93,7 @@ void Dispatcher::DispatcherThread()
             // Execute the task
             if (!task->IsExpired())
             {
-                const int64_t startExecTime = Utils::AbTick();
+                const int64_t startExecTime = Utils::Tick();
 
                 (*task)();
 

@@ -47,7 +47,7 @@ void Effect::Update(uint32_t timeElapsed)
     auto target = target_.lock();
     if (haveUpdate_)
         luaState_["onUpdate"](source.get(), target.get(), timeElapsed);
-    if (endTime_ <= Utils::AbTick())
+    if (endTime_ <= Utils::Tick())
     {
         luaState_["onEnd"](source.get(), target.get());
         ended_ = true;
@@ -58,7 +58,7 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
     target_ = target;
     source_ = source;
-    startTime_ = Utils::AbTick();
+    startTime_ = Utils::Tick();
     ticks_ = luaState_["getDuration"](source.get(), target.get());
     endTime_ = startTime_ + ticks_;
     bool succ = luaState_["onStart"](source.get(), target.get());

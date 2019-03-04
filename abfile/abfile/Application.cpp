@@ -113,20 +113,20 @@ void Application::UpdateBytesSent(size_t bytes)
     if (bytesSent_ + bytes > std::numeric_limits<uint64_t>::max())
     {
         bytesSent_ = 0;
-        statusMeasureTime_ = Utils::AbTick();
+        statusMeasureTime_ = Utils::Tick();
         ++uptimeRound_;
     }
     bytesSent_ += bytes;
 
     // Calculate load
-    if ((Utils::AbTick() - lastLoadCalc_) > 1000 || loads_.empty())
+    if ((Utils::Tick() - lastLoadCalc_) > 1000 || loads_.empty())
     {
-        lastLoadCalc_ = Utils::AbTick();
+        lastLoadCalc_ = Utils::Tick();
 
         uint8_t load = 0;
         if (maxThroughput_ != 0)
         {
-            int64_t mesTime = Utils::AbTick() - statusMeasureTime_;
+            int64_t mesTime = Utils::Tick() - statusMeasureTime_;
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
             float ld = ((float)bytesPerSecond / (float)maxThroughput_) * 100.0f;
             load = static_cast<uint8_t>(ld);
@@ -320,7 +320,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
 void Application::Run()
 {
-    startTime_ = Utils::AbTick();
+    startTime_ = Utils::Tick();
     statusMeasureTime_ = startTime_;
     uptimeRound_ = 1;
     AB::Entities::Service serv;
@@ -381,7 +381,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::AbTick();
+        serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
 

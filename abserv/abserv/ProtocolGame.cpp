@@ -88,7 +88,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 
     player->Initialize();
     player->data_.currentMapUuid = mapUuid;
-    player->data_.lastLogin = Utils::AbTick();
+    player->data_.lastLogin = Utils::Tick();
     if (!uuids::uuid(instanceUuid).nil())
         player->data_.instanceUuid = instanceUuid;
     client->Update(player->data_);
@@ -107,7 +107,7 @@ void ProtocolGame::Logout()
 //    LOG_DEBUG << "Player " << player->data_.uuid << " logging out" << std::endl;
 #endif
 
-    player->logoutTime_ = Utils::AbTick();
+    player->logoutTime_ = Utils::Tick();
     IO::IOPlayer::SavePlayer(player.get());
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
     GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
@@ -390,7 +390,7 @@ void ProtocolGame::Connect()
         return;
     }
 
-    player->loginTime_ = Utils::AbTick();
+    player->loginTime_ = Utils::Tick();
 
     acceptPackets_ = true;
 

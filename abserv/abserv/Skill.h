@@ -97,14 +97,14 @@ public:
     void Disable(uint32_t ticks)
     {
         if (recharged_ == 0)
-            recharged_ = Utils::AbTick();
+            recharged_ = Utils::Tick();
         recharged_ += ticks;
     }
     void Interrupt();
     AB::GameProtocol::SkillError GetLastError() const { return lastError_; }
 
     bool IsUsing() const { return (startUse_ != 0) && (Utils::TimePassed(startUse_) < static_cast<uint32_t>(activation_)); }
-    bool IsRecharged() const { return recharged_ <= Utils::AbTick(); }
+    bool IsRecharged() const { return recharged_ <= Utils::Tick(); }
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type) const
     {

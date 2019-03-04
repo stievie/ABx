@@ -37,7 +37,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     // Some global function
     state["GameTick"] = kaguya::function([]
     {
-        return Utils::AbTick();
+        return Utils::Tick();
     });
     state["ServerId"] = kaguya::function([]
     {

@@ -99,7 +99,7 @@ public:
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
     const std::map<uint32_t, Player*>& GetPlayers() const { return players_; }
-    int64_t GetInstanceTime() const { return Utils::AbTick() - startTime_; }
+    int64_t GetInstanceTime() const { return Utils::Tick() - startTime_; }
     std::string GetName() const { return map_->data_.name; }
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);

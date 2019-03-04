@@ -302,7 +302,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 void Application::Run()
 {
     auto dataClient = GetSubsystem<IO::DataClient>();
-    startTime_ = Utils::AbTick();
+    startTime_ = Utils::Tick();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     dataClient->Read(serv);
@@ -342,7 +342,7 @@ void Application::Stop()
     if (dataClient->Read(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
-        serv.stopTime = Utils::AbTick();
+        serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
         dataClient->Update(serv);

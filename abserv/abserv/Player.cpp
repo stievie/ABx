@@ -64,7 +64,7 @@ void Player::Logout()
 
 void Player::Ping()
 {
-    lastPing_ = Utils::AbTick();
+    lastPing_ = Utils::Tick();
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::GamePong);
     WriteToOutput(msg);
@@ -572,9 +572,9 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 {
     // In seconds
     uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) +
-        static_cast<uint32_t>((Utils::AbTick() - loginTime_) / 1000);
+        static_cast<uint32_t>((Utils::Tick() - loginTime_) / 1000);
     // In seconds
-    uint32_t age = static_cast<uint32_t>((Utils::AbTick() - data_.creation) / 1000);
+    uint32_t age = static_cast<uint32_t>((Utils::Tick() - data_.creation) / 1000);
 
     Net::NetworkMessage nmsg;
     nmsg.AddByte(AB::GameProtocol::ServerMessage);
