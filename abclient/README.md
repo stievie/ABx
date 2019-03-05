@@ -20,6 +20,10 @@ from Microsoft and install it.
 3. Create a character
 4. Enter world
 
+You can run multiple instances of the client at the same time, however you can't
+login twice with the same account. If you want that multiple instances use different
+settings, use the `-prefpath` command line switch.
+
 ## Input
 
 ### Keys
