@@ -335,7 +335,17 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
     LevelManager* lm = GetSubsystem<LevelManager>();
     SharedPtr<Actor> a = lm->GetActorByName(addPlayerEdit_->GetText());
     if (a)
+    {
+        if (auto p = player_.Lock())
+        {
+            if (a->id_ == p->id_)
+            {
+                ShowError("You can not invite yourself!");
+                return;
+            }
+        }
         targetId = a->id_;
+    }
     if (targetId != 0)
     {
         FwClient* client = GetSubsystem<FwClient>();
@@ -607,6 +617,7 @@ void PartyWindow::SubscribeEvents()
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleCloseClicked));
     Button* leaveButton = dynamic_cast<Button*>(GetChild("LeaveButton", true));
     SubscribeToEvent(leaveButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleLeaveButtonClicked));
+
     SubscribeToEvent(AbEvents::E_LEAVEINSTANCE, URHO3D_HANDLER(PartyWindow, HandleLeaveInstance));
     SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(PartyWindow, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(PartyWindow, HandleObjectSelected));
