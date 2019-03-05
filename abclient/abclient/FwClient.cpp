@@ -126,6 +126,7 @@ bool FwClient::Start()
 
 void FwClient::Stop()
 {
+    PartyLeave();
     Logout();
 }
 

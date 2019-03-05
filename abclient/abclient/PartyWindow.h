@@ -55,6 +55,7 @@ private:
     void ClearInvites();
     void ShowError(const String& msg);
     bool IsFull() const { return members_.Size() >= partySize_; }
+    bool IsInvited(uint32_t actorId) { return invitees_.Contains(actorId); }
     PartyItem* GetItem(uint32_t actorId);
     void AddItem(UIElement* container, SharedPtr<Actor> actor, MemberType type);
 public:

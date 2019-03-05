@@ -360,6 +360,8 @@
     </element>
 
     <element type="GameMessageError" style="Text" auto="false">
+        <attribute name="Font" value="Font;Fonts/ClearSans-Bold.ttf" />
+        <attribute name="Font Size" value="14" />
         <attribute name="Color" value="0.8 0.1 0.1" />
     </element>
 

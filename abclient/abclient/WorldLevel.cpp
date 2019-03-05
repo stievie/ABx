@@ -632,6 +632,7 @@ void WorldLevel::HandleLogout(StringHash, VariantMap&)
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
     FwClient* net = context_->GetSubsystem<FwClient>();
+    net->PartyLeave();
     net->Logout();
     VariantMap& e = GetEventDataMap();
     using namespace AbEvents::SetLevel;
@@ -644,6 +645,7 @@ void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
     FwClient* net = context_->GetSubsystem<FwClient>();
+    net->PartyLeave();
     net->Logout();
     net->Login(net->accountName_, net->accountPass_);
 }

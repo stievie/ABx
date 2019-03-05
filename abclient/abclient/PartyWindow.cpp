@@ -124,7 +124,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
-    if (type == MemberType::Member)
+    if (type == MemberType::Member && IsInvited(actor->id_))
         RemoveInvite(actor->id_);
     UIElement* cont = container->CreateChild<UIElement>(actor->name_);
     cont->SetLayoutMode(LM_HORIZONTAL);
@@ -219,6 +219,7 @@ void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
             {
                 pi->SetActor(actor);
                 pi->SetEnabled(true);
+                members_[actor->id_] = actor;
                 return;
             }
         }
@@ -245,34 +246,40 @@ void PartyWindow::AddInvitation(SharedPtr<Actor> leader)
 void PartyWindow::RemoveMember(uint32_t actorId)
 {
     auto item = GetItem(actorId);
-    if (item)
+    if (item && item->type_ == MemberType::Member)
     {
         item->GetParent()->Remove();
         members_.Erase(actorId);
         UpdateAll();
     }
+    else
+        URHO3D_LOGWARNINGF("Member with ID %d not found", actorId);
 }
 
 void PartyWindow::RemoveInvite(uint32_t actorId)
 {
     auto item = GetItem(actorId);
-    if (item)
+    if (item && item->type_ == MemberType::Invitee)
     {
         item->GetParent()->Remove();
         invitees_.Erase(actorId);
         UpdateAll();
     }
+    else
+        URHO3D_LOGWARNINGF("Invitee with ID %d not found", actorId);
 }
 
 void PartyWindow::RemoveInvitation(uint32_t actorId)
 {
     auto item = GetItem(actorId);
-    if (item)
+    if (item && item->type_ == MemberType::Invitation)
     {
         item->GetParent()->Remove();
         invitations_.Erase(actorId);
         UpdateAll();
     }
+    else
+        URHO3D_LOGWARNINGF("Invitation with ID %d not found", actorId);
 }
 
 void PartyWindow::RemoveActor(uint32_t actorId)

@@ -275,7 +275,7 @@ void ClientApp::Start()
 void ClientApp::Stop()
 {
     FwClient* cli = context_->GetSubsystem<FwClient>();
-    cli->Logout();
+    cli->Stop();
     Options* options = GetSubsystem<Options>();
     options->Save();
     windowManager_->SaveWindows();
