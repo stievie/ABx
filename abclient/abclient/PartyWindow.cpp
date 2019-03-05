@@ -187,7 +187,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
         else if (actor->objectType_ != ObjectTypeSelf && IsLeader())
         {
             // If thats not we and we are the leader we can kick players
-            Button* kickButton = cont->CreateChild<Button>();
+            Button* kickButton = cont->CreateChild<Button>("KickButton");
             kickButton->SetVar("ID", actor->id_);
             kickButton->SetSize(20, 20);
             kickButton->SetMaxSize(20, 20);
@@ -214,12 +214,17 @@ void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
         UIElement* cont = memberContainer_->GetChild(actor->name_, true);
         if (cont)
         {
-            auto pi = dynamic_cast<PartyItem*>(cont->GetChild("HealthBar", true));
+            auto pi = cont->GetChildDynamicCast<PartyItem>("HealthBar", true);
             if (pi)
             {
                 pi->SetActor(actor);
                 pi->SetEnabled(true);
                 members_[actor->id_] = actor;
+                // Update ID of kick button
+                Button* kickButton = cont->GetChildDynamicCast<Button>("KickButton", false);
+                if (kickButton)
+                    // Only leader has that and only in outposts
+                    kickButton->SetVar("ID", actor->id_);
                 return;
             }
         }
@@ -335,7 +340,6 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
     {
         FwClient* client = GetSubsystem<FwClient>();
         client->PartyInvitePlayer(targetId);
-        addPlayerEdit_->SetText(String::EMPTY);
     }
     else
         ShowError("This player is not online.");
@@ -537,9 +541,6 @@ void PartyWindow::HandleRejectInvitationClicked(StringHash, VariantMap& eventDat
     using namespace Released;
     auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
     uint32_t actorId = elem->GetVar("ID").GetUInt();
-    auto item = GetItem(actorId);
-    if (!item)
-        return;
 
     FwClient* cli = GetSubsystem<FwClient>();
     cli->PartyRejectInvite(actorId);
@@ -550,9 +551,6 @@ void PartyWindow::HandleKickClicked(StringHash, VariantMap& eventData)
     using namespace Released;
     auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
     uint32_t actorId = elem->GetVar("ID").GetUInt();
-    auto item = GetItem(actorId);
-    if (!item)
-        return;
 
     FwClient* cli = GetSubsystem<FwClient>();
     cli->PartyKickPlayer(actorId);
@@ -669,37 +667,46 @@ PartyItem* PartyWindow::GetItem(uint32_t actorId)
     if (members_.Contains(actorId))
     {
         auto actor = members_[actorId].Lock();
-        UIElement* cont = memberContainer_->GetChild(actor->name_, true);
-        if (cont)
+        if (actor)
         {
-            auto pi = cont->GetChild("HealthBar", true);
-            if (pi)
-                return dynamic_cast<PartyItem*>(pi);
+            UIElement* cont = memberContainer_->GetChild(actor->name_, true);
+            if (cont)
+            {
+                auto pi = cont->GetChild("HealthBar", true);
+                if (pi)
+                    return dynamic_cast<PartyItem*>(pi);
+            }
         }
     }
     if (invitees_.Contains(actorId))
     {
         auto actor = invitees_[actorId].Lock();
-        UIElement* cont = inviteContainer_->GetChild(actor->name_);
-        if (cont)
+        if (actor)
         {
-            auto pi = cont->GetChild("HealthBar", true);
-            if (pi)
-                return dynamic_cast<PartyItem*>(pi);
+            UIElement* cont = inviteContainer_->GetChild(actor->name_);
+            if (cont)
+            {
+                auto pi = cont->GetChild("HealthBar", true);
+                if (pi)
+                    return dynamic_cast<PartyItem*>(pi);
+            }
         }
     }
     if (invitations_.Contains(actorId))
     {
         auto actor = invitations_[actorId].Lock();
-        UIElement* cont = invitationContainer_->GetChild(actor->name_);
-        if (cont)
+        if (actor)
         {
-            auto pi = cont->GetChild("HealthBar", true);
-            if (pi)
-                return dynamic_cast<PartyItem*>(pi);
+            UIElement* cont = invitationContainer_->GetChild(actor->name_);
+            if (cont)
+            {
+                auto pi = cont->GetChild("HealthBar", true);
+                if (pi)
+                    return dynamic_cast<PartyItem*>(pi);
+            }
         }
     }
-
+    URHO3D_LOGWARNINGF("Actor with ID %d not found", actorId);
     return nullptr;
 }
 
