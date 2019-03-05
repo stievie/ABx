@@ -135,6 +135,14 @@ bool GameManager::AddPlayer(const std::string& mapUuid, std::shared_ptr<Player> 
 
 void GameManager::CleanGames()
 {
+    if (games_.size() == 0)
+    {
+        // If no games we can reset IDs
+        gameIds_.Reset();
+        GameObject::objectIds_.Reset();
+        return;
+    }
+
     for (const auto& g : games_)
     {
         if (g.second->IsInactive())

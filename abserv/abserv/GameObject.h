@@ -53,8 +53,9 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
-private:
+public:
     static Utils::IdGenerator<uint32_t> objectIds_;
+private:
     std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(float x, float y, float z);

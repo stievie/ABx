@@ -17,6 +17,10 @@ public:
             id_ = std::numeric_limits<T>::min();
         return ++id_;
     }
+    void Reset()
+    {
+        id_ = std::numeric_limits<T>::min();
+    }
 private:
     std::atomic<T> id_;
 };
