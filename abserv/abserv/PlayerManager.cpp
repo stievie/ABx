@@ -100,6 +100,7 @@ void PlayerManager::CleanPlayers()
         std::shared_ptr<Player> p = (*i).second;
         ++i;
         // Calls PlayerManager::RemovePlayer()
+        p->PartyLeave();
         p->Logout();
    }
 }
@@ -108,7 +109,11 @@ void PlayerManager::KickPlayer(uint32_t playerId)
 {
     auto it = players_.find(playerId);
     if (it != players_.end())
-        (*it).second->Logout();
+    {
+        std::shared_ptr<Player> p = (*it).second;
+        p->PartyLeave();
+        p->Logout();
+    }
 }
 
 void PlayerManager::KickAllPlayers()
@@ -117,6 +122,7 @@ void PlayerManager::KickAllPlayers()
     {
         auto it = players_.begin();
         std::shared_ptr<Player> p = (*it).second;
+        p->PartyLeave();
         p->Logout();
     }
 }

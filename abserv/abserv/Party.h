@@ -15,7 +15,6 @@ class PartyChatChannel;
 class Party : public std::enable_shared_from_this<Party>
 {
 private:
-    static Utils::IdGenerator<uint32_t> partyIds_;
     std::vector<std::weak_ptr<Player>> members_;
     /// Used when forming a group. If the player accepts it is added to the members.
     std::vector<std::weak_ptr<Player>> invited_;
@@ -31,6 +30,7 @@ private:
     /// 1-base position
     size_t GetDataPos(Player* player);
 public:
+    static Utils::IdGenerator<uint32_t> partyIds_;
     static uint32_t GetNewId()
     {
         return partyIds_.Next();

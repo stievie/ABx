@@ -140,6 +140,7 @@ void GameManager::CleanGames()
         // If no games we can reset IDs
         gameIds_.Reset();
         GameObject::objectIds_.Reset();
+        Party::partyIds_.Reset();
         return;
     }
 
