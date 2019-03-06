@@ -138,6 +138,13 @@ public:
         return collisionShape_.get();
     }
     bool Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
+    /// Get the distance to another object
+    float GetDistance(GameObject* other) const
+    {
+        if (!other)
+            return std::numeric_limits<float>::max();
+        return transformation_.position_.Distance(other->transformation_.position_);
+    }
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {

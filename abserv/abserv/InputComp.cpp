@@ -2,6 +2,7 @@
 #include "InputComp.h"
 #include "Actor.h"
 #include "Game.h"
+#include "ConfigManager.h"
 
 namespace Game {
 namespace Components {
@@ -58,11 +59,20 @@ void InputComp::FollowObject(uint32_t targetId, Net::NetworkMessage&)
         owner_.followedObject_ = owner_.GetGame()->GetObjectById(targetId);
         if (auto f = owner_.followedObject_.lock())
         {
-            bool succ = owner_.autorunComp_.Follow(f);
-            if (succ)
+            static const float RANGE_TOUCH = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeTouch];
+            if (owner_.GetDistance(f.get()) > RANGE_TOUCH)
             {
-                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_.autoRun_ = true;
+                bool succ = owner_.autorunComp_.Follow(f);
+                if (succ)
+                {
+                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                    owner_.autorunComp_.autoRun_ = true;
+                }
+            }
+            else
+            {
+                // We are already there
+                owner_.OnArrived();
             }
         }
 #ifdef DEBUG_NAVIGATION

@@ -21,30 +21,31 @@ const Math::Vector3 GameObject::BodyOffset(0.0f, 1.0f, 0.0f);
 void GameObject::RegisterLua(kaguya::State& state)
 {
     state["GameObject"].setClass(kaguya::UserdataMetatable<GameObject>()
-        .addFunction("GetId", &GameObject::GetId)
-        .addFunction("GetGame", &GameObject::_LuaGetGame)
-        .addFunction("GetName", &GameObject::GetName)
+        .addFunction("GetId",            &GameObject::GetId)
+        .addFunction("GetGame",          &GameObject::_LuaGetGame)
+        .addFunction("GetName",          &GameObject::GetName)
         .addFunction("GetCollisionMask", &GameObject::GetCollisionMask)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
-        .addFunction("QueryObjects", &GameObject::_LuaQueryObjects)
-        .addFunction("Raycast", &GameObject::_LuaRaycast)
-        .addFunction("SetBoundingBox", &GameObject::_LuaSetBoundingBox)
-        .addFunction("GetVarString", &GameObject::_LuaGetVarString)
-        .addFunction("SetVarString", &GameObject::_LuaSetVarString)
-        .addFunction("GetVarNumber", &GameObject::_LuaGetVarNumber)
-        .addFunction("SetVarNumber", &GameObject::_LuaSetVarNumber)
+        .addFunction("QueryObjects",     &GameObject::_LuaQueryObjects)
+        .addFunction("Raycast",          &GameObject::_LuaRaycast)
+        .addFunction("SetBoundingBox",   &GameObject::_LuaSetBoundingBox)
+        .addFunction("GetVarString",     &GameObject::_LuaGetVarString)
+        .addFunction("SetVarString",     &GameObject::_LuaSetVarString)
+        .addFunction("GetVarNumber",     &GameObject::_LuaGetVarNumber)
+        .addFunction("SetVarNumber",     &GameObject::_LuaSetVarNumber)
 
-        .addFunction("SetPosition", &GameObject::_LuaSetPosition)
-        .addFunction("SetRotation", &GameObject::_LuaSetRotation)
-        .addFunction("SetScale", &GameObject::_LuaSetScale)
-        .addFunction("GetPosition", &GameObject::_LuaGetPosition)
-        .addFunction("GetRotation", &GameObject::_LuaGetRotation)
-        .addFunction("GetScale", &GameObject::_LuaGetScale)
+        .addFunction("SetPosition",      &GameObject::_LuaSetPosition)
+        .addFunction("SetRotation",      &GameObject::_LuaSetRotation)
+        .addFunction("SetScale",         &GameObject::_LuaSetScale)
+        .addFunction("GetPosition",      &GameObject::_LuaGetPosition)
+        .addFunction("GetRotation",      &GameObject::_LuaGetRotation)
+        .addFunction("GetScale",         &GameObject::_LuaGetScale)
+        .addFunction("GetDistance",      &GameObject::GetDistance)
 
         // Can return empty if up-cast is not possible
-        .addFunction("AsActor", &GameObject::_LuaAsActor)
-        .addFunction("AsNpc", &GameObject::_LuaAsNpc)
-        .addFunction("AsPlayer", &GameObject::_LuaAsPlayer)
+        .addFunction("AsActor",          &GameObject::_LuaAsActor)
+        .addFunction("AsNpc",            &GameObject::_LuaAsNpc)
+        .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
     );
 }
 
@@ -72,7 +73,7 @@ void GameObject::Update(uint32_t, Net::NetworkMessage&)
 
 bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
 {
-    if (!collisionShape_ || !other->GetCollisionShape())
+    if (!collisionShape_ || !other || !other->GetCollisionShape())
         return false;
 
     switch (other->GetCollisionShape()->shapeType_)
