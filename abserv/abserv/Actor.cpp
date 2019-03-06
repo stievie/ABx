@@ -159,8 +159,7 @@ void Actor::UseSkill(uint32_t index)
 
 void Actor::CancelAction()
 {
-    Utils::VariantMap data;
-    inputComp_.Add(InputType::Cancel, data);
+    inputComp_.Add(InputType::Cancel);
 }
 
 void Actor::_LuaSetState(int state)
