@@ -17,28 +17,16 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
     following_ = actor;
     maxDist_ = RANGE_TOUCH;
     if (auto f = following_.lock())
+    {
         return FindPath(f->transformation_.position_);
+    }
     return false;
 }
 
 bool AutoRunComp::Goto(const Math::Vector3& dest)
 {
     maxDist_ = 0.2f;
-    bool succ = FindPath(dest);
-/*    if (!succ || wayPoints_.size() == 0)
-    {
-        const Math::Vector3& pos = owner_.transformation_.position_;
-//        if (pos.Distance(dest) > maxDist_)
-        {
-#ifdef DEBUG_NAVIGATION
-            LOG_DEBUG << "Going directly from " << pos.ToString() << " to " << dest.ToString() << std::endl;
-#endif
-            wayPoints_.clear();
-            wayPoints_.push_back(dest);
-            return true;
-        }
-    }*/
-    return succ;
+    return FindPath(dest);
 }
 
 bool AutoRunComp::FindPath(const Math::Vector3& dest)

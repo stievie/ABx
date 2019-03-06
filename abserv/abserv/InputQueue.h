@@ -12,7 +12,7 @@ enum class InputType
     Turn,
     UseSkill,
     Attack,
-    Cancel,        // Cancel skill/attack
+    Cancel,        // Cancel skill/attack/follow
     Select,
     ClickObject,
     Direction,

@@ -59,20 +59,11 @@ void InputComp::FollowObject(uint32_t targetId, Net::NetworkMessage&)
         owner_.followedObject_ = owner_.GetGame()->GetObjectById(targetId);
         if (auto f = owner_.followedObject_.lock())
         {
-            static const float RANGE_TOUCH = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeTouch];
-            if (owner_.GetDistance(f.get()) > RANGE_TOUCH)
+            bool succ = owner_.autorunComp_.Follow(f);
+            if (succ)
             {
-                bool succ = owner_.autorunComp_.Follow(f);
-                if (succ)
-                {
-                    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                    owner_.autorunComp_.autoRun_ = true;
-                }
-            }
-            else
-            {
-                // We are already there
-                owner_.OnArrived();
+                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                owner_.autorunComp_.autoRun_ = true;
             }
         }
 #ifdef DEBUG_NAVIGATION
@@ -212,11 +203,10 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Cancel:
-            // Either skill or attack
-            if (owner_.skillsComp_.IsUsing())
-                owner_.skillsComp_.Cancel();
-            else if (owner_.attackComp_.IsAttacking())
-                owner_.attackComp_.Cancel();
+            // Cancel all
+            owner_.skillsComp_.Cancel();
+            owner_.attackComp_.Cancel();
+            owner_.autorunComp_.Reset();
             break;
         case InputType::Command:
         {

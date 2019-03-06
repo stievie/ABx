@@ -212,6 +212,8 @@ public:
     void FollowObject(std::shared_ptr<GameObject> object);
     void FollowObject(uint32_t objectId);
     void UseSkill(uint32_t index);
+    /// Cancel attack, use skill, follow
+    void CancelAction();
 
     std::unique_ptr<SkillBar> skills_;
 

@@ -53,6 +53,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("Die", &Actor::Die)
         .addFunction("Resurrect", &Actor::Resurrect)
         .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
+        .addFunction("CancelAction", &Actor::CancelAction)
 
         .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
     );
@@ -154,6 +155,12 @@ void Actor::UseSkill(uint32_t index)
     Utils::VariantMap data;
     data[InputDataSkillIndex] = static_cast<uint8_t>(index);
     inputComp_.Add(InputType::UseSkill, data);
+}
+
+void Actor::CancelAction()
+{
+    Utils::VariantMap data;
+    inputComp_.Add(InputType::Cancel, data);
 }
 
 void Actor::_LuaSetState(int state)
