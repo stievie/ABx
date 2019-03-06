@@ -353,27 +353,28 @@ void Actor::UpdateRanges()
             if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
             {
                 auto so = o->shared_from_this();
-                Math::Vector3 objectPos = o->GetPosition();
-                Math::Vector3 myPos = GetPosition();
-                if (myPos.Distance(objectPos) <= RANGE_AGGRO)
+                const Math::Vector3 objectPos = o->GetPosition();
+                const Math::Vector3 myPos = GetPosition();
+                const float dist = myPos.Distance(objectPos);
+                if (dist <= RANGE_AGGRO)
                     ranges_[Ranges::Aggro].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_COMPASS)
+                if (dist <= RANGE_COMPASS)
                     ranges_[Ranges::Compass].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_SPIRIT)
+                if (dist <= RANGE_SPIRIT)
                     ranges_[Ranges::Spirit].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_EARSHOT)
+                if (dist <= RANGE_EARSHOT)
                     ranges_[Ranges::Earshot].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_CASTING)
+                if (dist <= RANGE_CASTING)
                     ranges_[Ranges::Casting].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_PROJECTILE)
+                if (dist <= RANGE_PROJECTILE)
                     ranges_[Ranges::Projectile].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_HALF)
+                if (dist <= RANGE_HALF)
                     ranges_[Ranges::HalfCompass].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_TOUCH)
+                if (dist <= RANGE_TOUCH)
                     ranges_[Ranges::Touch].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_ADJECENT)
+                if (dist <= RANGE_ADJECENT)
                     ranges_[Ranges::Adjecent].push_back(so);
-                if (myPos.Distance(objectPos) <= RANGE_VISIBLE)
+                if (dist <= RANGE_VISIBLE)
                     ranges_[Ranges::Visible].push_back(so);
             }
         }
