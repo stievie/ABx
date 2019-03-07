@@ -2,7 +2,6 @@
 #include "InputComp.h"
 #include "Actor.h"
 #include "Game.h"
-#include "ConfigManager.h"
 
 namespace Game {
 namespace Components {
@@ -170,7 +169,14 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Attack:
             if (!owner_.IsDead())
-                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
+            {
+                if (auto target = owner_.selectedObject_.lock())
+                {
+                    auto actor = std::dynamic_pointer_cast<Actor>(target);
+                    if (actor)
+                        owner_.attackComp_.Attack(actor);
+                }
+            }
             break;
         case InputType::UseSkill:
         {

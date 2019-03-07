@@ -110,6 +110,8 @@ void EffectsComp::Write(Net::NetworkMessage& message)
     {
         for (const auto& effect : removedEffects_)
         {
+            if (effect->IsInternal())
+                continue;
             message.AddByte(AB::GameProtocol::GameObjectEffectRemoved);
             message.Add<uint32_t>(owner_.id_);
             message.Add<uint32_t>(effect->data_.index);
@@ -121,6 +123,8 @@ void EffectsComp::Write(Net::NetworkMessage& message)
     {
         for (const auto& effect : addedEffects_)
         {
+            if (effect->IsInternal())
+                continue;
             message.AddByte(AB::GameProtocol::GameObjectEffectAdded);
             message.Add<uint32_t>(owner_.id_);
             message.Add<uint32_t>(effect->data_.index);
@@ -130,7 +134,8 @@ void EffectsComp::Write(Net::NetworkMessage& message)
     }
 }
 
-void EffectsComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+void EffectsComp::GetSkillCost(Skill* skill,
+    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
     // Since equipments, attributes etc. add (hidden) effects to the actor, we need only ask the effects component, I think...
     for (const auto& effect : effects_)
@@ -139,9 +144,12 @@ void EffectsComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energ
     }
 }
 
-int EffectsComp::GetDamage(DamageType type, int value)
+void EffectsComp::GetDamage(DamageType type, int32_t& value)
 {
-    return 0;
+    for (const auto& effect : effects_)
+    {
+        effect->GetDamage(type, value);
+    }
 }
 
 }

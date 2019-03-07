@@ -33,8 +33,15 @@ bool Effect::LoadScript(const std::string& fileName)
         return false;
 
     persistent_ = luaState_["isPersistent"];
-    haveUpdate_ = ScriptManager::IsFunction(luaState_, "onUpdate");
-    haveSkillCost_ = ScriptManager::IsFunction(luaState_, "getSkillCost");
+    if (ScriptManager::IsBool(luaState_, "internal"))
+        internal_ = luaState_["internal"];
+
+    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
+        functions_ |= FunctionUpdate;
+    if (ScriptManager::IsFunction(luaState_, "getSkillCost"))
+        functions_ |= FunctionGetSkillCost;
+    if (ScriptManager::IsFunction(luaState_, "getDamage"))
+        functions_ |= FunctionGetDamage;
     return true;
 }
 
@@ -45,7 +52,7 @@ void Effect::Update(uint32_t timeElapsed)
 
     auto source = source_.lock();
     auto target = target_.lock();
-    if (haveUpdate_)
+    if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](source.get(), target.get(), timeElapsed);
     if (endTime_ <= Utils::Tick())
     {
@@ -79,13 +86,22 @@ void Effect::Remove()
     cancelled_ = true;
 }
 
-void Effect::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+void Effect::GetSkillCost(Skill* skill,
+    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
-    if (!haveSkillCost_)
+    if (!HaveFunction(FunctionGetSkillCost))
         return;
 
     kaguya::tie(activation, energy, adrenaline, overcast, hp) =
         luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
+}
+
+void Effect::GetDamage(DamageType type, int32_t& value)
+{
+    if (!HaveFunction(FunctionGetDamage))
+        return;
+
+    value = luaState_["getDamage"](static_cast<int>(type), value);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

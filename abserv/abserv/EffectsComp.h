@@ -40,8 +40,9 @@ public:
     /// \param adrenaline Adrenaline cost
     /// \param overcast Causes overcast
     /// \param hp HP scarifies in percent of max health
-    void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
-    int GetDamage(DamageType type, int value);
+    void GetSkillCost(Skill* skill,
+        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
+    void GetDamage(DamageType type, int32_t& value);
 
     EffectList effects_;
 };

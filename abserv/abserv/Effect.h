@@ -4,6 +4,7 @@
 #include <forward_list>
 #include <AB/Entities/Effect.h>
 #include "Script.h"
+#include "Damage.h"
 
 namespace Game {
 
@@ -22,23 +23,35 @@ enum EffectAttr : uint8_t
 class Effect
 {
 private:
+    enum Function : uint32_t
+    {
+        FunctionNone         = 0,
+        FunctionUpdate       = 1,
+        FunctionGetSkillCost = 1 << 1,
+        FunctionGetDamage    = 1 << 2,
+    };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     std::weak_ptr<Actor> target_;
     std::weak_ptr<Actor> source_;
     bool persistent_;
-    bool haveUpdate_;
-    bool haveSkillCost_;
+    uint32_t functions_;
+    /// Internal effects are not visible to the player, e.g. Effects from the equipments (+armor from Armor, Shield...).
+    bool internal_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
+    bool HaveFunction(Function func)
+    {
+        return (functions_ & func) == func;
+    }
 public:
     static void RegisterLua(kaguya::State& state);
 
     Effect() = delete;
     explicit Effect(const AB::Entities::Effect& effect) :
         persistent_(false),
-        haveUpdate_(false),
-        haveSkillCost_(false),
+        functions_(FunctionNone),
+        internal_(false),
         data_(effect),
         startTime_(0),
         endTime_(0),
@@ -53,11 +66,12 @@ public:
     Effect& operator=(const Effect&) = delete;
     ~Effect() = default;
 
-    /// Gets saved to the DB when player logs out
+    /// Gets saved to the DB when player logs out, e.g. Dishonored.
     bool IsPersistent() const
     {
         return persistent_;
     }
+    bool IsInternal() const { return internal_; }
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
@@ -71,7 +85,10 @@ public:
     /// \param adrenaline Adrenaline cost
     /// \param overcast Causes overcast
     /// \param hp HP scarifies in percent of max health
-    void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
+    void GetSkillCost(Skill* skill,
+        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
+    /// Get real damage. It may be in-/decreased by some effects.
+    void GetDamage(DamageType type, int32_t& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

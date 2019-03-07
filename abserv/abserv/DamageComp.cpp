@@ -8,7 +8,8 @@ namespace Components {
 
 void DamageComp::ApplyDamage(DamageType type, int value)
 {
-    int damage = owner_.effectsComp_.GetDamage(type, value);
+    int damage = value;
+    owner_.effectsComp_.GetDamage(type, damage);
     lastDamage_ = Utils::Tick();
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, damage);
 }
