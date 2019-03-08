@@ -21,6 +21,9 @@ void Npc::InitializeLua()
 void Npc::RegisterLua(kaguya::State& state)
 {
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
+        .addFunction("IsTrigger", &Npc::IsTrigger)
+        .addFunction("SetTrigger", &Npc::SetTrigger)
+
         .addFunction("SetName", &Npc::SetName)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
@@ -34,7 +37,8 @@ Npc::Npc() :
     Actor(),
     behaviorTree_(""),
     luaInitialized_(false),
-    aiCharacter_(nullptr)
+    aiCharacter_(nullptr),
+    triggerComp_(nullptr)         // By default its not a trigger
 {
     // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Party::GetNewId();
@@ -241,33 +245,17 @@ void Npc::OnCollide(Actor* other)
     if (luaInitialized_ && other)
         ScriptManager::CallFunction(luaState_, "onCollide", other);
 
-    if (trigger_ && other)
-        OnTrigger(other);
+    if (triggerComp_)
+        triggerComp_->OnCollide(other);
 }
 
 void Npc::OnTrigger(Actor* other)
 {
+    // Called from triggerComp_
     Actor::OnTrigger(other);
-    if (!other)
-        return;
 
-    int64_t tick = Utils::Tick();
-    int64_t lasTrigger = triggered_[other->id_];
-    if (static_cast<uint32_t>(tick - lasTrigger) > retriggerTimeout_)
-    {
-        if (luaInitialized_)
-            ScriptManager::CallFunction(luaState_, "onTrigger", other);
-    }
-    triggered_[other->id_] = tick;
-
-    // Delete old
-    for (auto it = triggered_.begin(); it != triggered_.end(); )
-    {
-        if (tick - (*it).second > 10000)
-            triggered_.erase(it++);
-        else
-            ++it;
-    }
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onTrigger", other);
 }
 
 void Npc::OnEndUseSkill(Skill* skill)

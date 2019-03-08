@@ -5,6 +5,7 @@
 #include "Script.h"
 #include "AiLoader.h"
 #include "AiCharacter.h"
+#include "TriggerComp.h"
 
 namespace Game {
 
@@ -13,6 +14,7 @@ class Map;
 
 class Npc final : public Actor
 {
+    friend class Components::TriggerComp;
 private:
     friend class AI::AiCharacter;
     std::string name_;
@@ -71,6 +73,28 @@ public:
     bool SetBehaviour(const std::string& name);
     const std::string& GetBehaviour() const { return behaviorTree_; }
     float GetAggro(Actor* other);
+    uint32_t GetRetriggerTimout() const
+    {
+        if (!triggerComp_)
+            return 0;
+        return triggerComp_->retriggerTimeout_;
+    }
+    void SetRetriggerTimout(uint32_t value)
+    {
+        if (!triggerComp_)
+            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+        triggerComp_->retriggerTimeout_ = value;
+    }
+    bool IsTrigger() const
+    {
+        return triggerComp_ && triggerComp_->trigger_;
+    }
+    void SetTrigger(bool value)
+    {
+        if (!triggerComp_)
+            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+        triggerComp_->trigger_ = value;
+    }
 
     void Say(ChatType channel, const std::string& message);
 
@@ -80,6 +104,8 @@ public:
     void OnTrigger(Actor* other) override;
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
+
+    std::unique_ptr<Components::TriggerComp> triggerComp_;
 };
 
 }

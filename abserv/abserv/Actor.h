@@ -51,11 +51,6 @@ protected:
     std::vector<Math::Vector3> wayPoints_;
     std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
 
-    /// Time in ms the same Actor can retrigger
-    uint32_t retriggerTimeout_;
-    std::map<uint32_t, int64_t> triggered_;
-    /// If true fires onTrigger
-    bool trigger_;
     Math::Vector3 homePos_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message)
@@ -82,22 +77,6 @@ public:
     }
     const Math::Vector3& GetHomePos() const { return homePos_; }
     bool GotoHomePos();
-    uint32_t GetRetriggerTimout() const
-    {
-        return retriggerTimeout_;
-    }
-    void SetRetriggerTimout(uint32_t value)
-    {
-        retriggerTimeout_ = value;
-    }
-    bool IsTrigger() const
-    {
-        return trigger_;
-    }
-    void SetTrigger(bool value)
-    {
-        trigger_ = value;
-    }
     /**
     * @brief Allows to execute a functor/lambda on the visible objects
     * @note This is thread safe

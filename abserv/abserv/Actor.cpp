@@ -18,9 +18,6 @@ namespace Game {
 void Actor::RegisterLua(kaguya::State& state)
 {
     state["Actor"].setClass(kaguya::UserdataMetatable<Actor, GameObject>()
-        .addFunction("IsTrigger", &Actor::IsTrigger)
-        .addFunction("SetTrigger", &Actor::SetTrigger)
-
         .addFunction("GetLevel", &Actor::GetLevel)
         .addFunction("GetSkillBar", &Actor::GetSkillBar)
         .addFunction("GetSelectedObject", &Actor::_LuaGetSelectedObject)
@@ -72,8 +69,7 @@ Actor::Actor() :
     skillsComp_(*this),
     inputComp_(*this),
     damageComp_(*this),
-    undestroyable_(false),
-    retriggerTimeout_(1000)
+    undestroyable_(false)
 {
     // Actor always collides
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);

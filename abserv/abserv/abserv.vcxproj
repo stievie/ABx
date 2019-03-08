@@ -258,6 +258,7 @@
     <ClInclude Include="TemplateEncoder.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainPatch.h" />
+    <ClInclude Include="TriggerComp.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +337,7 @@
     <ClCompile Include="TemplateEncoder.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainPatch.cpp" />
+    <ClCompile Include="TriggerComp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\abscommon\abscommon\abscommon.vcxproj">
