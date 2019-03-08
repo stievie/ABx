@@ -9,6 +9,7 @@
 #include "StringUtils.h"
 #include "Script.h"
 #include "Subsystems.h"
+#include "Item.h"
 
 namespace Game {
 
@@ -82,6 +83,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     // Register all used classes
     GameObject::RegisterLua(state);
     Actor::RegisterLua(state);
+    Item::RegisterLua(state);
 
     Effect::RegisterLua(state);
     Skill::RegisterLua(state);

@@ -24,6 +24,9 @@ public:
     explicit EffectsComp(Actor& owner) :
         owner_(owner)
     { }
+    // non-copyable
+    EffectsComp(const EffectsComp&) = delete;
+    EffectsComp& operator=(const EffectsComp&) = delete;
     ~EffectsComp() = default;
 
     void AddEffect(std::shared_ptr<Actor> source, uint32_t index);

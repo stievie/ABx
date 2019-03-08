@@ -4,8 +4,12 @@
 namespace Game {
 namespace Components {
 
-void EquipComp::Update(uint32_t /* timeElapsed */)
+void EquipComp::Update(uint32_t timeElapsed)
 {
+    for (const auto& item : items_)
+    {
+        item.second->Update(timeElapsed);
+    }
 }
 
 }

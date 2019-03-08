@@ -226,6 +226,7 @@
     <ClInclude Include="IONavMesh.h" />
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="IOTerrain.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="PartyManager.h" />
     <ClInclude Include="ResourceComp.h" />
     <ClInclude Include="SceneViewer.h" />
@@ -298,6 +299,7 @@
     <ClCompile Include="IONavMesh.cpp" />
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="IOTerrain.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="PartyManager.cpp" />
     <ClCompile Include="ResourceComp.cpp" />
     <ClCompile Include="SceneViewer.cpp" />
