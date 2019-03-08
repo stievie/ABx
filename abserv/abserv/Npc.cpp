@@ -21,6 +21,8 @@ void Npc::InitializeLua()
 void Npc::RegisterLua(kaguya::State& state)
 {
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
+        .addFunction("IsServerOnly", &Npc::IsServerOnly)
+        .addFunction("SetServerOnly", &Npc::SetServerOnly)
         .addFunction("IsTrigger", &Npc::IsTrigger)
         .addFunction("SetTrigger", &Npc::SetTrigger)
 
@@ -35,9 +37,11 @@ void Npc::RegisterLua(kaguya::State& state)
 
 Npc::Npc() :
     Actor(),
+    serverOnly_(false),
     behaviorTree_(""),
     luaInitialized_(false),
     aiCharacter_(nullptr),
+    functions_(FunctionNone),
     triggerComp_(nullptr)         // By default its not a trigger
 {
     // Party and Groups must be unique, i.e. share the same ID pool.
@@ -91,6 +95,10 @@ bool Npc::LoadScript(const std::string& fileName)
 
     if (ScriptManager::IsString(luaState_, "behavior"))
         behaviorTree_ = (const char*)luaState_["behavior"];
+    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
+        functions_ |= FunctionUpdate;
+    if (ScriptManager::IsFunction(luaState_, "onTrigger"))
+        functions_ |= FunctionOnTrigger;
 
     bool ret = luaState_["onInit"]();
     if (ret)
@@ -129,7 +137,7 @@ void Npc::Shutdown()
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
-    if (luaInitialized_)
+    if (luaInitialized_ && HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
 }
 
@@ -196,6 +204,12 @@ float Npc::GetAggro(Actor* other)
     return (1.0f / dist) * rval;
 }
 
+void Npc::WriteSpawnData(Net::NetworkMessage& msg)
+{
+    if (!serverOnly_)
+        Actor::WriteSpawnData(msg);
+}
+
 void Npc::Say(ChatType channel, const std::string& message)
 {
     switch (channel)
@@ -254,7 +268,7 @@ void Npc::OnTrigger(Actor* other)
     // Called from triggerComp_
     Actor::OnTrigger(other);
 
-    if (luaInitialized_)
+    if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
         ScriptManager::CallFunction(luaState_, "onTrigger", other);
 }
 

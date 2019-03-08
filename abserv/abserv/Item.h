@@ -5,6 +5,13 @@
 
 namespace Game {
 
+enum class ItemUpgrade
+{
+    Pefix = 0,           // Insignia for armor, prefix for weapon
+    Suffix,              // Rune for armor, suffix for weapon
+    Inscription          // For lead/off hand weapons
+};
+
 class Item
 {
 private:
@@ -17,6 +24,7 @@ private:
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     uint32_t functions_;
+    std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
     void InitializeLua();
     bool HaveFunction(Function func)
     {
@@ -40,6 +48,8 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
+    /// Upgrade this item
+    void Upgrade(ItemUpgrade type, uint32_t index);
 
     AB::Entities::Item data_;
 };

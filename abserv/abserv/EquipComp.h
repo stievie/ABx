@@ -16,18 +16,6 @@ enum class ItemPos
     ArmorLegs,
     ArmorFeet,
 
-    InsigniaHead,
-    InsigniaChest,
-    InsigniaHands,
-    InsigniaLegs,
-    InsigniaFeet,
-
-    RuneHead,
-    RuneChest,
-    RuneHands,
-    RuneLegs,
-    RuneFeet,
-
     WeaponLeadHand,
     WeaponOffHand
 };
@@ -50,6 +38,8 @@ public:
     ~EquipComp() = default;
 
     void Update(uint32_t timeElapsed);
+
+    void Equip(ItemPos pos, uint32_t index);
 };
 
 }

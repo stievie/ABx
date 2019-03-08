@@ -12,5 +12,9 @@ void EquipComp::Update(uint32_t timeElapsed)
     }
 }
 
+void EquipComp::Equip(ItemPos pos, uint32_t index)
+{
+}
+
 }
 }

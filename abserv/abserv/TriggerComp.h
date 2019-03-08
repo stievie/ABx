@@ -7,6 +7,7 @@ class Npc;
 
 namespace Components {
 
+/// NPCs can be used a trigger box. This component calls NPC::OnTrigger() wehen it collides with the collision shape.
 class TriggerComp
 {
 private:

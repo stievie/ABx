@@ -16,18 +16,32 @@ class Npc final : public Actor
 {
     friend class Components::TriggerComp;
 private:
+    enum Function : uint32_t
+    {
+        FunctionNone = 0,
+        FunctionUpdate = 1,
+        FunctionOnTrigger = 1 << 1,
+    };
+
     friend class AI::AiCharacter;
+    /// This NPC exists only on the server, i.e. is not spawned on the client, e.g. a trigger box.
+    bool serverOnly_;
     std::string name_;
     uint32_t level_;
     uint32_t modelIndex_;
     AB::Entities::CharacterSex sex_;
-    // Group is like a party and they need unique IDs.
-    // If this NPC belongs to a party with players this must be the PartyID.
+    /// Group is like a party and they need unique IDs.
+    /// If this NPC belongs to a party with players this must be the PartyID.
     uint32_t groupId_;
     std::string behaviorTree_;
     std::shared_ptr<Script> script_;
     std::shared_ptr<AI::AiCharacter> aiCharacter_;
     std::shared_ptr<ai::AI> ai_;
+    uint32_t functions_;
+    bool HaveFunction(Function func)
+    {
+        return (functions_ & func) == func;
+    }
 protected:
     kaguya::State luaState_;
     bool luaInitialized_;
@@ -73,6 +87,8 @@ public:
     bool SetBehaviour(const std::string& name);
     const std::string& GetBehaviour() const { return behaviorTree_; }
     float GetAggro(Actor* other);
+    bool IsServerOnly() const { return serverOnly_; }
+    void SetServerOnly(bool value) { serverOnly_ = value; }
     uint32_t GetRetriggerTimout() const
     {
         if (!triggerComp_)
@@ -95,6 +111,7 @@ public:
             triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
         triggerComp_->trigger_ = value;
     }
+    void WriteSpawnData(Net::NetworkMessage& msg) override;
 
     void Say(ChatType channel, const std::string& message);
 

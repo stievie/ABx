@@ -35,6 +35,13 @@ void Item::Update(uint32_t timeElapsed)
 {
     if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->Update(timeElapsed);
+}
+
+void Item::Upgrade(ItemUpgrade type, uint32_t index)
+{
 }
 
 }
