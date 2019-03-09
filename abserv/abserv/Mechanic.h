@@ -32,8 +32,8 @@ static constexpr uint32_t ATTACK_SPEED_DAGGERS    = 1330;
 static constexpr uint32_t ATTACK_SPEED_SCYTE      = 1500;
 static constexpr uint32_t ATTACK_SPEED_SPEAR      = 1500;
 
-static constexpr float MAX_IAS = 1.33f;
-static constexpr float MAX_DAS = 0.5f;
+static constexpr float MAX_IAS = 1.33f;                    // Increased Attack Speed
+static constexpr float MAX_DAS = 0.5f;                     // Decreased Attack Speed
 
 // Ranges
 static constexpr float RANGE_BASE         = 80.0f;
