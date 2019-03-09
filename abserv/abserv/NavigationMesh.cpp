@@ -42,9 +42,7 @@ bool NavigationMesh::FindPath(std::vector<Math::Vector3>& dest,
 {
     dest.clear();
 
-#ifdef DEBUG_NAVIGATION
     AB_PROFILE;
-#endif
 
     const dtQueryFilter* queryFilter = filter ? filter : queryFilter_.get();
     dtPolyRef startRef = 0;

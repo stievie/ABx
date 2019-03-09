@@ -49,17 +49,6 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::PlayerLevelCap] = static_cast<int>(GetGlobal("level_cap", 20ll));
     config_[Key::Behaviours] = GetGlobal("behaviours", "/scripts/ai/behaviours.lua");
 
-    config_[Key::RangeAggro] = GetGlobal("range_aggro", 0.0f);
-    config_[Key::RangeCompass] = GetGlobal("range_compass", 0.0f);
-    config_[Key::RangeSpirit] = GetGlobal("range_spirit", 0.0f);
-    config_[Key::RangeEarshot] = GetGlobal("range_earshot", 0.0f);
-    config_[Key::RangeCasting] = GetGlobal("range_casting", 0.0f);
-    config_[Key::RangeProjectile] = GetGlobal("range_projectile", 0.0f);
-    config_[Key::RangeHalf] = GetGlobal("range_half_compass", 0.0f);
-    config_[Key::RangeTouch] = GetGlobal("range_touch", 0.0f);
-    config_[Key::RangeAdjecent] = GetGlobal("range_adjacent", 0.0f);
-    config_[Key::RangeVisible] = GetGlobal("range_visible", 0.0f);
-
     Close();
     return true;
 }

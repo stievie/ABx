@@ -13,8 +13,33 @@ enum ItemType : uint16_t
     ItemTypeUnknown = 0,
     ItemTypeCharacterModel = 1,
     ItemTypeCharacterHair,
-    ItemTypeModifier,
     ItemTypePortal,
+
+    // Equipments
+    ItemTypeArmorHead = 10,
+    ItemTypeArmorChest,
+    ItemTypeArmorHands,
+    ItemTypeArmorLegs,
+    ItemTypeArmorFeet,
+    ItemTypeModifierInsignia,
+    ItemTypeModifierRune,
+    ItemTypeModifierWeaponPrefix,
+    ItemTypeModifierWeaponSuffix,
+    ItemTypeModifierWeaponInscription,
+    // Weapons
+    ItemTypeAxe = 30,
+    ItemTypeSword,
+    ItemTypeHammer,
+    ItemTypeFlatbow,
+    ItemTypeHornbow,
+    ItemTypeShortbow,
+    ItemTypeLongbow,
+    ItemTypeRecurvebow,
+    ItemTypeStaff,
+    ItemTypeWand,
+    ItemTypeDaggers,
+    ItemTypeScyte,
+    ItemTypeSpear,
 };
 
 struct Item : Entity

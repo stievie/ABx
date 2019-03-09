@@ -8,7 +8,7 @@ class Actor;
 
 namespace Components {
 
-enum class ItemPos
+enum class ItemPos : uint32_t
 {
     ArmorHead = 0,
     ArmorChest,
@@ -39,7 +39,13 @@ public:
 
     void Update(uint32_t timeElapsed);
 
-    void Equip(ItemPos pos, uint32_t index);
+    /// Set upgrade
+    void SetItem(ItemPos pos, uint32_t index);
+    Item* GetItem(ItemPos pos) const;
+    void RemoveItem(ItemPos pos);
+    void SetUpgrade(ItemPos pos, ItemUpgrade type, uint32_t index);
+    /// Get lead hand weapon
+    Item* GetWeapon() const;
 };
 
 }

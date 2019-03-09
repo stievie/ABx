@@ -49,7 +49,8 @@ public:
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
-    void Upgrade(ItemUpgrade type, uint32_t index);
+    void SetUpgrade(ItemUpgrade type, uint32_t index);
+    void RemoveUpgrade(ItemUpgrade type);
 
     AB::Entities::Item data_;
 };

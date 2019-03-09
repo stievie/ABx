@@ -276,6 +276,12 @@
     <ClInclude Include="TriggerComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="IOItem.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Mechanic.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -489,6 +495,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TriggerComp.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="IOItem.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

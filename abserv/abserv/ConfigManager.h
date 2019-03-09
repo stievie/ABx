@@ -36,17 +36,6 @@ public:
 
         PlayerLevelCap,
         Behaviours,
-
-        RangeAggro,
-        RangeCompass,
-        RangeSpirit,
-        RangeEarshot,
-        RangeCasting,
-        RangeProjectile,
-        RangeHalf,
-        RangeTouch,
-        RangeAdjecent,
-        RangeVisible,
     };
 public:
     ConfigManager();

@@ -20,7 +20,6 @@ private:
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
 public:
-    static constexpr float BaseSpeed = 150.0f;
     explicit MoveComp(Actor& owner) :
         owner_(owner),
         moveDir_(AB::GameProtocol::MoveDirectionNone),

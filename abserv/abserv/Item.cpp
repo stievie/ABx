@@ -2,6 +2,7 @@
 #include "Item.h"
 #include "DataProvider.h"
 #include "ScriptManager.h"
+#include "IOItem.h"
 
 namespace Game {
 
@@ -40,8 +41,25 @@ void Item::Update(uint32_t timeElapsed)
             upg.second->Update(timeElapsed);
 }
 
-void Item::Upgrade(ItemUpgrade type, uint32_t index)
+void Item::SetUpgrade(ItemUpgrade type, uint32_t index)
 {
+    AB::Entities::Item item;
+    if (!IO::IOItem::LoadItemByIndex(item, index))
+    {
+        LOG_ERROR << "Failed to load item with index " << index << std::endl;
+        return;
+    }
+    std::unique_ptr<Item> i = std::make_unique<Item>(item);
+    if (i->LoadScript(item.script))
+    {
+        upgrades_[type] = std::move(i);
+    }
+}
+
+void Item::RemoveUpgrade(ItemUpgrade type)
+{
+    if (upgrades_[type])
+        upgrades_[type].reset();
 }
 
 }

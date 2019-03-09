@@ -14,7 +14,6 @@ class Map;
 
 class Npc final : public Actor
 {
-    friend class Components::TriggerComp;
 private:
     enum Function : uint32_t
     {

@@ -3,20 +3,19 @@
 namespace Game {
 
 class Actor;
-class Npc;
 
 namespace Components {
 
-/// NPCs can be used a trigger box. This component calls NPC::OnTrigger() wehen it collides with the collision shape.
+/// NPCs can be used a trigger box. This component calls Actor::OnTrigger() when it collides with the collision shape.
 class TriggerComp
 {
 private:
-    Npc& owner_;
+    Actor& owner_;
     std::map<uint32_t, int64_t> triggered_;
     void DoTrigger(Actor* other);
 public:
     TriggerComp() = delete;
-    explicit TriggerComp(Npc& owner) :
+    explicit TriggerComp(Actor& owner) :
         owner_(owner),
         retriggerTimeout_(1000)
     { }

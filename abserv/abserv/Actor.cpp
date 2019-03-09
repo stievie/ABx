@@ -10,6 +10,7 @@
 #include "ScriptManager.h"
 #include "ConfigManager.h"
 #include "TemplateEncoder.h"
+#include "Mechanic.h"
 
 #include "DebugNew.h"
 
@@ -335,18 +336,6 @@ void Actor::UpdateRanges()
     ranges_.clear();
     std::vector<GameObject*> res;
 
-    static const float RANGE_AGGRO = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeAggro];
-    static const float RANGE_COMPASS = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeCompass];
-    static const float RANGE_SPIRIT = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeSpirit];
-    static const float RANGE_EARSHOT = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeEarshot];
-    static const float RANGE_CASTING = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeCasting];
-    static const float RANGE_PROJECTILE = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeProjectile];
-    static const float RANGE_HALF = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeHalf];
-    static const float RANGE_TOUCH = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeTouch];
-    static const float RANGE_ADJECENT = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeAdjecent];
-
-    static const float RANGE_VISIBLE = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeVisible];
-
     // Compass radius
     if (QueryObjects(res, RANGE_COMPASS))
     {
@@ -370,7 +359,7 @@ void Actor::UpdateRanges()
                     ranges_[Ranges::Casting].push_back(so);
                 if (dist <= RANGE_PROJECTILE)
                     ranges_[Ranges::Projectile].push_back(so);
-                if (dist <= RANGE_HALF)
+                if (dist <= RANGE_HALF_COMPASS)
                     ranges_[Ranges::HalfCompass].push_back(so);
                 if (dist <= RANGE_TOUCH)
                     ranges_[Ranges::Touch].push_back(so);

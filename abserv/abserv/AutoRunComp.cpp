@@ -4,13 +4,13 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "ConfigManager.h"
+#include "Mechanic.h"
 
 namespace Game {
 namespace Components {
 
 bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
 {
-    static const float RANGE_TOUCH = (*GetSubsystem<ConfigManager>())[ConfigManager::Key::RangeTouch];
     auto actor = object->GetThisDynamic<Actor>();
     if (!actor)
         return false;
@@ -66,7 +66,7 @@ void AutoRunComp::Pop()
 void AutoRunComp::MoveTo(uint32_t timeElapsed, const Math::Vector3& dest)
 {
     owner_.moveComp_.HeadTo(dest);
-    owner_.moveComp_.Move(((float)(timeElapsed) / owner_.moveComp_.BaseSpeed) * owner_.moveComp_.GetSpeedFactor(),
+    owner_.moveComp_.Move(((float)(timeElapsed) / BASE_SPEED) * owner_.moveComp_.GetSpeedFactor(),
         Math::Vector3::UnitZ);
 }
 
