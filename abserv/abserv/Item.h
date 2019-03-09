@@ -2,6 +2,7 @@
 
 #include <AB/Entities/Item.h>
 #include "Script.h"
+#include "Damage.h"
 
 namespace Game {
 
@@ -25,6 +26,7 @@ private:
     std::shared_ptr<Script> script_;
     uint32_t functions_;
     std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
+    int32_t baseDamage_;
     void InitializeLua();
     bool HaveFunction(Function func)
     {
@@ -36,6 +38,7 @@ public:
     Item() = delete;
     explicit Item(const AB::Entities::Item& item) :
         functions_(FunctionNone),
+        baseDamage_(0),
         data_(item)
     {
         InitializeLua();
@@ -53,6 +56,8 @@ public:
     void RemoveUpgrade(ItemUpgrade type);
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
+    DamageType GetWeaponDamageType() const;
+    int32_t GetWeaponDamage() const { return baseDamage_; }
 
     AB::Entities::Item data_;
 };

@@ -122,6 +122,8 @@ public:
     void SetUndestroyable(bool value) { undestroyable_ = value; }
     bool IsInWeaponRange(Actor* actor) const;
     uint32_t GetAttackSpeed() const;
+    DamageType GetAttackDamageType() const;
+    int32_t GetAttackDamage() const;
 
     virtual uint32_t GetLevel() const { return 0; }
 

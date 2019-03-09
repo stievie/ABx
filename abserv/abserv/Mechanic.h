@@ -32,6 +32,9 @@ static constexpr uint32_t ATTACK_SPEED_DAGGERS    = 1330;
 static constexpr uint32_t ATTACK_SPEED_SCYTE      = 1500;
 static constexpr uint32_t ATTACK_SPEED_SPEAR      = 1500;
 
+static constexpr float MAX_IAS = 1.33f;
+static constexpr float MAX_DAS = 0.5f;
+
 // Ranges
 static constexpr float RANGE_BASE         = 80.0f;
 static constexpr float RANGE_AGGRO        = GetPercent(RANGE_BASE, 24.0f);

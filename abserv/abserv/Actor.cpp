@@ -29,6 +29,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetWeapon", &Actor::GetWeapon)
         .addFunction("IsInWeaponRange", &Actor::IsInWeaponRange)
         .addFunction("GetAttackSpeed", &Actor::GetAttackSpeed)
+        .addFunction("GetAttackDamageType", &Actor::GetAttackDamageType)
+        .addFunction("GetAttackDamage", &Actor::GetAttackDamage)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -336,9 +338,34 @@ uint32_t Actor::GetAttackSpeed() const
     Item* weapon = GetWeapon();
     if (!weapon)
         return 0;
-    uint32_t speed = weapon->GetWeaponAttackSpeed();
-    effectsComp_.GetAttackSpeed(weapon, speed);
-    return speed;
+    const uint32_t speed = weapon->GetWeaponAttackSpeed();
+    uint32_t modSpeed = speed;
+    effectsComp_.GetAttackSpeed(weapon, modSpeed);
+
+    // https://wiki.guildwars.com/wiki/Attack_speed
+    // Max IAS 133%, max DAS 50%
+    modSpeed = Math::Clamp(modSpeed,
+        static_cast<uint32_t>(static_cast<float>(speed) * MAX_DAS),
+        static_cast<uint32_t>(static_cast<float>(speed) * MAX_IAS));
+    return modSpeed;
+}
+
+DamageType Actor::GetAttackDamageType() const
+{
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return DamageType::Unknown;
+    // TODO: Some effects may modify the damage type
+    return weapon->GetWeaponDamageType();
+}
+
+int32_t Actor::GetAttackDamage() const
+{
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return 0;
+    // TODO: Some effects may modify the damage
+    return weapon->GetWeaponDamage();
 }
 
 Skill* Actor::GetCurrentSkill() const

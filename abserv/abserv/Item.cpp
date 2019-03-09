@@ -11,6 +11,9 @@ void Item::RegisterLua(kaguya::State& state)
 {
     state["Item"].setClass(kaguya::UserdataMetatable<Item>()
         .addFunction("GetWeaponRange", &Item::GetWeaponRange)
+        .addFunction("GetWeaponAttackSpeed", &Item::GetWeaponAttackSpeed)
+        .addFunction("GetWeaponDamageType", &Item::GetWeaponDamageType)
+        .addFunction("GetWeaponDamage", &Item::GetWeaponDamage)
     );
 }
 
@@ -128,6 +131,39 @@ uint32_t Item::GetWeaponAttackSpeed() const
         return ATTACK_SPEED_SPEAR;
     default:
         return 0;
+    }
+}
+
+DamageType Item::GetWeaponDamageType() const
+{
+    switch (data_.type)
+    {
+    case AB::Entities::ItemTypeAxe:
+        return DamageType::Piercing;
+    case AB::Entities::ItemTypeSword:
+        return DamageType::Slashing;
+    case AB::Entities::ItemTypeHammer:
+        return DamageType::Blunt;
+    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemTypeRecurvebow:
+        return DamageType::Piercing;
+    case AB::Entities::ItemTypeStaff:
+        // TODO: May have different types depending on the attribute
+        return DamageType::Slashing;
+    case AB::Entities::ItemTypeWand:
+        // TODO: May have different types depending on the attribute
+        return DamageType::Slashing;
+    case AB::Entities::ItemTypeDaggers:
+        return DamageType::Piercing;
+    case AB::Entities::ItemTypeScyte:
+        return DamageType::Slashing;
+    case AB::Entities::ItemTypeSpear:
+        return DamageType::Piercing;
+    default:
+        return DamageType::Unknown;
     }
 }
 
