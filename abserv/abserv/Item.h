@@ -51,6 +51,8 @@ public:
     /// Upgrade this item
     void SetUpgrade(ItemUpgrade type, uint32_t index);
     void RemoveUpgrade(ItemUpgrade type);
+    float GetWeaponRange() const;
+    uint32_t GetWeaponAttackSpeed() const;
 
     AB::Entities::Item data_;
 };

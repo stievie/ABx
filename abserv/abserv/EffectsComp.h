@@ -7,6 +7,7 @@ namespace Game {
 
 class Actor;
 class Skill;
+class Item;
 
 namespace Components {
 
@@ -44,8 +45,9 @@ public:
     /// \param overcast Causes overcast
     /// \param hp HP scarifies in percent of max health
     void GetSkillCost(Skill* skill,
-        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
-    void GetDamage(DamageType type, int32_t& value);
+        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp) const;
+    void GetDamage(DamageType type, int32_t& value) const;
+    void GetAttackSpeed(Item* weapon, uint32_t& value) const;
 
     EffectList effects_;
 };

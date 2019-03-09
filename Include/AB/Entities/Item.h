@@ -27,7 +27,8 @@ enum ItemType : uint16_t
     ItemTypeModifierWeaponSuffix,
     ItemTypeModifierWeaponInscription,
     // Weapons
-    ItemTypeAxe = 30,
+    ItemTypeWeaponFirst = 30,
+    ItemTypeAxe = ItemTypeWeaponFirst,
     ItemTypeSword,
     ItemTypeHammer,
     ItemTypeFlatbow,
@@ -40,6 +41,7 @@ enum ItemType : uint16_t
     ItemTypeDaggers,
     ItemTypeScyte,
     ItemTypeSpear,
+    ItemTypeWeaponLast = ItemTypeSpear,
 };
 
 struct Item : Entity

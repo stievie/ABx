@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "EffectManager.h"
 #include "Subsystems.h"
+#include "Item.h"
 
 namespace Game {
 namespace Components {
@@ -135,7 +136,7 @@ void EffectsComp::Write(Net::NetworkMessage& message)
 }
 
 void EffectsComp::GetSkillCost(Skill* skill,
-    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp) const
 {
     // Since equipments, attributes etc. add (hidden) effects to the actor, we need only ask the effects component, I think...
     for (const auto& effect : effects_)
@@ -144,11 +145,19 @@ void EffectsComp::GetSkillCost(Skill* skill,
     }
 }
 
-void EffectsComp::GetDamage(DamageType type, int32_t& value)
+void EffectsComp::GetDamage(DamageType type, int32_t& value) const
 {
     for (const auto& effect : effects_)
     {
         effect->GetDamage(type, value);
+    }
+}
+
+void EffectsComp::GetAttackSpeed(Item* weapon, uint32_t& value) const
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetAttackSpeed(weapon, value);
     }
 }
 

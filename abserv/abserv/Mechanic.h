@@ -36,11 +36,19 @@ static constexpr uint32_t ATTACK_SPEED_SPEAR      = 1500;
 static constexpr float RANGE_BASE         = 80.0f;
 static constexpr float RANGE_AGGRO        = GetPercent(RANGE_BASE, 24.0f);
 static constexpr float RANGE_COMPASS      = GetPercent(RANGE_BASE, 95.0f);
+static constexpr float RANGE_HALF_COMPASS = RANGE_COMPASS / 2.0f;
 static constexpr float RANGE_SPIRIT       = RANGE_AGGRO * 1.6f;                   // Longbow, spirits
 static constexpr float RANGE_EARSHOT      = RANGE_AGGRO;
 static constexpr float RANGE_CASTING      = RANGE_AGGRO * 1.35f;
 static constexpr float RANGE_PROJECTILE   = RANGE_AGGRO;
-static constexpr float RANGE_HALF_COMPASS = RANGE_COMPASS / 2.0f;
+
+static constexpr float RANGE_LONGBOW      = RANGE_AGGRO * 1.6f;
+static constexpr float RANGE_FLATBOW      = RANGE_AGGRO * 1.6f;
+static constexpr float RANGE_HORNBOW      = RANGE_AGGRO * 1.35f;
+static constexpr float RANGE_RECURVEBOW   = RANGE_AGGRO * 1.35f;
+static constexpr float RANGE_SHORTBOW     = RANGE_AGGRO * 1.05f;
+static constexpr float RANGE_SPEAR        = RANGE_AGGRO * 1.05f;
+
 // Close range
 static constexpr float RANGE_TOUCH        = 1.5f;
 static constexpr float RANGE_ADJECENT     = GetPercent(RANGE_BASE, 3.0f);

@@ -10,6 +10,7 @@ namespace Game {
 
 class Actor;
 class Skill;
+class Item;
 
 enum EffectAttr : uint8_t
 {
@@ -29,6 +30,7 @@ private:
         FunctionUpdate       = 1,
         FunctionGetSkillCost = 1 << 1,
         FunctionGetDamage    = 1 << 2,
+        FunctionGetAttackSpeed = 1 << 3,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -89,6 +91,7 @@ public:
         int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     /// Get real damage. It may be in-/decreased by some effects.
     void GetDamage(DamageType type, int32_t& value);
+    void GetAttackSpeed(Item* weapon, uint32_t& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

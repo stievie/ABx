@@ -11,6 +11,7 @@
 #include "ConfigManager.h"
 #include "TemplateEncoder.h"
 #include "Mechanic.h"
+#include "Item.h"
 
 #include "DebugNew.h"
 
@@ -25,6 +26,9 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetSelectedObject", &Actor::_LuaSetSelectedObject)
         .addFunction("UseSkill", &Actor::UseSkill)
         .addFunction("GetCurrentSkill", &Actor::GetCurrentSkill)
+        .addFunction("GetWeapon", &Actor::GetWeapon)
+        .addFunction("IsInWeaponRange", &Actor::IsInWeaponRange)
+        .addFunction("GetAttackSpeed", &Actor::GetAttackSpeed)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -286,6 +290,11 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     effectsComp_.Write(msg);
 }
 
+Item* Actor::GetWeapon() const
+{
+    return equipComp_.GetWeapon();
+}
+
 void Actor::OnEndUseSkill(Skill* skill)
 {
     // These change the state
@@ -309,6 +318,27 @@ void Actor::FaceObject(GameObject* object)
 {
     if (object)
         HeadTo(object->transformation_.position_);
+}
+
+bool Actor::IsInWeaponRange(Actor* actor) const
+{
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return false;
+    const float range = weapon->GetWeaponRange();
+    if (range == 0.0f)
+        return false;
+    return GetDistance(actor) <= range;
+}
+
+uint32_t Actor::GetAttackSpeed() const
+{
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return 0;
+    uint32_t speed = weapon->GetWeaponAttackSpeed();
+    effectsComp_.GetAttackSpeed(weapon, speed);
+    return speed;
 }
 
 Skill* Actor::GetCurrentSkill() const

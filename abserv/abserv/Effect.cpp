@@ -6,6 +6,7 @@
 #include "DataProvider.h"
 #include "Subsystems.h"
 #include "Skill.h"
+#include "Item.h"
 
 namespace Game {
 
@@ -42,6 +43,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetSkillCost;
     if (ScriptManager::IsFunction(luaState_, "getDamage"))
         functions_ |= FunctionGetDamage;
+    if (ScriptManager::IsFunction(luaState_, "getAttackSpeed"))
+        functions_ |= FunctionGetAttackSpeed;
     return true;
 }
 
@@ -102,6 +105,13 @@ void Effect::GetDamage(DamageType type, int32_t& value)
         return;
 
     value = luaState_["getDamage"](static_cast<int>(type), value);
+}
+
+void Effect::GetAttackSpeed(Item* weapon, uint32_t& value)
+{
+    if (!HaveFunction(FunctionGetAttackSpeed))
+        return;
+    value = luaState_["getAttackSpeed"](weapon, value);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

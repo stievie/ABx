@@ -108,6 +108,7 @@ public:
         }
         return false;
     }
+    Item* GetWeapon() const;
     virtual void OnEndUseSkill(Skill* skill);
     virtual void OnStartUseSkill(Skill* skill);
 
@@ -119,6 +120,8 @@ public:
     void AddSpeed(float value) { moveComp_.AddSpeed(value); }
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
+    bool IsInWeaponRange(Actor* actor) const;
+    uint32_t GetAttackSpeed() const;
 
     virtual uint32_t GetLevel() const { return 0; }
 
