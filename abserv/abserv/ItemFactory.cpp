@@ -22,15 +22,19 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid)
 
     std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
     const uuids::uuid guid = uuids::uuid_system_generator{}();
-    result->concreteItem_.uuid = guid.to_string();
-    result->concreteItem_.itemUuid = gameItem.uuid;
-    result->concreteItem_.creation = Utils::Tick();
-    if (!client->Create(result->concreteItem_))
+    AB::Entities::ConcreteItem ci;
+    ci.uuid = guid.to_string();
+    ci.itemUuid = gameItem.uuid;
+    ci.creation = Utils::Tick();
+    if (!client->Create(ci))
     {
         LOG_ERROR << "Unable top create concrete item" << std::endl;
         return std::unique_ptr<Item>();
     }
-
+    if (!result->LoadConcrete(ci))
+    {
+        return std::unique_ptr<Item>();
+    }
     return result;
 }
 

@@ -44,7 +44,7 @@ private:
     bool internal_;
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
-    bool HaveFunction(Function func)
+    bool HaveFunction(Function func) const
     {
         return (functions_ & func) == func;
     }

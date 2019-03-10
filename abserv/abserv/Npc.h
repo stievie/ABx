@@ -37,7 +37,7 @@ private:
     std::shared_ptr<AI::AiCharacter> aiCharacter_;
     std::shared_ptr<ai::AI> ai_;
     uint32_t functions_;
-    bool HaveFunction(Function func)
+    bool HaveFunction(Function func) const
     {
         return (functions_ & func) == func;
     }

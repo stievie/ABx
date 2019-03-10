@@ -4,6 +4,7 @@
 #include <AB/Entities/ConcreteItem.h>
 #include "Script.h"
 #include "Damage.h"
+#include "ItemStats.h"
 
 namespace Game {
 
@@ -30,6 +31,8 @@ private:
     std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
     int32_t baseMinDamage_;
     int32_t baseMaxDamage_;
+    ItemStats stats_;
+    AB::Entities::ConcreteItem concreteItem_;
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
@@ -53,6 +56,7 @@ public:
 
     ~Item() = default;
 
+    bool LoadConcrete(const AB::Entities::ConcreteItem& item);
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
@@ -60,11 +64,10 @@ public:
     void RemoveUpgrade(ItemUpgrade type);
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
-    DamageType GetWeaponDamageType();
+    DamageType GetWeaponDamageType() const;
     int32_t GetWeaponDamage();
 
     AB::Entities::Item data_;
-    AB::Entities::ConcreteItem concreteItem_;
 };
 
 }

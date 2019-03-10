@@ -23,6 +23,15 @@ void Item::InitializeLua()
     luaState_["self"] = this;
 }
 
+bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
+{
+    concreteItem_ = item;
+    // TODO: Load stats_ from DB BLOB
+    baseMinDamage_ = stats_.GetMinDamage();
+    baseMaxDamage_ = stats_.GetMaxDamage();
+    return true;
+}
+
 bool Item::LoadScript(const std::string& fileName)
 {
     script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
@@ -30,12 +39,6 @@ bool Item::LoadScript(const std::string& fileName)
         return false;
     if (!script_->Execute(luaState_))
         return false;
-
-    // TODO: Read stats from database
-    if (ScriptManager::IsNumber(luaState_, "baseMinDamage"))
-        baseMinDamage_ = luaState_["baseMinDamage"];
-    if (ScriptManager::IsNumber(luaState_, "baseMaxDamage"))
-        baseMaxDamage_ = luaState_["baseMaxDamage"];
 
     if (ScriptManager::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
@@ -143,7 +146,7 @@ uint32_t Item::GetWeaponAttackSpeed() const
     }
 }
 
-DamageType Item::GetWeaponDamageType()
+DamageType Item::GetWeaponDamageType() const
 {
     switch (data_.type)
     {
@@ -161,13 +164,7 @@ DamageType Item::GetWeaponDamageType()
         return DamageType::Piercing;
     case AB::Entities::ItemTypeStaff:
     case AB::Entities::ItemTypeWand:
-        // TODO: Read damage type from database, ItemStats
-        if (HaveFunction(FunctionGetDamageType))
-        {
-            DamageType type = static_cast<DamageType>(luaState_["getDamageType"]());
-            return type;
-        }
-        return DamageType::Slashing;
+        return stats_.GetDamageType();
     case AB::Entities::ItemTypeDaggers:
         return DamageType::Piercing;
     case AB::Entities::ItemTypeScyte:

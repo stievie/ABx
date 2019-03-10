@@ -45,10 +45,10 @@
 //#define _XM_NO_INTRINSICS_
 
 #if defined(HAVE_DIRECTX_MATH)
-#include <DirectXMath.h>
-#include <DirectXCollision.h>
+#   include <DirectXMath.h>
+#   include <DirectXCollision.h>
 namespace XMath = DirectX;
 #elif defined(HAVE_X_MATH)
-#include <XMath.h>
-#include <XCollision.h>
+#   include <XMath.h>
+#   include <XCollision.h>
 #endif

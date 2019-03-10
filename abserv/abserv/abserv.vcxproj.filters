@@ -285,6 +285,9 @@
     <ClInclude Include="ItemFactory.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ItemStats.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -504,6 +507,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ItemFactory.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemStats.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
