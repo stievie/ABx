@@ -54,6 +54,7 @@ static constexpr size_t KEY_ACCOUNTKEYLIST_HASH = Utils::StringHash(AB::Entities
 static constexpr size_t KEY_MUSIC_HASH = Utils::StringHash(AB::Entities::Music::KEY());
 static constexpr size_t KEY_MUSICLIST_HASH = Utils::StringHash(AB::Entities::MusicList::KEY());
 static constexpr size_t KEY_PARTIES_HASH = Utils::StringHash(AB::Entities::Party::KEY());
+static constexpr size_t KEY_CONCRETEITEMS_HASH = Utils::StringHash(AB::Entities::ConcreteItem::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -608,6 +609,8 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         return LoadFromDB<DB::DBMusic, AB::Entities::Music>(id, *data);
     case KEY_MUSICLIST_HASH:
         return LoadFromDB<DB::DBMusicList, AB::Entities::MusicList>(id, *data);
+    case KEY_CONCRETEITEMS_HASH:
+        return LoadFromDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -750,6 +753,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_MUSICLIST_HASH:
         succ = FlushRecord<DB::DBMusicList, AB::Entities::MusicList>(data);
         break;
+    case KEY_CONCRETEITEMS_HASH:
+        succ = FlushRecord<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
+        break;
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -846,6 +852,8 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
         return ExistsInDB<DB::DBMusic, AB::Entities::Music>(data);
     case KEY_MUSICLIST_HASH:
         return ExistsInDB<DB::DBMusicList, AB::Entities::MusicList>(data);
+    case KEY_CONCRETEITEMS_HASH:
+        return ExistsInDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist

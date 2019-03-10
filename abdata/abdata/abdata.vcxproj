@@ -184,6 +184,7 @@
     <ClInclude Include="DBBan.h" />
     <ClInclude Include="DBCharacter.h" />
     <ClInclude Include="DBCharacterList.h" />
+    <ClInclude Include="DBConcreteItem.h" />
     <ClInclude Include="DBEffect.h" />
     <ClInclude Include="DBEffectList.h" />
     <ClInclude Include="DBFriendList.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="DBBan.cpp" />
     <ClCompile Include="DBCharacter.cpp" />
     <ClCompile Include="DBCharacterList.cpp" />
+    <ClCompile Include="DBConcreteItem.cpp" />
     <ClCompile Include="DBEffect.cpp" />
     <ClCompile Include="DBEffectList.cpp" />
     <ClCompile Include="DBFriendList.cpp" />

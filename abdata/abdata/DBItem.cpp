@@ -76,7 +76,7 @@ bool DBItem::Exists(const AB::Entities::Item& item)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT COUNT(*) AS `count` FROM `game_effects` WHERE ";
+    query << "SELECT COUNT(*) AS `count` FROM `game_items` WHERE ";
     if (!item.uuid.empty() && !uuids::uuid(item.uuid).nil())
         query << "`uuid` = " << db->EscapeString(item.uuid);
     else if (item.index != 0)
