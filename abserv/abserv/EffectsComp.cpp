@@ -161,5 +161,21 @@ void EffectsComp::GetAttackSpeed(Item* weapon, uint32_t& value) const
     }
 }
 
+void EffectsComp::GetAttackDamageType(DamageType& type) const
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetAttackDamageType(type);
+    }
+}
+
+void EffectsComp::GetAttackDamage(int32_t& value) const
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetAttackDamage(value);
+    }
+}
+
 }
 }

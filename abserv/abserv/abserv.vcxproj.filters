@@ -282,6 +282,9 @@
     <ClInclude Include="Mechanic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ItemFactory.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -498,6 +501,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOItem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemFactory.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

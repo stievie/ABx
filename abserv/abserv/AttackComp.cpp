@@ -13,14 +13,17 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
         {
             // New attack
             attackSpeed_ = owner_.GetAttackSpeed();
-            if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_)
+            if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_ / 2)
             {
                 lastAttackTime_ = Utils::Tick();
                 attacking_ = true;
+                damageType_ = owner_.GetAttackDamageType();
+                baseDamage_ = owner_.GetAttackDamage();
             }
         }
         else
         {
+            // Now we are really attacking. This can be interrupted.
             if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_)
             {
                 // Done attack -> apply damage
@@ -47,8 +50,6 @@ void AttackComp::Attack(std::shared_ptr<Actor> target)
     if (!target)
         return;
     target_ = target;
-    damageType_ = owner_.GetAttackDamageType();
-    baseDamage_ = owner_.GetAttackDamage();
     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
     lastAttackTime_ = 0;
 }

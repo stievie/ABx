@@ -31,6 +31,8 @@ private:
         FunctionGetSkillCost = 1 << 1,
         FunctionGetDamage    = 1 << 2,
         FunctionGetAttackSpeed = 1 << 3,
+        FunctionGetAttackDamageType = 1 << 4,
+        FunctionGetAttackDamage = 1 << 5,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -89,9 +91,12 @@ public:
     /// \param hp HP scarifies in percent of max health
     void GetSkillCost(Skill* skill,
         int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
-    /// Get real damage. It may be in-/decreased by some effects.
+    /// Get real damage. It may be in-/decreased by some effects on the *Target*. This is called when the damage is applied to the target.
     void GetDamage(DamageType type, int32_t& value);
     void GetAttackSpeed(Item* weapon, uint32_t& value);
+    void GetAttackDamageType(DamageType& type);
+    /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
+    void GetAttackDamage(int32_t& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

@@ -48,6 +48,8 @@ public:
         int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp) const;
     void GetDamage(DamageType type, int32_t& value) const;
     void GetAttackSpeed(Item* weapon, uint32_t& value) const;
+    void GetAttackDamageType(DamageType& type) const;
+    void GetAttackDamage(int32_t& value) const;
 
     EffectList effects_;
 };

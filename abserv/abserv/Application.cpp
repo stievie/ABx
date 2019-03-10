@@ -40,6 +40,7 @@
 #include "AiRegistry.h"
 #include "AiLoader.h"
 #include "PartyManager.h"
+#include "ItemFactory.h"
 
 #include "DebugNew.h"
 
@@ -77,6 +78,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::EffectManager>();
     Subsystems::Instance.CreateSubsystem<Game::Chat>();
     Subsystems::Instance.CreateSubsystem<Game::SkillManager>();
+    Subsystems::Instance.CreateSubsystem<Game::ItemFactory>();
     Subsystems::Instance.CreateSubsystem<AI::AiRegistry>();
     auto reg = GetSubsystem<AI::AiRegistry>();
     Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);

@@ -45,6 +45,10 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetDamage;
     if (ScriptManager::IsFunction(luaState_, "getAttackSpeed"))
         functions_ |= FunctionGetAttackSpeed;
+    if (ScriptManager::IsFunction(luaState_, "getAttackDamageType"))
+        functions_ |= FunctionGetAttackDamageType;
+    if (ScriptManager::IsFunction(luaState_, "getAttackDamage"))
+        functions_ |= FunctionGetAttackDamage;
     return true;
 }
 
@@ -112,6 +116,20 @@ void Effect::GetAttackSpeed(Item* weapon, uint32_t& value)
     if (!HaveFunction(FunctionGetAttackSpeed))
         return;
     value = luaState_["getAttackSpeed"](weapon, value);
+}
+
+void Effect::GetAttackDamageType(DamageType& type)
+{
+    if (!HaveFunction(FunctionGetAttackDamageType))
+        return;
+    type = luaState_["getAttackDamageType"](type);
+}
+
+void Effect::GetAttackDamage(int32_t& value)
+{
+    if (!HaveFunction(FunctionGetAttackDamage))
+        return;
+    value = luaState_["getAttackDamage"](value);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

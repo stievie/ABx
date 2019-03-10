@@ -45,6 +45,7 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.client_model = result->GetString("client_model_file");
     item.client_icon = result->GetString("client_icon_file");
     item.type = static_cast<AB::Entities::ItemType>(result->GetUInt("type"));
+    item.dropChance = static_cast<uint8_t>(result->GetUInt("drop_chance"));
 
     return true;
 }

@@ -62,6 +62,7 @@ struct Item : Entity
         s.text1b(client_icon, Limits::MAX_FILENAME);
         s.text1b(client_model, Limits::MAX_FILENAME);
         s.value2b(type);
+        s.value1b(dropChance);
     }
 
     uint32_t index = INVALID_INDEX;
@@ -72,6 +73,7 @@ struct Item : Entity
     std::string client_icon;
     std::string client_model;
     ItemType type = ItemTypeUnknown;
+    uint8_t dropChance = 0;
 };
 
 }

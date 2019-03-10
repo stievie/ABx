@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/Entities/Item.h>
+#include <AB/Entities/ConcreteItem.h>
 #include "Script.h"
 #include "Damage.h"
 
@@ -60,6 +61,7 @@ public:
     int32_t GetWeaponDamage() const { return baseDamage_; }
 
     AB::Entities::Item data_;
+    AB::Entities::ConcreteItem concreteItem_;
 };
 
 }

@@ -6,9 +6,7 @@
 
 namespace Game {
 
-SkillManager::SkillManager()
-{
-}
+SkillManager::SkillManager() = default;
 
 std::shared_ptr<Skill> SkillManager::Get(uint32_t index)
 {
