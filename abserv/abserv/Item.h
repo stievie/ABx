@@ -22,14 +22,16 @@ private:
         FunctionNone = 0,
         FunctionUpdate = 1,
         FunctionGetDamage = 1 << 1,
+        FunctionGetDamageType = 1 << 2,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     uint32_t functions_;
     std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
-    int32_t baseDamage_;
+    int32_t baseMinDamage_;
+    int32_t baseMaxDamage_;
     void InitializeLua();
-    bool HaveFunction(Function func)
+    bool HaveFunction(Function func) const
     {
         return (functions_ & func) == func;
     }
@@ -39,7 +41,8 @@ public:
     Item() = delete;
     explicit Item(const AB::Entities::Item& item) :
         functions_(FunctionNone),
-        baseDamage_(0),
+        baseMinDamage_(0),
+        baseMaxDamage_(0),
         data_(item)
     {
         InitializeLua();
@@ -57,8 +60,8 @@ public:
     void RemoveUpgrade(ItemUpgrade type);
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
-    DamageType GetWeaponDamageType() const;
-    int32_t GetWeaponDamage() const { return baseDamage_; }
+    DamageType GetWeaponDamageType();
+    int32_t GetWeaponDamage();
 
     AB::Entities::Item data_;
     AB::Entities::ConcreteItem concreteItem_;

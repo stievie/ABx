@@ -30,10 +30,19 @@ bool Item::LoadScript(const std::string& fileName)
         return false;
     if (!script_->Execute(luaState_))
         return false;
+
+    // TODO: Read stats from database
+    if (ScriptManager::IsNumber(luaState_, "baseMinDamage"))
+        baseMinDamage_ = luaState_["baseMinDamage"];
+    if (ScriptManager::IsNumber(luaState_, "baseMaxDamage"))
+        baseMaxDamage_ = luaState_["baseMaxDamage"];
+
     if (ScriptManager::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "getDamage"))
         functions_ |= FunctionGetDamage;
+    if (ScriptManager::IsFunction(luaState_, "getDamageType"))
+        functions_ |= FunctionGetDamageType;
     return true;
 }
 
@@ -134,7 +143,7 @@ uint32_t Item::GetWeaponAttackSpeed() const
     }
 }
 
-DamageType Item::GetWeaponDamageType() const
+DamageType Item::GetWeaponDamageType()
 {
     switch (data_.type)
     {
@@ -151,10 +160,13 @@ DamageType Item::GetWeaponDamageType() const
     case AB::Entities::ItemTypeRecurvebow:
         return DamageType::Piercing;
     case AB::Entities::ItemTypeStaff:
-        // TODO: May have different types depending on the attribute
-        return DamageType::Slashing;
     case AB::Entities::ItemTypeWand:
-        // TODO: May have different types depending on the attribute
+        // TODO: Read damage type from database, ItemStats
+        if (HaveFunction(FunctionGetDamageType))
+        {
+            DamageType type = static_cast<DamageType>(luaState_["getDamageType"]());
+            return type;
+        }
         return DamageType::Slashing;
     case AB::Entities::ItemTypeDaggers:
         return DamageType::Piercing;
@@ -165,6 +177,16 @@ DamageType Item::GetWeaponDamageType() const
     default:
         return DamageType::Unknown;
     }
+}
+
+int32_t Item::GetWeaponDamage()
+{
+    if (HaveFunction(FunctionGetDamage))
+    {
+        int32_t value = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_);
+        return value;
+    }
+    return 0;
 }
 
 }

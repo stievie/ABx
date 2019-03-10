@@ -1,0 +1,6 @@
+baseMinDamage = 11
+baseMaxDamage = 22
+
+function getDamage(baseMin, baseMax)
+  return ((baseMax - baseMin) * math.random()) + baseMin
+end
