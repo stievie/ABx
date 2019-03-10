@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "DBItemList.h"
+#include "DBAccountItemList.h"
 #include "Database.h"
 #include "Subsystems.h"
 
 namespace DB {
 
-bool DBItemList::Create(AB::Entities::ItemList& il)
+bool DBAccountItemList::Create(AB::Entities::AccountItemList& li)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (li.uuid.empty() || uuids::uuid(li.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -16,7 +16,7 @@ bool DBItemList::Create(AB::Entities::ItemList& il)
     return true;
 }
 
-bool DBItemList::Load(AB::Entities::ItemList& il)
+bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
@@ -27,7 +27,7 @@ bool DBItemList::Load(AB::Entities::ItemList& il)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `game_items`";
+    query << "SELECT `uuid` FROM `concrete_items` WHERE `account_uuid` = " << db->EscapeString(il.uuid);
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         il.itemUuids.push_back(result->GetString("uuid"));
@@ -35,33 +35,36 @@ bool DBItemList::Load(AB::Entities::ItemList& il)
     return true;
 }
 
-bool DBItemList::Save(const AB::Entities::ItemList& il)
+bool DBAccountItemList::Save(const AB::Entities::AccountItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
+
     return true;
 }
 
-bool DBItemList::Delete(const AB::Entities::ItemList& il)
+bool DBAccountItemList::Delete(const AB::Entities::AccountItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
+
     return true;
 }
 
-bool DBItemList::Exists(const AB::Entities::ItemList& il)
+bool DBAccountItemList::Exists(const AB::Entities::AccountItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
+
     return true;
 }
 

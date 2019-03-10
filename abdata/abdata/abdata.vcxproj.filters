@@ -150,6 +150,12 @@
     <ClInclude Include="DBConcreteItem.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBAccountItemList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DBPlayerItemList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -279,6 +285,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBConcreteItem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBAccountItemList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBPlayerItemList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

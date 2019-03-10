@@ -55,6 +55,8 @@ static constexpr size_t KEY_MUSIC_HASH = Utils::StringHash(AB::Entities::Music::
 static constexpr size_t KEY_MUSICLIST_HASH = Utils::StringHash(AB::Entities::MusicList::KEY());
 static constexpr size_t KEY_PARTIES_HASH = Utils::StringHash(AB::Entities::Party::KEY());
 static constexpr size_t KEY_CONCRETEITEMS_HASH = Utils::StringHash(AB::Entities::ConcreteItem::KEY());
+static constexpr size_t KEY_ACCOUNTITEMLIST_HASH = Utils::StringHash(AB::Entities::AccountItemList::KEY());
+static constexpr size_t KEY_PLAYERITEMLIST_HASH = Utils::StringHash(AB::Entities::PlayerItemList::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -611,6 +613,10 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         return LoadFromDB<DB::DBMusicList, AB::Entities::MusicList>(id, *data);
     case KEY_CONCRETEITEMS_HASH:
         return LoadFromDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(id, *data);
+    case KEY_ACCOUNTITEMLIST_HASH:
+        return LoadFromDB<DB::DBAccountItemList, AB::Entities::AccountItemList>(id, *data);
+    case KEY_PLAYERITEMLIST_HASH:
+        return LoadFromDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -756,6 +762,12 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_CONCRETEITEMS_HASH:
         succ = FlushRecord<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
         break;
+    case KEY_ACCOUNTITEMLIST_HASH:
+        succ = FlushRecord<DB::DBAccountItemList, AB::Entities::AccountItemList>(data);
+        break;
+    case KEY_PLAYERITEMLIST_HASH:
+        succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
+        break;
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -854,6 +866,10 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
         return ExistsInDB<DB::DBMusicList, AB::Entities::MusicList>(data);
     case KEY_CONCRETEITEMS_HASH:
         return ExistsInDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
+    case KEY_ACCOUNTITEMLIST_HASH:
+        return ExistsInDB<DB::DBAccountItemList, AB::Entities::AccountItemList>(data);
+    case KEY_PLAYERITEMLIST_HASH:
+        return ExistsInDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
