@@ -11,6 +11,12 @@ private:
     const char* p_ = nullptr;
     const char* end_ = nullptr;
 public:
+    PropReadStream() = default;
+    // non-copyable
+    PropReadStream(const PropReadStream&) = delete;
+    PropReadStream& operator=(const PropReadStream&) = delete;
+    ~PropReadStream() = default;
+
     void Init(const char* p, size_t size)
     {
         p_ = p;
@@ -70,6 +76,7 @@ public:
     // non-copyable
     PropWriteStream(const PropWriteStream&) = delete;
     PropWriteStream& operator=(const PropWriteStream&) = delete;
+    ~PropWriteStream() = default;
 
     const char* GetStream(size_t& size) const
     {

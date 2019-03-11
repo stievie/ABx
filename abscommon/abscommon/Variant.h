@@ -4,7 +4,7 @@
 
 namespace Utils {
 
-enum VariantType
+enum VariantType : uint8_t
 {
     VAR_NONE = 0,
     VAR_INT,

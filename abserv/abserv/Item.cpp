@@ -148,6 +148,11 @@ uint32_t Item::GetWeaponAttackSpeed() const
 
 DamageType Item::GetWeaponDamageType() const
 {
+    DamageType dt = stats_.GetDamageType();
+    if (dt != DamageType::Unknown)
+        return dt;
+
+    // Default weapon damage type
     switch (data_.type)
     {
     case AB::Entities::ItemTypeAxe:
@@ -164,7 +169,7 @@ DamageType Item::GetWeaponDamageType() const
         return DamageType::Piercing;
     case AB::Entities::ItemTypeStaff:
     case AB::Entities::ItemTypeWand:
-        return stats_.GetDamageType();
+        return DamageType::Slashing;
     case AB::Entities::ItemTypeDaggers:
         return DamageType::Piercing;
     case AB::Entities::ItemTypeScyte:
