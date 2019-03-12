@@ -146,6 +146,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectEffectRemoved:
             ParseObjectEffectRemoved(message);
             break;
+        case AB::GameProtocol::GameObjectDamaged:
+            ParseObjectDamaged(message);
+            break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
@@ -263,6 +266,16 @@ void ProtocolGame::ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>&
     uint32_t effectIndex = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnObjectEffectRemoved(updateTick_, objectId, effectIndex);
+}
+
+void ProtocolGame::ParseObjectDamaged(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    uint8_t damageType = message->Get<uint8_t>();
+    int16_t damageValue = message->Get<uint16_t>();
+    uint32_t skillIndex = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnObjectDamaged(updateTick_, objectId, damageType, damageValue, skillIndex);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

@@ -150,6 +150,7 @@ public:
     void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
     void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) override;
     void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
+    void OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, uint32_t skillIndex) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) override;
     void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,

@@ -57,6 +57,7 @@ protected:
     void ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message);
     void ParseObjectEffectAdded(const std::shared_ptr<InputMessage>& message);
     void ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectDamaged(const std::shared_ptr<InputMessage>& message);
     void ParseServerMessage(const std::shared_ptr<InputMessage>& message);
     void ParseChatMessage(const std::shared_ptr<InputMessage>& message);
     void ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message);

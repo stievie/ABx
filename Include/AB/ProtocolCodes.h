@@ -203,6 +203,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectSkillFailure,       // Failed activating a skill, returns some error code
     GameObjectEffectAdded,
     GameObjectEffectRemoved,
+    GameObjectDamaged,            // Object got damage
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,

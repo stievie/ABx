@@ -457,6 +457,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     skillsComp_.Write(message);
     effectsComp_.Write(message);
     resourceComp_.Write(message);
+    damageComp_.Write(message);
 }
 
 bool Actor::Die()

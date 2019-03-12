@@ -1051,6 +1051,17 @@ void FwClient::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t e
     QueueEvent(AbEvents::E_OBJECTEFFECTREMOVED, eData);
 }
 
+void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, uint32_t skillIndex)
+{
+    using namespace AbEvents::ObjectDamaged;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;;
+    eData[P_DAMAGETYPE] = damageType;
+    eData[P_DAMAGEVALUE] = value;
+    eData[P_SKILLINDEX] = skillIndex;
+}
+
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {

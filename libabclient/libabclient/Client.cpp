@@ -221,6 +221,12 @@ void Client::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t eff
         receiver_->OnObjectEffectRemoved(updateTick, id, effectIndex);
 }
 
+void Client::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, uint32_t skillIndex)
+{
+    if (receiver_)
+        receiver_->OnObjectDamaged(updateTick, id, damageType, value, skillIndex);
+}
+
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {
