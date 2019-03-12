@@ -19,6 +19,7 @@ private:
     DamageType damageType_;
     std::weak_ptr<Actor> target_;
 public:
+    AttackComp() = delete;
     explicit AttackComp(Actor& owner) :
         owner_(owner),
         attacking_(false),
@@ -27,6 +28,9 @@ public:
         baseDamage_(0),
         damageType_(DamageType::Unknown)
     { }
+    // non-copyable
+    AttackComp(const AttackComp&) = delete;
+    AttackComp& operator=(const AttackComp&) = delete;
     ~AttackComp() = default;
     void Update(uint32_t timeElapsed);
     bool IsAttacking() const { return attacking_; }

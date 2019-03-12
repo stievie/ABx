@@ -16,12 +16,16 @@ private:
     AB::GameProtocol::CreatureState newState_;
     int64_t lastStateChange_;
 public:
+    StateComp() = delete;
     explicit StateComp(GameObject& owner) :
         owner_(owner),
         currentState_(AB::GameProtocol::CreatureStateIdle),
         newState_(AB::GameProtocol::CreatureStateIdle),
         lastStateChange_(Utils::Tick())
     { }
+    // non-copyable
+    StateComp(const StateComp&) = delete;
+    StateComp& operator=(const StateComp&) = delete;
     ~StateComp() = default;
 
     void SetState(AB::GameProtocol::CreatureState state, bool apply = false);

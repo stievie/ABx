@@ -33,7 +33,11 @@ public:
         newRecharge_(0),
         lastSkillTime_(0)
     { }
+    // non-copyable
+    SkillsComp(const SkillsComp&) = delete;
+    SkillsComp& operator=(const SkillsComp&) = delete;
     ~SkillsComp() = default;
+
     void Update(uint32_t timeElapsed);
     AB::GameProtocol::SkillError UseSkill(int index);
     void Cancel();

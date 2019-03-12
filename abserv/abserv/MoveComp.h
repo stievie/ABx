@@ -20,6 +20,7 @@ private:
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
 public:
+    MoveComp() = delete;
     explicit MoveComp(Actor& owner) :
         owner_(owner),
         moveDir_(AB::GameProtocol::MoveDirectionNone),
@@ -33,6 +34,9 @@ public:
         speedDirty_(false),
         velocity_(Math::Vector3::Zero)
     { }
+    // non-copyable
+    MoveComp(const MoveComp&) = delete;
+    MoveComp& operator=(const MoveComp&) = delete;
     ~MoveComp() = default;
 
     void Update(uint32_t timeElapsed);

@@ -112,6 +112,9 @@ public:
         lastHpDecrease_(0),
         lastRegenIncrease_(0)
     { }
+    // non-copyable
+    ResourceComp(const ResourceComp&) = delete;
+    ResourceComp& operator=(const ResourceComp&) = delete;
     ~ResourceComp() = default;
 
     int GetHealth() const { return static_cast<int>(health_); }

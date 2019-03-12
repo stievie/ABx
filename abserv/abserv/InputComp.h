@@ -17,10 +17,14 @@ private:
     void ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message);
     void FollowObject(uint32_t targetId, Net::NetworkMessage& message);
 public:
+    InputComp() = delete;
     explicit InputComp(Actor& owner) :
         owner_(owner),
         inputs_()
     { }
+    // non-copyable
+    InputComp(const InputComp&) = delete;
+    InputComp& operator=(const InputComp&) = delete;
     ~InputComp() = default;
 
     inline void Add(InputType type, const Utils::VariantMap& data)

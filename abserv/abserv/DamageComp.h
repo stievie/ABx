@@ -27,6 +27,9 @@ public:
         owner_(owner),
         lastDamage_(0)
     { }
+    // non-copyable
+    DamageComp(const DamageComp&) = delete;
+    DamageComp& operator=(const DamageComp&) = delete;
     ~DamageComp() = default;
 
     void Update(uint32_t /* timeElapsed */) { }
