@@ -2,9 +2,14 @@
 
 #include <map>
 
+namespace IO {
+class PropReadStream;
+class PropWriteStream;
+}
+
 namespace Utils {
 
-enum VariantType : uint8_t
+enum VariantType
 {
     VAR_NONE = 0,
     VAR_INT,
@@ -180,5 +185,8 @@ public:
 typedef std::map<size_t, Variant> VariantMap;
 /// Empty variant map
 const VariantMap VariantMapEmpty;
+
+bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream);
+void VariantMapWrite(const VariantMap& vMap, IO::PropWriteStream& stream);
 
 }

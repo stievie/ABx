@@ -26,7 +26,7 @@ public:
     int32_t GetMinDamage() const;
     int32_t GetMaxDamage() const;
 
-    void Load(IO::PropReadStream& stream);
+    bool Load(IO::PropReadStream& stream);
     void Save(IO::PropWriteStream& stream);
 
     Utils::VariantMap stats_;

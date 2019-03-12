@@ -4,6 +4,8 @@
 #include "ScriptManager.h"
 #include "IOItem.h"
 #include "Mechanic.h"
+#include "ItemFactory.h"
+#include "Subsystems.h"
 
 namespace Game {
 
@@ -26,9 +28,22 @@ void Item::InitializeLua()
 bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
 {
     concreteItem_ = item;
-    // TODO: Load stats_ from DB BLOB
+    IO::PropReadStream stream;
+    stream.Init(item.itemStats.data(), item.itemStats.length());
+    if (!stats_.Load(stream))
+    {
+        LOG_WARNING << "Error loading item stats" << std::endl;
+    }
     baseMinDamage_ = stats_.GetMinDamage();
     baseMaxDamage_ = stats_.GetMaxDamage();
+    auto itemFactory = GetSubsystem<ItemFactory>();
+    if (!item.upgrade1Uuid.empty() && !uuids::uuid(item.upgrade1Uuid).nil())
+        upgrades_[ItemUpgrade::Pefix] = std::move(itemFactory->LoadConcrete(item.upgrade1Uuid));
+    if (!item.upgrade2Uuid.empty() && !uuids::uuid(item.upgrade2Uuid).nil())
+        upgrades_[ItemUpgrade::Suffix] = std::move(itemFactory->LoadConcrete(item.upgrade2Uuid));
+    if (!item.upgrade3Uuid.empty() && !uuids::uuid(item.upgrade3Uuid).nil())
+        upgrades_[ItemUpgrade::Inscription] = std::move(itemFactory->LoadConcrete(item.upgrade3Uuid));
+
     return true;
 }
 
@@ -146,49 +161,63 @@ uint32_t Item::GetWeaponAttackSpeed() const
     }
 }
 
-DamageType Item::GetWeaponDamageType() const
+void Item::GetWeaponDamageType(DamageType& value) const
 {
-    DamageType dt = stats_.GetDamageType();
-    if (dt != DamageType::Unknown)
-        return dt;
+    value = stats_.GetDamageType();
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetWeaponDamageType(value);
+
+    if (value != DamageType::Unknown)
+        return;
 
     // Default weapon damage type
     switch (data_.type)
     {
     case AB::Entities::ItemTypeAxe:
-        return DamageType::Piercing;
+        value = DamageType::Piercing;
+        break;
     case AB::Entities::ItemTypeSword:
-        return DamageType::Slashing;
+        value = DamageType::Slashing;
+        break;
     case AB::Entities::ItemTypeHammer:
-        return DamageType::Blunt;
+        value = DamageType::Blunt;
+        break;
     case AB::Entities::ItemTypeFlatbow:
     case AB::Entities::ItemTypeHornbow:
     case AB::Entities::ItemTypeShortbow:
     case AB::Entities::ItemTypeLongbow:
     case AB::Entities::ItemTypeRecurvebow:
-        return DamageType::Piercing;
+        value = DamageType::Piercing;
+        break;
     case AB::Entities::ItemTypeStaff:
     case AB::Entities::ItemTypeWand:
-        return DamageType::Slashing;
+        value = DamageType::Slashing;
+        break;
     case AB::Entities::ItemTypeDaggers:
-        return DamageType::Piercing;
+        value = DamageType::Piercing;
+        break;
     case AB::Entities::ItemTypeScyte:
-        return DamageType::Slashing;
+        value = DamageType::Slashing;
+        break;
     case AB::Entities::ItemTypeSpear:
-        return DamageType::Piercing;
+        value = DamageType::Piercing;
+        break;
     default:
-        return DamageType::Unknown;
+        value = DamageType::Unknown;
+        break;
     }
 }
 
-int32_t Item::GetWeaponDamage()
+void Item::GetWeaponDamage(int32_t& value)
 {
     if (HaveFunction(FunctionGetDamage))
     {
-        int32_t value = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_);
-        return value;
+        value = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_);
     }
-    return 0;
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetWeaponDamage(value);
 }
 
 }

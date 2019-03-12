@@ -64,8 +64,8 @@ public:
     void RemoveUpgrade(ItemUpgrade type);
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
-    DamageType GetWeaponDamageType() const;
-    int32_t GetWeaponDamage();
+    void GetWeaponDamageType(DamageType& value) const;
+    void GetWeaponDamage(int32_t& value);
 
     AB::Entities::Item data_;
 };

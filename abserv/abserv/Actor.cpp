@@ -355,7 +355,8 @@ DamageType Actor::GetAttackDamageType() const
     Item* weapon = GetWeapon();
     if (!weapon)
         return DamageType::Unknown;
-    DamageType type = weapon->GetWeaponDamageType();
+    DamageType type = DamageType::Unknown;
+    weapon->GetWeaponDamageType(type);
     effectsComp_.GetAttackDamageType(type);
     return type;
 }
@@ -365,7 +366,8 @@ int32_t Actor::GetAttackDamage() const
     Item* weapon = GetWeapon();
     if (!weapon)
         return 0;
-    int32_t damage = weapon->GetWeaponDamage();
+    int32_t damage = 0;
+    weapon->GetWeaponDamage(damage);
     effectsComp_.GetAttackDamage(damage);
     return damage;
 }

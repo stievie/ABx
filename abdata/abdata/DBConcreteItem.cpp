@@ -16,7 +16,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `concrete_items` (`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, " <<
-        "`account_uuid`, `item_uuid`, `count`";
+        "`account_uuid`, `item_uuid`, `stats`, `count`";
     query << ") VALUES (";
 
     query << db->EscapeString(item.uuid) << ", ";
@@ -28,6 +28,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     query << db->EscapeString(item.upgrade3Uuid) << ", ";
     query << db->EscapeString(item.accountUuid) << ", ";
     query << db->EscapeString(item.itemUuid) << ", ";
+    query << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
     query << static_cast<int>(item.count) << ", ";
     query << item.creation;
 
@@ -74,6 +75,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.upgrade3Uuid = result->GetString("upgrade_3");
     item.accountUuid = result->GetString("account_uuid");
     item.itemUuid = result->GetString("item_uuid");
+    item.itemStats = result->GetStream("stats");
     item.count = static_cast<uint16_t>(result->GetUInt("count"));
     item.creation = result->GetLong("creation");
 
@@ -103,6 +105,7 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
     query << " `upgrade_3` = " << db->EscapeString(item.upgrade3Uuid) << ", ";
     query << " `account_uuid` = " << db->EscapeString(item.accountUuid) << ", ";
     query << " `item_uuid` = " << db->EscapeString(item.itemUuid) << ", ";
+    query << " `stats` = " << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
     query << " `count` = " << item.count << ", ";
     query << " `creation` = " << item.creation;
 

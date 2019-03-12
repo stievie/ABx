@@ -32,6 +32,7 @@ struct ConcreteItem : Entity
         s.text1b(upgrade2Uuid, Limits::MAX_UUID);
         s.text1b(upgrade3Uuid, Limits::MAX_UUID);
         s.text1b(itemUuid, Limits::MAX_UUID);
+        s.text1b(itemStats, Limits::MAX_ITEM_STATS);
 
         s.value1b(storagePlace);
         s.value2b(storagePos);
@@ -47,6 +48,7 @@ struct ConcreteItem : Entity
     std::string upgrade2Uuid = EMPTY_GUID;
     std::string upgrade3Uuid = EMPTY_GUID;
     std::string itemUuid = EMPTY_GUID;
+    std::string itemStats;
     uint16_t count;
     int64_t creation = 0;
 };

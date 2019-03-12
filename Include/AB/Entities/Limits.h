@@ -82,6 +82,7 @@ static constexpr int MAX_EFFECTS = 4096;                            // Max effec
 // Item
 static constexpr int MAX_ITEM_NAME = 64;
 static constexpr int MAX_ITEMS = 65536;
+static constexpr int MAX_ITEM_STATS = 1024;                         // Max size of stats BLOB
 
 }
 }
