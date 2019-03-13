@@ -1,4 +1,4 @@
-include("/scripts/includes/weapon_consts.lua")
+include("/scripts/includes/damage.lua")
 -- Include drop stats etc.
 include("/scripts/includes/wand_defaults.lua")
 

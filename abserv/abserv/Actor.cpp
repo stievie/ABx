@@ -31,6 +31,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetAttackSpeed", &Actor::GetAttackSpeed)
         .addFunction("GetAttackDamageType", &Actor::GetAttackDamageType)
         .addFunction("GetAttackDamage", &Actor::GetAttackDamage)
+        .addFunction("ApplyDamage", &Actor::ApplyDamage)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -38,8 +39,10 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetSpeed", &Actor::SetSpeed)
         .addFunction("AddSpeed", &Actor::AddSpeed)
         .addFunction("AddEffect", &Actor::_LuaAddEffect)
+        .addFunction("IsMoving", &Actor::IsMoving)
         .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
         .addFunction("GetLastEffect", &Actor::_LuaGetLastEffect)
+        .addFunction("IsAttacking", &Actor::IsAttacking)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
@@ -367,9 +370,16 @@ int32_t Actor::GetAttackDamage() const
     if (!weapon)
         return 0;
     int32_t damage = 0;
+    // Get weapon damage with mods
     weapon->GetWeaponDamage(damage);
+    // Effects may modify the damage
     effectsComp_.GetAttackDamage(damage);
     return damage;
+}
+
+void Actor::ApplyDamage(DamageType type, int value, Skill* skill)
+{
+    damageComp_.ApplyDamage(type, value, skill ? skill->data_.index : 0);
 }
 
 Skill* Actor::GetCurrentSkill() const

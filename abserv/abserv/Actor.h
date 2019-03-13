@@ -118,12 +118,15 @@ public:
     float GetSpeed() const { return moveComp_.GetSpeedFactor(); }
     void SetSpeed(float value) { moveComp_.SetSpeedFactor(value); }
     void AddSpeed(float value) { moveComp_.AddSpeed(value); }
+    bool IsMoving() const { return moveComp_.IsMoving(); }
+    bool IsAttacking() const { return attackComp_.IsAttacking(); }
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
     bool IsInWeaponRange(Actor* actor) const;
     uint32_t GetAttackSpeed() const;
     DamageType GetAttackDamageType() const;
     int32_t GetAttackDamage() const;
+    void ApplyDamage(DamageType type, int value, Skill* skill);
 
     virtual uint32_t GetLevel() const { return 0; }
 
