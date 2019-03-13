@@ -32,6 +32,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetAttackDamageType", &Actor::GetAttackDamageType)
         .addFunction("GetAttackDamage", &Actor::GetAttackDamage)
         .addFunction("ApplyDamage", &Actor::ApplyDamage)
+        .addFunction("DrainLife", &Actor::DrainLife)
+        .addFunction("DrainEnergy", &Actor::DrainEnergy)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -380,6 +382,16 @@ int32_t Actor::GetAttackDamage() const
 void Actor::ApplyDamage(DamageType type, int value, Skill* skill)
 {
     damageComp_.ApplyDamage(type, value, skill ? skill->data_.index : 0);
+}
+
+int Actor::DrainLife(int value)
+{
+    return resourceComp_.DrainLife(value);
+}
+
+int Actor::DrainEnergy(int value)
+{
+    return resourceComp_.DrainEnergy(value);
 }
 
 Skill* Actor::GetCurrentSkill() const

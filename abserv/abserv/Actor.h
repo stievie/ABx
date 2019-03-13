@@ -126,7 +126,12 @@ public:
     uint32_t GetAttackSpeed() const;
     DamageType GetAttackDamageType() const;
     int32_t GetAttackDamage() const;
+    /// Adds damage to this actor
     void ApplyDamage(DamageType type, int value, Skill* skill);
+    /// Steal life from this actor. The source must add the returned value to its life.
+    int DrainLife(int value);
+    /// Steal energy from this actor. The source must add the returned value to its energy.
+    int DrainEnergy(int value);
 
     virtual uint32_t GetLevel() const { return 0; }
 

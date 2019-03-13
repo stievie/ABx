@@ -49,6 +49,9 @@ void AttackComp::Attack(std::shared_ptr<Actor> target)
 {
     if (!target)
         return;
+    if (target->IsUndestroyable())
+        return;
+
     target_ = target;
     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
     lastAttackTime_ = 0;

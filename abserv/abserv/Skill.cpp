@@ -92,6 +92,12 @@ void Skill::Update(uint32_t timeElapsed)
 AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
     lastError_ = AB::GameProtocol::SkillErrorNone;
+
+    if (target && target->IsUndestroyable())
+        lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
+    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+        return lastError_;
+
     if (IsUsing() || !IsRecharged())
         lastError_ = AB::GameProtocol::SkillErrorRecharging;
     if (lastError_ != AB::GameProtocol::SkillErrorNone)

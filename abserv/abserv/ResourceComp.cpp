@@ -65,6 +65,22 @@ void ResourceComp::SetMaxEnergy(int value)
     }
 }
 
+int ResourceComp::DrainLife(int value)
+{
+    int currLife = GetHealth();
+    int result = Math::Clamp(value, 0, currLife);
+    SetHealth(Components::SetValueType::Absolute, currLife - result);
+    return result;
+}
+
+int ResourceComp::DrainEnergy(int value)
+{
+    int curr = GetEnergy();
+    int result = Math::Clamp(value, 0, curr);
+    SetEnergy(Components::SetValueType::Absolute, curr - result);
+    return result;
+}
+
 void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
 {
     // When the actor didn't get damage or lost HP for 5 seconds, increase natural HP regen by 1 every 2 seconds.

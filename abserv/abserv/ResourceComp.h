@@ -133,6 +133,10 @@ public:
     void SetMaxHealth(int value);
     int GetMaxEnergy() const { return maxEnergy_; }
     void SetMaxEnergy(int value);
+    /// Steal life from this actor. The source must add the returned value to its life.
+    int DrainLife(int value);
+    /// Steal energy from this actor. The source must add the returned value to its energy.
+    int DrainEnergy(int value);
 
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message, bool ignoreDirty = false);
