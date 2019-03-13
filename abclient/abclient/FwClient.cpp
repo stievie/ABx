@@ -1060,6 +1060,7 @@ void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageTy
     eData[P_DAMAGETYPE] = damageType;
     eData[P_DAMAGEVALUE] = value;
     eData[P_SKILLINDEX] = skillIndex;
+    QueueEvent(AbEvents::E_OBJECTDAMAGED, eData);
 }
 
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
