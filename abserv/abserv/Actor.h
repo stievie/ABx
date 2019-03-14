@@ -123,13 +123,14 @@ public:
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
     bool IsInWeaponRange(Actor* actor) const;
-    uint32_t GetAttackSpeed() const;
-    DamageType GetAttackDamageType() const;
-    int32_t GetAttackDamage() const;
-    bool CanAttack() const;
-    bool CanBeAttacked() const;
-    bool CanUseSkill() const;
-    bool CanBeSkillTarget() const;
+    uint32_t GetAttackSpeed();
+    DamageType GetAttackDamageType();
+    int32_t GetAttackDamage();
+    virtual bool OnAttack(Actor* target);
+    virtual bool OnAttacked(Actor* source, DamageType type, int32_t damage);
+    virtual bool OnGettingAttacked(Actor* source);
+    virtual bool OnUseSkill(Actor* target, Skill* skill);
+    virtual bool OnSkillTargeted(Actor* source, Skill* skill);
     /// Adds damage to this actor
     void ApplyDamage(DamageType type, int value, Skill* skill);
     /// Steal life from this actor. The source must add the returned value to its life.

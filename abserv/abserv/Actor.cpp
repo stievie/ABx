@@ -34,10 +34,6 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("ApplyDamage", &Actor::ApplyDamage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
-        .addFunction("CanAttack", &Actor::CanAttack)
-        .addFunction("CanBeAttacked", &Actor::CanBeAttacked)
-        .addFunction("CanUseSkill", &Actor::CanUseSkill)
-        .addFunction("CanBeSkillTarget", &Actor::CanBeSkillTarget)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -342,7 +338,7 @@ bool Actor::IsInWeaponRange(Actor* actor) const
     return GetDistance(actor) <= range;
 }
 
-uint32_t Actor::GetAttackSpeed() const
+uint32_t Actor::GetAttackSpeed()
 {
     Item* weapon = GetWeapon();
     if (!weapon)
@@ -359,7 +355,7 @@ uint32_t Actor::GetAttackSpeed() const
     return modSpeed;
 }
 
-DamageType Actor::GetAttackDamageType() const
+DamageType Actor::GetAttackDamageType()
 {
     Item* weapon = GetWeapon();
     if (!weapon)
@@ -370,7 +366,7 @@ DamageType Actor::GetAttackDamageType() const
     return type;
 }
 
-int32_t Actor::GetAttackDamage() const
+int32_t Actor::GetAttackDamage()
 {
     Item* weapon = GetWeapon();
     if (!weapon)
@@ -383,34 +379,41 @@ int32_t Actor::GetAttackDamage() const
     return damage;
 }
 
-bool Actor::CanAttack() const
+bool Actor::OnAttack(Actor* target)
 {
     Item* weapon = GetWeapon();
     if (!weapon)
         return false;
     bool result = true;
-    effectsComp_.CanAttack(result);
+    effectsComp_.OnAttack(target, result);
     return result;
 }
 
-bool Actor::CanBeAttacked() const
+bool Actor::OnAttacked(Actor* source, DamageType type, int32_t damage)
 {
     bool result = true;
-    effectsComp_.CanAttack(result);
+    effectsComp_.OnAttacked(source, type, damage, result);
     return result;
 }
 
-bool Actor::CanUseSkill() const
+bool Actor::OnGettingAttacked(Actor* source)
 {
     bool result = true;
-    effectsComp_.CanUseSkill(result);
+    effectsComp_.OnGettingAttacked(source, result);
     return result;
 }
 
-bool Actor::CanBeSkillTarget() const
+bool Actor::OnUseSkill(Actor* target, Skill* skill)
 {
     bool result = true;
-    effectsComp_.CanBeSkillTarget(result);
+    effectsComp_.OnUseSkill(target, skill, result);
+    return result;
+}
+
+bool Actor::OnSkillTargeted(Actor* source, Skill* skill)
+{
+    bool result = true;
+    effectsComp_.OnSkillTargeted(source, skill, result);
     return result;
 }
 

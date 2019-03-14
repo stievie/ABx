@@ -49,14 +49,16 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetAttackDamageType;
     if (ScriptManager::IsFunction(luaState_, "getAttackDamage"))
         functions_ |= FunctionGetAttackDamage;
-    if (ScriptManager::IsFunction(luaState_, "canAttack"))
-        functions_ |= FunctionCanAttack;
-    if (ScriptManager::IsFunction(luaState_, "canBeAttacked"))
-        functions_ |= FunctionCanBeAttacked;
-    if (ScriptManager::IsFunction(luaState_, "canUseSkill"))
-        functions_ |= FunctionCanUseSkill;
-    if (ScriptManager::IsFunction(luaState_, "canBeSkillTarget"))
-        functions_ |= FunctionCanBeSkillTarget;
+    if (ScriptManager::IsFunction(luaState_, "onAttack"))
+        functions_ |= FunctionOnAttack;
+    if (ScriptManager::IsFunction(luaState_, "onGettingAttacked"))
+        functions_ |= FunctionOnGettingAttacked;
+    if (ScriptManager::IsFunction(luaState_, "onUseSkill"))
+        functions_ |= FunctionOnUseSkill;
+    if (ScriptManager::IsFunction(luaState_, "onSkillTargeted"))
+        functions_ |= FunctionOnSkillTargeted;
+    if (ScriptManager::IsFunction(luaState_, "onAttacked"))
+        functions_ |= FunctionOnAttacked;
     return true;
 }
 
@@ -140,28 +142,34 @@ void Effect::GetAttackDamage(int32_t& value)
     value = luaState_["getAttackDamage"](value);
 }
 
-void Effect::CanAttack(bool& value)
+void Effect::OnAttack(Actor* source, Actor* target, bool& value)
 {
-    if (HaveFunction(FunctionCanAttack))
-        value = luaState_["canAttack"]();
+    if (HaveFunction(FunctionOnAttack))
+        value = luaState_["onAttack"](source, target);
 }
 
-void Effect::CanBeAttacked(bool& value)
+void Effect::OnAttacked(Actor* source, Actor* target, DamageType type, int32_t damage, bool& success)
 {
-    if (HaveFunction(FunctionCanBeAttacked))
-        value = luaState_["canBeAttacked"]();
+    if (HaveFunction(FunctionOnAttacked))
+        success = luaState_["onAttacked"](source, target, type, damage);
 }
 
-void Effect::CanUseSkill(bool& value)
+void Effect::OnGettingAttacked(Actor* source, Actor* target, bool& value)
 {
-    if (HaveFunction(FunctionCanUseSkill))
-        value = luaState_["canUseSkill"]();
+    if (HaveFunction(FunctionOnGettingAttacked))
+        value = luaState_["onGettingAttacked"](source, target);
 }
 
-void Effect::CanBeSkillTarget(bool & value)
+void Effect::OnUseSkill(Actor* source, Actor* target, Skill* skill, bool& value)
 {
-    if (HaveFunction(FunctionCanBeSkillTarget))
-        value = luaState_["canBeSkillTarget"]();
+    if (HaveFunction(FunctionOnUseSkill))
+        value = luaState_["canUseSkill"](source, target, skill);
+}
+
+void Effect::OnSkillTargeted(Actor* source, Actor* target, Skill* skill, bool& value)
+{
+    if (HaveFunction(FunctionOnSkillTargeted))
+        value = luaState_["onSkillTargeted"](source, target, skill);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

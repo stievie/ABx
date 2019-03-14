@@ -91,14 +91,14 @@ void Skill::Update(uint32_t timeElapsed)
 
 bool Skill::CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target)
 {
-    if (!source->CanUseSkill())
+    if (!source->OnUseSkill(target.get(), this))
     {
         lastError_ = AB::GameProtocol::SkillErrorCannotUseSkill;
         return false;
     }
     if (HasTarget(SkillTargetTarget))
     {
-        if (!target || !target->CanBeSkillTarget())
+        if (!target || !target->OnSkillTargeted(source.get(), this))
         {
             lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
             return false;

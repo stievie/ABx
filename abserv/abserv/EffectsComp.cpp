@@ -136,7 +136,7 @@ void EffectsComp::Write(Net::NetworkMessage& message)
 }
 
 void EffectsComp::GetSkillCost(Skill* skill,
-    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp) const
+    int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
     // Since equipments, attributes etc. add (hidden) effects to the actor, we need only ask the effects component, I think...
     for (const auto& effect : effects_)
@@ -145,7 +145,7 @@ void EffectsComp::GetSkillCost(Skill* skill,
     }
 }
 
-void EffectsComp::GetDamage(DamageType type, int32_t& value) const
+void EffectsComp::GetDamage(DamageType type, int32_t& value)
 {
     for (const auto& effect : effects_)
     {
@@ -153,7 +153,7 @@ void EffectsComp::GetDamage(DamageType type, int32_t& value) const
     }
 }
 
-void EffectsComp::GetAttackSpeed(Item* weapon, uint32_t& value) const
+void EffectsComp::GetAttackSpeed(Item* weapon, uint32_t& value)
 {
     for (const auto& effect : effects_)
     {
@@ -161,7 +161,7 @@ void EffectsComp::GetAttackSpeed(Item* weapon, uint32_t& value) const
     }
 }
 
-void EffectsComp::GetAttackDamageType(DamageType& type) const
+void EffectsComp::GetAttackDamageType(DamageType& type)
 {
     for (const auto& effect : effects_)
     {
@@ -169,7 +169,7 @@ void EffectsComp::GetAttackDamageType(DamageType& type) const
     }
 }
 
-void EffectsComp::GetAttackDamage(int32_t& value) const
+void EffectsComp::GetAttackDamage(int32_t& value)
 {
     for (const auto& effect : effects_)
     {
@@ -177,43 +177,53 @@ void EffectsComp::GetAttackDamage(int32_t& value) const
     }
 }
 
-void EffectsComp::CanAttack(bool& value) const
+void EffectsComp::OnAttack(Actor* target, bool& value)
 {
     for (const auto& effect : effects_)
     {
         if (!value)
             return;
-        effect->CanAttack(value);
+        effect->OnAttack(&owner_, target, value);
     }
 }
 
-void EffectsComp::CanBeAttacked(bool& value) const
+void EffectsComp::OnAttacked(Actor* source, DamageType type, int32_t damage, bool& success)
 {
     for (const auto& effect : effects_)
     {
-        if (!value)
+        if (!success)
             return;
-        effect->CanBeAttacked(value);
+        effect->OnAttacked(source, &owner_, type, damage, success);
     }
 }
 
-void EffectsComp::CanUseSkill(bool& value) const
+void EffectsComp::OnGettingAttacked(Actor* source, bool& value)
 {
     for (const auto& effect : effects_)
     {
         if (!value)
             return;
-        effect->CanUseSkill(value);
+        effect->OnGettingAttacked(source, &owner_, value);
     }
 }
 
-void EffectsComp::CanBeSkillTarget(bool& value) const
+void EffectsComp::OnUseSkill(Actor* target, Skill* skill, bool& value)
 {
     for (const auto& effect : effects_)
     {
         if (!value)
             return;
-        effect->CanBeSkillTarget(value);
+        effect->OnUseSkill(&owner_, target, skill, value);
+    }
+}
+
+void EffectsComp::OnSkillTargeted(Actor* source, Skill* skill, bool& value)
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->OnSkillTargeted(source, &owner_, skill, value);
     }
 }
 

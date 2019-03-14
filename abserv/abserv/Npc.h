@@ -121,6 +121,12 @@ public:
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
 
+    bool OnAttack(Actor* target) override;
+    bool OnAttacked(Actor* source, DamageType type, int32_t damage) override;
+    bool OnGettingAttacked(Actor* source) override;
+    bool OnUseSkill(Actor* target, Skill* skill) override;
+    bool OnSkillTargeted(Actor* source, Skill* skill) override;
+
     std::unique_ptr<Components::TriggerComp> triggerComp_;
 };
 

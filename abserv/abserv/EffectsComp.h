@@ -45,15 +45,16 @@ public:
     /// \param overcast Causes overcast
     /// \param hp HP scarifies in percent of max health
     void GetSkillCost(Skill* skill,
-        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp) const;
-    void GetDamage(DamageType type, int32_t& value) const;
-    void GetAttackSpeed(Item* weapon, uint32_t& value) const;
-    void GetAttackDamageType(DamageType& type) const;
-    void GetAttackDamage(int32_t& value) const;
-    void CanAttack(bool& value) const;
-    void CanBeAttacked(bool& value) const;
-    void CanUseSkill(bool& value) const;
-    void CanBeSkillTarget(bool& value) const;
+        int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
+    void GetDamage(DamageType type, int32_t& value);
+    void GetAttackSpeed(Item* weapon, uint32_t& value);
+    void GetAttackDamageType(DamageType& type);
+    void GetAttackDamage(int32_t& value);
+    void OnAttack(Actor* target, bool& value);
+    void OnAttacked(Actor* source, DamageType type, int32_t damage, bool& success);
+    void OnGettingAttacked(Actor* source, bool& value);
+    void OnUseSkill(Actor* target, Skill* skill, bool& value);
+    void OnSkillTargeted(Actor* source, Skill* skill, bool& value);
 
     EffectList effects_;
 };

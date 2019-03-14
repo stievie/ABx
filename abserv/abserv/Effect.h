@@ -33,10 +33,11 @@ private:
         FunctionGetAttackSpeed = 1 << 3,
         FunctionGetAttackDamageType = 1 << 4,
         FunctionGetAttackDamage = 1 << 5,
-        FunctionCanAttack = 1 << 6,
-        FunctionCanBeAttacked = 1 << 7,
-        FunctionCanUseSkill = 1 << 8,
-        FunctionCanBeSkillTarget = 1 << 9,
+        FunctionOnAttack = 1 << 6,
+        FunctionOnGettingAttacked = 1 << 7,
+        FunctionOnUseSkill = 1 << 8,
+        FunctionOnSkillTargeted = 1 << 9,
+        FunctionOnAttacked = 1 << 10,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -101,12 +102,13 @@ public:
     void GetAttackDamageType(DamageType& type);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
     void GetAttackDamage(int32_t& value);
-    /// Some effect may make the attacker unable to attack
-    void CanAttack(bool& value);
+    /// Some effect may make the attacker unable to attack. The target is being attacked.
+    void OnAttack(Actor* source, Actor* target, bool& value);
+    void OnAttacked(Actor* source, Actor* target, DamageType type, int32_t damage, bool& success);
     /// Checks whether the owner can be attacked
-    void CanBeAttacked(bool& value);
-    void CanUseSkill(bool& value);
-    void CanBeSkillTarget(bool& value);
+    void OnGettingAttacked(Actor* source, Actor* target, bool& value);
+    void OnUseSkill(Actor* source, Actor* target, Skill* skill, bool& value);
+    void OnSkillTargeted(Actor* source, Actor* target, Skill* skill, bool& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

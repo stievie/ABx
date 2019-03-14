@@ -32,7 +32,8 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                 {
                     int32_t damage = baseDamage_;
                     owner_.effectsComp_.GetDamage(damageType_, damage);
-                    t->damageComp_.ApplyDamage(damageType_, damage);
+                    if (t->OnAttacked(&owner_, damageType_, damage))
+                        t->damageComp_.ApplyDamage(damageType_, damage);
                 }
             }
         }
@@ -47,12 +48,12 @@ void AttackComp::Cancel()
 
 void AttackComp::Attack(std::shared_ptr<Actor> target)
 {
-    if (!owner_.CanAttack())
+    if (!owner_.OnAttack(target.get()))
         return;
     if (!target)
         // Attack needs a target
         return;
-    if (target->IsUndestroyable() && target->CanBeAttacked())
+    if (target->IsUndestroyable() && target->OnGettingAttacked(&owner_))
         // Can not attack an destroyable target
         return;
 

@@ -288,4 +288,49 @@ void Npc::OnStartUseSkill(Skill* skill)
         ScriptManager::CallFunction(luaState_, "onStartUseSkill", skill);
 }
 
+bool Npc::OnAttack(Actor* target)
+{
+    bool ret = Actor::OnAttack(target);
+
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onAttack", target, ret);
+    return ret;
+}
+
+bool Npc::OnAttacked(Actor* source, DamageType type, int32_t damage)
+{
+    bool ret = Actor::OnAttacked(source, type, damage);
+
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onAttacked", source, type, damage, ret);
+    return ret;
+}
+
+bool Npc::OnGettingAttacked(Actor* source)
+{
+    bool ret = Actor::OnGettingAttacked(source);
+
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onGettingAttacked", source, ret);
+    return ret;
+}
+
+bool Npc::OnUseSkill(Actor* target, Skill* skill)
+{
+    bool ret = Actor::OnUseSkill(target, skill);
+
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onUseSkill", target, skill, ret);
+    return ret;
+}
+
+bool Npc::OnSkillTargeted(Actor* source, Skill* skill)
+{
+    bool ret = Actor::OnSkillTargeted(source, skill);
+
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onSkillTargeted", source, skill, ret);
+    return ret;
+}
+
 }
