@@ -50,6 +50,10 @@ public:
     void GetAttackSpeed(Item* weapon, uint32_t& value) const;
     void GetAttackDamageType(DamageType& type) const;
     void GetAttackDamage(int32_t& value) const;
+    void CanAttack(bool& value) const;
+    void CanBeAttacked(bool& value) const;
+    void CanUseSkill(bool& value) const;
+    void CanBeSkillTarget(bool& value) const;
 
     EffectList effects_;
 };

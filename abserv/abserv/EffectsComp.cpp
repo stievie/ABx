@@ -177,5 +177,45 @@ void EffectsComp::GetAttackDamage(int32_t& value) const
     }
 }
 
+void EffectsComp::CanAttack(bool& value) const
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->CanAttack(value);
+    }
+}
+
+void EffectsComp::CanBeAttacked(bool& value) const
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->CanBeAttacked(value);
+    }
+}
+
+void EffectsComp::CanUseSkill(bool& value) const
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->CanUseSkill(value);
+    }
+}
+
+void EffectsComp::CanBeSkillTarget(bool& value) const
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->CanBeSkillTarget(value);
+    }
+}
+
 }
 }

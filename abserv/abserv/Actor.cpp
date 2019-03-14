@@ -34,6 +34,10 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("ApplyDamage", &Actor::ApplyDamage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
+        .addFunction("CanAttack", &Actor::CanAttack)
+        .addFunction("CanBeAttacked", &Actor::CanBeAttacked)
+        .addFunction("CanUseSkill", &Actor::CanUseSkill)
+        .addFunction("CanBeSkillTarget", &Actor::CanBeSkillTarget)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -377,6 +381,37 @@ int32_t Actor::GetAttackDamage() const
     // Effects may modify the damage
     effectsComp_.GetAttackDamage(damage);
     return damage;
+}
+
+bool Actor::CanAttack() const
+{
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return false;
+    bool result = true;
+    effectsComp_.CanAttack(result);
+    return result;
+}
+
+bool Actor::CanBeAttacked() const
+{
+    bool result = true;
+    effectsComp_.CanAttack(result);
+    return result;
+}
+
+bool Actor::CanUseSkill() const
+{
+    bool result = true;
+    effectsComp_.CanUseSkill(result);
+    return result;
+}
+
+bool Actor::CanBeSkillTarget() const
+{
+    bool result = true;
+    effectsComp_.CanBeSkillTarget(result);
+    return result;
 }
 
 void Actor::ApplyDamage(DamageType type, int value, Skill* skill)

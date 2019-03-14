@@ -47,9 +47,13 @@ void AttackComp::Cancel()
 
 void AttackComp::Attack(std::shared_ptr<Actor> target)
 {
-    if (!target)
+    if (!owner_.CanAttack())
         return;
-    if (target->IsUndestroyable())
+    if (!target)
+        // Attack needs a target
+        return;
+    if (target->IsUndestroyable() && target->CanBeAttacked())
+        // Can not attack an destroyable target
         return;
 
     target_ = target;

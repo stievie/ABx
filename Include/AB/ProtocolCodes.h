@@ -233,7 +233,8 @@ enum SkillError : uint8_t
     SkillErrorNoEnergy,
     SkillErrorNoAdrenaline,
     SkillErrorRecharging,
-    SkillErrorTargetUndestroyable
+    SkillErrorTargetUndestroyable,
+    SkillErrorCannotUseSkill,
 };
 
 enum GameObjectType : uint8_t

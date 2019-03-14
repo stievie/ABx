@@ -51,6 +51,7 @@ private:
     bool haveOnInterrupted_;
     AB::GameProtocol::SkillError lastError_;
 
+    bool CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target);
     void InitializeLua();
     int _LuaGetType() const { return static_cast<int>(data_.type); }
     uint32_t _LuaGetIndex() const { return data_.index; }

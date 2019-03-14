@@ -33,6 +33,10 @@ private:
         FunctionGetAttackSpeed = 1 << 3,
         FunctionGetAttackDamageType = 1 << 4,
         FunctionGetAttackDamage = 1 << 5,
+        FunctionCanAttack = 1 << 6,
+        FunctionCanBeAttacked = 1 << 7,
+        FunctionCanUseSkill = 1 << 8,
+        FunctionCanBeSkillTarget = 1 << 9,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -97,6 +101,12 @@ public:
     void GetAttackDamageType(DamageType& type);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
     void GetAttackDamage(int32_t& value);
+    /// Some effect may make the attacker unable to attack
+    void CanAttack(bool& value);
+    /// Checks whether the owner can be attacked
+    void CanBeAttacked(bool& value);
+    void CanUseSkill(bool& value);
+    void CanBeSkillTarget(bool& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

@@ -49,6 +49,14 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetAttackDamageType;
     if (ScriptManager::IsFunction(luaState_, "getAttackDamage"))
         functions_ |= FunctionGetAttackDamage;
+    if (ScriptManager::IsFunction(luaState_, "canAttack"))
+        functions_ |= FunctionCanAttack;
+    if (ScriptManager::IsFunction(luaState_, "canBeAttacked"))
+        functions_ |= FunctionCanBeAttacked;
+    if (ScriptManager::IsFunction(luaState_, "canUseSkill"))
+        functions_ |= FunctionCanUseSkill;
+    if (ScriptManager::IsFunction(luaState_, "canBeSkillTarget"))
+        functions_ |= FunctionCanBeSkillTarget;
     return true;
 }
 
@@ -130,6 +138,30 @@ void Effect::GetAttackDamage(int32_t& value)
     if (!HaveFunction(FunctionGetAttackDamage))
         return;
     value = luaState_["getAttackDamage"](value);
+}
+
+void Effect::CanAttack(bool& value)
+{
+    if (HaveFunction(FunctionCanAttack))
+        value = luaState_["canAttack"]();
+}
+
+void Effect::CanBeAttacked(bool& value)
+{
+    if (HaveFunction(FunctionCanBeAttacked))
+        value = luaState_["canBeAttacked"]();
+}
+
+void Effect::CanUseSkill(bool& value)
+{
+    if (HaveFunction(FunctionCanUseSkill))
+        value = luaState_["canUseSkill"]();
+}
+
+void Effect::CanBeSkillTarget(bool & value)
+{
+    if (HaveFunction(FunctionCanBeSkillTarget))
+        value = luaState_["canBeSkillTarget"]();
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

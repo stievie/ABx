@@ -89,18 +89,36 @@ void Skill::Update(uint32_t timeElapsed)
     }
 }
 
-AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
+bool Skill::CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target)
 {
-    lastError_ = AB::GameProtocol::SkillErrorNone;
-
-    if (target && target->IsUndestroyable())
-        lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
-    if (lastError_ != AB::GameProtocol::SkillErrorNone)
-        return lastError_;
+    if (!source->CanUseSkill())
+    {
+        lastError_ = AB::GameProtocol::SkillErrorCannotUseSkill;
+        return false;
+    }
+    if (HasTarget(SkillTargetTarget))
+    {
+        if (!target || !target->CanBeSkillTarget())
+        {
+            lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
+            return false;
+        }
+        if (target->IsUndestroyable())
+        {
+            lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
+            return false;
+        }
+    }
 
     if (IsUsing() || !IsRecharged())
         lastError_ = AB::GameProtocol::SkillErrorRecharging;
-    if (lastError_ != AB::GameProtocol::SkillErrorNone)
+    return (lastError_ == AB::GameProtocol::SkillErrorNone);
+}
+
+AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
+{
+    lastError_ = AB::GameProtocol::SkillErrorNone;
+    if (!CanUseSkill(source, target))
         return lastError_;
 
     realEnergy_ = energy_;
