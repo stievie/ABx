@@ -247,5 +247,15 @@ void EffectsComp::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill
     }
 }
 
+void EffectsComp::OnKnockingDown(Actor* source, uint32_t time, bool& value)
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->OnKnockingDown(source, &owner_, time, value);
+    }
+}
+
 }
 }

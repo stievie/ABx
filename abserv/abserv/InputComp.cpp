@@ -53,7 +53,7 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
 
 void InputComp::FollowObject(uint32_t targetId, Net::NetworkMessage&)
 {
-    if (!owner_.IsDead())
+    if (!owner_.IsDead() && !owner_.IsKnockedDown())
     {
         owner_.followedObject_ = owner_.GetGame()->GetObjectById(targetId);
         if (auto f = owner_.followedObject_.lock())
@@ -84,7 +84,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
         case InputType::Move:
         {
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 owner_.moveComp_.moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_.moveDir_ > AB::GameProtocol::MoveDirectionNone)
@@ -104,7 +104,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Turn:
         {
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 owner_.moveComp_.turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_.turnDir_ > AB::GameProtocol::TurnDirectionNone)
@@ -123,7 +123,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Direction:
         {
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 // No aurorunComp_.Reset() because manually setting the camera does not
                 // stop autorunning
@@ -134,7 +134,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::SetState:
         {
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 AB::GameProtocol::CreatureState state =
                     static_cast<AB::GameProtocol::CreatureState>(input.data[InputDataState].GetInt());
@@ -144,7 +144,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Goto:
         {
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 owner_.autorunComp_.Reset();
                 const Math::Vector3 dest = {
@@ -168,7 +168,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Attack:
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 if (auto target = owner_.selectedObject_.lock())
                 {
@@ -180,7 +180,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         case InputType::UseSkill:
         {
-            if (!owner_.IsDead())
+            if (!owner_.IsDead() && !owner_.IsKnockedDown())
             {
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();
 #ifdef DEBUG_GAME

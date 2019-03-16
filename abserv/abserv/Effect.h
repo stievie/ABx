@@ -41,6 +41,7 @@ private:
         FunctionOnAttacked = 1 << 10,
         FunctionOnInterruptingAttack = 1 << 11,
         FunctionOnInterruptingSkill = 1 << 12,
+        FunctionOnKnockingDown = 1 << 13,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -114,6 +115,7 @@ public:
     void OnSkillTargeted(Actor* source, Actor* target, Skill* skill, bool& value);
     void OnInterruptingAttack(bool& value);
     void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
+    void OnKnockingDown(Actor* source, Actor* target, uint32_t time, bool& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

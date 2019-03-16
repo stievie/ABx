@@ -130,6 +130,7 @@ public:
     bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
     void OnInterruptedAttack() override;
     void OnInterruptedSkill(Skill* skill) override;
+    void OnKnockedDown(uint32_t time) override;;
 
     std::unique_ptr<Components::TriggerComp> triggerComp_;
 };

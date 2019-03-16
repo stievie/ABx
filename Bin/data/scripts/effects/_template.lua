@@ -70,3 +70,7 @@ function onInterruptingSkill(skillType, skill)
   -- Skill is going to be interrupted. If this effect prevents interrupting return false.
   return true
 end
+
+function onKnockingDown(source, target, time)
+  return true
+end

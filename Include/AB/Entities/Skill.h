@@ -9,6 +9,7 @@ namespace Entities {
 static constexpr auto KEY_SKILLS = "game_skills";
 
 /// Skill type Tree
+/// https://wiki.guildwars.com/wiki/Skill_type
 enum SkillType : uint64_t
 {
     SkillTypeSkill = 0ll,

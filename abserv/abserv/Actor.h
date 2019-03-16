@@ -146,8 +146,9 @@ public:
     bool InterruptSkill(AB::Entities::SkillType type);
     /// Interrupt everything
     bool Interrupt();
-    virtual void OnInterruptedAttack() { };
-    virtual void OnInterruptedSkill(Skill*) { };
+    virtual void OnInterruptedAttack() { }
+    virtual void OnInterruptedSkill(Skill*) { }
+    virtual void OnKnockedDown(uint32_t) { }
 
     virtual uint32_t GetLevel() const { return 0; }
 
@@ -186,6 +187,8 @@ public:
     virtual bool Die();
     virtual bool Resurrect(int precentHealth, int percentEnergy);
     bool IsDead() const { return stateComp_.IsDead(); }
+    bool IsKnockedDown() const { return stateComp_.IsKnockedDown(); }
+    bool KnockDown(Actor* source, uint32_t time);
     bool IsEnemy(Actor* other);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {

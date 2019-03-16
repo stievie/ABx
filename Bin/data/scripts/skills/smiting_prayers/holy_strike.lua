@@ -41,5 +41,8 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
   target:ApplyDamage(damageType, 55, self)
+  if (target:IsKnockedDown()) then
+    target:ApplyDamage(damageType, 55, self)
+  end
   return SkillErrorNone
 end

@@ -15,6 +15,15 @@ void StateComp::SetState(AB::GameProtocol::CreatureState state, bool apply /* = 
     }
 }
 
+bool StateComp::KnockDown(uint32_t time)
+{
+    if (IsKnockedDown())
+        return false;
+    knockdownEndTime_ = Utils::Tick() + time;
+    SetState(AB::GameProtocol::CreatureStateKnockedDown);
+    return true;
+}
+
 void StateComp::Apply()
 {
     lastStateChange_ = Utils::Tick();
@@ -23,6 +32,14 @@ void StateComp::Apply()
 
 void StateComp::Update(uint32_t)
 {
+    if (IsKnockedDown())
+    {
+        if (knockdownEndTime_ <= Utils::Tick())
+        {
+            SetState(AB::GameProtocol::CreatureStateIdle);
+        }
+        return;
+    }
     if ((currentState_ > AB::GameProtocol::CreatureStateEmoteStart &&
         currentState_ < AB::GameProtocol::CreatureStateEmoteEnd)
         && lastStateChange_ + 4000 < Utils::Tick())

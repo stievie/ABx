@@ -62,6 +62,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("SetHomePos", &Actor::_LuaSetHomePos)
         .addFunction("GotoHomePos", &Actor::GotoHomePos)
         .addFunction("IsDead", &Actor::IsDead)
+        .addFunction("IsKnockedDown", &Actor::IsKnockedDown)
+        .addFunction("KnockDown", &Actor::KnockDown)
         .addFunction("Die", &Actor::Die)
         .addFunction("Resurrect", &Actor::Resurrect)
         .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
@@ -326,7 +328,7 @@ void Actor::HeadTo(const Math::Vector3& pos)
 
 void Actor::FaceObject(GameObject* object)
 {
-    if (object)
+    if (object && !IsDead() && !IsKnockedDown())
         HeadTo(object->transformation_.position_);
 }
 
@@ -591,6 +593,25 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
         return true;
     }
     return false;
+}
+
+bool Actor::KnockDown(Actor* source, uint32_t time)
+{
+    if (IsDead())
+        return false;
+
+    bool ret = true;
+    effectsComp_.OnKnockingDown(source, time, ret);
+    if (!ret)
+        return false;
+
+    ret = stateComp_.KnockDown(time);
+    if (ret)
+    {
+        autorunComp_.autoRun_ = false;
+        OnKnockedDown(time);
+    }
+    return ret;
 }
 
 bool Actor::IsEnemy(Actor* other)

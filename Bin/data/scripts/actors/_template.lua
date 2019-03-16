@@ -91,3 +91,6 @@ end
 -- This actor was interrupted
 function onInterruptedSkill(skill)
 end
+
+function onKnockedDown(_time)
+end

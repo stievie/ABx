@@ -65,6 +65,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
             player->skills_->SetSkill(0, skillsMan->Get(9998));
             player->skills_->SetSkill(1, skillsMan->Get(9997));
             player->skills_->SetSkill(2, skillsMan->Get(9996));
+            player->skills_->SetSkill(3, skillsMan->Get(312));
             player->skills_->SetSkill(7, skillsMan->Get(1043));
         }
     }

@@ -363,4 +363,11 @@ void Npc::OnInterruptedSkill(Skill* skill)
         ScriptManager::CallFunction(luaState_, "onInterruptedSkill", skill);
 }
 
+void Npc::OnKnockedDown(uint32_t time)
+{
+    Actor::OnKnockedDown(time);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onKnockedDown", time);
+}
+
 }

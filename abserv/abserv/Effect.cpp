@@ -63,6 +63,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnInterruptingAttack;
     if (ScriptManager::IsFunction(luaState_, "onInterruptingSkill"))
         functions_ |= FunctionOnInterruptingSkill;
+    if (ScriptManager::IsFunction(luaState_, "onKnockingDown"))
+        functions_ |= FunctionOnKnockingDown;
     return true;
 }
 
@@ -187,6 +189,12 @@ void Effect::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, boo
 {
     if (HaveFunction(FunctionOnInterruptingSkill))
         value = luaState_["onInterruptingSkill"](type, skill);
+}
+
+void Effect::OnKnockingDown(Actor* source, Actor* target, uint32_t time, bool& value)
+{
+    if (HaveFunction(FunctionOnKnockingDown))
+        value = luaState_["onKnockingDown"](source, target, time);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)
