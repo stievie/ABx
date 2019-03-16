@@ -47,8 +47,8 @@ SkillEffecSpeed         = 1 << 5
 -- What the skill targets
 SkillTargetNone         = 0
 SkillTargetSelf         = 1 << 1
-SkillTargetTarget       = 2 << 2
-SkillTargetAoe          = 3 << 3
+SkillTargetTarget       = 1 << 2
+SkillTargetAoe          = 1 << 3
 -- Error codes
 SkillErrorNone          = 0
 SkillErrorInvalidSkill  = 1

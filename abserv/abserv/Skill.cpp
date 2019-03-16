@@ -55,9 +55,9 @@ bool Skill::LoadScript(const std::string& fileName)
     if (ScriptManager::IsNumber(luaState_, "range"))
         range_ = static_cast<Ranges>(luaState_["range"]);
     if (ScriptManager::IsNumber(luaState_, "effect"))
-        skillEffect_ = static_cast<SkillEffect>(luaState_["effect"]);
+        skillEffect_ = static_cast<uint32_t>(luaState_["effect"]);
     if (ScriptManager::IsNumber(luaState_, "effectTarget"))
-        effectTarget = static_cast<SkillTarget>(luaState_["effectTarget"]);
+        effectTarget_ = static_cast<uint32_t>(luaState_["effectTarget"]);
     haveOnCancelled_ = ScriptManager::IsFunction(luaState_, "onCancelled");
     haveOnInterrupted_ = ScriptManager::IsFunction(luaState_, "onInterrupted");
 

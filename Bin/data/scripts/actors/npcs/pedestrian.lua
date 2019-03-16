@@ -15,6 +15,7 @@ local rezzTarget = nil
 
 function onInit()
   self:SetSpeed(0.5)
+  self:AddEffect(empty, 900000)
   -- Let's make it a rezz machine :D
   local skillBar = self:GetSkillBar()
   -- Instant rezz skill

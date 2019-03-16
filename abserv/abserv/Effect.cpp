@@ -163,7 +163,7 @@ void Effect::OnGettingAttacked(Actor* source, Actor* target, bool& value)
 void Effect::OnUseSkill(Actor* source, Actor* target, Skill* skill, bool& value)
 {
     if (HaveFunction(FunctionOnUseSkill))
-        value = luaState_["canUseSkill"](source, target, skill);
+        value = luaState_["onUseSkill"](source, target, skill);
 }
 
 void Effect::OnSkillTargeted(Actor* source, Actor* target, Skill* skill, bool& value)

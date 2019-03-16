@@ -10,7 +10,7 @@ namespace Game {
 
 class Actor;
 
-enum SkillEffect
+enum SkillEffect : uint32_t
 {
     SkillEffectNone      = 0,
     SkillEffectResurrect = 1 << 1,
@@ -20,7 +20,7 @@ enum SkillEffect
     SkillEffectSpeed     = 1 << 5,
 };
 
-enum SkillTarget
+enum SkillTarget : uint32_t
 {
     SkillTargetNone    = 0,
     SkillTargetSelf    = 1 << 1,
@@ -36,8 +36,8 @@ private:
     int64_t startUse_;
     int64_t recharged_;
     Ranges range_;
-    SkillEffect skillEffect_;
-    SkillTarget effectTarget;
+    uint32_t skillEffect_;
+    uint32_t effectTarget_;
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
     // The real cost may be influenced by skills, armor, effects etc.
@@ -65,8 +65,8 @@ public:
         startUse_(0),
         recharged_(0),
         range_(Ranges::Aggro),
-        skillEffect_(SkillEffectNone),
-        effectTarget(SkillTargetNone),
+        skillEffect_(0),
+        effectTarget_(0),
         realEnergy_(0),
         realAdrenaline_(0),
         realActivation_(0),
@@ -119,7 +119,7 @@ public:
             !IsType(AB::Entities::SkillTypeShout);
     }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
-    bool HasTarget(SkillTarget t) const { return (effectTarget & t) == t; }
+    bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
     bool IsInRange(Actor* target);
     Actor* GetSource()
     {
