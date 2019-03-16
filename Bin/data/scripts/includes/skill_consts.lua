@@ -70,4 +70,4 @@ EffectCategoryStance      = 7
 EffectCategoryWard        = 8
 EffectCategortyWell       = 9
 EffectCategoryGeneral     = 20
-EffectCategoryEnvironment = 245
+EffectCategoryEnvironment = 254

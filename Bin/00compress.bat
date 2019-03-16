@@ -2,4 +2,7 @@
 
 if exist abserv.zip del abserv.zip
 
-"%PROGRAMFILES%\7-Zip\7z.exe" a -tzip abserv.zip abdata.exe abmsgs.exe ablogin.exe abserv.exe absmngr.exe abfile.exe ablb.exe absadmin.exe keygen.exe server.crt server.csr server.key abserver.dh 00run.bat *.dll *.lua config\* data\* file_root\* admin\* logs\*\.gitkeep recordings\.gitkeep ..\README.md
+"%PROGRAMFILES%\7-Zip\7z.exe" a -tzip abserv.zip abdata.exe abmsgs.exe ablogin.exe abserv.exe absmngr.exe abfile.exe ablb.exe absadmin.exe keygen.exe server.crt server.csr server.key abserver.dh 00run.bat *.dll *.lua config\* data\* file_root\* admin\README.md admin\templates\* admin\root\*.ico admin\root\css\* admin\root\fonts\* admin\root\images\* admin\root\js\* logs\*\.gitkeep recordings\.gitkeep ..\README.md
+
+rem Not added to the ZIP archive:
+rem - admin\root\vendors
