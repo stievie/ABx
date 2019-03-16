@@ -177,8 +177,11 @@ void Skill::CancelUse()
     target_.reset();
 }
 
-void Skill::Interrupt()
+bool Skill::Interrupt()
 {
+    if (!IsUsing() || !IsChangingState())
+        return false;
+
     auto source = source_.lock();
     if (haveOnInterrupted_)
     {
@@ -192,6 +195,7 @@ void Skill::Interrupt()
     source_.reset();
     target_.reset();
     // recharged_ remains
+    return true;
 }
 
 bool Skill::IsInRange(Actor* target)

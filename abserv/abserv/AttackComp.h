@@ -19,6 +19,7 @@ private:
     int32_t baseDamage_;
     DamageType damageType_;
     AB::GameProtocol::AttackError lastError_;
+    bool interrupted_;
     std::weak_ptr<Actor> target_;
 public:
     AttackComp() = delete;
@@ -29,7 +30,8 @@ public:
         attackSpeed_(0),
         baseDamage_(0),
         damageType_(DamageType::Unknown),
-        lastError_(AB::GameProtocol::AttackErrorNone)
+        lastError_(AB::GameProtocol::AttackErrorNone),
+        interrupted_(false)
     { }
     // non-copyable
     AttackComp(const AttackComp&) = delete;
@@ -44,6 +46,7 @@ public:
     int64_t GetLastAttackTime() const { return lastAttackTime_; }
     bool IsAttackState() const;
     void SetAttackState(bool value);
+    bool Interrupt();
 };
 
 }

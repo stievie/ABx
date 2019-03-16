@@ -101,7 +101,7 @@ public:
             recharged_ = Utils::Tick();
         recharged_ += ticks;
     }
-    void Interrupt();
+    bool Interrupt();
     AB::GameProtocol::SkillError GetLastError() const { return lastError_; }
 
     bool IsUsing() const { return (startUse_ != 0) && (Utils::TimePassed(startUse_) < static_cast<uint32_t>(activation_)); }

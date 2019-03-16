@@ -127,5 +127,27 @@ void SkillsComp::Write(Net::NetworkMessage& message)
     }
 }
 
+bool SkillsComp::Interrupt(AB::Entities::SkillType type)
+{
+    if (auto ls = lastSkill_.lock())
+    {
+        if (ls->IsUsing() && ls->IsType(type))
+            return ls->Interrupt();
+    }
+    return false;
+}
+
+Skill* SkillsComp::GetCurrentSkill()
+{
+    if (auto ls = lastSkill_.lock())
+    {
+        if (ls->IsUsing())
+        {
+            return ls.get();
+        }
+    }
+    return nullptr;
+}
+
 }
 }

@@ -34,6 +34,9 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("ApplyDamage", &Actor::ApplyDamage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
+        .addFunction("InterruptAttack", &Actor::InterruptAttack)
+        .addFunction("InterruptSkill", &Actor::InterruptSkill)
+        .addFunction("Interrupt", &Actor::Interrupt)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -430,6 +433,44 @@ int Actor::DrainLife(int value)
 int Actor::DrainEnergy(int value)
 {
     return resourceComp_.DrainEnergy(value);
+}
+
+bool Actor::OnInterruptingAttack()
+{
+    bool result = true;
+    effectsComp_.OnInterruptingAttack(result);
+    return result;
+}
+
+bool Actor::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill)
+{
+    bool result = true;
+    effectsComp_.OnInterruptingSkill(type, skill, result);
+    return result;
+}
+
+bool Actor::InterruptAttack()
+{
+    if (!OnInterruptingAttack())
+        return false;
+    return attackComp_.Interrupt();
+}
+
+bool Actor::InterruptSkill(AB::Entities::SkillType type)
+{
+    auto skill = skillsComp_.GetCurrentSkill();
+    if (!skill)
+        return false;
+    if (!OnInterruptingSkill(type, skill))
+        return false;
+    return skillsComp_.Interrupt(type);
+}
+
+bool Actor::Interrupt()
+{
+    if (attackComp_.IsAttackState())
+        return InterruptAttack();
+    return InterruptSkill(AB::Entities::SkillTypeSkill);
 }
 
 Skill* Actor::GetCurrentSkill() const

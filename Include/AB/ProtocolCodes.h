@@ -243,6 +243,7 @@ enum AttackError : uint8_t
     AttackErrorNone = 0,
     AttackErrorInvalidTarget,
     AttackErrorTargetUndestroyable,
+    AttackErrorInterrupted,
 };
 
 enum GameObjectType : uint8_t

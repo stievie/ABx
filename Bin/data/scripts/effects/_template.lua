@@ -50,14 +50,23 @@ function onAttacked(source, target, _type, damage)
   return true
 end
 
-function OnGettingAttacked(source, target)
+function onGettingAttacked(source, target)
   return true
 end
 
-function canUseSkill(source, target, skill)
+function onUseSkill(source, target, skill)
   return true
 end
 
 function onSkillTargeted(source, target, skill)
+  return true
+end
+
+function onInterruptingAttack()
+  return true
+end
+
+function onInterruptingSkill(skillType, skill)
+  -- Skill is going to be interrupted. If this effect prevents interrupting return false.
   return true
 end

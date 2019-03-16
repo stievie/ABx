@@ -227,5 +227,25 @@ void EffectsComp::OnSkillTargeted(Actor* source, Skill* skill, bool& value)
     }
 }
 
+void EffectsComp::OnInterruptingAttack(bool& value)
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->OnInterruptingAttack(value);
+    }
+}
+
+void EffectsComp::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value)
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->OnInterruptingSkill(type, skill, value);
+    }
+}
+
 }
 }

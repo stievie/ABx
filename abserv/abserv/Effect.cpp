@@ -59,6 +59,10 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnSkillTargeted;
     if (ScriptManager::IsFunction(luaState_, "onAttacked"))
         functions_ |= FunctionOnAttacked;
+    if (ScriptManager::IsFunction(luaState_, "onInterruptingAttack"))
+        functions_ |= FunctionOnInterruptingAttack;
+    if (ScriptManager::IsFunction(luaState_, "onInterruptingSkill"))
+        functions_ |= FunctionOnInterruptingSkill;
     return true;
 }
 
@@ -96,10 +100,11 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 void Effect::Remove()
 {
     // The Effect was removed before it ended
-    auto source = source_.lock();
-    auto target = target_.lock();
-    ScriptManager::CallFunction(luaState_, "onRemove",
-        source.get(), target.get());
+    {
+        auto source = source_.lock();
+        auto target = target_.lock();
+        ScriptManager::CallFunction(luaState_, "onRemove", source.get(), target.get());
+    }
     cancelled_ = true;
 }
 
@@ -170,6 +175,18 @@ void Effect::OnSkillTargeted(Actor* source, Actor* target, Skill* skill, bool& v
 {
     if (HaveFunction(FunctionOnSkillTargeted))
         value = luaState_["onSkillTargeted"](source, target, skill);
+}
+
+void Effect::OnInterruptingAttack(bool& value)
+{
+    if (HaveFunction(FunctionOnInterruptingAttack))
+        value = luaState_["onInterruptingAttack"]();
+}
+
+void Effect::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value)
+{
+    if (HaveFunction(FunctionOnInterruptingSkill))
+        value = luaState_["onInterruptingSkill"](type, skill);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

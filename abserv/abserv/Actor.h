@@ -140,6 +140,13 @@ public:
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
 
+    virtual bool OnInterruptingAttack();
+    virtual bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill);
+    bool InterruptAttack();
+    bool InterruptSkill(AB::Entities::SkillType type);
+    /// Interrupt everything
+    bool Interrupt();
+
     virtual uint32_t GetLevel() const { return 0; }
 
     virtual AB::Entities::CharacterSex GetSex() const

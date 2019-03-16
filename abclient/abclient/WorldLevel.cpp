@@ -566,9 +566,12 @@ void WorldLevel::HandleObjectSkillFailure(StringHash, VariantMap& eventData)
         if (object->objectType_ == ObjectTypeSelf)
         {
             const String& msg = eventData[P_ERRORMSG].GetString();
-            WindowManager* wm = GetSubsystem<WindowManager>();
-            GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
-            wnd->ShowError(msg);
+            if (!msg.Empty())
+            {
+                WindowManager* wm = GetSubsystem<WindowManager>();
+                GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
+                wnd->ShowError(msg);
+            }
         }
     }
 }
@@ -585,9 +588,12 @@ void WorldLevel::HandleObjectAttackFailure(StringHash, VariantMap& eventData)
         if (object->objectType_ == ObjectTypeSelf)
         {
             const String& msg = eventData[P_ERRORMSG].GetString();
-            WindowManager* wm = GetSubsystem<WindowManager>();
-            GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
-            wnd->ShowError(msg);
+            if (!msg.Empty())
+            {
+                WindowManager* wm = GetSubsystem<WindowManager>();
+                GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
+                wnd->ShowError(msg);
+            }
         }
     }
 }

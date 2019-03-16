@@ -13,6 +13,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
         {
             // New attack
             attackSpeed_ = owner_.GetAttackSpeed();
+            interrupted_ = false;
             if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_ / 2)
             {
                 lastAttackTime_ = Utils::Tick();
@@ -28,12 +29,21 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
             {
                 // Done attack -> apply damage
                 attacking_ = false;
-                if (auto t = target_.lock())
+                if (interrupted_)
                 {
-                    int32_t damage = baseDamage_;
-                    owner_.effectsComp_.GetDamage(damageType_, damage);
-                    if (t->OnAttacked(&owner_, damageType_, damage))
-                        t->damageComp_.ApplyDamage(damageType_, damage);
+                    lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+                }
+                else
+                {
+                    if (auto t = target_.lock())
+                    {
+                        int32_t damage = baseDamage_;
+                        owner_.effectsComp_.GetDamage(damageType_, damage);
+                        if (t->OnAttacked(&owner_, damageType_, damage))
+                            t->damageComp_.ApplyDamage(damageType_, damage);
+                        else
+                            lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+                    }
                 }
             }
         }
@@ -95,6 +105,16 @@ void AttackComp::SetAttackState(bool value)
         else
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
     }
+}
+
+bool AttackComp::Interrupt()
+{
+    if (attacking_)
+    {
+        interrupted_ = true;
+        return true;
+    }
+    return false;
 }
 
 }

@@ -3,6 +3,7 @@
 #include "PropStream.h"
 #include <forward_list>
 #include <AB/Entities/Effect.h>
+#include <AB/Entities/Skill.h>
 #include "Script.h"
 #include "Damage.h"
 
@@ -38,6 +39,8 @@ private:
         FunctionOnUseSkill = 1 << 8,
         FunctionOnSkillTargeted = 1 << 9,
         FunctionOnAttacked = 1 << 10,
+        FunctionOnInterruptingAttack = 1 << 11,
+        FunctionOnInterruptingSkill = 1 << 12,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -109,6 +112,8 @@ public:
     void OnGettingAttacked(Actor* source, Actor* target, bool& value);
     void OnUseSkill(Actor* source, Actor* target, Skill* skill, bool& value);
     void OnSkillTargeted(Actor* source, Actor* target, Skill* skill, bool& value);
+    void OnInterruptingAttack(bool& value);
+    void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);

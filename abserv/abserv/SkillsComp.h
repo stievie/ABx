@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/ProtocolCodes.h>
+#include <AB/Entities/Skill.h>
 
 namespace Game {
 
@@ -44,6 +45,9 @@ public:
     bool IsUsing();
     void Write(Net::NetworkMessage& message);
     int64_t GetLastSkillTime() const { return lastSkillTime_; }
+    bool Interrupt(AB::Entities::SkillType type);
+    /// Return currently using skill. Maybe nullptr.
+    Skill* GetCurrentSkill();
 };
 
 }

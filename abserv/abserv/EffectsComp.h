@@ -55,6 +55,8 @@ public:
     void OnGettingAttacked(Actor* source, bool& value);
     void OnUseSkill(Actor* target, Skill* skill, bool& value);
     void OnSkillTargeted(Actor* source, Skill* skill, bool& value);
+    void OnInterruptingAttack(bool& value);
+    void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
 
     EffectList effects_;
 };
