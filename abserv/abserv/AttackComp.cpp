@@ -7,7 +7,7 @@ namespace Components {
 
 void AttackComp::Update(uint32_t /* timeElapsed */)
 {
-    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
+    if (IsAttackState())
     {
         if (!attacking_)
         {
@@ -40,26 +40,61 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     }
 }
 
+void AttackComp::Write(Net::NetworkMessage& message)
+{
+    if (lastError_ != AB::GameProtocol::AttackErrorNone)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectAttackFailure);
+        message.Add<uint32_t>(owner_.id_);
+        message.AddByte(lastError_);
+        lastError_ = AB::GameProtocol::AttackErrorNone;
+    }
+}
+
 void AttackComp::Cancel()
 {
-    if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking)
-        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+    SetAttackState(false);
 }
 
 void AttackComp::Attack(std::shared_ptr<Actor> target)
 {
     if (!owner_.OnAttack(target.get()))
+    {
+        lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
         return;
+    }
     if (!target)
+    {
         // Attack needs a target
+        lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
         return;
+    }
     if (target->IsUndestroyable() && target->OnGettingAttacked(&owner_))
+    {
         // Can not attack an destroyable target
+        lastError_ = AB::GameProtocol::AttackErrorTargetUndestroyable;
         return;
+    }
 
     target_ = target;
-    owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
+    SetAttackState(true);
     lastAttackTime_ = 0;
+}
+
+bool AttackComp::IsAttackState() const
+{
+    return owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking;
+}
+
+void AttackComp::SetAttackState(bool value)
+{
+    if (IsAttackState())
+    {
+        if (value)
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
+        else
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+    }
 }
 
 }

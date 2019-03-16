@@ -1,3 +1,3 @@
---package.path = "data/scripts/?.lua;" .. package.path
+-- Main script. Executed before all other scripts.
 
 math.randomseed(os.time())

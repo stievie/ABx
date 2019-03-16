@@ -77,10 +77,7 @@ public:
     }
     const Math::Vector3& GetHomePos() const { return homePos_; }
     bool GotoHomePos();
-    /**
-    * @brief Allows to execute a functor/lambda on the visible objects
-    * @note This is thread safe
-    */
+    /// Allows to execute a functor/lambda on the visible objects
     template<typename Func>
     void VisitInRange(Ranges range, Func&& func)
     {
@@ -126,12 +123,17 @@ public:
     uint32_t GetAttackSpeed();
     DamageType GetAttackDamageType();
     int32_t GetAttackDamage();
+    /// This Actor is attacking the target
     virtual bool OnAttack(Actor* target);
+    /// This Actor was attacked by source
     virtual bool OnAttacked(Actor* source, DamageType type, int32_t damage);
+    /// This Actor is going to bee attacked by source. Happens before OnAttacked.
     virtual bool OnGettingAttacked(Actor* source);
+    /// This actor is using a skill on target
     virtual bool OnUseSkill(Actor* target, Skill* skill);
+    /// This Actor is targeted for a skill by source
     virtual bool OnSkillTargeted(Actor* source, Skill* skill);
-    /// Adds damage to this actor
+    /// Adds damage to this actor, skill my be nullptr.
     void ApplyDamage(DamageType type, int value, Skill* skill);
     /// Steal life from this actor. The source must add the returned value to its life.
     int DrainLife(int value);

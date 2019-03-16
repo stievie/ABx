@@ -201,6 +201,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectUseSkill,           // Actor successfully activated a skill, returns resources needed etc.
     GameObjectEndUseSkill,        // Actor successfully finished a skill, returns recharge.
     GameObjectSkillFailure,       // Failed activating a skill, returns some error code
+    GameObjectAttackFailure,
     GameObjectEffectAdded,
     GameObjectEffectRemoved,
     GameObjectDamaged,            // Object got damage
@@ -235,6 +236,13 @@ enum SkillError : uint8_t
     SkillErrorRecharging,
     SkillErrorTargetUndestroyable,
     SkillErrorCannotUseSkill,
+};
+
+enum AttackError : uint8_t
+{
+    AttackErrorNone = 0,
+    AttackErrorInvalidTarget,
+    AttackErrorTargetUndestroyable,
 };
 
 enum GameObjectType : uint8_t

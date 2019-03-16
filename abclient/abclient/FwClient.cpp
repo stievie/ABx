@@ -89,6 +89,23 @@ String FwClient::GetSkillErrorMessage(AB::GameProtocol::SkillError err)
         return "Not enough Adrenaline";
     case AB::GameProtocol::SkillErrorRecharging:
         return "Skill is recharging";
+    case AB::GameProtocol::SkillErrorTargetUndestroyable:
+        return "The target is undestroyable";
+    case AB::GameProtocol::SkillErrorCannotUseSkill:
+        return "Can not use skill";
+    default:
+        return String::EMPTY;
+    }
+}
+
+String FwClient::GetAttackErrorMessage(AB::GameProtocol::AttackError err)
+{
+    switch (err)
+    {
+    case AB::GameProtocol::AttackErrorInvalidTarget:
+        return "Invalid Target";
+    case AB::GameProtocol::AttackErrorTargetUndestroyable:
+        return "Target is undestroyable";
     default:
         return String::EMPTY;
     }
@@ -996,6 +1013,18 @@ void FwClient::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIn
     eData[P_ERROR] = static_cast<uint8_t>(error);
     eData[P_ERRORMSG] = errorMsg;
     QueueEvent(AbEvents::E_SKILLFAILURE, eData);
+}
+
+void FwClient::OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error)
+{
+    String errorMsg = GetAttackErrorMessage(error);
+    using namespace AbEvents::AttackFailure;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_ERROR] = static_cast<uint8_t>(error);
+    eData[P_ERRORMSG] = errorMsg;
+    QueueEvent(AbEvents::E_ATTACKFAILURE, eData);
 }
 
 void FwClient::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,

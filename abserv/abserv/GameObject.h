@@ -95,6 +95,9 @@ public:
     static const Math::Vector3 BodyOffset;
 
     GameObject();
+    // non-copyable
+    GameObject(const GameObject&) = delete;
+    GameObject& operator=(const GameObject&) = delete;
     virtual ~GameObject();
 
     template <typename T>

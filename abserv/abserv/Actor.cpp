@@ -515,6 +515,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     moveComp_.Write(message);
 
     skillsComp_.Write(message);
+    attackComp_.Write(message);
     effectsComp_.Write(message);
     resourceComp_.Write(message);
     damageComp_.Write(message);

@@ -140,6 +140,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectEndUseSkill:
             ParseObjectEndUseSkill(message);
             break;
+        case AB::GameProtocol::GameObjectAttackFailure:
+            ParseObjectAttackFailure(message);
+            break;
         case AB::GameProtocol::GameObjectEffectAdded:
             ParseObjectEffectAdded(message);
             break;
@@ -249,6 +252,14 @@ void ProtocolGame::ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& m
     uint16_t recharge = message->Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
+}
+
+void ProtocolGame::ParseObjectAttackFailure(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    AB::GameProtocol::AttackError attackError = static_cast<AB::GameProtocol::AttackError>(message->Get<uint8_t>());
+    if (receiver_)
+        receiver_->OnObjectAttackFailure(updateTick_, objectId, attackError);
 }
 
 void ProtocolGame::ParseObjectEffectAdded(const std::shared_ptr<InputMessage>& message)

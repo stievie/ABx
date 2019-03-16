@@ -103,6 +103,7 @@ private:
     void HandleObjectSpeedUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleObjectSkillFailure(StringHash eventType, VariantMap& eventData);
+    void HandleObjectAttackFailure(StringHash eventType, VariantMap& eventData);
     void HandleObjectEffectAdded(StringHash eventType, VariantMap& eventData);
     void HandleObjectEffectRemoved(StringHash eventType, VariantMap& eventData);
     void HandleObjectResourceChange(StringHash eventType, VariantMap& eventData);

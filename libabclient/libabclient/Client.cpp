@@ -196,6 +196,12 @@ void Client::OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillInde
         receiver_->OnObjectSkillFailure(updateTick, id, skillIndex, error);
 }
 
+void Client::OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error)
+{
+    if (receiver_)
+        receiver_->OnObjectAttackFailure(updateTick, id, error);
+}
+
 void Client::OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex,
     uint16_t energy, uint16_t adrenaline, uint16_t activation, uint16_t overcast, uint16_t hp)
 {

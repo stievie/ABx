@@ -58,6 +58,7 @@ private:
 public:
     static String GetProtocolErrorMessage(uint8_t err);
     static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
+    static String GetAttackErrorMessage(AB::GameProtocol::AttackError err);
 
     FwClient(Context* context);
     ~FwClient();
@@ -145,6 +146,7 @@ public:
     void OnObjectSpeedChange(int64_t updateTick, uint32_t id, float speedFactor) override;
     void OnObjectSelected(int64_t updateTick, uint32_t sourceId, uint32_t targetId) override;
     void OnObjectSkillFailure(int64_t updateTick, uint32_t id, int skillIndex, AB::GameProtocol::SkillError error) override;
+    void OnObjectAttackFailure(int64_t updateTick, uint32_t id, AB::GameProtocol::AttackError error) override;
     void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
         uint16_t activation, uint16_t overcast, uint16_t hp) override;
     void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
