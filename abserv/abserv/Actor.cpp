@@ -458,7 +458,7 @@ bool Actor::InterruptAttack()
 
 bool Actor::InterruptSkill(AB::Entities::SkillType type)
 {
-    auto skill = skillsComp_.GetCurrentSkill();
+    Skill* skill = skillsComp_.GetCurrentSkill();
     if (!skill)
         return false;
     if (!OnInterruptingSkill(type, skill))
@@ -468,8 +468,9 @@ bool Actor::InterruptSkill(AB::Entities::SkillType type)
 
 bool Actor::Interrupt()
 {
-    if (attackComp_.IsAttackState())
-        return InterruptAttack();
+    bool ret = InterruptAttack();
+    if (ret)
+        return true;
     return InterruptSkill(AB::Entities::SkillTypeSkill);
 }
 

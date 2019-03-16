@@ -75,3 +75,19 @@ end
 -- success: bool
 function onSkillTargeted(source, skill, success)
 end
+
+-- This actor is going to be interrupted
+function onInterruptingAttack(success)
+end
+
+-- This actor is going to be interrupted
+function onInterruptingSkill(_type, skill, success)
+end
+
+-- This actor was interrupted
+function onInterruptedAttack()
+end
+
+-- This actor was interrupted
+function onInterruptedSkill(skill)
+end

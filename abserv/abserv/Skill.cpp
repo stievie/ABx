@@ -190,7 +190,10 @@ bool Skill::Interrupt()
             source.get(), target.get());
     }
     if (source)
+    {
+        source->OnInterruptedSkill(this);
         source->OnEndUseSkill(this);
+    }
     startUse_ = 0;
     source_.reset();
     target_.reset();

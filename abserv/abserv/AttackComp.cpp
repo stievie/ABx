@@ -32,6 +32,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                 if (interrupted_)
                 {
                     lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+                    owner_.OnInterruptedAttack();
                 }
                 else
                 {
@@ -42,7 +43,10 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                         if (t->OnAttacked(&owner_, damageType_, damage))
                             t->damageComp_.ApplyDamage(damageType_, damage);
                         else
+                        {
                             lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+                            owner_.OnInterruptedAttack();
+                        }
                     }
                 }
             }

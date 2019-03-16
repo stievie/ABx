@@ -333,4 +333,34 @@ bool Npc::OnSkillTargeted(Actor* source, Skill* skill)
     return ret;
 }
 
+bool Npc::OnInterruptingAttack()
+{
+    bool ret = Actor::OnInterruptingAttack();
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onInterruptingAttack", ret);
+    return ret;
+}
+
+bool Npc::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill)
+{
+    bool ret = Actor::OnInterruptingSkill(type, skill);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onInterruptingSkill", type, skill, ret);
+    return ret;
+}
+
+void Npc::OnInterruptedAttack()
+{
+    Actor::OnInterruptedAttack();
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onInterruptedAttack");
+}
+
+void Npc::OnInterruptedSkill(Skill* skill)
+{
+    Actor::OnInterruptedSkill(skill);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onInterruptedSkill", skill);
+}
+
 }

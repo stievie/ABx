@@ -146,6 +146,8 @@ public:
     bool InterruptSkill(AB::Entities::SkillType type);
     /// Interrupt everything
     bool Interrupt();
+    virtual void OnInterruptedAttack() { };
+    virtual void OnInterruptedSkill(Skill*) { };
 
     virtual uint32_t GetLevel() const { return 0; }
 

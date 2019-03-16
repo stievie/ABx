@@ -126,6 +126,10 @@ public:
     bool OnGettingAttacked(Actor* source) override;
     bool OnUseSkill(Actor* target, Skill* skill) override;
     bool OnSkillTargeted(Actor* source, Skill* skill) override;
+    bool OnInterruptingAttack() override;
+    bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
+    void OnInterruptedAttack() override;
+    void OnInterruptedSkill(Skill* skill) override;
 
     std::unique_ptr<Components::TriggerComp> triggerComp_;
 };
