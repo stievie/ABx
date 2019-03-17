@@ -145,11 +145,11 @@ void EffectsComp::GetSkillCost(Skill* skill,
     }
 }
 
-void EffectsComp::GetDamage(DamageType type, int32_t& value)
+void EffectsComp::GetDamage(DamageType type, int32_t& value, bool& critical)
 {
     for (const auto& effect : effects_)
     {
-        effect->GetDamage(type, value);
+        effect->GetDamage(type, value, critical);
     }
 }
 
@@ -254,6 +254,24 @@ void EffectsComp::OnKnockingDown(Actor* source, uint32_t time, bool& value)
         if (!value)
             return;
         effect->OnKnockingDown(source, &owner_, time, value);
+    }
+}
+
+void EffectsComp::OnHealing(Actor* source, int& value)
+{
+    for (const auto& effect : effects_)
+    {
+        effect->OnHealing(source, &owner_, value);
+    }
+}
+
+void EffectsComp::OnGetCriticalHit(Actor* source, bool& value)
+{
+    for (const auto& effect : effects_)
+    {
+        if (!value)
+            return;
+        effect->OnGetCriticalHit(source, &owner_, value);
     }
 }
 

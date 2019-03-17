@@ -37,6 +37,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("InterruptAttack", &Actor::InterruptAttack)
         .addFunction("InterruptSkill", &Actor::InterruptSkill)
         .addFunction("Interrupt", &Actor::Interrupt)
+        .addFunction("Healing", &Actor::Healing)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -384,6 +385,26 @@ int32_t Actor::GetAttackDamage()
     return damage;
 }
 
+float Actor::GetAttackCriticalChance(Actor* other)
+{
+    if (!other)
+        return 0.0f;
+    // https://www.guildwiki.de/wiki/Kritische_Treffer
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return 0.0f;
+
+    AttributeIndices attrib = weapon->GetWeaponAttribute();
+    float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
+    float myLevel = static_cast<float>(GetLevel());
+    float otherLevel = static_cast<float>(other->GetLevel());
+
+    float val1 = ((8.0f * myLevel) - (15.0f * otherLevel) + (4.0f * attribVal) + (6 * std::min(attribVal, ((myLevel + 4.0f) / 2.0f))) - 100.0f) / 40.0f;
+    float val2 = (1.0f - (attribVal / 100.0f));
+    float val3 = (attribVal / 100.0f);
+    return 0.5f * (2.0f * val1) * val2 + val3;
+}
+
 bool Actor::OnAttack(Actor* target)
 {
     Item* weapon = GetWeapon();
@@ -419,6 +440,13 @@ bool Actor::OnSkillTargeted(Actor* source, Skill* skill)
 {
     bool result = true;
     effectsComp_.OnSkillTargeted(source, skill, result);
+    return result;
+}
+
+bool Actor::OnGetCriticalHit(Actor* source)
+{
+    bool result = true;
+    effectsComp_.OnGetCriticalHit(source, result);
     return result;
 }
 
@@ -608,10 +636,25 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
     ret = stateComp_.KnockDown(time);
     if (ret)
     {
+        // KD interrupts all regardless of effects that may prevent interrupting.
+        // The only way to prevent this is an effect that prevents KDs.
+        attackComp_.Interrupt();
+        skillsComp_.Interrupt(AB::Entities::SkillTypeSkill);
         autorunComp_.autoRun_ = false;
         OnKnockedDown(time);
     }
     return ret;
+}
+
+int Actor::Healing(Actor* source, int value)
+{
+    if (IsDead())
+        return 0;
+    int val = value;
+    effectsComp_.OnHealing(source, val);
+    resourceComp_.SetHealth(Components::SetValueType::Increase, val);
+    OnHealed(val);
+    return val;
 }
 
 bool Actor::IsEnemy(Actor* other)

@@ -8,11 +8,9 @@ namespace Components {
 
 void DamageComp::ApplyDamage(DamageType type, int value, uint32_t skillIndex /* = 0 */)
 {
-    int damage = value;
-    owner_.effectsComp_.GetDamage(type, damage);
     lastDamage_ = Utils::Tick();
-    damages_.push_back({ type, damage, skillIndex, lastDamage_ });
-    owner_.resourceComp_.SetHealth(SetValueType::Decrease, damage);
+    damages_.push_back({ type, value, skillIndex, lastDamage_ });
+    owner_.resourceComp_.SetHealth(SetValueType::Decrease, value);
 }
 
 void DamageComp::Touch()

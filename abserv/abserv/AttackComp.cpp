@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AttackComp.h"
 #include "Actor.h"
+#include "Subsystems.h"
+#include "Random.h"
 
 namespace Game {
 namespace Components {
@@ -39,9 +41,20 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                     if (auto t = target_.lock())
                     {
                         int32_t damage = baseDamage_;
-                        owner_.effectsComp_.GetDamage(damageType_, damage);
+                        float criticalChance = owner_.GetAttackCriticalChance(t.get());
+                        auto rnd = GetSubsystem<Crypto::Random>();
+                        bool critical = criticalChance >= rnd->GetFloat();
+                        owner_.effectsComp_.GetDamage(damageType_, damage, critical);
                         if (t->OnAttacked(&owner_, damageType_, damage))
+                        {
+                            if (critical)
+                                critical = t->OnGetCriticalHit(&owner_);
+                            if (critical)
+                            {
+                                damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
+                            }
                             t->damageComp_.ApplyDamage(damageType_, damage);
+                        }
                         else
                         {
                             lastError_ = AB::GameProtocol::AttackErrorInterrupted;

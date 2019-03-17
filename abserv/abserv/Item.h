@@ -5,6 +5,7 @@
 #include "Script.h"
 #include "Damage.h"
 #include "ItemStats.h"
+#include "Attributes.h"
 
 namespace Game {
 
@@ -66,6 +67,7 @@ public:
     uint32_t GetWeaponAttackSpeed() const;
     void GetWeaponDamageType(DamageType& value) const;
     void GetWeaponDamage(int32_t& value);
+    AttributeIndices GetWeaponAttribute() const;
 
     AB::Entities::Item data_;
 };

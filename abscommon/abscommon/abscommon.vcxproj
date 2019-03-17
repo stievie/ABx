@@ -79,6 +79,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -95,6 +97,8 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,6 +118,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +138,8 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

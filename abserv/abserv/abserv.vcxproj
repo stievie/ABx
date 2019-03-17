@@ -96,6 +96,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +120,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,6 +146,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,6 +172,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,6 +196,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AttackComp.h" />
+    <ClInclude Include="Attributes.h" />
     <ClInclude Include="AutoRunComp.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />

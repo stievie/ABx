@@ -26,8 +26,8 @@ function getSkillCost(skill, activation, energy, adrenaline, overcast, hp)
   return activation, energy, adrenaline, overcast, hp
 end
 
-function getDamage(_type, value)
-  return value
+function getDamage(_type, value, critical)
+  return value, critical
 end
 
 function getAttackSpeed(weapon, value)
@@ -72,5 +72,14 @@ function onInterruptingSkill(skillType, skill)
 end
 
 function onKnockingDown(source, target, time)
+  return true
+end
+
+function onHealing(source, target, value)
+  return value
+end
+
+function onGetCriticalHit(source, target)
+  -- Return false when this effect prevents critical hits
   return true
 end

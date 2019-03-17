@@ -18,6 +18,7 @@ private:
     uint32_t attackSpeed_;
     int32_t baseDamage_;
     DamageType damageType_;
+    float criticalChance_;
     AB::GameProtocol::AttackError lastError_;
     bool interrupted_;
     std::weak_ptr<Actor> target_;

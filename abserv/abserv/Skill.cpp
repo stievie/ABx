@@ -207,6 +207,9 @@ bool Skill::IsInRange(Actor* target)
         return false;
     if (auto s = source_.lock())
     {
+        if (s->id_ == target->id_)
+            // Self is always in range
+            return true;
         return s->IsInRange(range_, target);
     }
     return false;

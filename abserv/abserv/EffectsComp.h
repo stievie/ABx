@@ -46,7 +46,7 @@ public:
     /// \param hp HP scarifies in percent of max health
     void GetSkillCost(Skill* skill,
         int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
-    void GetDamage(DamageType type, int32_t& value);
+    void GetDamage(DamageType type, int32_t& value, bool& critical);
     void GetAttackSpeed(Item* weapon, uint32_t& value);
     void GetAttackDamageType(DamageType& type);
     void GetAttackDamage(int32_t& value);
@@ -58,6 +58,8 @@ public:
     void OnInterruptingAttack(bool& value);
     void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
     void OnKnockingDown(Actor* source, uint32_t time, bool& value);
+    void OnHealing(Actor* source, int& value);
+    void OnGetCriticalHit(Actor* source, bool& value);
 
     EffectList effects_;
 };

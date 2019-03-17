@@ -65,6 +65,10 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnInterruptingSkill;
     if (ScriptManager::IsFunction(luaState_, "onKnockingDown"))
         functions_ |= FunctionOnKnockingDown;
+    if (ScriptManager::IsFunction(luaState_, "onHealing"))
+        functions_ |= FunctionOnHealing;
+    if (ScriptManager::IsFunction(luaState_, "onGetCriticalHit"))
+        functions_ |= FunctionOnGetCriticalHit;
     return true;
 }
 
@@ -120,12 +124,13 @@ void Effect::GetSkillCost(Skill* skill,
         luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
 }
 
-void Effect::GetDamage(DamageType type, int32_t& value)
+void Effect::GetDamage(DamageType type, int32_t& value, bool& critical)
 {
     if (!HaveFunction(FunctionGetDamage))
         return;
 
-    value = luaState_["getDamage"](static_cast<int>(type), value);
+    kaguya::tie(value, critical) =
+        luaState_["getDamage"](static_cast<int>(type), value, critical);
 }
 
 void Effect::GetAttackSpeed(Item* weapon, uint32_t& value)
@@ -195,6 +200,18 @@ void Effect::OnKnockingDown(Actor* source, Actor* target, uint32_t time, bool& v
 {
     if (HaveFunction(FunctionOnKnockingDown))
         value = luaState_["onKnockingDown"](source, target, time);
+}
+
+void Effect::OnGetCriticalHit(Actor* source, Actor* target, bool& value)
+{
+    if (HaveFunction(FunctionOnKnockingDown))
+        value = luaState_["onGetCriticalHit"](source, target);
+}
+
+void Effect::OnHealing(Actor* source, Actor* target, int& value)
+{
+    if (HaveFunction(FunctionOnHealing))
+        value = luaState_["onHealing"](source, target, value);
 }
 
 bool Effect::Serialize(IO::PropWriteStream& stream)

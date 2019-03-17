@@ -1,6 +1,7 @@
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
+include("/scripts/includes/attributes.lua")
 
 -- Touch skill
 costEnergy = 5
@@ -23,11 +24,15 @@ function onStartUse(source, target)
   if (source:GetId() == target:GetId()) then
     -- Can not use this skill on self
     return SkillErrorInvalidTarget
-  end;
+  end
   if (self:IsInRange(target) == false) then
     -- The target must be in range
     return SkillErrorOutOfRange
-  end  
+  end
+  if (source:IsEnemy(target) == false) then
+    -- Targets only enemies
+    return SkillErrorInvalidTarget
+  end
   if (target:IsDead()) then
     -- Can not kill what's already dead :(
     return SkillErrorInvalidTarget
@@ -40,9 +45,11 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  target:ApplyDamage(damageType, 55, self)
+  local attribVal = source:GetAttributeValue(ATTRIB_SMITING)
+  local damage = 10 + (attribVal * 3)
   if (target:IsKnockedDown()) then
-    target:ApplyDamage(damageType, 55, self)
+    damage = damage + (10 + (attribVal * 3))
   end
+  target:ApplyDamage(damageType, damage, self)
   return SkillErrorNone
 end

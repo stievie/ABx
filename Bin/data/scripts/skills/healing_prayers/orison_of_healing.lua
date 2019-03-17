@@ -3,17 +3,16 @@ include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 include("/scripts/includes/attributes.lua")
 
--- Spell
-costEnergy = 10
+-- Touch skill
+costEnergy = 5
 costAdrenaline = 0
 activation = 1000
-recharge = 10000
+recharge = 2000
 overcast = 0
 -- HP cost
 hp = 0
 range = RANGE_CASTING
-damageType = DAMAGETYPE_HOLY
-effect = SkillEffectDamage
+effect = SkillEffectHeal
 effectTarget = SkillTargetTarget
 
 function onStartUse(source, target)
@@ -21,20 +20,16 @@ function onStartUse(source, target)
     -- This skill needs a target
     return SkillErrorInvalidTarget
   end
-  if (source:GetId() == target:GetId()) then
-    -- Can not use this skill on self
-    return SkillErrorInvalidTarget
-  end
   if (self:IsInRange(target) == false) then
     -- The target must be in range
     return SkillErrorOutOfRange
-  end  
-  if (source:IsEnemy(target) == false) then
-    -- Targets only enemies
+  end
+  if (source:IsEnemy(target) == true) then
+    -- Targets only allies
     return SkillErrorInvalidTarget
   end
   if (target:IsDead()) then
-    -- Can not kill what's already dead :(
+    -- Can not heal what's dead :(
     return SkillErrorInvalidTarget
   end
   source:FaceObject(target)
@@ -45,11 +40,8 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_SMITING)
-  local damage = 10 + (attribVal * 3)
-  if (target:IsAttacking()) then
-    damage = damage + (10 + (attribVal * 1.5))
-  end
-  target:ApplyDamage(damageType, damage, self)
+  local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
+  local hp = 20 + (attribVal * 3.2)
+  target:Healing(source, hp)
   return SkillErrorNone
 end

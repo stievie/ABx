@@ -370,4 +370,11 @@ void Npc::OnKnockedDown(uint32_t time)
         ScriptManager::CallFunction(luaState_, "onKnockedDown", time);
 }
 
+void Npc::OnHealed(int hp)
+{
+    Actor::OnHealed(hp);
+    if (luaInitialized_)
+        ScriptManager::CallFunction(luaState_, "onHealed", hp);
+}
+
 }

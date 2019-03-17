@@ -209,6 +209,27 @@ void Item::GetWeaponDamageType(DamageType& value) const
     }
 }
 
+AttributeIndices Item::GetWeaponAttribute() const
+{
+    switch (data_.type)
+    {
+    case AB::Entities::ItemTypeAxe:
+        return AttributeIndices::AxeMatery;
+    case AB::Entities::ItemTypeSword:
+        return AttributeIndices::SwordsManship;
+    case AB::Entities::ItemTypeHammer:
+        return AttributeIndices::HammerMastery;
+    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemTypeRecurvebow:
+        return AttributeIndices::MarkMansship;
+    default:
+        return AttributeIndices::None;
+    }
+}
+
 void Item::GetWeaponDamage(int32_t& value)
 {
     if (HaveFunction(FunctionGetDamage))

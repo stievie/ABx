@@ -79,6 +79,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -96,6 +98,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +119,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,6 +139,8 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

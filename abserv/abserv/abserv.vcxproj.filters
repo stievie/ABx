@@ -288,6 +288,9 @@
     <ClInclude Include="ItemStats.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Attributes.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

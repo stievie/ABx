@@ -123,6 +123,8 @@ public:
     uint32_t GetAttackSpeed();
     DamageType GetAttackDamageType();
     int32_t GetAttackDamage();
+    /// Get chance for a critical hit. Value between 0..1
+    float GetAttackCriticalChance(Actor* other);
     /// This Actor is attacking the target
     virtual bool OnAttack(Actor* target);
     /// This Actor was attacked by source
@@ -133,6 +135,7 @@ public:
     virtual bool OnUseSkill(Actor* target, Skill* skill);
     /// This Actor is targeted for a skill by source
     virtual bool OnSkillTargeted(Actor* source, Skill* skill);
+    virtual bool OnGetCriticalHit(Actor* source);
     /// Adds damage to this actor, skill my be nullptr.
     void ApplyDamage(DamageType type, int value, Skill* skill);
     /// Steal life from this actor. The source must add the returned value to its life.
@@ -149,6 +152,7 @@ public:
     virtual void OnInterruptedAttack() { }
     virtual void OnInterruptedSkill(Skill*) { }
     virtual void OnKnockedDown(uint32_t) { }
+    virtual void OnHealed(int) { }
 
     virtual uint32_t GetLevel() const { return 0; }
 
@@ -189,6 +193,7 @@ public:
     bool IsDead() const { return stateComp_.IsDead(); }
     bool IsKnockedDown() const { return stateComp_.IsKnockedDown(); }
     bool KnockDown(Actor* source, uint32_t time);
+    int Healing(Actor* source, int value);
     bool IsEnemy(Actor* other);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {

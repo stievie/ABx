@@ -94,3 +94,6 @@ end
 
 function onKnockedDown(_time)
 end
+
+function onHealed(hp)
+end

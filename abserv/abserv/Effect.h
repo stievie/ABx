@@ -42,6 +42,8 @@ private:
         FunctionOnInterruptingAttack = 1 << 11,
         FunctionOnInterruptingSkill = 1 << 12,
         FunctionOnKnockingDown = 1 << 13,
+        FunctionOnHealing = 1 << 14,
+        FunctionOnGetCriticalHit = 1 << 15,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -101,7 +103,7 @@ public:
     void GetSkillCost(Skill* skill,
         int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     /// Get real damage. It may be in-/decreased by some effects on the *Target*. This is called when the damage is applied to the target.
-    void GetDamage(DamageType type, int32_t& value);
+    void GetDamage(DamageType type, int32_t& value, bool& critical);
     void GetAttackSpeed(Item* weapon, uint32_t& value);
     void GetAttackDamageType(DamageType& type);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
@@ -116,6 +118,9 @@ public:
     void OnInterruptingAttack(bool& value);
     void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
     void OnKnockingDown(Actor* source, Actor* target, uint32_t time, bool& value);
+    void OnGetCriticalHit(Actor* source, Actor* target, bool& value);
+    /// Targets gets healed by source
+    void OnHealing(Actor* source, Actor* target, int& value);
 
     bool Serialize(IO::PropWriteStream& stream);
     bool Unserialize(IO::PropReadStream& stream);
