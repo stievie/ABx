@@ -13,6 +13,16 @@ void DamageComp::ApplyDamage(DamageType type, int value, uint32_t skillIndex /* 
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, value);
 }
 
+int DamageComp::DrainLife(int value, uint32_t skillIndex)
+{
+    int currLife = owner_.resourceComp_.GetHealth();
+    int result = Math::Clamp(value, 0, currLife);
+    lastDamage_ = Utils::Tick();
+    damages_.push_back({ DamageType::LifeDrain, result, skillIndex, lastDamage_ });
+    owner_.resourceComp_.SetHealth(Components::SetValueType::Absolute, currLife - result);
+    return result;
+}
+
 void DamageComp::Touch()
 {
     lastDamage_ = Utils::Tick();

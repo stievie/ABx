@@ -65,14 +65,6 @@ void ResourceComp::SetMaxEnergy(int value)
     }
 }
 
-int ResourceComp::DrainLife(int value)
-{
-    int currLife = GetHealth();
-    int result = Math::Clamp(value, 0, currLife);
-    SetHealth(Components::SetValueType::Absolute, currLife - result);
-    return result;
-}
-
 int ResourceComp::DrainEnergy(int value)
 {
     int curr = GetEnergy();

@@ -34,6 +34,8 @@ public:
 
     void Update(uint32_t /* timeElapsed */) { }
     void ApplyDamage(DamageType type, int value, uint32_t skillIndex = 0);
+    /// Steal life from this actor. The source must add the returned value to its life.
+    int DrainLife(int value, uint32_t skillIndex = 0);
     void Touch();
     /// How long the actor didn't get damage in ms
     uint32_t NoDamageTime() const;

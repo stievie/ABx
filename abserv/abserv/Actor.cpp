@@ -457,7 +457,7 @@ void Actor::ApplyDamage(DamageType type, int value, Skill* skill)
 
 int Actor::DrainLife(int value)
 {
-    return resourceComp_.DrainLife(value);
+    return damageComp_.DrainLife(value);
 }
 
 int Actor::DrainEnergy(int value)

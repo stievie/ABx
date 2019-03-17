@@ -20,7 +20,9 @@ enum class DamageType
     Typeless,
     // Other
     Dark,
-    Chaos
+    Chaos,
+    // Not a real damage
+    LifeDrain = 99
 };
 
 }
