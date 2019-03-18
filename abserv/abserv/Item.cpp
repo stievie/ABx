@@ -215,6 +215,7 @@ AttributeIndices Item::GetWeaponAttribute() const
     if (ret != AttributeIndices::None)
         return ret;
 
+    // Default weapon attributes
     switch (data_.type)
     {
     case AB::Entities::ItemTypeAxe:
