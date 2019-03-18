@@ -87,6 +87,7 @@ Actor::Actor() :
     skillsComp_(*this),
     inputComp_(*this),
     damageComp_(*this),
+    healComp_(*this),
     undestroyable_(false)
 {
     // Actor always collides
@@ -579,6 +580,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     skillsComp_.Update(timeElapsed);
     effectsComp_.Update(timeElapsed);
     damageComp_.Update(timeElapsed);
+    healComp_.Update(timeElapsed);
     moveComp_.Update(timeElapsed);
     autorunComp_.Update(timeElapsed);
 
@@ -591,6 +593,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     effectsComp_.Write(message);
     resourceComp_.Write(message);
     damageComp_.Write(message);
+    healComp_.Write(message);
 }
 
 bool Actor::Die()
@@ -652,7 +655,7 @@ int Actor::Healing(Actor* source, int value)
         return 0;
     int val = value;
     effectsComp_.OnHealing(source, val);
-    resourceComp_.SetHealth(Components::SetValueType::Increase, val);
+    healComp_.Healing(source, val);
     OnHealed(val);
     return val;
 }

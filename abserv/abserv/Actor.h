@@ -15,6 +15,7 @@
 #include "SkillsComp.h"
 #include "InputComp.h"
 #include "DamageComp.h"
+#include "HealComp.h"
 #include "UuidUtils.h"
 
 namespace Game {
@@ -32,6 +33,7 @@ class Actor : public GameObject
     friend class Components::SkillsComp;
     friend class Components::InputComp;
     friend class Components::DamageComp;
+    friend class Components::HealComp;
 private:
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
@@ -243,6 +245,7 @@ public:
     Components::SkillsComp skillsComp_;
     Components::InputComp inputComp_;
     Components::DamageComp damageComp_;
+    Components::HealComp healComp_;
 
     bool undestroyable_;
 

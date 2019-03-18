@@ -291,6 +291,9 @@
     <ClInclude Include="Attributes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="HealComp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -513,6 +516,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ItemStats.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="HealComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

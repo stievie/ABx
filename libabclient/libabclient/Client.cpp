@@ -233,6 +233,12 @@ void Client::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType
         receiver_->OnObjectDamaged(updateTick, id, damageType, value, skillIndex);
 }
 
+void Client::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t value)
+{
+    if (receiver_)
+        receiver_->OnObjectHealed(updateTick, id, healerId, value);
+}
+
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {

@@ -206,6 +206,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectEffectAdded,
     GameObjectEffectRemoved,
     GameObjectDamaged,            // Object got damage
+    GameObjectHealed,
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,

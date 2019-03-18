@@ -1096,6 +1096,17 @@ void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageTy
     QueueEvent(AbEvents::E_OBJECTDAMAGED, eData);
 }
 
+void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t value)
+{
+    using namespace AbEvents::ObjectHealed;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;;
+    eData[P_HEALERID] = healerId;
+    eData[P_HEALVALUE] = value;
+    QueueEvent(AbEvents::E_OBJECTHEALED, eData);
+}
+
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {
