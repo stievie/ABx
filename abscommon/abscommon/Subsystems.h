@@ -2,6 +2,9 @@
 
 #include <map>
 
+// https://github.com/willwray/type_name
+#include <type_name_pt.hpp>
+#include "StringHash.h"
 #include "DebugNew.h"
 
 class Subsystems
@@ -19,7 +22,7 @@ private:
             object_(std::move(object))
         { }
     };
-    std::map<const char*, std::unique_ptr<_Subsystem>> systems_;
+    std::map<size_t, std::unique_ptr<_Subsystem>> systems_;
 public:
     Subsystems() = default;
     ~Subsystems() noexcept
@@ -30,7 +33,7 @@ public:
     void Clear() noexcept
     {
         // Reverse delete subsystems
-        std::map<const char*, std::unique_ptr<_Subsystem>>::reverse_iterator itr;
+        std::map<size_t, std::unique_ptr<_Subsystem>>::reverse_iterator itr;
         for (itr = systems_.rbegin(); itr != systems_.rend(); ++itr)
             (*itr).second.reset();
         systems_.clear();
@@ -39,7 +42,8 @@ public:
     template<typename T, typename... _CArgs>
     bool CreateSubsystem(_CArgs&&... _Args)
     {
-        static const auto key = typeid(T).name();
+//        constexpr auto tn = auto_name_pt<T>();
+        static const size_t key = Utils::StringHashRt(typeid(T).name());
         const auto i = systems_.find(key);
         if (i != systems_.end())
             return false;
@@ -58,7 +62,7 @@ public:
     template<typename T>
     bool RegisterSubsystem(T* system)
     {
-        static const auto key = typeid(T).name();
+        static const size_t key = Utils::StringHashRt(typeid(T).name());
         const auto i = systems_.find(key);
         if (i == systems_.end())
         {
@@ -71,7 +75,7 @@ public:
     template<typename T>
     void RemoveSubsystem()
     {
-        static const auto key = typeid(T).name();
+        static const size_t key = Utils::StringHashRt(typeid(T).name());
         const auto i = systems_.find(key);
         if (i != systems_.end())
             systems_.erase(i);
@@ -80,7 +84,7 @@ public:
     template<typename T>
     T* GetSubsystem()
     {
-        static const auto key = typeid(T).name();
+        static const size_t key = Utils::StringHashRt(typeid(T).name());
         const auto i = systems_.find(key);
         if (i != systems_.end())
         {

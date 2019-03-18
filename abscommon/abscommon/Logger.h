@@ -6,10 +6,12 @@
 #include "Utils.h"
 #include <stdarg.h>
 
-#if defined __GNUC__
-#define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__
-#elif defined _MSC_VER
-#define __AB_PRETTY_FUNCTION__ __FUNCTION__
+#if !defined(__AB_PRETTY_FUNCTION__)
+#   if defined __GNUC__
+#       define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__
+#   elif defined _MSC_VER
+#       define __AB_PRETTY_FUNCTION__ __FUNCTION__
+#   endif
 #endif
 // All 24h rotate log
 #define LOG_ROTATE_INTERVAL (1000 * 60 * 60 * 24)
