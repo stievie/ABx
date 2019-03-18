@@ -3,7 +3,7 @@
 #include <map>
 
 // https://github.com/willwray/type_name
-#include <type_name_pt.hpp>
+//#include <type_name_pt.hpp>
 #include "StringHash.h"
 #include "DebugNew.h"
 
