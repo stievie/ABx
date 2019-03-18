@@ -3,6 +3,7 @@
 #include "Variant.h"
 #include "Damage.h"
 #include "PropStream.h"
+#include "Attributes.h"
 
 namespace Game {
 
@@ -13,6 +14,7 @@ enum class Stat : size_t
     MaxDamage,
     DamageType,
     Attribute,           // Weapon requires this attribute
+    AttributeValue,
     Energy,
 };
 
@@ -25,6 +27,9 @@ public:
     DamageType GetDamageType() const;
     int32_t GetMinDamage() const;
     int32_t GetMaxDamage() const;
+    uint32_t GetRequirement() const;
+    AttributeIndices GetAttribute() const;
+
 
     bool Load(IO::PropReadStream& stream);
     void Save(IO::PropWriteStream& stream);

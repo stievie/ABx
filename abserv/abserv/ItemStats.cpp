@@ -29,6 +29,22 @@ int32_t ItemStats::GetMaxDamage() const
     return (*it).second.GetInt();
 }
 
+uint32_t ItemStats::GetRequirement() const
+{
+    auto it = stats_.find(static_cast<size_t>(Stat::AttributeValue));
+    if (it == stats_.end())
+        return 0;
+    return static_cast<uint32_t>((*it).second.GetInt());
+}
+
+AttributeIndices ItemStats::GetAttribute() const
+{
+    auto it = stats_.find(static_cast<size_t>(Stat::Attribute));
+    if (it == stats_.end())
+        return AttributeIndices::None;
+    return static_cast<AttributeIndices>((*it).second.GetInt());
+}
+
 bool ItemStats::Load(IO::PropReadStream& stream)
 {
     return Utils::VariantMapRead(stats_, stream);

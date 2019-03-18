@@ -68,6 +68,8 @@ public:
     void GetWeaponDamageType(DamageType& value) const;
     void GetWeaponDamage(int32_t& value);
     AttributeIndices GetWeaponAttribute() const;
+    uint32_t GetWeaponRequirement() const;
+
 
     AB::Entities::Item data_;
 };

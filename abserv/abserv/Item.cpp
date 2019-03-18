@@ -211,6 +211,10 @@ void Item::GetWeaponDamageType(DamageType& value) const
 
 AttributeIndices Item::GetWeaponAttribute() const
 {
+    auto ret = stats_.GetAttribute();
+    if (ret != AttributeIndices::None)
+        return ret;
+
     switch (data_.type)
     {
     case AB::Entities::ItemTypeAxe:
@@ -228,6 +232,11 @@ AttributeIndices Item::GetWeaponAttribute() const
     default:
         return AttributeIndices::None;
     }
+}
+
+uint32_t Item::GetWeaponRequirement() const
+{
+    return stats_.GetRequirement();
 }
 
 void Item::GetWeaponDamage(int32_t& value)

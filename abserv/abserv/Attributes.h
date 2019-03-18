@@ -25,7 +25,7 @@ enum class AttributeIndices : uint32_t
     AxeMatery,
     HammerMastery,
     SwordsManship,
-    TTactics,
+    Tactics,
     BeastMastery,
     Expertise,
     WildernessSurvival,

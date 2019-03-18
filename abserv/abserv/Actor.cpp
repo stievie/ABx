@@ -381,6 +381,12 @@ int32_t Actor::GetAttackDamage()
     int32_t damage = 0;
     // Get weapon damage with mods
     weapon->GetWeaponDamage(damage);
+    uint32_t attrib = static_cast<uint32_t>(weapon->GetWeaponAttribute());
+    auto req = weapon->GetWeaponRequirement();
+    if (GetAttributeValue(attrib) < req)
+        // If requirements are not met, damage is the half
+        damage /= 2;
+
     // Effects may modify the damage
     effectsComp_.GetAttackDamage(damage);
     return damage;
