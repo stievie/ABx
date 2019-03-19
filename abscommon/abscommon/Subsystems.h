@@ -2,8 +2,6 @@
 
 #include <map>
 
-// https://github.com/willwray/type_name
-//#include <type_name_pt.hpp>
 #include "StringHash.h"
 #include "DebugNew.h"
 
@@ -42,7 +40,6 @@ public:
     template<typename T, typename... _CArgs>
     bool CreateSubsystem(_CArgs&&... _Args)
     {
-//        constexpr auto tn = auto_name_pt<T>();
         static const size_t key = Utils::StringHashRt(typeid(T).name());
         const auto i = systems_.find(key);
         if (i != systems_.end())

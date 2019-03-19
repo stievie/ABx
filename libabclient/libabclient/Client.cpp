@@ -227,16 +227,16 @@ void Client::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t eff
         receiver_->OnObjectEffectRemoved(updateTick, id, effectIndex);
 }
 
-void Client::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, uint32_t skillIndex)
+void Client::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, int16_t skillIndex)
 {
     if (receiver_)
         receiver_->OnObjectDamaged(updateTick, id, damageType, value, skillIndex);
 }
 
-void Client::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t value)
+void Client::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t skillIndex, int16_t value)
 {
     if (receiver_)
-        receiver_->OnObjectHealed(updateTick, id, healerId, value);
+        receiver_->OnObjectHealed(updateTick, id, healerId, skillIndex, value);
 }
 
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,

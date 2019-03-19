@@ -655,13 +655,13 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
     return ret;
 }
 
-int Actor::Healing(Actor* source, int value)
+int Actor::Healing(Actor* source, Skill* skill, int value)
 {
     if (IsDead())
         return 0;
     int val = value;
     effectsComp_.OnHealing(source, val);
-    healComp_.Healing(source, val);
+    healComp_.Healing(source, skill, val);
     OnHealed(val);
     return val;
 }

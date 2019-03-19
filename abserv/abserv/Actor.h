@@ -195,7 +195,7 @@ public:
     bool IsDead() const { return stateComp_.IsDead(); }
     bool IsKnockedDown() const { return stateComp_.IsKnockedDown(); }
     bool KnockDown(Actor* source, uint32_t time);
-    int Healing(Actor* source, int value);
+    int Healing(Actor* source, Skill* kill, int value);
     bool IsEnemy(Actor* other);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {

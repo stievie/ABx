@@ -1084,25 +1084,26 @@ void FwClient::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t e
     QueueEvent(AbEvents::E_OBJECTEFFECTREMOVED, eData);
 }
 
-void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, uint32_t skillIndex)
+void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, int16_t skillIndex)
 {
     using namespace AbEvents::ObjectDamaged;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;
-    eData[P_OBJECTID] = id;;
+    eData[P_OBJECTID] = id;
     eData[P_DAMAGETYPE] = damageType;
     eData[P_DAMAGEVALUE] = value;
     eData[P_SKILLINDEX] = skillIndex;
     QueueEvent(AbEvents::E_OBJECTDAMAGED, eData);
 }
 
-void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t value)
+void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t skillIndex, int16_t value)
 {
     using namespace AbEvents::ObjectHealed;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;
-    eData[P_OBJECTID] = id;;
+    eData[P_OBJECTID] = id;
     eData[P_HEALERID] = healerId;
+    eData[P_SKILLINDEX] = skillIndex;
     eData[P_HEALVALUE] = value;
     QueueEvent(AbEvents::E_OBJECTHEALED, eData);
 }

@@ -229,7 +229,7 @@ void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& mess
 void ProtocolGame::ParseObjectSkillFailure(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    int skillIndex = message->Get<int>();
+    int skillIndex = static_cast<int>(message->Get<int16_t>());
     AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message->Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
@@ -287,7 +287,7 @@ void ProtocolGame::ParseObjectDamaged(const std::shared_ptr<InputMessage>& messa
     uint32_t objectId = message->Get<uint32_t>();
     uint8_t damageType = message->Get<uint8_t>();
     int16_t damageValue = message->Get<uint16_t>();
-    uint32_t skillIndex = message->Get<uint32_t>();
+    int16_t skillIndex = message->Get<int16_t>();
     if (receiver_)
         receiver_->OnObjectDamaged(updateTick_, objectId, damageType, damageValue, skillIndex);
 }
@@ -296,9 +296,10 @@ void ProtocolGame::ParseObjectHealed(const std::shared_ptr<InputMessage>& messag
 {
     uint32_t objectId = message->Get<uint32_t>();
     uint32_t healerId = message->Get<uint32_t>();
+    int16_t skillIndex = message->Get<int16_t>();
     int16_t healValue = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnObjectHealed(updateTick_, objectId, healerId, healValue);
+        receiver_->OnObjectHealed(updateTick_, objectId, healerId, skillIndex, healValue);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

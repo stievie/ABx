@@ -3,6 +3,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 namespace Components {
 
@@ -12,6 +13,7 @@ private:
     struct HealItem
     {
         uint32_t actorId;
+        int skillIndex;
         int value;
         int64_t tick;
     };
@@ -27,7 +29,7 @@ public:
     HealComp& operator=(const HealComp&) = delete;
     ~HealComp() = default;
 
-    void Healing(Actor* source, int value);
+    void Healing(Actor* source, Skill* skill, int value);
     void Update(uint32_t /* timeElapsed */) { }
     void Write(Net::NetworkMessage& message);
 };

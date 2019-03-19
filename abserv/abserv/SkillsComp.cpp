@@ -101,7 +101,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         {
             message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
             message.Add<uint32_t>(owner_.id_);
-            message.Add<int>(lastSkillIndex_ + 1);
+            message.Add<int16_t>(static_cast<uint16_t>(lastSkillIndex_ + 1));
             message.AddByte(lastError_);
         }
         startDirty_ = false;
@@ -120,7 +120,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         {
             message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
             message.Add<uint32_t>(owner_.id_);
-            message.Add<int>(lastSkillIndex_ + 1);
+            message.Add<int16_t>(static_cast<uint16_t>(lastSkillIndex_ + 1));
             message.AddByte(lastError_);
         }
         endDirty_ = false;
