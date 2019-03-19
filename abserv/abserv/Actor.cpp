@@ -320,7 +320,10 @@ void Actor::OnStartUseSkill(Skill* skill)
 {
     // These change the state
     if (skill->IsChangingState())
+    {
+        autorunComp_.Reset();
         stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
+    }
 }
 
 void Actor::HeadTo(const Math::Vector3& pos)
