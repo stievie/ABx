@@ -13,6 +13,7 @@ private:
     {
         XPIncrease,
         GotSkillPoint,
+        QuestUpdated,
     };
     struct ProgressItem
     {
@@ -37,6 +38,7 @@ public:
     /// The owner died
     void Died();
     void AddXp(int value);
+    /// Somewhere close an enemy died, so we get some XP
     void AddXpForKill(Actor* victim);
 };
 
