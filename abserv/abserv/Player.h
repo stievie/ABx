@@ -74,6 +74,7 @@ public:
     size_t GetGroupPos() final override;
 
     uint32_t GetLevel() const final override { return data_.level; }
+    void AddXp(int value) override;
     AB::GameProtocol::GameObjectType GetType() const final override
     {
         return AB::GameProtocol::ObjectTypePlayer;

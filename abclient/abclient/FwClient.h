@@ -154,6 +154,8 @@ public:
     void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
     void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, int16_t skillIndex, uint8_t damageType, int16_t value) override;
     void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t skillIndex, int16_t value) override;
+    void OnObjectXPIncreased(int64_t updateTick, uint32_t id, int value) override;
+    void OnObjectGotSkillPoint(int64_t updateTick, uint32_t id, int value) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) override;
     void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,

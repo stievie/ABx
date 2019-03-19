@@ -46,6 +46,11 @@ size_t Player::GetGroupPos()
     return party_->GetPosition(this);
 }
 
+void Player::AddXp(int value)
+{
+    data_.xp += value;
+}
+
 void Player::Initialize()
 {
     SetParty(GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid));

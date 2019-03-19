@@ -16,6 +16,7 @@
 #include "InputComp.h"
 #include "DamageComp.h"
 #include "HealComp.h"
+#include "ProgressComp.h"
 #include "UuidUtils.h"
 
 namespace Game {
@@ -34,6 +35,7 @@ class Actor : public GameObject
     friend class Components::InputComp;
     friend class Components::DamageComp;
     friend class Components::HealComp;
+    friend class Components::ProgressComp;
 private:
     void _LuaGotoPosition(float x, float y, float z);
     int _LuaGetState();
@@ -42,7 +44,6 @@ private:
     void _LuaHeadTo(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
     void _LuaFollowObject(GameObject* object);
-    std::vector<Actor*> _LuaGetActorsInRange(Ranges range);
     void _LuaAddEffect(Actor* source, uint32_t index);
     void _LuaRemoveEffect(uint32_t index);
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
@@ -107,6 +108,11 @@ public:
         }
         return false;
     }
+    std::vector<Actor*> GetActorsInRange(Ranges range);
+    std::vector<Actor*> GetEnemiesInRange(Ranges range);
+    size_t GetEnemyCountInRange(Ranges range);
+    std::vector<Actor*> GetAlliesInRange(Ranges range);
+    size_t GetAllyCountInRange(Ranges range);
     Item* GetWeapon() const;
     virtual void OnEndUseSkill(Skill* skill);
     virtual void OnStartUseSkill(Skill* skill);
@@ -155,8 +161,11 @@ public:
     virtual void OnInterruptedSkill(Skill*) { }
     virtual void OnKnockedDown(uint32_t) { }
     virtual void OnHealed(int) { }
+    virtual void OnDied();
+    virtual void OnResurrected(int /* health */, int /* energy */) { }
 
     virtual uint32_t GetLevel() const { return 0; }
+    virtual void AddXp(int /* value */) { }
 
     virtual AB::Entities::CharacterSex GetSex() const
     {
@@ -248,6 +257,7 @@ public:
     Components::InputComp inputComp_;
     Components::DamageComp damageComp_;
     Components::HealComp healComp_;
+    Components::ProgressComp progressComp_;
 
     bool undestroyable_;
 

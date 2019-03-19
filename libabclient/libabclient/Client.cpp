@@ -239,6 +239,18 @@ void Client::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, 
         receiver_->OnObjectHealed(updateTick, id, healerId, skillIndex, value);
 }
 
+void Client::OnObjectXPIncreased(int64_t updateTick, uint32_t id, int value)
+{
+    if (receiver_)
+        receiver_->OnObjectXPIncreased(updateTick, id, value);
+}
+
+void Client::OnObjectGotSkillPoint(int64_t updateTick, uint32_t id, int value)
+{
+    if (receiver_)
+        receiver_->OnObjectGotSkillPoint(updateTick, id, value);
+}
+
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {

@@ -238,6 +238,7 @@
     <ClInclude Include="ItemStats.h" />
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="PartyManager.h" />
+    <ClInclude Include="ProgressComp.h" />
     <ClInclude Include="ResourceComp.h" />
     <ClInclude Include="SceneViewer.h" />
     <ClInclude Include="Script.h" />
@@ -316,6 +317,7 @@
     <ClCompile Include="ItemFactory.cpp" />
     <ClCompile Include="ItemStats.cpp" />
     <ClCompile Include="PartyManager.cpp" />
+    <ClCompile Include="ProgressComp.cpp" />
     <ClCompile Include="ResourceComp.cpp" />
     <ClCompile Include="SceneViewer.cpp" />
     <ClCompile Include="Script.cpp" />

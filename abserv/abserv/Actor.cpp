@@ -68,7 +68,11 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("KnockDown", &Actor::KnockDown)
         .addFunction("Die", &Actor::Die)
         .addFunction("Resurrect", &Actor::Resurrect)
-        .addFunction("GetActorsInRange", &Actor::_LuaGetActorsInRange)
+        .addFunction("GetActorsInRange", &Actor::GetActorsInRange)
+        .addFunction("GetEnemiesInRange", &Actor::GetEnemiesInRange)
+        .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
+        .addFunction("GetAlliesInRange", &Actor::GetAlliesInRange)
+        .addFunction("GetAllyCountInRange", &Actor::GetAllyCountInRange)
         .addFunction("CancelAction", &Actor::CancelAction)
 
         .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
@@ -89,6 +93,7 @@ Actor::Actor() :
     inputComp_(*this),
     damageComp_(*this),
     healComp_(*this),
+    progressComp_(*this),
     undestroyable_(false)
 {
     // Actor always collides
@@ -216,7 +221,7 @@ void Actor::_LuaFollowObject(GameObject* object)
         FollowObject(0);
 }
 
-std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
+std::vector<Actor*> Actor::GetActorsInRange(Ranges range)
 {
     std::vector<Actor*> result;
     VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
@@ -224,6 +229,70 @@ std::vector<Actor*> Actor::_LuaGetActorsInRange(Ranges range)
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
             result.push_back(dynamic_cast<Actor*>(o.get()));
+    });
+    return result;
+}
+
+std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
+{
+    std::vector<Actor*> result;
+    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    {
+        AB::GameProtocol::GameObjectType t = o->GetType();
+        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        {
+            auto actor = dynamic_cast<Actor*>(o.get());
+            if (actor && actor->IsEnemy(this))
+                result.push_back(actor);
+        }
+    });
+    return result;
+}
+
+size_t Actor::GetEnemyCountInRange(Ranges range)
+{
+    size_t result = 0;
+    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    {
+        AB::GameProtocol::GameObjectType t = o->GetType();
+        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        {
+            auto actor = dynamic_cast<Actor*>(o.get());
+            if (actor && actor->IsEnemy(this))
+                ++result;
+        }
+    });
+    return result;
+}
+
+std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
+{
+    std::vector<Actor*> result;
+    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    {
+        AB::GameProtocol::GameObjectType t = o->GetType();
+        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        {
+            auto actor = dynamic_cast<Actor*>(o.get());
+            if (actor && !actor->IsEnemy(this))
+                result.push_back(actor);
+    }
+    });
+    return result;
+}
+
+size_t Actor::GetAllyCountInRange(Ranges range)
+{
+    size_t result = 0;
+    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    {
+        AB::GameProtocol::GameObjectType t = o->GetType();
+        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+        {
+            auto actor = dynamic_cast<Actor*>(o.get());
+            if (actor && !actor->IsEnemy(this))
+                ++result;
+    }
     });
     return result;
 }
@@ -516,6 +585,11 @@ bool Actor::Interrupt()
     return InterruptSkill(AB::Entities::SkillTypeSkill);
 }
 
+void Actor::OnDied()
+{
+    progressComp_.Died();
+}
+
 Skill* Actor::GetCurrentSkill() const
 {
     return skills_->GetCurrentSkill();
@@ -595,6 +669,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     healComp_.Update(timeElapsed);
     moveComp_.Update(timeElapsed);
     autorunComp_.Update(timeElapsed);
+    progressComp_.Update(timeElapsed);
 
     // Write all
     stateComp_.Write(message);
@@ -606,6 +681,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     resourceComp_.Write(message);
     damageComp_.Write(message);
     healComp_.Write(message);
+    progressComp_.Write(message);
 }
 
 bool Actor::Die()
@@ -618,6 +694,7 @@ bool Actor::Die()
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
         damageComp_.Touch();
         autorunComp_.autoRun_ = false;
+        OnDied();
         return true;
     }
     return false;
@@ -633,6 +710,7 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, energy);
         damageComp_.Touch();
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+        OnResurrected(health, energy);
         return true;
     }
     return false;

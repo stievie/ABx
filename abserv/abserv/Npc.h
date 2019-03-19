@@ -62,8 +62,6 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
-    bool Die() override;
-    bool Resurrect(int precentHealth, int percentEnergy) override;
     std::shared_ptr<ai::AI> GetAi();
     void Shutdown();
 
@@ -132,6 +130,8 @@ public:
     void OnInterruptedSkill(Skill* skill) override;
     void OnKnockedDown(uint32_t time) override;
     void OnHealed(int hp) override;
+    void OnDied() override;
+    void OnResurrected(int health, int energy) override;
 
     std::unique_ptr<Components::TriggerComp> triggerComp_;
 };

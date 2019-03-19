@@ -155,6 +155,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectHealed:
             ParseObjectHealed(message);
             break;
+        case AB::GameProtocol::GameObjectXPIncreased:
+            ParseObjectXPIncreased(message);
+            break;
+        case AB::GameProtocol::GameObjectGotSkillPoint:
+            ParseObjectGotSkillPoint(message);
+            break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
@@ -301,6 +307,22 @@ void ProtocolGame::ParseObjectHealed(const std::shared_ptr<InputMessage>& messag
     int16_t healValue = message->Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectHealed(updateTick_, objectId, healerId, skillIndex, healValue);
+}
+
+void ProtocolGame::ParseObjectXPIncreased(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    int value = static_cast<int>(message->Get<int16_t>());
+    if (receiver_)
+        receiver_->OnObjectXPIncreased(updateTick_, objectId, value);
+}
+
+void ProtocolGame::ParseObjectGotSkillPoint(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    int value = static_cast<int>(message->Get<int16_t>());
+    if (receiver_)
+        receiver_->OnObjectGotSkillPoint(updateTick_, objectId, value);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)
