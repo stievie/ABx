@@ -1,13 +1,22 @@
 file(GLOB SOURCES Source/*.cpp)
 
-include_directories(../Detour/Include)
-include_directories(Include)
-
 if (RECASTNAVIGATION_STATIC)
     add_library(DetourCrowd STATIC ${SOURCES})
 else ()
     add_library(DetourCrowd SHARED ${SOURCES})
 endif ()
+
+add_library(RecastNavigation::DetourCrowd ALIAS DetourCrowd)
+
+set(DetourCrowd_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Include")
+
+target_include_directories(DetourCrowd PUBLIC
+    "$<BUILD_INTERFACE:${DetourCrowd_INCLUDE_DIR}>"
+)
+
+target_link_libraries(DetourCrowd
+    Detour
+)
 
 set_target_properties(DetourCrowd PROPERTIES
         SOVERSION ${SOVERSION}
