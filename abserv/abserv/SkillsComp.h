@@ -42,6 +42,7 @@ public:
     void Update(uint32_t timeElapsed);
     AB::GameProtocol::SkillError UseSkill(int index);
     void Cancel();
+    void CancelWhenChangingState();
     bool IsUsing();
     void Write(Net::NetworkMessage& message);
     int64_t GetLastSkillTime() const { return lastSkillTime_; }

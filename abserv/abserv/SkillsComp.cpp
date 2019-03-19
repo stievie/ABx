@@ -63,6 +63,23 @@ void SkillsComp::Cancel()
     }
 }
 
+void SkillsComp::CancelWhenChangingState()
+{
+    if (usingSkill_)
+    {
+        if (auto ls = lastSkill_.lock())
+        {
+            if (ls->IsUsing() && ls->IsChangingState())
+            {
+                usingSkill_ = false;
+                endDirty_ = true;
+                newRecharge_ = 0;
+                ls->CancelUse();
+            }
+        }
+    }
+}
+
 bool SkillsComp::IsUsing()
 {
     if (auto ls = lastSkill_.lock())

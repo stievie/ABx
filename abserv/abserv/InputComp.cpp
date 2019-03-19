@@ -89,6 +89,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 owner_.moveComp_.moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_.moveDir_ > AB::GameProtocol::MoveDirectionNone)
                 {
+                    owner_.skillsComp_.CancelWhenChangingState();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 }
                 else
@@ -109,6 +110,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 owner_.moveComp_.turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_.turnDir_ > AB::GameProtocol::TurnDirectionNone)
                 {
+                    owner_.skillsComp_.CancelWhenChangingState();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 }
                 else
@@ -152,7 +154,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                     input.data[InputDataVertexY].GetFloat(),
                     input.data[InputDataVertexZ].GetFloat()
                 };
-                bool succ = owner_.autorunComp_.Goto(dest);
+                const bool succ = owner_.autorunComp_.Goto(dest);
                 if (succ)
                 {
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
@@ -213,6 +215,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             owner_.skillsComp_.Cancel();
             owner_.attackComp_.Cancel();
             owner_.autorunComp_.Reset();
+            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             break;
         case InputType::Command:
         {
