@@ -66,7 +66,7 @@ public:
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
     void GetWeaponDamageType(DamageType& value) const;
-    void GetWeaponDamage(int32_t& value);
+    void GetWeaponDamage(int32_t& value, bool critical);
     AttributeIndices GetWeaponAttribute() const;
     uint32_t GetWeaponRequirement() const;
 

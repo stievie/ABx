@@ -240,15 +240,15 @@ uint32_t Item::GetWeaponRequirement() const
     return stats_.GetRequirement();
 }
 
-void Item::GetWeaponDamage(int32_t& value)
+void Item::GetWeaponDamage(int32_t& value, bool critical)
 {
     if (HaveFunction(FunctionGetDamage))
     {
-        value = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_);
+        value = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_, critical);
     }
     for (const auto& upg : upgrades_)
         if (upg.second)
-            upg.second->GetWeaponDamage(value);
+            upg.second->GetWeaponDamage(value, critical);
 }
 
 }

@@ -49,6 +49,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
         .addFunction("GetLastEffect", &Actor::_LuaGetLastEffect)
         .addFunction("IsAttacking", &Actor::IsAttacking)
+        .addFunction("IsImmobilized", &Actor::IsImmobilized)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
@@ -376,14 +377,14 @@ DamageType Actor::GetAttackDamageType()
     return type;
 }
 
-int32_t Actor::GetAttackDamage()
+int32_t Actor::GetAttackDamage(bool critical)
 {
     Item* weapon = GetWeapon();
     if (!weapon)
         return 0;
     int32_t damage = 0;
     // Get weapon damage with mods
-    weapon->GetWeaponDamage(damage);
+    weapon->GetWeaponDamage(damage, critical);
     uint32_t attrib = static_cast<uint32_t>(weapon->GetWeaponAttribute());
     auto req = weapon->GetWeaponRequirement();
     if (GetAttributeValue(attrib) < req)

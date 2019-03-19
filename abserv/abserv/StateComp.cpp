@@ -30,6 +30,11 @@ void StateComp::Apply()
     currentState_ = newState_;
 }
 
+void StateComp::Reset()
+{
+    SetState(AB::GameProtocol::CreatureStateIdle);
+}
+
 void StateComp::Update(uint32_t)
 {
     if (IsKnockedDown())

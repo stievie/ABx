@@ -21,7 +21,6 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                 lastAttackTime_ = Utils::Tick();
                 attacking_ = true;
                 damageType_ = owner_.GetAttackDamageType();
-                baseDamage_ = owner_.GetAttackDamage();
             }
         }
         else
@@ -40,19 +39,21 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                 {
                     if (auto t = target_.lock())
                     {
-                        int32_t damage = baseDamage_;
                         float criticalChance = owner_.GetAttackCriticalChance(t.get());
                         auto rnd = GetSubsystem<Crypto::Random>();
                         bool critical = criticalChance >= rnd->GetFloat();
+                        // Critical hit -> always weapons max damage
+                        int32_t damage = owner_.GetAttackDamage(critical);
+                        // Source effects may modify the damage
                         owner_.effectsComp_.GetDamage(damageType_, damage, critical);
                         if (t->OnAttacked(&owner_, damageType_, damage))
                         {
+                            // Some effects may prevent attacks, e.g. blocking
                             if (critical)
+                                // Some effect may prevent critical hits
                                 critical = t->OnGetCriticalHit(&owner_);
                             if (critical)
-                            {
                                 damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
-                            }
                             t->damageComp_.ApplyDamage(&owner_, nullptr, damageType_, damage);
                         }
                         else
@@ -120,7 +121,7 @@ void AttackComp::SetAttackState(bool value)
         if (value)
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
         else
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+            owner_.stateComp_.Reset();
     }
 }
 

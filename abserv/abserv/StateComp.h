@@ -43,6 +43,8 @@ public:
     bool IsKnockedDown() const { return newState_ == AB::GameProtocol::CreatureStateKnockedDown; }
     bool KnockDown(uint32_t time);
     void Apply();
+    /// Reset to idle state
+    void Reset();
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
 };

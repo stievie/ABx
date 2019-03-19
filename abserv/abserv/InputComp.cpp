@@ -84,7 +84,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
         case InputType::Move:
         {
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 owner_.moveComp_.moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_.moveDir_ > AB::GameProtocol::MoveDirectionNone)
@@ -97,7 +97,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                     // Reset to Idle when neither moving nor turning
                     if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
                         owner_.moveComp_.turnDir_ == AB::GameProtocol::TurnDirectionNone)
-                        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+                        owner_.stateComp_.Reset();
                 }
                 owner_.autorunComp_.Reset();
             }
@@ -105,7 +105,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Turn:
         {
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 owner_.moveComp_.turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_.turnDir_ > AB::GameProtocol::TurnDirectionNone)
@@ -117,7 +117,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 {
                     if (owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateMoving &&
                         owner_.moveComp_.moveDir_ == AB::GameProtocol::MoveDirectionNone)
-                        owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+                        owner_.stateComp_.Reset();
                 }
                 owner_.autorunComp_.Reset();
             }
@@ -125,7 +125,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Direction:
         {
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 // No aurorunComp_.Reset() because manually setting the camera does not
                 // stop autorunning
@@ -136,7 +136,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::SetState:
         {
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 AB::GameProtocol::CreatureState state =
                     static_cast<AB::GameProtocol::CreatureState>(input.data[InputDataState].GetInt());
@@ -146,7 +146,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Goto:
         {
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 owner_.autorunComp_.Reset();
                 const Math::Vector3 dest = {
@@ -170,7 +170,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Attack:
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 if (auto target = owner_.selectedObject_.lock())
                 {
@@ -182,12 +182,9 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         case InputType::UseSkill:
         {
-            if (!owner_.IsDead() && !owner_.IsKnockedDown())
+            if (!owner_.IsImmobilized())
             {
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();
-#ifdef DEBUG_GAME
-                LOG_DEBUG << owner_.GetName() << " is using skill " << skillIndex << std::endl;
-#endif
                 owner_.skillsComp_.UseSkill(skillIndex);
             }
             break;
@@ -215,7 +212,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             owner_.skillsComp_.Cancel();
             owner_.attackComp_.Cancel();
             owner_.autorunComp_.Reset();
-            owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+            owner_.stateComp_.Reset();
             break;
         case InputType::Command:
         {

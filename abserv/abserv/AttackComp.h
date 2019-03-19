@@ -16,7 +16,6 @@ private:
     bool attacking_;
     int64_t lastAttackTime_;
     uint32_t attackSpeed_;
-    int32_t baseDamage_;
     DamageType damageType_;
     float criticalChance_;
     AB::GameProtocol::AttackError lastError_;
@@ -29,7 +28,6 @@ public:
         attacking_(false),
         lastAttackTime_(0),
         attackSpeed_(0),
-        baseDamage_(0),
         damageType_(DamageType::Unknown),
         lastError_(AB::GameProtocol::AttackErrorNone),
         interrupted_(false)

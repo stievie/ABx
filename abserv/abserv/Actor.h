@@ -124,7 +124,7 @@ public:
     bool IsInWeaponRange(Actor* actor) const;
     uint32_t GetAttackSpeed();
     DamageType GetAttackDamageType();
-    int32_t GetAttackDamage();
+    int32_t GetAttackDamage(bool critical);
     /// Get chance for a critical hit. Value between 0..1
     float GetAttackCriticalChance(Actor* other);
     /// This Actor is attacking the target
@@ -194,6 +194,8 @@ public:
     virtual bool Resurrect(int precentHealth, int percentEnergy);
     bool IsDead() const { return stateComp_.IsDead(); }
     bool IsKnockedDown() const { return stateComp_.IsKnockedDown(); }
+    /// Returns true when the actor can't do anything
+    bool IsImmobilized() const { return stateComp_.IsDead() || stateComp_.IsKnockedDown(); }
     bool KnockDown(Actor* source, uint32_t time);
     int Healing(Actor* source, Skill* kill, int value);
     bool IsEnemy(Actor* other);
