@@ -457,14 +457,14 @@ bool Actor::OnGetCriticalHit(Actor* source)
     return result;
 }
 
-void Actor::ApplyDamage(DamageType type, int value, Skill* skill)
+void Actor::ApplyDamage(Actor* source, Skill* skill, DamageType type, int value)
 {
-    damageComp_.ApplyDamage(type, value, skill ? skill->data_.index : 0);
+    damageComp_.ApplyDamage(source, skill, type, value);
 }
 
-int Actor::DrainLife(int value)
+int Actor::DrainLife(Actor* source, Skill* skill, int value)
 {
-    return damageComp_.DrainLife(value);
+    return damageComp_.DrainLife(source, skill, value);
 }
 
 int Actor::DrainEnergy(int value)

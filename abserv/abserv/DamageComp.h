@@ -5,6 +5,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 namespace Components {
 
@@ -15,8 +16,9 @@ private:
     {
         DamageType type;
         int value;
+        uint32_t actorId;
         // The skill causing this damage. If 0 it's a melee damage.
-        uint32_t skillIndex;
+        int skillIndex;
         int64_t tick;
     };
     Actor& owner_;
@@ -33,9 +35,9 @@ public:
     ~DamageComp() = default;
 
     void Update(uint32_t /* timeElapsed */) { }
-    void ApplyDamage(DamageType type, int value, uint32_t skillIndex = 0);
+    void ApplyDamage(Actor* source, Skill* skill, DamageType type, int value);
     /// Steal life from this actor. The source must add the returned value to its life.
-    int DrainLife(int value, uint32_t skillIndex = 0);
+    int DrainLife(Actor* source, Skill* skill, int value);
     void Touch();
     /// How long the actor didn't get damage in ms
     uint32_t NoDamageTime() const;

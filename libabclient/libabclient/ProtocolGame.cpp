@@ -285,11 +285,12 @@ void ProtocolGame::ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>&
 void ProtocolGame::ParseObjectDamaged(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
+    uint32_t sourceId = message->Get<uint32_t>();
+    int16_t skillIndex = message->Get<int16_t>();
     uint8_t damageType = message->Get<uint8_t>();
     int16_t damageValue = message->Get<uint16_t>();
-    int16_t skillIndex = message->Get<int16_t>();
     if (receiver_)
-        receiver_->OnObjectDamaged(updateTick_, objectId, damageType, damageValue, skillIndex);
+        receiver_->OnObjectDamaged(updateTick_, objectId, sourceId, skillIndex, damageType, damageValue);
 }
 
 void ProtocolGame::ParseObjectHealed(const std::shared_ptr<InputMessage>& message)

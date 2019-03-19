@@ -53,7 +53,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                             {
                                 damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
                             }
-                            t->damageComp_.ApplyDamage(damageType_, damage);
+                            t->damageComp_.ApplyDamage(&owner_, nullptr, damageType_, damage);
                         }
                         else
                         {

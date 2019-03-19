@@ -139,9 +139,9 @@ public:
     virtual bool OnSkillTargeted(Actor* source, Skill* skill);
     virtual bool OnGetCriticalHit(Actor* source);
     /// Adds damage to this actor, skill my be nullptr.
-    void ApplyDamage(DamageType type, int value, Skill* skill);
+    void ApplyDamage(Actor* source, Skill* skill, DamageType type, int value);
     /// Steal life from this actor. The source must add the returned value to its life.
-    int DrainLife(int value);
+    int DrainLife(Actor* source, Skill* skill, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
 

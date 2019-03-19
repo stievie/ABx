@@ -64,7 +64,7 @@ public:
     virtual void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) = 0;
     virtual void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) = 0;
     virtual void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) = 0;
-    virtual void OnObjectDamaged(int64_t updateTick, uint32_t id, uint8_t damageType, int16_t value, int16_t skillIndex) = 0;
+    virtual void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, int16_t skillIndex, uint8_t damageType, int16_t value) = 0;
     virtual void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t skillIndex, int16_t value) = 0;
     virtual void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) = 0;
