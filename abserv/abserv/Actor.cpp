@@ -329,12 +329,13 @@ void Actor::OnStartUseSkill(Skill* skill)
 
 void Actor::HeadTo(const Math::Vector3& pos)
 {
-    moveComp_.HeadTo(pos);
+    if (!IsImmobilized())
+        moveComp_.HeadTo(pos);
 }
 
 void Actor::FaceObject(GameObject* object)
 {
-    if (object && !IsDead() && !IsKnockedDown())
+    if (object && !IsImmobilized())
         HeadTo(object->transformation_.position_);
 }
 
@@ -522,11 +523,12 @@ Skill* Actor::GetCurrentSkill() const
 
 void Actor::_LuaGotoPosition(float x, float y, float z)
 {
+    if (IsImmobilized())
+        return;
+
     Math::Vector3 pos(x, y, z);
     if (Math::Equals(y, 0.0f))
-    {
         pos.y_ = GetGame()->map_->GetTerrainHeight(pos);
-    }
     GotoPosition(pos);
 }
 
@@ -653,7 +655,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
         // The only way to prevent this is an effect that prevents KDs.
         attackComp_.Interrupt();
         skillsComp_.Interrupt(AB::Entities::SkillTypeSkill);
-        autorunComp_.autoRun_ = false;
+        autorunComp_.Reset();
         OnKnockedDown(time);
     }
     return ret;
