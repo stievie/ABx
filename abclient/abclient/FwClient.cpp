@@ -1111,6 +1111,8 @@ void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId
 
 void FwClient::OnObjectXPIncreased(int64_t updateTick, uint32_t id, int value)
 {
+    URHO3D_LOGINFOF("Object %d got %d XP", id, value);
+
     using namespace AbEvents::ObjectXPIncreased;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;

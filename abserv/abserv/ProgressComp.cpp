@@ -34,13 +34,15 @@ void ProgressComp::Died()
     auto enemies = owner_.GetEnemiesInRange(Ranges::Aggro);
     for (const auto& e : enemies)
     {
-        e->progressComp_.AddXpForKill(&owner_);
+        if (!e->IsDead())
+            e->progressComp_.AddXpForKill(&owner_);
     }
 }
 
 void ProgressComp::AddXp(int value)
 {
     owner_.AddXp(value);
+    items_.push_back({ ProgressType::XPIncrease, value });
 }
 
 void ProgressComp::AddXpForKill(Actor* victim)

@@ -283,7 +283,8 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
 
 size_t Actor::GetAllyCountInRange(Ranges range)
 {
-    size_t result = 0;
+    // At least 1 ally and the we
+    size_t result = 1;
     VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
     {
         AB::GameProtocol::GameObjectType t = o->GetType();
