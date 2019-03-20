@@ -48,8 +48,9 @@ function onSuccess(source, target)
   local attribVal = source:GetAttributeValue(ATTRIB_SMITING)
   local damage = 10 + (attribVal * 3)
   if (target:IsKnockedDown()) then
-    damage = damage + (10 + (attribVal * 3))
+    -- Double damage when knocked down
+    damage = damage * 2
   end
-  target:ApplyDamage(source, self, damageType, damage)
+  target:ApplyDamage(source, self:Index(), damageType, damage)
   return SkillErrorNone
 end

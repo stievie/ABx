@@ -532,14 +532,14 @@ bool Actor::OnGetCriticalHit(Actor* source)
     return result;
 }
 
-void Actor::ApplyDamage(Actor* source, Skill* skill, DamageType type, int value)
+void Actor::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value)
 {
-    damageComp_.ApplyDamage(source, skill, type, value);
+    damageComp_.ApplyDamage(source, index, type, value);
 }
 
-int Actor::DrainLife(Actor* source, Skill* skill, int value)
+int Actor::DrainLife(Actor* source, uint32_t index, int value)
 {
-    return damageComp_.DrainLife(source, skill, value);
+    return damageComp_.DrainLife(source, index, value);
 }
 
 int Actor::DrainEnergy(int value)
@@ -740,13 +740,13 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
     return ret;
 }
 
-int Actor::Healing(Actor* source, Skill* skill, int value)
+int Actor::Healing(Actor* source, uint32_t index, int value)
 {
     if (IsDead())
         return 0;
     int val = value;
     effectsComp_.OnHealing(source, val);
-    healComp_.Healing(source, skill, val);
+    healComp_.Healing(source, index, val);
     OnHealed(val);
     return val;
 }

@@ -144,10 +144,10 @@ public:
     /// This Actor is targeted for a skill by source
     virtual bool OnSkillTargeted(Actor* source, Skill* skill);
     virtual bool OnGetCriticalHit(Actor* source);
-    /// Adds damage to this actor, skill my be nullptr.
-    void ApplyDamage(Actor* source, Skill* skill, DamageType type, int value);
+    /// Adds damage to this actor, skill or effect index my be 0.
+    void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value);
     /// Steal life from this actor. The source must add the returned value to its life.
-    int DrainLife(Actor* source, Skill* skill, int value);
+    int DrainLife(Actor* source, uint32_t index, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
 
@@ -206,7 +206,7 @@ public:
     /// Returns true when the actor can't do anything
     bool IsImmobilized() const { return stateComp_.IsDead() || stateComp_.IsKnockedDown(); }
     bool KnockDown(Actor* source, uint32_t time);
-    int Healing(Actor* source, Skill* kill, int value);
+    int Healing(Actor* source, uint32_t index, int value);
     bool IsEnemy(Actor* other);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {

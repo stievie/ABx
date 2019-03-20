@@ -27,6 +27,7 @@ void Skill::RegisterLua(kaguya::State& state)
         .addFunction("HasEffect",    &Skill::HasEffect)
         .addFunction("HasTarget",    &Skill::HasTarget)
         .addFunction("IsType",       &Skill::IsType)
+        .addFunction("Index",        &Skill::GetIndex)   // Hm, GetIndex name throws an exception...
     );
 }
 

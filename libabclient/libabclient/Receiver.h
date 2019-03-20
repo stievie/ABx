@@ -64,8 +64,8 @@ public:
     virtual void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) = 0;
     virtual void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) = 0;
     virtual void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) = 0;
-    virtual void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, int16_t skillIndex, uint8_t damageType, int16_t value) = 0;
-    virtual void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t skillIndex, int16_t value) = 0;
+    virtual void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) = 0;
+    virtual void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value) = 0;
     virtual void OnObjectXPIncreased(int64_t updateTick, uint32_t id, int value) = 0;
     virtual void OnObjectGotSkillPoint(int64_t updateTick, uint32_t id, int value) = 0;
     virtual void OnResourceChanged(int64_t updateTick, uint32_t id,

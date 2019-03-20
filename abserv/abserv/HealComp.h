@@ -13,7 +13,8 @@ private:
     struct HealItem
     {
         uint32_t actorId;
-        int skillIndex;
+        // Skill or Effect index
+        uint32_t index;
         int value;
         int64_t tick;
     };
@@ -29,7 +30,7 @@ public:
     HealComp& operator=(const HealComp&) = delete;
     ~HealComp() = default;
 
-    void Healing(Actor* source, Skill* skill, int value);
+    void Healing(Actor* source, uint32_t index, int value);
     void Update(uint32_t /* timeElapsed */) { }
     void Write(Net::NetworkMessage& message);
 };

@@ -42,6 +42,6 @@ function onSuccess(source, target)
   end
   local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
   local hp = 20 + (attribVal * 3.2)
-  target:Healing(source, self, hp)
+  target:Healing(source, self:Index(), hp)
   return SkillErrorNone
 end

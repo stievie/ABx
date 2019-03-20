@@ -16,6 +16,7 @@ void Effect::RegisterLua(kaguya::State& state)
         .addFunction("GetStartTime", &Effect::GetStartTime)
         .addFunction("GetEndTime", &Effect::GetEndTime)
         .addFunction("GetTicks", &Effect::GetTicks)
+        .addFunction("Index", &Effect::GetIndex)
     );
 }
 

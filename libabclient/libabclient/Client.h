@@ -101,8 +101,8 @@ public:
     void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
     void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) override;
     void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
-    void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, int16_t skillIndex, uint8_t damageType, int16_t value) override;
-    void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, int16_t skillIndex, int16_t value) override;
+    void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) override;
+    void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value) override;
     void OnObjectXPIncreased(int64_t updateTick, uint32_t id, int value) override;
     void OnObjectGotSkillPoint(int64_t updateTick, uint32_t id, int value) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,

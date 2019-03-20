@@ -118,6 +118,7 @@ public:
             !IsType(AB::Entities::SkillTypeFlashEnchantment) &&
             !IsType(AB::Entities::SkillTypeShout);
     }
+    uint32_t GetIndex() const { return data_.index; }
     bool HasEffect(SkillEffect effect) const { return (skillEffect_ & effect) == effect; }
     bool HasTarget(SkillTarget t) const { return (effectTarget_ & t) == t; }
     bool IsInRange(Actor* target);

@@ -18,6 +18,7 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
   
-  source:AddEffect(source, 1043)
+  -- Effect has the same index as the skill
+  source:AddEffect(source, self:Index())
   return SkillErrorNone
 end

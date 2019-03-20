@@ -87,6 +87,7 @@ public:
         return persistent_;
     }
     bool IsInternal() const { return internal_; }
+    uint32_t GetIndex() const { return data_.index; }
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);

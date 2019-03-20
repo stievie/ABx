@@ -292,21 +292,21 @@ void ProtocolGame::ParseObjectDamaged(const std::shared_ptr<InputMessage>& messa
 {
     uint32_t objectId = message->Get<uint32_t>();
     uint32_t sourceId = message->Get<uint32_t>();
-    int16_t skillIndex = message->Get<int16_t>();
+    uint16_t index = message->Get<uint16_t>();
     uint8_t damageType = message->Get<uint8_t>();
     int16_t damageValue = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnObjectDamaged(updateTick_, objectId, sourceId, skillIndex, damageType, damageValue);
+        receiver_->OnObjectDamaged(updateTick_, objectId, sourceId, index, damageType, damageValue);
 }
 
 void ProtocolGame::ParseObjectHealed(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
     uint32_t healerId = message->Get<uint32_t>();
-    int16_t skillIndex = message->Get<int16_t>();
+    uint16_t index = message->Get<uint16_t>();
     int16_t healValue = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnObjectHealed(updateTick_, objectId, healerId, skillIndex, healValue);
+        receiver_->OnObjectHealed(updateTick_, objectId, healerId, index, healValue);
 }
 
 void ProtocolGame::ParseObjectXPIncreased(const std::shared_ptr<InputMessage>& message)
