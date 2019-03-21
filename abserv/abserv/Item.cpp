@@ -249,6 +249,18 @@ void Item::GetArmor(DamageType damageType, int& value) const
             upg.second->GetArmor(damageType, value);
 }
 
+void Item::GetArmorPenetration(float& value) const
+{
+    switch (data_.type)
+    {
+    case AB::Entities::ItemTypeHornbow:
+        value += 0.1f;
+    }
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetArmorPenetration(value);
+}
+
 void Item::GetWeaponDamage(int32_t& value, bool critical)
 {
     if (HaveFunction(FunctionGetDamage))

@@ -51,6 +51,6 @@ function onSuccess(source, target)
     -- Double damage when knocked down
     damage = damage * 2
   end
-  target:ApplyDamage(source, self:Index(), damageType, damage)
+  target:ApplyDamage(source, self:Index(), damageType, damage, 0)
   return SkillErrorNone
 end

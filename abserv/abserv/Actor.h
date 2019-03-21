@@ -134,8 +134,10 @@ public:
     uint32_t GetAttackSpeed();
     DamageType GetAttackDamageType();
     int32_t GetAttackDamage(bool critical);
+    float GetArmorPenetration();
     /// Get chance for a critical hit. Value between 0..1
-    float GetAttackCriticalChance(Actor* other);
+    float GetCriticalChance(Actor* other);
+    DamagePos GetDamagePos() const { return damageComp_.GetDamagePos(); }
     /// This Actor is attacking the target
     virtual bool OnAttack(Actor* target);
     /// This Actor was attacked by source
@@ -148,7 +150,7 @@ public:
     virtual bool OnSkillTargeted(Actor* source, Skill* skill);
     virtual bool OnGetCriticalHit(Actor* source);
     /// Adds damage to this actor, skill or effect index my be 0.
-    void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value);
+    void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration);
     /// Steal life from this actor. The source must add the returned value to its life.
     int DrainLife(Actor* source, uint32_t index, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.

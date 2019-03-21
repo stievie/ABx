@@ -32,6 +32,8 @@ enum class DamagePos
     Hands,
     Legs,
     Feet,
+
+    NoPos = 99
 };
 
 }

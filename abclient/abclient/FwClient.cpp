@@ -1086,6 +1086,7 @@ void FwClient::OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t e
 
 void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value)
 {
+    URHO3D_LOGINFOF("Object %d was damaged by %d: value %d", id, sourceId, value);
     using namespace AbEvents::ObjectDamaged;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;
@@ -1099,6 +1100,7 @@ void FwClient::OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceI
 
 void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value)
 {
+    URHO3D_LOGINFOF("Object %d was healed by %d: HP %d", id, healerId, value);
     using namespace AbEvents::ObjectHealed;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;

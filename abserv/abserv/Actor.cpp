@@ -31,6 +31,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetAttackSpeed", &Actor::GetAttackSpeed)
         .addFunction("GetAttackDamageType", &Actor::GetAttackDamageType)
         .addFunction("GetAttackDamage", &Actor::GetAttackDamage)
+        .addFunction("GetCriticalChance", &Actor::GetCriticalChance)
+        .addFunction("GetDamagePos", &Actor::GetDamagePos)
         .addFunction("ApplyDamage", &Actor::ApplyDamage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
@@ -489,7 +491,22 @@ int32_t Actor::GetAttackDamage(bool critical)
     return damage;
 }
 
-float Actor::GetAttackCriticalChance(Actor* other)
+float Actor::GetArmorPenetration()
+{
+    float value = 0.0f;
+    // 1. Attributes
+    const float strength = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Strength)));
+    value += (strength * 0.01f);
+    // 2. Weapons
+    value += equipComp_.GetArmorPenetration();
+    // 3. Effects
+    float ea = 0.0f;
+    effectsComp_.GetArmorPenetration(ea);
+    value += ea;
+    return value;
+}
+
+float Actor::GetCriticalChance(Actor* other)
 {
     if (!other)
         return 0.0f;
@@ -560,9 +577,9 @@ bool Actor::OnGetCriticalHit(Actor* source)
     return result;
 }
 
-void Actor::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value)
+void Actor::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration)
 {
-    damageComp_.ApplyDamage(source, index, type, value);
+    damageComp_.ApplyDamage(source, index, type, value, penetration);
 }
 
 int Actor::DrainLife(Actor* source, uint32_t index, int value)

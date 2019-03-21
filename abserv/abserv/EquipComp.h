@@ -48,6 +48,7 @@ public:
     /// Get lead hand weapon
     Item* GetWeapon() const;
     int GetArmor(DamageType damageType, DamagePos pos);
+    float GetArmorPenetration();
 };
 
 }

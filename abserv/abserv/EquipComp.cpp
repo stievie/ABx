@@ -61,21 +61,23 @@ int EquipComp::GetArmor(DamageType damageType, DamagePos pos)
     Item* item = nullptr;
     switch (pos)
     {
-    case Game::DamagePos::Head:
+    case DamagePos::Head:
         item = items_[ItemPos::ArmorHead].get();
         break;
-    case Game::DamagePos::Chest:
+    case DamagePos::Chest:
         item = items_[ItemPos::ArmorChest].get();
         break;
-    case Game::DamagePos::Hands:
+    case DamagePos::Hands:
         item = items_[ItemPos::ArmorHands].get();
         break;
-    case Game::DamagePos::Legs:
+    case DamagePos::Legs:
         item = items_[ItemPos::ArmorLegs].get();
         break;
-    case Game::DamagePos::Feet:
+    case DamagePos::Feet:
         item = items_[ItemPos::ArmorFeet].get();
         break;
+    case DamagePos::NoPos:
+        return 0;
     default:
         break;
     }
@@ -84,6 +86,16 @@ int EquipComp::GetArmor(DamageType damageType, DamagePos pos)
     int armor = 0;
     item->GetArmor(damageType, armor);
     return armor;
+}
+
+float EquipComp::GetArmorPenetration()
+{
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return 0.0f;
+    float value = 0.0f;
+    weapon->GetArmorPenetration(value);
+    return value;
 }
 
 }

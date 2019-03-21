@@ -36,7 +36,7 @@ public:
     ~DamageComp() = default;
 
     void Update(uint32_t /* timeElapsed */) { }
-    void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value);
+    void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration);
     /// Steal life from this actor. The source must add the returned value to its life.
     int DrainLife(Actor* source, uint32_t index, int value);
     void Touch();

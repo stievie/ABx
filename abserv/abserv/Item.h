@@ -70,6 +70,7 @@ public:
     AttributeIndices GetWeaponAttribute() const;
     uint32_t GetWeaponRequirement() const;
     void GetArmor(DamageType damageType, int& value) const;
+    void GetArmorPenetration(float& value) const;
 
     AB::Entities::Item data_;
 };

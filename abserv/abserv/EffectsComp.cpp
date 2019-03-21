@@ -185,6 +185,14 @@ void EffectsComp::GetArmor(DamageType type, int& value)
     }
 }
 
+void EffectsComp::GetArmorPenetration(float& value)
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetArmorPenetration(value);
+    }
+}
+
 void EffectsComp::OnAttack(Actor* target, bool& value)
 {
     for (const auto& effect : effects_)

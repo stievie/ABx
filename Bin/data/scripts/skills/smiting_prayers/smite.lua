@@ -50,6 +50,6 @@ function onSuccess(source, target)
   if (target:IsAttacking()) then
     damage = damage + (10 + (attribVal * 1.5))
   end
-  target:ApplyDamage(source, self:Index(), damageType, damage)
+  target:ApplyDamage(source, self:Index(), damageType, damage, 0)
   return SkillErrorNone
 end

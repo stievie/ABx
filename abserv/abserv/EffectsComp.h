@@ -51,6 +51,7 @@ public:
     void GetAttackDamageType(DamageType& type);
     void GetAttackDamage(int32_t& value);
     void GetArmor(DamageType type, int& value);
+    void GetArmorPenetration(float& value);
     void OnAttack(Actor* target, bool& value);
     void OnAttacked(Actor* source, DamageType type, int32_t damage, bool& success);
     void OnGettingAttacked(Actor* source, bool& value);
