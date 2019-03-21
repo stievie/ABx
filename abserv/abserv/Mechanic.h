@@ -66,4 +66,7 @@ constexpr float DamagePosChances[] = {
     0.125f,                                // Feet
 };
 
+// If the rotation of 2 actors is smaller than this, an attack is from behind
+constexpr float BEHIND_ANGLE = 0.52f;
+
 }

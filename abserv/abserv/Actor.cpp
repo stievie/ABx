@@ -498,6 +498,12 @@ float Actor::GetAttackCriticalChance(Actor* other)
     if (!weapon)
         return 0.0f;
 
+    // From behind is always critical
+    float diff = transformation_.GetYRotation() - other->transformation_.GetYRotation();
+    if (fabs(diff) < BEHIND_ANGLE)
+        // If rotation is < 30 deg it's from behind
+        return 1.0f;
+
     AttributeIndices attrib = weapon->GetWeaponAttribute();
     float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
     float myLevel = static_cast<float>(GetLevel());
