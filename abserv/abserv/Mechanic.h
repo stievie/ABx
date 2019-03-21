@@ -57,4 +57,13 @@ static constexpr float RANGE_TOUCH        = 1.5f;
 static constexpr float RANGE_ADJECENT     = GetPercent(RANGE_BASE, 3.0f);
 static constexpr float RANGE_VISIBLE      = RANGE_AGGRO;
 
+// https://wiki.guildwars.com/wiki/Armor_rating
+constexpr float DamagePosChances[] = {
+    0.375f,                                // Chest
+    0.25f,                                 // Legs
+    0.125f,                                // Head
+    0.125f,                                // Hands
+    0.125f,                                // Feet
+};
+
 }

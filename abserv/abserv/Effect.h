@@ -44,6 +44,7 @@ private:
         FunctionOnKnockingDown = 1 << 13,
         FunctionOnHealing = 1 << 14,
         FunctionOnGetCriticalHit = 1 << 15,
+        FunctionGetArmor = 1 << 16,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -107,6 +108,7 @@ public:
     void GetDamage(DamageType type, int32_t& value, bool& critical);
     void GetAttackSpeed(Item* weapon, uint32_t& value);
     void GetAttackDamageType(DamageType& type);
+    void GetArmor(DamageType type, int& value);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
     void GetAttackDamage(int32_t& value);
     /// Some effect may make the attacker unable to attack. The target is being attacked.

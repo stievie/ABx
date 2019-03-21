@@ -15,6 +15,7 @@ class SkillsComp
 private:
     Actor& owner_;
     AB::GameProtocol::SkillError lastError_;
+    /// Index in users skill bar, 0 based
     int lastSkillIndex_;
     bool startDirty_;
     bool endDirty_;

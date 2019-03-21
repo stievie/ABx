@@ -2,6 +2,10 @@
 #include "DamageComp.h"
 #include "Utils.h"
 #include "Actor.h"
+#include "Subsystems.h"
+#include "Random.h"
+#include "Utils.h"
+#include "Mechanic.h"
 
 namespace Game {
 namespace Components {
@@ -9,7 +13,10 @@ namespace Components {
 void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value)
 {
     lastDamage_ = Utils::Tick();
-    damages_.push_back({ type, value, source ? source->id_ : 0, index, lastDamage_ });
+    DamagePos pos = GetDamagePos();
+    float am = owner_.GetArmorEffect(type, pos, 0.0f);
+    int realValue = static_cast<int>(static_cast<float>(value) * am);
+    damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, value);
 }
 
@@ -18,7 +25,7 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     int currLife = owner_.resourceComp_.GetHealth();
     int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();
-    damages_.push_back({ DamageType::LifeDrain, result, source ? source->id_ : 0, index, lastDamage_ });
+    damages_.push_back({ DamageType::LifeDrain, DamagePos::Chest, result, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(Components::SetValueType::Absolute, currLife - result);
     return result;
 }
@@ -26,6 +33,21 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
 void DamageComp::Touch()
 {
     lastDamage_ = Utils::Tick();
+}
+
+DamagePos DamageComp::GetDamagePos() const
+{
+    // https://stackoverflow.com/questions/3655430/selection-based-on-percentage-weighting
+    float rnd = GetSubsystem<Crypto::Random>()->GetFloat();
+    float percent = 0.0f;
+    for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)
+    {
+        percent += DamagePosChances[i];
+        if (rnd < percent)
+            return static_cast<DamagePos>(i);
+    }
+
+    return DamagePos::Chest;
 }
 
 uint32_t DamageComp::NoDamageTime() const

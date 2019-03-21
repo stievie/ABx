@@ -70,6 +70,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnHealing;
     if (ScriptManager::IsFunction(luaState_, "onGetCriticalHit"))
         functions_ |= FunctionOnGetCriticalHit;
+    if (ScriptManager::IsFunction(luaState_, "getArmor"))
+        functions_ |= FunctionGetArmor;
     return true;
 }
 
@@ -146,6 +148,13 @@ void Effect::GetAttackDamageType(DamageType& type)
     if (!HaveFunction(FunctionGetAttackDamageType))
         return;
     type = luaState_["getAttackDamageType"](type);
+}
+
+void Effect::GetArmor(DamageType type, int& value)
+{
+    if (!HaveFunction(FunctionGetArmor))
+        return;
+    value = luaState_["getArmor"](type, value);
 }
 
 void Effect::GetAttackDamage(int32_t& value)

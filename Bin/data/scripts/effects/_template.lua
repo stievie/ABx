@@ -42,6 +42,10 @@ function getAttackDamage(value)
   return value
 end
 
+function getArmor(damageType, value)
+  return value
+end
+
 function onAttack(source, target)
   return true
 end

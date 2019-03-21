@@ -9,6 +9,12 @@ namespace Utils {
 
 uint32_t AdlerChecksum(uint8_t* data, int32_t len);
 
+template <typename T, int N>
+constexpr size_t CountOf(T(&)[N])
+{
+    return N;
+}
+
 inline int64_t Tick()
 {
     timeb t;

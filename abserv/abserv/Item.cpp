@@ -240,6 +240,15 @@ uint32_t Item::GetWeaponRequirement() const
     return stats_.GetRequirement();
 }
 
+void Item::GetArmor(DamageType damageType, int& value) const
+{
+    value = stats_.GetArmor(damageType);
+
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetArmor(damageType, value);
+}
+
 void Item::GetWeaponDamage(int32_t& value, bool critical)
 {
     if (HaveFunction(FunctionGetDamage))

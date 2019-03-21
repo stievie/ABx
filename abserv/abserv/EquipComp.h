@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Item.h"
+#include "Damage.h"
 
 namespace Game {
 
@@ -46,6 +47,7 @@ public:
     void SetUpgrade(ItemPos pos, ItemUpgrade type, uint32_t index);
     /// Get lead hand weapon
     Item* GetWeapon() const;
+    int GetArmor(DamageType damageType, DamagePos pos);
 };
 
 }

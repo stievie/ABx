@@ -420,6 +420,28 @@ bool Actor::IsInWeaponRange(Actor* actor) const
     return GetDistance(actor) <= range;
 }
 
+float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetration)
+{
+    switch (damageType)
+    {
+    case DamageType::Holy:
+    case DamageType::Shadow:
+    case DamageType::Chaos:
+    case DamageType::LifeDrain:
+    case DamageType::Typeless:
+    case DamageType::Dark:
+        // Ignoring armor
+        return 1.0f;
+    default:
+        break;
+    }
+    int baseArmor = equipComp_.GetArmor(damageType, pos);
+    int armorMod = 0;
+    effectsComp_.GetArmor(damageType, armorMod);
+    float totalArmor = static_cast<float>(baseArmor) * (1.0f - penetration) + static_cast<float>(armorMod);
+    return 0.5f + ((totalArmor - 60.0f) / 40.0f);
+}
+
 uint32_t Actor::GetAttackSpeed()
 {
     Item* weapon = GetWeapon();

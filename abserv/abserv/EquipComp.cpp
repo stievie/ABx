@@ -56,5 +56,35 @@ Item* EquipComp::GetWeapon() const
     return GetItem(ItemPos::WeaponLeadHand);
 }
 
+int EquipComp::GetArmor(DamageType damageType, DamagePos pos)
+{
+    Item* item = nullptr;
+    switch (pos)
+    {
+    case Game::DamagePos::Head:
+        item = items_[ItemPos::ArmorHead].get();
+        break;
+    case Game::DamagePos::Chest:
+        item = items_[ItemPos::ArmorChest].get();
+        break;
+    case Game::DamagePos::Hands:
+        item = items_[ItemPos::ArmorHands].get();
+        break;
+    case Game::DamagePos::Legs:
+        item = items_[ItemPos::ArmorLegs].get();
+        break;
+    case Game::DamagePos::Feet:
+        item = items_[ItemPos::ArmorFeet].get();
+        break;
+    default:
+        break;
+    }
+    if (!item)
+        return 0;
+    int armor = 0;
+    item->GetArmor(damageType, armor);
+    return armor;
+}
+
 }
 }

@@ -128,6 +128,9 @@ public:
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
     bool IsInWeaponRange(Actor* actor) const;
+    /// Get effect of armor. Armor is influenced by the equipment and effects
+    /// Damage multiplier
+    float GetArmorEffect(DamageType damageType, DamagePos pos, float penetration);
     uint32_t GetAttackSpeed();
     DamageType GetAttackDamageType();
     int32_t GetAttackDamage(bool critical);

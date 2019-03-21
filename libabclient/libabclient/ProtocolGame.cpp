@@ -235,7 +235,7 @@ void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& mess
 void ProtocolGame::ParseObjectSkillFailure(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    int skillIndex = static_cast<int>(message->Get<int16_t>());
+    int skillIndex = static_cast<int>(message->Get<int8_t>());
     AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message->Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
@@ -244,7 +244,8 @@ void ProtocolGame::ParseObjectSkillFailure(const std::shared_ptr<InputMessage>& 
 void ProtocolGame::ParseObjectUseSkill(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    int skillIndex = message->Get<int>();
+    // Index in the skill bar, 1 based
+    int skillIndex = static_cast<int>(message->Get<uint8_t>());
     uint16_t energy = message->Get<uint16_t>();
     uint16_t adrenaline = message->Get<uint16_t>();
     uint16_t activation = message->Get<uint16_t>();
@@ -257,7 +258,7 @@ void ProtocolGame::ParseObjectUseSkill(const std::shared_ptr<InputMessage>& mess
 void ProtocolGame::ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
-    int skillIndex = message->Get<int>();
+    int skillIndex = static_cast<int>(message->Get<uint8_t>());
     uint16_t recharge = message->Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);

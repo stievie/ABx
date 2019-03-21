@@ -25,4 +25,13 @@ enum class DamageType
     LifeDrain = 99
 };
 
+enum class DamagePos
+{
+    Head = 0,
+    Chest,
+    Hands,
+    Legs,
+    Feet,
+};
+
 }

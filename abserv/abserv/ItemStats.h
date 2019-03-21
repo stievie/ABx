@@ -16,6 +16,22 @@ enum class Stat : size_t
     Attribute,           // Weapon requires this attribute
     AttributeValue,
     Energy,
+    Armor,               // General armor
+    // Type specific armor
+    ArmorElemental,
+    ArmorFire,
+    ArmorCold,
+    ArmorLightning,
+    ArmorEarth,
+    ArmorPhysical,
+    // Special
+    ArmorHoly,
+    ArmorShadow,
+    ArmorTypeless,
+    // Other
+    ArmorDark,
+    ArmorChaos,
+
 };
 
 class ItemStats
@@ -29,7 +45,7 @@ public:
     int32_t GetMaxDamage() const;
     uint32_t GetRequirement() const;
     AttributeIndices GetAttribute() const;
-
+    int GetArmor(DamageType damageType) const;
 
     bool Load(IO::PropReadStream& stream);
     void Save(IO::PropWriteStream& stream);

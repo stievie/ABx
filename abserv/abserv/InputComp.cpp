@@ -184,6 +184,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             if (!owner_.IsImmobilized())
             {
+                // The index of the skill in the users skill bar, 0 based
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();
                 owner_.skillsComp_.UseSkill(skillIndex);
             }

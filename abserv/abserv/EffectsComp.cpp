@@ -177,6 +177,14 @@ void EffectsComp::GetAttackDamage(int32_t& value)
     }
 }
 
+void EffectsComp::GetArmor(DamageType type, int& value)
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetArmor(type, value);
+    }
+}
+
 void EffectsComp::OnAttack(Actor* target, bool& value)
 {
     for (const auto& effect : effects_)
