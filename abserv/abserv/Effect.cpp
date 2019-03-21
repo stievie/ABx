@@ -74,6 +74,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetArmor;
     if (ScriptManager::IsFunction(luaState_, "getArmorPenetration"))
         functions_ |= FunctionGetArmorPenetration;
+    if (ScriptManager::IsFunction(luaState_, "getAttributeValue"))
+        functions_ |= FunctionGetAttributeValue;
     return true;
 }
 
@@ -159,11 +161,18 @@ void Effect::GetArmor(DamageType type, int& value)
     value = luaState_["getArmor"](type, value);
 }
 
-void Effect::GetArmorPenetration(float & value)
+void Effect::GetArmorPenetration(float& value)
 {
     if (!HaveFunction(FunctionGetArmorPenetration))
         return;
     value = luaState_["getArmorPenetration"](value);
+}
+
+void Effect::GetAttributeValue(uint32_t index, uint32_t& value)
+{
+    if (!HaveFunction(FunctionGetAttributeValue))
+        return;
+    value = luaState_["getAttributeValue"](index, value);
 }
 
 void Effect::GetAttackDamage(int32_t& value)

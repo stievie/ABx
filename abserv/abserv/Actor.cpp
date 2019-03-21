@@ -494,7 +494,7 @@ int32_t Actor::GetAttackDamage(bool critical)
 float Actor::GetArmorPenetration()
 {
     float value = 0.0f;
-    // 1. Attributes
+    // 1. Attribute strength
     const float strength = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Strength)));
     value += (strength * 0.01f);
     // 2. Weapons
@@ -802,6 +802,19 @@ bool Actor::IsEnemy(Actor* other)
         return false;
     // TODO: What if different groups are allies
     return true;
+}
+
+uint32_t Actor::GetAttributeValue(uint32_t index)
+{
+    uint32_t result = 0;
+    const AB::AttributeValue* val = skills_->GetAttribute(index);
+    if (val != nullptr)
+        result = val->value;
+    result += equipComp_.GetAttributeValue(index);
+    uint32_t value = 0;
+    effectsComp_.GetAttributeValue(index, value);
+    result += value;
+    return result;
 }
 
 }

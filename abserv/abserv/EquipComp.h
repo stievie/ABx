@@ -49,6 +49,7 @@ public:
     Item* GetWeapon() const;
     int GetArmor(DamageType damageType, DamagePos pos);
     float GetArmorPenetration();
+    uint32_t GetAttributeValue(uint32_t index);
 };
 
 }

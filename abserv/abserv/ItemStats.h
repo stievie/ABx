@@ -32,6 +32,8 @@ enum class Stat : size_t
     ArmorDark,
     ArmorChaos,
 
+    // Attributes
+    AttributeOffset = 1000
 };
 
 class ItemStats
@@ -46,6 +48,7 @@ public:
     uint32_t GetRequirement() const;
     AttributeIndices GetAttribute() const;
     int GetArmor(DamageType damageType) const;
+    uint32_t GetAttributeIncrease(uint32_t index) const;
 
     bool Load(IO::PropReadStream& stream);
     void Save(IO::PropWriteStream& stream);

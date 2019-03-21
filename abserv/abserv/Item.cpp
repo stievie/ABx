@@ -261,6 +261,15 @@ void Item::GetArmorPenetration(float& value) const
             upg.second->GetArmorPenetration(value);
 }
 
+void Item::GetAttributeValue(uint32_t index, uint32_t& value)
+{
+    // Equipment (e.g. runes) may increase the attributes
+    value += stats_.GetAttributeIncrease(index);
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetAttributeValue(index, value);
+}
+
 void Item::GetWeaponDamage(int32_t& value, bool critical)
 {
     if (HaveFunction(FunctionGetDamage))

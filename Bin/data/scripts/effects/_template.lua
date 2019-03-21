@@ -50,6 +50,10 @@ function getArmorPenetration(value)
   return value
 end
 
+function getAttributeValue(index, value)
+  return value
+end
+
 function onAttack(source, target)
   return true
 end

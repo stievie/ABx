@@ -221,13 +221,7 @@ public:
     {
         inputComp_.Add(type);
     }
-    uint32_t GetAttributeValue(uint32_t index) const
-    {
-        const AB::AttributeValue* val = skills_->GetAttribute(index);
-        if (val == nullptr)
-            return 0;
-        return val->value;
-    }
+    uint32_t GetAttributeValue(uint32_t index);
 
     std::weak_ptr<GameObject> selectedObject_;
     std::weak_ptr<GameObject> followedObject_;

@@ -46,6 +46,7 @@ private:
         FunctionOnGetCriticalHit = 1 << 15,
         FunctionGetArmor = 1 << 16,
         FunctionGetArmorPenetration = 1 << 17,
+        FunctionGetAttributeValue = 1 << 18,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -111,6 +112,7 @@ public:
     void GetAttackDamageType(DamageType& type);
     void GetArmor(DamageType type, int& value);
     void GetArmorPenetration(float& value);
+    void GetAttributeValue(uint32_t index, uint32_t& value);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
     void GetAttackDamage(int32_t& value);
     /// Some effect may make the attacker unable to attack. The target is being attacked.

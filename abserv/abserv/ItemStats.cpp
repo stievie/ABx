@@ -141,6 +141,14 @@ int ItemStats::GetArmor(DamageType damageType) const
     return value;
 }
 
+uint32_t ItemStats::GetAttributeIncrease(uint32_t index) const
+{
+    auto it = stats_.find(static_cast<size_t>(Stat::AttributeOffset) + index);
+    if (it == stats_.end())
+        return 0;
+    return static_cast<uint32_t>((*it).second.GetInt());
+}
+
 bool ItemStats::Load(IO::PropReadStream& stream)
 {
     return Utils::VariantMapRead(stats_, stream);

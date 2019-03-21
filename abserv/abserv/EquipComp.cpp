@@ -98,5 +98,15 @@ float EquipComp::GetArmorPenetration()
     return value;
 }
 
+uint32_t EquipComp::GetAttributeValue(uint32_t index)
+{
+    uint32_t result = 0;
+    for (const auto& item : items_)
+    {
+        item.second->GetAttributeValue(index, result);
+    }
+    return result;
+}
+
 }
 }

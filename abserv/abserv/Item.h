@@ -24,7 +24,7 @@ private:
         FunctionNone = 0,
         FunctionUpdate = 1,
         FunctionGetDamage = 1 << 1,
-        FunctionGetDamageType = 1 << 2,
+        FunctionGetDamageType = 1 << 2
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -71,6 +71,7 @@ public:
     uint32_t GetWeaponRequirement() const;
     void GetArmor(DamageType damageType, int& value) const;
     void GetArmorPenetration(float& value) const;
+    void GetAttributeValue(uint32_t index, uint32_t& value);
 
     AB::Entities::Item data_;
 };
