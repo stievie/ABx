@@ -31,7 +31,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
 
 void ProgressComp::Died()
 {
-    auto enemies = owner_.GetEnemiesInRange(Ranges::Aggro);
+    const auto enemies = owner_.GetEnemiesInRange(Ranges::Aggro);
     for (const auto& e : enemies)
     {
         if (!e->IsDead())
@@ -47,10 +47,10 @@ void ProgressComp::AddXp(int value)
 
 void ProgressComp::AddXpForKill(Actor* victim)
 {
-    size_t allyCount = owner_.GetAllyCountInRange(Ranges::Aggro);
-    int a = static_cast<int>(victim->GetLevel());
-    int b = static_cast<int>(owner_.GetLevel());
-    int xp = (100 + 4 * std::abs(a - b) + 16 * (a - b)) / static_cast<int>(allyCount);
+    const size_t allyCount = owner_.GetAllyCountInRange(Ranges::Aggro);
+    const int a = static_cast<int>(victim->GetLevel());
+    const int b = static_cast<int>(owner_.GetLevel());
+    const int xp = (100 + 4 * std::abs(a - b) + 16 * (a - b)) / static_cast<int>(allyCount);
     AddXp(xp);
 }
 

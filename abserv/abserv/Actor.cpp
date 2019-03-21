@@ -435,10 +435,10 @@ float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetrat
     default:
         break;
     }
-    int baseArmor = equipComp_.GetArmor(damageType, pos);
+    const int baseArmor = equipComp_.GetArmor(damageType, pos);
     int armorMod = 0;
     effectsComp_.GetArmor(damageType, armorMod);
-    float totalArmor = static_cast<float>(baseArmor) * (1.0f - penetration) + static_cast<float>(armorMod);
+    const float totalArmor = static_cast<float>(baseArmor) * (1.0f - penetration) + static_cast<float>(armorMod);
     return 0.5f + ((totalArmor - 60.0f) / 40.0f);
 }
 
@@ -478,8 +478,8 @@ int32_t Actor::GetAttackDamage(bool critical)
     int32_t damage = 0;
     // Get weapon damage with mods
     weapon->GetWeaponDamage(damage, critical);
-    uint32_t attrib = static_cast<uint32_t>(weapon->GetWeaponAttribute());
-    auto req = weapon->GetWeaponRequirement();
+    const uint32_t attrib = static_cast<uint32_t>(weapon->GetWeaponAttribute());
+    const uint32_t req = weapon->GetWeaponRequirement();
     if (GetAttributeValue(attrib) < req)
         // If requirements are not met, damage is the half
         damage /= 2;
@@ -499,19 +499,19 @@ float Actor::GetAttackCriticalChance(Actor* other)
         return 0.0f;
 
     // From behind is always critical
-    float diff = transformation_.GetYRotation() - other->transformation_.GetYRotation();
+    const float diff = transformation_.GetYRotation() - other->transformation_.GetYRotation();
     if (fabs(diff) < BEHIND_ANGLE)
         // If rotation is < 30 deg it's from behind
         return 1.0f;
 
     AttributeIndices attrib = weapon->GetWeaponAttribute();
-    float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
-    float myLevel = static_cast<float>(GetLevel());
-    float otherLevel = static_cast<float>(other->GetLevel());
+    const float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
+    const float myLevel = static_cast<float>(GetLevel());
+    const float otherLevel = static_cast<float>(other->GetLevel());
 
-    float val1 = ((8.0f * myLevel) - (15.0f * otherLevel) + (4.0f * attribVal) + (6 * std::min(attribVal, ((myLevel + 4.0f) / 2.0f))) - 100.0f) / 40.0f;
-    float val2 = (1.0f - (attribVal / 100.0f));
-    float val3 = (attribVal / 100.0f);
+    const float val1 = ((8.0f * myLevel) - (15.0f * otherLevel) + (4.0f * attribVal) + (6 * std::min(attribVal, ((myLevel + 4.0f) / 2.0f))) - 100.0f) / 40.0f;
+    const float val2 = (1.0f - (attribVal / 100.0f));
+    const float val3 = (attribVal / 100.0f);
     return 0.5f * (2.0f * val1) * val2 + val3;
 }
 
@@ -733,9 +733,9 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
 {
     if (IsDead())
     {
-        int health = (resourceComp_.GetMaxHealth() / 100) * precentHealth;
+        const int health = (resourceComp_.GetMaxHealth() / 100) * precentHealth;
         resourceComp_.SetHealth(Components::SetValueType::Absolute, health);
-        int energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
+        const int energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, energy);
         damageComp_.Touch();
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);

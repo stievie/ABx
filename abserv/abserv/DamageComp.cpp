@@ -13,17 +13,17 @@ namespace Components {
 void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value)
 {
     lastDamage_ = Utils::Tick();
-    DamagePos pos = GetDamagePos();
-    float am = owner_.GetArmorEffect(type, pos, 0.0f);
-    int realValue = static_cast<int>(static_cast<float>(value) * am);
+    const DamagePos pos = GetDamagePos();
+    const float am = owner_.GetArmorEffect(type, pos, 0.0f);
+    const int realValue = static_cast<int>(static_cast<float>(value) * am);
     damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, value);
 }
 
 int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
 {
-    int currLife = owner_.resourceComp_.GetHealth();
-    int result = Math::Clamp(value, 0, currLife);
+    const int currLife = owner_.resourceComp_.GetHealth();
+    const int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();
     damages_.push_back({ DamageType::LifeDrain, DamagePos::Chest, result, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(Components::SetValueType::Absolute, currLife - result);
@@ -38,7 +38,7 @@ void DamageComp::Touch()
 DamagePos DamageComp::GetDamagePos() const
 {
     // https://stackoverflow.com/questions/3655430/selection-based-on-percentage-weighting
-    float rnd = GetSubsystem<Crypto::Random>()->GetFloat();
+    const float rnd = GetSubsystem<Crypto::Random>()->GetFloat();
     float percent = 0.0f;
     for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)
     {

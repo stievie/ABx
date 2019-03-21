@@ -39,7 +39,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                 {
                     if (auto t = target_.lock())
                     {
-                        float criticalChance = owner_.GetAttackCriticalChance(t.get());
+                        const float criticalChance = owner_.GetAttackCriticalChance(t.get());
                         auto rnd = GetSubsystem<Crypto::Random>();
                         bool critical = criticalChance >= rnd->GetFloat();
                         // Critical hit -> always weapons max damage
