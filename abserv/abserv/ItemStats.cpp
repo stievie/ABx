@@ -7,54 +7,34 @@ ItemStats::ItemStats() = default;
 
 DamageType ItemStats::GetDamageType() const
 {
-    auto it = stats_.find(static_cast<size_t>(Stat::DamageType));
-    if (it == stats_.end())
-        return DamageType::Unknown;
-    return static_cast<DamageType>((*it).second.GetInt());
+    return static_cast<DamageType>(GetValue<int>(Stat::DamageType, (int)DamageType::Unknown));
 }
 
 int32_t ItemStats::GetMinDamage() const
 {
-    auto it = stats_.find(static_cast<size_t>(Stat::MinDamage));
-    if (it == stats_.end())
-        return 0;
-    return (*it).second.GetInt();
+    return GetValue<int32_t>(Stat::MinDamage, 0);
 }
 
 int32_t ItemStats::GetMaxDamage() const
 {
-    auto it = stats_.find(static_cast<size_t>(Stat::MaxDamage));
-    if (it == stats_.end())
-        return 0;
-    return (*it).second.GetInt();
+    return GetValue<int32_t>(Stat::MaxDamage, 0);
 }
 
 uint32_t ItemStats::GetRequirement() const
 {
-    auto it = stats_.find(static_cast<size_t>(Stat::AttributeValue));
-    if (it == stats_.end())
-        return 0;
-    return static_cast<uint32_t>((*it).second.GetInt());
+    return GetValue<uint32_t>(Stat::AttributeValue, 0);
 }
 
 AttributeIndices ItemStats::GetAttribute() const
 {
-    auto it = stats_.find(static_cast<size_t>(Stat::Attribute));
-    if (it == stats_.end())
-        return AttributeIndices::None;
-    return static_cast<AttributeIndices>((*it).second.GetInt());
+    return static_cast<AttributeIndices>(GetValue<int>(Stat::Attribute, (int)AttributeIndices::None));
 }
 
 int ItemStats::GetArmor(DamageType damageType) const
 {
-    // TODO: + type specific armor
     int value = 0;
-    {
-        // General
-        auto it = stats_.find(static_cast<size_t>(Stat::Armor));
-        if (it != stats_.end())
-            value += (*it).second.GetInt();
-    }
+    // General
+    value += GetValue(Stat::Armor, 0);
 
     switch (damageType)
     {
@@ -62,67 +42,33 @@ int ItemStats::GetArmor(DamageType damageType) const
         break;
     case Game::DamageType::Fire:
     {
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorElemental));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorFire));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
+        value += GetValue(Stat::ArmorElemental, 0);
+        value += GetValue(Stat::ArmorFire, 0);
         break;
     }
     case Game::DamageType::Cold:
     {
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorElemental));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorCold));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
+        value += GetValue(Stat::ArmorElemental, 0);
+        value += GetValue(Stat::ArmorCold, 0);
         break;
     }
     case Game::DamageType::Lightning:
     {
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorElemental));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorLightning));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
+        value += GetValue(Stat::ArmorElemental, 0);
+        value += GetValue(Stat::ArmorLightning, 0);
         break;
     }
     case Game::DamageType::Earth:
     {
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorElemental));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
-        {
-            auto it = stats_.find(static_cast<size_t>(Stat::ArmorEarth));
-            if (it != stats_.end())
-                value += (*it).second.GetInt();
-        }
+        value += GetValue(Stat::ArmorElemental, 0);
+        value += GetValue(Stat::ArmorEarth, 0);
         break;
     }
     case Game::DamageType::Blunt:
     case Game::DamageType::Piercing:
     case Game::DamageType::Slashing:
     {
-        auto it = stats_.find(static_cast<size_t>(Stat::ArmorPhysical));
-        if (it != stats_.end())
-            value += (*it).second.GetInt();
+        value += GetValue(Stat::ArmorPhysical, 0);
         break;
     }
     case Game::DamageType::Holy:
@@ -143,10 +89,7 @@ int ItemStats::GetArmor(DamageType damageType) const
 
 uint32_t ItemStats::GetAttributeIncrease(uint32_t index) const
 {
-    auto it = stats_.find(static_cast<size_t>(Stat::AttributeOffset) + index);
-    if (it == stats_.end())
-        return 0;
-    return static_cast<uint32_t>((*it).second.GetInt());
+    return GetValue(static_cast<size_t>(Stat::AttributeOffset) + index, 0);
 }
 
 bool ItemStats::Load(IO::PropReadStream& stream)

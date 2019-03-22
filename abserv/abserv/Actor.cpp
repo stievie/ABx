@@ -807,10 +807,13 @@ bool Actor::IsEnemy(Actor* other)
 uint32_t Actor::GetAttributeValue(uint32_t index)
 {
     uint32_t result = 0;
+    // Skilled points
     const AB::AttributeValue* val = skills_->GetAttribute(index);
     if (val != nullptr)
         result = val->value;
+    // Increase by equipment
     result += equipComp_.GetAttributeValue(index);
+    // Increase by effects
     uint32_t value = 0;
     effectsComp_.GetAttributeValue(index, value);
     result += value;

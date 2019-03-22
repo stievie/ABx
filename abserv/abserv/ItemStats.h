@@ -17,6 +17,9 @@ enum class Stat : size_t
     AttributeValue,
     Energy,
     Armor,               // General armor
+    HealthRegen,
+    EnergyRegen,
+
     // Type specific armor
     ArmorElemental,
     ArmorFire,
@@ -40,6 +43,9 @@ class ItemStats
 {
 public:
     ItemStats();
+    // non-copyable
+    ItemStats(const ItemStats&) = delete;
+    ItemStats& operator=(const ItemStats&) = delete;
     ~ItemStats() = default;
 
     DamageType GetDamageType() const;
@@ -49,6 +55,20 @@ public:
     AttributeIndices GetAttribute() const;
     int GetArmor(DamageType damageType) const;
     uint32_t GetAttributeIncrease(uint32_t index) const;
+
+    template <typename T>
+    T GetValue(Stat index, T def) const
+    {
+        return GetValue<T>(static_cast<size_t>(index), def);
+    }
+    template <typename T>
+    T GetValue(size_t index, T def) const
+    {
+        const auto it = stats_.find(index);
+        if (it != stats_.end())
+            return (T)(*it).second;
+        return def;
+    }
 
     bool Load(IO::PropReadStream& stream);
     void Save(IO::PropWriteStream& stream);

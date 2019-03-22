@@ -48,7 +48,9 @@ public:
     { }
 
     Variant(int value) : type_(VAR_INT) { value_.intValue = value; }
+    Variant(unsigned value) : type_(VAR_INT) { value_.intValue = static_cast<int>(value); }
     Variant(long long value) : type_(VAR_INT64) { value_.int64Value = value; }
+    Variant(unsigned long long value) : type_(VAR_INT64) { value_.int64Value = static_cast<long long>(value); }
     Variant(bool value) : type_(VAR_BOOL) { value_.boolValue = value; }
     Variant(float value) : type_(VAR_FLOAT) { value_.floatValue = value; }
     Variant(const std::string& value) : type_(VAR_STRING), stringValue_(value) {}
@@ -96,6 +98,12 @@ public:
         value_.int64Value = other;
         return *this;
     }
+    Variant& operator =(unsigned long long other)
+    {
+        SetType(VAR_INT64);
+        value_.int64Value = (long long)other;
+        return *this;
+    }
     Variant& operator =(const std::string& other)
     {
         SetType(VAR_STRING);
@@ -119,17 +127,22 @@ public:
     bool operator ==(const Variant& other) const;
     /// Test for equality. To return true, both the type and value must match.
     bool operator ==(int other) const { return type_ == VAR_INT ? value_.intValue == other : false; }
+    bool operator ==(unsigned other) const { return type_ == VAR_INT ? value_.intValue == static_cast<int>(other) : false; }
     bool operator ==(bool other) const { return type_ == VAR_BOOL ? value_.boolValue == other : false; }
     bool operator ==(float other) const { return type_ == VAR_FLOAT ? value_.floatValue == other : false; }
     bool operator ==(long long other) const { return type_ == VAR_INT64 ? value_.int64Value == other : false; }
+    bool operator ==(unsigned long long other) const { return type_ == VAR_INT64 ? value_.int64Value == static_cast<long long>(other) : false; }
     bool operator ==(const std::string& other) const { return type_ == VAR_STRING ? (stringValue_.compare(other) == 0) : false; }
     bool operator ==(const char* other) const { return type_ == VAR_STRING ? stringValue_.compare(other) == 0 : false; }
     bool operator ==(void* other) const { return type_ == VAR_VOIDPTR ? value_.ptrValue == other : false; }
     /// Test for inequality.
     bool operator !=(const Variant& other) const { return !(*this == other); }
+    bool operator !=(int other) const { return !(*this == other); }
+    bool operator !=(unsigned int other) const { return !(*this == other); }
     bool operator !=(bool other) const { return !(*this == other); }
     bool operator !=(float other) const { return !(*this == other); }
     bool operator !=(long long other) const { return !(*this == other); }
+    bool operator !=(unsigned long long other) const { return !(*this == other); }
     bool operator !=(const std::string& other) const { return !(*this == other); }
     bool operator !=(const char* other) const { return !(*this == other); }
     bool operator !=(void* other) const { return !(*this == other); }
@@ -168,6 +181,18 @@ public:
     operator int() const
     {
         return GetInt();
+    }
+    operator unsigned() const
+    {
+        return static_cast<unsigned>(GetInt());
+    }
+    operator long long() const
+    {
+        return GetInt64();
+    }
+    operator unsigned long long() const
+    {
+        return static_cast<unsigned long long>(GetInt64());
     }
     operator float() const
     {
