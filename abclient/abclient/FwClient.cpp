@@ -437,6 +437,7 @@ void FwClient::LoadItems(uint32_t curVersion)
         item->type_ = static_cast<AB::Entities::ItemType>(itm.attribute("type").as_uint());
         item->modelFile_ = itm.attribute("model").as_string();
         item->iconFile_ = itm.attribute("icon").as_string();
+        item->stackAble_ = itm.attribute("stack_able").as_bool();
 
         items->Add(item);
     }

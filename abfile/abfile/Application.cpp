@@ -949,6 +949,7 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("icon") = s.client_icon.c_str();
         gNd.append_attribute("remote_model") = s.server_model.c_str();
         gNd.append_attribute("remote_icon") = s.server_icon.c_str();
+        gNd.append_attribute("stack_able") = s.stackAble;
     }
 
     std::stringstream stream;

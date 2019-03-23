@@ -32,5 +32,6 @@ public:
     String modelFile_;
     String iconFile_;
     AB::Entities::ItemType type_;
+    bool stackAble_;
 };
 

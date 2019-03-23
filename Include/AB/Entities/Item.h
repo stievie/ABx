@@ -65,6 +65,7 @@ struct Item : Entity
         s.text1b(client_model, Limits::MAX_FILENAME);
         s.value2b(type);
         s.value1b(dropChance);
+        s.value1b(stackAble);
     }
 
     uint32_t index = INVALID_INDEX;
@@ -76,6 +77,7 @@ struct Item : Entity
     std::string client_model;
     ItemType type = ItemTypeUnknown;
     uint8_t dropChance = 0;
+    bool stackAble = false;
 };
 
 }

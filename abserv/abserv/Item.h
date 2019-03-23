@@ -91,6 +91,9 @@ public:
     void GetArmorPenetration(float& value) const;
     void GetAttributeValue(uint32_t index, uint32_t& value);
 
+    AB::Entities::ItemType GetType() const;
+    bool IsStackAble() const;
+
     AB::Entities::Item data_;
     AB::Entities::ConcreteItem concreteItem_;
 };

@@ -5,25 +5,13 @@
 
 namespace DB {
 
-bool DBItemList::Create(AB::Entities::ItemList& il)
+bool DBItemList::Create(AB::Entities::ItemList&)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
-
     return true;
 }
 
 bool DBItemList::Load(AB::Entities::ItemList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
-
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
@@ -35,33 +23,18 @@ bool DBItemList::Load(AB::Entities::ItemList& il)
     return true;
 }
 
-bool DBItemList::Save(const AB::Entities::ItemList& il)
+bool DBItemList::Save(const AB::Entities::ItemList&)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
     return true;
 }
 
-bool DBItemList::Delete(const AB::Entities::ItemList& il)
+bool DBItemList::Delete(const AB::Entities::ItemList&)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
     return true;
 }
 
-bool DBItemList::Exists(const AB::Entities::ItemList& il)
+bool DBItemList::Exists(const AB::Entities::ItemList&)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
-    {
-        LOG_ERROR << "UUID is empty" << std::endl;
-        return false;
-    }
     return true;
 }
 
