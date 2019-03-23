@@ -114,10 +114,13 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level)
     case AB::Entities::ItemTypeDaggers:
     case AB::Entities::ItemTypeScyte:
         CreateWeaponStats(level);
+        break;
     case AB::Entities::ItemTypeFocus:
         CreateFocusStats(level);
+        break;
     case AB::Entities::ItemTypeShield:
         CreateShieldStats(level);
+        break;
     default:
         break;
     }
