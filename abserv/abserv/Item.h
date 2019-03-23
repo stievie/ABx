@@ -16,6 +16,20 @@ enum class ItemUpgrade
     Inscription          // For lead/off hand weapons
 };
 
+enum class EquipPos : uint32_t
+{
+    None = 0,
+    ArmorHead = 1,
+    ArmorChest,
+    ArmorHands,
+    ArmorLegs,
+    ArmorFeet,
+
+    WeaponLeadHand,
+    WeaponOffHand,
+    WeaponTwoHanded
+};
+
 class Item
 {
 private:
@@ -33,12 +47,14 @@ private:
     int32_t baseMinDamage_;
     int32_t baseMaxDamage_;
     ItemStats stats_;
-    AB::Entities::ConcreteItem concreteItem_;
     void InitializeLua();
     bool HaveFunction(Function func) const
     {
         return (functions_ & func) == func;
     }
+    void CreateWeaponStats(uint32_t level);
+    void CreateFocusStats(uint32_t level);
+    void CreateShieldStats(uint32_t level);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -59,10 +75,12 @@ public:
 
     bool LoadConcrete(const AB::Entities::ConcreteItem& item);
     bool LoadScript(const std::string& fileName);
+    bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
     void SetUpgrade(ItemUpgrade type, uint32_t index);
     void RemoveUpgrade(ItemUpgrade type);
+    EquipPos GetEquipPos() const;
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
     void GetWeaponDamageType(DamageType& value) const;
@@ -74,6 +92,7 @@ public:
     void GetAttributeValue(uint32_t index, uint32_t& value);
 
     AB::Entities::Item data_;
+    AB::Entities::ConcreteItem concreteItem_;
 };
 
 }

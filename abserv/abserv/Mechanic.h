@@ -14,6 +14,9 @@ static constexpr T GetPercent(T max, T percent)
 }
 }
 
+// Max level a player can reach
+static constexpr uint32_t LEVEL_CAP = 20;
+
 // Base move speed
 static constexpr float BASE_SPEED = 150.0f;
 

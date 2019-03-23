@@ -28,6 +28,10 @@ bool DBAccountItemList::Load(AB::Entities::AccountItemList& il)
 
     std::ostringstream query;
     query << "SELECT `uuid` FROM `concrete_items` WHERE `account_uuid` = " << db->EscapeString(il.uuid);
+    if (il.storagePlace != AB::Entities::StoragePlaceNone)
+    {
+        query << " AND `storage_place` = " << static_cast<int>(il.storagePlace);
+    }
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         il.itemUuids.push_back(result->GetString("uuid"));

@@ -9,25 +9,13 @@ class Actor;
 
 namespace Components {
 
-enum class ItemPos : uint32_t
-{
-    ArmorHead = 0,
-    ArmorChest,
-    ArmorHands,
-    ArmorLegs,
-    ArmorFeet,
-
-    WeaponLeadHand,
-    WeaponOffHand
-};
-
 /// Equipment, like Armor, weapons, weapon mods etc.
 /// All this stuff adds effects to the actor. These effects are not visible in the clients effects window.
 class EquipComp
 {
 private:
     Actor& owner_;
-    std::map<ItemPos, std::unique_ptr<Item>> items_;
+    std::map<EquipPos, std::unique_ptr<Item>> items_;
 public:
     EquipComp() = delete;
     explicit EquipComp(Actor& owner) :
@@ -41,10 +29,11 @@ public:
     void Update(uint32_t timeElapsed);
 
     /// Set upgrade
-    void SetItem(ItemPos pos, uint32_t index);
-    Item* GetItem(ItemPos pos) const;
-    void RemoveItem(ItemPos pos);
-    void SetUpgrade(ItemPos pos, ItemUpgrade type, uint32_t index);
+    void SetItem(std::unique_ptr<Item> item);
+    Item* GetItem(EquipPos pos) const;
+    std::vector<Item*> GetItems() const;
+    void RemoveItem(EquipPos pos);
+    void SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index);
     /// Get lead hand weapon
     Item* GetWeapon() const;
     int GetArmor(DamageType damageType, DamagePos pos);

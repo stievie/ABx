@@ -56,7 +56,10 @@ static constexpr size_t KEY_MUSICLIST_HASH = Utils::StringHash(AB::Entities::Mus
 static constexpr size_t KEY_PARTIES_HASH = Utils::StringHash(AB::Entities::Party::KEY());
 static constexpr size_t KEY_CONCRETEITEMS_HASH = Utils::StringHash(AB::Entities::ConcreteItem::KEY());
 static constexpr size_t KEY_ACCOUNTITEMLIST_HASH = Utils::StringHash(AB::Entities::AccountItemList::KEY());
+static constexpr size_t KEY_CHESTITEMLIST_HASH = Utils::StringHash(AB::Entities::ChestItems::KEY());
 static constexpr size_t KEY_PLAYERITEMLIST_HASH = Utils::StringHash(AB::Entities::PlayerItemList::KEY());
+static constexpr size_t KEY_INVENTORYITEMLIST_HASH = Utils::StringHash(AB::Entities::InventoryItems::KEY());
+static constexpr size_t KEY_EQUIPPEDITEMLIST_HASH = Utils::StringHash(AB::Entities::EquippedItems::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -614,8 +617,11 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     case KEY_CONCRETEITEMS_HASH:
         return LoadFromDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(id, *data);
     case KEY_ACCOUNTITEMLIST_HASH:
+    case KEY_CHESTITEMLIST_HASH:
         return LoadFromDB<DB::DBAccountItemList, AB::Entities::AccountItemList>(id, *data);
     case KEY_PLAYERITEMLIST_HASH:
+    case KEY_INVENTORYITEMLIST_HASH:
+    case KEY_EQUIPPEDITEMLIST_HASH:
         return LoadFromDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
@@ -763,9 +769,12 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         succ = FlushRecord<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
         break;
     case KEY_ACCOUNTITEMLIST_HASH:
+    case KEY_CHESTITEMLIST_HASH:
         succ = FlushRecord<DB::DBAccountItemList, AB::Entities::AccountItemList>(data);
         break;
     case KEY_PLAYERITEMLIST_HASH:
+    case KEY_INVENTORYITEMLIST_HASH:
+    case KEY_EQUIPPEDITEMLIST_HASH:
         succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
         break;
     case KEY_GAMEINSTANCES_HASH:
@@ -867,8 +876,11 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     case KEY_CONCRETEITEMS_HASH:
         return ExistsInDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
     case KEY_ACCOUNTITEMLIST_HASH:
+    case KEY_CHESTITEMLIST_HASH:
         return ExistsInDB<DB::DBAccountItemList, AB::Entities::AccountItemList>(data);
     case KEY_PLAYERITEMLIST_HASH:
+    case KEY_INVENTORYITEMLIST_HASH:
+    case KEY_EQUIPPEDITEMLIST_HASH:
         return ExistsInDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:

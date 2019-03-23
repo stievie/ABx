@@ -4,12 +4,14 @@
 #include "DataClient.h"
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
+#include "Mechanic.h"
 
 namespace Game {
 
 ItemFactory::ItemFactory() = default;
 
 std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
+    uint32_t level /* = LEVEL_CAP */,
     const std::string& accUuid /* = Utils::Uuid::EMPTY_UUID */,
     const std::string& playerUuid /* = Utils::Uuid::EMPTY_UUID */)
 {
@@ -23,6 +25,9 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     }
 
     std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
+    if (!result->LoadScript(result->data_.script))
+        return std::unique_ptr<Item>();
+
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     AB::Entities::ConcreteItem ci;
     ci.uuid = guid.to_string();
@@ -35,10 +40,11 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
         LOG_ERROR << "Unable top create concrete item" << std::endl;
         return std::unique_ptr<Item>();
     }
-    if (!result->LoadConcrete(ci))
-    {
+    // Create item stats for this drop
+    if (!result->GenerateConcrete(ci, level))
         return std::unique_ptr<Item>();
-    }
+    // Save the created stats
+    client->Update(result->concreteItem_);
     return result;
 }
 
@@ -61,9 +67,10 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
     }
     std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
     if (!result->LoadConcrete(ci))
-    {
         return std::unique_ptr<Item>();
-    }
+    if (!result->LoadScript(result->data_.script))
+        return std::unique_ptr<Item>();
+
     return result;
 }
 

@@ -64,6 +64,75 @@ bool Item::LoadScript(const std::string& fileName)
     return true;
 }
 
+void Item::CreateWeaponStats(uint32_t level)
+{
+    if (ScriptManager::IsFunction(luaState_, "getDamageStats"))
+    {
+        int32_t minDamage = 0;
+        int32_t maxDamage = 0;
+        kaguya::tie(minDamage, maxDamage) = luaState_["getDamageStats"](level);
+        stats_.SetValue(Stat::MinDamage, minDamage);
+        stats_.SetValue(Stat::MaxDamage, maxDamage);
+    }
+}
+
+void Item::CreateFocusStats(uint32_t level)
+{
+    if (ScriptManager::IsFunction(luaState_, "getEnergyStats"))
+    {
+        int32_t energy = luaState_["getEnergyStats"](level);
+        stats_.SetValue(Stat::Energy, energy);
+    }
+}
+
+void Item::CreateShieldStats(uint32_t level)
+{
+    if (ScriptManager::IsFunction(luaState_, "getArmorStats"))
+    {
+        int32_t armor = luaState_["getArmorStats"](level);
+        stats_.SetValue(Stat::Armor, armor);
+    }
+}
+
+bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level)
+{
+    concreteItem_ = ci;
+
+    switch (data_.type)
+    {
+    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemTypeSpear:
+    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemTypeStaff:
+    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemTypeScyte:
+        CreateWeaponStats(level);
+    case AB::Entities::ItemTypeFocus:
+        CreateFocusStats(level);
+    case AB::Entities::ItemTypeShield:
+        CreateShieldStats(level);
+    default:
+        break;
+    }
+
+    IO::PropWriteStream stream;
+    stats_.Save(stream);
+    size_t ssize = 0;
+    const char* s = stream.GetStream(ssize);
+    concreteItem_.itemStats = std::string(s, ssize);
+
+    baseMinDamage_ = stats_.GetMinDamage();
+    baseMaxDamage_ = stats_.GetMaxDamage();
+    return true;
+}
+
 void Item::Update(uint32_t timeElapsed)
 {
     if (HaveFunction(FunctionUpdate))
@@ -92,6 +161,33 @@ void Item::RemoveUpgrade(ItemUpgrade type)
 {
     if (upgrades_[type])
         upgrades_[type].reset();
+}
+
+EquipPos Item::GetEquipPos() const
+{
+    switch (data_.type)
+    {
+    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemTypeSpear:
+        return EquipPos::WeaponLeadHand;
+    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemTypeStaff:
+    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemTypeScyte:
+        return EquipPos::WeaponTwoHanded;
+    case AB::Entities::ItemTypeFocus:
+    case AB::Entities::ItemTypeShield:
+        return EquipPos::WeaponOffHand;
+    default:
+        return EquipPos::None;
+    }
 }
 
 float Item::GetWeaponRange() const

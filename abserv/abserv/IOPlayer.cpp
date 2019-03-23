@@ -8,6 +8,7 @@
 #include <AB/Entities/Account.h>
 #include "Profiler.h"
 #include <AB/Entities/Profession.h>
+#include <AB/Entities/PlayerItemList.h>
 #include "Logger.h"
 #include <uuids.h>
 #include "Subsystems.h"
@@ -71,6 +72,9 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
             player->skills_->SetSkill(7, skillsMan->Get(1043));
         }
     }
+
+    if (!LoadPlayerEquipment(player))
+        return false;
     return true;
 }
 
@@ -108,19 +112,34 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     player->data_.profession2Uuid = player->skills_->prof2_.uuid;
     player->data_.skillTemplate = player->skills_->Encode();
     player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
-    return client->Update(player->data_);
+    if (!client->Update(player->data_))
+        return false;
+    return SavePlayerEquipment(player);
 }
 
-bool IOPlayer::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
+bool IOPlayer::LoadPlayerEquipment(Game::Player* player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Character ch;
-    ch.uuid = playerUuid;
-    if (!client->Read(ch))
+    AB::Entities::EquippedItems equipmenet;
+    equipmenet.uuid = player->data_.uuid;
+    if (!client->Read(equipmenet))
         return false;
-    if (ch.accountUuid.compare(accountUuid) != 0)
-        return false;
-    return client->Delete(ch);
+    for (const auto& e : equipmenet.itemUuids)
+    {
+        player->SetEquipment(e);
+    }
+    return true;
+}
+
+bool IOPlayer::SavePlayerEquipment(Game::Player* player)
+{
+    const auto items = player->equipComp_.GetItems();
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    for (const auto& item : items)
+    {
+        client->Update(item->concreteItem_);
+    }
+    return true;
 }
 
 }

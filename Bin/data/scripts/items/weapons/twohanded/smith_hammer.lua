@@ -1,6 +1,6 @@
 include("/scripts/includes/damage.lua")
 -- Include drop stats etc.
-include("/scripts/includes/wand_defaults.lua")
+include("/scripts/includes/hammer_defaults.lua")
 include("/scripts/includes/drop_stats.lua")
 
 function getDamage(baseMin, baseMax, critical)

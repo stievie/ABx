@@ -69,6 +69,16 @@ public:
             return (T)(*it).second;
         return def;
     }
+    template<typename T>
+    void SetValue(Stat index, T value)
+    {
+        SetValue(static_cast<size_t>(index), value);
+    }
+    template<typename T>
+    void SetValue(size_t index, T value)
+    {
+        stats_[index] = value;
+    }
 
     bool Load(IO::PropReadStream& stream);
     void Save(IO::PropWriteStream& stream);

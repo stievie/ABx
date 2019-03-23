@@ -12,6 +12,7 @@
 #include "TemplateEncoder.h"
 #include "Mechanic.h"
 #include "Item.h"
+#include "ItemFactory.h"
 
 #include "DebugNew.h"
 
@@ -639,6 +640,16 @@ void Actor::OnDied()
 Skill* Actor::GetCurrentSkill() const
 {
     return skills_->GetCurrentSkill();
+}
+
+bool Actor::SetEquipment(const std::string& ciUuid)
+{
+    auto factory = GetSubsystem<ItemFactory>();
+    std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
+    if (!item)
+        return false;
+    equipComp_.SetItem(std::move(item));
+    return true;
 }
 
 void Actor::_LuaGotoPosition(float x, float y, float z)

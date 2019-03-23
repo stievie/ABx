@@ -13,22 +13,12 @@ void EquipComp::Update(uint32_t timeElapsed)
     }
 }
 
-void EquipComp::SetItem(ItemPos pos, uint32_t index)
+void EquipComp::SetItem(std::unique_ptr<Item> item)
 {
-    AB::Entities::Item item;
-    if (!IO::IOItem::LoadItemByIndex(item, index))
-    {
-        LOG_ERROR << "Failed to load item with index " << index << std::endl;
-        return;
-    }
-    std::unique_ptr<Item> i = std::make_unique<Item>(item);
-    if (i->LoadScript(item.script))
-    {
-        items_[pos] = std::move(i);
-    }
+    items_[static_cast<EquipPos>(item->concreteItem_.storagePos)] = std::move(item);
 }
 
-Item* EquipComp::GetItem(ItemPos pos) const
+Item* EquipComp::GetItem(EquipPos pos) const
 {
     auto item = items_.find(pos);
     if (item == items_.end() || !(*item).second)
@@ -37,14 +27,22 @@ Item* EquipComp::GetItem(ItemPos pos) const
     return (*item).second.get();
 }
 
-void EquipComp::RemoveItem(ItemPos pos)
+std::vector<Item*> EquipComp::GetItems() const
+{
+    std::vector<Item*> result;
+    for (const auto& i : items_)
+        result.push_back(i.second.get());
+    return result;
+}
+
+void EquipComp::RemoveItem(EquipPos pos)
 {
     if (!items_[pos])
         return;
     items_[pos].reset();
 }
 
-void EquipComp::SetUpgrade(ItemPos pos, ItemUpgrade type, uint32_t index)
+void EquipComp::SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index)
 {
     if (!items_[pos])
         return;
@@ -53,7 +51,10 @@ void EquipComp::SetUpgrade(ItemPos pos, ItemUpgrade type, uint32_t index)
 
 Item* EquipComp::GetWeapon() const
 {
-    return GetItem(ItemPos::WeaponLeadHand);
+    Item* result = GetItem(EquipPos::WeaponLeadHand);
+    if (!result)
+        result = GetItem(EquipPos::WeaponTwoHanded);
+    return result;
 }
 
 int EquipComp::GetArmor(DamageType damageType, DamagePos pos)
@@ -62,19 +63,19 @@ int EquipComp::GetArmor(DamageType damageType, DamagePos pos)
     switch (pos)
     {
     case DamagePos::Head:
-        item = items_[ItemPos::ArmorHead].get();
+        item = items_[EquipPos::ArmorHead].get();
         break;
     case DamagePos::Chest:
-        item = items_[ItemPos::ArmorChest].get();
+        item = items_[EquipPos::ArmorChest].get();
         break;
     case DamagePos::Hands:
-        item = items_[ItemPos::ArmorHands].get();
+        item = items_[EquipPos::ArmorHands].get();
         break;
     case DamagePos::Legs:
-        item = items_[ItemPos::ArmorLegs].get();
+        item = items_[EquipPos::ArmorLegs].get();
         break;
     case DamagePos::Feet:
-        item = items_[ItemPos::ArmorFeet].get();
+        item = items_[EquipPos::ArmorFeet].get();
         break;
     case DamagePos::NoPos:
         return 0;

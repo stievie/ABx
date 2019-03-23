@@ -41,6 +41,8 @@ enum ItemType : uint16_t
     ItemTypeDaggers,
     ItemTypeScyte,
     ItemTypeSpear,
+    ItemTypeFocus,
+    ItemTypeShield,
     ItemTypeWeaponLast = ItemTypeSpear,
 };
 

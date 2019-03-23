@@ -8,7 +8,8 @@ namespace Entities {
 
 enum StoragePlace : uint8_t
 {
-    StoragePlaceScene = 0,      // On ground
+    StoragePlaceNone = 0,
+    StoragePlaceScene = 1,      // On ground
     StoragePlaceInventory,
     StoragePlaceChest,
     StoragePlaceEquipped
