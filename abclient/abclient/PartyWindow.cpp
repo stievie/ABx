@@ -717,7 +717,6 @@ PartyItem* PartyWindow::GetItem(uint32_t actorId)
             }
         }
     }
-    URHO3D_LOGWARNINGF("Actor with ID %d not found", actorId);
     return nullptr;
 }
 

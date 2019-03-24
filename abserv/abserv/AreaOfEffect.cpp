@@ -5,7 +5,6 @@
 #include "ScriptManager.h"
 #include "Actor.h"
 #include "Game.h"
-#include "Mechanic.h"
 
 namespace Game {
 
