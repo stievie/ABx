@@ -79,6 +79,7 @@ public:
             return false;
         if (range == Ranges::Map)
             return true;
+        // Don't calculate the distance now, but use previously calculated values.
         for (const auto& o : ranges_[range])
         {
             if (auto so = o.lock())

@@ -15,6 +15,7 @@ private:
         FunctionNone = 0,
         FunctionUpdate = 1,
         FunctionEnded = 1 << 1,
+        FunctionOnTrigger = 1 << 2,
     };
     std::weak_ptr<Actor> source_;
     kaguya::State luaState_;
@@ -48,8 +49,9 @@ public:
         return AB::GameProtocol::ObjectTypeAreaOfEffect;
     }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+    void OnTrigger(GameObject* other) override;
 
-    void SetRange(Ranges range) { range_ = range; }
+    void SetRange(Ranges range);
     Ranges GetRange() const { return range_; }
     void SetSource(std::shared_ptr<Actor> source);
     std::shared_ptr<Actor> GetSource();

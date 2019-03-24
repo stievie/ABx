@@ -45,11 +45,10 @@ function onSuccess(source, target)
   if (target:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  local attribVal = source:GetAttributeValue(ATTRIB_FIRE)
-  local damage = 7 * attribVal
   local game = target:GetGame()
   local position = target:GetPosition();
-  local aoe = game:AddAreaOfEffect("/scripts/actors/aoe/elementarist/meteor_shower.lua", source, self:Index(),
+  local aoe = game:AddAreaOfEffect("/scripts/actors/aoe/elementarist/meteor_shower.lua", 
+    source, self:Index(),
     position[1], position[2], position[3])
   return SkillErrorNone
 end

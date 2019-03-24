@@ -2,6 +2,7 @@
 
 namespace Game {
 
+class GameObject;
 class Actor;
 
 namespace Components {
@@ -10,12 +11,12 @@ namespace Components {
 class TriggerComp
 {
 private:
-    Actor& owner_;
+    GameObject& owner_;
     std::map<uint32_t, int64_t> triggered_;
-    void DoTrigger(Actor* other);
+    void DoTrigger(GameObject* other);
 public:
     TriggerComp() = delete;
-    explicit TriggerComp(Actor& owner) :
+    explicit TriggerComp(GameObject& owner) :
         owner_(owner),
         retriggerTimeout_(1000)
     { }
@@ -24,7 +25,7 @@ public:
     TriggerComp& operator=(const TriggerComp&) = delete;
     ~TriggerComp() = default;
 
-    void OnCollide(Actor* other);
+    void OnCollide(GameObject* other);
 
     bool trigger_;
     /// Time in ms the same Actor can retrigger

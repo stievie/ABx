@@ -86,36 +86,15 @@ public:
     float GetAggro(Actor* other);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }
-    uint32_t GetRetriggerTimout() const
-    {
-        if (!triggerComp_)
-            return 0;
-        return triggerComp_->retriggerTimeout_;
-    }
-    void SetRetriggerTimout(uint32_t value)
-    {
-        if (!triggerComp_)
-            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
-        triggerComp_->retriggerTimeout_ = value;
-    }
-    bool IsTrigger() const
-    {
-        return triggerComp_ && triggerComp_->trigger_;
-    }
-    void SetTrigger(bool value)
-    {
-        if (!triggerComp_)
-            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
-        triggerComp_->trigger_ = value;
-    }
+
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
     void Say(ChatType channel, const std::string& message);
 
     void OnSelected(Actor* selector) override;
     void OnClicked(Actor* selector) override;
-    void OnCollide(Actor* other) override;
-    void OnTrigger(Actor* other) override;
+    void OnCollide(GameObject* other) override;
+    void OnTrigger(GameObject* other) override;
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
 
@@ -132,8 +111,6 @@ public:
     void OnHealed(int hp) override;
     void OnDied() override;
     void OnResurrected(int health, int energy) override;
-
-    std::unique_ptr<Components::TriggerComp> triggerComp_;
 };
 
 }

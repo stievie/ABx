@@ -60,6 +60,35 @@ static constexpr float RANGE_TOUCH        = 1.5f;
 static constexpr float RANGE_ADJECENT     = GetPercent(RANGE_BASE, 3.0f);
 static constexpr float RANGE_VISIBLE      = RANGE_AGGRO;
 
+enum class Ranges : uint8_t
+{
+    Aggro = 0,
+    Compass,
+    Spirit,
+    Earshot,
+    Casting,
+    Projectile,
+    HalfCompass,
+    Touch,
+    Adjecent,
+    Visible,
+    Map                        // Whole map, must be last
+};
+
+constexpr float RangeDistances[] = {
+    RANGE_AGGRO,
+    RANGE_COMPASS,
+    RANGE_SPIRIT,
+    RANGE_EARSHOT,
+    RANGE_CASTING,
+    RANGE_PROJECTILE,
+    RANGE_HALF_COMPASS,
+    RANGE_TOUCH,
+    RANGE_ADJECENT,
+    RANGE_VISIBLE,
+    std::numeric_limits<float>::max()
+};
+
 // https://wiki.guildwars.com/wiki/Armor_rating
 constexpr float DamagePosChances[] = {
     0.375f,                                // Chest

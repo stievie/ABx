@@ -14,9 +14,11 @@
 #include <AB/ProtocolCodes.h>
 #include "IdGenerator.h"
 #include "StateComp.h"
+#include "TriggerComp.h"
 #include "Variant.h"
 #include <unordered_set>
 #include "Matrix4.h"
+#include "Mechanic.h"
 
 namespace Game {
 
@@ -32,22 +34,6 @@ class Game;
 class Actor;
 class Npc;
 class Player;
-
-/// Ranges. Distance is defined in ./config/meschanics.lus
-enum class Ranges : uint8_t
-{
-    Aggro = 0,
-    Compass,
-    Spirit,
-    Earshot,
-    Casting,
-    Projectile,
-    HalfCompass,
-    Touch,
-    Adjecent,
-    Visible,
-    Map                        // Whole map
-};
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
@@ -204,6 +190,7 @@ public:
     uint32_t id_;
     std::string name_;
     Components::StateComp stateComp_;
+    std::unique_ptr<Components::TriggerComp> triggerComp_;
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_;
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
@@ -224,12 +211,34 @@ public:
     bool QueryObjects(std::vector<GameObject*>& result, float radius);
     bool QueryObjects(std::vector<GameObject*>& result, const Math::BoundingBox& box);
 
+    uint32_t GetRetriggerTimout() const
+    {
+        if (!triggerComp_)
+            return 0;
+        return triggerComp_->retriggerTimeout_;
+    }
+    void SetRetriggerTimout(uint32_t value)
+    {
+        if (!triggerComp_)
+            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+        triggerComp_->retriggerTimeout_ = value;
+    }
+    bool IsTrigger() const
+    {
+        return triggerComp_ && triggerComp_->trigger_;
+    }
+    void SetTrigger(bool value)
+    {
+        if (!triggerComp_)
+            triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
+        triggerComp_->trigger_ = value;
+    }
     virtual void WriteSpawnData(Net::NetworkMessage&) { }
 
     virtual void OnSelected(Actor*) { }
     virtual void OnClicked(Actor*) { }
-    virtual void OnCollide(Actor*) { };
-    virtual void OnTrigger(Actor*) { }
+    virtual void OnCollide(GameObject*) { };
+    virtual void OnTrigger(GameObject*) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

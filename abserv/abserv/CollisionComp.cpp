@@ -20,9 +20,6 @@ void CollisionComp::DoCollisions()
                 Math::Vector3 move;
                 if (owner_.Collides(ci, owner_.moveComp_.velocity_, move))
                 {
-#ifdef DEBUG_COLLISION
-                    //                    LOG_DEBUG << GetName() << " collides with " << ci->GetName() << std::endl;
-#endif
                     if (move != Math::Vector3::Zero)
                         owner_.transformation_.position_ += move;
                     else
@@ -32,7 +29,7 @@ void CollisionComp::DoCollisions()
                     // Notify ci for colliding with us
                     ci->OnCollide(&owner_);
                     // Notify us for colliding with ci
-                    owner_.OnCollide(dynamic_cast<Actor*>(ci));
+                    owner_.OnCollide(ci);
                 }
             }
         }

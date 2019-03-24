@@ -34,6 +34,8 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("SetVarString",     &GameObject::_LuaSetVarString)
         .addFunction("GetVarNumber",     &GameObject::_LuaGetVarNumber)
         .addFunction("SetVarNumber",     &GameObject::_LuaSetVarNumber)
+        .addFunction("IsTrigger",        &GameObject::IsTrigger)
+        .addFunction("SetTrigger",       &GameObject::SetTrigger)
 
         .addFunction("SetPosition",      &GameObject::_LuaSetPosition)
         .addFunction("SetRotation",      &GameObject::_LuaSetRotation)
@@ -55,6 +57,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 GameObject::GameObject() :
     collisionShape_(nullptr),
     stateComp_(*this),
+    triggerComp_(nullptr),         // By default its not a trigger
     octant_(nullptr),
     sortValue_(0.0f),
     occludee_(true),

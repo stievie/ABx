@@ -25,14 +25,14 @@ end
 function onSelected(creature)
 end
 
--- creature collides with self
+-- creature: GameObject collides with self
 function onCollide(creature)
 end
 
 function onArrived()
 end
 
--- other: Actor
+-- other: GamneObject
 function onTrigger(other)
 end
 

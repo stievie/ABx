@@ -5,7 +5,7 @@
 namespace Game {
 namespace Components {
 
-void TriggerComp::DoTrigger(Actor* other)
+void TriggerComp::DoTrigger(GameObject* other)
 {
     if (!other)
         return;
@@ -27,7 +27,7 @@ void TriggerComp::DoTrigger(Actor* other)
     }
 }
 
-void TriggerComp::OnCollide(Actor* other)
+void TriggerComp::OnCollide(GameObject* other)
 {
     if (trigger_ && other)
         DoTrigger(other);

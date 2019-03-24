@@ -5,6 +5,7 @@
 #include "ScriptManager.h"
 #include "Actor.h"
 #include "Game.h"
+#include "Mechanic.h"
 
 namespace Game {
 
@@ -54,6 +55,11 @@ AreaOfEffect::AreaOfEffect() :
     startTime_(Utils::Tick()),
     lifetime_(std::numeric_limits<uint32_t>::max())
 {
+    SetCollisionShape(
+        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeTypeSphere,
+            Math::Vector3::Zero, RANGE_ADJECENT)
+    );
+
     InitializeLua();
 }
 
@@ -68,6 +74,8 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "onEnded"))
         functions_ |= FunctionEnded;
+    if (ScriptManager::IsFunction(luaState_, "onTrigger"))
+        functions_ |= FunctionOnTrigger;
 
     bool ret = luaState_["onInit"]();
     return ret;
@@ -76,6 +84,7 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
 void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
+
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
     if (Utils::TimePassed(startTime_) > lifetime_)
@@ -84,6 +93,35 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             ScriptManager::CallFunction(luaState_, "onEnded");
         GetGame()->RemoveObject(this);
     }
+}
+
+void AreaOfEffect::OnTrigger(GameObject* other)
+{
+    // Called from triggerComp_
+    GameObject::OnTrigger(other);
+
+    // AOE can also be a trap for example
+    if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
+        ScriptManager::CallFunction(luaState_, "onTrigger", other);
+}
+
+void AreaOfEffect::SetRange(Ranges range)
+{
+    assert(static_cast<int>(range) >= 0 && static_cast<int>(range) <= static_cast<int>(Ranges::Map));
+
+    range_ = range;
+
+    // Update collision shape size
+    using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+    auto cs = GetCollisionShape();
+    if (!cs)
+        return;
+    if (cs->shapeType_ != Math::ShapeTypeSphere)
+        // AOE should always have a sphere
+        return;
+
+    SphereShape* shape = static_cast<SphereShape*>(cs);
+    shape->Object()->radius_ = RangeDistances[static_cast<int>(range)];
 }
 
 void AreaOfEffect::SetSource(std::shared_ptr<Actor> source)

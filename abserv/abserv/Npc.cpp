@@ -23,8 +23,6 @@ void Npc::RegisterLua(kaguya::State& state)
     state["Npc"].setClass(kaguya::UserdataMetatable<Npc, Actor>()
         .addFunction("IsServerOnly", &Npc::IsServerOnly)
         .addFunction("SetServerOnly", &Npc::SetServerOnly)
-        .addFunction("IsTrigger", &Npc::IsTrigger)
-        .addFunction("SetTrigger", &Npc::SetTrigger)
 
         .addFunction("SetName", &Npc::SetName)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
@@ -41,8 +39,7 @@ Npc::Npc() :
     behaviorTree_(""),
     luaInitialized_(false),
     aiCharacter_(nullptr),
-    functions_(FunctionNone),
-    triggerComp_(nullptr)         // By default its not a trigger
+    functions_(FunctionNone)
 {
     // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Party::GetNewId();
@@ -230,7 +227,7 @@ void Npc::OnArrived()
         ScriptManager::CallFunction(luaState_, "onArrived");
 }
 
-void Npc::OnCollide(Actor* other)
+void Npc::OnCollide(GameObject* other)
 {
     Actor::OnCollide(other);
 
@@ -241,7 +238,7 @@ void Npc::OnCollide(Actor* other)
         triggerComp_->OnCollide(other);
 }
 
-void Npc::OnTrigger(Actor* other)
+void Npc::OnTrigger(GameObject* other)
 {
     // Called from triggerComp_
     Actor::OnTrigger(other);
