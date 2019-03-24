@@ -82,6 +82,8 @@ protected:
     /// Octree octant.
     Math::Octant* octant_;
     float sortValue_;
+    std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
+    void UpdateRanges();
     uint32_t GetNewId()
     {
         return objectIds_.Next();
@@ -148,6 +150,19 @@ public:
             return std::numeric_limits<float>::max();
         return transformation_.position_.Distance(other->transformation_.position_);
     }
+    /// Allows to execute a functor/lambda on the visible objects
+    template<typename Func>
+    void VisitInRange(Ranges range, Func&& func)
+    {
+        // May be called from the AI thread so lock it
+        std::lock_guard<std::mutex> lock(lock_);
+        for (const auto o : ranges_[range])
+        {
+            if (auto so = o.lock())
+                func(so);
+        }
+    }
+    std::vector<Actor*> GetActorsInRange(Ranges range);
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {

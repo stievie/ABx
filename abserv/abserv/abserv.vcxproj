@@ -190,6 +190,7 @@
     <ClInclude Include="AiRegistry.h" />
     <ClInclude Include="AiTask.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="AreaOfEffect.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AttackComp.h" />
     <ClInclude Include="Attributes.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="AiCharacter.cpp" />
     <ClCompile Include="AiRegistry.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="AreaOfEffect.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AttackComp.cpp" />
     <ClCompile Include="AutoRunComp.cpp" />

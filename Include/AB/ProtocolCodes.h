@@ -258,8 +258,9 @@ enum GameObjectType : uint8_t
     // -- Bellow all objects are sent to player when they spawn ----------------
     ObjectTypeSentToPlayer,          // Not an actual object type, all bellow is sent to the player
     ObjectTypeNpc,
-    ObjectTypePlayer,
+    ObjectTypePlayer,                // Human player
     ObjectTypeProjectile,
+    ObjectTypeAreaOfEffect,          // Area that affects actors in it, e.g. a well
 };
 
 enum GamePacketTypes : uint8_t

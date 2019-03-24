@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "MathUtils.h"
 #include "ConfigManager.h"
+#include "Mechanic.h"
 
 #include "DebugNew.h"
 
@@ -46,6 +47,8 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("AsActor",          &GameObject::_LuaAsActor)
         .addFunction("AsNpc",            &GameObject::_LuaAsNpc)
         .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
+
+        .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
     );
 }
 
@@ -67,8 +70,50 @@ GameObject::~GameObject()
     RemoveFromOctree();
 }
 
+void GameObject::UpdateRanges()
+{
+    ranges_.clear();
+    std::vector<GameObject*> res;
+
+    // Compass radius
+    if (QueryObjects(res, RANGE_COMPASS))
+    {
+        for (const auto& o : res)
+        {
+            if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
+            {
+                auto so = o->shared_from_this();
+                const Math::Vector3 objectPos = o->GetPosition();
+                const Math::Vector3 myPos = GetPosition();
+                const float dist = myPos.Distance(objectPos);
+                if (dist <= RANGE_AGGRO)
+                    ranges_[Ranges::Aggro].push_back(so);
+                if (dist <= RANGE_COMPASS)
+                    ranges_[Ranges::Compass].push_back(so);
+                if (dist <= RANGE_SPIRIT)
+                    ranges_[Ranges::Spirit].push_back(so);
+                if (dist <= RANGE_EARSHOT)
+                    ranges_[Ranges::Earshot].push_back(so);
+                if (dist <= RANGE_CASTING)
+                    ranges_[Ranges::Casting].push_back(so);
+                if (dist <= RANGE_PROJECTILE)
+                    ranges_[Ranges::Projectile].push_back(so);
+                if (dist <= RANGE_HALF_COMPASS)
+                    ranges_[Ranges::HalfCompass].push_back(so);
+                if (dist <= RANGE_TOUCH)
+                    ranges_[Ranges::Touch].push_back(so);
+                if (dist <= RANGE_ADJECENT)
+                    ranges_[Ranges::Adjecent].push_back(so);
+                if (dist <= RANGE_VISIBLE)
+                    ranges_[Ranges::Visible].push_back(so);
+            }
+        }
+    }
+}
+
 void GameObject::Update(uint32_t, Net::NetworkMessage&)
 {
+    UpdateRanges();
 }
 
 bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
@@ -255,6 +300,18 @@ std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)
         if (o.object_ != this)
             result.push_back(o.object_);
     }
+    return result;
+}
+
+std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
+{
+    std::vector<Actor*> result;
+    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    {
+        AB::GameProtocol::GameObjectType t = o->GetType();
+        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            result.push_back(dynamic_cast<Actor*>(o.get()));
+    });
     return result;
 }
 

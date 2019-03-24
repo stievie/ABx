@@ -71,12 +71,12 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("KnockDown", &Actor::KnockDown)
         .addFunction("Die", &Actor::Die)
         .addFunction("Resurrect", &Actor::Resurrect)
-        .addFunction("GetActorsInRange", &Actor::GetActorsInRange)
+        .addFunction("CancelAction", &Actor::CancelAction)
+
         .addFunction("GetEnemiesInRange", &Actor::GetEnemiesInRange)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
         .addFunction("GetAlliesInRange", &Actor::GetAlliesInRange)
         .addFunction("GetAllyCountInRange", &Actor::GetAllyCountInRange)
-        .addFunction("CancelAction", &Actor::CancelAction)
 
         .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
     );
@@ -224,16 +224,43 @@ void Actor::_LuaFollowObject(GameObject* object)
         FollowObject(0);
 }
 
-std::vector<Actor*> Actor::GetActorsInRange(Ranges range)
+void Actor::_LuaAddEffect(Actor* source, uint32_t index)
 {
-    std::vector<Actor*> result;
-    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
-    {
-        AB::GameProtocol::GameObjectType t = o->GetType();
-        if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
-            result.push_back(dynamic_cast<Actor*>(o.get()));
-    });
-    return result;
+#ifdef DEBUG_GAME
+    LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
+#endif
+    effectsComp_.AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index);
+}
+
+void Actor::_LuaRemoveEffect(uint32_t index)
+{
+    effectsComp_.RemoveEffect(index);
+}
+
+Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
+{
+    auto effect = effectsComp_.GetLast(category);
+    if (effect)
+        return effect.get();
+    return nullptr;
+}
+
+GameObject* Actor::_LuaGetSelectedObject()
+{
+    if (auto o = selectedObject_.lock())
+        return o.get();
+    return nullptr;
+}
+
+void Actor::_LuaSetSelectedObject(GameObject* object)
+{
+    Utils::VariantMap data;
+    data[InputDataObjectId] = GetId();    // Source
+    if (object)
+        data[InputDataObjectId2] = object->GetId();   // Target
+    else
+        data[InputDataObjectId2] = 0;   // Target
+    inputComp_.Add(InputType::Select, data);
 }
 
 std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
@@ -279,7 +306,7 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
             auto actor = dynamic_cast<Actor*>(o.get());
             if (actor && !actor->IsEnemy(this))
                 result.push_back(actor);
-    }
+        }
     });
     return result;
 }
@@ -296,48 +323,9 @@ size_t Actor::GetAllyCountInRange(Ranges range)
             auto actor = dynamic_cast<Actor*>(o.get());
             if (actor && !actor->IsEnemy(this))
                 ++result;
-    }
+        }
     });
     return result;
-}
-
-void Actor::_LuaAddEffect(Actor* source, uint32_t index)
-{
-#ifdef DEBUG_GAME
-    LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
-#endif
-    effectsComp_.AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index);
-}
-
-void Actor::_LuaRemoveEffect(uint32_t index)
-{
-    effectsComp_.RemoveEffect(index);
-}
-
-Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
-{
-    auto effect = effectsComp_.GetLast(category);
-    if (effect)
-        return effect.get();
-    return nullptr;
-}
-
-GameObject* Actor::_LuaGetSelectedObject()
-{
-    if (auto o = selectedObject_.lock())
-        return o.get();
-    return nullptr;
-}
-
-void Actor::_LuaSetSelectedObject(GameObject* object)
-{
-    Utils::VariantMap data;
-    data[InputDataObjectId] = GetId();    // Source
-    if (object)
-        data[InputDataObjectId2] = object->GetId();   // Target
-    else
-        data[InputDataObjectId2] = 0;   // Target
-    inputComp_.Add(InputType::Select, data);
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)
@@ -668,51 +656,9 @@ int Actor::_LuaGetState()
     return static_cast<int>(stateComp_.GetState());
 }
 
-void Actor::UpdateRanges()
-{
-    ranges_.clear();
-    std::vector<GameObject*> res;
-
-    // Compass radius
-    if (QueryObjects(res, RANGE_COMPASS))
-    {
-        for (const auto& o : res)
-        {
-            if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
-            {
-                auto so = o->shared_from_this();
-                const Math::Vector3 objectPos = o->GetPosition();
-                const Math::Vector3 myPos = GetPosition();
-                const float dist = myPos.Distance(objectPos);
-                if (dist <= RANGE_AGGRO)
-                    ranges_[Ranges::Aggro].push_back(so);
-                if (dist <= RANGE_COMPASS)
-                    ranges_[Ranges::Compass].push_back(so);
-                if (dist <= RANGE_SPIRIT)
-                    ranges_[Ranges::Spirit].push_back(so);
-                if (dist <= RANGE_EARSHOT)
-                    ranges_[Ranges::Earshot].push_back(so);
-                if (dist <= RANGE_CASTING)
-                    ranges_[Ranges::Casting].push_back(so);
-                if (dist <= RANGE_PROJECTILE)
-                    ranges_[Ranges::Projectile].push_back(so);
-                if (dist <= RANGE_HALF_COMPASS)
-                    ranges_[Ranges::HalfCompass].push_back(so);
-                if (dist <= RANGE_TOUCH)
-                    ranges_[Ranges::Touch].push_back(so);
-                if (dist <= RANGE_ADJECENT)
-                    ranges_[Ranges::Adjecent].push_back(so);
-                if (dist <= RANGE_VISIBLE)
-                    ranges_[Ranges::Visible].push_back(so);
-            }
-        }
-    }
-}
-
 void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
-    UpdateRanges();
 
     // Update all
     stateComp_.Update(timeElapsed);

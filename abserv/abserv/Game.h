@@ -17,6 +17,7 @@ namespace Game {
 
 class Player;
 class Npc;
+class AreaOfEffect;
 
 class Game : public std::enable_shared_from_this<Game>
 {
@@ -78,9 +79,14 @@ private:
     }
     GameObject* _LuaGetObjectById(uint32_t objectId);
     Npc* _LuaAddNpc(const std::string& script);
+    AreaOfEffect* _LuaAddAreaOfEffect(const std::string& script,
+        Actor* source,
+        uint32_t index,
+        float x, float y, float z);
     int _LuaGetType() const { return data_.type; }
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
     void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
+    void InternalRemoveObject(GameObject* object);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -108,9 +114,12 @@ public:
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);
-    void RemoveObject(GameObject* object);
 
     std::shared_ptr<Npc> AddNpc(const std::string& script);
+    std::shared_ptr<AreaOfEffect> AddAreaOfEffect(const std::string& script,
+        std::shared_ptr<Actor> source,
+        uint32_t index,
+        const Math::Vector3& pos);
 
     ExecutionState GetState() const { return state_; }
     bool IsInactive() const
@@ -126,6 +135,8 @@ public:
     void SendSpawnAll(uint32_t playerId);
     void QueueSpawnObject(std::shared_ptr<GameObject> object);
     void QueueLeaveObject(uint32_t objectId);
+
+    void RemoveObject(GameObject* object);
 
     /// From GameProtocol (Dispatcher Thread)
     void PlayerJoin(uint32_t playerId);

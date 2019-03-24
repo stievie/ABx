@@ -133,12 +133,10 @@ bool IOPlayer::LoadPlayerEquipment(Game::Player* player)
 
 bool IOPlayer::SavePlayerEquipment(Game::Player* player)
 {
-    const auto items = player->equipComp_.GetItems();
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    for (const auto& item : items)
-    {
+    player->equipComp_.VisitItems([client](Game::Item* item) {
         client->Update(item->concreteItem_);
-    }
+    });
     return true;
 }
 

@@ -49,10 +49,8 @@ private:
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
-    void UpdateRanges();
 protected:
     std::vector<Math::Vector3> wayPoints_;
-    std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
 
     Math::Vector3 homePos_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
@@ -68,11 +66,6 @@ public:
 
     Actor();
 
-    void SetGame(std::shared_ptr<Game> game) override
-    {
-        GameObject::SetGame(game);
-    }
-
     bool SetSpawnPoint(const std::string& group);
     void SetHomePos(const Math::Vector3& pos)
     {
@@ -80,18 +73,6 @@ public:
     }
     const Math::Vector3& GetHomePos() const { return homePos_; }
     bool GotoHomePos();
-    /// Allows to execute a functor/lambda on the visible objects
-    template<typename Func>
-    void VisitInRange(Ranges range, Func&& func)
-    {
-        // May be called from the AI thread so lock it
-        std::lock_guard<std::mutex> lock(lock_);
-        for (const auto o : ranges_[range])
-        {
-            if (auto so = o.lock())
-                func(so);
-        }
-    }
     bool IsInRange(Ranges range, Actor* actor)
     {
         if (!actor)
@@ -108,7 +89,6 @@ public:
         }
         return false;
     }
-    std::vector<Actor*> GetActorsInRange(Ranges range);
     std::vector<Actor*> GetEnemiesInRange(Ranges range);
     size_t GetEnemyCountInRange(Ranges range);
     std::vector<Actor*> GetAlliesInRange(Ranges range);

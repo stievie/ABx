@@ -5,5 +5,3 @@
 require("config/functions")
 
 behaviours = "/scripts/ai/behaviours.lua"
-
-level_cap = 20

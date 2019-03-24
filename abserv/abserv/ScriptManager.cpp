@@ -10,6 +10,7 @@
 #include "Script.h"
 #include "Subsystems.h"
 #include "Item.h"
+#include "AreaOfEffect.h"
 
 namespace Game {
 
@@ -89,6 +90,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     Skill::RegisterLua(state);
     SkillBar::RegisterLua(state);
 
+    AreaOfEffect::RegisterLua(state);
     Player::RegisterLua(state);
     Npc::RegisterLua(state);
 

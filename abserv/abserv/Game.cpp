@@ -22,6 +22,7 @@
 #include "ScriptManager.h"
 #include "ThreadPool.h"
 #include "Subsystems.h"
+#include "AreaOfEffect.h"
 
 #include "DebugNew.h"
 
@@ -59,6 +60,14 @@ GameObject* Game::_LuaGetObjectById(uint32_t objectId)
 Npc* Game::_LuaAddNpc(const std::string& script)
 {
     auto o = AddNpc(script);
+    if (o)
+        return o.get();
+    return nullptr;
+}
+
+AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script, Actor* source, uint32_t index, float x, float y, float z)
+{
+    auto o = AddAreaOfEffect(script, source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(), index, Math::Vector3(x, y, z));
     if (o)
         return o.get();
     return nullptr;
@@ -105,6 +114,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("GetInstanceTime", &Game::GetInstanceTime)
 
         .addFunction("AddNpc", &Game::_LuaAddNpc)
+        .addFunction("AddAreaOfEffect", &Game::_LuaAddAreaOfEffect)
     );
 }
 
@@ -305,7 +315,7 @@ void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
     object->SetGame(shared_from_this());
 }
 
-void Game::RemoveObject(GameObject* object)
+void Game::InternalRemoveObject(GameObject* object)
 {
     ScriptManager::CallFunction(luaState_, "onRemoveObject", object);
     object->SetGame(std::shared_ptr<Game>());
@@ -328,6 +338,30 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
         return std::shared_ptr<Npc>();
     }
     map_->AddEntity(result->GetAi(), result->GetGroupId());
+
+    // After all initialization is done, we can call this
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+            shared_from_this(), result))
+    );
+
+    return result;
+}
+
+std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
+    std::shared_ptr<Actor> source,
+    uint32_t index,
+    const Math::Vector3& pos)
+{
+    std::shared_ptr<AreaOfEffect> result = std::make_shared<AreaOfEffect>();
+    result->SetGame(shared_from_this());
+    result->transformation_.position_ = pos;
+    result->SetSource(source);
+    result->SetIndex(index);
+    if (!result->LoadScript(script))
+    {
+        return std::shared_ptr<AreaOfEffect>();
+    }
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(
@@ -484,6 +518,14 @@ void Game::PlayerJoin(uint32_t playerId)
     }
 }
 
+void Game::RemoveObject(GameObject* object)
+{
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), object->id_))
+    );
+    InternalRemoveObject(object);
+}
+
 void Game::PlayerLeave(uint32_t playerId)
 {
     Player* player = GetPlayerById(playerId);
@@ -509,7 +551,7 @@ void Game::PlayerLeave(uint32_t playerId)
                 shared_from_this(),
                 player->GetThis()))
         );
-        RemoveObject(player);
+        InternalRemoveObject(player);
     }
 }
 

@@ -39,6 +39,16 @@ public:
     int GetArmor(DamageType damageType, DamagePos pos);
     float GetArmorPenetration();
     uint32_t GetAttributeValue(uint32_t index);
+
+    template<typename Func>
+    void VisitItems(Func&& func)
+    {
+        for (const auto& o : items_)
+        {
+            func(o.second.get());
+        }
+    }
+
 };
 
 }
