@@ -54,10 +54,13 @@ AreaOfEffect::AreaOfEffect() :
     startTime_(Utils::Tick()),
     lifetime_(std::numeric_limits<uint32_t>::max())
 {
+    // AOE has always sphere shape with the range as radius
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeTypeSphere,
             Math::Vector3::Zero, RANGE_ADJECENT)
     );
+    // AOE can not hide other objects
+    occluder_ = false;
 
     InitializeLua();
 }

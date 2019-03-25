@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TriggerComp.h"
 #include "Actor.h"
+#include "Game.h"
 
 namespace Game {
 namespace Components {
@@ -11,20 +12,37 @@ void TriggerComp::DoTrigger(GameObject* other)
         return;
 
     const int64_t tick = Utils::Tick();
-    const int64_t lastTrigger = triggered_[other->id_];
-    if (static_cast<uint32_t>(tick - lastTrigger) > retriggerTimeout_)
+    const auto it = triggered_.find(other->id_);
+    const int64_t lastTrigger = (it != triggered_.end()) ? (*it).second : 0;
+    if (lastTrigger == 0 || static_cast<uint32_t>(tick - lastTrigger) > retriggerTimeout_)
+    {
         owner_.OnTrigger(other);
+        triggered_[other->id_] = tick;
+    }
+}
 
-    triggered_[other->id_] = tick;
+void TriggerComp::Update(uint32_t timeElapsed)
+{
+    if (triggered_.size() == 0)
+        return;
 
-    // Delete old
+    lastCheck_ += timeElapsed;
+    if (lastCheck_ < 500)
+        return;
+
+    // Check if objects are still inside
+    auto game = owner_.GetGame();
+    Math::Vector3 move;
     for (auto it = triggered_.begin(); it != triggered_.end(); )
     {
-        if (tick - (*it).second > 10000)
+        auto o = game->GetObjectById((*it).first);
+        // If not inside remove from triggered list
+        if (!o || !owner_.Collides(o.get(), Math::Vector3::Zero, move))
             triggered_.erase(it++);
         else
             ++it;
     }
+    lastCheck_ = 0;
 }
 
 void TriggerComp::OnCollide(GameObject* other)

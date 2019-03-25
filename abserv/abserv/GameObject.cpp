@@ -114,9 +114,11 @@ void GameObject::UpdateRanges()
     }
 }
 
-void GameObject::Update(uint32_t, Net::NetworkMessage&)
+void GameObject::Update(uint32_t timeElapsed, Net::NetworkMessage&)
 {
     UpdateRanges();
+    if (triggerComp_)
+        triggerComp_->Update(timeElapsed);
 }
 
 bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
