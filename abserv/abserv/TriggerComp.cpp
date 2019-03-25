@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TriggerComp.h"
-#include "Actor.h"
+#include "GameObject.h"
 #include "Game.h"
 
 namespace Game {
@@ -27,7 +27,8 @@ void TriggerComp::Update(uint32_t timeElapsed)
         return;
 
     lastCheck_ += timeElapsed;
-    if (lastCheck_ < 500)
+    // Check all 200ms
+    if (lastCheck_ < 200)
         return;
 
     // Check if objects are still inside

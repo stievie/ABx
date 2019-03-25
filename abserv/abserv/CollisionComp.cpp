@@ -7,7 +7,7 @@
 namespace Game {
 namespace Components {
 
-void CollisionComp::DoCollisions()
+void CollisionComp::ResolveCollisions()
 {
     std::vector<GameObject*> c;
     Math::BoundingBox box = owner_.GetWorldBoundingBox();
@@ -23,7 +23,10 @@ void CollisionComp::DoCollisions()
                     if (move != Math::Vector3::Zero)
                         owner_.transformation_.position_ += move;
                     else
+                    {
                         owner_.transformation_.position_ = owner_.moveComp_.GetOldPosition();
+                        owner_.moveComp_.moved_ = false;
+                    }
 
                     // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us
@@ -34,6 +37,12 @@ void CollisionComp::DoCollisions()
             }
         }
     }
+}
+
+void CollisionComp::Update(uint32_t)
+{
+    if (owner_.moveComp_.moved_)
+        ResolveCollisions();
 }
 
 }

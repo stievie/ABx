@@ -51,6 +51,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
 
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
+        .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
     );
 }
 
@@ -284,6 +285,13 @@ std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
         return result;
     }
     return std::vector<GameObject*>();
+}
+
+void GameObject::_LuaCallGameEvent(const std::string& name, GameObject* data)
+{
+    auto game = GetGame();
+    if (game)
+        game->CallLuaEvent(name, this, data);
 }
 
 std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)

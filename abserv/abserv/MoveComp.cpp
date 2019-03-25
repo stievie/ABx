@@ -20,7 +20,8 @@ void MoveComp::Update(uint32_t timeElapsed)
     UpdateMove(timeElapsed);
     UpdateTurn(timeElapsed);
 
-    velocity_ = (oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000);
+    velocity_ = ((oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000)).Abs();
+    moved_ = !velocity_.Equals(Math::Vector3::Zero);
 }
 
 bool MoveComp::SetPosition(const Math::Vector3& pos)
@@ -32,7 +33,7 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
     // Keep on ground
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
-    owner_.collisionComp_.DoCollisions();
+    owner_.collisionComp_.ResolveCollisions();
 
     bool moved = oldPosition_ != owner_.transformation_.position_;
 
@@ -44,6 +45,7 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
 
     if (moved)
         moved_ = true;
+
     return moved;
 }
 
@@ -55,7 +57,7 @@ void MoveComp::HeadTo(const Math::Vector3& pos)
     SetDirection(worldAngle);
 }
 
-bool MoveComp::Move(float speed, const Math::Vector3& amount)
+void MoveComp::Move(float speed, const Math::Vector3& amount)
 {
     // new position = position + direction * speed (where speed = amount * speed)
 
@@ -81,47 +83,33 @@ bool MoveComp::Move(float speed, const Math::Vector3& amount)
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
 
-    owner_.collisionComp_.DoCollisions();
-
     bool moved = oldPosition_ != owner_.transformation_.position_;
-
-    if (moved && owner_.octant_)
-    {
-        Math::Octree* octree = owner_.octant_->GetRoot();
-        octree->AddObjectUpdate(&owner_);
-    }
-
     if (moved)
         moved_ = true;
-    return moved;
 }
 
-bool MoveComp::UpdateMove(uint32_t timeElapsed)
+void MoveComp::UpdateMove(uint32_t timeElapsed)
 {
     if (owner_.autorunComp_.autoRun_)
-        return false;
+        return;
 
-    bool moved = false;
     if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
     {
-        moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitZ);
+        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitZ);
     }
     if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
     {
         // Move slower backward
-        moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::Back / 2.0f);
+        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::Back / 2.0f);
     }
     if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
     {
-        moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::Left / 2.0f);
+        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::Left / 2.0f);
     }
     if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
     {
-        moved |= Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitX / 2.0f);
+        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitX / 2.0f);
     }
-
-    moved_ |= moved;
-    return moved;
 }
 
 void MoveComp::Turn(float angle)

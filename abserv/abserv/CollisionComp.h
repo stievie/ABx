@@ -20,7 +20,8 @@ public:
     CollisionComp& operator=(const CollisionComp&) = delete;
     ~CollisionComp() = default;
 
-    void DoCollisions();
+    void Update(uint32_t timeElapsed);
+    void ResolveCollisions();
 };
 
 }

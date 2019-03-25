@@ -129,6 +129,7 @@ public:
         return noplayerTime_ > GAME_INACTIVE_TIME;
     }
     const kaguya::State& GetLuaState() const { return luaState_; }
+    void CallLuaEvent(const std::string& name, GameObject* sender, GameObject* data);
     void SetState(ExecutionState state);
     void Load(const std::string& mapUuid);
     /// Send spawn message for all existing objects

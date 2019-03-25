@@ -9,17 +9,16 @@ prof1Index = 0
 prof2Index = 0
 
 function onInit()
-  -- Player collides with BB. Make it a bit larget than the default BB.
   self:SetBoundingBox(-1, -1, -1, 1, 1, 1)
   self:SetUndestroyable(true)
   -- Will call onTrigger() when it collides
   self:SetTrigger(true)
+  -- The call back function
+  self:SetVarString("callback", "onTrigger")
   return true
 end
 
 function onTrigger(creature)
-  local player = creature:AsPlayer()
-  if (player ~= nil) then
-    player:ChangeMap(self:GetVarString("destination"))
-  end
+  -- Call onTrigger in game script
+  self:CallGameEvent(self:GetVarString("callback"), creature)
 end

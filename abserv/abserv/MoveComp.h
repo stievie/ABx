@@ -16,7 +16,7 @@ private:
     Math::Vector3 oldPosition_;
     float speedFactor_;
     /// Move to moveDir_
-    bool UpdateMove(uint32_t timeElapsed);
+    void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
 public:
@@ -27,8 +27,8 @@ public:
         turnDir_(AB::GameProtocol::TurnDirectionNone),
         oldPosition_(Math::Vector3::Zero),
         speedFactor_(1.0f),
-        moved_(false),
         turned_(false),
+        moved_(false),
         directionSet_(false),
         newAngle_(false),
         speedDirty_(false),
@@ -43,7 +43,7 @@ public:
     bool SetPosition(const Math::Vector3& pos);
     void HeadTo(const Math::Vector3& pos);
     /// Move in direction of rotation
-    bool Move(float speed, const Math::Vector3& amount);
+    void Move(float speed, const Math::Vector3& amount);
     void Turn(float angle);
     void SetDirection(float worldAngle);
     float GetSpeedFactor() const
@@ -73,8 +73,8 @@ public:
 
     uint32_t moveDir_;
     uint32_t turnDir_;
-    bool moved_;
     bool turned_;
+    bool moved_;
     bool speedDirty_;
     /// Manual direction set
     bool directionSet_;

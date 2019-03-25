@@ -5,8 +5,6 @@ function onStart()
     portal:SetName("Bassae")
     -- Map ID where this portal leads to
     portal:SetVarString("destination", "75e3dfcf-479a-11e8-ad09-02100700d6f0")
-    -- Will call onTrigger() when it collides
-    portal:SetTrigger(true)
     local x = -20.059
     local z = -0.00870347
     local y = 26.7

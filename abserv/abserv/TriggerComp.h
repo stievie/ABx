@@ -3,7 +3,6 @@
 namespace Game {
 
 class GameObject;
-class Actor;
 
 namespace Components {
 

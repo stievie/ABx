@@ -672,7 +672,15 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     healComp_.Update(timeElapsed);
     moveComp_.Update(timeElapsed);
     autorunComp_.Update(timeElapsed);
+    // After move/autorun resolve collisions
+    collisionComp_.Update(timeElapsed);
     progressComp_.Update(timeElapsed);
+
+    if (moveComp_.moved_ && octant_)
+    {
+        Math::Octree* octree = octant_->GetRoot();
+        octree->AddObjectUpdate(this);
+    }
 
     // Write all
     stateComp_.Write(message);

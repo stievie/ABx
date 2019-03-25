@@ -372,6 +372,12 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     return result;
 }
 
+void Game::CallLuaEvent(const std::string& name, GameObject* sender, GameObject* data)
+{
+    if (ScriptManager::IsFunction(luaState_, name))
+        luaState_[name](sender, data);
+}
+
 void Game::SetState(ExecutionState state)
 {
     if (state_ != state)
