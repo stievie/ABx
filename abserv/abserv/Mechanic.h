@@ -8,7 +8,7 @@ namespace Game {
 
 namespace {
 template<typename T>
-static constexpr T GetPercent(T max, T percent)
+constexpr T GetPercent(T max, T percent)
 {
     return (max / static_cast<T>(100)) * percent;
 }
@@ -75,7 +75,7 @@ enum class Ranges : uint8_t
     Map                        // Whole map, must be last
 };
 
-constexpr float RangeDistances[] = {
+static constexpr float RangeDistances[] = {
     RANGE_AGGRO,
     RANGE_COMPASS,
     RANGE_SPIRIT,
@@ -90,7 +90,7 @@ constexpr float RangeDistances[] = {
 };
 
 // https://wiki.guildwars.com/wiki/Armor_rating
-constexpr float DamagePosChances[] = {
+static constexpr float DamagePosChances[] = {
     0.375f,                                // Chest
     0.25f,                                 // Legs
     0.125f,                                // Head
@@ -99,6 +99,6 @@ constexpr float DamagePosChances[] = {
 };
 
 // If the rotation of 2 actors is smaller than this, an attack is from behind
-constexpr float BEHIND_ANGLE = 0.52f;
+static constexpr float BEHIND_ANGLE = 0.52f;
 
 }
