@@ -55,13 +55,13 @@ void Player::AddXp(int value)
 void Player::AddSkillPoint()
 {
     Actor::AddSkillPoint();
-    data_.skillPoints++;
+    ++data_.skillPoints;
 }
 
 void Player::AdvanceLevel()
 {
     if (data_.level < LEVEL_CAP)
-        data_.level++;
+        ++data_.level;
 }
 
 void Player::Initialize()

@@ -17,9 +17,10 @@ void EquipComp::SetItem(std::unique_ptr<Item> item)
 {
     if (item)
     {
-        RemoveItem(static_cast<EquipPos>(item->concreteItem_.storagePos));
-        items_[static_cast<EquipPos>(item->concreteItem_.storagePos)] = std::move(item);
-        items_[static_cast<EquipPos>(item->concreteItem_.storagePos)]->OnEquip(&owner_);
+        EquipPos pos = static_cast<EquipPos>(item->concreteItem_.storagePos);
+        RemoveItem(pos);
+        items_[pos] = std::move(item);
+        items_[pos]->OnEquip(&owner_);
     }
 }
 
@@ -45,7 +46,7 @@ void EquipComp::RemoveItem(EquipPos pos)
     if (!items_[pos])
         return;
     items_[pos]->OnUnequip(&owner_);
-    items_[pos].reset();
+    items_.erase(pos);
 }
 
 void EquipComp::SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index)

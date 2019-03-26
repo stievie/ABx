@@ -179,7 +179,7 @@ Item* Item::GetUpgrade(ItemUpgrade type)
 void Item::RemoveUpgrade(ItemUpgrade type)
 {
     if (upgrades_[type])
-        upgrades_[type].reset();
+        upgrades_.erase(type);
 }
 
 EquipPos Item::GetEquipPos() const
