@@ -41,6 +41,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("InterruptSkill", &Actor::InterruptSkill)
         .addFunction("Interrupt", &Actor::Interrupt)
         .addFunction("Healing", &Actor::Healing)
+        .addFunction("GetResource", &Actor::GetResource)
+        .addFunction("SetResource", &Actor::SetResource)
 
         .addFunction("IsUndestroyable", &Actor::IsUndestroyable)
         .addFunction("SetUndestroyable", &Actor::SetUndestroyable)
@@ -107,10 +109,19 @@ Actor::Actor() :
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
-    resourceComp_.SetMaxHealth(500);
-    resourceComp_.SetMaxEnergy(50);
-    resourceComp_.SetHealth(Components::SetValueType::Absolute, 500);
-    resourceComp_.SetEnergy(Components::SetValueType::Absolute, 50);
+}
+
+void Actor::Initialize()
+{
+    // Base HP
+    unsigned levelAdvance = GetLevel() - 1;
+    int hp = 100 + (levelAdvance * 20);
+    resourceComp_.SetMaxHealth(hp);
+    resourceComp_.SetHealth(Components::SetValueType::Absolute, hp);
+
+    unsigned baseEnergy = 20;
+    resourceComp_.SetMaxEnergy(baseEnergy);
+    resourceComp_.SetEnergy(Components::SetValueType::Absolute, baseEnergy);
 }
 
 bool Actor::SetSpawnPoint(const std::string& group)
@@ -334,8 +345,8 @@ bool Actor::Serialize(IO::PropWriteStream& stream)
         return false;
     stream.Write<uint32_t>(GetLevel());
     stream.Write<uint8_t>(GetSex());
-    stream.Write<uint32_t>(GetProfIndex());
-    stream.Write<uint32_t>(GetProf2Index());
+    stream.Write<uint32_t>(static_cast<uint32_t>(GetProfIndex()));
+    stream.Write<uint32_t>(static_cast<uint32_t>(GetProf2Index()));
     stream.Write<uint32_t>(GetModelIndex());
     const std::string skills = IO::TemplateEncoder::Encode(*skills_);
     stream.WriteString(skills);
@@ -519,6 +530,11 @@ float Actor::GetCriticalChance(Actor* other)
     const float val2 = (1.0f - (attribVal / 100.0f));
     const float val3 = (attribVal / 100.0f);
     return 0.5f * (2.0f * val1) * val2 + val3;
+}
+
+void Actor::SetResource(Components::ResourceType type, Components::SetValueType t, int value)
+{
+    resourceComp_.SetValue(type, t, value);
 }
 
 bool Actor::OnAttack(Actor* target)

@@ -9,6 +9,7 @@ class Actor;
 
 namespace Components {
 
+// Lua definition in /scripts/includes/consts.lua
 enum class SetValueType
 {
     Absolute,
@@ -28,6 +29,20 @@ enum ResourceDirty
     DirtyEnergyRegen = 1 << 5,
     DirtyMaxHealth = 1 << 6,
     DirtyMaxEnergy = 1 << 7
+};
+
+// Lua definition in /scripts/includes/consts.lua
+enum class ResourceType
+{
+    None = 0,
+    Energy,
+    Health,
+    Adrenaline,
+    Overcast,
+    HealthRegen,
+    EnergyRegen,
+    MaxHealth,
+    MaxEnergy
 };
 
 static constexpr int MAX_HEALTH_REGEN = 10;
@@ -133,6 +148,8 @@ public:
     void SetMaxHealth(int value);
     int GetMaxEnergy() const { return maxEnergy_; }
     void SetMaxEnergy(int value);
+    int GetValue(ResourceType type) const;
+    void SetValue(ResourceType type, SetValueType t, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
 

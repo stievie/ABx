@@ -32,6 +32,8 @@ protected:
     void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
     void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleHpCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandlePosCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleSitCommand(const std::string&, Net::NetworkMessage&);
     void HandleStandCommand(const std::string&, Net::NetworkMessage&);
@@ -74,7 +76,13 @@ public:
     size_t GetGroupPos() final override;
 
     uint32_t GetLevel() const final override { return data_.level; }
+    void SetLevel(uint32_t value) override final { data_.level = static_cast<uint8_t>(value); }
+
     void AddXp(int value) override;
+    uint32_t GetXp() const override { return data_.xp; }
+    void AddSkillPoint() override;
+    uint32_t GetSkillPoints() const override { return data_.skillPoints; }
+    void AdvanceLevel() override;
     AB::GameProtocol::GameObjectType GetType() const final override
     {
         return AB::GameProtocol::ObjectTypePlayer;
@@ -86,7 +94,7 @@ public:
         return Utils::TimePassed(lastPing_);
     }
 
-    void Initialize();
+    void Initialize() override;
     void Logout();
     void Ping();
     void ChangeMap(const std::string mapUuid);

@@ -48,11 +48,25 @@ size_t Player::GetGroupPos()
 
 void Player::AddXp(int value)
 {
+    Actor::AddXp(value);
     data_.xp += value;
+}
+
+void Player::AddSkillPoint()
+{
+    Actor::AddSkillPoint();
+    data_.skillPoints++;
+}
+
+void Player::AdvanceLevel()
+{
+    if (data_.level < LEVEL_CAP)
+        data_.level++;
 }
 
 void Player::Initialize()
 {
+    Actor::Initialize();
     SetParty(GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid));
 }
 
@@ -465,6 +479,12 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeAge:
         HandleAgeCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeHealth:
+        HandleHpCommand(command, message);
+        break;
+    case AB::GameProtocol::CommandTypePos:
+        HandlePosCommand(command, message);
+        break;
     case AB::GameProtocol::CommandTypeChatWhisper:
         HandleWhisperCommand(command, message);
         break;
@@ -586,6 +606,46 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
     nmsg.AddByte(AB::GameProtocol::ServerMessageTypeAge);
     nmsg.AddString(GetName());
     nmsg.AddString(std::to_string(age) + ":" + std::to_string(playTime));
+    WriteToOutput(nmsg);
+}
+
+void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
+{
+    Net::NetworkMessage nmsg;
+    int maxHp = resourceComp_.GetMaxHealth();
+    int hp = resourceComp_.GetHealth();
+    int maxE = resourceComp_.GetMaxEnergy();
+    int e = resourceComp_.GetEnergy();
+    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    nmsg.AddByte(AB::GameProtocol::ServerMessageTypeHp);
+    nmsg.AddString(GetName());
+    nmsg.AddString(std::to_string(hp) + ":" + std::to_string(maxHp) + "|" + std::to_string(e) + ":" + std::to_string(maxE));
+    WriteToOutput(nmsg);
+}
+
+void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    {
+        Net::NetworkMessage nmsg;
+        nmsg.AddByte(AB::GameProtocol::ServerMessage);
+        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+        nmsg.AddString(GetName());
+        nmsg.AddString("");
+        WriteToOutput(nmsg);
+        return;
+    }
+
+    Net::NetworkMessage nmsg;
+    std::stringstream ss;
+    ss << transformation_.position_.x_ << "," <<
+        transformation_.position_.y_ << "," <<
+        transformation_.position_.z_;
+    ss << " " << transformation_.GetYRotation();
+    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    nmsg.AddByte(AB::GameProtocol::ServerMessageTypePos);
+    nmsg.AddString(GetName());
+    nmsg.AddString(ss.str());
     WriteToOutput(nmsg);
 }
 

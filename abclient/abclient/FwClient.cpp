@@ -1112,26 +1112,18 @@ void FwClient::OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId
     QueueEvent(AbEvents::E_OBJECTHEALED, eData);
 }
 
-void FwClient::OnObjectXPIncreased(int64_t updateTick, uint32_t id, int value)
+void FwClient::OnObjectProgress(int64_t updateTick, uint32_t id,
+    AB::GameProtocol::ObjectProgressType type, int value)
 {
-    URHO3D_LOGINFOF("Object %d got %d XP", id, value);
+    URHO3D_LOGINFOF("Object %d progress type %d, value %d", id, static_cast<int>(type), value);
 
-    using namespace AbEvents::ObjectXPIncreased;
+    using namespace AbEvents::ObjectProgress;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;
     eData[P_OBJECTID] = id;
+    eData[P_TYPE] = static_cast<uint32_t>(type);
     eData[P_VALUE] = value;
-    QueueEvent(AbEvents::E_OBJECTXPINCREASED, eData);
-}
-
-void FwClient::OnObjectGotSkillPoint(int64_t updateTick, uint32_t id, int value)
-{
-    using namespace AbEvents::ObjectGotSkillPoint;
-    VariantMap& eData = GetEventDataMap();
-    eData[P_UPDATETICK] = updateTick;
-    eData[P_OBJECTID] = id;
-    eData[P_VALUE] = value;
-    QueueEvent(AbEvents::E_OBJECTGOTSKILLPOINT, eData);
+    QueueEvent(AbEvents::E_OBJECTPROGRESS, eData);
 }
 
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,

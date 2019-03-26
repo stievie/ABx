@@ -66,6 +66,8 @@ public:
 
     Actor();
 
+    /// Loading is done initialize properties
+    virtual void Initialize();
     bool SetSpawnPoint(const std::string& group);
     void SetHomePos(const Math::Vector3& pos)
     {
@@ -119,6 +121,8 @@ public:
     /// Get chance for a critical hit. Value between 0..1
     float GetCriticalChance(Actor* other);
     DamagePos GetDamagePos() const { return damageComp_.GetDamagePos(); }
+    int GetResource(Components::ResourceType type) const { return resourceComp_.GetValue(type); }
+    void SetResource(Components::ResourceType type, Components::SetValueType t, int value);
     /// This Actor is attacking the target
     virtual bool OnAttack(Actor* target);
     /// This Actor was attacked by source
@@ -151,8 +155,12 @@ public:
     virtual void OnResurrected(int /* health */, int /* energy */) { }
 
     virtual uint32_t GetLevel() const { return 0; }
-    virtual void AddXp(int /* value */) { }
-
+    virtual void SetLevel(uint32_t) { }
+    virtual void AddXp(int) { }
+    virtual uint32_t GetXp() const { return 0; }
+    virtual void AddSkillPoint() { }
+    virtual uint32_t GetSkillPoints() const { return 0; }
+    virtual void AdvanceLevel() { }
     virtual AB::Entities::CharacterSex GetSex() const
     {
         return AB::Entities::CharacterSexUnknown;
@@ -163,13 +171,13 @@ public:
     }
     virtual uint32_t GetGroupId() const { return 0u; }
     virtual size_t GetGroupPos() { return 0u; }
-    uint32_t GetProfIndex() const
+    AB::Entities::ProfessionIndex GetProfIndex() const
     {
-        return skills_->prof1_.index;
+        return static_cast<AB::Entities::ProfessionIndex>(skills_->prof1_.index);
     }
-    uint32_t GetProf2Index() const
+    AB::Entities::ProfessionIndex GetProf2Index() const
     {
-        return skills_->prof2_.index;
+        return static_cast<AB::Entities::ProfessionIndex>(skills_->prof2_.index);
     }
     /// 0 Based
     Skill* GetSkill(uint32_t index)

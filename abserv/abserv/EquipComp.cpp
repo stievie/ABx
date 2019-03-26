@@ -15,7 +15,12 @@ void EquipComp::Update(uint32_t timeElapsed)
 
 void EquipComp::SetItem(std::unique_ptr<Item> item)
 {
-    items_[static_cast<EquipPos>(item->concreteItem_.storagePos)] = std::move(item);
+    if (item)
+    {
+        RemoveItem(static_cast<EquipPos>(item->concreteItem_.storagePos));
+        items_[static_cast<EquipPos>(item->concreteItem_.storagePos)] = std::move(item);
+        items_[static_cast<EquipPos>(item->concreteItem_.storagePos)]->OnEquip(&owner_);
+    }
 }
 
 Item* EquipComp::GetItem(EquipPos pos) const
@@ -39,6 +44,7 @@ void EquipComp::RemoveItem(EquipPos pos)
 {
     if (!items_[pos])
         return;
+    items_[pos]->OnUnequip(&owner_);
     items_[pos].reset();
 }
 
@@ -46,7 +52,22 @@ void EquipComp::SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index)
 {
     if (!items_[pos])
         return;
-    items_[pos]->SetUpgrade(type, index);
+    Item* old = items_[pos]->GetUpgrade(type);
+    if (old)
+        old->OnUnequip(&owner_);
+    Item* n = items_[pos]->SetUpgrade(type, index);
+    if (n)
+        n->OnEquip(&owner_);
+}
+
+void EquipComp::RemoveUpgrade(EquipPos pos, ItemUpgrade type)
+{
+    Item* old = items_[pos]->GetUpgrade(type);
+    if (old)
+    {
+        old->OnUnequip(&owner_);
+        items_[pos]->RemoveUpgrade(type);
+    }
 }
 
 Item* EquipComp::GetWeapon() const

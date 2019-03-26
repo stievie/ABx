@@ -333,6 +333,8 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
     result->SetGame(shared_from_this());
+    // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
+    result->Initialize();
     if (!result->LoadScript(script))
     {
         return std::shared_ptr<Npc>();

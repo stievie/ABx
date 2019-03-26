@@ -60,8 +60,7 @@ protected:
     void ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>& message);
     void ParseObjectDamaged(const std::shared_ptr<InputMessage>& message);
     void ParseObjectHealed(const std::shared_ptr<InputMessage>& message);
-    void ParseObjectXPIncreased(const std::shared_ptr<InputMessage>& message);
-    void ParseObjectGotSkillPoint(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectProgress(const std::shared_ptr<InputMessage>& message);
     void ParseServerMessage(const std::shared_ptr<InputMessage>& message);
     void ParseChatMessage(const std::shared_ptr<InputMessage>& message);
     void ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message);

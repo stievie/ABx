@@ -6,6 +6,17 @@
 namespace AB {
 namespace Entities {
 
+enum ProfessionIndex : uint32_t
+{
+    ProfessionIndexNone = 0,
+    ProfessionIndexWarrior = 1,
+    ProfessionIndexRanger = 2,
+    ProfessionIndexMonk = 3,
+    ProfessionIndexNecromancer = 4,
+    ProfessionIndexMesmer = 5,
+    ProfessionIndexElementarist = 6
+};
+
 static constexpr auto KEY_PROFESSIONS = "game_professions";
 
 struct Profession : Entity

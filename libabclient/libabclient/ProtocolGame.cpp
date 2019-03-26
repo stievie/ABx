@@ -155,11 +155,8 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectHealed:
             ParseObjectHealed(message);
             break;
-        case AB::GameProtocol::GameObjectXPIncreased:
-            ParseObjectXPIncreased(message);
-            break;
-        case AB::GameProtocol::GameObjectGotSkillPoint:
-            ParseObjectGotSkillPoint(message);
+        case AB::GameProtocol::GameObjectProgress:
+            ParseObjectProgress(message);
             break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
@@ -310,20 +307,13 @@ void ProtocolGame::ParseObjectHealed(const std::shared_ptr<InputMessage>& messag
         receiver_->OnObjectHealed(updateTick_, objectId, healerId, index, healValue);
 }
 
-void ProtocolGame::ParseObjectXPIncreased(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectProgress(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
+    AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(message->Get<uint8_t>());
     int value = static_cast<int>(message->Get<int16_t>());
     if (receiver_)
-        receiver_->OnObjectXPIncreased(updateTick_, objectId, value);
-}
-
-void ProtocolGame::ParseObjectGotSkillPoint(const std::shared_ptr<InputMessage>& message)
-{
-    uint32_t objectId = message->Get<uint32_t>();
-    int value = static_cast<int>(message->Get<int16_t>());
-    if (receiver_)
-        receiver_->OnObjectGotSkillPoint(updateTick_, objectId, value);
+        receiver_->OnObjectProgress(updateTick_, objectId, type, value);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

@@ -24,7 +24,8 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "cry", AB::GameProtocol::CommandTypeCry },
     { "age", AB::GameProtocol::CommandTypeAge },
     { "deaths", AB::GameProtocol::CommandTypeDeaths },
-    { "health", AB::GameProtocol::CommandTypeHealth },
+    { "hp", AB::GameProtocol::CommandTypeHealth },
+    { "pos", AB::GameProtocol::CommandTypePos },
     { "ip", AB::GameProtocol::CommandTypeIp },
     { "id", AB::GameProtocol::CommandTypeServerId },
     { "prefpath", AB::GameProtocol::CommandTypePrefPath },
@@ -246,6 +247,12 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageTypeAge:
         HandleServerMessageAge(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypePos:
+        HandleServerMessagePos(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeHp:
+        HandleServerMessageHp(eventData);
+        break;
     case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
         HandleServerMessagePlayerNotOnline(eventData);
         break;
@@ -284,15 +291,15 @@ void ChatWindow::HandleServerMessageUnknownCommand(VariantMap&)
 void ChatWindow::HandleServerMessageInfo(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String message = eventData[P_DATA].GetString();
+    const String& message = eventData[P_DATA].GetString();
     AddLine(message, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String message = eventData[P_DATA].GetString();
-    String sender = eventData[P_SENDER].GetString();
+    const String& message = eventData[P_DATA].GetString();
+    const String& sender = eventData[P_SENDER].GetString();
     unsigned p = message.Find(":");
     String res = message.Substring(0, p);
     String max = message.Substring(p + 1);
@@ -308,7 +315,7 @@ void ChatWindow::HandleServerMessageRoll(VariantMap& eventData)
 void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
-    String message = eventData[P_DATA].GetString();
+    const String& message = eventData[P_DATA].GetString();
     unsigned p = message.Find(":");
     String age = message.Substring(0, p);
     String playTime = message.Substring(p + 1);
@@ -333,6 +340,40 @@ void ChatWindow::HandleServerMessageAge(VariantMap& eventData)
     else
         ss << tAge.days << " day(s).";
     AddLine(String(ss.str().c_str()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& message = eventData[P_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "Health {{currHp}}/{{maxHp}}, Energy {{currE}}/{{maxE}}" };
+    kainjow::mustache::data data;
+    auto parts = message.Split('|');
+    if (parts.Size() > 0)
+    {
+        unsigned p = parts[0].Find(":");
+        String currHp = parts[0].Substring(0, p);
+        String maxHp = parts[0].Substring(p + 1);
+        data.set("currHp", std::string(currHp.CString(), currHp.Length()));
+        data.set("maxHp", std::string(maxHp.CString(), maxHp.Length()));
+    }
+    if (parts.Size() > 1)
+    {
+        unsigned p = parts[1].Find(":");
+        String currE = parts[1].Substring(0, p);
+        String maxE = parts[1].Substring(p + 1);
+        data.set("currE", std::string(currE.CString(), currE.Length()));
+        data.set("maxE", std::string(maxE.CString(), maxE.Length()));
+    }
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessagePos(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& message = eventData[P_DATA].GetString();
+    AddLine(message, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
@@ -557,6 +598,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
+        AddLine("  /hp: Show health points and energy", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
         AddLine("  /prefpath: Show preferences path", "ChatLogServerInfoText");
         AddLine("  /help: Show this help", "ChatLogServerInfoText");

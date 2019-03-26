@@ -145,6 +145,8 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeInfo,
     ServerMessageTypeRoll,                    // /roll result
     ServerMessageTypeAge,                     // /age
+    ServerMessageTypeHp,                      // /hp
+    ServerMessageTypePos,                     // /pos
     ServerMessageTypePlayerNotOnline,
     ServerMessageTypePlayerGotMessage,
     ServerMessageTypeNewMail,
@@ -207,14 +209,20 @@ enum GameProtocolCodes : uint8_t
     GameObjectEffectRemoved,
     GameObjectDamaged,            // Object got damage
     GameObjectHealed,
-    GameObjectXPIncreased,
-    GameObjectGotSkillPoint,
+    GameObjectProgress,           // The object progressed, see ObjectProgressType
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,
     PartyPlayerAdded,
     PartyInviteRemoved,
     PartyInfoMembers,
+};
+
+enum ObjectProgressType : uint8_t
+{
+    ObjectProgressXPIncreased,
+    ObjectProgressGotSkillPoint,
+    ObjectProgressLevelAdvance,
 };
 
 enum ResourceType : uint8_t
@@ -318,6 +326,7 @@ enum CommandTypes : uint8_t
     CommandTypeAge,                  // /age
     CommandTypeDeaths,               // /deaths
     CommandTypeHealth,               // /hp
+    CommandTypePos,                  // /pos show position
     // Internal
     CommandTypeHelp,                 // /help
     CommandTypeIp,                   // /ip

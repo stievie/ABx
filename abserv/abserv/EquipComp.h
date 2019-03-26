@@ -34,6 +34,7 @@ public:
     std::vector<Item*> GetItems() const;
     void RemoveItem(EquipPos pos);
     void SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index);
+    void RemoveUpgrade(EquipPos pos, ItemUpgrade type);
     /// Get lead hand weapon
     Item* GetWeapon() const;
     int GetArmor(DamageType damageType, DamagePos pos);

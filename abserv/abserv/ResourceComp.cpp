@@ -65,6 +65,96 @@ void ResourceComp::SetMaxEnergy(int value)
     }
 }
 
+int ResourceComp::GetValue(ResourceType type) const
+{
+    switch (type)
+    {
+    case ResourceType::Energy:
+        return GetEnergy();
+    case ResourceType::Health:
+        return GetHealth();
+    case ResourceType::Adrenaline:
+        return GetAdrenaline();
+    case ResourceType::Overcast:
+        return GetOvercast();
+    case ResourceType::HealthRegen:
+        return GetHealthRegen();
+    case ResourceType::EnergyRegen:
+        return GetEnergyRegen();
+    case ResourceType::MaxHealth:
+        return GetMaxHealth();
+    case ResourceType::MaxEnergy:
+        return GetMaxEnergy();
+    default:
+        return 0;
+    }
+}
+
+void ResourceComp::SetValue(ResourceType type, SetValueType t, int value)
+{
+    switch (type)
+    {
+    case ResourceType::Energy:
+        SetEnergy(t, value);
+        break;
+    case ResourceType::Health:
+        SetHealth(t, value);
+        break;
+    case ResourceType::Adrenaline:
+        SetAdrenaline(t, value);
+        break;
+    case ResourceType::Overcast:
+        SetOvercast(t, value);
+        break;
+    case ResourceType::HealthRegen:
+        SetHealthRegen(t, value);
+        break;
+    case ResourceType::EnergyRegen:
+        SetEnergyRegen(t, value);
+        break;
+    case ResourceType::MaxHealth:
+    {
+        int hp = GetMaxHealth();
+        switch (t)
+        {
+        case SetValueType::Absolute:
+            hp = value;
+            break;
+        case SetValueType::Increase:
+            hp += value;
+            break;
+        case SetValueType::Decrease:
+            hp -= value;
+            break;
+        default:
+            return;
+        }
+        SetMaxHealth(hp);
+        break;
+    }
+    case ResourceType::MaxEnergy:
+    {
+        int e = GetMaxEnergy();
+        switch (t)
+        {
+        case SetValueType::Absolute:
+            e = value;
+            break;
+        case SetValueType::Increase:
+            e += value;
+            break;
+        case SetValueType::Decrease:
+            e -= value;
+            break;
+        default:
+            return;
+        }
+        SetMaxEnergy(e);
+        break;
+    }
+    }
+}
+
 int ResourceComp::DrainEnergy(int value)
 {
     int curr = GetEnergy();

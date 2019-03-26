@@ -9,6 +9,8 @@
 
 namespace Game {
 
+class Actor;
+
 enum class ItemUpgrade
 {
     Pefix = 0,           // Insignia for armor, prefix for weapon
@@ -38,7 +40,9 @@ private:
         FunctionNone = 0,
         FunctionUpdate = 1,
         FunctionGetDamage = 1 << 1,
-        FunctionGetDamageType = 1 << 2
+        FunctionGetDamageType = 1 << 2,
+        FunctionOnEquip = 1 << 3,
+        FunctionOnUnequip = 1 << 4,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -78,7 +82,8 @@ public:
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
-    void SetUpgrade(ItemUpgrade type, uint32_t index);
+    Item* SetUpgrade(ItemUpgrade type, uint32_t index);
+    Item* GetUpgrade(ItemUpgrade type);
     void RemoveUpgrade(ItemUpgrade type);
     EquipPos GetEquipPos() const;
     float GetWeaponRange() const;
@@ -90,6 +95,8 @@ public:
     void GetArmor(DamageType damageType, int& value) const;
     void GetArmorPenetration(float& value) const;
     void GetAttributeValue(uint32_t index, uint32_t& value);
+    void OnEquip(Actor* target);
+    void OnUnequip(Actor* target);
 
     AB::Entities::ItemType GetType() const;
     bool IsStackAble() const;

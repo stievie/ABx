@@ -6,6 +6,7 @@
 #include "Mechanic.h"
 #include "ItemFactory.h"
 #include "Subsystems.h"
+#include "Actor.h"
 
 namespace Game {
 
@@ -63,6 +64,10 @@ bool Item::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetDamage;
     if (ScriptManager::IsFunction(luaState_, "getDamageType"))
         functions_ |= FunctionGetDamageType;
+    if (ScriptManager::IsFunction(luaState_, "onEquip"))
+        functions_ |= FunctionOnEquip;
+    if (ScriptManager::IsFunction(luaState_, "onUnequip"))
+        functions_ |= FunctionOnUnequip;
     return true;
 }
 
@@ -147,19 +152,28 @@ void Item::Update(uint32_t timeElapsed)
             upg.second->Update(timeElapsed);
 }
 
-void Item::SetUpgrade(ItemUpgrade type, uint32_t index)
+Item* Item::SetUpgrade(ItemUpgrade type, uint32_t index)
 {
     AB::Entities::Item item;
     if (!IO::IOItem::LoadItemByIndex(item, index))
     {
         LOG_ERROR << "Failed to load item with index " << index << std::endl;
-        return;
+        return nullptr;
     }
     std::unique_ptr<Item> i = std::make_unique<Item>(item);
     if (i->LoadScript(item.script))
     {
         upgrades_[type] = std::move(i);
+        return upgrades_[type].get();
     }
+    return nullptr;
+}
+
+Item* Item::GetUpgrade(ItemUpgrade type)
+{
+    if (upgrades_[type])
+        return upgrades_[type].get();
+    return nullptr;
 }
 
 void Item::RemoveUpgrade(ItemUpgrade type)
@@ -369,6 +383,24 @@ void Item::GetAttributeValue(uint32_t index, uint32_t& value)
     for (const auto& upg : upgrades_)
         if (upg.second)
             upg.second->GetAttributeValue(index, value);
+}
+
+void Item::OnEquip(Actor* target)
+{
+    if (HaveFunction(FunctionOnEquip))
+        luaState_["onEquip"](target);
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->OnEquip(target);
+}
+
+void Item::OnUnequip(Actor* target)
+{
+    if (HaveFunction(FunctionOnUnequip))
+        luaState_["onUnequip"](target);
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->OnUnequip(target);
 }
 
 AB::Entities::ItemType Item::GetType() const
