@@ -9,6 +9,7 @@
 #include <AB/Entities/Account.h>
 #include "FriendList.h"
 #include "Party.h"
+#include "QuestComp.h"
 
 namespace Game {
 
@@ -113,6 +114,8 @@ public:
         return party_;
     }
 
+    void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+
     void PartyInvitePlayer(uint32_t playerId);
     void PartyKickPlayer(uint32_t playerId);
     /// Leave current party
@@ -122,6 +125,7 @@ public:
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
 
+    std::unique_ptr<Components::QuestComp> questComp_;
     AB::Entities::Character data_;
     AB::Entities::Account account_;
     time_t loginTime_;

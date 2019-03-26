@@ -23,7 +23,8 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     client_(client),
     lastPing_(0),
     mailBox_(nullptr),
-    party_(nullptr)
+    party_(nullptr),
+    questComp_(std::make_unique<Components::QuestComp>(*this))
 { }
 
 Player::~Player() = default;
@@ -243,6 +244,13 @@ void Player::SetParty(std::shared_ptr<Party> party)
         data_.partyUuid = party_->data_.uuid;
     }
     party_->Set(GetThis());
+}
+
+void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
+{
+    Actor::Update(timeElapsed, message);
+    questComp_->Update(timeElapsed);
+    questComp_->Write(message);
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)

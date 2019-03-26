@@ -14,7 +14,7 @@ private:
         XPIncrease,
         GotSkillPoint,
         LevelAdvance,
-        QuestUpdated,
+        TitleAdvance,
     };
     struct ProgressItem
     {
