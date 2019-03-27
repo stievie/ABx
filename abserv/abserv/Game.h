@@ -19,6 +19,9 @@ class Player;
 class Npc;
 class AreaOfEffect;
 
+using ObjectList = std::unordered_map<uint32_t, std::shared_ptr<GameObject>>;
+using PlayersList = std::unordered_map<uint32_t, Player*>;
+
 class Game : public std::enable_shared_from_this<Game>
 {
 public:
@@ -32,8 +35,9 @@ public:
 private:
     std::recursive_mutex lock_;
     std::atomic<ExecutionState> state_;
-    std::vector<std::shared_ptr<GameObject>> objects_;
-    std::map<uint32_t, Player*> players_;
+    /// The primary owner of the game objects
+    ObjectList objects_;
+    PlayersList players_;
     int64_t lastUpdate_;
     uint32_t noplayerTime_;
     kaguya::State luaState_;
@@ -104,13 +108,13 @@ public:
     std::unique_ptr<Map> map_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
-    const std::map<uint32_t, Player*>& GetPlayers() const { return players_; }
+    const PlayersList& GetPlayers() const { return players_; }
     int64_t GetInstanceTime() const { return Utils::Tick() - startTime_; }
     std::string GetName() const { return map_->data_.name; }
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);
-    const std::vector<std::shared_ptr<GameObject>>& GetObjects() const { return objects_; }
+    const ObjectList& GetObjects() const { return objects_; }
     std::shared_ptr<GameObject> GetObjectById(uint32_t objectId);
     void AddObject(std::shared_ptr<GameObject> object);
     void AddObjectInternal(std::shared_ptr<GameObject> object);

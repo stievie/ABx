@@ -22,3 +22,7 @@ function onTrigger(creature)
   -- Call onTrigger in game script
   self:CallGameEvent(self:GetVarString("callback"), creature)
 end
+
+-- other: GamneObject
+function onLeftArea(other)
+end

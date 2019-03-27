@@ -36,6 +36,10 @@ end
 function onTrigger(other)
 end
 
+-- other: GamneObject
+function onLeftArea(other)
+end
+
 function OnStartUseSkill(skill)
 end
 

@@ -240,7 +240,10 @@ public:
     virtual void OnSelected(Actor*) { }
     virtual void OnClicked(Actor*) { }
     virtual void OnCollide(GameObject*) { };
+    /// Object entered the area
     virtual void OnTrigger(GameObject*) { }
+    /// Object left the area. Opposite to OnTrigger
+    virtual void OnLeftArea(GameObject*) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

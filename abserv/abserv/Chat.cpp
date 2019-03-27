@@ -114,7 +114,7 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
     if (auto g = game_.lock())
     {
         Net::NetworkMessage msg;
-        const std::map<uint32_t, Player*>& players = g->GetPlayers();
+        const PlayersList& players = g->GetPlayers();
         msg.AddByte(AB::GameProtocol::ChatMessage);
         msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
         msg.Add<uint32_t>(player->id_);
@@ -134,7 +134,7 @@ bool GameChatChannel::TalkNpc(Npc* npc, const std::string& text)
     if (auto g = game_.lock())
     {
         Net::NetworkMessage msg;
-        const std::map<uint32_t, Player*>& players = g->GetPlayers();
+        const PlayersList& players = g->GetPlayers();
         msg.AddByte(AB::GameProtocol::ChatMessage);
         msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
         msg.Add<uint32_t>(npc->id_);

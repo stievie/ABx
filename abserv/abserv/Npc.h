@@ -20,6 +20,7 @@ private:
         FunctionNone = 0,
         FunctionUpdate = 1,
         FunctionOnTrigger = 1 << 1,
+        FunctionOnLeftArea = 1 << 2,
     };
 
     friend class AI::AiCharacter;
@@ -95,6 +96,7 @@ public:
     void OnClicked(Actor* selector) override;
     void OnCollide(GameObject* other) override;
     void OnTrigger(GameObject* other) override;
+    void OnLeftArea(GameObject* other) override;
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
 

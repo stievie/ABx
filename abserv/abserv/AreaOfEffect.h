@@ -16,6 +16,7 @@ private:
         FunctionUpdate = 1,
         FunctionEnded = 1 << 1,
         FunctionOnTrigger = 1 << 2,
+        FunctionOnLeftArea = 1 << 3,
     };
     std::weak_ptr<Actor> source_;
     kaguya::State luaState_;
@@ -50,6 +51,7 @@ public:
     }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
     void OnTrigger(GameObject* other) override;
+    void OnLeftArea(GameObject* other) override;
 
     void SetRange(Ranges range);
     Ranges GetRange() const { return range_; }

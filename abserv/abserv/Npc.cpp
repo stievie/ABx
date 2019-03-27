@@ -96,7 +96,11 @@ bool Npc::LoadScript(const std::string& fileName)
         functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "onTrigger"))
         functions_ |= FunctionOnTrigger;
+    if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
+        functions_ |= FunctionOnLeftArea;
 
+    // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
+    Initialize();
     bool ret = luaState_["onInit"]();
     if (ret)
     {
@@ -245,6 +249,15 @@ void Npc::OnTrigger(GameObject* other)
 
     if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
         ScriptManager::CallFunction(luaState_, "onTrigger", other);
+}
+
+void Npc::OnLeftArea(GameObject* other)
+{
+    // Called from triggerComp_
+    Actor::OnTrigger(other);
+
+    if (luaInitialized_ && HaveFunction(FunctionOnLeftArea))
+        ScriptManager::CallFunction(luaState_, "onLeftArea", other);
 }
 
 void Npc::OnEndUseSkill(Skill* skill)

@@ -228,7 +228,7 @@ void SceneViewer::DrawScene()
         auto objects = g->GetObjects();
         for (const auto& object : objects)
         {
-            DrawObject(object);
+            DrawObject(object.second);
         }
     }
 }

@@ -78,6 +78,8 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         functions_ |= FunctionEnded;
     if (ScriptManager::IsFunction(luaState_, "onTrigger"))
         functions_ |= FunctionOnTrigger;
+    if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
+        functions_ |= FunctionOnLeftArea;
 
     bool ret = luaState_["onInit"]();
     return ret;
@@ -105,6 +107,15 @@ void AreaOfEffect::OnTrigger(GameObject* other)
     // AOE can also be a trap for example
     if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
         ScriptManager::CallFunction(luaState_, "onTrigger", other);
+}
+
+void AreaOfEffect::OnLeftArea(GameObject* other)
+{
+    // Called from triggerComp_
+    GameObject::OnTrigger(other);
+    // AOE can also be a trap for example
+    if (luaInitialized_ && HaveFunction(FunctionOnLeftArea))
+        ScriptManager::CallFunction(luaState_, "onLeftArea", other);
 }
 
 void AreaOfEffect::SetRange(Ranges range)

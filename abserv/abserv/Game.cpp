@@ -197,9 +197,9 @@ void Game::Update()
         // First Update all objects
         for (const auto& o : objects_)
         {
-            if (!o)
+            if (!o.second)
                 return;
-            o->Update(delta, *gameStatus_.get());
+            o.second->Update(delta, *gameStatus_.get());
         }
 
         // Update Octree stuff
@@ -294,12 +294,9 @@ Player* Game::GetPlayerByName(const std::string& name)
 
 std::shared_ptr<GameObject> Game::GetObjectById(uint32_t objectId)
 {
-    auto it = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
-    {
-        return o->id_ == objectId;
-    });
+    auto it = objects_.find(objectId);
     if (it != objects_.end())
-        return (*it);
+        return (*it).second;
     return std::shared_ptr<GameObject>();
 }
 
@@ -311,7 +308,7 @@ void Game::AddObject(std::shared_ptr<GameObject> object)
 
 void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
 {
-    objects_.push_back(object);
+    objects_.emplace(object->id_, object);
     object->SetGame(shared_from_this());
 }
 
@@ -319,13 +316,10 @@ void Game::InternalRemoveObject(GameObject* object)
 {
     ScriptManager::CallFunction(luaState_, "onRemoveObject", object);
     object->SetGame(std::shared_ptr<Game>());
-    auto ito = std::find_if(objects_.begin(), objects_.end(), [&](std::shared_ptr<GameObject> const& o) -> bool
+    auto it = objects_.find(object->id_);
+    if (it != objects_.end())
     {
-        return o->id_ == object->id_;
-    });
-    if (ito != objects_.end())
-    {
-        objects_.erase(ito);
+        objects_.erase(it);
     }
 }
 
@@ -333,8 +327,6 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
 {
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
     result->SetGame(shared_from_this());
-    // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
-    result->Initialize();
     if (!result->LoadScript(script))
     {
         return std::shared_ptr<Npc>();
@@ -479,7 +471,7 @@ void Game::SendSpawnAll(uint32_t playerId)
 
     for (const auto& o : objects_)
     {
-        write(o);
+        write(o.second);
     }
     // Also send queued objects
     for (const auto& o : queuedObjects_)

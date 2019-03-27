@@ -28,7 +28,7 @@ void TriggerComp::Update(uint32_t timeElapsed)
 
     lastCheck_ += timeElapsed;
     // Check all 200ms
-    if (lastCheck_ < 200)
+    if (lastCheck_ < 100)
         return;
 
     // Check if objects are still inside
@@ -38,8 +38,15 @@ void TriggerComp::Update(uint32_t timeElapsed)
     {
         auto o = game->GetObjectById((*it).first);
         // If not inside remove from triggered list
-        if (!o || !owner_.Collides(o.get(), Math::Vector3::Zero, move))
+        if (!o)
+        {
             triggered_.erase(it++);
+        }
+        else if (!owner_.Collides(o.get(), Math::Vector3::Zero, move))
+        {
+            triggered_.erase(it++);
+            owner_.OnLeftArea(o.get());
+        }
         else
             ++it;
     }
