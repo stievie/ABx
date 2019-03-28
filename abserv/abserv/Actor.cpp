@@ -87,20 +87,20 @@ void Actor::RegisterLua(kaguya::State& state)
 Actor::Actor() :
     GameObject(),
     skills_(std::make_unique<SkillBar>(*this)),
-    moveComp_(*this),
     autorunComp_(*this),
     resourceComp_(*this),
     attackComp_(*this),
-    effectsComp_(*this),
-    equipComp_(*this),
     skillsComp_(*this),
     inputComp_(*this),
     damageComp_(*this),
     healComp_(*this),
-    progressComp_(*this),
+    progressComp_(std::make_unique<Components::ProgressComp>(*this)),
+    effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
+    equipComp_(std::make_unique<Components::EquipComp>(*this)),
+    collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
+    moveComp_(std::make_unique<Components::MoveComp>(*this)),
     undestroyable_(false)
 {
-    collisionComp_ = std::make_unique<Components::CollisionComp>(*this);    // Actor always collides
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
     static const Math::Vector3 CREATURTE_BB_MAX(0.2f, 1.7f, 0.2f);
     SetCollisionShape(
@@ -239,17 +239,17 @@ void Actor::_LuaAddEffect(Actor* source, uint32_t index)
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
-    effectsComp_.AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index);
+    effectsComp_->AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)
 {
-    effectsComp_.RemoveEffect(index);
+    effectsComp_->RemoveEffect(index);
 }
 
 Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
 {
-    auto effect = effectsComp_.GetLast(category);
+    auto effect = effectsComp_->GetLast(category);
     if (effect)
         return effect.get();
     return nullptr;
@@ -373,12 +373,12 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     const char* cData = data.GetStream(dataSize);
     msg.AddString(std::string(cData, dataSize));
     resourceComp_.Write(msg, true);
-    effectsComp_.Write(msg);
+    effectsComp_->Write(msg);
 }
 
 Item* Actor::GetWeapon() const
 {
-    return equipComp_.GetWeapon();
+    return equipComp_->GetWeapon();
 }
 
 void Actor::OnEndUseSkill(Skill* skill)
@@ -401,7 +401,7 @@ void Actor::OnStartUseSkill(Skill* skill)
 void Actor::HeadTo(const Math::Vector3& pos)
 {
     if (!IsImmobilized())
-        moveComp_.HeadTo(pos);
+        moveComp_->HeadTo(pos);
 }
 
 void Actor::FaceObject(GameObject* object)
@@ -436,9 +436,9 @@ float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetrat
     default:
         break;
     }
-    const int baseArmor = equipComp_.GetArmor(damageType, pos);
+    const int baseArmor = equipComp_->GetArmor(damageType, pos);
     int armorMod = 0;
-    effectsComp_.GetArmor(damageType, armorMod);
+    effectsComp_->GetArmor(damageType, armorMod);
     const float totalArmor = static_cast<float>(baseArmor) * (1.0f - penetration) + static_cast<float>(armorMod);
     return 0.5f + ((totalArmor - 60.0f) / 40.0f);
 }
@@ -450,7 +450,7 @@ uint32_t Actor::GetAttackSpeed()
         return 0;
     const uint32_t speed = weapon->GetWeaponAttackSpeed();
     uint32_t modSpeed = speed;
-    effectsComp_.GetAttackSpeed(weapon, modSpeed);
+    effectsComp_->GetAttackSpeed(weapon, modSpeed);
 
     // https://wiki.guildwars.com/wiki/Attack_speed
     // Max IAS 133%, max DAS 50%
@@ -467,7 +467,7 @@ DamageType Actor::GetAttackDamageType()
         return DamageType::Unknown;
     DamageType type = DamageType::Unknown;
     weapon->GetWeaponDamageType(type);
-    effectsComp_.GetAttackDamageType(type);
+    effectsComp_->GetAttackDamageType(type);
     return type;
 }
 
@@ -486,7 +486,7 @@ int32_t Actor::GetAttackDamage(bool critical)
         damage /= 2;
 
     // Effects may modify the damage
-    effectsComp_.GetAttackDamage(damage);
+    effectsComp_->GetAttackDamage(damage);
     return damage;
 }
 
@@ -497,10 +497,10 @@ float Actor::GetArmorPenetration()
     const float strength = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Strength)));
     value += (strength * 0.01f);
     // 2. Weapons
-    value += equipComp_.GetArmorPenetration();
+    value += equipComp_->GetArmorPenetration();
     // 3. Effects
     float ea = 0.0f;
-    effectsComp_.GetArmorPenetration(ea);
+    effectsComp_->GetArmorPenetration(ea);
     value += ea;
     return value;
 }
@@ -542,42 +542,42 @@ bool Actor::OnAttack(Actor* target)
     if (!weapon)
         return false;
     bool result = true;
-    effectsComp_.OnAttack(target, result);
+    effectsComp_->OnAttack(target, result);
     return result;
 }
 
 bool Actor::OnAttacked(Actor* source, DamageType type, int32_t damage)
 {
     bool result = true;
-    effectsComp_.OnAttacked(source, type, damage, result);
+    effectsComp_->OnAttacked(source, type, damage, result);
     return result;
 }
 
 bool Actor::OnGettingAttacked(Actor* source)
 {
     bool result = true;
-    effectsComp_.OnGettingAttacked(source, result);
+    effectsComp_->OnGettingAttacked(source, result);
     return result;
 }
 
 bool Actor::OnUseSkill(Actor* target, Skill* skill)
 {
     bool result = true;
-    effectsComp_.OnUseSkill(target, skill, result);
+    effectsComp_->OnUseSkill(target, skill, result);
     return result;
 }
 
 bool Actor::OnSkillTargeted(Actor* source, Skill* skill)
 {
     bool result = true;
-    effectsComp_.OnSkillTargeted(source, skill, result);
+    effectsComp_->OnSkillTargeted(source, skill, result);
     return result;
 }
 
 bool Actor::OnGetCriticalHit(Actor* source)
 {
     bool result = true;
-    effectsComp_.OnGetCriticalHit(source, result);
+    effectsComp_->OnGetCriticalHit(source, result);
     return result;
 }
 
@@ -599,14 +599,14 @@ int Actor::DrainEnergy(int value)
 bool Actor::OnInterruptingAttack()
 {
     bool result = true;
-    effectsComp_.OnInterruptingAttack(result);
+    effectsComp_->OnInterruptingAttack(result);
     return result;
 }
 
 bool Actor::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill)
 {
     bool result = true;
-    effectsComp_.OnInterruptingSkill(type, skill, result);
+    effectsComp_->OnInterruptingSkill(type, skill, result);
     return result;
 }
 
@@ -637,7 +637,7 @@ bool Actor::Interrupt()
 
 void Actor::OnDied()
 {
-    progressComp_.Died();
+    progressComp_->Died();
 }
 
 Skill* Actor::GetCurrentSkill() const
@@ -651,7 +651,7 @@ bool Actor::SetEquipment(const std::string& ciUuid)
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
-    equipComp_.SetItem(std::move(item));
+    equipComp_->SetItem(std::move(item));
     return true;
 }
 
@@ -682,19 +682,19 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     attackComp_.Update(timeElapsed);
     skillsComp_.Update(timeElapsed);
-    effectsComp_.Update(timeElapsed);
+    effectsComp_->Update(timeElapsed);
     damageComp_.Update(timeElapsed);
     healComp_.Update(timeElapsed);
     uint32_t flags = Components::MoveComp::UpdateFlagTurn;
     if (!autorunComp_.autoRun_)
         flags |= Components::MoveComp::UpdateFlagMove;
-    moveComp_.Update(timeElapsed, flags);
+    moveComp_->Update(timeElapsed, flags);
     autorunComp_.Update(timeElapsed);
     // After move/autorun resolve collisions
     collisionComp_->Update(timeElapsed);
-    progressComp_.Update(timeElapsed);
+    progressComp_->Update(timeElapsed);
 
-    if (moveComp_.moved_ && octant_)
+    if (moveComp_->moved_ && octant_)
     {
         Math::Octree* octree = octant_->GetRoot();
         octree->AddObjectUpdate(this);
@@ -702,15 +702,15 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     // Write all
     stateComp_.Write(message);
-    moveComp_.Write(message);
+    moveComp_->Write(message);
 
     skillsComp_.Write(message);
     attackComp_.Write(message);
-    effectsComp_.Write(message);
+    effectsComp_->Write(message);
     resourceComp_.Write(message);
     damageComp_.Write(message);
     healComp_.Write(message);
-    progressComp_.Write(message);
+    progressComp_->Write(message);
 }
 
 bool Actor::Die()
@@ -751,7 +751,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
         return false;
 
     bool ret = true;
-    effectsComp_.OnKnockingDown(source, time, ret);
+    effectsComp_->OnKnockingDown(source, time, ret);
     if (!ret)
         return false;
 
@@ -773,7 +773,7 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     if (IsDead())
         return 0;
     int val = value;
-    effectsComp_.OnHealing(source, val);
+    effectsComp_->OnHealing(source, val);
     healComp_.Healing(source, index, val);
     OnHealed(val);
     return val;
@@ -795,10 +795,10 @@ uint32_t Actor::GetAttributeValue(uint32_t index)
     if (val != nullptr)
         result = val->value;
     // Increase by equipment
-    result += equipComp_.GetAttributeValue(index);
+    result += equipComp_->GetAttributeValue(index);
     // Increase by effects
     uint32_t value = 0;
-    effectsComp_.GetAttributeValue(index, value);
+    effectsComp_->GetAttributeValue(index, value);
     result += value;
     return result;
 }

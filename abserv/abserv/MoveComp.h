@@ -5,14 +5,14 @@
 
 namespace Game {
 
-class GameObject;
+class Actor;
 
 namespace Components {
 
 class MoveComp
 {
 private:
-    GameObject& owner_;
+    Actor& owner_;
     Math::Vector3 oldPosition_;
     float speedFactor_;
     /// Move to moveDir_
@@ -26,7 +26,7 @@ public:
         UpdateFlagTurn = 1 << 1
     };
     MoveComp() = delete;
-    explicit MoveComp(GameObject& owner) :
+    explicit MoveComp(Actor& owner) :
         owner_(owner),
         moveDir_(AB::GameProtocol::MoveDirectionNone),
         turnDir_(AB::GameProtocol::TurnDirectionNone),

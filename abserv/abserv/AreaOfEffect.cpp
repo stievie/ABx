@@ -91,6 +91,10 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     GameObject::Update(timeElapsed, message);
 
+    stateComp_.Update(timeElapsed);
+
+    stateComp_.Write(message);
+
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
     if (Utils::TimePassed(startTime_) > lifetime_)
@@ -103,7 +107,7 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 void AreaOfEffect::OnCollide(GameObject* other)
 {
-    // Called from triggerComp_
+    // Called from collisionComp_ of the moving object
     GameObject::OnCollide(other);
 
     // AOE can also be a trap for example
@@ -113,7 +117,7 @@ void AreaOfEffect::OnCollide(GameObject* other)
 
 void AreaOfEffect::OnTrigger(GameObject* other)
 {
-    // Called from triggerComp_
+    // Called from our triggerComp_
     GameObject::OnTrigger(other);
 
     // AOE can also be a trap for example

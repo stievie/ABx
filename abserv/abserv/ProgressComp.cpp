@@ -32,19 +32,18 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::ObjectProgressLevelAdvance);
             message.Add<int16_t>(static_cast<int16_t>(i.value));
             break;
+        }
     }
-}
     items_.clear();
 }
 
 void ProgressComp::Died()
 {
-    const auto enemies = owner_.GetEnemiesInRange(Ranges::Aggro);
-    for (const auto& e : enemies)
+    owner_.VisitEnemiesInRange(Ranges::Aggro, [&](const Actor* actor)
     {
-        if (!e->IsDead())
-            e->progressComp_.AddXpForKill(&owner_);
-    }
+        if (!actor->IsDead())
+            actor->progressComp_->AddXpForKill(&owner_);
+    });
 }
 
 void ProgressComp::AddXp(int value)
@@ -53,7 +52,7 @@ void ProgressComp::AddXp(int value)
     if (value > SKILLPOINT_ADVANCE_XP)
         value = SKILLPOINT_ADVANCE_XP;
 
-    uint32_t oldXp = owner_.GetXp();
+    const uint32_t oldXp = owner_.GetXp();
     owner_.AddXp(value);
     items_.push_back({ ProgressType::XPIncrease, value });
 
@@ -71,13 +70,11 @@ void ProgressComp::AddXp(int value)
     }
     else
     {
-        uint32_t x = oldXp / SKILLPOINT_ADVANCE_XP;
-        uint32_t y = owner_.GetXp() / SKILLPOINT_ADVANCE_XP;
-        uint32_t z = y - x;
+        const uint32_t x = oldXp / SKILLPOINT_ADVANCE_XP;
+        const uint32_t y = owner_.GetXp() / SKILLPOINT_ADVANCE_XP;
+        const uint32_t z = y - x;
         if (z > 0)
-        {
             AddSkillPoint();
-        }
     }
 }
 

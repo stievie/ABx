@@ -134,7 +134,7 @@ bool IOPlayer::LoadPlayerEquipment(Game::Player* player)
 bool IOPlayer::SavePlayerEquipment(Game::Player* player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    player->equipComp_.VisitItems([client](Game::Item* item) {
+    player->equipComp_->VisitItems([client](Game::Item* item) {
         client->Update(item->concreteItem_);
     });
     return true;

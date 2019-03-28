@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CollisionComp.h"
-#include "GameObject.h"
 #include "Actor.h"
 #include "Game.h"
+#include "MoveComp.h"
 
 namespace Game {
 namespace Components {
@@ -17,15 +17,18 @@ void CollisionComp::ResolveCollisions()
         {
             if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
+                // Actor always has a MoveComp
+                MoveComp* mc = owner_.moveComp_.get();
+                assert(mc);
                 Math::Vector3 move;
-                if (owner_.Collides(ci, owner_.moveComp_.velocity_, move))
+                if (owner_.Collides(ci, mc->velocity_, move))
                 {
                     if (move != Math::Vector3::Zero)
                         owner_.transformation_.position_ += move;
                     else
                     {
-                        owner_.transformation_.position_ = owner_.moveComp_.GetOldPosition();
-                        owner_.moveComp_.moved_ = false;
+                        owner_.transformation_.position_ = mc->GetOldPosition();
+                        mc->moved_ = false;
                     }
 
                     // Need to notify both, because we test collisions only for moving objects
@@ -41,7 +44,9 @@ void CollisionComp::ResolveCollisions()
 
 void CollisionComp::Update(uint32_t)
 {
-    if (owner_.moveComp_.moved_)
+    MoveComp* mc = owner_.moveComp_.get();
+
+    if (mc && mc->moved_)
         ResolveCollisions();
 }
 

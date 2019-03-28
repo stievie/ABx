@@ -42,7 +42,7 @@ void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 void AiCharacter::setPosition(const glm::vec3& position)
 {
     auto pos = Math::Vector3(position.x, position.y, position.z);
-    if (owner_.moveComp_.SetPosition(pos))
+    if (owner_.moveComp_->SetPosition(pos))
     {
         owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
         Math::Vector3 realPos = owner_.GetPosition();

@@ -45,7 +45,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                         // Critical hit -> always weapons max damage
                         int32_t damage = owner_.GetAttackDamage(critical);
                         // Source effects may modify the damage
-                        owner_.effectsComp_.GetDamage(damageType_, damage, critical);
+                        owner_.effectsComp_->GetDamage(damageType_, damage, critical);
                         if (t->OnAttacked(&owner_, damageType_, damage))
                         {
                             // Some effects may prevent attacks, e.g. blocking

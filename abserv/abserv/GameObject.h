@@ -195,7 +195,6 @@ public:
     uint32_t id_;
     std::string name_;
     Components::StateComp stateComp_;
-    std::unique_ptr<Components::CollisionComp> collisionComp_;
     std::unique_ptr<Components::TriggerComp> triggerComp_;
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_;

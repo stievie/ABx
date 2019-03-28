@@ -6,6 +6,7 @@ class Actor;
 
 namespace Components {
 
+/// Only an Actor can have a CollisionComp, because only moving objects need it.
 class CollisionComp
 {
 private:

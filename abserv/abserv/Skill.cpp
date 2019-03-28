@@ -128,7 +128,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     realOvercast_ = overcast_;
     realHp_ = hp_;
     // Get real skill cost, which depends on the effects of the source (e.g. equipment)
-    source->effectsComp_.GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
+    source->effectsComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
 
     if (source->resourceComp_.GetEnergy() < realEnergy_)
         lastError_ = AB::GameProtocol::SkillErrorNoEnergy;

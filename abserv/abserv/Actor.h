@@ -92,8 +92,36 @@ public:
         }
         return false;
     }
+    template<typename Func>
+    void VisitEnemiesInRange(Ranges range, Func&& func)
+    {
+        VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+        {
+            const AB::GameProtocol::GameObjectType t = o->GetType();
+            if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            {
+                const auto actor = dynamic_cast<Actor*>(o.get());
+                if (actor && actor->IsEnemy(this))
+                    func(actor);
+            }
+        });
+    }
     std::vector<Actor*> GetEnemiesInRange(Ranges range);
     size_t GetEnemyCountInRange(Ranges range);
+    template<typename Func>
+    void VisitAlliesInRange(Ranges range, Func&& func)
+    {
+        VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+        {
+            const AB::GameProtocol::GameObjectType t = o->GetType();
+            if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            {
+                const auto actor = dynamic_cast<Actor*>(o.get());
+                if (actor && !actor->IsEnemy(this))
+                    func(actor);
+            }
+        });
+    }
     std::vector<Actor*> GetAlliesInRange(Ranges range);
     size_t GetAllyCountInRange(Ranges range);
     Item* GetWeapon() const;
@@ -103,10 +131,10 @@ public:
     void HeadTo(const Math::Vector3& pos);
     void FaceObject(GameObject* object);
     /// Move speed: 1 = normal speed
-    float GetSpeed() const { return moveComp_.GetSpeedFactor(); }
-    void SetSpeed(float value) { moveComp_.SetSpeedFactor(value); }
-    void AddSpeed(float value) { moveComp_.AddSpeed(value); }
-    bool IsMoving() const { return moveComp_.IsMoving(); }
+    float GetSpeed() const { return moveComp_->GetSpeedFactor(); }
+    void SetSpeed(float value) { moveComp_->SetSpeedFactor(value); }
+    void AddSpeed(float value) { moveComp_->AddSpeed(value); }
+    bool IsMoving() const { return moveComp_->IsMoving(); }
     bool IsAttacking() const { return attackComp_.IsAttacking(); }
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
@@ -236,17 +264,18 @@ public:
 
     std::unique_ptr<SkillBar> skills_;
 
-    Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
     Components::ResourceComp resourceComp_;
     Components::AttackComp attackComp_;
-    Components::EffectsComp effectsComp_;
-    Components::EquipComp equipComp_;
     Components::SkillsComp skillsComp_;
     Components::InputComp inputComp_;
     Components::DamageComp damageComp_;
     Components::HealComp healComp_;
-    Components::ProgressComp progressComp_;
+    std::unique_ptr<Components::ProgressComp> progressComp_;
+    std::unique_ptr<Components::EffectsComp> effectsComp_;
+    std::unique_ptr<Components::EquipComp> equipComp_;
+    std::unique_ptr<Components::MoveComp> moveComp_;
+    std::unique_ptr<Components::CollisionComp> collisionComp_;
 
     bool undestroyable_;
 
