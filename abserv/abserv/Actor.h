@@ -238,7 +238,6 @@ public:
 
     Components::MoveComp moveComp_;
     Components::AutoRunComp autorunComp_;
-    Components::CollisionComp collisionComp_;
     Components::ResourceComp resourceComp_;
     Components::AttackComp attackComp_;
     Components::EffectsComp effectsComp_;

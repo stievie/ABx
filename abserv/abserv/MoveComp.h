@@ -5,14 +5,14 @@
 
 namespace Game {
 
-class Actor;
+class GameObject;
 
 namespace Components {
 
 class MoveComp
 {
 private:
-    Actor& owner_;
+    GameObject& owner_;
     Math::Vector3 oldPosition_;
     float speedFactor_;
     /// Move to moveDir_
@@ -20,8 +20,13 @@ private:
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
 public:
+    enum UpdateFlags : uint32_t
+    {
+        UpdateFlagMove = 1,
+        UpdateFlagTurn = 1 << 1
+    };
     MoveComp() = delete;
-    explicit MoveComp(Actor& owner) :
+    explicit MoveComp(GameObject& owner) :
         owner_(owner),
         moveDir_(AB::GameProtocol::MoveDirectionNone),
         turnDir_(AB::GameProtocol::TurnDirectionNone),
@@ -39,7 +44,7 @@ public:
     MoveComp& operator=(const MoveComp&) = delete;
     ~MoveComp() = default;
 
-    void Update(uint32_t timeElapsed);
+    void Update(uint32_t timeElapsed, uint32_t flags);
     bool SetPosition(const Math::Vector3& pos);
     void HeadTo(const Math::Vector3& pos);
     /// Move in direction of rotation

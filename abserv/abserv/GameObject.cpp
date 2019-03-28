@@ -254,6 +254,12 @@ bool GameObject::QueryObjects(std::vector<GameObject*>& result, const Math::Boun
     return true;
 }
 
+void GameObject::OnCollide(GameObject* other)
+{
+    if (triggerComp_)
+        triggerComp_->OnCollide(other);
+}
+
 bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction)
 {
     if (!octant_)

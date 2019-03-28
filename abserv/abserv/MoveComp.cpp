@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MoveComp.h"
-#include "Actor.h"
+#include "GameObject.h"
 #include "CollisionComp.h"
 #include "MathUtils.h"
 #include "Game.h"
@@ -10,15 +10,19 @@
 namespace Game {
 namespace Components {
 
-void MoveComp::Update(uint32_t timeElapsed)
+void MoveComp::Update(uint32_t timeElapsed, uint32_t flags)
 {
     if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureStateMoving)
+        return;
+    if (flags == 0)
         return;
 
     oldPosition_ = owner_.transformation_.position_;
 
-    UpdateMove(timeElapsed);
-    UpdateTurn(timeElapsed);
+    if ((flags & UpdateFlagMove) == UpdateFlagMove)
+        UpdateMove(timeElapsed);
+    if ((flags & UpdateFlagTurn) == UpdateFlagTurn)
+        UpdateTurn(timeElapsed);
 
     velocity_ = ((oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000)).Abs();
     moved_ = !velocity_.Equals(Math::Vector3::Zero);
@@ -33,7 +37,8 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
     // Keep on ground
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
-    owner_.collisionComp_.ResolveCollisions();
+    if (owner_.collisionComp_)
+        owner_.collisionComp_->ResolveCollisions();
 
     bool moved = oldPosition_ != owner_.transformation_.position_;
 
@@ -90,9 +95,6 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
 
 void MoveComp::UpdateMove(uint32_t timeElapsed)
 {
-    if (owner_.autorunComp_.autoRun_)
-        return;
-
     if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
     {
         Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitZ);

@@ -76,6 +76,8 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "onEnded"))
         functions_ |= FunctionEnded;
+    if (ScriptManager::IsFunction(luaState_, "onCollide"))
+        functions_ |= FunctionOnCollide;
     if (ScriptManager::IsFunction(luaState_, "onTrigger"))
         functions_ |= FunctionOnTrigger;
     if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
@@ -97,6 +99,16 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             ScriptManager::CallFunction(luaState_, "onEnded");
         GetGame()->RemoveObject(this);
     }
+}
+
+void AreaOfEffect::OnCollide(GameObject* other)
+{
+    // Called from triggerComp_
+    GameObject::OnCollide(other);
+
+    // AOE can also be a trap for example
+    if (luaInitialized_ && HaveFunction(FunctionOnCollide))
+        ScriptManager::CallFunction(luaState_, "onCollide", other);
 }
 
 void AreaOfEffect::OnTrigger(GameObject* other)

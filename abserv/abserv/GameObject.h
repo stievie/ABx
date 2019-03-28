@@ -19,6 +19,8 @@
 #include <unordered_set>
 #include "Matrix4.h"
 #include "Mechanic.h"
+#include "CollisionComp.h"
+#include "MoveComp.h"
 
 namespace Game {
 
@@ -39,6 +41,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
+    friend class Components::MoveComp;
 public:
     static Utils::IdGenerator<uint32_t> objectIds_;
 private:
@@ -192,6 +195,7 @@ public:
     uint32_t id_;
     std::string name_;
     Components::StateComp stateComp_;
+    std::unique_ptr<Components::CollisionComp> collisionComp_;
     std::unique_ptr<Components::TriggerComp> triggerComp_;
     /// Occluder flag. An object that can hide another object from view.
     bool occluder_;
@@ -239,7 +243,7 @@ public:
 
     virtual void OnSelected(Actor*) { }
     virtual void OnClicked(Actor*) { }
-    virtual void OnCollide(GameObject*) { };
+    virtual void OnCollide(GameObject* other);
     /// Object entered the area
     virtual void OnTrigger(GameObject*) { }
     /// Object left the area. Opposite to OnTrigger

@@ -89,7 +89,6 @@ Actor::Actor() :
     skills_(std::make_unique<SkillBar>(*this)),
     moveComp_(*this),
     autorunComp_(*this),
-    collisionComp_(*this),
     resourceComp_(*this),
     attackComp_(*this),
     effectsComp_(*this),
@@ -101,7 +100,7 @@ Actor::Actor() :
     progressComp_(*this),
     undestroyable_(false)
 {
-    // Actor always collides
+    collisionComp_ = std::make_unique<Components::CollisionComp>(*this);    // Actor always collides
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
     static const Math::Vector3 CREATURTE_BB_MAX(0.2f, 1.7f, 0.2f);
     SetCollisionShape(
@@ -686,10 +685,13 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     effectsComp_.Update(timeElapsed);
     damageComp_.Update(timeElapsed);
     healComp_.Update(timeElapsed);
-    moveComp_.Update(timeElapsed);
+    uint32_t flags = Components::MoveComp::UpdateFlagTurn;
+    if (!autorunComp_.autoRun_)
+        flags |= Components::MoveComp::UpdateFlagMove;
+    moveComp_.Update(timeElapsed, flags);
     autorunComp_.Update(timeElapsed);
     // After move/autorun resolve collisions
-    collisionComp_.Update(timeElapsed);
+    collisionComp_->Update(timeElapsed);
     progressComp_.Update(timeElapsed);
 
     if (moveComp_.moved_ && octant_)

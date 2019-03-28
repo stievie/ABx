@@ -139,7 +139,7 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
-        ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
+        luaState_["onUpdate"](timeElapsed);
 }
 
 void Npc::SetGroupId(uint32_t value)
@@ -237,9 +237,6 @@ void Npc::OnCollide(GameObject* other)
 
     if (luaInitialized_ && other)
         ScriptManager::CallFunction(luaState_, "onCollide", other);
-
-    if (triggerComp_)
-        triggerComp_->OnCollide(other);
 }
 
 void Npc::OnTrigger(GameObject* other)

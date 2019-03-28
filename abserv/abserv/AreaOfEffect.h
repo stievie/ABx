@@ -17,6 +17,7 @@ private:
         FunctionEnded = 1 << 1,
         FunctionOnTrigger = 1 << 2,
         FunctionOnLeftArea = 1 << 3,
+        FunctionOnCollide = 1 << 4,
     };
     std::weak_ptr<Actor> source_;
     kaguya::State luaState_;
@@ -50,6 +51,7 @@ public:
         return AB::GameProtocol::ObjectTypeAreaOfEffect;
     }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+    void OnCollide(GameObject* other) override;
     void OnTrigger(GameObject* other) override;
     void OnLeftArea(GameObject* other) override;
 

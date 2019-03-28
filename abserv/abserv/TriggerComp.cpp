@@ -27,28 +27,38 @@ void TriggerComp::Update(uint32_t timeElapsed)
         return;
 
     lastCheck_ += timeElapsed;
-    // Check all 200ms
-    if (lastCheck_ < 100)
+    // Keep objects at least 2 ticks inside
+    if (lastCheck_ < NETWORK_TICK * 2)
         return;
 
     // Check if objects are still inside
     auto game = owner_.GetGame();
-    Math::Vector3 move;
-    for (auto it = triggered_.begin(); it != triggered_.end(); )
+    if (!game)
     {
-        auto o = game->GetObjectById((*it).first);
-        // If not inside remove from triggered list
-        if (!o)
+        // Game over
+        triggered_.clear();
+    }
+    else
+    {
+        Math::Vector3 move;
+        for (auto it = triggered_.begin(); it != triggered_.end(); )
         {
-            triggered_.erase(it++);
+            auto o = game->GetObjectById((*it).first);
+            // If not inside remove from triggered list
+            if (!o)
+            {
+                // This object is gone
+                triggered_.erase(it++);
+            }
+            else if (!owner_.Collides(o.get(), Math::Vector3::Zero, move))
+            {
+                // No longer collides
+                triggered_.erase(it++);
+                owner_.OnLeftArea(o.get());
+            }
+            else
+                ++it;
         }
-        else if (!owner_.Collides(o.get(), Math::Vector3::Zero, move))
-        {
-            triggered_.erase(it++);
-            owner_.OnLeftArea(o.get());
-        }
-        else
-            ++it;
     }
     lastCheck_ = 0;
 }
