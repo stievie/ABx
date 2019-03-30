@@ -705,6 +705,7 @@ void WorldLevel::HandleHideUI(StringHash, VariantMap&)
 
 void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
 {
+    // TODO: Follow or Attack
     player_->FollowSelected();
 }
 

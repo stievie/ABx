@@ -144,6 +144,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectAttackFailure:
             ParseObjectAttackFailure(message);
             break;
+        case AB::GameProtocol::GameObjectPingTarget:
+            ParseObjectPingTarget(message);
+            break;
         case AB::GameProtocol::GameObjectEffectAdded:
             ParseObjectEffectAdded(message);
             break;
@@ -268,6 +271,16 @@ void ProtocolGame::ParseObjectAttackFailure(const std::shared_ptr<InputMessage>&
     AB::GameProtocol::AttackError attackError = static_cast<AB::GameProtocol::AttackError>(message->Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectAttackFailure(updateTick_, objectId, attackError);
+}
+
+void ProtocolGame::ParseObjectPingTarget(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
+    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(message->Get<uint8_t>());
+    int skillIndex = message->Get<int8_t>();
+    if (receiver_)
+        receiver_->OnObjectPingTarget(updateTick_, objectId, targetId, type, skillIndex);
 }
 
 void ProtocolGame::ParseObjectEffectAdded(const std::shared_ptr<InputMessage>& message)
@@ -707,19 +720,29 @@ void ProtocolGame::GotoPos(const Vec3& pos)
     Send(msg);
 }
 
-void ProtocolGame::Follow(uint32_t targetId)
+void ProtocolGame::Follow(uint32_t targetId, bool ping)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
     msg->Add<uint32_t>(targetId);
+    msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
     Send(msg);
 }
 
-void ProtocolGame::UseSkill(uint32_t index)
+void ProtocolGame::UseSkill(uint32_t index, bool ping)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUseSkill);
     msg->Add<uint8_t>(static_cast<uint8_t>(index));
+    msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
+    Send(msg);
+}
+
+void ProtocolGame::Attack(bool ping)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAttack);
+    msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
     Send(msg);
 }
 

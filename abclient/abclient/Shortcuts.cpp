@@ -471,11 +471,11 @@ unsigned Shortcuts::GetModifiers() const
 {
     Input* input = GetSubsystem<Input>();
     unsigned result = 0;
-    if (input->GetKeyDown(KEY_LCTRL))
+/*    if (input->GetKeyDown(KEY_LCTRL))
     {
         result |= SC_MOD_CTRL;
         result |= SC_MOD_LCTRL;
-    }
+    }*/
     if (input->GetKeyDown(KEY_RCTRL))
     {
         result |= SC_MOD_CTRL;

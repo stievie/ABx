@@ -180,6 +180,7 @@ public:
     virtual void OnHealed(int) { }
     virtual void OnDied();
     virtual void OnResurrected(int /* health */, int /* energy */) { }
+    virtual void OnPingObject(uint32_t /* targetId */, AB::GameProtocol::ObjectCallType /* type */, int /* skillIndex */) { }
 
     virtual uint32_t GetLevel() const { return 0; }
     virtual void SetLevel(uint32_t) { }

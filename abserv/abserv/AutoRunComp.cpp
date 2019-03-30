@@ -9,7 +9,7 @@
 namespace Game {
 namespace Components {
 
-bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
+bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
 {
     auto actor = object->GetThisDynamic<Actor>();
     if (!actor)
@@ -18,7 +18,15 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object)
     maxDist_ = RANGE_TOUCH;
     if (auto f = following_.lock())
     {
-        return FindPath(f->transformation_.position_);
+        bool succ = FindPath(f->transformation_.position_);
+        if (succ)
+        {
+            if (ping)
+            {
+                owner_.OnPingObject(actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
+            }
+        }
+        return succ;
     }
     return false;
 }

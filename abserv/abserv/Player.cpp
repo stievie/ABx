@@ -221,6 +221,17 @@ void Player::WriteToOutput(const Net::NetworkMessage& message)
         LOG_ERROR << "client_ expired" << std::endl;
 }
 
+void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
+{
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::GameObjectPingTarget);
+    msg.Add<uint32_t>(id_);
+    msg.Add<uint32_t>(targetId);
+    msg.Add<int8_t>(static_cast<uint8_t>(type));
+    msg.Add<int8_t>(static_cast<uint8_t>(skillIndex));
+    GetParty()->WriteToMembers(msg);
+}
+
 void Player::SetParty(std::shared_ptr<Party> party)
 {
     if (party_)

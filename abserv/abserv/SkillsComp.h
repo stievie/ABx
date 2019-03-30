@@ -41,7 +41,7 @@ public:
     ~SkillsComp() = default;
 
     void Update(uint32_t timeElapsed);
-    AB::GameProtocol::SkillError UseSkill(int index);
+    AB::GameProtocol::SkillError UseSkill(int index, bool ping);
     void Cancel();
     void CancelWhenChangingState();
     bool IsUsing();

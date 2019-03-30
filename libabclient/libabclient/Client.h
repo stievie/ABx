@@ -99,6 +99,7 @@ public:
     void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
         uint16_t activation, uint16_t overcast, uint16_t hp) override;
     void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
+    void OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
     void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) override;
     void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
     void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) override;
@@ -164,7 +165,9 @@ public:
     void SetDirection(float rad);
     void ClickObject(uint32_t sourceId, uint32_t targetId);
     void SelectObject(uint32_t sourceId, uint32_t targetId);
-    void FollowObject(uint32_t targetId);
+    void FollowObject(uint32_t targetId, bool ping);
+    void UseSkill(uint32_t index, bool ping);
+    void Attack(bool ping);
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);
     void PartyInvitePlayer(uint32_t targetId);
@@ -174,7 +177,6 @@ public:
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
     void PartyLeave();
-    void UseSkill(uint32_t index);
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
 };

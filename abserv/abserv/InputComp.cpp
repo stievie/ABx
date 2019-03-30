@@ -51,16 +51,17 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
     }
 }
 
-void InputComp::FollowObject(uint32_t targetId, Net::NetworkMessage&)
+void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
 {
     if (!owner_.IsDead() && !owner_.IsKnockedDown())
     {
-        owner_.followedObject_ = owner_.GetGame()->GetObjectById(targetId);
-        if (auto f = owner_.followedObject_.lock())
+        auto target = owner_.GetGame()->GetObjectById(targetId);
+        if (target)
         {
-            bool succ = owner_.autorunComp_.Follow(f);
+            bool succ = owner_.autorunComp_.Follow(target, ping);
             if (succ)
             {
+                owner_.followedObject_ = target;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 owner_.autorunComp_.autoRun_ = true;
             }
@@ -166,7 +167,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         case InputType::Follow:
         {
             uint32_t targetId = static_cast<uint32_t>(input.data[InputDataObjectId].GetInt());
-            FollowObject(targetId, message);
+            bool ping = input.data[InputDataPingTarget].GetBool();
+            FollowObject(targetId, ping, message);
             break;
         }
         case InputType::Attack:
@@ -176,7 +178,10 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 {
                     auto actor = std::dynamic_pointer_cast<Actor>(target);
                     if (actor)
-                        owner_.attackComp_.Attack(actor);
+                    {
+                        bool ping = input.data[InputDataPingTarget].GetBool();
+                        owner_.attackComp_.Attack(actor, ping);
+                    }
                 }
             }
             break;
@@ -186,7 +191,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             {
                 // The index of the skill in the users skill bar, 0 based
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();
-                owner_.skillsComp_.UseSkill(skillIndex);
+                bool ping = input.data[InputDataPingTarget].GetBool();
+                owner_.skillsComp_.UseSkill(skillIndex, ping);
             }
             break;
         }

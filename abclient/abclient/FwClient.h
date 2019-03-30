@@ -106,6 +106,7 @@ public:
     void FollowObject(uint32_t objectId);
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void UseSkill(uint32_t index);
+    void Attack();
     void Cancel();
     void PartyInvitePlayer(uint32_t objectId);
     /// Remove as party member or remove invitation
@@ -150,6 +151,7 @@ public:
     void OnObjectUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t energy, uint16_t adrenaline,
         uint16_t activation, uint16_t overcast, uint16_t hp) override;
     void OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex, uint16_t recharge) override;
+    void OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
     void OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks) override;
     void OnObjectEffectRemoved(int64_t updateTick, uint32_t id, uint32_t effectIndex) override;
     void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) override;

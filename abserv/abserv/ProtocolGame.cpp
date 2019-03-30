@@ -239,6 +239,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         Utils::VariantMap data;
         data[Game::InputDataObjectId] = message.Get<uint32_t>();
+        data[Game::InputDataPingTarget] = (message.Get<uint8_t>() != 0);
         AddPlayerInput(Game::InputType::Follow, data);
         break;
     }
@@ -246,10 +247,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     {
         // 1 based -> convert to 0 based
         uint8_t index = message.Get<uint8_t>();
+        bool ping = message.Get<uint8_t>() != 0;
         if (index > 0 && index <= PLAYER_MAX_SKILLS)
         {
             Utils::VariantMap data;
             data[Game::InputDataSkillIndex] = index - 1;
+            data[Game::InputDataPingTarget] = ping;
             AddPlayerInput(Game::InputType::UseSkill, data);
         }
         break;
@@ -261,7 +264,10 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     }
     case AB::GameProtocol::PacketTypeAttack:
     {
-        AddPlayerInput(Game::InputType::Attack);
+        Utils::VariantMap data;
+        bool ping = message.Get<uint8_t>() != 0;
+        data[Game::InputDataPingTarget] = ping;
+        AddPlayerInput(Game::InputType::Attack, data);
         break;
     }
     case AB::GameProtocol::PacketTypeSelect:

@@ -41,7 +41,7 @@ public:
     void Write(Net::NetworkMessage& message);
     bool IsAttacking() const { return attacking_; }
     void Cancel();
-    void Attack(std::shared_ptr<Actor> target);
+    void Attack(std::shared_ptr<Actor> target, bool ping);
     int64_t GetLastAttackTime() const { return lastAttackTime_; }
     bool IsAttackState() const;
     void SetAttackState(bool value);

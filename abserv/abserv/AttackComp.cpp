@@ -84,7 +84,7 @@ void AttackComp::Cancel()
     SetAttackState(false);
 }
 
-void AttackComp::Attack(std::shared_ptr<Actor> target)
+void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 {
     if (!owner_.OnAttack(target.get()))
     {
@@ -105,6 +105,10 @@ void AttackComp::Attack(std::shared_ptr<Actor> target)
     }
 
     target_ = target;
+    if (ping)
+    {
+        owner_.OnPingObject(target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
+    }
     SetAttackState(true);
     lastAttackTime_ = 0;
 }

@@ -19,6 +19,8 @@ private:
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
     std::weak_ptr<Actor> following_;
+    bool pinging_;
+    uint32_t pingTarget_;
     void Pop();
     const Math::Vector3& Next() const
     {
@@ -33,6 +35,8 @@ public:
         owner_(owner),
         lastCalc_(0),
         maxDist_(1.0f),
+        pinging_(false),
+        pingTarget_(0),
         autoRun_(false)
     { }
     // non-copyable
@@ -40,7 +44,7 @@ public:
     AutoRunComp& operator=(const AutoRunComp&) = delete;
     ~AutoRunComp() = default;
 
-    bool Follow(std::shared_ptr<GameObject> object);
+    bool Follow(std::shared_ptr<GameObject> object, bool ping);
     bool Goto(const Math::Vector3& dest);
     void Reset()
     {

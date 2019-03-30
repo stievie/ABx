@@ -41,6 +41,7 @@ private:
     void HandlePartyInviteRemoved(StringHash eventType, VariantMap& eventData);
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
     void HandleActorClicked(StringHash eventType, VariantMap& eventData);
+    void HandleActorDoubleClicked(StringHash eventType, VariantMap& eventData);
     void HandleAcceptInvitationClicked(StringHash eventType, VariantMap& eventData);
     void HandleRejectInvitationClicked(StringHash eventType, VariantMap& eventData);
     void HandleKickClicked(StringHash eventType, VariantMap& eventData);

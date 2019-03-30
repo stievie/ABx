@@ -2,9 +2,9 @@
 function onStart()
   local portal = self:AddNpc("/scripts/actors/logic/portal.lua")
   if (portal ~= nil) then
-    portal:SetName("Bassae")
+    portal:SetName("Rhodes Arena")
     -- Map ID where this portal leads to
-    portal:SetVarString("destination", "75e3dfcf-479a-11e8-ad09-02100700d6f0")
+    portal:SetVarString("destination", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
     local x = -20.059
     local z = -0.00870347
     local y = 26.7

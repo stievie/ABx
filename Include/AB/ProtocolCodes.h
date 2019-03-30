@@ -212,12 +212,21 @@ enum GameProtocolCodes : uint8_t
     GameObjectDamaged,            // Object got damage
     GameObjectHealed,
     GameObjectProgress,           // The object progressed, see ObjectProgressType
+    GameObjectPingTarget,
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,
     PartyPlayerAdded,
     PartyInviteRemoved,
     PartyInfoMembers,
+};
+
+enum ObjectCallType : uint8_t
+{
+    ObjectCallTypeNone = 0,
+    ObjectCallTypeFollow,
+    ObjectCallTypeAttack,
+    ObjectCallTypeUseSkill
 };
 
 enum ObjectProgressType : uint8_t

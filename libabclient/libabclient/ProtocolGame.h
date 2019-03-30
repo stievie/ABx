@@ -56,6 +56,7 @@ protected:
     void ParseObjectUseSkill(const std::shared_ptr<InputMessage>& message);
     void ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message);
     void ParseObjectAttackFailure(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectPingTarget(const std::shared_ptr<InputMessage>& message);
     void ParseObjectEffectAdded(const std::shared_ptr<InputMessage>& message);
     void ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>& message);
     void ParseObjectDamaged(const std::shared_ptr<InputMessage>& message);
@@ -94,8 +95,9 @@ public:
     void SelectObject(uint32_t sourceId, uint32_t targetId);
     void Command(AB::GameProtocol::CommandTypes type, const std::string& data);
     void GotoPos(const Vec3& pos);
-    void Follow(uint32_t targetId);
-    void UseSkill(uint32_t index);
+    void Follow(uint32_t targetId, bool ping);
+    void UseSkill(uint32_t index, bool ping);
+    void Attack(bool ping);
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
     void PartyInvitePlayer(uint32_t targetId);

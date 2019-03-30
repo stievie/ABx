@@ -107,6 +107,7 @@ public:
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
     void WriteToOutput(const Net::NetworkMessage& message);
+    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
 
     void SetParty(std::shared_ptr<Party> party);
     std::shared_ptr<Party> GetParty() const

@@ -137,6 +137,7 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
     hb->SetActor(actor);
     hb->SetShowName(true);
     SubscribeToEvent(hb, E_CLICK, URHO3D_HANDLER(PartyWindow, HandleActorClicked));
+    SubscribeToEvent(hb, E_DOUBLECLICK, URHO3D_HANDLER(PartyWindow, HandleActorDoubleClicked));
     switch (type)
     {
     case MemberType::Invitee:
@@ -530,6 +531,20 @@ void PartyWindow::HandleActorClicked(StringHash, VariantMap& eventData)
         {
             p->SelectObject(actor->id_);
         }
+    }
+}
+
+void PartyWindow::HandleActorDoubleClicked(StringHash, VariantMap& eventData)
+{
+    // An actor was double clicked in the Party window
+    using namespace DoubleClick;
+    PartyItem* hb = dynamic_cast<PartyItem*>(eventData[P_ELEMENT].GetPtr());
+    SharedPtr<Actor> actor = hb->GetActor();
+    if (actor)
+    {
+        // Should be selected in Click
+        VariantMap& e = GetEventDataMap();
+        SendEvent(AbEvents::E_SC_DEFAULTACTION, e);
     }
 }
 

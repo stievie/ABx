@@ -25,7 +25,7 @@ void SkillsComp::Update(uint32_t timeElapsed)
     }
 }
 
-AB::GameProtocol::SkillError SkillsComp::UseSkill(int index)
+AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
 {
     std::shared_ptr<Actor> target;
     if (auto selObj = owner_.selectedObject_.lock())
@@ -43,6 +43,10 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index)
     lastSkillTime_ = Utils::Tick();
     startDirty_ = true;
     endDirty_ = false;
+    if (usingSkill_ && ping)
+    {
+        owner_.OnPingObject(target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
+    }
     return lastError_;
 }
 

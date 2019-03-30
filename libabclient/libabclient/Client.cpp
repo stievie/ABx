@@ -215,6 +215,12 @@ void Client::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillIndex
         receiver_->OnObjectEndUseSkill(updateTick, id, skillIndex, recharge);
 }
 
+void Client::OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
+{
+    if (receiver_)
+        receiver_->OnObjectPingTarget(updateTick, id, targetId, type, skillIndex);
+}
+
 void Client::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
 {
     if (receiver_)
@@ -593,10 +599,10 @@ void Client::SelectObject(uint32_t sourceId, uint32_t targetId)
         protoGame_->SelectObject(sourceId, targetId);
 }
 
-void Client::FollowObject(uint32_t targetId)
+void Client::FollowObject(uint32_t targetId, bool ping)
 {
     if (state_ == ClientState::World)
-        protoGame_->Follow(targetId);
+        protoGame_->Follow(targetId, ping);
 }
 
 void Client::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
@@ -647,10 +653,16 @@ void Client::PartyLeave()
         protoGame_->PartyLeave();
 }
 
-void Client::UseSkill(uint32_t index)
+void Client::UseSkill(uint32_t index, bool ping)
 {
     if (state_ == ClientState::World)
-        protoGame_->UseSkill(index);
+        protoGame_->UseSkill(index, ping);
+}
+
+void Client::Attack(bool ping)
+{
+    if (state_ == ClientState::World)
+        protoGame_->Attack(ping);
 }
 
 void Client::Cancel()

@@ -119,6 +119,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_CHATPARTY, URHO3D_HANDLER(ChatWindow, HandleShortcutChatParty));
     SubscribeToEvent(AbEvents::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
     SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
+    SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(ChatWindow, HandleTargetPinged));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -522,6 +523,47 @@ void ChatWindow::HandleShortcutChatWhisper(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(tabIndexWhisper_);
     FocusEdit();
+}
+
+void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectPingTarget;
+/*
+    URHO3D_PARAM(P_OBJECTID, ObjectId);
+    URHO3D_PARAM(P_TARGETID, TargetId);
+    URHO3D_PARAM(P_SKILLINDEX, SkillIndex);
+*/
+    String message = "I am";
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
+    int skillIndex = eventData[P_SKILLINDEX].GetUInt();
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    Actor* pinger = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
+    Actor* target = dynamic_cast<Actor*>(lm->GetObjectById(targetId).Get());
+
+    switch (type)
+    {
+    case AB::GameProtocol::ObjectCallTypeFollow:
+        if (!target)
+            return;
+        message += " following " + target->name_;
+        break;
+    case AB::GameProtocol::ObjectCallTypeAttack:
+        if (!target)
+            return;
+        message += " attacking " + target->name_;
+        break;
+    case AB::GameProtocol::ObjectCallTypeUseSkill:
+    {
+        if (skillIndex <= 0)
+            return;
+        FwClient* client = GetSubsystem<FwClient>();
+        const AB::Entities::Skill* skill = client->GetSkillByIndex(pinger->skills_[skillIndex - 1]);
+        message += " using " + String(skill->name.c_str()) + " on " + target->name_;
+    }
+    }
+    AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannelParty);
 }
 
 bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)

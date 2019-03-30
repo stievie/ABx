@@ -15,7 +15,7 @@ private:
     InputQueue inputs_;
     void SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message);
     void ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMessage& message);
-    void FollowObject(uint32_t targetId, Net::NetworkMessage& message);
+    void FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage& message);
 public:
     InputComp() = delete;
     explicit InputComp(Actor& owner) :

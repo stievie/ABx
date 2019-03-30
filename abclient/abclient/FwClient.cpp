@@ -674,7 +674,10 @@ void FwClient::GotoPos(const Vector3& pos)
 void FwClient::FollowObject(uint32_t objectId)
 {
     if (loggedIn_)
-        client_.FollowObject(objectId);
+    {
+        Input* input = GetSubsystem<Input>();
+        client_.FollowObject(objectId, input->GetKeyDown(KEY_LCTRL));
+    }
 }
 
 void FwClient::SetPlayerState(AB::GameProtocol::CreatureState newState)
@@ -686,7 +689,19 @@ void FwClient::SetPlayerState(AB::GameProtocol::CreatureState newState)
 void FwClient::UseSkill(uint32_t index)
 {
     if (loggedIn_)
-        client_.UseSkill(index);
+    {
+        Input* input = GetSubsystem<Input>();
+        client_.UseSkill(index, input->GetKeyDown(KEY_LCTRL));
+    }
+}
+
+void FwClient::Attack()
+{
+    if (loggedIn_)
+    {
+        Input* input = GetSubsystem<Input>();
+        client_.Attack(input->GetKeyDown(KEY_LCTRL));
+    }
 }
 
 void FwClient::Cancel()
@@ -1060,6 +1075,19 @@ void FwClient::OnObjectEndUseSkill(int64_t updateTick, uint32_t id, int skillInd
     eData[P_SKILLINDEX] = skillIndex;
     eData[P_RECHARGE] = recharge;
     QueueEvent(AbEvents::E_OBJECTENDUSESKILL, eData);
+}
+
+void FwClient::OnObjectPingTarget(int64_t updateTick, uint32_t id, uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
+{
+    URHO3D_LOGINFOF("Object %d pings Target %d, Skill %d", id, targetId, skillIndex);
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::ObjectPingTarget;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_TARGETID] = targetId;
+    eData[P_CALLTTYPE] = static_cast<int>(type);
+    eData[P_SKILLINDEX] = skillIndex;
+    QueueEvent(AbEvents::E_OBJECTPINGTARGET, eData);
 }
 
 void FwClient::OnObjectEffectAdded(int64_t updateTick, uint32_t id, uint32_t effectIndex, uint32_t ticks)
