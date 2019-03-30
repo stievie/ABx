@@ -29,9 +29,8 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
 {
     std::shared_ptr<Actor> target;
     if (auto selObj = owner_.selectedObject_.lock())
-    {
         target = selObj->GetThisDynamic<Actor>();
-    }
+
     // Can use skills only on Creatures not all GameObjects.
     // But a target is not mandatory, the Skill script will decide
     // if it needs a target, and may fail.
@@ -44,9 +43,7 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     startDirty_ = true;
     endDirty_ = false;
     if (usingSkill_ && ping)
-    {
         owner_.OnPingObject(target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
-    }
     return lastError_;
 }
 
@@ -122,7 +119,7 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         {
             message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
             message.Add<uint32_t>(owner_.id_);
-            message.Add<int8_t>(static_cast<uint8_t>(lastSkillIndex_ + 1));
+            message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
             message.AddByte(lastError_);
         }
         startDirty_ = false;
@@ -134,14 +131,14 @@ void SkillsComp::Write(Net::NetworkMessage& message)
         {
             message.AddByte(AB::GameProtocol::GameObjectEndUseSkill);
             message.Add<uint32_t>(owner_.id_);
-            message.Add<int8_t>(static_cast<uint8_t>(lastSkillIndex_ + 1));
+            message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
             message.Add<uint16_t>(static_cast<uint16_t>(newRecharge_));
         }
         else
         {
             message.AddByte(AB::GameProtocol::GameObjectSkillFailure);
             message.Add<uint32_t>(owner_.id_);
-            message.Add<int8_t>(static_cast<uint8_t>(lastSkillIndex_ + 1));
+            message.Add<int8_t>(static_cast<int8_t>(lastSkillIndex_ + 1));
             message.AddByte(lastError_);
         }
         endDirty_ = false;
@@ -163,9 +160,7 @@ Skill* SkillsComp::GetCurrentSkill()
     if (auto ls = lastSkill_.lock())
     {
         if (ls->IsUsing())
-        {
             return ls.get();
-        }
     }
     return nullptr;
 }

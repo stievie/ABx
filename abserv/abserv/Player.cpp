@@ -223,12 +223,14 @@ void Player::WriteToOutput(const Net::NetworkMessage& message)
 
 void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
 {
+    Actor::OnPingObject(targetId, type, skillIndex);
+
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::GameObjectPingTarget);
     msg.Add<uint32_t>(id_);
     msg.Add<uint32_t>(targetId);
-    msg.Add<int8_t>(static_cast<uint8_t>(type));
-    msg.Add<int8_t>(static_cast<uint8_t>(skillIndex));
+    msg.Add<uint8_t>(static_cast<uint8_t>(type));
+    msg.Add<int8_t>(static_cast<int8_t>(skillIndex));
     GetParty()->WriteToMembers(msg);
 }
 

@@ -19,13 +19,8 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
     if (auto f = following_.lock())
     {
         bool succ = FindPath(f->transformation_.position_);
-        if (succ)
-        {
-            if (ping)
-            {
-                owner_.OnPingObject(actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
-            }
-        }
+        if (succ && ping)
+            owner_.OnPingObject(actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
         return succ;
     }
     return false;

@@ -106,9 +106,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 
     target_ = target;
     if (ping)
-    {
         owner_.OnPingObject(target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
-    }
     SetAttackState(true);
     lastAttackTime_ = 0;
 }
