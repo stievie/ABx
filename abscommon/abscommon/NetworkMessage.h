@@ -127,6 +127,9 @@ public:
     int32_t GetSize() const { return info_.length; }
     void SetSize(int32_t size) { info_.length = (MsgSize_t)size; }
     int32_t GetReadPos() const { return info_.position; }
+
+    bool Compress();
+    bool Uncompress();
 };
 
 }

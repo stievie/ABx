@@ -141,7 +141,7 @@ public:
             return std::numeric_limits<float>::max();
         return transformation_.position_.Distance(other->transformation_.position_);
     }
-    /// Allows to execute a functor/lambda on the visible objects
+    /// Allows to execute a functor/lambda on the objects in range
     template<typename Func>
     void VisitInRange(Ranges range, Func&& func)
     {

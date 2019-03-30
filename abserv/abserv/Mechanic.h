@@ -101,5 +101,6 @@ static constexpr float DamagePosChances[] = {
 
 // If the rotation of 2 actors is smaller than this, an attack is from behind
 static constexpr float BEHIND_ANGLE = 0.52f;
+static constexpr uint32_t DEFAULT_KNOCKDOWN_TIME = 2000;
 
 }

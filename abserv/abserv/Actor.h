@@ -50,12 +50,11 @@ private:
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
 protected:
-    std::vector<Math::Vector3> wayPoints_;
-
     Math::Vector3 homePos_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& command, Net::NetworkMessage& message)
     {
+        // Only the player needs to override this
         AB_UNUSED(type);
         AB_UNUSED(command);
         AB_UNUSED(message);
@@ -229,6 +228,7 @@ public:
     bool IsKnockedDown() const { return stateComp_.IsKnockedDown(); }
     /// Returns true when the actor can't do anything
     bool IsImmobilized() const { return stateComp_.IsDead() || stateComp_.IsKnockedDown(); }
+    /// Knock the Actor down caused by source. If time = 0 DEFAULT_KNOCKDOWN_TIME is used.
     bool KnockDown(Actor* source, uint32_t time);
     int Healing(Actor* source, uint32_t index, int value);
     bool IsEnemy(Actor* other);

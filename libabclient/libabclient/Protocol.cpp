@@ -11,6 +11,7 @@ namespace Client {
 Protocol::Protocol(Crypto::DHKeys& keys) :
     connection_(nullptr),
     checksumEnabled_(false),
+    compressionEnabled_(false),
     encryptEnabled_(false),
     keys_(keys),
     errorCallback_(nullptr),
@@ -43,6 +44,8 @@ void Protocol::Send(const std::shared_ptr<OutputMessage>& message)
 {
     if (encryptEnabled_)
         XTEAEncrypt(message);
+    if (compressionEnabled_)
+        message->Compress();
     if (checksumEnabled_)
         message->WriteChecksum();
     message->WriteMessageSize();
@@ -95,6 +98,11 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     if (checksumEnabled_ && !inputMessage_->ReadChecksum())
     {
         return;
+    }
+    if (compressionEnabled_)
+    {
+        if (!inputMessage_->Uncompress())
+            return;
     }
     if (encryptEnabled_)
     {

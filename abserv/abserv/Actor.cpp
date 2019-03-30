@@ -749,7 +749,11 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
 {
     if (IsDead())
         return false;
+    if (IsKnockedDown())
+        return false;
 
+    if (time == 0)
+        time = DEFAULT_KNOCKDOWN_TIME;
     bool ret = true;
     effectsComp_->OnKnockingDown(source, time, ret);
     if (!ret)

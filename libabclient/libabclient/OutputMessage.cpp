@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include <abcrypto.hpp>
 #include <AB/ProtocolCodes.h>
+#include <lz4.h>
 
 #include "DebugNew.h"
 
@@ -94,6 +95,28 @@ void OutputMessage::WriteMessageSize()
     headerPos_ -= 2;
     Set<uint16_t>(headerPos_, size_);
     size_ += 2;
+}
+
+bool OutputMessage::Compress()
+{
+    char buff[MaxBufferSize];
+    const char* src = reinterpret_cast<const char*>(buffer_ + MaxHeaderSize);
+    int size = LZ4_compress_default(src, buff, size_, MaxBufferSize);
+    if (size > 0)
+    {
+/*
+#ifdef _MSC_VER
+        memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buff, size);
+#else
+        memcpy(buffer_ + MaxHeaderSize, buff, size);
+#endif
+        size_ = static_cast<uint16_t>(size);
+        pos_ = MaxHeaderSize;
+        headerPos_ = MaxHeaderSize;
+        */
+        return true;
+    }
+    return false;
 }
 
 }

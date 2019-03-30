@@ -13,6 +13,7 @@ ProtocolGame::ProtocolGame(Crypto::DHKeys& keys) :
     updateTick_(0)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
+    compressionEnabled_ = ENABLE_GAME_COMPRESSION;
     encryptEnabled_ = ENABLE_GAME_ENCRYTION;
     SetEncKey(AB::ENC_KEY);
 }

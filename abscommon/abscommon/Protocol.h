@@ -14,6 +14,7 @@ protected:
     std::weak_ptr<Connection> connection_;
     std::shared_ptr<OutputMessage> outputBuffer_;
     bool checksumEnabled_;
+    bool compressionEnabled_;
     bool encryptionEnabled_;
     DH_KEY encKey_;
     void XTEAEncrypt(OutputMessage& msg) const;
@@ -31,6 +32,7 @@ public:
     explicit Protocol(std::shared_ptr<Connection> connection) :
         connection_(connection),
         checksumEnabled_(false),
+        compressionEnabled_(false),
         encryptionEnabled_(false)
     {
     }

@@ -4,6 +4,7 @@ namespace Client {
 
 class Protocol;
 
+/// Message to write to the network
 class OutputMessage
 {
 public:
@@ -62,6 +63,8 @@ public:
 
     void AddString(const std::string& value);
     void AddStringEncrypted(const std::string& value);
+
+    bool Compress();
 };
 
 }

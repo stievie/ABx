@@ -9,6 +9,7 @@ Creator: sa 2017-2019
 * DH key exchange https://github.com/thejinchao/dhexchange
 * Catch2 https://github.com/catchorg/Catch2
 * stb https://github.com/nothings/stb
+* LZ4 https://github.com/lz4/lz4
 
 ## Server
 

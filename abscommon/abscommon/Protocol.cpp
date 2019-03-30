@@ -40,11 +40,12 @@ void Protocol::OnSendMessage(const std::shared_ptr<OutputMessage>& message) cons
     if (encryptionEnabled_)
     {
         XTEAEncrypt(*message);
-        message->AddCryptoHeader(checksumEnabled_);
     }
-    else if (checksumEnabled_)
+    if (compressionEnabled_)
+        message->Compress();
+    if (encryptionEnabled_ || checksumEnabled_)
     {
-        message->AddCryptoHeader(true);
+        message->AddCryptoHeader(checksumEnabled_);
     }
 }
 
@@ -53,6 +54,8 @@ void Protocol::OnRecvMessage(NetworkMessage& message)
 #ifdef DEBUG_NET
 //    LOG_DEBUG << "Receiving message with size " << message.GetMessageLength() << std::endl;
 #endif
+    if (compressionEnabled_)
+        message.Uncompress();
 
     if (encryptionEnabled_)
     {

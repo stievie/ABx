@@ -182,7 +182,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         case InputType::UseSkill:
         {
-            if (!owner_.IsImmobilized())
+            if (!owner_.IsDead())
             {
                 // The index of the skill in the users skill bar, 0 based
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();

@@ -2,6 +2,7 @@
 #include "NetworkMessage.h"
 #include <abcrypto.hpp>
 #include <AB/ProtocolCodes.h>
+#include <lz4.h>
 
 namespace Net {
 
@@ -127,6 +128,48 @@ void NetworkMessage::AddStringEncrypted(const std::string& value)
     std::string encString(buff, len);
     AddString(encString);
     delete[] buff;
+}
+
+bool NetworkMessage::Compress()
+{
+    char buff[NETWORKMESSAGE_MAXSIZE];
+    const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
+    int size = LZ4_compress_default(src, buff, GetSize(), NETWORKMESSAGE_MAXSIZE);
+    if (size > 0)
+    {
+/*
+#ifdef _MSC_VER
+        memcpy_s(buffer_ + HeaderLength, NETWORKMESSAGE_MAXSIZE, buff, size);
+#else
+        memcpy(buffer_ + HeaderLength, buff, size);
+#endif
+        info_.position = INITIAL_BUFFER_POSITION;
+        info_.length = size;
+        */
+        return true;
+    }
+    return false;
+}
+
+bool NetworkMessage::Uncompress()
+{
+    char buff[NETWORKMESSAGE_MAXSIZE];
+    const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
+    int size = LZ4_decompress_safe(src, buff, GetSize(), NETWORKMESSAGE_MAXSIZE);
+    if (size > 0)
+    {
+        /*
+#ifdef _MSC_VER
+        memcpy_s(buffer_ + HeaderLength, NETWORKMESSAGE_MAXSIZE, buff, size);
+#else
+        memcpy(buffer_ + HeaderLength, buff, size);
+#endif
+        info_.position = INITIAL_BUFFER_POSITION;
+        info_.length = size;
+        */
+        return true;
+    }
+    return true;
 }
 
 }

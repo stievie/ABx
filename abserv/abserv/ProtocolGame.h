@@ -39,6 +39,7 @@ public:
         Protocol(connection)
     {
         checksumEnabled_ = ProtocolGame::UseChecksum;
+        compressionEnabled_ = ENABLE_GAME_COMPRESSION;
         encryptionEnabled_ = ENABLE_GAME_ENCRYTION;
         // TODO:
         SetEncKey(AB::ENC_KEY);

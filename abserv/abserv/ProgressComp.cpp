@@ -39,9 +39,11 @@ void ProgressComp::Write(Net::NetworkMessage& message)
 
 void ProgressComp::Died()
 {
-    owner_.VisitEnemiesInRange(Ranges::Aggro, [&](const Actor* actor)
+    // When we die all Enemies in range get XP for that
+    owner_.VisitEnemiesInRange(Ranges::Aggro, [this](const Actor* actor)
     {
         if (!actor->IsDead())
+            // Actors get only XP for kills when they are not dead
             actor->progressComp_->AddXpForKill(&owner_);
     });
 }
@@ -56,7 +58,7 @@ void ProgressComp::AddXp(int value)
     owner_.AddXp(value);
     items_.push_back({ ProgressType::XPIncrease, value });
 
-    uint32_t level = owner_.GetLevel();
+    const uint32_t level = owner_.GetLevel();
     if (level < LEVEL_CAP)
     {
         unsigned nextLevel = level * 600 + 1400;

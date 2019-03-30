@@ -23,6 +23,7 @@ private:
 protected:
     std::shared_ptr<Connection> connection_;
     bool checksumEnabled_;
+    bool compressionEnabled_;
     bool encryptEnabled_;
     // Our (client) key pair
     Crypto::DHKeys& keys_;

@@ -62,6 +62,11 @@ AB::GameProtocol::SkillError SkillBar::UseSkill(int index, std::shared_ptr<Actor
 
     if (s->IsChangingState())
     {
+        if (owner_.IsKnockedDown())
+        {
+            // Can only use skills like Stances, Shouts when knocked down
+            return AB::GameProtocol::SkillErrorCannotUseSkill;
+        }
         // If changing state cancel old skill. Only one changing state skill at a time.
         Skill* oldSkill = GetCurrentSkill();
         if (oldSkill && oldSkill->IsUsing())

@@ -4,6 +4,7 @@ namespace Client {
 
 class Protocol;
 
+/// Message read from network
 class InputMessage
 {
 public:
@@ -64,6 +65,7 @@ public:
         pos_ += sizeof(T);
         return v;
     }
+    bool Uncompress();
 };
 
 }

@@ -44,9 +44,8 @@ void CollisionComp::ResolveCollisions()
 
 void CollisionComp::Update(uint32_t)
 {
-    MoveComp* mc = owner_.moveComp_.get();
-
-    if (mc && mc->moved_)
+    assert(owner_.moveComp_);
+    if (owner_.moveComp_->moved_)
         ResolveCollisions();
 }
 

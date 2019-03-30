@@ -22,6 +22,8 @@ enum ProtocolIds : uint8_t
 };
 
 #define ENABLE_GAME_ENCRYTION true
+// TODO:
+#define ENABLE_GAME_COMPRESSION false
 
 const uint32_t ENC_KEY[4] = {
     0xd705d09f,

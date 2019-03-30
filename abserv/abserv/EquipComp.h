@@ -10,7 +10,6 @@ class Actor;
 namespace Components {
 
 /// Equipment, like Armor, weapons, weapon mods etc.
-/// All this stuff adds effects to the actor. These effects are not visible in the clients effects window.
 class EquipComp
 {
 private:
@@ -28,13 +27,14 @@ public:
 
     void Update(uint32_t timeElapsed);
 
-    /// Set upgrade
     void SetItem(std::unique_ptr<Item> item);
     Item* GetItem(EquipPos pos) const;
     std::vector<Item*> GetItems() const;
+
     void RemoveItem(EquipPos pos);
     void SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index);
     void RemoveUpgrade(EquipPos pos, ItemUpgrade type);
+
     /// Get lead hand weapon
     Item* GetWeapon() const;
     int GetArmor(DamageType damageType, DamagePos pos);
