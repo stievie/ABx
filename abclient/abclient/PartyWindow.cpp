@@ -607,6 +607,8 @@ void PartyWindow::HandlePartyInfoMembers(StringHash, VariantMap& eventData)
 
 void PartyWindow::HandleLeaveInstance(StringHash, VariantMap&)
 {
+    // These are added with their new ID when they spawn
+    members_.Clear();
     ClearInvitations();
     ClearInvites();
 }
