@@ -53,7 +53,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("IsMoving", &Actor::IsMoving)
         .addFunction("RemoveEffect", &Actor::_LuaRemoveEffect)
         .addFunction("GetLastEffect", &Actor::_LuaGetLastEffect)
-        .addFunction("IsAttacking", &Actor::IsAttacking)
+        .addFunction("IsHitting", &Actor::IsHitting)
         .addFunction("IsImmobilized", &Actor::IsImmobilized)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
@@ -414,7 +414,7 @@ bool Actor::IsInWeaponRange(Actor* actor) const
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return false;
+        return GetDistance(actor) <= RANGE_TOUCH;
     const float range = weapon->GetWeaponRange();
     if (range == 0.0f)
         return false;
@@ -447,7 +447,7 @@ uint32_t Actor::GetAttackSpeed()
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return 0;
+        return ATTACK_SPEED_STAFF;
     const uint32_t speed = weapon->GetWeaponAttackSpeed();
     uint32_t modSpeed = speed;
     effectsComp_->GetAttackSpeed(weapon, modSpeed);
@@ -464,7 +464,8 @@ DamageType Actor::GetAttackDamageType()
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return DamageType::Unknown;
+        // No weapon makes Slashing damage
+        return DamageType::Slashing;
     DamageType type = DamageType::Unknown;
     weapon->GetWeaponDamageType(type);
     effectsComp_->GetAttackDamageType(type);
@@ -475,7 +476,7 @@ int32_t Actor::GetAttackDamage(bool critical)
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return 0;
+        return 5;   // make small damage without weapon, maybe with feasts :D
     int32_t damage = 0;
     // Get weapon damage with mods
     weapon->GetWeaponDamage(damage, critical);
@@ -538,9 +539,6 @@ void Actor::SetResource(Components::ResourceType type, Components::SetValueType 
 
 bool Actor::OnAttack(Actor* target)
 {
-    Item* weapon = GetWeapon();
-    if (!weapon)
-        return false;
     bool result = true;
     effectsComp_->OnAttack(target, result);
     return result;

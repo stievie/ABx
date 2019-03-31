@@ -124,7 +124,7 @@ enum CreatureState : uint8_t
     CreatureStateMoving = 2,
     CreatureStateUsingSkill = 3,
     CreatureStateAttacking = 4,
-    CreatureStateKnockedDown = 4,
+    CreatureStateKnockedDown = 5,
     CreatureStateEmote = 6,
     CreatureStateEmoteSit = 7,
 

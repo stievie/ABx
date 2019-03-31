@@ -32,6 +32,7 @@ static const StringHash ANIM_TAUNTING("Taunting");
 static const StringHash ANIM_PONDER("Ponder");
 static const StringHash ANIM_WAVE("Wave");
 static const StringHash ANIM_LAUGH("Laugh");
+static const StringHash ANIM_ATTACK("Attack");
 
 /// Stop playing current sound
 static const StringHash SOUND_NONE("None");
@@ -117,7 +118,6 @@ private:
     void UpdateTransformation();
     void AddActorUI();
     void RemoveActorUI();
-    void ShowSpeechBubble(const String& text);
     void HideSpeechBubble();
     String GetAnimation(const StringHash& hash);
     String GetSoundEffect(const StringHash& hash);
@@ -159,6 +159,14 @@ public:
     }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
     void PlayStateAnimation(float fadeTime = 0.2f);
+    void ShowSpeechBubble(const String& text);
 
     void ChangeResource(AB::GameProtocol::ResourceType resType, int32_t value);
+
+    bool IsEnemy(Actor* other) const
+    {
+        if (!other)
+            return false;
+        return (other->groupId_ != groupId_);
+    }
 };

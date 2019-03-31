@@ -199,6 +199,12 @@ void Player::FollowSelected()
     }
 }
 
+void Player::Attack()
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+    client->Attack();
+}
+
 void Player::GotoPosition(const Vector3& pos)
 {
     FwClient* client = context_->GetSubsystem<FwClient>();

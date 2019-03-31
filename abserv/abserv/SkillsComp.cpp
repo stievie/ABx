@@ -35,15 +35,21 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
     // But a target is not mandatory, the Skill script will decide
     // if it needs a target, and may fail.
     SkillBar* sb = owner_.GetSkillBar();
-    lastSkill_ = sb->GetSkill(index);
+    auto skill = sb->GetSkill(index);
     lastError_ = sb->UseSkill(index, target);
     usingSkill_ = lastError_ == AB::GameProtocol::SkillErrorNone;
     lastSkillIndex_ = index;
     lastSkillTime_ = Utils::Tick();
+    lastSkill_ = skill;
     startDirty_ = true;
     endDirty_ = false;
     if (usingSkill_ && ping)
-        owner_.OnPingObject(target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
+    {
+        uint32_t targetId = 0;
+        if (skill->HasTarget(SkillTargetTarget))
+            targetId = target ? target->id_ : 0;
+        owner_.OnPingObject(targetId, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
+    }
     return lastError_;
 }
 

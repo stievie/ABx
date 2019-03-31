@@ -705,8 +705,16 @@ void WorldLevel::HandleHideUI(StringHash, VariantMap&)
 
 void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
 {
-    // TODO: Follow or Attack
-    player_->FollowSelected();
+    auto sel = player_->GetSelectedObject();
+    if (!sel)
+        return;
+    Actor* a = dynamic_cast<Actor*>(sel.Get());
+    if (!a)
+        return;
+    if (player_->IsEnemy(a))
+        player_->Attack();
+    else
+        player_->FollowSelected();
 }
 
 void WorldLevel::HandleKeepRunning(StringHash, VariantMap&)

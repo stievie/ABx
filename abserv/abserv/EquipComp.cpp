@@ -9,7 +9,8 @@ void EquipComp::Update(uint32_t timeElapsed)
 {
     for (const auto& item : items_)
     {
-        item.second->Update(timeElapsed);
+        if (item.second)
+            item.second->Update(timeElapsed);
     }
 }
 
@@ -37,7 +38,8 @@ std::vector<Item*> EquipComp::GetItems() const
 {
     std::vector<Item*> result;
     for (const auto& i : items_)
-        result.push_back(i.second.get());
+        if (i.second)
+            result.push_back(i.second.get());
     return result;
 }
 
@@ -126,7 +128,8 @@ uint32_t EquipComp::GetAttributeValue(uint32_t index)
     uint32_t result = 0;
     for (const auto& item : items_)
     {
-        item.second->GetAttributeValue(index, result);
+        if (item.second)
+            item.second->GetAttributeValue(index, result);
     }
     return result;
 }

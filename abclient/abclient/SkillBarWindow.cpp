@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SkillBarWindow.h"
 #include "FwClient.h"
+#include "SkillManager.h"
 
 void SkillBarWindow::RegisterObject(Context* context)
 {
@@ -68,14 +69,14 @@ void SkillBarWindow::SetSkills(const AB::SkillIndices& skills)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* defTexture = cache->GetResource<Texture2D>("Textures/UI.png");
-    FwClient* client = GetSubsystem<FwClient>();
+    SkillManager* sm = GetSubsystem<SkillManager>();
     skills_ = skills;
     uint32_t i = 1;
     for (const auto& s : skills_)
     {
         bool iconSet = false;
         Button* btn = GetButtonFromIndex(i);
-        const AB::Entities::Skill* skill = client->GetSkillByIndex(s);
+        const AB::Entities::Skill* skill = sm->GetSkillByIndex(s);
         if (skill)
         {
             Texture2D* icon = cache->GetResource<Texture2D>(String(skill->icon.c_str()));

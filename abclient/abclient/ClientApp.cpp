@@ -36,7 +36,6 @@
 #include "CreditsWindow.h"
 #include "PartyItem.h"
 #include "HealthBar.h"
-#include "Ocean.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -121,6 +120,8 @@ ClientApp::ClientApp(Context* context) :
     context->RegisterSubsystem(client_);
     itemsCache_ = new ItemsCache(context);
     context->RegisterSubsystem(itemsCache_);
+    skillsManager_ = new SkillManager(context);
+    context->RegisterSubsystem(skillsManager_);
     levelManager_ = new LevelManager(context);
     context->RegisterSubsystem(levelManager_);
     audioManager_ = new AudioManager(context);
@@ -154,8 +155,6 @@ ClientApp::ClientApp(Context* context) :
     GameMessagesWindow::RegisterObject(context);
     EffectsWindow::RegisterObject(context);
     CreditsWindow::RegisterObject(context);
-    Ocean::RegisterObject(context);
-    DStaticModel::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));

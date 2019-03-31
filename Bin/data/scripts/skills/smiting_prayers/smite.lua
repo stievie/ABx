@@ -47,7 +47,7 @@ function onSuccess(source, target)
   end
   local attribVal = source:GetAttributeValue(ATTRIB_SMITING)
   local damage = 10 + (attribVal * 3)
-  if (target:IsAttacking()) then
+  if (target:IsHitting()) then
     damage = damage + (10 + (attribVal * 1.5))
   end
   target:ApplyDamage(source, self:Index(), damageType, damage, 0)

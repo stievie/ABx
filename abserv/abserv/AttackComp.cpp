@@ -7,19 +7,84 @@
 namespace Game {
 namespace Components {
 
+bool AttackComp::CheckRange()
+{
+    auto target = target_.lock();
+    if (!target)
+        return false;
+
+    Item* item = owner_.GetWeapon();
+    if (item)
+    {
+        float dist = item->GetWeaponRange();
+        if (owner_.GetDistance(target.get()) <= dist)
+            return true;
+    }
+    return owner_.IsInRange(Ranges::Touch, target.get());
+}
+
 void AttackComp::Update(uint32_t /* timeElapsed */)
 {
+    if (!attacking_)
+        return;
+
+    auto target = target_.lock();
+    if (target)
+    {
+        if (target->IsDead())
+        {
+            // We can stop hitting to this target now :(
+            attacking_ = false;
+            SetAttackState(false);
+            return;
+        }
+    }
+    else
+    {
+        // Gone
+        attacking_ = false;
+        SetAttackState(false);
+        return;
+    }
+    // We need to move to the target
+    if (!CheckRange())
+    {
+        if (!owner_.autorunComp_.autoRun_)
+        {
+            if (owner_.autorunComp_.Follow(target, false))
+            {
+                owner_.followedObject_ = target;
+                owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
+                owner_.autorunComp_.autoRun_ = true;
+            }
+            else
+            {
+                // No way to get to target
+                attacking_ = false;
+                SetAttackState(false);
+            }
+        }
+        return;
+    }
+    else
+    {
+        owner_.autorunComp_.Reset();
+        SetAttackState(true);
+    }
+
+    // We are in range of the target -> can start attacking it
     if (IsAttackState())
     {
-        if (!attacking_)
+        if (!hitting_)
         {
             // New attack
             attackSpeed_ = owner_.GetAttackSpeed();
             interrupted_ = false;
+            owner_.FaceObject(target.get());
             if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_ / 2)
             {
                 lastAttackTime_ = Utils::Tick();
-                attacking_ = true;
+                hitting_ = true;
                 damageType_ = owner_.GetAttackDamageType();
             }
         }
@@ -29,7 +94,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
             if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_)
             {
                 // Done attack -> apply damage
-                attacking_ = false;
+                hitting_ = false;
                 if (interrupted_)
                 {
                     lastError_ = AB::GameProtocol::AttackErrorInterrupted;
@@ -37,30 +102,27 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
                 }
                 else
                 {
-                    if (auto t = target_.lock())
+                    const float criticalChance = owner_.GetCriticalChance(target.get());
+                    auto rnd = GetSubsystem<Crypto::Random>();
+                    bool critical = criticalChance >= rnd->GetFloat();
+                    // Critical hit -> always weapons max damage
+                    int32_t damage = owner_.GetAttackDamage(critical);
+                    // Source effects may modify the damage
+                    owner_.effectsComp_->GetDamage(damageType_, damage, critical);
+                    if (target->OnAttacked(&owner_, damageType_, damage))
                     {
-                        const float criticalChance = owner_.GetCriticalChance(t.get());
-                        auto rnd = GetSubsystem<Crypto::Random>();
-                        bool critical = criticalChance >= rnd->GetFloat();
-                        // Critical hit -> always weapons max damage
-                        int32_t damage = owner_.GetAttackDamage(critical);
-                        // Source effects may modify the damage
-                        owner_.effectsComp_->GetDamage(damageType_, damage, critical);
-                        if (t->OnAttacked(&owner_, damageType_, damage))
-                        {
-                            // Some effects may prevent attacks, e.g. blocking
-                            if (critical)
-                                // Some effect may prevent critical hits
-                                critical = t->OnGetCriticalHit(&owner_);
-                            if (critical)
-                                damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
-                            t->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
-                        }
-                        else
-                        {
-                            lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-                            owner_.OnInterruptedAttack();
-                        }
+                        // Some effects may prevent attacks, e.g. blocking
+                        if (critical)
+                            // Some effect may prevent critical hits
+                            critical = target->OnGetCriticalHit(&owner_);
+                        if (critical)
+                            damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
+                        target->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
+                    }
+                    else
+                    {
+                        lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+                        owner_.OnInterruptedAttack();
                     }
                 }
             }
@@ -81,6 +143,7 @@ void AttackComp::Write(Net::NetworkMessage& message)
 
 void AttackComp::Cancel()
 {
+    attacking_ = false;
     SetAttackState(false);
 }
 
@@ -107,7 +170,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
     target_ = target;
     if (ping)
         owner_.OnPingObject(target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
-    SetAttackState(true);
+    attacking_ = true;
     lastAttackTime_ = 0;
 }
 
@@ -118,7 +181,7 @@ bool AttackComp::IsAttackState() const
 
 void AttackComp::SetAttackState(bool value)
 {
-    if (IsAttackState())
+    if (IsAttackState() != value)
     {
         if (value)
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateAttacking);
@@ -129,7 +192,7 @@ void AttackComp::SetAttackState(bool value)
 
 bool AttackComp::Interrupt()
 {
-    if (attacking_)
+    if (hitting_)
     {
         interrupted_ = true;
         return true;

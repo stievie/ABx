@@ -63,6 +63,5 @@ void PvpCombatLevel::CreateScene()
     scene_->LoadXML(sceneFile->GetRoot());
 
     InitSunProperties();
-    InitOcean();
     InitModelAnimations();
 }

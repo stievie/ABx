@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Quest.h"
+
 namespace Game {
 
 class Player;
@@ -10,6 +12,7 @@ class QuestComp
 {
 private:
     Player& owner_;
+    std::vector<std::unique_ptr<Quest>> quests_;
 public:
     QuestComp() = delete;
     explicit QuestComp(Player& owner) :

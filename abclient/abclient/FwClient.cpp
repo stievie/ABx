@@ -13,6 +13,7 @@
 #include "ItemsCache.h"
 #include "TimeUtils.h"
 #include "AudioManager.h"
+#include "SkillManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -293,6 +294,7 @@ void FwClient::LoadSkills(uint32_t curVersion)
     if (!node)
         return;
 
+    SkillManager* sm = GetSubsystem<SkillManager>();
     for (const auto& pro : node.children("skill"))
     {
         AB::Entities::Skill skill;
@@ -308,7 +310,7 @@ void FwClient::LoadSkills(uint32_t curVersion)
         skill.soundEffect = pro.attribute("sound_effect").as_string();
         skill.particleEffect = pro.attribute("particle_effect").as_string();
 
-        skills_.emplace(skill.index, skill);
+        sm->skills_.emplace(skill.index, skill);
     }
 }
 
@@ -331,7 +333,8 @@ void FwClient::LoadAttributes(uint32_t curVersion)
 
 void FwClient::LoadProfessions(uint32_t curVersion)
 {
-    if (!professions_.empty())
+    SkillManager* sm = GetSubsystem<SkillManager>();
+    if (!sm->professions_.empty())
         return;
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Professions.xml");
@@ -365,7 +368,7 @@ void FwClient::LoadProfessions(uint32_t curVersion)
         {
             prof.attributeUuids.push_back(attr.attribute("uuid").as_string());
         }
-        professions_.emplace(prof.uuid, prof);
+        sm->professions_.emplace(prof.uuid, prof);
     }
 }
 
@@ -390,6 +393,7 @@ void FwClient::LoadEffects(uint32_t curVersion)
     if (!node)
         return;
 
+    SkillManager* sm = GetSubsystem<SkillManager>();
     for (const auto& pro : node.children("effect"))
     {
         AB::Entities::Effect effect;
@@ -401,7 +405,7 @@ void FwClient::LoadEffects(uint32_t curVersion)
         effect.soundEffect = pro.attribute("sound_effect").as_string();
         effect.particleEffect = pro.attribute("particle_effect").as_string();
 
-        effects_.emplace(effect.index, effect);
+        sm->effects_.emplace(effect.index, effect);
     }
 }
 

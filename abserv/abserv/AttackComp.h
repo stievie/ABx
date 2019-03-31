@@ -14,6 +14,7 @@ class AttackComp
 private:
     Actor& owner_;
     bool attacking_;
+    bool hitting_;
     int64_t lastAttackTime_;
     uint32_t attackSpeed_;
     DamageType damageType_;
@@ -21,11 +22,13 @@ private:
     AB::GameProtocol::AttackError lastError_;
     bool interrupted_;
     std::weak_ptr<Actor> target_;
+    bool CheckRange();
 public:
     AttackComp() = delete;
     explicit AttackComp(Actor& owner) :
         owner_(owner),
         attacking_(false),
+        hitting_(false),
         lastAttackTime_(0),
         attackSpeed_(0),
         damageType_(DamageType::Unknown),
@@ -39,7 +42,7 @@ public:
 
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message);
-    bool IsAttacking() const { return attacking_; }
+    bool IsHitting() const { return hitting_; }
     void Cancel();
     void Attack(std::shared_ptr<Actor> target, bool ping);
     int64_t GetLastAttackTime() const { return lastAttackTime_; }

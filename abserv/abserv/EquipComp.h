@@ -46,7 +46,8 @@ public:
     {
         for (const auto& o : items_)
         {
-            func(o.second.get());
+            if (o.second)
+                func(o.second.get());
         }
     }
 

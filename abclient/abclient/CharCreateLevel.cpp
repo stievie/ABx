@@ -6,6 +6,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Limits.h>
 #include "AudioManager.h"
+#include "SkillManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -62,9 +63,8 @@ void CharCreateLevel::CreateUI()
 
     professionDropdown_->GetPopup()->SetWidth(professionDropdown_->GetWidth());
     professionDropdown_->AddItem(CreateDropdownItem("(Select primary Profession)", ""));
-    FwClient* client = GetSubsystem<FwClient>();
     // Load local file or download from file server
-    const auto& profs = client->GetProfessions();
+    const auto& profs = GetSubsystem<SkillManager>()->GetProfessions();
     for (const auto& prof : profs)
     {
         if (prof.second.index != 0)
@@ -145,7 +145,8 @@ void CharCreateLevel::DoCreateCharacter()
     }
 
     FwClient* client = GetSubsystem<FwClient>();
-    const auto& profs = client->GetProfessions();
+    SkillManager* sm = GetSubsystem<SkillManager>();
+    const auto& profs = sm->GetProfessions();
     AB::Entities::CharacterSex _sex = static_cast<AB::Entities::CharacterSex>(sex);
     uint32_t modelIndex = 0;
     auto profIt = profs.find(std::string(prof.CString()));

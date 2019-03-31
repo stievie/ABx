@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EffectsWindow.h"
 #include "FwClient.h"
+#include "SkillManager.h"
 
 void EffectsWindow::RegisterObject(Context* context)
 {
@@ -35,8 +36,8 @@ EffectsWindow::~EffectsWindow()
 
 void EffectsWindow::EffectAdded(uint32_t effectIndex, uint32_t ticks)
 {
-    FwClient* client = GetSubsystem<FwClient>();
-    const AB::Entities::Effect* effect = client->GetEffectByIndex(effectIndex);
+    SkillManager* sm = GetSubsystem<SkillManager>();
+    const AB::Entities::Effect* effect = sm->GetEffectByIndex(effectIndex);
     if (!effect)
         return;
 

@@ -9,6 +9,7 @@
 #include "WindowManager.h"
 #include "Mumble.h"
 #include "AudioManager.h"
+#include "SkillManager.h"
 
 using namespace Urho3D;
 
@@ -39,6 +40,7 @@ private:
     SharedPtr<FwClient> client_;
     SharedPtr<Shortcuts> shortcuts_;
     SharedPtr<ItemsCache> itemsCache_;
+    SharedPtr<SkillManager> skillsManager_;
     SharedPtr<LevelManager> levelManager_;
     SharedPtr<WindowManager> windowManager_;
     SharedPtr<AudioManager> audioManager_;

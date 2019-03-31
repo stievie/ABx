@@ -5,7 +5,6 @@
 #include <Urho3D/UI/MessageBox.h>
 #include "FwClient.h"
 #include "ClientApp.h"
-#include "Ocean.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -52,17 +51,6 @@ void BaseLevel::ShowError(const String& message, const String& title)
 
 void BaseLevel::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
-    if (oceanNode_)
-    {
-        BoundingBox bbox = ocean_->GetBoundingBox();
-
-        if ((bbox.Size() - boundingBox_.Size()).Length() > 10.0f)
-        {
-            boundingBox_.Merge(bbox);
-            staticModelOcean_->DSetBoundingBox(boundingBox_);
-        }
-    }
-
     Update(eventType, eventData);
 }
 
@@ -129,31 +117,6 @@ void BaseLevel::InitSunProperties()
         URHO3D_LOGWARNING("No Sun node found");
 }
 
-void BaseLevel::InitOcean()
-{
-#ifdef OCEAN_SIMULATION
-    oceanNode_ = scene_->GetChild("Ocean", false);
-    if (oceanNode_)
-    {
-#ifdef ADD_WATER_REFLECTION
-        waterNode_ = scene_->CreateChild("Water");
-        waterNode_->SetScale(Vector3(2048.0f, 1.0f, 2048.0f));
-        waterNode_->SetPosition(Vector3(0.0f, 5.0f, 0.0f));
-#endif
-        ResourceCache* cache = GetSubsystem<ResourceCache>();
-        // Remove the static model
-        oceanNode_->RemoveComponent<StaticModel>();
-        oceanNode_->SetScale(Vector3(1.0f, 0.13f, 1.0f));
-        ocean_ = oceanNode_->CreateComponent<Ocean>();
-        ocean_->InitOcean();
-        staticModelOcean_ = oceanNode_->CreateComponent<DStaticModel>();
-        staticModelOcean_->SetModel(ocean_->GetOceanModel());
-        staticModelOcean_->SetMaterial(cache->GetResource<Material>("Materials/Ocean.xml"));
-        staticModelOcean_->SetViewMask(0x80000000);
-    }
-#endif
-}
-
 void BaseLevel::InitModelAnimations()
 {
     PODVector<Node*> nodes;
@@ -177,50 +140,6 @@ void BaseLevel::SetupViewport()
 
     viewport_ = new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>());
     renderer->SetViewport(0, viewport_);
-
-#if defined(OCEAN_SIMULATION) && defined(ADD_WATER_REFLECTION)
-    // Ocean Water reflection
-    Graphics* graphics = GetSubsystem<Graphics>();
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    if (oceanNode_)
-    {
-        // Create a mathematical plane to represent the water in calculations
-        waterPlane_ = Plane(waterNode_->GetWorldRotation() * Vector3(0.0f, 1.0f, 0.0f), waterNode_->GetWorldPosition());
-        // Create a downward biased plane for reflection view clipping. Biasing is necessary to avoid too aggressive clipping
-        waterClipPlane_ = Plane(waterNode_->GetWorldRotation() * Vector3(0.0f, 1.0f, 0.0f), waterNode_->GetWorldPosition() -
-            Vector3(0.0f, 0.1f, 0.0f));
-
-        // Create camera for water reflection
-        // It will have the same farclip and position as the main viewport camera, but uses a reflection plane to modify
-        // its position when rendering
-        reflectionCameraNode_ = cameraNode_->CreateChild();
-        Camera* reflectionCamera = reflectionCameraNode_->CreateComponent<Camera>();
-        reflectionCamera->SetFarClip(750.0);
-        reflectionCamera->SetViewMask(0x7fffffff); // Hide objects with only bit 31 in the viewmask (the water plane)
-        reflectionCamera->SetAutoAspectRatio(false);
-        reflectionCamera->SetUseReflection(true);
-        reflectionCamera->SetReflectionPlane(waterPlane_);
-        reflectionCamera->SetUseClipping(true); // Enable clipping of geometry behind water plane
-        reflectionCamera->SetClipPlane(waterClipPlane_);
-        // The water reflection texture is rectangular. Set reflection camera aspect ratio to match
-        reflectionCamera->SetAspectRatio((float)graphics->GetWidth() / (float)graphics->GetHeight());
-        // View override flags could be used to optimize reflection rendering. For example disable shadows
-        //reflectionCamera->SetViewOverrideFlags(VO_DISABLE_SHADOWS);
-
-        // Create a texture and setup viewport for water reflection. Assign the reflection texture to the diffuse
-        // texture unit of the water material
-        int texSize = 1024;
-        SharedPtr<Texture2D> renderTexture(new Texture2D(context_));
-        renderTexture->SetSize(texSize, texSize, Graphics::GetRGBFormat(), TEXTURE_RENDERTARGET);
-        renderTexture->SetFilterMode(FILTER_BILINEAR);
-        RenderSurface* surface = renderTexture->GetRenderSurface();
-        SharedPtr<Viewport> rttViewport(new Viewport(context_, scene_, reflectionCamera));
-        surface->SetViewport(0, rttViewport);
-        Material* waterMat = cache->GetResource<Material>("Materials/Water.xml");
-        waterMat->SetTexture(TU_DIFFUSE, renderTexture);
-    }
-    // /Ocean Water reflection
-#endif
 
     postProcess_ = scene_->CreateComponent<PostProcessController>();
     postProcess_->AddViewport(viewport_, true);

@@ -13,6 +13,7 @@
 #include "Shortcuts.h"
 #include <AB/Entities/Skill.h>
 #include "HealthBar.h"
+#include "SkillManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -76,6 +77,7 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_PONDER] = GetAnimation(ANIM_PONDER);
     animations_[ANIM_WAVE] = GetAnimation(ANIM_WAVE);
     animations_[ANIM_LAUGH] = GetAnimation(ANIM_LAUGH);
+    animations_[ANIM_ATTACK] = GetAnimation(ANIM_ATTACK);
     sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
@@ -466,6 +468,8 @@ String Actor::GetAnimation(const StringHash& hash)
         result += "Wave.ani";
     else if (hash == ANIM_LAUGH)
         result += "Laugh.ani";
+    else if (hash == ANIM_ATTACK)
+        result += "Attack.ani";
     else
         return "";
     return result;
@@ -581,8 +585,7 @@ void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
     if (skillIndex < 1 || skillIndex > PLAYER_MAX_SKILLS)
         return;
     uint32_t skill = skills_[skillIndex - 1];
-    FwClient* client = GetSubsystem<FwClient>();
-    const AB::Entities::Skill* pSkill = client->GetSkillByIndex(skill);
+    const AB::Entities::Skill* pSkill = GetSubsystem<SkillManager>()->GetSkillByIndex(skill);
     if (pSkill)
     {
         if (!pSkill->soundEffect.empty())
@@ -619,8 +622,8 @@ void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
     if (id != id_)
         return;
     uint32_t effectIndex = eventData[P_EFFECTINDEX].GetUInt();
-    FwClient* client = GetSubsystem<FwClient>();
-    const AB::Entities::Effect* pEffect = client->GetEffectByIndex(effectIndex);
+    SkillManager* sm = GetSubsystem<SkillManager>();
+    const AB::Entities::Effect* pEffect = sm->GetEffectByIndex(effectIndex);
     if (pEffect)
     {
         if (!pEffect->soundEffect.empty())
@@ -682,6 +685,7 @@ void Actor::PlayStateAnimation(float fadeTime)
         PlayAnimation(ANIM_CASTING, true, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateAttacking:
+        PlayAnimation(ANIM_ATTACK, true, fadeTime);
         break;
     case AB::GameProtocol::CreatureStateEmote:
         break;
@@ -806,19 +810,19 @@ void Actor::Unserialize(PropReadStream& data)
     if (data.ReadString(str))
         name_ = String(str.data(), static_cast<unsigned>(str.length()));
     uint8_t s;
-    FwClient* client = GetSubsystem<FwClient>();
+    SkillManager* sm = GetSubsystem<SkillManager>();
     data.Read(level_);
     if (data.Read(s))
         sex_ = static_cast<AB::Entities::CharacterSex>(s);
     {
         uint32_t p;
         data.Read(p);
-        profession_ = client->GetProfessionByIndex(p);
+        profession_ = sm->GetProfessionByIndex(p);
     }
     {
         uint32_t p;
         data.Read(p);
-        profession2_ = client->GetProfessionByIndex(p);
+        profession2_ = sm->GetProfessionByIndex(p);
     }
     data.Read(modelIndex_);
     std::string skills;
@@ -883,10 +887,9 @@ bool Actor::LoadSkillTemplate(const std::string& templ)
     AB::SkillIndices skills;
     if (!AB::TemplEncoder::Decode(templ, p1, p2, attribs, skills))
         return false;
-    FwClient* client = GetSubsystem<FwClient>();
     attributes_ = attribs;
     skills_ = skills;
-    profession2_ = client->GetProfessionByIndex(p2.index);
+    profession2_ = GetSubsystem<SkillManager>()->GetProfessionByIndex(p2.index);
     return true;
 }
 

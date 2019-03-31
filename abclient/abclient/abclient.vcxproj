@@ -260,7 +260,6 @@
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
-    <ClCompile Include="ComplexFFT.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
@@ -282,7 +281,6 @@
     <ClCompile Include="MultiLineEdit.cpp" />
     <ClCompile Include="Mumble.cpp" />
     <ClCompile Include="NewMailWindow.cpp" />
-    <ClCompile Include="Ocean.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OptionsWindow.cpp" />
     <ClCompile Include="OutpostLevel.cpp" />
@@ -294,6 +292,7 @@
     <ClCompile Include="PvpCombatLevel.cpp" />
     <ClCompile Include="Shortcuts.cpp" />
     <ClCompile Include="SkillBarWindow.cpp" />
+    <ClCompile Include="SkillManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -313,7 +312,6 @@
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="AbEvents.h" />
     <ClInclude Include="BaseLevel.h" />
-    <ClInclude Include="ComplexFFT.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="CreditsWindow.h" />
@@ -340,7 +338,6 @@
     <ClInclude Include="MultiLineEdit.h" />
     <ClInclude Include="Mumble.h" />
     <ClInclude Include="NewMailWindow.h" />
-    <ClInclude Include="Ocean.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OptionsWindow.h" />
     <ClInclude Include="OutpostLevel.h" />
@@ -353,6 +350,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shortcuts.h" />
     <ClInclude Include="SkillBarWindow.h" />
+    <ClInclude Include="SkillManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TabGroup.h" />
     <ClInclude Include="targetver.h" />

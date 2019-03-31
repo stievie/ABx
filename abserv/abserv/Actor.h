@@ -21,6 +21,20 @@
 
 namespace Game {
 
+/// 8 different groups in one game possible
+enum class GroupMaskFlags : uint8_t
+{
+    GroupNone = 0,
+    Group1 = 1,
+    Group2 = 1 << 1,
+    Group3 = 1 << 2,
+    Group4 = 1 << 3,
+    Group5 = 1 << 4,
+    Group6 = 1 << 5,
+    Group7 = 1 << 6,
+    Group8 = 1 << 7
+};
+
 /// Player, NPC, Monster some such
 class Actor : public GameObject
 {
@@ -134,7 +148,8 @@ public:
     void SetSpeed(float value) { moveComp_->SetSpeedFactor(value); }
     void AddSpeed(float value) { moveComp_->AddSpeed(value); }
     bool IsMoving() const { return moveComp_->IsMoving(); }
-    bool IsAttacking() const { return attackComp_.IsAttacking(); }
+    /// Attack hit
+    bool IsHitting() const { return attackComp_.IsHitting(); }
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
     bool IsInWeaponRange(Actor* actor) const;

@@ -9,6 +9,7 @@
 #include "Options.h"
 #include "LevelManager.h"
 #include "Player.h"
+#include "SkillManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -558,12 +559,14 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     {
         if (skillIndex <= 0)
             return;
-        FwClient* client = GetSubsystem<FwClient>();
-        const AB::Entities::Skill* skill = client->GetSkillByIndex(pinger->skills_[skillIndex - 1]);
-        message += " using " + String(skill->name.c_str()) + " on " + target->name_;
+        const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[skillIndex - 1]);
+        message += " using " + String(skill->name.c_str());
+        if (target)
+            message += " on " + target->name_;
     }
     }
     AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannelParty);
+    pinger->ShowSpeechBubble(message);
 }
 
 bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)
