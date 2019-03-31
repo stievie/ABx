@@ -144,7 +144,6 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             {
                 AB::GameProtocol::CreatureState state =
                     static_cast<AB::GameProtocol::CreatureState>(input.data[InputDataState].GetInt());
-                owner_.attackComp_.Cancel();
                 owner_.stateComp_.SetState(state);
             }
             break;

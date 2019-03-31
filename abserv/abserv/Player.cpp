@@ -688,6 +688,8 @@ void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& 
 
 void Player::HandleSitCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (attackComp_.IsAttackState())
+        attackComp_.Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteSit);
 }
 
@@ -699,26 +701,36 @@ void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (attackComp_.IsAttackState())
+        attackComp_.Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteCry);
 }
 
 void Player::HandleTauntCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (attackComp_.IsAttackState())
+        attackComp_.Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteTaunt);
 }
 
 void Player::HandlePonderCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (attackComp_.IsAttackState())
+        attackComp_.Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmotePonder);
 }
 
 void Player::HandleWaveCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (attackComp_.IsAttackState())
+        attackComp_.Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteWave);
 }
 
 void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (attackComp_.IsAttackState())
+        attackComp_.Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteLaugh);
 }
 

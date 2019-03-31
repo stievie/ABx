@@ -715,6 +715,7 @@ bool Actor::Die()
 {
     if (!IsDead())
     {
+        attackComp_.Cancel();
         stateComp_.SetState(AB::GameProtocol::CreatureStateDead);
         resourceComp_.SetHealth(Components::SetValueType::Absolute, 0);
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
