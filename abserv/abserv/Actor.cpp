@@ -384,8 +384,12 @@ Item* Actor::GetWeapon() const
 void Actor::OnEndUseSkill(Skill* skill)
 {
     // These change the state
-    if (skill->IsChangingState() && !stateComp_.IsDead())
-        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+    if (skill->IsChangingState())
+    {
+        attackComp_.Pause(false);
+        if (!stateComp_.IsDead())
+            stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
+    }
 }
 
 void Actor::OnStartUseSkill(Skill* skill)
@@ -393,6 +397,7 @@ void Actor::OnStartUseSkill(Skill* skill)
     // These change the state
     if (skill->IsChangingState())
     {
+        attackComp_.Pause();
         autorunComp_.Reset();
         stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
     }

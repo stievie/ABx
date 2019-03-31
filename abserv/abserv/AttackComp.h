@@ -13,8 +13,10 @@ class AttackComp
 {
 private:
     Actor& owner_;
+    /// Also includes running to the target
     bool attacking_;
     bool hitting_;
+    bool pause_;
     int64_t lastAttackTime_;
     uint32_t attackSpeed_;
     DamageType damageType_;
@@ -29,6 +31,7 @@ public:
         owner_(owner),
         attacking_(false),
         hitting_(false),
+        pause_(false),
         lastAttackTime_(0),
         attackSpeed_(0),
         damageType_(DamageType::Unknown),
@@ -49,6 +52,7 @@ public:
     bool IsAttackState() const;
     void SetAttackState(bool value);
     bool Interrupt();
+    void Pause(bool value = true);
 };
 
 }

@@ -25,7 +25,7 @@ bool AttackComp::CheckRange()
 
 void AttackComp::Update(uint32_t /* timeElapsed */)
 {
-    if (!attacking_)
+    if (!attacking_ || pause_)
         return;
 
     auto target = target_.lock();
@@ -198,6 +198,11 @@ bool AttackComp::Interrupt()
         return true;
     }
     return false;
+}
+
+void AttackComp::Pause(bool value)
+{
+    pause_ = value;
 }
 
 }

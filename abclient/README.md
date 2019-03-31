@@ -38,6 +38,7 @@ bindings are:
 * `Q`: Move left
 * `E`: Move right
 * `R`: Keep running
+* `Space`: Default action, attack or follow
 * `Y`: Reverse camera
 * `F`: Select self
 * `Space`: Goto selected object or follow selected object when it's moving
@@ -45,6 +46,7 @@ bindings are:
 * `PrtScr`: Take screenshot
 * `^`: Show/hide chat window
 * `Backspace`: Hide UI
+* `Pause`: Mute audio
 
 Other shortcuts are shown in `[` `]`.
 
