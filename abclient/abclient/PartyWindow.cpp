@@ -59,6 +59,8 @@ PartyWindow::PartyWindow(Context* context) :
 
     SetStyleAuto();
 
+    SetMode(PartyWindowMode::ModeOutpost);
+
     SubscribeEvents();
 }
 
@@ -99,9 +101,6 @@ void PartyWindow::SetPartySize(uint8_t value)
 
 void PartyWindow::SetMode(PartyWindowMode mode)
 {
-    if (mode_ == mode)
-        return;
-
     mode_ = mode;
     auto* buttonContainer = dynamic_cast<UIElement*>(GetChild("ButtonContainer", true));
     Button* addPlayerButton = dynamic_cast<Button*>(GetChild("AddPlayerButton", true));
