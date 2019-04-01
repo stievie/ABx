@@ -84,6 +84,7 @@ void Shortcuts::Init()
 
     // Select
     shortcuts_[AbEvents::E_SC_SELECTSELF] = ShortcutEvent(AbEvents::E_SC_SELECTSELF, "Select Self", Trigger::Down);
+    shortcuts_[AbEvents::E_SC_SELECTTARGET] = ShortcutEvent(AbEvents::E_SC_SELECTTARGET, "Select Target", Trigger::Down, "Select called target");
     shortcuts_[AbEvents::E_SC_SELECTNEXTFOE] = ShortcutEvent(AbEvents::E_SC_SELECTNEXTFOE, "Select next Foe", Trigger::Down);
     shortcuts_[AbEvents::E_SC_SELECTPREVFOE] = ShortcutEvent(AbEvents::E_SC_SELECTPREVFOE, "Select previous Foe", Trigger::Down);
     shortcuts_[AbEvents::E_SC_SELECTNEXTALLY] = ShortcutEvent(AbEvents::E_SC_SELECTNEXTALLY, "Select next Ally", Trigger::Down);
@@ -166,6 +167,7 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_CANCEL, { KEY_ESCAPE });
 
     Add(AbEvents::E_SC_SELECTSELF, { KEY_F });
+    Add(AbEvents::E_SC_SELECTTARGET, { KEY_T });
     Add(AbEvents::E_SC_SELECTNEXTFOE, { KEY_TAB });
     Add(AbEvents::E_SC_SELECTPREVFOE, { KEY_TAB, MOUSEB_NONE, SC_MOD_SHIFT });
 

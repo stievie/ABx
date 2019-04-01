@@ -30,6 +30,7 @@ private:
     HashMap<uint32_t, WeakPtr<Actor>> members_;
     HashMap<uint32_t, WeakPtr<Actor>> invitees_;
     HashMap<uint32_t, WeakPtr<Actor>> invitations_;
+    WeakPtr<GameObject> target_;
     uint32_t leaderId_;
     uint32_t groupId_;
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
@@ -48,6 +49,8 @@ private:
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
     void HandlePartyInfoMembers(StringHash eventType, VariantMap& eventData);
     void HandleLeaveInstance(StringHash eventType, VariantMap& eventData);
+    void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
+    void HandleSelectTarget(StringHash eventType, VariantMap& eventData);
     void SubscribeEvents();
     void UpdateCaption();
     void UpdateAll();

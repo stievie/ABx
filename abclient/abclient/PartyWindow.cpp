@@ -653,6 +653,25 @@ void PartyWindow::HandleLeaveInstance(StringHash, VariantMap&)
     ClearInvites();
 }
 
+void PartyWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectPingTarget;
+//    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+//    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(eventData[P_CALLTTYPE].GetUInt());
+    LevelManager* lm = GetSubsystem<LevelManager>();
+//    Actor* pinger = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
+    target_ = lm->GetObjectById(targetId);
+}
+
+void PartyWindow::HandleSelectTarget(StringHash, VariantMap&)
+{
+    if (auto t = target_.Lock())
+    {
+        player_->SelectObject(t->id_);
+    }
+}
+
 void PartyWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
@@ -668,6 +687,8 @@ void PartyWindow::SubscribeEvents()
     SubscribeToEvent(AbEvents::E_PARTYINVITEREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyInviteRemoved));
     SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(PartyWindow, HandlePartyRemoved));
     SubscribeToEvent(AbEvents::E_PARTYINFOMEMBERS, URHO3D_HANDLER(PartyWindow, HandlePartyInfoMembers));
+    SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(PartyWindow, HandleTargetPinged));
+    SubscribeToEvent(AbEvents::E_SC_SELECTTARGET, URHO3D_HANDLER(PartyWindow, HandleSelectTarget));
 }
 
 void PartyWindow::UpdateCaption()
