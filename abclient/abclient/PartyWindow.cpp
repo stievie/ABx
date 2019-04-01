@@ -99,6 +99,9 @@ void PartyWindow::SetPartySize(uint8_t value)
 
 void PartyWindow::SetMode(PartyWindowMode mode)
 {
+    if (mode_ == mode)
+        return;
+
     mode_ = mode;
     auto* buttonContainer = dynamic_cast<UIElement*>(GetChild("ButtonContainer", true));
     Button* addPlayerButton = dynamic_cast<Button*>(GetChild("AddPlayerButton", true));
@@ -113,6 +116,16 @@ void PartyWindow::SetMode(PartyWindowMode mode)
         UnsubscribeFromEvent(addPlayerButton, E_RELEASED);
         addContainer_->SetVisible(false);
         buttonContainer->SetVisible(false);
+    }
+    for (auto& cont : memberContainer_->GetChildren())
+    {
+        Button* kickButton = cont->GetChildDynamicCast<Button>("KickButton", true);
+        if (kickButton)
+        {
+            if (mode_ != PartyWindowMode::ModeOutpost)
+                kickButton->SetVisible(mode_ == PartyWindowMode::ModeOutpost);
+        }
+
     }
     UpdateCaption();
 }
@@ -224,8 +237,12 @@ void PartyWindow::AddMember(SharedPtr<Actor> actor, unsigned pos /* = 0 */)
                 // Update ID of kick button
                 Button* kickButton = cont->GetChildDynamicCast<Button>("KickButton", false);
                 if (kickButton)
+                {
+                    if (mode_ != PartyWindowMode::ModeOutpost)
+                        kickButton->SetVisible(false);
                     // Only leader has that and only in outposts
                     kickButton->SetVar("ID", actor->id_);
+                }
                 return;
             }
         }
@@ -363,6 +380,8 @@ void PartyWindow::HandleCloseClicked(StringHash, VariantMap&)
 
 void PartyWindow::HandleLeaveButtonClicked(StringHash, VariantMap&)
 {
+    if (mode_ != PartyWindowMode::ModeOutpost)
+        return;
     FwClient* cli = GetSubsystem<FwClient>();
     cli->PartyLeave();
 }
@@ -550,6 +569,8 @@ void PartyWindow::HandleActorDoubleClicked(StringHash, VariantMap& eventData)
 
 void PartyWindow::HandleAcceptInvitationClicked(StringHash, VariantMap& eventData)
 {
+    if (mode_ != PartyWindowMode::ModeOutpost)
+        return;
     using namespace Released;
     auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
     uint32_t actorId = elem->GetVar("ID").GetUInt();
@@ -563,6 +584,8 @@ void PartyWindow::HandleAcceptInvitationClicked(StringHash, VariantMap& eventDat
 
 void PartyWindow::HandleRejectInvitationClicked(StringHash, VariantMap& eventData)
 {
+    if (mode_ != PartyWindowMode::ModeOutpost)
+        return;
     using namespace Released;
     auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
     uint32_t actorId = elem->GetVar("ID").GetUInt();
@@ -573,6 +596,8 @@ void PartyWindow::HandleRejectInvitationClicked(StringHash, VariantMap& eventDat
 
 void PartyWindow::HandleKickClicked(StringHash, VariantMap& eventData)
 {
+    if (mode_ != PartyWindowMode::ModeOutpost)
+        return;
     using namespace Released;
     auto* elem = static_cast<UIElement*>(eventData[P_ELEMENT].GetPtr());
     uint32_t actorId = elem->GetVar("ID").GetUInt();
