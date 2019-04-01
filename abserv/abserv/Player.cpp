@@ -354,9 +354,6 @@ void Player::PartyKickPlayer(uint32_t playerId)
 
 void Player::PartyLeave()
 {
-    // A player leaves the party
-    if (GetGame()->data_.type != AB::Entities::GameTypeOutpost)
-        return;
     if (party_->IsLeader(this) && party_->GetMemberCount() == 1)
         // Just we
         return;
