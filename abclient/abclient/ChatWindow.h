@@ -48,6 +48,7 @@ private:
     void HandleServerMessageMailboxFull(VariantMap& eventData);
     void HandleServerMessageMailDeleted(VariantMap& eventData);
     void HandleServerMessageServerId(VariantMap& eventData);
+    void HandleServerMessagePlayerResigned(VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
@@ -57,6 +58,7 @@ private:
     void HandleShortcutChatParty(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatTrade(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatWhisper(StringHash eventType, VariantMap& eventData);
+    void HandlePartyResigned(StringHash eventType, VariantMap& eventData);
     void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
     bool ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel);
     void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel);

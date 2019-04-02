@@ -21,6 +21,7 @@ private:
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
+    int64_t resignedTick_;
     template<typename E>
     bool UpdateEntity(const E& e)
     {
@@ -54,6 +55,7 @@ public:
     bool RemoveInvite(std::shared_ptr<Player> player);
     void ClearInvites();
 
+    void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
     void WriteToMembers(const Net::NetworkMessage& message);
 
     void SetPartySize(size_t size);
@@ -75,6 +77,19 @@ public:
             return std::shared_ptr<Player>();
         return members_[0].lock();
     }
+    std::shared_ptr<Player> GetAnyMember() const
+    {
+        if (members_.size() == 0)
+            return std::shared_ptr<Player>();
+        for (const auto& m : members_)
+        {
+            auto sm = m.lock();
+            if (sm)
+                return sm;
+        }
+        return std::shared_ptr<Player>();
+    }
+
     /// Get position of actor in party, 1-based, 0 = not found
     size_t GetPosition(Actor* actor);
     /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.

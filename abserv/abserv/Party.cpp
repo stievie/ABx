@@ -20,7 +20,8 @@ void Party::RegisterLua(kaguya::State& state)
 }
 
 Party::Party() :
-    maxMembers_(1)
+    maxMembers_(1),
+    resignedTick_(0)
 {
     id_ = GetNewId();
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
@@ -156,6 +157,38 @@ bool Party::RemoveInvite(std::shared_ptr<Player> player)
 void Party::ClearInvites()
 {
     invited_.clear();
+}
+
+void Party::Update(uint32_t, Net::NetworkMessage& message)
+{
+    if (resignedTick_ == 0)
+    {
+        int resigned = 0;
+        for (auto& wm : members_)
+        {
+            if (auto sm = wm.lock())
+            {
+                if (sm->IsResigned())
+                    ++resigned;
+            }
+        }
+        if (resigned == GetMemberCount())
+        {
+            resignedTick_ = Utils::Tick();
+            message.AddByte(AB::GameProtocol::PartyResigned);
+            message.Add<uint32_t>(id_);
+        }
+    }
+    if (resignedTick_ != 0)
+    {
+        if (Utils::TimePassed(resignedTick_) > 1000)
+        {
+            auto member = GetAnyMember();
+            if (member)
+                ChangeInstance(member->data_.lastOutpostUuid);
+            resignedTick_ = 0;
+        }
+    }
 }
 
 void Party::WriteToMembers(const Net::NetworkMessage& message)

@@ -21,6 +21,7 @@ namespace Game {
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
+    resigned_(false),
     lastPing_(0),
     mailBox_(nullptr),
     party_(nullptr),
@@ -264,6 +265,9 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     questComp_->Update(timeElapsed);
     questComp_->Write(message);
+    auto party = GetParty();
+    if (party->IsLeader(this))
+        party->Update(timeElapsed, message);
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)
@@ -361,7 +365,8 @@ void Player::PartyLeave()
     {
         Net::NetworkMessage nmsg;
         nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
-        nmsg.Add<uint32_t>(party_->GetLeader()->id_);
+        auto leader = party_->GetLeader();
+        nmsg.Add<uint32_t>(leader ? leader->id_ : 0);
         nmsg.Add<uint32_t>(id_);
         nmsg.Add<uint32_t>(party_->id_);
         party_->WriteToMembers(nmsg);
@@ -518,6 +523,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeChatTrade:
         HandleChatTradeCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeResign:
+        HandleResignCommand(command, message);
+        break;
     case AB::GameProtocol::CommandTypeServerId:
         HandleServerIdCommand(command, message);
         break;
@@ -615,6 +623,17 @@ void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMess
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Trade, 0);
     if (channel)
         channel->Talk(this, command);
+}
+
+void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& message)
+{
+    if (GetGame()->data_.type <= AB::Entities::GameTypeOutpost)
+        return;
+    message.AddByte(AB::GameProtocol::ServerMessage);
+    message.AddByte(AB::GameProtocol::ServerMessageTypePlayerResigned);
+    message.AddString(GetName());
+    message.AddString("");
+    resigned_ = true;
 }
 
 void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
@@ -790,6 +809,7 @@ void Player::ChangeMap(const std::string mapUuid)
 
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
+    resigned_ = false;
     if (client_)
         client_->ChangeInstance(mapUuid, instanceUuid);
     else

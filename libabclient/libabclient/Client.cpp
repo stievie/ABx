@@ -296,6 +296,12 @@ void Client::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_
         receiver_->OnPartyInviteRemoved(updateTick, sourceId, targetId, partyId);
 }
 
+void Client::OnPartyResigned(int64_t updateTick, uint32_t partyId)
+{
+    if (receiver_)
+        receiver_->OnPartyResigned(updateTick, partyId);
+}
+
 void Client::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
 {
     if (receiver_)

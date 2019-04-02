@@ -105,6 +105,9 @@ public:
     String GetClassLevel() const;
     String GetClassLevelName() const;
 
+    void HandlePartyAdded(StringHash eventType, VariantMap& eventData);
+    void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
+
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;

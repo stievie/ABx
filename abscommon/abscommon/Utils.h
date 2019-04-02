@@ -24,7 +24,10 @@ inline int64_t Tick()
 
 inline uint32_t TimePassed(int64_t last)
 {
-    return static_cast<uint32_t>(Utils::Tick() - last);
+    auto tick = Tick();
+    if (tick > last)
+        return static_cast<uint32_t>(tick - last);
+    return 0u;
 }
 
 template<typename Iter, typename RandomGenerator>

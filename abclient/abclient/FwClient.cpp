@@ -1239,6 +1239,15 @@ void FwClient::OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint3
     QueueEvent(AbEvents::E_PARTYINVITEREMOVED, eData);
 }
 
+void FwClient::OnPartyResigned(int64_t updateTick, uint32_t partyId)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PartyResigned;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_PARTYID] = partyId;
+    QueueEvent(AbEvents::E_PARTYRESIGNED, eData);
+}
+
 void FwClient::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members)
 {
     VariantMap& eData = GetEventDataMap();

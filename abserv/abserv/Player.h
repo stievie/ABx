@@ -24,6 +24,7 @@ private:
     std::shared_ptr<Party> party_;
     // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
     std::shared_ptr<Net::ProtocolGame> client_;
+    bool resigned_;
     Party* _LuaGetParty();
 protected:
     friend class PlayerManager;
@@ -33,6 +34,7 @@ protected:
     void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
     void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
+    void HandleResignCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleHpCommand(const std::string& command, Net::NetworkMessage& message);
     void HandlePosCommand(const std::string& command, Net::NetworkMessage& message);
@@ -109,6 +111,7 @@ public:
     void NotifyNewMail();
     void WriteToOutput(const Net::NetworkMessage& message);
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
+    bool IsResigned() const { return resigned_; }
 
     void SetParty(std::shared_ptr<Party> party);
     std::shared_ptr<Party> GetParty() const

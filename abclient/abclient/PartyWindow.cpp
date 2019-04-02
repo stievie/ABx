@@ -197,23 +197,25 @@ void PartyWindow::AddItem(UIElement* container, SharedPtr<Actor> actor, MemberTy
             rejectButton->SetPressedOffset(16, 0);
             SubscribeToEvent(rejectButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleRejectInvitationClicked));
         }
-        else if (actor->objectType_ != ObjectTypeSelf && IsLeader())
-        {
-            // If thats not we and we are the leader we can kick players
-            Button* kickButton = cont->CreateChild<Button>("KickButton");
-            kickButton->SetVar("ID", actor->id_);
-            kickButton->SetSize(20, 20);
-            kickButton->SetMaxSize(20, 20);
-            kickButton->SetMinSize(20, 20);
-            kickButton->SetAlignment(HA_LEFT, VA_CENTER);
-            kickButton->SetStyleAuto();
-            kickButton->SetTexture(cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png"));
-            kickButton->SetImageRect(IntRect(96, 0, 112, 16));
-            kickButton->SetHoverOffset(0, 16);
-            kickButton->SetPressedOffset(16, 0);
-            SubscribeToEvent(kickButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleKickClicked));
-        }
     }
+    if ((type != MemberType::Invitation) && (actor->objectType_ != ObjectTypeSelf) && IsLeader())
+    {
+        // If thats not we and we are the leader we can kick players
+        Button* kickButton = cont->CreateChild<Button>("KickButton");
+        kickButton->SetVar("ID", actor->id_);
+        kickButton->SetSize(20, 20);
+        kickButton->SetMaxSize(20, 20);
+        kickButton->SetMinSize(20, 20);
+        kickButton->SetAlignment(HA_LEFT, VA_CENTER);
+        kickButton->SetStyleAuto();
+        kickButton->SetTexture(cache->GetResource<Texture2D>("Textures/Fw-UI-Ex.png"));
+        kickButton->SetImageRect(IntRect(96, 0, 112, 16));
+        kickButton->SetHoverOffset(0, 16);
+        kickButton->SetPressedOffset(16, 0);
+        SubscribeToEvent(kickButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleKickClicked));
+        kickButton->SetVisible(mode_ == PartyWindowMode::ModeOutpost);
+    }
+
     cont->UpdateLayout();
     if (auto p = player_.Lock())
         if (p->GetSelectedObjectId() == actor->id_)

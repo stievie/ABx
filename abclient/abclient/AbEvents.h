@@ -245,8 +245,8 @@ URHO3D_EVENT(E_PARTYINVITED, PartyInvited)
 URHO3D_EVENT(E_PARTYREMOVED, PartyRemoved)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
-    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
-    URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
+    URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t             Leader
+    URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t             Actor
     URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
 }
 
@@ -263,6 +263,12 @@ URHO3D_EVENT(E_PARTYINVITEREMOVED, PartyInviteRemoved)
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);
     URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
     URHO3D_PARAM(P_TARGETID, TargetId);     // unit32_t
+    URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
+}
+
+URHO3D_EVENT(E_PARTYRESIGNED, PartyResigned)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
     URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
 }
 

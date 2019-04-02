@@ -34,6 +34,7 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "ponder", AB::GameProtocol::CommandTypePonder },
     { "wave", AB::GameProtocol::CommandTypeWave },
     { "laugh", AB::GameProtocol::CommandTypeLaugh },
+    { "resign", AB::GameProtocol::CommandTypeResign },
 
     { "help", AB::GameProtocol::CommandTypeHelp }
 };
@@ -121,6 +122,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_CHATTRADE, URHO3D_HANDLER(ChatWindow, HandleShortcutChatTrade));
     SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
     SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(ChatWindow, HandleTargetPinged));
+    SubscribeToEvent(AbEvents::E_PARTYRESIGNED, URHO3D_HANDLER(ChatWindow, HandlePartyResigned));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -278,6 +280,9 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         break;
     case AB::GameProtocol::ServerMessageTypeServerId:
         HandleServerMessageServerId(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypePlayerResigned:
+        HandleServerMessagePlayerResigned(eventData);
         break;
     case AB::GameProtocol::ServerMessageTypeUnknownCommand:
         HandleServerMessageUnknownCommand(eventData);
@@ -508,6 +513,17 @@ void ChatWindow::HandleServerMessageServerId(VariantMap& eventData)
     AddLine(id, "ChatLogServerInfoText");
 }
 
+void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& resigner = eventData[P_SENDER].GetString();
+    kainjow::mustache::mustache tpl{ "{{name}} has resigned" };
+    kainjow::mustache::data data;
+    data.set("name", std::string(resigner.CString(), resigner.Length()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
 void ChatWindow::HandleShortcutChatParty(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(2);
@@ -524,6 +540,18 @@ void ChatWindow::HandleShortcutChatWhisper(StringHash, VariantMap&)
 {
     tabgroup_->SetSelectedIndex(tabIndexWhisper_);
     FocusEdit();
+}
+
+void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::PartyResigned;
+    uint32_t partyId = eventData[P_PARTYID].GetUInt();
+
+    kainjow::mustache::mustache tpl{ "Party {{id}} has resigned" };
+    kainjow::mustache::data data;
+    data.set("id", std::to_string(partyId));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
@@ -642,6 +670,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
+        AddLine("  /resign: Resign", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /hp: Show health points and energy", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");

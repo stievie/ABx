@@ -35,6 +35,8 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(AbEvents::E_OBJECTUSESKILL, URHO3D_HANDLER(Actor, HandleSkillUse));
     SubscribeToEvent(AbEvents::E_OBJECTENDUSESKILL, URHO3D_HANDLER(Actor, HandleEndSkillUse));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(Actor, HandleEffectAdded));
+    SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(Actor, HandlePartyAdded));
+    SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(Actor, HandlePartyRemoved));
 }
 
 Actor::~Actor()
@@ -925,4 +927,24 @@ String Actor::GetClassLevelName() const
     if (result.Empty())
         return name_;
     return result + " " + name_;
+}
+
+void Actor::HandlePartyAdded(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::PartyAdded;
+    uint32_t targetId = eventData[P_PLAYERID].GetUInt(); // Actor
+    if (targetId == id_)
+    {
+        groupId_ = eventData[P_PARTYID].GetUInt();
+    }
+}
+
+void Actor::HandlePartyRemoved(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::PartyRemoved;
+    uint32_t targetId = eventData[P_TARGETID].GetUInt(); // Actor
+    if (targetId == id_)
+    {
+        groupId_ = 0;
+    }
 }

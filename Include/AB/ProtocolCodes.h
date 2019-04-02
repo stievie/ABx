@@ -157,6 +157,7 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailboxFull,
     ServerMessageTypeMailDeleted,
     ServerMessageTypeServerId,
+    ServerMessageTypePlayerResigned,
 
     ServerMessageTypeUnknownCommand = 0xff
 };
@@ -219,6 +220,7 @@ enum GameProtocolCodes : uint8_t
     PartyPlayerAdded,
     PartyInviteRemoved,
     PartyInfoMembers,
+    PartyResigned,
 };
 
 enum ObjectCallType : uint8_t
@@ -332,6 +334,8 @@ enum CommandTypes : uint8_t
     CommandTypeChatParty,            // /p <message>
     CommandTypeChatTrade,            // /trade <message>
     CommandTypeChatWhisper,          // /w <name>, <message>
+
+    CommandTypeResign,               // /resign
 
     // Info
     CommandTypeAge,                  // /age
