@@ -459,6 +459,12 @@ void Player::PartyGetMembers(uint32_t partyId)
 #endif
 }
 
+Party* Player::_LuaGetParty()
+{
+    auto party = GetParty();
+    return party ? party.get() : nullptr;
+}
+
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     const std::string& command, Net::NetworkMessage& message)
 {
@@ -793,6 +799,7 @@ void Player::ChangeInstance(const std::string& mapUuid, const std::string& insta
 void Player::RegisterLua(kaguya::State& state)
 {
     state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
+        .addFunction("GetParty", &Player::_LuaGetParty)
         .addFunction("ChangeMap", &Player::ChangeMap)
     );
 }

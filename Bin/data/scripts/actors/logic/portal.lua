@@ -20,6 +20,9 @@ end
 function onTrigger(creature)
   local player = creature:AsPlayer()
   if (player ~= nil) then
-    player:ChangeMap(self:GetVarString("destination"))
+    local party = player:GetParty()
+    if (party ~= nil) then
+      party:ChangeInstance(self:GetVarString("destination"))
+    end
   end
 end

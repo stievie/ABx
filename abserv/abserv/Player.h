@@ -24,6 +24,7 @@ private:
     std::shared_ptr<Party> party_;
     // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
     std::shared_ptr<Net::ProtocolGame> client_;
+    Party* _LuaGetParty();
 protected:
     friend class PlayerManager;
     void HandleCommand(AB::GameProtocol::CommandTypes type,

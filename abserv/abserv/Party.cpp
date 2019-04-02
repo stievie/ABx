@@ -11,6 +11,14 @@ namespace Game {
 
 Utils::IdGenerator<uint32_t> Party::partyIds_;
 
+void Party::RegisterLua(kaguya::State& state)
+{
+    state["Party"].setClass(kaguya::UserdataMetatable<Party>()
+        .addFunction("GetLeader", &Party::_LuaGetLeader)
+        .addFunction("ChangeInstance", &Party::ChangeInstance)
+    );
+}
+
 Party::Party() :
     maxMembers_(1)
 {
@@ -42,6 +50,12 @@ size_t Party::GetDataPos(Player* player)
     }
     // 1-based, 0 = invalid
     return index + 1;
+}
+
+Player* Party::_LuaGetLeader()
+{
+    auto leader = GetLeader();
+    return leader ? leader.get() : nullptr;
 }
 
 bool Party::Add(std::shared_ptr<Player> player)

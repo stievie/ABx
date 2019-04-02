@@ -29,12 +29,14 @@ private:
     }
     /// 1-base position
     size_t GetDataPos(Player* player);
+    Player* _LuaGetLeader();
 public:
     static Utils::IdGenerator<uint32_t> partyIds_;
     static uint32_t GetNewId()
     {
         return partyIds_.Next();
     }
+    static void RegisterLua(kaguya::State& state);
 
     Party();
     // non-copyable
