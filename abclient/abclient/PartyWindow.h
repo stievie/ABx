@@ -54,9 +54,6 @@ private:
     void SubscribeEvents();
     void UpdateCaption();
     void UpdateAll();
-    void ClearMembers();
-    void ClearInvitations();
-    void ClearInvites();
     void ShowError(const String& msg);
     bool IsFull() const { return members_.Size() >= partySize_; }
     bool IsInvited(uint32_t actorId) { return invitees_.Contains(actorId); }
@@ -84,5 +81,8 @@ public:
     bool UnselectItem(uint32_t actorId);
     void OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t groupPos);
     bool IsLeader();
+    void ClearMembers();
+    void ClearInvitations();
+    void ClearInvites();
 };
 

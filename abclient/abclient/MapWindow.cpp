@@ -2,6 +2,8 @@
 #include "MapWindow.h"
 #include "FwClient.h"
 #include "LevelManager.h"
+#include "WindowManager.h"
+#include "PartyWindow.h"
 
 MapWindow::MapWindow(Context* context) :
     Window(context),
