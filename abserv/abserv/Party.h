@@ -89,6 +89,7 @@ public:
         }
         return std::shared_ptr<Player>();
     }
+    void KillAll();
 
     /// Get position of actor in party, 1-based, 0 = not found
     size_t GetPosition(Actor* actor);

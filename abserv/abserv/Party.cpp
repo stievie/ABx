@@ -177,11 +177,12 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
             resignedTick_ = Utils::Tick();
             message.AddByte(AB::GameProtocol::PartyResigned);
             message.Add<uint32_t>(id_);
+            KillAll();
         }
     }
     if (resignedTick_ != 0)
     {
-        if (Utils::TimePassed(resignedTick_) > 1000)
+        if (Utils::TimePassed(resignedTick_) > 1500)
         {
             auto member = GetAnyMember();
             if (member)
@@ -241,6 +242,15 @@ bool Party::IsLeader(Player* player) const
     if (auto p = members_[0].lock())
         return p->id_ == player->id_;
     return false;
+}
+
+void Party::KillAll()
+{
+    for (const auto& m : members_)
+    {
+        if (auto sm = m.lock())
+            sm->Die();
+    }
 }
 
 size_t Party::GetPosition(Actor* actor)
