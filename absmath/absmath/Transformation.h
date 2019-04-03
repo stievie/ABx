@@ -32,6 +32,7 @@ public:
 
     float GetYRotation() const;
     void SetYRotation(float rad);
+    void LookAt(const Vector3& lookAt, const Vector3& up);
 
     /// Get transformation matrix
     XMath::XMMATRIX GetMatrix() const;

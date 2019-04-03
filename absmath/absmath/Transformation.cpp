@@ -29,4 +29,10 @@ void Transformation::SetYRotation(float rad)
     oriention_ = Quaternion(oriention_.x_, rad, oriention_.z_);
 }
 
+void Transformation::LookAt(const Vector3& lookAt, const Vector3& up)
+{
+    Matrix4 mat = Matrix4::FromLookAt(lookAt, position_, up);
+    oriention_ = mat.Rotation();
+}
+
 }

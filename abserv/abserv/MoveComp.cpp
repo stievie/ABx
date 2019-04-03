@@ -56,9 +56,7 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
 
 void MoveComp::HeadTo(const Math::Vector3& pos)
 {
-    float worldAngle = -Math::DegToRad(oldPosition_.AngleY(pos) - 180.0f);
-    if (worldAngle < 0.0f)
-        worldAngle += Math::M_PIF;
+    const float worldAngle = -Math::DegToRad(oldPosition_.AngleY(pos) - 180.0f);
     SetDirection(worldAngle);
 }
 
@@ -138,12 +136,11 @@ void MoveComp::UpdateTurn(uint32_t timeElapsed)
 
 void MoveComp::SetDirection(float worldAngle)
 {
-    float ang = owner_.transformation_.GetYRotation();
+    const float ang = owner_.transformation_.GetYRotation();
+    Math::NormalizeAngle(worldAngle);
     if (!Math::Equals(ang, worldAngle))
     {
-        ang = worldAngle;
-        Math::NormalizeAngle(ang);
-        owner_.transformation_.SetYRotation(ang);
+        owner_.transformation_.SetYRotation(worldAngle);
         directionSet_ = true;
     }
 }

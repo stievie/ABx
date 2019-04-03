@@ -106,6 +106,7 @@
     <ClCompile Include="Math.Quaternion.cpp" />
     <ClCompile Include="Math.Ray.cpp" />
     <ClCompile Include="Math.Sphere.cpp" />
+    <ClCompile Include="Math.Utils.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
