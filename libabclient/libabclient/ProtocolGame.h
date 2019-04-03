@@ -69,6 +69,7 @@ protected:
     void ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message);
     void ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message);
     void ParsePartyResigned(const std::shared_ptr<InputMessage>& message);
+    void ParsePartyDefeated(const std::shared_ptr<InputMessage>& message);
     void ParsePartyInfoMembers(const std::shared_ptr<InputMessage>& message);
     void ParseResourceChanged(const std::shared_ptr<InputMessage>& message);
 public:

@@ -272,6 +272,12 @@ URHO3D_EVENT(E_PARTYRESIGNED, PartyResigned)
     URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
 }
 
+URHO3D_EVENT(E_PARTYDEFEATED, PartyDefeated)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t
+}
+
 URHO3D_EVENT(E_PARTYINFOMEMBERS, PartyInfoMembers)
 {
     URHO3D_PARAM(P_PARTYID, PartyId);       // unit32_t

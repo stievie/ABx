@@ -83,6 +83,7 @@ public:
     /// The invite to our party was removed
     virtual void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
     virtual void OnPartyResigned(int64_t updateTick, uint32_t partyId) = 0;
+    virtual void OnPartyDefeated(int64_t updateTick, uint32_t partyId) = 0;
     virtual void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) = 0;
 };
 

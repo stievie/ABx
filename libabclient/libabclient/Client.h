@@ -120,6 +120,7 @@ public:
     /// The invite to our party was removed
     void OnPartyInviteRemoved(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
     void OnPartyResigned(int64_t updateTick, uint32_t partyId) override;
+    void OnPartyDefeated(int64_t updateTick, uint32_t partyId) override;
     void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
 
     std::string accountUuid_;

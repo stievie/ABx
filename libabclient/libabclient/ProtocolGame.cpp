@@ -183,6 +183,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::PartyResigned:
             ParsePartyResigned(message);
             break;
+        case AB::GameProtocol::PartyDefeated:
+            ParsePartyDefeated(message);
+            break;
         case AB::GameProtocol::PartyInfoMembers:
             ParsePartyInfoMembers(message);
             break;
@@ -395,6 +398,13 @@ void ProtocolGame::ParsePartyResigned(const std::shared_ptr<InputMessage>& messa
     uint32_t partyId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyResigned(updateTick_, partyId);
+}
+
+void ProtocolGame::ParsePartyDefeated(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t partyId = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnPartyDefeated(updateTick_, partyId);
 }
 
 void ProtocolGame::ParsePartyInfoMembers(const std::shared_ptr<InputMessage>& message)

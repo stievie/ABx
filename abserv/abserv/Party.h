@@ -21,7 +21,8 @@ private:
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
     uint32_t maxMembers_;
-    int64_t resignedTick_;
+    int64_t defeatedTick_;
+    bool defeated_;
     template<typename E>
     bool UpdateEntity(const E& e)
     {
@@ -90,6 +91,8 @@ public:
         return std::shared_ptr<Player>();
     }
     void KillAll();
+    void Defeat();
+    bool IsDefeated() const { return defeated_; }
 
     /// Get position of actor in party, 1-based, 0 = not found
     size_t GetPosition(Actor* actor);

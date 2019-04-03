@@ -123,6 +123,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_SC_CHATWHISPER, URHO3D_HANDLER(ChatWindow, HandleShortcutChatWhisper));
     SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(ChatWindow, HandleTargetPinged));
     SubscribeToEvent(AbEvents::E_PARTYRESIGNED, URHO3D_HANDLER(ChatWindow, HandlePartyResigned));
+    SubscribeToEvent(AbEvents::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -548,6 +549,18 @@ void ChatWindow::HandlePartyResigned(StringHash, VariantMap& eventData)
     uint32_t partyId = eventData[P_PARTYID].GetUInt();
 
     kainjow::mustache::mustache tpl{ "Party {{id}} has resigned" };
+    kainjow::mustache::data data;
+    data.set("id", std::to_string(partyId));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandlePartyDefeated(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::PartyDefeated;
+    uint32_t partyId = eventData[P_PARTYID].GetUInt();
+
+    kainjow::mustache::mustache tpl{ "Party {{id}} was defeated" };
     kainjow::mustache::data data;
     data.set("id", std::to_string(partyId));
     std::string t = tpl.render(data);

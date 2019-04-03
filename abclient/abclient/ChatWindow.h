@@ -59,6 +59,7 @@ private:
     void HandleShortcutChatTrade(StringHash eventType, VariantMap& eventData);
     void HandleShortcutChatWhisper(StringHash eventType, VariantMap& eventData);
     void HandlePartyResigned(StringHash eventType, VariantMap& eventData);
+    void HandlePartyDefeated(StringHash eventType, VariantMap& eventData);
     void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
     bool ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel);
     void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel);

@@ -16,12 +16,16 @@ void Party::RegisterLua(kaguya::State& state)
     state["Party"].setClass(kaguya::UserdataMetatable<Party>()
         .addFunction("GetLeader", &Party::_LuaGetLeader)
         .addFunction("ChangeInstance", &Party::ChangeInstance)
+        .addFunction("Defeat", &Party::Defeat)
+        .addFunction("IsDefeated", &Party::IsDefeated)
+        .addFunction("KillAll", &Party::KillAll)
     );
 }
 
 Party::Party() :
     maxMembers_(1),
-    resignedTick_(0)
+    defeatedTick_(0),
+    defeated_(false)
 {
     id_ = GetNewId();
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
@@ -161,7 +165,7 @@ void Party::ClearInvites()
 
 void Party::Update(uint32_t, Net::NetworkMessage& message)
 {
-    if (resignedTick_ == 0)
+    if (defeatedTick_ == 0)
     {
         int resigned = 0;
         for (auto& wm : members_)
@@ -174,20 +178,31 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         }
         if (resigned == GetMemberCount())
         {
-            resignedTick_ = Utils::Tick();
+            defeatedTick_ = Utils::Tick();
             message.AddByte(AB::GameProtocol::PartyResigned);
             message.Add<uint32_t>(id_);
             KillAll();
         }
-    }
-    if (resignedTick_ != 0)
-    {
-        if (Utils::TimePassed(resignedTick_) > 1500)
+
+        if (defeated_)
         {
+            defeatedTick_ = Utils::Tick();
+            message.AddByte(AB::GameProtocol::PartyDefeated);
+            message.Add<uint32_t>(id_);
+            KillAll();
+        }
+    }
+
+    if (defeatedTick_ != 0)
+    {
+        if (Utils::TimePassed(defeatedTick_) > 2000)
+        {
+            // Bring to the last outpost after 2 secs
             auto member = GetAnyMember();
             if (member)
                 ChangeInstance(member->data_.lastOutpostUuid);
-            resignedTick_ = 0;
+            defeatedTick_ = 0;
+            defeated_ = false;
         }
     }
 }
@@ -251,6 +266,11 @@ void Party::KillAll()
         if (auto sm = m.lock())
             sm->Die();
     }
+}
+
+void Party::Defeat()
+{
+    defeated_ = true;
 }
 
 size_t Party::GetPosition(Actor* actor)

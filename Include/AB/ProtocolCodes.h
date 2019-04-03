@@ -221,6 +221,7 @@ enum GameProtocolCodes : uint8_t
     PartyInviteRemoved,
     PartyInfoMembers,
     PartyResigned,
+    PartyDefeated,
 };
 
 enum ObjectCallType : uint8_t
