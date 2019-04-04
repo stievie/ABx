@@ -124,6 +124,8 @@ public:
         std::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
+    /// Return all Parties in this Game
+    std::vector<Party*> GetParties() const;
 
     ExecutionState GetState() const { return state_; }
     bool IsInactive() const

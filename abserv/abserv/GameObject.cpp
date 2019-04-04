@@ -51,6 +51,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
 
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
+        .addFunction("IsInRange", &GameObject::IsInRange)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
     );
 }

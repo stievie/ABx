@@ -108,6 +108,7 @@ void Game::RegisterLua(kaguya::State& state)
         .addFunction("GetObject", &Game::_LuaGetObjectById)
         // Get player of game by ID or name
         .addFunction("GetPlayer", &Game::GetPlayerById)
+        .addFunction("GetParties", &Game::GetParties)
 
         .addFunction("GetTerrainHeight", &Game::_LuaGetTerrainHeight)
         .addFunction("GetStartTime", &Game::_LuaGetStartTime)
@@ -363,6 +364,23 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
             shared_from_this(), result))
     );
 
+    return result;
+}
+
+std::vector<Party*> Game::GetParties() const
+{
+    // TODO: This looks not so smart...
+    std::vector<Party*> result;
+    std::map<uint32_t, Party*> pm;
+    for (const auto& player : players_)
+    {
+        auto p = player.second->GetParty();
+        if (p)
+            pm[p->id_] = p.get();
+    }
+    result.reserve(pm.size());
+    for (const auto& p : pm)
+        result.push_back(p.second);
     return result;
 }
 

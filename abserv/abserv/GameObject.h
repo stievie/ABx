@@ -141,6 +141,24 @@ public:
             return std::numeric_limits<float>::max();
         return transformation_.position_.Distance(other->transformation_.position_);
     }
+
+    /// Test if object is in our range
+    bool IsInRange(Ranges range, GameObject* object)
+    {
+        if (!object)
+            return false;
+        if (range == Ranges::Map)
+            return true;
+        // Don't calculate the distance now, but use previously calculated values.
+        const auto& r = ranges_[range];
+        const auto it = std::find_if(r.begin(), r.end(), [object](const std::weak_ptr<GameObject>& current) -> bool
+        {
+            if (auto c = current.lock())
+                return c->id_ == object->id_;
+            return false;
+        });
+        return it != r.end();
+    }
     /// Allows to execute a functor/lambda on the objects in range
     template<typename Func>
     void VisitInRange(Ranges range, Func&& func)

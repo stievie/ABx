@@ -5,6 +5,7 @@
 #include <AB/Entities/Party.h>
 #include "Subsystems.h"
 #include "DataClient.h"
+#include "Mechanic.h"
 
 namespace Game {
 
@@ -90,9 +91,14 @@ public:
         }
         return std::shared_ptr<Player>();
     }
+    /// Return a random Player of this Party
+    Player* GetRandomPlayer() const;
+    Player* GetRandomPlayerInRange(Actor* actor, Ranges range) const;
     void KillAll();
     void Defeat();
     bool IsDefeated() const { return defeated_; }
+    /// Bring all players back to their last outpost
+    void TeleportBack();
 
     /// Get position of actor in party, 1-based, 0 = not found
     size_t GetPosition(Actor* actor);

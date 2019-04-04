@@ -19,6 +19,8 @@ void Party::RegisterLua(kaguya::State& state)
         .addFunction("Defeat", &Party::Defeat)
         .addFunction("IsDefeated", &Party::IsDefeated)
         .addFunction("KillAll", &Party::KillAll)
+        .addFunction("GetRandomPlayer", &Party::GetRandomPlayer)
+        .addFunction("GetRandomPlayerInRange", &Party::GetRandomPlayerInRange)
     );
 }
 
@@ -198,9 +200,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         if (Utils::TimePassed(defeatedTick_) > 2000)
         {
             // Bring to the last outpost after 2 secs
-            auto member = GetAnyMember();
-            if (member)
-                ChangeInstance(member->data_.lastOutpostUuid);
+            TeleportBack();
             defeatedTick_ = 0;
             defeated_ = false;
         }
@@ -259,6 +259,46 @@ bool Party::IsLeader(Player* player) const
     return false;
 }
 
+Player* Party::GetRandomPlayer() const
+{
+    if (members_.size() == 0)
+        return nullptr;
+
+    using iterator = std::vector<std::weak_ptr<Player>>::const_iterator;
+    auto it = Utils::select_randomly<iterator>(members_.begin(), members_.end());
+    if (it != members_.end())
+    {
+        if (auto p = (*it).lock())
+            return p.get();
+    }
+    return nullptr;
+}
+
+Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
+{
+    if (members_.size() == 0 || actor == nullptr)
+        return nullptr;
+    std::vector<Player*> players;
+    for (const auto& m : members_)
+    {
+        if (auto p = m.lock())
+        {
+            if (actor->IsInRange(range, p.get()))
+                players.push_back(p.get());
+        }
+    }
+    if (players.size() == 0)
+        return nullptr;
+
+    using iterator = std::vector<Player*>::const_iterator;
+    auto it = Utils::select_randomly<iterator>(players.begin(), players.end());
+    if (it != players.end())
+    {
+        return (*it);
+    }
+    return nullptr;
+}
+
 void Party::KillAll()
 {
     for (const auto& m : members_)
@@ -271,6 +311,13 @@ void Party::KillAll()
 void Party::Defeat()
 {
     defeated_ = true;
+}
+
+void Party::TeleportBack()
+{
+    auto member = GetAnyMember();
+    if (member)
+        ChangeInstance(member->data_.lastOutpostUuid);
 }
 
 size_t Party::GetPosition(Actor* actor)

@@ -10,7 +10,7 @@ namespace Components {
 
 void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory categroy)
 {
-    auto check = [&](std::shared_ptr<Effect> const& current)
+    auto check = [categroy](const std::shared_ptr<Effect>& current)
     {
         return current->data_.category == categroy;
     };
@@ -52,7 +52,7 @@ void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index)
 
 void EffectsComp::DeleteEffect(uint32_t index)
 {
-    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
+    auto it = std::find_if(effects_.begin(), effects_.end(), [index](const std::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });
@@ -65,7 +65,7 @@ void EffectsComp::DeleteEffect(uint32_t index)
 
 void EffectsComp::RemoveEffect(uint32_t index)
 {
-    auto it = std::find_if(effects_.begin(), effects_.end(), [&](std::shared_ptr<Effect> const& current)
+    auto it = std::find_if(effects_.begin(), effects_.end(), [index](const std::shared_ptr<Effect>& current)
     {
         return current->data_.index == index;
     });

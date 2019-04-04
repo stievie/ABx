@@ -88,23 +88,6 @@ public:
     }
     const Math::Vector3& GetHomePos() const { return homePos_; }
     bool GotoHomePos();
-    bool IsInRange(Ranges range, Actor* actor)
-    {
-        if (!actor)
-            return false;
-        if (range == Ranges::Map)
-            return true;
-        // Don't calculate the distance now, but use previously calculated values.
-        for (const auto& o : ranges_[range])
-        {
-            if (auto so = o.lock())
-            {
-                if (so->id_ == actor->id_)
-                    return true;
-            }
-        }
-        return false;
-    }
     template<typename Func>
     void VisitEnemiesInRange(Ranges range, Func&& func)
     {

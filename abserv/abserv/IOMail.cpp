@@ -89,7 +89,7 @@ bool IOMail::ReadMail(AB::Entities::Mail& mail)
         ml.uuid = mail.toAccountUuid;
         if (client->Read(ml))
         {
-            auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&](const AB::Entities::MailHeader& current)
+            auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&mail](const AB::Entities::MailHeader& current)
             {
                 return current.uuid.compare(mail.uuid) == 0;
             });
@@ -117,7 +117,7 @@ bool IOMail::DeleteMail(AB::Entities::Mail& mail)
         ml.uuid = mail.toAccountUuid;
         if (client->Read(ml))
         {
-            auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&](const AB::Entities::MailHeader& current)
+            auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&mail](const AB::Entities::MailHeader& current)
             {
                 return current.uuid.compare(mail.uuid) == 0;
             });
