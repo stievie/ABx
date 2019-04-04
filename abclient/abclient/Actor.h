@@ -160,7 +160,7 @@ public:
             return sel->id_;
         return 0;
     }
-    void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f);
+    void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f, float speed = 1.0f);
     void PlayStateAnimation(float fadeTime = 0.2f);
     void ShowSpeechBubble(const String& text);
 
@@ -168,7 +168,7 @@ public:
 
     bool IsEnemy(Actor* other) const
     {
-        if (!other)
+        if (!other || other->undestroyable_)
             return false;
         return (other->groupId_ != groupId_);
     }

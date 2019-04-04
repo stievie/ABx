@@ -653,7 +653,7 @@ void Actor::SetSelectedObject(SharedPtr<GameObject> object)
     }
 }
 
-void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float fadeTime /* = 0.2f */)
+void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float fadeTime /* = 0.2f */, float speed /* = 1.0f */)
 {
     if (!animController_)
         return;
@@ -662,6 +662,8 @@ void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float 
     if (!ani.Empty())
     {
         animController_->PlayExclusive(ani, 0, looped, fadeTime);
+        // Play adds the animation then we can set the speed of it
+        animController_->SetSpeed(ani, speed);
     }
     else
         animController_->StopAll();
@@ -677,9 +679,10 @@ void Actor::PlayStateAnimation(float fadeTime)
     case AB::GameProtocol::CreatureStateMoving:
     {
         if (speedFactor_ > 0.5f)
-            PlayAnimation(ANIM_RUN, true, fadeTime);
+            PlayAnimation(ANIM_RUN, true, fadeTime, speedFactor_);
         else
-            PlayAnimation(ANIM_WALK, true, fadeTime);
+            // speed / 2 -> walk animation -> playing at normal speed = speed * 2
+            PlayAnimation(ANIM_WALK, true, fadeTime, speedFactor_ * 2.0f);
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:
