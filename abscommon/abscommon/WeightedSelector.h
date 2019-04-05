@@ -15,15 +15,11 @@ private:
     std::vector<float> probs_;
     std::vector<size_t> alias_;
     std::vector<T> values_;
-    inline size_t GetIndex() const
+    inline size_t GetIndex(float rand1, float rand2) const
     {
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        static std::uniform_real_distribution<float> r_uni(0.0, 1.0);
-        float rand1 = r_uni(gen);
         const size_t count = values_.size();
         size_t k = static_cast<size_t>(count * rand1);
-        return rand1 < probs_[k] ? k : alias_[k];
+        return rand2 < probs_[k] ? k : alias_[k];
     }
 public:
     WeightedSelector() = default;
@@ -92,7 +88,16 @@ public:
 
     T Get() const
     {
-        return values_[GetIndex()];
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        static const std::uniform_real_distribution<float> r_uni(0.0, 1.0);
+        float rand1 = r_uni(gen);
+        float rand2 = r_uni(gen);
+        return Get(rand1, rand2);
+    }
+    T Get(float rand1, float rand2) const
+    {
+        return values_[GetIndex(rand1, rand2)];
     }
 };
 
