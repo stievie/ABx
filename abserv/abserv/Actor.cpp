@@ -516,15 +516,16 @@ float Actor::GetCriticalChance(Actor* other)
     if (!other)
         return 0.0f;
     // https://www.guildwiki.de/wiki/Kritische_Treffer
-    Item* weapon = GetWeapon();
-    if (!weapon)
-        return 0.0f;
 
     // From behind is always critical
     const float diff = transformation_.GetYRotation() - other->transformation_.GetYRotation();
     if (fabs(diff) < BEHIND_ANGLE)
-        // If rotation is < 30 deg it's from behind
+        // If rotation is < 30 deg it's from behind -> always critical even without weapon
         return 1.0f;
+
+    Item* weapon = GetWeapon();
+    if (!weapon)
+        return 0.0f;
 
     AttributeIndices attrib = weapon->GetWeaponAttribute();
     const float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
