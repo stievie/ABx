@@ -11,6 +11,7 @@ template <typename T>
 class WeightedSelector
 {
 private:
+    bool initialized_;
     std::vector<float> weights_;
     std::vector<float> probs_;
     std::vector<size_t> alias_;
@@ -22,12 +23,15 @@ private:
         return rand2 < probs_[k] ? k : alias_[k];
     }
 public:
-    WeightedSelector() = default;
+    WeightedSelector() :
+        initialized_(false)
+    { }
     // non-copyable
     WeightedSelector(const WeightedSelector&) = delete;
     WeightedSelector& operator=(const WeightedSelector&) = delete;
     ~WeightedSelector() = default;
 
+    size_t Count() const { return values_.size(); }
     /// Add a value with a weight. After all values have been added call Update() then
     /// call Get() to get a value.
     void Add(const T& value, float weight)
@@ -84,7 +88,10 @@ public:
             probs_[large_block[--num_large_block]] = 1.0f;
         while (num_small_block)
             probs_[small_block[--num_small_block]] = 1.0f;
+        initialized_ = true;
     }
+
+    bool IsInitialized() const { return initialized_; }
 
     T Get() const
     {

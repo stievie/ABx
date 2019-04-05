@@ -6,6 +6,7 @@
 #include "Random.h"
 #include "Utils.h"
 #include "Mechanic.h"
+#include "WeightedSelector.h"
 
 namespace Game {
 namespace Components {
@@ -39,8 +40,21 @@ void DamageComp::Touch()
 
 DamagePos DamageComp::GetDamagePos() const
 {
+    static Utils::WeightedSelector<DamagePos> ws;
+    if (!ws.IsInitialized())
+    {
+        for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)
+            ws.Add(static_cast<DamagePos>(i), DamagePosChances[i]);
+        ws.Update();
+    }
+
+    auto rng = GetSubsystem<Crypto::Random>();
+    const float rnd1 = rng->GetFloat();
+    const float rnd2 = rng->GetFloat();
+    return ws.Get(rnd1, rnd2);
+
+/*
     // https://stackoverflow.com/questions/3655430/selection-based-on-percentage-weighting
-    const float rnd = GetSubsystem<Crypto::Random>()->GetFloat();
     float percent = 0.0f;
     for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)
     {
@@ -50,6 +64,7 @@ DamagePos DamageComp::GetDamagePos() const
     }
 
     return DamagePos::Chest;
+*/
 }
 
 uint32_t DamageComp::NoDamageTime() const

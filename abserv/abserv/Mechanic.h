@@ -93,10 +93,10 @@ static constexpr float RangeDistances[] = {
 
 // https://wiki.guildwars.com/wiki/Armor_rating
 static constexpr float DamagePosChances[] = {
-    0.375f,                                // Chest
-    0.25f,                                 // Legs
     0.125f,                                // Head
+    0.375f,                                // Chest
     0.125f,                                // Hands
+    0.25f,                                 // Legs
     0.125f,                                // Feet
 };
 
