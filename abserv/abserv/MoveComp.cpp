@@ -38,12 +38,14 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
     if (owner_.collisionComp_)
+        // We need to do it here because this is not called from Update()
         owner_.collisionComp_->ResolveCollisions();
 
     bool moved = oldPosition_ != owner_.transformation_.position_;
 
     if (moved && owner_.octant_)
     {
+        // We need to do it here because this is not called from Update()
         Math::Octree* octree = owner_.octant_->GetRoot();
         octree->AddObjectUpdate(&owner_);
     }
@@ -93,23 +95,16 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
 
 void MoveComp::UpdateMove(uint32_t timeElapsed)
 {
+    const float speed = GetSpeed(timeElapsed, BASE_SPEED);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
-    {
-        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitZ);
-    }
+        Move(speed, Math::Vector3::UnitZ);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
-    {
         // Move slower backward
-        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::Back / 2.0f);
-    }
+        Move(speed, Math::Vector3::Back / 2.0f);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionWest) == AB::GameProtocol::MoveDirectionWest)
-    {
-        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::Left / 2.0f);
-    }
+        Move(speed, Math::Vector3::Left / 2.0f);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
-    {
-        Move(((float)(timeElapsed) / BASE_SPEED) * speedFactor_, Math::Vector3::UnitX / 2.0f);
-    }
+        Move(speed, Math::Vector3::UnitX / 2.0f);
 }
 
 void MoveComp::Turn(float angle)
@@ -122,14 +117,15 @@ void MoveComp::Turn(float angle)
 
 void MoveComp::UpdateTurn(uint32_t timeElapsed)
 {
+    const float speed = GetSpeed(timeElapsed, BASE_TURN_SPEED);
     if ((turnDir_ & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
     {
-        Turn(((float)(timeElapsed) / 2000.0f) * speedFactor_);
+        Turn(speed);
         turned_ = true;
     }
     if ((turnDir_ & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
     {
-        Turn(-((float)(timeElapsed) / 2000.0f) * speedFactor_);
+        Turn(-speed);
         turned_ = true;
     }
 }

@@ -19,6 +19,10 @@ private:
     void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
+    inline float GetSpeed(uint32_t timeElapsed, float baseSpeed)
+    {
+        return (static_cast<float>(timeElapsed) / baseSpeed) * speedFactor_;
+    }
 public:
     enum UpdateFlags : uint32_t
     {

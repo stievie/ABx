@@ -527,7 +527,7 @@ float Actor::GetCriticalChance(Actor* other)
     if (!weapon)
         return 0.0f;
 
-    AttributeIndices attrib = weapon->GetWeaponAttribute();
+    const AttributeIndices attrib = weapon->GetWeaponAttribute();
     const float attribVal = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(attrib)));
     const float myLevel = static_cast<float>(GetLevel());
     const float otherLevel = static_cast<float>(other->GetLevel());
