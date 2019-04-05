@@ -184,6 +184,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="UuidUtils.h" />
     <ClInclude Include="Variant.h" />
+    <ClInclude Include="WeightedSelector.h" />
     <ClInclude Include="WinService.h" />
     <ClInclude Include="Xml.h" />
   </ItemGroup>

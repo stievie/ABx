@@ -108,6 +108,7 @@
     <ClCompile Include="Math.Sphere.cpp" />
     <ClCompile Include="Math.Utils.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
+    <ClCompile Include="Utils.WeightedSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\absmath\absmath\absmath.vcxproj">
