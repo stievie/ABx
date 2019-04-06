@@ -156,6 +156,9 @@
     <ClInclude Include="DBPlayerItemList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DBItemChanceList.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -291,6 +294,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DBPlayerItemList.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DBItemChanceList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

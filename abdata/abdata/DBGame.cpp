@@ -40,6 +40,7 @@ bool DBGame::Load(AB::Entities::Game& game)
     game.partySize = static_cast<uint8_t>(result->GetUInt("party_size"));
     game.mapCoordX = result->GetUInt("map_coord_x");
     game.mapCoordY = result->GetUInt("map_coord_y");
+    game.defaultLevel = static_cast<uint8_t>(result->GetUInt("default_level"));
 
     return true;
 }

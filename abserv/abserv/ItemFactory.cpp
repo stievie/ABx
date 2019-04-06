@@ -5,6 +5,8 @@
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
 #include "Mechanic.h"
+#include <AB/Entities/ItemChanceList.h>
+#include "Random.h"
 
 namespace Game {
 
@@ -72,6 +74,59 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
         return std::unique_ptr<Item>();
 
     return result;
+}
+
+void ItemFactory::DeleteConcrete(const std::string& uuid)
+{
+    AB::Entities::ConcreteItem ci;
+    auto client = GetSubsystem<IO::DataClient>();
+    ci.uuid = uuid;
+    if (!client->Delete(ci))
+    {
+        LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
+    }
+}
+
+void ItemFactory::LoadDropChances(const std::string mapUuid)
+{
+    auto it = dropChances_.find(mapUuid);
+    if (it != dropChances_.end())
+        // Already loaded
+        return;
+
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::ItemChanceList il;
+    il.uuid = mapUuid;
+    if (!client->Read(il))
+    {
+        LOG_ERROR << "Failed to read Item list for map " << mapUuid << std::endl;
+        return;
+    }
+
+    std::unique_ptr<ItemSelector> selector = std::make_unique<ItemSelector>();
+    for (const auto& i : il.items)
+    {
+        selector->Add(i.first, i.second);
+    }
+    selector->Update();
+
+    std::lock_guard<std::mutex> lockClass(lock_);
+    dropChances_.emplace(mapUuid, std::move(selector));
+}
+
+std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& mapUuid, uint32_t level, const std::string& playerUuid)
+{
+    auto it = dropChances_.find(mapUuid);
+    if (it != dropChances_.end())
+        return std::unique_ptr<Item>();
+    if ((*it).second->Count() == 0)
+        return std::unique_ptr<Item>();
+
+    auto rng = GetSubsystem<Crypto::Random>();
+    const float rnd1 = rng->GetFloat();
+    const float rnd2 = rng->GetFloat();
+    std::string itemUuid = (*it).second->Get(rnd1, rnd2);
+    return CreateItem(itemUuid, level, Utils::Uuid::EMPTY_UUID, playerUuid);
 }
 
 

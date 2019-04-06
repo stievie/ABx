@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <random>
+#include <atomic>
 
 namespace Utils {
 
@@ -11,7 +12,7 @@ template <typename T>
 class WeightedSelector
 {
 private:
-    bool initialized_;
+    std::atomic<bool> initialized_;
     std::vector<float> weights_;
     std::vector<float> probs_;
     std::vector<size_t> alias_;
@@ -95,6 +96,9 @@ public:
 
     T Get() const
     {
+        assert(initialized_);
+        assert(Count() != 0);
+
         static std::random_device rd;
         static std::mt19937 gen(rd());
         static const std::uniform_real_distribution<float> r_uni(0.0, 1.0);

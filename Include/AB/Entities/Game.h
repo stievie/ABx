@@ -58,6 +58,7 @@ struct Game : Entity
     uint8_t partySize = 0;
     int32_t mapCoordX = 0;
     int32_t mapCoordY = 0;
+    int8_t defaultLevel = 1;
 };
 
 }

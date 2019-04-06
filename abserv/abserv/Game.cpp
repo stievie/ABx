@@ -23,6 +23,7 @@
 #include "ThreadPool.h"
 #include "Subsystems.h"
 #include "AreaOfEffect.h"
+#include "ItemFactory.h"
 
 #include "DebugNew.h"
 
@@ -432,8 +433,12 @@ void Game::Load(const std::string& mapUuid)
     if (!script_->Execute(luaState_))
         return;
 
-    // Load Assets
-    GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Game::InternalLoad, shared_from_this());
+    auto thPool = GetSubsystem<Asynch::ThreadPool>();
+    // Load Game Assets
+    thPool->Enqueue(&Game::InternalLoad, shared_from_this());
+    // Load item drop chances on this map
+    auto factory = GetSubsystem<ItemFactory>();
+    thPool->Enqueue(&ItemFactory::LoadDropChances, factory, mapUuid);
 }
 
 void Game::QueueSpawnObject(std::shared_ptr<GameObject> object)

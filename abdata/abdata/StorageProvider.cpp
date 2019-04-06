@@ -60,6 +60,7 @@ static constexpr size_t KEY_CHESTITEMLIST_HASH = Utils::StringHash(AB::Entities:
 static constexpr size_t KEY_PLAYERITEMLIST_HASH = Utils::StringHash(AB::Entities::PlayerItemList::KEY());
 static constexpr size_t KEY_INVENTORYITEMLIST_HASH = Utils::StringHash(AB::Entities::InventoryItems::KEY());
 static constexpr size_t KEY_EQUIPPEDITEMLIST_HASH = Utils::StringHash(AB::Entities::EquippedItems::KEY());
+static constexpr size_t KEY_ITEMCHANCELIST_HASH = Utils::StringHash(AB::Entities::ItemChanceList::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -623,6 +624,8 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     case KEY_INVENTORYITEMLIST_HASH:
     case KEY_EQUIPPEDITEMLIST_HASH:
         return LoadFromDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(id, *data);
+    case KEY_ITEMCHANCELIST_HASH:
+        return LoadFromDB<DB::DBItemChanceList, AB::Entities::ItemChanceList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -777,6 +780,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_EQUIPPEDITEMLIST_HASH:
         succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
         break;
+    case KEY_ITEMCHANCELIST_HASH:
+        succ = FlushRecord<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
+        break;
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -882,6 +888,8 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     case KEY_INVENTORYITEMLIST_HASH:
     case KEY_EQUIPPEDITEMLIST_HASH:
         return ExistsInDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
+    case KEY_ITEMCHANCELIST_HASH:
+        return ExistsInDB<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
