@@ -26,9 +26,35 @@ $include {{_header.html}}
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                  <div class="col-xs-12 col-md-4 col-md-offset-4">
-                    <a class="btn btn-large btn-success btn-block" href="/files/fwclient.7z"><i class="fa fa-download"></i>&nbsp;Game Client</a>
+                  <div class="row">
+                    <div class="col-xs-12 col-md-4 col-md-offset-4">
+                      <a class="btn btn-large btn-success btn-block" href="/files/fwclient.7z"><i class="fa fa-download"></i>&nbsp;Game Client</a>
+                    </div>
                   </div>
+
+                  <h3>Installation</h3>
+
+                  <p>Extract the archive to a location of your choice.</p>
+                  <p>If it doesn't run download the <a href="https://visualstudio.microsoft.com/downloads/">Visual C++ Redistributable for Visual Studio 2017
+                  package</a> (Other Tools and Frameworks) from Microsoft and install it.</p>
+
+                  <h3>Uninstall</h3>
+                  <ul>
+                    <li>Delete the extracted files.</li>
+                    <li>Delete the directory <code>c:\Users\&lt;username&gt;\AppData\Roaming\Trill\FW\</code> (Win7)</li>
+                  </ul>
+
+                  <h3>Run</h3>
+                  <ol>
+                    <li>Start <code>fw.exe</code></li>
+                    <li>Create an account (you can/should leave the Email field empty)</li>
+                    <li>Create a character</li>
+                    <li>Enter world</li>
+                  </ol>
+
+                  <p>You can run multiple instances of the client at the same time, however you can't
+                  login twice with the same account. If you want that multiple instances use different
+                  settings, use the <code>-prefpath</code> command line switch.</p>
                 </div>
               </div>
             </div>
