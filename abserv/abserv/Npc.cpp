@@ -25,6 +25,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetServerOnly", &Npc::SetServerOnly)
 
         .addFunction("SetName", &Npc::SetName)
+        .addFunction("SetLevel", &Npc::SetLevel)             // Can only be used in onInit(), i.e. before it is sent to the clients
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)

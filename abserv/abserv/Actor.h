@@ -278,13 +278,6 @@ public:
 
     bool undestroyable_;
 
-    /// Effects may influence the cast spells speed
-    float castSpeedFactor_ = 1.0f;
-    /// For any skill
-    float skillSpeedFactor_ = 1.0f;
-    /// Effects may influence the attack speed
-    float attackSpeedFactor_ = 1.0f;
-
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 };

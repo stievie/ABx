@@ -111,6 +111,8 @@ public:
     const PlayersList& GetPlayers() const { return players_; }
     int64_t GetInstanceTime() const { return Utils::Tick() - startTime_; }
     std::string GetName() const { return map_->data_.name; }
+    /// Default level on this map
+    uint32_t GetDefaultLevel() const { return data_.defaultLevel; }
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);

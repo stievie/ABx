@@ -69,6 +69,7 @@ public:
     std::string GetName() const override { return name_; }
     void SetName(const std::string& name) { name_ = name; }
     uint32_t GetLevel() const override { return level_; }
+    void SetLevel(uint32_t value) { level_ = value; }
     uint32_t GetModelIndex() const final override
     {
         return modelIndex_;
