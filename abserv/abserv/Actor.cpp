@@ -515,7 +515,7 @@ int32_t Actor::GetAttackDamage(bool critical)
     {
         // make small damage without weapon, maybe with feasts :D
         const int32_t level = static_cast<int32_t>(GetLevel());
-        // Level 20 actors make 5 damage. Lover actors make least 1 damage
+        // Level 20 actors make 5 damage. Lower actors make least 1 damage
         return Math::Clamp(level / 4, 1, level);
     }
     int32_t damage = 0;

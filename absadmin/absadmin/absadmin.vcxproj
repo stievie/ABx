@@ -181,6 +181,7 @@
     <ClInclude Include="ContentTypes.h" />
     <ClInclude Include="Cookie.h" />
     <ClInclude Include="CreateKeyResource.h" />
+    <ClInclude Include="DownloadResource.h" />
     <ClInclude Include="FileResource.h" />
     <ClInclude Include="FriendsResource.h" />
     <ClInclude Include="IndexResource.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="ContentTypes.cpp" />
     <ClCompile Include="Cookie.cpp" />
     <ClCompile Include="CreateKeyResource.cpp" />
+    <ClCompile Include="DownloadResource.cpp" />
     <ClCompile Include="FileResource.cpp" />
     <ClCompile Include="FriendsResource.cpp" />
     <ClCompile Include="IndexResource.cpp" />

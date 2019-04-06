@@ -111,6 +111,9 @@
     <ClInclude Include="AccountLogoutResource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="DownloadResource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -204,6 +207,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="AccountLogoutResource.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DownloadResource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

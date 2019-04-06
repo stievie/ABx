@@ -34,6 +34,7 @@
 #include "AccountResource.h"
 #include "AccountPostResource.h"
 #include "AccountLogoutResource.h"
+#include "DownloadResource.h"
 
 Application* Application::Instance = nullptr;
 
@@ -154,6 +155,7 @@ void Application::InitRoutes()
     Route<Resources::AccountsJsonResource>("GET", "^/get/accounts$");
     Route<Resources::AccountResource>("GET", "^/account$");
     Route<Resources::AccountKeysResource>("GET", "^/accountkeys$");
+    Route<Resources::DownloadResource>("GET", "^/download$");
 
     Route<Resources::LoginResource>("POST", "^/post/login$");
     Route<Resources::LogoutResource>("POST", "^/post/logout$");
