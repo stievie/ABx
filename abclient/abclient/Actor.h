@@ -124,6 +124,7 @@ private:
     void HideSpeechBubble();
     String GetAnimation(const StringHash& hash);
     String GetSoundEffect(const StringHash& hash);
+    void UpdateMoveSpeed();
     void HandleNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleAnimationFinished(StringHash eventType, VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);

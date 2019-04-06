@@ -653,6 +653,21 @@ void Actor::SetSelectedObject(SharedPtr<GameObject> object)
     }
 }
 
+void Actor::UpdateMoveSpeed()
+{
+    if (!animController_)
+        return;
+
+    // Change speed of currently running animations
+    const String& aniRun = animations_[ANIM_RUN];
+    if (!aniRun.Empty())
+        animController_->SetSpeed(aniRun, speedFactor_);
+    const String& aniWalk = animations_[ANIM_WALK];
+    if (!aniWalk.Empty())
+        // speed / 2 -> walk animation -> playing at normal speed = speed * 2
+        animController_->SetSpeed(aniWalk, speedFactor_ * 2.0f);
+}
+
 void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float fadeTime /* = 0.2f */, float speed /* = 1.0f */)
 {
     if (!animController_)
@@ -804,8 +819,7 @@ void Actor::SetCreatureState(int64_t time, AB::GameProtocol::CreatureState newSt
 void Actor::SetSpeedFactor(int64_t time, float value)
 {
     GameObject::SetSpeedFactor(time, value);
-    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
-        PlayStateAnimation(0.0f);
+    UpdateMoveSpeed();
 }
 
 void Actor::Unserialize(PropReadStream& data)
