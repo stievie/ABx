@@ -114,12 +114,21 @@ void ItemFactory::LoadDropChances(const std::string mapUuid)
     dropChances_.emplace(mapUuid, std::move(selector));
 }
 
+void ItemFactory::DeleteMap(const std::string& uuid)
+{
+    auto it = dropChances_.find(uuid);
+    if (it != dropChances_.end())
+        dropChances_.erase(it);
+}
+
 std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& mapUuid, uint32_t level, const std::string& playerUuid)
 {
     auto it = dropChances_.find(mapUuid);
-    if (it != dropChances_.end())
+    if (it == dropChances_.end())
+        // Maybe outpost -> no drops
         return std::unique_ptr<Item>();
     if ((*it).second->Count() == 0)
+        // No drops on this map :(
         return std::unique_ptr<Item>();
 
     auto rng = GetSubsystem<Crypto::Random>();

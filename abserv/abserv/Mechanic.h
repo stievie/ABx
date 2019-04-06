@@ -22,6 +22,8 @@ static constexpr uint32_t SKILLPOINT_ADVANCE_XP = 15000;
 static constexpr float BASE_SPEED = 150.0f;
 static constexpr float BASE_TURN_SPEED = 2000.0f;
 
+static constexpr uint32_t NO_WEAPON_DAMAGE = 5;
+
 // Attack speeds in ms
 static constexpr uint32_t ATTACK_SPEED_AXE        = 1330;
 static constexpr uint32_t ATTACK_SPEED_SWORD      = 1330;

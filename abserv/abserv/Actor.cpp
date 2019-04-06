@@ -481,7 +481,7 @@ int32_t Actor::GetAttackDamage(bool critical)
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return 5;   // make small damage without weapon, maybe with feasts :D
+        return NO_WEAPON_DAMAGE;   // make small damage without weapon, maybe with feasts :D
     int32_t damage = 0;
     // Get weapon damage with mods
     weapon->GetWeaponDamage(damage, critical);

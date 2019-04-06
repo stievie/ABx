@@ -26,6 +26,8 @@ public:
     /// Deletes a concrete item from the database, e.g. when an item was not picked up
     void DeleteConcrete(const std::string& uuid);
     void LoadDropChances(const std::string mapUuid);
+    /// Delete drop chances for this map
+    void DeleteMap(const std::string& uuid);
     std::unique_ptr<Item>CreateDropItem(const std::string& mapUuid,
         uint32_t level, const std::string& playerUuid);
 };
