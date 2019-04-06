@@ -26,6 +26,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetSelectedObject", &Actor::_LuaGetSelectedObject)
         .addFunction("SetSelectedObject", &Actor::_LuaSetSelectedObject)
         .addFunction("UseSkill", &Actor::UseSkill)
+        .addFunction("Attack", &Actor::Attack)
+        .addFunction("IsAttackingActor", &Actor::IsAttackingActor)
         .addFunction("GetCurrentSkill", &Actor::GetCurrentSkill)
         .addFunction("GetWeapon", &Actor::GetWeapon)
         .addFunction("IsInWeaponRange", &Actor::IsInWeaponRange)
@@ -182,6 +184,35 @@ void Actor::FollowObject(uint32_t objectId)
     Utils::VariantMap data;
     data[InputDataObjectId] = objectId;
     inputComp_.Add(InputType::Follow, data);
+}
+
+void Actor::Attack(Actor* target)
+{
+    if (!target)
+        return;
+    if (!IsEnemy(target))
+        return;
+    if (attackComp_.IsAttackingTarget(target))
+        return;
+
+    {
+        // First select object
+        Utils::VariantMap data;
+        data[InputDataObjectId] = GetId();    // Source
+        data[InputDataObjectId2] = target->GetId();   // Target
+        inputComp_.Add(InputType::Select, data);
+    }
+    // Then attack
+    inputComp_.Add(InputType::Attack);
+}
+
+bool Actor::IsAttackingActor(Actor* target)
+{
+    if (!target)
+        return false;
+    if (attackComp_.IsAttackingTarget(target))
+        return true;
+    return false;
 }
 
 void Actor::UseSkill(uint32_t index)
@@ -481,7 +512,12 @@ int32_t Actor::GetAttackDamage(bool critical)
 {
     Item* weapon = GetWeapon();
     if (!weapon)
-        return NO_WEAPON_DAMAGE;   // make small damage without weapon, maybe with feasts :D
+    {
+        // make small damage without weapon, maybe with feasts :D
+        const int32_t level = static_cast<int32_t>(GetLevel());
+        // Level 20 actors make 5 damage. Lover actors make least 1 damage
+        return Math::Clamp(level / 4, 1, level);
+    }
     int32_t damage = 0;
     // Get weapon damage with mods
     weapon->GetWeaponDamage(damage, critical);

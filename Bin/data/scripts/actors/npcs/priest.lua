@@ -26,3 +26,10 @@ end
 -- creature collides with self
 function onCollide(creature)
 end
+
+function onAttacked(source, _type, damage, success)
+  if (self:IsAttackingActor(source) == false) then
+    self:Say(CHAT_CHANNEL_GENERAL, "Okay " .. source:GetName() .. ", take that!")
+    self:Attack(source)
+  end
+end

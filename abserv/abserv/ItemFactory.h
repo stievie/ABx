@@ -11,7 +11,7 @@ class ItemFactory
 {
 private:
     using ItemSelector = Utils::WeightedSelector<std::string>;
-    std::unordered_map<std::string, std::unique_ptr<ItemSelector>> dropChances_;
+    std::map<std::string, std::unique_ptr<ItemSelector>> dropChances_;
     std::mutex lock_;
 public:
     ItemFactory();

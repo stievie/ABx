@@ -174,6 +174,15 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
     lastAttackTime_ = 0;
 }
 
+bool AttackComp::IsAttackingTarget(Actor* target)
+{
+    if (!IsAttackState())
+        return false;
+    if (auto t = target_.lock())
+        return t->id_ == target->id_;
+    return false;
+}
+
 bool AttackComp::IsAttackState() const
 {
     return owner_.stateComp_.GetState() == AB::GameProtocol::CreatureStateAttacking;

@@ -44,6 +44,13 @@ function onSelected(creature)
 --  end
 end
 
+function onAttacked(source, _type, damage, success)
+  if (self:IsAttackingActor(source) == false) then
+    self:Say(CHAT_CHANNEL_GENERAL, "WTF, wait, I will give you that!")
+    self:Attack(source)
+  end
+end
+
 -- creature collides with self
 function onCollide(creature)
 end

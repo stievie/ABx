@@ -60,7 +60,7 @@ end
 function onAttacked(source, _type, damage, success)
 end
 
--- This Actor is going to bee attacked by source. Happens before onAttacked.
+-- This Actor is going to be attacked by source. Happens before onAttacked.
 -- source: Actor
 -- success: bool
 function onGettingAttacked(source, success)

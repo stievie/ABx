@@ -40,6 +40,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("SetPosition",      &GameObject::_LuaSetPosition)
         .addFunction("SetRotation",      &GameObject::_LuaSetRotation)
         .addFunction("SetScale",         &GameObject::_LuaSetScale)
+        .addFunction("SetScaleSimple",   &GameObject::_LuaSetScaleSimple)
         .addFunction("GetPosition",      &GameObject::_LuaGetPosition)
         .addFunction("GetRotation",      &GameObject::_LuaGetRotation)
         .addFunction("GetScale",         &GameObject::_LuaGetScale)
@@ -51,7 +52,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
 
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
-        .addFunction("IsInRange", &GameObject::IsInRange)
+        .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
     );
 }
@@ -373,6 +374,13 @@ void GameObject::_LuaSetScale(float x, float y, float z)
     transformation_.scale_.x_ = x;
     transformation_.scale_.y_ = y;
     transformation_.scale_.z_ = z;
+}
+
+void GameObject::_LuaSetScaleSimple(float value)
+{
+    transformation_.scale_.x_ = value;
+    transformation_.scale_.y_ = value;
+    transformation_.scale_.z_ = value;
 }
 
 std::vector<float> GameObject::_LuaGetPosition() const

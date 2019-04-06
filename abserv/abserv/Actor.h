@@ -258,6 +258,8 @@ public:
     void FollowObject(std::shared_ptr<GameObject> object);
     void FollowObject(uint32_t objectId);
     void UseSkill(uint32_t index);
+    void Attack(Actor* target);
+    bool IsAttackingActor(Actor* target);
     /// Cancel attack, use skill, follow
     void CancelAction();
 

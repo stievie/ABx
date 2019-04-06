@@ -54,6 +54,7 @@ private:
     void _LuaSetPosition(float x, float y, float z);
     void _LuaSetRotation(float y);
     void _LuaSetScale(float x, float y, float z);
+    void _LuaSetScaleSimple(float value);
     std::vector<float> _LuaGetPosition() const;
     float _LuaGetRotation() const;
     std::vector<float> _LuaGetScale() const;
