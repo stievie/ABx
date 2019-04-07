@@ -3,9 +3,5 @@ include("/scripts/includes/damage.lua")
 include("/scripts/includes/sword_defaults.lua")
 include("/scripts/includes/drop_stats.lua")
 
-function getDamage(baseMin, baseMax, critical)
-  if (critical == true) then
-    return baseMax
-  end
-  return ((baseMax - baseMin) * math.random()) + baseMin
-end
+-- getDamage()
+include("/scripts/items/weapons/damage.lua")
