@@ -77,6 +77,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("Resurrect", &Actor::Resurrect)
         .addFunction("CancelAction", &Actor::CancelAction)
 
+        .addFunction("DropItem", &Actor::DropItem)
+
         .addFunction("GetEnemiesInRange", &Actor::GetEnemiesInRange)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
         .addFunction("GetAlliesInRange", &Actor::GetAlliesInRange)
@@ -225,6 +227,19 @@ void Actor::UseSkill(uint32_t index)
 void Actor::CancelAction()
 {
     inputComp_.Add(InputType::Cancel);
+}
+
+void Actor::AddToInventory(std::unique_ptr<Item>& item)
+{
+    std::unique_ptr<Item> i = std::move(item);
+    // By default just delete the item
+    auto factory = GetSubsystem<ItemFactory>();
+    factory->DeleteConcrete(i->concreteItem_.uuid);
+}
+
+void Actor::DropItem()
+{
+    GetGame()->AddItemDrop(this);
 }
 
 void Actor::_LuaSetState(int state)

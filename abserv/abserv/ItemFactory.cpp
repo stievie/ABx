@@ -36,6 +36,7 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.itemUuid = gameItem.uuid;
     ci.accountUuid = accUuid;
     ci.playerUuid = playerUuid;
+    ci.count = 1;
     ci.creation = Utils::Tick();
     if (!client->Create(ci))
     {

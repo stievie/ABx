@@ -167,6 +167,11 @@ bool AreaOfEffect::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
         return false;
+    stream.Write<uint32_t>(0);                                   // Level
+    stream.Write<uint8_t>(AB::Entities::CharacterSexUnknown);
+    stream.Write<uint32_t>(0);                                   // Prof 1
+    stream.Write<uint32_t>(0);                                   // Prof 2
+    stream.Write<uint32_t>(index_);   // Model index, in this case the effect index
     return true;
 }
 
@@ -180,7 +185,7 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.x_);
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);
-    msg.Add<uint8_t>(1);                                  // destroyable
+    msg.Add<uint8_t>(1);                                  // not destroyable
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(0.0f);                                 // speed
     msg.Add<uint32_t>(0);                                 // Group id

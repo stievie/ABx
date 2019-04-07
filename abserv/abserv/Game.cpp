@@ -24,6 +24,7 @@
 #include "Subsystems.h"
 #include "AreaOfEffect.h"
 #include "ItemFactory.h"
+#include "ItemDrop.h"
 
 #include "DebugNew.h"
 
@@ -74,6 +75,14 @@ AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script, Actor* source
     return nullptr;
 }
 
+ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
+{
+    auto o = AddItemDrop(dropper);
+    if (o)
+        return o.get();
+    return nullptr;
+}
+
 void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
 {
     auto client = GetSubsystem<Net::MessageClient>();
@@ -118,6 +127,7 @@ void Game::RegisterLua(kaguya::State& state)
 
         .addFunction("AddNpc", &Game::_LuaAddNpc)
         .addFunction("AddAreaOfEffect", &Game::_LuaAddAreaOfEffect)
+        .addFunction("AddItemDrop", &Game::_LuaAddItemDrop)
     );
 }
 
@@ -365,6 +375,40 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
         Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
             shared_from_this(), result))
     );
+
+    return result;
+}
+
+std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
+{
+    auto factory = GetSubsystem<ItemFactory>();
+    auto rng = GetSubsystem<Crypto::Random>();
+    const float rnd = rng->GetFloat();
+    auto p = Utils::SelectRandomly(players_.begin(), players_.end(), rnd);
+    if (p == players_.end())
+        return std::shared_ptr<ItemDrop>();
+
+    Player* target = (*p).second;
+    auto item = factory->CreateDropItem(data_.uuid, data_.defaultLevel, target->data_.uuid);
+    if (!item)
+        return std::shared_ptr<ItemDrop>();
+
+    std::shared_ptr<ItemDrop> result = std::make_shared<ItemDrop>(item);
+    result->SetGame(shared_from_this());
+    result->transformation_.position_ = dropper->transformation_.position_;
+    result->SetSource(dropper->GetThis<Actor>());
+    result->actorId_ = target->id_;
+
+    // After all initialization is done, we can call this
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+            shared_from_this(), result))
+    );
+
+    gameStatus_->AddByte(AB::GameProtocol::GameObjectDropItem);
+    gameStatus_->Add<uint32_t>(dropper->id_);
+    gameStatus_->Add<uint32_t>(target->id_);
+    gameStatus_->Add<uint32_t>(result->GetItemIndex());
 
     return result;
 }

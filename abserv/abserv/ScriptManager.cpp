@@ -12,6 +12,7 @@
 #include "Item.h"
 #include "AreaOfEffect.h"
 #include "Party.h"
+#include "ItemDrop.h"
 
 namespace Game {
 
@@ -86,6 +87,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     GameObject::RegisterLua(state);
     Actor::RegisterLua(state);
     Item::RegisterLua(state);
+    ItemDrop::RegisterLua(state);
 
     Effect::RegisterLua(state);
     Skill::RegisterLua(state);

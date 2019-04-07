@@ -214,6 +214,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectHealed,
     GameObjectProgress,           // The object progressed, see ObjectProgressType
     GameObjectPingTarget,
+    GameObjectDropItem,           // An object dropped an item
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,
@@ -283,6 +284,7 @@ enum GameObjectType : uint8_t
     ObjectTypePlayer,                // Human player
     ObjectTypeProjectile,
     ObjectTypeAreaOfEffect,          // Area that affects actors in it, e.g. a well
+    ObjectTypeItemDrop,
 };
 
 enum GamePacketTypes : uint8_t

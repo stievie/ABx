@@ -93,6 +93,8 @@ public:
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state) override;
+    bool LoadModel(uint32_t index, const Vector3& position, const Quaternion& rotation);
+    bool LoadAreaOfEffect(uint32_t index, const Vector3& position, const Quaternion& rotation);
     /// Add a model like hair armor etc.
     void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
@@ -150,6 +152,7 @@ public:
     AB::Entities::Profession* profession2_;
     AB::SkillIndices skills_;
     AB::Attributes attributes_;
+    /// Model or effect (in case of AOE) index
     uint32_t modelIndex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;

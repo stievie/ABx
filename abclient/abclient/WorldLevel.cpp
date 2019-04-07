@@ -407,6 +407,14 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         object = CreateActor(id, position, scale, rot, state, data);
         object->objectType_ = ObjectTypeNpc;
         break;
+    case AB::GameProtocol::ObjectTypeAreaOfEffect:
+        object = CreateActor(id, position, scale, rot, state, data);
+        object->objectType_ = ObjectTypeAreaOfEffect;
+        break;
+    case AB::GameProtocol::ObjectTypeItemDrop:
+        object = CreateActor(id, position, scale, rot, state, data);
+        object->objectType_ = ObjectTypeItemDrop;
+        break;
     }
     if (object)
     {
@@ -424,6 +432,8 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         object->SetSpeedFactor(updateTick, speed);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
+
+        URHO3D_LOGINFOF("Spawned object %d: %s", actor->id_, actor->name_.CString());
 
         switch (object->objectType_)
         {

@@ -221,7 +221,14 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
         AB::Entities::Character ch;
         if (GetEntity(*data, ch) && !ch.name.empty())
         {
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4244)
+#endif
             std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), ::tolower);
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
             auto playerIt = playerNames_.find(ch.name);
             if (playerIt != playerNames_.end())
             {

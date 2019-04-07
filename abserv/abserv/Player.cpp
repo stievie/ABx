@@ -270,6 +270,12 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         party->Update(timeElapsed, message);
 }
 
+void Player::AddToInventory(std::unique_ptr<Item>& item)
+{
+    // TODO: Don't just delete the item, but add it to the inventory
+    Actor::AddToInventory(item);
+}
+
 void Player::PartyInvitePlayer(uint32_t playerId)
 {
     // The leader invited a player

@@ -263,6 +263,9 @@ public:
     /// Cancel attack, use skill, follow
     void CancelAction();
 
+    virtual void AddToInventory(std::unique_ptr<Item>& item);
+    void DropItem();
+
     std::unique_ptr<SkillBar> skills_;
 
     Components::AutoRunComp autorunComp_;

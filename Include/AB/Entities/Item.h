@@ -14,6 +14,7 @@ enum ItemType : uint16_t
     ItemTypeCharacterModel = 1,
     ItemTypeCharacterHair,
     ItemTypePortal,
+    ItemTypeAreaOfEffect,
 
     // Equipments
     ItemTypeArmorHead = 10,
@@ -64,7 +65,6 @@ struct Item : Entity
         s.text1b(client_icon, Limits::MAX_FILENAME);
         s.text1b(client_model, Limits::MAX_FILENAME);
         s.value2b(type);
-        s.value1b(dropChance);
         s.value1b(stackAble);
     }
 
@@ -76,7 +76,6 @@ struct Item : Entity
     std::string client_icon;
     std::string client_model;
     ItemType type = ItemTypeUnknown;
-    uint8_t dropChance = 0;
     bool stackAble = false;
 };
 

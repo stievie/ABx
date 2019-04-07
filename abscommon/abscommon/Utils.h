@@ -31,7 +31,7 @@ inline uint32_t TimePassed(int64_t last)
 }
 
 template<typename Iter, typename RandomGenerator>
-Iter select_randomly(Iter start, Iter end, RandomGenerator& g)
+Iter SelectRandomly(Iter start, Iter end, RandomGenerator& g)
 {
     std::uniform_int_distribution<> dis(0, static_cast<int>(std::distance(start, end)) - 1);
     std::advance(start, dis(g));
@@ -39,11 +39,19 @@ Iter select_randomly(Iter start, Iter end, RandomGenerator& g)
 }
 
 template<typename Iter>
-Iter select_randomly(Iter start, Iter end)
+Iter SelectRandomly(Iter start, Iter end)
 {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    return select_randomly(start, end, gen);
+    return SelectRandomly(start, end, gen);
+}
+
+template<typename Iter>
+Iter SelectRandomly(Iter start, Iter end, float rnd)
+{
+    int adv = static_cast<int>(static_cast<float>(std::distance(start, end) - 1) * rnd);
+    std::advance(start, adv);
+    return start;
 }
 
 bool GetCommandLineValue(const std::vector<std::string>& values, const std::string& name);

@@ -6,6 +6,7 @@
 #include "GameManager.h"
 #include "Subsystems.h"
 #include "PartyManager.h"
+#include "Random.h"
 
 namespace Game {
 
@@ -264,8 +265,10 @@ Player* Party::GetRandomPlayer() const
     if (members_.size() == 0)
         return nullptr;
 
+    auto rng = GetSubsystem<Crypto::Random>();
+    const float rnd = rng->GetFloat();
     using iterator = std::vector<std::weak_ptr<Player>>::const_iterator;
-    auto it = Utils::select_randomly<iterator>(members_.begin(), members_.end());
+    auto it = Utils::SelectRandomly<iterator>(members_.begin(), members_.end(), rnd);
     if (it != members_.end())
     {
         if (auto p = (*it).lock())
@@ -290,8 +293,10 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
     if (players.size() == 0)
         return nullptr;
 
+    auto rng = GetSubsystem<Crypto::Random>();
+    const float rnd = rng->GetFloat();
     using iterator = std::vector<Player*>::const_iterator;
-    auto it = Utils::select_randomly<iterator>(players.begin(), players.end());
+    auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
     if (it != players.end())
     {
         return (*it);

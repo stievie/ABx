@@ -120,6 +120,7 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+    void AddToInventory(std::unique_ptr<Item>& item) override;
 
     void PartyInvitePlayer(uint32_t playerId);
     void PartyKickPlayer(uint32_t playerId);

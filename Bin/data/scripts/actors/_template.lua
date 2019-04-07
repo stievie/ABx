@@ -40,10 +40,13 @@ end
 function onLeftArea(other)
 end
 
-function OnStartUseSkill(skill)
+function onDied()
 end
 
-function OnEndUseSkill(skill)
+function onStartUseSkill(skill)
+end
+
+function onEndUseSkill(skill)
 end
 
 -- This Actor is attacking the target

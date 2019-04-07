@@ -2,7 +2,7 @@ include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
 
 name = "Cosmic Scared (Smith)"
-level = 1
+level = 20
 modelIndex = 5     -- Smith body model
 sex = SEX_MALE     -- Male
 creatureState = CREATURESTATE_IDLE
@@ -11,7 +11,6 @@ prof2Index = 0     -- None
 behavior = "SMITH"
 
 function onInit()
-  self:SetScaleSimple(0.3)
   return true
 end
 

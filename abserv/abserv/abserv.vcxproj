@@ -235,6 +235,7 @@
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="IOTerrain.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemDrop.h" />
     <ClInclude Include="ItemFactory.h" />
     <ClInclude Include="ItemStats.h" />
     <ClInclude Include="Mechanic.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="IOTerrain.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemDrop.cpp" />
     <ClCompile Include="ItemFactory.cpp" />
     <ClCompile Include="ItemStats.cpp" />
     <ClCompile Include="PartyManager.cpp" />

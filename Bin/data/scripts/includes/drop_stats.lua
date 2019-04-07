@@ -7,6 +7,7 @@ function getDamageStats(level)
   local maxD = dropStats["MaxDamage"] / p;
   local minRes = (((minD / 2) - minD) * math.random()) + (minD / 2)
   local maxRes = (((maxD / 2) - maxD) * math.random()) + (maxD / 2)
+  print(minRes, maxRes)
   return minRes, maxRes
 end
 
@@ -14,6 +15,7 @@ function getEnergyStats(level)
   local p = level / 20
   local energy = dropStats["Energy"] / p;
   local res = (((energy / 2) - energy) * math.random()) + (energy / 2)
+  print(res)
   return res
 end
 
@@ -21,5 +23,6 @@ function getArmorStats(level)
   local p = level / 20
   local armor = dropStats["Armor"] / p;
   local res = (((armor / 2) - armor) * math.random()) + (armor / 2)
+  print(res)
   return res
 end

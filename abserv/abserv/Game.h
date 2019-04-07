@@ -18,6 +18,7 @@ namespace Game {
 class Player;
 class Npc;
 class AreaOfEffect;
+class ItemDrop;
 
 using ObjectList = std::unordered_map<uint32_t, std::shared_ptr<GameObject>>;
 using PlayersList = std::unordered_map<uint32_t, Player*>;
@@ -87,6 +88,7 @@ private:
         Actor* source,
         uint32_t index,
         float x, float y, float z);
+    ItemDrop* _LuaAddItemDrop(Actor* dropper);
     int _LuaGetType() const { return data_.type; }
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
     void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
@@ -126,6 +128,7 @@ public:
         std::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
+    std::shared_ptr<ItemDrop> AddItemDrop(Actor* dropper);
     /// Return all Parties in this Game
     std::vector<Party*> GetParties() const;
 

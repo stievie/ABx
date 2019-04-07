@@ -62,6 +62,7 @@ protected:
     void ParseObjectDamaged(const std::shared_ptr<InputMessage>& message);
     void ParseObjectHealed(const std::shared_ptr<InputMessage>& message);
     void ParseObjectProgress(const std::shared_ptr<InputMessage>& message);
+    void ParseObjectDroppedItem(const std::shared_ptr<InputMessage>& message);
     void ParseServerMessage(const std::shared_ptr<InputMessage>& message);
     void ParseChatMessage(const std::shared_ptr<InputMessage>& message);
     void ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message);

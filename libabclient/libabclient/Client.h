@@ -105,6 +105,7 @@ public:
     void OnObjectDamaged(int64_t updateTick, uint32_t id, uint32_t sourceId, uint16_t index, uint8_t damageType, int16_t value) override;
     void OnObjectHealed(int64_t updateTick, uint32_t id, uint32_t healerId, uint16_t index, int16_t value) override;
     void OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol::ObjectProgressType type, int value) override;
+    void OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId) override;
     void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) override;
     void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,

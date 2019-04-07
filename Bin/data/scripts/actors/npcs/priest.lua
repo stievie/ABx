@@ -33,3 +33,7 @@ function onAttacked(source, _type, damage, success)
     self:Attack(source)
   end
 end
+
+function onDied()
+  self:DropItem()
+end

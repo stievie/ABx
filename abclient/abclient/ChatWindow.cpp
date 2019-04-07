@@ -10,6 +10,7 @@
 #include "LevelManager.h"
 #include "Player.h"
 #include "SkillManager.h"
+#include "ItemsCache.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -124,6 +125,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_OBJECTPINGTARGET, URHO3D_HANDLER(ChatWindow, HandleTargetPinged));
     SubscribeToEvent(AbEvents::E_PARTYRESIGNED, URHO3D_HANDLER(ChatWindow, HandlePartyResigned));
     SubscribeToEvent(AbEvents::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
+    SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(ChatWindow, HandleItemDropped));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -608,6 +610,35 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     }
     AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannelParty);
     pinger->ShowSpeechBubble(message);
+}
+
+void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectItemDropped;
+    uint32_t dropperId = eventData[P_OBJECTID].GetUInt();
+    uint32_t targetId = eventData[P_TARGETID].GetUInt();
+    uint32_t itemIndex = eventData[P_ITEMID].GetUInt();
+
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    Actor* dropper = dynamic_cast<Actor*>(lm->GetObjectById(dropperId).Get());
+    Actor* target = dynamic_cast<Actor*>(lm->GetObjectById(targetId).Get());
+
+    ItemsCache* items = GetSubsystem<ItemsCache>();
+    // Item may not be spawned yet
+    Item* item = items->Get(itemIndex);
+
+    kainjow::mustache::mustache tpl{ "{{dropper}} dropped {{item}} for {{target}}" };
+    kainjow::mustache::data data;
+    data.set("dropper", std::string(dropper->name_.CString()));
+    if (item)
+        data.set("item", std::string(item->name_.CString()));
+    else
+    {
+        data.set("item", std::to_string(itemIndex));
+    }
+    data.set("target", std::string(target->name_.CString()));
+    std::string t = tpl.render(data);
+    AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 
 bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel)

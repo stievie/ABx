@@ -86,57 +86,13 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
 
     if (modelIndex_ != 0)
     {
-        ItemsCache* items = GetSubsystem<ItemsCache>();
-        SharedPtr<Item> item = items->Get(modelIndex_);
-        if (!item)
-        {
-            URHO3D_LOGERRORF("Model Item not found: %d", modelIndex_);
-            return;
-        }
-        XMLFile* object = item->GetModelResource<XMLFile>();
-        if (!object)
-        {
-            URHO3D_LOGERRORF("Prefab file not found: %s", item->modelFile_.CString());
-            return;
-        }
-
-        XMLElement root = object->GetRoot();
-        unsigned nodeId = root.GetUInt("id");
-        SceneResolver resolver;
-        Node* adjNode = node_->CreateChild(0, LOCAL);
-        resolver.AddNode(nodeId, adjNode);
-        adjNode->SetRotation(Quaternion(270, Vector3(0, 1, 0)));
-        if (adjNode->LoadXML(root, resolver, true, true))
-        {
-            resolver.Resolve();
-            node_->SetTransform(position, rotation);
-            adjNode->ApplyAttributes();
-            if (adjNode->GetComponent<AnimatedModel>(true))
-            {
-                AnimatedModel* animModel = adjNode->GetComponent<AnimatedModel>(true);
-                type_ = Actor::Animated;
-                animController_ = adjNode->CreateComponent<AnimationController>();
-                model_ = animModel;
-            }
-            else
-            {
-                type_ = Actor::Static;
-                model_ = adjNode->GetComponent<StaticModel>(true);
-            }
-            Node* soundSourceNode = node_->CreateChild("SoundSourceNode");
-            soundSource_ = soundSourceNode->CreateComponent<SoundSource3D>();
-            soundSource_->SetSoundType(SOUND_EFFECT);
-            soundSource_->SetNearDistance(2.0f);
-            soundSource_->SetFarDistance(15.0f);
-        }
+        if (objectType_ != ObjectTypeAreaOfEffect)
+            LoadModel(modelIndex_, position, rotation);
         else
         {
-            URHO3D_LOGERRORF("Error instantiating prefab %s", item->modelFile_.CString());
-            adjNode->Remove();
+            LoadAreaOfEffect(modelIndex_, position, rotation);
         }
     }
-    else
-        URHO3D_LOGERROR("Prefab file is empty");
 
     creatureState_ = state;
     if (model_)
@@ -146,6 +102,66 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
         model_->SetOccluder(false);
         SubscribeToEvent(model_->GetNode(), E_ANIMATIONFINISHED, URHO3D_HANDLER(Actor, HandleAnimationFinished));
     }
+}
+
+bool Actor::LoadModel(uint32_t index, const Vector3& position, const Quaternion& rotation)
+{
+    ItemsCache* items = GetSubsystem<ItemsCache>();
+    SharedPtr<Item> item = items->Get(index);
+    if (!item)
+    {
+        URHO3D_LOGERRORF("Model Item not found: %d", index);
+        return false;
+    }
+    XMLFile* object = item->GetModelResource<XMLFile>();
+    if (!object)
+    {
+        URHO3D_LOGERRORF("Prefab file not found for %s: %s", item->name_.CString(), item->modelFile_.CString());
+        return false;
+    }
+
+    XMLElement root = object->GetRoot();
+    unsigned nodeId = root.GetUInt("id");
+    SceneResolver resolver;
+    Node* adjNode = node_->CreateChild(0, LOCAL);
+    resolver.AddNode(nodeId, adjNode);
+    adjNode->SetRotation(Quaternion(270, Vector3(0, 1, 0)));
+    if (adjNode->LoadXML(root, resolver, true, true))
+    {
+        resolver.Resolve();
+        node_->SetTransform(position, rotation);
+        adjNode->ApplyAttributes();
+        if (adjNode->GetComponent<AnimatedModel>(true))
+        {
+            AnimatedModel* animModel = adjNode->GetComponent<AnimatedModel>(true);
+            type_ = Actor::Animated;
+            animController_ = adjNode->CreateComponent<AnimationController>();
+            model_ = animModel;
+        }
+        else
+        {
+            type_ = Actor::Static;
+            model_ = adjNode->GetComponent<StaticModel>(true);
+        }
+        Node* soundSourceNode = node_->CreateChild("SoundSourceNode");
+        soundSource_ = soundSourceNode->CreateComponent<SoundSource3D>();
+        soundSource_->SetSoundType(SOUND_EFFECT);
+        soundSource_->SetNearDistance(2.0f);
+        soundSource_->SetFarDistance(15.0f);
+    }
+    else
+    {
+        URHO3D_LOGERRORF("Error instantiating prefab %s", item->modelFile_.CString());
+        adjNode->Remove();
+        return false;
+    }
+    return true;
+}
+
+bool Actor::LoadAreaOfEffect(uint32_t index, const Vector3& position, const Quaternion& rotation)
+{
+    // TODO
+    return true;
 }
 
 void Actor::AddModel(uint32_t itemIndex)

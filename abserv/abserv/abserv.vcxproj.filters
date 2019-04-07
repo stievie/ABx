@@ -306,6 +306,9 @@
     <ClInclude Include="Quest.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ItemDrop.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -543,6 +546,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Quest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemDrop.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -162,6 +162,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectProgress:
             ParseObjectProgress(message);
             break;
+        case AB::GameProtocol::GameObjectDropItem:
+            ParseObjectDroppedItem(message);
+            break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
@@ -334,6 +337,15 @@ void ProtocolGame::ParseObjectProgress(const std::shared_ptr<InputMessage>& mess
     int value = static_cast<int>(message->Get<int16_t>());
     if (receiver_)
         receiver_->OnObjectProgress(updateTick_, objectId, type, value);
+}
+
+void ProtocolGame::ParseObjectDroppedItem(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t dropperId = message->Get<uint32_t>();
+    uint32_t targetId = message->Get<uint32_t>();
+    uint32_t itemId = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

@@ -69,7 +69,8 @@ std::string Variant::ToString() const
 bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
 {
     if (stream.GetSize() == 0)
-        return false;
+        // Empty but OK
+        return true;
 
     size_t count = 0;
     if (!stream.Read<size_t>(count))

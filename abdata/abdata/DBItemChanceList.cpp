@@ -33,7 +33,7 @@ bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
         il.items.push_back(
             std::make_pair<std::string, float>(
                 result->GetString("item_uuid"),
-                static_cast<float>(result->GetUInt("chance")) / 100.0f
+                static_cast<float>(result->GetUInt("chance")) / 1000.0f
             )
         );
     }

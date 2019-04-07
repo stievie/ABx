@@ -1158,6 +1158,17 @@ void FwClient::OnObjectProgress(int64_t updateTick, uint32_t id,
     QueueEvent(AbEvents::E_OBJECTPROGRESS, eData);
 }
 
+void FwClient::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId)
+{
+    using namespace AbEvents::ObjectItemDropped;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_OBJECTID] = id;
+    eData[P_TARGETID] = targetId;
+    eData[P_ITEMID] = itemId;
+    QueueEvent(AbEvents::E_OBJECTITEMDROPPED, eData);
+}
+
 void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
     AB::GameProtocol::ResourceType resType, int16_t value)
 {

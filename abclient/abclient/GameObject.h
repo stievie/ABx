@@ -8,7 +8,9 @@ enum ObjectType
     ObjectTypeStatic = 0,
     ObjectTypeNpc = 1,
     ObjectTypePlayer = 2,
-    ObjectTypeSelf = 3
+    ObjectTypeSelf = 3,
+    ObjectTypeAreaOfEffect,          // Area that affects actors in it, e.g. a well
+    ObjectTypeItemDrop,
 };
 
 class GameObject : public LogicComponent
