@@ -417,7 +417,8 @@ void Item::GetWeaponDamage(int32_t& value, bool critical)
 {
     if (HaveFunction(FunctionGetDamage))
     {
-        value = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_, critical);
+        float val = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_, critical);
+        value = static_cast<int32_t>(val);
     }
     for (const auto& upg : upgrades_)
         if (upg.second)
