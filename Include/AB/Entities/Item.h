@@ -65,6 +65,7 @@ struct Item : Entity
         s.text1b(client_icon, Limits::MAX_FILENAME);
         s.text1b(client_model, Limits::MAX_FILENAME);
         s.value2b(type);
+        s.value2b(belongsTo);
         s.value1b(stackAble);
     }
 
@@ -76,6 +77,7 @@ struct Item : Entity
     std::string client_icon;
     std::string client_model;
     ItemType type = ItemTypeUnknown;
+    ItemType belongsTo = ItemTypeUnknown;
     bool stackAble = false;
 };
 

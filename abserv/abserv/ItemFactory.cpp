@@ -8,6 +8,7 @@
 #include <AB/Entities/ItemChanceList.h>
 #include "Random.h"
 #include "MathUtils.h"
+#include "AB/Entities/TypedItemList.h"
 
 namespace Game {
 
@@ -79,6 +80,63 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
         return std::unique_ptr<Item>();
 
     return result;
+}
+
+void ItemFactory::IdentiyArmor(Item* item)
+{
+}
+
+void ItemFactory::IdentiyLeadHandWeapon(Item* item)
+{
+}
+
+void ItemFactory::IdentifyTwoHandedWeapon(Item* item)
+{
+}
+
+void ItemFactory::IdentifyOffHandWeapon(Item* item)
+{
+}
+
+void ItemFactory::IdentiyItem(Item* item)
+{
+    switch (item->data_.type)
+    {
+    case AB::Entities::ItemTypeArmorHead:
+    case AB::Entities::ItemTypeArmorChest:
+    case AB::Entities::ItemTypeArmorHands:
+    case AB::Entities::ItemTypeArmorLegs:
+    case AB::Entities::ItemTypeArmorFeet:
+        // Armor
+        IdentiyArmor(item);
+        break;
+    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemTypeSpear:
+        // Lead hand weapon
+        IdentiyLeadHandWeapon(item);
+        break;
+    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemTypeScyte:
+    case AB::Entities::ItemTypeStaff:
+        // Two handed
+        IdentifyTwoHandedWeapon(item);
+        break;
+    case AB::Entities::ItemTypeFocus:
+    case AB::Entities::ItemTypeShield:
+        // Off hand
+        IdentifyOffHandWeapon(item);
+        break;
+    default:
+        return;
+    }
 }
 
 void ItemFactory::DeleteConcrete(const std::string& uuid)

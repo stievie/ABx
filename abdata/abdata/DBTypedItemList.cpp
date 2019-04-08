@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "DBItemChanceList.h"
+#include "DBTypedItemList.h"
 #include "Database.h"
 #include "Subsystems.h"
 #include "UuidUtils.h"
 
 namespace DB {
 
-bool DBItemChanceList::Create(AB::Entities::ItemChanceList& il)
+bool DBTypedItemList::Create(AB::Entities::TypedItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
@@ -17,7 +17,7 @@ bool DBItemChanceList::Create(AB::Entities::ItemChanceList& il)
     return true;
 }
 
-bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
+bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
@@ -28,22 +28,28 @@ bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `item_uuid`, `chance` FROM `game_item_chances` WHERE `map_uuid` = " << db->EscapeString(il.uuid);
+    query << "SELECT game_item_chances.chance AS chance, game_items.type AS type, game_items.belongs_to AS belongs_to, game_items.uuid AS uuid, " <<
+        "game_item_chances.map_uuid AS map_uuid " <<
+        "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid " <<
+        "WHERE map_uuid = " << db->EscapeString(il.uuid);
     // Empty GUID means can drop an all maps
     query << " OR `map_uuid` = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
+    if (il.type != AB::Entities::ItemTypeUnknown)
+    {
+        query << " AND `type` = " << static_cast<int>(il.type);
+    }
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        il.items.push_back(
-            std::make_pair<std::string, float>(
-                result->GetString("item_uuid"),
-                static_cast<float>(result->GetUInt("chance")) / 1000.0f
-            )
-        );
+        AB::Entities::TypedListItem c = { 0 };
+        c.uuid = result->GetString("uuid");
+        c.belongsTo = static_cast<AB::Entities::ItemType>(result->GetUInt("belongs_to"));
+        c.chance = static_cast<float>(result->GetUInt("chance")) / 1000.0f;
+        il.items.push_back(c);
     }
     return true;
 }
 
-bool DBItemChanceList::Save(const AB::Entities::ItemChanceList& il)
+bool DBTypedItemList::Save(const AB::Entities::TypedItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
@@ -54,7 +60,7 @@ bool DBItemChanceList::Save(const AB::Entities::ItemChanceList& il)
     return true;
 }
 
-bool DBItemChanceList::Delete(const AB::Entities::ItemChanceList& il)
+bool DBTypedItemList::Delete(const AB::Entities::TypedItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {
@@ -65,7 +71,7 @@ bool DBItemChanceList::Delete(const AB::Entities::ItemChanceList& il)
     return true;
 }
 
-bool DBItemChanceList::Exists(const AB::Entities::ItemChanceList& il)
+bool DBTypedItemList::Exists(const AB::Entities::TypedItemList& il)
 {
     if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
     {

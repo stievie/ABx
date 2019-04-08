@@ -13,6 +13,10 @@ private:
     using ItemSelector = Utils::WeightedSelector<std::string>;
     std::map<std::string, std::unique_ptr<ItemSelector>> dropChances_;
     std::mutex lock_;
+    void IdentiyArmor(Item* item);
+    void IdentiyLeadHandWeapon(Item* item);
+    void IdentifyTwoHandedWeapon(Item* item);
+    void IdentifyOffHandWeapon(Item* item);
 public:
     ItemFactory();
     ~ItemFactory() = default;
@@ -23,6 +27,7 @@ public:
         const std::string& accUuid = Utils::Uuid::EMPTY_UUID,
         const std::string& playerUuid = Utils::Uuid::EMPTY_UUID);
     std::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
+    void IdentiyItem(Item* item);
     /// Deletes a concrete item from the database, e.g. when an item was not picked up
     void DeleteConcrete(const std::string& uuid);
     void LoadDropChances(const std::string mapUuid);

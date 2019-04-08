@@ -38,3 +38,4 @@
 #include "DBAccountItemList.h"
 #include "DBPlayerItemList.h"
 #include "DBItemChanceList.h"
+#include "DBTypedItemList.h"
