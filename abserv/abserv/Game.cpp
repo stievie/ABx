@@ -396,6 +396,10 @@ std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
     std::shared_ptr<ItemDrop> result = std::make_shared<ItemDrop>(item);
     result->SetGame(shared_from_this());
     result->transformation_.position_ = dropper->transformation_.position_;
+    // Random pos around dropper
+    result->transformation_.position_.y_ += 0.2f;
+    result->transformation_.position_.x_ += rng->Get<float>(-0.5f, 0.5f);
+    result->transformation_.position_.z_ += rng->Get<float>(-0.5f, 0.5f);
     result->SetSource(dropper->GetThis<Actor>());
     result->actorId_ = target->id_;
 

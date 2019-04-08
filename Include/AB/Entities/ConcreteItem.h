@@ -52,6 +52,7 @@ struct ConcreteItem : Entity
     std::string itemStats;
     uint16_t count;
     int64_t creation = 0;
+    uint16_t value = 0;
 };
 
 }

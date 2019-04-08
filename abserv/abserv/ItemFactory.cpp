@@ -17,6 +17,7 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& accUuid /* = Utils::Uuid::EMPTY_UUID */,
     const std::string& playerUuid /* = Utils::Uuid::EMPTY_UUID */)
 {
+    auto rng = GetSubsystem<Crypto::Random>();
     auto client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item gameItem;
     gameItem.uuid = itemUuid;
@@ -38,6 +39,7 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.playerUuid = playerUuid;
     ci.count = 1;
     ci.creation = Utils::Tick();
+    ci.value = static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level);
     if (!client->Create(ci))
     {
         LOG_ERROR << "Unable top create concrete item" << std::endl;

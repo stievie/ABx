@@ -30,7 +30,8 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     query << db->EscapeString(item.itemUuid) << ", ";
     query << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
     query << static_cast<int>(item.count) << ", ";
-    query << item.creation;
+    query << item.creation << ", ";
+    query << static_cast<int>(item.value);
 
     query << ")";
 
@@ -78,6 +79,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
     item.itemStats = result->GetStream("stats");
     item.count = static_cast<uint16_t>(result->GetUInt("count"));
     item.creation = result->GetLong("creation");
+    item.value = static_cast<uint16_t>(result->GetUInt("value"));
 
     return true;
 }
@@ -106,8 +108,9 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
     query << " `account_uuid` = " << db->EscapeString(item.accountUuid) << ", ";
     query << " `item_uuid` = " << db->EscapeString(item.itemUuid) << ", ";
     query << " `stats` = " << db->EscapeBlob(item.itemStats.data(), item.itemStats.length()) << ", ";
-    query << " `count` = " << item.count << ", ";
-    query << " `creation` = " << item.creation;
+    query << " `count` = " << static_cast<int>(item.count) << ", ";
+    query << " `creation` = " << item.creation << ", ";
+    query << " `value` = " << static_cast<int>(item.value);
 
     query << " WHERE `uuid` = " << db->EscapeString(item.uuid);
 
