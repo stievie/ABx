@@ -39,6 +39,7 @@ struct ConcreteItem : Entity
         s.value2b(storagePos);
         s.value2b(count);
         s.value8b(creation);
+        s.value2b(value);
     }
 
     std::string playerUuid = EMPTY_GUID;

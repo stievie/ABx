@@ -7,6 +7,7 @@
 #include "Mechanic.h"
 #include <AB/Entities/ItemChanceList.h>
 #include "Random.h"
+#include "MathUtils.h"
 
 namespace Game {
 
@@ -39,7 +40,8 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.playerUuid = playerUuid;
     ci.count = 1;
     ci.creation = Utils::Tick();
-    ci.value = static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level);
+    ci.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
+        static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
     if (!client->Create(ci))
     {
         LOG_ERROR << "Unable top create concrete item" << std::endl;
