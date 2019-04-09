@@ -13,6 +13,7 @@
 #include "AreaOfEffect.h"
 #include "Party.h"
 #include "ItemDrop.h"
+#include "Random.h"
 
 namespace Game {
 
@@ -39,9 +40,13 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     }
 #endif
     // Some global function
-    state["GameTick"] = kaguya::function([]
+    state["Tick"] = kaguya::function([]
     {
         return Utils::Tick();
+    });
+    state["Random"] = kaguya::function([]
+    {
+        return GetSubsystem<Crypto::Random>()->GetFloat();
     });
     state["ServerId"] = kaguya::function([]
     {

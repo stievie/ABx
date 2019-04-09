@@ -6,7 +6,8 @@ Instead of `require()` we must use the custom function `include()`.
 
 ## Built-in global functions
 
-* `GameTick()`
+* `Tick()` return game tick
+* `Random()` returns a random number between 0..1
 * `ServerId()`
 * `include(string)`
 * `include_dir(string)` (should be avoided)

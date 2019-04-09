@@ -13,17 +13,17 @@ prof2Index = 0     -- None
 local startTick;
 
 function onInit()
-  startTick = GameTick()
+  startTick = Tick()
   self:SetSpeed(0.5)
   return true
 end
 
 function onUpdate(timeElapsed)  
-  if (GameTick() - startTick > 10000 and self:GetState() == CREATURESTATE_IDLE) then
+  if (Tick() - startTick > 10000 and self:GetState() == CREATURESTATE_IDLE) then
 --    local pos = self:GetPosition();
 --    print("going " .. pos[1] .. "," .. pos[2] .. "," .. pos[3])
 --    self:GotoPosition(-48.85, 0.0, -34.67)
-    startTick = GameTick()
+    startTick = Tick()
   end
 end
 

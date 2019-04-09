@@ -14,14 +14,14 @@ function onInit()
   
   local attribVal = source:GetAttributeValue(ATTRIB_FIRE)
   damage = 7 * attribVal
-  lastDamage = GameTick()
+  lastDamage = Tick()
   self:SetRange(RANGE_ADJECENT)
   self:SetLifetime(9000)
   return true
 end
 
 function onUpdate(timeElapsed)
-  local tick = GameTick()
+  local tick = Tick()
   if (tick - lastDamage > 3000)
     local actors = self:GetActorsInRange(self:GetRange())
     local source = self:GetSource()
