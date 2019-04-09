@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16786161" />
-	<attribute name="Next Local Component ID" value="16787455" />
+	<attribute name="Next Local Node ID" value="16786212" />
+	<attribute name="Next Local Component ID" value="16787519" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -760,6 +760,19 @@
 			<attribute name="Size" value="0.5 1.6 2" />
 			<attribute name="Offset Position" value="0 0.8 0" />
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
+		</component>
+	</node>
+	<node id="16786211">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="SpartanShield" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-3.72675 25.648 21.7824" />
+		<attribute name="Rotation" value="1.50421e-07 0.0871557 -0.996195 -1.31602e-08" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787516">
+			<attribute name="Model" value="Model;Models/SpartanShield.mdl" />
+			<attribute name="Material" value="Material;Materials/SpartanShield.xml" />
 		</component>
 	</node>
 </scene>
