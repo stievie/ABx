@@ -7,8 +7,8 @@
 	<attribute name="Elapsed Time" value="2415.64" />
 	<attribute name="Next Replicated Node ID" value="32" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16786111" />
-	<attribute name="Next Local Component ID" value="16787394" />
+	<attribute name="Next Local Node ID" value="16786161" />
+	<attribute name="Next Local Component ID" value="16787455" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -274,7 +274,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="EternalBlade" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-3.78563 25.6985 18.6202" />
+		<attribute name="Position" value="-3.871 25.9602 18.6202" />
 		<attribute name="Rotation" value="0.699162 0.697117 0.0927609 0.128822" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -324,7 +324,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Xiphos" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="-3.90283 25.6721 18.515" />
+		<attribute name="Position" value="-3.90283 25.8484 18.585" />
 		<attribute name="Rotation" value="0.5078 0.759154 -0.313009 0.260478" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
