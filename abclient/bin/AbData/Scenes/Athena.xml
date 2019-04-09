@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2415.64" />
-	<attribute name="Next Replicated Node ID" value="32" />
+	<attribute name="Next Replicated Node ID" value="36" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16786212" />
-	<attribute name="Next Local Component ID" value="16787519" />
+	<attribute name="Next Local Node ID" value="16786312" />
+	<attribute name="Next Local Component ID" value="16787653" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -773,6 +773,97 @@
 		<component type="StaticModel" id="16787516">
 			<attribute name="Model" value="Model;Models/SpartanShield.mdl" />
 			<attribute name="Material" value="Material;Materials/SpartanShield.xml" />
+		</component>
+	</node>
+	<node id="32">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="5.59049 27.4596 21.8738" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787580">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box1.xml" />
+		</component>
+		<component type="RigidBody" id="16787581">
+			<attribute name="Physics Position" value="5.59049 27.4596 21.8738" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787582">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="33">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="4.90546 26.2677 21.8821" />
+		<attribute name="Rotation" value="0.96709 0 0.254433 0" />
+		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787583">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box1.xml" />
+		</component>
+		<component type="RigidBody" id="16787584">
+			<attribute name="Physics Rotation" value="0.96709 0 0.254433 0" />
+			<attribute name="Physics Position" value="4.90546 26.2677 21.8821" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787585">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="34">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="6.55398 26.2677 21.7951" />
+		<attribute name="Rotation" value="0.986827 0 0.161776 0" />
+		<attribute name="Scale" value="0.7 0.7 0.7" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787586">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box1.xml" />
+		</component>
+		<component type="RigidBody" id="16787587">
+			<attribute name="Physics Rotation" value="0.986827 0 0.161776 0" />
+			<attribute name="Physics Position" value="6.55398 26.2677 21.7951" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787588">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+		</component>
+	</node>
+	<node id="35">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Box1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="3.51231 25.9329 22.1348" />
+		<attribute name="Rotation" value="0.996876 0 0.0789811 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16787650">
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
+			<attribute name="Material" value="Material;Materials/Box2.xml" />
+		</component>
+		<component type="RigidBody" id="16787651">
+			<attribute name="Physics Rotation" value="0.996876 0 0.0789811 0" />
+			<attribute name="Physics Position" value="3.51231 25.9329 22.1348" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16787652">
+			<attribute name="Size" value="2 2 2" />
+			<attribute name="Model" value="Model;Models/Box1.mdl" />
 		</component>
 	</node>
 </scene>
