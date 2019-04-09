@@ -71,6 +71,15 @@ bool Item::LoadScript(const std::string& fileName)
     return true;
 }
 
+void Item::CreateInsigniaStats(uint32_t level)
+{
+    if (ScriptManager::IsFunction(luaState_, "getHealthStats"))
+    {
+        float health = luaState_["getHealthStats"](level);
+        stats_.SetValue(Stat::Health, static_cast<int32_t>(health));
+    }
+}
+
 void Item::CreateWeaponStats(uint32_t level)
 {
     if (ScriptManager::IsFunction(luaState_, "getDamageStats"))
@@ -107,6 +116,9 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level)
 
     switch (data_.type)
     {
+    case AB::Entities::ItemTypeModifierInsignia:
+        CreateInsigniaStats(level);
+        break;
     case AB::Entities::ItemTypeAxe:
     case AB::Entities::ItemTypeSword:
     case AB::Entities::ItemTypeWand:
@@ -152,19 +164,28 @@ void Item::Update(uint32_t timeElapsed)
             upg.second->Update(timeElapsed);
 }
 
-Item* Item::SetUpgrade(ItemUpgrade type, uint32_t index)
+Item* Item::SetUpgrade(ItemUpgrade type, std::unique_ptr<Item> upgrade)
 {
-    AB::Entities::Item item;
-    if (!IO::IOItem::LoadItemByIndex(item, index))
+    if (upgrade)
     {
-        LOG_ERROR << "Failed to load item with index " << index << std::endl;
-        return nullptr;
-    }
-    std::unique_ptr<Item> i = std::make_unique<Item>(item);
-    if (i->LoadScript(item.script))
-    {
-        upgrades_[type] = std::move(i);
+        upgrades_[type] = std::move(upgrade);
+        switch (type)
+        {
+        case ItemUpgrade::Pefix:
+            concreteItem_.upgrade1Uuid = upgrades_[type]->concreteItem_.uuid;
+            break;
+        case ItemUpgrade::Suffix:
+            concreteItem_.upgrade2Uuid = upgrades_[type]->concreteItem_.uuid;
+            break;
+        case ItemUpgrade::Inscription:
+            concreteItem_.upgrade3Uuid = upgrades_[type]->concreteItem_.uuid;
+            break;
+        }
         return upgrades_[type].get();
+    }
+    else
+    {
+        RemoveUpgrade(type);
     }
     return nullptr;
 }
@@ -179,7 +200,21 @@ Item* Item::GetUpgrade(ItemUpgrade type)
 void Item::RemoveUpgrade(ItemUpgrade type)
 {
     if (upgrades_[type])
+    {
         upgrades_.erase(type);
+        switch (type)
+        {
+        case ItemUpgrade::Pefix:
+            concreteItem_.upgrade1Uuid = Utils::Uuid::EMPTY_UUID;
+            break;
+        case ItemUpgrade::Suffix:
+            concreteItem_.upgrade2Uuid = Utils::Uuid::EMPTY_UUID;
+            break;
+        case ItemUpgrade::Inscription:
+            concreteItem_.upgrade3Uuid = Utils::Uuid::EMPTY_UUID;
+            break;
+        }
+    }
 }
 
 EquipPos Item::GetEquipPos() const

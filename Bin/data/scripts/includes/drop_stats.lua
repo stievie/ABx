@@ -26,3 +26,11 @@ function getArmorStats(level)
   print(res)
   return res
 end
+
+function getHealthStats(level)
+  local p = level / 20
+  local health = dropStats["Health"] / p;
+  local res = (((health / 2) - armor) * math.random()) + (health / 2)
+  print(res)
+  return res
+end

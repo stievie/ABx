@@ -16,7 +16,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `concrete_items` (`uuid`, `player_uuid`, `storage_place`, `storage_pos`, `upgrade_1`, `upgrade_2`, `upgrade_3`, " <<
-        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`";
+        "`account_uuid`, `item_uuid`, `stats`, `count`, `creation`, `value`";
     query << ") VALUES (";
 
     query << db->EscapeString(item.uuid) << ", ";

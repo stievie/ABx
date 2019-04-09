@@ -64,6 +64,9 @@ static constexpr size_t KEY_ITEMCHANCELIST_HASH = Utils::StringHash(AB::Entities
 static constexpr size_t KEY_TYPEDITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemList::KEY());
 static constexpr size_t KEY_INSIGNIAITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsInsignia::KEY());
 static constexpr size_t KEY_RUNEITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsRunes::KEY());
+static constexpr size_t KEY_WEAPONPREFIXITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsWeaponPrefix::KEY());
+static constexpr size_t KEY_WEAPONSUFFIXITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsWeaponSuffix::KEY());
+static constexpr size_t KEY_WEAPONINSCRIPTIONITEMLIST_HASH = Utils::StringHash(AB::Entities::TypedItemsWeaponInscription::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -642,6 +645,9 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         assert(false);
     case KEY_INSIGNIAITEMLIST_HASH:
     case KEY_RUNEITEMLIST_HASH:
+    case KEY_WEAPONPREFIXITEMLIST_HASH:
+    case KEY_WEAPONSUFFIXITEMLIST_HASH:
+    case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemList>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
@@ -805,6 +811,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         assert(false);
     case KEY_INSIGNIAITEMLIST_HASH:
     case KEY_RUNEITEMLIST_HASH:
+    case KEY_WEAPONPREFIXITEMLIST_HASH:
+    case KEY_WEAPONSUFFIXITEMLIST_HASH:
+    case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemList>(data);
         break;
     case KEY_GAMEINSTANCES_HASH:
@@ -919,6 +928,9 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
         assert(false);
     case KEY_INSIGNIAITEMLIST_HASH:
     case KEY_RUNEITEMLIST_HASH:
+    case KEY_WEAPONPREFIXITEMLIST_HASH:
+    case KEY_WEAPONSUFFIXITEMLIST_HASH:
+    case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemList>(data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:

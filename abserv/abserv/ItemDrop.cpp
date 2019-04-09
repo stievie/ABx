@@ -30,7 +30,7 @@ ItemDrop::~ItemDrop()
     {
         // Not picked up delete it
         auto factory = GetSubsystem<ItemFactory>();
-        factory->DeleteConcrete(item_->concreteItem_.uuid);
+        factory->DeleteItem(item_.get());
     }
 }
 

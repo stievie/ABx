@@ -77,5 +77,44 @@ struct TypedItemsRunes : TypedItemList
     }
 };
 
+struct TypedItemsWeaponPrefix : TypedItemList
+{
+    static constexpr const char* KEY()
+    {
+        return "weapon_prefix_item_list";
+    }
+    TypedItemsWeaponPrefix() :
+        TypedItemList()
+    {
+        type = ItemTypeModifierWeaponPrefix;
+    }
+};
+
+struct TypedItemsWeaponSuffix : TypedItemList
+{
+    static constexpr const char* KEY()
+    {
+        return "weapon_suffix_item_list";
+    }
+    TypedItemsWeaponSuffix() :
+        TypedItemList()
+    {
+        type = ItemTypeModifierWeaponSuffix;
+    }
+};
+
+struct TypedItemsWeaponInscription : TypedItemList
+{
+    static constexpr const char* KEY()
+    {
+        return "weapon_inscrition_item_list";
+    }
+    TypedItemsWeaponInscription() :
+        TypedItemList()
+    {
+        type = ItemTypeModifierWeaponInscription;
+    }
+};
+
 }
 }

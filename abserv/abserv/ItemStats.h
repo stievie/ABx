@@ -15,10 +15,23 @@ enum class Stat : size_t
     DamageType,
     Attribute,           // Weapon requires this attribute
     AttributeValue,
-    Energy,
     Armor,               // General armor
     HealthRegen,
     EnergyRegen,
+    Health,              // +/- Health
+    Energy,              // +/- Energy
+
+    PhysicalDamageReduction,
+    HexDurationReduction,
+    ConditionDurationReduction,
+    BlindnessDurationReduction,
+    WeaknessDurationReduction,
+    DeseaseDurationReduction,
+    PoisionDurationReduction,
+    DazedDurationReduction,
+    DeepWoundDurationReduction,
+    BleedingDurationReduction,
+    CrippledDurationReduction,
 
     // Type specific armor
     ArmorElemental,

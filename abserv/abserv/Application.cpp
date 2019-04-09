@@ -374,6 +374,11 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to connect to message server" << std::endl;
     }
 
+    LOG_INFO << "Loading Game items...";
+    auto itemFactory = GetSubsystem<Game::ItemFactory>();
+    itemFactory->Initialize();
+    LOG_INFO << "[done]" << std::endl;
+
     if (serverHost_.empty())
         serverHost_ = (*config)[ConfigManager::Key::GameHost].GetString();
     uint32_t ip;

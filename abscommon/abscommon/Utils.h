@@ -9,6 +9,18 @@ namespace Utils {
 
 uint32_t AdlerChecksum(uint8_t* data, int32_t len);
 
+template <typename ForwardIterator, typename OutputIterator, typename UnaryPredicate>
+void SelectIterators(ForwardIterator first, ForwardIterator last,
+    OutputIterator out, UnaryPredicate pred)
+{
+    while (first != last)
+    {
+        if (pred(*first))
+            *out++ = first;
+        ++first;
+    }
+}
+
 template <typename T, int N>
 constexpr size_t CountOf(T(&)[N])
 {

@@ -9,10 +9,91 @@
 #include "Random.h"
 #include "MathUtils.h"
 #include "AB/Entities/TypedItemList.h"
+#include "Player.h"
 
 namespace Game {
 
 ItemFactory::ItemFactory() = default;
+
+void ItemFactory::Initialize()
+{
+    // Upgrades are not dependent on the map
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    {
+        AB::Entities::TypedItemsInsignia insignias;
+        insignias.uuid = Utils::Uuid::EMPTY_UUID;
+        if (client->Read(insignias))
+        {
+            std::vector<TypedListValue> values;
+            values.reserve(insignias.items.size());
+            for (const auto& i : insignias.items)
+            {
+                values.push_back(std::make_pair(i.uuid, i.belongsTo));
+            }
+            typedItems_.emplace(AB::Entities::ItemTypeModifierInsignia, values);
+        }
+    }
+
+    {
+        AB::Entities::TypedItemsRunes runes;
+        runes.uuid = Utils::Uuid::EMPTY_UUID;
+        if (client->Read(runes))
+        {
+            std::vector<TypedListValue> values;
+            values.reserve(runes.items.size());
+            for (const auto& i : runes.items)
+            {
+                values.push_back(std::make_pair(i.uuid, i.belongsTo));
+            }
+            typedItems_.emplace(AB::Entities::ItemTypeModifierRune, values);
+        }
+    }
+
+    {
+        AB::Entities::TypedItemsWeaponPrefix prefixes;
+        prefixes.uuid = Utils::Uuid::EMPTY_UUID;
+        if (client->Read(prefixes))
+        {
+            std::vector<TypedListValue> values;
+            values.reserve(prefixes.items.size());
+            for (const auto& i : prefixes.items)
+            {
+                values.push_back(std::make_pair(i.uuid, i.belongsTo));
+            }
+            typedItems_.emplace(AB::Entities::ItemTypeModifierWeaponPrefix, values);
+        }
+    }
+
+    {
+        AB::Entities::TypedItemsWeaponSuffix suffixes;
+        suffixes.uuid = Utils::Uuid::EMPTY_UUID;
+        if (client->Read(suffixes))
+        {
+            std::vector<TypedListValue> values;
+            values.reserve(suffixes.items.size());
+            for (const auto& i : suffixes.items)
+            {
+                values.push_back(std::make_pair(i.uuid, i.belongsTo));
+            }
+            typedItems_.emplace(AB::Entities::ItemTypeModifierWeaponSuffix, values);
+        }
+    }
+
+    {
+        AB::Entities::TypedItemsWeaponInscription inscriptions;
+        inscriptions.uuid = Utils::Uuid::EMPTY_UUID;
+        if (client->Read(inscriptions))
+        {
+            std::vector<TypedListValue> values;
+            values.reserve(inscriptions.items.size());
+            for (const auto& i : inscriptions.items)
+            {
+                values.push_back(std::make_pair(i.uuid, i.belongsTo));
+            }
+            typedItems_.emplace(AB::Entities::ItemTypeModifierWeaponInscription, values);
+        }
+    }
+}
 
 std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     uint32_t level /* = LEVEL_CAP */,
@@ -82,23 +163,69 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
     return result;
 }
 
-void ItemFactory::IdentiyArmor(Item* item)
+void ItemFactory::IdentiyArmor(Item* item, Player* player)
 {
+    std::unique_ptr<Item> insignia = CreateModifier(AB::Entities::ItemTypeModifierInsignia, AB::Entities::ItemTypeUnknown,
+        player->GetLevel(), player->data_.uuid);
+    if (insignia)
+        item->SetUpgrade(ItemUpgrade::Pefix, std::move(insignia));
+    std::unique_ptr<Item> rune = CreateModifier(AB::Entities::ItemTypeModifierRune, AB::Entities::ItemTypeUnknown,
+        player->GetLevel(), player->data_.uuid);
+    if (rune)
+        item->SetUpgrade(ItemUpgrade::Suffix, std::move(rune));
 }
 
-void ItemFactory::IdentiyLeadHandWeapon(Item* item)
+void ItemFactory::IdentiyWeapon(Item* item, Player* player)
 {
+    std::unique_ptr<Item> prefix = CreateModifier(AB::Entities::ItemTypeModifierWeaponPrefix, item->data_.type,
+        player->GetLevel(), player->data_.uuid);
+    if (prefix)
+        item->SetUpgrade(ItemUpgrade::Pefix, std::move(prefix));
+    std::unique_ptr<Item> suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item->data_.type,
+        player->GetLevel(), player->data_.uuid);
+    if (suffix)
+        item->SetUpgrade(ItemUpgrade::Suffix, std::move(suffix));
+    std::unique_ptr<Item> inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item->data_.type,
+        player->GetLevel(), player->data_.uuid);
+    if (inscr)
+        item->SetUpgrade(ItemUpgrade::Inscription, std::move(inscr));
 }
 
-void ItemFactory::IdentifyTwoHandedWeapon(Item* item)
+void ItemFactory::IdentifyOffHandWeapon(Item* item, Player* player)
 {
+    // Offhead weapons do not have a prefix
+    std::unique_ptr<Item> suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item->data_.type,
+        player->GetLevel(), player->data_.uuid);
+    if (suffix)
+        item->SetUpgrade(ItemUpgrade::Suffix, std::move(suffix));
+    std::unique_ptr<Item> inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item->data_.type,
+        player->GetLevel(), player->data_.uuid);
+    if (inscr)
+        item->SetUpgrade(ItemUpgrade::Inscription, std::move(inscr));
 }
 
-void ItemFactory::IdentifyOffHandWeapon(Item* item)
+std::unique_ptr<Item> ItemFactory::CreateModifier(AB::Entities::ItemType modType, AB::Entities::ItemType belongsTo,
+    uint32_t level, const std::string& playerUuid)
 {
+    auto it = typedItems_.find(modType);
+    if (it == typedItems_.end())
+        return std::unique_ptr<Item>();
+    std::vector<std::vector<TypedListValue>::iterator> result;
+    Utils::SelectIterators((*it).second.begin(), (*it).second.end(),
+        std::back_inserter(result),
+        [belongsTo](const TypedListValue& current)
+    {
+        return (current.second == belongsTo);
+    });
+
+    auto selIt = Utils::SelectRandomly(result.begin(), result.end());
+    if (selIt == result.end())
+        return std::unique_ptr<Item>();
+
+    return CreateItem((*(*selIt)).first, level, Utils::Uuid::EMPTY_UUID, playerUuid);
 }
 
-void ItemFactory::IdentiyItem(Item* item)
+void ItemFactory::IdentiyItem(Item* item, Player* player)
 {
     switch (item->data_.type)
     {
@@ -108,7 +235,7 @@ void ItemFactory::IdentiyItem(Item* item)
     case AB::Entities::ItemTypeArmorLegs:
     case AB::Entities::ItemTypeArmorFeet:
         // Armor
-        IdentiyArmor(item);
+        IdentiyArmor(item, player);
         break;
     case AB::Entities::ItemTypeAxe:
     case AB::Entities::ItemTypeSword:
@@ -116,8 +243,6 @@ void ItemFactory::IdentiyItem(Item* item)
     case AB::Entities::ItemTypeWand:
     case AB::Entities::ItemTypeSpear:
         // Lead hand weapon
-        IdentiyLeadHandWeapon(item);
-        break;
     case AB::Entities::ItemTypeFlatbow:
     case AB::Entities::ItemTypeHornbow:
     case AB::Entities::ItemTypeShortbow:
@@ -127,12 +252,12 @@ void ItemFactory::IdentiyItem(Item* item)
     case AB::Entities::ItemTypeScyte:
     case AB::Entities::ItemTypeStaff:
         // Two handed
-        IdentifyTwoHandedWeapon(item);
+        IdentiyWeapon(item, player);
         break;
     case AB::Entities::ItemTypeFocus:
     case AB::Entities::ItemTypeShield:
         // Off hand
-        IdentifyOffHandWeapon(item);
+        IdentifyOffHandWeapon(item, player);
         break;
     default:
         return;
@@ -148,6 +273,37 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     {
         LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
     }
+}
+
+void ItemFactory::DeleteItem(Item* item)
+{
+    if (!item)
+        return;
+    {
+        auto upg = item->GetUpgrade(ItemUpgrade::Pefix);
+        if (upg)
+        {
+            DeleteConcrete(upg->concreteItem_.uuid);
+            item->RemoveUpgrade(ItemUpgrade::Pefix);
+        }
+    }
+    {
+        auto upg = item->GetUpgrade(ItemUpgrade::Suffix);
+        if (upg)
+        {
+            DeleteConcrete(upg->concreteItem_.uuid);
+            item->RemoveUpgrade(ItemUpgrade::Suffix);
+        }
+    }
+    {
+        auto upg = item->GetUpgrade(ItemUpgrade::Inscription);
+        if (upg)
+        {
+            DeleteConcrete(upg->concreteItem_.uuid);
+            item->RemoveUpgrade(ItemUpgrade::Inscription);
+        }
+    }
+    DeleteConcrete(item->concreteItem_.uuid);
 }
 
 void ItemFactory::LoadDropChances(const std::string mapUuid)
@@ -173,8 +329,10 @@ void ItemFactory::LoadDropChances(const std::string mapUuid)
     }
     selector->Update();
 
-    std::lock_guard<std::mutex> lockClass(lock_);
-    dropChances_.emplace(mapUuid, std::move(selector));
+    {
+        std::lock_guard<std::mutex> lockClass(lock_);
+        dropChances_.emplace(mapUuid, std::move(selector));
+    }
 }
 
 void ItemFactory::DeleteMap(const std::string& uuid)

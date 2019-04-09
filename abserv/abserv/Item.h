@@ -56,6 +56,7 @@ private:
     {
         return (functions_ & func) == func;
     }
+    void CreateInsigniaStats(uint32_t level);
     void CreateWeaponStats(uint32_t level);
     void CreateFocusStats(uint32_t level);
     void CreateShieldStats(uint32_t level);
@@ -82,7 +83,7 @@ public:
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
-    Item* SetUpgrade(ItemUpgrade type, uint32_t index);
+    Item* SetUpgrade(ItemUpgrade type, std::unique_ptr<Item> upgrade);
     Item* GetUpgrade(ItemUpgrade type);
     void RemoveUpgrade(ItemUpgrade type);
     EquipPos GetEquipPos() const;
@@ -97,6 +98,17 @@ public:
     void GetAttributeValue(uint32_t index, uint32_t& value);
     void OnEquip(Actor* target);
     void OnUnequip(Actor* target);
+    /// Get value of this item with all mods
+    uint32_t GetValue() const
+    {
+        uint32_t result = concreteItem_.value;
+        for (const auto& u : upgrades_)
+        {
+            if (u.second)
+                result += u.second->concreteItem_.value;
+        }
+        return result;
+    }
 
     AB::Entities::ItemType GetType() const;
     bool IsStackAble() const;

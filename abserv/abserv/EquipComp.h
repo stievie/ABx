@@ -32,7 +32,7 @@ public:
     std::vector<Item*> GetItems() const;
 
     void RemoveItem(EquipPos pos);
-    void SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index);
+    void SetUpgrade(EquipPos pos, ItemUpgrade type, std::unique_ptr<Item> upgrade);
     void RemoveUpgrade(EquipPos pos, ItemUpgrade type);
 
     /// Get lead hand weapon

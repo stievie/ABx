@@ -51,14 +51,14 @@ void EquipComp::RemoveItem(EquipPos pos)
     items_.erase(pos);
 }
 
-void EquipComp::SetUpgrade(EquipPos pos, ItemUpgrade type, uint32_t index)
+void EquipComp::SetUpgrade(EquipPos pos, ItemUpgrade type, std::unique_ptr<Item> upgrade)
 {
     if (!items_[pos])
         return;
     Item* old = items_[pos]->GetUpgrade(type);
     if (old)
         old->OnUnequip(&owner_);
-    Item* n = items_[pos]->SetUpgrade(type, index);
+    Item* n = items_[pos]->SetUpgrade(type, std::move(upgrade));
     if (n)
         n->OnEquip(&owner_);
 }
