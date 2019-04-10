@@ -210,7 +210,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EffectsComp.h" />
-    <ClInclude Include="EquipComp.h" />
+    <ClInclude Include="InventoryComp.h" />
     <ClInclude Include="filters\AiSelectAggro.h" />
     <ClInclude Include="filters\AiSelectVisible.h" />
     <ClInclude Include="FriendList.h" />
@@ -295,7 +295,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EffectsComp.cpp" />
-    <ClCompile Include="EquipComp.cpp" />
+    <ClCompile Include="InventoryComp.cpp" />
     <ClCompile Include="filters\AiSelectAggro.cpp" />
     <ClCompile Include="filters\AiSelectVisible.cpp" />
     <ClCompile Include="FriendList.cpp" />

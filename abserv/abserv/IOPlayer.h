@@ -16,8 +16,8 @@ public:
     static bool LoadPlayerByName(Game::Player* player, const std::string& name);
     static bool LoadPlayerByUuid(Game::Player* player, const std::string& uuid);
     static bool SavePlayer(Game::Player* player);
-    static bool LoadPlayerEquipment(Game::Player* player);
-    static bool SavePlayerEquipment(Game::Player* player);
+    static bool LoadPlayerInventory(Game::Player* player);
+    static bool SavePlayerInventory(Game::Player* player);
 };
 
 }

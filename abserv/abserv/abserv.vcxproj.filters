@@ -243,9 +243,6 @@
     <ClInclude Include="EffectsComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="EquipComp.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="SkillsComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -307,6 +304,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ItemDrop.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="InventoryComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -497,9 +497,6 @@
     <ClCompile Include="EffectsComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="EquipComp.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="SkillsComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -549,6 +546,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ItemDrop.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryComp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

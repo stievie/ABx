@@ -73,7 +73,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         }
     }
 
-    if (!LoadPlayerEquipment(player))
+    if (!LoadPlayerInventory(player))
         return false;
     return true;
 }
@@ -114,10 +114,10 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
     if (!client->Update(player->data_))
         return false;
-    return SavePlayerEquipment(player);
+    return SavePlayerInventory(player);
 }
 
-bool IOPlayer::LoadPlayerEquipment(Game::Player* player)
+bool IOPlayer::LoadPlayerInventory(Game::Player* player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::EquippedItems equipmenet;
@@ -128,13 +128,20 @@ bool IOPlayer::LoadPlayerEquipment(Game::Player* player)
     {
         player->SetEquipment(e);
     }
+
+    // TODO: Load inventory
     return true;
 }
 
-bool IOPlayer::SavePlayerEquipment(Game::Player* player)
+bool IOPlayer::SavePlayerInventory(Game::Player* player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    player->equipComp_->VisitItems([client](Game::Item* item)
+    player->inventoryComp_->VisitEquipement([client](Game::Item* item)
+    {
+        client->Update(item->concreteItem_);
+    });
+
+    player->inventoryComp_->VisitInventory([client](Game::Item* item)
     {
         client->Update(item->concreteItem_);
     });

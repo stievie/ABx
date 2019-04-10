@@ -100,7 +100,7 @@ Actor::Actor() :
     healComp_(*this),
     progressComp_(std::make_unique<Components::ProgressComp>(*this)),
     effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
-    equipComp_(std::make_unique<Components::EquipComp>(*this)),
+    inventoryComp_(std::make_unique<Components::InventoryComp>(*this)),
     collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
     moveComp_(std::make_unique<Components::MoveComp>(*this)),
     undestroyable_(false)
@@ -424,7 +424,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
 
 Item* Actor::GetWeapon() const
 {
-    return equipComp_->GetWeapon();
+    return inventoryComp_->GetWeapon();
 }
 
 void Actor::OnEndUseSkill(Skill* skill)
@@ -487,7 +487,7 @@ float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetrat
     default:
         break;
     }
-    const int baseArmor = equipComp_->GetArmor(damageType, pos);
+    const int baseArmor = inventoryComp_->GetArmor(damageType, pos);
     int armorMod = 0;
     effectsComp_->GetArmor(damageType, armorMod);
     const float totalArmor = static_cast<float>(baseArmor) * (1.0f - penetration) + static_cast<float>(armorMod);
@@ -554,7 +554,7 @@ float Actor::GetArmorPenetration()
     const float strength = static_cast<float>(GetAttributeValue(static_cast<uint32_t>(AttributeIndices::Strength)));
     value += (strength * 0.01f);
     // 2. Weapons
-    value += equipComp_->GetArmorPenetration();
+    value += inventoryComp_->GetArmorPenetration();
     // 3. Effects
     float ea = 0.0f;
     effectsComp_->GetArmorPenetration(ea);
@@ -706,7 +706,7 @@ bool Actor::SetEquipment(const std::string& ciUuid)
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
-    equipComp_->SetItem(std::move(item));
+    inventoryComp_->SetEquipment(std::move(item));
     return true;
 }
 
@@ -855,7 +855,7 @@ uint32_t Actor::GetAttributeValue(uint32_t index)
     if (val != nullptr)
         result = val->value;
     // Increase by equipment
-    result += equipComp_->GetAttributeValue(index);
+    result += inventoryComp_->GetAttributeValue(index);
     // Increase by effects
     uint32_t value = 0;
     effectsComp_->GetAttributeValue(index, value);

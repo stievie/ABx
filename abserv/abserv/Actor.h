@@ -11,7 +11,7 @@
 #include "CollisionComp.h"
 #include "AttackComp.h"
 #include "EffectsComp.h"
-#include "EquipComp.h"
+#include "InventoryComp.h"
 #include "SkillsComp.h"
 #include "InputComp.h"
 #include "DamageComp.h"
@@ -44,7 +44,7 @@ class Actor : public GameObject
     friend class Components::ResourceComp;
     friend class Components::AttackComp;
     friend class Components::EffectsComp;
-    friend class Components::EquipComp;
+    friend class Components::InventoryComp;
     friend class Components::SkillsComp;
     friend class Components::InputComp;
     friend class Components::DamageComp;
@@ -277,7 +277,7 @@ public:
     Components::HealComp healComp_;
     std::unique_ptr<Components::ProgressComp> progressComp_;
     std::unique_ptr<Components::EffectsComp> effectsComp_;
-    std::unique_ptr<Components::EquipComp> equipComp_;
+    std::unique_ptr<Components::InventoryComp> inventoryComp_;
     std::unique_ptr<Components::MoveComp> moveComp_;
     std::unique_ptr<Components::CollisionComp> collisionComp_;
 
