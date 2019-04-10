@@ -218,6 +218,7 @@ public:
     }
     Skill* GetCurrentSkill() const;
     bool SetEquipment(const std::string& ciUuid);
+    bool SetInventory(const std::string& ciUuid);
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 

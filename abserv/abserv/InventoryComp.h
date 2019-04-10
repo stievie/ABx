@@ -9,6 +9,8 @@ class Actor;
 
 namespace Components {
 
+static constexpr size_t DEFAULT_INV_SIZE = 12;
+
 /// Equipment, like Armor, weapons, weapon mods etc.
 class InventoryComp
 {
@@ -20,17 +22,24 @@ public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner) :
         owner_(owner)
-    { }
+    {
+        SetInventorySize(DEFAULT_INV_SIZE);
+    }
     // non-copyable
     InventoryComp(const InventoryComp&) = delete;
     InventoryComp& operator=(const InventoryComp&) = delete;
     ~InventoryComp() = default;
 
+    size_t GetInventorySize() const { return inventory_.size(); }
+    void SetInventorySize(size_t value) { inventory_.resize(value); }
     void Update(uint32_t timeElapsed);
 
     void SetEquipment(std::unique_ptr<Item> item);
     Item* GetEquipment(EquipPos pos) const;
     void RemoveEquipment(EquipPos pos);
+
+    void SetInventory(std::unique_ptr<Item> item);
+    void RemoveInventory(uint16_t pos);
 
     void SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade);
     void RemoveUpgrade(Item* item, ItemUpgrade type);

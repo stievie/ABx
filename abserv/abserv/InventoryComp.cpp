@@ -42,6 +42,36 @@ void InventoryComp::RemoveEquipment(EquipPos pos)
     equipment_.erase(pos);
 }
 
+void InventoryComp::SetInventory(std::unique_ptr<Item> item)
+{
+    if (item)
+    {
+        // pos = 1-based
+        size_t pos = item->concreteItem_.storagePos;
+        if (pos == 0)
+        {
+            // Insert free slot
+            for (size_t i = 0; i < inventory_.size(); ++i)
+            {
+                if (!inventory_[i])
+                {
+                    item->concreteItem_.storagePos = static_cast<uint16_t>(i + 1);
+                    inventory_[i] = std::move(item);
+                }
+            }
+        }
+        inventory_[pos - 1] = std::move(item);
+    }
+}
+
+void InventoryComp::RemoveInventory(uint16_t pos)
+{
+    if (pos > inventory_.size())
+        return;
+    if (inventory_[pos - 1])
+        inventory_[pos - 1].reset();
+}
+
 void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade)
 {
     const bool isEquipped = item->concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;

@@ -120,16 +120,26 @@ bool IOPlayer::SavePlayer(Game::Player* player)
 bool IOPlayer::LoadPlayerInventory(Game::Player* player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
+
     AB::Entities::EquippedItems equipmenet;
     equipmenet.uuid = player->data_.uuid;
-    if (!client->Read(equipmenet))
-        return false;
-    for (const auto& e : equipmenet.itemUuids)
+    if (client->Read(equipmenet))
     {
-        player->SetEquipment(e);
+        for (const auto& e : equipmenet.itemUuids)
+        {
+            player->SetEquipment(e);
+        }
     }
 
-    // TODO: Load inventory
+    AB::Entities::InventoryItems inventory;
+    inventory.uuid = player->data_.uuid;
+    if (client->Read(inventory))
+    {
+        for (const auto& e : inventory.itemUuids)
+        {
+            player->SetInventory(e);
+        }
+    }
     return true;
 }
 

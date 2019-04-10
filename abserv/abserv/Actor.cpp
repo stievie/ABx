@@ -710,6 +710,16 @@ bool Actor::SetEquipment(const std::string& ciUuid)
     return true;
 }
 
+bool Actor::SetInventory(const std::string& ciUuid)
+{
+    auto factory = GetSubsystem<ItemFactory>();
+    std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
+    if (!item)
+        return false;
+    inventoryComp_->SetInventory(std::move(item));
+    return true;
+}
+
 void Actor::_LuaGotoPosition(float x, float y, float z)
 {
     if (IsImmobilized())
