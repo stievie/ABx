@@ -637,18 +637,23 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
         // Use one bellow
         assert(false);
     case KEY_INVENTORYITEMLIST_HASH:
+        return LoadFromDB<DB::DBPlayerItemList, AB::Entities::InventoryItems>(id, *data);
     case KEY_EQUIPPEDITEMLIST_HASH:
-        return LoadFromDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(id, *data);
+        return LoadFromDB<DB::DBPlayerItemList, AB::Entities::EquippedItems>(id, *data);
     case KEY_ITEMCHANCELIST_HASH:
         return LoadFromDB<DB::DBItemChanceList, AB::Entities::ItemChanceList>(id, *data);
     case KEY_TYPEDITEMLIST_HASH:
         assert(false);
     case KEY_INSIGNIAITEMLIST_HASH:
+        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>(id, *data);
     case KEY_RUNEITEMLIST_HASH:
+        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>(id, *data);
     case KEY_WEAPONPREFIXITEMLIST_HASH:
+        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>(id, *data);
     case KEY_WEAPONSUFFIXITEMLIST_HASH:
+        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>(id, *data);
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
-        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemList>(id, *data);
+        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
@@ -801,8 +806,10 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
     case KEY_INVENTORYITEMLIST_HASH:
+        succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::InventoryItems>(data);
+        break;
     case KEY_EQUIPPEDITEMLIST_HASH:
-        succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
+        succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::EquippedItems>(data);
         break;
     case KEY_ITEMCHANCELIST_HASH:
         succ = FlushRecord<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
@@ -810,11 +817,19 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_TYPEDITEMLIST_HASH:
         assert(false);
     case KEY_INSIGNIAITEMLIST_HASH:
+        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>(data);
+        break;
     case KEY_RUNEITEMLIST_HASH:
+        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>(data);
+        break;
     case KEY_WEAPONPREFIXITEMLIST_HASH:
+        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>(data);
+        break;
     case KEY_WEAPONSUFFIXITEMLIST_HASH:
+        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>(data);
+        break;
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
-        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemList>(data);
+        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
         break;
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
@@ -920,18 +935,23 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
     case KEY_INVENTORYITEMLIST_HASH:
+        return ExistsInDB<DB::DBPlayerItemList, AB::Entities::InventoryItems>(data);
     case KEY_EQUIPPEDITEMLIST_HASH:
-        return ExistsInDB<DB::DBPlayerItemList, AB::Entities::PlayerItemList>(data);
+        return ExistsInDB<DB::DBPlayerItemList, AB::Entities::EquippedItems>(data);
     case KEY_ITEMCHANCELIST_HASH:
         return ExistsInDB<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
     case KEY_TYPEDITEMLIST_HASH:
         assert(false);
     case KEY_INSIGNIAITEMLIST_HASH:
+        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>(data);
     case KEY_RUNEITEMLIST_HASH:
+        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>(data);
     case KEY_WEAPONPREFIXITEMLIST_HASH:
+        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>(data);
     case KEY_WEAPONSUFFIXITEMLIST_HASH:
+        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>(data);
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
-        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemList>(data);
+        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
