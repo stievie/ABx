@@ -75,8 +75,8 @@ void Item::CreateInsigniaStats(uint32_t level)
 {
     if (ScriptManager::IsFunction(luaState_, "getHealthStats"))
     {
-        float health = luaState_["getHealthStats"](level);
-        stats_.SetValue(Stat::Health, static_cast<int32_t>(health));
+        int32_t health = luaState_["getHealthStats"](level);
+        stats_.SetValue(Stat::Health, health);
     }
 }
 
@@ -84,11 +84,11 @@ void Item::CreateWeaponStats(uint32_t level)
 {
     if (ScriptManager::IsFunction(luaState_, "getDamageStats"))
     {
-        float minDamage = 0.0f;
-        float maxDamage = 0.0f;
+        int32_t minDamage = 0;
+        int32_t maxDamage = 0;
         kaguya::tie(minDamage, maxDamage) = luaState_["getDamageStats"](level);
-        stats_.SetValue(Stat::MinDamage, static_cast<int32_t>(minDamage));
-        stats_.SetValue(Stat::MaxDamage, static_cast<int32_t>(maxDamage));
+        stats_.SetValue(Stat::MinDamage, minDamage);
+        stats_.SetValue(Stat::MaxDamage, maxDamage);
     }
 }
 
@@ -96,8 +96,8 @@ void Item::CreateFocusStats(uint32_t level)
 {
     if (ScriptManager::IsFunction(luaState_, "getEnergyStats"))
     {
-        float energy = luaState_["getEnergyStats"](level);
-        stats_.SetValue(Stat::Energy, static_cast<int32_t>(energy));
+        int32_t energy = luaState_["getEnergyStats"](level);
+        stats_.SetValue(Stat::Energy, energy);
     }
 }
 
@@ -105,8 +105,8 @@ void Item::CreateShieldStats(uint32_t level)
 {
     if (ScriptManager::IsFunction(luaState_, "getArmorStats"))
     {
-        float armor = luaState_["getArmorStats"](level);
-        stats_.SetValue(Stat::Armor, static_cast<int32_t>(armor));
+        int32_t armor = luaState_["getArmorStats"](level);
+        stats_.SetValue(Stat::Armor, armor);
     }
 }
 

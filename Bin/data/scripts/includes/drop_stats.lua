@@ -11,7 +11,7 @@ function getRandomStat(maxVal, level, minVal)
   if (res < minVal) then
     res = minVal
   end
-  return res
+  return math.floor(res)
 end
 
 -- Range is damage / 2 .. damage
@@ -24,7 +24,7 @@ function getDamageStats(level)
   
   local diff = dropStats["MaxDamage"] - dropStats["MinDamage"]
   local p = level / 20
-  local  minRes = maxRes - (diff * p)
+  local  minRes = math.floor(maxRes - (diff * p))
   if (minRes < 1) then
     minRes = 1
   end

@@ -1,7 +1,7 @@
 -- Included by weapons to get damage value
 function getDamage(baseMin, baseMax, critical)
   if (critical == true) then
-    return baseMax
+    return math.floor(baseMax)
   end
-  return ((baseMax - baseMin) * Random()) + baseMin
+  return math.floor(((baseMax - baseMin) * Random()) + baseMin)
 end
