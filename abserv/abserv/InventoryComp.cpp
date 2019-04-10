@@ -42,7 +42,7 @@ void InventoryComp::RemoveEquipment(EquipPos pos)
     equipment_.erase(pos);
 }
 
-void InventoryComp::SetInventory(std::unique_ptr<Item> item)
+bool InventoryComp::SetInventory(std::unique_ptr<Item> item)
 {
     if (item)
     {
@@ -55,13 +55,19 @@ void InventoryComp::SetInventory(std::unique_ptr<Item> item)
             {
                 if (!inventory_[i])
                 {
+                    item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
                     item->concreteItem_.storagePos = static_cast<uint16_t>(i + 1);
                     inventory_[i] = std::move(item);
+                    return true;
                 }
             }
+            // Inventory full
+            return false;
         }
         inventory_[pos - 1] = std::move(item);
+        return true;
     }
+    return false;
 }
 
 void InventoryComp::RemoveInventory(uint16_t pos)

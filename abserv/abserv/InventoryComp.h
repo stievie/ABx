@@ -38,7 +38,7 @@ public:
     Item* GetEquipment(EquipPos pos) const;
     void RemoveEquipment(EquipPos pos);
 
-    void SetInventory(std::unique_ptr<Item> item);
+    bool SetInventory(std::unique_ptr<Item> item);
     void RemoveInventory(uint16_t pos);
 
     void SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade);

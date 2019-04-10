@@ -11,7 +11,7 @@ enum StoragePlace : uint8_t
     StoragePlaceNone = 0,
     StoragePlaceScene = 1,      // On ground
     StoragePlaceInventory,
-    StoragePlaceChest,
+    StoragePlaceChest,          // Account chest
     StoragePlaceEquipped
 };
 
