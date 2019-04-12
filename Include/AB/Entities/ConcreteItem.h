@@ -37,7 +37,7 @@ struct ConcreteItem : Entity
 
         s.value1b(storagePlace);
         s.value2b(storagePos);
-        s.value2b(count);
+        s.value4b(count);
         s.value8b(creation);
         s.value2b(value);
     }
@@ -51,7 +51,7 @@ struct ConcreteItem : Entity
     std::string upgrade3Uuid = EMPTY_GUID;
     std::string itemUuid = EMPTY_GUID;
     std::string itemStats;
-    uint16_t count;
+    uint32_t count;
     int64_t creation = 0;
     uint16_t value = 0;
 };

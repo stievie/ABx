@@ -105,7 +105,7 @@ static constexpr float BEHIND_ANGLE = 0.52f;
 static constexpr uint32_t DEFAULT_KNOCKDOWN_TIME = 2000;
 
 // Item value at lvl20
-static constexpr int MIN_ITEM_VALUE = 30;
-static constexpr int MAX_ITEM_VALUE = 500;
+static constexpr int MIN_ITEM_VALUE = 20;
+static constexpr int MAX_ITEM_VALUE = 300;
 
 }

@@ -52,6 +52,10 @@ bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
 
 bool Item::LoadScript(const std::string& fileName)
 {
+    if (fileName.empty())
+        // An item does not need a script
+        return true;
+
     script_ = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(fileName);
     if (!script_)
         return false;

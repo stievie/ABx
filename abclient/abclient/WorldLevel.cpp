@@ -52,6 +52,8 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectAdded));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
     SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
+    SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
+
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMAP, URHO3D_HANDLER(WorldLevel, HandleToggleMap));
@@ -818,6 +820,20 @@ void WorldLevel::HandleCancel(StringHash, VariantMap&)
 {
     FwClient* client = GetSubsystem<FwClient>();
     client->Cancel();
+}
+
+void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectItemDropped;
+    uint32_t itemId = eventData[P_ITEMID].GetUInt();
+    uint32_t count = eventData[P_COUNT].GetUInt();
+    uint32_t value = eventData[P_VALUE].GetUInt();
+    GameObject* item = GetObjectById(itemId);
+    if (item)
+    {
+        item->count_ = count;
+        item->value_ = value;
+    }
 }
 
 Actor* WorldLevel::CreateActor(uint32_t id,

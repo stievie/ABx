@@ -3,10 +3,10 @@ include("/scripts/includes/skill_consts.lua")
 
 costEnergy = 10
 costAdrenaline = 0
-activation = 3000
-recharge = 10000
+activation = 2000
+recharge = 1000
 overcast = 0
-hp = 50
+hp = 0
 range = RANGE_ADJECENT
 effect = SkillEffectResurrect
 effectTarget = SkillTargetTarget

@@ -45,6 +45,8 @@ enum ItemType : uint16_t
     ItemTypeFocus,
     ItemTypeShield,
     ItemTypeWeaponLast = ItemTypeSpear,
+
+    ItemTypeMoney = 65534
 };
 
 struct Item : Entity
@@ -67,6 +69,7 @@ struct Item : Entity
         s.value2b(type);
         s.value2b(belongsTo);
         s.value1b(stackAble);
+        s.value2b(value);
     }
 
     uint32_t index = INVALID_INDEX;
@@ -77,8 +80,9 @@ struct Item : Entity
     std::string client_icon;
     std::string client_model;
     ItemType type = ItemTypeUnknown;
-    ItemType belongsTo = ItemTypeUnknown;
+    ItemType belongsTo = ItemTypeUnknown;    
     bool stackAble = false;
+    uint16_t value = 0;
 };
 
 }

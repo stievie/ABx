@@ -29,6 +29,7 @@ public:
         return AB::GameProtocol::ObjectTypeItemDrop;
     }
     uint32_t GetItemIndex() const;
+    const Item* GetItem() const { return item_ ? item_.get() : nullptr; }
 
     void OnClicked(Actor* actor) override;
     void SetSource(std::shared_ptr<Actor> source);

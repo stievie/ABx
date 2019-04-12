@@ -403,16 +403,25 @@ std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
     result->SetSource(dropper->GetThis<Actor>());
     result->actorId_ = target->id_;
 
-    // After all initialization is done, we can call this
-    GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
-            shared_from_this(), result))
-    );
+    QueueSpawnObject(result);
 
     gameStatus_->AddByte(AB::GameProtocol::GameObjectDropItem);
     gameStatus_->Add<uint32_t>(dropper->id_);
     gameStatus_->Add<uint32_t>(target->id_);
+    gameStatus_->Add<uint32_t>(result->id_);
     gameStatus_->Add<uint32_t>(result->GetItemIndex());
+    const Item* pItem = result->GetItem();
+    if (pItem)
+    {
+        gameStatus_->Add<uint32_t>(pItem->concreteItem_.count);
+        gameStatus_->Add<uint16_t>(pItem->concreteItem_.value);
+    }
+    else
+    {
+        // Shouldn't get here!
+        gameStatus_->Add<uint32_t>(1);
+        gameStatus_->Add<uint16_t>(0);
+    }
 
     return result;
 }

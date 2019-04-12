@@ -617,7 +617,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     using namespace AbEvents::ObjectItemDropped;
     uint32_t dropperId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
-    uint32_t itemIndex = eventData[P_ITEMID].GetUInt();
+    uint32_t itemIndex = eventData[P_ITEMINDEX].GetUInt();
 
     LevelManager* lm = GetSubsystem<LevelManager>();
     Actor* dropper = dynamic_cast<Actor*>(lm->GetObjectById(dropperId).Get());

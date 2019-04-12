@@ -47,6 +47,7 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.type = static_cast<AB::Entities::ItemType>(result->GetUInt("type"));
     item.belongsTo = static_cast<AB::Entities::ItemType>(result->GetUInt("belongs_to"));
     item.stackAble = result->GetUInt("stack_able") != 0;
+    item.value = static_cast<uint16_t>(result->GetUInt("value"));
 
     return true;
 }

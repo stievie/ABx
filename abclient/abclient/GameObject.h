@@ -30,6 +30,8 @@ public:
     unsigned index_;
     ObjectType objectType_;
     bool undestroyable_;
+    uint32_t count_ = 1;
+    uint32_t value_ = 0;
     int64_t spawnTickServer_;
     /// Player hovers
     bool hovered_;

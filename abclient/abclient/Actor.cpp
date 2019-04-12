@@ -420,7 +420,10 @@ void Actor::AddActorUI()
     nameLabel_ = nameWindow_->CreateChild<Text>();
     nameLabel_->SetAlignment(HA_LEFT, VA_CENTER);
     nameLabel_->SetStyle("ActorNameText");
-    nameLabel_->SetText(name_);
+    if (count_ > 1)
+        nameLabel_->SetText(String(count_) + " " + name_);
+    else
+        nameLabel_->SetText(name_);
     nameLabel_->SetVisible(true);
     SubscribeToEvent(nameWindow_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
 

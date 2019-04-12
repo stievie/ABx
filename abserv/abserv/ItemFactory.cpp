@@ -120,10 +120,23 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.itemUuid = gameItem.uuid;
     ci.accountUuid = accUuid;
     ci.playerUuid = playerUuid;
-    ci.count = 1;
     ci.creation = Utils::Tick();
-    ci.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
-        static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
+    if (gameItem.type != AB::Entities::ItemTypeMoney)
+    {
+        ci.count = 1;
+        if (gameItem.value == 0)
+            ci.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
+                static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
+        else
+            ci.value = gameItem.value;
+    }
+    else
+    {
+        // Money
+        ci.count = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
+            static_cast<uint16_t>(50), static_cast<uint16_t>(1000));
+        ci.value = 1;
+    }
     if (!client->Create(ci))
     {
         LOG_ERROR << "Unable top create concrete item" << std::endl;

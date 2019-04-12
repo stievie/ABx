@@ -1158,7 +1158,8 @@ void FwClient::OnObjectProgress(int64_t updateTick, uint32_t id,
     QueueEvent(AbEvents::E_OBJECTPROGRESS, eData);
 }
 
-void FwClient::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId)
+void FwClient::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
+    uint32_t itemIndex, uint32_t count, uint16_t value)
 {
     using namespace AbEvents::ObjectItemDropped;
     VariantMap& eData = GetEventDataMap();
@@ -1166,6 +1167,9 @@ void FwClient::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t tar
     eData[P_OBJECTID] = id;
     eData[P_TARGETID] = targetId;
     eData[P_ITEMID] = itemId;
+    eData[P_ITEMINDEX] = itemIndex;
+    eData[P_COUNT] = count;
+    eData[P_VALUE] = value;
     QueueEvent(AbEvents::E_OBJECTITEMDROPPED, eData);
 }
 

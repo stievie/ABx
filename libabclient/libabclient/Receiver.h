@@ -70,7 +70,8 @@ public:
     virtual void OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol::ObjectProgressType type, int value) = 0;
     virtual void OnResourceChanged(int64_t updateTick, uint32_t id,
         AB::GameProtocol::ResourceType resType, int16_t value) = 0;
-    virtual void OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId) = 0;
+    virtual void OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
+        uint32_t itemIndex, uint32_t count, uint16_t value) = 0;
     virtual void OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
         const std::string& senderName, const std::string& message) = 0;
     virtual void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,

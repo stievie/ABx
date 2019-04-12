@@ -344,8 +344,11 @@ void ProtocolGame::ParseObjectDroppedItem(const std::shared_ptr<InputMessage>& m
     uint32_t dropperId = message->Get<uint32_t>();
     uint32_t targetId = message->Get<uint32_t>();
     uint32_t itemId = message->Get<uint32_t>();
+    uint32_t itemIndex = message->Get<uint32_t>();
+    uint32_t count = message->Get<uint32_t>();
+    uint16_t value = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId);
+        receiver_->OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId, itemIndex, count, value);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

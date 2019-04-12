@@ -251,10 +251,11 @@ void Client::OnObjectProgress(int64_t updateTick, uint32_t id, AB::GameProtocol:
         receiver_->OnObjectProgress(updateTick, id, type, value);
 }
 
-void Client::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId)
+void Client::OnObjectDroppedItem(int64_t updateTick, uint32_t id, uint32_t targetId, uint32_t itemId,
+    uint32_t itemIndex, uint32_t count, uint16_t value)
 {
     if (receiver_)
-        receiver_->OnObjectDroppedItem(updateTick, id, targetId, itemId);
+        receiver_->OnObjectDroppedItem(updateTick, id, targetId, itemId, itemIndex, count, value);
 }
 
 void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
