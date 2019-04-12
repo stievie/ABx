@@ -111,14 +111,14 @@ std::string DatabasePgsql::EscapeString(const std::string& s)
 std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
 {
     // remember to quote even empty stream!
-    if (!s)
+    if (!s || length == 0)
         return std::string("''");
 
     // quotes escaped string and frees temporary buffer
     size_t len;
     char* output = (char*)PQescapeByteaConn(handle_, (unsigned char*)s, length, &len);
     std::stringstream r;
-    r << "E'" << output << "'";
+    r << "E'" << std::string(output, len - 1) << "'";
     PQfreemem(output);
     return r.str();
 }

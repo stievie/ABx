@@ -136,6 +136,9 @@ bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
 
 void VariantMapWrite(const VariantMap& vMap, IO::PropWriteStream& stream)
 {
+    if (vMap.size() == 0)
+        return;
+
     stream.Write<size_t>(vMap.size());
     for (const auto& s : vMap)
     {

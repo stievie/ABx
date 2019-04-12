@@ -6,6 +6,11 @@
 namespace AB {
 namespace Entities {
 
+/*
+ * Special item indices:
+ *       0: No item, the first item
+ * 9999999: Money, the last item
+ */
 static constexpr auto KEY_ITEMS = "game_items";
 
 enum ItemType : uint16_t
@@ -80,7 +85,7 @@ struct Item : Entity
     std::string client_icon;
     std::string client_model;
     ItemType type = ItemTypeUnknown;
-    ItemType belongsTo = ItemTypeUnknown;    
+    ItemType belongsTo = ItemTypeUnknown;
     bool stackAble = false;
     uint16_t value = 0;
 };

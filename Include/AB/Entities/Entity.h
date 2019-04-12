@@ -16,7 +16,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-static constexpr uint32_t INVALID_INDEX = 9999;
+static constexpr uint32_t INVALID_INDEX = std::numeric_limits<uint32_t>::max();
 static constexpr auto EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 
 /// Base class for entities.
