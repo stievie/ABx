@@ -14,6 +14,7 @@
 #include "GameManager.h"
 #include "PartyManager.h"
 #include "Item.h"
+#include "AB/Entities/PlayerItemList.h"
 
 #include "DebugNew.h"
 
@@ -274,6 +275,9 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 void Player::AddToInventory(std::unique_ptr<Item>& item)
 {
     inventoryComp_->SetInventory(std::move(item));
+    AB::Entities::InventoryItems inventory;
+    inventory.uuid = data_.uuid;
+    GetSubsystem<IO::DataClient>()->Invalidate(inventory);
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)

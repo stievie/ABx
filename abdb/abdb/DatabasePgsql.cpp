@@ -4,6 +4,7 @@
 
 #include "DatabasePgsql.h"
 #include "Logger.h"
+#include <base64.h>
 
 #include "DebugNew.h"
 
@@ -114,6 +115,10 @@ std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
     if (!s || length == 0)
         return std::string("''");
 
+    std::stringstream r;
+    r << "'" << base64::encode((const unsigned char*)s, length) << "'";
+    return r.str();
+/*
     // quotes escaped string and frees temporary buffer
     size_t len;
     char* output = (char*)PQescapeByteaConn(handle_, (unsigned char*)s, length, &len);
@@ -121,6 +126,7 @@ std::string DatabasePgsql::EscapeBlob(const char* s, size_t length)
     r << "E'" << std::string(output, len - 1) << "'";
     PQfreemem(output);
     return r.str();
+    */
 }
 
 void DatabasePgsql::FreeResult(DBResult* res)
@@ -249,12 +255,17 @@ std::string PgsqlResult::GetString(const std::string& col)
 
 std::string PgsqlResult::GetStream(const std::string& col)
 {
+    size_t size = PQgetlength(handle_, cursor_, PQfnumber(handle_, col.c_str()));
+    char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
+    return base64::decode(buf, size);
+    /*
     size_t size;
     char* buf = PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()));
     unsigned char* temp = PQunescapeBytea((const unsigned char*)buf, &size);
     std::string result((char*)temp, size);
     PQfreemem(temp);
     return result;
+    */
 }
 
 bool PgsqlResult::IsNull(const std::string& col)

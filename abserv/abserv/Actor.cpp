@@ -13,6 +13,7 @@
 #include "Mechanic.h"
 #include "Item.h"
 #include "ItemFactory.h"
+#include "Scheduler.h"
 
 #include "DebugNew.h"
 
@@ -239,7 +240,10 @@ void Actor::AddToInventory(std::unique_ptr<Item>& item)
 
 void Actor::DropItem()
 {
-    GetGame()->AddItemDrop(this);
+    auto game = GetGame();
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::AddItemDrop, game, this))
+    );
 }
 
 void Actor::_LuaSetState(int state)
