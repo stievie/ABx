@@ -640,7 +640,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     }
     data.set("target", std::string(target->name_.CString()));
     std::string t;
-    if (count > 0)
+    if (count > 1)
     {
         data.set("count", std::to_string(count));
         t = tplCount.render(data);

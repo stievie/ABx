@@ -381,6 +381,9 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
 
 std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
 {
+    if (state_ != ExecutionState::Running)
+        return std::shared_ptr<ItemDrop>();
+
     auto factory = GetSubsystem<ItemFactory>();
     auto rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
