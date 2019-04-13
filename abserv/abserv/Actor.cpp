@@ -461,7 +461,7 @@ void Actor::HeadTo(const Math::Vector3& pos)
 
 void Actor::FaceObject(GameObject* object)
 {
-    if (object && !IsImmobilized())
+    if (object && !IsImmobilized() && object != this)
         HeadTo(object->transformation_.position_);
 }
 

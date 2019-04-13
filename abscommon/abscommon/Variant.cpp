@@ -73,14 +73,14 @@ bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
         // Empty but OK
         return true;
 
-    size_t count = 0;
-    if (!stream.Read<size_t>(count))
+    uint16_t count = 0;
+    if (!stream.Read<uint16_t>(count))
         return false;
 
-    for (size_t i = 0; i < count; ++i)
+    for (uint16_t i = 0; i < count; ++i)
     {
-        size_t stat = 0;
-        if (!stream.Read<size_t>(stat))
+        uint64_t stat = 0;
+        if (!stream.Read<uint64_t>(stat))
             return false;
 
         uint8_t bt = 0;
@@ -97,35 +97,35 @@ bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
         {
             int value = 0;
             if (stream.Read<int>(value))
-                vMap[stat] = value;
+                vMap[static_cast<size_t>(stat)] = value;
             break;
         }
         case Utils::VAR_INT64:
         {
             long long value = 0;
             if (stream.Read<long long>(value))
-                vMap[stat] = value;
+                vMap[static_cast<size_t>(stat)] = value;
             break;
         }
         case Utils::VAR_BOOL:
         {
             uint8_t value = 0;
             if (stream.Read<uint8_t>(value))
-                vMap[stat] = value == 0 ? false : true;
+                vMap[static_cast<size_t>(stat)] = value == 0 ? false : true;
             break;
         }
         case Utils::VAR_FLOAT:
         {
             float value = 0.0f;
             if (stream.Read<float>(value))
-                vMap[stat] = value;
+                vMap[static_cast<size_t>(stat)] = value;
             break;
         }
         case Utils::VAR_STRING:
         {
             std::string value;
             if (stream.ReadString(value))
-                vMap[stat] = value;
+                vMap[static_cast<size_t>(stat)] = value;
             break;
         }
         default:
@@ -137,14 +137,14 @@ bool VariantMapRead(VariantMap& vMap, IO::PropReadStream& stream)
 
 void VariantMapWrite(const VariantMap& vMap, IO::PropWriteStream& stream)
 {
-    stream.Write<size_t>(vMap.size());
+    stream.Write<uint16_t>(static_cast<uint16_t>(vMap.size()));
     for (const auto& s : vMap)
     {
         Utils::VariantType t = s.second.GetType();
         if (t == Utils::VAR_NONE || t == Utils::VAR_VOIDPTR)
             continue;
 
-        stream.Write<size_t>(s.first);
+        stream.Write<uint64_t>(static_cast<uint64_t>(s.first));
         uint8_t bt = static_cast<uint8_t>(t);
         stream.Write<uint8_t>(bt);
         switch (t)
