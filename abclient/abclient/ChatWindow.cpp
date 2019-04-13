@@ -618,6 +618,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     uint32_t dropperId = eventData[P_OBJECTID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
     uint32_t itemIndex = eventData[P_ITEMINDEX].GetUInt();
+    uint32_t count = eventData[P_COUNT].GetUInt();
 
     LevelManager* lm = GetSubsystem<LevelManager>();
     Actor* dropper = dynamic_cast<Actor*>(lm->GetObjectById(dropperId).Get());
@@ -627,6 +628,7 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     // Item may not be spawned yet
     Item* item = items->Get(itemIndex);
 
+    kainjow::mustache::mustache tplCount{ "{{dropper}} dropped {{count}} {{item}} for {{target}}" };
     kainjow::mustache::mustache tpl{ "{{dropper}} dropped {{item}} for {{target}}" };
     kainjow::mustache::data data;
     data.set("dropper", std::string(dropper->name_.CString()));
@@ -637,7 +639,14 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
         data.set("item", std::to_string(itemIndex));
     }
     data.set("target", std::string(target->name_.CString()));
-    std::string t = tpl.render(data);
+    std::string t;
+    if (count > 0)
+    {
+        data.set("count", std::to_string(count));
+        t = tplCount.render(data);
+    }
+    else
+        t = tpl.render(data);
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
 }
 

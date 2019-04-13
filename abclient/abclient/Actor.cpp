@@ -37,6 +37,7 @@ Actor::Actor(Context* context) :
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(Actor, HandleEffectAdded));
     SubscribeToEvent(AbEvents::E_PARTYADDED, URHO3D_HANDLER(Actor, HandlePartyAdded));
     SubscribeToEvent(AbEvents::E_PARTYREMOVED, URHO3D_HANDLER(Actor, HandlePartyRemoved));
+    SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(Actor, HandleItemDropped));
 }
 
 Actor::~Actor()
@@ -653,6 +654,21 @@ void Actor::HandleEffectAdded(StringHash, VariantMap& eventData)
             const String name("Effect_" + String(pEffect->index));
             PlaySoundEffect(s, name);
         }
+    }
+}
+
+void Actor::HandleItemDropped(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectItemDropped;
+    uint32_t itemId = eventData[P_ITEMID].GetUInt();
+    if (itemId == id_)
+    {
+        count_ = eventData[P_COUNT].GetUInt();
+        value_ = eventData[P_VALUE].GetUInt();
+        if (count_ > 1)
+            nameLabel_->SetText(String(count_) + " " + name_);
+        else
+            nameLabel_->SetText(name_);
     }
 }
 

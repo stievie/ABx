@@ -133,6 +133,7 @@ private:
     void HandleSkillUse(StringHash eventType, VariantMap& eventData);
     void HandleEndSkillUse(StringHash eventType, VariantMap& eventData);
     void HandleEffectAdded(StringHash eventType, VariantMap& eventData);
+    void HandleItemDropped(StringHash eventType, VariantMap& eventData);
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;
