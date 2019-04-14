@@ -88,6 +88,7 @@ struct Character : Entity
     std::string instanceUuid = EMPTY_GUID;
     /// AB::Entities::Party
     std::string partyUuid = EMPTY_GUID;
+    uint16_t inventory_size = 0;
 };
 
 typedef std::vector<Character> CharList;

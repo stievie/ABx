@@ -17,7 +17,7 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     std::ostringstream query;
     query << "INSERT INTO `players` (`uuid`, `profession`, `profession2`, `profession_uuid`, `profession2_uuid`, `name`, `pvp`, " <<
         "`account_uuid`, `level`, `experience`, `skillpoints`, `sex`, " <<
-        "`model_index`, `creation`";
+        "`model_index`, `creation`, `inventory_size`";
     query << ") VALUES (";
 
     query << db->EscapeString(character.uuid) << ", ";
@@ -33,7 +33,8 @@ bool DBCharacter::Create(AB::Entities::Character& character)
     query << character.skillPoints << ", ";
     query << static_cast<uint32_t>(character.sex) << ", ";
     query << character.modelIndex << ", ";
-    query << character.creation;
+    query << character.creation << ", ";
+    query << static_cast<int>(character.inventory_size);
 
     query << ")";
 
@@ -92,6 +93,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
     character.deletedTime = result->GetLong("deleted");
     character.currentMapUuid = result->GetString("current_map_uuid");
     character.lastOutpostUuid = result->GetString("last_outpost_uuid");
+    character.inventory_size = static_cast<uint16_t>(result->GetUInt("inventory_size"));
 
     return true;
 }
@@ -121,7 +123,8 @@ bool DBCharacter::Save(const AB::Entities::Character& character)
     query << " `onlinetime` = " << character.onlineTime << ", ";
     query << " `deleted` = " << character.deletedTime << ", ";
     query << " `current_map_uuid` = " << db->EscapeString(character.currentMapUuid) << ", ";
-    query << " `last_outpost_uuid` = " << db->EscapeString(character.lastOutpostUuid);
+    query << " `last_outpost_uuid` = " << db->EscapeString(character.lastOutpostUuid) << ", ";
+    query << " `inventory_size` = " << static_cast<int>(character.inventory_size);
 
     query << " WHERE `uuid` = " << db->EscapeString(character.uuid);
 

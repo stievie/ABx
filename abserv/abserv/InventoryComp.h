@@ -3,6 +3,7 @@
 #include "Item.h"
 #include "Damage.h"
 #include "Mechanic.h"
+#include "AB/CommonConfig.h"
 
 namespace Game {
 
@@ -43,7 +44,13 @@ public:
     bool SetInventory(std::unique_ptr<Item>& item);
     void RemoveInventory(uint16_t pos);
     bool DestroyItem(uint16_t pos);
-    bool IsFull() const { return inventory_.size() >= inventorySize_; }
+    bool IsFull() const { return GetCount() >= inventorySize_; }
+    void SetSize(uint16_t value)
+    {
+        // Can not resize inventory when it has items loaded
+        assert(inventory_.size() == 0);
+        inventorySize_ = value;
+    }
     size_t GetCount() const
     {
         size_t count = 0;

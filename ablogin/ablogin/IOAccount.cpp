@@ -58,6 +58,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     acc.type = AB::Entities::AccountType::AccountTypeNormal;
     acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
     acc.creation = Utils::Tick();
+    acc.chest_size = DEFAULT_CHEST_SIZE;
     if (!client->Create(acc))
     {
         LOG_ERROR << "Creating account with name " << name << " failed" << std::endl;
@@ -116,6 +117,16 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
     case AB::Entities::KeyTypeCharSlot:
     {
         acc.charSlots++;
+        if (!client->Update(acc))
+        {
+            LOG_ERROR << "Account update failed " << accountUuid << std::endl;
+            return Result::InternalError;
+        }
+        break;
+    }
+    case AB::Entities::KeyTypeChestSlots:
+    {
+        acc.chest_size += 10;
         if (!client->Update(acc))
         {
             LOG_ERROR << "Account update failed " << accountUuid << std::endl;
@@ -209,6 +220,7 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     ch.pvp = isPvp;
     ch.level = 1;
     ch.creation = Utils::Tick();
+    ch.inventory_size = DEFAULT_INVENTORY_SIZE;
     ch.accountUuid = accountUuid;
     if (!client->Create(ch))
     {

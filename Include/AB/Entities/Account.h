@@ -84,6 +84,7 @@ struct Account : Entity
     std::string guildUuid = EMPTY_GUID;
     // Clients DH public key (16 byte)
     std::array<uint8_t, 16> clientPubKey;
+    uint16_t chest_size = 0;
 };
 
 }

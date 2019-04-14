@@ -73,6 +73,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         }
     }
 
+    player->inventoryComp_->SetSize(player->data_.inventory_size);
     if (!LoadPlayerInventory(player))
         return false;
     return true;

@@ -46,6 +46,7 @@ $include {{_header.html}}
                               <option $if ak.is_type_unknown {{selected}} value="0">Unknown</option>
                               <option $if ak.is_type_account {{selected}} value="1">Account</option>
                               <option $if ak.is_type_charslot {{selected}} value="2">Character slot</option>
+                              <option $if ak.is_type_chestslot {{selected}} value="2">+10 Chest slots</option>
                             </select>
                           </td>
                           <td>
@@ -95,6 +96,7 @@ $include {{_header.html}}
                           <option value="0">Unknown</option>
                           <option selected value="1">Account</option>
                           <option value="2">Character slot</option>
+                          <option value="3">+10 Chest slots</option>
                         </select>
                       </div>
                     </div>

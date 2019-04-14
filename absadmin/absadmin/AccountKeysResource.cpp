@@ -37,6 +37,7 @@ bool AccountKeysResource::GetObjects(std::map<std::string, ginger::object>& obje
             { "is_type_unknown", ak.type == AB::Entities::KeyTypeUnknown },
             { "is_type_account", ak.type == AB::Entities::KeyTypeAccount },
             { "is_type_charslot", ak.type == AB::Entities::KeyTypeCharSlot },
+            { "is_type_chestslot", ak.type == AB::Entities::KeyTypeChestSlots },
             { "total", std::to_string(ak.total) },
             { "used", std::to_string(ak.used) },
             { "status", static_cast<int>(ak.status) },

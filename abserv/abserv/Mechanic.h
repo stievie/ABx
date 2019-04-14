@@ -109,9 +109,7 @@ static constexpr int MIN_ITEM_VALUE = 20;
 static constexpr int MAX_ITEM_VALUE = 300;
 
 // --- Inventory ---
-static constexpr size_t DEFAULT_INVENTORY_SIZE = 40;
 static constexpr uint32_t MAX_INVENTOREY_MONEY = 1000 * 1000;  // 1M
-static constexpr size_t DEFAULT_CHEST_SIZE = DEFAULT_INVENTORY_SIZE * 5;
 static constexpr uint32_t DEFAULT_CHEST_MONEY = MAX_INVENTOREY_MONEY * 100;
 static constexpr uint32_t MAX_INVENTORY_STACK_SIZE = 250;
 

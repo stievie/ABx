@@ -17,7 +17,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "INSERT INTO `accounts` (`uuid`, `name`, `password`, `email`, `type`, " <<
-        "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`) VALUES ( ";
+        "`status`, `creation`, `char_slots`, `current_server_uuid`, `online_status`, `guild_uuid`, `chest_size`) VALUES ( ";
 
     query << db->EscapeString(account.uuid) << ", ";
     query << db->EscapeString(account.name) << ", ";
@@ -29,7 +29,8 @@ bool DBAccount::Create(AB::Entities::Account& account)
     query << account.charSlots << ", ";
     query << db->EscapeString(account.currentServerUuid) << ", ";
     query << static_cast<int>(account.onlineStatus) << ", ";
-    query << db->EscapeString(account.guildUuid);
+    query << db->EscapeString(account.guildUuid) << ", ";
+    query << static_cast<int>(account.chest_size) << ", ";
 
     query << ")";
     DBTransaction transaction(db);
@@ -81,6 +82,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.currentServerUuid = result->GetString("current_server_uuid");
     account.onlineStatus = static_cast<AB::Entities::OnlineStatus>(result->GetInt("online_status"));
     account.guildUuid = result->GetString("guild_uuid");
+    account.chest_size = static_cast<uint16_t>(result->GetInt("chest_size"));
 
     // load characters
     account.characterUuids.clear();
@@ -116,7 +118,8 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `current_character_uuid` = " << db->EscapeString(account.currentCharacterUuid) << ",";
     query << " `current_server_uuid` = " << db->EscapeString(account.currentServerUuid) << ",";
     query << " `online_status` = " << static_cast<int>(account.onlineStatus) << ",";
-    query << " `guild_uuid` = " << db->EscapeString(account.guildUuid);
+    query << " `guild_uuid` = " << db->EscapeString(account.guildUuid) << ",";
+    query << " `chest_size` = " << static_cast<int>(account.chest_size) << ",";
 
     query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
 

@@ -20,6 +20,7 @@ enum AccountKeyType : uint8_t
     KeyTypeUnknown = 0,
     KeyTypeAccount = 1,
     KeyTypeCharSlot = 2,
+    KeyTypeChestSlots = 3,     // Increase count of player inventory by 10
 };
 
 /// Account key entity. The UUID is the key.
