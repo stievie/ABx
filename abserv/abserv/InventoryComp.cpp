@@ -117,9 +117,9 @@ uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
     {
         if (!inventory_[i])
         {
-            item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-            item->concreteItem_.storagePos = static_cast<uint16_t>(i + 1);
             inventory_[i] = std::move(item);
+            inventory_[i]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+            inventory_[i]->concreteItem_.storagePos = static_cast<uint16_t>(i + 1);
             return static_cast<uint16_t>(i + 1);
         }
     }
@@ -128,8 +128,8 @@ uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
     {
         inventory_.push_back(std::move(item));
         uint16_t pos = static_cast<uint16_t>(inventory_.size());
-        inventory_[pos]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-        inventory_[pos]->concreteItem_.storagePos = static_cast<uint16_t>(pos);
+        inventory_[pos - 1]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+        inventory_[pos - 1]->concreteItem_.storagePos = static_cast<uint16_t>(pos);
         return pos;
     }
     return 0;

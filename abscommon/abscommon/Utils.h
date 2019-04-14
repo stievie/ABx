@@ -61,7 +61,7 @@ Iter SelectRandomly(Iter start, Iter end)
 template<typename Iter>
 Iter SelectRandomly(Iter start, Iter end, float rnd)
 {
-    int adv = static_cast<int>(static_cast<float>(std::distance(start, end) - 1) * rnd);
+    int adv = static_cast<int>(round(static_cast<float>(std::distance(start, end) - 1) * rnd));
     std::advance(start, adv);
     return start;
 }
