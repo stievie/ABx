@@ -20,7 +20,9 @@ class Npc;
 class AreaOfEffect;
 class ItemDrop;
 
-using ObjectList = std::unordered_map<uint32_t, std::shared_ptr<GameObject>>;
+/// The list which owns the objects. We use a std::map because we want to
+/// have it in the order of creation (allocation) when Update() is called.
+using ObjectList = std::map<uint32_t, std::shared_ptr<GameObject>>;
 using PlayersList = std::unordered_map<uint32_t, Player*>;
 
 class Game : public std::enable_shared_from_this<Game>
