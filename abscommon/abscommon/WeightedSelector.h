@@ -108,7 +108,10 @@ public:
     }
     T Get(float rand1, float rand2) const
     {
+        assert(initialized_);
+
         auto i = GetIndex(rand1, rand2);
+        assert(Count() > i);
         return values_[i];
     }
 };
