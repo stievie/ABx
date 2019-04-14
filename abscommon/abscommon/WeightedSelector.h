@@ -20,7 +20,7 @@ private:
     inline size_t GetIndex(float rand1, float rand2) const
     {
         const size_t count = values_.size();
-        size_t k = static_cast<size_t>(round(static_cast<float>(count) * rand1));
+        size_t k = static_cast<size_t>(static_cast<float>(count) * rand1);
         return rand2 < probs_[k] ? k : alias_[k];
     }
 public:
@@ -108,7 +108,8 @@ public:
     }
     T Get(float rand1, float rand2) const
     {
-        return values_[GetIndex(rand1, rand2)];
+        auto i = GetIndex(rand1, rand2);
+        return values_[i];
     }
 };
 

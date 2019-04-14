@@ -17,6 +17,8 @@ void ItemDrop::RegisterLua(kaguya::State& state)
 ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
     GameObject(),
     item_(std::move(item)),
+    itemUuid_(item_->concreteItem_.uuid),
+    pickedUp_(false),
     actorId_(0)
 {
     // Drops can not hide other objects
@@ -26,11 +28,11 @@ ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
 
 ItemDrop::~ItemDrop()
 {
-    if (item_)
+    if (!pickedUp_ && !itemUuid_.empty() && !uuids::uuid(itemUuid_).nil())
     {
         // Not picked up delete it
         auto factory = GetSubsystem<ItemFactory>();
-        factory->DeleteItem(item_.get());
+        factory->DeleteConcrete(itemUuid_);
     }
 }
 
@@ -51,7 +53,10 @@ void ItemDrop::OnClicked(Actor* actor)
     if (IsInRange(Ranges::Touch, actor))
     {
         if (actor->AddToInventory(item_))
+        {
+            pickedUp_ = true;
             GetGame()->RemoveObject(this);
+        }
     }
 }
 

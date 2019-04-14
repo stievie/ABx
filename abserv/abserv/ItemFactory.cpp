@@ -282,10 +282,7 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     AB::Entities::ConcreteItem ci;
     auto client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
-    if (!client->Delete(ci))
-    {
-        LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
-    }
+    client->Delete(ci);
 }
 
 void ItemFactory::DeleteItem(Item* item)
@@ -361,7 +358,7 @@ std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& mapUuid, ui
     if (it == dropChances_.end())
         // Maybe outpost -> no drops
         return std::unique_ptr<Item>();
-    if ((*it).second->Count() == 0)
+    if (!(*it).second || (*it).second->Count() == 0)
         // No drops on this map :(
         return std::unique_ptr<Item>();
 

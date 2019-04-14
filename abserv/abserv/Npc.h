@@ -51,7 +51,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     Npc();
-    ~Npc() override;
+    ~Npc();
     // non-copyable
     Npc(const Npc&) = delete;
     Npc& operator=(const Npc&) = delete;

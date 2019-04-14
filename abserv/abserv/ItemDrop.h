@@ -11,6 +11,8 @@ class ItemDrop : public GameObject
 {
 private:
     std::unique_ptr<Item> item_;
+    std::string itemUuid_;
+    bool pickedUp_;
     /// Dropper
     std::weak_ptr<Actor> source_;
 public:
@@ -22,7 +24,7 @@ public:
     ItemDrop(const ItemDrop&) = delete;
     ItemDrop& operator=(const ItemDrop&) = delete;
 
-    ~ItemDrop() override;
+    ~ItemDrop();
 
     AB::GameProtocol::GameObjectType GetType() const final override
     {

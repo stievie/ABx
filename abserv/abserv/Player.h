@@ -53,7 +53,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     explicit Player(std::shared_ptr<Net::ProtocolGame> client);
-    ~Player() override;
+    ~Player();
     // non-copyable
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
