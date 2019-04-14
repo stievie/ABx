@@ -30,7 +30,7 @@ bool DBAccount::Create(AB::Entities::Account& account)
     query << db->EscapeString(account.currentServerUuid) << ", ";
     query << static_cast<int>(account.onlineStatus) << ", ";
     query << db->EscapeString(account.guildUuid) << ", ";
-    query << static_cast<int>(account.chest_size) << ", ";
+    query << static_cast<int>(account.chest_size);
 
     query << ")";
     DBTransaction transaction(db);
@@ -119,7 +119,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `current_server_uuid` = " << db->EscapeString(account.currentServerUuid) << ",";
     query << " `online_status` = " << static_cast<int>(account.onlineStatus) << ",";
     query << " `guild_uuid` = " << db->EscapeString(account.guildUuid) << ",";
-    query << " `chest_size` = " << static_cast<int>(account.chest_size) << ",";
+    query << " `chest_size` = " << static_cast<int>(account.chest_size);
 
     query << " WHERE `uuid` = " << db->EscapeString(account.uuid);
 
