@@ -10,6 +10,8 @@ namespace Entities {
 
 static constexpr auto KEY_ACCOUNTS = "accounts";
 static const uint32_t ACCOUNT_DEF_CHARSLOTS = 6;
+// Account chest size
+static constexpr size_t DEFAULT_CHEST_SIZE = 100;
 
 enum AccountType : uint8_t
 {
@@ -84,7 +86,7 @@ struct Account : Entity
     std::string guildUuid = EMPTY_GUID;
     // Clients DH public key (16 byte)
     std::array<uint8_t, 16> clientPubKey;
-    uint16_t chest_size = 0;
+    uint16_t chest_size = DEFAULT_CHEST_SIZE;
 };
 
 }

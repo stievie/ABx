@@ -15,6 +15,9 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
+// Player inventory size
+static constexpr size_t DEFAULT_INVENTORY_SIZE = 40;
+
 enum CharacterSex : uint8_t
 {
     CharacterSexUnknown = 0,
@@ -88,7 +91,7 @@ struct Character : Entity
     std::string instanceUuid = EMPTY_GUID;
     /// AB::Entities::Party
     std::string partyUuid = EMPTY_GUID;
-    uint16_t inventory_size = 0;
+    uint16_t inventory_size = DEFAULT_INVENTORY_SIZE;
 };
 
 typedef std::vector<Character> CharList;

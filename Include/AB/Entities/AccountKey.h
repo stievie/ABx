@@ -7,6 +7,7 @@ namespace AB {
 namespace Entities {
 
 static constexpr auto KEY_ACCOUNTS_KEYS = "account_keys";
+static constexpr uint16_t CHEST_SLOT_INCREASE = 10;
 
 enum AccountKeyStatus : uint8_t
 {

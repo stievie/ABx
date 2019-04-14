@@ -17,8 +17,3 @@
 #define PLAYER_MAX_ATTRIBUTES 10
 
 static constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"§$%&/()=?\´`,.-;:_+*~#'|)";
-
-// Player inventory size
-static constexpr size_t DEFAULT_INVENTORY_SIZE = 40;
-// Account chest size
-static constexpr size_t DEFAULT_CHEST_SIZE = DEFAULT_INVENTORY_SIZE * 5;

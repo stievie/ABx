@@ -3,7 +3,7 @@
 #include "Item.h"
 #include "Damage.h"
 #include "Mechanic.h"
-#include "AB/CommonConfig.h"
+#include <AB/Entities/Character.h>
 
 namespace Game {
 
@@ -28,7 +28,7 @@ public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner) :
         owner_(owner),
-        inventorySize_(DEFAULT_INVENTORY_SIZE)
+        inventorySize_(AB::Entities::DEFAULT_INVENTORY_SIZE)
     { }
     // non-copyable
     InventoryComp(const InventoryComp&) = delete;
