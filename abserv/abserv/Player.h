@@ -111,6 +111,7 @@ public:
     void NotifyNewMail();
     void WriteToOutput(const Net::NetworkMessage& message);
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
+    void OnInventoryFull() override;
     bool IsResigned() const { return resigned_; }
 
     void SetParty(std::shared_ptr<Party> party);
@@ -120,7 +121,7 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
-    void AddToInventory(std::unique_ptr<Item>& item) override;
+    bool AddToInventory(std::unique_ptr<Item>& item) override;
 
     void PartyInvitePlayer(uint32_t playerId);
     void PartyKickPlayer(uint32_t playerId);

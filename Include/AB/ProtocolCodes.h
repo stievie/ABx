@@ -189,6 +189,8 @@ enum GameProtocolCodes : uint8_t
 
     ChangeInstance,
 
+    PlayerError,                         // Some GameError code
+
     GameStart,                         // Start tick
     GameEnter,
     GameUpdate,
@@ -271,6 +273,12 @@ enum AttackError : uint8_t
     AttackErrorInvalidTarget,
     AttackErrorTargetUndestroyable,
     AttackErrorInterrupted,
+};
+
+enum PlayerErrorValue : uint8_t
+{
+    PlayerErrorNone = 0,
+    PlayerErrorInventoryFull,
 };
 
 enum GameObjectType : uint8_t

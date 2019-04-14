@@ -116,6 +116,17 @@ String FwClient::GetAttackErrorMessage(AB::GameProtocol::AttackError err)
     }
 }
 
+String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
+{
+    switch (err)
+    {
+    case AB::GameProtocol::PlayerErrorInventoryFull:
+        return "Inventory full";
+    default:
+        return String::EMPTY;
+    }
+}
+
 FwClient::FwClient(Context* context) :
     Object(context),
     loggedIn_(false),
@@ -1208,6 +1219,16 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     eData[P_SENDER] = String(senderName.data(), static_cast<int>(senderName.length()));
     eData[P_DATA] = String(message.data(), static_cast<int>(message.length()));
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
+}
+
+void FwClient::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PlayerError;
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_ERROR] = static_cast<uint8_t>(error);
+    eData[P_ERRORMSG] = GetGameErrorMessage(error);
+    QueueEvent(AbEvents::E_PLAYERERROR, eData);
 }
 
 void FwClient::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)

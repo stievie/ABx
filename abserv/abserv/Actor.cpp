@@ -230,12 +230,13 @@ void Actor::CancelAction()
     inputComp_.Add(InputType::Cancel);
 }
 
-void Actor::AddToInventory(std::unique_ptr<Item>& item)
+bool Actor::AddToInventory(std::unique_ptr<Item>& item)
 {
     std::unique_ptr<Item> i = std::move(item);
     // By default just delete the item
     auto factory = GetSubsystem<ItemFactory>();
     factory->DeleteConcrete(i->concreteItem_.uuid);
+    return true;
 }
 
 void Actor::DropItem()
@@ -720,7 +721,7 @@ bool Actor::SetInventory(const std::string& ciUuid)
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
-    inventoryComp_->SetInventory(std::move(item));
+    inventoryComp_->SetInventory(item);
     return true;
 }
 

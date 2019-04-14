@@ -179,6 +179,7 @@ public:
     virtual void OnDied();
     virtual void OnResurrected(int /* health */, int /* energy */) { }
     virtual void OnPingObject(uint32_t /* targetId */, AB::GameProtocol::ObjectCallType /* type */, int /* skillIndex */) { }
+    virtual void OnInventoryFull() { }
 
     virtual uint32_t GetLevel() const { return 0; }
     virtual void SetLevel(uint32_t) { }
@@ -264,7 +265,7 @@ public:
     /// Cancel attack, use skill, follow
     void CancelAction();
 
-    virtual void AddToInventory(std::unique_ptr<Item>& item);
+    virtual bool AddToInventory(std::unique_ptr<Item>& item);
     void DropItem();
 
     std::unique_ptr<SkillBar> skills_;

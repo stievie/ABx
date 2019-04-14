@@ -49,6 +49,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
     SubscribeToEvent(AbEvents::E_ATTACKFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectAttackFailure));
+    SubscribeToEvent(AbEvents::E_PLAYERERROR, URHO3D_HANDLER(WorldLevel, HandlePlayerError));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectAdded));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
     SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
@@ -607,6 +608,21 @@ void WorldLevel::HandleObjectAttackFailure(StringHash, VariantMap& eventData)
                 wnd->ShowError(msg);
             }
         }
+    }
+}
+
+void WorldLevel::HandlePlayerError(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::PlayerError;
+    AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(eventData[P_ERROR].GetUInt());
+    if (error == AB::GameProtocol::PlayerErrorNone)
+        return;
+    const String& msg = eventData[P_ERRORMSG].GetString();
+    if (!msg.Empty())
+    {
+        WindowManager* wm = GetSubsystem<WindowManager>();
+        GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
+        wnd->ShowError(msg);
     }
 }
 

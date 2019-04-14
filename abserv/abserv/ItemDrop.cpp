@@ -50,8 +50,8 @@ void ItemDrop::OnClicked(Actor* actor)
 
     if (IsInRange(Ranges::Touch, actor))
     {
-        actor->AddToInventory(item_);
-        GetGame()->RemoveObject(this);
+        if (actor->AddToInventory(item_))
+            GetGame()->RemoveObject(this);
     }
 }
 

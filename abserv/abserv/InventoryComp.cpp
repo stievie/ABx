@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "InventoryComp.h"
 #include "IOItem.h"
+#include "ItemFactory.h"
+#include "Actor.h"
 
 namespace Game {
 namespace Components {
@@ -42,30 +44,124 @@ void InventoryComp::RemoveEquipment(EquipPos pos)
     equipment_.erase(pos);
 }
 
-bool InventoryComp::SetInventory(std::unique_ptr<Item> item)
+bool InventoryComp::AddInventory(std::unique_ptr<Item>& item)
 {
-    if (item)
+
+    // pos = 1-based
+    size_t pos = item->concreteItem_.storagePos;
+    if (pos == 0)
     {
-        // pos = 1-based
-        size_t pos = item->concreteItem_.storagePos;
-        if (pos == 0)
+        if (item->data_.stackAble)
         {
-            // Insert free slot
-            for (size_t i = 0; i < inventory_.size(); ++i)
+            Item* invItem = FindItem(item->data_.uuid);
+            if (invItem)
             {
-                if (!inventory_[i])
+                // If this item is stackable merge them
+                if (invItem->concreteItem_.count + item->concreteItem_.count < MAX_INVENTORY_STACK_SIZE)
                 {
-                    item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-                    item->concreteItem_.storagePos = static_cast<uint16_t>(i + 1);
-                    inventory_[i] = std::move(item);
+                    invItem->concreteItem_.count += item->concreteItem_.count;
+                    // Merged -> delete this
+                    auto factory = GetSubsystem<ItemFactory>();
+                    factory->DeleteConcrete(item->concreteItem_.uuid);
                     return true;
                 }
             }
-            // Inventory full
+        }
+
+        if (GetCount() < inventorySize_)
+        {
+            int16_t p = InsertItem(item);
+            if (p != 0)
+            {
+                return true;
+            }
             return false;
         }
-        inventory_[pos - 1] = std::move(item);
-        return true;
+        // Inventory full
+        return false;
+    }
+    else
+    {
+        if (inventory_.size() >= pos)
+        {
+            if (!inventory_[pos - 1])
+            {
+                inventory_[pos - 1] = std::move(item);
+                return true;
+            }
+        }
+        if (inventory_.size() < inventorySize_)
+        {
+            if (inventory_.size() < pos)
+                inventory_.resize(pos);
+            inventory_[pos - 1] = std::move(item);
+            return true;
+        }
+        return false;
+    }
+}
+
+Item* InventoryComp::FindItem(const std::string& uuid)
+{
+    for (const auto& i : inventory_)
+    {
+        if (i && i->data_.uuid.compare(uuid) == 0)
+            return i.get();
+    }
+    return nullptr;
+}
+
+uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
+{
+    for (size_t i = 0; i < inventory_.size(); ++i)
+    {
+        if (!inventory_[i])
+        {
+            item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+            item->concreteItem_.storagePos = static_cast<uint16_t>(i + 1);
+            inventory_[i] = std::move(item);
+            return static_cast<uint16_t>(i + 1);
+        }
+    }
+    // No free slot between
+    if (inventory_.size() < inventorySize_)
+    {
+        inventory_.push_back(std::move(item));
+        uint16_t pos = static_cast<uint16_t>(inventory_.size());
+        inventory_[pos]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+        inventory_[pos]->concreteItem_.storagePos = static_cast<uint16_t>(pos);
+        return pos;
+    }
+    return 0;
+}
+
+bool InventoryComp::SetInventory(std::unique_ptr<Item>& item)
+{
+    if (item)
+    {
+        if (item->data_.type == AB::Entities::ItemTypeMoney)
+        {
+            if (!moneyItem_)
+            {
+                item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+                moneyItem_ = std::move(item);
+            }
+            else
+            {
+                if (moneyItem_->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
+                    return false;
+                moneyItem_->concreteItem_.count += item->concreteItem_.count;
+                // Merged -> delete this
+                auto factory = GetSubsystem<ItemFactory>();
+                factory->DeleteConcrete(item->concreteItem_.uuid);
+            }
+            return true;
+        }
+
+        bool res = AddInventory(item);
+        if (!res)
+            owner_.OnInventoryFull();
+        return res;
     }
     return false;
 }
@@ -76,6 +172,16 @@ void InventoryComp::RemoveInventory(uint16_t pos)
         return;
     if (inventory_[pos - 1])
         inventory_[pos - 1].reset();
+}
+
+bool InventoryComp::DestroyItem(uint16_t pos)
+{
+    if (inventory_.size() >= pos && inventory_[pos - 1])
+    {
+        inventory_[pos - 1].reset();
+        return true;
+    }
+    return false;
 }
 
 void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade)

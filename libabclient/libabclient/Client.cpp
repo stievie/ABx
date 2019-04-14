@@ -279,6 +279,12 @@ void Client::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChan
         receiver_->OnChatMessage(updateTick, channel, senderId, senderName, message);
 }
 
+void Client::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error)
+{
+    if (receiver_)
+        receiver_->OnPlayerError(updateTick, error);
+}
+
 void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     if (receiver_)

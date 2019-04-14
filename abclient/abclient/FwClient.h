@@ -56,6 +56,7 @@ public:
     static String GetProtocolErrorMessage(uint8_t err);
     static String GetSkillErrorMessage(AB::GameProtocol::SkillError err);
     static String GetAttackErrorMessage(AB::GameProtocol::AttackError err);
+    static String GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err);
 
     FwClient(Context* context);
     ~FwClient();
@@ -162,6 +163,7 @@ public:
         const std::string& senderName, const std::string& message) override;
     void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) override;
+    void OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error) override;
     /// The player was invited into our party
     void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
     /// Player was removed from our party

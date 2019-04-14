@@ -104,6 +104,7 @@ private:
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
     void HandleObjectSkillFailure(StringHash eventType, VariantMap& eventData);
     void HandleObjectAttackFailure(StringHash eventType, VariantMap& eventData);
+    void HandlePlayerError(StringHash eventType, VariantMap& eventData);
     void HandleObjectEffectAdded(StringHash eventType, VariantMap& eventData);
     void HandleObjectEffectRemoved(StringHash eventType, VariantMap& eventData);
     void HandleObjectResourceChange(StringHash eventType, VariantMap& eventData);

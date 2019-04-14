@@ -54,3 +54,5 @@ Thumbs.db
 build/*
 Design/*
 Tools/*
+
+backup.cmd

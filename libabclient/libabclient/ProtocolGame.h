@@ -44,6 +44,7 @@ protected:
     void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);
     void ParseMailComplete(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
+    void ParseGameError(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message);
     void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);

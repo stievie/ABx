@@ -101,6 +101,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GamePong:
             ParsePong(message);
             break;
+        case AB::GameProtocol::PlayerError:
+            ParseGameError(message);
+            break;
         case AB::GameProtocol::MailHeaders:
             ParseMailHeaders(message);
             break;
@@ -525,6 +528,13 @@ void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
     lastPing_ = static_cast<int>(AbTick() - pingTick_);
     if (receiver_)
         receiver_->OnPong(lastPing_);
+}
+
+void ProtocolGame::ParseGameError(const std::shared_ptr<InputMessage>& message)
+{
+    AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(message->Get<uint8_t>());
+    if (receiver_)
+        receiver_->OnPlayerError(updateTick_, error);
 }
 
 void ProtocolGame::ParseServerJoined(const std::shared_ptr<InputMessage>& message)

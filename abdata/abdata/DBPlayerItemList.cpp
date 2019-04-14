@@ -32,6 +32,7 @@ bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
     {
         query << " AND `storage_place` = " << static_cast<int>(il.storagePlace);
     }
+    query << " ORDER BY `creation`";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
         il.itemUuids.push_back(result->GetString("uuid"));

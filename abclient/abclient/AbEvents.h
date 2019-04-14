@@ -130,6 +130,13 @@ URHO3D_EVENT(E_ATTACKFAILURE, AttackFailure)
     URHO3D_PARAM(P_ERRORMSG, ErrorMsg);                // String
 }
 
+URHO3D_EVENT(E_PLAYERERROR, PlayerError)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_ERROR, Error);                      // uint8_t
+    URHO3D_PARAM(P_ERRORMSG, ErrorMsg);                // String
+}
+
 URHO3D_EVENT(E_OBJECTUSESKILL, ObjectUseSkill)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);

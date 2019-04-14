@@ -237,6 +237,16 @@ void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType ty
     GetParty()->WriteToMembers(msg);
 }
 
+void Player::OnInventoryFull()
+{
+    Actor::OnInventoryFull();
+
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::PlayerError);
+    msg.AddByte(AB::GameProtocol::PlayerErrorInventoryFull);
+    WriteToOutput(msg);
+}
+
 void Player::SetParty(std::shared_ptr<Party> party)
 {
     if (party_)
@@ -272,12 +282,21 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         party->Update(timeElapsed, message);
 }
 
-void Player::AddToInventory(std::unique_ptr<Item>& item)
+bool Player::AddToInventory(std::unique_ptr<Item>& item)
 {
-    inventoryComp_->SetInventory(std::move(item));
-    AB::Entities::InventoryItems inventory;
-    inventory.uuid = data_.uuid;
-    GetSubsystem<IO::DataClient>()->Invalidate(inventory);
+    if (inventoryComp_->IsFull())
+    {
+        OnInventoryFull();
+        return false;
+    }
+    if (inventoryComp_->SetInventory(item))
+    {
+        AB::Entities::InventoryItems inventory;
+        inventory.uuid = data_.uuid;
+        GetSubsystem<IO::DataClient>()->Invalidate(inventory);
+        return true;
+    }
+    return false;
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)
