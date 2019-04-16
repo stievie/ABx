@@ -29,7 +29,6 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
-        .addFunction("HealSelf", &Npc::HealSelf)
         .addFunction("GetGroupId", &Npc::GetGroupId)
         .addFunction("SetGroupId", &Npc::SetGroupId)
     );
@@ -134,24 +133,6 @@ void Npc::Shutdown()
         zone->destroyAI(id_);
         ai_->setZone(nullptr);
     }
-}
-
-bool Npc::HealSelf()
-{
-    auto skills = skills_->GetSkillsWithEffectTarget(SkillEffectHeal, SkillTargetSelf);
-    if (skills.size() == 0)
-        return false;
-    for (size_t i = 0; i < skills.size(); ++i)
-    {
-        auto skill = skills_->GetSkill(skills[i]);
-        if (skill->IsRecharged())
-        {
-            SetSelectedObject(shared_from_this());
-            UseSkill(skills[i]);
-            return true;
-        }
-    }
-    return false;
 }
 
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)

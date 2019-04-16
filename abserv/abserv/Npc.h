@@ -65,7 +65,6 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
     std::shared_ptr<ai::AI> GetAi();
     void Shutdown();
-    bool HealSelf();
 
     std::string GetName() const override { return name_; }
     void SetName(const std::string& name) { name_ = name; }

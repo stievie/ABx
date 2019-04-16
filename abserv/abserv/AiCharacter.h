@@ -32,6 +32,7 @@ public:
     std::weak_ptr<Game::Skill> currentSkill_;
     int64_t lastFoeAttack_;
     std::weak_ptr<Game::Actor> lastAttacker_;
+    std::weak_ptr<Game::Actor> currentTarget_;
 };
 
 inline Game::Npc& getNpc(const ai::AIPtr& ai) {

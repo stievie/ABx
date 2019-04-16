@@ -3,7 +3,6 @@ function idle(parentnode)
   -- fails if all children failed, too.
   local prio = parentnode:addNode("PrioritySelector", "idle")
     prio:addNode("Idle{1000}", "idle1000")
---    prio:addNode("Steer(Wander)", "wander")
 end
 
 function stayAlive(parentnode)
