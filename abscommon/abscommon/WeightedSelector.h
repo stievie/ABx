@@ -3,7 +3,6 @@
 #include <memory>
 #include <vector>
 #include <random>
-#include <atomic>
 
 namespace Utils {
 
@@ -12,7 +11,7 @@ template <typename T>
 class WeightedSelector
 {
 private:
-    std::atomic<bool> initialized_;
+    bool initialized_;
     std::vector<float> weights_;
     std::vector<float> probs_;
     std::vector<size_t> alias_;
@@ -94,7 +93,7 @@ public:
 
     bool IsInitialized() const { return initialized_; }
 
-    T Get() const
+    const T& Get() const
     {
         assert(initialized_);
         assert(Count() != 0);
@@ -106,7 +105,7 @@ public:
         float rand2 = r_uni(gen);
         return Get(rand1, rand2);
     }
-    T Get(float rand1, float rand2) const
+    const T& Get(float rand1, float rand2) const
     {
         assert(initialized_);
 

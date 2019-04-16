@@ -365,13 +365,12 @@ std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& mapUuid, ui
     auto rng = GetSubsystem<Crypto::Random>();
     const float rnd1 = rng->GetFloat();
     const float rnd2 = rng->GetFloat();
-    std::string itemUuid = (*it).second->Get(rnd1, rnd2);
+    const std::string& itemUuid = (*it).second->Get(rnd1, rnd2);
     if (uuids::uuid(itemUuid).nil())
         // There is a chance that nothing drops
         return std::unique_ptr<Item>();
 
     return CreateItem(itemUuid, level, Utils::Uuid::EMPTY_UUID, playerUuid);
 }
-
 
 }
