@@ -34,6 +34,7 @@ private:
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     int64_t startUse_;
+    int64_t lastUse_;
     int64_t recharged_;
     Ranges range_;
     uint32_t skillEffect_;
@@ -63,6 +64,7 @@ public:
     Skill() = delete;
     explicit Skill(const AB::Entities::Skill& skill) :
         startUse_(0),
+        lastUse_(0),
         recharged_(0),
         range_(Ranges::Aggro),
         skillEffect_(0),
@@ -139,6 +141,8 @@ public:
     int32_t GetRealActivation() const { return realActivation_; }
     int32_t GetRealOvercast() const { return realOvercast_; }
     int32_t GetRealHp() const { return realHp_; }
+
+    int64_t GetLastUse() const { return	lastUse_; }
 
     void AddRecharge(int32_t ms);
 

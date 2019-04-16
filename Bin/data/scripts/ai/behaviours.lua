@@ -2,14 +2,10 @@
 
 require("data/scripts/ai/shared")
 require("data/scripts/ai/smith")
-
-function subtreeExample(tree)
-	tree:createRoot("Steer(Wander)", tree:getName())
-end
+require("data/scripts/ai/priest")
+require("data/scripts/ai/guild_lord")
 
 function init()
-	subtreeExample(AI.createTree("wander"))
-
 	local example = AI.createTree("example")
 	local rootNodeExample = example:createRoot("PrioritySelector", "root")
 		local group1Node = rootNodeExample:addNode("PrioritySelector", "group1")
@@ -31,11 +27,13 @@ function init()
   local patrol = AI.createTree("patrol")
 	local patrolRoot = patrol:createRoot("PrioritySelector", "root")
     patrolRoot:addNode("Idle{3000}", "idle3000")
-  local prioSelector = patrolRoot:addNode("PrioritySelector", "prio2");
+  local prioSelector = patrolRoot:addNode("PrioritySelector", "prio2")
     prioSelector:addNode("Idle{3000}", "idle3000"):setCondition("HasEnemies")
     prioSelector:addNode("MoveTo", "movetoaggro"):setCondition("Filter(SelectHighestAggro)")
     prioSelector:addNode("Idle{1000}", "idle1000")
   patrolRoot:addNode("Idle{20}", "idle20")
   
   initSmith()
+  initPriest()
+  initGuildLord()
 end

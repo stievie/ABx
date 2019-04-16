@@ -27,6 +27,7 @@ void SkillBar::RegisterLua(kaguya::State& state)
         .addFunction("UseSkill", &SkillBar::UseSkill)
         .addFunction("GetSkillsWithEffect", &SkillBar::_LuaGetSkillsWithEffect)
         .addFunction("GetSkillsWithTarget", &SkillBar::_LuaGetSkillsWithTarget)
+        .addFunction("GetSkillsWithEffectTarget", &SkillBar::_LuaGetSkillsWithEffectTarget)
         .addFunction("AddSkill", &SkillBar::_LuaAddSkill)
         .addFunction("Load", &SkillBar::Load)
     );
@@ -169,6 +170,19 @@ std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillTarget target) const
     for (const auto& skill : skills_)
     {
         if (skill->HasTarget(target))
+            result.push_back(i);
+        ++i;
+    }
+    return result;
+}
+
+std::vector<uint32_t> SkillBar::GetSkillsWithEffectTarget(SkillEffect effect, SkillTarget target, bool rechargedOnly /* = false */) const
+{
+    std::vector<uint32_t> result;
+    uint32_t i = 0;
+    for (const auto& skill : skills_)
+    {
+        if (skill && skill->HasEffect(effect) && skill->HasTarget(target) && (!rechargedOnly || skill->IsRecharged()))
             result.push_back(i);
         ++i;
     }

@@ -29,6 +29,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
+        .addFunction("HealSelf", &Npc::HealSelf)
         .addFunction("GetGroupId", &Npc::GetGroupId)
         .addFunction("SetGroupId", &Npc::SetGroupId)
     );
@@ -102,12 +103,11 @@ bool Npc::LoadScript(const std::string& fileName)
 
     // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
     Initialize();
+
+    if (!behaviorTree_.empty())
+        SetBehaviour(behaviorTree_);
+
     bool ret = luaState_["onInit"]();
-    if (ret)
-    {
-        if (!behaviorTree_.empty())
-            SetBehaviour(behaviorTree_);
-    }
     return ret;
 }
 
@@ -136,6 +136,24 @@ void Npc::Shutdown()
     }
 }
 
+bool Npc::HealSelf()
+{
+    auto skills = skills_->GetSkillsWithEffectTarget(SkillEffectHeal, SkillTargetSelf);
+    if (skills.size() == 0)
+        return false;
+    for (size_t i = 0; i < skills.size(); ++i)
+    {
+        auto skill = skills_->GetSkill(skills[i]);
+        if (skill->IsRecharged())
+        {
+            SetSelectedObject(shared_from_this());
+            UseSkill(skills[i]);
+            return true;
+        }
+    }
+    return false;
+}
+
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);
@@ -147,14 +165,16 @@ void Npc::SetGroupId(uint32_t value)
 {
     if (groupId_ != value)
     {
-        GetGame()->map_->SetEntityGroupId(GetAi(), groupId_, value);
+        auto ai = GetAi();
+        if (ai)
+            GetGame()->map_->SetEntityGroupId(ai, groupId_, value);
         groupId_ = value;
     }
 }
 
 bool Npc::SetBehaviour(const std::string& name)
 {
-    if (behaviorTree_.compare(name) != 0)
+    if (behaviorTree_.compare(name) != 0 || !ai_)
     {
         behaviorTree_ = name;
         auto loader = GetSubsystem<AI::AiLoader>();
@@ -167,13 +187,13 @@ bool Npc::SetBehaviour(const std::string& name)
         {
             ai_ = std::make_shared<ai::AI>(root);
             ai_->getAggroMgr().setReduceByValue(0.1f);
-            GetGame()->map_->AddEntity(GetAi(), 0);
+            GetGame()->map_->AddEntity(GetAi(), groupId_);
         }
     }
     return true;
 }
 
-float Npc::GetAggro(Actor* other)
+float Npc::GetAggro(const Actor* other)
 {
     if (!other)
         return 0.0f;
@@ -289,6 +309,14 @@ bool Npc::OnAttacked(Actor* source, DamageType type, int32_t damage)
 
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onAttacked", source, type, damage, ret);
+    if (ret)
+    {
+        if (aiCharacter_)
+        {
+            aiCharacter_->lastFoeAttack_ = Utils::Tick();
+            aiCharacter_->lastAttacker_ = source->GetThis<Actor>();
+        }
+    }
     return ret;
 }
 

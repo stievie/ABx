@@ -5,7 +5,7 @@
 
 namespace AI {
 
-AI_TASK(AttackOnSelection)
+AI_TASK(AttackSelection)
 {
     Game::Npc& npc = chr.GetNpc();
     const ai::FilteredEntities& selection = npc.GetAi()->getFilteredEntities();
@@ -13,12 +13,12 @@ AI_TASK(AttackOnSelection)
     {
         return ai::TreeNodeStatus::FAILED;
     }
-    bool attacked = false;
     for (ai::CharacterId id : selection)
     {
-        //attacked |= npc.attack(id);
+        if (npc.AttackById(id))
+            return ai::TreeNodeStatus::FINISHED;
     }
-    return attacked ? ai::TreeNodeStatus::FINISHED : ai::TreeNodeStatus::FAILED;
+    return ai::TreeNodeStatus::FAILED;
 }
 
 }

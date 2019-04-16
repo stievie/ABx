@@ -8,8 +8,12 @@ sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 1     -- Warrior
 prof2Index = 2     -- Ranger
+behavior = "GUILDLORD"
 
 function onInit()
+  local skillBar = self:GetSkillBar()
+  -- Add a heal skill
+  skillBar:AddSkill(1)
   return true
 end
 
@@ -25,4 +29,8 @@ end
 
 -- creature collides with self
 function onCollide(creature)
+end
+
+function onDied()
+  self:DropItem()
 end

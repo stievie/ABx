@@ -16,14 +16,14 @@
     <Filter Include="Headerdateien\Actions">
       <UniqueIdentifier>{b26b870b-8672-40fc-aaf1-327d5cb59b5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headerdateien\Consitions">
-      <UniqueIdentifier>{3840a0ad-b5d6-4c79-87a9-2afcc935877a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headerdateien\Filters">
       <UniqueIdentifier>{add958c5-fea7-446f-9e9c-2491726f409e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Quelldateien\Filters">
       <UniqueIdentifier>{5553eeb7-b00c-498a-8ce8-60b72a0b3ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Conditions">
+      <UniqueIdentifier>{3840a0ad-b5d6-4c79-87a9-2afcc935877a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -210,17 +210,14 @@
     <ClInclude Include="AiTask.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="actions\AiAttackOnSelection.h">
-      <Filter>Headerdateien\Actions</Filter>
-    </ClInclude>
     <ClInclude Include="actions\AiDie.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
     <ClInclude Include="conditions\AiIsSelectionAlive.h">
-      <Filter>Headerdateien\Consitions</Filter>
+      <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
     <ClInclude Include="conditions\AiIsCloseToSelection.h">
-      <Filter>Headerdateien\Consitions</Filter>
+      <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
     <ClInclude Include="filters\AiSelectVisible.h">
       <Filter>Headerdateien\Filters</Filter>
@@ -308,6 +305,36 @@
     </ClInclude>
     <ClInclude Include="InventoryComp.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsSelfHealthLow.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiHealSelf.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiHealOther.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectLowHealth.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsAllyHealthLow.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsAttacked.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectAttackers.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiAttackSelection.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\AiSelectDeadAllies.h">
+      <Filter>Headerdateien\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="actions\AiResurrectSelection.h">
+      <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -550,6 +577,15 @@
     </ClCompile>
     <ClCompile Include="InventoryComp.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectLowHealth.cpp">
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectAttackers.cpp">
+      <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\AiSelectDeadAllies.cpp">
+      <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

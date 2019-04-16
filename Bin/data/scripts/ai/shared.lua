@@ -1,9 +1,40 @@
 function idle(parentnode)
-  local prio = parentnode:addNode("PrioritySelector", "walkuncrowded")
+  -- This node tries to execute all the attached children until one succeeds. This composite only
+  -- fails if all children failed, too.
+  local prio = parentnode:addNode("PrioritySelector", "idle")
+    prio:addNode("Idle{1000}", "idle1000")
+--    prio:addNode("Steer(Wander)", "wander")
+end
 
-  -- if there are too many objects (see parameter) visible of either the same npc type or the max count, leave the area
-  -- otherwise walk randomly around in the area around your home position
-  --prio:addNode("Steer(WanderAroundHome{100})", "wanderathome"):addCondition("Not(IsCrowded{10, 100})")
-  -- if we can't walk in our home base area, we are wandering freely around to find another not crowded area
-  prio:addNode("Steer(Wander)", "wanderfreely")
+function stayAlive(parentnode)
+  -- Executes all the connected children in the order they were added (no matter what
+  -- the TreeNodeStatus of the previous child was).
+  local parallel = parentnode:addNode("Parallel", "stayalive")
+  parallel:setCondition("IsSelfHealthLow")
+    parallel:addNode("HealSelf", "healself")
+end
+
+function defend(parentnode)
+  local parallel = parentnode:addNode("Parallel", "defend")
+  parallel:setCondition("And(IsAttacked,Filter(SelectAttackers))")
+    parallel:addNode("AttackSelection", "attack")
+end
+
+function healAlly(parentnode)
+  local parallel = parentnode:addNode("Parallel", "healally")
+  parallel:setCondition("And(IsAllyHealthLow,Filter(SelectLowHealth))")
+    parallel:addNode("HealOther", "healother")
+end
+
+function attackAggro(parentnode)
+  local parallel = parentnode:addNode("Parallel", "attackaggro")
+  parallel:setCondition("Filter(SelectAggro)")
+    parallel:addNode("AttackSelection", "attack")
+end
+
+function rezzAlly(parentnode)
+  local parallel = parentnode:addNode("Parallel", "rezzally")
+  parallel:setCondition("Filter(SelectDeadAllies)")
+    parallel:addNode("Steer(SelectionSeek)", "follow")
+    parallel:addNode("ResurrectSelection", "attack"):setCondition("IsCloseToSelection{1}")
 end

@@ -180,9 +180,8 @@ public:
         return AB::GameProtocol::ObjectTypeStatic;
     }
 
-    Math::Vector3 GetPosition()
+    const Math::Vector3& GetPosition() const
     {
-        std::lock_guard<std::mutex> lock(lock_);
         return transformation_.position_;
     }
 

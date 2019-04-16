@@ -65,6 +65,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
     std::shared_ptr<ai::AI> GetAi();
     void Shutdown();
+    bool HealSelf();
 
     std::string GetName() const override { return name_; }
     void SetName(const std::string& name) { name_ = name; }
@@ -85,7 +86,7 @@ public:
     void SetGroupId(uint32_t value);
     bool SetBehaviour(const std::string& name);
     const std::string& GetBehaviour() const { return behaviorTree_; }
-    float GetAggro(Actor* other);
+    float GetAggro(const Actor* other);
     bool IsServerOnly() const { return serverOnly_; }
     void SetServerOnly(bool value) { serverOnly_ = value; }
 

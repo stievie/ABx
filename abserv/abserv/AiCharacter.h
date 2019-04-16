@@ -3,9 +3,13 @@
 namespace Game {
 class Npc;
 class Map;
+class Skill;
+class Actor;
 }
 
 namespace AI {
+
+class AiTask;
 
 class AiCharacter : public ai::ICharacter
 {
@@ -23,7 +27,11 @@ public:
 
     inline Game::Npc& GetNpc() const {
         return owner_;
-    }
+    };
+    AiTask* currentTask_;
+    std::weak_ptr<Game::Skill> currentSkill_;
+    int64_t lastFoeAttack_;
+    std::weak_ptr<Game::Actor> lastAttacker_;
 };
 
 inline Game::Npc& getNpc(const ai::AIPtr& ai) {

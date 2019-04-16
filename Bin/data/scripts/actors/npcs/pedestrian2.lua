@@ -1,7 +1,7 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
 
-name = "Pedestrian2"
+name = "Dorothea Samara"
 level = 20
 modelIndex = 12    -- Female Pedestrian 1 body model
 sex = SEX_FEMALE

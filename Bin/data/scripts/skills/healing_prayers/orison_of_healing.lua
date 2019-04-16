@@ -13,7 +13,7 @@ overcast = 0
 hp = 0
 range = RANGE_CASTING
 effect = SkillEffectHeal
-effectTarget = SkillTargetTarget
+effectTarget = SkillTargetTarget | SkillTargetSelf
 
 function onStartUse(source, target)
   if (target == nil) then

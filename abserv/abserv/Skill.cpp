@@ -80,8 +80,12 @@ void Skill::Update(uint32_t timeElapsed)
             startUse_ = 0;
             if (lastError_ != AB::GameProtocol::SkillErrorNone)
                 recharged_ = 0;
-            // On success sacrifice the HP
-            source->resourceComp_.SetHealth(Components::SetValueType::DecreasePercent, realHp_);
+            else
+            {
+                // On success sacrifice the HP
+                source->resourceComp_.SetHealth(Components::SetValueType::DecreasePercent, realHp_);
+                lastUse_ = Utils::Tick();
+            }
             if (source)
                 source->OnEndUseSkill(this);
             source_.reset();

@@ -6,6 +6,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 namespace Components {
 
@@ -134,8 +135,17 @@ public:
 
     int GetHealth() const { return static_cast<int>(health_); }
     void SetHealth(SetValueType t, int value);
+    /// Get health / max health. Value between 0..1
+    float GetHealthRatio() const {
+        assert(maxHealth_ > 0);
+        return Math::Clamp(health_, 0.0f, static_cast<float>(maxHealth_)) / static_cast<float>(maxHealth_);
+    }
     int GetEnergy() const { return static_cast<int>(energy_); }
     void SetEnergy(SetValueType t, int value);
+    float GetEnergyRatio() const {
+        assert(maxEnergy_ > 0);
+        return Math::Clamp(energy_, 0.0f, static_cast<float>(maxEnergy_)) / static_cast<float>(maxEnergy_);
+    }
     int GetAdrenaline() const { return static_cast<int>(adrenaline_); }
     void SetAdrenaline(SetValueType t, int value);
     int GetOvercast() const { return static_cast<int>(overcast_); }
@@ -152,6 +162,8 @@ public:
     void SetValue(ResourceType type, SetValueType t, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
+    /// Approx. check if we have enough resource to use this skill.
+    bool HaveEnoughResources(Skill* skill) const;
 
     void Update(uint32_t timeElapsed);
     void Write(Net::NetworkMessage& message, bool ignoreDirty = false);

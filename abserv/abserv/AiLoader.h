@@ -17,8 +17,7 @@ public:
     explicit AiLoader(ai::AIRegistry& registry) :
         registry_(registry),
         loader_(registry)
-    {
-    }
+    { }
 
     ai::TreeNodePtr Load(const std::string& name)
     {

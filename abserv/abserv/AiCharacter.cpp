@@ -4,6 +4,7 @@
 #include "Npc.h"
 #include "Map.h"
 #include "Game.h"
+#include "Actor.h"
 
 namespace AI {
 
@@ -26,14 +27,10 @@ void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
 {
     ai::AggroMgr& aggro = owner_.GetAi()->getAggroMgr();
     // https://github.com/mgerhardy/engine/blob/a3ebd511c9009f8b58937599df03d86ed6efdbf1/src/modules/backend/entity/ai/AICharacter.cpp
-    owner_.VisitInRange(Game::Ranges::Aggro, [&](const std::shared_ptr<Game::GameObject>& o)
+    owner_.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
-        auto a = o->GetThisDynamic<Game::Actor>();
-        if (a)
-        {
-            float aggroValue = owner_.GetAggro(a.get());
-            aggro.addAggro(a->id_, aggroValue);
-        }
+        float aggroValue = owner_.GetAggro(o);
+        aggro.addAggro(o->id_, aggroValue);
     });
 
     Super::update(deltaTime, debuggingActive);

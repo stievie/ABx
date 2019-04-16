@@ -1,7 +1,7 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
 
-name = "Merchant"
+name = "Telemachos Makos (Merchant)"
 level = 20
 modelIndex = 9     -- Merchant body model
 sex = SEX_MALE

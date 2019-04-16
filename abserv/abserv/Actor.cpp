@@ -156,12 +156,17 @@ bool Actor::GotoHomePos()
 
 void Actor::SetSelectedObject(std::shared_ptr<GameObject> object)
 {
+    if (object)
+        SetSelectedObjectById(object->GetId());
+    else
+        SetSelectedObjectById(0);
+}
+
+void Actor::SetSelectedObjectById(uint32_t id)
+{
     Utils::VariantMap data;
     data[InputDataObjectId] = GetId();    // Source
-    if (object)
-        data[InputDataObjectId2] = object->GetId();   // Target
-    else
-        data[InputDataObjectId2] = 0;   // Target
+    data[InputDataObjectId2] = id;   // Target
     inputComp_.Add(InputType::Select, data);
 }
 
@@ -207,6 +212,33 @@ void Actor::Attack(Actor* target)
     }
     // Then attack
     inputComp_.Add(InputType::Attack);
+}
+
+bool Actor::AttackById(uint32_t targetId)
+{
+    auto target = GetGame()->GetObjectById(targetId);
+    if (!target)
+        return false;
+
+    auto actor = std::dynamic_pointer_cast<Actor>(target);
+    if (!actor)
+        return false;
+    Actor* pActor = actor.get();
+    if (!IsEnemy(pActor))
+        return false;
+    if (attackComp_.IsAttackingTarget(pActor))
+        return true;
+
+    {
+        // First select object
+        Utils::VariantMap data;
+        data[InputDataObjectId] = GetId();    // Source
+        data[InputDataObjectId2] = target->GetId();   // Target
+        inputComp_.Add(InputType::Select, data);
+    }
+    // Then attack
+    inputComp_.Add(InputType::Attack);
+    return true;
 }
 
 bool Actor::IsAttackingActor(Actor* target)

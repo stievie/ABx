@@ -8,8 +8,14 @@ sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 3     -- Monk
 prof2Index = 0     -- None
+behavior = "PRIEST"
 
 function onInit()
+  local skillBar = self:GetSkillBar()
+  -- Add a heal skill
+  skillBar:AddSkill(281)
+  -- Instant rezz skill
+  skillBar:AddSkill(9996)
   return true
 end
 
@@ -29,8 +35,8 @@ end
 
 function onAttacked(source, _type, damage, success)
   if (self:IsAttackingActor(source) == false) then
-    self:Say(CHAT_CHANNEL_GENERAL, "Okay " .. source:GetName() .. ", take that!")
-    self:Attack(source)
+--    self:Say(CHAT_CHANNEL_GENERAL, "Okay " .. source:GetName() .. ", take that!")
+--    self:Attack(source)
   end
 end
 

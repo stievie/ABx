@@ -2,6 +2,7 @@
 #include "ResourceComp.h"
 #include <AB/ProtocolCodes.h>
 #include "Actor.h"
+#include "Skill.h"
 
 namespace Game {
 namespace Components {
@@ -161,6 +162,19 @@ int ResourceComp::DrainEnergy(int value)
     int result = Math::Clamp(value, 0, curr);
     SetEnergy(Components::SetValueType::Absolute, curr - result);
     return result;
+}
+
+bool ResourceComp::HaveEnoughResources(Skill* skill) const
+{
+    if (!skill)
+        return false;
+    if (skill->adrenaline_ > GetAdrenaline())
+        return false;
+    if (skill->energy_ > GetEnergy())
+        return false;
+    if (skill->hp_ > GetHealth())
+        return false;
+    return true;
 }
 
 void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)

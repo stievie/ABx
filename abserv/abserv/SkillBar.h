@@ -23,6 +23,7 @@ private:
     int _LuaAddSkill(uint32_t skillIndex);
     std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const { return GetSkillsWithEffect(static_cast<SkillEffect>(effect)); }
     std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const { return GetSkillsWithTarget(static_cast<SkillTarget>(target)); }
+    std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const { return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillTarget>(target)); }
     Skill* _LuaGetSkill(uint32_t index);
 public:
     static void RegisterLua(kaguya::State& state);
@@ -56,6 +57,7 @@ public:
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect) const;
     std::vector<uint32_t> GetSkillsWithTarget(SkillTarget target) const;
+    std::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillTarget target, bool rechargedOnly = false) const;
 
     Skill* operator[](uint32_t index)
     {

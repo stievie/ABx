@@ -14,6 +14,7 @@
 #include "Party.h"
 #include "ItemDrop.h"
 #include "Random.h"
+#include "Party.h"
 
 namespace Game {
 
@@ -51,6 +52,10 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     state["ServerId"] = kaguya::function([]
     {
         return Application::Instance->GetServerId();
+    });
+    state["NewGroupId"] = kaguya::function([]
+    {
+        return Party::GetNewId();
     });
     state["include"] = kaguya::function([&state](const std::string& file)
     {

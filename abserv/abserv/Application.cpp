@@ -328,7 +328,7 @@ bool Application::LoadMain()
     }
     LOG_INFO << "[done]" << std::endl;
 
-    LOG_INFO << "Loading behavior tree...";
+    LOG_INFO << "Loading behavior trees...";
     auto aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
     const std::string& btFile = (*config)[ConfigManager::Key::Behaviours].GetString();
