@@ -153,7 +153,7 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
 
 [0] Scene file format
 
-~~~
+~~~xml
 <?xml version="1.0"?>
 <index>
   <file type="Scene" src="Athena.xml" />
