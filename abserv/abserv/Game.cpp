@@ -265,6 +265,7 @@ void Game::Update()
         );
         break;
     }
+    ScriptManager::CollectGarbage(luaState_);
 }
 
 void Game::SendStatus()

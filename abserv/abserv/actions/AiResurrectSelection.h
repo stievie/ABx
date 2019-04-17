@@ -31,19 +31,14 @@ AI_TASK(ResurrectSelection)
         // Some other skill currently using
         return ai::FAILED;
 
-    auto skills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectResurrect, Game::SkillTargetTarget, true);
+    auto skills = npc.skills_->GetSkillsWithEffect(Game::SkillEffectResurrect, true);
     if (skills.size() == 0)
         return ai::FAILED;
     // Possible heal targets
     const ai::FilteredEntities& selection = npc.GetAi()->getFilteredEntities();
     if (selection.empty())
-    {
         return ai::TreeNodeStatus::FAILED;
-    }
 
-    auto skill = npc.skills_->GetSkill(skills[0]);
-    if (!skill)
-        return ai::FAILED;
     auto target = npc.GetGame()->GetObjectById(selection[0]);
     if (!target)
         return ai::FAILED;
@@ -51,13 +46,21 @@ AI_TASK(ResurrectSelection)
     if (!actor || !actor->IsDead())
         return ai::FAILED;
 
-    if (!npc.resourceComp_.HaveEnoughResources(skill.get()))
-        return ai::FAILED;
-    npc.SetSelectedObjectById(selection[0]);
-    npc.UseSkill(skills[0]);
-    chr.currentSkill_ = skill;
-    chr.currentTask_ = this;
-    return ai::RUNNING;
+    for (auto i : skills)
+    {
+        auto skill = npc.skills_->GetSkill(i);
+        if (!skill)
+            continue;
+        if (!npc.resourceComp_.HaveEnoughResources(skill.get()))
+            continue;
+
+        npc.SetSelectedObjectById(selection[0]);
+        npc.UseSkill(i);
+        chr.currentSkill_ = skill;
+        chr.currentTask_ = this;
+        return ai::RUNNING;
+    }
+    return ai::FAILED;
 }
 
 }

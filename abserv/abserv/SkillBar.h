@@ -55,8 +55,8 @@ public:
     const AB::AttributeValue* GetAttribute(uint32_t index) const;
     const AB::Attributes& GetAttributes() const { return attributes_; }
     const SkillsArray& GetArray() const { return skills_; }
-    std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect) const;
-    std::vector<uint32_t> GetSkillsWithTarget(SkillTarget target) const;
+    std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
+    std::vector<uint32_t> GetSkillsWithTarget(SkillTarget target, bool rechargedOnly = false) const;
     std::vector<uint32_t> GetSkillsWithEffectTarget(SkillEffect effect, SkillTarget target, bool rechargedOnly = false) const;
 
     Skill* operator[](uint32_t index)

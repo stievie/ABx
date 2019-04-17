@@ -200,9 +200,11 @@
     <ClInclude Include="AutoRunComp.h" />
     <ClInclude Include="Chat.h" />
     <ClInclude Include="CollisionComp.h" />
+    <ClInclude Include="conditions\AiIsAllyHealthCritical.h" />
     <ClInclude Include="conditions\AiIsAllyHealthLow.h" />
     <ClInclude Include="conditions\AiIsAttacked.h" />
     <ClInclude Include="conditions\AiIsCloseToSelection.h" />
+    <ClInclude Include="conditions\AiIsSelfHealthCritical.h" />
     <ClInclude Include="conditions\AiIsSelfHealthLow.h" />
     <ClInclude Include="conditions\AiIsSelectionAlive.h" />
     <ClInclude Include="CrowdAgent.h" />

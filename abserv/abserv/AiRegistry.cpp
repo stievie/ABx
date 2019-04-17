@@ -12,7 +12,9 @@
 #include "conditions/AiIsSelectionAlive.h"
 #include "conditions/AiIsCloseToSelection.h"
 #include "conditions/AiIsSelfHealthLow.h"
+#include "conditions/AiIsSelfHealthCritical.h"
 #include "conditions/AiIsAllyHealthLow.h"
+#include "conditions/AiIsAllyHealthCritical.h"
 #include "conditions/AiIsAttacked.h"
 #include "filters/AiSelectVisible.h"
 #include "filters/AiSelectAggro.h"
@@ -37,7 +39,9 @@ void AiRegistry::Initialize()
     registerConditionFactory("IsSelectionAlive", IsSelectionAlive::getFactory());
     registerConditionFactory("IsCloseToSelection", IsCloseToSelection::getFactory());
     registerConditionFactory("IsSelfHealthLow", IsSelfHealthLow::getFactory());
+    registerConditionFactory("SelfHealthCritical", IsSelfHealthCritical::getFactory());
     registerConditionFactory("IsAllyHealthLow", IsAllyHealthLow::getFactory());
+    registerConditionFactory("AllyHealthCritical", IsAllyHealthCritical::getFactory());
     registerConditionFactory("IsAttacked", IsAttacked::getFactory());
 
     registerFilterFactory("SelectVisible", SelectVisible::getFactory());

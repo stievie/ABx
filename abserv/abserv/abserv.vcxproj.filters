@@ -336,6 +336,12 @@
     <ClInclude Include="actions\AiResurrectSelection.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="conditions\AiIsSelfHealthCritical.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
+    <ClInclude Include="conditions\AiIsAllyHealthCritical.h">
+      <Filter>Headerdateien\Conditions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

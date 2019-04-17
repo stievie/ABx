@@ -116,4 +116,9 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
         mainS->Execute(state);
 }
 
+void ScriptManager::CollectGarbage(kaguya::State& state)
+{
+    state.gc().step();
+}
+
 }

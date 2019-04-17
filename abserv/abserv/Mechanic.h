@@ -118,6 +118,7 @@ static constexpr uint32_t MAX_INVENTORY_STACK_SIZE = 250;
 namespace AI {
 
 /// The AI will consider healing if HP is bellow this health/max health ratio
-static constexpr float LOW_HP_THREASHOLD = 0.9f;
+static constexpr float LOW_HP_THREASHOLD = 0.8f;
+static constexpr int CRITICAL_HP_THRESHOLD = 50;
 
 }

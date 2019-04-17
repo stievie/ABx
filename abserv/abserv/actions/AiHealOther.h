@@ -32,20 +32,46 @@ AI_TASK(HealOther)
     if (currSkill)
         // Some other skill currently using
         return ai::FAILED;
-
-    auto skills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetTarget, true);
-    if (skills.size() == 0)
-        return ai::FAILED;
     // Possible heal targets
     const ai::FilteredEntities& selection = npc.GetAi()->getFilteredEntities();
     if (selection.empty())
+        return ai::FAILED;
+
+    // Lambda to use one of the given skills on the target
+    static const auto useSkill = [&npc, &chr](const std::vector<uint32_t>& skills, uint32_t targetId) -> bool
     {
-        return ai::TreeNodeStatus::FAILED;
+        for (auto i : skills)
+        {
+            // Try all skills until success
+            auto skill = npc.skills_->GetSkill(i);
+            if (!skill)
+                continue;
+            if (!npc.resourceComp_.HaveEnoughResources(skill.get()))
+                continue;
+
+            npc.SetSelectedObjectById(targetId);
+            npc.UseSkill(0);
+            chr.currentSkill_ = skill;
+            return true;
+        }
+        return false;
+    };
+
+    if (selection.size() > 4)
+    {
+        // Many to heal try party healing
+        auto partySkills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetParty, true);
+        if (partySkills.size() != 0)
+        {
+            if (useSkill(partySkills, selection[0]))
+            {
+                chr.currentTask_ = this;
+                return ai::RUNNING;
+            }
+        }
     }
 
-    auto skill = npc.skills_->GetSkill(skills[0]);
-    if (!skill)
-        return ai::FAILED;
+    // Highest priorioty target is on top
     auto target = npc.GetGame()->GetObjectById(selection[0]);
     if (!target)
         return ai::FAILED;
@@ -53,13 +79,16 @@ AI_TASK(HealOther)
     if (!actor || actor->IsDead())
         return ai::FAILED;
 
-    if (!npc.resourceComp_.HaveEnoughResources(skill.get()))
+    auto skills = npc.skills_->GetSkillsWithEffectTarget(Game::SkillEffectHeal, Game::SkillTargetTarget, true);
+    if (skills.size() == 0)
         return ai::FAILED;
-    npc.SetSelectedObjectById(selection[0]);
-    npc.UseSkill(skills[0]);
-    chr.currentSkill_ = skill;
-    chr.currentTask_ = this;
-    return ai::RUNNING;
+
+    if (useSkill(skills, selection[0]))
+    {
+        chr.currentTask_ = this;
+        return ai::RUNNING;
+    }
+    return ai::FAILED;
 }
 
 }

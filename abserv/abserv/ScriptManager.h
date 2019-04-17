@@ -45,6 +45,7 @@ public:
             state[name](std::forward<_CArgs>(_Args)...);
         }
     }
+    static void CollectGarbage(kaguya::State& state);
 };
 
 }

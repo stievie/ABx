@@ -56,6 +56,7 @@ TerrainPatch* Map::GetPatch(int x, int z) const
 
 void Map::LoadSceneNode(const pugi::xml_node& node)
 {
+    auto dataProvider = GetSubsystem<IO::DataProvider>();
     // Game load thread
     if (auto game = game_.lock())
     {
@@ -146,7 +147,9 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                         std::vector<std::string> modelFile = Utils::Split(modelValue, ";");
                         if (modelFile.size() == 2)
                         {
-                            model = GetSubsystem<IO::DataProvider>()->GetAsset<Model>(modelFile[1]);
+                            if (dataProvider->Exists<Model>(modelFile[1]))
+                                // Model is optional
+                                model = dataProvider->GetAsset<Model>(modelFile[1]);
 #ifdef DEBUG_COLLISION
                             if (model)
                                 LOG_DEBUG << model->fileName_ << ": " << model->GetBoundingBox().ToString() << std::endl;

@@ -10,11 +10,11 @@ namespace AI {
 /**
  * @ingroup AI
  */
-class IsAllyHealthLow : public ai::ICondition
+class IsAllyHealthCritical : public ai::ICondition
 {
 public:
-    CONDITION_CLASS(IsAllyHealthLow)
-    CONDITION_FACTORY(IsAllyHealthLow)
+    CONDITION_CLASS(IsAllyHealthCritical)
+    CONDITION_FACTORY(IsAllyHealthCritical)
 
     bool evaluate(const ai::AIPtr& entity) override
     {
@@ -29,7 +29,7 @@ public:
         {
             if (result)
                 return;
-            if (!o->IsDead() && o->GetId() != npc.GetId() && o->resourceComp_.GetHealthRatio() < LOW_HP_THREASHOLD)
+            if (!o->IsDead() && o->GetId() != npc.GetId() && o->resourceComp_.GetHealth() < CRITICAL_HP_THRESHOLD)
                 result = true;
         });
 

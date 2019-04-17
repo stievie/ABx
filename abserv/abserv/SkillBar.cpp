@@ -150,26 +150,26 @@ const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
     return nullptr;
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect) const
+std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly /* = false */) const
 {
     std::vector<uint32_t> result;
     uint32_t i = 0;
     for (const auto& skill : skills_)
     {
-        if (skill && skill->HasEffect(effect))
+        if (skill && skill->HasEffect(effect) && (!rechargedOnly || skill->IsRecharged()))
             result.push_back(i);
         ++i;
     }
     return result;
 }
 
-std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillTarget target) const
+std::vector<uint32_t> SkillBar::GetSkillsWithTarget(SkillTarget target, bool rechargedOnly /* = false */) const
 {
     std::vector<uint32_t> result;
     uint32_t i = 0;
     for (const auto& skill : skills_)
     {
-        if (skill->HasTarget(target))
+        if (skill && skill->HasTarget(target) && (!rechargedOnly || skill->IsRecharged()))
             result.push_back(i);
         ++i;
     }

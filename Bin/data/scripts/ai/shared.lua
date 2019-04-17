@@ -11,6 +11,7 @@ function stayAlive(parentnode)
   local parallel = parentnode:addNode("Parallel", "stayalive")
   parallel:setCondition("IsSelfHealthLow")
     parallel:addNode("HealSelf", "healself")
+  -- TODO: Flee
 end
 
 function defend(parentnode)

@@ -18,6 +18,7 @@ enum SkillEffect : uint32_t
     SkillEffectProtect   = 1 << 3,
     SkillEffectDamage    = 1 << 4,
     SkillEffectSpeed     = 1 << 5,
+    SkillEffectInterrupt = 1 << 6,
 };
 
 enum SkillTarget : uint32_t
@@ -26,6 +27,7 @@ enum SkillTarget : uint32_t
     SkillTargetSelf    = 1 << 1,
     SkillTargetTarget  = 1 << 2,
     SkillTargetAoe     = 1 << 3,
+    SkillTargetParty   = 1 << 4,
 };
 
 class Skill

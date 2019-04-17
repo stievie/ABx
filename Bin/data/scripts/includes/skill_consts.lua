@@ -44,11 +44,13 @@ SkillEffectHeal         = 1 << 2
 SkillEffectProtect      = 1 << 3
 SkillEffectDamage       = 1 << 4
 SkillEffecSpeed         = 1 << 5
+SkillEffectInterrupt    = 1 << 6
 -- What the skill targets
 SkillTargetNone         = 0
 SkillTargetSelf         = 1 << 1
 SkillTargetTarget       = 1 << 2
 SkillTargetAoe          = 1 << 3
+SkillTargetParty        = 1 << 4
 -- Error codes
 SkillErrorNone          = 0
 SkillErrorInvalidSkill  = 1
