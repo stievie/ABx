@@ -124,11 +124,11 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
 
 ### Structure of `Bin/data` directory
 
-~~~
+~~~plain
   data
    - maps
      - (Map)
-       - index.xml  (defined the files)[0]
+       - index.xml  (defines the files)[0]
        - NavMesh.bin (Recast navigation mesh)
        - Scene.xml (Urho3D's scene file)
        - HeightField.terrain (Heightfield file)
@@ -151,7 +151,7 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
      main.lua
 ~~~
 
-[0] Scene file format
+[0] Map index.xml file format
 
 ~~~xml
 <?xml version="1.0"?>
