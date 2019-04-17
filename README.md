@@ -7,7 +7,7 @@ Ancient Greece Multiplayer Online RPG.
 
 ## Architecture
 
-~~~
+~~~plain
                                               +--------------------- File System
          +---------------- File Server1...N --+-----+-- Data Server -+
          +-----------------+                  |     |                +---- Database
