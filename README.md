@@ -122,28 +122,44 @@ skip-name-resolve
 
 Doesn't need any special attention. Works with PostreSQL 9 to 11.
 
-### Structure of `data` directory
+### Structure of `Bin/data` directory
 
 ~~~
   data
    - maps
      - (Map)
-       - index.xml
-       - NavMesh.bin
-       - Scene.xml
-       - HeightField.terrain
+       - index.xml  (defined the files)[0]
+       - NavMesh.bin (Recast navigation mesh)
+       - Scene.xml (Urho3D's scene file)
+       - HeightField.terrain (Heightfield file)
    - models
    - scripts
      - actors
-       - logic
+       - aoe (area of effect)
+       - logic (portals etc)
        - npcs
-     - ai
+     - ai (behaviours)
      - effects
        - conditions
        - ...
      - games
-     - items (armor, mods etc.)
+     - items (armor, weapons etc.)
+     - includes (shared includes)
      - skills
+     - quests
+     - skills
+     main.lua
+~~~
+
+[0] Scene file format
+
+~~~
+<?xml version="1.0"?>
+<index>
+  <file type="Scene" src="Athena.xml" />
+  <file type="NavMesh" src="all_tiles_navmesh.bin" />
+  <file type="Terrain" src="athena.hm" />
+</index>
 ~~~
 
 ## Run Client
