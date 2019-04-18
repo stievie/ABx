@@ -17,7 +17,7 @@ private:
     std::vector<float> probs_;
     std::vector<size_t> alias_;
     std::vector<T> values_;
-    inline size_t GetIndex(float rand1, float rand2) const
+    size_t GetIndex(float rand1, float rand2) const
     {
         const size_t count = values_.size();
         size_t k = static_cast<size_t>(static_cast<float>(count) * rand1);
