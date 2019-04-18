@@ -104,6 +104,7 @@ public:
     }
     std::vector<Actor*> GetEnemiesInRange(Ranges range);
     size_t GetEnemyCountInRange(Ranges range);
+    /// Ally is always without self
     template<typename Func>
     void VisitAlliesInRange(Ranges range, Func&& func)
     {

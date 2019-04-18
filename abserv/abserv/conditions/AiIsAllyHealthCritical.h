@@ -25,11 +25,11 @@ public:
         const AiCharacter& chr = entity->getCharacterCast<AiCharacter>();
         auto& npc = chr.GetNpc();
         bool result = false;
-        npc.VisitAlliesInRange(Game::Ranges::Aggro, [&result, &npc](const Game::Actor* o)
+        npc.VisitAlliesInRange(Game::Ranges::Aggro, [&result](const Game::Actor* o)
         {
             if (result)
                 return;
-            if (!o->IsDead() && o->GetId() != npc.GetId() && o->resourceComp_.GetHealth() < CRITICAL_HP_THRESHOLD)
+            if (!o->IsDead() && o->resourceComp_.GetHealth() < CRITICAL_HP_THRESHOLD)
                 result = true;
         });
 

@@ -10,7 +10,7 @@ namespace Components {
 
 void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory categroy)
 {
-    auto check = [categroy](const std::shared_ptr<Effect>& current)
+    const auto check = [categroy](const std::shared_ptr<Effect>& current)
     {
         return current->data_.category == categroy;
     };

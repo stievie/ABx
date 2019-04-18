@@ -35,18 +35,21 @@ AI_TASK(HealSelf)
     if (skills.size() == 0)
         return ai::FAILED;
 
-    // Find skill that can be used
-    auto skill = npc.skills_->GetSkill(skills[0]);
-    if (!skill)
-        return ai::FAILED;
-    if (npc.IsDead() || !npc.resourceComp_.HaveEnoughResources(skill.get()))
-        return ai::FAILED;
+    for (uint32_t i : skills)
+    {
+        // Find skill that can be used
+        auto skill = npc.skills_->GetSkill(i);
+        if (!skill)
+            continue;
+        if (npc.IsDead() || !npc.resourceComp_.HaveEnoughResources(skill.get()))
+            continue;
 
-    npc.SetSelectedObjectById(npc.GetId());
-    npc.UseSkill(skills[0]);
-    chr.currentSkill_ = skill;
-    chr.currentTask_ = this;
-    return ai::RUNNING;
+        npc.SetSelectedObjectById(npc.GetId());
+        npc.UseSkill(i);
+        chr.currentSkill_ = skill;
+        chr.currentTask_ = this;
+        return ai::RUNNING;
+    }
 
     // Nothing found
     return ai::TreeNodeStatus::FAILED;

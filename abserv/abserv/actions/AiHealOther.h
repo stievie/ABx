@@ -38,9 +38,9 @@ AI_TASK(HealOther)
         return ai::FAILED;
 
     // Lambda to use one of the given skills on the target
-    static const auto useSkill = [&npc, &chr](const std::vector<uint32_t>& skills, uint32_t targetId) -> bool
+    const auto useSkill = [&npc, &chr](const std::vector<uint32_t>& skills, uint32_t targetId) -> bool
     {
-        for (auto i : skills)
+        for (uint32_t i : skills)
         {
             // Try all skills until success
             auto skill = npc.skills_->GetSkill(i);
