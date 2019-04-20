@@ -96,6 +96,7 @@ void ItemFactory::Initialize()
 }
 
 std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
+    const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level /* = LEVEL_CAP */,
     const std::string& accUuid /* = Utils::Uuid::EMPTY_UUID */,
     const std::string& playerUuid /* = Utils::Uuid::EMPTY_UUID */)
@@ -120,6 +121,8 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.itemUuid = gameItem.uuid;
     ci.accountUuid = accUuid;
     ci.playerUuid = playerUuid;
+    ci.instanceUuid = instanceUuid;
+    ci.mapUuid = mapUuid;
     ci.creation = Utils::Tick();
     if (gameItem.type != AB::Entities::ItemTypeMoney)
     {
@@ -235,7 +238,8 @@ std::unique_ptr<Item> ItemFactory::CreateModifier(AB::Entities::ItemType modType
     if (selIt == result.end())
         return std::unique_ptr<Item>();
 
-    return CreateItem((*(*selIt)).first, level, Utils::Uuid::EMPTY_UUID, playerUuid);
+    return CreateItem((*(*selIt)).first, Utils::Uuid::EMPTY_UUID, Utils::Uuid::EMPTY_UUID, 
+        level, Utils::Uuid::EMPTY_UUID, playerUuid);
 }
 
 void ItemFactory::IdentiyItem(Item* item, Player* player)
@@ -282,7 +286,10 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     AB::Entities::ConcreteItem ci;
     auto client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
-    client->Delete(ci);
+    if (!client->Delete(ci))
+    {
+        LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
+    }
 }
 
 void ItemFactory::DeleteItem(Item* item)
@@ -352,7 +359,8 @@ void ItemFactory::DeleteMap(const std::string& uuid)
         dropChances_.erase(it);
 }
 
-std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& mapUuid, uint32_t level, const std::string& playerUuid)
+std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid, 
+    uint32_t level, const std::string& playerUuid)
 {
     auto it = dropChances_.find(mapUuid);
     if (it == dropChances_.end())
@@ -370,7 +378,7 @@ std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& mapUuid, ui
         // There is a chance that nothing drops
         return std::unique_ptr<Item>();
 
-    return CreateItem(itemUuid, level, Utils::Uuid::EMPTY_UUID, playerUuid);
+    return CreateItem(itemUuid, instanceUuid, mapUuid, level, Utils::Uuid::EMPTY_UUID, playerUuid);
 }
 
 }

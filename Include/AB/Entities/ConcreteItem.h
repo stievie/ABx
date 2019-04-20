@@ -40,6 +40,8 @@ struct ConcreteItem : Entity
         s.value4b(count);
         s.value8b(creation);
         s.value2b(value);
+        s.text1b(instanceUuid, Limits::MAX_UUID);
+        s.text1b(mapUuid, Limits::MAX_UUID);
     }
 
     std::string playerUuid = EMPTY_GUID;
@@ -54,6 +56,8 @@ struct ConcreteItem : Entity
     uint32_t count;
     int64_t creation = 0;
     uint16_t value = 0;
+    std::string instanceUuid = EMPTY_GUID;
+    std::string mapUuid = EMPTY_GUID;
 };
 
 }

@@ -50,7 +50,7 @@ AI_TASK(HealOther)
                 continue;
 
             npc.SetSelectedObjectById(targetId);
-            npc.UseSkill(0);
+            npc.UseSkill(i);
             chr.currentSkill_ = skill;
             return true;
         }

@@ -445,6 +445,7 @@ void StorageProvider::CleanTask()
     CleanCache();
     DB::DBGuildMembers::DeleteExpired(this);
     DB::DBReservedName::DeleteExpired(this);
+    DB::DBConcreteItem::Clean(this);
     if (running_)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
@@ -478,7 +479,6 @@ void StorageProvider::FlushCache()
             bRes = res.get();
         }
         if (!bRes)
-//        if (!FlushData(key))
         {
             LOG_WARNING << "Error flushing " << key.format() << std::endl;
             // Error, break for now and try  the next time.

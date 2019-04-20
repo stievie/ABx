@@ -393,7 +393,7 @@ std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
         return std::shared_ptr<ItemDrop>();
 
     Player* target = (*p).second;
-    auto item = factory->CreateDropItem(data_.uuid, data_.defaultLevel, target->data_.uuid);
+    auto item = factory->CreateDropItem(instanceData_.uuid, data_.uuid, data_.defaultLevel, target->data_.uuid);
     if (!item)
         return std::shared_ptr<ItemDrop>();
 

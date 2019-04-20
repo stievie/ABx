@@ -11,7 +11,6 @@ class ItemDrop : public GameObject
 {
 private:
     std::unique_ptr<Item> item_;
-    std::string itemUuid_;
     bool pickedUp_;
     /// Dropper
     std::weak_ptr<Actor> source_;

@@ -31,6 +31,7 @@ public:
     void Initialize();
     /// Creates a new concrete item of the item and saves it to DB
     std::unique_ptr<Item> CreateItem(const std::string& itemUuid,
+        const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level = LEVEL_CAP,
         const std::string& accUuid = Utils::Uuid::EMPTY_UUID,
         const std::string& playerUuid = Utils::Uuid::EMPTY_UUID);
@@ -42,7 +43,7 @@ public:
     void LoadDropChances(const std::string mapUuid);
     /// Delete drop chances for this map
     void DeleteMap(const std::string& uuid);
-    std::unique_ptr<Item>CreateDropItem(const std::string& mapUuid,
+    std::unique_ptr<Item>CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level, const std::string& playerUuid);
 };
 
