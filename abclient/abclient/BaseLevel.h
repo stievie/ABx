@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "PostProcessController.h"
+#include "Errors.h"
 
 class FwClient;
 
@@ -40,7 +41,7 @@ protected:
     virtual void PostUpdate(StringHash, VariantMap&) {}
     virtual void PostRenderUpdate(StringHash eventType, VariantMap& eventData);
 
-    virtual void OnNetworkError(const std::error_code& err);
+    virtual void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err);
     virtual void OnProtocolError(uint8_t err);
 
     Ray GetActiveViewportScreenRay(const IntVector2& pos) const

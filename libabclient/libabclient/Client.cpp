@@ -334,10 +334,10 @@ void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& o
         receiver_->OnSpawnObject(updateTick, id, objectSpawn, data, existing);
 }
 
-void Client::OnNetworkError(const std::error_code& err)
+void Client::OnNetworkError(ConnectionError connectionError, const std::error_code& err)
 {
     if (state_ != ClientState::Disconnected && receiver_)
-        receiver_->OnNetworkError(err);
+        receiver_->OnNetworkError(connectionError, err);
 }
 
 void Client::OnProtocolError(uint8_t err)
@@ -371,7 +371,7 @@ std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
     if (!protoLogin_)
     {
         protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_);
-        protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1));
+        protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1, std::placeholders::_2));
         protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     }
     return protoLogin_;

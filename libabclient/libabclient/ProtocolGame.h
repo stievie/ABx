@@ -32,7 +32,7 @@ private:
 protected:
     void OnConnect() override;
     void OnReceive(const std::shared_ptr<InputMessage>& message) override;
-    void OnError(const asio::error_code& err) override;
+    void OnError(ConnectionError connectionError, const asio::error_code& err) override;
 
     void ParseMessage(const std::shared_ptr<InputMessage>& message);
     void ParseKeyExchange(const std::shared_ptr<InputMessage>& message);

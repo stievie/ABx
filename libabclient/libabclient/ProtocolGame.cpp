@@ -64,11 +64,11 @@ void ProtocolGame::OnReceive(const std::shared_ptr<InputMessage>& message)
     }
 }
 
-void ProtocolGame::OnError(const asio::error_code& err)
+void ProtocolGame::OnError(ConnectionError connectionError, const asio::error_code& err)
 {
-    Protocol::OnError(err);
+    Protocol::OnError(connectionError, err);
     if (receiver_)
-        receiver_->OnNetworkError(err);
+        receiver_->OnNetworkError(connectionError, err);
 }
 
 void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)

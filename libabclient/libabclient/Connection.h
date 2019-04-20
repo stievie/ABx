@@ -1,13 +1,14 @@
 #pragma once
 
 #include "TimeUtils.h"
+#include "Errors.h"
 
 namespace Client {
 
 class Connection : public std::enable_shared_from_this<Connection>
 {
 private:
-    typedef std::function<void(const asio::error_code&)> ErrorCallback;
+    typedef std::function<void(ConnectionError, const asio::error_code&)> ErrorCallback;
     typedef std::function<void(uint8_t*, uint16_t)> RecvCallback;
     enum {
         ReadTimeout = 30,
@@ -23,7 +24,7 @@ private:
     void OnWrite(const asio::error_code& error, size_t writeSize, std::shared_ptr<asio::streambuf> outputStream);
     void OnCanWrite(const asio::error_code& error);
     void OnRecv(const asio::error_code& error, size_t recvSize);
-    void HandleError(const asio::error_code& error);
+    void HandleError(ConnectionError connectionError, const asio::error_code& error);
     void InternalConnect(asio::ip::basic_resolver<asio::ip::tcp>::iterator endpointIterator);
     void InternalWrite();
 protected:

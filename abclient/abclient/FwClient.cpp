@@ -889,13 +889,13 @@ void FwClient::OnChangeInstance(int64_t updateTick, const std::string& serverId,
     }
 }
 
-void FwClient::OnNetworkError(const std::error_code& err)
+void FwClient::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
     loggedIn_ = false;
     LevelManager* lm = context_->GetSubsystem<LevelManager>();
     BaseLevel* cl = lm->GetCurrentLevel<BaseLevel>();
     if (cl)
-        cl->OnNetworkError(err);
+        cl->OnNetworkError(connectionError, err);
 
     if (lm->GetLevelName() != "LoginLevel")
     {

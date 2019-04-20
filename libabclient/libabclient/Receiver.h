@@ -11,6 +11,7 @@
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
 #include <AB/Entities/Service.h>
+#include "Errors.h"
 
 namespace Client {
 
@@ -29,7 +30,7 @@ struct ObjectSpawn
 class Receiver
 {
 public:
-    virtual void OnNetworkError(const std::error_code& err) = 0;
+    virtual void OnNetworkError(ConnectionError connectionError, const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;
     virtual void OnPong(int lastPing) = 0;
     virtual void OnServerJoined(const AB::Entities::Service& service) = 0;

@@ -12,7 +12,7 @@ namespace Client {
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 public:
-    typedef std::function<void(const std::error_code&)> ErrorCallback;
+    typedef std::function<void(ConnectionError connectionError, const std::error_code&)> ErrorCallback;
     typedef std::function<void(uint8_t)> ProtocolErrorCallback;
 private:
     std::shared_ptr<InputMessage> inputMessage_;
@@ -31,7 +31,7 @@ protected:
     DH_KEY encKey_;
     ErrorCallback errorCallback_;
     ProtocolErrorCallback protocolErrorCallback_;
-    virtual void OnError(const asio::error_code& err);
+    virtual void OnError(ConnectionError connectionError, const asio::error_code& err);
     virtual void OnConnect() {}
     virtual void OnReceive(const std::shared_ptr<InputMessage>& message) {
         AB_UNUSED(message);

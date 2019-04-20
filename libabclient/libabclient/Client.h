@@ -9,6 +9,7 @@
 #include "Structs.h"
 #include <memory>
 #include <AB/DHKeys.hpp>
+#include "Errors.h"
 
 namespace Client {
 
@@ -66,7 +67,7 @@ public:
     uint32_t GetIp() const;
 
     // Receiver
-    void OnNetworkError(const std::error_code& err) override;
+    void OnNetworkError(ConnectionError connectionError, const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
     void OnPong(int lastPing) override;
     void OnServerJoined(const AB::Entities::Service& service) override;

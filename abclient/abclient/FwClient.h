@@ -115,7 +115,7 @@ public:
     void PartyLeave();
 
     /// asio network error
-    void OnNetworkError(const std::error_code& err) override;
+    void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
     void OnProtocolError(uint8_t err) override;
     void OnPong(int) override { }

@@ -19,8 +19,7 @@ Connection::Connection() :
     socket_(gIoService),
     connected_(false),
     connecting_(false)
-{
-}
+{ }
 
 Connection::~Connection()
 {
@@ -74,28 +73,28 @@ void Connection::OnResolve(const asio::error_code& error, asio::ip::tcp::resolve
     if (!error)
         InternalConnect(endpointIterator);
     else
-        HandleError(error);
+        HandleError(ConnectionError::ResolveError, error);
 }
 
 void Connection::OnConnectTimeout(const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
         return;
-    HandleError(error);
+    HandleError(ConnectionError::ConnectTimeout, error);
 }
 
 void Connection::OnReadTimeout(const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
         return;
-    HandleError(error);
+    HandleError(ConnectionError::ReadTimeout, error);
 }
 
 void Connection::OnWriteTimeout(const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
         return;
-    HandleError(error);
+    HandleError(ConnectionError::WriteTimeout, error);
 }
 
 void Connection::OnConnect(const asio::error_code& error)
@@ -117,7 +116,7 @@ void Connection::OnConnect(const asio::error_code& error)
             connectCallback_();
     }
     else
-        HandleError(error);
+        HandleError(ConnectionError::ConnectError, error);
 
     connecting_ = false;
 }
@@ -137,17 +136,17 @@ void Connection::OnWrite(const asio::error_code& error, size_t writeSize,
     outputStreams_.push_back(outputStream);
 
     if (connected_ && error)
-        HandleError(error);
+        HandleError(ConnectionError::WriteError, error);
 }
 
-void Connection::HandleError(const asio::error_code& error)
+void Connection::HandleError(ConnectionError connectionError, const asio::error_code& error)
 {
     if (error == asio::error::operation_aborted)
         return;
 
     error_ = error;
     if (errorCallback_)
-        errorCallback_(error);
+        errorCallback_(connectionError, error);
 
     if (connected_ || connecting_)
         Close();
@@ -265,7 +264,7 @@ void Connection::OnRecv(const asio::error_code& error, size_t recvSize)
             }
         }
         else
-            HandleError(error);
+            HandleError(ConnectionError::ReceiveError, error);
     }
 
     if (!error)

@@ -28,7 +28,7 @@ Protocol::~Protocol()
 void Protocol::Connect(const std::string& host, uint16_t port)
 {
     connection_ = std::make_shared<Connection>();
-    connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(), std::placeholders::_1));
+    connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
     connection_->Connect(host, port, std::bind(&Protocol::OnConnect, shared_from_this()));
 }
 
@@ -145,10 +145,10 @@ void Protocol::XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage)
     xxtea_enc(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
 }
 
-void Protocol::OnError(const asio::error_code& err)
+void Protocol::OnError(ConnectionError connectionError, const asio::error_code& err)
 {
     if (errorCallback_)
-        errorCallback_(err);
+        errorCallback_(connectionError, err);
     Disconnect();
 }
 
