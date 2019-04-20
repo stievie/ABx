@@ -15,7 +15,11 @@ function getRandomStat(maxVal, level, minVal)
 end
 
 -- Range is damage / 2 .. damage
-function getDamageStats(level)
+function getDamageStats(level, maxStats)
+  if (maxStats) then
+    return dropStats["MinDamage"], dropStats["MaxDamage"]
+  end
+
   local maxRes = getRandomStat(dropStats["MaxDamage"], level, 3)
   if (maxRes == dropStats["MaxDamage"]) then
     -- Max -> return max min damage
@@ -31,14 +35,23 @@ function getDamageStats(level)
   return minRes, maxRes
 end
 
-function getEnergyStats(level)
+function getEnergyStats(level, maxStats)
+  if (maxStats) then
+    return dropStats["Energy"]
+  end
   return getRandomStat(dropStats["Energy"], level, 1)
 end
 
-function getArmorStats(level)
+function getArmorStats(level, maxStats)
+  if (maxStats) then
+    return dropStats["Armor"]
+  end
   return getRandomStat(dropStats["Armor"], level, 6)
 end
 
-function getHealthStats(level)
+function getHealthStats(level, maxStats)
+  if (maxStats) then
+    return dropStats["Health"]
+  end
   return getRandomStat(dropStats["Health"], level)
 end

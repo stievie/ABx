@@ -75,53 +75,53 @@ bool Item::LoadScript(const std::string& fileName)
     return true;
 }
 
-void Item::CreateInsigniaStats(uint32_t level)
+void Item::CreateInsigniaStats(uint32_t level, bool maxStats)
 {
     if (ScriptManager::IsFunction(luaState_, "getHealthStats"))
     {
-        int32_t health = luaState_["getHealthStats"](level);
+        int32_t health = luaState_["getHealthStats"](level, maxStats);
         stats_.SetValue(Stat::Health, health);
     }
 }
 
-void Item::CreateWeaponStats(uint32_t level)
+void Item::CreateWeaponStats(uint32_t level, bool maxStats)
 {
     if (ScriptManager::IsFunction(luaState_, "getDamageStats"))
     {
         int32_t minDamage = 0;
         int32_t maxDamage = 0;
-        kaguya::tie(minDamage, maxDamage) = luaState_["getDamageStats"](level);
+        kaguya::tie(minDamage, maxDamage) = luaState_["getDamageStats"](level, maxStats);
         stats_.SetValue(Stat::MinDamage, minDamage);
         stats_.SetValue(Stat::MaxDamage, maxDamage);
     }
 }
 
-void Item::CreateFocusStats(uint32_t level)
+void Item::CreateFocusStats(uint32_t level, bool maxStats)
 {
     if (ScriptManager::IsFunction(luaState_, "getEnergyStats"))
     {
-        int32_t energy = luaState_["getEnergyStats"](level);
+        int32_t energy = luaState_["getEnergyStats"](level, maxStats);
         stats_.SetValue(Stat::Energy, energy);
     }
 }
 
-void Item::CreateShieldStats(uint32_t level)
+void Item::CreateShieldStats(uint32_t level, bool maxStats)
 {
     if (ScriptManager::IsFunction(luaState_, "getArmorStats"))
     {
-        int32_t armor = luaState_["getArmorStats"](level);
+        int32_t armor = luaState_["getArmorStats"](level, maxStats);
         stats_.SetValue(Stat::Armor, armor);
     }
 }
 
-bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level)
+bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats)
 {
     concreteItem_ = ci;
 
     switch (data_.type)
     {
     case AB::Entities::ItemTypeModifierInsignia:
-        CreateInsigniaStats(level);
+        CreateInsigniaStats(level, maxStats);
         break;
     case AB::Entities::ItemTypeAxe:
     case AB::Entities::ItemTypeSword:
@@ -136,13 +136,13 @@ bool Item::GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level)
     case AB::Entities::ItemTypeStaff:
     case AB::Entities::ItemTypeDaggers:
     case AB::Entities::ItemTypeScyte:
-        CreateWeaponStats(level);
+        CreateWeaponStats(level, maxStats);
         break;
     case AB::Entities::ItemTypeFocus:
-        CreateFocusStats(level);
+        CreateFocusStats(level, maxStats);
         break;
     case AB::Entities::ItemTypeShield:
-        CreateShieldStats(level);
+        CreateShieldStats(level, maxStats);
         break;
     default:
         break;

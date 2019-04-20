@@ -19,7 +19,6 @@ function onUpdate(timeElapsed)
 end
 
 function onClicked(creature)
-  self:FollowObject(creature)
 end
 
 -- self was selected by creature
@@ -37,9 +36,4 @@ end
 
 -- creature collides with self
 function onCollide(creature)
-  -- Testing Octree query
---  local objects = self:QueryObjects(1.0)
---  for i, v in ipairs(objects) do
---    print(i, v, v:GetName()) 
---  end
 end

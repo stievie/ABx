@@ -140,6 +140,7 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
+    ScriptManager::CollectGarbage(luaState_);
 }
 
 void Npc::SetGroupId(uint32_t value)

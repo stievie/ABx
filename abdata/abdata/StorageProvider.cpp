@@ -445,7 +445,7 @@ void StorageProvider::CleanTask()
     CleanCache();
     DB::DBGuildMembers::DeleteExpired(this);
     DB::DBReservedName::DeleteExpired(this);
-    DB::DBConcreteItem::Clean(this);
+//    DB::DBConcreteItem::Clean(this);
     if (running_)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
