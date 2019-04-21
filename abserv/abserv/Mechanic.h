@@ -105,8 +105,8 @@ static constexpr float BEHIND_ANGLE = 0.52f;
 static constexpr uint32_t DEFAULT_KNOCKDOWN_TIME = 2000;
 
 // Item value at lvl20
-static constexpr int MIN_ITEM_VALUE = 20;
-static constexpr int MAX_ITEM_VALUE = 300;
+static constexpr unsigned int MIN_ITEM_VALUE = 10;
+static constexpr unsigned int MAX_ITEM_VALUE = 100;
 
 // --- Inventory ---
 static constexpr uint32_t MAX_INVENTOREY_MONEY = 1000 * 1000;  // 1M
@@ -118,7 +118,7 @@ static constexpr uint32_t MAX_INVENTORY_STACK_SIZE = 250;
 namespace AI {
 
 /// The AI will consider healing if HP is bellow this health/max health ratio
-static constexpr float LOW_HP_THREASHOLD = 0.8f;
+static constexpr float LOW_HP_THRESHOLD = 0.8f;
 static constexpr int CRITICAL_HP_THRESHOLD = 50;
 
 }

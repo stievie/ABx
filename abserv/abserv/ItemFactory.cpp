@@ -95,6 +95,31 @@ void ItemFactory::Initialize()
     }
 }
 
+void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result)
+{
+    auto rng = GetSubsystem<Crypto::Random>();
+    if (item.type != AB::Entities::ItemTypeMoney && item.type != AB::Entities::ItemTypeMaterial)
+    {
+        result.count = 1;
+        if (item.value == 0)
+            result.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
+                static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
+        else
+            result.value = item.value;
+    }
+    else
+    {
+        // Money or Material
+        result.count = Math::Clamp(rng->Get(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level, 5u, 1000u);
+        if (item.type == AB::Entities::ItemTypeMoney)
+            // Money
+            result.value = 1;
+        else
+            // The value in the items table is used for materials
+            result.value = item.value;
+    }
+}
+
 std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level /* = LEVEL_CAP */,
@@ -102,7 +127,6 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& accUuid /* = Utils::Uuid::EMPTY_UUID */,
     const std::string& playerUuid /* = Utils::Uuid::EMPTY_UUID */)
 {
-    auto rng = GetSubsystem<Crypto::Random>();
     auto client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item gameItem;
     gameItem.uuid = itemUuid;
@@ -125,22 +149,8 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.instanceUuid = instanceUuid;
     ci.mapUuid = mapUuid;
     ci.creation = Utils::Tick();
-    if (gameItem.type != AB::Entities::ItemTypeMoney)
-    {
-        ci.count = 1;
-        if (gameItem.value == 0)
-            ci.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
-                static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
-        else
-            ci.value = gameItem.value;
-    }
-    else
-    {
-        // Money
-        ci.count = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
-            static_cast<uint16_t>(50), static_cast<uint16_t>(1000));
-        ci.value = 1;
-    }
+    CalculateValue(gameItem, level, ci);
+
     if (!client->Create(ci))
     {
         LOG_ERROR << "Unable top create concrete item" << std::endl;

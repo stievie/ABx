@@ -51,6 +51,10 @@ enum ItemType : uint16_t
     ItemTypeShield,
     ItemTypeWeaponLast = ItemTypeSpear,
 
+    // Other
+    ItemTypeMaterial = 1000,                       // Material, e.g. Iron
+    ItemTypeTropy,                                 // Nothing useful
+
     ItemTypeMoney = 65534
 };
 

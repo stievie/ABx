@@ -23,6 +23,7 @@ private:
     void IdentifyOffHandWeapon(Item* item, Player* player);
     std::unique_ptr<Item> CreateModifier(AB::Entities::ItemType modType, Item* forItem,
         uint32_t level, bool maxStats, const std::string& playerUuid);
+    void CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result);
 public:
     ItemFactory();
     ~ItemFactory() = default;

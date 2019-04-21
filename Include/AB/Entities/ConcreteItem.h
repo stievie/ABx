@@ -10,9 +10,10 @@ enum StoragePlace : uint8_t
 {
     StoragePlaceNone = 0,
     StoragePlaceScene = 1,      // On ground
-    StoragePlaceInventory,
+    StoragePlaceInventory,      // In players inventory
     StoragePlaceChest,          // Account chest
-    StoragePlaceEquipped
+    StoragePlaceEquipped,       // A player has equipped this item
+    StoragePlaceMerchant,       // Merchant has this item and may be bought by a player
 };
 
 static constexpr auto KEY_CONCRETE_ITEMS = "concrete_items";

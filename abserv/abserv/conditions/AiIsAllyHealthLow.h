@@ -29,7 +29,7 @@ public:
         {
             if (result)
                 return;
-            if (!o->IsDead() && o->resourceComp_.GetHealthRatio() < LOW_HP_THREASHOLD)
+            if (!o->IsDead() && o->resourceComp_.GetHealthRatio() < LOW_HP_THRESHOLD)
                 result = true;
         });
 

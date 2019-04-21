@@ -13,9 +13,8 @@ void SelectLowHealth::filter(const ai::AIPtr& entity)
 
     chr.VisitAlliesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
-        if (o->resourceComp_.GetHealthRatio() < 0.9f)
+        if (o->resourceComp_.GetHealthRatio() < LOW_HP_THRESHOLD)
         {
-            // Select all with less than 90% HP
             entities.push_back(o->id_);
             sorting[o->id_] = std::make_pair<float, float>(o->resourceComp_.GetHealthRatio(), o->GetDistance(&chr));
         }
