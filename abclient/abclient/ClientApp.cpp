@@ -36,6 +36,7 @@
 #include "CreditsWindow.h"
 #include "PartyItem.h"
 #include "HealthBar.h"
+#include "InventoryWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -155,6 +156,7 @@ ClientApp::ClientApp(Context* context) :
     GameMessagesWindow::RegisterObject(context);
     EffectsWindow::RegisterObject(context);
     CreditsWindow::RegisterObject(context);
+    InventoryWindow::RegisterObject(context);
 
 #ifdef DEBUG_HUD
     SubscribeToEvent(AbEvents::E_SC_TOGGLEDEBUGHUD, URHO3D_HANDLER(ClientApp, HandleToggleDebugHUD));

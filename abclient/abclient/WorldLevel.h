@@ -111,6 +111,7 @@ private:
     void HandleLogout(StringHash eventType, VariantMap& eventData);
     void HandleSelectChar(StringHash eventType, VariantMap& eventData);
     void HandleTogglePartyWindow(StringHash eventType, VariantMap& eventData);
+    void HandleToggleInventoryWindow(StringHash eventType, VariantMap& eventData);
     void HandleToggleMissionMapWindow(StringHash eventType, VariantMap& eventData);
     void HandleTargetWindowUnselectObject(StringHash eventType, VariantMap& eventData);
     void HandleToggleMap(StringHash eventType, VariantMap& eventData);

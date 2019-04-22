@@ -12,6 +12,7 @@ static const StringHash WINDOW_SKILLBAR("SkillBarWindow");
 static const StringHash WINDOW_FRIENDLIST("FriendListWindow");
 static const StringHash WINDOW_GAMEMESSAGES("GameMessagesWindow");
 static const StringHash WINDOW_EFFECTS("EffectsWindow");
+static const StringHash WINDOW_INVENTORY("InventoryWindow");
 
 class WindowManager : public Object
 {

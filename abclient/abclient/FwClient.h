@@ -33,6 +33,7 @@ private:
     std::map<std::string, AB::Entities::Game> games_;
     std::map<std::string, AB::Entities::Service> services_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
+    std::vector<Client::InventoryItem> inventory_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -94,6 +95,7 @@ public:
     void ReadMail(const std::string& uuid);
     void DeleteMail(const std::string& uuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
+    void UpdateInventory();
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
@@ -131,6 +133,7 @@ public:
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
+    void OnGetInventory(int64_t updateTick, const std::vector<Client::InventoryItem>& items) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
         AB::Entities::GameType type, uint8_t partySize) override;
@@ -232,6 +235,10 @@ public:
     const AB::Entities::Mail& GetCurrentMail() const
     {
         return currentMail_;
+    }
+    const std::vector<Client::InventoryItem>& GetInventoryItems() const
+    {
+        return inventory_;
     }
     int GetAvgPing() const
     {

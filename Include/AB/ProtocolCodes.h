@@ -225,6 +225,8 @@ enum GameProtocolCodes : uint8_t
     PartyInfoMembers,
     PartyResigned,
     PartyDefeated,
+    // Inventory
+    InventoryContent,
 };
 
 enum ObjectCallType : uint8_t
@@ -334,6 +336,9 @@ enum GamePacketTypes : uint8_t
     PacketTypePartyAcceptInvite,
     PacketTypePartyRejectInvite,
     PacektTypeGetPartyMembers,
+
+    // Inventory
+    PacketTypeGetInventory,
 };
 
 enum CommandTypes : uint8_t

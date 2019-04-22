@@ -11,6 +11,8 @@
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
 #include <AB/Entities/Service.h>
+#include <AB/Entities/Item.h>
+#include <AB/Entities/ConcreteItem.h>
 #include "Errors.h"
 
 namespace Client {
@@ -25,6 +27,16 @@ struct ObjectSpawn
     float speed;
     uint32_t groupId;
     uint8_t groupPos;
+};
+
+struct InventoryItem
+{
+    AB::Entities::ItemType type;
+    uint32_t index;
+    AB::Entities::StoragePlace place;
+    uint16_t pos;
+    uint32_t count;
+    uint16_t value;
 };
 
 class Receiver
@@ -45,6 +57,7 @@ public:
 
     virtual void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) = 0;
     virtual void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) = 0;
+    virtual void OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items) = 0;
     virtual void OnChangeInstance(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid) = 0;
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,

@@ -163,6 +163,9 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::DeleteMail, mailUuid);
         break;
     }
+    case AB::GameProtocol::PacketTypeGetInventory:
+        AddPlayerTask(&Game::Player::GetInventory);
+        break;
     case AB::GameProtocol::PacketTypePartyInvitePlayer:
     {
         uint32_t playerId = message.Get<uint32_t>();

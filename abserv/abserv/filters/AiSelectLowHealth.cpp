@@ -23,7 +23,7 @@ void SelectLowHealth::filter(const ai::AIPtr& entity)
     {
         const std::pair<float, float>& p1 = sorting[i];
         const std::pair<float, float>& p2 = sorting[j];
-        if (fabs(p1.first - p2.first) < 0.05)
+        if (fabs(p1.first - p2.first) < 0.05f)
             // If same HP (max 5% difference) use shorter distance
             return p1.second < p2.second;
         return p1.first < p2.first;

@@ -14,6 +14,7 @@
 #include "GameMessagesWindow.h"
 #include "AudioManager.h"
 #include "CreditsWindow.h"
+#include "InventoryWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -68,6 +69,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleNewMail));
     SubscribeToEvent(AbEvents::E_SC_REPLYMAIL, URHO3D_HANDLER(WorldLevel, HandleReplyMail));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleFriendList));
+    SubscribeToEvent(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleInventoryWindow));
     SubscribeToEvent(AbEvents::E_SC_SHOWCREDITS, URHO3D_HANDLER(WorldLevel, HandleShowCredits));
     SubscribeToEvent(E_MOUSEBUTTONDOWN, URHO3D_HANDLER(WorldLevel, HandleMouseDown));
     SubscribeToEvent(E_MOUSEBUTTONUP, URHO3D_HANDLER(WorldLevel, HandleMouseUp));
@@ -708,6 +710,15 @@ void WorldLevel::HandleTogglePartyWindow(StringHash, VariantMap&)
 {
     if (partyWindow_)
         partyWindow_->SetVisible(!partyWindow_->IsVisible());
+}
+
+void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
+{
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    InventoryWindow* wnd = dynamic_cast<InventoryWindow*>(wm->GetWindow(WINDOW_INVENTORY, true).Get());
+    wnd->SetVisible(!wnd->IsVisible());
+    if (wnd->IsVisible())
+        wnd->GetInventory();
 }
 
 void WorldLevel::HandleToggleMissionMapWindow(StringHash, VariantMap&)

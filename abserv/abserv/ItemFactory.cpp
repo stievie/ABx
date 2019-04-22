@@ -97,12 +97,15 @@ void ItemFactory::Initialize()
 
 void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result)
 {
+    assert(level <= LEVEL_CAP);
+    const uint32_t l = (LEVEL_CAP + 1) - level;
+
     auto rng = GetSubsystem<Crypto::Random>();
     if (item.type != AB::Entities::ItemTypeMoney && item.type != AB::Entities::ItemTypeMaterial)
     {
         result.count = 1;
         if (item.value == 0)
-            result.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level),
+            result.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l),
                 static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
         else
             result.value = item.value;
@@ -110,13 +113,15 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
     else
     {
         // Money or Material
-        result.count = Math::Clamp(rng->Get(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / level, 5u, 1000u);
         if (item.type == AB::Entities::ItemTypeMoney)
             // Money
             result.value = 1;
         else
             // The value in the items table is used for materials
-            result.value = item.value;
+            result.value = (item.value != 0) ? item.value : 1u;
+        // Count also depends on the value of the item
+        result.count = Math::Clamp((rng->Get(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l) / result.value, 
+            1u, 1000u);
     }
 }
 

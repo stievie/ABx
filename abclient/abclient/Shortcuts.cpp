@@ -100,6 +100,7 @@ void Shortcuts::Init()
     shortcuts_[AbEvents::E_SC_TOGGLEMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEMAILWINDOW, "Mail", Trigger::Down, "Toggle Mail window");
     shortcuts_[AbEvents::E_SC_TOGGLENEWMAILWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLENEWMAILWINDOW, "New Mail", Trigger::Down, "Show New Mail window");
     shortcuts_[AbEvents::E_SC_TOGGLEOPTIONS] = ShortcutEvent(AbEvents::E_SC_TOGGLEOPTIONS, "Options", Trigger::Down, "Show Options window");
+    shortcuts_[AbEvents::E_SC_TOGGLEINVENTORYWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, "Inventory", Trigger::Down, "Toggle Inventory window");
     // Chat
     shortcuts_[AbEvents::E_SC_TOGGLECHATWINDOW] = ShortcutEvent(AbEvents::E_SC_TOGGLECHATWINDOW, "Chat", Trigger::Down, "Toggle Chat window");
     shortcuts_[AbEvents::E_SC_CHATGENERAL] = ShortcutEvent(AbEvents::E_SC_CHATGENERAL, "General", Trigger::Up, "General chat");
@@ -138,6 +139,7 @@ void Shortcuts::AddDefault()
     Add(AbEvents::E_SC_TOGGLEMAP, { KEY_M });
     Add(AbEvents::E_SC_TOGGLEPARTYWINDOW, { KEY_P });
     Add(AbEvents::E_SC_TOGGLEFRIENDLISTWINDOW, { KEY_N });
+    Add(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, { KEY_I });
     Add(AbEvents::E_SC_TAKESCREENSHOT, { KEY_PRINTSCREEN });
 
     Add(AbEvents::E_SC_TOGGLEOPTIONS, { KEY_F11 });

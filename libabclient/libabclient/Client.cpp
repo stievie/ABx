@@ -125,6 +125,12 @@ void Client::OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail)
         receiver_->OnGetMail(updateTick, mail);
 }
 
+void Client::OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items)
+{
+    if (receiver_)
+        receiver_->OnGetInventory(updateTick, items);
+}
+
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
     AB::Entities::GameType type, uint8_t partySize)
@@ -580,6 +586,12 @@ void Client::GetMail(const std::string& mailUuid)
 {
     if (state_ == ClientState::World)
         protoGame_->GetMail(mailUuid);
+}
+
+void Client::GetInventory()
+{
+    if (state_ == ClientState::World)
+        protoGame_->GetInventory();
 }
 
 void Client::DeleteMail(const std::string& mailUuid)

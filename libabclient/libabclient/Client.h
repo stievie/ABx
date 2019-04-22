@@ -82,6 +82,7 @@ public:
 
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
+    void OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
         AB::Entities::GameType type, uint8_t partySize) override;
@@ -164,6 +165,7 @@ public:
     void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
+    void GetInventory();
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void Move(uint8_t direction);

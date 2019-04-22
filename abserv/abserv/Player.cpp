@@ -121,6 +121,24 @@ void Player::GetMailHeaders()
     WriteToOutput(msg);
 }
 
+void Player::GetInventory()
+{
+    Net::NetworkMessage msg;
+    msg.AddByte(AB::GameProtocol::InventoryContent);
+    msg.Add<uint16_t>(static_cast<uint16_t>(inventoryComp_->GetCount()));
+    inventoryComp_->VisitInventory([&msg](const Item* current) 
+    {
+        msg.Add<uint16_t>(current->data_.type);
+        msg.Add<uint32_t>(current->data_.index);
+        msg.Add<uint8_t>(static_cast<uint8_t>(current->concreteItem_.storagePlace));
+        msg.Add<uint16_t>(current->concreteItem_.storagePos);
+        msg.Add<uint32_t>(current->concreteItem_.count);
+        msg.Add<uint16_t>(current->concreteItem_.value);
+    });
+
+    WriteToOutput(msg);
+}
+
 void Player::SendMail(const std::string recipient, const std::string subject, const std::string body)
 {
     Net::NetworkMessage nmsg;
@@ -294,6 +312,8 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
         AB::Entities::InventoryItems inventory;
         inventory.uuid = data_.uuid;
         GetSubsystem<IO::DataClient>()->Invalidate(inventory);
+        // TODO: Don't send always the full inv when picking up an item
+        GetInventory();
         return true;
     }
     return false;

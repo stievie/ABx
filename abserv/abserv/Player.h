@@ -105,6 +105,7 @@ public:
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void UpdateMailBox();
     void GetMailHeaders();
+    void GetInventory();
     void SendMail(const std::string recipient, const std::string subject, const std::string body);
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);

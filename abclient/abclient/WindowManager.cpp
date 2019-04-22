@@ -15,6 +15,7 @@
 #include "FriendListWindow.h"
 #include "GameMessagesWindow.h"
 #include "EffectsWindow.h"
+#include "InventoryWindow.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -52,6 +53,13 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
             SharedPtr<NewMailWindow> wnd = SharedPtr<NewMailWindow>(new NewMailWindow(context_));
             opts->LoadWindow(wnd);
             wnd->SetVisible(false);
+            windows_[hash] = wnd;
+        }
+        else if (hash == WINDOW_INVENTORY)
+        {
+            SharedPtr<InventoryWindow> wnd = SharedPtr<InventoryWindow>(new InventoryWindow(context_));
+            wnd->SetVisible(true);
+            opts->LoadWindow(wnd);
             windows_[hash] = wnd;
         }
         else if (hash == WINDOW_PARTY)

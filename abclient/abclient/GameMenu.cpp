@@ -73,6 +73,9 @@ void GameMenu::CreateMenuBar()
     CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEMAP, "Map"),
         scs->GetShortcutName(AbEvents::E_SC_TOGGLEMAP),
         URHO3D_HANDLER(GameMenu, HandleMapUsed));
+    CreateMenuItem(popup, scs->GetCaption(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, "Inventory"),
+        scs->GetShortcutName(AbEvents::E_SC_TOGGLEINVENTORYWINDOW),
+        URHO3D_HANDLER(GameMenu, HandleInventoryWindowUsed));
 
     popup->SetWidth(40);
 }
@@ -194,6 +197,13 @@ void GameMenu::HandlePartyWindowUsed(StringHash, VariantMap&)
     menu_->ShowPopup(false);
     VariantMap& e = GetEventDataMap();
     SendEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW , e);
+}
+
+void GameMenu::HandleInventoryWindowUsed(StringHash, VariantMap&)
+{
+    menu_->ShowPopup(false);
+    VariantMap& e = GetEventDataMap();
+    SendEvent(AbEvents::E_SC_TOGGLEINVENTORYWINDOW, e);
 }
 
 void GameMenu::HandleMapUsed(StringHash, VariantMap&)

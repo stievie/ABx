@@ -43,6 +43,7 @@ protected:
     void ParseChangeInstance(const std::shared_ptr<InputMessage>& message);
     void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);
     void ParseMailComplete(const std::shared_ptr<InputMessage>& message);
+    void ParseInventoryContent(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseGameError(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
@@ -88,6 +89,7 @@ public:
     void Ping();
     void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
+    void GetInventory();
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

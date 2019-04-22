@@ -644,6 +644,12 @@ void FwClient::SendMail(const std::string& recipient, const std::string& subject
         client_.SendMail(recipient, subject, body);
 }
 
+void FwClient::UpdateInventory()
+{
+    if (loggedIn_)
+        client_.GetInventory();
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -807,6 +813,13 @@ void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
     currentMail_ = mail;
     VariantMap& eData = GetEventDataMap();
     SendEvent(AbEvents::E_MAILREAD, eData);
+}
+
+void FwClient::OnGetInventory(int64_t, const std::vector<Client::InventoryItem>& items)
+{
+    inventory_ = items;
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(AbEvents::E_INVENTORY, eData);
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,

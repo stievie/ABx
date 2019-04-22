@@ -110,6 +110,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::MailComplete:
             ParseMailComplete(message);
             break;
+        case AB::GameProtocol::InventoryContent:
+            ParseInventoryContent(message);
+            break;
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
             break;
@@ -631,6 +634,26 @@ void ProtocolGame::ParseMailComplete(const std::shared_ptr<InputMessage>& messag
         receiver_->OnGetMail(updateTick_, mail);
 }
 
+void ProtocolGame::ParseInventoryContent(const std::shared_ptr<InputMessage>& message)
+{
+    uint16_t count = message->Get<uint16_t>();
+    std::vector<InventoryItem> items;
+    items.reserve(count);
+    for (uint16_t i = 0; i < count; i++)
+    {
+        items.push_back({
+            static_cast<AB::Entities::ItemType>(message->Get<uint16_t>()),
+            message->Get<uint32_t>(),
+            static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>()),
+            message->Get<uint16_t>(),
+            message->Get<uint32_t>(),
+            message->Get<uint16_t>()
+        });
+    }
+    if (receiver_)
+        receiver_->OnGetInventory(updateTick_, items);
+}
+
 void ProtocolGame::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
@@ -675,6 +698,13 @@ void ProtocolGame::GetMailHeaders()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMailHeaders);
+    Send(msg);
+}
+
+void ProtocolGame::GetInventory()
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetInventory);
     Send(msg);
 }
 
