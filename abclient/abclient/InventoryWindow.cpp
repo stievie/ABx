@@ -97,7 +97,8 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
             continue;
 
         container->RemoveAllChildren();
-        BorderImage* icon = container->CreateChild<BorderImage>("Icon");
+        // For ToolTips we need a button
+        Button* icon = container->CreateChild<Button>("Icon");
         icon->SetPosition(4, 4);
         icon->SetSize(container->GetSize() - IntVector2(8, 8));
         icon->SetMinSize(icon->GetSize());
@@ -115,6 +116,32 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
             count->SetText(String(item.count));
             count->SetStyleAuto();                  // !!!
             count->SetFontSize(9);
+        }
+
+        {
+            // Tooltip
+            ToolTip* tt = icon->CreateChild<ToolTip>();
+            tt->SetLayoutMode(LM_HORIZONTAL);
+            Window* ttWindow = tt->CreateChild<Window>();
+            ttWindow->SetLayoutMode(LM_VERTICAL);
+            ttWindow->SetLayoutBorder(IntRect(4, 4, 4, 4));
+            ttWindow->SetStyleAuto();
+            Text* ttText1 = ttWindow->CreateChild<Text>();
+            String text = item.count > 1 ? String(item.count) + " " : "";
+            text += i->name_;
+            ttText1->SetText(text);
+            ttText1->SetStyleAuto();
+
+            String text2 = String(item.count * item.value) + " Drachma";
+            Text* ttText2 = ttWindow->CreateChild<Text>();
+            ttText2->SetText(text2);
+            ttText2->SetStyleAuto();
+            ttText2->SetFontSize(9);
+
+            tt->SetPriority(2147483647);
+            tt->SetOpacity(0.7f);
+            tt->SetStyleAuto();
+            tt->SetPosition(IntVector2(0, -(ttWindow->GetHeight() + 10)));
         }
     }
     SetStyleAuto();
