@@ -714,9 +714,17 @@ void WorldLevel::HandleTogglePartyWindow(StringHash, VariantMap&)
 
 void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
 {
+    static bool windowShown = false;
     WindowManager* wm = GetSubsystem<WindowManager>();
     InventoryWindow* wnd = dynamic_cast<InventoryWindow*>(wm->GetWindow(WINDOW_INVENTORY, true).Get());
-    wnd->SetVisible(!wnd->IsVisible());
+    if (windowShown)
+        wnd->SetVisible(!wnd->IsVisible());
+    else
+    {
+        // Initial show
+        wnd->SetVisible(true);
+        windowShown = true;
+    }
     if (wnd->IsVisible())
         wnd->GetInventory();
 }

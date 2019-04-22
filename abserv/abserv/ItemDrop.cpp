@@ -40,7 +40,7 @@ uint32_t ItemDrop::GetItemIndex() const
     return item_ ? item_->data_.index : 0;;
 }
 
-void ItemDrop::OnClicked(Actor* actor)
+void ItemDrop::OnSelected(Actor* actor)
 {
     if (!actor)
         return;
@@ -54,6 +54,7 @@ void ItemDrop::OnClicked(Actor* actor)
         if (actor->AddToInventory(item_))
         {
             pickedUp_ = true;
+            actor->SetSelectedObjectById(0);
             GetGame()->RemoveObject(this);
         }
     }

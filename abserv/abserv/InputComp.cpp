@@ -16,7 +16,15 @@ void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkM
 
     if (source)
     {
-        if (targetId != source->GetSelectedObjectId())
+        if (targetId == 0)
+        {
+            source->selectedObject_.reset();
+            message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+            message.Add<uint32_t>(source->id_);
+            // Clear Target
+            message.Add<uint32_t>(0);
+        }
+        else if (targetId != source->GetSelectedObjectId())
         {
             source->selectedObject_ = owner_.GetGame()->GetObjectById(targetId);
             message.AddByte(AB::GameProtocol::GameObjectSelectTarget);

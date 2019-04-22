@@ -32,7 +32,7 @@ public:
     uint32_t GetItemIndex() const;
     const Item* GetItem() const { return item_ ? item_.get() : nullptr; }
 
-    void OnClicked(Actor* actor) override;
+    void OnSelected(Actor* actor) override;
     void SetSource(std::shared_ptr<Actor> source);
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;

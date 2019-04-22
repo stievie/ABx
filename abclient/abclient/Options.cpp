@@ -761,7 +761,10 @@ void Options::LoadWindow(UIElement* window)
     XMLElement root = xml->GetRoot();
     if (!root)
         return;
-    XMLElement elem = root.GetChild(window->GetName());
+    XMLElement winNode = root.GetChild("windows");
+    if (!winNode)
+        return;
+    XMLElement elem = winNode.GetChild(window->GetName());
     if (!elem)
         return;
 
@@ -780,8 +783,9 @@ void Options::SaveWindow(UIElement* window)
         return;
 
     XMLElement root = xml->GetRoot();
-    root.RemoveChild(window->GetName());
-    XMLElement param = root.CreateChild(window->GetName());
+    XMLElement winNode = root.HasChild("windows") ? root.GetChild("windows") : root.CreateChild("windows");
+    winNode.RemoveChild(window->GetName());
+    XMLElement param = winNode.CreateChild(window->GetName());
     param.SetIntVector2("position", window->GetPosition());
     param.SetIntVector2("size", window->GetSize());
     param.SetBool("visible", window->IsVisible());
