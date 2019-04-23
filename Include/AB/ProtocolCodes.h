@@ -226,7 +226,9 @@ enum GameProtocolCodes : uint8_t
     PartyResigned,
     PartyDefeated,
     // Inventory
-    InventoryContent,
+    InventoryContent,             // All inventory
+    InventoryItemAdded,
+    InventoryItemRemoved,
 };
 
 enum ObjectCallType : uint8_t
@@ -339,6 +341,7 @@ enum GamePacketTypes : uint8_t
 
     // Inventory
     PacketTypeGetInventory,
+    PacketTypeInventoryDestroyItem,
 };
 
 enum CommandTypes : uint8_t

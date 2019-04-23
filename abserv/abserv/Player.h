@@ -106,6 +106,7 @@ public:
     void UpdateMailBox();
     void GetMailHeaders();
     void GetInventory();
+    void DestroyInventoryItem(uint16_t pos);
     void SendMail(const std::string recipient, const std::string subject, const std::string body);
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);

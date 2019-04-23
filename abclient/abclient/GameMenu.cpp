@@ -83,8 +83,6 @@ void GameMenu::CreateMenuBar()
 Menu* GameMenu::CreateMenu(UIElement* parent, const String& title, const String& shortcut)
 {
     Menu* result = CreateMenuItem(parent, title, shortcut, nullptr);
-//    auto menuText = result->GetChildren()[0];
-//    result->SetMaxWidth(menuText->GetWidth() + 20);
     result->SetMinWidth(parent->GetWidth());
     CreatePopup(result);
 

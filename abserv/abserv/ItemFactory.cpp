@@ -158,7 +158,7 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
 
     if (!client->Create(ci))
     {
-        LOG_ERROR << "Unable top create concrete item" << std::endl;
+        LOG_ERROR << "Unable to create concrete item" << std::endl;
         return std::unique_ptr<Item>();
     }
     // Create item stats for this drop

@@ -17,10 +17,10 @@ class InventoryComp
 private:
     Actor& owner_;
     std::map<EquipPos, std::unique_ptr<Item>> equipment_;
+    /// All inventory. Index 0 is the money
     std::vector<std::unique_ptr<Item>> inventory_;
-    std::unique_ptr<Item> moneyItem_;
     size_t inventorySize_;
-    bool AddInventory(std::unique_ptr<Item>& item);
+    Item* AddInventory(std::unique_ptr<Item>& item);
     Item* FindItem(const std::string& uuid);
     /// Insert in first free slot
     uint16_t InsertItem(std::unique_ptr<Item>& item);
@@ -29,7 +29,10 @@ public:
     explicit InventoryComp(Actor& owner) :
         owner_(owner),
         inventorySize_(AB::Entities::DEFAULT_INVENTORY_SIZE)
-    { }
+    { 
+        // Money
+        inventory_.resize(1);
+    }
     // non-copyable
     InventoryComp(const InventoryComp&) = delete;
     InventoryComp& operator=(const InventoryComp&) = delete;
@@ -41,9 +44,9 @@ public:
     Item* GetEquipment(EquipPos pos) const;
     void RemoveEquipment(EquipPos pos);
 
-    bool SetInventory(std::unique_ptr<Item>& item);
-    void RemoveInventory(uint16_t pos);
+    Item* SetInventory(std::unique_ptr<Item>& item);
     bool DestroyItem(uint16_t pos);
+    Item* GetItem(uint16_t pos);
     bool IsFull() const { return GetCount() >= inventorySize_; }
     void SetSize(uint16_t value)
     {
@@ -83,9 +86,6 @@ public:
     template<typename Func>
     void VisitInventory(Func&& func)
     {
-        if (moneyItem_)
-            func(moneyItem_.get());
-
         for (const auto& o : inventory_)
         {
             if (o)

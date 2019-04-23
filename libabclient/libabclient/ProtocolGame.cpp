@@ -113,6 +113,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::InventoryContent:
             ParseInventoryContent(message);
             break;
+        case AB::GameProtocol::InventoryItemAdded:
+            ParseInventoryItemAded(message);
+            break;
+        case AB::GameProtocol::InventoryItemRemoved:
+            ParseInventoryItemRemoved(message);
+            break;
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
             break;
@@ -654,6 +660,26 @@ void ProtocolGame::ParseInventoryContent(const std::shared_ptr<InputMessage>& me
         receiver_->OnGetInventory(updateTick_, items);
 }
 
+void ProtocolGame::ParseInventoryItemAded(const std::shared_ptr<InputMessage>& message)
+{
+    InventoryItem item;
+    item.type = static_cast<AB::Entities::ItemType>(message->Get<uint16_t>());
+    item.index = message->Get<uint32_t>();
+    item.place = static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>());
+    item.pos = message->Get<uint16_t>();
+    item.count = message->Get<uint32_t>();
+    item.value = message->Get<uint16_t>();
+    if (receiver_)
+        receiver_->OnInventoryItemAdded(updateTick_, item);
+}
+
+void ProtocolGame::ParseInventoryItemRemoved(const std::shared_ptr<InputMessage>& message)
+{
+    uint16_t pos = message->Get<uint16_t>();
+    if (receiver_)
+        receiver_->OnInventoryItemRemoved(updateTick_, pos);
+}
+
 void ProtocolGame::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
@@ -705,6 +731,14 @@ void ProtocolGame::GetInventory()
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetInventory);
+    Send(msg);
+}
+
+void ProtocolGame::InventoryDestroyItem(uint16_t pos)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDestroyItem);
+    msg->Add<uint16_t>(pos);
     Send(msg);
 }
 

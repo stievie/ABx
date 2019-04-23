@@ -14,7 +14,6 @@
 #include "GameMessagesWindow.h"
 #include "AudioManager.h"
 #include "CreditsWindow.h"
-#include "InventoryWindow.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -714,19 +713,9 @@ void WorldLevel::HandleTogglePartyWindow(StringHash, VariantMap&)
 
 void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
 {
-    static bool windowShown = false;
-    WindowManager* wm = GetSubsystem<WindowManager>();
-    InventoryWindow* wnd = dynamic_cast<InventoryWindow*>(wm->GetWindow(WINDOW_INVENTORY, true).Get());
-    if (windowShown)
-        wnd->SetVisible(!wnd->IsVisible());
-    else
-    {
-        // Initial show
-        wnd->SetVisible(true);
-        windowShown = true;
-    }
-    if (wnd->IsVisible())
-        wnd->GetInventory();
+    inventoryWindow_->SetVisible(!inventoryWindow_->IsVisible());
+    if (!inventoryWindow_->IsVisible())
+        inventoryWindow_->GetInventory();
 }
 
 void WorldLevel::HandleToggleMissionMapWindow(StringHash, VariantMap&)
@@ -978,4 +967,7 @@ void WorldLevel::CreateUI()
     missionMap_.DynamicCast(wm->GetWindow(WINDOW_MISSIONMAP));
     uiRoot_->AddChild(missionMap_);
     missionMap_->SetScene(scene_);
+
+    inventoryWindow_.DynamicCast(wm->GetWindow(WINDOW_INVENTORY));
+    uiRoot_->AddChild(inventoryWindow_);
 }

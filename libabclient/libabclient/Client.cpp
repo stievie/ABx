@@ -131,6 +131,18 @@ void Client::OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>
         receiver_->OnGetInventory(updateTick, items);
 }
 
+void Client::OnInventoryItemAdded(int64_t updateTick, const InventoryItem& item)
+{
+    if (receiver_)
+        receiver_->OnInventoryItemAdded(updateTick, item);
+}
+
+void Client::OnInventoryItemRemoved(int64_t updateTick, uint16_t pos)
+{
+    if (receiver_)
+        receiver_->OnInventoryItemRemoved(updateTick, pos);
+}
+
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
     AB::Entities::GameType type, uint8_t partySize)
@@ -592,6 +604,12 @@ void Client::GetInventory()
 {
     if (state_ == ClientState::World)
         protoGame_->GetInventory();
+}
+
+void Client::InventoryDestroyItem(uint16_t pos)
+{
+    if (state_ == ClientState::World)
+        protoGame_->InventoryDestroyItem(pos);
 }
 
 void Client::DeleteMail(const std::string& mailUuid)

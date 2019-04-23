@@ -256,6 +256,18 @@ URHO3D_EVENT(E_INVENTORY, Inventory)
 {
 }
 
+URHO3D_EVENT(E_INVENTORYADDED, InventoryAdded)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_ITEMPOS, ItemPos);     // unit16_t
+}
+
+URHO3D_EVENT(E_INVENTORYREMOVED, InventoryRemoved)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_ITEMPOS, ItemPos);     // unit16_t
+}
+
 URHO3D_EVENT(E_PARTYINVITED, PartyInvited)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);

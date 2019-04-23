@@ -650,6 +650,12 @@ void FwClient::UpdateInventory()
         client_.GetInventory();
 }
 
+void FwClient::InventoryDestroyItem(uint16_t pos)
+{
+    if (loggedIn_)
+        client_.InventoryDestroyItem(pos);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -817,9 +823,40 @@ void FwClient::OnGetMail(int64_t, const AB::Entities::Mail& mail)
 
 void FwClient::OnGetInventory(int64_t, const std::vector<Client::InventoryItem>& items)
 {
-    inventory_ = items;
+    inventory_.clear();
+    inventory_.reserve(items.size());
+    for (const auto& item : items)
+        inventory_.push_back(item);
     VariantMap& eData = GetEventDataMap();
     SendEvent(AbEvents::E_INVENTORY, eData);
+}
+
+void FwClient::OnInventoryItemAdded(int64_t updateTick, const Client::InventoryItem& item)
+{
+    inventory_.push_back(item);
+
+    using namespace AbEvents::InventoryAdded;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_ITEMPOS] = item.pos;
+    SendEvent(AbEvents::E_INVENTORYADDED, eData);
+}
+
+void FwClient::OnInventoryItemRemoved(int64_t updateTick, uint16_t pos)
+{
+    auto it = std::find_if(inventory_.begin(), inventory_.end(), [pos](const Client::InventoryItem& current) {
+        return current.pos == pos;
+    });
+    if (it == inventory_.end())
+        return;
+
+    using namespace AbEvents::InventoryRemoved;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = updateTick;
+    eData[P_ITEMPOS] = pos;
+    SendEvent(AbEvents::E_INVENTORYREMOVED, eData);
+
+    inventory_.erase(it);
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,

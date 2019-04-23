@@ -44,6 +44,8 @@ protected:
     void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);
     void ParseMailComplete(const std::shared_ptr<InputMessage>& message);
     void ParseInventoryContent(const std::shared_ptr<InputMessage>& message);
+    void ParseInventoryItemAded(const std::shared_ptr<InputMessage>& message);
+    void ParseInventoryItemRemoved(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseGameError(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
@@ -90,6 +92,7 @@ public:
     void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
     void GetInventory();
+    void InventoryDestroyItem(uint16_t pos);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

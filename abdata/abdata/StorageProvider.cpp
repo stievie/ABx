@@ -293,7 +293,10 @@ bool StorageProvider::Delete(const IO::DataKey& key)
 bool StorageProvider::Invalidate(const IO::DataKey& key)
 {
     if (!FlushData(key))
+    {
+        LOG_ERROR << "Error flushing " << key.format() << std::endl;
         return false;
+    }
     return RemoveData(key);
 }
 
@@ -676,7 +679,8 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
 
     auto data = cache_.find(key);
     if (data == cache_.end())
-        return false;
+        // Not in cache so no need to flush anything
+        return true;
     // No need to save to DB when not modified
     if (!(*data).second.first.modified && !(*data).second.first.deleted && (*data).second.first.created)
         return true;
@@ -766,9 +770,6 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_SERVICE_HASH:
         succ = FlushRecord<DB::DBService, AB::Entities::Service>(data);
         break;
-    case KEY_SERVICELIST_HASH:
-        succ = FlushRecord<DB::DBServicelList, AB::Entities::ServiceList>(data);
-        break;
     case KEY_GUILD_HASH:
         succ = FlushRecord<DB::DBGuild, AB::Entities::Guild>(data);
         break;
@@ -805,12 +806,6 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         break;
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
-    case KEY_INVENTORYITEMLIST_HASH:
-        succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::InventoryItems>(data);
-        break;
-    case KEY_EQUIPPEDITEMLIST_HASH:
-        succ = FlushRecord<DB::DBPlayerItemList, AB::Entities::EquippedItems>(data);
-        break;
     case KEY_ITEMCHANCELIST_HASH:
         succ = FlushRecord<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
         break;
@@ -831,6 +826,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
         break;
+    case KEY_SERVICELIST_HASH:
+    case KEY_INVENTORYITEMLIST_HASH:
+    case KEY_EQUIPPEDITEMLIST_HASH:
     case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB

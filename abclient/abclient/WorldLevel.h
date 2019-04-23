@@ -15,6 +15,7 @@
 #include "MissionMapWindow.h"
 #include "SkillBarWindow.h"
 #include "EffectsWindow.h"
+#include "InventoryWindow.h"
 #include <AB/Entities/Game.h>
 
 /// All World maps, Outposts, Combat, Exploreable...
@@ -51,6 +52,7 @@ protected:
     SharedPtr<MissionMapWindow> missionMap_;
     SharedPtr<SkillBarWindow> skillBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
+    SharedPtr<InventoryWindow> inventoryWindow_;
     String mapUuid_;
     String mapName_;
     AB::Entities::GameType mapType_;

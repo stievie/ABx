@@ -61,6 +61,8 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
             wnd->SetVisible(true);
             opts->LoadWindow(wnd);
             windows_[hash] = wnd;
+            if (wnd->IsVisible())
+                wnd->GetInventory();
         }
         else if (hash == WINDOW_PARTY)
         {

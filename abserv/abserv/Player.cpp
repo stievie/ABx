@@ -123,6 +123,10 @@ void Player::GetMailHeaders()
 
 void Player::GetInventory()
 {
+    size_t count = inventoryComp_->GetCount();
+    if (count == 0)
+        return;
+
     Net::NetworkMessage msg;
     msg.AddByte(AB::GameProtocol::InventoryContent);
     msg.Add<uint16_t>(static_cast<uint16_t>(inventoryComp_->GetCount()));
@@ -137,6 +141,23 @@ void Player::GetInventory()
     });
 
     WriteToOutput(msg);
+}
+
+void Player::DestroyInventoryItem(uint16_t pos)
+{
+    if (inventoryComp_->DestroyItem(pos))
+    {
+        AB::Entities::InventoryItems inv;
+        inv.uuid = data_.uuid;
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+        if (!cli->Invalidate(inv))
+            LOG_ERROR << "Error invalidating inv" << std::endl;
+
+        Net::NetworkMessage msg;
+        msg.AddByte(AB::GameProtocol::InventoryItemRemoved);
+        msg.Add<uint16_t>(pos);
+        WriteToOutput(msg);
+    }
 }
 
 void Player::SendMail(const std::string recipient, const std::string subject, const std::string body)
@@ -307,13 +328,26 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
         OnInventoryFull();
         return false;
     }
-    if (inventoryComp_->SetInventory(item))
+    Item* realItem = inventoryComp_->SetInventory(item);
+    if (realItem)
     {
         AB::Entities::InventoryItems inventory;
         inventory.uuid = data_.uuid;
         GetSubsystem<IO::DataClient>()->Invalidate(inventory);
-        // TODO: Don't send always the full inv when picking up an item
-        GetInventory();
+
+        if (realItem)
+        {
+            Net::NetworkMessage msg;
+            msg.AddByte(AB::GameProtocol::InventoryItemAdded);
+            msg.Add<uint16_t>(realItem->data_.type);
+            msg.Add<uint32_t>(realItem->data_.index);
+            msg.Add<uint8_t>(static_cast<uint8_t>(realItem->concreteItem_.storagePlace));
+            msg.Add<uint16_t>(realItem->concreteItem_.storagePos);
+            msg.Add<uint32_t>(realItem->concreteItem_.count);
+            msg.Add<uint16_t>(realItem->concreteItem_.value);
+            WriteToOutput(msg);
+        }
+
         return true;
     }
     return false;
