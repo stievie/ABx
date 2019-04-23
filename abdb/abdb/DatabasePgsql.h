@@ -15,6 +15,7 @@ class DatabasePgsql final : public Database
 {
 protected:
     PGconn* handle_;
+    bool Connect(int numTries = 1);
     bool InternalQuery(const std::string& query) final;
     std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) final;
     std::string Parse(const std::string& s);
