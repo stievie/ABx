@@ -150,8 +150,7 @@ void Player::DestroyInventoryItem(uint16_t pos)
         AB::Entities::InventoryItems inv;
         inv.uuid = data_.uuid;
         IO::DataClient* cli = GetSubsystem<IO::DataClient>();
-        if (!cli->Invalidate(inv))
-            LOG_ERROR << "Error invalidating inv" << std::endl;
+        cli->Invalidate(inv);
 
         Net::NetworkMessage msg;
         msg.AddByte(AB::GameProtocol::InventoryItemRemoved);
