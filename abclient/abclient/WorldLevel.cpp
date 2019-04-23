@@ -686,6 +686,8 @@ void WorldLevel::HandleLogout(StringHash, VariantMap&)
 {
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
+    inventoryWindow_->Clear();
+    uiRoot_->RemoveChild(inventoryWindow_);
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->PartyLeave();
     net->Logout();
@@ -699,6 +701,8 @@ void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
 {
     gameMenu_->RemoveAllChildren();
     uiRoot_->RemoveChild(gameMenu_);
+    inventoryWindow_->Clear();
+    uiRoot_->RemoveChild(inventoryWindow_);
     FwClient* net = context_->GetSubsystem<FwClient>();
     net->PartyLeave();
     net->Logout();
@@ -714,7 +718,7 @@ void WorldLevel::HandleTogglePartyWindow(StringHash, VariantMap&)
 void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
 {
     inventoryWindow_->SetVisible(!inventoryWindow_->IsVisible());
-    if (!inventoryWindow_->IsVisible())
+    if (inventoryWindow_->IsVisible())
         inventoryWindow_->GetInventory();
 }
 
@@ -970,4 +974,6 @@ void WorldLevel::CreateUI()
 
     inventoryWindow_.DynamicCast(wm->GetWindow(WINDOW_INVENTORY));
     uiRoot_->AddChild(inventoryWindow_);
+    if (inventoryWindow_->IsVisible())
+        inventoryWindow_->GetInventory();
 }

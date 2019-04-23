@@ -98,6 +98,19 @@ void InventoryWindow::GetInventory()
     }
 }
 
+void InventoryWindow::Clear()
+{
+    Text* moneyText = dynamic_cast<Text*>(GetChild("MoneyText", true));
+    moneyText->SetText("0 Drachma");
+    uint16_t pos = 1;
+    while (auto cont = GetItemContainer(pos))
+    {
+        cont->RemoveAllChildren();
+        ++pos;
+    }
+    initializted_ = false;
+}
+
 void InventoryWindow::SubscribeEvents()
 {
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
@@ -176,6 +189,7 @@ void InventoryWindow::SetItem(Item* item, const Client::InventoryItem& iItem)
 
 void InventoryWindow::HandleInventory(StringHash, VariantMap&)
 {
+    Clear();
     FwClient* net = context_->GetSubsystem<FwClient>();
     const auto& items = net->GetInventoryItems();
     ItemsCache* itemsCache = GetSubsystem<ItemsCache>();

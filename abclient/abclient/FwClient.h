@@ -252,7 +252,6 @@ public:
         if (it == inventory_.end())
         {
             static Client::InventoryItem empty;
-            empty.type = AB::Entities::ItemTypeUnknown;
             return empty;
         }
 

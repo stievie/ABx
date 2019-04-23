@@ -26,5 +26,6 @@ public:
     ~InventoryWindow();
 
     void GetInventory();
+    void Clear();
 };
 
