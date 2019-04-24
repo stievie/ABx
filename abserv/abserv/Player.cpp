@@ -330,10 +330,6 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
     Item* realItem = inventoryComp_->SetInventory(item);
     if (realItem)
     {
-        AB::Entities::InventoryItems inventory;
-        inventory.uuid = data_.uuid;
-        GetSubsystem<IO::DataClient>()->Invalidate(inventory);
-
         if (realItem)
         {
             Net::NetworkMessage msg;

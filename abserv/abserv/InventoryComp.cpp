@@ -171,11 +171,8 @@ bool InventoryComp::DestroyItem(uint16_t pos)
 {
     if (inventory_.size() > pos && inventory_[pos])
     {
-        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
-        const AB::Entities::ConcreteItem& ci = inventory_[pos]->concreteItem_;
-        cli->Delete(ci);
-        // Need to delete from DB before inv list is read
-        cli->Invalidate(ci);              
+        auto factory = GetSubsystem<ItemFactory>();
+        factory->DeleteItem(inventory_[pos].get());
         inventory_[pos].reset();
         return true;
     }

@@ -310,10 +310,10 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     AB::Entities::ConcreteItem ci;
     auto client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
-    if (!client->Delete(ci))
-    {
+    if (client->Delete(ci))
+        client->Invalidate(ci);
+    else
         LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
-    }
 }
 
 void ItemFactory::DeleteItem(Item* item)

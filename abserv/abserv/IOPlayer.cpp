@@ -150,12 +150,18 @@ bool IOPlayer::SavePlayerInventory(Game::Player* player)
     player->inventoryComp_->VisitEquipement([client](Game::Item* item)
     {
         client->Update(item->concreteItem_);
+        client->Invalidate(item->concreteItem_);
     });
 
     player->inventoryComp_->VisitInventory([client](Game::Item* item)
     {
         client->Update(item->concreteItem_);
+        client->Invalidate(item->concreteItem_);
     });
+
+    AB::Entities::InventoryItems inventory;
+    inventory.uuid = player->data_.uuid;
+    client->Invalidate(inventory);
     return true;
 }
 
