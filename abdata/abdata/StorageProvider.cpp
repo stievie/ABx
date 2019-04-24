@@ -13,6 +13,7 @@
 #include <AB/Entities/Party.h>
 #include "Subsystems.h"
 #include "ThreadPool.h"
+#include "Database.h"
 
 #if defined(_MSC_VER)
 #pragma warning(push)
@@ -497,6 +498,8 @@ void StorageProvider::FlushCache()
 
 void StorageProvider::FlushCacheTask()
 {
+    DB::Database* db = GetSubsystem<DB::Database>();
+    db->CheckConnection();
     FlushCache();
     if (running_)
     {

@@ -14,6 +14,17 @@ namespace DB {
 DatabasePgsql::DatabasePgsql() :
     Database()
 {
+    const std::string& host = Database::dbHost_;
+    const std::string& user = Database::dbUser_;
+    const std::string& pass = Database::dbPass_;
+    const std::string& db = Database::dbName_;
+    const uint16_t port = Database::dbPort_;
+
+    std::stringstream dns;
+    dns << "host='" << host << "' dbname='" << db << "' user='" << user <<
+        "' password='" << pass << "' port='" << port << "'";
+    dns_ = dns.str();
+
     if (!Connect())
     {
         LOG_ERROR << "Unable to connect to PostgresSQL database: " <<
@@ -29,23 +40,32 @@ DatabasePgsql::~DatabasePgsql()
 
 bool DatabasePgsql::Connect(int numTries /* = 1 */)
 {
-    const std::string& host = Database::dbHost_;
-    const std::string& user = Database::dbUser_;
-    const std::string& pass = Database::dbPass_;
-    const std::string& db = Database::dbName_;
-    const uint16_t port = Database::dbPort_;
-
-    std::stringstream dns;
-    dns << "host='" << host << "' dbname='" << db << "' user='" << user <<
-        "' password='" << pass << "' port='" << port << "'";
     int tr = 0;
     while (!connected_ && tr < numTries)
     {
-        handle_ = PQconnectdb(dns.str().c_str());
-        connected_ = PQstatus(handle_) == CONNECTION_OK;
+        PGPing ping = PQping(dns_.c_str());
+        switch (ping)
+        {
+        case PQPING_REJECT:
+            LOG_ERROR << "Server rejected connection" << std::endl;
+            break;
+        case PQPING_NO_RESPONSE:
+            LOG_ERROR << "Server didn't respond" << std::endl;
+            break;
+        case PQPING_NO_ATTEMPT:
+            LOG_ERROR << "Bad paramters" << std::endl;
+            return false;
+        }
+
+        if (ping == PQPING_OK)
+        {
+            // When ping OK then try to connect
+            handle_ = PQconnectdb(dns_.c_str());
+            connected_ = PQstatus(handle_) == CONNECTION_OK;
+        }
         ++tr;
-        if (!connected_)
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+        if (!connected_ && tr < numTries)
+            std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     return connected_;
 }
@@ -86,16 +106,6 @@ uint64_t DatabasePgsql::GetLastInsertId()
 {
     if (!connected_)
         return 0;
-
-    if (!PQstatus(handle_) == CONNECTION_OK)
-    {
-        if (!Connect(5))
-        {
-            LOG_ERROR << "Unable to connect to PostgresSQL database: " <<
-                PQerrorMessage(handle_) << std::endl;
-            return 0;
-        }
-    }
 
     PGresult* res = PQexec(handle_, "SELECT LASTVAL() as last;");
     ExecStatusType stat = PQresultStatus(res);
@@ -156,6 +166,23 @@ void DatabasePgsql::FreeResult(DBResult* res)
     delete (PgsqlResult*)res;
 }
 
+void DatabasePgsql::CheckConnection()
+{
+    if (dns_.empty())
+        return;
+
+    PGresult* res = PQexec(handle_, "SELECT 1");
+    ExecStatusType stat = PQresultStatus(res);
+    if (stat == PGRES_COMMAND_OK || stat == PGRES_TUPLES_OK)
+        // OK
+        return;
+
+    connected_ = false;
+    PGPing ping = PQping(dns_.c_str());
+    if (ping == PQPING_OK)
+        Connect();
+}
+
 bool DatabasePgsql::InternalQuery(const std::string& query)
 {
     if (!connected_)
@@ -164,17 +191,6 @@ bool DatabasePgsql::InternalQuery(const std::string& query)
 #ifdef DEBUG_SQL
     LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
 #endif
-
-
-    if (!PQstatus(handle_) == CONNECTION_OK)
-    {
-        if (!Connect(5))
-        {
-            LOG_ERROR << "Unable to connect to PostgresSQL database: " <<
-                PQerrorMessage(handle_) << std::endl;
-            return false;
-        }
-    }
 
     // executes query
     PGresult* res = PQexec(handle_, Parse(query).c_str());
@@ -200,16 +216,6 @@ std::shared_ptr<DBResult> DatabasePgsql::InternalSelectQuery(const std::string& 
 #ifdef DEBUG_SQL
     LOG_DEBUG << "PGSQL QUERY: " << query << std::endl;
 #endif
-
-    if (!PQstatus(handle_) == CONNECTION_OK)
-    {
-        if (!Connect(5))
-        {
-            LOG_ERROR << "Unable to connect to PostgresSQL database: " <<
-                PQerrorMessage(handle_) << std::endl;
-            return std::shared_ptr<DBResult>();
-        }
-    }
 
     // executes query
     PGresult* res = PQexec(handle_, Parse(query).c_str());

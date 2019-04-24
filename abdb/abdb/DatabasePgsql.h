@@ -15,6 +15,7 @@ class DatabasePgsql final : public Database
 {
 protected:
     PGconn* handle_;
+    std::string dns_;
     bool Connect(int numTries = 1);
     bool InternalQuery(const std::string& query) final;
     std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) final;
@@ -32,6 +33,7 @@ public:
     std::string EscapeString(const std::string& s) final;
     std::string EscapeBlob(const char* s, size_t length) final;
     void FreeResult(DBResult* res) final;
+    void CheckConnection() override;
 };
 
 class PgsqlResult final : public DBResult

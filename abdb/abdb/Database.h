@@ -58,6 +58,7 @@ public:
     virtual uint64_t GetLastInsertId() = 0;
     virtual std::string EscapeString(const std::string& s) = 0;
     virtual std::string EscapeBlob(const char* s, size_t length) = 0;
+    virtual void CheckConnection() { }
 };
 
 class DBResult : public std::enable_shared_from_this<DBResult>
