@@ -92,6 +92,16 @@ uint32_t ItemStats::GetAttributeIncrease(uint32_t index) const
     return GetValue(static_cast<size_t>(Stat::AttributeOffset) + index, 0);
 }
 
+int ItemStats::GetHealth() const
+{
+    return GetValue<int>(Stat::Health, 0);
+}
+
+int ItemStats::GetEnergy() const
+{
+    return GetValue<int>(Stat::Energy, 0);
+}
+
 bool ItemStats::Load(IO::PropReadStream& stream)
 {
     return Utils::VariantMapRead(stats_, stream);

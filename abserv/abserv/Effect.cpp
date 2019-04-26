@@ -76,6 +76,8 @@ bool Effect::LoadScript(const std::string& fileName)
         functions_ |= FunctionGetArmorPenetration;
     if (ScriptManager::IsFunction(luaState_, "getAttributeValue"))
         functions_ |= FunctionGetAttributeValue;
+    if (ScriptManager::IsFunction(luaState_, "getResources"))
+        functions_ |= FunctionGetResources;
     return true;
 }
 
@@ -180,6 +182,13 @@ void Effect::GetAttackDamage(int32_t& value)
     if (!HaveFunction(FunctionGetAttackDamage))
         return;
     value = luaState_["getAttackDamage"](value);
+}
+
+void Effect::GetRecources(int & maxHealth, int & maxEnergy)
+{
+    if (!HaveFunction(FunctionGetResources))
+        return;
+    kaguya::tie(maxHealth, maxEnergy) = luaState_["getResources"](maxHealth, maxEnergy);
 }
 
 void Effect::OnAttack(Actor* source, Actor* target, bool& value)

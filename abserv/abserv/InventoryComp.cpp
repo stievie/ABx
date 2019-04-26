@@ -275,5 +275,14 @@ uint32_t InventoryComp::GetAttributeValue(uint32_t index)
     return result;
 }
 
+void InventoryComp::GetResources(int& maxHealth, int& maxEnergy)
+{
+    for (const auto& item : equipment_)
+    {
+        if (item.second)
+            item.second->GetResources(maxHealth, maxEnergy);
+    }
+}
+
 }
 }

@@ -53,6 +53,7 @@ public:
     void GetArmor(DamageType type, int& value);
     void GetArmorPenetration(float& value);
     void GetAttributeValue(uint32_t index, uint32_t& value);
+    void GetResources(int& maxHealth, int& maxEnergy);
     void OnAttack(Actor* target, bool& value);
     void OnAttacked(Actor* source, DamageType type, int32_t damage, bool& success);
     void OnGettingAttacked(Actor* source, bool& value);

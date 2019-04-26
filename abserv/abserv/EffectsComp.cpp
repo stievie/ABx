@@ -201,6 +201,14 @@ void EffectsComp::GetAttributeValue(uint32_t index, uint32_t& value)
     }
 }
 
+void EffectsComp::GetResources(int& maxHealth, int& maxEnergy)
+{
+    for (const auto& effect : effects_)
+    {
+        effect->GetRecources(maxHealth, maxEnergy);
+    }
+}
+
 void EffectsComp::OnAttack(Actor* target, bool& value)
 {
     for (const auto& effect : effects_)

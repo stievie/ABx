@@ -188,7 +188,7 @@ public:
     virtual uint32_t GetXp() const { return 0; }
     virtual void AddSkillPoint() { }
     virtual uint32_t GetSkillPoints() const { return 0; }
-    virtual void AdvanceLevel() { }
+    virtual void AdvanceLevel();
     virtual AB::Entities::CharacterSex GetSex() const
     {
         return AB::Entities::CharacterSexUnknown;

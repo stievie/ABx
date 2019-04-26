@@ -95,6 +95,7 @@ public:
     uint32_t GetWeaponRequirement() const;
     void GetArmor(DamageType damageType, int& value) const;
     void GetArmorPenetration(float& value) const;
+    void GetResources(int& maxHealth, int& maxEnergy);
     void GetAttributeValue(uint32_t index, uint32_t& value);
     void OnEquip(Actor* target);
     void OnUnequip(Actor* target);

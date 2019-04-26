@@ -7,6 +7,23 @@
 namespace Game {
 namespace Components {
 
+void ResourceComp::UpdateResources()
+{
+    // Base HP
+    unsigned levelAdvance = owner_.GetLevel() - 1;
+    int hp = 100 + (levelAdvance * 20);
+    int energy = BASE_ENERGY;
+
+    // Runes etc.
+    owner_.inventoryComp_->GetResources(hp, energy);
+    // Effects influencing
+    owner_.effectsComp_->GetResources(hp, energy);
+    // TODO: Attribute values may also influence max energy
+
+    SetMaxHealth(hp);
+    SetMaxEnergy(energy);
+}
+
 void ResourceComp::SetHealth(SetValueType t, int value)
 {
     float oldVal = health_;
@@ -220,7 +237,8 @@ void ResourceComp::Update(uint32_t timeElapsed)
 {
     if (owner_.undestroyable_ || owner_.IsDead())
         return;
-
+    
+    UpdateResources();
     UpdateRegen(timeElapsed);
     // 2 regen per sec
     const float sec = static_cast<float>(timeElapsed) / 1000.0f;

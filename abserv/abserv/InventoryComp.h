@@ -73,6 +73,7 @@ public:
     int GetArmor(DamageType damageType, DamagePos pos);
     float GetArmorPenetration();
     uint32_t GetAttributeValue(uint32_t index);
+    void GetResources(int& maxHealth, int& maxEnergy);
 
     template<typename Func>
     void VisitEquipement(Func&& func)

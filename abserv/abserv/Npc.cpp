@@ -135,6 +135,12 @@ void Npc::Shutdown()
     }
 }
 
+void Npc::SetLevel(uint32_t value)
+{
+    level_ = value;
+    resourceComp_.UpdateResources();
+}
+
 void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     Actor::Update(timeElapsed, message);

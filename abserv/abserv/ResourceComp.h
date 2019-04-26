@@ -46,9 +46,6 @@ enum class ResourceType
     MaxEnergy
 };
 
-static constexpr int MAX_HEALTH_REGEN = 10;
-static constexpr float MAX_ENERGY_REGEN = 10.0f;
-
 class ResourceComp
 {
 private:
@@ -132,6 +129,8 @@ public:
     ResourceComp(const ResourceComp&) = delete;
     ResourceComp& operator=(const ResourceComp&) = delete;
     ~ResourceComp() = default;
+
+    void UpdateResources();
 
     int GetHealth() const { return static_cast<int>(health_); }
     void SetHealth(SetValueType t, int value);

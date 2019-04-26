@@ -68,7 +68,8 @@ public:
     AttributeIndices GetAttribute() const;
     int GetArmor(DamageType damageType) const;
     uint32_t GetAttributeIncrease(uint32_t index) const;
-
+    int GetHealth() const;
+    int GetEnergy() const;
     template <typename T>
     T GetValue(Stat index, T def) const
     {

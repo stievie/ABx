@@ -117,15 +117,9 @@ Actor::Actor() :
 
 void Actor::Initialize()
 {
-    // Base HP
-    unsigned levelAdvance = GetLevel() - 1;
-    int hp = 100 + (levelAdvance * 20);
-    resourceComp_.SetMaxHealth(hp);
-    resourceComp_.SetHealth(Components::SetValueType::Absolute, hp);
-
-    unsigned baseEnergy = 20;
-    resourceComp_.SetMaxEnergy(baseEnergy);
-    resourceComp_.SetEnergy(Components::SetValueType::Absolute, baseEnergy);
+    resourceComp_.UpdateResources();
+    resourceComp_.SetHealth(Components::SetValueType::Absolute, resourceComp_.GetMaxHealth());
+    resourceComp_.SetEnergy(Components::SetValueType::Absolute, resourceComp_.GetMaxEnergy());
 }
 
 bool Actor::SetSpawnPoint(const std::string& group)
@@ -730,6 +724,11 @@ bool Actor::Interrupt()
 void Actor::OnDied()
 {
     progressComp_->Died();
+}
+
+void Actor::AdvanceLevel()
+{
+    resourceComp_.UpdateResources();
 }
 
 Skill* Actor::GetCurrentSkill() const

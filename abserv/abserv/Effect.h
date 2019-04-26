@@ -47,6 +47,7 @@ private:
         FunctionGetArmor = 1 << 16,
         FunctionGetArmorPenetration = 1 << 17,
         FunctionGetAttributeValue = 1 << 18,
+        FunctionGetResources = 1 << 19,
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
@@ -115,6 +116,7 @@ public:
     void GetAttributeValue(uint32_t index, uint32_t& value);
     /// Attack damage may be in-/decreased by effects on the *Source*. This is called when the source starts attacking.
     void GetAttackDamage(int32_t& value);
+    void GetRecources(int& maxHealth, int& maxEnergy);
     /// Some effect may make the attacker unable to attack. The target is being attacked.
     void OnAttack(Actor* source, Actor* target, bool& value);
     void OnAttacked(Actor* source, Actor* target, DamageType type, int32_t damage, bool& success);

@@ -64,6 +64,7 @@ void Player::AddSkillPoint()
 
 void Player::AdvanceLevel()
 {
+    Actor::AdvanceLevel();
     if (data_.level < LEVEL_CAP)
         ++data_.level;
 }

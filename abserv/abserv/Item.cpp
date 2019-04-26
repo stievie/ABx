@@ -415,6 +415,16 @@ void Item::GetArmorPenetration(float& value) const
             upg.second->GetArmorPenetration(value);
 }
 
+void Item::GetResources(int& maxHealth, int& maxEnergy)
+{
+    maxHealth += stats_.GetHealth();
+    maxEnergy += stats_.GetEnergy();
+
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetResources(maxHealth, maxEnergy);
+}
+
 void Item::GetAttributeValue(uint32_t index, uint32_t& value)
 {
     // Equipment (e.g. runes) may increase the attributes

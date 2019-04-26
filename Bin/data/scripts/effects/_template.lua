@@ -95,3 +95,7 @@ function onGetCriticalHit(source, target)
   -- Return false when this effect prevents critical hits
   return true
 end
+
+function getResources(maxHealth, maxEnergy)
+  return maxHealth, maxEnergy
+end
