@@ -8,6 +8,7 @@
 #include "WindowManager.h"
 #include "SkillBarWindow.h"
 #include "Mumble.h"
+#include "LevelManager.h"
 
 #include <Urho3D/DebugNew.h>
 
@@ -201,6 +202,10 @@ void Player::FollowSelected()
 
 void Player::Attack()
 {
+    LevelManager* lm = GetSubsystem<LevelManager>();
+    if (lm->GetMapType() == AB::Entities::GameTypeOutpost)
+        return;
+
     FwClient* client = context_->GetSubsystem<FwClient>();
     client->Attack();
 }

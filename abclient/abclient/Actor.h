@@ -119,9 +119,9 @@ private:
     SharedPtr<Window> speechBubbleWindow_;
     SharedPtr<Text> speechBubbleText_;
     SharedPtr<HealthBarPlain> hpBar_;
+    SharedPtr<Text> classLevel_;
     float speechBubbleVisible_;
     void UpdateTransformation();
-    void AddActorUI();
     void RemoveActorUI();
     void HideSpeechBubble();
     String GetAnimation(const StringHash& hash);
@@ -157,6 +157,7 @@ public:
     uint32_t modelIndex_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
+    void AddActorUI();
     void SetSelectedObject(SharedPtr<GameObject> object);
     SharedPtr<GameObject> GetSelectedObject() const { return selectedObject_.Lock(); }
     uint32_t GetSelectedObjectId() const

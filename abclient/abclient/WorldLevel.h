@@ -53,9 +53,9 @@ protected:
     SharedPtr<SkillBarWindow> skillBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
     SharedPtr<InventoryWindow> inventoryWindow_;
+    AB::Entities::GameType mapType_;
     String mapUuid_;
     String mapName_;
-    AB::Entities::GameType mapType_;
     uint8_t partySize_;
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;

@@ -42,7 +42,6 @@ bindings are:
 * `Y`: Reverse camera
 * `F`: Select self
 * `T`: Select called target
-* `Space`: Goto selected object or follow selected object when it's moving
 * `LeftCtrl`: Highlight objects
 * `PrtScr`: Take screenshot
 * `^`: Show/hide chat window

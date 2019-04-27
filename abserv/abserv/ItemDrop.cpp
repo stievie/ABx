@@ -29,7 +29,6 @@ ItemDrop::~ItemDrop()
 {
     if (!pickedUp_)
     {
-        LOG_INFO << "Deleting item " << item_->concreteItem_.uuid << std::endl;
         // Not picked up delete it
         auto factory = GetSubsystem<ItemFactory>();
         factory->DeleteConcrete(item_->concreteItem_.uuid);

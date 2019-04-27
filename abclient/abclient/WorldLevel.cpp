@@ -19,11 +19,11 @@
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
+    mapType_(AB::Entities::GameTypeUnknown),
     rmbDown_(false),
     mailWindow_(nullptr),
     mapWindow_(nullptr),
     partyWindow_(nullptr),
-    mapType_(AB::Entities::GameTypeUnknown),
     partySize_(1)
 {
 }
@@ -431,6 +431,7 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         Actor* actor = dynamic_cast<Actor*>(object);
         actor->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
+        actor->AddActorUI();
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
         object->undestroyable_ = undestroyable;
         object->SetSpeedFactor(updateTick, speed);
@@ -751,7 +752,7 @@ void WorldLevel::HandleDefaultAction(StringHash, VariantMap&)
     Actor* a = dynamic_cast<Actor*>(sel.Get());
     if (!a)
         return;
-    if (player_->IsEnemy(a))
+    if (mapType_ != AB::Entities::GameTypeOutpost && player_->IsEnemy(a))
         player_->Attack();
     else
         player_->FollowSelected();

@@ -313,13 +313,8 @@ Vector3 Actor::GetHeadPos() const
 void Actor::Update(float timeStep)
 {
     UpdateTransformation();
-    if (!hpBar_)
-        // TODO: UI not yet created
-        return;
 
     Shortcuts* sc = GetSubsystem<Shortcuts>();
-
-    hpBar_->SetValues(stats_.maxHealth, stats_.health);
 
     const Vector3& pos = node_->GetPosition();
     Vector3 headPos = GetHeadPos();
@@ -343,16 +338,30 @@ void Actor::Update(float timeStep)
             IntVector2 labelPos(screenPos.x_ - nameWindow_->GetWidth() / 2, screenPos.y_);
             nameWindow_->SetPosition(labelPos);
 
-            hpBar_->SetSize(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac));
-            IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_ - hpBar_->GetHeight() - 5);
-            hpBar_->SetPosition(ihpPos);
+            if (hpBar_)
+            {
+                hpBar_->SetSize(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac));
+                IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_ - hpBar_->GetHeight() - 5);
+                hpBar_->SetPosition(ihpPos);
+            }
+            else if (classLevel_)
+            {
+                IntVector2 ihpPos(screenPos.x_ - classLevel_->GetWidth() / 2, hpTop.y_ - classLevel_->GetHeight());
+                classLevel_->SetPosition(ihpPos);
+            }
         }
     }
 
     nameWindow_->SetVisible(highlight || hovered_ || playerSelected_);
-    if (!undestroyable_)
+    if (hpBar_ && !undestroyable_)
+    {
+        hpBar_->SetValues(stats_.maxHealth, stats_.health);
         hpBar_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
-
+    }
+    else if (classLevel_)
+    {
+        classLevel_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
+    }
     if (speechBubbleWindow_->IsVisible())
     {
         IntVector2 isbPos(screenPos.x_ - (speechBubbleWindow_->GetWidth() / 3), hpTop.y_ - 40);
@@ -428,12 +437,28 @@ void Actor::AddActorUI()
     nameLabel_->SetVisible(true);
     SubscribeToEvent(nameWindow_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
 
-    hpBar_ = uiRoot->CreateChild<HealthBarPlain>();
-    hpBar_->SetRange(100.0f);
-    hpBar_->SetStyle("HealthBarGreen");
-    hpBar_->SetSize(100, 20);
-    hpBar_->SetValue(50.0f);
-    hpBar_->SetVisible(false);
+    if (HasUI())
+    {
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        if (lm->GetMapType() != AB::Entities::GameTypeOutpost)
+        {
+            // No HP bar in outposts
+            hpBar_ = uiRoot->CreateChild<HealthBarPlain>();
+            hpBar_->SetRange(100.0f);
+            hpBar_->SetStyle("HealthBarGreen");
+            hpBar_->SetSize(100, 20);
+            hpBar_->SetValue(50.0f);
+            hpBar_->SetVisible(false);
+        }
+        else
+        {
+            classLevel_ = uiRoot->CreateChild<Text>();
+            classLevel_->SetStyleAuto();
+            classLevel_->SetVisible(false);
+            classLevel_->SetText(GetClassLevel());
+            classLevel_->SetFontSize(8);
+        }
+    }
 }
 
 void Actor::RemoveActorUI()
@@ -455,6 +480,11 @@ void Actor::RemoveActorUI()
     {
         uiRoot->RemoveChild(speechBubbleWindow_);
         speechBubbleWindow_ = SharedPtr<Window>();
+    }
+    if (classLevel_)
+    {
+        uiRoot->RemoveChild(classLevel_);
+        classLevel_ = SharedPtr<Text>();
     }
 }
 
@@ -882,7 +912,6 @@ void Actor::Unserialize(PropReadStream& data)
     std::string skills;
     data.ReadString(skills);
     LoadSkillTemplate(skills);
-    AddActorUI();
 }
 
 void Actor::PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop /* = false */)
