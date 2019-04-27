@@ -27,8 +27,9 @@ ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
 
 ItemDrop::~ItemDrop()
 {
-    if (!pickedUp_ && !item_->concreteItem_.uuid.empty() && !uuids::uuid(item_->concreteItem_.uuid).nil())
+    if (!pickedUp_)
     {
+        LOG_INFO << "Deleting item " << item_->concreteItem_.uuid << std::endl;
         // Not picked up delete it
         auto factory = GetSubsystem<ItemFactory>();
         factory->DeleteConcrete(item_->concreteItem_.uuid);

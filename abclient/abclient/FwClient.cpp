@@ -833,7 +833,18 @@ void FwClient::OnGetInventory(int64_t, const std::vector<Client::InventoryItem>&
 
 void FwClient::OnInventoryItemAdded(int64_t updateTick, const Client::InventoryItem& item)
 {
-    inventory_.push_back(item);
+    const auto it = std::find_if(inventory_.begin(), inventory_.end(), [&item](const Client::InventoryItem& current) -> bool
+    {
+        return current.pos == item.pos;
+    });
+    if (it != inventory_.end())
+    {
+        // Replace item at the pos
+        (*it) = item;
+    }
+    else
+        // Append
+        inventory_.push_back(item);
 
     using namespace AbEvents::InventoryAdded;
     VariantMap& eData = GetEventDataMap();

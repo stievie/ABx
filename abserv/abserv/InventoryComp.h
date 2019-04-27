@@ -50,9 +50,10 @@ public:
     bool IsFull() const { return GetCount() >= inventorySize_; }
     void SetSize(uint16_t value)
     {
-        // Can not resize inventory when it has items loaded
-        assert(inventory_.size() == 0);
-        inventorySize_ = value;
+        // Can not make smaller
+        assert(value + 1 > inventorySize_);
+        // + 1 because Money doesnt count
+        inventorySize_ = value + 1;
     }
     size_t GetCount() const
     {

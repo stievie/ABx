@@ -69,7 +69,7 @@ Item* InventoryComp::AddInventory(std::unique_ptr<Item>& item)
             }
         }
 
-        if (GetCount() < inventorySize_)
+        if (!IsFull())
         {
             int16_t p = InsertItem(item);
             if (p != 0)
@@ -83,6 +83,7 @@ Item* InventoryComp::AddInventory(std::unique_ptr<Item>& item)
     }
     else
     {
+        // We have a position insert it there
         if (inventory_.size() > pos)
         {
             if (!inventory_[pos])
@@ -124,8 +125,8 @@ uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
             return static_cast<uint16_t>(i);
         }
     }
-    // No free slot between
-    if (inventory_.size() < inventorySize_)
+    // No free slot between -> append it
+    if (!IsFull())
     {
         inventory_.push_back(std::move(item));
         uint16_t pos = static_cast<uint16_t>(inventory_.size()) - 1;
