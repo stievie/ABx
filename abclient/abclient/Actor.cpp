@@ -437,7 +437,7 @@ void Actor::AddActorUI()
     nameLabel_->SetVisible(true);
     SubscribeToEvent(nameWindow_, E_CLICK, URHO3D_HANDLER(Actor, HandleNameClicked));
 
-    if (HasUI())
+    if (HasHealthBar())
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         if (lm->GetMapType() != AB::Entities::GameTypeOutpost)

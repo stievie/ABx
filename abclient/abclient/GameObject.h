@@ -19,9 +19,9 @@ class GameObject : public LogicComponent
 protected:
     AB::GameProtocol::CreatureState creatureState_;
     float speedFactor_;
-    bool HasUI() const
+    bool HasHealthBar() const
     {
-        return objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
+        return objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
     }
 public:
     GameObject(Context* context);
