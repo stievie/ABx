@@ -202,10 +202,6 @@ void Player::FollowSelected()
 
 void Player::Attack()
 {
-    LevelManager* lm = GetSubsystem<LevelManager>();
-    if (lm->GetMapType() == AB::Entities::GameTypeOutpost)
-        return;
-
     FwClient* client = context_->GetSubsystem<FwClient>();
     client->Attack();
 }

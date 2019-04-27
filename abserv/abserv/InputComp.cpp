@@ -184,7 +184,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             break;
         }
         case InputType::Attack:
-            if (!owner_.IsImmobilized())
+        {
+            if (owner_.CanAttack() && !owner_.IsImmobilized())
             {
                 if (auto target = owner_.selectedObject_.lock())
                 {
@@ -197,9 +198,10 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 }
             }
             break;
+        }
         case InputType::UseSkill:
         {
-            if (!owner_.IsDead())
+            if (owner_.CanUseSkill() && !owner_.IsDead())
             {
                 // The index of the skill in the users skill bar, 0 based
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();

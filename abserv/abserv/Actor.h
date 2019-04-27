@@ -182,6 +182,8 @@ public:
     virtual void OnPingObject(uint32_t /* targetId */, AB::GameProtocol::ObjectCallType /* type */, int /* skillIndex */) { }
     virtual void OnInventoryFull() { }
 
+    virtual bool CanAttack() const { return false; }
+    virtual bool CanUseSkill() const { return false; }
     virtual uint32_t GetLevel() const { return 0; }
     virtual void SetLevel(uint32_t) { }
     virtual void AddXp(int) { }

@@ -79,6 +79,8 @@ public:
     }
     size_t GetGroupPos() final override;
 
+    bool CanAttack() const override;
+    bool CanUseSkill() const override;
     uint32_t GetLevel() const final override { return data_.level; }
     void SetLevel(uint32_t value) override final { data_.level = static_cast<uint8_t>(value); }
 

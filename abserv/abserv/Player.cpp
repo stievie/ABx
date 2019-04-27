@@ -50,6 +50,18 @@ size_t Player::GetGroupPos()
     return party_->GetPosition(this);
 }
 
+bool Player::CanAttack() const
+{
+    return GetGame()->data_.type != AB::Entities::GameTypeOutpost ||
+        account_.type >= AB::Entities::AccountTypeGamemaster;
+}
+
+bool Player::CanUseSkill() const
+{
+    return GetGame()->data_.type != AB::Entities::GameTypeOutpost ||
+        account_.type >= AB::Entities::AccountTypeGamemaster;
+}
+
 void Player::AddXp(int value)
 {
     Actor::AddXp(value);
