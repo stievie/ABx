@@ -17,6 +17,7 @@ private:
     void HandleInventoryRemoved(StringHash eventType, VariantMap& eventData);
     void HandleItemClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemDestroySelected(StringHash eventType, VariantMap& eventData);
+    void HandleItemDropSelected(StringHash eventType, VariantMap& eventData);
     BorderImage* GetItemContainer(uint16_t pos);
     void SetItem(Item* item, const Client::InventoryItem& iItem);
 public:

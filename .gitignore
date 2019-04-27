@@ -22,6 +22,7 @@ bin
 *.res
 *.cache
 *.layout
+*.7z
 
 # Precompiled header files
 *.gch/
@@ -54,5 +55,10 @@ Thumbs.db
 build/*
 Design/*
 Tools/*
+Doc/*
 
 backup.cmd
+*.pdb
+*.idb
+/STUFF.md
+/clocall.bat

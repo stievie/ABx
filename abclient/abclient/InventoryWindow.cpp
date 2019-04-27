@@ -61,6 +61,7 @@ InventoryWindow::InventoryWindow(Context* context) :
     int height = 0;
 
     {
+        // Destroy
         Menu* item = popup->CreateChild<Menu>();
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();
@@ -76,6 +77,24 @@ InventoryWindow::InventoryWindow(Context* context) :
             height = item->GetHeight();
         SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(InventoryWindow, HandleItemDestroySelected));
     }
+    {
+        // Drop
+        Menu* item = popup->CreateChild<Menu>();
+        item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
+        item->SetStyleAuto();
+        Text* menuText = item->CreateChild<Text>();
+        menuText->SetText("Drop");
+        menuText->SetStyle("EditorMenuText");
+        item->SetLayout(LM_HORIZONTAL, 0, IntRect(8, 2, 8, 2));
+        item->SetMinSize(menuText->GetSize() + IntVector2(4, 4));
+        item->SetSize(item->GetMinSize());
+        if (item->GetWidth() > width)
+            width = item->GetWidth();
+        if (item->GetHeight() > height)
+            height = item->GetHeight();
+        SubscribeToEvent(item, E_MENUSELECTED, URHO3D_HANDLER(InventoryWindow, HandleItemDropSelected));
+    }
+
     popup->SetMinSize(IntVector2(width, height));
     popup->SetSize(popup->GetMinSize());
     itemPopup_->SetSize(popup->GetSize());
@@ -276,6 +295,11 @@ void InventoryWindow::HandleItemDestroySelected(StringHash, VariantMap& eventDat
         return;
     FwClient* cli = GetSubsystem<FwClient>();
     cli->InventoryDestroyItem(static_cast<uint16_t>(pos));
+}
+
+void InventoryWindow::HandleItemDropSelected(StringHash eventType, VariantMap& eventData)
+{
+    // TODO:
 }
 
 BorderImage* InventoryWindow::GetItemContainer(uint16_t pos)
