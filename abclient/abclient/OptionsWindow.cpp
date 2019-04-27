@@ -194,7 +194,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
 
     CheckBox* shCheck = dynamic_cast<CheckBox*>(wnd->GetChild("StickCameraToHeadCheck", true));
     shCheck->SetChecked(opts->stickCameraToHead_);
-    SubscribeToEvent(shCheck, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+    SubscribeToEvent(shCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
     {
         using namespace Toggled;
         bool checked = eventData[P_STATE].GetBool();

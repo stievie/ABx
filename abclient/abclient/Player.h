@@ -58,7 +58,6 @@ private:
     uint8_t lastMoveDir_;
     uint8_t lastTurnDir_;
     float lastYaw_;
-    bool stickCameraToHead_;
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
 };

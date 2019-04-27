@@ -16,13 +16,11 @@ Player::Player(Context* context) :
     Actor(context),
     lastMoveDir_(AB::GameProtocol::MoveDirectionNone),
     lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
+    lastYaw_(0.0f),
     cameraDistance_(CAMERA_INITIAL_DIST),
-    moveLock_(false),
-    stickCameraToHead_(false)
+    moveLock_(false)
 {
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
-    Options* opt = GetSubsystem<Options>();
-    stickCameraToHead_ = opt->stickCameraToHead_;
     SubscribeToEvent(AbEvents::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));
     SubscribeToEvent(AbEvents::E_SC_SELECTSELF, URHO3D_HANDLER(Player, HandleSelectSelf));
     FwClient* cli = GetSubsystem<FwClient>();
@@ -256,7 +254,7 @@ void Player::PostUpdate(float timeStep)
 
     // Third person camera: position behind the character
     Vector3 aimPoint;
-    if (stickCameraToHead_ && headNode)
+    if (GetSubsystem<Options>()->stickCameraToHead_ && headNode)
         aimPoint = headNode->GetWorldPosition();
     else
     {
