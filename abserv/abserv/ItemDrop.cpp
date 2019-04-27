@@ -40,15 +40,10 @@ uint32_t ItemDrop::GetItemIndex() const
     return item_ ? item_->data_.index : 0;;
 }
 
-void ItemDrop::OnSelected(Actor* actor)
+void ItemDrop::PickUp(Actor* actor)
 {
-    if (!actor)
-        return;
-    if (!item_)
-        return;
     if (actorId_ != actor->GetId())
         return;
-
     if (IsInRange(Ranges::Touch, actor))
     {
         if (actor->AddToInventory(item_))
@@ -56,6 +51,30 @@ void ItemDrop::OnSelected(Actor* actor)
             pickedUp_ = true;
             actor->SetSelectedObjectById(0);
             GetGame()->RemoveObject(this);
+        }
+    }
+}
+
+void ItemDrop::OnSelected(Actor* actor)
+{
+    if (!actor)
+        return;
+    if (!item_)
+        return;
+    PickUp(actor);
+}
+
+void ItemDrop::OnClicked(Actor* actor)
+{
+    if (!actor)
+        return;
+    if (!item_)
+        return;
+    if (auto o = actor->selectedObject_.lock())
+    {
+        if (o->id_ == id_)
+        {
+            PickUp(actor);
         }
     }
 }
