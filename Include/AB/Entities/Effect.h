@@ -53,7 +53,7 @@ struct Effect : Entity
 
     uint32_t index = 0;
     std::string name;
-    EffectCategory category;
+    EffectCategory category = EffectNone;
     std::string script;
     std::string icon;
     std::string soundEffect;

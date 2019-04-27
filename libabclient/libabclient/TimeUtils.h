@@ -21,7 +21,11 @@ struct timer
 private:
     ticks_t start_;
 public:
-    timer() { restart(); }
+    timer() :
+        start_(0)
+    { 
+        restart(); 
+    }
     float elapsed_seconds() { return (float)((micros() - start_) / 1000000.0); }
     ticks_t elapsed_millis() { return (micros() - start_) / 1000; }
     ticks_t elapsed_micros() { return micros() - start_; }

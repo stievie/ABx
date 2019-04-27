@@ -18,6 +18,8 @@ private:
     std::mutex lock_;
 public:
     DHKeys() :
+        privateKey_{ 0 },
+        publicKey_{ 0 },
         keysLoaded_(false)
     {}
     ~DHKeys() {}

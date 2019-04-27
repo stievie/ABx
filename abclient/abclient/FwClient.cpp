@@ -129,6 +129,7 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
 
 FwClient::FwClient(Context* context) :
     Object(context),
+    levelReady_(false),
     loggedIn_(false),
     playerId_(0)
 {

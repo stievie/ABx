@@ -34,7 +34,7 @@ struct Mail : Entity
     std::string toName;
     std::string subject;
     std::string message;
-    int64_t created;
+    int64_t created = 0;
     bool isRead = false;
 };
 
