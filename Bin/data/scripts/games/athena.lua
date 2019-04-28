@@ -19,7 +19,7 @@ function onStart()
     smith:SetPosition(x, y, z)
     smith:SetRotation(180)
     smith:SetHomePos(x, y, z)
-  end  
+  end
   local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
     local x = 4.92965
@@ -28,7 +28,7 @@ function onStart()
     merchant:SetPosition(x, y, z)
     merchant:SetRotation(180)
     merchant:SetHomePos(x, y, z)
-  end  
+  end
   local ped = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
   if (ped ~= nil) then
     local x = 64.6874
@@ -37,7 +37,7 @@ function onStart()
     ped:SetPosition(x, y, z)
     ped:SetRotation(90)
     ped:SetHomePos(x, y, z)
-  end  
+  end
   local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian2.lua")
   if (ped2 ~= nil) then
     local x = 4.92965
@@ -45,7 +45,16 @@ function onStart()
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition(x, y, z)
     ped2:SetHomePos(x, y, z)
-  end  
+  end
+
+  local chest = self:AddNpc("/scripts/actors/logic/account_chest.lua")
+  if (chest ~= nil) then
+    local x = 0.8
+    local z = 15.0
+    local y = self:GetTerrainHeight(x, z)
+    chest:SetPosition(x, y, z)
+    chest:SetRotation(90)
+  end
 end
 
 -- Game stopping

@@ -20,6 +20,7 @@ enum ItemType : uint16_t
     ItemTypeCharacterHair,
     ItemTypePortal,
     ItemTypeAreaOfEffect,
+    ItemTypeAccountChest,
 
     // Equipments
     ItemTypeArmorHead = 10,
