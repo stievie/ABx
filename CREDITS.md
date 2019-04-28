@@ -21,7 +21,8 @@ Creator: sa 2017-2019
 * https://github.com/fraillt/bitsery
 * https://github.com/brimzi/simple-cache
 * https://github.com/mariusbancila/stduuid
-* boost https://www.boost.org/
+* https://github.com/Alexhuszagh/multi_index
+* https://github.com/edouarda/brigand
 * ginger Template Engine https://github.com/melpon/ginger
 * https://github.com/nbsdx/SimpleJSON
 * https://github.com/BramvdKroef/clessc

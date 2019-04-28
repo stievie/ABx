@@ -57,7 +57,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Language)'=='C++'">
     <CAExcludePath>..\Include\asio;$(CAExcludePath)</CAExcludePath>
-  </PropertyGroup>  
+  </PropertyGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

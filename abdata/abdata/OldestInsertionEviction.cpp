@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "EvictionStrategy.h"
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/ordered_index.hpp>
+#include <multi_index_container.hpp>
+#include <multi_index/ordered_index.hpp>
 
-using namespace boost::multi_index;
+using namespace multi_index;
 
 IO::DataKey OldestInsertionEviction::NextEviction()
 {

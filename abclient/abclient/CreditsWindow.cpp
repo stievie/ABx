@@ -163,7 +163,8 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("GJK: https://github.com/xuzebin/gjk", 15);
     CreateSingleLine("Binary serialization: https://github.com/fraillt/bitsery", 15);
     CreateSingleLine("UUIDs: https://github.com/mariusbancila/stduuid", 15);
-    CreateSingleLine("boost: https://www.boost.org/", 15);
+    CreateSingleLine("multi_index: https://github.com/Alexhuszagh/multi_index", 15);
+    CreateSingleLine("Brigand: https://github.com/edouarda/brigand", 15);
     CreateSingleLine("ginger Template Engine: https://github.com/melpon/ginger", 15);
     CreateSingleLine("SimpleJSON: https://github.com/nbsdx/SimpleJSON", 15);
     CreateSingleLine("LESS complier: https://github.com/BramvdKroef/clessc", 15);

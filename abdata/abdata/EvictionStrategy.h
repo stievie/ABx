@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/identity.hpp>
-#include <boost/multi_index/ordered_index.hpp>
+#include <multi_index_container.hpp>
+#include <multi_index/hashed_index.hpp>
+#include <multi_index/member.hpp>
+#include <multi_index/identity.hpp>
+#include <multi_index/ordered_index.hpp>
 #include "DataKey.h"
 
 class DataItem
@@ -23,7 +23,7 @@ public:
     }
 };
 
-namespace boost
+/*namespace boost
 {
 template<> struct hash<IO::DataKey>
 {
@@ -34,15 +34,15 @@ template<> struct hash<IO::DataKey>
         return Utils::StringHashRt((const char*)p.data(), p.size());
     }
 };
-}
+} */
 
-typedef boost::multi_index::multi_index_container
+typedef multi_index::multi_index_container
 <
     DataItem,
-    boost::multi_index::indexed_by
+    multi_index::indexed_by
     <
-        boost::multi_index::hashed_unique<boost::multi_index::member<DataItem, IO::DataKey, &DataItem::key>>,
-        boost::multi_index::ordered_unique<boost::multi_index::member<DataItem, uint64_t, &DataItem::rank>>
+        multi_index::hashed_unique<multi_index::member<DataItem, IO::DataKey, &DataItem::key>>,
+        multi_index::ordered_unique<multi_index::member<DataItem, uint64_t, &DataItem::rank>>
     >
 > DataItemContainer;
 
