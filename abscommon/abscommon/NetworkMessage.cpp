@@ -6,6 +6,22 @@
 
 namespace Net {
 
+std::vector<std::unique_ptr<NetworkMessage>> NetworkMessage::pool_;
+
+std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
+{
+    if (pool_.size() == 0)
+    {
+        // 16kB * 200 = 3.2MB
+        // Reallocation ~ 5 secs with no activity
+        for (size_t i = 0; i < 200; ++i)
+            pool_.push_back(std::make_unique<NetworkMessage>());
+    }
+    auto msg = std::move(pool_.back());
+    pool_.pop_back();
+    return msg;
+}
+
 std::string NetworkMessage::GetString(uint16_t len /* = 0 */)
 {
     if (len == 0)

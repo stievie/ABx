@@ -21,6 +21,10 @@ protected:
     float speedFactor_;
     bool HasHealthBar() const
     {
+        return objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
+    }
+    bool IsPlayer() const
+    {
         return objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
     }
 public:

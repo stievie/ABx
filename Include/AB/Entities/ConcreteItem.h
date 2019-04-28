@@ -54,7 +54,7 @@ struct ConcreteItem : Entity
     std::string upgrade3Uuid = EMPTY_GUID;
     std::string itemUuid = EMPTY_GUID;
     std::string itemStats;
-    uint32_t count;
+    uint32_t count = 0;
     int64_t creation = 0;
     uint16_t value = 0;
     std::string instanceUuid = EMPTY_GUID;

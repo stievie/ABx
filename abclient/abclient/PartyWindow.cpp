@@ -17,6 +17,7 @@ void PartyWindow::RegisterObject(Context* context)
 
 PartyWindow::PartyWindow(Context* context) :
     Window(context),
+    mode_(PartyWindowMode::ModeOutpost),
     player_(nullptr),
     leaderId_(0),
     partySize_(0),

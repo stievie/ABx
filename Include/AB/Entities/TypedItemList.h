@@ -21,8 +21,8 @@ static constexpr auto KEY_TYPED_ITEMLIST = "typed_item_list";
 struct TypedListItem
 {
     std::string uuid;
-    ItemType belongsTo;
-    float chance;
+    ItemType belongsTo = ItemTypeUnknown;
+    float chance = 0.0f;
 };
 
 /// Item by type on a certain map with drop chances. UUID is the map uuid.

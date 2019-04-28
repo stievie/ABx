@@ -158,8 +158,8 @@ void MultiLineEdit::Update(float timeStep)
 }
 
 void MultiLineEdit::OnClickBegin(const IntVector2& position,
-    const IntVector2& screenPosition, int button, int buttons, int qualifiers,
-    Cursor* cursor)
+    const IntVector2& /* screenPosition */, int button, int /* buttons */, int /* qualifiers */,
+    Cursor* /* cursor */)
 {
     if (button == MOUSEB_LEFT && cursorMovable_)
     {
@@ -172,9 +172,9 @@ void MultiLineEdit::OnClickBegin(const IntVector2& position,
     }
 }
 
-void MultiLineEdit::OnDoubleClick(const IntVector2& position,
-    const IntVector2& screenPosition, int button, int buttons, int qualifiers,
-    Cursor* cursor)
+void MultiLineEdit::OnDoubleClick(const IntVector2& /* position */,
+    const IntVector2& /* screenPosition */, int button, int /* buttons */, int /* qualifiers */,
+    Cursor* /* cursor */)
 {
     if (button == MOUSEB_LEFT)
         text_->SetSelection(0);
@@ -190,8 +190,8 @@ void MultiLineEdit::OnDragBegin(const IntVector2& position,
 }
 
 void MultiLineEdit::OnDragMove(const IntVector2& position,
-    const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons,
-    int qualifiers, Cursor* cursor)
+    const IntVector2& /* screenPosition */, const IntVector2& /* deltaPos */, int /* buttons */,
+    int /* qualifiers */, Cursor* /* cursor */)
 {
     if (cursorMovable_ && textSelectable_)
     {
@@ -209,7 +209,7 @@ void MultiLineEdit::OnDragMove(const IntVector2& position,
 
 }
 
-bool MultiLineEdit::OnDragDropTest(UIElement* source)
+bool MultiLineEdit::OnDragDropTest(UIElement* /* source */)
 {
     //if (source && editable_)
     //{
@@ -224,7 +224,7 @@ bool MultiLineEdit::OnDragDropTest(UIElement* source)
     return true;
 }
 
-bool MultiLineEdit::OnDragDropFinish(UIElement* source)
+bool MultiLineEdit::OnDragDropFinish(UIElement* /* source */)
 {
     //if (source && editable_)
     //{
@@ -806,7 +806,7 @@ unsigned MultiLineEdit::GetCharIndex(const IntVector2& position)
     return M_MAX_UNSIGNED;
 }
 
-void MultiLineEdit::HandleFocused(StringHash eventType, VariantMap& eventData)
+void MultiLineEdit::HandleFocused(StringHash, VariantMap& eventData)
 {
     if (eventData[Focused::P_BYKEY].GetBool())
     {
@@ -819,7 +819,7 @@ void MultiLineEdit::HandleFocused(StringHash eventType, VariantMap& eventData)
         GetSubsystem<Input>()->SetScreenKeyboardVisible(true);
 }
 
-void MultiLineEdit::HandleDefocused(StringHash eventType, VariantMap& eventData)
+void MultiLineEdit::HandleDefocused(StringHash, VariantMap&)
 {
     text_->ClearSelection();
 
@@ -827,7 +827,7 @@ void MultiLineEdit::HandleDefocused(StringHash eventType, VariantMap& eventData)
         GetSubsystem<Input>()->SetScreenKeyboardVisible(false);
 }
 
-void MultiLineEdit::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void MultiLineEdit::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     using namespace KeyDown;
     int key = eventData[P_KEY].GetInt();
@@ -847,7 +847,7 @@ void MultiLineEdit::SetFontSize(int size)
 {
     text_->SetFont(text_->GetFont(), (float)size);
 }
-void MultiLineEdit::HandleLayoutUpdated(StringHash eventType, VariantMap& eventData)
+void MultiLineEdit::HandleLayoutUpdated(StringHash, VariantMap&)
 {
     UpdateCursor();
 }

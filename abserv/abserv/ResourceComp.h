@@ -121,6 +121,8 @@ public:
         healthRegen_(0.0f),
         energyRegen_(2.0f),
         naturalHealthRegen_(0),
+        maxHealth_(0),
+        maxEnergy_(0),
         dirtyFlags_(0),
         lastHpDecrease_(0),
         lastRegenIncrease_(0)

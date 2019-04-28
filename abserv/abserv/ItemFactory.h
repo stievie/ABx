@@ -24,6 +24,7 @@ private:
     std::unique_ptr<Item> CreateModifier(AB::Entities::ItemType modType, Item* forItem,
         uint32_t level, bool maxStats, const std::string& playerUuid);
     void CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result);
+    bool CreateDBItem(AB::Entities::ConcreteItem item);
 public:
     ItemFactory();
     ~ItemFactory() = default;
@@ -47,7 +48,7 @@ public:
     /// Delete drop chances for this map
     void DeleteMap(const std::string& uuid);
     std::unique_ptr<Item>CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
-        uint32_t level, const std::string& playerUuid);
+        uint32_t level, Player* player);
 };
 
 }

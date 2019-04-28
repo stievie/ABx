@@ -46,7 +46,7 @@ public:
         if (GetSize() < len)
             return false;
 
-        char* str = new char[len + 1];
+        char* str = new char[static_cast<size_t>(len) + 1];
 #ifdef _MSC_VER
         memcpy_s(str, len, p_, len);
 #else

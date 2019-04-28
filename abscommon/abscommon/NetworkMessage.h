@@ -1,11 +1,16 @@
 #pragma once
 
-#define NETWORKMESSAGE_MAXSIZE 15340
+#define NETWORKMESSAGE_MAXSIZE 16384
 
 namespace Net {
 
 class NetworkMessage
 {
+private:
+    static std::vector<std::unique_ptr<NetworkMessage>> pool_;
+public:
+    /// Pre allocated network messages
+    static std::unique_ptr<NetworkMessage> GetNew();
 public:
     using MsgSize_t = uint16_t;
     // Headers:

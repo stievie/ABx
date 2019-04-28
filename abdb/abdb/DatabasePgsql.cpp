@@ -12,7 +12,8 @@
 namespace DB {
 
 DatabasePgsql::DatabasePgsql() :
-    Database()
+    Database(),
+    handle_(nullptr)
 {
     const std::string& host = Database::dbHost_;
     const std::string& user = Database::dbUser_;

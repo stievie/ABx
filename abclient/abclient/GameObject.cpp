@@ -8,6 +8,10 @@
 
 GameObject::GameObject(Context* context) :
     LogicComponent(context),
+    id_(0),
+    index_(0),
+    spawnTickServer_(0),
+    undestroyable_(false),
     objectType_(ObjectTypeStatic),
     creatureState_(AB::GameProtocol::CreatureStateIdle),
     hovered_(false),

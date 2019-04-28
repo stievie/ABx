@@ -20,6 +20,8 @@
 Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
+    animatedModel_(nullptr),
+    type_(ModelType::Static),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
@@ -27,7 +29,10 @@ Actor::Actor(Context* context) :
     name_(""),
     profession_(nullptr),
     profession2_(nullptr),
-    sex_(AB::Entities::CharacterSexUnknown)
+    sex_(AB::Entities::CharacterSexUnknown),
+    level_(0),
+    skills_{},
+    speechBubbleVisible_(false)
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_UPDATE);
@@ -452,11 +457,14 @@ void Actor::AddActorUI()
         }
         else
         {
-            classLevel_ = uiRoot->CreateChild<Text>();
-            classLevel_->SetStyleAuto();
-            classLevel_->SetVisible(false);
-            classLevel_->SetText(GetClassLevel());
-            classLevel_->SetFontSize(8);
+            if (IsPlayer())
+            {
+                classLevel_ = uiRoot->CreateChild<Text>();
+                classLevel_->SetStyleAuto();
+                classLevel_->SetVisible(false);
+                classLevel_->SetText(GetClassLevel());
+                classLevel_->SetFontSize(8);
+            }
         }
     }
 }

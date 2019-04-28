@@ -53,7 +53,7 @@ public:
         // Can not make smaller
         assert(value + 1 > inventorySize_);
         // + 1 because Money doesnt count
-        inventorySize_ = value + 1;
+        inventorySize_ = static_cast<size_t>(value) + 1;
     }
     size_t GetCount() const
     {

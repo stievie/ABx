@@ -75,6 +75,7 @@ public:
         realAdrenaline_(0),
         realActivation_(0),
         realOvercast_(0),
+        realHp_(0),
         haveOnCancelled_(false),
         haveOnInterrupted_(false),
         lastError_(AB::GameProtocol::SkillErrorNone),

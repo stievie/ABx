@@ -53,8 +53,8 @@ public:
     Variant(unsigned long long value) : type_(VAR_INT64) { value_.int64Value = static_cast<long long>(value); }
     Variant(bool value) : type_(VAR_BOOL) { value_.boolValue = value; }
     Variant(float value) : type_(VAR_FLOAT) { value_.floatValue = value; }
-    Variant(const std::string& value) : type_(VAR_STRING), stringValue_(value) {}
-    Variant(const char* value) : type_(VAR_STRING), stringValue_(value) {}
+    Variant(const std::string& value) : type_(VAR_STRING), value_{}, stringValue_(value) {}
+    Variant(const char* value) : type_(VAR_STRING), value_{}, stringValue_(value) {}
 
     ~Variant() {};
 

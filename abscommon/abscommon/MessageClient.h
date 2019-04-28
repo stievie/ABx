@@ -53,7 +53,8 @@ public:
         ioService_(io_service),
         resolver_(io_service),
         socket_(io_service),
-        connected_(false)
+        connected_(false),
+        port_(0)
     {
     };
     ~MessageClient() = default;

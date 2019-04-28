@@ -20,6 +20,7 @@ String Options::prefPath_;
 
 Options::Options(Context* context) :
     Object(context),
+    loginPort_(0),
     width_(0),
     height_(0),
     fullscreen_(true),

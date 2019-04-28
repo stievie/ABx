@@ -85,6 +85,7 @@ struct RayQueryResult
 {
     /// Construct with defaults.
     RayQueryResult() :
+        distance_(0.0f),
         object_(nullptr)
     {}
 

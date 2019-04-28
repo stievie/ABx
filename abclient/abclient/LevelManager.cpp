@@ -11,6 +11,7 @@
 LevelManager::LevelManager(Context* context) :
     Object(context),
     fadeWindow_(nullptr),
+    fadeTime_(0),
     levelName_(""),
     lastLevelName_(""),
     level_(nullptr),

@@ -117,6 +117,7 @@ static constexpr unsigned int MAX_ITEM_VALUE = 100;
 static constexpr uint32_t MAX_INVENTOREY_MONEY = 1000 * 1000;  // 1M
 static constexpr uint32_t DEFAULT_CHEST_MONEY = MAX_INVENTOREY_MONEY * 100;
 static constexpr uint32_t MAX_INVENTORY_STACK_SIZE = 250;
+static constexpr uint32_t MAX_CHEST_STACK_SIZE = 250;
 
 }
 

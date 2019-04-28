@@ -146,11 +146,15 @@ private:
 
     static uint32_t ToInt32(const DataBuff& intBytes, uint32_t start)
     {
-        return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
+        return (intBytes[static_cast<size_t>(start) + 3] << 24) | 
+            (intBytes[static_cast<size_t>(start) + 2] << 16) | 
+            (intBytes[static_cast<size_t>(start) + 1] << 8) | 
+            intBytes[static_cast<size_t>(start)];
     }
     static uint16_t ToInt16(const DataBuff& intBytes, uint32_t start)
     {
-        return (intBytes[start + 1] << 8) | intBytes[start];
+        return (intBytes[static_cast<size_t>(start) + 1] << 8) | 
+            intBytes[static_cast<size_t>(start)];
     }
 
     bool MakeRequest(OpCodes opCode, const DataKey& key, DataBuff& data);

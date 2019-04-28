@@ -24,6 +24,8 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
     resigned_(false),
+    loginTime_(0),
+    logoutTime_(0),
     lastPing_(0),
     mailBox_(nullptr),
     party_(nullptr),
@@ -215,10 +217,10 @@ void Player::DeleteMail(const std::string mailUuid)
     if (!mailBox_)
         return;
 
+    Net::NetworkMessage msg;
     if (mailUuid.compare("all") == 0)
     {
         mailBox_->DeleteAll();
-        Net::NetworkMessage msg;
         msg.AddByte(AB::GameProtocol::ServerMessage);
         msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
         msg.AddString(GetName());
@@ -230,7 +232,6 @@ void Player::DeleteMail(const std::string mailUuid)
     AB::Entities::Mail m;
     if (mailBox_->DeleteMail(mailUuid, m))
     {
-        Net::NetworkMessage msg;
         msg.AddByte(AB::GameProtocol::ServerMessage);
         msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
         msg.AddString(GetName());
@@ -245,26 +246,25 @@ void Player::NotifyNewMail()
     if (!mailBox_)
         return;
 
+    Net::NetworkMessage msg;
     if (mailBox_->GetTotalMailCount() > 0)
     {
         // Notify player there are new emails since last check.
-        Net::NetworkMessage msg;
         msg.AddByte(AB::GameProtocol::ServerMessage);
         msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
         msg.AddString(GetName());
         msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-        WriteToOutput(msg);
     }
     if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
     {
         // Notify player that mailbox is full.
-        Net::NetworkMessage msg;
         msg.AddByte(AB::GameProtocol::ServerMessage);
         msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
         msg.AddString(GetName());
         msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
-        WriteToOutput(msg);
     }
+    if (msg.GetSize() != 0)
+        WriteToOutput(msg);
 }
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)
@@ -408,42 +408,44 @@ void Player::PartyKickPlayer(uint32_t playerId)
 
     bool removedMember = false;
     {
-        Net::NetworkMessage nmsg;
+        // Exceeding stack size
+        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
         if (party_->IsMember(player.get()))
         {
             if (!party_->Remove(player.get()))
                 return;
-            nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+            nmsg->AddByte(AB::GameProtocol::PartyPlayerRemoved);
             removedMember = true;
         }
         else if (party_->IsInvited(player.get()))
         {
             if (!party_->RemoveInvite(player))
                 return;
-            nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
+            nmsg->AddByte(AB::GameProtocol::PartyInviteRemoved);
         }
         else
             return;
 
-        nmsg.Add<uint32_t>(id_);                 // Leader
-        nmsg.Add<uint32_t>(playerId);            // Member
-        nmsg.Add<uint32_t>(party_->id_);
-        party_->WriteToMembers(nmsg);
+        nmsg->Add<uint32_t>(id_);                 // Leader
+        nmsg->Add<uint32_t>(playerId);            // Member
+        nmsg->Add<uint32_t>(party_->id_);
+        party_->WriteToMembers(*nmsg.get());
 
         // Also send to player which is removed already
-        player->WriteToOutput(nmsg);
+        player->WriteToOutput(*nmsg.get());
     }
 
     if (removedMember)
     {
         // The kicked player needs a new party
         player->SetParty(std::shared_ptr<Party>());
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
-        nmsg.Add<uint32_t>(player->id_);                           // Acceptor
-        nmsg.Add<uint32_t>(player->id_);                           // Leader
-        nmsg.Add<uint32_t>(player->GetParty()->id_);
-        player->GetParty()->WriteToMembers(nmsg);
+        // Exceeding stack size
+        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
+        nmsg->Add<uint32_t>(player->id_);                           // Acceptor
+        nmsg->Add<uint32_t>(player->id_);                           // Leader
+        nmsg->Add<uint32_t>(player->GetParty()->id_);
+        player->GetParty()->WriteToMembers(*nmsg.get());
     }
 }
 
@@ -454,25 +456,27 @@ void Player::PartyLeave()
         return;
 
     {
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::PartyPlayerRemoved);
+        // Exceeding stack size
+        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::PartyPlayerRemoved);
         auto leader = party_->GetLeader();
-        nmsg.Add<uint32_t>(leader ? leader->id_ : 0);
-        nmsg.Add<uint32_t>(id_);
-        nmsg.Add<uint32_t>(party_->id_);
-        party_->WriteToMembers(nmsg);
+        nmsg->Add<uint32_t>(leader ? leader->id_ : 0);
+        nmsg->Add<uint32_t>(id_);
+        nmsg->Add<uint32_t>(party_->id_);
+        party_->WriteToMembers(*nmsg.get());
         party_->Remove(this);
     }
 
     {
         // We need a new party
         SetParty(std::shared_ptr<Party>());
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
-        nmsg.Add<uint32_t>(id_);                           // Acceptor
-        nmsg.Add<uint32_t>(id_);                           // Leader
-        nmsg.Add<uint32_t>(party_->id_);
-        party_->WriteToMembers(nmsg);
+        // Exceeding stack size
+        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
+        nmsg->Add<uint32_t>(id_);                           // Acceptor
+        nmsg->Add<uint32_t>(id_);                           // Leader
+        nmsg->Add<uint32_t>(party_->id_);
+        party_->WriteToMembers(*nmsg.get());
     }
 }
 
@@ -662,12 +666,13 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
         {
             if (channel->Talk(this, msg))
             {
-                Net::NetworkMessage nmsg;
-                nmsg.AddByte(AB::GameProtocol::ServerMessage);
-                nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
-                nmsg.AddString(name);
-                nmsg.AddString(msg);
-                WriteToOutput(nmsg);
+                // Exceeding stack size
+                std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+                nmsg->AddByte(AB::GameProtocol::ServerMessage);
+                nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
+                nmsg->AddString(name);
+                nmsg->AddString(msg);
+                WriteToOutput(*nmsg.get());
             }
         }
         return;
@@ -683,23 +688,24 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
         std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
         if (channel->Talk(this, msg))
         {
-            Net::NetworkMessage nmsg;
-            nmsg.AddByte(AB::GameProtocol::ServerMessage);
-            nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
-            nmsg.AddString(name);
-            nmsg.AddString(msg);
-            WriteToOutput(nmsg);
+            // Exceeding stack size
+            std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+            nmsg->AddByte(AB::GameProtocol::ServerMessage);
+            nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
+            nmsg->AddString(name);
+            nmsg->AddString(msg);
+            WriteToOutput(*nmsg.get());
             return;
         }
     }
 
     // Send not online message
-    Net::NetworkMessage nmsg;
-    nmsg.AddByte(AB::GameProtocol::ServerMessage);
-    nmsg.AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
-    nmsg.AddString(GetName());
-    nmsg.AddString(name);
-    WriteToOutput(nmsg);
+    std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
+    nmsg->AddString(GetName());
+    nmsg->AddString(name);
+    WriteToOutput(*nmsg.get());
 }
 
 void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
@@ -761,26 +767,27 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
 {
     if (account_.type < AB::Entities::AccountTypeGamemaster)
     {
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::ServerMessage);
-        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
-        nmsg.AddString(GetName());
-        nmsg.AddString("");
-        WriteToOutput(nmsg);
+        // Exceeding stack size
+        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::ServerMessage);
+        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+        nmsg->AddString(GetName());
+        nmsg->AddString("");
+        WriteToOutput(*nmsg.get());
         return;
     }
 
-    Net::NetworkMessage nmsg;
+    std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
     std::stringstream ss;
     ss << transformation_.position_.x_ << "," <<
         transformation_.position_.y_ << "," <<
         transformation_.position_.z_;
     ss << " " << transformation_.GetYRotation();
-    nmsg.AddByte(AB::GameProtocol::ServerMessage);
-    nmsg.AddByte(AB::GameProtocol::ServerMessageTypePos);
-    nmsg.AddString(GetName());
-    nmsg.AddString(ss.str());
-    WriteToOutput(nmsg);
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePos);
+    nmsg->AddString(GetName());
+    nmsg->AddString(ss.str());
+    WriteToOutput(*nmsg.get());
 }
 
 void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& message)

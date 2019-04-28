@@ -10,6 +10,9 @@
 #include "MathUtils.h"
 #include "AB/Entities/TypedItemList.h"
 #include "Player.h"
+#include "Profiler.h"
+#include "Scheduler.h"
+#include "ThreadPool.h"
 
 namespace Game {
 
@@ -125,6 +128,17 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
     }
 }
 
+bool ItemFactory::CreateDBItem(AB::Entities::ConcreteItem item)
+{
+    auto client = GetSubsystem<IO::DataClient>();
+    if (!client->Create(item))
+    {
+        LOG_ERROR << "Unable to create concrete item" << std::endl;
+        return false;
+    }
+    return true;
+}
+
 std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level /* = LEVEL_CAP */,
@@ -156,16 +170,14 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     ci.creation = Utils::Tick();
     CalculateValue(gameItem, level, ci);
 
-    if (!client->Create(ci))
-    {
-        LOG_ERROR << "Unable to create concrete item" << std::endl;
-        return std::unique_ptr<Item>();
-    }
     // Create item stats for this drop
     if (!result->GenerateConcrete(ci, level, maxStats))
         return std::unique_ptr<Item>();
+
     // Save the created stats
-    client->Update(result->concreteItem_);
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreateDBItem, this, result->concreteItem_))
+    );
     return result;
 }
 
@@ -384,8 +396,9 @@ void ItemFactory::DeleteMap(const std::string& uuid)
 }
 
 std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid, 
-    uint32_t level, const std::string& playerUuid)
+    uint32_t level, Player* target)
 {
+    AB_PROFILE;
     auto it = dropChances_.find(mapUuid);
     if (it == dropChances_.end())
         // Maybe outpost -> no drops
@@ -402,7 +415,7 @@ std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUui
         // There is a chance that nothing drops
         return std::unique_ptr<Item>();
 
-    return CreateItem(itemUuid, instanceUuid, mapUuid, level, false, Utils::Uuid::EMPTY_UUID, playerUuid);
+    return CreateItem(itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid);
 }
 
 }

@@ -43,6 +43,7 @@ private:
 public:
     MessageMsg() :
         bodyLength_(0),
+        data_{},
         type_(MessageType::Unknown)
     { }
     ~MessageMsg() = default;

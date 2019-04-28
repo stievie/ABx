@@ -34,6 +34,7 @@ Game::Game() :
     state_(ExecutionState::Terminated),
     lastUpdate_(0),
     noplayerTime_(0),
+    id_(0),
     startTime_(0)
 {
     InitializeLua();
@@ -287,7 +288,7 @@ void Game::SendStatus()
 
 void Game::ResetStatus()
 {
-    gameStatus_ = std::make_unique<Net::NetworkMessage>();
+    gameStatus_ = Net::NetworkMessage::GetNew();
 }
 
 Player* Game::GetPlayerById(uint32_t playerId)
@@ -393,7 +394,9 @@ std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
         return std::shared_ptr<ItemDrop>();
 
     Player* target = (*p).second;
-    auto item = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), target->data_.uuid);
+    if (!target)
+        return std::shared_ptr<ItemDrop>();
+    auto item = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), target);
     if (!item)
         return std::shared_ptr<ItemDrop>();
 
