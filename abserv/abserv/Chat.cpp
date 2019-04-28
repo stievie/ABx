@@ -113,17 +113,15 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
 {
     if (auto g = game_.lock())
     {
-        Net::NetworkMessage msg;
+        auto msg = Net::NetworkMessage::GetNew();
         const PlayersList& players = g->GetPlayers();
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
-        msg.Add<uint32_t>(player->id_);
-        msg.AddString(player->GetName());
-        msg.AddString(text);
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelGeneral);
+        msg->Add<uint32_t>(player->id_);
+        msg->AddString(player->GetName());
+        msg->AddString(text);
         for (auto& p : players)
-        {
-            p.second->WriteToOutput(msg);
-        }
+            p.second->WriteToOutput(*msg.get());
         return true;
     }
     return false;
@@ -133,17 +131,15 @@ bool GameChatChannel::TalkNpc(Npc* npc, const std::string& text)
 {
     if (auto g = game_.lock())
     {
-        Net::NetworkMessage msg;
+        auto msg = Net::NetworkMessage::GetNew();
         const PlayersList& players = g->GetPlayers();
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelGeneral);
-        msg.Add<uint32_t>(npc->id_);
-        msg.AddString(npc->GetName());
-        msg.AddString(text);
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelGeneral);
+        msg->Add<uint32_t>(npc->id_);
+        msg->AddString(npc->GetName());
+        msg->AddString(text);
         for (auto& p : players)
-        {
-            p.second->WriteToOutput(msg);
-        }
+            p.second->WriteToOutput(*msg.get());
         return true;
     }
     return false;
@@ -165,13 +161,13 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
 {
     if (auto p = player_.lock())
     {
-        Net::NetworkMessage msg;
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelWhisper);
-        msg.Add<uint32_t>(player->id_);
-        msg.AddString(player->GetName());
-        msg.AddString(text);
-        p->WriteToOutput(msg);
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelWhisper);
+        msg->Add<uint32_t>(player->id_);
+        msg->AddString(player->GetName());
+        msg->AddString(text);
+        p->WriteToOutput(*msg.get());
         return true;
     }
 
@@ -192,13 +188,13 @@ bool WhisperChatChannel::Talk(const std::string& playerName, const std::string& 
 {
     if (auto p = player_.lock())
     {
-        Net::NetworkMessage msg;
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelWhisper);
-        msg.Add<uint32_t>(0);
-        msg.AddString(playerName);
-        msg.AddString(text);
-        p->WriteToOutput(msg);
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelWhisper);
+        msg->Add<uint32_t>(0);
+        msg->AddString(playerName);
+        msg->AddString(text);
+        p->WriteToOutput(*msg.get());
         return true;
     }
     return false;
@@ -236,13 +232,13 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
             // This player not on this server.
             continue;
 
-        Net::NetworkMessage msg;
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelGuild);
-        msg.Add<uint32_t>(0);
-        msg.AddString(playerName);
-        msg.AddString(text);
-        player->WriteToOutput(msg);
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelGuild);
+        msg->Add<uint32_t>(0);
+        msg->AddString(playerName);
+        msg->AddString(text);
+        player->WriteToOutput(*msg.get());
     }
 }
 
@@ -260,34 +256,32 @@ bool TradeChatChannel::Talk(Player* player, const std::string& text)
 
 void TradeChatChannel::Broadcast(const std::string& playerName, const std::string& text)
 {
-    Net::NetworkMessage msg;
+    auto msg = Net::NetworkMessage::GetNew();
     const auto& players = GetSubsystem<PlayerManager>()->GetPlayers();
-    msg.AddByte(AB::GameProtocol::ChatMessage);
-    msg.AddByte(AB::GameProtocol::ChatChannelTrade);
-    msg.Add<uint32_t>(0);
-    msg.AddString(playerName);
-    msg.AddString(text);
+    msg->AddByte(AB::GameProtocol::ChatMessage);
+    msg->AddByte(AB::GameProtocol::ChatChannelTrade);
+    msg->Add<uint32_t>(0);
+    msg->AddString(playerName);
+    msg->AddString(text);
     for (const auto& player : players)
-    {
-        player.second->WriteToOutput(msg);
-    }
+        player.second->WriteToOutput(*msg.get());
 }
 
 bool PartyChatChannel::Talk(Player* player, const std::string& text)
 {
     if (party_)
     {
-        Net::NetworkMessage msg;
+        auto msg = Net::NetworkMessage::GetNew();
         const auto& players = party_->GetMembers();
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelParty);
-        msg.Add<uint32_t>(player->id_);
-        msg.AddString(player->GetName());
-        msg.AddString(text);
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelParty);
+        msg->Add<uint32_t>(player->id_);
+        msg->AddString(player->GetName());
+        msg->AddString(text);
         for (auto& wp : players)
         {
             if (auto sp = wp.lock())
-                sp->WriteToOutput(msg);
+                sp->WriteToOutput(*msg.get());
         }
         return true;
     }
@@ -298,17 +292,17 @@ bool PartyChatChannel::TalkNpc(Npc* npc, const std::string& text)
 {
     if (party_)
     {
-        Net::NetworkMessage msg;
+        auto msg = Net::NetworkMessage::GetNew();
         const auto& players = party_->GetMembers();
-        msg.AddByte(AB::GameProtocol::ChatMessage);
-        msg.AddByte(AB::GameProtocol::ChatChannelParty);
-        msg.Add<uint32_t>(npc->id_);
-        msg.AddString(npc->GetName());
-        msg.AddString(text);
+        msg->AddByte(AB::GameProtocol::ChatMessage);
+        msg->AddByte(AB::GameProtocol::ChatChannelParty);
+        msg->Add<uint32_t>(npc->id_);
+        msg->AddString(npc->GetName());
+        msg->AddString(text);
         for (auto& wp : players)
         {
             if (auto sp = wp.lock())
-                sp->WriteToOutput(msg);
+                sp->WriteToOutput(*msg.get());
         }
         return true;
     }

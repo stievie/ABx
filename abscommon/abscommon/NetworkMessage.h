@@ -1,8 +1,14 @@
 #pragma once
 
+/// Size of the buffer (16kB)
 #define NETWORKMESSAGE_MAXSIZE 16384
 
 namespace Net {
+
+/// Size of the pool in Byte (4MB)
+static constexpr size_t NETWORKMESSAGE_POOLSIZE = 4096 * 1000;
+/// Number of messages to preallocate
+static constexpr size_t NETWORKMESSAGE_POOLCOUNT = NETWORKMESSAGE_POOLSIZE / NETWORKMESSAGE_MAXSIZE;
 
 class NetworkMessage
 {

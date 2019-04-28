@@ -543,7 +543,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     // This is sent to all players.
     // Only called when the player enters a game. All spawns during the game are sent
     // when they happen.
-    Net::NetworkMessage msg;
+    auto msg = Net::NetworkMessage::GetNew();
     const auto write = [&msg, &player](const std::shared_ptr<GameObject>& o)
     {
         if (o->GetType() < AB::GameProtocol::ObjectTypeSentToPlayer)
@@ -553,8 +553,8 @@ void Game::SendSpawnAll(uint32_t playerId)
             // Don't send spawn of our self
             return;
 
-        msg.AddByte(AB::GameProtocol::GameSpawnObjectExisting);
-        o->WriteSpawnData(msg);
+        msg->AddByte(AB::GameProtocol::GameSpawnObjectExisting);
+        o->WriteSpawnData(*msg.get());
     };
 
     for (const auto& o : objects_)
@@ -567,8 +567,8 @@ void Game::SendSpawnAll(uint32_t playerId)
         write(o);
     }
 
-    if (msg.GetSize() != 0)
-        player->WriteToOutput(msg);
+    if (msg->GetSize() != 0)
+        player->WriteToOutput(*msg.get());
 }
 
 void Game::PlayerJoin(uint32_t playerId)

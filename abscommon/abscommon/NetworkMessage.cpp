@@ -14,7 +14,7 @@ std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
     {
         // 16kB * 200 = 3.2MB
         // Reallocation ~ 5 secs with no activity
-        for (size_t i = 0; i < 200; ++i)
+        for (size_t i = 0; i < NETWORKMESSAGE_POOLCOUNT; ++i)
             pool_.push_back(std::make_unique<NetworkMessage>());
     }
     auto msg = std::move(pool_.back());
@@ -148,9 +148,9 @@ void NetworkMessage::AddStringEncrypted(const std::string& value)
 
 bool NetworkMessage::Compress()
 {
-    char buff[NETWORKMESSAGE_MAXSIZE];
+    std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_MAXSIZE);
     const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
-    int size = LZ4_compress_default(src, buff, GetSize(), NETWORKMESSAGE_MAXSIZE);
+    int size = LZ4_compress_default(src, buff.get(), GetSize(), NETWORKMESSAGE_MAXSIZE);
     if (size > 0)
     {
 /*
@@ -169,9 +169,9 @@ bool NetworkMessage::Compress()
 
 bool NetworkMessage::Uncompress()
 {
-    char buff[NETWORKMESSAGE_MAXSIZE];
+    std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_MAXSIZE);
     const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
-    int size = LZ4_decompress_safe(src, buff, GetSize(), NETWORKMESSAGE_MAXSIZE);
+    int size = LZ4_decompress_safe(src, buff.get(), GetSize(), NETWORKMESSAGE_MAXSIZE);
     if (size > 0)
     {
         /*

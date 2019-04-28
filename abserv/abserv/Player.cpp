@@ -103,9 +103,9 @@ void Player::Logout()
 void Player::Ping()
 {
     lastPing_ = Utils::Tick();
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::GamePong);
-    WriteToOutput(msg);
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::GamePong);
+    WriteToOutput(*msg.get());
 }
 
 void Player::UpdateMailBox()
@@ -121,19 +121,20 @@ void Player::GetMailHeaders()
     UpdateMailBox();
     if (!mailBox_)
         return;
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::MailHeaders);
-    msg.Add<uint16_t>(static_cast<uint16_t>(mailBox_->GetTotalMailCount()));
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::MailHeaders);
+    msg->Add<uint16_t>(static_cast<uint16_t>(mailBox_->GetTotalMailCount()));
     const AB::Entities::MailList& mails = mailBox_->GetMails();
     for (const auto& mail : mails.mails)
     {
-        msg.AddString(mail.uuid);
-        msg.AddString(mail.fromName);
-        msg.AddString(mail.subject);
-        msg.Add<int64_t>(mail.created);
-        msg.AddByte(mail.isRead ? 1 : 0);
+        msg->AddString(mail.uuid);
+        msg->AddString(mail.fromName);
+        msg->AddString(mail.subject);
+        msg->Add<int64_t>(mail.created);
+        msg->AddByte(mail.isRead ? 1 : 0);
     }
-    WriteToOutput(msg);
+    WriteToOutput(*msg.get());
 }
 
 void Player::GetInventory()
@@ -142,20 +143,20 @@ void Player::GetInventory()
     if (count == 0)
         return;
 
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::InventoryContent);
-    msg.Add<uint16_t>(static_cast<uint16_t>(inventoryComp_->GetCount()));
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::InventoryContent);
+    msg->Add<uint16_t>(static_cast<uint16_t>(inventoryComp_->GetCount()));
     inventoryComp_->VisitInventory([&msg](const Item* current) 
     {
-        msg.Add<uint16_t>(current->data_.type);
-        msg.Add<uint32_t>(current->data_.index);
-        msg.Add<uint8_t>(static_cast<uint8_t>(current->concreteItem_.storagePlace));
-        msg.Add<uint16_t>(current->concreteItem_.storagePos);
-        msg.Add<uint32_t>(current->concreteItem_.count);
-        msg.Add<uint16_t>(current->concreteItem_.value);
+        msg->Add<uint16_t>(current->data_.type);
+        msg->Add<uint32_t>(current->data_.index);
+        msg->Add<uint8_t>(static_cast<uint8_t>(current->concreteItem_.storagePlace));
+        msg->Add<uint16_t>(current->concreteItem_.storagePos);
+        msg->Add<uint32_t>(current->concreteItem_.count);
+        msg->Add<uint16_t>(current->concreteItem_.value);
     });
 
-    WriteToOutput(msg);
+    WriteToOutput(*msg.get());
 }
 
 void Player::DestroyInventoryItem(uint16_t pos)
@@ -167,24 +168,24 @@ void Player::DestroyInventoryItem(uint16_t pos)
         IO::DataClient* cli = GetSubsystem<IO::DataClient>();
         cli->Invalidate(inv);
 
-        Net::NetworkMessage msg;
-        msg.AddByte(AB::GameProtocol::InventoryItemRemoved);
-        msg.Add<uint16_t>(pos);
-        WriteToOutput(msg);
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::InventoryItemRemoved);
+        msg->Add<uint16_t>(pos);
+        WriteToOutput(*msg.get());
     }
 }
 
 void Player::SendMail(const std::string recipient, const std::string subject, const std::string body)
 {
-    Net::NetworkMessage nmsg;
-    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
     if (IO::IOMail::SendMailToPlayer(recipient, data_.accountUuid, GetName(), subject, body))
-        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
+        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailSent);
     else
-        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
-    nmsg.AddString(recipient);
-    nmsg.AddString("");                // Data
-    WriteToOutput(nmsg);
+        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
+    nmsg->AddString(recipient);
+    nmsg->AddString("");                // Data
+    WriteToOutput(*nmsg.get());
 }
 
 void Player::GetMail(const std::string mailUuid)
@@ -197,16 +198,16 @@ void Player::GetMail(const std::string mailUuid)
     AB::Entities::Mail m;
     if (mailBox_->ReadMail(mailUuid, m))
     {
-        Net::NetworkMessage msg;
-        msg.AddByte(AB::GameProtocol::MailComplete);
-        msg.AddString(m.fromAccountUuid);
-        msg.AddString(m.fromName);
-        msg.AddString(m.toName);
-        msg.AddString(m.subject);
-        msg.AddString(m.message);
-        msg.Add<int64_t>(m.created);
-        msg.AddByte(m.isRead ? 1 : 0);
-        WriteToOutput(msg);
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::MailComplete);
+        msg->AddString(m.fromAccountUuid);
+        msg->AddString(m.fromName);
+        msg->AddString(m.toName);
+        msg->AddString(m.subject);
+        msg->AddString(m.message);
+        msg->Add<int64_t>(m.created);
+        msg->AddByte(m.isRead ? 1 : 0);
+        WriteToOutput(*msg.get());
     }
 }
 
@@ -217,26 +218,27 @@ void Player::DeleteMail(const std::string mailUuid)
     if (!mailBox_)
         return;
 
-    Net::NetworkMessage msg;
     if (mailUuid.compare("all") == 0)
     {
+        auto msg = Net::NetworkMessage::GetNew();
         mailBox_->DeleteAll();
-        msg.AddByte(AB::GameProtocol::ServerMessage);
-        msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
-        msg.AddString(GetName());
-        msg.AddString(mailUuid);
-        WriteToOutput(msg);
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
+        msg->AddString(GetName());
+        msg->AddString(mailUuid);
+        WriteToOutput(*msg.get());
         return;
     }
 
     AB::Entities::Mail m;
     if (mailBox_->DeleteMail(mailUuid, m))
     {
-        msg.AddByte(AB::GameProtocol::ServerMessage);
-        msg.AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
-        msg.AddString(GetName());
-        msg.AddString(mailUuid);
-        WriteToOutput(msg);
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
+        msg->AddString(GetName());
+        msg->AddString(mailUuid);
+        WriteToOutput(*msg.get());
     }
 }
 
@@ -246,25 +248,25 @@ void Player::NotifyNewMail()
     if (!mailBox_)
         return;
 
-    Net::NetworkMessage msg;
+    auto msg = Net::NetworkMessage::GetNew();
     if (mailBox_->GetTotalMailCount() > 0)
     {
         // Notify player there are new emails since last check.
-        msg.AddByte(AB::GameProtocol::ServerMessage);
-        msg.AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
-        msg.AddString(GetName());
-        msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypeNewMail);
+        msg->AddString(GetName());
+        msg->AddString(std::to_string(mailBox_->GetTotalMailCount()));
     }
     if (mailBox_->GetTotalMailCount() >= AB::Entities::Limits::MAX_MAIL_COUNT)
     {
         // Notify player that mailbox is full.
-        msg.AddByte(AB::GameProtocol::ServerMessage);
-        msg.AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
-        msg.AddString(GetName());
-        msg.AddString(std::to_string(mailBox_->GetTotalMailCount()));
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypeMailboxFull);
+        msg->AddString(GetName());
+        msg->AddString(std::to_string(mailBox_->GetTotalMailCount()));
     }
-    if (msg.GetSize() != 0)
-        WriteToOutput(msg);
+    if (msg->GetSize() != 0)
+        WriteToOutput(*msg.get());
 }
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)
@@ -279,23 +281,23 @@ void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType ty
 {
     Actor::OnPingObject(targetId, type, skillIndex);
 
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::GameObjectPingTarget);
-    msg.Add<uint32_t>(id_);
-    msg.Add<uint32_t>(targetId);
-    msg.Add<uint8_t>(static_cast<uint8_t>(type));
-    msg.Add<int8_t>(static_cast<int8_t>(skillIndex));
-    GetParty()->WriteToMembers(msg);
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::GameObjectPingTarget);
+    msg->Add<uint32_t>(id_);
+    msg->Add<uint32_t>(targetId);
+    msg->Add<uint8_t>(static_cast<uint8_t>(type));
+    msg->Add<int8_t>(static_cast<int8_t>(skillIndex));
+    GetParty()->WriteToMembers(*msg.get());
 }
 
 void Player::OnInventoryFull()
 {
     Actor::OnInventoryFull();
 
-    Net::NetworkMessage msg;
-    msg.AddByte(AB::GameProtocol::PlayerError);
-    msg.AddByte(AB::GameProtocol::PlayerErrorInventoryFull);
-    WriteToOutput(msg);
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::PlayerError);
+    msg->AddByte(AB::GameProtocol::PlayerErrorInventoryFull);
+    WriteToOutput(*msg.get());
 }
 
 void Player::SetParty(std::shared_ptr<Party> party)
@@ -345,15 +347,15 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
     {
         if (realItem)
         {
-            Net::NetworkMessage msg;
-            msg.AddByte(AB::GameProtocol::InventoryItemAdded);
-            msg.Add<uint16_t>(realItem->data_.type);
-            msg.Add<uint32_t>(realItem->data_.index);
-            msg.Add<uint8_t>(static_cast<uint8_t>(realItem->concreteItem_.storagePlace));
-            msg.Add<uint16_t>(realItem->concreteItem_.storagePos);
-            msg.Add<uint32_t>(realItem->concreteItem_.count);
-            msg.Add<uint16_t>(realItem->concreteItem_.value);
-            WriteToOutput(msg);
+            auto msg = Net::NetworkMessage::GetNew();
+            msg->AddByte(AB::GameProtocol::InventoryItemAdded);
+            msg->Add<uint16_t>(realItem->data_.type);
+            msg->Add<uint32_t>(realItem->data_.index);
+            msg->Add<uint8_t>(static_cast<uint8_t>(realItem->concreteItem_.storagePlace));
+            msg->Add<uint16_t>(realItem->concreteItem_.storagePos);
+            msg->Add<uint32_t>(realItem->concreteItem_.count);
+            msg->Add<uint16_t>(realItem->concreteItem_.value);
+            WriteToOutput(*msg.get());
         }
 
         return true;
@@ -377,15 +379,15 @@ void Player::PartyInvitePlayer(uint32_t playerId)
     {
         if (party_->Invite(player))
         {
-            Net::NetworkMessage nmsg;
-            nmsg.AddByte(AB::GameProtocol::PartyPlayerInvited);
-            nmsg.Add<uint32_t>(id_);                             // Leader
-            nmsg.Add<uint32_t>(playerId);                        // Invitee
-            nmsg.Add<uint32_t>(party_->id_);
+            auto nmsg = Net::NetworkMessage::GetNew();
+            nmsg->AddByte(AB::GameProtocol::PartyPlayerInvited);
+            nmsg->Add<uint32_t>(id_);                             // Leader
+            nmsg->Add<uint32_t>(playerId);                        // Invitee
+            nmsg->Add<uint32_t>(party_->id_);
             // Send us confirmation
-            party_->WriteToMembers(nmsg);
+            party_->WriteToMembers(*nmsg.get());
             // Send player he was invited
-            player->WriteToOutput(nmsg);
+            player->WriteToOutput(*nmsg.get());
         }
     }
 }
@@ -493,12 +495,12 @@ void Player::PartyAccept(uint32_t playerId)
         PartyLeave();
         if (leader->GetParty()->Add(GetThis()))
         {
-            Net::NetworkMessage nmsg;
-            nmsg.AddByte(AB::GameProtocol::PartyPlayerAdded);
-            nmsg.Add<uint32_t>(id_);                           // Acceptor
-            nmsg.Add<uint32_t>(playerId);                      // Leader
-            nmsg.Add<uint32_t>(party_->id_);
-            party_->WriteToMembers(nmsg);
+            auto nmsg = Net::NetworkMessage::GetNew();
+            nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
+            nmsg->Add<uint32_t>(id_);                           // Acceptor
+            nmsg->Add<uint32_t>(playerId);                      // Leader
+            nmsg->Add<uint32_t>(party_->id_);
+            party_->WriteToMembers(*nmsg.get());
 #ifdef DEBUG_GAME
             LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->id_ << std::endl;
 #endif
@@ -517,15 +519,15 @@ void Player::PartyRejectInvite(uint32_t inviterId)
     {
         if (leader->GetParty()->RemoveInvite(GetThis()))
         {
-            Net::NetworkMessage nmsg;
-            nmsg.AddByte(AB::GameProtocol::PartyInviteRemoved);
-            nmsg.Add<uint32_t>(inviterId);                // Leader
-            nmsg.Add<uint32_t>(id_);                      // We
-            nmsg.Add<uint32_t>(leader->GetParty()->id_);
+            auto nmsg = Net::NetworkMessage::GetNew();
+            nmsg->AddByte(AB::GameProtocol::PartyInviteRemoved);
+            nmsg->Add<uint32_t>(inviterId);                // Leader
+            nmsg->Add<uint32_t>(id_);                      // We
+            nmsg->Add<uint32_t>(leader->GetParty()->id_);
             // Inform the party
-            leader->GetParty()->WriteToMembers(nmsg);
+            leader->GetParty()->WriteToMembers(*nmsg.get());
             // Inform us
-            WriteToOutput(nmsg);
+            WriteToOutput(*nmsg.get());
         }
     }
 }
@@ -535,20 +537,20 @@ void Player::PartyGetMembers(uint32_t partyId)
     std::shared_ptr<Party> party = GetSubsystem<PartyManager>()->Get(partyId);
     if (party)
     {
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::PartyInfoMembers);
-        nmsg.Add<uint32_t>(partyId);
+        auto nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::PartyInfoMembers);
+        nmsg->Add<uint32_t>(partyId);
         size_t count = party->GetMemberCount();
         const auto& members = party->GetMembers();
-        nmsg.AddByte(static_cast<uint8_t>(count));
+        nmsg->AddByte(static_cast<uint8_t>(count));
         for (auto& m : members)
         {
             if (auto sm = m.lock())
-                nmsg.Add<uint32_t>(sm->id_);
+                nmsg->Add<uint32_t>(sm->id_);
             else
-                nmsg.Add<uint32_t>(0);
+                nmsg->Add<uint32_t>(0);
         }
-        WriteToOutput(nmsg);
+        WriteToOutput(*nmsg.get());
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Player: " << id_ << ", Party: " << partyId << ", Count: " << static_cast<int>(count) << std::endl;
 #endif
@@ -632,22 +634,22 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
 
 void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
 {
-    Net::NetworkMessage nmsg;
-    nmsg.AddByte(AB::GameProtocol::ServerMessage);
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
     if (account_.type >= AB::Entities::AccountTypeGamemaster)
     {
         // Since it's more for debugging, it's only available for >= GM
-        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeServerId);
-        nmsg.AddString(GetName());
-        nmsg.AddString(Application::Instance->GetServerId());
+        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeServerId);
+        nmsg->AddString(GetName());
+        nmsg->AddString(Application::Instance->GetServerId());
     }
     else
     {
-        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
-        nmsg.AddString(GetName());
-        nmsg.AddString("");
+        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+        nmsg->AddString(GetName());
+        nmsg->AddString("");
     }
-    WriteToOutput(nmsg);
+    WriteToOutput(*nmsg.get());
 }
 
 void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)
@@ -741,26 +743,26 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
     // In seconds
     uint32_t age = static_cast<uint32_t>((Utils::Tick() - data_.creation) / 1000);
 
-    Net::NetworkMessage nmsg;
-    nmsg.AddByte(AB::GameProtocol::ServerMessage);
-    nmsg.AddByte(AB::GameProtocol::ServerMessageTypeAge);
-    nmsg.AddString(GetName());
-    nmsg.AddString(std::to_string(age) + ":" + std::to_string(playTime));
-    WriteToOutput(nmsg);
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeAge);
+    nmsg->AddString(GetName());
+    nmsg->AddString(std::to_string(age) + ":" + std::to_string(playTime));
+    WriteToOutput(*nmsg.get());
 }
 
 void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
 {
-    Net::NetworkMessage nmsg;
+    auto nmsg = Net::NetworkMessage::GetNew();
     int maxHp = resourceComp_.GetMaxHealth();
     int hp = resourceComp_.GetHealth();
     int maxE = resourceComp_.GetMaxEnergy();
     int e = resourceComp_.GetEnergy();
-    nmsg.AddByte(AB::GameProtocol::ServerMessage);
-    nmsg.AddByte(AB::GameProtocol::ServerMessageTypeHp);
-    nmsg.AddString(GetName());
-    nmsg.AddString(std::to_string(hp) + ":" + std::to_string(maxHp) + "|" + std::to_string(e) + ":" + std::to_string(maxE));
-    WriteToOutput(nmsg);
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeHp);
+    nmsg->AddString(GetName());
+    nmsg->AddString(std::to_string(hp) + ":" + std::to_string(maxHp) + "|" + std::to_string(e) + ":" + std::to_string(maxE));
+    WriteToOutput(*nmsg.get());
 }
 
 void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
@@ -860,12 +862,12 @@ void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
         Die();
     else
     {
-        Net::NetworkMessage nmsg;
-        nmsg.AddByte(AB::GameProtocol::ServerMessage);
-        nmsg.AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
-        nmsg.AddString(GetName());
-        nmsg.AddString("");
-        WriteToOutput(nmsg);
+        auto nmsg = Net::NetworkMessage::GetNew();
+        nmsg->AddByte(AB::GameProtocol::ServerMessage);
+        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+        nmsg->AddString(GetName());
+        nmsg->AddString("");
+        WriteToOutput(*nmsg.get());
     }
 }
 

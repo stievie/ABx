@@ -20,7 +20,7 @@
 #else
 #endif
 
-//#define _NPROFILING
+#define _NPROFILING
 #if !defined(_NPROFILING)
 #define _PROFILING
 #endif

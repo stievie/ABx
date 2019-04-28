@@ -121,7 +121,7 @@ void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
 
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 {
-    Net::NetworkMessage nmsg;
+    auto nmsg = Net::NetworkMessage::GetNew();
     IO::PropReadStream prop;
     if (!msg.GetPropStream(prop))
         return;
@@ -143,17 +143,17 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
 #ifdef _DEBUG
         LOG_DEBUG << "Sending server joined message" << std::endl;
 #endif
-        nmsg.AddByte(AB::GameProtocol::ServerJoined);
+        nmsg->AddByte(AB::GameProtocol::ServerJoined);
     }
     else
     {
 #ifdef _DEBUG
         LOG_DEBUG << "Sending server left message" << std::endl;
 #endif
-        nmsg.AddByte(AB::GameProtocol::ServerLeft);
+        nmsg->AddByte(AB::GameProtocol::ServerLeft);
     }
 
-    nmsg.Add<AB::Entities::ServiceType>(s.type);
+    nmsg->Add<AB::Entities::ServiceType>(s.type);
 
     /*
     The client expects the following
@@ -164,12 +164,12 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
     output->AddStringEncrypted(service.name);
     */
 
-    nmsg.AddString(s.uuid);
-    nmsg.AddString(s.host);
-    nmsg.Add<uint16_t>(s.port);
-    nmsg.AddString(s.location);
-    nmsg.AddString(s.name);
-    GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(nmsg);
+    nmsg->AddString(s.uuid);
+    nmsg->AddString(s.host);
+    nmsg->Add<uint16_t>(s.port);
+    nmsg->AddString(s.location);
+    nmsg->AddString(s.name);
+    GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(*nmsg.get());
 }
 
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
