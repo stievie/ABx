@@ -1,15 +1,8 @@
+include("/scripts/includes/create_npcs.lua")
+
 -- Game start up
 function onStart()
-  local portal = self:AddNpc("/scripts/actors/logic/portal.lua")
-  if (portal ~= nil) then
-    portal:SetName("Rhodes Arena")
-    -- Map ID where this portal leads to
-    portal:SetVarString("destination", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
-    local x = -20.059
-    local z = -0.00870347
-    local y = 26.7
-    portal:SetPosition(x, y, z)
-  end
+  createPortal(self, -20.059, 26.7, -0.00870347, "Rhodes Arena", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
 
   local smith = self:AddNpc("/scripts/actors/npcs/smith.lua")
   if (smith ~= nil) then
@@ -47,12 +40,8 @@ function onStart()
     ped2:SetHomePos(x, y, z)
   end
 
-  local chest = self:AddNpc("/scripts/actors/logic/account_chest.lua")
+  local chest = createChest(self, 0.8, 15.0)
   if (chest ~= nil) then
-    local x = 0.8
-    local z = 15.0
-    local y = self:GetTerrainHeight(x, z)
-    chest:SetPosition(x, y, z)
     chest:SetRotation(90)
   end
 end
