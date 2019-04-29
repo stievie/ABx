@@ -121,7 +121,7 @@ std::string decode(const void* data, const size_t len)
     }
 
     str.resize(j);
-    return std::move(str);
+    return str;
 }
 #endif
 
