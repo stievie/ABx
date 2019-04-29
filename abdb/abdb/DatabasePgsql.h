@@ -6,7 +6,7 @@
 #ifdef _WIN32
 #include <libpq-fe.h>
 #else
-#include <postgresql/libpq-fe.h>
+#include <libpq-fe.h>
 #endif
 
 namespace DB {

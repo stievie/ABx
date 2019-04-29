@@ -6,6 +6,7 @@
 #include <fstream>
 #include <base64.h>
 #include "Logger.h"
+#include <functional>
 
 #include "DebugNew.h"
 
