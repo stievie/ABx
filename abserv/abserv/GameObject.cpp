@@ -30,6 +30,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("QueryObjects",     &GameObject::_LuaQueryObjects)
         .addFunction("Raycast",          &GameObject::_LuaRaycast)
         .addFunction("SetBoundingBox",   &GameObject::_LuaSetBoundingBox)
+        .addFunction("SetBoundingSize",  &GameObject::_LuaSetBoundingSize)
         .addFunction("GetVarString",     &GameObject::_LuaGetVarString)
         .addFunction("SetVarString",     &GameObject::_LuaSetVarString)
         .addFunction("GetVarNumber",     &GameObject::_LuaGetVarNumber)
@@ -415,6 +416,29 @@ void GameObject::_LuaSetBoundingBox(float minX, float minY, float minZ, float ma
         auto obj = shape->Object();
         obj->min_ = Math::Vector3(minX, minY, minZ);
         obj->max_ = Math::Vector3(maxX, maxY, maxZ);
+    }
+}
+
+void GameObject::_LuaSetBoundingSize(float x, float y, float z)
+{
+    switch (GetCollisionShape()->shapeType_)
+    {
+    case Math::ShapeTypeBoundingBox:
+    {
+        const Math::Vector3 halfSize = (Math::Vector3(x, y, z) * 0.5f);
+        using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
+        auto obj = shape->Object();
+        obj->min_ = -halfSize;
+        obj->max_ = halfSize;
+    }
+    case Math::ShapeTypeSphere:
+    {
+        using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+        SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());
+        auto obj = shape->Object();
+        obj->radius_ = x;
+    }
     }
 }
 

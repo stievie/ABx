@@ -60,6 +60,7 @@ private:
     std::vector<float> _LuaGetScale() const;
     void _LuaSetBoundingBox(float minX, float minY, float minZ,
         float maxX, float maxY, float maxZ);
+    void _LuaSetBoundingSize(float x, float y, float z);
     std::string _LuaGetVarString(const std::string& name);
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);

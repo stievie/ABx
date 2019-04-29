@@ -28,7 +28,7 @@ void Map::CreatePatches()
     patches_.clear();
     terrain_->numPatches_.x_ = (terrain_->GetHeightMap()->GetWidth() - 1) / terrain_->patchSize_;
     terrain_->numPatches_.y_ = (terrain_->GetHeightMap()->GetHeight() - 1) / terrain_->patchSize_;
-    patches_.reserve(terrain_->numPatches_.x_ * terrain_->numPatches_.y_);
+    patches_.reserve(static_cast<size_t>(terrain_->numPatches_.x_) * static_cast<size_t>(terrain_->numPatches_.y_));
     for (int y = 0; y < terrain_->numPatches_.y_; ++y)
     {
         for (int x = 0; x < terrain_->numPatches_.x_; ++x)
@@ -318,9 +318,8 @@ void Map::UpdateAi(uint32_t delta)
     zone_.update(delta);
 }
 
-void Map::UpdateOctree(uint32_t delta)
+void Map::UpdateOctree(uint32_t)
 {
-    AB_UNUSED(delta);
     octree_->Update();
 }
 

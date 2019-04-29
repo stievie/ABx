@@ -603,7 +603,7 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
     {
         if (skillIndex <= 0)
             return;
-        const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[skillIndex - 1]);
+        const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[static_cast<size_t>(skillIndex) - 1]);
         message += " using " + String(skill->name.c_str());
         if (target)
             message += " on " + target->name_;
