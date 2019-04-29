@@ -3,11 +3,7 @@
 #ifdef USE_PGSQL
 
 #include "Database.h"
-#ifdef _WIN32
 #include <libpq-fe.h>
-#else
-#include <libpq-fe.h>
-#endif
 
 namespace DB {
 

@@ -45,9 +45,7 @@ public:
         const std::string& user, const std::string& pass,
         const std::string& name);
 
-    virtual bool GetParam(DBParam) {
-        return false;
-    }
+    virtual bool GetParam(DBParam) { return false; }
     bool IsConnected() const { return connected_; }
 
     bool ExecuteQuery(const std::string& query);
