@@ -57,6 +57,8 @@ bool DatabasePgsql::Connect(int numTries /* = 1 */)
         case PQPING_NO_ATTEMPT:
             LOG_ERROR << "Bad paramters" << std::endl;
             return false;
+        default:
+            break;
         }
 
         if (ping == PQPING_OK)

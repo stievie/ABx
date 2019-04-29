@@ -14,11 +14,11 @@ protected:
     sqlite3* handle_;
     std::recursive_mutex lock_;
     std::string Parse(const std::string& s);
-    virtual bool InternalQuery(const std::string& query);
-    virtual std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query);
+    bool InternalQuery(const std::string& query) final;
+    std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) final;
 public:
     DatabaseSqlite(const std::string& file);
-    virtual ~DatabaseSqlite();
+    ~DatabaseSqlite() override;
 
     bool BeginTransaction() final;
     bool Rollback() final;

@@ -123,7 +123,7 @@ private:
     std::ostringstream buff_;
 public:
     DBInsert(Database* db);
-    ~DBInsert() {};
+    ~DBInsert() {}
 
     void SetQuery(const std::string& query);
     bool AddRow(const std::string& row);

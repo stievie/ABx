@@ -22,7 +22,7 @@ protected:
     std::string Parse(const std::string& s);
 public:
     DatabasePgsql();
-    virtual ~DatabasePgsql();
+    ~DatabasePgsql() override;
 
     bool BeginTransaction() final;
     bool Rollback() final;

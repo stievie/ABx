@@ -31,7 +31,7 @@ protected:
     std::string Parse(const std::string& s);
 public:
     DatabaseOdbc();
-    virtual ~DatabaseOdbc();
+    ~DatabaseOdbc() override;
 
     bool GetParam(DBParam param) final;
     uint64_t GetLastInsertId() final;

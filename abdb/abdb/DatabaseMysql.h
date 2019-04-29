@@ -18,7 +18,7 @@ protected:
     std::shared_ptr<DBResult> InternalSelectQuery(const std::string& query) final;
 public:
     DatabaseMysql();
-    virtual ~DatabaseMysql();
+    ~DatabaseMysql() override;
 
     bool BeginTransaction() final;
     bool Rollback() final;
