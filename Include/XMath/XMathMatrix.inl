@@ -5,7 +5,7 @@
 // ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 // THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
 // PARTICULAR PURPOSE.
-//  
+//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-------------------------------------------------------------------------------------
 
@@ -3287,20 +3287,20 @@ inline XMFLOAT4X3::XMFLOAT4X3
 	assert(pArray != nullptr);
 
 	m[0][0] = pArray[0];
-	m[0][1] = pArray[1];
-	m[0][2] = pArray[2];
+	m[1][0] = pArray[1];
+	m[2][0] = pArray[2];
 
-	m[1][0] = pArray[3];
+	m[0][1] = pArray[3];
 	m[1][1] = pArray[4];
-	m[1][2] = pArray[5];
+	m[2][1] = pArray[5];
 
-	m[2][0] = pArray[6];
-	m[2][1] = pArray[7];
+	m[0][2] = pArray[6];
+	m[1][2] = pArray[7];
 	m[2][2] = pArray[8];
 
-	m[3][0] = pArray[9];
-	m[3][1] = pArray[10];
-	m[3][2] = pArray[11];
+	m[0][3] = pArray[9];
+	m[1][3] = pArray[10];
+	m[2][3] = pArray[11];
 }
 
 //------------------------------------------------------------------------------

@@ -69,7 +69,7 @@ private:
 
             // Plane test on edge ab
             Vector3 abp = ab.CrossProduct(abc);       // direction vector pointing inside triangle abc from ab
-            if (ab.DotProduct(ao) > 0.0f)
+            if (abp.DotProduct(ao) > 0.0f)
             {
                 // origin lies outside the triangle abc, near the edge ab
                 c = b;
