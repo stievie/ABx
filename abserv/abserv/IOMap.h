@@ -6,8 +6,10 @@
 namespace IO {
 
 namespace Map {
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4307)
+#endif
 static constexpr size_t FileTypeScene = Utils::StringHash("Scene");
 static constexpr size_t FileTypeNavmesh = Utils::StringHash("NavMesh");
 static constexpr size_t FileTypeTerrain = Utils::StringHash("Terrain");
@@ -45,7 +47,9 @@ static constexpr size_t AttrVertexSpacing = Utils::StringHash("Vertex Spacing");
 static constexpr size_t AttrIsOccluder = Utils::StringHash("Is Occluder");
 static constexpr size_t AttrIsOccludee = Utils::StringHash("Can Be Occluded");
 static constexpr size_t AttrCollisionMask = Utils::StringHash("Collision Mask");
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 }
 
 class IOMap

@@ -30,6 +30,8 @@ std::shared_ptr<ChatChannel> Chat::Get(ChatType type, uint64_t id)
     {
     case ChatType::Whisper:
         return std::make_shared<WhisperChatChannel>(id);
+    default:
+        break;
     }
 
     const std::pair<ChatType, uint64_t> channelId = { type, id };
@@ -74,6 +76,8 @@ std::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
     case ChatType::Whisper:
         c = std::make_shared<WhisperChatChannel>(uuid);
         channels_.emplace(channelId, c);
+        break;
+    default:
         break;
     }
     return c;

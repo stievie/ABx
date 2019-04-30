@@ -41,11 +41,11 @@ bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
     baseMaxDamage_ = stats_.GetMaxDamage();
     auto itemFactory = GetSubsystem<ItemFactory>();
     if (!item.upgrade1Uuid.empty() && !uuids::uuid(item.upgrade1Uuid).nil())
-        upgrades_[ItemUpgrade::Pefix] = std::move(itemFactory->LoadConcrete(item.upgrade1Uuid));
+        upgrades_[ItemUpgrade::Pefix] = itemFactory->LoadConcrete(item.upgrade1Uuid);
     if (!item.upgrade2Uuid.empty() && !uuids::uuid(item.upgrade2Uuid).nil())
-        upgrades_[ItemUpgrade::Suffix] = std::move(itemFactory->LoadConcrete(item.upgrade2Uuid));
+        upgrades_[ItemUpgrade::Suffix] = itemFactory->LoadConcrete(item.upgrade2Uuid);
     if (!item.upgrade3Uuid.empty() && !uuids::uuid(item.upgrade3Uuid).nil())
-        upgrades_[ItemUpgrade::Inscription] = std::move(itemFactory->LoadConcrete(item.upgrade3Uuid));
+        upgrades_[ItemUpgrade::Inscription] = itemFactory->LoadConcrete(item.upgrade3Uuid);
 
     return true;
 }
@@ -409,6 +409,8 @@ void Item::GetArmorPenetration(float& value) const
     {
     case AB::Entities::ItemTypeHornbow:
         value += 0.1f;
+    default:
+        break;
     }
     for (const auto& upg : upgrades_)
         if (upg.second)

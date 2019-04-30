@@ -38,8 +38,8 @@ Npc::Npc() :
     Actor(),
     serverOnly_(false),
     behaviorTree_(""),
-    luaInitialized_(false),
     aiCharacter_(nullptr),
+    luaInitialized_(false),
     functions_(FunctionNone)
 {
     // Party and Groups must be unique, i.e. share the same ID pool.

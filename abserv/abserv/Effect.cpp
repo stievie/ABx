@@ -281,6 +281,8 @@ bool Effect::UnserializeProp(EffectAttr attr, IO::PropReadStream& stream)
         break;
     case EffectAttrTicks:
         return stream.Read<uint32_t>(ticks_);
+    default:
+        break;
     }
     return false;
 }

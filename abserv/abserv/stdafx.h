@@ -43,19 +43,30 @@
 
 #include "MathConfig.h"
 #include <pugixml.hpp>
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4592)
+#endif
 #include <asio.hpp>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4702 4127)
+#endif
 #include <kaguya/kaguya.hpp>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4201 4267 4244)
+#endif
 #include <ai/SimpleAI.h>
+#if defined(_MSC_VER)
 #pragma warning(pop)
-
+#endif
 #include <uuid.h>
 
 #include "Application.h"

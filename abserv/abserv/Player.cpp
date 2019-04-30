@@ -26,8 +26,8 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     resigned_(false),
     loginTime_(0),
     logoutTime_(0),
-    lastPing_(0),
     mailBox_(nullptr),
+    lastPing_(0),
     party_(nullptr),
     questComp_(std::make_unique<Components::QuestComp>(*this))
 { }
@@ -146,7 +146,7 @@ void Player::GetInventory()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::InventoryContent);
     msg->Add<uint16_t>(static_cast<uint16_t>(inventoryComp_->GetCount()));
-    inventoryComp_->VisitInventory([&msg](const Item* current) 
+    inventoryComp_->VisitInventory([&msg](const Item* current)
     {
         msg->Add<uint16_t>(current->data_.type);
         msg->Add<uint32_t>(current->data_.index);

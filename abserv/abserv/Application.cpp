@@ -48,10 +48,10 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    autoTerminate_(false),
-    temporary_(false),
+    ioService_(),
     lastLoadCalc_(0),
-    ioService_()
+    autoTerminate_(false),
+    temporary_(false)
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;

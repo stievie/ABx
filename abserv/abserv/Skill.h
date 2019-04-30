@@ -149,8 +149,6 @@ public:
 
     void AddRecharge(int32_t ms);
 
-    AB::Entities::Skill data_;
-
     int32_t energy_;
     int32_t adrenaline_;
     int32_t activation_;
@@ -158,6 +156,8 @@ public:
     int32_t overcast_;
     /// HP sacrifice
     int32_t hp_;
+
+    AB::Entities::Skill data_;
 };
 
 }

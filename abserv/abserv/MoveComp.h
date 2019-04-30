@@ -32,15 +32,15 @@ public:
     MoveComp() = delete;
     explicit MoveComp(Actor& owner) :
         owner_(owner),
-        moveDir_(AB::GameProtocol::MoveDirectionNone),
-        turnDir_(AB::GameProtocol::TurnDirectionNone),
         oldPosition_(Math::Vector3::Zero),
         speedFactor_(1.0f),
+        moveDir_(AB::GameProtocol::MoveDirectionNone),
+        turnDir_(AB::GameProtocol::TurnDirectionNone),
         turned_(false),
         moved_(false),
+        speedDirty_(false),
         directionSet_(false),
         newAngle_(false),
-        speedDirty_(false),
         velocity_(Math::Vector3::Zero)
     { }
     // non-copyable

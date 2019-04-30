@@ -265,6 +265,9 @@ void Game::Update()
                 GetSubsystem<GameManager>(), id_))
         );
         break;
+    case ExecutionState::Startup:
+        // Do nothing
+        break;
     }
     ScriptManager::CollectGarbage(luaState_);
 }

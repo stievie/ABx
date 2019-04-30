@@ -61,12 +61,12 @@ void GameObject::RegisterLua(kaguya::State& state)
 GameObject::GameObject() :
     collisionShape_(nullptr),
     stateComp_(*this),
-    triggerComp_(nullptr),         // By default its not a trigger
     octant_(nullptr),
+    triggerComp_(nullptr),         // By default its not a trigger
     sortValue_(0.0f),
-    occludee_(true),
-    occluder_(false),
     name_("Unknown"),
+    occluder_(false),
+    occludee_(true),
     id_(GetNewId()),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {

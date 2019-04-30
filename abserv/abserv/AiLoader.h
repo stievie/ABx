@@ -1,9 +1,13 @@
 #pragma once
 
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4100)
+#endif
 #include <ai/tree/loaders/lua/LUATreeLoader.h>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 #include "Logger.h"
 
 namespace AI {

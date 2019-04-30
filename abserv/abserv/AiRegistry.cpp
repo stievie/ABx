@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "AiRegistry.h"
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4189 4100)
+#endif
 #include "actions/AiAttackSelection.h"
 #include "actions/AiDie.h"
 #include "actions/AiGoHome.h"
@@ -21,7 +23,9 @@
 #include "filters/AiSelectLowHealth.h"
 #include "filters/AiSelectAttackers.h"
 #include "filters/AiSelectDeadAllies.h"
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 
 namespace AI {
 
