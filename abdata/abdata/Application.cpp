@@ -91,24 +91,24 @@ bool Application::LoadConfig()
     }
 
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
-        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+        serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
-        serverName_ = config->GetGlobal("server_name", "abdata");
+        serverName_ = config->GetGlobalString("server_name", "abdata");
     if (serverLocation_.empty())
-        serverLocation_ = config->GetGlobal("location", "--");
+        serverLocation_ = config->GetGlobalString("location", "--");
 
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     if (listenIp_ == 0)
-        listenIp_ = Utils::ConvertStringToIP(config->GetGlobal("data_ip", ""));
+        listenIp_ = Utils::ConvertStringToIP(config->GetGlobalString("data_ip", ""));
     if (serverHost_.empty())
-        serverHost_ = config->GetGlobal("data_host", "");
+        serverHost_ = config->GetGlobalString("data_host", "");
     if (maxSize_ == 0)
-        maxSize_ = config->GetGlobal("max_size", 0ll);
+        maxSize_ = config->GetGlobalInt("max_size", 0ll);
     if (!readonly_)
         readonly_ = config->GetGlobalBool("read_only", false);
 
-    std::string ips = config->GetGlobal("allowed_ips", "");
+    std::string ips = config->GetGlobalString("allowed_ips", "");
     if (!ips.empty())
     {
         std::vector<std::string> ipVec = Utils::Split(ips, ";");
@@ -119,22 +119,22 @@ bool Application::LoadConfig()
     }
 
     if (IO::Logger::logDir_.empty())
-        IO::Logger::logDir_ = config->GetGlobal("log_dir", "");
+        IO::Logger::logDir_ = config->GetGlobalString("log_dir", "");
     if (DB::Database::driver_.empty())
-        DB::Database::driver_ = config->GetGlobal("db_driver", "");
+        DB::Database::driver_ = config->GetGlobalString("db_driver", "");
     if (DB::Database::dbHost_.empty())
-        DB::Database::dbHost_ = config->GetGlobal("db_host", "");
+        DB::Database::dbHost_ = config->GetGlobalString("db_host", "");
     if (DB::Database::dbName_.empty())
-        DB::Database::dbName_ = config->GetGlobal("db_name", "");
+        DB::Database::dbName_ = config->GetGlobalString("db_name", "");
     if (DB::Database::dbUser_.empty())
-        DB::Database::dbUser_ = config->GetGlobal("db_user", "");
+        DB::Database::dbUser_ = config->GetGlobalString("db_user", "");
     if (DB::Database::dbPass_.empty())
-        DB::Database::dbPass_ = config->GetGlobal("db_pass", "");
+        DB::Database::dbPass_ = config->GetGlobalString("db_pass", "");
     if (DB::Database::dbPort_ == 0)
-        DB::Database::dbPort_ = static_cast<uint16_t>(config->GetGlobal("db_port", 0ll));
+        DB::Database::dbPort_ = static_cast<uint16_t>(config->GetGlobalInt("db_port", 0ll));
 
-    flushInterval_ = static_cast<uint32_t>(config->GetGlobal("flush_interval", (int64_t)flushInterval_));
-    cleanInterval_ = static_cast<uint32_t>(config->GetGlobal("clean_interval", (int64_t)cleanInterval_));
+    flushInterval_ = static_cast<uint32_t>(config->GetGlobalInt("flush_interval", (int64_t)flushInterval_));
+    cleanInterval_ = static_cast<uint32_t>(config->GetGlobalInt("clean_interval", (int64_t)cleanInterval_));
 
     if (serverPort_ == 0)
     {
@@ -296,7 +296,7 @@ void Application::Stop()
 
     StorageProvider* provider = server_->GetStorageProvider();
     AB::Entities::Service serv;
-    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobal("server_id", "");
+    serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobalString("server_id", "");
     if (provider->EntityRead(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;

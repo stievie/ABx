@@ -18,9 +18,9 @@ public:
     {
         Close();
     }
-    std::string GetGlobal(const std::string& ident, const std::string& def);
-    int64_t GetGlobal(const std::string& ident, int64_t def);
-    float GetGlobal(const std::string& ident, float def);
+    std::string GetGlobalString(const std::string& ident, const std::string& def);
+    int64_t GetGlobalInt(const std::string& ident, int64_t def);
+    float GetGlobalFloat(const std::string& ident, float def);
     bool GetGlobalBool(const std::string& ident, bool def);
 
     bool Load(const std::string& file);

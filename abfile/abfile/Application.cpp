@@ -184,36 +184,36 @@ bool Application::Initialize(const std::vector<std::string>& args)
     }
 
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
-        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+        serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (machine_.empty())
-        machine_ = config->GetGlobal("machine", "");
+        machine_ = config->GetGlobalString("machine", "");
     if (serverName_.empty())
-        serverName_ = config->GetGlobal("server_name", "abfile");
+        serverName_ = config->GetGlobalString("server_name", "abfile");
     if (serverLocation_.empty())
-        serverLocation_ = config->GetGlobal("location", "--");
+        serverLocation_ = config->GetGlobalString("location", "--");
     if (logDir_.empty())
-        logDir_ = config->GetGlobal("log_dir", "");
+        logDir_ = config->GetGlobalString("log_dir", "");
 
     if (serverIp_.empty())
-        serverIp_ = config->GetGlobal("file_ip", "");
+        serverIp_ = config->GetGlobalString("file_ip", "");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("file_port", 8081ll));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("file_port", 8081ll));
     else if (serverPort_ == 0)
         serverPort_ = Net::ServiceManager::GetFreePort();
 
-    std::string key = config->GetGlobal("server_key", "server.key");
-    std::string cert = config->GetGlobal("server_cert", "server.crt");
-    size_t threads = static_cast<size_t>(config->GetGlobal("num_threads", 0ll));
+    std::string key = config->GetGlobalString("server_key", "server.key");
+    std::string cert = config->GetGlobalString("server_cert", "server.crt");
+    size_t threads = static_cast<size_t>(config->GetGlobalInt("num_threads", 0ll));
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
-    root_ = config->GetGlobal("root_dir", "");
-    dataHost_ = config->GetGlobal("data_host", "");
-    dataPort_ = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
+    root_ = config->GetGlobalString("root_dir", "");
+    dataHost_ = config->GetGlobalString("data_host", "");
+    dataPort_ = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     requireAuth_ = config->GetGlobalBool("require_auth", false);
-    maxThroughput_ = static_cast<uint64_t>(config->GetGlobal("max_throughput", 0ll));
+    maxThroughput_ = static_cast<uint64_t>(config->GetGlobalInt("max_throughput", 0ll));
 
-    Auth::BanManager::LoginTries = static_cast<uint32_t>(config->GetGlobal("login_tries", 5ll));
-    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000ll));
+    Auth::BanManager::LoginTries = static_cast<uint32_t>(config->GetGlobalInt("login_tries", 5ll));
+    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>(config->GetGlobalInt("login_retrytimeout", 5000ll));
 
     if (!logDir_.empty())
     {
@@ -286,8 +286,8 @@ bool Application::Initialize(const std::vector<std::string>& args)
         serverName_ = GetFreeName(dataClient);
     }
 
-    std::string msgHost = config->GetGlobal("message_host", "");
-    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobal("message_port", 0ll));
+    std::string msgHost = config->GetGlobalString("message_host", "");
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobalInt("message_port", 0ll));
     auto msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Connecting to message server...";
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));

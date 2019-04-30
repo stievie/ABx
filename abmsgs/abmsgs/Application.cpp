@@ -57,16 +57,16 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
-        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+        serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
-        serverName_ = config->GetGlobal("server_name", "abmsgs");
+        serverName_ = config->GetGlobalString("server_name", "abmsgs");
     if (serverLocation_.empty())
-        serverLocation_ = config->GetGlobal("location", "--");
+        serverLocation_ = config->GetGlobalString("location", "--");
     if (serverHost_.empty())
-        serverHost_ = config->GetGlobal("message_host", "");
+        serverHost_ = config->GetGlobalString("message_host", "");
     if (logDir_.empty())
-        logDir_ = config->GetGlobal("log_dir", "");
-    std::string ips = config->GetGlobal("allowed_ips", "");
+        logDir_ = config->GetGlobalString("log_dir", "");
+    std::string ips = config->GetGlobalString("allowed_ips", "");
     if (!ips.empty())
     {
         std::vector<std::string> ipVec = Utils::Split(ips, ";");
@@ -78,8 +78,8 @@ bool Application::LoadMain()
 
     LOG_INFO << "Connecting to data server...";
     auto dataClient = GetSubsystem<IO::DataClient>();
-    const std::string& dataHost = config->GetGlobal("data_host", "");
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
+    const std::string& dataHost = config->GetGlobalString("data_host", "");
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
     {
@@ -95,9 +95,9 @@ bool Application::LoadMain()
 
     // Add Protocols
     if (serverIp_.empty())
-        serverIp_ = config->GetGlobal("message_ip", "0.0.0.0");
+        serverIp_ = config->GetGlobalString("message_ip", "0.0.0.0");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("message_port", 2771ll));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("message_port", 2771ll));
 
     PrintServerInfo();
     return true;

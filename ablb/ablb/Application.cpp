@@ -69,19 +69,19 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
-        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+        serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
-        serverName_ = config->GetGlobal("server_name", "ablb");
+        serverName_ = config->GetGlobalString("server_name", "ablb");
     if (serverLocation_.empty())
-        serverLocation_ = config->GetGlobal("location", "--");
+        serverLocation_ = config->GetGlobalString("location", "--");
     if (logDir_.empty())
-        logDir_ = config->GetGlobal("log_dir", "");
+        logDir_ = config->GetGlobalString("log_dir", "");
 
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     if (dataPort != 0)
     {
         LOG_INFO << "Connecting to data server...";
-        const std::string dataHost = config->GetGlobal("data_host", "");
+        const std::string dataHost = config->GetGlobalString("data_host", "");
         dataClient_->Connect(dataHost, dataPort);
         if (!dataClient_->IsConnected())
         {
@@ -97,7 +97,7 @@ bool Application::LoadMain()
     }
     else
     {
-        const std::string serverList = config->GetGlobal("server_list", "");
+        const std::string serverList = config->GetGlobalString("server_list", "");
         if (!ParseServerList(serverList))
         {
             LOG_ERROR << "Error parsing server list file " << serverList << std::endl;
@@ -106,16 +106,16 @@ bool Application::LoadMain()
     }
 
     if (serverIp_.empty())
-        serverHost_ = config->GetGlobal("lb_ip", "0.0.0.0");
+        serverHost_ = config->GetGlobalString("lb_ip", "0.0.0.0");
     if (serverHost_.empty())
-        serverHost_ = config->GetGlobal("lb_host", "0.0.0.0");
+        serverHost_ = config->GetGlobalString("lb_host", "0.0.0.0");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
     {
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("lb_port", 2740ll));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("lb_port", 2740ll));
     }
     lbType_ = static_cast<AB::Entities::ServiceType>(
         // Default is login server
-        config->GetGlobal("lb_type", static_cast<int64_t>(AB::Entities::ServiceTypeLoginServer))
+        config->GetGlobalInt("lb_type", static_cast<int64_t>(AB::Entities::ServiceTypeLoginServer))
     );
     if (dataPort != 0)
         // We have a data port so we can query the data server

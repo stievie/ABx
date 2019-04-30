@@ -87,7 +87,7 @@ int main(int argc, char** argv)
         std::cout << "Failed too load config file " << cfgFile << std::endl;
         return EXIT_FAILURE;
     }
-    std::string keyFile = cfg.GetGlobal("server_keys", "");
+    std::string keyFile = cfg.GetGlobalString("server_keys", "");
     if (keyFile.empty())
         keyFile = Utils::AddSlash(path) + "abserver.dh";
     Utils::GetCommandLineValue(args, "-o", keyFile);

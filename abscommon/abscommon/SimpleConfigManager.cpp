@@ -4,7 +4,7 @@
 
 namespace IO {
 
-std::string SimpleConfigManager::GetGlobal(const std::string& ident, const std::string& def)
+std::string SimpleConfigManager::GetGlobalString(const std::string& ident, const std::string& def)
 {
     lua_getglobal(L, ident.c_str());
 
@@ -21,7 +21,7 @@ std::string SimpleConfigManager::GetGlobal(const std::string& ident, const std::
     return ret;
 }
 
-int64_t SimpleConfigManager::GetGlobal(const std::string& ident, int64_t def)
+int64_t SimpleConfigManager::GetGlobalInt(const std::string& ident, int64_t def)
 {
     lua_getglobal(L, ident.c_str());
 
@@ -37,7 +37,7 @@ int64_t SimpleConfigManager::GetGlobal(const std::string& ident, int64_t def)
     return val;
 }
 
-float SimpleConfigManager::GetGlobal(const std::string& ident, float def)
+float SimpleConfigManager::GetGlobalFloat(const std::string& ident, float def)
 {
     lua_getglobal(L, ident.c_str());
 

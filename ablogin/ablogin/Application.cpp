@@ -72,21 +72,21 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
-        serverId_ = config->GetGlobal("server_id", Utils::Uuid::EMPTY_UUID);
+        serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
-        serverName_ = config->GetGlobal("server_name", "ablogin");
+        serverName_ = config->GetGlobalString("server_name", "ablogin");
     if (serverLocation_.empty())
-        serverLocation_ = config->GetGlobal("location", "--");
+        serverLocation_ = config->GetGlobalString("location", "--");
     if (serverHost_.empty())
-        serverHost_ = config->GetGlobal("login_host", "");
+        serverHost_ = config->GetGlobalString("login_host", "");
     if (logDir_.empty())
-        logDir_ = config->GetGlobal("log_dir", "");
+        logDir_ = config->GetGlobalString("log_dir", "");
 
     auto banMan = GetSubsystem<Auth::BanManager>();
-    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobal("max_packets_per_second", 0ll));
-    banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobal("login_tries", 5ll));
-    banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_retrytimeout", 5000ll));
-    banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobal("login_timeout", 60ll * 1000ll));
+    Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobalInt("max_packets_per_second", 0ll));
+    banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobalInt("login_tries", 5ll));
+    banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobalInt("login_retrytimeout", 5000ll));
+    banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobalInt("login_timeout", 60ll * 1000ll));
 
     LOG_INFO << "Initializing RNG...";
     GetSubsystem<Crypto::Random>()->Initialize();
@@ -110,8 +110,8 @@ bool Application::LoadMain()
 
     LOG_INFO << "Connecting to data server...";
     auto dataClient = GetSubsystem<IO::DataClient>();
-    const std::string& dataHost = config->GetGlobal("data_host", "");
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobal("data_port", 0ll));
+    const std::string& dataHost = config->GetGlobalString("data_host", "");
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
     {
@@ -126,9 +126,9 @@ bool Application::LoadMain()
     }
 
     if (serverIp_.empty())
-        serverIp_ = config->GetGlobal("login_ip", "0.0.0.0");
+        serverIp_ = config->GetGlobalString("login_ip", "0.0.0.0");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobal("login_port", 2748ll));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("login_port", 2748ll));
     else if (serverPort_ == 0)
         serverPort_ = Net::ServiceManager::GetFreePort();
 
@@ -266,7 +266,7 @@ void Application::Stop()
 std::string Application::GetKeysFile() const
 {
     auto config = GetSubsystem<IO::SimpleConfigManager>();
-    const std::string keys = config->GetGlobal("server_keys", "");
+    const std::string keys = config->GetGlobalString("server_keys", "");
     if (!keys.empty())
         return keys;
     return Utils::AddSlash(path_) + "abserver.dh";
