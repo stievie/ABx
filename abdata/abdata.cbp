@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="abdata" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Lib/x64/Debug/abdata" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/x64/Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../Lib/x64/Release/abdata" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../Lib/x64/Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../Include" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="pthread" />
+			<Add library="uuid" />
+			<Add library="lua" />
+			<Add library="abscommon" />
+			<Add library="abdb" />
+			<Add library="sqlite3" />
+			<Add library="dl" />
+			<Add library="pq" />
+			<Add library="ldap" />
+			<Add library="ssl" />
+			<Add library="crypto" />
+			<Add library="mysqlclient" />
+			<Add library="z" />
+			<Add library="gssapi_krb5" />
+		</Linker>
+		<Unit filename="abdata/Application.cpp" />
+		<Unit filename="abdata/Application.h" />
+		<Unit filename="abdata/Connection.cpp" />
+		<Unit filename="abdata/Connection.h" />
+		<Unit filename="abdata/ConnectionManager.cpp" />
+		<Unit filename="abdata/ConnectionManager.h" />
+		<Unit filename="abdata/DBAccount.cpp" />
+		<Unit filename="abdata/DBAccount.h" />
+		<Unit filename="abdata/DBAccountBan.cpp" />
+		<Unit filename="abdata/DBAccountBan.h" />
+		<Unit filename="abdata/DBAccountItemList.cpp" />
+		<Unit filename="abdata/DBAccountItemList.h" />
+		<Unit filename="abdata/DBAccountKey.cpp" />
+		<Unit filename="abdata/DBAccountKey.h" />
+		<Unit filename="abdata/DBAccountKeyAccounts.cpp" />
+		<Unit filename="abdata/DBAccountKeyAccounts.h" />
+		<Unit filename="abdata/DBAccountKeyList.cpp" />
+		<Unit filename="abdata/DBAccountKeyList.h" />
+		<Unit filename="abdata/DBAccountList.cpp" />
+		<Unit filename="abdata/DBAccountList.h" />
+		<Unit filename="abdata/DBAll.h" />
+		<Unit filename="abdata/DBAttribute.cpp" />
+		<Unit filename="abdata/DBAttribute.h" />
+		<Unit filename="abdata/DBAttributeList.cpp" />
+		<Unit filename="abdata/DBAttributeList.h" />
+		<Unit filename="abdata/DBBan.cpp" />
+		<Unit filename="abdata/DBBan.h" />
+		<Unit filename="abdata/DBCharacter.cpp" />
+		<Unit filename="abdata/DBCharacter.h" />
+		<Unit filename="abdata/DBCharacterList.cpp" />
+		<Unit filename="abdata/DBCharacterList.h" />
+		<Unit filename="abdata/DBConcreteItem.cpp" />
+		<Unit filename="abdata/DBConcreteItem.h" />
+		<Unit filename="abdata/DBEffect.cpp" />
+		<Unit filename="abdata/DBEffect.h" />
+		<Unit filename="abdata/DBEffectList.cpp" />
+		<Unit filename="abdata/DBEffectList.h" />
+		<Unit filename="abdata/DBFriendList.cpp" />
+		<Unit filename="abdata/DBFriendList.h" />
+		<Unit filename="abdata/DBGame.cpp" />
+		<Unit filename="abdata/DBGame.h" />
+		<Unit filename="abdata/DBGameList.cpp" />
+		<Unit filename="abdata/DBGameList.h" />
+		<Unit filename="abdata/DBGuild.cpp" />
+		<Unit filename="abdata/DBGuild.h" />
+		<Unit filename="abdata/DBGuildMembers.cpp" />
+		<Unit filename="abdata/DBGuildMembers.h" />
+		<Unit filename="abdata/DBIpBan.cpp" />
+		<Unit filename="abdata/DBIpBan.h" />
+		<Unit filename="abdata/DBItem.cpp" />
+		<Unit filename="abdata/DBItem.h" />
+		<Unit filename="abdata/DBItemChanceList.cpp" />
+		<Unit filename="abdata/DBItemChanceList.h" />
+		<Unit filename="abdata/DBItemList.cpp" />
+		<Unit filename="abdata/DBItemList.h" />
+		<Unit filename="abdata/DBMail.cpp" />
+		<Unit filename="abdata/DBMail.h" />
+		<Unit filename="abdata/DBMailList.cpp" />
+		<Unit filename="abdata/DBMailList.h" />
+		<Unit filename="abdata/DBMusic.cpp" />
+		<Unit filename="abdata/DBMusic.h" />
+		<Unit filename="abdata/DBMusicList.cpp" />
+		<Unit filename="abdata/DBMusicList.h" />
+		<Unit filename="abdata/DBPlayerItemList.cpp" />
+		<Unit filename="abdata/DBPlayerItemList.h" />
+		<Unit filename="abdata/DBProfession.cpp" />
+		<Unit filename="abdata/DBProfession.h" />
+		<Unit filename="abdata/DBProfessionList.cpp" />
+		<Unit filename="abdata/DBProfessionList.h" />
+		<Unit filename="abdata/DBReservedName.cpp" />
+		<Unit filename="abdata/DBReservedName.h" />
+		<Unit filename="abdata/DBService.cpp" />
+		<Unit filename="abdata/DBService.h" />
+		<Unit filename="abdata/DBServicelList.cpp" />
+		<Unit filename="abdata/DBServicelList.h" />
+		<Unit filename="abdata/DBSkill.cpp" />
+		<Unit filename="abdata/DBSkill.h" />
+		<Unit filename="abdata/DBSkillList.cpp" />
+		<Unit filename="abdata/DBSkillList.h" />
+		<Unit filename="abdata/DBTypedItemList.cpp" />
+		<Unit filename="abdata/DBTypedItemList.h" />
+		<Unit filename="abdata/DBVersion.cpp" />
+		<Unit filename="abdata/DBVersion.h" />
+		<Unit filename="abdata/DBVersionList.cpp" />
+		<Unit filename="abdata/DBVersionList.h" />
+		<Unit filename="abdata/EvictionStrategy.h" />
+		<Unit filename="abdata/OldestInsertionEviction.cpp" />
+		<Unit filename="abdata/Server.cpp" />
+		<Unit filename="abdata/Server.h" />
+		<Unit filename="abdata/StorageProvider.cpp" />
+		<Unit filename="abdata/StorageProvider.h" />
+		<Unit filename="abdata/Version.h" />
+		<Unit filename="abdata/main.cpp" />
+		<Unit filename="abdata/stdafx.cpp" />
+		<Unit filename="abdata/stdafx.h" />
+		<Unit filename="abdata/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -6,6 +6,7 @@ Debug Static
 Release Static
 ipch
 bin
+Bin
 .vs
 *.exe
 *.dll
@@ -45,6 +46,7 @@ Thumbs.db
 *.user
 *.pak
 *cppcheck*
+*.depend
 
 *.crt
 *.key

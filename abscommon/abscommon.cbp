@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="abscommon" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Lib/x64/Debug/abscommon" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../Lib/x64/Release/abscommon" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="../Include" />
+		</Compiler>
+		<Unit filename="abscommon/BanManager.cpp" />
+		<Unit filename="abscommon/BanManager.h" />
+		<Unit filename="abscommon/Connection.cpp" />
+		<Unit filename="abscommon/Connection.h" />
+		<Unit filename="abscommon/CpuUsage.h" />
+		<Unit filename="abscommon/CpuUsageWin.cpp" />
+		<Unit filename="abscommon/DataClient.cpp" />
+		<Unit filename="abscommon/DataClient.h" />
+		<Unit filename="abscommon/DataCodes.h" />
+		<Unit filename="abscommon/DataKey.h" />
+		<Unit filename="abscommon/DebugConfig.h" />
+		<Unit filename="abscommon/DebugNew.h" />
+		<Unit filename="abscommon/Dispatcher.cpp" />
+		<Unit filename="abscommon/Dispatcher.h" />
+		<Unit filename="abscommon/FileUtils.cpp" />
+		<Unit filename="abscommon/FileUtils.h" />
+		<Unit filename="abscommon/IdGenerator.h" />
+		<Unit filename="abscommon/IpList.cpp" />
+		<Unit filename="abscommon/IpList.h" />
+		<Unit filename="abscommon/Logger.cpp" />
+		<Unit filename="abscommon/Logger.h" />
+		<Unit filename="abscommon/MessageClient.cpp" />
+		<Unit filename="abscommon/MessageClient.h" />
+		<Unit filename="abscommon/MessageMsg.h" />
+		<Unit filename="abscommon/MiniDump.cpp" />
+		<Unit filename="abscommon/MiniDump.h" />
+		<Unit filename="abscommon/NetworkMessage.cpp" />
+		<Unit filename="abscommon/NetworkMessage.h" />
+		<Unit filename="abscommon/OutputMessage.cpp" />
+		<Unit filename="abscommon/OutputMessage.h" />
+		<Unit filename="abscommon/Process.cpp" />
+		<Unit filename="abscommon/Process.hpp" />
+		<Unit filename="abscommon/ProcessUnix.cpp" />
+		<Unit filename="abscommon/ProcessWin.cpp" />
+		<Unit filename="abscommon/Profiler.h" />
+		<Unit filename="abscommon/PropStream.h" />
+		<Unit filename="abscommon/Protocol.cpp" />
+		<Unit filename="abscommon/Protocol.h" />
+		<Unit filename="abscommon/Random.cpp" />
+		<Unit filename="abscommon/Random.h" />
+		<Unit filename="abscommon/Scheduler.cpp" />
+		<Unit filename="abscommon/Scheduler.h" />
+		<Unit filename="abscommon/ServerApp.cpp" />
+		<Unit filename="abscommon/ServerApp.h" />
+		<Unit filename="abscommon/Service.cpp" />
+		<Unit filename="abscommon/Service.h" />
+		<Unit filename="abscommon/ServiceConfig.h" />
+		<Unit filename="abscommon/ServiceInstaller.cpp" />
+		<Unit filename="abscommon/ServiceInstaller.h" />
+		<Unit filename="abscommon/SimpleConfigManager.cpp" />
+		<Unit filename="abscommon/SimpleConfigManager.h" />
+		<Unit filename="abscommon/StringHash.h" />
+		<Unit filename="abscommon/StringUtils.cpp" />
+		<Unit filename="abscommon/StringUtils.h" />
+		<Unit filename="abscommon/Subsystems.cpp" />
+		<Unit filename="abscommon/Subsystems.h" />
+		<Unit filename="abscommon/Task.h" />
+		<Unit filename="abscommon/ThreadPool.cpp" />
+		<Unit filename="abscommon/ThreadPool.h" />
+		<Unit filename="abscommon/TimeUtils.h" />
+		<Unit filename="abscommon/Utils.cpp" />
+		<Unit filename="abscommon/Utils.h" />
+		<Unit filename="abscommon/UuidUtils.cpp" />
+		<Unit filename="abscommon/UuidUtils.h" />
+		<Unit filename="abscommon/Variant.cpp" />
+		<Unit filename="abscommon/Variant.h" />
+		<Unit filename="abscommon/WeightedSelector.h" />
+		<Unit filename="abscommon/WinService.cpp" />
+		<Unit filename="abscommon/WinService.h" />
+		<Unit filename="abscommon/Xml.cpp" />
+		<Unit filename="abscommon/Xml.h" />
+		<Unit filename="abscommon/stdafx.cpp" />
+		<Unit filename="abscommon/stdafx.h" />
+		<Unit filename="abscommon/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

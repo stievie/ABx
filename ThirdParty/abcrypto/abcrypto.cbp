@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="abcrypto" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../Lib/x64/Debug/abcrypto" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../../Lib/x64/Release/abcrypto" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
+		<Unit filename="aes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="aes.h" />
+		<Unit filename="arc4random.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="arc4random.h" />
+		<Unit filename="bcrypt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="bcrypt.h" />
+		<Unit filename="blowfish.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="blowfish.h" />
+		<Unit filename="dh.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dh.h" />
+		<Unit filename="md5.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="md5.h" />
+		<Unit filename="safebfuns.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="safebfuns.h" />
+		<Unit filename="sha1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sha1.h" />
+		<Unit filename="sha256.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sha256.h" />
+		<Unit filename="xxtea.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="xxtea.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
