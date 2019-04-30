@@ -65,13 +65,10 @@ private:
     void _LuaSetSelectedObject(GameObject* object);
 protected:
     Math::Vector3 homePos_;
-    virtual void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& command, Net::NetworkMessage& message)
+    virtual void HandleCommand(AB::GameProtocol::CommandTypes,
+        const std::string&, Net::NetworkMessage&)
     {
         // Only the player needs to override this
-        AB_UNUSED(type);
-        AB_UNUSED(command);
-        AB_UNUSED(message);
     }
     virtual void OnArrived() {}
 public:

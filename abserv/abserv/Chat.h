@@ -33,15 +33,11 @@ public:
         id_(id)
     {}
     virtual ~ChatChannel() = default;
-    virtual bool Talk(Player* player, const std::string& text) {
-        AB_UNUSED(player);
-        AB_UNUSED(text);
+    virtual bool Talk(Player*, const std::string&) {
         return false;
     }
-    virtual bool TalkNpc(Npc* npc, const std::string& text)
+    virtual bool TalkNpc(Npc*, const std::string&)
     {
-        AB_UNUSED(npc);
-        AB_UNUSED(text);
         return false;
     }
 };

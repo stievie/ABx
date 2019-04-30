@@ -10,7 +10,7 @@
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/PlayerItemList.h>
 #include "Logger.h"
-#include <uuids.h>
+#include <uuid.h>
 #include "Subsystems.h"
 #include "SkillManager.h"
 

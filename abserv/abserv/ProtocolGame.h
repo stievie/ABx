@@ -54,27 +54,6 @@ public:
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void WriteToOutput(const NetworkMessage& message);
 private:
-    // Helpers so we don't need to bind every time
-    template <typename Callable, typename... Args>
-    void AddGameTask(Callable function, Args&&... args)
-    {
-        auto player = GetPlayer();
-        if (!player)
-            return;
-        Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(std::bind(function, player->GetGame(), std::forward<Args>(args)...))
-        );
-    }
-    template <typename Callable, typename... Args>
-    void AddGameTaskTimed(uint32_t delay, Callable function, Args&&... args)
-    {
-        auto player = GetPlayer();
-        if (!player)
-            return;
-        Asynch::Dispatcher::Instance.Add(
-            Asynch::CreateTask(delay, std::bind(function, player->GetGame(), std::forward<Args>(args)...))
-        );
-    }
     template <typename Callable, typename... Args>
     void AddPlayerTask(Callable function, Args&&... args)
     {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/ProtocolCodes.h>
+#include "Utils.h"
 
 namespace Game {
 

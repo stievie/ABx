@@ -62,7 +62,7 @@ public:
         if (keysLoaded_)
             return false;
 
-        std::ifstream f(fileName, std::ios::in || std::ios::binary);
+        std::ifstream f(fileName, std::ios::in | std::ios::binary);
         if (!f.is_open())
             return false;
 

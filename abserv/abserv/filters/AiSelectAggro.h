@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filter/IFilter.h>
+
 namespace AI {
 
 /**

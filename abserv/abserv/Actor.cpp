@@ -102,8 +102,8 @@ Actor::Actor() :
     progressComp_(std::make_unique<Components::ProgressComp>(*this)),
     effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
     inventoryComp_(std::make_unique<Components::InventoryComp>(*this)),
-    collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
     moveComp_(std::make_unique<Components::MoveComp>(*this)),
+    collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
     undestroyable_(false)
 {
     static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);

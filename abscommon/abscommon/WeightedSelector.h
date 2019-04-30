@@ -94,6 +94,7 @@ public:
 
     bool IsInitialized() const { return initialized_; }
 
+#ifdef _MSC_VER
     const T& Get() const
     {
         assert(initialized_);
@@ -106,6 +107,7 @@ public:
         float rand2 = r_uni(gen);
         return Get(rand1, rand2);
     }
+#endif
     const T& Get(float rand1, float rand2) const
     {
         assert(initialized_);

@@ -71,7 +71,7 @@ public:
     uint32_t GetLevel() const override { return level_; }
     bool CanAttack() const override { return true; }
     bool CanUseSkill() const override { return true; }
-    void SetLevel(uint32_t value);
+    void SetLevel(uint32_t value) override;
     uint32_t GetModelIndex() const final override
     {
         return modelIndex_;

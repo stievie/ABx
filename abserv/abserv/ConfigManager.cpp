@@ -40,7 +40,7 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::MessageServerHost] = GetGlobalString("message_host", "localhost");
     config_[Key::MessageServerPort] = static_cast<int>(GetGlobalInt("message_port", 2771ll));
 
-    config_[Key::MaxPacketsPerSecond] = GetGlobalInt("max_packets_per_second", 25ll);
+    config_[Key::MaxPacketsPerSecond] = static_cast<int>(GetGlobalInt("max_packets_per_second", 25ll));
 
     config_[Key::LoginTries] = static_cast<int>(GetGlobalInt("login_tries", 5ll));
     config_[Key::LoginTimeout] = static_cast<int>(GetGlobalInt("login_timeout", 60ll * 1000ll));

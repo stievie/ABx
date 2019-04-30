@@ -11,7 +11,7 @@ class vectorbuf : public std::basic_streambuf<CharT, TraitsT>
 public:
     vectorbuf(std::vector<CharT>& vec)
     {
-        setg(vec.data(), vec.data(), vec.data() + vec.size());
+        this->setg(vec.data(), vec.data(), vec.data() + vec.size());
     }
 };
 

@@ -151,7 +151,7 @@ Item* InventoryComp::SetInventory(std::unique_ptr<Item>& item)
             else
             {
                 if (inventory_[0]->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
-                    return false;
+                    return nullptr;
                 inventory_[0]->concreteItem_.count += item->concreteItem_.count;
                 // Merged -> delete this
                 auto factory = GetSubsystem<ItemFactory>();

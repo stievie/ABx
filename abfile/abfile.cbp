@@ -50,6 +50,7 @@
 			<Add library="abcrypto" />
 			<Add library="ssl" />
 			<Add library="crypto" />
+			<Add library="libstdc++fs" />
 		</Linker>
 		<Unit filename="abfile/Application.cpp" />
 		<Unit filename="abfile/Application.h" />

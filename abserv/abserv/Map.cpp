@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "StringUtils.h"
 #include "TerrainPatch.h"
+#include <cmath>
 
 namespace Game {
 
@@ -355,7 +356,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
         }), objects.end());
     };
 
-    size_t minObjects = INFINITE;
+    size_t minObjects = std::numeric_limits<size_t>::max();
     SpawnPoint minPos;
     for (const auto& p : points)
     {

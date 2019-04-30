@@ -21,6 +21,7 @@
 #include "Mechanic.h"
 #include "CollisionComp.h"
 #include "MoveComp.h"
+#include <kaguya/kaguya.hpp>
 
 namespace Game {
 

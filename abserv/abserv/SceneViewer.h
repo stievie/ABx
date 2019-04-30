@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(SCENE_VIEWER)
+
 extern "C" {
 #include <GL/glew.h>
 }
@@ -80,3 +82,5 @@ public:
 };
 
 }
+
+#endif

@@ -4,6 +4,7 @@
 #pragma warning(disable: 4100)
 #include <ai/tree/loaders/lua/LUATreeLoader.h>
 #pragma warning(pop)
+#include "Logger.h"
 
 namespace AI {
 

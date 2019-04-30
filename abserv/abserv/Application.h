@@ -45,8 +45,8 @@ public:
     ~Application() override;
 
     bool Initialize(const std::vector<std::string>& args) override;
-    void Run();
-    void Stop();
+    void Run() override;
+    void Stop() override;
 
     std::string GetKeysFile() const;
     /// Returns a value between 0..100

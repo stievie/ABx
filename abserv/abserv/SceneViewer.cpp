@@ -11,6 +11,8 @@
 
 // http://www.alecjacobson.com/weblog/?p=4307
 
+#if defined(SCENE_VIEWER)
+
 namespace Debug {
 
 const float CAMERA_MIN_DIST = 0.0f;
@@ -449,3 +451,5 @@ Math::Matrix4 Camera::GetMatrix()
 }
 
 }
+
+#endif

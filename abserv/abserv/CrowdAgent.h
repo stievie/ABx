@@ -2,6 +2,8 @@
 
 namespace Navigation {
 
+class CrowdManager;
+
 class CrowdAgent
 {
     friend class CrowdManager;

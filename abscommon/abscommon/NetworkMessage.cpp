@@ -148,6 +148,7 @@ void NetworkMessage::AddStringEncrypted(const std::string& value)
 
 bool NetworkMessage::Compress()
 {
+#if 0
     std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_MAXSIZE);
     const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
     int size = LZ4_compress_default(src, buff.get(), GetSize(), NETWORKMESSAGE_MAXSIZE);
@@ -164,11 +165,13 @@ bool NetworkMessage::Compress()
         */
         return true;
     }
+#endif
     return false;
 }
 
 bool NetworkMessage::Uncompress()
 {
+#if 0
     std::unique_ptr<char[]> buff = std::make_unique<char[]>(NETWORKMESSAGE_MAXSIZE);
     const char* src = reinterpret_cast<const char*>(buffer_ + HeaderLength);
     int size = LZ4_decompress_safe(src, buff.get(), GetSize(), NETWORKMESSAGE_MAXSIZE);
@@ -185,6 +188,7 @@ bool NetworkMessage::Uncompress()
         */
         return true;
     }
+#endif
     return true;
 }
 

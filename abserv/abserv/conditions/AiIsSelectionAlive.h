@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../AICharacter.h"
+#include "../AiCharacter.h"
 #include "../Npc.h"
 
 namespace AI {

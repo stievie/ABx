@@ -572,8 +572,9 @@ std::string Application::GetKeysFile() const
 
 unsigned Application::GetLoad()
 {
+#if defined(_MSC_VER)
     static System::CpuUsage usage;
-
+#endif
     if (Utils::TimePassed(lastLoadCalc_) > 1000 || loads_.empty())
     {
         lastLoadCalc_ = Utils::Tick();
@@ -583,10 +584,12 @@ unsigned Application::GetLoad()
         unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
         if (utilization > load)
             load = utilization;
+#if defined(_MSC_VER)
         unsigned l = static_cast<unsigned>(usage.GetUsage());
         if (l > load)
             // Use the higher value
             load = l;
+#endif
         if (load > 100)
             load = 100;
 
