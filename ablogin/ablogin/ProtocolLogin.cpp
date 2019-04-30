@@ -352,6 +352,8 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
+    default:
+        break;
     }
 
     AB::Entities::Service gameServer;
@@ -428,6 +430,10 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
+    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+    case IO::IOAccount::LoginError::OK:
+        // OK
+        break;
     }
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -467,6 +473,10 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
+    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+    case IO::IOAccount::LoginError::OK:
+        // OK
+        break;
     }
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -551,6 +561,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
+    case IO::IOAccount::LoginError::OK:
+        // OK
+        break;
     }
 
     std::string uuid;
@@ -617,6 +630,9 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
+    case IO::IOAccount::LoginError::OK:
+        // OK
+        break;
     }
 
     IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountUuid, password, accKey);
@@ -670,6 +686,9 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
+        break;
+    case IO::IOAccount::LoginError::OK:
+        // OK
         break;
     }
 

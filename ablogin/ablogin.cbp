@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ablogin" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Bin/ablogin_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/x64/Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../Bin/ablogin" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../Lib/x64/Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../Include" />
+			<Add directory="../abscommon/abscommon" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="pthread" />
+			<Add library="lua" />
+			<Add library="abscommon" />
+			<Add library="uuid" />
+			<Add library="abcrypto" />
+		</Linker>
+		<Unit filename="ablogin/Application.cpp" />
+		<Unit filename="ablogin/Application.h" />
+		<Unit filename="ablogin/Bans.cpp" />
+		<Unit filename="ablogin/Bans.h" />
+		<Unit filename="ablogin/IOAccount.cpp" />
+		<Unit filename="ablogin/IOAccount.h" />
+		<Unit filename="ablogin/IOGame.cpp" />
+		<Unit filename="ablogin/IOGame.h" />
+		<Unit filename="ablogin/IOService.cpp" />
+		<Unit filename="ablogin/IOService.h" />
+		<Unit filename="ablogin/ProtocolLogin.cpp" />
+		<Unit filename="ablogin/ProtocolLogin.h" />
+		<Unit filename="ablogin/Version.h" />
+		<Unit filename="ablogin/main.cpp" />
+		<Unit filename="ablogin/stdafx.cpp" />
+		<Unit filename="ablogin/stdafx.h" />
+		<Unit filename="ablogin/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
