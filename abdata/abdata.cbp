@@ -37,6 +37,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add directory="../Include" />
+			<Add directory="../abscommon/abscommon" />
+			<Add directory="../abdb/abdb" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />

@@ -19,7 +19,7 @@ private:
     void PrintServerInfo();
     void ShowHelp();
 protected:
-    bool ParseCommandLine();
+    bool ParseCommandLine() override;
 public:
     Application();
     ~Application() override;
