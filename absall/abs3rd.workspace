@@ -2,7 +2,6 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
 		<Project filename="../ThirdParty/abcrypto/abcrypto.cbp" />
-		<Project filename="../ThirdParty/lua/lua.cbp" />
 		<Project filename="../ThirdParty/PugiXml/PugiXml.cbp" />
 		<Project filename="../ThirdParty/recastnavigation/Recast.cbp" />
 		<Project filename="../ThirdParty/recastnavigation/Detour.cbp" />

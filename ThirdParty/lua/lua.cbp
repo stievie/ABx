@@ -36,6 +36,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-m64" />
+			<Add option="-DLUA_USE_LINUX" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
@@ -147,6 +148,7 @@
 		</Unit>
 		<Unit filename="lua/ltm.h" />
 		<Unit filename="lua/lua.h" />
+		<Unit filename="lua/luaconf.h" />
 		<Unit filename="lua/lualib.h" />
 		<Unit filename="lua/lundump.c">
 			<Option compilerVar="CC" />

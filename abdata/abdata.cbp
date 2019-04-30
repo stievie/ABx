@@ -7,7 +7,7 @@
 		<Option compiler="clang" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../Lib/x64/Debug/abdata" prefix_auto="1" extension_auto="1" />
+				<Option output="../Bin/abdata_d" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="clang" />
@@ -19,7 +19,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="../Lib/x64/Release/abdata" prefix_auto="1" extension_auto="1" />
+				<Option output="../Bin/abdata" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="clang" />
@@ -35,7 +35,9 @@
 		<Compiler>
 			<Add option="-m64" />
 			<Add option="-Wall" />
+			<Add option="-std=c++14" />
 			<Add option="-fexceptions" />
+			<Add option="-DLUA_USE_LINUX" />
 			<Add directory="../Include" />
 			<Add directory="../abscommon/abscommon" />
 			<Add directory="../abdb/abdb" />
