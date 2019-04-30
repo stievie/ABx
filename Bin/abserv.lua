@@ -8,8 +8,8 @@ server_name = "AT1"
 
 require("config/data_server")
 
-data_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/data"
-recordings_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/recordings"
+data_dir = "data"
+recordings_dir = "recordings"
 record_games = false
 
 base_port = 2749          -- 0xABE
