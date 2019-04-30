@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="../abdb/abdb.cbp" />
+		<Project filename="../abscommon/abscommon.cbp" />
+		<Project filename="../absmath/absmath.cbp" />
+		<Project filename="../abdata/abdata.cbp" />
+		<Project filename="../abmsgs/abmsgs.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
