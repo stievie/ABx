@@ -105,7 +105,6 @@ bool Application::LoadMain()
 
 void Application::PrintServerInfo()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     auto dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
@@ -160,7 +159,6 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
 void Application::Run()
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
     auto dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();

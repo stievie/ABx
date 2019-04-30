@@ -22,10 +22,14 @@
 #include "DebugConfig.h"
 
 #define ASIO_STANDALONE
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4592)
+#endif
 #include <asio.hpp>
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif // _MSC_VER
 
 #include <uuid.h>
 

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="abmsgs" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Bin/abmsgs_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/x64/Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../Bin/abmsgs" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../Lib/x64/Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../Include" />
+			<Add directory="../abscommon/abscommon" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="pthread" />
+			<Add library="abscommon" />
+			<Add library="lua" />
+			<Add library="uuid" />
+		</Linker>
+		<Unit filename="abmsgs/Application.cpp" />
+		<Unit filename="abmsgs/Application.h" />
+		<Unit filename="abmsgs/MessageChannel.cpp" />
+		<Unit filename="abmsgs/MessageChannel.h" />
+		<Unit filename="abmsgs/MessageServer.cpp" />
+		<Unit filename="abmsgs/MessageServer.h" />
+		<Unit filename="abmsgs/Version.h" />
+		<Unit filename="abmsgs/main.cpp" />
+		<Unit filename="abmsgs/stdafx.cpp" />
+		<Unit filename="abmsgs/stdafx.h" />
+		<Unit filename="abmsgs/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -75,6 +75,8 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::Spawn:
         SpawnServer();
         break;
+    default:
+        break;
     }
 }
 
@@ -692,9 +694,9 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         gNd.append_attribute("uuid") = s.uuid.c_str();
         gNd.append_attribute("index") = s.index;
         gNd.append_attribute("name") = s.name.c_str();
-        gNd.append_attribute("attribute") = s.attributeUuid.c_str();
-        gNd.append_attribute("profession") = s.professionUuid.c_str();
-        gNd.append_attribute("type") = static_cast<uint64_t>(s.type);
+        gNd.append_attribute("attribute").set_value(s.attributeUuid.c_str());
+        gNd.append_attribute("profession").set_value(s.professionUuid.c_str());
+        gNd.append_attribute("type").set_value(static_cast<unsigned long long>(s.type));
         gNd.append_attribute("elite") = s.isElite;
         gNd.append_attribute("description") = s.description.c_str();
         gNd.append_attribute("short_description") = s.shortDescription.c_str();

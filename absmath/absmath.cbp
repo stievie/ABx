@@ -37,6 +37,7 @@
 		<Compiler>
 			<Add option="-m64" />
 			<Add directory="../Include" />
+			<Add directory="../Include/XMath" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
