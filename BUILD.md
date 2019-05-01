@@ -37,7 +37,9 @@ Disable link time optimiztation on linux
 
 * Install MariaDB, PostgreSQL, SQlite, Lua. Link against the installed libraries.
 * Use Code::Blocks and build `./absall/abs3rd.workspace` and `./absall/absall.worklspace`
-* Use `cbp2mak` to create makefiles `cbp2make -in ./absall/absall.workspace -unix` and run `make -f absall.workspace.mak config=release`
+* Use `cbp2mak` to create makefiles: (1) `cbp2make -in ./absall/abs3rd.workspace -unix --keep-outdir`,
+(2) `cbp2make -in ./absall/absall.workspace -unix --keep-outdir` and run 
+(1) `make -f abs3rd.workspace.mak`, (2) `make -f absall.workspace.mak`
 
 ### Adding Clang to `cbp2mak`s configuration:
 
