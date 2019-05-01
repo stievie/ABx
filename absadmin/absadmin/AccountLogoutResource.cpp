@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AccountlogoutResource.h"
+#include "AccountLogoutResource.h"
 #include "Application.h"
 #include "ContentTypes.h"
 #include "StringUtils.h"

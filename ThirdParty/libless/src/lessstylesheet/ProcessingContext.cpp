@@ -19,7 +19,7 @@ const LessStylesheet *ProcessingContext::getLessStylesheet() const {
 
 const TokenList *ProcessingContext::getVariable(const std::string &key) const {
   const TokenList* t;
-  
+
   if (stack != NULL) {
     if ((t = stack->getVariable(key, *this)) != NULL)
       return t;
@@ -31,7 +31,7 @@ const TokenList *ProcessingContext::getVariable(const std::string &key) const {
 const TokenList *ProcessingContext::getFunctionVariable
 (const std::string &key,
  const Function* function) const {
-  
+
   std::map<const Function*, VariableMap>::const_iterator it;
 
   if ((it = variables.find(function)) != variables.end())
@@ -83,7 +83,7 @@ bool ProcessingContext::isSavePoint() const {
 
 const Function* ProcessingContext::getSavePoint() const {
   MixinCall *tmp = stack;
-  while (tmp != NULL && !tmp->savepoint) 
+  while (tmp != NULL && !tmp->savepoint)
     tmp = tmp->parent;
   return (tmp == NULL) ? NULL : tmp->function;
 }
@@ -104,7 +104,7 @@ bool ProcessingContext::isInStack(const Function &function) const {
   if (stack != NULL)
     return stack->isInStack(function);
   else
-    return NULL;
+    return false;
 }
 
 void ProcessingContext::pushExtensionScope(std::list<Extension> &scope) {
@@ -126,10 +126,10 @@ std::list<Extension> *ProcessingContext::getExtensions() {
 void ProcessingContext::addClosure(const LessRuleset &ruleset) {
   if (stack == NULL)
     return;
-  
+
   const Function* fnc = getSavePoint();
   Closure *c = new Closure(ruleset, *stack);
-  
+
   if (fnc != NULL)
     closures[fnc].push_back(c);
   else
@@ -162,7 +162,7 @@ ValueProcessor *ProcessingContext::getValueProcessor() {
 
 void ProcessingContext::interpolate(Selector &selector) const {
   std::list<TokenList>::iterator it;
-  
+
   for (it = selector.begin(); it != selector.end(); it++) {
     processor.interpolate(*it, *this);
   }

@@ -201,7 +201,7 @@ bool LessParser::parseRuleset(TokenList &selector,
 
   s = new LessSelector();
   lessSelectorParser.parse(selector, *s);
-  
+
   // Create the ruleset and parse ruleset statements.
   if (parentRuleset == NULL)
     ruleset = stylesheet->createLessRuleset(*s);
@@ -217,7 +217,7 @@ bool LessParser::parseRuleset(TokenList &selector,
   }
   tokenizer->readNextToken();
   skipWhitespace();
-  
+
   return true;
 }
 
@@ -226,7 +226,7 @@ bool LessParser::parseRuleset(LessStylesheet &parent, TokenList &selector) {
 }
 bool LessParser::parseRuleset(LessRuleset &parent, TokenList &selector) {
   return parseRuleset(selector, NULL, &parent);
-}  
+}
 
 void LessParser::parseMediaQueryRuleset(Token &mediatoken,
                                         LessRuleset &parent) {
@@ -248,7 +248,7 @@ void LessParser::parseMediaQueryRuleset(Token &mediatoken,
 
   query = parent.createMediaQuery(selector);
   query->setReference(reference);
-  
+
   if (tokenizer->getTokenType() != Token::BRACKET_OPEN) {
     throw new ParseException(tokenizer->getToken(), "{");
   }
@@ -302,10 +302,10 @@ bool LessParser::parseRulesetStatement(LessRuleset &ruleset) {
 
   if (parseComment(ruleset))
     return true;
-  
+
   if (parseAtRuleOrVariable(ruleset))
     return true;
-  
+
   while (parseProperty(tokens) || parsePropertyVariable(tokens)) {
   }
 
@@ -324,18 +324,18 @@ bool LessParser::parseRulesetStatement(LessRuleset &ruleset) {
   parseWhitespace(tokens);
   if (tokenizer->getTokenType() != Token::COLON)
     property_i = 0;
-  
+
   parseSelector(tokens);
   tokens.trim();
 
   if (tokens.empty())
-    return NULL;
+    return false;
 
   if (parseRuleset(ruleset, tokens))
     return true;
 
   parseValue(tokens);
-  
+
   if (parseExtension(tokens, ruleset) ||
       parseDeclaration(tokens, property_i, ruleset)) {
   } else {
@@ -351,9 +351,9 @@ bool LessParser::parseRulesetStatement(LessRuleset &ruleset) {
 
 bool LessParser::parseComment(LessRuleset& ruleset) {
   CssComment *comment;
-  if (tokenizer->getTokenType() != Token::COMMENT) 
+  if (tokenizer->getTokenType() != Token::COMMENT)
     return false;
-  
+
   comment = ruleset.createComment();
   comment->setComment(tokenizer->getToken());
   tokenizer->readNextToken();
@@ -407,7 +407,7 @@ bool LessParser::parseExtension(TokenList &statement, LessRuleset &ruleset) {
   selectorParser.parse(target, extension.getTarget());
 
   ruleset.addExtension(extension);
-  
+
   return true;
 }
 
@@ -418,32 +418,32 @@ bool LessParser::parseDeclaration(TokenList &tokens,
   TokenList::iterator i;
   TokenList property;
   Token keyword;
-  
+
   if (property_i == 0 ||
       tokens.front().type == Token::HASH ||
       tokens.front() == ".") {
     return false;
   }
-  
+
   d = ruleset.createLessDeclaration();
 
   i = tokens.begin();
   std::advance(i, property_i);
-  
+
   property.insert(property.begin(), tokens.begin(), i);
   keyword = property.front();
   keyword.assign(property.toString());
   d->setProperty(keyword);
 
-  while (i != tokens.end() && (*i).type == Token::WHITESPACE) 
+  while (i != tokens.end() && (*i).type == Token::WHITESPACE)
     i++;
-  
+
   if (i != tokens.end() && (*i).type == Token::COLON)
     i++;
-  
-  while (i != tokens.end() && (*i).type == Token::WHITESPACE) 
+
+  while (i != tokens.end() && (*i).type == Token::WHITESPACE)
     i++;
-  
+
   d->getValue().insert(d->getValue().begin(), i, tokens.end());
 
   return true;
@@ -465,7 +465,7 @@ bool LessParser::parseMixin(TokenList &tokens,
   TokenList::const_iterator i = tokens.begin();
   Mixin *mixin;
   TokenList name;
-  
+
   for (; i != tokens.end() && (*i).type != Token::PAREN_OPEN; i++) {
     name.push_back(*i);
   }
@@ -555,7 +555,7 @@ void LessParser::parseMixinArguments(TokenList::const_iterator &i,
     }
     argument.clear();
   }
-  
+
   if (i != tokens.end())
     i++;
 }
@@ -766,7 +766,7 @@ void LessParser::parseLessMediaQuery(Token &mediatoken,
                                      LessStylesheet &stylesheet) {
   LessMediaQuery *query;
   TokenList selector;
-  
+
   selector.push_back(mediatoken);
   selector.push_back(Token::BUILTIN_SPACE);
 
