@@ -17,7 +17,6 @@ private:
     dtNavMeshQuery* navQuery_;
     std::unique_ptr<dtQueryFilter> queryFilter_;
     std::unique_ptr<FindPathData> pathData_;
-    dtStatus pathFindState_;
 public:
     NavigationMesh();
     ~NavigationMesh() override;

@@ -574,6 +574,10 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     {
     case AB::GameProtocol::CommandTypeUnknown:
         break;
+    case AB::GameProtocol::CommandTypeIp:
+    case AB::GameProtocol::CommandTypePrefPath:
+        // Client side only
+        break;
     case AB::GameProtocol::CommandTypeChatGeneral:
         HandleGeneralChatCommand(command, message);
         break;

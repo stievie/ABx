@@ -73,7 +73,7 @@ bool GameReadStream::Open(const std::string& dir, const std::string& instance)
     {
         char header[4] = { 0 };
         stream_.read((char*)&header, 4);
-        if (header[0] != 'R' || header[1] != 'E' || header[2] != 'C' || header[4] != '\0')
+        if (header[0] != 'R' || header[1] != 'E' || header[2] != 'C' || header[3] != '\0')
         {
             LOG_ERROR << "Wrong file header" << std::endl;
             stream_.close();
