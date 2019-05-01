@@ -38,7 +38,7 @@ namespace {
                 case '\t': output += "\\t";  break;
                 default  : output += str[i]; break;
             }
-        return std::move( output );
+        return output;
     }
 }
 
@@ -429,7 +429,7 @@ inline JSON Array( T... args ) {
 }
 
 inline JSON Object() {
-    return std::move( JSON::Make( JSON::Class::Object ) );
+    return JSON::Make( JSON::Class::Object );
 }
 
 inline std::ostream& operator<<( std::ostream &os, const JSON &json ) {
@@ -487,7 +487,7 @@ namespace {
         ++offset;
         consume_ws( str, offset );
         if( str[offset] == ']' ) {
-            ++offset; return std::move( Array );
+            ++offset; return Array;
         }
 
         while( true ) {
