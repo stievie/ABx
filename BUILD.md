@@ -20,15 +20,16 @@ x. libldap2-dev, libssl-dev, libgsasl7-dev
 
 ## Fixes
 
-* Remove `#pragma comment` to link file. 
-* Link `lua`, `abcrypto`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist), 
-`libmysqlclient` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev/filelist), 
-`libsqlite3` (https://packages.debian.org/jessie/armhf/libsqlite3-dev/filelist), 
+* Remove `#pragma comment` to link file.
+* Link `lua`, `abcrypto`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist),
+`libmysqlclient` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev/filelist),
+`libsqlite3` (https://packages.debian.org/jessie/armhf/libsqlite3-dev/filelist),
 `libuuid` (https://packages.debian.org/jessie/armhf/uuid-dev/filelist)
 * Remove `#pragma once`, add include guards?
 * `#ifdef _MSC_VER` all `*_s` C functions
 * Fix initialization order
 * Complie `make -f abdata.make -e config=release_armv7`
+* Rename `./Include/opensll` to something else to use the installed version (`abfile`, `absadmin`).
 
 Disable link time optimiztation on linux
 
