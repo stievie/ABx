@@ -49,6 +49,8 @@
 			<Add library="stdc++fs" />
 			<Add library="lua" />
 			<Add library="uuid" />
+			<Add library="less" />
+			<Add library="abcrypto" />
 		</Linker>
 		<Unit filename="absadmin/AccountKeysResource.cpp" />
 		<Unit filename="absadmin/AccountKeysResource.h" />

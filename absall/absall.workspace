@@ -8,5 +8,7 @@
 		<Project filename="../abmsgs/abmsgs.cbp" />
 		<Project filename="../ablogin/ablogin.cbp" />
 		<Project filename="../abserv/abserv.cbp" />
+		<Project filename="../abfile/abfile.cbp" />
+		<Project filename="../absadmin/absadmin.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

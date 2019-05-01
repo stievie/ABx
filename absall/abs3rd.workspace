@@ -7,5 +7,6 @@
 		<Project filename="../ThirdParty/recastnavigation/Detour.cbp" />
 		<Project filename="../ThirdParty/recastnavigation/DebugUtils.cbp" />
 		<Project filename="../ThirdParty/sqlite3/sqlite3.cbp" />
+		<Project filename="../ThirdParty/libless/libless.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
