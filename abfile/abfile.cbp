@@ -13,6 +13,7 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="../Lib/x64/Debug" />
 				</Compiler>
 				<Linker>
 					<Add directory="../Lib/x64/Debug" />
@@ -25,6 +26,7 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add directory="../Lib/x64/Release" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -42,15 +44,17 @@
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
+			<Add option="-v" />
 			<Add library="pthread" />
+			<Add library="ssl" />
+			<Add library="crypto" />
 			<Add library="lua" />
 			<Add library="uuid" />
 			<Add library="abscommon" />
 			<Add library="pugixml" />
 			<Add library="abcrypto" />
-			<Add library="ssl" />
-			<Add library="crypto" />
 			<Add library="libstdc++fs" />
+			<Add library="abcrypto" />
 		</Linker>
 		<Unit filename="abfile/Application.cpp" />
 		<Unit filename="abfile/Application.h" />
