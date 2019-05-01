@@ -57,7 +57,7 @@
 			<Add library="abcrypto" />
 			<Add library="pugixml" />
 			<Add library="detour" />
-			<Add library="libstdc++fs" />
+			<Add library="stdc++fs" />
 		</Linker>
 		<Unit filename="abserv/Actor.cpp" />
 		<Unit filename="abserv/Actor.h" />

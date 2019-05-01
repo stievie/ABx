@@ -24,6 +24,7 @@ Bin
 *.cache
 *.layout
 *.7z
+*.mak
 
 # Precompiled header files
 *.gch/
