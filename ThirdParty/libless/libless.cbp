@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libless" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../Lib/x64/Debug/less" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="../../Lib/x64/Release/less" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+			<Add option="-Wall" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
+		<Unit filename="include/less/LessException.h" />
+		<Unit filename="include/less/Token.h" />
+		<Unit filename="include/less/TokenList.h" />
+		<Unit filename="include/less/VariableMap.h" />
+		<Unit filename="include/less/css/CssParser.h" />
+		<Unit filename="include/less/css/CssPrettyWriter.h" />
+		<Unit filename="include/less/css/CssSelectorParser.h" />
+		<Unit filename="include/less/css/CssTokenizer.h" />
+		<Unit filename="include/less/css/CssWriter.h" />
+		<Unit filename="include/less/css/IOException.h" />
+		<Unit filename="include/less/css/ParseException.h" />
+		<Unit filename="include/less/css/SourceMapWriter.h" />
+		<Unit filename="include/less/less/LessParser.h" />
+		<Unit filename="include/less/less/LessSelectorParser.h" />
+		<Unit filename="include/less/less/LessTokenizer.h" />
+		<Unit filename="include/less/lessstylesheet/Closure.h" />
+		<Unit filename="include/less/lessstylesheet/Extension.h" />
+		<Unit filename="include/less/lessstylesheet/Function.h" />
+		<Unit filename="include/less/lessstylesheet/LessAtRule.h" />
+		<Unit filename="include/less/lessstylesheet/LessDeclaration.h" />
+		<Unit filename="include/less/lessstylesheet/LessMediaQuery.h" />
+		<Unit filename="include/less/lessstylesheet/LessRuleset.h" />
+		<Unit filename="include/less/lessstylesheet/LessSelector.h" />
+		<Unit filename="include/less/lessstylesheet/LessStylesheet.h" />
+		<Unit filename="include/less/lessstylesheet/MediaQueryRuleset.h" />
+		<Unit filename="include/less/lessstylesheet/Mixin.h" />
+		<Unit filename="include/less/lessstylesheet/MixinArguments.h" />
+		<Unit filename="include/less/lessstylesheet/MixinCall.h" />
+		<Unit filename="include/less/lessstylesheet/MixinException.h" />
+		<Unit filename="include/less/lessstylesheet/ProcessingContext.h" />
+		<Unit filename="include/less/stylesheet/AtRule.h" />
+		<Unit filename="include/less/stylesheet/CssComment.h" />
+		<Unit filename="include/less/stylesheet/CssWritable.h" />
+		<Unit filename="include/less/stylesheet/Declaration.h" />
+		<Unit filename="include/less/stylesheet/MediaQuery.h" />
+		<Unit filename="include/less/stylesheet/Ruleset.h" />
+		<Unit filename="include/less/stylesheet/RulesetStatement.h" />
+		<Unit filename="include/less/stylesheet/Selector.h" />
+		<Unit filename="include/less/stylesheet/Stylesheet.h" />
+		<Unit filename="include/less/stylesheet/StylesheetStatement.h" />
+		<Unit filename="include/less/value/BooleanValue.h" />
+		<Unit filename="include/less/value/Color.h" />
+		<Unit filename="include/less/value/ColorFunctions.h" />
+		<Unit filename="include/less/value/FunctionLibrary.h" />
+		<Unit filename="include/less/value/NumberFunctions.h" />
+		<Unit filename="include/less/value/NumberValue.h" />
+		<Unit filename="include/less/value/StringFunctions.h" />
+		<Unit filename="include/less/value/StringValue.h" />
+		<Unit filename="include/less/value/UnitValue.h" />
+		<Unit filename="include/less/value/UrlFunctions.h" />
+		<Unit filename="include/less/value/UrlValue.h" />
+		<Unit filename="include/less/value/Value.h" />
+		<Unit filename="include/less/value/ValueException.h" />
+		<Unit filename="include/less/value/ValueProcessor.h" />
+		<Unit filename="include/less/value/ValueScope.h" />
+		<Unit filename="src/LessException.cpp" />
+		<Unit filename="src/Token.cpp" />
+		<Unit filename="src/TokenList.cpp" />
+		<Unit filename="src/VariableMap.cpp" />
+		<Unit filename="src/css/CssParser.cpp" />
+		<Unit filename="src/css/CssPrettyWriter.cpp" />
+		<Unit filename="src/css/CssSelectorParser.cpp" />
+		<Unit filename="src/css/CssTokenizer.cpp" />
+		<Unit filename="src/css/CssWriter.cpp" />
+		<Unit filename="src/css/ParseException.cpp" />
+		<Unit filename="src/css/SourceMapWriter.cpp" />
+		<Unit filename="src/less/LessParser.cpp" />
+		<Unit filename="src/less/LessSelectorParser.cpp" />
+		<Unit filename="src/less/LessTokenizer.cpp" />
+		<Unit filename="src/lessstylesheet/Closure.cpp" />
+		<Unit filename="src/lessstylesheet/Extension.cpp" />
+		<Unit filename="src/lessstylesheet/LessAtRule.cpp" />
+		<Unit filename="src/lessstylesheet/LessDeclaration.cpp" />
+		<Unit filename="src/lessstylesheet/LessMediaQuery.cpp" />
+		<Unit filename="src/lessstylesheet/LessRuleset.cpp" />
+		<Unit filename="src/lessstylesheet/LessSelector.cpp" />
+		<Unit filename="src/lessstylesheet/LessStylesheet.cpp" />
+		<Unit filename="src/lessstylesheet/MediaQueryRuleset.cpp" />
+		<Unit filename="src/lessstylesheet/Mixin.cpp" />
+		<Unit filename="src/lessstylesheet/MixinArguments.cpp" />
+		<Unit filename="src/lessstylesheet/MixinCall.cpp" />
+		<Unit filename="src/lessstylesheet/MixinException.cpp" />
+		<Unit filename="src/lessstylesheet/ProcessingContext.cpp" />
+		<Unit filename="src/stylesheet/AtRule.cpp" />
+		<Unit filename="src/stylesheet/CssComment.cpp" />
+		<Unit filename="src/stylesheet/Declaration.cpp" />
+		<Unit filename="src/stylesheet/MediaQuery.cpp" />
+		<Unit filename="src/stylesheet/Ruleset.cpp" />
+		<Unit filename="src/stylesheet/RulesetStatement.cpp" />
+		<Unit filename="src/stylesheet/Selector.cpp" />
+		<Unit filename="src/stylesheet/Stylesheet.cpp" />
+		<Unit filename="src/stylesheet/StylesheetStatement.cpp" />
+		<Unit filename="src/value/BooleanValue.cpp" />
+		<Unit filename="src/value/Color.cpp" />
+		<Unit filename="src/value/ColorFunctions.cpp" />
+		<Unit filename="src/value/FunctionLibrary.cpp" />
+		<Unit filename="src/value/NumberFunctions.cpp" />
+		<Unit filename="src/value/NumberValue.cpp" />
+		<Unit filename="src/value/StringFunctions.cpp" />
+		<Unit filename="src/value/StringValue.cpp" />
+		<Unit filename="src/value/UnitValue.cpp" />
+		<Unit filename="src/value/UrlFunctions.cpp" />
+		<Unit filename="src/value/UrlValue.cpp" />
+		<Unit filename="src/value/Value.cpp" />
+		<Unit filename="src/value/ValueProcessor.cpp" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

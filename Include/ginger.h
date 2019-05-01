@@ -12,10 +12,27 @@
 #include <iterator>
 #include <functional>
 #include <memory>
+#include <fstream>
 
 namespace ginger {
 
 static constexpr char IDENT = '$';
+
+// Forward declaration
+namespace internal {
+template<class IOS>
+struct output_type;
+}
+template<class IOS>
+static internal::output_type<IOS> from_ios(IOS&& ios);
+template<class Input, class Dictionary, class Output>
+static void parse(Input&& input, Dictionary&& dic, Output&& out);
+template<class Input, class Dictionary>
+static void parse(Input&& input, Dictionary&& dic);
+template<class Dictionary, class Output>
+static void parse(const char* input, Dictionary&& dic, Output&& out);
+template<class Dictionary>
+static void parse(const char* input, Dictionary&& dic);
 
 class object {
     struct holder {
@@ -327,6 +344,26 @@ namespace internal {
         }
     }
 
+    template<class IOS>
+    struct output_type {
+        IOS ios;
+        output_type(IOS ios) : ios(std::forward<IOS>(ios)) { }
+
+        template<class Iterator>
+        void put(Iterator first, Iterator last) {
+            std::copy(first, last, std::ostreambuf_iterator<char>(ios));
+        }
+        void flush() {
+            ios << std::flush;
+        }
+
+        output_type(output_type&&) = default;
+        output_type& operator=(output_type&&) = default;
+
+        output_type(const output_type&) = delete;
+        output_type& operator=(const output_type&) = delete;
+    };
+
     template<class Iterator, class Dictionary, class F>
     static void block(parser<Iterator>& p, const Dictionary& dic, tmpl_context& ctx, bool skip, F& out) {
         while (p) {
@@ -523,26 +560,6 @@ namespace internal {
             }
         }
     }
-
-    template<class IOS>
-    struct output_type {
-        IOS ios;
-        output_type(IOS ios) : ios(std::forward<IOS>(ios)) { }
-
-        template<class Iterator>
-        void put(Iterator first, Iterator last) {
-            std::copy(first, last, std::ostreambuf_iterator<char>(ios));
-        }
-        void flush() {
-            ios << std::flush;
-        }
-
-        output_type(output_type&&) = default;
-        output_type& operator=(output_type&&) = default;
-
-        output_type(const output_type&) = delete;
-        output_type& operator=(const output_type&) = delete;
-    };
 
     struct cstring : std::iterator<std::forward_iterator_tag, char> {
         cstring() : p(nullptr) { }
