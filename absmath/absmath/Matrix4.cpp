@@ -364,19 +364,24 @@ Matrix4 Matrix4::FromTranslation(const Vector3& v)
     return m;
 }
 
-Quaternion Matrix4::Rotation(bool rowNormalize /* = true */) const
+Quaternion Matrix4::Rotation() const
 {
+//#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+//    return XMath::XMQuaternionRotationMatrix(*this);
+//#else
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
     Vector4 row0(m_[Index00], m_[Index01], m_[Index02], m_[Index03]);
     Vector4 row1(m_[Index10], m_[Index11], m_[Index12], m_[Index13]);
     Vector4 row2(m_[Index20], m_[Index21], m_[Index22], m_[Index23]);
-    if (rowNormalize)
-    {
-        row0.Normalize();
-        row1.Normalize();
-        row2.Normalize();
-    }
+    //if (rowNormalize)
+    //{
+    //    row0.Normalize();
+    //    row1.Normalize();
+    //    row2.Normalize();
+    //}
     Quaternion q;
-    float trace = 0.25f * (row0.x_, row1.y_, row2.z_ + 1.0f);
+    float trace = 0.25f * (row0.x_ + row1.y_ + row2.z_ + 1.0f);
+//    float trace = row0.x_ + row1.y_ + row2.z_;
     if (trace > 0)
     {
         float sq = sqrt(trace);
@@ -414,6 +419,7 @@ Quaternion Matrix4::Rotation(bool rowNormalize /* = true */) const
         q.y_ = (row2.y_ + row1.z_) * sq;
     }
     return q.Normal();
+//#endif
 }
 
 Vector3 Matrix4::Translation() const

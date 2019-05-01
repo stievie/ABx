@@ -101,12 +101,12 @@ TEST_CASE("Quaternion Operations")
     {
         Math::Quaternion quat(1.0f, 2.0f, 3.0f, 4.0f);
         Math::Matrix4 mat = quat.GetMatrix();
-        Math::Quaternion q = mat.Rotation(false);
+        Math::Quaternion q = mat.Rotation();
         float diff = quat.w_ / q.w_;
-        REQUIRE(q.w_ * diff == quat.w_);
-        REQUIRE(q.x_ * diff == quat.x_);
-        REQUIRE(q.y_ * diff == quat.y_);
-        REQUIRE(q.z_ * diff == quat.z_);
+        REQUIRE(q.w_ * diff == Approx(quat.w_));
+        REQUIRE(q.x_ * diff == Approx(quat.x_));
+        REQUIRE(q.y_ * diff == Approx(quat.y_));
+        REQUIRE(q.z_ * diff == Approx(quat.z_));
     }
 }
 

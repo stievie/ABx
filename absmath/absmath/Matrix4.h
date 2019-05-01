@@ -131,7 +131,7 @@ public:
     Matrix4& Rotate(const Vector4& axisAngle);
 
     /// Get rotation part
-    Quaternion Rotation(bool rowNormalize = true) const;
+    Quaternion Rotation() const;
     /// Get translation part
     Vector3 Translation() const;
     /// Get scaling part
