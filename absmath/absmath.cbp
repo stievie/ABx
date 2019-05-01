@@ -49,6 +49,7 @@
 		<Unit filename="absmath/ConvexHull.h" />
 		<Unit filename="absmath/Frustum.cpp" />
 		<Unit filename="absmath/Frustum.h" />
+		<Unit filename="absmath/Gjk.cpp" />
 		<Unit filename="absmath/Gjk.h" />
 		<Unit filename="absmath/HeightMap.cpp" />
 		<Unit filename="absmath/HeightMap.h" />
