@@ -11,7 +11,7 @@ class Connection;
 class ServiceBase
 {
 public:
-    ~ServiceBase() {}
+    virtual ~ServiceBase() = default;
     virtual bool IsSingleSocket() const = 0;
     virtual bool IsChecksummed() const = 0;
     virtual uint8_t GetPotocolIdentifier() const = 0;
