@@ -242,6 +242,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             owner_.HandleCommand(type, cmd, message);
             break;
         }
+        case InputType::None:
+            break;
         }
     }
 }

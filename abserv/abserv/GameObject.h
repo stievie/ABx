@@ -94,8 +94,7 @@ public:
     // non-copyable
     GameObject(const GameObject&) = delete;
     GameObject& operator=(const GameObject&) = delete;
-    // virtual not needed with shared_ptr
-    ~GameObject();
+    virtual ~GameObject();
 
     template <typename T>
     std::shared_ptr<T> GetThis()

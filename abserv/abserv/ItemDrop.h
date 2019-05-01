@@ -24,7 +24,7 @@ public:
     ItemDrop(const ItemDrop&) = delete;
     ItemDrop& operator=(const ItemDrop&) = delete;
 
-    ~ItemDrop();
+    ~ItemDrop() final;
 
     AB::GameProtocol::GameObjectType GetType() const final override
     {

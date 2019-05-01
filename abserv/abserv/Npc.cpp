@@ -39,8 +39,8 @@ Npc::Npc() :
     serverOnly_(false),
     behaviorTree_(""),
     aiCharacter_(nullptr),
-    luaInitialized_(false),
-    functions_(FunctionNone)
+    functions_(FunctionNone),
+    luaInitialized_(false)
 {
     // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Party::GetNewId();
@@ -216,6 +216,9 @@ void Npc::Say(ChatType channel, const std::string& message)
             ch->TalkNpc(this, message);
         break;
     }
+    default:
+        // N/A
+        break;
     }
 }
 

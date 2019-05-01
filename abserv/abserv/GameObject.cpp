@@ -60,14 +60,14 @@ void GameObject::RegisterLua(kaguya::State& state)
 
 GameObject::GameObject() :
     collisionShape_(nullptr),
-    stateComp_(*this),
     octant_(nullptr),
-    triggerComp_(nullptr),         // By default its not a trigger
     sortValue_(0.0f),
+    id_(GetNewId()),
     name_("Unknown"),
+    stateComp_(*this),
+    triggerComp_(nullptr),         // By default its not a trigger
     occluder_(false),
     occludee_(true),
-    id_(GetNewId()),
     collisionMask_(0xFFFFFFFF)    // Collides with all by default
 {
 }
@@ -439,6 +439,9 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         auto obj = shape->Object();
         obj->radius_ = x;
     }
+    default:
+        // Not possible for other shapes
+        break;
     }
 }
 

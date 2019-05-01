@@ -19,11 +19,11 @@ class MailBox;
 class Player final : public Actor
 {
 private:
+    // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
+    std::shared_ptr<Net::ProtocolGame> client_;
     std::unique_ptr<MailBox> mailBox_;
     std::unique_ptr<FriendList> friendList_;
     std::shared_ptr<Party> party_;
-    // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
-    std::shared_ptr<Net::ProtocolGame> client_;
     bool resigned_;
     Party* _LuaGetParty();
 protected:
@@ -53,7 +53,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     explicit Player(std::shared_ptr<Net::ProtocolGame> client);
-    ~Player();
+    ~Player() final;
     // non-copyable
     Player(const Player&) = delete;
     Player& operator=(const Player&) = delete;
@@ -136,12 +136,12 @@ public:
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
 
-    std::unique_ptr<Components::QuestComp> questComp_;
     AB::Entities::Character data_;
     AB::Entities::Account account_;
     time_t loginTime_;
     time_t logoutTime_;
     int64_t lastPing_ = 0;
+    std::unique_ptr<Components::QuestComp> questComp_;
 };
 
 }

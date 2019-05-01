@@ -112,6 +112,8 @@ void ResourceComp::SetValue(ResourceType type, SetValueType t, int value)
 {
     switch (type)
     {
+    case ResourceType::None:
+        break;
     case ResourceType::Energy:
         SetEnergy(t, value);
         break;

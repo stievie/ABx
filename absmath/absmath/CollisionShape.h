@@ -25,7 +25,7 @@ public:
     CollisionShape(ShapeType type) :
         shapeType_(type)
     {}
-    ~CollisionShape() = default;
+    virtual ~CollisionShape() = default;
 
     /// AABB
     virtual BoundingBox GetWorldBoundingBox(const Matrix4& transform) const = 0;

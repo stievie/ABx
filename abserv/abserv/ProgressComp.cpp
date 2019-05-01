@@ -32,6 +32,9 @@ void ProgressComp::Write(Net::NetworkMessage& message)
             message.AddByte(AB::GameProtocol::ObjectProgressLevelAdvance);
             message.Add<int16_t>(static_cast<int16_t>(i.value));
             break;
+        case ProgressType::TitleAdvance:
+            // TODO:
+            break;
         }
     }
     items_.clear();

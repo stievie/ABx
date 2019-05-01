@@ -19,7 +19,6 @@ enum class InputType
     Command,
     Goto,
     Follow,
-    Sit,
     SetState,
 };
 

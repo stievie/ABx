@@ -198,5 +198,8 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
     case Net::MessageType::PlayerLoggedOut:
         DispatchPlayerLoggedOut(msg);
         break;
+    default:
+        // Not handled here
+        break;
     }
 }

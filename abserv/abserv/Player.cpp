@@ -23,12 +23,12 @@ namespace Game {
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
     client_(client),
+    mailBox_(nullptr),
+    party_(nullptr),
     resigned_(false),
     loginTime_(0),
     logoutTime_(0),
-    mailBox_(nullptr),
     lastPing_(0),
-    party_(nullptr),
     questComp_(std::make_unique<Components::QuestComp>(*this))
 { }
 
@@ -572,6 +572,8 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
 {
     switch (type)
     {
+    case AB::GameProtocol::CommandTypeUnknown:
+        break;
     case AB::GameProtocol::CommandTypeChatGeneral:
         HandleGeneralChatCommand(command, message);
         break;
@@ -628,6 +630,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         break;
     case AB::GameProtocol::CommandTypeDie:
         HandleDieCommand(command, message);
+        break;
+    case AB::GameProtocol::CommandTypeDeaths:
+        // TODO:
         break;
     }
 }
