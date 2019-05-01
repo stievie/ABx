@@ -35,7 +35,7 @@ Disable link time optimiztation on linux
 ## Manjaro/Arch
 
 * Install MariaDB, PostgreSQL, SQlite, Lua. Link against the installed libraries.
-* Use Code::Blocks and build ./absall/absall.worklspace
+* Use Code::Blocks and build `./absall/abs3rd.workspace` and `./absall/absall.worklspace`
 * Use `cbp2mak` to create makefiles `cbp2make -in ./absall/absall.workspace -unix` and run `make -f absall.workspace.mak config=release`
 
 ### Adding Clang to `cbp2mak`s configuration:
