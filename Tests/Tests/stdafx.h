@@ -8,5 +8,6 @@
 #include <cmath>
 
 #include <stdint.h>
+#include <initializer_list>
 
 #include "MathConfig.h"

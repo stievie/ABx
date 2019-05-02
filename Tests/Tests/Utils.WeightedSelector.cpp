@@ -18,6 +18,6 @@ TEST_CASE("WeightedSelector")
     ws.Add("Test10", 0.05f);
     ws.Update();
 
-    std::string s = ws.Get();
+    std::string s = ws.Get(0.3f, 0.25f);
     INFO(s);
 }

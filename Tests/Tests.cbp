@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Tests" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Bin/Tests_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/x64/Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../Bin/Tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../Lib/x64/Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-std=c++17" />
+			<Add directory="../Include" />
+			<Add directory="../absmath/absmath" />
+			<Add directory="../abscommon/abscommon" />
+			<Add directory="../Include/XMath" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+			<Add library="absmath" />
+			<Add library="abscommon" />
+		</Linker>
+		<Unit filename="Tests/Math.BoundingBox.cpp" />
+		<Unit filename="Tests/Math.Collisions.cpp" />
+		<Unit filename="Tests/Math.Quaternion.cpp" />
+		<Unit filename="Tests/Math.Ray.cpp" />
+		<Unit filename="Tests/Math.Sphere.cpp" />
+		<Unit filename="Tests/Math.Utils.cpp" />
+		<Unit filename="Tests/Math.Vector3.cpp" />
+		<Unit filename="Tests/Utils.WeightedSelector.cpp" />
+		<Unit filename="Tests/main.cpp" />
+		<Unit filename="Tests/stdafx.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
