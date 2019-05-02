@@ -19,5 +19,5 @@ TEST_CASE("WeightedSelector")
     ws.Update();
 
     std::string s = ws.Get(0.3f, 0.25f);
-    INFO(s);
+    REQUIRE(s == "Test4");
 }
