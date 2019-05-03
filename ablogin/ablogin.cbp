@@ -24,7 +24,7 @@
 				<Option type="1" />
 				<Option compiler="clang" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -36,6 +36,7 @@
 			<Add option="-m64" />
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-std=c++17" />
 			<Add directory="../Include" />
 			<Add directory="../abscommon/abscommon" />
 		</Compiler>

@@ -36,6 +36,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-m64" />
+			<Add option="-std=c++17" />
 			<Add directory="../Include" />
 			<Add directory="../Include/XMath" />
 		</Compiler>

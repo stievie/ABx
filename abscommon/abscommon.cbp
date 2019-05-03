@@ -29,7 +29,7 @@
 				<Option compiler="clang" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-Wall" />
 				</Compiler>
 				<Linker>
@@ -39,6 +39,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++17" />
 			<Add directory="../Include" />
 		</Compiler>
 		<Linker>

@@ -36,6 +36,7 @@
 			<Add option="-m64" />
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-std=c++17" />
 			<Add directory="../Include" />
 			<Add directory="../abscommon/abscommon" />
 		</Compiler>

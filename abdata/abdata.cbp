@@ -35,8 +35,8 @@
 		<Compiler>
 			<Add option="-m64" />
 			<Add option="-Wall" />
-			<Add option="-std=c++14" />
 			<Add option="-fexceptions" />
+			<Add option="-std=c++17" />
 			<Add option="-DLUA_USE_LINUX" />
 			<Add directory="../Include" />
 			<Add directory="../abscommon/abscommon" />
