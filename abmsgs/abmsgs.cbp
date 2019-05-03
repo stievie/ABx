@@ -46,6 +46,7 @@
 			<Add library="abscommon" />
 			<Add library="lua" />
 			<Add library="uuid" />
+			<Add library="abcrypto" />
 		</Linker>
 		<Unit filename="abmsgs/Application.cpp" />
 		<Unit filename="abmsgs/Application.h" />
