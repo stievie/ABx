@@ -7,6 +7,8 @@
 #include <iostream>
 #ifdef _WIN32
 #include <Windows.h>
+#else
+#include <unistd.h>
 #endif
 #include "StringUtils.h"
 #include "SimpleConfigManager.h"
@@ -14,7 +16,6 @@
 #include "Random.h"
 #include <AB/DHKeys.hpp>
 #include "Utils.h"
-#include <unistd.h>
 
 static bool GenerateKeys(const std::string& outFile)
 {
