@@ -14,6 +14,7 @@
 #include "Random.h"
 #include <AB/DHKeys.hpp>
 #include "Utils.h"
+#include <unistd.h>
 
 static bool GenerateKeys(const std::string& outFile)
 {
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
 #else
     char buff[PATH_MAX];
     ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeFile_ = std::string(buff, (count > 0) ? count : 0);
+    exeFile = std::string(buff, (count > 0) ? count : 0);
 #endif
     std::string path = Utils::ExtractFileDir(exeFile);
     std::vector<std::string> args;

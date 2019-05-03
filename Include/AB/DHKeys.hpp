@@ -6,6 +6,7 @@
 #include <fstream>
 #include <mutex>
 #include <cassert>
+#include <cstring>
 
 namespace Crypto {
 

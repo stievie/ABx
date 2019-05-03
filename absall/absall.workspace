@@ -10,5 +10,6 @@
 		<Project filename="../abserv/abserv.cbp" />
 		<Project filename="../abfile/abfile.cbp" />
 		<Project filename="../absadmin/absadmin.cbp" />
+		<Project filename="../keygen/keygen.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
