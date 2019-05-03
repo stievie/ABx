@@ -6,12 +6,11 @@
     2. `cd` to premake-core
     3. `make -f Bootstrap.mak linux`. premake5 is now bin/release
     4. Add alias `premake5` to `~/premake-core/bin/release/premake5`
-3. Install boost `sudo apt-get install libboost-all-dev`. Unfortunately the data server still needs some header files. (Set `BOOST_DIR` and `BOOST_LIB_PATH`)
-4. Install `sudo apt-get install uuid-dev` (https://packages.debian.org/jessie/uuid-dev)
-5. Install `libmysqlclient-dev` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev)
-6. Install `libpq-dev` (https://packages.debian.org/jessie/armhf/libpq-dev)
-7. Install `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
-x. libldap2-dev, libssl-dev, libgsasl7-dev
+3. Install `sudo apt-get install uuid-dev` (https://packages.debian.org/jessie/uuid-dev)
+4. Install `libmysqlclient-dev` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev)
+5. Install `libpq-dev` (https://packages.debian.org/jessie/armhf/libpq-dev)
+6. Install `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
+7. libldap2-dev, libssl-dev, libgsasl7-dev
 8. Clone repo `git -c http.sslVerify=false clone https://stievie.mooo.com/git/Trill/ABx.git`.
 9. `cd ABx`
 10. Generate make files: GCC: `~/premake-core/bin/release/premake5 gmake`, CLang: `~/premake-core/bin/release/premake5 --cc=clang gmake`
@@ -29,7 +28,6 @@ x. libldap2-dev, libssl-dev, libgsasl7-dev
 * `#ifdef _MSC_VER` all `*_s` C functions
 * Fix initialization order
 * Complie `make -f abdata.make -e config=release_armv7`
-* Rename `./Include/opensll` to something else to use the installed version (`abfile`, `absadmin`).
 
 Disable link time optimiztation on linux
 
