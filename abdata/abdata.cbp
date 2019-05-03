@@ -58,6 +58,7 @@
 			<Add library="mysqlclient" />
 			<Add library="z" />
 			<Add library="gssapi_krb5" />
+			<Add library="abcrypto" />
 		</Linker>
 		<Unit filename="abdata/Application.cpp" />
 		<Unit filename="abdata/Application.h" />
