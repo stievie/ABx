@@ -1,3 +1,5 @@
+#!/bin/sh
+
 export cbp2make="/home/sa/Dokumente/projects/bin/Release/cbp2make"
 
 $cbp2make -in abs3rd.workspace -unix --keep-outdir
