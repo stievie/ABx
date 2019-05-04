@@ -315,6 +315,18 @@ Vector3 Actor::GetHeadPos() const
     return node_->GetWorldPosition();
 }
 
+void Actor::SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos)
+{
+    if (size != IntVector2::ZERO)
+        elem->SetSize(size);
+    if (pos != IntVector2::ZERO)
+    {
+        IntVector2 dist = elem->GetPosition() - pos;
+        if (Abs(dist.x_) > 10 || Abs(dist.y_) > 10)
+            elem->SetPosition(pos);
+    }
+}
+
 void Actor::Update(float timeStep)
 {
     UpdateTransformation();
@@ -341,18 +353,19 @@ void Actor::Update(float timeStep)
             }
 
             IntVector2 labelPos(screenPos.x_ - nameWindow_->GetWidth() / 2, screenPos.y_);
-            nameWindow_->SetPosition(labelPos);
+            SetUIElementSizePos(nameWindow_, IntVector2::ZERO, labelPos);
 
             if (hpBar_)
-            {
-                hpBar_->SetSize(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac));
+            {   
                 IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_ - hpBar_->GetHeight() - 5);
-                hpBar_->SetPosition(ihpPos);
+                SetUIElementSizePos(hpBar_, 
+                    IntVector2(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac)),
+                    ihpPos);
             }
             else if (classLevel_)
             {
                 IntVector2 ihpPos(screenPos.x_ - classLevel_->GetWidth() / 2, hpTop.y_ - classLevel_->GetHeight());
-                classLevel_->SetPosition(ihpPos);
+                SetUIElementSizePos(classLevel_, IntVector2::ZERO, ihpPos);
             }
         }
     }
@@ -370,7 +383,7 @@ void Actor::Update(float timeStep)
     if (speechBubbleWindow_->IsVisible())
     {
         IntVector2 isbPos(screenPos.x_ - (speechBubbleWindow_->GetWidth() / 3), hpTop.y_ - 40);
-        speechBubbleWindow_->SetPosition(isbPos);
+        SetUIElementSizePos(speechBubbleWindow_, IntVector2::ZERO, isbPos);
         speechBubbleVisible_ += timeStep;
         if (speechBubbleVisible_ > 3.0f)
             HideSpeechBubble();
