@@ -16,14 +16,19 @@
 
 #define WRITE_MINIBUMP
 
+#include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
 #define ASIO_STANDALONE
 
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning(disable: 4592)
+#endif
 #include <asio.hpp>
+#if defined(_MSC_VER)
 #pragma warning(pop)
+#endif
 
 #include "Logger.h"
 

@@ -148,6 +148,7 @@
     <ClInclude Include="BanManager.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="CpuUsage.h" />
+    <ClInclude Include="Daemon.h" />
     <ClInclude Include="DataCodes.h" />
     <ClInclude Include="DataKey.h" />
     <ClInclude Include="DebugConfig.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="BanManager.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="CpuUsageWin.cpp" />
+    <ClCompile Include="Daemon.cpp" />
     <ClCompile Include="IpList.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="ServiceInstaller.cpp" />

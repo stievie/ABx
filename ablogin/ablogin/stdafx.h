@@ -17,6 +17,7 @@
 #include <unordered_set>
 #include <iostream>
 
+#include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
 #define ASIO_STANDALONE
@@ -43,5 +44,3 @@
 
 // When a user deletes a character, the characters name is reserved for 1 week
 static constexpr int NAME_RESERVATION_EXPIRES_MS = 1000 * 60 * 60 * 24 * 7;
-
-#include <AB/CommonConfig.h>

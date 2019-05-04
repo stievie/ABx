@@ -13,6 +13,7 @@
 #include <map>
 #include <string>
 
+#include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
 #if !defined(ASIO_STANDALONE)
@@ -38,7 +39,7 @@
 #define USE_SQLITE
 #define USE_MYSQL
 #define USE_PGSQL
-#ifdef _WIN32
+#ifdef AB_WINDOWS
 #define USE_ODBC
 #endif
 

@@ -1,6 +1,8 @@
 #pragma once
 
-#ifdef _WIN32
+#include <AB/CommonConfig.h>
+
+#ifdef AB_WINDOWS
 
 #include <windows.h>
 #include "ServiceInstaller.h"

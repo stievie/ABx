@@ -8,5 +8,4 @@
 #include "targetver.h"
 
 #include <stdio.h>
-
-// TODO: Hier auf zusätzliche Header, die das Programm erfordert, verweisen.
+#include <AB/CommonConfig.h>

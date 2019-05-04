@@ -1,5 +1,11 @@
 #pragma once
 
+#if defined(_WIN32)
+#   define AB_WINDOWS
+#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+#   define AB_UNIX
+#endif
+
 // Configurations shared by the server and client
 
 #define CURRENT_YEAR 2019

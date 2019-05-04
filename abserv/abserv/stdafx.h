@@ -14,6 +14,7 @@
 #define AB_UNUSED(P) (void)(P)
 
 #include <cassert>
+#include <AB/CommonConfig.h>
 #include "ServiceConfig.h"
 #include "Config.h"
 #include "DebugConfig.h"

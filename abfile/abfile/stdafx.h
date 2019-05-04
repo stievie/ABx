@@ -18,6 +18,7 @@
 #include <memory>
 #include <limits>
 
+#include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
 #if !defined(USE_STANDALONE_ASIO)

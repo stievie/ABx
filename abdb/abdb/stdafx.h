@@ -14,12 +14,13 @@
 #include <string>
 #include <memory>
 
+#include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
 #define USE_SQLITE
 #define USE_MYSQL
 #define USE_PGSQL
-#ifdef _WIN32
+#ifdef AB_WINDOWS
 #define USE_ODBC
 #endif
 

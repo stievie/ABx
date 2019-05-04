@@ -86,7 +86,7 @@ int main(int argc, char** argv)
     IO::SimpleConfigManager cfg;
     if (!cfg.Load(cfgFile))
     {
-        std::cout << "Failed too load config file " << cfgFile << std::endl;
+        std::cout << "Failed to load config file " << cfgFile << std::endl;
         return EXIT_FAILURE;
     }
     std::string keyFile = cfg.GetGlobalString("server_keys", "");

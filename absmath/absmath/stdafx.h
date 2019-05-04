@@ -30,4 +30,5 @@
 
 #include <stdint.h>
 
+#include <AB/CommonConfig.h>
 #include "MathConfig.h"

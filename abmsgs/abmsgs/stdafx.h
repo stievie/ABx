@@ -19,6 +19,7 @@
 #include <unordered_set>
 #include <iostream>
 
+#include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
 #define ASIO_STANDALONE

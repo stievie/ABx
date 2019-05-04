@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "WinService.h"
 
-#ifdef _WIN32
+#ifdef AB_WINDOWS
 
 #include <strsafe.h>
 
