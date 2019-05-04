@@ -13,12 +13,12 @@ file_port = 8081
 -- Used to calculate the load Byte/sec (100Mbit)
 max_throughput = (100 * 1024 * 1024) / 8
 
-server_key = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/server.key"
-server_cert = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/server.crt"
+server_key = "server.key"
+server_cert = "server.crt"
 
 -- Thread pool size
 num_threads = 4
-root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/file_root"
+root_dir = "file_root"
 
 -- If true client must give Account UUID and password in HTTP header:
 -- Auth: UUID:password

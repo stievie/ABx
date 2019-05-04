@@ -8,7 +8,7 @@ server_name = "ablogin"
 
 -- login server port
 login_port = 2748         -- 0xABC
-login_ip = "192.168.1.51"
+login_ip = "0.0.0.0"
 --login_host = "stievie.mooo.com"
 
 -- DOS prevention
