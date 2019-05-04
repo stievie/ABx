@@ -1,4 +1,4 @@
-export cbp2make="/home/sa/Dokumente/projects/cbp2make-stl-rev147-all/bin/Release/cbp2make"
+export cbp2make="/home/sa/Dokumente/projects/bin/Release/cbp2make"
 
 $cbp2make -in abs3rd.workspace -unix --keep-outdir
 $cbp2make -in absall.workspace -unix --keep-outdir
