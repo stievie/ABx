@@ -51,6 +51,8 @@
 		<Unit filename="abscommon/Connection.h" />
 		<Unit filename="abscommon/CpuUsage.h" />
 		<Unit filename="abscommon/CpuUsageWin.cpp" />
+		<Unit filename="abscommon/Daemon.cpp" />
+		<Unit filename="abscommon/Daemon.h" />
 		<Unit filename="abscommon/DataClient.cpp" />
 		<Unit filename="abscommon/DataClient.h" />
 		<Unit filename="abscommon/DataCodes.h" />
