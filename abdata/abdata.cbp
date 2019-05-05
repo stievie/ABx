@@ -13,6 +13,7 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
 					<Add directory="../Lib/x64/Debug" />
@@ -25,6 +26,7 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
