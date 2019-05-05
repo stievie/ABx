@@ -154,8 +154,11 @@ uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
         if (!inventory_[i])
         {
             inventory_[i] = std::move(item);
-            inventory_[i]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-            inventory_[i]->concreteItem_.storagePos = static_cast<uint16_t>(i);
+            const auto& _i = inventory_[i];
+            _i->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+            _i->concreteItem_.storagePos = static_cast<uint16_t>(i);
+            _i->concreteItem_.playerUuid = owner_.GetPlayerUuid();
+            _i->concreteItem_.accountUuid = owner_.GetAccountUuid();
             return static_cast<uint16_t>(i);
         }
     }
@@ -164,8 +167,11 @@ uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
     {
         inventory_.push_back(std::move(item));
         uint16_t pos = static_cast<uint16_t>(inventory_.size()) - 1;
-        inventory_[pos]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-        inventory_[pos]->concreteItem_.storagePos = pos;
+        const auto& _i = inventory_[pos];
+        _i->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+        _i->concreteItem_.storagePos = pos;
+        _i->concreteItem_.playerUuid = owner_.GetPlayerUuid();
+        _i->concreteItem_.accountUuid = owner_.GetAccountUuid();
         return pos;
     }
     return 0;

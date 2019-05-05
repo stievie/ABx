@@ -220,6 +220,8 @@ public:
     Skill* GetCurrentSkill() const;
     bool SetEquipment(const std::string& ciUuid);
     bool SetInventory(const std::string& ciUuid);
+    virtual const std::string& GetPlayerUuid() const { return Utils::Uuid::EMPTY_UUID; }
+    virtual const std::string& GetAccountUuid() const { return Utils::Uuid::EMPTY_UUID; }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 

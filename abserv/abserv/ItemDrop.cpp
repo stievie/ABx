@@ -42,7 +42,8 @@ uint32_t ItemDrop::GetItemIndex() const
 
 void ItemDrop::PickUp(Actor* actor)
 {
-    if (actorId_ != actor->GetId())
+    // if actorId_ == 0 all can pick it up
+    if (actorId_ != 0 && actorId_ != actor->GetId())
         return;
     if (IsInRange(Ranges::Touch, actor))
     {
