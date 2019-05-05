@@ -24,11 +24,9 @@
 				<Option type="1" />
 				<Option compiler="clang" />
 				<Compiler>
-					<Add option="-m64" />
 					<Add option="-O3" />
 				</Compiler>
 				<Linker>
-					<Add option="-m64" />
 					<Add option="-s" />
 					<Add directory="../Lib/x64/Release" />
 				</Linker>
@@ -39,7 +37,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-std=c++17" />
-			<Add directory="./" />
 			<Add directory="../Include/recastnavigation" />
 			<Add directory="../Include/ai" />
 			<Add directory="../Include/XMath" />
