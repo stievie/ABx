@@ -131,16 +131,16 @@ void Client::OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>
         receiver_->OnGetInventory(updateTick, items);
 }
 
-void Client::OnInventoryItemAdded(int64_t updateTick, const InventoryItem& item)
+void Client::OnInventoryItemUpdate(int64_t updateTick, const InventoryItem& item)
 {
     if (receiver_)
-        receiver_->OnInventoryItemAdded(updateTick, item);
+        receiver_->OnInventoryItemUpdate(updateTick, item);
 }
 
-void Client::OnInventoryItemRemoved(int64_t updateTick, uint16_t pos)
+void Client::OnInventoryItemDelete(int64_t updateTick, uint16_t pos)
 {
     if (receiver_)
-        receiver_->OnInventoryItemRemoved(updateTick, pos);
+        receiver_->OnInventoryItemDelete(updateTick, pos);
 }
 
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,

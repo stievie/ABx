@@ -321,9 +321,7 @@ void Actor::SetUIElementSizePos(UIElement* elem, const IntVector2& size, const I
         elem->SetSize(size);
     if (pos != IntVector2::ZERO)
     {
-        IntVector2 dist = elem->GetPosition() - pos;
-        if (Abs(dist.x_) > 10 || Abs(dist.y_) > 10)
-            elem->SetPosition(pos);
+        elem->SetPosition(pos);
     }
 }
 

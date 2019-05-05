@@ -27,7 +27,7 @@ ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
 
 ItemDrop::~ItemDrop()
 {
-    if (!pickedUp_)
+    if (!pickedUp_ && item_)
     {
         // Not picked up delete it
         auto factory = GetSubsystem<ItemFactory>();

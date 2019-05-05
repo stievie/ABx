@@ -140,6 +140,7 @@ FwClient::FwClient(Context* context) :
     lastState_ = client_.state_;
     SubscribeToEvent(AbEvents::E_LEVELREADY, URHO3D_HANDLER(FwClient, HandleLevelReady));
     SubscribeUpdate();
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
 
 FwClient::~FwClient()
@@ -166,14 +167,14 @@ void FwClient::Stop()
 
 void FwClient::UnsubscribeUpdate()
 {
-    URHO3D_LOGINFO("FwClient::UnsubscribeUpdate()");
-    UnsubscribeFromEvent(E_UPDATE);
+//    URHO3D_LOGINFO("FwClient::UnsubscribeUpdate()");
+//    UnsubscribeFromEvent(E_UPDATE);
 }
 
 void FwClient::SubscribeUpdate()
 {
-    URHO3D_LOGINFO("FwClient::SubscribeUpdate()");
-    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
+//    URHO3D_LOGINFO("FwClient::SubscribeUpdate()");
+//    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(FwClient, HandleUpdate));
 }
 
 void FwClient::HandleLevelReady(StringHash, VariantMap&)
@@ -832,7 +833,7 @@ void FwClient::OnGetInventory(int64_t, const std::vector<Client::InventoryItem>&
     SendEvent(AbEvents::E_INVENTORY, eData);
 }
 
-void FwClient::OnInventoryItemAdded(int64_t updateTick, const Client::InventoryItem& item)
+void FwClient::OnInventoryItemUpdate(int64_t updateTick, const Client::InventoryItem& item)
 {
     const auto it = std::find_if(inventory_.begin(), inventory_.end(), [&item](const Client::InventoryItem& current) -> bool
     {
@@ -847,14 +848,14 @@ void FwClient::OnInventoryItemAdded(int64_t updateTick, const Client::InventoryI
         // Append
         inventory_.push_back(item);
 
-    using namespace AbEvents::InventoryAdded;
+    using namespace AbEvents::InventoryItemUpdate;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;
     eData[P_ITEMPOS] = item.pos;
-    SendEvent(AbEvents::E_INVENTORYADDED, eData);
+    SendEvent(AbEvents::E_INVENTORYITEMUPDATE, eData);
 }
 
-void FwClient::OnInventoryItemRemoved(int64_t updateTick, uint16_t pos)
+void FwClient::OnInventoryItemDelete(int64_t updateTick, uint16_t pos)
 {
     auto it = std::find_if(inventory_.begin(), inventory_.end(), [pos](const Client::InventoryItem& current) {
         return current.pos == pos;
@@ -862,11 +863,11 @@ void FwClient::OnInventoryItemRemoved(int64_t updateTick, uint16_t pos)
     if (it == inventory_.end())
         return;
 
-    using namespace AbEvents::InventoryRemoved;
+    using namespace AbEvents::InventoryItemDelete;
     VariantMap& eData = GetEventDataMap();
     eData[P_UPDATETICK] = updateTick;
     eData[P_ITEMPOS] = pos;
-    SendEvent(AbEvents::E_INVENTORYREMOVED, eData);
+    SendEvent(AbEvents::E_INVENTORYITEMDELETE, eData);
 
     inventory_.erase(it);
 }
@@ -939,7 +940,7 @@ void FwClient::OnChangeInstance(int64_t updateTick, const std::string& serverId,
             eData[P_INSTANCEUUID] = String(instanceUuid.c_str());
             SendEvent(AbEvents::E_CHANGINGINSTANCE, eData);
 
-            URHO3D_LOGINFOF("Changing instance %s", instanceUuid.c_str());
+//            URHO3D_LOGINFOF("Changing instance %s", instanceUuid.c_str());
             currentCharacterUuid_ = String(charUuid.c_str());
             client_.EnterWorld(charUuid, mapUuid,
                 (*it).second.host, (*it).second.port, instanceUuid);

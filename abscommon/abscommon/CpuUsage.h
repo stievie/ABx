@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(_MSC_VER)
+#if defined(AB_WINDOWS)
 
 #include <windows.h>
 
@@ -9,9 +9,9 @@ namespace System {
 class CpuUsage
 {
 public:
-    CpuUsage(void);
+    CpuUsage();
 
-    short  GetUsage();
+    short GetUsage();
 private:
     ULONGLONG SubtractTimes(const FILETIME& ftA, const FILETIME& ftB);
     bool EnoughTimePassed();

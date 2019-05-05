@@ -752,8 +752,7 @@ bool Actor::SetInventory(const std::string& ciUuid)
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
-    inventoryComp_->SetInventory(item);
-    return true;
+    return inventoryComp_->SetInventory(item, nullptr);
 }
 
 void Actor::_LuaGotoPosition(float x, float y, float z)

@@ -227,8 +227,8 @@ enum GameProtocolCodes : uint8_t
     PartyDefeated,
     // Inventory
     InventoryContent,             // All inventory
-    InventoryItemAdded,
-    InventoryItemRemoved,
+    InventoryItemUpdate,
+    InventoryItemDelete,
 };
 
 enum ObjectCallType : uint8_t

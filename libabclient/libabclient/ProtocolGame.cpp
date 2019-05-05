@@ -113,11 +113,11 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::InventoryContent:
             ParseInventoryContent(message);
             break;
-        case AB::GameProtocol::InventoryItemAdded:
-            ParseInventoryItemAded(message);
+        case AB::GameProtocol::InventoryItemUpdate:
+            ParseInventoryItemUpdate(message);
             break;
-        case AB::GameProtocol::InventoryItemRemoved:
-            ParseInventoryItemRemoved(message);
+        case AB::GameProtocol::InventoryItemDelete:
+            ParseInventoryItemDelete(message);
             break;
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
@@ -660,7 +660,7 @@ void ProtocolGame::ParseInventoryContent(const std::shared_ptr<InputMessage>& me
         receiver_->OnGetInventory(updateTick_, items);
 }
 
-void ProtocolGame::ParseInventoryItemAded(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseInventoryItemUpdate(const std::shared_ptr<InputMessage>& message)
 {
     InventoryItem item;
     item.type = static_cast<AB::Entities::ItemType>(message->Get<uint16_t>());
@@ -670,14 +670,14 @@ void ProtocolGame::ParseInventoryItemAded(const std::shared_ptr<InputMessage>& m
     item.count = message->Get<uint32_t>();
     item.value = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnInventoryItemAdded(updateTick_, item);
+        receiver_->OnInventoryItemUpdate(updateTick_, item);
 }
 
-void ProtocolGame::ParseInventoryItemRemoved(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseInventoryItemDelete(const std::shared_ptr<InputMessage>& message)
 {
     uint16_t pos = message->Get<uint16_t>();
     if (receiver_)
-        receiver_->OnInventoryItemRemoved(updateTick_, pos);
+        receiver_->OnInventoryItemDelete(updateTick_, pos);
 }
 
 void ProtocolGame::SendLoginPacket()

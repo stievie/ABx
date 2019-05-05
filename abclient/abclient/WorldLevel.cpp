@@ -460,6 +460,7 @@ void WorldLevel::HandleObjectDespawn(StringHash, VariantMap& eventData)
     GameObject* object = objects_[objectId];
     if (object)
     {
+        URHO3D_LOGINFOF("Despawn object %d", object->id_);
         SharedPtr<GameObject> selO = player_->GetSelectedObject();
         if (selO && selO->id_ == object->id_)
         {

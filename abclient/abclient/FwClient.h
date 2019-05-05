@@ -135,8 +135,8 @@ public:
     void OnGetMailHeaders(int64_t updateTick, const std::vector<AB::Entities::MailHeader>& headers) override;
     void OnGetMail(int64_t updateTick, const AB::Entities::Mail& mail) override;
     void OnGetInventory(int64_t updateTick, const std::vector<Client::InventoryItem>& items) override;
-    void OnInventoryItemAdded(int64_t updateTick, const Client::InventoryItem& item) override;
-    void OnInventoryItemRemoved(int64_t updateTick, uint16_t pos) override;
+    void OnInventoryItemUpdate(int64_t updateTick, const Client::InventoryItem& item) override;
+    void OnInventoryItemDelete(int64_t updateTick, uint16_t pos) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
         AB::Entities::GameType type, uint8_t partySize) override;

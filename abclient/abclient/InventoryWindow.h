@@ -13,8 +13,8 @@ private:
     void SubscribeEvents();
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleInventory(StringHash eventType, VariantMap& eventData);
-    void HandleInventoryAdded(StringHash eventType, VariantMap& eventData);
-    void HandleInventoryRemoved(StringHash eventType, VariantMap& eventData);
+    void HandleInventoryItemUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleInventoryItemRemove(StringHash eventType, VariantMap& eventData);
     void HandleItemClicked(StringHash eventType, VariantMap& eventData);
     void HandleItemDestroySelected(StringHash eventType, VariantMap& eventData);
     void HandleItemDropSelected(StringHash eventType, VariantMap& eventData);

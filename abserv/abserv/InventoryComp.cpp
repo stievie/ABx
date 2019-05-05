@@ -4,6 +4,7 @@
 #include "ItemFactory.h"
 #include "Actor.h"
 #include "DataClient.h"
+#include "MathUtils.h"
 
 namespace Game {
 namespace Components {
@@ -45,41 +46,72 @@ void InventoryComp::RemoveEquipment(EquipPos pos)
     equipment_.erase(pos);
 }
 
-Item* InventoryComp::AddInventory(std::unique_ptr<Item>& item)
+bool InventoryComp::StackItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
+{
+    int32_t count = item->concreteItem_.count;
+    for (const auto& i : inventory_)
+    {
+        if (i && i->data_.index == item->data_.index)
+        {
+            int32_t space = MAX_INVENTORY_STACK_SIZE - i->concreteItem_.count;
+            if (space > 0)
+            {
+                int32_t added = std::min(space, count);
+                i->concreteItem_.count += added;
+                count -= added;
+                WriteItemUpdate(i.get(), message);
+
+                if (count == 0)
+                    break;
+            }
+        }
+    }
+    if (count == 0)
+    {
+        // Merged -> delete this
+        auto factory = GetSubsystem<ItemFactory>();
+        factory->DeleteConcrete(item->concreteItem_.uuid);
+        return true;
+    }
+
+    // Add remaing as new item
+    item->concreteItem_.count = count;
+    int16_t p = InsertItem(item);
+    if (p != 0)
+    {
+        WriteItemUpdate(inventory_[p].get(), message);
+        return true;
+    }
+
+    return false;
+}
+
+bool InventoryComp::AddInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
 {
 
     // pos = 1-based
     size_t pos = item->concreteItem_.storagePos;
     if (pos == 0)
     {
+        // Adding new item to inventory
         if (item->data_.stackAble)
         {
-            Item* invItem = FindItem(item->data_.uuid);
-            if (invItem)
-            {
-                // If this item is stackable merge them
-                if (invItem->concreteItem_.count + item->concreteItem_.count < MAX_INVENTORY_STACK_SIZE)
-                {
-                    invItem->concreteItem_.count += item->concreteItem_.count;
-                    // Merged -> delete this
-                    auto factory = GetSubsystem<ItemFactory>();
-                    factory->DeleteConcrete(item->concreteItem_.uuid);
-                    return invItem;
-                }
-            }
+            return StackItem(item, message);
         }
 
+        // Not stackable
         if (!IsFull())
         {
             int16_t p = InsertItem(item);
             if (p != 0)
             {
-                return GetItem(p);
+                WriteItemUpdate(inventory_[p].get(), message);
+                return true;
             }
-            return nullptr;
+            return false;
         }
         // Inventory full
-        return nullptr;
+        return false;
     }
     else
     {
@@ -89,7 +121,8 @@ Item* InventoryComp::AddInventory(std::unique_ptr<Item>& item)
             if (!inventory_[pos])
             {
                 inventory_[pos] = std::move(item);
-                return inventory_[pos].get();
+                WriteItemUpdate(inventory_[pos].get(), message);
+                return true;
             }
         }
         if (inventory_.size() < inventorySize_)
@@ -97,9 +130,10 @@ Item* InventoryComp::AddInventory(std::unique_ptr<Item>& item)
             if (inventory_.size() <= pos)
                 inventory_.resize(pos + 1);
             inventory_[pos] = std::move(item);
-            return inventory_[pos].get();
+            WriteItemUpdate(inventory_[pos].get(), message);
+            return true;
         }
-        return nullptr;
+        return false;
     }
 }
 
@@ -131,13 +165,26 @@ uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
         inventory_.push_back(std::move(item));
         uint16_t pos = static_cast<uint16_t>(inventory_.size()) - 1;
         inventory_[pos]->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-        inventory_[pos]->concreteItem_.storagePos = static_cast<uint16_t>(pos);
+        inventory_[pos]->concreteItem_.storagePos = pos;
         return pos;
     }
     return 0;
 }
 
-Item* InventoryComp::SetInventory(std::unique_ptr<Item>& item)
+void InventoryComp::WriteItemUpdate(Item* item, Net::NetworkMessage* message)
+{
+    if (!message)
+        return;
+    message->AddByte(AB::GameProtocol::InventoryItemUpdate);
+    message->Add<uint16_t>(item->data_.type);
+    message->Add<uint32_t>(item->data_.index);
+    message->Add<uint8_t>(static_cast<uint8_t>(item->concreteItem_.storagePlace));
+    message->Add<uint16_t>(item->concreteItem_.storagePos);
+    message->Add<uint32_t>(item->concreteItem_.count);
+    message->Add<uint16_t>(item->concreteItem_.value);
+}
+
+bool InventoryComp::SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
 {
     if (item)
     {
@@ -151,21 +198,26 @@ Item* InventoryComp::SetInventory(std::unique_ptr<Item>& item)
             else
             {
                 if (inventory_[0]->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
-                    return nullptr;
+                    return false;
                 inventory_[0]->concreteItem_.count += item->concreteItem_.count;
                 // Merged -> delete this
                 auto factory = GetSubsystem<ItemFactory>();
                 factory->DeleteConcrete(item->concreteItem_.uuid);
             }
-            return inventory_[0].get();
+            if (message)
+            {
+                Item* _i = inventory_[0].get();
+                WriteItemUpdate(_i, message);
+            }
+            return true;
         }
 
-        Item* res = AddInventory(item);
+        bool res = AddInventory(item, message);
         if (!res)
             owner_.OnInventoryFull();
         return res;
     }
-    return nullptr;
+    return false;
 }
 
 bool InventoryComp::DestroyItem(uint16_t pos)

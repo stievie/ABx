@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-#if defined(_MSC_VER)
+#if defined(AB_WINDOWS)
 
 #include "CpuUsage.h"
 
 namespace System {
 
-CpuUsage::CpuUsage(void) :
+CpuUsage::CpuUsage() :
     cpuUsage_(-1),
     lastRun_(0),
     runCount_(0)

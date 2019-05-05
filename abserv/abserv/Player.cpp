@@ -169,7 +169,7 @@ void Player::DestroyInventoryItem(uint16_t pos)
         cli->Invalidate(inv);
 
         auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::InventoryItemRemoved);
+        msg->AddByte(AB::GameProtocol::InventoryItemDelete);
         msg->Add<uint16_t>(pos);
         WriteToOutput(*msg.get());
     }
@@ -342,25 +342,11 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
         OnInventoryFull();
         return false;
     }
-    Item* realItem = inventoryComp_->SetInventory(item);
-    if (realItem)
-    {
-        if (realItem)
-        {
-            auto msg = Net::NetworkMessage::GetNew();
-            msg->AddByte(AB::GameProtocol::InventoryItemAdded);
-            msg->Add<uint16_t>(realItem->data_.type);
-            msg->Add<uint32_t>(realItem->data_.index);
-            msg->Add<uint8_t>(static_cast<uint8_t>(realItem->concreteItem_.storagePlace));
-            msg->Add<uint16_t>(realItem->concreteItem_.storagePos);
-            msg->Add<uint32_t>(realItem->concreteItem_.count);
-            msg->Add<uint16_t>(realItem->concreteItem_.value);
-            WriteToOutput(*msg.get());
-        }
-
-        return true;
-    }
-    return false;
+    auto msg = Net::NetworkMessage::GetNew();
+    bool ret = inventoryComp_->SetInventory(item, msg.get());
+    if (msg->GetSize() != 0)
+        WriteToOutput(*msg.get());
+    return ret;
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)

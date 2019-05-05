@@ -20,10 +20,12 @@ private:
     /// All inventory. Index 0 is the money
     std::vector<std::unique_ptr<Item>> inventory_;
     size_t inventorySize_;
-    Item* AddInventory(std::unique_ptr<Item>& item);
+    bool AddInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
+    bool StackItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
     Item* FindItem(const std::string& uuid);
     /// Insert in first free slot
     uint16_t InsertItem(std::unique_ptr<Item>& item);
+    void WriteItemUpdate(Item* item, Net::NetworkMessage* message);
 public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner) :
@@ -44,7 +46,7 @@ public:
     Item* GetEquipment(EquipPos pos) const;
     void RemoveEquipment(EquipPos pos);
 
-    Item* SetInventory(std::unique_ptr<Item>& item);
+    bool SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
     bool DestroyItem(uint16_t pos);
     Item* GetItem(uint16_t pos);
     bool IsFull() const { return GetCount() >= inventorySize_; }

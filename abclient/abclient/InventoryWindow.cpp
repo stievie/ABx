@@ -135,8 +135,8 @@ void InventoryWindow::SubscribeEvents()
     Button* closeButton = dynamic_cast<Button*>(GetChild("CloseButton", true));
     SubscribeToEvent(closeButton, E_RELEASED, URHO3D_HANDLER(InventoryWindow, HandleCloseClicked));
     SubscribeToEvent(AbEvents::E_INVENTORY, URHO3D_HANDLER(InventoryWindow, HandleInventory));
-    SubscribeToEvent(AbEvents::E_INVENTORYADDED, URHO3D_HANDLER(InventoryWindow, HandleInventoryAdded));
-    SubscribeToEvent(AbEvents::E_INVENTORYREMOVED, URHO3D_HANDLER(InventoryWindow, HandleInventoryRemoved));
+    SubscribeToEvent(AbEvents::E_INVENTORYITEMUPDATE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemUpdate));
+    SubscribeToEvent(AbEvents::E_INVENTORYITEMDELETE, URHO3D_HANDLER(InventoryWindow, HandleInventoryItemRemove));
 }
 
 void InventoryWindow::HandleCloseClicked(StringHash, VariantMap&)
@@ -231,9 +231,9 @@ void InventoryWindow::HandleInventory(StringHash, VariantMap&)
     SetStyleAuto();
 }
 
-void InventoryWindow::HandleInventoryAdded(StringHash, VariantMap& eventData)
+void InventoryWindow::HandleInventoryItemUpdate(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::InventoryAdded;
+    using namespace AbEvents::InventoryItemUpdate;
 
     FwClient* net = context_->GetSubsystem<FwClient>();
     ItemsCache* itemsCache = GetSubsystem<ItemsCache>();
@@ -256,9 +256,9 @@ void InventoryWindow::HandleInventoryAdded(StringHash, VariantMap& eventData)
     SetItem(i, iItem);
 }
 
-void InventoryWindow::HandleInventoryRemoved(StringHash, VariantMap& eventData)
+void InventoryWindow::HandleInventoryItemRemove(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::InventoryRemoved;
+    using namespace AbEvents::InventoryItemDelete;
     uint16_t pos = static_cast<uint16_t>(eventData[P_ITEMPOS].GetUInt());
     Client::InventoryItem item;
     item.type = AB::Entities::ItemTypeUnknown;

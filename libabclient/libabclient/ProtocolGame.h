@@ -44,8 +44,8 @@ protected:
     void ParseMailHeaders(const std::shared_ptr<InputMessage>& message);
     void ParseMailComplete(const std::shared_ptr<InputMessage>& message);
     void ParseInventoryContent(const std::shared_ptr<InputMessage>& message);
-    void ParseInventoryItemAded(const std::shared_ptr<InputMessage>& message);
-    void ParseInventoryItemRemoved(const std::shared_ptr<InputMessage>& message);
+    void ParseInventoryItemUpdate(const std::shared_ptr<InputMessage>& message);
+    void ParseInventoryItemDelete(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseGameError(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
