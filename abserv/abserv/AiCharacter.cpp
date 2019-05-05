@@ -8,10 +8,9 @@
 
 namespace AI {
 
-AiCharacter::AiCharacter(Game::Npc& owner, const Game::Map* map) :
+AiCharacter::AiCharacter(Game::Npc& owner) :
     Super(owner.id_),
-    owner_(owner),
-    map_(map)
+    owner_(owner)
 {
     const Math::Vector3& pos = owner.transformation_.position_;
     Super::setPosition(glm::vec3(pos.x_, pos.y_, pos.z_));

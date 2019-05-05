@@ -106,8 +106,7 @@ bool Npc::LoadScript(const std::string& fileName)
     if (!behaviorTree_.empty())
         SetBehaviour(behaviorTree_);
 
-    bool ret = luaState_["onInit"]();
-    return ret;
+    return luaState_["onInit"]();
 }
 
 std::shared_ptr<ai::AI> Npc::GetAi()
@@ -117,7 +116,7 @@ std::shared_ptr<ai::AI> Npc::GetAi()
 
     if (!aiCharacter_)
     {
-        aiCharacter_ = std::make_shared<AI::AiCharacter>(*this, GetGame()->map_.get());
+        aiCharacter_ = std::make_shared<AI::AiCharacter>(*this);
         ai_->setCharacter(aiCharacter_);
     }
     return ai_;
@@ -263,7 +262,7 @@ void Npc::OnTrigger(GameObject* other)
 void Npc::OnLeftArea(GameObject* other)
 {
     // Called from triggerComp_
-    Actor::OnTrigger(other);
+    Actor::OnLeftArea(other);
 
     if (luaInitialized_ && HaveFunction(FunctionOnLeftArea))
         ScriptManager::CallFunction(luaState_, "onLeftArea", other);

@@ -16,9 +16,8 @@ class AiCharacter : public ai::ICharacter
 private:
     using Super = ai::ICharacter;
     Game::Npc& owner_;
-    const Game::Map* map_;
 public:
-    explicit AiCharacter(Game::Npc& owner, const Game::Map* map);
+    explicit AiCharacter(Game::Npc& owner);
     ~AiCharacter() = default;
     void update(int64_t deltaTime, bool debuggingActive) override;
     void setPosition(const glm::vec3& position) override;
