@@ -1,5 +1,14 @@
 # Linux
 
+## General Fixes
+
+* Remove `#pragma comment` to link file.
+* <s>Remove `#pragma once`, add include guards?</s> (`#pragma once` is widely supported)
+* `#ifdef _MSC_VER` all `*_s` C functions
+* Fix initialization order
+
+## Debian (ARM)
+
 1. Install CLang
 2. Install premake5
     1 Clone repo https://github.com/premake/premake-core
@@ -15,25 +24,22 @@
 9. `cd ABx`
 10. Generate make files: GCC: `~/premake-core/bin/release/premake5 gmake`, CLang: `~/premake-core/bin/release/premake5 --cc=clang gmake`
 11. `cd build`, maybe `make -f ... clean`, or just delete `obj` dir.
-12. Build abdata: `make -f lua.make && make -f abcrypto.make && make -f abscommon.make && make -f abdata.make`
+12. Build abdata: `make -f lua.make && make -f abcrypto.make && make -f abscommon.make && make -f abdata.make` (`make -f abdata.make -e config=release_armv7`)
 
 ## Fixes
 
-* Remove `#pragma comment` to link file.
-* Link `lua`, `abcrypto`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist),
+* Link `pthread`, `lua`, `abcrypto`, `abscommon`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist),
 `libmysqlclient` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev/filelist),
 `libsqlite3` (https://packages.debian.org/jessie/armhf/libsqlite3-dev/filelist),
 `libuuid` (https://packages.debian.org/jessie/armhf/uuid-dev/filelist)
-* Remove `#pragma once`, add include guards?
-* `#ifdef _MSC_VER` all `*_s` C functions
-* Fix initialization order
-* Complie `make -f abdata.make -e config=release_armv7`
 
 Disable link time optimiztation on linux
 
-## Manjaro/Arch
+NOTE: The premake script is out of date, use the Code::Blocks project/workspace files to create GNU makefiles.
 
-* Install MariaDB, PostgreSQL, SQlite, Lua. Link against the installed libraries.
+## Manjaro/Arch (x86_64)
+
+* Install MariaDB, PostgreSQL, SQlite, Lua, uuid. Link against the installed libraries.
 * Use Code::Blocks and build `./absall/abs3rd.workspace` and `./absall/absall.worklspace`
 * Use `cbp2mak` to create makefiles: (1) `cbp2make -in ./absall/abs3rd.workspace -unix --keep-outdir`,
 (2) `cbp2make -in ./absall/absall.workspace -unix --keep-outdir` and run 
