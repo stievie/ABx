@@ -123,8 +123,12 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
             // The value in the items table is used for materials
             result.value = (item.value != 0) ? item.value : 1u;
         // Count also depends on the value of the item
-        result.count = Math::Clamp((rng->Get(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l) / result.value, 
-            1u, 1000u);
+        if (item.stackAble)
+            // Only stackable items drop count > 1. And always <= MAX_INVENTORY_STACK_SIZE
+            result.count = Math::Clamp((rng->Get(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l) / result.value,
+                1u, MAX_INVENTORY_STACK_SIZE);
+        else
+            result.count = 1;
     }
 }
 
