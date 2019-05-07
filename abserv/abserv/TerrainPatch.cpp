@@ -65,7 +65,7 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
 
 #ifdef _DEBUG
     char buff[256];
-    int len = sprintf_s(buff, "TerrainPatch: %d,%d; pos %s; BB %s",
+    int len = sprintf(buff, "TerrainPatch: %d,%d; pos %s; BB %s",
         offset.x_, offset.y_, transformation_.position_.ToString().c_str(),
         boundingBox_.ToString().c_str());
     name_ = std::string(buff, len);
