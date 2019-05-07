@@ -52,6 +52,7 @@
 		<Unit filename="Tests/Math.Quaternion.cpp" />
 		<Unit filename="Tests/Math.Ray.cpp" />
 		<Unit filename="Tests/Math.Sphere.cpp" />
+		<Unit filename="Tests/Math.Transformation.cpp" />
 		<Unit filename="Tests/Math.Utils.cpp" />
 		<Unit filename="Tests/Math.Vector3.cpp" />
 		<Unit filename="Tests/Utils.WeightedSelector.cpp" />
