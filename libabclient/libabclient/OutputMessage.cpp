@@ -32,15 +32,15 @@ void OutputMessage::AddString(const std::string& value)
     if (len > MaxStringLength)
         throw std::runtime_error("String too long");
 
-    CheckWrite(len + 2);
+    CheckWrite(static_cast<int>(len) + 2);
     Add<uint16_t>(static_cast<uint16_t>(len));
 #ifdef _MSC_VER
     memcpy_s((char*)(buffer_ + pos_), MaxBufferSize - len, value.c_str(), len);
 #else
     memcpy((char*)(buffer_ + pos_), value.c_str(), len);
 #endif
-    pos_ += len;
-    size_ += len;
+    pos_ += static_cast<uint16_t>(len);
+    size_ += static_cast<uint16_t>(len);
 }
 
 void OutputMessage::AddStringEncrypted(const std::string& value)
@@ -69,7 +69,7 @@ void OutputMessage::AddStringEncrypted(const std::string& value)
     memcpy((char*)(buff), value.data(), len);
 #endif
     uint32_t* buffer = (uint32_t*)(buff);
-    xxtea_enc(buffer, len / 4, AB::ENC_KEY);
+    xxtea_enc(buffer, static_cast<uint32_t>(len) / 4, AB::ENC_KEY);
     std::string encString(buff, len);
     AddString(encString);
     delete[] buff;
