@@ -49,6 +49,7 @@
 		</Linker>
 		<Unit filename="Tests/Math.BoundingBox.cpp" />
 		<Unit filename="Tests/Math.Collisions.cpp" />
+		<Unit filename="Tests/Math.Matrix.cpp" />
 		<Unit filename="Tests/Math.Quaternion.cpp" />
 		<Unit filename="Tests/Math.Ray.cpp" />
 		<Unit filename="Tests/Math.Sphere.cpp" />
