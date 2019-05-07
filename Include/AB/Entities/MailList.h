@@ -2,6 +2,7 @@
 
 #include <AB/Entities/Entity.h>
 #include <AB/Entities/Limits.h>
+#include <vector>
 
 namespace AB {
 namespace Entities {

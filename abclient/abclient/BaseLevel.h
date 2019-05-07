@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "PostProcessController.h"
 #include "Errors.h"
+#include <Urho3D/Physics/PhysicsWorld.h>
+#include <Urho3D/Navigation/NavigationMesh.h>
 
 class FwClient;
 

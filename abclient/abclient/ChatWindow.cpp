@@ -738,7 +738,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         FwClient* client = context_->GetSubsystem<FwClient>();
         uint32_t ip = client->GetIp();
         char buffer[20];
-        sprintf_s(buffer, 20, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
+        sprintf(buffer, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
         String sIp(buffer);
         AddLine(sIp, "ChatLogServerInfoText");
         break;

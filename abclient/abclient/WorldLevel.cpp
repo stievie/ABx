@@ -266,11 +266,8 @@ void WorldLevel::HandleMouseMove(StringHash, VariantMap&)
     }
 }
 
-void WorldLevel::Update(StringHash eventType, VariantMap& eventData)
+void WorldLevel::Update(StringHash, VariantMap&)
 {
-    UNREFERENCED_PARAMETER(eventType);
-    UNREFERENCED_PARAMETER(eventData);
-
     using namespace Update;
 
     if (!player_)

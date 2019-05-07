@@ -1,11 +1,17 @@
 #include "stdafx.h"
 #include "Mumble.h"
 
+#ifndef _WIN32
+#include <unistd.h>
+#include <sys/types.h>
+#endif // _WIN32
 // https://wiki.mumble.info/wiki/Link
 
 Mumble::Mumble(Context* context) :
     Object(context),
+#ifdef _WIN32
     hMapObject_(NULL),
+#endif
     lm_(nullptr),
     avatar_(nullptr),
     camera_(nullptr),

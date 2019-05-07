@@ -29,10 +29,8 @@ LevelManager::~LevelManager()
     level_ = SharedPtr<Object>();
 }
 
-void LevelManager::HandleSetLevelQueue(StringHash eventType, VariantMap& eventData)
+void LevelManager::HandleSetLevelQueue(StringHash, VariantMap& eventData)
 {
-    UNREFERENCED_PARAMETER(eventType);
-
     // Busy now
     if (levelQueue_.Size())
     {
@@ -48,10 +46,8 @@ void LevelManager::HandleSetLevelQueue(StringHash eventType, VariantMap& eventDa
     fadeStatus_ = 0;
 }
 
-void LevelManager::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void LevelManager::HandleUpdate(StringHash, VariantMap& eventData)
 {
-    UNREFERENCED_PARAMETER(eventType);
-
     using namespace Update;
 
     // Take the frame time step, which is stored as a float

@@ -355,10 +355,16 @@ void ClientApp::HandleTakeScreenshot(StringHash, VariantMap&)
     std::chrono::time_point<std::chrono::system_clock> time_point;
     time_point = std::chrono::system_clock::now();
     std::time_t ttp = std::chrono::system_clock::to_time_t(time_point);
+    char chr[50];
+#ifdef _MSC_VER
     tm p;
     localtime_s(&p, &ttp);
-    char chr[50];
     strftime(chr, 50, "%Y-%m-%d-%H-%M-%S", (const tm*)&p);
+#else
+    tm* p;
+    p = localtime(&ttp);
+    strftime(chr, 50, "%Y-%m-%d-%H-%M-%S", p);
+#endif
 
     String file = path + "fw" + String(chr) + ".png";
     image.SavePNG(file);

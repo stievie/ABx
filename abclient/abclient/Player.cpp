@@ -9,6 +9,8 @@
 #include "SkillBarWindow.h"
 #include "Mumble.h"
 #include "LevelManager.h"
+#include <Urho3D/Physics/RigidBody.h>
+#include <Urho3D/Physics/PhysicsWorld.h>
 
 #include <Urho3D/DebugNew.h>
 

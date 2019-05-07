@@ -39,6 +39,7 @@
 		<Compiler>
 			<Add option="-m64" />
 			<Add option="-Wall" />
+			<Add option="-Wno-argument-outside-range" />
 			<Add directory="../Include" />
 			<Add directory="../libabclient/libabclient" />
 			<Add directory="../Include/Urho3D" />
@@ -46,8 +47,16 @@
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
-			<Add library="libabclient" />
+			<Add library="pthread" />
+			<Add library="GL" />
+			<Add library="crypto" />
+			<Add library="ssl" />
 			<Add library="Urho3D" />
+			<Add library="libabclient" />
+			<Add library="dl" />
+			<Add library="rt" />
+			<Add library="stdc++fs" />
+			<Add library="abcrypto" />
 			<Add directory="../Lib" />
 		</Linker>
 		<Unit filename="abclient/AbEvents.h" />
