@@ -56,6 +56,13 @@ void ItemDrop::PickUp(Actor* actor)
     }
 }
 
+uint32_t ItemDrop::GetSourceId()
+{
+    if (auto s = source_.lock())
+        return s->id_;
+    return 0;
+}
+
 void ItemDrop::OnSelected(Actor* actor)
 {
     if (!actor)

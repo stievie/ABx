@@ -742,6 +742,14 @@ void ProtocolGame::InventoryDestroyItem(uint16_t pos)
     Send(msg);
 }
 
+void ProtocolGame::InventoryDropItem(uint16_t pos)
+{
+    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDropItem);
+    msg->Add<uint16_t>(pos);
+    Send(msg);
+}
+
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
     std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();

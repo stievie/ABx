@@ -342,6 +342,7 @@ enum GamePacketTypes : uint8_t
     // Inventory
     PacketTypeGetInventory,
     PacketTypeInventoryDestroyItem,
+    PacketTypeInventoryDropItem,
 };
 
 enum CommandTypes : uint8_t

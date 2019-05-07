@@ -238,6 +238,16 @@ bool InventoryComp::DestroyItem(uint16_t pos)
     return false;
 }
 
+std::unique_ptr<Item> InventoryComp::RemoveItem(uint16_t pos)
+{
+    if (inventory_.size() > pos && inventory_[pos])
+    {
+        std::unique_ptr<Item> item = std::move(inventory_[pos]);
+        return item;
+    }
+    return std::unique_ptr<Item>();
+}
+
 Item* InventoryComp::GetItem(uint16_t pos)
 {
     if (inventory_.size() >= pos && inventory_[pos])

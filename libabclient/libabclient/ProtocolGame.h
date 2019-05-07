@@ -93,6 +93,7 @@ public:
     void GetMailHeaders();
     void GetInventory();
     void InventoryDestroyItem(uint16_t pos);
+    void InventoryDropItem(uint16_t pos);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

@@ -126,6 +126,7 @@ public:
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
     bool AddToInventory(std::unique_ptr<Item>& item) override;
+    void DropInventoryItem(uint16_t pos);
     const std::string& GetPlayerUuid() const override { return data_.uuid; }
     const std::string& GetAccountUuid() const override { return account_.uuid; }
 

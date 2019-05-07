@@ -32,12 +32,15 @@ public:
     }
     uint32_t GetItemIndex() const;
     const Item* GetItem() const { return item_ ? item_.get() : nullptr; }
+    /// ID of dropper
+    uint32_t GetSourceId();
 
     void OnSelected(Actor* actor) override;
     void OnClicked(Actor* actor) override;
     void SetSource(std::shared_ptr<Actor> source);
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
+
 
     uint32_t actorId_;
 };

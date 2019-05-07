@@ -97,6 +97,7 @@ public:
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void UpdateInventory();
     void InventoryDestroyItem(uint16_t pos);
+    void InventoryDropItem(uint16_t pos);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);

@@ -270,7 +270,7 @@ public:
     void CancelAction();
 
     virtual bool AddToInventory(std::unique_ptr<Item>& item);
-    void DropItem();
+    void DropRandomItem();
 
     std::unique_ptr<SkillBar> skills_;
 

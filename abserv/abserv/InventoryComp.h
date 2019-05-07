@@ -47,7 +47,10 @@ public:
     void RemoveEquipment(EquipPos pos);
 
     bool SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
+    /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyItem(uint16_t pos);
+    /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything
+    std::unique_ptr<Item> RemoveItem(uint16_t pos);
     Item* GetItem(uint16_t pos);
     bool IsFull() const { return GetCount() >= inventorySize_; }
     void SetSize(uint16_t value)

@@ -32,5 +32,5 @@ function onCollide(creature)
 end
 
 function onDied()
-  self:DropItem()
+  self:DropRandomItem()
 end

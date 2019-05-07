@@ -78,7 +78,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("Resurrect", &Actor::Resurrect)
         .addFunction("CancelAction", &Actor::CancelAction)
 
-        .addFunction("DropItem", &Actor::DropItem)
+        .addFunction("DropRandomItem", &Actor::DropRandomItem)
 
         .addFunction("GetEnemiesInRange", &Actor::GetEnemiesInRange)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
@@ -265,11 +265,11 @@ bool Actor::AddToInventory(std::unique_ptr<Item>& item)
     return true;
 }
 
-void Actor::DropItem()
+void Actor::DropRandomItem()
 {
     auto game = GetGame();
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::AddItemDrop, game, this))
+        Asynch::CreateScheduledTask(std::bind(&Game::AddRandomItemDrop, game, this))
     );
 }
 

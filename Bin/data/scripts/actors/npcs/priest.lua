@@ -41,5 +41,5 @@ function onAttacked(source, _type, damage, success)
 end
 
 function onDied()
-  self:DropItem()
+  self:DropRandomItem()
 end

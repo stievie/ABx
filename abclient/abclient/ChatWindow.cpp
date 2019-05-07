@@ -624,6 +624,8 @@ void ChatWindow::HandleItemDropped(StringHash, VariantMap& eventData)
     LevelManager* lm = GetSubsystem<LevelManager>();
     Actor* dropper = dynamic_cast<Actor*>(lm->GetObjectById(dropperId).Get());
     Actor* target = dynamic_cast<Actor*>(lm->GetObjectById(targetId).Get());
+    if (!target)
+        return;
 
     ItemsCache* items = GetSubsystem<ItemsCache>();
     // Item may not be spawned yet

@@ -612,6 +612,12 @@ void Client::InventoryDestroyItem(uint16_t pos)
         protoGame_->InventoryDestroyItem(pos);
 }
 
+void Client::InventoryDropItem(uint16_t pos)
+{
+    if (state_ == ClientState::World)
+        protoGame_->InventoryDropItem(pos);
+}
+
 void Client::DeleteMail(const std::string& mailUuid)
 {
     if (state_ == ClientState::World)

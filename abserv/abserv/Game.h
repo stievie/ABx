@@ -130,7 +130,8 @@ public:
         std::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
-    std::shared_ptr<ItemDrop> AddItemDrop(Actor* dropper);
+    std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);
+    void SpawnItemDrop(std::shared_ptr<ItemDrop> item);
     /// Return all Parties in this Game
     std::vector<Party*> GetParties() const;
 

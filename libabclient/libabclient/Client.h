@@ -169,6 +169,7 @@ public:
     void GetMail(const std::string& mailUuid);
     void GetInventory();
     void InventoryDestroyItem(uint16_t pos);
+    void InventoryDropItem(uint16_t pos);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void Move(uint8_t direction);

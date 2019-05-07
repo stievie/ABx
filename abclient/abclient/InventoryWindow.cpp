@@ -297,9 +297,18 @@ void InventoryWindow::HandleItemDestroySelected(StringHash, VariantMap& eventDat
     cli->InventoryDestroyItem(static_cast<uint16_t>(pos));
 }
 
-void InventoryWindow::HandleItemDropSelected(StringHash eventType, VariantMap& eventData)
+void InventoryWindow::HandleItemDropSelected(StringHash, VariantMap& eventData)
 {
-    // TODO:
+    itemPopup_->ShowPopup(false);
+    using namespace MenuSelected;
+    Menu* sender = dynamic_cast<Menu*>(eventData[P_ELEMENT].GetPtr());
+    if (!sender)
+        return;
+    unsigned pos = itemPopup_->GetVar("ItemPos").GetUInt();
+    if (pos > std::numeric_limits<uint16_t>::max())
+        return;
+    FwClient* cli = GetSubsystem<FwClient>();
+    cli->InventoryDropItem(static_cast<uint16_t>(pos));
 }
 
 BorderImage* InventoryWindow::GetItemContainer(uint16_t pos)

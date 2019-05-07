@@ -78,7 +78,7 @@ AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script, Actor* source
 
 ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
 {
-    auto o = AddItemDrop(dropper);
+    auto o = AddRandomItemDrop(dropper);
     if (o)
         return o.get();
     return nullptr;
@@ -128,7 +128,7 @@ void Game::RegisterLua(kaguya::State& state)
 
         .addFunction("AddNpc", &Game::_LuaAddNpc)
         .addFunction("AddAreaOfEffect", &Game::_LuaAddAreaOfEffect)
-        .addFunction("AddItemDrop", &Game::_LuaAddItemDrop)
+        .addFunction("AddRandomItemDrop", &Game::_LuaAddItemDrop)
     );
 }
 
@@ -384,7 +384,7 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     return result;
 }
 
-std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
+std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
 {
     if (state_ != ExecutionState::Running || !dropper)
         return std::shared_ptr<ItemDrop>();
@@ -404,23 +404,30 @@ std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
         return std::shared_ptr<ItemDrop>();
 
     std::shared_ptr<ItemDrop> result = std::make_shared<ItemDrop>(item);
-    result->SetGame(shared_from_this());
     result->transformation_.position_ = dropper->transformation_.position_;
     // Random pos around dropper
     result->transformation_.position_.y_ += 0.2f;
-    result->transformation_.position_.x_ += rng->Get<float>(-0.5f, 0.5f);
-    result->transformation_.position_.z_ += rng->Get<float>(-0.5f, 0.5f);
+    result->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+    result->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
     result->SetSource(dropper->GetThis<Actor>());
     result->actorId_ = target->id_;
 
-    QueueSpawnObject(result);
+    SpawnItemDrop(result);
+    return result;
+}
+
+void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
+{
+    item->SetGame(shared_from_this());
+    // Also adds it to the objects array
+    QueueSpawnObject(item);
 
     gameStatus_->AddByte(AB::GameProtocol::GameObjectDropItem);
-    gameStatus_->Add<uint32_t>(dropper->id_);
-    gameStatus_->Add<uint32_t>(target->id_);
-    gameStatus_->Add<uint32_t>(result->id_);
-    gameStatus_->Add<uint32_t>(result->GetItemIndex());
-    const Item* pItem = result->GetItem();
+    gameStatus_->Add<uint32_t>(item->GetSourceId());
+    gameStatus_->Add<uint32_t>(item->actorId_);
+    gameStatus_->Add<uint32_t>(item->id_);
+    gameStatus_->Add<uint32_t>(item->GetItemIndex());
+    const Item* pItem = item->GetItem();
     if (pItem)
     {
         gameStatus_->Add<uint32_t>(pItem->concreteItem_.count);
@@ -432,8 +439,6 @@ std::shared_ptr<ItemDrop> Game::AddItemDrop(Actor* dropper)
         gameStatus_->Add<uint32_t>(1);
         gameStatus_->Add<uint16_t>(0);
     }
-
-    return result;
 }
 
 std::vector<Party*> Game::GetParties() const

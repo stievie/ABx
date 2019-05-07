@@ -658,6 +658,12 @@ void FwClient::InventoryDestroyItem(uint16_t pos)
         client_.InventoryDestroyItem(pos);
 }
 
+void FwClient::InventoryDropItem(uint16_t pos)
+{
+    if (loggedIn_)
+        client_.InventoryDropItem(pos);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
