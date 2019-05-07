@@ -31,7 +31,7 @@ public:
     explicit InventoryComp(Actor& owner) :
         owner_(owner),
         inventorySize_(AB::Entities::DEFAULT_INVENTORY_SIZE)
-    { 
+    {
         // Money
         inventory_.resize(1);
     }
@@ -44,12 +44,13 @@ public:
 
     void SetEquipment(std::unique_ptr<Item> item);
     Item* GetEquipment(EquipPos pos) const;
-    void RemoveEquipment(EquipPos pos);
+    std::unique_ptr<Item> RemoveEquipment(EquipPos pos);
 
     bool SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyItem(uint16_t pos);
-    /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything
+    /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
+    /// Since it's a unique_ptr somebody should own it, if it's still needed.
     std::unique_ptr<Item> RemoveItem(uint16_t pos);
     Item* GetItem(uint16_t pos);
     bool IsFull() const { return GetCount() >= inventorySize_; }

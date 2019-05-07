@@ -38,12 +38,13 @@ Item* InventoryComp::GetEquipment(EquipPos pos) const
     return (*item).second.get();
 }
 
-void InventoryComp::RemoveEquipment(EquipPos pos)
+std::unique_ptr<Item> InventoryComp::RemoveEquipment(EquipPos pos)
 {
     if (!equipment_[pos])
-        return;
-    equipment_[pos]->OnUnequip(&owner_);
-    equipment_.erase(pos);
+        return std::unique_ptr<Item>();
+    std::unique_ptr<Item> item = std::move(equipment_[pos]);
+    item->OnUnequip(&owner_);
+    return item;
 }
 
 bool InventoryComp::StackItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
