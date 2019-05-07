@@ -5,6 +5,8 @@
 #include <Urho3D/UI/MessageBox.h>
 #include "FwClient.h"
 #include "ClientApp.h"
+#include <Urho3D/Physics/PhysicsWorld.h>
+#include <Urho3D/Navigation/NavigationMesh.h>
 
 #include <Urho3D/DebugNew.h>
 
@@ -64,11 +66,8 @@ void BaseLevel::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventDa
     PostRenderUpdate(eventType, eventData);
 }
 
-void BaseLevel::PostRenderUpdate(StringHash eventType, VariantMap& eventData)
+void BaseLevel::PostRenderUpdate(StringHash, VariantMap&)
 {
-    UNREFERENCED_PARAMETER(eventType);
-    UNREFERENCED_PARAMETER(eventData);
-
     if (debugGeometry_)
     {
         if (auto physW = scene_->GetComponent<PhysicsWorld>())

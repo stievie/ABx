@@ -1,5 +1,8 @@
 #pragma once
 
+#include <limits>
+#include <stdint.h>
+
 namespace Client {
 
 class Protocol;
@@ -9,8 +12,8 @@ class OutputMessage
 {
 public:
     enum {
-        MaxBufferSize = 65536,
-        MaxStringLength = 65536,
+        MaxBufferSize = std::numeric_limits<uint16_t>::max() - 1,
+        MaxStringLength = std::numeric_limits<uint16_t>::max() - 1,
         MaxHeaderSize = 8
     };
 private:

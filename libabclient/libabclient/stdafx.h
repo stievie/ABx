@@ -8,7 +8,6 @@
 #include "targetver.h"
 
 #include <stdio.h>
-#include <tchar.h>
 #include <cassert>
 #include <ctype.h>
 
@@ -25,13 +24,19 @@
 #include <functional>
 #include <mutex>
 
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include "windows.h"
+#endif
 
 #define USE_STANDALONE_ASIO
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4592)
+#endif
 #include <asio.hpp>
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif // _MSC_VER
 
 #define AB_UNUSED(P) (void)(P)

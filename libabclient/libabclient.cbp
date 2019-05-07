@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libabclient" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../Lib/x64/Debug/abclient" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+				</Compiler>
+				<Linker>
+					<Add directory="../Lib/x64/Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../Lib/x64/Release/abclient" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add directory="../Lib/x64/Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-m64" />
+			<Add option="-Wall" />
+			<Add directory="../Include" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
+		<Unit filename="libabclient/Client.cpp" />
+		<Unit filename="libabclient/Client.h" />
+		<Unit filename="libabclient/Connection.cpp" />
+		<Unit filename="libabclient/Connection.h" />
+		<Unit filename="libabclient/DebugNew.h" />
+		<Unit filename="libabclient/Definitions.h" />
+		<Unit filename="libabclient/Errors.h" />
+		<Unit filename="libabclient/InputMessage.cpp" />
+		<Unit filename="libabclient/InputMessage.h" />
+		<Unit filename="libabclient/OutputMessage.cpp" />
+		<Unit filename="libabclient/OutputMessage.h" />
+		<Unit filename="libabclient/PropStream.h" />
+		<Unit filename="libabclient/Protocol.cpp" />
+		<Unit filename="libabclient/Protocol.h" />
+		<Unit filename="libabclient/ProtocolGame.cpp" />
+		<Unit filename="libabclient/ProtocolGame.h" />
+		<Unit filename="libabclient/ProtocolLogin.cpp" />
+		<Unit filename="libabclient/ProtocolLogin.h" />
+		<Unit filename="libabclient/Random.cpp" />
+		<Unit filename="libabclient/Random.h" />
+		<Unit filename="libabclient/Receiver.h" />
+		<Unit filename="libabclient/Structs.h" />
+		<Unit filename="libabclient/TimeUtils.cpp" />
+		<Unit filename="libabclient/TimeUtils.h" />
+		<Unit filename="libabclient/Utils.cpp" />
+		<Unit filename="libabclient/Utils.h" />
+		<Unit filename="libabclient/stdafx.cpp" />
+		<Unit filename="libabclient/stdafx.h" />
+		<Unit filename="libabclient/targetver.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

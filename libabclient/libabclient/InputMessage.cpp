@@ -26,7 +26,11 @@ void InputMessage::SetBuffer(const std::string& buffer)
 {
     size_t len = buffer.size();
     CheckWrite(len);
+#ifdef _MSC_VER
     memcpy_s(buffer_ + MaxHeaderSize, MaxBufferSize, buffer.c_str(), len);
+#else
+    memcpy(buffer_ + MaxHeaderSize, buffer.c_str(), len);
+#endif // _MSC_VER
     pos_ = MaxHeaderSize;
     headerPos_ = MaxHeaderSize;
     size_ = (uint16_t)len;
@@ -50,7 +54,11 @@ std::string InputMessage::GetStringEncrypted()
     size_t len = encString.length();
     char* buff = new char[len + 1];
     memset(buff, 0, len + 1);
+#ifdef _MSC_VER
     memcpy_s((char*)(buff), len, encString.data(), len);
+#else
+    memcpy((char*)(buff), encString.data(), len);
+#endif
     uint32_t* buffer = (uint32_t*)(buff);
     xxtea_dec(buffer, (uint32_t)(len / 4), AB::ENC_KEY);
     std::string result(buff);
@@ -61,13 +69,13 @@ std::string InputMessage::GetStringEncrypted()
 void InputMessage::CheckWrite(size_t size)
 {
     if (size > MaxBufferSize)
-        throw std::exception("InputMessage max buffer size reached");
+        throw std::runtime_error("InputMessage max buffer size reached");
 }
 
 void InputMessage::CheckRead(size_t size)
 {
     if (!CanRead(size))
-        throw std::exception("InputMessage max buffer size reached");
+        throw std::runtime_error("InputMessage max buffer size reached");
 }
 
 bool InputMessage::CanRead(size_t size)
@@ -80,7 +88,11 @@ bool InputMessage::CanRead(size_t size)
 void InputMessage::FillBuffer(uint8_t* buffer, uint16_t size)
 {
     CheckWrite(pos_ + size);
+#ifdef _MSC_VER
     memcpy_s(buffer_ + pos_, MaxBufferSize - pos_, buffer, size);
+#else
+    memcpy(buffer_ + pos_, buffer, size);
+#endif
     size_ += size;
 }
 

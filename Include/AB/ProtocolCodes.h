@@ -12,7 +12,11 @@ static constexpr uint16_t CLIENT_OS_LINUX = 2;
 static constexpr uint16_t CLIENT_OS_MAC = 3;
 #ifdef _WIN32
 static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_WIN;
-#endif // _WIN32
+#elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
+static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_LINUX;
+#elif (defined(__APPLE__) && defined(__MACH__))
+static constexpr uint16_t CLIENT_OS_CURRENT = CLIENT_OS_MAC;
+#endif
 
 enum ProtocolIds : uint8_t
 {

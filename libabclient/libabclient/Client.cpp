@@ -4,10 +4,14 @@
 #include "ProtocolGame.h"
 #include "Connection.h"
 #define USE_STANDALONE_ASIO
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4457 4456 4150)
+#endif
 #include <SimpleWeb/client_https.hpp>
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 #include <iostream>
 #include <fstream>
 
@@ -28,18 +32,18 @@ public:
 };
 
 Client::Client() :
-    loginHost_("127.0.0.1"),
-    gameHost_(""),
-    fileHost_(""),
-    loginPort_(2748),
-    gamePort_(0),
-    filePort_(0),
     protoLogin_(nullptr),
     protoGame_(nullptr),
-    state_(ClientState::Disconnected),
     lastRun_(0),
     lastPing_(0),
     gotPong_(true),
+    loginHost_("127.0.0.1"),
+    loginPort_(2748),
+    fileHost_(""),
+    filePort_(0),
+    gameHost_(""),
+    gamePort_(0),
+    state_(ClientState::Disconnected),
     httpClient_(nullptr)
 {
     // Always create new keys

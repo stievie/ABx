@@ -12,17 +12,18 @@
 
 #include "targetver.h"
 
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
 #undef MessageBox                       // Redefines Urho3D::MessageBox
 #undef GetMessage
+#endif // _WIN32
 
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <tchar.h>
 #include <stdint.h>
 
 #define _USE_MATH_DEFINES
@@ -36,7 +37,11 @@
 #include "Defines.h"
 #include "Config.h"
 
+#ifdef _WIN32
 #pragma warning( push )
 #pragma warning( disable : 4100 4305 4800 4244)
+#endif
 #include <Urho3D/Urho3DAll.h>
+#ifdef _WIN32
 #pragma warning( pop )
+#endif

@@ -9,10 +9,10 @@ namespace Client {
 
 ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys) :
     Protocol(keys),
+    action_(ActionUnknown),
     charlistCallback_(nullptr),
     gamelistCallback_(nullptr),
-    createAccCallback_(nullptr),
-    action_(ActionUnknown)
+    createAccCallback_(nullptr)
 {
     checksumEnabled_ = ProtocolLogin::UseChecksum;
     encryptEnabled_ = false;

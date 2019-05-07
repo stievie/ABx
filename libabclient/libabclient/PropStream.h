@@ -37,7 +37,11 @@ public:
         if (GetSize() < sizeof(T))
             return false;
 
+#ifdef _MSC_VER
         memcpy_s(&r, sizeof(T), p_, sizeof(T));
+#else
+        memcpy(&r, p_, sizeof(T));
+#endif
         p_ += sizeof(T);
         return true;
     }
@@ -51,7 +55,11 @@ public:
             return false;
 
         char* str = new char[static_cast<size_t>(len) + 1];
+#ifdef _MSC_VER
         memcpy_s(str, len, p_, len);
+#else
+        memcpy(str, p_, len);
+#endif // _MSC_VER
         str[len] = 0;
         r.assign(str, len);
         p_ += len;

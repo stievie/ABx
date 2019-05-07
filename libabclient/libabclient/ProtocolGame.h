@@ -79,7 +79,7 @@ protected:
     void ParseResourceChanged(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame(Crypto::DHKeys& keys);
-    ~ProtocolGame() = default;
+    ~ProtocolGame() override = default;
 
     Receiver* receiver_;
 

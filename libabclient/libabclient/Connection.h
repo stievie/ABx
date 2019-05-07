@@ -2,6 +2,7 @@
 
 #include "TimeUtils.h"
 #include "Errors.h"
+#include <list>
 
 namespace Client {
 

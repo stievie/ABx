@@ -44,7 +44,7 @@ protected:
 public:
     Protocol(Crypto::DHKeys& keys);
     Protocol(const Protocol&) = delete;
-    ~Protocol();
+    virtual ~Protocol();
 
     void Connect(const std::string& host, uint16_t port);
     void Disconnect();

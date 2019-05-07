@@ -23,8 +23,8 @@ private:
 public:
     timer() :
         start_(0)
-    { 
-        restart(); 
+    {
+        restart();
     }
     float elapsed_seconds() { return (float)((micros() - start_) / 1000000.0); }
     ticks_t elapsed_millis() { return (micros() - start_) / 1000; }
@@ -49,6 +49,7 @@ struct TimeSpan
     TimeSpan(uint32_t sec)
     {
         time_t secs(sec); // you have to convert your input_seconds into time_t
+#ifdef _MSC_VER
         struct tm p;
         errno_t err = gmtime_s(&p, &secs); // convert to broken down time
         if (err)
@@ -64,6 +65,23 @@ struct TimeSpan
         hours = p.tm_hour;
         minutes = p.tm_min;
         seconds = p.tm_sec;
+#else
+        struct tm* p;
+        p = gmtime(&secs); // convert to broken down time
+        if (!p)
+            return;
+
+        if (p->tm_yday > 31)
+        {
+            months = p->tm_yday / 31;
+            days = p->tm_yday - (months * 31);
+        }
+        else
+            days = p->tm_yday;
+        hours = p->tm_hour;
+        minutes = p->tm_min;
+        seconds = p->tm_sec;
+#endif
     }
 };
 

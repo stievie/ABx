@@ -11,8 +11,8 @@ asio::io_service gIoService;
 std::list<std::shared_ptr<asio::streambuf>> Connection::outputStreams_;
 
 Connection::Connection() :
-    connectTimer_(gIoService),
     readTimer_(gIoService),
+    connectTimer_(gIoService),
     writeTimer_(gIoService),
     delayedWriteTimer_(gIoService),
     resolver_(gIoService),
