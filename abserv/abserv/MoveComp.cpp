@@ -78,7 +78,7 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
     owner_.transformation_.position_.y_ += XMath::XMVectorGetY(v);
     owner_.transformation_.position_.z_ += XMath::XMVectorGetZ(v);
 #else
-    Math::Matrix4 m = Math::Matrix4::FromQuaternion(owner_.transformation_.GetQuaternion());
+    Math::Matrix4 m = Math::Matrix4::FromQuaternion(owner_.transformation_.oriention_.Inverse());
     Math::Vector3 a = amount * speed;
     Math::Vector3 v = m * a;
     owner_.transformation_.position_ += v;

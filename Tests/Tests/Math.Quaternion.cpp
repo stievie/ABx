@@ -93,9 +93,12 @@ TEST_CASE("Quaternion Operations")
     }
     SECTION("Inverse")
     {
-        Math::Quaternion quat(1.0f, 1.0f, 1.0f, 1.0f);
-        Math::Quaternion inv = quat.Inverse();
-        REQUIRE(inv.Equals(Math::Quaternion(0.25f, -0.25f, -0.25f, -0.25f)));
+        Math::Quaternion q = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI) / 3.0f);
+        Math::Quaternion inv = q.Inverse();
+        REQUIRE(q.w_ == Approx(inv.w_));
+        REQUIRE(q.x_ == Approx(-inv.x_));
+        REQUIRE(q.y_ == Approx(-inv.y_));
+        REQUIRE(q.z_ == Approx(-inv.z_));
     }
     SECTION("GetMatrix")
     {
@@ -140,6 +143,6 @@ TEST_CASE("Quaternion Methods")
         REQUIRE(q.x_ == Approx(0.0f));
         REQUIRE(q.y_ == Approx(0.5f));
         REQUIRE(q.z_ == Approx(0.0f));
-
     }
+
 }
