@@ -12,16 +12,15 @@ public:
     void ShowError(const String& message, const String& title = "Error") override;
 
 protected:
-    virtual void SubscribeToEvents();
-    virtual void CreateUI();
-
+    void SubscribeToEvents() override;
+    void CreateUI() override;
 private:
     bool loggingIn_;
     SharedPtr<LineEdit> nameEdit_;
     SharedPtr<LineEdit> passEdit_;
     SharedPtr<Button> button_;
     SharedPtr<Button> createAccountButton_;
-    void CreateScene();
+    void CreateScene() override;
     void HandleLoginClicked(StringHash eventType, VariantMap& eventData);
     void HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);

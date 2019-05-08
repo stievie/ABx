@@ -12,9 +12,8 @@ public:
     void ShowError(const String& message, const String& title = "Error") override;
 
 protected:
-    virtual void SubscribeToEvents();
-    virtual void CreateUI();
-
+    void SubscribeToEvents() override;
+    void CreateUI() override;
 private:
     SharedPtr<LineEdit> nameEdit_;
     SharedPtr<LineEdit> passEdit_;
@@ -25,7 +24,7 @@ private:
     SharedPtr<Button> button_;
     void DoCreateAccount();
     void DoCancel();
-    void CreateScene();
+    void CreateScene() override;
     void HandleCreateClicked(StringHash eventType, VariantMap& eventData);
     void HandleCancelClicked(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);

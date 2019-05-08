@@ -166,6 +166,8 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
         tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper", true));
         tabIndexWhisper_ = tabs->GetTabCount() - 1;
         break;
+    default:
+        break;
     }
 
     UIElement* parent = tabElement->tabBody_;
@@ -290,6 +292,8 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         break;
     case AB::GameProtocol::ServerMessageTypeUnknownCommand:
         HandleServerMessageUnknownCommand(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeUnknown:
         break;
     }
 }
@@ -608,6 +612,8 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
         if (target)
             message += " on " + target->name_;
     }
+    default:
+        break;
     }
     AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannelParty);
     pinger->ShowSpeechBubble(message);
@@ -789,6 +795,8 @@ void ChatWindow::UpdateVisibleItems()
             break;
         case AB::GameProtocol::ChatChannelWhisper:
             elem->SetVisible(visibleWhisper_);
+            break;
+        default:
             break;
         }
     }

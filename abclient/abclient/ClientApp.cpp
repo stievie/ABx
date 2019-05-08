@@ -56,10 +56,14 @@
 * > return function;
 * > }
 */
+#if defined(_MSC_VER)
 #pragma warning(push)
 #pragma warning( disable : 4701 4100)
+#endif
 URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
+#if defined(_MSC_VER)
 #pragma warning( pop )
+#endif // defined
 
 /**
 * This happens before the engine has been initialized

@@ -82,6 +82,9 @@ struct Shortcut
             break;
         case MOUSEB_X2:
             result = ModName() + "X2MB";
+            break;
+        default:
+            break;
         }
         if (!result.Empty())
         {

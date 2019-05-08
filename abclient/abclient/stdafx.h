@@ -37,11 +37,11 @@
 #include "Defines.h"
 #include "Config.h"
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #pragma warning( push )
 #pragma warning( disable : 4100 4305 4800 4244)
 #endif
 #include <Urho3D/Urho3DAll.h>
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #pragma warning( pop )
 #endif

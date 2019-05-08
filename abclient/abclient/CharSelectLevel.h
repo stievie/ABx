@@ -10,10 +10,10 @@ public:
     CharSelectLevel(Context* context);
     void CreateCamera();
 protected:
-    virtual void SubscribeToEvents();
-    virtual void CreateUI();
+    void SubscribeToEvents() override;
+    void CreateUI() override;
 private:
-    void CreateScene();
+    void CreateScene() override;
     void HandleCharClicked(StringHash eventType, VariantMap& eventData);
     void HandleCreateCharClicked(StringHash eventType, VariantMap& eventData);
     void HandleBackClicked(StringHash eventType, VariantMap& eventData);

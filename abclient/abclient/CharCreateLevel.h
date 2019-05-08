@@ -10,8 +10,8 @@ public:
     CharCreateLevel(Context* context);
     void CreateCamera();
 protected:
-    virtual void SubscribeToEvents();
-    virtual void CreateUI();
+    void SubscribeToEvents() override;
+    void CreateUI() override;
 private:
     SharedPtr<LineEdit> nameEdit_;
     SharedPtr<DropDownList> professionDropdown_;
@@ -20,7 +20,7 @@ private:
     SharedPtr<Button> cancelButton_;
     void DoCreateCharacter();
     void DoCancel();
-    void CreateScene();
+    void CreateScene() override;
     Text* CreateDropdownItem(const String& text, uint32_t value);
     Text* CreateDropdownItem(const String& text, const String& value);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
