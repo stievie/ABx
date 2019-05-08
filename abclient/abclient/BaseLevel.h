@@ -17,11 +17,11 @@ public:
     BaseLevel(Context* context) :
         Object(context),
         uiRoot_(GetSubsystem<UI>()->GetRoot()),
+        scene_(nullptr),
+        cameraNode_(nullptr),
+        player_(nullptr),
         yaw_(0.0f),
         pitch_(0.0f),
-        scene_(nullptr),
-        player_(nullptr),
-        cameraNode_(nullptr),
         debugGeometry_(false)
     {}
 

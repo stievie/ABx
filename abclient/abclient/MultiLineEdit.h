@@ -65,8 +65,15 @@ public:
     bool OnDragDropTest(UIElement* source) override;
     /// React to drag and drop finish. Return true to signal that the drop was accepted.
     bool OnDragDropFinish(UIElement* source) override;
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif // __clang__
     /// React to a key press.
     virtual void OnKey(int key, int buttons, int qualifiers);
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif // __clang__
     /// React to text input event.
     void OnTextInput(const String& text) override;
 

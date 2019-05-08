@@ -40,8 +40,13 @@
 #if defined(_MSC_VER)
 #pragma warning( push )
 #pragma warning( disable : 4100 4305 4800 4244)
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
 #endif
 #include <Urho3D/Urho3DAll.h>
 #if defined(_MSC_VER)
 #pragma warning( pop )
+#elif defined(__clang__)
+#pragma clang diagnostic pop
 #endif

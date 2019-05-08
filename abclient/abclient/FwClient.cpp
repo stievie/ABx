@@ -535,7 +535,7 @@ void FwClient::Update(float timeStep)
     case Client::Client::ClientState::SelectChar:
         loggedIn_ = true;
         break;
-    case Client::Client::ClientState::World:
+    default:
         break;
     }
     lastState_ = client_.state_;

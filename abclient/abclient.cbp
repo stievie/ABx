@@ -27,7 +27,7 @@
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
@@ -40,6 +40,7 @@
 			<Add option="-m64" />
 			<Add option="-Wall" />
 			<Add option="-Wno-argument-outside-range" />
+			<Add option="-Wno-reorder" />
 			<Add directory="../Include" />
 			<Add directory="../libabclient/libabclient" />
 			<Add directory="../Include/Urho3D" />

@@ -1,7 +1,14 @@
 #include "stdafx.h"
 #include "PingDot.h"
 #include "FwClient.h"
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-lambda-capture"
+#endif // __clang__
 #include <Mustache/mustache.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif // __clang__
 
 #include <Urho3D/DebugNew.h>
 

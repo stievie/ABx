@@ -443,6 +443,8 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
             if (!existing)
                 chatWindow_->AddLine(dynamic_cast<Actor*>(object)->name_ + " joined the game", "ChatLogServerInfoText");
             break;
+        default:
+            break;
         }
 
         // Update party window

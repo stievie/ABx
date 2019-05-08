@@ -4,7 +4,14 @@
 #include "AbEvents.h"
 #include "Utils.h"
 #include <TimeUtils.h>
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-lambda-capture"
+#endif // __clang__
 #include <Mustache/mustache.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif // __clang__
 #include "Shortcuts.h"
 #include "Options.h"
 #include "LevelManager.h"
@@ -44,13 +51,13 @@ ChatWindow::ChatWindow(Context* context) :
     UIElement(context),
     historyRows_(20),
     historyPosition_(0),
-    tabIndexWhisper_(-1),
     firstStart_(true),
     visibleGeneral_(true),
     visibleGuild_(true),
     visibleParty_(true),
     visibleTrade_(true),
-    visibleWhisper_(true)
+    visibleWhisper_(true),
+    tabIndexWhisper_(-1)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
