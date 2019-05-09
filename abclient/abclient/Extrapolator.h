@@ -42,7 +42,7 @@ public:
     Extrapolator()
     {
         Type pos[Count];
-        memset(pos, 0, sizeof(pos));
+        memset(pos, 0, sizeof(Type) * Count);
         Reset(0, 0, pos);
     }
     //! Bye, bye, Extrapolator!
@@ -73,7 +73,7 @@ public:
             }
         }
         else
-            memset(_vel, 0, sizeof(_vel));
+            memset(_vel, 0, sizeof(Type) * Count);
 
         return AddSample(packetTime, curTime, pos, _vel);
     }
@@ -136,7 +136,7 @@ public:
     void Reset(double packetTime, double curTime, Type const pos[Count])
     {
         Type _vel[Count];
-        memset(_vel, 0, sizeof(_vel));
+        memset(_vel, 0, sizeof(Type) * Count);
         Reset(packetTime, curTime, pos, _vel);
     }
     //! Re-set the Extrapolator's idea of time, velocity and position.
@@ -210,7 +210,7 @@ public:
             oPos[i] = (Type)(snapPos_[i] + oVel[i] * (forTime - snapTime_));
         }
         if (!ok)
-            memset(oVel, 0, sizeof(oVel));
+            memset(oVel, 0, sizeof(Type) * Count);
 
         return ok;
     }
