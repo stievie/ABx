@@ -7,7 +7,6 @@
 namespace Client {
 
 asio::io_service gIoService;
-//asio::io_service::work work(gIoService);
 std::list<std::shared_ptr<asio::streambuf>> Connection::outputStreams_;
 
 Connection::Connection() :

@@ -37,7 +37,7 @@ ItemDrop::~ItemDrop()
 
 uint32_t ItemDrop::GetItemIndex() const
 {
-    return item_ ? item_->data_.index : 0;;
+    return item_ ? item_->data_.index : 0;
 }
 
 void ItemDrop::PickUp(Actor* actor)
