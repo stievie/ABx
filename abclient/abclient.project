@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="abclient" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="abclient/WorldLevel.cpp"/>
+    <File Name="abclient/WindowManager.cpp"/>
+    <File Name="abclient/TargetWindow.cpp"/>
+    <File Name="abclient/TabGroup.cpp"/>
+    <File Name="abclient/stdafx.cpp"/>
+    <File Name="abclient/SkillManager.cpp"/>
+    <File Name="abclient/SkillBarWindow.cpp"/>
+    <File Name="abclient/Shortcuts.cpp"/>
+    <File Name="abclient/PvpCombatLevel.cpp"/>
+    <File Name="abclient/PostProcessController.cpp"/>
+    <File Name="abclient/Player.cpp"/>
+    <File Name="abclient/PingDot.cpp"/>
+    <File Name="abclient/PartyWindow.cpp"/>
+    <File Name="abclient/PartyItem.cpp"/>
+    <File Name="abclient/OutpostLevel.cpp"/>
+    <File Name="abclient/OptionsWindow.cpp"/>
+    <File Name="abclient/Options.cpp"/>
+    <File Name="abclient/NewMailWindow.cpp"/>
+    <File Name="abclient/Mumble.cpp"/>
+    <File Name="abclient/MultiLineEdit.cpp"/>
+    <File Name="abclient/MissionMapWindow.cpp"/>
+    <File Name="abclient/MapWindow.cpp"/>
+    <File Name="abclient/MailWindow.cpp"/>
+    <File Name="abclient/LoginLevel.cpp"/>
+    <File Name="abclient/LevelManager.cpp"/>
+    <File Name="abclient/ItemsCache.cpp"/>
+    <File Name="abclient/Item.cpp"/>
+    <File Name="abclient/InventoryWindow.cpp"/>
+    <File Name="abclient/HotkeyEdit.cpp"/>
+    <File Name="abclient/HealthBarPlain.cpp"/>
+    <File Name="abclient/HealthBar.cpp"/>
+    <File Name="abclient/GameObject.cpp"/>
+    <File Name="abclient/GameMessagesWindow.cpp"/>
+    <File Name="abclient/GameMenu.cpp"/>
+    <File Name="abclient/FwClient.cpp"/>
+    <File Name="abclient/FriendListWindow.cpp"/>
+    <File Name="abclient/EffectsWindow.cpp"/>
+    <File Name="abclient/CreditsWindow.cpp"/>
+    <File Name="abclient/CreateAccountLevel.cpp"/>
+    <File Name="abclient/ClientApp.cpp"/>
+    <File Name="abclient/ChatWindow.cpp"/>
+    <File Name="abclient/CharSelectLevel.cpp"/>
+    <File Name="abclient/CharCreateLevel.cpp"/>
+    <File Name="abclient/BaseLevel.cpp"/>
+    <File Name="abclient/AudioManager.cpp"/>
+    <File Name="abclient/Actor.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="abclient/WorldLevel.h"/>
+    <File Name="abclient/WindowManager.h"/>
+    <File Name="abclient/TargetWindow.h"/>
+    <File Name="abclient/targetver.h"/>
+    <File Name="abclient/TabGroup.h"/>
+    <File Name="abclient/stdafx.h"/>
+    <File Name="abclient/SkillManager.h"/>
+    <File Name="abclient/SkillBarWindow.h"/>
+    <File Name="abclient/Shortcuts.h"/>
+    <File Name="abclient/resource.h"/>
+    <File Name="abclient/PvpCombatLevel.h"/>
+    <File Name="abclient/PostProcessController.h"/>
+    <File Name="abclient/Player.h"/>
+    <File Name="abclient/PingDot.h"/>
+    <File Name="abclient/PartyWindow.h"/>
+    <File Name="abclient/PartyItem.h"/>
+    <File Name="abclient/OutpostLevel.h"/>
+    <File Name="abclient/OptionsWindow.h"/>
+    <File Name="abclient/Options.h"/>
+    <File Name="abclient/NewMailWindow.h"/>
+    <File Name="abclient/Mumble.h"/>
+    <File Name="abclient/MultiLineEdit.h"/>
+    <File Name="abclient/MissionMapWindow.h"/>
+    <File Name="abclient/MathUtils.h"/>
+    <File Name="abclient/MapWindow.h"/>
+    <File Name="abclient/MailWindow.h"/>
+    <File Name="abclient/LoginLevel.h"/>
+    <File Name="abclient/LevelManager.h"/>
+    <File Name="abclient/ItemsCache.h"/>
+    <File Name="abclient/Item.h"/>
+    <File Name="abclient/InventoryWindow.h"/>
+    <File Name="abclient/HotkeyEdit.h"/>
+    <File Name="abclient/HealthBarPlain.h"/>
+    <File Name="abclient/HealthBar.h"/>
+    <File Name="abclient/GameObject.h"/>
+    <File Name="abclient/GameMessagesWindow.h"/>
+    <File Name="abclient/GameMenu.h"/>
+    <File Name="abclient/FwClient.h"/>
+    <File Name="abclient/FriendListWindow.h"/>
+    <File Name="abclient/Extrapolator.h"/>
+    <File Name="abclient/EffectsWindow.h"/>
+    <File Name="abclient/Defines.h"/>
+    <File Name="abclient/CreditsWindow.h"/>
+    <File Name="abclient/CreateAccountLevel.h"/>
+    <File Name="abclient/Config.h"/>
+    <File Name="abclient/ClientApp.h"/>
+    <File Name="abclient/ChatWindow.h"/>
+    <File Name="abclient/CharSelectLevel.h"/>
+    <File Name="abclient/CharCreateLevel.h"/>
+    <File Name="abclient/BaseLevel.h"/>
+    <File Name="abclient/AudioManager.h"/>
+    <File Name="abclient/AntiRE.h"/>
+    <File Name="abclient/Actor.h"/>
+    <File Name="abclient/AbEvents.h"/>
+  </VirtualDirectory>
+  <Dependencies Name="Release">
+    <Project Name="libabclient"/>
+  </Dependencies>
+  <Dependencies Name="Debug">
+    <Project Name="libabclient"/>
+  </Dependencies>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="-m64;-std=c++17;-Wall;-Wno-argument-outside-range;-Wno-reorder" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../Include"/>
+        <IncludePath Value="../libabclient/libabclient"/>
+        <IncludePath Value="../Include/Urho3D"/>
+        <IncludePath Value="../Include/Urho3D/ThirdParty"/>
+      </Compiler>
+      <Linker Options="-m64">
+        <LibraryPath Value="../Lib"/>
+        <LibraryPath Value="../Lib/x64/$(ConfigurationName)"/>
+        <Library Value="pthread"/>
+        <Library Value="ssl"/>
+        <Library Value="crypto"/>
+        <Library Value="Urho3D"/>
+        <Library Value="libabclient"/>
+        <Library Value="GL"/>
+        <Library Value="dl"/>
+        <Library Value="rt"/>
+        <Library Value="stdc++fs"/>
+        <Library Value="abcrypto"/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="_DEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="bin/fw_d" IntermediateDirectory="./Debug" Command="fw_d" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths>/home/sa/Dokumente/projects/ABx/abclient/bin</DebuggerSearchPaths>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="-s" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="bin/fw" IntermediateDirectory="./Release" Command="fw" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

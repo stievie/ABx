@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="abdata" Version="10.0.0" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="include">
+    <File Name="abdata/Version.h"/>
+    <File Name="abdata/targetver.h"/>
+    <File Name="abdata/StorageProvider.h"/>
+    <File Name="abdata/stdafx.h"/>
+    <File Name="abdata/Server.h"/>
+    <File Name="abdata/EvictionStrategy.h"/>
+    <File Name="abdata/DBVersionList.h"/>
+    <File Name="abdata/DBVersion.h"/>
+    <File Name="abdata/DBTypedItemList.h"/>
+    <File Name="abdata/DBSkillList.h"/>
+    <File Name="abdata/DBSkill.h"/>
+    <File Name="abdata/DBServicelList.h"/>
+    <File Name="abdata/DBService.h"/>
+    <File Name="abdata/DBReservedName.h"/>
+    <File Name="abdata/DBProfessionList.h"/>
+    <File Name="abdata/DBProfession.h"/>
+    <File Name="abdata/DBPlayerItemList.h"/>
+    <File Name="abdata/DBMusicList.h"/>
+    <File Name="abdata/DBMusic.h"/>
+    <File Name="abdata/DBMailList.h"/>
+    <File Name="abdata/DBMail.h"/>
+    <File Name="abdata/DBItemList.h"/>
+    <File Name="abdata/DBItemChanceList.h"/>
+    <File Name="abdata/DBItem.h"/>
+    <File Name="abdata/DBIpBan.h"/>
+    <File Name="abdata/DBGuildMembers.h"/>
+    <File Name="abdata/DBGuild.h"/>
+    <File Name="abdata/DBGameList.h"/>
+    <File Name="abdata/DBGame.h"/>
+    <File Name="abdata/DBFriendList.h"/>
+    <File Name="abdata/DBEffectList.h"/>
+    <File Name="abdata/DBEffect.h"/>
+    <File Name="abdata/DBConcreteItem.h"/>
+    <File Name="abdata/DBCharacterList.h"/>
+    <File Name="abdata/DBCharacter.h"/>
+    <File Name="abdata/DBBan.h"/>
+    <File Name="abdata/DBAttributeList.h"/>
+    <File Name="abdata/DBAttribute.h"/>
+    <File Name="abdata/DBAll.h"/>
+    <File Name="abdata/DBAccountList.h"/>
+    <File Name="abdata/DBAccountKeyList.h"/>
+    <File Name="abdata/DBAccountKeyAccounts.h"/>
+    <File Name="abdata/DBAccountKey.h"/>
+    <File Name="abdata/DBAccountItemList.h"/>
+    <File Name="abdata/DBAccountBan.h"/>
+    <File Name="abdata/DBAccount.h"/>
+    <File Name="abdata/ConnectionManager.h"/>
+    <File Name="abdata/Connection.h"/>
+    <File Name="abdata/Application.h"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="abdata/StorageProvider.cpp"/>
+    <File Name="abdata/stdafx.cpp"/>
+    <File Name="abdata/Server.cpp"/>
+    <File Name="abdata/OldestInsertionEviction.cpp"/>
+    <File Name="abdata/main.cpp"/>
+    <File Name="abdata/DBVersionList.cpp"/>
+    <File Name="abdata/DBVersion.cpp"/>
+    <File Name="abdata/DBTypedItemList.cpp"/>
+    <File Name="abdata/DBSkillList.cpp"/>
+    <File Name="abdata/DBSkill.cpp"/>
+    <File Name="abdata/DBServicelList.cpp"/>
+    <File Name="abdata/DBService.cpp"/>
+    <File Name="abdata/DBReservedName.cpp"/>
+    <File Name="abdata/DBProfessionList.cpp"/>
+    <File Name="abdata/DBProfession.cpp"/>
+    <File Name="abdata/DBPlayerItemList.cpp"/>
+    <File Name="abdata/DBMusicList.cpp"/>
+    <File Name="abdata/DBMusic.cpp"/>
+    <File Name="abdata/DBMailList.cpp"/>
+    <File Name="abdata/DBMail.cpp"/>
+    <File Name="abdata/DBItemList.cpp"/>
+    <File Name="abdata/DBItemChanceList.cpp"/>
+    <File Name="abdata/DBItem.cpp"/>
+    <File Name="abdata/DBIpBan.cpp"/>
+    <File Name="abdata/DBGuildMembers.cpp"/>
+    <File Name="abdata/DBGuild.cpp"/>
+    <File Name="abdata/DBGameList.cpp"/>
+    <File Name="abdata/DBGame.cpp"/>
+    <File Name="abdata/DBFriendList.cpp"/>
+    <File Name="abdata/DBEffectList.cpp"/>
+    <File Name="abdata/DBEffect.cpp"/>
+    <File Name="abdata/DBConcreteItem.cpp"/>
+    <File Name="abdata/DBCharacterList.cpp"/>
+    <File Name="abdata/DBCharacter.cpp"/>
+    <File Name="abdata/DBBan.cpp"/>
+    <File Name="abdata/DBAttributeList.cpp"/>
+    <File Name="abdata/DBAttribute.cpp"/>
+    <File Name="abdata/DBAccountList.cpp"/>
+    <File Name="abdata/DBAccountKeyList.cpp"/>
+    <File Name="abdata/DBAccountKeyAccounts.cpp"/>
+    <File Name="abdata/DBAccountKey.cpp"/>
+    <File Name="abdata/DBAccountItemList.cpp"/>
+    <File Name="abdata/DBAccountBan.cpp"/>
+    <File Name="abdata/DBAccount.cpp"/>
+    <File Name="abdata/ConnectionManager.cpp"/>
+    <File Name="abdata/Connection.cpp"/>
+    <File Name="abdata/Application.cpp"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="abscommon"/>
+    <Project Name="abdb"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="abscommon"/>
+    <Project Name="abdb"/>
+  </Dependencies>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="-m64;-g;-std=c++17;-Wall" C_Options="-m64;-O3;-Wall" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../Include"/>
+        <IncludePath Value="../abscommon/abscommon"/>
+        <IncludePath Value="../abdb/abdb"/>
+      </Compiler>
+      <Linker Options="-m64">
+        <LibraryPath Value="."/>
+        <LibraryPath Value="../Lib/x64/$(ConfigurationName)"/>
+        <Library Value="pthread"/>
+        <Library Value="uuid"/>
+        <Library Value="lua"/>
+        <Library Value="abscommon"/>
+        <Library Value="abdb"/>
+        <Library Value="sqlite3"/>
+        <Library Value="dl"/>
+        <Library Value="pq"/>
+        <Library Value="ldap"/>
+        <Library Value="ssl"/>
+        <Library Value="crypto"/>
+        <Library Value="mysqlclient"/>
+        <Library Value="z"/>
+        <Library Value="gssapi_krb5"/>
+        <Library Value="abcrypto"/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="_DEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../Bin/$(ProjectName)_d" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="-s" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="../Bin/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
