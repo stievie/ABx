@@ -58,11 +58,6 @@ Client::~Client()
     Connection::Terminate();
 }
 
-void Client::Poll()
-{
-    Connection::Poll();
-}
-
 void Client::Run()
 {
     Connection::Run();

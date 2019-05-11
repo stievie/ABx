@@ -45,6 +45,8 @@ NOTE: The premake script is out of date, use the Code::Blocks project/workspace 
 (2) `cbp2make -in ./absall/absall.workspace -unix --keep-outdir` and run 
 (1) `make -f abs3rd.workspace.mak`, (2) `make -f absall.workspace.mak`
 
+## Client
+
 ### Adding Clang to `cbp2mak`s configuration:
 
 In `/home/<user>/.cbp2make/cbp2make.cfg` add:
