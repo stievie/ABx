@@ -125,6 +125,8 @@
         <IncludePath Value="../libabclient/libabclient"/>
         <IncludePath Value="../Include/Urho3D"/>
         <IncludePath Value="../Include/Urho3D/ThirdParty"/>
+        <Preprocessor Value="ABCLIENT_STATIC_LIB"/>
+        <Preprocessor Value="ASIO_STANDALONE"/>
       </Compiler>
       <Linker Options="-m64">
         <LibraryPath Value="../Lib"/>
@@ -146,6 +148,7 @@
       <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <Preprocessor Value="_DEBUG"/>
+        <Preprocessor Value="URHO3D_LOGGING"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>

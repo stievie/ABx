@@ -135,7 +135,11 @@ namespace SimpleWeb {
           timer = nullptr;
           return;
         }
+#if ASIO_VERSION >= 101300
         timer = std::make_unique<asio::steady_timer>(socket->get_executor());
+#else
+        timer = std::make_unique<asio::steady_timer>(socket->get_io_service());
+#endif
         timer->expires_from_now(std::chrono::seconds(seconds));
         auto self = this->shared_from_this();
         timer->async_wait([self](const error_code &ec) {
