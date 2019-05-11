@@ -334,7 +334,6 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HealthBar.h" />
     <ClInclude Include="HealthBarPlain.h" />
-    <ClInclude Include="HelperThread.h" />
     <ClInclude Include="HotkeyEdit.h" />
     <ClInclude Include="InventoryWindow.h" />
     <ClInclude Include="Item.h" />
