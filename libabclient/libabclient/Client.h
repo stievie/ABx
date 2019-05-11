@@ -43,6 +43,7 @@ private:
 public:
     Client();
     ~Client();
+    void Poll();
     void Run();
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);

@@ -49,6 +49,7 @@ public:
     Connection();
     ~Connection();
 
+    static void Poll();
     static void Run();
     static void Terminate();
 
