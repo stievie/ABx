@@ -411,7 +411,7 @@ void Client::Login(const std::string& name, const std::string& pass)
     GetProtoLogin()->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnLoggedIn, this, std::placeholders::_1),
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
-    Connection::Run();
+//    Connection::Run();
 }
 
 void Client::CreateAccount(const std::string& name, const std::string& pass,
@@ -426,7 +426,7 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
     GetProtoLogin()->CreateAccount(loginHost_, loginPort_, name, pass,
         email, accKey,
         std::bind(&Client::OnAccountCreated, this));
-    Connection::Run();
+//    Connection::Run();
 }
 
 void Client::CreatePlayer(const std::string& charName, const std::string& profUuid,
@@ -442,7 +442,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, password_,
         charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
-    Connection::Run();
+//    Connection::Run();
 }
 
 void Client::Logout()
@@ -464,7 +464,7 @@ void Client::GetOutposts()
 
     GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, password_,
         std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
-    Connection::Run();
+//    Connection::Run();
 }
 
 void Client::GetServers()
@@ -474,7 +474,7 @@ void Client::GetServers()
 
     GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, password_,
         std::bind(&Client::OnGetServices, this, std::placeholders::_1));
-    Connection::Run();
+//    Connection::Run();
 }
 
 void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
