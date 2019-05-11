@@ -37,6 +37,11 @@ void Connection::Poll()
 
 void Connection::Run()
 {
+#ifndef _WIN32
+    // WTF, why is this needed on Linux but not on Windows?
+    if (gIoService.stopped())
+        gIoService.reset();
+#endif // _WIN32
     gIoService.run();
 }
 
