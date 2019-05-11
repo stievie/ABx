@@ -19,6 +19,37 @@ XMath::XMMATRIX Transformation::GetMatrix(const Quaternion& rot) const
     return XMath::XMMatrixTransformation(vZero, qId, scale, vZero, rotation, position);
 }
 
+void Transformation::Move(float speed, const Vector3& amount)
+{
+    // new position = position + direction * speed (where speed = amount * speed)
+
+    // It's as easy as:
+    // 1. Create a matrix from the rotation,
+    // 2. multiply this matrix with the moving vector and
+    // 3. add the resulting vector to the current position
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+    XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -GetYRotation());
+    Vector3 a = amount * speed;
+    XMath::XMVECTOR v = XMath::XMVector3Transform(a, m);
+    position_.x_ += XMath::XMVectorGetX(v);
+    position_.y_ += XMath::XMVectorGetY(v);
+    position_.z_ += XMath::XMVectorGetZ(v);
+#else
+    Matrix4 m = Math::Matrix4::FromQuaternion(oriention_.Inverse());
+    Vector3 a = amount * speed;
+    Vector3 v = m * a;
+    position_ += v;
+#endif
+}
+
+void Transformation::Turn(float yAngle)
+{
+    float ang = GetYRotation();
+    ang += yAngle;
+    NormalizeAngle(ang);
+    SetYRotation(ang);
+}
+
 float Transformation::GetYRotation() const
 {
     return oriention_.EulerAngles().y_;

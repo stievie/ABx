@@ -38,6 +38,8 @@ public:
     XMath::XMMATRIX GetMatrix() const;
     /// Use rot instead of oriention_
     XMath::XMMATRIX GetMatrix(const Quaternion& rot) const;
+    void Move(float speed, const Vector3& amount);
+    void Turn(float yAngle);
 };
 
 }
