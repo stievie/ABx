@@ -167,7 +167,7 @@ void Connection::InternalWrite()
         return;
 
     std::shared_ptr<asio::streambuf> outputStream = outputStream_;
-    outputStream_ = nullptr;
+    outputStream_.reset();
 
     asio::async_write(socket_,
         *outputStream,
@@ -221,7 +221,7 @@ void Connection::Write(uint8_t* buffer, size_t size)
             outputStreams_.pop_front();
         }
         else
-            outputStream_ = std::shared_ptr<asio::streambuf>(new asio::streambuf);
+            outputStream_ = std::make_shared<asio::streambuf>();
 
         delayedWriteTimer_.cancel();
         delayedWriteTimer_.expires_from_now(std::chrono::milliseconds(10));
