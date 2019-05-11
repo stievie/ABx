@@ -8,6 +8,9 @@ ipch
 bin
 Bin
 .vs
+.codelite
+.build-debug
+.build-release
 *.exe
 *.dll
 *.ilk
@@ -26,12 +29,21 @@ Bin
 *.7z
 *.mak
 *.a
+*.mk
+Makefile
 
 # Precompiled header files
 *.gch/
 *.pch/
 *.pch.*
 *.pch
+
+# codelite object list
+abclient/abclient.txt
+abdata/abdata.txt
+abdb/abdb.txt
+abscommon/abscommon.txt
+libabclient/libabclient.txt
 
 # Misc.
 configure*

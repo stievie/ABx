@@ -171,9 +171,6 @@
     <ClInclude Include="HealthBarPlain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HelperThread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SkillManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -37,6 +37,11 @@
 #include "PartyItem.h"
 #include "HealthBar.h"
 #include "InventoryWindow.h"
+#include <asio/detail/config.hpp>
+#include <asio/version.hpp>
+#if defined(__linux__)
+#include <linux/version.h>
+#endif
 
 #include <Urho3D/DebugNew.h>
 
@@ -267,6 +272,39 @@ void ClientApp::Start()
 #ifdef DEBUG_HUD
     CreateHUD();
 #endif
+
+#ifdef _DEBUG
+    std::string output;
+#if defined(ASIO_HAS_IOCP)
+    output += " iocp";
+#endif
+#if defined(ASIO_HAS_EPOLL)
+    output += " epoll";
+#endif
+#if defined(ASIO_HAS_EVENTFD)
+    output += " eventfd";
+#endif
+#if defined(ASIO_HAS_TIMERFD)
+    output += " timerfd";
+#endif
+#if defined(ASIO_HAS_KQUEUE)
+    output += " kqueue";
+#endif
+#if defined(ASIO_HAS_DEV_POLL)
+    output += " /dev/poll" ;
+#endif
+
+#if defined(__linux__)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,45)
+    URHO3D_LOGINFOF("LINUX_VERSION_CODE >= 2.5.45, %d", LINUX_VERSION_CODE);
+#endif
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,22)
+    URHO3D_LOGINFOF("LINUX_VERSION_CODE >= 2.6.22, %d", LINUX_VERSION_CODE);
+#endif
+#endif  // defined(__linux__)
+
+    URHO3D_LOGINFOF("Asio %d has %s", ASIO_VERSION, output.c_str());
+#endif  // _DEBUG
 
     SwitchScene("LoginLevel");
 }

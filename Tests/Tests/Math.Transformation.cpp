@@ -38,6 +38,14 @@ TEST_CASE("Transformation Move")
 {
     float speed = 0.5f;
     const Math::Vector3& amount = Math::Vector3::UnitZ;
+    SECTION("Move")
+    {
+        Math::Transformation trans(Math::Vector3::One, Math::Vector3(0.5f, 0.5f, 0.5f), Math::M_PIHALF);
+        trans.Move(speed, amount);
+        REQUIRE(trans.position_.x_ == Approx(0.5f));
+        REQUIRE(trans.position_.y_ == Approx(1.0f));
+        REQUIRE(trans.position_.z_ == Approx(1.0f));
+    }
     SECTION("Move Internal")
     {
         Math::Transformation trans(Math::Vector3::One, Math::Vector3(0.5f, 0.5f, 0.5f), Math::M_PIHALF);

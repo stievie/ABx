@@ -4,6 +4,8 @@
 
 #include "DebugNew.h"
 
+// https://www.gamedev.net/blogs/entry/2249317-a-guide-to-getting-started-with-boostasio/
+
 namespace Client {
 
 asio::io_service gIoService;
@@ -25,19 +27,9 @@ Connection::~Connection()
     Close();
 }
 
-void Connection::Poll()
-{
-    // Blocking!
-
-    // Reset must always be called prior to poll
-    gIoService.reset();
-    gIoService.poll();
-}
-
 void Connection::Run()
 {
-    // Non-blocking
-    gIoService.run();
+    gIoService.poll();
 }
 
 void Connection::Terminate()

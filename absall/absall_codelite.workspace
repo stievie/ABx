@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="absall" Database="" Version="10.0.0">
+  <Project Name="abdb" Path="../abdb/abdb.project" Active="Yes"/>
+  <Project Name="abscommon" Path="../abscommon/abscommon.project"/>
+  <Project Name="abdata" Path="../abdata/abdata.project"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="abdb" ConfigName="Debug"/>
+      <Project Name="abscommon" ConfigName="Debug"/>
+      <Project Name="abdata" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Environment/>
+      <Project Name="abdb" ConfigName="Release"/>
+      <Project Name="abscommon" ConfigName="Release"/>
+      <Project Name="abdata" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

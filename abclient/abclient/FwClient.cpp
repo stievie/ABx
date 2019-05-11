@@ -617,8 +617,6 @@ void FwClient::ChangeServer(const String& serverId)
 void FwClient::Logout()
 {
     client_.Logout();
-    client_.Poll();
-    client_.Run();
     loggedIn_ = false;
 }
 

@@ -64,31 +64,13 @@ void MoveComp::HeadTo(const Math::Vector3& pos)
 
 void MoveComp::Move(float speed, const Math::Vector3& amount)
 {
-    // new position = position + direction * speed (where speed = amount * speed)
-
-    // It's as easy as:
-    // 1. Create a matrix from the rotation,
-    // 2. multiply this matrix with the moving vector and
-    // 3. add the resulting vector to the current position
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
-    XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -owner_.transformation_.GetYRotation());
-    Math::Vector3 a = amount * speed;
-    XMath::XMVECTOR v = XMath::XMVector3Transform(a, m);
-    owner_.transformation_.position_.x_ += XMath::XMVectorGetX(v);
-    owner_.transformation_.position_.y_ += XMath::XMVectorGetY(v);
-    owner_.transformation_.position_.z_ += XMath::XMVectorGetZ(v);
-#else
-    Math::Matrix4 m = Math::Matrix4::FromQuaternion(owner_.transformation_.oriention_.Inverse());
-    Math::Vector3 a = amount * speed;
-    Math::Vector3 v = m * a;
-    owner_.transformation_.position_ += v;
-#endif
+    owner_.transformation_.Move(speed, amount);
 
     // Keep on ground
     float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
 
-    bool moved = oldPosition_ != owner_.transformation_.position_;
+    bool moved = !oldPosition_.Equals(owner_.transformation_.position_);
     if (moved)
         moved_ = true;
 }
@@ -109,10 +91,7 @@ void MoveComp::UpdateMove(uint32_t timeElapsed)
 
 void MoveComp::Turn(float angle)
 {
-    float ang = owner_.transformation_.GetYRotation();
-    ang += angle;
-    Math::NormalizeAngle(ang);
-    owner_.transformation_.SetYRotation(ang);
+    owner_.transformation_.Turn(angle);
 }
 
 void MoveComp::UpdateTurn(uint32_t timeElapsed)
