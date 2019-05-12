@@ -99,7 +99,7 @@ void ProtocolLogin::GetServers(std::string& host, uint16_t port,
 
 void ProtocolLogin::SendLoginPacket()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
@@ -111,7 +111,7 @@ void ProtocolLogin::SendLoginPacket()
 
 void ProtocolLogin::SendCreateAccountPacket()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
@@ -125,7 +125,7 @@ void ProtocolLogin::SendCreateAccountPacket()
 
 void ProtocolLogin::SendCreatePlayerPacket()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
@@ -142,7 +142,7 @@ void ProtocolLogin::SendCreatePlayerPacket()
 
 void ProtocolLogin::SendGetOutpostsPacket()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
@@ -154,7 +154,7 @@ void ProtocolLogin::SendGetOutpostsPacket()
 
 void ProtocolLogin::SendGetServersPacket()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolLogin::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
