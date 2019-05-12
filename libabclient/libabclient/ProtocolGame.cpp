@@ -682,7 +682,7 @@ void ProtocolGame::ParseInventoryItemDelete(const std::shared_ptr<InputMessage>&
 
 void ProtocolGame::SendLoginPacket()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(ProtocolGame::ProtocolIdentifier);
     msg->Add<uint16_t>(AB::CLIENT_OS_CURRENT);  // Client OS
     msg->Add<uint16_t>(AB::PROTOCOL_VERSION);   // Protocol Version
@@ -699,14 +699,14 @@ void ProtocolGame::SendLoginPacket()
 
 void ProtocolGame::Logout()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
     Send(msg);
 }
 
 void ProtocolGame::Ping()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
     Send(msg);
@@ -714,7 +714,7 @@ void ProtocolGame::Ping()
 
 void ProtocolGame::ChangeMap(const std::string& mapUuid)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChangeMap);
     msg->AddString(mapUuid);
     Send(msg);
@@ -722,21 +722,21 @@ void ProtocolGame::ChangeMap(const std::string& mapUuid)
 
 void ProtocolGame::GetMailHeaders()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMailHeaders);
     Send(msg);
 }
 
 void ProtocolGame::GetInventory()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetInventory);
     Send(msg);
 }
 
 void ProtocolGame::InventoryDestroyItem(uint16_t pos)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDestroyItem);
     msg->Add<uint16_t>(pos);
     Send(msg);
@@ -744,7 +744,7 @@ void ProtocolGame::InventoryDestroyItem(uint16_t pos)
 
 void ProtocolGame::InventoryDropItem(uint16_t pos)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDropItem);
     msg->Add<uint16_t>(pos);
     Send(msg);
@@ -752,7 +752,7 @@ void ProtocolGame::InventoryDropItem(uint16_t pos)
 
 void ProtocolGame::GetMail(const std::string& mailUuid)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMail);
     msg->AddString(mailUuid);
     Send(msg);
@@ -760,7 +760,7 @@ void ProtocolGame::GetMail(const std::string& mailUuid)
 
 void ProtocolGame::DeleteMail(const std::string& mailUuid)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeDeleteMail);
     msg->AddString(mailUuid);
     Send(msg);
@@ -768,7 +768,7 @@ void ProtocolGame::DeleteMail(const std::string& mailUuid)
 
 void ProtocolGame::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSendMail);
     msg->AddString(recipient);
     msg->AddString(subject);
@@ -778,7 +778,7 @@ void ProtocolGame::SendMail(const std::string& recipient, const std::string& sub
 
 void ProtocolGame::Move(uint8_t direction)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeMove);
     msg->Add<uint8_t>(direction);
     Send(msg);
@@ -786,7 +786,7 @@ void ProtocolGame::Move(uint8_t direction)
 
 void ProtocolGame::Turn(uint8_t direction)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeTurn);
     msg->Add<uint8_t>(direction);
     Send(msg);
@@ -794,7 +794,7 @@ void ProtocolGame::Turn(uint8_t direction)
 
 void ProtocolGame::SetDirection(float rad)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetDirection);
     msg->Add<float>(rad);
     Send(msg);
@@ -802,7 +802,7 @@ void ProtocolGame::SetDirection(float rad)
 
 void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeClickObject);
     msg->Add<uint32_t>(sourceId);
     msg->Add<uint32_t>(targetId);
@@ -811,7 +811,7 @@ void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
 
 void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSelect);
     msg->Add<uint32_t>(sourceId);
     msg->Add<uint32_t>(targetId);
@@ -820,7 +820,7 @@ void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
 
 void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCommand);
     msg->Add<uint8_t>(type);
     msg->AddString(data);
@@ -829,7 +829,7 @@ void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::strin
 
 void ProtocolGame::GotoPos(const Vec3& pos)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGoto);
     msg->Add<float>(pos.x);
     msg->Add<float>(pos.y);
@@ -839,7 +839,7 @@ void ProtocolGame::GotoPos(const Vec3& pos)
 
 void ProtocolGame::Follow(uint32_t targetId, bool ping)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
     msg->Add<uint32_t>(targetId);
     msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
@@ -848,7 +848,7 @@ void ProtocolGame::Follow(uint32_t targetId, bool ping)
 
 void ProtocolGame::UseSkill(uint32_t index, bool ping)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUseSkill);
     msg->Add<uint8_t>(static_cast<uint8_t>(index));
     msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
@@ -857,7 +857,7 @@ void ProtocolGame::UseSkill(uint32_t index, bool ping)
 
 void ProtocolGame::Attack(bool ping)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAttack);
     msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
     Send(msg);
@@ -865,14 +865,14 @@ void ProtocolGame::Attack(bool ping)
 
 void ProtocolGame::Cancel()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCancel);
     Send(msg);
 }
 
 void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetState);
     msg->Add<uint8_t>(static_cast<uint8_t>(newState));
     Send(msg);
@@ -880,7 +880,7 @@ void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
 
 void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyInvitePlayer);
     msg->Add<uint32_t>(targetId);
     Send(msg);
@@ -888,7 +888,7 @@ void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
 
 void ProtocolGame::PartyKickPlayer(uint32_t targetId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyKickPlayer);
     msg->Add<uint32_t>(targetId);
     Send(msg);
@@ -896,14 +896,14 @@ void ProtocolGame::PartyKickPlayer(uint32_t targetId)
 
 void ProtocolGame::PartyLeave()
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyLeave);
     Send(msg);
 }
 
 void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyAcceptInvite);
     msg->Add<uint32_t>(inviterId);
     Send(msg);
@@ -911,7 +911,7 @@ void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
 
 void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyRejectInvite);
     msg->Add<uint32_t>(inviterId);
     Send(msg);
@@ -919,7 +919,7 @@ void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
 
 void ProtocolGame::PartyGetMembers(uint32_t partyId)
 {
-    std::shared_ptr<OutputMessage> msg = std::make_shared<OutputMessage>();
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacektTypeGetPartyMembers);
     msg->Add<uint32_t>(partyId);
     Send(msg);

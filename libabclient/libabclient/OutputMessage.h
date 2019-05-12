@@ -7,16 +7,20 @@ namespace Client {
 
 class Protocol;
 
+static constexpr size_t BUFFER_SIZE = 4096;
+static constexpr size_t MESSAGEPOOL_COUNT = 60;
+
 /// Message to write to the network
 class OutputMessage
 {
 public:
     enum {
-        MaxBufferSize = std::numeric_limits<uint16_t>::max() - 1,
-        MaxStringLength = std::numeric_limits<uint16_t>::max() - 1,
-        MaxHeaderSize = 8
+        MaxHeaderSize = 8,
+        MaxBufferSize = BUFFER_SIZE,
+        MaxStringLength = BUFFER_SIZE - MaxHeaderSize,
     };
 private:
+    static std::vector<std::unique_ptr<OutputMessage>> pool_;
     uint16_t headerPos_;
     uint16_t pos_;
     uint16_t size_;
@@ -37,8 +41,8 @@ protected:
     uint8_t* GetWriteBuffer() { return buffer_ + pos_; }
     uint8_t* GetHeaderBuffer() { return buffer_ + headerPos_; }
     uint8_t* GetDataBuffer() { return buffer_ + MaxHeaderSize; }
-
 public:
+    static std::shared_ptr<OutputMessage> New();
     OutputMessage();
 
     uint16_t GetSize() const { return size_; }

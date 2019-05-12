@@ -10,6 +10,20 @@
 
 namespace Client {
 
+std::vector<std::unique_ptr<OutputMessage>> OutputMessage::pool_;
+
+std::shared_ptr<OutputMessage> OutputMessage::New()
+{
+    if (pool_.size() == 0)
+    {
+        for (size_t i = 0; i < MESSAGEPOOL_COUNT; ++i)
+            pool_.push_back(std::make_unique<OutputMessage>());
+    }
+    auto msg = std::move(pool_.back());
+    pool_.pop_back();
+    return msg;
+}
+
 OutputMessage::OutputMessage()
 {
     Reset();
