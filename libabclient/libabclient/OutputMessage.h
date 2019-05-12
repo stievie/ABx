@@ -20,7 +20,7 @@ public:
         MaxStringLength = BUFFER_SIZE - MaxHeaderSize,
     };
 private:
-    static std::vector<std::unique_ptr<OutputMessage>> pool_;
+    static std::vector<std::shared_ptr<OutputMessage>> pool_;
     uint16_t headerPos_;
     uint16_t pos_;
     uint16_t size_;
