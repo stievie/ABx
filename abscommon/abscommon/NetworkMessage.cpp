@@ -3,20 +3,35 @@
 #include <abcrypto.hpp>
 #include <AB/ProtocolCodes.h>
 #include <lz4.h>
+#include "Subsystems.h"
+#include "Dispatcher.h"
 
 namespace Net {
 
 std::vector<std::unique_ptr<NetworkMessage>> NetworkMessage::pool_;
 
+void NetworkMessage::AllocateNetworkMessages()
+{
+    // 16kB * 200 = 3.2MB
+    // Reallocation ~ 5 secs with no activity
+    const size_t count = pool_.size();
+    for (size_t i = count; i < NETWORKMESSAGE_POOLCOUNT; ++i)
+        pool_.push_back(std::make_unique<NetworkMessage>());
+}
+
 std::unique_ptr<NetworkMessage> NetworkMessage::GetNew()
 {
-    if (pool_.size() == 0)
+    if (pool_.size() < NETWORKMESSAGE_POOLCOUNT / 10)
     {
-        // 16kB * 200 = 3.2MB
-        // Reallocation ~ 5 secs with no activity
-        for (size_t i = 0; i < NETWORKMESSAGE_POOLCOUNT; ++i)
-            pool_.push_back(std::make_unique<NetworkMessage>());
+        // Allocate new if we are low
+        GetSubsystem<Asynch::Dispatcher>()->Add(
+            Asynch::CreateTask(std::bind(&NetworkMessage::AllocateNetworkMessages))
+        );
     }
+    if (pool_.size() == 0)
+        // There is no pool yet.
+        return std::make_unique<NetworkMessage>();
+
     auto msg = std::move(pool_.back());
     pool_.pop_back();
     return msg;

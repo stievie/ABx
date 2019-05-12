@@ -14,6 +14,7 @@ class NetworkMessage
 {
 private:
     static std::vector<std::unique_ptr<NetworkMessage>> pool_;
+    static void AllocateNetworkMessages();
 public:
     /// Pre allocated network messages
     static std::unique_ptr<NetworkMessage> GetNew();
