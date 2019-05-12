@@ -37,6 +37,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-std=c++17" />
+			<Add option="-DCATCH_CONFIG_FAST_COMPILE" />
 			<Add directory="../Include" />
 			<Add directory="../absmath/absmath" />
 			<Add directory="../abscommon/abscommon" />
