@@ -3,12 +3,12 @@
   <Project Name="libabclient" Path="../libabclient/libabclient.project" Active="No"/>
   <Project Name="abclient" Path="abclient.project" Active="Yes"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="libabclient" ConfigName="Debug"/>
       <Project Name="abclient" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Environment/>
       <Project Name="libabclient" ConfigName="Release"/>
       <Project Name="abclient" ConfigName="Release"/>

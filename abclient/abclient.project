@@ -192,7 +192,7 @@
       </Compiler>
       <Linker Options="-s" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="bin/fw" IntermediateDirectory="./Release" Command="fw" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <General OutputFile="bin/fw" IntermediateDirectory="./Release" Command="fw" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="bin" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
