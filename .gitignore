@@ -42,7 +42,10 @@ Makefile
 abclient/abclient.txt
 abdata/abdata.txt
 abdb/abdb.txt
+abfile/abfile.txt
+abmsgs/abmsgs.txt
 abscommon/abscommon.txt
+absmath/absmath.txt
 libabclient/libabclient.txt
 
 # Misc.

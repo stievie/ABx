@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="abdb" Version="10.0.0" InternalType="Library">
+<CodeLite_Project Name="absmath" Version="10.0.0" InternalType="Library">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -8,28 +8,55 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="abdb/stdafx.cpp"/>
-    <File Name="abdb/DatabaseSqlite.cpp"/>
-    <File Name="abdb/DatabasePgsql.cpp"/>
-    <File Name="abdb/DatabaseOdbc.cpp"/>
-    <File Name="abdb/DatabaseMysql.cpp"/>
-    <File Name="abdb/Database.cpp"/>
+    <File Name="absmath/Vector4.cpp"/>
+    <File Name="absmath/Vector3.cpp"/>
+    <File Name="absmath/Transformation.cpp"/>
+    <File Name="absmath/stdafx.cpp"/>
+    <File Name="absmath/Sphere.cpp"/>
+    <File Name="absmath/Shape.cpp"/>
+    <File Name="absmath/Ray.cpp"/>
+    <File Name="absmath/Quaternion.cpp"/>
+    <File Name="absmath/Plane.cpp"/>
+    <File Name="absmath/Matrix4.cpp"/>
+    <File Name="absmath/Hull.cpp"/>
+    <File Name="absmath/HeightMap.cpp"/>
+    <File Name="absmath/Gjk.cpp"/>
+    <File Name="absmath/Frustum.cpp"/>
+    <File Name="absmath/ConvexHull.cpp"/>
+    <File Name="absmath/BoundingBox.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="abdb/DatabaseSqlite.h"/>
-    <File Name="abdb/targetver.h"/>
-    <File Name="abdb/stdafx.h"/>
-    <File Name="abdb/DatabasePgsql.h"/>
-    <File Name="abdb/DatabaseOdbc.h"/>
-    <File Name="abdb/DatabaseMysql.h"/>
-    <File Name="abdb/Database.h"/>
+    <File Name="absmath/Vector4.h"/>
+    <File Name="absmath/Vector3.h"/>
+    <File Name="absmath/Transformation.h"/>
+    <File Name="absmath/targetver.h"/>
+    <File Name="absmath/stdafx.h"/>
+    <File Name="absmath/Sphere.h"/>
+    <File Name="absmath/Shape.h"/>
+    <File Name="absmath/Rect.h"/>
+    <File Name="absmath/Ray.h"/>
+    <File Name="absmath/Quaternion.h"/>
+    <File Name="absmath/Point.h"/>
+    <File Name="absmath/Plane.h"/>
+    <File Name="absmath/Matrix4.h"/>
+    <File Name="absmath/MathUtils.h"/>
+    <File Name="absmath/MathDefs.h"/>
+    <File Name="absmath/MathConfig.h"/>
+    <File Name="absmath/Line.h"/>
+    <File Name="absmath/Hull.h"/>
+    <File Name="absmath/HeightMap.h"/>
+    <File Name="absmath/Gjk.h"/>
+    <File Name="absmath/Frustum.h"/>
+    <File Name="absmath/ConvexHull.h"/>
+    <File Name="absmath/CollisionShape.h"/>
+    <File Name="absmath/BoundingBox.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Include"/>
-        <IncludePath Value="../abscommon/abscommon"/>
+        <IncludePath Value="../Include/XMath"/>
       </Compiler>
       <Linker Options="-m64">
         <LibraryPath Value="."/>
@@ -48,7 +75,7 @@
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>
@@ -78,6 +105,7 @@
     </Configuration>
     <Configuration Name="Release" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -87,7 +115,7 @@
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>
