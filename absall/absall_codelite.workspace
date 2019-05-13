@@ -8,7 +8,7 @@
   <Project Name="absmath" Path="../absmath/absmath.project"/>
   <Project Name="abserv" Path="../abserv/abserv.project"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="abdb" ConfigName="Debug"/>
       <Project Name="abscommon" ConfigName="Debug"/>
