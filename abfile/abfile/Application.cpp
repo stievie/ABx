@@ -618,11 +618,11 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
     }
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("games");
-    root.append_attribute("version") = gamesVersion.value;
+    root.append_attribute("version").set_value(gamesVersion.value);
 
     for (const std::string& uuid : gl.gameUuids)
     {
@@ -631,12 +631,12 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         if (!dataClient->Read(g))
             continue;
         auto gNd = root.append_child("game");
-        gNd.append_attribute("uuid") = g.uuid.c_str();
-        gNd.append_attribute("name") = g.name.c_str();
-        gNd.append_attribute("type") = g.type;
-        gNd.append_attribute("landing") = g.landing;
-        gNd.append_attribute("map_coord_x") = g.mapCoordX;
-        gNd.append_attribute("map_coord_y") = g.mapCoordY;
+        gNd.append_attribute("uuid").set_value(g.uuid.c_str());
+        gNd.append_attribute("name").set_value(g.name.c_str());
+        gNd.append_attribute("type").set_value(g.type);
+        gNd.append_attribute("landing").set_value(g.landing);
+        gNd.append_attribute("map_coord_x").set_value(g.mapCoordX);
+        gNd.append_attribute("map_coord_y").set_value(g.mapCoordY);
     }
 
     std::stringstream stream;
@@ -678,11 +678,11 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("skills");
-    root.append_attribute("version") = v.value;
+    root.append_attribute("version").set_value(v.value);
 
     for (const std::string& uuid : sl.skillUuids)
     {
@@ -691,18 +691,18 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("skill");
-        gNd.append_attribute("uuid") = s.uuid.c_str();
-        gNd.append_attribute("index") = s.index;
-        gNd.append_attribute("name") = s.name.c_str();
+        gNd.append_attribute("uuid").set_value(s.uuid.c_str());
+        gNd.append_attribute("index").set_value(s.index);
+        gNd.append_attribute("name").set_value(s.name.c_str());
         gNd.append_attribute("attribute").set_value(s.attributeUuid.c_str());
         gNd.append_attribute("profession").set_value(s.professionUuid.c_str());
         gNd.append_attribute("type").set_value(static_cast<unsigned long long>(s.type));
-        gNd.append_attribute("elite") = s.isElite;
-        gNd.append_attribute("description") = s.description.c_str();
-        gNd.append_attribute("short_description") = s.shortDescription.c_str();
-        gNd.append_attribute("icon") = s.icon.c_str();
-        gNd.append_attribute("sound_effect") = s.soundEffect.c_str();
-        gNd.append_attribute("particle_effect") = s.particleEffect.c_str();
+        gNd.append_attribute("elite").set_value(s.isElite);
+        gNd.append_attribute("description").set_value(s.description.c_str());
+        gNd.append_attribute("short_description").set_value(s.shortDescription.c_str());
+        gNd.append_attribute("icon").set_value(s.icon.c_str());
+        gNd.append_attribute("sound_effect").set_value(s.soundEffect.c_str());
+        gNd.append_attribute("particle_effect").set_value(s.particleEffect.c_str());
     }
 
     std::stringstream stream;
@@ -744,11 +744,11 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("professions");
-    root.append_attribute("version") = v.value;
+    root.append_attribute("version").set_value(v.value);
 
     for (const std::string& uuid : pl.profUuids)
     {
@@ -757,17 +757,17 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("prof");
-        gNd.append_attribute("uuid") = s.uuid.c_str();
-        gNd.append_attribute("index") = s.index;
-        gNd.append_attribute("name") = s.name.c_str();
-        gNd.append_attribute("abbr") = s.abbr.c_str();
-        gNd.append_attribute("model_index_female") = s.modelIndexFemale;
-        gNd.append_attribute("model_index_male") = s.modelIndexMale;
-        gNd.append_attribute("num_attr") = s.attributeCount;
+        gNd.append_attribute("uuid").set_value(s.uuid.c_str());
+        gNd.append_attribute("index").set_value(s.index);
+        gNd.append_attribute("name").set_value(s.name.c_str());
+        gNd.append_attribute("abbr").set_value(s.abbr.c_str());
+        gNd.append_attribute("model_index_female").set_value(s.modelIndexFemale);
+        gNd.append_attribute("model_index_male").set_value(s.modelIndexMale);
+        gNd.append_attribute("num_attr").set_value(s.attributeCount);
         for (const std::string& a : s.attributeUuids)
         {
             auto attrNd = gNd.append_child("attr");
-            attrNd.append_attribute("uuid") = a.c_str();
+            attrNd.append_attribute("uuid").set_value(a.c_str());
         }
     }
 
@@ -810,11 +810,11 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("attributes");
-    root.append_attribute("version") = v.value;
+    root.append_attribute("version").set_value(v.value);
 
     for (const std::string& uuid : pl.uuids)
     {
@@ -823,11 +823,11 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
         if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("attrib");
-        gNd.append_attribute("uuid") = s.uuid.c_str();
-        gNd.append_attribute("index") = s.index;
-        gNd.append_attribute("name") = s.name.c_str();
-        gNd.append_attribute("profession") = s.professionUuid.c_str();
-        gNd.append_attribute("primary") = s.isPrimary;
+        gNd.append_attribute("uuid").set_value(s.uuid.c_str());
+        gNd.append_attribute("index").set_value(s.index);
+        gNd.append_attribute("name").set_value(s.name.c_str());
+        gNd.append_attribute("profession").set_value(s.professionUuid.c_str());
+        gNd.append_attribute("primary").set_value(s.isPrimary);
     }
 
     std::stringstream stream;
@@ -869,11 +869,11 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("effects");
-    root.append_attribute("version") = v.value;
+    root.append_attribute("version").set_value(v.value);
 
     for (const std::string& uuid : pl.effectUuids)
     {
@@ -882,13 +882,13 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
         if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("effect");
-        gNd.append_attribute("uuid") = s.uuid.c_str();
-        gNd.append_attribute("index") = s.index;
-        gNd.append_attribute("name") = s.name.c_str();
-        gNd.append_attribute("category") = s.category;
-        gNd.append_attribute("icon") = s.icon.c_str();
-        gNd.append_attribute("sound_effect") = s.soundEffect.c_str();
-        gNd.append_attribute("particle_effect") = s.particleEffect.c_str();
+        gNd.append_attribute("uuid").set_value(s.uuid.c_str());
+        gNd.append_attribute("index").set_value(s.index);
+        gNd.append_attribute("name").set_value(s.name.c_str());
+        gNd.append_attribute("category").set_value(s.category);
+        gNd.append_attribute("icon").set_value(s.icon.c_str());
+        gNd.append_attribute("sound_effect").set_value(s.soundEffect.c_str());
+        gNd.append_attribute("particle_effect").set_value(s.particleEffect.c_str());
     }
 
     std::stringstream stream;
@@ -930,11 +930,11 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("items");
-    root.append_attribute("version") = v.value;
+    root.append_attribute("version").set_value(v.value);
 
     for (const std::string& uuid : pl.itemUuids)
     {
@@ -943,15 +943,15 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("item");
-        gNd.append_attribute("uuid") = s.uuid.c_str();
-        gNd.append_attribute("index") = s.index;
-        gNd.append_attribute("name") = s.name.c_str();
-        gNd.append_attribute("type") = static_cast<int>(s.type);
-        gNd.append_attribute("model") = s.client_model.c_str();
-        gNd.append_attribute("icon") = s.client_icon.c_str();
-        gNd.append_attribute("remote_model") = s.server_model.c_str();
-        gNd.append_attribute("remote_icon") = s.server_icon.c_str();
-        gNd.append_attribute("stack_able") = s.stackAble;
+        gNd.append_attribute("uuid").set_value(s.uuid.c_str());
+        gNd.append_attribute("index").set_value(s.index);
+        gNd.append_attribute("name").set_value(s.name.c_str());
+        gNd.append_attribute("type").set_value(static_cast<int>(s.type));
+        gNd.append_attribute("model").set_value(s.client_model.c_str());
+        gNd.append_attribute("icon").set_value(s.client_icon.c_str());
+        gNd.append_attribute("remote_model").set_value(s.server_model.c_str());
+        gNd.append_attribute("remote_icon").set_value(s.server_icon.c_str());
+        gNd.append_attribute("stack_able").set_value(s.stackAble);
     }
 
     std::stringstream stream;
@@ -993,11 +993,11 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("music_list");
-    root.append_attribute("version") = v.value;
+    root.append_attribute("version").set_value(v.value);
 
     for (const std::string& uuid : pl.musicUuids)
     {
@@ -1006,12 +1006,12 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
         if (!dataClient->Read(s))
             continue;
         auto gNd = root.append_child("music");
-        gNd.append_attribute("uuid") = s.uuid.c_str();
-        gNd.append_attribute("map_uuid") = s.mapUuid.c_str();
-        gNd.append_attribute("local_file") = s.localFile.c_str();
-        gNd.append_attribute("remote_file") = s.remoteFile.c_str();
-        gNd.append_attribute("sorting") = s.sorting;
-        gNd.append_attribute("style") = static_cast<uint32_t>(s.style);
+        gNd.append_attribute("uuid").set_value(s.uuid.c_str());
+        gNd.append_attribute("map_uuid").set_value(s.mapUuid.c_str());
+        gNd.append_attribute("local_file").set_value(s.localFile.c_str());
+        gNd.append_attribute("remote_file").set_value(s.remoteFile.c_str());
+        gNd.append_attribute("sorting").set_value(s.sorting);
+        gNd.append_attribute("style").set_value(static_cast<uint32_t>(s.style));
     }
 
     std::stringstream stream;
@@ -1098,9 +1098,9 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
 
     pugi::xml_document doc;
     auto declarationNode = doc.append_child(pugi::node_declaration);
-    declarationNode.append_attribute("version") = "1.0";
-    declarationNode.append_attribute("encoding") = "UTF-8";
-    declarationNode.append_attribute("standalone") = "yes";
+    declarationNode.append_attribute("version").set_value("1.0");
+    declarationNode.append_attribute("encoding").set_value("UTF-8");
+    declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("versions");
 
     for (const std::string& uuid : vl.versionUuids)
@@ -1113,9 +1113,9 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
             continue;
 
         auto gNd = root.append_child("version");
-        gNd.append_attribute("uuid") = v.uuid.c_str();
-        gNd.append_attribute("name") = v.name.c_str();
-        gNd.append_attribute("value") = v.value;
+        gNd.append_attribute("uuid").set_value(v.uuid.c_str());
+        gNd.append_attribute("name").set_value(v.name.c_str());
+        gNd.append_attribute("value").set_value(v.value);
     }
 
     std::stringstream stream;

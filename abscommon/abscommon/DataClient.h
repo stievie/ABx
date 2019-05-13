@@ -146,14 +146,14 @@ private:
 
     static uint32_t ToInt32(const DataBuff& intBytes, uint32_t start)
     {
-        return (intBytes[static_cast<size_t>(start) + 3] << 24) | 
-            (intBytes[static_cast<size_t>(start) + 2] << 16) | 
-            (intBytes[static_cast<size_t>(start) + 1] << 8) | 
+        return (intBytes[static_cast<size_t>(start) + 3] << 24) |
+            (intBytes[static_cast<size_t>(start) + 2] << 16) |
+            (intBytes[static_cast<size_t>(start) + 1] << 8) |
             intBytes[static_cast<size_t>(start)];
     }
     static uint16_t ToInt16(const DataBuff& intBytes, uint32_t start)
     {
-        return (intBytes[static_cast<size_t>(start) + 1] << 8) | 
+        return (intBytes[static_cast<size_t>(start) + 1] << 8) |
             intBytes[static_cast<size_t>(start)];
     }
 
