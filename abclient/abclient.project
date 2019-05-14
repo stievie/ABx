@@ -119,7 +119,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-m64;-std=c++17;-Wall;-Wno-argument-outside-range;-Wno-reorder" C_Options="-m64;-std=c99;-Wall" Assembler="">
+      <Compiler Options="-m64;-std=c++17;-Wall;-Wno-argument-outside-range;-Wno-reorder" C_Options="-m64;-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Include"/>
         <IncludePath Value="../libabclient/libabclient"/>
@@ -132,11 +132,11 @@
         <LibraryPath Value="../Lib"/>
         <LibraryPath Value="../Lib/x64/$(ConfigurationName)"/>
         <Library Value="pthread"/>
-        <Library Value="ssl"/>
-        <Library Value="crypto"/>
-        <Library Value="Urho3D"/>
-        <Library Value="libabclient"/>
         <Library Value="GL"/>
+        <Library Value="crypto"/>
+        <Library Value="ssl"/>
+        <Library Value="Urho3D"/>
+        <Library Value="abclient"/>
         <Library Value="dl"/>
         <Library Value="rt"/>
         <Library Value="stdc++fs"/>
