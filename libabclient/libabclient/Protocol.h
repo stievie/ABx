@@ -21,6 +21,7 @@ private:
     bool XTEADecrypt(const std::shared_ptr<InputMessage>& inputMessage);
     void XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage);
 protected:
+    asio::io_service& ioService_;
     std::shared_ptr<Connection> connection_;
     bool checksumEnabled_;
     bool compressionEnabled_;
@@ -42,7 +43,7 @@ protected:
             protocolErrorCallback_(err);
     }
 public:
-    Protocol(Crypto::DHKeys& keys);
+    Protocol(Crypto::DHKeys& keys, asio::io_service& ioService);
     Protocol(const Protocol&) = delete;
     virtual ~Protocol();
 

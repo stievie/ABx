@@ -7,8 +7,8 @@
 
 namespace Client {
 
-ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys) :
-    Protocol(keys),
+ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService) :
+    Protocol(keys, ioService),
     action_(ActionUnknown),
     charlistCallback_(nullptr),
     gamelistCallback_(nullptr),

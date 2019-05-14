@@ -78,7 +78,7 @@ protected:
     void ParsePartyInfoMembers(const std::shared_ptr<InputMessage>& message);
     void ParseResourceChanged(const std::shared_ptr<InputMessage>& message);
 public:
-    ProtocolGame(Crypto::DHKeys& keys);
+    ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService);
     ~ProtocolGame() override = default;
 
     Receiver* receiver_;

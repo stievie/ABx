@@ -8,7 +8,8 @@
 
 namespace Client {
 
-Protocol::Protocol(Crypto::DHKeys& keys) :
+Protocol::Protocol(Crypto::DHKeys& keys, asio::io_service& ioService) :
+    ioService_(ioService),
     connection_(nullptr),
     checksumEnabled_(false),
     compressionEnabled_(false),
@@ -27,7 +28,7 @@ Protocol::~Protocol()
 
 void Protocol::Connect(const std::string& host, uint16_t port)
 {
-    connection_ = std::make_shared<Connection>();
+    connection_ = std::make_shared<Connection>(ioService_);
     connection_->SetErrorCallback(std::bind(&Protocol::OnError, shared_from_this(), std::placeholders::_1, std::placeholders::_2));
     connection_->Connect(host, port, std::bind(&Protocol::OnConnect, shared_from_this()));
 }

@@ -10,6 +10,7 @@
 #include <memory>
 #include <AB/DHKeys.hpp>
 #include "Errors.h"
+#include <asio.hpp>
 
 namespace Client {
 
@@ -29,6 +30,7 @@ public:
         World
     };
 private:
+    std::shared_ptr<asio::io_service> ioService_;
     std::shared_ptr<ProtocolLogin> protoLogin_;
     std::shared_ptr<ProtocolGame> protoGame_;
     std::string accountName_;
@@ -40,11 +42,14 @@ private:
     // Our (client) key pair
     Crypto::DHKeys dhKeys_;
     std::shared_ptr<ProtocolLogin> GetProtoLogin();
+    void Terminate();
 public:
     Client();
     ~Client();
+
     void Poll();
     void Run();
+
     /// Login to login server
     void Login(const std::string& name, const std::string& pass);
     void Logout();

@@ -8,16 +8,16 @@
 
 namespace Client {
 
-asio::io_service gIoService;
 std::list<std::shared_ptr<asio::streambuf>> Connection::outputStreams_;
 
-Connection::Connection() :
-    readTimer_(gIoService),
-    connectTimer_(gIoService),
-    writeTimer_(gIoService),
-    delayedWriteTimer_(gIoService),
-    resolver_(gIoService),
-    socket_(gIoService),
+Connection::Connection(asio::io_service& ioService) :
+    ioService_(ioService),
+    readTimer_(ioService_),
+    connectTimer_(ioService_),
+    writeTimer_(ioService_),
+    delayedWriteTimer_(ioService_),
+    resolver_(ioService_),
+    socket_(ioService_),
     connected_(false),
     connecting_(false)
 { }
@@ -27,27 +27,8 @@ Connection::~Connection()
     Close();
 }
 
-void Connection::Poll()
-{
-    // Blocking!
-    // Reset must always be called prior to poll
-    gIoService.reset();
-    gIoService.poll();
-}
-
-void Connection::Run()
-{
-#ifndef _WIN32
-    // WTF, why is this needed on Linux but not on Windows?
-    if (gIoService.stopped())
-        gIoService.reset();
-#endif // _WIN32
-    gIoService.run();
-}
-
 void Connection::Terminate()
 {
-    gIoService.stop();
     outputStreams_.clear();
 }
 

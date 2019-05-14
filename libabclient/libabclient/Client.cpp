@@ -32,6 +32,7 @@ public:
 };
 
 Client::Client() :
+    ioService_(std::make_shared<asio::io_service>()),
     protoLogin_(nullptr),
     protoGame_(nullptr),
     lastRun_(0),
@@ -44,6 +45,7 @@ Client::Client() :
     gameHost_(""),
     gamePort_(0),
     state_(ClientState::Disconnected),
+    receiver_(nullptr),
     httpClient_(nullptr)
 {
     // Always create new keys
@@ -55,17 +57,31 @@ Client::~Client()
 {
     if (httpClient_)
         delete httpClient_;
-    Connection::Terminate();
+    Terminate();
 }
 
 void Client::Poll()
 {
-    Connection::Poll();
+    // Blocking!
+    // Reset must always be called prior to poll
+    ioService_->reset();
+    ioService_->poll();
 }
 
 void Client::Run()
 {
-    Connection::Run();
+#ifndef _WIN32
+    // WTF, why is this needed on Linux but not on Windows?
+    if (ioService_->stopped())
+        ioService_->reset();
+#endif // _WIN32
+    ioService_->run();
+}
+
+void Client::Terminate()
+{
+    ioService_->stop();
+    Connection::Terminate();
 }
 
 void Client::OnLoggedIn(const std::string& accountUuid)
@@ -392,7 +408,7 @@ std::shared_ptr<ProtocolLogin> Client::GetProtoLogin()
 {
     if (!protoLogin_)
     {
-        protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_);
+        protoLogin_ = std::make_shared<ProtocolLogin>(dhKeys_, *ioService_.get());
         protoLogin_->SetErrorCallback(std::bind(&Client::OnNetworkError, this, std::placeholders::_1, std::placeholders::_2));
         protoLogin_->SetProtocolErrorCallback(std::bind(&Client::OnProtocolError, this, std::placeholders::_1));
     }
@@ -411,7 +427,6 @@ void Client::Login(const std::string& name, const std::string& pass)
     GetProtoLogin()->Login(loginHost_, loginPort_, name, pass,
         std::bind(&Client::OnLoggedIn, this, std::placeholders::_1),
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
-//    Connection::Run();
 }
 
 void Client::CreateAccount(const std::string& name, const std::string& pass,
@@ -426,7 +441,6 @@ void Client::CreateAccount(const std::string& name, const std::string& pass,
     GetProtoLogin()->CreateAccount(loginHost_, loginPort_, name, pass,
         email, accKey,
         std::bind(&Client::OnAccountCreated, this));
-//    Connection::Run();
 }
 
 void Client::CreatePlayer(const std::string& charName, const std::string& profUuid,
@@ -442,7 +456,6 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, password_,
         charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
-//    Connection::Run();
 }
 
 void Client::Logout()
@@ -453,7 +466,7 @@ void Client::Logout()
     {
         state_ = ClientState::Disconnected;
         protoGame_->Logout();
-        Connection::Run();
+        Run();
     }
 }
 
@@ -464,7 +477,6 @@ void Client::GetOutposts()
 
     GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, password_,
         std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
-//    Connection::Run();
 }
 
 void Client::GetServers()
@@ -501,7 +513,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
     // 2. Login to game server
     if (!protoGame_)
     {
-        protoGame_ = std::make_shared<ProtocolGame>(dhKeys_);
+        protoGame_ = std::make_shared<ProtocolGame>(dhKeys_, *ioService_.get());
         protoGame_->receiver_ = this;
     }
 
@@ -531,7 +543,7 @@ void Client::Update(int timeElapsed)
         // Don't send more than ~60 updates to the server, it might DC.
         // If running @144Hz every 2nd Update. If running @60Hz every update
         lastRun_ = 0;
-        Connection::Run();
+        Run();
     }
     if (state_ == ClientState::World)
         lastPing_ += timeElapsed;

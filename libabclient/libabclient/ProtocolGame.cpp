@@ -8,8 +8,8 @@
 
 namespace Client {
 
-ProtocolGame::ProtocolGame(Crypto::DHKeys& keys) :
-    Protocol(keys),
+ProtocolGame::ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService) :
+    Protocol(keys, ioService),
     updateTick_(0)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;

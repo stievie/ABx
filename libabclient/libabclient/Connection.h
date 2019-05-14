@@ -32,6 +32,7 @@ protected:
     std::function<void()> connectCallback_;
     ErrorCallback errorCallback_;
     RecvCallback recvCallback_;
+    asio::io_service& ioService_;
     asio::steady_timer readTimer_;
     asio::steady_timer connectTimer_;
     asio::steady_timer writeTimer_;
@@ -46,11 +47,9 @@ protected:
     asio::streambuf inputStream_;
     timer activityTimer_;
 public:
-    Connection();
+    explicit Connection(asio::io_service& ioService);
     ~Connection();
 
-    static void Poll();
-    static void Run();
     static void Terminate();
 
     void Connect(const std::string& host, uint16_t port, const std::function<void()>& connectCallback);
