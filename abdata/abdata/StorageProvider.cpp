@@ -393,9 +393,9 @@ void StorageProvider::Shutdown()
     std::lock_guard<std::mutex> lock(lock_);
     running_ = false;
     for (const auto& c : cache_)
-    {
         FlushData(c.first);
-    }
+
+    DB::DBAccount::LogoutAll();
 }
 
 void StorageProvider::CleanCache()

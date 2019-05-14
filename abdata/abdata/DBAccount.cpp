@@ -179,4 +179,20 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
     return result->GetUInt("count") != 0;
 }
 
+bool DBAccount::LogoutAll()
+{
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "UPDATE `accounts` SET `online_status` = 0";
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
+}
+
 }

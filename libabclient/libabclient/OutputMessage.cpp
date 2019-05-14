@@ -24,43 +24,42 @@ std::shared_ptr<OutputMessage> OutputMessage::New()
     return msg;
 }
 
-OutputMessage::OutputMessage()
-{
-    Reset();
-}
+OutputMessage::OutputMessage() :
+    info_({})
+{ }
 
 void OutputMessage::AddPaddingBytes(int bytes, uint8_t byte)
 {
     if (bytes <= 0)
         return;
     CheckWrite(bytes);
-    memset((void*)&buffer_[pos_], byte, bytes);
-    pos_ += static_cast<uint16_t>(bytes);
-    size_ += static_cast<uint16_t>(bytes);
+    memset((void*)&buffer_[info_.pos], byte, bytes);
+    info_.pos += static_cast<uint16_t>(bytes);
+    info_.size += static_cast<uint16_t>(bytes);
 }
 
 void OutputMessage::AddString(const std::string& value)
 {
     size_t len = value.length();
 
-    if (len > MaxStringLength)
+    if (len > OUTPUTMESSAGE_MAX_STRING_LEN)
         throw std::runtime_error("String too long");
 
     CheckWrite(static_cast<int>(len) + 2);
     Add<uint16_t>(static_cast<uint16_t>(len));
 #ifdef _MSC_VER
-    memcpy_s((char*)(buffer_ + pos_), MaxBufferSize - len, value.c_str(), len);
+    memcpy_s((char*)(buffer_ + info_.pos), OUTPUTMESSAGE_BUFFER_SIZE - len, value.c_str(), len);
 #else
     memcpy((char*)(buffer_ + pos_), value.c_str(), len);
 #endif
-    pos_ += static_cast<uint16_t>(len);
-    size_ += static_cast<uint16_t>(len);
+    info_.pos += static_cast<uint16_t>(len);
+    info_.size += static_cast<uint16_t>(len);
 }
 
 void OutputMessage::AddStringEncrypted(const std::string& value)
 {
     size_t len = value.length();
-    if (len > MaxStringLength)
+    if (len > OUTPUTMESSAGE_MAX_STRING_LEN)
         throw std::runtime_error("String too long");
 
     if (value.empty())
@@ -91,9 +90,9 @@ void OutputMessage::AddStringEncrypted(const std::string& value)
 
 bool OutputMessage::CanWrite(int bytes)
 {
-    if (pos_ + bytes > MaxBufferSize)
-        return false;
-    return true;
+    if (info_.pos + bytes <= OUTPUTMESSAGE_BUFFER_SIZE)
+        return true;
+    return false;
 }
 
 void OutputMessage::CheckWrite(int bytes)
@@ -104,26 +103,26 @@ void OutputMessage::CheckWrite(int bytes)
 
 void OutputMessage::WriteChecksum()
 {
-    uint32_t checksum = AdlerChecksum(buffer_ + headerPos_, size_);
-    assert(headerPos_ - 4 >= 0);
-    headerPos_ -= 4;
-    Set<uint32_t>(headerPos_, checksum);
-    size_ += 4;
+    uint32_t checksum = AdlerChecksum(buffer_ + info_.headerPos, info_.size);
+    assert(info_.headerPos - 4 >= 0);
+    info_.headerPos -= 4;
+    Set<uint32_t>(info_.headerPos, checksum);
+    info_.size += 4;
 }
 
 void OutputMessage::WriteMessageSize()
 {
-    assert(headerPos_ - 2 >= 0);
-    headerPos_ -= 2;
-    Set<uint16_t>(headerPos_, size_);
-    size_ += 2;
+    assert(info_.headerPos - 2 >= 0);
+    info_.headerPos -= 2;
+    Set<uint16_t>(info_.headerPos, info_.size);
+    info_.size += 2;
 }
 
 bool OutputMessage::Compress()
 {
-    char buff[MaxBufferSize];
-    const char* src = reinterpret_cast<const char*>(buffer_ + MaxHeaderSize);
-    int size = LZ4_compress_default(src, buff, size_, MaxBufferSize);
+    char buff[OUTPUTMESSAGE_BUFFER_SIZE];
+    const char* src = reinterpret_cast<const char*>(buffer_ + OUTPUTMESSAGE_HEADER_SIZE);
+    int size = LZ4_compress_default(src, buff, info_.size, OUTPUTMESSAGE_HEADER_SIZE);
     if (size > 0)
     {
 /*
