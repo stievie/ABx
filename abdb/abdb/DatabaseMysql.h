@@ -35,7 +35,7 @@ class MysqlResult final : public DBResult
 {
     friend class DatabaseMysql;
 protected:
-    MysqlResult(MYSQL_RES* res);
+    explicit MysqlResult(MYSQL_RES* res);
 
     typedef std::map<const std::string, uint32_t> ListNames;
     ListNames listNames_;

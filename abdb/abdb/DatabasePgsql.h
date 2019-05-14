@@ -36,7 +36,7 @@ class PgsqlResult final : public DBResult
 {
     friend class DatabasePgsql;
 protected:
-    PgsqlResult(PGresult* res);
+    explicit PgsqlResult(PGresult* res);
 
     int32_t rows_, cursor_;
     PGresult* handle_;

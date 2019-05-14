@@ -35,7 +35,7 @@ class SqliteResult final : public DBResult
 {
     friend class DatabaseSqlite;
 protected:
-    SqliteResult(sqlite3_stmt* res);
+    explicit SqliteResult(sqlite3_stmt* res);
 
     typedef std::map<const std::string, uint32_t> ListNames;
     ListNames listNames_;

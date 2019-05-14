@@ -120,7 +120,7 @@ private:
     std::string query_;
     std::ostringstream buff_;
 public:
-    DBInsert(Database* db);
+    explicit DBInsert(Database* db);
     ~DBInsert() {}
 
     void SetQuery(const std::string& query);
@@ -140,7 +140,7 @@ private:
     Database* db_;
     TransactionState state_;
 public:
-    DBTransaction(Database* db) :
+    explicit DBTransaction(Database* db) :
         db_(db),
         state_(StateNoStart)
     {}
