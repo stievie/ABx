@@ -32,7 +32,6 @@ protected:
     std::function<void()> connectCallback_;
     ErrorCallback errorCallback_;
     RecvCallback recvCallback_;
-    asio::io_service& ioService_;
     asio::steady_timer readTimer_;
     asio::steady_timer connectTimer_;
     asio::steady_timer writeTimer_;

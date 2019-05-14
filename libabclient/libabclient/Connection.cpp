@@ -11,13 +11,12 @@ namespace Client {
 std::list<std::shared_ptr<asio::streambuf>> Connection::outputStreams_;
 
 Connection::Connection(asio::io_service& ioService) :
-    ioService_(ioService),
-    readTimer_(ioService_),
-    connectTimer_(ioService_),
-    writeTimer_(ioService_),
-    delayedWriteTimer_(ioService_),
-    resolver_(ioService_),
-    socket_(ioService_),
+    readTimer_(ioService),
+    connectTimer_(ioService),
+    writeTimer_(ioService),
+    delayedWriteTimer_(ioService),
+    resolver_(ioService),
+    socket_(ioService),
     connected_(false),
     connecting_(false)
 { }

@@ -9,6 +9,7 @@
 namespace Client {
 
 Protocol::Protocol(Crypto::DHKeys& keys, asio::io_service& ioService) :
+    inputMessage_(std::make_shared<InputMessage>()),
     ioService_(ioService),
     connection_(nullptr),
     checksumEnabled_(false),
@@ -17,9 +18,7 @@ Protocol::Protocol(Crypto::DHKeys& keys, asio::io_service& ioService) :
     keys_(keys),
     errorCallback_(nullptr),
     protocolErrorCallback_(nullptr)
-{
-    inputMessage_ = std::make_shared<InputMessage>();
-}
+{ }
 
 Protocol::~Protocol()
 {
