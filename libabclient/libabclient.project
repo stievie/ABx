@@ -42,7 +42,7 @@
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-m64;-std=c++17;-Wall" C_Options="" Assembler="">
+      <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-std=c99" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Include"/>
         <Preprocessor Value="ABCLIENT_STATIC_LIB"/>

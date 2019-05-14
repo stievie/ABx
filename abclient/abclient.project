@@ -119,7 +119,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-m64;-std=c++17;-Wall;-Wno-argument-outside-range;-Wno-reorder" C_Options="" Assembler="">
+      <Compiler Options="-m64;-std=c++17;-Wall;-Wno-argument-outside-range;-Wno-reorder" C_Options="-m64;-std=c99;-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Include"/>
         <IncludePath Value="../libabclient/libabclient"/>

@@ -50,7 +50,7 @@ void OutputMessage::AddString(const std::string& value)
 #ifdef _MSC_VER
     memcpy_s((char*)(buffer_ + info_.pos), OUTPUTMESSAGE_BUFFER_SIZE - len, value.c_str(), len);
 #else
-    memcpy((char*)(buffer_ + pos_), value.c_str(), len);
+    memcpy((char*)(buffer_ + info_.pos), value.c_str(), len);
 #endif
     info_.pos += static_cast<uint16_t>(len);
     info_.size += static_cast<uint16_t>(len);
@@ -58,15 +58,15 @@ void OutputMessage::AddString(const std::string& value)
 
 void OutputMessage::AddStringEncrypted(const std::string& value)
 {
-    size_t len = value.length();
-    if (len > OUTPUTMESSAGE_MAX_STRING_LEN)
-        throw std::runtime_error("String too long");
-
     if (value.empty())
     {
         AddString(value);
         return;
     }
+
+    size_t len = value.length();
+    if (len > OUTPUTMESSAGE_MAX_STRING_LEN)
+        throw std::runtime_error("String too long");
 
     //add bytes until reach 8 multiple
     if ((len % 8) != 0)
