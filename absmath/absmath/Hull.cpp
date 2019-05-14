@@ -1859,11 +1859,12 @@ ConvexH *ConvexHCrop(ConvexH &convex,const Plane &slice)
 		}
 	}
 #if defined(__clang__)
+#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
 	int vertcountunderold = vertcountunder; // for debugging only
 #if defined(__clang__)
-#pragma clang diagnostic warning "-Wunused-variable"
+#pragma clang diagnostic pop
 #endif
 
 	int under_edge_count =0;
@@ -2359,13 +2360,14 @@ void checkit(Tri *t)
 		int i1=(i+1)%3;
 		int i2=(i+2)%3;
 #if defined(__clang__)
+#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
 		int a = (*t)[i1];
 		int b = (*t)[i2];
 		assert(a!=b);
 #if defined(__clang__)
-#pragma clang diagnostic warning "-Wunused-variable"
+#pragma clang diagnostic pop
 #endif
 		assert( tris[t->n[i]]->neib(b,a) == t->id);
 	}
