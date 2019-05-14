@@ -548,7 +548,7 @@ void Client::Update(int timeElapsed)
         // Don't send more than ~60 updates to the server, it might DC.
         // If running @144Hz every 2nd Update. If running @60Hz every update
         lastRun_ = 0;
-        Poll();
+        Run();
     }
     if (state_ == ClientState::World)
         lastPing_ += timeElapsed;
