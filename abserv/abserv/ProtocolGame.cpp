@@ -103,16 +103,13 @@ void ProtocolGame::Logout()
     if (!player)
         return;
 
-#ifdef DEBUG_NET
-//    LOG_DEBUG << "Player " << player->data_.uuid << " logging out" << std::endl;
-#endif
-
     player->logoutTime_ = Utils::Tick();
     IO::IOPlayer::SavePlayer(player.get());
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
     GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
     Disconnect();
     OutputMessagePool::Instance()->RemoveFromAutoSend(shared_from_this());
+    LOG_INFO << "User " << player->account_.name << " logged out" << std::endl;
     player_.reset();
 }
 

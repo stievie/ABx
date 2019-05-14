@@ -60,11 +60,16 @@ Client::~Client()
     Terminate();
 }
 
-void Client::Poll()
+void Client::ResetPoll()
 {
     // Blocking!
     // Reset must always be called prior to poll
     ioService_->reset();
+    ioService_->poll();
+}
+
+void Client::Poll()
+{
     ioService_->poll();
 }
 
@@ -543,7 +548,7 @@ void Client::Update(int timeElapsed)
         // Don't send more than ~60 updates to the server, it might DC.
         // If running @144Hz every 2nd Update. If running @60Hz every update
         lastRun_ = 0;
-        Run();
+        Poll();
     }
     if (state_ == ClientState::World)
         lastPing_ += timeElapsed;

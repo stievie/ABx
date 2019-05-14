@@ -47,6 +47,7 @@ public:
     Client();
     ~Client();
 
+    void ResetPoll();
     void Poll();
     void Run();
 
