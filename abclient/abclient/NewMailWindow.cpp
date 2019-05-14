@@ -3,6 +3,7 @@
 #include "Shortcuts.h"
 #include "AbEvents.h"
 #include "FwClient.h"
+#include <AB/Entities/Limits.h>
 
 void NewMailWindow::RegisterObject(Context* context)
 {
@@ -83,13 +84,17 @@ void NewMailWindow::HandleSendClicked(StringHash, VariantMap&)
         recipient_->SetFocus(true);
         return;
     }
-    const String body = mailBody_->GetText().Trimmed();
+    String body = mailBody_->GetText().Trimmed();
     if (body.Empty())
     {
         mailBody_->SetFocus(true);
         return;
     }
-    const String subject = subject_->GetText();
+    String subject = subject_->GetText();
+    if (subject.Length() > AB::Entities::Limits::MAX_MAIL_SUBJECT)
+        subject.Resize(AB::Entities::Limits::MAX_MAIL_SUBJECT);
+    if (body.Length() > AB::Entities::Limits::MAX_MAIL_MESSAGE)
+        body.Resize(AB::Entities::Limits::MAX_MAIL_MESSAGE);
 
     FwClient* client = context_->GetSubsystem<FwClient>();
     client->SendMail(std::string(recipient.CString(), recipient.Length()),

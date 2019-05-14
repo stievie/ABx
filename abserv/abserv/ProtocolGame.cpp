@@ -93,6 +93,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         player->data_.instanceUuid = instanceUuid;
     client->Update(player->data_);
     OutputMessagePool::Instance()->AddToAutoSend(shared_from_this());
+    LOG_INFO << "User " << player->account_.name << " logged in with " << player->data_.name << " entering " << g.name << std::endl;
     player_ = player;
     Connect();
 }

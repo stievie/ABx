@@ -7,7 +7,7 @@ namespace Client {
 
 class Protocol;
 
-// Make sizeof(OutputMessage) == 4KB
+// Make sizeof(OutputMessage) == 1KB
 static constexpr uint16_t OUTPUTMESSAGE_HEADER_SIZE = 8;
 
 struct OutputMessageInfo
@@ -17,9 +17,9 @@ struct OutputMessageInfo
     uint16_t size = 0;
 };
 
-static constexpr size_t OUTPUTMESSAGE_BUFFER_SIZE = 4096 - sizeof(OutputMessageInfo);
+static constexpr size_t OUTPUTMESSAGE_BUFFER_SIZE = 1024 - sizeof(OutputMessageInfo);
 static constexpr size_t OUTPUTMESSAGE_MAX_STRING_LEN = OUTPUTMESSAGE_BUFFER_SIZE - OUTPUTMESSAGE_HEADER_SIZE - sizeof(uint16_t);
-static constexpr size_t MESSAGEPOOL_COUNT = 60;
+static constexpr size_t MESSAGEPOOL_COUNT = 240;
 
 /// Message to write to the network
 class OutputMessage

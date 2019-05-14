@@ -766,8 +766,13 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         break;
     default:
     {
-        FwClient* client = context_->GetSubsystem<FwClient>();
-        client->Command(type, data.Substring(0, MAX_CHAT_MESSAGE));
+        if (data.Length() <= MAX_CHAT_MESSAGE)
+        {
+            FwClient* client = context_->GetSubsystem<FwClient>();
+            client->Command(type, data.Substring(0, MAX_CHAT_MESSAGE));
+        }
+        else
+            AddLine("The message is too long", "ChatLogServerInfoText");
         break;
     }
     }
