@@ -213,7 +213,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
+      <Compiler Options="-m64;-fexceptions;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
         <IncludePath Value="../Include/recastnavigation"/>
         <IncludePath Value="../Include/ai"/>
         <IncludePath Value="../Include/XMath"/>

@@ -9,7 +9,14 @@
 #include "Profiler.h"
 
 #include <less/less/LessTokenizer.h>
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
 #include <less/less/LessParser.h>
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 #include <less/css/CssWriter.h>
 #include <less/css/CssPrettyWriter.h>
 #include <less/stylesheet/Stylesheet.h>

@@ -1,22 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="abfile" Version="10.0.0" InternalType="Console">
+<CodeLite_Project Name="absadmin" Version="10.0.0" InternalType="Console">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="include">
-    <File Name="abfile/Version.h"/>
-    <File Name="abfile/targetver.h"/>
-    <File Name="abfile/stdafx.h"/>
-    <File Name="abfile/Application.h"/>
+    <File Name="absadmin/Version.h"/>
+    <File Name="absadmin/UpdateAccountKeyResource.h"/>
+    <File Name="absadmin/TerminateResource.h"/>
+    <File Name="absadmin/TemplateResource.h"/>
+    <File Name="absadmin/targetver.h"/>
+    <File Name="absadmin/stdafx.h"/>
+    <File Name="absadmin/SpawnResource.h"/>
+    <File Name="absadmin/Sessions.h"/>
+    <File Name="absadmin/ServicesResource.h"/>
+    <File Name="absadmin/ServicesJsonResource.h"/>
+    <File Name="absadmin/ServiceResource.h"/>
+    <File Name="absadmin/Resource.h"/>
+    <File Name="absadmin/ProfileResource.h"/>
+    <File Name="absadmin/ProfilePostResource.h"/>
+    <File Name="absadmin/PasswordPostResource.h"/>
+    <File Name="absadmin/LogoutResource.h"/>
+    <File Name="absadmin/LoginResource.h"/>
+    <File Name="absadmin/LessFileResource.h"/>
+    <File Name="absadmin/IndexResource.h"/>
+    <File Name="absadmin/FriendsResource.h"/>
+    <File Name="absadmin/FileResource.h"/>
+    <File Name="absadmin/DownloadResource.h"/>
+    <File Name="absadmin/CreateKeyResource.h"/>
+    <File Name="absadmin/Cookie.h"/>
+    <File Name="absadmin/ContentTypes.h"/>
+    <File Name="absadmin/ClearCacheResource.h"/>
+    <File Name="absadmin/Application.h"/>
+    <File Name="absadmin/AccountsResource.h"/>
+    <File Name="absadmin/AccountsJsonResource.h"/>
+    <File Name="absadmin/AccountResource.h"/>
+    <File Name="absadmin/AccountPostResource.h"/>
+    <File Name="absadmin/AccountLogoutResource.h"/>
+    <File Name="absadmin/AccountKeysResource.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="abfile/stdafx.cpp"/>
-    <File Name="abfile/main.cpp"/>
-    <File Name="abfile/Application.cpp"/>
+    <File Name="absadmin/UpdateAccountKeyResource.cpp"/>
+    <File Name="absadmin/TerminateResource.cpp"/>
+    <File Name="absadmin/TemplateResource.cpp"/>
+    <File Name="absadmin/stdafx.cpp"/>
+    <File Name="absadmin/SpawnResource.cpp"/>
+    <File Name="absadmin/Sessions.cpp"/>
+    <File Name="absadmin/ServicesResource.cpp"/>
+    <File Name="absadmin/ServicesJsonResource.cpp"/>
+    <File Name="absadmin/ServiceResource.cpp"/>
+    <File Name="absadmin/Resource.cpp"/>
+    <File Name="absadmin/ProfileResource.cpp"/>
+    <File Name="absadmin/ProfilePostResource.cpp"/>
+    <File Name="absadmin/PasswordPostResource.cpp"/>
+    <File Name="absadmin/main.cpp"/>
+    <File Name="absadmin/LogoutResource.cpp"/>
+    <File Name="absadmin/LoginResource.cpp"/>
+    <File Name="absadmin/LessFileResource.cpp"/>
+    <File Name="absadmin/IndexResource.cpp"/>
+    <File Name="absadmin/FriendsResource.cpp"/>
+    <File Name="absadmin/FileResource.cpp"/>
+    <File Name="absadmin/DownloadResource.cpp"/>
+    <File Name="absadmin/CreateKeyResource.cpp"/>
+    <File Name="absadmin/Cookie.cpp"/>
+    <File Name="absadmin/ContentTypes.cpp"/>
+    <File Name="absadmin/ClearCacheResource.cpp"/>
+    <File Name="absadmin/Application.cpp"/>
+    <File Name="absadmin/AccountsResource.cpp"/>
+    <File Name="absadmin/AccountsJsonResource.cpp"/>
+    <File Name="absadmin/AccountResource.cpp"/>
+    <File Name="absadmin/AccountPostResource.cpp"/>
+    <File Name="absadmin/AccountLogoutResource.cpp"/>
+    <File Name="absadmin/AccountKeysResource.cpp"/>
   </VirtualDirectory>
   <Dependencies Name="Debug">
     <Project Name="abscommon"/>
@@ -43,6 +101,7 @@
         <Library Value="abcrypto"/>
         <Library Value="stdc++fs"/>
         <Library Value="pugixml"/>
+        <Library Value="less"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
