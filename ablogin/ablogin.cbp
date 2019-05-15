@@ -52,8 +52,6 @@
 		</Linker>
 		<Unit filename="ablogin/Application.cpp" />
 		<Unit filename="ablogin/Application.h" />
-		<Unit filename="ablogin/Bans.cpp" />
-		<Unit filename="ablogin/Bans.h" />
 		<Unit filename="ablogin/IOAccount.cpp" />
 		<Unit filename="ablogin/IOAccount.h" />
 		<Unit filename="ablogin/IOGame.cpp" />

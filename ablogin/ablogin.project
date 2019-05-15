@@ -13,7 +13,6 @@
     <File Name="ablogin/IOService.h"/>
     <File Name="ablogin/IOGame.h"/>
     <File Name="ablogin/IOAccount.h"/>
-    <File Name="ablogin/Bans.h"/>
     <File Name="ablogin/Application.h"/>
   </VirtualDirectory>
   <Description/>
@@ -25,7 +24,6 @@
     <File Name="ablogin/IOService.cpp"/>
     <File Name="ablogin/IOGame.cpp"/>
     <File Name="ablogin/IOAccount.cpp"/>
-    <File Name="ablogin/Bans.cpp"/>
     <File Name="ablogin/Application.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
