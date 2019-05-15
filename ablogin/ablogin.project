@@ -26,6 +26,12 @@
     <File Name="ablogin/IOAccount.cpp"/>
     <File Name="ablogin/Application.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="abscommon"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="abscommon"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
@@ -124,10 +130,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="abscommon"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="abscommon"/>
-  </Dependencies>
 </CodeLite_Project>

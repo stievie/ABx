@@ -9,6 +9,7 @@
   <Project Name="abserv" Path="../abserv/abserv.project"/>
   <Project Name="ablogin" Path="../ablogin/ablogin.project"/>
   <Project Name="absadmin" Path="../absadmin/absadmin.project"/>
+  <Project Name="ablb" Path="../ablb/ablb.project"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
@@ -21,6 +22,7 @@
       <Project Name="abserv" ConfigName="Debug"/>
       <Project Name="ablogin" ConfigName="Debug"/>
       <Project Name="absadmin" ConfigName="Debug"/>
+      <Project Name="ablb" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -33,6 +35,7 @@
       <Project Name="abserv" ConfigName="Release"/>
       <Project Name="ablogin" ConfigName="Release"/>
       <Project Name="absadmin" ConfigName="Release"/>
+      <Project Name="ablb" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
