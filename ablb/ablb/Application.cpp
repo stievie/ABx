@@ -9,7 +9,8 @@
 
 Application::Application() :
     ServerApp::ServerApp(),
-    ioService_()
+    ioService_(),
+    lbType_(AB::Entities::ServiceTypeUnknown)
 {
     serverType_ = AB::Entities::ServiceTypeLoadBalancer;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
