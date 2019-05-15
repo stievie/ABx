@@ -9,7 +9,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Utils.h"
-#include "Bans.h"
+#include "BanManager.h"
 #include "Subsystems.h"
 #include "Random.h"
 #include <AB/DHKeys.hpp>
@@ -82,11 +82,9 @@ bool Application::LoadMain()
     if (logDir_.empty())
         logDir_ = config->GetGlobalString("log_dir", "");
 
-    auto banMan = GetSubsystem<Auth::BanManager>();
     Net::ConnectionManager::maxPacketsPerSec = static_cast<uint32_t>(config->GetGlobalInt("max_packets_per_second", 0ll));
-    banMan->loginTries_ = static_cast<uint32_t>(config->GetGlobalInt("login_tries", 5ll));
-    banMan->retryTimeout_ = static_cast<uint32_t>(config->GetGlobalInt("login_retrytimeout", 5000ll));
-    banMan->loginTimeout_ = static_cast<uint32_t>(config->GetGlobalInt("login_timeout", 60ll * 1000ll));
+    Auth::BanManager::LoginTries = static_cast<uint32_t>(config->GetGlobalInt("login_tries", 5ll));
+    Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>(config->GetGlobalInt("login_retrytimeout", 5000ll));
 
     LOG_INFO << "Initializing RNG...";
     GetSubsystem<Crypto::Random>()->Initialize();

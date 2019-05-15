@@ -175,7 +175,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Bans.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOGame.h" />
     <ClInclude Include="IOService.h" />
@@ -186,7 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Bans.cpp" />
     <ClCompile Include="IOAccount.cpp" />
     <ClCompile Include="IOGame.cpp" />
     <ClCompile Include="IOService.cpp" />

@@ -27,9 +27,6 @@
     <ClInclude Include="ProtocolLogin.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Bans.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="IOAccount.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -54,9 +51,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ProtocolLogin.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Bans.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="IOAccount.cpp">
