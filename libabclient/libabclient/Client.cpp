@@ -491,7 +491,6 @@ void Client::GetServers()
 
     GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, password_,
         std::bind(&Client::OnGetServices, this, std::placeholders::_1));
-//    Connection::Run();
 }
 
 void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
