@@ -1,37 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="ablogin" Version="10.0.0" InternalType="Console">
+<CodeLite_Project Name="keygen" Version="10.0.0" InternalType="Console">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="include">
-    <File Name="ablogin/Version.h"/>
-    <File Name="ablogin/targetver.h"/>
-    <File Name="ablogin/stdafx.h"/>
-    <File Name="ablogin/ProtocolLogin.h"/>
-    <File Name="ablogin/IOService.h"/>
-    <File Name="ablogin/IOGame.h"/>
-    <File Name="ablogin/IOAccount.h"/>
-    <File Name="ablogin/Application.h"/>
+    <File Name="keygen/targetver.h"/>
+    <File Name="keygen/stdafx.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="ablogin/stdafx.cpp"/>
-    <File Name="ablogin/ProtocolLogin.cpp"/>
-    <File Name="ablogin/main.cpp"/>
-    <File Name="ablogin/IOService.cpp"/>
-    <File Name="ablogin/IOGame.cpp"/>
-    <File Name="ablogin/IOAccount.cpp"/>
-    <File Name="ablogin/Application.cpp"/>
+    <File Name="keygen/stdafx.cpp"/>
+    <File Name="keygen/main.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug">
-    <Project Name="abscommon"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="abscommon"/>
-  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
@@ -42,7 +25,6 @@
         <LibraryPath Value="."/>
         <LibraryPath Value="../Lib/x64/$(ConfigurationName)"/>
         <Library Value="pthread"/>
-        <Library Value="uuid"/>
         <Library Value="lua"/>
         <Library Value="abscommon"/>
         <Library Value="abcrypto"/>
@@ -130,4 +112,10 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="abscommon"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="abscommon"/>
+  </Dependencies>
 </CodeLite_Project>

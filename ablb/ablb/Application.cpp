@@ -78,7 +78,7 @@ bool Application::LoadMain()
     if (logDir_.empty())
         logDir_ = config->GetGlobalString("log_dir", "");
 
-    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
+    uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0));
     if (dataPort != 0)
     {
         LOG_INFO << "Connecting to data server...";
@@ -112,7 +112,7 @@ bool Application::LoadMain()
         serverHost_ = config->GetGlobalString("lb_host", "0.0.0.0");
     if (serverPort_ == std::numeric_limits<uint16_t>::max())
     {
-        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("lb_port", 2740ll));
+        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("lb_port", 2740));
     }
     lbType_ = static_cast<AB::Entities::ServiceType>(
         // Default is login server
