@@ -43,6 +43,7 @@ abclient/abclient.txt
 abdata/abdata.txt
 abdb/abdb.txt
 abfile/abfile.txt
+ablb/ablb.txt
 ablogin/ablogin.txt
 abmsgs/abmsgs.txt
 absadmin/absadmin.txt
@@ -50,6 +51,7 @@ abscommon/abscommon.txt
 abserv/abserv.txt
 absmath/absmath.txt
 libabclient/libabclient.txt
+keygen/keygen.txt
 
 # Misc.
 configure*

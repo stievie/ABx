@@ -10,8 +10,9 @@
   <Project Name="ablogin" Path="../ablogin/ablogin.project" Active="No"/>
   <Project Name="absadmin" Path="../absadmin/absadmin.project" Active="No"/>
   <Project Name="ablb" Path="../ablb/ablb.project" Active="Yes"/>
+  <Project Name="keygen" Path="../keygen/keygen.project"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="abdb" ConfigName="Debug"/>
       <Project Name="abscommon" ConfigName="Debug"/>
@@ -23,8 +24,9 @@
       <Project Name="ablogin" ConfigName="Debug"/>
       <Project Name="absadmin" ConfigName="Debug"/>
       <Project Name="ablb" ConfigName="Debug"/>
+      <Project Name="keygen" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Environment/>
       <Project Name="abdb" ConfigName="Release"/>
       <Project Name="abscommon" ConfigName="Release"/>
@@ -36,6 +38,7 @@
       <Project Name="ablogin" ConfigName="Release"/>
       <Project Name="absadmin" ConfigName="Release"/>
       <Project Name="ablb" ConfigName="Release"/>
+      <Project Name="keygen" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
