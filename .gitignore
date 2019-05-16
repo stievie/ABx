@@ -52,6 +52,7 @@ abserv/abserv.txt
 absmath/absmath.txt
 libabclient/libabclient.txt
 keygen/keygen.txt
+Tests/Tests.txt
 
 # Misc.
 configure*
