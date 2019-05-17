@@ -6,6 +6,7 @@
 #include "StringUtils.h"
 #include "Utils.h"
 #include "Subsystems.h"
+#include "BanManager.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -14,6 +15,7 @@ Application::Application() :
 {
     serverType_ = AB::Entities::ServiceTypeLoadBalancer;
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+    Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
     dataClient_ = std::make_unique<IO::DataClient>(ioService_);
 }
 
