@@ -42,7 +42,7 @@ function onStart()
 
   local chest = createChest(self, 0.8, 15.0)
   if (chest ~= nil) then
-    chest:SetRotation(90)
+    chest:SetRotation(180)
   end
 end
 

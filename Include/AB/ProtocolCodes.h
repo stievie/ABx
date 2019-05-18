@@ -142,6 +142,12 @@ enum CreatureState : uint8_t
     CreatureStateEmoteEnd,
     // /Emotes -----------------------------------------------------------------
 
+    // Logic actors states -----------------------------------------------------
+    CreatureStateChestClosed,
+    CreatureStateChestOpen,
+    // /Logic actors states ----------------------------------------------------
+
+
     CreatureStateDead = 255,
 };
 

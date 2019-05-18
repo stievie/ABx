@@ -33,6 +33,8 @@ static const StringHash ANIM_PONDER("Ponder");
 static const StringHash ANIM_WAVE("Wave");
 static const StringHash ANIM_LAUGH("Laugh");
 static const StringHash ANIM_ATTACK("Attack");
+static const StringHash ANIM_CHEST_OPENING("ChestOpening");
+static const StringHash ANIM_CHEST_CLOSING("ChestClosing");
 
 /// Stop playing current sound
 static const StringHash SOUND_NONE("None");

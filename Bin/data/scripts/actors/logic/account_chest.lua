@@ -4,7 +4,7 @@ name = "Chest"
 level = 20
 modelIndex = 13
 sex = SEX_UNKNOWN
-creatureState = CREATURESTATE_IDLE
+creatureState = CREATURESTATE_CHEST_CLOSED
 prof1Index = 0
 prof2Index = 0
 
@@ -16,9 +16,12 @@ function onInit()
 end
 
 function onClicked(creature)
-  -- TODO: If in range show chest
-end
-
--- self was selected by creature
-function onSelected(creature)
+  if (self:IsInRange(RANGE_TOUCH, creature)) then
+    if (self:GetState() == CREATURESTATE_CHEST_OPEN) then
+      self:SetState(CREATURESTATE_CHEST_CLOSED)
+    else 
+      self:SetState(CREATURESTATE_CHEST_OPEN)
+    -- TODO: Trigger chest dialog
+    end
+  end
 end

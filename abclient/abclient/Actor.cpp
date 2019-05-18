@@ -86,6 +86,8 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     animations_[ANIM_WAVE] = GetAnimation(ANIM_WAVE);
     animations_[ANIM_LAUGH] = GetAnimation(ANIM_LAUGH);
     animations_[ANIM_ATTACK] = GetAnimation(ANIM_ATTACK);
+    animations_[ANIM_CHEST_OPENING] = GetAnimation(ANIM_CHEST_OPENING);
+    animations_[ANIM_CHEST_CLOSING] = GetAnimation(ANIM_CHEST_CLOSING);
     sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
@@ -354,9 +356,9 @@ void Actor::Update(float timeStep)
             SetUIElementSizePos(nameWindow_, IntVector2::ZERO, labelPos);
 
             if (hpBar_)
-            {   
+            {
                 IntVector2 ihpPos(screenPos.x_ - hpBar_->GetWidth() / 2, hpTop.y_ - hpBar_->GetHeight() - 5);
-                SetUIElementSizePos(hpBar_, 
+                SetUIElementSizePos(hpBar_,
                     IntVector2(static_cast<int>(130.f * sizeFac), static_cast<int>(18.f * sizeFac)),
                     ihpPos);
             }
@@ -511,6 +513,11 @@ String Actor::GetAnimation(const StringHash& hash)
 {
     String result;
     result = "Animations/";
+    if (hash == ANIM_CHEST_OPENING)
+        return result + "Chest/Opening.ani";
+    else if (hash == ANIM_CHEST_CLOSING)
+        return result + "Chest/Closing.ani";
+
     result += String(profession_->abbr.c_str()) + "/";
     if (sex_ == AB::Entities::CharacterSexFemale)
         result += "F/";
@@ -813,6 +820,12 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     case AB::GameProtocol::CreatureStateDead:
         PlayAnimation(ANIM_DYING, false, fadeTime);
+        break;
+    case AB::GameProtocol::CreatureStateChestOpen:
+        PlayAnimation(ANIM_CHEST_OPENING, false, 0.0f);
+        break;
+    case AB::GameProtocol::CreatureStateChestClosed:
+        PlayAnimation(ANIM_CHEST_CLOSING, false, 0.0f);
         break;
     default:
         break;
