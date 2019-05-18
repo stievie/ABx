@@ -59,6 +59,29 @@ enum ItemType : uint16_t
     ItemTypeMoney = 65534
 };
 
+enum ModelClass : uint16_t
+{
+    ModelClassUnknown = 0,
+
+    // Character models
+    ModelClassWarriorFemale,
+    ModelClassWarriorMale,
+    ModelClassElementaristFemale,
+    ModelClassElementaristMale,
+    ModelClassMesmerFemale,
+    ModelClassMesmerMale,
+    ModelClassNecromancerFemale,
+    ModelClassNecromancerMale,
+    ModelClassMonkFemale,
+    ModelClassMonkMale,
+    ModelClassRangerFemale,
+    ModelClassRangerMale,
+
+    ModelClassLogicStart = 100,
+    ModelClassPortal,
+    ModelClassAccountChest,
+};
+
 struct Item : Entity
 {
     static constexpr const char* KEY()
@@ -70,6 +93,7 @@ struct Item : Entity
     {
         s.ext(*this, BaseClass<Entity>{});
         s.value4b(index);
+        s.value2b(model_class);
         s.text1b(name, Limits::MAX_ITEM_NAME);
         s.text1b(script, Limits::MAX_FILENAME);
         s.text1b(server_icon, Limits::MAX_FILENAME);
@@ -83,6 +107,7 @@ struct Item : Entity
     }
 
     uint32_t index = INVALID_INDEX;
+    ModelClass model_class = ModelClassUnknown;
     std::string name;
     std::string script;
     std::string server_icon;

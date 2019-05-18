@@ -4,6 +4,7 @@
 #include "Extrapolator.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Profession.h>
+#include <AB/Entities/Item.h>
 #include <AB/TemplEncoder.h>
 #include "HealthBarPlain.h"
 
@@ -158,6 +159,7 @@ public:
     AB::Attributes attributes_;
     /// Model or effect (in case of AOE) index
     uint32_t modelIndex_;
+    AB::Entities::ModelClass modelClass_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;
     void AddActorUI();

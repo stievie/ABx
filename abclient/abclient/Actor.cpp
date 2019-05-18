@@ -74,6 +74,17 @@ Actor* Actor::CreateActor(uint32_t id, Scene* scene,
 void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state)
 {
+    if (modelIndex_ != 0)
+    {
+        if (objectType_ != ObjectTypeAreaOfEffect)
+            LoadModel(modelIndex_, position, rotation);
+        else
+        {
+            LoadAreaOfEffect(modelIndex_, position, rotation);
+        }
+    }
+
+    // Must be after load model
     animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
     animations_[ANIM_WALK] = GetAnimation(ANIM_WALK);
     animations_[ANIM_IDLE] = GetAnimation(ANIM_IDLE);
@@ -91,16 +102,6 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     sounds_[SOUND_SKILLFAILURE] = GetSoundEffect(SOUND_SKILLFAILURE);
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
-
-    if (modelIndex_ != 0)
-    {
-        if (objectType_ != ObjectTypeAreaOfEffect)
-            LoadModel(modelIndex_, position, rotation);
-        else
-        {
-            LoadAreaOfEffect(modelIndex_, position, rotation);
-        }
-    }
 
     creatureState_ = state;
     if (model_)
@@ -128,6 +129,7 @@ bool Actor::LoadModel(uint32_t index, const Vector3& position, const Quaternion&
         return false;
     }
 
+    modelClass_ = item->modelClass_;
     XMLElement root = object->GetRoot();
     unsigned nodeId = root.GetUInt("id");
     SceneResolver resolver;
@@ -513,16 +515,59 @@ String Actor::GetAnimation(const StringHash& hash)
 {
     String result;
     result = "Animations/";
-    if (hash == ANIM_CHEST_OPENING)
-        return result + "Chest/Opening.ani";
-    else if (hash == ANIM_CHEST_CLOSING)
-        return result + "Chest/Closing.ani";
+    if (modelClass_ == AB::Entities::ModelClassAccountChest)
+    {
+        if (hash == ANIM_CHEST_OPENING)
+        {
+            return result + "Chest/Opening.ani";
+        }
+        else if (hash == ANIM_CHEST_CLOSING)
+        {
+            return result + "Chest/Closing.ani";
+        }
+    }
 
-    result += String(profession_->abbr.c_str()) + "/";
-    if (sex_ == AB::Entities::CharacterSexFemale)
-        result += "F/";
-    else
-        result += "M/";
+    switch (modelClass_)
+    {
+    case AB::Entities::ModelClassWarriorFemale:
+        result += "W/F/";
+        break;
+    case AB::Entities::ModelClassWarriorMale:
+        result += "W/M/";
+        break;
+    case AB::Entities::ModelClassElementaristFemale:
+        result += "E/F/";
+        break;
+    case AB::Entities::ModelClassElementaristMale:
+        result += "E/M/";
+        break;
+    case AB::Entities::ModelClassMesmerFemale:
+        result += "Me/F/";
+        break;
+    case AB::Entities::ModelClassMesmerMale:
+        result += "Me/M/";
+        break;
+    case AB::Entities::ModelClassNecromancerFemale:
+        result += "N/F/";
+        break;
+    case AB::Entities::ModelClassNecromancerMale:
+        result += "N/M/";
+        break;
+    case AB::Entities::ModelClassMonkFemale:
+        result += "Mo/F/";
+        break;
+    case AB::Entities::ModelClassMonkMale:
+        result += "Mo/M/";
+        break;
+    case AB::Entities::ModelClassRangerFemale:
+        result += "R/F/";
+        break;
+    case AB::Entities::ModelClassRangerMale:
+        result += "R/M/";
+        break;
+    default:
+        return String::EMPTY;
+    }
 
     if (hash == ANIM_IDLE)
         result += "Idle.ani";
