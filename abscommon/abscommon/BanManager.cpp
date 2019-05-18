@@ -19,27 +19,26 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
     if (clientIP == 0)
         return false;
 
-    lock_.lock();
-
     uint64_t currentTime = Utils::Tick();
     std::map<uint32_t, ConnectBlock>::iterator it = ipConnects_.find(clientIP);
     if (it == ipConnects_.end())
     {
+        std::lock_guard<std::mutex> lock(lock_);
         ipConnects_.emplace(clientIP, ConnectBlock(currentTime, 0, 1));
-        lock_.unlock();
         return true;
     }
 
     ConnectBlock& cb = it->second;
-    cb.count++;
-    if (cb.blockTime > currentTime)
     {
-        lock_.unlock();
-        return false;
+        std::lock_guard<std::mutex> lock(lock_);
+        ++cb.count;
     }
+    if (cb.blockTime > currentTime)
+        return false;
 
     if (currentTime - cb.startTime > 1000)
     {
+        std::lock_guard<std::mutex> lock(lock_);
         uint32_t connectionsPerSec = cb.count;
         cb.startTime = currentTime;
         cb.count = 0;
@@ -48,12 +47,10 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
         if (connectionsPerSec > 10)
         {
             cb.blockTime = currentTime + 10000;
-            lock_.unlock();
             return false;
         }
     }
 
-    lock_.unlock();
     return true;
 }
 
@@ -89,7 +86,6 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
     if (BanManager::LoginTries == 0)
         return false;
 
-    std::lock_guard<std::recursive_mutex> lockGuard(lock_);
     std::map<uint32_t, LoginBlock>::iterator it = ipLogins_.find(clientIP);
     if (it == ipLogins_.end())
         return false;
@@ -129,7 +125,7 @@ void BanManager::AddLoginAttempt(uint32_t clientIP, bool success)
         return;
 
     time_t currentTime = (Utils::Tick() / 1000);
-    std::lock_guard<std::recursive_mutex> lockGuard(lock_);
+    std::lock_guard<std::mutex> lockGuard(lock_);
     std::map<uint32_t, LoginBlock>::iterator it = ipLogins_.find(clientIP);
     if (it == ipLogins_.end())
     {

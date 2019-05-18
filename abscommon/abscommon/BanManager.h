@@ -34,7 +34,7 @@ struct ConnectBlock
 class BanManager
 {
 private:
-    std::recursive_mutex lock_;
+    std::mutex lock_;
     std::map<uint32_t, LoginBlock> ipLogins_;
     std::map<uint32_t, ConnectBlock> ipConnects_;
 public:

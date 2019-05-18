@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ProtocolLogin.h"
 #include "OutputMessage.h"
-#include "Bans.h"
+#include "BanManager.h"
 #include "Dispatcher.h"
 #include <functional>
 #include "IOAccount.h"
