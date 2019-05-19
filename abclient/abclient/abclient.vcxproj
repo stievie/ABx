@@ -262,6 +262,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AccountChestDialog.cpp" />
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BaseLevel.cpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
+    <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
     <ClCompile Include="FriendListWindow.cpp" />
     <ClCompile Include="FwClient.cpp" />
@@ -311,6 +313,7 @@
     <ClCompile Include="TargetWindow.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WorldLevel.cpp" />
+    <ClInclude Include="AccountChestDialog.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AntiRE.h" />
     <ClInclude Include="AudioManager.h" />
@@ -325,6 +328,7 @@
     <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="CreditsWindow.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="DialogWindow.h" />
     <ClInclude Include="EffectsWindow.h" />
     <ClInclude Include="Extrapolator.h" />
     <ClInclude Include="FriendListWindow.h" />

@@ -370,6 +370,12 @@ void Client::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& m
         receiver_->OnPartyInfoMembers(partyId, members);
 }
 
+void Client::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
+{
+    if (receiver_)
+        receiver_->OnDialogTrigger(updateTick, dialogId);
+}
+
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {

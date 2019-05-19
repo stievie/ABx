@@ -1,5 +1,8 @@
 #pragma once
 
+#include <AB/Dialogs.h>
+#include "DialogWindow.h"
+
 static const StringHash WINDOW_OPTIONS("OptionsWindow");
 static const StringHash WINDOW_CHAT("CatWindow");
 static const StringHash WINDOW_MAIL("MailWindow");
@@ -33,6 +36,8 @@ public:
     }
 
     SharedPtr<UIElement> GetWindow(const StringHash& hash, bool addToUi = false);
+    SharedPtr<DialogWindow> GetDialog(AB::Dialogs dialog);
+
     void SaveWindows();
 };
 

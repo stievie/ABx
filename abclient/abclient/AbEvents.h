@@ -328,6 +328,12 @@ URHO3D_EVENT(E_ACTORNAMECLICKED, ActorNameClicked)
     URHO3D_PARAM(P_SOURCEID, SourceId);     // unit32_t
 }
 
+URHO3D_EVENT(E_DIALOGGTRIGGER, DialogTrigger)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_DIALOGID, DialogId);     // unit32_t
+}
+
 // Shortcuts
 URHO3D_EVENT(E_SC_TOGGLEMAP, ToggleMap)
 {

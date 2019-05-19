@@ -103,6 +103,7 @@ public:
     void Initialize() override;
     void Logout();
     void Ping();
+    void TriggerDialog(uint32_t dialogIndex);
     void ChangeMap(const std::string mapUuid);
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void UpdateMailBox();

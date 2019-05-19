@@ -135,6 +135,7 @@ public:
     void OnPartyResigned(int64_t updateTick, uint32_t partyId) override;
     void OnPartyDefeated(int64_t updateTick, uint32_t partyId) override;
     void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
+    void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
 
     std::string accountUuid_;
     std::string password_;

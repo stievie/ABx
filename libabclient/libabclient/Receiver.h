@@ -104,6 +104,7 @@ public:
     virtual void OnPartyResigned(int64_t updateTick, uint32_t partyId) = 0;
     virtual void OnPartyDefeated(int64_t updateTick, uint32_t partyId) = 0;
     virtual void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) = 0;
+    virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
 };
 
 }

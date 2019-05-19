@@ -45,7 +45,7 @@ void ItemDrop::PickUp(Actor* actor)
     // if actorId_ == 0 all can pick it up
     if (actorId_ != 0 && actorId_ != actor->GetId())
         return;
-    if (IsInRange(Ranges::Touch, actor))
+    if (IsInRange(Ranges::Adjecent, actor))
     {
         if (actor->AddToInventory(item_))
         {

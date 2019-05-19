@@ -239,6 +239,8 @@ enum GameProtocolCodes : uint8_t
     InventoryContent,             // All inventory
     InventoryItemUpdate,
     InventoryItemDelete,
+
+    DialogTrigger,                // Show a dialog
 };
 
 enum ObjectCallType : uint8_t

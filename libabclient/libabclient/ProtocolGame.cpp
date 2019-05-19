@@ -207,6 +207,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectResourceChange:
             ParseResourceChanged(message);
             break;
+        case AB::GameProtocol::DialogTrigger:
+            ParseDialogTrigger(message);
+            break;
         default:
             // End of message. Encryption adds some padding bytes, so after this
             // its probably just junk.
@@ -475,6 +478,13 @@ void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& mes
         break;
     }
     }
+}
+
+void ProtocolGame::ParseDialogTrigger(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t dialogId = message->Get<uint32_t>();
+    if (receiver_)
+        receiver_->OnDialogTrigger(updateTick_, dialogId);
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)

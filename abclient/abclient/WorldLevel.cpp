@@ -54,6 +54,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
     SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
     SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(WorldLevel, HandleItemDropped));
+    SubscribeToEvent(AbEvents::E_DIALOGGTRIGGER, URHO3D_HANDLER(WorldLevel, HandleDialogTrigger));
 
     SubscribeToEvent(AbEvents::E_SC_TOGGLEPARTYWINDOW, URHO3D_HANDLER(WorldLevel, HandleTogglePartyWindow));
     SubscribeToEvent(AbEvents::E_SC_TOGGLEMISSIONMAPWINDOW, URHO3D_HANDLER(WorldLevel, HandleToggleMissionMapWindow));
@@ -713,20 +714,31 @@ void WorldLevel::HandleSelectChar(StringHash, VariantMap&)
 void WorldLevel::HandleTogglePartyWindow(StringHash, VariantMap&)
 {
     if (partyWindow_)
+    {
         partyWindow_->SetVisible(!partyWindow_->IsVisible());
+        if (partyWindow_->IsVisible())
+            partyWindow_->BringToFront();
+    }
 }
 
 void WorldLevel::HandleToggleInventoryWindow(StringHash, VariantMap&)
 {
     inventoryWindow_->SetVisible(!inventoryWindow_->IsVisible());
     if (inventoryWindow_->IsVisible())
+    {
+        inventoryWindow_->BringToFront();
         inventoryWindow_->GetInventory();
+    }
 }
 
 void WorldLevel::HandleToggleMissionMapWindow(StringHash, VariantMap&)
 {
     if (missionMap_)
+    {
         missionMap_->SetVisible(!missionMap_->IsVisible());
+        if (missionMap_->IsVisible())
+            missionMap_->BringToFront();
+    }
 }
 
 void WorldLevel::HandleTargetWindowUnselectObject(StringHash, VariantMap&)
@@ -774,7 +786,10 @@ void WorldLevel::HandleToggleMail(StringHash, VariantMap&)
     MailWindow* wnd = dynamic_cast<MailWindow*>(wm->GetWindow(WINDOW_MAIL, true).Get());
     wnd->SetVisible(!wnd->IsVisible());
     if (wnd->IsVisible())
+    {
+        wnd->BringToFront();
         wnd->GetHeaders();
+    }
 }
 
 void WorldLevel::HandleReplyMail(StringHash, VariantMap& eventData)
@@ -806,6 +821,8 @@ void WorldLevel::HandleToggleFriendList(StringHash, VariantMap&)
     WindowManager* wm = GetSubsystem<WindowManager>();
     SharedPtr<UIElement> wnd = wm->GetWindow(WINDOW_FRIENDLIST, true);
     wnd->SetVisible(!wnd->IsVisible());
+    if (wnd->IsVisible())
+        wnd->BringToFront();
 }
 
 void WorldLevel::HandleShowCredits(StringHash, VariantMap&)
@@ -862,6 +879,20 @@ void WorldLevel::HandleItemDropped(StringHash, VariantMap& eventData)
     {
         item->count_ = count;
         item->value_ = value;
+    }
+}
+
+void WorldLevel::HandleDialogTrigger(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::DialogTrigger;
+    AB::Dialogs dialog = static_cast<AB::Dialogs>(eventData[P_DIALOGID].GetUInt());
+    WindowManager* wm = GetSubsystem<WindowManager>();
+    DialogWindow* wnd = wm->GetDialog(dialog);
+    if (wnd)
+    {
+        wnd->Initialize();
+        wnd->SetVisible(true);
+        wnd->BringToFront();
     }
 }
 

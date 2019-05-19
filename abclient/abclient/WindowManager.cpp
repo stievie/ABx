@@ -16,6 +16,7 @@
 #include "GameMessagesWindow.h"
 #include "EffectsWindow.h"
 #include "InventoryWindow.h"
+#include "AccountChestDialog.h"
 
 WindowManager::WindowManager(Context* context) :
     Object(context)
@@ -134,6 +135,34 @@ SharedPtr<UIElement> WindowManager::GetWindow(const StringHash& hash, bool addTo
         return wnd;
     }
     return SharedPtr<UIElement>();
+}
+
+SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog)
+{
+    SharedPtr<DialogWindow> result;
+    switch (dialog)
+    {
+    case AB::DialogUnknown:
+        break;
+    case AB::DialogAccountChest:
+    {
+        UIElement* root = GetSubsystem<UI>()->GetRoot();
+        UIElement* wnd = root->GetChild(AccountChestDialog::GetTypeNameStatic());
+        if (!wnd)
+        {
+            wnd = new AccountChestDialog(context_);
+            root->AddChild(wnd);
+        }
+        result = dynamic_cast<DialogWindow*>(wnd);
+    }
+    case AB::DialogMerchantItems:
+        break;
+    case AB::DialogSmithItems:
+        break;
+    default:
+        break;
+    }
+    return result;
 }
 
 void WindowManager::SaveWindows()

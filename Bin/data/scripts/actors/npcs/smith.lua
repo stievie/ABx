@@ -19,6 +19,9 @@ function onUpdate(timeElapsed)
 end
 
 function onClicked(creature)
+  if (creature ~= nil) then
+    self:FaceObject(creature)
+  end
 end
 
 -- self was selected by creature

@@ -1375,3 +1375,12 @@ void FwClient::OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>&
     eData[P_MEMBERS] = _members;
     QueueEvent(AbEvents::E_PARTYINFOMEMBERS, eData);
 }
+
+void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::DialogTrigger;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_DIALOGID] = dialogId;
+    QueueEvent(AbEvents::E_DIALOGGTRIGGER, eData);
+}

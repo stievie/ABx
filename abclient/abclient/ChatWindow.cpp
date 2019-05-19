@@ -69,8 +69,6 @@ ChatWindow::ChatWindow(Context* context) :
     Window* wnd = dynamic_cast<Window*>(GetChild("ChatWindow", true));
     wnd->SetPosition(0, 0);
     SetSize(wnd->GetSize());
-    wnd->SetBringToBack(false);
-    wnd->SetPriority(200);
 
     // Chat filter
     UIElement* filterContainer = wnd->GetChild("ChatFilter", false);

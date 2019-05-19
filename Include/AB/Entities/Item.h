@@ -59,7 +59,7 @@ enum ItemType : uint16_t
     ItemTypeMoney = 65534
 };
 
-enum ModelClass : uint16_t
+enum ModelClass : uint32_t
 {
     ModelClassUnknown = 0,
 
@@ -93,7 +93,7 @@ struct Item : Entity
     {
         s.ext(*this, BaseClass<Entity>{});
         s.value4b(index);
-        s.value2b(model_class);
+        s.value4b(model_class);
         s.text1b(name, Limits::MAX_ITEM_NAME);
         s.text1b(script, Limits::MAX_FILENAME);
         s.text1b(server_icon, Limits::MAX_FILENAME);

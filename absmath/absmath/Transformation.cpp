@@ -46,7 +46,6 @@ void Transformation::Turn(float yAngle)
 {
     float ang = GetYRotation();
     ang += yAngle;
-    NormalizeAngle(ang);
     SetYRotation(ang);
 }
 
@@ -57,6 +56,7 @@ float Transformation::GetYRotation() const
 
 void Transformation::SetYRotation(float rad)
 {
+    NormalizeAngle(rad);
     oriention_ = Quaternion(oriention_.x_, rad, oriention_.z_);
 }
 

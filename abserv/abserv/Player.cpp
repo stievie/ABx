@@ -109,6 +109,14 @@ void Player::Ping()
     WriteToOutput(*msg.get());
 }
 
+void Player::TriggerDialog(uint32_t dialogIndex)
+{
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::DialogTrigger);
+    msg->Add<uint32_t>(dialogIndex);
+    WriteToOutput(*msg.get());
+}
+
 void Player::UpdateMailBox()
 {
     if (!mailBox_ && !data_.accountUuid.empty() && !uuids::uuid(data_.accountUuid).nil())
@@ -942,6 +950,7 @@ void Player::RegisterLua(kaguya::State& state)
     state["Player"].setClass(kaguya::UserdataMetatable<Player, Actor>()
         .addFunction("GetParty", &Player::_LuaGetParty)
         .addFunction("ChangeMap", &Player::ChangeMap)
+        .addFunction("TriggerDialog", &Player::TriggerDialog)
     );
 }
 
