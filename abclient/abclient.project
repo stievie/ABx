@@ -8,6 +8,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="abclient/DialogWindow.cpp"/>
+    <File Name="abclient/AccountChestDialog.cpp"/>
     <File Name="abclient/WorldLevel.cpp"/>
     <File Name="abclient/WindowManager.cpp"/>
     <File Name="abclient/TargetWindow.cpp"/>
@@ -56,6 +58,8 @@
     <File Name="abclient/Actor.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="abclient/DialogWindow.h"/>
+    <File Name="abclient/AccountChestDialog.h"/>
     <File Name="abclient/WorldLevel.h"/>
     <File Name="abclient/WindowManager.h"/>
     <File Name="abclient/TargetWindow.h"/>
