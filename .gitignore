@@ -38,6 +38,9 @@ Makefile
 *.pch.*
 *.pch
 
+compile_commands.json
+compile_flags.txt
+
 # codelite object list
 abclient/abclient.txt
 abdata/abdata.txt
