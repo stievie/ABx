@@ -5,8 +5,8 @@ namespace Math {
 
 void Plane::Define(const Vector3& v0, const Vector3& v1, const Vector3& v2)
 {
-    Vector3 dist1 = v1 - v0;
-    Vector3 dist2 = v2 - v0;
+    const Vector3 dist1 = v1 - v0;
+    const Vector3 dist2 = v2 - v0;
 
     Define(dist1.CrossProduct(dist2), v0);
 }

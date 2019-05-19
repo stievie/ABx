@@ -10,21 +10,21 @@ namespace Math {
 Vector3 Ray::ClosestPoint(const Ray& ray) const
 {
     // Algorithm based on http://paulbourke.net/geometry/lineline3d/
-    Vector3 p13 = origin_ - ray.origin_;
-    Vector3 p43 = ray.direction_;
-    Vector3 p21 = direction_;
+    const Vector3 p13 = origin_ - ray.origin_;
+    const Vector3 p43 = ray.direction_;
+    const Vector3 p21 = direction_;
 
-    float d1343 = p13.DotProduct(p43);
-    float d4321 = p43.DotProduct(p21);
-    float d1321 = p13.DotProduct(p21);
-    float d4343 = p43.DotProduct(p43);
-    float d2121 = p21.DotProduct(p21);
+    const float d1343 = p13.DotProduct(p43);
+    const float d4321 = p43.DotProduct(p21);
+    const float d1321 = p13.DotProduct(p21);
+    const float d4343 = p43.DotProduct(p43);
+    const float d2121 = p21.DotProduct(p21);
 
-    float d = d2121 * d4343 - d4321 * d4321;
+    const float d = d2121 * d4343 - d4321 * d4321;
     if (fabs(d) < M_EPSILON)
         return origin_;
-    float n = d1343 * d4321 - d1321 * d4343;
-    float a = n / d;
+    const float n = d1343 * d4321 - d1321 * d4343;
+    const float a = n / d;
 
     return origin_ + a * direction_;
 }
@@ -119,26 +119,26 @@ float Ray::HitDistance(const BoundingBox& box) const
 
 float Ray::HitDistance(const Sphere& sphere) const
 {
-    Vector3 centeredOrigin = origin_ - sphere.center_;
-    float squaredRadius = sphere.radius_ * sphere.radius_;
+    const Vector3 centeredOrigin = origin_ - sphere.center_;
+    const float squaredRadius = sphere.radius_ * sphere.radius_;
 
     // Check if ray originates inside the sphere
     if (centeredOrigin.LengthSqr() <= squaredRadius)
         return 0.0f;
 
     // Calculate intersection by quadratic equation
-    float a = direction_.DotProduct(direction_);
-    float b = 2.0f * centeredOrigin.DotProduct(direction_);
-    float c = centeredOrigin.DotProduct(centeredOrigin) - squaredRadius;
-    float d = b * b - 4.0f * a * c;
+    const float a = direction_.DotProduct(direction_);
+    const float b = 2.0f * centeredOrigin.DotProduct(direction_);
+    const float c = centeredOrigin.DotProduct(centeredOrigin) - squaredRadius;
+    const float d = b * b - 4.0f * a * c;
 
     // No solution
     if (d < 0.0f)
         return INFINITY;
 
     // Get the nearer solution
-    float dSqrt = sqrtf(d);
-    float dist = (-b - dSqrt) / (2.0f * a);
+    const float dSqrt = sqrtf(d);
+    const float dist = (-b - dSqrt) / (2.0f * a);
     if (dist >= 0.0f)
         return dist;
     else

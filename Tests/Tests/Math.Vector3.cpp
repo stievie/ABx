@@ -46,3 +46,15 @@ TEST_CASE("Vector3 Arithmetic", "[vector3]")
         REQUIRE(vec2 == Math::Vector3(2.0f, 3.0f, 2.0f));
     }
 }
+
+TEST_CASE("Vector3 Geometry", "[vector3]")
+{
+    SECTION("CrossProduct")
+    {
+        Math::Vector3 vec1(0.0f, 0.0f, 1.0f);
+        Math::Vector3 vec2(1.0f, 0.0f, 0.0f);
+        Math::Vector3 cross = vec1.CrossProduct(vec2);
+        REQUIRE(cross.Equals(Math::Vector3(0.0f, 1.0f, 0.0f)));
+    }
+
+}

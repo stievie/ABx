@@ -83,9 +83,9 @@ public:
 
     Vector3 operator *(const Vector3& rhs) const
     {
-        Vector3 qVec(x_, y_, z_);
-        Vector3 cross1(qVec.CrossProduct(rhs));
-        Vector3 cross2(qVec.CrossProduct(cross1));
+        const Vector3 qVec(x_, y_, z_);
+        const Vector3 cross1(qVec.CrossProduct(rhs));
+        const Vector3 cross2(qVec.CrossProduct(cross1));
 
         return rhs + 2.0f * (cross1 * w_ + cross2);
     }

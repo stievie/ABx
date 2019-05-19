@@ -46,14 +46,14 @@ public:
     /// Project a point on the ray.
     Vector3 Project(const Vector3& point) const
     {
-        Vector3 offset = point - origin_;
+        const Vector3 offset = point - origin_;
         return origin_ + offset.DotProduct(direction_) * direction_;
     }
 
     /// Return distance of a point from the ray.
     float Distance(const Vector3& point) const
     {
-        Vector3 projected = Project(point);
+        const Vector3 projected = Project(point);
         return (point - projected).Length();
     }
 

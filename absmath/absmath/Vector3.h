@@ -89,11 +89,15 @@ public:
 
     const Vector3 CrossProduct(const Vector3& v) const
     {
+#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+        return XMath::XMVector3Cross(*this, v);
+#else
         return Vector3(
             y_ * v.z_ - z_ * v.y_,
             z_ * v.x_ - x_ * v.z_,
             x_ * v.y_ - y_ * v.x_
         );
+#endif
     }
 
     float DotProduct(const Vector3& v) const

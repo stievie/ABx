@@ -43,12 +43,12 @@ void Sphere::Merge(const Vector3& point)
         return;
     }
 
-    Vector3 offset = point - center_;
-    float dist = offset.Length();
+    const Vector3 offset = point - center_;
+    const float dist = offset.Length();
 
     if (dist > radius_)
     {
-        float half = (dist - radius_) * 0.5f;
+        const float half = (dist - radius_) * 0.5f;
         radius_ += half;
         center_ += (half / dist) * offset;
     }
@@ -162,7 +162,7 @@ bool Sphere::Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& mo
 
 bool Sphere::Collides(const HeightMap& b2, const Vector3& velocity, Vector3& move) const
 {
-    BoundingBox bbox = GetBoundingBox();
+    const BoundingBox bbox = GetBoundingBox();
     return bbox.Collides(b2, velocity, move);
 }
 
@@ -183,12 +183,12 @@ Intersection Sphere::IsInside(const BoundingBox& box) const
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
     if (box.IsOriented())
     {
-        XMath::BoundingSphere me(center_, radius_);
-        XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
+        const XMath::BoundingSphere me(center_, radius_);
+        const XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
         return ct == XMath::DISJOINT ? OUTSIDE : (ct == XMath::INTERSECTS ? INTERSECTS : INSIDE);
     }
 #endif
-    float radiusSquared = radius_ * radius_;
+    const float radiusSquared = radius_ * radius_;
     float distSquared = 0;
     float temp;
     Vector3 min = box.min_;
@@ -264,7 +264,7 @@ Intersection Sphere::IsInsideFast(const BoundingBox& box) const
     if (box.IsOriented())
         return IsInside(box);
 
-    float radiusSquared = radius_ * radius_;
+    const float radiusSquared = radius_ * radius_;
     float distSquared = 0;
     float temp;
     Vector3 min = box.min_;

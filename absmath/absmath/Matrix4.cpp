@@ -167,10 +167,10 @@ Matrix4& Matrix4::RotateZ(float ang)
 
 Matrix4& Matrix4::Rotate(const Vector3& axis, float ang)
 {
-    float s = sin(ang);
-    float c = cos(ang);
-    float t = 1 - c;
-    Vector3 a = axis.Normal();
+    const float s = sin(ang);
+    const float c = cos(ang);
+    const float t = 1 - c;
+    const Vector3 a = axis.Normal();
 
     return *this = *this * Matrix4(
         a.x_ * a.x_ * t + c, a.x_ * a.y_ * t - a.z_ * s, a.x_ * a.z_ * t + a.y_ * s, 0,
@@ -287,8 +287,8 @@ Matrix4 Matrix4::FromFrustum(float left, float right, float bottom, float top, f
 
 Matrix4 Matrix4::FromPerspective(float fovy, float aspect, float _near, float _far)
 {
-    float top = _near * tan(fovy / 2.0f);
-    float right = top * aspect;
+    const float top = _near * tan(fovy / 2.0f);
+    const float right = top * aspect;
     return FromFrustum(-right, right, -top, top, _near, _far);
 }
 
@@ -313,30 +313,30 @@ Matrix4 Matrix4::FromOrtho(float width, float height, float _near, float _far)
 
 Matrix4 Matrix4::FromQuaternion(const Quaternion& q)
 {
-    Quaternion _q = q.Normal();
-    Vector4 axixAngle = _q.AxisAngle();
+    const Quaternion _q = q.Normal();
+    const Vector4 axixAngle = _q.AxisAngle();
     return Matrix4::FromAxisAngle(Vector3(axixAngle.x_, axixAngle.y_, axixAngle.z_), axixAngle.w_);
 }
 
 Matrix4 Matrix4::FromAxisAngle(const Vector3& axis, float angle)
 {
-    Vector3 _axis = axis.Normal();
-    float axisX = _axis.x_, axisY = _axis.y_, axisZ = _axis.z_;
+    const Vector3 _axis = axis.Normal();
+    const float axisX = _axis.x_, axisY = _axis.y_, axisZ = _axis.z_;
 
     // Angles
-    float _cos = cos(-angle);
-    float _sin = sin(-angle);
-    float t = 1.0f - _cos;
+    const float _cos = cos(-angle);
+    const float _sin = sin(-angle);
+    const float t = 1.0f - _cos;
 
     // do the conversion math once
-    float tXX = t * axisX * axisX,
+    const float tXX = t * axisX * axisX,
         tXY = t * axisX * axisY,
         tXZ = t * axisX * axisZ,
         tYY = t * axisY * axisY,
         tYZ = t * axisY * axisZ,
         tZZ = t * axisZ * axisZ;
 
-    float sinX = _sin * axisX,
+    const float sinX = _sin * axisX,
         sinY = _sin * axisY,
         sinZ = _sin * axisZ;
 
@@ -444,15 +444,15 @@ Matrix4 Matrix4::FromLookAt(const Vector3& eye, const Vector3& center, const Vec
 {
     Matrix4 res;
 
-    Vector3 Z = (eye - center).Normal();
+    const Vector3 Z = (eye - center).Normal();
 
-    Vector3 X = Vector3(
+    const Vector3 X = Vector3(
         up.y_ * Z.z_ - up.z_ * Z.y_,
         up.z_ * Z.x_ - up.x_ * Z.z_,
         up.x_ * Z.y_ - up.y_ * Z.x_
     ).Normal();
 
-    Vector3 Y = Vector3(
+    const Vector3 Y = Vector3(
         Z.y_ * X.z_ - Z.z_ * X.y_,
         Z.z_ * X.x_ - Z.x_ * X.z_,
         Z.x_ * X.y_ - Z.y_ * X.x_
@@ -476,25 +476,25 @@ Matrix4 Matrix4::FromLookAt(const Vector3& eye, const Vector3& center, const Vec
 
 Vector3 Matrix4::UnProject(const Vector3& vec, const Matrix4& view, const Matrix4& proj, const float viewport[])
 {
-    Matrix4 inv = (proj * view).Inverse();
-    Vector3 v(
+    const Matrix4 inv = (proj * view).Inverse();
+    const Vector3 v(
         (vec.x_ - viewport[0]) * 2.0f / viewport[2] - 1.0f,
         (vec.y_ - viewport[1]) * 2.0f / viewport[3] - 1.0f,
         2.0f * vec.z_ - 1.0f
     );
 
-    Vector3 res = inv * v;
-    float w = inv.m_[3] * v.x_ + inv.m_[7] * v.y_ + inv.m_[11] * v.z_ + inv.m_[15];
+    const Vector3 res = inv * v;
+    const float w = inv.m_[3] * v.x_ + inv.m_[7] * v.y_ + inv.m_[11] * v.z_ + inv.m_[15];
 
     return res / w;
 }
 
 Vector3 Matrix4::Project(const Vector3& vec, const Matrix4& view, const Matrix4& proj, const float viewport[])
 {
-    Matrix4 trans = proj * view;
+    const Matrix4 trans = proj * view;
     Vector3 v = trans * vec;
 
-    float w = trans.m_[3] * vec.x_ + trans.m_[7] * vec.y_ + trans.m_[11] * vec.z_ + trans.m_[15];
+    const float w = trans.m_[3] * vec.x_ + trans.m_[7] * vec.y_ + trans.m_[11] * vec.z_ + trans.m_[15];
     v = v / w;
 
     return Vector3(

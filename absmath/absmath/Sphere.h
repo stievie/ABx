@@ -93,7 +93,7 @@ public:
     /// Test if a point is inside.
     Intersection IsInside(const Vector3& point) const
     {
-        float distSquared = (point - center_).LengthSqr();
+        const float distSquared = (point - center_).LengthSqr();
         if (distSquared < radius_ * radius_)
             return INSIDE;
         else
@@ -103,7 +103,7 @@ public:
     /// Test if another sphere is inside, outside or intersects.
     Intersection IsInside(const Sphere& sphere) const
     {
-        float dist = (sphere.center_ - center_).Length();
+        const float dist = (sphere.center_ - center_).Length();
         if (dist >= sphere.radius_ + radius_)
             return OUTSIDE;
         else if (dist + sphere.radius_ < radius_)
@@ -117,8 +117,8 @@ public:
     /// Test if another sphere is (partially) inside or outside.
     Intersection IsInsideFast(const Sphere& sphere) const
     {
-        float distSquared = (sphere.center_ - center_).LengthSqr();
-        float combined = sphere.radius_ + radius_;
+        const float distSquared = (sphere.center_ - center_).LengthSqr();
+        const float combined = sphere.radius_ + radius_;
 
         if (distSquared >= combined * combined)
             return OUTSIDE;

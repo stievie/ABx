@@ -13,7 +13,7 @@ const Vector4 Vector4::UnitW(0.0f, 0.0f, 0.0f, 1.0f);
 
 Vector4::Vector4(const std::string& str)
 {
-    std::vector<std::string> parts = Math::Split(str, ' ');
+    const std::vector<std::string> parts = Math::Split(str, ' ');
     if (parts.size() > 2)
     {
         x_ = std::stof(parts.at(0));
