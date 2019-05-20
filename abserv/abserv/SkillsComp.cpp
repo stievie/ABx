@@ -10,17 +10,17 @@ void SkillsComp::Update(uint32_t timeElapsed)
 {
     SkillBar* sb = owner_.GetSkillBar();
     sb->Update(timeElapsed);
-    if (usingSkill_)
+    if (!usingSkill_)
+        return;
+
+    if (auto ls = lastSkill_.lock())
     {
-        if (auto ls = lastSkill_.lock())
+        if (!ls->IsUsing())
         {
-            if (!ls->IsUsing())
-            {
-                usingSkill_ = false;
-                endDirty_ = true;
-                lastError_ = ls->GetLastError();
-                newRecharge_ = ls->recharge_;
-            }
+            usingSkill_ = false;
+            endDirty_ = true;
+            lastError_ = ls->GetLastError();
+            newRecharge_ = ls->recharge_;
         }
     }
 }
@@ -55,34 +55,34 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
 
 void SkillsComp::Cancel()
 {
-    if (usingSkill_)
+    if (!usingSkill_)
+        return;
+
+    if (auto ls = lastSkill_.lock())
     {
-        if (auto ls = lastSkill_.lock())
+        if (ls->IsUsing())
         {
-            if (ls->IsUsing())
-            {
-                usingSkill_ = false;
-                endDirty_ = true;
-                newRecharge_ = 0;
-                ls->CancelUse();
-            }
+            usingSkill_ = false;
+            endDirty_ = true;
+            newRecharge_ = 0;
+            ls->CancelUse();
         }
     }
 }
 
 void SkillsComp::CancelWhenChangingState()
 {
-    if (usingSkill_)
+    if (!usingSkill_)
+        return;
+
+    if (auto ls = lastSkill_.lock())
     {
-        if (auto ls = lastSkill_.lock())
+        if (ls->IsUsing() && ls->IsChangingState())
         {
-            if (ls->IsUsing() && ls->IsChangingState())
-            {
-                usingSkill_ = false;
-                endDirty_ = true;
-                newRecharge_ = 0;
-                ls->CancelUse();
-            }
+            usingSkill_ = false;
+            endDirty_ = true;
+            newRecharge_ = 0;
+            ls->CancelUse();
         }
     }
 }

@@ -239,7 +239,7 @@ void ResourceComp::Update(uint32_t timeElapsed)
 {
     if (owner_.undestroyable_ || owner_.IsDead())
         return;
-    
+
     UpdateResources();
     UpdateRegen(timeElapsed);
     // 2 regen per sec
