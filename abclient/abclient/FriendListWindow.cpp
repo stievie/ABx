@@ -30,6 +30,8 @@ FriendListWindow::FriendListWindow(Context* context) :
     SetBorder(IntRect(4, 4, 4, 4));
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
+    SetBringToFront(true);
+    SetBringToBack(true);
 
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* caption = dynamic_cast<Text*>(GetChild("Caption", true));

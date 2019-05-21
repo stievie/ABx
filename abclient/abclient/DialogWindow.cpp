@@ -38,6 +38,8 @@ void DialogWindow::LoadLayout(const String& fileName)
     SetBorder(IntRect(4, 4, 4, 4));
     SetImageBorder(IntRect(0, 0, 0, 0));
     SetResizeBorder(IntRect(8, 8, 8, 8));
+    SetBringToFront(true);
+    SetBringToBack(true);
 }
 
 void DialogWindow::Center()

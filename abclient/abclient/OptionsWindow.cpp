@@ -23,6 +23,8 @@ OptionsWindow::OptionsWindow(Context* context) :
     Shortcuts* scs = GetSubsystem<Shortcuts>();
     Text* titleText = dynamic_cast<Text*>(GetChild("TitleText", true));
     titleText->SetText(scs->GetCaption(AbEvents::E_SC_TOGGLEOPTIONS, "Options", true));
+    SetBringToFront(true);
+    SetBringToBack(true);
 
     UIElement* container = dynamic_cast<UIElement*>(GetChild("Container", true));
 
