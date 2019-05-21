@@ -168,6 +168,7 @@ void Player::SetYRotation(int64_t time, float rad, bool updateYaw)
         // Yaw is already set by the client
         float deg = RadToDeg(rad);
         controls_.yaw_ = deg;
+        NormalizeAngle(controls_.yaw_);
     }
     lastYaw_ = controls_.yaw_;
 
@@ -187,7 +188,7 @@ void Player::CameraZoom(bool increase)
 void Player::UpdateYaw()
 {
     const Quaternion& rot = node_->GetRotation();
-    controls_.yaw_ = rot.YawAngle();
+    controls_.yaw_ = rot.EulerAngles().y_;
     lastYaw_ = controls_.yaw_;
 }
 

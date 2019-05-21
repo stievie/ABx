@@ -29,10 +29,16 @@ inline T Clamp(T value, T min, T max)
 }
 
 /// Check whether two floating point values are equal within accuracy.
-template <class T>
+template <typename T>
 inline bool Equals(T lhs, T rhs)
 {
     return lhs + std::numeric_limits<T>::epsilon() >= rhs && lhs - std::numeric_limits<T>::epsilon() <= rhs;
+}
+
+template <typename T>
+inline bool Equals(T lhs, T rhs, T epsilon)
+{
+    return lhs + epsilon >= rhs && lhs - epsilon <= rhs;
 }
 
 template <typename T, typename U>
@@ -42,7 +48,7 @@ inline T Lerp(T lhs, T rhs, T i)
 }
 
 /// Return fractional part of passed value in range [0, 1).
-template <class T>
+template <typename T>
 T Fract(T value)
 {
     return value - floor(value);
@@ -65,6 +71,12 @@ inline void NormalizeAngle(float& angle)
 {
     angle = fmod(angle, Math::M_TWOPI);
     angle = fmod(angle + Math::M_TWOPI, Math::M_TWOPI);
+}
+
+inline float NormalizedAngle(float angle)
+{
+    NormalizeAngle(angle);
+    return angle;
 }
 
 }

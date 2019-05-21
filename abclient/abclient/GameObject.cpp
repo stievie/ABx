@@ -53,7 +53,7 @@ void GameObject::SetSpeedFactor(int64_t, float value)
 
 float GameObject::GetYRotation() const
 {
-    return DegToRad(GetNode()->GetRotation().YawAngle());
+    return DegToRad(GetNode()->GetRotation().EulerAngles().y_);
 }
 
 void GameObject::MoveTo(int64_t, const Vector3& newPos)

@@ -3,12 +3,20 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-inline float DegToRad(float deg)
+inline void NormalizeAngle(float& angle)
 {
-    return 2.0f * (float)M_PI * (-deg / 360.0f);
+    angle = fmod(angle, 360.0f);
+    angle = fmod(angle + 360.0f, 360.0f);
 }
 
-inline float RadToDeg(float rad)
+template <typename T>
+inline T DegToRad(T deg)
 {
-    return -rad * (180.0f / (float)M_PI);
+    return -deg * (static_cast<T>(M_PI / 180.0));
+}
+
+template <typename T>
+inline T RadToDeg(T rad)
+{
+    return (-rad / static_cast<T>(M_PI)) * (static_cast<T>(180.0));
 }

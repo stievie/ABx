@@ -295,7 +295,7 @@ void Actor::UpdateTransformation()
     {
         if (fabs(rotateTo_.YawAngle() - rot.YawAngle()) > 1.0f)
         {
-            Quaternion r = rot.Slerp(rotateTo_, 0.4f);
+            Quaternion r = rot.Slerp(rotateTo_, 0.2f);
             node_->SetRotation(r);
         }
         else
@@ -402,7 +402,8 @@ void Actor::MoveTo(int64_t time, const Vector3& newPos)
 void Actor::SetYRotation(int64_t, float rad, bool)
 {
     float deg = RadToDeg(rad);
-    rotateTo_.FromAngleAxis(deg, Vector3::UP);
+    NormalizeAngle(deg);
+    rotateTo_.FromEulerAngles(0.0f, deg, 0.0f);
 }
 
 void Actor::RemoveFromScene()

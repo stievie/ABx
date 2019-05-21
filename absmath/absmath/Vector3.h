@@ -109,9 +109,10 @@ public:
     {
         return acos(DotProduct(v) / (Length() * v.Length()));
     }
+    /// Returns the Y angle between this point and v in Rad
     float AngleY(const Vector3& v) const
     {
-        return atan2((x_ - v.x_), (z_ - v.z_)) * 180.0f / Math::M_PIF;
+        return atan2(x_ - v.x_, z_ - v.z_);
     }
 
     float LengthSqr() const;

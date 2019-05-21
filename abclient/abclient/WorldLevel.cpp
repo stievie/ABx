@@ -316,10 +316,7 @@ void WorldLevel::Update(StringHash, VariantMap&)
 
     // Limit pitch
     player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
-    if (player_->controls_.yaw_ > 360.0f)
-        player_->controls_.yaw_ -= 360.0f;
-    else if (player_->controls_.yaw_ < 0.0f)
-        player_->controls_.yaw_ += 360.0f;
+    NormalizeAngle(player_->controls_.yaw_);
 }
 
 void WorldLevel::SetupViewport()
