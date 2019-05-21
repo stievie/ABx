@@ -22,6 +22,9 @@ namespace SimpleWeb {
   public:
     Server(const std::string &cert_file, const std::string &private_key_file, const std::string &verify_file = std::string())
         : ServerBase<HTTPS>::ServerBase(443), context(asio::ssl::context::tlsv12) {
+      context.set_options(asio::ssl::context::default_workarounds |
+            asio::ssl::context::no_sslv2 |
+            asio::ssl::context::no_sslv3);
       context.use_certificate_chain_file(cert_file);
       context.use_private_key_file(private_key_file, asio::ssl::context::pem);
 
