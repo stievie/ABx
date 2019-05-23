@@ -125,7 +125,7 @@ Vector3 Quaternion::EulerAngles() const
     if (check < -0.995f)
     {
         return Vector3(
-            -float(M_PI_2),
+            -float(M_PIHALF),
             0.0f,
             -atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_))
         );
@@ -133,7 +133,7 @@ Vector3 Quaternion::EulerAngles() const
     else if (check > 0.995f)
     {
         return Vector3(
-            float(M_PI_2),
+            float(M_PIHALF),
             0.0f,
             atan2f(2.0f * (x_ * z_ - w_ * y_), 1.0f - 2.0f * (y_ * y_ + z_ * z_))
         );

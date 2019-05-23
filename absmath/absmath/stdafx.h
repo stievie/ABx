@@ -9,7 +9,6 @@
 
 #define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschlieﬂen
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 // STL

@@ -123,7 +123,7 @@ void SceneViewer::Update()
                 auto p = g->GetPlayers().begin()->second;
 
                 // Get camera look at dir from character yaw + pitch
-                Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_ + float(M_PI));
+                Math::Quaternion rot = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, yaw_ + float(Math::M_PIF));
                 Math::Quaternion dir = rot * Math::Quaternion::FromAxisAngle(Math::Vector3::UnitX, pitch_);
                 Math::Vector3 aimPoint;
                 static const Math::Vector3 CAM_POS(0.0f, 0.0f, 0.0f);
@@ -131,7 +131,7 @@ void SceneViewer::Update()
                 Math::Vector3 rayDir = dir * Math::Vector3::Back;
 
                 camera_.transformation_.position_ = (aimPoint + rayDir * cameraDistance_);
-                Math::Quaternion quat = p->transformation_.oriention_;// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI));
+                Math::Quaternion quat = p->transformation_.oriention_;// *Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(Math::M_PIF));
 
                 camera_.rotation_ = quat * dir;
             }

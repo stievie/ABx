@@ -57,13 +57,13 @@ T Fract(T value)
 template <typename T>
 inline T DegToRad(T deg)
 {
-    return deg * (static_cast<T>(M_PI / 180.0));
+    return deg * (static_cast<T>(M_PIF / 180.0));
 }
 
 template <typename T>
 inline T RadToDeg(T rad)
 {
-    return (rad / static_cast<T>(M_PI)) * (static_cast<T>(180.0));
+    return (rad / static_cast<T>(M_PIF)) * (static_cast<T>(180.0));
 }
 
 /// Make angle between 0 and 2 * Pi.

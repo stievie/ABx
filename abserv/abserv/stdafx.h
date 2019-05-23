@@ -19,7 +19,6 @@
 #include "Config.h"
 #include "DebugConfig.h"
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 // STL

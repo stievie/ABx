@@ -11,8 +11,8 @@ Vector3 Ray::ClosestPoint(const Ray& ray) const
 {
     // Algorithm based on http://paulbourke.net/geometry/lineline3d/
     const Vector3 p13 = origin_ - ray.origin_;
-    const Vector3 p43 = ray.direction_;
-    const Vector3 p21 = direction_;
+    const Vector3& p43 = ray.direction_;
+    const Vector3& p21 = direction_;
 
     const float d1343 = p13.DotProduct(p43);
     const float d4321 = p43.DotProduct(p21);
