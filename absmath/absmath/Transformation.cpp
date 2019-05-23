@@ -57,7 +57,8 @@ float Transformation::GetYRotation() const
 void Transformation::SetYRotation(float rad)
 {
     NormalizeAngle(rad);
-    oriention_ = Quaternion(0.0f, rad, 0.0f);
+    const Math::Vector3 euler = oriention_.EulerAngles();
+    oriention_ = Quaternion(euler.x_, rad, euler.y_);
 }
 
 void Transformation::LookAt(const Vector3& lookAt, const Vector3& up)

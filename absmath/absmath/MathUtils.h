@@ -42,7 +42,7 @@ inline bool Equals(T lhs, T rhs, T epsilon)
 }
 
 template <typename T, typename U>
-inline T Lerp(T lhs, T rhs, T i)
+inline T Lerp(T lhs, T rhs, U i)
 {
     return (i - lhs) / (rhs - lhs);
 }
