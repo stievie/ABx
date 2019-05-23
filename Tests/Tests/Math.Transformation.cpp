@@ -27,6 +27,7 @@ TEST_CASE("Transformation Basic")
         Math::Vector3 scaling;
         Math::Quaternion orient;
         matrix.Decompose(&scaling, &orient, &transl);
+        INFO(transl.ToString());
         REQUIRE(transl.Equals(Math::Vector3::One));
         REQUIRE(scaling.Equals(Math::Vector3(0.5f, 0.5f, 0.5f)));
         Math::Quaternion orient2 = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::M_PIHALF);

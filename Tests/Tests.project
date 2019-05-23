@@ -5,24 +5,24 @@
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Tests">
-    <File Name="Tests/Math.Vector3.cpp"/>
-    <File Name="Tests/Math.Ray.cpp"/>
-    <File Name="Tests/Math.Sphere.cpp"/>
-    <File Name="Tests/Math.Quaternion.cpp"/>
-    <File Name="Tests/Math.Transformation.cpp"/>
-    <File Name="Tests/main.cpp"/>
-    <File Name="Tests/Math.Matrix.cpp"/>
-    <File Name="Tests/Math.BoundingBox.cpp"/>
-    <File Name="Tests/Math.Utils.cpp"/>
-    <File Name="Tests/Math.Collisions.cpp"/>
+  <VirtualDirectory Name="include">
     <File Name="Tests/stdafx.h"/>
-    <File Name="Tests/Utils.WeightedSelector.cpp"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="include"/>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="src"/>
+  <VirtualDirectory Name="src">
+    <File Name="Tests/Utils.WeightedSelector.cpp"/>
+    <File Name="Tests/Math.Vector3.cpp"/>
+    <File Name="Tests/Math.Utils.cpp"/>
+    <File Name="Tests/Math.Transformation.cpp"/>
+    <File Name="Tests/Math.Sphere.cpp"/>
+    <File Name="Tests/Math.Ray.cpp"/>
+    <File Name="Tests/Math.Quaternion.cpp"/>
+    <File Name="Tests/Math.Matrix.cpp"/>
+    <File Name="Tests/Math.Collisions.cpp"/>
+    <File Name="Tests/Math.BoundingBox.cpp"/>
+    <File Name="Tests/main.cpp"/>
+  </VirtualDirectory>
   <Dependencies Name="Release">
     <Project Name="abscommon"/>
     <Project Name="absmath"/>
