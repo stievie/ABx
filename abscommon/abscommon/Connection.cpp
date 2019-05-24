@@ -222,7 +222,7 @@ void Connection::ParsePacket(const asio::error_code& error)
         return;
     }
 
-    uint32_t checksum;;
+    uint32_t checksum;
     int32_t len = msg_.GetMessageLength() - msg_.GetReadPos() - NetworkMessage::ChecksumLength;
     if (len > 0)
         checksum = Utils::AdlerChecksum((uint8_t*)(msg_.GetBuffer() + msg_.GetReadPos() +

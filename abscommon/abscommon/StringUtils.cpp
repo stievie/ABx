@@ -132,7 +132,7 @@ uint32_t ConvertStringToIP(const std::string& ip)
 static float RoundOff(float n)
 {
     float d = n * 100.0f;
-    int i = static_cast<int>(d + 0.5);
+    int i = static_cast<int>(d + 0.5f);
     d = (float)i / 100.0f;
     return d;
 }

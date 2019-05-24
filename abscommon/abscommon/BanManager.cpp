@@ -19,7 +19,7 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
     if (clientIP == 0)
         return false;
 
-    uint64_t currentTime = Utils::Tick();
+    int64_t currentTime = Utils::Tick();
     std::map<uint32_t, ConnectBlock>::iterator it = ipConnects_.find(clientIP);
     if (it == ipConnects_.end())
     {

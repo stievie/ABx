@@ -33,7 +33,8 @@ bool Variant::operator ==(const Variant& other) const
     case VAR_BOOL:
         return value_.boolValue == other.value_.boolValue;
     case VAR_FLOAT:
-        return value_.floatValue == other.value_.floatValue;
+        return value_.floatValue + std::numeric_limits<float>::epsilon() >= other.value_.floatValue &&
+            value_.floatValue - std::numeric_limits<float>::epsilon() <= other.value_.floatValue;
     case VAR_INT64:
         return value_.int64Value == other.value_.int64Value;
     case VAR_STRING:
@@ -60,7 +61,11 @@ std::string Variant::ToString() const
     case VAR_STRING:
         return stringValue_;
     case VAR_VOIDPTR:
-        return std::to_string(0);
+    {
+        char buff[100];
+        int len = snprintf(buff, 100, "0x%p", value_.ptrValue);
+        return std::string(buff, len);
+    }
     default:
         return std::string();
     }
