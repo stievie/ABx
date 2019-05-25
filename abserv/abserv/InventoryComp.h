@@ -91,7 +91,7 @@ public:
     }
     size_t GetChestCount() const
     {
-        return inventory_->GetCount();
+        return chest_->GetCount();
     }
 
     void SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade);

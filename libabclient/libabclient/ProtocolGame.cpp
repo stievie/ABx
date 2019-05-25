@@ -704,7 +704,7 @@ void ProtocolGame::ParseChestContent(const std::shared_ptr<InputMessage>& messag
     uint16_t count = message->Get<uint16_t>();
     std::vector<InventoryItem> items;
     items.reserve(count);
-    for (uint16_t i = 0; i < count; i++)
+    for (uint16_t i = 0; i < count; ++i)
     {
         items.push_back({
             static_cast<AB::Entities::ItemType>(message->Get<uint16_t>()),
