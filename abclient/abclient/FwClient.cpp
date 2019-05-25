@@ -665,6 +665,18 @@ void FwClient::InventoryDropItem(uint16_t pos)
         client_.InventoryDropItem(pos);
 }
 
+void FwClient::UpdateChest()
+{
+    if (loggedIn_)
+        client_.GetChest();
+}
+
+void FwClient::ChestDestroyItem(uint16_t pos)
+{
+    if (loggedIn_)
+        client_.ChestDestroyItem(pos);
+}
+
 void FwClient::Move(uint8_t direction)
 {
     if (loggedIn_)
@@ -877,6 +889,55 @@ void FwClient::OnInventoryItemDelete(int64_t updateTick, uint16_t pos)
     SendEvent(AbEvents::E_INVENTORYITEMDELETE, eData);
 
     inventory_.erase(it);
+}
+
+void FwClient::OnGetChest(int64_t, const std::vector<Client::InventoryItem>& items)
+{
+    chest_.clear();
+    chest_.reserve(items.size());
+    for (const auto& item : items)
+        chest_.push_back(item);
+    VariantMap& eData = GetEventDataMap();
+    SendEvent(AbEvents::E_CHEST, eData);
+}
+
+void FwClient::OnChestItemUpdate(int64_t updateTick, const Client::InventoryItem& item)
+{
+    const auto it = std::find_if(chest_.begin(), chest_.end(), [&item](const Client::InventoryItem& current) -> bool
+    {
+        return current.pos == item.pos;
+    });
+    if (it != chest_.end())
+    {
+        // Replace item at the pos
+        (*it) = item;
+    }
+    else
+        // Append
+        chest_.push_back(item);
+
+    using namespace AbEvents::ChestItemUpdate;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_ITEMPOS] = item.pos;
+    SendEvent(AbEvents::E_CHESTITEMUPDATE, eData);
+}
+
+void FwClient::OnChestItemDelete(int64_t updateTick, uint16_t pos)
+{
+    auto it = std::find_if(chest_.begin(), chest_.end(), [pos](const Client::InventoryItem& current) {
+        return current.pos == pos;
+    });
+    if (it == chest_.end())
+        return;
+
+    using namespace AbEvents::ChestItemDelete;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_ITEMPOS] = pos;
+    SendEvent(AbEvents::E_CHESTITEMDELETE, eData);
+
+    chest_.erase(it);
 }
 
 void FwClient::OnEnterWorld(int64_t updateTick, const std::string& serverId,

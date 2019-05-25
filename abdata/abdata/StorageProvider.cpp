@@ -637,8 +637,9 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     case KEY_CONCRETEITEMS_HASH:
         return LoadFromDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(id, *data);
     case KEY_ACCOUNTITEMLIST_HASH:
+        assert(false);
     case KEY_CHESTITEMLIST_HASH:
-        return LoadFromDB<DB::DBAccountItemList, AB::Entities::AccountItemList>(id, *data);
+        return LoadFromDB<DB::DBAccountItemList, AB::Entities::ChestItems>(id, *data);
     case KEY_PLAYERITEMLIST_HASH:
         // Use one bellow
         assert(false);
@@ -804,8 +805,9 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         succ = FlushRecord<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
         break;
     case KEY_ACCOUNTITEMLIST_HASH:
+        assert(false);
     case KEY_CHESTITEMLIST_HASH:
-        succ = FlushRecord<DB::DBAccountItemList, AB::Entities::AccountItemList>(data);
+        succ = FlushRecord<DB::DBAccountItemList, AB::Entities::ChestItems>(data);
         break;
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
@@ -931,8 +933,9 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     case KEY_CONCRETEITEMS_HASH:
         return ExistsInDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
     case KEY_ACCOUNTITEMLIST_HASH:
+        assert(false);
     case KEY_CHESTITEMLIST_HASH:
-        return ExistsInDB<DB::DBAccountItemList, AB::Entities::AccountItemList>(data);
+        return ExistsInDB<DB::DBAccountItemList, AB::Entities::ChestItems>(data);
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
     case KEY_INVENTORYITEMLIST_HASH:

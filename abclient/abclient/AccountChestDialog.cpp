@@ -1,28 +1,11 @@
 #include "stdafx.h"
 #include "AccountChestDialog.h"
 #include "AbEvents.h"
-
-void AccountChestDialog::HandleInventoryItemUpdate(StringHash, VariantMap& eventData)
-{
-}
-
-void AccountChestDialog::HandleInventoryItemRemove(StringHash, VariantMap& eventData)
-{
-}
-
-void AccountChestDialog::HandleItemClicked(StringHash, VariantMap& eventData)
-{
-}
-
-void AccountChestDialog::SubscribeEvents()
-{
-    DialogWindow::SubscribeEvents();
-    SubscribeToEvent(AbEvents::E_INVENTORYITEMUPDATE, URHO3D_HANDLER(AccountChestDialog, HandleInventoryItemUpdate));
-    SubscribeToEvent(AbEvents::E_INVENTORYITEMDELETE, URHO3D_HANDLER(AccountChestDialog, HandleInventoryItemRemove));
-}
+#include "FwClient.h"
 
 AccountChestDialog::AccountChestDialog(Context* context) :
-    DialogWindow(context)
+    DialogWindow(context),
+    initializted_(false)
 {
     SetName(AccountChestDialog::GetTypeNameStatic());
 
@@ -36,8 +19,38 @@ AccountChestDialog::AccountChestDialog(Context* context) :
 
 AccountChestDialog::~AccountChestDialog()
 {
+    UnsubscribeFromAllEvents();
+}
+
+void AccountChestDialog::HandleChest(StringHash, VariantMap& eventData)
+{
+}
+
+void AccountChestDialog::HandleChestItemUpdate(StringHash, VariantMap& eventData)
+{
+}
+
+void AccountChestDialog::HandleChestItemRemove(StringHash, VariantMap& eventData)
+{
+}
+
+void AccountChestDialog::HandleItemClicked(StringHash, VariantMap& eventData)
+{
+}
+
+void AccountChestDialog::SubscribeEvents()
+{
+    DialogWindow::SubscribeEvents();
+    SubscribeToEvent(AbEvents::E_CHEST, URHO3D_HANDLER(AccountChestDialog, HandleChest));
+    SubscribeToEvent(AbEvents::E_CHESTITEMUPDATE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemUpdate));
+    SubscribeToEvent(AbEvents::E_CHESTITEMDELETE, URHO3D_HANDLER(AccountChestDialog, HandleChestItemRemove));
 }
 
 void AccountChestDialog::Initialize()
 {
+    if (!initializted_)
+    {
+        GetSubsystem<FwClient>()->UpdateChest();
+        initializted_ = true;
+    }
 }

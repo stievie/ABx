@@ -113,7 +113,7 @@ void InventoryWindow::GetInventory()
 {
     if (!initializted_)
     {
-        FwClient* net = context_->GetSubsystem<FwClient>();
+        FwClient* net = GetSubsystem<FwClient>();
         net->UpdateInventory();
         initializted_ = true;
     }

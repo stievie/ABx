@@ -60,6 +60,9 @@ public:
     virtual void OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items) = 0;
     virtual void OnInventoryItemUpdate(int64_t updateTick, const InventoryItem& item) = 0;
     virtual void OnInventoryItemDelete(int64_t updateTick, uint16_t pos) = 0;
+    virtual void OnGetChest(int64_t updateTick, const std::vector<InventoryItem>& items) = 0;
+    virtual void OnChestItemUpdate(int64_t updateTick, const InventoryItem& item) = 0;
+    virtual void OnChestItemDelete(int64_t updateTick, uint16_t pos) = 0;
     virtual void OnChangeInstance(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, const std::string& charUuid) = 0;
     virtual void OnEnterWorld(int64_t updateTick, const std::string& serverId,

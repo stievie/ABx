@@ -176,6 +176,15 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::DropInventoryItem, pos);
         break;
     }
+    case AB::GameProtocol::PacketTypeGetChest:
+        AddPlayerTask(&Game::Player::GetChest);
+        break;
+    case AB::GameProtocol::PacketTypeChestDestroyItem:
+    {
+        uint16_t pos = message.Get<uint16_t>();
+        AddPlayerTask(&Game::Player::DestroyChestItem, pos);
+        break;
+    }
     case AB::GameProtocol::PacketTypePartyInvitePlayer:
     {
         uint32_t playerId = message.Get<uint32_t>();

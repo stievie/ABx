@@ -239,6 +239,10 @@ enum GameProtocolCodes : uint8_t
     InventoryContent,             // All inventory
     InventoryItemUpdate,
     InventoryItemDelete,
+    // Chest
+    ChestContent,
+    ChestItemUpdate,
+    ChestItemDelete,
 
     DialogTrigger,                // Show a dialog
 };
@@ -355,6 +359,9 @@ enum GamePacketTypes : uint8_t
     PacketTypeGetInventory,
     PacketTypeInventoryDestroyItem,
     PacketTypeInventoryDropItem,
+    // Chest
+    PacketTypeGetChest,
+    PacketTypeChestDestroyItem,
 };
 
 enum CommandTypes : uint8_t

@@ -14,7 +14,8 @@
 #include "GameManager.h"
 #include "PartyManager.h"
 #include "Item.h"
-#include "AB/Entities/PlayerItemList.h"
+#include <AB/Entities/PlayerItemList.h>
+#include <AB/Entities/AccountItemList.h>
 #include "ItemDrop.h"
 
 #include "DebugNew.h"
@@ -148,13 +149,13 @@ void Player::GetMailHeaders()
 
 void Player::GetInventory()
 {
-    size_t count = inventoryComp_->GetCount();
+    size_t count = inventoryComp_->GetInventoryCount();
     if (count == 0)
         return;
 
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::InventoryContent);
-    msg->Add<uint16_t>(static_cast<uint16_t>(inventoryComp_->GetCount()));
+    msg->Add<uint16_t>(static_cast<uint16_t>(count));
     inventoryComp_->VisitInventory([&msg](const Item* current)
     {
         msg->Add<uint16_t>(current->data_.type);
@@ -170,7 +171,7 @@ void Player::GetInventory()
 
 void Player::DestroyInventoryItem(uint16_t pos)
 {
-    if (inventoryComp_->DestroyItem(pos))
+    if (inventoryComp_->DestroyInventoryItem(pos))
     {
         AB::Entities::InventoryItems inv;
         inv.uuid = data_.uuid;
@@ -179,6 +180,68 @@ void Player::DestroyInventoryItem(uint16_t pos)
 
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::InventoryItemDelete);
+        msg->Add<uint16_t>(pos);
+        WriteToOutput(*msg.get());
+    }
+}
+
+void Player::DropInventoryItem(uint16_t pos)
+{
+    std::unique_ptr<Item> item = inventoryComp_->RemoveInventoryItem(pos);
+    if (item)
+    {
+        item->concreteItem_.storagePlace = AB::Entities::StoragePlaceScene;
+        item->concreteItem_.storagePos = 0;
+        auto rng = GetSubsystem<Crypto::Random>();
+        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item);
+        drop->transformation_.position_ = transformation_.position_;
+        // Random pos around dropper
+        drop->transformation_.position_.y_ += 0.2f;
+        drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
+        drop->SetSource(GetThis());
+        GetGame()->SpawnItemDrop(drop);
+
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::InventoryItemDelete);
+        msg->Add<uint16_t>(pos);
+        WriteToOutput(*msg.get());
+    }
+}
+
+void Player::GetChest()
+{
+    size_t count = inventoryComp_->GetChestCount();
+    if (count == 0)
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ChestContent);
+    msg->Add<uint16_t>(static_cast<uint16_t>(count));
+    inventoryComp_->VisitChest([&msg](const Item* current)
+    {
+        msg->Add<uint16_t>(current->data_.type);
+        msg->Add<uint32_t>(current->data_.index);
+        msg->Add<uint8_t>(static_cast<uint8_t>(current->concreteItem_.storagePlace));
+        msg->Add<uint16_t>(current->concreteItem_.storagePos);
+        msg->Add<uint32_t>(current->concreteItem_.count);
+        msg->Add<uint16_t>(current->concreteItem_.value);
+    });
+
+    WriteToOutput(*msg.get());
+}
+
+void Player::DestroyChestItem(uint16_t pos)
+{
+    if (inventoryComp_->DestroyChestItem(pos))
+    {
+        AB::Entities::ChestItems inv;
+        inv.uuid = account_.uuid;
+        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+        cli->Invalidate(inv);
+
+        auto msg = Net::NetworkMessage::GetNew();
+        msg->AddByte(AB::GameProtocol::ChestItemDelete);
         msg->Add<uint16_t>(pos);
         WriteToOutput(*msg.get());
     }
@@ -346,40 +409,16 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
 bool Player::AddToInventory(std::unique_ptr<Item>& item)
 {
-    if (inventoryComp_->IsFull())
+    if (inventoryComp_->IsInventoryFull())
     {
         OnInventoryFull();
         return false;
     }
     auto msg = Net::NetworkMessage::GetNew();
-    bool ret = inventoryComp_->SetInventory(item, msg.get());
+    bool ret = inventoryComp_->SetInventoryItem(item, msg.get());
     if (msg->GetSize() != 0)
         WriteToOutput(*msg.get());
     return ret;
-}
-
-void Player::DropInventoryItem(uint16_t pos)
-{
-    std::unique_ptr<Item> item = inventoryComp_->RemoveItem(pos);
-    if (item)
-    {
-        item->concreteItem_.storagePlace = AB::Entities::StoragePlaceScene;
-        item->concreteItem_.storagePos = 0;
-        auto rng = GetSubsystem<Crypto::Random>();
-        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item);
-        drop->transformation_.position_ = transformation_.position_;
-        // Random pos around dropper
-        drop->transformation_.position_.y_ += 0.2f;
-        drop->transformation_.position_.x_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-        drop->transformation_.position_.z_ += rng->Get<float>(-RANGE_TOUCH, RANGE_TOUCH);
-        drop->SetSource(GetThis());
-        GetGame()->SpawnItemDrop(drop);
-
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::InventoryItemDelete);
-        msg->Add<uint16_t>(pos);
-        WriteToOutput(*msg.get());
-    }
 }
 
 void Player::PartyInvitePlayer(uint32_t playerId)

@@ -108,8 +108,6 @@ public:
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void UpdateMailBox();
     void GetMailHeaders();
-    void GetInventory();
-    void DestroyInventoryItem(uint16_t pos);
     void SendMail(const std::string recipient, const std::string subject, const std::string body);
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
@@ -126,8 +124,13 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+    void GetInventory();
     bool AddToInventory(std::unique_ptr<Item>& item) override;
     void DropInventoryItem(uint16_t pos);
+    void DestroyInventoryItem(uint16_t pos);
+    void GetChest();
+    void DestroyChestItem(uint16_t pos);
+
     const std::string& GetPlayerUuid() const override { return data_.uuid; }
     const std::string& GetAccountUuid() const override { return account_.uuid; }
 

@@ -6,8 +6,10 @@ class AccountChestDialog : public DialogWindow
 {
     URHO3D_OBJECT(AccountChestDialog, DialogWindow);
 private:
-    void HandleInventoryItemUpdate(StringHash eventType, VariantMap& eventData);
-    void HandleInventoryItemRemove(StringHash eventType, VariantMap& eventData);
+    bool initializted_;
+    void HandleChest(StringHash eventType, VariantMap& eventData);
+    void HandleChestItemUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleChestItemRemove(StringHash eventType, VariantMap& eventData);
     void HandleItemClicked(StringHash eventType, VariantMap& eventData);
 protected:
     void SubscribeEvents() override;

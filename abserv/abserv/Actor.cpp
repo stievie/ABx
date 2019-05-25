@@ -752,7 +752,16 @@ bool Actor::SetInventory(const std::string& ciUuid)
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
-    return inventoryComp_->SetInventory(item, nullptr);
+    return inventoryComp_->SetInventoryItem(item, nullptr);
+}
+
+bool Actor::SetChest(const std::string& ciUuid)
+{
+    auto factory = GetSubsystem<ItemFactory>();
+    std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
+    if (!item)
+        return false;
+    return inventoryComp_->SetChestItem(item, nullptr);
 }
 
 void Actor::_LuaGotoPosition(float x, float y, float z)

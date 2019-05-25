@@ -168,6 +168,24 @@ void Client::OnInventoryItemDelete(int64_t updateTick, uint16_t pos)
         receiver_->OnInventoryItemDelete(updateTick, pos);
 }
 
+void Client::OnGetChest(int64_t updateTick, const std::vector<InventoryItem>& items)
+{
+    if (receiver_)
+        receiver_->OnGetChest(updateTick, items);
+}
+
+void Client::OnChestItemUpdate(int64_t updateTick, const InventoryItem& item)
+{
+    if (receiver_)
+        receiver_->OnChestItemUpdate(updateTick, item);
+}
+
+void Client::OnChestItemDelete(int64_t updateTick, uint16_t pos)
+{
+    if (receiver_)
+        receiver_->OnChestItemDelete(updateTick, pos);
+}
+
 void Client::OnEnterWorld(int64_t updateTick, const std::string& serverId,
     const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
     AB::Entities::GameType type, uint8_t partySize)
@@ -642,6 +660,18 @@ void Client::InventoryDropItem(uint16_t pos)
 {
     if (state_ == ClientState::World)
         protoGame_->InventoryDropItem(pos);
+}
+
+void Client::GetChest()
+{
+    if (state_ == ClientState::World)
+        protoGame_->GetChest();
+}
+
+void Client::ChestDestroyItem(uint16_t pos)
+{
+    if (state_ == ClientState::World)
+        protoGame_->ChestDestroyItem(pos);
 }
 
 void Client::DeleteMail(const std::string& mailUuid)

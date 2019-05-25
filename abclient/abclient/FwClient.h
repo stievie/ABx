@@ -34,6 +34,7 @@ private:
     std::map<std::string, AB::Entities::Service> services_;
     std::vector<AB::Entities::MailHeader> mailHeaders_;
     std::vector<Client::InventoryItem> inventory_;
+    std::vector<Client::InventoryItem> chest_;
     String currentServerId_;
     AB::Entities::Mail currentMail_;
     String currentCharacterUuid_;
@@ -98,6 +99,8 @@ public:
     void UpdateInventory();
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
+    void UpdateChest();
+    void ChestDestroyItem(uint16_t pos);
     void Move(uint8_t direction);
     void Turn(uint8_t direction);
     void SetDirection(float rad);
@@ -138,6 +141,9 @@ public:
     void OnGetInventory(int64_t updateTick, const std::vector<Client::InventoryItem>& items) override;
     void OnInventoryItemUpdate(int64_t updateTick, const Client::InventoryItem& item) override;
     void OnInventoryItemDelete(int64_t updateTick, uint16_t pos) override;
+    void OnGetChest(int64_t updateTick, const std::vector<Client::InventoryItem>& items) override;
+    void OnChestItemUpdate(int64_t updateTick, const Client::InventoryItem& item) override;
+    void OnChestItemDelete(int64_t updateTick, uint16_t pos) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
         AB::Entities::GameType type, uint8_t partySize) override;

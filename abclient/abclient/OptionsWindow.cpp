@@ -180,7 +180,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
     else
         windowDropdown->SetSelection(static_cast<unsigned>(opts->GetWindowMode()));
 
-    SubscribeToEvent(windowDropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+    SubscribeToEvent(windowDropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
     {
         using namespace ItemSelected;
         unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -205,7 +205,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
     });
     CheckBox* mwCheck = dynamic_cast<CheckBox*>(wnd->GetChild("DisableMouseWalkingCheck", true));
     mwCheck->SetChecked(opts->disableMouseWalking_);
-    SubscribeToEvent(mwCheck, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+    SubscribeToEvent(mwCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
     {
         using namespace Toggled;
         bool checked = eventData[P_STATE].GetBool();
@@ -215,7 +215,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("MouseSensSlider", true));
         slider->SetValue(opts->mouseSensitivity_);
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
@@ -225,7 +225,7 @@ void OptionsWindow::CreatePageGeneral(TabElement* tabElement)
     }
     CheckBox* mumbleCheck = dynamic_cast<CheckBox*>(wnd->GetChild("EnableMumbleCheck", true));
     mumbleCheck->SetChecked(opts->enableMumble_);
-    SubscribeToEvent(mumbleCheck, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+    SubscribeToEvent(mumbleCheck, E_TOGGLED, [this](StringHash, VariantMap& eventData)
     {
         using namespace Toggled;
         bool checked = eventData[P_STATE].GetBool();
@@ -302,7 +302,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
             dropdown->AddItem(result);
         }
         dropdown->SetSelection(static_cast<unsigned>(opts->GetShadowQuality()));
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -356,7 +356,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
                 dropdown->SetSelection(3);
         }
 
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -471,7 +471,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         }
         dropdown->SetSelection(static_cast<unsigned>(opts->GetTextureFilterMode()));
 
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -489,7 +489,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("ShadowsCheck", true));
         check->SetChecked(opts->GetShadows());
-        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Toggled;
             bool checked = eventData[P_STATE].GetBool();
@@ -500,7 +500,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("VSynchCheck", true));
         check->SetChecked(opts->GetVSync());
-        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Toggled;
             bool checked = eventData[P_STATE].GetBool();
@@ -576,7 +576,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
                 selection = 6;
         }
         dropdown->SetSelection(selection);
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -594,7 +594,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("SpecularLightningCheck", true));
         check->SetChecked(opts->GetSpecularLightning());
-        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Toggled;
             bool checked = eventData[P_STATE].GetBool();
@@ -605,7 +605,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("HDRRenderingCheck", true));
         check->SetChecked(opts->GetHDRRendering());
-        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Toggled;
             bool checked = eventData[P_STATE].GetBool();
@@ -628,7 +628,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
     {
         CheckBox* check = dynamic_cast<CheckBox*>(wnd->GetChild("HighDPICheck", true));
         check->SetChecked(opts->GetHighDPI());
-        SubscribeToEvent(check, E_TOGGLED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(check, E_TOGGLED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Toggled;
             bool checked = eventData[P_STATE].GetBool();
@@ -683,7 +683,7 @@ void OptionsWindow::CreatePageGraphics(TabElement* tabElement)
         }
         dropdown->SetSelection(static_cast<unsigned>(opts->GetAntiAliasingMode()));
 
-        SubscribeToEvent(dropdown, E_ITEMSELECTED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(dropdown, E_ITEMSELECTED, [this](StringHash, VariantMap& eventData)
         {
             using namespace ItemSelected;
             unsigned sel = eventData[P_SELECTION].GetUInt();
@@ -715,7 +715,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMasterSlider", true));
         slider->SetValue(opts->gainMaster_ * slider->GetRange());
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
@@ -728,7 +728,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainEffectSlider", true));
         slider->SetValue(opts->gainEffect_ * slider->GetRange());
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
@@ -741,7 +741,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainAmbientSlider", true));
         slider->SetValue(opts->gainAmbient_ * slider->GetRange());
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
@@ -754,7 +754,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainVoiceSlider", true));
         slider->SetValue(opts->gainVoice_ * slider->GetRange());
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
@@ -767,7 +767,7 @@ void OptionsWindow::CreatePageAudio(TabElement* tabElement)
     {
         Slider* slider = dynamic_cast<Slider*>(wnd->GetChild("GainMusicSlider", true));
         slider->SetValue(opts->gainMusic_ * slider->GetRange());
-        SubscribeToEvent(slider, E_SLIDERCHANGED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(slider, E_SLIDERCHANGED, [this](StringHash, VariantMap& eventData)
         {
             using namespace SliderChanged;
             float value = eventData[P_VALUE].GetFloat();
@@ -871,7 +871,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
 
     {
         Button* button = dynamic_cast<Button*>(wnd->GetChild("AddButton", true));
-        SubscribeToEvent(button, E_RELEASED, [&](StringHash, VariantMap& eventData)
+        SubscribeToEvent(button, E_RELEASED, [this](StringHash, VariantMap& eventData)
         {
             using namespace Released;
 
@@ -904,7 +904,7 @@ void OptionsWindow::CreatePageInput(TabElement* tabElement)
     }
     {
         Button* button = dynamic_cast<Button*>(wnd->GetChild("DeleteButton", true));
-        SubscribeToEvent(button, E_RELEASED, [&](StringHash, VariantMap&)
+        SubscribeToEvent(button, E_RELEASED, [this](StringHash, VariantMap&)
         {
             ListView* hkLvw = dynamic_cast<ListView*>(GetChild("HotkeysListView", true));
             Text* sel = dynamic_cast<Text*>(hkLvw->GetSelectedItem());

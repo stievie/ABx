@@ -4,6 +4,7 @@
 #include "Damage.h"
 #include "Mechanic.h"
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Account.h>
 #include "ItemContainer.h"
 
 namespace Game {
@@ -18,13 +19,17 @@ class InventoryComp
 private:
     Actor& owner_;
     std::map<EquipPos, std::unique_ptr<Item>> equipment_;
+    /// Character inventory
     std::unique_ptr<ItemContainer> inventory_;
-    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
+    /// Account chest
+    std::unique_ptr<ItemContainer> chest_;
+    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest);
 public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner) :
         owner_(owner),
-        inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE))
+        inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE)),
+        chest_(std::make_unique<ItemContainer>(MAX_CHEST_STACK_SIZE, AB::Entities::DEFAULT_CHEST_SIZE))
     { }
     // non-copyable
     InventoryComp(const InventoryComp&) = delete;
@@ -37,28 +42,54 @@ public:
     Item* GetEquipment(EquipPos pos) const;
     std::unique_ptr<Item> RemoveEquipment(EquipPos pos);
 
-    bool SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
+    bool SetInventoryItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
-    bool DestroyItem(uint16_t pos)
+    bool DestroyInventoryItem(uint16_t pos)
     {
         return inventory_->DestroyItem(pos);
     }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    std::unique_ptr<Item> RemoveItem(uint16_t pos)
+    std::unique_ptr<Item> RemoveInventoryItem(uint16_t pos)
     {
         return inventory_->RemoveItem(pos);
     }
-    Item* GetItem(uint16_t pos)
+    Item* GetInventoryItem(uint16_t pos)
     {
         return inventory_->GetItem(pos);
     }
-    bool IsFull() const { return inventory_->IsFull(); }
-    void SetSize(uint16_t value)
+    bool IsInventoryFull() const { return inventory_->IsFull(); }
+    void SetInventorySize(uint16_t value)
     {
         inventory_->SetSize(value);
     }
-    size_t GetCount() const
+    size_t GetInventoryCount() const
+    {
+        return inventory_->GetCount();
+    }
+
+    bool SetChestItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
+    /// Remove and Destroy (i.e. delete from DB) the item
+    bool DestroyChestItem(uint16_t pos)
+    {
+        return chest_->DestroyItem(pos);
+    }
+    /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
+    /// Since it's a unique_ptr somebody should own it, if it's still needed.
+    std::unique_ptr<Item> RemoveChestItem(uint16_t pos)
+    {
+        return chest_->RemoveItem(pos);
+    }
+    Item* GetChestItem(uint16_t pos)
+    {
+        return chest_->GetItem(pos);
+    }
+    bool IsChestFull() const { return chest_->IsFull(); }
+    void SetChestSize(uint16_t value)
+    {
+        chest_->SetSize(value);
+    }
+    size_t GetChestCount() const
     {
         return inventory_->GetCount();
     }
@@ -86,6 +117,11 @@ public:
     void VisitInventory(Func&& func)
     {
         inventory_->VisitItems(func);
+    }
+    template<typename Func>
+    void VisitChest(Func&& func)
+    {
+        chest_->VisitItems(func);
     }
 
 };

@@ -268,6 +268,22 @@ URHO3D_EVENT(E_INVENTORYITEMDELETE, InventoryItemDelete)
     URHO3D_PARAM(P_ITEMPOS, ItemPos);     // unit16_t
 }
 
+URHO3D_EVENT(E_CHEST, Chest)
+{
+}
+
+URHO3D_EVENT(E_CHESTITEMUPDATE, ChestItemUpdate)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_ITEMPOS, ItemPos);     // unit16_t
+}
+
+URHO3D_EVENT(E_CHESTITEMDELETE, ChestItemDelete)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_ITEMPOS, ItemPos);     // unit16_t
+}
+
 URHO3D_EVENT(E_PARTYINVITED, PartyInvited)
 {
     URHO3D_PARAM(P_UPDATETICK, UpdateTick);

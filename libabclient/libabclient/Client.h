@@ -91,6 +91,9 @@ public:
     void OnGetInventory(int64_t updateTick, const std::vector<InventoryItem>& items) override;
     void OnInventoryItemUpdate(int64_t updateTick, const InventoryItem& item) override;
     void OnInventoryItemDelete(int64_t updateTick, uint16_t pos) override;
+    void OnGetChest(int64_t updateTick, const std::vector<InventoryItem>& items) override;
+    void OnChestItemUpdate(int64_t updateTick, const InventoryItem& item) override;
+    void OnChestItemDelete(int64_t updateTick, uint16_t pos) override;
     void OnEnterWorld(int64_t updateTick, const std::string& serverId,
         const std::string& mapUuid, const std::string& instanceUuid, uint32_t playerId,
         AB::Entities::GameType type, uint8_t partySize) override;
@@ -177,6 +180,8 @@ public:
     void GetInventory();
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
+    void GetChest();
+    void ChestDestroyItem(uint16_t pos);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void Move(uint8_t direction);

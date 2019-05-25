@@ -47,11 +47,11 @@ std::unique_ptr<Item> InventoryComp::RemoveEquipment(EquipPos pos)
     return item;
 }
 
-void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message)
+void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest)
 {
     if (!message)
         return;
-    message->AddByte(AB::GameProtocol::InventoryItemUpdate);
+    message->AddByte((!isChest) ? AB::GameProtocol::InventoryItemUpdate : AB::GameProtocol::ChestItemUpdate);
     message->Add<uint16_t>(item->data_.type);
     message->Add<uint32_t>(item->data_.index);
     message->Add<uint8_t>(static_cast<uint8_t>(item->concreteItem_.storagePlace));
@@ -60,13 +60,26 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
     message->Add<uint16_t>(item->concreteItem_.value);
 }
 
-bool InventoryComp::SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
+bool InventoryComp::SetInventoryItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
 {
     item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
     item->concreteItem_.accountUuid = owner_.GetAccountUuid();
     const bool ret = inventory_->SetItem(item, [message](const Item* const item)
     {
-        InventoryComp::WriteItemUpdate(item, message);
+        InventoryComp::WriteItemUpdate(item, message, false);
+    });
+    if (!ret)
+        owner_.OnInventoryFull();
+    return ret;
+}
+
+bool InventoryComp::SetChestItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
+{
+    item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
+    item->concreteItem_.accountUuid = owner_.GetAccountUuid();
+    const bool ret = inventory_->SetItem(item, [message](const Item* const item)
+    {
+        InventoryComp::WriteItemUpdate(item, message, true);
     });
     if (!ret)
         owner_.OnInventoryFull();

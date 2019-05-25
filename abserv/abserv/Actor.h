@@ -220,6 +220,7 @@ public:
     Skill* GetCurrentSkill() const;
     bool SetEquipment(const std::string& ciUuid);
     bool SetInventory(const std::string& ciUuid);
+    bool SetChest(const std::string& ciUuid);
     virtual const std::string& GetPlayerUuid() const { return Utils::Uuid::EMPTY_UUID; }
     virtual const std::string& GetAccountUuid() const { return Utils::Uuid::EMPTY_UUID; }
 

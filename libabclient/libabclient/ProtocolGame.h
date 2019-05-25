@@ -46,6 +46,9 @@ protected:
     void ParseInventoryContent(const std::shared_ptr<InputMessage>& message);
     void ParseInventoryItemUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseInventoryItemDelete(const std::shared_ptr<InputMessage>& message);
+    void ParseChestContent(const std::shared_ptr<InputMessage>& message);
+    void ParseChestItemUpdate(const std::shared_ptr<InputMessage>& message);
+    void ParseChestItemDelete(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseGameError(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
@@ -95,6 +98,8 @@ public:
     void GetInventory();
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
+    void GetChest();
+    void ChestDestroyItem(uint16_t pos);
     void GetMail(const std::string& mailUuid);
     void DeleteMail(const std::string& mailUuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);

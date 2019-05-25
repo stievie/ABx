@@ -119,6 +119,15 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::InventoryItemDelete:
             ParseInventoryItemDelete(message);
             break;
+        case AB::GameProtocol::ChestContent:
+            ParseChestContent(message);
+            break;
+        case AB::GameProtocol::ChestItemUpdate:
+            ParseChestItemUpdate(message);
+            break;
+        case AB::GameProtocol::ChestItemDelete:
+            ParseChestItemDelete(message);
+            break;
         case AB::GameProtocol::GameUpdate:
             ParseUpdate(message);
             break;
@@ -690,6 +699,46 @@ void ProtocolGame::ParseInventoryItemDelete(const std::shared_ptr<InputMessage>&
         receiver_->OnInventoryItemDelete(updateTick_, pos);
 }
 
+void ProtocolGame::ParseChestContent(const std::shared_ptr<InputMessage>& message)
+{
+    uint16_t count = message->Get<uint16_t>();
+    std::vector<InventoryItem> items;
+    items.reserve(count);
+    for (uint16_t i = 0; i < count; i++)
+    {
+        items.push_back({
+            static_cast<AB::Entities::ItemType>(message->Get<uint16_t>()),
+            message->Get<uint32_t>(),
+            static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>()),
+            message->Get<uint16_t>(),
+            message->Get<uint32_t>(),
+            message->Get<uint16_t>()
+            });
+    }
+    if (receiver_)
+        receiver_->OnGetChest(updateTick_, items);
+}
+
+void ProtocolGame::ParseChestItemUpdate(const std::shared_ptr<InputMessage>& message)
+{
+    InventoryItem item;
+    item.type = static_cast<AB::Entities::ItemType>(message->Get<uint16_t>());
+    item.index = message->Get<uint32_t>();
+    item.place = static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>());
+    item.pos = message->Get<uint16_t>();
+    item.count = message->Get<uint32_t>();
+    item.value = message->Get<uint16_t>();
+    if (receiver_)
+        receiver_->OnChestItemUpdate(updateTick_, item);
+}
+
+void ProtocolGame::ParseChestItemDelete(const std::shared_ptr<InputMessage>& message)
+{
+    uint16_t pos = message->Get<uint16_t>();
+    if (receiver_)
+        receiver_->OnChestItemDelete(updateTick_, pos);
+}
+
 void ProtocolGame::SendLoginPacket()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
@@ -756,6 +805,21 @@ void ProtocolGame::InventoryDropItem(uint16_t pos)
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDropItem);
+    msg->Add<uint16_t>(pos);
+    Send(msg);
+}
+
+void ProtocolGame::GetChest()
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetChest);
+    Send(msg);
+}
+
+void ProtocolGame::ChestDestroyItem(uint16_t pos)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChestDestroyItem);
     msg->Add<uint16_t>(pos);
     Send(msg);
 }
