@@ -478,7 +478,7 @@ struct alignas(16) XMMATRIX
 #ifdef _XM_NO_INTRINSICS_
 	union
 	{
-		XMVECTOR c[4];
+		XMVECTOR r[4];
 		struct
 		{
 			float _11, _21, _31, _41;
@@ -489,14 +489,14 @@ struct alignas(16) XMMATRIX
 		float m[4][4];
 	};
 #else
-	XMVECTOR c[4];
+	XMVECTOR r[4];
 #endif
 
 	XMMATRIX() XM_CTOR_DEFAULT
 #if defined(_MSC_VER) && _MSC_VER >= 1900
-		constexpr XMMATRIX(FXMVECTOR C0, FXMVECTOR C1, FXMVECTOR C2, CXMVECTOR C3) : c{ C0,C1,C2,C3 } {}
+		constexpr XMMATRIX(FXMVECTOR R0, FXMVECTOR R1, FXMVECTOR R2, CXMVECTOR R3) : r{ R0,R1,R2,R3 } {}
 #else
-		XMMATRIX(FXMVECTOR C0, FXMVECTOR C1, FXMVECTOR C2, CXMVECTOR C3) { c[0] = C0; c[1] = C1; c[2] = C2; c[3] = C3; }
+		XMMATRIX(FXMVECTOR R0, FXMVECTOR R1, FXMVECTOR R2, CXMVECTOR R3) { r[0] = R0; r[1] = R1; r[2] = R2; r[3] = R3; }
 #endif
 	XMMATRIX(float m00, float m10, float m20, float m30,
 		float m01, float m11, float m21, float m31,
@@ -505,11 +505,11 @@ struct alignas(16) XMMATRIX
 	explicit XMMATRIX(_In_reads_(16) const float *pArray);
 
 #ifdef _XM_NO_INTRINSICS_
-	float       operator() (size_t Row, size_t Column) const { return m[Column][Row]; }
-	float&      operator() (size_t Row, size_t Column) { return m[Column][Row]; }
+	float       operator() (size_t Row, size_t Column) const { return m[Row][Column]; }
+	float&      operator() (size_t Row, size_t Column) { return m[Row][Column]; }
 #endif
 
-	XMMATRIX&   operator= (const XMMATRIX& M) { c[0] = M.c[0]; c[1] = M.c[1]; c[2] = M.c[2]; c[3] = M.c[3]; return *this; }
+	XMMATRIX&   operator= (const XMMATRIX& M) { r[0] = M.r[0]; r[1] = M.r[1]; r[2] = M.r[2]; r[3] = M.r[3]; return *this; }
 
 	XMMATRIX    operator+ () const { return *this; }
 	XMMATRIX    operator- () const;

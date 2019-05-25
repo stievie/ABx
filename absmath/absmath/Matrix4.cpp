@@ -40,7 +40,6 @@ Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, 
 #if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
 Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
 {
-#if defined(HAVE_DIRECTX_MATH)
     // Row major
 #   define XMMG(m, i) (XMath::XMVectorGetByIndex(m, i))
     const XMath::XMVECTOR& row0 = matrix.r[0];
@@ -52,19 +51,6 @@ Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
     m_[Index20] = XMMG(row2, 0); m_[Index21] = XMMG(row2, 1); m_[Index22] = XMMG(row2, 2); m_[Index23] = XMMG(row2, 3);
     m_[Index30] = XMMG(row3, 0); m_[Index31] = XMMG(row3, 1); m_[Index32] = XMMG(row3, 2); m_[Index33] = XMMG(row3, 3);
 #   undef XMMG
-#elif defined(HAVE_X_MATH)
-    // Col major
-#   define XMMG(m, i) (XMath::XMVectorGetByIndex(m, i))
-    const XMath::XMVECTOR& row0 = matrix.c[0];
-    const XMath::XMVECTOR& row1 = matrix.c[1];
-    const XMath::XMVECTOR& row2 = matrix.c[2];
-    const XMath::XMVECTOR& row3 = matrix.c[3];
-    m_[Index00] = XMMG(row0, 0); m_[Index01] = XMMG(row1, 0); m_[Index02] = XMMG(row2, 0); m_[Index03] = XMMG(row3, 0);
-    m_[Index10] = XMMG(row0, 1); m_[Index11] = XMMG(row1, 1); m_[Index12] = XMMG(row2, 1); m_[Index13] = XMMG(row3, 1);
-    m_[Index20] = XMMG(row0, 2); m_[Index21] = XMMG(row1, 2); m_[Index22] = XMMG(row2, 2); m_[Index23] = XMMG(row3, 2);
-    m_[Index30] = XMMG(row0, 3); m_[Index31] = XMMG(row1, 3); m_[Index32] = XMMG(row2, 3); m_[Index33] = XMMG(row3, 3);
-#   undef XMMG
-#endif
 }
 #endif
 

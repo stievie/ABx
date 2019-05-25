@@ -526,9 +526,9 @@ inline void XM_CALLCONV BoundingSphere::Transform(BoundingSphere& Out, FXMMATRIX
 	// Transform the center of the sphere.
 	XMVECTOR C = XMVector3Transform(vCenter, M);
 
-	XMVECTOR dX = XMVector3Dot(M.c[0], M.c[0]);
-	XMVECTOR dY = XMVector3Dot(M.c[1], M.c[1]);
-	XMVECTOR dZ = XMVector3Dot(M.c[2], M.c[2]);
+	XMVECTOR dX = XMVector3Dot(M.r[0], M.r[0]);
+	XMVECTOR dY = XMVector3Dot(M.r[1], M.r[1]);
+	XMVECTOR dZ = XMVector3Dot(M.r[2], M.r[2]);
 
 	XMVECTOR d = XMVectorMax(dX, XMVectorMax(dY, dZ));
 
@@ -1948,10 +1948,10 @@ inline void XM_CALLCONV BoundingOrientedBox::Transform(BoundingOrientedBox& Out,
 
 	// Composite the box rotation and the transform rotation.
 	XMMATRIX nM;
-	nM.c[0] = XMVector3Normalize(M.c[0]);
-	nM.c[1] = XMVector3Normalize(M.c[1]);
-	nM.c[2] = XMVector3Normalize(M.c[2]);
-	nM.c[3] = g_XMIdentityR3;
+	nM.r[0] = XMVector3Normalize(M.r[0]);
+	nM.r[1] = XMVector3Normalize(M.r[1]);
+	nM.r[2] = XMVector3Normalize(M.r[2]);
+	nM.r[3] = g_XMIdentityR3;
 	XMVECTOR Rotation = XMQuaternionRotationMatrix(nM);
 	vOrientation = XMQuaternionMultiply(vOrientation, Rotation);
 
@@ -1959,9 +1959,9 @@ inline void XM_CALLCONV BoundingOrientedBox::Transform(BoundingOrientedBox& Out,
 	vCenter = XMVector3Transform(vCenter, M);
 
 	// Scale the box extents.
-	XMVECTOR dX = XMVector3Length(M.c[0]);
-	XMVECTOR dY = XMVector3Length(M.c[1]);
-	XMVECTOR dZ = XMVector3Length(M.c[2]);
+	XMVECTOR dX = XMVector3Length(M.r[0]);
+	XMVECTOR dY = XMVector3Length(M.r[1]);
+	XMVECTOR dZ = XMVector3Length(M.r[2]);
 
 	XMVECTOR VectorScale = XMVectorSelect(dY, dX, g_XMSelect1000);
 	VectorScale = XMVectorSelect(dZ, VectorScale, g_XMSelect1100);
@@ -2301,16 +2301,16 @@ inline bool BoundingOrientedBox::Intersects(const BoundingOrientedBox& box) cons
 	XMVECTOR h_B = XMLoadFloat3(&box.Extents);
 
 	// Rows. Note R[0,1,2]X.w = 0.
-	XMVECTOR R0X = R.c[0];
-	XMVECTOR R1X = R.c[1];
-	XMVECTOR R2X = R.c[2];
+	XMVECTOR R0X = R.r[0];
+	XMVECTOR R1X = R.r[1];
+	XMVECTOR R2X = R.r[2];
 
 	R = XMMatrixTranspose(R);
 
 	// Columns. Note RX[0,1,2].w = 0.
-	XMVECTOR RX0 = R.c[0];
-	XMVECTOR RX1 = R.c[1];
-	XMVECTOR RX2 = R.c[2];
+	XMVECTOR RX0 = R.r[0];
+	XMVECTOR RX1 = R.r[1];
+	XMVECTOR RX2 = R.r[2];
 
 	// Absolute value of rows.
 	XMVECTOR AR0X = XMVectorAbs(R0X);
@@ -2521,7 +2521,7 @@ inline PlaneIntersectionType XM_CALLCONV BoundingOrientedBox::Intersects(FXMVECT
 	XMMATRIX R = XMMatrixRotationQuaternion(BoxOrientation);
 
 	XMVECTOR Outside, Inside;
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane, Outside, Inside);
 
 	// If the box is outside any plane it is outside.
 	if (XMVector4EqualInt(Outside, XMVectorTrueInt()))
@@ -2568,13 +2568,13 @@ inline bool XM_CALLCONV BoundingOrientedBox::Intersects(FXMVECTOR Origin, FXMVEC
 	XMVECTOR TOrigin = XMVectorSubtract(vCenter, Origin);
 
 	// Compute the dot product againt each axis of the box.
-	XMVECTOR AxisDotOrigin = XMVector3Dot(R.c[0], TOrigin);
-	AxisDotOrigin = XMVectorSelect(AxisDotOrigin, XMVector3Dot(R.c[1], TOrigin), SelectY);
-	AxisDotOrigin = XMVectorSelect(AxisDotOrigin, XMVector3Dot(R.c[2], TOrigin), SelectZ);
+	XMVECTOR AxisDotOrigin = XMVector3Dot(R.r[0], TOrigin);
+	AxisDotOrigin = XMVectorSelect(AxisDotOrigin, XMVector3Dot(R.r[1], TOrigin), SelectY);
+	AxisDotOrigin = XMVectorSelect(AxisDotOrigin, XMVector3Dot(R.r[2], TOrigin), SelectZ);
 
-	XMVECTOR AxisDotDirection = XMVector3Dot(R.c[0], Direction);
-	AxisDotDirection = XMVectorSelect(AxisDotDirection, XMVector3Dot(R.c[1], Direction), SelectY);
-	AxisDotDirection = XMVectorSelect(AxisDotDirection, XMVector3Dot(R.c[2], Direction), SelectZ);
+	XMVECTOR AxisDotDirection = XMVector3Dot(R.r[0], Direction);
+	AxisDotDirection = XMVectorSelect(AxisDotDirection, XMVector3Dot(R.r[1], Direction), SelectY);
+	AxisDotDirection = XMVectorSelect(AxisDotDirection, XMVector3Dot(R.r[2], Direction), SelectZ);
 
 	// if (fabs(AxisDotDirection) <= Epsilon) the ray is nearly parallel to the slab.
 	XMVECTOR IsParallel = XMVectorLessOrEqual(XMVectorAbs(AxisDotDirection), g_RayEpsilon);
@@ -2641,28 +2641,28 @@ inline ContainmentType XM_CALLCONV BoundingOrientedBox::ContainedBy(FXMVECTOR Pl
 	XMVECTOR Outside, Inside;
 
 	// Test against each plane.
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane0, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane0, Outside, Inside);
 
 	XMVECTOR AnyOutside = Outside;
 	XMVECTOR AllInside = Inside;
 
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane1, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane1, Outside, Inside);
 	AnyOutside = XMVectorOrInt(AnyOutside, Outside);
 	AllInside = XMVectorAndInt(AllInside, Inside);
 
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane2, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane2, Outside, Inside);
 	AnyOutside = XMVectorOrInt(AnyOutside, Outside);
 	AllInside = XMVectorAndInt(AllInside, Inside);
 
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane3, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane3, Outside, Inside);
 	AnyOutside = XMVectorOrInt(AnyOutside, Outside);
 	AllInside = XMVectorAndInt(AllInside, Inside);
 
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane4, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane4, Outside, Inside);
 	AnyOutside = XMVectorOrInt(AnyOutside, Outside);
 	AllInside = XMVectorAndInt(AllInside, Inside);
 
-	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.c[0], R.c[1], R.c[2], Plane5, Outside, Inside);
+	Internal::FastIntersectOrientedBoxPlane(vCenter, vExtents, R.r[0], R.r[1], R.r[2], Plane5, Outside, Inside);
 	AnyOutside = XMVectorOrInt(AnyOutside, Outside);
 	AllInside = XMVectorAndInt(AllInside, Inside);
 
@@ -2750,10 +2750,10 @@ inline void BoundingOrientedBox::CreateFromPoints(BoundingOrientedBox& Out, size
 	// Put them in a matrix.
 	XMMATRIX R;
 
-	R.c[0] = XMVectorSetW(v1, 0.f);
-	R.c[1] = XMVectorSetW(v2, 0.f);
-	R.c[2] = XMVectorSetW(v3, 0.f);
-	R.c[3] = g_XMIdentityR3.v;
+	R.r[0] = XMVectorSetW(v1, 0.f);
+	R.r[1] = XMVectorSetW(v2, 0.f);
+	R.r[2] = XMVectorSetW(v3, 0.f);
+	R.r[3] = g_XMIdentityR3.v;
 
 	// Multiply by -1 to convert the matrix into a right handed coordinate 
 	// system (Det ~= 1) in case the eigenvectors form a left handed 
@@ -2763,9 +2763,9 @@ inline void BoundingOrientedBox::CreateFromPoints(BoundingOrientedBox& Out, size
 
 	if (XMVector4Less(Det, XMVectorZero()))
 	{
-		R.c[0] = XMVectorMultiply(R.c[0], g_XMNegativeOne.v);
-		R.c[1] = XMVectorMultiply(R.c[1], g_XMNegativeOne.v);
-		R.c[2] = XMVectorMultiply(R.c[2], g_XMNegativeOne.v);
+		R.r[0] = XMVectorMultiply(R.r[0], g_XMNegativeOne.v);
+		R.r[1] = XMVectorMultiply(R.r[1], g_XMNegativeOne.v);
+		R.r[2] = XMVectorMultiply(R.r[2], g_XMNegativeOne.v);
 	}
 
 	// Get the rotation quaternion from the matrix.
@@ -2825,10 +2825,10 @@ inline void XM_CALLCONV BoundingFrustum::Transform(BoundingFrustum& Out, FXMMATR
 
 	// Composite the frustum rotation and the transform rotation
 	XMMATRIX nM;
-	nM.c[0] = XMVector3Normalize(M.c[0]);
-	nM.c[1] = XMVector3Normalize(M.c[1]);
-	nM.c[2] = XMVector3Normalize(M.c[2]);
-	nM.c[3] = g_XMIdentityR3;
+	nM.r[0] = XMVector3Normalize(M.r[0]);
+	nM.r[1] = XMVector3Normalize(M.r[1]);
+	nM.r[2] = XMVector3Normalize(M.r[2]);
+	nM.r[3] = g_XMIdentityR3;
 	XMVECTOR Rotation = XMQuaternionRotationMatrix(nM);
 	vOrientation = XMQuaternionMultiply(vOrientation, Rotation);
 
@@ -2840,9 +2840,9 @@ inline void XM_CALLCONV BoundingFrustum::Transform(BoundingFrustum& Out, FXMMATR
 	XMStoreFloat4(&Out.Orientation, vOrientation);
 
 	// Scale the near and far distances (the slopes remain the same).
-	XMVECTOR dX = XMVector3Dot(M.c[0], M.c[0]);
-	XMVECTOR dY = XMVector3Dot(M.c[1], M.c[1]);
-	XMVECTOR dZ = XMVector3Dot(M.c[2], M.c[2]);
+	XMVECTOR dX = XMVector3Dot(M.r[0], M.r[0]);
+	XMVECTOR dY = XMVector3Dot(M.r[1], M.r[1]);
+	XMVECTOR dZ = XMVector3Dot(M.r[2], M.r[2]);
 
 	XMVECTOR d = XMVectorMax(dX, XMVectorMax(dY, dZ));
 	float Scale = sqrtf(XMVectorGetX(d));
@@ -3422,9 +3422,9 @@ inline bool BoundingFrustum::Intersects(const BoundingOrientedBox& box) const
 		// h(u) * abs(n dot b(u))) + h(v) * abs(n dot b(v)) + h(w) * abs(n dot b(w))
 		// where h(i) are extents of the box, n is the plane normal, and b(i) are the 
 		// axes of the box.
-		XMVECTOR Radius = XMVector3Dot(Planes[i], R.c[0]);
-		Radius = XMVectorSelect(Radius, XMVector3Dot(Planes[i], R.c[1]), SelectY);
-		Radius = XMVectorSelect(Radius, XMVector3Dot(Planes[i], R.c[2]), SelectZ);
+		XMVECTOR Radius = XMVector3Dot(Planes[i], R.r[0]);
+		Radius = XMVectorSelect(Radius, XMVector3Dot(Planes[i], R.r[1]), SelectY);
+		Radius = XMVectorSelect(Radius, XMVector3Dot(Planes[i], R.r[2]), SelectZ);
 		Radius = XMVector3Dot(Extents, XMVectorAbs(Radius));
 
 		// Outside the plane?
@@ -3473,25 +3473,25 @@ inline bool BoundingFrustum::Intersects(const BoundingOrientedBox& box) const
 		// Find the min/max values of the projection of the frustum onto each axis.
 		XMVECTOR FrustumMin, FrustumMax;
 
-		FrustumMin = XMVector3Dot(Corners[0], R.c[0]);
-		FrustumMin = XMVectorSelect(FrustumMin, XMVector3Dot(Corners[0], R.c[1]), SelectY);
-		FrustumMin = XMVectorSelect(FrustumMin, XMVector3Dot(Corners[0], R.c[2]), SelectZ);
+		FrustumMin = XMVector3Dot(Corners[0], R.r[0]);
+		FrustumMin = XMVectorSelect(FrustumMin, XMVector3Dot(Corners[0], R.r[1]), SelectY);
+		FrustumMin = XMVectorSelect(FrustumMin, XMVector3Dot(Corners[0], R.r[2]), SelectZ);
 		FrustumMax = FrustumMin;
 
 		for (size_t i = 1; i < BoundingOrientedBox::CORNER_COUNT; ++i)
 		{
-			XMVECTOR Temp = XMVector3Dot(Corners[i], R.c[0]);
-			Temp = XMVectorSelect(Temp, XMVector3Dot(Corners[i], R.c[1]), SelectY);
-			Temp = XMVectorSelect(Temp, XMVector3Dot(Corners[i], R.c[2]), SelectZ);
+			XMVECTOR Temp = XMVector3Dot(Corners[i], R.r[0]);
+			Temp = XMVectorSelect(Temp, XMVector3Dot(Corners[i], R.r[1]), SelectY);
+			Temp = XMVectorSelect(Temp, XMVector3Dot(Corners[i], R.r[2]), SelectZ);
 
 			FrustumMin = XMVectorMin(FrustumMin, Temp);
 			FrustumMax = XMVectorMax(FrustumMax, Temp);
 		}
 
 		// Project the center of the box onto the axes.
-		XMVECTOR BoxDist = XMVector3Dot(Center, R.c[0]);
-		BoxDist = XMVectorSelect(BoxDist, XMVector3Dot(Center, R.c[1]), SelectY);
-		BoxDist = XMVectorSelect(BoxDist, XMVector3Dot(Center, R.c[2]), SelectZ);
+		XMVECTOR BoxDist = XMVector3Dot(Center, R.r[0]);
+		BoxDist = XMVectorSelect(BoxDist, XMVector3Dot(Center, R.r[1]), SelectY);
+		BoxDist = XMVectorSelect(BoxDist, XMVector3Dot(Center, R.r[2]), SelectZ);
 
 		// The projection of the box onto the axis is just its Center and Extents.
 		// if (min > box_max || max < box_min) reject;
@@ -3517,7 +3517,7 @@ inline bool BoundingFrustum::Intersects(const BoundingOrientedBox& box) const
 		for (size_t j = 0; j < 6; j++)
 		{
 			// Compute the axis we are going to test.
-			XMVECTOR Axis = XMVector3Cross(R.c[i], FrustumEdgeAxis[j]);
+			XMVECTOR Axis = XMVector3Cross(R.r[i], FrustumEdgeAxis[j]);
 
 			// Find the min/max values of the projection of the frustum onto the axis.
 			XMVECTOR FrustumMin, FrustumMax;
@@ -3535,9 +3535,9 @@ inline bool BoundingFrustum::Intersects(const BoundingOrientedBox& box) const
 			XMVECTOR Dist = XMVector3Dot(Center, Axis);
 
 			// Project the axes of the box onto the axis to find the "radius" of the box.
-			XMVECTOR Radius = XMVector3Dot(Axis, R.c[0]);
-			Radius = XMVectorSelect(Radius, XMVector3Dot(Axis, R.c[1]), SelectY);
-			Radius = XMVectorSelect(Radius, XMVector3Dot(Axis, R.c[2]), SelectZ);
+			XMVECTOR Radius = XMVector3Dot(Axis, R.r[0]);
+			Radius = XMVectorSelect(Radius, XMVector3Dot(Axis, R.r[1]), SelectY);
+			Radius = XMVectorSelect(Radius, XMVector3Dot(Axis, R.r[2]), SelectZ);
 			Radius = XMVector3Dot(Extents, XMVectorAbs(Radius));
 
 			// if (center > max + radius || center < min - radius) reject;

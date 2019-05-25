@@ -770,9 +770,9 @@ inline XMVECTOR XM_CALLCONV XMQuaternionRotationMatrix
 	static const XMVECTORU32 Select0110 = { XM_SELECT_0, XM_SELECT_1, XM_SELECT_1, XM_SELECT_0 };
 	static const XMVECTORU32 Select0010 = { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 };
 
-	XMVECTOR r0 = M.c[0];
-	XMVECTOR r1 = M.c[1];
-	XMVECTOR r2 = M.c[2];
+	XMVECTOR r0 = M.r[0];
+	XMVECTOR r1 = M.r[1];
+	XMVECTOR r2 = M.r[2];
 
 	XMVECTOR r00 = vdupq_lane_f32(vget_low_f32(r0), 0);
 	XMVECTOR r11 = vdupq_lane_f32(vget_low_f32(r1), 1);
@@ -855,9 +855,9 @@ inline XMVECTOR XM_CALLCONV XMQuaternionRotationMatrix
 	static const XMVECTORF32 XMMPMP = { -1.0f, +1.0f, -1.0f, +1.0f };
 	static const XMVECTORF32 XMMMPP = { -1.0f, -1.0f, +1.0f, +1.0f };
 
-	XMVECTOR r0 = M.c[0];  // (r00, r01, r02, 0)
-	XMVECTOR r1 = M.c[1];  // (r10, r11, r12, 0)
-	XMVECTOR r2 = M.c[2];  // (r20, r21, r22, 0)
+	XMVECTOR r0 = M.r[0];  // (r00, r01, r02, 0)
+	XMVECTOR r1 = M.r[1];  // (r10, r11, r12, 0)
+	XMVECTOR r2 = M.r[2];  // (r20, r21, r22, 0)
 
 						   // (r00, r00, r00, r00)
 	XMVECTOR r00 = XM_PERMUTE_PS(r0, _MM_SHUFFLE(0, 0, 0, 0));
@@ -1247,10 +1247,10 @@ inline XMVECTOR XM_CALLCONV XMPlaneTransform
 	XMVECTOR Y = XMVectorSplatY(P);
 	XMVECTOR X = XMVectorSplatX(P);
 
-	XMVECTOR Result = XMVectorMultiply(W, M.c[3]);
-	Result = XMVectorMultiplyAdd(Z, M.c[2], Result);
-	Result = XMVectorMultiplyAdd(Y, M.c[1], Result);
-	Result = XMVectorMultiplyAdd(X, M.c[0], Result);
+	XMVECTOR Result = XMVectorMultiply(W, M.r[3]);
+	Result = XMVectorMultiplyAdd(Z, M.r[2], Result);
+	Result = XMVectorMultiplyAdd(Y, M.r[1], Result);
+	Result = XMVectorMultiplyAdd(X, M.r[0], Result);
 	return Result;
 }
 
@@ -1459,7 +1459,7 @@ inline XMVECTOR XM_CALLCONV XMColorAdjustSaturation
 	float    fSaturation
 )
 {
-	// Luminance = 0.2125f * C[0] + 0.7154f * C[1] + 0.0721f * C[2];
+	// Luminance = 0.2125f * r[0] + 0.7154f * r[1] + 0.0721f * r[2];
 	// Result = (C - Luminance) * Saturation + Luminance;
 
 #if defined(_XM_NO_INTRINSICS_)
