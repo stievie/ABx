@@ -47,136 +47,7 @@ std::unique_ptr<Item> InventoryComp::RemoveEquipment(EquipPos pos)
     return item;
 }
 
-bool InventoryComp::StackItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
-{
-    int32_t count = item->concreteItem_.count;
-    for (const auto& i : inventory_)
-    {
-        if (i && i->data_.index == item->data_.index)
-        {
-            int32_t space = MAX_INVENTORY_STACK_SIZE - i->concreteItem_.count;
-            if (space > 0)
-            {
-                int32_t added = std::min(space, count);
-                i->concreteItem_.count += added;
-                count -= added;
-                WriteItemUpdate(i.get(), message);
-
-                if (count == 0)
-                    break;
-            }
-        }
-    }
-    if (count == 0)
-    {
-        // Merged -> delete this
-        auto factory = GetSubsystem<ItemFactory>();
-        factory->DeleteConcrete(item->concreteItem_.uuid);
-        return true;
-    }
-
-    // Add remaing as new item
-    item->concreteItem_.count = count;
-    int16_t p = InsertItem(item);
-    if (p != 0)
-    {
-        WriteItemUpdate(inventory_[p].get(), message);
-        return true;
-    }
-
-    return false;
-}
-
-bool InventoryComp::AddInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
-{
-
-    // pos = 1-based
-    size_t pos = item->concreteItem_.storagePos;
-    if (pos == 0)
-    {
-        // Adding new item to inventory
-        if (item->data_.stackAble)
-            return StackItem(item, message);
-
-        // Not stackable
-        if (!IsFull())
-        {
-            int16_t p = InsertItem(item);
-            if (p != 0)
-            {
-                WriteItemUpdate(inventory_[p].get(), message);
-                return true;
-            }
-            return false;
-        }
-        // Inventory full
-        return false;
-    }
-    else
-    {
-        // We have a position insert it there
-        if (inventory_.size() > pos)
-        {
-            if (!inventory_[pos])
-            {
-                inventory_[pos] = std::move(item);
-                WriteItemUpdate(inventory_[pos].get(), message);
-                return true;
-            }
-        }
-        if (inventory_.size() < inventorySize_)
-        {
-            if (inventory_.size() <= pos)
-                inventory_.resize(pos + 1);
-            inventory_[pos] = std::move(item);
-            WriteItemUpdate(inventory_[pos].get(), message);
-            return true;
-        }
-        return false;
-    }
-}
-
-Item* InventoryComp::FindItem(const std::string& uuid)
-{
-    for (const auto& i : inventory_)
-    {
-        if (i && i->data_.uuid.compare(uuid) == 0)
-            return i.get();
-    }
-    return nullptr;
-}
-
-uint16_t InventoryComp::InsertItem(std::unique_ptr<Item>& item)
-{
-    for (size_t i = 1; i < inventory_.size(); ++i)
-    {
-        if (!inventory_[i])
-        {
-            inventory_[i] = std::move(item);
-            const auto& _i = inventory_[i];
-            _i->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-            _i->concreteItem_.storagePos = static_cast<uint16_t>(i);
-            _i->concreteItem_.playerUuid = owner_.GetPlayerUuid();
-            _i->concreteItem_.accountUuid = owner_.GetAccountUuid();
-            return static_cast<uint16_t>(i);
-        }
-    }
-    // No free slot between -> append it
-    if (!IsFull())
-    {
-        inventory_.push_back(std::move(item));
-        uint16_t pos = static_cast<uint16_t>(inventory_.size()) - 1;
-        const auto& _i = inventory_[pos];
-        _i->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-        _i->concreteItem_.storagePos = pos;
-        _i->concreteItem_.playerUuid = owner_.GetPlayerUuid();
-        _i->concreteItem_.accountUuid = owner_.GetAccountUuid();
-        return pos;
-    }
-    return 0;
-}
-
-void InventoryComp::WriteItemUpdate(Item* item, Net::NetworkMessage* message)
+void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message)
 {
     if (!message)
         return;
@@ -191,66 +62,15 @@ void InventoryComp::WriteItemUpdate(Item* item, Net::NetworkMessage* message)
 
 bool InventoryComp::SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
 {
-    if (!item)
-        return false;
-
-    if (item->data_.type == AB::Entities::ItemTypeMoney)
+    item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
+    item->concreteItem_.accountUuid = owner_.GetAccountUuid();
+    bool ret = inventory_->SetItem(item, [this, message](const Item* const item)
     {
-        if (!inventory_[0])
-        {
-            item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
-            inventory_[0] = std::move(item);
-        }
-        else
-        {
-            if (inventory_[0]->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
-                return false;
-            inventory_[0]->concreteItem_.count += item->concreteItem_.count;
-            // Merged -> delete this
-            auto factory = GetSubsystem<ItemFactory>();
-            factory->DeleteConcrete(item->concreteItem_.uuid);
-        }
-        if (message)
-        {
-            Item* _i = inventory_[0].get();
-            WriteItemUpdate(_i, message);
-        }
-        return true;
-    }
-
-    bool res = AddInventory(item, message);
-    if (!res)
+        InventoryComp::WriteItemUpdate(item, message);
+    });
+    if (!ret)
         owner_.OnInventoryFull();
-    return res;
-}
-
-bool InventoryComp::DestroyItem(uint16_t pos)
-{
-    if (inventory_.size() > pos && inventory_[pos])
-    {
-        auto factory = GetSubsystem<ItemFactory>();
-        factory->DeleteItem(inventory_[pos].get());
-        inventory_[pos].reset();
-        return true;
-    }
-    return false;
-}
-
-std::unique_ptr<Item> InventoryComp::RemoveItem(uint16_t pos)
-{
-    if (inventory_.size() > pos && inventory_[pos])
-    {
-        std::unique_ptr<Item> item = std::move(inventory_[pos]);
-        return item;
-    }
-    return std::unique_ptr<Item>();
-}
-
-Item* InventoryComp::GetItem(uint16_t pos)
-{
-    if (inventory_.size() >= pos && inventory_[pos])
-        return inventory_[pos].get();
-    return nullptr;
+    return ret;
 }
 
 void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade)

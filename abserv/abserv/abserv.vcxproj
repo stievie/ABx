@@ -57,7 +57,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Language)'=='C++'">
     <CAExcludePath>..\Include\asio;$(CAExcludePath)</CAExcludePath>
-  </PropertyGroup>  
+  </PropertyGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -250,6 +250,7 @@
     <ClInclude Include="IOPlayer.h" />
     <ClInclude Include="IOTerrain.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemContainer.h" />
     <ClInclude Include="ItemDrop.h" />
     <ClInclude Include="ItemFactory.h" />
     <ClInclude Include="ItemStats.h" />
@@ -337,6 +338,7 @@
     <ClCompile Include="IOPlayer.cpp" />
     <ClCompile Include="IOTerrain.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemContainer.cpp" />
     <ClCompile Include="ItemDrop.cpp" />
     <ClCompile Include="ItemFactory.cpp" />
     <ClCompile Include="ItemStats.cpp" />

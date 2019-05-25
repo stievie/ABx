@@ -342,6 +342,9 @@
     <ClInclude Include="conditions\AiIsAllyHealthCritical.h">
       <Filter>Headerdateien\Conditions</Filter>
     </ClInclude>
+    <ClInclude Include="ItemContainer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -592,6 +595,9 @@
     </ClCompile>
     <ClCompile Include="filters\AiSelectDeadAllies.cpp">
       <Filter>Quelldateien\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemContainer.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "Damage.h"
 #include "Mechanic.h"
 #include <AB/Entities/Character.h>
+#include "ItemContainer.h"
 
 namespace Game {
 
@@ -17,24 +18,14 @@ class InventoryComp
 private:
     Actor& owner_;
     std::map<EquipPos, std::unique_ptr<Item>> equipment_;
-    /// All inventory. Index 0 is the money
-    std::vector<std::unique_ptr<Item>> inventory_;
-    size_t inventorySize_;
-    bool AddInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
-    bool StackItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
-    Item* FindItem(const std::string& uuid);
-    /// Insert in first free slot
-    uint16_t InsertItem(std::unique_ptr<Item>& item);
-    void WriteItemUpdate(Item* item, Net::NetworkMessage* message);
+    std::unique_ptr<ItemContainer> inventory_;
+    static void WriteItemUpdate(const Item* const item, Net::NetworkMessage* message);
 public:
     InventoryComp() = delete;
     explicit InventoryComp(Actor& owner) :
         owner_(owner),
-        inventorySize_(AB::Entities::DEFAULT_INVENTORY_SIZE)
-    {
-        // Money
-        inventory_.resize(1);
-    }
+        inventory_(std::make_unique<ItemContainer>(MAX_INVENTORY_STACK_SIZE, AB::Entities::DEFAULT_INVENTORY_SIZE))
+    { }
     // non-copyable
     InventoryComp(const InventoryComp&) = delete;
     InventoryComp& operator=(const InventoryComp&) = delete;
@@ -48,28 +39,28 @@ public:
 
     bool SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
-    bool DestroyItem(uint16_t pos);
+    bool DestroyItem(uint16_t pos)
+    {
+        return inventory_->DestroyItem(pos);
+    }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    std::unique_ptr<Item> RemoveItem(uint16_t pos);
-    Item* GetItem(uint16_t pos);
-    bool IsFull() const { return GetCount() >= inventorySize_; }
+    std::unique_ptr<Item> RemoveItem(uint16_t pos)
+    {
+        return inventory_->RemoveItem(pos);
+    }
+    Item* GetItem(uint16_t pos)
+    {
+        return inventory_->GetItem(pos);
+    }
+    bool IsFull() const { return inventory_->IsFull(); }
     void SetSize(uint16_t value)
     {
-        // Can not make smaller
-        assert(value + 1 > inventorySize_);
-        // + 1 because Money doesnt count
-        inventorySize_ = static_cast<size_t>(value) + 1;
+        inventory_->SetSize(value);
     }
     size_t GetCount() const
     {
-        size_t count = 0;
-        for (const auto& i : inventory_)
-        {
-            if (i)
-                ++count;
-        }
-        return count;
+        return inventory_->GetCount();
     }
 
     void SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade);
@@ -94,11 +85,7 @@ public:
     template<typename Func>
     void VisitInventory(Func&& func)
     {
-        for (const auto& o : inventory_)
-        {
-            if (o)
-                func(o.get());
-        }
+        inventory_->VisitItems(func);
     }
 
 };
