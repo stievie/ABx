@@ -794,7 +794,7 @@ void OptionsWindow::FillShortcutsList()
             txt->SetWidth(lvw->GetWidth());
             txt->SetWordwrap(false);
             txt->SetVar("Event", sc.first_);
-            txt->SetStyle("DropDownItemEnumText");
+            txt->SetStyle("ListViewItemText");
             lvw->AddItem(txt);
         }
     }

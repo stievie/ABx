@@ -493,6 +493,13 @@
         <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
         <attribute name="Font Size" value="9" />
     </element>
+    <element type="ListViewItemText" auto="false">
+        <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
+        <attribute name="Font Size" value="10" />
+        <attribute name="Is Enabled" value="true" />
+        <attribute name="Selection Color" value="0.23 0.3 0.27 1" />
+        <attribute name="Hover Color" value="0.3 0.4 0.32 1" />
+    </element>
     <element type="DropdownItemText" auto="false">
         <attribute name="Font" value="Font;Fonts/ClearSans-Regular.ttf" />
         <attribute name="Font Size" value="11" />
