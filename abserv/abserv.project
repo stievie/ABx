@@ -6,6 +6,7 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="include">
+    <File Name="abserv/ItemContainer.h"/>
     <VirtualDirectory Name="AI">
       <File Name="abserv/AiTask.h"/>
       <File Name="abserv/filters/AiSelectVisible.h"/>
@@ -117,6 +118,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="abserv/ItemContainer.cpp"/>
     <VirtualDirectory Name="AI">
       <File Name="abserv/filters/AiSelectVisible.cpp"/>
       <File Name="abserv/filters/AiSelectLowHealth.cpp"/>

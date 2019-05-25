@@ -64,7 +64,7 @@ bool InventoryComp::SetInventory(std::unique_ptr<Item>& item, Net::NetworkMessag
 {
     item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
     item->concreteItem_.accountUuid = owner_.GetAccountUuid();
-    bool ret = inventory_->SetItem(item, [this, message](const Item* const item)
+    const bool ret = inventory_->SetItem(item, [message](const Item* const item)
     {
         InventoryComp::WriteItemUpdate(item, message);
     });
