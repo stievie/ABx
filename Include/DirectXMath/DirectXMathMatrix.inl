@@ -874,7 +874,7 @@ inline XMVECTOR XM_CALLCONV XMMatrixDeterminant
     FXMMATRIX M
 )
 {
-    static const XMVECTORF32 Sign = { { { 1.0f, -1.0f, 1.0f, -1.0f } } };
+    static const XMVECTORF32 Sign = { 1.0f, -1.0f, 1.0f, -1.0f };
 
     XMVECTOR V0 = XMVectorSwizzle<XM_SWIZZLE_Y, XM_SWIZZLE_X, XM_SWIZZLE_X, XM_SWIZZLE_X>(M.r[2]);
     XMVECTOR V1 = XMVectorSwizzle<XM_SWIZZLE_Z, XM_SWIZZLE_Z, XM_SWIZZLE_Y, XM_SWIZZLE_Y>(M.r[3]);
@@ -1654,7 +1654,7 @@ inline XMMATRIX XM_CALLCONV XMMatrixRotationQuaternion
 {
 #if defined(_XM_NO_INTRINSICS_) || defined(_XM_ARM_NEON_INTRINSICS_)
 
-    static const XMVECTORF32 Constant1110 = { { { 1.0f, 1.0f, 1.0f, 0.0f } } };
+    static const XMVECTORF32 Constant1110 = { 1.0f, 1.0f, 1.0f, 0.0f };
 
     XMVECTOR Q0 = XMVectorAdd(Quaternion, Quaternion);
     XMVECTOR Q1 = XMVectorMultiply(Quaternion, Q0);
@@ -1686,7 +1686,7 @@ inline XMMATRIX XM_CALLCONV XMMatrixRotationQuaternion
     return M;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    static const XMVECTORF32  Constant1110 = { { { 1.0f, 1.0f, 1.0f, 0.0f } } };
+    static const XMVECTORF32  Constant1110 = { 1.0f, 1.0f, 1.0f, 0.0f };
 
     XMVECTOR Q0 = _mm_add_ps(Quaternion,Quaternion);
     XMVECTOR Q1 = _mm_mul_ps(Quaternion,Q0);
@@ -1871,7 +1871,7 @@ inline XMMATRIX XM_CALLCONV XMMatrixReflect
     assert(!XMVector3Equal(ReflectionPlane, XMVectorZero()));
     assert(!XMPlaneIsInfinite(ReflectionPlane));
 
-    static const XMVECTORF32 NegativeTwo = { { { -2.0f, -2.0f, -2.0f, 0.0f } } };
+    static const XMVECTORF32 NegativeTwo = { -2.0f, -2.0f, -2.0f, 0.0f };
 
     XMVECTOR P = XMPlaneNormalize(ReflectionPlane);
     XMVECTOR S = XMVectorMultiply(P, NegativeTwo);
@@ -1897,7 +1897,7 @@ inline XMMATRIX XM_CALLCONV XMMatrixShadow
     FXMVECTOR LightPosition
 )
 {
-    static const XMVECTORU32 Select0001 = { { { XM_SELECT_0, XM_SELECT_0, XM_SELECT_0, XM_SELECT_1 } } };
+    static const XMVECTORU32 Select0001 = { XM_SELECT_0, XM_SELECT_0, XM_SELECT_0, XM_SELECT_1 };
 
     assert(!XMVector3Equal(ShadowPlane, XMVectorZero()));
     assert(!XMPlaneIsInfinite(ShadowPlane));

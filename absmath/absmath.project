@@ -56,7 +56,7 @@
       <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../Include"/>
-        <IncludePath Value="../Include/XMath"/>
+        <IncludePath Value="../Include/DirectXMath"/>
       </Compiler>
       <Linker Options="-m64">
         <LibraryPath Value="."/>

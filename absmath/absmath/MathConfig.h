@@ -1,20 +1,15 @@
 #pragma once
 
+// DirectXMath also works on Windows on ARM and it should also compile on Linux now
+#define HAVE_DIRECTX_MATH
 #if defined(_WIN32)
-// DirectXMath also works on Windows on ARM
-#   define HAVE_DIRECTX_MATH
 #   if !defined(BUILD_INTRINSICS_LEVEL)
 #       define BUILD_INTRINSICS_LEVEL 3
 #   endif
 #else
-#   define HAVE_X_MATH
 #   if !defined(BUILD_INTRINSICS_LEVEL)
 #       define BUILD_INTRINSICS_LEVEL 1
 #   endif
-#endif
-
-#if !defined(HAVE_DIRECTX_MATH) && !defined(HAVE_X_MATH)
-#error HAVE_DIRECTX_MATH or HAVE_X_MATH must be defined
 #endif
 
 #if defined(BUILD_ARCH_ARM)
@@ -48,7 +43,4 @@
 #   include <DirectXMath.h>
 #   include <DirectXCollision.h>
 namespace XMath = DirectX;
-#elif defined(HAVE_X_MATH)
-#   include <XMath.h>
-#   include <XCollision.h>
 #endif

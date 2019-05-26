@@ -218,7 +218,7 @@
       <Compiler Options="-m64;-fexceptions;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
         <IncludePath Value="../Include/recastnavigation"/>
         <IncludePath Value="../Include/ai"/>
-        <IncludePath Value="../Include/XMath"/>
+        <IncludePath Value="../Include/DirectXMath"/>
         <IncludePath Value="../absmath/absmath"/>
         <IncludePath Value="../abscommon/abscommon"/>
         <IncludePath Value="../Include"/>

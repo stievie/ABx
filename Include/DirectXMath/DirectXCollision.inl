@@ -11,20 +11,20 @@
 
 XMGLOBALCONST XMVECTORF32 g_BoxOffset[8] =
 {
-    { { { -1.0f, -1.0f,  1.0f, 0.0f } } },
-    { { {  1.0f, -1.0f,  1.0f, 0.0f } } },
-    { { {  1.0f,  1.0f,  1.0f, 0.0f } } },
-    { { { -1.0f,  1.0f,  1.0f, 0.0f } } },
-    { { { -1.0f, -1.0f, -1.0f, 0.0f } } },
-    { { {  1.0f, -1.0f, -1.0f, 0.0f } } },
-    { { {  1.0f,  1.0f, -1.0f, 0.0f } } },
-    { { { -1.0f,  1.0f, -1.0f, 0.0f } } },
+    { -1.0f, -1.0f,  1.0f, 0.0f },
+    {  1.0f, -1.0f,  1.0f, 0.0f },
+    {  1.0f,  1.0f,  1.0f, 0.0f },
+    { -1.0f,  1.0f,  1.0f, 0.0f },
+    { -1.0f, -1.0f, -1.0f, 0.0f },
+    {  1.0f, -1.0f, -1.0f, 0.0f },
+    {  1.0f,  1.0f, -1.0f, 0.0f },
+    { -1.0f,  1.0f, -1.0f, 0.0f },
 };
 
-XMGLOBALCONST XMVECTORF32 g_RayEpsilon    = { { { 1e-20f, 1e-20f, 1e-20f, 1e-20f } } };
-XMGLOBALCONST XMVECTORF32 g_RayNegEpsilon = { { { -1e-20f, -1e-20f, -1e-20f, -1e-20f } } };
-XMGLOBALCONST XMVECTORF32 g_FltMin        = { { { -FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX } } };
-XMGLOBALCONST XMVECTORF32 g_FltMax        = { { { FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX } } };
+XMGLOBALCONST XMVECTORF32 g_RayEpsilon    = { 1e-20f, 1e-20f, 1e-20f, 1e-20f };
+XMGLOBALCONST XMVECTORF32 g_RayNegEpsilon = { -1e-20f, -1e-20f, -1e-20f, -1e-20f };
+XMGLOBALCONST XMVECTORF32 g_FltMin        = { -FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX };
+XMGLOBALCONST XMVECTORF32 g_FltMax        = { FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX };
 
 namespace Internal
 {
@@ -56,9 +56,9 @@ inline bool XMVector3AllTrue( _In_ FXMVECTOR V )
 
 #if defined(_PREFAST_) || !defined(NDEBUG)
 
-XMGLOBALCONST XMVECTORF32 g_UnitVectorEpsilon     = { { { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f } } };
-XMGLOBALCONST XMVECTORF32 g_UnitQuaternionEpsilon = { { { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f } } };
-XMGLOBALCONST XMVECTORF32 g_UnitPlaneEpsilon      = { { { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f } } };
+XMGLOBALCONST XMVECTORF32 g_UnitVectorEpsilon     = { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f };
+XMGLOBALCONST XMVECTORF32 g_UnitQuaternionEpsilon = { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f };
+XMGLOBALCONST XMVECTORF32 g_UnitPlaneEpsilon      = { 1.0e-4f, 1.0e-4f, 1.0e-4f, 1.0e-4f };
 
 //-----------------------------------------------------------------------------
 // Return true if the vector is a unit vector (length == 1).
@@ -2543,8 +2543,8 @@ inline bool XM_CALLCONV BoundingOrientedBox::Intersects( FXMVECTOR Origin, FXMVE
 {
     assert( DirectX::Internal::XMVector3IsUnit( Direction ) );
 
-    static const XMVECTORU32 SelectY = { { { XM_SELECT_0, XM_SELECT_1, XM_SELECT_0, XM_SELECT_0 } } };
-    static const XMVECTORU32 SelectZ = { { { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 } } };
+    static const XMVECTORU32 SelectY = { XM_SELECT_0, XM_SELECT_1, XM_SELECT_0, XM_SELECT_0 };
+    static const XMVECTORU32 SelectZ = { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 };
 
     // Load the box.
     XMVECTOR vCenter = XMLoadFloat3( &Center );
@@ -3362,8 +3362,8 @@ inline bool BoundingFrustum::Intersects( const BoundingBox& box ) const
 _Use_decl_annotations_
 inline bool BoundingFrustum::Intersects( const BoundingOrientedBox& box ) const
 {
-    static const XMVECTORU32 SelectY = { { { XM_SELECT_0, XM_SELECT_1, XM_SELECT_0, XM_SELECT_0 } } };
-    static const XMVECTORU32 SelectZ = { { { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 } } };
+    static const XMVECTORU32 SelectY = { XM_SELECT_0, XM_SELECT_1, XM_SELECT_0, XM_SELECT_0 };
+    static const XMVECTORU32 SelectZ = { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 };
 
     XMVECTOR Zero = XMVectorZero();
 
@@ -4241,13 +4241,13 @@ inline void XM_CALLCONV BoundingFrustum::CreateFromMatrix( BoundingFrustum& Out,
     // Corners of the projection frustum in homogenous space.
     static XMVECTORF32 HomogenousPoints[6] =
     {
-        { { {  1.0f,  0.0f, 1.0f, 1.0f } } },   // right (at far plane)
-        { { { -1.0f,  0.0f, 1.0f, 1.0f } } },   // left
-        { { {  0.0f,  1.0f, 1.0f, 1.0f } } },   // top
-        { { {  0.0f, -1.0f, 1.0f, 1.0f } } },   // bottom
+        {  1.0f,  0.0f, 1.0f, 1.0f },   // right (at far plane)
+        { -1.0f,  0.0f, 1.0f, 1.0f },   // left
+        {  0.0f,  1.0f, 1.0f, 1.0f },   // top
+        {  0.0f, -1.0f, 1.0f, 1.0f },   // bottom
 
-        { { { 0.0f, 0.0f, 0.0f, 1.0f } } },     // near
-        { { { 0.0f, 0.0f, 1.0f, 1.0f } } }      // far
+        { 0.0f, 0.0f, 0.0f, 1.0f },     // near
+        { 0.0f, 0.0f, 1.0f, 1.0f }      // far
     };
 
     XMVECTOR Determinant;
@@ -4417,11 +4417,11 @@ inline bool XM_CALLCONV Intersects( FXMVECTOR Origin, FXMVECTOR Direction, FXMVE
 _Use_decl_annotations_
 inline bool XM_CALLCONV Intersects( FXMVECTOR A0, FXMVECTOR A1, FXMVECTOR A2, GXMVECTOR B0, HXMVECTOR B1, HXMVECTOR B2 )
 {
-    static const XMVECTORU32 SelectY    = { { { XM_SELECT_0, XM_SELECT_1, XM_SELECT_0, XM_SELECT_0 } } };
-    static const XMVECTORU32 SelectZ    = { { { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 } } };
-    static const XMVECTORU32 Select0111 = { { { XM_SELECT_0, XM_SELECT_1, XM_SELECT_1, XM_SELECT_1 } } };
-    static const XMVECTORU32 Select1011 = { { { XM_SELECT_1, XM_SELECT_0, XM_SELECT_1, XM_SELECT_1 } } };
-    static const XMVECTORU32 Select1101 = { { { XM_SELECT_1, XM_SELECT_1, XM_SELECT_0, XM_SELECT_1 } } };
+    static const XMVECTORU32 SelectY    = { XM_SELECT_0, XM_SELECT_1, XM_SELECT_0, XM_SELECT_0 };
+    static const XMVECTORU32 SelectZ    = { XM_SELECT_0, XM_SELECT_0, XM_SELECT_1, XM_SELECT_0 };
+    static const XMVECTORU32 Select0111 = { XM_SELECT_0, XM_SELECT_1, XM_SELECT_1, XM_SELECT_1 };
+    static const XMVECTORU32 Select1011 = { XM_SELECT_1, XM_SELECT_0, XM_SELECT_1, XM_SELECT_1 };
+    static const XMVECTORU32 Select1101 = { XM_SELECT_1, XM_SELECT_1, XM_SELECT_0, XM_SELECT_1 };
 
     XMVECTOR Zero = XMVectorZero();
 
