@@ -178,6 +178,7 @@ public:
     void GetMailHeaders();
     void GetMail(const std::string& mailUuid);
     void GetInventory();
+    void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
     void GetChest();

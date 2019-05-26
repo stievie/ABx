@@ -650,6 +650,12 @@ void Client::GetInventory()
         protoGame_->GetInventory();
 }
 
+void Client::InventoryStoreItem(uint16_t pos)
+{
+    if (state_ == ClientState::World)
+        protoGame_->InventoryStoreItem(pos);
+}
+
 void Client::InventoryDestroyItem(uint16_t pos)
 {
     if (state_ == ClientState::World)

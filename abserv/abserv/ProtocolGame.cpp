@@ -176,6 +176,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerTask(&Game::Player::DropInventoryItem, pos);
         break;
     }
+    case AB::GameProtocol::PacketTypeInventoryStoreInChest:
+    {
+        uint16_t pos = message.Get<uint16_t>();
+        AddPlayerTask(&Game::Player::StoreInChest, pos);
+        break;
+    }
     case AB::GameProtocol::PacketTypeGetChest:
         AddPlayerTask(&Game::Player::GetChest);
         break;

@@ -128,6 +128,8 @@ public:
     bool AddToInventory(std::unique_ptr<Item>& item) override;
     void DropInventoryItem(uint16_t pos);
     void DestroyInventoryItem(uint16_t pos);
+    /// Move an inventory item to the chest
+    void StoreInChest(uint16_t pos);
     void GetChest();
     void DestroyChestItem(uint16_t pos);
 

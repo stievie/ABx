@@ -793,6 +793,14 @@ void ProtocolGame::GetInventory()
     Send(msg);
 }
 
+void ProtocolGame::InventoryStoreItem(uint16_t pos)
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryStoreInChest);
+    msg->Add<uint16_t>(pos);
+    Send(msg);
+}
+
 void ProtocolGame::InventoryDestroyItem(uint16_t pos)
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();

@@ -653,6 +653,12 @@ void FwClient::UpdateInventory()
         client_.GetInventory();
 }
 
+void FwClient::InventoryStoreItem(uint16_t pos)
+{
+    if (loggedIn_)
+        client_.InventoryStoreItem(pos);
+}
+
 void FwClient::InventoryDestroyItem(uint16_t pos)
 {
     if (loggedIn_)

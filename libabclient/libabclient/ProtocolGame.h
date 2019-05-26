@@ -96,6 +96,7 @@ public:
     void ChangeMap(const std::string& mapUuid);
     void GetMailHeaders();
     void GetInventory();
+    void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
     void GetChest();

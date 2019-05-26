@@ -185,6 +185,28 @@ void Player::DestroyInventoryItem(uint16_t pos)
     }
 }
 
+void Player::StoreInChest(uint16_t pos)
+{
+    if (inventoryComp_->IsChestFull())
+    {
+        OnInventoryFull();
+        return;
+    }
+
+    std::unique_ptr<Item> item = inventoryComp_->RemoveInventoryItem(pos);
+    if (!item)
+        return;
+
+    auto msg = Net::NetworkMessage::GetNew();
+    // Remove from inventory
+    msg->AddByte(AB::GameProtocol::InventoryItemDelete);
+    msg->Add<uint16_t>(pos);
+
+    // Add to chest
+    inventoryComp_->SetChestItem(item, msg.get());
+    WriteToOutput(*msg.get());
+}
+
 void Player::DropInventoryItem(uint16_t pos)
 {
     std::unique_ptr<Item> item = inventoryComp_->RemoveInventoryItem(pos);

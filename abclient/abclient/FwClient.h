@@ -97,6 +97,7 @@ public:
     void DeleteMail(const std::string& uuid);
     void SendMail(const std::string& recipient, const std::string& subject, const std::string& body);
     void UpdateInventory();
+    void InventoryStoreItem(uint16_t pos);
     void InventoryDestroyItem(uint16_t pos);
     void InventoryDropItem(uint16_t pos);
     void UpdateChest();

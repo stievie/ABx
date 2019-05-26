@@ -14,7 +14,7 @@ bool ItemContainer::SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
     {
         if (!items_[0])
         {
-            item->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+            item->concreteItem_.storagePlace = place_;
             items_[0] = std::move(item);
         }
         else
@@ -80,7 +80,7 @@ bool ItemContainer::StackItem(std::unique_ptr<Item>& item, const ItemUpdatedCall
     {
         if (i && i->data_.index == item->data_.index)
         {
-            int32_t space = MAX_INVENTORY_STACK_SIZE - i->concreteItem_.count;
+            int32_t space = static_cast<int32_t>(stackSize_) - i->concreteItem_.count;
             if (space > 0)
             {
                 int32_t added = std::min(space, count);
@@ -145,6 +145,7 @@ bool ItemContainer::AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
             if (!items_[pos])
             {
                 items_[pos] = std::move(item);
+                items_[pos]->concreteItem_.storagePlace = place_;
                 callback(items_[pos].get());
                 return true;
             }
@@ -154,6 +155,7 @@ bool ItemContainer::AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
             if (items_.size() <= pos)
                 items_.resize(pos + 1);
             items_[pos] = std::move(item);
+            items_[pos]->concreteItem_.storagePlace = place_;
             callback(items_[pos].get());
             return true;
         }
@@ -169,10 +171,8 @@ uint16_t ItemContainer::InsertItem(std::unique_ptr<Item>& item)
         {
             items_[i] = std::move(item);
             const auto& _i = items_[i];
-            _i->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+            _i->concreteItem_.storagePlace = place_;
             _i->concreteItem_.storagePos = static_cast<uint16_t>(i);
-//            _i->concreteItem_.playerUuid = owner_.GetPlayerUuid();
-//            _i->concreteItem_.accountUuid = owner_.GetAccountUuid();
             return static_cast<uint16_t>(i);
         }
     }
@@ -182,10 +182,8 @@ uint16_t ItemContainer::InsertItem(std::unique_ptr<Item>& item)
         items_.push_back(std::move(item));
         uint16_t pos = static_cast<uint16_t>(items_.size()) - 1;
         const auto& _i = items_[pos];
-        _i->concreteItem_.storagePlace = AB::Entities::StoragePlaceInventory;
+        _i->concreteItem_.storagePlace = place_;
         _i->concreteItem_.storagePos = pos;
-//        _i->concreteItem_.playerUuid = owner_.GetPlayerUuid();
-//        _i->concreteItem_.accountUuid = owner_.GetAccountUuid();
         return pos;
     }
     return 0;

@@ -13,6 +13,7 @@ public:
 private:
     size_t stackSize_;
     size_t size_;
+    AB::Entities::StoragePlace place_;
     /// All inventory. Index 0 is the money
     std::vector<std::unique_ptr<Item>> items_;
     bool AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback);
@@ -20,9 +21,10 @@ private:
     /// Insert in first free slot. Return position
     uint16_t InsertItem(std::unique_ptr<Item>& item);
 public:
-    ItemContainer(size_t stackSize, size_t size) :
+    ItemContainer(size_t stackSize, size_t size, AB::Entities::StoragePlace place) :
         stackSize_(stackSize),
-        size_(size)
+        size_(size),
+        place_(place)
     {
         // Money
         items_.resize(1);
