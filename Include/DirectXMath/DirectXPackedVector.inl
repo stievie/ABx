@@ -70,18 +70,20 @@ inline float XMConvertHalfToFloat
 }
 
 //------------------------------------------------------------------------------
+#ifdef _MSC_VER
 #ifdef _PREFAST_
 #pragma prefast(push)
 #pragma prefast(disable : 26015 26019, "PREfast noise: Esp:1307" )
+#endif
 #endif
 
 _Use_decl_annotations_
 inline float* XMConvertHalfToFloatStream
 (
-    float*      pOutputStream, 
-    size_t      OutputStride, 
-    const HALF* pInputStream, 
-    size_t      InputStride, 
+    float*      pOutputStream,
+    size_t      OutputStride,
+    const HALF* pInputStream,
+    size_t      InputStride,
     size_t      HalfCount
 )
 {
@@ -117,7 +119,7 @@ inline float* XMConvertHalfToFloatStream
                         __m128 FV = _mm_cvtph_ps( HV );
 
                         XM_STREAM_PS( reinterpret_cast<float*>(pFloat), FV );
-                        pFloat += OutputStride*4; 
+                        pFloat += OutputStride*4;
                         i += 4;
                     }
                 }
@@ -132,7 +134,7 @@ inline float* XMConvertHalfToFloatStream
                         __m128 FV = _mm_cvtph_ps( HV );
 
                         _mm_storeu_ps( reinterpret_cast<float*>(pFloat), FV );
-                        pFloat += OutputStride*4; 
+                        pFloat += OutputStride*4;
                         i += 4;
                     }
                 }
@@ -148,13 +150,13 @@ inline float* XMConvertHalfToFloatStream
                     __m128 FV = _mm_cvtph_ps( HV );
 
                     _mm_store_ss( reinterpret_cast<float*>(pFloat), FV );
-                    pFloat += OutputStride; 
+                    pFloat += OutputStride;
                     *reinterpret_cast<int*>(pFloat) = _mm_extract_ps( FV, 1 );
-                    pFloat += OutputStride; 
+                    pFloat += OutputStride;
                     *reinterpret_cast<int*>(pFloat) = _mm_extract_ps( FV, 2 );
-                    pFloat += OutputStride; 
+                    pFloat += OutputStride;
                     *reinterpret_cast<int*>(pFloat) = _mm_extract_ps( FV, 3 );
-                    pFloat += OutputStride; 
+                    pFloat += OutputStride;
                     i += 4;
                 }
             }
@@ -183,7 +185,7 @@ inline float* XMConvertHalfToFloatStream
                     __m128 FV = _mm_cvtph_ps( HV );
 
                     XM_STREAM_PS( reinterpret_cast<float*>(pFloat ), FV );
-                    pFloat += OutputStride*4; 
+                    pFloat += OutputStride*4;
                     i += 4;
                 }
             }
@@ -209,7 +211,7 @@ inline float* XMConvertHalfToFloatStream
                     __m128 FV = _mm_cvtph_ps( HV );
 
                     _mm_storeu_ps( reinterpret_cast<float*>(pFloat ), FV );
-                    pFloat += OutputStride*4; 
+                    pFloat += OutputStride*4;
                     i += 4;
                 }
             }
@@ -252,7 +254,7 @@ inline float* XMConvertHalfToFloatStream
     {
         *reinterpret_cast<float*>(pFloat) = XMConvertHalfToFloat(reinterpret_cast<const HALF*>(pHalf)[0]);
         pHalf += InputStride;
-        pFloat += OutputStride; 
+        pFloat += OutputStride;
     }
 
     XM_SFENCE();
@@ -377,7 +379,7 @@ inline float* XMConvertHalfToFloatStream
     {
         *reinterpret_cast<float*>(pFloat) = XMConvertHalfToFloat(reinterpret_cast<const HALF*>(pHalf)[0]);
         pHalf += InputStride;
-        pFloat += OutputStride; 
+        pFloat += OutputStride;
     }
 
     return pOutputStream;
@@ -437,7 +439,7 @@ inline HALF XMConvertFloatToHalf
             IValue += 0xC8000000U;
         }
 
-        Result = ((IValue + 0x0FFFU + ((IValue >> 13U) & 1U)) >> 13U)&0x7FFFU; 
+        Result = ((IValue + 0x0FFFU + ((IValue >> 13U) & 1U)) >> 13U)&0x7FFFU;
     }
     return static_cast<HALF>(Result|Sign);
 #endif // !_XM_F16C_INTRINSICS_
@@ -447,10 +449,10 @@ inline HALF XMConvertFloatToHalf
 _Use_decl_annotations_
 inline HALF* XMConvertFloatToHalfStream
 (
-    HALF* pOutputStream, 
-    size_t       OutputStride, 
-    const float* pInputStream, 
-    size_t       InputStride, 
+    HALF* pOutputStream,
+    size_t       OutputStride,
+    const float* pInputStream,
+    size_t       InputStride,
     size_t       FloatCount
 )
 {
@@ -619,7 +621,7 @@ inline HALF* XMConvertFloatToHalfStream
     for (; i < FloatCount; ++i)
     {
         *reinterpret_cast<HALF*>(pHalf) = XMConvertFloatToHalf(reinterpret_cast<const float*>(pFloat)[0]);
-        pFloat += InputStride; 
+        pFloat += InputStride;
         pHalf += OutputStride;
     }
 
@@ -732,7 +734,7 @@ inline HALF* XMConvertFloatToHalfStream
     for (; i < FloatCount; ++i)
     {
         *reinterpret_cast<HALF*>(pHalf) = XMConvertFloatToHalf(reinterpret_cast<const float*>(pFloat)[0]);
-        pFloat += InputStride; 
+        pFloat += InputStride;
         pHalf += OutputStride;
     }
 
@@ -744,15 +746,17 @@ inline HALF* XMConvertFloatToHalfStream
     for (size_t i = 0; i < FloatCount; i++)
     {
         *reinterpret_cast<HALF*>(pHalf) = XMConvertFloatToHalf(reinterpret_cast<const float*>(pFloat)[0]);
-        pFloat += InputStride; 
+        pFloat += InputStride;
         pHalf += OutputStride;
     }
     return pOutputStream;
 #endif // !_XM_F16C_INTRINSICS_
 }
 
+#ifdef _MSC_VER
 #ifdef _PREFAST_
 #pragma prefast(pop)
+#endif
 #endif
 
 /****************************************************************************
@@ -761,9 +765,11 @@ inline HALF* XMConvertFloatToHalfStream
  *
  ****************************************************************************/
 
+#ifdef _MSC_VER
 #ifdef _PREFAST_
 #pragma prefast(push)
 #pragma prefast(disable:28931, "PREfast noise: Esp:1266")
+#endif
 #endif
 
 _Use_decl_annotations_
@@ -1206,7 +1212,7 @@ inline XMVECTOR XM_CALLCONV XMLoadFloat3PK
 {
     assert(pSource);
 
-    __declspec(align(16)) uint32_t Result[4];
+    alignas(16) uint32_t Result[4];
     uint32_t Mantissa;
     uint32_t Exponent;
 
@@ -1227,20 +1233,20 @@ inline XMVECTOR XM_CALLCONV XMLoadFloat3PK
         {
             // Normalize the value in the resulting float
             Exponent = 1;
-    
+
             do
             {
                 Exponent--;
                 Mantissa <<= 1;
             } while ((Mantissa & 0x40) == 0);
-    
+
             Mantissa &= 0x3F;
         }
         else // The value is zero
         {
             Exponent = static_cast<uint32_t>(-112);
         }
-    
+
         Result[0] = ((Exponent + 112) << 23) | (Mantissa << 17);
     }
 
@@ -1261,20 +1267,20 @@ inline XMVECTOR XM_CALLCONV XMLoadFloat3PK
         {
             // Normalize the value in the resulting float
             Exponent = 1;
-    
+
             do
             {
                 Exponent--;
                 Mantissa <<= 1;
             } while ((Mantissa & 0x40) == 0);
-    
+
             Mantissa &= 0x3F;
         }
         else // The value is zero
         {
             Exponent = static_cast<uint32_t>(-112);
         }
-    
+
         Result[1] = ((Exponent + 112) << 23) | (Mantissa << 17);
     }
 
@@ -1295,13 +1301,13 @@ inline XMVECTOR XM_CALLCONV XMLoadFloat3PK
         {
             // Normalize the value in the resulting float
             Exponent = 1;
-    
+
             do
             {
                 Exponent--;
                 Mantissa <<= 1;
             } while ((Mantissa & 0x20) == 0);
-    
+
             Mantissa &= 0x1F;
         }
         else // The value is zero
@@ -1567,9 +1573,11 @@ inline XMVECTOR XM_CALLCONV XMLoadXDecN4
 }
 
 //------------------------------------------------------------------------------
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 _Use_decl_annotations_
 inline XMVECTOR XM_CALLCONV XMLoadXDec4
@@ -1620,7 +1628,9 @@ inline XMVECTOR XM_CALLCONV XMLoadXDec4
 #endif
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 //------------------------------------------------------------------------------
 _Use_decl_annotations_
@@ -1766,9 +1776,11 @@ inline XMVECTOR XM_CALLCONV XMLoadUDec4
 }
 
 //------------------------------------------------------------------------------
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 _Use_decl_annotations_
 inline XMVECTOR XM_CALLCONV XMLoadDecN4
@@ -1869,7 +1881,9 @@ inline XMVECTOR XM_CALLCONV XMLoadDec4
 #endif
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 //------------------------------------------------------------------------------
 _Use_decl_annotations_
@@ -2109,8 +2123,10 @@ inline XMVECTOR XM_CALLCONV XMLoadU555
 #endif
 }
 
+#ifdef _MSC_VER
 #ifdef _PREFAST_
 #pragma prefast(pop)
+#endif
 #endif
 
 /****************************************************************************
@@ -2121,7 +2137,7 @@ inline XMVECTOR XM_CALLCONV XMLoadU555
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreColor
 (
-    XMCOLOR* pDestination, 
+    XMCOLOR* pDestination,
     FXMVECTOR V
 )
 {
@@ -2159,7 +2175,7 @@ inline void XM_CALLCONV XMStoreColor
     vResult = _mm_mul_ps(vResult,g_UByteMax);
     // Shuffle RGBA to ARGB
     vResult = XM_PERMUTE_PS(vResult,_MM_SHUFFLE(3,0,1,2));
-    // Convert to int 
+    // Convert to int
     __m128i vInt = _mm_cvtps_epi32(vResult);
     // Mash to shorts
     vInt = _mm_packs_epi32(vInt,vInt);
@@ -2174,7 +2190,7 @@ inline void XM_CALLCONV XMStoreColor
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreHalf2
 (
-    XMHALF2* pDestination, 
+    XMHALF2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2192,7 +2208,7 @@ inline void XM_CALLCONV XMStoreHalf2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreShortN2
 (
-    XMSHORTN2* pDestination, 
+    XMSHORTN2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2230,7 +2246,7 @@ inline void XM_CALLCONV XMStoreShortN2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreShort2
 (
-    XMSHORT2* pDestination, 
+    XMSHORT2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2268,7 +2284,7 @@ inline void XM_CALLCONV XMStoreShort2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUShortN2
 (
-    XMUSHORTN2* pDestination, 
+    XMUSHORTN2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2312,7 +2328,7 @@ inline void XM_CALLCONV XMStoreUShortN2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUShort2
 (
-    XMUSHORT2* pDestination, 
+    XMUSHORT2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2351,7 +2367,7 @@ inline void XM_CALLCONV XMStoreUShort2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreByteN2
 (
-    XMBYTEN2* pDestination, 
+    XMBYTEN2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2395,7 +2411,7 @@ inline void XM_CALLCONV XMStoreByteN2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreByte2
 (
-    XMBYTE2* pDestination, 
+    XMBYTE2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2435,7 +2451,7 @@ inline void XM_CALLCONV XMStoreByte2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUByteN2
 (
-    XMUBYTEN2* pDestination, 
+    XMUBYTEN2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2481,7 +2497,7 @@ inline void XM_CALLCONV XMStoreUByteN2
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUByte2
 (
-    XMUBYTE2* pDestination, 
+    XMUBYTE2* pDestination,
     FXMVECTOR V
 )
 {
@@ -2580,7 +2596,7 @@ inline void XM_CALLCONV XMStoreFloat3PK
 {
     assert(pDestination);
 
-    __declspec(align(16)) uint32_t IValue[4];
+    alignas(16) uint32_t IValue[4];
     XMStoreFloat3A( reinterpret_cast<XMFLOAT3A*>(&IValue), V );
 
     uint32_t Result[3];
@@ -2629,7 +2645,7 @@ inline void XM_CALLCONV XMStoreFloat3PK
                 // Rebias the exponent to represent the value as a normalized float11
                 I += 0xC8000000U;
             }
-     
+
             Result[j] = ((I + 0xFFFFU + ((I >> 17U) & 1U)) >> 17U)&0x7ffU;
         }
     }
@@ -2676,7 +2692,7 @@ inline void XM_CALLCONV XMStoreFloat3PK
             // Rebias the exponent to represent the value as a normalized float10
             I += 0xC8000000U;
         }
-     
+
         Result[2] = ((I + 0x1FFFFU + ((I >> 18U) & 1U)) >> 18U)&0x3ffU;
     }
 
@@ -2730,7 +2746,7 @@ inline void XM_CALLCONV XMStoreFloat3SE
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreHalf4
 (
-    XMHALF4* pDestination, 
+    XMHALF4* pDestination,
     FXMVECTOR V
 )
 {
@@ -2753,7 +2769,7 @@ inline void XM_CALLCONV XMStoreHalf4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreShortN4
 (
-    XMSHORTN4* pDestination, 
+    XMSHORTN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -2793,7 +2809,7 @@ inline void XM_CALLCONV XMStoreShortN4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreShort4
 (
-    XMSHORT4* pDestination, 
+    XMSHORT4* pDestination,
     FXMVECTOR V
 )
 {
@@ -2833,7 +2849,7 @@ inline void XM_CALLCONV XMStoreShort4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUShortN4
 (
-    XMUSHORTN4* pDestination, 
+    XMUSHORTN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -2881,7 +2897,7 @@ inline void XM_CALLCONV XMStoreUShortN4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUShort4
 (
-    XMUSHORT4* pDestination, 
+    XMUSHORT4* pDestination,
     FXMVECTOR V
 )
 {
@@ -2924,7 +2940,7 @@ inline void XM_CALLCONV XMStoreUShort4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreXDecN4
 (
-    XMXDECN4* pDestination, 
+    XMXDECN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -2990,14 +3006,16 @@ inline void XM_CALLCONV XMStoreXDecN4
 }
 
 //------------------------------------------------------------------------------
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreXDec4
 (
-    XMXDEC4* pDestination, 
+    XMXDEC4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3061,13 +3079,15 @@ inline void XM_CALLCONV XMStoreXDec4
 #endif
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 //------------------------------------------------------------------------------
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUDecN4
 (
-    XMUDECN4* pDestination, 
+    XMUDECN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3135,7 +3155,7 @@ inline void XM_CALLCONV XMStoreUDecN4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUDecN4_XR
 (
-    XMUDECN4* pDestination, 
+    XMUDECN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3209,7 +3229,7 @@ inline void XM_CALLCONV XMStoreUDecN4_XR
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUDec4
 (
-    XMUDEC4* pDestination, 
+    XMUDEC4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3273,14 +3293,16 @@ inline void XM_CALLCONV XMStoreUDec4
 }
 
 //------------------------------------------------------------------------------
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreDecN4
 (
-    XMDECN4* pDestination, 
+    XMDECN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3341,7 +3363,7 @@ inline void XM_CALLCONV XMStoreDecN4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreDec4
 (
-    XMDEC4*  pDestination, 
+    XMDEC4*  pDestination,
     FXMVECTOR V
 )
 {
@@ -3398,13 +3420,15 @@ inline void XM_CALLCONV XMStoreDec4
 #endif
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 //------------------------------------------------------------------------------
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUByteN4
 (
-    XMUBYTEN4* pDestination, 
+    XMUBYTEN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3449,7 +3473,7 @@ inline void XM_CALLCONV XMStoreUByteN4
     vResulti = _mm_or_si128(vResulti,vResulti2);
     // Move Z to the x position
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    // Perform a single bit left shift to fix y|w 
+    // Perform a single bit left shift to fix y|w
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
     // i = x|y|z|w
     vResulti = _mm_or_si128(vResulti,vResulti2);
@@ -3461,7 +3485,7 @@ inline void XM_CALLCONV XMStoreUByteN4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreUByte4
 (
-    XMUBYTE4* pDestination, 
+    XMUBYTE4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3504,7 +3528,7 @@ inline void XM_CALLCONV XMStoreUByte4
     vResulti = _mm_or_si128(vResulti,vResulti2);
     // Move Z to the x position
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    // Perform a single bit left shift to fix y|w 
+    // Perform a single bit left shift to fix y|w
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
     // i = x|y|z|w
     vResulti = _mm_or_si128(vResulti,vResulti2);
@@ -3516,7 +3540,7 @@ inline void XM_CALLCONV XMStoreUByte4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreByteN4
 (
-    XMBYTEN4* pDestination, 
+    XMBYTEN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -3571,7 +3595,7 @@ inline void XM_CALLCONV XMStoreByteN4
 _Use_decl_annotations_
 inline void XM_CALLCONV XMStoreByte4
 (
-    XMBYTE4*  pDestination, 
+    XMBYTE4*  pDestination,
     FXMVECTOR V
 )
 {
@@ -4270,9 +4294,11 @@ inline XMXDECN4::XMXDECN4
  *
  ****************************************************************************/
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -4355,7 +4381,9 @@ inline XMDEC4::XMDEC4
     XMStoreDec4(this, XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(pArray)));
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 /****************************************************************************
  *

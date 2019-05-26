@@ -19,14 +19,26 @@
 #error DirectX Math requires Visual C++ 2015 or later.
 #endif
 
-#if defined(_MSC_VER) && !defined(_M_ARM) && !defined(_M_ARM64) && !defined(_M_HYBRID_X86_ARM64) && (!_MANAGED) && (!_M_CEE) && (!defined(_M_IX86_FP) || (_M_IX86_FP > 1)) && !defined(_XM_NO_INTRINSICS_) && !defined(_XM_VECTORCALL_)
+#if !defined(__ARM_ARCH) && !defined(_M_ARM) && !defined(_M_ARM64) && (!_MANAGED) && (!_M_CEE) && (!defined(_M_IX86_FP) || (_M_IX86_FP > 1)) && !defined(_XM_NO_INTRINSICS_) && !defined(_XM_VECTORCALL_)
 #define _XM_VECTORCALL_ 1
 #endif
 
-#if _XM_VECTORCALL_
-#define XM_CALLCONV __vectorcall
+#ifdef _XM_NO_CALL_CONVENTION_
+#	define XM_CALLCONV
 #else
-#define XM_CALLCONV __fastcall
+#	ifdef _MSC_VER
+#		if _XM_VECTORCALL_
+#			define XM_CALLCONV __vectorcall
+#		else
+#			define XM_CALLCONV __fastcall
+#		endif
+#	else
+#		if _XM_VECTORCALL_
+#			define XM_CALLCONV __attribute__((vectorcall))
+#		else
+#			define XM_CALLCONV __attribute__((fastcall))
+#		endif
+#	endif
 #endif
 
 #if defined(_MSC_VER) && (_MSC_FULL_VER < 190023506)
@@ -38,7 +50,11 @@
 #endif
 
 #ifndef XM_DEPRECATED
-#define XM_DEPRECATED __declspec(deprecated("This is deprecated and will be removed in a future version."))
+#	ifdef _MSC_VER
+#		define XM_DEPRECATED __declspec(deprecated("This is deprecated and will be removed in a future version."))
+#	else
+#		define XM_DEPRECATED
+#	endif
 #endif
 
 #if !defined(_XM_AVX2_INTRINSICS_) && defined(__AVX2__) && !defined(_XM_NO_INTRINSICS_)
@@ -91,20 +107,28 @@
 #define _XM_NO_XMVECTOR_OVERLOADS_
 #endif
 
-#pragma warning(push)
-#pragma warning(disable:4514 4820)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable:4514 4820)
+#endif
 // C4514/4820: Off by default noise
 #include <math.h>
 #include <float.h>
-#include <malloc.h>
-#pragma warning(pop)
+#ifndef __APPLE__
+#	include <malloc.h>
+#endif
+#ifdef _MSC_VER
+#	pragma warning(pop)
+#endif
 
 #ifndef _XM_NO_INTRINSICS_
-#pragma warning(push)
-#pragma warning(disable : 4987)
+#   ifdef _MSC_VER
+#       pragma warning(push)
+#       pragma warning(disable : 4987)
 // C4987: Off by default noise
-#include <intrin.h>
-#pragma warning(pop)
+#       include <intrin.h>
+#       pragma warning(pop)
+#   endif
 
 #ifdef _XM_SSE_INTRINSICS_
 #include <xmmintrin.h>
@@ -127,18 +151,46 @@
 #include <arm64_neon.h>
 #else
 #include <arm_neon.h>
+#ifdef _XM_ARM_NEON_NO_ALIGN_
+#define vld1_u32_ex(s,a) vld1_u32(s)
+#define vld1_f32_ex(s,a) vld1_f32(s)
+#define vld1q_u32_ex(s,a) vld1q_u32(s)
+#define vld1q_f32_ex(s,a) vld1q_f32(s)
+#define vst1_u32_ex(d,v,a) vst1_u32(d,v)
+#define vst1_f32_ex(d,v,a) vst1_f32(d,v)
+#define vst1q_u32_ex(d,v,a) vst1q_u32(d,v)
+#define vst1q_f32_ex(d,v,a) vst1q_f32(d,v)
+#endif
 #endif
 #endif
 #endif // !_XM_NO_INTRINSICS_
 
-#include <sal.h>
+#ifdef _MSC_VER
+#   include <sal.h>
+#else
+#	define _In_
+#	define _In_reads_(n)
+#	define _In_reads_bytes_(n)
+#	define _Out_
+#	define _Out_writes_(n)
+#	define _Out_writes_bytes_(n)
+#	define _Out_opt_
+#	define _Success_(expr)
+#	define _Use_decl_annotations_
+#	define _Analysis_assume_(expr)
+#endif
+
 #include <assert.h>
 
-#pragma warning(push)
-#pragma warning(disable : 4005 4668)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable : 4005 4668)
+#endif
 // C4005/4668: Old header issue
 #include <stdint.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+#   pragma warning(pop)
+#endif
 
 /****************************************************************************
  *
@@ -267,16 +319,18 @@ inline bool XMComparisonAnyOutOfBounds(uint32_t CR) { return (((CR) & XM_CRMASK_
  *
  ****************************************************************************/
 
-#pragma warning(push)
-#pragma warning(disable:4068 4201 4365 4324 4820)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable:4068 4201 4365 4324 4820)
 // C4068: ignore unknown pragmas
 // C4201: nonstandard extension used : nameless struct/union
 // C4365: Off by default noise
 // C4324/4820: padding warnings
 
-#ifdef _PREFAST_
-#pragma prefast(push)
-#pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
+#   ifdef _PREFAST_
+#       pragma prefast(push)
+#       pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
+#   endif
 #endif
 
 //------------------------------------------------------------------------------
@@ -328,13 +382,26 @@ typedef const XMVECTOR& CXMVECTOR;
 
 //------------------------------------------------------------------------------
 // Conversion types for constants
-__declspec(align(16)) struct XMVECTORF32
+struct alignas(16) XMVECTORF32
 {
     union
     {
         float f[4];
         XMVECTOR v;
     };
+
+#if !defined(_MSC_VER) && defined(_XM_SSE_INTRINSICS_)
+    XMVECTORF32() = default;
+    XMVECTORF32(std::initializer_list<float> l)
+    {
+        int co(0);
+        for (auto val : l)
+        {
+            f[co] = val;
+            if ((++co) > 3) break;
+        }
+    }
+#endif
 
     inline operator XMVECTOR() const { return v; }
     inline operator const float*() const { return f; }
@@ -344,7 +411,7 @@ __declspec(align(16)) struct XMVECTORF32
 #endif
 };
 
-__declspec(align(16)) struct XMVECTORI32
+struct alignas(16) XMVECTORI32
 {
     union
     {
@@ -352,6 +419,19 @@ __declspec(align(16)) struct XMVECTORI32
         XMVECTOR v;
     };
 
+#if !defined(_MSC_VER) && defined(_XM_SSE_INTRINSICS_)
+    XMVECTORI32() = default;
+    XMVECTORI32(std::initializer_list<int32_t> l)
+    {
+        int co(0);
+        for (auto val : l)
+        {
+            i[co] = val;
+            if ((++co) > 3) break;
+        }
+    }
+#endif
+
     inline operator XMVECTOR() const { return v; }
 #if !defined(_XM_NO_INTRINSICS_) && defined(_XM_SSE_INTRINSICS_)
     inline operator __m128i() const { return _mm_castps_si128(v); }
@@ -359,7 +439,7 @@ __declspec(align(16)) struct XMVECTORI32
 #endif
 };
 
-__declspec(align(16)) struct XMVECTORU8
+struct alignas(16) XMVECTORU8
 {
     union
     {
@@ -367,6 +447,19 @@ __declspec(align(16)) struct XMVECTORU8
         XMVECTOR v;
     };
 
+#if !defined(_MSC_VER) && defined(_XM_SSE_INTRINSICS_)
+    XMVECTORU8() = default;
+    XMVECTORU8(std::initializer_list<uint8_t> l)
+    {
+        int co(0);
+        for (auto val : l)
+        {
+            u[co] = val;
+            if ((++co) > 3) break;
+        }
+    }
+#endif
+
     inline operator XMVECTOR() const { return v; }
 #if !defined(_XM_NO_INTRINSICS_) && defined(_XM_SSE_INTRINSICS_)
     inline operator __m128i() const { return _mm_castps_si128(v); }
@@ -374,13 +467,26 @@ __declspec(align(16)) struct XMVECTORU8
 #endif
 };
 
-__declspec(align(16)) struct XMVECTORU32
+struct alignas(16) XMVECTORU32
 {
     union
     {
         uint32_t u[4];
         XMVECTOR v;
     };
+
+#if !defined(_MSC_VER) && defined(_XM_SSE_INTRINSICS_)
+    XMVECTORU32() = default;
+    XMVECTORU32(std::initializer_list<uint32_t> l)
+    {
+        int co(0);
+        for (auto val : l)
+        {
+            u[co] = val;
+            if ((++co) > 3) break;
+        }
+    }
+#endif
 
     inline operator XMVECTOR() const { return v; }
 #if !defined(_XM_NO_INTRINSICS_) && defined(_XM_SSE_INTRINSICS_)
@@ -432,7 +538,7 @@ typedef const XMMATRIX& CXMMATRIX;
 #ifdef _XM_NO_INTRINSICS_
 struct XMMATRIX
 #else
-__declspec(align(16)) struct XMMATRIX
+struct alignas(16) XMMATRIX
 #endif
 {
 #ifdef _XM_NO_INTRINSICS_
@@ -515,7 +621,7 @@ struct XMFLOAT2
 };
 
 // 2D Vector; 32 bit floating point components aligned on a 16 byte boundary
-__declspec(align(16)) struct XMFLOAT2A : public XMFLOAT2
+struct alignas(16) XMFLOAT2A : public XMFLOAT2
 {
     XMFLOAT2A() = default;
 
@@ -587,7 +693,7 @@ struct XMFLOAT3
 };
 
 // 3D Vector; 32 bit floating point components aligned on a 16 byte boundary
-__declspec(align(16)) struct XMFLOAT3A : public XMFLOAT3
+struct alignas(16) XMFLOAT3A : public XMFLOAT3
 {
     XMFLOAT3A() = default;
 
@@ -662,7 +768,7 @@ struct XMFLOAT4
 };
 
 // 4D Vector; 32 bit floating point components aligned on a 16 byte boundary
-__declspec(align(16)) struct XMFLOAT4A : public XMFLOAT4
+struct alignas(16) XMFLOAT4A : public XMFLOAT4
 {
     XMFLOAT4A() = default;
 
@@ -792,7 +898,7 @@ struct XMFLOAT4X3
 };
 
 // 4x3 Row-major Matrix: 32 bit floating point components aligned on a 16 byte boundary
-__declspec(align(16)) struct XMFLOAT4X3A : public XMFLOAT4X3
+struct alignas(16) XMFLOAT4X3A : public XMFLOAT4X3
 {
     XMFLOAT4X3A() = default;
 
@@ -847,7 +953,7 @@ struct XMFLOAT3X4
 };
 
 // 3x4 Column-major Matrix: 32 bit floating point components aligned on a 16 byte boundary
-__declspec(align(16)) struct XMFLOAT3X4A : public XMFLOAT3X4
+struct alignas(16) XMFLOAT3X4A : public XMFLOAT3X4
 {
     XMFLOAT3X4A() = default;
 
@@ -903,7 +1009,7 @@ struct XMFLOAT4X4
 };
 
 // 4x4 Matrix: 32 bit floating point components aligned on a 16 byte boundary
-__declspec(align(16)) struct XMFLOAT4X4A : public XMFLOAT4X4
+struct alignas(16) XMFLOAT4X4A : public XMFLOAT4X4
 {
     XMFLOAT4X4A() = default;
 
@@ -923,11 +1029,13 @@ __declspec(align(16)) struct XMFLOAT4X4A : public XMFLOAT4X4
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef _PREFAST_
-#pragma prefast(pop)
-#endif
+#ifdef _MSC_VER
+#   ifdef _PREFAST_
+#       pragma prefast(pop)
+#   endif
 
-#pragma warning(pop)
+#   pragma warning(pop)
+#endif
 
 /****************************************************************************
  *
@@ -1883,7 +1991,11 @@ template<uint32_t VSLeftRotateElements, uint32_t Select0, uint32_t Select1, uint
 // separate math routine it would be reloaded.
 
 #ifndef XMGLOBALCONST
-#define XMGLOBALCONST extern const __declspec(selectany)
+#	ifdef _MSC_VER
+#       define XMGLOBALCONST extern const __declspec(selectany)
+#   else
+#       define XMGLOBALCONST const
+#   endif
 #endif
 
 XMGLOBALCONST XMVECTORF32 g_XMSinCoefficients0      = { { { -0.16666667f, +0.0083333310f, -0.00019840874f, +2.7525562e-06f } } };
@@ -2033,17 +2145,19 @@ XMGLOBALCONST XMVECTORF32 g_UShortMax               = { { { 65535.0f, 65535.0f, 
  *
  ****************************************************************************/
 
-#pragma warning(push)
-#pragma warning(disable:4068 4214 4204 4365 4616 4640 6001 6101)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable:4068 4214 4204 4365 4616 4640 6001 6101)
 // C4068/4616: ignore unknown pragmas
 // C4214/4204: nonstandard extension used
 // C4365/4640: Off by default noise
 // C6001/6101: False positives
 
-#ifdef _PREFAST_
-#pragma prefast(push)
-#pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
-#pragma prefast(disable : 26495, "Union initialization confuses /analyze")
+#   ifdef _PREFAST_
+#       pragma prefast(push)
+#       pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
+#       pragma prefast(disable : 26495, "Union initialization confuses /analyze")
+#   endif
 #endif
 
 //------------------------------------------------------------------------------
@@ -2142,11 +2256,13 @@ inline XMVECTOR XM_CALLCONV XMVectorSplatConstantInt(int32_t IntConstant)
 #include "DirectXMathMatrix.inl"
 #include "DirectXMathMisc.inl"
 
-#ifdef _PREFAST_
-#pragma prefast(pop)
-#endif
+#ifdef _MSC_VER
+#   ifdef _PREFAST_
+#       pragma prefast(pop)
+#   endif
 
-#pragma warning(pop)
+#   pragma warning(pop)
+#endif
 
 } // namespace DirectX
 

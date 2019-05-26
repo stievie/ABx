@@ -32,10 +32,12 @@ struct BoundingBox;
 struct BoundingOrientedBox;
 struct BoundingFrustum;
 
-#pragma warning(push)
-#pragma warning(disable:4324 4820)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable:4324 4820)
 // C4324: alignment padding warnings
 // C4820: Off by default noise
+#endif
 
 //-------------------------------------------------------------------------------------
 // Bounding sphere
@@ -73,13 +75,13 @@ struct BoundingSphere
     bool Intersects( _In_ const BoundingBox& box ) const;
     bool Intersects( _In_ const BoundingOrientedBox& box ) const;
     bool Intersects( _In_ const BoundingFrustum& fr ) const;
-    
+
     bool    XM_CALLCONV     Intersects( _In_ FXMVECTOR V0, _In_ FXMVECTOR V1, _In_ FXMVECTOR V2 ) const;
         // Triangle-sphere test
 
     PlaneIntersectionType    XM_CALLCONV     Intersects( _In_ FXMVECTOR Plane ) const;
         // Plane-sphere test
-    
+
     bool    XM_CALLCONV     Intersects( _In_ FXMVECTOR Origin, _In_ FXMVECTOR Direction, _Out_ float& Dist ) const;
         // Ray-sphere test
 
@@ -120,7 +122,7 @@ struct BoundingBox
 
     XM_CONSTEXPR BoundingBox( _In_ const XMFLOAT3& center, _In_ const XMFLOAT3& extents )
         : Center(center), Extents(extents) {}
-    
+
     // Methods
     void    XM_CALLCONV     Transform( _Out_ BoundingBox& Out, _In_ FXMMATRIX M ) const;
     void    XM_CALLCONV     Transform( _Out_ BoundingBox& Out, _In_ float Scale, _In_ FXMVECTOR Rotation, _In_ FXMVECTOR Translation ) const;
@@ -134,7 +136,7 @@ struct BoundingBox
     ContainmentType Contains( _In_ const BoundingBox& box ) const;
     ContainmentType Contains( _In_ const BoundingOrientedBox& box ) const;
     ContainmentType Contains( _In_ const BoundingFrustum& fr ) const;
-    
+
     bool Intersects( _In_ const BoundingSphere& sh ) const;
     bool Intersects( _In_ const BoundingBox& box ) const;
     bool Intersects( _In_ const BoundingOrientedBox& box ) const;
@@ -210,7 +212,7 @@ struct BoundingOrientedBox
 
     PlaneIntersectionType    XM_CALLCONV     Intersects( _In_ FXMVECTOR Plane ) const;
         // Plane-OrientedBox test
-    
+
     bool    XM_CALLCONV     Intersects( _In_ FXMVECTOR Origin, _In_ FXMVECTOR Direction, _Out_ float& Dist ) const;
         // Ray-OrientedBox test
 
@@ -321,7 +323,9 @@ namespace TriangleTests
         // Test a triangle against six planes at once (see BoundingFrustum::GetPlanes)
 }
 
-#pragma warning(pop)
+#ifdef _MSC_VER
+#   pragma warning(pop)
+#endif
 
 /****************************************************************************
  *
@@ -329,25 +333,29 @@ namespace TriangleTests
  *
  ****************************************************************************/
 
-#pragma warning(push)
-#pragma warning(disable : 4068 4365 4616 6001)
+#ifdef _MSC_VER
+#   pragma warning(push)
+#   pragma warning(disable : 4068 4365 4616 6001)
 // C4068/4616: ignore unknown pragmas
 // C4365: Off by default noise
 // C6001: False positives
 
-#ifdef _PREFAST_
-#pragma prefast(push)
-#pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
-#pragma prefast(disable : 26495, "Union initialization confuses /analyze")
+#   ifdef _PREFAST_
+#       pragma prefast(push)
+#       pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
+#       pragma prefast(disable : 26495, "Union initialization confuses /analyze")
+#   endif
 #endif
 
 #include "DirectXCollision.inl"
 
-#ifdef _PREFAST_
-#pragma prefast(pop)
-#endif
+#ifdef _MSC_VER
+#   ifdef _PREFAST_
+#       pragma prefast(pop)
+#   endif
 
-#pragma warning(pop)
+#   pragma warning(pop)
+#endif
 
 } // namespace DirectX
 

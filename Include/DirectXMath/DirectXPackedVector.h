@@ -13,16 +13,18 @@
 
 namespace DirectX
 {
-    
+
 namespace PackedVector
 {
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4201 4365 4324 4996)
 // C4201: nonstandard extension used
 // C4365: Off by default noise
 // C4324: alignment padding warnings
 // C4996: deprecation warnings
+#endif
 
 //------------------------------------------------------------------------------
 // ARGB Color; 8-8-8-8 bit unsigned normalized integer components packed into
@@ -63,7 +65,7 @@ struct XMCOLOR
 };
 
 //------------------------------------------------------------------------------
-// 16 bit floating point number consisting of a sign bit, a 5 bit biased 
+// 16 bit floating point number consisting of a sign bit, a 5 bit biased
 // exponent, and a 10 bit mantissa
 typedef uint16_t HALF;
 
@@ -619,9 +621,9 @@ struct XMUSHORT4
 
 //------------------------------------------------------------------------------
 // 4D Vector; 10-10-10-2 bit normalized components packed into a 32 bit integer
-// The normalized 4D Vector is packed into 32 bits as follows: a 2 bit unsigned, 
-// normalized integer for the w component and 10 bit signed, normalized 
-// integers for the z, y, and x components.  The w component is stored in the 
+// The normalized 4D Vector is packed into 32 bits as follows: a 2 bit unsigned,
+// normalized integer for the w component and 10 bit signed, normalized
+// integers for the z, y, and x components.  The w component is stored in the
 // most significant bits and the x component in the least significant bits
 // (W2Z10Y10X10): [32] wwzzzzzz zzzzyyyy yyyyyyxx xxxxxxxx [0]
 struct XMXDECN4
@@ -657,8 +659,8 @@ struct XMXDECN4
 
 // 4D Vector; 10-10-10-2 bit components packed into a 32 bit integer
 // The normalized 4D Vector is packed into 32 bits as follows: a 2 bit unsigned
-// integer for the w component and 10 bit signed integers for the 
-// z, y, and x components.  The w component is stored in the 
+// integer for the w component and 10 bit signed integers for the
+// z, y, and x components.  The w component is stored in the
 // most significant bits and the x component in the least significant bits
 // (W2Z10Y10X10): [32] wwzzzzzz zzzzyyyy yyyyyyxx xxxxxxxx [0]
 struct XM_DEPRECATED XMXDEC4
@@ -693,9 +695,9 @@ struct XM_DEPRECATED XMXDEC4
 };
 
 // 4D Vector; 10-10-10-2 bit normalized components packed into a 32 bit integer
-// The normalized 4D Vector is packed into 32 bits as follows: a 2 bit signed, 
-// normalized integer for the w component and 10 bit signed, normalized 
-// integers for the z, y, and x components.  The w component is stored in the 
+// The normalized 4D Vector is packed into 32 bits as follows: a 2 bit signed,
+// normalized integer for the w component and 10 bit signed, normalized
+// integers for the z, y, and x components.  The w component is stored in the
 // most significant bits and the x component in the least significant bits
 // (W2Z10Y10X10): [32] wwzzzzzz zzzzyyyy yyyyyyxx xxxxxxxx [0]
 struct XM_DEPRECATED XMDECN4
@@ -730,9 +732,9 @@ struct XM_DEPRECATED XMDECN4
 };
 
 // 4D Vector; 10-10-10-2 bit components packed into a 32 bit integer
-// The 4D Vector is packed into 32 bits as follows: a 2 bit signed, 
-// integer for the w component and 10 bit signed integers for the 
-// z, y, and x components.  The w component is stored in the 
+// The 4D Vector is packed into 32 bits as follows: a 2 bit signed,
+// integer for the w component and 10 bit signed integers for the
+// z, y, and x components.  The w component is stored in the
 // most significant bits and the x component in the least significant bits
 // (W2Z10Y10X10): [32] wwzzzzzz zzzzyyyy yyyyyyxx xxxxxxxx [0]
 struct XM_DEPRECATED XMDEC4
@@ -767,9 +769,9 @@ struct XM_DEPRECATED XMDEC4
 };
 
 // 4D Vector; 10-10-10-2 bit normalized components packed into a 32 bit integer
-// The normalized 4D Vector is packed into 32 bits as follows: a 2 bit unsigned, 
-// normalized integer for the w component and 10 bit unsigned, normalized 
-// integers for the z, y, and x components.  The w component is stored in the 
+// The normalized 4D Vector is packed into 32 bits as follows: a 2 bit unsigned,
+// normalized integer for the w component and 10 bit unsigned, normalized
+// integers for the z, y, and x components.  The w component is stored in the
 // most significant bits and the x component in the least significant bits
 // (W2Z10Y10X10): [32] wwzzzzzz zzzzyyyy yyyyyyxx xxxxxxxx [0]
 struct XMUDECN4
@@ -804,9 +806,9 @@ struct XMUDECN4
 };
 
 // 4D Vector; 10-10-10-2 bit components packed into a 32 bit integer
-// The 4D Vector is packed into 32 bits as follows: a 2 bit unsigned, 
-// integer for the w component and 10 bit unsigned integers 
-// for the z, y, and x components.  The w component is stored in the 
+// The 4D Vector is packed into 32 bits as follows: a 2 bit unsigned,
+// integer for the w component and 10 bit unsigned integers
+// for the z, y, and x components.  The w component is stored in the
 // most significant bits and the x component in the least significant bits
 // (W2Z10Y10X10): [32] wwzzzzzz zzzzyyyy yyyyyyxx xxxxxxxx [0]
 struct XMUDEC4
@@ -1039,7 +1041,9 @@ struct XMU555
     XMU555& operator= (uint16_t Packed) { v = Packed; return *this; }
 };
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 
 /****************************************************************************
@@ -1097,14 +1101,18 @@ XMVECTOR    XM_CALLCONV     XMLoadUByte4(_In_ const XMUBYTE4* pSource);
 XMVECTOR    XM_CALLCONV     XMLoadUNibble4(_In_ const XMUNIBBLE4* pSource);
 XMVECTOR    XM_CALLCONV     XMLoadU555(_In_ const XMU555* pSource);
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 XMVECTOR    XM_DEPRECATED XM_CALLCONV XMLoadDecN4(_In_ const XMDECN4* pSource);
 XMVECTOR    XM_DEPRECATED XM_CALLCONV XMLoadDec4(_In_ const XMDEC4* pSource);
 XMVECTOR    XM_DEPRECATED XM_CALLCONV XMLoadXDec4(_In_ const XMXDEC4* pSource);
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 /****************************************************************************
  *
@@ -1144,14 +1152,18 @@ void    XM_CALLCONV     XMStoreUByte4(_Out_ XMUBYTE4* pDestination, _In_ FXMVECT
 void    XM_CALLCONV     XMStoreUNibble4(_Out_ XMUNIBBLE4* pDestination, _In_ FXMVECTOR V);
 void    XM_CALLCONV     XMStoreU555(_Out_ XMU555* pDestination, _In_ FXMVECTOR V);
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4996)
 // C4996: ignore deprecation warning
+#endif
 
 void    XM_DEPRECATED XM_CALLCONV XMStoreDecN4(_Out_ XMDECN4* pDestination, _In_ FXMVECTOR V);
 void    XM_DEPRECATED XM_CALLCONV XMStoreDec4(_Out_ XMDEC4* pDestination, _In_ FXMVECTOR V);
 void    XM_DEPRECATED XM_CALLCONV XMStoreXDec4(_Out_ XMXDEC4* pDestination, _In_ FXMVECTOR V);
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 /****************************************************************************
  *
@@ -1159,6 +1171,7 @@ void    XM_DEPRECATED XM_CALLCONV XMStoreXDec4(_Out_ XMXDEC4* pDestination, _In_
  *
  ****************************************************************************/
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable:4068 4214 4204 4365 4616 6001 6101)
 // C4068/4616: ignore unknown pragmas
@@ -1171,14 +1184,17 @@ void    XM_DEPRECATED XM_CALLCONV XMStoreXDec4(_Out_ XMXDEC4* pDestination, _In_
 #pragma prefast(disable : 25000, "FXMVECTOR is 16 bytes")
 #pragma prefast(disable : 26495, "Union initialization confuses /analyze")
 #endif
+#endif
 
 #include "DirectXPackedVector.inl"
 
+#ifdef _MSC_VER
 #ifdef _PREFAST_
 #pragma prefast(pop)
 #endif
 
 #pragma warning(pop)
+#endif
 
 } // namespace PackedVector
 
