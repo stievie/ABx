@@ -38,7 +38,7 @@
         <IncludePath Value="../Include"/>
         <IncludePath Value="../absmath/absmath"/>
         <IncludePath Value="../abscommon/abscommon"/>
-        <IncludePath Value="../Include/XMath"/>
+        <IncludePath Value="../Include/DirectXMath"/>
       </Compiler>
       <Linker Options="-m64">
         <LibraryPath Value="."/>
