@@ -1,17 +1,15 @@
 #pragma once
 
+// DirectXMath also works on Windows on ARM and it should also compile on Linux now.
+
 #if defined(__ARM_ARCH) || defined(_M_ARM) || defined(_M_ARM64)
 #   define BUILD_ARCH_ARM 1
 #elif defined(_MSC_VER)
-#   if defined(_M_X86)
-#       define BUILD_ARCH_X86 1
-#   elif defined(_M_X64)
+#   if defined(_M_X86) || defined(_M_X64)
 #       define BUILD_ARCH_X86 1
 #   endif
 #elif defined(__GNUC__) || defined(__clang__)
-#   if defined(__i386__)
-#       define BUILD_ARCH_X86 1
-#   elif defined(__x86_64__)
+#   if defined(__i386__) || defined(__x86_64__)
 #       define BUILD_ARCH_X86 1
 #   endif
 #endif
@@ -33,7 +31,13 @@
 #   define BUILD_PLATFORM_ANDROID 1
 #endif
 
-// DirectXMath also works on Windows on ARM and it should also compile on Linux now
+/*
+ * BUILD_INTRINSICS_LEVEL 0..3. Try setting different levels and see what compiles.
+ * 0 _XM_NO_INTRINSICS_
+ * 1 Some
+ * 2 More
+ * 3 All
+ */
 #define HAVE_DIRECTX_MATH
 #if defined(BUILD_PLATFORM_WIN)
 #   if !defined(BUILD_INTRINSICS_LEVEL)
@@ -59,6 +63,7 @@
 #       define _XM_SSE3_INTRINSICS_
 #       define _XM_SSE4_INTRINSICS_
 #       define _XM_AVX_INTRINSICS_
+//#       define _XM_AVX2_INTRINSICS_  <-- Crashes in directxcollision.inl: line: 1191
 #   endif
 #   if BUILD_INTRINSICS_LEVEL > 2
 #       define _XM_F16C_INTRINSICS_
@@ -70,7 +75,6 @@
 #if defined(BUILD_PLATFORM_IOS) || defined(BUILD_PLATFORM_ANDROID)
 #   define _XM_ARM_NEON_NO_ALIGN_
 #endif
-//#define _XM_NO_INTRINSICS_
 
 #if defined(HAVE_DIRECTX_MATH)
 #   include <DirectXMath.h>
