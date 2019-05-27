@@ -36,8 +36,8 @@ public:
         Terminated
     };
 private:
-    std::recursive_mutex lock_;
-    std::atomic<ExecutionState> state_;
+    std::mutex lock_;
+    std::atomic<ExecutionState> state_;           // Just changed when starting/stopping a game
     /// The primary owner of the game objects
     ObjectList objects_;
     PlayersList players_;
