@@ -30,7 +30,7 @@ public:
 
     ~Sphere() = default;
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     operator XMath::BoundingSphere() const
     {
         return XMath::BoundingSphere(center_, radius_);

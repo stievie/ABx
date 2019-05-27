@@ -150,7 +150,7 @@ Vector3 Quaternion::EulerAngles() const
 
 Quaternion Quaternion::Inverse() const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     return XMath::XMQuaternionInverse(*this);
 #else
     float lenSquared = LengthSqr();
@@ -164,7 +164,7 @@ Quaternion Quaternion::Inverse() const
 }
 Quaternion Quaternion::Conjugate() const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     return XMath::XMQuaternionConjugate(*this);
 #else
     return Quaternion(w_, -x_, -y_, -z_);
@@ -191,7 +191,7 @@ Quaternion& Quaternion::operator-=(const Quaternion& v)
 
 Quaternion& Quaternion::operator*=(const Quaternion& rhs)
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     *this = XMath::XMQuaternionMultiply(rhs, *this);
 #else
     w_ = w_ * rhs.w_ - x_ * rhs.x_ - y_ * rhs.y_ - z_ * rhs.z_;
@@ -224,7 +224,7 @@ Quaternion operator*(float n, const Quaternion& v)
 
 Quaternion operator*(const Quaternion& lhs, const Quaternion& rhs)
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     return XMath::XMQuaternionMultiply(rhs, lhs);
 #else
     return Quaternion(

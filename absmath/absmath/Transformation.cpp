@@ -27,7 +27,7 @@ void Transformation::Move(float speed, const Vector3& amount)
     // 1. Create a matrix from the rotation,
     // 2. multiply this matrix with the moving vector and
     // 3. add the resulting vector to the current position
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     const XMath::XMMATRIX m = XMath::XMMatrixRotationAxis(Math::Vector3::UnitY, -GetYRotation());
     const Vector3 a = amount * speed;
     const XMath::XMVECTOR v = XMath::XMVector3Transform(a, m);

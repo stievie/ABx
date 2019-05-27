@@ -37,7 +37,7 @@ Matrix4::Matrix4(const Vector4& row0, const Vector4& row1, const Vector4& row2, 
     m_[Index30] = row3.x_; m_[Index31] = row3.y_; m_[Index32] = row3.z_; m_[Index33] = row3.w_;
 }
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
 Matrix4::Matrix4(const XMath::XMMATRIX& matrix) noexcept
 {
     // Row major
@@ -173,7 +173,7 @@ Matrix4& Matrix4::Rotate(const Vector4& axisAngle)
 
 Matrix4 Matrix4::Transpose() const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     return XMath::XMMatrixTranspose(*this);
 #else
     Matrix4 res;
@@ -214,7 +214,7 @@ float Matrix4::Determinant() const
 
 Matrix4 Matrix4::Inverse() const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     return XMath::XMMatrixInverse(nullptr, *this);
 #else
     float det = Determinant();
@@ -352,7 +352,7 @@ Matrix4 Matrix4::FromTranslation(const Vector3& v)
 
 Quaternion Matrix4::Rotation() const
 {
-//#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+//#if defined(HAVE_DIRECTX_MATH)
 //    return XMath::XMQuaternionRotationMatrix(*this);
 //#else
     // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm

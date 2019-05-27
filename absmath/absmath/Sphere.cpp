@@ -180,7 +180,7 @@ Intersection Sphere::IsInside(const ConvexHull& sphere) const
 
 Intersection Sphere::IsInside(const BoundingBox& box) const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     if (box.IsOriented())
     {
         const XMath::BoundingSphere me(center_, radius_);

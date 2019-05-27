@@ -148,7 +148,7 @@ BoundingBox BoundingBox::Transformed(const Matrix4& transform) const
     if (!IsDefined())
         // No transformation needed when not defined
         return *this;
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     XMath::BoundingBox _result;
     ((XMath::BoundingBox)*this).Transform(_result, transform);
     BoundingBox result(Vector3(_result.Center) - Vector3(_result.Extents), Vector3(_result.Center) + Vector3(_result.Extents));
@@ -233,7 +233,7 @@ min 0------------4
 
 bool BoundingBox::Collides(const BoundingBox& b2) const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     if (GetOrientations(b2) != OrientationsNone)
         return ((XMath::BoundingOrientedBox)*this).Intersects((XMath::BoundingOrientedBox)b2);
 #endif
@@ -258,7 +258,7 @@ bool BoundingBox::ResolveCollision(const BoundingBox& /* b2 */, const Vector3& /
 
 bool BoundingBox::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
 {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     const uint32_t o = GetOrientations(b2);
     if (o != OrientationsNone)
     {

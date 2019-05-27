@@ -31,7 +31,7 @@ public:
         z_(z)
     { }
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
         Vector3(const XMath::XMVECTOR& vector) noexcept :
         x_(XMath::XMVectorGetX(vector)),
         y_(XMath::XMVectorGetY(vector)),
@@ -55,7 +55,7 @@ public:
         return *this;
     }
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     /// Cast to XMVECTOR
     operator XMath::XMVECTOR() const
     {
@@ -89,7 +89,7 @@ public:
 
     const Vector3 CrossProduct(const Vector3& v) const
     {
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
         return XMath::XMVector3Cross(*this, v);
 #else
         return Vector3(

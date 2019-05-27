@@ -35,7 +35,7 @@ public:
         w_(w)
     { }
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
         Vector4(const XMath::XMVECTOR& vector) noexcept :
         x_(XMath::XMVectorGetX(vector)),
         y_(XMath::XMVectorGetY(vector)),
@@ -56,7 +56,7 @@ public:
         return *this;
     }
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     /// Cast to XMVECTOR
     operator XMath::XMVECTOR() const
     {

@@ -24,7 +24,7 @@ public:
         z_(z)
     {}
     Quaternion(float x, float y, float z);
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     Quaternion(const XMath::XMVECTOR& q) :
         w_(XMath::XMVectorGetW(q)),
         x_(XMath::XMVectorGetX(q)),
@@ -44,7 +44,7 @@ public:
     /// Create a Quaternion from Axis and Angle. Angle is Rad
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
 
-#if defined(HAVE_DIRECTX_MATH) || defined(HAVE_X_MATH)
+#if defined(HAVE_DIRECTX_MATH)
     /// Cast to XMVECTOR
     operator XMath::XMVECTOR() const
     {
