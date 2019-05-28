@@ -5,6 +5,13 @@
 
 namespace Game {
 
+void ItemContainer::InternalSetItem(std::unique_ptr<Item>& item)
+{
+    if (!item)
+        return;
+    items_[item->concreteItem_.storagePos] = std::move(item);
+}
+
 bool ItemContainer::SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback)
 {
     if (!item)

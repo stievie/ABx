@@ -11,22 +11,35 @@ namespace Components {
 
 void InventoryComp::Update(uint32_t timeElapsed)
 {
-    for (const auto& item : equipment_)
+    VisitEquipement([&](Item* item)
     {
-        if (item.second)
-            item.second->Update(timeElapsed);
-    }
+        item->Update(timeElapsed);
+    });
 }
 
-void InventoryComp::SetEquipment(std::unique_ptr<Item> item)
+EquipPos InventoryComp::SetEquipment(std::unique_ptr<Item>& item)
 {
-    if (item)
+    if (!item)
+        return EquipPos::None;
+
+    const EquipPos pos = item->GetEquipPos();
     {
-        EquipPos pos = static_cast<EquipPos>(item->concreteItem_.storagePos);
-        RemoveEquipment(pos);
-        equipment_[pos] = std::move(item);
-        equipment_[pos]->OnEquip(&owner_);
+        std::unique_ptr<Item> old = RemoveEquipment(pos);
+        if (old)
+        {
+            if (!owner_.AddToInventory(old))
+            {
+                // Ouch!
+                equipment_[pos] = std::move(item);
+                equipment_[pos]->OnEquip(&owner_);
+                return EquipPos::None;
+            }
+            old->OnUnequip(&owner_);
+        }
     }
+    equipment_[pos] = std::move(item);
+    equipment_[pos]->OnEquip(&owner_);
+    return pos;
 }
 
 Item* InventoryComp::GetEquipment(EquipPos pos) const
@@ -45,6 +58,21 @@ std::unique_ptr<Item> InventoryComp::RemoveEquipment(EquipPos pos)
     std::unique_ptr<Item> item = std::move(equipment_[pos]);
     item->OnUnequip(&owner_);
     return item;
+}
+
+EquipPos InventoryComp::EquipInventoryItem(uint16_t pos)
+{
+    Item* pItem = GetInventoryItem(pos);
+    if (!pItem || pItem->GetEquipPos() == EquipPos::None)
+        return EquipPos::None;
+    std::unique_ptr<Item> item = RemoveInventoryItem(pos);
+    EquipPos ePos = SetEquipment(item);
+    if (ePos != EquipPos::None)
+        return ePos;
+
+    // Rollback
+    inventory_->InternalSetItem(item);
+    return EquipPos::None;
 }
 
 void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest)
@@ -165,21 +193,19 @@ float InventoryComp::GetArmorPenetration()
 uint32_t InventoryComp::GetAttributeValue(uint32_t index)
 {
     uint32_t result = 0;
-    for (const auto& item : equipment_)
+    VisitEquipement([&](Item* item)
     {
-        if (item.second)
-            item.second->GetAttributeValue(index, result);
-    }
+        item->GetAttributeValue(index, result);
+    });
     return result;
 }
 
 void InventoryComp::GetResources(int& maxHealth, int& maxEnergy)
 {
-    for (const auto& item : equipment_)
+    VisitEquipement([&](Item* item)
     {
-        if (item.second)
-            item.second->GetResources(maxHealth, maxEnergy);
-    }
+        item->GetResources(maxHealth, maxEnergy);
+    });
 }
 
 }

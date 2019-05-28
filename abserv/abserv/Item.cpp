@@ -243,6 +243,16 @@ EquipPos Item::GetEquipPos() const
     case AB::Entities::ItemTypeFocus:
     case AB::Entities::ItemTypeShield:
         return EquipPos::WeaponOffHand;
+    case AB::Entities::ItemTypeArmorHead:
+        return EquipPos::ArmorHead;
+    case AB::Entities::ItemTypeArmorChest:
+        return EquipPos::ArmorChest;
+    case AB::Entities::ItemTypeArmorHands:
+        return EquipPos::ArmorHands;
+    case AB::Entities::ItemTypeArmorLegs:
+        return EquipPos::ArmorFeet;
+    case AB::Entities::ItemTypeArmorFeet:
+        return EquipPos::ArmorFeet;
     default:
         return EquipPos::None;
     }

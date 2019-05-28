@@ -34,6 +34,7 @@ public:
     ItemContainer& operator=(const ItemContainer&) = delete;
     ~ItemContainer() = default;
 
+    void InternalSetItem(std::unique_ptr<Item>& item);
     bool SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyItem(uint16_t pos);

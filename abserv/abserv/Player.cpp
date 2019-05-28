@@ -171,18 +171,45 @@ void Player::GetInventory()
 
 void Player::DestroyInventoryItem(uint16_t pos)
 {
-    if (inventoryComp_->DestroyInventoryItem(pos))
-    {
-        AB::Entities::InventoryItems inv;
-        inv.uuid = data_.uuid;
-        IO::DataClient* cli = GetSubsystem<IO::DataClient>();
-        cli->Invalidate(inv);
+    if (!inventoryComp_->DestroyInventoryItem(pos))
+        return;
 
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::InventoryItemDelete);
-        msg->Add<uint16_t>(pos);
-        WriteToOutput(*msg.get());
-    }
+    AB::Entities::InventoryItems inv;
+    inv.uuid = data_.uuid;
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+    cli->Invalidate(inv);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::InventoryItemDelete);
+    msg->Add<uint16_t>(pos);
+    WriteToOutput(*msg.get());
+}
+
+void Player::EquipInventoryItem(uint16_t pos)
+{
+    EquipPos ePos = inventoryComp_->EquipInventoryItem(pos);
+    if (ePos == EquipPos::None)
+        return;
+
+    IO::DataClient* cli = GetSubsystem<IO::DataClient>();
+
+    AB::Entities::InventoryItems inv;
+    inv.uuid = data_.uuid;
+    cli->Invalidate(inv);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    // Removed from inventory
+    msg->AddByte(AB::GameProtocol::InventoryItemDelete);
+    msg->Add<uint16_t>(pos);
+    // TODO: Write new equipment
+//    msg->AddByte(AB::GameProtocol::EquipmentItemUpdate);
+//    msg->Add<uint16_t>(static_cast<uint16_t>(ePos));
+
+    WriteToOutput(*msg.get());
+
+    AB::Entities::EquippedItems equ;
+    equ.uuid = data_.uuid;
+    cli->Invalidate(equ);
 }
 
 void Player::StoreInChest(uint16_t pos)

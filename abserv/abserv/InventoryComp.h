@@ -38,9 +38,11 @@ public:
 
     void Update(uint32_t timeElapsed);
 
-    void SetEquipment(std::unique_ptr<Item> item);
+    EquipPos SetEquipment(std::unique_ptr<Item>& item);
     Item* GetEquipment(EquipPos pos) const;
     std::unique_ptr<Item> RemoveEquipment(EquipPos pos);
+    /// Swap inventory - equipment
+    EquipPos EquipInventoryItem(uint16_t pos);
 
     bool SetInventoryItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item

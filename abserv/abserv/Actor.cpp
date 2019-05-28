@@ -742,7 +742,7 @@ bool Actor::SetEquipment(const std::string& ciUuid)
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
-    inventoryComp_->SetEquipment(std::move(item));
+    inventoryComp_->SetEquipment(item);
     return true;
 }
 
