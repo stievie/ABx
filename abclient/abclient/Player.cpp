@@ -9,6 +9,7 @@
 #include "SkillBarWindow.h"
 #include "Mumble.h"
 #include "LevelManager.h"
+#include "ClientPrediction.h"
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Physics/PhysicsWorld.h>
 
@@ -53,6 +54,7 @@ Player* Player::CreatePlayer(uint32_t id, Scene* scene,
 {
     Node* node = scene->CreateChild(0, LOCAL);
     Player* result = node->CreateComponent<Player>();
+    node->CreateComponent<ClientPrediction>();
     result->id_ = id;
 
     result->Unserialize(data);
@@ -102,10 +104,8 @@ void Player::Init(Scene* scene, const Vector3& position, const Quaternion& rotat
     skillsWin->SetSkills(skills_);
 }
 
-void Player::FixedUpdate(float timeStep)
+uint8_t Player::GetMoveDir()
 {
-    FwClient* client = context_->GetSubsystem<FwClient>();
-
     uint8_t moveDir = AB::GameProtocol::MoveDirectionNone;
     if (!(controls_.IsDown(CTRL_MOVE_FORWARD) && controls_.IsDown(CTRL_MOVE_BACK)))
     {
@@ -121,6 +121,33 @@ void Player::FixedUpdate(float timeStep)
         if (controls_.IsDown(CTRL_MOVE_RIGHT))
             moveDir |= AB::GameProtocol::MoveDirectionEast;
     }
+    return moveDir;
+}
+
+uint8_t Player::GetTurnDir()
+{
+    uint8_t turnDir = AB::GameProtocol::TurnDirectionNone;
+    if (!(controls_.IsDown(CTRL_TURN_LEFT) && controls_.IsDown(CTRL_TURN_RIGHT)))
+    {
+        if (controls_.IsDown(CTRL_TURN_LEFT))
+            turnDir |= AB::GameProtocol::TurnDirectionLeft;
+        if (controls_.IsDown(CTRL_TURN_RIGHT))
+            turnDir |= AB::GameProtocol::TurnDirectionRight;
+    }
+    return turnDir;
+}
+
+void Player::MoveTo(int64_t time, const Vector3& newPos)
+{
+    ClientPrediction* cp = GetComponent<ClientPrediction>();
+    cp->CheckServerPosition(time, newPos);
+}
+
+void Player::FixedUpdate(float timeStep)
+{
+    FwClient* client = context_->GetSubsystem<FwClient>();
+
+    uint8_t moveDir = GetMoveDir();
 
     if (lastMoveDir_ != moveDir)
     {
@@ -134,14 +161,7 @@ void Player::FixedUpdate(float timeStep)
         lastMoveDir_ = moveDir;
     }
 
-    uint8_t turnDir = AB::GameProtocol::TurnDirectionNone;
-    if (!(controls_.IsDown(CTRL_TURN_LEFT) & controls_.IsDown(CTRL_TURN_RIGHT)))
-    {
-        if (controls_.IsDown(CTRL_TURN_LEFT))
-            turnDir |= AB::GameProtocol::TurnDirectionLeft;
-        if (controls_.IsDown(CTRL_TURN_RIGHT))
-            turnDir |= AB::GameProtocol::TurnDirectionRight;
-    }
+    uint8_t turnDir = GetTurnDir();
     if (lastTurnDir_ != turnDir)
     {
         client->Turn(turnDir);

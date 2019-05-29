@@ -261,7 +261,7 @@ void Actor::AddModel(uint32_t itemIndex)
 void Actor::UpdateTransformation()
 {
     Vector3 moveTo;
-    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+    if (creatureState_ == AB::GameProtocol::CreatureStateMoving && objectType_ != ObjectTypeSelf)
     {
         FwClient* c = context_->GetSubsystem<FwClient>();
         double diff = (double)c->GetLastPing();

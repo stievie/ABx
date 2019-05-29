@@ -183,6 +183,9 @@
     <ClInclude Include="AccountChestDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ClientPrediction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LevelManager.cpp">
@@ -327,6 +330,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AccountChestDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientPrediction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

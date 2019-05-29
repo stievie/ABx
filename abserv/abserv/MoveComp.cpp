@@ -64,6 +64,16 @@ void MoveComp::HeadTo(const Math::Vector3& pos)
 
 void MoveComp::Move(float speed, const Math::Vector3& amount)
 {
+/*
+    // The client prediction calculates the position in the following way:
+    const Math::Matrix4 m = Math::Matrix4::FromQuaternion(owner_.transformation_.oriention_.Inverse());
+    const Math::Vector3 a = amount * speed;
+    const Math::Vector3 v = m * a;
+    Math::Vector3 oldPos = owner_.transformation_.position_;
+    oldPos += v;
+    LOG_INFO << "seepd " << speed << " amount " << amount.ToString() << " v " << v.ToString() << " new pos " << oldPos.ToString() << std::endl;
+*/
+
     owner_.transformation_.Move(speed, amount);
 
     // Keep on ground

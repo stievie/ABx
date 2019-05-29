@@ -51,6 +51,9 @@ public:
     void GotoPosition(const Vector3& pos);
     void ClickObject(uint32_t objectId);
     void SelectObject(uint32_t objectId);
+    uint8_t GetMoveDir();
+    uint8_t GetTurnDir();
+    void MoveTo(int64_t time, const Vector3& newPos) override;
 protected:
     void PostUpdate(float timeStep) override;
 private:

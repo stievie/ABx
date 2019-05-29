@@ -63,7 +63,7 @@ InventoryWindow::InventoryWindow(Context* context) :
     int height = 0;
 
     {
-        // Stre
+        // Store
         Menu* item = popup->CreateChild<Menu>();
         item->SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
         item->SetStyleAuto();

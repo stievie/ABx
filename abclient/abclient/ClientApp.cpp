@@ -37,6 +37,7 @@
 #include "PartyItem.h"
 #include "HealthBar.h"
 #include "InventoryWindow.h"
+#include "ClientPrediction.h"
 #include <asio/detail/config.hpp>
 #include <asio/version.hpp>
 #if defined(__linux__)
@@ -150,6 +151,7 @@ ClientApp::ClientApp(Context* context) :
     // be created via CreateComponent, and loaded / saved
     Actor::RegisterObject(context);
     Player::RegisterObject(context);
+    ClientPrediction::RegisterObject(context);
     ChatWindow::RegisterObject(context);
     GameMenu::RegisterObject(context);
     PingDot::RegisterObject(context);

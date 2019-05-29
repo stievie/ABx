@@ -269,6 +269,7 @@
     <ClCompile Include="CharCreateLevel.cpp" />
     <ClCompile Include="CharSelectLevel.cpp" />
     <ClCompile Include="ChatWindow.cpp" />
+    <ClCompile Include="ClientPrediction.cpp" />
     <ClCompile Include="CreateAccountLevel.cpp" />
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="DialogWindow.cpp" />
@@ -324,6 +325,7 @@
     <ClCompile Include="ClientApp.cpp" />
     <ClInclude Include="AbEvents.h" />
     <ClInclude Include="BaseLevel.h" />
+    <ClInclude Include="ClientPrediction.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CreateAccountLevel.h" />
     <ClInclude Include="CreditsWindow.h" />
