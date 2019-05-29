@@ -54,13 +54,13 @@ public:
     uint8_t GetMoveDir();
     uint8_t GetTurnDir();
     void MoveTo(int64_t time, const Vector3& newPos) override;
+    float lastYaw_;
 protected:
     void PostUpdate(float timeStep) override;
 private:
     SharedPtr<SoundSource3D> footstepsSource_;
     uint8_t lastMoveDir_;
     uint8_t lastTurnDir_;
-    float lastYaw_;
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
 };

@@ -139,6 +139,9 @@ uint8_t Player::GetTurnDir()
 
 void Player::MoveTo(int64_t time, const Vector3& newPos)
 {
+    if (GetMoveDir() == 0)
+        Actor::MoveTo(time, newPos);
+
     ClientPrediction* cp = GetComponent<ClientPrediction>();
     cp->CheckServerPosition(time, newPos);
 }
@@ -192,7 +195,11 @@ void Player::SetYRotation(int64_t time, float rad, bool updateYaw)
     }
     lastYaw_ = controls_.yaw_;
 
-    Actor::SetYRotation(time, rad, updateYaw);
+    if (GetTurnDir() == 0)
+        Actor::SetYRotation(time, rad, updateYaw);
+
+    ClientPrediction* cp = GetComponent<ClientPrediction>();
+    cp->CheckServerRotation(time, rad);
 }
 
 void Player::CameraZoom(bool increase)

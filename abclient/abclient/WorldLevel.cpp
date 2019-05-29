@@ -47,6 +47,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
+    SubscribeToEvent(AbEvents::E_OBJECTSPEEDUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectSpeedUpdate));
     SubscribeToEvent(AbEvents::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
     SubscribeToEvent(AbEvents::E_ATTACKFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectAttackFailure));
     SubscribeToEvent(AbEvents::E_PLAYERERROR, URHO3D_HANDLER(WorldLevel, HandlePlayerError));
