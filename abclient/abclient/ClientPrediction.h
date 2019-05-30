@@ -9,6 +9,8 @@ class ClientPrediction : public LogicComponent
 private:
     int64_t serverTime_;
     float serverY_;
+    uint8_t lastMoveDir_ = 0;
+    uint8_t lastTurnDir_ = 0;
     void UpdateMove(float timeStep, uint8_t direction, float speedFactor);
     void Move(float speed, const Vector3& amount);
     void UpdateTurn(float timeStep, uint8_t direction, float speedFactor);

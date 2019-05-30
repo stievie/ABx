@@ -10,6 +10,7 @@
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Music.h>
 #include <map>
+#include "Options.h"
 
 struct EventItem
 {
@@ -63,6 +64,7 @@ public:
     FwClient(Context* context);
     ~FwClient();
 
+    void SetEnvironment(const Environment* env);
     uint32_t GetIp() const
     {
         if (loggedIn_)

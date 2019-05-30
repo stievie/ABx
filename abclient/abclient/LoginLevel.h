@@ -10,7 +10,6 @@ public:
     LoginLevel(Context* context);
     void CreateCamera();
     void ShowError(const String& message, const String& title = "Error") override;
-
 protected:
     void SubscribeToEvents() override;
     void CreateUI() override;
@@ -20,6 +19,7 @@ private:
     SharedPtr<LineEdit> passEdit_;
     SharedPtr<Button> button_;
     SharedPtr<Button> createAccountButton_;
+    SharedPtr<DropDownList> environmentsList_;
     void CreateScene() override;
     void HandleLoginClicked(StringHash eventType, VariantMap& eventData);
     void HandleCreateAccountClicked(StringHash eventType, VariantMap& eventData);
@@ -27,4 +27,5 @@ private:
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void DoLogin();
+    Text* CreateDropdownItem(const String& text, const String& value);
 };

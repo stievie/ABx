@@ -149,6 +149,14 @@ FwClient::~FwClient()
     UnsubscribeFromAllEvents();
 }
 
+void FwClient::SetEnvironment(const Environment* env)
+{
+    if (!env)
+        return;
+    client_.loginHost_ = std::string(env->host.CString());
+    client_.loginPort_ = env->port;
+}
+
 void FwClient::UpdateServers()
 {
     client_.GetServers();

@@ -96,6 +96,49 @@ void LoginLevel::CreateUI()
         passEdit_->SetText(options->password_);
     }
     button_->SetEnabled(!(nameEdit_->GetText().Empty() || passEdit_->GetText().Empty()));
+
+    environmentsList_ = uiRoot_->CreateChild<DropDownList>("Environments");
+    environmentsList_->SetStyleAuto();
+    environmentsList_->SetAlignment(HA_LEFT, VA_BOTTOM);
+    environmentsList_->SetPosition(8, -8);
+    Options* opts = GetSubsystem<Options>();
+    const auto& envs = opts->environments_;
+    Environment* selEnv = opts->GetSelectedEnvironment();
+    int width = 0; int height = 0;
+    int selIndex = 0;
+    int i = 0;;
+    for (const auto& env : envs)
+    {
+        Text* txt = CreateDropdownItem(env.name, env.name);
+        environmentsList_->AddItem(txt);
+        if (width < txt->GetWidth())
+            width = txt->GetWidth();
+        if (height < txt->GetHeight())
+            height = txt->GetHeight();
+        if (selEnv != nullptr)
+        {
+            if (selEnv->name.Compare(env.name) == 0)
+            {
+                selIndex = i;
+            }
+        }
+        ++i;
+    }
+    environmentsList_->SetMinWidth(width + 50);
+    environmentsList_->SetWidth(width + 50);
+    environmentsList_->SetMinHeight(height + 4);
+    environmentsList_->SetHeight(height + 4);
+    environmentsList_->GetPopup()->SetWidth(environmentsList_->GetWidth() + 4);
+    environmentsList_->SetSelection(selIndex);
+}
+
+Text* LoginLevel::CreateDropdownItem(const String& text, const String& value)
+{
+    Text* result = new Text(context_);
+    result->SetText(text);
+    result->SetVar("String Value", value);
+    result->SetStyle("DropDownItemEnumText");
+    return result;
 }
 
 void LoginLevel::HandleUpdate(StringHash, VariantMap& eventData)
@@ -140,7 +183,16 @@ void LoginLevel::DoLogin()
     button_->SetEnabled(false);
     String name = nameEdit_->GetText();
     String pass = passEdit_->GetText();
+    Options* opts = GetSubsystem<Options>();
+    auto& envs = opts->environments_;
+    unsigned selEnv = environmentsList_->GetSelection();
     FwClient* net = context_->GetSubsystem<FwClient>();
+    if (selEnv < envs.Size())
+    {
+        Environment* env = &envs[selEnv];
+        net->SetEnvironment(env);
+        opts->SetSelectedEnvironment(env->name);
+    }
     net->Login(name, pass);
 }
 

@@ -76,6 +76,7 @@ Other shortcuts are shown in `[` `]`.
 * `-prefpath <directory>`: Preferecences path
 * `-username <username>`: Username
 * `-password <password>`: Password
+* `-no-cp`: No client prediction
 
 ## Settings
 

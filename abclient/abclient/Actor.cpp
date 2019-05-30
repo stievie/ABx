@@ -260,13 +260,15 @@ void Actor::AddModel(uint32_t itemIndex)
 
 void Actor::UpdateTransformation()
 {
+//    extern bool gNoClientPrediction;
     Vector3 moveTo;
-    if (creatureState_ == AB::GameProtocol::CreatureStateMoving && objectType_ != ObjectTypeSelf)
+    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+//    if (((objectType_ != ObjectTypeSelf) || !gNoClientPrediction))
     {
         FwClient* c = context_->GetSubsystem<FwClient>();
-        double diff = (double)c->GetLastPing();
+        const double forTime = GetClientTime() + static_cast<double>(c->GetLastPing());
         float p[3];
-        if (posExtrapolator_.ReadPosition(GetClientTime() - diff, p))
+        if (posExtrapolator_.ReadPosition(forTime, p))
             moveTo = Vector3(p[0], p[1], p[2]);
         else
             moveTo = moveToPos_;
@@ -280,10 +282,10 @@ void Actor::UpdateTransformation()
     if (moveTo != Vector3::ZERO && moveTo != cp)
     {
         // Try to make moves smoother...
-        if ((cp - moveToPos_).LengthSquared() > 0.01f)
+        if ((cp - moveToPos_).LengthSquared() > 0.02f)
         {
             // Seems to be the best result
-            Vector3 pos = cp.Lerp(moveTo, 0.4f);
+            Vector3 pos = cp.Lerp(moveTo, 0.2f);
             node_->SetPosition(pos);
         }
         else
@@ -331,7 +333,9 @@ void Actor::SetUIElementSizePos(UIElement* elem, const IntVector2& size, const I
 
 void Actor::Update(float timeStep)
 {
+    Vector3 oldpos = node_->GetPosition();
     UpdateTransformation();
+    velocity_ = ((oldpos - node_->GetPosition()) / timeStep).Abs();
 
     Shortcuts* sc = GetSubsystem<Shortcuts>();
 

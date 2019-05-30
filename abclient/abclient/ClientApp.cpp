@@ -71,6 +71,8 @@ URHO3D_DEFINE_APPLICATION_MAIN(ClientApp)
 #pragma warning( pop )
 #endif // defined
 
+bool gNoClientPrediction = false;
+
 /**
 * This happens before the engine has been initialized
 * so it's usually minimal code setting defaults for
@@ -104,6 +106,10 @@ ClientApp::ClientApp(Context* context) :
             ++i;
             if (i < args.Size())
                 options_->password_ = args[i];
+        }
+        else if (arg == "-no-cp")
+        {
+            gNoClientPrediction = true;
         }
         ++i;
     }

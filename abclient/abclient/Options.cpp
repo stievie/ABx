@@ -292,6 +292,13 @@ void Options::Save()
         param.SetString("type", "bool");
         param.SetBool("value", disableMouseWalking_);
     }
+    {
+        Environment* sel = GetSelectedEnvironment();
+        XMLElement param = root.CreateChild("parameter");
+        param.SetString("name", "ActiveEnvironment");
+        param.SetString("type", "string");
+        param.SetString("value", (sel != nullptr ? sel->name : ""));
+    }
 
     Shortcuts* sc = GetSubsystem<Shortcuts>();
     if (sc)
@@ -404,6 +411,34 @@ void Options::SetAntiAliasingMode(AntiAliasingMode mode)
 const String& Options::GetRenderPath() const
 {
     return renderPath_;
+}
+
+Environment* Options::GetEnvironmment(const String& name)
+{
+    for (auto& env : environments_)
+    {
+        if (env.name.Compare(name) == 0)
+            return &env;
+    }
+    return nullptr;
+}
+
+Environment* Options::GetSelectedEnvironment()
+{
+    for (auto& env : environments_)
+    {
+        if (env.selected)
+            return &env;
+    }
+    return nullptr;
+}
+
+void Options::SetSelectedEnvironment(const String& name)
+{
+    for (auto& env : environments_)
+    {
+        env.selected = (env.name.Compare(name) == 0);
+    }
 }
 
 WindowMode Options::GetWindowMode() const
@@ -721,7 +756,21 @@ void Options::LoadElements(const XMLElement& root)
         {
             disableMouseWalking_ = paramElem.GetBool("value");
         }
-
+        else if (name.Compare("Environment") == 0)
+        {
+            Environment env;
+            XMLElement nameElem = paramElem.GetChild("name");
+            env.name = nameElem.GetAttribute("value");
+            XMLElement hostElem = paramElem.GetChild("host");
+            env.host = hostElem.GetAttribute("value");
+            XMLElement portElem = paramElem.GetChild("port");
+            env.port = static_cast<uint16_t>(portElem.GetUInt("value"));
+            environments_.Push(env);
+        }
+        else if (name.Compare("ActiveEnvironment") == 0)
+        {
+            SetSelectedEnvironment(paramElem.GetAttribute("value"));
+        }
         paramElem = paramElem.GetNext("parameter");
     }
 }

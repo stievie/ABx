@@ -91,11 +91,10 @@ void ClientPrediction::TurnAbsolute(float yAngle)
 void ClientPrediction::Update(float timeStep)
 {
     LogicComponent::Update(timeStep);
-}
 
-void ClientPrediction::FixedUpdate(float timeStep)
-{
-    LogicComponent::FixedUpdate(timeStep);
+    extern bool gNoClientPrediction;
+    if (gNoClientPrediction)
+        return;
 
     Player* player = node_->GetComponent<Player>();
 
@@ -103,21 +102,18 @@ void ClientPrediction::FixedUpdate(float timeStep)
     if (state != AB::GameProtocol::CreatureStateIdle && state != AB::GameProtocol::CreatureStateMoving)
         return;
 
-    uint8_t moveDir = player->GetMoveDir();
+    const uint8_t moveDir = player->GetMoveDir();
     if (moveDir != 0)
     {
         if (state == AB::GameProtocol::CreatureStateIdle)
         {
-//            if (player->lastYaw_ != player->controls_.yaw_)
-//            {
-                TurnAbsolute(player->controls_.yaw_);
-//            }
+            TurnAbsolute(player->controls_.yaw_);
             player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureStateMoving);
         }
         UpdateMove(timeStep, moveDir, player->GetSpeedFactor());
     }
 
-    uint8_t turnDir = player->GetTurnDir();
+    const uint8_t turnDir = player->GetTurnDir();
     if (turnDir != 0)
     {
         if (state == AB::GameProtocol::CreatureStateIdle)
@@ -125,8 +121,20 @@ void ClientPrediction::FixedUpdate(float timeStep)
         UpdateTurn(timeStep, turnDir, player->GetSpeedFactor());
     }
 
-//    if (moveDir == 0 && turnDir == 0 && state == AB::GameProtocol::CreatureStateMoving)
-//        player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureStateIdle);
+    if (state == AB::GameProtocol::CreatureStateMoving)
+    {
+        if ((moveDir == 0 && lastMoveDir_ != 0) ||
+            (turnDir == 0 && lastTurnDir_ != 0))
+            player->SetCreatureState(serverTime_, AB::GameProtocol::CreatureStateIdle);
+    }
+
+    lastMoveDir_ = moveDir;
+    lastTurnDir_ = turnDir;
+}
+
+void ClientPrediction::FixedUpdate(float timeStep)
+{
+    LogicComponent::FixedUpdate(timeStep);
 }
 
 void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPos)
@@ -136,9 +144,11 @@ void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPo
     Player* player = node_->GetComponent<Player>();
     const Vector3& currPos = player->moveToPos_;
     float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
-    if (dist > 1.0f)
+    if (dist > 5.0f)
     {
-        URHO3D_LOGINFOF("Distance %f", dist);
+        double serverTime = player->GetServerTime(time);
+        double clientTtime = player->GetClientTime();
+        URHO3D_LOGINFOF("Distance %f, server time %f, client time %f", dist, serverTime, clientTtime);
         // Lerp to actual position
         player->moveToPos_ = serverPos;
 //        node_->SetWorldPosition(player->moveToPos_);

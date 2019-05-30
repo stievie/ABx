@@ -116,6 +116,7 @@ public:
     Vector<String> materials_;
     // Can pickup this thingy
     bool pickable_;
+    Vector3 velocity_;
 private:
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;

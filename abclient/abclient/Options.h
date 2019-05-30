@@ -21,6 +21,14 @@ enum class AntiAliasingMode
 static constexpr float MIN_FOV = 45.0;
 static constexpr float MAX_FOV = 120.0;
 
+struct Environment
+{
+    String name;
+    String host;
+    uint16_t port;
+    bool selected;
+};
+
 class Options : public Object
 {
     URHO3D_OBJECT(Options, Object);
@@ -32,6 +40,7 @@ public:
     uint16_t loginPort_;
     String username_;
     String password_;
+    Vector<Environment> environments_;
 
     bool stickCameraToHead_;
     bool disableMouseWalking_;
@@ -47,6 +56,9 @@ public:
     void Load();
     void Save();
 
+    Environment* GetEnvironmment(const String& name);
+    Environment* GetSelectedEnvironment();
+    void SetSelectedEnvironment(const String& name);
     WindowMode GetWindowMode() const;
     void SetWindowMode(WindowMode mode);
     int GetWidth() const
