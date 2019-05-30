@@ -23,3 +23,9 @@
 #define PLAYER_MAX_ATTRIBUTES 10
 
 static constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()=?\`,.-;:_+*~#'|)";
+
+namespace Game {
+// For client prediction these values are also needed by the client.
+static constexpr float BASE_SPEED = 150.0f;
+static constexpr float BASE_TURN_SPEED = 2000.0f;
+}

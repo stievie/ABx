@@ -23,7 +23,7 @@ ClientPrediction::~ClientPrediction()
 
 void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speedFactor)
 {
-    const float speed = GetSpeed(timeStep, BASE_SPEED, speedFactor);
+    const float speed = GetSpeed(timeStep, Game::BASE_SPEED, speedFactor);
     if ((direction & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         Move(speed, Vector3::FORWARD);
     if ((direction & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
@@ -61,7 +61,7 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
 
 void ClientPrediction::UpdateTurn(float timeStep, uint8_t direction, float speedFactor)
 {
-    const float speed = GetSpeed(timeStep, BASE_TURN_SPEED, speedFactor);
+    const float speed = GetSpeed(timeStep, Game::BASE_TURN_SPEED, speedFactor);
     if ((direction & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
     {
         Turn(speed);

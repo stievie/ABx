@@ -1,8 +1,5 @@
 #pragma once
 
-static constexpr float BASE_SPEED = 150.0f;
-static constexpr float BASE_TURN_SPEED = 2000.0f;
-
 class ClientPrediction : public LogicComponent
 {
     URHO3D_OBJECT(ClientPrediction, LogicComponent);

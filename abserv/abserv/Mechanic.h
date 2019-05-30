@@ -18,10 +18,6 @@ constexpr T GetPercent(T max, T percent)
 static constexpr uint32_t LEVEL_CAP = 20;
 static constexpr uint32_t SKILLPOINT_ADVANCE_XP = 15000;
 
-// Base move speed
-static constexpr float BASE_SPEED = 150.0f;
-static constexpr float BASE_TURN_SPEED = 2000.0f;
-
 // Resources
 static constexpr int BASE_ENERGY = 20;
 static constexpr int MAX_HEALTH_REGEN = 10;
