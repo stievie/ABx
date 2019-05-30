@@ -63,13 +63,9 @@ void ClientPrediction::UpdateTurn(float timeStep, uint8_t direction, float speed
 {
     const float speed = GetSpeed(timeStep, Game::BASE_TURN_SPEED, speedFactor);
     if ((direction & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
-    {
         Turn(speed);
-    }
     if ((direction & AB::GameProtocol::TurnDirectionRight) == AB::GameProtocol::TurnDirectionRight)
-    {
         Turn(-speed);
-    }
 }
 
 void ClientPrediction::Turn(float yAngle)

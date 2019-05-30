@@ -263,10 +263,12 @@ void Actor::UpdateTransformation()
 //    extern bool gNoClientPrediction;
     Vector3 moveTo;
     if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
-//    if (((objectType_ != ObjectTypeSelf) || !gNoClientPrediction))
     {
         FwClient* c = context_->GetSubsystem<FwClient>();
-        const double forTime = GetClientTime() + static_cast<double>(c->GetLastPing());
+        // + half round trip time
+        // http://www.codersblock.org/blog/multiplayer-fps-part-5
+        const double rtt = (static_cast<double>(c->GetLastPing()) * 0.5);
+        const double forTime = GetClientTime() + ((objectType_ != ObjectTypeSelf) ? -rtt : rtt);
         float p[3];
         if (posExtrapolator_.ReadPosition(forTime, p))
             moveTo = Vector3(p[0], p[1], p[2]);
@@ -279,7 +281,7 @@ void Actor::UpdateTransformation()
     }
 
     const Vector3& cp = node_->GetPosition();
-    if (moveTo != Vector3::ZERO && moveTo != cp)
+    if (moveTo != Vector3::ZERO && !moveTo.Equals(cp))
     {
         // Try to make moves smoother...
         if ((cp - moveToPos_).LengthSquared() > 0.02f)
