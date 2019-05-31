@@ -139,18 +139,20 @@ uint8_t Player::GetTurnDir()
 
 void Player::MoveTo(int64_t time, const Vector3& newPos)
 {
+    // Server position
     extern bool gNoClientPrediction;
 
     if (gNoClientPrediction)
-        Actor::MoveTo(time, newPos);
-    else
     {
-        if (GetMoveDir() == 0)
-            Actor::MoveTo(time, newPos);
-
-        ClientPrediction* cp = GetComponent<ClientPrediction>();
-        cp->CheckServerPosition(time, newPos);
+        Actor::MoveTo(time, newPos);
+        return;
     }
+
+//        if (GetMoveDir() == 0)
+//            Actor::MoveTo(time, newPos);
+
+    ClientPrediction* cp = GetComponent<ClientPrediction>();
+    cp->CheckServerPosition(time, newPos);
 }
 
 void Player::FixedUpdate(float timeStep)

@@ -5,6 +5,19 @@ Ancient Greece Multiplayer Online RPG.
 * https://www.gamedev.net/blogs/blog/3042-abx-online-rpg/
 * https://dev.azure.com/trill42/ABx
 
+## Current features
+
+* Uses a single TCP stream for the game protocol. This is not a shooter or action game, more like a classical online RPG.
+* Database back-end is currently PostreSQL.
+* Instanced world.
+* Encrypted Game and Login Protocol.
+* Lag compensation: Entity interpolation, client prediction.
+* Spawn any number of server which may have heavy load (game, file server) even on different hardware.
+* Local (map), Guild chat and whisper is currently working, even across different game server.
+* Static objects are directly loaded from Urho3D's scene files.
+* Navigation using Recast/Detour
+* Server runs on Windows and Linux
+
 ## Architecture
 
 ~~~plain

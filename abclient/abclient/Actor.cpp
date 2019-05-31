@@ -260,15 +260,18 @@ void Actor::AddModel(uint32_t itemIndex)
 
 void Actor::UpdateTransformation()
 {
-//    extern bool gNoClientPrediction;
+    extern bool gNoClientPrediction;
     Vector3 moveTo;
-    if (creatureState_ == AB::GameProtocol::CreatureStateMoving)
+    if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) && (objectType_ != ObjectTypeSelf || gNoClientPrediction))
     {
+        // Interpolate when:
+        // 1. Creature is moving
+        // 2. no client prediction is used
         FwClient* c = context_->GetSubsystem<FwClient>();
         // + half round trip time
         // http://www.codersblock.org/blog/multiplayer-fps-part-5
         const double rtt = (static_cast<double>(c->GetLastPing()) * 0.5);
-        const double forTime = GetClientTime() + ((objectType_ != ObjectTypeSelf) ? -rtt : rtt);
+        const double forTime = GetClientTime() - rtt;
         float p[3];
         if (posExtrapolator_.ReadPosition(forTime, p))
             moveTo = Vector3(p[0], p[1], p[2]);
