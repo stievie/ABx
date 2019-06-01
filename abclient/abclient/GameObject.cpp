@@ -61,6 +61,11 @@ void GameObject::MoveTo(int64_t, const Vector3& newPos)
     GetNode()->SetPosition(newPos);
 }
 
+void GameObject::ForcePosition(int64_t, const Vector3& newPos)
+{
+    GetNode()->SetWorldPosition(newPos);
+}
+
 IntVector2 GameObject::WorldToScreenPoint()
 {
     return WorldToScreenPoint(GetNode()->GetPosition());

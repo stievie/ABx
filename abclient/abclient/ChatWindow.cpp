@@ -43,6 +43,7 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "wave", AB::GameProtocol::CommandTypeWave },
     { "laugh", AB::GameProtocol::CommandTypeLaugh },
     { "resign", AB::GameProtocol::CommandTypeResign },
+    { "stuck", AB::GameProtocol::CommandTypeStuck },
 
     { "help", AB::GameProtocol::CommandTypeHelp }
 };
@@ -740,6 +741,7 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /resign: Resign", "ChatLogServerInfoText");
         AddLine("  /age: Show Character age", "ChatLogServerInfoText");
         AddLine("  /hp: Show health points and energy", "ChatLogServerInfoText");
+        AddLine("  /stuck: Force server position", "ChatLogServerInfoText");
         AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
         AddLine("  /prefpath: Show preferences path", "ChatLogServerInfoText");
         AddLine("  /help: Show this help", "ChatLogServerInfoText");

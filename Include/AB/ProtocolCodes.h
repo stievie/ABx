@@ -227,6 +227,7 @@ enum GameProtocolCodes : uint8_t
     GameObjectProgress,           // The object progressed, see ObjectProgressType
     GameObjectPingTarget,
     GameObjectDropItem,           // An object dropped an item
+    GameObjectSetPosition,        // Force set position
     // Party
     PartyPlayerInvited,
     PartyPlayerRemoved,
@@ -376,6 +377,7 @@ enum CommandTypes : uint8_t
     CommandTypeChatWhisper,          // /w <name>, <message>
 
     CommandTypeResign,               // /resign
+    CommandTypeStuck,                // /stuck
 
     // Info
     CommandTypeAge,                  // /age

@@ -186,6 +186,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GameObjectDropItem:
             ParseObjectDroppedItem(message);
             break;
+        case AB::GameProtocol::GameObjectSetPosition:
+            ParseObjectSetPosition(message);
+            break;
         case AB::GameProtocol::ServerMessage:
             ParseServerMessage(message);
             break;
@@ -373,6 +376,18 @@ void ProtocolGame::ParseObjectDroppedItem(const std::shared_ptr<InputMessage>& m
     uint16_t value = message->Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId, itemIndex, count, value);
+}
+
+void ProtocolGame::ParseObjectSetPosition(const std::shared_ptr<InputMessage>& message)
+{
+    uint32_t objectId = message->Get<uint32_t>();
+    Vec3 pos = {
+        message->Get<float>(),
+        message->Get<float>(),
+        message->Get<float>()
+    };
+    if (receiver_)
+        receiver_->OnObjectSetPosition(updateTick_, objectId, pos);
 }
 
 void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)

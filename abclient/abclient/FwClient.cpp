@@ -1341,6 +1341,16 @@ void FwClient::OnResourceChanged(int64_t updateTick, uint32_t id,
     QueueEvent(AbEvents::E_OBJECTRESOURCECHANGED, eData);
 }
 
+void FwClient::OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos)
+{
+    using namespace AbEvents::ObjectSetPosition;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_OBJECTID] = id;
+    eData[P_POSITION] = Vector3(pos.x, pos.y, pos.z);
+    QueueEvent(AbEvents::E_OBJECTSETPOSITION, eData);
+}
+
 void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {

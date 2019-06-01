@@ -737,6 +737,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeResign:
         HandleResignCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeStuck:
+        HandleStuckCommand(command, message);
+        break;
     case AB::GameProtocol::CommandTypeServerId:
         HandleServerIdCommand(command, message);
         break;
@@ -850,6 +853,15 @@ void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& messag
     message.AddString(GetName());
     message.AddString("");
     resigned_ = true;
+}
+
+void Player::HandleStuckCommand(const std::string&, Net::NetworkMessage& message)
+{
+    message.AddByte(AB::GameProtocol::GameObjectSetPosition);
+    message.Add<uint32_t>(id_);
+    message.Add<float>(transformation_.position_.x_);
+    message.Add<float>(transformation_.position_.y_);
+    message.Add<float>(transformation_.position_.z_);
 }
 
 void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)

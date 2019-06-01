@@ -408,6 +408,14 @@ void Actor::MoveTo(int64_t time, const Vector3& newPos)
     posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
 }
 
+void Actor::ForcePosition(int64_t time, const Vector3& newPos)
+{
+    moveToPos_ = newPos;
+    const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
+    posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
+    GameObject::ForcePosition(time, newPos);
+}
+
 void Actor::SetYRotation(int64_t, float rad, bool)
 {
     float deg = RadToDeg(rad);

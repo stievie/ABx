@@ -326,6 +326,12 @@ void Client::OnResourceChanged(int64_t updateTick, uint32_t id,
         receiver_->OnResourceChanged(updateTick, id, resType, value);
 }
 
+void Client::OnObjectSetPosition(int64_t updateTick, uint32_t id, const Vec3& pos)
+{
+    if (receiver_)
+        receiver_->OnObjectSetPosition(updateTick, id, pos);
+}
+
 void Client::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessageType type,
     const std::string& senderName, const std::string& message)
 {

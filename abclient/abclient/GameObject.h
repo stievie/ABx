@@ -75,6 +75,7 @@ public:
 
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
+    virtual void ForcePosition(int64_t time, const Vector3& newPos);
     bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
     IntVector2 WorldToScreenPoint();
     IntVector2 WorldToScreenPoint(Vector3 pos);

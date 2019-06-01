@@ -35,6 +35,7 @@ protected:
     void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
     void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
     void HandleResignCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleStuckCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleHpCommand(const std::string& command, Net::NetworkMessage& message);
     void HandlePosCommand(const std::string& command, Net::NetworkMessage& message);

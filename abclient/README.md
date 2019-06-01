@@ -66,7 +66,10 @@ Other shortcuts are shown in `[` `]`.
 /read <index>: Read mail with <index>
 /delete <index>: Delete mail with <index>
 /roll <number>: Rolls a <number>-sided die (2-100 sides)
+/resign: Resign
 /age: Show Character age
+/hp: Show health points and energy
+/stuck: Force server position
 /ip: Show server IP
 /help: Show this help
 ~~~

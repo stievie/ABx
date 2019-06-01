@@ -45,6 +45,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_OBJECTDESPAWN, URHO3D_HANDLER(WorldLevel, HandleObjectDespawn));
     SubscribeToEvent(AbEvents::E_OBJECTPOSUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectPosUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTROTUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectRotUpdate));
+    SubscribeToEvent(AbEvents::E_OBJECTSETPOSITION, URHO3D_HANDLER(WorldLevel, HandleObjectSetPosition));
     SubscribeToEvent(AbEvents::E_OBJECTSTATEUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectStateUpdate));
     SubscribeToEvent(AbEvents::E_OBJECTSELECTED, URHO3D_HANDLER(WorldLevel, HandleObjectSelected));
     SubscribeToEvent(AbEvents::E_OBJECTSPEEDUPDATE, URHO3D_HANDLER(WorldLevel, HandleObjectSpeedUpdate));
@@ -502,6 +503,20 @@ void WorldLevel::HandleObjectRotUpdate(StringHash, VariantMap& eventData)
         int64_t tick = eventData[P_UPDATETICK].GetInt64();
         // Manual SetDirection -> don't update camera yaw because it comes from camera move
         object->SetYRotation(tick, rot, !manual);
+    }
+}
+
+void WorldLevel::HandleObjectSetPosition(StringHash, VariantMap& eventData)
+{
+    // Force update position
+    using namespace AbEvents::ObjectSetPosition;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    GameObject* object = objects_[objectId];
+    if (object)
+    {
+        const Vector3& pos = eventData[P_POSITION].GetVector3();
+        int64_t tick = eventData[P_UPDATETICK].GetInt64();
+        object->ForcePosition(tick, pos);
     }
 }
 

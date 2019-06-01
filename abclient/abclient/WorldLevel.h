@@ -101,6 +101,7 @@ private:
     void HandleObjectDespawn(StringHash eventType, VariantMap& eventData);
     void HandleObjectPosUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectRotUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleObjectSetPosition(StringHash eventType, VariantMap& eventData);
     void HandleObjectStateUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSpeedUpdate(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
