@@ -28,8 +28,7 @@ Creator: sa 2017-2019
 * https://github.com/BramvdKroef/clessc
 * https://github.com/mgerhardy/simpleai
 * SimpleWeb https://github.com/eidheim/Simple-Web-Server
-* DirectXMath https://github.com/Microsoft/DirectXMath (Windows)
-* XMath https://github.com/Napoleon314/XMath (other)
+* DirectXMath https://github.com/Microsoft/DirectXMath
 
 ## Client
 

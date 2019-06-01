@@ -159,7 +159,6 @@ void CreditsWindow::AddCredits()
     CreateSingleLine("Kaguya: https://github.com/satoren/kaguya", 15);
     CreateSingleLine("pugixml: https://pugixml.org/", 15);
     CreateSingleLine("DirectXMath: https://github.com/Microsoft/DirectXMath", 15);
-    CreateSingleLine("XMath: https://github.com/Napoleon314/XMath", 15);
     CreateSingleLine("GJK: https://github.com/xuzebin/gjk", 15);
     CreateSingleLine("Binary serialization: https://github.com/fraillt/bitsery", 15);
     CreateSingleLine("UUIDs: https://github.com/mariusbancila/stduuid", 15);
