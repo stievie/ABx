@@ -647,7 +647,6 @@ void WorldLevel::HandlePlayerAutorun(StringHash, VariantMap& eventData)
 {
     using namespace AbEvents::PlayerAutorun;
     bool autorun = eventData[P_AUTORUN].GetBool();
-    URHO3D_LOGINFOF("Autorun %s", (autorun ? "true" : "false"));
     if (player_)
         player_->autoRun_ = autorun;
 }
