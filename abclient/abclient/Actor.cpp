@@ -17,6 +17,10 @@
 
 #include <Urho3D/DebugNew.h>
 
+#define RUN_ANIM_SPEED(x) (x > 1.0f ? x * 0.8f : x)
+// speed / 2 -> walk animation -> playing at normal speed = speed * 2
+#define WALK_ANIM_SPEED(x) (x * 2.0f)
+
 Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
@@ -413,7 +417,7 @@ void Actor::ForcePosition(int64_t time, const Vector3& newPos)
     moveToPos_ = newPos;
     const float p[3] = { moveToPos_.x_, moveToPos_.y_, moveToPos_.z_ };
     posExtrapolator_.AddSample(GetServerTime(time), GetClientTime(), p);
-    GameObject::ForcePosition(time, newPos);
+//    GameObject::ForcePosition(time, newPos);
 }
 
 void Actor::SetYRotation(int64_t, float rad, bool)
@@ -815,11 +819,11 @@ void Actor::UpdateMoveSpeed()
     // Change speed of currently running animations
     const String& aniRun = animations_[ANIM_RUN];
     if (!aniRun.Empty())
-        animController_->SetSpeed(aniRun, speedFactor_);
+        animController_->SetSpeed(aniRun, RUN_ANIM_SPEED(speedFactor_));
     const String& aniWalk = animations_[ANIM_WALK];
     if (!aniWalk.Empty())
         // speed / 2 -> walk animation -> playing at normal speed = speed * 2
-        animController_->SetSpeed(aniWalk, speedFactor_ * 2.0f);
+        animController_->SetSpeed(aniWalk, WALK_ANIM_SPEED(speedFactor_));
 }
 
 void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float fadeTime /* = 0.2f */, float speed /* = 1.0f */)
@@ -848,10 +852,10 @@ void Actor::PlayStateAnimation(float fadeTime)
     case AB::GameProtocol::CreatureStateMoving:
     {
         if (speedFactor_ > 0.5f)
-            PlayAnimation(ANIM_RUN, true, fadeTime, speedFactor_);
+            PlayAnimation(ANIM_RUN, true, fadeTime, RUN_ANIM_SPEED(speedFactor_));
         else
             // speed / 2 -> walk animation -> playing at normal speed = speed * 2
-            PlayAnimation(ANIM_WALK, true, fadeTime, speedFactor_ * 2.0f);
+            PlayAnimation(ANIM_WALK, true, fadeTime, WALK_ANIM_SPEED(speedFactor_));
         break;
     }
     case AB::GameProtocol::CreatureStateUsingSkill:

@@ -41,6 +41,7 @@ public:
         speedDirty_(false),
         directionSet_(false),
         newAngle_(false),
+        forcePosition_(false),
         velocity_(Math::Vector3::Zero)
     { }
     // non-copyable
@@ -88,6 +89,7 @@ public:
     /// Manual direction set
     bool directionSet_;
     bool newAngle_;
+    bool forcePosition_;
     /// Velocity in Units/s.
     Math::Vector3 velocity_;
 };

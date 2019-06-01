@@ -28,10 +28,11 @@ void CollisionComp::ResolveCollisions()
                     else
                     {
                         owner_.transformation_.position_ = mc->GetOldPosition();
+                        mc->moved_ = false;
                     }
                     // Due to client prediction stuff, we must tell the client to update the position even to the old position.
                     // The client does not do collisions.
-                    mc->moved_ = true;
+                    mc->forcePosition_ = true;
 
                     // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us

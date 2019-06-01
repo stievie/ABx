@@ -19,6 +19,7 @@ void MoveComp::Update(uint32_t timeElapsed, uint32_t flags)
 
     oldPosition_ = owner_.transformation_.position_;
 
+    forcePosition_ = false;
     if ((flags & UpdateFlagMove) == UpdateFlagMove)
         UpdateMove(timeElapsed);
     if ((flags & UpdateFlagTurn) == UpdateFlagTurn)
@@ -148,6 +149,15 @@ void MoveComp::Write(Net::NetworkMessage& message)
         message.Add<float>(owner_.transformation_.position_.y_);
         message.Add<float>(owner_.transformation_.position_.z_);
         moved_ = false;
+    }
+    if (forcePosition_)
+    {
+        message.AddByte(AB::GameProtocol::GameObjectSetPosition);
+        message.Add<uint32_t>(owner_.id_);
+        message.Add<float>(owner_.transformation_.position_.x_);
+        message.Add<float>(owner_.transformation_.position_.y_);
+        message.Add<float>(owner_.transformation_.position_.z_);
+        forcePosition_ = false;
     }
 
     // The rotation may change in 2 ways: Turn and SetWorldDirection
