@@ -5,6 +5,7 @@
 #include "MathUtils.h"
 #include "ConfigManager.h"
 #include "Mechanic.h"
+#include "Player.h"
 
 namespace Game {
 namespace Components {
@@ -103,7 +104,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
         {
             // If at dest reset
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-            autoRun_ = false;
+            SetAutoRun(false);
             owner_.OnArrived();
         }
         return;
@@ -120,6 +121,24 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     {
         // If we are close to this point remove it from the list
         Pop();
+    }
+}
+
+void AutoRunComp::SetAutoRun(bool value)
+{
+    if (autoRun_ != value)
+    {
+        autoRun_ = value;
+        if (owner_.GetType() == AB::GameProtocol::ObjectTypePlayer)
+        {
+            // This tells the players client to switch off client prediction and use server positions instead
+            auto nmsg = Net::NetworkMessage::GetNew();
+            nmsg->AddByte(AB::GameProtocol::PlayerAutoRun);
+            nmsg->Add<uint8_t>(autoRun_ ? 1 : 0);
+            Player* player = dynamic_cast<Player*>(&owner_);
+            if (player)
+                player->WriteToOutput(*nmsg.get());
+        }
     }
 }
 

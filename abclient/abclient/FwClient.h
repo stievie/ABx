@@ -181,6 +181,7 @@ public:
     void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) override;
     void OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error) override;
+    void OnPlayerAutorun(int64_t updateTick, bool autorun) override;
     /// The player was invited into our party
     void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) override;
     /// Player was removed from our party

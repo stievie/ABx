@@ -49,13 +49,13 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     // We need to move to the target
     if (!CheckRange())
     {
-        if (!owner_.autorunComp_.autoRun_)
+        if (!owner_.autorunComp_.IsAutoRun())
         {
             if (owner_.autorunComp_.Follow(target, false))
             {
                 owner_.followedObject_ = target;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_.autoRun_ = true;
+                owner_.autorunComp_.SetAutoRun(true);
             }
             else
             {

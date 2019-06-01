@@ -200,6 +200,7 @@ enum GameProtocolCodes : uint8_t
     ChangeInstance,
 
     PlayerError,                         // Some GameError code
+    PlayerAutoRun,                // Server is controlling the player, client must stop client prediction
 
     GameStart,                         // Start tick
     GameEnter,

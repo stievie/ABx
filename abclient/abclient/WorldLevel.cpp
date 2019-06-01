@@ -52,6 +52,7 @@ void WorldLevel::SubscribeToEvents()
     SubscribeToEvent(AbEvents::E_SKILLFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectSkillFailure));
     SubscribeToEvent(AbEvents::E_ATTACKFAILURE, URHO3D_HANDLER(WorldLevel, HandleObjectAttackFailure));
     SubscribeToEvent(AbEvents::E_PLAYERERROR, URHO3D_HANDLER(WorldLevel, HandlePlayerError));
+    SubscribeToEvent(AbEvents::E_PLAYERAUTORUN, URHO3D_HANDLER(WorldLevel, HandlePlayerAutorun));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTADDED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectAdded));
     SubscribeToEvent(AbEvents::E_OBJECTEFFECTREMOVED, URHO3D_HANDLER(WorldLevel, HandleObjectEffectRemoved));
     SubscribeToEvent(AbEvents::E_OBJECTRESOURCECHANGED, URHO3D_HANDLER(WorldLevel, HandleObjectResourceChange));
@@ -640,6 +641,15 @@ void WorldLevel::HandlePlayerError(StringHash, VariantMap& eventData)
         GameMessagesWindow* wnd = dynamic_cast<GameMessagesWindow*>(wm->GetWindow(WINDOW_GAMEMESSAGES, true).Get());
         wnd->ShowError(msg);
     }
+}
+
+void WorldLevel::HandlePlayerAutorun(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::PlayerAutorun;
+    bool autorun = eventData[P_AUTORUN].GetBool();
+    URHO3D_LOGINFOF("Autorun %s", (autorun ? "true" : "false"));
+    if (player_)
+        player_->autoRun_ = autorun;
 }
 
 void WorldLevel::HandleObjectEffectAdded(StringHash, VariantMap& eventData)

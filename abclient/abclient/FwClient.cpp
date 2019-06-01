@@ -1386,6 +1386,15 @@ void FwClient::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorVa
     QueueEvent(AbEvents::E_PLAYERERROR, eData);
 }
 
+void FwClient::OnPlayerAutorun(int64_t updateTick, bool autorun)
+{
+    using namespace AbEvents::PlayerAutorun;
+    VariantMap& eData = GetEventDataMap();
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_AUTORUN] = autorun;
+    QueueEvent(AbEvents::E_PLAYERAUTORUN, eData);
+}
+
 void FwClient::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     VariantMap& eData = GetEventDataMap();

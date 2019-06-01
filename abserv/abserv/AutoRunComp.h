@@ -16,6 +16,7 @@ private:
     int64_t lastCalc_;
     /// Maximum distance to consider being there
     float maxDist_;
+    bool autoRun_;
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
     std::weak_ptr<Actor> following_;
@@ -45,7 +46,7 @@ public:
     void Reset()
     {
         wayPoints_.clear();
-        autoRun_ = false;
+        SetAutoRun(false);
         following_.reset();
     }
     bool HasWaypoints() const
@@ -53,8 +54,8 @@ public:
         return wayPoints_.size() != 0;
     }
     void Update(uint32_t timeElapsed);
-
-    bool autoRun_;
+    void SetAutoRun(bool value);
+    bool IsAutoRun() const { return autoRun_; }
 };
 
 }

@@ -72,7 +72,7 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
                 owner_.attackComp_.Cancel();
                 owner_.followedObject_ = target;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_.autoRun_ = true;
+                owner_.autorunComp_.SetAutoRun(true);
             }
         }
 #ifdef DEBUG_NAVIGATION
@@ -141,7 +141,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             {
                 // No aurorunComp_.Reset() because manually setting the camera does not
                 // stop autorunning
-                if (!owner_.autorunComp_.autoRun_)
+                if (!owner_.autorunComp_.IsAutoRun())
                     owner_.moveComp_->SetDirection(input.data[InputDataDirection].GetFloat());
             }
             break;
@@ -171,7 +171,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 {
                     owner_.attackComp_.Cancel();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                    owner_.autorunComp_.autoRun_ = true;
+                    owner_.autorunComp_.SetAutoRun(true);
                 }
             }
             break;

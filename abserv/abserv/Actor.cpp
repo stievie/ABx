@@ -795,7 +795,7 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     damageComp_.Update(timeElapsed);
     healComp_.Update(timeElapsed);
     uint32_t flags = Components::MoveComp::UpdateFlagTurn;
-    if (!autorunComp_.autoRun_)
+    if (!autorunComp_.IsAutoRun())
         flags |= Components::MoveComp::UpdateFlagMove;
     moveComp_->Update(timeElapsed, flags);
     autorunComp_.Update(timeElapsed);
@@ -832,7 +832,7 @@ bool Actor::Die()
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
         damageComp_.Touch();
-        autorunComp_.autoRun_ = false;
+        autorunComp_.SetAutoRun(false);
         OnDied();
         return true;
     }

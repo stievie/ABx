@@ -51,6 +51,7 @@ protected:
     void ParseChestItemDelete(const std::shared_ptr<InputMessage>& message);
     void ParsePong(const std::shared_ptr<InputMessage>& message);
     void ParseGameError(const std::shared_ptr<InputMessage>& message);
+    void ParsePlayerAutoRun(const std::shared_ptr<InputMessage>& message);
     void ParseUpdate(const std::shared_ptr<InputMessage>& message);
     void ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message);
     void ParseLeaveObject(const std::shared_ptr<InputMessage>& message);

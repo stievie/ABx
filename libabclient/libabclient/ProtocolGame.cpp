@@ -104,6 +104,9 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::PlayerError:
             ParseGameError(message);
             break;
+        case AB::GameProtocol::PlayerAutoRun:
+            ParsePlayerAutoRun(message);
+            break;
         case AB::GameProtocol::MailHeaders:
             ParseMailHeaders(message);
             break;
@@ -578,6 +581,13 @@ void ProtocolGame::ParseGameError(const std::shared_ptr<InputMessage>& message)
     AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(message->Get<uint8_t>());
     if (receiver_)
         receiver_->OnPlayerError(updateTick_, error);
+}
+
+void ProtocolGame::ParsePlayerAutoRun(const std::shared_ptr<InputMessage>& message)
+{
+    bool autorun = message->Get<uint8_t>() == 1;
+    if (receiver_)
+        receiver_->OnPlayerAutorun(updateTick_, autorun);
 }
 
 void ProtocolGame::ParseServerJoined(const std::shared_ptr<InputMessage>& message)

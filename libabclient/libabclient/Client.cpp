@@ -352,6 +352,12 @@ void Client::OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValu
         receiver_->OnPlayerError(updateTick, error);
 }
 
+void Client::OnPlayerAutorun(int64_t updateTick, bool autorun)
+{
+    if (receiver_)
+        receiver_->OnPlayerAutorun(updateTick, autorun);
+}
+
 void Client::OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId)
 {
     if (receiver_)

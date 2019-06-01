@@ -97,6 +97,7 @@ public:
     virtual void OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageChannel channel,
         uint32_t senderId, const std::string& senderName, const std::string& message) = 0;
     virtual void OnPlayerError(int64_t updateTick, AB::GameProtocol::PlayerErrorValue error) = 0;
+    virtual void OnPlayerAutorun(int64_t updateTick, bool autorun) = 0;
     /// The player was invited into our party
     virtual void OnPartyInvited(int64_t updateTick, uint32_t sourceId, uint32_t targetId, uint32_t partyId) = 0;
     /// Player was removed from our party

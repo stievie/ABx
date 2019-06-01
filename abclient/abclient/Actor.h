@@ -118,6 +118,7 @@ public:
     // Can pickup this thingy
     bool pickable_;
     Vector3 velocity_;
+    bool autoRun_;
 private:
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;

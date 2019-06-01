@@ -142,7 +142,7 @@ void Player::MoveTo(int64_t time, const Vector3& newPos)
     // Server position
     extern bool gNoClientPrediction;
 
-    if (gNoClientPrediction)
+    if (gNoClientPrediction || autoRun_)
     {
         Actor::MoveTo(time, newPos);
         return;
@@ -206,7 +206,7 @@ void Player::SetYRotation(int64_t time, float rad, bool updateYaw)
 
     extern bool gNoClientPrediction;
 
-    if (gNoClientPrediction)
+    if (gNoClientPrediction || autoRun_)
         Actor::SetYRotation(time, rad, updateYaw);
     else
     {

@@ -24,6 +24,7 @@
 Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
+    autoRun_(false),
     animatedModel_(nullptr),
     type_(ModelType::Static),
     animController_(nullptr),
@@ -266,7 +267,7 @@ void Actor::UpdateTransformation()
 {
     extern bool gNoClientPrediction;
     Vector3 moveTo;
-    if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) && (objectType_ != ObjectTypeSelf || gNoClientPrediction))
+    if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) && (objectType_ != ObjectTypeSelf || gNoClientPrediction || autoRun_))
     {
         // Interpolate when:
         // 1. Creature is moving
