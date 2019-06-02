@@ -41,11 +41,10 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
     auto physWorld = GetScene()->GetComponent<PhysicsWorld>();
     if (!physWorld)
         return true;
-    Vector3 move = node_->GetWorldPosition() - pos;
-
     auto collShape = node_->GetComponent<CollisionShape>(true);
     if (!collShape)
         return true;
+
     BoundingBox bb = collShape->GetWorldBoundingBox();
     Vector3 half = bb.HalfSize();
     BoundingBox newBB(pos - half, pos + half);
@@ -54,7 +53,6 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
     if (result.Size() > 1)
     {
         // First is always the players model
-//        URHO3D_LOGINFOF("Colliding with %d rigid bodies", result.Size() - 1);
         return false;
     }
     return true;
@@ -63,7 +61,7 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
 void ClientPrediction::Move(float speed, const Vector3& amount)
 {
     Player* player = node_->GetComponent<Player>();
-    Quaternion oriention = player->rotateTo_;
+    const Quaternion& oriention = player->rotateTo_;
     Vector3 pos = player->moveToPos_;
     const Matrix3 m = oriention.RotationMatrix();
     const Vector3 a = amount * speed;
