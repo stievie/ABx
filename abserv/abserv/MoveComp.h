@@ -89,6 +89,7 @@ public:
     /// Manual direction set
     bool directionSet_;
     bool newAngle_;
+    /// Sends a special message to the client to force the client to set the position.
     bool forcePosition_;
     /// Velocity in Units/s.
     Math::Vector3 velocity_;
