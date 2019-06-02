@@ -15,7 +15,7 @@
 #include "AudioManager.h"
 #include "CreditsWindow.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),

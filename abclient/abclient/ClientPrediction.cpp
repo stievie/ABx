@@ -17,12 +17,13 @@ ClientPrediction::ClientPrediction(Context* context) :
     SetUpdateEventMask(USE_UPDATE | USE_FIXEDUPDATE);
 }
 
-ClientPrediction::~ClientPrediction()
-{
-}
+ClientPrediction::~ClientPrediction() = default;
 
 void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speedFactor)
 {
+    if (direction == 0)
+        return;
+
     const float speed = GetSpeed(timeStep, Game::BASE_SPEED, speedFactor);
     if ((direction & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         Move(speed, Vector3::FORWARD);
@@ -33,6 +34,30 @@ void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speed
         Move(speed, Vector3::LEFT / 2.0f);
     if ((direction & AB::GameProtocol::MoveDirectionEast) == AB::GameProtocol::MoveDirectionEast)
         Move(speed, Vector3::RIGHT / 2.0f);
+}
+
+bool ClientPrediction::CheckCollision(const Vector3& pos)
+{
+    auto physWorld = GetScene()->GetComponent<PhysicsWorld>();
+    if (!physWorld)
+        return true;
+    Vector3 move = node_->GetWorldPosition() - pos;
+
+    auto collShape = node_->GetComponent<CollisionShape>(true);
+    if (!collShape)
+        return true;
+    BoundingBox bb = collShape->GetWorldBoundingBox();
+    Vector3 half = bb.HalfSize();
+    BoundingBox newBB(pos - half, pos + half);
+    PODVector<RigidBody*> result;
+    physWorld->GetRigidBodies(result, newBB);
+    if (result.Size() > 1)
+    {
+        // First is always the players model
+//        URHO3D_LOGINFOF("Colliding with %d rigid bodies", result.Size() - 1);
+        return false;
+    }
+    return true;
 }
 
 void ClientPrediction::Move(float speed, const Vector3& amount)
@@ -52,15 +77,16 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
         if (!Equals(serverY_, std::numeric_limits<float>::max()))
             pos.y_ = serverY_;
     }
-//    URHO3D_LOGINFOF("speed %f, amount %s, v %s, new pos %s", speed, amount.ToString().CString(), v.ToString().CString(), pos.ToString().CString());
 
-//    node_->SetWorldPosition(pos);
-
-    player->moveToPos_ = pos;
+    if (CheckCollision(pos))
+        player->moveToPos_ = pos;
 }
 
 void ClientPrediction::UpdateTurn(float timeStep, uint8_t direction, float speedFactor)
 {
+    if (direction == 0)
+        return;
+
     const float speed = GetSpeed(timeStep, Game::BASE_TURN_SPEED, speedFactor);
     if ((direction & AB::GameProtocol::TurnDirectionLeft) == AB::GameProtocol::TurnDirectionLeft)
         Turn(speed);
@@ -81,7 +107,6 @@ void ClientPrediction::TurnAbsolute(float yAngle)
 {
     Player* player = node_->GetComponent<Player>();
     player->rotateTo_.FromEulerAngles(0.0f, yAngle, 0.0f);
-//    node_->SetWorldRotation(player->rotateTo_);
 }
 
 void ClientPrediction::Update(float timeStep)

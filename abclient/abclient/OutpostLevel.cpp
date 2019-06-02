@@ -5,7 +5,7 @@
 #include "LevelManager.h"
 #include "WindowManager.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 OutpostLevel::OutpostLevel(Context* context) :
     WorldLevel(context)

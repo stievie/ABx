@@ -4,7 +4,7 @@
 #include "FwClient.h"
 #include "TimeUtils.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 GameObject::GameObject(Context* context) :
     LogicComponent(context),

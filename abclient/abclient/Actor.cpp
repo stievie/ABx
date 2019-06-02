@@ -15,7 +15,7 @@
 #include "HealthBar.h"
 #include "SkillManager.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 #define RUN_ANIM_SPEED(x) (x > 1.0f ? x * 0.8f : x)
 // speed / 2 -> walk animation -> playing at normal speed = speed * 2

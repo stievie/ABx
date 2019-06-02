@@ -6,7 +6,7 @@
 #include "Actor.h"
 #include "Mumble.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 LevelManager::LevelManager(Context* context) :
     Object(context),

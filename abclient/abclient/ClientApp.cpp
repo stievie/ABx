@@ -44,7 +44,7 @@
 #include <linux/version.h>
 #endif
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 /**
 * This macro is expanded to (roughly, depending on OS) this:

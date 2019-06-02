@@ -10,7 +10,7 @@
 #pragma clang diagnostic pop
 #endif // __clang__
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 const IntRect PingDot::PING_NONE(0, 0, 32, 32);
 const IntRect PingDot::PING_GOOD(32, 0, 64, 32);

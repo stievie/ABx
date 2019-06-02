@@ -23,16 +23,17 @@ void CollisionComp::ResolveCollisions()
                 Math::Vector3 move;
                 if (owner_.Collides(ci, mc->velocity_, move))
                 {
-                    if (move != Math::Vector3::Zero)
-                        owner_.transformation_.position_ += move;
-                    else
-                    {
+                    // Doing now client side collisions as well, so no need for this anymore
+//                    if (move != Math::Vector3::Zero)
+//                        owner_.transformation_.position_ += move;
+//                    else
+//                    {
                         owner_.transformation_.position_ = mc->GetOldPosition();
                         mc->moved_ = false;
-                    }
+//                    }
                     // Due to client prediction stuff, we must tell the client to update the position even to the old position.
                     // The client does not do collisions.
-                    mc->forcePosition_ = true;
+//                    mc->forcePosition_ = true;
 
                     // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us

@@ -4,7 +4,7 @@
 #include "FwClient.h"
 #include "Shortcuts.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 void GameMenu::RegisterObject(Context* context)
 {

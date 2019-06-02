@@ -19,7 +19,7 @@
 #include "SkillManager.h"
 #include "ItemsCache.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS = {
     { "a", AB::GameProtocol::CommandTypeChatGeneral },
@@ -734,7 +734,6 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
         AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
         AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
         AddLine("  /party <message>: Party chat", "ChatLogServerInfoText");
-        AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
         AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
         AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
         AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");

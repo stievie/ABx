@@ -60,11 +60,9 @@ Other shortcuts are shown in `[` `]`.
 
 ~~~
 /a <message>: General chat
+/g <message>: Guild chat
+/party <message>: Party chat
 /w <name>, <message>: Whisper to <name> a <message>
-/mail <name>, [<subject>:] <message>: Send mail to <name> with <message>
-/inbox: Show your mail inbox
-/read <index>: Read mail with <index>
-/delete <index>: Delete mail with <index>
 /roll <number>: Rolls a <number>-sided die (2-100 sides)
 /resign: Resign
 /age: Show Character age

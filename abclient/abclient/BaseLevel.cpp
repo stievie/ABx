@@ -6,7 +6,7 @@
 #include "FwClient.h"
 #include "ClientApp.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 void BaseLevel::Run()
 {

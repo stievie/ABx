@@ -31,7 +31,7 @@
 
 #include "MultiLineEdit.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 namespace Urho3D
 {

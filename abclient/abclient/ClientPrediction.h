@@ -17,6 +17,7 @@ private:
     {
         return ((timeElapsed * 1000.0f) / baseSpeed) * speedFactor;
     }
+    bool CheckCollision(const Vector3& pos);
 public:
     static void RegisterObject(Context* context);
 

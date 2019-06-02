@@ -5,7 +5,7 @@
 #include "LevelManager.h"
 #include "WindowManager.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 PvpCombatLevel::PvpCombatLevel(Context* context) :
     WorldLevel(context)

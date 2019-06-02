@@ -7,7 +7,7 @@
 #include "WindowManager.h"
 #include "PartyWindow.h"
 
-#include <Urho3D/DebugNew.h>
+//#include <Urho3D/DebugNew.h>
 
 LoginLevel::LoginLevel(Context* context) :
     BaseLevel(context),

@@ -37,6 +37,16 @@
 #include "Defines.h"
 #include "Config.h"
 
+#define USE_STANDALONE_ASIO
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4592)
+#endif
+#include <asio.hpp>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif // _MSC_VER
+
 #if defined(_MSC_VER)
 #pragma warning( push )
 #pragma warning( disable : 4100 4305 4800 4244)
