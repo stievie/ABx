@@ -10,7 +10,7 @@ prof2Index = 0
 
 function onInit()
   -- Player collides with BB. Make it a bit larget than the default BB.
-  self:SetBoundingBox(-1, -1, -1, 1, 1, 1)
+  self:SetBoundingBox(-1.5, -1.5, -1, 1.5, 1.5, 1)
   self:SetUndestroyable(true)
   -- Will call onTrigger() when it collides
   self:SetTrigger(true)
