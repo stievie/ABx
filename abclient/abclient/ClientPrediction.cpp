@@ -14,7 +14,7 @@ ClientPrediction::ClientPrediction(Context* context) :
     serverTime_(0),
     serverY_(std::numeric_limits<float>::max())
 {
-    SetUpdateEventMask(USE_UPDATE | USE_FIXEDUPDATE);
+    SetUpdateEventMask(USE_UPDATE);
 }
 
 ClientPrediction::~ClientPrediction() = default;
@@ -38,16 +38,17 @@ void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speed
 
 bool ClientPrediction::CheckCollision(const Vector3& pos)
 {
-    auto physWorld = GetScene()->GetComponent<PhysicsWorld>();
+    PhysicsWorld* physWorld = GetScene()->GetComponent<PhysicsWorld>();
     if (!physWorld)
         return true;
-    auto collShape = node_->GetComponent<CollisionShape>(true);
+    CollisionShape* collShape = node_->GetComponent<CollisionShape>(true);
     if (!collShape)
         return true;
 
-    BoundingBox bb = collShape->GetWorldBoundingBox();
-    Vector3 half = bb.HalfSize();
-    BoundingBox newBB(pos - half, pos + half);
+    // Actors always have AABB
+    const BoundingBox bb = collShape->GetWorldBoundingBox();
+    const Vector3 half = bb.HalfSize();
+    const BoundingBox newBB(pos - half, pos + half);
     PODVector<RigidBody*> result;
     physWorld->GetRigidBodies(result, newBB);
     if (result.Size() > 1)
@@ -97,7 +98,7 @@ void ClientPrediction::Turn(float yAngle)
     float deg = RadToDeg(yAngle);
     NormalizeAngle(deg);
     Player* player = node_->GetComponent<Player>();
-    float newangle = player->rotateTo_.EulerAngles().y_ + deg;
+    const float newangle = player->rotateTo_.EulerAngles().y_ + deg;
     TurnAbsolute(newangle);
 }
 
@@ -151,26 +152,17 @@ void ClientPrediction::Update(float timeStep)
     lastTurnDir_ = turnDir;
 }
 
-void ClientPrediction::FixedUpdate(float timeStep)
-{
-    LogicComponent::FixedUpdate(timeStep);
-}
-
 void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPos)
 {
     serverTime_ = time;
     serverY_ = serverPos.y_;
     Player* player = node_->GetComponent<Player>();
     const Vector3& currPos = player->moveToPos_;
-    float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
+    const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
     if (dist > 5.0f)
     {
-        double serverTime = player->GetServerTime(time);
-        double clientTtime = player->GetClientTime();
-        URHO3D_LOGINFOF("Distance %f, server time %f, client time %f", dist, serverTime, clientTtime);
         // Lerp to actual position
         player->moveToPos_ = serverPos;
-//        node_->SetWorldPosition(player->moveToPos_);
     }
 }
 
@@ -181,7 +173,7 @@ void ClientPrediction::CheckServerRotation(int64_t time, float rad)
     const Quaternion& currRot = player->rotateTo_;
     float deg = RadToDeg(rad);
     NormalizeAngle(deg);
-    if (fabs(currRot.EulerAngles().y_ - deg) > 10.0f)
+    if (fabs(currRot.EulerAngles().y_ - deg) > 1.0f)
     {
         player->rotateTo_.FromEulerAngles(0.0f, deg, 0.0f);
     }
