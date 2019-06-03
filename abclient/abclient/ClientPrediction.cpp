@@ -68,7 +68,7 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
     const Vector3 a = amount * speed;
     const Vector3 v = m * a;
     pos += v;
-    Terrain* terrain = node_->GetScene()->GetComponent<Terrain>(true);
+    Terrain* terrain = GetScene()->GetComponent<Terrain>(true);
     if (terrain)
         pos.y_ = terrain->GetHeight(pos);
     else
@@ -118,7 +118,7 @@ void ClientPrediction::Update(float timeStep)
 
     Player* player = node_->GetComponent<Player>();
 
-    AB::GameProtocol::CreatureState state = player->GetCreatureState();
+    const AB::GameProtocol::CreatureState state = player->GetCreatureState();
     if (state != AB::GameProtocol::CreatureStateIdle && state != AB::GameProtocol::CreatureStateMoving)
         return;
 
