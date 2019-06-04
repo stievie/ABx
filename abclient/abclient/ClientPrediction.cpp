@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "MathUtils.h"
 #include <Urho3D/Physics/PhysicsWorld.h>
+#include "LevelManager.h"
 
 void ClientPrediction::RegisterObject(Context* context)
 {
@@ -45,15 +46,47 @@ bool ClientPrediction::CheckCollision(const Vector3& pos)
     if (!collShape)
         return true;
 
+    LevelManager* lMan = GetSubsystem<LevelManager>();
+    const bool isCollidingWithPlayers = lMan->GetMapType() > AB::Entities::GameTypeOutpost;
+
     // Actors always have AABB
     const BoundingBox bb = collShape->GetWorldBoundingBox();
     const Vector3 half = bb.HalfSize();
     const BoundingBox newBB(pos - half, pos + half);
     PODVector<RigidBody*> result;
     physWorld->GetRigidBodies(result, newBB);
-    if (result.Size() > 1)
+    if (result.Size() < 2)
+        return true;
+
+    for (auto i = result.Begin(); i != result.End(); ++i)
     {
-        // First is always the players model
+        if (!(*i)->GetNode())
+            continue;
+
+        Node* node = (*i)->GetNode()->GetParent();
+        if (!node)
+            continue;
+        if (node->GetComponent<Player>() != nullptr)
+            continue;
+
+        auto actor = node->GetComponent<Actor>();
+        if (!actor)
+        {
+            // Always collide with static objects
+            return false;
+        }
+
+        const ObjectType type = actor->objectType_;
+        if (type == ObjectTypeSelf)
+            // Don't collide with self
+            continue;
+        else if (type == ObjectTypePlayer && !isCollidingWithPlayers)
+            // Don't collide with other players in outposts
+            continue;
+        else if (type == ObjectTypeAreaOfEffect || type == ObjectTypeItemDrop)
+            // Never collide with these
+            continue;
+        // When we are here we do collide with some object and can't go to pos
         return false;
     }
     return true;

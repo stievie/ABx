@@ -9,6 +9,10 @@ namespace Components {
 
 void CollisionComp::ResolveCollisions()
 {
+    // Players don't collide with other players in outposts
+    const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
+        owner_.GetGame()->data_.type > AB::Entities::GameTypeOutpost;
+
     std::vector<GameObject*> c;
     Math::BoundingBox box = owner_.GetWorldBoundingBox();
     if (owner_.QueryObjects(c, box))
@@ -17,6 +21,9 @@ void CollisionComp::ResolveCollisions()
         {
             if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
+                if (ci->GetType() == AB::GameProtocol::ObjectTypePlayer && !isCollidingWithPlayers)
+                    continue;
+
                 // Actor always has a MoveComp
                 MoveComp* mc = owner_.moveComp_.get();
                 assert(mc);
