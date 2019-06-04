@@ -35,6 +35,7 @@ private:
     void HandleTextFinished(StringHash eventType, VariantMap& eventData);
     void HandleEditKey(StringHash eventType, VariantMap& eventData);
     void HandleServerMessage(StringHash eventType, VariantMap& eventData);
+    void HandleObjectProgress(StringHash eventType, VariantMap& eventData);
     void HandleServerMessageUnknownCommand(VariantMap&);
     void HandleServerMessageInfo(VariantMap& eventData);
     void HandleServerMessageRoll(VariantMap& eventData);

@@ -134,6 +134,7 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_PARTYRESIGNED, URHO3D_HANDLER(ChatWindow, HandlePartyResigned));
     SubscribeToEvent(AbEvents::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
     SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(ChatWindow, HandleItemDropped));
+    SubscribeToEvent(AbEvents::E_OBJECTPROGRESS, URHO3D_HANDLER(ChatWindow, HandleObjectProgress));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -305,6 +306,26 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         break;
     case AB::GameProtocol::ServerMessageTypeUnknown:
         break;
+    }
+}
+
+void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
+{
+    using namespace AbEvents::ObjectProgress;
+    uint32_t objectId = eventData[P_OBJECTID].GetUInt();
+    AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(eventData[P_TYPE].GetUInt());
+    if (type == AB::GameProtocol::ObjectProgressGotSkillPoint)
+    {
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        Actor* actor = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
+        if (actor)
+        {
+            kainjow::mustache::mustache tpl{ "{{name}} got a skill point" };
+            kainjow::mustache::data data;
+            data.set("name", std::string(actor->name_.CString(), actor->name_.Length()));
+            std::string t = tpl.render(data);
+            AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        }
     }
 }
 
