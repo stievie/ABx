@@ -38,6 +38,7 @@ protected:
     void HandleStuckCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleHpCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleXpCommand(const std::string& command, Net::NetworkMessage& message);
     void HandlePosCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
     void HandleSitCommand(const std::string&, Net::NetworkMessage&);

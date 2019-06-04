@@ -34,6 +34,7 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "age", AB::GameProtocol::CommandTypeAge },
     { "deaths", AB::GameProtocol::CommandTypeDeaths },
     { "hp", AB::GameProtocol::CommandTypeHealth },
+    { "xp", AB::GameProtocol::CommandTypeXp },
     { "pos", AB::GameProtocol::CommandTypePos },
     { "ip", AB::GameProtocol::CommandTypeIp },
     { "id", AB::GameProtocol::CommandTypeServerId },
@@ -269,6 +270,9 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageTypeHp:
         HandleServerMessageHp(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypeXp:
+        HandleServerMessageXp(eventData);
+        break;
     case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
         HandleServerMessagePlayerNotOnline(eventData);
         break;
@@ -388,6 +392,22 @@ void ChatWindow::HandleServerMessageHp(VariantMap& eventData)
     }
     std::string t = tpl.render(data);
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageXp(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& message = eventData[P_DATA].GetString();
+    kainjow::mustache::mustache tpl{ "XP {{xp}}, Skill points {{sp}}" };
+    kainjow::mustache::data data;
+    auto parts = message.Split('|');
+    if (parts.Size() == 2)
+    {
+        data.set("xp", std::string(parts[0].CString(), parts[0].Length()));
+        data.set("sp", std::string(parts[1].CString(), parts[1].Length()));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    }
 }
 
 void ChatWindow::HandleServerMessagePos(VariantMap& eventData)

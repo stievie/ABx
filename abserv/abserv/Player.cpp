@@ -722,6 +722,9 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeHealth:
         HandleHpCommand(command, message);
         break;
+    case AB::GameProtocol::CommandTypeXp:
+        HandleXpCommand(command, message);
+        break;
     case AB::GameProtocol::CommandTypePos:
         HandlePosCommand(command, message);
         break;
@@ -891,6 +894,16 @@ void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypeHp);
     nmsg->AddString(GetName());
     nmsg->AddString(std::to_string(hp) + ":" + std::to_string(maxHp) + "|" + std::to_string(e) + ":" + std::to_string(maxE));
+    WriteToOutput(*nmsg.get());
+}
+
+void Player::HandleXpCommand(const std::string& command, Net::NetworkMessage& message)
+{
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeXp);
+    nmsg->AddString(GetName());
+    nmsg->AddString(std::to_string(data_.xp) + "|" + std::to_string(data_.skillPoints));
     WriteToOutput(*nmsg.get());
 }
 

@@ -40,6 +40,7 @@ private:
     void HandleServerMessageRoll(VariantMap& eventData);
     void HandleServerMessageAge(VariantMap& eventData);
     void HandleServerMessageHp(VariantMap& eventData);
+    void HandleServerMessageXp(VariantMap& eventData);
     void HandleServerMessagePos(VariantMap& eventData);
     void HandleServerMessagePlayerNotOnline(VariantMap& eventData);
     void HandleServerMessagePlayerGotMessage(VariantMap& eventData);

@@ -158,6 +158,7 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeRoll,                    // /roll result
     ServerMessageTypeAge,                     // /age
     ServerMessageTypeHp,                      // /hp
+    ServerMessageTypeXp,                      // /xp
     ServerMessageTypePos,                     // /pos
     ServerMessageTypePlayerNotOnline,
     ServerMessageTypePlayerGotMessage,
@@ -384,6 +385,7 @@ enum CommandTypes : uint8_t
     CommandTypeAge,                  // /age
     CommandTypeDeaths,               // /deaths
     CommandTypeHealth,               // /hp
+    CommandTypeXp,                   // /xp
     CommandTypePos,                  // /pos show position
     // Internal
     CommandTypeHelp,                 // /help
