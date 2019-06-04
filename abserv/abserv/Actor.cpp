@@ -106,8 +106,13 @@ Actor::Actor() :
     collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
     undestroyable_(false)
 {
-    static const Math::Vector3 CREATURTE_BB_MIN(-0.2f, 0.0f, -0.2f);
-    static const Math::Vector3 CREATURTE_BB_MAX(0.2f, 1.7f, 0.2f);
+    /*
+     * Default BB for humans
+     * <attribute name="Size" value="0.3 1.7 0.5"/>
+     * <attribute name="Offset Position" value="0 0.85 0"/>
+    */
+    static const Math::Vector3 CREATURTE_BB_MIN(-0.15f, 0.0f, -0.25f);
+    static const Math::Vector3 CREATURTE_BB_MAX(0.15f, 1.7f, 0.25f);
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox,
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)

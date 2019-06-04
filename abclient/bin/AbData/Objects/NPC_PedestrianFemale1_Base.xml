@@ -10,7 +10,7 @@
 	</component>
 	<component id="16777218" type="CollisionShape">
 		<attribute name="Shape Type" value="Box"/>
-		<attribute name="Size" value="0.5236 1.76033 1.595"/>
-		<attribute name="Offset Position" value="-0.12233 0.866355 0"/>
+    <attribute name="Size" value="0.3 1.7 0.5"/>
+    <attribute name="Offset Position" value="0 0.85 0"/>
 	</component>
 </node>
