@@ -415,7 +415,7 @@ void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& o
 
 void Client::OnNetworkError(ConnectionError connectionError, const std::error_code& err)
 {
-    if (state_ != ClientState::Disconnected && receiver_)
+    if (receiver_)
         receiver_->OnNetworkError(connectionError, err);
 }
 

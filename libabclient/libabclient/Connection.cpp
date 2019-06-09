@@ -39,7 +39,7 @@ void Connection::Connect(const std::string& host, uint16_t port, const std::func
     connectCallback_ = connectCallback;
 
     connectTimer_.cancel();
-    connectTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
+    connectTimer_.expires_from_now(std::chrono::seconds(Connection::ConnectTimeout));
     connectTimer_.async_wait(std::bind(&Connection::OnConnectTimeout, shared_from_this(),
         std::placeholders::_1));
 
@@ -139,7 +139,7 @@ void Connection::HandleError(ConnectionError connectionError, const asio::error_
 void Connection::InternalConnect(asio::ip::basic_resolver<asio::ip::tcp>::iterator endpointIterator)
 {
     connectTimer_.cancel();
-    connectTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
+    connectTimer_.expires_from_now(std::chrono::seconds(Connection::ConnectTimeout));
     connectTimer_.async_wait(std::bind(&Connection::OnConnectTimeout, shared_from_this(), std::placeholders::_1));
 
     socket_.async_connect(*endpointIterator,

@@ -12,6 +12,7 @@ private:
     typedef std::function<void(ConnectionError, const asio::error_code&)> ErrorCallback;
     typedef std::function<void(uint8_t*, uint16_t)> RecvCallback;
     enum {
+        ConnectTimeout = 5,
         ReadTimeout = 30,
         WriteTimeout = 30,
         SendBufferSize = 65536,
