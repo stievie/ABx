@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "MathUtils.h"
 #include <Urho3D/Physics/PhysicsWorld.h>
+#include <Urho3D/Physics/CollisionShape.h>
+#include <Urho3D/Physics/RigidBody.h>
 #include "LevelManager.h"
 
 void ClientPrediction::RegisterObject(Context* context)
