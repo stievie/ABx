@@ -5,6 +5,7 @@
 #include <ctime>
 #include "Utils.h"
 #include <stdarg.h>
+#include "ConsoleColor.h"
 
 #if !defined(__AB_PRETTY_FUNCTION__)
 #   if defined __GNUC__
@@ -62,7 +63,10 @@ public:
     // Overload for std::endl only:
     Logger& operator << (endlType endl)
     {
+        static Color::Modifier def(Color::FG_DEFAULT);
         nextIsBegin_ = true;
+        if (mode_ == ModeStream)
+            stream_ << def;
         stream_ << endl;
         return *this;
     }
@@ -119,8 +123,13 @@ public:
 #endif
     Logger& Error()
     {
+        static Color::Modifier red(Color::FG_RED);
         if (nextIsBegin_)
-            (*this) << "[ERROR] ";
+        {
+            if (mode_ == ModeStream)
+                stream_ << red;
+            (*this) << "[ERROR] ";        
+        }
         return *this;
     }
     Logger& Info()
@@ -131,8 +140,13 @@ public:
     }
     Logger& Warning()
     {
+        static Color::Modifier yellow(Color::FG_YELLOW);
         if (nextIsBegin_)
-            (*this) << "[Warning] ";
+        {
+            if (mode_ == ModeStream)
+                stream_ << yellow;
+            (*this) << "[Warning] ";            
+        }
         return *this;
     }
 #if defined(_PROFILING)

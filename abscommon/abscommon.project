@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="abscommon" Version="10.0.0" InternalType="Library">
   <Plugins>
-    <Plugin Name="CppCheck"/>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
+    <Plugin Name="CppCheck"/>
   </Plugins>
   <Description/>
   <Dependencies/>
@@ -43,6 +43,7 @@
     <File Name="abscommon/BanManager.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="abscommon/ConsoleColor.h"/>
     <File Name="abscommon/Xml.h"/>
     <File Name="abscommon/WinService.h"/>
     <File Name="abscommon/WeightedSelector.h"/>
