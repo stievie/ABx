@@ -77,7 +77,7 @@ void BaseLevel::PostRenderUpdate(StringHash, VariantMap&)
 
 void BaseLevel::OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err)
 {
-    URHO3D_LOGERRORF("Network error (%d): %s", err.value(), err.message().c_str());
+    URHO3D_LOGERRORF("Network error (%d): %s", err.default_error_condition().value(), err.message().c_str());
     String msg;
     switch (connectionError)
     {

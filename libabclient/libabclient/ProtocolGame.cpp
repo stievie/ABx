@@ -10,7 +10,8 @@ namespace Client {
 
 ProtocolGame::ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService) :
     Protocol(keys, ioService),
-    updateTick_(0)
+    updateTick_(0),
+    loggingOut_(false)
 {
     checksumEnabled_ = ProtocolGame::UseChecksum;
     compressionEnabled_ = ENABLE_GAME_COMPRESSION;
@@ -67,6 +68,13 @@ void ProtocolGame::OnReceive(const std::shared_ptr<InputMessage>& message)
 void ProtocolGame::OnError(ConnectionError connectionError, const asio::error_code& err)
 {
     Protocol::OnError(connectionError, err);
+    // Error 2 = End of file
+    if (loggingOut_ && err.default_error_condition().value() == 2)
+    {
+        // When logging out a disconnect is expected
+        loggingOut_ = false;
+        return;
+    }
     if (receiver_)
         receiver_->OnNetworkError(connectionError, err);
 }
@@ -783,6 +791,7 @@ void ProtocolGame::SendLoginPacket()
 
 void ProtocolGame::Logout()
 {
+    loggingOut_ = true;
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
     Send(msg);

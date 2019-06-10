@@ -27,6 +27,7 @@ private:
     int lastPing_;
     bool firstRevc_;
     DH_KEY serverKey_;
+    bool loggingOut_;
 
     void SendLoginPacket();
 protected:
