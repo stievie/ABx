@@ -897,7 +897,7 @@ void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
     WriteToOutput(*nmsg.get());
 }
 
-void Player::HandleXpCommand(const std::string& command, Net::NetworkMessage& message)
+void Player::HandleXpCommand(const std::string&, Net::NetworkMessage&)
 {
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);

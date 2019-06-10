@@ -63,10 +63,14 @@ public:
     // Overload for std::endl only:
     Logger& operator << (endlType endl)
     {
+#if !defined(AB_WINDOWS)
         static Color::Modifier def(Color::FG_DEFAULT);
+#endif
         nextIsBegin_ = true;
+#if !defined(AB_WINDOWS)
         if (mode_ == ModeStream)
             stream_ << def;
+#endif
         stream_ << endl;
         return *this;
     }
@@ -123,12 +127,16 @@ public:
 #endif
     Logger& Error()
     {
+#if !defined(AB_WINDOWS)
         static Color::Modifier red(Color::FG_RED);
+#endif
         if (nextIsBegin_)
         {
+#if !defined(AB_WINDOWS)
             if (mode_ == ModeStream)
                 stream_ << red;
-            (*this) << "[ERROR] ";        
+#endif
+            (*this) << "[ERROR] ";
         }
         return *this;
     }
@@ -140,12 +148,16 @@ public:
     }
     Logger& Warning()
     {
+#if !defined(AB_WINDOWS)
         static Color::Modifier yellow(Color::FG_YELLOW);
+#endif
         if (nextIsBegin_)
         {
+#if !defined(AB_WINDOWS)
             if (mode_ == ModeStream)
                 stream_ << yellow;
-            (*this) << "[Warning] ";            
+#endif
+            (*this) << "[Warning] ";
         }
         return *this;
     }
