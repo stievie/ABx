@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="BanManager.h" />
     <ClInclude Include="Connection.h" />
+    <ClInclude Include="ConsoleColor.h" />
     <ClInclude Include="CpuUsage.h" />
     <ClInclude Include="Daemon.h" />
     <ClInclude Include="DataCodes.h" />
