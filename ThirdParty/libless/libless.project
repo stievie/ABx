@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libless" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="src/Token.cpp"/>
+    <File Name="src/VariableMap.cpp"/>
+    <File Name="src/TokenList.cpp"/>
+    <File Name="src/LessException.cpp"/>
+    <VirtualDirectory Name="stylesheet">
+      <File Name="src/stylesheet/Declaration.cpp"/>
+      <File Name="src/stylesheet/CssComment.cpp"/>
+      <File Name="src/stylesheet/Selector.cpp"/>
+      <File Name="src/stylesheet/StylesheetStatement.cpp"/>
+      <File Name="src/stylesheet/MediaQuery.cpp"/>
+      <File Name="src/stylesheet/AtRule.cpp"/>
+      <File Name="src/stylesheet/Ruleset.cpp"/>
+      <File Name="src/stylesheet/RulesetStatement.cpp"/>
+      <File Name="src/stylesheet/Stylesheet.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="less">
+      <File Name="src/less/LessSelectorParser.cpp"/>
+      <File Name="src/less/LessParser.cpp"/>
+      <File Name="src/less/LessTokenizer.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="value">
+      <File Name="src/value/BooleanValue.cpp"/>
+      <File Name="src/value/UrlFunctions.cpp"/>
+      <File Name="src/value/UrlValue.cpp"/>
+      <File Name="src/value/NumberFunctions.cpp"/>
+      <File Name="src/value/ColorFunctions.cpp"/>
+      <File Name="src/value/StringFunctions.cpp"/>
+      <File Name="src/value/StringValue.cpp"/>
+      <File Name="src/value/UnitValue.cpp"/>
+      <File Name="src/value/NumberValue.cpp"/>
+      <File Name="src/value/FunctionLibrary.cpp"/>
+      <File Name="src/value/ValueProcessor.cpp"/>
+      <File Name="src/value/Value.cpp"/>
+      <File Name="src/value/Color.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="css">
+      <File Name="src/css/CssSelectorParser.cpp"/>
+      <File Name="src/css/CssParser.cpp"/>
+      <File Name="src/css/CssPrettyWriter.cpp"/>
+      <File Name="src/css/CssTokenizer.cpp"/>
+      <File Name="src/css/SourceMapWriter.cpp"/>
+      <File Name="src/css/CssWriter.cpp"/>
+      <File Name="src/css/ParseException.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="lessstylesheet">
+      <File Name="src/lessstylesheet/MixinCall.cpp"/>
+      <File Name="src/lessstylesheet/LessDeclaration.cpp"/>
+      <File Name="src/lessstylesheet/LessAtRule.cpp"/>
+      <File Name="src/lessstylesheet/Mixin.cpp"/>
+      <File Name="src/lessstylesheet/LessSelector.cpp"/>
+      <File Name="src/lessstylesheet/MediaQueryRuleset.cpp"/>
+      <File Name="src/lessstylesheet/ProcessingContext.cpp"/>
+      <File Name="src/lessstylesheet/LessRuleset.cpp"/>
+      <File Name="src/lessstylesheet/MixinArguments.cpp"/>
+      <File Name="src/lessstylesheet/Extension.cpp"/>
+      <File Name="src/lessstylesheet/LessStylesheet.cpp"/>
+      <File Name="src/lessstylesheet/LessMediaQuery.cpp"/>
+      <File Name="src/lessstylesheet/MixinException.cpp"/>
+      <File Name="src/lessstylesheet/Closure.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="less">
+      <File Name="include/less/LessException.h"/>
+      <File Name="include/less/VariableMap.h"/>
+      <File Name="include/less/TokenList.h"/>
+      <File Name="include/less/Token.h"/>
+      <VirtualDirectory Name="stylesheet">
+        <File Name="include/less/stylesheet/StylesheetStatement.h"/>
+        <File Name="include/less/stylesheet/Stylesheet.h"/>
+        <File Name="include/less/stylesheet/RulesetStatement.h"/>
+        <File Name="include/less/stylesheet/CssComment.h"/>
+        <File Name="include/less/stylesheet/MediaQuery.h"/>
+        <File Name="include/less/stylesheet/Declaration.h"/>
+        <File Name="include/less/stylesheet/Ruleset.h"/>
+        <File Name="include/less/stylesheet/AtRule.h"/>
+        <File Name="include/less/stylesheet/CssWritable.h"/>
+        <File Name="include/less/stylesheet/Selector.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="less">
+        <File Name="include/less/less/LessTokenizer.h"/>
+        <File Name="include/less/less/LessParser.h"/>
+        <File Name="include/less/less/LessSelectorParser.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="value">
+        <File Name="include/less/value/Color.h"/>
+        <File Name="include/less/value/ValueException.h"/>
+        <File Name="include/less/value/UrlFunctions.h"/>
+        <File Name="include/less/value/NumberFunctions.h"/>
+        <File Name="include/less/value/FunctionLibrary.h"/>
+        <File Name="include/less/value/ValueProcessor.h"/>
+        <File Name="include/less/value/ColorFunctions.h"/>
+        <File Name="include/less/value/StringFunctions.h"/>
+        <File Name="include/less/value/NumberValue.h"/>
+        <File Name="include/less/value/UrlValue.h"/>
+        <File Name="include/less/value/StringValue.h"/>
+        <File Name="include/less/value/BooleanValue.h"/>
+        <File Name="include/less/value/ValueScope.h"/>
+        <File Name="include/less/value/Value.h"/>
+        <File Name="include/less/value/UnitValue.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="css">
+        <File Name="include/less/css/CssWriter.h"/>
+        <File Name="include/less/css/IOException.h"/>
+        <File Name="include/less/css/ParseException.h"/>
+        <File Name="include/less/css/CssParser.h"/>
+        <File Name="include/less/css/CssSelectorParser.h"/>
+        <File Name="include/less/css/CssTokenizer.h"/>
+        <File Name="include/less/css/CssPrettyWriter.h"/>
+        <File Name="include/less/css/SourceMapWriter.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="lessstylesheet">
+        <File Name="include/less/lessstylesheet/ProcessingContext.h"/>
+        <File Name="include/less/lessstylesheet/Mixin.h"/>
+        <File Name="include/less/lessstylesheet/Function.h"/>
+        <File Name="include/less/lessstylesheet/LessDeclaration.h"/>
+        <File Name="include/less/lessstylesheet/MixinCall.h"/>
+        <File Name="include/less/lessstylesheet/LessSelector.h"/>
+        <File Name="include/less/lessstylesheet/LessAtRule.h"/>
+        <File Name="include/less/lessstylesheet/MixinException.h"/>
+        <File Name="include/less/lessstylesheet/Closure.h"/>
+        <File Name="include/less/lessstylesheet/Extension.h"/>
+        <File Name="include/less/lessstylesheet/LessMediaQuery.h"/>
+        <File Name="include/less/lessstylesheet/LessStylesheet.h"/>
+        <File Name="include/less/lessstylesheet/MediaQueryRuleset.h"/>
+        <File Name="include/less/lessstylesheet/MixinArguments.h"/>
+        <File Name="include/less/lessstylesheet/LessRuleset.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="include"/>
+      </Compiler>
+      <Linker Options="-m64">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="_DEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(ProjectPath)/../../Lib/x64/$(ConfigurationName)/$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(ProjectPath)/../../Lib/x64/$(ConfigurationName)/$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
