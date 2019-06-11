@@ -63,6 +63,7 @@ ThirdParty/recastnavigation/DebugUtils.txt
 ThirdParty/recastnavigation/Detour.txt
 ThirdParty/recastnavigation/Recast.txt
 ThirdParty/sqlite3/sqlite3.txt
+ThirdParty/lz4/lz4.txt
 
 # Misc.
 configure*

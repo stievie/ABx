@@ -7,6 +7,7 @@
   <Project Name="Recast" Path="../ThirdParty/recastnavigation/Recast.project"/>
   <Project Name="Detour" Path="../ThirdParty/recastnavigation/Detour.project"/>
   <Project Name="DebugUtils" Path="../ThirdParty/recastnavigation/DebugUtils.project"/>
+  <Project Name="lz4" Path="../ThirdParty/lz4/lz4.project"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
@@ -17,6 +18,7 @@
       <Project Name="Recast" ConfigName="Debug"/>
       <Project Name="Detour" ConfigName="Debug"/>
       <Project Name="DebugUtils" ConfigName="Debug"/>
+      <Project Name="lz4" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -27,6 +29,7 @@
       <Project Name="Recast" ConfigName="Release"/>
       <Project Name="Detour" ConfigName="Release"/>
       <Project Name="DebugUtils" ConfigName="Release"/>
+      <Project Name="lz4" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
