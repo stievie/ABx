@@ -42,7 +42,7 @@ Options::Options(Context* context) :
     textureFilterMode_(FILTER_ANISOTROPIC),
     textureAnisotropyLevel_(16),
     specularLightning_(true),
-    hdrRendering_(true),
+    hdrRendering_(false),
     antiAliasingMode_(AntiAliasingMode::FXAA3),
     loginHost_("localhost"),
     renderPath_("RenderPaths/Prepass.xml"),
