@@ -53,6 +53,7 @@
 #elif defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Woverloaded-virtual"
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
 #endif
 #include <Urho3D/Urho3DAll.h>
 #if defined(_MSC_VER)
