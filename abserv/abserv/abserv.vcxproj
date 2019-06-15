@@ -100,6 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)..\Include;$(SolutionDir)..\Include\recastnavigation;$(SolutionDir)..\Include\XMath;$(SolutionDir)..\Include\DirectXMath;$(SolutionDir)..\Include\ai;$(SolutionDir)..\abscommon\abscommon;$(SolutionDir)..\absmath\absmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +125,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +151,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,6 +177,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
