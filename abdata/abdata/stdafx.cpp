@@ -3,3 +3,5 @@
 // stdafx.obj enthält die vorkompilierten Typinformationen.
 
 #include "stdafx.h"
+
+#include <base64.h>

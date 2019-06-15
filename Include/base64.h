@@ -37,10 +37,7 @@ static const unsigned int base64_chars[64] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
 };
 
-std::string encode(const unsigned char* src, size_t len)
-#if !defined(BASE64_IMPLEMENTATION)
-;
-#else
+inline std::string encode(const unsigned char* src, size_t len)
 {
     unsigned char *out, *pos;
     const unsigned char *end, *in;
@@ -86,12 +83,8 @@ std::string encode(const unsigned char* src, size_t len)
 
     return outStr;
 }
-#endif
 
-std::string decode(const void* data, const size_t len)
-#if !defined(BASE64_IMPLEMENTATION)
-;
-#else
+inline std::string decode(const void* data, const size_t len)
 {
     unsigned char* p = (unsigned char*)data;
     int pad = len > 0 && (len % 4 || p[len - 1] == '=');
@@ -123,24 +116,15 @@ std::string decode(const void* data, const size_t len)
     str.resize(j);
     return str;
 }
-#endif
 
-std::string encode(const std::string& str64)
-#if !defined(BASE64_IMPLEMENTATION)
-;
-#else
+inline std::string encode(const std::string& str64)
 {
     return encode((const unsigned char*)str64.data(), str64.length());
 }
-#endif
 
-std::string decode(const std::string& str64)
-#if !defined(BASE64_IMPLEMENTATION)
-;
-#else
+inline std::string decode(const std::string& str64)
 {
     return decode(str64.data(), str64.length());
 }
-#endif
 
 }
