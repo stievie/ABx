@@ -1,6 +1,4 @@
-CC = gcc
-CXX = g++
-AR = ar
+include common.make
 
 # This may change
 DEFINES += -DNDEBUG
@@ -17,8 +15,7 @@ SRC_FILES = \
 	$(SOURDEDIR)/stdafx.cpp \
 # End changes
 
-CXXFLAGS += $(DEFINES) $(INCLUDES) -MMD -O3 -Wall -Wextra -std=c++14
-LINKCMD = $(AR) -rcs "$@"
+CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
 $(info $(OBJ_FILES))
