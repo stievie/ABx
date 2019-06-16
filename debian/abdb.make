@@ -24,7 +24,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ_FILES)
 	@$(MKDIR_P) $(@D)
-	$(LINKCMD) $(OBJ_FILES)
+	$(LINKCMD_LIB) $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
