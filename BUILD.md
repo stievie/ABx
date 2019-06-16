@@ -19,7 +19,7 @@
 4. Install `libmysqlclient-dev` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev)
 5. Install `libpq-dev` (https://packages.debian.org/jessie/armhf/libpq-dev)
 6. Install `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
-7. libldap2-dev, libssl-dev, libgsasl7-dev
+7. libldap2-dev, libssl-dev, libgsasl7-dev, libkrb5-dev, lua5.3, lua5.3-dev
 8. Clone repo `git -c http.sslVerify=false clone https://stievie.mooo.com/git/Trill/ABx.git`.
 9. `cd ABx`
 10. Generate make files: GCC: `~/premake-core/bin/release/premake5 gmake`, CLang: `~/premake-core/bin/release/premake5 --cc=clang gmake`
