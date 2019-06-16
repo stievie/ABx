@@ -18,12 +18,13 @@ SRC_FILES = \
 # End changes
 
 CXXFLAGS += $(DEFINES) $(INCLUDES) -MMD -O3 -Wall -Wextra -std=c++14
-LINKCMD = $(AR) -rcs "$@" $(obj)
+LINKCMD = $(AR) -rcs "$@"
 
-OBJ_FILERS := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
+OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
+$(info $(OBJ_FILES))
 
-$(TARGET): $(OBJ_FILERS)
-	$(LINKCMD)
+$(TARGET): $(OBJ_FILES)
+	$(LINKCMD) $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -37,4 +38,4 @@ $(TARGETDIR):
 
 .PHONY: clean
 clean:
-	rm -f $(OBJ_FILERS) $(TARGET)
+	rm -f $(OBJ_FILES) $(TARGET)
