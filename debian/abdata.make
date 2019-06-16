@@ -1,8 +1,8 @@
 include common.make
 
 # This may change
-DEFINES += -DNDEBUG -D_CONSOLE
-INCLUDES += -I../abscommon/abscommon -I../abdb/abdb -I../Include
+DEFINES += -D_CONSOLE
+INCLUDES += -I../abscommon/abscommon -I../abdb/abdb
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abdata
 SOURDEDIR = ../abdata/abdata

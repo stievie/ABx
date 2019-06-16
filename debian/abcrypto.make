@@ -1,8 +1,6 @@
 include common.make
 
 # This may change
-DEFINES += -DNDEBUG
-INCLUDES += -I../Include
 TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/libabcrypto.a
 SOURDEDIR = ../ThirdParty/abcrypto

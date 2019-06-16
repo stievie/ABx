@@ -1,8 +1,7 @@
 include common.make
 
 # This may change
-DEFINES += -DNDEBUG
-INCLUDES += -I../Include -I../abscommon/abscommon -I/usr/include/postgresql
+INCLUDES += -I../abscommon/abscommon -I/usr/include/postgresql
 TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/libabdb.a
 SOURDEDIR = ../abdb/abdb
