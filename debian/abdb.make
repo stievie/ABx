@@ -34,7 +34,7 @@ $(OBJDIR):
 $(TARGETDIR):
 	mkdir -p $(TARGETDIR)
 
--include $(OBJ_FILERS:.o=.d)
+-include $(OBJ_FILES:.o=.d)
 
 .PHONY: clean
 clean:
