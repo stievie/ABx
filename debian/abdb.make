@@ -18,18 +18,17 @@ SRC_FILES = \
 CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
-$(info $(OBJ_FILES))
+#$(info $(OBJ_FILES))
+
+all: $(TARGET)
 
 $(TARGET): $(OBJ_FILES)
+	@$(MKDIR_P) $(@D)
 	$(LINKCMD) $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
+	@$(MKDIR_P) $(@D)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
-$(TARGETDIR):
-	mkdir -p $(TARGETDIR)
 
 -include $(OBJ_FILES:.o=.d)
 
