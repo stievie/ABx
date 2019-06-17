@@ -7,7 +7,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/ablogin
 SOURDEDIR = ../ablogin/ablogin
 OBJDIR = obj/x64/Release/ablogin
-LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon
+LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
