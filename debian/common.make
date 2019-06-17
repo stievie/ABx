@@ -1,6 +1,6 @@
 # Tools chain
-CC = clang
-CXX = clang++
+CC = gcc
+CXX = g++
 AR = ar
 # Utils
 MKDIR_P = mkdir -p
