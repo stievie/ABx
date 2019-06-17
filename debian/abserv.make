@@ -1,13 +1,13 @@
 include common.make
 
 # This may change
-DEFINES += -D_CONSOLE
-INCLUDES += -I../abscommon/abscommon -I../Include/recastnavigation -I../Include/ai -I../absmath/absmath -I../Include/DirectXMath
+INCLUDES += -I../Include/recastnavigation -I../Include/ai -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon 
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abserv
 SOURDEDIR = ../abserv/abserv
 OBJDIR = obj/x64/Release/abserv
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto -labsmath -lpugixml -ldetour -lstdc++fs
+CXXFLAGS += -fexceptions
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp $(SOURDEDIR)/*/*.cpp)

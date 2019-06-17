@@ -10,8 +10,8 @@ LINKCMD_LIB = $(AR) -r "$@"
 LINKCMD_EXE = $(CXX) $(LDFLAGS) -o "$@"
 
 # Flags
-CFLAGS = -MMD -m64 -O3 -Wall -Wextra
-CXXFLAGS = -MMD -m64 -O3 -Wall -Wextra -std=c++17
+CFLAGS = -m64 -O3 -Wall
+CXXFLAGS = -m64 -O3 -Wall -std=c++17
 LDFLAGS =  -L../Lib -L../Lib/x64/Release -m64 -s
 
 # Options
