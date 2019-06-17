@@ -3,7 +3,7 @@
 #include "ServerApp.h"
 #include <AB/Entities/Account.h>
 #if __cplusplus < 201703L
-#   if !defined(__clang__)
+#   if !defined(__clang__) && !defined(__GNUC__)
 #       include <filesystem>
 #   else
 #       include <experimental/filesystem>

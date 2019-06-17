@@ -1,10 +1,13 @@
 include common.make
 
 # This may change
-TARGETDIR = ../Lib/x64/Release
-TARGET = $(TARGETDIR)/libpugixml.a
-SOURDEDIR = ../ThirdParty/PugiXml/src
-OBJDIR = obj/x64/Release/pugixml
+DEFINES += -D_CONSOLE
+INCLUDES += -I../abscommon/abscommon
+TARGETDIR = ../Bin
+TARGET = $(TARGETDIR)/ablb
+SOURDEDIR = ../ablb/ablb
+OBJDIR = obj/x64/Release/ablb
+LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
@@ -18,7 +21,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ_FILES)
 	@$(MKDIR_P) $(@D)
-	$(LINKCMD_LIB) $(OBJ_FILES)
+	$(LINKCMD_EXE) $(OBJ_FILES) $(LIBS)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)

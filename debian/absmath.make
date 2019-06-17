@@ -1,10 +1,11 @@
 include common.make
 
 # This may change
+INCLUDES += -I../Include/DirectXMath
 TARGETDIR = ../Lib/x64/Release
-TARGET = $(TARGETDIR)/libpugixml.a
-SOURDEDIR = ../ThirdParty/PugiXml/src
-OBJDIR = obj/x64/Release/pugixml
+TARGET = $(TARGETDIR)/libabsmath.a
+SOURDEDIR = ../absmath/absmath
+OBJDIR = obj/x64/Release/absmath
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)

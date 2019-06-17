@@ -10,9 +10,9 @@ all:
 #	@$(MAKE) -f  absmath.make
 	@$(MAKE) -f  abdata.make
 #	@$(MAKE) -f  abfile.make
-#	@$(MAKE) -f  ablb.make
+	@$(MAKE) -f  ablb.make
 #	@$(MAKE) -f  ablogin.make
-#	@$(MAKE) -f  abmsgs.make
+	@$(MAKE) -f  abmsgs.make
 #	@$(MAKE) -f  absadmin.make
 #	@$(MAKE) -f  abserv.make
 
@@ -26,8 +26,8 @@ clean:
 #	@$(MAKE) -f  absmath.make clean
 	@$(MAKE) -f  abdata.make clean
 #	@$(MAKE) -f  abfile.make clean
-#	@$(MAKE) -f  ablb.make clean
+	@$(MAKE) -f  ablb.make clean
 #	@$(MAKE) -f  ablogin.make clean
-#	@$(MAKE) -f  abmsgs.make clean
+	@$(MAKE) -f  abmsgs.make clean
 #	@$(MAKE) -f  absadmin.make clean
 #	@$(MAKE) -f  abserv.make clean

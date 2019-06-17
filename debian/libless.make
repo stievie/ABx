@@ -2,12 +2,12 @@ include common.make
 
 # This may change
 TARGETDIR = ../Lib/x64/Release
-TARGET = $(TARGETDIR)/libpugixml.a
-SOURDEDIR = ../ThirdParty/PugiXml/src
-OBJDIR = obj/x64/Release/pugixml
+TARGET = $(TARGETDIR)/libless.a
+SOURDEDIR = ../ThirdParty/libless/src
+OBJDIR = obj/x64/Release/libless
 # End changes
 
-SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
+SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp $(SOURDEDIR)/*/*.cpp)
 
 CXXFLAGS += $(DEFINES) $(INCLUDES)
 

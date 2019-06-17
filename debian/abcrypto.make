@@ -5,11 +5,20 @@ TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/libabcrypto.a
 SOURDEDIR = ../ThirdParty/abcrypto
 OBJDIR = obj/x64/Release/abcrypto
+SRC_FILES = \
+	$(SOURDEDIR)/aes.c \
+	$(SOURDEDIR)/arc4random.c \
+	$(SOURDEDIR)/bcrypt.c \
+	$(SOURDEDIR)/blowfish.c \
+	$(SOURDEDIR)/dh.c \
+	$(SOURDEDIR)/md5.c \
+	$(SOURDEDIR)/safebfuns.c \
+	$(SOURDEDIR)/sha1.c \
+	$(SOURDEDIR)/sha256.c \
+	$(SOURDEDIR)/xxtea.c \
 # End changes
 
-SRC_FILES = $(wildcard $(SOURDEDIR)/*.c)
-
-CXXFLAGS += $(DEFINES) $(INCLUDES)
+CFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.c, $(OBJDIR)/%.o, $(SRC_FILES))
 #$(info $(OBJ_FILES))
