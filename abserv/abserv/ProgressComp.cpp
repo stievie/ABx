@@ -54,8 +54,8 @@ void ProgressComp::Died()
 void ProgressComp::AddXp(int value)
 {
     // Max XP
-    if (value > SKILLPOINT_ADVANCE_XP)
-        value = SKILLPOINT_ADVANCE_XP;
+    if (value > static_cast<int>(SKILLPOINT_ADVANCE_XP))
+        value = static_cast<int>(SKILLPOINT_ADVANCE_XP);
 
     const uint32_t oldXp = owner_.GetXp();
     owner_.AddXp(value);
