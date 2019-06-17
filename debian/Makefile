@@ -15,7 +15,7 @@ all:
 	@$(MAKE) -f  ablogin.make
 	@$(MAKE) -f  abmsgs.make
 	@$(MAKE) -f  absadmin.make
-#	@$(MAKE) -f  abserv.make
+	@$(MAKE) -f  abserv.make
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
@@ -32,4 +32,4 @@ clean:
 	@$(MAKE) -f  ablogin.make clean
 	@$(MAKE) -f  abmsgs.make clean
 	@$(MAKE) -f  absadmin.make clean
-#	@$(MAKE) -f  abserv.make clean
+	@$(MAKE) -f  abserv.make clean
