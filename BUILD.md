@@ -26,6 +26,12 @@
 11. `cd build`, maybe `make -f ... clean`, or just delete `obj` dir.
 12. Build abdata: `make -f lua.make && make -f abcrypto.make && make -f abscommon.make && make -f abdata.make` (`make -f abdata.make -e config=release_armv7`)
 
+## Debian 10 Buster (x86_64)
+
+1. Install the required packages.
+2. `cd` to `./debian`
+3. Type `make`
+
 ## Fixes
 
 * Link `pthread`, `lua`, `abcrypto`, `abscommon`, `libpq` (https://packages.debian.org/jessie/armhf/libpq-dev/filelist),
