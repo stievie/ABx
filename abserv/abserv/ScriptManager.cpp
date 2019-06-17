@@ -5,7 +5,15 @@
 #include <lua.hpp>
 #include "DataProvider.h"
 #include "Profiler.h"
-#include <filesystem>
+#if __cplusplus < 201703L
+#   if !defined(__clang__) && !defined(__GNUC__)
+#       include <filesystem>
+#   else
+#       include <experimental/filesystem>
+#   endif
+#else
+#   include <filesystem>
+#endif
 #include "StringUtils.h"
 #include "Script.h"
 #include "Subsystems.h"
