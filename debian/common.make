@@ -5,7 +5,7 @@ AR = ar
 # Utils
 MKDIR_P = mkdir -p
 # Linker Static libs
-LINKCMD_LIB = $(AR) -rcs "$@"
+LINKCMD_LIB = $(AR) -r "$@"
 # Linker Executeables
 LINKCMD_EXE = $(CXX) $(LDFLAGS) -o "$@"
 

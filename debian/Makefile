@@ -8,7 +8,7 @@ all:
 	@$(MAKE) -f  libless.make
 	@$(MAKE) -f  abdb.make
 	@$(MAKE) -f  abscommon.make
-#	@$(MAKE) -f  absmath.make
+	@$(MAKE) -f  absmath.make
 	@$(MAKE) -f  abdata.make
 	@$(MAKE) -f  abfile.make
 	@$(MAKE) -f  ablb.make
@@ -25,7 +25,7 @@ clean:
 	@$(MAKE) -f  libless.make clean
 	@$(MAKE) -f  abdb.make clean
 	@$(MAKE) -f  abscommon.make clean
-#	@$(MAKE) -f  absmath.make clean
+	@$(MAKE) -f  absmath.make clean
 	@$(MAKE) -f  abdata.make clean
 	@$(MAKE) -f  abfile.make clean
 	@$(MAKE) -f  ablb.make clean
