@@ -76,12 +76,6 @@
 #   define _XM_ARM_NEON_NO_ALIGN_
 #endif
 
-#if defined(BUILD_PLATFORM_LINUX) || defined(BUILD_PLATFORM_UNIX)
-#   if defined(B0)
-#       undef B0
-#   endif
-#endif
-
 #if defined(HAVE_DIRECTX_MATH)
 #   include <DirectXMath.h>
 #   include <DirectXCollision.h>
