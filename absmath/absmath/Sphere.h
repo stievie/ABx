@@ -33,7 +33,7 @@ public:
 #if defined(HAVE_DIRECTX_MATH)
     operator XMath::BoundingSphere() const
     {
-        return XMath::BoundingSphere(center_, radius_);
+        return XMath::BoundingSphere({ center_.x_, center_.y_, center_.z_ }, radius_);
     }
 #endif
 
