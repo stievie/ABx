@@ -170,7 +170,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 {
     if (defeatedTick_ == 0)
     {
-        int resigned = 0;
+        size_t resigned = 0;
         for (auto& wm : members_)
         {
             if (auto sm = wm.lock())
