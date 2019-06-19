@@ -17,6 +17,7 @@ all:
 	@$(MAKE) -f  absadmin.make
 	@$(MAKE) -f  abserv.make
 	@$(MAKE) -f  abstests.make
+	@../Bin/Tests
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
