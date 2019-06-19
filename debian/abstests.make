@@ -8,6 +8,7 @@ SOURDEDIR = ../Tests/Tests
 OBJDIR = obj/x64/Release/Tests
 LIBS += -labscommon -labsmath
 CXXFLAGS += -fexceptions
+DEFINES += -DBUILD_INTRINSICS_LEVEL=1
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
