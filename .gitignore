@@ -27,6 +27,7 @@ Bin
 *.cache
 *.layout
 *.7z
+*.zip
 *.mak
 *.a
 *.mk

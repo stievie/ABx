@@ -31,10 +31,14 @@ all:
 	@$(MAKE) -f  absadmin.make
 	@echo "-------------------- Building abserv --------------------"
 	@$(MAKE) -f  abserv.make
+	@echo "-------------------- Building keygen --------------------"
+	@$(MAKE) -f  keygen.make
 	@echo "------------------- Building abstests -------------------"
 	@$(MAKE) -f  abstests.make
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
+	@echo "----------------- Compressing binaries ------------------"
+	@cd ../Bin && ./00comprbin.sh && cd ../debian
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
@@ -52,4 +56,5 @@ clean:
 	@$(MAKE) -f  abmsgs.make clean
 	@$(MAKE) -f  absadmin.make clean
 	@$(MAKE) -f  abserv.make clean
+	@$(MAKE) -f  keygen.make clean
 	@$(MAKE) -f  abstests.make clean
