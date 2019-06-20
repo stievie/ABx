@@ -37,6 +37,7 @@ Makefile
 *.pch/
 *.pch.*
 *.pch
+*.gch
 
 compile_commands.json
 compile_flags.txt
