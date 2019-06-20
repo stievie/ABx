@@ -86,7 +86,7 @@ ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
 
 void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
 {
-    auto client = GetSubsystem<Net::MessageClient>();
+    auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerLoggedIn;
 
@@ -99,7 +99,7 @@ void Game::BroadcastPlayerLoggedIn(std::shared_ptr<Player> player)
 
 void Game::BroadcastPlayerLoggedOut(std::shared_ptr<Player> player)
 {
-    auto client = GetSubsystem<Net::MessageClient>();
+    auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
     msg.type_ = Net::MessageType::PlayerLoggedOut;
 
@@ -142,7 +142,7 @@ void Game::Start()
 {
     if (state_ == ExecutionState::Startup)
     {
-        auto config = GetSubsystem<ConfigManager>();
+        auto* config = GetSubsystem<ConfigManager>();
         startTime_ = Utils::Tick();
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
@@ -304,7 +304,7 @@ Player* Game::GetPlayerById(uint32_t playerId)
 
 Player* Game::GetPlayerByName(const std::string& name)
 {
-    uint32_t playerId = GetSubsystem<PlayerManager>()->GetPlayerIdByName(name);
+    const uint32_t playerId = GetSubsystem<PlayerManager>()->GetPlayerIdByName(name);
     if (playerId != 0)
         return GetPlayerById(playerId);
     return nullptr;
@@ -389,8 +389,8 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
     if (state_ != ExecutionState::Running || !dropper)
         return std::shared_ptr<ItemDrop>();
 
-    auto factory = GetSubsystem<ItemFactory>();
-    auto rng = GetSubsystem<Crypto::Random>();
+    auto* factory = GetSubsystem<ItemFactory>();
+    auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     auto p = Utils::SelectRandomly(players_.begin(), players_.end(), rnd);
     if (p == players_.end())
@@ -506,11 +506,11 @@ void Game::Load(const std::string& mapUuid)
     if (!script_->Execute(luaState_))
         return;
 
-    auto thPool = GetSubsystem<Asynch::ThreadPool>();
+    auto* thPool = GetSubsystem<Asynch::ThreadPool>();
     // Load Game Assets
     thPool->Enqueue(&Game::InternalLoad, shared_from_this());
     // Load item drop chances on this map
-    auto factory = GetSubsystem<ItemFactory>();
+    auto* factory = GetSubsystem<ItemFactory>();
     thPool->Enqueue(&ItemFactory::LoadDropChances, factory, mapUuid);
 }
 
