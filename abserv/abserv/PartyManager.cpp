@@ -19,7 +19,7 @@ std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
     }
     AB::Entities::Party p;
     p.uuid = _uuid;
-    auto cli = GetSubsystem<IO::DataClient>();
+    auto* cli = GetSubsystem<IO::DataClient>();
     if (!cli->Read(p))
         cli->Create(p);
 

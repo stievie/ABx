@@ -51,7 +51,7 @@ size_t Party::GetDataPos(Player* player)
     {
         return player->data_.uuid.compare(current) == 0;
     });
-    size_t index = std::distance(data_.members.begin(), iter);
+    const size_t index = std::distance(data_.members.begin(), iter);
     if (index == data_.members.size())
     {
         return 0;
@@ -90,7 +90,7 @@ bool Party::Set(std::shared_ptr<Player> player)
     if (!player)
         return false;
     // 1-based
-    size_t pos = GetDataPos(player.get());
+    const size_t pos = GetDataPos(player.get());
     if (pos == 0)
     {
         // Not in data_ -> append it
@@ -265,7 +265,7 @@ Player* Party::GetRandomPlayer() const
     if (members_.size() == 0)
         return nullptr;
 
-    auto rng = GetSubsystem<Crypto::Random>();
+    auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     using iterator = std::vector<std::weak_ptr<Player>>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(members_.begin(), members_.end(), rnd);
@@ -293,7 +293,7 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
     if (players.size() == 0)
         return nullptr;
 
-    auto rng = GetSubsystem<Crypto::Random>();
+    auto* rng = GetSubsystem<Crypto::Random>();
     const float rnd = rng->GetFloat();
     using iterator = std::vector<Player*>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);

@@ -30,7 +30,7 @@ bool ItemContainer::SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
                 return false;
             items_[0]->concreteItem_.count += item->concreteItem_.count;
             // Merged -> delete this
-            auto factory = GetSubsystem<ItemFactory>();
+            auto* factory = GetSubsystem<ItemFactory>();
             factory->DeleteConcrete(item->concreteItem_.uuid);
         }
 
@@ -45,7 +45,7 @@ bool ItemContainer::DestroyItem(uint16_t pos)
 {
     if (items_.size() > pos && items_[pos])
     {
-        auto factory = GetSubsystem<ItemFactory>();
+        auto* factory = GetSubsystem<ItemFactory>();
         factory->DeleteItem(items_[pos].get());
         items_[pos].reset();
         return true;
@@ -103,7 +103,7 @@ bool ItemContainer::StackItem(std::unique_ptr<Item>& item, const ItemUpdatedCall
     if (count == 0)
     {
         // Merged -> delete this
-        auto factory = GetSubsystem<ItemFactory>();
+        auto* factory = GetSubsystem<ItemFactory>();
         factory->DeleteConcrete(item->concreteItem_.uuid);
         return true;
     }

@@ -34,7 +34,7 @@ void EffectsComp::AddEffect(std::shared_ptr<Actor> source, uint32_t index)
         /*
          * Eine Fertigkeit kann nicht mit sich selbst gestapelt werden, beispielsweise
          * kann man einen Gegner also nicht zweimal mit der gleichen Verhexung belegen,
-         * sich selbst mehrfach durch ein und dieselbe Verzauberung schützen oder
+         * sich selbst mehrfach durch ein und dieselbe Verzauberung schÃ¼tzen oder
          * den Bonus eines Schreis mehrfach erhalten.
          * https://www.guildwiki.de/wiki/Effektstapelung
          */

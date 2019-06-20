@@ -85,7 +85,7 @@ void Maintenance::UpdateServerLoadTask()
 
 void Maintenance::CheckAutoTerminate()
 {
-    auto dispatcher = GetSubsystem<Asynch::Dispatcher>();
+    auto* dispatcher = GetSubsystem<Asynch::Dispatcher>();
     if (GetSubsystem<Game::PlayerManager>()->GetIdleTime() >= CHECK_AUTOTERMINATE_IDLE_MS)
     {
         dispatcher->Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
@@ -105,7 +105,7 @@ void Maintenance::Run()
         std::lock_guard<std::mutex> lock(lock_);
         status_ = MaintenanceStatus::Runnig;
     }
-    auto shed = GetSubsystem<Asynch::Scheduler>();
+    auto* shed = GetSubsystem<Asynch::Scheduler>();
     shed->Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&Maintenance::CleanCacheTask, this))
     );

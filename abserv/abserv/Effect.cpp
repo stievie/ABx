@@ -104,11 +104,9 @@ bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
     startTime_ = Utils::Tick();
     ticks_ = luaState_["getDuration"](source.get(), target.get());
     endTime_ = startTime_ + ticks_;
-    bool succ = luaState_["onStart"](source.get(), target.get());
+    const bool succ = luaState_["onStart"](source.get(), target.get());
     if (!succ)
-    {
         endTime_ = 0;
-    }
     return succ;
 }
 
