@@ -38,7 +38,7 @@ all:
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
 	@echo "----------------- Compressing binaries ------------------"
-	@cd ../Bin && ./00comprbin.sh && cd ../debian
+	@cd ../Bin && ./00comprbin.sh && yes | cp -f Bin.zip /mnt/hdd02/abx && cd ../debian
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
