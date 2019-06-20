@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Version.h"
+#include "Logo.h"
 #include "Application.h"
 #include "ServiceConfig.h"
 #if !defined(WIN_SERVICE)
