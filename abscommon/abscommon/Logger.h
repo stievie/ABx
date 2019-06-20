@@ -164,16 +164,34 @@ public:
 #if defined(_PROFILING)
     Logger& Profile()
     {
+#if !defined(AB_WINDOWS)
+        static Color::Modifier blue(Color::FG_BLUE);
+#endif
         if (nextIsBegin_)
-            (*this) << "[Profile] ";
+        {
+#if !defined(AB_WINDOWS)
+            if (mode_ == ModeStream)
+                stream_ << blue;
+#endif
+            (*this) << "[Profile] ";            
+        }
         return *this;
     }
 #endif
 #if defined(_DEBUG)
     Logger& Debug()
     {
+#if !defined(AB_WINDOWS)
+        static Color::Modifier grey(Color::FG_LIGHTGREY);
+#endif
         if (nextIsBegin_)
+        {
+#if !defined(AB_WINDOWS)
+            if (mode_ == ModeStream)
+                stream_ << grey;
+#endif
             (*this) << "[Debug] ";
+        }
         return *this;
     }
 #endif
@@ -200,8 +218,8 @@ public:
 #define LOG_WARNING (IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
 #define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << "(): ")
 #if defined(_PROFILING)
-#define LOG_PROFILE (IO::Logger::Instance().Profile())
+#   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #endif
 #if defined(_DEBUG)
-#define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
+#   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
 #endif

@@ -363,7 +363,7 @@ std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto actor = dynamic_cast<Actor*>(o.get());
+            auto* actor = dynamic_cast<Actor*>(o.get());
             if (actor && actor->IsEnemy(this))
                 result.push_back(actor);
         }
@@ -379,7 +379,7 @@ size_t Actor::GetEnemyCountInRange(Ranges range)
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto actor = dynamic_cast<Actor*>(o.get());
+            auto* actor = dynamic_cast<Actor*>(o.get());
             if (actor && actor->IsEnemy(this))
                 ++result;
         }
@@ -395,7 +395,7 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto actor = dynamic_cast<Actor*>(o.get());
+            auto* actor = dynamic_cast<Actor*>(o.get());
             if (actor && !actor->IsEnemy(this))
                 result.push_back(actor);
         }
@@ -412,7 +412,7 @@ size_t Actor::GetAllyCountInRange(Ranges range)
         AB::GameProtocol::GameObjectType t = o->GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto actor = dynamic_cast<Actor*>(o.get());
+            auto* actor = dynamic_cast<Actor*>(o.get());
             if (actor && !actor->IsEnemy(this))
                 ++result;
         }
@@ -743,7 +743,7 @@ Skill* Actor::GetCurrentSkill() const
 
 bool Actor::SetEquipment(const std::string& ciUuid)
 {
-    auto factory = GetSubsystem<ItemFactory>();
+    auto* factory = GetSubsystem<ItemFactory>();
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
@@ -753,7 +753,7 @@ bool Actor::SetEquipment(const std::string& ciUuid)
 
 bool Actor::SetInventory(const std::string& ciUuid)
 {
-    auto factory = GetSubsystem<ItemFactory>();
+    auto* factory = GetSubsystem<ItemFactory>();
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;
@@ -762,7 +762,7 @@ bool Actor::SetInventory(const std::string& ciUuid)
 
 bool Actor::SetChest(const std::string& ciUuid)
 {
-    auto factory = GetSubsystem<ItemFactory>();
+    auto* factory = GetSubsystem<ItemFactory>();
     std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
     if (!item)
         return false;

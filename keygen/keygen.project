@@ -15,6 +15,12 @@
     <File Name="keygen/stdafx.cpp"/>
     <File Name="keygen/main.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="abscommon"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="abscommon"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-m64;-std=c++17;-Wall" C_Options="-m64;-Wall" Assembler="">
@@ -32,7 +38,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="./keygen/stdafx.h" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="_DEBUG"/>
       </Compiler>
@@ -72,7 +78,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="clang( tags/RELEASE_800/final )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="./keygen/stdafx.h" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -112,10 +118,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="abscommon"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="abscommon"/>
-  </Dependencies>
 </CodeLite_Project>
