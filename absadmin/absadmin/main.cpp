@@ -36,13 +36,7 @@ static void ShowLogo()
     std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
     std::cout << std::endl;
 
-    std::cout << "##########  ######  ######" << std::endl;
-    std::cout << "    ##          ##  ##" << std::endl;
-    std::cout << "    ##  ######  ##  ##" << std::endl;
-    std::cout << "    ##  ##      ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << AB_CONSOLE_LOGO << std::endl;
 
     std::cout << std::endl;
 }

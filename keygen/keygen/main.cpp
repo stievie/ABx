@@ -1,4 +1,4 @@
-// keygen.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
+// keygen.cpp : Definiert den Einstiegspunkt fÃ¼r die Konsolenanwendung.
 //
 
 #include "stdafx.h"
@@ -16,6 +16,7 @@
 #include "Random.h"
 #include <AB/DHKeys.hpp>
 #include "Utils.h"
+#include "Logo.h"
 
 static bool GenerateKeys(const std::string& outFile)
 {
@@ -37,13 +38,7 @@ static void ShowLogo()
 
     std::cout << std::endl;
 
-    std::cout << "##########  ######  ######" << std::endl;
-    std::cout << "    ##          ##  ##" << std::endl;
-    std::cout << "    ##  ######  ##  ##" << std::endl;
-    std::cout << "    ##  ##      ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << AB_CONSOLE_LOGO << std::endl;
 
     std::cout << std::endl;
 }

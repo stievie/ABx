@@ -43,6 +43,7 @@
     <File Name="abscommon/BanManager.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="abscommon/Logo.h"/>
     <File Name="abscommon/ConsoleColor.h"/>
     <File Name="abscommon/Xml.h"/>
     <File Name="abscommon/WinService.h"/>

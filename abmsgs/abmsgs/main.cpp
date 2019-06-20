@@ -1,4 +1,4 @@
-// abmsgs.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
+// abmsgs.cpp : Definiert den Einstiegspunkt fÃ¼r die Konsolenanwendung.
 //
 
 #include "stdafx.h"
@@ -35,13 +35,7 @@ static void ShowLogo()
     std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
     std::cout << std::endl;
 
-    std::cout << "##########  ######  ######" << std::endl;
-    std::cout << "    ##          ##  ##" << std::endl;
-    std::cout << "    ##  ######  ##  ##" << std::endl;
-    std::cout << "    ##  ##      ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << AB_CONSOLE_LOGO << std::endl;
 
     std::cout << std::endl;
 }

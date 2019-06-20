@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
+#include "Logo.h"
 
 #if !defined(WIN_SERVICE)
 #include "Dispatcher.h"
@@ -38,13 +39,7 @@ static void ShowLogo()
 
     std::cout << std::endl;
 
-    std::cout << "##########  ######  ######" << std::endl;
-    std::cout << "    ##          ##  ##" << std::endl;
-    std::cout << "    ##  ######  ##  ##" << std::endl;
-    std::cout << "    ##  ##      ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << AB_CONSOLE_LOGO << std::endl;
 
     std::cout << std::endl;
 }

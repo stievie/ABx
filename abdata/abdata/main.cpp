@@ -1,9 +1,10 @@
-// abdata.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
+// abdata.cpp : Definiert den Einstiegspunkt fÃ¼r die Konsolenanwendung.
 //
 
 #include "stdafx.h"
 #include "Application.h"
 #include "Version.h"
+#include "Logo.h"
 #include "ServiceConfig.h"
 #if !defined(WIN_SERVICE)
 
@@ -38,13 +39,7 @@ static void ShowLogo()
     std::cout << "(C) 2017-" << SERVER_YEAR << std::endl;
     std::cout << std::endl;
 
-    std::cout << "##########  ######  ######" << std::endl;
-    std::cout << "    ##          ##  ##" << std::endl;
-    std::cout << "    ##  ######  ##  ##" << std::endl;
-    std::cout << "    ##  ##      ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
-    std::cout << "    ##  ##  ##  ##  ##" << std::endl;
+    std::cout << AB_CONSOLE_LOGO << std::endl;
 
     std::cout << std::endl;
 }
