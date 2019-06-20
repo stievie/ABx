@@ -134,7 +134,7 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
 
 bool ItemFactory::CreateDBItem(AB::Entities::ConcreteItem item)
 {
-    auto client = GetSubsystem<IO::DataClient>();
+    auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Create(item))
     {
         LOG_ERROR << "Unable to create concrete item" << std::endl;
@@ -150,7 +150,7 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& accUuid /* = Utils::Uuid::EMPTY_UUID */,
     const std::string& playerUuid /* = Utils::Uuid::EMPTY_UUID */)
 {
-    auto client = GetSubsystem<IO::DataClient>();
+    auto* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Item gameItem;
     gameItem.uuid = itemUuid;
     if (!client->Read(gameItem))
@@ -188,7 +188,7 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
 std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
 {
     AB::Entities::ConcreteItem ci;
-    auto client = GetSubsystem<IO::DataClient>();
+    auto* client = GetSubsystem<IO::DataClient>();
     ci.uuid = concreteUuid;
     if (!client->Read(ci))
     {
@@ -324,7 +324,7 @@ void ItemFactory::IdentiyItem(Item* item, Player* player)
 void ItemFactory::DeleteConcrete(const std::string& uuid)
 {
     AB::Entities::ConcreteItem ci;
-    auto client = GetSubsystem<IO::DataClient>();
+    auto* client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
     if (client->Delete(ci))
         client->Invalidate(ci);

@@ -10,7 +10,7 @@ namespace Components {
 void ResourceComp::UpdateResources()
 {
     // Base HP
-    unsigned levelAdvance = owner_.GetLevel() - 1;
+    const unsigned levelAdvance = owner_.GetLevel() - 1;
     int hp = 100 + (levelAdvance * 20);
     int energy = BASE_ENERGY;
 
@@ -26,7 +26,7 @@ void ResourceComp::UpdateResources()
 
 void ResourceComp::SetHealth(SetValueType t, int value)
 {
-    float oldVal = health_;
+    const float oldVal = health_;
     if (SetValue(t, static_cast<float>(value), static_cast<float>(maxHealth_), health_))
     {
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
@@ -177,8 +177,8 @@ void ResourceComp::SetValue(ResourceType type, SetValueType t, int value)
 
 int ResourceComp::DrainEnergy(int value)
 {
-    int curr = GetEnergy();
-    int result = Math::Clamp(value, 0, curr);
+    const int curr = GetEnergy();
+    const int result = Math::Clamp(value, 0, curr);
     SetEnergy(Components::SetValueType::Absolute, curr - result);
     return result;
 }
@@ -244,13 +244,13 @@ void ResourceComp::Update(uint32_t timeElapsed)
     UpdateRegen(timeElapsed);
     // 2 regen per sec
     const float sec = static_cast<float>(timeElapsed) / 1000.0f;
-    // Jeder Pfeil erhöht oder senkt die Lebenspunkte um genau zwei pro Sekunde.
+    // Jeder Pfeil erhÃ¶ht oder senkt die Lebenspunkte um genau zwei pro Sekunde.
     if (SetValue(SetValueType::Increase, (static_cast<float>(GetHealthRegen()) * 2.0f) * sec, static_cast<float>(maxHealth_), health_))
         dirtyFlags_ |= ResourceDirty::DirtyHealth;
     // Also bedeutet 1 Pfeil eine Regeneration (oder Degeneration) von 0,33 Energiepunkten pro Sekunde.
     if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, static_cast<float>(maxEnergy_), energy_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergy;
-    // Überzaubert wird alle drei Sekunden um einen Punkt abgebaut
+    // Ãœberzaubert wird alle drei Sekunden um einen Punkt abgebaut
     if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, static_cast<float>(maxEnergy_), overcast_))
         dirtyFlags_ |= ResourceDirty::DirtyOvercast;
 

@@ -149,7 +149,7 @@ void Player::GetMailHeaders()
 
 void Player::GetInventory()
 {
-    size_t count = inventoryComp_->GetInventoryCount();
+    const size_t count = inventoryComp_->GetInventoryCount();
     if (count == 0)
         return;
 
@@ -260,7 +260,7 @@ void Player::DropInventoryItem(uint16_t pos)
 
 void Player::GetChest()
 {
-    size_t count = inventoryComp_->GetChestCount();
+    const size_t count = inventoryComp_->GetChestCount();
     if (count == 0)
         return;
 
@@ -464,7 +464,7 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
         return false;
     }
     auto msg = Net::NetworkMessage::GetNew();
-    bool ret = inventoryComp_->SetInventoryItem(item, msg.get());
+    const bool ret = inventoryComp_->SetInventoryItem(item, msg.get());
     if (msg->GetSize() != 0)
         WriteToOutput(*msg.get());
     return ret;
@@ -870,10 +870,10 @@ void Player::HandleStuckCommand(const std::string&, Net::NetworkMessage& message
 void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 {
     // In seconds
-    uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) +
+    const uint32_t playTime = static_cast<uint32_t>(data_.onlineTime) +
         static_cast<uint32_t>((Utils::Tick() - loginTime_) / 1000);
     // In seconds
-    uint32_t age = static_cast<uint32_t>((Utils::Tick() - data_.creation) / 1000);
+    const uint32_t age = static_cast<uint32_t>((Utils::Tick() - data_.creation) / 1000);
 
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
@@ -886,10 +886,10 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
 {
     auto nmsg = Net::NetworkMessage::GetNew();
-    int maxHp = resourceComp_.GetMaxHealth();
-    int hp = resourceComp_.GetHealth();
-    int maxE = resourceComp_.GetMaxEnergy();
-    int e = resourceComp_.GetEnergy();
+    const int maxHp = resourceComp_.GetMaxHealth();
+    const int hp = resourceComp_.GetHealth();
+    const int maxE = resourceComp_.GetMaxEnergy();
+    const int e = resourceComp_.GetEnergy();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypeHp);
     nmsg->AddString(GetName());
@@ -938,10 +938,10 @@ void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& 
 {
     if (Utils::IsNumber(command))
     {
-        int max = std::stoi(command);
+        const int max = std::stoi(command);
         if (max >= ROLL_MIN && max <= ROLL_MAX)
         {
-            int res = static_cast<int>(GetSubsystem<Crypto::Random>()->GetFloat() * (float)max) + 1;
+            const int res = static_cast<int>(GetSubsystem<Crypto::Random>()->GetFloat() * static_cast<float>(max)) + 1;
             message.AddByte(AB::GameProtocol::ServerMessage);
             message.AddByte(AB::GameProtocol::ServerMessageTypeRoll);
             message.AddString(GetName());

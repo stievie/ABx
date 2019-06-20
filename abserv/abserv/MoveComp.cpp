@@ -36,13 +36,13 @@ bool MoveComp::SetPosition(const Math::Vector3& pos)
     HeadTo(pos);
     owner_.transformation_.position_ = pos;
     // Keep on ground
-    float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
+    const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
     if (owner_.collisionComp_)
         // We need to do it here because this is not called from Update()
         owner_.collisionComp_->ResolveCollisions();
 
-    bool moved = oldPosition_ != owner_.transformation_.position_;
+    const bool moved = oldPosition_ != owner_.transformation_.position_;
 
     if (moved && owner_.octant_)
     {
@@ -78,10 +78,10 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
     owner_.transformation_.Move(speed, amount);
 
     // Keep on ground
-    float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
+    const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
     owner_.transformation_.position_.y_ = y;
 
-    bool moved = !oldPosition_.Equals(owner_.transformation_.position_);
+    const bool moved = !oldPosition_.Equals(owner_.transformation_.position_);
     if (moved)
         moved_ = true;
 }

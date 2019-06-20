@@ -164,7 +164,7 @@ bool Npc::SetBehaviour(const std::string& name)
     if (behaviorTree_.compare(name) != 0 || !ai_)
     {
         behaviorTree_ = name;
-        auto loader = GetSubsystem<AI::AiLoader>();
+        auto* loader = GetSubsystem<AI::AiLoader>();
         const ai::TreeNodePtr& root = loader->Load(behaviorTree_);
         if (!root)
             return false;
@@ -185,9 +185,9 @@ float Npc::GetAggro(const Actor* other)
     if (!other)
         return 0.0f;
 
-    auto random = GetSubsystem<Crypto::Random>();
-    float dist = GetPosition().Distance(other->GetPosition());
-    float rval = random->GetFloat();
+    auto* random = GetSubsystem<Crypto::Random>();
+    const float dist = GetPosition().Distance(other->GetPosition());
+    const float rval = random->GetFloat();
     return (1.0f / dist) * rval;
 }
 

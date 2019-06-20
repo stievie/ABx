@@ -57,7 +57,7 @@ TerrainPatch* Map::GetPatch(int x, int z) const
 
 void Map::LoadSceneNode(const pugi::xml_node& node)
 {
-    auto dataProvider = GetSubsystem<IO::DataProvider>();
+    auto* dataProvider = GetSubsystem<IO::DataProvider>();
     // Game load thread
     if (auto game = game_.lock())
     {
@@ -344,7 +344,7 @@ SpawnPoint Map::GetFreeSpawnPoint(const std::vector<SpawnPoint>& points)
     if (points.size() == 0)
         return EmtpySpawnPoint;
 
-    static auto cleanObjects = [](std::vector<GameObject*>& objects)
+    auto cleanObjects = [](std::vector<GameObject*>& objects)
     {
         if (objects.size() == 0)
             return;
@@ -425,7 +425,7 @@ bool Map::FindPath(std::vector<Math::Vector3>& dest,
     if (!navMesh_)
         return false;
 
-    bool res = navMesh_->FindPath(dest, start, end, extends, filter);
+    const bool res = navMesh_->FindPath(dest, start, end, extends, filter);
     if (res)
     {
         for (auto& v : dest)
