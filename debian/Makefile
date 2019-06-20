@@ -1,22 +1,39 @@
 .PHONY: clean all
 
 all:
+	@echo "------------------- Building abcrypto -------------------"
 	@$(MAKE) -f  abcrypto.make
+	@echo "-------------------- Building pugixml -------------------"
 	@$(MAKE) -f  pugixml.make
+	@echo "-------------------- Building recast --------------------"
 	@$(MAKE) -f  recast.make
+	@echo "-------------------- Building detour --------------------"
 	@$(MAKE) -f  detour.make
+	@echo "-------------------- Building libless -------------------"
 	@$(MAKE) -f  libless.make
+	@echo "--------------------- Building abdb ---------------------"
 	@$(MAKE) -f  abdb.make
+	@echo "------------------- Building abscommon ------------------"
 	@$(MAKE) -f  abscommon.make
+	@echo "-------------------- Building absmath -------------------"
 	@$(MAKE) -f  absmath.make
+	@echo "-------------------- Building abdata --------------------"
 	@$(MAKE) -f  abdata.make
+	@echo "-------------------- Building abfile --------------------"
 	@$(MAKE) -f  abfile.make
+	@echo "--------------------- Building ablb ---------------------"
 	@$(MAKE) -f  ablb.make
+	@echo "-------------------- Building ablogin -------------------"
 	@$(MAKE) -f  ablogin.make
+	@echo "-------------------- Building abmsgs --------------------"
 	@$(MAKE) -f  abmsgs.make
+	@echo "------------------- Building absadmin -------------------"
 	@$(MAKE) -f  absadmin.make
+	@echo "-------------------- Building abserv --------------------"
 	@$(MAKE) -f  abserv.make
+	@echo "------------------- Building abstests -------------------"
 	@$(MAKE) -f  abstests.make
+	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
 
 clean:
