@@ -36,7 +36,9 @@ all:
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
 	@echo "----------------- Compressing binaries ------------------"
+	@cd ../Bin
 	@../Bin/00comprbin.sh
+	@cd ../debian
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
