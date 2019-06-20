@@ -8,6 +8,7 @@ SOURDEDIR = ../Tests/Tests
 OBJDIR = obj/x64/Release/Tests
 LIBS += -labscommon -labsmath
 CXXFLAGS += -fexceptions
+DEFINES += -DBUILD_INTRINSICS_LEVEL=1
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
@@ -25,7 +26,7 @@ $(TARGET): $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
 -include $(OBJ_FILES:.o=.d)
 
