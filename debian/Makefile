@@ -35,6 +35,8 @@ all:
 	@$(MAKE) -f  abstests.make
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
+	@echo "----------------- Compressing binaries ------------------"
+	@../Bin/00comprbin.sh
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
