@@ -37,7 +37,7 @@ all:
 	@../Bin/Tests
 	@echo "----------------- Compressing binaries ------------------"
 	@cd ../Bin
-	@../Bin/00comprbin.sh
+	@./00comprbin.sh
 	@cd ../debian
 
 clean:
