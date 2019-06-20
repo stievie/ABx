@@ -37,8 +37,8 @@ all:
 	@$(MAKE) -f  abstests.make
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
-	@echo "----------------- Compressing binaries ------------------"
-	@cd ../Bin && ./00comprbin.sh && yes | cp -f Bin.zip /mnt/hdd02/abx && cd ../debian
+	@echo "------------------- Making artifact ---------------------"
+	@$(MAKE) -f  artifact.make
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
@@ -58,3 +58,4 @@ clean:
 	@$(MAKE) -f  abserv.make clean
 	@$(MAKE) -f  keygen.make clean
 	@$(MAKE) -f  abstests.make clean
+	@$(MAKE) -f  artifact.make
