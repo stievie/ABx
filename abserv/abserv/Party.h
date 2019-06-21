@@ -61,13 +61,21 @@ public:
     void WriteToMembers(const Net::NetworkMessage& message);
 
     void SetPartySize(size_t size);
-    size_t GetMemberCount() const
-    {
-        return members_.size();
-    }
+    inline size_t GetValidMemberCount() const;
+    inline size_t GetMemberCount() const { return members_.size(); }
     const std::vector<std::weak_ptr<Player>>& GetMembers() const
     {
         return members_;
+    }
+    /// void callback(Player* player)
+    template<typename Callback>
+    inline void VisitMembers(Callback&& callback) const
+    {
+        for (auto& wm : members_)
+        {
+            if (auto sm = wm.lock())
+                callback(sm.get());
+        }
     }
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
     bool IsMember(Player* player) const;
@@ -85,8 +93,7 @@ public:
             return std::shared_ptr<Player>();
         for (const auto& m : members_)
         {
-            auto sm = m.lock();
-            if (sm)
+            if (auto sm = m.lock())
                 return sm;
         }
         return std::shared_ptr<Player>();

@@ -171,15 +171,11 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
     if (defeatedTick_ == 0)
     {
         size_t resigned = 0;
-        for (auto& wm : members_)
-        {
-            if (auto sm = wm.lock())
-            {
-                if (sm->IsResigned())
-                    ++resigned;
-            }
-        }
-        if (resigned == GetMemberCount())
+        VisitMembers([&resigned] (Player* player) {
+            if (player->IsResigned())
+                ++resigned;
+        });
+        if (resigned == GetValidMemberCount())
         {
             defeatedTick_ = Utils::Tick();
             message.AddByte(AB::GameProtocol::PartyResigned);
@@ -210,11 +206,9 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 
 void Party::WriteToMembers(const Net::NetworkMessage& message)
 {
-    for (auto& wm : members_)
-    {
-        if (auto sm = wm.lock())
-            sm->WriteToOutput(message);
-    }
+    VisitMembers([&message](Player* player) {
+        player->WriteToOutput(message);
+    });
 }
 
 void Party::SetPartySize(size_t size)
@@ -223,6 +217,15 @@ void Party::SetPartySize(size_t size)
         members_.erase(members_.end());
 
     maxMembers_ = static_cast<uint32_t>(size);
+}
+
+inline size_t Party::GetValidMemberCount() const
+{
+    size_t result = 0;
+    VisitMembers([&result](Player*) {
+        ++result;
+    });
+    return result;
 }
 
 bool Party::IsMember(Player* player) const
@@ -282,14 +285,10 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
     if (members_.size() == 0 || actor == nullptr)
         return nullptr;
     std::vector<Player*> players;
-    for (const auto& m : members_)
-    {
-        if (auto p = m.lock())
-        {
-            if (actor->IsInRange(range, p.get()))
-                players.push_back(p.get());
-        }
-    }
+    VisitMembers([&](Player* player) {
+        if (actor->IsInRange(range, player))
+            players.push_back(player);
+    });
     if (players.size() == 0)
         return nullptr;
 
@@ -298,19 +297,16 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
     using iterator = std::vector<Player*>::const_iterator;
     auto it = Utils::SelectRandomly<iterator>(players.begin(), players.end(), rnd);
     if (it != players.end())
-    {
         return (*it);
-    }
+
     return nullptr;
 }
 
 void Party::KillAll()
 {
-    for (const auto& m : members_)
-    {
-        if (auto sm = m.lock())
-            sm->Die();
-    }
+    VisitMembers([](Player* player) {
+        player->Die();
+    });
 }
 
 void Party::Defeat()
@@ -347,13 +343,9 @@ void Party::ChangeInstance(const std::string& mapUuid)
         LOG_ERROR << "Failed to get game " << mapUuid << std::endl;
         return;
     }
-    for (const auto& member : members_)
-    {
-        if (auto mem = member.lock())
-        {
-            mem->ChangeInstance(mapUuid, game->instanceData_.uuid);
-        }
-    }
+    VisitMembers([&mapUuid, &game] (Player* player) {
+        player->ChangeInstance(mapUuid, game->instanceData_.uuid);
+    });
 }
 
 }
