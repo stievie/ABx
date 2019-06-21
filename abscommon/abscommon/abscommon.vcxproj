@@ -159,6 +159,7 @@
     <ClInclude Include="DebugConfig.h" />
     <ClInclude Include="DebugNew.h" />
     <ClInclude Include="IpList.h" />
+    <ClInclude Include="Iteration.h" />
     <ClInclude Include="Logo.h" />
     <ClInclude Include="ServiceConfig.h" />
     <ClInclude Include="ServiceInstaller.h" />
