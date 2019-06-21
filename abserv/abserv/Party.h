@@ -6,6 +6,7 @@
 #include "Subsystems.h"
 #include "DataClient.h"
 #include "Mechanic.h"
+#include "Iteration.h"
 
 namespace Game {
 
@@ -67,14 +68,15 @@ public:
     {
         return members_;
     }
-    /// void callback(Player* player)
+    /// Iteration callback(Player* player)
     template<typename Callback>
     inline void VisitMembers(Callback&& callback) const
     {
         for (auto& wm : members_)
         {
             if (auto sm = wm.lock())
-                callback(sm.get());
+                if (callback(sm.get()) != Iteration::Continue)
+                    break;
         }
     }
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }

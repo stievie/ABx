@@ -174,6 +174,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
         VisitMembers([&resigned] (Player* player) {
             if (player->IsResigned())
                 ++resigned;
+            return Iteration::Continue;
         });
         if (resigned == GetValidMemberCount())
         {
@@ -208,6 +209,7 @@ void Party::WriteToMembers(const Net::NetworkMessage& message)
 {
     VisitMembers([&message](Player* player) {
         player->WriteToOutput(message);
+        return Iteration::Continue;
     });
 }
 
@@ -224,6 +226,7 @@ inline size_t Party::GetValidMemberCount() const
     size_t result = 0;
     VisitMembers([&result](Player*) {
         ++result;
+        return Iteration::Continue;
     });
     return result;
 }
@@ -288,6 +291,7 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
     VisitMembers([&](Player* player) {
         if (actor->IsInRange(range, player))
             players.push_back(player);
+        return Iteration::Continue;
     });
     if (players.size() == 0)
         return nullptr;
@@ -306,6 +310,7 @@ void Party::KillAll()
 {
     VisitMembers([](Player* player) {
         player->Die();
+        return Iteration::Continue;
     });
 }
 
@@ -345,6 +350,7 @@ void Party::ChangeInstance(const std::string& mapUuid)
     }
     VisitMembers([&mapUuid, &game] (Player* player) {
         player->ChangeInstance(mapUuid, game->instanceData_.uuid);
+        return Iteration::Continue;
     });
 }
 
