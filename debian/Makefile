@@ -38,7 +38,7 @@ all:
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
 	@echo "-------------------- Making artifact --------------------"
-	@$(MAKE) -f  artifact.make
+	@$(MAKE) -f  artefact.make
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
@@ -58,4 +58,4 @@ clean:
 	@$(MAKE) -f  abserv.make clean
 	@$(MAKE) -f  keygen.make clean
 	@$(MAKE) -f  abstests.make clean
-	@$(MAKE) -f  artifact.make
+	@$(MAKE) -f  artefact.make
