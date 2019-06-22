@@ -292,7 +292,7 @@ void Application::Stop()
         return;
 
     running_ = false;
-    LOG_INFO << "Server shutdown...";
+    LOG_INFO << "Server shutdown..." << std::endl;
 
     StorageProvider* provider = server_->GetStorageProvider();
     AB::Entities::Service serv;

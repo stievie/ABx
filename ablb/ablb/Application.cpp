@@ -275,7 +275,7 @@ void Application::Stop()
         return;
 
     running_ = false;
-    LOG_INFO << "Server shutdown...";
+    LOG_INFO << "Server shutdown..." << std::endl;
 
     AB::Entities::Service serv;
     serv.uuid = GetServerId();

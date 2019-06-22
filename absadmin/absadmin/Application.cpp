@@ -338,7 +338,7 @@ void Application::Stop()
 
     running_ = false;
     auto dataClient = GetSubsystem<IO::DataClient>();
-    LOG_INFO << "Server shutdown...";
+    LOG_INFO << "Server shutdown..." << std::endl;
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     if (dataClient->Read(serv))
