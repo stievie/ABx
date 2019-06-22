@@ -37,7 +37,6 @@
     <File Name="abscommon/FileUtils.cpp"/>
     <File Name="abscommon/Dispatcher.cpp"/>
     <File Name="abscommon/DataClient.cpp"/>
-    <File Name="abscommon/Daemon.cpp"/>
     <File Name="abscommon/CpuUsageWin.cpp"/>
     <File Name="abscommon/Connection.cpp"/>
     <File Name="abscommon/BanManager.cpp"/>
@@ -86,7 +85,6 @@
     <File Name="abscommon/DataKey.h"/>
     <File Name="abscommon/DataCodes.h"/>
     <File Name="abscommon/DataClient.h"/>
-    <File Name="abscommon/Daemon.h"/>
     <File Name="abscommon/CpuUsage.h"/>
     <File Name="abscommon/Connection.h"/>
     <File Name="abscommon/BanManager.h"/>
