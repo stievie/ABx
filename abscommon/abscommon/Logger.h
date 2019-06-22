@@ -89,7 +89,7 @@ public:
             struct tm* p;
             p = localtime(&ttp);
             char chr[50] = { 0 };
-            strftime(chr, 50, "(%g-%m-%d-%H:%M:%S)", p);
+            strftime(chr, 50, "(%g-%m-%d %H:%M:%S)", p);
 
             stream_ << std::string(chr) << ": " << data;
             nextIsBegin_ = false;
