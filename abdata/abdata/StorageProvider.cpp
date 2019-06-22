@@ -9,7 +9,6 @@
 #include "DBAll.h"
 #include "StringUtils.h"
 #include "Profiler.h"
-#include <AB/Entities/GameInstance.h>
 #include <AB/Entities/Party.h>
 #include "Subsystems.h"
 #include "ThreadPool.h"
@@ -662,6 +661,7 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(id, *data);
     case KEY_GAMEINSTANCES_HASH:
+        return LoadFromDB<DB::DBInstance, AB::Entities::GameInstance>(id, *data);
     case KEY_PARTIES_HASH:
         // Not written to DB
         return false;
@@ -831,10 +831,12 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
         break;
+    case KEY_GAMEINSTANCES_HASH:
+        succ = FlushRecord<DB::DBInstance, AB::Entities::GameInstance>(data);
+        break;
     case KEY_SERVICELIST_HASH:
     case KEY_INVENTORYITEMLIST_HASH:
     case KEY_EQUIPPEDITEMLIST_HASH:
-    case KEY_GAMEINSTANCES_HASH:
     case KEY_PARTIES_HASH:
         // Not written to DB
         // Mark not modified and created or it will infinitely try to flush it
@@ -957,6 +959,7 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
         return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
     case KEY_GAMEINSTANCES_HASH:
+        return ExistsInDB<DB::DBInstance, AB::Entities::GameInstance>(data);
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
         return false;

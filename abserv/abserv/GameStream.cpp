@@ -13,8 +13,8 @@ GameWriteStream::~GameWriteStream()
 
 bool GameWriteStream::Open(const std::string& dir, Game::Game* game)
 {
-    std::string filename = Utils::AddSlash(dir) + game->instanceData_.uuid + ".rec";
-    stream_.open(filename, std::ios::binary | std::fstream::out);
+    filename_ = Utils::AddSlash(dir) + game->instanceData_.uuid + ".rec";
+    stream_.open(filename_, std::ios::binary | std::fstream::out);
     open_ = stream_.is_open();
     if (open_)
     {
@@ -30,7 +30,7 @@ bool GameWriteStream::Open(const std::string& dir, Game::Game* game)
     }
     else
     {
-        LOG_ERROR << "Unable to open file for writing: " << filename << std::endl;
+        LOG_ERROR << "Unable to open file for writing: " << filename_ << std::endl;
     }
     return open_;
 }

@@ -30,6 +30,7 @@ private:
     std::fstream stream_;
     bool open_;
     uint32_t size_;
+    std::string filename_;
 public:
     GameWriteStream() :
         open_(false),
@@ -44,6 +45,7 @@ public:
     {
         return open_;
     }
+    std::string GetFilename() const { return filename_; }
 };
 
 class GameReadStream

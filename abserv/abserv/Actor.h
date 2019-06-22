@@ -88,15 +88,16 @@ public:
     template<typename Func>
     void VisitEnemiesInRange(Ranges range, Func&& func)
     {
-        VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+        VisitInRange(range, [&](const GameObject& o)
         {
-            const AB::GameProtocol::GameObjectType t = o->GetType();
+            const AB::GameProtocol::GameObjectType t = o.GetType();
             if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
             {
-                const auto actor = dynamic_cast<Actor*>(o.get());
+                const auto* actor = dynamic_cast<const Actor*>(&o);
                 if (actor && actor->IsEnemy(this))
                     func(actor);
             }
+            return Iteration::Continue;
         });
     }
     std::vector<Actor*> GetEnemiesInRange(Ranges range);
@@ -105,15 +106,16 @@ public:
     template<typename Func>
     void VisitAlliesInRange(Ranges range, Func&& func)
     {
-        VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+        VisitInRange(range, [&](const GameObject& o)
         {
-            const AB::GameProtocol::GameObjectType t = o->GetType();
+            const AB::GameProtocol::GameObjectType t = o.GetType();
             if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
             {
-                const auto actor = dynamic_cast<Actor*>(o.get());
+                const auto* actor = dynamic_cast<const Actor*>(&o);
                 if (actor && !actor->IsEnemy(this))
                     func(actor);
             }
+            return Iteration::Continue;
         });
     }
     std::vector<Actor*> GetAlliesInRange(Ranges range);
@@ -235,7 +237,7 @@ public:
     /// Knock the Actor down caused by source. If time = 0 DEFAULT_KNOCKDOWN_TIME is used.
     bool KnockDown(Actor* source, uint32_t time);
     int Healing(Actor* source, uint32_t index, int value);
-    bool IsEnemy(Actor* other);
+    bool IsEnemy(Actor* other) const;
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {
         inputComp_.Add(type, data);

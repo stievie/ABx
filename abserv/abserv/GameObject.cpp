@@ -328,11 +328,12 @@ std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)
 std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
 {
     std::vector<Actor*> result;
-    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    VisitInRange(range, [&](GameObject& o)
     {
-        AB::GameProtocol::GameObjectType t = o->GetType();
+        const AB::GameProtocol::GameObjectType t = o.GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
-            result.push_back(dynamic_cast<Actor*>(o.get()));
+            result.push_back(dynamic_cast<Actor*>(&o));
+        return Iteration::Continue;
     });
     return result;
 }

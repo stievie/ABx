@@ -171,8 +171,8 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
     if (defeatedTick_ == 0)
     {
         size_t resigned = 0;
-        VisitMembers([&resigned] (Player* player) {
-            if (player->IsResigned())
+        VisitMembers([&resigned] (Player& player) {
+            if (player.IsResigned())
                 ++resigned;
             return Iteration::Continue;
         });
@@ -207,8 +207,8 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 
 void Party::WriteToMembers(const Net::NetworkMessage& message)
 {
-    VisitMembers([&message](Player* player) {
-        player->WriteToOutput(message);
+    VisitMembers([&message](Player& player) {
+        player.WriteToOutput(message);
         return Iteration::Continue;
     });
 }
@@ -224,7 +224,7 @@ void Party::SetPartySize(size_t size)
 inline size_t Party::GetValidMemberCount() const
 {
     size_t result = 0;
-    VisitMembers([&result](Player*) {
+    VisitMembers([&result](Player&) {
         ++result;
         return Iteration::Continue;
     });
@@ -288,9 +288,9 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
     if (members_.size() == 0 || actor == nullptr)
         return nullptr;
     std::vector<Player*> players;
-    VisitMembers([&](Player* player) {
-        if (actor->IsInRange(range, player))
-            players.push_back(player);
+    VisitMembers([&](Player& player) {
+        if (actor->IsInRange(range, &player))
+            players.push_back(&player);
         return Iteration::Continue;
     });
     if (players.size() == 0)
@@ -308,8 +308,8 @@ Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
 
 void Party::KillAll()
 {
-    VisitMembers([](Player* player) {
-        player->Die();
+    VisitMembers([](Player& player) {
+        player.Die();
         return Iteration::Continue;
     });
 }
@@ -348,8 +348,8 @@ void Party::ChangeInstance(const std::string& mapUuid)
         LOG_ERROR << "Failed to get game " << mapUuid << std::endl;
         return;
     }
-    VisitMembers([&mapUuid, &game] (Player* player) {
-        player->ChangeInstance(mapUuid, game->instanceData_.uuid);
+    VisitMembers([&mapUuid, &game] (Player& player) {
+        player.ChangeInstance(mapUuid, game->instanceData_.uuid);
         return Iteration::Continue;
     });
 }

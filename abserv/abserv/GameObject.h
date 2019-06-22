@@ -22,6 +22,7 @@
 #include "CollisionComp.h"
 #include "MoveComp.h"
 #include <kaguya/kaguya.hpp>
+#include "Iteration.h"
 
 namespace Game {
 
@@ -171,7 +172,8 @@ public:
         for (const auto o : ranges_[range])
         {
             if (auto so = o.lock())
-                func(so);
+                if (func(*so.get()) != Iteration::Continue)
+                    break;
         }
     }
     std::vector<Actor*> GetActorsInRange(Ranges range);

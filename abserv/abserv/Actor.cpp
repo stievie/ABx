@@ -358,15 +358,16 @@ void Actor::_LuaSetSelectedObject(GameObject* object)
 std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
 {
     std::vector<Actor*> result;
-    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    VisitInRange(range, [&](GameObject& o)
     {
-        AB::GameProtocol::GameObjectType t = o->GetType();
+        const AB::GameProtocol::GameObjectType t = o.GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto* actor = dynamic_cast<Actor*>(o.get());
+            auto* actor = dynamic_cast<Actor*>(&o);
             if (actor && actor->IsEnemy(this))
                 result.push_back(actor);
         }
+        return Iteration::Continue;
     });
     return result;
 }
@@ -374,15 +375,16 @@ std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
 size_t Actor::GetEnemyCountInRange(Ranges range)
 {
     size_t result = 0;
-    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    VisitInRange(range, [&](const GameObject& o)
     {
-        AB::GameProtocol::GameObjectType t = o->GetType();
+        const AB::GameProtocol::GameObjectType t = o.GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto* actor = dynamic_cast<Actor*>(o.get());
+            const auto* actor = dynamic_cast<const Actor*>(&o);
             if (actor && actor->IsEnemy(this))
                 ++result;
         }
+        return Iteration::Continue;
     });
     return result;
 }
@@ -390,15 +392,16 @@ size_t Actor::GetEnemyCountInRange(Ranges range)
 std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
 {
     std::vector<Actor*> result;
-    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    VisitInRange(range, [&](GameObject& o)
     {
-        AB::GameProtocol::GameObjectType t = o->GetType();
+        const AB::GameProtocol::GameObjectType t = o.GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto* actor = dynamic_cast<Actor*>(o.get());
+            auto* actor = dynamic_cast<Actor*>(&o);
             if (actor && !actor->IsEnemy(this))
                 result.push_back(actor);
         }
+        return Iteration::Continue;
     });
     return result;
 }
@@ -407,15 +410,16 @@ size_t Actor::GetAllyCountInRange(Ranges range)
 {
     // At least 1 ally and the we
     size_t result = 1;
-    VisitInRange(range, [&](const std::shared_ptr<GameObject>& o)
+    VisitInRange(range, [&](const GameObject& o)
     {
-        AB::GameProtocol::GameObjectType t = o->GetType();
+        const AB::GameProtocol::GameObjectType t = o.GetType();
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
-            auto* actor = dynamic_cast<Actor*>(o.get());
+            const auto* actor = dynamic_cast<const Actor*>(&o);
             if (actor && !actor->IsEnemy(this))
                 ++result;
         }
+        return Iteration::Continue;
     });
     return result;
 }
@@ -898,7 +902,7 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     return val;
 }
 
-bool Actor::IsEnemy(Actor* other)
+bool Actor::IsEnemy(Actor* other) const
 {
     if (GetGroupId() == other->GetGroupId())
         return false;

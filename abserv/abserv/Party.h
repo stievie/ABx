@@ -75,7 +75,7 @@ public:
         for (auto& wm : members_)
         {
             if (auto sm = wm.lock())
-                if (callback(sm.get()) != Iteration::Continue)
+                if (callback(*sm.get()) != Iteration::Continue)
                     break;
         }
     }

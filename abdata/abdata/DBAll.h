@@ -39,3 +39,4 @@
 #include "DBPlayerItemList.h"
 #include "DBItemChanceList.h"
 #include "DBTypedItemList.h"
+#include "DBInstance.h"

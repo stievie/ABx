@@ -7,7 +7,7 @@ enum class Iteration
 };
 
 template<typename T, typename Callback>
-void ForEach(T container, Callback&& callback)
+void ForEach(T& container, Callback&& callback)
 {
     for (const auto& i : container)
         if (callback(i) != Iteration::Continue)

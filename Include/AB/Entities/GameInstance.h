@@ -16,13 +16,11 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
-static constexpr auto KEY_GAMEINSTANCES = "game_instances";
-
 struct GameInstance : Entity
 {
     static constexpr const char* KEY()
     {
-        return KEY_GAMEINSTANCES;
+        return "instances";
     }
     template<typename S>
     void serialize(S& s)
@@ -30,16 +28,25 @@ struct GameInstance : Entity
         s.ext(*this, BaseClass<Entity>{});
         s.text1b(gameUuid, Limits::MAX_UUID);
         s.text1b(serverUuid, Limits::MAX_UUID);
+        s.text1b(name, Limits::MAX_GAME_INSTANCE_NAME);
+        s.text1b(recording, Limits::MAX_FILENAME);
         s.value8b(startTime);
+        s.value8b(stopTime);
         s.value2b(number);
+        s.value1b(running);
     }
 
     std::string gameUuid = EMPTY_GUID;
     /// Server running this instance
     std::string serverUuid = EMPTY_GUID;
-    int64_t startTime = 0;
+    std::string name;
+    /// Recording filename
+    std::string recording;
+    int64_t startTime{ 0 };
+    int64_t stopTime{ 0 };
     /// If there are more instances of the same game on the same server this is the number, e.g. District.
     uint16_t number = 0;
+    bool running{ false };
 };
 
 }

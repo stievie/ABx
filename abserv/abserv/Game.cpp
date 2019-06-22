@@ -46,7 +46,9 @@ Game::Game() :
 
 Game::~Game()
 {
-    DeleteEntity(instanceData_);
+    instanceData_.running = false;
+    instanceData_.stopTime = Utils::Tick();
+    UpdateEntity(instanceData_);
     players_.clear();
     objects_.clear();
     GetSubsystem<Chat>()->Remove(ChatType::Map, id_);
@@ -147,14 +149,17 @@ void Game::Start()
         instanceData_.startTime = startTime_;
         instanceData_.serverUuid = Application::Instance->GetServerId();
         instanceData_.gameUuid = data_.uuid;
-        CreateEntity(instanceData_);
+        instanceData_.name = map_->data_.name;
         LOG_INFO << "Starting game " << id_ << ", " << map_->data_.name << std::endl;
 
         if ((*config)[ConfigManager::Key::RecordGames])
         {
             writeStream_ = std::make_unique<IO::GameWriteStream>();
-            writeStream_->Open((*config)[ConfigManager::Key::RecordingsDir], this);
+            if (writeStream_->Open((*config)[ConfigManager::Key::RecordingsDir], this))
+                instanceData_.recording = writeStream_->GetFilename();
         }
+        instanceData_.running = true;
+        CreateEntity(instanceData_);
 
         lastUpdate_ = 0;
         SetState(ExecutionState::Running);

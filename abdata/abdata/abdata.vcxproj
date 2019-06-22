@@ -205,6 +205,7 @@
     <ClInclude Include="DBGameList.h" />
     <ClInclude Include="DBGuild.h" />
     <ClInclude Include="DBGuildMembers.h" />
+    <ClInclude Include="DBInstance.h" />
     <ClInclude Include="DBIpBan.h" />
     <ClInclude Include="DBItem.h" />
     <ClInclude Include="DBItemChanceList.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="DBGameList.cpp" />
     <ClCompile Include="DBGuild.cpp" />
     <ClCompile Include="DBGuildMembers.cpp" />
+    <ClCompile Include="DBInstance.cpp" />
     <ClCompile Include="DBIpBan.cpp" />
     <ClCompile Include="DBItem.cpp" />
     <ClCompile Include="DBItemChanceList.cpp" />
