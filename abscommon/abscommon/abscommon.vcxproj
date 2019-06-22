@@ -198,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BanManager.cpp" />
+    <ClInclude Include="ConditionSleep.h" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="CpuUsageWin.cpp" />
     <ClCompile Include="IpList.cpp" />

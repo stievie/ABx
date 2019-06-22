@@ -41,6 +41,7 @@
 #include "AiLoader.h"
 #include "PartyManager.h"
 #include "ItemFactory.h"
+#include "ConditionSleep.h"
 
 #include "DebugNew.h"
 
@@ -556,15 +557,11 @@ void Application::Stop()
     GetSubsystem<Game::PlayerManager>()->KickAllPlayers();
     auto* gameMan = GetSubsystem<Game::GameManager>();
     gameMan->Stop();
-    unsigned wait = 0;
-    // Wait until all games are stopped and deleted
-    while (gameMan->GetGameCount() > 0)
-    {
-        std::this_thread::sleep_for(100ms);
-        wait += 100;
-        if (wait > 3000)
-            break;
-    }
+
+    // We must wait until all games stopped
+    Asynch::ConditionSleep([&]() {
+        return gameMan->GetGameCount() == 0;
+    });
     std::this_thread::sleep_for(100ms);
 
     // Before serviceManager_.Stop()

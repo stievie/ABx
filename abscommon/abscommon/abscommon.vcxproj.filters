@@ -248,5 +248,8 @@
     <ClCompile Include="BanManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ConditionLock.h">
+      <Filter>Headerdateien</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
