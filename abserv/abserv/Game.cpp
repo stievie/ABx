@@ -218,7 +218,7 @@ void Game::Update()
         {
             if (!o.second)
                 return;
-            o.second->Update(delta, *gameStatus_.get());
+            o.second->Update(delta, *gameStatus_);
         }
 
         // Update Octree stuff
@@ -285,11 +285,11 @@ void Game::SendStatus()
     for (const auto& p : players_)
     {
         // Write to buffered, auto-sent output message
-        p.second->WriteToOutput(*gameStatus_.get());
+        p.second->WriteToOutput(*gameStatus_);
     }
 
     if (writeStream_ && writeStream_->IsOpen())
-        writeStream_->Write(*gameStatus_.get());
+        writeStream_->Write(*gameStatus_);
 
     ResetStatus();
 }
@@ -479,7 +479,7 @@ void Game::InternalLoad()
 {
     // Game::Load() Thread
 
-    if (!IO::IOMap::Load(*map_.get()))
+    if (!IO::IOMap::Load(*map_))
     {
         LOG_ERROR << "Error loading map with name " << map_->data_.name << std::endl;
         return;
@@ -567,7 +567,7 @@ void Game::SendSpawnAll(uint32_t playerId)
             return;
 
         msg->AddByte(AB::GameProtocol::GameSpawnObjectExisting);
-        o->WriteSpawnData(*msg.get());
+        o->WriteSpawnData(*msg);
     };
 
     for (const auto& o : objects_)
@@ -581,7 +581,7 @@ void Game::SendSpawnAll(uint32_t playerId)
     }
 
     if (msg->GetSize() != 0)
-        player->WriteToOutput(*msg.get());
+        player->WriteToOutput(*msg);
 }
 
 void Game::PlayerJoin(uint32_t playerId)

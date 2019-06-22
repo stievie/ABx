@@ -107,7 +107,7 @@ void Player::Ping()
     lastPing_ = Utils::Tick();
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::GamePong);
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::TriggerDialog(uint32_t dialogIndex)
@@ -115,7 +115,7 @@ void Player::TriggerDialog(uint32_t dialogIndex)
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::DialogTrigger);
     msg->Add<uint32_t>(dialogIndex);
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::UpdateMailBox()
@@ -144,7 +144,7 @@ void Player::GetMailHeaders()
         msg->Add<int64_t>(mail.created);
         msg->AddByte(mail.isRead ? 1 : 0);
     }
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::GetInventory()
@@ -166,7 +166,7 @@ void Player::GetInventory()
         msg->Add<uint16_t>(current->concreteItem_.value);
     });
 
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::DestroyInventoryItem(uint16_t pos)
@@ -182,7 +182,7 @@ void Player::DestroyInventoryItem(uint16_t pos)
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::InventoryItemDelete);
     msg->Add<uint16_t>(pos);
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::EquipInventoryItem(uint16_t pos)
@@ -205,7 +205,7 @@ void Player::EquipInventoryItem(uint16_t pos)
 //    msg->AddByte(AB::GameProtocol::EquipmentItemUpdate);
 //    msg->Add<uint16_t>(static_cast<uint16_t>(ePos));
 
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 
     AB::Entities::EquippedItems equ;
     equ.uuid = data_.uuid;
@@ -231,7 +231,7 @@ void Player::StoreInChest(uint16_t pos)
 
     // Add to chest
     inventoryComp_->SetChestItem(item, msg.get());
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::DropInventoryItem(uint16_t pos)
@@ -254,7 +254,7 @@ void Player::DropInventoryItem(uint16_t pos)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::InventoryItemDelete);
         msg->Add<uint16_t>(pos);
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
     }
 }
 
@@ -277,7 +277,7 @@ void Player::GetChest()
         msg->Add<uint16_t>(current->concreteItem_.value);
     });
 
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::DestroyChestItem(uint16_t pos)
@@ -292,7 +292,7 @@ void Player::DestroyChestItem(uint16_t pos)
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChestItemDelete);
         msg->Add<uint16_t>(pos);
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
     }
 }
 
@@ -306,7 +306,7 @@ void Player::SendMail(const std::string recipient, const std::string subject, co
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeMailNotSent);
     nmsg->AddString(recipient);
     nmsg->AddString("");                // Data
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::GetMail(const std::string mailUuid)
@@ -328,7 +328,7 @@ void Player::GetMail(const std::string mailUuid)
         msg->AddString(m.message);
         msg->Add<int64_t>(m.created);
         msg->AddByte(m.isRead ? 1 : 0);
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
     }
 }
 
@@ -347,7 +347,7 @@ void Player::DeleteMail(const std::string mailUuid)
         msg->AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
         msg->AddString(GetName());
         msg->AddString(mailUuid);
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
         return;
     }
 
@@ -359,7 +359,7 @@ void Player::DeleteMail(const std::string mailUuid)
         msg->AddByte(AB::GameProtocol::ServerMessageTypeMailDeleted);
         msg->AddString(GetName());
         msg->AddString(mailUuid);
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
     }
 }
 
@@ -387,7 +387,7 @@ void Player::NotifyNewMail()
         msg->AddString(std::to_string(mailBox_->GetTotalMailCount()));
     }
     if (msg->GetSize() != 0)
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
 }
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)
@@ -408,7 +408,7 @@ void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType ty
     msg->Add<uint32_t>(targetId);
     msg->Add<uint8_t>(static_cast<uint8_t>(type));
     msg->Add<int8_t>(static_cast<int8_t>(skillIndex));
-    GetParty()->WriteToMembers(*msg.get());
+    GetParty()->WriteToMembers(*msg);
 }
 
 void Player::OnInventoryFull()
@@ -418,7 +418,7 @@ void Player::OnInventoryFull()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::PlayerError);
     msg->AddByte(AB::GameProtocol::PlayerErrorInventoryFull);
-    WriteToOutput(*msg.get());
+    WriteToOutput(*msg);
 }
 
 void Player::SetParty(std::shared_ptr<Party> party)
@@ -466,7 +466,7 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
     auto msg = Net::NetworkMessage::GetNew();
     const bool ret = inventoryComp_->SetInventoryItem(item, msg.get());
     if (msg->GetSize() != 0)
-        WriteToOutput(*msg.get());
+        WriteToOutput(*msg);
     return ret;
 }
 
@@ -492,9 +492,9 @@ void Player::PartyInvitePlayer(uint32_t playerId)
             nmsg->Add<uint32_t>(playerId);                        // Invitee
             nmsg->Add<uint32_t>(party_->id_);
             // Send us confirmation
-            party_->WriteToMembers(*nmsg.get());
+            party_->WriteToMembers(*nmsg);
             // Send player he was invited
-            player->WriteToOutput(*nmsg.get());
+            player->WriteToOutput(*nmsg);
         }
     }
 }
@@ -517,7 +517,6 @@ void Player::PartyKickPlayer(uint32_t playerId)
 
     bool removedMember = false;
     {
-        // Exceeding stack size
         std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
         if (party_->IsMember(player.get()))
         {
@@ -538,23 +537,22 @@ void Player::PartyKickPlayer(uint32_t playerId)
         nmsg->Add<uint32_t>(id_);                 // Leader
         nmsg->Add<uint32_t>(playerId);            // Member
         nmsg->Add<uint32_t>(party_->id_);
-        party_->WriteToMembers(*nmsg.get());
+        party_->WriteToMembers(*nmsg);
 
         // Also send to player which is removed already
-        player->WriteToOutput(*nmsg.get());
+        player->WriteToOutput(*nmsg);
     }
 
     if (removedMember)
     {
         // The kicked player needs a new party
         player->SetParty(std::shared_ptr<Party>());
-        // Exceeding stack size
         std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
         nmsg->Add<uint32_t>(player->id_);                           // Acceptor
         nmsg->Add<uint32_t>(player->id_);                           // Leader
         nmsg->Add<uint32_t>(player->GetParty()->id_);
-        player->GetParty()->WriteToMembers(*nmsg.get());
+        player->GetParty()->WriteToMembers(*nmsg);
     }
 }
 
@@ -565,27 +563,25 @@ void Player::PartyLeave()
         return;
 
     {
-        // Exceeding stack size
         std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::PartyPlayerRemoved);
         auto leader = party_->GetLeader();
         nmsg->Add<uint32_t>(leader ? leader->id_ : 0);
         nmsg->Add<uint32_t>(id_);
         nmsg->Add<uint32_t>(party_->id_);
-        party_->WriteToMembers(*nmsg.get());
+        party_->WriteToMembers(*nmsg);
         party_->Remove(this);
     }
 
     {
         // We need a new party
         SetParty(std::shared_ptr<Party>());
-        // Exceeding stack size
         std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::PartyPlayerAdded);
         nmsg->Add<uint32_t>(id_);                           // Acceptor
         nmsg->Add<uint32_t>(id_);                           // Leader
         nmsg->Add<uint32_t>(party_->id_);
-        party_->WriteToMembers(*nmsg.get());
+        party_->WriteToMembers(*nmsg);
     }
 }
 
@@ -607,7 +603,7 @@ void Player::PartyAccept(uint32_t playerId)
             nmsg->Add<uint32_t>(id_);                           // Acceptor
             nmsg->Add<uint32_t>(playerId);                      // Leader
             nmsg->Add<uint32_t>(party_->id_);
-            party_->WriteToMembers(*nmsg.get());
+            party_->WriteToMembers(*nmsg);
 #ifdef DEBUG_GAME
             LOG_DEBUG << "Acceptor: " << id_ << ", Leader: " << playerId << ", Party: " << party_->id_ << std::endl;
 #endif
@@ -632,9 +628,9 @@ void Player::PartyRejectInvite(uint32_t inviterId)
             nmsg->Add<uint32_t>(id_);                      // We
             nmsg->Add<uint32_t>(leader->GetParty()->id_);
             // Inform the party
-            leader->GetParty()->WriteToMembers(*nmsg.get());
+            leader->GetParty()->WriteToMembers(*nmsg);
             // Inform us
-            WriteToOutput(*nmsg.get());
+            WriteToOutput(*nmsg);
         }
     }
 }
@@ -657,7 +653,7 @@ void Player::PartyGetMembers(uint32_t partyId)
             else
                 nmsg->Add<uint32_t>(0);
         }
-        WriteToOutput(*nmsg.get());
+        WriteToOutput(*nmsg);
 #ifdef DEBUG_GAME
         LOG_DEBUG << "Player: " << id_ << ", Party: " << partyId << ", Count: " << static_cast<int>(count) << std::endl;
 #endif
@@ -772,7 +768,7 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
         nmsg->AddString(GetName());
         nmsg->AddString("");
     }
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)
@@ -791,13 +787,12 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
         {
             if (channel->Talk(this, msg))
             {
-                // Exceeding stack size
                 std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
                 nmsg->AddByte(AB::GameProtocol::ServerMessage);
                 nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
                 nmsg->AddString(name);
                 nmsg->AddString(msg);
-                WriteToOutput(*nmsg.get());
+                WriteToOutput(*nmsg);
             }
         }
         return;
@@ -813,13 +808,12 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
         std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, character.uuid);
         if (channel->Talk(this, msg))
         {
-            // Exceeding stack size
             std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
             nmsg->AddByte(AB::GameProtocol::ServerMessage);
             nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerGotMessage);
             nmsg->AddString(name);
             nmsg->AddString(msg);
-            WriteToOutput(*nmsg.get());
+            WriteToOutput(*nmsg);
             return;
         }
     }
@@ -830,7 +824,7 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerNotOnline);
     nmsg->AddString(GetName());
     nmsg->AddString(name);
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
@@ -880,7 +874,7 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypeAge);
     nmsg->AddString(GetName());
     nmsg->AddString(std::to_string(age) + ":" + std::to_string(playTime));
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
@@ -894,7 +888,7 @@ void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypeHp);
     nmsg->AddString(GetName());
     nmsg->AddString(std::to_string(hp) + ":" + std::to_string(maxHp) + "|" + std::to_string(e) + ":" + std::to_string(maxE));
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleXpCommand(const std::string&, Net::NetworkMessage&)
@@ -904,20 +898,19 @@ void Player::HandleXpCommand(const std::string&, Net::NetworkMessage&)
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypeXp);
     nmsg->AddString(GetName());
     nmsg->AddString(std::to_string(data_.xp) + "|" + std::to_string(data_.skillPoints));
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
 {
     if (account_.type < AB::Entities::AccountTypeGamemaster)
     {
-        // Exceeding stack size
         std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
         nmsg->AddByte(AB::GameProtocol::ServerMessage);
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
         nmsg->AddString(GetName());
         nmsg->AddString("");
-        WriteToOutput(*nmsg.get());
+        WriteToOutput(*nmsg);
         return;
     }
 
@@ -931,7 +924,7 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypePos);
     nmsg->AddString(GetName());
     nmsg->AddString(ss.str());
-    WriteToOutput(*nmsg.get());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& message)
@@ -1009,7 +1002,7 @@ void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
         nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
         nmsg->AddString(GetName());
         nmsg->AddString("");
-        WriteToOutput(*nmsg.get());
+        WriteToOutput(*nmsg);
     }
 }
 

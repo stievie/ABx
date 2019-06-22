@@ -27,7 +27,7 @@ Logger& Logger::Instance()
         else
             instance_ = std::make_unique<Logger>();
     }
-    return *instance_.get();
+    return *instance_;
 }
 
 int Logger::PrintF(const char *__restrict __format, ...)

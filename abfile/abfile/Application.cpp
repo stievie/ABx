@@ -50,9 +50,9 @@ Application::Application() :
     serverType_ = AB::Entities::ServiceTypeFileServer;
     ioService_ = std::make_shared<asio::io_service>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
-    Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_.get());
+    Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_);
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
-    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_.get());
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(*ioService_);
 }
 
 Application::~Application()

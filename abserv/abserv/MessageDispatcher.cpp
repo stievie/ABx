@@ -169,7 +169,7 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
     nmsg->Add<uint16_t>(s.port);
     nmsg->AddString(s.location);
     nmsg->AddString(s.name);
-    GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(*nmsg.get());
+    GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(*nmsg);
 }
 
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)

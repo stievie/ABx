@@ -23,13 +23,13 @@ void Connection::Start()
 {
     data_.reset(new std::vector<uint8_t>(3));
     auto self(shared_from_this());
-    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(3),
+    asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(3),
         [this, self](const asio::error_code& error, size_t /* bytes_transferred */)
     {
         if (!error)
         {
             opcode_ = static_cast<IO::OpCodes>(data_->at(0));
-            uint16_t keySize = ToInt16(*data_.get(), 1);
+            uint16_t keySize = ToInt16(*data_, 1);
             if (keySize <= maxKeySize_)
                 StartReadKey(keySize);
             else
@@ -69,12 +69,12 @@ void Connection::StartCreateOperation()
 {
     data_.reset(new std::vector<uint8_t>(4));
     auto self = shared_from_this();
-    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
+    asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
     {
         if (!error)
         {
-            uint32_t size = ToInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_, 0);
             if (size == 0)
             {
                 LOG_ERROR << "Size = 0, bytes_transferred = " << bytes_transferred << std::endl;
@@ -83,7 +83,7 @@ void Connection::StartCreateOperation()
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
-                asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
+                asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleCreateReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
             }
@@ -102,12 +102,12 @@ void Connection::StartUpdateDataOperation()
 {
     data_.reset(new std::vector<uint8_t>(4));
     auto self = shared_from_this();
-    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
+    asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
     {
         if (!error)
         {
-            uint32_t size = ToInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_, 0);
             if (size == 0)
             {
                 LOG_ERROR << "Size = 0, bytes_transferred = " << bytes_transferred << std::endl;
@@ -116,7 +116,7 @@ void Connection::StartUpdateDataOperation()
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
-                asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
+                asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleUpdateReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
             }
@@ -135,12 +135,12 @@ void Connection::StartReadOperation()
 {
     data_.reset(new std::vector<uint8_t>(4));
     auto self = shared_from_this();
-    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
+    asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
     {
         if (!error && bytes_transferred >= 4)
         {
-            uint32_t size = ToInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_, 0);
             if (size == 0)
             {
                 LOG_ERROR << "Size = 0, bytes_transferred = " << bytes_transferred << std::endl;
@@ -149,7 +149,7 @@ void Connection::StartReadOperation()
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
-                asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
+                asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleReadReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
             }
@@ -192,12 +192,12 @@ void Connection::StartExistsOperation()
 {
     data_.reset(new std::vector<uint8_t>(4));
     auto self = shared_from_this();
-    asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(4),
+    asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(4),
         [this, self](const asio::error_code& error, size_t bytes_transferred)
     {
         if (!error)
         {
-            uint32_t size = ToInt32(*data_.get(), 0);
+            uint32_t size = ToInt32(*data_, 0);
             if (size == 0)
             {
                 LOG_ERROR << "Size = 0, bytes_transferred = " << bytes_transferred << std::endl;
@@ -206,7 +206,7 @@ void Connection::StartExistsOperation()
             if (size <= maxDataSize_)
             {
                 data_.reset(new std::vector<uint8_t>(size));
-                asio::async_read(socket_, asio::buffer(*data_.get()), asio::transfer_at_least(size),
+                asio::async_read(socket_, asio::buffer(*data_), asio::transfer_at_least(size),
                     std::bind(&Connection::HandleExistsReadRawData, self,
                         std::placeholders::_1, std::placeholders::_2, size));
             }
@@ -410,7 +410,7 @@ void Connection::SendStatusAndRestart(IO::ErrorCodes code, const std::string& me
     {
         data_->push_back(letter);
     }
-    std::vector<asio::mutable_buffer> bufs = { asio::buffer(*data_.get()) };
+    std::vector<asio::mutable_buffer> bufs = { asio::buffer(*data_) };
     SendResponseAndStart(bufs, data_->size());
 }
 

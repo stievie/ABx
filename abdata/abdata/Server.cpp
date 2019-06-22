@@ -53,7 +53,7 @@ void Server::HandleAccept(const asio::error_code& error)
 {
     if (!error)
     {
-        auto endp = newConnection_.get()->socket().remote_endpoint();
+        const auto endp = newConnection_->socket().remote_endpoint();
         if (IsIpAllowed(endp))
         {
             LOG_INFO << "Connection from " << endp.address() << ":" << endp.port() << std::endl;

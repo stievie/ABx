@@ -159,7 +159,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
 void Application::Run()
 {
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     dataClient->Read(serv);
@@ -197,7 +197,7 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown..." << std::endl;
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     if (dataClient->Read(serv))

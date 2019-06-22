@@ -137,7 +137,7 @@ void AutoRunComp::SetAutoRun(bool value)
             nmsg->Add<uint8_t>(autoRun_ ? 1 : 0);
             Player* player = dynamic_cast<Player*>(&owner_);
             if (player)
-                player->WriteToOutput(*nmsg.get());
+                player->WriteToOutput(*nmsg);
         }
     }
 }

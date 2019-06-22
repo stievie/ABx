@@ -172,7 +172,7 @@ public:
         for (const auto o : ranges_[range])
         {
             if (auto so = o.lock())
-                if (func(*so.get()) != Iteration::Continue)
+                if (func(*so) != Iteration::Continue)
                     break;
         }
     }
