@@ -1,0 +1,25 @@
+# Put in lib/systemd/system
+[Unit]
+# By default 'simple' is used, see also https://www.freedesktop.org/software/systemd/man/systemd.service.html#Type=
+# Type=simple|forking|oneshot|dbus|notify|idle
+Description=abdata Service
+## make sure we only start the service after network is up
+Wants=network-online.target
+After=network.target
+
+[Service]
+## here we can set custom environment variables
+#Environment=AUTOSSH_GATETIME=0
+#Environment=AUTOSSH_PORT=0
+WorkingDirectory=/root/ABx/Bin
+ExecStart=/root/ABx/Bin/abserv
+ExecStop=pkill -9 abserv
+# don't use 'nobody' if your script needs to access user files
+# (if User is not set the service will run as root)
+#User=nobody
+
+# Useful during debugging; remove it once the service is working
+StandardOutput=console
+
+[Install]
+WantedBy=multi-user.target

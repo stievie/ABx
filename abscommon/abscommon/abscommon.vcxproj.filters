@@ -144,9 +144,6 @@
     <ClInclude Include="WeightedSelector.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Daemon.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleColor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -249,9 +246,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BanManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Daemon.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
