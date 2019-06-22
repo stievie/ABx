@@ -8,6 +8,7 @@ TARGET = $(TARGETDIR)/absadmin
 SOURDEDIR = ../absadmin/absadmin
 OBJDIR = obj/x64/Release/absadmin
 LIBS += -lpthread -luuid -llua5.3 -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml -lless
+CXXFLAGS += -fexceptions
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
