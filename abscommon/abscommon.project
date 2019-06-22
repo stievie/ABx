@@ -42,6 +42,7 @@
     <File Name="abscommon/BanManager.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="abscommon/ConditionSleep.h"/>
     <File Name="abscommon/Iteration.h"/>
     <File Name="abscommon/Logo.h"/>
     <File Name="abscommon/ConsoleColor.h"/>
