@@ -58,4 +58,4 @@ clean:
 	@$(MAKE) -f  abserv.make clean
 	@$(MAKE) -f  keygen.make clean
 	@$(MAKE) -f  abstests.make clean
-	@$(MAKE) -f  artefact.make
+	@$(MAKE) -f  artefact.make clean
