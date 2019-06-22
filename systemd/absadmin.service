@@ -12,7 +12,7 @@ After=network.target
 #Environment=AUTOSSH_GATETIME=0
 #Environment=AUTOSSH_PORT=0
 WorkingDirectory=/root/ABx/Bin
-ExecStart=/root/ABx/Bin/absadmin
+ExecStart=/root/ABx/Bin/absadmin  -log /root/ABx/Bin/logs/absadmin
 ExecStop=pkill -9 absadmin
 # don't use 'nobody' if your script needs to access user files
 # (if User is not set the service will run as root)
