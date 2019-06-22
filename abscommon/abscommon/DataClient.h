@@ -170,7 +170,7 @@ private:
     /// Try connect to server.
     /// @param[in] force If force is true it disconnects first.
     /// @return true on success.
-    bool TryConnect(bool force);
+    bool TryConnect(bool force, unsigned numTries = 10);
     /// Try to send some data. If not connected tries to reconnect.
     template<typename B>
     bool TryWrite(const B& buffer)

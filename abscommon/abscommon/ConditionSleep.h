@@ -5,7 +5,7 @@
 
 namespace Asynch {
 
-/// This thread sleeps until pred is met
+/// This thread sleeps until pred returns true
 template<typename Predicate>
 void ConditionSleep(Predicate&& pred)
 {

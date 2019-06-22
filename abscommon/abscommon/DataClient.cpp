@@ -23,7 +23,8 @@ void DataClient::Connect(const std::string& host, uint16_t port)
 {
     host_ = host;
     port_ = port;
-    TryConnect(false);
+    // First time connect, try longer other servers may not be up yet.
+    TryConnect(false, 100);
 }
 
 bool DataClient::MakeRequest(OpCodes opCode, const DataKey& key, DataBuff& data)
@@ -133,8 +134,8 @@ bool DataClient::InvalidateData(const DataKey& key)
 bool DataClient::Clear()
 {
     // Need a key
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    DataKey key("__DUMMY__", guid);
+    static const uuids::uuid guid = uuids::uuid_system_generator{}();
+    static DataKey key("__DUMMY__", guid);
     return MakeRequestNoData(OpCodes::Clear, key);
 }
 
@@ -151,16 +152,16 @@ void DataClient::InternalConnect()
         connected_ = true;
 }
 
-bool DataClient::TryConnect(bool force)
+bool DataClient::TryConnect(bool force, unsigned numTries /* = 10 */)
 {
     if (force)
     {
         connected_ = false;
         socket_.close();
     }
-    // Try for 1 seconds, 10 tries
-    int tries = 0;
-    while (!connected_ && tries < 10)
+    // By default try for 1 second, 10 tries
+    unsigned tries = 0;
+    while (!connected_ && tries < numTries)
     {
         ++tries;
         InternalConnect();

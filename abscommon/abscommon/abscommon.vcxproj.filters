@@ -153,6 +153,9 @@
     <ClInclude Include="Iteration.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ConditionSleep.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -247,9 +250,6 @@
     </ClCompile>
     <ClCompile Include="BanManager.cpp">
       <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ConditionLock.h">
-      <Filter>Headerdateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
