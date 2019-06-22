@@ -2,11 +2,11 @@
 <CodeLite_Workspace Name="absall" Database="" Version="10.0.0">
   <Project Name="abdb" Path="../abdb/abdb.project" Active="No"/>
   <Project Name="abscommon" Path="../abscommon/abscommon.project" Active="No"/>
-  <Project Name="abdata" Path="../abdata/abdata.project" Active="No"/>
+  <Project Name="abdata" Path="../abdata/abdata.project" Active="Yes"/>
   <Project Name="abmsgs" Path="../abmsgs/abmsgs.project" Active="No"/>
   <Project Name="abfile" Path="../abfile/abfile.project" Active="No"/>
   <Project Name="absmath" Path="../absmath/absmath.project" Active="No"/>
-  <Project Name="abserv" Path="../abserv/abserv.project" Active="Yes"/>
+  <Project Name="abserv" Path="../abserv/abserv.project" Active="No"/>
   <Project Name="ablogin" Path="../ablogin/ablogin.project" Active="No"/>
   <Project Name="absadmin" Path="../absadmin/absadmin.project" Active="No"/>
   <Project Name="ablb" Path="../ablb/ablb.project" Active="No"/>

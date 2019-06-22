@@ -6,6 +6,7 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="include">
+    <File Name="abdata/DBInstance.h"/>
     <File Name="abdata/Version.h"/>
     <File Name="abdata/targetver.h"/>
     <File Name="abdata/StorageProvider.h"/>
@@ -59,6 +60,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="abdata/DBInstance.cpp"/>
     <File Name="abdata/StorageProvider.cpp"/>
     <File Name="abdata/stdafx.cpp"/>
     <File Name="abdata/Server.cpp"/>
