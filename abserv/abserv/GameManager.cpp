@@ -61,6 +61,7 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     auto it = games_.find(gameId);
     if (it != games_.end())
     {
+        std::lock_guard<std::mutex> lockClass(lock_);
         maps_.erase((*it).second->data_.uuid);
         games_.erase(it);
     }

@@ -89,7 +89,6 @@ Application::Application() :
 Application::~Application()
 {
     serviceManager_->Stop();
-    GetSubsystem<Game::GameManager>()->Stop();
     GetSubsystem<Net::ConnectionManager>()->CloseAll();
     GetSubsystem<Asynch::ThreadPool>()->Stop();
     GetSubsystem<Asynch::Scheduler>()->Stop();
@@ -555,6 +554,19 @@ void Application::Stop()
     std::this_thread::sleep_for(100ms);
 
     GetSubsystem<Game::PlayerManager>()->KickAllPlayers();
+    auto* gameMan = GetSubsystem<Game::GameManager>();
+    gameMan->Stop();
+    unsigned wait = 0;
+    // Wait until all games are stopped and deleted
+    while (gameMan->GetGameCount() > 0)
+    {
+        std::this_thread::sleep_for(100ms);
+        wait += 100;
+        if (wait > 3000)
+            break;
+    }
+    std::this_thread::sleep_for(100ms);
+
     // Before serviceManager_.Stop()
     maintenance_.Stop();
 
