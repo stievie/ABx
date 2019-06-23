@@ -211,7 +211,8 @@ void Application::Stop()
         AB::Entities::ServiceList sl;
         dataClient->Invalidate(sl);
     }
-    LOG_ERROR << "Unable to read service" << std::endl;
+    else
+        LOG_ERROR << "Unable to read service" << std::endl;
 
     ioService_.stop();
 }
