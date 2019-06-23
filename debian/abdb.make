@@ -10,8 +10,7 @@ SRC_FILES = \
 	$(SOURDEDIR)/Database.cpp \
 	$(SOURDEDIR)/DatabaseMysql.cpp \
 	$(SOURDEDIR)/DatabasePgsql.cpp \
-	$(SOURDEDIR)/DatabaseSqlite.cpp \
-	$(SOURDEDIR)/stdafx.cpp
+	$(SOURDEDIR)/DatabaseSqlite.cpp
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes
 
@@ -28,7 +27,7 @@ $(TARGET): $(GCH) $(OBJ_FILES)
 	@$(MKDIR_P) $(@D)
 	$(LINKCMD_LIB) $(OBJ_FILES)
 
-$(OBJ_FILES): $(SRC_FILES)
+$(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 

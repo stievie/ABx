@@ -12,12 +12,12 @@ CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes
 
-SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)
+SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
 
 CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
-#$(info $(OBJ_FILES))
+$(info $(SRC_FILES))
 
 GCH = $(PCH).gch
 
@@ -27,7 +27,7 @@ $(TARGET): $(GCH) $(OBJ_FILES)
 	@$(MKDIR_P) $(@D)
 	$(LINKCMD_EXE) $(OBJ_FILES) $(LIBS)
 
-$(OBJ_FILES): $(SRC_FILES)
+$(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
