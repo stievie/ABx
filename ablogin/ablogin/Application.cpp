@@ -62,7 +62,7 @@ bool Application::LoadMain()
 #endif
     }
 
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
     if (!config->Load(configFile_))
     {
@@ -91,7 +91,7 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Loading encryption keys...";
-    auto keys = GetSubsystem<Crypto::DHKeys>();
+    auto* keys = GetSubsystem<Crypto::DHKeys>();
     if (!keys)
     {
         LOG_INFO << "[FAIL]" << std::endl;
@@ -107,7 +107,7 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Connecting to data server...";
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     const std::string& dataHost = config->GetGlobalString("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     dataClient->Connect(dataHost, dataPort);
@@ -152,7 +152,7 @@ bool Application::LoadMain()
 
 void Application::PrintServerInfo()
 {
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
@@ -261,7 +261,7 @@ void Application::Stop()
 
 std::string Application::GetKeysFile() const
 {
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     const std::string keys = config->GetGlobalString("server_keys", "");
     if (!keys.empty())
         return keys;

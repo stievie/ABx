@@ -140,7 +140,7 @@ void Application::UpdateBytesSent(size_t bytes)
             loads_.erase(loads_.begin());
         loads_.push_back(static_cast<int>(load));
 
-        auto dataClient = GetSubsystem<IO::DataClient>();
+        auto* dataClient = GetSubsystem<IO::DataClient>();
         if (dataClient->IsConnected())
         {
             AB::Entities::Service serv;
@@ -169,7 +169,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     }
 
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
@@ -273,7 +273,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         server_->resource["^/_music_$"]["GET"] = std::bind(&Application::GetHandlerMusic, shared_from_this(),
             std::placeholders::_1, std::placeholders::_2);
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
     dataClient->Connect(dataHost_, dataPort_);
     if (!dataClient->IsConnected())
@@ -290,7 +290,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
     std::string msgHost = config->GetGlobalString("message_host", "");
     uint16_t msgPort = static_cast<uint16_t>(config->GetGlobalInt("message_port", 0ll));
-    auto msgClient = GetSubsystem<Net::MessageClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Connecting to message server...";
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
     if (msgClient->IsConnected())
@@ -327,7 +327,7 @@ void Application::Run()
     uptimeRound_ = 1;
     AB::Entities::Service serv;
     serv.uuid = serverId_;
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     if (!dataClient->Read(serv))
     {
         if (!temporary_)
@@ -378,7 +378,7 @@ void Application::Stop()
     AB::Entities::Service serv;
     serv.uuid = serverId_;
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
 
     if (dataClient->Read(serv))
     {
@@ -437,14 +437,14 @@ void Application::SpawnServer()
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
 {
     uint32_t ip = request->remote_endpoint->address().to_v4().to_uint();
-    auto banMan = GetSubsystem<Auth::BanManager>();
+    auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(ip))
         return false;
 
     if (!requireAuth_)
         return true;
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
 
     // Check Auth
     const auto it = request->header.find("Auth");
@@ -599,7 +599,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::GameList gl;
     if (!dataClient->Read(gl))
     {
@@ -659,7 +659,7 @@ void Application::GetHandlerSkills(std::shared_ptr<HttpsServer::Response> respon
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::SkillList sl;
     if (!dataClient->Read(sl))
     {
@@ -725,7 +725,7 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::ProfessionList pl;
     if (!dataClient->Read(pl))
     {
@@ -791,7 +791,7 @@ void Application::GetHandlerAttributes(std::shared_ptr<HttpsServer::Response> re
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::AttributeList pl;
     if (!dataClient->Read(pl))
     {
@@ -850,7 +850,7 @@ void Application::GetHandlerEffects(std::shared_ptr<HttpsServer::Response> respo
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::EffectList pl;
     if (!dataClient->Read(pl))
     {
@@ -911,7 +911,7 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::ItemList pl;
     if (!dataClient->Read(pl))
     {
@@ -975,7 +975,7 @@ void Application::GetHandlerMusic(std::shared_ptr<HttpsServer::Response> respons
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::MusicList pl;
     if (!dataClient->Read(pl))
     {
@@ -1052,7 +1052,7 @@ void Application::GetHandlerVersion(std::shared_ptr<HttpsServer::Response> respo
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Version v;
     v.name = table;
     if (!dataClient->Read(v))
@@ -1088,7 +1088,7 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
         return;
     }
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::VersionList vl;
     if (!dataClient->Read(vl))
     {
@@ -1131,14 +1131,14 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const Simpl
 {
     // Handle errors here
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
-    if (ec.value() == 995 || ec == SimpleWeb::errc::operation_canceled)
+    if (ec.default_error_condition().value() == 995 || ec == SimpleWeb::errc::operation_canceled)
         return;
 
-    LOG_ERROR << "(" << ec.value() << ") " << ec.message() << std::endl;
+    LOG_ERROR << "(" << ec.default_error_condition().value() << ") " << ec.default_error_condition().message() << std::endl;
 }
 
-bool Application::HandleOnAccept(const asio::ip::tcp::endpoint & endpoint)
+bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
 {
-    auto banMan = GetSubsystem<Auth::BanManager>();
+    auto* banMan = GetSubsystem<Auth::BanManager>();
     return banMan->AcceptConnection(endpoint.address().to_v4().to_ulong());
 }

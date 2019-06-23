@@ -213,7 +213,9 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     {
         std::string serverId = msg.GetBodyString();
         if (serverId.compare(serverId_) == 0)
-            GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Application::Stop, this)));
+            // Can't use Dispatcher because Stop() must run in a different thread. Stop() will wait
+            // until all games are deleted, and games are deleted in the Dispatcher thread.
+            GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::Stop, this);
         break;
     }
     case Net::MessageType::Spawn:
@@ -226,7 +228,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         std::string serverId = msg.GetBodyString();
         if (serverId.compare(serverId_) == 0)
         {
-            auto dataProvider = GetSubsystem<IO::DataProvider>();
+            auto* dataProvider = GetSubsystem<IO::DataProvider>();
             GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&IO::DataProvider::ClearCache, dataProvider)));
         }
         break;
@@ -307,7 +309,7 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Initializing RNG...";
-    auto rnd = GetSubsystem<Crypto::Random>();
+    auto* rnd = GetSubsystem<Crypto::Random>();
     rnd->Initialize();
     ai::randomSeed(rnd->Get<uint32_t>());
     LOG_INFO << "[done]" << std::endl;
@@ -363,7 +365,7 @@ bool Application::LoadMain()
     const std::string& msgHost = (*config)[ConfigManager::Key::MessageServerHost].GetString();
     uint16_t msgPort = static_cast<uint16_t>((*config)[ConfigManager::Key::MessageServerPort].GetInt());
 
-    auto msgClient = GetSubsystem<Net::MessageClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
     msgDispatcher_ = std::make_unique<MessageDispatcher>();
     if (msgClient->IsConnected())
@@ -375,7 +377,7 @@ bool Application::LoadMain()
     }
 
     LOG_INFO << "Loading Game items...";
-    auto itemFactory = GetSubsystem<Game::ItemFactory>();
+    auto* itemFactory = GetSubsystem<Game::ItemFactory>();
     itemFactory->Initialize();
     LOG_INFO << "[done]" << std::endl;
 
@@ -423,9 +425,9 @@ bool Application::LoadMain()
 
 void Application::PrintServerInfo()
 {
-    auto config = GetSubsystem<ConfigManager>();
-    auto dataClient = GetSubsystem<IO::DataClient>();
-    auto msgClient = GetSubsystem<Net::MessageClient>();
+    auto* config = GetSubsystem<ConfigManager>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
@@ -454,8 +456,8 @@ void Application::PrintServerInfo()
 
 void Application::Run()
 {
-    auto config = GetSubsystem<ConfigManager>();
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* config = GetSubsystem<ConfigManager>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
     if (!dataClient->Read(serv))
@@ -495,7 +497,7 @@ void Application::Run()
     // If we use a log file close current and reopen as file logger
     if (logDir_.empty())
         logDir_ = (*config)[ConfigManager::Key::LogDir].GetString();
-    if (!logDir_.empty() && logDir_.compare(IO::Logger::logDir_) != 0)
+    if (!logDir_.empty() && !Utils::SameFilename(logDir_, IO::Logger::logDir_))
     {
         // Different log dir
         LOG_INFO << "Log directory: " << logDir_ << std::endl;
@@ -515,18 +517,21 @@ void Application::Stop()
     if (!running_)
         return;
 
+    // On Windows this can't take too long, or Windows will just terminate the process
+    // when stopped with a signal.
+
 #if defined(SCENE_VIEWER)
     sceneViewer_->Stop();
 #endif
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     running_ = false;
     LOG_INFO << "Server shutdown..." << std::endl;
 
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
 
-    auto msgClient = GetSubsystem<Net::MessageClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
 
     if (dataClient->Read(serv))
     {
@@ -547,12 +552,10 @@ void Application::Stop()
         dataClient->Invalidate(sl);
     }
     else
-    {
         LOG_ERROR << "Unable to read service" << std::endl;
-    }
 
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(100ms);
+    std::this_thread::sleep_for(50ms);
 
     GetSubsystem<Game::PlayerManager>()->KickAllPlayers();
     auto* gameMan = GetSubsystem<Game::GameManager>();
@@ -561,8 +564,8 @@ void Application::Stop()
     // We must wait until all games stopped
     Asynch::ConditionSleep([&]() {
         return gameMan->GetGameCount() == 0;
-    });
-    std::this_thread::sleep_for(100ms);
+    }, 2000);
+    std::this_thread::sleep_for(50ms);
 
     // Before serviceManager_.Stop()
     maintenance_.Stop();
@@ -581,7 +584,7 @@ std::string Application::GetKeysFile() const
 
 unsigned Application::GetLoad()
 {
-#if defined(_MSC_VER)
+#if defined(AB_WINDOWS)
     static System::CpuUsage usage;
 #endif
     if (Utils::TimePassed(lastLoadCalc_) > 1000 || loads_.empty())
@@ -593,7 +596,7 @@ unsigned Application::GetLoad()
         unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
         if (utilization > load)
             load = utilization;
-#if defined(_MSC_VER)
+#if defined(AB_WINDOWS)
         unsigned l = static_cast<unsigned>(usage.GetUsage());
         if (l > load)
             // Use the higher value

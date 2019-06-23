@@ -46,7 +46,7 @@ void MessageSession::HandleRead(const asio::error_code& error)
     }
     else
     {
-        LOG_ERROR << "(" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         channel_.Leave(shared_from_this());
     }
 }
@@ -65,7 +65,7 @@ void MessageSession::HandleWrite(const asio::error_code& error)
     }
     else
     {
-        LOG_ERROR << "(" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         channel_.Leave(shared_from_this());
     }
 }

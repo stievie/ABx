@@ -1,4 +1,4 @@
-include common.make
+include makefile.common
 
 # This may change
 INCLUDES += -I../ThirdParty/recastnavigation/Detour/Include -I../ThirdParty/recastnavigation/DetourTileCache/Include

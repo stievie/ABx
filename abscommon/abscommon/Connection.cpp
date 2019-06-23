@@ -325,12 +325,12 @@ void Connection::CloseSocket()
         asio::error_code err;
         socket_.shutdown(asio::ip::tcp::socket::shutdown_both, err);
         if (err)
-            LOG_ERROR << "Network " << err.value() << " " << err.message() << std::endl;
+            LOG_ERROR << "Network " << err.default_error_condition().value() << " " << err.default_error_condition().message() << std::endl;
 
         asio::error_code err2;
         socket_.close(err2);
         if (err2)
-            LOG_ERROR << "Network " << err2.value() << " " << err2.message() << std::endl;
+            LOG_ERROR << "Network " << err2.default_error_condition().value() << " " << err2.default_error_condition().message() << std::endl;
     }
 }
 

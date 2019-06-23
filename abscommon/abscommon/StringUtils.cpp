@@ -24,6 +24,15 @@ bool StringEquals(const std::wstring& l, const std::wstring& r)
     });
 }
 
+bool SameFilename(const std::string& l, const std::string& r)
+{
+#if defined(AB_WINDOWS)
+    return StringEquals(l, r);
+#else
+    return l.compare(r) == 0;
+#endif
+}
+
 std::string ChangeFileExt(const std::string& fn, const std::string& ext)
 {
     size_t pos = fn.find_last_of('.');
@@ -139,7 +148,7 @@ static float RoundOff(float n)
 
 std::string ConvertSize(size_t size)
 {
-    static const char *SIZES[] = { "B", "KB", "MB", "GB" };
+    static const char* SIZES[] = { "B", "KB", "MB", "GB" };
     size_t div = 0;
     size_t rem = 0;
 
@@ -150,7 +159,7 @@ std::string ConvertSize(size_t size)
         size /= 1024;
     }
 
-    float size_d = (float)size + (float)rem / 1024.0f;
+    float size_d = static_cast<float>(size) + static_cast<float>(rem) / 1024.0f;
     std::ostringstream convert;
     convert << RoundOff(size_d);
     std::string result = convert.str() + " " + SIZES[div];
@@ -209,7 +218,7 @@ std::string UrlDecode(const std::string& str)
             sscanf(str.substr(i + 1, 2).c_str(), "%x", &ii);
             ch = static_cast<char>(ii);
             ret += ch;
-            i = i + 2;
+            i += 2;
         }
     }
     return ret;

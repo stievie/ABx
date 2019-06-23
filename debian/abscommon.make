@@ -1,10 +1,11 @@
-include common.make
+include makefile.common
 
 # This may change
 TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/libabscommon.a
 SOURDEDIR = ../abscommon/abscommon
 OBJDIR = obj/x64/Release/abscommon
+CXXFLAGS += -fexceptions
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)

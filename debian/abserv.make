@@ -1,4 +1,4 @@
-include common.make
+include makefile.common
 
 # This may change
 INCLUDES += -I../Include/recastnavigation -I../Include/ai -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon 

@@ -1,4 +1,4 @@
-include common.make
+include makefile.common
 
 # This may change
 INCLUDES += -I../abscommon/abscommon -I/usr/include/postgresql

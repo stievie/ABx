@@ -4,8 +4,9 @@
 // https://misc.flogisoft.com/bash/tip_colors_and_formatting
 namespace IO {
 namespace Color {
-    enum Code 
+    enum Code
     {
+        // Foregrounds
         FG_BLACK        = 30,
         FG_RED          = 31,
         FG_GREEN        = 32,
@@ -14,7 +15,7 @@ namespace Color {
         FG_MAGENTA      = 35,
         FG_CYAN         = 36,
         FG_LIGHTGREY    = 37,
-        FG_DEFAULT      = 39,        
+        FG_DEFAULT      = 39,
         FG_DARKGREY     = 90,
         FG_LIGHRED      = 91,
         FG_LIGHTGREEN   = 92,
@@ -23,7 +24,7 @@ namespace Color {
         FG_LIGHTMAGENTA = 95,
         FG_LIGHTCYAN    = 96,
         FG_WHITE        = 97,
-        
+        // Backgrounds
         BG_BLACK        = 40,
         BG_RED          = 41,
         BG_GREEN        = 42,
@@ -42,14 +43,14 @@ namespace Color {
         BG_LIGHTCYAN    = 106,
         BG_WHITE        = 107,
     };
-    class Modifier 
+    class Modifier
     {
     private:
         Code code_;
     public:
         explicit Modifier(Code code) : code_(code) {}
         friend std::ostream&
-        operator << (std::ostream& os, const Modifier& mod) 
+        operator << (std::ostream& os, const Modifier& mod)
         {
             return os << "\033[" << mod.code_ << "m";
         }

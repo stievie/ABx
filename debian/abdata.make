@@ -1,4 +1,4 @@
-include common.make
+include makefile.common
 
 # This may change
 DEFINES += -D_CONSOLE
@@ -8,6 +8,7 @@ TARGET = $(TARGETDIR)/abdata
 SOURDEDIR = ../abdata/abdata
 OBJDIR = obj/x64/Release/abdata
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -lsqlite3 -ldl -lpq -lldap -lssl -lcrypto -lmariadbclient -lz -lgssapi_krb5 -labscommon -labdb
+CXXFLAGS += -fexceptions
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)

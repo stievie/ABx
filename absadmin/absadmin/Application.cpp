@@ -102,7 +102,7 @@ void Application::ShowHelp()
 
 void Application::PrintServerInfo()
 {
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Server config:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
@@ -116,12 +116,13 @@ void Application::PrintServerInfo()
 
 void Application::HandleMessage(const Net::MessageMsg&)
 {
+    // Nothing to handle
 }
 
 void Application::InitContentTypes()
 {
     // https://www.freeformatter.com/mime-types-list.html
-    auto conT = GetSubsystem<ContentTypes>();
+    auto* conT = GetSubsystem<ContentTypes>();
     conT->map_[".css"] = "text/css";
     conT->map_[".html"] = "text/html";
     conT->map_[".js"] = "application/javascript";
@@ -181,7 +182,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     }
 
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
     if (configFile_.empty())
     {
@@ -235,7 +236,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
     Auth::BanManager::LoginTries = static_cast<uint32_t>(config->GetGlobalInt("login_tries", 5ll));
     Auth::BanManager::LoginRetryTimeout = static_cast<uint32_t>(config->GetGlobalInt("login_retrytimeout", 5000ll));
 
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     LOG_INFO << "Connecting to data server...";
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
@@ -252,7 +253,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
 
     std::string msgHost = config->GetGlobalString("message_host", "");
     uint16_t msgPort = static_cast<uint16_t>(config->GetGlobalInt("message_port", 0ll));
-    auto msgClient = GetSubsystem<Net::MessageClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Connecting to message server...";
     msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
     if (msgClient->IsConnected())
@@ -373,14 +374,14 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>,
 {
     // Handle errors here
     // Note that connection timeouts will also call this handle with ec set to SimpleWeb::errc::operation_canceled
-    if (ec.value() == 995 || ec == SimpleWeb::errc::operation_canceled)
+    if (ec.default_error_condition().value() == 995 || ec == SimpleWeb::errc::operation_canceled)
         return;
 
-    LOG_ERROR << "(" << ec.value() << ") " << ec.message() << std::endl;
+    LOG_ERROR << "(" << ec.default_error_condition().value() << ") " << ec.default_error_condition().message() << std::endl;
 }
 
 bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
 {
-    auto banMan = GetSubsystem<Auth::BanManager>();
+    auto* banMan = GetSubsystem<Auth::BanManager>();
     return banMan->AcceptConnection(endpoint.address().to_v4().to_ulong());
 }

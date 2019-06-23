@@ -62,7 +62,7 @@ bool Application::LoadMain()
 #endif
     }
 
-    auto config = GetSubsystem<IO::SimpleConfigManager>();
+    auto* config = GetSubsystem<IO::SimpleConfigManager>();
     LOG_INFO << "Loading configuration...";
     if (!config->Load(configFile_))
     {

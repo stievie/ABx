@@ -46,11 +46,11 @@ private:
     void SendResponseAndStart(std::vector<asio::mutable_buffer>& resp, size_t size);
     void SendStatusAndRestart(IO::ErrorCodes code, const std::string& message);
 
-    static inline uint32_t ToInt32(const std::vector<uint8_t>& intBytes, uint32_t start)
+    static inline uint32_t ToInt32(const std::vector<uint8_t>& intBytes, size_t start)
     {
         return (intBytes[start + 3] << 24) | (intBytes[start + 2] << 16) | (intBytes[start + 1] << 8) | intBytes[start];
     }
-    static inline uint16_t ToInt16(const std::vector<uint8_t>& intBytes, uint32_t start)
+    static inline uint16_t ToInt16(const std::vector<uint8_t>& intBytes, size_t start)
     {
         return  (intBytes[start + 1] << 8) | intBytes[start];
     }

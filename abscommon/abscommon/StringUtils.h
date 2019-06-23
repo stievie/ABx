@@ -5,6 +5,8 @@ namespace Utils {
 /// Case insensitive string compare
 bool StringEquals(const std::string& l, const std::string& r);
 bool StringEquals(const std::wstring& l, const std::wstring& r);
+/// On Windows case insensitive, otherwise case sensitive
+bool SameFilename(const std::string& l, const std::string& r);
 std::string ChangeFileExt(const std::string& fn, const std::string& ext);
 std::string GetFileExt(const std::string& fn);
 std::string ExtractFileDir(const std::string& fn);
@@ -13,10 +15,12 @@ template <typename charType>
 std::basic_string<charType> Trim(const std::basic_string<charType>& str,
     const std::basic_string<charType>& whitespace = " \t")
 {
+    // Left
     const auto strBegin = str.find_first_not_of(whitespace);
     if (strBegin == std::string::npos)
         return std::basic_string<charType>(); // no content
 
+    // Right
     const auto strEnd = str.find_last_not_of(whitespace);
     const auto strRange = strEnd - strBegin + 1;
 

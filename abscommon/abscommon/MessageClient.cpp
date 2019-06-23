@@ -28,7 +28,7 @@ void MessageClient::InternalConnect()
                 this, std::placeholders::_1, std::placeholders::_2));
     }
     else
-        LOG_ERROR << "(" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
 }
 
 void MessageClient::HandleRead(const asio::error_code& error, size_t)
@@ -44,7 +44,7 @@ void MessageClient::HandleRead(const asio::error_code& error, size_t)
     }
     else
     {
-        LOG_ERROR << "(" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         Close();
     }
 }
@@ -79,7 +79,7 @@ void MessageClient::HandleWrite(const asio::error_code& error)
     }
     else
     {
-        LOG_ERROR << "(" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "(" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         Close();
     }
 }
