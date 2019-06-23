@@ -7,7 +7,7 @@ location = "AT"
 server_name = "abmsgs"
 
 message_port = 2771
-message_ip = "127.0.0.1"
+message_ip = "0.0.0.0"
 --message_host = "stievie.mooo.com"
 
 allowed_ips = "127.0.0.1;192.168.1.51"
