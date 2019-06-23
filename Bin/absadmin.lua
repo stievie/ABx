@@ -10,12 +10,12 @@ admin_ip = ""         -- Listen on all
 admin_host = ""       -- emtpy use same host as for login
 admin_port = 443
 
-server_key = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/server.key"
-server_cert = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/server.crt"
+server_key = "server.key"
+server_cert = "server.crt"
 
 -- Thread pool size
 num_threads = 4
-root_dir = "c:/Users/Stefan Ascher/Documents/Visual Studio 2015/Projects/ABx/Bin/admin/root"
+root_dir = "admin/root"
 -- 60min
 session_lifetime = 1000 * 60 * 60
 

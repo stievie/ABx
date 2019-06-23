@@ -37,7 +37,7 @@ void Connection::Start()
         }
         else
         {
-            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+            LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
             connectionManager_.Stop(self);
         }
     });
@@ -59,7 +59,7 @@ void Connection::StartReadKey(uint16_t& keySize)
         }
         else
         {
-            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+            LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
             connectionManager_.Stop(self);
         }
     });
@@ -92,7 +92,7 @@ void Connection::StartCreateOperation()
         }
         else
         {
-            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+            LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
             connectionManager_.Stop(self);
         }
     });
@@ -125,7 +125,7 @@ void Connection::StartUpdateDataOperation()
         }
         else
         {
-            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+            LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
             connectionManager_.Stop(self);
         }
     });
@@ -158,7 +158,7 @@ void Connection::StartReadOperation()
         }
         else
         {
-            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+            LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
             connectionManager_.Stop(self);
         }
     });
@@ -215,7 +215,7 @@ void Connection::StartExistsOperation()
         }
         else
         {
-            LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+            LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
             connectionManager_.Stop(self);
         }
     });
@@ -251,7 +251,7 @@ void Connection::HandleUpdateReadRawData(const asio::error_code& error,
     }
     else
     {
-        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
     }
 }
@@ -273,7 +273,7 @@ void Connection::HandleCreateReadRawData(const asio::error_code& error,
     }
     else
     {
-        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
     }
 }
@@ -282,7 +282,7 @@ void Connection::HandleReadReadRawData(const asio::error_code& error, size_t byt
 {
     if (error)
     {
-        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
         return;
     }
@@ -324,7 +324,7 @@ void Connection::HandleWriteReqResponse(const asio::error_code& error)
         Start();
     else
     {
-        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
     }
 }
@@ -345,7 +345,7 @@ void Connection::HandleExistsReadRawData(const asio::error_code& error, size_t b
     }
     else
     {
-        LOG_ERROR << "Network (" << error.value() << ") " << error.message() << std::endl;
+        LOG_ERROR << "Network (" << error.default_error_condition().value() << ") " << error.default_error_condition().message() << std::endl;
         connectionManager_.Stop(shared_from_this());
     }
 }

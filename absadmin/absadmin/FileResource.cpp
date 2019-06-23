@@ -17,7 +17,7 @@ void FileResource::Render(std::shared_ptr<HttpsServer::Response> response)
     try
     {
         auto web_root_path = fs::canonical(root);
-        auto path = fs::canonical(web_root_path / request_->path);
+        auto path = fs::canonical(Utils::AddSlash(root) + request_->path);
         // Check if path is within web_root_path
         if (std::distance(web_root_path.begin(), web_root_path.end()) > std::distance(path.begin(), path.end()) ||
             !std::equal(web_root_path.begin(), web_root_path.end(), path.begin()))

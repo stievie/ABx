@@ -128,8 +128,7 @@ void LessFileResource::Render(std::shared_ptr<HttpsServer::Response> response)
 
     try
     {
-        auto web_root_path = fs::canonical(root);
-        auto path = fs::canonical(web_root_path / request_->path);
+        auto path = fs::canonical(Utils::AddSlash(root) + request_->path);
         std::string output = Utils::ChangeFileExt(path.string(), ".css");
 
         bool createNew = false;
