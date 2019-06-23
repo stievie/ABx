@@ -13,7 +13,7 @@ After=network.target
 #Environment=AUTOSSH_PORT=0
 WorkingDirectory=/root/ABx/Bin
 ExecStart=/root/ABx/Bin/ablogin  -log /root/ABx/Bin/logs/ablogin
-ExecStop=pkill -9 ablogin
+ExecStop=pkill ablogin
 # don't use 'nobody' if your script needs to access user files
 # (if User is not set the service will run as root)
 #User=nobody
