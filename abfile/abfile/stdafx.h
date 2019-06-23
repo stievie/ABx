@@ -3,7 +3,9 @@
 // die nur in unregelm‰ﬂigen Abst‰nden ge‰ndert werden.
 //
 
+#if defined(_MSC_VER)
 #pragma once
+#endif
 
 #if defined(_MSC_VER)
 // Decorated name length exceeded
