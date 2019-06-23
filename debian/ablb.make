@@ -10,6 +10,7 @@ OBJDIR = obj/x64/Release/ablb
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

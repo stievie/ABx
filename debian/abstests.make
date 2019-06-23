@@ -10,6 +10,7 @@ LIBS += -labscommon -labsmath
 CXXFLAGS += -fexceptions
 DEFINES += -DBUILD_INTRINSICS_LEVEL=1
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

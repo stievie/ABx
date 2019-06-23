@@ -6,6 +6,7 @@ TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/librecast.a
 SOURDEDIR = ../ThirdParty/recastnavigation
 OBJDIR = obj/x64/Release/recastnavigation
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/Recast/Source/*.cpp)

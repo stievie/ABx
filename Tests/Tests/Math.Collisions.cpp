@@ -11,7 +11,7 @@ TEST_CASE("Collisions")
         XMath::BoundingBox abb({ -3.5f, 0.0f, -3.5f }, { 0.5f, 0.5f, 0.5f });
         // -45Deg Y axis
         XMath::XMFLOAT4 orientation = { 0.000000000f, -0.382683456f, 0.000000000f, 0.923879504f };
-        XMath::XMFLOAT4 o3 = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::DegToRad(-45.0f));
+        //XMath::XMFLOAT4 o3 = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::DegToRad(-45.0f));
 
         XMath::BoundingOrientedBox obb({ 0.0f, 0.0f, 0.0f }, { 4.0f, 0.5f, 2.0f }, orientation);
         while (!abb.Intersects(obb))

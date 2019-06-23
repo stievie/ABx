@@ -7,6 +7,7 @@ SOURDEDIR = ../abscommon/abscommon
 OBJDIR = obj/x64/Release/abscommon
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

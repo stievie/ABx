@@ -467,7 +467,7 @@ namespace internal {
                         // $else {{ <block> }}
                         object obj = get_variable(p, dic, ctx, skip);
                         p.eat_with_whitespace("{{");
-                        bool run; // if `skip` is true, `run` is an unspecified value.
+                        bool run{ false }; // if `skip` is true, `run` is an unspecified value.
                         if (skip) {
                             block(p, dic, ctx, true, out);
                         }

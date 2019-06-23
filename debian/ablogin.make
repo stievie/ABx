@@ -10,6 +10,7 @@ OBJDIR = obj/x64/Release/ablogin
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

@@ -5,7 +5,7 @@ TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/libpugixml.a
 SOURDEDIR = ../ThirdParty/PugiXml/src
 OBJDIR = obj/x64/Release/pugixml
-CXXFLAGS += -fPIC
+CXXFLAGS += -Werror -Wno-class-memaccess -Wimplicit-fallthrough=0
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp)

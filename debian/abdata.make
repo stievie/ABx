@@ -10,6 +10,7 @@ OBJDIR = obj/x64/Release/abdata
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -lsqlite3 -ldl -lpq -lldap -lssl -lcrypto -lmariadbclient -lz -lgssapi_krb5 -labscommon -labdb
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

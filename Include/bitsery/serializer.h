@@ -188,6 +188,7 @@ namespace bitsery {
 
         template<typename T, typename Fnc>
         void container(const T &obj, size_t maxSize, Fnc &&fnc) {
+            (void)maxSize;
             static_assert(details::IsContainerTraitsDefined<T>::value,
                           "Please define ContainerTraits or include from <bitsery/traits/...>");
             static_assert(traits::ContainerTraits<T>::isResizable,
@@ -364,6 +365,7 @@ namespace bitsery {
         //process text,
         template<size_t VSIZE, typename T>
         void procText(const T& str, size_t maxSize) {
+            (void)maxSize;
             auto length = traits::TextTraits<T>::length(str);
             assert((length + (traits::TextTraits<T>::addNUL ? 1u : 0u)) <= maxSize);
             details::writeSize(_writer, length);

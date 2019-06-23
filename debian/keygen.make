@@ -9,6 +9,7 @@ SOURDEDIR = ../keygen/keygen
 OBJDIR = obj/x64/Release/keygen
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

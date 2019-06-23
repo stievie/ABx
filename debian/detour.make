@@ -6,6 +6,7 @@ TARGETDIR = ../Lib/x64/Release
 TARGET = $(TARGETDIR)/libdetour.a
 SOURDEDIR = ../ThirdParty/recastnavigation
 OBJDIR = obj/x64/Release/recastnavigation
+CXXFLAGS += -Werror -Wno-class-memaccess -Wno-maybe-uninitialized
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/Detour/Source/*.cpp $(SOURDEDIR)/DetourTileCache/Source/*.cpp)

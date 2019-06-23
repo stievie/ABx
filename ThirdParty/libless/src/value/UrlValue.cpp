@@ -193,6 +193,7 @@ bool UrlValue::loadPng(UrlValue_Img& img) const {
   return true;
 
 #else
+  (void)img;
   return false;
 #endif
 }
@@ -331,6 +332,7 @@ bool UrlValue::loadJpeg(UrlValue_Img& img) const {
   fclose(infile);
   return true;
 #else
+  (void)img;
   return false;
 #endif
 }

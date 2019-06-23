@@ -905,6 +905,8 @@ float3 operator*( const Quaternion& q, const float3& v )
 float3 operator*( const float3& v, const Quaternion& q )
 {
 	assert(0);  // must multiply with the quat on the left
+	(void)v;
+	(void)q;
 	return float3(0.0f,0.0f,0.0f);
 }
 
@@ -1833,8 +1835,10 @@ ConvexH *ConvexHCrop(ConvexH &convex,const Plane &slice)
 	assert(convex.edges.count<480);
 
 	EdgeFlag  edgeflag[512];
+	(void)edgeflag;
 	VertFlag  vertflag[256];
 	PlaneFlag planeflag[128];
+	(void)planeflag;
 	HalfEdge  tmpunderedges[512];
 	Plane	  tmpunderplanes[128];
 	Coplanar coplanaredges[512];
@@ -1858,14 +1862,8 @@ ConvexH *ConvexHCrop(ConvexH &convex,const Plane &slice)
 			vertflag[i].undermap = -1; // for debugging purposes
 		}
 	}
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
 	int vertcountunderold = vertcountunder; // for debugging only
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+	(void)vertcountunderold;     // Kepp compiler happy
 
 	int under_edge_count =0;
 	int underplanescount=0;
@@ -1873,7 +1871,7 @@ ConvexH *ConvexHCrop(ConvexH &convex,const Plane &slice)
 
 	for(int currentplane=0; currentplane<convex.facets.count; currentplane++) {
 		int estart =e0;
-		int enextface;
+		int enextface = 0;
 		int planeside = 0;
 		int e1 = e0+1;
 		int vout=-1;
@@ -2359,16 +2357,11 @@ void checkit(Tri *t)
 	{
 		int i1=(i+1)%3;
 		int i2=(i+2)%3;
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
 		int a = (*t)[i1];
 		int b = (*t)[i2];
 		assert(a!=b);
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+		(void)a;
+		(void)b;
 		assert( tris[t->n[i]]->neib(b,a) == t->id);
 	}
 }
