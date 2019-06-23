@@ -17,7 +17,7 @@ SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp)
 CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
-$(info $(SRC_FILES))
+#$(info $(SRC_FILES))
 
 GCH = $(PCH).gch
 
