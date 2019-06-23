@@ -44,9 +44,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     state.setErrorHandler(LuaErrorHandler);
 #ifdef DEBUG_GAME
     if (!state.gc().isrunning())
-    {
-        LOG_ERROR << "Lua GC not running" << std::endl;
-    }
+        LOG_WARNING << "Lua GC not running" << std::endl;
 #endif
     // Some global function
     state["Tick"] = kaguya::function([]
@@ -74,7 +72,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     state["include_dir"] = kaguya::function([&state](const std::string& dir)
     {
         // directory must start with /
-        auto dataProv = GetSubsystem<IO::DataProvider>();
+        auto* dataProv = GetSubsystem<IO::DataProvider>();
         using namespace fs;
         const std::string& dataDir = dataProv->GetDataDir();
         size_t dataDirLen = dataDir.length();
