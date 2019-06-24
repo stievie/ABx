@@ -11,6 +11,7 @@ namespace AI {
 
 AI_TASK(HealOther)
 {
+    (void)deltaMillis;
     if (chr.currentTask_ == this)
     {
         if (auto s = chr.currentSkill_.lock())

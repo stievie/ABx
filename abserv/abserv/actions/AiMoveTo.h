@@ -7,6 +7,7 @@ namespace AI {
 
 AI_TASK(MoveTo)
 {
+    (void)deltaMillis;
     Game::Npc& npc = chr.GetNpc();
     const ai::FilteredEntities& selection = npc.GetAi()->getFilteredEntities();
     if (selection.empty())

@@ -8,6 +8,7 @@ namespace AI {
 
 AI_TASK(AttackSelection)
 {
+    (void)deltaMillis;
     Game::Npc& npc = chr.GetNpc();
     if (chr.currentTask_ == this)
     {

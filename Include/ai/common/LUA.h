@@ -75,6 +75,7 @@ public:
 
 	explicit LUA(bool debug = false) :
 			_state(luaL_newstate()), _destroy(true) {
+		(void)debug;
 		luaL_openlibs(_state);
 		lua_atpanic(_state, panicCB);
 		lua_gc(_state, LUA_GCSTOP, 0);

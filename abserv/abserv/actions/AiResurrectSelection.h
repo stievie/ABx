@@ -9,6 +9,7 @@ namespace AI {
 
 AI_TASK(ResurrectSelection)
 {
+    (void)deltaMillis;
     if (chr.currentTask_ == this)
     {
         if (auto s = chr.currentSkill_.lock())

@@ -8,6 +8,7 @@ namespace AI {
 
 AI_TASK(Die)
 {
+    (void)deltaMillis;
     Game::Npc& npc = chr.GetNpc();
     if (npc.Die())
         return ai::TreeNodeStatus::FINISHED;
