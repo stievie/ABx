@@ -432,6 +432,7 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         auto obj = shape->Object();
         obj->min_ = -halfSize;
         obj->max_ = halfSize;
+        break;
     }
     case Math::ShapeTypeSphere:
     {
@@ -439,6 +440,7 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());
         auto obj = shape->Object();
         obj->radius_ = x;
+        break;
     }
     default:
         // Not possible for other shapes
