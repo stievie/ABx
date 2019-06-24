@@ -26,25 +26,25 @@ static const uint128_t INVERT_P = { 159 };
 static const uint128_t G = { 5 };
 
 /*--------------------------------------------------------------------------*/
-static void INLINE
+INLINE static void
 _u128_make(uint128_t* dq, const DH_KEY key) {
     memcpy(dq->byte, key, DH_KEY_LENGTH);
 }
 
 /*--------------------------------------------------------------------------*/
-static int INLINE
+INLINE static int
 _u128_is_zero(const uint128_t dq) {
     return (dq.low == 0 && dq.high == 0);
 }
 
 /*--------------------------------------------------------------------------*/
-static int INLINE
+INLINE static int
 _u128_is_odd(const uint128_t dq) {
     return (dq.low & 1);
 }
 
 /*--------------------------------------------------------------------------*/
-static void INLINE
+INLINE static void
 _u128_lshift(uint128_t* dq) {
     uint64_t t = (dq->low >> 63) & 1;
     dq->high = (dq->high << 1) | t;
@@ -52,7 +52,7 @@ _u128_lshift(uint128_t* dq) {
 }
 
 /*--------------------------------------------------------------------------*/
-static void INLINE
+INLINE static void
 _u128_rshift(uint128_t* dq) {
     uint64_t t = (dq->high & 1) << 63;
     dq->high = dq->high >> 1;
@@ -60,7 +60,7 @@ _u128_rshift(uint128_t* dq) {
 }
 
 /*--------------------------------------------------------------------------*/
-static int INLINE
+INLINE static int
 _u128_compare(const uint128_t a, const uint128_t b) {
     if (a.high > b.high) return 1;
     else if (a.high == b.high) {
@@ -73,7 +73,7 @@ _u128_compare(const uint128_t a, const uint128_t b) {
 }
 
 /*--------------------------------------------------------------------------*/
-static void INLINE
+INLINE static void
 _u128_add(uint128_t* r, const uint128_t a, const uint128_t b) {
     uint64_t overflow = 0;
     uint64_t low = a.low + b.low;
@@ -86,7 +86,7 @@ _u128_add(uint128_t* r, const uint128_t a, const uint128_t b) {
 }
 
 /*--------------------------------------------------------------------------*/
-static void INLINE
+INLINE static void
 _u128_add_i(uint128_t* r, const uint128_t a, const uint64_t b) {
     uint64_t overflow = 0;
     uint64_t low = a.low + b;
@@ -99,7 +99,7 @@ _u128_add_i(uint128_t* r, const uint128_t a, const uint64_t b) {
 }
 
 /*--------------------------------------------------------------------------*/
-static void INLINE
+INLINE static void
 _u128_sub(uint128_t* r, const uint128_t a, const uint128_t b) {
     uint128_t invert_b;
     invert_b.low = ~b.low;
