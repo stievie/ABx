@@ -15,7 +15,9 @@ SRC_FILES = \
 	$(SOURDEDIR)/safebfuns.c \
 	$(SOURDEDIR)/sha1.c \
 	$(SOURDEDIR)/sha256.c \
-	$(SOURDEDIR)/xxtea.c \
+	$(SOURDEDIR)/xxtea.c
+# I don't want to mess around with crypto code, just silence the warnings
+CFLAGS += -Werror -Wno-pointer-sign -Wno-comment -Wno-missing-braces -Wno-missing-field-initializers -Wformat-truncation=0
 # End changes
 
 CFLAGS += $(DEFINES) $(INCLUDES)

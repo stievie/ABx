@@ -9,6 +9,7 @@ OBJDIR = obj/x64/Release/abserv
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto -labsmath -lpugixml -ldetour -lstdc++fs
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Werror -Wno-unused-parameter
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp $(SOURDEDIR)/*/*.cpp))
