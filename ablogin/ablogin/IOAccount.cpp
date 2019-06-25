@@ -9,6 +9,7 @@
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/ReservedName.h>
 #include <AB/Entities/AccountList.h>
+#include <AB/Entities/PlayerItemList.h>
 #include "Profiler.h"
 #include "Application.h"
 #include "Subsystems.h"
@@ -258,13 +259,46 @@ bool IOAccount::LoadCharacter(AB::Entities::Character& ch)
 bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Character ch;
-    ch.uuid = playerUuid;
+    AB::Entities::Character ch{ playerUuid };
     if (!client->Read(ch))
         return false;
     if (ch.accountUuid.compare(accountUuid) != 0)
         return false;
     bool succ = client->Delete(ch);
+    if (!succ)
+    {
+        LOG_ERROR << "Error deleting player with UUID " << playerUuid << std::endl;
+        return false;
+    }
+
+    // Everything that belongs to the Player (not the Account) should be deleted too.
+    // TODO: Check if there is more to delete.
+    const auto deleteItems = [&](const std::vector<std::string>& items)
+    {
+        for (const auto& uuid : items)
+        {
+            AB::Entities::ConcreteItem item{ uuid };
+            if (!client->Delete(item))
+                LOG_WARNING << "Error deleting concrete item with UUID " << uuid << std::endl;
+        }
+    };
+
+    AB::Entities::EquippedItems equip;
+    equip.uuid = playerUuid;
+    succ = client->Read(equip);
+    if (succ)
+        deleteItems(equip.itemUuids);
+    else
+        LOG_WARNING << "Error reading equipment for player with UUID " << playerUuid << std::endl;
+
+    AB::Entities::InventoryItems inv;
+    inv.uuid = playerUuid;
+    succ = client->Read(inv);
+    if (succ)
+        deleteItems(inv.itemUuids);
+    else
+        LOG_ERROR << "Error reading inventory for player with UUID " << playerUuid << std::endl;
+
     if (succ)
     {
         // Reserve the character name for some time for this user
@@ -289,9 +323,7 @@ bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forA
     ch.name = name;
     // Check if player with the same name exists
     if (client->Exists(ch))
-    {
         return false;
-    }
 
     AB::Entities::ReservedName rn;
     rn.name = name;
