@@ -9,9 +9,6 @@ namespace Components {
 
 void CollisionComp::ResolveCollisions()
 {
-    if (owner_.collisionMask_ == 0)
-        return;
-
     // Players don't collide with other players in outposts
     const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
         owner_.GetGame()->data_.type > AB::Entities::GameTypeOutpost;
@@ -22,7 +19,7 @@ void CollisionComp::ResolveCollisions()
     {
         for (auto& ci : c)
         {
-            if (ci != &owner_ && (ci->collisionMask_ != 0) && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
+            if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
                 if (ci->GetType() == AB::GameProtocol::ObjectTypePlayer && !isCollidingWithPlayers)
                     continue;
@@ -33,13 +30,19 @@ void CollisionComp::ResolveCollisions()
                 Math::Vector3 move;
                 if (owner_.Collides(ci, mc->velocity_, move))
                 {
-                    // Doing now client side collisions as well, so only do it for NPCs
-                    if (move != Math::Vector3::Zero && owner_.GetType() == AB::GameProtocol::ObjectTypeNpc)
-                        owner_.transformation_.position_ += move;
-                    else
+                    if (ci->collisionMask_ != 0)
                     {
-                        owner_.transformation_.position_ = mc->GetOldPosition();
-                        mc->moved_ = false;
+                        // Don't move the character when the object actually does not collide,
+                        // but we may still need the trigger stuff.
+
+                        // Doing now client side collisions as well, so only do it for NPCs
+                        if (move != Math::Vector3::Zero && owner_.GetType() == AB::GameProtocol::ObjectTypeNpc)
+                            owner_.transformation_.position_ += move;
+                        else
+                        {
+                            owner_.transformation_.position_ = mc->GetOldPosition();
+                            mc->moved_ = false;
+                        }
                     }
 
                     // Need to notify both, because we test collisions only for moving objects
