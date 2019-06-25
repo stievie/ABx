@@ -259,7 +259,7 @@ bool IOAccount::LoadCharacter(AB::Entities::Character& ch)
 bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& playerUuid)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Character ch{ playerUuid };
+    AB::Entities::Character ch{ { playerUuid } };
     if (!client->Read(ch))
         return false;
     if (ch.accountUuid.compare(accountUuid) != 0)
@@ -277,7 +277,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
     {
         for (const auto& uuid : items)
         {
-            AB::Entities::ConcreteItem item{ uuid };
+            AB::Entities::ConcreteItem item{ { uuid } };
             if (!client->Delete(item))
                 LOG_WARNING << "Error deleting concrete item with UUID " << uuid << std::endl;
         }
