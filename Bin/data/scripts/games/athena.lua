@@ -44,6 +44,12 @@ function onStart()
   if (chest ~= nil) then
     chest:SetRotation(180)
   end
+  
+  -- Add some poison
+  local poison = self:AddAreaOfEffect(
+    "/scripts/actors/aoe/general/poison_spout.lua",
+    nil, 10001, -14.8, 0.0, 22.98)
+
 end
 
 -- Game stopping

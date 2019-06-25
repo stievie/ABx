@@ -9,6 +9,9 @@ namespace Components {
 
 void CollisionComp::ResolveCollisions()
 {
+    if (owner_.collisionMask_ == 0)
+        return;
+
     // Players don't collide with other players in outposts
     const bool isCollidingWithPlayers = (owner_.GetType() != AB::GameProtocol::ObjectTypePlayer) ||
         owner_.GetGame()->data_.type > AB::Entities::GameTypeOutpost;
@@ -19,7 +22,7 @@ void CollisionComp::ResolveCollisions()
     {
         for (auto& ci : c)
         {
-            if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
+            if (ci != &owner_ && (ci->collisionMask_ != 0) && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
                 if (ci->GetType() == AB::GameProtocol::ObjectTypePlayer && !isCollidingWithPlayers)
                     continue;

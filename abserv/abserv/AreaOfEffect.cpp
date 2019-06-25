@@ -61,6 +61,8 @@ AreaOfEffect::AreaOfEffect() :
     );
     // AOE can not hide other objects
     occluder_ = false;
+    // AOE usually not colliding
+    collisionMask_ = 0;
 
     InitializeLua();
 }

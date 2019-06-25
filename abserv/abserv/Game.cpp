@@ -72,7 +72,9 @@ Npc* Game::_LuaAddNpc(const std::string& script)
 
 AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script, Actor* source, uint32_t index, float x, float y, float z)
 {
-    auto o = AddAreaOfEffect(script, source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(), index, Math::Vector3(x, y, z));
+    auto o = AddAreaOfEffect(script,
+        source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(),
+        index, Math::Vector3(x, y, z));
     if (o)
         return o.get();
     return nullptr;
@@ -373,6 +375,10 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     std::shared_ptr<AreaOfEffect> result = std::make_shared<AreaOfEffect>();
     result->SetGame(shared_from_this());
     result->transformation_.position_ = pos;
+    if (Math::Equals(pos.y_, 0.0f))
+    {
+        result->transformation_.position_.y_ = map_->GetTerrainHeight(pos);
+    }
     result->SetSource(source);
     result->SetIndex(index);
     if (!result->LoadScript(script))
