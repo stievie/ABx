@@ -6,6 +6,9 @@
 #include "Utils.h"
 #include <stdarg.h>
 #include "ConsoleColor.h"
+#if defined(AB_WINDOWS)
+#include <Windows.h>
+#endif
 
 #if !defined(__AB_PRETTY_FUNCTION__)
 #   if defined __GNUC__
@@ -23,11 +26,15 @@ namespace IO {
 class Logger
 {
 private:
-    enum Mode
+    enum class Mode
     {
-        ModeStream,
-        ModeFile
+        Stream,
+        File
     };
+#if defined(AB_WINDOWS)
+    HANDLE hConsole_{ 0 };
+    short foregroundDefault_{ 0 };
+#endif
     static std::unique_ptr<Logger> instance_;
     std::ofstream fstream_;
     std::ostream& stream_;
@@ -38,22 +45,17 @@ public:
     static std::string logDir_;
     bool nextIsBegin_;
 
-    explicit Logger(std::ostream& stream = std::cout) :
-        stream_(stream),
-        mode_(ModeStream),
-        logStart_(Utils::Tick()),
-        nextIsBegin_(true)
-    {}
+    explicit Logger(std::ostream& stream = std::cout);
     explicit Logger(const std::string& fileName) :
         fstream_(fileName),
         stream_(fstream_),
-        mode_(ModeFile),
+        mode_(Mode::File),
         logStart_(Utils::Tick()),
         nextIsBegin_(true)
     {}
     ~Logger()
     {
-        if (mode_ == ModeFile)
+        if (mode_ == Mode::File)
         {
             fstream_.flush();
             fstream_.close();
@@ -67,10 +69,14 @@ public:
         static Color::Modifier def(Color::FG_DEFAULT);
 #endif
         nextIsBegin_ = true;
+        if (mode_ == Mode::Stream)
+        {
 #if !defined(AB_WINDOWS)
-        if (mode_ == ModeStream)
             stream_ << def;
+#else
+            SetConsoleTextAttribute(hConsole_, foregroundDefault_);
 #endif
+        }
         stream_ << endl;
         return *this;
     }
@@ -127,15 +133,17 @@ public:
 #endif
     Logger& Error()
     {
-#if !defined(AB_WINDOWS)
         static Color::Modifier red(Color::FG_RED);
-#endif
         if (nextIsBegin_)
         {
+            if (mode_ == Mode::Stream)
+            {
 #if !defined(AB_WINDOWS)
-            if (mode_ == ModeStream)
                 stream_ << red;
+#else
+                SetConsoleTextAttribute(hConsole_, red.code_);
 #endif
+            }
             (*this) << "[ERROR] ";
         }
         return *this;
@@ -148,15 +156,17 @@ public:
     }
     Logger& Warning()
     {
-#if !defined(AB_WINDOWS)
         static Color::Modifier yellow(Color::FG_YELLOW);
-#endif
         if (nextIsBegin_)
         {
+            if (mode_ == Mode::Stream)
+            {
 #if !defined(AB_WINDOWS)
-            if (mode_ == ModeStream)
                 stream_ << yellow;
+#else
+                SetConsoleTextAttribute(hConsole_, yellow.code_);
 #endif
+            }
             (*this) << "[Warning] ";
         }
         return *this;
@@ -164,15 +174,17 @@ public:
 #if defined(_PROFILING)
     Logger& Profile()
     {
-#if !defined(AB_WINDOWS)
         static Color::Modifier blue(Color::FG_BLUE);
-#endif
         if (nextIsBegin_)
         {
+            if (mode_ == Mode::Stream)
+            {
 #if !defined(AB_WINDOWS)
-            if (mode_ == ModeStream)
                 stream_ << blue;
+#else
+                SetConsoleTextAttribute(hConsole_, blue.code_);
 #endif
+            }
             (*this) << "[Profile] ";
         }
         return *this;
@@ -181,15 +193,17 @@ public:
 #if defined(_DEBUG)
     Logger& Debug()
     {
-#if !defined(AB_WINDOWS)
         static Color::Modifier grey(Color::FG_LIGHTGREY);
-#endif
         if (nextIsBegin_)
         {
+            if (mode_ == Mode::Stream)
+            {
 #if !defined(AB_WINDOWS)
-            if (mode_ == ModeStream)
                 stream_ << grey;
+#else
+                SetConsoleTextAttribute(hConsole_, grey.code_);
 #endif
+            }
             (*this) << "[Debug] ";
         }
         return *this;

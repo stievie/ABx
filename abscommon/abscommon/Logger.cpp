@@ -30,6 +30,19 @@ Logger& Logger::Instance()
     return *instance_;
 }
 
+Logger::Logger(std::ostream& stream /* = std::cout */) :
+    stream_(stream),
+    mode_(Mode::Stream),
+    logStart_(Utils::Tick()),
+    nextIsBegin_(true)
+{
+#if defined(AB_WINDOWS)
+    hConsole_ = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO Info;
+    GetConsoleScreenBufferInfo(hConsole_, &Info);
+    foregroundDefault_ = Info.wAttributes;
+#endif
+}
 int Logger::PrintF(const char *__restrict __format, ...)
 {
     int ret;
