@@ -43,6 +43,10 @@ public:
     Projectile& operator=(const Projectile&) = delete;
 
     bool LoadScript(const std::string& fileName);
+    AB::GameProtocol::GameObjectType GetType() const final override
+    {
+        return AB::GameProtocol::ObjectTypeProjectile;
+    }
     void SetSource(std::shared_ptr<Actor> source);
     void SetTarget(std::shared_ptr<Actor> target);
     void SetSpeed(float speed);
@@ -51,6 +55,9 @@ public:
 
     void OnCollide(GameObject* other) override;
     bool OnStart();
+
+    bool Serialize(IO::PropWriteStream& stream) override;
+    void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 
 }

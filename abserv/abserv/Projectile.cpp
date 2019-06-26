@@ -98,7 +98,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     {
         moveComp_->HeadTo(direction_);
         moveComp_->Move(((float)(timeElapsed) / BASE_SPEED) * moveComp_->GetSpeedFactor(),
-            Math::Vector3::UnitZ);        
+            Math::Vector3::UnitZ);
     }
 
     GameObject::Update(timeElapsed, message);
@@ -130,12 +130,47 @@ bool Projectile::OnStart()
 {
     auto t = target_.lock();
     assert(t);
-    if (luaInitialized_ && HaveFunction(FunctionOnCollide))
+    if (luaInitialized_ && HaveFunction(FunctionOnStart))
     {
         bool ret = luaState_["onStart"](t.get());
-        return ret;        
+        return ret;
     }
     return true;
+}
+
+bool Projectile::Serialize(IO::PropWriteStream& stream)
+{
+    if (!Actor::Serialize(stream))
+        return false;
+    stream.Write<uint32_t>(0);                                   // Level
+    stream.Write<uint8_t>(AB::Entities::CharacterSexUnknown);
+    stream.Write<uint32_t>(0);                                   // Prof 1
+    stream.Write<uint32_t>(0);                                   // Prof 2
+    // TODO: Item index for projectiles
+    stream.Write<uint32_t>(0);   // Model index, in this case the effect index
+    return true;
+}
+
+void Projectile::WriteSpawnData(Net::NetworkMessage& msg)
+{
+    msg.Add<uint32_t>(id_);
+    msg.Add<float>(transformation_.position_.x_);
+    msg.Add<float>(transformation_.position_.y_);
+    msg.Add<float>(transformation_.position_.z_);
+    msg.Add<float>(transformation_.GetYRotation());
+    msg.Add<float>(transformation_.scale_.x_);
+    msg.Add<float>(transformation_.scale_.y_);
+    msg.Add<float>(transformation_.scale_.z_);
+    msg.Add<uint8_t>(1);                                  // not destroyable
+    msg.Add<uint8_t>(stateComp_.GetState());
+    msg.Add<float>(0.0f);                                 // speed
+    msg.Add<uint32_t>(0);                                 // Group id
+    msg.Add<uint8_t>(0);                                  // Group pos
+    IO::PropWriteStream data;
+    size_t dataSize;
+    Serialize(data);
+    const char* cData = data.GetStream(dataSize);
+    msg.AddString(std::string(cData, dataSize));
 }
 
 }
