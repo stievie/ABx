@@ -15,6 +15,7 @@ private:
         FunctionUpdate = 1,
         FunctionOnCollide = 1 << 1,
         FunctionOnHitTarget = 1 << 2,
+        FunctionOnStart = 1 << 3,
     };
     kaguya::State luaState_;
     bool luaInitialized_;
@@ -26,6 +27,7 @@ private:
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
     float speed_{ 0.0f };
+    bool started_{ false };
     uint32_t functions_{ FunctionNone };
     void InitializeLua();
     bool HaveFunction(Function func) const
@@ -48,6 +50,7 @@ public:
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     void OnCollide(GameObject* other) override;
+    bool OnStart();
 };
 
 }

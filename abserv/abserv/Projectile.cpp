@@ -3,6 +3,7 @@
 #include "ScriptManager.h"
 #include "DataProvider.h"
 #include "Game.h"
+#include "Mechanic.h"
 
 namespace Game {
 
@@ -22,7 +23,7 @@ Projectile::Projectile() :
     // AOE has always sphere shape with the range as radius
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeTypeSphere,
-            Math::Vector3::Zero, RANGE_ADJECENT)
+            Math::Vector3::Zero, PROJECTILE_SIZE)
     );
     // Projectile can not hide other objects
     occluder_ = false;
@@ -50,6 +51,8 @@ bool Projectile::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnCollide;
     if (ScriptManager::IsFunction(luaState_, "onHitTarget"))
         functions_ |= FunctionOnHitTarget;
+    if (ScriptManager::IsFunction(luaState_, "onStart"))
+        functions_ |= FunctionOnStart;
 
     bool ret = luaState_["onInit"]();
     return ret;
@@ -87,9 +90,16 @@ void Projectile::SetSpeed(float speed)
 
 void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    moveComp_->HeadTo(direction_);
-    moveComp_->Move(((float)(timeElapsed) / BASE_SPEED) * moveComp_->GetSpeedFactor(),
-        Math::Vector3::UnitZ);
+    if (!started_)
+    {
+        started_ = OnStart();
+    }
+    if (started_)
+    {
+        moveComp_->HeadTo(direction_);
+        moveComp_->Move(((float)(timeElapsed) / BASE_SPEED) * moveComp_->GetSpeedFactor(),
+            Math::Vector3::UnitZ);        
+    }
 
     GameObject::Update(timeElapsed, message);
 
@@ -114,6 +124,18 @@ void Projectile::OnCollide(GameObject* other)
 
     // Always remove when it collides with anything
     GetGame()->RemoveObject(this);
+}
+
+bool Projectile::OnStart()
+{
+    auto t = target_.lock();
+    assert(t);
+    if (luaInitialized_ && HaveFunction(FunctionOnCollide))
+    {
+        bool ret = luaState_["onStart"](t.get());
+        return ret;        
+    }
+    return true;
 }
 
 }
