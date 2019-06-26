@@ -7,24 +7,24 @@
 * `#ifdef _MSC_VER` all `*_s` C functions
 * Fix initialization order
 
+## Dependencies
+
+* `uuid-dev` (https://packages.debian.org/jessie/uuid-dev)
+* `libmysqlclient-dev` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev) or MariaDB
+* `libpq-dev` (https://packages.debian.org/jessie/armhf/libpq-dev)
+* `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
+* libldap2-dev, libssl-dev, libgsasl7-dev, libkrb5-dev, lua5.3, lua5.3-dev
+
 ## Debian (ARM)
 
 1. Install CLang
-2. Install premake5
-    1 Clone repo https://github.com/premake/premake-core
-    2. `cd` to premake-core
-    3. `make -f Bootstrap.mak linux`. premake5 is now bin/release
-    4. Add alias `premake5` to `~/premake-core/bin/release/premake5`
 3. Install `sudo apt-get install uuid-dev` (https://packages.debian.org/jessie/uuid-dev)
 4. Install `libmysqlclient-dev` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev)
 5. Install `libpq-dev` (https://packages.debian.org/jessie/armhf/libpq-dev)
 6. Install `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
 7. libldap2-dev, libssl-dev, libgsasl7-dev, libkrb5-dev, lua5.3, lua5.3-dev
 8. Clone repo `git -c http.sslVerify=false clone https://stievie.mooo.com/git/Trill/ABx.git`.
-9. `cd ABx`
-10. Generate make files: GCC: `~/premake-core/bin/release/premake5 gmake`, CLang: `~/premake-core/bin/release/premake5 --cc=clang gmake`
-11. `cd build`, maybe `make -f ... clean`, or just delete `obj` dir.
-12. Build abdata: `make -f lua.make && make -f abcrypto.make && make -f abscommon.make && make -f abdata.make` (`make -f abdata.make -e config=release_armv7`)
+9. `cd ABx/debian`
 
 ## Debian 10 Buster (x86_64)
 
@@ -41,8 +41,6 @@
 
 Disable link time optimiztation on linux
 
-NOTE: The premake script is out of date, use the Code::Blocks project/workspace files to create GNU makefiles.
-
 ## Manjaro/Arch (x86_64)
 
 * Install MariaDB, PostgreSQL, SQlite, Lua, uuid. Link against the installed libraries.
@@ -53,9 +51,17 @@ NOTE: The premake script is out of date, use the Code::Blocks project/workspace 
 
 ## Trouble shooting
 
-1. Link error multiple definition of: Clean -> Build
+1. Link error multiple definition of: Clean -> Build, delete all `*.a` files.
 
 ## Client
+
+### Dependencies
+
+Required lib files for the client not in this repostitory:
+
+* `Urho3D(_d).lib`
+
+Build them and put the library files in `Lib/x64/(Debug|Release)`.
 
 ### Adding Clang to `cbp2mak`s configuration:
 

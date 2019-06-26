@@ -190,16 +190,7 @@ conversion required.
 
 ## Build
 
-Use premake5 to generate solutions for the server and the client.
-
-1. Server: Open `build/abs3rd.sln` and `build/absall.sln` and compile.
-2. Client: Open `build/abclient.sln` and compile.
-
-Required lib files for the client not in this repostitory:
-
-* `Urho3D(_d).lib`
-
-Build them and put the library files in `Lib/x64/(Debug|Release)`.
+See BUILD.md
 
 ## Credits
 
