@@ -345,6 +345,9 @@
     <ClInclude Include="ItemContainer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -597,6 +600,9 @@
       <Filter>Quelldateien\Filters</Filter>
     </ClCompile>
     <ClCompile Include="ItemContainer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

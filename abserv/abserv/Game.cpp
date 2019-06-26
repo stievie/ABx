@@ -25,6 +25,7 @@
 #include "AreaOfEffect.h"
 #include "ItemFactory.h"
 #include "ItemDrop.h"
+#include "Projectile.h"
 
 #include "DebugNew.h"
 
@@ -70,11 +71,26 @@ Npc* Game::_LuaAddNpc(const std::string& script)
     return nullptr;
 }
 
-AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script, Actor* source, uint32_t index, float x, float y, float z)
+AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script,
+    Actor* source, uint32_t index,
+    float x, float y, float z)
 {
     auto o = AddAreaOfEffect(script,
         source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(),
         index, Math::Vector3(x, y, z));
+    if (o)
+        return o.get();
+    return nullptr;
+}
+
+Projectile* Game::_LuaAddProjectile(const std::string& script,
+    Actor* source,
+    Actor* target)
+{
+    assert(source);
+    assert(target);
+    auto o = AddProjectile(script,
+        source->GetThis<Actor>(), target->GetThis<Actor>());
     if (o)
         return o.get();
     return nullptr;
@@ -132,6 +148,7 @@ void Game::RegisterLua(kaguya::State& state)
 
         .addFunction("AddNpc", &Game::_LuaAddNpc)
         .addFunction("AddAreaOfEffect", &Game::_LuaAddAreaOfEffect)
+        .addFunction("AddProjectile", &Game::_LuaAddProjectile)
         .addFunction("AddRandomItemDrop", &Game::_LuaAddItemDrop)
     );
 }
@@ -353,9 +370,7 @@ std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
     std::shared_ptr<Npc> result = std::make_shared<Npc>();
     result->SetGame(shared_from_this());
     if (!result->LoadScript(script))
-    {
         return std::shared_ptr<Npc>();
-    }
     map_->AddEntity(result->GetAi(), result->GetGroupId());
 
     // After all initialization is done, we can call this
@@ -376,15 +391,32 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     result->SetGame(shared_from_this());
     result->transformation_.position_ = pos;
     if (Math::Equals(pos.y_, 0.0f))
-    {
         result->transformation_.position_.y_ = map_->GetTerrainHeight(pos);
-    }
     result->SetSource(source);
     result->SetIndex(index);
     if (!result->LoadScript(script))
-    {
         return std::shared_ptr<AreaOfEffect>();
-    }
+
+    // After all initialization is done, we can call this
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
+            shared_from_this(), result))
+    );
+
+    return result;
+}
+
+std::shared_ptr<Projectile> Game::AddProjectile(const std::string& script,
+    std::shared_ptr<Actor> source,
+    std::shared_ptr<Actor> target)
+{
+    std::shared_ptr<Projectile> result = std::make_shared<Projectile>();
+    result->SetGame(shared_from_this());
+    result->SetSource(source);
+    result->SetTarget(target);
+    // Speed is set by the script
+    if (!result->LoadScript(script))
+        return std::shared_ptr<Projectile>();
 
     // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(

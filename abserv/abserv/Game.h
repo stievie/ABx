@@ -19,6 +19,7 @@ class Player;
 class Npc;
 class AreaOfEffect;
 class ItemDrop;
+class Projectile;
 
 /// The list which owns the objects. We use a std::map because we want to
 /// have it in the order of creation (allocation) when Update() is called.
@@ -90,6 +91,9 @@ private:
         Actor* source,
         uint32_t index,
         float x, float y, float z);
+    Projectile* _LuaAddProjectile(const std::string& script,
+        Actor* source,
+        Actor* target);
     ItemDrop* _LuaAddItemDrop(Actor* dropper);
     int _LuaGetType() const { return data_.type; }
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
@@ -130,6 +134,9 @@ public:
         std::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
+    std::shared_ptr<Projectile> AddProjectile(const std::string& script,
+        std::shared_ptr<Actor> source,
+        std::shared_ptr<Actor> target);
     std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);
     void SpawnItemDrop(std::shared_ptr<ItemDrop> item);
     /// Return all Parties in this Game

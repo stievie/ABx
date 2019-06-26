@@ -261,6 +261,7 @@
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="PartyManager.h" />
     <ClInclude Include="ProgressComp.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestComp.h" />
     <ClInclude Include="ResourceComp.h" />
@@ -348,6 +349,7 @@
     <ClCompile Include="ItemStats.cpp" />
     <ClCompile Include="PartyManager.cpp" />
     <ClCompile Include="ProgressComp.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="QuestComp.cpp" />
     <ClCompile Include="ResourceComp.cpp" />

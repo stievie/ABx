@@ -30,7 +30,7 @@ void CollisionComp::ResolveCollisions()
                 Math::Vector3 move;
                 if (owner_.Collides(ci, mc->velocity_, move))
                 {
-                    if (ci->collisionMask_ != 0)
+                    if ((ci->collisionMask_ != 0) && (owner_.collisionMask_ != 0))
                     {
                         // Don't move the character when the object actually does not collide,
                         // but we may still need the trigger stuff.
