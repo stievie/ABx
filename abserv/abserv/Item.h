@@ -89,6 +89,8 @@ public:
     EquipPos GetEquipPos() const;
     float GetWeaponRange() const;
     uint32_t GetWeaponAttackSpeed() const;
+    /// REturn true when the weapon is throwing projectiles
+    bool IsWeaponProjectile() const;
     void GetWeaponDamageType(DamageType& value) const;
     void GetWeaponDamage(int32_t& value, bool critical);
     AttributeIndices GetWeaponAttribute() const;

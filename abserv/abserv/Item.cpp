@@ -325,6 +325,30 @@ uint32_t Item::GetWeaponAttackSpeed() const
     }
 }
 
+bool Item::IsWeaponProjectile() const
+{
+    switch (data_.type)
+    {
+    case AB::Entities::ItemTypeAxe:
+    case AB::Entities::ItemTypeSword:
+    case AB::Entities::ItemTypeHammer:
+    case AB::Entities::ItemTypeDaggers:
+    case AB::Entities::ItemTypeScyte:
+        return false;
+    case AB::Entities::ItemTypeFlatbow:
+    case AB::Entities::ItemTypeHornbow:
+    case AB::Entities::ItemTypeShortbow:
+    case AB::Entities::ItemTypeLongbow:
+    case AB::Entities::ItemTypeRecurvebow:
+    case AB::Entities::ItemTypeStaff:
+    case AB::Entities::ItemTypeWand:
+    case AB::Entities::ItemTypeSpear:
+        return true;
+    default:
+        return false;
+    }
+}
+
 void Item::GetWeaponDamageType(DamageType& value) const
 {
     value = stats_.GetDamageType();
