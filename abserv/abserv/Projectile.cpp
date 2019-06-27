@@ -20,7 +20,6 @@ Projectile::Projectile() :
     luaInitialized_(false),
     startSet_(false)
 {
-    // AOE has always sphere shape with the range as radius
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeTypeSphere,
             Math::Vector3::Zero, PROJECTILE_SIZE)
@@ -63,7 +62,7 @@ void Projectile::SetSource(std::shared_ptr<Actor> source)
     if (!startSet_)
     {
         source_ = source;
-        start_ = source->transformation_.position_;
+        start_ = source->transformation_.position_ + HeadOffset;
         transformation_.position_ = start_;
     }
 }
@@ -101,7 +100,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             Math::Vector3::UnitZ);
     }
 
-    GameObject::Update(timeElapsed, message);
+    Actor::Update(timeElapsed, message);
 
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);

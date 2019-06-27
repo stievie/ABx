@@ -54,6 +54,7 @@ void GameObject::RegisterLua(kaguya::State& state)
 
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
         .addFunction("IsInRange",        &GameObject::IsInRange)
+        .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
     );
 }
@@ -263,21 +264,47 @@ void GameObject::OnCollide(GameObject* other)
         triggerComp_->OnCollide(other);
 }
 
-bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction)
+bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction) const
+{
+    return Raycast(result, transformation_.position_ + HeadOffset, direction);
+}
+
+bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction) const
 {
     if (!octant_)
         return false;
 
     std::vector<Math::RayQueryResult> res;
-    Math::Ray ray(transformation_.position_ + HeadOffset, direction);
+    Math::Ray ray(position, direction);
     Math::RayOctreeQuery query(res, ray);
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
     for (const auto& o : query.result_)
-    {
         result.push_back(o.object_);
-    }
     return true;
+}
+
+bool GameObject::IsObjectInSight(const GameObject* object) const
+{
+    assert(object);
+    std::vector<GameObject*> result;
+    const bool res = Raycast(result, object->transformation_.position_);
+    if (res)
+    {
+        for (const auto* o : result)
+        {
+            // result is sorted by distance
+            if (o->id_ != id_ && o->id_ != object->id_)
+                return false;
+            else if (o->id_ == object->id_)
+                // Can stop here it doesn't matter whats behind the target.
+                return true;
+        }
+        // Actually shouldn't get here
+        return true;
+    }
+    // Shouldn't happen
+    return false;
 }
 
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
@@ -408,13 +435,17 @@ std::vector<float> GameObject::_LuaGetScale() const
     return result;
 }
 
-void GameObject::_LuaSetBoundingBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+void GameObject::_LuaSetBoundingBox(
+    float minX, float minY, float minZ,
+    float maxX, float maxY, float maxZ)
 {
-    if (collisionShape_ && collisionShape_->shapeType_ == Math::ShapeTypeBoundingBox)
+    if (!collisionShape_)
+        return;
+    if (collisionShape_->shapeType_ == Math::ShapeTypeBoundingBox)
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
-        auto obj = shape->Object();
+        auto* obj = shape->Object();
         obj->min_ = Math::Vector3(minX, minY, minZ);
         obj->max_ = Math::Vector3(maxX, maxY, maxZ);
     }
@@ -422,14 +453,16 @@ void GameObject::_LuaSetBoundingBox(float minX, float minY, float minZ, float ma
 
 void GameObject::_LuaSetBoundingSize(float x, float y, float z)
 {
-    switch (GetCollisionShape()->shapeType_)
+    if (!collisionShape_)
+        return;
+    switch (collisionShape_->shapeType_)
     {
     case Math::ShapeTypeBoundingBox:
     {
         const Math::Vector3 halfSize = (Math::Vector3(x, y, z) * 0.5f);
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
-        auto obj = shape->Object();
+        auto* obj = shape->Object();
         obj->min_ = -halfSize;
         obj->max_ = halfSize;
         break;
@@ -438,12 +471,13 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());
-        auto obj = shape->Object();
-        obj->radius_ = x;
+        auto* obj = shape->Object();
+        obj->radius_ = x * 0.5f;
         break;
     }
     default:
         // Not possible for other shapes
+        LOG_WARNING << "Can not set size of shape type " << static_cast<int>(collisionShape_->shapeType_) << std::endl;
         break;
     }
 }

@@ -206,7 +206,9 @@ public:
         octant_ = octant;
     }
 
-    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction);
+    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction) const;
+    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction) const;
+    bool IsObjectInSight(const GameObject* object) const;
 
     virtual bool Serialize(IO::PropWriteStream& stream);
 
