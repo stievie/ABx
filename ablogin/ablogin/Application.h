@@ -11,6 +11,7 @@ private:
     void ShowHelp();
     bool LoadMain();
     void PrintServerInfo();
+    void HeardBeatTask();
 public:
     Application();
     ~Application() override;

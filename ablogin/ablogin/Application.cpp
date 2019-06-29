@@ -172,6 +172,30 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
+void Application::HeardBeatTask()
+{
+    auto* dataClient = GetSubsystem<IO::DataClient>();
+    if (dataClient->IsConnected())
+    {
+        AB::Entities::Service serv;
+        serv.uuid = serverId_;
+        if (dataClient->Read(serv))
+        {
+            serv.heardbeat = Utils::Tick();
+            if (!dataClient->Update(serv))
+                LOG_ERROR << "Error updating service " << serverId_ << std::endl;
+        }
+        else
+            LOG_ERROR << "Error reading service " << serverId_ << std::endl;
+    }
+    if (running_)
+    {
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+        );
+    }
+}
+
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
@@ -225,6 +249,10 @@ void Application::Run()
 
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
+
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+    );
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
