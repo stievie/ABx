@@ -602,7 +602,7 @@ float Actor::GetArmorPenetration()
     return value;
 }
 
-float Actor::GetCriticalChance(Actor* other)
+float Actor::GetCriticalChance(const Actor* other)
 {
     if (!other)
         return 0.0f;

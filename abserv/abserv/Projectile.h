@@ -6,9 +6,14 @@
 
 namespace Game {
 
+class Item;
+
+/// Projectile is an Actor and has an Item. Both have a script. This is similar to ItemDrop:
+/// it is a GameObject and wraps an Item.
 class Projectile : public Actor
 {
 private:
+    std::unique_ptr<Item> item_;
     enum Function : uint32_t
     {
         FunctionNone = 0,
@@ -37,7 +42,8 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    Projectile();
+    explicit Projectile(std::unique_ptr<Item>& item);
+    Projectile() = delete;
     // non-copyable
     Projectile(const Projectile&) = delete;
     Projectile& operator=(const Projectile&) = delete;
@@ -55,6 +61,7 @@ public:
 
     void OnCollide(GameObject* other) override;
     bool OnStart();
+    Item* GetItem() const;
 
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;

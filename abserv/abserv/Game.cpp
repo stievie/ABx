@@ -406,16 +406,21 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     return result;
 }
 
-std::shared_ptr<Projectile> Game::AddProjectile(const std::string& script,
+std::shared_ptr<Projectile> Game::AddProjectile(const std::string& itemUuid,
     std::shared_ptr<Actor> source,
     std::shared_ptr<Actor> target)
 {
-    std::shared_ptr<Projectile> result = std::make_shared<Projectile>();
+    auto* itemFac = GetSubsystem<ItemFactory>();
+    auto item = itemFac->CreateTempItem(itemUuid);
+    if (!item)
+        return std::shared_ptr<Projectile>();
+
+    std::shared_ptr<Projectile> result = std::make_shared<Projectile>(item);
     result->SetGame(shared_from_this());
     result->SetSource(source);
     result->SetTarget(target);
     // Speed is set by the script
-    if (!result->LoadScript(script))
+    if (!result->LoadScript(item->data_.actorScript))
         return std::shared_ptr<Projectile>();
 
     // After all initialization is done, we can call this

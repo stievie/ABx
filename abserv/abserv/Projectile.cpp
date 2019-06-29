@@ -12,11 +12,13 @@ void Projectile::RegisterLua(kaguya::State& state)
     state["Projectile"].setClass(kaguya::UserdataMetatable<Projectile, Actor>()
         .addFunction("SetSpeed", &Projectile::SetSpeed)
         .addFunction("GetSpeed", &Projectile::GetSpeed)
+        .addFunction("GetItem", &Projectile::GetItem)
     );
 }
 
-Projectile::Projectile() :
+Projectile::Projectile(std::unique_ptr<Item>& item) :
     Actor(),
+    item_(std::move(item)),
     luaInitialized_(false),
     startSet_(false)
 {
@@ -104,6 +106,8 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
+    if (item_)
+        item_->Update(timeElapsed);
 }
 
 void Projectile::OnCollide(GameObject* other)
@@ -135,6 +139,13 @@ bool Projectile::OnStart()
         return ret;
     }
     return true;
+}
+
+Item* Projectile::GetItem() const
+{
+    if (item_)
+        return item_.get();
+    return nullptr;
 }
 
 bool Projectile::Serialize(IO::PropWriteStream& stream)

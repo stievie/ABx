@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "Subsystems.h"
 #include "Random.h"
+#include "Game.h"
 
 namespace Game {
 namespace Components {
@@ -21,6 +22,77 @@ bool AttackComp::CheckRange()
             return true;
     }
     return owner_.IsInRange(Ranges::Touch, target.get());
+}
+
+void AttackComp::StartHit(Actor* target)
+{
+    // New attack
+    attackSpeed_ = owner_.GetAttackSpeed();
+    interrupted_ = false;
+    owner_.FaceObject(target);
+    if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_ / 2)
+    {
+        lastAttackTime_ = Utils::Tick();
+        hitting_ = true;
+        FireWeapon(target);
+        damageType_ = owner_.GetAttackDamageType();
+    }
+}
+
+void AttackComp::Hit(Actor* target)
+{
+    // Done attack -> apply damage
+    hitting_ = false;
+    if (interrupted_)
+    {
+        lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+        owner_.OnInterruptedAttack();
+    }
+    else
+    {
+        const float criticalChance = owner_.GetCriticalChance(target);
+        auto rnd = GetSubsystem<Crypto::Random>();
+        bool critical = criticalChance >= rnd->GetFloat();
+        // Critical hit -> always weapons max damage
+        int32_t damage = owner_.GetAttackDamage(critical);
+        // Source effects may modify the damage
+        owner_.effectsComp_->GetDamage(damageType_, damage, critical);
+        if (target)
+        {
+            if (target->OnAttacked(&owner_, damageType_, damage))
+            {
+                // Some effects may prevent attacks, e.g. blocking
+                if (critical)
+                    // Some effect may prevent critical hits
+                    critical = target->OnGetCriticalHit(&owner_);
+                if (critical)
+                    damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
+                target->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
+            }
+            else
+            {
+                lastError_ = AB::GameProtocol::AttackErrorInterrupted;
+                owner_.OnInterruptedAttack();
+            }
+        }
+        else
+        {
+            lastError_ = AB::GameProtocol::AttackErrorNoTarget;
+            owner_.OnInterruptedAttack();
+        }
+    }
+}
+
+void AttackComp::FireWeapon(Actor* target)
+{
+    if (!target)
+        return;
+
+    auto* weapon = owner_.GetWeapon();
+    if (!weapon || !weapon->IsWeaponProjectile())
+        return;
+    owner_.GetGame()->AddProjectile(weapon->data_.spawnItemUuid,
+        owner_.GetThis<Actor>(), target->GetThis<Actor>());
 }
 
 void AttackComp::Update(uint32_t /* timeElapsed */)
@@ -77,55 +149,13 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     {
         if (!hitting_)
         {
-            // New attack
-            attackSpeed_ = owner_.GetAttackSpeed();
-            interrupted_ = false;
-            owner_.FaceObject(target.get());
-            if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_ / 2)
-            {
-                lastAttackTime_ = Utils::Tick();
-                hitting_ = true;
-                damageType_ = owner_.GetAttackDamageType();
-            }
+            StartHit(target.get());
         }
         else
         {
             // Now we are really attacking. This can be interrupted.
             if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_)
-            {
-                // Done attack -> apply damage
-                hitting_ = false;
-                if (interrupted_)
-                {
-                    lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-                    owner_.OnInterruptedAttack();
-                }
-                else
-                {
-                    const float criticalChance = owner_.GetCriticalChance(target.get());
-                    auto rnd = GetSubsystem<Crypto::Random>();
-                    bool critical = criticalChance >= rnd->GetFloat();
-                    // Critical hit -> always weapons max damage
-                    int32_t damage = owner_.GetAttackDamage(critical);
-                    // Source effects may modify the damage
-                    owner_.effectsComp_->GetDamage(damageType_, damage, critical);
-                    if (target->OnAttacked(&owner_, damageType_, damage))
-                    {
-                        // Some effects may prevent attacks, e.g. blocking
-                        if (critical)
-                            // Some effect may prevent critical hits
-                            critical = target->OnGetCriticalHit(&owner_);
-                        if (critical)
-                            damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
-                        target->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
-                    }
-                    else
-                    {
-                        lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-                        owner_.OnInterruptedAttack();
-                    }
-                }
-            }
+                Hit(target.get());
         }
     }
 }

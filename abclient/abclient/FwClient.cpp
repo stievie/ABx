@@ -107,6 +107,8 @@ String FwClient::GetAttackErrorMessage(AB::GameProtocol::AttackError err)
         return "Invalid Target";
     case AB::GameProtocol::AttackErrorTargetUndestroyable:
         return "Target is undestroyable";
+    case AB::GameProtocol::AttackErrorNoTarget:
+        return "No Target";
     case AB::GameProtocol::AttackErrorInterrupted:
         // Happens when the attack is interrupted, due to some hex or something.
         // No need to show an error message

@@ -134,7 +134,7 @@ public:
         std::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
-    std::shared_ptr<Projectile> AddProjectile(const std::string& script,
+    std::shared_ptr<Projectile> AddProjectile(const std::string& itemUuid,
         std::shared_ptr<Actor> source,
         std::shared_ptr<Actor> target);
     std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);

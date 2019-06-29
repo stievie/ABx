@@ -144,7 +144,7 @@ public:
     int32_t GetAttackDamage(bool critical);
     float GetArmorPenetration();
     /// Get chance for a critical hit. Value between 0..1
-    float GetCriticalChance(Actor* other);
+    float GetCriticalChance(const Actor* other);
     DamagePos GetDamagePos() const { return damageComp_.GetDamagePos(); }
     int GetResource(Components::ResourceType type) const { return resourceComp_.GetValue(type); }
     void SetResource(Components::ResourceType type, Components::SetValueType t, int value);

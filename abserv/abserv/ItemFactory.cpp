@@ -143,6 +143,23 @@ bool ItemFactory::CreateDBItem(AB::Entities::ConcreteItem item)
     return true;
 }
 
+std::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item gameItem;
+    gameItem.uuid = itemUuid;
+    if (!client->Read(gameItem))
+    {
+        LOG_ERROR << "Unable to read item with UUID " << itemUuid << std::endl;
+        return std::unique_ptr<Item>();
+    }
+
+    std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
+    if (!result->LoadScript(result->data_.script))
+        return std::unique_ptr<Item>();
+    return result;
+}
+
 std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level /* = LEVEL_CAP */,
@@ -276,8 +293,8 @@ std::unique_ptr<Item> ItemFactory::CreateModifier(AB::Entities::ItemType modType
     if (selIt == result.end())
         return std::unique_ptr<Item>();
 
-    return CreateItem((*(*selIt)).first, 
-        forItem->concreteItem_.instanceUuid, forItem->concreteItem_.mapUuid, 
+    return CreateItem((*(*selIt)).first,
+        forItem->concreteItem_.instanceUuid, forItem->concreteItem_.mapUuid,
         level, maxStats, Utils::Uuid::EMPTY_UUID, playerUuid);
 }
 
@@ -399,7 +416,7 @@ void ItemFactory::DeleteMap(const std::string& uuid)
         dropChances_.erase(it);
 }
 
-std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid, 
+std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level, Player* target)
 {
     AB_PROFILE;

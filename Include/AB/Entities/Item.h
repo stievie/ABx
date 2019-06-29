@@ -50,7 +50,12 @@ enum ItemType : uint16_t
     ItemTypeSpear,
     ItemTypeFocus,
     ItemTypeShield,
-    ItemTypeWeaponLast = ItemTypeSpear,
+    ItemTypeWeaponLast = ItemTypeShield,
+    // Items that are spawned by weapons
+    ItemTypeSpawnArrow,
+    ItemTypeSpawnSpear,
+    ItemTypeSpawnWandStaff,
+    ItemTypeSpawnSkill,
 
     // Other
     ItemTypeMaterial = 1000,                       // Material, e.g. Iron
@@ -80,6 +85,9 @@ enum ModelClass : uint32_t
     ModelClassLogicStart = 100,
     ModelClassPortal,
     ModelClassAccountChest,
+
+    ModelClassItemSpawns = 500,
+    ModelClassArrow,
 };
 
 struct Item : Entity
@@ -104,6 +112,8 @@ struct Item : Entity
         s.value2b(belongsTo);
         s.value1b(stackAble);
         s.value2b(value);
+        s.text1b(spawnItemUuid, Limits::MAX_UUID);
+        s.text1b(actorScript, Limits::MAX_FILENAME);
     }
 
     uint32_t index = INVALID_INDEX;
@@ -118,6 +128,8 @@ struct Item : Entity
     ItemType belongsTo = ItemTypeUnknown;
     bool stackAble = false;
     uint16_t value = 0;
+    std::string spawnItemUuid = EMPTY_GUID;
+    std::string actorScript;
 };
 
 }

@@ -24,6 +24,9 @@ private:
     bool interrupted_;
     std::weak_ptr<Actor> target_;
     bool CheckRange();
+    void StartHit(Actor* target);
+    void Hit(Actor* target);
+    void FireWeapon(Actor* target);
 public:
     AttackComp() = delete;
     explicit AttackComp(Actor& owner) :

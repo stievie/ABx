@@ -296,6 +296,7 @@ enum AttackError : uint8_t
     AttackErrorInvalidTarget,
     AttackErrorTargetUndestroyable,
     AttackErrorInterrupted,
+    AttackErrorNoTarget,
 };
 
 enum PlayerErrorValue : uint8_t

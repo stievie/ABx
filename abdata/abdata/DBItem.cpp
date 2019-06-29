@@ -49,6 +49,8 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.belongsTo = static_cast<AB::Entities::ItemType>(result->GetUInt("belongs_to"));
     item.stackAble = result->GetUInt("stack_able") != 0;
     item.value = static_cast<uint16_t>(result->GetUInt("value"));
+    item.spawnItemUuid = result->GetString("spawn_item_uuid");
+    item.actorScript = result->GetString("actor_script");
 
     return true;
 }
