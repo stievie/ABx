@@ -6,8 +6,6 @@
 namespace AB {
 namespace Entities {
 
-constexpr unsigned HEARDBEAT_INTERVAL = 1000;
-
 enum ServiceType : uint8_t
 {
     ServiceTypeUnknown = 0,
@@ -29,13 +27,13 @@ enum ServiceStatus : uint8_t
     ServiceStatusOnline
 };
 
-static constexpr auto KEY_SERVICES = "services";
+static constexpr unsigned HEARDBEAT_INTERVAL = 1000;
 
 struct Service : Entity
 {
     static constexpr const char* KEY()
     {
-        return KEY_SERVICES;
+        return "services";
     }
     template<typename S>
     void serialize(S& s)
