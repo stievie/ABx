@@ -66,7 +66,7 @@ public:
 
     /// We are entering a game
     void SetGame(std::shared_ptr<Game> game) final override;
-    std::string GetName() const final override { return data_.name; }
+    const std::string& GetName() const final override { return data_.name; }
     AB::Entities::CharacterSex GetSex() const final override
     {
         return data_.sex;

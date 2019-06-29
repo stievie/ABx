@@ -212,7 +212,7 @@ public:
 
     virtual bool Serialize(IO::PropWriteStream& stream);
 
-    virtual std::string GetName() const { return name_; }
+    virtual const std::string& GetName() const { return name_; }
 
     Math::Transformation transformation_;
     /// Auto ID, not DB ID

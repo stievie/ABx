@@ -66,7 +66,7 @@ public:
     std::shared_ptr<ai::AI> GetAi();
     void Shutdown();
 
-    std::string GetName() const override { return name_; }
+    const std::string& GetName() const override { return name_; }
     void SetName(const std::string& name) { name_ = name; }
     uint32_t GetLevel() const override { return level_; }
     bool CanAttack() const override { return true; }
