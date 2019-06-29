@@ -109,6 +109,12 @@ String FwClient::GetAttackErrorMessage(AB::GameProtocol::AttackError err)
         return "Target is undestroyable";
     case AB::GameProtocol::AttackErrorNoTarget:
         return "No Target";
+    case AB::GameProtocol::AttackErrorTargetObstructed:
+        return "Target is obstructed";
+    case AB::GameProtocol::AttackErrorTargetDodge:
+        return "Target dodged";
+    case AB::GameProtocol::AttackErrorTargetMissed:
+        return "Target missed";
     case AB::GameProtocol::AttackErrorInterrupted:
         // Happens when the attack is interrupted, due to some hex or something.
         // No need to show an error message

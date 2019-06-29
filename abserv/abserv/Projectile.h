@@ -27,8 +27,9 @@ private:
     bool startSet_;
     std::shared_ptr<Script> script_;
     Math::Vector3 start_;
-    Math::Vector3 direction_;
+    Math::Vector3 targetPos_;
     Math::Ray ray_;
+    float distance_{ std::numeric_limits<float>::max() };
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
     float speed_{ 0.0f };

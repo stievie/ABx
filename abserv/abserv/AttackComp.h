@@ -57,6 +57,7 @@ public:
     bool Interrupt();
     void Pause(bool value = true);
     bool IsTarget(const Actor* target) const;
+    void SetAttackError(AB::GameProtocol::AttackError error) { lastError_ = error; }
 };
 
 }

@@ -75,9 +75,9 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     // Can not change target
     assert(!target);
     target_ = target;
-    direction_ = target->transformation_.position_;
-    ray_ = Math::Ray(start_, direction_);
-    // TODO: Raycast query
+    targetPos_ = target->transformation_.position_;
+    ray_ = Math::Ray(start_, targetPos_);
+    started_ = OnStart();
 }
 
 void Projectile::SetSpeed(float speed)
@@ -91,13 +91,9 @@ void Projectile::SetSpeed(float speed)
 
 void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    if (!started_)
-    {
-        started_ = OnStart();
-    }
     if (started_)
     {
-        moveComp_->HeadTo(direction_);
+        moveComp_->HeadTo(targetPos_);
         moveComp_->Move(((float)(timeElapsed) / BASE_SPEED) * moveComp_->GetSpeedFactor(),
             Math::Vector3::UnitZ);
     }
@@ -108,6 +104,34 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
     if (item_)
         item_->Update(timeElapsed);
+
+    if (!started_)
+        return;
+
+    auto source = source_.lock();
+    if (auto target = target_.lock())
+    {
+        if (!target->transformation_.position_.Equals(targetPos_))
+        {
+            if (source)
+                source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetDodge);
+            GetGame()->RemoveObject(this);
+            return;
+        }
+        const auto targetBB = target->GetWorldBoundingBox();
+        assert(targetBB.IsDefined());
+        assert(ray_.IsDefined());
+        const float dist = ray_.HitDistance(targetBB);
+        if (dist < distance_)
+            distance_ = dist;
+        else
+        {
+            // Increasing distance -> missed
+            if (source)
+                source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetMissed);
+            GetGame()->RemoveObject(this);
+        }
+    }
 }
 
 void Projectile::OnCollide(GameObject* other)
