@@ -6,6 +6,8 @@
 namespace AB {
 namespace Entities {
 
+constexpr unsigned HEARDBEAT_INTERVAL = 1000;
+
 enum ServiceType : uint8_t
 {
     ServiceTypeUnknown = 0,
@@ -55,6 +57,7 @@ struct Service : Entity
         s.text1b(arguments, Limits::MAX_FILENAME);
         s.value1b(temporary);
         s.value1b(load);
+        s.value8b(heardbeat);
     }
 
     std::string name;
@@ -79,6 +82,8 @@ struct Service : Entity
     /// Service load, something between 0..100. Not written to DB. The service
     /// is responsible to update this value.
     uint8_t load = 0;
+    /// Last heard beat time
+    int64_t heardbeat{ 0 };
 };
 
 }

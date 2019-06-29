@@ -38,6 +38,8 @@
 #define WRITE_MINIBUMP
 #define _PROFILING
 
+#define SCHEDULER_MINTICKS 10
+
 //#define _PROFILING
 // Used by the profiler to generate a unique identifier
 #define CONCAT(a, b) a ## b

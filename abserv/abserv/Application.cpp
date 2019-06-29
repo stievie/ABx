@@ -484,6 +484,7 @@ void Application::Run()
     serv.type = serverType_;
     serv.temporary = temporary_;
     serv.startTime = Utils::Tick();
+    serv.heardbeat = Utils::Tick();
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;

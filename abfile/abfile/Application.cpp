@@ -36,6 +36,8 @@
 #include "StringUtils.h"
 #include "Subsystems.h"
 #include "FileUtils.h"
+#include "Dispatcher.h"
+#include "Scheduler.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -49,6 +51,8 @@ Application::Application() :
 {
     serverType_ = AB::Entities::ServiceTypeFileServer;
     ioService_ = std::make_shared<asio::io_service>();
+    Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
+    Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(*ioService_);
     Subsystems::Instance.CreateSubsystem<Auth::BanManager>();
@@ -59,6 +63,8 @@ Application::~Application()
 {
     if (running_)
         Stop();
+    GetSubsystem<Asynch::Scheduler>()->Stop();
+    GetSubsystem<Asynch::Dispatcher>()->Stop();
 }
 
 void Application::HandleMessage(const Net::MessageMsg& msg)
@@ -139,22 +145,31 @@ void Application::UpdateBytesSent(size_t bytes)
         while (loads_.size() > 9)
             loads_.erase(loads_.begin());
         loads_.push_back(static_cast<int>(load));
+    }
+}
 
-        auto* dataClient = GetSubsystem<IO::DataClient>();
-        if (dataClient->IsConnected())
+void Application::HeardBeatTask()
+{
+    auto* dataClient = GetSubsystem<IO::DataClient>();
+    if (dataClient->IsConnected())
+    {
+        AB::Entities::Service serv;
+        serv.uuid = serverId_;
+        if (dataClient->Read(serv))
         {
-            AB::Entities::Service serv;
-            serv.uuid = serverId_;
-            if (dataClient->Read(serv))
-            {
-                uint8_t avgLoad = GetAvgLoad();
-                if (avgLoad != serv.load)
-                {
-                    serv.load = avgLoad;
-                    dataClient->Update(serv);
-                }
-            }
+            serv.load = GetAvgLoad();
+            serv.heardbeat = Utils::Tick();
+            if (!dataClient->Update(serv))
+                LOG_ERROR << "Error updating service " << serverId_ << std::endl;
         }
+        else
+            LOG_ERROR << "Error reading service " << serverId_ << std::endl;
+    }
+    if (running_)
+    {
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+        );
     }
 }
 
@@ -168,6 +183,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
         ShowHelp();
         return false;
     }
+
+    GetSubsystem<Asynch::Dispatcher>()->Start();
+    GetSubsystem<Asynch::Scheduler>()->Start();
 
     auto* config = GetSubsystem<IO::SimpleConfigManager>();
     if (configFile_.empty())
@@ -353,10 +371,15 @@ void Application::Run()
     serv.type = serverType_;
     serv.startTime = startTime_;
     serv.temporary = temporary_;
+    serv.heardbeat = Utils::Tick();
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
+
+    GetSubsystem<Asynch::Scheduler>()->Add(
+        Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+    );
 
     // If we want to receive messages, we need to send our ServerID to the message server.
     SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);

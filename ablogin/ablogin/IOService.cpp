@@ -28,6 +28,12 @@ bool IOService::GetService(AB::Entities::ServiceType type,
             continue;
         if (s.status != AB::Entities::ServiceStatusOnline)
             continue;
+        if (s.type == AB::Entities::ServiceTypeFileServer || s.type == AB::Entities::ServiceTypeGameServer)
+        {
+            if (Utils::TimePassed(s.heardbeat) > AB::Entities::HEARDBEAT_INTERVAL * 2)
+                // Maybe dead
+                continue;
+        }
         if (s.type == type)
         {
             // Use preferred server is possible

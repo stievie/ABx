@@ -59,6 +59,7 @@ private:
     void HandleMessage(const Net::MessageMsg& msg);
     void ShowHelp();
     void UpdateBytesSent(size_t bytes);
+    void HeardBeatTask();
     bool IsAllowed(std::shared_ptr<HttpsServer::Request> request);
     static SimpleWeb::CaseInsensitiveMultimap GetDefaultHeader();
     void GetHandlerDefault(std::shared_ptr<HttpsServer::Response> response,

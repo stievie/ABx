@@ -320,6 +320,7 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
     serv.startTime = startTime_;
+    serv.heardbeat = Utils::Tick();
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
