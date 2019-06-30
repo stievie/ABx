@@ -53,7 +53,7 @@ void ProtocolLogin::CreateAccount(std::string& host, uint16_t port,
 void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     const std::string& accountUuid, const std::string& password,
     const std::string& charName, const std::string& profUuid,
-    uint32_t modelIndex,
+    uint32_t itemIndex,
     AB::Entities::CharacterSex sex, bool isPvp,
     const CreatePlayerCallback& callback)
 {
@@ -63,7 +63,7 @@ void ProtocolLogin::CreatePlayer(std::string& host, uint16_t port,
     password_ = password;
     charName_ = charName;
     profUuid_ = profUuid;
-    modelIndex_ = modelIndex;
+    itemIndex_ = itemIndex;
     sex_ = sex;
     isPvp_ = isPvp;
     createPlayerCallback_ = callback;
@@ -133,7 +133,7 @@ void ProtocolLogin::SendCreatePlayerPacket()
     msg->AddStringEncrypted(accountUuid_);
     msg->AddStringEncrypted(password_);
     msg->AddStringEncrypted(charName_);
-    msg->Add<uint32_t>(modelIndex_);
+    msg->Add<uint32_t>(itemIndex_);
     msg->Add<uint8_t>(static_cast<uint8_t>(sex_));
     msg->AddString(profUuid_);
     msg->Add<uint8_t>(isPvp_ ? 1 : 0);

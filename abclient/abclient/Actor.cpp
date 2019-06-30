@@ -79,15 +79,8 @@ Actor* Actor::CreateActor(uint32_t id, Scene* scene,
 void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     AB::GameProtocol::CreatureState state)
 {
-    if (modelIndex_ != 0)
-    {
-        if (objectType_ != ObjectTypeAreaOfEffect)
-            LoadModel(modelIndex_, position, rotation);
-        else
-        {
-            LoadAreaOfEffect(modelIndex_, position, rotation);
-        }
-    }
+    if (itemIndex_ != 0)
+        LoadObject(itemIndex_, position, rotation);
 
     // Must be after load model
     animations_[ANIM_RUN] = GetAnimation(ANIM_RUN);
@@ -118,13 +111,13 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     }
 }
 
-bool Actor::LoadModel(uint32_t index, const Vector3& position, const Quaternion& rotation)
+bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quaternion& rotation)
 {
     ItemsCache* items = GetSubsystem<ItemsCache>();
-    SharedPtr<Item> item = items->Get(index);
+    SharedPtr<Item> item = items->Get(itemIndex);
     if (!item)
     {
-        URHO3D_LOGERRORF("Model Item not found: %d", index);
+        URHO3D_LOGERRORF("Model Item not found: %d", itemIndex);
         return false;
     }
     XMLFile* object = item->GetModelResource<XMLFile>();
@@ -170,12 +163,6 @@ bool Actor::LoadModel(uint32_t index, const Vector3& position, const Quaternion&
         adjNode->Remove();
         return false;
     }
-    return true;
-}
-
-bool Actor::LoadAreaOfEffect(uint32_t index, const Vector3& position, const Quaternion& rotation)
-{
-    // TODO
     return true;
 }
 
@@ -341,6 +328,13 @@ void Actor::SetUIElementSizePos(UIElement* elem, const IntVector2& size, const I
     }
 }
 
+bool Actor::IsSpeehcBubbleVisible() const
+{
+    if (speechBubbleWindow_)
+        return speechBubbleWindow_->IsVisible();
+    return false;
+}
+
 void Actor::Update(float timeStep)
 {
     Vector3 oldpos = node_->GetPosition();
@@ -356,7 +350,7 @@ void Actor::Update(float timeStep)
     IntVector2 hpTop = WorldToScreenPoint(headPos);
 
     bool highlight = sc->Test(AbEvents::E_SC_HIGHLIGHTOBJECTS);
-    if (hovered_ || playerSelected_ || highlight || speechBubbleWindow_->IsVisible())
+    if (hovered_ || playerSelected_ || highlight || IsSpeehcBubbleVisible())
     {
         float sizeFac = 1.0f;
         if (screenPos != IntVector2::ZERO)
@@ -368,8 +362,11 @@ void Actor::Update(float timeStep)
                 sizeFac = 10.0f / dist.Length();
             }
 
-            IntVector2 labelPos(screenPos.x_ - nameWindow_->GetWidth() / 2, screenPos.y_);
-            SetUIElementSizePos(nameWindow_, IntVector2::ZERO, labelPos);
+            if (nameWindow_)
+            {
+                IntVector2 labelPos(screenPos.x_ - nameWindow_->GetWidth() / 2, screenPos.y_);
+                SetUIElementSizePos(nameWindow_, IntVector2::ZERO, labelPos);
+            }
 
             if (hpBar_)
             {
@@ -386,7 +383,8 @@ void Actor::Update(float timeStep)
         }
     }
 
-    nameWindow_->SetVisible(highlight || hovered_ || playerSelected_);
+    if (nameWindow_)
+        nameWindow_->SetVisible(highlight || hovered_ || playerSelected_);
     if (hpBar_ && !undestroyable_)
     {
         hpBar_->SetValues(stats_.maxHealth, stats_.health);
@@ -396,7 +394,7 @@ void Actor::Update(float timeStep)
     {
         classLevel_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
     }
-    if (speechBubbleWindow_->IsVisible())
+    if (IsSpeehcBubbleVisible())
     {
         IntVector2 isbPos(screenPos.x_ - (speechBubbleWindow_->GetWidth() / 3), hpTop.y_ - 40);
         SetUIElementSizePos(speechBubbleWindow_, IntVector2::ZERO, isbPos);
@@ -435,8 +433,11 @@ void Actor::RemoveFromScene()
 
 void Actor::AddActorUI()
 {
+    if (objectType_ == ObjectTypeAreaOfEffect)
+        return;
     if (name_.Empty())
         return;
+    assert(name_.Compare("Unknown") != 0);
 
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Texture2D* tex = cache->GetResource<Texture2D>("Textures/UI.png");
@@ -1008,7 +1009,7 @@ void Actor::Unserialize(PropReadStream& data)
         data.Read(p);
         profession2_ = sm->GetProfessionByIndex(p);
     }
-    data.Read(modelIndex_);
+    data.Read(itemIndex_);
     std::string skills;
     data.ReadString(skills);
     LoadSkillTemplate(skills);

@@ -97,8 +97,7 @@ public:
     /// Initialize the vehicle. Create rendering and physics components. Called by the application.
     void Init(Scene* scene, const Vector3& position, const Quaternion& rotation,
         AB::GameProtocol::CreatureState state) override;
-    bool LoadModel(uint32_t index, const Vector3& position, const Quaternion& rotation);
-    bool LoadAreaOfEffect(uint32_t index, const Vector3& position, const Quaternion& rotation);
+    bool LoadObject(uint32_t itemIndex, const Vector3& position, const Quaternion& rotation);
     /// Add a model like hair armor etc.
     void AddModel(uint32_t itemIndex);
     void PlaySoundEffect(SoundSource3D* soundSource, const StringHash& type, bool loop = false);
@@ -141,6 +140,7 @@ private:
     void HandleEffectAdded(StringHash eventType, VariantMap& eventData);
     void HandleItemDropped(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
+    bool IsSpeehcBubbleVisible() const;
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;
@@ -161,7 +161,7 @@ public:
     AB::SkillIndices skills_;
     AB::Attributes attributes_;
     /// Model or effect (in case of AOE) index
-    uint32_t modelIndex_;
+    uint32_t itemIndex_;
     AB::Entities::ModelClass modelClass_;
     Extrapolator<3, float> posExtrapolator_;
     ActorStats stats_;

@@ -43,7 +43,7 @@ private:
     std::string accKey_;
     std::string charName_;
     std::string profUuid_;
-    uint32_t modelIndex_;
+    uint32_t itemIndex_;
     AB::Entities::CharacterSex sex_;
     bool isPvp_;
     bool firstRecv_;
