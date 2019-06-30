@@ -328,7 +328,7 @@ void Actor::SetUIElementSizePos(UIElement* elem, const IntVector2& size, const I
     }
 }
 
-bool Actor::IsSpeehcBubbleVisible() const
+bool Actor::IsSpeechBubbleVisible() const
 {
     if (speechBubbleWindow_)
         return speechBubbleWindow_->IsVisible();
@@ -350,7 +350,7 @@ void Actor::Update(float timeStep)
     IntVector2 hpTop = WorldToScreenPoint(headPos);
 
     bool highlight = sc->Test(AbEvents::E_SC_HIGHLIGHTOBJECTS);
-    if (hovered_ || playerSelected_ || highlight || IsSpeehcBubbleVisible())
+    if (hovered_ || playerSelected_ || highlight || IsSpeechBubbleVisible())
     {
         float sizeFac = 1.0f;
         if (screenPos != IntVector2::ZERO)
@@ -394,7 +394,7 @@ void Actor::Update(float timeStep)
     {
         classLevel_->SetVisible((hovered_ && objectType_ != ObjectTypeSelf) || playerSelected_);
     }
-    if (IsSpeehcBubbleVisible())
+    if (IsSpeechBubbleVisible())
     {
         IntVector2 isbPos(screenPos.x_ - (speechBubbleWindow_->GetWidth() / 3), hpTop.y_ - 40);
         SetUIElementSizePos(speechBubbleWindow_, IntVector2::ZERO, isbPos);

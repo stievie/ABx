@@ -140,7 +140,7 @@ private:
     void HandleEffectAdded(StringHash eventType, VariantMap& eventData);
     void HandleItemDropped(StringHash eventType, VariantMap& eventData);
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
-    bool IsSpeehcBubbleVisible() const;
+    bool IsSpeechBubbleVisible() const;
 protected:
     AnimatedModel* animatedModel_;
     Actor::ModelType type_;
