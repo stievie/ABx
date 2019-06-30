@@ -432,7 +432,7 @@ bool Actor::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint8_t>(GetSex());
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProfIndex()));
     stream.Write<uint32_t>(static_cast<uint32_t>(GetProf2Index()));
-    stream.Write<uint32_t>(GetModelIndex());
+    stream.Write<uint32_t>(GetItemIndex());
     const std::string skills = IO::TemplateEncoder::Encode(*skills_);
     stream.WriteString(skills);
     return true;

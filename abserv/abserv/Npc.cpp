@@ -62,7 +62,7 @@ bool Npc::LoadScript(const std::string& fileName)
 
     name_ = (const char*)luaState_["name"];
     level_ = luaState_["level"];
-    modelIndex_ = luaState_["modelIndex"];
+    itemIndex_ = luaState_["modelIndex"];
     sex_ = luaState_["sex"];
     if (ScriptManager::IsNumber(luaState_, "group_id"))
         groupId_ = luaState_["group_id"];

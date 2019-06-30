@@ -56,6 +56,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
+        .addFunction("Remove",           &GameObject::Remove)
     );
 }
 
@@ -305,6 +306,13 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
     }
     // Shouldn't happen
     return false;
+}
+
+void GameObject::Remove()
+{
+    auto game = GetGame();
+    assert(game);
+    game->RemoveObject(this);
 }
 
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)

@@ -28,6 +28,7 @@ Projectile::Projectile(std::unique_ptr<Item>& item) :
     );
     // Projectile can not hide other objects
     occluder_ = false;
+    undestroyable_ = true;
 
     InitializeLua();
 }
@@ -73,7 +74,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
 {
     assert(startSet_);
     // Can not change target
-    assert(!target);
+    assert(!target_);
     target_ = target;
     targetPos_ = target->transformation_.position_;
     ray_ = Math::Ray(start_, targetPos_);
@@ -82,11 +83,12 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
 
 void Projectile::SetSpeed(float speed)
 {
-    if (speed_ != speed)
-    {
-        speed_ = speed;
-        moveComp_->SetSpeedFactor(speed);
-    }
+    moveComp_->SetSpeedFactor(speed);
+}
+
+float Projectile::GetSpeed() const
+{
+    return moveComp_->GetSpeedFactor();
 }
 
 void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
@@ -115,7 +117,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             if (source)
                 source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetDodge);
-            GetGame()->RemoveObject(this);
+            Remove();
             return;
         }
         const auto targetBB = target->GetWorldBoundingBox();
@@ -129,9 +131,30 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             // Increasing distance -> missed
             if (source)
                 source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetMissed);
-            GetGame()->RemoveObject(this);
+            Remove();
         }
     }
+}
+
+uint32_t Projectile::GetGroupId() const
+{
+    if (auto s = source_.lock())
+        return s->GetGroupId();
+    return 0u;
+}
+
+uint32_t Projectile::GetItemIndex() const
+{
+    auto* item = GetItem();
+    assert(item);
+    return item->data_.index;
+}
+
+uint32_t Projectile::GetLevel() const
+{
+    if (auto s = source_.lock())
+        return s->GetLevel();
+    return 0u;
 }
 
 void Projectile::OnCollide(GameObject* other)
@@ -170,41 +193,6 @@ Item* Projectile::GetItem() const
     if (item_)
         return item_.get();
     return nullptr;
-}
-
-bool Projectile::Serialize(IO::PropWriteStream& stream)
-{
-    if (!Actor::Serialize(stream))
-        return false;
-    stream.Write<uint32_t>(0);                                   // Level
-    stream.Write<uint8_t>(AB::Entities::CharacterSexUnknown);
-    stream.Write<uint32_t>(0);                                   // Prof 1
-    stream.Write<uint32_t>(0);                                   // Prof 2
-    // TODO: Item index for projectiles
-    stream.Write<uint32_t>(0);   // Model index, in this case the effect index
-    return true;
-}
-
-void Projectile::WriteSpawnData(Net::NetworkMessage& msg)
-{
-    msg.Add<uint32_t>(id_);
-    msg.Add<float>(transformation_.position_.x_);
-    msg.Add<float>(transformation_.position_.y_);
-    msg.Add<float>(transformation_.position_.z_);
-    msg.Add<float>(transformation_.GetYRotation());
-    msg.Add<float>(transformation_.scale_.x_);
-    msg.Add<float>(transformation_.scale_.y_);
-    msg.Add<float>(transformation_.scale_.z_);
-    msg.Add<uint8_t>(1);                                  // not destroyable
-    msg.Add<uint8_t>(stateComp_.GetState());
-    msg.Add<float>(0.0f);                                 // speed
-    msg.Add<uint32_t>(0);                                 // Group id
-    msg.Add<uint8_t>(0);                                  // Group pos
-    IO::PropWriteStream data;
-    size_t dataSize;
-    Serialize(data);
-    const char* cData = data.GetStream(dataSize);
-    msg.AddString(std::string(cData, dataSize));
 }
 
 }

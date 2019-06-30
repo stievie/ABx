@@ -71,7 +71,7 @@ public:
     {
         return data_.sex;
     }
-    uint32_t GetModelIndex() const final override
+    uint32_t GetItemIndex() const final override
     {
         return data_.modelIndex;
     }

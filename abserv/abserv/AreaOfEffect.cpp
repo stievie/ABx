@@ -41,6 +41,9 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
         .addFunction("GetStartTime", &AreaOfEffect::GetStartTime)
         .addFunction("GetLifetime", &AreaOfEffect::GetLifetime)
         .addFunction("SetLifetime", &AreaOfEffect::SetLifetime)
+        .addFunction("GetItemIndex", &AreaOfEffect::GetItemIndex)
+        .addFunction("SetItemIndex", &AreaOfEffect::SetItemIndex)
+
         .addFunction("Index", &AreaOfEffect::GetIndex)
     );
 }
@@ -74,6 +77,9 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         return false;
     if (!script_->Execute(luaState_))
         return false;
+
+    itemIndex_ = luaState_["itemIndex"];
+
     if (ScriptManager::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "onEnded"))
@@ -165,6 +171,18 @@ std::shared_ptr<Actor> AreaOfEffect::GetSource()
     return source_.lock();
 }
 
+uint32_t AreaOfEffect::GetGroupId() const
+{
+    if (auto s = source_.lock())
+        return s->GetGroupId();
+    return 0u;
+}
+
+uint32_t AreaOfEffect::GetItemIndex() const
+{
+    return itemIndex_;
+}
+
 bool AreaOfEffect::Serialize(IO::PropWriteStream& stream)
 {
     if (!GameObject::Serialize(stream))
@@ -173,7 +191,7 @@ bool AreaOfEffect::Serialize(IO::PropWriteStream& stream)
     stream.Write<uint8_t>(AB::Entities::CharacterSexUnknown);
     stream.Write<uint32_t>(0);                                   // Prof 1
     stream.Write<uint32_t>(0);                                   // Prof 2
-    stream.Write<uint32_t>(index_);   // Model index, in this case the effect index
+    stream.Write<uint32_t>(GetItemIndex());   // Model/Item index
     return true;
 }
 
@@ -190,7 +208,7 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<uint8_t>(1);                                  // not destroyable
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(0.0f);                                 // speed
-    msg.Add<uint32_t>(0);                                 // Group id
+    msg.Add<uint32_t>(GetGroupId());                                 // Group id
     msg.Add<uint8_t>(0);                                  // Group pos
     IO::PropWriteStream data;
     size_t dataSize;

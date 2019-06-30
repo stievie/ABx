@@ -57,15 +57,16 @@ public:
     void SetSource(std::shared_ptr<Actor> source);
     void SetTarget(std::shared_ptr<Actor> target);
     void SetSpeed(float speed);
-    float GetSpeed() const { return speed_; }
+    float GetSpeed() const;
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+
+    uint32_t GetGroupId() const override;
+    uint32_t GetItemIndex() const override;
+    uint32_t GetLevel() const override;
 
     void OnCollide(GameObject* other) override;
     bool OnStart();
     Item* GetItem() const;
-
-    bool Serialize(IO::PropWriteStream& stream) override;
-    void WriteSpawnData(Net::NetworkMessage& msg) override;
 };
 
 }

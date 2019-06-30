@@ -28,7 +28,7 @@ private:
     bool serverOnly_;
     std::string name_;
     uint32_t level_;
-    uint32_t modelIndex_;
+    uint32_t itemIndex_;
     AB::Entities::CharacterSex sex_;
     /// Group is like a party and they need unique IDs.
     /// If this NPC belongs to a party with players this must be the PartyID.
@@ -72,9 +72,9 @@ public:
     bool CanAttack() const override { return true; }
     bool CanUseSkill() const override { return true; }
     void SetLevel(uint32_t value) override;
-    uint32_t GetModelIndex() const final override
+    uint32_t GetItemIndex() const final override
     {
-        return modelIndex_;
+        return itemIndex_;
     }
     AB::Entities::CharacterSex GetSex() const final override
     {

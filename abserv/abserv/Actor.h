@@ -194,7 +194,7 @@ public:
     {
         return AB::Entities::CharacterSexUnknown;
     }
-    virtual uint32_t GetModelIndex() const
+    virtual uint32_t GetItemIndex() const
     {
         return 0;
     }

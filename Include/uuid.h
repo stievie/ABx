@@ -68,10 +68,11 @@ public:
         return (value << count) ^ (value >> (32 - count));
     }
 
-    sha1()
-    {
-        reset();
-    }
+    sha1() :
+        m_digest{ 0x67452301 , 0xEFCDAB89 , 0x98BADCFE, 0x10325476, 0xC3D2E1F0 },
+        m_blockByteIndex(0),
+        m_byteCount(0)
+    { }
 
     void reset()
     {

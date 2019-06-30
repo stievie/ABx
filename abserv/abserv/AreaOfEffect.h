@@ -30,6 +30,7 @@ private:
     int64_t startTime_;
     // Lifetime
     uint32_t lifetime_;
+    uint32_t itemIndex_{ 0 };
     bool HaveFunction(Function func) const
     {
         return (functions_ & func) == func;
@@ -64,6 +65,10 @@ public:
     int64_t GetStartTime() const { return startTime_; }
     uint32_t GetIndex() const { return index_; }
     void SetIndex(uint32_t value) { index_ = value; }
+
+    uint32_t GetGroupId() const;
+    uint32_t GetItemIndex() const;
+    void SetItemIndex(uint32_t value) { itemIndex_ = value; }
 
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;

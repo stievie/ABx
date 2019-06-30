@@ -209,6 +209,8 @@ public:
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction) const;
     bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction) const;
     bool IsObjectInSight(const GameObject* object) const;
+    /// Remove this object from scene
+    void Remove();
 
     virtual bool Serialize(IO::PropWriteStream& stream);
 

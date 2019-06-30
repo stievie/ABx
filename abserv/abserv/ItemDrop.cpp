@@ -51,7 +51,7 @@ void ItemDrop::PickUp(Actor* actor)
         {
             pickedUp_ = true;
             actor->SetSelectedObjectById(0);
-            GetGame()->RemoveObject(this);
+            Remove();
         }
     }
 }
@@ -81,9 +81,7 @@ void ItemDrop::OnClicked(Actor* actor)
     if (auto o = actor->selectedObject_.lock())
     {
         if (o->id_ == id_)
-        {
             PickUp(actor);
-        }
     }
 }
 

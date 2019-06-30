@@ -2,6 +2,8 @@ include("/scripts/includes/consts.lua")
 include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 
+itemIndex = 6000
+
 -- https://wiki.guildwars.com/wiki/Poison_Spout
 local damage = 50
 local poisoningMS = 12 * 1000

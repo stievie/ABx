@@ -55,7 +55,8 @@ enum ItemType : uint16_t
     ItemTypeSpawnArrow,
     ItemTypeSpawnSpear,
     ItemTypeSpawnWandStaff,
-    ItemTypeSpawnSkill,
+    ItemTypeSpawnSkill,                            // E.g. Meteor
+    ItemTypeParticle,
 
     // Other
     ItemTypeMaterial = 1000,                       // Material, e.g. Iron
@@ -88,6 +89,8 @@ enum ModelClass : uint32_t
 
     ModelClassItemSpawns = 500,
     ModelClassArrow,
+
+    ModelClassParticle = 1000,
 };
 
 struct Item : Entity
