@@ -46,7 +46,23 @@ protected:
     kaguya::State luaState_;
     bool luaInitialized_;
     void InitializeLua();
+protected:
     void OnArrived() override;
+    void OnEndUseSkill(Skill* skill) override;
+    void OnStartUseSkill(Skill* skill) override;
+    bool OnAttack(Actor* target) override;
+    bool OnAttacked(Actor* source, DamageType type, int32_t damage) override;
+    bool OnGettingAttacked(Actor* source) override;
+    bool OnUseSkill(Actor* target, Skill* skill) override;
+    bool OnSkillTargeted(Actor* source, Skill* skill) override;
+    bool OnInterruptingAttack() override;
+    bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
+    void OnInterruptedAttack() override;
+    void OnInterruptedSkill(Skill* skill) override;
+    void OnKnockedDown(uint32_t time) override;
+    void OnHealed(int hp) override;
+    void OnDied() override;
+    void OnResurrected(int health, int energy) override;
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -100,22 +116,6 @@ public:
     void OnCollide(GameObject* other) override;
     void OnTrigger(GameObject* other) override;
     void OnLeftArea(GameObject* other) override;
-    void OnEndUseSkill(Skill* skill) override;
-    void OnStartUseSkill(Skill* skill) override;
-
-    bool OnAttack(Actor* target) override;
-    bool OnAttacked(Actor* source, DamageType type, int32_t damage) override;
-    bool OnGettingAttacked(Actor* source) override;
-    bool OnUseSkill(Actor* target, Skill* skill) override;
-    bool OnSkillTargeted(Actor* source, Skill* skill) override;
-    bool OnInterruptingAttack() override;
-    bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
-    void OnInterruptedAttack() override;
-    void OnInterruptedSkill(Skill* skill) override;
-    void OnKnockedDown(uint32_t time) override;
-    void OnHealed(int hp) override;
-    void OnDied() override;
-    void OnResurrected(int health, int energy) override;
 };
 
 }

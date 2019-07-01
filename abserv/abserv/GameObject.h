@@ -21,6 +21,7 @@
 #include "Mechanic.h"
 #include "CollisionComp.h"
 #include "MoveComp.h"
+#include "InputComp.h"
 #include <kaguya/kaguya.hpp>
 #include "Iteration.h"
 
@@ -43,7 +44,10 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
+    friend class Components::CollisionComp;
     friend class Components::MoveComp;
+    friend class Components::TriggerComp;
+    friend class Components::InputComp;
 public:
     static Utils::IdGenerator<uint32_t> objectIds_;
 private:
@@ -85,6 +89,14 @@ protected:
     }
     void AddToOctree();
     void RemoveFromOctree();
+protected:
+    virtual void OnSelected(Actor*) { }
+    virtual void OnClicked(Actor*) { }
+    virtual void OnCollide(GameObject* other);
+    /// Object entered the area
+    virtual void OnTrigger(GameObject*) { }
+    /// Object left the area. Opposite to OnTrigger
+    virtual void OnLeftArea(GameObject*) { }
 public:
     static void RegisterLua(kaguya::State& state);
     /// The head is not on the ground.
@@ -264,15 +276,8 @@ public:
             triggerComp_ = std::make_unique<Components::TriggerComp>(*this);
         triggerComp_->trigger_ = value;
     }
-    virtual void WriteSpawnData(Net::NetworkMessage&) { }
 
-    virtual void OnSelected(Actor*) { }
-    virtual void OnClicked(Actor*) { }
-    virtual void OnCollide(GameObject* other);
-    /// Object entered the area
-    virtual void OnTrigger(GameObject*) { }
-    /// Object left the area. Opposite to OnTrigger
-    virtual void OnLeftArea(GameObject*) { }
+    virtual void WriteSpawnData(Net::NetworkMessage&) { }
 };
 
 inline bool CompareObjects(GameObject* lhs, GameObject* rhs)

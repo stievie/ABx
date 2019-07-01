@@ -120,6 +120,8 @@ Actor::Actor() :
     occluder_ = true;
 }
 
+Actor::~Actor() = default;
+
 void Actor::Initialize()
 {
     resourceComp_.UpdateResources();

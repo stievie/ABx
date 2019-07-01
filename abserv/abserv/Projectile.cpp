@@ -173,7 +173,7 @@ void Projectile::OnCollide(GameObject* other)
     }
 
     // Always remove when it collides with anything
-    GetGame()->RemoveObject(this);
+    Remove();
 }
 
 bool Projectile::OnStart()

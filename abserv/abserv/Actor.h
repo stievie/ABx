@@ -38,6 +38,7 @@ enum class GroupMaskFlags : uint8_t
 /// Player, NPC, Monster some such
 class Actor : public GameObject
 {
+    friend class Skill;
     friend class Components::MoveComp;
     friend class Components::AutoRunComp;
     friend class Components::CollisionComp;
@@ -70,11 +71,35 @@ protected:
     {
         // Only the player needs to override this
     }
+protected:
+    // Mostly called by Components, which are friends
     virtual void OnArrived() {}
+    virtual void OnInterruptedAttack() { }
+    virtual void OnInterruptedSkill(Skill*) { }
+    virtual void OnKnockedDown(uint32_t) { }
+    virtual void OnHealed(int) { }
+    virtual void OnDied();
+    virtual void OnResurrected(int /* health */, int /* energy */) { }
+    virtual void OnPingObject(uint32_t /* targetId */, AB::GameProtocol::ObjectCallType /* type */, int /* skillIndex */) { }
+    virtual void OnInventoryFull() { }
+    /// This Actor is attacking the target
+    virtual bool OnAttack(Actor* target);
+    /// This Actor was attacked by source
+    virtual bool OnAttacked(Actor* source, DamageType type, int32_t damage);
+    /// This Actor is going to bee attacked by source. Happens before OnAttacked.
+    virtual bool OnGettingAttacked(Actor* source);
+    /// This actor is using a skill on target
+    virtual bool OnUseSkill(Actor* target, Skill* skill);
+    /// This Actor is targeted for a skill by source
+    virtual bool OnSkillTargeted(Actor* source, Skill* skill);
+    virtual bool OnGetCriticalHit(Actor* source);
+    virtual void OnEndUseSkill(Skill* skill);
+    virtual void OnStartUseSkill(Skill* skill);
 public:
     static void RegisterLua(kaguya::State& state);
 
     Actor();
+    ~Actor() override;
 
     /// Loading is done initialize properties
     virtual void Initialize();
@@ -121,8 +146,6 @@ public:
     std::vector<Actor*> GetAlliesInRange(Ranges range);
     size_t GetAllyCountInRange(Ranges range);
     Item* GetWeapon() const;
-    virtual void OnEndUseSkill(Skill* skill);
-    virtual void OnStartUseSkill(Skill* skill);
 
     void HeadTo(const Math::Vector3& pos);
     void FaceObject(GameObject* object);
@@ -148,17 +171,6 @@ public:
     DamagePos GetDamagePos() const { return damageComp_.GetDamagePos(); }
     int GetResource(Components::ResourceType type) const { return resourceComp_.GetValue(type); }
     void SetResource(Components::ResourceType type, Components::SetValueType t, int value);
-    /// This Actor is attacking the target
-    virtual bool OnAttack(Actor* target);
-    /// This Actor was attacked by source
-    virtual bool OnAttacked(Actor* source, DamageType type, int32_t damage);
-    /// This Actor is going to bee attacked by source. Happens before OnAttacked.
-    virtual bool OnGettingAttacked(Actor* source);
-    /// This actor is using a skill on target
-    virtual bool OnUseSkill(Actor* target, Skill* skill);
-    /// This Actor is targeted for a skill by source
-    virtual bool OnSkillTargeted(Actor* source, Skill* skill);
-    virtual bool OnGetCriticalHit(Actor* source);
     /// Adds damage to this actor, skill or effect index my be 0.
     void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration);
     /// Steal life from this actor. The source must add the returned value to its life.
@@ -172,14 +184,6 @@ public:
     bool InterruptSkill(AB::Entities::SkillType type);
     /// Interrupt everything
     bool Interrupt();
-    virtual void OnInterruptedAttack() { }
-    virtual void OnInterruptedSkill(Skill*) { }
-    virtual void OnKnockedDown(uint32_t) { }
-    virtual void OnHealed(int) { }
-    virtual void OnDied();
-    virtual void OnResurrected(int /* health */, int /* energy */) { }
-    virtual void OnPingObject(uint32_t /* targetId */, AB::GameProtocol::ObjectCallType /* type */, int /* skillIndex */) { }
-    virtual void OnInventoryFull() { }
 
     virtual bool CanAttack() const { return false; }
     virtual bool CanUseSkill() const { return false; }

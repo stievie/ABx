@@ -51,6 +51,9 @@ protected:
     void HandleDieCommand(const std::string&, Net::NetworkMessage&);
     void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&);
     void HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&);
+protected:
+    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
+    void OnInventoryFull() override;
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -115,8 +118,6 @@ public:
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
     void WriteToOutput(const Net::NetworkMessage& message);
-    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
-    void OnInventoryFull() override;
     bool IsResigned() const { return resigned_; }
 
     void SetParty(std::shared_ptr<Party> party);
