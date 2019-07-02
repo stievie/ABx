@@ -971,10 +971,8 @@ void Application::GetHandlerItems(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("model_class").set_value(s.model_class);
         gNd.append_attribute("name").set_value(s.name.c_str());
         gNd.append_attribute("type").set_value(static_cast<int>(s.type));
-        gNd.append_attribute("model").set_value(s.client_model.c_str());
-        gNd.append_attribute("icon").set_value(s.client_icon.c_str());
-        gNd.append_attribute("remote_model").set_value(s.server_model.c_str());
-        gNd.append_attribute("remote_icon").set_value(s.server_icon.c_str());
+        gNd.append_attribute("object").set_value(s.objectFile.c_str());
+        gNd.append_attribute("icon").set_value(s.iconFile.c_str());
         gNd.append_attribute("stack_able").set_value(s.stackAble);
     }
 

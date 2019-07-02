@@ -10,7 +10,7 @@ ItemsCache::ItemsCache(Context* context) :
     item->index_ = 0;
     item->name_ = "Placeholder";
     item->type_ = AB::Entities::ItemTypeUnknown;
-    item->modelFile_ = "/Objects/Placeholder.xml";
+    item->objectFile_ = "/Objects/Placeholder.xml";
     item->iconFile_ = "/Textures/Icons/placeholder.png";
     item->stackAble_ = false;
     Add(item);

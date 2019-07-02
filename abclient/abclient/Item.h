@@ -12,10 +12,10 @@ public:
     template <class T>
     T* GetModelResource()
     {
-        if (modelFile_.Empty())
+        if (objectFile_.Empty())
             return nullptr;
         ResourceCache* cache = GetSubsystem<ResourceCache>();
-        return cache->GetResource<T>(modelFile_);
+        return cache->GetResource<T>(objectFile_);
     }
     template <class T>
     T* GetIconResource()
@@ -29,7 +29,7 @@ public:
     String uuid_;
     uint32_t index_;
     String name_;
-    String modelFile_;
+    String objectFile_;
     String iconFile_;
     AB::Entities::ItemType type_;
     AB::Entities::ModelClass modelClass_;
