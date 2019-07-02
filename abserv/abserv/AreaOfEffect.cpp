@@ -109,7 +109,7 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     {
         if (luaInitialized_ && HaveFunction(FunctionEnded))
             ScriptManager::CallFunction(luaState_, "onEnded");
-        GetGame()->RemoveObject(this);
+        Remove();
     }
 }
 

@@ -318,12 +318,12 @@ void Actor::_LuaFollowObject(GameObject* object)
         FollowObject(0);
 }
 
-void Actor::_LuaAddEffect(Actor* source, uint32_t index)
+void Actor::_LuaAddEffect(Actor* source, uint32_t index, uint32_t time)
 {
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Effect " << index << " added to " << GetName() << std::endl;
 #endif
-    effectsComp_->AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index);
+    effectsComp_->AddEffect(source ? source->GetThisDynamic<Actor>() : std::shared_ptr<Actor>(), index, time);
 }
 
 void Actor::_LuaRemoveEffect(uint32_t index)

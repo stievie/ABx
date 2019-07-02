@@ -97,12 +97,15 @@ void Effect::Update(uint32_t timeElapsed)
     }
 }
 
-bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
+bool Effect::Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t time)
 {
     target_ = target;
     source_ = source;
     startTime_ = Utils::Tick();
-    ticks_ = luaState_["getDuration"](source.get(), target.get());
+    if (time == 0)
+        ticks_ = luaState_["getDuration"](source.get(), target.get());
+    else
+        ticks_ = time;
     endTime_ = startTime_ + ticks_;
     const bool succ = luaState_["onStart"](source.get(), target.get());
     if (!succ)

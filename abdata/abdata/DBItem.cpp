@@ -42,8 +42,8 @@ bool DBItem::Load(AB::Entities::Item& item)
     item.name = result->GetString("name");
     item.script = result->GetString("schript_file");
     item.server_icon = result->GetString("server_icon_file");
-    item.server_model = result->GetString("server_model_file");
-    item.client_model = result->GetString("client_model_file");
+    item.server_model = result->GetString("server_object_file");
+    item.client_model = result->GetString("client_object_file");
     item.client_icon = result->GetString("client_icon_file");
     item.type = static_cast<AB::Entities::ItemType>(result->GetUInt("type"));
     item.belongsTo = static_cast<AB::Entities::ItemType>(result->GetUInt("belongs_to"));

@@ -19,7 +19,7 @@ enum EffectCategory : uint8_t
     EffectSpirit = 5,
     EffectWard = 6,
     EffectWell = 7,
-    // Single
+    // Single, e.g. only one stance at a time, other stances remove previous stances
     EffectPreparation = 8,
     EffectStance = 9,
     EffectForm = 10,

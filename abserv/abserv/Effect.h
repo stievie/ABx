@@ -95,7 +95,7 @@ public:
 
     bool LoadScript(const std::string& fileName);
     void Update(uint32_t timeElapsed);
-    bool Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target);
+    bool Start(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target, uint32_t time);
     /// Remove Effect before it ends
     void Remove();
     /// Get real cost of a skill

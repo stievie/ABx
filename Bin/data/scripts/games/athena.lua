@@ -66,7 +66,7 @@ end
 
 function onPlayerJoin(player)
   if (player ~= nil) then
-    player:AddEffect(empty, 1000)
+    player:AddEffect(empty, 1000, 0)
   end
 --  print("Player joined: " .. player:GetName())
 end

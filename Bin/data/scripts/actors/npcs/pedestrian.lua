@@ -13,7 +13,7 @@ behavior = "PRIEST"
 
 function onInit()
   self:SetSpeed(0.5)
-  self:AddEffect(empty, 900000)
+  self:AddEffect(empty, 900000, 0)
   -- Let's make it a rezz machine :D
   local skillBar = self:GetSkillBar()
   -- Add a heal skill

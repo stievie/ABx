@@ -30,7 +30,7 @@ public:
     EffectsComp& operator=(const EffectsComp&) = delete;
     ~EffectsComp() = default;
 
-    void AddEffect(std::shared_ptr<Actor> source, uint32_t index);
+    void AddEffect(std::shared_ptr<Actor> source, uint32_t index, uint32_t time);
     void DeleteEffect(uint32_t index);
     /// Remove effect before it ended
     void RemoveEffect(uint32_t index);

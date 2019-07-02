@@ -59,7 +59,7 @@ private:
     void _LuaHeadTo(float x, float y, float z);
     std::vector<float> _LuaGetHomePos();
     void _LuaFollowObject(GameObject* object);
-    void _LuaAddEffect(Actor* source, uint32_t index);
+    void _LuaAddEffect(Actor* source, uint32_t index, uint32_t time);
     void _LuaRemoveEffect(uint32_t index);
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
