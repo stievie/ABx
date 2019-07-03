@@ -9,6 +9,7 @@
 #include "MathUtils.h"
 #include "ConfigManager.h"
 #include "Mechanic.h"
+#include "Scheduler.h"
 
 #include "DebugNew.h"
 
@@ -57,6 +58,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
         .addFunction("Remove",           &GameObject::Remove)
+        .addFunction("RemoveIn",         &GameObject::RemoveIn)
     );
 }
 
@@ -311,8 +313,15 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
 void GameObject::Remove()
 {
     auto game = GetGame();
-    assert(game);
-    game->RemoveObject(this);
+    if (game)
+        game->RemoveObject(this);
+}
+
+void GameObject::RemoveIn(uint32_t time)
+{
+    // FIXME: What if this is called twice?
+    auto* shed = GetSubsystem<Asynch::Scheduler>();
+    shed->Add(Asynch::CreateScheduledTask(time, std::bind(&GameObject::Remove, shared_from_this())));
 }
 
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)

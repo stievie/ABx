@@ -79,6 +79,10 @@ bool AreaOfEffect::LoadScript(const std::string& fileName)
         return false;
 
     itemIndex_ = luaState_["itemIndex"];
+    if (ScriptManager::IsNumber(luaState_, "creatureState"))
+        stateComp_.SetState(luaState_["creatureState"], true);
+    else
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
 
     if (ScriptManager::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;

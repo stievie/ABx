@@ -356,13 +356,13 @@ void Game::AddObjectInternal(std::shared_ptr<GameObject> object)
 
 void Game::InternalRemoveObject(GameObject* object)
 {
+    auto it = objects_.find(object->id_);
+    if (it == objects_.end())
+        return;
     ScriptManager::CallFunction(luaState_, "onRemoveObject", object);
     object->SetGame(std::shared_ptr<Game>());
-    auto it = objects_.find(object->id_);
     if (it != objects_.end())
-    {
         objects_.erase(it);
-    }
 }
 
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
@@ -664,6 +664,12 @@ void Game::PlayerJoin(uint32_t playerId)
 
 void Game::RemoveObject(GameObject* object)
 {
+    if (!object)
+        return;
+    auto it = objects_.find(object->id_);
+    if (it == objects_.end())
+        return;
+
     GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), object->id_))
     );

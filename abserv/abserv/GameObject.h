@@ -223,6 +223,7 @@ public:
     bool IsObjectInSight(const GameObject* object) const;
     /// Remove this object from scene
     void Remove();
+    void RemoveIn(uint32_t time);
 
     virtual bool Serialize(IO::PropWriteStream& stream);
 
