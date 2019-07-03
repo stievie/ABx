@@ -6,6 +6,10 @@ include("/scripts/includes/damage.lua")
 
 itemIndex = 6000
 lifeTime = 90 * 1000
+creatureState = CREATURESTATE_IDLE
+
+-- 90 seconds
+local lifeTime = 90 * 1000
 
 local damage = 0;
 local crippledTime = 0;
@@ -23,11 +27,14 @@ function onInit()
 end
 
 function onTrigger(other)
-  local actors = self:GetActorsInRange(self:GetRange())
-  for i, actor in ipairs(actors) do
-    actor:ApplyDamage(self:GetSource(), self:Index(), DAMAGETYPE_PIERCING, damage, 0)
-    actor:KnockDown(self:GetSource(), 0)
-    actor:AddEffect(self:GetSource(), 10001, crippledTime)
+  if (self:GetState() == CREATURESTATE_IDLE) then
+    self:SetState(CREATURESTATE_TRIGGERED)
+    local actors = self:GetActorsInRange(self:GetRange())
+    for i, actor in ipairs(actors) do
+      actor:ApplyDamage(self:GetSource(), self:Index(), DAMAGETYPE_PIERCING, damage, 0)
+      actor:KnockDown(self:GetSource(), 0)
+      actor:AddEffect(self:GetSource(), 10001, crippledTime)
+    end
+    self:RemoveIn(2000)
   end
-  self:Remove()
 end

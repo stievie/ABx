@@ -25,6 +25,7 @@ CREATURESTATE_EMOTE_END = 14
 
 CREATURESTATE_CHEST_CLOSED = 15
 CREATURESTATE_CHEST_OPEN = 16
+CREATURESTATE_TRIGGERED = 17
 
 CREATURESTATE_DEAD = 255
 -- /Creature states ------------------------------------------------------------

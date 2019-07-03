@@ -175,6 +175,7 @@ public:
         return 0;
     }
     void PlayAnimation(StringHash animation, bool looped = true, float fadeTime = 0.2f, float speed = 1.0f);
+    void PlayObjectAnimation(bool looped = false, float fadeTime = 0.2f, float speed = 1.0f);
     void PlayStateAnimation(float fadeTime = 0.2f);
     void ShowSpeechBubble(const String& text);
 

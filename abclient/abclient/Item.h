@@ -10,7 +10,7 @@ public:
     ~Item();
 
     template <class T>
-    T* GetModelResource()
+    T* GetObjectResource()
     {
         if (objectFile_.Empty())
             return nullptr;
@@ -29,7 +29,9 @@ public:
     String uuid_;
     uint32_t index_;
     String name_;
+    /// Prefab file
     String objectFile_;
+    /// UI icon file, somewhere in /Textures
     String iconFile_;
     AB::Entities::ItemType type_;
     AB::Entities::ModelClass modelClass_;

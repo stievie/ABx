@@ -145,6 +145,7 @@ enum CreatureState : uint8_t
     // Logic actors states -----------------------------------------------------
     CreatureStateChestClosed,
     CreatureStateChestOpen,
+    CreatureStateTriggered,
     // /Logic actors states ----------------------------------------------------
 
 

@@ -120,7 +120,7 @@ bool Actor::LoadObject(uint32_t itemIndex, const Vector3& position, const Quater
         URHO3D_LOGERRORF("Model Item not found: %d", itemIndex);
         return false;
     }
-    XMLFile* object = item->GetModelResource<XMLFile>();
+    XMLFile* object = item->GetObjectResource<XMLFile>();
     if (!object)
     {
         URHO3D_LOGERRORF("Prefab file not found for %s: %s", item->name_.CString(), item->objectFile_.CString());
@@ -178,7 +178,7 @@ void Actor::AddModel(uint32_t itemIndex)
         URHO3D_LOGERRORF("Model Item not found: %d", itemIndex);
         return;
     }
-    XMLFile* xml = item->GetModelResource<XMLFile>();
+    XMLFile* xml = item->GetObjectResource<XMLFile>();
     if (!xml)
     {
         URHO3D_LOGERRORF("Prefab file not found: %s", item->objectFile_.CString());
@@ -844,6 +844,18 @@ void Actor::PlayAnimation(StringHash animation, bool looped /* = true */, float 
         animController_->StopAll();
 }
 
+void Actor::PlayObjectAnimation(bool looped, float fadeTime, float speed)
+{
+    // Play the animation referenced in the Object node
+    const String& fileName = node_->GetVar("AnimationFile").GetString();
+    AnimationController* animCtrl = node_->GetComponent<AnimationController>();
+    if (!fileName.Empty() && animCtrl)
+    {
+        animController_->PlayExclusive(fileName, 0, looped, fadeTime);
+        animController_->SetSpeed(fileName, speed);
+    }
+}
+
 void Actor::PlayStateAnimation(float fadeTime)
 {
     switch (creatureState_)
@@ -895,6 +907,10 @@ void Actor::PlayStateAnimation(float fadeTime)
         break;
     case AB::GameProtocol::CreatureStateChestClosed:
         PlayAnimation(ANIM_CHEST_CLOSING, false, 0.0f);
+        break;
+    case AB::GameProtocol::CreatureStateTriggered:
+        // E.g. Traps have their animation referenced in the object node
+        PlayObjectAnimation();
         break;
     default:
         break;
