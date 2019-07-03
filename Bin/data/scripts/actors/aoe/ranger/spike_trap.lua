@@ -17,6 +17,7 @@ local crippledTime = 0;
 function onInit()
   self:SetRange(RANGE_ADJECENT)
   self:SetLifetime(lifeTime)
+  self:SetTrigger(true)
   local source = self:GetSource();
   if (source ~= nil) then
     local attribVal = source:GetAttributeValue(ATTRIB_WILDERNESS_SURVIVAL)
