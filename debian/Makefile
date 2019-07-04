@@ -37,7 +37,7 @@ all:
 	@$(MAKE) -f  abstests.make
 	@echo "--------------------- Running Tests ---------------------"
 	@../Bin/Tests
-	@echo "-------------------- Making artifact --------------------"
+	@echo "------------------- Making artefacts --------------------"
 	@$(MAKE) -f  artefact.make
 
 clean:
