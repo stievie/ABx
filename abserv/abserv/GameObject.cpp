@@ -127,6 +127,12 @@ void GameObject::Update(uint32_t timeElapsed, Net::NetworkMessage&)
     UpdateRanges();
     if (triggerComp_)
         triggerComp_->Update(timeElapsed);
+
+    if (removeAt_ != 0 && removeAt_ <= Utils::Tick())
+    {
+        auto* disp = GetSubsystem<Asynch::Dispatcher>();
+        disp->Add(Asynch::CreateTask(std::bind(&GameObject::Remove, shared_from_this())));
+    }
 }
 
 bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
@@ -319,9 +325,9 @@ void GameObject::Remove()
 
 void GameObject::RemoveIn(uint32_t time)
 {
-    // FIXME: What if this is called twice?
-    auto* shed = GetSubsystem<Asynch::Scheduler>();
-    shed->Add(Asynch::CreateScheduledTask(time, std::bind(&GameObject::Remove, shared_from_this())));
+    const int64_t newTick = Utils::Tick() + time;
+    if (removeAt_ == 0 || newTick < removeAt_)
+        removeAt_ = newTick;
 }
 
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
@@ -357,7 +363,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)
     const Math::Vector3& src = transformation_.position_;
     const Math::Vector3 dest(x, y, z);
     std::vector<Math::RayQueryResult> res;
-    Math::Ray ray(src, dest);
+    const Math::Ray ray(src, dest);
     Math::RayOctreeQuery query(res, ray, src.Distance(dest));
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);

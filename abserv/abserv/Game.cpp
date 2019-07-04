@@ -83,14 +83,15 @@ AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script,
     return nullptr;
 }
 
-Projectile* Game::_LuaAddProjectile(const std::string& script,
+Projectile* Game::_LuaAddProjectile(const std::string& itemUuid,
     Actor* source,
     Actor* target)
 {
     assert(source);
     assert(target);
-    auto o = AddProjectile(script,
-        source->GetThis<Actor>(), target->GetThis<Actor>());
+    auto o = AddProjectile(itemUuid,
+        source->GetThis<Actor>(),
+        target->GetThis<Actor>());
     if (o)
         return o.get();
     return nullptr;

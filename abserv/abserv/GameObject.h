@@ -51,6 +51,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
 public:
     static Utils::IdGenerator<uint32_t> objectIds_;
 private:
+    int64_t removeAt_{ 0 };
     std::unique_ptr<Math::CollisionShape> collisionShape_;
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(float x, float y, float z);
@@ -223,6 +224,7 @@ public:
     bool IsObjectInSight(const GameObject* object) const;
     /// Remove this object from scene
     void Remove();
+    /// Remove this object in time ms
     void RemoveIn(uint32_t time);
 
     virtual bool Serialize(IO::PropWriteStream& stream);

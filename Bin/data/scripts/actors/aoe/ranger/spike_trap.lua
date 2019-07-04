@@ -5,7 +5,6 @@ include("/scripts/includes/damage.lua")
 -- https://wiki.guildwars.com/wiki/Spike_Trap
 
 itemIndex = 6000
-lifeTime = 90 * 1000
 creatureState = CREATURESTATE_IDLE
 
 -- 90 seconds
@@ -15,20 +14,23 @@ local damage = 0;
 local crippledTime = 0;
 
 function onInit()
+  local source = self:GetSource()
+  if (source == nil) then
+    return false
+  end
+  
   self:SetRange(RANGE_ADJECENT)
   self:SetLifetime(lifeTime)
   self:SetTrigger(true)
-  local source = self:GetSource();
-  if (source ~= nil) then
-    local attribVal = source:GetAttributeValue(ATTRIB_WILDERNESS_SURVIVAL)
-    damage = 10 + (attribVal * 2)
-    crippledTime = 3 + math.floor(attribVal * 1.5)
-  end
+  local attribVal = source:GetAttributeValue(ATTRIB_WILDERNESS_SURVIVAL)
+  damage = 10 + (attribVal * 2)
+  crippledTime = 3 + math.floor(attribVal * 1.5)
   return true
 end
 
 function onTrigger(other)
   if (self:GetState() == CREATURESTATE_IDLE) then
+    -- Not triggered yet, so let's trigger now
     self:SetState(CREATURESTATE_TRIGGERED)
     local actors = self:GetActorsInRange(self:GetRange())
     for i, actor in ipairs(actors) do

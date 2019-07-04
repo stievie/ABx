@@ -91,7 +91,7 @@ private:
         Actor* source,
         uint32_t index,
         float x, float y, float z);
-    Projectile* _LuaAddProjectile(const std::string& script,
+    Projectile* _LuaAddProjectile(const std::string& itemUuid,
         Actor* source,
         Actor* target);
     ItemDrop* _LuaAddItemDrop(Actor* dropper);
