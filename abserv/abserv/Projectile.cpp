@@ -174,11 +174,6 @@ uint32_t Projectile::GetGroupId() const
     return 0u;
 }
 
-uint32_t Projectile::GetItemIndex() const
-{
-    return  itemIndex_;
-}
-
 uint32_t Projectile::GetLevel() const
 {
     if (auto s = source_.lock())
