@@ -3,7 +3,7 @@ include("/scripts/includes/consts.lua")
 
 name = "Priest"
 level = 20
-modelIndex = 2
+itemIndex = 2
 sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 3     -- Monk

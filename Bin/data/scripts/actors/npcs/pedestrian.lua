@@ -4,7 +4,7 @@ include("/scripts/includes/skill_consts.lua")
 
 name = "Marianna Gani"
 level = 20
-modelIndex = 10    -- Female Pedestrian 1 body model
+itemIndex = 10    -- Female Pedestrian 1 body model
 sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 3     -- Monk

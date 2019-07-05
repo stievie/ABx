@@ -3,7 +3,7 @@ include("/scripts/includes/consts.lua")
 
 name = "Arrow"
 level = 20
-modelIndex = 5000
+itemIndex = 5000
 sex = SEX_UNKNOWN
 creatureState = CREATURESTATE_MOVING
 prof1Index = 0

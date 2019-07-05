@@ -3,7 +3,7 @@ include("/scripts/includes/consts.lua")
 
 name = "Guild Lord"
 level = 20
-modelIndex = 5     -- Smith body model
+itemIndex = 5     -- Smith body model
 sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 1     -- Warrior

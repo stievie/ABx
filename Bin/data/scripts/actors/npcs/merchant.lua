@@ -3,7 +3,7 @@ include("/scripts/includes/consts.lua")
 
 name = "Telemachos Makos (Merchant)"
 level = 20
-modelIndex = 9     -- Merchant body model
+itemIndex = 9     -- Merchant body model
 sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 1     -- Warrior

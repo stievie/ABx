@@ -3,7 +3,7 @@ include("/scripts/includes/consts.lua")
 
 name = "Dimitris Sallas (Smith)"
 level = 20
-modelIndex = 5     -- Smith body model
+itemIndex = 5     -- Smith body model
 sex = SEX_MALE     -- Male
 creatureState = CREATURESTATE_IDLE
 prof1Index = 1     -- Warrior

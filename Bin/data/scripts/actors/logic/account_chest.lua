@@ -3,7 +3,7 @@ include("/scripts/includes/dialogs.lua")
 
 name = "Chest"
 level = 20
-modelIndex = 13
+itemIndex = 13
 sex = SEX_UNKNOWN
 creatureState = CREATURESTATE_CHEST_CLOSED
 prof1Index = 0

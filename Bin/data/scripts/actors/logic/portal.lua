@@ -2,7 +2,7 @@ include("/scripts/includes/consts.lua")
 
 name = ""
 level = 20
-modelIndex = 11
+itemIndex = 11
 sex = SEX_UNKNOWN
 creatureState = CREATURESTATE_IDLE
 prof1Index = 0

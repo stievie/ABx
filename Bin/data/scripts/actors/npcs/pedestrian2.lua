@@ -3,7 +3,7 @@ include("/scripts/includes/consts.lua")
 
 name = "Dorothea Samara"
 level = 20
-modelIndex = 12    -- Female Pedestrian 1 body model
+itemIndex = 12    -- Female Pedestrian 1 body model
 sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = 5
