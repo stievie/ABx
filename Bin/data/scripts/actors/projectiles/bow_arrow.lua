@@ -10,11 +10,8 @@ prof1Index = 0
 prof2Index = 0
 
 function onInit()
+  self:SetSpeed(4.0)
   return true
-end
-
-function onUpdate(timeElapsed)
-
 end
 
 -- creature: GameObject collides with self
@@ -25,5 +22,8 @@ function onStart(creature)
 end
 
 function onHitTarget(creature)
+  local source = self:GetSource()
+  local weapon = source:GetWeapon()
+  -- TODO: 
 end
 

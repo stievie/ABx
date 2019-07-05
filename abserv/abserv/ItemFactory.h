@@ -41,6 +41,7 @@ public:
         const std::string& playerUuid = Utils::Uuid::EMPTY_UUID);
     std::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
     void IdentiyItem(Item* item, Player* player);
+    /// Create temporary item, does not create a concrete item.
     std::unique_ptr<Item> CreateTempItem(const std::string& itemUuid);
     /// Deletes a concrete item from the database, e.g. when an item was not picked up
     void DeleteConcrete(const std::string& uuid);

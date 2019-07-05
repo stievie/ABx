@@ -12,13 +12,13 @@ void Projectile::RegisterLua(kaguya::State& state)
     state["Projectile"].setClass(kaguya::UserdataMetatable<Projectile, Actor>()
         .addFunction("SetSpeed", &Projectile::SetSpeed)
         .addFunction("GetSpeed", &Projectile::GetSpeed)
-        .addFunction("GetItem", &Projectile::GetItem)
+        .addFunction("GetSource", &Projectile::_LuaGetSource)
+        .addFunction("GetTarget", &Projectile::_LuaGetTarget)
     );
 }
 
-Projectile::Projectile(std::unique_ptr<Item>& item) :
+Projectile::Projectile(const std::string& itemUuid) :
     Actor(),
-    item_(std::move(item)),
     luaInitialized_(false),
     startSet_(false)
 {
@@ -29,6 +29,7 @@ Projectile::Projectile(std::unique_ptr<Item>& item) :
     // Projectile can not hide other objects
     occluder_ = false;
     undestroyable_ = true;
+    itemUuid_ = itemUuid;
 
     InitializeLua();
 }
@@ -60,6 +61,20 @@ bool Projectile::LoadScript(const std::string& fileName)
     return ret;
 }
 
+bool Projectile::Load()
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Item gameItem;
+    gameItem.uuid = itemUuid_;
+    if (!client->Read(gameItem))
+    {
+        LOG_ERROR << "Unable to read item with UUID " << itemUuid_ << std::endl;
+        return false;
+    }
+    itemIndex_ = gameItem.index;
+    return LoadScript(gameItem.actorScript);
+}
+
 void Projectile::SetSource(std::shared_ptr<Actor> source)
 {
     if (!startSet_)
@@ -79,6 +94,22 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     targetPos_ = target->transformation_.position_;
     ray_ = Math::Ray(start_, targetPos_);
     started_ = OnStart();
+}
+
+Actor* Projectile::_LuaGetSource()
+{
+    auto o = GetSource();
+    if (o)
+        return o.get();
+    return nullptr;
+}
+
+Actor* Projectile::_LuaGetTarget()
+{
+    auto o = GetTarget();
+    if (o)
+        return o.get();
+    return nullptr;
 }
 
 void Projectile::SetSpeed(float speed)
@@ -145,9 +176,7 @@ uint32_t Projectile::GetGroupId() const
 
 uint32_t Projectile::GetItemIndex() const
 {
-    auto* item = GetItem();
-    assert(item);
-    return item->data_.index;
+    return  itemIndex_;
 }
 
 uint32_t Projectile::GetLevel() const
@@ -186,13 +215,6 @@ bool Projectile::OnStart()
         return ret;
     }
     return true;
-}
-
-Item* Projectile::GetItem() const
-{
-    if (item_)
-        return item_.get();
-    return nullptr;
 }
 
 }

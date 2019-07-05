@@ -34,28 +34,35 @@ private:
     std::weak_ptr<Actor> target_;
     float speed_{ 0.0f };
     bool started_{ false };
+    uint32_t itemIndex_{ 0 };
+    std::string itemUuid_;
     uint32_t functions_{ FunctionNone };
     void InitializeLua();
+    bool LoadScript(const std::string& fileName);
     bool HaveFunction(Function func) const
     {
         return (functions_ & func) == func;
     }
+    Actor* _LuaGetSource();
+    Actor* _LuaGetTarget();
 public:
     static void RegisterLua(kaguya::State& state);
 
-    explicit Projectile(std::unique_ptr<Item>& item);
+    explicit Projectile(const std::string& itemUuid);
     Projectile() = delete;
     // non-copyable
     Projectile(const Projectile&) = delete;
     Projectile& operator=(const Projectile&) = delete;
 
-    bool LoadScript(const std::string& fileName);
+    bool Load();
     AB::GameProtocol::GameObjectType GetType() const final override
     {
         return AB::GameProtocol::ObjectTypeProjectile;
     }
     void SetSource(std::shared_ptr<Actor> source);
+    std::shared_ptr<Actor> GetSource() const { return source_.lock(); }
     void SetTarget(std::shared_ptr<Actor> target);
+    std::shared_ptr<Actor> GetTarget() const { return target_.lock(); }
     void SetSpeed(float speed);
     float GetSpeed() const;
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
@@ -66,7 +73,6 @@ public:
 
     void OnCollide(GameObject* other) override;
     bool OnStart();
-    Item* GetItem() const;
 };
 
 }

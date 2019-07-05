@@ -411,17 +411,12 @@ std::shared_ptr<Projectile> Game::AddProjectile(const std::string& itemUuid,
     std::shared_ptr<Actor> source,
     std::shared_ptr<Actor> target)
 {
-    auto* itemFac = GetSubsystem<ItemFactory>();
-    auto item = itemFac->CreateTempItem(itemUuid);
-    if (!item)
-        return std::shared_ptr<Projectile>();
-
-    std::shared_ptr<Projectile> result = std::make_shared<Projectile>(item);
+    std::shared_ptr<Projectile> result = std::make_shared<Projectile>(itemUuid);
     result->SetGame(shared_from_this());
     result->SetSource(source);
     result->SetTarget(target);
     // Speed is set by the script
-    if (!result->LoadScript(item->data_.actorScript))
+    if (!result->Load())
         return std::shared_ptr<Projectile>();
 
     // After all initialization is done, we can call this
