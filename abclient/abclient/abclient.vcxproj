@@ -277,6 +277,7 @@
     <ClCompile Include="CreditsWindow.cpp" />
     <ClCompile Include="DialogWindow.cpp" />
     <ClCompile Include="EffectsWindow.cpp" />
+    <ClCompile Include="FormatText.cpp" />
     <ClCompile Include="FriendListWindow.cpp" />
     <ClCompile Include="FwClient.cpp" />
     <ClCompile Include="GameMenu.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="DialogWindow.h" />
     <ClInclude Include="EffectsWindow.h" />
     <ClInclude Include="Extrapolator.h" />
+    <ClInclude Include="FormatText.h" />
     <ClInclude Include="FriendListWindow.h" />
     <ClInclude Include="FwClient.h" />
     <ClInclude Include="GameMenu.h" />
