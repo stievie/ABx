@@ -1,6 +1,6 @@
-// stdafx.h: Includedatei f¸r Standardsystem-Includedateien
-// oder h‰ufig verwendete projektspezifische Includedateien,
-// die nur in unregelm‰ﬂigen Abst‰nden ge‰ndert werden.
+// stdafx.h: Includedatei f√ºr Standardsystem-Includedateien
+// oder h√§ufig verwendete projektspezifische Includedateien,
+// die nur in unregelm√§√üigen Abst√§nden ge√§ndert werden.
 //
 
 #if defined(_MSC_VER)
@@ -45,30 +45,48 @@
 
 #include "MathConfig.h"
 #include <pugixml.hpp>
+
 #if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4592)
+#   pragma warning(push)
+#   pragma warning(disable: 4592)
+#endif
+#if defined(__clang__)
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wpadded"
+#endif
+#if defined(__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wpadded"
 #endif
 #include <asio.hpp>
-#if defined(_MSC_VER)
-#pragma warning(pop)
+#if defined(__GNUC__)
+#   pragma GCC diagnostic pop
+#endif
+#if defined(__clang__)
+#   pragma clang diagnostic pop
 #endif
 #if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4702 4127)
+#   pragma warning(pop)
 #endif
+#if defined(_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable: 4702 4127)
+#endif
+
 #include <kaguya/kaguya.hpp>
+
 #if defined(_MSC_VER)
-#pragma warning(pop)
+#   pragma warning(pop)
 #endif
 #if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4201 4267 4244)
+#   pragma warning(push)
+#   pragma warning(disable: 4201 4267 4244)
 #endif
 #include <ai/SimpleAI.h>
 #if defined(_MSC_VER)
-#pragma warning(pop)
+#   pragma warning(pop)
 #endif
+
 #include <uuid.h>
 
 #include "Application.h"

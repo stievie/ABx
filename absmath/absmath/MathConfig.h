@@ -77,7 +77,25 @@
 #endif
 
 #if defined(HAVE_DIRECTX_MATH)
+#   if defined(__clang__)
+#       pragma clang diagnostic push
+#       pragma clang diagnostic ignored "-Wpadded"
+#       pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#   endif
+#   if defined(__GNUC__)
+#       pragma GCC diagnostic push
+#       pragma GCC diagnostic ignored "-Wpadded"
+#       pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#   endif
+
 #   include <DirectXMath.h>
 #   include <DirectXCollision.h>
+
+#   if defined(__GNUC__)
+#       pragma GCC diagnostic pop
+#   endif
+#   if defined(__clang__)
+#       pragma clang diagnostic pop
+#   endif
 namespace XMath = DirectX;
 #endif
