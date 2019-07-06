@@ -27,7 +27,7 @@ DatabasePgsql::DatabasePgsql() :
         "' password='" << pass << "' port='" << port << "'";
     dns_ = dns.str();
 
-    if (!Connect())
+    if (!Connect(10))
     {
         LOG_ERROR << "Unable to connect to PostgresSQL database: " <<
             PQerrorMessage(handle_) << std::endl;
