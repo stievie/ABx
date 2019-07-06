@@ -17,20 +17,26 @@ FormatText::~FormatText()
     DeleteTree(tree_);
 }
 
-void FormatText::ParseString(const String& value)
+void FormatText::SetMarkupText(const String& value)
 {
     DeleteTree(tree_);
 
+    tree_ = new TreeNode();
     pugi::xml_document doc;
     if (!doc.load_string(value.CString(), value.Length()))
-        return;
-
-    tree_ = new TreeNode();
-    tree_->type = NodeType::Root;
-    for (const auto& node : doc.children())
     {
-        ParseNode(node, tree_);
+        // Simple text
+        tree_->type = NodeType::Text;
+        tree_->value = value;
     }
+    else
+    {
+        // Seems to be markup
+        tree_->type = NodeType::Root;
+        for (const auto& node : doc.children())
+            ParseNode(node, tree_);
+    }
+
     String text = GetNodeText(tree_);
     SetText(text);
 }
@@ -72,9 +78,7 @@ void FormatText::ParseNode(const pugi::xml_node& pugiNode, TreeNode* treeNode)
     }
 
     for (const auto& node : pugiNode.children())
-    {
         ParseNode(node, nd);
-    }
 }
 
 void FormatText::DeleteTree(TreeNode* tree)

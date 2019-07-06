@@ -852,6 +852,9 @@ void PartyWindow::OnObjectSpawned(GameObject* object, uint32_t groupId, uint8_t 
 
 bool PartyWindow::IsLeader()
 {
+    if (!player_)
+        return false;
+
     UIElement* elem = memberContainers_[0];
     auto pi = elem->GetChild("HealthBar", true);
     if (pi)

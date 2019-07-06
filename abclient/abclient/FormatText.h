@@ -15,7 +15,6 @@ struct TreeNode
     PODVector<TreeNode*> children;
 };
 
-
 class FormatText : public Text
 {
     URHO3D_OBJECT(FormatText, Text);
@@ -25,7 +24,7 @@ public:
     FormatText(Context* context);
     ~FormatText();
 
-    void ParseString(const String& value);
+    void SetMarkupText(const String& value);
     void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor) override;
 private:
     void ParseNode(const pugi::xml_node& pugiNode, TreeNode* treeNode);

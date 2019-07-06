@@ -18,6 +18,7 @@
 #include "Player.h"
 #include "SkillManager.h"
 #include "ItemsCache.h"
+#include "FormatText.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -1066,6 +1067,7 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text,
     nameText->SetStyle(style);
     nameText->EnableLayoutUpdate();
     nameText->SetMaxWidth(chatLog_->GetWidth() - 8);
+
     Text* textText = nameText->CreateChild<Text>();
     textText->SetPosition(IntVector2(nameText->GetWidth() + 10, 0));
     textText->SetText(text);
