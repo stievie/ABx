@@ -1,0 +1,13 @@
+abdb/Database.cpp
+abdb/Database.h
+abdb/DatabaseMysql.cpp
+abdb/DatabaseMysql.h
+abdb/DatabaseOdbc.cpp
+abdb/DatabaseOdbc.h
+abdb/DatabasePgsql.cpp
+abdb/DatabasePgsql.h
+abdb/DatabaseSqlite.cpp
+abdb/DatabaseSqlite.h
+abdb/stdafx.cpp
+abdb/stdafx.h
+abdb/targetver.h

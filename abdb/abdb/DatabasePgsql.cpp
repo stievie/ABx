@@ -45,17 +45,18 @@ bool DatabasePgsql::Connect(int numTries /* = 1 */)
     int tr = 0;
     while (!connected_ && tr < numTries)
     {
+        int remaingTries = tr - numTries;
         PGPing ping = PQping(dns_.c_str());
         switch (ping)
         {
         case PQPING_REJECT:
-            LOG_ERROR << "Server rejected connection" << std::endl;
+            LOG_ERROR << "Server rejected connection, trying for " << remaingTries << " more times" << std::endl;
             break;
         case PQPING_NO_RESPONSE:
-            LOG_ERROR << "Server didn't respond" << std::endl;
+            LOG_ERROR << "Server didn't respond, trying for " << remaingTries << " more times" << std::endl;
             break;
         case PQPING_NO_ATTEMPT:
-            LOG_ERROR << "Bad parameters" << std::endl;
+            LOG_ERROR << "Bad parameters, check connection parameters" << std::endl;
             return false;
         default:
             break;
@@ -68,7 +69,7 @@ bool DatabasePgsql::Connect(int numTries /* = 1 */)
             connected_ = PQstatus(handle_) == CONNECTION_OK;
         }
         ++tr;
-        if (!connected_ && tr < numTries)
+        if (!connected_ && remaingTries > 0)
             std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     return connected_;
