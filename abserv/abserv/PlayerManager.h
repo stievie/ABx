@@ -2,6 +2,7 @@
 
 #include <limits>
 #include "Utils.h"
+#include "Iteration.h"
 
 namespace Net {
 class ProtocolGame;
@@ -29,10 +30,6 @@ public:
         players_.clear();
     }
 
-    const std::map<uint32_t, std::shared_ptr<Player>>& GetPlayers() const
-    {
-        return players_;
-    }
     std::shared_ptr<Player> GetPlayerByName(const std::string& name);
     /// GEt player by player UUID
     std::shared_ptr<Player> GetPlayerByUuid(const std::string& uuid);
@@ -58,6 +55,18 @@ public:
         if (players_.size() != 0)
             return 0;
         return Utils::Tick() - idleTime_;
+    }
+    template<typename Callback>
+    inline void VisitPlayers(Callback&& callback)
+    {
+        for (auto& player : players_)
+        {
+            if (player.second)
+            {
+                if (callback(*player.second) != Iteration::Continue)
+                    break;
+            }
+        }
     }
 };
 

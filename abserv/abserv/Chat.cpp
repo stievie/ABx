@@ -261,14 +261,16 @@ bool TradeChatChannel::Talk(Player* player, const std::string& text)
 void TradeChatChannel::Broadcast(const std::string& playerName, const std::string& text)
 {
     auto msg = Net::NetworkMessage::GetNew();
-    const auto& players = GetSubsystem<PlayerManager>()->GetPlayers();
+    auto* playerMngr = GetSubsystem<PlayerManager>();
     msg->AddByte(AB::GameProtocol::ChatMessage);
     msg->AddByte(AB::GameProtocol::ChatChannelTrade);
     msg->Add<uint32_t>(0);
     msg->AddString(playerName);
     msg->AddString(text);
-    for (const auto& player : players)
-        player.second->WriteToOutput(*msg);
+    playerMngr->VisitPlayers([&msg](Player& player) {
+        player.WriteToOutput(*msg);
+        return Iteration::Continue;
+    });
 }
 
 bool PartyChatChannel::Talk(Player* player, const std::string& text)
@@ -276,17 +278,15 @@ bool PartyChatChannel::Talk(Player* player, const std::string& text)
     if (party_)
     {
         auto msg = Net::NetworkMessage::GetNew();
-        const auto& players = party_->GetMembers();
         msg->AddByte(AB::GameProtocol::ChatMessage);
         msg->AddByte(AB::GameProtocol::ChatChannelParty);
         msg->Add<uint32_t>(player->id_);
         msg->AddString(player->GetName());
         msg->AddString(text);
-        for (auto& wp : players)
-        {
-            if (auto sp = wp.lock())
-                sp->WriteToOutput(*msg);
-        }
+        party_->VisitMembers([&msg](auto& player) {
+            player.WriteToOutput(*msg);
+            return Iteration::Continue;
+        });
         return true;
     }
     return false;
@@ -297,17 +297,15 @@ bool PartyChatChannel::TalkNpc(Npc* npc, const std::string& text)
     if (party_)
     {
         auto msg = Net::NetworkMessage::GetNew();
-        const auto& players = party_->GetMembers();
         msg->AddByte(AB::GameProtocol::ChatMessage);
         msg->AddByte(AB::GameProtocol::ChatChannelParty);
         msg->Add<uint32_t>(npc->id_);
         msg->AddString(npc->GetName());
         msg->AddString(text);
-        for (auto& wp : players)
-        {
-            if (auto sp = wp.lock())
-                sp->WriteToOutput(*msg);
-        }
+        party_->VisitMembers([&msg](auto& player) {
+            player.WriteToOutput(*msg);
+            return Iteration::Continue;
+        });
         return true;
     }
     return false;
