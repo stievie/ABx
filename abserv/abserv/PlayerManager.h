@@ -15,7 +15,7 @@ class PlayerManager
 {
 private:
     /// Player UUID -> id
-    std::map<std::string, uint32_t> playerUuids_;
+    std::unordered_map<std::string, uint32_t> playerUuids_;
     int64_t idleTime_;
     /// The owner of players
     std::map<uint32_t, std::shared_ptr<Player>> players_;
