@@ -52,19 +52,6 @@ DamagePos DamageComp::GetDamagePos() const
     const float rnd1 = rng->GetFloat();
     const float rnd2 = rng->GetFloat();
     return ws.Get(rnd1, rnd2);
-
-/*
-    // https://stackoverflow.com/questions/3655430/selection-based-on-percentage-weighting
-    float percent = 0.0f;
-    for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)
-    {
-        percent += DamagePosChances[i];
-        if (rnd < percent)
-            return static_cast<DamagePos>(i);
-    }
-
-    return DamagePos::Chest;
-*/
 }
 
 uint32_t DamageComp::NoDamageTime() const

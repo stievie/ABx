@@ -64,7 +64,7 @@ public:
         for (size_t k = 0; k < count; ++k)
             norm_probs[k] = weights_[k] * count / sum;
 
-        for (int k = static_cast<int>(count) - 1; k >= 0; k--)
+        for (size_t k = count - 1; k != 0; --k)
         {
             if (norm_probs[k] < 1)
                 small_block[num_small_block++] = k;
