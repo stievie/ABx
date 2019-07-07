@@ -8,8 +8,6 @@
 // Name of config file
 #define CONFIG_FILE "abserv.lua"
 
-constexpr unsigned SCHEDULER_MINTICKS = 10u;
-
 #if !defined(WIN_SERVICE)
     // Compiled with Debug::SceneViewer
 #   if !defined(SCENE_VIEWER)
