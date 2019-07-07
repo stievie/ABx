@@ -23,6 +23,7 @@
 #include <ctime>
 #include "Options.h"
 #include "MultiLineEdit.h"
+#include "FormatText.h"
 #include "NewMailWindow.h"
 #include "MissionMapWindow.h"
 #include "HotkeyEdit.h"
@@ -115,6 +116,7 @@ ClientApp::ClientApp(Context* context) :
     }
 
     MultiLineEdit::RegisterObject(context);
+    FormatText::RegisterObject(context);
 
     // Register levels
     context->RegisterFactory<LoginLevel>();
