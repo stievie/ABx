@@ -12,6 +12,7 @@
 #include "Script.h"
 #include "Subsystems.h"
 #include "DataClient.h"
+#include "Iteration.h"
 
 namespace Game {
 
@@ -120,7 +121,7 @@ public:
     int64_t GetInstanceTime() const { return Utils::Tick() - startTime_; }
     std::string GetName() const { return map_->data_.name; }
     /// Default level on this map
-    uint32_t GetDefaultLevel() const { return data_.defaultLevel; }
+    uint32_t GetDefaultLevel() const { return static_cast<uint32_t>(data_.defaultLevel); }
     /// Returns only players that are part of this game
     Player* GetPlayerById(uint32_t playerId);
     Player* GetPlayerByName(const std::string& name);
@@ -164,6 +165,18 @@ public:
     /// From GameProtocol (Dispatcher Thread)
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
+    template<typename Callback>
+    inline void VisitObject(Callback&& callback)
+    {
+        for (auto object : objects_)
+        {
+            if (object.second)
+            {
+                if (callback(*object.second) != Iteration::Continue)
+                    break;
+            }
+        }
+    }
 };
 
 }
