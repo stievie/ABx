@@ -21,6 +21,8 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
     damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, value);
+    if (source)
+        lastDamager_ = source->GetThis<Actor>();
 }
 
 int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
@@ -30,6 +32,8 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     lastDamage_ = Utils::Tick();
     damages_.push_back({ DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(Components::SetValueType::Absolute, currLife - result);
+    if (source)
+        lastDamager_ = source->GetThis<Actor>();
     return result;
 }
 

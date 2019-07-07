@@ -68,8 +68,9 @@ bool Player::CanUseSkill() const
 
 void Player::AddXp(int value)
 {
+    assert(value >= 0);
     Actor::AddXp(value);
-    data_.xp += value;
+    data_.xp += static_cast<uint32_t>(value);
 }
 
 void Player::AddSkillPoint()

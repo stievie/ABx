@@ -138,6 +138,7 @@ public:
         std::shared_ptr<Actor> source,
         std::shared_ptr<Actor> target);
     std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);
+    std::shared_ptr<ItemDrop> AddRandomItemDropFor(Actor* dropper, Actor* target);
     void SpawnItemDrop(std::shared_ptr<ItemDrop> item);
     /// Return all Parties in this Game
     std::vector<Party*> GetParties() const;
