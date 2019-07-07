@@ -94,7 +94,7 @@ struct RayQueryResult
     {
         return position_ != rhs.position_ ||
             normal_ != rhs.normal_ ||
-            distance_ != rhs.distance_ ||
+            !Equals(distance_, rhs.distance_) ||
             object_ != rhs.object_;
     }
 

@@ -129,7 +129,7 @@ void Npc::Shutdown()
         ai::Zone* zone = ai_->getZone();
         if (zone == nullptr)
             return;
-        zone->destroyAI(id_);
+        zone->destroyAI(static_cast<int>(id_));
         ai_->setZone(nullptr);
     }
 }

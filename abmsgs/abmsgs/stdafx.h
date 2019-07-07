@@ -38,8 +38,6 @@
 
 #include "Logger.h"
 
-#define SCHEDULER_MINTICKS 10
-
 #define WRITE_MINIBUMP
 //#define _PROFILING
 // Used by the profiler to generate a unique identifier

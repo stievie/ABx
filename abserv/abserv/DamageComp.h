@@ -24,6 +24,7 @@ private:
     };
     Actor& owner_;
     std::vector<DamageItem> damages_;
+    std::weak_ptr<Actor> lastDamager_;
 public:
     DamageComp() = delete;
     explicit DamageComp(Actor& owner) :
@@ -43,6 +44,7 @@ public:
     DamagePos GetDamagePos() const;
     /// How long the actor didn't get damage in ms
     uint32_t NoDamageTime() const;
+    std::shared_ptr<Actor> GetLastDamager() const { return lastDamager_.lock(); }
     void Write(Net::NetworkMessage& message);
 
     int64_t lastDamage_;

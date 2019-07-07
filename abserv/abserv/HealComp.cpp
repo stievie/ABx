@@ -22,7 +22,7 @@ void HealComp::Write(Net::NetworkMessage& message)
         message.Add<uint32_t>(owner_.id_);
         message.Add<uint32_t>(static_cast<uint8_t>(d.actorId));
         message.Add<uint16_t>(static_cast<uint16_t>(d.index));
-        message.Add<int16_t>(static_cast<uint16_t>(d.value));
+        message.Add<int16_t>(static_cast<int16_t>(d.value));
     }
     healings_.clear();
 }

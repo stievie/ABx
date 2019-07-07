@@ -275,9 +275,9 @@ void Game::Update()
         const int64_t end = Utils::Tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         // At least SCHEDULER_MINTICKS
-        const int32_t sleepTime = std::max<int32_t>(SCHEDULER_MINTICKS, NETWORK_TICK - duration);
+        const int32_t sleepTime = NETWORK_TICK - static_cast<int32_t>(duration);
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, shared_from_this()))
+            Asynch::CreateScheduledTask(static_cast<uint32_t>(sleepTime), std::bind(&Game::Update, shared_from_this()))
         );
 
         break;
@@ -428,22 +428,18 @@ std::shared_ptr<Projectile> Game::AddProjectile(const std::string& itemUuid,
     return result;
 }
 
-std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
+std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* target)
 {
     if (state_ != ExecutionState::Running || !dropper)
         return std::shared_ptr<ItemDrop>();
 
-    auto* factory = GetSubsystem<ItemFactory>();
-    auto* rng = GetSubsystem<Crypto::Random>();
-    const float rnd = rng->GetFloat();
-    auto p = Utils::SelectRandomly(players_.begin(), players_.end(), rnd);
-    if (p == players_.end())
+    Player* targetPlayer = dynamic_cast<Player*>(target);
+    if (!targetPlayer)
         return std::shared_ptr<ItemDrop>();
 
-    Player* target = (*p).second;
-    if (!target)
-        return std::shared_ptr<ItemDrop>();
-    auto item = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), target);
+    auto* factory = GetSubsystem<ItemFactory>();
+    auto* rng = GetSubsystem<Crypto::Random>();
+    auto item = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), targetPlayer);
     if (!item)
         return std::shared_ptr<ItemDrop>();
 
@@ -458,6 +454,23 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
 
     SpawnItemDrop(result);
     return result;
+}
+
+std::shared_ptr<ItemDrop> Game::AddRandomItemDrop(Actor* dropper)
+{
+    if (state_ != ExecutionState::Running || !dropper)
+        return std::shared_ptr<ItemDrop>();
+
+    auto* rng = GetSubsystem<Crypto::Random>();
+    const float rnd = rng->GetFloat();
+    auto p = Utils::SelectRandomly(players_.begin(), players_.end(), rnd);
+    if (p == players_.end())
+        return std::shared_ptr<ItemDrop>();
+
+    Player* target = (*p).second;
+    if (!target)
+        return std::shared_ptr<ItemDrop>();
+    return AddRandomItemDropFor(dropper, target);
 }
 
 void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)

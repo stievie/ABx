@@ -63,6 +63,8 @@ public:
     { }
     ~BoundingBox() = default;
 
+    BoundingBox& operator = (const BoundingBox& other) = default;
+
 #if defined(HAVE_DIRECTX_MATH)
     operator XMath::BoundingBox() const
     {

@@ -14,6 +14,8 @@
 #include "Item.h"
 #include "ItemFactory.h"
 #include "Scheduler.h"
+#include "PartyManager.h"
+#include "Player.h"
 
 #include "DebugNew.h"
 
@@ -275,9 +277,28 @@ bool Actor::AddToInventory(std::unique_ptr<Item>& item)
 void Actor::DropRandomItem()
 {
     auto game = GetGame();
-    GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(std::bind(&Game::AddRandomItemDrop, game, this))
-    );
+    if (auto killer = killedBy_.lock())
+    {
+        // Killed by some killer, get the party of the killer and chose a random player
+        // of that party in range as drop target.
+        auto* partyMngr = GetSubsystem<PartyManager>();
+        auto party = partyMngr->Get(killer->GetGroupId());
+        Actor* target = nullptr;
+        if (party)
+            target = party->GetRandomPlayerInRange(this, Ranges::Compass);
+        else
+            target = killer.get();
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(std::bind(&Game::AddRandomItemDropFor, game, this, target))
+        );
+    }
+    else
+    {
+        // Not killed by an actor, drop for any player in game
+        GetSubsystem<Asynch::Scheduler>()->Add(
+            Asynch::CreateScheduledTask(std::bind(&Game::AddRandomItemDrop, game, this))
+        );
+    }
 }
 
 void Actor::_LuaSetState(int state)
@@ -844,6 +865,7 @@ bool Actor::Die()
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
         damageComp_.Touch();
         autorunComp_.SetAutoRun(false);
+        killedBy_ = damageComp_.GetLastDamager();
         OnDied();
         return true;
     }

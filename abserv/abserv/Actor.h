@@ -66,6 +66,7 @@ private:
     void _LuaSetSelectedObject(GameObject* object);
 protected:
     Math::Vector3 homePos_;
+    std::weak_ptr<Actor> killedBy_;
     virtual void HandleCommand(AB::GameProtocol::CommandTypes,
         const std::string&, Net::NetworkMessage&)
     {

@@ -45,7 +45,6 @@
 #define USE_ODBC
 #endif
 
-#define SCHEDULER_MINTICKS 10
 #define MAX_DATA_SIZE (1024 * 1024)
 #define MAX_KEY_SIZE 256
 

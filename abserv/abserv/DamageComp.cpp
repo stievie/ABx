@@ -21,6 +21,8 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
     damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(SetValueType::Decrease, value);
+    if (source)
+        lastDamager_ = source->GetThis<Actor>();
 }
 
 int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
@@ -30,6 +32,8 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     lastDamage_ = Utils::Tick();
     damages_.push_back({ DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ });
     owner_.resourceComp_.SetHealth(Components::SetValueType::Absolute, currLife - result);
+    if (source)
+        lastDamager_ = source->GetThis<Actor>();
     return result;
 }
 
@@ -52,19 +56,6 @@ DamagePos DamageComp::GetDamagePos() const
     const float rnd1 = rng->GetFloat();
     const float rnd2 = rng->GetFloat();
     return ws.Get(rnd1, rnd2);
-
-/*
-    // https://stackoverflow.com/questions/3655430/selection-based-on-percentage-weighting
-    float percent = 0.0f;
-    for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)
-    {
-        percent += DamagePosChances[i];
-        if (rnd < percent)
-            return static_cast<DamagePos>(i);
-    }
-
-    return DamagePos::Chest;
-*/
 }
 
 uint32_t DamageComp::NoDamageTime() const
