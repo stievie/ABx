@@ -275,7 +275,7 @@ void Game::Update()
         const int64_t end = Utils::Tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
         // At least SCHEDULER_MINTICKS
-        const int32_t sleepTime = std::max<int32_t>(Asynch::SCHEDULER_MINTICKS, NETWORK_TICK - static_cast<int32_t>(duration));
+        const int32_t sleepTime = NETWORK_TICK - static_cast<int32_t>(duration);
         GetSubsystem<Asynch::Scheduler>()->Add(
             Asynch::CreateScheduledTask(static_cast<uint32_t>(sleepTime), std::bind(&Game::Update, shared_from_this()))
         );
