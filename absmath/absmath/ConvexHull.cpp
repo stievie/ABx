@@ -78,7 +78,7 @@ void ConvexHull::BuildHull(const std::vector<Vector3>& vertices)
         // Build the convex hull from the raw geometry
         StanHull::HullDesc desc;
         desc.SetHullFlag(StanHull::QF_TRIANGLES);
-        desc.mVcount = (unsigned)vertices.size();
+        desc.mVcount = static_cast<unsigned>(vertices.size());
         desc.mVertices = vertices[0].Data();
         desc.mVertexStride = 3 * sizeof(float);
         desc.mSkinWidth = 0.0f;

@@ -83,11 +83,11 @@ std::vector<Line> BoundingBox::GetEdges() const
 min 0------2-----4
     */
 
-    const int index[][2] = {
+    const unsigned index[][2] = {
         { 0, 3 },{ 0, 4 },{ 3, 7 },{ 4, 7 },{ 0, 2 },{ 4, 6 },
         { 3, 5 },{ 7, 1 },{ 1, 6 },{ 6, 2 },{ 2, 5 },{ 5, 1 }
     };
-    for (int j = 0; j < 12; ++j)
+    for (unsigned j = 0; j < 12; ++j)
     {
         result.push_back(Line(
             v[index[j][0]], v[index[j][1]]

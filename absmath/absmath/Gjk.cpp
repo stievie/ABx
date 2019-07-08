@@ -11,7 +11,7 @@ bool Gjk::CheckOneFaceAC(const Vector3& abc, const Vector3& ac, const Vector3& a
         b = -ao;
         v = TripleProduct(ac, ao);
         n = 2;
-        return false;;
+        return false;
     }
     return true;
 }
@@ -196,7 +196,7 @@ bool Gjk::Update(const Vector3& a)
                     return false;
                 //otherwise, in the region of "ABC" (which is actually acd)
                 d = c;
-                c = b;;
+                c = b;
                 b = a;
                 v = abc;
                 n = 3;

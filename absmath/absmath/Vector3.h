@@ -3,6 +3,7 @@
 #include "MathDefs.h"
 #include "MathUtils.h"
 #include <sstream>
+#include <cmath>
 
 namespace Math {
 
@@ -67,8 +68,8 @@ public:
     }
 #endif
 
-    bool operator ==(const Vector3& vector) const { return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_; }
-    bool operator !=(const Vector3& vector) const { return x_ != vector.x_ || y_ != vector.y_ || z_ != vector.z_; }
+    bool operator ==(const Vector3& vector) const { return Equals(vector); }
+    bool operator !=(const Vector3& vector) const { return !Equals(vector); }
 
     /// Return negation.
     Vector3 operator -() const { return Vector3(-x_, -y_, -z_); }
@@ -107,12 +108,12 @@ public:
 
     float Angle(const Vector3& v) const
     {
-        return acos(DotProduct(v) / (Length() * v.Length()));
+        return acosf(DotProduct(v) / (Length() * v.Length()));
     }
     /// Returns the Y angle between this point and v in Rad
     float AngleY(const Vector3& v) const
     {
-        return atan2(x_ - v.x_, z_ - v.z_);
+        return atan2f(x_ - v.x_, z_ - v.z_);
     }
 
     float LengthSqr() const;
@@ -122,7 +123,7 @@ public:
     /// Absolute
     Vector3 Abs() const
     {
-        return Vector3(fabs(x_), fabs(y_), fabs(z_));
+        return Vector3(fabsf(x_), fabsf(y_), fabsf(z_));
     }
     /// Linear interpolation
     Vector3 Lerp(const Vector3& to, float i) const
@@ -130,7 +131,7 @@ public:
         return *this * (1.0f - i) + to * i;
     }
     /// Test for equality with another vector with epsilon.
-    bool Equals(const Vector3& rhs) const
+    inline bool Equals(const Vector3& rhs) const
     {
         return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_);
     }

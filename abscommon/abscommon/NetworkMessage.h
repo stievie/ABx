@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 /// Size of the buffer (16kB)
 #define NETWORKMESSAGE_MAXSIZE 16384
 
