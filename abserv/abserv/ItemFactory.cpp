@@ -103,12 +103,12 @@ void ItemFactory::CalculateValue(const AB::Entities::Item& item, uint32_t level,
     assert(level <= LEVEL_CAP);
     const uint32_t l = (LEVEL_CAP + 1) - level;
 
-    auto rng = GetSubsystem<Crypto::Random>();
+    auto* rng = GetSubsystem<Crypto::Random>();
     if (item.type != AB::Entities::ItemTypeMoney && item.type != AB::Entities::ItemTypeMaterial)
     {
         result.count = 1;
         if (item.value == 0)
-            result.value = Math::Clamp(static_cast<uint16_t>(rng->Get<int>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l),
+            result.value = Math::Clamp(static_cast<uint16_t>(rng->Get<uint16_t>(MIN_ITEM_VALUE, MAX_ITEM_VALUE) / l),
                 static_cast<uint16_t>(5), static_cast<uint16_t>(1000));
         else
             result.value = item.value;

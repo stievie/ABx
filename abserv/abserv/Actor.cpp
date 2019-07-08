@@ -269,7 +269,7 @@ bool Actor::AddToInventory(std::unique_ptr<Item>& item)
 {
     std::unique_ptr<Item> i = std::move(item);
     // By default just delete the item
-    auto factory = GetSubsystem<ItemFactory>();
+    auto* factory = GetSubsystem<ItemFactory>();
     factory->DeleteConcrete(i->concreteItem_.uuid);
     return true;
 }
@@ -537,6 +537,7 @@ bool Actor::IsInWeaponRange(Actor* actor) const
 
 float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetration)
 {
+    // To calculate the effect of the armor to the damage. The damage is multiplied by value
     switch (damageType)
     {
     case DamageType::Holy:
@@ -545,7 +546,7 @@ float Actor::GetArmorEffect(DamageType damageType, DamagePos pos, float penetrat
     case DamageType::LifeDrain:
     case DamageType::Typeless:
     case DamageType::Dark:
-        // Ignoring armor
+        // Ignoring armor -> full damage, armor no effect
         return 1.0f;
     default:
         break;

@@ -29,7 +29,7 @@ void AiCharacter::update(int64_t deltaTime, bool debuggingActive)
     owner_.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
         float aggroValue = owner_.GetAggro(o);
-        aggro.addAggro(o->id_, aggroValue);
+        aggro.addAggro(static_cast<int>(o->id_), aggroValue);
     });
 
     Super::update(deltaTime, debuggingActive);

@@ -21,7 +21,8 @@ void CollisionComp::ResolveCollisions()
         {
             if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
             {
-                if (ci->GetType() == AB::GameProtocol::ObjectTypePlayer && !isCollidingWithPlayers)
+                if (!isCollidingWithPlayers &&
+                    (ci->GetType() == AB::GameProtocol::ObjectTypePlayer || ci->GetType() == AB::GameProtocol::ObjectTypeNpc))
                     continue;
 
                 // Actor always has a MoveComp

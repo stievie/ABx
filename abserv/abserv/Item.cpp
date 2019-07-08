@@ -34,12 +34,11 @@ bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
     IO::PropReadStream stream;
     stream.Init(item.itemStats.data(), item.itemStats.length());
     if (!stats_.Load(stream))
-    {
         LOG_WARNING << "Error loading item stats" << std::endl;
-    }
+
     baseMinDamage_ = stats_.GetMinDamage();
     baseMaxDamage_ = stats_.GetMaxDamage();
-    auto itemFactory = GetSubsystem<ItemFactory>();
+    auto* itemFactory = GetSubsystem<ItemFactory>();
     if (!item.upgrade1Uuid.empty() && !uuids::uuid(item.upgrade1Uuid).nil())
         upgrades_[ItemUpgrade::Pefix] = itemFactory->LoadConcrete(item.upgrade1Uuid);
     if (!item.upgrade2Uuid.empty() && !uuids::uuid(item.upgrade2Uuid).nil())
@@ -442,7 +441,9 @@ void Item::GetArmorPenetration(float& value) const
     switch (data_.type)
     {
     case AB::Entities::ItemTypeHornbow:
+        // Hornbow adds 10% armor penetration
         value += 0.1f;
+        break;
     default:
         break;
     }

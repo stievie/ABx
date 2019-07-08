@@ -89,7 +89,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
 {
     assert(startSet_);
     // Can not change target
-    assert(!target_);
+    assert(!target);
     target_ = target;
     targetPos_ = target->transformation_.position_;
     ray_ = Math::Ray(start_, targetPos_);
