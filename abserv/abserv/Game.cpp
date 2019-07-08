@@ -259,6 +259,7 @@ void Game::Update()
     switch (state_)
     {
     case ExecutionState::Running:
+        [[fallthrough]];
     case ExecutionState::Shutdown:
     {
         if (state_ == ExecutionState::Shutdown && IsInactive())
@@ -274,10 +275,11 @@ void Game::Update()
         // Schedule next update
         const int64_t end = Utils::Tick();
         const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
-        // At least SCHEDULER_MINTICKS
-        const int32_t sleepTime = NETWORK_TICK - static_cast<int32_t>(duration);
+        const uint32_t sleepTime = NETWORK_TICK > duration ?
+                    NETWORK_TICK - duration :
+                    0;
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(static_cast<uint32_t>(sleepTime), std::bind(&Game::Update, shared_from_this()))
+            Asynch::CreateScheduledTask(sleepTime, std::bind(&Game::Update, shared_from_this()))
         );
 
         break;
@@ -623,14 +625,11 @@ void Game::SendSpawnAll(uint32_t playerId)
     };
 
     for (const auto& o : objects_)
-    {
         write(o.second);
-    }
+
     // Also send queued objects
     for (const auto& o : queuedObjects_)
-    {
         write(o);
-    }
 
     if (msg->GetSize() != 0)
         player->WriteToOutput(*msg);
