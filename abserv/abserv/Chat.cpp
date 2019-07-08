@@ -118,14 +118,15 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
     if (auto g = game_.lock())
     {
         auto msg = Net::NetworkMessage::GetNew();
-        const PlayersList& players = g->GetPlayers();
         msg->AddByte(AB::GameProtocol::ChatMessage);
         msg->AddByte(AB::GameProtocol::ChatChannelGeneral);
         msg->Add<uint32_t>(player->id_);
         msg->AddString(player->GetName());
         msg->AddString(text);
-        for (auto& p : players)
-            p.second->WriteToOutput(*msg);
+        g->VisitPlayers([&msg](Player* player) {
+            player->WriteToOutput(*msg);
+            return Iteration::Continue;
+        });
         return true;
     }
     return false;
@@ -136,14 +137,15 @@ bool GameChatChannel::TalkNpc(Npc* npc, const std::string& text)
     if (auto g = game_.lock())
     {
         auto msg = Net::NetworkMessage::GetNew();
-        const PlayersList& players = g->GetPlayers();
         msg->AddByte(AB::GameProtocol::ChatMessage);
         msg->AddByte(AB::GameProtocol::ChatChannelGeneral);
         msg->Add<uint32_t>(npc->id_);
         msg->AddString(npc->GetName());
         msg->AddString(text);
-        for (auto& p : players)
-            p.second->WriteToOutput(*msg);
+        g->VisitPlayers([&msg](Player* player) {
+            player->WriteToOutput(*msg);
+            return Iteration::Continue;
+        });
         return true;
     }
     return false;

@@ -117,7 +117,6 @@ public:
     std::unique_ptr<Map> map_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
-    const PlayersList& GetPlayers() const { return players_; }
     int64_t GetInstanceTime() const { return Utils::Tick() - startTime_; }
     std::string GetName() const { return map_->data_.name; }
     /// Default level on this map
@@ -165,16 +164,26 @@ public:
     /// From GameProtocol (Dispatcher Thread)
     void PlayerJoin(uint32_t playerId);
     void PlayerLeave(uint32_t playerId);
+
     template<typename Callback>
-    inline void VisitObject(Callback&& callback)
+    inline void VisitObjects(Callback&& callback)
     {
-        for (auto object : objects_)
+        for (auto& object : objects_)
         {
             if (object.second)
             {
                 if (callback(*object.second) != Iteration::Continue)
                     break;
             }
+        }
+    }
+    template<typename Callback>
+    inline void VisitPlayers(Callback&& callback)
+    {
+        for (auto& player : players_)
+        {
+            if (callback(player.second) != Iteration::Continue)
+                break;
         }
     }
 };
