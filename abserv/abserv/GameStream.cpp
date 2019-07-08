@@ -89,7 +89,7 @@ bool GameReadStream::Open(const std::string& dir, const std::string& instance)
             open_ = false;
             return false;
         }
-        stream_.read((char*)&size_, sizeof(size_));
+        stream_.read((char*)&size_, sizeof(uint32_t));
 
         gameUuid_.resize(36);
         stream_.read((char*)gameUuid_.data(), 36);
@@ -120,7 +120,7 @@ bool GameReadStream::Read(Net::NetworkMessage& msg)
     if (read_ + size > size_)
         return false;
 
-    auto buff = msg.GetBuffer();
+    auto* buff = msg.GetBuffer();
     stream_.read((char*)buff, size);
     size_ += size;
     return true;

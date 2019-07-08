@@ -136,9 +136,9 @@ public:
         info_.position = 2;
         return buffer_ + HeaderLength;
     }
-    int32_t GetSize() const { return info_.length; }
-    void SetSize(int32_t size) { info_.length = (MsgSize_t)size; }
-    int32_t GetReadPos() const { return info_.position; }
+    int32_t GetSize() const { return static_cast<int32_t>(info_.length); }
+    void SetSize(int32_t size) { info_.length = static_cast<MsgSize_t>(size); }
+    int32_t GetReadPos() const { return static_cast<int32_t>(info_.position); }
 
     bool Compress();
     bool Uncompress();
