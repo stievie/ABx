@@ -21,8 +21,8 @@ TEST_CASE("Collisions")
         }
         // Must intersect @ x = -3.0, z = -3.0
         REQUIRE(abb.Intersects(obb));
-        REQUIRE(abb.Center.x == -3.0f);
-        REQUIRE(abb.Center.z == -3.0f);
+        REQUIRE(abb.Center.x == Approx(-3.0f));
+        REQUIRE(abb.Center.z == Approx(-3.0f));
 
         XMath::BoundingBox abb2({ -2.5f, 0.0f, 2.5f }, { 0.5f, 0.5f, 0.5f });
         REQUIRE(!abb2.Intersects(obb));
@@ -43,8 +43,8 @@ TEST_CASE("Collisions")
         }
         // Must intersect @ x = -1.5, z = -1.5
         REQUIRE(abb.Intersects(obb));
-        REQUIRE(abb.Center.x == -1.5f);
-        REQUIRE(abb.Center.z == -1.5f);
+        REQUIRE(abb.Center.x == Approx(-1.5f));
+        REQUIRE(abb.Center.z == Approx(-1.5f));
 
         XMath::BoundingBox abb2({ -2.5f, 0.0f, 2.5f }, { 0.5f, 0.5f, 0.5f });
         REQUIRE(abb2.Intersects(obb));
@@ -55,8 +55,8 @@ TEST_CASE("Collisions")
         }
         // Must intersect @ x = -2.0, z = 1.5
         REQUIRE(!abb2.Intersects(obb));
-        REQUIRE(abb2.Center.x == -3.5f);
-        REQUIRE(abb2.Center.z == 3.5f);
+        REQUIRE(abb2.Center.x == Approx(-3.5f));
+        REQUIRE(abb2.Center.z == Approx(3.5f));
     }
 
     SECTION("AABB vs AABB")

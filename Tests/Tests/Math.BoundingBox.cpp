@@ -43,9 +43,9 @@ TEST_CASE("BoundingBox Transform", "[boundingbox]")
         Math::BoundingBox bb(-2.0f, 2.0f);
         Math::Matrix4 trans = Math::Matrix4::FromScale(Math::Vector3(1.0f, 0.5f, 1.0f));
         Math::BoundingBox transformed = bb.Transformed(trans);
-        REQUIRE(transformed.min_.x_ == -2.0f);
-        REQUIRE(transformed.min_.y_ == -1.0f);
-        REQUIRE(transformed.min_.z_ == -2.0f);
+        REQUIRE(transformed.min_.x_ == Approx(-2.0f));
+        REQUIRE(transformed.min_.y_ == Approx(-1.0f));
+        REQUIRE(transformed.min_.z_ == Approx(-2.0f));
         REQUIRE(transformed.max_.x_ == 2.0f);
         REQUIRE(transformed.max_.y_ == 1.0f);
         REQUIRE(transformed.max_.z_ == 2.0f);
@@ -55,9 +55,9 @@ TEST_CASE("BoundingBox Transform", "[boundingbox]")
         Math::BoundingBox bb(-2.0f, 2.0f);
         Math::Matrix4 trans = Math::Matrix4::FromTranslation(Math::Vector3(1.0f, 1.0f, 1.0f));
         Math::BoundingBox transformed = bb.Transformed(trans);
-        REQUIRE(transformed.min_.x_ == -1.0f);
-        REQUIRE(transformed.min_.y_ == -1.0f);
-        REQUIRE(transformed.min_.z_ == -1.0f);
+        REQUIRE(transformed.min_.x_ == Approx(-1.0f));
+        REQUIRE(transformed.min_.y_ == Approx(-1.0f));
+        REQUIRE(transformed.min_.z_ == Approx(-1.0f));
         REQUIRE(transformed.max_.x_ == 3.0f);
         REQUIRE(transformed.max_.y_ == 3.0f);
         REQUIRE(transformed.max_.z_ == 3.0f);

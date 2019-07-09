@@ -75,6 +75,12 @@ public:
         return XMath::BoundingOrientedBox(Center(), Extends(), orientation_);
     }
 #endif
+    bool operator ==(const BoundingBox& rhs) const { return Equals(rhs); }
+    bool operator !=(const BoundingBox& rhs) const { return !Equals(rhs); }
+    inline bool Equals(const BoundingBox& rhs) const
+    {
+        return min_.Equals(rhs.min_) && max_.Equals(rhs.max_);
+    }
 
     void Define(float min, float max);
 

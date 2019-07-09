@@ -1,5 +1,6 @@
 Tests/Math.BoundingBox.cpp
 Tests/Math.Collisions.cpp
+Tests/Math.Hull.cpp
 Tests/Math.Matrix.cpp
 Tests/Math.Quaternion.cpp
 Tests/Math.Ray.cpp

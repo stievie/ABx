@@ -284,7 +284,7 @@ int32_t PgsqlResult::GetInt(const std::string& col)
 
 uint32_t PgsqlResult::GetUInt(const std::string& col)
 {
-    return (uint32_t)atoi(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str())));
+    return static_cast<uint32_t>(atoi(PQgetvalue(handle_, cursor_, PQfnumber(handle_, col.c_str()))));
 }
 
 int64_t PgsqlResult::GetLong(const std::string& col)
