@@ -128,7 +128,7 @@ bool Gjk::Update(const Vector3& a)
         {
         case 0:
             // inside the tetrahedron
-            return false;
+            return true;
         case over_abc:
             if (!CheckOneFaceAC(abc, ac, ao))
                 //in the region of AC
@@ -293,6 +293,8 @@ bool Gjk::Update(const Vector3& a)
                 n = 3;
                 return false;
             }
+        default:
+            return true;
         }
     }
 

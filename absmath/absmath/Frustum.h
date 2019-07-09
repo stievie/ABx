@@ -48,10 +48,10 @@ public:
         for (const auto& plane : planes_)
         {
             if (plane.Distance(point) < 0.0f)
-                return OUTSIDE;
+                return Intersection::Outside;
         }
 
-        return INSIDE;
+        return Intersection::Inside;
     }
     /// Test if a sphere is inside, outside or intersects.
     Intersection IsInside(const Sphere& sphere) const;

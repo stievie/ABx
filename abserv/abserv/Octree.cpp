@@ -104,7 +104,7 @@ void Octree::Update()
         if (!octant || octant->GetRoot() != this)
             continue;
         // Skip if still fits the current octant
-        if (o->occludee_ && octant->GetCullingBox().IsInside(box) == INSIDE && octant->CheckObjectFit(box))
+        if (o->occludee_ && octant->GetCullingBox().IsInside(box) == Intersection::Inside && octant->CheckObjectFit(box))
             continue;
 
         InsertObject(o);
@@ -177,7 +177,7 @@ void Octant::InsertObject(Game::GameObject* object)
     // Also if object is outside the root octant bounds, insert to root
     bool insertHere;
     if (this == root_)
-        insertHere = !object->occludee_ || cullingBox_.IsInside(box) != INSIDE || CheckObjectFit(box);
+        insertHere = !object->occludee_ || cullingBox_.IsInside(box) != Intersection::Inside || CheckObjectFit(box);
     else
         insertHere = CheckObjectFit(box);
 
@@ -282,9 +282,9 @@ void Octant::GetObjectsInternal(OctreeQuery& query, bool inside) const
     if (this != root_)
     {
         Intersection res = query.TestOctant(cullingBox_, inside);
-        if (res == INSIDE)
+        if (res == Intersection::Inside)
             inside = true;
-        else if (res == OUTSIDE)
+        else if (res == Intersection::Outside)
         {
             // Fully outside, so cull this octant, its children & objects
             return;

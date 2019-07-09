@@ -346,7 +346,7 @@ bool BoundingBox::Collides(const Sphere& b2) const
     {
         return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingSphere)b2) > XMath::DISJOINT;
     }
-    return IsInside(b2) != OUTSIDE;
+    return IsInside(b2) != Intersection::Outside;
 }
 
 bool BoundingBox::Collides(const Sphere& b2, const Vector3&, Vector3&) const
@@ -355,12 +355,12 @@ bool BoundingBox::Collides(const Sphere& b2, const Vector3&, Vector3&) const
     {
         return ((XMath::BoundingOrientedBox)*this).Contains((XMath::BoundingSphere)b2) > XMath::DISJOINT;
     }
-    return IsInside(b2) != OUTSIDE;
+    return IsInside(b2) != Intersection::Outside;
 }
 
 bool BoundingBox::Collides(const ConvexHull& b2, const Vector3&, Vector3&) const
 {
-    return IsInside(b2) != OUTSIDE;
+    return IsInside(b2) != Intersection::Outside;
 }
 
 bool BoundingBox::Collides(const HeightMap& b2, const Vector3&, Vector3& move) const
@@ -383,9 +383,9 @@ Intersection BoundingBox::IsInside(const HeightMap& shape) const
     const float y = shape.GetHeight(centerBottom);
     if (y > min_.y_)
     {
-        return INSIDE;
+        return Intersection::Inside;
     }
-    return OUTSIDE;
+    return Intersection::Outside;
 }
 
 Intersection BoundingBox::IsInside(const ConvexHull& shape) const
@@ -393,8 +393,8 @@ Intersection BoundingBox::IsInside(const ConvexHull& shape) const
     const Shape s = GetShape();
 
     if (Gjk::StaticIntersects(s, shape))
-        return INSIDE;
-    return OUTSIDE;
+        return Intersection::Inside;
+    return Intersection::Outside;
 }
 
 Intersection BoundingBox::IsInside(const Sphere& shape) const
@@ -436,12 +436,12 @@ Intersection BoundingBox::IsInside(const Sphere& shape) const
 
     float radius = shape.radius_;
     if (distSquared >= radius * radius)
-        return OUTSIDE;
+        return Intersection::Outside;
     else if (center.x_ - radius < min_.x_ || center.x_ + radius > max_.x_ || center.y_ - radius < min_.y_ ||
         center.y_ + radius > max_.y_ || center.z_ - radius < min_.z_ || center.z_ + radius > max_.z_)
-        return INTERSECTS;
+        return Intersection::Intersects;
     else
-        return INSIDE;
+        return Intersection::Inside;
 }
 
 }

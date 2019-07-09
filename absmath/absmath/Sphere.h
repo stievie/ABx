@@ -84,7 +84,7 @@ public:
     bool Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const;
     bool Collides(const Sphere& b2) const
     {
-        return IsInsideFast(b2) != OUTSIDE;
+        return IsInsideFast(b2) != Intersection::Outside;
     }
     bool Collides(const Sphere& b2, const Vector3& velocity, Vector3&) const;
     bool Collides(const ConvexHull& b2, const Vector3& velocity, Vector3& move) const;
@@ -95,9 +95,9 @@ public:
     {
         const float distSquared = (point - center_).LengthSqr();
         if (distSquared < radius_ * radius_)
-            return INSIDE;
+            return Intersection::Inside;
         else
-            return OUTSIDE;
+            return Intersection::Outside;
     }
 
     /// Test if another sphere is inside, outside or intersects.
@@ -105,11 +105,11 @@ public:
     {
         const float dist = (sphere.center_ - center_).Length();
         if (dist >= sphere.radius_ + radius_)
-            return OUTSIDE;
+            return Intersection::Outside;
         else if (dist + sphere.radius_ < radius_)
-            return INSIDE;
+            return Intersection::Inside;
         else
-            return INTERSECTS;
+            return Intersection::Intersects;
     }
     Intersection IsInside(const HeightMap& sphere) const;
     Intersection IsInside(const ConvexHull& sphere) const;
@@ -121,9 +121,9 @@ public:
         const float combined = sphere.radius_ + radius_;
 
         if (distSquared >= combined * combined)
-            return OUTSIDE;
+            return Intersection::Outside;
         else
-            return INSIDE;
+            return Intersection::Inside;
     }
 
     /// Test if a bounding box is inside, outside or intersects.

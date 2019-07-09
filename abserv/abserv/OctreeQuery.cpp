@@ -7,7 +7,7 @@ namespace Math {
 Intersection PointOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
 {
     if (inside)
-        return INSIDE;
+        return Intersection::Inside;
     else
         return box.IsInside(point_);
 }
@@ -18,7 +18,7 @@ void PointOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** 
     {
         Game::GameObject* object = *start++;
 
-        if (inside || object->GetWorldBoundingBox().IsInside(point_))
+        if (inside || object->GetWorldBoundingBox().IsInside(point_) != Intersection::Outside)
             result_.push_back(object);
     }
 }
@@ -26,7 +26,7 @@ void PointOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** 
 Intersection SphereOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
 {
     if (inside)
-        return INSIDE;
+        return Intersection::Inside;
     else
         return sphere_.IsInside(box);
 }
@@ -37,7 +37,7 @@ void SphereOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject**
     {
         Game::GameObject* object = *start++;
 
-        if (inside || sphere_.IsInsideFast(object->GetWorldBoundingBox()))
+        if (inside || sphere_.IsInsideFast(object->GetWorldBoundingBox()) != Intersection::Outside)
             result_.push_back(object);
     }
 }
@@ -45,7 +45,7 @@ void SphereOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject**
 Intersection BoxOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
 {
     if (inside)
-        return INSIDE;
+        return Intersection::Inside;
     else
         return box_.IsInside(box);
 }
@@ -56,7 +56,7 @@ void BoxOctreeQuery::TestObjects(Game::GameObject** start, Game::GameObject** en
     {
         Game::GameObject* object = *start++;
 
-        if (inside || box_.IsInsideFast(object->GetWorldBoundingBox()))
+        if (inside || box_.IsInsideFast(object->GetWorldBoundingBox()) != Intersection::Outside)
             result_.push_back(object);
     }
 }

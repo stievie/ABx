@@ -19,8 +19,8 @@ Intersection ConvexHull::IsInside(const Vector3& point) const
 {
     Shape shape2(point);
     if (Gjk::StaticIntersects(*this, shape2))
-        return INSIDE;
-    return OUTSIDE;
+        return Intersection::Inside;
+    return Intersection::Outside;
 }
 
 ConvexHull ConvexHull::Transformed(const Matrix4& transform) const

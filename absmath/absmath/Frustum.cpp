@@ -96,7 +96,7 @@ Intersection Frustum::IsInside(const BoundingBox& bbox)
         inside &= d > 0;
         //return false; //with flag works faster
     }
-    return inside ? INSIDE : OUTSIDE;
+    return inside ? Intersection::Inside : Intersection::Outside;
 }
 
 Intersection Frustum::IsInside(const Sphere& sphere) const
@@ -106,12 +106,12 @@ Intersection Frustum::IsInside(const Sphere& sphere) const
     {
         float dist = plane.Distance(sphere.center_);
         if (dist < -sphere.radius_)
-            return OUTSIDE;
+            return Intersection::Outside;
         else if (dist < sphere.radius_)
             allInside = false;
     }
 
-    return allInside ? INSIDE : INTERSECTS;
+    return allInside ? Intersection::Inside : Intersection::Intersects;
 }
 
 Shape Frustum::GetShape() const

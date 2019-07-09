@@ -138,7 +138,7 @@ Sphere Sphere::Transformed(const Matrix4& transform) const
 
 bool Sphere::Collides(const BoundingBox& b2) const
 {
-    return IsInsideFast(b2) != OUTSIDE;
+    return IsInsideFast(b2) != Intersection::Outside;
 }
 
 bool Sphere::Collides(const BoundingBox& b2, const Vector3& velocity, Vector3& move) const
@@ -169,13 +169,13 @@ bool Sphere::Collides(const HeightMap& b2, const Vector3& velocity, Vector3& mov
 Intersection Sphere::IsInside(const HeightMap& sphere) const
 {
     Vector3 move;
-    return Collides(sphere, Vector3::Zero, move) ? INSIDE : OUTSIDE;
+    return Collides(sphere, Vector3::Zero, move) ? Intersection::Inside : Intersection::Outside;
 }
 
 Intersection Sphere::IsInside(const ConvexHull& sphere) const
 {
     Vector3 move;
-    return Collides(sphere, Vector3::Zero, move) ? INSIDE : OUTSIDE;
+    return Collides(sphere, Vector3::Zero, move) ? Intersection::Inside : Intersection::Outside;
 }
 
 Intersection Sphere::IsInside(const BoundingBox& box) const
@@ -185,7 +185,7 @@ Intersection Sphere::IsInside(const BoundingBox& box) const
     {
         const XMath::BoundingSphere me(center_, radius_);
         const XMath::ContainmentType ct = me.Contains((XMath::BoundingOrientedBox)box);
-        return ct == XMath::DISJOINT ? OUTSIDE : (ct == XMath::INTERSECTS ? INTERSECTS : INSIDE);
+        return ct == XMath::DISJOINT ? Intersection::Outside : (ct == XMath::INTERSECTS ? Intersection::Intersects : Intersection::Inside);
     }
 #endif
     const float radiusSquared = radius_ * radius_;
@@ -226,37 +226,37 @@ Intersection Sphere::IsInside(const BoundingBox& box) const
     }
 
     if (distSquared >= radiusSquared)
-        return OUTSIDE;
+        return Intersection::Outside;
 
     min -= center_;
     max -= center_;
 
     Vector3 tempVec = min; // - - -
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.x_ = max.x_; // + - -
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.y_ = max.y_; // + + -
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.x_ = min.x_; // - + -
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.z_ = max.z_; // - + +
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.y_ = min.y_; // - - +
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.x_ = max.x_; // + - +
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
     tempVec.y_ = max.y_; // + + +
     if (tempVec.LengthSqr() >= radiusSquared)
-        return INTERSECTS;
+        return Intersection::Intersects;
 
-    return INSIDE;
+    return Intersection::Inside;
 }
 
 Intersection Sphere::IsInsideFast(const BoundingBox& box) const
@@ -302,9 +302,9 @@ Intersection Sphere::IsInsideFast(const BoundingBox& box) const
     }
 
     if (distSquared >= radiusSquared)
-        return OUTSIDE;
+        return Intersection::Outside;
     else
-        return INSIDE;
+        return Intersection::Inside;
 }
 
 }

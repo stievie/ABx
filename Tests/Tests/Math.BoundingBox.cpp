@@ -165,14 +165,14 @@ TEST_CASE("BoundingBox Intersections", "[boundingbox]")
         Math::BoundingBox bb1(-2.0f, 2.0f);
         Math::Vector3 inside(1.0f, 1.0f, 1.0f);
         Math::Intersection in = bb1.IsInside(inside);
-        REQUIRE(in == Math::INSIDE);
+        REQUIRE(in == Math::Intersection::Inside);
     }
     SECTION("Vector3 outside")
     {
         Math::BoundingBox bb1(-2.0f, 2.0f);
         Math::Vector3 inside(3.0f, 1.0f, 1.0f);
         Math::Intersection in = bb1.IsInside(inside);
-        REQUIRE(in == Math::OUTSIDE);
+        REQUIRE(in == Math::Intersection::Outside);
     }
 }
 

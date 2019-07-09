@@ -9,11 +9,11 @@ static constexpr float M_PIHALF = M_PIF / 2.0f;            // PI/2
 static constexpr float M_PIFOURTH = M_PIF / 4.0f;          // PI/4
 
 /// Intersection test result.
-enum Intersection
+enum class Intersection
 {
-    OUTSIDE,
-    INTERSECTS,
-    INSIDE
+    Outside,
+    Intersects,
+    Inside
 };
 
 }
