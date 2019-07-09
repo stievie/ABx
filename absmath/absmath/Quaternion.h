@@ -57,12 +57,12 @@ public:
 #endif
 
     /// Test for equality
-    bool operator ==(const Quaternion& vector) const {
-        return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_ && w_ == vector.w_;
+    bool operator ==(const Quaternion& rhs) const {
+        return Equals(rhs);
     }
     /// Test for inequality
-    bool operator !=(const Quaternion& vector) const {
-        return x_ != vector.x_ || y_ != vector.y_ || z_ != vector.z_ || w_ != vector.w_;
+    bool operator !=(const Quaternion& rhs) const {
+        return !Equals(rhs);
     }
 
     Quaternion& operator+=(const Quaternion& v);
