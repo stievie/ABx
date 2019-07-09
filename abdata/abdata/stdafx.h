@@ -38,15 +38,12 @@
 
 #include "Logger.h"
 
-#define USE_SQLITE
-#define USE_MYSQL
-#define USE_PGSQL
-#ifdef AB_WINDOWS
-#define USE_ODBC
-#endif
-
 #define MAX_DATA_SIZE (1024 * 1024)
 #define MAX_KEY_SIZE 256
+
+#if !defined(USE_MYSQL) && !defined(USE_PGSQL) && !defined(USE_ODBC) && !defined(USE_SQLITE)
+#error "Define at least one database driver"
+#endif
 
 // Used by the profiler to generate a unique identifier
 #define CONCAT(a, b) a ## b

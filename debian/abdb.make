@@ -13,6 +13,7 @@ SRC_FILES = \
 	$(SOURDEDIR)/DatabaseSqlite.cpp
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
+DEFINES += -DUSE_PGSQL
 # End changes
 
 CXXFLAGS += $(DEFINES) $(INCLUDES)

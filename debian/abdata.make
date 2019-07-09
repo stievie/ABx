@@ -7,10 +7,15 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abdata
 SOURDEDIR = ../abdata/abdata
 OBJDIR = obj/x64/Release/abdata
-LIBS += -lpthread -luuid -llua5.3 -labcrypto -lsqlite3 -ldl -lpq -lldap -lssl -lcrypto -lmariadbclient -lz -lgssapi_krb5 -labscommon -labdb
+LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon -labdb
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
+DEFINES += -DUSE_PGSQL
+# Database Libs
+# LIBS += -lsqlite3
+LIBS += -ldl -lpq -lldap -lssl -lcrypto -lz -lgssapi_krb5
+# LIBS +=  -lmariadbclient
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

@@ -19,11 +19,8 @@
 #include <AB/CommonConfig.h>
 #include "DebugConfig.h"
 
-#define USE_SQLITE
-#define USE_MYSQL
-#define USE_PGSQL
-#ifdef AB_WINDOWS
-#define USE_ODBC
+#if !defined(USE_MYSQL) && !defined(USE_PGSQL) && !defined(USE_ODBC) && !defined(USE_SQLITE)
+#error "Define at least one database driver"
 #endif
 
 // Used by the profiler to generate a unique identifier
