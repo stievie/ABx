@@ -19,10 +19,10 @@ void CollisionComp::ResolveCollisions()
     {
         for (auto& ci : c)
         {
-            if (ci != &owner_ && ((owner_.collisionMask_ & ci->collisionMask_) == ci->collisionMask_))
+            if (ci != &owner_)
             {
                 if (!isCollidingWithPlayers &&
-                    (ci->GetType() == AB::GameProtocol::ObjectTypePlayer || ci->GetType() == AB::GameProtocol::ObjectTypeNpc))
+                    (ci->GetType() == AB::GameProtocol::ObjectTypePlayer))
                     continue;
 
                 // Actor always has a MoveComp

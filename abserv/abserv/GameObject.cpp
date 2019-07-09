@@ -142,7 +142,7 @@ bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math
 
     switch (other->GetCollisionShape()->shapeType_)
     {
-    case Math::ShapeTypeBoundingBox:
+    case Math::ShapeType::BoundingBox:
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(other->GetCollisionShape());
@@ -163,7 +163,7 @@ bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math
         return collisionShape_->Collides(transformation_.GetMatrix(), bbox, velocity, move);
 #endif
     }
-    case Math::ShapeTypeSphere:
+    case Math::ShapeType::Sphere:
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(other->GetCollisionShape());
@@ -180,7 +180,7 @@ bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math
         return collisionShape_->Collides(transformation_.GetMatrix(), sphere, velocity,  move);
 #endif
     }
-    case Math::ShapeTypeConvexHull:
+    case Math::ShapeType::ConvexHull:
     {
         using HullShape = Math::CollisionShapeImpl<Math::ConvexHull>;
         HullShape* shape = static_cast<HullShape*>(other->GetCollisionShape());
@@ -197,7 +197,7 @@ bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math
         return collisionShape_->Collides(transformation_.GetMatrix(), hull, velocity, move);
 #endif
     }
-    case Math::ShapeTypeHeightMap:
+    case Math::ShapeType::HeightMap:
     {
         using HeightShape = Math::CollisionShapeImpl<Math::HeightMap>;
         HeightShape* shape = static_cast<HeightShape*>(other->GetCollisionShape());
@@ -464,7 +464,7 @@ void GameObject::_LuaSetBoundingBox(
 {
     if (!collisionShape_)
         return;
-    if (collisionShape_->shapeType_ == Math::ShapeTypeBoundingBox)
+    if (collisionShape_->shapeType_ == Math::ShapeType::BoundingBox)
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
@@ -480,7 +480,7 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         return;
     switch (collisionShape_->shapeType_)
     {
-    case Math::ShapeTypeBoundingBox:
+    case Math::ShapeType::BoundingBox:
     {
         const Math::Vector3 halfSize = (Math::Vector3(x, y, z) * 0.5f);
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
@@ -490,7 +490,7 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         obj->max_ = halfSize;
         break;
     }
-    case Math::ShapeTypeSphere:
+    case Math::ShapeType::Sphere:
     {
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());

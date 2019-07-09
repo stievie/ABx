@@ -59,7 +59,7 @@ AreaOfEffect::AreaOfEffect() :
 {
     // AOE has always sphere shape with the range as radius
     SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeTypeSphere,
+        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, RANGE_ADJECENT)
     );
     // AOE can not hide other objects
@@ -157,7 +157,7 @@ void AreaOfEffect::SetRange(Ranges range)
     auto cs = GetCollisionShape();
     if (!cs)
         return;
-    if (cs->shapeType_ != Math::ShapeTypeSphere)
+    if (cs->shapeType_ != Math::ShapeType::Sphere)
         // AOE should always have a sphere
         return;
 

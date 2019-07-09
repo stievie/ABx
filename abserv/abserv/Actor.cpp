@@ -116,7 +116,7 @@ Actor::Actor() :
     static const Math::Vector3 CREATURTE_BB_MIN(-0.15f, 0.0f, -0.25f);
     static const Math::Vector3 CREATURTE_BB_MAX(0.15f, 1.7f, 0.25f);
     SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeTypeBoundingBox,
+        std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;

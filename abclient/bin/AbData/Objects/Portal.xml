@@ -20,4 +20,13 @@
 		</attribute>
 		<attribute name="Serialize Particles" value="false" />
 	</component>
+	<component id="16777217" type="RigidBody">
+		<attribute name="Collision Layer" value="0"/>
+		<attribute name="Use Gravity" value="false"/>
+	</component>
+	<component id="16777218" type="CollisionShape">
+		<attribute name="Shape Type" value="Box"/>
+		<attribute name="Size" value="1.0 2.0 2.0"/>
+		<attribute name="Offset Position" value="0.0 0.0 0.0"/>
+	</component>
 </node>

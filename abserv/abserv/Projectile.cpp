@@ -23,7 +23,7 @@ Projectile::Projectile(const std::string& itemUuid) :
     startSet_(false)
 {
     SetCollisionShape(
-        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeTypeSphere,
+        std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, PROJECTILE_SIZE)
     );
     // Projectile can not hide other objects

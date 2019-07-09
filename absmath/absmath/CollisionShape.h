@@ -11,12 +11,12 @@
 
 namespace Math {
 
-enum ShapeType
+enum class ShapeType
 {
-    ShapeTypeBoundingBox,
-    ShapeTypeSphere,
-    ShapeTypeConvexHull,
-    ShapeTypeHeightMap
+    BoundingBox,
+    Sphere,
+    ConvexHull,
+    HeightMap
 };
 
 class CollisionShape

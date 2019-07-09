@@ -210,7 +210,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 #endif
                                 object->SetCollisionShape(
                                     std::make_unique<Math::CollisionShapeImpl<Math::ConvexHull>>(
-                                        Math::ShapeTypeConvexHull, model->shape_->vertexData_)
+                                        Math::ShapeType::ConvexHull, model->shape_->vertexData_)
                                 );
                             }
                         }
@@ -230,7 +230,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                                    Math::ShapeTypeBoundingBox, bb)
+                                    Math::ShapeType::BoundingBox, bb)
                             );
                         }
                         else if ((coll_shape == IO::Map::AttrCollisionShapeTypeSphere || coll_shape == IO::Map::AttrCollisionShapeTypeCylinder) &&
@@ -246,7 +246,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(
-                                    Math::ShapeTypeSphere, sphere)
+                                    Math::ShapeType::Sphere, sphere)
                             );
                         }
                         else if (model)
@@ -262,7 +262,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
 #endif
                             object->SetCollisionShape(
                                 std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(
-                                    Math::ShapeTypeBoundingBox, bb)
+                                    Math::ShapeType::BoundingBox, bb)
                             );
                         }
                     }

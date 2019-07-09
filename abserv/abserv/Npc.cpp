@@ -63,20 +63,27 @@ bool Npc::LoadScript(const std::string& fileName)
     name_ = (const char*)luaState_["name"];
     level_ = luaState_["level"];
     itemIndex_ = luaState_["itemIndex"];
-    sex_ = luaState_["sex"];
+    if (ScriptManager::IsNumber(luaState_, "sex"))
+        sex_ = luaState_["sex"];
     if (ScriptManager::IsNumber(luaState_, "group_id"))
         groupId_ = luaState_["group_id"];
 
-    stateComp_.SetState(luaState_["creatureState"], true);
+    if (ScriptManager::IsNumber(luaState_, "creatureState"))
+        stateComp_.SetState(luaState_["creatureState"], true);
+    else
+        stateComp_.SetState(AB::GameProtocol::CreatureStateIdle, true);
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
-    skills_->prof1_.index = luaState_["prof1Index"];
-    if (skills_->prof1_.index != 0)
+    if (ScriptManager::IsNumber(luaState_, "prof1Index"))
     {
-        if (!client->Read(skills_->prof1_))
+        skills_->prof1_.index = luaState_["prof1Index"];
+        if (skills_->prof1_.index != 0)
         {
-            LOG_WARNING << "Unable to read primary profession of " << GetName() << ", index = " << skills_->prof1_.index << std::endl;
+            if (!client->Read(skills_->prof1_))
+            {
+                LOG_WARNING << "Unable to read primary profession of " << GetName() << ", index = " << skills_->prof1_.index << std::endl;
+            }
         }
     }
     if (ScriptManager::IsNumber(luaState_, "prof2Index"))
