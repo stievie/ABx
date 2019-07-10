@@ -14,6 +14,7 @@ public:
 
     void Add(uint32_t ip);
     void Add(const std::string& ip);
+    void AddList(const std::string& ips);
     bool Contains(uint32_t value) const;
     bool IsEmpty() const { return ips_.empty(); }
     std::string ToString() const;

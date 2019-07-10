@@ -117,6 +117,7 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
         break;
     default:
         channel_.Deliver(msg);
+        break;
     }
 }
 

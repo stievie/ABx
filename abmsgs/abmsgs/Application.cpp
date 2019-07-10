@@ -66,19 +66,12 @@ bool Application::LoadMain()
         serverHost_ = config->GetGlobalString("message_host", "");
     if (logDir_.empty())
         logDir_ = config->GetGlobalString("log_dir", "");
-    std::string ips = config->GetGlobalString("allowed_ips", "");
-    if (!ips.empty())
-    {
-        std::vector<std::string> ipVec = Utils::Split(ips, ";");
-        for (const std::string& ip : ipVec)
-        {
-            whiteList_.Add(ip);
-        }
-    }
+    const std::string ips = config->GetGlobalString("allowed_ips", "");
+    whiteList_.AddList(ips);
 
     LOG_INFO << "Connecting to data server...";
     auto* dataClient = GetSubsystem<IO::DataClient>();
-    const std::string& dataHost = config->GetGlobalString("data_host", "");
+    const std::string dataHost = config->GetGlobalString("data_host", "");
     uint16_t dataPort = static_cast<uint16_t>(config->GetGlobalInt("data_port", 0ll));
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())

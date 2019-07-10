@@ -118,7 +118,7 @@ void Application::ShowHelp()
 void Application::UpdateBytesSent(size_t bytes)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (bytesSent_ + bytes > std::numeric_limits<uint64_t>::max())
+    if (Utils::WouldExceed(bytesSent_, bytes, std::numeric_limits<uint64_t>::max()))
     {
         bytesSent_ = 0;
         statusMeasureTime_ = Utils::Tick();
@@ -134,9 +134,9 @@ void Application::UpdateBytesSent(size_t bytes)
         uint8_t load = 0;
         if (maxThroughput_ != 0)
         {
-            int64_t mesTime = Utils::Tick() - statusMeasureTime_;
+            int64_t mesTime = Utils::TimePassed(statusMeasureTime_);
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
-            float ld = ((float)bytesPerSecond / (float)maxThroughput_) * 100.0f;
+            float ld = (static_cast<float>(bytesPerSecond) / static_cast<float>(maxThroughput_)) * 100.0f;
             load = static_cast<uint8_t>(ld);
             if (load > 100)
                 load = 100;
@@ -1161,5 +1161,5 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>, const Simpl
 bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
 {
     auto* banMan = GetSubsystem<Auth::BanManager>();
-    return banMan->AcceptConnection(endpoint.address().to_v4().to_ulong());
+    return banMan->AcceptConnection(endpoint.address().to_v4().to_uint());
 }

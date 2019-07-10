@@ -104,19 +104,12 @@ bool Application::LoadConfig()
     if (serverHost_.empty())
         serverHost_ = config->GetGlobalString("data_host", "");
     if (maxSize_ == 0)
-        maxSize_ = config->GetGlobalInt("max_size", 0ll);
+        maxSize_ = static_cast<size_t>(config->GetGlobalInt("max_size", 0ll));
     if (!readonly_)
         readonly_ = config->GetGlobalBool("read_only", false);
 
     std::string ips = config->GetGlobalString("allowed_ips", "");
-    if (!ips.empty())
-    {
-        std::vector<std::string> ipVec = Utils::Split(ips, ";");
-        for (const std::string& ip : ipVec)
-        {
-            whiteList_.Add(ip);
-        }
-    }
+    whiteList_.AddList((ips));
 
     if (IO::Logger::logDir_.empty())
         IO::Logger::logDir_ = config->GetGlobalString("log_dir", "");
@@ -133,8 +126,8 @@ bool Application::LoadConfig()
     if (DB::Database::dbPort_ == 0)
         DB::Database::dbPort_ = static_cast<uint16_t>(config->GetGlobalInt("db_port", 0ll));
 
-    flushInterval_ = static_cast<uint32_t>(config->GetGlobalInt("flush_interval", (int64_t)flushInterval_));
-    cleanInterval_ = static_cast<uint32_t>(config->GetGlobalInt("clean_interval", (int64_t)cleanInterval_));
+    flushInterval_ = static_cast<uint32_t>(config->GetGlobalInt("flush_interval", flushInterval_));
+    cleanInterval_ = static_cast<uint32_t>(config->GetGlobalInt("clean_interval", cleanInterval_));
 
     if (serverPort_ == 0)
     {
@@ -161,13 +154,9 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Readonly mode: " << (readonly_ ? "TRUE" : "false") << std::endl;
     LOG_INFO << "  Allowed IPs: ";
     if (whiteList_.IsEmpty())
-    {
         LOG_INFO << "(all)";
-    }
     else
-    {
         LOG_INFO << whiteList_.ToString();
-    }
     LOG_INFO << std::endl;
     LOG_INFO << "Database drivers:";
 #ifdef USE_SQLITE

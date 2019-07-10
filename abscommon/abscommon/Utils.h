@@ -21,6 +21,15 @@ void SelectIterators(ForwardIterator first, ForwardIterator last,
     }
 }
 
+/// Check if value would exceed max if add was added
+template <typename T>
+inline bool WouldExceed(T value, T add, T max)
+{
+    // Don't do return value + add > max because max maybe the largest possible value,
+    // e.g. std::numeric_limits<>::max()
+    return (max - add) < value;
+}
+
 template <typename T, int N>
 constexpr size_t CountOf(T(&)[N])
 {
