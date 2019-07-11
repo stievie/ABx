@@ -32,7 +32,7 @@ $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 
 # PCH
 $(GCH): $(PCH)
-        $(CXX) -x c++-header $(CXXFLAGS) -c $< -o $@
+	$(CXX) -x c++-header $(CXXFLAGS) -c $< -o $@
 
 -include $(OBJ_FILES:.o=.d)
 

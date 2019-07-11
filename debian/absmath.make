@@ -25,7 +25,7 @@ $(TARGET): $(GCH) $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
-        $(CCACHE) $(CXX) $(CXXFLAGS) -MMD -c $< -o $@
+	$(CCACHE) $(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
 # PCH
 $(GCH): $(PCH)
