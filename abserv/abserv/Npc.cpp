@@ -24,7 +24,6 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("IsServerOnly", &Npc::IsServerOnly)
         .addFunction("SetServerOnly", &Npc::SetServerOnly)
 
-        .addFunction("SetName", &Npc::SetName)
         .addFunction("SetLevel", &Npc::SetLevel)             // Can only be used in onInit(), i.e. before it is sent to the clients
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
@@ -36,10 +35,7 @@ void Npc::RegisterLua(kaguya::State& state)
 
 Npc::Npc() :
     Actor(),
-    serverOnly_(false),
-    behaviorTree_(""),
     aiCharacter_(nullptr),
-    functions_(FunctionNone),
     luaInitialized_(false)
 {
     // Party and Groups must be unique, i.e. share the same ID pool.

@@ -50,7 +50,7 @@ public:
     static Utils::IdGenerator<uint32_t> objectIds_;
 private:
     int64_t removeAt_{ 0 };
-    std::unique_ptr<Math::CollisionShape> collisionShape_;
+    std::unique_ptr<Math::CollisionShape> collisionShape_{ nullptr };
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(float x, float y, float z);
     Actor* _LuaAsActor();
@@ -75,11 +75,12 @@ private:
     void _LuaCallGameEvent(const std::string& name, GameObject* data);
 protected:
     std::mutex lock_;
+    std::string name_;
     Utils::VariantMap variables_;
     std::weak_ptr<Game> game_;
     /// Octree octant.
-    Math::Octant* octant_;
-    float sortValue_;
+    Math::Octant* octant_{ nullptr };
+    float sortValue_{ 0.0f };
     std::map<Ranges, std::vector<std::weak_ptr<GameObject>>> ranges_;
     void UpdateRanges();
     uint32_t GetNewId()
@@ -228,18 +229,19 @@ public:
     virtual bool Serialize(IO::PropWriteStream& stream);
 
     virtual const std::string& GetName() const { return name_; }
+    virtual void SetName(const std::string& name) { name_ = name; }
+
 
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;
-    std::string name_;
     Components::StateComp stateComp_;
     std::unique_ptr<Components::TriggerComp> triggerComp_;
     /// Occluder flag. An object that can hide another object from view.
-    bool occluder_;
+    bool occluder_{ false };
     /// Occludee flag. An object that can be hidden from view (because it is occluded by another object) but that cannot, itself, hide another object from view.
-    bool occludee_;
-    uint32_t collisionMask_;
+    bool occludee_{ true };
+    uint32_t collisionMask_{ 0xFFFFFFFF };     // Collides with all by default
     virtual Math::BoundingBox GetWorldBoundingBox() const
     {
         if (!collisionShape_)

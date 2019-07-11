@@ -25,6 +25,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("GetId",            &GameObject::GetId)
         .addFunction("GetGame",          &GameObject::_LuaGetGame)
         .addFunction("GetName",          &GameObject::GetName)
+        .addFunction("SetName",          &GameObject::SetName)
         .addFunction("GetCollisionMask", &GameObject::GetCollisionMask)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
         .addFunction("QueryObjects",     &GameObject::_LuaQueryObjects)
@@ -62,18 +63,11 @@ void GameObject::RegisterLua(kaguya::State& state)
 }
 
 GameObject::GameObject() :
-    collisionShape_(nullptr),
-    octant_(nullptr),
-    sortValue_(0.0f),
-    id_(GetNewId()),
     name_("Unknown"),
+    id_(GetNewId()),
     stateComp_(*this),
-    triggerComp_(nullptr),         // By default its not a trigger
-    occluder_(false),
-    occludee_(true),
-    collisionMask_(0xFFFFFFFF)    // Collides with all by default
-{
-}
+    triggerComp_(nullptr)         // By default its not a trigger
+{ }
 
 GameObject::~GameObject()
 {

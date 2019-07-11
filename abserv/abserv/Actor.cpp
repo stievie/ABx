@@ -104,8 +104,7 @@ Actor::Actor() :
     effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
     inventoryComp_(std::make_unique<Components::InventoryComp>(*this)),
     moveComp_(std::make_unique<Components::MoveComp>(*this)),
-    collisionComp_(std::make_unique<Components::CollisionComp>(*this)),    // Actor always collides
-    undestroyable_(false)
+    collisionComp_(std::make_unique<Components::CollisionComp>(*this))    // Actor always collides
 {
     /*
      * Default BB for humans

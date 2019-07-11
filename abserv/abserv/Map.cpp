@@ -127,7 +127,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             case IO::Map::AttrStaticModel:
             {
                 object = std::make_shared<GameObject>();
-                object->name_ = name;
+                object->SetName(name);
                 object->collisionMask_ = 0;
                 object->transformation_ = Math::Transformation(pos, scale, rot);
                 {

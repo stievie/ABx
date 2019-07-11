@@ -295,7 +295,7 @@ public:
     std::unique_ptr<Components::MoveComp> moveComp_;
     std::unique_ptr<Components::CollisionComp> collisionComp_;
 
-    bool undestroyable_;
+    bool undestroyable_{ false };
 
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
