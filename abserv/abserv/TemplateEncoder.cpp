@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "TemplateEncoder.h"
-#include <base64.h>
 #include "SkillBar.h"
 
 namespace IO {

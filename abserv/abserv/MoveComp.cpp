@@ -5,7 +5,6 @@
 #include "MathUtils.h"
 #include "Game.h"
 #include "MathUtils.h"
-#include "Mechanic.h"
 
 namespace Game {
 namespace Components {

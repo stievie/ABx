@@ -16,13 +16,10 @@
 #include "StateComp.h"
 #include "TriggerComp.h"
 #include "Variant.h"
-#include <unordered_set>
 #include "Matrix4.h"
-#include "Mechanic.h"
 #include "CollisionComp.h"
 #include "MoveComp.h"
 #include "InputComp.h"
-#include <kaguya/kaguya.hpp>
 #include "Iteration.h"
 
 namespace Game {

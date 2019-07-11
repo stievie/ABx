@@ -9,7 +9,6 @@
 #include "MessageMsg.h"
 #include <AB/Entities/GuildMembers.h>
 #include "DataClient.h"
-#include <uuid.h>
 #include "Profiler.h"
 #include "PropStream.h"
 #include "Subsystems.h"

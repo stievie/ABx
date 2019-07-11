@@ -3,7 +3,3 @@
 // stdafx.obj enthält die vorkompilierten Typinformationen.
 
 #include "stdafx.h"
-
-#define BASE64_IMPLEMENTATION
-#include <base64.h>
-#undef BASE64_IMPLEMENTATION

@@ -3,7 +3,6 @@
 #include "DataProvider.h"
 #include "ScriptManager.h"
 #include "IOItem.h"
-#include "Mechanic.h"
 #include "ItemFactory.h"
 #include "Subsystems.h"
 #include "Actor.h"

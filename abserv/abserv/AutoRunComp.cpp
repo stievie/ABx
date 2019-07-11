@@ -4,7 +4,6 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "ConfigManager.h"
-#include "Mechanic.h"
 #include "Player.h"
 
 namespace Game {

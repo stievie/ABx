@@ -18,7 +18,6 @@
 #include "Maintenance.h"
 #include "Utils.h"
 #include <AB/ProtocolCodes.h>
-#include <base64.h>
 #include "Profiler.h"
 #include "PlayerManager.h"
 #include <AB/Entities/Service.h>

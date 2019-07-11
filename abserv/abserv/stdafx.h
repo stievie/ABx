@@ -39,6 +39,7 @@
 #include <condition_variable>
 #include <unordered_set>
 
+#include <limits>
 #include <stdint.h>
 
 #define WRITE_MINIBUMP
@@ -73,6 +74,7 @@
 #   pragma warning(disable: 4702 4127)
 #endif
 
+#include <lua.hpp>
 #include <kaguya/kaguya.hpp>
 
 #if defined(_MSC_VER)
@@ -87,8 +89,10 @@
 #   pragma warning(pop)
 #endif
 
+#include <base64.h>
 #include <uuid.h>
 
+#include "Mechanic.h"
 #include "Application.h"
 
 // Used by the profiler to generate a unique identifier

@@ -10,7 +10,6 @@
 #include "ScriptManager.h"
 #include "ConfigManager.h"
 #include "TemplateEncoder.h"
-#include "Mechanic.h"
 #include "Item.h"
 #include "ItemFactory.h"
 #include "Scheduler.h"

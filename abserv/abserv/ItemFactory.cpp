@@ -4,11 +4,10 @@
 #include "DataClient.h"
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
-#include "Mechanic.h"
 #include <AB/Entities/ItemChanceList.h>
 #include "Random.h"
 #include "MathUtils.h"
-#include "AB/Entities/TypedItemList.h"
+#include <AB/Entities/TypedItemList.h>
 #include "Player.h"
 #include "Profiler.h"
 #include "Scheduler.h"

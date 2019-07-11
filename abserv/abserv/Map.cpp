@@ -10,7 +10,6 @@
 #include "Model.h"
 #include "StringUtils.h"
 #include "TerrainPatch.h"
-#include <cmath>
 
 namespace Game {
 

@@ -5,7 +5,6 @@
 #include "Subsystems.h"
 #include "Random.h"
 #include "Utils.h"
-#include "Mechanic.h"
 #include "WeightedSelector.h"
 
 namespace Game {

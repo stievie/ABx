@@ -2,7 +2,6 @@
 #include "ScriptManager.h"
 #include "Player.h"
 #include "Npc.h"
-#include <lua.hpp>
 #include "DataProvider.h"
 #include "Profiler.h"
 #if __cplusplus < 201703L

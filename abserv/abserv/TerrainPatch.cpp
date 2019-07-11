@@ -3,7 +3,6 @@
 #include "Ray.h"
 #include "Vector3.h"
 #include "Terrain.h"
-#include <limits>
 
 namespace Game {
 

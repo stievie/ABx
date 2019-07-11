@@ -8,7 +8,6 @@
 #include "Player.h"
 #include "MathUtils.h"
 #include "ConfigManager.h"
-#include "Mechanic.h"
 #include "Scheduler.h"
 
 #include "DebugNew.h"
