@@ -33,7 +33,7 @@ $(TARGET): $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.c
 	@$(MKDIR_P) $(@D)
-	$(CC) $(CFLAGS) -MMD -c $< -o $@
+	$(CCACHE) $(CC) $(CFLAGS) -MMD -c $< -o $@
 
 -include $(OBJ_FILES:.o=.d)
 

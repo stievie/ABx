@@ -23,7 +23,7 @@ $(TARGET): $(OBJ_FILES)
 
 $(OBJDIR)/%.o: $(SOURDEDIR)/%.cpp
 	@$(MKDIR_P) $(@D)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CCACHE) $(CXX) $(CXXFLAGS) -c -o $@ $<
 
 -include $(OBJ_FILES:.o=.d)
 
