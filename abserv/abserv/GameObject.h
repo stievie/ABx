@@ -2,7 +2,6 @@
 
 #include "Vector3.h"
 #include "Quaternion.h"
-#include <limits>
 #include "PropStream.h"
 #include <AB/ProtocolCodes.h>
 #include "NetworkMessage.h"
@@ -21,6 +20,8 @@
 #include "MoveComp.h"
 #include "InputComp.h"
 #include "Iteration.h"
+#include "Mechanic.h"
+#include <kaguya/kaguya.hpp>
 
 namespace Game {
 

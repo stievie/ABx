@@ -26,7 +26,6 @@ private:
     friend class AI::AiCharacter;
     /// This NPC exists only on the server, i.e. is not spawned on the client, e.g. a trigger box.
     bool serverOnly_;
-    std::string name_;
     uint32_t level_;
     uint32_t itemIndex_;
     AB::Entities::CharacterSex sex_;
@@ -82,7 +81,6 @@ public:
     std::shared_ptr<ai::AI> GetAi();
     void Shutdown();
 
-    const std::string& GetName() const override { return name_; }
     void SetName(const std::string& name) { name_ = name; }
     uint32_t GetLevel() const override { return level_; }
     bool CanAttack() const override { return true; }

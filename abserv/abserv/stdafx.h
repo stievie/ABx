@@ -24,6 +24,7 @@
 #include <cmath>
 
 // STL
+#include <memory>
 #include <vector>
 #include <map>
 #include <algorithm>

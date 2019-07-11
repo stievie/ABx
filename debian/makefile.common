@@ -1,3 +1,5 @@
+# vi:syntax=diff
+
 # Tools chain
 CC = gcc
 CXX = g++
