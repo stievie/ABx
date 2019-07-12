@@ -24,7 +24,7 @@ private:
     };
     kaguya::State luaState_;
     bool luaInitialized_;
-    bool startSet_;
+    bool startSet_{ false };
     std::shared_ptr<Script> script_;
     Math::Vector3 start_;
     Math::Vector3 targetPos_;

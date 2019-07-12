@@ -24,9 +24,9 @@ private:
     bool luaInitialized_;
     std::shared_ptr<Script> script_;
     /// Effect or skill index
-    uint32_t index_;
-    Ranges range_;
-    uint32_t functions_;
+    uint32_t index_{ 0 };
+    Ranges range_{ Ranges::Aggro };
+    uint32_t functions_{ FunctionNone };
     int64_t startTime_;
     // Lifetime
     uint32_t lifetime_;

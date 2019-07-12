@@ -46,7 +46,7 @@ private:
     };
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
-    uint32_t functions_;
+    uint32_t functions_{ FunctionNone };
     std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
     int32_t baseMinDamage_;
     int32_t baseMaxDamage_;
@@ -65,7 +65,6 @@ public:
 
     Item() = delete;
     explicit Item(const AB::Entities::Item& item) :
-        functions_(FunctionNone),
         baseMinDamage_(0),
         baseMaxDamage_(0),
         data_(item)

@@ -11,7 +11,7 @@ class ItemDrop : public GameObject
 {
 private:
     std::unique_ptr<Item> item_;
-    bool pickedUp_;
+    bool pickedUp_{ false };
     /// Dropper
     std::weak_ptr<Actor> source_;
     void PickUp(Actor* actor);
@@ -42,7 +42,7 @@ public:
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
 
-    uint32_t actorId_;
+    uint32_t actorId_{ 0 };
 };
 
 }

@@ -28,8 +28,7 @@ private:
 public:
     DamageComp() = delete;
     explicit DamageComp(Actor& owner) :
-        owner_(owner),
-        lastDamage_(0)
+        owner_(owner)
     { }
     // non-copyable
     DamageComp(const DamageComp&) = delete;
@@ -47,7 +46,7 @@ public:
     std::shared_ptr<Actor> GetLastDamager() const { return lastDamager_.lock(); }
     void Write(Net::NetworkMessage& message);
 
-    int64_t lastDamage_;
+    int64_t lastDamage_{ 0 };
 };
 
 }

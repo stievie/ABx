@@ -12,15 +12,12 @@ class TriggerComp
 private:
     GameObject& owner_;
     std::map<uint32_t, int64_t> triggered_;
-    uint32_t lastCheck_;
+    uint32_t lastCheck_{ 0 };
     void DoTrigger(GameObject* other);
 public:
     TriggerComp() = delete;
     explicit TriggerComp(GameObject& owner) :
-        owner_(owner),
-        lastCheck_(0),
-        trigger_(false),
-        retriggerTimeout_(std::numeric_limits<uint32_t>::max())  // By default never retrigger
+        owner_(owner)
     { }
     // non-copyable
     TriggerComp(const TriggerComp&) = delete;
@@ -31,9 +28,9 @@ public:
 
     void OnCollide(GameObject* other);
 
-    bool trigger_;
+    bool trigger_{ false };
     /// Time in ms the same Actor can retrigger
-    uint32_t retriggerTimeout_;
+    uint32_t retriggerTimeout_{ std::numeric_limits<uint32_t>::max() };   // By default never retrigger
 };
 
 }

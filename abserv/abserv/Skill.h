@@ -35,24 +35,24 @@ class Skill
 private:
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
-    int64_t startUse_;
-    int64_t lastUse_;
-    int64_t recharged_;
-    Ranges range_;
-    uint32_t skillEffect_;
-    uint32_t effectTarget_;
+    int64_t startUse_{ 0 };
+    int64_t lastUse_{ 0 };
+    int64_t recharged_{ 0 };
+    Ranges range_{ Ranges::Aggro };
+    uint32_t skillEffect_{ SkillEffectNone };
+    uint32_t effectTarget_{ SkillTargetNone };
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
     // The real cost may be influenced by skills, armor, effects etc.
-    int32_t realEnergy_;
-    int32_t realAdrenaline_;
-    int32_t realActivation_;
-    int32_t realOvercast_;
-    int32_t realHp_;
+    int32_t realEnergy_{ 0 };
+    int32_t realAdrenaline_{ 0 };
+    int32_t realActivation_{ 0 };
+    int32_t realOvercast_{ 0 };
+    int32_t realHp_{ 0 };
 
-    bool haveOnCancelled_;
-    bool haveOnInterrupted_;
-    AB::GameProtocol::SkillError lastError_;
+    bool haveOnCancelled_{ false };
+    bool haveOnInterrupted_{ false };
+    AB::GameProtocol::SkillError lastError_{ AB::GameProtocol::SkillErrorNone };
 
     bool CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target);
     void InitializeLua();
@@ -65,26 +65,6 @@ public:
 
     Skill() = delete;
     explicit Skill(const AB::Entities::Skill& skill) :
-        startUse_(0),
-        lastUse_(0),
-        recharged_(0),
-        range_(Ranges::Aggro),
-        skillEffect_(0),
-        effectTarget_(0),
-        realEnergy_(0),
-        realAdrenaline_(0),
-        realActivation_(0),
-        realOvercast_(0),
-        realHp_(0),
-        haveOnCancelled_(false),
-        haveOnInterrupted_(false),
-        lastError_(AB::GameProtocol::SkillErrorNone),
-        energy_(0),
-        adrenaline_(0),
-        activation_(0),
-        recharge_(0),
-        overcast_(0),
-        hp_(0),
         data_(skill)
     {
         InitializeLua();
@@ -149,13 +129,13 @@ public:
 
     void AddRecharge(int32_t ms);
 
-    int32_t energy_;
-    int32_t adrenaline_;
-    int32_t activation_;
-    int32_t recharge_;
-    int32_t overcast_;
+    int32_t energy_{ 0 };
+    int32_t adrenaline_{ 0 };
+    int32_t activation_{ 0 };
+    int32_t recharge_{ 0 };
+    int32_t overcast_{ 0 };
     /// HP sacrifice
-    int32_t hp_;
+    int32_t hp_{ 0 };
 
     AB::Entities::Skill data_;
 };

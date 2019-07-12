@@ -19,7 +19,7 @@ private:
     SkillsArray skills_;
     AB::Attributes attributes_;
     Actor& owner_;
-    int currentSkillIndex_;
+    int currentSkillIndex_{ -1 };
     int _LuaAddSkill(uint32_t skillIndex);
     std::vector<uint32_t> _LuaGetSkillsWithEffect(uint32_t effect) const { return GetSkillsWithEffect(static_cast<SkillEffect>(effect)); }
     std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const { return GetSkillsWithTarget(static_cast<SkillTarget>(target)); }
@@ -30,9 +30,8 @@ public:
 
     SkillBar() = delete;
     explicit SkillBar(Actor& owner) :
-        owner_(owner),
-        currentSkillIndex_(-1)
-    { };
+        owner_(owner)
+    { }
     // non-copyable
     SkillBar(const SkillBar&) = delete;
     SkillBar& operator=(const SkillBar&) = delete;

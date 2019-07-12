@@ -39,12 +39,12 @@ public:
     };
 private:
     std::mutex lock_;
-    std::atomic<ExecutionState> state_;           // Just changed when starting/stopping a game
+    std::atomic<ExecutionState> state_{ ExecutionState::Terminated };           // Just changed when starting/stopping a game
+    int64_t lastUpdate_{ 0 };
+    uint32_t noplayerTime_{ 0 };
     /// The primary owner of the game objects
     ObjectList objects_;
     PlayersList players_;
-    int64_t lastUpdate_;
-    uint32_t noplayerTime_;
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     /// First player(s) triggering the creation of this game
@@ -108,11 +108,11 @@ public:
 
     void Start();
 
+    /// Auto generated ID used by the GameManager
+    uint32_t id_{ 0 };
+    int64_t startTime_{ 0 };
     AB::Entities::Game data_;
     AB::Entities::GameInstance instanceData_;
-    /// Auto generated ID used by the GameManager
-    uint32_t id_;
-    int64_t startTime_;
 
     std::unique_ptr<Map> map_;
 

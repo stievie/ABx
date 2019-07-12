@@ -43,7 +43,7 @@ public:
     }
 
     Math::Transformation transformation_;
-    int patchSize_;
+    int patchSize_{ DEFAULT_PATCH_SIZE };
     Math::Point<int> numPatches_;
 };
 

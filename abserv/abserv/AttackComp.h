@@ -14,14 +14,14 @@ class AttackComp
 private:
     Actor& owner_;
     /// Also includes running to the target
-    bool attacking_;
-    bool hitting_;
-    bool pause_;
-    int64_t lastAttackTime_;
-    uint32_t attackSpeed_;
-    DamageType damageType_;
-    AB::GameProtocol::AttackError lastError_;
-    bool interrupted_;
+    bool attacking_{ false };
+    bool hitting_{ false };
+    bool pause_{ false };
+    int64_t lastAttackTime_{ 0 };
+    uint32_t attackSpeed_{ 0 };
+    DamageType damageType_{ DamageType::Unknown };
+    AB::GameProtocol::AttackError lastError_{ AB::GameProtocol::AttackErrorNone };
+    bool interrupted_{ false };
     std::weak_ptr<Actor> target_;
     bool CheckRange();
     void StartHit(Actor* target);
@@ -30,15 +30,7 @@ private:
 public:
     AttackComp() = delete;
     explicit AttackComp(Actor& owner) :
-        owner_(owner),
-        attacking_(false),
-        hitting_(false),
-        pause_(false),
-        lastAttackTime_(0),
-        attackSpeed_(0),
-        damageType_(DamageType::Unknown),
-        lastError_(AB::GameProtocol::AttackErrorNone),
-        interrupted_(false)
+        owner_(owner)
     { }
     // non-copyable
     AttackComp(const AttackComp&) = delete;

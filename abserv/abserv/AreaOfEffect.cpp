@@ -51,9 +51,6 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
 AreaOfEffect::AreaOfEffect() :
     GameObject(),
     luaInitialized_(false),
-    index_(0),
-    range_(Ranges::Aggro),
-    functions_(FunctionNone),
     startTime_(Utils::Tick()),
     lifetime_(std::numeric_limits<uint32_t>::max())
 {

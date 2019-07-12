@@ -18,8 +18,7 @@ void Projectile::RegisterLua(kaguya::State& state)
 
 Projectile::Projectile(const std::string& itemUuid) :
     Actor(),
-    luaInitialized_(false),
-    startSet_(false)
+    luaInitialized_(false)
 {
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,

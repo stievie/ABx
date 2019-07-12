@@ -53,10 +53,10 @@ private:
     std::shared_ptr<Script> script_;
     std::weak_ptr<Actor> target_;
     std::weak_ptr<Actor> source_;
-    bool persistent_;
-    uint32_t functions_;
+    bool persistent_{ false };
+    uint32_t functions_{ FunctionNone };
     /// Internal effects are not visible to the player, e.g. Effects from the equipments (+armor from Armor, Shield...).
-    bool internal_;
+    bool internal_{ false };
     bool UnserializeProp(EffectAttr attr, IO::PropReadStream& stream);
     void InitializeLua();
     bool HaveFunction(Function func) const
@@ -68,9 +68,6 @@ public:
 
     Effect() = delete;
     explicit Effect(const AB::Entities::Effect& effect) :
-        persistent_(false),
-        functions_(FunctionNone),
-        internal_(false),
         data_(effect),
         startTime_(0),
         endTime_(0),

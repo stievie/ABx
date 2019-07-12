@@ -31,12 +31,7 @@
 
 namespace Game {
 
-Game::Game() :
-    state_(ExecutionState::Terminated),
-    lastUpdate_(0),
-    noplayerTime_(0),
-    id_(0),
-    startTime_(0)
+Game::Game()
 {
     InitializeLua();
     // Create gameStatus_ here, because we may already write it.

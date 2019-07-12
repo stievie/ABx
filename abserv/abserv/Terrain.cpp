@@ -6,8 +6,7 @@ namespace Game {
 
 Terrain::Terrain() :
     IO::Asset(),
-    heightMap_(nullptr),
-    patchSize_(DEFAULT_PATCH_SIZE)
+    heightMap_(nullptr)
 {
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "InputQueue.h"
+#include "NetworkMessage.h"
 
 namespace Game {
 

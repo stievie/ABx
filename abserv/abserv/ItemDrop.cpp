@@ -16,9 +16,7 @@ void ItemDrop::RegisterLua(kaguya::State& state)
 
 ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
     GameObject(),
-    item_(std::move(item)),
-    pickedUp_(false),
-    actorId_(0)
+    item_(std::move(item))
 {
     // Drops can not hide other objects
     occluder_ = false;

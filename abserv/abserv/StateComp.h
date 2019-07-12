@@ -13,18 +13,15 @@ class StateComp
 {
 private:
     GameObject& owner_;
-    AB::GameProtocol::CreatureState currentState_;
-    AB::GameProtocol::CreatureState newState_;
+    AB::GameProtocol::CreatureState currentState_{ AB::GameProtocol::CreatureStateIdle };
+    AB::GameProtocol::CreatureState newState_{ AB::GameProtocol::CreatureStateIdle };
     int64_t lastStateChange_;
-    int64_t knockdownEndTime_;
+    int64_t knockdownEndTime_{ 0 };
 public:
     StateComp() = delete;
     explicit StateComp(GameObject& owner) :
         owner_(owner),
-        currentState_(AB::GameProtocol::CreatureStateIdle),
-        newState_(AB::GameProtocol::CreatureStateIdle),
-        lastStateChange_(Utils::Tick()),
-        knockdownEndTime_(0)
+        lastStateChange_(Utils::Tick())
     { }
     // non-copyable
     StateComp(const StateComp&) = delete;

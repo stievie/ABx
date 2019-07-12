@@ -2,6 +2,7 @@
 
 #include "Vector3.h"
 #include <AB/ProtocolCodes.h>
+#include "NetworkMessage.h"
 
 namespace Game {
 
@@ -14,7 +15,7 @@ class MoveComp
 private:
     Actor& owner_;
     Math::Vector3 oldPosition_;
-    float speedFactor_;
+    float speedFactor_{ 1.0f };
     /// Move to moveDir_
     void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
@@ -31,18 +32,7 @@ public:
     };
     MoveComp() = delete;
     explicit MoveComp(Actor& owner) :
-        owner_(owner),
-        oldPosition_(Math::Vector3::Zero),
-        speedFactor_(1.0f),
-        moveDir_(AB::GameProtocol::MoveDirectionNone),
-        turnDir_(AB::GameProtocol::TurnDirectionNone),
-        turned_(false),
-        moved_(false),
-        speedDirty_(false),
-        directionSet_(false),
-        newAngle_(false),
-        forcePosition_(false),
-        velocity_(Math::Vector3::Zero)
+        owner_(owner)
     { }
     // non-copyable
     MoveComp(const MoveComp&) = delete;
@@ -62,7 +52,7 @@ public:
     }
     void SetSpeedFactor(float value)
     {
-        if (speedFactor_ != value)
+        if (!Math::Equals(speedFactor_, value))
         {
             speedFactor_ = value;
             speedDirty_ = true;
@@ -81,16 +71,16 @@ public:
     bool IsMoving() const { return velocity_ != Math::Vector3::Zero; }
     void Write(Net::NetworkMessage& message);
 
-    uint32_t moveDir_;
-    uint32_t turnDir_;
-    bool turned_;
-    bool moved_;
-    bool speedDirty_;
+    uint32_t moveDir_{ AB::GameProtocol::MoveDirectionNone };
+    uint32_t turnDir_{ AB::GameProtocol::TurnDirectionNone };
+    bool turned_{ false };
+    bool moved_{ false };
+    bool speedDirty_{ false };
     /// Manual direction set
-    bool directionSet_;
-    bool newAngle_;
+    bool directionSet_{ false };
+    bool newAngle_{ false };
     /// Sends a special message to the client to force the client to set the position.
-    bool forcePosition_;
+    bool forcePosition_{ false };
     /// Velocity in Units/s.
     Math::Vector3 velocity_;
 };

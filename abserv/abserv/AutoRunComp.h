@@ -13,10 +13,10 @@ class AutoRunComp
 {
 private:
     Actor& owner_;
-    int64_t lastCalc_;
+    int64_t lastCalc_{ 0 };
     /// Maximum distance to consider being there
-    float maxDist_;
-    bool autoRun_;
+    float maxDist_{ 1.0f };
+    bool autoRun_{ false };
     std::vector<Math::Vector3> wayPoints_;
     Math::Vector3 destination_;
     std::weak_ptr<Actor> following_;
@@ -31,10 +31,7 @@ public:
     static constexpr float SWITCH_WAYPOINT_DIST = 2.0f;
     AutoRunComp() = delete;
     explicit AutoRunComp(Actor& owner) :
-        owner_(owner),
-        lastCalc_(0),
-        maxDist_(1.0f),
-        autoRun_(false)
+        owner_(owner)
     { }
     // non-copyable
     AutoRunComp(const AutoRunComp&) = delete;
