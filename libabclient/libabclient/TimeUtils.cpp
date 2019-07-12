@@ -10,7 +10,7 @@ const static auto gStartupTtime = std::chrono::high_resolution_clock::now();
 
 ticks_t time()
 {
-    return std::time(NULL);
+    return std::time(nullptr);
 }
 
 ticks_t millis()

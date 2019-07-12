@@ -45,7 +45,7 @@ private:
     void Terminate();
 public:
     Client();
-    ~Client();
+    virtual ~Client();
 
     void ResetPoll();
     void Poll();

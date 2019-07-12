@@ -125,7 +125,7 @@ private:
     SharedPtr<Text> speechBubbleText_;
     SharedPtr<HealthBarPlain> hpBar_;
     SharedPtr<Text> classLevel_;
-    float speechBubbleVisible_;
+    float speechBubbleVisible_{ false };
     void UpdateTransformation();
     void RemoveActorUI();
     void HideSpeechBubble();
@@ -142,8 +142,8 @@ private:
     static void SetUIElementSizePos(UIElement* elem, const IntVector2& size, const IntVector2& pos);
     bool IsSpeechBubbleVisible() const;
 protected:
-    AnimatedModel* animatedModel_;
-    Actor::ModelType type_;
+    AnimatedModel* animatedModel_{ nullptr };
+    Actor::ModelType type_{ ModelType::Static };
     SharedPtr<AnimationController> animController_;
     SharedPtr<StaticModel> model_;
     HashMap<StringHash, String> animations_;
@@ -154,10 +154,10 @@ public:
     Vector3 moveToPos_;
     Quaternion rotateTo_;
     String name_;
-    AB::Entities::CharacterSex sex_;
-    uint32_t level_;
-    AB::Entities::Profession* profession_;
-    AB::Entities::Profession* profession2_;
+    AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSexUnknown };
+    uint32_t level_{ 0 };
+    AB::Entities::Profession* profession_{ nullptr };
+    AB::Entities::Profession* profession2_{ nullptr };
     AB::SkillIndices skills_;
     AB::Attributes attributes_;
     /// Model or effect (in case of AOE) index

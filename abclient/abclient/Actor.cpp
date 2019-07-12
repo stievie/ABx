@@ -25,19 +25,12 @@ Actor::Actor(Context* context) :
     GameObject(context),
     pickable_(false),
     autoRun_(false),
-    animatedModel_(nullptr),
-    type_(ModelType::Static),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
     nameLabel_(nullptr),
     name_(""),
-    profession_(nullptr),
-    profession2_(nullptr),
-    sex_(AB::Entities::CharacterSexUnknown),
-    level_(0),
-    skills_{},
-    speechBubbleVisible_(false)
+    skills_{}
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization
     SetUpdateEventMask(USE_UPDATE);
