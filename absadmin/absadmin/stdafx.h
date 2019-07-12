@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <limits>
+#include <unordered_map>
 
 #include <AB/CommonConfig.h>
 #include "DebugConfig.h"
