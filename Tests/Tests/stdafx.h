@@ -5,7 +5,7 @@
 #include "targetver.h"
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschlieﬂen
+#define WIN32_LEAN_AND_MEAN             // Selten verwendete Komponenten aus Windows-Headern ausschlie√üen
 #endif
 
 #define _USE_MATH_DEFINES

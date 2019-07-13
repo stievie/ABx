@@ -1,6 +1,6 @@
-// stdafx.h: Includedatei f¸r Standardsystem-Includedateien
-// oder h‰ufig verwendete projektspezifische Includedateien,
-// die nur in unregelm‰ﬂigen Abst‰nden ge‰ndert werden.
+// stdafx.h: Includedatei f√ºr Standardsystem-Includedateien
+// oder h√§ufig verwendete projektspezifische Includedateien,
+// die nur in unregelm√§√üigen Abst√§nden ge√§ndert werden.
 //
 
 #if defined(_MSC_VER)
@@ -17,6 +17,7 @@
 #include <memory>
 
 #include <AB/CommonConfig.h>
+#include <base64.h>
 #include "DebugConfig.h"
 
 #if !defined(USE_MYSQL) && !defined(USE_PGSQL) && !defined(USE_ODBC) && !defined(USE_SQLITE)
