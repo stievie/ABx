@@ -148,6 +148,11 @@ void Npc::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     Actor::Update(timeElapsed, message);
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
+    if (aiCharacter_)
+    {
+        const Math::Vector3& pos = transformation_.position_;
+        aiCharacter_->setPosition({ pos.x_, pos.y_, pos.z_ });
+    }
     ScriptManager::CollectGarbage(luaState_);
 }
 

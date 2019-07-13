@@ -13,9 +13,9 @@
 
 namespace Game {
 
-Map::Map(std::shared_ptr<Game> game) :
+Map::Map(std::shared_ptr<Game> game, const std::string name) :
     game_(game),
-    zone_(game->data_.name),
+    zone_(name),
     aiLock_("gamemap"),
     navMesh_(nullptr),
     octree_(std::make_unique<Math::Octree>())

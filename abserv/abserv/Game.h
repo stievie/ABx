@@ -100,6 +100,7 @@ private:
     void BroadcastPlayerLoggedIn(std::shared_ptr<Player> player);
     void BroadcastPlayerLoggedOut(std::shared_ptr<Player> player);
     void InternalRemoveObject(GameObject* object);
+    void ShutdownNpcs();
 public:
     static void RegisterLua(kaguya::State& state);
 

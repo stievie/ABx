@@ -226,7 +226,8 @@ void Game::Update()
         gameStatus_->AddByte(AB::GameProtocol::GameUpdate);
         gameStatus_->Add<int64_t>(tick);
 
-        map_->UpdateAi(delta);
+        if (state_ == ExecutionState::Running)
+            map_->UpdateAi(delta);
 
         // First Update all objects
         for (const auto& o : objects_)
@@ -263,6 +264,7 @@ void Game::Update()
             // terminated, it'll be deleted in the next update.
             // Keep empty games for 10 seconds
             LOG_INFO << "Shutting down game " << id_ << ", " << map_->data_.name << " no players for " << noplayerTime_ << std::endl;
+            ShutdownNpcs();
             SetState(ExecutionState::Terminated);
             ScriptManager::CallFunction(luaState_, "onStop");
         }
@@ -361,6 +363,22 @@ void Game::InternalRemoveObject(GameObject* object)
     object->SetGame(std::shared_ptr<Game>());
     if (it != objects_.end())
         objects_.erase(it);
+}
+
+void Game::ShutdownNpcs()
+{
+    for (const auto& obj : objects_)
+    {
+        if (obj.second->GetType() == AB::GameProtocol::ObjectTypeNpc)
+        {
+            auto* npc = dynamic_cast<Npc*>(obj.second.get());
+            if (npc)
+            {
+                map_->RemoveEntity(npc->id_);
+                npc->Shutdown();
+            }
+        }
+    }
 }
 
 std::shared_ptr<Npc> Game::AddNpc(const std::string& script)
@@ -543,12 +561,14 @@ void Game::Load(const std::string& mapUuid)
     state_ = ExecutionState::Startup;
     AB_PROFILE;
     // Dispatcher Thread
-    map_ = std::make_unique<Map>(shared_from_this());
     if (!IO::IOGame::LoadGameByUuid(this, mapUuid))
     {
         LOG_ERROR << "Error loading game " << mapUuid << std::endl;
         return;
     }
+    std::stringstream name;
+    name << data_.name << " (" << instanceData_.number << ")";
+    map_ = std::make_unique<Map>(shared_from_this(), name.str());
     map_->data_.name = data_.name;
     map_->data_.directory = data_.directory;
 

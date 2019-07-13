@@ -14,7 +14,7 @@ record_games = false
 
 base_port = 2749          -- 0xABE
 
-ai_server = false
+ai_server = true
 
 require("config/server")
 require("config/login")

@@ -53,7 +53,7 @@ private:
     typedef std::unordered_map<uint32_t, ai::AIPtr> Entities;
     Entities entities_;
 public:
-    explicit Map(std::shared_ptr<Game> game);
+    Map(std::shared_ptr<Game> game, const std::string name);
     Map() = delete;
     ~Map();
 
