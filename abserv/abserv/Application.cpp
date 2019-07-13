@@ -453,6 +453,10 @@ void Application::PrintServerInfo()
         ports.pop_front();
     }
     LOG_INFO << std::endl;
+    if (aiServer_)
+        LOG_INFO << "  AI Server listening: " << aiServerIp_ << ":" << aiServerPort_ << std::endl;
+    else
+        LOG_INFO << "  AI Server: (not running)" << std::endl;
     LOG_INFO << "  Auto terminate: " << (autoTerminate_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Temporary: " << (temporary_ ? "true" : "false") << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
@@ -463,10 +467,6 @@ void Application::PrintServerInfo()
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
     LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
-    if (aiServer_)
-        LOG_INFO << "  AI Server:" << aiServerIp_ << ":" << aiServerPort_ << std::endl;
-    else
-        LOG_INFO << "  AI Server: (not running)" << std::endl;
 }
 
 void Application::Run()

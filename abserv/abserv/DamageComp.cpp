@@ -19,7 +19,7 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     const float am = owner_.GetArmorEffect(type, pos, penetration);
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
     damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
-    owner_.resourceComp_.SetHealth(SetValueType::Decrease, realValue);
+    owner_.resourceComp_.SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
         lastDamager_ = source->GetThis<Actor>();
 }

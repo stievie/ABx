@@ -39,7 +39,6 @@ inline ScheduledTask* CreateScheduledTask(const std::function<void(void)>& f)
 
 inline ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<void(void)>& f)
 {
-    assert(delay != 0);
     if (delay < SCHEDULER_MINTICKS)
         delay = SCHEDULER_MINTICKS;
     return new ScheduledTask(delay, f);
