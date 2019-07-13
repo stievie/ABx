@@ -127,7 +127,7 @@ public:
     void UpdateAi(uint32_t delta);
     void UpdateOctree(uint32_t delta);
     SpawnPoint GetFreeSpawnPoint();
-    SpawnPoint GetFreeSpawnPoint(const std::string& group);;
+    SpawnPoint GetFreeSpawnPoint(const std::string& group);
     SpawnPoint GetFreeSpawnPoint(const std::vector<SpawnPoint>& points);
     const SpawnPoint& GetSpawnPoint(const std::string& group) const;
     std::vector<SpawnPoint> GetSpawnPoints(const std::string& group);
