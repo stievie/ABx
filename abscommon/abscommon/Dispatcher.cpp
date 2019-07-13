@@ -98,8 +98,8 @@ void Dispatcher::DispatcherThread()
                 (*task)();
 
                 // https://technet.microsoft.com/en-us/library/cc181325.aspx
-                const uint32_t busyTime = Utils::TimePassed(startExecTime);
-                const uint32_t observationTime = Utils::TimePassed(observationStart);
+                const uint32_t busyTime = Utils::TimeElapsed(startExecTime);
+                const uint32_t observationTime = Utils::TimeElapsed(observationStart);
                 if (observationTime != 0)
                     utilization_ = static_cast<uint32_t>(busyTime / observationTime);
             }

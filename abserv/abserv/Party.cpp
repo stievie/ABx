@@ -195,7 +195,7 @@ void Party::Update(uint32_t, Net::NetworkMessage& message)
 
     if (defeatedTick_ != 0)
     {
-        if (Utils::TimePassed(defeatedTick_) > PARTY_TELEPORT_BACK_TIME)
+        if (Utils::TimeElapsed(defeatedTick_) > PARTY_TELEPORT_BACK_TIME)
         {
             // Bring to the last outpost after 2 secs
             TeleportBack();

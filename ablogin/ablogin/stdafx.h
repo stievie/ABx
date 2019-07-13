@@ -37,6 +37,7 @@
 #define WRITE_MINIBUMP
 #define AB_UNUSED(P) (void)(P)
 
+#include "Utils.h"
 #include "Logger.h"
 
 // Maximum connections to this server. A single machine can maybe handle up to 3000 concurrent connections.

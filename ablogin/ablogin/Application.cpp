@@ -8,7 +8,6 @@
 #include "ProtocolLogin.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
-#include "Utils.h"
 #include "BanManager.h"
 #include "Subsystems.h"
 #include "Random.h"

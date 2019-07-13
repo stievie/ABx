@@ -86,7 +86,7 @@ public:
     {
         if (nextIsBegin_)
         {
-            if (Utils::TimePassed(logStart_) > LOG_ROTATE_INTERVAL)
+            if (Utils::TimeElapsed(logStart_) > LOG_ROTATE_INTERVAL)
                 Logger::Rotate();
             //set time_point to current time
             std::chrono::time_point<std::chrono::system_clock> time_point;

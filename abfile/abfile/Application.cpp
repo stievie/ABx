@@ -29,10 +29,6 @@
 #include <AB/Entities/Music.h>
 #include <AB/Entities/MusicList.h>
 #include <AB/Entities/VersionList.h>
-#include <pugixml.hpp>
-#include "Profiler.h"
-#include "Utils.h"
-#include <abcrypto.hpp>
 #include "StringUtils.h"
 #include "Subsystems.h"
 #include "FileUtils.h"
@@ -134,7 +130,7 @@ void Application::UpdateBytesSent(size_t bytes)
         uint8_t load = 0;
         if (maxThroughput_ != 0)
         {
-            int64_t mesTime = Utils::TimePassed(statusMeasureTime_);
+            int64_t mesTime = Utils::TimeElapsed(statusMeasureTime_);
             int bytesPerSecond = static_cast<int>(bytesSent_ / (mesTime / 1000));
             float ld = (static_cast<float>(bytesPerSecond) / static_cast<float>(maxThroughput_)) * 100.0f;
             load = static_cast<uint8_t>(ld);

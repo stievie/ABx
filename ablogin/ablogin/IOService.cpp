@@ -30,7 +30,7 @@ bool IOService::GetService(AB::Entities::ServiceType type,
             continue;
         if (s.type == AB::Entities::ServiceTypeFileServer || s.type == AB::Entities::ServiceTypeGameServer)
         {
-            if (Utils::TimePassed(s.heardbeat) > AB::Entities::HEARDBEAT_INTERVAL * 2)
+            if (Utils::TimeElapsed(s.heardbeat) > AB::Entities::HEARDBEAT_INTERVAL * 2)
                 // Maybe dead
                 continue;
         }

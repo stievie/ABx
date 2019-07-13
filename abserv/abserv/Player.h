@@ -102,7 +102,7 @@ public:
     {
         if (lastPing_ == 0)
             return 0;
-        return Utils::TimePassed(lastPing_);
+        return Utils::TimeElapsed(lastPing_);
     }
 
     void Initialize() override;

@@ -49,6 +49,8 @@ using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 
 #include <json.hpp>
 
+#include "Utils.h"
+
 #define WRITE_MINIBUMP
 #define _PROFILING
 

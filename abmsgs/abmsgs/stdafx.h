@@ -36,6 +36,7 @@
 
 #include <uuid.h>
 
+#include "Utils.h"
 #include "Logger.h"
 
 #define WRITE_MINIBUMP

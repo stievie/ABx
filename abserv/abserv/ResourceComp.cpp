@@ -207,12 +207,12 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
         uint32_t last = std::min(owner_.damageComp_.NoDamageTime(),
             GetLastHpDecrease());
         // Not using skills
-        last = std::min(Utils::TimePassed(owner_.skillsComp_.GetLastSkillTime()), last);
+        last = std::min(Utils::TimeElapsed(owner_.skillsComp_.GetLastSkillTime()), last);
         // Not attacking
-        last = std::min(Utils::TimePassed(owner_.attackComp_.GetLastAttackTime()), last);
+        last = std::min(Utils::TimeElapsed(owner_.attackComp_.GetLastAttackTime()), last);
         if (last > 5000 && healthRegen_ >= 0.0f)
         {
-            if ((Utils::TimePassed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
+            if ((Utils::TimeElapsed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)
             {
                 ++naturalHealthRegen_;
                 lastRegenIncrease_ = Utils::Tick();
@@ -232,7 +232,7 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
 
 uint32_t ResourceComp::GetLastHpDecrease() const
 {
-    return Utils::TimePassed(lastHpDecrease_);
+    return Utils::TimeElapsed(lastHpDecrease_);
 }
 
 void ResourceComp::Update(uint32_t timeElapsed)

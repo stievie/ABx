@@ -30,6 +30,7 @@ inline bool WouldExceed(T value, T add, T max)
     return (max - add) < value;
 }
 
+/// Count of elements in an array
 template <typename T, int N>
 constexpr size_t CountOf(T(&)[N])
 {
@@ -43,11 +44,12 @@ inline int64_t Tick()
     return int64_t(t.millitm) + int64_t(t.time) * 1000;
 }
 
-inline uint32_t TimePassed(int64_t last)
+/// Return the time that's elapsed since in ms
+inline uint32_t TimeElapsed(int64_t since)
 {
     auto tick = Tick();
-    if (tick > last)
-        return static_cast<uint32_t>(tick - last);
+    if (tick > since)
+        return static_cast<uint32_t>(tick - since);
     return 0u;
 }
 

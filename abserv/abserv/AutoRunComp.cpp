@@ -82,7 +82,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
     const Math::Vector3& pos = owner_.transformation_.position_;
     if (auto f = following_.lock())
     {
-        if ((lastCalc_ != 0 && Utils::TimePassed(lastCalc_) > 1000)
+        if ((lastCalc_ != 0 && Utils::TimeElapsed(lastCalc_) > 1000)
             && (destination_.Distance(f->transformation_.position_) > SWITCH_WAYPOINT_DIST))
         {
             // Find new path when following object moved and enough time passed

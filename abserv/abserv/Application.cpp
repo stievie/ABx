@@ -8,7 +8,6 @@
 #include "Logger.h"
 #include "StringUtils.h"
 #include "GameManager.h"
-#include <functional>
 #include "Random.h"
 #include "Connection.h"
 #include "SkillManager.h"
@@ -16,9 +15,7 @@
 #include "EffectManager.h"
 #include "DataProvider.h"
 #include "Maintenance.h"
-#include "Utils.h"
 #include <AB/ProtocolCodes.h>
-#include "Profiler.h"
 #include "PlayerManager.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
@@ -417,7 +414,7 @@ bool Application::LoadMain()
     }
 
 
-    uint32_t loadingTime = Utils::TimePassed(startLoading);
+    uint32_t loadingTime = Utils::TimeElapsed(startLoading);
 
     PrintServerInfo();
 
@@ -608,7 +605,7 @@ unsigned Application::GetLoad()
 #if defined(AB_WINDOWS)
     static System::CpuUsage usage;
 #endif
-    if (Utils::TimePassed(lastLoadCalc_) > 1000 || loads_.empty())
+    if (Utils::TimeElapsed(lastLoadCalc_) > 1000 || loads_.empty())
     {
         lastLoadCalc_ = Utils::Tick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();

@@ -93,6 +93,8 @@
 #include <base64.h>
 #include <uuid.h>
 
+#include "Utils.h"
+#include "Profiler.h"
 #include "Mechanic.h"
 #include "Application.h"
 

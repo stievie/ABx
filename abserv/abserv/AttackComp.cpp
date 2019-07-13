@@ -30,7 +30,7 @@ void AttackComp::StartHit(Actor* target)
     attackSpeed_ = owner_.GetAttackSpeed();
     interrupted_ = false;
     owner_.FaceObject(target);
-    if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_ / 2)
+    if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_ / 2)
     {
         lastAttackTime_ = Utils::Tick();
         hitting_ = true;
@@ -158,7 +158,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
         else
         {
             // Now we are really attacking. This can be interrupted.
-            if (Utils::TimePassed(lastAttackTime_) >= attackSpeed_)
+            if (Utils::TimeElapsed(lastAttackTime_) >= attackSpeed_)
                 Hit(target.get());
         }
     }

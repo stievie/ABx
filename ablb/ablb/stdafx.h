@@ -32,6 +32,7 @@
 #pragma warning(pop)
 #endif
 
+#include "Utils.h"
 #include "Logger.h"
 
 // Used by the profiler to generate a unique identifier

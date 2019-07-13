@@ -106,7 +106,7 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     if (luaInitialized_ && HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
-    if (Utils::TimePassed(startTime_) > lifetime_)
+    if (Utils::TimeElapsed(startTime_) > lifetime_)
     {
         if (luaInitialized_ && HaveFunction(FunctionEnded))
             ScriptManager::CallFunction(luaState_, "onEnded");

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utils.h"
 #include <AB/Entities/Skill.h>
 #include "Script.h"
 #include "GameObject.h"
@@ -89,7 +88,7 @@ public:
     bool Interrupt();
     AB::GameProtocol::SkillError GetLastError() const { return lastError_; }
 
-    bool IsUsing() const { return (startUse_ != 0) && (Utils::TimePassed(startUse_) < static_cast<uint32_t>(activation_)); }
+    bool IsUsing() const { return (startUse_ != 0) && (Utils::TimeElapsed(startUse_) < static_cast<uint32_t>(activation_)); }
     bool IsRecharged() const { return recharged_ <= Utils::Tick(); }
     void SetRecharged(int64_t ticks) { recharged_ = ticks; }
     bool IsType(AB::Entities::SkillType type) const

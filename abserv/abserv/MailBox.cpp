@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MailBox.h"
 #include "IOMail.h"
-#include "Utils.h"
 
 namespace Game {
 

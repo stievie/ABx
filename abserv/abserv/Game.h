@@ -3,7 +3,6 @@
 #include "Map.h"
 #include "GameObject.h"
 #include "NavigationMesh.h"
-#include "Utils.h"
 #include "NetworkMessage.h"
 #include "Chat.h"
 #include <AB/Entities/Game.h>
@@ -118,7 +117,7 @@ public:
     std::unique_ptr<Map> map_;
 
     uint32_t GetPlayerCount() const { return static_cast<uint32_t>(players_.size()); }
-    int64_t GetInstanceTime() const { return Utils::Tick() - startTime_; }
+    int64_t GetInstanceTime() const { return Utils::TimeElapsed(startTime_); }
     std::string GetName() const { return map_->data_.name; }
     /// Default level on this map
     uint32_t GetDefaultLevel() const { return static_cast<uint32_t>(data_.defaultLevel); }

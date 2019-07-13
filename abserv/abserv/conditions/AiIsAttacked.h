@@ -23,7 +23,7 @@ public:
             return false;
 
         const AiCharacter& chr = entity->getCharacterCast<AiCharacter>();
-        if (Utils::TimePassed(chr.lastFoeAttack_) < 1000)
+        if (Utils::TimeElapsed(chr.lastFoeAttack_) < 1000)
         {
             if (auto attacker = chr.lastAttacker_.lock())
             {

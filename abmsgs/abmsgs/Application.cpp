@@ -6,7 +6,6 @@
 #include "StringUtils.h"
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
-#include "Utils.h"
 #include "Subsystems.h"
 
 Application::Application() :

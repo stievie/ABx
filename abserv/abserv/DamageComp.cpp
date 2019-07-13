@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "DamageComp.h"
-#include "Utils.h"
 #include "Actor.h"
 #include "Subsystems.h"
 #include "Random.h"
-#include "Utils.h"
 #include "WeightedSelector.h"
 
 namespace Game {
@@ -59,7 +57,7 @@ DamagePos DamageComp::GetDamagePos() const
 
 uint32_t DamageComp::NoDamageTime() const
 {
-    return Utils::TimePassed(lastDamage_);
+    return Utils::TimeElapsed(lastDamage_);
 }
 
 void DamageComp::Write(Net::NetworkMessage& message)

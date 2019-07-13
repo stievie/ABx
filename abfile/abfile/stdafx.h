@@ -19,9 +19,14 @@
 
 #include <memory>
 #include <limits>
+#include <iostream>
 
+#include <pugixml.hpp>
+#include <abcrypto.hpp>
 #include <AB/CommonConfig.h>
 #include "DebugConfig.h"
+#include "Utils.h"
+#include "Profiler.h"
 
 #if !defined(USE_STANDALONE_ASIO)
 #define USE_STANDALONE_ASIO
