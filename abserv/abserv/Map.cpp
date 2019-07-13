@@ -19,9 +19,18 @@ Map::Map(std::shared_ptr<Game> game) :
     aiLock_("gamemap"),
     navMesh_(nullptr),
     octree_(std::make_unique<Math::Octree>())
-{ }
+{
+    auto* aiServer = GetSubsystem<ai::Server>();
+    if (aiServer)
+        aiServer->addZone(&zone_);
+}
 
-Map::~Map() = default;
+Map::~Map()
+{
+    auto* aiServer = GetSubsystem<ai::Server>();
+    if (aiServer)
+        aiServer->removeZone(&zone_);
+}
 
 void Map::CreatePatches()
 {
@@ -316,6 +325,9 @@ void Map::AddGameObject(std::shared_ptr<GameObject> object)
 void Map::UpdateAi(uint32_t delta)
 {
     zone_.update(delta);
+    auto* aiServer = GetSubsystem<ai::Server>();
+    if (aiServer)
+        aiServer->update(delta);
 }
 
 void Map::UpdateOctree(uint32_t)

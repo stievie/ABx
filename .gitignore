@@ -7,7 +7,7 @@ Release Static
 ipch
 bin
 Bin
-.autosave
+*.autosave
 .vs
 .codelite
 .build-debug

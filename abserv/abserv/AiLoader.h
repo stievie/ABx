@@ -64,6 +64,10 @@ public:
     {
         return loader_.getError();
     }
+    void getTrees(std::vector<std::string>& trees) const
+    {
+        loader_.getTrees(trees);
+    }
 };
 
 }

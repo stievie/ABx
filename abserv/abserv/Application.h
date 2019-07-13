@@ -19,8 +19,11 @@ private:
     std::unique_ptr<Net::ServiceManager> serviceManager_;
     std::unique_ptr<MessageDispatcher> msgDispatcher_;
     std::vector<unsigned> loads_;
-    int64_t lastLoadCalc_;
+    int64_t lastLoadCalc_{ 0 };
     Maintenance maintenance_;
+    bool aiServer_{ false };
+    std::string aiServerIp_;
+    uint16_t aiServerPort_{ 0 };
 #if defined(SCENE_VIEWER)
     std::shared_ptr<Debug::SceneViewer> sceneViewer_;
 #endif
@@ -34,7 +37,7 @@ private:
             return 0;
 
         float loads = 0.0f;
-        for (int p : loads_)
+        for (unsigned p : loads_)
             loads += static_cast<float>(p);
         return static_cast<unsigned>(loads / loads_.size());
     }
@@ -54,8 +57,8 @@ public:
 
     void SpawnServer();
 
-    bool autoTerminate_;
-    bool temporary_;
+    bool autoTerminate_{ false };
+    bool temporary_{ false };
 
     static Application* Instance;
 };

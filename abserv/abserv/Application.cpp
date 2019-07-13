@@ -48,10 +48,7 @@ Application* Application::Instance = nullptr;
 
 Application::Application() :
     ServerApp::ServerApp(),
-    ioService_(),
-    lastLoadCalc_(0),
-    autoTerminate_(false),
-    temporary_(false)
+    ioService_()
 {
     assert(Application::Instance == nullptr);
     Application::Instance = this;
@@ -80,7 +77,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::SkillManager>();
     Subsystems::Instance.CreateSubsystem<Game::ItemFactory>();
     Subsystems::Instance.CreateSubsystem<AI::AiRegistry>();
-    auto reg = GetSubsystem<AI::AiRegistry>();
+    auto* reg = GetSubsystem<AI::AiRegistry>();
     Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);
 
     serviceManager_ = std::make_unique<Net::ServiceManager>(ioService_);
@@ -108,9 +105,9 @@ bool Application::ParseCommandLine()
         temporary_ = true;
     }
     if (GetCommandLineValue("-temp"))
-    {
         temporary_ = true;
-    }
+    if (GetCommandLineValue("-aiserver"))
+        aiServer_ = true;
     return true;
 }
 
@@ -129,6 +126,7 @@ void Application::ShowHelp()
     std::cout << "  port <port>: Game port, when 0 it uses a free port" << std::endl;
     std::cout << "  autoterm: If set, the server terminates itself when all players left" << std::endl;
     std::cout << "  temp: If set, the server is temporary" << std::endl;
+    std::cout << "  aiserver: Start AI server for debugging" << std::endl;
     std::cout << "  h, help: Show help" << std::endl;
 }
 
@@ -329,6 +327,7 @@ bool Application::LoadMain()
     }
     LOG_INFO << "[done]" << std::endl;
 
+    // AI
     LOG_INFO << "Loading behavior trees...";
     auto aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
@@ -341,8 +340,21 @@ bool Application::LoadMain()
         LOG_INFO << "[FAIL]" << std::endl;
         return false;
     }
+    // AI server
+    if (!aiServer_)
+        aiServer_ = (*config)[ConfigManager::Key::AIServer].GetBool();
+    if (aiServer_)
+    {
+        aiServerIp_ = (*config)[ConfigManager::Key::AIServerIp].GetString();
+        aiServerPort_ = static_cast<uint16_t>((*config)[ConfigManager::Key::AIServerPort].GetInt());
+        auto* reg = GetSubsystem<AI::AiRegistry>();
+        ai::Server* server = new ai::Server(*reg, static_cast<short>(aiServerPort_), aiServerIp_);
+        Subsystems::Instance.RegisterSubsystem(server);
+    }
+
     LOG_INFO << "[done]" << std::endl;
 
+    // Data server
     LOG_INFO << "Connecting to data server...";
     const std::string& dataHost = (*config)[ConfigManager::Key::DataServerHost].GetString();
     uint16_t dataPort = static_cast<uint16_t>((*config)[ConfigManager::Key::DataServerPort].GetInt());
@@ -451,6 +463,10 @@ void Application::PrintServerInfo()
 
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
     LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
+    if (aiServer_)
+        LOG_INFO << "  AI Server:" << aiServerIp_ << ":" << aiServerPort_ << std::endl;
+    else
+        LOG_INFO << "  AI Server: (not running)" << std::endl;
 }
 
 void Application::Run()
@@ -508,6 +524,11 @@ void Application::Run()
     SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
 
     running_ = true;
+    if (aiServer_)
+    {
+        ai::Server* aiServ = GetSubsystem<ai::Server>();
+        aiServ->start();
+    }
     serviceManager_->Run();
     ioService_.run();
 }

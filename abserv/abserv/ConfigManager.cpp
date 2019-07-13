@@ -47,6 +47,9 @@ bool ConfigManager::Load(const std::string& file)
     config_[Key::LoginRetryTimeout] = static_cast<int>(GetGlobalInt("login_retrytimeout", 5000ll));
 
     config_[Key::Behaviours] = GetGlobalString("behaviours", "/scripts/ai/behaviours.lua");
+    config_[Key::AIServer] = GetGlobalBool("ai_server", false);
+    config_[Key::AIServerIp] = GetGlobalString("ai_server_ip", "0.0.0.0");
+    config_[Key::AIServerPort] = static_cast<int>(GetGlobalInt("ai_server_port", 10001));
 
     Close();
     return true;
