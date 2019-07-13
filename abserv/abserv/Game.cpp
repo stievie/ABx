@@ -360,6 +360,7 @@ void Game::InternalRemoveObject(GameObject* object)
     if (it == objects_.end())
         return;
     ScriptManager::CallFunction(luaState_, "onRemoveObject", object);
+    map_->RemoveEntity(object->id_);
     object->SetGame(std::shared_ptr<Game>());
     if (it != objects_.end())
         objects_.erase(it);

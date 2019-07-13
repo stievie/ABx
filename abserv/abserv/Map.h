@@ -111,7 +111,7 @@ public:
             e->setReduceByValue(1.0f + reductionVal);
         }
     }
-    inline bool RemoveEntity(const ai::CharacterId& id)
+    inline bool RemoveEntity(uint32_t id)
     {
         ai::ScopedReadLock lock(aiLock_);
         auto iter = entities_.find(id);
