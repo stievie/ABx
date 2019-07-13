@@ -10,7 +10,7 @@
 
 #define CURRENT_YEAR 2019
 
-// Email is mandatory when creating an account
+// If Email is mandatory when creating an account uncomment bellow
 //#define EMAIL_MANDATORY
 
 // If defined disable nagle's algorithm, this make the game play smoother
@@ -19,14 +19,14 @@
 // Okay, let's use it, didn't see any negative effects lately.
 #define TCP_OPTION_NODELAY
 
-#define PLAYER_MAX_SKILLS 8
-// Most profession have 4 attribute but Warrior and Elementarist have 5
-#define PLAYER_MAX_ATTRIBUTES 10
-
-static constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()=?\`,.-;:_+*~#'|)";
+constexpr auto RESTRICTED_NAME_CHARS = R"(<>^!"$%&/()[]{}=?\`´,.-;:_+*~#'|)";
 
 namespace Game {
+constexpr int PLAYER_MAX_SKILLS = 8;
+// Most profession have 4 attribute but Warrior and Elementarist have 5
+constexpr int PLAYER_MAX_ATTRIBUTES = 10;
+
 // For client prediction these values are also needed by the client.
-static constexpr float BASE_SPEED = 150.0f;
-static constexpr float BASE_TURN_SPEED = 2000.0f;
+constexpr float BASE_SPEED = 150.0f;
+constexpr float BASE_TURN_SPEED = 2000.0f;
 }

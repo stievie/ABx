@@ -276,7 +276,7 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         // 1 based -> convert to 0 based
         uint8_t index = message.Get<uint8_t>();
         bool ping = message.Get<uint8_t>() != 0;
-        if (index > 0 && index <= PLAYER_MAX_SKILLS)
+        if (index > 0 && index <= Game::PLAYER_MAX_SKILLS)
         {
             Utils::VariantMap data;
             data[Game::InputDataSkillIndex] = index - 1;

@@ -18,8 +18,8 @@ struct AttributeValue
     uint32_t value = 0;     // How many points
 };
 
-typedef std::array<AttributeValue, PLAYER_MAX_ATTRIBUTES> Attributes;
-typedef std::array<uint32_t, PLAYER_MAX_SKILLS> SkillIndices;
+typedef std::array<AttributeValue, Game::PLAYER_MAX_ATTRIBUTES> Attributes;
+typedef std::array<uint32_t, Game::PLAYER_MAX_SKILLS> SkillIndices;
 
 class TemplEncoder
 {
@@ -91,7 +91,7 @@ public:
             ++pos;
         }
 
-        for (int i = 0; i < PLAYER_MAX_SKILLS; i++)
+        for (int i = 0; i < Game::PLAYER_MAX_SKILLS; i++)
         {
             const uint8_t partA = vec[pos];
             ++pos;
