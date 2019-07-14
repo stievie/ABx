@@ -8,7 +8,7 @@ Ancient Greece Multiplayer Online RPG.
 ## Current features
 
 * Uses a single TCP stream for the game protocol. This is not a shooter or action game, more like a classical online RPG.
-* Database back-end is currently PostreSQL.
+* Database back-end is currently PostgreSQL.
 * Instanced world.
 * Encrypted Game and Login Protocol.
 * Lag compensation: Entity interpolation, client prediction.
