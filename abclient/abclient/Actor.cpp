@@ -722,7 +722,7 @@ void Actor::HandleSkillUse(StringHash, VariantMap& eventData)
     if (id != id_)
         return;
     int skillIndex = eventData[P_SKILLINDEX].GetInt();
-    if (skillIndex < 1 || skillIndex > PLAYER_MAX_SKILLS)
+    if (skillIndex < 1 || skillIndex > Game::PLAYER_MAX_SKILLS)
         return;
     uint32_t skill = skills_[skillIndex - 1];
     const AB::Entities::Skill* pSkill = GetSubsystem<SkillManager>()->GetSkillByIndex(skill);

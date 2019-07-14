@@ -34,9 +34,9 @@ Required lib files for the client not in this repostitory:
 
 * `Urho3D(_d).lib`
 
-Build them and put the library files in `Lib/x64/(Debug|Release)`.
+Build them and put the library files in `./Lib/x64`.
 
 ### Build
 
-No makefiles yet.
+`cd` to `./makefiles` and type `make -f client.make`.
 

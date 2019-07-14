@@ -50,7 +50,7 @@ void FormatText::ParseNode(const pugi::xml_node& pugiNode, TreeNode* treeNode)
 {
     const char* name = pugiNode.name();
     TreeNode* nd = treeNode;
-    if (_stricmp(name, "a") == 0)
+    if (strcmp(name, "a") == 0)
     {
         // Link
         TreeNode* child = new TreeNode();
@@ -59,7 +59,7 @@ void FormatText::ParseNode(const pugi::xml_node& pugiNode, TreeNode* treeNode)
         treeNode->children.Push(child);
         nd = child;
     }
-    else if (_stricmp(name, "color") == 0)
+    else if (strcmp(name, "color") == 0)
     {
         // Font color
         TreeNode* child = new TreeNode();
