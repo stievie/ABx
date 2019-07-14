@@ -7,6 +7,8 @@
 #include <stdarg.h>
 #include "ConsoleColor.h"
 #if defined(AB_WINDOWS)
+#define WIN32_LEAN_AND_MEAN
+#define _WINSOCKAPI_
 #include <Windows.h>
 #endif
 

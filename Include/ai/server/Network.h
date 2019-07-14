@@ -9,10 +9,12 @@
 #include <stdint.h>
 #include <list>
 #ifdef WIN32
+#ifndef _WINSOCKAPI_
 #define NOMINMAX
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <ws2spi.h>
+#endif
 #else
 #define SOCKET  int
 #include <sys/select.h>

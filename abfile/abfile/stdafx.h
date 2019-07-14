@@ -14,6 +14,18 @@
 
 #include "targetver.h"
 
+#if !defined(USE_STANDALONE_ASIO)
+#define USE_STANDALONE_ASIO
+#endif
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4592)
+#endif
+#include <SimpleWeb/server_https.hpp>
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+
 #include <stdio.h>
 #include <stdint.h>
 
@@ -27,18 +39,6 @@
 #include "DebugConfig.h"
 #include "Utils.h"
 #include "Profiler.h"
-
-#if !defined(USE_STANDALONE_ASIO)
-#define USE_STANDALONE_ASIO
-#endif
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable: 4592)
-#endif
-#include <SimpleWeb/server_https.hpp>
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
 
 #define WRITE_MINIBUMP
 #define _PROFILING
