@@ -16,10 +16,10 @@ class PartyWindow : public Window
 {
     URHO3D_OBJECT(PartyWindow, Window);
 private:
-    PartyWindowMode mode_;
+    PartyWindowMode mode_{ PartyWindowMode::ModeOutpost };
     SharedPtr<Window> window_;
     SharedPtr<LineEdit> addPlayerEdit_;
-    uint8_t partySize_;
+    uint8_t partySize_{ 0 };
     SharedPtr<UIElement> memberContainer_;
     SharedPtr<UIElement> partyContainer_;
     SharedPtr<UIElement> addContainer_;
@@ -31,8 +31,8 @@ private:
     HashMap<uint32_t, WeakPtr<Actor>> invitees_;
     HashMap<uint32_t, WeakPtr<Actor>> invitations_;
     WeakPtr<GameObject> target_;
-    uint32_t leaderId_;
-    uint32_t groupId_;
+    uint32_t leaderId_{ 0 };
+    uint32_t groupId_{ 0 };
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleLeaveButtonClicked(StringHash eventType, VariantMap& eventData);

@@ -24,9 +24,9 @@ class FwClient : public Object, public Client::Receiver
 private:
     String currentLevel_;
     String currentMapUuid_;
-    bool levelReady_;
+    bool levelReady_{ false };
     Vector<EventItem> queuedEvents_;
-    uint32_t playerId_;
+    uint32_t playerId_{ 0 };
     Client::Client client_;
     Client::Client::ClientState lastState_;
     AB::Entities::CharList characters_;
@@ -51,7 +51,7 @@ private:
     void LoadItems(uint32_t curVersion);
     void LoadMusic(uint32_t curVersion);
     bool MakeHttpRequest(const String& path, const String& outFile);
-    bool loggedIn_;
+    bool loggedIn_{ false };
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     void HandleLevelReady(StringHash eventType, VariantMap& eventData);
     void QueueEvent(StringHash eventType, VariantMap& eventData);

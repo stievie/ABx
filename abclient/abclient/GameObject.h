@@ -17,8 +17,8 @@ class GameObject : public LogicComponent
 {
     URHO3D_OBJECT(GameObject, LogicComponent);
 protected:
-    AB::GameProtocol::CreatureState creatureState_;
-    float speedFactor_;
+    AB::GameProtocol::CreatureState creatureState_{ AB::GameProtocol::CreatureStateIdle };
+    float speedFactor_{ 1.0f };
     bool HasHealthBar() const
     {
         return objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
@@ -34,19 +34,19 @@ public:
     virtual void Init(Scene*, const Vector3&, const Quaternion&,
         AB::GameProtocol::CreatureState) {}
 
-    uint32_t id_;
-    unsigned index_;
-    ObjectType objectType_;
-    bool undestroyable_;
+    uint32_t id_{ 0 };
+    unsigned index_{ 0 };
+    ObjectType objectType_{ ObjectTypeStatic };
+    bool undestroyable_{ false };
     uint32_t count_ = 1;
     uint32_t value_ = 0;
-    int64_t spawnTickServer_;
+    int64_t spawnTickServer_{ 0 };
     /// Player hovers
-    bool hovered_;
+    bool hovered_{ false };
     /// Player has selected this object
-    bool playerSelected_;
-    uint32_t groupId_;
-    uint8_t groupPos_;
+    bool playerSelected_{ false };
+    uint32_t groupId_{ 0 };
+    uint8_t groupPos_{ 0 };
     SharedPtr<SoundSource3D> soundSource_;
 
     virtual void Unserialize(PropReadStream&) {}

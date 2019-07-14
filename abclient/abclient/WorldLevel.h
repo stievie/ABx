@@ -22,10 +22,10 @@
 /// These all have the Game UI, though the UI may slightly differ, e.g. the Party window.
 class WorldLevel : public BaseLevel
 {
-    URHO3D_OBJECT(WorldLevel, BaseLevel);
+    URHO3D_OBJECT(WorldLevel, BaseLevel)
 public:
     WorldLevel(Context* context);
-    ~WorldLevel();
+    ~WorldLevel() override;
     void CreatePlayer(uint32_t id,
         const Vector3& position, const Vector3& scale, const Quaternion& direction,
         AB::GameProtocol::CreatureState state,
@@ -53,10 +53,10 @@ protected:
     SharedPtr<SkillBarWindow> skillBar_;
     SharedPtr<EffectsWindow> effectsWindow_;
     SharedPtr<InventoryWindow> inventoryWindow_;
-    AB::Entities::GameType mapType_;
+    AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
     String mapUuid_;
     String mapName_;
-    uint8_t partySize_;
+    uint8_t partySize_{ 1 };
     /// All objects in the scene
     HashMap<uint32_t, SharedPtr<GameObject>> objects_;
     /// Urho3D NodeIDs -> AB Object IDs given from the server
@@ -73,7 +73,7 @@ protected:
     void PostUpdate(StringHash eventType, VariantMap& eventData) override;
 private:
     IntVector2 mouseDownPos_;
-    bool rmbDown_;
+    bool rmbDown_ { false };
     /// Local Node IDs are not the same as Object IDs on the server.
     SharedPtr<GameObject> GetObjectFromNode(Node* node)
     {

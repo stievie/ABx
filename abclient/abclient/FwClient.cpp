@@ -136,10 +136,7 @@ String FwClient::GetGameErrorMessage(AB::GameProtocol::PlayerErrorValue err)
 }
 
 FwClient::FwClient(Context* context) :
-    Object(context),
-    levelReady_(false),
-    loggedIn_(false),
-    playerId_(0)
+    Object(context)
 {
     Options* o = context->GetSubsystem<Options>();
     client_.loginHost_ = std::string(o->loginHost_.CString());

@@ -20,41 +20,8 @@ String Options::prefPath_;
 
 Options::Options(Context* context) :
     Object(context),
-    loginPort_(0),
-    width_(0),
-    height_(0),
-    fullscreen_(true),
-    borderless_(false),
-    resizeable_(false),
-    maximized_(false),
-    internalMaximized_(false),
-    highDPI_(false),
-    vSync_(false),
-    maxFps_(200),
-    tripleBuffer_(false),
-    cameraFarClip_(300.0f),
-    cameryNearClip_(0.0f),
-    cameraFov_(60.0f),
-    shadows_(true),
-    shadowQuality_(SHADOWQUALITY_VSM),
-    textureQuality_(QUALITY_HIGH),
-    materialQuality_(QUALITY_HIGH),
-    textureFilterMode_(FILTER_ANISOTROPIC),
-    textureAnisotropyLevel_(16),
-    specularLightning_(true),
-    hdrRendering_(false),
-    antiAliasingMode_(AntiAliasingMode::FXAA3),
     loginHost_("localhost"),
-    renderPath_("RenderPaths/Prepass.xml"),
-    gainMaster_(1.0f),
-    gainEffect_(1.0f),
-    gainAmbient_(1.0f),
-    gainVoice_(1.0f),
-    gainMusic_(0.1f),
-    stickCameraToHead_(true),
-    disableMouseWalking_(false),
-    enableMumble_(false),
-    mouseSensitivity_(0.1f)
+    renderPath_("RenderPaths/Prepass.xml")
 {
     SubscribeToEvent(E_INPUTFOCUS, URHO3D_HANDLER(Options, HandleInputFocus));
 }

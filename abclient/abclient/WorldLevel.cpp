@@ -19,12 +19,9 @@
 
 WorldLevel::WorldLevel(Context* context) :
     BaseLevel(context),
-    mapType_(AB::Entities::GameTypeUnknown),
-    rmbDown_(false),
     mailWindow_(nullptr),
     mapWindow_(nullptr),
-    partyWindow_(nullptr),
-    partySize_(1)
+    partyWindow_(nullptr)
 {
 }
 

@@ -20,7 +20,7 @@ const float CAMERA_MAX_DIST = 40.0f;
 /// Character component, responsible for physical movement according to controls, as well as animation.
 class Player : public Actor
 {
-    URHO3D_OBJECT(Player, Actor);
+    URHO3D_OBJECT(Player, Actor)
 public:
     /// Construct.
     Player(Context* context);
@@ -41,8 +41,8 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
     SharedPtr<Node> cameraNode_;
-    bool moveLock_;
-    float cameraDistance_;
+    bool moveLock_{ false };
+    float cameraDistance_{ CAMERA_INITIAL_DIST };
     void SetYRotation(int64_t time, float rad, bool updateYaw) override;
     void CameraZoom(bool increase);
     void UpdateYaw();
@@ -54,13 +54,13 @@ public:
     uint8_t GetMoveDir();
     uint8_t GetTurnDir();
     void MoveTo(int64_t time, const Vector3& newPos) override;
-    float lastYaw_;
+    float lastYaw_{ 0.0f };
 protected:
     void PostUpdate(float timeStep) override;
 private:
     SharedPtr<SoundSource3D> footstepsSource_;
-    uint8_t lastMoveDir_;
-    uint8_t lastTurnDir_;
+    uint8_t lastMoveDir_{ AB::GameProtocol::MoveDirectionNone };
+    uint8_t lastTurnDir_{ AB::GameProtocol::TurnDirectionNone };
     void HandleActorNameClicked(StringHash eventType, VariantMap& eventData);
     void HandleSelectSelf(StringHash eventType, VariantMap& eventData);
 };

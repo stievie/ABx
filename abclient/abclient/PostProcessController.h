@@ -26,10 +26,10 @@ using TagEffectPair = Pair<String, String>;
 
 class PostProcessController : public Component
 {
-    URHO3D_OBJECT(PostProcessController, Component);
+    URHO3D_OBJECT(PostProcessController, Component)
 public:
     PostProcessController(Context* context);
-    ~PostProcessController();
+    ~PostProcessController() override;
 
     static void RegisterObject(Context* context);
 
@@ -149,41 +149,41 @@ public:
 
 private:
     SharedPtr<RenderPath> effectsPath_;
-    bool useAutoExposure_;
-    float aeAdaptRate_;
-    Vector2 aeLumRange_;
-    float aeMiddleGrey_;
-    bool useBloom_;
-    float bloomThreshold_;
-    Vector2 bloomMix_;
-    bool useBloomHDR_;
-    float bloomHDRThreshold_;
-    Vector2 bloomHDRMix_;
-    Vector2 bloomHDRDirH_;
-    Vector2 bloomHDRDirV_;
-    float bloomHDRBlurRadius_;
-    float bloomHDRBlurSigma_;
-    bool useBlur_;
-    Vector2 blurDirV_;
-    Vector2 blurDirH_;
-    float blurRadius_;
-    float blurSigma_;
-    bool useFXAA2_;
-    Vector3 FXAAParams_;
-    bool useFXAA3_;
-    unsigned FXAA3QualityPreset_;
-    bool useGammaCorrection_;
-    TonemapMode tonemapMode_;
-    float tonemapExposureBias_;
-    float tonemapMaxWhite_;
-    bool useColorCorrection_;
-    bool useGreyScale_;
+    bool useAutoExposure_{ false };
+    float aeAdaptRate_{ 0.6f };
+    Vector2 aeLumRange_{ 0.01f, 1.0f };
+    float aeMiddleGrey_{ 0.6f };
+    bool useBloom_{ false };
+    float bloomThreshold_{ 0.3f };
+    Vector2 bloomMix_{ 0.9f, 0.4f };
+    bool useBloomHDR_{ false };
+    float bloomHDRThreshold_{ 0.8f };
+    Vector2 bloomHDRMix_{ 1.0f, 0.4f };
+    Vector2 bloomHDRDirH_{ 1.0f, 0.0f };
+    Vector2 bloomHDRDirV_{ 0.0f, 1.0f };
+    float bloomHDRBlurRadius_{ 1.0f };
+    float bloomHDRBlurSigma_{ 2.0f };
+    bool useBlur_{ false };
+    Vector2 blurDirV_{ 0.0f , 1.0f };
+    Vector2 blurDirH_{ 1.0f, 0.0f };
+    float blurRadius_{ 2.0f };
+    float blurSigma_{ 2.0f };
+    bool useFXAA2_{ false };
+    Vector3 FXAAParams_{ 0.4f, 0.5f, 0.75f };
+    bool useFXAA3_{ false };
+    unsigned FXAA3QualityPreset_{ 12 };
+    bool useGammaCorrection_{ false };
+    TonemapMode tonemapMode_{ TONEMAP_DISABLED };
+    float tonemapExposureBias_{ 1.0f };
+    float tonemapMaxWhite_{ 1.0f };
+    bool useColorCorrection_{ false };
+    bool useGreyScale_{ false };
     SharedPtr<Texture3D> lutTexture_;
     Vector<TagEffectPair> effectsOrder_;
-    Renderer * renderer_;
+    Renderer* renderer_;
     Vector<WeakPtr<Viewport>> viewports_;
     mutable VariantVector viewportsIndexesAttr_;
     ResourceRef inputPathAttr_;
 
-    bool effectsOrderDirty_;
+    bool effectsOrderDirty_{ true };
 };

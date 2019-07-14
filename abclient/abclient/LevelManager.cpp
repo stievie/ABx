@@ -10,15 +10,8 @@
 
 LevelManager::LevelManager(Context* context) :
     Object(context),
-    fadeWindow_(nullptr),
-    fadeTime_(0),
-    levelName_(""),
-    lastLevelName_(""),
     level_(nullptr),
-    drawDebugGeometry_(false),
-    fadeStatus_(0),
-    mapType_(AB::Entities::GameTypeUnknown),
-    partySize_(0)
+    fadeWindow_(nullptr)
 {
     // Listen to set level event
     SubscribeToEvent(AbEvents::E_SETLEVEL, URHO3D_HANDLER(LevelManager, HandleSetLevelQueue));

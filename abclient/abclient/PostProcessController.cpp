@@ -54,39 +54,10 @@ static const TagEffectPair& GREY_SCALE_PAIR = TagEffectPair(GREY_SCALE_TAG, "Pos
 
 static const ResourceRef& DEF_LUT_TEXTURE = ResourceRef(Texture3D::GetTypeStatic(), "Textures/LUTIdentity.xml");
 
-PostProcessController::PostProcessController(Context * context) : Component(context),
-useGammaCorrection_(false),
-tonemapMode_(TONEMAP_DISABLED),
-tonemapExposureBias_(1.0f),
-tonemapMaxWhite_(1.0f),
-useColorCorrection_(false),
-lutTexture_(nullptr),
-useAutoExposure_(false),
-aeAdaptRate_(0.6f),
-aeLumRange_(0.01f, 1.0f),
-aeMiddleGrey_(0.6f),
-useBloom_(false),
-bloomThreshold_(0.3f),
-bloomMix_(0.9f, 0.4f),
-useBloomHDR_(false),
-bloomHDRThreshold_(0.8f),
-bloomHDRMix_(1.0f, 0.4f),
-bloomHDRDirH_(1.0f, 0.0f),
-bloomHDRDirV_(0.0f, 1.0f),
-bloomHDRBlurRadius_(1.0f),
-bloomHDRBlurSigma_(2.0f),
-useBlur_(false),
-blurDirH_(1.0f, 0.0f),
-blurDirV_(0.0f, 1.0f),
-blurRadius_(2.0f),
-blurSigma_(2.0f),
-useFXAA2_(false),
-FXAAParams_(0.4f, 0.5f, 0.75f),
-useFXAA3_(false),
-FXAA3QualityPreset_(12),
-useGreyScale_(false),
-inputPathAttr_(ResourceRef(XMLFile::GetTypeStatic())),
-effectsOrderDirty_(true)
+PostProcessController::PostProcessController(Context * context) :
+    Component(context),
+    lutTexture_(nullptr),
+    inputPathAttr_(ResourceRef(XMLFile::GetTypeStatic()))
 {
     renderer_ = GetSubsystem<Renderer>();
     viewportsIndexesAttr_.Push(0);

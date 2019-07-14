@@ -13,7 +13,7 @@ class Actor;
 
 class LevelManager : public Object
 {
-    URHO3D_OBJECT(LevelManager, Object);
+    URHO3D_OBJECT(LevelManager, Object)
 public:
     LevelManager(Context* context);
     ~LevelManager();
@@ -25,15 +25,15 @@ private:
     List<VariantMap> levelQueue_;
     String levelName_;
     String mapUuid_;
-    AB::Entities::GameType mapType_;
-    uint8_t partySize_;
+    AB::Entities::GameType mapType_{ AB::Entities::GameTypeUnknown };
+    uint8_t partySize_{ 0 };
     /// Name of level we're coming from. Needed to get the spawn point
     String lastLevelName_;
     SharedPtr<Object> level_;
     SharedPtr<Window> fadeWindow_;
-    float fadeTime_;
-    int fadeStatus_;
-    bool drawDebugGeometry_;
+    float fadeTime_{ 0 };
+    int fadeStatus_{ 0 };
+    bool drawDebugGeometry_{ false };
     const float MAX_FADE_TIME = 0.7f;
 
 public:

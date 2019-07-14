@@ -16,12 +16,7 @@
 //#include <Urho3D/DebugNew.h>
 
 Player::Player(Context* context) :
-    Actor(context),
-    lastMoveDir_(AB::GameProtocol::MoveDirectionNone),
-    lastTurnDir_(AB::GameProtocol::TurnDirectionNone),
-    lastYaw_(0.0f),
-    cameraDistance_(CAMERA_INITIAL_DIST),
-    moveLock_(false)
+    Actor(context)
 {
     SetUpdateEventMask(USE_FIXEDUPDATE | USE_POSTUPDATE | USE_UPDATE);
     SubscribeToEvent(AbEvents::E_ACTORNAMECLICKED, URHO3D_HANDLER(Player, HandleActorNameClicked));

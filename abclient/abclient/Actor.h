@@ -114,10 +114,8 @@ public:
     void HandlePartyRemoved(StringHash eventType, VariantMap& eventData);
 
     Vector<String> materials_;
-    // Can pickup this thingy
-    bool pickable_;
     Vector3 velocity_;
-    bool autoRun_;
+    bool autoRun_{ false };
 private:
     SharedPtr<Text> nameLabel_;
     SharedPtr<Window> nameWindow_;

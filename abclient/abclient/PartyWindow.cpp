@@ -17,11 +17,7 @@ void PartyWindow::RegisterObject(Context* context)
 
 PartyWindow::PartyWindow(Context* context) :
     Window(context),
-    mode_(PartyWindowMode::ModeOutpost),
-    player_(nullptr),
-    leaderId_(0),
-    partySize_(0),
-    groupId_(0)
+    player_(nullptr)
 {
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
     ResourceCache* cache = GetSubsystem<ResourceCache>();

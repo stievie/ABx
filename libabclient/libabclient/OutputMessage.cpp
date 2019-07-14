@@ -33,7 +33,7 @@ void OutputMessage::AddPaddingBytes(int bytes, uint8_t byte)
     if (bytes <= 0)
         return;
     CheckWrite(bytes);
-    memset((void*)&buffer_[info_.pos], byte, bytes);
+    memset((void*)&buffer_[info_.pos], byte, static_cast<size_t>(bytes));
     info_.pos += static_cast<uint16_t>(bytes);
     info_.size += static_cast<uint16_t>(bytes);
 }
@@ -90,7 +90,7 @@ void OutputMessage::AddStringEncrypted(const std::string& value)
 
 bool OutputMessage::CanWrite(int bytes)
 {
-    if (info_.pos + bytes <= OUTPUTMESSAGE_BUFFER_SIZE)
+    if (info_.pos + static_cast<uint16_t>(bytes) <= OUTPUTMESSAGE_BUFFER_SIZE)
         return true;
     return false;
 }

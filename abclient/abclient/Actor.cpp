@@ -23,13 +23,10 @@
 
 Actor::Actor(Context* context) :
     GameObject(context),
-    pickable_(false),
-    autoRun_(false),
+    nameLabel_(nullptr),
     animController_(nullptr),
     model_(nullptr),
     selectedObject_(nullptr),
-    nameLabel_(nullptr),
-    name_(""),
     skills_{}
 {
     // Only the physics update event is needed: unsubscribe from the rest for optimization

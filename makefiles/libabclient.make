@@ -6,6 +6,7 @@ TARGET = $(TARGETDIR)/libabclient.a
 SOURDEDIR = ../libabclient/libabclient
 OBJDIR = obj/x64/Release/libabclient
 PCH = $(SOURDEDIR)/stdafx.h
+CXXFLAGS += -Wimplicit-fallthrough=0
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))

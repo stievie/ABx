@@ -12,20 +12,20 @@ private:
     static constexpr int MAX_LINES = 100;
     static const HashMap<String, AB::GameProtocol::CommandTypes> CHAT_COMMANDS;
     SharedPtr<BorderImage> background_;
-    bool firstStart_;
+    bool firstStart_{ false };
     Vector<String> history_;
     /// Command auto complete current position.
-    unsigned historyRows_;
+    unsigned historyRows_{ 20 };
     /// Store the original line which is being auto-completed
-    unsigned historyPosition_;
+    unsigned historyPosition_{ 0 };
     /// Current row being edited.
     String currentRow_;
-    bool visibleGeneral_;
-    bool visibleGuild_;
-    bool visibleParty_;
-    bool visibleTrade_;
-    bool visibleWhisper_;
-    int tabIndexWhisper_;
+    bool visibleGeneral_{ true };
+    bool visibleGuild_{ true };
+    bool visibleParty_{ true };
+    bool visibleTrade_{ true };
+    bool visibleWhisper_{ true };
+    int tabIndexWhisper_{ -1 };
     void TrimLines();
     void UpdateVisibleItems();
     void HandleFilterClick(StringHash eventType, VariantMap& eventData);

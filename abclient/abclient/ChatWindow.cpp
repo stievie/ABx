@@ -51,16 +51,7 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
 };
 
 ChatWindow::ChatWindow(Context* context) :
-    UIElement(context),
-    historyRows_(20),
-    historyPosition_(0),
-    firstStart_(true),
-    visibleGeneral_(true),
-    visibleGuild_(true),
-    visibleParty_(true),
-    visibleTrade_(true),
-    visibleWhisper_(true),
-    tabIndexWhisper_(-1)
+    UIElement(context)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     SetDefaultStyle(GetSubsystem<UI>()->GetRoot()->GetDefaultStyle());
