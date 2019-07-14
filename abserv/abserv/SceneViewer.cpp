@@ -42,14 +42,7 @@ void main()
 )glsl";
 
 SceneViewer::SceneViewer() :
-    running_(false),
-    initialized_(false),
-    menuId_(0),
-    yaw_(0.0f),
-    pitch_(0.0f),
     cameraDistance_(CAMERA_INITIAL_DIST),
-    mouseLook_(false),
-    mousePos_({0, 0})
 {
     assert(SceneViewer::instance_ == nullptr);
     SceneViewer::instance_ = this;
@@ -431,10 +424,6 @@ void SceneViewer::ChangeSize(GLsizei w, GLsizei h)
 }
 
 Camera::Camera() :
-    near_(0.1f),
-    far_(20000.f),
-    fov_(90.0f),
-    zoom_(1.0f),
     rotation_(Math::Quaternion::Identity)
 { }
 

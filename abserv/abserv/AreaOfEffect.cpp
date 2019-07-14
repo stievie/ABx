@@ -50,7 +50,6 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
 
 AreaOfEffect::AreaOfEffect() :
     GameObject(),
-    luaInitialized_(false),
     startTime_(Utils::Tick()),
     lifetime_(std::numeric_limits<uint32_t>::max())
 {
@@ -104,11 +103,11 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     stateComp_.Write(message);
 
-    if (luaInitialized_ && HaveFunction(FunctionUpdate))
+    if (HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
     if (Utils::TimeElapsed(startTime_) > lifetime_)
     {
-        if (luaInitialized_ && HaveFunction(FunctionEnded))
+        if (HaveFunction(FunctionEnded))
             ScriptManager::CallFunction(luaState_, "onEnded");
         Remove();
     }
@@ -120,7 +119,7 @@ void AreaOfEffect::OnCollide(GameObject* other)
     GameObject::OnCollide(other);
 
     // AOE can also be a trap for example
-    if (luaInitialized_ && HaveFunction(FunctionOnCollide))
+    if (HaveFunction(FunctionOnCollide))
         ScriptManager::CallFunction(luaState_, "onCollide", other);
 }
 
@@ -130,7 +129,7 @@ void AreaOfEffect::OnTrigger(GameObject* other)
     GameObject::OnTrigger(other);
 
     // AOE can also be a trap for example
-    if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
+    if (HaveFunction(FunctionOnTrigger))
         ScriptManager::CallFunction(luaState_, "onTrigger", other);
 }
 
@@ -139,7 +138,7 @@ void AreaOfEffect::OnLeftArea(GameObject* other)
     // Called from triggerComp_
     GameObject::OnTrigger(other);
     // AOE can also be a trap for example
-    if (luaInitialized_ && HaveFunction(FunctionOnLeftArea))
+    if (HaveFunction(FunctionOnLeftArea))
         ScriptManager::CallFunction(luaState_, "onLeftArea", other);
 }
 

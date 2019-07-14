@@ -7,7 +7,7 @@ namespace Game {
 class Item;
 class Actor;
 
-class ItemDrop : public GameObject
+class ItemDrop final : public GameObject
 {
 private:
     std::unique_ptr<Item> item_;

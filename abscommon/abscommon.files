@@ -11,7 +11,6 @@ abscommon/DataClient.h
 abscommon/DataCodes.h
 abscommon/DataKey.h
 abscommon/DebugConfig.h
-abscommon/DebugNew.h
 abscommon/Dispatcher.cpp
 abscommon/Dispatcher.h
 abscommon/FileUtils.cpp

@@ -47,7 +47,7 @@ public:
     }
 };
 
-typedef std::function<bool(uint32_t remoteIp)> AcceptConnection;
+using AcceptConnection = std::function<bool(uint32_t remoteIp)>;
 
 class ServicePort : public std::enable_shared_from_this<ServicePort>
 {
@@ -109,7 +109,7 @@ public:
 
     /// Adds a protocol and binds it to the port
     template <typename T>
-    bool Add(uint32_t ip, uint16_t port, const AcceptConnection acceptConnection)
+    bool Add(uint32_t ip, uint16_t port, const AcceptConnection& acceptConnection)
     {
         if (port == 0)
         {

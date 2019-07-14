@@ -23,8 +23,6 @@
 #include <less/css/IOException.h>
 #include <less/lessstylesheet/LessStylesheet.h>
 
-#include "DebugNew.h"
-
 namespace Resources {
 
 static bool ParseInput(LessStylesheet& stylesheet,

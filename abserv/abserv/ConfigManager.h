@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Variant.h"
-#include <lua.hpp>
 #include "SimpleConfigManager.h"
 
 class ConfigManager : public IO::SimpleConfigManager
 {
 public:
-    enum Key
+    enum Key : size_t
     {
         Machine,
         ServerName,

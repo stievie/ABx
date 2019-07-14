@@ -16,8 +16,6 @@
 #   include <crtdbg.h>
 #endif
 
-#include "DebugNew.h"
-
 namespace {
 std::function<void(int)> shutdown_handler;
 void signal_handler(int signal)

@@ -8,8 +8,6 @@
 #include <AB/Entities/Character.h>
 #include "Subsystems.h"
 
-#include "DebugNew.h"
-
 namespace IO {
 
 bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string& pass,

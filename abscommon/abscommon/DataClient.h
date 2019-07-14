@@ -187,10 +187,10 @@ private:
     }
 
     std::string host_;
-    uint16_t port_;
+    uint16_t port_{ 0 };
     asio::ip::tcp::socket socket_;
     asio::ip::tcp::resolver resolver_;
-    bool connected_;
+    bool connected_{ false };
 };
 
 }

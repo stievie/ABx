@@ -48,8 +48,8 @@ private:
     std::shared_ptr<Script> script_;
     uint32_t functions_{ FunctionNone };
     std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
-    int32_t baseMinDamage_;
-    int32_t baseMaxDamage_;
+    int32_t baseMinDamage_{ 0 };
+    int32_t baseMaxDamage_{ 0 };
     ItemStats stats_;
     void InitializeLua();
     bool HaveFunction(Function func) const
@@ -65,8 +65,6 @@ public:
 
     Item() = delete;
     explicit Item(const AB::Entities::Item& item) :
-        baseMinDamage_(0),
-        baseMaxDamage_(0),
         data_(item)
     {
         InitializeLua();

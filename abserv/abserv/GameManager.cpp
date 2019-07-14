@@ -6,8 +6,6 @@
 #include "Npc.h"
 #include "IOGame.h"
 
-#include "DebugNew.h"
-
 namespace Game {
 
 void GameManager::Start()

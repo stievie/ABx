@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PropStream.h"
-#include <forward_list>
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Skill.h>
 #include "Script.h"

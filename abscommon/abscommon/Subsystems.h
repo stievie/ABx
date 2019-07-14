@@ -3,7 +3,6 @@
 #include <map>
 
 #include "StringHash.h"
-#include "DebugNew.h"
 
 class Subsystems
 {

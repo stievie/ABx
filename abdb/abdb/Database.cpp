@@ -14,8 +14,6 @@
 #endif
 #include "Logger.h"
 
-#include "DebugNew.h"
-
 namespace DB {
 
 std::recursive_mutex DBQuery::lock_;

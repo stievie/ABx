@@ -7,7 +7,7 @@ namespace Game {
 
 class Actor;
 
-class AreaOfEffect : public GameObject
+class AreaOfEffect final : public GameObject
 {
 private:
     enum Function : uint32_t
@@ -21,7 +21,7 @@ private:
     };
     std::weak_ptr<Actor> source_;
     kaguya::State luaState_;
-    bool luaInitialized_;
+    bool luaInitialized_{ false };
     std::shared_ptr<Script> script_;
     /// Effect or skill index
     uint32_t index_{ 0 };
@@ -33,7 +33,7 @@ private:
     uint32_t itemIndex_{ 0 };
     bool HaveFunction(Function func) const
     {
-        return (functions_ & func) == func;
+        return luaInitialized_ && ((functions_ & func) == func);
     }
     void InitializeLua();
     void _LuaSetSource(Actor* source);

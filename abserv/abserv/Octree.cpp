@@ -2,8 +2,6 @@
 #include "Octree.h"
 #include "GameObject.h"
 
-#include "DebugNew.h"
-
 namespace Math {
 
 static constexpr float DEFAULT_OCTREE_SIZE = 1000.0f;

@@ -6,11 +6,8 @@
 namespace IO {
 
 DataClient::DataClient(asio::io_service& io_service) :
-    host_(""),
-    port_(0),
     socket_(io_service),
-    resolver_(io_service),
-    connected_(false)
+    resolver_(io_service)
 {
 }
 

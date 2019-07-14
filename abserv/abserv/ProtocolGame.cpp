@@ -19,8 +19,6 @@
 #include <AB/DHKeys.hpp>
 #include "UuidUtils.h"
 
-#include "DebugNew.h"
-
 namespace Net {
 
 std::string ProtocolGame::serverId_ = Utils::Uuid::EMPTY_UUID;

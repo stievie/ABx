@@ -15,6 +15,9 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <fstream>
+#include <functional>
+#include <thread>
 
 #include <AB/CommonConfig.h>
 #include <base64.h>

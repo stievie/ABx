@@ -4,11 +4,6 @@
 
 #include "DatabasePgsql.h"
 #include "Logger.h"
-#include <base64.h>
-#include <thread>
-#include <functional>
-
-#include "DebugNew.h"
 
 namespace DB {
 

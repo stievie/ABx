@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Random.h"
 
-#include "DebugNew.h"
-
 namespace Crypto {
 
 void Random::Initialize()

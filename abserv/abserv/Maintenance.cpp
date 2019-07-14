@@ -14,8 +14,6 @@
 #include "Dispatcher.h"
 #include "Subsystems.h"
 
-#include "DebugNew.h"
-
 void Maintenance::CleanCacheTask()
 {
     GetSubsystem<IO::DataProvider>()->CleanCache();

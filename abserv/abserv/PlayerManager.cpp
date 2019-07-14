@@ -3,8 +3,6 @@
 #include "Player.h"
 #include "StringUtils.h"
 
-#include "DebugNew.h"
-
 namespace Game {
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)

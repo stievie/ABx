@@ -17,8 +17,7 @@ void Projectile::RegisterLua(kaguya::State& state)
 }
 
 Projectile::Projectile(const std::string& itemUuid) :
-    Actor(),
-    luaInitialized_(false)
+    Actor()
 {
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
@@ -131,7 +130,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     Actor::Update(timeElapsed, message);
 
-    if (luaInitialized_ && HaveFunction(FunctionUpdate))
+    if (HaveFunction(FunctionUpdate))
         ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
     if (item_)
         item_->Update(timeElapsed);
@@ -182,14 +181,14 @@ uint32_t Projectile::GetLevel() const
 void Projectile::OnCollide(GameObject* other)
 {
     Actor::OnCollide(other);
-    if (luaInitialized_ && HaveFunction(FunctionOnCollide))
+    if (HaveFunction(FunctionOnCollide))
         ScriptManager::CallFunction(luaState_, "onCollide", other);
 
     if (auto spt = target_.lock())
     {
         if (other && other->id_ == spt->id_)
         {
-            if (luaInitialized_ && HaveFunction(FunctionOnHitTarget))
+            if (HaveFunction(FunctionOnHitTarget))
                 ScriptManager::CallFunction(luaState_, "onHitTarget", other);
         }
     }
@@ -202,7 +201,7 @@ bool Projectile::OnStart()
 {
     auto t = target_.lock();
     assert(t);
-    if (luaInitialized_ && HaveFunction(FunctionOnStart))
+    if (HaveFunction(FunctionOnStart))
     {
         bool ret = luaState_["onStart"](t.get());
         return ret;

@@ -26,31 +26,30 @@ public:
 
     Math::Transformation transformation_;
     Math::Quaternion rotation_;
-    float near_;
-    float far_;
-    float fov_;
-    float zoom_;
+    float near_{ 0.1f };
+    float far_{ 20000.0f };
+    float fov_{ 90.0f };
+    float zoom_{ 1.0f };
 };
 
 class SceneViewer : public std::enable_shared_from_this<SceneViewer>
 {
 private:
-    bool running_;
-    bool initialized_;
+    bool running_{ false };
+    bool initialized_{ false };
     static SceneViewer* instance_;
+    bool mouseLook_{ false };
+    Math::Point<int> mousePos_{ 0, 0 };
+    float cameraDistance_;
     Camera camera_;
     std::weak_ptr<Game::Game> game_;
-    int menuId_;
+    int menuId_{ 0 };
     GLuint vertexShader_;
     GLuint fragmentShader_;
     GLuint shaderProgram_;
-    int projectionModelviewMatrixLoc_;
     float ratio_;
     float yaw_;
     float pitch_;
-    float cameraDistance_;
-    bool mouseLook_;
-    Math::Point<int> mousePos_;
     GLuint VAO_;
     static void StaticRenderScene();
     static void StaticChangeSize(GLsizei w, GLsizei h);

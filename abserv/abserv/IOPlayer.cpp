@@ -14,8 +14,6 @@
 #include "Subsystems.h"
 #include "SkillManager.h"
 
-#include "DebugNew.h"
-
 namespace IO {
 
 bool IOPlayer::LoadPlayer(Game::Player* player)

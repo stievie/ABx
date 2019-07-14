@@ -10,8 +10,6 @@
 #include "ConfigManager.h"
 #include "Scheduler.h"
 
-#include "DebugNew.h"
-
 namespace Game {
 
 Utils::IdGenerator<uint32_t> GameObject::objectIds_;

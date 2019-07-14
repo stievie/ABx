@@ -7,8 +7,6 @@
 #include "Profiler.h"
 #include "Subsystems.h"
 
-#include "DebugNew.h"
-
 namespace Auth {
 
 uint32_t BanManager::LoginTries = 5;

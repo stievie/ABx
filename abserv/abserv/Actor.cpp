@@ -16,8 +16,6 @@
 #include "PartyManager.h"
 #include "Player.h"
 
-#include "DebugNew.h"
-
 namespace Game {
 
 void Actor::RegisterLua(kaguya::State& state)

@@ -41,7 +41,6 @@ private:
     {
         return (functions_ & func) == func;
     }
-protected:
     kaguya::State luaState_;
     bool luaInitialized_;
     void InitializeLua();

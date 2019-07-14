@@ -39,9 +39,12 @@
 #include <functional>
 #include <condition_variable>
 #include <unordered_set>
+#include <forward_list>
 
 #include <limits>
 #include <stdint.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define WRITE_MINIBUMP
 

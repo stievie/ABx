@@ -22,9 +22,9 @@ private:
     std::vector<std::weak_ptr<Player>> invited_;
     std::shared_ptr<PartyChatChannel> chatChannel_;
     /// Depends on the map
-    uint32_t maxMembers_;
-    int64_t defeatedTick_;
-    bool defeated_;
+    uint32_t maxMembers_{ 1 };
+    int64_t defeatedTick_{ 0 };
+    bool defeated_{ false };
     template<typename E>
     bool UpdateEntity(const E& e)
     {

@@ -3,9 +3,7 @@
 #include "Asset.h"
 #include "Vector3.h"
 #include "HeightMap.h"
-#include "Shape.h"
 #include "Transformation.h"
-#include "CollisionShape.h"
 #include "Point.h"
 
 namespace Game {

@@ -18,8 +18,6 @@
 #include <AB/Entities/AccountItemList.h>
 #include "ItemDrop.h"
 
-#include "DebugNew.h"
-
 namespace Game {
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :

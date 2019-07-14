@@ -26,11 +26,8 @@ void Party::RegisterLua(kaguya::State& state)
 }
 
 Party::Party() :
-    maxMembers_(1),
-    defeatedTick_(0),
-    defeated_(false)
+    id_(GetNewId())
 {
-    id_ = GetNewId();
     chatChannel_ = std::dynamic_pointer_cast<PartyChatChannel>(GetSubsystem<Chat>()->Get(ChatType::Party, id_));
     chatChannel_->party_ = this;
     members_.reserve(AB::Entities::Limits::MAX_PARTY_MEMBERS);

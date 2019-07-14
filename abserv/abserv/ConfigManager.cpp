@@ -4,8 +4,6 @@
 #include "StringUtils.h"
 #include "UuidUtils.h"
 
-#include "DebugNew.h"
-
 ConfigManager::ConfigManager() :
     IO::SimpleConfigManager()
 {

@@ -4,3 +4,6 @@ I thought about some event system, but that's too heavy. There must be some
 template madness I just dont see yet, because everything is known at
 compiletime.
 ! Debug build of game server doesn't work well, e.g. disconnects when mapping.
+~ Revisit GameObject::Serialize and GameObject::WriteSpawnData. A lot useless
+stuff is sent. Also the object type should be written in WriteSpawnData(),
+like the id_.

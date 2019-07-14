@@ -22,8 +22,6 @@
 #include "Connection.h"
 #include "BanManager.h"
 #include "CpuUsage.h"
-#include <limits>
-#include <stdlib.h>
 #include "Process.hpp"
 #include <locale>
 #include <codecvt>
@@ -31,15 +29,11 @@
 #include "EffectManager.h"
 #include "DataClient.h"
 #include <AB/DHKeys.hpp>
-#include <time.h>
-#include <stdlib.h>
 #include "AiRegistry.h"
 #include "AiLoader.h"
 #include "PartyManager.h"
 #include "ItemFactory.h"
 #include "ConditionSleep.h"
-
-#include "DebugNew.h"
 
 Application* Application::Instance = nullptr;
 
@@ -326,7 +320,7 @@ bool Application::LoadMain()
 
     // AI
     LOG_INFO << "Loading behavior trees...";
-    auto aiReg = GetSubsystem<AI::AiRegistry>();
+    auto* aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
     const std::string& btFile = (*config)[ConfigManager::Key::Behaviours].GetString();
     auto dp = GetSubsystem<IO::DataProvider>();
@@ -344,8 +338,7 @@ bool Application::LoadMain()
     {
         aiServerIp_ = (*config)[ConfigManager::Key::AIServerIp].GetString();
         aiServerPort_ = static_cast<uint16_t>((*config)[ConfigManager::Key::AIServerPort].GetInt());
-        auto* reg = GetSubsystem<AI::AiRegistry>();
-        ai::Server* server = new ai::Server(*reg, static_cast<short>(aiServerPort_), aiServerIp_);
+        ai::Server* server = new ai::Server(*aiReg, static_cast<short>(aiServerPort_), aiServerIp_);
         Subsystems::Instance.RegisterSubsystem(server);
     }
 

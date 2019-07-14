@@ -10,7 +10,7 @@ class Item;
 
 /// Projectile is an Actor and has an Item. Both have a script. This is similar to ItemDrop:
 /// it is a GameObject and wraps an Item.
-class Projectile : public Actor
+class Projectile final : public Actor
 {
 private:
     std::unique_ptr<Item> item_;
@@ -23,7 +23,7 @@ private:
         FunctionOnStart = 1 << 3,
     };
     kaguya::State luaState_;
-    bool luaInitialized_;
+    bool luaInitialized_{ false };
     bool startSet_{ false };
     std::shared_ptr<Script> script_;
     Math::Vector3 start_;
@@ -41,7 +41,7 @@ private:
     bool LoadScript(const std::string& fileName);
     bool HaveFunction(Function func) const
     {
-        return (functions_ & func) == func;
+        return luaInitialized_ && ((functions_ & func) == func);
     }
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();

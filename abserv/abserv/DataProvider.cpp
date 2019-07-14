@@ -11,8 +11,6 @@
 #include "IOScript.h"
 #include "Subsystems.h"
 
-#include "DebugNew.h"
-
 namespace IO {
 
 DataProvider::DataProvider()

@@ -27,8 +27,6 @@
 #include "ItemDrop.h"
 #include "Projectile.h"
 
-#include "DebugNew.h"
-
 namespace Game {
 
 Game::Game()

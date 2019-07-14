@@ -50,18 +50,18 @@ class ResourceComp
 {
 private:
     Actor& owner_;
-    float energy_;
-    float health_;
-    float adrenaline_;
-    float overcast_;
-    float healthRegen_;     // How many arrows right or left
-    float energyRegen_;
-    int naturalHealthRegen_;
-    int maxHealth_;
-    int maxEnergy_;
-    uint32_t dirtyFlags_;
-    int64_t lastHpDecrease_;
-    int64_t lastRegenIncrease_;
+    float energy_{ 0.0f };
+    float health_{ 0.0f };
+    float adrenaline_{ 0.0f };
+    float overcast_{ 0.0f };
+    float healthRegen_{ 0.0f };     // How many arrows right or left
+    float energyRegen_{ 2.0f };
+    int naturalHealthRegen_{ 0 };
+    int maxHealth_{ 0 };
+    int maxEnergy_{ 0 };
+    uint32_t dirtyFlags_{ 0 };
+    int64_t lastHpDecrease_{ 0 };
+    int64_t lastRegenIncrease_{ 0 };
     template <typename T>
     static bool SetValue(SetValueType t, T value, T maxVal, T& out)
     {
@@ -113,19 +113,7 @@ private:
 public:
     ResourceComp() = delete;
     explicit ResourceComp(Actor& owner) :
-        owner_(owner),
-        energy_(0.0f),
-        health_(0.0f),
-        adrenaline_(0.0f),
-        overcast_(0.0f),
-        healthRegen_(0.0f),
-        energyRegen_(2.0f),
-        naturalHealthRegen_(0),
-        maxHealth_(0),
-        maxEnergy_(0),
-        dirtyFlags_(0),
-        lastHpDecrease_(0),
-        lastRegenIncrease_(0)
+        owner_(owner)
     { }
     // non-copyable
     ResourceComp(const ResourceComp&) = delete;

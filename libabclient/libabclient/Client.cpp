@@ -15,8 +15,6 @@
 #include <iostream>
 #include <fstream>
 
-#include "DebugNew.h"
-
 namespace Client {
 
 class HttpsClient : public SimpleWeb::Client<SimpleWeb::HTTPS>

@@ -13,7 +13,7 @@ struct FindPathData;
 class NavigationMesh : public IO::Asset
 {
 private:
-    dtNavMesh* navMesh_;
+    dtNavMesh* navMesh_{ nullptr };
     dtNavMeshQuery* navQuery_;
     std::unique_ptr<dtQueryFilter> queryFilter_;
     std::unique_ptr<FindPathData> pathData_;
