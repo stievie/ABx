@@ -16,14 +16,11 @@
 //#       define DEBUG_COLLISION
 //#       define DEBUG_AI
 #   endif
-//#   define DEGUB_ENCRYPTION
 #else
 #endif
 
-#if !defined(_NPROFILING)
-#   define _NPROFILING
+#if !defined(NPROFILING)
+#   define PROFILING
+#else
+#   undef PROFILING
 #endif
-#if !defined(_NPROFILING)
-#   define _PROFILING
-#endif
-

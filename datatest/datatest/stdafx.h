@@ -1,6 +1,6 @@
-// stdafx.h: Includedatei f¸r Standardsystem-Includedateien
-// oder h‰ufig verwendete projektspezifische Includedateien,
-// die nur in unregelm‰ﬂigen Abst‰nden ge‰ndert werden.
+// stdafx.h: Includedatei f√ºr Standardsystem-Includedateien
+// oder h√§ufig verwendete projektspezifische Includedateien,
+// die nur in unregelm√§√üigen Abst√§nden ge√§ndert werden.
 //
 
 #pragma once
@@ -25,7 +25,3 @@
 #pragma warning(pop)
 
 #include <uuid.h>
-
-// Used by the profiler to generate a unique identifier
-#define CONCAT(a, b) a ## b
-#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)

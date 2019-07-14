@@ -1,7 +1,6 @@
 include makefile.common
 
 # This may change
-DEFINES += -D_CONSOLE
 INCLUDES += -I../abscommon/abscommon
 TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abmsgs

@@ -34,7 +34,3 @@
 
 #include "Utils.h"
 #include "Logger.h"
-
-// Used by the profiler to generate a unique identifier
-#define CONCAT(a, b) a ## b
-#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)

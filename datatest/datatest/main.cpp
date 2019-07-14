@@ -1,4 +1,4 @@
-// datatest.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
+// datatest.cpp : Definiert den Einstiegspunkt fÃ¼r die Konsolenanwendung.
 //
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Game.h>
 #include <uuid.h>
-#define _PROFILING
+#define PROFILING
 #include "Profiler.h"
 
 void TestCreate(IO::DataClient* cli)

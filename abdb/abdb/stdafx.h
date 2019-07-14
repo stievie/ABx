@@ -23,7 +23,3 @@
 #if !defined(USE_MYSQL) && !defined(USE_PGSQL) && !defined(USE_ODBC) && !defined(USE_SQLITE)
 #error "Define at least one database driver"
 #endif
-
-// Used by the profiler to generate a unique identifier
-#define CONCAT(a, b) a ## b
-#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)

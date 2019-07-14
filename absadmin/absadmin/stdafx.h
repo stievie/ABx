@@ -52,9 +52,4 @@ using HttpServer = SimpleWeb::Server<SimpleWeb::HTTP>;
 #include "Utils.h"
 
 #define WRITE_MINIBUMP
-#define _PROFILING
-
-//#define _PROFILING
-// Used by the profiler to generate a unique identifier
-#define CONCAT(a, b) a ## b
-#define UNIQUENAME(prefix) CONCAT(prefix, __LINE__)
+#define PROFILING

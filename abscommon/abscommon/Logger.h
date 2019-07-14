@@ -6,11 +6,6 @@
 #include "Utils.h"
 #include <stdarg.h>
 #include "ConsoleColor.h"
-#if defined(AB_WINDOWS)
-#define WIN32_LEAN_AND_MEAN
-#define _WINSOCKAPI_
-#include <Windows.h>
-#endif
 
 #if !defined(__AB_PRETTY_FUNCTION__)
 #   if defined __GNUC__
@@ -121,7 +116,7 @@ public:
     {
         Warning() << msg << std::endl;
     }
-#if defined(_PROFILING)
+#if defined(PROFILING)
     void AddProfile(const std::string& msg)
     {
         Profile() << msg << std::endl;
@@ -173,7 +168,7 @@ public:
         }
         return *this;
     }
-#if defined(_PROFILING)
+#if defined(PROFILING)
     Logger& Profile()
     {
         static Color::Modifier blue(Color::FG_BLUE);
@@ -233,7 +228,7 @@ public:
 #define LOG_INFO (IO::Logger::Instance().Info())
 #define LOG_WARNING (IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
 #define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << "(): ")
-#if defined(_PROFILING)
+#if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #endif
 #if defined(_DEBUG)

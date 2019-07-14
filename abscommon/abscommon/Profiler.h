@@ -3,7 +3,7 @@
 #include "Logger.h"
 #include <chrono>
 
-// Undefine _PROFILING or define _NPROFILING to disable profiling
+// Undefine PROFILING or define NPROFILING to disable profiling
 
 // Used by the profiler to generate a unique identifier
 #if (!defined(CONCAT))
@@ -25,13 +25,13 @@ public:
     Profiler() :
         start_(timer::now())
     { }
-    Profiler(const std::string name) :
+    Profiler(const std::string& name) :
         start_(timer::now()),
         name_(name)
     { }
     ~Profiler()
     {
-#if defined(_PROFILING) && !defined(_NPROFILING)
+#if defined(PROFILING) && !defined(NPROFILING)
         std::chrono::time_point<timer> end = timer::now();
         auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start_).count();
         if (!name_.empty())
@@ -50,7 +50,7 @@ public:
 
 }
 
-#if defined(_PROFILING) && !defined(_NPROFILING)
+#if defined(PROFILING) && !defined(NPROFILING)
 #   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(__AB_PRETTY_FUNCTION__)
 #else
 #   define AB_PROFILE

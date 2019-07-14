@@ -8,9 +8,11 @@ SOURDEDIR = ../abclient/abclient
 OBJDIR = obj/x64/Release/abclient
 LIBS += -lpthread -lGL -lcrypto -lssl -lUrho3D -labclient -ldl -lrt -lstdc++fs -labcrypto
 CXXFLAGS += -fexceptions
-CXXFLAGS :=$(filter-out -Wextra,$(CXXFLAGS))
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes
+
+# Remove -Wextra
+CXXFLAGS :=$(filter-out -Wextra,$(CXXFLAGS))
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
 
