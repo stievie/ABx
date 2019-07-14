@@ -29,6 +29,8 @@
 #include <io.h>
 #include <fcntl.h>
 #include <time.h>
+#define WIN32_LEAN_AND_MEAN
+#define _WINSOCKAPI_
 #include <windows.h>
 #pragma warning(push)
 #pragma warning(disable: 4091)

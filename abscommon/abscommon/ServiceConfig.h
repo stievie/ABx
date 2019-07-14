@@ -10,11 +10,3 @@
 #elif defined(WIN_SERVICE)
 #   undef WIN_SERVICE
 #endif
-
-#if defined (AB_UNIX)
-#   if !defined(UNIX_DAEMON)
-//#       define UNIX_DAEMON
-#   endif
-#elif defined(UNIX_DAEMON)
-#   undef UNIX_DAEMON
-#endif

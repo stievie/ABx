@@ -3,6 +3,8 @@
 #ifdef _WIN32
 
 #include "Process.hpp"
+#define WIN32_LEAN_AND_MEAN
+#define _WINSOCKAPI_
 #include <windows.h>
 #include <cstring>
 #include <TlHelp32.h>
