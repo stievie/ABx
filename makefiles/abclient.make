@@ -3,7 +3,7 @@ include makefile.common
 # This may change
 INCLUDES += -I../libabclient/libabclient -I../Include/Urho3D -I../Include/Urho3D/ThirdParty
 TARGETDIR = ../abclient/bin
-TARGET = $(TARGETDIR)/abclient
+TARGET = $(TARGETDIR)/fw
 SOURDEDIR = ../abclient/abclient
 OBJDIR = obj/x64/Release/abclient
 LIBS += -lpthread -lGL -lcrypto -lssl -lUrho3D -labclient -ldl -lrt -lstdc++fs -labcrypto
