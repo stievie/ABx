@@ -32,7 +32,6 @@ Bin
 *.mak
 *.a
 *.mk
-Makefile
 
 # Precompiled header files
 *.gch/
