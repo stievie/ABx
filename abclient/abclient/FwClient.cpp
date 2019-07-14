@@ -1363,8 +1363,8 @@ void FwClient::OnServerMessage(int64_t updateTick, AB::GameProtocol::ServerMessa
     using namespace AbEvents::ServerMessage;
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_MESSAGETYPE] = type;
-    eData[P_SENDER] = String(senderName.data(), static_cast<int>(senderName.length()));
-    eData[P_DATA] = String(message.data(), static_cast<int>(message.length()));
+    eData[P_SENDER] = String(senderName.data(), static_cast<unsigned>(senderName.length()));
+    eData[P_DATA] = String(message.data(), static_cast<unsigned>(message.length()));
     QueueEvent(AbEvents::E_SERVERMESSAGE, eData);
 }
 
@@ -1376,8 +1376,8 @@ void FwClient::OnChatMessage(int64_t updateTick, AB::GameProtocol::ChatMessageCh
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_MESSAGETYPE] = channel;
     eData[P_SENDERID] = senderId;
-    eData[P_SENDER] = String(senderName.data(), static_cast<int>(senderName.length()));
-    eData[P_DATA] = String(message.data(), static_cast<int>(message.length()));
+    eData[P_SENDER] = String(senderName.data(), static_cast<unsigned>(senderName.length()));
+    eData[P_DATA] = String(message.data(), static_cast<unsigned>(message.length()));
     QueueEvent(AbEvents::E_CHATMESSAGE, eData);
 }
 

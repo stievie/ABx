@@ -5,6 +5,10 @@ Ancient Greece Multiplayer Online RPG.
 * https://www.gamedev.net/blogs/blog/3042-abx-online-rpg/
 * https://dev.azure.com/trill42/ABx
 
+## ETA
+
+Christmas 2127 +/- some years. That's still a negative stardate so I think we are fine.
+
 ## Current features
 
 * Uses a single TCP stream for the game protocol. This is not a shooter or action game, more like a classical online RPG.

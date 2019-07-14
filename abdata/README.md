@@ -76,13 +76,8 @@ struct Account : Entity
 }
 ~~~
 
-## External Dependencies
-
-* Boost
-
 ## Credits
 
-* https://www.boost.org/
 * https://think-async.com/Asio/AsioStandalone
 * https://github.com/fraillt/bitsery
 * https://github.com/mariusbancila/stduuid (modified to compile with VC++ 2015)
