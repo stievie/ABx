@@ -154,6 +154,7 @@ SharedPtr<DialogWindow> WindowManager::GetDialog(AB::Dialogs dialog)
             root->AddChild(wnd);
         }
         result = dynamic_cast<DialogWindow*>(wnd);
+        break;
     }
     case AB::DialogMerchantItems:
         break;

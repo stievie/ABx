@@ -1,3 +1,6 @@
 ! AI Server: Crash when deleting a game. No proper shutdown or something.
 ~ Find out how components can communicate with each other and the compositor.
+I thought about some event system, but that's too heavy. There must be some
+template madness I just dont see yet, because everything is known at
+compiletime.
 ! Debug build of game server doesn't work well, e.g. disconnects when mapping.
