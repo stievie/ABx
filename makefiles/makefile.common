@@ -1,4 +1,4 @@
-# vi:syntax=diff
+# vi:syntax=make
 
 # Tools chain
 CC = gcc

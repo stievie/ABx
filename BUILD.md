@@ -8,6 +8,9 @@ Didn't try with Visual Studio 2019 tools chain yet.
 
 Install GCC, ccache.
 
+It should also compile with Clang out of the box, just change `CXX` to `clang++` and `CC` to `clang`
+in `makefiles/makefile.common`. But we keep GCC for various reasons.
+
 ## Dependencies
 
 * `uuid-dev` (https://packages.debian.org/jessie/uuid-dev)
