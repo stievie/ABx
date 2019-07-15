@@ -41,9 +41,7 @@ public:
     static void CallFunction(kaguya::State& state, const std::string& name, _CArgs&&... _Args)
     {
         if (IsFunction(state, name))
-        {
             state[name](std::forward<_CArgs>(_Args)...);
-        }
     }
     static void CollectGarbage(kaguya::State& state);
 };

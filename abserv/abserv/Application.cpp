@@ -266,7 +266,7 @@ bool Application::LoadMain()
 #endif
     }
     LOG_INFO << "Loading configuration: " << configFile_ << "...";
-    auto config = GetSubsystem<ConfigManager>();
+    auto* config = GetSubsystem<ConfigManager>();
     if (!config)
     {
         LOG_INFO << "[FAIL]" << std::endl;
@@ -303,7 +303,7 @@ bool Application::LoadMain()
     LOG_INFO << "[done]" << std::endl;
 
     LOG_INFO << "Loading encryption keys...";
-    auto keys = GetSubsystem<Crypto::DHKeys>();
+    auto* keys = GetSubsystem<Crypto::DHKeys>();
     if (!keys)
     {
         LOG_INFO << "[FAIL]" << std::endl;
@@ -323,7 +323,7 @@ bool Application::LoadMain()
     auto* aiReg = GetSubsystem<AI::AiRegistry>();
     aiReg->Initialize();
     const std::string& btFile = (*config)[ConfigManager::Key::Behaviours].GetString();
-    auto dp = GetSubsystem<IO::DataProvider>();
+    auto* dp = GetSubsystem<IO::DataProvider>();
     std::string absBtFile = dp->GetDataFile(btFile);
     auto aiLoader = GetSubsystem<AI::AiLoader>();
     if (!aiLoader->Init(absBtFile))
@@ -348,7 +348,7 @@ bool Application::LoadMain()
     LOG_INFO << "Connecting to data server...";
     const std::string& dataHost = (*config)[ConfigManager::Key::DataServerHost].GetString();
     uint16_t dataPort = static_cast<uint16_t>((*config)[ConfigManager::Key::DataServerPort].GetInt());
-    auto dataClient = GetSubsystem<IO::DataClient>();
+    auto* dataClient = GetSubsystem<IO::DataClient>();
     dataClient->Connect(dataHost, dataPort);
     if (!dataClient->IsConnected())
     {

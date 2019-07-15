@@ -44,7 +44,7 @@ namespace ai {
 		::ai::IFilter(#FilterName, parameters) { \
 	} \
 public: \
-	virtual ~FilterName() { \
+        virtual ~FilterName() override { \
 	}
 
 #define FILTER_FACTORY(FilterName) \

@@ -31,7 +31,7 @@ typedef std::shared_ptr<AI> AIPtr;
 		::ai::ICondition(#ConditionName, parameters) { \
 	} \
 public: \
-	virtual ~ConditionName() { \
+        virtual ~ConditionName() override { \
 	}
 
 /**

@@ -28,7 +28,7 @@ public:
 struct TaskName: public AiTask { \
 	TaskName(const std::string& name, const std::string& parameters, const ai::ConditionPtr& condition) : \
 			AiTask(name, parameters, condition) {} \
-	virtual ~TaskName() {} \
+    virtual ~TaskName() override {} \
 	NODE_FACTORY(TaskName) \
 	ai::TreeNodeStatus doAction(AI::AiCharacter& chr, int64_t deltaMillis) override; \
 }; \

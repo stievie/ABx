@@ -17,7 +17,7 @@ namespace ai {
 /**
  * @brief Macro for the destructor of a task. Just give the class name as parameter.
  */
-#define TASK_CLASS_DTOR(TaskName) virtual ~TaskName()
+#define TASK_CLASS_DTOR(TaskName) virtual ~TaskName() override
 
 /**
  * @brief Macro to simplify the task creation. Just give the class name as parameter.
