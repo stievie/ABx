@@ -23,7 +23,7 @@ namespace Color {
         FG_LIGHTGREY    = 37,
         FG_DEFAULT      = 39,
         FG_DARKGREY     = 90,
-        FG_LIGHRED      = 91,
+        FG_LIGHTRED     = 91,
         FG_LIGHTGREEN   = 92,
         FG_LIGHTYELLOW  = 93,
         FG_LIGHTBLUE    = 94,
