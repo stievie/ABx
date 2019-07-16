@@ -43,6 +43,108 @@ Logger::Logger(std::ostream& stream /* = std::cout */) :
     foregroundDefault_ = Info.wAttributes;
 #endif
 }
+
+Logger& Logger::operator << (endlType endl)
+{
+#if !defined(AB_WINDOWS)
+    static Color::Modifier def(Color::FG_DEFAULT);
+#endif
+    nextIsBegin_ = true;
+    if (mode_ == Mode::Stream)
+    {
+#if !defined(AB_WINDOWS)
+        stream_ << def;
+#else
+        SetConsoleTextAttribute(hConsole_, foregroundDefault_);
+#endif
+    }
+    stream_ << endl;
+    return *this;
+}
+
+Logger& Logger::Error()
+{
+    static Color::Modifier red(Color::FG_LIGHTRED);
+    if (nextIsBegin_)
+    {
+        if (mode_ == Mode::Stream)
+        {
+#if !defined(AB_WINDOWS)
+            stream_ << red;
+#else
+            SetConsoleTextAttribute(hConsole_, red.code_);
+#endif
+        }
+        (*this) << "[ERROR] ";
+    }
+    return *this;
+}
+
+Logger& Logger::Info()
+{
+    if (nextIsBegin_)
+        (*this) << "[Info] ";
+    return *this;
+}
+
+Logger& Logger::Warning()
+{
+    static Color::Modifier yellow(Color::FG_YELLOW);
+    if (nextIsBegin_)
+    {
+        if (mode_ == Mode::Stream)
+        {
+#if !defined(AB_WINDOWS)
+            stream_ << yellow;
+#else
+            SetConsoleTextAttribute(hConsole_, yellow.code_);
+#endif
+        }
+        (*this) << "[Warning] ";
+    }
+    return *this;
+}
+
+#if defined(PROFILING)
+Logger& Logger::Profile()
+{
+    static Color::Modifier green(Color::FG_LIGHTGREEN);
+    if (nextIsBegin_)
+    {
+        if (mode_ == Mode::Stream)
+        {
+#if !defined(AB_WINDOWS)
+            stream_ << green;
+#else
+            SetConsoleTextAttribute(hConsole_, green.code_);
+#endif
+        }
+        (*this) << "[Profile] ";
+    }
+    return *this;
+}
+#endif
+
+#if defined(_DEBUG)
+Logger& Logger::Debug()
+{
+    static Color::Modifier grey(Color::FG_LIGHTGREY);
+    if (nextIsBegin_)
+    {
+        if (mode_ == Mode::Stream)
+        {
+#if !defined(AB_WINDOWS)
+            stream_ << grey;
+#else
+            SetConsoleTextAttribute(hConsole_, grey.code_);
+#endif
+        }
+        (*this) << "[Debug] ";
+    }
+    return *this;
+}
+#endif
+
 int Logger::PrintF(const char *__restrict __format, ...)
 {
     int ret;

@@ -28,11 +28,12 @@ private:
         Stream,
         File
     };
+    static std::unique_ptr<Logger> instance_;
 #if defined(AB_WINDOWS)
     HANDLE hConsole_{ 0 };
     short foregroundDefault_{ 0 };
 #endif
-    static std::unique_ptr<Logger> instance_;
+    bool nextIsBegin_{ false };
     std::ofstream fstream_;
     std::ostream& stream_;
     Mode mode_;
@@ -40,15 +41,13 @@ private:
     using endlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
-    bool nextIsBegin_;
 
     explicit Logger(std::ostream& stream = std::cout);
     explicit Logger(const std::string& fileName) :
         fstream_(fileName),
         stream_(fstream_),
         mode_(Mode::File),
-        logStart_(Utils::Tick()),
-        nextIsBegin_(true)
+        logStart_(Utils::Tick())
     {}
     ~Logger()
     {
@@ -60,23 +59,7 @@ public:
     }
 
     // Overload for std::endl only:
-    Logger& operator << (endlType endl)
-    {
-#if !defined(AB_WINDOWS)
-        static Color::Modifier def(Color::FG_DEFAULT);
-#endif
-        nextIsBegin_ = true;
-        if (mode_ == Mode::Stream)
-        {
-#if !defined(AB_WINDOWS)
-            stream_ << def;
-#else
-            SetConsoleTextAttribute(hConsole_, foregroundDefault_);
-#endif
-        }
-        stream_ << endl;
-        return *this;
-    }
+    Logger& operator << (endlType endl);
 
     template <typename T>
     Logger& operator << (const T& data)
@@ -128,83 +111,14 @@ public:
         Debug() << msg << std::endl;
     }
 #endif
-    Logger& Error()
-    {
-        static Color::Modifier red(Color::FG_RED);
-        if (nextIsBegin_)
-        {
-            if (mode_ == Mode::Stream)
-            {
-#if !defined(AB_WINDOWS)
-                stream_ << red;
-#else
-                SetConsoleTextAttribute(hConsole_, red.code_);
-#endif
-            }
-            (*this) << "[ERROR] ";
-        }
-        return *this;
-    }
-    Logger& Info()
-    {
-        if (nextIsBegin_)
-            (*this) << "[Info] ";
-        return *this;
-    }
-    Logger& Warning()
-    {
-        static Color::Modifier yellow(Color::FG_YELLOW);
-        if (nextIsBegin_)
-        {
-            if (mode_ == Mode::Stream)
-            {
-#if !defined(AB_WINDOWS)
-                stream_ << yellow;
-#else
-                SetConsoleTextAttribute(hConsole_, yellow.code_);
-#endif
-            }
-            (*this) << "[Warning] ";
-        }
-        return *this;
-    }
+    Logger& Error();
+    Logger& Info();
+    Logger& Warning();
 #if defined(PROFILING)
-    Logger& Profile()
-    {
-        static Color::Modifier blue(Color::FG_BLUE);
-        if (nextIsBegin_)
-        {
-            if (mode_ == Mode::Stream)
-            {
-#if !defined(AB_WINDOWS)
-                stream_ << blue;
-#else
-                SetConsoleTextAttribute(hConsole_, blue.code_);
-#endif
-            }
-            (*this) << "[Profile] ";
-        }
-        return *this;
-    }
+    Logger& Profile();
 #endif
 #if defined(_DEBUG)
-    Logger& Debug()
-    {
-        static Color::Modifier grey(Color::FG_LIGHTGREY);
-        if (nextIsBegin_)
-        {
-            if (mode_ == Mode::Stream)
-            {
-#if !defined(AB_WINDOWS)
-                stream_ << grey;
-#else
-                SetConsoleTextAttribute(hConsole_, grey.code_);
-#endif
-            }
-            (*this) << "[Debug] ";
-        }
-        return *this;
-    }
+    Logger& Debug();
 #endif
     static int PrintF(const char *__restrict __format, ...);
 
@@ -226,11 +140,11 @@ public:
 }
 
 #define LOG_INFO (IO::Logger::Instance().Info())
-#define LOG_WARNING (IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << "(): ")
-#define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << "(): ")
+#define LOG_WARNING (IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << ": ")
+#define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << ": ")
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #endif
 #if defined(_DEBUG)
-#   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << "(): ")
+#   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << ": ")
 #endif
