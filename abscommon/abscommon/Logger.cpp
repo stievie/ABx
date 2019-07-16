@@ -33,8 +33,7 @@ Logger& Logger::Instance()
 Logger::Logger(std::ostream& stream /* = std::cout */) :
     stream_(stream),
     mode_(Mode::Stream),
-    logStart_(Utils::Tick()),
-    nextIsBegin_(true)
+    logStart_(Utils::Tick())
 {
 #if defined(AB_WINDOWS)
     hConsole_ = GetStdHandle(STD_OUTPUT_HANDLE);
