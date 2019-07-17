@@ -144,7 +144,8 @@ void AreaOfEffect::OnLeftArea(GameObject* other)
 
 void AreaOfEffect::SetRange(Ranges range)
 {
-    assert(static_cast<int>(range) >= 0 && static_cast<int>(range) <= static_cast<int>(Ranges::Map));
+    if (range_ == range)
+        return;
 
     range_ = range;
 

@@ -48,7 +48,7 @@ public:
     void SetSize(uint16_t value)
     {
         // Can not make smaller
-        assert(value + 1 > size_);
+        assert(value + 1u > size_);
         // + 1 because Money doesnt count
         size_ = static_cast<size_t>(value) + 1;
     }
