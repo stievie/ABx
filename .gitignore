@@ -43,30 +43,6 @@ Bin
 compile_commands.json
 compile_flags.txt
 
-# codelite object list
-abclient/abclient.txt
-abdata/abdata.txt
-abdb/abdb.txt
-abfile/abfile.txt
-ablb/ablb.txt
-ablogin/ablogin.txt
-abmsgs/abmsgs.txt
-absadmin/absadmin.txt
-abscommon/abscommon.txt
-abserv/abserv.txt
-absmath/absmath.txt
-libabclient/libabclient.txt
-keygen/keygen.txt
-Tests/Tests.txt
-ThirdParty/PugiXml/pugixml.txt
-ThirdParty/abcrypto/abcrypto.txt
-ThirdParty/libless/libless.txt
-ThirdParty/recastnavigation/DebugUtils.txt
-ThirdParty/recastnavigation/Detour.txt
-ThirdParty/recastnavigation/Recast.txt
-ThirdParty/sqlite3/sqlite3.txt
-ThirdParty/lz4/lz4.txt
-
 # Misc.
 configure*
 *~
@@ -99,4 +75,3 @@ backup.cmd
 *.pdb
 *.idb
 /STUFF.md
-/clocall.bat
