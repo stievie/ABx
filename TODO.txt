@@ -7,3 +7,4 @@ compiletime.
 ~ Revisit GameObject::Serialize and GameObject::WriteSpawnData. A lot useless
 stuff is sent. Also the object type should be written in WriteSpawnData(),
 like the id_.
+~ abscommon: Connection, no recursive_mutex needed, change to mutex.
