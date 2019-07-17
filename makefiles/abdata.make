@@ -3,9 +3,9 @@ include makefile.common
 # This may change
 INCLUDES += -I../abscommon/abscommon -I../abdb/abdb
 TARGETDIR = ../Bin
-TARGET = $(TARGETDIR)/abdata
+TARGET = $(TARGETDIR)/abdata$(SUFFIX)
 SOURDEDIR = ../abdata/abdata
-OBJDIR = obj/x64/Release/abdata
+OBJDIR = obj/x64/$(CONFIG)/abdata
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon -labdb
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h

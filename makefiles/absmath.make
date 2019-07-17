@@ -2,10 +2,10 @@ include makefile.common
 
 # This may change
 INCLUDES += -I../Include/DirectXMath
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabsmath.a
 SOURDEDIR = ../absmath/absmath
-OBJDIR = obj/x64/Release/absmath
+OBJDIR = obj/x64/$(CONFIG)/absmath
 PCH = $(SOURDEDIR)/stdafx.h
 # End changes
 

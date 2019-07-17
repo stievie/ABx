@@ -3,9 +3,9 @@ include makefile.common
 # This may change
 INCLUDES += -I../abscommon/abscommon
 TARGETDIR = ../Bin
-TARGET = $(TARGETDIR)/keygen
+TARGET = $(TARGETDIR)/keygen$(SUFFIX)
 SOURDEDIR = ../keygen/keygen
-OBJDIR = obj/x64/Release/keygen
+OBJDIR = obj/x64/$(CONFIG)/keygen
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror

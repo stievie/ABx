@@ -1,10 +1,10 @@
 include makefile.common
 
 # This may change
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabscommon.a
 SOURDEDIR = ../abscommon/abscommon
-OBJDIR = obj/x64/Release/abscommon
+OBJDIR = obj/x64/$(CONFIG)/abscommon
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror

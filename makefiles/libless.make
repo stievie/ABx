@@ -1,10 +1,10 @@
 include makefile.common
 
 # This may change
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libless.a
 SOURDEDIR = ../ThirdParty/libless/src
-OBJDIR = obj/x64/Release/libless
+OBJDIR = obj/x64/$(CONFIG)/libless
 # End changes
 
 SRC_FILES = $(wildcard $(SOURDEDIR)/*.cpp $(SOURDEDIR)/*/*.cpp)

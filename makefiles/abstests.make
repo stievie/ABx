@@ -3,9 +3,9 @@ include makefile.common
 # This may change
 INCLUDES += -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon 
 TARGETDIR = ../Bin
-TARGET = $(TARGETDIR)/Tests
+TARGET = $(TARGETDIR)/Tests$(SUFFIX)
 SOURDEDIR = ../Tests/Tests
-OBJDIR = obj/x64/Release/Tests
+OBJDIR = obj/x64/$(CONFIG)/Tests
 LIBS += -labscommon -labsmath
 CXXFLAGS += -fexceptions
 DEFINES += -DBUILD_INTRINSICS_LEVEL=1

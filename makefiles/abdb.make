@@ -2,10 +2,10 @@ include makefile.common
 
 # This may change
 INCLUDES += -I../abscommon/abscommon -I/usr/include/postgresql
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabdb.a
 SOURDEDIR = ../abdb/abdb
-OBJDIR = obj/x64/Release/abdb
+OBJDIR = obj/x64/$(CONFIG)/abdb
 SRC_FILES = \
 	$(SOURDEDIR)/Database.cpp \
 	$(SOURDEDIR)/DatabaseMysql.cpp \

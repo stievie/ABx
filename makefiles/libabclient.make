@@ -1,10 +1,10 @@
 include makefile.common
 
 # This may change
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabclient.a
 SOURDEDIR = ../libabclient/libabclient
-OBJDIR = obj/x64/Release/libabclient
+OBJDIR = obj/x64/$(CONFIG)/libabclient
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Wimplicit-fallthrough=0
 # End changes

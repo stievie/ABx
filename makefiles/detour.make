@@ -2,10 +2,10 @@ include makefile.common
 
 # This may change
 INCLUDES += -I../ThirdParty/recastnavigation/Detour/Include -I../ThirdParty/recastnavigation/DetourTileCache/Include
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libdetour.a
 SOURDEDIR = ../ThirdParty/recastnavigation
-OBJDIR = obj/x64/Release/recastnavigation
+OBJDIR = obj/x64/$(CONFIG)/recastnavigation
 CXXFLAGS += -Werror -Wno-class-memaccess -Wno-maybe-uninitialized
 # End changes
 

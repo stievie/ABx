@@ -3,9 +3,9 @@ include makefile.common
 # This may change
 INCLUDES += -I../Include/recastnavigation -I../Include/ai -I../Include/DirectXMath -I../absmath/absmath -I../abscommon/abscommon 
 TARGETDIR = ../Bin
-TARGET = $(TARGETDIR)/abserv
+TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
-OBJDIR = obj/x64/Release/abserv
+OBJDIR = obj/x64/$(CONFIG)/abserv
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto -labsmath -lpugixml -ldetour -lstdc++fs
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h

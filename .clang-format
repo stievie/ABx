@@ -20,7 +20,6 @@ BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: 'false'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
 BreakConstructorInitializers: AfterColon
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: 4
 ColumnLimit: '0'

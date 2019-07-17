@@ -1,10 +1,10 @@
 include makefile.common
 
 # This may change
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libabcrypto.a
 SOURDEDIR = ../ThirdParty/abcrypto
-OBJDIR = obj/x64/Release/abcrypto
+OBJDIR = obj/x64/$(CONFIG)/abcrypto
 SRC_FILES = \
 	$(SOURDEDIR)/aes.c \
 	$(SOURDEDIR)/arc4random.c \
