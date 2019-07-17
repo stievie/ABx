@@ -20,12 +20,12 @@ Connection::~Connection()
 
 bool Connection::Send(const std::shared_ptr<OutputMessage>& message)
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
 
     if (state_ != State::Open)
         return false;
 
     bool noPendingWrite = messageQueue_.empty();
+    std::lock_guard<std::mutex> lockClass(lock_);
     messageQueue_.emplace_back(message);
     if (noPendingWrite)
         InternalSend(message);
@@ -54,7 +54,7 @@ void Connection::InternalSend(std::shared_ptr<OutputMessage> message)
 
 void Connection::OnWriteOperation(const asio::error_code& error)
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
+    std::lock_guard<std::mutex> lockClass(lock_);
     writeTimer_.cancel();
     messageQueue_.pop_front();
 
@@ -66,18 +66,14 @@ void Connection::OnWriteOperation(const asio::error_code& error)
     }
 
     if (!messageQueue_.empty())
-    {
         InternalSend(messageQueue_.front());
-    }
     else if (state_ == State::Closed)
-    {
         CloseSocket();
-    }
 }
 
 void Connection::Close(bool force /* = false */)
 {
-    auto connMngr = GetSubsystem<ConnectionManager>();
+    auto* connMngr = GetSubsystem<ConnectionManager>();
     if (!connMngr)
     {
         LOG_ERROR << "No ConnectionManager subsystem." << std::endl;
@@ -85,7 +81,6 @@ void Connection::Close(bool force /* = false */)
     }
     connMngr->ReleaseConnection(shared_from_this());
 
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     if (state_ != State::Open)
         return;
     state_ = State::Closed;
@@ -111,7 +106,6 @@ void Connection::Accept(std::shared_ptr<Protocol> protocol)
 
 void Connection::Accept()
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     try
     {
         readTimer_.expires_from_now(std::chrono::seconds(Connection::ReadTimeout));
@@ -132,7 +126,6 @@ void Connection::Accept()
 
 void Connection::ParseHeader(const asio::error_code& error)
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 #ifdef DEBUG_NET
     lastReadHeader_ = Utils::Tick();
@@ -203,7 +196,6 @@ void Connection::ParseHeader(const asio::error_code& error)
 
 void Connection::ParsePacket(const asio::error_code& error)
 {
-    std::lock_guard<std::recursive_mutex> lockClass(lock_);
     readTimer_.cancel();
 #ifdef DEBUG_NET
     lastReadBody_ = Utils::Tick();
@@ -311,9 +303,7 @@ void Connection::HandleWriteTimeout(std::weak_ptr<Connection> weakConn, const as
 #endif
 
     if (auto conn = weakConn.lock())
-    {
         conn->Close(true);
-    }
 }
 
 void Connection::CloseSocket()

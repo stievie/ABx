@@ -33,7 +33,8 @@ class Connection : public std::enable_shared_from_this<Connection>
 public:
     enum { WriteTimeout = 30 };
     enum { ReadTimeout = 30 };
-    enum State {
+    enum class State
+    {
         Open = 0,
         Closed = 3
     };
@@ -84,7 +85,7 @@ private:
 #endif
     std::shared_ptr<ServicePort> servicePort_;
     std::shared_ptr<Protocol> protocol_;
-    std::recursive_mutex lock_;
+    std::mutex lock_;
     bool receivedFirst_;
     asio::steady_timer readTimer_;
     asio::steady_timer writeTimer_;
@@ -93,7 +94,7 @@ private:
     time_t timeConnected_;
     uint32_t packetsSent_;
 
-    State state_;
+    std::atomic<State> state_;
 };
 
 }
