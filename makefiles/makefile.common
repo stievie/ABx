@@ -19,10 +19,10 @@ LINKCMD_LIB = $(AR) -r "$@"
 LINKCMD_EXE = $(CXX) $(LDFLAGS) -o "$@"
 
 # Flags
-CFLAGS = -m64 -Wall -Wextra
-CXXFLAGS = -m64 -Wall -Wextra -std=c++17
+CFLAGS = -std=c17 -m64 -Wall -Wextra
+CXXFLAGS = -std=c++17 -m64 -Wall -Wextra
 ifeq ($(CONFIG),Debug)
-	CFLAGS += -g -o=
+	CFLAGS += -g -O0
 	CXXFLAGS += -g -O0
 	SUFFIX = _d
 else
@@ -35,8 +35,9 @@ LDFLAGS =  -L../Lib -L../Lib/x64/$(CONFIG) -m64 -s
 # Options
 DEFINES = -DNPROFILING
 ifeq ($(CONFIG),Debug)
-	DEFINES += -D_DEBUG
+	DEFINES += -D_DEBUG -DDEBUG
 else
 	DEFINES += -DNDEBUG
 endif
 INCLUDES = -I../Include
+
