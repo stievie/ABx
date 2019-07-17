@@ -1,6 +1,6 @@
 ﻿---
 BasedOnStyle: Mozilla
-IndentWidth: 4
+IndentWidth: '4'
 ---
 Language: Cpp
 AlignAfterOpenBracket: DontAlign
@@ -18,6 +18,11 @@ AlwaysBreakBeforeMultilineStrings: 'false'
 BinPackParameters: 'false'
 BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: 'false'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+BreakConstructorInitializers: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: '4'
+ContinuationIndentWidth: 4
 ColumnLimit: '0'
 PointerAlignment: Left
 SortIncludes: 'false'
