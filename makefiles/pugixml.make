@@ -1,10 +1,10 @@
 include makefile.common
 
 # This may change
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/libpugixml.a
 SOURDEDIR = ../ThirdParty/PugiXml/src
-OBJDIR = obj/x64/Release/pugixml
+OBJDIR = obj/x64/$(CONFIG)/pugixml
 CXXFLAGS += -Werror -Wno-class-memaccess -Wimplicit-fallthrough=0 -Wno-deprecated-copy
 # End changes
 

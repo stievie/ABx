@@ -2,10 +2,10 @@ include makefile.common
 
 # This may change
 INCLUDES += -I../ThirdParty/recastnavigation/Recast/Include
-TARGETDIR = ../Lib/x64/Release
+TARGETDIR = ../Lib/x64/$(CONFIG)
 TARGET = $(TARGETDIR)/librecast.a
 SOURDEDIR = ../ThirdParty/recastnavigation
-OBJDIR = obj/x64/Release/recastnavigation
+OBJDIR = obj/x64/$(CONFIG)/recastnavigation
 CXXFLAGS += -Werror
 # End changes
 
