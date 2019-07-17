@@ -32,7 +32,7 @@ public:
     ChatChannel(uint64_t id) :
         id_(id)
     {}
-    virtual ~ChatChannel() = default;
+    virtual ~ChatChannel();
     virtual bool Talk(Player*, const std::string&) {
         return false;
     }

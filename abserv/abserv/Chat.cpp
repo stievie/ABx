@@ -15,6 +15,8 @@
 
 namespace Game {
 
+ChatChannel::~ChatChannel() = default;
+
 Chat::Chat()
 {
     // Keep a reference to this chat so it doesn't get deleted.

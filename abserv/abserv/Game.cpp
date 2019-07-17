@@ -714,11 +714,12 @@ void Game::PlayerLeave(uint32_t playerId)
         player->data_.instanceUuid = "";
         UpdateEntity(player->data_);
 
-        GetSubsystem<Asynch::Scheduler>()->Add(
+        auto* sched = GetSubsystem<Asynch::Scheduler>();
+        sched->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::QueueLeaveObject, shared_from_this(), playerId))
         );
         // Notify other servers that a player left, e.g. for friend list
-        GetSubsystem<Asynch::Scheduler>()->Add(
+        sched->Add(
             Asynch::CreateScheduledTask(std::bind(&Game::BroadcastPlayerLoggedOut,
                 shared_from_this(),
                 player->GetThis()))

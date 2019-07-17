@@ -7,7 +7,7 @@ Ancient Greece Multiplayer Online RPG.
 
 ## ETA
 
-Christmas 2127 +/- some years. That's still a negative stardate so I think we are fine.
+Christmas 2117 +/- some years. That's still a negative stardate so I think we are fine.
 
 ## Current features
 
