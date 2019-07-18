@@ -106,7 +106,9 @@ public:
             Write<uint16_t>(0);
             return;
         }
+        // Write length of string
         Write(static_cast<uint16_t>(len));
+        // Copy the string itself
         std::copy(add.begin(), add.end(), std::back_inserter(buffer_));
     }
 };
