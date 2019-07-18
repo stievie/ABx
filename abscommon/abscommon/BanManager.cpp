@@ -91,7 +91,7 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
     time_t currentTime = (Utils::Tick() / 1000);
 
     if ((it->second.numberOfLogins >= BanManager::LoginTries) &&
-        (uint32_t)currentTime < it->second.lastLoginTime + BanManager::LoginRetryTimeout)
+        currentTime < it->second.lastLoginTime + BanManager::LoginRetryTimeout)
         return true;
 
     return false;

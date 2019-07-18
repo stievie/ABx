@@ -9,6 +9,8 @@
 #include <AB/Entities/Service.h>
 #include "Subsystems.h"
 
+MessageParticipant::~MessageParticipant() = default;
+
 void MessageChannel::Join(std::shared_ptr<MessageParticipant> participant)
 {
     participants_.insert(participant);

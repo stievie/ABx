@@ -226,7 +226,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
     HTTP::Session::sessionLifetime_ = static_cast<uint32_t>(config->GetGlobalInt("session_lifetime", (int64_t)HTTP::Session::sessionLifetime_));
     std::string key = config->GetGlobalString("server_key", "server.key");
     std::string cert = config->GetGlobalString("server_cert", "server.crt");
-    size_t threads = config->GetGlobalInt("num_threads", 0ll);
+    size_t threads = static_cast<size_t>(config->GetGlobalInt("num_threads", 0ll));
     if (threads == 0)
         threads = std::max<size_t>(1, std::thread::hardware_concurrency());
     root_ = config->GetGlobalString("root_dir", "");
@@ -281,6 +281,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
     }
     catch (const std::exception& ex)
     {
+        // May happen when there is something wrong with the certificates
         LOG_ERROR << ex.what() << std::endl;
         return false;
     }
@@ -384,5 +385,5 @@ void Application::HandleError(std::shared_ptr<HttpsServer::Request>,
 bool Application::HandleOnAccept(const asio::ip::tcp::endpoint& endpoint)
 {
     auto* banMan = GetSubsystem<Auth::BanManager>();
-    return banMan->AcceptConnection(endpoint.address().to_v4().to_ulong());
+    return banMan->AcceptConnection(endpoint.address().to_v4().to_uint());
 }

@@ -15,11 +15,11 @@ private:
     asio::io_service& ioService_;
     asio::ip::tcp::resolver resolver_;
     asio::ip::tcp::socket socket_;
-    bool connected_;
+    bool connected_{ false };
+    std::string host_;
+    uint16_t port_{ 0 };
     MessageMsg readMsg_;
     MessageQueue writeMsgs_;
-    std::string host_;
-    uint16_t port_;
     MessageHandler messageHandler_;
     void HandleReadHeader(MessageMsg* msg, const ReadHandler& handler,
         const asio::error_code& error, size_t bytes_transferred)
@@ -52,11 +52,8 @@ public:
     MessageClient(asio::io_service& io_service) :
         ioService_(io_service),
         resolver_(io_service),
-        socket_(io_service),
-        connected_(false),
-        port_(0)
-    {
-    };
+        socket_(io_service)
+    { }
     ~MessageClient() = default;
 
     void Connect(const std::string& host, uint16_t port, const MessageHandler& messageHandler);

@@ -3,6 +3,7 @@
 #include <algorithm>
 #if defined(__linux__) || defined(__unix__)
 #include <unistd.h>
+#include <linux/limits.h>
 #endif
 #include "DataClient.h"
 #include <AB/Entities/Service.h>
@@ -157,7 +158,7 @@ void ServerApp::Init()
 #else
     char buff[PATH_MAX];
     ssize_t count = readlink("/proc/self/exe", buff, PATH_MAX);
-    exeFile_ = std::string(buff, (count > 0) ? count : 0);
+    exeFile_ = std::string(buff, (count > 0) ? static_cast<size_t>(count) : 0);
 #endif
     path_ = Utils::ExtractFileDir(exeFile_);
 }
@@ -165,7 +166,7 @@ void ServerApp::Init()
 bool ServerApp::InitializeW(int argc, wchar_t** argv)
 {
     std::vector<std::string> args;
-    for (int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; ++i)
     {
         char buffer[500];
         // First arg is the pointer to destination char, second arg is
@@ -180,7 +181,7 @@ bool ServerApp::InitializeW(int argc, wchar_t** argv)
 bool ServerApp::InitializeA(int argc, char** argv)
 {
     std::vector<std::string> args;
-    for (int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; ++i)
     {
         args.push_back(argv[i]);
     }

@@ -6,7 +6,7 @@
 class MessageParticipant
 {
 public:
-    virtual ~MessageParticipant() { }
+    virtual ~MessageParticipant();
     virtual void Deliver(const Net::MessageMsg& msg) = 0;
     std::string serverId_;
 };

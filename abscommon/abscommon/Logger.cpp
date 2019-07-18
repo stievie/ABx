@@ -36,6 +36,7 @@ Logger::Logger(std::ostream& stream /* = std::cout */) :
     logStart_(Utils::Tick())
 {
 #if defined(AB_WINDOWS)
+    // Get default console font color on Windows
     hConsole_ = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO Info;
     GetConsoleScreenBufferInfo(hConsole_, &Info);
@@ -159,7 +160,7 @@ int Logger::PrintF(const char *__restrict __format, ...)
     /* Forward the '...' to vprintf */
     ret = vsprintf(buff, __format, myargs);
 
-    std::string msg(buff, ret);
+    std::string msg(buff, static_cast<size_t>(ret));
     Instance() << msg;
     if (msg.back() == '\n')
         Instance().nextIsBegin_ = true;
