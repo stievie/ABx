@@ -19,6 +19,12 @@ public:
         vertexCount_(other.vertexCount_),
         indexCount_(other.indexCount_)
     { }
+    Shape(Shape&& other) :
+        vertexData_(std::move(other.vertexData_)),
+        indexData_(std::move(other.indexData_)),
+        vertexCount_(other.vertexCount_),
+        indexCount_(other.indexCount_)
+    { }
     explicit Shape(const Vector3& vector) :
         vertexCount_(1),
         indexCount_(0)
@@ -44,6 +50,17 @@ public:
         {
             vertexData_ = other.vertexData_;
             vertexCount_ = other.vertexCount_;
+            indexData_ = other.indexData_;
+            indexCount_ = other.indexCount_;
+        }
+        return *this;
+    }
+    Shape& operator= (Shape&& other)
+    {
+        if (this != &other)
+        {
+            vertexData_ = std::move(other.vertexData_);
+            vertexCount_ = std::move(other.vertexCount_);
             indexData_ = other.indexData_;
             indexCount_ = other.indexCount_;
         }

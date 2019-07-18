@@ -14,9 +14,52 @@ class HeightMap
 {
 public:
     HeightMap();
+    HeightMap(const HeightMap& other) :
+        spacing_(other.spacing_),
+        minHeight_(other.minHeight_),
+        maxHeight_(other.maxHeight_),
+        numVertices_(other.numVertices_),
+        heightData_(other.heightData_),
+        boundingBox_(other.boundingBox_),
+        matrix_(other.matrix_)
+    {}
+    HeightMap(HeightMap&& other) :
+        spacing_(other.spacing_),
+        minHeight_(other.minHeight_),
+        maxHeight_(other.maxHeight_),
+        numVertices_(other.numVertices_),
+        heightData_(std::move(other.heightData_)),
+        boundingBox_(other.boundingBox_),
+        matrix_(other.matrix_)
+    {}
     HeightMap(const std::vector<float>& data, const Point<int>& size);
     ~HeightMap() = default;
 
+    HeightMap& operator= (const HeightMap& other)
+    {
+        if (this != &other)
+        {
+            spacing_ = other.spacing_;
+            minHeight_ = other.minHeight_;
+            maxHeight_ = other.maxHeight_;
+            numVertices_ = other.numVertices_;
+            heightData_ = other.heightData_;
+            boundingBox_ = other.boundingBox_;
+            matrix_ = other.matrix_;
+        }
+        return *this;
+    }
+    HeightMap& operator= (HeightMap&& other)
+    {
+        spacing_ = other.spacing_;
+        minHeight_ = other.minHeight_;
+        maxHeight_ = other.maxHeight_;
+        numVertices_ = other.numVertices_;
+        heightData_ = std::move(other.heightData_);
+        boundingBox_ = other.boundingBox_;
+        matrix_ = other.matrix_;
+        return *this;
+    }
     void ProcessData();
 
     float GetRawHeight(int x, int z) const;

@@ -18,8 +18,33 @@ public:
         Shape(other),
         boundingBox_(other.boundingBox_)
     {}
+    ConvexHull(ConvexHull&& other) :
+        Shape(other),
+        boundingBox_(other.boundingBox_)
+    {}
     explicit ConvexHull(const std::vector<Vector3>& vertices);
     ~ConvexHull() = default;
+
+    ConvexHull& operator= (const ConvexHull& other)
+    {
+        if (this != &other)
+        {
+            vertexData_ = other.vertexData_;
+            vertexCount_ = other.vertexCount_;
+            indexData_ = other.indexData_;
+            indexCount_ = other.indexCount_;
+        }
+        return *this;
+    }
+    ConvexHull& operator= (ConvexHull&& other)
+    {
+        vertexData_ = std::move(other.vertexData_);
+        vertexCount_ = std::move(other.vertexCount_);
+        indexData_ = other.indexData_;
+        indexCount_ = other.indexCount_;
+        boundingBox_ = other.boundingBox_;
+        return *this;
+    }
 
     BoundingBox GetBoundingBox() const
     {
