@@ -183,23 +183,40 @@ void AreaOfEffect::SetShapeType(Math::ShapeType shape)
 
 void AreaOfEffect::SetRange(Ranges range)
 {
-    // Size can also set the size with GameObject::(_Lua)SetBoundingSize()
+    // Size can also be set with GameObject::(_Lua)SetBoundingSize()
     if (range_ == range)
         return;
 
     range_ = range;
 
     // Update collision shape size
-    using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
     auto cs = GetCollisionShape();
     if (!cs)
         return;
-    if (cs->shapeType_ != Math::ShapeType::Sphere)
-        // AOE should always have a sphere
-        return;
 
-    SphereShape* shape = static_cast<SphereShape*>(cs);
-    shape->Object()->radius_ = RangeDistances[static_cast<int>(range)] * 0.5f;
+    switch (cs->shapeType_)
+    {
+    case Math::ShapeType::BoundingBox:
+    {
+        const float rangeSize = RangeDistances[static_cast<int>(range_)] * 0.5f;
+        const Math::Vector3 halfSize = { rangeSize, rangeSize, rangeSize };
+        using BoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
+        BoxShape* shape = static_cast<BoxShape*>(cs);
+        shape->Object()->min_ = -halfSize;
+        shape->Object()->max_ = halfSize;
+        break;
+    }
+    case Math::ShapeType::Sphere:
+    {
+        using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
+        SphereShape* shape = static_cast<SphereShape*>(cs);
+        shape->Object()->radius_ = RangeDistances[static_cast<int>(range)] * 0.5f;
+        break;
+    }
+    default:
+        LOG_WARNING << "Can not set range for shape type " << static_cast<int>(cs->shapeType_) << std::endl;
+        break;
+    }
 }
 
 void AreaOfEffect::SetSource(std::shared_ptr<Actor> source)
