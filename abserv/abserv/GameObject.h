@@ -122,6 +122,7 @@ public:
 
     virtual void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
 
+    void SetBoundingSize(const Math::Vector3& size);
     void SetCollisionShape(std::unique_ptr<Math::CollisionShape> shape)
     {
         collisionShape_ = std::move(shape);

@@ -36,6 +36,8 @@ void AreaOfEffect::RegisterLua(kaguya::State& state)
     state["AreaOfEffect"].setClass(kaguya::UserdataMetatable<AreaOfEffect, GameObject>()
         .addFunction("SetRange", &AreaOfEffect::SetRange)
         .addFunction("GetRange", &AreaOfEffect::GetRange)
+        .addFunction("SetShapeType", &AreaOfEffect::SetShapeType)
+        .addFunction("GetShapeType", &AreaOfEffect::GetShapeType)
         .addFunction("GetSource", &AreaOfEffect::_LuaGetSource)
         .addFunction("SetSource", &AreaOfEffect::_LuaSetSource)
         .addFunction("GetStartTime", &AreaOfEffect::GetStartTime)
@@ -53,10 +55,10 @@ AreaOfEffect::AreaOfEffect() :
     startTime_(Utils::Tick()),
     lifetime_(std::numeric_limits<uint32_t>::max())
 {
-    // AOE has always sphere shape with the range as radius
+    // By default AOE has a sphere shape with the range as radius
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
-            Math::Vector3::Zero, RANGE_ADJECENT)
+            Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
     );
     // AOE can not hide other objects
     occluder_ = false;
@@ -142,8 +144,46 @@ void AreaOfEffect::OnLeftArea(GameObject* other)
         ScriptManager::CallFunction(luaState_, "onLeftArea", other);
 }
 
+Math::ShapeType AreaOfEffect::GetShapeType() const
+{
+    auto* shape = GetCollisionShape();
+    if (!shape)
+        return Math::ShapeType::None;
+    return shape->shapeType_;
+}
+
+void AreaOfEffect::SetShapeType(Math::ShapeType shape)
+{
+    switch (shape)
+    {
+    case Math::ShapeType::BoundingBox:
+    {
+        const float rangeSize = RangeDistances[static_cast<int>(range_)];
+        const Math::Vector3 halfSize = Math::Vector3(rangeSize, rangeSize, rangeSize) * 0.5f;
+        SetCollisionShape(
+            std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
+                -halfSize, halfSize)
+        );
+        break;
+    }
+    case Math::ShapeType::Sphere:
+        SetCollisionShape(
+            std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
+                Math::Vector3::Zero, RangeDistances[static_cast<int>(range_)] * 0.5f)
+        );
+        break;
+    case Math::ShapeType::None:
+        SetCollisionShape(std::unique_ptr<Math::CollisionShape>());
+        break;
+    default:
+        LOG_ERROR << "Invalid shape type for AOE " << static_cast<int>(shape) << std::endl;
+        break;
+    }
+}
+
 void AreaOfEffect::SetRange(Ranges range)
 {
+    // Size can also set the size with GameObject::(_Lua)SetBoundingSize()
     if (range_ == range)
         return;
 
@@ -159,7 +199,7 @@ void AreaOfEffect::SetRange(Ranges range)
         return;
 
     SphereShape* shape = static_cast<SphereShape*>(cs);
-    shape->Object()->radius_ = RangeDistances[static_cast<int>(range)];
+    shape->Object()->radius_ = RangeDistances[static_cast<int>(range)] * 0.5f;
 }
 
 void AreaOfEffect::SetSource(std::shared_ptr<Actor> source)

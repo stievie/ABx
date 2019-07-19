@@ -16,7 +16,9 @@ enum class ShapeType
     BoundingBox,
     Sphere,
     ConvexHull,
-    HeightMap
+    HeightMap,
+
+    None = 99
 };
 
 class CollisionShape

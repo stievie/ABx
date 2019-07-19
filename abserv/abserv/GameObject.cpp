@@ -133,6 +133,9 @@ bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math
 
     switch (other->GetCollisionShape()->shapeType_)
     {
+    case Math::ShapeType::None:
+        // Shouldn't get here because in that case GetCollisionShape() would return nullptr
+        return false;
     case Math::ShapeType::BoundingBox:
     {
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
@@ -465,7 +468,7 @@ void GameObject::_LuaSetBoundingBox(
     }
 }
 
-void GameObject::_LuaSetBoundingSize(float x, float y, float z)
+void GameObject::SetBoundingSize(const Math::Vector3& size)
 {
     if (!collisionShape_)
         return;
@@ -473,7 +476,7 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
     {
     case Math::ShapeType::BoundingBox:
     {
-        const Math::Vector3 halfSize = (Math::Vector3(x, y, z) * 0.5f);
+        const Math::Vector3 halfSize = (size * 0.5f);
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
         auto* obj = shape->Object();
@@ -486,7 +489,7 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         using SphereShape = Math::CollisionShapeImpl<Math::Sphere>;
         SphereShape* shape = static_cast<SphereShape*>(GetCollisionShape());
         auto* obj = shape->Object();
-        obj->radius_ = x * 0.5f;
+        obj->radius_ = size.x_ * 0.5f;
         break;
     }
     default:
@@ -494,6 +497,11 @@ void GameObject::_LuaSetBoundingSize(float x, float y, float z)
         LOG_WARNING << "Can not set size of shape type " << static_cast<int>(collisionShape_->shapeType_) << std::endl;
         break;
     }
+}
+
+void GameObject::_LuaSetBoundingSize(float x, float y, float z)
+{
+    SetBoundingSize({ x, y, z });
 }
 
 std::string GameObject::_LuaGetVarString(const std::string& name)

@@ -25,7 +25,7 @@ private:
     std::shared_ptr<Script> script_;
     /// Effect or skill index
     uint32_t index_{ 0 };
-    Ranges range_{ Ranges::Aggro };
+    Ranges range_{ Ranges::Adjecent };
     uint32_t functions_{ FunctionNone };
     int64_t startTime_;
     // Lifetime
@@ -56,6 +56,9 @@ public:
     void OnTrigger(GameObject* other) override;
     void OnLeftArea(GameObject* other) override;
 
+    /// Collision shape type
+    void SetShapeType(Math::ShapeType shape);
+    Math::ShapeType GetShapeType() const;
     void SetRange(Ranges range);
     Ranges GetRange() const { return range_; }
     void SetSource(std::shared_ptr<Actor> source);
