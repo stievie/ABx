@@ -69,10 +69,10 @@ void Maintenance::UpdateServerLoadTask()
     if (cli->Read(serv))
     {
         uint8_t load = static_cast<uint8_t>(Application::Instance->GetLoad());
-        if (load != serv.load || Utils::TimeElapsed(serv.heardbeat) >= AB::Entities::HEARDBEAT_INTERVAL)
+        if (load != serv.load || Utils::TimeElapsed(serv.heartbeat) >= AB::Entities::HEARTBEAT_INTERVAL)
         {
             serv.load = load;
-            serv.heardbeat = Utils::Tick();
+            serv.heartbeat = Utils::Tick();
             cli->Update(serv);
         }
     }

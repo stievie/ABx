@@ -152,7 +152,7 @@ bool Application::GetServiceCallback(AB::Entities::Service& svc)
             s.type == AB::Entities::ServiceTypeGameServer ||
             s.type == AB::Entities::ServiceTypeLoginServer)
         {
-            if (Utils::TimeElapsed(s.heardbeat) > AB::Entities::HEARDBEAT_INTERVAL * 2)
+            if (Utils::TimeElapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
                 // Maybe dead
                 continue;
         }
@@ -263,7 +263,7 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
     serv.startTime = Utils::Tick();
-    serv.heardbeat = Utils::Tick();
+    serv.heartbeat = Utils::Tick();
     dataClient_->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;

@@ -171,7 +171,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
-void Application::HeardBeatTask()
+void Application::HeartBeatTask()
 {
     auto* dataClient = GetSubsystem<IO::DataClient>();
     if (dataClient->IsConnected())
@@ -180,7 +180,7 @@ void Application::HeardBeatTask()
         serv.uuid = serverId_;
         if (dataClient->Read(serv))
         {
-            serv.heardbeat = Utils::Tick();
+            serv.heartbeat = Utils::Tick();
             if (!dataClient->Update(serv))
                 LOG_ERROR << "Error updating service " << serverId_ << std::endl;
         }
@@ -190,7 +190,7 @@ void Application::HeardBeatTask()
     if (running_)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+            Asynch::CreateScheduledTask(AB::Entities::HEARTBEAT_INTERVAL, std::bind(&Application::HeartBeatTask, this))
         );
     }
 }
@@ -243,14 +243,14 @@ void Application::Run()
     serv.status = AB::Entities::ServiceStatusOnline;
     serv.type = serverType_;
     serv.startTime = Utils::Tick();
-    serv.heardbeat = Utils::Tick();
+    serv.heartbeat = Utils::Tick();
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+        Asynch::CreateScheduledTask(AB::Entities::HEARTBEAT_INTERVAL, std::bind(&Application::HeartBeatTask, this))
     );
 
     running_ = true;

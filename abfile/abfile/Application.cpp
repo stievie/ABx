@@ -144,7 +144,7 @@ void Application::UpdateBytesSent(size_t bytes)
     }
 }
 
-void Application::HeardBeatTask()
+void Application::HeartBeatTask()
 {
     auto* dataClient = GetSubsystem<IO::DataClient>();
     if (dataClient->IsConnected())
@@ -154,7 +154,7 @@ void Application::HeardBeatTask()
         if (dataClient->Read(serv))
         {
             serv.load = GetAvgLoad();
-            serv.heardbeat = Utils::Tick();
+            serv.heartbeat = Utils::Tick();
             if (!dataClient->Update(serv))
                 LOG_ERROR << "Error updating service " << serverId_ << std::endl;
         }
@@ -164,7 +164,7 @@ void Application::HeardBeatTask()
     if (running_)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
-            Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+            Asynch::CreateScheduledTask(AB::Entities::HEARTBEAT_INTERVAL, std::bind(&Application::HeartBeatTask, this))
         );
     }
 }
@@ -367,14 +367,14 @@ void Application::Run()
     serv.type = serverType_;
     serv.startTime = startTime_;
     serv.temporary = temporary_;
-    serv.heardbeat = Utils::Tick();
+    serv.heartbeat = Utils::Tick();
     dataClient->UpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
 
     GetSubsystem<Asynch::Scheduler>()->Add(
-        Asynch::CreateScheduledTask(AB::Entities::HEARDBEAT_INTERVAL, std::bind(&Application::HeardBeatTask, this))
+        Asynch::CreateScheduledTask(AB::Entities::HEARTBEAT_INTERVAL, std::bind(&Application::HeartBeatTask, this))
     );
 
     // If we want to receive messages, we need to send our ServerID to the message server.

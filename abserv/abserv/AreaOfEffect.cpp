@@ -158,8 +158,8 @@ void AreaOfEffect::SetShapeType(Math::ShapeType shape)
     {
     case Math::ShapeType::BoundingBox:
     {
-        const float rangeSize = RangeDistances[static_cast<int>(range_)];
-        const Math::Vector3 halfSize = Math::Vector3(rangeSize, rangeSize, rangeSize) * 0.5f;
+        const float rangeSize = RangeDistances[static_cast<int>(range_)] * 0.5f;
+        const Math::Vector3 halfSize = { rangeSize, rangeSize, rangeSize };
         SetCollisionShape(
             std::make_unique<Math::CollisionShapeImpl<Math::BoundingBox>>(Math::ShapeType::BoundingBox,
                 -halfSize, halfSize)

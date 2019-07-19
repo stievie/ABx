@@ -27,7 +27,7 @@ enum ServiceStatus : uint8_t
     ServiceStatusOnline
 };
 
-static constexpr unsigned HEARDBEAT_INTERVAL = 1000;
+static constexpr unsigned HEARTBEAT_INTERVAL = 1000;
 
 struct Service : Entity
 {
@@ -55,7 +55,7 @@ struct Service : Entity
         s.text1b(arguments, Limits::MAX_FILENAME);
         s.value1b(temporary);
         s.value1b(load);
-        s.value8b(heardbeat);
+        s.value8b(heartbeat);
     }
 
     std::string name;
@@ -80,8 +80,8 @@ struct Service : Entity
     /// Service load, something between 0..100. Not written to DB. The service
     /// is responsible to update this value.
     uint8_t load = 0;
-    /// Last heard beat time
-    int64_t heardbeat{ 0 };
+    /// Last heart beat time
+    int64_t heartbeat{ 0 };
 };
 
 }
