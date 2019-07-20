@@ -392,11 +392,6 @@ enum CommandTypes : uint8_t
     CommandTypeHealth,               // /hp
     CommandTypeXp,                   // /xp
     CommandTypePos,                  // /pos show position
-    // Internal
-    CommandTypeHelp,                 // /help
-    CommandTypeIp,                   // /ip
-    CommandTypeServerId,             // /id
-    CommandTypePrefPath,             // /prefpath
     // Emotes
     CommandTypeRoll,                 // /roll <number>
     CommandTypeSit,                  // /sit
@@ -407,6 +402,14 @@ enum CommandTypes : uint8_t
     CommandTypeWave,                 // /wave
     CommandTypeLaugh,                // /laugh
     CommandTypeDie,                  // /die (only admin)
+
+    // Internal
+    CommandTypeInternal = 100,
+    CommandTypeHelp = CommandTypeInternal, // /help
+    CommandTypeIp,       // /ip
+    CommandTypeServerId, // /id
+    CommandTypePrefPath, // /prefpath
+    CommandTypeQuit,
 };
 
 }
