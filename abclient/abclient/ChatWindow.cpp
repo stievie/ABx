@@ -151,24 +151,24 @@ void ChatWindow::CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChan
     tabElement->tabText_->SetFont(cache->GetResource<Font>("Fonts/ClearSans-Regular.ttf"), 10);
     switch (channel)
     {
-        case AB::GameProtocol::ChatChannelGeneral:
-            tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGENERAL, "General", true));
-            break;
-        case AB::GameProtocol::ChatChannelParty:
-            tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATPARTY, "Party", true));
-            break;
-        case AB::GameProtocol::ChatChannelGuild:
-            tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGUILD, "Guild", true));
-            break;
-        case AB::GameProtocol::ChatChannelTrade:
-            tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATTRADE, "Trade", true));
-            break;
-        case AB::GameProtocol::ChatChannelWhisper:
-            tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper", true));
-            tabIndexWhisper_ = tabs->GetTabCount() - 1;
-            break;
-        default:
-            break;
+    case AB::GameProtocol::ChatChannelGeneral:
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGENERAL, "General", true));
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATPARTY, "Party", true));
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATGUILD, "Guild", true));
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATTRADE, "Trade", true));
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        tabElement->tabText_->SetText(scs->GetCaption(AbEvents::E_SC_CHATWHISPER, "Whisper", true));
+        tabIndexWhisper_ = tabs->GetTabCount() - 1;
+        break;
+    default:
+        break;
     }
 
     UIElement* parent = tabElement->tabBody_;
@@ -247,56 +247,56 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         static_cast<AB::GameProtocol::ServerMessageType>(eventData[P_MESSAGETYPE].GetInt());
     switch (type)
     {
-        case AB::GameProtocol::ServerMessageTypeInfo:
-            HandleServerMessageInfo(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeRoll:
-            HandleServerMessageRoll(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeAge:
-            HandleServerMessageAge(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypePos:
-            HandleServerMessagePos(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeHp:
-            HandleServerMessageHp(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeXp:
-            HandleServerMessageXp(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
-            HandleServerMessagePlayerNotOnline(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
-            HandleServerMessagePlayerGotMessage(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeNewMail:
-            HandleServerMessageNewMail(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeMailSent:
-            HandleServerMessageMailSent(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeMailNotSent:
-            HandleServerMessageMailNotSent(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeMailboxFull:
-            HandleServerMessageMailboxFull(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeMailDeleted:
-            HandleServerMessageMailDeleted(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeServerId:
-            HandleServerMessageServerId(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypePlayerResigned:
-            HandleServerMessagePlayerResigned(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeUnknownCommand:
-            HandleServerMessageUnknownCommand(eventData);
-            break;
-        case AB::GameProtocol::ServerMessageTypeUnknown:
-            break;
+    case AB::GameProtocol::ServerMessageTypeInfo:
+        HandleServerMessageInfo(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeRoll:
+        HandleServerMessageRoll(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeAge:
+        HandleServerMessageAge(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypePos:
+        HandleServerMessagePos(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeHp:
+        HandleServerMessageHp(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeXp:
+        HandleServerMessageXp(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
+        HandleServerMessagePlayerNotOnline(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
+        HandleServerMessagePlayerGotMessage(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeNewMail:
+        HandleServerMessageNewMail(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeMailSent:
+        HandleServerMessageMailSent(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeMailNotSent:
+        HandleServerMessageMailNotSent(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeMailboxFull:
+        HandleServerMessageMailboxFull(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeMailDeleted:
+        HandleServerMessageMailDeleted(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeServerId:
+        HandleServerMessageServerId(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypePlayerResigned:
+        HandleServerMessagePlayerResigned(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeUnknownCommand:
+        HandleServerMessageUnknownCommand(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeUnknown:
+        break;
     }
 }
 
@@ -631,27 +631,27 @@ void ChatWindow::HandleTargetPinged(StringHash, VariantMap& eventData)
 
     switch (type)
     {
-        case AB::GameProtocol::ObjectCallTypeFollow:
-            if (!target)
-                return;
-            message += " following " + target->name_;
-            break;
-        case AB::GameProtocol::ObjectCallTypeAttack:
-            if (!target)
-                return;
-            message += " attacking " + target->name_;
-            break;
-        case AB::GameProtocol::ObjectCallTypeUseSkill:
-        {
-            if (skillIndex <= 0)
-                return;
-            const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[static_cast<size_t>(skillIndex) - 1]);
-            message += " using " + String(skill->name.c_str());
-            if (target)
-                message += " on " + target->name_;
-        }
-        default:
-            break;
+    case AB::GameProtocol::ObjectCallTypeFollow:
+        if (!target)
+            return;
+        message += " following " + target->name_;
+        break;
+    case AB::GameProtocol::ObjectCallTypeAttack:
+        if (!target)
+            return;
+        message += " attacking " + target->name_;
+        break;
+    case AB::GameProtocol::ObjectCallTypeUseSkill:
+    {
+        if (skillIndex <= 0)
+            return;
+        const AB::Entities::Skill* skill = GetSubsystem<SkillManager>()->GetSkillByIndex(pinger->skills_[static_cast<size_t>(skillIndex) - 1]);
+        message += " using " + String(skill->name.c_str());
+        if (target)
+            message += " on " + target->name_;
+    }
+    default:
+        break;
     }
     AddChatLine(objectId, pinger->name_, message, AB::GameProtocol::ChatChannelParty);
     pinger->ShowSpeechBubble(message);
@@ -727,92 +727,92 @@ bool ChatWindow::ParseChatCommand(const String& text, AB::GameProtocol::ChatMess
     {
         switch (defChannel)
         {
-            case AB::GameProtocol::ChatChannelGuild:
-                type = AB::GameProtocol::CommandTypeChatGuild;
-                data = text;
-                break;
-            case AB::GameProtocol::ChatChannelParty:
-                type = AB::GameProtocol::CommandTypeChatParty;
-                data = text;
-                break;
-            case AB::GameProtocol::ChatChannelTrade:
-                type = AB::GameProtocol::CommandTypeChatTrade;
-                data = text;
-                break;
-            case AB::GameProtocol::ChatChannelWhisper:
+        case AB::GameProtocol::ChatChannelGuild:
+            type = AB::GameProtocol::CommandTypeChatGuild;
+            data = text;
+            break;
+        case AB::GameProtocol::ChatChannelParty:
+            type = AB::GameProtocol::CommandTypeChatParty;
+            data = text;
+            break;
+        case AB::GameProtocol::ChatChannelTrade:
+            type = AB::GameProtocol::CommandTypeChatTrade;
+            data = text;
+            break;
+        case AB::GameProtocol::ChatChannelWhisper:
+        {
+            type = AB::GameProtocol::CommandTypeChatWhisper;
+            LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
+            String name = nameEdit->GetText().Trimmed();
+            if (name.Empty())
             {
-                type = AB::GameProtocol::CommandTypeChatWhisper;
-                LineEdit* nameEdit = dynamic_cast<LineEdit*>(GetChild("WhisperChatNameEdit", true));
-                String name = nameEdit->GetText().Trimmed();
-                if (name.Empty())
-                {
-                    nameEdit->SetFocus(true);
-                    return false;
-                }
-                data = name + ", " + text;
-                break;
+                nameEdit->SetFocus(true);
+                return false;
             }
-            default:
-                type = AB::GameProtocol::CommandTypeChatGeneral;
-                data = text;
-                break;
+            data = name + ", " + text;
+            break;
+        }
+        default:
+            type = AB::GameProtocol::CommandTypeChatGeneral;
+            data = text;
+            break;
         }
     }
 
     switch (type)
     {
-        case AB::GameProtocol::CommandTypeHelp:
-            AddLine("Available commands:", "ChatLogServerInfoText");
-            AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
-            AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
-            AddLine("  /party <message>: Party chat", "ChatLogServerInfoText");
-            AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
-            AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
-            AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
-            AddLine("  /resign: Resign", "ChatLogServerInfoText");
-            AddLine("  /age: Show Character age", "ChatLogServerInfoText");
-            AddLine("  /hp: Show health points and energy", "ChatLogServerInfoText");
-            AddLine("  /stuck: Force server position", "ChatLogServerInfoText");
-            AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
-            AddLine("  /prefpath: Show preferences path", "ChatLogServerInfoText");
-            AddLine("  /help: Show this help", "ChatLogServerInfoText");
-            AddLine("  /quit: Exit program", "ChatLogServerInfoText");
-            break;
-        case AB::GameProtocol::CommandTypeIp:
+    case AB::GameProtocol::CommandTypeHelp:
+        AddLine("Available commands:", "ChatLogServerInfoText");
+        AddLine("  /a <message>: General chat", "ChatLogServerInfoText");
+        AddLine("  /g <message>: Guild chat", "ChatLogServerInfoText");
+        AddLine("  /party <message>: Party chat", "ChatLogServerInfoText");
+        AddLine("  /trade <message>: Trade chat", "ChatLogServerInfoText");
+        AddLine("  /w <name>, <message>: Whisper to <name> a <message>", "ChatLogServerInfoText");
+        AddLine("  /roll <number>: Rolls a <number>-sided die (2-100 sides)", "ChatLogServerInfoText");
+        AddLine("  /resign: Resign", "ChatLogServerInfoText");
+        AddLine("  /age: Show Character age", "ChatLogServerInfoText");
+        AddLine("  /hp: Show health points and energy", "ChatLogServerInfoText");
+        AddLine("  /stuck: Force server position", "ChatLogServerInfoText");
+        AddLine("  /ip: Show server IP", "ChatLogServerInfoText");
+        AddLine("  /prefpath: Show preferences path", "ChatLogServerInfoText");
+        AddLine("  /help: Show this help", "ChatLogServerInfoText");
+        AddLine("  /quit: Exit program", "ChatLogServerInfoText");
+        break;
+    case AB::GameProtocol::CommandTypeIp:
+    {
+        FwClient* client = context_->GetSubsystem<FwClient>();
+        uint32_t ip = client->GetIp();
+        char buffer[20];
+        sprintf(buffer, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
+        String sIp(buffer);
+        AddLine(sIp, "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandTypePrefPath:
+    {
+        AddLine(Options::GetPrefPath(), "ChatLogServerInfoText");
+        break;
+    }
+    case AB::GameProtocol::CommandTypeQuit:
+    {
+        VariantMap& e = GetEventDataMap();
+        SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
+        break;
+    }
+    case AB::GameProtocol::CommandTypeUnknown:
+        AddLine("Unknown command", "ChatLogServerInfoText");
+        break;
+    default:
+    {
+        if (data.Length() <= MAX_CHAT_MESSAGE)
         {
             FwClient* client = context_->GetSubsystem<FwClient>();
-            uint32_t ip = client->GetIp();
-            char buffer[20];
-            sprintf(buffer, "%d.%d.%d.%d", ip >> 24, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
-            String sIp(buffer);
-            AddLine(sIp, "ChatLogServerInfoText");
-            break;
+            client->Command(type, data.Substring(0, MAX_CHAT_MESSAGE));
         }
-        case AB::GameProtocol::CommandTypePrefPath:
-        {
-            AddLine(Options::GetPrefPath(), "ChatLogServerInfoText");
-            break;
-        }
-        case AB::GameProtocol::CommandTypeQuit:
-        {
-            VariantMap& e = GetEventDataMap();
-            SendEvent(AbEvents::E_SC_EXITPROGRAM, e);
-            break;
-        }
-        case AB::GameProtocol::CommandTypeUnknown:
-            AddLine("Unknown command", "ChatLogServerInfoText");
-            break;
-        default:
-        {
-            if (data.Length() <= MAX_CHAT_MESSAGE)
-            {
-                FwClient* client = context_->GetSubsystem<FwClient>();
-                client->Command(type, data.Substring(0, MAX_CHAT_MESSAGE));
-            }
-            else
-                AddLine("The message is too long", "ChatLogServerInfoText");
-            break;
-        }
+        else
+            AddLine("The message is too long", "ChatLogServerInfoText");
+        break;
+    }
     }
     return true;
 }
@@ -831,23 +831,23 @@ void ChatWindow::UpdateVisibleItems()
         AB::GameProtocol::ChatMessageChannel channel = static_cast<AB::GameProtocol::ChatMessageChannel>(elem->GetVar("Channel").GetUInt());
         switch (channel)
         {
-            case AB::GameProtocol::ChatChannelGeneral:
-                elem->SetVisible(visibleGeneral_);
-                break;
-            case AB::GameProtocol::ChatChannelGuild:
-                elem->SetVisible(visibleGuild_);
-                break;
-            case AB::GameProtocol::ChatChannelParty:
-                elem->SetVisible(visibleParty_);
-                break;
-            case AB::GameProtocol::ChatChannelTrade:
-                elem->SetVisible(visibleTrade_);
-                break;
-            case AB::GameProtocol::ChatChannelWhisper:
-                elem->SetVisible(visibleWhisper_);
-                break;
-            default:
-                break;
+        case AB::GameProtocol::ChatChannelGeneral:
+            elem->SetVisible(visibleGeneral_);
+            break;
+        case AB::GameProtocol::ChatChannelGuild:
+            elem->SetVisible(visibleGuild_);
+            break;
+        case AB::GameProtocol::ChatChannelParty:
+            elem->SetVisible(visibleParty_);
+            break;
+        case AB::GameProtocol::ChatChannelTrade:
+            elem->SetVisible(visibleTrade_);
+            break;
+        case AB::GameProtocol::ChatChannelWhisper:
+            elem->SetVisible(visibleWhisper_);
+            break;
+        default:
+            break;
         }
     }
 }
@@ -860,23 +860,23 @@ void ChatWindow::HandleFilterClick(StringHash, VariantMap& eventData)
     AB::GameProtocol::ChatMessageChannel channel = static_cast<AB::GameProtocol::ChatMessageChannel>(sender->GetVar("Channel").GetUInt());
     switch (channel)
     {
-        case AB::GameProtocol::ChatChannelGeneral:
-            visibleGeneral_ = state;
-            break;
-        case AB::GameProtocol::ChatChannelGuild:
-            visibleGuild_ = state;
-            break;
-        case AB::GameProtocol::ChatChannelParty:
-            visibleParty_ = state;
-            break;
-        case AB::GameProtocol::ChatChannelTrade:
-            visibleTrade_ = state;
-            break;
-        case AB::GameProtocol::ChatChannelWhisper:
-            visibleWhisper_ = state;
-            break;
-        default:
-            return;
+    case AB::GameProtocol::ChatChannelGeneral:
+        visibleGeneral_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        visibleGuild_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        visibleParty_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        visibleTrade_ = state;
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        visibleWhisper_ = state;
+        break;
+    default:
+        return;
     }
     UpdateVisibleItems();
 }
@@ -955,26 +955,26 @@ void ChatWindow::HandleEditKey(StringHash, VariantMap& eventData)
 
     switch (eventData[P_KEY].GetInt())
     {
-        case KEY_UP:
-            if (historyPosition_ > 0)
-            {
-                --historyPosition_;
-                changed = true;
-            }
-            break;
+    case KEY_UP:
+        if (historyPosition_ > 0)
+        {
+            --historyPosition_;
+            changed = true;
+        }
+        break;
 
-        case KEY_DOWN:
-            // If history options left
-            if (historyPosition_ < history_.Size())
-            {
-                // Use the next option
-                ++historyPosition_;
-                changed = true;
-            }
-            break;
+    case KEY_DOWN:
+        // If history options left
+        if (historyPosition_ < history_.Size())
+        {
+            // Use the next option
+            ++historyPosition_;
+            changed = true;
+        }
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     if (changed)
@@ -1038,24 +1038,24 @@ void ChatWindow::AddLine(uint32_t id, const String& name, const String& text, co
         nameText->SetText("{" + name + "}");
     switch (channel)
     {
-        case AB::GameProtocol::ChatChannelGeneral:
-            nameText->SetVisible(visibleGeneral_);
-            break;
-        case AB::GameProtocol::ChatChannelGuild:
-            nameText->SetVisible(visibleGuild_);
-            break;
-        case AB::GameProtocol::ChatChannelParty:
-            nameText->SetVisible(visibleParty_);
-            break;
-        case AB::GameProtocol::ChatChannelTrade:
-            nameText->SetVisible(visibleTrade_);
-            break;
-        case AB::GameProtocol::ChatChannelWhisper:
-            nameText->SetVisible(visibleWhisper_);
-            break;
-        default:
-            nameText->SetVisible(true);
-            break;
+    case AB::GameProtocol::ChatChannelGeneral:
+        nameText->SetVisible(visibleGeneral_);
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        nameText->SetVisible(visibleGuild_);
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        nameText->SetVisible(visibleParty_);
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        nameText->SetVisible(visibleTrade_);
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        nameText->SetVisible(visibleWhisper_);
+        break;
+    default:
+        nameText->SetVisible(true);
+        break;
     }
     SubscribeToEvent(nameText, E_CLICK, URHO3D_HANDLER(ChatWindow, HandleNameClicked));
     nameText->SetStyle(style);
@@ -1088,25 +1088,25 @@ void ChatWindow::AddChatLine(uint32_t senderId, const String& name, const String
     String textStyle = "ChatLogChatText";
     switch (channel)
     {
-        case AB::GameProtocol::ChatChannelGeneral:
-            style = "ChatLogGeneralChatText";
-            break;
-        case AB::GameProtocol::ChatChannelGuild:
-            style = "ChatLogGuildChatText";
-            break;
-        case AB::GameProtocol::ChatChannelParty:
-            style = "ChatLogPartyChatText";
-            break;
-        case AB::GameProtocol::ChatChannelWhisper:
-            style = "ChatLogWhisperChatText";
-            break;
-        case AB::GameProtocol::ChatChannelTrade:
-            style = "ChatLogTradeChatText";
-            textStyle = "ChatLogTradeChatText";
-            break;
-        default:
-            style = "ChatLogChatText";
-            break;
+    case AB::GameProtocol::ChatChannelGeneral:
+        style = "ChatLogGeneralChatText";
+        break;
+    case AB::GameProtocol::ChatChannelGuild:
+        style = "ChatLogGuildChatText";
+        break;
+    case AB::GameProtocol::ChatChannelParty:
+        style = "ChatLogPartyChatText";
+        break;
+    case AB::GameProtocol::ChatChannelWhisper:
+        style = "ChatLogWhisperChatText";
+        break;
+    case AB::GameProtocol::ChatChannelTrade:
+        style = "ChatLogTradeChatText";
+        textStyle = "ChatLogTradeChatText";
+        break;
+    default:
+        style = "ChatLogChatText";
+        break;
     }
     AddLine(senderId, name, text, style, textStyle, channel);
 }
