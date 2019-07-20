@@ -69,6 +69,7 @@ public:
     }
     void Close()
     {
+        connected_ = false;
         socket_.close();
     }
     bool IsConnected() const

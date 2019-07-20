@@ -33,6 +33,9 @@ void MessageClient::InternalConnect()
 
 void MessageClient::HandleRead(const asio::error_code& error, size_t)
 {
+    if (!connected_)
+        return;
+
     if (!error)
     {
         if (messageHandler_ && !readMsg_.IsEmpty())
@@ -65,6 +68,9 @@ void MessageClient::DoWrite(MessageMsg msg)
 
 void MessageClient::HandleWrite(const asio::error_code& error)
 {
+    if (!connected_)
+        return;
+
     if (!error)
     {
         writeMsgs_.pop_front();
