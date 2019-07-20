@@ -642,8 +642,10 @@ void Player::PartyGetMembers(uint32_t partyId)
         nmsg->AddByte(AB::GameProtocol::PartyInfoMembers);
         nmsg->Add<uint32_t>(partyId);
         size_t count = party->GetMemberCount();
-        const auto& members = party->GetMembers();
         nmsg->AddByte(static_cast<uint8_t>(count));
+        // We also need invalid (i.e. not yet connected) members,
+        // therefore we can not use Party::VisitMembers()
+        const auto& members = party->GetMembers();
         for (auto& m : members)
         {
             if (auto sm = m.lock())

@@ -79,6 +79,8 @@ bool Party::Add(std::shared_ptr<Player> player)
     player->SetParty(shared_from_this());
     RemoveInvite(player);
     UpdateEntity(data_);
+    if (gameId_ == 0)
+        gameId_ = player->GetGame()->id_;
     return true;
 }
 
@@ -99,6 +101,8 @@ bool Party::Set(std::shared_ptr<Player> player)
     if (members_.size() < pos)
         members_.resize(pos);
     members_[pos - 1] = player;
+    if (gameId_ == 0)
+        gameId_ = player->GetGame()->id_;
     return true;
 }
 

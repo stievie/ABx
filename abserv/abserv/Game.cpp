@@ -26,6 +26,7 @@
 #include "ItemFactory.h"
 #include "ItemDrop.h"
 #include "Projectile.h"
+#include "PartyManager.h"
 
 namespace Game {
 
@@ -514,19 +515,8 @@ void Game::SpawnItemDrop(std::shared_ptr<ItemDrop> item)
 
 std::vector<Party*> Game::GetParties() const
 {
-    // TODO: This looks not so smart...
-    std::vector<Party*> result;
-    std::map<uint32_t, Party*> pm;
-    for (const auto& player : players_)
-    {
-        auto p = player.second->GetParty();
-        if (p)
-            pm[p->id_] = p.get();
-    }
-    result.reserve(pm.size());
-    for (const auto& p : pm)
-        result.push_back(p.second);
-    return result;
+    auto* partyMngr = GetSubsystem<PartyManager>();
+    return partyMngr->GetByGame(id_);
 }
 
 void Game::CallLuaEvent(const std::string& name, GameObject* sender, GameObject* data)
