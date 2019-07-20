@@ -13,6 +13,13 @@
 #pragma warning(disable: 4100 4189 4244 4245 4189 4159 4456 4459 4706 4701)
 #endif
 
+
+#ifdef __GCC__
+#pragma GCC diagnostic push
+// This doesnt seem to do much...
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+
 /*----------------------------------------------------------------------
 		Copyright (c) 2004 Open Dynamics Framework Group
 					www.physicstools.org
@@ -3210,6 +3217,10 @@ void HullLibrary::BringOutYourDead(const float *verts,unsigned int vcount, float
 }
 
 }
+
+#ifdef __GCC__
+#pragma GCC diagnostic pop
+#endif
 
 #ifdef _MSC_VER
 #pragma warning(pop)
