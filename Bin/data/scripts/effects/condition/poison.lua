@@ -6,8 +6,8 @@ function getDuration(source, target)
 end
 
 function onStart(source, target)
-  return true
   target:SetHealthRegen(-4)
+  return true
 end
 
 function onEnd(source, target)

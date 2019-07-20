@@ -22,6 +22,7 @@ function onUpdate(timeElapsed)
     local actors = self:GetActorsInRange(self:GetRange())
     for i, actor in ipairs(actors) do
       actor:ApplyDamage(nil, self:Index(), DAMAGETYPE_COLD, damage, 0)
+      actor:AddEffect(nil, 10002, 12000)
     end
     lastDamage = tick
   end
