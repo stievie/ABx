@@ -669,7 +669,7 @@ Party* Player::_LuaGetParty()
 }
 
 void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
-    const std::string& command, Net::NetworkMessage& message)
+    const std::string& arguments, Net::NetworkMessage& message)
 {
     switch (type)
     {
@@ -682,67 +682,67 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
         // Client side only
         break;
     case AB::GameProtocol::CommandTypeChatGeneral:
-        HandleGeneralChatCommand(command, message);
+        HandleGeneralChatCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeChatParty:
-        HandlePartyChatCommand(command, message);
+        HandlePartyChatCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeRoll:
-        HandleRollCommand(command, message);
+        HandleRollCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeSit:
-        HandleSitCommand(command, message);
+        HandleSitCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeStand:
-        HandleStandCommand(command, message);
+        HandleStandCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeCry:
-        HandleCryCommand(command, message);
+        HandleCryCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeTaunt:
-        HandleTauntCommand(command, message);
+        HandleTauntCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypePonder:
-        HandlePonderCommand(command, message);
+        HandlePonderCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeWave:
-        HandleWaveCommand(command, message);
+        HandleWaveCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeLaugh:
-        HandleLaughCommand(command, message);
+        HandleLaughCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeAge:
-        HandleAgeCommand(command, message);
+        HandleAgeCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeHealth:
-        HandleHpCommand(command, message);
+        HandleHpCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeXp:
-        HandleXpCommand(command, message);
+        HandleXpCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypePos:
-        HandlePosCommand(command, message);
+        HandlePosCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeChatWhisper:
-        HandleWhisperCommand(command, message);
+        HandleWhisperCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeChatGuild:
-        HandleChatGuildCommand(command, message);
+        HandleChatGuildCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeChatTrade:
-        HandleChatTradeCommand(command, message);
+        HandleChatTradeCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeResign:
-        HandleResignCommand(command, message);
+        HandleResignCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeStuck:
-        HandleStuckCommand(command, message);
+        HandleStuckCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeServerId:
-        HandleServerIdCommand(command, message);
+        HandleServerIdCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeDie:
-        HandleDieCommand(command, message);
+        HandleDieCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeDeaths:
         // TODO:
@@ -770,14 +770,14 @@ void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
     WriteToOutput(*nmsg);
 }
 
-void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessage&)
+void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMessage&)
 {
-    size_t p = command.find(',');
+    size_t p = arguments.find(',');
     if (p == std::string::npos)
         return;
 
-    const std::string name = command.substr(0, p);
-    const std::string msg = Utils::LeftTrim(command.substr(p + 1, std::string::npos));
+    const std::string name = arguments.substr(0, p);
+    const std::string msg = Utils::LeftTrim(arguments.substr(p + 1, std::string::npos));
     std::shared_ptr<Player> target = GetSubsystem<PlayerManager>()->GetPlayerByName(name);
     if (target)
     {
@@ -826,18 +826,18 @@ void Player::HandleWhisperCommand(const std::string& command, Net::NetworkMessag
     WriteToOutput(*nmsg);
 }
 
-void Player::HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&)
+void Player::HandleChatGuildCommand(const std::string& arguments, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Guild, account_.guildUuid);
     if (channel)
-        channel->Talk(this, command);
+        channel->Talk(this, arguments);
 }
 
-void Player::HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&)
+void Player::HandleChatTradeCommand(const std::string& arguments, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Trade, 0);
     if (channel)
-        channel->Talk(this, command);
+        channel->Talk(this, arguments);
 }
 
 void Player::HandleResignCommand(const std::string&, Net::NetworkMessage& message)
@@ -926,11 +926,11 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
     WriteToOutput(*nmsg);
 }
 
-void Player::HandleRollCommand(const std::string& command, Net::NetworkMessage& message)
+void Player::HandleRollCommand(const std::string& arguments, Net::NetworkMessage& message)
 {
-    if (Utils::IsNumber(command))
+    if (Utils::IsNumber(arguments))
     {
-        const int max = std::stoi(command);
+        const int max = std::stoi(arguments);
         if (max >= ROLL_MIN && max <= ROLL_MAX)
         {
             const int res = static_cast<int>(GetSubsystem<Crypto::Random>()->GetFloat() * static_cast<float>(max)) + 1;
@@ -1005,18 +1005,18 @@ void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
     }
 }
 
-void Player::HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&)
+void Player::HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Map, GetGame()->id_);
     if (channel)
-        channel->Talk(this, command);
+        channel->Talk(this, arguments);
 }
 
-void Player::HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&)
+void Player::HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&)
 {
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->id_);
     if (channel)
-        channel->Talk(this, command);
+        channel->Talk(this, arguments);
 }
 
 void Player::ChangeMap(const std::string mapUuid)

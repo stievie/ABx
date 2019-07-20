@@ -29,18 +29,18 @@ private:
 protected:
     friend class PlayerManager;
     void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& command, Net::NetworkMessage& message) override;
+        const std::string& arguments, Net::NetworkMessage& message) override;
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
-    void HandleWhisperCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleChatGuildCommand(const std::string& command, Net::NetworkMessage&);
-    void HandleChatTradeCommand(const std::string& command, Net::NetworkMessage&);
-    void HandleResignCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleStuckCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleAgeCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleHpCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleXpCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandlePosCommand(const std::string& command, Net::NetworkMessage& message);
-    void HandleRollCommand(const std::string& command, Net::NetworkMessage& message);
+    void HandleWhisperCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandleChatGuildCommand(const std::string& arguments, Net::NetworkMessage&);
+    void HandleChatTradeCommand(const std::string& arguments, Net::NetworkMessage&);
+    void HandleResignCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandleStuckCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandleAgeCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandleHpCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandleXpCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandlePosCommand(const std::string& arguments, Net::NetworkMessage& message);
+    void HandleRollCommand(const std::string& arguments, Net::NetworkMessage& message);
     void HandleSitCommand(const std::string&, Net::NetworkMessage&);
     void HandleStandCommand(const std::string&, Net::NetworkMessage&);
     void HandleCryCommand(const std::string&, Net::NetworkMessage&);
@@ -49,8 +49,8 @@ protected:
     void HandleWaveCommand(const std::string&, Net::NetworkMessage&);
     void HandleLaughCommand(const std::string&, Net::NetworkMessage&);
     void HandleDieCommand(const std::string&, Net::NetworkMessage&);
-    void HandleGeneralChatCommand(const std::string& command, Net::NetworkMessage&);
-    void HandlePartyChatCommand(const std::string& command, Net::NetworkMessage&);
+    void HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&);
+    void HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&);
 protected:
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
     void OnInventoryFull() override;
