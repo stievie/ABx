@@ -7,7 +7,7 @@ TARGET = $(TARGETDIR)/libabsmath.a
 SOURDEDIR = ../absmath/absmath
 OBJDIR = obj/x64/$(CONFIG)/absmath
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += --Wno-class-memaccess -Wno-maybe-uninitialized
+CXXFLAGS += -Wno-class-memaccess -Wno-maybe-uninitialized
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
