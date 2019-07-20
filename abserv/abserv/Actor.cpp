@@ -39,6 +39,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("ApplyDamage", &Actor::ApplyDamage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
+        .addFunction("SetHealthRegen", &Actor::SetHealthRegen)
         .addFunction("InterruptAttack", &Actor::InterruptAttack)
         .addFunction("InterruptSkill", &Actor::InterruptSkill)
         .addFunction("Interrupt", &Actor::Interrupt)
@@ -709,6 +710,12 @@ int Actor::DrainLife(Actor* source, uint32_t index, int value)
 int Actor::DrainEnergy(int value)
 {
     return resourceComp_.DrainEnergy(value);
+}
+
+void Actor::SetHealthRegen(int value)
+{
+    Components::SetValueType vt = value < 0 ? Components::SetValueType::Decrease : Components::SetValueType::Increase;
+    resourceComp_.SetHealthRegen(vt, abs(value));
 }
 
 bool Actor::OnInterruptingAttack()

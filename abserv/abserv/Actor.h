@@ -178,6 +178,7 @@ public:
     int DrainLife(Actor* source, uint32_t index, int value);
     /// Steal energy from this actor. The source must add the returned value to its energy.
     int DrainEnergy(int value);
+    void SetHealthRegen(int value);
 
     virtual bool OnInterruptingAttack();
     virtual bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill);
