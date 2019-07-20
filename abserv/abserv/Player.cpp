@@ -22,8 +22,7 @@ namespace Game {
 
 Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     Actor(),
-    client_(client),
-    mailBox_(nullptr),
+    client_(client), mailBox_(nullptr),
     party_(nullptr),
     resigned_(false),
     loginTime_(0),
@@ -679,6 +678,7 @@ void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
     case AB::GameProtocol::CommandTypeIp:
     case AB::GameProtocol::CommandTypePrefPath:
     case AB::GameProtocol::CommandTypeHelp:
+    case AB::GameProtocol::CommandTypeQuit:
         // Client side only
         break;
     case AB::GameProtocol::CommandTypeChatGeneral:
