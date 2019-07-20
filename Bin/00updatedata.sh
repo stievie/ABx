@@ -1,7 +1,8 @@
 #!/bin/sh
 
-read -p "Are you sure (Y/[N])? " -r
-if [[ $REPLY =~ ^[Yy]$ ]]
+read -p "Overwite local data (Y/[N])? " choice
+choice=${choice,,}
+if [[ $choice =~ ^(yes|y| ) ]];
 then
 	rsync -av --delete /mnt/hdd02/abx/data ./
 fi
