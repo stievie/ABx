@@ -11,9 +11,12 @@
 #include <stdexcept>
 #include <signal.h>
 
-namespace System {
+namespace System
+{
 
-Process::Data::Data() noexcept : id(0), handle(NULL)
+Process::Data::Data() noexcept :
+    id(0),
+    handle(NULL)
 {
 }
 
@@ -21,7 +24,8 @@ Process::Data::Data() noexcept : id(0), handle(NULL)
 class Handle
 {
 public:
-    Handle() noexcept : handle(INVALID_HANDLE_VALUE)
+    Handle() noexcept :
+        handle(INVALID_HANDLE_VALUE)
     {
     }
     ~Handle() noexcept
@@ -47,6 +51,7 @@ public:
     {
         return &handle;
     }
+
 private:
     HANDLE handle;
 };
@@ -55,7 +60,7 @@ private:
 std::mutex create_process_mutex;
 
 //Based on the example at https://msdn.microsoft.com/en-us/library/windows/desktop/ms682499(v=vs.85).aspx.
-Process::id_type Process::open(const string_type &command, const string_type &path) noexcept
+Process::id_type Process::open(const string_type& command, const string_type& path) noexcept
 {
     if (open_stdin)
         stdin_fd = std::unique_ptr<fd_type>(new fd_type(NULL));
@@ -132,17 +137,23 @@ Process::id_type Process::open(const string_type &command, const string_type &pa
     process_command += "\"";
 #endif
 
-    BOOL bSuccess = CreateProcess(nullptr, process_command.empty() ? nullptr : &process_command[0], nullptr, nullptr, TRUE, 0,
-        nullptr, path.empty() ? nullptr : path.c_str(), &startup_info, &process_info);
+    BOOL bSuccess = CreateProcess(nullptr,
+        process_command.empty() ? nullptr : &process_command[0],
+        nullptr, nullptr, TRUE, 0, nullptr,
+        path.empty() ? nullptr : path.c_str(),
+        &startup_info, &process_info);
 
     if (!bSuccess)
         return 0;
     else
         CloseHandle(process_info.hThread);
 
-    if (stdin_fd) *stdin_fd = stdin_wr_p.detach();
-    if (stdout_fd) *stdout_fd = stdout_rd_p.detach();
-    if (stderr_fd) *stderr_fd = stderr_rd_p.detach();
+    if (stdin_fd)
+        *stdin_fd = stdin_wr_p.detach();
+    if (stdout_fd)
+        *stdout_fd = stdout_rd_p.detach();
+    if (stderr_fd)
+        *stderr_fd = stderr_rd_p.detach();
 
     closed = false;
     data.id = process_info.dwProcessId;
@@ -157,8 +168,7 @@ void Process::async_read() noexcept
 
     if (stdout_fd)
     {
-        stdout_thread = std::thread([this]()
-        {
+        stdout_thread = std::thread([this]() {
             DWORD n;
             std::unique_ptr<char[]> buffer(new char[buffer_size]);
             for (;;)
@@ -172,8 +182,7 @@ void Process::async_read() noexcept
     }
     if (stderr_fd)
     {
-        stderr_thread = std::thread([this]()
-        {
+        stderr_thread = std::thread([this]() {
             DWORD n;
             std::unique_ptr<char[]> buffer(new char[buffer_size]);
             for (;;)
@@ -206,7 +215,7 @@ int Process::get_exit_status() noexcept
     return static_cast<int>(exit_status);
 }
 
-bool Process::try_get_exit_status(int &exit_status) noexcept
+bool Process::try_get_exit_status(int& exit_status) noexcept
 {
     if (data.id == 0)
         return false;
@@ -241,17 +250,19 @@ void Process::close_fds() noexcept
         close_stdin();
     if (stdout_fd)
     {
-        if (*stdout_fd != NULL) CloseHandle(*stdout_fd);
+        if (*stdout_fd != NULL)
+            CloseHandle(*stdout_fd);
         stdout_fd.reset();
     }
     if (stderr_fd)
     {
-        if (*stderr_fd != NULL) CloseHandle(*stderr_fd);
+        if (*stderr_fd != NULL)
+            CloseHandle(*stderr_fd);
         stderr_fd.reset();
     }
 }
 
-bool Process::write(const char *bytes, size_t n)
+bool Process::write(const char* bytes, size_t n)
 {
     if (!open_stdin)
         throw std::invalid_argument("Can't write to an unopened stdin pipe. Please set open_stdin=true when constructing the process.");
@@ -278,11 +289,11 @@ void Process::close_stdin() noexcept
     std::lock_guard<std::mutex> lock(stdin_mutex);
     if (stdin_fd)
     {
-        if (*stdin_fd != NULL) CloseHandle(*stdin_fd);
+        if (*stdin_fd != NULL)
+            CloseHandle(*stdin_fd);
         stdin_fd.reset();
     }
 }
-
 
 //Based on http://stackoverflow.com/a/1173396
 void Process::kill(bool /* force */) noexcept
@@ -347,7 +358,8 @@ void Process::kill(id_type id, bool /*force*/) noexcept
         CloseHandle(snapshot);
     }
     HANDLE process_handle = OpenProcess(PROCESS_TERMINATE, FALSE, id);
-    if (process_handle) TerminateProcess(process_handle, 2);
+    if (process_handle)
+        TerminateProcess(process_handle, 2);
 }
 
 } // System
