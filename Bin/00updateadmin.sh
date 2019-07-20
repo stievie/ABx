@@ -1,9 +1,8 @@
 #!/bin/sh
 
 read -p "Overwite local data (Y/[N])? " choice
-choice=${choice,,}
-if [[ $choice =~ ^(yes|y| ) ]];
-then
-	rsync -av --delete /mnt/hdd02/abx/admin ./
+if [ "$choice" != "y" ]; then
+  exit 0
 fi
 
+rsync -av --delete /mnt/hdd02/abx/admin ./
