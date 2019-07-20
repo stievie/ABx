@@ -8,17 +8,24 @@
 #include <signal.h>
 #include <stdexcept>
 
-namespace System {
+namespace System
+{
 
-Process::Data::Data() noexcept : id(-1)
+Process::Data::Data() noexcept :
+    id(-1)
 {
 }
 
 Process::Process(std::function<void()> function,
-    std::function<void(const char *, size_t)> read_stdout,
-    std::function<void(const char *, size_t)> read_stderr,
-    bool open_stdin, size_t buffer_size) noexcept :
-closed(true), read_stdout(std::move(read_stdout)), read_stderr(std::move(read_stderr)), open_stdin(open_stdin), buffer_size(buffer_size)
+    std::function<void(const char*, size_t)> read_stdout,
+    std::function<void(const char*, size_t)> read_stderr,
+    bool open_stdin,
+    size_t buffer_size) noexcept :
+    closed(true),
+    read_stdout(std::move(read_stdout)),
+    read_stderr(std::move(read_stderr)),
+    open_stdin(open_stdin),
+    buffer_size(buffer_size)
 {
     open(function);
     async_read();
@@ -41,7 +48,8 @@ Process::id_type Process::open(std::function<void()> function) noexcept
     {
         if (stdin_fd)
         {
-            close(stdin_p[0]); close(stdin_p[1]);
+            close(stdin_p[0]);
+            close(stdin_p[1]);
         }
         return -1;
     }
@@ -49,11 +57,13 @@ Process::id_type Process::open(std::function<void()> function) noexcept
     {
         if (stdin_fd)
         {
-            close(stdin_p[0]); close(stdin_p[1]);
+            close(stdin_p[0]);
+            close(stdin_p[1]);
         }
         if (stdout_fd)
         {
-            close(stdout_p[0]); close(stdout_p[1]);
+            close(stdout_p[0]);
+            close(stdout_p[1]);
         }
         return -1;
     }
@@ -64,34 +74,43 @@ Process::id_type Process::open(std::function<void()> function) noexcept
     {
         if (stdin_fd)
         {
-            close(stdin_p[0]); close(stdin_p[1]);
+            close(stdin_p[0]);
+            close(stdin_p[1]);
         }
         if (stdout_fd)
         {
-            close(stdout_p[0]); close(stdout_p[1]);
+            close(stdout_p[0]);
+            close(stdout_p[1]);
         }
         if (stderr_fd)
         {
-            close(stderr_p[0]); close(stderr_p[1]);
+            close(stderr_p[0]);
+            close(stderr_p[1]);
         }
         return pid;
     }
     else if (pid == 0)
     {
-        if (stdin_fd) dup2(stdin_p[0], 0);
-        if (stdout_fd) dup2(stdout_p[1], 1);
-        if (stderr_fd) dup2(stderr_p[1], 2);
+        if (stdin_fd)
+            dup2(stdin_p[0], 0);
+        if (stdout_fd)
+            dup2(stdout_p[1], 1);
+        if (stderr_fd)
+            dup2(stderr_p[1], 2);
         if (stdin_fd)
         {
-            close(stdin_p[0]); close(stdin_p[1]);
+            close(stdin_p[0]);
+            close(stdin_p[1]);
         }
         if (stdout_fd)
         {
-            close(stdout_p[0]); close(stdout_p[1]);
+            close(stdout_p[0]);
+            close(stdout_p[1]);
         }
         if (stderr_fd)
         {
-            close(stderr_p[0]); close(stderr_p[1]);
+            close(stderr_p[0]);
+            close(stderr_p[1]);
         }
 
         //Based on http://stackoverflow.com/a/899533/3808293
@@ -109,23 +128,28 @@ Process::id_type Process::open(std::function<void()> function) noexcept
         _exit(EXIT_FAILURE);
     }
 
-    if (stdin_fd) close(stdin_p[0]);
-    if (stdout_fd) close(stdout_p[1]);
-    if (stderr_fd) close(stderr_p[1]);
+    if (stdin_fd)
+        close(stdin_p[0]);
+    if (stdout_fd)
+        close(stdout_p[1]);
+    if (stderr_fd)
+        close(stderr_p[1]);
 
-    if (stdin_fd) *stdin_fd = stdin_p[1];
-    if (stdout_fd) *stdout_fd = stdout_p[0];
-    if (stderr_fd) *stderr_fd = stderr_p[0];
+    if (stdin_fd)
+        *stdin_fd = stdin_p[1];
+    if (stdout_fd)
+        *stdout_fd = stdout_p[0];
+    if (stderr_fd)
+        *stderr_fd = stderr_p[0];
 
     closed = false;
     data.id = pid;
     return pid;
 }
 
-Process::id_type Process::open(const std::string &command, const std::string &path) noexcept
+Process::id_type Process::open(const std::string& command, const std::string& path) noexcept
 {
-    return open([&command, &path]
-    {
+    return open([&command, &path] {
         if (!path.empty())
         {
             auto path_escaped = path;
@@ -150,8 +174,7 @@ void Process::async_read() noexcept
 
     if (stdout_fd)
     {
-        stdout_thread = std::thread([this]()
-        {
+        stdout_thread = std::thread([this]() {
             auto buffer = std::unique_ptr<char[]>(new char[buffer_size]);
             ssize_t n;
             while ((n = read(*stdout_fd, buffer.get(), buffer_size)) > 0)
@@ -160,8 +183,7 @@ void Process::async_read() noexcept
     }
     if (stderr_fd)
     {
-        stderr_thread = std::thread([this]()
-        {
+        stderr_thread = std::thread([this]() {
             auto buffer = std::unique_ptr<char[]>(new char[buffer_size]);
             ssize_t n;
             while ((n = read(*stderr_fd, buffer.get(), buffer_size)) > 0)
@@ -188,7 +210,7 @@ int Process::get_exit_status() noexcept
     return exit_status;
 }
 
-bool Process::try_get_exit_status(int &exit_status) noexcept
+bool Process::try_get_exit_status(int& exit_status) noexcept
 {
     if (data.id <= 0)
         return false;
@@ -232,7 +254,7 @@ void Process::close_fds() noexcept
     }
 }
 
-bool Process::write(const char *bytes, size_t n)
+bool Process::write(const char* bytes, size_t n)
 {
     if (!open_stdin)
         throw std::invalid_argument("Can't write to an unopened stdin pipe. Please set open_stdin=true when constructing the process.");
