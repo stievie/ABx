@@ -8,6 +8,7 @@ creatureState = CREATURESTATE_IDLE
 local lastDart
 
 function onInit()
+  self:SetBoundingSize(1.5, 2.3, 1.5)
   self:SetUndestroyable(true)
   self:SetSelectable(false)
   lastDart = Tick()

@@ -1,8 +1,8 @@
 <node id="16777216">
-	<attribute name="Name" value="PoisonDart"/>
+	<attribute name="Name" value="PoisonDartLaucher"/>
 	<component id="16777216" type="StaticModel">
-		<attribute name="Model" value="Model;Models/PoisonDart.mdl"/>
-		<attribute name="Material" value="Material;Materials/PoisonDart.xml"/>
+		<attribute name="Model" value="Model;Models/PoisonDartLaucher.mdl"/>
+		<attribute name="Material" value="Material;Materials/PoisonDartLauncher.xml"/>
 	</component>
 	<component id="16777217" type="RigidBody">
 		<attribute name="Collision Layer" value="2"/>
@@ -10,7 +10,7 @@
 	</component>
 	<component id="16777218" type="CollisionShape">
 		<attribute name="Shape Type" value="Box"/>
-		<attribute name="Size" value="0.00648391 0.0173798 0.0906937"/>
-		<attribute name="Offset Position" value="0.000133137 0.000394676 -0.00164793"/>
+		<attribute name="Size" value="1.46251 1.77924 1.46251"/>
+		<attribute name="Offset Position" value="0 1.00294 0"/>
 	</component>
 </node>
