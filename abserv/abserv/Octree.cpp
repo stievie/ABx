@@ -41,6 +41,15 @@ void Octree::AddObjectUpdate(Game::GameObject* object)
         objectUpdate_.push_back(object);
 }
 
+void Octree::RemoveObjectUpdate(Game::GameObject* object)
+{
+    auto it = std::find(objectUpdate_.begin(), objectUpdate_.end(), object);
+    if (it != objectUpdate_.end())
+    {
+        objectUpdate_.erase(it);
+    }
+}
+
 void Octree::GetObjects(OctreeQuery& query) const
 {
     query.result_.clear();
@@ -257,6 +266,7 @@ void Octant::AddObject(Game::GameObject* object)
 
 void Octant::RemoveObject(Game::GameObject* object, bool resetOctant /* = true */)
 {
+    root_->RemoveObjectUpdate(object);
     auto it = std::find(objects_.begin(), objects_.end(), object);
     if (it != objects_.end())
     {

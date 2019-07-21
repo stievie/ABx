@@ -77,18 +77,13 @@ AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script,
     return nullptr;
 }
 
-Projectile* Game::_LuaAddProjectile(const std::string& itemUuid,
+void Game::_LuaAddProjectile(const std::string& itemUuid,
     Actor* source,
     Actor* target)
 {
     assert(source);
     assert(target);
-    auto o = AddProjectile(itemUuid,
-        source->GetThis<Actor>(),
-        target->GetThis<Actor>());
-    if (o)
-        return o.get();
-    return nullptr;
+    AddProjectile(itemUuid, source->GetThis<Actor>(), target->GetThis<Actor>());
 }
 
 ItemDrop* Game::_LuaAddItemDrop(Actor* dropper)
@@ -229,11 +224,15 @@ void Game::Update()
             map_->UpdateAi(delta);
 
         // First Update all objects
-        for (const auto& o : objects_)
         {
-            if (!o.second)
-                return;
-            o.second->Update(delta, *gameStatus_);
+            // FIXME: Why is this iterator becoming invalid when spawning an object (e.g. a Projectile) at the wrong time?
+            auto lobj = objects_;
+            for (const auto& o : lobj)
+            {
+                if (!o.second)
+                    return;
+                o.second->Update(delta, *gameStatus_);
+            }
         }
 
         // Update Octree stuff
@@ -422,7 +421,7 @@ std::shared_ptr<AreaOfEffect> Game::AddAreaOfEffect(const std::string& script,
     return result;
 }
 
-std::shared_ptr<Projectile> Game::AddProjectile(const std::string& itemUuid,
+void Game::AddProjectile(const std::string& itemUuid,
     std::shared_ptr<Actor> source,
     std::shared_ptr<Actor> target)
 {
@@ -432,15 +431,12 @@ std::shared_ptr<Projectile> Game::AddProjectile(const std::string& itemUuid,
     result->SetTarget(target);
     // Speed is set by the script
     if (!result->Load())
-        return std::shared_ptr<Projectile>();
+        return;
 
-    // After all initialization is done, we can call this
     GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(std::bind(&Game::QueueSpawnObject,
             shared_from_this(), result))
     );
-
-    return result;
 }
 
 std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* target)

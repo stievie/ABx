@@ -54,6 +54,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("IsSelectable",     &GameObject::IsSelectable)
         .addFunction("SetSelectable",    &GameObject::SetSelectable)
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
+        .addFunction("GetClosestActor",  &GameObject::GetClosestActor)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
@@ -381,6 +382,35 @@ std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
             result.push_back(dynamic_cast<Actor*>(&o));
         return Iteration::Continue;
     });
+    return result;
+}
+
+Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
+{
+    Actor* result = nullptr;
+    for (unsigned r = static_cast<unsigned>(Ranges::Aggro); r < static_cast<unsigned>(Ranges::Map); ++r)
+    {
+        VisitInRange(static_cast<Ranges>(r), [&](GameObject& o)
+        {
+            const AB::GameProtocol::GameObjectType t = o.GetType();
+            if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
+            {
+                if (!o.IsSelectable() && !unselectable)
+                    return Iteration::Continue;
+
+                result =  dynamic_cast<Actor*>(&o);
+                if (result->IsUndestroyable() && !undestroyable || result->IsDead())
+                {
+                    result = nullptr;
+                    return Iteration::Continue;
+                }
+                return Iteration::Break;
+            }
+            return Iteration::Continue;
+        });
+        if (result)
+            break;
+    }
     return result;
 }
 

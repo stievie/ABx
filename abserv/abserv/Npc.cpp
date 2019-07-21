@@ -28,6 +28,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
+        .addFunction("ShootAt", &Npc::ShootAt)
         .addFunction("GetGroupId", &Npc::GetGroupId)
         .addFunction("SetGroupId", &Npc::SetGroupId)
     );
@@ -227,6 +228,12 @@ void Npc::Say(ChatType channel, const std::string& message)
         // N/A
         break;
     }
+}
+
+void Npc::ShootAt(const std::string& itemUuid, Actor* target)
+{
+    auto game = GetGame();
+    game->AddProjectile(itemUuid, GetThis<Actor>(), target->GetThis<Actor>());
 }
 
 void Npc::OnSelected(Actor* selector)

@@ -9,8 +9,6 @@ namespace Game {
 void Projectile::RegisterLua(kaguya::State& state)
 {
     state["Projectile"].setClass(kaguya::UserdataMetatable<Projectile, Actor>()
-        .addFunction("SetSpeed", &Projectile::SetSpeed)
-        .addFunction("GetSpeed", &Projectile::GetSpeed)
         .addFunction("GetSource", &Projectile::_LuaGetSource)
         .addFunction("GetTarget", &Projectile::_LuaGetTarget)
     );
@@ -46,6 +44,7 @@ bool Projectile::LoadScript(const std::string& fileName)
         return false;
     if (!script_->Execute(luaState_))
         return false;
+
     if (ScriptManager::IsFunction(luaState_, "onUpdate"))
         functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "onCollide"))
@@ -85,9 +84,9 @@ void Projectile::SetSource(std::shared_ptr<Actor> source)
 
 void Projectile::SetTarget(std::shared_ptr<Actor> target)
 {
-    assert(startSet_);
     // Can not change target
-    assert(!target);
+    if (started_)
+        return;
     target_ = target;
     targetPos_ = target->transformation_.position_;
     ray_ = Math::Ray(start_, targetPos_);
@@ -108,16 +107,6 @@ Actor* Projectile::_LuaGetTarget()
     if (o)
         return o.get();
     return nullptr;
-}
-
-void Projectile::SetSpeed(float speed)
-{
-    moveComp_->SetSpeedFactor(speed);
-}
-
-float Projectile::GetSpeed() const
-{
-    return moveComp_->GetSpeedFactor();
 }
 
 void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)

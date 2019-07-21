@@ -106,6 +106,8 @@ public:
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
     void Say(ChatType channel, const std::string& message);
+    /// Shooting a projectile without having a weapon that can spawn projectiles
+    void ShootAt(const std::string& itemUuid, Actor* target);
 
     void OnSelected(Actor* selector) override;
     void OnClicked(Actor* selector) override;

@@ -86,6 +86,8 @@ enum ModelClass : uint32_t
     ModelClassLogicStart = 100,
     ModelClassPortal,
     ModelClassAccountChest,
+    // Doesn't do anything visual, e.g. no animations
+    ModelClassStaticNpc,
 
     ModelClassItemSpawns = 500,
     ModelClassArrow,

@@ -184,7 +184,7 @@ public:
     {
         // May be called from the AI thread so lock it
         std::lock_guard<std::mutex> lock(lock_);
-        for (const auto o : ranges_[range])
+        for (const auto& o : ranges_[range])
         {
             if (auto so = o.lock())
                 if (func(*so) != Iteration::Continue)
@@ -192,6 +192,10 @@ public:
         }
     }
     std::vector<Actor*> GetActorsInRange(Ranges range);
+    /// Returns the closest actor or nullptr
+    /// @param[in] undestroyable If true include undestroyable actors
+    /// @param[in] unselectable If true includes unselectable actors
+    Actor* GetClosestActor(bool undestroyable, bool unselectable);
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {

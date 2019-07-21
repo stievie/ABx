@@ -416,6 +416,10 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         object = CreateActor(id, position, scale, rot, state, data);
         object->objectType_ = ObjectTypeItemDrop;
         break;
+    case AB::GameProtocol::ObjectTypeProjectile:
+        object = CreateActor(id, position, scale, rot, state, data);
+        object->objectType_ = ObjectTypeProjectile;
+        break;
     }
     if (object)
     {

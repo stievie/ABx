@@ -22,6 +22,7 @@
 #include "ItemDrop.h"
 #include "Random.h"
 #include "Party.h"
+#include "Projectile.h"
 
 namespace Game {
 
@@ -112,6 +113,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     AreaOfEffect::RegisterLua(state);
     Player::RegisterLua(state);
     Npc::RegisterLua(state);
+    Projectile::RegisterLua(state);
 
     Game::RegisterLua(state);
 

@@ -91,7 +91,7 @@ private:
         Actor* source,
         uint32_t index,
         float x, float y, float z);
-    Projectile* _LuaAddProjectile(const std::string& itemUuid,
+    void _LuaAddProjectile(const std::string& itemUuid,
         Actor* source,
         Actor* target);
     ItemDrop* _LuaAddItemDrop(Actor* dropper);
@@ -134,7 +134,7 @@ public:
         std::shared_ptr<Actor> source,
         uint32_t index,
         const Math::Vector3& pos);
-    std::shared_ptr<Projectile> AddProjectile(const std::string& itemUuid,
+    void AddProjectile(const std::string& itemUuid,
         std::shared_ptr<Actor> source,
         std::shared_ptr<Actor> target);
     std::shared_ptr<ItemDrop> AddRandomItemDrop(Actor* dropper);

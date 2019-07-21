@@ -1,11 +1,8 @@
-include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
-
-name = "Poison Dart"
-itemIndex = 5001
+include("/scripts/includes/damage.lua")
 
 function onInit()
-  self:SetSpeed(4.0)
+  self:SetSpeed(1.0)
   return true
 end
 
@@ -14,6 +11,11 @@ function onStart(creature)
 end
 
 function onHitTarget(creature)
-  creature:ApplyDamage(nil, self:Index(), DAMAGETYPE_PIERCING, 33, 0)
-  creature:AddEffect(nil, 10002, 8000)
+  -- TODO: Make some index for this "skill"
+  local actor = creature:AsActor()
+  if (actor ~= nil) then
+    print("Hit", actor:GetName())
+    actor:ApplyDamage(nil, 0, DAMAGETYPE_PIERCING, 33, 0)
+    actor:AddEffect(nil, 10002, 8000)
+  end
 end

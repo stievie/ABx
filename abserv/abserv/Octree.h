@@ -92,6 +92,7 @@ public:
     void SetSize(const BoundingBox& box, unsigned numLevels);
     void Update();
     void AddObjectUpdate(Game::GameObject* object);
+    void RemoveObjectUpdate(Game::GameObject* object);
     /// Return drawable objects by a query.
     void GetObjects(OctreeQuery& query) const;
     /// Return drawable objects by a ray query.

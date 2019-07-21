@@ -11,6 +11,7 @@ enum ObjectType
     ObjectTypeSelf = 3,
     ObjectTypeAreaOfEffect,          // Area that affects actors in it, e.g. a well
     ObjectTypeItemDrop,
+    ObjectTypeProjectile,
 };
 
 class GameObject : public LogicComponent

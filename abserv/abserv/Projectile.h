@@ -63,8 +63,6 @@ public:
     std::shared_ptr<Actor> GetSource() const { return source_.lock(); }
     void SetTarget(std::shared_ptr<Actor> target);
     std::shared_ptr<Actor> GetTarget() const { return target_.lock(); }
-    void SetSpeed(float speed);
-    float GetSpeed() const;
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
 
     uint32_t GetGroupId() const override;
