@@ -399,7 +399,7 @@ Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
                     return Iteration::Continue;
 
                 result =  dynamic_cast<Actor*>(&o);
-                if (result->IsUndestroyable() && !undestroyable || result->IsDead())
+                if ((result->IsUndestroyable() && !undestroyable) || result->IsDead())
                 {
                     result = nullptr;
                     return Iteration::Continue;
