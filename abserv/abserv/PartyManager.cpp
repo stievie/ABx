@@ -54,9 +54,12 @@ void PartyManager::Remove(uint32_t partyId)
 std::vector<Party*> PartyManager::GetByGame(uint32_t id)
 {
     std::vector<Party*> result;
+    if (id == 0)
+        return result;
+
     for (const auto& p : parties_)
     {
-        if (p.second->GetGameId() == id)
+        if (p.second->gameId_ == id)
             result.push_back(p.second.get());
     }
     return result;

@@ -64,6 +64,7 @@ AreaOfEffect::AreaOfEffect() :
     occluder_ = false;
     // AOE usually not colliding
     collisionMask_ = 0;
+    selectable_ = false;
 
     InitializeLua();
 }
@@ -264,9 +265,10 @@ void AreaOfEffect::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<uint8_t>(1);                                  // not destroyable
+    msg.Add<uint8_t>(selectable_ ? 1 : 0);
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(0.0f);                                 // speed
-    msg.Add<uint32_t>(GetGroupId());                                 // Group id
+    msg.Add<uint32_t>(GetGroupId());                      // Group id
     msg.Add<uint8_t>(0);                                  // Group pos
     IO::PropWriteStream data;
     size_t dataSize;

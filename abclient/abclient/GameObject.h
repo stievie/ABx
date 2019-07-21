@@ -21,7 +21,7 @@ protected:
     float speedFactor_{ 1.0f };
     bool HasHealthBar() const
     {
-        return objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf;
+        return selectable_ && (objectType_ == ObjectTypeNpc || objectType_ == ObjectTypePlayer || objectType_ == ObjectTypeSelf);
     }
     bool IsPlayer() const
     {
@@ -32,12 +32,14 @@ public:
     ~GameObject() override;
 
     virtual void Init(Scene*, const Vector3&, const Quaternion&,
-        AB::GameProtocol::CreatureState) {}
+        AB::GameProtocol::CreatureState)
+    {}
 
     uint32_t id_{ 0 };
     unsigned index_{ 0 };
     ObjectType objectType_{ ObjectTypeStatic };
     bool undestroyable_{ false };
+    bool selectable_{ false };
     uint32_t count_ = 1;
     uint32_t value_ = 0;
     int64_t spawnTickServer_{ 0 };
@@ -76,7 +78,7 @@ public:
     float GetYRotation() const;
     virtual void MoveTo(int64_t time, const Vector3& newPos);
     virtual void ForcePosition(int64_t time, const Vector3& newPos);
-    bool IsSelectable() const { return objectType_ > ObjectTypeStatic; }
+    bool IsSelectable() const { return selectable_; }
     IntVector2 WorldToScreenPoint();
     IntVector2 WorldToScreenPoint(Vector3 pos);
     virtual void HoverBegin() { hovered_ = true; }

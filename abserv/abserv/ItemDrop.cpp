@@ -20,6 +20,7 @@ ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
 {
     // Drops can not hide other objects
     occluder_ = false;
+    selectable_ = true;
     name_ = item_->data_.name;
 }
 
@@ -111,6 +112,7 @@ void ItemDrop::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<uint8_t>(1);                                  // not destroyable
+    msg.Add<uint8_t>(selectable_ ? 1 : 0);
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(0.0f);                                 // speed
     msg.Add<uint32_t>(0);                                 // Group id

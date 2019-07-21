@@ -25,7 +25,6 @@ private:
     uint32_t maxMembers_{ 1 };
     int64_t defeatedTick_{ 0 };
     bool defeated_{ false };
-    uint32_t gameId_{ 0 };
     template<typename E>
     bool UpdateEntity(const E& e)
     {
@@ -59,8 +58,6 @@ public:
     bool RemoveInvite(std::shared_ptr<Player> player);
     /// Clear all invites
     void ClearInvites();
-    /// Get the ID of the game the members are in
-    uint32_t GetGameId() const { return gameId_; }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message);
     void WriteToMembers(const Net::NetworkMessage& message);
@@ -120,6 +117,8 @@ public:
 
     uint32_t id_;
     AB::Entities::Party data_;
+    /// Get the ID of the game the members are in
+    uint32_t gameId_{ 0 };
 };
 
 }

@@ -26,17 +26,21 @@ void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkM
         }
         else if (targetId != source->GetSelectedObjectId())
         {
-            source->selectedObject_ = owner_.GetGame()->GetObjectById(targetId);
-            message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
-            message.Add<uint32_t>(source->id_);
-            if (auto sel = source->selectedObject_.lock())
+            auto target = owner_.GetGame()->GetObjectById(targetId);
+            if (target->selectable_)
             {
-                sel->OnSelected(source);
-                message.Add<uint32_t>(sel->id_);
+                source->selectedObject_ = owner_.GetGame()->GetObjectById(targetId);
+                message.AddByte(AB::GameProtocol::GameObjectSelectTarget);
+                message.Add<uint32_t>(source->id_);
+                if (auto sel = source->selectedObject_.lock())
+                {
+                    sel->OnSelected(source);
+                    message.Add<uint32_t>(sel->id_);
+                }
+                else
+                    // Clear Target
+                    message.Add<uint32_t>(0);
             }
-            else
-                // Clear Target
-                message.Add<uint32_t>(0);
         }
     }
 }

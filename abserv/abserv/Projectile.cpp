@@ -26,6 +26,7 @@ Projectile::Projectile(const std::string& itemUuid) :
     // Projectile can not hide other objects
     occluder_ = false;
     undestroyable_ = true;
+    selectable_ = false;
     itemUuid_ = itemUuid;
 
     InitializeLua();

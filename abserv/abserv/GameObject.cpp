@@ -51,6 +51,8 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("AsNpc",            &GameObject::_LuaAsNpc)
         .addFunction("AsPlayer",         &GameObject::_LuaAsPlayer)
 
+        .addFunction("IsSelectable",     &GameObject::IsSelectable)
+        .addFunction("SetSelectable",    &GameObject::SetSelectable)
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)

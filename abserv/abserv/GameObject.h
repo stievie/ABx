@@ -139,6 +139,8 @@ public:
         if (game)
             AddToOctree();
     }
+    bool IsSelectable() const { return selectable_; }
+    void SetSelectable(bool value) { selectable_ = value; }
     void SetCollisionMask(uint32_t mask)
     {
         collisionMask_ = mask;
@@ -232,10 +234,11 @@ public:
     virtual const std::string& GetName() const { return name_; }
     virtual void SetName(const std::string& name) { name_ = name; }
 
-
     Math::Transformation transformation_;
     /// Auto ID, not DB ID
     uint32_t id_;
+    /// Can not be selected by a player. Majority of objects is not selectable by the player so lets make it true by default.
+    bool selectable_{ false };
     Components::StateComp stateComp_;
     std::unique_ptr<Components::TriggerComp> triggerComp_;
     /// Occluder flag. An object that can hide another object from view.

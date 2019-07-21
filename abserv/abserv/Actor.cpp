@@ -117,6 +117,8 @@ Actor::Actor() :
             CREATURTE_BB_MIN, CREATURTE_BB_MAX)
     );
     occluder_ = true;
+    // By default Actors can be selected
+    selectable_ = true;
 }
 
 Actor::~Actor() = default;
@@ -469,6 +471,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     msg.Add<float>(transformation_.scale_.y_);
     msg.Add<float>(transformation_.scale_.z_);
     msg.Add<uint8_t>(undestroyable_ ? 1 : 0);
+    msg.Add<uint8_t>(selectable_ ? 1 : 0);
     msg.Add<uint8_t>(stateComp_.GetState());
     msg.Add<float>(GetSpeed());
     msg.Add<uint32_t>(GetGroupId());

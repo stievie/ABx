@@ -135,7 +135,7 @@ private:
 
     void SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         const Vector3& position, const Vector3& scale, const Quaternion& rot,
-        bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
+        bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
         uint32_t groupId, uint8_t groupPos,
         PropReadStream& data);
 };

@@ -423,7 +423,7 @@ void Actor::RemoveFromScene()
 
 void Actor::AddActorUI()
 {
-    if (objectType_ == ObjectTypeAreaOfEffect)
+    if (!selectable_)
         return;
     if (name_.Empty())
         return;

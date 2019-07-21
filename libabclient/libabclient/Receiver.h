@@ -23,6 +23,7 @@ struct ObjectSpawn
     Vec3 scale;
     float rot;
     bool undestroyable;
+    bool selectable;
     AB::GameProtocol::CreatureState state;
     float speed;
     uint32_t groupId;

@@ -369,14 +369,16 @@ void WorldLevel::HandleObjectSpawn(StringHash, VariantMap& eventData)
     const String& d = eventData[P_DATA].GetString();
     bool existing = eventData[P_EXISTING].GetBool();
     bool undestroyable = eventData[P_UNDESTROYABLE].GetBool();
+    bool selectable = eventData[P_SELECTABLE].GetBool();
     PropReadStream data(d.CString(), d.Length());
-    SpawnObject(tick, objectId, existing, pos, scale, direction, undestroyable,
+    SpawnObject(tick, objectId, existing, pos, scale, direction,
+        undestroyable, selectable,
         state, speed, groupId, groupPos, data);
 }
 
 void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
     const Vector3& position, const Vector3& scale, const Quaternion& rot,
-    bool undestroyable, AB::GameProtocol::CreatureState state, float speed,
+    bool undestroyable, bool selectable, AB::GameProtocol::CreatureState state, float speed,
     uint32_t groupId, uint8_t groupPos,
     PropReadStream& data)
 {
@@ -426,12 +428,13 @@ void WorldLevel::SpawnObject(int64_t updateTick, uint32_t id, bool existing,
         Actor* actor = dynamic_cast<Actor*>(object);
         actor->posExtrapolator_.Reset(object->GetServerTime(updateTick),
             object->GetClientTime(), p);
-        actor->AddActorUI();
         object->GetNode()->SetName(dynamic_cast<Actor*>(object)->name_);
         object->undestroyable_ = undestroyable;
+        object->selectable_ = selectable;
         object->SetSpeedFactor(updateTick, speed);
         objects_[id] = object;
         nodeIds_[object->GetNode()->GetID()] = id;
+        actor->AddActorUI();
 
         URHO3D_LOGINFOF("Spawned object %d: %s", actor->id_, actor->name_.CString());
 
