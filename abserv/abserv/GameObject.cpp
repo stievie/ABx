@@ -294,14 +294,17 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
 {
     assert(object);
     std::vector<GameObject*> result;
-    const bool res = Raycast(result, object->transformation_.position_);
+    const bool res = Raycast(result, object->transformation_.position_ + BodyOffset);
     if (res)
     {
         for (const auto* o : result)
         {
             // result is sorted by distance
             if (o->id_ != id_ && o->id_ != object->id_)
+            {
+//                LOG_INFO << o->GetName() << std::endl;
                 return false;
+            }
             else if (o->id_ == object->id_)
                 // Can stop here it doesn't matter whats behind the target.
                 return true;

@@ -90,6 +90,9 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     target_ = target;
     targetPos_ = target->transformation_.position_;
     ray_ = Math::Ray(start_, targetPos_);
+
+    const auto targetBB = target->GetWorldBoundingBox();
+    distance_ = ray_.HitDistance(targetBB);
     started_ = OnStart();
 }
 
@@ -135,6 +138,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             if (source)
                 source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetDodge);
+            LOG_INFO << "Dodge" << std::endl;
             Remove();
             return;
         }
@@ -148,8 +152,16 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             // Increasing distance -> missed
             if (source)
-                source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetMissed);
-            Remove();
+            {
+                if (!source->IsObjectInSight(target.get()))
+                {
+                    source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetObstructed);
+                    LOG_INFO << "Obstructed" << std::endl;
+                    Remove();
+                    return;
+                }
+            }
+            OnCollide(target.get());
         }
     }
 }
