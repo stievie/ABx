@@ -13,6 +13,7 @@
 #include "Chat.h"
 #include "Dispatcher.h"
 #include "Subsystems.h"
+#include "ThreadPool.h"
 
 void Maintenance::CleanCacheTask()
 {
@@ -84,15 +85,16 @@ void Maintenance::UpdateServerLoadTask()
 
 void Maintenance::CheckAutoTerminate()
 {
-    auto* dispatcher = GetSubsystem<Asynch::Dispatcher>();
     if (GetSubsystem<Game::PlayerManager>()->GetIdleTime() >= CHECK_AUTOTERMINATE_IDLE_MS)
     {
-        dispatcher->Add(Asynch::CreateTask(std::bind(&Application::Stop, Application::Instance)));
+        // Can't use Dispatcher because Stop() must run in a different thread. Stop() will wait
+        // until all games are deleted, and games are deleted in the Dispatcher thread.
+        GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::Stop, Application::Instance);
         return;
     }
     if (status_ == MaintenanceStatus::Runnig)
     {
-        dispatcher->Add(
+        GetSubsystem<Asynch::Dispatcher>()->Add(
             Asynch::CreateScheduledTask(CHECK_AUTOTERMINATE_MS, std::bind(&Maintenance::CheckAutoTerminate, this))
         );
     }
