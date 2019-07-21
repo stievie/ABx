@@ -602,7 +602,7 @@ unsigned Application::GetLoad()
     {
         lastLoadCalc_ = Utils::Tick();
         size_t playerCount = GetSubsystem<Game::PlayerManager>()->GetPlayerCount();
-        float ld = ((float)playerCount / (float)SERVER_MAX_CONNECTIONS) * 100.0f;
+        float ld = (static_cast<float>(playerCount) / static_cast<float>(SERVER_MAX_CONNECTIONS)) * 100.0f;
         unsigned load = static_cast<uint8_t>(ld);
         unsigned utilization = GetSubsystem<Asynch::Dispatcher>()->GetUtilization();
         if (utilization > load)
