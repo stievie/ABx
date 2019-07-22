@@ -6,6 +6,10 @@
 #   define AB_UNIX
 #endif
 
+#if !defined(AB_WINDOWS) && !defined(AB_UNIX)
+#error Unsuppoprted platform
+#endif
+
 // Configurations shared by the server and client
 
 #define CURRENT_YEAR 2019

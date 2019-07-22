@@ -107,6 +107,8 @@ Uses a single TCP stream for the game protocol.
 
 Optional run `absadmin`.
 
+All servers must run with the same timezone, preferably UTC.
+
 ### Run as NT service
 
 Define `WIN_SERVICE` and recompile the server. It will create a Windows Service

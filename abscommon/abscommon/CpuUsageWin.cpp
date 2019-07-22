@@ -7,8 +7,6 @@
 namespace System {
 
 CpuUsage::CpuUsage() :
-    cpuUsage_(-1),
-    lastRun_(0),
     runCount_(0)
 {
     ZeroMemory(&prevSysKernel_, sizeof(FILETIME));

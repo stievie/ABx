@@ -5,6 +5,7 @@ abscommon/Connection.cpp
 abscommon/Connection.h
 abscommon/ConsoleColor.h
 abscommon/CpuUsage.h
+abscommon/CpuUsageUnix.cpp
 abscommon/CpuUsageWin.cpp
 abscommon/DataClient.cpp
 abscommon/DataClient.h
