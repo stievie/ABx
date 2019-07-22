@@ -35,11 +35,12 @@ short CpuUsage::GetUsage()
         lastUserCPU_ = buf.tms_utime;
 
         cpuUsage_ = static_cast<short>(percent);
+        nCpuCopy = cpuUsage_;
     }
 
     lastRun_ = Utils::Tick();
 
-    return cpuUsage_;
+    return nCpuCopy;
 }
 
 bool CpuUsage::EnoughTimePassed()

@@ -13,7 +13,7 @@ class CpuUsage
 public:
     CpuUsage();
 
-    /// Returns CPU usage of the calling process in percent, i.e. a value between 0 .. 100.
+    /// Returns CPU usage of the calling process in percent, i.e. a value between 0..100.
     short GetUsage();
 private:
     short cpuUsage_{ -1 };
