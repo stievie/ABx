@@ -35,8 +35,15 @@ public:
         w_(w)
     { }
 
+    Vector4(const std::array<float, 4> values) noexcept :
+        x_(values[0]),
+        y_(values[1]),
+        z_(values[2]),
+        w_(values[3])
+    { }
+
 #if defined(HAVE_DIRECTX_MATH)
-        Vector4(const XMath::XMVECTOR& vector) noexcept :
+    Vector4(const XMath::XMVECTOR& vector) noexcept :
         x_(XMath::XMVectorGetX(vector)),
         y_(XMath::XMVectorGetY(vector)),
         z_(XMath::XMVectorGetZ(vector)),
@@ -56,6 +63,10 @@ public:
         return *this;
     }
 
+    operator std::array<float, 4>() const
+    {
+        return{ x_, y_, z_, w_ };
+    }
 #if defined(HAVE_DIRECTX_MATH)
     /// Cast to XMVECTOR
     operator XMath::XMVECTOR() const
@@ -68,8 +79,8 @@ public:
     }
 #endif
 
-    bool operator ==(const Vector4& vector) const { return x_ == vector.x_ && y_ == vector.y_ && z_ == vector.z_ && w_ == vector.w_; }
-    bool operator !=(const Vector4& vector) const { return x_ != vector.x_ || y_ != vector.y_ || z_ != vector.z_ || w_ != vector.w_; }
+    bool operator ==(const Vector4& vector) const { return Equals(vector); }
+    bool operator !=(const Vector4& vector) const { return !Equals(vector); }
 
     Vector4& operator+=(const Vector4& v);
     Vector4& operator-=(const Vector4& v);
@@ -83,6 +94,10 @@ public:
     friend Vector4 operator/(const Vector4& v, float n);
     friend Vector4 operator/(float n, const Vector4& v);
 
+    inline bool Equals(const Vector4& rhs) const
+    {
+        return Math::Equals(x_, rhs.x_) && Math::Equals(y_, rhs.y_) && Math::Equals(z_, rhs.z_) && Math::Equals(w_, rhs.w_);
+    }
     float LengthSqr() const;
     float Length() const;
     float Distance(const Vector4& v) const;

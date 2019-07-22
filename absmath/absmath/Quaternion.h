@@ -23,6 +23,16 @@ public:
         y_(y),
         z_(z)
     {}
+    Quaternion(std::array<float, 4> values) noexcept :
+        w_(values[0]),
+        x_(values[1]),
+        y_(values[2]),
+        z_(values[3])
+    {}
+    Quaternion(std::array<float, 3> values) noexcept :
+        // 0 = Pitch, 1 = Yaw, 2 = Roll
+        Quaternion(values[0], values[1], values[2])
+    {}
     Quaternion(float x, float y, float z);
 #if defined(HAVE_DIRECTX_MATH)
     Quaternion(const XMath::XMVECTOR& q) :
@@ -44,6 +54,10 @@ public:
     /// Create a Quaternion from Axis and Angle. Angle is Rad
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
 
+    operator std::array<float, 4>() const
+    {
+        return { x_, y_, z_, w_ };
+    }
 #if defined(HAVE_DIRECTX_MATH)
     /// Cast to XMVECTOR
     operator XMath::XMVECTOR() const

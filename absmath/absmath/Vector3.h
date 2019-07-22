@@ -4,6 +4,7 @@
 #include "MathUtils.h"
 #include <sstream>
 #include <cmath>
+#include <array>
 
 namespace Math {
 
@@ -31,6 +32,11 @@ public:
         y_(y),
         z_(z)
     { }
+    Vector3(std::array<float, 3> values) noexcept :
+        x_(values[0]),
+        y_(values[1]),
+        z_(values[2])
+    { }
 
 #if defined(HAVE_DIRECTX_MATH)
         Vector3(const XMath::XMVECTOR& vector) noexcept :
@@ -56,6 +62,10 @@ public:
         return *this;
     }
 
+    operator std::array<float, 3>() const
+    {
+        return { x_, y_, z_ };
+    }
 #if defined(HAVE_DIRECTX_MATH)
     /// Cast to XMVECTOR
     operator XMath::XMVECTOR() const
