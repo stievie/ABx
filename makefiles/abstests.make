@@ -40,3 +40,7 @@ $(GCH): $(PCH)
 .PHONY: clean
 clean:
 	rm -f $(GCH) $(OBJ_FILES) $(TARGET)
+
+.PHONY: run
+run:
+	$(TARGET)

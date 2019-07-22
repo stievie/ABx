@@ -36,7 +36,7 @@ all:
 	@echo "------------------- Building abstests -------------------"
 	@$(MAKE) -f  abstests.make
 	@echo "--------------------- Running Tests ---------------------"
-	@../Bin/Tests
+	@$(MAKE) -f  abstests.make run
 	@echo "------------------- Making artefacts --------------------"
 	@$(MAKE) -f  artefact.make
 
