@@ -9,7 +9,7 @@ OBJDIR = obj/x64/$(CONFIG)/abserv
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto -labsmath -lpugixml -ldetour -lstdc++fs
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
-CXXFLAGS += -Werror
+CXXFLAGS += -Werror -Wno-maybe-uninitialized
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp $(SOURDEDIR)/*/*.cpp))
