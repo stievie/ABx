@@ -10,6 +10,9 @@ namespace Components {
 
 void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration)
 {
+    if (owner_.IsDead())
+        return;
+
     lastDamage_ = Utils::Tick();
     // Get a random pos where to hit
     const DamagePos pos = GetDamagePos();
@@ -24,6 +27,9 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
 
 int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
 {
+    if (owner_.IsDead())
+        return 0;
+
     const int currLife = owner_.resourceComp_.GetHealth();
     const int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();

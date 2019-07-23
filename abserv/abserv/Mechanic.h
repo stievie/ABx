@@ -41,8 +41,8 @@ static constexpr uint32_t ATTACK_SPEED_SPEAR      = 1500;
 static constexpr float MAX_IAS = 1.33f;                    // Increased Attack Speed
 static constexpr float MAX_DAS = 0.5f;                     // Decreased Attack Speed
 
-// TODO: Check size
-static constexpr float PROJECTILE_SIZE = 0.1f;
+// For simplicity we use a sphere collision shape with this radius for projectiles
+static constexpr float PROJECTILE_SIZE = 0.3f;
 
 // Ranges
 static constexpr float RANGE_BASE         = 80.0f;

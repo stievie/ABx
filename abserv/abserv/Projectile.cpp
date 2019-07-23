@@ -99,8 +99,6 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     {
         if (auto source = source_.lock())
             source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetObstructed);
-        Remove();
-        return;
     }
     currentDistance_ = distance_;
     started_ = OnStart();

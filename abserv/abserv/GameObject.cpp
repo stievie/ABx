@@ -299,17 +299,19 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
     {
         for (const auto* o : result)
         {
-            if (o->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch ||
-                o->GetType() == AB::GameProtocol::ObjectTypeProjectile)
-                // Object collide with the Terrain not TerrainPatches
+            if (!o->occluder_ || o->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch)
+                // Object collides with the Terrain not TerrainPatches
                 continue;
             if (o->id_ == id_)
+                // Oh, thats we
                 continue;
 
             // result is sorted by distance
             if (o->id_ != object->id_)
             {
-                LOG_INFO << o->GetName() << std::endl;
+#ifdef DEBUG_COLLISION
+                LOG_DEBUG << "Obstructed by " << o->GetName() << std::endl;
+#endif
                 return false;
             }
             else if (o->id_ == object->id_)
