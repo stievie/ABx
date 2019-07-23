@@ -5,7 +5,7 @@ function createChest(game, x, z)
   local chest = game:AddNpc("/scripts/actors/logic/account_chest.lua")
   if (chest ~= nil) then
     local y = game:GetTerrainHeight(x, z)
-    chest:SetPosition(x, y, z)
+    chest:SetPosition({x, y, z})
     return chest
   end
   return nil
@@ -18,7 +18,7 @@ function createPortal(game, x, y, z, name, destination)
     portal:SetName(name)
     -- Map ID where this portal leads to
     portal:SetVarString("destination", destination)
-    portal:SetPosition(x, y, z)
+    portal:SetPosition({x, y, z})
     return portal
   end
   return nil

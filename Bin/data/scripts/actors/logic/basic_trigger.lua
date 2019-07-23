@@ -9,7 +9,7 @@ prof1Index = 0
 prof2Index = 0
 
 function onInit()
-  self:SetBoundingBox(-1, -1, -1, 1, 1, 1)
+  self:SetBoundingBox({-1, -1, -1}, {1, 1, 1})
   self:SetUndestroyable(true)
   -- Will call onTrigger() when it collides
   self:SetTrigger(true)

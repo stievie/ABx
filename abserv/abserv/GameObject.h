@@ -52,20 +52,19 @@ private:
     int64_t removeAt_{ 0 };
     std::unique_ptr<Math::CollisionShape> collisionShape_{ nullptr };
     std::vector<GameObject*> _LuaQueryObjects(float radius);
-    std::vector<GameObject*> _LuaRaycast(float x, float y, float z);
+    std::vector<GameObject*> _LuaRaycast(const Math::STLVector3& direction);
     Actor* _LuaAsActor();
     Npc* _LuaAsNpc();
     Player* _LuaAsPlayer();
-    void _LuaSetPosition(float x, float y, float z);
+    void _LuaSetPosition(const Math::STLVector3& pos);
     void _LuaSetRotation(float y);
-    void _LuaSetScale(float x, float y, float z);
+    void _LuaSetScale(const Math::STLVector3& scale);
     void _LuaSetScaleSimple(float value);
-    std::vector<float> _LuaGetPosition() const;
+    Math::STLVector3 _LuaGetPosition() const;
     float _LuaGetRotation() const;
-    std::vector<float> _LuaGetScale() const;
-    void _LuaSetBoundingBox(float minX, float minY, float minZ,
-        float maxX, float maxY, float maxZ);
-    void _LuaSetBoundingSize(float x, float y, float z);
+    Math::STLVector3 _LuaGetScale() const;
+    void _LuaSetBoundingBox(const Math::STLVector3& min, const Math::STLVector3& max);
+    void _LuaSetBoundingSize(const Math::STLVector3& size);
     std::string _LuaGetVarString(const std::string& name);
     void _LuaSetVarString(const std::string& name, const std::string& value);
     float _LuaGetVarNumber(const std::string& name);

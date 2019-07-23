@@ -52,12 +52,12 @@ class Actor : public GameObject
     friend class Components::HealComp;
     friend class Components::ProgressComp;
 private:
-    void _LuaGotoPosition(float x, float y, float z);
+    void _LuaGotoPosition(const Math::STLVector3& pos);
     int _LuaGetState();
     void _LuaSetState(int state);
-    void _LuaSetHomePos(float x, float y, float z);
-    void _LuaHeadTo(float x, float y, float z);
-    std::vector<float> _LuaGetHomePos();
+    void _LuaSetHomePos(const Math::STLVector3& pos);
+    void _LuaHeadTo(const Math::STLVector3& pos);
+    Math::STLVector3 _LuaGetHomePos();
     void _LuaFollowObject(GameObject* object);
     void _LuaAddEffect(Actor* source, uint32_t index, uint32_t time);
     void _LuaRemoveEffect(uint32_t index);

@@ -17,11 +17,11 @@ function onSuccess(source, target)
   if (source:IsDead()) then
     return SkillErrorInvalidTarget
   end
-  
+
   local game = source:GetGame()
   local pos = source:GetPosition()
   local trap = game:AddAreaOfEffect("/scripts/actors/aoe/ranger/spike_trap.lua",
-    source, 461, pos[1], pos[2], pos[3])
-  
+    source, 461, pos)
+
   return SkillErrorNone
 end

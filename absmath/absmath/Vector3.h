@@ -32,7 +32,7 @@ public:
         y_(y),
         z_(z)
     { }
-    Vector3(std::array<float, 3> values) noexcept :
+    Vector3(const std::array<float, 3>& values) noexcept :
         x_(values[0]),
         y_(values[1]),
         z_(values[2])

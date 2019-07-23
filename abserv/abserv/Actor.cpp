@@ -307,27 +307,21 @@ void Actor::_LuaSetState(int state)
     inputComp_.Add(InputType::SetState, data);
 }
 
-void Actor::_LuaSetHomePos(float x, float y, float z)
+void Actor::_LuaSetHomePos(const Math::STLVector3& pos)
 {
-    homePos_ = { x, y, z };
+    homePos_ = pos;
     if (Math::Equals(homePos_.y_, 0.0f))
-    {
         homePos_.y_ = GetGame()->map_->GetTerrainHeight(homePos_);
-    }
 }
 
-void Actor::_LuaHeadTo(float x, float y, float z)
+void Actor::_LuaHeadTo(const Math::STLVector3& pos)
 {
-    HeadTo(Math::Vector3(x, y, z));
+    HeadTo(pos);
 }
 
-std::vector<float> Actor::_LuaGetHomePos()
+Math::STLVector3 Actor::_LuaGetHomePos()
 {
-    std::vector<float> result;
-    result.push_back(homePos_.x_);
-    result.push_back(homePos_.y_);
-    result.push_back(homePos_.z_);
-    return result;
+    return (Math::STLVector3)homePos_;
 }
 
 void Actor::_LuaFollowObject(GameObject* object)
@@ -803,15 +797,15 @@ bool Actor::SetChest(const std::string& ciUuid)
     return inventoryComp_->SetChestItem(item, nullptr);
 }
 
-void Actor::_LuaGotoPosition(float x, float y, float z)
+void Actor::_LuaGotoPosition(const Math::STLVector3& pos)
 {
     if (IsImmobilized())
         return;
 
-    Math::Vector3 pos(x, y, z);
-    if (Math::Equals(y, 0.0f))
-        pos.y_ = GetGame()->map_->GetTerrainHeight(pos);
-    GotoPosition(pos);
+    Math::Vector3 _pos(pos);
+    if (Math::Equals(_pos.y_, 0.0f))
+        _pos.y_ = GetGame()->map_->GetTerrainHeight(_pos);
+    GotoPosition(_pos);
 }
 
 int Actor::_LuaGetState()

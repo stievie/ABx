@@ -6,7 +6,7 @@ function onStart()
     local x = -6.71275
     local z = 15.5906
     local y = self:GetTerrainHeight(x, z)
-    priest:SetPosition(x, y, z)
+    priest:SetPosition({x, y, z})
     priest:SetRotation(180)
     priest:SetGroupId(groupId)
   end
@@ -15,7 +15,7 @@ function onStart()
     local x = -6.71275
     local z = 17.5906
     local y = self:GetTerrainHeight(x, z)
-    guildLord:SetPosition(x, y, z)
+    guildLord:SetPosition({x, y, z})
     guildLord:SetRotation(180)
     guildLord:SetGroupId(groupId)
   end

@@ -28,7 +28,7 @@ function onStartUse(source, target)
   if (self:IsInRange(target) == false) then
     -- The target must be in range
     return SkillErrorOutOfRange
-  end  
+  end
   if (source:IsEnemy(target) == false) then
     -- Targets only enemies
     return SkillErrorInvalidTarget
@@ -47,8 +47,7 @@ function onSuccess(source, target)
   end
   local game = target:GetGame()
   local position = target:GetPosition();
-  local aoe = game:AddAreaOfEffect("/scripts/actors/aoe/elementarist/meteor_shower.lua", 
-    source, self:Index(),
-    position[1], position[2], position[3])
+  local aoe = game:AddAreaOfEffect("/scripts/actors/aoe/elementarist/meteor_shower.lua",
+    source, self:Index(), position)
   return SkillErrorNone
 end

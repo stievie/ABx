@@ -18,7 +18,6 @@ enum class Intersection
     Inside
 };
 
-// If we don't typedef them we can use ctors and operator from the Math library directly
 using STLVector3 = std::array<float, 3>;
 using STLVector4 = std::array<float, 4>;
 

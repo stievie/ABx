@@ -28,20 +28,12 @@ function onSelected(creature)
   if (creature == nil) then
     return;
   end
-    
+
   if (creature:IsDead()) then
     self:Say(CHAT_CHANNEL_GENERAL, "Wow, how did you manage to die here? Noob!")
   else
     self:Say(CHAT_CHANNEL_GENERAL, "What do you want?!?")
   end
---  print(creature:GetName() .. " selected me, the " .. self:GetName() .. " :D")
-  -- Testing Raycast
---  local pos = creature:GetPosition();
---  print("Raycast to " .. pos[1] .. "," .. pos[2] .. "," .. pos[3])
---  local objects = self:Raycast(pos[1], pos[2], pos[3]);
---  for i, v in ipairs(objects) do
---    print(i, v, v:GetName()) 
---  end
 end
 
 function onAttacked(source, _type, damage, success)

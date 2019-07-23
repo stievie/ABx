@@ -7,7 +7,7 @@ function onStart()
     local x = 93.8996
     local z = -35.5445
     local y = 32.1627
-    portal:SetPosition(x, y, z)
+    portal:SetPosition({x, y, z})
   end
 end
 

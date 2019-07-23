@@ -23,13 +23,13 @@ public:
         y_(y),
         z_(z)
     {}
-    Quaternion(std::array<float, 4> values) noexcept :
+    Quaternion(const std::array<float, 4>& values) noexcept :
         w_(values[0]),
         x_(values[1]),
         y_(values[2]),
         z_(values[3])
     {}
-    Quaternion(std::array<float, 3> values) noexcept :
+    Quaternion(const std::array<float, 3>& values) noexcept :
         // 0 = Pitch, 1 = Yaw, 2 = Roll
         Quaternion(values[0], values[1], values[2])
     {}

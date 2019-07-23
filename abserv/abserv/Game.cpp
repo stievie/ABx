@@ -67,11 +67,11 @@ Npc* Game::_LuaAddNpc(const std::string& script)
 
 AreaOfEffect* Game::_LuaAddAreaOfEffect(const std::string& script,
     Actor* source, uint32_t index,
-    float x, float y, float z)
+    const Math::STLVector3& pos)
 {
     auto o = AddAreaOfEffect(script,
         source ? source->GetThis<Actor>() : std::shared_ptr<Actor>(),
-        index, Math::Vector3(x, y, z));
+        index, pos);
     if (o)
         return o.get();
     return nullptr;

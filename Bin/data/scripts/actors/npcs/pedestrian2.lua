@@ -18,11 +18,11 @@ function onInit()
   return true
 end
 
-function onUpdate(timeElapsed)  
+function onUpdate(timeElapsed)
   if (Tick() - startTick > 10000 and self:GetState() == CREATURESTATE_IDLE) then
 --    local pos = self:GetPosition();
 --    print("going " .. pos[1] .. "," .. pos[2] .. "," .. pos[3])
---    self:GotoPosition(-48.85, 0.0, -34.67)
+--    self:GotoPosition({-48.85, 0.0, -34.67})
     startTick = Tick()
   end
 end

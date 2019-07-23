@@ -9,53 +9,53 @@ function onStart()
     local x = -6.71275
     local z = 15.5906
     local y = self:GetTerrainHeight(x, z)
-    smith:SetPosition(x, y, z)
+    smith:SetPosition({x, y, z})
     smith:SetRotation(180)
-    smith:SetHomePos(x, y, z)
+    smith:SetHomePos({x, y, z})
   end
   local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
     local x = 4.92965
     local z = 14.2049
     local y = self:GetTerrainHeight(x, z)
-    merchant:SetPosition(x, y, z)
+    merchant:SetPosition({x, y, z})
     merchant:SetRotation(180)
-    merchant:SetHomePos(x, y, z)
+    merchant:SetHomePos({x, y, z})
   end
   local ped = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
   if (ped ~= nil) then
     local x = 64.6874
     local z = 22.0684
     local y = self:GetTerrainHeight(x, z)
-    ped:SetPosition(x, y, z)
+    ped:SetPosition({x, y, z})
     ped:SetRotation(90)
-    ped:SetHomePos(x, y, z)
+    ped:SetHomePos({x, y, z})
   end
   local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian2.lua")
   if (ped2 ~= nil) then
     local x = 4.92965
     local z = 11.2049
     local y = self:GetTerrainHeight(x, z)
-    ped2:SetPosition(x, y, z)
-    ped2:SetHomePos(x, y, z)
+    ped2:SetPosition({x, y, z})
+    ped2:SetHomePos({x, y, z})
   end
 
   local chest = createChest(self, 0.8, 15.0)
   if (chest ~= nil) then
     chest:SetRotation(180)
   end
-  
+
   -- Add some poison
   local poison = self:AddAreaOfEffect(
     "/scripts/actors/aoe/general/poison_spout.lua",
-    nil, 10001, -14.8, 0.0, 22.98)
+    nil, 10001, {-14.8, 0.0, 22.98})
 
   local pdl = self:AddNpc("/scripts/actors/npcs/poison_dart_launcher.lua")
   if (pdl ~= nil) then
     local x = -46
     local z = 9
     local y = self:GetTerrainHeight(x, z)
-    pdl:SetPosition(x, y, z)
+    pdl:SetPosition({x, y, z})
   end
 
 end

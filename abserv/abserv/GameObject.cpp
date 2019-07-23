@@ -353,7 +353,7 @@ void GameObject::_LuaCallGameEvent(const std::string& name, GameObject* data)
         game->CallLuaEvent(name, this, data);
 }
 
-std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)
+std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& direction)
 {
     std::vector<GameObject*> result;
 
@@ -361,7 +361,7 @@ std::vector<GameObject*> GameObject::_LuaRaycast(float x, float y, float z)
         return result;
 
     const Math::Vector3& src = transformation_.position_;
-    const Math::Vector3 dest(x, y, z);
+    const Math::Vector3 dest(direction);
     std::vector<Math::RayQueryResult> res;
     const Math::Ray ray(src, dest);
     Math::RayOctreeQuery query(res, ray, src.Distance(dest));
@@ -437,11 +437,9 @@ Player* GameObject::_LuaAsPlayer()
     return nullptr;
 }
 
-void GameObject::_LuaSetPosition(float x, float y, float z)
+void GameObject::_LuaSetPosition(const Math::STLVector3& pos)
 {
-    transformation_.position_.x_ = x;
-    transformation_.position_.y_ = y;
-    transformation_.position_.z_ = z;
+    transformation_.position_ = pos;
 }
 
 void GameObject::_LuaSetRotation(float y)
@@ -451,11 +449,9 @@ void GameObject::_LuaSetRotation(float y)
     transformation_.SetYRotation(ang);
 }
 
-void GameObject::_LuaSetScale(float x, float y, float z)
+void GameObject::_LuaSetScale(const Math::STLVector3& scale)
 {
-    transformation_.scale_.x_ = x;
-    transformation_.scale_.y_ = y;
-    transformation_.scale_.z_ = z;
+    transformation_.scale_ = scale;
 }
 
 void GameObject::_LuaSetScaleSimple(float value)
@@ -465,13 +461,9 @@ void GameObject::_LuaSetScaleSimple(float value)
     transformation_.scale_.z_ = value;
 }
 
-std::vector<float> GameObject::_LuaGetPosition() const
+Math::STLVector3 GameObject::_LuaGetPosition() const
 {
-    std::vector<float> result;
-    result.push_back(transformation_.position_.x_);
-    result.push_back(transformation_.position_.y_);
-    result.push_back(transformation_.position_.z_);
-    return result;
+    return (Math::STLVector3)transformation_.position_;
 }
 
 float GameObject::_LuaGetRotation() const
@@ -479,18 +471,12 @@ float GameObject::_LuaGetRotation() const
     return Math::RadToDeg(transformation_.GetYRotation());
 }
 
-std::vector<float> GameObject::_LuaGetScale() const
+Math::STLVector3 GameObject::_LuaGetScale() const
 {
-    std::vector<float> result;
-    result.push_back(transformation_.scale_.x_);
-    result.push_back(transformation_.scale_.y_);
-    result.push_back(transformation_.scale_.z_);
-    return result;
+    return (Math::STLVector3)transformation_.scale_;
 }
 
-void GameObject::_LuaSetBoundingBox(
-    float minX, float minY, float minZ,
-    float maxX, float maxY, float maxZ)
+void GameObject::_LuaSetBoundingBox(const Math::STLVector3& min, const Math::STLVector3& max)
 {
     if (!collisionShape_)
         return;
@@ -499,8 +485,8 @@ void GameObject::_LuaSetBoundingBox(
         using BBoxShape = Math::CollisionShapeImpl<Math::BoundingBox>;
         BBoxShape* shape = static_cast<BBoxShape*>(GetCollisionShape());
         auto* obj = shape->Object();
-        obj->min_ = Math::Vector3(minX, minY, minZ);
-        obj->max_ = Math::Vector3(maxX, maxY, maxZ);
+        obj->min_ = min;
+        obj->max_ = max;
     }
 }
 
@@ -535,9 +521,9 @@ void GameObject::SetBoundingSize(const Math::Vector3& size)
     }
 }
 
-void GameObject::_LuaSetBoundingSize(float x, float y, float z)
+void GameObject::_LuaSetBoundingSize(const Math::STLVector3& size)
 {
-    SetBoundingSize({ x, y, z });
+    SetBoundingSize(size);
 }
 
 std::string GameObject::_LuaGetVarString(const std::string& name)

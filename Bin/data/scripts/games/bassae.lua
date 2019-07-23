@@ -4,8 +4,8 @@ function onStart()
     local x = 4.92965
     local z = 5.2049
     local y = self:GetTerrainHeight(x, z)
-    ped2:SetPosition(x, y, z)
-  end  
+    ped2:SetPosition({x, y, z})
+  end
 end
 
 function onStop()

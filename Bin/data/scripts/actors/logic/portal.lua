@@ -7,7 +7,7 @@ creatureState = CREATURESTATE_IDLE
 
 function onInit()
   -- Player collides with BB. Make it a bit larget than the default BB.
-  self:SetBoundingSize(1.0, 2.0, 2.0)
+  self:SetBoundingSize({1.0, 2.0, 2.0})
   self:SetUndestroyable(true)
   -- Will call onTrigger() when it collides
   self:SetTrigger(true)

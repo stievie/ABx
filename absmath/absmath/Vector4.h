@@ -35,7 +35,7 @@ public:
         w_(w)
     { }
 
-    Vector4(const std::array<float, 4> values) noexcept :
+    Vector4(const std::array<float, 4>& values) noexcept :
         x_(values[0]),
         y_(values[1]),
         z_(values[2]),
