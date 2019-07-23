@@ -83,13 +83,13 @@ void GameObject::UpdateRanges()
     // Compass radius
     if (QueryObjects(res, RANGE_COMPASS))
     {
+        const Math::Vector3& myPos = GetPosition();
         for (const auto& o : res)
         {
             if (o != this && o->GetType() > AB::GameProtocol::ObjectTypeSentToPlayer)
             {
                 auto so = o->shared_from_this();
-                const Math::Vector3 objectPos = o->GetPosition();
-                const Math::Vector3 myPos = GetPosition();
+                const Math::Vector3& objectPos = o->GetPosition();
                 const float dist = myPos.Distance(objectPos);
                 if (dist <= RANGE_AGGRO)
                     ranges_[Ranges::Aggro].push_back(so);
