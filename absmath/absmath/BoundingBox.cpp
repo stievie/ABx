@@ -138,8 +138,8 @@ void BoundingBox::Merge(const Vector3* vertices, unsigned count)
 
 void BoundingBox::Reset()
 {
-    min_ = { INFINITY, INFINITY, INFINITY };
-    max_ = { -INFINITY, -INFINITY, -INFINITY };
+    min_ = { Math::M_INFINITE, Math::M_INFINITE, Math::M_INFINITE };
+    max_ = { -Math::M_INFINITE, -Math::M_INFINITE, -Math::M_INFINITE };
     orientation_ = Quaternion::Identity;
 }
 

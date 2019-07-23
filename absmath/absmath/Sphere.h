@@ -15,7 +15,7 @@ class Sphere
 public:
     Sphere() noexcept :
         center_(Vector3::Zero),
-        radius_(-INFINITY)
+        radius_(-Math::M_INFINITE)
     {}
     /// Copy-construct from another sphere.
     Sphere(const Sphere& sphere) noexcept :
@@ -66,7 +66,7 @@ public:
     void Reset()
     {
         center_ = Vector3::Zero;
-        radius_ = -INFINITY;
+        radius_ = -Math::M_INFINITE;
     }
 
     /// Return true if this sphere is defined via a previous call to Define() or Merge().

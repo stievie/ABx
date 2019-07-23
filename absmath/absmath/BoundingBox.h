@@ -36,8 +36,8 @@ private:
     bool ResolveCollision(const BoundingBox& b2, const Vector3& velocity, Vector3& result) const;
 public:
     BoundingBox() noexcept :
-        min_(Vector3(INFINITY, INFINITY, INFINITY)),
-        max_(Vector3(-INFINITY, -INFINITY, -INFINITY)),
+        min_(Vector3(Math::M_INFINITE, Math::M_INFINITE, Math::M_INFINITE)),
+        max_(Vector3(-Math::M_INFINITE, -Math::M_INFINITE, -Math::M_INFINITE)),
         orientation_(Quaternion::Identity)
     { }
     BoundingBox(const BoundingBox& other) noexcept :
@@ -116,7 +116,7 @@ public:
         return (max_ - min_) * 0.5f;
     }
 
-    bool IsDefined() const { return min_.x_ != INFINITY; }
+    bool IsDefined() const { return !Math::IsInfinite(min_.x_); }
     bool IsOriented() const { return orientation_ != Quaternion::Identity; }
     std::string ToString() const
     {

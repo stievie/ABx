@@ -113,7 +113,7 @@ class RayOctreeQuery
 public:
     /// Construct with ray and query parameters.
     RayOctreeQuery(std::vector<RayQueryResult>& result, const Ray& ray,
-        float maxDistance = INFINITY) :
+        float maxDistance = Math::M_INFINITE) :
         result_(result),
         ray_(ray),
         maxDistance_(maxDistance)

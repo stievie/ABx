@@ -33,16 +33,16 @@ float Ray::HitDistance(const BoundingBox& box) const
 {
     // If undefined, no hit (infinite distance)
     if (!box.IsDefined())
-        return INFINITY;
+        return Math::M_INFINITE;
 
-    float dist = INFINITY;
+    float dist = Math::M_INFINITE;
 
 #if defined(HAVE_DIRECTX_MATH)
     const XMath::BoundingOrientedBox xbb = (XMath::BoundingOrientedBox)box;
     if (xbb.Intersects(origin_, direction_, dist))
         return dist;
     else
-        return INFINITY;
+        return Math::M_INFINITE;
 #else
     // Check for ray origin being inside the box
     if (box.IsInside(origin_) != Intersection::Outside)

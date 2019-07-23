@@ -77,7 +77,7 @@ void Octree::RaycastSingle(RayOctreeQuery& query) const
     std::sort(rayQueryObjects_.begin(), rayQueryObjects_.end(), Game::CompareObjects);
 
     // Then do the actual test according to the query, and early-out as possible
-    float closestHit = INFINITY;
+    float closestHit = Math::M_INFINITE;
     for (auto object : rayQueryObjects_)
     {
         if (object->GetSortValue() < std::min(closestHit, query.maxDistance_))

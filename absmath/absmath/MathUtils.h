@@ -44,7 +44,7 @@ inline bool Equals(T lhs, T rhs, T epsilon)
 template <typename T>
 inline bool IsInfinite(T value)
 {
-    return Equals(value, static_cast<T>(INFINITY));
+    return Equals(value, static_cast<T>(Math::M_INFINITE));
 }
 
 template <typename T, typename U>
