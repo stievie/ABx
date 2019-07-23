@@ -3,6 +3,7 @@
 #include "MathDefs.h"
 #include <vector>
 #include <sstream>
+#include <limits>
 
 namespace Math {
 
@@ -44,7 +45,8 @@ inline bool Equals(T lhs, T rhs, T epsilon)
 template <typename T>
 inline bool IsInfinite(T value)
 {
-    return Equals(value, static_cast<T>(Math::M_INFINITE));
+    static_assert(std::numeric_limits<T>::has_infinity);
+    return Equals(value, std::numeric_limits<T>::infinity());
 }
 
 template <typename T, typename U>
