@@ -70,7 +70,7 @@ private:
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
     Game* _LuaGetGame();
-    /// Call a method on of the game script. data is optional
+    /// Call a method of the game script. data is optional
     void _LuaCallGameEvent(const std::string& name, GameObject* data);
 protected:
     std::mutex lock_;
