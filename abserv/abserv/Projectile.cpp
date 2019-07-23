@@ -88,11 +88,21 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     if (started_)
         return;
     target_ = target;
-    targetPos_ = target->transformation_.position_;
-    ray_ = Math::Ray(start_, targetPos_);
+    targetPos_ = target->transformation_.position_ + BodyOffset;
+    HeadTo(targetPos_);
+    moveComp_->HeadTo(targetPos_);
+    ray_ = Math::Ray(start_, targetPos_ - start_);
 
     const auto targetBB = target->GetWorldBoundingBox();
     distance_ = ray_.HitDistance(targetBB);
+    if (Math::IsInfinite(distance_))
+    {
+        if (auto source = source_.lock())
+            source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetObstructed);
+        Remove();
+        return;
+    }
+    currentDistance_ = distance_;
     started_ = OnStart();
 }
 
@@ -116,7 +126,6 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
     if (started_)
     {
-        moveComp_->HeadTo(targetPos_);
         moveComp_->Move(((float)(timeElapsed) / BASE_SPEED) * moveComp_->GetSpeedFactor(),
             Math::Vector3::UnitZ);
     }
@@ -134,35 +143,32 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     auto source = source_.lock();
     if (auto target = target_.lock())
     {
-        if (!target->transformation_.position_.Equals(targetPos_))
-        {
-            if (source)
-                source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetDodge);
-            LOG_INFO << "Dodge" << std::endl;
-            Remove();
-            return;
-        }
         const auto targetBB = target->GetWorldBoundingBox();
         assert(targetBB.IsDefined());
         assert(ray_.IsDefined());
         const float dist = ray_.HitDistance(targetBB);
-        if (dist < distance_)
-            distance_ = dist;
-        else
+        if (dist < currentDistance_)
+            currentDistance_ = dist;
+        else if (Math::IsInfinite(dist))
         {
-            // Increasing distance -> missed
+            // No Hit
             if (source)
             {
-                if (!source->IsObjectInSight(target.get()))
-                {
-                    source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetObstructed);
-                    LOG_INFO << "Obstructed" << std::endl;
-                    Remove();
-                    return;
-                }
+                source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetMissed);
+                Remove();
+                return;
             }
+        }
+        else if (!Math::Equals(currentDistance_, dist))
+        {
+            // Increasing distance
             OnCollide(target.get());
         }
+    }
+    else
+    {
+        // Target gone
+        Remove();
     }
 }
 

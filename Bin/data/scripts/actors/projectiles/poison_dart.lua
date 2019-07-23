@@ -2,7 +2,7 @@ include("/scripts/includes/consts.lua")
 include("/scripts/includes/damage.lua")
 
 function onInit()
-  self:SetSpeed(1.0)
+  self:SetSpeed(5.0)
   return true
 end
 
@@ -15,7 +15,8 @@ function onHitTarget(creature)
   local actor = creature:AsActor()
   if (actor ~= nil) then
     print("Hit", actor:GetName())
-    actor:ApplyDamage(nil, 0, DAMAGETYPE_PIERCING, 33, 0)
+    actor:ApplyDamage(nil, 0, DAMAGETYPE_PIERCING, 3, 0)
+--    actor:ApplyDamage(nil, 0, DAMAGETYPE_PIERCING, 33, 0)
     actor:AddEffect(nil, 10002, 8000)
   end
 end

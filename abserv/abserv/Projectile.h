@@ -30,9 +30,9 @@ private:
     Math::Vector3 targetPos_;
     Math::Ray ray_;
     float distance_{ std::numeric_limits<float>::max() };
+    float currentDistance_{ std::numeric_limits<float>::max() };
     std::weak_ptr<Actor> source_;
     std::weak_ptr<Actor> target_;
-    float speed_{ 0.0f };
     bool started_{ false };
     uint32_t itemIndex_{ 0 };
     std::string itemUuid_;

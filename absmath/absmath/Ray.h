@@ -13,6 +13,8 @@ class Ray
 {
 public:
     Ray() {}
+    /// Construct from origin and direction.
+    /// Hint: To get a Ray from one point to another use (target - origin) as direction
     Ray(const Vector3& origin, const Vector3& direction)
     {
         Define(origin, direction);

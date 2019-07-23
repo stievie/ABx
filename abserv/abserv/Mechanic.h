@@ -42,7 +42,7 @@ static constexpr float MAX_IAS = 1.33f;                    // Increased Attack S
 static constexpr float MAX_DAS = 0.5f;                     // Decreased Attack Speed
 
 // TODO: Check size
-static constexpr float PROJECTILE_SIZE = 0.3f;
+static constexpr float PROJECTILE_SIZE = 0.1f;
 
 // Ranges
 static constexpr float RANGE_BASE         = 80.0f;

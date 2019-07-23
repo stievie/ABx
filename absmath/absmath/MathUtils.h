@@ -41,6 +41,12 @@ inline bool Equals(T lhs, T rhs, T epsilon)
     return lhs + epsilon >= rhs && lhs - epsilon <= rhs;
 }
 
+template <typename T>
+inline bool IsInfinite(T value)
+{
+    return Equals(value, static_cast<T>(INFINITY));
+}
+
 template <typename T, typename U>
 inline T Lerp(T lhs, T rhs, U i)
 {
