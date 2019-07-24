@@ -1,8 +1,10 @@
 # Windows
 
-Visual Studio 2017 required. Open `.sln` files and build.
+Visual Studio 2017 required. Open `.sln` files and build. There are `.sln` files in `absall` and
+in the directories of the projects.
 
-Didn't try with Visual Studio 2019 tools chain yet.
+I use Visual Studio 2019 as IDE with the Visual Studio 2017 tools chain. I didn't try the Visual 
+Studio 2019 tools chain yet.
 
 # Linux
 
@@ -13,21 +15,27 @@ in `makefiles/makefile.common`. But we keep GCC for various reasons.
 
 ## Dependencies
 
-* `uuid-dev` (https://packages.debian.org/jessie/uuid-dev)
-* `libmysqlclient-dev` (https://packages.debian.org/jessie/armhf/libmysqlclient-dev) or MariaDB
-* `libpq-dev` (https://packages.debian.org/jessie/armhf/libpq-dev)
-* `libsqlite3-dev` (https://packages.debian.org/jessie/armhf/libsqlite3-dev)
-* libldap2-dev, libssl-dev, libgsasl7-dev, libkrb5-dev, lua5.3, lua5.3-dev
+* `uuid-dev`
+* `libmysqlclient-dev` or MariaDB when building with `USE_MYSQL`
+* `libpq-dev` when building with `USE_PGSQL`
+* `libsqlite3-dev` when building with `USE_SQLITE`
+* libssl-dev
+* libldap2-dev (for PostgreSQL)
+* libgsasl7-dev (for PostreSQL)
+* libkrb5-dev (for PostgreSQL)
+* lua5.3
+* lua5.3-dev
+
+Your distribution may have different names for these libraries.
+
+I didn't try any other database backend than PostgreSQL since some time, so the others may or may
+not work.
 
 ## Build
 
 1. Install the required packages.
 2. `cd` to `./makefiles`
-3. Type `make`
-
-## Trouble shooting
-
-1. Link error multiple definition of: Clean -> Build, delete all `*.a` files. `make clean`
+3. Type `make`.
 
 ## Client
 
