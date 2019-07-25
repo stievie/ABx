@@ -12,9 +12,15 @@ PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
 DEFINES += -DUSE_PGSQL
 # Database Libs
-# LIBS += -lsqlite3
+ifneq (,$(findstring USE_PGSQL,$(DEFINES)))
 LIBS += -ldl -lpq -lldap -lssl -lcrypto -lz -lgssapi_krb5
-# LIBS +=  -lmariadbclient
+endif
+ifneq (,$(findstring USE_SQLITE,$(DEFINES)))
+LIBS += -lsqlite3
+endif
+ifneq (,$(findstring USE_MYSQL,$(DEFINES)))
+LIBS +=  -lmariadbclient
+endif
 # End changes
 
 SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp))
