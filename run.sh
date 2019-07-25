@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd Bin
+
 # Start these only if they are not running
 ps auxw | grep abdata | grep -v grep > /dev/null
 if [ $? != 0 ]
@@ -28,3 +30,6 @@ fi
 ./abserv &
 # start abserv -conf abserv2.lua
 # start abserv -conf abserv3.lua
+
+cd ..
+
