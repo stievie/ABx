@@ -75,6 +75,25 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
 #endif
 }
 
+float TerrainPatch::CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const
+{
+    const float dt = 0.1f;
+    const float mint = 0.001f;
+    float lh = 0.0f;
+    float ly = 0.0f;
+    for (float t = mint; t < maxDist; t += dt)
+    {
+        const Math::Vector3 p = origin + direction * t;
+        const float h = GetHeight(p);
+        if (p.y_ < h)
+            // Get the intersection distance
+            return (t - dt + dt * (lh - ly) / (p.y_ - ly - h + lh));
+        lh = h;
+        ly = p.y_;
+    }
+    return Math::M_INFINITE;
+}
+
 void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
     std::vector<Math::RayQueryResult>& results)
 {
@@ -82,13 +101,18 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
     {
         const Math::Matrix4& matrix = o->transformation_.GetMatrix();
         Math::Ray localRay = query.ray_.Transformed(matrix.Inverse());
-        float distance = localRay.HitDistance(boundingBox_);
+        float max = Math::Clamp(Math::IsInfinite(query.maxDistance_) ? static_cast<float>(o->patchSize_) : query.maxDistance_,
+            0.0f,
+            static_cast<float>(o->patchSize_));
+
+        float distance = CastRay(localRay.origin_, localRay.direction_, max);
+        LOG_INFO << distance << std::endl;
         Math::Vector3 normal = -query.ray_.direction_;
 
-        if (distance < query.maxDistance_)
+        if (!Math::IsInfinite(distance) && (distance < query.maxDistance_))
         {
-#ifdef _DEBUG
-//            LOG_DEBUG << "Raycast hit " << name_ << std::endl;
+#ifdef DEBUG_COLLISION
+            LOG_DEBUG << "Raycast hit " << name_ << std::endl;
 #endif
             Math::RayQueryResult result;
             result.position_ = query.ray_.origin_ + distance * query.ray_.direction_;
@@ -97,7 +121,7 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
             result.object_ = this;
             results.push_back(result);
         }
-#ifdef _DEBUG
+#ifdef DEBUG_COLLISION
         else
         {
             LOG_DEBUG << "Raycast no hit with " << name_ << " distance = " << distance <<
@@ -114,6 +138,20 @@ Math::BoundingBox TerrainPatch::GetWorldBoundingBox() const
     if (auto t = owner_.lock())
         return boundingBox_.Transformed(t->transformation_.GetMatrix());
     return Math::BoundingBox();
+}
+
+float TerrainPatch::GetHeight(const Math::Vector3& position) const
+{
+    // Local coordinates
+    if (auto o = owner_.lock())
+    {
+        const Math::Vector3 pos(
+            position.x_ + (static_cast<float>(offset_.x_) * static_cast<float>(o->patchSize_)),
+            0.0f,
+            position.z_ + (static_cast<float>(offset_.y_) * static_cast<float>(o->patchSize_)));
+        return o->GetHeight(pos);
+    }
+    return 0.0f;
 }
 
 }
