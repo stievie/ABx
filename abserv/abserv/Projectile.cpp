@@ -123,7 +123,6 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
 
     else if (obstructed)
     {
-        LOG_INFO << "Error: Obstructed" << std::endl;
         SetError(AB::GameProtocol::AttackErrorTargetObstructed);
     }
     currentDistance_ = distance_;
