@@ -3,7 +3,7 @@
 	<attribute name="Is Enabled" value="true" />
 	<attribute name="Name" value="Poison" />
 	<attribute name="Tags" />
-	<attribute name="Position" value="1.91117 0 0" />
+	<attribute name="Position" value="0 0 0" />
 	<attribute name="Rotation" value="1 0 0 0" />
 	<attribute name="Scale" value="1 1 1" />
 	<attribute name="Variables" />
@@ -11,9 +11,8 @@
 		<attribute name="Effect" value="ParticleEffect;Particle/Poison.xml" />
 		<attribute name="Cast Shadows" value="true" />
 		<attribute name="Animation LOD Bias" value="0" />
-		<attribute name="Is Emitting" value="true" />
-		<attribute name="Period Timer" value="0.220793" />
-		<attribute name="Emission Timer" value="-0.00704473" />
+		<attribute name="Period Timer" value="6.9967" />
+		<attribute name="Emission Timer" value="1.83208" />
 		<attribute name="Particles">
 			<variant type="Int" value="20" />
 		</attribute>
@@ -21,5 +20,9 @@
 			<variant type="Int" value="20" />
 		</attribute>
 		<attribute name="Serialize Particles" value="false" />
+	</component>
+	<component type="StaticModel" id="16777434">
+		<attribute name="Model" value="Model;Models/Mushroom.mdl" />
+		<attribute name="Material" value="Material;Materials/Mushroom.xml" />
 	</component>
 </node>
