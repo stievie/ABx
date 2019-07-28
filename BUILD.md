@@ -8,7 +8,11 @@ Studio 2019 tools chain yet.
 
 # Linux
 
-Install GCC, ccache.
+## Prerequisites
+
+* GCC
+* GNU make
+* ccache
 
 It should also compile with Clang out of the box, just change `CXX` to `clang++` and `CC` to `clang`
 in `makefiles/makefile.common`. But we keep GCC for various reasons.
