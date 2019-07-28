@@ -2,6 +2,7 @@
 #include <catch.hpp>
 
 #include "Vector3.h"
+#include "Vector4.h"
 
 TEST_CASE("Vector3 Construct", "[vector3]")
 {

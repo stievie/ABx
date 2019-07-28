@@ -19,12 +19,11 @@ TEST_CASE("Ray", "[ray]")
     }
     SECTION("Distance")
     {
-        Math::Vector3 origin(0.0f, 0.0f, 0.0f);
-        Math::Vector3 direction(0.0f, 0.0f, 1.0f);
+        Math::Vector3 origin(1.0f, 1.0f, 1.0f);
+        Math::Vector3 direction(0.0f, 1.0f, 0.0f);
         Math::Ray ray(origin, direction);
-        float dist = ray.Distance(Math::Vector3(0.0f, 0.0f, 5.0f));
-        // TODO: Shouldn't it be 5
-        REQUIRE(dist == 0.0f);
+        float dist = ray.Distance(Math::Vector3(5.0f, 1.0f, 5.0f));
+        REQUIRE(dist == Approx(5.65685));
     }
 }
 

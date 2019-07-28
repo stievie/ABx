@@ -28,3 +28,9 @@ TEST_CASE("NormalizeAngle")
         REQUIRE(nomalAngle == Approx(30.0f));
     }
 }
+
+TEST_CASE("Lerp")
+{
+    float r = Math::Lerp(1.0f, 2.0f, 0.5f);
+    REQUIRE(r == Approx(1.5f));
+}

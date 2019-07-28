@@ -33,7 +33,6 @@ TEST_CASE("BoundingBox Basic", "[boundingbox]")
         REQUIRE(extends.y_ == 2.0f);
         REQUIRE(extends.z_ == 2.0f);
     }
-
 }
 
 TEST_CASE("BoundingBox Transform", "[boundingbox]")
@@ -62,7 +61,6 @@ TEST_CASE("BoundingBox Transform", "[boundingbox]")
         REQUIRE(transformed.max_.y_ == 3.0f);
         REQUIRE(transformed.max_.z_ == 3.0f);
     }
-
 }
 
 TEST_CASE("BoundingBox Collisions", "[boundingbox]")
@@ -213,9 +211,5 @@ TEST_CASE("BoundingBox Conversion", "[boundingbox]")
 
         REQUIRE(edges[0].start_ == Math::Vector3(-2.0f, -2.0f, -2.0f));
         REQUIRE(edges[0].end_ == Math::Vector3(-2.0f, 2.0f, -2.0f));
-
-//        bb1.orientation_ = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::DegToRad(90.0f));
-//        auto edges2 = bb1.Transformed(bb1.orientation_.GetMatrix()).GetEdges();
-//        REQUIRE(edges2[0].start_ == Math::Vector3::UnitX);
     }
 }

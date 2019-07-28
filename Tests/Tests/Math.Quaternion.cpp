@@ -16,6 +16,14 @@ TEST_CASE("Quaternion Construct")
         REQUIRE(quat.y_ == 2.0f);
         REQUIRE(quat.z_ == 3.0f);
     }
+    SECTION("From Euler Angles")
+    {
+        Math::Quaternion quat(1.0f, Math::M_PIFOURTH, 1.0f);
+        Math::Vector3 euler = quat.EulerAngles();
+        REQUIRE(euler.x_ == Approx(1.0f));
+        REQUIRE(euler.y_ == Approx(Math::M_PIFOURTH));
+        REQUIRE(euler.z_ == Approx(1.0f));
+    }
     SECTION("From String")
     {
         // 45 Deg
@@ -33,23 +41,21 @@ TEST_CASE("Quaternion Construct")
         REQUIRE(quat.y_ == Approx(0.382683456f));
         REQUIRE(quat.z_ == 0.0f);
     }
-    SECTION("Euler")
+    SECTION("From LookAt")
     {
-        Math::Quaternion quat(0.92388f, 0.0f, 0.382683f, 0.0f);
-        Math::Quaternion quat2(0.0f, Math::DegToRad(45.0f), 0.0f);
+        Math::Vector3 from{ 1.0f, 1.0f, 1.0f };
+        Math::Vector3 to{ 2.0f, 1.0f, 3.0f };
+        Math::Quaternion quat = Math::Quaternion::FromLookAt(from, to);
         Math::Vector3 euler = quat.EulerAngles();
-        REQUIRE(euler.x_ == 0.0f);
-        REQUIRE(Math::RadToDeg(euler.y_) == Approx(45.0f));
-        REQUIRE(euler.z_ == 0.0f);
-    }
-    SECTION("To AxisAngle")
-    {
-        // 45 Deg
-        Math::Quaternion quat(0.92388f, 0.0f, 0.382683f, 0.0f);
-        Math::Vector4 aa = quat.AxisAngle();
-        REQUIRE(aa.y_ * aa.w_ == Approx(Math::DegToRad(45.0f)));
-        REQUIRE(aa.x_ == 0.0f);
-        REQUIRE(aa.z_ == 0.0f);
+        float degY = Math::RadToDeg(euler.y_);
+        INFO(degY);
+        const Math::Matrix4 mat = Math::Matrix4::FromLookAt(to, from, Math::Vector3::UnitY);
+        Math::Quaternion oriention = mat.Rotation();
+
+        REQUIRE(quat.w_ == Approx(oriention.w_));
+        REQUIRE(quat.x_ == Approx(oriention.x_));
+        REQUIRE(quat.y_ == Approx(oriention.y_));
+        REQUIRE(quat.z_ == Approx(oriention.z_));
     }
 }
 
@@ -115,6 +121,24 @@ TEST_CASE("Quaternion Operations")
 
 TEST_CASE("Quaternion Methods")
 {
+    SECTION("Euler")
+    {
+        Math::Quaternion quat(0.92388f, 0.0f, 0.382683f, 0.0f);
+        Math::Quaternion quat2(0.0f, Math::DegToRad(45.0f), 0.0f);
+        Math::Vector3 euler = quat.EulerAngles();
+        REQUIRE(euler.x_ == 0.0f);
+        REQUIRE(Math::RadToDeg(euler.y_) == Approx(45.0f));
+        REQUIRE(euler.z_ == 0.0f);
+    }
+    SECTION("To AxisAngle")
+    {
+        // 45 Deg
+        Math::Quaternion quat(0.92388f, 0.0f, 0.382683f, 0.0f);
+        Math::Vector4 aa = quat.AxisAngle();
+        REQUIRE(aa.y_ * aa.w_ == Approx(Math::DegToRad(45.0f)));
+        REQUIRE(aa.x_ == 0.0f);
+        REQUIRE(aa.z_ == 0.0f);
+    }
     SECTION("Scaling")
     {
         Math::Quaternion quat(1.0f, 2.0f, 3.0f, 4.0f);
@@ -138,7 +162,7 @@ TEST_CASE("Quaternion Methods")
     }
     SECTION("Scaling")
     {
-        Math::Quaternion q = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, float(M_PI) / 3.0f);
+        Math::Quaternion q = Math::Quaternion::FromAxisAngle(Math::Vector3::UnitY, Math::M_PIF / 3.0f);
         REQUIRE(q.w_ == Approx(std::sqrt(3.0f) / 2.0f));
         REQUIRE(q.x_ == Approx(0.0f));
         REQUIRE(q.y_ == Approx(0.5f));
