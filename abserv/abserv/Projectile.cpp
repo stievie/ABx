@@ -183,11 +183,12 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     const float speed = moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     moveComp_->Move(speed, Math::Vector3::UnitZ);
-
     // Adjust Y
-    transformation_.position_.y_ = Math::Lerp(startPos_.y_,
+    transformation_.position_.y_ = Math::Lerp(
+        startPos_.y_,
         targetPos_.y_,
         GetPosition().Distance(targetPos_) / distance_);
+
     const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
     Actor::Update(timeElapsed, message);
 

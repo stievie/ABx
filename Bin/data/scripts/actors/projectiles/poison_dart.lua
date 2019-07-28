@@ -6,10 +6,6 @@ function onInit()
   return true
 end
 
-function onStart(creature)
-  self:SetState(CREATURESTATE_MOVING)
-end
-
 function onHitTarget(creature)
   -- TODO: Make some index for this "skill"
   local actor = creature:AsActor()
