@@ -70,7 +70,7 @@ void AutoRunComp::MoveTo(uint32_t timeElapsed, const Math::Vector3& dest)
 {
     owner_.moveComp_->HeadTo(dest);
     owner_.moveComp_->Move(
-        (static_cast<float>(timeElapsed) / BASE_SPEED) * owner_.moveComp_->GetSpeedFactor(),
+        owner_.moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED),
         Math::Vector3::UnitZ);
 }
 

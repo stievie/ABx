@@ -125,6 +125,7 @@ public:
     {
         return atan2f(x_ - v.x_, z_ - v.z_);
     }
+    Vector3 Orthogonal() const;
 
     float LengthSqr() const;
     float Length() const;

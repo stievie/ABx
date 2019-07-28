@@ -28,6 +28,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("SetCollisionMask", &GameObject::SetCollisionMask)
         .addFunction("QueryObjects",     &GameObject::_LuaQueryObjects)
         .addFunction("Raycast",          &GameObject::_LuaRaycast)
+        .addFunction("RaycastTo",        &GameObject::_LuaRaycastTo)
         .addFunction("SetBoundingBox",   &GameObject::_LuaSetBoundingBox)
         .addFunction("SetBoundingSize",  &GameObject::_LuaSetBoundingSize)
         .addFunction("GetVarString",     &GameObject::_LuaGetVarString)
@@ -56,6 +57,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
         .addFunction("GetClosestActor",  &GameObject::GetClosestActor)
         .addFunction("IsInRange",        &GameObject::IsInRange)
+        .addFunction("IsCloserThan",     &GameObject::IsCloserThan)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
         .addFunction("Remove",           &GameObject::Remove)
@@ -270,19 +272,23 @@ void GameObject::OnCollide(GameObject* other)
         triggerComp_->OnCollide(other);
 }
 
-bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction) const
+bool GameObject::Raycast(std::vector<GameObject*>& result,
+    const Math::Vector3& direction,
+    float maxDist /* = Math::M_INFINITE */) const
 {
-    return Raycast(result, transformation_.position_ + HeadOffset, direction);
+    return Raycast(result, transformation_.position_ + HeadOffset, direction, maxDist);
 }
 
-bool GameObject::Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction) const
+bool GameObject::Raycast(std::vector<GameObject*>& result,
+    const Math::Vector3& position, const Math::Vector3& direction,
+    float maxDist /* = Math::M_INFINITE */) const
 {
     if (!octant_)
         return false;
 
     std::vector<Math::RayQueryResult> res;
     Math::Ray ray(position, direction);
-    Math::RayOctreeQuery query(res, ray);
+    Math::RayOctreeQuery query(res, ray, maxDist);
     Math::Octree* octree = octant_->GetRoot();
     octree->Raycast(query);
     for (const auto& o : query.result_)
@@ -299,8 +305,7 @@ bool GameObject::IsObjectInSight(const GameObject* object) const
     {
         for (const auto* o : result)
         {
-            if (!o->occluder_ || o->GetType() == AB::GameProtocol::ObjectTypeTerrainPatch)
-                // Object collides with the Terrain not TerrainPatches
+            if (!o->occluder_)
                 continue;
             if (o->id_ == id_)
                 // Oh, thats we
@@ -382,6 +387,18 @@ std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& directi
             result.push_back(o.object_);
     }
     return result;
+}
+
+std::vector<GameObject*> GameObject::_LuaRaycastTo(const Math::STLVector3& destination)
+{
+    const Math::Vector3& src = transformation_.position_;
+    const Math::Vector3 direction = Math::Vector3(destination) - src;
+    return _LuaRaycast(direction);
+}
+
+bool GameObject::IsCloserThan(float maxDist, const GameObject* object) const
+{
+    return GetDistance(object) < maxDist;
 }
 
 std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)

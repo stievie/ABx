@@ -52,7 +52,7 @@ inline bool IsInfinite(T value)
 template <typename T, typename U>
 inline T Lerp(T lhs, T rhs, U i)
 {
-    return (i - lhs) / (rhs - lhs);
+    return lhs * (static_cast<U>(1.0) - i) + rhs * i;
 }
 
 /// Return fractional part of passed value in range [0, 1).

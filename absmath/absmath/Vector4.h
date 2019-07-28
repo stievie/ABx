@@ -104,6 +104,13 @@ public:
     const Vector4 Normal() const;
     void Normalize();
 
+    std::string ToString() const
+    {
+        std::stringstream ss;
+        ss << w_ << " " << x_ << " " << y_ << " " << z_;
+        return ss.str();
+    }
+
     float x_;
     float y_;
     float z_;

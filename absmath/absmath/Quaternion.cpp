@@ -54,27 +54,22 @@ Quaternion::Quaternion(const std::string& str)
     z_ = std::stof(parts.at(3));
 }
 
-Quaternion Quaternion::FromTwoVectors(const Vector3& u, const Vector3& v)
+Quaternion Quaternion::FromLookAt(const Vector3& from, const Vector3& to)
 {
-    // http://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
-    float normUNormV = sqrt(u.DotProduct(u) * v.DotProduct(v));
-    float realPart = normUNormV + u.DotProduct(v);
-    Vector3 w;
-    if (realPart < 1.e-6f * normUNormV)
-    {
-        /* If u and v are exactly opposite, rotate 180 degrees
-        * around an arbitrary orthogonal axis. Axis normalisation
-        * can happen later, when we normalise the quaternion. */
-        realPart = 0.0f;
-        w = abs(u.x_) > abs(u.z_)
-            ? Vector3(-u.y_, u.x_, 0.0f)
-            : Vector3(0.0f, -u.z_, u.y_);
-    }
-    else
-    {
-        w = u.CrossProduct(v);
-    }
-    return Quaternion::FromAxisAngle(w, realPart);
+    // https://gamedev.stackexchange.com/questions/15070/orienting-a-model-to-face-a-target
+    const Vector3 forward = (to - from).Normal();
+    const float dot = Vector3::UnitZ.DotProduct(forward);
+    if (Math::Equals(dot, -1.0f, 0.000001f))
+        // vector a and b point exactly in the opposite direction,
+        // so it is a 180 degrees turn around the up-axis
+        return Quaternion(Math::M_PIF, Vector3::UnitY.x_, Vector3::UnitY.y_, Vector3::UnitY.z_);
+    if (Math::Equals(dot, 1.0f, 0.000001f))
+        // vector a and b point exactly in the same direction
+        // so we return the identity quaternion
+        return Quaternion::Identity;
+    const float rot = acos(dot);
+    const Vector3 axis = Vector3::UnitZ.CrossProduct(forward).Normal();
+    return Quaternion::FromAxisAngle(axis, rot);
 }
 
 Quaternion Quaternion::FromAxisAngle(const Vector3& axis, float angle)

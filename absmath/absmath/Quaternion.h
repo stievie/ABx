@@ -49,10 +49,9 @@ public:
     /// Parse from string
     explicit Quaternion(const std::string& str);
 
-    /// Create a Quaternion representing the rotation between two 3D vectors
-    static Quaternion FromTwoVectors(const Vector3& u, const Vector3& v);
     /// Create a Quaternion from Axis and Angle. Angle is Rad
     static Quaternion FromAxisAngle(const Vector3& axis, float angle);
+    static Quaternion FromLookAt(const Vector3& from, const Vector3& to);
 
     operator std::array<float, 4>() const
     {

@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "MathUtils.h"
 #include "Vector4.h"
+#include "MathUtils.h"
 
 namespace Math {
 
@@ -93,6 +94,17 @@ Vector3 operator/(float n, const Vector3& v)
     return Vector3(v.x_ / n, v.y_ / n, v.z_ / n);
 }
 
+Vector3 Vector3::Orthogonal() const
+{
+    float x = fabs(x_);
+    float y = fabs(y_);
+    float z = fabs(z_);
+    Vector3 other = (x < y) ?
+        ((x < z) ? Vector3::UnitX : Vector3::UnitZ) :
+        ((y < z) ? Vector3::UnitY : Vector3::UnitZ);
+    return CrossProduct(other);
+}
+
 float Vector3::LengthSqr() const
 {
     return x_*x_ + y_*y_ + z_*z_;
@@ -110,7 +122,10 @@ float Vector3::Distance(const Vector3& v) const
 
 const Vector3 Vector3::Normal() const
 {
-    return *this / Length();
+    float l = Length();
+    if (!Math::Equals(l, 0.0f))
+        return *this / l;
+    return *this;
 }
 
 }

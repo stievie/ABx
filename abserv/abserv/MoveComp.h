@@ -14,16 +14,12 @@ class MoveComp
 {
 private:
     Actor& owner_;
-    Math::Vector3 oldPosition_;
     float speedFactor_{ 1.0f };
+    Math::Vector3 oldPosition_;
     /// Move to moveDir_
     void UpdateMove(uint32_t timeElapsed);
     /// Turn to turnDir_
     void UpdateTurn(uint32_t timeElapsed);
-    inline float GetSpeed(uint32_t timeElapsed, float baseSpeed)
-    {
-        return (static_cast<float>(timeElapsed) / baseSpeed) * speedFactor_;
-    }
 public:
     enum UpdateFlags : uint32_t
     {
@@ -39,6 +35,10 @@ public:
     MoveComp& operator=(const MoveComp&) = delete;
     ~MoveComp() = default;
 
+    inline float GetSpeed(uint32_t timeElapsed, float baseSpeed)
+    {
+        return (static_cast<float>(timeElapsed) / baseSpeed) * speedFactor_;
+    }
     void Update(uint32_t timeElapsed, uint32_t flags);
     bool SetPosition(const Math::Vector3& pos);
     void HeadTo(const Math::Vector3& pos);
@@ -70,6 +70,8 @@ public:
     }
     bool IsMoving() const { return velocity_ != Math::Vector3::Zero; }
     void Write(Net::NetworkMessage& message);
+    void StoreOldPosition();
+    Math::Vector3& CalculateVelocity(uint32_t timeElapsed);
 
     uint32_t moveDir_{ AB::GameProtocol::MoveDirectionNone };
     uint32_t turnDir_{ AB::GameProtocol::TurnDirectionNone };
@@ -81,6 +83,7 @@ public:
     bool newAngle_{ false };
     /// Sends a special message to the client to force the client to set the position.
     bool forcePosition_{ false };
+    bool autoMove_{ false };
     /// Velocity in Units/s.
     Math::Vector3 velocity_;
 };

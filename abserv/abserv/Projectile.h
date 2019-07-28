@@ -17,7 +17,6 @@ private:
     enum Function : uint32_t
     {
         FunctionNone = 0,
-        FunctionUpdate = 1,
         FunctionOnCollide = 1 << 1,
         FunctionOnHitTarget = 1 << 2,
         FunctionOnStart = 1 << 3,
@@ -26,9 +25,9 @@ private:
     bool luaInitialized_{ false };
     bool startSet_{ false };
     std::shared_ptr<Script> script_;
-    Math::Vector3 start_;
+    Math::Vector3 startPos_;
     Math::Vector3 targetPos_;
-    Math::Ray ray_;
+    uint32_t targetMoveDir_{ AB::GameProtocol::MoveDirectionNone };
     float distance_{ std::numeric_limits<float>::max() };
     float currentDistance_{ std::numeric_limits<float>::max() };
     std::weak_ptr<Actor> source_;
@@ -37,12 +36,14 @@ private:
     uint32_t itemIndex_{ 0 };
     std::string itemUuid_;
     uint32_t functions_{ FunctionNone };
+    AB::GameProtocol::AttackError error_{ AB::GameProtocol::AttackErrorNone };
     void InitializeLua();
     bool LoadScript(const std::string& fileName);
     bool HaveFunction(Function func) const
     {
         return luaInitialized_ && ((functions_ & func) == func);
     }
+    void SetError(AB::GameProtocol::AttackError error);
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();
 public:

@@ -61,7 +61,7 @@ void Transformation::SetYRotation(float rad)
     oriention_ = Quaternion(euler.x_, rad, euler.y_);
 }
 
-void Transformation::LookAt(const Vector3& lookAt, const Vector3& up)
+void Transformation::LookAt(const Vector3& lookAt, const Vector3& up /* = Math::Vector3::UnitY */)
 {
     const Matrix4 mat = Matrix4::FromLookAt(lookAt, position_, up);
     oriention_ = mat.Rotation();

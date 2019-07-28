@@ -62,7 +62,7 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
         transformation_.position_.z_ + ((float)size.y_ / 2.0f));
     boundingBox_ = Math::BoundingBox(bbMin, bbMax);
 
-#ifdef _DEBUG
+#ifdef DEBUG_COLLISION
     char buff[256];
     int len = sprintf(buff, "TerrainPatch: %d,%d; pos %s; BB %s",
         offset.x_, offset.y_, transformation_.position_.ToString().c_str(),
@@ -106,7 +106,6 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
             static_cast<float>(o->patchSize_));
 
         float distance = CastRay(localRay.origin_, localRay.direction_, max);
-        LOG_INFO << distance << std::endl;
         Math::Vector3 normal = -query.ray_.direction_;
 
         if (!Math::IsInfinite(distance) && (distance < query.maxDistance_))

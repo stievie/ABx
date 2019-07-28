@@ -31,6 +31,6 @@ constexpr int PLAYER_MAX_SKILLS = 8;
 constexpr int PLAYER_MAX_ATTRIBUTES = 10;
 
 // For client prediction these values are also needed by the client.
-constexpr float BASE_SPEED = 150.0f;
+constexpr float BASE_MOVE_SPEED = 150.0f;
 constexpr float BASE_TURN_SPEED = 2000.0f;
 }

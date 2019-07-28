@@ -53,6 +53,8 @@ private:
     std::unique_ptr<Math::CollisionShape> collisionShape_{ nullptr };
     std::vector<GameObject*> _LuaQueryObjects(float radius);
     std::vector<GameObject*> _LuaRaycast(const Math::STLVector3& direction);
+    /// Raycast to destination point
+    std::vector<GameObject*> _LuaRaycastTo(const Math::STLVector3& destination);
     Actor* _LuaAsActor();
     Npc* _LuaAsNpc();
     Player* _LuaAsPlayer();
@@ -153,10 +155,10 @@ public:
     }
     bool Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
     /// Get the distance to another object
-    float GetDistance(GameObject* other) const
+    float GetDistance(const GameObject* other) const
     {
         if (!other)
-            return std::numeric_limits<float>::max();
+            return Math::M_INFINITE;
         return transformation_.position_.Distance(other->transformation_.position_);
     }
 
@@ -177,6 +179,8 @@ public:
         });
         return it != r.end();
     }
+    /// Check if the object is within maxDist
+    bool IsCloserThan(float maxDist, const GameObject* object) const;
     /// Allows to execute a functor/lambda on the objects in range
     template<typename Func>
     void VisitInRange(Ranges range, Func&& func)
@@ -224,8 +228,8 @@ public:
         octant_ = octant;
     }
 
-    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction) const;
-    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction) const;
+    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
+    bool Raycast(std::vector<GameObject*>& result, const Math::Vector3& position, const Math::Vector3& direction, float maxDist = Math::M_INFINITE) const;
     bool IsObjectInSight(const GameObject* object) const;
     /// Remove this object from scene
     void Remove();

@@ -13,30 +13,34 @@ void MoveComp::Update(uint32_t timeElapsed, uint32_t flags)
 {
     if (owner_.stateComp_.GetState() != AB::GameProtocol::CreatureStateMoving)
         return;
-    if (flags == 0)
+    if (flags == 0 && !autoMove_)
         return;
 
-    oldPosition_ = owner_.transformation_.position_;
+    StoreOldPosition();
 
     forcePosition_ = false;
-    if ((flags & UpdateFlagMove) == UpdateFlagMove)
+    if (autoMove_ || ((flags & UpdateFlagMove) == UpdateFlagMove))
         UpdateMove(timeElapsed);
     if ((flags & UpdateFlagTurn) == UpdateFlagTurn)
         UpdateTurn(timeElapsed);
 
-    velocity_ = ((oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000)).Abs();
+    CalculateVelocity(timeElapsed);
     moved_ = !velocity_.Equals(Math::Vector3::Zero);
 }
 
 bool MoveComp::SetPosition(const Math::Vector3& pos)
 {
-    oldPosition_ = owner_.transformation_.position_;
+    StoreOldPosition();
 
     HeadTo(pos);
     owner_.transformation_.position_ = pos;
-    // Keep on ground
-    const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
-    owner_.transformation_.position_.y_ = y;
+
+    if (owner_.GetType() != AB::GameProtocol::ObjectTypeProjectile)
+    {
+        // Keep on ground
+        const float y = owner_.GetGame()->map_->GetTerrainHeight(owner_.transformation_.position_);
+        owner_.transformation_.position_.y_ = y;
+    }
     if (owner_.collisionComp_)
         // We need to do it here because this is not called from Update()
         owner_.collisionComp_->ResolveCollisions();
@@ -90,7 +94,7 @@ void MoveComp::Move(float speed, const Math::Vector3& amount)
 
 void MoveComp::UpdateMove(uint32_t timeElapsed)
 {
-    const float speed = GetSpeed(timeElapsed, BASE_SPEED);
+    const float speed = GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         Move(speed, Math::Vector3::UnitZ);
     if ((moveDir_ & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)
@@ -126,7 +130,7 @@ void MoveComp::SetDirection(float worldAngle)
 {
     const float ang = owner_.transformation_.GetYRotation();
     Math::NormalizeAngle(worldAngle);
-    if (!Math::Equals(ang, worldAngle, 0.0001f))
+    if (!Math::Equals(ang, worldAngle, 0.00001f))
     {
         owner_.transformation_.SetYRotation(worldAngle);
         directionSet_ = true;
@@ -172,6 +176,17 @@ void MoveComp::Write(Net::NetworkMessage& message)
         turned_ = false;
         directionSet_ = false;
     }
+}
+
+void MoveComp::StoreOldPosition()
+{
+    oldPosition_ = owner_.transformation_.position_;
+}
+
+Math::Vector3& MoveComp::CalculateVelocity(uint32_t timeElapsed)
+{
+    velocity_ = ((oldPosition_ - owner_.transformation_.position_) / (static_cast<float>(timeElapsed) / 1000.0f)).Abs();
+    return velocity_;
 }
 
 }

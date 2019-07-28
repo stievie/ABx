@@ -244,7 +244,8 @@ void Actor::UpdateTransformation()
 {
     extern bool gNoClientPrediction;
     Vector3 moveTo;
-    if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) && (objectType_ != ObjectTypeSelf || gNoClientPrediction || autoRun_))
+    if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) &&
+        (objectType_ != ObjectTypeSelf || gNoClientPrediction || autoRun_))
     {
         // Interpolate when:
         // 1. Creature is moving

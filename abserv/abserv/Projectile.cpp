@@ -45,8 +45,6 @@ bool Projectile::LoadScript(const std::string& fileName)
     if (!script_->Execute(luaState_))
         return false;
 
-    if (ScriptManager::IsFunction(luaState_, "onUpdate"))
-        functions_ |= FunctionUpdate;
     if (ScriptManager::IsFunction(luaState_, "onCollide"))
         functions_ |= FunctionOnCollide;
     if (ScriptManager::IsFunction(luaState_, "onHitTarget"))
@@ -77,8 +75,9 @@ void Projectile::SetSource(std::shared_ptr<Actor> source)
     if (!startSet_)
     {
         source_ = source;
-        start_ = source->transformation_.position_ + HeadOffset;
-        transformation_.position_ = start_;
+        startPos_ = source->transformation_.position_ + HeadOffset;
+        transformation_.position_ = startPos_;
+        moveComp_->moved_ = true;
     }
 }
 
@@ -88,20 +87,58 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     if (started_)
         return;
     target_ = target;
+    targetMoveDir_ = target->moveComp_->moveDir_;
     targetPos_ = target->transformation_.position_ + BodyOffset;
-    HeadTo(targetPos_);
     moveComp_->HeadTo(targetPos_);
-    ray_ = Math::Ray(start_, targetPos_ - start_);
+    moveComp_->directionSet_ = true;
 
-    const auto targetBB = target->GetWorldBoundingBox();
-    distance_ = ray_.HitDistance(targetBB);
-    if (Math::IsInfinite(distance_))
+    distance_ = GetPosition().Distance(targetPos_);
+
+    bool obstructed = false;
+    std::vector<GameObject*> objects;
+    const auto& origin = GetPosition();
+    const auto direction = targetPos_ - origin;
+    if (Raycast(objects, origin, direction, distance_))
     {
-        if (auto source = source_.lock())
-            source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetObstructed);
+#ifdef DEBUG_COLLISION
+        GameObject* obstructedBy = nullptr;
+#endif
+        // The target is also in this list
+        for (auto* o : objects)
+        {
+            if (o->id_ != id_ && o->id_ != target->id_)
+            {
+                obstructed = true;
+#ifdef DEBUG_COLLISION
+                obstructedBy = o;
+#endif
+                break;
+            }
+        }
+#ifdef DEBUG_COLLISION
+        if (obstructed)
+            LOG_DEBUG << "Obstructed by " << obstructedBy->GetName() << std::endl;
+#endif
+    }
+
+    else if (obstructed)
+    {
+        LOG_INFO << "Error: Obstructed" << std::endl;
+        SetError(AB::GameProtocol::AttackErrorTargetObstructed);
     }
     currentDistance_ = distance_;
     started_ = OnStart();
+    if (started_)
+    {
+        stateComp_.SetState(AB::GameProtocol::CreatureStateMoving, true);
+    }
+}
+
+void Projectile::SetError(AB::GameProtocol::AttackError error)
+{
+    error_ = error;
+    if (auto source = source_.lock())
+        source->attackComp_.SetAttackError(error);
 }
 
 Actor* Projectile::_LuaGetSource()
@@ -122,45 +159,61 @@ Actor* Projectile::_LuaGetTarget()
 
 void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    if (started_)
+    if (error_ != AB::GameProtocol::AttackErrorNone)
     {
-        moveComp_->Move(((float)(timeElapsed) / BASE_SPEED) * moveComp_->GetSpeedFactor(),
-            Math::Vector3::UnitZ);
+        Remove();
+        return;
     }
-
-    Actor::Update(timeElapsed, message);
-
-    if (HaveFunction(FunctionUpdate))
-        ScriptManager::CallFunction(luaState_, "onUpdate", timeElapsed);
-    if (item_)
-        item_->Update(timeElapsed);
-
     if (!started_)
         return;
+
+    if (auto target = target_.lock())
+    {
+        if (targetMoveDir_ == target->moveComp_->moveDir_)
+        {
+            // If the target does not change direction we follow him.
+            // Target can only doge when changing the direction after we lauched.
+            targetPos_ = target->GetPosition();
+            currentDistance_ = GetPosition().Distance(targetPos_);
+        }
+    }
+
+    moveComp_->StoreOldPosition();
+    moveComp_->HeadTo(targetPos_);
+    moveComp_->directionSet_ = true;
+
+    const float speed = moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED);
+    moveComp_->Move(speed, Math::Vector3::UnitZ);
+
+    // Adjust Y
+    transformation_.position_.y_ = Math::Lerp(startPos_.y_,
+        targetPos_.y_,
+        GetPosition().Distance(targetPos_) / distance_);
+    const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
+    Actor::Update(timeElapsed, message);
+
+    if (item_)
+        item_->Update(timeElapsed);
 
     auto source = source_.lock();
     if (auto target = target_.lock())
     {
-        const auto targetBB = target->GetWorldBoundingBox();
-        assert(targetBB.IsDefined());
-        assert(ray_.IsDefined());
-        const float dist = ray_.HitDistance(targetBB);
-        if (dist < currentDistance_)
-            currentDistance_ = dist;
-        else if (Math::IsInfinite(dist))
+        const float dist = GetPosition().Distance(targetPos_);
+        if (dist < (velocity.Length() / static_cast<float>(timeElapsed)) * 10.0f)
         {
-            // No Hit
-            if (source)
-            {
-                source->attackComp_.SetAttackError(AB::GameProtocol::AttackErrorTargetMissed);
+            // We may not really collide because of the low game update rate, so let's
+            // approximate if we would collide
+            if (error_ == AB::GameProtocol::AttackErrorNone)
+                OnCollide(target.get());
+            else
                 Remove();
-                return;
-            }
         }
-        else if (!Math::Equals(currentDistance_, dist))
+        else if (dist < currentDistance_)
+            currentDistance_ = dist;
+        else if (dist > currentDistance_)
         {
-            // Increasing distance
-            OnCollide(target.get());
+            SetError(AB::GameProtocol::AttackErrorTargetDodge);
+            Remove();
         }
     }
     else
