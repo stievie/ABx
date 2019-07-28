@@ -104,7 +104,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
         GameObject* obstructedBy = nullptr;
 #endif
         // The target is also in this list
-        for (auto* o : objects)
+        for (const auto* o : objects)
         {
             if (o->id_ != id_ && o->id_ != target->id_)
             {
@@ -242,12 +242,15 @@ void Projectile::OnCollide(GameObject* other)
     if (HaveFunction(FunctionOnCollide))
         ScriptManager::CallFunction(luaState_, "onCollide", other);
 
-    if (auto spt = target_.lock())
+    if (other)
     {
-        if (other && other->id_ == spt->id_)
+        if (auto spt = target_.lock())
         {
-            if (HaveFunction(FunctionOnHitTarget))
-                ScriptManager::CallFunction(luaState_, "onHitTarget", other);
+            if (other->id_ == spt->id_)
+            {
+                if (HaveFunction(FunctionOnHitTarget))
+                    ScriptManager::CallFunction(luaState_, "onHitTarget", other);
+            }
         }
     }
 
