@@ -13,6 +13,7 @@ class TerrainPatch : public GameObject
 private:
     std::weak_ptr<Terrain> owner_;
     Math::BoundingBox boundingBox_;
+    float CastRay(const Math::Vector3& origin, const Math::Vector3& direction, float maxDist) const;
 public:
     TerrainPatch(std::shared_ptr<Terrain> owner,
         const Math::Point<int>& offset,
@@ -30,6 +31,7 @@ public:
     {
         return AB::GameProtocol::ObjectTypeTerrainPatch;
     }
+    float GetHeight(const Math::Vector3& position) const;
 
     Math::Point<int> offset_;
     Math::Point<int> size_;
