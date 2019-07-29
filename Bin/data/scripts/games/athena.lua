@@ -47,7 +47,7 @@ function onStart()
 
   -- Add some poison
   local poison = self:AddAreaOfEffect(
-    "/scripts/actors/aoe/general/poison_spout.lua",
+    "/scripts/actors/aoe/general/magic_mushroom.lua",
     nil, 10001, {-14.8, 0.0, 22.98})
 
   local pdl = self:AddNpc("/scripts/actors/npcs/poison_dart_launcher.lua")
