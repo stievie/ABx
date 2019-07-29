@@ -22,17 +22,17 @@
 namespace Game {
 
 /// 8 different groups in one game possible
-enum class GroupMaskFlags : uint8_t
+enum GroupMask : uint8_t
 {
-    GroupNone = 0,
-    Group1 = 1,
-    Group2 = 1 << 1,
-    Group3 = 1 << 2,
-    Group4 = 1 << 3,
-    Group5 = 1 << 4,
-    Group6 = 1 << 5,
-    Group7 = 1 << 6,
-    Group8 = 1 << 7
+    GroupMaskNone = 0,
+    GroupMask1 = 1,
+    GroupMask2 = 1 << 1,
+    GroupMask3 = 1 << 2,
+    GroupMask4 = 1 << 3,
+    GroupMask5 = 1 << 4,
+    GroupMask6 = 1 << 5,
+    GroupMask7 = 1 << 6,
+    GroupMask8 = 1 << 7
 };
 
 /// Player, NPC, Monster some such
@@ -61,6 +61,8 @@ private:
     void _LuaFollowObject(GameObject* object);
     void _LuaAddEffect(Actor* source, uint32_t index, uint32_t time);
     void _LuaRemoveEffect(uint32_t index);
+    uint8_t _LuaGetGroupMask();
+    void _LuaSetGroupMask(uint8_t value);
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
@@ -297,6 +299,7 @@ public:
     std::unique_ptr<Components::CollisionComp> collisionComp_;
 
     bool undestroyable_{ false };
+    uint8_t groupMask_{ GroupMask::GroupMaskNone };
 
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;

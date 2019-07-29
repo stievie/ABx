@@ -66,6 +66,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("FaceObject", &Actor::FaceObject)
         .addFunction("HeadTo", &Actor::_LuaHeadTo)
         .addFunction("IsEnemy", &Actor::IsEnemy)
+        .addFunction("GetGroupMask", &Actor::_LuaGetGroupMask)
+        .addFunction("SetGroupMask", &Actor::_LuaSetGroupMask)
 
         .addFunction("SetSpawnPoint", &Actor::SetSpawnPoint)
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
@@ -343,6 +345,16 @@ void Actor::_LuaAddEffect(Actor* source, uint32_t index, uint32_t time)
 void Actor::_LuaRemoveEffect(uint32_t index)
 {
     effectsComp_->RemoveEffect(index);
+}
+
+uint8_t Actor::_LuaGetGroupMask()
+{
+    return groupMask_;
+}
+
+void Actor::_LuaSetGroupMask(uint8_t value)
+{
+    groupMask_ = value;
 }
 
 Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
@@ -930,9 +942,10 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
 bool Actor::IsEnemy(Actor* other) const
 {
     if (GetGroupId() == other->GetGroupId())
+        // Same group members are always friends
         return false;
-    // TODO: What if different groups are allies
-    return true;
+    // Return true if the don't have the same group mask
+    return ((groupMask_ & other->groupMask_) == 0);
 }
 
 uint32_t Actor::GetAttributeValue(uint32_t index)

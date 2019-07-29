@@ -1,3 +1,5 @@
+include("/scripts/includes/consts.lua")
+
 function onStart()
   local priest = self:AddNpc("/scripts/actors/npcs/priest.lua")
   -- To make them allies set the same group ID
@@ -9,6 +11,7 @@ function onStart()
     priest:SetPosition({x, y, z})
     priest:SetRotation(180)
     priest:SetGroupId(groupId)
+    guildLord:SetGroupMask(GROUPMASK_1)
   end
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then
@@ -18,8 +21,8 @@ function onStart()
     guildLord:SetPosition({x, y, z})
     guildLord:SetRotation(180)
     guildLord:SetGroupId(groupId)
+    guildLord:SetGroupMask(GROUPMASK_1)
   end
-
 end
 
 function onStop()
@@ -34,11 +37,10 @@ function onRemoveObject(object)
 end
 
 function onPlayerJoin(player)
---  print("Player joined: " .. player:GetName())
+  player:SetGroupMask(GROUPMASK_2)
 end
 
 function onPlayerLeave(player)
---  print("Player left: " .. player:GetName())
 end
 
 -- Game Update

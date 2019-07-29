@@ -1,3 +1,4 @@
+include("/scripts/includes/consts.lua")
 include("/scripts/includes/create_npcs.lua")
 
 -- Game start up
@@ -12,6 +13,7 @@ function onStart()
     smith:SetPosition({x, y, z})
     smith:SetRotation(180)
     smith:SetHomePos({x, y, z})
+    smith:SetGroupMask(GROUPMASK_1 | GROUPMASK_2)
   end
   local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
@@ -21,6 +23,7 @@ function onStart()
     merchant:SetPosition({x, y, z})
     merchant:SetRotation(180)
     merchant:SetHomePos({x, y, z})
+    merchant:SetGroupMask(GROUPMASK_1 | GROUPMASK_2)
   end
   local ped = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
   if (ped ~= nil) then
@@ -30,6 +33,7 @@ function onStart()
     ped:SetPosition({x, y, z})
     ped:SetRotation(90)
     ped:SetHomePos({x, y, z})
+    ped:SetGroupMask(GROUPMASK_1 | GROUPMASK_2)
   end
   local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian2.lua")
   if (ped2 ~= nil) then
@@ -38,6 +42,7 @@ function onStart()
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
     ped2:SetHomePos({x, y, z})
+    ped2:SetGroupMask(GROUPMASK_1 | GROUPMASK_2)
   end
 
   local chest = createChest(self, 0.8, 15.0)
@@ -75,8 +80,8 @@ end
 function onPlayerJoin(player)
   if (player ~= nil) then
     player:AddEffect(empty, 1000, 0)
+    player:SetGroupMask(GROUPMASK_2)
   end
---  print("Player joined: " .. player:GetName())
 end
 
 function onPlayerLeave(player)
