@@ -158,11 +158,6 @@ Actor* Projectile::_LuaGetTarget()
 
 void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 {
-    if (error_ != AB::GameProtocol::AttackErrorNone)
-    {
-        Remove();
-        return;
-    }
     if (!started_)
         return;
 
@@ -172,22 +167,23 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         {
             // If the target does not change direction we follow him.
             // Target can only doge when changing the direction after we lauched.
-            targetPos_ = target->GetPosition();
+            targetPos_ = target->GetPosition() + BodyOffset;
             currentDistance_ = GetPosition().Distance(targetPos_);
         }
     }
 
     moveComp_->StoreOldPosition();
-    moveComp_->HeadTo(targetPos_);
-    moveComp_->directionSet_ = true;
+    if (currentDistance_ > 1.0f)
+    {
+        moveComp_->HeadTo(targetPos_);
+        moveComp_->directionSet_ = true;
+    }
 
     const float speed = moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     moveComp_->Move(speed, Math::Vector3::UnitZ);
     // Adjust Y
-    transformation_.position_.y_ = Math::Lerp(
-        startPos_.y_,
-        targetPos_.y_,
-        GetPosition().Distance(targetPos_) / distance_);
+    const float f = GetPosition().Distance(targetPos_) / distance_;
+    transformation_.position_.y_ = Math::Lerp(targetPos_.y_, startPos_.y_, f);
 
     const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
     Actor::Update(timeElapsed, message);
@@ -205,14 +201,17 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             // approximate if we would collide
             if (error_ == AB::GameProtocol::AttackErrorNone)
                 OnCollide(target.get());
-            else
-                Remove();
         }
         else if (dist < currentDistance_)
             currentDistance_ = dist;
         else if (dist > currentDistance_)
         {
             SetError(AB::GameProtocol::AttackErrorTargetDodge);
+        }
+        else if (dist > distance_ * 2.0f)
+        {
+            if (error_ == AB::GameProtocol::AttackErrorNone)
+                SetError(AB::GameProtocol::AttackErrorTargetMissed);
             Remove();
         }
     }

@@ -27,7 +27,7 @@ void ClientPrediction::UpdateMove(float timeStep, uint8_t direction, float speed
     if (direction == 0)
         return;
 
-    const float speed = GetSpeed(timeStep, Game::BASE_SPEED, speedFactor);
+    const float speed = GetSpeed(timeStep, Game::BASE_MOVE_SPEED, speedFactor);
     if ((direction & AB::GameProtocol::MoveDirectionNorth) == AB::GameProtocol::MoveDirectionNorth)
         Move(speed, Vector3::FORWARD);
     if ((direction & AB::GameProtocol::MoveDirectionSouth) == AB::GameProtocol::MoveDirectionSouth)

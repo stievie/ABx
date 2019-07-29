@@ -9,7 +9,6 @@
 
 namespace Game {
 
-class Npc;
 class Map;
 
 class Npc final : public Actor
@@ -26,7 +25,7 @@ private:
     friend class AI::AiCharacter;
     /// This NPC exists only on the server, i.e. is not spawned on the client, e.g. a trigger box.
     bool serverOnly_{ false };
-    uint32_t level_;
+    uint32_t level_{ 1 };
     uint32_t itemIndex_;
     AB::Entities::CharacterSex sex_;
     /// Group is like a party and they need unique IDs.
@@ -71,7 +70,7 @@ public:
     Npc& operator=(const Npc&) = delete;
 
     bool LoadScript(const std::string& fileName);
-    AB::GameProtocol::GameObjectType GetType() const override
+    AB::GameProtocol::GameObjectType GetType() const final override
     {
         return AB::GameProtocol::ObjectTypeNpc;
     }

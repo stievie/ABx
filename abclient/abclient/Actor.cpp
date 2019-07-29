@@ -243,13 +243,13 @@ void Actor::AddModel(uint32_t itemIndex)
 void Actor::UpdateTransformation()
 {
     extern bool gNoClientPrediction;
-    Vector3 moveTo;
+    Vector3 moveTo = {};
     if ((creatureState_ == AB::GameProtocol::CreatureStateMoving) &&
         (objectType_ != ObjectTypeSelf || gNoClientPrediction || autoRun_))
     {
         // Interpolate when:
         // 1. Creature is moving
-        // 2. no client prediction is used
+        // 2. Player: no client prediction is used or auto running
         FwClient* c = context_->GetSubsystem<FwClient>();
         // + half round trip time
         // http://www.codersblock.org/blog/multiplayer-fps-part-5

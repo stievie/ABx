@@ -1,8 +1,9 @@
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/damage.lua")
 
+-- Poison Dart makes 33 damage and applies Poison effect
 function onInit()
-  self:SetSpeed(5.0)
+  self:SetSpeed(4.0)
   return true
 end
 

@@ -16,16 +16,18 @@ void MoveComp::Update(uint32_t timeElapsed, uint32_t flags)
     if (flags == 0 && !autoMove_)
         return;
 
-    StoreOldPosition();
-
     forcePosition_ = false;
-    if (autoMove_ || ((flags & UpdateFlagMove) == UpdateFlagMove))
-        UpdateMove(timeElapsed);
+    // Lets turn first
     if ((flags & UpdateFlagTurn) == UpdateFlagTurn)
         UpdateTurn(timeElapsed);
-
-    CalculateVelocity(timeElapsed);
-    moved_ = !velocity_.Equals(Math::Vector3::Zero);
+    if (autoMove_ || ((flags & UpdateFlagMove) == UpdateFlagMove))
+    {
+        StoreOldPosition();
+        UpdateMove(timeElapsed);
+        CalculateVelocity(timeElapsed);
+        if (!velocity_.Equals(Math::Vector3::Zero))
+            moved_ = true;
+    }
 }
 
 bool MoveComp::SetPosition(const Math::Vector3& pos)
@@ -156,6 +158,7 @@ void MoveComp::Write(Net::NetworkMessage& message)
         message.Add<float>(owner_.transformation_.position_.z_);
         moved_ = false;
     }
+
     if (forcePosition_)
     {
         message.AddByte(AB::GameProtocol::GameObjectSetPosition);

@@ -21,7 +21,7 @@
 
 namespace Game {
 
-/// 8 different groups in one game possible
+/// 8 different groups in one game possible. If Actors have one same bit set they are considered as allies.
 enum GroupMask : uint8_t
 {
     GroupMaskNone = 0,
