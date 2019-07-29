@@ -89,7 +89,7 @@ Logger& Logger::Info()
 
 Logger& Logger::Warning()
 {
-    static Color::Modifier yellow(Color::FG_YELLOW);
+    static Color::Modifier yellow(Color::FG_LIGHTYELLOW);
     if (nextIsBegin_)
     {
         if (mode_ == Mode::Stream)

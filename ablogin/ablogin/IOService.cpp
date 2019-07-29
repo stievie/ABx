@@ -16,7 +16,10 @@ bool IOService::GetService(AB::Entities::ServiceType type,
 
     AB::Entities::ServiceList sl;
     if (!dc->Read(sl))
+    {
+        LOG_ERROR << "Error reading service list" << std::endl;
         return false;
+    }
 
     std::vector<AB::Entities::Service> services;
 
