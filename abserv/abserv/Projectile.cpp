@@ -92,7 +92,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     moveComp_->HeadTo(targetPos_);
     moveComp_->directionSet_ = true;
 
-    distance_ = GetPosition().Distance(targetPos_);
+    distance_ = currentDistance_ = GetPosition().Distance(targetPos_);
 
     bool obstructed = false;
     std::vector<GameObject*> objects;
@@ -125,7 +125,6 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     {
         SetError(AB::GameProtocol::AttackErrorTargetObstructed);
     }
-    currentDistance_ = distance_;
     started_ = OnStart();
     if (started_)
     {
@@ -166,7 +165,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         if (targetMoveDir_ == target->moveComp_->moveDir_)
         {
             // If the target does not change direction we follow him.
-            // Target can only doge when changing the direction after we lauched.
+            // Target can only dodge when changing the direction after we lauched.
             targetPos_ = target->GetPosition() + BodyOffset;
             currentDistance_ = GetPosition().Distance(targetPos_);
         }
