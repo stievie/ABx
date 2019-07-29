@@ -86,6 +86,8 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetEnemyCountInRange", &Actor::GetEnemyCountInRange)
         .addFunction("GetAlliesInRange", &Actor::GetAlliesInRange)
         .addFunction("GetAllyCountInRange", &Actor::GetAllyCountInRange)
+        .addFunction("GetClosestEnemy", &Actor::GetClosestEnemy)
+        .addFunction("GetClosestAlly", &Actor::GetClosestAlly)
 
         .addFunction("GetAttributeValue", &Actor::GetAttributeValue)
     );
@@ -450,6 +452,34 @@ size_t Actor::GetAllyCountInRange(Ranges range)
         return Iteration::Continue;
     });
     return result;
+}
+
+Actor* Actor::GetClosestEnemy(bool undestroyable, bool unselectable)
+{
+    return GetClosestActor([&](const Actor& actor) -> bool
+    {
+        if (!actor.IsSelectable() && !unselectable)
+            return false;
+        if ((actor.IsUndestroyable() || actor.IsDead()) && !undestroyable)
+            return false;
+        if (!actor.IsEnemy(this))
+            return false;
+        return true;
+    });
+}
+
+Actor* Actor::GetClosestAlly(bool undestroyable, bool unselectable)
+{
+    return GetClosestActor([&](const Actor& actor) -> bool
+    {
+        if (!actor.IsSelectable() && !unselectable)
+            return false;
+        if ((actor.IsUndestroyable() || actor.IsDead()) && !undestroyable)
+            return false;
+        if (actor.IsEnemy(this))
+            return false;
+        return true;
+    });
 }
 
 bool Actor::Serialize(IO::PropWriteStream& stream)

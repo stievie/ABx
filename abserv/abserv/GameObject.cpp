@@ -55,7 +55,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("IsSelectable",     &GameObject::IsSelectable)
         .addFunction("SetSelectable",    &GameObject::SetSelectable)
         .addFunction("GetActorsInRange", &GameObject::GetActorsInRange)
-        .addFunction("GetClosestActor",  &GameObject::GetClosestActor)
+        .addFunction("GetClosestActor",  &GameObject::_LuaGetClosestActor)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsCloserThan",     &GameObject::IsCloserThan)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
@@ -367,6 +367,11 @@ void GameObject::_LuaCallGameEvent(const std::string& name, GameObject* data)
         game->CallLuaEvent(name, this, data);
 }
 
+Actor* GameObject::_LuaGetClosestActor(bool undestroyable, bool unselectable)
+{
+    return GetClosestActor(undestroyable, unselectable);
+}
+
 std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& direction)
 {
     std::vector<GameObject*> result;
@@ -414,7 +419,7 @@ std::vector<Actor*> GameObject::GetActorsInRange(Ranges range)
     return result;
 }
 
-Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
+Actor* GameObject::GetClosestActor(const std::function<bool(const Actor& actor)>& callback)
 {
     Actor* result = nullptr;
     for (unsigned r = static_cast<unsigned>(Ranges::Aggro); r < static_cast<unsigned>(Ranges::Map); ++r)
@@ -424,12 +429,8 @@ Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
             const AB::GameProtocol::GameObjectType t = o.GetType();
             if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
             {
-                if (!o.IsSelectable() && !unselectable)
-                    return Iteration::Continue;
-
-                result =  dynamic_cast<Actor*>(&o);
-                // Let's consider dead stuff as undestroyable
-                if ((result->IsUndestroyable() || result->IsDead()) && !undestroyable)
+                result = dynamic_cast<Actor*>(&o);
+                if (!callback(*result))
                 {
                     result = nullptr;
                     return Iteration::Continue;
@@ -442,6 +443,18 @@ Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
             break;
     }
     return result;
+}
+
+Actor* GameObject::GetClosestActor(bool undestroyable, bool unselectable)
+{
+    return GetClosestActor([&](const Actor& actor) -> bool
+    {
+        if (!actor.IsSelectable() && !unselectable)
+            return false;
+        if ((actor.IsUndestroyable() || actor.IsDead()) && !undestroyable)
+            return false;
+        return true;
+    });
 }
 
 Actor* GameObject::_LuaAsActor()

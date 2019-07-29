@@ -74,6 +74,7 @@ private:
     Game* _LuaGetGame();
     /// Call a method of the game script. data is optional
     void _LuaCallGameEvent(const std::string& name, GameObject* data);
+    Actor* _LuaGetClosestActor(bool undestroyable, bool unselectable);
 protected:
     std::mutex lock_;
     std::string name_;
@@ -199,6 +200,7 @@ public:
     /// @param[in] undestroyable If true include undestroyable actors
     /// @param[in] unselectable If true includes unselectable actors
     Actor* GetClosestActor(bool undestroyable, bool unselectable);
+    Actor* GetClosestActor(const std::function<bool(const Actor& actor)>& callback);
 
     virtual AB::GameProtocol::GameObjectType GetType() const
     {

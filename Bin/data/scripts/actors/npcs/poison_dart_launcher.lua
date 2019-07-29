@@ -19,7 +19,7 @@ function onUpdate(timeElapsed)
   local tick = Tick()
   if (tick - lastDart > 2000) then
     -- Must be destroyable and selectable
-    local actor = self:GetClosestActor(false, false)
+    local actor = self:GetClosestEnemy(false, false)
     if (actor ~= nil) then
       if (self:IsInRange(RANGE_SPIRIT, actor)) then
         self:ShootAt("e945dcab-b383-4247-9da5-0a01c4bd4bfd", actor)

@@ -148,6 +148,8 @@ public:
     }
     std::vector<Actor*> GetAlliesInRange(Ranges range);
     size_t GetAllyCountInRange(Ranges range);
+    Actor* GetClosestEnemy(bool undestroyable, bool unselectable);
+    Actor* GetClosestAlly(bool undestroyable, bool unselectable);
     Item* GetWeapon() const;
 
     void HeadTo(const Math::Vector3& pos);

@@ -61,6 +61,8 @@ function onStart()
     local z = 9
     local y = self:GetTerrainHeight(x, z)
     pdl:SetPosition({x, y, z})
+    -- NPCs group mask 1 -> don't shoot at MPCs
+    pdl:SetGroupMask(GROUPMASK_1)
   end
 
 end
