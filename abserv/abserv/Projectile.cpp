@@ -180,9 +180,11 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     const float speed = moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     moveComp_->Move(speed, Math::Vector3::UnitZ);
-    // Adjust Y
-    const float f = GetPosition().Distance(targetPos_) / distance_;
-    transformation_.position_.y_ = Math::Lerp(targetPos_.y_, startPos_.y_, f);
+    // Adjust Y, also try to make a somewhat realisitc trajectory
+    const Math::Vector3 curPosOrigY = { transformation_.position_.x_, startPos_.y_, transformation_.position_.z_ };
+    const float f = 1.0f - (curPosOrigY.Distance(targetPos_) / distance_);
+    transformation_.position_.y_ = Math::Lerp(startPos_.y_, targetPos_.y_, f) +
+        (sinf(f * Math::M_PIHALF) * ((distance_ / 10.0f) / speed));
 
     const Math::Vector3 velocity = moveComp_->CalculateVelocity(timeElapsed);
     Actor::Update(timeElapsed, message);
