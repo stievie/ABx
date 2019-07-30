@@ -75,6 +75,8 @@ private:
     /// Call a method of the game script. data is optional
     void _LuaCallGameEvent(const std::string& name, GameObject* data);
     Actor* _LuaGetClosestActor(bool undestroyable, bool unselectable);
+    /// Returns all object inside the collision shape. This object must be a Trigger, i.e. it returns only objects when SetTrigger(true) was called before.
+    std::vector<GameObject*> _LuaGetObjectsInside();
 protected:
     std::mutex lock_;
     std::string name_;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Iteration.h"
+
 namespace Game {
 
 class GameObject;
@@ -25,6 +27,16 @@ public:
     ~TriggerComp() = default;
 
     void Update(uint32_t timeElapsed);
+    /// Get all object IDs inside the collision shape
+    template <typename Callback>
+    void VisitObjectInside(Callback&& callback)
+    {
+        for (const auto& i : triggered_)
+        {
+            if (callback(i.first) != Iteration::Continue)
+                break;
+        }
+    }
 
     void OnCollide(GameObject* other);
 

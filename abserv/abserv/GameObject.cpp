@@ -59,6 +59,7 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("IsInRange",        &GameObject::IsInRange)
         .addFunction("IsCloserThan",     &GameObject::IsCloserThan)
         .addFunction("IsObjectInSight",  &GameObject::IsObjectInSight)
+        .addFunction("GetObjectsInside", &GameObject::_LuaGetObjectsInside)
         .addFunction("CallGameEvent",    &GameObject::_LuaCallGameEvent)
         .addFunction("Remove",           &GameObject::Remove)
         .addFunction("RemoveIn",         &GameObject::RemoveIn)
@@ -370,6 +371,22 @@ void GameObject::_LuaCallGameEvent(const std::string& name, GameObject* data)
 Actor* GameObject::_LuaGetClosestActor(bool undestroyable, bool unselectable)
 {
     return GetClosestActor(undestroyable, unselectable);
+}
+
+std::vector<GameObject*> GameObject::_LuaGetObjectsInside()
+{
+    std::vector<GameObject*> result;
+    if (!triggerComp_)
+        return result;
+
+    auto game = GetGame();
+    triggerComp_->VisitObjectInside([&](uint32_t id) -> Iteration {
+        auto object = game->GetObjectById(id);
+        if (object)
+            result.push_back(object.get());
+        return Iteration::Continue;
+    });
+    return result;
 }
 
 std::vector<GameObject*> GameObject::_LuaRaycast(const Math::STLVector3& direction)

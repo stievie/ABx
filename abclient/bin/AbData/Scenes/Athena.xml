@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2415.64" />
-	<attribute name="Next Replicated Node ID" value="37" />
+	<attribute name="Next Replicated Node ID" value="40" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16786512" />
-	<attribute name="Next Local Component ID" value="16787900" />
+	<attribute name="Next Local Node ID" value="16786614" />
+	<attribute name="Next Local Component ID" value="16788025" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -511,20 +511,6 @@
 			<attribute name="Model" value="Model;Models/StoneWall.mdl" />
 		</component>
 	</node>
-	<node id="30">
-		<attribute name="Is Enabled" value="true" />
-		<attribute name="Name" value="grass_patch" />
-		<attribute name="Tags" />
-		<attribute name="Position" value="52.8564 31.6983 31.0726" />
-		<attribute name="Rotation" value="0.986168 0.0520946 -0.135102 -0.0806545" />
-		<attribute name="Scale" value="1 1 1" />
-		<attribute name="Variables" />
-		<component type="StaticModel" id="16784678">
-			<attribute name="Model" value="Model;Models/grass_patch.mdl" />
-			<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
-			<attribute name="Occlusion LOD Level" value="1" />
-		</component>
-	</node>
 	<node id="31">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="massive_swamptree" />
@@ -893,5 +879,70 @@
 			<attribute name="Size" value="0.230128 0.141163 0.223866" />
 			<attribute name="Offset Position" value="0.000737593 0.0685208 0.0076894" />
 		</component>
+	</node>
+	<node id="16786563">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Grass" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="-32.3428 32.5969 -20.53" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<node id="30">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="grass_patch" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0.296036 -0.975166 -2.26825" />
+			<attribute name="Rotation" value="0.970319 0.0361893 -0.140202 -0.193688" />
+			<attribute name="Scale" value="2 2 3" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16784678">
+				<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+				<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+				<attribute name="Occlusion LOD Level" value="1" />
+			</component>
+		</node>
+		<node id="37">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="grass_patch" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-3.63178 -0.226219 -2.86901" />
+			<attribute name="Rotation" value="0.905214 0.0831037 -0.376514 -0.178658" />
+			<attribute name="Scale" value="2 2 2" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16787961">
+				<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+				<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+				<attribute name="Occlusion LOD Level" value="1" />
+			</component>
+		</node>
+		<node id="38">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="grass_patch" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="0.069519 -0.749443 -5.84789" />
+			<attribute name="Rotation" value="0.98039 0.00879481 -0.00336739 -0.196843" />
+			<attribute name="Scale" value="3 2 2" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16787962">
+				<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+				<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+				<attribute name="Occlusion LOD Level" value="1" />
+			</component>
+		</node>
+		<node id="39">
+			<attribute name="Is Enabled" value="true" />
+			<attribute name="Name" value="grass_patch" />
+			<attribute name="Tags" />
+			<attribute name="Position" value="-2.4315 -0.621502 -5.13383" />
+			<attribute name="Rotation" value="0.905214 0.0831037 -0.376514 -0.178658" />
+			<attribute name="Scale" value="2 2 2" />
+			<attribute name="Variables" />
+			<component type="StaticModel" id="16787963">
+				<attribute name="Model" value="Model;Models/grass_patch.mdl" />
+				<attribute name="Material" value="Material;Materials/grass_patch_d-alpha.xml" />
+				<attribute name="Occlusion LOD Level" value="1" />
+			</component>
+		</node>
 	</node>
 </scene>
