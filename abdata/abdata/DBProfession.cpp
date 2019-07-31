@@ -49,16 +49,18 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
 
     // Get attributes
     query.str("");
-    query << "SELECT `uuid` FROM `game_attributes` WHERE `profession_uuid` = " << db->EscapeString(prof.uuid);
+    query << "SELECT `uuid`, `idx` FROM `game_attributes` WHERE `profession_uuid` = " << db->EscapeString(prof.uuid);
     std::shared_ptr<DB::DBResult> resAttrib = db->StoreQuery(query.str());
     prof.attributeCount= 0;
     prof.attributeUuids.clear();
+    prof.attributeIndices.clear();
     if (resAttrib)
     {
         for (resAttrib = db->StoreQuery(query.str()); resAttrib; resAttrib = resAttrib->Next())
         {
             ++prof.attributeCount;
             prof.attributeUuids.push_back(resAttrib->GetString("uuid"));
+            prof.attributeIndices.push_back(resAttrib->GetUInt("idx"));
         }
     }
     return true;

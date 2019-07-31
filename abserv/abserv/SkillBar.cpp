@@ -11,14 +11,6 @@
 
 namespace Game {
 
-Skill * SkillBar::_LuaGetSkill(uint32_t index)
-{
-    auto s = GetSkill(index);
-    if (s)
-        return s.get();
-    return nullptr;
-}
-
 void SkillBar::RegisterLua(kaguya::State& state)
 {
     state["SkillBar"].setClass(kaguya::UserdataMetatable<SkillBar>()
@@ -29,8 +21,19 @@ void SkillBar::RegisterLua(kaguya::State& state)
         .addFunction("GetSkillsWithTarget", &SkillBar::_LuaGetSkillsWithTarget)
         .addFunction("GetSkillsWithEffectTarget", &SkillBar::_LuaGetSkillsWithEffectTarget)
         .addFunction("AddSkill", &SkillBar::_LuaAddSkill)
+        .addFunction("HaveAttribute", &SkillBar::HaveAttribute)
+        .addFunction("SetAttributeValue", &SkillBar::SetAttributeValue)
+        .addFunction("GetAttributeValue", &SkillBar::GetAttributeValue)
         .addFunction("Load", &SkillBar::Load)
     );
+}
+
+Skill* SkillBar::_LuaGetSkill(uint32_t index)
+{
+    auto s = GetSkill(index);
+    if (s)
+        return s.get();
+    return nullptr;
 }
 
 int SkillBar::_LuaAddSkill(uint32_t skillIndex)
@@ -102,6 +105,55 @@ std::string SkillBar::Encode()
     return IO::TemplateEncoder::Encode(*this);
 }
 
+bool SkillBar::HaveAttribute(uint32_t index)
+{
+    if (std::find_if(prof1_.attributeIndices.begin(), prof1_.attributeIndices.end(), [&](uint32_t i)
+    {
+        return i == index;
+    }) != prof1_.attributeIndices.end())
+        return true;
+    if (std::find_if(prof2_.attributeIndices.begin(), prof2_.attributeIndices.end(), [&](uint32_t i)
+    {
+        return i == index;
+    }) != prof2_.attributeIndices.end())
+        return true;
+    return false;
+}
+
+void SkillBar::SetAttributes(const AB::Attributes& attributes)
+{
+    for (const auto& a : attributes)
+    {
+        if (a.index == 0)
+            continue;
+        if (!SetAttributeValue(a.index, a.value))
+        {
+            LOG_ERROR << "Error setting attribute " << a.index << " to value " << a.value << std::endl;
+        }
+    }
+}
+
+void SkillBar::ResetAttributes()
+{
+    attributes_.fill({ 99u, 0u });
+}
+
+void SkillBar::InitAttributes()
+{
+    ResetAttributes();
+    int i = 0;
+    for (uint32_t index : prof1_.attributeIndices)
+    {
+        attributes_[i].index = index;
+        ++i;
+    }
+    for (uint32_t index : prof2_.attributeIndices)
+    {
+        attributes_[i].index = index;
+        ++i;
+    }
+}
+
 bool SkillBar::Load(const std::string& str, bool locked)
 {
     AB::Entities::Profession p1;
@@ -114,6 +166,8 @@ bool SkillBar::Load(const std::string& str, bool locked)
     prof2_.uuid = Utils::Uuid::EMPTY_UUID;
     prof2_.index = p2.index;
     prof2_.attributeUuids.clear();
+    prof2_.attributeCount = 0;
+    prof2_.attributeIndices.clear();
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     if (p2.index != AB::Entities::INVALID_INDEX)
@@ -123,7 +177,8 @@ bool SkillBar::Load(const std::string& str, bool locked)
             LOG_WARNING << "Error loading secondary profession with index " << prof2_.index << std::endl;
         }
     }
-    attributes_ = attribs;
+    InitAttributes();
+    SetAttributes(attribs);
     auto skillMan = GetSubsystem<SkillManager>();
     for (int i = 0; i < PLAYER_MAX_SKILLS; i++)
     {
@@ -145,9 +200,36 @@ std::shared_ptr<Skill> SkillBar::GetSkill(uint32_t index)
 
 const AB::AttributeValue* SkillBar::GetAttribute(uint32_t index) const
 {
-    if (index < PLAYER_MAX_ATTRIBUTES)
-        return &attributes_[index];
+    for (const auto& a : attributes_)
+    {
+        if (a.index == index)
+            return &a;
+    }
     return nullptr;
+}
+
+bool SkillBar::SetAttributeValue(uint32_t index, uint32_t value)
+{
+    // This works only when professions are set, shich fill the attributes array
+    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AB::AttributeValue& attrib) {
+        return attrib.index == index;
+    });
+    if (it == attributes_.end())
+        return false;
+    (*it).value = value;
+    return true;
+}
+
+uint32_t SkillBar::GetAttributeValue(uint32_t index) const
+{
+    // This works only when professions are set, shich fill the attributes array
+    auto it = std::find_if(attributes_.begin(), attributes_.end(), [&](const AB::AttributeValue& attrib)
+    {
+        return attrib.index == index;
+    });
+    if (it == attributes_.end())
+        return 0;
+    return (*it).value;
 }
 
 std::vector<uint32_t> SkillBar::GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly /* = false */) const

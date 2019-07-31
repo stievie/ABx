@@ -25,6 +25,9 @@ private:
     std::vector<uint32_t> _LuaGetSkillsWithTarget(uint32_t target) const { return GetSkillsWithTarget(static_cast<SkillTarget>(target)); }
     std::vector<uint32_t> _LuaGetSkillsWithEffectTarget(uint32_t effect, uint32_t target) const { return GetSkillsWithEffectTarget(static_cast<SkillEffect>(effect), static_cast<SkillTarget>(target)); }
     Skill* _LuaGetSkill(uint32_t index);
+    void SetAttributes(const AB::Attributes& attributes);
+    void ResetAttributes();
+    bool HaveAttribute(uint32_t index);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -51,8 +54,14 @@ public:
             return;
         skills_[index] = skill;
     }
+    void InitAttributes();
+    /// Get an attribute
+    /// @param index The index of the attribute, not the index in the array
+    /// @return The attribute or nullptr
     const AB::AttributeValue* GetAttribute(uint32_t index) const;
     const AB::Attributes& GetAttributes() const { return attributes_; }
+    bool SetAttributeValue(uint32_t index, uint32_t value);
+    uint32_t GetAttributeValue(uint32_t index) const;
     const SkillsArray& GetArray() const { return skills_; }
     std::vector<uint32_t> GetSkillsWithEffect(SkillEffect effect, bool rechargedOnly = false) const;
     std::vector<uint32_t> GetSkillsWithTarget(SkillTarget target, bool rechargedOnly = false) const;

@@ -104,6 +104,7 @@ bool Npc::LoadScript(const std::string& fileName)
     if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
         functions_ |= FunctionOnLeftArea;
 
+    GetSkillBar()->InitAttributes();
     // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
     Initialize();
 

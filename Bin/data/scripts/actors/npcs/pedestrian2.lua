@@ -6,8 +6,8 @@ level = 20
 itemIndex = 12    -- Female Pedestrian 1 body model
 sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
-prof1Index = 5
-prof2Index = 0     -- None
+prof1Index = PROFESSIONINDEX_MESMER
+prof2Index = PROFESSIONINDEX_NONE
 --behavior = "patrol"
 
 local startTick;

@@ -40,6 +40,7 @@ struct Profession : Entity
         {
             s.text1b(a, Limits::MAX_UUID);
         });
+        s.container4b(attributeIndices, Limits::MAX_PROFESSION_ATTRIBUTES);
     }
 
     uint32_t index = INVALID_INDEX;
@@ -49,6 +50,7 @@ struct Profession : Entity
     uint32_t modelIndexMale = 0;
     uint32_t attributeCount = 0;
     std::vector<std::string> attributeUuids;
+    std::vector<uint32_t> attributeIndices;
 };
 
 }
