@@ -50,6 +50,7 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     // Get attributes
     query.str("");
     query << "SELECT `uuid`, `idx` FROM `game_attributes` WHERE `profession_uuid` = " << db->EscapeString(prof.uuid);
+    query << " ORDER BY `idx`";
     std::shared_ptr<DB::DBResult> resAttrib = db->StoreQuery(query.str());
     prof.attributeCount= 0;
     prof.attributeUuids.clear();
