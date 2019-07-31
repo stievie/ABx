@@ -2,6 +2,7 @@ include("/scripts/includes/consts.lua")
 include("/scripts/includes/skill_consts.lua")
 include("/scripts/includes/damage.lua")
 include("/scripts/includes/attributes.lua")
+include("/scripts/includes/monk.lua")
 
 -- Touch skill
 costEnergy = 5
@@ -41,7 +42,8 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
   local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
-  local hp = math.floor(20 + (attribVal * 3.2))
+  local bonus = getDevineFavorHealBonus(source)
+  local hp = math.floor(20 + (attribVal * 3.2) + bonus)
   target:Healing(source, self:Index(), hp)
   return SkillErrorNone
 end
