@@ -783,10 +783,10 @@ void Application::GetHandlerProfessions(std::shared_ptr<HttpsServer::Response> r
         gNd.append_attribute("model_index_female").set_value(s.modelIndexFemale);
         gNd.append_attribute("model_index_male").set_value(s.modelIndexMale);
         gNd.append_attribute("num_attr").set_value(s.attributeCount);
-        for (const std::string& a : s.attributeUuids)
+        for (const AB::Entities::AttriInfo& a : s.attributes)
         {
             auto attrNd = gNd.append_child("attr");
-            attrNd.append_attribute("uuid").set_value(a.c_str());
+            attrNd.append_attribute("uuid").set_value(a.uuid.c_str());
         }
     }
 

@@ -18,6 +18,13 @@ enum ProfessionIndex : uint32_t
     ProfessionIndexElementarist = 6
 };
 
+struct AttriInfo
+{
+    std::string uuid;
+    uint32_t index{ 0 };
+    bool primary{ false };
+};
+
 static constexpr auto KEY_PROFESSIONS = "game_professions";
 
 struct Profession : Entity
@@ -36,11 +43,12 @@ struct Profession : Entity
         s.value4b(modelIndexFemale);
         s.value4b(modelIndexMale);
         s.value4b(attributeCount);
-        s.container(attributeUuids, Limits::MAX_PROFESSION_ATTRIBUTES, [&s](std::string& a)
+        s.container(attributes, Limits::MAX_PROFESSION_ATTRIBUTES, [&s](AttriInfo& a)
         {
-            s.text1b(a, Limits::MAX_UUID);
+            s.text1b(a.uuid, Limits::MAX_UUID);
+            s.value4b(a.index);
+            s.value1b(a.primary);
         });
-        s.container4b(attributeIndices, Limits::MAX_PROFESSION_ATTRIBUTES);
     }
 
     uint32_t index = INVALID_INDEX;
@@ -49,8 +57,7 @@ struct Profession : Entity
     uint32_t modelIndexFemale = 0;
     uint32_t modelIndexMale = 0;
     uint32_t attributeCount = 0;
-    std::vector<std::string> attributeUuids;
-    std::vector<uint32_t> attributeIndices;
+    std::vector<AttriInfo> attributes;
 };
 
 }

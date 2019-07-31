@@ -107,15 +107,15 @@ std::string SkillBar::Encode()
 
 bool SkillBar::HaveAttribute(uint32_t index)
 {
-    if (std::find_if(prof1_.attributeIndices.begin(), prof1_.attributeIndices.end(), [&](uint32_t i)
+    if (std::find_if(prof1_.attributes.begin(), prof1_.attributes.end(), [&](const AB::Entities::AttriInfo& i)
     {
-        return i == index;
-    }) != prof1_.attributeIndices.end())
+        return i.index == index;
+    }) != prof1_.attributes.end())
         return true;
-    if (std::find_if(prof2_.attributeIndices.begin(), prof2_.attributeIndices.end(), [&](uint32_t i)
+    if (std::find_if(prof2_.attributes.begin(), prof2_.attributes.end(), [&](const AB::Entities::AttriInfo& i)
     {
-        return i == index;
-    }) != prof2_.attributeIndices.end())
+        return i.index == index;
+    }) != prof2_.attributes.end())
         return true;
     return false;
 }
@@ -142,15 +142,18 @@ void SkillBar::InitAttributes()
 {
     ResetAttributes();
     int i = 0;
-    for (uint32_t index : prof1_.attributeIndices)
+    for (const auto& a : prof1_.attributes)
     {
-        attributes_[i].index = index;
+        attributes_[i].index = a.index;
         ++i;
     }
-    for (uint32_t index : prof2_.attributeIndices)
+    for (const auto& a : prof2_.attributes)
     {
-        attributes_[i].index = index;
-        ++i;
+        if (!a.primary)
+        {
+            attributes_[i].index = a.index;
+            ++i;
+        }
     }
 }
 
@@ -165,9 +168,7 @@ bool SkillBar::Load(const std::string& str, bool locked)
 
     prof2_.uuid = Utils::Uuid::EMPTY_UUID;
     prof2_.index = p2.index;
-    prof2_.attributeUuids.clear();
-    prof2_.attributeCount = 0;
-    prof2_.attributeIndices.clear();
+    prof2_.attributes.clear();
 
     auto dataClient = GetSubsystem<IO::DataClient>();
     if (p2.index != AB::Entities::INVALID_INDEX)
