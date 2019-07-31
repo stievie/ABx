@@ -23,7 +23,6 @@ function onInit()
   skillBar:AddSkill(9996)
   skillBar:SetAttributeValue(ATTRIB_HEALING, 12)
   skillBar:SetAttributeValue(ATTRIB_DEVINE_FAVOUR, 12)
-  print(skillBar:GetAttributeValue(ATTRIB_DEVINE_FAVOUR))
   return true
 end
 
