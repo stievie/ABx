@@ -574,12 +574,14 @@ void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMe
 void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
 {
     updateTick_ = message->Get<int64_t>();
-    clockDiff_ = AbTick() - updateTick_;
 }
 
 void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
 {
-    AB_UNUSED(message);
+    int32_t diff = message->Get<int32_t>();
+    // Clock difference between client and server
+    clockDiff_ = static_cast<int64_t>(diff);
+    // Round trip time
     lastPing_ = static_cast<int>(AbTick() - pingTick_);
     if (receiver_)
         receiver_->OnPong(lastPing_);
@@ -803,6 +805,7 @@ void ProtocolGame::Ping()
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
+    msg->Add<int64_t>(pingTick_),
     Send(msg);
 }
 

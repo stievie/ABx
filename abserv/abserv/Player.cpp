@@ -101,11 +101,13 @@ void Player::Logout()
     client_->Logout();
 }
 
-void Player::Ping()
+void Player::Ping(int64_t clientTick)
 {
     lastPing_ = Utils::Tick();
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::GamePong);
+    // Depending on the timezone of server and client the server may also be behind, i.e. difference is negative.
+    msg->Add<int32_t>(static_cast<int32_t>(clientTick - Utils::Tick()));
     WriteToOutput(*msg);
 }
 

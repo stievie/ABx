@@ -124,8 +124,11 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     switch (recvByte)
     {
     case AB::GameProtocol::PacketTypePing:
-        AddPlayerTask(&Game::Player::Ping);
+    {
+        const int64_t clientTick = message.Get<int64_t>();
+        AddPlayerTask(&Game::Player::Ping, clientTick);
         break;
+    }
     case AB::GameProtocol::PacketTypeLogout:
         AddPlayerTask(&Game::Player::Logout);
         break;
