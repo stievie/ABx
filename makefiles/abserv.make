@@ -7,7 +7,7 @@ TARGET = $(TARGETDIR)/abserv$(SUFFIX)
 SOURDEDIR = ../abserv/abserv
 OBJDIR = obj/x64/$(CONFIG)/abserv
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto -labsmath -lpugixml -ldetour -lstdc++fs
-CXXFLAGS += -fexceptions
+CXXFLAGS += -fexceptions -Wno-unused-parameter
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror -Wno-maybe-uninitialized
 # End changes

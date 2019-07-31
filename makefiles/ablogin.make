@@ -7,7 +7,7 @@ TARGET = $(TARGETDIR)/ablogin$(SUFFIX)
 SOURDEDIR = ../ablogin/ablogin
 OBJDIR = obj/x64/$(CONFIG)/ablogin
 LIBS += -lpthread -luuid -llua5.3 -labscommon -labcrypto
-CXXFLAGS += -fexceptions
+CXXFLAGS += -fexceptions -Wno-unused-parameter
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
 # End changes

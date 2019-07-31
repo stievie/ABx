@@ -10,12 +10,19 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #endif
+#if defined(__GCC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 #include <bitsery/bitsery.h>
 #include <bitsery/adapter/buffer.h>
 #include <bitsery/traits/vector.h>
 #include <bitsery/traits/string.h>
 #if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
+#if defined(__GCC__)
+#pragma GCC diagnostic pop
 #endif
 #if defined(_MSC_VER)
 #pragma warning(pop)
