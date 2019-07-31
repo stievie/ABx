@@ -172,7 +172,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     }
 
     moveComp_->StoreOldPosition();
-    if (currentDistance_ > 1.0f)
+    if (currentDistance_ > 0.5f)
     {
         moveComp_->HeadTo(targetPos_);
         moveComp_->directionSet_ = true;
@@ -196,7 +196,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     if (auto target = target_.lock())
     {
         const float dist = GetPosition().Distance(targetPos_);
-        if (dist < (velocity.Length() / static_cast<float>(timeElapsed)) * 10.0f)
+        if (dist < (velocity.Length() / static_cast<float>(timeElapsed)) * 5.0f)
         {
             // We may not really collide because of the low game update rate, so let's
             // approximate if we would collide
