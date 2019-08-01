@@ -67,35 +67,16 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     {
         auto script = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(file);
         if (script)
+        {
+            // Make something like an include guard
+            std::string ident = file;
+            Utils::MakeIdent(ident);
+            ident = "__included_" + ident + "__";
+            if (IsBool(state, ident))
+                return;
             script->Execute(state);
-    });
-    state["include_dir"] = kaguya::function([&state](const std::string& dir)
-    {
-        // directory must start with /
-        auto* dataProv = GetSubsystem<IO::DataProvider>();
-        using namespace fs;
-        const std::string& dataDir = dataProv->GetDataDir();
-        size_t dataDirLen = dataDir.length();
-        std::string absDir = dataDir + Utils::NormalizeFilename(dir);
-        recursive_directory_iterator end_itr;
-        try
-        {
-            for (recursive_directory_iterator itr(absDir); itr != end_itr; ++itr)
-            {
-                std::string s = itr->path().string();
-                std::string ext = itr->path().extension().string();
-                if (Utils::StringEquals(ext, ".lua"))
-                {
-                    std::string _s = Utils::NormalizeFilename(s.substr(dataDirLen));
-                    auto script = dataProv->GetAsset<Script>(_s);
-                    if (script)
-                        script->Execute(state);
-                }
-            }
-        }
-        catch (filesystem_error& ex)
-        {
-            LOG_ERROR << ex.what() << std::endl;
+            state[ident] = true;
+            LOG_INFO << ident << std::endl;
         }
     });
 

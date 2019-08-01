@@ -61,6 +61,17 @@ bool ReplaceSubstring(std::basic_string<charType>& subject,
     return result;
 }
 
+/// Strip out all characters that are not valid for an identifier
+template <typename charType>
+void MakeIdent(std::basic_string<charType>& s)
+{
+    s = Trim<charType>(s, " \t\\/");
+    static std::basic_string<charType> invalidChars("\\/:?\"<>|.");
+    std::transform(s.begin(), s.end(), s.begin(), [](auto c) {
+        return (invalidChars.find(c) == std::string::npos) ? c : '_';
+    });
+}
+
 template <typename charType>
 std::basic_string<charType> CombineString(const std::vector<std::basic_string<charType>>& strings,
     const std::basic_string<charType>& delim)
