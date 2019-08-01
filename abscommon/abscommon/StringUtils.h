@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 namespace Utils {
 
 /// Case insensitive string compare
