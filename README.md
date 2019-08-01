@@ -24,15 +24,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 
 ## Architecture
 
-~~~plain
-                                              +--------------------- File System
-         +---------------- File Server1...N --+-----+-- Data Server -+
-         +-----------------+                  |     |                +---- Database
-Client1 -+                 +--- Game Server1 -+--+  |
-  ...    + - Login Server -+        ...       |  +--+-- Message Server
-ClientN -+                 +--- Game ServerN -+--+
-         +-----------------+
-~~~
+![Architecture](/Doc/abschema.png?raw=true)
 
 ### Data Server
 
