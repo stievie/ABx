@@ -1,13 +1,15 @@
 include("/scripts/includes/chat.lua")
 include("/scripts/includes/consts.lua")
+include("/scripts/includes/attributes.lua")
+include("/scripts/includes/skill_consts.lua")
 
 name = "Priest"
 level = 20
 itemIndex = 2
 sex = SEX_MALE
 creatureState = CREATURESTATE_IDLE
-prof1Index = 3     -- Monk
-prof2Index = 0     -- None
+prof1Index = PROFESSIONINDEX_MONK
+prof2Index = PROFESSIONINDEX_NONE
 behavior = "PRIEST"
 
 function onInit()
@@ -16,6 +18,8 @@ function onInit()
   skillBar:AddSkill(281)
   -- Instant rezz skill
   skillBar:AddSkill(9996)
+  skillBar:SetAttributeValue(ATTRIB_HEALING, 12)
+  skillBar:SetAttributeValue(ATTRIB_DEVINE_FAVOUR, 12)
   return true
 end
 

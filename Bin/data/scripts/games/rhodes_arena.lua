@@ -11,7 +11,7 @@ function onStart()
     priest:SetPosition({x, y, z})
     priest:SetRotation(180)
     priest:SetGroupId(groupId)
-    guildLord:SetGroupMask(GROUPMASK_1)
+    priest:SetGroupMask(GROUPMASK_1)
   end
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then

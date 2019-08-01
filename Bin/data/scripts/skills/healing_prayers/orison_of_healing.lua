@@ -42,9 +42,11 @@ function onSuccess(source, target)
     return SkillErrorInvalidTarget
   end
   local attribVal = source:GetAttributeValue(ATTRIB_HEALING)
-  local bonus = math.floor(getDevineFavorHealBonus(source))
   local hp = math.floor(20 + (attribVal * 3.2))
   target:Healing(source, self:Index(), hp)
-  target:Healing(source, self:Index(), bonus)
+  local bonus = math.floor(getDevineFavorHealBonus(source))
+  if (bonus ~= 0) then
+    target:Healing(source, self:Index(), bonus)
+  end
   return SkillErrorNone
 end

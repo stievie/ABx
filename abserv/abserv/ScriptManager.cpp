@@ -69,14 +69,13 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
         if (script)
         {
             // Make something like an include guard
-            std::string ident = file;
+            std::string ident(file);
             Utils::MakeIdent(ident);
             ident = "__included_" + ident + "__";
             if (IsBool(state, ident))
                 return;
             script->Execute(state);
             state[ident] = true;
-            LOG_INFO << ident << std::endl;
         }
     });
 
