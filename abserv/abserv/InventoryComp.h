@@ -10,6 +10,7 @@
 namespace Game {
 
 class Actor;
+class Skill;
 
 namespace Components {
 
@@ -105,7 +106,7 @@ public:
     float GetArmorPenetration();
     uint32_t GetAttributeValue(uint32_t index);
     void GetResources(int& maxHealth, int& maxEnergy);
-
+    void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     template<typename Func>
     void VisitEquipement(Func&& func)
     {

@@ -6,6 +6,7 @@
 #include "ItemFactory.h"
 #include "Subsystems.h"
 #include "Actor.h"
+#include "Skill.h"
 
 namespace Game {
 
@@ -70,6 +71,8 @@ bool Item::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnEquip;
     if (ScriptManager::IsFunction(luaState_, "onUnequip"))
         functions_ |= FunctionOnUnequip;
+    if (ScriptManager::IsFunction(luaState_, "getSkillCost"))
+        functions_ |= FunctionGetSkillCost;
     return true;
 }
 
@@ -459,6 +462,15 @@ void Item::GetResources(int& maxHealth, int& maxEnergy)
     for (const auto& upg : upgrades_)
         if (upg.second)
             upg.second->GetResources(maxHealth, maxEnergy);
+}
+
+void Item::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+{
+    kaguya::tie(activation, energy, adrenaline, overcast, hp) =
+        luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
+    for (const auto& upg : upgrades_)
+        if (upg.second)
+            upg.second->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
 }
 
 void Item::GetAttributeValue(uint32_t index, uint32_t& value)

@@ -5,6 +5,7 @@
 #include "Actor.h"
 #include "DataClient.h"
 #include "MathUtils.h"
+#include "Skill.h"
 
 namespace Game {
 namespace Components {
@@ -205,6 +206,14 @@ void InventoryComp::GetResources(int& maxHealth, int& maxEnergy)
     VisitEquipement([&](Item* item)
     {
         item->GetResources(maxHealth, maxEnergy);
+    });
+}
+
+void InventoryComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
+{
+    VisitEquipement([&](Item* item)
+    {
+        item->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
     });
 }
 

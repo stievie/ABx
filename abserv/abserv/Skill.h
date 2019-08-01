@@ -59,6 +59,7 @@ private:
     uint32_t _LuaGetIndex() const { return data_.index; }
     bool _LuaIsElite() const { return data_.isElite; }
     std::string _LuaGetName() const { return data_.name; }
+    int32_t GetActivation(const std::shared_ptr<Actor>& source, int32_t activation);
 public:
     static void RegisterLua(kaguya::State& state);
 

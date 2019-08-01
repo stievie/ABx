@@ -120,6 +120,18 @@ bool Skill::CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_
     return (lastError_ == AB::GameProtocol::SkillErrorNone);
 }
 
+int32_t Skill::GetActivation(const std::shared_ptr<Actor>& source, int32_t activation)
+{
+    const uint32_t fastcast = source->GetAttributeValue(static_cast<uint32_t>(AttributeIndices::FastCast));
+    if (fastcast == 0)
+        return activation;
+    if (IsType(AB::Entities::SkillTypeSignet))
+        return static_cast<int32_t>(static_cast<float>(activation) * (1.0f - (3.0f * static_cast<float>(fastcast))));
+    if (IsType(AB::Entities::SkillTypeSpell))
+        return static_cast<int32_t>(static_cast<float>(activation) / powf(static_cast<float>(fastcast) / 15.0f, 2.0f));
+    return activation;
+}
+
 AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std::shared_ptr<Actor> target)
 {
     lastError_ = AB::GameProtocol::SkillErrorNone;
@@ -128,10 +140,11 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
 
     realEnergy_ = energy_;
     realAdrenaline_ = adrenaline_;
-    realActivation_ = activation_;
+    realActivation_ = GetActivation(source, activation_);
     realOvercast_ = overcast_;
     realHp_ = hp_;
-    // Get real skill cost, which depends on the effects of the source (e.g. equipment)
+    // Get real skill cost, which depends on the effects and equipment of the source
+    source->inventoryComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
     source->effectsComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
 
     if (source->resourceComp_.GetEnergy() < realEnergy_)
