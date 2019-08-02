@@ -14,9 +14,9 @@ void ClientPrediction::RegisterObject(Context* context)
 
 ClientPrediction::ClientPrediction(Context* context) :
     LogicComponent(context),
-    serverTime_(0),
-    serverY_(std::numeric_limits<float>::max())
+    serverTime_(0)
 {
+    serverPos_.y_ = std::numeric_limits<float>::max();
     SetUpdateEventMask(USE_UPDATE);
 }
 
@@ -108,8 +108,8 @@ void ClientPrediction::Move(float speed, const Vector3& amount)
         pos.y_ = terrain->GetHeight(pos);
     else
     {
-        if (!Equals(serverY_, std::numeric_limits<float>::max()))
-            pos.y_ = serverY_;
+        if (!Equals(serverPos_.y_, std::numeric_limits<float>::max()))
+            pos.y_ = serverPos_.y_;
     }
 
     if (CheckCollision(pos))
@@ -190,13 +190,14 @@ void ClientPrediction::Update(float timeStep)
 void ClientPrediction::CheckServerPosition(int64_t time, const Vector3& serverPos)
 {
     serverTime_ = time;
-    serverY_ = serverPos.y_;
+    this->serverPos_ = serverPos;
     Player* player = node_->GetComponent<Player>();
     const Vector3& currPos = player->moveToPos_;
     const float dist = (fabs(currPos.x_ - serverPos.x_) + fabs(currPos.z_ - serverPos.z_)) * 0.5f;
-    if (dist > 5.0f)
+    // FIXME: This sucks a bit, and needs some work.
+    if (dist > 5.0f || (dist > 1.0f && player->GetCreatureState() == AB::GameProtocol::CreatureStateIdle))
     {
-        // Lerp to actual position
+        // If too far away or player is idle, Lerp to server position
         player->moveToPos_ = serverPos;
     }
 }

@@ -5,7 +5,7 @@ class ClientPrediction : public LogicComponent
     URHO3D_OBJECT(ClientPrediction, LogicComponent);
 private:
     int64_t serverTime_;
-    float serverY_;
+    Vector3 serverPos_;
     uint8_t lastMoveDir_ = 0;
     uint8_t lastTurnDir_ = 0;
     void UpdateMove(float timeStep, uint8_t direction, float speedFactor);
