@@ -229,8 +229,8 @@ void FwClient::LoadData()
 
     LoadGames(versions_["game_maps"]);
     LoadSkills(versions_["game_skills"]);
-    LoadAttributes(versions_["game_attributes"]);
     LoadProfessions(versions_["game_professions"]);
+    LoadAttributes(versions_["game_attributes"]);
     LoadEffects(versions_["game_effects"]);
     LoadItems(versions_["game_items"]);
     LoadMusic(versions_["game_music"]);
@@ -342,6 +342,7 @@ void FwClient::LoadSkills(uint32_t curVersion)
 
 void FwClient::LoadAttributes(uint32_t curVersion)
 {
+    // Professions must be loaded already
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     XMLFile* file = cache->GetResource<XMLFile>("Attributes.xml");
 
@@ -352,9 +353,42 @@ void FwClient::LoadAttributes(uint32_t curVersion)
         if (file)
             cache->ReloadResource(file);
         file = cache->GetResource<XMLFile>("Attributes.xml");
+
     }
     if (!file)
         return;
+
+    SkillManager* sm = GetSubsystem<SkillManager>();
+    if (sm->professions_.empty())
+        return;
+
+    const pugi::xml_document* const doc = file->GetDocument();
+    const pugi::xml_node& node = doc->child("attributes");
+    if (!node)
+        return;
+    for (const auto& pro : node.children("attrib"))
+    {
+        String profUuid = pro.attribute("profession").as_string();
+        String attrName = pro.attribute("name").as_string();
+        String attrUuid = pro.attribute("uuid").as_string();
+        uint32_t attrIndex = pro.attribute("index").as_uint();
+        bool isPrimary = pro.attribute("primary").as_bool();
+        sm->attributes_[attrIndex] = {
+            std::string(attrUuid.CString()),
+            attrIndex,
+            std::string(profUuid.CString()),
+            std::string(attrName.CString()),
+            isPrimary
+        };
+        AB::Entities::Profession* prof = sm->GetProfession(profUuid);
+        if (!prof)
+            continue;
+        AB::Entities::AttriInfo* attrInfo = sm->GetAttrInfo(*prof, attrUuid);
+        if (!attrInfo)
+            continue;
+        attrInfo->index = attrIndex;
+        attrInfo->primary = isPrimary;
+    }
 }
 
 void FwClient::LoadProfessions(uint32_t curVersion)
@@ -392,7 +426,7 @@ void FwClient::LoadProfessions(uint32_t curVersion)
         prof.modelIndexMale = pro.attribute("model_index_male").as_uint();
         for (const auto& attr : pro.children("attr"))
         {
-            prof.attributeUuids.push_back(attr.attribute("uuid").as_string());
+            prof.attributes.push_back({ attr.attribute("uuid").as_string(), 0, false });
         }
         sm->professions_.emplace(prof.uuid, prof);
     }

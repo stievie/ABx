@@ -528,6 +528,15 @@ void Application::Stop()
     if (!running_)
         return;
 
+    // Stop can not be called from the Dispatcher thread.
+    // TODO: I think this should be an assert()
+    if (GetSubsystem<Asynch::Dispatcher>()->IsDispatcherThread())
+    {
+        LOG_WARNING << "Application::Stop() was called from the Dispatcher thread" << std::endl;
+        GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::Stop, this);
+        return;
+    }
+
     // On Windows this can't take too long, or Windows will just terminate the process
     // when stopped with a signal.
 

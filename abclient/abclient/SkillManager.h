@@ -4,6 +4,7 @@
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/Skill.h>
 #include <AB/Entities/Effect.h>
+#include <AB/Entities/Attribute.h>
 
 class SkillManager : public Object
 {
@@ -27,6 +28,15 @@ public:
         static AB::Entities::Profession EMPTY;
         return &EMPTY;
     }
+    AB::Entities::Profession* GetProfession(const String& uuid);
+    AB::Entities::AttriInfo* GetAttrInfo(AB::Entities::Profession& prof, const String& uuid);
+    const AB::Entities::Attribute* GetAttributeByIndex(uint32_t index) const
+    {
+        auto it = attributes_.find(index);
+        if (it == attributes_.end())
+            return nullptr;
+        return &(*it).second;
+    }
 
     const std::map<uint32_t, AB::Entities::Skill>& GetSkills() const { return skills_; }
     const AB::Entities::Skill* GetSkillByIndex(uint32_t index) const
@@ -46,6 +56,7 @@ public:
 
     std::map<uint32_t, AB::Entities::Skill> skills_;
     std::map<std::string, AB::Entities::Profession> professions_;
+    std::map<uint32_t, AB::Entities::Attribute> attributes_;
     std::map<uint32_t, AB::Entities::Effect> effects_;
 
 };

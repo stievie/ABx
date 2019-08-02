@@ -25,6 +25,8 @@ public:
         return utilization_;
     }
 
+    bool IsDispatcherThread() const { return (state_ == State::Running) ? thread_.get_id() == std::this_thread::get_id() : false; }
+
     enum class State
     {
         Running,
