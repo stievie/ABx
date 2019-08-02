@@ -25,7 +25,7 @@ public:
     ~ClientPrediction();
 
     /// Called on scene update, variable timestep.
-    void Update(float timeStep) override;
+    void FixedUpdate(float timeStep) override;
     void CheckServerPosition(int64_t time, const Vector3& serverPos);
     void CheckServerRotation(int64_t time, float rad);
 };

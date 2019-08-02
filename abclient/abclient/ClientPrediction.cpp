@@ -17,7 +17,7 @@ ClientPrediction::ClientPrediction(Context* context) :
     serverTime_(0)
 {
     serverPos_.y_ = std::numeric_limits<float>::max();
-    SetUpdateEventMask(USE_UPDATE);
+    SetUpdateEventMask(USE_FIXEDUPDATE);
 }
 
 ClientPrediction::~ClientPrediction() = default;
@@ -143,9 +143,9 @@ void ClientPrediction::TurnAbsolute(float yAngle)
     player->rotateTo_.FromEulerAngles(0.0f, yAngle, 0.0f);
 }
 
-void ClientPrediction::Update(float timeStep)
+void ClientPrediction::FixedUpdate(float timeStep)
 {
-    LogicComponent::Update(timeStep);
+    LogicComponent::FixedUpdate(timeStep);
 
     extern bool gNoClientPrediction;
     if (gNoClientPrediction)
