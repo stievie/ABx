@@ -126,6 +126,8 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
         Math::Vector3 size = Math::Vector3::One;
         Math::Vector3 offset = Math::Vector3::Zero;
         Math::Quaternion offsetRot = Math::Quaternion::Identity;
+        // If we have a rigid body collide by default with everything. That's also Urho3Ds default.
+        uint32_t colisionMask = 0xFFFFFFFF;
         for (const auto& comp : node.children("component"))
         {
             const pugi::xml_attribute& type_attr = comp.attribute("type");
@@ -137,7 +139,7 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
             {
                 object = std::make_shared<GameObject>();
                 object->SetName(name);
-                object->collisionMask_ = 0;
+                object->collisionMask_ = colisionMask;
                 object->transformation_ = Math::Transformation(pos, scale, rot);
                 {
                     std::lock_guard<std::mutex> lock(lock_);
@@ -287,7 +289,9 @@ void Map::LoadSceneNode(const pugi::xml_node& node)
                     switch (name_hash)
                     {
                     case IO::Map::AttrCollisionMask:
-                        object->collisionMask_ = value_attr.as_uint();
+                        colisionMask = value_attr.as_uint();
+                        if (object)
+                            object->collisionMask_ = colisionMask;
                         break;
                     }
                 }
