@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="2415.64" />
-	<attribute name="Next Replicated Node ID" value="40" />
+	<attribute name="Next Replicated Node ID" value="42" />
 	<attribute name="Next Replicated Component ID" value="42" />
-	<attribute name="Next Local Node ID" value="16786614" />
-	<attribute name="Next Local Component ID" value="16788025" />
+	<attribute name="Next Local Node ID" value="16787029" />
+	<attribute name="Next Local Component ID" value="16788485" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="Group;AnimationFile" />
 	<component type="Octree" id="1" />
@@ -597,7 +597,7 @@
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables">
-			<variant hash="2570276288" type="String" value="Models/Ship1.ani" />
+			<variant hash="2570276288" type="String" value="Animations/Ship1.ani" />
 		</attribute>
 		<component type="AnimatedModel" id="16786523">
 			<attribute name="Model" value="Model;Models/Ship1.mdl" />
@@ -766,7 +766,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="5.59049 27.4596 21.8738" />
+		<attribute name="Position" value="5.85031 27.4596 25.0824" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="0.5 0.5 0.5" />
 		<attribute name="Variables" />
@@ -776,7 +776,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16787581">
-			<attribute name="Physics Position" value="5.59049 27.4596 21.8738" />
+			<attribute name="Physics Position" value="5.85031 27.4596 25.0824" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -789,7 +789,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="4.90546 26.2677 21.8821" />
+		<attribute name="Position" value="5.01478 26.2677 25.7146" />
 		<attribute name="Rotation" value="0.96709 0 0.254433 0" />
 		<attribute name="Scale" value="0.7 0.7 0.7" />
 		<attribute name="Variables" />
@@ -800,7 +800,7 @@
 		</component>
 		<component type="RigidBody" id="16787584">
 			<attribute name="Physics Rotation" value="0.96709 0 0.254433 0" />
-			<attribute name="Physics Position" value="4.90546 26.2677 21.8821" />
+			<attribute name="Physics Position" value="5.01478 26.2677 25.7146" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -813,7 +813,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="6.55398 26.2677 21.7951" />
+		<attribute name="Position" value="6.50885 26.2677 24.7419" />
 		<attribute name="Rotation" value="0.986827 0 0.161776 0" />
 		<attribute name="Scale" value="0.7 0.7 0.7" />
 		<attribute name="Variables" />
@@ -824,7 +824,7 @@
 		</component>
 		<component type="RigidBody" id="16787587">
 			<attribute name="Physics Rotation" value="0.986827 0 0.161776 0" />
-			<attribute name="Physics Position" value="6.55398 26.2677 21.7951" />
+			<attribute name="Physics Position" value="6.50885 26.2677 24.7419" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -837,7 +837,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box1" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="3.51231 25.9329 22.1348" />
+		<attribute name="Position" value="4.60435 25.9329 22.8304" />
 		<attribute name="Rotation" value="0.996876 0 0.0789811 0" />
 		<attribute name="Scale" value="0.5 0.5 0.5" />
 		<attribute name="Variables" />
@@ -848,7 +848,7 @@
 		</component>
 		<component type="RigidBody" id="16787651">
 			<attribute name="Physics Rotation" value="0.996876 0 0.0789811 0" />
-			<attribute name="Physics Position" value="3.51231 25.9329 22.1348" />
+			<attribute name="Physics Position" value="4.60435 25.9329 22.8304" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -861,7 +861,7 @@
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="GoldBag" />
 		<attribute name="Tags" />
-		<attribute name="Position" value="2.74458 25.3528 19.435" />
+		<attribute name="Position" value="2.74458 25.3528 22.5989" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="4 4 4" />
 		<attribute name="Variables" />
@@ -871,7 +871,7 @@
 			<attribute name="Cast Shadows" value="true" />
 		</component>
 		<component type="RigidBody" id="16787715">
-			<attribute name="Physics Position" value="2.74458 25.3528 19.435" />
+			<attribute name="Physics Position" value="2.74458 25.3528 22.5989" />
 			<attribute name="Collision Layer" value="2" />
 			<attribute name="Use Gravity" value="false" />
 		</component>
@@ -944,5 +944,192 @@
 				<attribute name="Occlusion LOD Level" value="1" />
 			</component>
 		</node>
+	</node>
+	<node id="16786665">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="MarketTend1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="2.59084 25.3585 21.0209" />
+		<attribute name="Rotation" value="-8.74228e-08 -0 -1 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788089">
+			<attribute name="Model" value="Model;Models/MarketTend1.mdl" />
+			<attribute name="Material" value="Material;Materials/TendWood.xml;Materials/TendRoof.xml" />
+		</component>
+		<component type="RigidBody" id="16788090">
+			<attribute name="Physics Rotation" value="8.74228e-08 0 1 0" />
+			<attribute name="Physics Position" value="2.59084 25.3585 21.0209" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788091">
+			<attribute name="Size" value="6.18871 4.31133 6.1528" />
+			<attribute name="Offset Position" value="0.0310233 2.00369 0.023514" />
+		</component>
+	</node>
+	<node id="16786716">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Barrel1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="6.15908 25.407 22.5374" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788153">
+			<attribute name="Model" value="Model;Models/Barrel1.mdl" />
+			<attribute name="Material" value="Material;Materials/BarrelWood.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788154">
+			<attribute name="Physics Position" value="6.15908 25.407 22.5374" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788155">
+			<attribute name="Size" value="0.574561 0.747794 0.574561" />
+			<attribute name="Offset Position" value="0 0.379707 0" />
+		</component>
+	</node>
+	<node id="16786717">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Barrel1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="6.82585 25.407 23.0139" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788156">
+			<attribute name="Model" value="Model;Models/Barrel1.mdl" />
+			<attribute name="Material" value="Material;Materials/BarrelWood.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788157">
+			<attribute name="Physics Position" value="6.82585 25.407 23.0139" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788158">
+			<attribute name="Size" value="0.574561 0.747794 0.574561" />
+			<attribute name="Offset Position" value="0 0.379707 0" />
+		</component>
+	</node>
+	<node id="16786768">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Amphora1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="7.32234 25.2328 22.0482" />
+		<attribute name="Rotation" value="0.819152 0 0.573576 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788220">
+			<attribute name="Model" value="Model;Models/Amphora1.mdl" />
+			<attribute name="Material" value="Material;Materials/AmphoraPug.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788221">
+			<attribute name="Physics Rotation" value="0.819152 0 0.573576 0" />
+			<attribute name="Physics Position" value="7.32234 25.2328 22.0482" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788222">
+			<attribute name="Size" value="0.484792 0.716992 0.499678" />
+			<attribute name="Offset Position" value="-1.49012e-08 0.364305 0" />
+		</component>
+	</node>
+	<node id="16786819">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Barrow1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="1.85453 25.5558 26.6769" />
+		<attribute name="Rotation" value="0.706999 -0.0123407 -0.706999 0.0123407" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788284">
+			<attribute name="Model" value="Model;Models/Barrow1.mdl" />
+			<attribute name="Material" value="Material;Materials/Barrow1_Wood.xml;Materials/Barrow1_Wheel.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788285">
+			<attribute name="Physics Rotation" value="0.706999 -0.0123407 -0.706999 0.0123407" />
+			<attribute name="Physics Position" value="1.85453 25.5558 26.6769" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788286">
+			<attribute name="Size" value="1.30723 1.46414 2.94477" />
+			<attribute name="Offset Position" value="0.00805351 0.75032 0.349918" />
+		</component>
+	</node>
+	<node id="40">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="GoldBag" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="2.74458 26.4716 18.4092" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788287">
+			<attribute name="Model" value="Model;Models/GoldBag.mdl" />
+			<attribute name="Material" value="Material;Materials/GoldBagCoin.xml;Materials/GoldBag.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788288">
+			<attribute name="Physics Position" value="2.74458 26.4716 18.4092" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788289">
+			<attribute name="Size" value="0.230128 0.141163 0.223866" />
+			<attribute name="Offset Position" value="0.000737593 0.0685208 0.0076894" />
+		</component>
+	</node>
+	<node id="16786820">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Amphora1" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="3.24268 26.4647 18.3279" />
+		<attribute name="Rotation" value="0.819153 0 -0.573576 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788290">
+			<attribute name="Model" value="Model;Models/Amphora1.mdl" />
+			<attribute name="Material" value="Material;Materials/AmphoraPug.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788291">
+			<attribute name="Physics Rotation" value="0.819153 0 -0.573576 0" />
+			<attribute name="Physics Position" value="3.24268 26.4647 18.3279" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788292">
+			<attribute name="Size" value="0.484792 0.716992 0.499678" />
+			<attribute name="Offset Position" value="-1.49012e-08 0.364305 0" />
+		</component>
+	</node>
+	<node id="41">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="GoldBag" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="2.74458 26.4716 18.4092" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="0.5 0.5 0.5" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16788482">
+			<attribute name="Model" value="Model;Models/GoldBag.mdl" />
+			<attribute name="Material" value="Material;Materials/GoldBagCoin.xml;Materials/GoldBag.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+		<component type="RigidBody" id="16788483">
+			<attribute name="Physics Position" value="2.74458 26.4716 18.4092" />
+			<attribute name="Collision Layer" value="2" />
+			<attribute name="Use Gravity" value="false" />
+		</component>
+		<component type="CollisionShape" id="16788484">
+			<attribute name="Size" value="0.230128 0.141163 0.223866" />
+			<attribute name="Offset Position" value="0.000737593 0.0685208 0.0076894" />
+		</component>
 	</node>
 </scene>

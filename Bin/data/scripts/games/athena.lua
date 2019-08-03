@@ -17,8 +17,8 @@ function onStart()
   end
   local merchant = self:AddNpc("/scripts/actors/npcs/merchant.lua")
   if (merchant ~= nil) then
-    local x = 4.92965
-    local z = 14.2049
+    local x = 1.66
+    local z = 19
     local y = self:GetTerrainHeight(x, z)
     merchant:SetPosition({x, y, z})
     merchant:SetRotation(180)
@@ -37,8 +37,8 @@ function onStart()
   end
   local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian2.lua")
   if (ped2 ~= nil) then
-    local x = 4.92965
-    local z = 11.2049
+    local x = 2.5
+    local z = 17
     local y = self:GetTerrainHeight(x, z)
     ped2:SetPosition({x, y, z})
     ped2:SetHomePos({x, y, z})
