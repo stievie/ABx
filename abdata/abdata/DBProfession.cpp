@@ -46,6 +46,7 @@ bool DBProfession::Load(AB::Entities::Profession& prof)
     prof.abbr = result->GetString("abbr");
     prof.modelIndexFemale = result->GetUInt("model_index_female");
     prof.modelIndexMale = result->GetUInt("model_index_male");
+    prof.position = static_cast<AB::Entities::ProfessionPosition>(result->GetUInt("position"));
 
     // Get attributes
     query.str("");

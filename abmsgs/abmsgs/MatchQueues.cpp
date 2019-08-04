@@ -43,5 +43,8 @@ Queue* MatchQueues::GetQueue(const std::string& mapUuid)
 
 void MatchQueues::Update(uint32_t timeElapsed)
 {
-    (void)timeElapsed;
+    for (const auto& q : queues_)
+    {
+        q.second->Update(timeElapsed);
+    }
 }

@@ -18,6 +18,15 @@ enum ProfessionIndex : uint32_t
     ProfessionIndexElementarist = 6
 };
 
+/// Usual position of the profession. Used by the matchmaking server to make balanced teams
+enum class ProfessionPosition : uint8_t
+{
+    None = 0,
+    Frontline,                   // Synonym for Warrior
+    Midline,                     // DD
+    Backline,                    // Synonym for supporter, healer, prot etc.
+};
+
 struct AttriInfo
 {
     std::string uuid;
@@ -42,6 +51,7 @@ struct Profession : Entity
         s.text1b(abbr, Limits::MAX_PROFESSION_ABBR);
         s.value4b(modelIndexFemale);
         s.value4b(modelIndexMale);
+        s.value1b(position);
         s.value4b(attributeCount);
         s.container(attributes, Limits::MAX_PROFESSION_ATTRIBUTES, [&s](AttriInfo& a)
         {
@@ -56,6 +66,7 @@ struct Profession : Entity
     std::string abbr;
     uint32_t modelIndexFemale = 0;
     uint32_t modelIndexMale = 0;
+    ProfessionPosition position = ProfessionPosition::None;
     uint32_t attributeCount = 0;
     std::vector<AttriInfo> attributes;
 };
