@@ -68,7 +68,7 @@ template <typename charType>
 void MakeIdent(std::basic_string<charType>& s)
 {
     s = Trim<charType>(s, " \t\\/");
-    static std::basic_string<charType> invalidChars("\\/:?\"<>|.");
+    static std::basic_string<charType> invalidChars("\\/:?\"<>|.+-*");
     std::transform(s.begin(), s.end(), s.begin(), [](auto c) {
         return (invalidChars.find(c) == std::string::npos) ? c : '_';
     });
