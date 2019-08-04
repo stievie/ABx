@@ -1,9 +1,13 @@
 abmsgs/Application.cpp
 abmsgs/Application.h
+abmsgs/MatchQueues.cpp
+abmsgs/MatchQueues.h
 abmsgs/MessageChannel.cpp
 abmsgs/MessageChannel.h
 abmsgs/MessageServer.cpp
 abmsgs/MessageServer.h
+abmsgs/Queue.cpp
+abmsgs/Queue.h
 abmsgs/Version.h
 abmsgs/main.cpp
 abmsgs/stdafx.cpp

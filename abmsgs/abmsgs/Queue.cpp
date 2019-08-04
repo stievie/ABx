@@ -32,5 +32,4 @@ void Queue::Remove(const std::string& partyUuid)
     });
     if (it != parties_.end())
         parties_.erase(it);
-        parties_.erase(it);
 }
