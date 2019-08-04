@@ -3,7 +3,7 @@ include("/scripts/includes/create_npcs.lua")
 
 -- Game start up
 function onStart()
-  createPortal(self, -20.059, 26.7, -0.00870347, "Rhodes Arena", "a13b71f8-fe19-4bf5-bba7-c7642c796c0f")
+  createPortal(self, -20.059, 26.7, -0.00870347, "Athena Arena", "3c081fd5-3966-433a-bc61-50a33084eac2")
 
   local smith = self:AddNpc("/scripts/actors/npcs/smith.lua")
   if (smith ~= nil) then

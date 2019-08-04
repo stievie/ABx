@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<index>
+  <file type="Scene" src="Athena Arena.xml" />
+  <file type="NavMesh" src="AtnenaArena_HF.obj.navmesh" />
+  <file type="Terrain" src="AtnenaArena_HF.hm" />
+</index>
