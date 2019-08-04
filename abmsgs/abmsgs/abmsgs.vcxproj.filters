@@ -33,6 +33,12 @@
     <ClInclude Include="MessageChannel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="MatchQueues.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +54,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MessageChannel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MatchQueues.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Queue.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

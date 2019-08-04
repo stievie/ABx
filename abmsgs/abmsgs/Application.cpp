@@ -7,6 +7,7 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Subsystems.h"
+#include "MatchQueues.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -17,6 +18,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+    Subsystems::Instance.CreateSubsystem<MatchQueues>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
 }
 
@@ -121,6 +123,26 @@ void Application::PrintServerInfo()
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
 }
 
+void Application::UpdateQueue()
+{
+    int64_t tick = Utils::Tick();
+    if (lastUpdate_ == 0)
+        lastUpdate_ = tick - QUEUE_UPDATE_INTERVAL_MS;
+    uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
+    lastUpdate_ = tick;
+    GetSubsystem<MatchQueues>()->Update(delta);
+
+    if (running_)
+    {
+        // Schedule next update
+        const int64_t end = Utils::Tick();
+        const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
+        const uint32_t sleepTime = QUEUE_UPDATE_INTERVAL_MS > duration ?
+            QUEUE_UPDATE_INTERVAL_MS - duration : 0;
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(sleepTime, std::bind(&Application::UpdateQueue, this)));
+    }
+}
+
 bool Application::Initialize(const std::vector<std::string>& args)
 {
     if (!ServerApp::Initialize(args))
@@ -175,6 +197,8 @@ void Application::Run()
     uint32_t ip = Utils::ConvertStringToIP(serverIp_);
     asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), serverPort_);
     server_ = std::make_unique<MessageServer>(ioService_, endpoint, whiteList_);
+
+    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(QUEUE_UPDATE_INTERVAL_MS, std::bind(&Application::UpdateQueue, this)));
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
