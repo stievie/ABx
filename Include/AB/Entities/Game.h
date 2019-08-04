@@ -43,8 +43,11 @@ struct Game : Entity
         s.value1b(type);
         s.value1b(landing);
         s.value1b(partySize);
+        s.value1b(partyCount);
+        s.value1b(randomParty);
         s.value4b(mapCoordX);
         s.value4b(mapCoordY);
+        s.value1b(defaultLevel);
     }
 
     /// The name of the game
@@ -56,6 +59,8 @@ struct Game : Entity
     GameType type = GameTypeUnknown;
     bool landing = false;
     uint8_t partySize = 0;
+    uint8_t partyCount = 0;
+    bool randomParty = false;
     int32_t mapCoordX = 0;
     int32_t mapCoordY = 0;
     int8_t defaultLevel = 1;

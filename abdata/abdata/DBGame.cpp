@@ -38,6 +38,8 @@ bool DBGame::Load(AB::Entities::Game& game)
     game.script = result->GetString("script_file");
     game.landing = result->GetUInt("landing") != 0;
     game.partySize = static_cast<uint8_t>(result->GetUInt("party_size"));
+    game.partyCount = static_cast<uint8_t>(result->GetUInt("party_count"));
+    game.randomParty = result->GetUInt("random_party") != 0;
     game.mapCoordX = result->GetInt("map_coord_x");
     game.mapCoordY = result->GetInt("map_coord_y");
     game.defaultLevel = static_cast<int8_t>(result->GetInt("default_level"));

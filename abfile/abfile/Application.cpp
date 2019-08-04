@@ -656,6 +656,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("landing").set_value(g.landing);
         gNd.append_attribute("map_coord_x").set_value(g.mapCoordX);
         gNd.append_attribute("map_coord_y").set_value(g.mapCoordY);
+        // The rest is not ineresting for the player, so skip it
     }
 
     std::stringstream stream;
