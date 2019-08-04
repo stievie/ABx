@@ -15,6 +15,7 @@ local lastActive;
 function onInit()
   self:SetRange(RANGE_ADJECENT)
   self:SetLifetime(TIME_FOREVER)
+  self:SetTrigger(true)
   lastDamage = Tick()
   lastActive = Tick()
   return true
@@ -39,10 +40,13 @@ function onUpdate(timeElapsed)
   end
   
   if (tick - lastDamage > 1000) then
-    local actors = self:GetActorsInRange(self:GetRange())
-    for i, actor in ipairs(actors) do
-      actor:ApplyDamage(nil, self:Index(), DAMAGETYPE_COLD, damage, 0)
-      actor:AddEffect(nil, 10002, 12000)
+    local objects = self:GetObjectsInside()
+    for i, object in ipairs(objects) do
+      local actor = object:AsActor()
+      if (actor ~= nil) then
+        actor:ApplyDamage(nil, self:Index(), DAMAGETYPE_COLD, damage, 0)
+        actor:AddEffect(nil, 10002, 12000)
+      end
     end
     lastDamage = tick
   end
