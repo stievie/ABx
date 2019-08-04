@@ -13,7 +13,7 @@
 namespace Game {
 
 Utils::IdGenerator<uint32_t> GameObject::objectIds_;
-// Let's make the head 1.6m above the ground
+// Let's make the head 1.7m above the ground
 const Math::Vector3 GameObject::HeadOffset(0.0f, 1.7f, 0.0f);
 const Math::Vector3 GameObject::BodyOffset(0.0f, 1.0f, 0.0f);
 
@@ -37,6 +37,8 @@ void GameObject::RegisterLua(kaguya::State& state)
         .addFunction("SetVarNumber",     &GameObject::_LuaSetVarNumber)
         .addFunction("IsTrigger",        &GameObject::IsTrigger)
         .addFunction("SetTrigger",       &GameObject::SetTrigger)
+        .addFunction("GetState",         &GameObject::_LuaGetState)
+        .addFunction("SetState",         &GameObject::_LuaSetState)
 
         .addFunction("SetPosition",      &GameObject::_LuaSetPosition)
         .addFunction("SetRotation",      &GameObject::_LuaSetRotation)
@@ -345,6 +347,11 @@ void GameObject::RemoveIn(uint32_t time)
         removeAt_ = newTick;
 }
 
+void GameObject::SetState(AB::GameProtocol::CreatureState state)
+{
+    stateComp_.SetState(state, false);
+}
+
 std::vector<GameObject*> GameObject::_LuaQueryObjects(float radius)
 {
     std::vector<GameObject*> res;
@@ -607,6 +614,16 @@ Game* GameObject::_LuaGetGame()
     if (auto g = game_.lock())
         return g.get();
     return nullptr;
+}
+
+int GameObject::_LuaGetState()
+{
+    return static_cast<int>(stateComp_.GetState());
+}
+
+void GameObject::_LuaSetState(int state)
+{
+    SetState(static_cast<AB::GameProtocol::CreatureState>(state));
 }
 
 void GameObject::AddToOctree()

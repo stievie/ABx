@@ -72,6 +72,8 @@ private:
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
     Game* _LuaGetGame();
+    int _LuaGetState();
+    void _LuaSetState(int state);
     /// Call a method of the game script. data is optional
     void _LuaCallGameEvent(const std::string& name, GameObject* data);
     Actor* _LuaGetClosestActor(bool undestroyable, bool unselectable);
@@ -244,6 +246,7 @@ public:
 
     virtual const std::string& GetName() const { return name_; }
     virtual void SetName(const std::string& name) { name_ = name; }
+    virtual void SetState(AB::GameProtocol::CreatureState state);
 
     Math::Transformation transformation_;
     /// Auto ID, not DB ID

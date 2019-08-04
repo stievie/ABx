@@ -91,6 +91,15 @@ void Actor::Init(Scene*, const Vector3& position, const Quaternion& rotation,
     sounds_[SOUND_FOOTSTEPS] = GetSoundEffect(SOUND_FOOTSTEPS);
     sounds_[SOUND_DIE] = GetSoundEffect(SOUND_DIE);
 
+    if (modelClass_ == AB::Entities::ModelClassAoe)
+    {
+        ParticleEmitter* pe = node_->GetComponent<ParticleEmitter>(true);
+        if (pe)
+        {
+            pe->SetEmitting(state == AB::GameProtocol::CreatureStateIdle ? false : true);
+        }
+    }
+
     creatureState_ = state;
     if (model_)
     {
@@ -176,22 +185,6 @@ void Actor::AddModel(uint32_t itemIndex)
     }
 
     XMLElement root = xml->GetRoot();
-
-/*    unsigned nodeId = root.GetUInt("id");
-    SceneResolver resolver;
-    Node* adjNode = node_->CreateChild(0, LOCAL);
-    resolver.AddNode(nodeId, adjNode);
-    adjNode->SetRotation(Quaternion(270, Vector3(0, 1, 0)));
-    if (adjNode->LoadXML(root, resolver, true, true))
-    {
-        resolver.Resolve();
-        adjNode->ApplyAttributes();
-    }
-    else
-    {
-        URHO3D_LOGERRORF("Error instantiating prefab %s", item->objectFile_);
-        adjNode->Remove();
-    }*/
 
     Node* node = model_->GetNode();
 
@@ -845,6 +838,19 @@ void Actor::PlayObjectAnimation(bool looped, float fadeTime, float speed)
         animController_->PlayExclusive(fileName, 0, looped, fadeTime);
         animController_->SetSpeed(fileName, speed);
     }
+    ParticleEmitter* pe = node_->GetComponent<ParticleEmitter>(true);
+    if (pe)
+    {
+        pe->SetEmitting(true);
+    }
+}
+
+void Actor::PlayIdleAnimation(float fadeTime)
+{
+    PlayAnimation(ANIM_IDLE, true, fadeTime);
+    ParticleEmitter* pe = node_->GetComponent<ParticleEmitter>(true);
+    if (pe)
+        pe->SetEmitting(false);
 }
 
 void Actor::PlayStateAnimation(float fadeTime)
@@ -852,7 +858,7 @@ void Actor::PlayStateAnimation(float fadeTime)
     switch (creatureState_)
     {
     case AB::GameProtocol::CreatureStateIdle:
-        PlayAnimation(ANIM_IDLE, true, fadeTime);
+        PlayIdleAnimation(fadeTime);
         break;
     case AB::GameProtocol::CreatureStateMoving:
     {

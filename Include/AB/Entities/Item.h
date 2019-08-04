@@ -92,7 +92,8 @@ enum ModelClass : uint32_t
     ModelClassItemSpawns = 500,
     ModelClassArrow,
 
-    ModelClassParticle = 1000,
+    // AOE may have an animation and particles
+    ModelClassAoe = 1000,
 };
 
 struct Item : Entity

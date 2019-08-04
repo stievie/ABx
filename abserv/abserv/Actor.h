@@ -53,8 +53,6 @@ class Actor : public GameObject
     friend class Components::ProgressComp;
 private:
     void _LuaGotoPosition(const Math::STLVector3& pos);
-    int _LuaGetState();
-    void _LuaSetState(int state);
     void _LuaSetHomePos(const Math::STLVector3& pos);
     void _LuaHeadTo(const Math::STLVector3& pos);
     Math::STLVector3 _LuaGetHomePos();
@@ -159,6 +157,7 @@ public:
     void SetSpeed(float value) { moveComp_->SetSpeedFactor(value); }
     void AddSpeed(float value) { moveComp_->AddSpeed(value); }
     bool IsMoving() const { return moveComp_->IsMoving(); }
+    void SetState(AB::GameProtocol::CreatureState state) override;
     /// Attack hit
     bool IsHitting() const { return attackComp_.IsHitting(); }
     bool IsUndestroyable() const { return undestroyable_; }

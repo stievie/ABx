@@ -61,8 +61,6 @@ void Actor::RegisterLua(kaguya::State& state)
 
         .addFunction("GotoPosition", &Actor::_LuaGotoPosition)
         .addFunction("FollowObject", &Actor::_LuaFollowObject)
-        .addFunction("GetState", &Actor::_LuaGetState)
-        .addFunction("SetState", &Actor::_LuaSetState)
         .addFunction("FaceObject", &Actor::FaceObject)
         .addFunction("HeadTo", &Actor::_LuaHeadTo)
         .addFunction("IsEnemy", &Actor::IsEnemy)
@@ -304,7 +302,7 @@ void Actor::DropRandomItem()
     }
 }
 
-void Actor::_LuaSetState(int state)
+void Actor::SetState(AB::GameProtocol::CreatureState state)
 {
     Utils::VariantMap data;
     data[InputDataState] = static_cast<uint8_t>(state);
@@ -848,11 +846,6 @@ void Actor::_LuaGotoPosition(const Math::STLVector3& pos)
     if (Math::Equals(_pos.y_, 0.0f))
         _pos.y_ = GetGame()->map_->GetTerrainHeight(_pos);
     GotoPosition(_pos);
-}
-
-int Actor::_LuaGetState()
-{
-    return static_cast<int>(stateComp_.GetState());
 }
 
 void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
