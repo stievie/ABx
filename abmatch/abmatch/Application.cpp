@@ -7,17 +7,20 @@
 #include <AB/Entities/Service.h>
 #include <AB/Entities/ServiceList.h>
 #include "Subsystems.h"
+#include "MatchQueues.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
     ioService_()
 {
-    serverType_ = AB::Entities::ServiceTypeMessageServer;
+    serverType_ = AB::Entities::ServiceTypeMatchServer;
 
     Subsystems::Instance.CreateSubsystem<Asynch::Dispatcher>();
     Subsystems::Instance.CreateSubsystem<Asynch::Scheduler>();
     Subsystems::Instance.CreateSubsystem<IO::SimpleConfigManager>();
+    Subsystems::Instance.CreateSubsystem<MatchQueues>();
     Subsystems::Instance.CreateSubsystem<IO::DataClient>(ioService_);
+    Subsystems::Instance.CreateSubsystem<Net::MessageClient>(ioService_);
 }
 
 Application::~Application()
@@ -28,7 +31,7 @@ Application::~Application()
 
 void Application::ShowHelp()
 {
-    std::cout << "abmsgs [-<options> [<value>]]" << std::endl;
+    std::cout << "abmatch [-<options> [<value>]]" << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  conf <config file>: Use config file" << std::endl;
     std::cout << "  log <log directory>: Use log directory" << std::endl;
@@ -40,9 +43,9 @@ bool Application::LoadMain()
     if (configFile_.empty())
     {
 #if defined(WIN_SERVICE)
-        configFile_ = path_ + "/" + "abmsgs_svc.lua";
+        configFile_ = path_ + "/" + "abmatch_svc.lua";
 #else
-        configFile_ = path_ + "/" + "abmsgs.lua";
+        configFile_ = path_ + "/" + "abmatch.lua";
 #endif
     }
 
@@ -65,8 +68,6 @@ bool Application::LoadMain()
         serverHost_ = config->GetGlobalString("message_host", "");
     if (logDir_.empty())
         logDir_ = config->GetGlobalString("log_dir", "");
-    const std::string ips = config->GetGlobalString("allowed_ips", "");
-    whiteList_.AddList(ips);
 
     LOG_INFO << "Connecting to data server...";
     auto* dataClient = GetSubsystem<IO::DataClient>();
@@ -80,16 +81,20 @@ bool Application::LoadMain()
         return false;
     }
     LOG_INFO << "[done]" << std::endl;
-    if (serverName_.empty() || serverName_.compare("generic") == 0)
-    {
-        serverName_ = GetFreeName(dataClient);
-    }
 
-    // Add Protocols
-    if (serverIp_.empty())
-        serverIp_ = config->GetGlobalString("message_ip", "0.0.0.0");
-    if (serverPort_ == std::numeric_limits<uint16_t>::max())
-        serverPort_ = static_cast<uint16_t>(config->GetGlobalInt("message_port", 2771ll));
+    LOG_INFO << "Connecting to message server...";
+    const std::string& msgHost = config->GetGlobalString("message_host", "");
+    uint16_t msgPort = static_cast<uint16_t>(config->GetGlobalInt("message_port", 0ll));
+
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
+    msgClient->Connect(msgHost, msgPort, std::bind(&Application::HandleMessage, this, std::placeholders::_1));
+    if (msgClient->IsConnected())
+        LOG_INFO << "[done]" << std::endl;
+    else
+    {
+        LOG_INFO << "[FAIL]" << std::endl;
+        LOG_ERROR << "Failed to connect to message server" << std::endl;
+    }
 
     PrintServerInfo();
     return true;
@@ -98,27 +103,49 @@ bool Application::LoadMain()
 void Application::PrintServerInfo()
 {
     auto* dataClient = GetSubsystem<IO::DataClient>();
+    auto* msgClient = GetSubsystem<Net::MessageClient>();
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
 
-    LOG_INFO << "  Listening: ";
-    LOG_INFO << serverIp_ << ":" << static_cast<int>(serverPort_) << std::endl;
-
-    LOG_INFO << "  Allowed IPs: ";
-    if (whiteList_.IsEmpty())
-    {
-        LOG_INFO << "(all)";
-    }
-    else
-    {
-        LOG_INFO << whiteList_.ToString();
-    }
-    LOG_INFO << std::endl;
-
     LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
+    LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
+}
+
+void Application::UpdateQueue()
+{
+    int64_t tick = Utils::Tick();
+    if (lastUpdate_ == 0)
+        lastUpdate_ = tick - QUEUE_UPDATE_INTERVAL_MS;
+    uint32_t delta = static_cast<uint32_t>(tick - lastUpdate_);
+    lastUpdate_ = tick;
+    GetSubsystem<MatchQueues>()->Update(delta);
+
+    if (running_)
+    {
+        // Schedule next update
+        const int64_t end = Utils::Tick();
+        const uint32_t duration = static_cast<uint32_t>(end - lastUpdate_);
+        const uint32_t sleepTime = QUEUE_UPDATE_INTERVAL_MS > duration ?
+            QUEUE_UPDATE_INTERVAL_MS - duration : 0;
+        GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(sleepTime, std::bind(&Application::UpdateQueue, this)));
+    }
+}
+
+void Application::MainLoop()
+{
+    while (running_)
+    {
+        ioService_.run();
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(100ms);
+    }
+}
+
+void Application::HandleMessage(const Net::MessageMsg& msg)
+{
 }
 
 bool Application::Initialize(const std::vector<std::string>& args)
@@ -172,14 +199,12 @@ void Application::Run()
     AB::Entities::ServiceList sl;
     dataClient->Invalidate(sl);
 
-    uint32_t ip = Utils::ConvertStringToIP(serverIp_);
-    asio::ip::tcp::endpoint endpoint(asio::ip::address(asio::ip::address_v4(ip)), serverPort_);
-    server_ = std::make_unique<MessageServer>(ioService_, endpoint, whiteList_);
+    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(QUEUE_UPDATE_INTERVAL_MS, std::bind(&Application::UpdateQueue, this)));
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
 
-    ioService_.run();
+    MainLoop();
 }
 
 void Application::Stop()

@@ -52,6 +52,9 @@ std::string ServerApp::GetFreeName(IO::DataClient* client)
         // Different!
         prefix = "AB Admin " + serverLocation_ + " ";
         break;
+    case AB::Entities::ServiceTypeMatchServer:
+        prefix += "MM";
+        break;
     case AB::Entities::ServiceTypeLoadBalancer:
         prefix += "LB";
         break;

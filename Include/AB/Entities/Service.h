@@ -14,6 +14,7 @@ enum ServiceType : uint8_t
     ServiceTypeFileServer,
     ServiceTypeLoginServer,
     ServiceTypeGameServer,
+    ServiceTypeMatchServer,
 
     ServiceTypeAdminServer,
 
