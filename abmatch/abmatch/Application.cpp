@@ -61,11 +61,9 @@ bool Application::LoadMain()
     if (serverId_.empty() || uuids::uuid(serverId_).nil())
         serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
-        serverName_ = config->GetGlobalString("server_name", "abmsgs");
+        serverName_ = config->GetGlobalString("server_name", "abmatch");
     if (serverLocation_.empty())
         serverLocation_ = config->GetGlobalString("location", "--");
-    if (serverHost_.empty())
-        serverHost_ = config->GetGlobalString("message_host", "");
     if (logDir_.empty())
         logDir_ = config->GetGlobalString("log_dir", "");
 
@@ -151,7 +149,7 @@ void Application::HandleQueueAdd(const Net::MessageMsg& msg)
     IO::PropReadStream prop;
     if (!msg.GetPropStream(prop))
     {
-        LOG_ERROR << "Error reading property satream from message";
+        LOG_ERROR << "Error reading property stream from message" << std::endl;
         return;
     }
     std::string playerUuid;
@@ -166,13 +164,11 @@ void Application::HandleQueueRemove(const Net::MessageMsg& msg)
     IO::PropReadStream prop;
     if (!msg.GetPropStream(prop))
     {
-        LOG_ERROR << "Error reading property satream from message";
+        LOG_ERROR << "Error reading property stream from message" << std::endl;
         return;
     }
     std::string playerUuid;
     prop.ReadString(playerUuid);
-    std::string mapUuid;
-    prop.ReadString(mapUuid);
     GetSubsystem<MatchQueues>()->Remove(playerUuid);
 }
 
@@ -227,9 +223,9 @@ void Application::Run()
     serv.uuid = GetServerId();
     dataClient->Read(serv);
     serv.location = serverLocation_;
-    serv.host = serverHost_;
-    serv.port = serverPort_;
-    serv.ip = serverIp_;
+    serv.host = "";
+    serv.port = 0;
+    serv.ip = "";
     serv.name = serverName_;
     serv.file = exeFile_;
     serv.path = path_;

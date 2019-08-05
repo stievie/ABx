@@ -16,7 +16,7 @@ class ServerApp
 private:
     void Init();
 protected:
-    bool running_;
+    std::atomic<bool> running_;
     std::string serverId_;
     AB::Entities::ServiceType serverType_;
     std::string machine_;

@@ -330,6 +330,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         LOG_INFO << "  Data Server: " << dataClient->GetHost() << ":" << dataClient->GetPort() << std::endl;
     else
         LOG_INFO << "  Data Server: (NONE)" << std::endl;
+    LOG_INFO << "  Message Server: " << msgClient->GetHost() << ":" << msgClient->GetPort() << std::endl;
 
     return true;
 }
