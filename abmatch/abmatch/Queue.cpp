@@ -5,6 +5,7 @@
 #include <AB/Entities/Game.h>
 #include <algorithm>
 #include <AB/Entities/Character.h>
+#include "MessageClient.h"
 
 AB::Entities::ProfessionPosition Queue::GetPlayerPosition(const std::string& uuid)
 {
@@ -67,6 +68,16 @@ void Queue::Add(const std::string& uuid)
        !randomParty_,
        randomParty_ ? GetPlayerPosition(uuid) : AB::Entities::ProfessionPosition::None
    });
+
+    auto* client = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::PlayerAddedToQueue;
+
+    IO::PropWriteStream stream;
+    stream.WriteString(uuid);
+    stream.WriteString(uuid_);
+    msg.SetPropStream(stream);
+    client->Write(msg);
 }
 
 void Queue::Remove(const std::string& uuid)
@@ -75,7 +86,19 @@ void Queue::Remove(const std::string& uuid)
         return current.uuid.compare(uuid) == 0;
     });
     if (it != entires_.end())
+    {
         entires_.erase(it);
+
+        auto* client = GetSubsystem<Net::MessageClient>();
+        Net::MessageMsg msg;
+        msg.type_ = Net::MessageType::PlayerRemovedFromQueue;
+
+        IO::PropWriteStream stream;
+        stream.WriteString(uuid);
+        stream.WriteString(uuid_);
+        msg.SetPropStream(stream);
+        client->Write(msg);
+    }
 }
 
 std::vector<std::string> Queue::MakeRandomTeam()

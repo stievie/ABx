@@ -116,6 +116,7 @@ void Application::PrintServerInfo()
 
 void Application::UpdateQueue()
 {
+    // Dispatcher thread
     int64_t tick = Utils::Tick();
     if (lastUpdate_ == 0)
         lastUpdate_ = tick - QUEUE_UPDATE_INTERVAL_MS;
@@ -136,6 +137,7 @@ void Application::UpdateQueue()
 
 void Application::MainLoop()
 {
+    // Main thread
     while (running_)
     {
         ioService_.run();
@@ -144,8 +146,50 @@ void Application::MainLoop()
     }
 }
 
+void Application::HandleQueueAdd(const Net::MessageMsg& msg)
+{
+    IO::PropReadStream prop;
+    if (!msg.GetPropStream(prop))
+    {
+        LOG_ERROR << "Error reading property satream from message";
+        return;
+    }
+    std::string playerUuid;
+    prop.ReadString(playerUuid);
+    std::string mapUuid;
+    prop.ReadString(mapUuid);
+    GetSubsystem<MatchQueues>()->Add(mapUuid, playerUuid);
+}
+
+void Application::HandleQueueRemove(const Net::MessageMsg& msg)
+{
+    IO::PropReadStream prop;
+    if (!msg.GetPropStream(prop))
+    {
+        LOG_ERROR << "Error reading property satream from message";
+        return;
+    }
+    std::string playerUuid;
+    prop.ReadString(playerUuid);
+    std::string mapUuid;
+    prop.ReadString(mapUuid);
+    GetSubsystem<MatchQueues>()->Remove(playerUuid);
+}
+
 void Application::HandleMessage(const Net::MessageMsg& msg)
 {
+    // Main thread
+    switch (msg.type_)
+    {
+    case Net::MessageType::QueueAdd:
+        HandleQueueAdd(msg);
+        break;
+    case Net::MessageType::QueueRemove:
+        HandleQueueRemove(msg);
+        break;
+    default:
+        break;
+    }
 }
 
 bool Application::Initialize(const std::vector<std::string>& args)

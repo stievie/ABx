@@ -2,7 +2,7 @@
 [Unit]
 # By default 'simple' is used, see also https://www.freedesktop.org/software/systemd/man/systemd.service.html#Type=
 # Type=simple|forking|oneshot|dbus|notify|idle
-Description=abdata Service
+Description=ablogin Service
 ## make sure we only start the service after network is up
 Wants=network-online.target
 After=network.target

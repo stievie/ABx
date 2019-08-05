@@ -27,6 +27,12 @@ enum class MessageType : uint8_t
     PlayerLoggedIn,
     PlayerLoggedOut,
 
+    // Queues
+    QueueAdd,
+    QueueRemove,
+    PlayerAddedToQueue,
+    PlayerRemovedFromQueue,
+
     Last
 };
 

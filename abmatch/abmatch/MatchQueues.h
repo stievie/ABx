@@ -9,8 +9,8 @@ private:
     std::unordered_map<std::string, std::string> parties_;
     std::mutex lock_;
 public:
-    void AddParty(const std::string& mapUuid, const std::string& partyUuid);
-    void RemoveParty(const std::string& partyUuid);
+    void Add(const std::string& mapUuid, const std::string& playerUuid);
+    void Remove(const std::string& playerUuid);
     Queue* GetQueue(const std::string& mapUuid);
     void Update(uint32_t timeElapsed);
 };

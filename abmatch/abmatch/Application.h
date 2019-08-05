@@ -18,6 +18,8 @@ private:
     void UpdateQueue();
     void MainLoop();
     void HandleMessage(const Net::MessageMsg& msg);
+    void HandleQueueAdd(const Net::MessageMsg& msg);
+    void HandleQueueRemove(const Net::MessageMsg& msg);
 public:
     Application();
     ~Application() override;

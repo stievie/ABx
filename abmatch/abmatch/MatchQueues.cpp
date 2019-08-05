@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MatchQueues.h"
 
-void MatchQueues::AddParty(const std::string& mapUuid, const std::string& partyUuid)
+void MatchQueues::Add(const std::string& mapUuid, const std::string& playerUuid)
 {
     Queue* queue = GetQueue(mapUuid);
     if (!queue)
@@ -9,11 +9,11 @@ void MatchQueues::AddParty(const std::string& mapUuid, const std::string& partyU
         LOG_ERROR << "Unable to get queue for game " << mapUuid << std::endl;
         return;
     }
-    queue->Add(partyUuid);
-    parties_.emplace(partyUuid, mapUuid);
+    queue->Add(playerUuid);
+    parties_.emplace(playerUuid, mapUuid);
 }
 
-void MatchQueues::RemoveParty(const std::string& playerUuid)
+void MatchQueues::Remove(const std::string& playerUuid)
 {
     auto it = parties_.find(playerUuid);
     if (it == parties_.end())
@@ -22,6 +22,7 @@ void MatchQueues::RemoveParty(const std::string& playerUuid)
     if (!queue)
         return;
     queue->Remove(playerUuid);
+    parties_.erase(it);
 }
 
 Queue* MatchQueues::GetQueue(const std::string& mapUuid)

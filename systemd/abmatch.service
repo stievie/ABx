@@ -2,7 +2,7 @@
 [Unit]
 # By default 'simple' is used, see also https://www.freedesktop.org/software/systemd/man/systemd.service.html#Type=
 # Type=simple|forking|oneshot|dbus|notify|idle
-Description=abmsgs Service
+Description=abmatch Service
 ## make sure we only start the service after network is up
 Wants=network-online.target
 After=network.target
@@ -12,8 +12,8 @@ After=network.target
 #Environment=AUTOSSH_GATETIME=0
 #Environment=AUTOSSH_PORT=0
 WorkingDirectory=/root/ABx/Bin
-ExecStart=/root/ABx/Bin/abmsgs  -log /root/ABx/Bin/logs/abmsgs
-ExecStop=pkill abmsgs
+ExecStart=/root/ABx/Bin/abmatch  -log /root/ABx/Bin/logs/abmatch
+ExecStop=pkill abmatch
 # don't use 'nobody' if your script needs to access user files
 # (if User is not set the service will run as root)
 #User=nobody

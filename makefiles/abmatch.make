@@ -3,9 +3,9 @@ include makefile.common
 # This may change
 INCLUDES += -I../abscommon/abscommon
 TARGETDIR = ../Bin
-TARGET = $(TARGETDIR)/abmsgs$(SUFFIX)
-SOURDEDIR = ../abmsgs/abmsgs
-OBJDIR = obj/x64/$(CONFIG)/abmsgs
+TARGET = $(TARGETDIR)/abmatch$(SUFFIX)
+SOURDEDIR = ../abmatch/abmatch
+OBJDIR = obj/x64/$(CONFIG)/abmatch
 LIBS += -lpthread -luuid -llua5.3 -labcrypto -labscommon
 CXXFLAGS += -fexceptions
 PCH = $(SOURDEDIR)/stdafx.h
@@ -17,7 +17,7 @@ SRC_FILES = $(filter-out $(SOURDEDIR)/stdafx.cpp, $(wildcard $(SOURDEDIR)/*.cpp)
 CXXFLAGS += $(DEFINES) $(INCLUDES)
 
 OBJ_FILES := $(patsubst $(SOURDEDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC_FILES))
-$(info $(OBJ_FILES))
+#$(info $(OBJ_FILES))
 GCH = $(PCH).gch
 
 all: $(TARGET)

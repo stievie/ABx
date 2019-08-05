@@ -27,6 +27,8 @@ all:
 	@$(MAKE) -f  ablogin.make
 	@echo "-------------------- Building abmsgs --------------------"
 	@$(MAKE) -f  abmsgs.make
+	@echo "------------------- Building abmatch --------------------"
+	@$(MAKE) -f  abmatch.make
 	@echo "------------------- Building absadmin -------------------"
 	@$(MAKE) -f  absadmin.make
 	@echo "-------------------- Building abserv --------------------"
@@ -54,6 +56,7 @@ clean:
 	@$(MAKE) -f  ablb.make clean
 	@$(MAKE) -f  ablogin.make clean
 	@$(MAKE) -f  abmsgs.make clean
+	@$(MAKE) -f  abmatch.make clean
 	@$(MAKE) -f  absadmin.make clean
 	@$(MAKE) -f  abserv.make clean
 	@$(MAKE) -f  keygen.make clean
