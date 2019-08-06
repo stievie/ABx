@@ -40,22 +40,45 @@ TEST_CASE("Transaction")
         }
     };
 
-    MyType t1;
-    t1.mystring = "string";
-    t1.uint = 5;
-    t1.strings.push_back("strings1");
-    t1.strings.push_back("strings2");
-    t1.uints.push_back(1);
-    t1.uints.push_back(2);
-    MyType t2 = t1;
-
+    SECTION("Rollback")
     {
+        MyType t1;
+        t1.mystring = "string";
+        t1.uint = 5;
+        t1.strings.push_back("strings1");
+        t1.strings.push_back("strings2");
+        t1.uints.push_back(1);
+        t1.uints.push_back(2);
+        MyType t2 = t1;
+        {
+            Utils::Transaction transaction(t1);
+            t1.mystring = "nothing";
+            t1.uint = 0;
+            t1.strings.clear();
+            t1.uints.clear();
+        }
+        bool equal = t1 == t2;
+        REQUIRE(equal);
+    }
+    SECTION("Commit")
+    {
+        MyType t1;
+        t1.mystring = "string";
+        t1.uint = 5;
+        t1.strings.push_back("strings1");
+        t1.strings.push_back("strings2");
+        t1.uints.push_back(1);
+        t1.uints.push_back(2);
+        MyType t2 = t1;
+
         Utils::Transaction transaction(t1);
         t1.mystring = "nothing";
         t1.uint = 0;
         t1.strings.clear();
         t1.uints.clear();
+        transaction.Commit();
+        bool equal = t1 == t2;
+        REQUIRE(!equal);
     }
-    bool equal = t1 == t2;
-    REQUIRE(equal);
+
 }

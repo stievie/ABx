@@ -113,6 +113,7 @@
     <ClCompile Include="Math.Transformation.cpp" />
     <ClCompile Include="Math.Utils.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
+    <ClCompile Include="Utils.Transaction.cpp" />
     <ClCompile Include="Utils.WeightedSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
