@@ -64,8 +64,9 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("FaceObject", &Actor::FaceObject)
         .addFunction("HeadTo", &Actor::_LuaHeadTo)
         .addFunction("IsEnemy", &Actor::IsEnemy)
-        .addFunction("GetGroupMask", &Actor::_LuaGetGroupMask)
-        .addFunction("SetGroupMask", &Actor::_LuaSetGroupMask)
+        .addFunction("IsAlly", &Actor::IsAlly)
+        .addFunction("AddFriendFoe", &Actor::AddFriendFoe)
+        .addFunction("RemoveFriendFoe", &Actor::RemoveFriendFoe)
 
         .addFunction("SetSpawnPoint", &Actor::SetSpawnPoint)
         .addFunction("GetHomePos", &Actor::_LuaGetHomePos)
@@ -347,14 +348,14 @@ void Actor::_LuaRemoveEffect(uint32_t index)
     effectsComp_->RemoveEffect(index);
 }
 
-uint8_t Actor::_LuaGetGroupMask()
+void Actor::AddFriendFoe(uint32_t frnd, uint32_t foe)
 {
-    return groupMask_;
+    groupMask_ |= frnd | (foe << 16);
 }
 
-void Actor::_LuaSetGroupMask(uint8_t value)
+void Actor::RemoveFriendFoe(uint32_t frnd, uint32_t foe)
 {
-    groupMask_ = value;
+    groupMask_ &= ~(frnd | (foe << 16));
 }
 
 Effect* Actor::_LuaGetLastEffect(AB::Entities::EffectCategory category)
@@ -426,7 +427,7 @@ std::vector<Actor*> Actor::GetAlliesInRange(Ranges range)
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
             auto* actor = dynamic_cast<Actor*>(&o);
-            if (actor && !actor->IsEnemy(this))
+            if (actor && actor->IsAlly(this))
                 result.push_back(actor);
         }
         return Iteration::Continue;
@@ -444,7 +445,7 @@ size_t Actor::GetAllyCountInRange(Ranges range)
         if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
         {
             const auto* actor = dynamic_cast<const Actor*>(&o);
-            if (actor && !actor->IsEnemy(this))
+            if (actor && actor->IsAlly(this))
                 ++result;
         }
         return Iteration::Continue;
@@ -474,7 +475,7 @@ Actor* Actor::GetClosestAlly(bool undestroyable, bool unselectable)
             return false;
         if ((actor.IsUndestroyable() || actor.IsDead()) && !undestroyable)
             return false;
-        if (actor.IsEnemy(this))
+        if (!actor.IsAlly(this))
             return false;
         return true;
     });
@@ -968,7 +969,16 @@ bool Actor::IsEnemy(Actor* other) const
         // Same group members are always friends
         return false;
     // Return true if the don't have the same group mask
-    return ((groupMask_ & other->groupMask_) == 0);
+    return ((GetFoeMask() & other->GetFoeMask()) != 0);
+}
+
+bool Actor::IsAlly(Actor* other) const
+{
+    if (GetGroupId() == other->GetGroupId())
+        // Same group members are always friends
+        return true;
+    // Return true if the don't have the same group mask
+    return ((GetFriendMask() & other->GetFriendMask()) != 0);
 }
 
 uint32_t Actor::GetAttributeValue(uint32_t index)

@@ -21,20 +21,6 @@
 
 namespace Game {
 
-/// 8 different groups in one game possible. If Actors have one same bit set they are considered as allies.
-enum GroupMask : uint8_t
-{
-    GroupMaskNone = 0,
-    GroupMask1 = 1,
-    GroupMask2 = 1 << 1,
-    GroupMask3 = 1 << 2,
-    GroupMask4 = 1 << 3,
-    GroupMask5 = 1 << 4,
-    GroupMask6 = 1 << 5,
-    GroupMask7 = 1 << 6,
-    GroupMask8 = 1 << 7
-};
-
 /// Player, NPC, Monster some such
 class Actor : public GameObject
 {
@@ -59,11 +45,13 @@ private:
     void _LuaFollowObject(GameObject* object);
     void _LuaAddEffect(Actor* source, uint32_t index, uint32_t time);
     void _LuaRemoveEffect(uint32_t index);
-    uint8_t _LuaGetGroupMask();
-    void _LuaSetGroupMask(uint8_t value);
     Effect* _LuaGetLastEffect(AB::Entities::EffectCategory category);
     GameObject* _LuaGetSelectedObject();
     void _LuaSetSelectedObject(GameObject* object);
+    /// Get lower 16 bits of the group mask
+    uint32_t GetFriendMask() const { return groupMask_ & 0xffff; }
+    /// Get upper 16 bits of the group mask
+    uint32_t GetFoeMask() const { return groupMask_ >> 16; }
 protected:
     Math::Vector3 homePos_;
     std::weak_ptr<Actor> killedBy_;
@@ -138,7 +126,7 @@ public:
             if (t == AB::GameProtocol::ObjectTypeNpc || t == AB::GameProtocol::ObjectTypePlayer)
             {
                 const auto* actor = dynamic_cast<const Actor*>(&o);
-                if (actor && !actor->IsEnemy(this))
+                if (actor && actor->IsAlly(this))
                     func(actor);
             }
             return Iteration::Continue;
@@ -247,6 +235,9 @@ public:
     bool KnockDown(Actor* source, uint32_t time);
     int Healing(Actor* source, uint32_t index, int value);
     bool IsEnemy(Actor* other) const;
+    bool IsAlly(Actor* other) const;
+    void AddFriendFoe(uint32_t frnd, uint32_t foe);
+    void RemoveFriendFoe(uint32_t frnd, uint32_t foe);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {
         inputComp_.Add(type, data);
@@ -300,7 +291,10 @@ public:
     std::unique_ptr<Components::CollisionComp> collisionComp_;
 
     bool undestroyable_{ false };
-    uint8_t groupMask_{ GroupMask::GroupMaskNone };
+    /// Friend foe identification. Upper 16 bit is foe mask, lower 16 bit friend mask.
+    /// This gives us 3 types of relation: (1) friend, (2) foe and (3) neutral
+    /// and (4) in theory, both but that's silly.
+    uint32_t groupMask_{ 0 };
 
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;
