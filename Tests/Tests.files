@@ -8,6 +8,7 @@ Tests/Math.Sphere.cpp
 Tests/Math.Transformation.cpp
 Tests/Math.Utils.cpp
 Tests/Math.Vector3.cpp
+Tests/Utils.Transaction.cpp
 Tests/Utils.WeightedSelector.cpp
 Tests/main.cpp
 Tests/stdafx.h
