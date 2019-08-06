@@ -32,6 +32,8 @@ enum class MessageType : uint8_t
     QueueRemove,
     PlayerAddedToQueue,
     PlayerRemovedFromQueue,
+    TeamsEnterMatch,
+    StartTeamMatch,
 
     Last
 };

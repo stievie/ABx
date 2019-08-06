@@ -62,6 +62,7 @@ abscommon/Task.h
 abscommon/ThreadPool.cpp
 abscommon/ThreadPool.h
 abscommon/TimeUtils.h
+abscommon/Transaction.h
 abscommon/Utils.cpp
 abscommon/Utils.h
 abscommon/UuidUtils.cpp

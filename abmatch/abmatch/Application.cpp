@@ -240,6 +240,8 @@ void Application::Run()
     dataClient->Invalidate(sl);
 
     GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(QUEUE_UPDATE_INTERVAL_MS, std::bind(&Application::UpdateQueue, this)));
+    // If we want to receive messages, we need to send our ServerID to the message server.
+    SendServerJoined(GetSubsystem<Net::MessageClient>(), serv);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
@@ -264,6 +266,9 @@ void Application::Stop()
         serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
+
+        SendServerLeft(GetSubsystem<Net::MessageClient>(), serv);
+
         dataClient->Update(serv);
 
         AB::Entities::ServiceList sl;

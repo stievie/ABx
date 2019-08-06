@@ -6,7 +6,6 @@
 #include "PropStream.h"
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
-#include <AB/Entities/Service.h>
 #include "Subsystems.h"
 
 MessageParticipant::~MessageParticipant() = default;
@@ -77,16 +76,15 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     switch (msg.type_)
     {
     case Net::MessageType::Unknown:
-        LOG_WARNING << "Unknown message type" << std::endl;
+        LOG_WARNING << "Unknown message type: " << static_cast<int>(msg.type_) << std::endl;
         break;
     case Net::MessageType::ServerJoined:
     {
         IO::PropReadStream prop;
         if (msg.GetPropStream(prop))
         {
-            AB::Entities::ServiceType t;
-            // Just to get the server UUID
-            prop.Read<AB::Entities::ServiceType>(t);
+            // Get type and UUID of server
+            prop.Read<AB::Entities::ServiceType>(serviceType_);
             prop.ReadString(serverId_);
             channel_.Deliver(msg);
         }
@@ -117,10 +115,80 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::NewMail:
         HandleNewMailMessage(msg);
         break;
+    case Net::MessageType::QueueAdd:
+    case Net::MessageType::QueueRemove:
+        HandleQueueMessage(msg);
+        break;
+    case Net::MessageType::PlayerAddedToQueue:
+    case Net::MessageType::PlayerRemovedFromQueue:
+        HandleQueuePlayerMessage(msg);
+        break;
+    case Net::MessageType::TeamsEnterMatch:
+        HandleQueueTeamEnterMessage(msg);
+        break;
     default:
         channel_.Deliver(msg);
         break;
     }
+}
+
+void MessageSession::SendPlayerMessage(const std::string& playerUuid, const Net::MessageMsg& msg)
+{
+    auto* server = GetServerWidthPlayer(playerUuid);
+    if (server)
+        server->Deliver(msg);
+}
+
+void MessageSession::HandleQueueTeamEnterMessage(const Net::MessageMsg& msg)
+{
+    std::string queueUuid;
+    std::string mapUuid;
+    std::string hostingServer;
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    if (!stream.ReadString(queueUuid))
+        return;
+    if (!stream.ReadString(hostingServer))
+        return;
+    if (!stream.ReadString(mapUuid))
+        return;
+
+    uint8_t numTeams{ 0 };
+    stream.Read<uint8_t>(numTeams);
+    for (uint8_t t = 0; t < numTeams; ++t)
+    {
+        uint8_t numMewmbers{ 0 };
+        stream.Read<uint8_t>(numMewmbers);
+        for (uint8_t m = 0; m < numMewmbers; ++m)
+        {
+            std::string member;
+            if (!stream.ReadString(member))
+                continue;
+            // Send this message to all players on their current game server
+            // This message also contains the hosting game server
+            SendPlayerMessage(member, msg);
+        }
+    }
+}
+
+void MessageSession::HandleQueueMessage(const Net::MessageMsg& msg)
+{
+    auto* server = GetServerByType(AB::Entities::ServiceTypeMatchServer);
+    if (server)
+        server->Deliver(msg);
+}
+
+void MessageSession::HandleQueuePlayerMessage(const Net::MessageMsg& msg)
+{
+    std::string playerUuid;
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    if (!stream.ReadString(playerUuid))
+        return;
+
+    SendPlayerMessage(playerUuid, msg);
 }
 
 void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
@@ -132,11 +200,7 @@ void MessageSession::HandleWhisperMessage(const Net::MessageMsg& msg)
     if (!stream.ReadString(receiverUuid))
         return;
 
-    MessageParticipant* server = GetServerWidthPlayer(receiverUuid);
-    if (server)
-    {
-        server->Deliver(msg);
-    }
+    SendPlayerMessage(receiverUuid, msg);
 }
 
 void MessageSession::HandleNewMailMessage(const Net::MessageMsg& msg)
@@ -176,6 +240,18 @@ MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& acc
         return nullptr;
 
     return GetServer(acc.currentServerUuid);
+}
+
+MessageParticipant* MessageSession::GetServerByType(AB::Entities::ServiceType type)
+{
+    auto serv = std::find_if(channel_.participants_.begin(),
+        channel_.participants_.end(), [type](const std::shared_ptr<MessageParticipant>& current)
+    {
+        return current->serviceType_ == type;
+    });
+    if (serv != channel_.participants_.end())
+        return (*serv).get();
+    return nullptr;
 }
 
 MessageParticipant* MessageSession::GetServer(const std::string& serverUuid)

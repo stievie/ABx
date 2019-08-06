@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/Entities/Profession.h>
+#include <deque>
 
 struct QueueEntry
 {
@@ -9,19 +10,35 @@ struct QueueEntry
     AB::Entities::ProfessionPosition position;
 };
 
+/// All members of a team (random), or just the leader of a party (which must be on the same server)
+struct Team
+{
+    std::vector<std::string> members;
+};
+
+struct MatchTeams
+{
+    std::string mapUuid;
+    std::string queueUuid;
+    std::vector<Team> teams;
+};
+
 class Queue
 {
 private:
     static AB::Entities::ProfessionPosition GetPlayerPosition(const std::string& uuid);
+    static std::string FindServerForMatch(const MatchTeams& teams);
     std::string uuid_;
     std::string mapUuid_;
-    std::vector<QueueEntry> entires_;
+    std::deque<QueueEntry> entires_;
     unsigned partySize_{ 0 };
     unsigned partyCount_{ 0 };
     /// If true, choose partyCount_ * partySize_ players and put them into pertyCount_ parties.
     /// If false, the party leader is in the parties_ list and if there are partyCount_ parties they can enter a match.
     bool randomParty_{ false };
-    std::vector<std::string> MakeRandomTeam();
+    bool MakeRandomTeams(MatchTeams& teams);
+    bool MakeTeams(MatchTeams& teams);
+    void SendEnterMessage(const MatchTeams& teams);
 public:
     explicit Queue(const std::string& mapUuid);
     bool Load();

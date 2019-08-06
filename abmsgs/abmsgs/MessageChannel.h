@@ -2,6 +2,7 @@
 
 #include "MessageMsg.h"
 #include <set>
+#include <AB/Entities/Service.h>
 
 class MessageParticipant
 {
@@ -9,6 +10,7 @@ public:
     virtual ~MessageParticipant();
     virtual void Deliver(const Net::MessageMsg& msg) = 0;
     std::string serverId_;
+    AB::Entities::ServiceType serviceType_;
 };
 
 class MessageChannel
@@ -35,9 +37,14 @@ private:
     void HandleMessage(const Net::MessageMsg& msg);
     void HandleWhisperMessage(const Net::MessageMsg& msg);
     void HandleNewMailMessage(const Net::MessageMsg& msg);
+    void HandleQueueMessage(const Net::MessageMsg& msg);
+    void HandleQueuePlayerMessage(const Net::MessageMsg& msg);
+    void HandleQueueTeamEnterMessage(const Net::MessageMsg& msg);
+    void SendPlayerMessage(const std::string& playerUuid, const Net::MessageMsg& msg);
     MessageParticipant* GetServerWidthPlayer(const std::string& playerUuid);
     MessageParticipant* GetServerWidthAccount(const std::string& accountUuid);
     MessageParticipant* GetServer(const std::string& serverUuid);
+    MessageParticipant* GetServerByType(AB::Entities::ServiceType type);
 public:
     MessageSession(asio::io_service& io_service, MessageChannel& channel) :
         socket_(io_service),
