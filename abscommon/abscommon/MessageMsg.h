@@ -46,14 +46,21 @@ public:
     enum { HeaderLength = 4 };
     enum { MaxBodyLength = 512 };
 private:
+    static constexpr size_t BufferSize = HeaderLength + MaxBodyLength;
     size_t bodyLength_;
-    uint8_t data_[HeaderLength + MaxBodyLength];
+    uint8_t data_[BufferSize];
 public:
     MessageMsg() :
         bodyLength_(0),
         data_{},
         type_(MessageType::Unknown)
     { }
+    MessageMsg(const MessageMsg& other) :
+        bodyLength_(other.bodyLength_),
+        type_(other.type_)
+    {
+        std::copy(other.data_, other.data_ + HeaderLength + other.bodyLength_, data_);
+    }
     ~MessageMsg() = default;
 
     MessageType type_;
@@ -124,7 +131,7 @@ public:
     }
     bool DecodeHeader()
     {
-        bodyLength_ = (size_t)(data_[0] | data_[1] << 8);
+        bodyLength_ = static_cast<size_t>(data_[0] | data_[1] << 8);
         type_ = static_cast<MessageType>(data_[2]);
         if (bodyLength_ > MaxBodyLength)
         {

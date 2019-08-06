@@ -198,6 +198,17 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
     case Net::MessageType::PlayerLoggedOut:
         DispatchPlayerLoggedOut(msg);
         break;
+    case Net::MessageType::TeamsEnterMatch:
+        // If it's a party the leader gets informed of this.
+        // The game server is sesponsible to inform all party memebers
+        // TODO:
+        break;
+    case Net::MessageType::PlayerAddedToQueue:
+    case Net::MessageType::PlayerRemovedFromQueue:
+        // If it's a party the leader gets informed of this.
+        // The game server is sesponsible to inform all party memebers
+        // TODO:
+        break;
     default:
         // Not handled here
         break;
