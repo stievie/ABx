@@ -321,9 +321,9 @@ bool Application::Initialize(const std::vector<std::string>& args)
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << (serverIp_.empty() ? "0.0.0.0" : serverIp_) << ":" << serverPort_ << std::endl;
-    LOG_INFO << "  Temporary: " << (temporary_ ? "true" : "false") << std::endl;
+    LOG_INFO << "  Temporary: " << temporary_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
-    LOG_INFO << "  Require authentication: " << (requireAuth_ ? "true" : "false") << std::endl;
+    LOG_INFO << "  Require authentication: " << requireAuth_ << std::endl;
     LOG_INFO << "  Max. throughput: " << Utils::ConvertSize(maxThroughput_) << "/s" << std::endl;
     LOG_INFO << "  Worker Threads: " << server_->config.thread_pool_size << std::endl;
     if (haveData)

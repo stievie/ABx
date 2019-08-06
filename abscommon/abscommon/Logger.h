@@ -60,7 +60,13 @@ public:
 
     // Overload for std::endl only:
     Logger& operator << (endlType endl);
-
+    // Some special types
+    Logger& operator << (bool value)
+    {
+        stream_ << (value ? "true" : "false");
+        return *this;
+    }
+    // Everything else
     template <typename T>
     Logger& operator << (const T& data)
     {

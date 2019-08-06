@@ -105,9 +105,6 @@
     <ClInclude Include="DataKey.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DebugNew.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadPool.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -154,6 +151,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ConditionSleep.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Transaction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

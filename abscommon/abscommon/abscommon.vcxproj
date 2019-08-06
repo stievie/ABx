@@ -200,6 +200,7 @@
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Task.h" />
+    <ClInclude Include="Transaction.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="UuidUtils.h" />
     <ClInclude Include="Variant.h" />

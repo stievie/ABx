@@ -447,10 +447,10 @@ void Application::PrintServerInfo()
         LOG_INFO << "  AI Server listening: " << aiServerIp_ << ":" << aiServerPort_ << std::endl;
     else
         LOG_INFO << "  AI Server: (not running)" << std::endl;
-    LOG_INFO << "  Auto terminate: " << (autoTerminate_ ? "true" : "false") << std::endl;
-    LOG_INFO << "  Temporary: " << (temporary_ ? "true" : "false") << std::endl;
+    LOG_INFO << "  Auto terminate: " << autoTerminate_ << std::endl;
+    LOG_INFO << "  Temporary: " << temporary_ << std::endl;
     LOG_INFO << "  Log dir: " << (IO::Logger::logDir_.empty() ? "(empty)" : IO::Logger::logDir_) << std::endl;
-    LOG_INFO << "  Recording games: " << ((*config)[ConfigManager::Key::RecordGames].GetBool() ? "true" : "false") << std::endl;
+    LOG_INFO << "  Recording games: " << (*config)[ConfigManager::Key::RecordGames].GetBool() << std::endl;
     const std::string& recDir = (*config)[ConfigManager::Key::RecordingsDir].GetString();
     LOG_INFO << "  Recording directory: " << (recDir.empty() ? "(empty)" : recDir) << std::endl;
     LOG_INFO << "  Background threads: " << GetSubsystem<Asynch::ThreadPool>()->GetNumThreads() << std::endl;
