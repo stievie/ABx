@@ -6,10 +6,12 @@ namespace Utils {
 /// https://github.com/elanthis/constexpr-hash-demo/blob/master/test.cpp
 
 // FNV-1a constants
-#if defined(_WIN64)
+#if defined(_M_X64) || defined(__amd64__) || defined(__x86_64)
+static_assert(sizeof(size_t) == 8);
 static const size_t OFFSET = 14695981039346656037ULL;
 static const size_t PRIME = 1099511628211ULL;
 #else
+static_assert(sizeof(size_t) == 4);
 static const size_t OFFSET = 2166136261U;
 static const size_t PRIME = 16777619U;
 #endif
