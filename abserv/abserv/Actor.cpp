@@ -968,7 +968,7 @@ bool Actor::IsEnemy(Actor* other) const
     if (GetGroupId() == other->GetGroupId())
         // Same group members are always friends
         return false;
-    // Return true if the don't have the same group mask
+    // Return true if they have matching bits in the foe mask
     return ((GetFoeMask() & other->GetFoeMask()) != 0);
 }
 
@@ -977,7 +977,7 @@ bool Actor::IsAlly(Actor* other) const
     if (GetGroupId() == other->GetGroupId())
         // Same group members are always friends
         return true;
-    // Return true if the don't have the same group mask
+    // Return true if they have matching bits in the friend mask
     return ((GetFriendMask() & other->GetFriendMask()) != 0);
 }
 

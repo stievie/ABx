@@ -293,7 +293,7 @@ public:
     bool undestroyable_{ false };
     /// Friend foe identification. Upper 16 bit is foe mask, lower 16 bit friend mask.
     /// This gives us 3 types of relation: (1) friend, (2) foe and (3) neutral
-    /// and (4) in theory, both but that's silly.
+    /// and (4) in theory, both but that would be silly.
     uint32_t groupMask_{ 0 };
 
     bool Serialize(IO::PropWriteStream& stream) override;
