@@ -11,7 +11,7 @@ function onStart()
     priest:SetPosition({x, y, z})
     priest:SetRotation(180)
     priest:SetGroupId(groupId)
-    priest:SetGroupMask(GROUPMASK_1)
+    priest:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
   end
   local guildLord = self:AddNpc("/scripts/actors/npcs/guild_lord.lua")
   if (guildLord ~= nil) then
@@ -21,7 +21,7 @@ function onStart()
     guildLord:SetPosition({x, y, z})
     guildLord:SetRotation(180)
     guildLord:SetGroupId(groupId)
-    guildLord:SetGroupMask(GROUPMASK_1)
+    guildLord:AddFriendFoe(GROUPMASK_1, GROUPMASK_2)
   end
 end
 
@@ -37,7 +37,7 @@ function onRemoveObject(object)
 end
 
 function onPlayerJoin(player)
-  player:SetGroupMask(GROUPMASK_2)
+  player:AddFriendFoe(GROUPMASK_2, GROUPMASK_1)
 end
 
 function onPlayerLeave(player)
