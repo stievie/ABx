@@ -37,6 +37,7 @@ TEST_CASE("MessageMsg PropStream")
     REQUIRE(msg1.SetPropStream(stream));
 
     Net::MessageMsg msg2 = msg1;
+    msg1.Empty();
     IO::PropReadStream readStream;
     REQUIRE(msg2.GetPropStream(readStream));
     std::string str;
