@@ -30,6 +30,45 @@ AB::Entities::ProfessionPosition Queue::GetPlayerPosition(const std::string& uui
     return prof.position;
 }
 
+std::string Queue::FindServerForMatch(const MatchTeams& teams)
+{
+    auto* dataclient = GetSubsystem<IO::DataClient>();
+
+    std::vector<std::string> servers;
+    std::map<std::string, unsigned> sorting;
+    for (const auto& team : teams)
+    {
+        for (const auto& m : team.members)
+        {
+            AB::Entities::Character ch;
+            ch.uuid = m;
+            if (!dataclient->Read(ch))
+                continue;
+            AB::Entities::Account acc;
+            acc.uuid = ch.accountUuid;
+            if (!dataclient->Read(acc))
+                continue;
+
+            servers.push_back(acc.currentServerUuid);
+            sorting[acc.currentServerUuid] += 1;
+        }
+    }
+    if (servers.size() == 0)
+    {
+        LOG_ERROR << "No server found" << std::endl;
+        return "";
+    }
+
+    // Make server with most players on it the first
+    std::sort(servers.begin(), servers.end(), [&sorting](const std::string& i1, const std::string& i2) {
+        const auto& p1 = sorting[i1];
+        const auto& p2 = sorting[i2];
+
+        return p1 > p2;
+    });
+    return servers[0];
+}
+
 Queue::Queue(const std::string& mapUuid) :
     mapUuid_(mapUuid)
 {
@@ -65,9 +104,8 @@ bool Queue::Load()
 
 void Queue::Add(const std::string& uuid)
 {
-    entires_.push_back({
+    entries_.push_back({
        uuid,
-       !randomParty_,
        randomParty_ ? GetPlayerPosition(uuid) : AB::Entities::ProfessionPosition::None
    });
 
@@ -84,12 +122,12 @@ void Queue::Add(const std::string& uuid)
 
 void Queue::Remove(const std::string& uuid)
 {
-    auto it = std::find_if(entires_.begin(), entires_.end(), [&](const QueueEntry& current) {
+    auto it = std::find_if(entries_.begin(), entries_.end(), [&](const QueueEntry& current) {
         return current.uuid.compare(uuid) == 0;
     });
-    if (it != entires_.end())
+    if (it != entries_.end())
     {
-        entires_.erase(it);
+        entries_.erase(it);
 
         auto* client = GetSubsystem<Net::MessageClient>();
         Net::MessageMsg msg;
@@ -103,46 +141,7 @@ void Queue::Remove(const std::string& uuid)
     }
 }
 
-std::string Queue::FindServerForMatch(const MatchTeams& teams)
-{
-    auto* dataclient = GetSubsystem<IO::DataClient>();
-
-    std::vector<std::string> servers;
-    std::map<std::string, unsigned> sorting;
-    for (const auto& t : teams.teams)
-    {
-        for (const auto& m : t.members)
-        {
-            AB::Entities::Character ch;
-            ch.uuid = m;
-            if (!dataclient->Read(ch))
-                continue;
-            AB::Entities::Account acc;
-            acc.uuid = ch.accountUuid;
-            if (!dataclient->Read(acc))
-                continue;
-
-            servers.push_back(acc.currentServerUuid);
-            sorting[acc.currentServerUuid] += 1;
-        }
-    }
-    if (servers.size() == 0)
-    {
-        LOG_ERROR << "No server found" << std::endl;
-        return "";
-    }
-
-    // Make server with most ppl on it the first
-    std::sort(servers.begin(), servers.end(), [&sorting](const std::string& i1, const std::string& i2) {
-        const auto& p1 = sorting[i1];
-        const auto& p2 = sorting[i2];
-
-        return p1 > p2;
-    });
-    return servers[0];
-}
-
-void Queue::SendEnterMessage(const MatchTeams& teams)
+bool Queue::SendEnterMessage(const MatchTeams& teams)
 {
     auto* client = GetSubsystem<Net::MessageClient>();
     Net::MessageMsg msg;
@@ -154,14 +153,14 @@ void Queue::SendEnterMessage(const MatchTeams& teams)
     if (server.empty())
     {
         // This sould really not happen
-        LOG_ERROR << "Didn not find any suitable server" << std::endl;
-        return;
+        LOG_ERROR << "Did not find any suitable server" << std::endl;
+        return false;
     }
-    stream.WriteString(teams.queueUuid);
+    stream.WriteString(uuid_);
     stream.WriteString(server);
-    stream.WriteString(teams.mapUuid);
-    stream.Write<uint8_t>(static_cast<uint8_t>(teams.teams.size()));
-    for (const auto& team : teams.teams)
+    stream.WriteString(mapUuid_);
+    stream.Write<uint8_t>(static_cast<uint8_t>(teams.size()));
+    for (const auto& team : teams)
     {
         stream.Write<uint8_t>(static_cast<uint8_t>(team.members.size()));
         for (const auto& member : team.members)
@@ -170,58 +169,129 @@ void Queue::SendEnterMessage(const MatchTeams& teams)
         }
     }
     msg.SetPropStream(stream);
-    client->Write(msg);
+    return client->Write(msg);
+}
+
+std::optional<QueueEntry> Queue::GetPlayerByPos(AB::Entities::ProfessionPosition pos)
+{
+    if (entries_.empty())
+        return {};
+
+    auto it = std::find_if(entries_.begin(), entries_.end(), [&](const auto& current) {
+        return current.position == pos;
+    });
+    if (it != entries_.end())
+    {
+        std::optional<QueueEntry> result = (*it);
+        entries_.erase(it);
+        return result;
+    }
+    // No player for the position, return the first in the queue
+    std::optional<QueueEntry> result = entries_.front();
+    entries_.pop_front();
+    return result;
+}
+
+bool Queue::MakeRandomTeam(Team& team)
+{
+    team.members.reserve(partySize_);
+    if (partySize_ == 1)
+    {
+        QueueEntry& e = entries_.front();
+        team.members.push_back(e.uuid);
+        entries_.pop_front();
+        return true;
+    }
+
+    // 1/4 front liners
+    const unsigned frontlinecount = partySize_ / 4;
+    // 1/4 back liners
+    const unsigned backlinecount = partySize_ / 4;
+    // Rest is mid line
+    const unsigned midlinecount = partySize_ - frontlinecount - backlinecount;
+
+    const auto addPlayers = [&team, this](unsigned count, AB::Entities::ProfessionPosition pos) -> bool
+    {
+        for (unsigned i = 0; i < count; ++i)
+        {
+            auto player = GetPlayerByPos(pos);
+            if (!player.has_value())
+            {
+                LOG_ERROR << "Not enough players" << std::endl;
+                return false;
+            }
+            team.members.push_back(player.value().uuid);
+        }
+        return true;
+    };
+
+    if (!addPlayers(frontlinecount, AB::Entities::ProfessionPosition::Frontline))
+        return false;
+    if (!addPlayers(midlinecount, AB::Entities::ProfessionPosition::Midline))
+        return false;
+    if (!addPlayers(backlinecount, AB::Entities::ProfessionPosition::Backline))
+        return false;
+
+    return true;
 }
 
 bool Queue::MakeRandomTeams(MatchTeams& teams)
 {
-    (void)teams;
-    return false;
+    teams.reserve(partyCount_);
+
+    for (unsigned i = 0; i < partyCount_; ++i)
+    {
+        Team team;
+        if (!MakeRandomTeam(team))
+        {
+            LOG_ERROR << "Not enough players" << std::endl;
+            return false;
+        }
+        teams.push_back(team);
+    }
+
+    return true;
 }
 
-bool Queue::MakeTeams(MatchTeams& teams)
+bool Queue::MakePartyTeams(MatchTeams& teams)
 {
-    Utils::Transaction transction(entires_);
+    teams.reserve(partyCount_);
 
     // Not a random team, so only the party leader queued for a game
     for (unsigned i = 0; i < partyCount_; ++i)
     {
-        if (entires_.empty())
+        if (entries_.empty())
         {
             // Shouldn't happen because we check first if there are enough players
             LOG_ERROR << "Not enough players" << std::endl;
             return false;
         }
         Team team;
-        QueueEntry& e = entires_.front();
+        QueueEntry& e = entries_.front();
         team.members.push_back(e.uuid);
-        entires_.pop_front();
-        teams.teams.push_back(team);
+        entries_.pop_front();
+        teams.push_back(team);
     }
-    transction.Commit();
     return true;
+}
+
+bool Queue::MakeTeams(MatchTeams& teams)
+{
+    if (randomParty_)
+        return MakeRandomTeams(teams);
+    return MakePartyTeams(teams);
 }
 
 void Queue::Update(uint32_t)
 {
     if (EnoughPlayers())
     {
+        Utils::Transaction transaction(entries_);
         MatchTeams teams;
-        teams.mapUuid = mapUuid_;
-        teams.queueUuid = uuid_;
-        if (randomParty_)
+        if (MakeTeams(teams))
         {
-            if (MakeRandomTeams(teams))
-            {
-                SendEnterMessage(teams);
-            }
-        }
-        else
-        {
-            if (MakeTeams(teams))
-            {
-                SendEnterMessage(teams);
-            }
+            if (SendEnterMessage(teams))
+                transaction.Commit();
         }
     }
 }
