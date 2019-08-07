@@ -60,10 +60,10 @@ std::string Queue::FindServerForMatch(const MatchTeams& teams)
     }
 
     // Make server with most players on it the first
-    std::sort(servers.begin(), servers.end(), [&sorting](const std::string& i1, const std::string& i2) {
+    std::sort(servers.begin(), servers.end(), [&sorting](const std::string& i1, const std::string& i2)
+    {
         const auto& p1 = sorting[i1];
         const auto& p2 = sorting[i2];
-
         return p1 > p2;
     });
     return servers[0];
@@ -164,9 +164,7 @@ bool Queue::SendEnterMessage(const MatchTeams& teams)
     {
         stream.Write<uint8_t>(static_cast<uint8_t>(team.members.size()));
         for (const auto& member : team.members)
-        {
             stream.WriteString(member);
-        }
     }
     msg.SetPropStream(stream);
     return client->Write(msg);
@@ -203,13 +201,6 @@ bool Queue::MakeRandomTeam(Team& team)
         return true;
     }
 
-    // 1/4 front liners
-    const unsigned frontlinecount = partySize_ / 4;
-    // 1/4 back liners
-    const unsigned backlinecount = partySize_ / 4;
-    // Rest is mid line
-    const unsigned midlinecount = partySize_ - frontlinecount - backlinecount;
-
     const auto addPlayers = [&team, this](unsigned count, AB::Entities::ProfessionPosition pos) -> bool
     {
         for (unsigned i = 0; i < count; ++i)
@@ -225,6 +216,12 @@ bool Queue::MakeRandomTeam(Team& team)
         return true;
     };
 
+    // 1/4 front liners
+    const unsigned frontlinecount = partySize_ / 4;
+    // 1/4 back liners
+    const unsigned backlinecount = partySize_ / 4;
+    // Rest is mid line
+    const unsigned midlinecount = partySize_ - frontlinecount - backlinecount;
     if (!addPlayers(frontlinecount, AB::Entities::ProfessionPosition::Frontline))
         return false;
     if (!addPlayers(midlinecount, AB::Entities::ProfessionPosition::Midline))
