@@ -2,6 +2,7 @@
 
 #include <AB/Entities/Profession.h>
 #include <deque>
+#include <optional>
 
 struct QueueEntry
 {
