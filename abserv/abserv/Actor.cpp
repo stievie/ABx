@@ -350,7 +350,7 @@ void Actor::_LuaRemoveEffect(uint32_t index)
 
 void Actor::AddFriendFoe(uint32_t frnd, uint32_t foe)
 {
-    groupMask_ |= frnd | (foe << 16);
+    groupMask_ |= (frnd | (foe << 16));
 }
 
 void Actor::RemoveFriendFoe(uint32_t frnd, uint32_t foe)
@@ -461,7 +461,7 @@ Actor* Actor::GetClosestEnemy(bool undestroyable, bool unselectable)
             return false;
         if ((actor.IsUndestroyable() || actor.IsDead()) && !undestroyable)
             return false;
-        if (!actor.IsEnemy(this))
+        if (!IsEnemy(&actor))
             return false;
         return true;
     });
@@ -475,7 +475,7 @@ Actor* Actor::GetClosestAlly(bool undestroyable, bool unselectable)
             return false;
         if ((actor.IsUndestroyable() || actor.IsDead()) && !undestroyable)
             return false;
-        if (!actor.IsAlly(this))
+        if (!IsAlly(&actor))
             return false;
         return true;
     });
@@ -963,18 +963,18 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     return val;
 }
 
-bool Actor::IsEnemy(Actor* other) const
+bool Actor::IsEnemy(const Actor* other) const
 {
-    if (GetGroupId() == other->GetGroupId())
+    if ((GetGroupId() != 0) && GetGroupId() == other->GetGroupId())
         // Same group members are always friends
         return false;
-    // Return true if they have matching bits in the foe mask
-    return ((GetFoeMask() & other->GetFoeMask()) != 0);
+    // Return true if we have a matching bit of our foe mask in their friend mask
+    return ((GetFoeMask() & other->GetFriendMask()) != 0);
 }
 
-bool Actor::IsAlly(Actor* other) const
+bool Actor::IsAlly(const Actor* other) const
 {
-    if (GetGroupId() == other->GetGroupId())
+    if ((GetGroupId() != 0) && GetGroupId() == other->GetGroupId())
         // Same group members are always friends
         return true;
     // Return true if they have matching bits in the friend mask

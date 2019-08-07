@@ -234,8 +234,8 @@ public:
     /// Knock the Actor down caused by source. If time = 0 DEFAULT_KNOCKDOWN_TIME is used.
     bool KnockDown(Actor* source, uint32_t time);
     int Healing(Actor* source, uint32_t index, int value);
-    bool IsEnemy(Actor* other) const;
-    bool IsAlly(Actor* other) const;
+    bool IsEnemy(const Actor* other) const;
+    bool IsAlly(const Actor* other) const;
     void AddFriendFoe(uint32_t frnd, uint32_t foe);
     void RemoveFriendFoe(uint32_t frnd, uint32_t foe);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
