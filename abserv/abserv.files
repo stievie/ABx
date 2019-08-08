@@ -169,6 +169,7 @@ abserv/actions/AiHealOther.h
 abserv/actions/AiHealSelf.h
 abserv/actions/AiMoveTo.h
 abserv/actions/AiResurrectSelection.h
+abserv/actions/AiSay.h
 abserv/conditions/AiIsAllyHealthCritical.h
 abserv/conditions/AiIsAllyHealthLow.h
 abserv/conditions/AiIsAttacked.h
