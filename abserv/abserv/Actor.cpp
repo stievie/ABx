@@ -95,13 +95,13 @@ void Actor::RegisterLua(kaguya::State& state)
 Actor::Actor() :
     GameObject(),
     skills_(std::make_unique<SkillBar>(*this)),
-    autorunComp_(*this),
     resourceComp_(*this),
     attackComp_(*this),
     skillsComp_(*this),
     inputComp_(*this),
     damageComp_(*this),
     healComp_(*this),
+    autorunComp_(std::make_unique<Components::AutoRunComp>(*this)),
     progressComp_(std::make_unique<Components::ProgressComp>(*this)),
     effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
     inventoryComp_(std::make_unique<Components::InventoryComp>(*this)),
@@ -542,7 +542,7 @@ void Actor::OnStartUseSkill(Skill* skill)
     if (skill->IsChangingState())
     {
         attackComp_.Pause();
-        autorunComp_.Reset();
+        autorunComp_->Reset();
         stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
     }
 }
@@ -864,10 +864,10 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     damageComp_.Update(timeElapsed);
     healComp_.Update(timeElapsed);
     uint32_t flags = Components::MoveComp::UpdateFlagTurn;
-    if (!autorunComp_.IsAutoRun())
+    if (!autorunComp_->IsAutoRun())
         flags |= Components::MoveComp::UpdateFlagMove;
     moveComp_->Update(timeElapsed, flags);
-    autorunComp_.Update(timeElapsed);
+    autorunComp_->Update(timeElapsed);
     // After move/autorun resolve collisions
     collisionComp_->Update(timeElapsed);
     progressComp_->Update(timeElapsed);
@@ -901,7 +901,7 @@ bool Actor::Die()
         resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
         resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
         damageComp_.Touch();
-        autorunComp_.SetAutoRun(false);
+        autorunComp_->SetAutoRun(false);
         killedBy_ = damageComp_.GetLastDamager();
         OnDied();
         return true;
@@ -946,7 +946,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
         // The only way to prevent this is an effect that prevents KDs.
         attackComp_.Interrupt();
         skillsComp_.Interrupt(AB::Entities::SkillTypeSkill);
-        autorunComp_.Reset();
+        autorunComp_->Reset();
         OnKnockedDown(time);
     }
     return ret;

@@ -125,13 +125,13 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     // We need to move to the target
     if (!CheckRange())
     {
-        if (!owner_.autorunComp_.IsAutoRun())
+        if (!owner_.autorunComp_->IsAutoRun())
         {
-            if (owner_.autorunComp_.Follow(target, false))
+            if (owner_.autorunComp_->Follow(target, false))
             {
                 owner_.followedObject_ = target;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_.SetAutoRun(true);
+                owner_.autorunComp_->SetAutoRun(true);
             }
             else
             {
@@ -144,7 +144,7 @@ void AttackComp::Update(uint32_t /* timeElapsed */)
     }
     else
     {
-        owner_.autorunComp_.Reset();
+        owner_.autorunComp_->Reset();
         SetAttackState(true);
     }
 

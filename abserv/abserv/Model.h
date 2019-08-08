@@ -7,7 +7,7 @@
 namespace Game {
 
 /// 3D Model
-class Model : public IO::Asset
+class Model final : public IO::Asset
 {
 public:
     Model();

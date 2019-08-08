@@ -30,6 +30,8 @@ Projectile::Projectile(const std::string& itemUuid) :
     InitializeLua();
 }
 
+Projectile::~Projectile() = default;
+
 void Projectile::InitializeLua()
 {
     ScriptManager::RegisterLuaAll(luaState_);

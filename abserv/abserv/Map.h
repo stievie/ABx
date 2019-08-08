@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "Vector3.h"
 #include <pugixml.hpp>
+#include "TerrainPatch.h"
 
 namespace Game {
 

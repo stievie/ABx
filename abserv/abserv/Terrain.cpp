@@ -10,4 +10,6 @@ Terrain::Terrain() :
 {
 }
 
+Terrain::~Terrain() = default;
+
 }

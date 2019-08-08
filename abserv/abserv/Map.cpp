@@ -9,7 +9,6 @@
 #include "IOMap.h"
 #include "Model.h"
 #include "StringUtils.h"
-#include "TerrainPatch.h"
 
 namespace Game {
 

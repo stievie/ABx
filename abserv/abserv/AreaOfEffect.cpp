@@ -8,29 +8,6 @@
 
 namespace Game {
 
-void AreaOfEffect::InitializeLua()
-{
-    ScriptManager::RegisterLuaAll(luaState_);
-    luaState_["self"] = this;
-    luaInitialized_ = true;
-}
-
-void AreaOfEffect::_LuaSetSource(Actor* source)
-{
-    if (source)
-        source_ = source->GetThis<Actor>();
-    else
-        source_.reset();
-}
-
-Actor* AreaOfEffect::_LuaGetSource()
-{
-    auto source = GetSource();
-    if (source)
-        return source.get();
-    return nullptr;
-}
-
 void AreaOfEffect::RegisterLua(kaguya::State& state)
 {
     state["AreaOfEffect"].setClass(kaguya::UserdataMetatable<AreaOfEffect, GameObject>()
@@ -67,6 +44,31 @@ AreaOfEffect::AreaOfEffect() :
     selectable_ = false;
 
     InitializeLua();
+}
+
+AreaOfEffect::~AreaOfEffect() = default;
+
+void AreaOfEffect::InitializeLua()
+{
+    ScriptManager::RegisterLuaAll(luaState_);
+    luaState_["self"] = this;
+    luaInitialized_ = true;
+}
+
+void AreaOfEffect::_LuaSetSource(Actor* source)
+{
+    if (source)
+        source_ = source->GetThis<Actor>();
+    else
+        source_.reset();
+}
+
+Actor* AreaOfEffect::_LuaGetSource()
+{
+    auto source = GetSource();
+    if (source)
+        return source.get();
+    return nullptr;
 }
 
 bool AreaOfEffect::LoadScript(const std::string& fileName)

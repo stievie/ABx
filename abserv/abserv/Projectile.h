@@ -54,6 +54,7 @@ public:
 
     explicit Projectile(const std::string& itemUuid);
     Projectile() = delete;
+    ~Projectile() final;
     // non-copyable
     Projectile(const Projectile&) = delete;
     Projectile& operator=(const Projectile&) = delete;

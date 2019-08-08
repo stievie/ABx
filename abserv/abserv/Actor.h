@@ -277,13 +277,13 @@ public:
 
     std::unique_ptr<SkillBar> skills_;
 
-    Components::AutoRunComp autorunComp_;
     Components::ResourceComp resourceComp_;
     Components::AttackComp attackComp_;
     Components::SkillsComp skillsComp_;
     Components::InputComp inputComp_;
     Components::DamageComp damageComp_;
     Components::HealComp healComp_;
+    std::unique_ptr<Components::AutoRunComp> autorunComp_;
     std::unique_ptr<Components::ProgressComp> progressComp_;
     std::unique_ptr<Components::EffectsComp> effectsComp_;
     std::unique_ptr<Components::InventoryComp> inventoryComp_;

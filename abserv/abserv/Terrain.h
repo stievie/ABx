@@ -12,15 +12,14 @@ static constexpr int DEFAULT_PATCH_SIZE = 32;
 static constexpr int MIN_PATCH_SIZE = 4;
 static constexpr int MAX_PATCH_SIZE = 128;
 
-class TerrainPatch;
-
-class Terrain : public IO::Asset
+class Terrain final : public IO::Asset
 {
 private:
     // Must be shared_ptr CollisionShape may also own it
     std::shared_ptr<Math::HeightMap> heightMap_;
 public:
     Terrain();
+    ~Terrain() final;
 
     void SetHeightMap(std::shared_ptr<Math::HeightMap> val)
     {

@@ -42,6 +42,7 @@ public:
     static void RegisterLua(kaguya::State& state);
 
     AreaOfEffect();
+    ~AreaOfEffect() final;
     // non-copyable
     AreaOfEffect(const AreaOfEffect&) = delete;
     AreaOfEffect& operator=(const AreaOfEffect&) = delete;

@@ -4,7 +4,7 @@
 
 namespace Game {
 
-class Script : public IO::Asset
+class Script final : public IO::Asset
 {
 private:
     std::vector<char> buffer_;
@@ -12,6 +12,7 @@ public:
     Script() :
         IO::Asset()
     { }
+    ~Script() final;
 
     std::vector<char>& GetBuffer()
     {

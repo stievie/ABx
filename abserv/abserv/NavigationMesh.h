@@ -10,7 +10,7 @@ namespace Navigation {
 struct FindPathData;
 
 /// Navigation Mesh constructed from Map and Obstacles
-class NavigationMesh : public IO::Asset
+class NavigationMesh final : public IO::Asset
 {
 private:
     dtNavMesh* navMesh_{ nullptr };
@@ -19,7 +19,7 @@ private:
     std::unique_ptr<FindPathData> pathData_;
 public:
     NavigationMesh();
-    ~NavigationMesh() override;
+    ~NavigationMesh() final;
 
     static std::string GetStatusString(dtStatus status);
 

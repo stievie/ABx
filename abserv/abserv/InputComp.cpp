@@ -70,13 +70,13 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
         auto target = owner_.GetGame()->GetObjectById(targetId);
         if (target)
         {
-            bool succ = owner_.autorunComp_.Follow(target, ping);
+            bool succ = owner_.autorunComp_->Follow(target, ping);
             if (succ)
             {
                 owner_.attackComp_.Cancel();
                 owner_.followedObject_ = target;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                owner_.autorunComp_.SetAutoRun(true);
+                owner_.autorunComp_->SetAutoRun(true);
             }
         }
 #ifdef DEBUG_NAVIGATION
@@ -114,7 +114,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                         owner_.moveComp_->turnDir_ == AB::GameProtocol::TurnDirectionNone)
                         owner_.stateComp_.Reset();
                 }
-                owner_.autorunComp_.Reset();
+                owner_.autorunComp_->Reset();
             }
             break;
         }
@@ -135,7 +135,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                         owner_.moveComp_->moveDir_ == AB::GameProtocol::MoveDirectionNone)
                         owner_.stateComp_.Reset();
                 }
-                owner_.autorunComp_.Reset();
+                owner_.autorunComp_->Reset();
             }
             break;
         }
@@ -145,7 +145,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             {
                 // No aurorunComp_.Reset() because manually setting the camera does not
                 // stop autorunning
-                if (!owner_.autorunComp_.IsAutoRun())
+                if (!owner_.autorunComp_->IsAutoRun())
                     owner_.moveComp_->SetDirection(input.data[InputDataDirection].GetFloat());
             }
             break;
@@ -164,18 +164,18 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             if (!owner_.IsImmobilized())
             {
-                owner_.autorunComp_.Reset();
+                owner_.autorunComp_->Reset();
                 const Math::Vector3 dest = {
                     input.data[InputDataVertexX].GetFloat(),
                     input.data[InputDataVertexY].GetFloat(),
                     input.data[InputDataVertexZ].GetFloat()
                 };
-                const bool succ = owner_.autorunComp_.Goto(dest);
+                const bool succ = owner_.autorunComp_->Goto(dest);
                 if (succ)
                 {
                     owner_.attackComp_.Cancel();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
-                    owner_.autorunComp_.SetAutoRun(true);
+                    owner_.autorunComp_->SetAutoRun(true);
                 }
             }
             break;
@@ -236,7 +236,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
             // Cancel all
             owner_.skillsComp_.Cancel();
             owner_.attackComp_.Cancel();
-            owner_.autorunComp_.Reset();
+            owner_.autorunComp_->Reset();
             owner_.stateComp_.Reset();
             break;
         case InputType::Command:

@@ -14,6 +14,8 @@ public:
     }
 };
 
+Script::~Script() = default;
+
 bool Script::Execute(kaguya::State& luaState)
 {
     vectorbuf<char> databuf(buffer_);
