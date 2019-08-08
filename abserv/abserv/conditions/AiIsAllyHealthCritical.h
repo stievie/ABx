@@ -29,7 +29,7 @@ public:
         {
             if (result)
                 return;
-            if (!o->IsDead() && o->resourceComp_.GetHealth() < CRITICAL_HP_THRESHOLD)
+            if (!o->IsDead() && o->resourceComp_->GetHealth() < CRITICAL_HP_THRESHOLD)
                 result = true;
         });
 

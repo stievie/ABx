@@ -12,7 +12,7 @@ void HealComp::Healing(Actor* source, uint32_t index, int value)
         return;
 
     healings_.push_back({ source ? source->id_ : 0, index, value, Utils::Tick() });
-    owner_.resourceComp_.SetHealth(Components::SetValueType::Increase, value);
+    owner_.resourceComp_->SetHealth(Components::SetValueType::Increase, value);
 }
 
 void HealComp::Write(Net::NetworkMessage& message)

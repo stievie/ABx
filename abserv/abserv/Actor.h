@@ -147,7 +147,7 @@ public:
     bool IsMoving() const { return moveComp_->IsMoving(); }
     void SetState(AB::GameProtocol::CreatureState state) override;
     /// Attack hit
-    bool IsHitting() const { return attackComp_.IsHitting(); }
+    bool IsHitting() const { return attackComp_->IsHitting(); }
     bool IsUndestroyable() const { return undestroyable_; }
     void SetUndestroyable(bool value) { undestroyable_ = value; }
     bool IsInWeaponRange(Actor* actor) const;
@@ -160,8 +160,8 @@ public:
     float GetArmorPenetration();
     /// Get chance for a critical hit. Value between 0..1
     float GetCriticalChance(const Actor* other);
-    DamagePos GetDamagePos() const { return damageComp_.GetDamagePos(); }
-    int GetResource(Components::ResourceType type) const { return resourceComp_.GetValue(type); }
+    DamagePos GetDamagePos() const { return damageComp_->GetDamagePos(); }
+    int GetResource(Components::ResourceType type) const { return resourceComp_->GetValue(type); }
     void SetResource(Components::ResourceType type, Components::SetValueType t, int value);
     /// Adds damage to this actor, skill or effect index my be 0.
     void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration);
@@ -240,11 +240,11 @@ public:
     void RemoveFriendFoe(uint32_t frnd, uint32_t foe);
     inline void AddInput(InputType type, const Utils::VariantMap& data)
     {
-        inputComp_.Add(type, data);
+        inputComp_->Add(type, data);
     }
     inline void AddInput(InputType type)
     {
-        inputComp_.Add(type);
+        inputComp_->Add(type);
     }
     uint32_t GetAttributeValue(uint32_t index);
 
@@ -277,12 +277,12 @@ public:
 
     std::unique_ptr<SkillBar> skills_;
 
-    Components::ResourceComp resourceComp_;
-    Components::AttackComp attackComp_;
-    Components::SkillsComp skillsComp_;
-    Components::InputComp inputComp_;
-    Components::DamageComp damageComp_;
-    Components::HealComp healComp_;
+    std::unique_ptr<Components::ResourceComp> resourceComp_;
+    std::unique_ptr<Components::AttackComp> attackComp_;
+    std::unique_ptr<Components::SkillsComp> skillsComp_;
+    std::unique_ptr<Components::InputComp> inputComp_;
+    std::unique_ptr<Components::DamageComp> damageComp_;
+    std::unique_ptr<Components::HealComp> healComp_;
     std::unique_ptr<Components::AutoRunComp> autorunComp_;
     std::unique_ptr<Components::ProgressComp> progressComp_;
     std::unique_ptr<Components::EffectsComp> effectsComp_;

@@ -20,7 +20,7 @@ void DamageComp::ApplyDamage(Actor* source, uint32_t index, DamageType type, int
     const float am = owner_.GetArmorEffect(type, pos, penetration);
     const int realValue = static_cast<int>(static_cast<float>(value) * am);
     damages_.push_back({ type, pos, realValue, source ? source->id_ : 0, index, lastDamage_ });
-    owner_.resourceComp_.SetHealth(SetValueType::Decrease, abs(realValue));
+    owner_.resourceComp_->SetHealth(SetValueType::Decrease, abs(realValue));
     if (source)
         lastDamager_ = source->GetThis<Actor>();
 }
@@ -30,11 +30,11 @@ int DamageComp::DrainLife(Actor* source, uint32_t index, int value)
     if (owner_.IsDead())
         return 0;
 
-    const int currLife = owner_.resourceComp_.GetHealth();
+    const int currLife = owner_.resourceComp_->GetHealth();
     const int result = Math::Clamp(value, 0, currLife);
     lastDamage_ = Utils::Tick();
     damages_.push_back({ DamageType::LifeDrain, DamagePos::NoPos, result, source ? source->id_ : 0, index, lastDamage_ });
-    owner_.resourceComp_.SetHealth(Components::SetValueType::Absolute, currLife - result);
+    owner_.resourceComp_->SetHealth(Components::SetValueType::Absolute, currLife - result);
     if (source)
         lastDamager_ = source->GetThis<Actor>();
     return result;

@@ -138,7 +138,7 @@ void Projectile::SetError(AB::GameProtocol::AttackError error)
 {
     error_ = error;
     if (auto source = source_.lock())
-        source->attackComp_.SetAttackError(error);
+        source->attackComp_->SetAttackError(error);
 }
 
 Actor* Projectile::_LuaGetSource()

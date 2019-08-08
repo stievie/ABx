@@ -27,7 +27,7 @@ public:
         if (npc.IsDead())
             // Too late
             return false;
-        return npc.resourceComp_.GetHealth() < CRITICAL_HP_THRESHOLD;
+        return npc.resourceComp_->GetHealth() < CRITICAL_HP_THRESHOLD;
     }
 };
 

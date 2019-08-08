@@ -204,12 +204,12 @@ void ResourceComp::UpdateRegen(uint32_t /* timeElapsed */)
     if (!owner_.IsDead() && health_ < maxHealth_)
     {
         // Time last HP was reduced
-        uint32_t last = std::min(owner_.damageComp_.NoDamageTime(),
+        uint32_t last = std::min(owner_.damageComp_->NoDamageTime(),
             GetLastHpDecrease());
         // Not using skills
-        last = std::min(Utils::TimeElapsed(owner_.skillsComp_.GetLastSkillTime()), last);
+        last = std::min(Utils::TimeElapsed(owner_.skillsComp_->GetLastSkillTime()), last);
         // Not attacking
-        last = std::min(Utils::TimeElapsed(owner_.attackComp_.GetLastAttackTime()), last);
+        last = std::min(Utils::TimeElapsed(owner_.attackComp_->GetLastAttackTime()), last);
         if (last > 5000 && healthRegen_ >= 0.0f)
         {
             if ((Utils::TimeElapsed(lastRegenIncrease_) > 2000) && GetHealthRegen() < 7)

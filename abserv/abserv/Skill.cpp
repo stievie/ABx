@@ -83,7 +83,7 @@ void Skill::Update(uint32_t timeElapsed)
             else
             {
                 // On success sacrifice the HP
-                source->resourceComp_.SetHealth(Components::SetValueType::DecreasePercent, realHp_);
+                source->resourceComp_->SetHealth(Components::SetValueType::DecreasePercent, realHp_);
                 lastUse_ = Utils::Tick();
             }
             if (source)
@@ -147,11 +147,11 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     source->inventoryComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
     source->effectsComp_->GetSkillCost(this, realActivation_, realEnergy_, realAdrenaline_, realOvercast_, realHp_);
 
-    if (source->resourceComp_.GetEnergy() < realEnergy_)
+    if (source->resourceComp_->GetEnergy() < realEnergy_)
         lastError_ = AB::GameProtocol::SkillErrorNoEnergy;
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
         return lastError_;
-    if (source->resourceComp_.GetAdrenaline() < realAdrenaline_)
+    if (source->resourceComp_->GetAdrenaline() < realAdrenaline_)
         lastError_ = AB::GameProtocol::SkillErrorNoAdrenaline;
     if (lastError_ != AB::GameProtocol::SkillErrorNone)
         return lastError_;
@@ -170,9 +170,9 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
         target_.reset();
         return lastError_;
     }
-    source->resourceComp_.SetEnergy(Components::SetValueType::Decrease, realEnergy_);
-    source->resourceComp_.SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
-    source->resourceComp_.SetOvercast(Components::SetValueType::Increase, realOvercast_);
+    source->resourceComp_->SetEnergy(Components::SetValueType::Decrease, realEnergy_);
+    source->resourceComp_->SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
+    source->resourceComp_->SetOvercast(Components::SetValueType::Increase, realOvercast_);
     source->OnStartUseSkill(this);
     return lastError_;
 }

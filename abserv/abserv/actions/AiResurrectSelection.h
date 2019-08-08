@@ -52,7 +52,7 @@ AI_TASK(ResurrectSelection)
         auto skill = npc.skills_->GetSkill(i);
         if (!skill)
             continue;
-        if (!npc.resourceComp_.HaveEnoughResources(skill.get()))
+        if (!npc.resourceComp_->HaveEnoughResources(skill.get()))
             continue;
 
         npc.SetSelectedObjectById(selection[0]);

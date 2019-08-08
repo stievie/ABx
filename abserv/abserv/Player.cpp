@@ -884,10 +884,10 @@ void Player::HandleAgeCommand(const std::string&, Net::NetworkMessage&)
 void Player::HandleHpCommand(const std::string&, Net::NetworkMessage&)
 {
     auto nmsg = Net::NetworkMessage::GetNew();
-    const int maxHp = resourceComp_.GetMaxHealth();
-    const int hp = resourceComp_.GetHealth();
-    const int maxE = resourceComp_.GetMaxEnergy();
-    const int e = resourceComp_.GetEnergy();
+    const int maxHp = resourceComp_->GetMaxHealth();
+    const int hp = resourceComp_->GetHealth();
+    const int maxE = resourceComp_->GetMaxEnergy();
+    const int e = resourceComp_->GetEnergy();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
     nmsg->AddByte(AB::GameProtocol::ServerMessageTypeHp);
     nmsg->AddString(GetName());
@@ -949,8 +949,8 @@ void Player::HandleRollCommand(const std::string& arguments, Net::NetworkMessage
 
 void Player::HandleSitCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (attackComp_.IsAttackState())
-        attackComp_.Cancel();
+    if (attackComp_->IsAttackState())
+        attackComp_->Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteSit);
 }
 
@@ -962,36 +962,36 @@ void Player::HandleStandCommand(const std::string&, Net::NetworkMessage&)
 
 void Player::HandleCryCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (attackComp_.IsAttackState())
-        attackComp_.Cancel();
+    if (attackComp_->IsAttackState())
+        attackComp_->Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteCry);
 }
 
 void Player::HandleTauntCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (attackComp_.IsAttackState())
-        attackComp_.Cancel();
+    if (attackComp_->IsAttackState())
+        attackComp_->Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteTaunt);
 }
 
 void Player::HandlePonderCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (attackComp_.IsAttackState())
-        attackComp_.Cancel();
+    if (attackComp_->IsAttackState())
+        attackComp_->Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmotePonder);
 }
 
 void Player::HandleWaveCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (attackComp_.IsAttackState())
-        attackComp_.Cancel();
+    if (attackComp_->IsAttackState())
+        attackComp_->Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteWave);
 }
 
 void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (attackComp_.IsAttackState())
-        attackComp_.Cancel();
+    if (attackComp_->IsAttackState())
+        attackComp_->Cancel();
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteLaugh);
 }
 

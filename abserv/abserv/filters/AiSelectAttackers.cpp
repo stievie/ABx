@@ -13,7 +13,7 @@ void SelectAttackers::filter(const ai::AIPtr& entity)
     Game::Npc& chr = getNpc(entity);
     chr.VisitEnemiesInRange(Game::Ranges::Aggro, [&](const Game::Actor* o)
     {
-        if (o->attackComp_.IsTarget(&chr))
+        if (o->attackComp_->IsTarget(&chr))
         {
             entities.push_back(o->id_);
             sorting[o->id_] = o->GetDistance(&chr);

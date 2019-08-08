@@ -95,12 +95,12 @@ void Actor::RegisterLua(kaguya::State& state)
 Actor::Actor() :
     GameObject(),
     skills_(std::make_unique<SkillBar>(*this)),
-    resourceComp_(*this),
-    attackComp_(*this),
-    skillsComp_(*this),
-    inputComp_(*this),
-    damageComp_(*this),
-    healComp_(*this),
+    resourceComp_(std::make_unique<Components::ResourceComp>(*this)),
+    attackComp_(std::make_unique<Components::AttackComp>(*this)),
+    skillsComp_(std::make_unique<Components::SkillsComp>(*this)),
+    inputComp_(std::make_unique<Components::InputComp>(*this)),
+    damageComp_(std::make_unique<Components::DamageComp>(*this)),
+    healComp_(std::make_unique<Components::HealComp>(*this)),
     autorunComp_(std::make_unique<Components::AutoRunComp>(*this)),
     progressComp_(std::make_unique<Components::ProgressComp>(*this)),
     effectsComp_(std::make_unique<Components::EffectsComp>(*this)),
@@ -128,9 +128,9 @@ Actor::~Actor() = default;
 
 void Actor::Initialize()
 {
-    resourceComp_.UpdateResources();
-    resourceComp_.SetHealth(Components::SetValueType::Absolute, resourceComp_.GetMaxHealth());
-    resourceComp_.SetEnergy(Components::SetValueType::Absolute, resourceComp_.GetMaxEnergy());
+    resourceComp_->UpdateResources();
+    resourceComp_->SetHealth(Components::SetValueType::Absolute, resourceComp_->GetMaxHealth());
+    resourceComp_->SetEnergy(Components::SetValueType::Absolute, resourceComp_->GetMaxEnergy());
 }
 
 bool Actor::SetSpawnPoint(const std::string& group)
@@ -172,7 +172,7 @@ void Actor::SetSelectedObjectById(uint32_t id)
     Utils::VariantMap data;
     data[InputDataObjectId] = GetId();    // Source
     data[InputDataObjectId2] = id;   // Target
-    inputComp_.Add(InputType::Select, data);
+    inputComp_->Add(InputType::Select, data);
 }
 
 void Actor::GotoPosition(const Math::Vector3& pos)
@@ -181,7 +181,7 @@ void Actor::GotoPosition(const Math::Vector3& pos)
     data[InputDataVertexX] = pos.x_;
     data[InputDataVertexY] = pos.y_;
     data[InputDataVertexZ] = pos.z_;
-    inputComp_.Add(InputType::Goto, data);
+    inputComp_->Add(InputType::Goto, data);
 }
 
 void Actor::FollowObject(std::shared_ptr<GameObject> object)
@@ -196,7 +196,7 @@ void Actor::FollowObject(uint32_t objectId)
 {
     Utils::VariantMap data;
     data[InputDataObjectId] = objectId;
-    inputComp_.Add(InputType::Follow, data);
+    inputComp_->Add(InputType::Follow, data);
 }
 
 void Actor::Attack(Actor* target)
@@ -205,7 +205,7 @@ void Actor::Attack(Actor* target)
         return;
     if (!IsEnemy(target))
         return;
-    if (attackComp_.IsAttackingTarget(target))
+    if (attackComp_->IsAttackingTarget(target))
         return;
 
     {
@@ -213,10 +213,10 @@ void Actor::Attack(Actor* target)
         Utils::VariantMap data;
         data[InputDataObjectId] = GetId();    // Source
         data[InputDataObjectId2] = target->GetId();   // Target
-        inputComp_.Add(InputType::Select, data);
+        inputComp_->Add(InputType::Select, data);
     }
     // Then attack
-    inputComp_.Add(InputType::Attack);
+    inputComp_->Add(InputType::Attack);
 }
 
 bool Actor::AttackById(uint32_t targetId)
@@ -231,7 +231,7 @@ bool Actor::AttackById(uint32_t targetId)
     Actor* pActor = actor.get();
     if (!IsEnemy(pActor))
         return false;
-    if (attackComp_.IsAttackingTarget(pActor))
+    if (attackComp_->IsAttackingTarget(pActor))
         return true;
 
     {
@@ -239,10 +239,10 @@ bool Actor::AttackById(uint32_t targetId)
         Utils::VariantMap data;
         data[InputDataObjectId] = GetId();    // Source
         data[InputDataObjectId2] = target->GetId();   // Target
-        inputComp_.Add(InputType::Select, data);
+        inputComp_->Add(InputType::Select, data);
     }
     // Then attack
-    inputComp_.Add(InputType::Attack);
+    inputComp_->Add(InputType::Attack);
     return true;
 }
 
@@ -250,7 +250,7 @@ bool Actor::IsAttackingActor(Actor* target)
 {
     if (!target)
         return false;
-    if (attackComp_.IsAttackingTarget(target))
+    if (attackComp_->IsAttackingTarget(target))
         return true;
     return false;
 }
@@ -259,12 +259,12 @@ void Actor::UseSkill(uint32_t index)
 {
     Utils::VariantMap data;
     data[InputDataSkillIndex] = static_cast<uint8_t>(index);
-    inputComp_.Add(InputType::UseSkill, data);
+    inputComp_->Add(InputType::UseSkill, data);
 }
 
 void Actor::CancelAction()
 {
-    inputComp_.Add(InputType::Cancel);
+    inputComp_->Add(InputType::Cancel);
 }
 
 bool Actor::AddToInventory(std::unique_ptr<Item>& item)
@@ -307,7 +307,7 @@ void Actor::SetState(AB::GameProtocol::CreatureState state)
 {
     Utils::VariantMap data;
     data[InputDataState] = static_cast<uint8_t>(state);
-    inputComp_.Add(InputType::SetState, data);
+    inputComp_->Add(InputType::SetState, data);
 }
 
 void Actor::_LuaSetHomePos(const Math::STLVector3& pos)
@@ -381,7 +381,7 @@ void Actor::_LuaSetSelectedObject(GameObject* object)
         data[InputDataObjectId2] = object->GetId();   // Target
     else
         data[InputDataObjectId2] = 0;   // Target
-    inputComp_.Add(InputType::Select, data);
+    inputComp_->Add(InputType::Select, data);
 }
 
 std::vector<Actor*> Actor::GetEnemiesInRange(Ranges range)
@@ -516,7 +516,7 @@ void Actor::WriteSpawnData(Net::NetworkMessage& msg)
     Serialize(data);
     const char* cData = data.GetStream(dataSize);
     msg.AddString(std::string(cData, dataSize));
-    resourceComp_.Write(msg, true);
+    resourceComp_->Write(msg, true);
     effectsComp_->Write(msg);
 }
 
@@ -530,7 +530,7 @@ void Actor::OnEndUseSkill(Skill* skill)
     // These change the state
     if (skill->IsChangingState())
     {
-        attackComp_.Pause(false);
+        attackComp_->Pause(false);
         if (!stateComp_.IsDead())
             stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
     }
@@ -541,7 +541,7 @@ void Actor::OnStartUseSkill(Skill* skill)
     // These change the state
     if (skill->IsChangingState())
     {
-        attackComp_.Pause();
+        attackComp_->Pause();
         autorunComp_->Reset();
         stateComp_.SetState(AB::GameProtocol::CreatureStateUsingSkill);
     }
@@ -690,7 +690,7 @@ float Actor::GetCriticalChance(const Actor* other)
 
 void Actor::SetResource(Components::ResourceType type, Components::SetValueType t, int value)
 {
-    resourceComp_.SetValue(type, t, value);
+    resourceComp_->SetValue(type, t, value);
 }
 
 bool Actor::OnAttack(Actor* target)
@@ -737,23 +737,23 @@ bool Actor::OnGetCriticalHit(Actor* source)
 
 void Actor::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration)
 {
-    damageComp_.ApplyDamage(source, index, type, value, penetration);
+    damageComp_->ApplyDamage(source, index, type, value, penetration);
 }
 
 int Actor::DrainLife(Actor* source, uint32_t index, int value)
 {
-    return damageComp_.DrainLife(source, index, value);
+    return damageComp_->DrainLife(source, index, value);
 }
 
 int Actor::DrainEnergy(int value)
 {
-    return resourceComp_.DrainEnergy(value);
+    return resourceComp_->DrainEnergy(value);
 }
 
 void Actor::SetHealthRegen(int value)
 {
     Components::SetValueType vt = value < 0 ? Components::SetValueType::Decrease : Components::SetValueType::Increase;
-    resourceComp_.SetHealthRegen(vt, abs(value));
+    resourceComp_->SetHealthRegen(vt, abs(value));
 }
 
 bool Actor::OnInterruptingAttack()
@@ -774,17 +774,17 @@ bool Actor::InterruptAttack()
 {
     if (!OnInterruptingAttack())
         return false;
-    return attackComp_.Interrupt();
+    return attackComp_->Interrupt();
 }
 
 bool Actor::InterruptSkill(AB::Entities::SkillType type)
 {
-    Skill* skill = skillsComp_.GetCurrentSkill();
+    Skill* skill = skillsComp_->GetCurrentSkill();
     if (!skill)
         return false;
     if (!OnInterruptingSkill(type, skill))
         return false;
-    return skillsComp_.Interrupt(type);
+    return skillsComp_->Interrupt(type);
 }
 
 bool Actor::Interrupt()
@@ -802,7 +802,7 @@ void Actor::OnDied()
 
 void Actor::AdvanceLevel()
 {
-    resourceComp_.UpdateResources();
+    resourceComp_->UpdateResources();
 }
 
 Skill* Actor::GetCurrentSkill() const
@@ -855,14 +855,14 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     // Update all
     stateComp_.Update(timeElapsed);
-    resourceComp_.Update(timeElapsed);
-    inputComp_.Update(timeElapsed, message);
+    resourceComp_->Update(timeElapsed);
+    inputComp_->Update(timeElapsed, message);
 
-    attackComp_.Update(timeElapsed);
-    skillsComp_.Update(timeElapsed);
+    attackComp_->Update(timeElapsed);
+    skillsComp_->Update(timeElapsed);
     effectsComp_->Update(timeElapsed);
-    damageComp_.Update(timeElapsed);
-    healComp_.Update(timeElapsed);
+    damageComp_->Update(timeElapsed);
+    healComp_->Update(timeElapsed);
     uint32_t flags = Components::MoveComp::UpdateFlagTurn;
     if (!autorunComp_->IsAutoRun())
         flags |= Components::MoveComp::UpdateFlagMove;
@@ -882,12 +882,12 @@ void Actor::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
     stateComp_.Write(message);
     moveComp_->Write(message);
 
-    skillsComp_.Write(message);
-    attackComp_.Write(message);
+    skillsComp_->Write(message);
+    attackComp_->Write(message);
     effectsComp_->Write(message);
-    resourceComp_.Write(message);
-    damageComp_.Write(message);
-    healComp_.Write(message);
+    resourceComp_->Write(message);
+    damageComp_->Write(message);
+    healComp_->Write(message);
     progressComp_->Write(message);
 }
 
@@ -895,14 +895,14 @@ bool Actor::Die()
 {
     if (!IsDead())
     {
-        attackComp_.Cancel();
+        attackComp_->Cancel();
         stateComp_.SetState(AB::GameProtocol::CreatureStateDead);
-        resourceComp_.SetHealth(Components::SetValueType::Absolute, 0);
-        resourceComp_.SetEnergy(Components::SetValueType::Absolute, 0);
-        resourceComp_.SetAdrenaline(Components::SetValueType::Absolute, 0);
-        damageComp_.Touch();
+        resourceComp_->SetHealth(Components::SetValueType::Absolute, 0);
+        resourceComp_->SetEnergy(Components::SetValueType::Absolute, 0);
+        resourceComp_->SetAdrenaline(Components::SetValueType::Absolute, 0);
+        damageComp_->Touch();
         autorunComp_->SetAutoRun(false);
-        killedBy_ = damageComp_.GetLastDamager();
+        killedBy_ = damageComp_->GetLastDamager();
         OnDied();
         return true;
     }
@@ -913,11 +913,11 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
 {
     if (IsDead())
     {
-        const int health = (resourceComp_.GetMaxHealth() / 100) * precentHealth;
-        resourceComp_.SetHealth(Components::SetValueType::Absolute, health);
-        const int energy = (resourceComp_.GetMaxEnergy() / 100) * percentEnergy;
-        resourceComp_.SetEnergy(Components::SetValueType::Absolute, energy);
-        damageComp_.Touch();
+        const int health = (resourceComp_->GetMaxHealth() / 100) * precentHealth;
+        resourceComp_->SetHealth(Components::SetValueType::Absolute, health);
+        const int energy = (resourceComp_->GetMaxEnergy() / 100) * percentEnergy;
+        resourceComp_->SetEnergy(Components::SetValueType::Absolute, energy);
+        damageComp_->Touch();
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
         OnResurrected(health, energy);
         return true;
@@ -944,8 +944,8 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
     {
         // KD interrupts all regardless of effects that may prevent interrupting.
         // The only way to prevent this is an effect that prevents KDs.
-        attackComp_.Interrupt();
-        skillsComp_.Interrupt(AB::Entities::SkillTypeSkill);
+        attackComp_->Interrupt();
+        skillsComp_->Interrupt(AB::Entities::SkillTypeSkill);
         autorunComp_->Reset();
         OnKnockedDown(time);
     }
@@ -958,7 +958,7 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
         return 0;
     int val = value;
     effectsComp_->OnHealing(source, val);
-    healComp_.Healing(source, index, val);
+    healComp_->Healing(source, index, val);
     OnHealed(val);
     return val;
 }

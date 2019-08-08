@@ -73,7 +73,7 @@ void InputComp::FollowObject(uint32_t targetId, bool ping, Net::NetworkMessage&)
             bool succ = owner_.autorunComp_->Follow(target, ping);
             if (succ)
             {
-                owner_.attackComp_.Cancel();
+                owner_.attackComp_->Cancel();
                 owner_.followedObject_ = target;
                 owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 owner_.autorunComp_->SetAutoRun(true);
@@ -100,11 +100,11 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             if (!owner_.IsImmobilized())
             {
-                owner_.attackComp_.Cancel();
+                owner_.attackComp_->Cancel();
                 owner_.moveComp_->moveDir_ = static_cast<AB::GameProtocol::MoveDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_->moveDir_ > AB::GameProtocol::MoveDirectionNone)
                 {
-                    owner_.skillsComp_.CancelWhenChangingState();
+                    owner_.skillsComp_->CancelWhenChangingState();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 }
                 else
@@ -122,11 +122,11 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             if (!owner_.IsImmobilized())
             {
-                owner_.attackComp_.Cancel();
+                owner_.attackComp_->Cancel();
                 owner_.moveComp_->turnDir_ = static_cast<AB::GameProtocol::TurnDirection>(input.data[InputDataDirection].GetInt());
                 if (owner_.moveComp_->turnDir_ > AB::GameProtocol::TurnDirectionNone)
                 {
-                    owner_.skillsComp_.CancelWhenChangingState();
+                    owner_.skillsComp_->CancelWhenChangingState();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                 }
                 else
@@ -173,7 +173,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 const bool succ = owner_.autorunComp_->Goto(dest);
                 if (succ)
                 {
-                    owner_.attackComp_.Cancel();
+                    owner_.attackComp_->Cancel();
                     owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateMoving);
                     owner_.autorunComp_->SetAutoRun(true);
                 }
@@ -197,7 +197,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                     if (actor)
                     {
                         bool ping = input.data[InputDataPingTarget].GetBool();
-                        owner_.attackComp_.Attack(actor, ping);
+                        owner_.attackComp_->Attack(actor, ping);
                     }
                 }
             }
@@ -210,7 +210,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
                 // The index of the skill in the users skill bar, 0 based
                 int skillIndex = input.data[InputDataSkillIndex].GetInt();
                 bool ping = input.data[InputDataPingTarget].GetBool();
-                owner_.skillsComp_.UseSkill(skillIndex, ping);
+                owner_.skillsComp_->UseSkill(skillIndex, ping);
             }
             break;
         }
@@ -234,8 +234,8 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         }
         case InputType::Cancel:
             // Cancel all
-            owner_.skillsComp_.Cancel();
-            owner_.attackComp_.Cancel();
+            owner_.skillsComp_->Cancel();
+            owner_.attackComp_->Cancel();
             owner_.autorunComp_->Reset();
             owner_.stateComp_.Reset();
             break;

@@ -42,7 +42,7 @@ AI_TASK(HealSelf)
         auto skill = npc.skills_->GetSkill(i);
         if (!skill)
             continue;
-        if (npc.IsDead() || !npc.resourceComp_.HaveEnoughResources(skill.get()))
+        if (npc.IsDead() || !npc.resourceComp_->HaveEnoughResources(skill.get()))
             continue;
 
         npc.SetSelectedObjectById(npc.GetId());
