@@ -12,23 +12,21 @@ AI_TASK(Say)
 {
     (void)deltaMillis;
     Game::Npc& npc = chr.GetNpc();
-    // channel;message
-    std::vector<std::string> params = Utils::Split(getParameters(), ",");
-//    LOG_INFO << "Params = " << getParameters() << std::endl;
-    if (params.size() != 2)
+    int ch = 0;
+    int quote = 0;
+
+#ifdef _MSC_VER
+    if (::sscanf_s(_parameters.c_str(), "%d,%d", &ch, &quote) != 2) {
+#else
+    if (::sscanf(_parameters.c_str(), "%d,%d", &ch, &quote) != 2) {
+#endif
         return ai::TreeNodeStatus::FAILED;
-    Game::ChatType channel = Game::ChatType::None;
-    const std::string& ch = params[0];
-    if (ch.compare("map") == 0)
-        channel = Game::ChatType::Map;
-    else if (ch.compare("party") == 0)
-        channel = Game::ChatType::Party;
-    else if (ch.compare("allies") == 0)
-        channel = Game::ChatType::Allies;
-    // All other channels don't make sense for an NPC, so fail
-    if (channel == Game::ChatType::None)
+    }
+    if (ch < 1 || ch > 6)
         return ai::TreeNodeStatus::FAILED;
-    npc.Say(channel, params[1]);
+    Game::ChatType channel = static_cast<Game::ChatType>(ch);
+    if (!npc.SayQuote(channel, quote))
+        return ai::TreeNodeStatus::FAILED;
     return ai::TreeNodeStatus::FINISHED;
 }
 

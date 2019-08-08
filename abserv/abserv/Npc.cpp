@@ -8,6 +8,7 @@
 #include "AiCharacter.h"
 #include "Random.h"
 #include "Party.h"
+#include <Mustache/mustache.hpp>
 
 namespace Game {
 
@@ -28,6 +29,7 @@ void Npc::RegisterLua(kaguya::State& state)
         .addFunction("SetBehaviour", &Npc::SetBehaviour)
         .addFunction("GetBehaviour", &Npc::GetBehaviour)
         .addFunction("Say", &Npc::Say)
+        .addFunction("SayQuote", &Npc::SayQuote)
         .addFunction("ShootAt", &Npc::ShootAt)
         .addFunction("GetGroupId", &Npc::GetGroupId)
         .addFunction("SetGroupId", &Npc::SetGroupId)
@@ -103,6 +105,8 @@ bool Npc::LoadScript(const std::string& fileName)
         functions_ |= FunctionOnTrigger;
     if (ScriptManager::IsFunction(luaState_, "onLeftArea"))
         functions_ |= FunctionOnLeftArea;
+    if (ScriptManager::IsFunction(luaState_, "onGetQuote"))
+        functions_ |= FunctionOnGetQuote;
 
     GetSkillBar()->InitAttributes();
     // Initialize resources, etc. may be overwritten in onInit() in the NPC script bellow.
@@ -229,6 +233,33 @@ void Npc::Say(ChatType channel, const std::string& message)
         // N/A
         break;
     }
+}
+
+std::string Npc::GetQuote(int index)
+{
+    if (!HaveFunction(FunctionOnGetQuote))
+        return "";
+    const char* q = (const char* )luaState_["onGetQuote"](index);
+    return q;
+}
+
+bool Npc::SayQuote(ChatType channel, int index)
+{
+    std::string quote = GetQuote(index);
+    if (quote.empty())
+        return false;
+
+    kainjow::mustache::mustache tpl{ quote };
+    kainjow::mustache::data data;
+    if (auto sel = selectedObject_.lock())
+        data.set("selected_name", sel->GetName());
+    else
+        data.set("selected_name", "");
+
+    std::string t = tpl.render(data);
+
+    Say(channel, t);
+    return true;
 }
 
 void Npc::ShootAt(const std::string& itemUuid, Actor* target)

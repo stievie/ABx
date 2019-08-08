@@ -20,6 +20,7 @@ private:
         FunctionUpdate = 1,
         FunctionOnTrigger = 1 << 1,
         FunctionOnLeftArea = 1 << 2,
+        FunctionOnGetQuote = 1 << 3
     };
 
     friend class AI::AiCharacter;
@@ -43,6 +44,7 @@ private:
     kaguya::State luaState_;
     bool luaInitialized_;
     void InitializeLua();
+    std::string GetQuote(int index);
 protected:
     void OnArrived() override;
     void OnEndUseSkill(Skill* skill) override;
@@ -105,6 +107,7 @@ public:
     void WriteSpawnData(Net::NetworkMessage& msg) override;
 
     void Say(ChatType channel, const std::string& message);
+    bool SayQuote(ChatType channel, int index);
     /// Shooting a projectile without having a weapon that can spawn projectiles
     void ShootAt(const std::string& itemUuid, Actor* target);
 

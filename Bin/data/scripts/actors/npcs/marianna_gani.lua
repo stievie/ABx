@@ -12,6 +12,10 @@ prof1Index = PROFESSIONINDEX_MONK
 prof2Index = PROFESSIONINDEX_NONE
 behavior = "marianna_gani"
 
+local quotes = {
+  "Oh {{selected_name}}, this was close!"
+}
+
 function onInit()
   self:SetSpeed(0.5)
   self:AddEffect(empty, 900000, 0)
@@ -24,6 +28,13 @@ function onInit()
   skillBar:SetAttributeValue(ATTRIB_HEALING, 12)
   skillBar:SetAttributeValue(ATTRIB_DEVINE_FAVOUR, 12)
   return true
+end
+
+function onGetQuote(index)
+  if (index < 1 or index > #quotes) then
+    return ""
+  end
+  return quotes[index]
 end
 
 function onUpdate(timeElapsed)
@@ -45,7 +56,6 @@ function onArrived()
 end
 
 function onEndUseSkill(skill)
-  self:Say(CHAT_CHANNEL_GENERAL, "Phew!")
 end
 
 function onStartUseSkill(skill)

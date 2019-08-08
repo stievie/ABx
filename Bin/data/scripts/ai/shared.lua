@@ -23,7 +23,8 @@ end
 function healAlly(parentnode)
   local parallel = parentnode:addNode("Parallel", "healally")
   parallel:setCondition("And(IsAllyHealthLow,Filter(SelectLowHealth))")
-    return parallel:addNode("HealOther", "healother")
+    parallel:addNode("HealOther", "healother")
+  return parallel
 end
 
 function attackAggro(parentnode)
