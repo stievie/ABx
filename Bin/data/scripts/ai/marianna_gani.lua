@@ -8,8 +8,9 @@ function initMariannaGani()
   local name = "marianna_gani"
   local rootNode = AI.createTree(name):createRoot("PrioritySelector", name)
   stayAlive(rootNode)
-  healAlly(rootNode)
+  local healNode = healAlly(rootNode)
+--    healNode:addNode("PrioritySelector", "saysomething"):addNode("Say{map,Phew! That was close.}", "say_stuff")
 --  rezzAlly(rootNode)
   defend(rootNode)
-  idle(rootNode)
+  idleNode = idle(rootNode)
 end

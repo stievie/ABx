@@ -2,7 +2,7 @@ function idle(parentnode)
   -- This node tries to execute all the attached children until one succeeds. This composite only
   -- fails if all children failed, too.
   local prio = parentnode:addNode("PrioritySelector", "idle")
-    prio:addNode("Idle{1000}", "idle1000")
+    return prio:addNode("Idle{1000}", "idle1000")
 end
 
 function stayAlive(parentnode)
@@ -23,7 +23,7 @@ end
 function healAlly(parentnode)
   local parallel = parentnode:addNode("Parallel", "healally")
   parallel:setCondition("And(IsAllyHealthLow,Filter(SelectLowHealth))")
-    parallel:addNode("HealOther", "healother")
+    return parallel:addNode("HealOther", "healother")
 end
 
 function attackAggro(parentnode)

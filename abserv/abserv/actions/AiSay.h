@@ -13,7 +13,8 @@ AI_TASK(Say)
     (void)deltaMillis;
     Game::Npc& npc = chr.GetNpc();
     // channel;message
-    std::vector<std::string> params = Utils::Split(_parameters, ";");
+    std::vector<std::string> params = Utils::Split(getParameters(), ",");
+//    LOG_INFO << "Params = " << getParameters() << std::endl;
     if (params.size() != 2)
         return ai::TreeNodeStatus::FAILED;
     Game::ChatType channel = Game::ChatType::None;
@@ -21,9 +22,9 @@ AI_TASK(Say)
     if (ch.compare("map") == 0)
         channel = Game::ChatType::Map;
     else if (ch.compare("party") == 0)
-        channel == Game::ChatType::Party;
+        channel = Game::ChatType::Party;
     else if (ch.compare("allies") == 0)
-        channel == Game::ChatType::Allies;
+        channel = Game::ChatType::Allies;
     // All other channels don't make sense for an NPC, so fail
     if (channel == Game::ChatType::None)
         return ai::TreeNodeStatus::FAILED;
