@@ -348,6 +348,9 @@
     <ClInclude Include="Projectile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="actions\AiSay.h">
+      <Filter>Headerdateien\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

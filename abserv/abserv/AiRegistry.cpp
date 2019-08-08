@@ -6,6 +6,7 @@
 #endif
 #include "actions/AiAttackSelection.h"
 #include "actions/AiDie.h"
+#include "actions/AiSay.h"
 #include "actions/AiGoHome.h"
 #include "actions/AiMoveTo.h"
 #include "actions/AiHealSelf.h"
@@ -35,6 +36,7 @@ void AiRegistry::Initialize()
     registerNodeFactory("GoHome", GoHome::getFactory());
     registerNodeFactory("AttackSelection", AttackSelection::getFactory());
     registerNodeFactory("Die", Die::getFactory());
+    registerNodeFactory("Say", Say::getFactory());
     registerNodeFactory("MoveTo", MoveTo::getFactory());
     registerNodeFactory("HealSelf", HealSelf::getFactory());
     registerNodeFactory("HealOther", HealOther::getFactory());

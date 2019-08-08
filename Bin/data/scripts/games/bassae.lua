@@ -1,5 +1,5 @@
 function onStart()
-  local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
+  local ped2 = self:AddNpc("/scripts/actors/npcs/marianna_gani.lua")
   if (ped2 ~= nil) then
     local x = 4.92965
     local z = 5.2049

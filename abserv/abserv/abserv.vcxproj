@@ -196,6 +196,7 @@
     <ClInclude Include="actions\AiHealSelf.h" />
     <ClInclude Include="actions\AiMoveTo.h" />
     <ClInclude Include="actions\AiResurrectSelection.h" />
+    <ClInclude Include="actions\AiSay.h" />
     <ClInclude Include="AiCharacter.h" />
     <ClInclude Include="AiLoader.h" />
     <ClInclude Include="AiRegistry.h" />

@@ -3,10 +3,12 @@
 require("data/scripts/ai/shared")
 require("data/scripts/ai/smith")
 require("data/scripts/ai/priest")
+require("data/scripts/ai/marianna_gani")
 require("data/scripts/ai/guild_lord")
 
 function init()
   initSmith()
   initPriest()
+  initMariannaGani()
   initGuildLord()
 end

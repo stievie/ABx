@@ -26,7 +26,7 @@ function onStart()
     merchant:SetHomePos({x, y, z})
     merchant:AddFriendFoe(GROUPMASK_1 | GROUPMASK_2, 0)
   end
-  local ped = self:AddNpc("/scripts/actors/npcs/pedestrian.lua")
+  local ped = self:AddNpc("/scripts/actors/npcs/marianna_gani.lua")
   if (ped ~= nil) then
     local x = 64.6874
     local z = 22.0684
@@ -36,7 +36,7 @@ function onStart()
     ped:SetHomePos({x, y, z})
     ped:AddFriendFoe(GROUPMASK_1 | GROUPMASK_2, 0)
   end
-  local ped2 = self:AddNpc("/scripts/actors/npcs/pedestrian2.lua")
+  local ped2 = self:AddNpc("/scripts/actors/npcs/dorothea_samara.lua")
   if (ped2 ~= nil) then
     local x = 2.5
     local z = 17

@@ -12,6 +12,8 @@ class Npc;
 
 enum class ChatType : uint8_t
 {
+    /// Returns nullptr
+    None = AB::GameProtocol::ChatChannelUnknown,
     /// Local map chat
     Map = AB::GameProtocol::ChatChannelGeneral,       // ID = GameID
     /// Guild messages get all guild members on all servers

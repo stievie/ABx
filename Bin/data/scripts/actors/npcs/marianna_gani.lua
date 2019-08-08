@@ -10,7 +10,7 @@ sex = SEX_FEMALE
 creatureState = CREATURESTATE_IDLE
 prof1Index = PROFESSIONINDEX_MONK
 prof2Index = PROFESSIONINDEX_NONE
-behavior = "PRIEST"
+behavior = "marianna_gani"
 
 function onInit()
   self:SetSpeed(0.5)
