@@ -36,6 +36,7 @@ bool DBGame::Load(AB::Entities::Game& game)
     game.type = static_cast<AB::Entities::GameType>(result->GetInt("type"));
     game.directory = result->GetString("directory");
     game.script = result->GetString("script_file");
+    game.queueMapUuid = result->GetString("queue_map_uuid");
     game.landing = result->GetUInt("landing") != 0;
     game.partySize = static_cast<uint8_t>(result->GetUInt("party_size"));
     game.partyCount = static_cast<uint8_t>(result->GetUInt("party_count"));

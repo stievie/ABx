@@ -1066,9 +1066,12 @@ void Player::QueueForMatch()
     msg.type_ = Net::MessageType::QueueAdd;
     auto game = GetGame();
     assert(game);
+    if (game->data_.queueMapUuid.empty() || uuids::uuid(game->data_.queueMapUuid).nil())
+        return;
+
     IO::PropWriteStream stream;
     stream.WriteString(data_.uuid);
-    stream.WriteString(game->data_.uuid);
+    stream.WriteString(game->data_.queueMapUuid);
     client->Write(msg);
 }
 

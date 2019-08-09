@@ -40,6 +40,7 @@ struct Game : Entity
         s.text1b(name, Limits::MAX_MAP_NAME);
         s.text1b(directory, Limits::MAX_FILENAME);
         s.text1b(script, Limits::MAX_FILENAME);
+        s.text1b(queueMapUuid, Limits::MAX_UUID);
         s.value1b(type);
         s.value1b(landing);
         s.value1b(partySize);
@@ -56,6 +57,7 @@ struct Game : Entity
     std::string directory;
     /// Script file
     std::string script;
+    std::string queueMapUuid;
     GameType type = GameTypeUnknown;
     bool landing = false;
     uint8_t partySize = 0;
