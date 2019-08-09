@@ -488,7 +488,7 @@ void ProtocolGame::EnterGame()
         DisconnectClient(AB::Errors::CannotEnterGame);
 }
 
-void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
+void ProtocolGame::ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid)
 {
     auto player = GetPlayer();
     if (!player)
@@ -503,11 +503,16 @@ void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string&
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
     output->AddByte(AB::GameProtocol::ChangeInstance);
-    output->AddString(ProtocolGame::serverId_);  // Server UUID
+    output->AddString(serverUuid);               // Server UUID
     output->AddString(mapUuid);                  // Map UUID
     output->AddString(instanceUuid);             // Instance UUID
     output->AddString(player->data_.uuid);       // Character UUID
     Send(output);
+}
+
+void ProtocolGame::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
+{
+    ChangeServerInstance(ProtocolGame::serverId_, mapUuid, instanceUuid);
 }
 
 }

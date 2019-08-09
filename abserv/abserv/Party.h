@@ -114,6 +114,7 @@ public:
     size_t GetPosition(Actor* actor);
     /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid);
+    void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
 
     uint32_t id_;
     AB::Entities::Party data_;

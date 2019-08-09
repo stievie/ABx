@@ -45,6 +45,7 @@ public:
         return CreateGame(mapName);
     }
     std::shared_ptr<Game> GetInstance(const std::string& instanceUuid);
+    std::shared_ptr<Game> GetOrCreateInstance(const std::string& mapUuid, const std::string& instanceUuid);
     /// Returns the game with the mapName. If no such game exists it creates one.
     std::shared_ptr<Game> GetGame(const std::string& mapName, bool canCreate = false);
     std::shared_ptr<Game> Get(uint32_t gameId);

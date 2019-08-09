@@ -52,6 +52,7 @@ public:
     void EnterGame();
     /// Tells the client to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
+    void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
     void WriteToOutput(const NetworkMessage& message);
 private:
     template <typename Callable, typename... Args>

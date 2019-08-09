@@ -143,6 +143,7 @@ void MessageSession::HandleQueueTeamEnterMessage(const Net::MessageMsg& msg)
 {
     std::string queueUuid;
     std::string mapUuid;
+    std::string instanceUuid;
     std::string hostingServer;
     IO::PropReadStream stream;
     if (!msg.GetPropStream(stream))
@@ -153,7 +154,26 @@ void MessageSession::HandleQueueTeamEnterMessage(const Net::MessageMsg& msg)
         return;
     if (!stream.ReadString(mapUuid))
         return;
+    if (!stream.ReadString(instanceUuid))
+        return;
 
+    Net::MessageMsg createInstMsg;
+    createInstMsg.type_ = Net::MessageType::CreateGameInstance;
+    IO::PropWriteStream createInstStream;
+    createInstStream.WriteString(hostingServer);
+    createInstStream.WriteString(mapUuid);
+    createInstStream.WriteString(instanceUuid);
+
+    // Send the hosting server a message to create the instance
+    auto* server = GetServer(hostingServer);
+    if (!server)
+    {
+        LOG_ERROR << "Server not found " << hostingServer << std::endl;
+        return;
+    }
+    server->Deliver(createInstMsg);
+
+    // This message must gell all server that have members. The hosting server is responsible to create the instance
     uint8_t numTeams{ 0 };
     stream.Read<uint8_t>(numTeams);
     for (uint8_t t = 0; t < numTeams; ++t)

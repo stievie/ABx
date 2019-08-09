@@ -336,6 +336,15 @@ size_t Party::GetPosition(Actor* actor)
     return 0;
 }
 
+void Party::ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid)
+{
+    VisitMembers([&](Player& player)
+    {
+        player.ChangeServerInstance(serverUuid, mapUuid, instanceUuid);
+        return Iteration::Continue;
+    });
+}
+
 void Party::ChangeInstance(const std::string& mapUuid)
 {
     // Get or create a game. The client gets an instance UUID to change to.

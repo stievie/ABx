@@ -31,6 +31,7 @@ private:
     void PrintServerInfo();
     void ShowHelp();
     void HandleMessage(const Net::MessageMsg& msg);
+    void HandleCreateInstanceMessage(const Net::MessageMsg& msg);
     unsigned GetAvgLoad() const
     {
         if (loads_.empty())

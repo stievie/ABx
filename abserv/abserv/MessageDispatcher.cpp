@@ -172,6 +172,50 @@ void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)
     GetSubsystem<Game::PlayerManager>()->BroadcastNetMessage(*nmsg);
 }
 
+void MessageDispatcher::DispatchTeamsEnterMatch(const Net::MessageMsg& msg)
+{
+    // If it's a party only the leader gets informed of this. So we just can get the
+    // party and call Party::ChangeServerInstance()
+
+    IO::PropReadStream prop;
+    if (!msg.GetPropStream(prop))
+        return;
+
+    std::vector<std::string> players;
+    std::string queueUuid;
+    prop.ReadString(queueUuid);
+    std::string serverUuid;
+    prop.ReadString(serverUuid);
+    std::string mapUuid;
+    prop.ReadString(mapUuid);
+    std::string instanceUuid;
+    prop.ReadString(instanceUuid);
+    uint8_t teamSize{ 0 };
+    prop.Read<uint8_t>(teamSize);
+    for (uint8_t i = 0; i < teamSize; ++i)
+    {
+        uint8_t memberCount{ 0 };
+        prop.Read<uint8_t>(memberCount);
+        for (uint8_t j = 0; j < memberCount; ++j)
+        {
+            std::string playerUuid;
+            prop.ReadString(playerUuid);
+            players.push_back(playerUuid);
+        }
+    }
+
+    auto* playerMngr = GetSubsystem<Game::PlayerManager>();
+    for (const auto& player : players)
+    {
+        // Get player if s/he is on this server
+        auto pPlayer = playerMngr->GetPlayerByUuid(player);
+        if (pPlayer)
+        {
+            pPlayer->GetParty()->ChangeServerInstance(serverUuid, mapUuid, instanceUuid);
+        }
+    }
+}
+
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -199,9 +243,7 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
         DispatchPlayerLoggedOut(msg);
         break;
     case Net::MessageType::TeamsEnterMatch:
-        // If it's a party the leader gets informed of this.
-        // The game server is sesponsible to inform all party memebers
-        // TODO:
+        DispatchTeamsEnterMatch(msg);
         break;
     case Net::MessageType::PlayerAddedToQueue:
     case Net::MessageType::PlayerRemovedFromQueue:

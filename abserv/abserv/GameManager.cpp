@@ -64,6 +64,19 @@ void GameManager::DeleteGameTask(uint32_t gameId)
     }
 }
 
+std::shared_ptr<Game> GameManager::GetOrCreateInstance(const std::string& mapUuid, const std::string& instanceUuid)
+{
+    auto result = GetInstance(instanceUuid);
+    if (result)
+        return result;
+    result = CreateGame(mapUuid);
+    if (result)
+    {
+        result->instanceData_.uuid = instanceUuid;
+    }
+    return result;
+}
+
 std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
 {
     auto it = std::find_if(games_.begin(), games_.end(), [&](auto const& current)

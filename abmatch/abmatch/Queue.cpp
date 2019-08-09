@@ -159,6 +159,11 @@ bool Queue::SendEnterMessage(const MatchTeams& teams)
     stream.WriteString(uuid_);
     stream.WriteString(server);
     stream.WriteString(mapUuid_);
+    // This will be the instance UUID so that all teams enter the same game instance
+    const uuids::uuid guid = uuids::uuid_system_generator{}();
+    const std::string instanceUuid = guid.to_string();
+    stream.WriteString(instanceUuid);
+
     stream.Write<uint8_t>(static_cast<uint8_t>(teams.size()));
     for (const auto& team : teams)
     {
@@ -279,16 +284,24 @@ bool Queue::MakeTeams(MatchTeams& teams)
     return MakePartyTeams(teams);
 }
 
-void Queue::Update(uint32_t)
+void Queue::Update(uint32_t, const std::function<void(const std::string& playerUuid)>& callback)
 {
-    if (EnoughPlayers())
+    // Create as many matches as possible.
+    while (EnoughPlayers())
     {
         Utils::Transaction transaction(entries_);
         MatchTeams teams;
         if (MakeTeams(teams))
         {
             if (SendEnterMessage(teams))
+            {
                 transaction.Commit();
+                for (const auto& team : teams)
+                {
+                    for (const auto& member : team.members)
+                        callback(member);
+                }
+            }
         }
     }
 }

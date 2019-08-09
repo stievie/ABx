@@ -111,6 +111,7 @@ public:
     void TriggerDialog(uint32_t dialogIndex);
     void ChangeMap(const std::string mapUuid);
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
+    void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
     void UpdateMailBox();
     void GetMailHeaders();
     void SendMail(const std::string recipient, const std::string subject, const std::string body);

@@ -1046,6 +1046,15 @@ void Player::ChangeMap(const std::string mapUuid)
         party->ChangeInstance(mapUuid);
 }
 
+void Player::ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid)
+{
+    resigned_ = false;
+    if (client_)
+        client_->ChangeServerInstance(serverUuid, mapUuid, instanceUuid);
+    else
+        LOG_ERROR << "client_ = null" << std::endl;
+}
+
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
     resigned_ = false;

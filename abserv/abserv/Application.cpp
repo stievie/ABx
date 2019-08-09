@@ -193,6 +193,33 @@ void Application::SpawnServer()
 #endif
 }
 
+void Application::HandleCreateInstanceMessage(const Net::MessageMsg& msg)
+{
+    IO::PropReadStream createInstStream;
+    if (!msg.GetPropStream(createInstStream))
+    {
+        return;
+    }
+    std::string hostingServer;
+    if (!createInstStream.ReadString(hostingServer))
+        return;
+    // Not we should host the game? Shouldn't happen this message is only sent to us
+    if (hostingServer.compare(GetServerId()) != 0)
+        return;
+    std::string mapUuid;
+    if (!createInstStream.ReadString(mapUuid))
+        return;
+    std::string instanceUuid;
+    if (!createInstStream.ReadString(instanceUuid))
+        return;
+    auto* gameMan = GetSubsystem<Game::GameManager>();
+    auto inst = gameMan->GetOrCreateInstance(mapUuid, instanceUuid);
+    if (!inst)
+    {
+        LOG_ERROR << "Unable to create instance. Map UUID " << mapUuid << ", instance UUID " << instanceUuid << std::endl;
+    }
+}
+
 void Application::HandleMessage(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -245,6 +272,9 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
         }
         break;
     }
+    case Net::MessageType::CreateGameInstance:
+        HandleCreateInstanceMessage(msg);
+        break;
     default:
         // All other message are delivered by the message dispatcher
         msgDispatcher_->Dispatch(msg);

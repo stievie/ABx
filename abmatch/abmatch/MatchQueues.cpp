@@ -3,6 +3,7 @@
 
 void MatchQueues::Add(const std::string& mapUuid, const std::string& playerUuid)
 {
+    std::lock_guard<std::mutex> lock(lock_);
     Queue* queue = GetQueue(mapUuid);
     if (!queue)
     {
@@ -10,19 +11,26 @@ void MatchQueues::Add(const std::string& mapUuid, const std::string& playerUuid)
         return;
     }
     queue->Add(playerUuid);
-    parties_.emplace(playerUuid, mapUuid);
+    players_.emplace(playerUuid, mapUuid);
 }
 
 void MatchQueues::Remove(const std::string& playerUuid)
 {
-    auto it = parties_.find(playerUuid);
-    if (it == parties_.end())
+    std::lock_guard<std::mutex> lock(lock_);
+    auto it = players_.find(playerUuid);
+    if (it == players_.end())
+    {
+        LOG_WARNING << "Player not found " << playerUuid << std::endl;
         return;
+    }
     Queue* queue = GetQueue((*it).second);
     if (!queue)
+    {
+        LOG_WARNING << "No Queue for map " << (*it).second << " found" << std::endl;
         return;
+    }
     queue->Remove(playerUuid);
-    parties_.erase(it);
+    players_.erase(it);
 }
 
 Queue* MatchQueues::GetQueue(const std::string& mapUuid)
@@ -44,8 +52,23 @@ Queue* MatchQueues::GetQueue(const std::string& mapUuid)
 
 void MatchQueues::Update(uint32_t timeElapsed)
 {
+    std::lock_guard<std::mutex> lock(lock_);
+    // Delete empty queues
+    auto i = queues_.begin();
+    while ((i = std::find_if(i, queues_.end(), [](const auto& current) -> bool
+    {
+        return current.second->Count() == 0;
+    })) != queues_.end())
+        queues_.erase(i++);
+
+    // Update the rest
     for (const auto& q : queues_)
     {
-        q.second->Update(timeElapsed);
+        q.second->Update(timeElapsed, [this](const std::string& playerUuid) {
+            // These players enter a match now, we should remove them from players_
+            auto it = players_.find(playerUuid);
+            if (it != players_.end())
+                players_.erase(it);
+        });
     }
 }
