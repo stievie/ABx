@@ -156,6 +156,9 @@ void Application::HandleQueueAdd(const Net::MessageMsg& msg)
     prop.ReadString(playerUuid);
     std::string mapUuid;
     prop.ReadString(mapUuid);
+#ifdef DEBUG_MATCH
+    LOG_DEBUG << "Player " << playerUuid << " queuing for " << mapUuid << std::endl;
+#endif
     GetSubsystem<MatchQueues>()->Add(mapUuid, playerUuid);
 }
 
@@ -169,6 +172,9 @@ void Application::HandleQueueRemove(const Net::MessageMsg& msg)
     }
     std::string playerUuid;
     prop.ReadString(playerUuid);
+#ifdef DEBUG_MATCH
+    LOG_DEBUG << "Player " << playerUuid << " removing from queue" << std::endl;
+#endif
     GetSubsystem<MatchQueues>()->Remove(playerUuid);
 }
 

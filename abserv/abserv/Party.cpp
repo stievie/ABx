@@ -345,6 +345,28 @@ void Party::ChangeServerInstance(const std::string& serverUuid, const std::strin
     });
 }
 
+void Party::NotifyPlayersQueued()
+{
+    assert(GetLeader());
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerQueued);
+    nmsg->AddString(GetLeader()->GetName());
+    nmsg->AddString("");
+    WriteToMembers(*nmsg);
+}
+
+void Party::NotifyPlayersUnqueued()
+{
+    assert(GetLeader());
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerUnqueued);
+    nmsg->AddString(GetLeader()->GetName());
+    nmsg->AddString("");
+    WriteToMembers(*nmsg);
+}
+
 void Party::ChangeInstance(const std::string& mapUuid)
 {
     // Get or create a game. The client gets an instance UUID to change to.

@@ -315,6 +315,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerInput(Game::InputType::ClickObject, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeQueue:
+        AddPlayerTask(&Game::Player::QueueForMatch);
+        break;
+    case AB::GameProtocol::PacketTypeUnqueue:
+        AddPlayerTask(&Game::Player::UnqueueForMatch);
+        break;
     case AB::GameProtocol::PacketTypeCommand:
     {
         Utils::VariantMap data;

@@ -1055,6 +1055,37 @@ void Player::ChangeServerInstance(const std::string& serverUuid, const std::stri
         LOG_ERROR << "client_ = null" << std::endl;
 }
 
+void Player::QueueForMatch()
+{
+    assert(GetParty());
+    if (!GetParty()->IsLeader(this))
+        return;
+
+    auto* client = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::QueueAdd;
+    auto game = GetGame();
+    assert(game);
+    IO::PropWriteStream stream;
+    stream.WriteString(data_.uuid);
+    stream.WriteString(game->data_.uuid);
+    client->Write(msg);
+}
+
+void Player::UnqueueForMatch()
+{
+    assert(GetParty());
+    if (!GetParty()->IsLeader(this))
+        return;
+
+    auto* client = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::QueueRemove;
+    IO::PropWriteStream stream;
+    stream.WriteString(data_.uuid);
+    client->Write(msg);
+}
+
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)
 {
     resigned_ = false;

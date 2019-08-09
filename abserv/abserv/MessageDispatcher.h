@@ -11,6 +11,8 @@ private:
     void DispatchPlayerLoggedOut(const Net::MessageMsg& msg);
     void DispatchServerChange(const Net::MessageMsg& msg);
     void DispatchTeamsEnterMatch(const Net::MessageMsg& msg);
+    void DispatchQueueAdded(const Net::MessageMsg& msg);
+    void DispatchQueueRemoved(const Net::MessageMsg& msg);
 public:
     MessageDispatcher() = default;
     ~MessageDispatcher() = default;

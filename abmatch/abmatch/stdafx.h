@@ -36,3 +36,4 @@
 
 #define WRITE_MINIBUMP
 #define PROFILING
+#define DEBUG_MATCH

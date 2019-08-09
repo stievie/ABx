@@ -216,6 +216,41 @@ void MessageDispatcher::DispatchTeamsEnterMatch(const Net::MessageMsg& msg)
     }
 }
 
+void MessageDispatcher::DispatchQueueAdded(const Net::MessageMsg& msg)
+{
+    // Notify players they were added to the queue
+    // If it's a party the leader gets informed of this.
+    // The game server is sesponsible to inform all party memebers
+
+    IO::PropReadStream prop;
+    if (!msg.GetPropStream(prop))
+        return;
+
+    std::string playerUuid;
+    prop.ReadString(playerUuid);
+
+    auto* playerMngr = GetSubsystem<Game::PlayerManager>();
+    auto pPlayer = playerMngr->GetPlayerByUuid(playerUuid);
+    if (pPlayer)
+        pPlayer->GetParty()->NotifyPlayersQueued();
+}
+
+void MessageDispatcher::DispatchQueueRemoved(const Net::MessageMsg& msg)
+{
+    // Notify players they were removed to the queue
+    IO::PropReadStream prop;
+    if (!msg.GetPropStream(prop))
+        return;
+
+    std::string playerUuid;
+    prop.ReadString(playerUuid);
+
+    auto* playerMngr = GetSubsystem<Game::PlayerManager>();
+    auto pPlayer = playerMngr->GetPlayerByUuid(playerUuid);
+    if (pPlayer)
+        pPlayer->GetParty()->NotifyPlayersUnqueued();
+}
+
 void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
 {
     switch (msg.type_)
@@ -243,13 +278,14 @@ void MessageDispatcher::Dispatch(const Net::MessageMsg& msg)
         DispatchPlayerLoggedOut(msg);
         break;
     case Net::MessageType::TeamsEnterMatch:
+        // Is called when the game was started and the players should enter it
         DispatchTeamsEnterMatch(msg);
         break;
     case Net::MessageType::PlayerAddedToQueue:
+        DispatchQueueAdded(msg);
+        break;
     case Net::MessageType::PlayerRemovedFromQueue:
-        // If it's a party the leader gets informed of this.
-        // The game server is sesponsible to inform all party memebers
-        // TODO:
+        DispatchQueueRemoved(msg);
         break;
     default:
         // Not handled here

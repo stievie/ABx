@@ -125,7 +125,7 @@ Logger& Logger::Profile()
 }
 #endif
 
-#if defined(_DEBUG)
+#if defined(HAVE_LOG_DEBUG)
 Logger& Logger::Debug()
 {
     static Color::Modifier grey(Color::FG_LIGHTGREY);

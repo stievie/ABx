@@ -170,6 +170,8 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailDeleted,
     ServerMessageTypeServerId,
     ServerMessageTypePlayerResigned,
+    ServerMessageTypePlayerQueued,
+    ServerMessageTypePlayerUnqueued,
 
     ServerMessageTypeUnknownCommand = 0xff
 };
@@ -354,6 +356,9 @@ enum GamePacketTypes : uint8_t
     PacketTypeClickObject,
     // Command
     PacketTypeCommand,
+    // Queue
+    PacketTypeQueue,
+    PacketTypeUnqueue,
 
     // Party
     PacketTypePartyInvitePlayer,

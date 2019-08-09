@@ -111,7 +111,7 @@ public:
         Profile() << msg << std::endl;
     }
 #endif
-#if defined(_DEBUG)
+#if defined(HAVE_LOG_DEBUG)
     void AddDebug(const std::string& msg)
     {
         Debug() << msg << std::endl;
@@ -123,7 +123,7 @@ public:
 #if defined(PROFILING)
     Logger& Profile();
 #endif
-#if defined(_DEBUG)
+#if defined(HAVE_LOG_DEBUG)
     Logger& Debug();
 #endif
     static int PrintF(const char *__restrict __format, ...);
@@ -150,7 +150,9 @@ public:
 #define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << ": ")
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
+#elif !defined(PROFILING)
+#   define PROFILING
 #endif
-#if defined(_DEBUG)
+#if defined(HAVE_LOG_DEBUG)
 #   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << ": ")
 #endif

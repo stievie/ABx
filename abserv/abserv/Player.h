@@ -112,6 +112,8 @@ public:
     void ChangeMap(const std::string mapUuid);
     void ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid);
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
+    void QueueForMatch();
+    void UnqueueForMatch();
     void UpdateMailBox();
     void GetMailHeaders();
     void SendMail(const std::string recipient, const std::string subject, const std::string body);

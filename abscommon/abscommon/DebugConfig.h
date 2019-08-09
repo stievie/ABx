@@ -9,6 +9,7 @@
 //#   define DEBUG_SQL
 //#   define DEBUG_MATH
 #   define DEBUG_GAME
+#   define DEBUG_MATCH
 #   ifdef DEBUG_GAME
 //#       define DEBUG_NAVIGATION
 #       define DEBUG_PROTOCOL
@@ -18,6 +19,7 @@
 #   endif
 #else
 #endif
+#define HAVE_LOG_DEBUG
 
 #if !defined(NPROFILING)
 #   define PROFILING

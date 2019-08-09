@@ -115,6 +115,8 @@ public:
     /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid);
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
+    void NotifyPlayersQueued();
+    void NotifyPlayersUnqueued();
 
     uint32_t id_;
     AB::Entities::Party data_;
