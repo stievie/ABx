@@ -150,8 +150,8 @@ public:
 #define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << ": ")
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
-#elif !defined(PROFILING)
-#   define PROFILING
+#elif !defined(LOG_PROFILE)
+#   define LOG_PROFILE
 #endif
 #if defined(HAVE_LOG_DEBUG)
 #   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << ": ")
