@@ -659,7 +659,7 @@ void Application::GetHandlerGames(std::shared_ptr<HttpsServer::Response> respons
         gNd.append_attribute("map_coord_y").set_value(g.mapCoordY);
         // The client should know about that to show/hide the 'Enter' button
         gNd.append_attribute("queue_map").set_value(g.queueMapUuid.c_str());
-        // The rest is not ineresting for the player, so skip it
+        // The rest is not interesting for the player, so skip it
     }
 
     std::stringstream stream;
