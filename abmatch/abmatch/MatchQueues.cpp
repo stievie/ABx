@@ -41,8 +41,9 @@ Queue* MatchQueues::GetQueue(const std::string& mapUuid)
         auto queue = std::make_unique<Queue>(mapUuid);
         if (queue->Load())
         {
-            queues_.emplace(mapUuid, std::move(queue));
-            it = queues_.find(mapUuid);
+            auto res = queues_.emplace(mapUuid, std::move(queue));
+            if (res.second)
+                it = res.first;
         }
     }
     if (it == queues_.end())
