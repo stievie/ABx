@@ -7,6 +7,7 @@
 #include "DataClient.h"
 #include "Mechanic.h"
 #include "Iteration.h"
+#include "Variant.h"
 
 namespace Game {
 
@@ -25,6 +26,7 @@ private:
     uint32_t maxMembers_{ 1 };
     int64_t defeatedTick_{ 0 };
     bool defeated_{ false };
+    Utils::VariantMap variables_;
     template<typename E>
     bool UpdateEntity(const E& e)
     {
@@ -34,8 +36,13 @@ private:
     /// 1-base position
     size_t GetDataPos(Player* player);
     Player* _LuaGetLeader();
+    std::string _LuaGetVarString(const std::string& name);
+    void _LuaSetVarString(const std::string& name, const std::string& value);
+    float _LuaGetVarNumber(const std::string& name);
+    void _LuaSetVarNumber(const std::string& name, float value);
 public:
     static Utils::IdGenerator<uint32_t> partyIds_;
+    /// Returns a new Party/Group ID
     static uint32_t GetNewId()
     {
         return partyIds_.Next();
@@ -69,7 +76,7 @@ public:
     {
         return members_;
     }
-    /// Iteration callback(Player* player)
+    /// Iteration callback(Player& player)
     template<typename Callback>
     inline void VisitMembers(Callback&& callback) const
     {
@@ -117,6 +124,9 @@ public:
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);
     void NotifyPlayersQueued();
     void NotifyPlayersUnqueued();
+
+    const Utils::Variant& GetVar(const std::string& name) const;
+    void SetVar(const std::string& name, const Utils::Variant& val);
 
     uint32_t id_;
     AB::Entities::Party data_;

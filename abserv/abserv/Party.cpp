@@ -22,6 +22,10 @@ void Party::RegisterLua(kaguya::State& state)
         .addFunction("KillAll", &Party::KillAll)
         .addFunction("GetRandomPlayer", &Party::GetRandomPlayer)
         .addFunction("GetRandomPlayerInRange", &Party::GetRandomPlayerInRange)
+        .addFunction("GetVarString", &Party::_LuaGetVarString)
+        .addFunction("SetVarString", &Party::_LuaSetVarString)
+        .addFunction("GetVarNumber", &Party::_LuaGetVarNumber)
+        .addFunction("SetVarNumber", &Party::_LuaSetVarNumber)
     );
 }
 
@@ -61,6 +65,26 @@ Player* Party::_LuaGetLeader()
 {
     auto leader = GetLeader();
     return leader ? leader.get() : nullptr;
+}
+
+std::string Party::_LuaGetVarString(const std::string& name)
+{
+    return GetVar(name).GetString();
+}
+
+void Party::_LuaSetVarString(const std::string& name, const std::string& value)
+{
+    SetVar(name, Utils::Variant(value));
+}
+
+float Party::_LuaGetVarNumber(const std::string& name)
+{
+    return GetVar(name).GetFloat();
+}
+
+void Party::_LuaSetVarNumber(const std::string& name, float value)
+{
+    SetVar(name, Utils::Variant(value));
 }
 
 bool Party::Add(std::shared_ptr<Player> player)
@@ -365,6 +389,19 @@ void Party::NotifyPlayersUnqueued()
     nmsg->AddString(GetLeader()->GetName());
     nmsg->AddString("");
     WriteToMembers(*nmsg);
+}
+
+const Utils::Variant& Party::GetVar(const std::string& name) const
+{
+    auto it = variables_.find(Utils::StringHashRt(name.c_str()));
+    if (it != variables_.end())
+        return (*it).second;
+    return Utils::Variant::Empty;
+}
+
+void Party::SetVar(const std::string& name, const Utils::Variant& val)
+{
+    variables_[Utils::StringHashRt(name.c_str())] = val;
 }
 
 void Party::ChangeInstance(const std::string& mapUuid)
