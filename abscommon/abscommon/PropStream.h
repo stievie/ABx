@@ -2,6 +2,8 @@
 
 #include <limits>
 #include <iterator>
+#include <cstring>
+#include <vector>
 
 namespace IO {
 
@@ -22,7 +24,7 @@ public:
         p_ = p;
         end_ = p + size;
     }
-    size_t GetSize() const { return end_ - p_; }
+    size_t GetSize() const { return static_cast<size_t>(end_ - p_); }
     template <typename T>
     bool Read(T& r)
     {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <kaguya/kaguya.hpp>
 #include "PropStream.h"
 #include <AB/Entities/Effect.h>
 #include <AB/Entities/Skill.h>

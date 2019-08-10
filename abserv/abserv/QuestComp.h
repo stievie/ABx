@@ -1,6 +1,12 @@
 #pragma once
 
+#include <memory>
+#include <vector>
 #include "Quest.h"
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

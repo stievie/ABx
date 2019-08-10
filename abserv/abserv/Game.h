@@ -1,5 +1,8 @@
 #pragma once
 
+#include <mutex>
+#include <atomic>
+#include "Config.h"
 #include "Map.h"
 #include "GameObject.h"
 #include "NavigationMesh.h"

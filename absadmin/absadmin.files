@@ -42,6 +42,7 @@ absadmin/ProfileResource.cpp
 absadmin/ProfileResource.h
 absadmin/Resource.cpp
 absadmin/Resource.h
+absadmin/Servers.h
 absadmin/ServiceResource.cpp
 absadmin/ServiceResource.h
 absadmin/ServicesJsonResource.cpp

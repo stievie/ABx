@@ -3,6 +3,7 @@
 #include "Cookie.h"
 #include "Sessions.h"
 #include <AB/Entities/Account.h>
+#include "Servers.h"
 
 namespace Resources {
 

@@ -1,12 +1,14 @@
 #pragma once
 
+#include <algorithm>
+
 namespace Math {
 
 template<typename T>
 class Rect
 {
 public:
-    Rect() {};
+    Rect() {}
     Rect(T left, T top, T right, T bottom) :
         left_(left),
         top_(top),
@@ -57,7 +59,7 @@ public:
     {
         left_ -= x;
         top_ -= y;
-        right += x;
+        right_ += x;
         bottom_ += y;
     }
     void Offset(T x, T y)

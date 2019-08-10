@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Asset.h"
 #include "Shape.h"
 #include "BoundingBox.h"

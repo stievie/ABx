@@ -3,4 +3,6 @@
 
 namespace IO {
 
+Asset::~Asset() = default;
+
 }

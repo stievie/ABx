@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Asset.h"
 #include "Vector3.h"
 #include "HeightMap.h"

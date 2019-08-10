@@ -1,6 +1,13 @@
 #pragma once
 
+#include <stdint.h>
+#include <vector>
+#include <memory>
 #include "Damage.h"
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

@@ -4,6 +4,8 @@
 
 namespace Math {
 
+OctreeQuery::~OctreeQuery() = default;
+
 Intersection PointOctreeQuery::TestOctant(const BoundingBox& box, bool inside)
 {
     if (inside)

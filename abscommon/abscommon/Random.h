@@ -37,14 +37,14 @@ public:
     template <typename T>
     T Get(T max)
     {
-        return static_cast<T>(GetFloat() * (float)max);
+        return static_cast<T>(GetFloat() * static_cast<float>(max));
     }
     /// Get value from min..max
     template <typename T>
     T Get(T min, T max)
     {
         assert(max > min);
-        return static_cast<T>(GetFloat() * (float)(max - min)) + min;
+        return static_cast<T>(GetFloat() * static_cast<float>(max - min)) + min;
     }
 };
 

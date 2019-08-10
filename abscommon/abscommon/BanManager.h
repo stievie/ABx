@@ -3,6 +3,7 @@
 #include <AB/Entities/Ban.h>
 #include <map>
 #include <uuid.h>
+#include <mutex>
 
 namespace Auth {
 
@@ -46,9 +47,9 @@ public:
 
     bool AcceptConnection(uint32_t clientIP);
     /// mask = network mask
-    bool IsIpBanned(uint32_t clientIP, uint32_t mask = 0xFFFFFFFF);
+    bool IsIpBanned(uint32_t clientIP, uint32_t mask = 0xFFFFFFFF) const;
     /// May happen when there are too many connections from this IP
-    bool IsIpDisabled(uint32_t clientIP);
+    bool IsIpDisabled(uint32_t clientIP) const;
     bool IsAccountBanned(const uuids::uuid& accountUuid);
     void AddLoginAttempt(uint32_t clientIP, bool success);
     bool AddIpBan(uint32_t ip, uint32_t mask, int32_t expires,

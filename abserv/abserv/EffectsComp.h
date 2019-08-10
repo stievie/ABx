@@ -3,6 +3,10 @@
 #include "Effect.h"
 #include "Damage.h"
 
+namespace Net {
+class NetworkMessage;
+}
+
 namespace Game {
 
 class Actor;

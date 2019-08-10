@@ -1,5 +1,8 @@
 #pragma once
 
+#include <map>
+#include <unordered_map>
+#include <memory>
 #include "Asset.h"
 #include "IOAsset.h"
 #include "Logger.h"

@@ -3,6 +3,8 @@
 #include "NetworkMessage.h"
 #include <unordered_set>
 #include <list>
+#include <memory>
+#include <asio.hpp>
 
 namespace Net {
 

@@ -14,6 +14,8 @@
 #include <uuid.h>
 #include "DataKey.h"
 #include "DataCodes.h"
+#include <mutex>
+#include <asio.hpp>
 
 namespace IO {
 

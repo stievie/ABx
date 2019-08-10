@@ -3,6 +3,9 @@
 #include "Task.h"
 #include <set>
 #include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
 #include "IdGenerator.h"
 
 namespace Asynch {

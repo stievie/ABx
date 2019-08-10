@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <kaguya/kaguya.hpp>
 #include <AB/Entities/Item.h>
 #include <AB/Entities/ConcreteItem.h>
 #include "Script.h"

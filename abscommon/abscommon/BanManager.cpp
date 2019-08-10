@@ -52,7 +52,7 @@ bool BanManager::AcceptConnection(uint32_t clientIP)
     return true;
 }
 
-bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
+bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */) const
 {
     if (clientIP == 0)
         return false;
@@ -76,7 +76,7 @@ bool BanManager::IsIpBanned(uint32_t clientIP, uint32_t mask /* = 0xFFFFFFFF */)
     return (_ban.expires <= 0) || (_ban.expires >= Utils::Tick() / 1000);
 }
 
-bool BanManager::IsIpDisabled(uint32_t clientIP)
+bool BanManager::IsIpDisabled(uint32_t clientIP) const
 {
     if (clientIP == 0)
         return false;
@@ -84,7 +84,7 @@ bool BanManager::IsIpDisabled(uint32_t clientIP)
     if (BanManager::LoginTries == 0)
         return false;
 
-    std::map<uint32_t, LoginBlock>::iterator it = ipLogins_.find(clientIP);
+    const auto it = ipLogins_.find(clientIP);
     if (it == ipLogins_.end())
         return false;
 

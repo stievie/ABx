@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <DetourNavMesh.h>
 #include <DetourNavMeshQuery.h>
 #include "Asset.h"

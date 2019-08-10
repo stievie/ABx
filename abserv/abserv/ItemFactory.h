@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include "Item.h"
 #include "UuidUtils.h"
 #include "Mechanic.h"

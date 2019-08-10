@@ -134,7 +134,7 @@ void GameObject::Update(uint32_t timeElapsed, Net::NetworkMessage&)
     }
 }
 
-bool GameObject::Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
+bool GameObject::Collides(const GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const
 {
     if (!collisionShape_ || !other || !other->GetCollisionShape())
         return false;

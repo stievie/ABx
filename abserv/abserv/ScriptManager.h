@@ -1,5 +1,7 @@
 #pragma once
 
+#include <kaguya/kaguya.hpp>
+
 namespace Game {
 
 class ScriptManager

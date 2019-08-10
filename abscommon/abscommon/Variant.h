@@ -56,7 +56,7 @@ public:
     Variant(const std::string& value) : type_(VAR_STRING), value_{}, stringValue_(value) {}
     Variant(const char* value) : type_(VAR_STRING), value_{}, stringValue_(value) {}
 
-    ~Variant() {};
+    ~Variant() {}
 
     VariantType GetType() const { return type_; }
     void SetType(VariantType value) { type_ = value; }
@@ -77,7 +77,7 @@ public:
     Variant& operator =(unsigned other)
     {
         SetType(VAR_INT);
-        value_.intValue = (int)other;
+        value_.intValue = static_cast<int>(other);
         return *this;
     }
     Variant& operator =(bool other)
@@ -101,7 +101,7 @@ public:
     Variant& operator =(unsigned long long other)
     {
         SetType(VAR_INT64);
-        value_.int64Value = (long long)other;
+        value_.int64Value = static_cast<long long>(other);
         return *this;
     }
     Variant& operator =(const std::string& other)

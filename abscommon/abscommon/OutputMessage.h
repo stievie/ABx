@@ -20,7 +20,7 @@ private:
     template <typename T>
     inline void AddHeader(T add)
     {
-        if ((int32_t)outputBufferStart_ < (int32_t)sizeof(T))
+        if (static_cast<int32_t>(outputBufferStart_) < static_cast<int32_t>(sizeof(T)))
         {
             LOG_ERROR << "outputBufferStart_(" << outputBufferStart_ << ") < " <<
                 sizeof(T) << std::endl;

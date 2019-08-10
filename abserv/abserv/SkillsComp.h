@@ -1,7 +1,12 @@
 #pragma once
 
+#include <memory>
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Skill.h>
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

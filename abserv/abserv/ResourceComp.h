@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include "NetworkMessage.h"
 #include "MathUtils.h"
 

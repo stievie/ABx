@@ -1,5 +1,12 @@
 #pragma once
 
+#include <stdint.h>
+#include <vector>
+
+namespace Net {
+class NetworkMessage;
+}
+
 namespace Game {
 
 class Actor;

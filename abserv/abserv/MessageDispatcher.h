@@ -1,5 +1,9 @@
 #pragma once
 
+namespace Net {
+class MessageMsg;
+}
+
 class MessageDispatcher
 {
 private:

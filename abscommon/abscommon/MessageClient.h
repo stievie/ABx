@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+#include <asio.hpp>
 #include "MessageMsg.h"
 #include "Logger.h"
 

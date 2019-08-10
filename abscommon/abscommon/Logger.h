@@ -1,6 +1,8 @@
 #pragma once
 
 #include <fstream>
+#include <memory>
+#include <iostream>
 #include <chrono>
 #include <ctime>
 #include "Utils.h"

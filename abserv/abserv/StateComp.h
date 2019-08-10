@@ -3,6 +3,10 @@
 #include <AB/ProtocolCodes.h>
 #include "Utils.h"
 
+namespace Net {
+class NetworkMessage;
+}
+
 namespace Game {
 
 class GameObject;

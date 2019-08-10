@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Vector3.h"
 
 namespace Game {

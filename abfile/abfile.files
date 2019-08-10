@@ -1,5 +1,6 @@
 abfile/Application.cpp
 abfile/Application.h
+abfile/Servers.h
 abfile/Version.h
 abfile/main.cpp
 abfile/stdafx.cpp

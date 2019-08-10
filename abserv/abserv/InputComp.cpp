@@ -2,6 +2,7 @@
 #include "InputComp.h"
 #include "Actor.h"
 #include "Game.h"
+#include "NetworkMessage.h"
 
 namespace Game {
 namespace Components {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <kaguya/kaguya.hpp>
 #include "NetworkMessage.h"
 #include "IdGenerator.h"
 #include <AB/Entities/Party.h>
@@ -88,9 +89,9 @@ public:
         }
     }
     bool IsFull() const { return static_cast<uint32_t>(members_.size()) >= maxMembers_; }
-    bool IsMember(Player* player) const;
-    bool IsInvited(Player* player) const;
-    bool IsLeader(Player* player) const;
+    bool IsMember(const Player* player) const;
+    bool IsInvited(const Player* player) const;
+    bool IsLeader(const Player* player) const;
     std::shared_ptr<Player> GetLeader() const
     {
         if (members_.size() == 0)
@@ -110,7 +111,7 @@ public:
     }
     /// Return a random Player of this Party
     Player* GetRandomPlayer() const;
-    Player* GetRandomPlayerInRange(Actor* actor, Ranges range) const;
+    Player* GetRandomPlayerInRange(const Actor* actor, Ranges range) const;
     void KillAll();
     void Defeat();
     bool IsDefeated() const { return defeated_; }
@@ -118,7 +119,7 @@ public:
     void TeleportBack();
 
     /// Get position of actor in party, 1-based, 0 = not found
-    size_t GetPosition(Actor* actor);
+    size_t GetPosition(const Actor* actor) const;
     /// Tells all members to change the instance. The client will disconnect and reconnect to enter the instance.
     void ChangeInstance(const std::string& mapUuid);
     void ChangeServerInstance(const std::string& serverUuid, const std::string& mapUuid, const std::string& instanceUuid);

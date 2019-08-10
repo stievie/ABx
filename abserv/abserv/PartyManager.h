@@ -15,11 +15,12 @@ public:
     {
         parties_.clear();
     }
+    /// Returns an existing party or creates a new one
     std::shared_ptr<Party> GetByUuid(const std::string& uuid);
-    std::shared_ptr<Party> Get(uint32_t partyId);
+    std::shared_ptr<Party> Get(uint32_t partyId) const;
     void Remove(uint32_t partyId);
     /// Get all parties in a game
-    std::vector<Party*> GetByGame(uint32_t id);
+    std::vector<Party*> GetByGame(uint32_t id) const;
 };
 
 }

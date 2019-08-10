@@ -87,6 +87,8 @@ void Database::FreeResult(DBResult*)
     throw std::runtime_error("No database driver loaded, yet a DBResult was freed.");
 }
 
+DBResult::~DBResult() = default;
+
 DBInsert::DBInsert(Database * db) :
     db_(db),
     rows_(0)

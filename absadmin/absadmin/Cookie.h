@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <map>
+#include "Servers.h"
+
 namespace HTTP {
 
 class Cookie

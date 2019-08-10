@@ -252,7 +252,7 @@ inline size_t Party::GetValidMemberCount() const
     return result;
 }
 
-bool Party::IsMember(Player* player) const
+bool Party::IsMember(const Player* player) const
 {
     auto it = std::find_if(members_.begin(), members_.end(), [player](const std::weak_ptr<Player>& current)
     {
@@ -265,7 +265,7 @@ bool Party::IsMember(Player* player) const
     return it != members_.end();
 }
 
-bool Party::IsInvited(Player* player) const
+bool Party::IsInvited(const Player* player) const
 {
     auto it = std::find_if(invited_.begin(), invited_.end(), [player](const std::weak_ptr<Player>& current)
     {
@@ -278,7 +278,7 @@ bool Party::IsInvited(Player* player) const
     return it != invited_.end();
 }
 
-bool Party::IsLeader(Player* player) const
+bool Party::IsLeader(const Player* player) const
 {
     if (members_.size() == 0)
         return false;
@@ -304,7 +304,7 @@ Player* Party::GetRandomPlayer() const
     return nullptr;
 }
 
-Player* Party::GetRandomPlayerInRange(Actor* actor, Ranges range) const
+Player* Party::GetRandomPlayerInRange(const Actor* actor, Ranges range) const
 {
     if (members_.size() == 0 || actor == nullptr)
         return nullptr;
@@ -347,7 +347,7 @@ void Party::TeleportBack()
         ChangeInstance(member->data_.lastOutpostUuid);
 }
 
-size_t Party::GetPosition(Actor* actor)
+size_t Party::GetPosition(const Actor* actor) const
 {
     for (size_t i = 0; i < members_.size(); ++i)
     {

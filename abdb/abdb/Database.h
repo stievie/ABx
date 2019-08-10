@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <sstream>
+#include <memory>
 
 namespace DB {
 
@@ -63,7 +64,7 @@ class DBResult : public std::enable_shared_from_this<DBResult>
 {
 protected:
     DBResult() = default;
-    virtual ~DBResult() {}
+    virtual ~DBResult();
 public:
     virtual int32_t GetInt(const std::string&) {
         return 0;

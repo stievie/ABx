@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <uuid.h>
 #include "Protocol.h"
 #include "Connection.h"
 #include "Dispatcher.h"
@@ -20,7 +22,7 @@ public:
     enum { ServerSendsFirst = true };
     enum { ProtocolIdentifier = 0 }; // Not required as we send first
     enum { UseChecksum = true };
-    static const char* ProtocolName() { return "Game Protocol"; };
+    static const char* ProtocolName() { return "Game Protocol"; }
     friend class Game::Player;
     static std::string serverId_;
 private:

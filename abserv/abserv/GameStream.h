@@ -1,6 +1,7 @@
 #pragma once
 
-#include "NetworkMessage.h"
+#include <string>
+#include <fstream>
 
 /// File Format
 ///  =============== Header ===============
@@ -15,6 +16,10 @@
 ///   size Byte: The message
 ///   ------------------------------------
 ///   ...
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 class Game;

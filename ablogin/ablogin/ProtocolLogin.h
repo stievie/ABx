@@ -14,7 +14,7 @@ public:
     enum { ServerSendsFirst = false };
     enum { ProtocolIdentifier = AB::ProtocolLoginId };
     enum { UseChecksum = true };
-    static const char* ProtocolName() { return "Login Protocol"; };
+    static const char* ProtocolName() { return "Login Protocol"; }
 public:
     explicit ProtocolLogin(std::shared_ptr<Connection> connection) :
         Protocol(connection)

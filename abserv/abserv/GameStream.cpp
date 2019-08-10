@@ -3,6 +3,7 @@
 #include "FileUtils.h"
 #include "Game.h"
 #include "Logger.h"
+#include "NetworkMessage.h"
 
 namespace IO {
 

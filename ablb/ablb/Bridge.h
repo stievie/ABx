@@ -1,6 +1,8 @@
 #pragma once
 
 #include <mutex>
+#include <memory>
+#include <asio.hpp>
 
 class Bridge : public std::enable_shared_from_this<Bridge>
 {

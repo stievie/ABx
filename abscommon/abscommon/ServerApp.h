@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+#include <vector>
 #include <AB/Entities/Service.h>
 #include "UuidUtils.h"
 

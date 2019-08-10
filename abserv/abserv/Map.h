@@ -1,5 +1,8 @@
 #pragma once
 
+#include <ai/AI.h>
+#include <ai/zone/Zone.h>
+#include <ai/common/Random.h>
 #include "NavigationMesh.h"
 #include "Octree.h"
 #include "Terrain.h"

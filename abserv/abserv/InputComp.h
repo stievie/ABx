@@ -1,7 +1,10 @@
 #pragma once
 
 #include "InputQueue.h"
-#include "NetworkMessage.h"
+
+namespace Net {
+class NetworkMessage;
+}
 
 namespace Game {
 

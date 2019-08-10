@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <memory>
+#include <map>
 #include "StringHash.h"
 #include <AB/ProtocolCodes.h>
 

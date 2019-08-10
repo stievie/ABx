@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "PropStream.h"
@@ -158,7 +159,7 @@ public:
             return nullptr;
         return collisionShape_.get();
     }
-    bool Collides(GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
+    bool Collides(const GameObject* other, const Math::Vector3& velocity, Math::Vector3& move) const;
     /// Get the distance to another object
     float GetDistance(const GameObject* other) const
     {
@@ -168,14 +169,17 @@ public:
     }
 
     /// Test if object is in our range
-    bool IsInRange(Ranges range, GameObject* object)
+    bool IsInRange(Ranges range, const GameObject* object) const
     {
         if (!object)
             return false;
         if (range == Ranges::Map)
             return true;
         // Don't calculate the distance now, but use previously calculated values.
-        const auto& r = ranges_[range];
+        const auto rIt = ranges_.find(range);
+        if (rIt == ranges_.end())
+            return false;
+        const auto& r = (*rIt).second;
         const auto it = std::find_if(r.begin(), r.end(), [object](const std::weak_ptr<GameObject>& current) -> bool
         {
             if (auto c = current.lock())

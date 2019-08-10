@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <memory>
 #include <AB/Entities/Effect.h>
 
 namespace Game {

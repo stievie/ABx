@@ -12,6 +12,7 @@
 #   include <filesystem>
 #endif
 #include "MessageClient.h"
+#include "Servers.h"
 
 #if __cplusplus < 201703L
 // C++14

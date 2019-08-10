@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <map>
+#include <mutex>
 #include "Queue.h"
 
 class MatchQueues

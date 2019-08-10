@@ -1,6 +1,11 @@
 #pragma once
 
+#include <vector>
 #include "Asset.h"
+
+namespace kaguya {
+class State;
+}
 
 namespace Game {
 

@@ -29,7 +29,7 @@ std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
     return result;
 }
 
-std::shared_ptr<Party> PartyManager::Get(uint32_t partyId)
+std::shared_ptr<Party> PartyManager::Get(uint32_t partyId) const
 {
     auto it = std::find_if(parties_.begin(), parties_.end(), [partyId](const auto& o) -> bool
     {
@@ -51,7 +51,7 @@ void PartyManager::Remove(uint32_t partyId)
         parties_.erase(it);
 }
 
-std::vector<Party*> PartyManager::GetByGame(uint32_t id)
+std::vector<Party*> PartyManager::GetByGame(uint32_t id) const
 {
     std::vector<Party*> result;
     if (id == 0)

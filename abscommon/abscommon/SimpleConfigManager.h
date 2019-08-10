@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lua.hpp>
+#include <string>
 
 namespace IO {
 

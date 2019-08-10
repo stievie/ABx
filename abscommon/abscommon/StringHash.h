@@ -1,12 +1,14 @@
 #pragma once
 
+#include <stdlib.h>
+
 namespace Utils {
 
 /// Compile time string hash
 /// https://github.com/elanthis/constexpr-hash-demo/blob/master/test.cpp
 
 // FNV-1a constants
-#if defined(_M_X64) || defined(__amd64__) || defined(__x86_64)
+#if defined(_M_X64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__)
 static_assert(sizeof(size_t) == 8);
 static const size_t OFFSET = 14695981039346656037ULL;
 static const size_t PRIME = 1099511628211ULL;
@@ -19,7 +21,7 @@ static const size_t PRIME = 16777619U;
 // compile-time hash helper function
 constexpr size_t StringHashOne(char c, const char* remain, size_t value)
 {
-    return c == 0 ? value : StringHashOne(remain[0], remain + 1, (value ^ c) * PRIME);
+    return c == 0 ? value : StringHashOne(remain[0], remain + 1, (value ^ static_cast<size_t>(c)) * PRIME);
 }
 
 // compile-time hash
@@ -33,7 +35,7 @@ inline size_t StringHashRt(const char* str)
 {
     size_t hash = OFFSET;
     while (*str != 0) {
-        hash ^= str[0];
+        hash ^= static_cast<size_t>(str[0]);
         hash *= PRIME;
         ++str;
     }
@@ -45,7 +47,7 @@ inline size_t StringHashRt(const char* str, size_t size)
     size_t hash = OFFSET;
     for (size_t i = 0; i < size; ++i)
     {
-        hash ^= str[i];
+        hash ^= static_cast<size_t>(str[i]);
         hash *= PRIME;
     }
     return hash;

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <memory>
+#include <vector>
 
 /// Size of the buffer (16kB)
 #define NETWORKMESSAGE_MAXSIZE 16384

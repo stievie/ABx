@@ -17,7 +17,7 @@ public:
     OctreeQuery(std::vector<Game::GameObject*>& result) :
         result_(result)
     { }
-    virtual ~OctreeQuery() = default;
+    virtual ~OctreeQuery();
     OctreeQuery(const OctreeQuery& rhs) = delete;
     OctreeQuery& operator =(const OctreeQuery& rhs) = delete;
 

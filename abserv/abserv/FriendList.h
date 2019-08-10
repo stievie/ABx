@@ -6,7 +6,7 @@ class FriendList
 {
 public:
     FriendList()
-    { };
+    { }
     ~FriendList() = default;
 };
 

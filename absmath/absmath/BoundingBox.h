@@ -4,6 +4,7 @@
 #include "MathDefs.h"
 #include "Quaternion.h"
 #include <array>
+#include "MathConfig.h"
 
 namespace Math {
 

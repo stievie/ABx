@@ -8,6 +8,7 @@
 #include "HeightMap.h"
 #include "ConvexHull.h"
 #include "Shape.h"
+#include <memory>
 
 namespace Math {
 

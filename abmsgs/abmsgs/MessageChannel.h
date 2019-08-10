@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <asio.hpp>
 #include "MessageMsg.h"
 #include <set>
 #include <AB/Entities/Service.h>
