@@ -27,6 +27,9 @@
     <ClInclude Include="Version.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Servers.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
