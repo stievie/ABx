@@ -30,7 +30,10 @@ else
 	CXXFLAGS += -O3
 endif
 
-LDFLAGS =  -L../Lib -L../Lib/x64/$(CONFIG) -m64 -s
+LDFLAGS =  -L../Lib -L../Lib/x64/$(CONFIG) -m64
+ifneq ($(CONFIG),Debug)
+	LDFLAGS += -s
+endif
 
 # Options
 DEFINES = -DNPROFILING
