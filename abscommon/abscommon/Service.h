@@ -132,11 +132,9 @@ public:
         {
             servicePort = finder->second;
             if (servicePort->IsSingleSocket() || T::ServerSendsFirst)
-            {
                 return false;
-            }
         }
-        return servicePort->AddService(std::shared_ptr<ServiceBase>(new Service<T>()));
+        return servicePort->AddService(std::make_shared<Service<T>>());
     }
     /// Get a free random port
     static uint16_t GetFreePort();
