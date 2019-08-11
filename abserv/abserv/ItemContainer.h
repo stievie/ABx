@@ -63,7 +63,7 @@ public:
         return count;
     }
     template<typename Func>
-    void VisitItems(Func&& func)
+    void VisitItems(const Func& func)
     {
         for (const auto& o : items_)
         {

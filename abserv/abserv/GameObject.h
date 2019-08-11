@@ -192,7 +192,7 @@ public:
     bool IsCloserThan(float maxDist, const GameObject* object) const;
     /// Allows to execute a functor/lambda on the objects in range
     template<typename Func>
-    void VisitInRange(Ranges range, Func&& func)
+    void VisitInRange(Ranges range, const Func& func)
     {
         // May be called from the AI thread so lock it
         std::lock_guard<std::mutex> lock(lock_);

@@ -58,13 +58,13 @@ public:
     void WriteToOutput(const NetworkMessage& message);
 private:
     template <typename Callable, typename... Args>
-    void AddPlayerTask(Callable function, Args&&... args)
+    void AddPlayerTask(Callable&& function, Args&&... args)
     {
         auto player = GetPlayer();
         if (!player)
             return;
         GetSubsystem<Asynch::Dispatcher>()->Add(
-            Asynch::CreateTask(std::bind(function, player, std::forward<Args>(args)...))
+            Asynch::CreateTask(std::bind(std::move(function), player, std::forward<Args>(args)...))
         );
     }
 

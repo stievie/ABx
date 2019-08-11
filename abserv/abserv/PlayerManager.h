@@ -61,7 +61,7 @@ public:
         return Utils::Tick() - idleTime_;
     }
     template<typename Callback>
-    inline void VisitPlayers(Callback&& callback)
+    inline void VisitPlayers(const Callback& callback)
     {
         for (auto& player : players_)
         {

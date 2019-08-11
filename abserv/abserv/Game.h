@@ -169,7 +169,7 @@ public:
     void PlayerLeave(uint32_t playerId);
 
     template<typename Callback>
-    inline void VisitObjects(Callback&& callback)
+    inline void VisitObjects(const Callback& callback)
     {
         for (auto& object : objects_)
         {
@@ -181,7 +181,7 @@ public:
         }
     }
     template<typename Callback>
-    inline void VisitPlayers(Callback&& callback)
+    inline void VisitPlayers(const Callback& callback)
     {
         for (auto& player : players_)
         {

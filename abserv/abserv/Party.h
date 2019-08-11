@@ -79,7 +79,7 @@ public:
     }
     /// Iteration callback(Player& player)
     template<typename Callback>
-    inline void VisitMembers(Callback&& callback) const
+    inline void VisitMembers(const Callback& callback) const
     {
         for (auto& wm : members_)
         {

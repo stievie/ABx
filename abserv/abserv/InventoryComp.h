@@ -113,7 +113,7 @@ public:
     void GetResources(int& maxHealth, int& maxEnergy);
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     template<typename Func>
-    void VisitEquipement(Func&& func)
+    void VisitEquipement(const Func& func)
     {
         for (const auto& o : equipment_)
         {
@@ -122,12 +122,12 @@ public:
         }
     }
     template<typename Func>
-    void VisitInventory(Func&& func)
+    void VisitInventory(const Func& func)
     {
         inventory_->VisitItems(func);
     }
     template<typename Func>
-    void VisitChest(Func&& func)
+    void VisitChest(const Func& func)
     {
         chest_->VisitItems(func);
     }
