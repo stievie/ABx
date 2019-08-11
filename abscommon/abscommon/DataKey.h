@@ -15,6 +15,9 @@ public:
     DataKey(const DataKey& other) noexcept :
         data_(other.data_)
     { }
+    DataKey(DataKey&& other) noexcept :
+        data_(std::move(other.data_))
+    { }
     DataKey(const std::string& table, const uuids::uuid& id) noexcept
     {
         data_.assign(table.begin(), table.end());
@@ -26,9 +29,16 @@ public:
     ~DataKey() noexcept = default;
 
     /// Assignment
-    DataKey& operator =(const DataKey& other)
+    DataKey& operator =(const DataKey& other) noexcept
     {
-        data_ = other.data_;
+        if (this != &other)
+            data_ = other.data_;
+        return *this;
+    }
+    DataKey& operator =(DataKey&& other) noexcept
+    {
+        if (this != &other)
+            data_ = std::move(other.data_);
         return *this;
     }
 

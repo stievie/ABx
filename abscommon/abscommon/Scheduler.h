@@ -24,27 +24,27 @@ public:
         return GetCycle() > rhs.GetCycle();
     }
 protected:
-    ScheduledTask(uint32_t delay, const std::function<void(void)>& f) :
-        Task(delay, f),
+    ScheduledTask(uint32_t delay, std::function<void(void)>&& f) :
+        Task(delay, std::move(f)),
         eventId_(0)
     {}
 
-    friend ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<void(void)>&);
-    friend ScheduledTask* CreateScheduledTask(const std::function<void(void)>&);
+    friend ScheduledTask* CreateScheduledTask(uint32_t delay, std::function<void(void)>&&);
+    friend ScheduledTask* CreateScheduledTask(std::function<void(void)>&&);
 private:
     uint32_t eventId_;
 };
 
-inline ScheduledTask* CreateScheduledTask(const std::function<void(void)>& f)
+inline ScheduledTask* CreateScheduledTask(std::function<void(void)>&& f)
 {
-    return new ScheduledTask(SCHEDULER_MINTICKS, f);
+    return new ScheduledTask(SCHEDULER_MINTICKS, std::move(f));
 }
 
-inline ScheduledTask* CreateScheduledTask(uint32_t delay, const std::function<void(void)>& f)
+inline ScheduledTask* CreateScheduledTask(uint32_t delay, std::function<void(void)>&& f)
 {
     if (delay < SCHEDULER_MINTICKS)
         delay = SCHEDULER_MINTICKS;
-    return new ScheduledTask(delay, f);
+    return new ScheduledTask(delay, std::move(f));
 }
 
 struct TaskComparator

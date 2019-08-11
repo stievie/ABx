@@ -54,12 +54,12 @@ class ServicePort : public std::enable_shared_from_this<ServicePort>
 public:
     ServicePort(const ServicePort&) = delete;
     ServicePort& operator=(const ServicePort&) = delete;
-    explicit ServicePort(asio::io_service& ioService, const AcceptConnection& acceptConnection) :
+    explicit ServicePort(asio::io_service& ioService, AcceptConnection&& acceptConnection) :
         service_(ioService),
         serverPort_(0),
         serverIp_(INADDR_ANY),
         acceptor_(nullptr),
-        acceptConnection_(acceptConnection)
+        acceptConnection_(std::move(acceptConnection))
     {}
     ~ServicePort() = default;
 
@@ -109,7 +109,7 @@ public:
 
     /// Adds a protocol and binds it to the port
     template <typename T>
-    bool Add(uint32_t ip, uint16_t port, const AcceptConnection& acceptConnection)
+    bool Add(uint32_t ip, uint16_t port, AcceptConnection&& acceptConnection)
     {
         if (port == 0)
         {
@@ -120,10 +120,10 @@ public:
         }
         std::shared_ptr<ServicePort> servicePort;
         AcceptorKey key(ip, port);
-        std::map<AcceptorKey, std::shared_ptr<ServicePort>>::iterator finder = acceptors_.find(key);
+        const auto finder = acceptors_.find(key);
         if (finder == acceptors_.end())
         {
-            servicePort = std::make_shared<ServicePort>(ioService_, acceptConnection);
+            servicePort = std::make_shared<ServicePort>(ioService_, std::move(acceptConnection));
             if (!servicePort->Open(ip, port))
                 return false;
             acceptors_[key] = servicePort;

@@ -10,16 +10,16 @@ using the_clock = std::chrono::system_clock;
 class Task
 {
 public:
-    explicit Task(unsigned ms, const std::function<void(void)>& f) :
+    explicit Task(unsigned ms, std::function<void(void)>&& f) :
         expires_(true),
-        function_(f)
+        function_(std::move(f))
     {
         expiration_ = the_clock::now() + std::chrono::milliseconds(ms);
     }
-    explicit Task(const std::function<void(void)>& f) :
+    explicit Task(std::function<void(void)>&& f) :
         expiration_(the_clock::time_point::max()),
         expires_(false),
-        function_(f)
+        function_(std::move(f))
     {}
     ~Task() = default;
 
@@ -48,16 +48,16 @@ private:
 };
 
 /// Creates a task that does not expire.
-inline Task* CreateTask(std::function<void(void)> f)
+inline Task* CreateTask(std::function<void(void)>&& f)
 {
-    return new Task(f);
+    return new Task(std::move(f));
 }
 /// Creates a new task that may expire.
 /// \param ms Expiration
 /// \param f Function
-inline Task* CreateTask(unsigned ms, std::function<void(void)> f)
+inline Task* CreateTask(unsigned ms, std::function<void(void)>&& f)
 {
-    return new Task(ms, f);
+    return new Task(ms, std::move(f));
 }
 
 }
