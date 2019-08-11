@@ -7,6 +7,7 @@
 #include "DataKey.h"
 #include "Subsystems.h"
 #include "DataCodes.h"
+#include <asio.hpp>
 
 class ConnectionManager;
 

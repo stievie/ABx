@@ -23,19 +23,6 @@ public:
     }
 };
 
-/*namespace boost
-{
-template<> struct hash<IO::DataKey>
-{
-    typedef IO::DataKey argument_type;
-    typedef std::size_t result_type;
-    result_type operator()(argument_type const& p) const noexcept
-    {
-        return Utils::StringHashRt((const char*)p.data(), p.size());
-    }
-};
-} */
-
 typedef multi_index::multi_index_container
 <
     DataItem,

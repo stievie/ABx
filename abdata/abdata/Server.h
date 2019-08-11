@@ -13,9 +13,9 @@ public:
     ~Server();
     void Shutdown();
 
-    StorageProvider* GetStorageProvider()
+    StorageProvider& GetStorageProvider()
     {
-        return &storageProvider_;
+        return storageProvider_;
     }
 private:
 	void StartAccept();

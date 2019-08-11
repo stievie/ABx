@@ -247,13 +247,13 @@ void Application::Run()
     GetSubsystem<Asynch::ThreadPool>()->Start();
 
     server_ = std::make_unique<Server>(ioService_, listenIp_, serverPort_, maxSize_, readonly_, whiteList_);
-    StorageProvider* provider = server_->GetStorageProvider();
-    provider->flushInterval_ = flushInterval_;
-    provider->cleanInterval_ = cleanInterval_;
+    auto& provider = server_->GetStorageProvider();
+    provider.flushInterval_ = flushInterval_;
+    provider.cleanInterval_ = cleanInterval_;
 
     AB::Entities::Service serv;
     serv.uuid = GetServerId();
-    provider->EntityRead(serv);
+    provider.EntityRead(serv);
     serv.location = serverLocation_;
     serv.host = serverHost_;
     serv.port = serverPort_;
@@ -266,10 +266,10 @@ void Application::Run()
     serv.type = serverType_;
     serv.startTime = Utils::Tick();
     serv.heartbeat = Utils::Tick();
-    provider->EntityUpdateOrCreate(serv);
+    provider.EntityUpdateOrCreate(serv);
 
     AB::Entities::ServiceList sl;
-    provider->EntityInvalidate(sl);
+    provider.EntityInvalidate(sl);
 
     running_ = true;
     LOG_INFO << "Server is running" << std::endl;
@@ -284,19 +284,19 @@ void Application::Stop()
     running_ = false;
     LOG_INFO << "Server shutdown..." << std::endl;
 
-    StorageProvider* provider = server_->GetStorageProvider();
+    auto& provider = server_->GetStorageProvider();
     AB::Entities::Service serv;
     serv.uuid = GetSubsystem<IO::SimpleConfigManager>()->GetGlobalString("server_id", "");
-    if (provider->EntityRead(serv))
+    if (provider.EntityRead(serv))
     {
         serv.status = AB::Entities::ServiceStatusOffline;
         serv.stopTime = Utils::Tick();
         if (serv.startTime != 0)
             serv.runTime += (serv.stopTime - serv.startTime) / 1000;
-        provider->EntityUpdate(serv);
+        provider.EntityUpdate(serv);
 
         AB::Entities::ServiceList sl;
-        provider->EntityInvalidate(sl);
+        provider.EntityInvalidate(sl);
     }
     else
         LOG_ERROR << "Error reading service" << std::endl;
