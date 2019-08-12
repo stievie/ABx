@@ -35,6 +35,11 @@ void ProgressComp::Write(Net::NetworkMessage& message)
         case ProgressType::TitleAdvance:
             // TODO:
             break;
+        case ProgressType::AttributePointGain:
+            message.AddByte(AB::GameProtocol::GameObjectProgress);
+            message.Add<uint32_t>(owner_.id_);
+            message.AddByte(AB::GameProtocol::ObjectProgressAttribPointsGain);
+            message.Add<int16_t>(static_cast<int16_t>(i.value));
         }
     }
     items_.clear();
@@ -102,8 +107,16 @@ void ProgressComp::AdvanceLevel()
 {
     if (owner_.GetLevel() > LEVEL_CAP)
     {
+        const uint32_t oldLevel = owner_.GetLevel();
+        const uint32_t oldAttribPoints = owner_.GetAttributePoints();
         items_.push_back({ ProgressType::LevelAdvance, 1 });
         owner_.AdvanceLevel();
+        if (oldLevel >= 2 && oldLevel < LEVEL_CAP)
+        {
+            const int attribPointsChange = owner_.GetAttributePoints() - oldAttribPoints;
+            if (attribPointsChange > 0)
+                items_.push_back({ ProgressType::AttributePointGain, attribPointsChange });
+        }
     }
 }
 

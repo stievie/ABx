@@ -22,6 +22,7 @@ private:
         GotSkillPoint,
         LevelAdvance,
         TitleAdvance,
+        AttributePointGain,
     };
     struct ProgressItem
     {

@@ -266,6 +266,7 @@ enum ObjectProgressType : uint8_t
     ObjectProgressXPIncreased,
     ObjectProgressGotSkillPoint,
     ObjectProgressLevelAdvance,
+    ObjectProgressAttribPointsGain,
 };
 
 enum ResourceType : uint8_t

@@ -184,6 +184,8 @@ public:
     virtual void SetLevel(uint32_t) { }
     virtual void AddXp(int) { }
     virtual uint32_t GetXp() const { return 0; }
+    /// Get the number of attribute points according the level
+    virtual uint32_t GetAttributePoints() const;
     virtual void AddSkillPoint() { }
     virtual uint32_t GetSkillPoints() const { return 0; }
     virtual void AdvanceLevel();

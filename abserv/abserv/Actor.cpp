@@ -800,6 +800,21 @@ void Actor::OnDied()
     progressComp_->Died();
 }
 
+uint32_t Actor::GetAttributePoints() const
+{
+    uint32_t level = GetLevel();
+    uint32_t result{ 0 };
+    if (level > 1)
+        result += ADVANCE_ATTRIB_2_10 * ((10 - 2) * (Math::Clamp<uint32_t>(level, 2, 10) - 2));
+    if (level > 10)
+        result += ADVANCE_ATTRIB_11_15 * ((15 - 11) * (Math::Clamp<uint32_t>(level, 11, 15) - 11));
+    if (level > 15)
+        result += ADVANCE_ATTRIB_16_20 * ((20 - 16) * (Math::Clamp<uint32_t>(level, 16, 20) - 16));
+    if (level > LEVEL_CAP)
+        result += ADVANCE_ATTRIB_16_20 * (20 - level);
+    return result;
+}
+
 void Actor::AdvanceLevel()
 {
     resourceComp_->UpdateResources();

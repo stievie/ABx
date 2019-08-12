@@ -305,7 +305,9 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
     using namespace AbEvents::ObjectProgress;
     uint32_t objectId = eventData[P_OBJECTID].GetUInt();
     AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(eventData[P_TYPE].GetUInt());
-    if (type == AB::GameProtocol::ObjectProgressGotSkillPoint)
+    switch (type)
+    {
+    case AB::GameProtocol::ObjectProgressGotSkillPoint:
     {
         LevelManager* lm = GetSubsystem<LevelManager>();
         Actor* actor = dynamic_cast<Actor*>(lm->GetObjectById(objectId).Get());
@@ -317,6 +319,22 @@ void ChatWindow::HandleObjectProgress(StringHash, VariantMap& eventData)
             std::string t = tpl.render(data);
             AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
         }
+        break;
+    }
+    case AB::GameProtocol::ObjectProgressAttribPointsGain:
+    {
+        LevelManager* lm = GetSubsystem<LevelManager>();
+        auto player = lm->GetPlayer();
+        if (player && player->id_ == objectId)
+        {
+            kainjow::mustache::mustache tpl{ "You got {{number}} attribute points" };
+            kainjow::mustache::data data;
+            data.set("number", std::to_string(eventData[P_VALUE].GetInt()));
+            std::string t = tpl.render(data);
+            AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+        }
+        break;
+    }
     }
 }
 
