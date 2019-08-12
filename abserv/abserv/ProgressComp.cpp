@@ -113,7 +113,7 @@ void ProgressComp::AdvanceLevel()
         owner_.AdvanceLevel();
         if (oldLevel >= 2 && oldLevel < LEVEL_CAP)
         {
-            const int attribPointsChange = owner_.GetAttributePoints() - oldAttribPoints;
+            const int attribPointsChange = static_cast<int>(owner_.GetAttributePoints()) - static_cast<int>(oldAttribPoints);
             if (attribPointsChange > 0)
                 items_.push_back({ ProgressType::AttributePointGain, attribPointsChange });
         }
