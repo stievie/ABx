@@ -7,5 +7,7 @@ compiletime.
 ~ Revisit GameObject::Serialize and GameObject::WriteSpawnData. A lot useless
 stuff is sent. Also the object type should be written in WriteSpawnData(),
 like the id_.
-! Fix pointer stuff for inventory/equipment/item
+! Fix pointer stuff for inventory/equipment/item. Make ItemFactory the owner
+of the unique_ptr's and the inventory should just store IDs. Add id_ to the
+Item class.
 
