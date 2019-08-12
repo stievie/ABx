@@ -43,6 +43,7 @@ public:
     const String& GetLastLevelName() const { return lastLevelName_; }
     String GetMapUuid() const { return mapUuid_; }
     AB::Entities::GameType GetMapType() const { return mapType_; }
+    const AB::Entities::Game* GetGame() const;
     uint8_t GetPartySize() const { return partySize_; }
     bool GetDrawDebugGeometry() { return drawDebugGeometry_; }
     void SetDrawDebugGeometry(bool draw);

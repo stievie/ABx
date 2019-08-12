@@ -1045,4 +1045,18 @@ void ProtocolGame::PartyGetMembers(uint32_t partyId)
     Send(msg);
 }
 
+void ProtocolGame::QueueMatch()
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeQueue);
+    Send(msg);
+}
+
+void ProtocolGame::UnqueueMatch()
+{
+    std::shared_ptr<OutputMessage> msg = OutputMessage::New();
+    msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUnqueue);
+    Send(msg);
+}
+
 }

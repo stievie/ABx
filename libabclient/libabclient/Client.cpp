@@ -798,6 +798,18 @@ void Client::Attack(bool ping)
         protoGame_->Attack(ping);
 }
 
+void Client::QueueMatch()
+{
+    if (state_ == ClientState::World)
+        protoGame_->QueueMatch();
+}
+
+void Client::UnqueueMatch()
+{
+    if (state_ == ClientState::World)
+        protoGame_->UnqueueMatch();
+}
+
 void Client::Cancel()
 {
     if (state_ == ClientState::World)

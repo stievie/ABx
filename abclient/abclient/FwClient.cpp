@@ -295,6 +295,7 @@ void FwClient::LoadGames(uint32_t curVersion)
         game.landing = pro.attribute("landing").as_bool();
         game.mapCoordX = pro.attribute("map_coord_x").as_int();
         game.mapCoordY = pro.attribute("map_coord_y").as_int();
+        game.queueMapUuid = pro.attribute("queue_map").as_string();
         games_.emplace(game.uuid, game);
     }
 }
@@ -845,6 +846,18 @@ void FwClient::PartyLeave()
 {
     if (loggedIn_)
         client_.PartyLeave();
+}
+
+void FwClient::QueueMatch()
+{
+    if (loggedIn_)
+        client_.QueueMatch();
+}
+
+void FwClient::UnqueueMatch()
+{
+    if (loggedIn_)
+        client_.UnqueueMatch();
 }
 
 void FwClient::OnLoggedIn(const std::string&)

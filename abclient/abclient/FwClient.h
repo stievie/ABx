@@ -123,6 +123,8 @@ public:
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
     void PartyLeave();
+    void QueueMatch();
+    void UnqueueMatch();
 
     /// asio network error
     void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err) override;

@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "WindowManager.h"
 #include "GameMessagesWindow.h"
+#include <uuid.h>
 
 void PartyWindow::RegisterObject(Context* context)
 {
@@ -98,6 +99,28 @@ void PartyWindow::SetPartySize(uint8_t value)
     }
 }
 
+void PartyWindow::UpdateEnterButton()
+{
+    auto* enterContainer = dynamic_cast<UIElement*>(GetChild("EnterContainer", true));
+    auto* enterButton = dynamic_cast<Button*>(GetChild("EnterButton", true));
+    if (mode_ == PartyWindowMode::ModeOutpost)
+    {
+        auto* lvl = GetSubsystem<LevelManager>();
+        auto* game = lvl->GetGame();
+        if (game)
+        {
+            if (!game->queueMapUuid.empty() && !uuids::uuid(game->queueMapUuid).nil())
+            {
+                SubscribeToEvent(enterButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleEnterButtonClicked));
+                enterContainer->SetVisible(true);
+                return;
+            }
+        }
+    }
+    UnsubscribeFromEvent(enterButton, E_RELEASED);
+    enterContainer->SetVisible(false);
+}
+
 void PartyWindow::SetMode(PartyWindowMode mode)
 {
     mode_ = mode;
@@ -115,6 +138,7 @@ void PartyWindow::SetMode(PartyWindowMode mode)
         addContainer_->SetVisible(false);
         buttonContainer->SetVisible(false);
     }
+
     for (auto& cont : memberContainer_->GetChildren())
     {
         Button* kickButton = cont->GetChildDynamicCast<Button>("KickButton", true);
@@ -125,6 +149,7 @@ void PartyWindow::SetMode(PartyWindowMode mode)
         }
 
     }
+    UpdateEnterButton();
     UpdateCaption();
 }
 
@@ -373,6 +398,12 @@ void PartyWindow::HandleAddTargetClicked(StringHash, VariantMap&)
         ShowError("This player is not online.");
 }
 
+void PartyWindow::HandleEnterButtonClicked(StringHash, VariantMap&)
+{
+    auto* client = GetSubsystem<FwClient>();
+    client->QueueMatch();
+}
+
 void PartyWindow::HandleCloseClicked(StringHash, VariantMap&)
 {
     SetVisible(false);
@@ -432,7 +463,6 @@ void PartyWindow::HandlePartyInvited(StringHash, VariantMap& eventData)
     using namespace AbEvents::PartyInvited;
     uint32_t sourceId = eventData[P_SOURCEID].GetUInt();
     uint32_t targetId = eventData[P_TARGETID].GetUInt();
-//    uint32_t partyId = eventData[P_PARTYID].GetUInt();
     LevelManager* lm = GetSubsystem<LevelManager>();
     GameObject* o = lm->GetObjectById(targetId);
     if (o)

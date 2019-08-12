@@ -25,6 +25,7 @@ private:
     std::unique_ptr<FriendList> friendList_;
     std::shared_ptr<Party> party_;
     bool resigned_;
+    bool queueing_{ false };
     Party* _LuaGetParty();
 protected:
     friend class PlayerManager;

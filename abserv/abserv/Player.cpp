@@ -95,7 +95,8 @@ void Player::Logout()
 #ifdef DEBUG_GAME
     LOG_DEBUG << "Player logging out " << GetName() << std::endl;
 #endif // DEBUG_GAME
-
+    if (queueing_)
+        UnqueueForMatch();
     if (auto g = GetGame())
         g->PlayerLeave(id_);
     client_->Logout();
@@ -1061,18 +1062,20 @@ void Player::QueueForMatch()
     if (!GetParty()->IsLeader(this))
         return;
 
-    auto* client = GetSubsystem<Net::MessageClient>();
-    Net::MessageMsg msg;
-    msg.type_ = Net::MessageType::QueueAdd;
     auto game = GetGame();
     assert(game);
     if (game->data_.queueMapUuid.empty() || uuids::uuid(game->data_.queueMapUuid).nil())
         return;
 
+    auto* client = GetSubsystem<Net::MessageClient>();
+    Net::MessageMsg msg;
+    msg.type_ = Net::MessageType::QueueAdd;
     IO::PropWriteStream stream;
     stream.WriteString(data_.uuid);
     stream.WriteString(game->data_.queueMapUuid);
+    msg.SetPropStream(stream);
     client->Write(msg);
+    queueing_ = true;
 }
 
 void Player::UnqueueForMatch()
@@ -1086,7 +1089,9 @@ void Player::UnqueueForMatch()
     msg.type_ = Net::MessageType::QueueRemove;
     IO::PropWriteStream stream;
     stream.WriteString(data_.uuid);
+    msg.SetPropStream(stream);
     client->Write(msg);
+    queueing_ = false;
 }
 
 void Player::ChangeInstance(const std::string& mapUuid, const std::string& instanceUuid)

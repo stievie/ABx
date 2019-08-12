@@ -126,6 +126,8 @@ public:
     void PartyAcceptInvite(uint32_t inviterId);
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
+    void QueueMatch();
+    void UnqueueMatch();
 
     int64_t GetUpdateTick() const
     {

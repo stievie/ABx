@@ -5,6 +5,7 @@
 #include "GameMenu.h"
 #include "Actor.h"
 #include "Mumble.h"
+#include "FwClient.h"
 
 //#include <Urho3D/DebugNew.h>
 
@@ -179,6 +180,12 @@ void LevelManager::AddFadeLayer()
     // Make it top most
     fadeWindow_->SetBringToBack(false);
     fadeWindow_->BringToFront();
+}
+
+const AB::Entities::Game* LevelManager::GetGame() const
+{
+    auto* client = GetSubsystem<FwClient>();
+    return client->GetGame(mapUuid_);
 }
 
 void LevelManager::SetDrawDebugGeometry(bool draw)

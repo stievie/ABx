@@ -204,6 +204,8 @@ public:
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
     void PartyLeave();
+    void QueueMatch();
+    void UnqueueMatch();
     void Cancel();
     void SetPlayerState(AB::GameProtocol::CreatureState newState);
 };

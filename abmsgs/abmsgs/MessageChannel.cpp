@@ -197,6 +197,8 @@ void MessageSession::HandleQueueMessage(const Net::MessageMsg& msg)
     auto* server = GetServerByType(AB::Entities::ServiceTypeMatchServer);
     if (server)
         server->Deliver(msg);
+    else
+        LOG_WARNING << "Match making server not running" << std::endl;
 }
 
 void MessageSession::HandleQueuePlayerMessage(const Net::MessageMsg& msg)

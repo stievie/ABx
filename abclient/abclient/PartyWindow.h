@@ -33,7 +33,9 @@ private:
     WeakPtr<GameObject> target_;
     uint32_t leaderId_{ 0 };
     uint32_t groupId_{ 0 };
+    void UpdateEnterButton();
     void HandleAddTargetClicked(StringHash eventType, VariantMap& eventData);
+    void HandleEnterButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleCloseClicked(StringHash eventType, VariantMap& eventData);
     void HandleLeaveButtonClicked(StringHash eventType, VariantMap& eventData);
     void HandleObjectSelected(StringHash eventType, VariantMap& eventData);
