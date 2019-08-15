@@ -92,6 +92,8 @@ abserv/ItemFactory.cpp
 abserv/ItemFactory.h
 abserv/ItemStats.cpp
 abserv/ItemStats.h
+abserv/ItemsCache.cpp
+abserv/ItemsCache.h
 abserv/MailBox.cpp
 abserv/MailBox.h
 abserv/Maintenance.cpp
