@@ -274,7 +274,7 @@ public:
     /// Cancel attack, use skill, follow
     void CancelAction();
 
-    virtual bool AddToInventory(std::unique_ptr<Item>& item);
+    virtual bool AddToInventory(uint32_t itemId);
     void DropRandomItem();
 
     std::unique_ptr<SkillBar> skills_;

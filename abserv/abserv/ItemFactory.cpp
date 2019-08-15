@@ -12,6 +12,7 @@
 #include "Profiler.h"
 #include "Scheduler.h"
 #include "ThreadPool.h"
+#include "ItemsCache.h"
 
 namespace Game {
 
@@ -159,7 +160,7 @@ std::unique_ptr<Item> ItemFactory::CreateTempItem(const std::string& itemUuid)
     return result;
 }
 
-std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
+uint32_t ItemFactory::CreateItem(const std::string& itemUuid,
     const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level /* = LEVEL_CAP */,
     bool maxStats /* = false */,
@@ -172,12 +173,12 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
     if (!client->Read(gameItem))
     {
         LOG_ERROR << "Unable to read item with UUID " << itemUuid << std::endl;
-        return std::unique_ptr<Item>();
+        return 0;
     }
 
     std::unique_ptr<Item> result = std::make_unique<Item>(gameItem);
     if (!result->LoadScript(result->data_.script))
-        return std::unique_ptr<Item>();
+        return 0;
 
     const uuids::uuid guid = uuids::uuid_system_generator{}();
     AB::Entities::ConcreteItem ci;
@@ -192,13 +193,14 @@ std::unique_ptr<Item> ItemFactory::CreateItem(const std::string& itemUuid,
 
     // Create item stats for this drop
     if (!result->GenerateConcrete(ci, level, maxStats))
-        return std::unique_ptr<Item>();
+        return 0;
 
     // Save the created stats
     GetSubsystem<Asynch::Scheduler>()->Add(
         Asynch::CreateScheduledTask(std::bind(&ItemFactory::CreateDBItem, this, result->concreteItem_))
     );
-    return result;
+    auto* cache = GetSubsystem<ItemsCache>();
+    return cache->Add(std::move(result));
 }
 
 std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
@@ -227,53 +229,65 @@ std::unique_ptr<Item> ItemFactory::LoadConcrete(const std::string& concreteUuid)
     return result;
 }
 
+uint32_t ItemFactory::GetConcreteId(const std::string& concreteUuid)
+{
+    auto* cache = GetSubsystem<ItemsCache>();
+    uint32_t result = cache->GetConcreteId(concreteUuid);
+    if (result != 0)
+        return result;
+    std::unique_ptr<Item> item = LoadConcrete(concreteUuid);
+    if (!item)
+        return 0;
+    return cache->Add(std::move(item));
+}
+
 void ItemFactory::IdentifyArmor(Item* item, Player* player)
 {
-    std::unique_ptr<Item> insignia = CreateModifier(AB::Entities::ItemTypeModifierInsignia, item,
+    uint32_t insignia = CreateModifier(AB::Entities::ItemTypeModifierInsignia, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (insignia)
-        item->SetUpgrade(ItemUpgrade::Pefix, std::move(insignia));
-    std::unique_ptr<Item> rune = CreateModifier(AB::Entities::ItemTypeModifierRune, item,
+    if (insignia != 0)
+        item->SetUpgrade(ItemUpgrade::Pefix, insignia);
+    uint32_t rune = CreateModifier(AB::Entities::ItemTypeModifierRune, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (rune)
-        item->SetUpgrade(ItemUpgrade::Suffix, std::move(rune));
+    if (rune != 0)
+        item->SetUpgrade(ItemUpgrade::Suffix, rune);
 }
 
 void ItemFactory::IdentifyWeapon(Item* item, Player* player)
 {
-    std::unique_ptr<Item> prefix = CreateModifier(AB::Entities::ItemTypeModifierWeaponPrefix, item,
+    uint32_t prefix = CreateModifier(AB::Entities::ItemTypeModifierWeaponPrefix, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (prefix)
-        item->SetUpgrade(ItemUpgrade::Pefix, std::move(prefix));
-    std::unique_ptr<Item> suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item,
+    if (prefix != 0)
+        item->SetUpgrade(ItemUpgrade::Pefix, prefix);
+    uint32_t suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (suffix)
-        item->SetUpgrade(ItemUpgrade::Suffix, std::move(suffix));
-    std::unique_ptr<Item> inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item,
+    if (suffix != 0)
+        item->SetUpgrade(ItemUpgrade::Suffix, suffix);
+    uint32_t inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (inscr)
-        item->SetUpgrade(ItemUpgrade::Inscription, std::move(inscr));
+    if (inscr != 0)
+        item->SetUpgrade(ItemUpgrade::Inscription, inscr);
 }
 
 void ItemFactory::IdentifyOffHandWeapon(Item* item, Player* player)
 {
     // Offhead weapons do not have a prefix
-    std::unique_ptr<Item> suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item,
+    uint32_t suffix = CreateModifier(AB::Entities::ItemTypeModifierWeaponSuffix, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (suffix)
-        item->SetUpgrade(ItemUpgrade::Suffix, std::move(suffix));
-    std::unique_ptr<Item> inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item,
+    if (suffix != 0)
+        item->SetUpgrade(ItemUpgrade::Suffix, suffix);
+    uint32_t inscr = CreateModifier(AB::Entities::ItemTypeModifierWeaponInscription, item,
         player->GetLevel(), false, player->data_.uuid);
-    if (inscr)
-        item->SetUpgrade(ItemUpgrade::Inscription, std::move(inscr));
+    if (inscr != 0)
+        item->SetUpgrade(ItemUpgrade::Inscription, inscr);
 }
 
-std::unique_ptr<Item> ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forItem,
+uint32_t ItemFactory::CreateModifier(AB::Entities::ItemType modType, Item* forItem,
     uint32_t level, bool maxStats, const std::string& playerUuid)
 {
     auto it = typedItems_.find(modType);
     if (it == typedItems_.end())
-        return std::unique_ptr<Item>();
+        return 0;
     std::vector<std::vector<TypedListValue>::iterator> result;
     Utils::SelectIterators((*it).second.begin(), (*it).second.end(),
         std::back_inserter(result),
@@ -287,10 +301,10 @@ std::unique_ptr<Item> ItemFactory::CreateModifier(AB::Entities::ItemType modType
     });
 
     if (result.size() == 0)
-        return std::unique_ptr<Item>();
+        return 0;
     auto selIt = Utils::SelectRandomly(result.begin(), result.end());
     if (selIt == result.end())
-        return std::unique_ptr<Item>();
+        return 0;
 
     return CreateItem((*(*selIt)).first,
         forItem->concreteItem_.instanceUuid, forItem->concreteItem_.mapUuid,
@@ -343,7 +357,11 @@ void ItemFactory::DeleteConcrete(const std::string& uuid)
     auto* client = GetSubsystem<IO::DataClient>();
     ci.uuid = uuid;
     if (client->Delete(ci))
+    {
+        auto* cache = GetSubsystem<ItemsCache>();
+        cache->RemoveConcrete(uuid);
         client->Invalidate(ci);
+    }
     else
         LOG_WARNING << "Error deleting concrete item " << uuid << std::endl;
 }
@@ -415,17 +433,17 @@ void ItemFactory::DeleteMap(const std::string& uuid)
         dropChances_.erase(it);
 }
 
-std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
+uint32_t ItemFactory::CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
     uint32_t level, Player* target)
 {
     AB_PROFILE;
     auto it = dropChances_.find(mapUuid);
     if (it == dropChances_.end())
         // Maybe outpost -> no drops
-        return std::unique_ptr<Item>();
+        return 0;
     if (!(*it).second || (*it).second->Count() == 0)
         // No drops on this map :(
-        return std::unique_ptr<Item>();
+        return 0;
 
     auto rng = GetSubsystem<Crypto::Random>();
     const float rnd1 = rng->GetFloat();
@@ -433,7 +451,7 @@ std::unique_ptr<Item> ItemFactory::CreateDropItem(const std::string& instanceUui
     const std::string& itemUuid = (*it).second->Get(rnd1, rnd2);
     if (uuids::uuid(itemUuid).nil())
         // There is a chance that nothing drops
-        return std::unique_ptr<Item>();
+        return 0;
 
     return CreateItem(itemUuid, instanceUuid, mapUuid, level, false, target->account_.uuid, target->data_.uuid);
 }

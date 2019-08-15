@@ -7,6 +7,7 @@
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>
 #include "ItemContainer.h"
+#include "ItemsCache.h"
 
 namespace Net {
 class NetworkMessage;
@@ -24,7 +25,7 @@ class InventoryComp
 {
 private:
     Actor& owner_;
-    std::map<EquipPos, std::unique_ptr<Item>> equipment_;
+    EquipmentMap equipment_;
     /// Character inventory
     std::unique_ptr<ItemContainer> inventory_;
     /// Account chest
@@ -44,13 +45,13 @@ public:
 
     void Update(uint32_t timeElapsed);
 
-    EquipPos SetEquipment(std::unique_ptr<Item>& item);
+    EquipPos SetEquipment(uint32_t itemId);
     Item* GetEquipment(EquipPos pos) const;
-    std::unique_ptr<Item> RemoveEquipment(EquipPos pos);
+    uint32_t RemoveEquipment(EquipPos pos);
     /// Swap inventory - equipment
     EquipPos EquipInventoryItem(uint16_t pos);
 
-    bool SetInventoryItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
+    bool SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyInventoryItem(uint16_t pos)
     {
@@ -58,7 +59,7 @@ public:
     }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    std::unique_ptr<Item> RemoveInventoryItem(uint16_t pos)
+    uint32_t RemoveInventoryItem(uint16_t pos)
     {
         return inventory_->RemoveItem(pos);
     }
@@ -76,7 +77,7 @@ public:
         return inventory_->GetCount();
     }
 
-    bool SetChestItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message);
+    bool SetChestItem(uint32_t itemId, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyChestItem(uint16_t pos)
     {
@@ -84,7 +85,7 @@ public:
     }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    std::unique_ptr<Item> RemoveChestItem(uint16_t pos)
+    uint32_t RemoveChestItem(uint16_t pos)
     {
         return chest_->RemoveItem(pos);
     }
@@ -102,7 +103,7 @@ public:
         return chest_->GetCount();
     }
 
-    void SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade);
+    void SetUpgrade(Item* item, ItemUpgrade type, uint32_t upgradeId);
     void RemoveUpgrade(Item* item, ItemUpgrade type);
 
     /// Get lead hand weapon
@@ -113,14 +114,7 @@ public:
     void GetResources(int& maxHealth, int& maxEnergy);
     void GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp);
     template<typename Func>
-    void VisitEquipement(const Func& func)
-    {
-        for (const auto& o : equipment_)
-        {
-            if (o.second)
-                func(o.second.get());
-        }
-    }
+    void VisitEquipement(const Func& func);
     template<typename Func>
     void VisitInventory(const Func& func)
     {
@@ -133,6 +127,21 @@ public:
     }
 
 };
+
+template<typename Func>
+inline void InventoryComp::VisitEquipement(const Func& func)
+{
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : equipment_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+        {
+            if (func(*item) != Iteration::Continue)
+                break;
+        }
+    }
+}
 
 }
 }

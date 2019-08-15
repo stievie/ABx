@@ -258,6 +258,7 @@
     <ClInclude Include="ItemContainer.h" />
     <ClInclude Include="ItemDrop.h" />
     <ClInclude Include="ItemFactory.h" />
+    <ClInclude Include="ItemsCache.h" />
     <ClInclude Include="ItemStats.h" />
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="PartyManager.h" />
@@ -347,6 +348,7 @@
     <ClCompile Include="ItemContainer.cpp" />
     <ClCompile Include="ItemDrop.cpp" />
     <ClCompile Include="ItemFactory.cpp" />
+    <ClCompile Include="ItemsCache.cpp" />
     <ClCompile Include="ItemStats.cpp" />
     <ClCompile Include="PartyManager.cpp" />
     <ClCompile Include="ProgressComp.cpp" />

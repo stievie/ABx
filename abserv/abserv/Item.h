@@ -35,6 +35,9 @@ enum class EquipPos : uint32_t
     WeaponTwoHanded
 };
 
+typedef std::map<ItemUpgrade, uint32_t> UpgradesMap;
+typedef std::map<EquipPos, uint32_t> EquipmentMap;
+
 class Item
 {
 private:
@@ -51,7 +54,7 @@ private:
     kaguya::State luaState_;
     std::shared_ptr<Script> script_;
     uint32_t functions_{ FunctionNone };
-    std::map<ItemUpgrade, std::unique_ptr<Item>> upgrades_;
+    UpgradesMap upgrades_;
     int32_t baseMinDamage_{ 0 };
     int32_t baseMaxDamage_{ 0 };
     ItemStats stats_;
@@ -84,7 +87,7 @@ public:
     bool GenerateConcrete(AB::Entities::ConcreteItem& ci, uint32_t level, bool maxStats);
     void Update(uint32_t timeElapsed);
     /// Upgrade this item
-    Item* SetUpgrade(ItemUpgrade type, std::unique_ptr<Item> upgrade);
+    Item* SetUpgrade(ItemUpgrade type, uint32_t id);
     Item* GetUpgrade(ItemUpgrade type);
     void RemoveUpgrade(ItemUpgrade type);
     EquipPos GetEquipPos() const;
@@ -104,16 +107,7 @@ public:
     void OnEquip(Actor* target);
     void OnUnequip(Actor* target);
     /// Get value of this item with all mods
-    uint32_t GetValue() const
-    {
-        uint32_t result = concreteItem_.value;
-        for (const auto& u : upgrades_)
-        {
-            if (u.second)
-                result += u.second->concreteItem_.value;
-        }
-        return result;
-    }
+    uint32_t GetValue() const;
 
     AB::Entities::ItemType GetType() const;
     bool IsStackAble() const;
@@ -126,6 +120,7 @@ public:
             data_.type == AB::Entities::ItemTypeArmorFeet;
     }
 
+    uint32_t id_;
     AB::Entities::Item data_;
     AB::Entities::ConcreteItem concreteItem_;
 };

@@ -34,6 +34,7 @@
 #include "PartyManager.h"
 #include "ItemFactory.h"
 #include "ConditionSleep.h"
+#include "ItemsCache.h"
 
 Application* Application::Instance = nullptr;
 
@@ -67,6 +68,7 @@ Application::Application() :
     Subsystems::Instance.CreateSubsystem<Game::Chat>();
     Subsystems::Instance.CreateSubsystem<Game::SkillManager>();
     Subsystems::Instance.CreateSubsystem<Game::ItemFactory>();
+    Subsystems::Instance.CreateSubsystem<Game::ItemsCache>();
     Subsystems::Instance.CreateSubsystem<AI::AiRegistry>();
     auto* reg = GetSubsystem<AI::AiRegistry>();
     Subsystems::Instance.CreateSubsystem<AI::AiLoader>(*reg);

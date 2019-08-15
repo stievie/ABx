@@ -2,39 +2,44 @@
 #include "ItemContainer.h"
 #include "Subsystems.h"
 #include "ItemFactory.h"
+#include "Iteration.h"
 
 namespace Game {
 
-void ItemContainer::InternalSetItem(std::unique_ptr<Item>& item)
+void ItemContainer::InternalSetItem(uint32_t itemId)
 {
-    if (!item)
-        return;
-    items_[item->concreteItem_.storagePos] = std::move(item);
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
+    if (item)
+        items_[item->concreteItem_.storagePos] = itemId;
 }
 
-bool ItemContainer::SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback)
+bool ItemContainer::SetItem(uint32_t itemId, const ItemUpdatedCallback& callback)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
     if (!item)
         return false;
 
     if (item->data_.type == AB::Entities::ItemTypeMoney)
     {
-        if (!items_[0])
+        if (items_[0] == 0)
         {
             item->concreteItem_.storagePlace = place_;
-            items_[0] = std::move(item);
+            items_[0] = item->id_;
         }
         else
         {
-            if (items_[0]->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
+            auto* currItem = GetItem(0);
+            if (currItem->concreteItem_.count + item->concreteItem_.count > MAX_INVENTOREY_MONEY)
                 return false;
-            items_[0]->concreteItem_.count += item->concreteItem_.count;
+            currItem->concreteItem_.count += item->concreteItem_.count;
             // Merged -> delete this
             auto* factory = GetSubsystem<ItemFactory>();
             factory->DeleteConcrete(item->concreteItem_.uuid);
         }
 
-        callback(items_[0].get());
+        callback(GetItem(0));
         return true;
     }
 
@@ -43,49 +48,69 @@ bool ItemContainer::SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
 
 bool ItemContainer::DestroyItem(uint16_t pos)
 {
-    if (items_.size() > pos && items_[pos])
+    if (items_.size() > pos && items_[pos] != 0)
     {
+        auto* cache = GetSubsystem<ItemsCache>();
+        auto* item = cache->Get(items_[pos]);
+        if (!item)
+            return false;
         auto* factory = GetSubsystem<ItemFactory>();
-        factory->DeleteItem(items_[pos].get());
-        items_[pos].reset();
+        factory->DeleteItem(item);
+        items_[pos] = 0;
         return true;
     }
     return false;
 }
 
-std::unique_ptr<Item> ItemContainer::RemoveItem(uint16_t pos)
+uint32_t ItemContainer::RemoveItem(uint16_t pos)
 {
-    if (items_.size() > pos && items_[pos])
+    if (items_.size() > pos && items_[pos] != 0)
     {
-        std::unique_ptr<Item> item = std::move(items_[pos]);
-        return item;
+        uint32_t id = items_[pos];
+        items_[pos] = 0;
+        return id;
     }
-    return std::unique_ptr<Item>();
+    return 0;
 }
 
 Item* ItemContainer::GetItem(uint16_t pos)
 {
     if (items_.size() >= pos && items_[pos])
-        return items_[pos].get();
+    {
+        uint32_t id = items_[pos];
+        auto* cache = GetSubsystem<ItemsCache>();
+        return cache->Get(id);
+
+    }
     return nullptr;
 }
 
 Item* ItemContainer::FindItem(const std::string& uuid)
 {
-    for (const auto& i : items_)
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (uint32_t itemId : items_)
     {
-        if (i && i->data_.uuid.compare(uuid) == 0)
-            return i.get();
+        auto* i = cache->Get(itemId);
+        if (!i)
+            continue;
+
+        if (i->data_.uuid.compare(uuid) == 0)
+            return i;
     }
     return nullptr;
 }
 
-bool ItemContainer::StackItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback)
+bool ItemContainer::StackItem(Item* item, const ItemUpdatedCallback& callback)
 {
     int32_t count = item->concreteItem_.count;
-    for (const auto& i : items_)
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (uint32_t itemId : items_)
     {
-        if (i && i->data_.index == item->data_.index)
+        auto* i = cache->Get(itemId);
+        if (!i)
+            continue;
+
+        if (i->data_.index == item->data_.index)
         {
             int32_t space = static_cast<int32_t>(stackSize_) - i->concreteItem_.count;
             if (space > 0)
@@ -93,13 +118,14 @@ bool ItemContainer::StackItem(std::unique_ptr<Item>& item, const ItemUpdatedCall
                 int32_t added = std::min(space, count);
                 i->concreteItem_.count += added;
                 count -= added;
-                callback(i.get());
+                callback(i);
 
                 if (count == 0)
                     break;
             }
         }
     }
+
     if (count == 0)
     {
         // Merged -> delete this
@@ -113,14 +139,14 @@ bool ItemContainer::StackItem(std::unique_ptr<Item>& item, const ItemUpdatedCall
     int16_t p = InsertItem(item);
     if (p != 0)
     {
-        callback(items_[p].get());
+        callback(item);
         return true;
     }
 
     return false;
 }
 
-bool ItemContainer::AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback)
+bool ItemContainer::AddItem(Item* item, const ItemUpdatedCallback& callback)
 {
     // pos = 1-based
     size_t pos = item->concreteItem_.storagePos;
@@ -136,7 +162,7 @@ bool ItemContainer::AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
             int16_t p = InsertItem(item);
             if (p != 0)
             {
-                callback(items_[p].get());
+                callback(item);
                 return true;
             }
             return false;
@@ -151,9 +177,9 @@ bool ItemContainer::AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
         {
             if (!items_[pos])
             {
-                items_[pos] = std::move(item);
-                items_[pos]->concreteItem_.storagePlace = place_;
-                callback(items_[pos].get());
+                items_[pos] = item->id_;
+                item->concreteItem_.storagePlace = place_;
+                callback(item);
                 return true;
             }
         }
@@ -161,36 +187,34 @@ bool ItemContainer::AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallba
         {
             if (items_.size() <= pos)
                 items_.resize(pos + 1);
-            items_[pos] = std::move(item);
-            items_[pos]->concreteItem_.storagePlace = place_;
-            callback(items_[pos].get());
+            items_[pos] = item->id_;
+            item->concreteItem_.storagePlace = place_;
+            callback(item);
             return true;
         }
         return false;
     }
 }
 
-uint16_t ItemContainer::InsertItem(std::unique_ptr<Item>& item)
+uint16_t ItemContainer::InsertItem(Item* item)
 {
     for (size_t i = 1; i < items_.size(); ++i)
     {
-        if (!items_[i])
+        if (items_[i] == 0)
         {
-            items_[i] = std::move(item);
-            const auto& _i = items_[i];
-            _i->concreteItem_.storagePlace = place_;
-            _i->concreteItem_.storagePos = static_cast<uint16_t>(i);
+            items_[i] = item->id_;
+            item->concreteItem_.storagePlace = place_;
+            item->concreteItem_.storagePos = static_cast<uint16_t>(i);
             return static_cast<uint16_t>(i);
         }
     }
     // No free slot between -> append it
     if (!IsFull())
     {
-        items_.push_back(std::move(item));
+        items_.push_back(item->id_);
         uint16_t pos = static_cast<uint16_t>(items_.size()) - 1;
-        const auto& _i = items_[pos];
-        _i->concreteItem_.storagePlace = place_;
-        _i->concreteItem_.storagePos = pos;
+        item->concreteItem_.storagePlace = place_;
+        item->concreteItem_.storagePos = pos;
         return pos;
     }
     return 0;

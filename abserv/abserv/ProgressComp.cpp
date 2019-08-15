@@ -105,7 +105,7 @@ void ProgressComp::AddSkillPoint()
 
 void ProgressComp::AdvanceLevel()
 {
-    if (owner_.GetLevel() > LEVEL_CAP)
+    if (owner_.GetLevel() < LEVEL_CAP)
     {
         const uint32_t oldLevel = owner_.GetLevel();
         const uint32_t oldAttribPoints = owner_.GetAttributePoints();

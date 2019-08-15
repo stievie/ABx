@@ -7,6 +7,7 @@
 #include "Subsystems.h"
 #include "Actor.h"
 #include "Skill.h"
+#include "ItemsCache.h"
 
 namespace Game {
 
@@ -40,11 +41,11 @@ bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
     baseMaxDamage_ = stats_.GetMaxDamage();
     auto* itemFactory = GetSubsystem<ItemFactory>();
     if (!item.upgrade1Uuid.empty() && !uuids::uuid(item.upgrade1Uuid).nil())
-        upgrades_[ItemUpgrade::Pefix] = itemFactory->LoadConcrete(item.upgrade1Uuid);
+        upgrades_[ItemUpgrade::Pefix] = itemFactory->GetConcreteId(item.upgrade1Uuid);
     if (!item.upgrade2Uuid.empty() && !uuids::uuid(item.upgrade2Uuid).nil())
-        upgrades_[ItemUpgrade::Suffix] = itemFactory->LoadConcrete(item.upgrade2Uuid);
+        upgrades_[ItemUpgrade::Suffix] = itemFactory->GetConcreteId(item.upgrade2Uuid);
     if (!item.upgrade3Uuid.empty() && !uuids::uuid(item.upgrade3Uuid).nil())
-        upgrades_[ItemUpgrade::Inscription] = itemFactory->LoadConcrete(item.upgrade3Uuid);
+        upgrades_[ItemUpgrade::Inscription] = itemFactory->GetConcreteId(item.upgrade3Uuid);
 
     return true;
 }
@@ -164,29 +165,37 @@ void Item::Update(uint32_t timeElapsed)
 {
     if (HaveFunction(FunctionUpdate))
         luaState_["onUpdate"](timeElapsed);
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->Update(timeElapsed);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->Update(timeElapsed);
+    }
 }
 
-Item* Item::SetUpgrade(ItemUpgrade type, std::unique_ptr<Item> upgrade)
+Item* Item::SetUpgrade(ItemUpgrade type, uint32_t id)
 {
-    if (upgrade)
+    auto* cache = GetSubsystem<ItemsCache>();
+    Item* upgrade = cache->Get(id);
+    if (upgrade != 0)
     {
-        upgrades_[type] = std::move(upgrade);
+
+        upgrades_[type] = upgrade->id_;
         switch (type)
         {
         case ItemUpgrade::Pefix:
-            concreteItem_.upgrade1Uuid = upgrades_[type]->concreteItem_.uuid;
+            concreteItem_.upgrade1Uuid = upgrade->concreteItem_.uuid;
             break;
         case ItemUpgrade::Suffix:
-            concreteItem_.upgrade2Uuid = upgrades_[type]->concreteItem_.uuid;
+            concreteItem_.upgrade2Uuid = upgrade->concreteItem_.uuid;
             break;
         case ItemUpgrade::Inscription:
-            concreteItem_.upgrade3Uuid = upgrades_[type]->concreteItem_.uuid;
+            concreteItem_.upgrade3Uuid = upgrade->concreteItem_.uuid;
             break;
         }
-        return upgrades_[type].get();
+        return upgrade;
     }
     else
     {
@@ -197,14 +206,17 @@ Item* Item::SetUpgrade(ItemUpgrade type, std::unique_ptr<Item> upgrade)
 
 Item* Item::GetUpgrade(ItemUpgrade type)
 {
-    if (upgrades_[type])
-        return upgrades_[type].get();
+    if (upgrades_[type] != 0)
+    {
+        auto* cache = GetSubsystem<ItemsCache>();
+        return cache->Get(upgrades_[type]);
+    }
     return nullptr;
 }
 
 void Item::RemoveUpgrade(ItemUpgrade type)
 {
-    if (upgrades_[type])
+    if (upgrades_[type] != 0)
     {
         upgrades_.erase(type);
         switch (type)
@@ -353,9 +365,13 @@ bool Item::IsWeaponProjectile() const
 void Item::GetWeaponDamageType(DamageType& value) const
 {
     value = stats_.GetDamageType();
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetWeaponDamageType(value);
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetWeaponDamageType(value);
+    }
 
     if (value != DamageType::Unknown)
         return;
@@ -433,9 +449,13 @@ void Item::GetArmor(DamageType damageType, int& value) const
 {
     value = stats_.GetArmor(damageType);
 
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetArmor(damageType, value);
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetArmor(damageType, value);
+    }
 }
 
 void Item::GetArmorPenetration(float& value) const
@@ -449,9 +469,14 @@ void Item::GetArmorPenetration(float& value) const
     default:
         break;
     }
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetArmorPenetration(value);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetArmorPenetration(value);
+    }
 }
 
 void Item::GetResources(int& maxHealth, int& maxEnergy)
@@ -459,45 +484,82 @@ void Item::GetResources(int& maxHealth, int& maxEnergy)
     maxHealth += stats_.GetHealth();
     maxEnergy += stats_.GetEnergy();
 
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetResources(maxHealth, maxEnergy);
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetResources(maxHealth, maxEnergy);
+    }
 }
 
 void Item::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
     kaguya::tie(activation, energy, adrenaline, overcast, hp) =
         luaState_["getSkillCost"](skill, activation, energy, adrenaline, overcast, hp);
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+    }
 }
 
 void Item::GetAttributeValue(uint32_t index, uint32_t& value)
 {
     // Equipment (e.g. runes) may increase the attributes
     value += stats_.GetAttributeIncrease(index);
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetAttributeValue(index, value);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetAttributeValue(index, value);
+    }
 }
 
 void Item::OnEquip(Actor* target)
 {
     if (HaveFunction(FunctionOnEquip))
         luaState_["onEquip"](target);
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->OnEquip(target);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->OnEquip(target);
+    }
 }
 
 void Item::OnUnequip(Actor* target)
 {
     if (HaveFunction(FunctionOnUnequip))
         luaState_["onUnequip"](target);
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->OnUnequip(target);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->OnUnequip(target);
+    }
+}
+
+uint32_t Item::GetValue() const
+{
+    uint32_t result = concreteItem_.value;
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            result += item->concreteItem_.value;
+    }
+    return result;
 }
 
 AB::Entities::ItemType Item::GetType() const
@@ -517,9 +579,14 @@ void Item::GetWeaponDamage(int32_t& value, bool critical)
         float val = luaState_["getDamage"](baseMinDamage_, baseMaxDamage_, critical);
         value = static_cast<int32_t>(val);
     }
-    for (const auto& upg : upgrades_)
-        if (upg.second)
-            upg.second->GetWeaponDamage(value, critical);
+
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : upgrades_)
+    {
+        auto* item = cache->Get(i.second);
+        if (item)
+            item->GetWeaponDamage(value, critical);
+    }
 }
 
 }

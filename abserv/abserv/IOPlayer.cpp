@@ -155,27 +155,30 @@ bool IOPlayer::SavePlayerInventory(Game::Player* player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     // Equipment
-    player->inventoryComp_->VisitEquipement([client](Game::Item* item)
+    player->inventoryComp_->VisitEquipement([client](Game::Item& item)
     {
-        client->Update(item->concreteItem_);
-        client->Invalidate(item->concreteItem_);
+        client->Update(item.concreteItem_);
+        client->Invalidate(item.concreteItem_);
+        return Iteration::Continue;
     });
 
     // Inventory
-    player->inventoryComp_->VisitInventory([client](Game::Item* item)
+    player->inventoryComp_->VisitInventory([client](Game::Item& item)
     {
-        client->Update(item->concreteItem_);
-        client->Invalidate(item->concreteItem_);
+        client->Update(item.concreteItem_);
+        client->Invalidate(item.concreteItem_);
+        return Iteration::Continue;
     });
     AB::Entities::InventoryItems inventory;
     inventory.uuid = player->data_.uuid;
     client->Invalidate(inventory);
 
     // Chest
-    player->inventoryComp_->VisitChest([client](Game::Item* item)
+    player->inventoryComp_->VisitChest([client](Game::Item& item)
     {
-        client->Update(item->concreteItem_);
-        client->Invalidate(item->concreteItem_);
+        client->Update(item.concreteItem_);
+        client->Invalidate(item.concreteItem_);
+        return Iteration::Continue;
     });
 
     AB::Entities::ChestItems chest;

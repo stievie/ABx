@@ -5,6 +5,7 @@
 #include "ItemFactory.h"
 #include "Subsystems.h"
 #include "Game.h"
+#include "ItemsCache.h"
 
 namespace Game {
 
@@ -14,29 +15,42 @@ void ItemDrop::RegisterLua(kaguya::State& state)
     );
 }
 
-ItemDrop::ItemDrop(std::unique_ptr<Item>& item) :
+ItemDrop::ItemDrop(uint32_t itemId) :
     GameObject(),
-    item_(std::move(item))
+    itemId_(itemId)
 {
     // Drops can not hide other objects
     occluder_ = false;
     selectable_ = true;
-    name_ = item_->data_.name;
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
+    if (item)
+    {
+        name_ = item->data_.name;
+        itemIndex_ = item->data_.index;
+        concreteUuid_ = item->concreteItem_.uuid;
+    }
 }
 
 ItemDrop::~ItemDrop()
 {
-    if (!pickedUp_ && item_)
+    if (!pickedUp_ && itemId_ != 0)
     {
         // Not picked up delete it
         auto* factory = GetSubsystem<ItemFactory>();
-        factory->DeleteConcrete(item_->concreteItem_.uuid);
+        factory->DeleteConcrete(concreteUuid_);
     }
 }
 
 uint32_t ItemDrop::GetItemIndex() const
 {
-    return item_ ? item_->data_.index : 0;
+    return itemIndex_;
+}
+
+const Item* ItemDrop::GetItem() const
+{
+    auto* cache = GetSubsystem<ItemsCache>();
+    return cache->Get(itemId_);
 }
 
 void ItemDrop::PickUp(Actor* actor)
@@ -46,7 +60,7 @@ void ItemDrop::PickUp(Actor* actor)
         return;
     if (IsInRange(Ranges::Adjecent, actor))
     {
-        if (actor->AddToInventory(item_))
+        if (actor->AddToInventory(itemId_))
         {
             pickedUp_ = true;
             actor->SetSelectedObjectById(0);
@@ -66,16 +80,12 @@ void ItemDrop::OnSelected(Actor* actor)
 {
     if (!actor)
         return;
-    if (!item_)
-        return;
     PickUp(actor);
 }
 
 void ItemDrop::OnClicked(Actor* actor)
 {
     if (!actor)
-        return;
-    if (!item_)
         return;
     if (auto o = actor->selectedObject_.lock())
     {
@@ -91,13 +101,17 @@ void ItemDrop::SetSource(std::shared_ptr<Actor> source)
 
 bool ItemDrop::Serialize(IO::PropWriteStream& stream)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto item = cache->Get(itemId_);
+    if (!item)
+        return false;
     if (!GameObject::Serialize(stream))
         return false;
     stream.Write<uint32_t>(0);                                   // Level
     stream.Write<uint8_t>(AB::Entities::CharacterSexUnknown);
     stream.Write<uint32_t>(0);                                   // Prof 1
     stream.Write<uint32_t>(0);                                   // Prof 2
-    stream.Write<uint32_t>(item_->data_.index);                  // Model index
+    stream.Write<uint32_t>(item->data_.index);                   // Model index
     return true;
 }
 

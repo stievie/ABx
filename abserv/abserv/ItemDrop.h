@@ -10,7 +10,9 @@ class Actor;
 class ItemDrop final : public GameObject
 {
 private:
-    std::unique_ptr<Item> item_;
+    uint32_t itemId_;
+    uint32_t itemIndex_{ 0 };
+    std::string concreteUuid_;
     bool pickedUp_{ false };
     /// Dropper
     std::weak_ptr<Actor> source_;
@@ -18,7 +20,7 @@ private:
 public:
     static void RegisterLua(kaguya::State& state);
 
-    explicit ItemDrop(std::unique_ptr<Item>& item);
+    explicit ItemDrop(uint32_t itemId);
     ItemDrop() = delete;
     // non-copyable
     ItemDrop(const ItemDrop&) = delete;
@@ -31,7 +33,7 @@ public:
         return AB::GameProtocol::ObjectTypeItemDrop;
     }
     uint32_t GetItemIndex() const;
-    const Item* GetItem() const { return item_ ? item_.get() : nullptr; }
+    const Item* GetItem() const;
     /// ID of dropper
     uint32_t GetSourceId();
 

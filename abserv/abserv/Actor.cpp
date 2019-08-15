@@ -15,6 +15,7 @@
 #include "Scheduler.h"
 #include "PartyManager.h"
 #include "Player.h"
+#include "ItemsCache.h"
 
 namespace Game {
 
@@ -267,12 +268,16 @@ void Actor::CancelAction()
     inputComp_->Add(InputType::Cancel);
 }
 
-bool Actor::AddToInventory(std::unique_ptr<Item>& item)
+bool Actor::AddToInventory(uint32_t itemId)
 {
-    std::unique_ptr<Item> i = std::move(item);
-    // By default just delete the item
-    auto* factory = GetSubsystem<ItemFactory>();
-    factory->DeleteConcrete(i->concreteItem_.uuid);
+    auto* cache = GetSubsystem<ItemsCache>();
+    Item* item = cache->Get(itemId);
+    if (item)
+    {
+        // By default just delete the item
+        auto* factory = GetSubsystem<ItemFactory>();
+        factory->DeleteConcrete(item->concreteItem_.uuid);
+    }
     return true;
 }
 
@@ -828,29 +833,29 @@ Skill* Actor::GetCurrentSkill() const
 bool Actor::SetEquipment(const std::string& ciUuid)
 {
     auto* factory = GetSubsystem<ItemFactory>();
-    std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
-    if (!item)
+    uint32_t itemId = factory->GetConcreteId(ciUuid);
+    if (itemId == 0)
         return false;
-    inventoryComp_->SetEquipment(item);
+    inventoryComp_->SetEquipment(itemId);
     return true;
 }
 
 bool Actor::SetInventory(const std::string& ciUuid)
 {
     auto* factory = GetSubsystem<ItemFactory>();
-    std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
-    if (!item)
+    uint32_t itemId = factory->GetConcreteId(ciUuid);
+    if (itemId == 0)
         return false;
-    return inventoryComp_->SetInventoryItem(item, nullptr);
+    return inventoryComp_->SetInventoryItem(itemId, nullptr);
 }
 
 bool Actor::SetChest(const std::string& ciUuid)
 {
     auto* factory = GetSubsystem<ItemFactory>();
-    std::unique_ptr<Item> item = factory->LoadConcrete(ciUuid);
-    if (!item)
+    uint32_t itemId = factory->GetConcreteId(ciUuid);
+    if (itemId == 0)
         return false;
-    return inventoryComp_->SetChestItem(item, nullptr);
+    return inventoryComp_->SetChestItem(itemId, nullptr);
 }
 
 void Actor::_LuaGotoPosition(const Math::STLVector3& pos)

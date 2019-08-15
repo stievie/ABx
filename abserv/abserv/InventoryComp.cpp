@@ -6,59 +6,68 @@
 #include "DataClient.h"
 #include "MathUtils.h"
 #include "Skill.h"
+#include "Transaction.h"
 
 namespace Game {
 namespace Components {
 
 void InventoryComp::Update(uint32_t timeElapsed)
 {
-    VisitEquipement([&](Item* item)
+    VisitEquipement([&](Item& item)
     {
-        item->Update(timeElapsed);
+        item.Update(timeElapsed);
+        return Iteration::Continue;
     });
 }
 
-EquipPos InventoryComp::SetEquipment(std::unique_ptr<Item>& item)
+EquipPos InventoryComp::SetEquipment(uint32_t itemId)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
     if (!item)
         return EquipPos::None;
 
     const EquipPos pos = item->GetEquipPos();
     {
-        std::unique_ptr<Item> old = RemoveEquipment(pos);
+        uint32_t old = RemoveEquipment(pos);
         if (old)
         {
             if (!owner_.AddToInventory(old))
             {
-                // Ouch!
-                equipment_[pos] = std::move(item);
-                equipment_[pos]->OnEquip(&owner_);
                 return EquipPos::None;
             }
-            old->OnUnequip(&owner_);
+            auto* oldItem = cache->Get(old);
+            if (oldItem)
+                oldItem->OnUnequip(&owner_);
         }
     }
-    equipment_[pos] = std::move(item);
-    equipment_[pos]->OnEquip(&owner_);
+    equipment_[pos] = itemId;
+    item->OnEquip(&owner_);
     return pos;
 }
 
 Item* InventoryComp::GetEquipment(EquipPos pos) const
 {
     auto item = equipment_.find(pos);
-    if (item == equipment_.end() || !(*item).second)
+    if (item == equipment_.end() || (*item).second == 0)
         return nullptr;
 
-    return (*item).second.get();
+    auto* cache = GetSubsystem<ItemsCache>();
+    return cache->Get((*item).second);
 }
 
-std::unique_ptr<Item> InventoryComp::RemoveEquipment(EquipPos pos)
+uint32_t InventoryComp::RemoveEquipment(EquipPos pos)
 {
-    if (!equipment_[pos])
-        return std::unique_ptr<Item>();
-    std::unique_ptr<Item> item = std::move(equipment_[pos]);
+    if (equipment_[pos] == 0)
+        return 0;
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(equipment_[pos]);
+    if (!item)
+        return 0;
+
     item->OnUnequip(&owner_);
-    return item;
+    equipment_[pos] = 0;
+    return item->id_;
 }
 
 EquipPos InventoryComp::EquipInventoryItem(uint16_t pos)
@@ -66,7 +75,7 @@ EquipPos InventoryComp::EquipInventoryItem(uint16_t pos)
     Item* pItem = GetInventoryItem(pos);
     if (!pItem || pItem->GetEquipPos() == EquipPos::None)
         return EquipPos::None;
-    std::unique_ptr<Item> item = RemoveInventoryItem(pos);
+    uint32_t item = RemoveInventoryItem(pos);
     EquipPos ePos = SetEquipment(item);
     if (ePos != EquipPos::None)
         return ePos;
@@ -89,11 +98,16 @@ void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage*
     message->Add<uint16_t>(item->concreteItem_.value);
 }
 
-bool InventoryComp::SetInventoryItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
+bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
+    if (!item)
+        return false;
+
     item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
     item->concreteItem_.accountUuid = owner_.GetAccountUuid();
-    const bool ret = inventory_->SetItem(item, [message](const Item* const item)
+    const bool ret = inventory_->SetItem(itemId, [message](const Item* const item)
     {
         InventoryComp::WriteItemUpdate(item, message, false);
     });
@@ -102,11 +116,16 @@ bool InventoryComp::SetInventoryItem(std::unique_ptr<Item>& item, Net::NetworkMe
     return ret;
 }
 
-bool InventoryComp::SetChestItem(std::unique_ptr<Item>& item, Net::NetworkMessage* message)
+bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message)
 {
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
+    if (!item)
+        return false;
+
     item->concreteItem_.playerUuid = owner_.GetPlayerUuid();
     item->concreteItem_.accountUuid = owner_.GetAccountUuid();
-    const bool ret = chest_->SetItem(item, [message](const Item* const item)
+    const bool ret = chest_->SetItem(itemId, [message](const Item* const item)
     {
         InventoryComp::WriteItemUpdate(item, message, true);
     });
@@ -115,7 +134,7 @@ bool InventoryComp::SetChestItem(std::unique_ptr<Item>& item, Net::NetworkMessag
     return ret;
 }
 
-void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Item> upgrade)
+void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, uint32_t upgradeId)
 {
     const bool isEquipped = item->concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
     if (isEquipped)
@@ -124,7 +143,7 @@ void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, std::unique_ptr<Ite
         if (old)
             old->OnUnequip(&owner_);
     }
-    Item* n = item->SetUpgrade(type, std::move(upgrade));
+    Item* n = item->SetUpgrade(type, upgradeId);
     if (n && isEquipped)
         n->OnEquip(&owner_);
 }
@@ -152,22 +171,23 @@ Item* InventoryComp::GetWeapon() const
 int InventoryComp::GetArmor(DamageType damageType, DamagePos pos)
 {
     Item* item = nullptr;
+    auto* cache = GetSubsystem<ItemsCache>();
     switch (pos)
     {
     case DamagePos::Head:
-        item = equipment_[EquipPos::ArmorHead].get();
+        item = cache->Get(equipment_[EquipPos::ArmorHead]);
         break;
     case DamagePos::Chest:
-        item = equipment_[EquipPos::ArmorChest].get();
+        item = cache->Get(equipment_[EquipPos::ArmorChest]);
         break;
     case DamagePos::Hands:
-        item = equipment_[EquipPos::ArmorHands].get();
+        item = cache->Get(equipment_[EquipPos::ArmorHands]);
         break;
     case DamagePos::Legs:
-        item = equipment_[EquipPos::ArmorLegs].get();
+        item = cache->Get(equipment_[EquipPos::ArmorLegs]);
         break;
     case DamagePos::Feet:
-        item = equipment_[EquipPos::ArmorFeet].get();
+        item = cache->Get(equipment_[EquipPos::ArmorFeet]);
         break;
     case DamagePos::NoPos:
         return 0;
@@ -194,26 +214,29 @@ float InventoryComp::GetArmorPenetration()
 uint32_t InventoryComp::GetAttributeValue(uint32_t index)
 {
     uint32_t result = 0;
-    VisitEquipement([&](Item* item)
+    VisitEquipement([&](Item& item)
     {
-        item->GetAttributeValue(index, result);
+        item.GetAttributeValue(index, result);
+        return Iteration::Continue;
     });
     return result;
 }
 
 void InventoryComp::GetResources(int& maxHealth, int& maxEnergy)
 {
-    VisitEquipement([&](Item* item)
+    VisitEquipement([&](Item& item)
     {
-        item->GetResources(maxHealth, maxEnergy);
+        item.GetResources(maxHealth, maxEnergy);
+        return Iteration::Continue;
     });
 }
 
 void InventoryComp::GetSkillCost(Skill* skill, int32_t& activation, int32_t& energy, int32_t& adrenaline, int32_t& overcast, int32_t& hp)
 {
-    VisitEquipement([&](Item* item)
+    VisitEquipement([&](Item& item)
     {
-        item->GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+        item.GetSkillCost(skill, activation, energy, adrenaline, overcast, hp);
+        return Iteration::Continue;
     });
 }
 

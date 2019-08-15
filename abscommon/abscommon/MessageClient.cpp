@@ -3,11 +3,11 @@
 
 namespace Net {
 
-void MessageClient::Connect(const std::string& host, uint16_t port, const MessageHandler& messageHandler)
+void MessageClient::Connect(const std::string& host, uint16_t port, MessageHandler&& messageHandler)
 {
     host_ = host;
     port_ = port;
-    messageHandler_ = messageHandler;
+    messageHandler_ = std::move(messageHandler);
     InternalConnect();
 }
 

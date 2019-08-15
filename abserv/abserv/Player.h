@@ -132,7 +132,7 @@ public:
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
     void GetInventory();
-    bool AddToInventory(std::unique_ptr<Item>& item) override;
+    bool AddToInventory(uint32_t itemId) override;
     void DropInventoryItem(uint16_t pos);
     void DestroyInventoryItem(uint16_t pos);
     void EquipInventoryItem(uint16_t pos);

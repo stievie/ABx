@@ -351,6 +351,9 @@
     <ClInclude Include="actions\AiSay.h">
       <Filter>Headerdateien\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="ItemsCache.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -606,6 +609,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemsCache.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

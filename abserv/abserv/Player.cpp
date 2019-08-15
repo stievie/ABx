@@ -17,6 +17,7 @@
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Entities/AccountItemList.h>
 #include "ItemDrop.h"
+#include "ItemsCache.h"
 
 namespace Game {
 
@@ -158,14 +159,15 @@ void Player::GetInventory()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::InventoryContent);
     msg->Add<uint16_t>(static_cast<uint16_t>(count));
-    inventoryComp_->VisitInventory([&msg](const Item* current)
+    inventoryComp_->VisitInventory([&msg](const Item& current)
     {
-        msg->Add<uint16_t>(current->data_.type);
-        msg->Add<uint32_t>(current->data_.index);
-        msg->Add<uint8_t>(static_cast<uint8_t>(current->concreteItem_.storagePlace));
-        msg->Add<uint16_t>(current->concreteItem_.storagePos);
-        msg->Add<uint32_t>(current->concreteItem_.count);
-        msg->Add<uint16_t>(current->concreteItem_.value);
+        msg->Add<uint16_t>(current.data_.type);
+        msg->Add<uint32_t>(current.data_.index);
+        msg->Add<uint8_t>(static_cast<uint8_t>(current.concreteItem_.storagePlace));
+        msg->Add<uint16_t>(current.concreteItem_.storagePos);
+        msg->Add<uint32_t>(current.concreteItem_.count);
+        msg->Add<uint16_t>(current.concreteItem_.value);
+        return Iteration::Continue;
     });
 
     WriteToOutput(*msg);
@@ -222,8 +224,8 @@ void Player::StoreInChest(uint16_t pos)
         return;
     }
 
-    std::unique_ptr<Item> item = inventoryComp_->RemoveInventoryItem(pos);
-    if (!item)
+    uint32_t itemId = inventoryComp_->RemoveInventoryItem(pos);
+    if (itemId == 0)
         return;
 
     auto msg = Net::NetworkMessage::GetNew();
@@ -232,19 +234,22 @@ void Player::StoreInChest(uint16_t pos)
     msg->Add<uint16_t>(pos);
 
     // Add to chest
-    inventoryComp_->SetChestItem(item, msg.get());
+    inventoryComp_->SetChestItem(itemId, msg.get());
     WriteToOutput(*msg);
 }
 
 void Player::DropInventoryItem(uint16_t pos)
 {
-    std::unique_ptr<Item> item = inventoryComp_->RemoveInventoryItem(pos);
+    uint32_t itemId = inventoryComp_->RemoveInventoryItem(pos);
+    auto* cache = GetSubsystem<ItemsCache>();
+    auto* item = cache->Get(itemId);
     if (item)
     {
+
         item->concreteItem_.storagePlace = AB::Entities::StoragePlaceScene;
         item->concreteItem_.storagePos = 0;
         auto rng = GetSubsystem<Crypto::Random>();
-        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item);
+        std::shared_ptr<ItemDrop> drop = std::make_shared<ItemDrop>(item->id_);
         drop->transformation_.position_ = transformation_.position_;
         // Random pos around dropper
         drop->transformation_.position_.y_ += 0.2f;
@@ -269,14 +274,15 @@ void Player::GetChest()
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::ChestContent);
     msg->Add<uint16_t>(static_cast<uint16_t>(count));
-    inventoryComp_->VisitChest([&msg](const Item* current)
+    inventoryComp_->VisitChest([&msg](const Item& current)
     {
-        msg->Add<uint16_t>(current->data_.type);
-        msg->Add<uint32_t>(current->data_.index);
-        msg->Add<uint8_t>(static_cast<uint8_t>(current->concreteItem_.storagePlace));
-        msg->Add<uint16_t>(current->concreteItem_.storagePos);
-        msg->Add<uint32_t>(current->concreteItem_.count);
-        msg->Add<uint16_t>(current->concreteItem_.value);
+        msg->Add<uint16_t>(current.data_.type);
+        msg->Add<uint32_t>(current.data_.index);
+        msg->Add<uint8_t>(static_cast<uint8_t>(current.concreteItem_.storagePlace));
+        msg->Add<uint16_t>(current.concreteItem_.storagePos);
+        msg->Add<uint32_t>(current.concreteItem_.count);
+        msg->Add<uint16_t>(current.concreteItem_.value);
+        return Iteration::Continue;
     });
 
     WriteToOutput(*msg);
@@ -458,7 +464,7 @@ void Player::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         party->Update(timeElapsed, message);
 }
 
-bool Player::AddToInventory(std::unique_ptr<Item>& item)
+bool Player::AddToInventory(uint32_t itemId)
 {
     if (inventoryComp_->IsInventoryFull())
     {
@@ -466,7 +472,7 @@ bool Player::AddToInventory(std::unique_ptr<Item>& item)
         return false;
     }
     auto msg = Net::NetworkMessage::GetNew();
-    const bool ret = inventoryComp_->SetInventoryItem(item, msg.get());
+    const bool ret = inventoryComp_->SetInventoryItem(itemId, msg.get());
     if (msg->GetSize() != 0)
         WriteToOutput(*msg);
     return ret;

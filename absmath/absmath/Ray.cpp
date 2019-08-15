@@ -133,7 +133,7 @@ float Ray::HitDistance(const Sphere& sphere) const
 
     // No solution
     if (d < 0.0f)
-        return INFINITY;
+        return Math::M_INFINITE;
 
     // Get the nearer solution
     const float dSqrt = sqrtf(d);

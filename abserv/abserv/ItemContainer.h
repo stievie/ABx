@@ -2,6 +2,7 @@
 
 #include "Mechanic.h"
 #include "Item.h"
+#include "ItemsCache.h"
 
 namespace Game {
 
@@ -15,11 +16,11 @@ private:
     size_t size_;
     AB::Entities::StoragePlace place_;
     /// All inventory. Index 0 is the money
-    std::vector<std::unique_ptr<Item>> items_;
-    bool AddItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback);
-    bool StackItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback);
+    std::vector<uint32_t> items_;
+    bool AddItem(Item* item, const ItemUpdatedCallback& callback);
+    bool StackItem(Item* item, const ItemUpdatedCallback& callback);
     /// Insert in first free slot. Return position
-    uint16_t InsertItem(std::unique_ptr<Item>& item);
+    uint16_t InsertItem(Item* item);
 public:
     ItemContainer(size_t stackSize, size_t size, AB::Entities::StoragePlace place) :
         stackSize_(stackSize),
@@ -34,13 +35,13 @@ public:
     ItemContainer& operator=(const ItemContainer&) = delete;
     ~ItemContainer() = default;
 
-    void InternalSetItem(std::unique_ptr<Item>& item);
-    bool SetItem(std::unique_ptr<Item>& item, const ItemUpdatedCallback& callback);
+    void InternalSetItem(uint32_t itemId);
+    bool SetItem(uint32_t itemId, const ItemUpdatedCallback& callback);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyItem(uint16_t pos);
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    std::unique_ptr<Item> RemoveItem(uint16_t pos);
+    uint32_t RemoveItem(uint16_t pos);
     Item* GetItem(uint16_t pos);
     Item* FindItem(const std::string& uuid);
 
@@ -57,20 +58,28 @@ public:
         size_t count = 0;
         for (const auto& i : items_)
         {
-            if (i)
+            if (i != 0)
                 ++count;
         }
         return count;
     }
     template<typename Func>
-    void VisitItems(const Func& func)
+    void VisitItems(const Func& func);
+};
+
+template<typename Func>
+inline void ItemContainer::VisitItems(const Func& func)
+{
+    auto* cache = GetSubsystem<ItemsCache>();
+    for (auto& i : items_)
     {
-        for (const auto& o : items_)
+        auto* item = cache->Get(i);
+        if (item)
         {
-            if (o)
-                func(o.get());
+            if (func(*item) != Iteration::Continue)
+                break;
         }
     }
-};
+}
 
 }

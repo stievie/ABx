@@ -450,11 +450,11 @@ std::shared_ptr<ItemDrop> Game::AddRandomItemDropFor(Actor* dropper, Actor* targ
 
     auto* factory = GetSubsystem<ItemFactory>();
     auto* rng = GetSubsystem<Crypto::Random>();
-    auto item = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), targetPlayer);
-    if (!item)
+    uint32_t itemId = factory->CreateDropItem(instanceData_.uuid, data_.uuid, dropper->GetLevel(), targetPlayer);
+    if (itemId == 0)
         return std::shared_ptr<ItemDrop>();
 
-    std::shared_ptr<ItemDrop> result = std::make_shared<ItemDrop>(item);
+    std::shared_ptr<ItemDrop> result = std::make_shared<ItemDrop>(itemId);
     result->transformation_.position_ = dropper->transformation_.position_;
     // Random pos around dropper
     result->transformation_.position_.y_ += 0.2f;

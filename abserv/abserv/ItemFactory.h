@@ -22,10 +22,11 @@ private:
     void IdentifyArmor(Item* item, Player* player);
     void IdentifyWeapon(Item* item, Player* player);
     void IdentifyOffHandWeapon(Item* item, Player* player);
-    std::unique_ptr<Item> CreateModifier(AB::Entities::ItemType modType, Item* forItem,
+    uint32_t CreateModifier(AB::Entities::ItemType modType, Item* forItem,
         uint32_t level, bool maxStats, const std::string& playerUuid);
     void CalculateValue(const AB::Entities::Item& item, uint32_t level, AB::Entities::ConcreteItem& result);
     bool CreateDBItem(AB::Entities::ConcreteItem item);
+    std::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
 public:
     ItemFactory();
     ~ItemFactory() = default;
@@ -34,23 +35,24 @@ public:
     void Initialize();
     /// Creates a new concrete item of the item and saves it to DB
     /// maxStats: When buying the item from a merchant these are always with max stats. Dropped Items have random stats.
-    std::unique_ptr<Item> CreateItem(const std::string& itemUuid,
+    uint32_t CreateItem(const std::string& itemUuid,
         const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level = LEVEL_CAP,
         bool maxStats = false,
         const std::string& accUuid = Utils::Uuid::EMPTY_UUID,
         const std::string& playerUuid = Utils::Uuid::EMPTY_UUID);
-    std::unique_ptr<Item> LoadConcrete(const std::string& concreteUuid);
+    uint32_t GetConcreteId(const std::string& concreteUuid);
     void IdentiyItem(Item* item, Player* player);
     /// Create temporary item, does not create a concrete item.
     std::unique_ptr<Item> CreateTempItem(const std::string& itemUuid);
-    /// Deletes a concrete item from the database, e.g. when an item was not picked up
+    /// Deletes a concrete item from the database, e.g. when an item was not picked up. Also removes it from cache.
     void DeleteConcrete(const std::string& uuid);
+    /// Deletes an Item with all attached modifiers. Removes them from cache
     void DeleteItem(Item* item);
     void LoadDropChances(const std::string mapUuid);
     /// Delete drop chances for this map
     void DeleteMap(const std::string& uuid);
-    std::unique_ptr<Item>CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
+    uint32_t CreateDropItem(const std::string& instanceUuid, const std::string& mapUuid,
         uint32_t level, Player* player);
 };
 

@@ -58,7 +58,7 @@ public:
     { }
     ~MessageClient() = default;
 
-    void Connect(const std::string& host, uint16_t port, const MessageHandler& messageHandler);
+    void Connect(const std::string& host, uint16_t port, MessageHandler&& messageHandler);
     bool Write(const MessageMsg& msg)
     {
         if (connected_)
