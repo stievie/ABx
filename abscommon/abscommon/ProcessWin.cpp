@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#ifdef _WIN32
+#ifdef AB_WINDOWS
 
 #include "Process.hpp"
 #define WIN32_LEAN_AND_MEAN

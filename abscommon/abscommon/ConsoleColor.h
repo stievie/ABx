@@ -12,7 +12,7 @@ namespace Color {
     enum Code : short
     {
         // Foregrounds
-#if !defined(AB_WINDOWS)
+#if defined(AB_UNIX)
         FG_BLACK        = 30,
         FG_RED          = 31,
         FG_GREEN        = 32,
@@ -30,7 +30,7 @@ namespace Color {
         FG_LIGHTMAGENTA = 95,
         FG_LIGHTCYAN    = 96,
         FG_WHITE        = 97,
-#else
+#elif defined(AB_WINDOWS)
         FG_BLACK = 0,
         FG_WHITE = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
         FG_RED = FOREGROUND_RED,
@@ -50,7 +50,7 @@ namespace Color {
         FG_LIGHTCYAN = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE,
 #endif
         // Backgrounds
-#if !defined(AB_WINDOWS)
+#if defined(AB_UNIX)
         BG_BLACK        = 40,
         BG_RED          = 41,
         BG_GREEN        = 42,
@@ -68,7 +68,7 @@ namespace Color {
         BG_LIGHTMAGENTA = 105,
         BG_LIGHTCYAN    = 106,
         BG_WHITE        = 107,
-#else
+#elif defined(AB_WINDOWS)
         BG_BLACK = 0,
         BG_RED = BACKGROUND_RED,
         BG_GREEN = BACKGROUND_GREEN,

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#if defined(__linux__) || defined(__unix__)
+#if defined(AB_UNIX)
 
 #include "Process.hpp"
 #include <cstdlib>

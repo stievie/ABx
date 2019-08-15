@@ -22,7 +22,7 @@
 
 #include "stdafx.h"
 
-#if defined(_MSC_VER)
+#if defined(AB_WINDOWS)
 
 #include "StringUtils.h"
 #include <cstdio>

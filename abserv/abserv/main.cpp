@@ -42,7 +42,7 @@ static void ShowLogo()
     std::cout << std::endl;
 }
 
-#ifdef _WIN32
+#ifdef AB_WINDOWS
 static std::mutex gTermLock;
 static std::condition_variable termSignal;
 #endif
@@ -52,13 +52,13 @@ int main(int argc, char** argv)
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-#if defined(_MSC_VER) && defined(WRITE_MINIBUMP)
+#if defined(AB_WINDOWS) && defined(WRITE_MINIBUMP)
     SetUnhandledExceptionFilter(System::UnhandledHandler);
 #endif
 
     std::signal(SIGINT, signal_handler);              // Ctrl+C
     std::signal(SIGTERM, signal_handler);
-#ifdef _WIN32
+#ifdef AB_WINDOWS
     std::signal(SIGBREAK, signal_handler);            // X clicked
 #endif
 
@@ -71,11 +71,11 @@ int main(int argc, char** argv)
 
         shutdown_handler = [&app](int /* signal */)
         {
-#ifdef _WIN32
+#ifdef AB_WINDOWS
             std::unique_lock<std::mutex> lockUnique(gTermLock);
 #endif
             app.Stop();
-#ifdef _WIN32
+#ifdef AB_WINDOWS
             termSignal.wait(lockUnique);
 #endif
         };
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
         app.Run();
     }
 
-#ifdef _WIN32
+#ifdef AB_WINDOWS
     termSignal.notify_all();
 #endif
 

@@ -8,7 +8,7 @@
 #include <mutex>
 #include <thread>
 #include <memory>
-#ifndef _WIN32
+#ifdef AB_UNIX
 #include <sys/wait.h>
 #endif
 
@@ -18,15 +18,15 @@ namespace System {
 class Process
 {
 public:
-#ifdef _WIN32
+#if defined(AB_WINDOWS)
     typedef unsigned long id_type; //Process id type
     typedef void *fd_type;         //File descriptor type
-#ifdef UNICODE
+#   ifdef UNICODE
     typedef std::wstring string_type;
-#else
+#   else
     typedef std::string string_type;
-#endif
-#else
+#   endif
+#elif defined(AB_UNIX)
     typedef pid_t id_type;
     typedef int fd_type;
     typedef std::string string_type;
@@ -37,7 +37,7 @@ private:
     public:
         Data() noexcept;
         id_type id;
-#ifdef _WIN32
+#ifdef AB_WINDOWS
         void *handle;
 #endif
     };
@@ -50,7 +50,7 @@ public:
         std::function<void(const char *bytes, size_t n)> read_stderr = nullptr,
         bool open_stdin = false,
         size_t buffer_size = 131072) noexcept;
-#ifndef _WIN32
+#ifndef AB_WINDOWS
     /// Supported on Unix-like systems only.
     Process(std::function<void()> function,
         std::function<void(const char *bytes, size_t n)> read_stdout = nullptr,
@@ -96,7 +96,7 @@ private:
     std::unique_ptr<fd_type> stdout_fd, stderr_fd, stdin_fd;
 
     id_type open(const string_type &command, const string_type &path) noexcept;
-#ifndef _WIN32
+#ifndef AB_WINDOWS
     id_type open(std::function<void()> function) noexcept;
 #endif
     void async_read() noexcept;
