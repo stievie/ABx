@@ -44,7 +44,7 @@ bool ItemContainer::SetItem(uint32_t itemId, const ItemUpdatedCallback& callback
     return AddItem(item, callback);
 }
 
-bool ItemContainer::DestroyItem(uint16_t pos)
+bool ItemContainer::DestroyItem(ItemPos pos)
 {
     if (items_.size() > pos && items_[pos] != 0)
     {
@@ -60,7 +60,7 @@ bool ItemContainer::DestroyItem(uint16_t pos)
     return false;
 }
 
-uint32_t ItemContainer::RemoveItem(uint16_t pos)
+uint32_t ItemContainer::RemoveItem(ItemPos pos)
 {
     if (items_.size() > pos && items_[pos] != 0)
     {
@@ -71,7 +71,7 @@ uint32_t ItemContainer::RemoveItem(uint16_t pos)
     return 0;
 }
 
-Item* ItemContainer::GetItem(uint16_t pos)
+Item* ItemContainer::GetItem(ItemPos pos)
 {
     if (items_.size() >= pos && items_[pos])
     {
@@ -194,7 +194,7 @@ bool ItemContainer::AddItem(Item* item, const ItemUpdatedCallback& callback)
     }
 }
 
-uint16_t ItemContainer::InsertItem(Item* item)
+ItemPos ItemContainer::InsertItem(Item* item)
 {
     for (size_t i = 1; i < items_.size(); ++i)
     {
@@ -203,14 +203,14 @@ uint16_t ItemContainer::InsertItem(Item* item)
             items_[i] = item->id_;
             item->concreteItem_.storagePlace = place_;
             item->concreteItem_.storagePos = static_cast<uint16_t>(i);
-            return static_cast<uint16_t>(i);
+            return static_cast<ItemPos>(i);
         }
     }
     // No free slot between -> append it
     if (!IsFull())
     {
         items_.push_back(item->id_);
-        uint16_t pos = static_cast<uint16_t>(items_.size()) - 1;
+        ItemPos pos = static_cast<ItemPos>(items_.size()) - 1;
         item->concreteItem_.storagePlace = place_;
         item->concreteItem_.storagePos = pos;
         return pos;

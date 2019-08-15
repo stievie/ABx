@@ -70,7 +70,7 @@ uint32_t InventoryComp::RemoveEquipment(EquipPos pos)
     return item->id_;
 }
 
-EquipPos InventoryComp::EquipInventoryItem(uint16_t pos)
+EquipPos InventoryComp::EquipInventoryItem(ItemPos pos)
 {
     Item* pItem = GetInventoryItem(pos);
     if (!pItem || pItem->GetEquipPos() == EquipPos::None)

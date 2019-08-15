@@ -49,26 +49,26 @@ public:
     Item* GetEquipment(EquipPos pos) const;
     uint32_t RemoveEquipment(EquipPos pos);
     /// Swap inventory - equipment
-    EquipPos EquipInventoryItem(uint16_t pos);
+    EquipPos EquipInventoryItem(ItemPos pos);
 
     bool SetInventoryItem(uint32_t itemId, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
-    bool DestroyInventoryItem(uint16_t pos)
+    bool DestroyInventoryItem(ItemPos pos)
     {
         return inventory_->DestroyItem(pos);
     }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    uint32_t RemoveInventoryItem(uint16_t pos)
+    uint32_t RemoveInventoryItem(ItemPos pos)
     {
         return inventory_->RemoveItem(pos);
     }
-    Item* GetInventoryItem(uint16_t pos)
+    Item* GetInventoryItem(ItemPos pos)
     {
         return inventory_->GetItem(pos);
     }
     bool IsInventoryFull() const { return inventory_->IsFull(); }
-    void SetInventorySize(uint16_t value)
+    void SetInventorySize(size_t value)
     {
         inventory_->SetSize(value);
     }
@@ -79,22 +79,22 @@ public:
 
     bool SetChestItem(uint32_t itemId, Net::NetworkMessage* message);
     /// Remove and Destroy (i.e. delete from DB) the item
-    bool DestroyChestItem(uint16_t pos)
+    bool DestroyChestItem(ItemPos pos)
     {
         return chest_->DestroyItem(pos);
     }
     /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
     /// Since it's a unique_ptr somebody should own it, if it's still needed.
-    uint32_t RemoveChestItem(uint16_t pos)
+    uint32_t RemoveChestItem(ItemPos pos)
     {
         return chest_->RemoveItem(pos);
     }
-    Item* GetChestItem(uint16_t pos)
+    Item* GetChestItem(ItemPos pos)
     {
         return chest_->GetItem(pos);
     }
     bool IsChestFull() const { return chest_->IsFull(); }
-    void SetChestSize(uint16_t value)
+    void SetChestSize(size_t value)
     {
         chest_->SetSize(value);
     }
