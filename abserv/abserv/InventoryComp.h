@@ -125,7 +125,6 @@ public:
     {
         chest_->VisitItems(func);
     }
-
 };
 
 template<typename Func>
