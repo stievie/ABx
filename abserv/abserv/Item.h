@@ -120,7 +120,7 @@ public:
             data_.type == AB::Entities::ItemTypeArmorFeet;
     }
 
-    uint32_t id_;
+    uint32_t id_{ std::numeric_limits<uint32_t>::min() };
     AB::Entities::Item data_;
     AB::Entities::ConcreteItem concreteItem_;
 };

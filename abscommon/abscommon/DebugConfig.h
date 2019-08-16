@@ -19,7 +19,6 @@
 #   endif
 #else
 #endif
-#define HAVE_LOG_DEBUG
 
 #if !defined(NPROFILING)
 #   define PROFILING

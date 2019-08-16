@@ -43,8 +43,7 @@ public:
     bool SetItem(uint32_t itemId, const ItemUpdatedCallback& callback);
     /// Remove and Destroy (i.e. delete from DB) the item
     bool DestroyItem(ItemPos pos);
-    /// Removes the item, does not delete it, e.g. when dropped. Returns the item for further anything.
-    /// Since it's a unique_ptr somebody should own it, if it's still needed.
+    /// Removes the item, does not delete it, e.g. when dropped. Returns the item ID for further anything.
     uint32_t RemoveItem(ItemPos pos);
     Item* GetItem(ItemPos pos);
     Item* FindItem(const std::string& uuid);

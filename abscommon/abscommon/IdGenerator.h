@@ -1,5 +1,8 @@
 #pragma once
 
+#include <limits>
+#include <mutex>
+
 namespace Utils {
 
 template <typename T>
@@ -8,6 +11,7 @@ class IdGenerator
 private:
     std::mutex mutex_;
 public:
+    static constexpr T InvalidId = std::numeric_limits<T>::min();
     IdGenerator() noexcept :
         id_(std::numeric_limits<T>::min())
     { }

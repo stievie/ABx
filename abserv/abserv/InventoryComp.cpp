@@ -87,7 +87,7 @@ EquipPos InventoryComp::EquipInventoryItem(ItemPos pos)
 
 void InventoryComp::WriteItemUpdate(const Item* const item, Net::NetworkMessage* message, bool isChest)
 {
-    if (!message)
+    if (!item || !message)
         return;
     message->AddByte((!isChest) ? AB::GameProtocol::InventoryItemUpdate : AB::GameProtocol::ChestItemUpdate);
     message->Add<uint16_t>(item->data_.type);
@@ -134,29 +134,29 @@ bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message)
     return ret;
 }
 
-void InventoryComp::SetUpgrade(Item* item, ItemUpgrade type, uint32_t upgradeId)
+void InventoryComp::SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId)
 {
-    const bool isEquipped = item->concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
+    const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
     if (isEquipped)
     {
-        Item* old = item->GetUpgrade(type);
+        Item* old = item.GetUpgrade(type);
         if (old)
             old->OnUnequip(&owner_);
     }
-    Item* n = item->SetUpgrade(type, upgradeId);
+    Item* n = item.SetUpgrade(type, upgradeId);
     if (n && isEquipped)
         n->OnEquip(&owner_);
 }
 
-void InventoryComp::RemoveUpgrade(Item* item, ItemUpgrade type)
+void InventoryComp::RemoveUpgrade(Item& item, ItemUpgrade type)
 {
-    const bool isEquipped = item->concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
-    Item* old = item->GetUpgrade(type);
+    const bool isEquipped = item.concreteItem_.storagePlace == AB::Entities::StoragePlaceEquipped;
+    Item* old = item.GetUpgrade(type);
     if (old)
     {
         if (isEquipped)
             old->OnUnequip(&owner_);
-        item->RemoveUpgrade(type);
+        item.RemoveUpgrade(type);
     }
 }
 

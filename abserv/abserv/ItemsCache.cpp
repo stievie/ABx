@@ -19,14 +19,14 @@ uint32_t ItemsCache::GetConcreteId(const std::string& uuid) const
     const auto cIt = concreteIds_.find(uuid);
     if (cIt != concreteIds_.end())
         return (*cIt).second;
-    return 0;
+    return itemIds_.InvalidId;
 }
 
 uint32_t ItemsCache::Add(std::unique_ptr<Item>&& item)
 {
     if (!item)
-        return 0;
-    if (item->id_ == 0)
+        return itemIds_.InvalidId;
+    if (item->id_ == itemIds_.InvalidId)
         item->id_ = itemIds_.Next();
     uint32_t id = item->id_;
     const auto cIt = concreteIds_.find(item->concreteItem_.uuid);

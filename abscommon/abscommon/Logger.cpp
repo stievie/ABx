@@ -125,7 +125,6 @@ Logger& Logger::Profile()
 }
 #endif
 
-#if defined(HAVE_LOG_DEBUG)
 Logger& Logger::Debug()
 {
     static Color::Modifier grey(Color::FG_LIGHTGREY);
@@ -143,7 +142,6 @@ Logger& Logger::Debug()
     }
     return *this;
 }
-#endif
 
 int Logger::PrintF(const char *__restrict __format, ...)
 {

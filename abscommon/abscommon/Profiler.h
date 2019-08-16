@@ -51,7 +51,7 @@ public:
 }
 
 #if defined(PROFILING) && !defined(NPROFILING)
-#   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(__AB_PRETTY_FUNCTION__)
+#   define AB_PROFILE Utils::Profiler UNIQUENAME(__profiler__)(AB_PRETTY_FUNCTION)
 #else
 #   define AB_PROFILE
 #endif

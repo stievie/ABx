@@ -9,11 +9,11 @@
 #include <stdarg.h>
 #include "ConsoleColor.h"
 
-#if !defined(__AB_PRETTY_FUNCTION__)
+#if !defined(AB_PRETTY_FUNCTION)
 #   if defined __GNUC__
-#       define __AB_PRETTY_FUNCTION__ __PRETTY_FUNCTION__
+#       define AB_PRETTY_FUNCTION __PRETTY_FUNCTION__
 #   elif defined _MSC_VER
-#       define __AB_PRETTY_FUNCTION__ __FUNCTION__
+#       define AB_PRETTY_FUNCTION __FUNCTION__
 #   endif
 #endif
 // All 24h rotate log
@@ -113,21 +113,17 @@ public:
         Profile() << msg << std::endl;
     }
 #endif
-#if defined(HAVE_LOG_DEBUG)
     void AddDebug(const std::string& msg)
     {
         Debug() << msg << std::endl;
     }
-#endif
     Logger& Error();
     Logger& Info();
     Logger& Warning();
 #if defined(PROFILING)
     Logger& Profile();
 #endif
-#if defined(HAVE_LOG_DEBUG)
     Logger& Debug();
-#endif
     static int PrintF(const char *__restrict __format, ...);
 
     static void Close()
@@ -148,13 +144,11 @@ public:
 }
 
 #define LOG_INFO (IO::Logger::Instance().Info())
-#define LOG_WARNING (IO::Logger::Instance().Warning() << __AB_PRETTY_FUNCTION__ << ": ")
-#define LOG_ERROR (IO::Logger::Instance().Error() << __AB_PRETTY_FUNCTION__ << ": ")
+#define LOG_WARNING (IO::Logger::Instance().Warning() << AB_PRETTY_FUNCTION << ": ")
+#define LOG_ERROR (IO::Logger::Instance().Error() << AB_PRETTY_FUNCTION << ": ")
 #if defined(PROFILING)
 #   define LOG_PROFILE (IO::Logger::Instance().Profile())
 #elif !defined(LOG_PROFILE)
 #   define LOG_PROFILE
 #endif
-#if defined(HAVE_LOG_DEBUG)
-#   define LOG_DEBUG (IO::Logger::Instance().Debug() << __AB_PRETTY_FUNCTION__ << ": ")
-#endif
+#define LOG_DEBUG (IO::Logger::Instance().Debug() << AB_PRETTY_FUNCTION << ": ")

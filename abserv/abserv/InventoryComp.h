@@ -103,8 +103,8 @@ public:
         return chest_->GetCount();
     }
 
-    void SetUpgrade(Item* item, ItemUpgrade type, uint32_t upgradeId);
-    void RemoveUpgrade(Item* item, ItemUpgrade type);
+    void SetUpgrade(Item& item, ItemUpgrade type, uint32_t upgradeId);
+    void RemoveUpgrade(Item& item, ItemUpgrade type);
 
     /// Get lead hand weapon
     Item* GetWeapon() const;
