@@ -34,6 +34,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Machine: " << machine_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << serverHost_ << ":" << static_cast<int>(serverPort_) << std::endl;

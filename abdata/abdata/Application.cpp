@@ -145,6 +145,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "Server config:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Machine: " << machine_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Config file: " << (configFile_.empty() ? "(empty)" : configFile_) << std::endl;
     LOG_INFO << "  Listening: " << Utils::ConvertIPToString(listenIp_) << ":" << serverPort_ << std::endl;

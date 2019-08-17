@@ -17,6 +17,7 @@ class ServerApp
 {
 private:
     void Init();
+    static std::string GetMachineName();
 protected:
     std::atomic<bool> running_;
     std::string serverId_;
@@ -32,6 +33,7 @@ protected:
     /// Get a generic currently unique server name
     std::string GetFreeName(IO::DataClient* client);
     virtual bool ParseCommandLine();
+    void UpdateService(AB::Entities::Service& service);
 public:
     ServerApp() :
         running_(false),

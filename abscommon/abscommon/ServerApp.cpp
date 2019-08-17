@@ -112,6 +112,21 @@ bool ServerApp::SendServerLeft(Net::MessageClient* client, const AB::Entities::S
     return client->Write(msg);
 }
 
+void ServerApp::UpdateService(AB::Entities::Service& service)
+{
+    if (service.machine.empty())
+        service.machine = machine_;
+    service.location = serverLocation_;
+    service.host = serverHost_;
+    service.port = serverPort_;
+    service.ip = serverIp_;
+    service.name = serverName_;
+    service.file = exeFile_;
+    service.path = path_;
+    service.arguments = Utils::CombineString(arguments_, std::string(" "));
+    service.type = serverType_;
+}
+
 bool ServerApp::ParseCommandLine()
 {
     std::string value;
@@ -154,7 +169,7 @@ bool ServerApp::GetCommandLineValue(const std::string& name)
 
 void ServerApp::Init()
 {
-#ifdef _WIN32
+#ifdef AB_WINDOWS
     char buff[MAX_PATH];
     GetModuleFileNameA(NULL, buff, MAX_PATH);
     exeFile_ = std::string(buff);
@@ -164,6 +179,29 @@ void ServerApp::Init()
     exeFile_ = std::string(buff, (count > 0) ? static_cast<size_t>(count) : 0);
 #endif
     path_ = Utils::ExtractFileDir(exeFile_);
+    machine_ = GetMachineName();
+}
+
+std::string ServerApp::GetMachineName()
+{
+#ifdef AB_WINDOWS
+    char buff[256];
+    DWORD size = sizeof(buff);
+    BOOL ret = GetComputerNameExA(ComputerNameDnsHostname, buff, &size);
+    if (ret == 0)
+    {
+        size = sizeof(buff);
+        ZeroMemory(buff, size);
+        ret = GetComputerNameA(buff, &size);
+    }
+    if (ret != 0)
+        return std::string(buff, size);
+    return "";
+#else
+    char buff[HOST_NAME_MAX];
+    gethostname(buff, HOST_NAME_MAX);
+    return std::string(buff);
+#endif
 }
 
 bool ServerApp::InitializeW(int argc, wchar_t** argv)

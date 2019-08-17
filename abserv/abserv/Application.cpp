@@ -465,6 +465,7 @@ void Application::PrintServerInfo()
     LOG_INFO << "Server Info:" << std::endl;
     LOG_INFO << "  Server ID: " << GetServerId() << std::endl;
     LOG_INFO << "  Name: " << serverName_ << std::endl;
+    LOG_INFO << "  Machine: " << machine_ << std::endl;
     LOG_INFO << "  Location: " << serverLocation_ << std::endl;
     LOG_INFO << "  Protocol version: " << AB::PROTOCOL_VERSION << std::endl;
 
@@ -506,20 +507,8 @@ void Application::Run()
             LOG_WARNING << "Unable to read service with UUID " << serv.uuid << std::endl;
         }
     }
-    if (!machine_.empty())
-        serv.machine = machine_;
-    else
-        machine_ = serv.machine;
-    serv.host = serverHost_;
-    serv.location = serverLocation_;
-    serv.port = serverPort_;
-    serv.ip = serverIp_;
-    serv.name = serverName_;
-    serv.file = exeFile_;
-    serv.path = path_;
-    serv.arguments = Utils::CombineString(arguments_, std::string(" "));
+    UpdateService(serv);
     serv.status = AB::Entities::ServiceStatusOnline;
-    serv.type = serverType_;
     serv.temporary = temporary_;
     serv.startTime = Utils::Tick();
     serv.heartbeat = Utils::Tick();
