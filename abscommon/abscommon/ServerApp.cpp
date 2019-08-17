@@ -198,9 +198,10 @@ std::string ServerApp::GetMachineName()
         return std::string(buff, size);
     return "";
 #else
-    char buff[HOST_NAME_MAX];
-    gethostname(buff, HOST_NAME_MAX);
-    return std::string(buff);
+    char buff[64];
+    if (gethostname(buff, 64) == 0)
+        return std::string(buff);
+    return "";
 #endif
 }
 
