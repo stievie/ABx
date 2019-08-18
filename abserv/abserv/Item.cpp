@@ -8,6 +8,7 @@
 #include "Actor.h"
 #include "Skill.h"
 #include "ItemsCache.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -40,11 +41,11 @@ bool Item::LoadConcrete(const AB::Entities::ConcreteItem& item)
     baseMinDamage_ = stats_.GetMinDamage();
     baseMaxDamage_ = stats_.GetMaxDamage();
     auto* itemFactory = GetSubsystem<ItemFactory>();
-    if (!item.upgrade1Uuid.empty() && !uuids::uuid(item.upgrade1Uuid).nil())
+    if (!Utils::Uuid::IsEmpty(item.upgrade1Uuid))
         upgrades_[ItemUpgrade::Pefix] = itemFactory->GetConcreteId(item.upgrade1Uuid);
-    if (!item.upgrade2Uuid.empty() && !uuids::uuid(item.upgrade2Uuid).nil())
+    if (!Utils::Uuid::IsEmpty(item.upgrade2Uuid))
         upgrades_[ItemUpgrade::Suffix] = itemFactory->GetConcreteId(item.upgrade2Uuid);
-    if (!item.upgrade3Uuid.empty() && !uuids::uuid(item.upgrade3Uuid).nil())
+    if (!Utils::Uuid::IsEmpty(item.upgrade3Uuid))
         upgrades_[ItemUpgrade::Inscription] = itemFactory->GetConcreteId(item.upgrade3Uuid);
 
     return true;

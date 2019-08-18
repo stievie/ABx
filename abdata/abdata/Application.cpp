@@ -10,6 +10,7 @@
 #include "Utils.h"
 #include "Subsystems.h"
 #include "ThreadPool.h"
+#include "UuidUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -90,7 +91,7 @@ bool Application::LoadConfig()
         }
     }
 
-    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+    if (Utils::Uuid::IsEmpty(serverId_))
         serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
         serverName_ = config->GetGlobalString("server_name", "abdata");

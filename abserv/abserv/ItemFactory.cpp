@@ -180,9 +180,8 @@ uint32_t ItemFactory::CreateItem(const std::string& itemUuid,
     if (!result->LoadScript(result->data_.script))
         return 0;
 
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
     AB::Entities::ConcreteItem ci;
-    ci.uuid = guid.to_string();
+    ci.uuid = Utils::Uuid::New();
     ci.itemUuid = gameItem.uuid;
     ci.accountUuid = accUuid;
     ci.playerUuid = playerUuid;

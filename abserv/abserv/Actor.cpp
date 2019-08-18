@@ -858,6 +858,18 @@ bool Actor::SetChest(const std::string& ciUuid)
     return inventoryComp_->SetChestItem(itemId, nullptr);
 }
 
+const std::string& Actor::GetPlayerUuid() const
+{
+    static const std::string empty(Utils::Uuid::EMPTY_UUID);
+    return empty;
+}
+
+const std::string& Actor::GetAccountUuid() const
+{
+    static const std::string empty(Utils::Uuid::EMPTY_UUID);
+    return empty;
+}
+
 void Actor::_LuaGotoPosition(const Math::STLVector3& pos)
 {
     if (IsImmobilized())

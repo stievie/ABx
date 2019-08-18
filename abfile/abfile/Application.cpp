@@ -34,6 +34,7 @@
 #include "FileUtils.h"
 #include "Dispatcher.h"
 #include "Scheduler.h"
+#include "UuidUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -70,7 +71,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::Shutdown:
     {
         std::string serverId = msg.GetBodyString();
-        if (serverId.compare(serverId_) == 0)
+        if (Utils::Uuid::IsEqual(serverId, serverId_))
             Stop();
         break;
     }
@@ -199,7 +200,7 @@ bool Application::Initialize(const std::vector<std::string>& args)
         return false;
     }
 
-    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+    if (Utils::Uuid::IsEmpty(serverId_))
         serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (machine_.empty())
         machine_ = config->GetGlobalString("machine", "");
@@ -466,7 +467,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
     }
     const std::string accId = (*it).second.substr(0, 36);
     const std::string passwd = (*it).second.substr(36);
-    if (accId.empty() || passwd.empty() || uuids::uuid(accId).nil())
+    if (passwd.empty() || Utils::Uuid::IsEmpty(accId))
     {
         LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Wrong Auth header " << (*it).second << std::endl;

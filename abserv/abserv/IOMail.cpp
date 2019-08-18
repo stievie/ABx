@@ -2,6 +2,7 @@
 #include "IOMail.h"
 #include "IOPlayer.h"
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 namespace IO {
 
@@ -41,8 +42,7 @@ bool IOMail::SendMailToAccount(const std::string& accountUuid, const std::string
         return false;
 
     AB::Entities::Mail m;
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    m.uuid = guid.to_string();
+    m.uuid = Utils::Uuid::New();
     m.fromAccountUuid = fromAcc;
     m.toAccountUuid = accountUuid;
     m.fromName = fromName;
@@ -91,7 +91,7 @@ bool IOMail::ReadMail(AB::Entities::Mail& mail)
         {
             auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&mail](const AB::Entities::MailHeader& current)
             {
-                return current.uuid.compare(mail.uuid) == 0;
+                return Utils::Uuid::IsEqual(current.uuid, mail.uuid);
             });
             if (it != ml.mails.end())
             {
@@ -119,7 +119,7 @@ bool IOMail::DeleteMail(AB::Entities::Mail& mail)
         {
             auto it = std::find_if(ml.mails.begin(), ml.mails.end(), [&mail](const AB::Entities::MailHeader& current)
             {
-                return current.uuid.compare(mail.uuid) == 0;
+                return Utils::Uuid::IsEqual(current.uuid, mail.uuid);
             });
             if (it != ml.mails.end())
             {

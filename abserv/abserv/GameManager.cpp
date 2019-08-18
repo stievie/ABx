@@ -81,7 +81,7 @@ std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
 {
     auto it = std::find_if(games_.begin(), games_.end(), [&](auto const& current)
     {
-        return current.second->instanceData_.uuid.compare(instanceUuid) == 0;
+        return Utils::Uuid::IsEqual(current.second->instanceData_.uuid, instanceUuid);
     });
     if (it != games_.end())
         return (*it).second;

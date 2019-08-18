@@ -7,6 +7,7 @@
 #include "Subsystems.h"
 #include <AB/Entities/AccountKey.h>
 #include <AB/Entities/AccountKeyList.h>
+#include "UuidUtils.h"
 
 namespace Resources {
 
@@ -20,10 +21,7 @@ bool CreateKeyResource::CreateKey(const std::string& uuid,
     if (!uuids::uuid(uuid).nil())
         ak.uuid = uuid;
     else
-    {
-        const uuids::uuid guid = uuids::uuid_system_generator{}();
-        ak.uuid = guid.to_string();
-    }
+        ak.uuid = Utils::Uuid::New();
     if (dataClient->Read(ak))
         // Already exists
         return false;

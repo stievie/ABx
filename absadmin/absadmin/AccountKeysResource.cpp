@@ -9,6 +9,7 @@
 #include "DataClient.h"
 #include "StringUtils.h"
 #include "Xml.h"
+#include "UuidUtils.h"
 
 namespace Resources {
 
@@ -50,8 +51,7 @@ bool AccountKeysResource::GetObjects(std::map<std::string, ginger::object>& obje
         });
     }
 
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    objects["new_id"] = guid.to_string();
+    objects["new_id"] = Utils::Uuid::New();
 
     objects["accountkeys"] = xs;
     return true;

@@ -6,6 +6,7 @@
 #include "DataClient.h"
 #include "Profiler.h"
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 namespace Auth {
 
@@ -154,8 +155,7 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std
         return false;
 
     AB::Entities::Ban ban;
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    ban.uuid = guid.to_string();
+    ban.uuid = Utils::Uuid::New();
     ban.expires = expires;
     ban.added = (Utils::Tick() / 1000);
     ban.reason = reason;
@@ -165,7 +165,7 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std
         return false;
 
     AB::Entities::IpBan ipBan;
-    ipBan.banUuid = guid.to_string();
+    ipBan.banUuid = ban.uuid;
     ipBan.ip = ip;
     ipBan.mask = mask;
     return client->Create(ipBan);
@@ -174,14 +174,13 @@ bool BanManager::AddIpBan(uint32_t ip, uint32_t mask, int32_t expires, const std
 bool BanManager::AddAccountBan(const std::string& accountUuid, int32_t expires, const std::string& adminUuid,
     const std::string& comment, AB::Entities::BanReason reason /* = AB::Entities::BanReasonOther */)
 {
-    if (accountUuid.empty() || uuids::uuid(accountUuid).nil())
+    if (Utils::Uuid::IsEmpty(accountUuid))
         return false;
 
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Ban ban;
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    ban.uuid = guid.to_string();
+    ban.uuid = Utils::Uuid::New();
     ban.expires = expires;
     ban.added = (Utils::Tick() / 1000);
     ban.reason = reason;
@@ -191,7 +190,7 @@ bool BanManager::AddAccountBan(const std::string& accountUuid, int32_t expires, 
         return false;
 
     AB::Entities::AccountBan accBan;
-    accBan.banUuid = guid.to_string();
+    accBan.banUuid = ban.uuid;
     accBan.accountUuid = accountUuid;
     return client->Create(accBan);
 }

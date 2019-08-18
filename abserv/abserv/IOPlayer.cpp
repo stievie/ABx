@@ -13,6 +13,7 @@
 #include <uuid.h>
 #include "Subsystems.h"
 #include "SkillManager.h"
+#include "UuidUtils.h"
 
 namespace IO {
 
@@ -32,7 +33,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         return false;
     }
 
-    if (uuids::uuid(player->data_.professionUuid).nil())
+    if (Utils::Uuid::IsEmpty(player->data_.professionUuid))
     {
         LOG_ERROR << "Error primary profession is nil" << std::endl;
         return false;
@@ -43,7 +44,7 @@ bool IOPlayer::LoadPlayer(Game::Player* player)
         LOG_ERROR << "Error reading player profession1" << std::endl;
         return false;
     }
-    if (!uuids::uuid(player->data_.profession2Uuid).nil())
+    if (!Utils::Uuid::IsEmpty(player->data_.profession2Uuid))
     {
         player->skills_->prof2_.uuid = player->data_.profession2Uuid;
         if (!client->Read(player->skills_->prof2_))

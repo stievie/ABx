@@ -10,6 +10,7 @@
 #include "WindowManager.h"
 #include "GameMessagesWindow.h"
 #include <uuid.h>
+#include "UuidUtils.h"
 
 void PartyWindow::RegisterObject(Context* context)
 {
@@ -109,7 +110,7 @@ void PartyWindow::UpdateEnterButton()
         auto* game = lvl->GetGame();
         if (game)
         {
-            if (!game->queueMapUuid.empty() && !uuids::uuid(game->queueMapUuid).nil())
+            if (!Utils::Uuid::IsEmpty(game->queueMapUuid))
             {
                 SubscribeToEvent(enterButton, E_RELEASED, URHO3D_HANDLER(PartyWindow, HandleEnterButtonClicked));
                 enterContainer->SetVisible(true);

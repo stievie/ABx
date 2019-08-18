@@ -38,6 +38,7 @@
 #define PROFILING
 
 #include "Logger.h"
+#include "UuidUtils.h"
 
 #define MAX_DATA_SIZE (1024 * 1024)
 #define MAX_KEY_SIZE 256

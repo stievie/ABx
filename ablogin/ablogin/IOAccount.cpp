@@ -51,8 +51,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
         return Result::InternalError;
     }
     std::string passwordHash(pwhash, 61);
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    acc.uuid = guid.to_string();
+    acc.uuid = Utils::Uuid::New();
     acc.password = passwordHash;
     acc.email = email;
     acc.type = AB::Entities::AccountType::AccountTypeNormal;
@@ -209,9 +208,8 @@ IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& account
     if (name.find_first_of(RESTRICTED_NAME_CHARS, 0) != std::string::npos)
         return CreatePlayerResult::InvalidName;
 
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
     AB::Entities::Character ch;
-    ch.uuid = guid.to_string();
+    ch.uuid = Utils::Uuid::New();
     ch.name = name;
     ch.modelIndex = modelIndex;
     ch.profession = pro.abbr;
@@ -262,7 +260,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
     ch.uuid = playerUuid;
     if (!client->Read(ch))
         return false;
-    if (ch.accountUuid.compare(accountUuid) != 0)
+    if (!Utils::Uuid::IsEqual(ch.accountUuid, accountUuid))
         return false;
     bool succ = client->Delete(ch);
     if (!succ)
@@ -306,8 +304,7 @@ bool IOAccount::DeletePlayer(const std::string& accountUuid, const std::string& 
         AB::Entities::ReservedName rn;
         rn.name = ch.name;
         client->DeleteIfExists(rn);
-        const uuids::uuid guid = uuids::uuid_system_generator{}();
-        rn.uuid = guid.to_string();
+        rn.uuid = Utils::Uuid::New();
         rn.isReserved = true;
         rn.reservedForAccountUuid = accountUuid;
         rn.name = ch.name;
@@ -341,7 +338,7 @@ bool IOAccount::IsNameAvailable(const std::string& name, const std::string& forA
                 return true;
             }
             // Not expired yet
-            return forAccountUuid.compare(rn.reservedForAccountUuid) == 0;
+            return Utils::Uuid::IsEqual(forAccountUuid, rn.reservedForAccountUuid);
         }
         // Exists in table and does not expire, so it's not available.
         return false;

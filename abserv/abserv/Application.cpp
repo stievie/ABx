@@ -35,6 +35,7 @@
 #include "ItemFactory.h"
 #include "ConditionSleep.h"
 #include "ItemsCache.h"
+#include "UuidUtils.h"
 
 Application* Application::Instance = nullptr;
 
@@ -206,7 +207,7 @@ void Application::HandleCreateInstanceMessage(const Net::MessageMsg& msg)
     if (!createInstStream.ReadString(hostingServer))
         return;
     // Not we should host the game? Shouldn't happen this message is only sent to us
-    if (hostingServer.compare(GetServerId()) != 0)
+    if (!Utils::Uuid::IsEqual(hostingServer, GetServerId()))
         return;
     std::string mapUuid;
     if (!createInstStream.ReadString(mapUuid))
@@ -229,7 +230,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::Shutdown:
     {
         std::string serverId = msg.GetBodyString();
-        if (serverId.compare(serverId_) == 0)
+        if (Utils::Uuid::IsEqual(serverId, serverId_))
             // Can't use Dispatcher because Stop() must run in a different thread. Stop() will wait
             // until all games are deleted, and games are deleted in the Dispatcher thread.
             GetSubsystem<Asynch::ThreadPool>()->Enqueue(&Application::Stop, this);
@@ -243,7 +244,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::ClearCache:
     {
         std::string serverId = msg.GetBodyString();
-        if (serverId.compare(serverId_) == 0)
+        if (Utils::Uuid::IsEqual(serverId, serverId_))
         {
             auto* dataProvider = GetSubsystem<IO::DataProvider>();
             GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&IO::DataProvider::ClearCache, dataProvider)));
@@ -260,7 +261,7 @@ void Application::HandleMessage(const Net::MessageMsg& msg)
             prop.Read<AB::Entities::ServiceType>(s.type);
             prop.ReadString(s.uuid);
 
-            if ((s.uuid.compare(serverId_) != 0) && (s.type == AB::Entities::ServiceTypeGameServer))
+            if ((!Utils::Uuid::IsEqual(s.uuid, serverId_)) && (s.type == AB::Entities::ServiceTypeGameServer))
             {
                 // Notify players another game server joined/left. Wait some time until the
                 // service list is updated.
@@ -312,7 +313,7 @@ bool Application::LoadMain()
         LOG_ERROR << "Failed to load configuration file" << std::endl;
         return false;
     }
-    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+    if (Utils::Uuid::IsEmpty(serverId_))
         serverId_ = (*config)[ConfigManager::Key::ServerID].GetString();
     if (machine_.empty())
         machine_ = (*config)[ConfigManager::Key::Machine].GetString();

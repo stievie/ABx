@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ItemContainer.h"
 #include "ItemFactory.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -92,7 +93,7 @@ Item* ItemContainer::FindItem(const std::string& uuid)
         if (!i)
             continue;
 
-        if (i->data_.uuid.compare(uuid) == 0)
+        if (Utils::Uuid::IsEqual(i->data_.uuid, uuid))
             return i;
     }
     return nullptr;

@@ -12,6 +12,7 @@
 #include "Profiler.h"
 #include "PropStream.h"
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -61,7 +62,7 @@ std::shared_ptr<ChatChannel> Chat::Get(ChatType type, uint64_t id)
 
 std::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
 {
-    if (uuid.empty() || uuids::uuid(uuid).nil() || type == ChatType::None)
+    if (Utils::Uuid::IsEmpty(uuid) || type == ChatType::None)
         return std::shared_ptr<ChatChannel>();
 
     const std::pair<ChatType, uint64_t> channelId = { type, Utils::StringHash(uuid.c_str()) };

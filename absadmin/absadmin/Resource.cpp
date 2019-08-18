@@ -4,6 +4,7 @@
 #include "Subsystems.h"
 #include "Application.h"
 #include "StringHash.h"
+#include "UuidUtils.h"
 
 namespace Resources {
 
@@ -38,10 +39,7 @@ Resource::Resource(std::shared_ptr<HttpsServer::Request> request) :
     HTTP::Cookie* sessCookie = requestCookies_->Get("SESSION_ID");
     std::string sessId;
     if (sessCookie == nullptr)
-    {
-        const uuids::uuid guid = uuids::uuid_system_generator{}();
-        sessId = guid.to_string();
-    }
+        sessId = Utils::Uuid::New();
     else
         sessId = sessCookie->content_;
 

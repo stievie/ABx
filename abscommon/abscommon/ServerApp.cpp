@@ -10,6 +10,7 @@
 #include <AB/Entities/ServiceList.h>
 #include "StringUtils.h"
 #include "MessageClient.h"
+#include "UuidUtils.h"
 
 std::string ServerApp::GetFreeName(IO::DataClient* client)
 {
@@ -25,7 +26,7 @@ std::string ServerApp::GetFreeName(IO::DataClient* client)
         if (!client->Read(s))
             continue;
         // Exact match so return this name
-        if (s.uuid.compare(serverId_) == 0)
+        if (Utils::Uuid::IsEqual(s.uuid, serverId_))
             return s.name;
         names.push_back(s.name);
     }
@@ -140,8 +141,7 @@ bool ServerApp::ParseCommandLine()
         // There was an argument
         if (uuids::uuid(serverId_).nil())
         {
-            const uuids::uuid guid = uuids::uuid_system_generator{}();
-            serverId_ = guid.to_string();
+            serverId_ = Utils::Uuid::New();
             LOG_INFO << "Generating new Server ID " << serverId_ << std::endl;
         }
     }

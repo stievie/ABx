@@ -33,7 +33,7 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
         LOG_ERROR << "Error reading character " << charUuid << std::endl;
         return false;
     }
-    if (ch.accountUuid.compare(acc.uuid) != 0)
+    if (!Utils::Uuid::IsEqual(ch.accountUuid, acc.uuid))
     {
         LOG_ERROR << "Character " << charUuid << " does not belong to account " << accountUuid << std::endl;
         return false;

@@ -2,6 +2,7 @@
 #include "PlayerManager.h"
 #include "Player.h"
 #include "StringUtils.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -38,7 +39,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string&
 {
     auto it = std::find_if(players_.begin(), players_.end(), [&uuid](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
     {
-        return current.second->data_.accountUuid.compare(uuid) == 0;
+        return Utils::Uuid::IsEqual(current.second->data_.accountUuid, uuid);
     });
     if (it != players_.end())
         return (*it).second;

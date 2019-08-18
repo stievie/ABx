@@ -5,6 +5,7 @@
 #include "Logger.h"
 #include "Subsystems.h"
 #include "DataClient.h"
+#include "UuidUtils.h"
 
 namespace IO {
 
@@ -40,7 +41,7 @@ bool IOService::GetService(AB::Entities::ServiceType type,
         if (s.type == type)
         {
             // Use preferred server is possible
-            if (s.uuid.compare(preferredUuid) == 0 && s.load < 90)
+            if (Utils::Uuid::IsEqual(s.uuid, preferredUuid) == 0 && s.load < 90)
             {
                 service = s;
                 return true;

@@ -13,6 +13,7 @@
 #include "IOService.h"
 #include "IOGame.h"
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 namespace Net {
 
@@ -184,7 +185,7 @@ void ProtocolLogin::HandleCreateCharacterPacket(NetworkMessage& message)
         return;
     }
     const std::string prof = message.GetString();
-    if (prof.empty() || uuids::uuid(prof).nil())
+    if (Utils::Uuid::IsEmpty(prof))
     {
         DisconnectClient(AB::Errors::InvalidProfession);
         return;
@@ -222,7 +223,7 @@ void ProtocolLogin::HandleDeleteCharacterPacket(NetworkMessage& message)
         return;
     }
     const std::string charUuid = message.GetStringEncrypted();
-    if (charUuid.empty() || uuids::uuid(charUuid).nil())
+    if (Utils::Uuid::IsEmpty(charUuid))
     {
         DisconnectClient(AB::Errors::InvalidCharacter);
         return;
@@ -407,7 +408,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
         output->AddStringEncrypted(character.profession2);
         output->AddByte(static_cast<uint8_t>(character.sex));
         output->Add<uint32_t>(character.modelIndex);
-        if (!uuids::uuid(character.lastOutpostUuid).nil())
+        if (!Utils::Uuid::IsEmpty(character.lastOutpostUuid))
             output->AddStringEncrypted(character.lastOutpostUuid);
         else
             output->AddStringEncrypted(landingGame);

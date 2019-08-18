@@ -20,8 +20,8 @@ private:
     static std::string GetMachineName();
 protected:
     std::atomic<bool> running_;
-    std::string serverId_;
     AB::Entities::ServiceType serverType_;
+    std::string serverId_;
     std::string machine_;
     std::string serverName_;
     std::string serverLocation_;
@@ -37,8 +37,8 @@ protected:
 public:
     ServerApp() :
         running_(false),
-        serverId_(Utils::Uuid::EMPTY_UUID),
         serverType_(AB::Entities::ServiceTypeUnknown),
+        serverId_(Utils::Uuid::EMPTY_UUID),
         machine_(""),
         serverName_(""),
         serverLocation_(""),

@@ -8,6 +8,7 @@
 #include <AB/Entities/ServiceList.h>
 #include "Subsystems.h"
 #include "MatchQueues.h"
+#include "UuidUtils.h"
 
 Application::Application() :
     ServerApp::ServerApp(),
@@ -58,7 +59,7 @@ bool Application::LoadMain()
     }
     LOG_INFO << "[done]" << std::endl;
 
-    if (serverId_.empty() || uuids::uuid(serverId_).nil())
+    if (Utils::Uuid::IsEmpty(serverId_))
         serverId_ = config->GetGlobalString("server_id", Utils::Uuid::EMPTY_UUID);
     if (serverName_.empty())
         serverName_ = config->GetGlobalString("server_name", "abmatch");

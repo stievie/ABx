@@ -2,6 +2,7 @@
 #include "PartyManager.h"
 #include "Subsystems.h"
 #include "DataClient.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -13,10 +14,7 @@ std::shared_ptr<Party> PartyManager::GetByUuid(const std::string& uuid)
 
     std::string _uuid(uuid);
     if (uuids::uuid(_uuid).nil())
-    {
-        const uuids::uuid guid = uuids::uuid_system_generator{}();
-        _uuid = guid.to_string();
-    }
+        _uuid = Utils::Uuid::New();
     AB::Entities::Party p;
     p.uuid = _uuid;
     auto* cli = GetSubsystem<IO::DataClient>();

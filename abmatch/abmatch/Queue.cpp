@@ -8,6 +8,7 @@
 #include "MessageClient.h"
 #include <AB/Entities/Account.h>
 #include "Transaction.h"
+#include "UuidUtils.h"
 
 AB::Entities::ProfessionPosition Queue::GetPlayerPosition(const std::string& uuid)
 {
@@ -72,8 +73,7 @@ std::string Queue::FindServerForMatch(const MatchTeams& teams)
 Queue::Queue(const std::string& mapUuid) :
     mapUuid_(mapUuid)
 {
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    uuid_ = guid.to_string();
+    uuid_ = Utils::Uuid::New();
 }
 
 bool Queue::Load()
@@ -123,7 +123,7 @@ void Queue::Add(const std::string& uuid)
 void Queue::Remove(const std::string& uuid)
 {
     auto it = std::find_if(entries_.begin(), entries_.end(), [&](const QueueEntry& current) {
-        return current.uuid.compare(uuid) == 0;
+        return Utils::Uuid::IsEqual(current.uuid, uuid);
     });
     if (it != entries_.end())
     {
@@ -160,8 +160,7 @@ bool Queue::SendEnterMessage(const MatchTeams& teams)
     stream.WriteString(server);
     stream.WriteString(mapUuid_);
     // This will be the instance UUID so that all teams enter the same game instance
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    const std::string instanceUuid = guid.to_string();
+    const std::string instanceUuid = Utils::Uuid::New();
     stream.WriteString(instanceUuid);
 
     stream.Write<uint8_t>(static_cast<uint8_t>(teams.size()));

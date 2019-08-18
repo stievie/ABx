@@ -18,6 +18,7 @@
 #include <AB/Entities/AccountItemList.h>
 #include "ItemDrop.h"
 #include "ItemsCache.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -123,7 +124,7 @@ void Player::TriggerDialog(uint32_t dialogIndex)
 
 void Player::UpdateMailBox()
 {
-    if (!mailBox_ && !data_.accountUuid.empty() && !uuids::uuid(data_.accountUuid).nil())
+    if (!mailBox_ && !Utils::Uuid::IsEmpty(data_.accountUuid))
         mailBox_ = std::make_unique<MailBox>(data_.accountUuid);
     if (mailBox_)
         mailBox_->Update();
@@ -1070,7 +1071,7 @@ void Player::QueueForMatch()
 
     auto game = GetGame();
     assert(game);
-    if (game->data_.queueMapUuid.empty() || uuids::uuid(game->data_.queueMapUuid).nil())
+    if (Utils::Uuid::IsEmpty(game->data_.queueMapUuid))
         return;
 
     auto* client = GetSubsystem<Net::MessageClient>();

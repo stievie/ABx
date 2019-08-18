@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBAccountKey::Create(AB::Entities::AccountKey& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -43,7 +43,7 @@ bool DBAccountKey::Create(AB::Entities::AccountKey& ak)
 
 bool DBAccountKey::Load(AB::Entities::AccountKey& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -74,7 +74,7 @@ bool DBAccountKey::Load(AB::Entities::AccountKey& ak)
 
 bool DBAccountKey::Save(const AB::Entities::AccountKey& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -113,7 +113,7 @@ bool DBAccountKey::Delete(const AB::Entities::AccountKey&)
 
 bool DBAccountKey::Exists(const AB::Entities::AccountKey& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

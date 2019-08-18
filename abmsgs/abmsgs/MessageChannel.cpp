@@ -7,6 +7,7 @@
 #include <AB/Entities/Account.h>
 #include <AB/Entities/Character.h>
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 MessageParticipant::~MessageParticipant() = default;
 
@@ -281,7 +282,7 @@ MessageParticipant* MessageSession::GetServer(const std::string& serverUuid)
     auto serv = std::find_if(channel_.participants_.begin(),
         channel_.participants_.end(), [&serverUuid](const std::shared_ptr<MessageParticipant>& current)
     {
-        return current->serverId_.compare(serverUuid) == 0;
+        return Utils::Uuid::IsEqual(current->serverId_, serverUuid);
     });
     if (serv != channel_.participants_.end())
         return (*serv).get();

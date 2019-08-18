@@ -7,6 +7,7 @@
 #include "Subsystems.h"
 #include "PartyManager.h"
 #include "Random.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -50,7 +51,7 @@ size_t Party::GetDataPos(Player* player)
     std::vector<std::string>::iterator iter = std::find_if(data_.members.begin(),
         data_.members.end(), [player](const std::string& current)
     {
-        return player->data_.uuid.compare(current) == 0;
+        return Utils::Uuid::IsEqual(player->data_.uuid, current);
     });
     const size_t index = std::distance(data_.members.begin(), iter);
     if (index == data_.members.size())

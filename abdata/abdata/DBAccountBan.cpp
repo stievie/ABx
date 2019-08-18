@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBAccountBan::Create(AB::Entities::AccountBan& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -41,7 +41,7 @@ bool DBAccountBan::Load(AB::Entities::AccountBan& ban)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT * FROM `account_bans` WHERE ";
-    if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(ban.uuid))
         query << "`uuid` = " << ban.uuid;
     else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
         query << "`account_uuid` = " << db->EscapeString(ban.accountUuid);
@@ -64,7 +64,7 @@ bool DBAccountBan::Load(AB::Entities::AccountBan& ban)
 
 bool DBAccountBan::Save(const AB::Entities::AccountBan& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -92,7 +92,7 @@ bool DBAccountBan::Save(const AB::Entities::AccountBan& ban)
 
 bool DBAccountBan::Delete(const AB::Entities::AccountBan& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -117,7 +117,7 @@ bool DBAccountBan::Exists(const AB::Entities::AccountBan& ban)
     Database* db = GetSubsystem<Database>();
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `account_bans` WHERE ";
-    if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(ban.uuid))
         query << "`uuid` = " << db->EscapeString(ban.uuid);
     else if (!ban.accountUuid.empty() && !uuids::uuid(ban.accountUuid).nil())
         query << "`account_uuid` = " << db->EscapeString(ban.accountUuid);

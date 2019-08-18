@@ -27,6 +27,7 @@
 #include "ItemDrop.h"
 #include "Projectile.h"
 #include "PartyManager.h"
+#include "UuidUtils.h"
 
 namespace Game {
 
@@ -35,8 +36,7 @@ Game::Game()
     InitializeLua();
     // Create gameStatus_ here, because we may already write it.
     ResetStatus();
-    const uuids::uuid guid = uuids::uuid_system_generator{}();
-    instanceData_.uuid = guid.to_string();
+    instanceData_.uuid = Utils::Uuid::New();
 }
 
 Game::~Game()

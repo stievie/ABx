@@ -8,7 +8,7 @@ namespace DB {
 
 bool DBAccount::Create(AB::Entities::Account& account)
 {
-    if (account.uuid.empty() || uuids::uuid(account.uuid).nil())
+    if (Utils::Uuid::IsEmpty(account.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -53,7 +53,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
 
     std::ostringstream query;
     query << "SELECT * FROM `accounts` WHERE ";
-    if (!account.uuid.empty() && !uuids::uuid(account.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(account.uuid))
         query << "`uuid` = " << db->EscapeString(account.uuid);
     else if (!account.name.empty())
         query << "`name` = " << db->EscapeString(account.name);
@@ -99,7 +99,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
 
 bool DBAccount::Save(const AB::Entities::Account& account)
 {
-    if (account.uuid.empty() || uuids::uuid(account.uuid).nil())
+    if (Utils::Uuid::IsEmpty(account.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -136,7 +136,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
 
 bool DBAccount::Delete(const AB::Entities::Account& account)
 {
-    if (account.uuid.empty() || uuids::uuid(account.uuid).nil())
+    if (Utils::Uuid::IsEmpty(account.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -163,7 +163,7 @@ bool DBAccount::Exists(const AB::Entities::Account& account)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `accounts` WHERE ";
-    if (!account.uuid.empty() && !uuids::uuid(account.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(account.uuid))
         query << "`uuid` = " << db->EscapeString(account.uuid);
     else if (!account.name.empty())
         query << "`name` = " << db->EscapeString(account.name);
