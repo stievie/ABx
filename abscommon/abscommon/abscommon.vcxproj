@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BanManager.h" />
+    <ClInclude Include="CallableTable.h" />
     <ClInclude Include="Connection.h" />
     <ClInclude Include="ConsoleColor.h" />
     <ClInclude Include="CpuUsage.h" />

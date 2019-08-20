@@ -31,6 +31,8 @@
 #endif
 #include "StringHash.h"
 #include "DataKey.h"
+#include "CallableTable.h"
+#include "StringHash.h"
 
 // Clean cache every 10min
 #define CLEAN_CACHE_MS (1000 * 60 * 10)
@@ -131,6 +133,34 @@ public:
 private:
     /// first = flags, second = data
     using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;
+    Utils::CallableTable<size_t, bool, std::vector<uint8_t>&> exitsCallables_;
+    Utils::CallableTable<size_t, bool, CacheItem&> flushCallables_;
+    Utils::CallableTable<size_t, bool, const uuids::uuid&, std::vector<uint8_t>&> loadCallables_;
+    template<typename D, typename E>
+    void AddEntityClass()
+    {
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4307)
+#endif
+        static constexpr size_t hash = Utils::StringHash(E::KEY());
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+        exitsCallables_.Add(hash, [this](auto& data) -> bool
+        {
+            return ExistsInDB<D, E>(data);
+        });
+        flushCallables_.Add(hash, [this](CacheItem& data) -> bool
+        {
+            return FlushRecord<D, E>(data);
+        });
+        loadCallables_.Add(hash, [this](auto& id, auto& data) -> bool
+        {
+            return LoadFromDB<D, E>(id, data);
+        });
+    }
+    void InitEnitityClasses();
 
     /// Read UUID from data
     static uuids::uuid GetUuid(std::vector<uint8_t>& data);
@@ -175,28 +205,28 @@ private:
     /// So synchronize this item with the DB. Depending on the data header calls
     /// CreateInDB(), SaveToDB() and/or DeleteFromDB()
     bool FlushData(const IO::DataKey& key);
-    template<typename D, typename E, typename I>
-    bool FlushRecord(I& data)
+    template<typename D, typename E>
+    bool FlushRecord(CacheItem& data)
     {
         bool succ = true;
         // These flags are not mutually exclusive, hoverer creating it implies it is no longer modified
-        if (!(*data).second.first.created)
+        if (!data.first.created)
         {
-            succ = CreateInDB<D, E>(*(*data).second.second.get());
+            succ = CreateInDB<D, E>(*data.second.get());
             if (succ)
             {
-                (*data).second.first.created = true;
-                (*data).second.first.modified = false;
+                data.first.created = true;
+                data.first.modified = false;
             }
         }
-        else if ((*data).second.first.modified)
+        else if (data.first.modified)
         {
-            succ = SaveToDB<D, E>(*(*data).second.second.get());
+            succ = SaveToDB<D, E>(*data.second.get());
             if (succ)
-                (*data).second.first.modified = false;
+                data.first.modified = false;
         }
-        if ((*data).second.first.deleted)
-            succ = DeleteFromDB<D, E>(*(*data).second.second.get());
+        if (data.first.deleted)
+            succ = DeleteFromDB<D, E>(*data.second.get());
 
         return succ;
     }

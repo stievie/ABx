@@ -114,6 +114,7 @@
     <ClCompile Include="Math.Utils.cpp" />
     <ClCompile Include="Math.Vector3.cpp" />
     <ClCompile Include="Net.MessageMsg.cpp" />
+    <ClCompile Include="Utils.CallableTable.cpp" />
     <ClCompile Include="Utils.Transaction.cpp" />
     <ClCompile Include="Utils.WeightedSelector.cpp" />
   </ItemGroup>

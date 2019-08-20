@@ -156,6 +156,9 @@
     <ClInclude Include="Transaction.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="CallableTable.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

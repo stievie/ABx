@@ -2,8 +2,6 @@
 #include "StorageProvider.h"
 #include "Database.h"
 #include <sstream>
-#include "StringHash.h"
-#include "StringHash.h"
 #include "Scheduler.h"
 #include "Dispatcher.h"
 #include "DBAll.h"
@@ -80,6 +78,7 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     currentSize_(0),
     cache_()
 {
+    InitEnitityClasses();
     auto sched = GetSubsystem<Asynch::Scheduler>();
     sched->Add(
         Asynch::CreateScheduledTask(FLUSH_CACHE_MS, std::bind(&StorageProvider::FlushCacheTask, this))
@@ -87,6 +86,55 @@ StorageProvider::StorageProvider(size_t maxSize, bool readonly) :
     sched->Add(
         Asynch::CreateScheduledTask(CLEAN_CACHE_MS, std::bind(&StorageProvider::CleanTask, this))
     );
+}
+
+void StorageProvider::InitEnitityClasses()
+{
+    AddEntityClass<DB::DBAccount, AB::Entities::Account>();
+    AddEntityClass<DB::DBCharacter, AB::Entities::Character>();
+    AddEntityClass<DB::DBGame, AB::Entities::Game>();
+    AddEntityClass<DB::DBGameList, AB::Entities::GameList>();
+    AddEntityClass<DB::DBIpBan, AB::Entities::IpBan>();
+    AddEntityClass<DB::DBAccountBan, AB::Entities::AccountBan>();
+    AddEntityClass<DB::DBBan, AB::Entities::Ban>();
+    AddEntityClass<DB::DBFriendList, AB::Entities::FriendList>();
+    AddEntityClass<DB::DBAccountKey, AB::Entities::AccountKey>();
+    AddEntityClass<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>();
+    AddEntityClass<DB::DBMail, AB::Entities::Mail>();
+    AddEntityClass<DB::DBMailList, AB::Entities::MailList>();
+    AddEntityClass<DB::DBProfession, AB::Entities::Profession>();
+    AddEntityClass<DB::DBSkill, AB::Entities::Skill>();
+    AddEntityClass<DB::DBEffect, AB::Entities::Effect>();
+    AddEntityClass<DB::DBAttribute, AB::Entities::Attribute>();
+    AddEntityClass<DB::DBSkillList, AB::Entities::SkillList>();
+    AddEntityClass<DB::DBEffectList, AB::Entities::EffectList>();
+    AddEntityClass<DB::DBProfessionList, AB::Entities::ProfessionList>();
+    AddEntityClass<DB::DBVersion, AB::Entities::Version>();
+    AddEntityClass<DB::DBAttributeList, AB::Entities::AttributeList>();
+    AddEntityClass<DB::DBAccountList, AB::Entities::AccountList>();
+    AddEntityClass<DB::DBCharacterList, AB::Entities::CharacterList>();
+    AddEntityClass<DB::DBService, AB::Entities::Service>();
+    AddEntityClass<DB::DBServicelList, AB::Entities::ServiceList>();
+    AddEntityClass<DB::DBGuild, AB::Entities::Guild>();
+    AddEntityClass<DB::DBGuildMembers, AB::Entities::GuildMembers>();
+    AddEntityClass<DB::DBReservedName, AB::Entities::ReservedName>();
+    AddEntityClass<DB::DBItem, AB::Entities::Item>();
+    AddEntityClass<DB::DBItemList, AB::Entities::ItemList>();
+    AddEntityClass<DB::DBVersionList, AB::Entities::VersionList>();
+    AddEntityClass<DB::DBAccountKeyList, AB::Entities::AccountKeyList>();
+    AddEntityClass<DB::DBMusic, AB::Entities::Music>();
+    AddEntityClass<DB::DBMusicList, AB::Entities::MusicList>();
+    AddEntityClass<DB::DBConcreteItem, AB::Entities::ConcreteItem>();
+    AddEntityClass<DB::DBAccountItemList, AB::Entities::ChestItems>();
+    AddEntityClass<DB::DBPlayerItemList, AB::Entities::InventoryItems>();
+    AddEntityClass<DB::DBPlayerItemList, AB::Entities::EquippedItems>();
+    AddEntityClass<DB::DBItemChanceList, AB::Entities::ItemChanceList>();
+    AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>();
+    AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>();
+    AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>();
+    AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>();
+    AddEntityClass<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>();
+    AddEntityClass<DB::DBInstance, AB::Entities::GameInstance>();
 }
 
 bool StorageProvider::Create(const IO::DataKey& key, std::shared_ptr<std::vector<uint8_t>> data)
@@ -564,109 +612,23 @@ bool StorageProvider::LoadData(const IO::DataKey& key,
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
-    case KEY_ACCOUNTS_HASH:
-        return LoadFromDB<DB::DBAccount, AB::Entities::Account>(id, *data);
-    case KEY_CHARACTERS_HASH:
-        return LoadFromDB<DB::DBCharacter, AB::Entities::Character>(id, *data);
-    case KEY_GAMES_HASH:
-        return LoadFromDB<DB::DBGame, AB::Entities::Game>(id, *data);
-    case KEY_GAMELIST_HASH:
-        return LoadFromDB<DB::DBGameList, AB::Entities::GameList>(id, *data);
-    case KEY_IPBANS_HASH:
-        return LoadFromDB<DB::DBIpBan, AB::Entities::IpBan>(id, *data);
-    case KEY_ACCOUNTBANS_HASH:
-        return LoadFromDB<DB::DBAccountBan, AB::Entities::AccountBan>(id, *data);
-    case KEY_BANS_HASH:
-        return LoadFromDB<DB::DBBan, AB::Entities::Ban>(id, *data);
-    case KEY_FRIENDLIST_HASH:
-        return LoadFromDB<DB::DBFriendList, AB::Entities::FriendList>(id, *data);
-    case KEY_ACCOUNTKEYS_HASH:
-        return LoadFromDB<DB::DBAccountKey, AB::Entities::AccountKey>(id, *data);
-    case KEY_ACCOUNTKEYACCOUNTS_HASH:
-        return LoadFromDB<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(id, *data);
-    case KEY_MAIL_HASH:
-        return LoadFromDB<DB::DBMail, AB::Entities::Mail>(id, *data);
-    case KEY_MAILLIST_HASH:
-        return LoadFromDB<DB::DBMailList, AB::Entities::MailList>(id, *data);
-    case KEY_PROFESSIONS_HASH:
-        return LoadFromDB<DB::DBProfession, AB::Entities::Profession>(id, *data);
-    case KEY_SKILLS_HASH:
-        return LoadFromDB<DB::DBSkill, AB::Entities::Skill>(id, *data);
-    case KEY_EFFECTS_HASH:
-        return LoadFromDB<DB::DBEffect, AB::Entities::Effect>(id, *data);
-    case KEY_ATTRIBUTES_HASH:
-        return LoadFromDB<DB::DBAttribute, AB::Entities::Attribute>(id, *data);
-    case KEY_SKILLLIST_HASH:
-        return LoadFromDB<DB::DBSkillList, AB::Entities::SkillList>(id, *data);
-    case KEY_EFFECTLIST_HASH:
-        return LoadFromDB<DB::DBEffectList, AB::Entities::EffectList>(id, *data);
-    case KEY_PROFESSIONLIST_HASH:
-        return LoadFromDB<DB::DBProfessionList, AB::Entities::ProfessionList>(id, *data);
-    case KEY_VERSIONS_HASH:
-        return LoadFromDB<DB::DBVersion, AB::Entities::Version>(id, *data);
-    case KEY_ATTRIBUTELIST_HASH:
-        return LoadFromDB<DB::DBAttributeList, AB::Entities::AttributeList>(id, *data);
-    case KEY_ACCOUNTLIST_HASH:
-        return LoadFromDB<DB::DBAccountList, AB::Entities::AccountList>(id, *data);
-    case KEY_CHARACTERLIST_HASH:
-        return LoadFromDB<DB::DBCharacterList, AB::Entities::CharacterList>(id, *data);
-    case KEY_SERVICE_HASH:
-        return LoadFromDB<DB::DBService, AB::Entities::Service>(id, *data);
-    case KEY_SERVICELIST_HASH:
-        return LoadFromDB<DB::DBServicelList, AB::Entities::ServiceList>(id, *data);
-    case KEY_GUILD_HASH:
-        return LoadFromDB<DB::DBGuild, AB::Entities::Guild>(id, *data);
-    case KEY_GUILDMEMBERS_HASH:
-        return LoadFromDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(id, *data);
-    case KEY_RESERVEDNAME_HASH:
-        return LoadFromDB<DB::DBReservedName, AB::Entities::ReservedName>(id, *data);
-    case KEY_ITEMS_HASH:
-        return LoadFromDB<DB::DBItem, AB::Entities::Item>(id, *data);
-    case KEY_ITEMLIST_HASH:
-        return LoadFromDB<DB::DBItemList, AB::Entities::ItemList>(id, *data);
-    case KEY_VERSIONLIST_HASH:
-        return LoadFromDB<DB::DBVersionList, AB::Entities::VersionList>(id, *data);
-    case KEY_ACCOUNTKEYLIST_HASH:
-        return LoadFromDB<DB::DBAccountKeyList, AB::Entities::AccountKeyList>(id, *data);
-    case KEY_MUSIC_HASH:
-        return LoadFromDB<DB::DBMusic, AB::Entities::Music>(id, *data);
-    case KEY_MUSICLIST_HASH:
-        return LoadFromDB<DB::DBMusicList, AB::Entities::MusicList>(id, *data);
-    case KEY_CONCRETEITEMS_HASH:
-        return LoadFromDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(id, *data);
     case KEY_ACCOUNTITEMLIST_HASH:
         assert(false);
-    case KEY_CHESTITEMLIST_HASH:
-        return LoadFromDB<DB::DBAccountItemList, AB::Entities::ChestItems>(id, *data);
     case KEY_PLAYERITEMLIST_HASH:
         // Use one bellow
         assert(false);
-    case KEY_INVENTORYITEMLIST_HASH:
-        return LoadFromDB<DB::DBPlayerItemList, AB::Entities::InventoryItems>(id, *data);
-    case KEY_EQUIPPEDITEMLIST_HASH:
-        return LoadFromDB<DB::DBPlayerItemList, AB::Entities::EquippedItems>(id, *data);
-    case KEY_ITEMCHANCELIST_HASH:
-        return LoadFromDB<DB::DBItemChanceList, AB::Entities::ItemChanceList>(id, *data);
     case KEY_TYPEDITEMLIST_HASH:
         assert(false);
-    case KEY_INSIGNIAITEMLIST_HASH:
-        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>(id, *data);
-    case KEY_RUNEITEMLIST_HASH:
-        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>(id, *data);
-    case KEY_WEAPONPREFIXITEMLIST_HASH:
-        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>(id, *data);
-    case KEY_WEAPONSUFFIXITEMLIST_HASH:
-        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>(id, *data);
-    case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
-        return LoadFromDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(id, *data);
-    case KEY_GAMEINSTANCES_HASH:
-        return LoadFromDB<DB::DBInstance, AB::Entities::GameInstance>(id, *data);
     case KEY_PARTIES_HASH:
         // Not written to DB
         return false;
     default:
+    {
+        if (loadCallables_.Exists(tableHash))
+            return loadCallables_.Call(tableHash, id, *data);
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
+    }
     }
 
     return false;
@@ -688,6 +650,8 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
     if (!(*data).second.first.modified && !(*data).second.first.deleted && (*data).second.first.created)
         return true;
 
+    CacheItem& item = (*data).second;
+
     std::string table;
     uuids::uuid id;
     if (!key.decode(table, id))
@@ -701,138 +665,12 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
 
     switch (tableHash)
     {
-    case KEY_ACCOUNTS_HASH:
-        succ = FlushRecord<DB::DBAccount, AB::Entities::Account>(data);
-        break;
-    case KEY_CHARACTERS_HASH:
-        succ = FlushRecord<DB::DBCharacter, AB::Entities::Character>(data);
-        break;
-    case KEY_GAMES_HASH:
-        succ = FlushRecord<DB::DBGame, AB::Entities::Game>(data);
-        break;
-    case KEY_GAMELIST_HASH:
-        succ = FlushRecord<DB::DBGameList, AB::Entities::GameList>(data);
-        break;
-    case KEY_IPBANS_HASH:
-        succ = FlushRecord<DB::DBIpBan, AB::Entities::IpBan>(data);
-        break;
-    case KEY_ACCOUNTBANS_HASH:
-        succ = FlushRecord<DB::DBAccountBan, AB::Entities::AccountBan>(data);
-        break;
-    case KEY_BANS_HASH:
-        succ = FlushRecord<DB::DBBan, AB::Entities::Ban>(data);
-        break;
-    case KEY_FRIENDLIST_HASH:
-        succ = FlushRecord<DB::DBFriendList, AB::Entities::FriendList>(data);
-        break;
-    case KEY_ACCOUNTKEYS_HASH:
-        succ = FlushRecord<DB::DBAccountKey, AB::Entities::AccountKey>(data);
-        break;
-    case KEY_ACCOUNTKEYACCOUNTS_HASH:
-        succ = FlushRecord<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(data);
-        break;
-    case KEY_MAIL_HASH:
-        succ = FlushRecord<DB::DBMail, AB::Entities::Mail>(data);
-        break;
-    case KEY_MAILLIST_HASH:
-        succ = FlushRecord<DB::DBMailList, AB::Entities::MailList>(data);
-        break;
-    case KEY_PROFESSIONS_HASH:
-        succ = FlushRecord<DB::DBProfession, AB::Entities::Profession>(data);
-        break;
-    case KEY_SKILLS_HASH:
-        succ = FlushRecord<DB::DBSkill, AB::Entities::Skill>(data);
-        break;
-    case KEY_EFFECTS_HASH:
-        succ = FlushRecord<DB::DBEffect, AB::Entities::Effect>(data);
-        break;
-    case KEY_ATTRIBUTES_HASH:
-        succ = FlushRecord<DB::DBAttribute, AB::Entities::Attribute>(data);
-        break;
-    case KEY_SKILLLIST_HASH:
-        succ = FlushRecord<DB::DBSkillList, AB::Entities::SkillList>(data);
-        break;
-    case KEY_EFFECTLIST_HASH:
-        succ = FlushRecord<DB::DBEffectList, AB::Entities::EffectList>(data);
-        break;
-    case KEY_PROFESSIONLIST_HASH:
-        succ = FlushRecord<DB::DBProfessionList, AB::Entities::ProfessionList>(data);
-        break;
-    case KEY_VERSIONS_HASH:
-        succ = FlushRecord<DB::DBVersion, AB::Entities::Version>(data);
-        break;
-    case KEY_ATTRIBUTELIST_HASH:
-        succ = FlushRecord<DB::DBAttributeList, AB::Entities::AttributeList>(data);
-        break;
-    case KEY_ACCOUNTLIST_HASH:
-        succ = FlushRecord<DB::DBAccountList, AB::Entities::AccountList>(data);
-        break;
-    case KEY_CHARACTERLIST_HASH:
-        succ = FlushRecord<DB::DBCharacterList, AB::Entities::CharacterList>(data);
-        break;
-    case KEY_SERVICE_HASH:
-        succ = FlushRecord<DB::DBService, AB::Entities::Service>(data);
-        break;
-    case KEY_GUILD_HASH:
-        succ = FlushRecord<DB::DBGuild, AB::Entities::Guild>(data);
-        break;
-    case KEY_GUILDMEMBERS_HASH:
-        succ = FlushRecord<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
-        break;
-    case KEY_RESERVEDNAME_HASH:
-        succ = FlushRecord<DB::DBReservedName, AB::Entities::ReservedName>(data);
-        break;
-    case KEY_ITEMS_HASH:
-        succ = FlushRecord<DB::DBItem, AB::Entities::Item>(data);
-        break;
-    case KEY_ITEMLIST_HASH:
-        succ = FlushRecord<DB::DBItemList, AB::Entities::ItemList>(data);
-        break;
-    case KEY_VERSIONLIST_HASH:
-        succ = FlushRecord<DB::DBVersionList, AB::Entities::VersionList>(data);
-        break;
-    case KEY_ACCOUNTKEYLIST_HASH:
-        succ = FlushRecord<DB::DBAccountKeyList, AB::Entities::AccountKeyList>(data);
-        break;
-    case KEY_MUSIC_HASH:
-        succ = FlushRecord<DB::DBMusic, AB::Entities::Music>(data);
-        break;
-    case KEY_MUSICLIST_HASH:
-        succ = FlushRecord<DB::DBMusicList, AB::Entities::MusicList>(data);
-        break;
-    case KEY_CONCRETEITEMS_HASH:
-        succ = FlushRecord<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
-        break;
     case KEY_ACCOUNTITEMLIST_HASH:
         assert(false);
-    case KEY_CHESTITEMLIST_HASH:
-        succ = FlushRecord<DB::DBAccountItemList, AB::Entities::ChestItems>(data);
-        break;
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
-    case KEY_ITEMCHANCELIST_HASH:
-        succ = FlushRecord<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
-        break;
     case KEY_TYPEDITEMLIST_HASH:
         assert(false);
-    case KEY_INSIGNIAITEMLIST_HASH:
-        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>(data);
-        break;
-    case KEY_RUNEITEMLIST_HASH:
-        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>(data);
-        break;
-    case KEY_WEAPONPREFIXITEMLIST_HASH:
-        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>(data);
-        break;
-    case KEY_WEAPONSUFFIXITEMLIST_HASH:
-        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>(data);
-        break;
-    case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
-        succ = FlushRecord<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
-        break;
-    case KEY_GAMEINSTANCES_HASH:
-        succ = FlushRecord<DB::DBInstance, AB::Entities::GameInstance>(data);
-        break;
     case KEY_SERVICELIST_HASH:
     case KEY_INVENTORYITEMLIST_HASH:
     case KEY_EQUIPPEDITEMLIST_HASH:
@@ -844,8 +682,15 @@ bool StorageProvider::FlushData(const IO::DataKey& key)
         succ = true;
         break;
     default:
-        LOG_ERROR << "Unknown table " << table << std::endl;
-        return false;
+    {
+        if (flushCallables_.Exists(tableHash))
+            succ = flushCallables_.Call(tableHash, item);
+        else
+        {
+            LOG_ERROR << "Unknown table " << table << std::endl;
+            return false;
+        }
+    }
     }
 
     if (!succ)
@@ -863,106 +708,18 @@ bool StorageProvider::ExistsData(const IO::DataKey& key, std::vector<uint8_t>& d
     size_t tableHash = Utils::StringHashRt(table.data());
     switch (tableHash)
     {
-    case KEY_ACCOUNTS_HASH:
-        return ExistsInDB<DB::DBAccount, AB::Entities::Account>(data);
-    case KEY_CHARACTERS_HASH:
-        return ExistsInDB<DB::DBCharacter, AB::Entities::Character>(data);
-    case KEY_GAMES_HASH:
-        return ExistsInDB<DB::DBGame, AB::Entities::Game>(data);
-    case KEY_GAMELIST_HASH:
-        return ExistsInDB<DB::DBGameList, AB::Entities::GameList>(data);
-    case KEY_IPBANS_HASH:
-        return ExistsInDB<DB::DBIpBan, AB::Entities::IpBan>(data);
-    case KEY_ACCOUNTBANS_HASH:
-        return ExistsInDB<DB::DBAccountBan, AB::Entities::AccountBan>(data);
-    case KEY_BANS_HASH:
-        return ExistsInDB<DB::DBBan, AB::Entities::Ban>(data);
-    case KEY_FRIENDLIST_HASH:
-        return ExistsInDB<DB::DBFriendList, AB::Entities::FriendList>(data);
-    case KEY_ACCOUNTKEYS_HASH:
-        return ExistsInDB<DB::DBAccountKey, AB::Entities::AccountKey>(data);
-    case KEY_ACCOUNTKEYACCOUNTS_HASH:
-        return ExistsInDB<DB::DBAccountKeyAccounts, AB::Entities::AccountKeyAccounts>(data);
-    case KEY_MAIL_HASH:
-        return ExistsInDB<DB::DBMail, AB::Entities::Mail>(data);
-    case KEY_MAILLIST_HASH:
-        return ExistsInDB<DB::DBMailList, AB::Entities::MailList>(data);
-    case KEY_PROFESSIONS_HASH:
-        return ExistsInDB<DB::DBProfession, AB::Entities::Profession>(data);
-    case KEY_SKILLS_HASH:
-        return ExistsInDB<DB::DBSkill, AB::Entities::Skill>(data);
-    case KEY_EFFECTS_HASH:
-        return ExistsInDB<DB::DBEffect, AB::Entities::Effect>(data);
-    case KEY_ATTRIBUTES_HASH:
-        return ExistsInDB<DB::DBAttribute, AB::Entities::Attribute>(data);
-    case KEY_SKILLLIST_HASH:
-        return ExistsInDB<DB::DBSkillList, AB::Entities::SkillList>(data);
-    case KEY_EFFECTLIST_HASH:
-        return ExistsInDB<DB::DBEffectList, AB::Entities::EffectList>(data);
-    case KEY_PROFESSIONLIST_HASH:
-        return ExistsInDB<DB::DBProfessionList, AB::Entities::ProfessionList>(data);
-    case KEY_VERSIONS_HASH:
-        return ExistsInDB<DB::DBVersion, AB::Entities::Version>(data);
-    case KEY_ATTRIBUTELIST_HASH:
-        return ExistsInDB<DB::DBAttributeList, AB::Entities::AttributeList>(data);
-    case KEY_ACCOUNTLIST_HASH:
-        return ExistsInDB<DB::DBAccountList, AB::Entities::AccountList>(data);
-    case KEY_CHARACTERLIST_HASH:
-        return ExistsInDB<DB::DBCharacterList, AB::Entities::CharacterList>(data);
-    case KEY_SERVICE_HASH:
-        return ExistsInDB<DB::DBService, AB::Entities::Service>(data);
-    case KEY_SERVICELIST_HASH:
-        return ExistsInDB<DB::DBServicelList, AB::Entities::ServiceList>(data);
-    case KEY_GUILD_HASH:
-        return ExistsInDB<DB::DBGuild, AB::Entities::Guild>(data);
-    case KEY_GUILDMEMBERS_HASH:
-        return ExistsInDB<DB::DBGuildMembers, AB::Entities::GuildMembers>(data);
-    case KEY_RESERVEDNAME_HASH:
-        return ExistsInDB<DB::DBReservedName, AB::Entities::ReservedName>(data);
-    case KEY_ITEMS_HASH:
-        return ExistsInDB<DB::DBItem, AB::Entities::Item>(data);
-    case KEY_ITEMLIST_HASH:
-        return ExistsInDB<DB::DBItemList, AB::Entities::ItemList>(data);
-    case KEY_VERSIONLIST_HASH:
-        return ExistsInDB<DB::DBVersionList, AB::Entities::VersionList>(data);
-    case KEY_ACCOUNTKEYLIST_HASH:
-        return ExistsInDB<DB::DBAccountKeyList, AB::Entities::AccountKeyList>(data);
-    case KEY_MUSIC_HASH:
-        return ExistsInDB<DB::DBMusic, AB::Entities::Music>(data);
-    case KEY_MUSICLIST_HASH:
-        return ExistsInDB<DB::DBMusicList, AB::Entities::MusicList>(data);
-    case KEY_CONCRETEITEMS_HASH:
-        return ExistsInDB<DB::DBConcreteItem, AB::Entities::ConcreteItem>(data);
     case KEY_ACCOUNTITEMLIST_HASH:
         assert(false);
-    case KEY_CHESTITEMLIST_HASH:
-        return ExistsInDB<DB::DBAccountItemList, AB::Entities::ChestItems>(data);
     case KEY_PLAYERITEMLIST_HASH:
         assert(false);
-    case KEY_INVENTORYITEMLIST_HASH:
-        return ExistsInDB<DB::DBPlayerItemList, AB::Entities::InventoryItems>(data);
-    case KEY_EQUIPPEDITEMLIST_HASH:
-        return ExistsInDB<DB::DBPlayerItemList, AB::Entities::EquippedItems>(data);
-    case KEY_ITEMCHANCELIST_HASH:
-        return ExistsInDB<DB::DBItemChanceList, AB::Entities::ItemChanceList>(data);
     case KEY_TYPEDITEMLIST_HASH:
         assert(false);
-    case KEY_INSIGNIAITEMLIST_HASH:
-        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsInsignia>(data);
-    case KEY_RUNEITEMLIST_HASH:
-        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsRunes>(data);
-    case KEY_WEAPONPREFIXITEMLIST_HASH:
-        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponPrefix>(data);
-    case KEY_WEAPONSUFFIXITEMLIST_HASH:
-        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponSuffix>(data);
-    case KEY_WEAPONINSCRIPTIONITEMLIST_HASH:
-        return ExistsInDB<DB::DBTypedItemList, AB::Entities::TypedItemsWeaponInscription>(data);
-    case KEY_GAMEINSTANCES_HASH:
-        return ExistsInDB<DB::DBInstance, AB::Entities::GameInstance>(data);
     case KEY_PARTIES_HASH:
         // Not written to DB. If we are here its not in cache so does not exist
         return false;
     default:
+        if (exitsCallables_.Exists(tableHash))
+            return exitsCallables_.Call(tableHash, data);
         LOG_ERROR << "Unknown table " << table << std::endl;
         break;
     }
