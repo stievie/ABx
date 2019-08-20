@@ -147,6 +147,11 @@ private:
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
+        // For each Entity there are 3 methods that we need:
+        // 1. Does the Entity exist
+        // 2. Write (also delete) the entity to the DB
+        // 3. Load the Entity from the DB
+        // Yes, I love templates too!
         exitsCallables_.Add(hash, [this](auto& data) -> bool
         {
             return ExistsInDB<D, E>(data);
@@ -155,7 +160,7 @@ private:
         {
             return FlushRecord<D, E>(data);
         });
-        loadCallables_.Add(hash, [this](auto& id, auto& data) -> bool
+        loadCallables_.Add(hash, [this](const auto& id, auto& data) -> bool
         {
             return LoadFromDB<D, E>(id, data);
         });
