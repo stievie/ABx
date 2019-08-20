@@ -9,6 +9,7 @@ Tests/Math.Transformation.cpp
 Tests/Math.Utils.cpp
 Tests/Math.Vector3.cpp
 Tests/Net.MessageMsg.cpp
+Tests/Utils.CallableTable.cpp
 Tests/Utils.Transaction.cpp
 Tests/Utils.WeightedSelector.cpp
 Tests/main.cpp

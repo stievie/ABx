@@ -1,5 +1,6 @@
 abscommon/BanManager.cpp
 abscommon/BanManager.h
+abscommon/CallableTable.h
 abscommon/ConditionSleep.h
 abscommon/Connection.cpp
 abscommon/Connection.h
