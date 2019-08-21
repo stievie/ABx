@@ -143,7 +143,7 @@ private:
 #pragma warning(push)
 #pragma warning(disable: 4307)
 #endif
-        static constexpr size_t hash = Utils::StringHash(E::KEY());
+        constexpr size_t hash = Utils::StringHash(E::KEY());
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
