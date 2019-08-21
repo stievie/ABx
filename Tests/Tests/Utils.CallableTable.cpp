@@ -73,4 +73,14 @@ TEST_CASE("CallableTable")
         table.Add(1, std::bind(&ClassWithMedhodTemplate::Foo<int>, &o, std::placeholders::_1));
         REQUIRE(table.Call(1, 1) == 1);
     }
+
+    SECTION("Operator []")
+    {
+        Utils::CallableTable<unsigned, int, int, int> table;
+        table.Add(1, [](int i, int j) -> int
+        {
+            return i * j;
+        });
+        REQUIRE(table[1](2, 2) == 4);
+    }
 }
