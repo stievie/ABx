@@ -16,7 +16,7 @@ void TriggerComp::DoTrigger(GameObject* other)
     const int64_t lastTrigger = (it != triggered_.end()) ? (*it).second : 0;
     if (lastTrigger == 0 || static_cast<uint32_t>(tick - lastTrigger) > retriggerTimeout_)
     {
-        owner_.OnTrigger(other);
+        owner_.CallEvent<void(GameObject*)>(EVENT_ON_TRIGGER, other);
         triggered_[other->id_] = tick;
     }
 }
@@ -54,7 +54,7 @@ void TriggerComp::Update(uint32_t timeElapsed)
             {
                 // No longer collides
                 triggered_.erase(it++);
-                owner_.OnLeftArea(o.get());
+                owner_.CallEvent<void(GameObject*)>(EVENT_ON_LEFTAREA, o.get());
             }
             else
                 ++it;

@@ -21,22 +21,36 @@
 
 namespace Game {
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4307)
+#endif
+static constexpr Utils::event_t EVENT_ON_ARRIVED = Utils::StringHash("OnArrived");
+static constexpr Utils::event_t EVENT_ON_INTERRUPTEDATTACK = Utils::StringHash("OnInterruptedAttack");
+static constexpr Utils::event_t EVENT_ON_INTERRUPTEDSKILL = Utils::StringHash("OnInterruptedSkill");
+static constexpr Utils::event_t EVENT_ON_KNOCKEDDOWN = Utils::StringHash("OnKnockedDown");
+static constexpr Utils::event_t EVENT_ON_HEALED = Utils::StringHash("OnHealed");
+static constexpr Utils::event_t EVENT_ON_DIED = Utils::StringHash("OnDied");
+static constexpr Utils::event_t EVENT_ON_RESURRECTED = Utils::StringHash("OnResurrected");
+static constexpr Utils::event_t EVENT_ON_PINGOBJECT = Utils::StringHash("OnPingObject");
+static constexpr Utils::event_t EVENT_ON_INVENTORYFULL = Utils::StringHash("OnInventoryFull");
+static constexpr Utils::event_t EVENT_ON_ATTACK = Utils::StringHash("OnAttack");
+static constexpr Utils::event_t EVENT_ON_ATTACKED = Utils::StringHash("OnAttacked");
+static constexpr Utils::event_t EVENT_ON_GETTINGATTACKED = Utils::StringHash("OnGettingAttacked");
+static constexpr Utils::event_t EVENT_ON_USESKILL = Utils::StringHash("OnUseSkill");
+static constexpr Utils::event_t EVENT_ON_SKILLTARGETED = Utils::StringHash("OnSkillTargeted");
+static constexpr Utils::event_t EVENT_ON_GETCRITICALHIT = Utils::StringHash("OnGetCriticalHit");
+static constexpr Utils::event_t EVENT_ON_ENDUSESKILL = Utils::StringHash("OnEndUseSkill");
+static constexpr Utils::event_t EVENT_ON_STARTUSESKILL = Utils::StringHash("OnStartUseSkill");
+static constexpr Utils::event_t EVENT_ON_HANDLECOMMAND = Utils::StringHash("OnHandleCommand");
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
+
 /// Player, NPC, Monster some such
 class Actor : public GameObject
 {
-    friend class Skill;
-    friend class Components::MoveComp;
-    friend class Components::AutoRunComp;
-    friend class Components::CollisionComp;
-    friend class Components::ResourceComp;
-    friend class Components::AttackComp;
-    friend class Components::EffectsComp;
-    friend class Components::InventoryComp;
-    friend class Components::SkillsComp;
-    friend class Components::InputComp;
-    friend class Components::DamageComp;
-    friend class Components::HealComp;
-    friend class Components::ProgressComp;
+    friend class Components::MoveComp;              // Needed for accessing octand
 private:
     void _LuaGotoPosition(const Math::STLVector3& pos);
     void _LuaSetHomePos(const Math::STLVector3& pos);
@@ -55,22 +69,9 @@ private:
 protected:
     Math::Vector3 homePos_;
     std::weak_ptr<Actor> killedBy_;
-    virtual void HandleCommand(AB::GameProtocol::CommandTypes,
-        const std::string&, Net::NetworkMessage&)
-    {
-        // Only the player needs to override this
-    }
 protected:
-    // Mostly called by Components, which are friends
-    virtual void OnArrived() {}
-    virtual void OnInterruptedAttack() { }
-    virtual void OnInterruptedSkill(Skill*) { }
-    virtual void OnKnockedDown(uint32_t) { }
-    virtual void OnHealed(int) { }
+    // Mostly triggered by Components
     virtual void OnDied();
-    virtual void OnResurrected(int /* health */, int /* energy */) { }
-    virtual void OnPingObject(uint32_t /* targetId */, AB::GameProtocol::ObjectCallType /* type */, int /* skillIndex */) { }
-    virtual void OnInventoryFull() { }
     /// This Actor is attacking the target
     virtual bool OnAttack(Actor* target);
     /// This Actor was attacked by source

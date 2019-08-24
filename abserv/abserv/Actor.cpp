@@ -109,6 +109,18 @@ Actor::Actor() :
     moveComp_(std::make_unique<Components::MoveComp>(*this)),
     collisionComp_(std::make_unique<Components::CollisionComp>(*this))    // Actor always collides
 {
+    events_.Add<void(void)>(EVENT_ON_DIED, std::bind(&Actor::OnDied, this));
+    events_.Add<bool(Actor*)>(EVENT_ON_ATTACK, std::bind(&Actor::OnAttack, this, std::placeholders::_1));
+    events_.Add<bool(Actor*,DamageType,int32_t)>(EVENT_ON_ATTACKED, std::bind(
+        &Actor::OnAttacked, this,
+        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    events_.Add<bool(Actor*)>(EVENT_ON_GETTINGATTACKED, std::bind(&Actor::OnGettingAttacked, this, std::placeholders::_1));
+    events_.Add<bool(Actor*,Skill*)>(EVENT_ON_USESKILL, std::bind(&Actor::OnUseSkill, this, std::placeholders::_1, std::placeholders::_2));
+    events_.Add<bool(Actor*,Skill*)>(EVENT_ON_SKILLTARGETED, std::bind(&Actor::OnSkillTargeted, this, std::placeholders::_1, std::placeholders::_2));
+    events_.Add<bool(Actor*)>(EVENT_ON_GETCRITICALHIT, std::bind(&Actor::OnGetCriticalHit, this, std::placeholders::_1));
+    events_.Add<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Actor::OnEndUseSkill, this, std::placeholders::_1));
+    events_.Add<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Actor::OnStartUseSkill, this, std::placeholders::_1));
+
     /*
      * Default BB for humans
      * <attribute name="Size" value="0.3 1.7 0.5"/>
@@ -951,7 +963,7 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
         resourceComp_->SetEnergy(Components::SetValueType::Absolute, energy);
         damageComp_->Touch();
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-        OnResurrected(health, energy);
+        CallEvent<void(int,int)>(EVENT_ON_RESURRECTED, health, energy);
         return true;
     }
     return false;
@@ -979,7 +991,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
         attackComp_->Interrupt();
         skillsComp_->Interrupt(AB::Entities::SkillTypeSkill);
         autorunComp_->Reset();
-        OnKnockedDown(time);
+        CallEvent<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, time);
     }
     return ret;
 }
@@ -991,7 +1003,7 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     int val = value;
     effectsComp_->OnHealing(source, val);
     healComp_->Healing(source, index, val);
-    OnHealed(val);
+    CallEvent<void(int)>(EVENT_ON_HEALED, val);
     return val;
 }
 

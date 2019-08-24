@@ -123,7 +123,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
 #endif
     }
 
-    else if (obstructed)
+    if (obstructed)
     {
         SetError(AB::GameProtocol::AttackErrorTargetObstructed);
     }

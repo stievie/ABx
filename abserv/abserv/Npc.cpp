@@ -41,6 +41,12 @@ Npc::Npc() :
     aiCharacter_(nullptr),
     luaInitialized_(false)
 {
+    events_.Add<void(void)>(EVENT_ON_ARRIVED, std::bind(&Npc::OnArrived, this));
+    events_.Add<void(void)>(EVENT_ON_INTERRUPTEDATTACK, std::bind(&Npc::OnInterruptedAttack, this));
+    events_.Add<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, std::bind(&Npc::OnInterruptedSkill, this, std::placeholders::_1));
+    events_.Add<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, std::bind(&Npc::OnKnockedDown, this, std::placeholders::_1));
+    events_.Add<void(int)>(EVENT_ON_HEALED, std::bind(&Npc::OnHealed, this, std::placeholders::_1));
+    events_.Add<void(int, int)>(EVENT_ON_RESURRECTED, std::bind(&Npc::OnResurrected, this, std::placeholders::_1, std::placeholders::_2));
     // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Party::GetNewId();
     InitializeLua();
@@ -284,7 +290,6 @@ void Npc::OnClicked(Actor* selector)
 
 void Npc::OnArrived()
 {
-    Actor::OnArrived();
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onArrived");
 }
@@ -402,28 +407,24 @@ bool Npc::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill)
 
 void Npc::OnInterruptedAttack()
 {
-    Actor::OnInterruptedAttack();
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onInterruptedAttack");
 }
 
 void Npc::OnInterruptedSkill(Skill* skill)
 {
-    Actor::OnInterruptedSkill(skill);
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onInterruptedSkill", skill);
 }
 
 void Npc::OnKnockedDown(uint32_t time)
 {
-    Actor::OnKnockedDown(time);
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onKnockedDown", time);
 }
 
 void Npc::OnHealed(int hp)
 {
-    Actor::OnHealed(hp);
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onHealed", hp);
 }
@@ -435,9 +436,8 @@ void Npc::OnDied()
         ScriptManager::CallFunction(luaState_, "onDied");
 }
 
-void Npc::OnResurrected(int health, int energy)
+void Npc::OnResurrected(int, int)
 {
-    Actor::OnResurrected(health, energy);
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onResurrected");
 }

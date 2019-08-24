@@ -48,7 +48,8 @@ AB::GameProtocol::SkillError SkillsComp::UseSkill(int index, bool ping)
         uint32_t targetId = 0;
         if (skill->HasTarget(SkillTargetTarget))
             targetId = target ? target->id_ : 0;
-        owner_.OnPingObject(targetId, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
+        owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT,
+            targetId, AB::GameProtocol::ObjectCallTypeUseSkill, lastSkillIndex_ + 1);
     }
     return lastError_;
 }

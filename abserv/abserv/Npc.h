@@ -27,8 +27,8 @@ private:
     /// This NPC exists only on the server, i.e. is not spawned on the client, e.g. a trigger box.
     bool serverOnly_{ false };
     uint32_t level_{ 1 };
-    uint32_t itemIndex_;
-    AB::Entities::CharacterSex sex_;
+    uint32_t itemIndex_{ 0 };
+    AB::Entities::CharacterSex sex_{ AB::Entities::CharacterSexUnknown };
     /// Group is like a party and they need unique IDs.
     /// If this NPC belongs to a party with players this must be the PartyID.
     uint32_t groupId_;
@@ -46,7 +46,12 @@ private:
     void InitializeLua();
     std::string GetQuote(int index);
 protected:
-    void OnArrived() override;
+    void OnArrived();
+    void OnInterruptedAttack();
+    void OnInterruptedSkill(Skill* skill);
+    void OnKnockedDown(uint32_t time);
+    void OnHealed(int hp);
+    void OnResurrected(int health, int energy);
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
     bool OnAttack(Actor* target) override;
@@ -56,12 +61,7 @@ protected:
     bool OnSkillTargeted(Actor* source, Skill* skill) override;
     bool OnInterruptingAttack() override;
     bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
-    void OnInterruptedAttack() override;
-    void OnInterruptedSkill(Skill* skill) override;
-    void OnKnockedDown(uint32_t time) override;
-    void OnHealed(int hp) override;
     void OnDied() override;
-    void OnResurrected(int health, int energy) override;
 public:
     static void RegisterLua(kaguya::State& state);
 

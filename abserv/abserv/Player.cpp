@@ -31,7 +31,15 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     logoutTime_(0),
     lastPing_(0),
     questComp_(std::make_unique<Components::QuestComp>(*this))
-{ }
+{
+    events_.Add<void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
+        std::bind(&Player::OnHandleCommand, this,
+            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    events_.Add<void(void)>(EVENT_ON_INVENTORYFULL, std::bind(&Player::OnInventoryFull, this));
+    events_.Add<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, std::bind(
+        &Player::OnPingObject, this,
+        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+}
 
 Player::~Player() = default;
 
@@ -409,8 +417,6 @@ void Player::WriteToOutput(const Net::NetworkMessage& message)
 
 void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex)
 {
-    Actor::OnPingObject(targetId, type, skillIndex);
-
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::GameObjectPingTarget);
     msg->Add<uint32_t>(id_);
@@ -422,8 +428,6 @@ void Player::OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType ty
 
 void Player::OnInventoryFull()
 {
-    Actor::OnInventoryFull();
-
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::PlayerError);
     msg->AddByte(AB::GameProtocol::PlayerErrorInventoryFull);
@@ -681,7 +685,7 @@ Party* Player::_LuaGetParty()
     return party ? party.get() : nullptr;
 }
 
-void Player::HandleCommand(AB::GameProtocol::CommandTypes type,
+void Player::OnHandleCommand(AB::GameProtocol::CommandTypes type,
     const std::string& arguments, Net::NetworkMessage& message)
 {
     switch (type)

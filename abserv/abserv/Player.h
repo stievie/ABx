@@ -18,6 +18,7 @@ class MailBox;
 
 class Player final : public Actor
 {
+    friend class PlayerManager;
 private:
     // The Player and ConnectionManager owns the client. The client has a weak ref of the player.
     std::shared_ptr<Net::ProtocolGame> client_;
@@ -27,10 +28,8 @@ private:
     bool resigned_;
     bool queueing_{ false };
     Party* _LuaGetParty();
-protected:
-    friend class PlayerManager;
-    void HandleCommand(AB::GameProtocol::CommandTypes type,
-        const std::string& arguments, Net::NetworkMessage& message) override;
+    void OnHandleCommand(AB::GameProtocol::CommandTypes type,
+        const std::string& arguments, Net::NetworkMessage& message);
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
     void HandleWhisperCommand(const std::string& arguments, Net::NetworkMessage& message);
     void HandleChatGuildCommand(const std::string& arguments, Net::NetworkMessage&);
@@ -53,8 +52,8 @@ protected:
     void HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&);
     void HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&);
 protected:
-    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex) override;
-    void OnInventoryFull() override;
+    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
+    void OnInventoryFull();
 public:
     static void RegisterLua(kaguya::State& state);
 

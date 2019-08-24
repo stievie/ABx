@@ -48,9 +48,9 @@ void CollisionComp::ResolveCollisions()
 
                     // Need to notify both, because we test collisions only for moving objects
                     // Notify ci for colliding with us
-                    ci->OnCollide(&owner_);
+                    ci->CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, &owner_);
                     // Notify us for colliding with ci
-                    owner_.OnCollide(ci);
+                    owner_.CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, ci);
                 }
             }
         }

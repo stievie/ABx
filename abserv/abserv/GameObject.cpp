@@ -73,7 +73,13 @@ GameObject::GameObject() :
     id_(GetNewId()),
     stateComp_(*this),
     triggerComp_(nullptr)         // By default its not a trigger
-{ }
+{
+    events_.Add<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&GameObject::OnClicked, this, std::placeholders::_1));
+    events_.Add<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&GameObject::OnCollide, this, std::placeholders::_1));
+    events_.Add<void(GameObject*)>(EVENT_ON_LEFTAREA, std::bind(&GameObject::OnLeftArea, this, std::placeholders::_1));
+    events_.Add<void(Actor*)>(EVENT_ON_SELECTED, std::bind(&GameObject::OnSelected, this, std::placeholders::_1));
+    events_.Add<void(GameObject*)>(EVENT_ON_TRIGGER, std::bind(&GameObject::OnTrigger, this, std::placeholders::_1));
+}
 
 GameObject::~GameObject()
 {

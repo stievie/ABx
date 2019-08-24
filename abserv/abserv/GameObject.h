@@ -23,6 +23,8 @@
 #include "Iteration.h"
 #include "Mechanic.h"
 #include <kaguya/kaguya.hpp>
+#include "Events.h"
+#include "Damage.h"
 
 namespace Game {
 
@@ -38,15 +40,25 @@ class Game;
 class Actor;
 class Npc;
 class Player;
+class Skill;
+
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4307)
+#endif
+static constexpr Utils::event_t EVENT_ON_CLICKED = Utils::StringHash("OnClicked");
+static constexpr Utils::event_t EVENT_ON_COLLIDE = Utils::StringHash("OnCollide");
+static constexpr Utils::event_t EVENT_ON_LEFTAREA = Utils::StringHash("OnLeftArea");
+static constexpr Utils::event_t EVENT_ON_SELECTED = Utils::StringHash("OnSelected");
+static constexpr Utils::event_t EVENT_ON_TRIGGER = Utils::StringHash("OnTrigger");
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
     friend class Math::Octree;
-    friend class Components::CollisionComp;
-    friend class Components::MoveComp;
-    friend class Components::TriggerComp;
-    friend class Components::InputComp;
 public:
     static Utils::IdGenerator<uint32_t> objectIds_;
 private:
@@ -85,6 +97,20 @@ protected:
     std::string name_;
     Utils::VariantMap variables_;
     std::weak_ptr<Game> game_;
+    Utils::Events<
+        void(void),
+        void(uint32_t),
+        void(int),
+        void(int,int),
+        void(GameObject*),
+        void(Actor*),
+        bool(Actor*),
+        void(Skill*),
+        void(uint32_t,AB::GameProtocol::ObjectCallType,int),   // OnPingObject
+        bool(Actor*,DamageType,int32_t),                       // OnAttacked
+        bool(Actor*,Skill*),                                   // OnUseSkill, OnSkillTargeted
+        void(AB::GameProtocol::CommandTypes,const std::string&,Net::NetworkMessage&)
+    > events_;
     /// Octree octant.
     Math::Octant* octant_{ nullptr };
     float sortValue_{ 0.0f };
@@ -246,6 +272,11 @@ public:
     /// Remove this object in time ms
     void RemoveIn(uint32_t time);
 
+    template <typename Func, typename... _CArgs>
+    auto CallEvent(Utils::event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Func, _CArgs...>::type
+    {
+        return events_.Call<Func, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
+    }
     virtual bool Serialize(IO::PropWriteStream& stream);
 
     virtual const std::string& GetName() const { return name_; }
