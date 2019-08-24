@@ -25,6 +25,7 @@
 #include <kaguya/kaguya.hpp>
 #include "Events.h"
 #include "Damage.h"
+#include "StringHash.h"
 
 namespace Game {
 
