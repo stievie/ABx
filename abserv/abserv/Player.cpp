@@ -32,13 +32,14 @@ Player::Player(std::shared_ptr<Net::ProtocolGame> client) :
     lastPing_(0),
     questComp_(std::make_unique<Components::QuestComp>(*this))
 {
-    events_.Add<void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
+    events_.Subscribe<void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
         std::bind(&Player::OnHandleCommand, this,
             std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    events_.Add<void(void)>(EVENT_ON_INVENTORYFULL, std::bind(&Player::OnInventoryFull, this));
-    events_.Add<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT, std::bind(
-        &Player::OnPingObject, this,
-        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    events_.Subscribe<void(void)>(EVENT_ON_INVENTORYFULL, std::bind(&Player::OnInventoryFull, this));
+    events_.Subscribe<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+        std::bind(
+            &Player::OnPingObject, this,
+            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 Player::~Player() = default;

@@ -18,11 +18,10 @@ private:
     std::map<uint32_t, int64_t> triggered_;
     uint32_t lastCheck_{ 0 };
     void DoTrigger(GameObject* other);
+    void OnCollide(GameObject* other);
 public:
     TriggerComp() = delete;
-    explicit TriggerComp(GameObject& owner) :
-        owner_(owner)
-    { }
+    explicit TriggerComp(GameObject& owner);
     // non-copyable
     TriggerComp(const TriggerComp&) = delete;
     TriggerComp& operator=(const TriggerComp&) = delete;
@@ -39,8 +38,6 @@ public:
                 break;
         }
     }
-
-    void OnCollide(GameObject* other);
 
     bool trigger_{ false };
     /// Time in ms the same Actor can retrigger

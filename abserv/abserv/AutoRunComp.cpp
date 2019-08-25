@@ -20,7 +20,7 @@ bool AutoRunComp::Follow(std::shared_ptr<GameObject> object, bool ping)
     {
         bool succ = FindPath(f->transformation_.position_);
         if (succ && ping)
-            owner_.CallEvent<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
+            owner_.CallEventAll<void(uint32_t,AB::GameProtocol::ObjectCallType,int)>(EVENT_ON_PINGOBJECT, actor->id_, AB::GameProtocol::ObjectCallTypeFollow, 0);
         return succ;
     }
     return false;
@@ -105,7 +105,7 @@ void AutoRunComp::Update(uint32_t timeElapsed)
             // If at dest reset
             owner_.stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
             SetAutoRun(false);
-            owner_.CallEvent<void(void)>(EVENT_ON_ARRIVED);
+            owner_.CallEventAll<void(void)>(EVENT_ON_ARRIVED);
         }
         return;
     }

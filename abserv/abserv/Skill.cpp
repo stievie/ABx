@@ -87,7 +87,7 @@ void Skill::Update(uint32_t timeElapsed)
                 lastUse_ = Utils::Tick();
             }
             if (source)
-                source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
+                source->CallEventAll<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
             source_.reset();
             target_.reset();
         }
@@ -96,14 +96,14 @@ void Skill::Update(uint32_t timeElapsed)
 
 bool Skill::CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target)
 {
-    if (!source->CallEvent<bool(Actor*,Skill*)>(EVENT_ON_USESKILL, target.get(), this))
+    if (!source->CallEventOne<bool(Actor*,Skill*)>(EVENT_ON_USESKILL, target.get(), this))
     {
         lastError_ = AB::GameProtocol::SkillErrorCannotUseSkill;
         return false;
     }
     if (HasTarget(SkillTargetTarget))
     {
-        if (!target || !target->CallEvent<bool(Actor*,Skill*)>(EVENT_ON_SKILLTARGETED, source.get(), this))
+        if (!target || !target->CallEventOne<bool(Actor*,Skill*)>(EVENT_ON_SKILLTARGETED, source.get(), this))
         {
             lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
             return false;
@@ -173,7 +173,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     source->resourceComp_->SetEnergy(Components::SetValueType::Decrease, realEnergy_);
     source->resourceComp_->SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
     source->resourceComp_->SetOvercast(Components::SetValueType::Increase, realOvercast_);
-    source->CallEvent<void(Skill*)>(EVENT_ON_STARTUSESKILL, this);
+    source->CallEventAll<void(Skill*)>(EVENT_ON_STARTUSESKILL, this);
     return lastError_;
 }
 
@@ -187,7 +187,7 @@ void Skill::CancelUse()
             source.get(), target.get());
     }
     if (source)
-        source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
+        source->CallEventAll<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
     startUse_ = 0;
     // No recharging when canceled
     recharged_ = 0;
@@ -209,8 +209,8 @@ bool Skill::Interrupt()
     }
     if (source)
     {
-        source->CallEvent<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, this);
-        source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
+        source->CallEventAll<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, this);
+        source->CallEventAll<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
     }
     startUse_ = 0;
     source_.reset();

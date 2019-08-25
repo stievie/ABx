@@ -35,7 +35,7 @@ void InputComp::SelectObject(uint32_t sourceId, uint32_t targetId, Net::NetworkM
                 message.Add<uint32_t>(source->id_);
                 if (auto sel = source->selectedObject_.lock())
                 {
-                    sel->CallEvent<void(Actor*)>(EVENT_ON_SELECTED, source);
+                    sel->CallEventAll<void(Actor*)>(EVENT_ON_SELECTED, source);
                     message.Add<uint32_t>(sel->id_);
                 }
                 else
@@ -59,7 +59,7 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
         auto clickedObj = owner_.GetGame()->GetObjectById(targetId);
         if (clickedObj)
         {
-            clickedObj->CallEvent<void(GameObject*)>(EVENT_ON_CLICKED, source);
+            clickedObj->CallEventAll<void(GameObject*)>(EVENT_ON_CLICKED, source);
         }
     }
 }
@@ -244,7 +244,7 @@ void InputComp::Update(uint32_t, Net::NetworkMessage& message)
         {
             AB::GameProtocol::CommandTypes type = static_cast<AB::GameProtocol::CommandTypes>(input.data[InputDataCommandType].GetInt());
             const std::string& cmd = input.data[InputDataCommandData].GetString();
-            owner_.CallEvent<void(AB::GameProtocol::CommandTypes,const std::string&,Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
+            owner_.CallEventAll<void(AB::GameProtocol::CommandTypes,const std::string&,Net::NetworkMessage&)>(EVENT_ON_HANDLECOMMAND,
                 type, cmd, message);
             break;
         }

@@ -45,13 +45,21 @@ private:
     bool luaInitialized_;
     void InitializeLua();
     std::string GetQuote(int index);
-protected:
+private:
+    // Events
     void OnArrived();
     void OnInterruptedAttack();
     void OnInterruptedSkill(Skill* skill);
     void OnKnockedDown(uint32_t time);
     void OnHealed(int hp);
     void OnResurrected(int health, int energy);
+    void OnClicked(Actor* selector);
+    void OnCollide(GameObject* other);
+    void OnSelected(Actor* selector);
+    void OnTrigger(GameObject* other);
+    void OnLeftArea(GameObject* other);
+protected:
+    // Events subscribed by Actor
     void OnEndUseSkill(Skill* skill) override;
     void OnStartUseSkill(Skill* skill) override;
     bool OnAttack(Actor* target) override;
@@ -110,12 +118,6 @@ public:
     bool SayQuote(ChatType channel, int index);
     /// Shooting a projectile without having a weapon that can spawn projectiles
     void ShootAt(const std::string& itemUuid, Actor* target);
-
-    void OnSelected(Actor* selector) override;
-    void OnClicked(Actor* selector) override;
-    void OnCollide(GameObject* other) override;
-    void OnTrigger(GameObject* other) override;
-    void OnLeftArea(GameObject* other) override;
 };
 
 }

@@ -17,6 +17,9 @@ private:
     /// Dropper
     std::weak_ptr<Actor> source_;
     void PickUp(Actor* actor);
+protected:
+    void OnClicked(Actor* actor);
+    void OnSelected(Actor* actor);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -37,8 +40,6 @@ public:
     /// ID of dropper
     uint32_t GetSourceId();
 
-    void OnSelected(Actor* actor) override;
-    void OnClicked(Actor* actor) override;
     void SetSource(std::shared_ptr<Actor> source);
     bool Serialize(IO::PropWriteStream& stream) override;
     void WriteSpawnData(Net::NetworkMessage& msg) override;

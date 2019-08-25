@@ -28,6 +28,9 @@ private:
     bool resigned_;
     bool queueing_{ false };
     Party* _LuaGetParty();
+
+    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
+    void OnInventoryFull();
     void OnHandleCommand(AB::GameProtocol::CommandTypes type,
         const std::string& arguments, Net::NetworkMessage& message);
     void HandleServerIdCommand(const std::string&, Net::NetworkMessage&);
@@ -51,9 +54,6 @@ private:
     void HandleDieCommand(const std::string&, Net::NetworkMessage&);
     void HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&);
     void HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&);
-protected:
-    void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
-    void OnInventoryFull();
 public:
     static void RegisterLua(kaguya::State& state);
 

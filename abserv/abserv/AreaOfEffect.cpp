@@ -32,6 +32,9 @@ AreaOfEffect::AreaOfEffect() :
     startTime_(Utils::Tick()),
     lifetime_(std::numeric_limits<uint32_t>::max())
 {
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&AreaOfEffect::OnCollide, this, std::placeholders::_1));
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_TRIGGER, std::bind(&AreaOfEffect::OnTrigger, this, std::placeholders::_1));
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_LEFTAREA, std::bind(&AreaOfEffect::OnLeftArea, this, std::placeholders::_1));
     // By default AOE has a sphere shape with the range as radius
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
@@ -121,8 +124,6 @@ void AreaOfEffect::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 void AreaOfEffect::OnCollide(GameObject* other)
 {
     // Called from collisionComp_ of the moving object
-    GameObject::OnCollide(other);
-
     // AOE can also be a trap for example
     if (HaveFunction(FunctionOnCollide))
         ScriptManager::CallFunction(luaState_, "onCollide", other);
@@ -130,9 +131,6 @@ void AreaOfEffect::OnCollide(GameObject* other)
 
 void AreaOfEffect::OnTrigger(GameObject* other)
 {
-    // Called from our triggerComp_
-    GameObject::OnTrigger(other);
-
     // AOE can also be a trap for example
     if (HaveFunction(FunctionOnTrigger))
         ScriptManager::CallFunction(luaState_, "onTrigger", other);
@@ -140,8 +138,6 @@ void AreaOfEffect::OnTrigger(GameObject* other)
 
 void AreaOfEffect::OnLeftArea(GameObject* other)
 {
-    // Called from triggerComp_
-    GameObject::OnTrigger(other);
     // AOE can also be a trap for example
     if (HaveFunction(FunctionOnLeftArea))
         ScriptManager::CallFunction(luaState_, "onLeftArea", other);

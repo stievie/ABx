@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <type_traits>
 #include <tuple>
+#include <vector>
 
 namespace Utils {
 
@@ -13,7 +14,7 @@ typedef size_t event_t;
 template <typename T>
 struct _Events
 {
-    std::unordered_map<event_t, std::function<T>> events_;
+    std::unordered_map<event_t, std::vector<std::function<T>>> events_;
 };
 
 template <typename... Types>
@@ -40,25 +41,27 @@ private:
 public:
     /// Is used with std::bind()
     template <typename Func>
-    void Add(event_t index, std::function<Func>&& func)
+    void Subscribe(event_t index, std::function<Func>&& func)
     {
-        GetEventsT<Func>().events_[index] = std::move(func);
+        GetEventsT<Func>().events_[index].push_back(std::move(func));
     }
     /// Is used for everything else that looks like a callable, e.g. a Lambda
     template <typename Func>
-    void Add(event_t index, Func func)
+    void Subscribe(event_t index, Func func)
     {
-        GetEventsT<Func>().events_[index] = std::function<Func>(func);
+        GetEventsT<Func>().events_[index].push_back(std::function<Func>(func));
     }
 
+    /// Calls the first subscriber and returns the result
     template <typename Func, typename... _CArgs>
-    auto Call(event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Func, _CArgs...>::type
+    auto CallOne(event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Func, _CArgs...>::type
     {
         using ResultType = typename std::invoke_result<Func, _CArgs...>::type;
         static constexpr auto isVoid = std::is_same_v<ResultType, void>;
 
         auto& events = GetEventsT<Func>();
-        if (events.events_.find(index) == events.events_.end())
+        const auto it = events.events_.find(index);
+        if (it == events.events_.end() || (*it).second.size() == 0)
         {
             // Index not found, return nothing (if void), some default value
             if constexpr(isVoid)
@@ -67,7 +70,39 @@ public:
                 return ResultType{};
             // or even better throw an exception
         }
-        return events.events_[index](std::forward<_CArgs>(_Args)...);
+        return (*it).second.front()(std::forward<_CArgs>(_Args)...);
+    }
+
+    /// Calls all subscibers and returns a std::vector of results or void
+    template <typename Func, typename... _CArgs>
+    auto CallAll(event_t index, _CArgs&& ... _Args)
+    {
+        using ResultType = typename std::invoke_result<Func, _CArgs...>::type;
+        static constexpr auto isVoid = std::is_same_v<ResultType, void>;
+        auto& events = GetEventsT<Func>();
+        const auto it = events.events_.find(index);
+        if (it == events.events_.end() || (*it).second.size() == 0)
+        {
+            // Index not found, return nothing (if void), some default value
+            if constexpr(isVoid)
+                return;
+            else
+                return std::vector<ResultType>();
+            // or even better throw an exception
+        }
+
+        if constexpr(isVoid)
+        {
+            for (const auto& fun : (*it).second)
+                fun(std::forward<_CArgs>(_Args)...);
+        }
+        else
+        {
+            std::vector<ResultType> result;
+            for (const auto& fun : (*it).second)
+                result.push_back(fun(std::forward<_CArgs>(_Args)...));
+            return result;
+        }
     }
 };
 

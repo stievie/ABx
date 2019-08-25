@@ -17,6 +17,7 @@ void Projectile::RegisterLua(kaguya::State& state)
 Projectile::Projectile(const std::string& itemUuid) :
     Actor()
 {
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&Projectile::OnCollide, this, std::placeholders::_1));
     SetCollisionShape(
         std::make_unique<Math::CollisionShapeImpl<Math::Sphere>>(Math::ShapeType::Sphere,
             Math::Vector3::Zero, PROJECTILE_SIZE)
@@ -203,7 +204,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             // We may not really collide because of the low game update rate, so let's
             // approximate if we would collide
             if (error_ == AB::GameProtocol::AttackErrorNone)
-                OnCollide(target.get());
+                CallEventAll<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
         }
         else if (dist < currentDistance_)
             currentDistance_ = dist;
@@ -241,7 +242,6 @@ uint32_t Projectile::GetLevel() const
 
 void Projectile::OnCollide(GameObject* other)
 {
-    Actor::OnCollide(other);
     if (HaveFunction(FunctionOnCollide))
         ScriptManager::CallFunction(luaState_, "onCollide", other);
 

@@ -6,6 +6,12 @@
 namespace Game {
 namespace Components {
 
+TriggerComp::TriggerComp(GameObject& owner) :
+    owner_(owner)
+{
+    owner_.SubscribeEvent<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&TriggerComp::OnCollide, this, std::placeholders::_1));
+}
+
 void TriggerComp::DoTrigger(GameObject* other)
 {
     if (!other)
@@ -16,7 +22,7 @@ void TriggerComp::DoTrigger(GameObject* other)
     const int64_t lastTrigger = (it != triggered_.end()) ? (*it).second : 0;
     if (lastTrigger == 0 || static_cast<uint32_t>(tick - lastTrigger) > retriggerTimeout_)
     {
-        owner_.CallEvent<void(GameObject*)>(EVENT_ON_TRIGGER, other);
+        owner_.CallEventAll<void(GameObject*)>(EVENT_ON_TRIGGER, other);
         triggered_[other->id_] = tick;
     }
 }
@@ -54,7 +60,7 @@ void TriggerComp::Update(uint32_t timeElapsed)
             {
                 // No longer collides
                 triggered_.erase(it++);
-                owner_.CallEvent<void(GameObject*)>(EVENT_ON_LEFTAREA, o.get());
+                owner_.CallEventAll<void(GameObject*)>(EVENT_ON_LEFTAREA, o.get());
             }
             else
                 ++it;

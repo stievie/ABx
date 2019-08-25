@@ -112,7 +112,7 @@ bool InventoryComp::SetInventoryItem(uint32_t itemId, Net::NetworkMessage* messa
         InventoryComp::WriteItemUpdate(item, message, false);
     });
     if (!ret)
-        owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        owner_.CallEventAll<void(void)>(EVENT_ON_INVENTORYFULL);
     return ret;
 }
 
@@ -130,7 +130,7 @@ bool InventoryComp::SetChestItem(uint32_t itemId, Net::NetworkMessage* message)
         InventoryComp::WriteItemUpdate(item, message, true);
     });
     if (!ret)
-        owner_.CallEvent<void(void)>(EVENT_ON_INVENTORYFULL);
+        owner_.CallEventAll<void(void)>(EVENT_ON_INVENTORYFULL);
     return ret;
 }
 

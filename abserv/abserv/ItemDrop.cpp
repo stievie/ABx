@@ -19,6 +19,8 @@ ItemDrop::ItemDrop(uint32_t itemId) :
     GameObject(),
     itemId_(itemId)
 {
+    events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&ItemDrop::OnClicked, this, std::placeholders::_1));
+    events_.Subscribe<void(Actor*)>(EVENT_ON_SELECTED, std::bind(&ItemDrop::OnSelected, this, std::placeholders::_1));
     // Drops can not hide other objects
     occluder_ = false;
     selectable_ = true;

@@ -41,12 +41,17 @@ Npc::Npc() :
     aiCharacter_(nullptr),
     luaInitialized_(false)
 {
-    events_.Add<void(void)>(EVENT_ON_ARRIVED, std::bind(&Npc::OnArrived, this));
-    events_.Add<void(void)>(EVENT_ON_INTERRUPTEDATTACK, std::bind(&Npc::OnInterruptedAttack, this));
-    events_.Add<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, std::bind(&Npc::OnInterruptedSkill, this, std::placeholders::_1));
-    events_.Add<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, std::bind(&Npc::OnKnockedDown, this, std::placeholders::_1));
-    events_.Add<void(int)>(EVENT_ON_HEALED, std::bind(&Npc::OnHealed, this, std::placeholders::_1));
-    events_.Add<void(int, int)>(EVENT_ON_RESURRECTED, std::bind(&Npc::OnResurrected, this, std::placeholders::_1, std::placeholders::_2));
+    events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&Npc::OnClicked, this, std::placeholders::_1));
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&Npc::OnCollide, this, std::placeholders::_1));
+    events_.Subscribe<void(Actor*)>(EVENT_ON_SELECTED, std::bind(&Npc::OnSelected, this, std::placeholders::_1));
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_TRIGGER, std::bind(&Npc::OnTrigger, this, std::placeholders::_1));
+    events_.Subscribe<void(GameObject*)>(EVENT_ON_LEFTAREA, std::bind(&Npc::OnLeftArea, this, std::placeholders::_1));
+    events_.Subscribe<void(void)>(EVENT_ON_ARRIVED, std::bind(&Npc::OnArrived, this));
+    events_.Subscribe<void(void)>(EVENT_ON_INTERRUPTEDATTACK, std::bind(&Npc::OnInterruptedAttack, this));
+    events_.Subscribe<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, std::bind(&Npc::OnInterruptedSkill, this, std::placeholders::_1));
+    events_.Subscribe<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, std::bind(&Npc::OnKnockedDown, this, std::placeholders::_1));
+    events_.Subscribe<void(int)>(EVENT_ON_HEALED, std::bind(&Npc::OnHealed, this, std::placeholders::_1));
+    events_.Subscribe<void(int, int)>(EVENT_ON_RESURRECTED, std::bind(&Npc::OnResurrected, this, std::placeholders::_1, std::placeholders::_2));
     // Party and Groups must be unique, i.e. share the same ID pool.
     groupId_ = Party::GetNewId();
     InitializeLua();
@@ -276,14 +281,12 @@ void Npc::ShootAt(const std::string& itemUuid, Actor* target)
 
 void Npc::OnSelected(Actor* selector)
 {
-    Actor::OnSelected(selector);
     if (luaInitialized_ && selector)
         ScriptManager::CallFunction(luaState_, "onSelected", selector);
 }
 
 void Npc::OnClicked(Actor* selector)
 {
-    Actor::OnSelected(selector);
     if (luaInitialized_ && selector)
         ScriptManager::CallFunction(luaState_, "onClicked", selector);
 }
@@ -296,26 +299,18 @@ void Npc::OnArrived()
 
 void Npc::OnCollide(GameObject* other)
 {
-    Actor::OnCollide(other);
-
     if (luaInitialized_ && other)
         ScriptManager::CallFunction(luaState_, "onCollide", other);
 }
 
 void Npc::OnTrigger(GameObject* other)
 {
-    // Called from triggerComp_
-    Actor::OnTrigger(other);
-
     if (luaInitialized_ && HaveFunction(FunctionOnTrigger))
         ScriptManager::CallFunction(luaState_, "onTrigger", other);
 }
 
 void Npc::OnLeftArea(GameObject* other)
 {
-    // Called from triggerComp_
-    Actor::OnLeftArea(other);
-
     if (luaInitialized_ && HaveFunction(FunctionOnLeftArea))
         ScriptManager::CallFunction(luaState_, "onLeftArea", other);
 }

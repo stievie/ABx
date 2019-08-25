@@ -38,6 +38,11 @@ private:
     void InitializeLua();
     void _LuaSetSource(Actor* source);
     Actor* _LuaGetSource();
+private:
+    // Events
+    void OnCollide(GameObject* other);
+    void OnTrigger(GameObject* other);
+    void OnLeftArea(GameObject* other);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -53,9 +58,6 @@ public:
         return AB::GameProtocol::ObjectTypeAreaOfEffect;
     }
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
-    void OnCollide(GameObject* other) override;
-    void OnTrigger(GameObject* other) override;
-    void OnLeftArea(GameObject* other) override;
 
     /// Collision shape type
     void SetShapeType(Math::ShapeType shape);

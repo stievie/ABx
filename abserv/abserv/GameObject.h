@@ -123,14 +123,6 @@ protected:
     }
     void AddToOctree();
     void RemoveFromOctree();
-protected:
-    virtual void OnSelected(Actor*) { }
-    virtual void OnClicked(Actor*) { }
-    virtual void OnCollide(GameObject* other);
-    /// Object entered the area
-    virtual void OnTrigger(GameObject*) { }
-    /// Object left the area. Opposite to OnTrigger
-    virtual void OnLeftArea(GameObject*) { }
 public:
     static void RegisterLua(kaguya::State& state);
     /// The head is not on the ground.
@@ -273,11 +265,22 @@ public:
     /// Remove this object in time ms
     void RemoveIn(uint32_t time);
 
-    template <typename Func, typename... _CArgs>
-    auto CallEvent(Utils::event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Func, _CArgs...>::type
+    template <typename Signature>
+    void SubscribeEvent(Utils::event_t index, std::function<Signature>&& func)
     {
-        return events_.Call<Func, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
+        events_.Subscribe<Signature>(index, std::move(func));
     }
+    template <typename Signature, typename... _CArgs>
+    auto CallEventOne(Utils::event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Signature, _CArgs...>::type
+    {
+        return events_.CallOne<Signature, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
+    }
+    template <typename Signature, typename... _CArgs>
+    auto CallEventAll(Utils::event_t index, _CArgs&& ... _Args)
+    {
+        return events_.CallAll<Signature, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
+    }
+
     virtual bool Serialize(IO::PropWriteStream& stream);
 
     virtual const std::string& GetName() const { return name_; }

@@ -46,7 +46,7 @@ void AttackComp::Hit(Actor* target)
     if (interrupted_)
     {
         lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-        owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
+        owner_.CallEventAll<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
     }
     else
     {
@@ -59,12 +59,12 @@ void AttackComp::Hit(Actor* target)
         owner_.effectsComp_->GetDamage(damageType_, damage, critical);
         if (target)
         {
-            if (target->CallEvent<bool(Actor *, DamageType, int32_t)>(EVENT_ON_ATTACKED, &owner_, damageType_, damage))
+            if (target->CallEventOne<bool(Actor *, DamageType, int32_t)>(EVENT_ON_ATTACKED, &owner_, damageType_, damage))
             {
                 // Some effects may prevent attacks, e.g. blocking
                 if (critical)
                     // Some effect may prevent critical hits
-                    critical = target->CallEvent<bool(Actor*)>(EVENT_ON_GETCRITICALHIT, &owner_);
+                    critical = target->CallEventOne<bool(Actor*)>(EVENT_ON_GETCRITICALHIT, &owner_);
                 if (critical)
                     damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
                 target->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
@@ -72,13 +72,13 @@ void AttackComp::Hit(Actor* target)
             else
             {
                 lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-                owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
+                owner_.CallEventAll<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
             }
         }
         else
         {
             lastError_ = AB::GameProtocol::AttackErrorNoTarget;
-            owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
+            owner_.CallEventAll<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
         }
     }
 }
@@ -183,7 +183,7 @@ void AttackComp::Cancel()
 
 void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 {
-    if (!owner_.CallEvent<bool(Actor*)>(EVENT_ON_ATTACK, target.get()))
+    if (!owner_.CallEventOne<bool(Actor*)>(EVENT_ON_ATTACK, target.get()))
     {
         lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
         return;
@@ -194,7 +194,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
         lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
         return;
     }
-    if (target->IsUndestroyable() && target->CallEvent<bool(Actor*)>(EVENT_ON_GETTINGATTACKED, &owner_))
+    if (target->IsUndestroyable() && target->CallEventOne<bool(Actor*)>(EVENT_ON_GETTINGATTACKED, &owner_))
     {
         // Can not attack an destroyable target
         lastError_ = AB::GameProtocol::AttackErrorTargetUndestroyable;
@@ -203,7 +203,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 
     target_ = target;
     if (ping)
-        owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+        owner_.CallEventAll<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
             target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
     attacking_ = true;
     lastAttackTime_ = 0;

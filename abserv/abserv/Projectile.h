@@ -46,9 +46,9 @@ private:
     void SetError(AB::GameProtocol::AttackError error);
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();
-protected:
-    void OnCollide(GameObject* other) override;
     bool OnStart();
+private:
+    void OnCollide(GameObject* other);
 public:
     static void RegisterLua(kaguya::State& state);
 
