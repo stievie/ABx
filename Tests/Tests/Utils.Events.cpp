@@ -27,6 +27,37 @@ TEST_CASE("Events")
         }
     };
 
+    class A
+    {
+    private:
+        Utils::Events<
+            int(int, int)
+        > events;
+    protected:
+        virtual int Foo(int i, int j)
+        {
+            return i * j;
+        }
+    public:
+        A()
+        {
+            events.Subscribe<int(int, int)>(1, std::bind(&A::Foo, this, std::placeholders::_1, std::placeholders::_2));
+        }
+        int DoFoo(int i, int j)
+        {
+            return events.CallOne<int(int, int)>(1, i, j);
+        }
+    };
+    class B : public A
+    {
+    protected:
+        int Foo(int i, int j) override
+        {
+            return i + j;
+        }
+    };
+
+
     SECTION("Lambda")
     {
         Utils::Events<
@@ -68,6 +99,14 @@ TEST_CASE("Events")
         Foo foo;
         auto result = foo.DoBar(3, 2);
         REQUIRE(result == 6);
+    }
+
+    SECTION("Virtual Method")
+    {
+        B b;
+        auto result = b.DoFoo(3, 2);
+        // Must be 5 because B overrides it does not multiply it but calculates the sum
+        REQUIRE(result == 5);
     }
 
     SECTION("Different signatures")
