@@ -56,6 +56,21 @@ static constexpr Utils::event_t EVENT_ON_TRIGGER = Utils::StringHash("OnTrigger"
 #pragma warning(pop)
 #endif
 
+using GameObjectEvents = Utils::Events<
+    void(void),
+    void(uint32_t),
+    void(int),
+    void(int, int),
+    void(GameObject*),
+    void(Actor*),
+    bool(Actor*),
+    void(Skill*),
+    void(uint32_t, AB::GameProtocol::ObjectCallType, int),   // OnPingObject
+    bool(Actor*, DamageType, int32_t),                       // OnAttacked
+    bool(Actor*, Skill*),                                    // OnUseSkill, OnSkillTargeted
+    void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)
+>;
+
 class GameObject : public std::enable_shared_from_this<GameObject>
 {
     friend class Math::Octant;
@@ -98,20 +113,7 @@ protected:
     std::string name_;
     Utils::VariantMap variables_;
     std::weak_ptr<Game> game_;
-    Utils::Events<
-        void(void),
-        void(uint32_t),
-        void(int),
-        void(int,int),
-        void(GameObject*),
-        void(Actor*),
-        bool(Actor*),
-        void(Skill*),
-        void(uint32_t,AB::GameProtocol::ObjectCallType,int),   // OnPingObject
-        bool(Actor*,DamageType,int32_t),                       // OnAttacked
-        bool(Actor*,Skill*),                                   // OnUseSkill, OnSkillTargeted
-        void(AB::GameProtocol::CommandTypes,const std::string&,Net::NetworkMessage&)
-    > events_;
+    GameObjectEvents events_;
     /// Octree octant.
     Math::Octant* octant_{ nullptr };
     float sortValue_{ 0.0f };

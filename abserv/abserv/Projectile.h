@@ -46,7 +46,7 @@ private:
     void SetError(AB::GameProtocol::AttackError error);
     Actor* _LuaGetSource();
     Actor* _LuaGetTarget();
-    bool OnStart();
+    bool DoStart();
 private:
     void OnCollide(GameObject* other);
 public:

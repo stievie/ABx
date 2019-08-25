@@ -99,6 +99,7 @@ public:
         else
         {
             std::vector<ResultType> result;
+            result.reserve((*it).second.size());
             for (const auto& fun : (*it).second)
                 result.push_back(fun(std::forward<_CArgs>(_Args)...));
             return result;

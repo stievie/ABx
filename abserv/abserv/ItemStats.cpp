@@ -38,45 +38,45 @@ int ItemStats::GetArmor(DamageType damageType) const
 
     switch (damageType)
     {
-    case Game::DamageType::Unknown:
+    case DamageType::Unknown:
         break;
-    case Game::DamageType::Fire:
+    case DamageType::Fire:
     {
         value += GetValue(Stat::ArmorElemental, 0);
         value += GetValue(Stat::ArmorFire, 0);
         break;
     }
-    case Game::DamageType::Cold:
+    case DamageType::Cold:
     {
         value += GetValue(Stat::ArmorElemental, 0);
         value += GetValue(Stat::ArmorCold, 0);
         break;
     }
-    case Game::DamageType::Lightning:
+    case DamageType::Lightning:
     {
         value += GetValue(Stat::ArmorElemental, 0);
         value += GetValue(Stat::ArmorLightning, 0);
         break;
     }
-    case Game::DamageType::Earth:
+    case DamageType::Earth:
     {
         value += GetValue(Stat::ArmorElemental, 0);
         value += GetValue(Stat::ArmorEarth, 0);
         break;
     }
-    case Game::DamageType::Blunt:
-    case Game::DamageType::Piercing:
-    case Game::DamageType::Slashing:
+    case DamageType::Blunt:
+    case DamageType::Piercing:
+    case DamageType::Slashing:
     {
         value += GetValue(Stat::ArmorPhysical, 0);
         break;
     }
-    case Game::DamageType::Holy:
-    case Game::DamageType::Shadow:
-    case Game::DamageType::Chaos:
-    case Game::DamageType::LifeDrain:
-    case Game::DamageType::Typeless:
-    case Game::DamageType::Dark:
+    case DamageType::Holy:
+    case DamageType::Shadow:
+    case DamageType::Chaos:
+    case DamageType::LifeDrain:
+    case DamageType::Typeless:
+    case DamageType::Dark:
         // Ignoring armor
         break;
     default:

@@ -128,7 +128,7 @@ void Projectile::SetTarget(std::shared_ptr<Actor> target)
     {
         SetError(AB::GameProtocol::AttackErrorTargetObstructed);
     }
-    started_ = OnStart();
+    started_ = DoStart();
     if (started_)
     {
         stateComp_.SetState(AB::GameProtocol::CreatureStateMoving, true);
@@ -261,7 +261,7 @@ void Projectile::OnCollide(GameObject* other)
     Remove();
 }
 
-bool Projectile::OnStart()
+bool Projectile::DoStart()
 {
     auto t = target_.lock();
     assert(t);
