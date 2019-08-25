@@ -15,6 +15,7 @@ abscommon/DataKey.h
 abscommon/DebugConfig.h
 abscommon/Dispatcher.cpp
 abscommon/Dispatcher.h
+abscommon/Events.h
 abscommon/FileUtils.cpp
 abscommon/FileUtils.h
 abscommon/IdGenerator.h
