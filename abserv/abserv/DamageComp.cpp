@@ -3,7 +3,7 @@
 #include "Actor.h"
 #include "Subsystems.h"
 #include "Random.h"
-#include "WeightedSelector.h"
+#include <sa/WeightedSelector.h>
 
 namespace Game {
 namespace Components {
@@ -47,7 +47,7 @@ void DamageComp::Touch()
 
 DamagePos DamageComp::GetDamagePos() const
 {
-    static Utils::WeightedSelector<DamagePos> ws;
+    static sa::WeightedSelector<DamagePos> ws;
     if (!ws.IsInitialized())
     {
         for (size_t i = 0; i < Utils::CountOf(DamagePosChances); ++i)

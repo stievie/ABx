@@ -12,7 +12,7 @@
 #include "CollisionShape.h"
 #include <AB/Entities/Character.h>
 #include <AB/ProtocolCodes.h>
-#include "IdGenerator.h"
+#include <sa/IdGenerator.h>
 #include "StateComp.h"
 #include "TriggerComp.h"
 #include "Variant.h"
@@ -20,10 +20,10 @@
 #include "CollisionComp.h"
 #include "MoveComp.h"
 #include "InputComp.h"
-#include "Iteration.h"
+#include <sa/Iteration.h>
 #include "Mechanic.h"
 #include <kaguya/kaguya.hpp>
-#include "Events.h"
+#include <sa/Events.h>
 #include "Damage.h"
 #include "StringHash.h"
 
@@ -47,16 +47,16 @@ class Skill;
 #pragma warning(push)
 #pragma warning(disable: 4307)
 #endif
-static constexpr Utils::event_t EVENT_ON_CLICKED = Utils::StringHash("OnClicked");
-static constexpr Utils::event_t EVENT_ON_COLLIDE = Utils::StringHash("OnCollide");
-static constexpr Utils::event_t EVENT_ON_LEFTAREA = Utils::StringHash("OnLeftArea");
-static constexpr Utils::event_t EVENT_ON_SELECTED = Utils::StringHash("OnSelected");
-static constexpr Utils::event_t EVENT_ON_TRIGGER = Utils::StringHash("OnTrigger");
+static constexpr sa::event_t EVENT_ON_CLICKED = Utils::StringHash("OnClicked");
+static constexpr sa::event_t EVENT_ON_COLLIDE = Utils::StringHash("OnCollide");
+static constexpr sa::event_t EVENT_ON_LEFTAREA = Utils::StringHash("OnLeftArea");
+static constexpr sa::event_t EVENT_ON_SELECTED = Utils::StringHash("OnSelected");
+static constexpr sa::event_t EVENT_ON_TRIGGER = Utils::StringHash("OnTrigger");
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
 
-using GameObjectEvents = Utils::Events<
+using GameObjectEvents = sa::Events<
     void(void),
     void(uint32_t),
     void(int),
@@ -76,7 +76,7 @@ class GameObject : public std::enable_shared_from_this<GameObject>
     friend class Math::Octant;
     friend class Math::Octree;
 public:
-    static Utils::IdGenerator<uint32_t> objectIds_;
+    static sa::IdGenerator<uint32_t> objectIds_;
 private:
     int64_t removeAt_{ 0 };
     std::unique_ptr<Math::CollisionShape> collisionShape_{ nullptr };
@@ -268,17 +268,17 @@ public:
     void RemoveIn(uint32_t time);
 
     template <typename Signature>
-    void SubscribeEvent(Utils::event_t index, std::function<Signature>&& func)
+    void SubscribeEvent(sa::event_t index, std::function<Signature>&& func)
     {
         events_.Subscribe<Signature>(index, std::move(func));
     }
     template <typename Signature, typename... _CArgs>
-    auto CallEventOne(Utils::event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Signature, _CArgs...>::type
+    auto CallEventOne(sa::event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Signature, _CArgs...>::type
     {
         return events_.CallOne<Signature, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
     }
     template <typename Signature, typename... _CArgs>
-    auto CallEventAll(Utils::event_t index, _CArgs&& ... _Args)
+    auto CallEventAll(sa::event_t index, _CArgs&& ... _Args)
     {
         return events_.CallAll<Signature, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
     }

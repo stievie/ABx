@@ -33,7 +33,7 @@
 #include "AiLoader.h"
 #include "PartyManager.h"
 #include "ItemFactory.h"
-#include "ConditionSleep.h"
+#include <sa/ConditionSleep.h>
 #include "ItemsCache.h"
 #include "UuidUtils.h"
 
@@ -605,7 +605,7 @@ void Application::Stop()
     gameMan->Stop();
 
     // We must wait until all games stopped
-    Asynch::ConditionSleep([&]() {
+    sa::ConditionSleep([&]() {
         return gameMan->GetGameCount() == 0;
     }, 2000);
     std::this_thread::sleep_for(50ms);

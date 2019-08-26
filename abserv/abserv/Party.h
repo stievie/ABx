@@ -2,12 +2,12 @@
 
 #include <kaguya/kaguya.hpp>
 #include "NetworkMessage.h"
-#include "IdGenerator.h"
+#include <sa/IdGenerator.h>
 #include <AB/Entities/Party.h>
 #include "Subsystems.h"
 #include "DataClient.h"
 #include "Mechanic.h"
-#include "Iteration.h"
+#include <sa/Iteration.h>
 #include "Variant.h"
 
 namespace Game {
@@ -42,7 +42,7 @@ private:
     float _LuaGetVarNumber(const std::string& name);
     void _LuaSetVarNumber(const std::string& name, float value);
 public:
-    static Utils::IdGenerator<uint32_t> partyIds_;
+    static sa::IdGenerator<uint32_t> partyIds_;
     /// Returns a new Party/Group ID
     static uint32_t GetNewId()
     {

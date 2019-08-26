@@ -90,9 +90,6 @@
     <ClInclude Include="Process.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IdGenerator.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Variant.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -138,28 +135,10 @@
     <ClInclude Include="BanManager.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="WeightedSelector.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleColor.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Logo.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Iteration.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ConditionSleep.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Transaction.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="CallableTable.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Events.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,7 +7,7 @@
 #include <AB/Entities/Character.h>
 #include "MessageClient.h"
 #include <AB/Entities/Account.h>
-#include "Transaction.h"
+#include <sa/Transaction.h>
 #include "UuidUtils.h"
 
 AB::Entities::ProfessionPosition Queue::GetPlayerPosition(const std::string& uuid)
@@ -288,7 +288,7 @@ void Queue::Update(uint32_t, const std::function<void(const std::string& playerU
     // Create as many matches as possible.
     while (EnoughPlayers())
     {
-        Utils::Transaction transaction(entries_);
+        sa::Transaction transaction(entries_);
         MatchTeams teams;
         if (MakeTeams(teams))
         {

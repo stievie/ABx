@@ -12,7 +12,7 @@
 
 namespace Game {
 
-Utils::IdGenerator<uint32_t> GameObject::objectIds_;
+sa::IdGenerator<uint32_t> GameObject::objectIds_;
 // Let's make the head 1.7m above the ground
 const Math::Vector3 GameObject::HeadOffset(0.0f, 1.7f, 0.0f);
 const Math::Vector3 GameObject::BodyOffset(0.0f, 1.0f, 0.0f);

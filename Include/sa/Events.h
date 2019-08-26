@@ -6,22 +6,22 @@
 #include <tuple>
 #include <vector>
 
-namespace Utils {
+namespace sa {
 
 typedef size_t event_t;
-
-/// All events with exactly one signature
-template <typename T>
-struct _Events
-{
-    std::unordered_map<event_t, std::vector<std::function<T>>> events_;
-};
 
 template <typename... Types>
 class Events
 {
 private:
+    /// All events with exactly one signature
+    template <typename T>
+    struct _Events
+    {
+        std::unordered_map<event_t, std::vector<std::function<T>>> events_;
+    };
     std::tuple<_Events<Types>...> events_;
+
     template <unsigned int Index>
     using GetTypeOfElement = typename std::tuple_element<Index, decltype(events_)>::type;
     template<typename T, unsigned int Index>

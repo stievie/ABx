@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "Transaction.h"
+#include <sa/Transaction.h>
 
 TEST_CASE("Transaction")
 {
@@ -51,7 +51,7 @@ TEST_CASE("Transaction")
         t1.uints.push_back(2);
         MyType t2 = t1;
         {
-            Utils::Transaction transaction(t1);
+            sa::Transaction transaction(t1);
             t1.mystring = "nothing";
             t1.uint = 0;
             t1.strings.clear();
@@ -71,7 +71,7 @@ TEST_CASE("Transaction")
         t1.uints.push_back(2);
         MyType t2 = t1;
 
-        Utils::Transaction transaction(t1);
+        sa::Transaction transaction(t1);
         t1.mystring = "nothing";
         t1.uint = 0;
         t1.strings.clear();

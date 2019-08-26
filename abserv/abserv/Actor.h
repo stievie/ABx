@@ -25,24 +25,24 @@ namespace Game {
 #pragma warning(push)
 #pragma warning(disable: 4307)
 #endif
-static constexpr Utils::event_t EVENT_ON_ARRIVED = Utils::StringHash("OnArrived");
-static constexpr Utils::event_t EVENT_ON_INTERRUPTEDATTACK = Utils::StringHash("OnInterruptedAttack");
-static constexpr Utils::event_t EVENT_ON_INTERRUPTEDSKILL = Utils::StringHash("OnInterruptedSkill");
-static constexpr Utils::event_t EVENT_ON_KNOCKEDDOWN = Utils::StringHash("OnKnockedDown");
-static constexpr Utils::event_t EVENT_ON_HEALED = Utils::StringHash("OnHealed");
-static constexpr Utils::event_t EVENT_ON_DIED = Utils::StringHash("OnDied");
-static constexpr Utils::event_t EVENT_ON_RESURRECTED = Utils::StringHash("OnResurrected");
-static constexpr Utils::event_t EVENT_ON_PINGOBJECT = Utils::StringHash("OnPingObject");
-static constexpr Utils::event_t EVENT_ON_INVENTORYFULL = Utils::StringHash("OnInventoryFull");
-static constexpr Utils::event_t EVENT_ON_ATTACK = Utils::StringHash("OnAttack");
-static constexpr Utils::event_t EVENT_ON_ATTACKED = Utils::StringHash("OnAttacked");
-static constexpr Utils::event_t EVENT_ON_GETTINGATTACKED = Utils::StringHash("OnGettingAttacked");
-static constexpr Utils::event_t EVENT_ON_USESKILL = Utils::StringHash("OnUseSkill");
-static constexpr Utils::event_t EVENT_ON_SKILLTARGETED = Utils::StringHash("OnSkillTargeted");
-static constexpr Utils::event_t EVENT_ON_GETCRITICALHIT = Utils::StringHash("OnGetCriticalHit");
-static constexpr Utils::event_t EVENT_ON_ENDUSESKILL = Utils::StringHash("OnEndUseSkill");
-static constexpr Utils::event_t EVENT_ON_STARTUSESKILL = Utils::StringHash("OnStartUseSkill");
-static constexpr Utils::event_t EVENT_ON_HANDLECOMMAND = Utils::StringHash("OnHandleCommand");
+static constexpr sa::event_t EVENT_ON_ARRIVED = Utils::StringHash("OnArrived");
+static constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = Utils::StringHash("OnInterruptedAttack");
+static constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = Utils::StringHash("OnInterruptedSkill");
+static constexpr sa::event_t EVENT_ON_KNOCKEDDOWN = Utils::StringHash("OnKnockedDown");
+static constexpr sa::event_t EVENT_ON_HEALED = Utils::StringHash("OnHealed");
+static constexpr sa::event_t EVENT_ON_DIED = Utils::StringHash("OnDied");
+static constexpr sa::event_t EVENT_ON_RESURRECTED = Utils::StringHash("OnResurrected");
+static constexpr sa::event_t EVENT_ON_PINGOBJECT = Utils::StringHash("OnPingObject");
+static constexpr sa::event_t EVENT_ON_INVENTORYFULL = Utils::StringHash("OnInventoryFull");
+static constexpr sa::event_t EVENT_ON_ATTACK = Utils::StringHash("OnAttack");
+static constexpr sa::event_t EVENT_ON_ATTACKED = Utils::StringHash("OnAttacked");
+static constexpr sa::event_t EVENT_ON_GETTINGATTACKED = Utils::StringHash("OnGettingAttacked");
+static constexpr sa::event_t EVENT_ON_USESKILL = Utils::StringHash("OnUseSkill");
+static constexpr sa::event_t EVENT_ON_SKILLTARGETED = Utils::StringHash("OnSkillTargeted");
+static constexpr sa::event_t EVENT_ON_GETCRITICALHIT = Utils::StringHash("OnGetCriticalHit");
+static constexpr sa::event_t EVENT_ON_ENDUSESKILL = Utils::StringHash("OnEndUseSkill");
+static constexpr sa::event_t EVENT_ON_STARTUSESKILL = Utils::StringHash("OnStartUseSkill");
+static constexpr sa::event_t EVENT_ON_HANDLECOMMAND = Utils::StringHash("OnHandleCommand");
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif

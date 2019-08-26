@@ -5,7 +5,7 @@
 #include <random>
 #include <cassert>
 
-namespace Utils {
+namespace sa {
 
 // https://github.com/m-ochi/aliasmethod
 template <typename T>

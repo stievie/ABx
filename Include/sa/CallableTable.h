@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Utils {
+namespace sa {
 
 template <typename IndexType, typename ReturnType, typename... _CArgs>
 class CallableTable

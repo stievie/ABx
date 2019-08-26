@@ -2,14 +2,14 @@
 #include <catch.hpp>
 #include <functional>
 
-#include "Events.h"
+#include <sa/Events.h>
 
 TEST_CASE("Events")
 {
     class Foo
     {
     private:
-        Utils::Events<
+        sa::Events<
             int(int, int)
         > events;
         int Bar(int i, int j)
@@ -30,7 +30,7 @@ TEST_CASE("Events")
     class A
     {
     private:
-        Utils::Events<
+        sa::Events<
             int(int, int)
         > events;
     protected:
@@ -60,7 +60,7 @@ TEST_CASE("Events")
 
     SECTION("Lambda")
     {
-        Utils::Events<
+        sa::Events<
             int(int, int)
         > events;
         events.Subscribe<int(int, int)>(1, [](int i, int j) -> int
@@ -83,7 +83,7 @@ TEST_CASE("Events")
 
     SECTION("Not found")
     {
-        Utils::Events<
+        sa::Events<
             int(int, int)
         > events;
         events.Subscribe<int(int, int)>(1, [](int i, int j) -> int
@@ -111,7 +111,7 @@ TEST_CASE("Events")
 
     SECTION("Different signatures")
     {
-        Utils::Events<
+        sa::Events<
             int(int, int),
             bool(int),
             void(void)
@@ -136,7 +136,7 @@ TEST_CASE("Events")
 
     SECTION("Multiple subscribers")
     {
-        Utils::Events<
+        sa::Events<
             std::string(const std::string&)
         > events;
         events.Subscribe<std::string(const std::string&)>(1, [](const std::string& s)
@@ -156,7 +156,7 @@ TEST_CASE("Events")
 
     SECTION("Event not found")
     {
-        Utils::Events<
+        sa::Events<
             int(int, int)
         > events;
         events.Subscribe<int(int, int)>(1, [](int i, int j) -> int

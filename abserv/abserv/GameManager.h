@@ -3,7 +3,7 @@
 #include "Service.h"
 #include "Game.h"
 #include <limits>
-#include "IdGenerator.h"
+#include <sa/IdGenerator.h>
 #include <AB/Entities/Game.h>
 
 namespace Game {
@@ -23,7 +23,7 @@ private:
     std::mutex lock_;
     std::map<uint32_t, std::shared_ptr<Game>> games_;
     std::map<std::string, std::vector<Game*>> maps_;
-    Utils::IdGenerator<uint32_t> gameIds_;
+    sa::IdGenerator<uint32_t> gameIds_;
     uint32_t GetNewGameId()
     {
         return gameIds_.Next();

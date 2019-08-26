@@ -5,7 +5,7 @@
 #include <memory>
 #include <limits>
 #include "Utils.h"
-#include "Iteration.h"
+#include <sa/Iteration.h>
 
 namespace Net {
 class ProtocolGame;

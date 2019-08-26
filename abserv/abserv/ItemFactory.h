@@ -4,7 +4,7 @@
 #include "Item.h"
 #include "UuidUtils.h"
 #include "Mechanic.h"
-#include "WeightedSelector.h"
+#include <sa/WeightedSelector.h>
 
 namespace Game {
 
@@ -13,7 +13,7 @@ class Player;
 class ItemFactory
 {
 private:
-    using ItemSelector = Utils::WeightedSelector<std::string>;
+    using ItemSelector = sa::WeightedSelector<std::string>;
     using TypedListValue = std::pair<std::string, AB::Entities::ItemType>;
     std::map<std::string, std::unique_ptr<ItemSelector>> dropChances_;
     /// List of upgrades. Upgrades are not specific to maps

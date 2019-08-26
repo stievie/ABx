@@ -3,7 +3,7 @@
 #include <limits>
 #include <mutex>
 
-namespace Utils {
+namespace sa {
 
 template <typename T>
 class IdGenerator

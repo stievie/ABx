@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "ItemsCache.h"
-#include "Iteration.h"
+#include <sa/Iteration.h>
 
 namespace Game {
 
-Utils::IdGenerator<uint32_t> ItemsCache::itemIds_;
+sa::IdGenerator<uint32_t> ItemsCache::itemIds_;
 
 Item* ItemsCache::Get(uint32_t id)
 {

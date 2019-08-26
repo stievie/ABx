@@ -3,7 +3,7 @@
 #include "Mechanic.h"
 #include "Item.h"
 #include "ItemsCache.h"
-#include "Iteration.h"
+#include <sa/Iteration.h>
 #include "Subsystems.h"
 
 namespace Game {

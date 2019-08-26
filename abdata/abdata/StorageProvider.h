@@ -31,7 +31,7 @@
 #endif
 #include "StringHash.h"
 #include "DataKey.h"
-#include "CallableTable.h"
+#include <sa/CallableTable.h>
 #include "StringHash.h"
 
 // Clean cache every 10min
@@ -133,9 +133,9 @@ public:
 private:
     /// first = flags, second = data
     using CacheItem = std::pair<CacheFlags, std::shared_ptr<std::vector<uint8_t>>>;
-    Utils::CallableTable<size_t, bool, std::vector<uint8_t>&> exitsCallables_;
-    Utils::CallableTable<size_t, bool, CacheItem&> flushCallables_;
-    Utils::CallableTable<size_t, bool, const uuids::uuid&, std::vector<uint8_t>&> loadCallables_;
+    sa::CallableTable<size_t, bool, std::vector<uint8_t>&> exitsCallables_;
+    sa::CallableTable<size_t, bool, CacheItem&> flushCallables_;
+    sa::CallableTable<size_t, bool, const uuids::uuid&, std::vector<uint8_t>&> loadCallables_;
     template<typename D, typename E>
     void AddEntityClass()
     {

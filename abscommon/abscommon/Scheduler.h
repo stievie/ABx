@@ -6,7 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <thread>
-#include "IdGenerator.h"
+#include <sa/IdGenerator.h>
 
 namespace Asynch {
 
@@ -69,7 +69,7 @@ private:
     std::set<uint32_t> eventIds_;
     std::thread thread_;
     std::priority_queue<ScheduledTask*, std::deque<ScheduledTask*>, TaskComparator> events_;
-    Utils::IdGenerator<uint32_t> idGenerator_;
+    sa::IdGenerator<uint32_t> idGenerator_;
     void SchedulerThread();
 public:
     Scheduler() :

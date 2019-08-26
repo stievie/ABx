@@ -3,7 +3,7 @@
 #include <thread>
 #include <chrono>
 
-namespace Asynch {
+namespace sa {
 
 /// This thread sleeps until pred returns true
 template<typename Predicate>

@@ -11,7 +11,7 @@
 
 namespace Game {
 
-Utils::IdGenerator<uint32_t> Party::partyIds_;
+sa::IdGenerator<uint32_t> Party::partyIds_;
 
 void Party::RegisterLua(kaguya::State& state)
 {

@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include <catch.hpp>
 
-#include "WeightedSelector.h"
+#include <sa/WeightedSelector.h>
 
 TEST_CASE("WeightedSelector")
 {
-    Utils::WeightedSelector<std::string> ws;
+    sa::WeightedSelector<std::string> ws;
     ws.Add("Test1", 0.5f);
     ws.Add("Test2", 0.2f);
     ws.Add("Test3", 0.15f);

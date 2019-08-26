@@ -6,7 +6,7 @@
 #include "DataClient.h"
 #include "MathUtils.h"
 #include "Skill.h"
-#include "Transaction.h"
+#include <sa/Transaction.h>
 
 namespace Game {
 namespace Components {

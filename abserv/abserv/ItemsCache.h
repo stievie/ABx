@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include "IdGenerator.h"
+#include <sa/IdGenerator.h>
 #include "Item.h"
 
 namespace Game {
@@ -9,7 +9,7 @@ namespace Game {
 class ItemsCache
 {
 private:
-    static Utils::IdGenerator<uint32_t> itemIds_;
+    static sa::IdGenerator<uint32_t> itemIds_;
     std::unordered_map<uint32_t, std::unique_ptr<Item>> itemCache_;
     std::unordered_map<std::string, uint32_t> concreteIds_;
 public:
