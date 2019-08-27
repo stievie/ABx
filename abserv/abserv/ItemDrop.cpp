@@ -11,7 +11,7 @@ namespace Game {
 
 void ItemDrop::RegisterLua(kaguya::State& state)
 {
-    state["ItemDrop"].setClass(kaguya::UserdataMetatable<ItemDrop>()
+    state["ItemDrop"].setClass(kaguya::UserdataMetatable<ItemDrop, GameObject>()
     );
 }
 

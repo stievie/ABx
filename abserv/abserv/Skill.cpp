@@ -87,7 +87,7 @@ void Skill::Update(uint32_t timeElapsed)
                 lastUse_ = Utils::Tick();
             }
             if (source)
-                source->CallEventAll<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
+                source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
             source_.reset();
             target_.reset();
         }
@@ -173,7 +173,7 @@ AB::GameProtocol::SkillError Skill::StartUse(std::shared_ptr<Actor> source, std:
     source->resourceComp_->SetEnergy(Components::SetValueType::Decrease, realEnergy_);
     source->resourceComp_->SetAdrenaline(Components::SetValueType::Decrease, realAdrenaline_);
     source->resourceComp_->SetOvercast(Components::SetValueType::Increase, realOvercast_);
-    source->CallEventAll<void(Skill*)>(EVENT_ON_STARTUSESKILL, this);
+    source->CallEvent<void(Skill*)>(EVENT_ON_STARTUSESKILL, this);
     return lastError_;
 }
 
@@ -187,7 +187,7 @@ void Skill::CancelUse()
             source.get(), target.get());
     }
     if (source)
-        source->CallEventAll<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
+        source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
     startUse_ = 0;
     // No recharging when canceled
     recharged_ = 0;
@@ -209,8 +209,8 @@ bool Skill::Interrupt()
     }
     if (source)
     {
-        source->CallEventAll<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, this);
-        source->CallEventAll<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
+        source->CallEvent<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, this);
+        source->CallEvent<void(Skill*)>(EVENT_ON_ENDUSESKILL, this);
     }
     startUse_ = 0;
     source_.reset();

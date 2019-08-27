@@ -43,6 +43,7 @@ TEST_CASE("Events")
         {
             events.Subscribe<int(int, int)>(1, std::bind(&A::Foo, this, std::placeholders::_1, std::placeholders::_2));
         }
+        virtual ~A() = default;
         int DoFoo(int i, int j)
         {
             return events.CallOne<int(int, int)>(1, i, j);

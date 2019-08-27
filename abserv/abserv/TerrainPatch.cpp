@@ -53,13 +53,13 @@ TerrainPatch::TerrainPatch(std::shared_ptr<Terrain> owner,
         }
     }
     const Math::Vector3 bbMin(
-        transformation_.position_.x_ - ((float)size.x_ / 2.0f),
+        transformation_.position_.x_ - (static_cast<float>(size.x_) / 2.0f),
         minY,
-        transformation_.position_.z_ - ((float)size.y_ / 2.0f));
+        transformation_.position_.z_ - (static_cast<float>(size.y_) / 2.0f));
     const Math::Vector3 bbMax(
-        transformation_.position_.x_ + ((float)size.x_ / 2.0f),
+        transformation_.position_.x_ + (static_cast<float>(size.x_) / 2.0f),
         maxY,
-        transformation_.position_.z_ + ((float)size.y_ / 2.0f));
+        transformation_.position_.z_ + (static_cast<float>(size.y_) / 2.0f));
     boundingBox_ = Math::BoundingBox(bbMin, bbMax);
 
 #ifdef DEBUG_COLLISION
@@ -101,7 +101,8 @@ void TerrainPatch::ProcessRayQuery(const Math::RayOctreeQuery& query,
     {
         const Math::Matrix4& matrix = o->transformation_.GetMatrix();
         Math::Ray localRay = query.ray_.Transformed(matrix.Inverse());
-        float max = Math::Clamp(Math::IsInfinite(query.maxDistance_) ? static_cast<float>(o->patchSize_) : query.maxDistance_,
+        float max = Math::Clamp(
+            Math::IsInfinite(query.maxDistance_) ? static_cast<float>(o->patchSize_) : query.maxDistance_,
             0.0f,
             static_cast<float>(o->patchSize_));
 

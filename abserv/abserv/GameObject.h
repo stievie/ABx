@@ -268,19 +268,26 @@ public:
     void RemoveIn(uint32_t time);
 
     template <typename Signature>
-    void SubscribeEvent(sa::event_t index, std::function<Signature>&& func)
+    size_t SubscribeEvent(sa::event_t id, std::function<Signature>&& func)
     {
-        events_.Subscribe<Signature>(index, std::move(func));
+        return events_.Subscribe<Signature>(id, std::move(func));
     }
-    template <typename Signature, typename... _CArgs>
-    auto CallEventOne(sa::event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Signature, _CArgs...>::type
+    template <typename Signature>
+    void UnsubscribeEvent(sa::event_t id, size_t index)
     {
-        return events_.CallOne<Signature, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
+        events_.Unsubscribe<Signature>(id, index);
     }
+    /// Call the first subscriber
     template <typename Signature, typename... _CArgs>
-    auto CallEventAll(sa::event_t index, _CArgs&& ... _Args)
+    auto CallEventOne(sa::event_t id, _CArgs&& ... _Args) -> typename std::invoke_result<Signature, _CArgs...>::type
     {
-        return events_.CallAll<Signature, _CArgs...>(index, std::forward<_CArgs>(_Args)...);
+        return events_.CallOne<Signature, _CArgs...>(id, std::forward<_CArgs>(_Args)...);
+    }
+    /// Calls all subscribers
+    template <typename Signature, typename... _CArgs>
+    auto CallEvent(sa::event_t id, _CArgs&& ... _Args)
+    {
+        return events_.CallAll<Signature, _CArgs...>(id, std::forward<_CArgs>(_Args)...);
     }
 
     virtual bool Serialize(IO::PropWriteStream& stream);

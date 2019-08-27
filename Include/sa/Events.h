@@ -4,13 +4,22 @@
 #include <unordered_map>
 #include <type_traits>
 #include <tuple>
-#include <vector>
+#include <map>
+#include <future>
+
+// Define SA_EVENTS_ASYNC to get the Async... methods. On *NIX you must link against
+// pthread. Handle with care and know what you are doing.
 
 namespace sa {
 
+// Events are identified by it's function signature and the event_t value. So events with the same
+// ID but a different signature are distinct.
+
+/// A unique value identifying an event, I use a string hash therefore size_t but can be anything that
+/// an std::unordered_map takes as key.
 typedef size_t event_t;
 
-template <typename... Types>
+template <typename... Signatures>
 class Events
 {
 private:
@@ -18,9 +27,9 @@ private:
     template <typename T>
     struct _Events
     {
-        std::unordered_map<event_t, std::vector<std::function<T>>> events_;
+        std::unordered_map<event_t, std::map<size_t, std::function<T>>> events_;
     };
-    std::tuple<_Events<Types>...> events_;
+    std::tuple<_Events<Signatures>...> events_;
 
     template <unsigned int Index>
     using GetTypeOfElement = typename std::tuple_element<Index, decltype(events_)>::type;
@@ -38,55 +47,79 @@ private:
         constexpr auto index = FindElement<_Events<T>>::value;
         return std::get<index>(events_);
     }
+    size_t indices_{ 0 };
+    size_t NewIndex() { return ++indices_; }
 public:
     /// Is used with std::bind()
-    template <typename Func>
-    void Subscribe(event_t index, std::function<Func>&& func)
+    template <typename Signature>
+    size_t Subscribe(event_t id, std::function<Signature>&& func)
     {
-        GetEventsT<Func>().events_[index].push_back(std::move(func));
+        auto& events = GetEventsT<Signature>().events_[id];
+        size_t index = NewIndex();
+        events.emplace(index, std::move(func));
+        return index;
     }
     /// Is used for everything else that looks like a callable, e.g. a Lambda
-    template <typename Func>
-    void Subscribe(event_t index, Func func)
+    template <typename Signature>
+    size_t Subscribe(event_t id, Signature func)
     {
-        GetEventsT<Func>().events_[index].push_back(std::function<Func>(func));
+        auto& events = GetEventsT<Signature>().events_[id];
+        size_t index = NewIndex();
+        events.emplace(index, std::function<Signature>(func));
+        return index;
+    }
+    template <typename Signature>
+    void Unsubscribe(event_t id, size_t index)
+    {
+        auto& events = GetEventsT<Signature>();
+        const auto it = events.events_.find(id);
+        if (it == events.events_.end())
+            return;
+
+        auto& eventsMap = (*it).second;
+        auto itFunc = eventsMap.find(index);
+        if (itFunc == eventsMap.end())
+            return;
+        eventsMap.erase(itFunc);
     }
 
     /// Calls the first subscriber and returns the result
-    template <typename Func, typename... _CArgs>
-    auto CallOne(event_t index, _CArgs&& ... _Args) -> typename std::invoke_result<Func, _CArgs...>::type
+    template <typename Signature, typename... ArgTypes>
+    auto CallOne(event_t id, ArgTypes&& ... Arguments) -> typename std::invoke_result<Signature, ArgTypes...>::type
     {
-        using ResultType = typename std::invoke_result<Func, _CArgs...>::type;
+        using ResultType = typename std::invoke_result<Signature, ArgTypes...>::type;
         static constexpr auto isVoid = std::is_same_v<ResultType, void>;
 
-        auto& events = GetEventsT<Func>();
-        const auto it = events.events_.find(index);
+        auto& events = GetEventsT<Signature>();
+        const auto it = events.events_.find(id);
         if (it == events.events_.end() || (*it).second.size() == 0)
         {
             // Index not found, return nothing (if void), some default value
             if constexpr(isVoid)
                 return;
             else
+                // Should work with primitives and classes with trivial constructor
                 return ResultType{};
             // or even better throw an exception
         }
-        return (*it).second.front()(std::forward<_CArgs>(_Args)...);
+        return (*(*it).second.begin()).second(std::forward<ArgTypes>(Arguments)...);
     }
 
-    /// Calls all subscibers and returns a std::vector of results or void
-    template <typename Func, typename... _CArgs>
-    auto CallAll(event_t index, _CArgs&& ... _Args)
+    /// Calls all subscribers and returns a std::vector of results or void
+    template <typename Signature, typename... ArgTypes>
+    auto CallAll(event_t id, ArgTypes&& ... Arguments)
     {
-        using ResultType = typename std::invoke_result<Func, _CArgs...>::type;
+        using ResultType = typename std::invoke_result<Signature, ArgTypes...>::type;
         static constexpr auto isVoid = std::is_same_v<ResultType, void>;
-        auto& events = GetEventsT<Func>();
-        const auto it = events.events_.find(index);
+        auto& events = GetEventsT<Signature>();
+        const auto it = events.events_.find(id);
         if (it == events.events_.end() || (*it).second.size() == 0)
         {
             // Index not found, return nothing (if void), some default value
             if constexpr(isVoid)
                 return;
             else
+                // Return an empty std::vector
                 return std::vector<ResultType>();
             // or even better throw an exception
         }
@@ -94,17 +127,77 @@ public:
         if constexpr(isVoid)
         {
             for (const auto& fun : (*it).second)
-                fun(std::forward<_CArgs>(_Args)...);
+                fun.second(std::forward<ArgTypes>(Arguments)...);
         }
         else
         {
             std::vector<ResultType> result;
             result.reserve((*it).second.size());
             for (const auto& fun : (*it).second)
-                result.push_back(fun(std::forward<_CArgs>(_Args)...));
+                result.push_back(fun.second(std::forward<ArgTypes>(Arguments)...));
             return result;
         }
     }
+
+#ifdef SA_EVENTS_ASYNC
+    /// Async calls the first subscriber and returns the result
+    template <typename Signature, typename... ArgTypes>
+    auto AsyncCallOne(event_t id, ArgTypes&& ... Arguments)
+    {
+        using ResultType = typename std::invoke_result<Signature, ArgTypes...>::type;
+        static constexpr auto isVoid = std::is_same_v<ResultType, void>;
+
+        auto& events = GetEventsT<Signature>();
+        const auto it = events.events_.find(id);
+        if (it == events.events_.end() || (*it).second.size() == 0)
+        {
+            // Index not found, return nothing (if void), some default value
+            if constexpr(isVoid)
+                return;
+            else
+                // Should work with primitives and classes with trivial constructor
+                return std::future<ResultType>{};
+            // or even better throw an exception
+        }
+        return std::async(launch_, (*(*it).second.begin()).second, std::forward<ArgTypes>(Arguments)...);
+    }
+
+    /// Async calls all subscribers and returns a std::vector of results or void
+    template <typename Signature, typename... ArgTypes>
+    auto AsyncCallAll(event_t id, ArgTypes&& ... Arguments)
+    {
+        using ResultType = typename std::invoke_result<Signature, ArgTypes...>::type;
+        static constexpr auto isVoid = std::is_same_v<ResultType, void>;
+        auto& events = GetEventsT<Signature>();
+        const auto it = events.events_.find(id);
+        if (it == events.events_.end() || (*it).second.size() == 0)
+        {
+            // Index not found, return nothing (if void), some default value
+            if constexpr(isVoid)
+                return;
+            else
+                // Return an empty std::vector
+                return std::vector<std::future<ResultType>>();
+            // or even better throw an exception
+        }
+
+        if constexpr(isVoid)
+        {
+            for (const auto& fun : (*it).second)
+                std::async(launch_, fun.second, std::forward<ArgTypes>(Arguments)...);
+        }
+        else
+        {
+            std::vector<std::future<ResultType>> result;
+            result.reserve((*it).second.size());
+            for (const auto& fun : (*it).second)
+                result.push_back(std::async(launch_, fun.second, std::forward<ArgTypes>(Arguments)...));
+            return result;
+        }
+    }
+    std::launch launch_{ std::launch::deferred };
+#endif
+
 };
 
 }

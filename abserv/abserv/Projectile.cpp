@@ -168,7 +168,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
         if (targetMoveDir_ == target->moveComp_->moveDir_)
         {
             // If the target does not change direction we follow him.
-            // Target can only dodge when changing the direction after we lauched.
+            // Target can only dodge when changing the direction after we launched.
             targetPos_ = target->GetPosition() + BodyOffset;
             currentDistance_ = GetPosition().Distance(targetPos_);
         }
@@ -183,7 +183,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
 
     const float speed = moveComp_->GetSpeed(timeElapsed, BASE_MOVE_SPEED);
     moveComp_->Move(speed, Math::Vector3::UnitZ);
-    // Adjust Y, also try to make a somewhat realisitc trajectory
+    // Adjust Y, also try to make a somewhat realistic trajectory
     const Math::Vector3 curPosOrigY = { transformation_.position_.x_, startPos_.y_, transformation_.position_.z_ };
     const float f = 1.0f - (curPosOrigY.Distance(targetPos_) / distance_);
     transformation_.position_.y_ = Math::Lerp(startPos_.y_, targetPos_.y_, f) +
@@ -204,7 +204,7 @@ void Projectile::Update(uint32_t timeElapsed, Net::NetworkMessage& message)
             // We may not really collide because of the low game update rate, so let's
             // approximate if we would collide
             if (error_ == AB::GameProtocol::AttackErrorNone)
-                CallEventAll<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
+                CallEvent<void(GameObject*)>(EVENT_ON_COLLIDE, target.get());
         }
         else if (dist < currentDistance_)
             currentDistance_ = dist;

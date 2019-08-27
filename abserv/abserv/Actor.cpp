@@ -963,7 +963,7 @@ bool Actor::Resurrect(int precentHealth, int percentEnergy)
         resourceComp_->SetEnergy(Components::SetValueType::Absolute, energy);
         damageComp_->Touch();
         stateComp_.SetState(AB::GameProtocol::CreatureStateIdle);
-        CallEventAll<void(int,int)>(EVENT_ON_RESURRECTED, health, energy);
+        CallEvent<void(int,int)>(EVENT_ON_RESURRECTED, health, energy);
         return true;
     }
     return false;
@@ -991,7 +991,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
         attackComp_->Interrupt();
         skillsComp_->Interrupt(AB::Entities::SkillTypeSkill);
         autorunComp_->Reset();
-        CallEventAll<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, time);
+        CallEvent<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, time);
     }
     return ret;
 }
@@ -1003,7 +1003,7 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     int val = value;
     effectsComp_->OnHealing(source, val);
     healComp_->Healing(source, index, val);
-    CallEventAll<void(int)>(EVENT_ON_HEALED, val);
+    CallEvent<void(int)>(EVENT_ON_HEALED, val);
     return val;
 }
 

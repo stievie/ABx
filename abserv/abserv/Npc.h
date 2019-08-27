@@ -58,10 +58,13 @@ private:
     void OnSelected(Actor* selector);
     void OnTrigger(GameObject* other);
     void OnLeftArea(GameObject* other);
+    void OnDied();
+    void OnEndUseSkill(Skill* skill);
+    void OnStartUseSkill(Skill* skill);
 protected:
-    // Events subscribed by Actor
-    void OnEndUseSkill(Skill* skill) override;
-    void OnStartUseSkill(Skill* skill) override;
+    // Events subscribed by Actor and we override it. They return a value that's
+    // why it's a virtual function to get one combined value. If we'd use the
+    // Events we would get a vector<bool> which complicates the stuff a bit.
     bool OnAttack(Actor* target) override;
     bool OnAttacked(Actor* source, DamageType type, int32_t damage) override;
     bool OnGettingAttacked(Actor* source) override;
@@ -69,7 +72,6 @@ protected:
     bool OnSkillTargeted(Actor* source, Skill* skill) override;
     bool OnInterruptingAttack() override;
     bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
-    void OnDied() override;
 public:
     static void RegisterLua(kaguya::State& state);
 

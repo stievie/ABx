@@ -46,7 +46,7 @@ void AttackComp::Hit(Actor* target)
     if (interrupted_)
     {
         lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-        owner_.CallEventAll<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
+        owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
     }
     else
     {
@@ -72,13 +72,13 @@ void AttackComp::Hit(Actor* target)
             else
             {
                 lastError_ = AB::GameProtocol::AttackErrorInterrupted;
-                owner_.CallEventAll<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
+                owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
             }
         }
         else
         {
             lastError_ = AB::GameProtocol::AttackErrorNoTarget;
-            owner_.CallEventAll<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
+            owner_.CallEvent<void(void)>(EVENT_ON_INTERRUPTEDATTACK);
         }
     }
 }
@@ -203,7 +203,7 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 
     target_ = target;
     if (ping)
-        owner_.CallEventAll<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
+        owner_.CallEvent<void(uint32_t, AB::GameProtocol::ObjectCallType, int)>(EVENT_ON_PINGOBJECT,
             target ? target->id_ : 0, AB::GameProtocol::ObjectCallTypeAttack, 0);
     attacking_ = true;
     lastAttackTime_ = 0;

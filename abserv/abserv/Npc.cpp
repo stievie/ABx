@@ -41,6 +41,9 @@ Npc::Npc() :
     aiCharacter_(nullptr),
     luaInitialized_(false)
 {
+    events_.Subscribe<void(void)>(EVENT_ON_DIED, std::bind(&Npc::OnDied, this));
+    events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Npc::OnEndUseSkill, this, std::placeholders::_1));
+    events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Npc::OnStartUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Actor*)>(EVENT_ON_CLICKED, std::bind(&Npc::OnClicked, this, std::placeholders::_1));
     events_.Subscribe<void(GameObject*)>(EVENT_ON_COLLIDE, std::bind(&Npc::OnCollide, this, std::placeholders::_1));
     events_.Subscribe<void(Actor*)>(EVENT_ON_SELECTED, std::bind(&Npc::OnSelected, this, std::placeholders::_1));
@@ -317,16 +320,12 @@ void Npc::OnLeftArea(GameObject* other)
 
 void Npc::OnEndUseSkill(Skill* skill)
 {
-    Actor::OnEndUseSkill(skill);
-
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onEndUseSkill", skill);
 }
 
 void Npc::OnStartUseSkill(Skill* skill)
 {
-    Actor::OnStartUseSkill(skill);
-
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onStartUseSkill", skill);
 }
@@ -426,7 +425,6 @@ void Npc::OnHealed(int hp)
 
 void Npc::OnDied()
 {
-    Actor::OnDied();
     if (luaInitialized_)
         ScriptManager::CallFunction(luaState_, "onDied");
 }

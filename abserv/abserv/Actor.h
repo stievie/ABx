@@ -69,9 +69,12 @@ private:
 protected:
     Math::Vector3 homePos_;
     std::weak_ptr<Actor> killedBy_;
+private:
+    void OnDied();
+    void OnEndUseSkill(Skill* skill);
+    void OnStartUseSkill(Skill* skill);
 protected:
     // Mostly triggered by Components
-    virtual void OnDied();
     /// This Actor is attacking the target
     virtual bool OnAttack(Actor* target);
     /// This Actor was attacked by source
@@ -83,8 +86,6 @@ protected:
     /// This Actor is targeted for a skill by source
     virtual bool OnSkillTargeted(Actor* source, Skill* skill);
     virtual bool OnGetCriticalHit(Actor* source);
-    virtual void OnEndUseSkill(Skill* skill);
-    virtual void OnStartUseSkill(Skill* skill);
 public:
     static void RegisterLua(kaguya::State& state);
 
