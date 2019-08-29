@@ -109,15 +109,6 @@ Actor::Actor() :
     moveComp_(std::make_unique<Components::MoveComp>(*this)),
     collisionComp_(std::make_unique<Components::CollisionComp>(*this))    // Actor always collides
 {
-    events_.Subscribe<void(void)>(EVENT_ON_DIED, std::bind(&Actor::OnDied, this));
-    events_.Subscribe<bool(Actor*)>(EVENT_ON_ATTACK, std::bind(&Actor::OnAttack, this, std::placeholders::_1));
-    events_.Subscribe<bool(Actor*,DamageType,int32_t)>(EVENT_ON_ATTACKED, std::bind(
-        &Actor::OnAttacked, this,
-        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    events_.Subscribe<bool(Actor*)>(EVENT_ON_GETTINGATTACKED, std::bind(&Actor::OnGettingAttacked, this, std::placeholders::_1));
-    events_.Subscribe<bool(Actor*,Skill*)>(EVENT_ON_USESKILL, std::bind(&Actor::OnUseSkill, this, std::placeholders::_1, std::placeholders::_2));
-    events_.Subscribe<bool(Actor*,Skill*)>(EVENT_ON_SKILLTARGETED, std::bind(&Actor::OnSkillTargeted, this, std::placeholders::_1, std::placeholders::_2));
-    events_.Subscribe<bool(Actor*)>(EVENT_ON_GETCRITICALHIT, std::bind(&Actor::OnGetCriticalHit, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Actor::OnEndUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Actor::OnStartUseSkill, this, std::placeholders::_1));
 
@@ -710,48 +701,6 @@ void Actor::SetResource(Components::ResourceType type, Components::SetValueType 
     resourceComp_->SetValue(type, t, value);
 }
 
-bool Actor::OnAttack(Actor* target)
-{
-    bool result = true;
-    effectsComp_->OnAttack(target, result);
-    return result;
-}
-
-bool Actor::OnAttacked(Actor* source, DamageType type, int32_t damage)
-{
-    bool result = true;
-    effectsComp_->OnAttacked(source, type, damage, result);
-    return result;
-}
-
-bool Actor::OnGettingAttacked(Actor* source)
-{
-    bool result = true;
-    effectsComp_->OnGettingAttacked(source, result);
-    return result;
-}
-
-bool Actor::OnUseSkill(Actor* target, Skill* skill)
-{
-    bool result = true;
-    effectsComp_->OnUseSkill(target, skill, result);
-    return result;
-}
-
-bool Actor::OnSkillTargeted(Actor* source, Skill* skill)
-{
-    bool result = true;
-    effectsComp_->OnSkillTargeted(source, skill, result);
-    return result;
-}
-
-bool Actor::OnGetCriticalHit(Actor* source)
-{
-    bool result = true;
-    effectsComp_->OnGetCriticalHit(source, result);
-    return result;
-}
-
 void Actor::ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration)
 {
     damageComp_->ApplyDamage(source, index, type, value, penetration);
@@ -773,23 +722,11 @@ void Actor::SetHealthRegen(int value)
     resourceComp_->SetHealthRegen(vt, abs(value));
 }
 
-bool Actor::OnInterruptingAttack()
-{
-    bool result = true;
-    effectsComp_->OnInterruptingAttack(result);
-    return result;
-}
-
-bool Actor::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill)
-{
-    bool result = true;
-    effectsComp_->OnInterruptingSkill(type, skill, result);
-    return result;
-}
-
 bool Actor::InterruptAttack()
 {
-    if (!OnInterruptingAttack())
+    bool success = true;
+    CallEvent<void(bool&)>(EVENT_ON_INTERRUPTING_ATTACK, success);
+    if (!success)
         return false;
     return attackComp_->Interrupt();
 }
@@ -799,7 +736,9 @@ bool Actor::InterruptSkill(AB::Entities::SkillType type)
     Skill* skill = skillsComp_->GetCurrentSkill();
     if (!skill)
         return false;
-    if (!OnInterruptingSkill(type, skill))
+    bool success = true;
+    CallEvent<void(AB::Entities::SkillType, Skill*, bool&)>(EVENT_ON_INTERRUPTING_SKILL, type, skill, success);
+    if (!success)
         return false;
     return skillsComp_->Interrupt(type);
 }
@@ -810,11 +749,6 @@ bool Actor::Interrupt()
     if (ret)
         return true;
     return InterruptSkill(AB::Entities::SkillTypeSkill);
-}
-
-void Actor::OnDied()
-{
-    progressComp_->Died();
 }
 
 uint32_t Actor::GetAttributePoints() const
@@ -947,7 +881,7 @@ bool Actor::Die()
         damageComp_->Touch();
         autorunComp_->SetAutoRun(false);
         killedBy_ = damageComp_->GetLastDamager();
-        OnDied();
+        CallEvent<void(void)>(EVENT_ON_DIED);
         return true;
     }
     return false;
@@ -979,7 +913,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
     if (time == 0)
         time = DEFAULT_KNOCKDOWN_TIME;
     bool ret = true;
-    effectsComp_->OnKnockingDown(source, time, ret);
+    CallEvent<void(Actor*, uint32_t, bool&)>(EVENT_ON_KNOCKING_DOWN, source, time, ret);
     if (!ret)
         return false;
 
@@ -991,7 +925,7 @@ bool Actor::KnockDown(Actor* source, uint32_t time)
         attackComp_->Interrupt();
         skillsComp_->Interrupt(AB::Entities::SkillTypeSkill);
         autorunComp_->Reset();
-        CallEvent<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, time);
+        CallEvent<void(uint32_t)>(EVENT_ON_KNOCKED_DOWN, time);
     }
     return ret;
 }
@@ -1001,7 +935,7 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     if (IsDead())
         return 0;
     int val = value;
-    effectsComp_->OnHealing(source, val);
+    CallEvent<void(Actor*, int&)>(EVENT_ON_HEALING, source, val);
     healComp_->Healing(source, index, val);
     CallEvent<void(int)>(EVENT_ON_HEALED, val);
     return val;

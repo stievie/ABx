@@ -41,6 +41,17 @@ Npc::Npc() :
     aiCharacter_(nullptr),
     luaInitialized_(false)
 {
+    events_.Subscribe<void(Actor*, bool&)>(EVENT_ON_ATTACK, std::bind(&Npc::OnAttack, this, std::placeholders::_1, std::placeholders::_2));
+    events_.Subscribe<void(Actor*, bool&)>(EVENT_ON_GETTING_ATTACKED, std::bind(&Npc::OnGettingAttacked, this, std::placeholders::_1, std::placeholders::_2));
+    events_.Subscribe<void(Actor*, DamageType, int32_t, bool&)>(EVENT_ON_ATTACKED, std::bind(
+        &Npc::OnAttacked, this,
+        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    events_.Subscribe<void(bool&)>(EVENT_ON_INTERRUPTING_ATTACK, std::bind(&Npc::OnInterruptingAttack, this, std::placeholders::_1));
+    events_.Subscribe<void(AB::Entities::SkillType, Skill*, bool&)>(EVENT_ON_INTERRUPTING_SKILL,
+        std::bind(&Npc::OnInterruptingSkill, this,
+            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    events_.Subscribe<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, std::bind(&Npc::OnSkillTargeted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    events_.Subscribe<void(Actor*, Skill*, bool&)>(EVENT_ON_USESKILL, std::bind(&Npc::OnUseSkill, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     events_.Subscribe<void(void)>(EVENT_ON_DIED, std::bind(&Npc::OnDied, this));
     events_.Subscribe<void(Skill*)>(EVENT_ON_ENDUSESKILL, std::bind(&Npc::OnEndUseSkill, this, std::placeholders::_1));
     events_.Subscribe<void(Skill*)>(EVENT_ON_STARTUSESKILL, std::bind(&Npc::OnStartUseSkill, this, std::placeholders::_1));
@@ -52,7 +63,7 @@ Npc::Npc() :
     events_.Subscribe<void(void)>(EVENT_ON_ARRIVED, std::bind(&Npc::OnArrived, this));
     events_.Subscribe<void(void)>(EVENT_ON_INTERRUPTEDATTACK, std::bind(&Npc::OnInterruptedAttack, this));
     events_.Subscribe<void(Skill*)>(EVENT_ON_INTERRUPTEDSKILL, std::bind(&Npc::OnInterruptedSkill, this, std::placeholders::_1));
-    events_.Subscribe<void(uint32_t)>(EVENT_ON_KNOCKEDDOWN, std::bind(&Npc::OnKnockedDown, this, std::placeholders::_1));
+    events_.Subscribe<void(uint32_t)>(EVENT_ON_KNOCKED_DOWN, std::bind(&Npc::OnKnockedDown, this, std::placeholders::_1));
     events_.Subscribe<void(int)>(EVENT_ON_HEALED, std::bind(&Npc::OnHealed, this, std::placeholders::_1));
     events_.Subscribe<void(int, int)>(EVENT_ON_RESURRECTED, std::bind(&Npc::OnResurrected, this, std::placeholders::_1, std::placeholders::_2));
     // Party and Groups must be unique, i.e. share the same ID pool.
@@ -330,22 +341,17 @@ void Npc::OnStartUseSkill(Skill* skill)
         ScriptManager::CallFunction(luaState_, "onStartUseSkill", skill);
 }
 
-bool Npc::OnAttack(Actor* target)
+void Npc::OnAttack(Actor* target, bool& canAttack)
 {
-    bool ret = Actor::OnAttack(target);
-
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onAttack", target, ret);
-    return ret;
+        ScriptManager::CallFunction(luaState_, "onAttack", target, canAttack);
 }
 
-bool Npc::OnAttacked(Actor* source, DamageType type, int32_t damage)
+void Npc::OnAttacked(Actor* source, DamageType type, int32_t damage, bool& canGetAttacked)
 {
-    bool ret = Actor::OnAttacked(source, type, damage);
-
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onAttacked", source, type, damage, ret);
-    if (ret)
+        ScriptManager::CallFunction(luaState_, "onAttacked", source, type, damage, canGetAttacked);
+    if (canGetAttacked)
     {
         if (aiCharacter_)
         {
@@ -353,50 +359,36 @@ bool Npc::OnAttacked(Actor* source, DamageType type, int32_t damage)
             aiCharacter_->lastAttacker_ = source->GetThis<Actor>();
         }
     }
-    return ret;
 }
 
-bool Npc::OnGettingAttacked(Actor* source)
+void Npc::OnGettingAttacked(Actor* source, bool& canGetAttacked)
 {
-    bool ret = Actor::OnGettingAttacked(source);
-
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onGettingAttacked", source, ret);
-    return ret;
+        ScriptManager::CallFunction(luaState_, "onGettingAttacked", source, canGetAttacked);
 }
 
-bool Npc::OnUseSkill(Actor* target, Skill* skill)
+void Npc::OnUseSkill(Actor* target, Skill* skill, bool& success)
 {
-    bool ret = Actor::OnUseSkill(target, skill);
-
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onUseSkill", target, skill, ret);
-    return ret;
+        ScriptManager::CallFunction(luaState_, "onUseSkill", target, skill, success);
 }
 
-bool Npc::OnSkillTargeted(Actor* source, Skill* skill)
+void Npc::OnSkillTargeted(Actor* source, Skill* skill, bool& success)
 {
-    bool ret = Actor::OnSkillTargeted(source, skill);
-
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onSkillTargeted", source, skill, ret);
-    return ret;
+        ScriptManager::CallFunction(luaState_, "onSkillTargeted", source, skill, success);
 }
 
-bool Npc::OnInterruptingAttack()
+void Npc::OnInterruptingAttack(bool& success)
 {
-    bool ret = Actor::OnInterruptingAttack();
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onInterruptingAttack", ret);
-    return ret;
+        ScriptManager::CallFunction(luaState_, "onInterruptingAttack", success);
 }
 
-bool Npc::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill)
+void Npc::OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& success)
 {
-    bool ret = Actor::OnInterruptingSkill(type, skill);
     if (luaInitialized_)
-        ScriptManager::CallFunction(luaState_, "onInterruptingSkill", type, skill, ret);
-    return ret;
+        ScriptManager::CallFunction(luaState_, "onInterruptingSkill", type, skill, success);
 }
 
 void Npc::OnInterruptedAttack()

@@ -96,14 +96,16 @@ void Skill::Update(uint32_t timeElapsed)
 
 bool Skill::CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_ptr<Actor>& target)
 {
-    if (!source->CallEventOne<bool(Actor*,Skill*)>(EVENT_ON_USESKILL, target.get(), this))
+    bool success = true;
+    source->CallEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_USESKILL, target.get(), this, success);
+    if (!success)
     {
         lastError_ = AB::GameProtocol::SkillErrorCannotUseSkill;
         return false;
     }
     if (HasTarget(SkillTargetTarget))
     {
-        if (!target || !target->CallEventOne<bool(Actor*,Skill*)>(EVENT_ON_SKILLTARGETED, source.get(), this))
+        if (!target)
         {
             lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
             return false;
@@ -111,6 +113,13 @@ bool Skill::CanUseSkill(const std::shared_ptr<Actor>& source, const std::shared_
         if (target->IsUndestroyable())
         {
             lastError_ = AB::GameProtocol::SkillErrorTargetUndestroyable;
+            return false;
+        }
+        bool targetSuccess = true;
+        target->CallEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, source.get(), this, targetSuccess);
+        if (!targetSuccess)
+        {
+            lastError_ = AB::GameProtocol::SkillErrorInvalidTarget;
             return false;
         }
     }

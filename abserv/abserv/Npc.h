@@ -61,17 +61,13 @@ private:
     void OnDied();
     void OnEndUseSkill(Skill* skill);
     void OnStartUseSkill(Skill* skill);
-protected:
-    // Events subscribed by Actor and we override it. They return a value that's
-    // why it's a virtual function to get one combined value. If we'd use the
-    // Events we would get a vector<bool> which complicates the stuff a bit.
-    bool OnAttack(Actor* target) override;
-    bool OnAttacked(Actor* source, DamageType type, int32_t damage) override;
-    bool OnGettingAttacked(Actor* source) override;
-    bool OnUseSkill(Actor* target, Skill* skill) override;
-    bool OnSkillTargeted(Actor* source, Skill* skill) override;
-    bool OnInterruptingAttack() override;
-    bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill) override;
+    void OnAttack(Actor* target, bool& canAttack);
+    void OnGettingAttacked(Actor* source, bool& canGetAttacked);
+    void OnAttacked(Actor* source, DamageType type, int32_t damage, bool& canGetAttacked);
+    void OnInterruptingAttack(bool& success);
+    void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& success);
+    void OnUseSkill(Actor* target, Skill* skill, bool& success);
+    void OnSkillTargeted(Actor* source, Skill* skill, bool& succcess);
 public:
     static void RegisterLua(kaguya::State& state);
 
