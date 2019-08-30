@@ -28,7 +28,7 @@ namespace Game {
 static constexpr sa::event_t EVENT_ON_ARRIVED = Utils::StringHash("OnArrived");
 static constexpr sa::event_t EVENT_ON_INTERRUPTEDATTACK = Utils::StringHash("OnInterruptedAttack");
 static constexpr sa::event_t EVENT_ON_INTERRUPTEDSKILL = Utils::StringHash("OnInterruptedSkill");
-static constexpr sa::event_t EVENT_ON_KNOCKEDDOWN = Utils::StringHash("OnKnockedDown");
+static constexpr sa::event_t EVENT_ON_KNOCKED_DOWN = Utils::StringHash("OnKnockedDown");
 static constexpr sa::event_t EVENT_ON_HEALED = Utils::StringHash("OnHealed");
 static constexpr sa::event_t EVENT_ON_DIED = Utils::StringHash("OnDied");
 static constexpr sa::event_t EVENT_ON_RESURRECTED = Utils::StringHash("OnResurrected");
@@ -36,13 +36,17 @@ static constexpr sa::event_t EVENT_ON_PINGOBJECT = Utils::StringHash("OnPingObje
 static constexpr sa::event_t EVENT_ON_INVENTORYFULL = Utils::StringHash("OnInventoryFull");
 static constexpr sa::event_t EVENT_ON_ATTACK = Utils::StringHash("OnAttack");
 static constexpr sa::event_t EVENT_ON_ATTACKED = Utils::StringHash("OnAttacked");
-static constexpr sa::event_t EVENT_ON_GETTINGATTACKED = Utils::StringHash("OnGettingAttacked");
+static constexpr sa::event_t EVENT_ON_GETTING_ATTACKED = Utils::StringHash("OnGettingAttacked");
 static constexpr sa::event_t EVENT_ON_USESKILL = Utils::StringHash("OnUseSkill");
 static constexpr sa::event_t EVENT_ON_SKILLTARGETED = Utils::StringHash("OnSkillTargeted");
-static constexpr sa::event_t EVENT_ON_GETCRITICALHIT = Utils::StringHash("OnGetCriticalHit");
+static constexpr sa::event_t EVENT_ON_GET_CRITICAL_HIT = Utils::StringHash("OnGetCriticalHit");
 static constexpr sa::event_t EVENT_ON_ENDUSESKILL = Utils::StringHash("OnEndUseSkill");
 static constexpr sa::event_t EVENT_ON_STARTUSESKILL = Utils::StringHash("OnStartUseSkill");
 static constexpr sa::event_t EVENT_ON_HANDLECOMMAND = Utils::StringHash("OnHandleCommand");
+static constexpr sa::event_t EVENT_ON_INTERRUPTING_ATTACK = Utils::StringHash("OnInterruptingAttack");
+static constexpr sa::event_t EVENT_ON_INTERRUPTING_SKILL = Utils::StringHash("OnInterruptingSkill");
+static constexpr sa::event_t EVENT_ON_KNOCKING_DOWN = Utils::StringHash("OnKnockingDown");
+static constexpr sa::event_t EVENT_ON_HEALING = Utils::StringHash("OnHealing");
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
@@ -70,22 +74,9 @@ protected:
     Math::Vector3 homePos_;
     std::weak_ptr<Actor> killedBy_;
 private:
-    void OnDied();
+    // Events
     void OnEndUseSkill(Skill* skill);
     void OnStartUseSkill(Skill* skill);
-protected:
-    // Mostly triggered by Components
-    /// This Actor is attacking the target
-    virtual bool OnAttack(Actor* target);
-    /// This Actor was attacked by source
-    virtual bool OnAttacked(Actor* source, DamageType type, int32_t damage);
-    /// This Actor is going to bee attacked by source. Happens before OnAttacked.
-    virtual bool OnGettingAttacked(Actor* source);
-    /// This actor is using a skill on target
-    virtual bool OnUseSkill(Actor* target, Skill* skill);
-    /// This Actor is targeted for a skill by source
-    virtual bool OnSkillTargeted(Actor* source, Skill* skill);
-    virtual bool OnGetCriticalHit(Actor* source);
 public:
     static void RegisterLua(kaguya::State& state);
 
@@ -173,8 +164,6 @@ public:
     int DrainEnergy(int value);
     void SetHealthRegen(int value);
 
-    virtual bool OnInterruptingAttack();
-    virtual bool OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill);
     bool InterruptAttack();
     bool InterruptSkill(AB::Entities::SkillType type);
     /// Interrupt everything

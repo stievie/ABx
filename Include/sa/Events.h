@@ -5,7 +5,9 @@
 #include <type_traits>
 #include <tuple>
 #include <map>
+#ifdef SA_EVENTS_ASYNC
 #include <future>
+#endif
 
 // Define SA_EVENTS_ASYNC to get the Async... methods. On *NIX you must link against
 // pthread. Handle with care and know what you are doing.
@@ -61,12 +63,9 @@ public:
     }
     /// Is used for everything else that looks like a callable, e.g. a Lambda
     template <typename Signature>
-    size_t Subscribe(event_t id, Signature func)
+    size_t Subscribe(event_t id, Signature&& func)
     {
-        auto& events = GetEventsT<Signature>().events_[id];
-        size_t index = NewIndex();
-        events.emplace(index, std::function<Signature>(func));
-        return index;
+        return Subscribe<Signature>(id, std::function<Signature>(std::move(func)));
     }
     template <typename Signature>
     void Unsubscribe(event_t id, size_t index)

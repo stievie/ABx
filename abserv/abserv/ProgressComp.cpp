@@ -5,6 +5,12 @@
 namespace Game {
 namespace Components {
 
+ProgressComp::ProgressComp(Actor& owner) :
+    owner_(owner)
+{
+    owner_.SubscribeEvent<void(void)>(EVENT_ON_DIED, std::bind(&ProgressComp::OnDied, this));
+}
+
 void ProgressComp::Write(Net::NetworkMessage& message)
 {
     if (items_.size() == 0)
@@ -45,7 +51,7 @@ void ProgressComp::Write(Net::NetworkMessage& message)
     items_.clear();
 }
 
-void ProgressComp::Died()
+void ProgressComp::OnDied()
 {
     // When we die all Enemies in range get XP for that
     owner_.VisitEnemiesInRange(Ranges::Aggro, [this](const Actor* actor)

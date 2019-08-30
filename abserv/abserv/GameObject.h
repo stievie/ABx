@@ -11,6 +11,7 @@
 #include "Octree.h"
 #include "CollisionShape.h"
 #include <AB/Entities/Character.h>
+#include <AB/Entities/Skill.h>
 #include <AB/ProtocolCodes.h>
 #include <sa/IdGenerator.h>
 #include "StateComp.h"
@@ -60,14 +61,18 @@ using GameObjectEvents = sa::Events<
     void(void),
     void(uint32_t),
     void(int),
+    void(bool&),
     void(int, int),
     void(GameObject*),
     void(Actor*),
-    bool(Actor*),
     void(Skill*),
+    void(Actor*, uint32_t, bool&),
+    void(Actor*, DamageType, int32_t, bool&),
+    void(AB::Entities::SkillType, Skill*, bool&),
     void(uint32_t, AB::GameProtocol::ObjectCallType, int),   // OnPingObject
-    bool(Actor*, DamageType, int32_t),                       // OnAttacked
-    bool(Actor*, Skill*),                                    // OnUseSkill, OnSkillTargeted
+    void(Actor*, Skill*, bool&),                                    // OnUseSkill, OnSkillTargeted
+    void(Actor*, bool&),
+    void(Actor*, int&),
     void(AB::GameProtocol::CommandTypes, const std::string&, Net::NetworkMessage&)
 >;
 

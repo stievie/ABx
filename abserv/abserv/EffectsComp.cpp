@@ -8,6 +8,23 @@
 namespace Game {
 namespace Components {
 
+EffectsComp::EffectsComp(Actor& owner) :
+    owner_(owner)
+{
+    owner_.SubscribeEvent<void(Actor*, bool&)>(EVENT_ON_GET_CRITICAL_HIT, std::bind(&EffectsComp::OnGetCriticalHit, this, std::placeholders::_1, std::placeholders::_2));
+    owner_.SubscribeEvent<void(Actor*, DamageType, int32_t, bool&)>(EVENT_ON_ATTACKED, std::bind(
+        &EffectsComp::OnAttacked, this,
+        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    owner_.SubscribeEvent<void(Actor*, bool&)>(EVENT_ON_GETTING_ATTACKED, std::bind(&EffectsComp::OnGettingAttacked, this, std::placeholders::_1, std::placeholders::_2));
+    owner_.SubscribeEvent<void(Actor*, bool&)>(EVENT_ON_ATTACK, std::bind(&EffectsComp::OnAttack, this, std::placeholders::_1, std::placeholders::_2));
+    owner_.SubscribeEvent<void(bool&)>(EVENT_ON_INTERRUPTING_ATTACK, std::bind(&EffectsComp::OnInterruptingAttack, this, std::placeholders::_1));
+    owner_.SubscribeEvent<void(AB::Entities::SkillType, Skill*, bool&)>(EVENT_ON_INTERRUPTING_SKILL, std::bind(&EffectsComp::OnInterruptingSkill, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    owner_.SubscribeEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_USESKILL, std::bind(&EffectsComp::OnUseSkill, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    owner_.SubscribeEvent<void(Actor*, Skill*, bool&)>(EVENT_ON_SKILLTARGETED, std::bind(&EffectsComp::OnSkillTargeted, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    owner_.SubscribeEvent<void(Actor*, uint32_t, bool&)>(EVENT_ON_KNOCKING_DOWN, std::bind(&EffectsComp::OnKnockingDown, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    owner_.SubscribeEvent<void(Actor*, int&)>(EVENT_ON_HEALING, std::bind(&EffectsComp::OnHealing, this, std::placeholders::_1, std::placeholders::_2));
+}
+
 void EffectsComp::RemoveAllOfCategory(AB::Entities::EffectCategory categroy)
 {
     const auto check = [categroy](const std::shared_ptr<Effect>& current)

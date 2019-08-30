@@ -24,11 +24,21 @@ private:
     EffectList addedEffects_;
     EffectList removedEffects_;
     void RemoveAllOfCategory(AB::Entities::EffectCategory categroy);
+private:
+    // Events
+    void OnGetCriticalHit(Actor* source, bool& value);
+    void OnAttack(Actor* target, bool& value);
+    void OnGettingAttacked(Actor* source, bool& value);
+    void OnAttacked(Actor* source, DamageType type, int32_t damage, bool& success);
+    void OnInterruptingAttack(bool& value);
+    void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
+    void OnUseSkill(Actor* target, Skill* skill, bool& value);
+    void OnSkillTargeted(Actor* source, Skill* skill, bool& value);
+    void OnKnockingDown(Actor* source, uint32_t time, bool& value);
+    void OnHealing(Actor* source, int& value);
 public:
     EffectsComp() = delete;
-    explicit EffectsComp(Actor& owner) :
-        owner_(owner)
-    { }
+    explicit EffectsComp(Actor& owner);
     // non-copyable
     EffectsComp(const EffectsComp&) = delete;
     EffectsComp& operator=(const EffectsComp&) = delete;
@@ -58,16 +68,6 @@ public:
     void GetArmorPenetration(float& value);
     void GetAttributeValue(uint32_t index, uint32_t& value);
     void GetResources(int& maxHealth, int& maxEnergy);
-    void OnAttack(Actor* target, bool& value);
-    void OnAttacked(Actor* source, DamageType type, int32_t damage, bool& success);
-    void OnGettingAttacked(Actor* source, bool& value);
-    void OnUseSkill(Actor* target, Skill* skill, bool& value);
-    void OnSkillTargeted(Actor* source, Skill* skill, bool& value);
-    void OnInterruptingAttack(bool& value);
-    void OnInterruptingSkill(AB::Entities::SkillType type, Skill* skill, bool& value);
-    void OnKnockingDown(Actor* source, uint32_t time, bool& value);
-    void OnHealing(Actor* source, int& value);
-    void OnGetCriticalHit(Actor* source, bool& value);
 
     EffectList effects_;
 };

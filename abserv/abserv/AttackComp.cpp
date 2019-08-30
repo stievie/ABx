@@ -59,12 +59,15 @@ void AttackComp::Hit(Actor* target)
         owner_.effectsComp_->GetDamage(damageType_, damage, critical);
         if (target)
         {
-            if (target->CallEventOne<bool(Actor *, DamageType, int32_t)>(EVENT_ON_ATTACKED, &owner_, damageType_, damage))
+            bool canGettingAttacked = true;
+            target->CallEvent<void(Actor*, DamageType, int32_t, bool&)>(EVENT_ON_ATTACKED,
+                &owner_, damageType_, damage, canGettingAttacked);
+            if (canGettingAttacked)
             {
                 // Some effects may prevent attacks, e.g. blocking
                 if (critical)
                     // Some effect may prevent critical hits
-                    critical = target->CallEventOne<bool(Actor*)>(EVENT_ON_GETCRITICALHIT, &owner_);
+                    target->CallEvent<void(Actor*,bool&)>(EVENT_ON_GET_CRITICAL_HIT, &owner_, critical);
                 if (critical)
                     damage = static_cast<int>(static_cast<float>(damage) * std::sqrt(2.0f));
                 target->ApplyDamage(&owner_, 0, damageType_, damage, owner_.GetArmorPenetration());
@@ -183,7 +186,9 @@ void AttackComp::Cancel()
 
 void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
 {
-    if (!owner_.CallEventOne<bool(Actor*)>(EVENT_ON_ATTACK, target.get()))
+    bool canAttack = true;
+    owner_.CallEvent<void(Actor*,bool&)>(EVENT_ON_ATTACK, target.get(), canAttack);
+    if (!canAttack)
     {
         lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
         return;
@@ -194,7 +199,9 @@ void AttackComp::Attack(std::shared_ptr<Actor> target, bool ping)
         lastError_ = AB::GameProtocol::AttackErrorInvalidTarget;
         return;
     }
-    if (target->IsUndestroyable() && target->CallEventOne<bool(Actor*)>(EVENT_ON_GETTINGATTACKED, &owner_))
+    bool canGettingAttacked = true;
+    target->CallEvent<void(Actor*, bool&)>(EVENT_ON_GETTING_ATTACKED, &owner_, canGettingAttacked);
+    if (target->IsUndestroyable() && canGettingAttacked)
     {
         // Can not attack an destroyable target
         lastError_ = AB::GameProtocol::AttackErrorTargetUndestroyable;

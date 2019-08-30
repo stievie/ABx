@@ -31,11 +31,12 @@ private:
     };
     std::vector<ProgressItem> items_;
     Actor& owner_;
+private:
+    /// The owner died
+    void OnDied();
 public:
     ProgressComp() = delete;
-    explicit ProgressComp(Actor& owner) :
-        owner_(owner)
-    { }
+    explicit ProgressComp(Actor& owner);
     // non-copyable
     ProgressComp(const ProgressComp&) = delete;
     ProgressComp& operator=(const ProgressComp&) = delete;
@@ -44,8 +45,6 @@ public:
     void Update(uint32_t /* timeElapsed */) { }
     void Write(Net::NetworkMessage& message);
 
-    /// The owner died
-    void Died();
     void AddXp(int value);
     /// Somewhere close an enemy died, so we get some XP
     void AddXpForKill(Actor* victim);
