@@ -8,7 +8,6 @@ SOURDEDIR = ../Tests/Tests
 OBJDIR = obj/x64/$(CONFIG)/Tests
 LIBS += -labscommon -labsmath
 CXXFLAGS += -fexceptions
-DEFINES += -DBUILD_INTRINSICS_LEVEL=1
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
 # End changes

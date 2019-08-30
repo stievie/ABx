@@ -45,7 +45,7 @@
 #   endif
 #else
 #   if !defined(BUILD_INTRINSICS_LEVEL)
-#       define BUILD_INTRINSICS_LEVEL 1
+#       define BUILD_INTRINSICS_LEVEL 3
 #   endif
 #endif
 
@@ -63,7 +63,7 @@
 #       define _XM_SSE3_INTRINSICS_
 #       define _XM_SSE4_INTRINSICS_
 #       define _XM_AVX_INTRINSICS_
-//#       define _XM_AVX2_INTRINSICS_  <-- Crashes in directxcollision.inl: line: 1191
+//#       define _XM_AVX2_INTRINSICS_  // <-- Crashes in directxcollision.inl: line: 1191
 #   endif
 #   if BUILD_INTRINSICS_LEVEL > 2
 #       define _XM_F16C_INTRINSICS_
