@@ -65,7 +65,7 @@ std::shared_ptr<ChatChannel> Chat::Get(ChatType type, const std::string& uuid)
     if (Utils::Uuid::IsEmpty(uuid) || type == ChatType::None)
         return std::shared_ptr<ChatChannel>();
 
-    const std::pair<ChatType, uint64_t> channelId = { type, Utils::StringHash(uuid.c_str()) };
+    const std::pair<ChatType, uint64_t> channelId = { type, Utils::StringHashRt(uuid.c_str()) };
     const auto it = channels_.find(channelId);
     if (it != channels_.end())
         return (*it).second;
@@ -235,6 +235,12 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
         return;
     }
 
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::ChatMessage);
+    msg->AddByte(AB::GameProtocol::ChatChannelGuild);
+    msg->Add<uint32_t>(0);
+    msg->AddString(playerName);
+    msg->AddString(text);
     for (const auto& g : gs.members)
     {
         std::shared_ptr<Player> player = GetSubsystem<PlayerManager>()->GetPlayerByAccountUuid(g.accountUuid);
@@ -242,12 +248,6 @@ void GuildChatChannel::Broadcast(const std::string& playerName, const std::strin
             // This player not on this server.
             continue;
 
-        auto msg = Net::NetworkMessage::GetNew();
-        msg->AddByte(AB::GameProtocol::ChatMessage);
-        msg->AddByte(AB::GameProtocol::ChatChannelGuild);
-        msg->Add<uint32_t>(0);
-        msg->AddString(playerName);
-        msg->AddString(text);
         player->WriteToOutput(*msg);
     }
 }
