@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <limits>
+#include <cmath>
 
 namespace Math {
 
@@ -77,8 +78,8 @@ inline T RadToDeg(T rad)
 /// Make angle between 0 and 2 * Pi.
 inline void NormalizeAngle(float& angle)
 {
-    angle = fmod(angle, Math::M_TWOPI);
-    angle = fmod(angle + Math::M_TWOPI, Math::M_TWOPI);
+    angle = fmodf(angle, Math::M_TWOPI);
+    angle = fmodf(angle + Math::M_TWOPI, Math::M_TWOPI);
 }
 
 inline float NormalizedAngle(float angle)
