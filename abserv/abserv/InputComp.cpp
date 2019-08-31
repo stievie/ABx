@@ -58,9 +58,7 @@ void InputComp::ClickObject(uint32_t sourceId, uint32_t targetId, Net::NetworkMe
     {
         auto clickedObj = owner_.GetGame()->GetObjectById(targetId);
         if (clickedObj)
-        {
-            clickedObj->CallEvent<void(GameObject*)>(EVENT_ON_CLICKED, source);
-        }
+            clickedObj->CallEvent<void(Actor*)>(EVENT_ON_CLICKED, source);
     }
 }
 
