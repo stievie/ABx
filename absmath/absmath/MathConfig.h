@@ -31,44 +31,82 @@
 #   define BUILD_PLATFORM_ANDROID 1
 #endif
 
+#define HAVE_DIRECTX_MATH
 /*
  * BUILD_INTRINSICS_LEVEL 0..3. Try setting different levels and see what compiles.
  * 0 _XM_NO_INTRINSICS_
  * 1 Some
  * 2 More
  * 3 All
+ *
+ * If not defined it tries to auto detect it
  */
-#define HAVE_DIRECTX_MATH
-#if defined(BUILD_PLATFORM_WIN)
-#   if !defined(BUILD_INTRINSICS_LEVEL)
-#       define BUILD_INTRINSICS_LEVEL 3
-#   endif
-#else
-#   if !defined(BUILD_INTRINSICS_LEVEL)
-#       define BUILD_INTRINSICS_LEVEL 3
+
+// If BUILD_INTRINSICS_LEVEL not defined try to auto detect
+#if !defined (BUILD_INTRINSICS_LEVEL)
+#   ifdef _MSC_VER
+#       if _MSC_VER >= 1300
+#           define _XM_SSE_INTRINSICS_
+#       endif
+#       if _MSC_VER >= 1500
+#           define _XM_SSE3_INTRINSICS_
+#           define _XM_SSE4_INTRINSICS_
+#       endif
+#       if _MSC_FULL_VER >= 160040219
+#           define _XM_AVX_INTRINSICS_
+#       endif
+#       if _MSC_VER >= 1700
+//#           define _XM_AVX2_INTRINSICS_
+#           define _XM_F16C_INTRINSICS_
+#       endif
+#   else
+#       if defined(__SSE__)
+#           define _XM_SSE_INTRINSICS_
+#       endif
+#       if defined(__SSE3__)
+#           define _XM_SSE3_INTRINSICS_
+#       endif
+#       if defined(__SSE4__) || defined(__SSE4_1__) || defined(__SSE4_2__)
+#           define _XM_SSE4_INTRINSICS_
+#       endif
+#       if defined(__AVX__)
+#           define _XM_AVX_INTRINSICS_
+#       endif
+#       if defined(__AVX2__)
+#           define _XM_AVX2_INTRINSICS_
+#       endif
+#       if defined(__F16C__)
+#           define _XM_F16C_INTRINSICS_
+#       endif
 #   endif
 #endif
 
-#if defined(BUILD_ARCH_ARM)
-#   if defined(__ARM_NEON) && BUILD_INTRINSICS_LEVEL > 0
-#       define _XM_ARM_NEON_INTRINSICS_
+#if defined(BUILD_INTRINSICS_LEVEL)
+#   if defined(BUILD_ARCH_ARM)
+#       if defined(__ARM_NEON) && BUILD_INTRINSICS_LEVEL > 0
+#           define _XM_ARM_NEON_INTRINSICS_
+#       else
+#           define _XM_NO_INTRINSICS_
+#       endif
 #   else
-#       define _XM_NO_INTRINSICS_
-#   endif
-#else
-#   if BUILD_INTRINSICS_LEVEL > 0
-#       define _XM_SSE_INTRINSICS_
-#   endif
-#   if BUILD_INTRINSICS_LEVEL > 1
-#       define _XM_SSE3_INTRINSICS_
-#       define _XM_SSE4_INTRINSICS_
-#       define _XM_AVX_INTRINSICS_
-//#       define _XM_AVX2_INTRINSICS_  // <-- Crashes in directxcollision.inl: line: 1191
-#   endif
-#   if BUILD_INTRINSICS_LEVEL > 2
-#       define _XM_F16C_INTRINSICS_
+#       if BUILD_INTRINSICS_LEVEL == 0
+#           define _XM_NO_INTRINSICS_
+#       endif
+#       if BUILD_INTRINSICS_LEVEL > 0
+#           define _XM_SSE_INTRINSICS_
+#       endif
+#       if BUILD_INTRINSICS_LEVEL > 1
+#           define _XM_SSE3_INTRINSICS_
+#           define _XM_SSE4_INTRINSICS_
+#           define _XM_AVX_INTRINSICS_
+//#           define _XM_AVX2_INTRINSICS_  // <-- Crashes in directxcollision.inl: line: 1191
+#       endif
+#       if BUILD_INTRINSICS_LEVEL > 2
+#           define _XM_F16C_INTRINSICS_
+#       endif
 #   endif
 #endif
+
 #if defined(__GNUC__) || defined(BUILD_PLATFORM_IOS)
 #   define _XM_NO_CALL_CONVENTION_
 #endif
