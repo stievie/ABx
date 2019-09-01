@@ -39,10 +39,13 @@
  * 2 More
  * 3 All
  *
- * If not defined it tries to auto detect it
+ * If not defined it tries to auto detect it.
+ * On Linux run `cat /proc/cpuinfo | grep flags` to see what
+ * the processor supports, and `g++ -march=native -Q --help=target`
+ * what the compiler turns on, on the current processor.
  */
 
-// If BUILD_INTRINSICS_LEVEL not defined try to auto detect
+// If BUILD_INTRINSICS_LEVEL not defined try to auto detect.
 #if !defined (BUILD_INTRINSICS_LEVEL)
 #   ifdef _MSC_VER
 #       if _MSC_VER >= 1300
@@ -56,7 +59,9 @@
 #           define _XM_AVX_INTRINSICS_
 #       endif
 #       if _MSC_VER >= 1700
+// No support for AVX2 on my processor, Ivy Bridge
 //#           define _XM_AVX2_INTRINSICS_
+// 16-bit Floating-point conversion instructions
 #           define _XM_F16C_INTRINSICS_
 #       endif
 #   else
@@ -99,7 +104,8 @@
 #           define _XM_SSE3_INTRINSICS_
 #           define _XM_SSE4_INTRINSICS_
 #           define _XM_AVX_INTRINSICS_
-//#           define _XM_AVX2_INTRINSICS_  // <-- Crashes in directxcollision.inl: line: 1191
+// No support for AVX2 on my processor, Ivy Bridge
+//#           define _XM_AVX2_INTRINSICS_
 #       endif
 #       if BUILD_INTRINSICS_LEVEL > 2
 #           define _XM_F16C_INTRINSICS_
