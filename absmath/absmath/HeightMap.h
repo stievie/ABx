@@ -23,14 +23,14 @@ public:
         boundingBox_(other.boundingBox_),
         matrix_(other.matrix_)
     {}
-    HeightMap(HeightMap&& other) :
-        spacing_(other.spacing_),
+    HeightMap(HeightMap&& other) noexcept :
+        spacing_(std::move(other.spacing_)),
         minHeight_(other.minHeight_),
         maxHeight_(other.maxHeight_),
         numVertices_(other.numVertices_),
         heightData_(std::move(other.heightData_)),
-        boundingBox_(other.boundingBox_),
-        matrix_(other.matrix_)
+        boundingBox_(std::move(other.boundingBox_)),
+        matrix_(std::move(other.matrix_))
     {}
     HeightMap(const std::vector<float>& data, const Point<int>& size);
     ~HeightMap() = default;
@@ -49,15 +49,15 @@ public:
         }
         return *this;
     }
-    HeightMap& operator= (HeightMap&& other)
+    HeightMap& operator= (HeightMap&& other) noexcept
     {
-        spacing_ = other.spacing_;
+        spacing_ = std::move(other.spacing_);
         minHeight_ = other.minHeight_;
         maxHeight_ = other.maxHeight_;
         numVertices_ = other.numVertices_;
         heightData_ = std::move(other.heightData_);
-        boundingBox_ = other.boundingBox_;
-        matrix_ = other.matrix_;
+        boundingBox_ = std::move(other.boundingBox_);
+        matrix_ = std::move(other.matrix_);
         return *this;
     }
     void ProcessData();

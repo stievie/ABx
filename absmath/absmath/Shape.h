@@ -19,7 +19,7 @@ public:
         vertexCount_(other.vertexCount_),
         indexCount_(other.indexCount_)
     { }
-    Shape(Shape&& other) :
+    Shape(Shape&& other) noexcept :
         vertexData_(std::move(other.vertexData_)),
         indexData_(std::move(other.indexData_)),
         vertexCount_(other.vertexCount_),
@@ -55,13 +55,13 @@ public:
         }
         return *this;
     }
-    Shape& operator= (Shape&& other)
+    Shape& operator= (Shape&& other) noexcept
     {
         if (this != &other)
         {
             vertexData_ = std::move(other.vertexData_);
-            vertexCount_ = std::move(other.vertexCount_);
-            indexData_ = other.indexData_;
+            vertexCount_ = other.vertexCount_;
+            indexData_ = std::move(other.indexData_);
             indexCount_ = other.indexCount_;
         }
         return *this;

@@ -18,9 +18,9 @@ public:
         Shape(other),
         boundingBox_(other.boundingBox_)
     {}
-    ConvexHull(ConvexHull&& other) :
+    ConvexHull(ConvexHull&& other) noexcept :
         Shape(other),
-        boundingBox_(other.boundingBox_)
+        boundingBox_(std::move(other.boundingBox_))
     {}
     explicit ConvexHull(const std::vector<Vector3>& vertices);
     ~ConvexHull() = default;
@@ -36,13 +36,13 @@ public:
         }
         return *this;
     }
-    ConvexHull& operator= (ConvexHull&& other)
+    ConvexHull& operator= (ConvexHull&& other) noexcept
     {
         vertexData_ = std::move(other.vertexData_);
-        vertexCount_ = std::move(other.vertexCount_);
-        indexData_ = other.indexData_;
+        vertexCount_ = other.vertexCount_;
+        indexData_ = std::move(other.indexData_);
         indexCount_ = other.indexCount_;
-        boundingBox_ = other.boundingBox_;
+        boundingBox_ = std::move(other.boundingBox_);
         return *this;
     }
 
