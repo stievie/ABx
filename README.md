@@ -1,5 +1,7 @@
 # ABx
 
+[![Build Status](https://dev.azure.com/trill42/ABx/_apis/build/status/stievie.ABx?branchName=master)](https://dev.azure.com/trill42/ABx/_build/latest?definitionId=3&branchName=master)
+
 Ancient Greece Multiplayer Online RPG.
 
 * https://www.gamedev.net/blogs/blog/3042-abx-online-rpg/
