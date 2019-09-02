@@ -6,7 +6,7 @@ variables:
   buildPlatform: 'x64'
 
 jobs:
-#  - job: 'VS2017-Win2016'
+#  - job: 'VS2017_Win2016'
 #    pool:
 #      vmImage: 'VS2017-Win2016'
 #

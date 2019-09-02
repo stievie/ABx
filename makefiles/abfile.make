@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/abfile$(SUFFIX)
 SOURDEDIR = ../abfile/abfile
 OBJDIR = obj/x64/$(CONFIG)/abfile
-LIBS += -lpthread -luuid -llua5.3 -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml
+LIBS += -luuid -lpthread -llua5.3 -labscommon -lssl -lcrypto -labcrypto -lstdc++fs -lpugixml
 CXXFLAGS += -fexceptions -Wno-unused-parameter
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror -Wimplicit-fallthrough=0
