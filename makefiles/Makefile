@@ -39,8 +39,6 @@ all:
 	@$(MAKE) -f  abstests.make
 	@echo "--------------------- Running Tests ---------------------"
 	@$(MAKE) -f  abstests.make run
-	@echo "------------------- Making artefacts --------------------"
-	@$(MAKE) -f  artefact.make
 
 clean:
 	@$(MAKE) -f  abcrypto.make clean
@@ -61,4 +59,3 @@ clean:
 	@$(MAKE) -f  abserv.make clean
 	@$(MAKE) -f  keygen.make clean
 	@$(MAKE) -f  abstests.make clean
-	@$(MAKE) -f  artefact.make clean
