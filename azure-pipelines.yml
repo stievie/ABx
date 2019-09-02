@@ -26,7 +26,7 @@ jobs:
 #          platform: '$(buildPlatform)'
 #          configuration: '$(buildConfiguration)'
 
-  - job: 'GCC-Linux'
+  - job: 'GCC_Linux'
     pool:
       vmImage: 'ubuntu-16.04'
 
