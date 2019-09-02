@@ -6,33 +6,33 @@ variables:
   buildPlatform: 'x64'
 
 jobs:
-#  - job: 'VS2017_Win2016'
-#    pool:
-#      vmImage: 'VS2017-Win2016'
-#
-#    variables:
-#      solution: 'absall/*.sln'
-#
-#    steps:
-#      - task: NuGetToolInstaller@0
-#
-#      - task: NuGetCommand@2
-#        inputs:
-#          restoreSolution: '$(solution)'
-#
-#      - task: VSBuild@1
-#        inputs:
-#          solution: '$(solution)'
-#          platform: '$(buildPlatform)'
-#          configuration: '$(buildConfiguration)'
-
-  - job: 'GCC_Linux'
+  - job: 'VS2017_Win2016'
     pool:
-      vmImage: 'ubuntu-16.04'
+      vmImage: 'VS2017-Win2016'
+
+    variables:
+      solution: 'absall/*.sln'
 
     steps:
-      - template: .azure-pipelines/install-gcc.yml
-      - template: .azure-pipelines/install-deps.yml
-      - template: .azure-pipelines/build.yml
-        parameters:
+      - task: NuGetToolInstaller@0
+
+      - task: NuGetCommand@2
+        inputs:
+          restoreSolution: '$(solution)'
+
+      - task: VSBuild@1
+        inputs:
+          solution: '$(solution)'
+          platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
+
+#  - job: 'GCC_Linux'
+#    pool:
+#      vmImage: 'ubuntu-16.04'
+#
+#    steps:
+#      - template: .azure-pipelines/install-gcc.yml
+#      - template: .azure-pipelines/install-deps.yml
+#      - template: .azure-pipelines/build.yml
+#        parameters:
+#          configuration: '$(buildConfiguration)'
