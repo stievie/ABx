@@ -1,0 +1,12 @@
+parameters:
+  # defaults, if not specified
+  major_version: 9
+
+steps:
+  - bash: |
+      sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+      sudo apt-get update -qq
+      sudo apt-get install ccache g++-${{ parameters.major_version }}
+      sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ parameters.major_version }} 90
+      sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ parameters.major_version }} 90
+    displayName: 'Install GCC'

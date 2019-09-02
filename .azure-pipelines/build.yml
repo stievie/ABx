@@ -1,0 +1,6 @@
+parameters:
+  # defaults, if not specified
+  configuration: 'Release'
+
+steps:
+  - script: cd makefiles && make config=${{ parameters.configuration }}
