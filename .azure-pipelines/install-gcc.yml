@@ -1,6 +1,6 @@
 parameters:
   # defaults, if not specified
-  major_version: 9
+  major_version: 8
 
 steps:
   - bash: |
