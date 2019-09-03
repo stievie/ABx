@@ -26,13 +26,13 @@ jobs:
           platform: '$(buildPlatform)'
           configuration: '$(buildConfiguration)'
 
-#  - job: 'GCC_Linux'
-#    pool:
-#      vmImage: 'ubuntu-16.04'
-#
-#    steps:
-#      - template: .azure-pipelines/install-gcc.yml
-#      - template: .azure-pipelines/install-deps.yml
-#      - template: .azure-pipelines/build.yml
-#        parameters:
-#          configuration: '$(buildConfiguration)'
+  - job: 'GCC_Linux'
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+    steps:
+      - template: .azure-pipelines/install-gcc.yml
+      - template: .azure-pipelines/install-deps.yml
+      - template: .azure-pipelines/build.yml
+        parameters:
+          configuration: '$(buildConfiguration)'
