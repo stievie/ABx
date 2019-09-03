@@ -6,7 +6,7 @@ TARGETDIR = ../Bin
 TARGET = $(TARGETDIR)/keygen$(SUFFIX)
 SOURDEDIR = ../keygen/keygen
 OBJDIR = obj/x64/$(CONFIG)/keygen
-LIBS += -luuid -lpthread -llua5.3 -labcrypto -labscommon
+LIBS += -lpthread -llua5.3 -labcrypto -labscommon -luuid
 PCH = $(SOURDEDIR)/stdafx.h
 CXXFLAGS += -Werror
 # End changes
