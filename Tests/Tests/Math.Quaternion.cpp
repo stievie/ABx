@@ -3,6 +3,7 @@
 
 #include "Quaternion.h"
 #include "Matrix4.h"
+#include "MathUtils.h"
 
 // https://github.com/gareth-cross/quat/blob/master/test/quaternion_test.cpp
 
@@ -87,9 +88,10 @@ TEST_CASE("Quaternion Operations")
         mul = quat1 * quat1.Conjugate();
 
         REQUIRE(mul.w_ == Approx(1.0f));
-        REQUIRE(mul.x_ == Approx(0.0f));
-        REQUIRE(mul.y_ == Approx(0.0f));
-        REQUIRE(mul.z_ == Approx(0.0f));
+        // Catch2 has some problems with comparing 0's
+        REQUIRE(Math::Equals(mul.x_, 0.0f));
+        REQUIRE(Math::Equals(mul.y_, 0.0f));
+        REQUIRE(Math::Equals(mul.z_, 0.0f));
     }
     SECTION("Conjugate")
     {
