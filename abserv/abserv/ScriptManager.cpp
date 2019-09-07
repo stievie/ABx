@@ -4,15 +4,6 @@
 #include "Npc.h"
 #include "DataProvider.h"
 #include "Profiler.h"
-#if __cplusplus < 201703L
-#   if !defined(__clang__) && !defined(__GNUC__)
-#       include <filesystem>
-#   else
-#       include <experimental/filesystem>
-#   endif
-#else
-#   include <filesystem>
-#endif
 #include "StringUtils.h"
 #include "Script.h"
 #include "Subsystems.h"
@@ -26,13 +17,7 @@
 
 namespace Game {
 
-#if __cplusplus < 201703L
-// C++14
-namespace fs = std::experimental::filesystem;
-#else
-// C++17
-namespace fs = std::filesystem;
-#endif
+static const char* MAIN_SCRIPT = "/scripts/main.lua";
 
 void ScriptManager::LuaErrorHandler(int errCode, const char* message)
 {
@@ -42,10 +27,7 @@ void ScriptManager::LuaErrorHandler(int errCode, const char* message)
 void ScriptManager::RegisterLuaAll(kaguya::State& state)
 {
     state.setErrorHandler(LuaErrorHandler);
-#ifdef DEBUG_GAME
-    if (!state.gc().isrunning())
-        LOG_WARNING << "Lua GC not running" << std::endl;
-#endif
+
     // Some global function
     state["Tick"] = kaguya::function([]
     {
@@ -98,7 +80,7 @@ void ScriptManager::RegisterLuaAll(kaguya::State& state)
     Game::RegisterLua(state);
 
     // Execute main script with definitions, constants, etc.
-    auto mainS = GetSubsystem<IO::DataProvider>()->GetAsset<Script>("/scripts/main.lua");
+    auto mainS = GetSubsystem<IO::DataProvider>()->GetAsset<Script>(MAIN_SCRIPT);
     if (mainS)
         mainS->Execute(state);
 }

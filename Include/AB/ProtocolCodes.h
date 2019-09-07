@@ -169,6 +169,8 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailboxFull,
     ServerMessageTypeMailDeleted,
     ServerMessageTypeServerId,
+    ServerMessageTypePlayerLoggedIn,
+    ServerMessageTypePlayerLoggedOut,
     ServerMessageTypePlayerResigned,
     ServerMessageTypePlayerQueued,
     ServerMessageTypePlayerUnqueued,

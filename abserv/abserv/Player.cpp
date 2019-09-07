@@ -4,6 +4,7 @@
 #include "Chat.h"
 #include "Random.h"
 #include "MailBox.h"
+#include "FriendList.h"
 #include "PlayerManager.h"
 #include "IOMail.h"
 #include "IOGuild.h"
@@ -406,6 +407,16 @@ void Player::NotifyNewMail()
     }
     if (msg->GetSize() != 0)
         WriteToOutput(*msg);
+}
+
+void Player::GetFriendList()
+{
+    if (!friendList_)
+    {
+        friendList_ = std::make_unique<FriendList>(data_.accountUuid);
+        friendList_->Load();
+    }
+    // TODO: ...
 }
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)

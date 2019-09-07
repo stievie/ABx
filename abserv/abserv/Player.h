@@ -7,7 +7,6 @@
 #include "Actor.h"
 #include <AB/Entities/Character.h>
 #include <AB/Entities/Account.h>
-#include "FriendList.h"
 #include "Party.h"
 #include "QuestComp.h"
 
@@ -15,6 +14,7 @@ namespace Game {
 
 class PlayerManager;
 class MailBox;
+class FriendList;
 
 class Player final : public Actor
 {
@@ -120,6 +120,7 @@ public:
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
+    void GetFriendList();
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
 

@@ -18,6 +18,7 @@ public:
     static bool LoadPlayerByName(Game::Player* player, const std::string& name);
     static bool LoadPlayerByUuid(Game::Player* player, const std::string& uuid);
     static bool SavePlayer(Game::Player* player);
+    static size_t GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts);
 };
 
 }

@@ -8,6 +8,9 @@
 #include <AB/Entities/Character.h>
 #include "Subsystems.h"
 #include "UuidUtils.h"
+#include <AB/Entities/FriendList.h>
+#include <AB/Entities/GuildMembers.h>
+#include "UuidUtils.h"
 
 MessageParticipant::~MessageParticipant() = default;
 
@@ -116,6 +119,10 @@ void MessageSession::HandleMessage(const Net::MessageMsg& msg)
     case Net::MessageType::NewMail:
         HandleNewMailMessage(msg);
         break;
+    case Net::MessageType::PlayerLoggedIn:
+    case Net::MessageType::PlayerLoggedOut:
+        HandlePlayerOnlineMessage(msg);
+        break;
     case Net::MessageType::QueueAdd:
     case Net::MessageType::QueueRemove:
         HandleQueueMessage(msg);
@@ -202,6 +209,66 @@ void MessageSession::HandleQueueMessage(const Net::MessageMsg& msg)
         LOG_WARNING << "Match making server not running" << std::endl;
 }
 
+void MessageSession::HandlePlayerOnlineMessage(const Net::MessageMsg& msg)
+{
+    IO::PropReadStream stream;
+    if (!msg.GetPropStream(stream))
+        return;
+    std::string account;
+    if (!stream.ReadString(account))
+        return;
+
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Account acc;
+    acc.uuid = account;
+    if (!client->Read(acc))
+        return;
+
+    std::vector<std::string> interested;
+
+    AB::Entities::FriendList fl;
+    for (const auto& f : fl.friends)
+    {
+        if (f.relation == AB::Entities::FriendRelationFriend)
+            interested.push_back(f.friendUuid);
+    }
+
+    if (!Utils::Uuid::IsEmpty(acc.guildUuid))
+    {
+        // If this guy is in a guild also inform guild members
+        AB::Entities::GuildMembers gms;
+        gms.uuid = acc.guildUuid;
+        if (client->Read(gms))
+        {
+            for (const auto& gm : gms.members)
+            {
+                interested.push_back(gm.accountUuid);
+            }
+        }
+    }
+    std::sort(interested.begin(), interested.end());
+    interested.erase(std::unique(interested.begin(), interested.end()), interested.end());
+
+    // Get all servers
+    std::vector<std::string> servers;
+    for (const auto& informAcc : interested)
+    {
+        std::string serverUuid = GetServerUuidWidthAccount(informAcc);
+        if (!Utils::Uuid::IsEmpty(serverUuid))
+            servers.push_back(serverUuid);
+    }
+
+    // Get unique servers
+    std::sort(servers.begin(), servers.end());
+    servers.erase(std::unique(servers.begin(), servers.end()), servers.end());
+    for (const auto& serverUuid : servers)
+    {
+        auto* server = GetServer(serverUuid);
+        if (server)
+            server->Deliver(msg);
+    }
+}
+
 void MessageSession::HandleQueuePlayerMessage(const Net::MessageMsg& msg)
 {
     std::string playerUuid;
@@ -253,16 +320,19 @@ MessageParticipant* MessageSession::GetServerWidthPlayer(const std::string& play
     return GetServerWidthAccount(ch.accountUuid);
 }
 
-MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& accountUuid)
+std::string MessageSession::GetServerUuidWidthAccount(const std::string& accountUuid)
 {
-    // No need to send this message to all servers
     IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     acc.uuid = accountUuid;
     if (!cli->Read(acc))
-        return nullptr;
+        return Utils::Uuid::EMPTY_UUID;
+    return acc.currentServerUuid;
+}
 
-    return GetServer(acc.currentServerUuid);
+MessageParticipant* MessageSession::GetServerWidthAccount(const std::string& accountUuid)
+{
+    return GetServer(GetServerUuidWidthAccount(accountUuid));
 }
 
 MessageParticipant* MessageSession::GetServerByType(AB::Entities::ServiceType type)

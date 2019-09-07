@@ -88,13 +88,25 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
 
 bool DBFriendList::Delete(const AB::Entities::FriendList& fl)
 {
-    // Do nothing
     if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
     }
-    return true;
+
+    // Delete all friends of this account
+    Database* db = GetSubsystem<Database>();
+    std::ostringstream query;
+    query << "DELETE FROM `friend_list` WHERE `account_uuid` = " << db->EscapeString(fl.uuid);
+    DBTransaction transaction(db);
+    if (!transaction.Begin())
+        return false;
+
+    if (!db->ExecuteQuery(query.str()))
+        return false;
+
+    // End transaction
+    return transaction.Commit();
 }
 
 bool DBFriendList::Exists(const AB::Entities::FriendList& fl)

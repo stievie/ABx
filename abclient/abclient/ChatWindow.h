@@ -44,6 +44,8 @@ private:
     void HandleServerMessageXp(VariantMap& eventData);
     void HandleServerMessagePos(VariantMap& eventData);
     void HandleServerMessagePlayerNotOnline(VariantMap& eventData);
+    void HandleServerMessagePlayerLoggedIn(VariantMap& eventData);
+    void HandleServerMessagePlayerLoggedOut(VariantMap& eventData);
     void HandleServerMessagePlayerGotMessage(VariantMap& eventData);
     void HandleServerMessageNewMail(VariantMap& eventData);
     void HandleServerMessageMailSent(VariantMap& eventData);

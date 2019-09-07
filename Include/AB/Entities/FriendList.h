@@ -26,7 +26,9 @@ enum FriendRelation : uint8_t
 
 struct Friend
 {
+    /// Friend account UUID
     std::string friendUuid;
+    /// Character or nick name of the friend
     std::string friendName;
     FriendRelation relation;
 };

@@ -9,6 +9,8 @@
 #include <AB/Entities/Profession.h>
 #include <AB/Entities/PlayerItemList.h>
 #include <AB/Entities/AccountItemList.h>
+#include <AB/Entities/FriendList.h>
+#include <AB/Entities/GuildMembers.h>
 #include "Logger.h"
 #include <uuid.h>
 #include "Subsystems.h"
@@ -116,6 +118,42 @@ bool IOPlayer::SavePlayer(Game::Player* player)
     if (!client->Update(player->data_))
         return false;
     return SavePlayerInventory(player);
+}
+
+size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Account acc;
+    acc.uuid = accountUuid;
+    if (!client->Read(acc))
+        return 0;
+
+    accounts.clear();
+
+    AB::Entities::FriendList fl;
+    for (const auto& f : fl.friends)
+    {
+        if (f.relation == AB::Entities::FriendRelationFriend)
+            accounts.push_back(f.friendUuid);
+    }
+
+    if (!Utils::Uuid::IsEmpty(acc.guildUuid))
+    {
+        // If this guy is in a guild also inform guild members
+        AB::Entities::GuildMembers gms;
+        gms.uuid = acc.guildUuid;
+        if (client->Read(gms))
+        {
+            for (const auto& gm : gms.members)
+            {
+                if (!Utils::Uuid::IsEqual(accountUuid, gm.accountUuid))
+                    accounts.push_back(gm.accountUuid);
+            }
+        }
+    }
+    std::sort(accounts.begin(), accounts.end());
+    accounts.erase(std::unique(accounts.begin(), accounts.end()), accounts.end());
+    return accounts.size();
 }
 
 bool IOPlayer::LoadPlayerInventory(Game::Player* player)

@@ -268,6 +268,12 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
     case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
         HandleServerMessagePlayerNotOnline(eventData);
         break;
+    case AB::GameProtocol::ServerMessageTypePlayerLoggedIn:
+        HandleServerMessagePlayerLoggedIn(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypePlayerLoggedOut:
+        HandleServerMessagePlayerLoggedOut(eventData);
+        break;
     case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
         HandleServerMessagePlayerGotMessage(eventData);
         break;
@@ -452,6 +458,20 @@ void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
     using namespace AbEvents::ServerMessage;
     const String& data = eventData[P_DATA].GetString();
     AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessagePlayerLoggedIn(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& sender = eventData[P_SENDER].GetString();
+    AddLine(sender + " logged in.", "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessagePlayerLoggedOut(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& sender = eventData[P_SENDER].GetString();
+    AddLine(sender + " logged out.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)

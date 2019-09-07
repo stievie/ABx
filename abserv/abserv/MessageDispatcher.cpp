@@ -7,6 +7,8 @@
 #include "PropStream.h"
 #include <AB/ProtocolCodes.h>
 #include "Subsystems.h"
+#include "IOPlayer.h"
+#include <AB/Entities/Character.h>
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
@@ -101,7 +103,30 @@ void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
     if (!stream.ReadString(charUuid))
         return;
 
-    // TODO: Inform interested players: Friends, Guild members
+    // Read players name
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Character ch;
+    ch.uuid = charUuid;
+    if (!client->Read(ch))
+        return;
+
+    std::vector<std::string> accounts;
+    IO::IOPlayer::GetInterestedParties(accUuid, accounts);
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerLoggedIn);
+    nmsg->AddString(ch.name);
+    nmsg->AddString("");
+
+    auto* playerMan = GetSubsystem<Game::PlayerManager>();
+    for (const auto& acc : accounts)
+    {
+        auto player = playerMan->GetPlayerByAccountUuid(acc);
+        if (player)
+            player->WriteToOutput(*nmsg);
+
+    }
 }
 
 void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
@@ -116,7 +141,30 @@ void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
     if (!stream.ReadString(charUuid))
         return;
 
-    // TODO: Inform interested players: Friends, Guild members
+    // Read players name
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Character ch;
+    ch.uuid = charUuid;
+    if (!client->Read(ch))
+        return;
+
+    std::vector<std::string> accounts;
+    IO::IOPlayer::GetInterestedParties(accUuid, accounts);
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerLoggedOut);
+    nmsg->AddString(ch.name);
+    nmsg->AddString("");
+
+    auto* playerMan = GetSubsystem<Game::PlayerManager>();
+    for (const auto& acc : accounts)
+    {
+        auto player = playerMan->GetPlayerByAccountUuid(acc);
+        if (player)
+            player->WriteToOutput(*nmsg);
+
+    }
 }
 
 void MessageDispatcher::DispatchServerChange(const Net::MessageMsg& msg)

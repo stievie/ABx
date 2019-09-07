@@ -40,10 +40,12 @@ private:
     void HandleWhisperMessage(const Net::MessageMsg& msg);
     void HandleNewMailMessage(const Net::MessageMsg& msg);
     void HandleQueueMessage(const Net::MessageMsg& msg);
+    void HandlePlayerOnlineMessage(const Net::MessageMsg& msg);
     void HandleQueuePlayerMessage(const Net::MessageMsg& msg);
     void HandleQueueTeamEnterMessage(const Net::MessageMsg& msg);
     void SendPlayerMessage(const std::string& playerUuid, const Net::MessageMsg& msg);
     MessageParticipant* GetServerWidthPlayer(const std::string& playerUuid);
+    std::string GetServerUuidWidthAccount(const std::string& accountUuid);
     MessageParticipant* GetServerWidthAccount(const std::string& accountUuid);
     MessageParticipant* GetServer(const std::string& serverUuid);
     MessageParticipant* GetServerByType(AB::Entities::ServiceType type);
