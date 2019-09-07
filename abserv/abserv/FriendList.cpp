@@ -5,6 +5,7 @@
 #include <AB/Entities/Character.h>
 #include "UuidUtils.h"
 #include "StringUtils.h"
+#include <sa/Transaction.h>
 
 namespace Game {
 
@@ -30,6 +31,7 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     if (it != friendList_.friends.end())
         return FriendList::Error::AlreadyFriend;
 
+    sa::Transaction transaction(friendList_);
     friendList_.friends.push_back({
         accountUuid,
         name,
@@ -38,6 +40,7 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(friendList_))
         return FriendList::Error::InternalError;
+    transaction.Commit();
     return FriendList::Error::Success;
 }
 
@@ -65,10 +68,12 @@ FriendList::Error FriendList::RemoveByAccount(const std::string& accountUuid)
     });
     if (it == friendList_.friends.end())
         return FriendList::Error::NoFriend;
+    sa::Transaction transaction(friendList_);
     friendList_.friends.erase(it);
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(friendList_))
         return FriendList::Error::InternalError;
+    transaction.Commit();
     return FriendList::Error::Success;
 }
 
@@ -93,11 +98,13 @@ FriendList::Error FriendList::ChangeNickname(const std::string& currentName, con
     if (it == friendList_.friends.end())
         return FriendList::Error::PlayerNotFound;
 
+    sa::Transaction transaction(friendList_);
     (*it).friendName = newName;
 
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(friendList_))
         return FriendList::Error::InternalError;
+    transaction.Commit();
     return FriendList::Error::Success;
 }
 
