@@ -126,7 +126,7 @@ public:
         return nullptr;
     }
     template<class T>
-    bool Import(T* asset, const std::string& name)
+    bool Import(T& asset, const std::string& name)
     {
         const std::string file = GetFile(name);
         if (FileExists(file))
@@ -137,7 +137,7 @@ public:
                 LOG_WARNING << "No importer found for " << name << std::endl;
                 return false;
             }
-            asset->fileName_ = file;
+            asset.fileName_ = file;
             return imp->Import(asset, file);
         }
         else
@@ -162,7 +162,8 @@ public:
 
         // Not in cache make a new one and load it
         std::shared_ptr<T> asset = std::make_shared<T>();
-        if (Import<T>(asset.get(), normal_name))
+        assert(asset);
+        if (Import<T>(*asset, normal_name))
         {
             if (cacheAble)
                 cache_[key] = asset;

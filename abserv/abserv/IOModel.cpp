@@ -5,7 +5,7 @@
 
 namespace IO {
 
-bool IOModel::Import(Game::Model* asset, const std::string& name)
+bool IOModel::Import(Game::Model& asset, const std::string& name)
 {
     std::fstream input(name, std::ios::binary | std::fstream::in);
     if (!input.is_open())
@@ -19,22 +19,22 @@ bool IOModel::Import(Game::Model* asset, const std::string& name)
         return false;
 
     // Read bounding box
-    input.read((char*)asset->boundingBox_.min_.Data(), sizeof(float) * 3);
-    input.read((char*)asset->boundingBox_.max_.Data(), sizeof(float) * 3);
+    input.read((char*)asset.boundingBox_.min_.Data(), sizeof(float) * 3);
+    input.read((char*)asset.boundingBox_.max_.Data(), sizeof(float) * 3);
 
     // Read shape data
-    asset->shape_ = std::make_unique<Math::Shape>();
+    asset.shape_ = std::make_unique<Math::Shape>();
 
-    input.read(reinterpret_cast<char*>(&asset->shape_->vertexCount_), sizeof(asset->shape_->vertexCount_));
-    asset->shape_->vertexData_.resize(asset->shape_->vertexCount_);
-    for (unsigned i = 0; i < asset->shape_->vertexCount_; ++i)
+    input.read(reinterpret_cast<char*>(&asset.shape_->vertexCount_), sizeof(asset.shape_->vertexCount_));
+    asset.shape_->vertexData_.resize(asset.shape_->vertexCount_);
+    for (unsigned i = 0; i < asset.shape_->vertexCount_; ++i)
     {
-        input.read((char*)asset->shape_->vertexData_[i].Data(), sizeof(float) * 3);
+        input.read((char*)asset.shape_->vertexData_[i].Data(), sizeof(float) * 3);
     }
 
-    input.read(reinterpret_cast<char*>(&asset->shape_->indexCount_), sizeof(asset->shape_->indexCount_));
-    asset->shape_->indexData_.resize(asset->shape_->indexCount_);
-    input.read((char*)asset->shape_->indexData_.data(), sizeof(unsigned) * asset->shape_->indexCount_);
+    input.read(reinterpret_cast<char*>(&asset.shape_->indexCount_), sizeof(asset.shape_->indexCount_));
+    asset.shape_->indexData_.resize(asset.shape_->indexCount_);
+    input.read((char*)asset.shape_->indexData_.data(), sizeof(unsigned) * asset.shape_->indexCount_);
 
     return true;
 }

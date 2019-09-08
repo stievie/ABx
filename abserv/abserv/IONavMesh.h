@@ -8,7 +8,7 @@ namespace IO {
 class IONavMesh : public IOAssetImpl<Navigation::NavigationMesh>
 {
 public:
-    bool Import(Navigation::NavigationMesh* asset, const std::string& name) override;
+    bool Import(Navigation::NavigationMesh& asset, const std::string& name) override;
 };
 
 }

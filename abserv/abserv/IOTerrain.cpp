@@ -7,7 +7,7 @@
 
 namespace IO {
 
-bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
+bool IOTerrain::Import(Game::Terrain& asset, const std::string& name)
 {
     std::fstream input(name, std::ios::binary | std::fstream::in);
     if (!input.is_open())
@@ -21,7 +21,7 @@ bool IOTerrain::Import(Game::Terrain* asset, const std::string& name)
         return false;
 
     std::shared_ptr<Math::HeightMap> heightMap = std::make_shared<Math::HeightMap>();
-    asset->SetHeightMap(heightMap);
+    asset.SetHeightMap(heightMap);
 
     // Urho3D default spacing
     heightMap->spacing_ = Math::Vector3(1.0f, 0.25f, 1.0f);

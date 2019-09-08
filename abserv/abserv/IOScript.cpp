@@ -15,7 +15,7 @@ static int writer(lua_State*, const void* p, size_t size, void* u)
     return 0;
 }
 
-bool IOScript::Import(Game::Script* asset, const std::string& name)
+bool IOScript::Import(Game::Script& asset, const std::string& name)
 {
     // https://stackoverflow.com/questions/8936369/compile-lua-code-store-bytecode-then-load-and-execute-it
     // https://stackoverflow.com/questions/17597816/lua-dump-in-c
@@ -29,7 +29,7 @@ bool IOScript::Import(Game::Script* asset, const std::string& name)
         return false;
     }
     lua_lock(L);
-    lua_dump(L, writer, asset, 1);
+    lua_dump(L, writer, &asset, 1);
     lua_unlock(L);
     lua_close(L);
 

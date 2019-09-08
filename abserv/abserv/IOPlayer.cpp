@@ -19,63 +19,63 @@
 
 namespace IO {
 
-bool IOPlayer::LoadPlayer(Game::Player* player)
+bool IOPlayer::LoadPlayer(Game::Player& player)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    if (!client->Read(player->data_))
+    if (!client->Read(player.data_))
     {
         LOG_ERROR << "Error reading player data" << std::endl;
         return false;
     }
-    player->account_.uuid = player->data_.accountUuid;
-    if (!client->Read(player->account_))
+    player.account_.uuid = player.data_.accountUuid;
+    if (!client->Read(player.account_))
     {
         LOG_ERROR << "Error reading player account" << std::endl;
         return false;
     }
 
-    if (Utils::Uuid::IsEmpty(player->data_.professionUuid))
+    if (Utils::Uuid::IsEmpty(player.data_.professionUuid))
     {
         LOG_ERROR << "Error primary profession is nil" << std::endl;
         return false;
     }
-    player->skills_->prof1_.uuid = player->data_.professionUuid;
-    if (!client->Read(player->skills_->prof1_))
+    player.skills_->prof1_.uuid = player.data_.professionUuid;
+    if (!client->Read(player.skills_->prof1_))
     {
         LOG_ERROR << "Error reading player profession1" << std::endl;
         return false;
     }
-    if (!Utils::Uuid::IsEmpty(player->data_.profession2Uuid))
+    if (!Utils::Uuid::IsEmpty(player.data_.profession2Uuid))
     {
-        player->skills_->prof2_.uuid = player->data_.profession2Uuid;
-        if (!client->Read(player->skills_->prof2_))
+        player.skills_->prof2_.uuid = player.data_.profession2Uuid;
+        if (!client->Read(player.skills_->prof2_))
         {
             LOG_ERROR << "Error reading player profession2" << std::endl;
             return false;
         }
     }
     // After loading professions we can load the skills
-    if (!player->skills_->Load(player->data_.skillTemplate, player->account_.type >= AB::Entities::AccountTypeGamemaster))
+    if (!player.skills_->Load(player.data_.skillTemplate, player.account_.type >= AB::Entities::AccountTypeGamemaster))
     {
-        LOG_WARNING << "Unable to decode skill template " << player->data_.skillTemplate << std::endl;
+        LOG_WARNING << "Unable to decode skill template " << player.data_.skillTemplate << std::endl;
         // TODO: Remove
-        if (player->account_.type >= AB::Entities::AccountTypeGamemaster)
+        if (player.account_.type >= AB::Entities::AccountTypeGamemaster)
         {
             LOG_INFO << "Adding GM skills" << std::endl;
             auto skillsMan = GetSubsystem<Game::SkillManager>();
-            player->skills_->SetSkill(0, skillsMan->Get(9998));
-            player->skills_->SetSkill(1, skillsMan->Get(9997));
-            player->skills_->SetSkill(2, skillsMan->Get(9996));
-            player->skills_->SetSkill(3, skillsMan->Get(312));
-            player->skills_->SetSkill(4, skillsMan->Get(240));
-            player->skills_->SetSkill(5, skillsMan->Get(281));
-            player->skills_->SetSkill(7, skillsMan->Get(1043));
+            player.skills_->SetSkill(0, skillsMan->Get(9998));
+            player.skills_->SetSkill(1, skillsMan->Get(9997));
+            player.skills_->SetSkill(2, skillsMan->Get(9996));
+            player.skills_->SetSkill(3, skillsMan->Get(312));
+            player.skills_->SetSkill(4, skillsMan->Get(240));
+            player.skills_->SetSkill(5, skillsMan->Get(281));
+            player.skills_->SetSkill(7, skillsMan->Get(1043));
         }
     }
 
-    player->inventoryComp_->SetInventorySize(player->data_.inventory_size);
-    player->inventoryComp_->SetChestSize(player->account_.chest_size);
+    player.inventoryComp_->SetInventorySize(player.data_.inventory_size);
+    player.inventoryComp_->SetChestSize(player.account_.chest_size);
     if (!LoadPlayerInventory(player))
         return false;
     return true;
@@ -93,29 +93,29 @@ bool IOPlayer::LoadCharacter(AB::Entities::Character& ch)
     return true;
 }
 
-bool IOPlayer::LoadPlayerByName(Game::Player* player, const std::string& name)
+bool IOPlayer::LoadPlayerByName(Game::Player& player, const std::string& name)
 {
-    player->data_.name = name;
+    player.data_.name = name;
     return LoadPlayer(player);
 }
 
-bool IOPlayer::LoadPlayerByUuid(Game::Player* player, const std::string& uuid)
+bool IOPlayer::LoadPlayerByUuid(Game::Player& player, const std::string& uuid)
 {
-    player->data_.uuid = uuid;
+    player.data_.uuid = uuid;
     return LoadPlayer(player);
 }
 
-bool IOPlayer::SavePlayer(Game::Player* player)
+bool IOPlayer::SavePlayer(Game::Player& player)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    player->data_.lastLogin = player->loginTime_;
-    player->data_.lastLogout = player->logoutTime_;
-    player->data_.profession2 = player->skills_->prof2_.abbr;
-    player->data_.profession2Uuid = player->skills_->prof2_.uuid;
-    player->data_.skillTemplate = player->skills_->Encode();
-    player->data_.onlineTime += static_cast<int64_t>((player->logoutTime_ - player->loginTime_) / 1000);
-    if (!client->Update(player->data_))
+    player.data_.lastLogin = player.loginTime_;
+    player.data_.lastLogout = player.logoutTime_;
+    player.data_.profession2 = player.skills_->prof2_.abbr;
+    player.data_.profession2Uuid = player.skills_->prof2_.uuid;
+    player.data_.skillTemplate = player.skills_->Encode();
+    player.data_.onlineTime += static_cast<int64_t>((player.logoutTime_ - player.loginTime_) / 1000);
+    if (!client->Update(player.data_))
         return false;
     return SavePlayerInventory(player);
 }
@@ -156,45 +156,45 @@ size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vecto
     return accounts.size();
 }
 
-bool IOPlayer::LoadPlayerInventory(Game::Player* player)
+bool IOPlayer::LoadPlayerInventory(Game::Player& player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
 
     // Equipment
     AB::Entities::EquippedItems equipmenet;
-    equipmenet.uuid = player->data_.uuid;
+    equipmenet.uuid = player.data_.uuid;
     if (client->Read(equipmenet))
     {
         for (const auto& e : equipmenet.itemUuids)
-            player->SetEquipment(e);
+            player.SetEquipment(e);
     }
 
     // Inventory
     AB::Entities::InventoryItems inventory;
-    inventory.uuid = player->data_.uuid;
+    inventory.uuid = player.data_.uuid;
     if (client->Read(inventory))
     {
         for (const auto& e : inventory.itemUuids)
-            player->SetInventory(e);
+            player.SetInventory(e);
     }
 
     // Chest
     AB::Entities::ChestItems chest;
-    chest.uuid = player->account_.uuid;
+    chest.uuid = player.account_.uuid;
     if (client->Read(chest))
     {
         for (const auto& e : chest.itemUuids)
-            player->SetChest(e);
+            player.SetChest(e);
     }
 
     return true;
 }
 
-bool IOPlayer::SavePlayerInventory(Game::Player* player)
+bool IOPlayer::SavePlayerInventory(Game::Player& player)
 {
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     // Equipment
-    player->inventoryComp_->VisitEquipement([client](Game::Item& item)
+    player.inventoryComp_->VisitEquipement([client](Game::Item& item)
     {
         client->Update(item.concreteItem_);
         client->Invalidate(item.concreteItem_);
@@ -202,18 +202,18 @@ bool IOPlayer::SavePlayerInventory(Game::Player* player)
     });
 
     // Inventory
-    player->inventoryComp_->VisitInventory([client](Game::Item& item)
+    player.inventoryComp_->VisitInventory([client](Game::Item& item)
     {
         client->Update(item.concreteItem_);
         client->Invalidate(item.concreteItem_);
         return Iteration::Continue;
     });
     AB::Entities::InventoryItems inventory;
-    inventory.uuid = player->data_.uuid;
+    inventory.uuid = player.data_.uuid;
     client->Invalidate(inventory);
 
     // Chest
-    player->inventoryComp_->VisitChest([client](Game::Item& item)
+    player.inventoryComp_->VisitChest([client](Game::Item& item)
     {
         client->Update(item.concreteItem_);
         client->Invalidate(item.concreteItem_);
@@ -221,7 +221,7 @@ bool IOPlayer::SavePlayerInventory(Game::Player* player)
     });
 
     AB::Entities::ChestItems chest;
-    chest.uuid = player->account_.uuid;
+    chest.uuid = player.account_.uuid;
     client->Invalidate(chest);
     return true;
 }

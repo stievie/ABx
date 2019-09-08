@@ -8,16 +8,16 @@ namespace IO {
 class IOPlayer
 {
 private:
-    static bool LoadPlayer(Game::Player* player);
-    static bool LoadPlayerInventory(Game::Player* player);
-    static bool SavePlayerInventory(Game::Player* player);
+    static bool LoadPlayer(Game::Player& player);
+    static bool LoadPlayerInventory(Game::Player& player);
+    static bool SavePlayerInventory(Game::Player& player);
 public:
     IOPlayer() = delete;
 
     static bool LoadCharacter(AB::Entities::Character& ch);
-    static bool LoadPlayerByName(Game::Player* player, const std::string& name);
-    static bool LoadPlayerByUuid(Game::Player* player, const std::string& uuid);
-    static bool SavePlayer(Game::Player* player);
+    static bool LoadPlayerByName(Game::Player& player, const std::string& name);
+    static bool LoadPlayerByUuid(Game::Player& player, const std::string& uuid);
+    static bool SavePlayer(Game::Player& player);
     static size_t GetInterestedParties(const std::string& accountUuid, std::vector<std::string>& accounts);
 };
 

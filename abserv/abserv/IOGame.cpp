@@ -14,16 +14,16 @@ bool IOGame::LoadGame(AB::Entities::Game& game)
     return client->Read(game);
 }
 
-bool IOGame::LoadGameByName(Game::Game* game, const std::string& name)
+bool IOGame::LoadGameByName(Game::Game& game, const std::string& name)
 {
-    game->data_.name = name;
-    return LoadGame(game->data_);
+    game.data_.name = name;
+    return LoadGame(game.data_);
 }
 
-bool IOGame::LoadGameByUuid(Game::Game* game, const std::string& uuid)
+bool IOGame::LoadGameByUuid(Game::Game& game, const std::string& uuid)
 {
-    game->data_.uuid = uuid;
-    return LoadGame(game->data_);
+    game.data_.uuid = uuid;
+    return LoadGame(game.data_);
 }
 
 std::string IOGame::GetLandingGameUuid()

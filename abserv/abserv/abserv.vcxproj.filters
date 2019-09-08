@@ -66,9 +66,6 @@
     <ClInclude Include="IOPlayer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IOGuild.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="IOGame.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -136,9 +133,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="FriendList.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="IOFriendList.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="MessageDispatcher.h">
@@ -270,9 +264,6 @@
     <ClInclude Include="TriggerComp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="IOItem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Mechanic.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -392,9 +383,6 @@
     <ClCompile Include="IOPlayer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="IOGuild.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="IOGame.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -459,9 +447,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="FriendList.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="IOFriendList.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="MessageDispatcher.cpp">
@@ -564,9 +549,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TriggerComp.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="IOItem.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ItemFactory.cpp">

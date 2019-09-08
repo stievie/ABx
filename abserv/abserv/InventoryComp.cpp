@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "InventoryComp.h"
-#include "IOItem.h"
 #include "ItemFactory.h"
 #include "Actor.h"
 #include "DataClient.h"

@@ -243,10 +243,7 @@
     <ClInclude Include="InputQueue.h" />
     <ClInclude Include="IOAccount.h" />
     <ClInclude Include="IOAsset.h" />
-    <ClInclude Include="IOFriendList.h" />
     <ClInclude Include="IOGame.h" />
-    <ClInclude Include="IOGuild.h" />
-    <ClInclude Include="IOItem.h" />
     <ClInclude Include="IOScript.h" />
     <ClInclude Include="IOMail.h" />
     <ClInclude Include="IOMap.h" />
@@ -333,10 +330,7 @@
     <ClCompile Include="InputComp.cpp" />
     <ClCompile Include="InputQueue.cpp" />
     <ClCompile Include="IOAccount.cpp" />
-    <ClCompile Include="IOFriendList.cpp" />
     <ClCompile Include="IOGame.cpp" />
-    <ClCompile Include="IOGuild.cpp" />
-    <ClCompile Include="IOItem.cpp" />
     <ClCompile Include="IOScript.cpp" />
     <ClCompile Include="IOMail.cpp" />
     <ClCompile Include="IOMap.cpp" />

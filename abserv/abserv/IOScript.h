@@ -9,7 +9,7 @@ namespace IO {
 class IOScript : public IOAssetImpl<Game::Script>
 {
 public:
-    bool Import(Game::Script* asset, const std::string& name) override;
+    bool Import(Game::Script& asset, const std::string& name) override;
 };
 
 }

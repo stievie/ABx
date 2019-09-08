@@ -60,8 +60,9 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     }
 
     std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(playerUuid, GetThis());
+    assert(player);
 
-    if (!IO::IOPlayer::LoadPlayerByUuid(player.get(), playerUuid))
+    if (!IO::IOPlayer::LoadPlayerByUuid(*player, playerUuid))
     {
         LOG_ERROR << "Error loading player " << playerUuid << std::endl;
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
@@ -103,7 +104,7 @@ void ProtocolGame::Logout()
         return;
 
     player->logoutTime_ = Utils::Tick();
-    IO::IOPlayer::SavePlayer(player.get());
+    IO::IOPlayer::SavePlayer(*player);
     IO::IOAccount::AccountLogout(player->data_.accountUuid);
     GetSubsystem<Game::PlayerManager>()->RemovePlayer(player->id_);
     Disconnect();

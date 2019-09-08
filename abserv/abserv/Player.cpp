@@ -7,7 +7,6 @@
 #include "FriendList.h"
 #include "PlayerManager.h"
 #include "IOMail.h"
-#include "IOGuild.h"
 #include "StringUtils.h"
 #include "Application.h"
 #include <AB/Entities/Character.h>
