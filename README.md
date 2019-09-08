@@ -7,6 +7,10 @@ Ancient Greece Multiplayer Online RPG.
 * https://www.gamedev.net/blogs/blog/3042-abx-online-rpg/
 * https://dev.azure.com/trill42/ABx
 
+## License
+
+The source code is licensed under the MIT License.
+
 ## ETA
 
 Christmas 2117 +/- some years. That's still a negative stardate so I think we are fine.
@@ -31,7 +35,7 @@ Christmas 2117 +/- some years. That's still a negative stardate so I think we ar
 ### Data Server
 
 The Data server provides data from the database server and caches it. It also
-acts as threadsafe interserver shared memory. Connection to this server is 
+acts as threadsafe interserver shared memory. Connection to this server is
 required for:
 
 * File Server
@@ -70,7 +74,7 @@ same data. Because this game is designed to have an instanced world, several gam
 server instances appear to the player as one game server. It is even possible to
 change the game server with a simple menu click.
 
-So, in theory, how many players and games this server can handle, depends only 
+So, in theory, how many players and games this server can handle, depends only
 on how much hardware you have.
 
 ### Message Server
@@ -185,7 +189,7 @@ Doesn't need any special attention. Works with PostreSQL 9 to 11.
 ## Encoding
 
 Everything is UTF-8 encoded. The Client sends only UTF-8 encoded strings to the
-server. All files on the server are UTF-8 encoded. So there is no additional 
+server. All files on the server are UTF-8 encoded. So there is no additional
 conversion required.
 
 ## Build
