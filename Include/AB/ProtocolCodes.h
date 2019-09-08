@@ -251,6 +251,10 @@ enum GameProtocolCodes : uint8_t
     ChestContent,
     ChestItemUpdate,
     ChestItemDelete,
+    // Friend list
+    FriendListAll,
+    // Guild
+    GuildMembersAll,
 
     DialogTrigger,                // Show a dialog
 };
@@ -379,6 +383,10 @@ enum GamePacketTypes : uint8_t
     // Chest
     PacketTypeGetChest,
     PacketTypeChestDestroyItem,
+    // Friend list
+    PacketTypeGetFriendList,
+    // Guild
+    PacketTypeGetGuildMembers,
 };
 
 enum CommandTypes : uint8_t

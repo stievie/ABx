@@ -7,6 +7,7 @@
 #include <AB/Entities/AccountKeyAccounts.h>
 #include <AB/Entities/Character.h>
 #include "Subsystems.h"
+#include "UuidUtils.h"
 
 namespace IO {
 
@@ -62,6 +63,19 @@ bool IOAccount::AccountLogout(const std::string& uuid)
     }
     acc.onlineStatus = AB::Entities::OnlineStatus::OnlineStatusOffline;
     return client->Update(acc);
+}
+
+bool IOAccount::GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    if (!client->Read(account))
+        return false;
+    if (Utils::Uuid::IsEmpty(account.currentCharacterUuid))
+        return false;
+    character.uuid = account.currentCharacterUuid;
+    if (!client->Read(character))
+        return false;
+    return true;
 }
 
 }

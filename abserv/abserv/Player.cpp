@@ -19,6 +19,7 @@
 #include "ItemDrop.h"
 #include "ItemsCache.h"
 #include "UuidUtils.h"
+#include "IOAccount.h"
 
 namespace Game {
 
@@ -158,6 +159,11 @@ void Player::GetMailHeaders()
         msg->AddByte(mail.isRead ? 1 : 0);
     }
     WriteToOutput(*msg);
+}
+
+void Player::GetGuildMembers()
+{
+    // TODO: ...
 }
 
 void Player::GetInventory()
@@ -415,7 +421,37 @@ void Player::GetFriendList()
         friendList_ = std::make_unique<FriendList>(data_.accountUuid);
         friendList_->Load();
     }
-    // TODO: ...
+
+    auto msg = Net::NetworkMessage::GetNew();
+    msg->AddByte(AB::GameProtocol::FriendListAll);
+    msg->Add<uint16_t>(static_cast<uint16_t>(friendList_->Count()));
+    friendList_->VisitAll([&msg](AB::Entities::Friend& current)
+    {
+        msg->Add<uint8_t>(current.relation);
+        msg->AddString(current.friendUuid);
+        msg->AddString(current.friendName);
+
+        if (current.relation == AB::Entities::FriendRelationFriend)
+        {
+            AB::Entities::Account friendAccount;
+            friendAccount.uuid = current.friendUuid;
+            AB::Entities::Character friendToon;
+            /* const bool success = */ IO::IOAccount::GetAccountInfo(friendAccount, friendToon);
+            // If success == false -> offline, empty toon name
+            msg->Add<uint8_t>(friendAccount.onlineStatus);
+            msg->AddString(friendToon.name);
+            msg->AddString(friendToon.currentMapUuid);
+        }
+        else
+        {
+            // Ignored always offline and no current toon
+            msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
+            msg->AddString("");
+            msg->AddString(Utils::Uuid::EMPTY_UUID);
+        }
+        return Iteration::Continue;
+    });
+    WriteToOutput(*msg);
 }
 
 void Player::WriteToOutput(const Net::NetworkMessage& message)

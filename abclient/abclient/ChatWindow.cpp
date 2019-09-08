@@ -464,14 +464,14 @@ void ChatWindow::HandleServerMessagePlayerLoggedIn(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
     const String& sender = eventData[P_SENDER].GetString();
-    AddLine(sender + " logged in.", "ChatLogServerInfoText");
+    AddLine(sender, sender + " logged in.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerLoggedOut(VariantMap& eventData)
 {
     using namespace AbEvents::ServerMessage;
     const String& sender = eventData[P_SENDER].GetString();
-    AddLine(sender + " logged out.", "ChatLogServerInfoText");
+    AddLine(sender, sender + " logged out.", "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleServerMessagePlayerGotMessage(VariantMap& eventData)

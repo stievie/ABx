@@ -233,6 +233,12 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::DialogTrigger:
             ParseDialogTrigger(message);
             break;
+        case AB::GameProtocol::FriendListAll:
+            ParseFriendListAll(message);
+            break;
+        case AB::GameProtocol::GuildMembersAll:
+            ParseGuildMembersAll(message);
+            break;
         default:
             // End of message. Encryption adds some padding bytes, so after this
             // its probably just junk.
@@ -520,6 +526,32 @@ void ProtocolGame::ParseDialogTrigger(const std::shared_ptr<InputMessage>& messa
     uint32_t dialogId = message->Get<uint32_t>();
     if (receiver_)
         receiver_->OnDialogTrigger(updateTick_, dialogId);
+}
+
+void ProtocolGame::ParseFriendListAll(const std::shared_ptr<InputMessage>& message)
+{
+    std::vector<RelatedAccount> friends;
+    size_t count = message->Get<uint16_t>();
+    friends.reserve(count);
+    for (size_t i = 0; i < count; ++i)
+    {
+        friends.push_back({
+            static_cast<RelatedAccount::Releation>(message->Get<uint8_t>()),
+            message->GetString(),                         // Account UUID
+            message->GetString(),                         // Name
+            static_cast<RelatedAccount::Status>(message->Get<uint8_t>()),
+            message->GetString(),                         // Current name
+            message->GetString()                          // Current map
+        });
+    }
+    // TODO:
+    (void)friends;
+}
+
+void ProtocolGame::ParseGuildMembersAll(const std::shared_ptr<InputMessage>& message)
+{
+    // TODO:
+    (void)message;
 }
 
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AB/Entities/Account.h>
+#include <AB/Entities/Character.h>
 
 namespace IO {
 
@@ -12,6 +13,7 @@ public:
         const std::string& charUuid);
     static bool Save(const AB::Entities::Account& account);
     static bool AccountLogout(const std::string& uuid);
+    static bool GetAccountInfo(AB::Entities::Account& account, AB::Entities::Character& character);
 };
 
 }

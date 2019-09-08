@@ -330,6 +330,12 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
         AddPlayerInput(Game::InputType::Command, data);
         break;
     }
+    case AB::GameProtocol::PacketTypeGetFriendList:
+        AddPlayerTask(&Game::Player::GetFriendList);
+        break;
+    case AB::GameProtocol::PacketTypeGetGuildMembers:
+        AddPlayerTask(&Game::Player::GetGuildMembers);
+        break;
     default:
     {
         auto player = GetPlayer();

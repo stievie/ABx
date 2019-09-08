@@ -40,6 +40,29 @@ struct InventoryItem
     uint16_t value;
 };
 
+struct RelatedAccount
+{
+    enum Releation
+    {
+        FriendRelationFriend = 0,
+        FriendRelationIgnore = 1
+    };
+    enum Status
+    {
+        OnlineStatusOffline = 0,
+        OnlineStatusAway,
+        OnlineStatusDoNotDisturb,
+        OnlineStatusOnline,
+        OnlineStatusInvisible              // Like offline for other users
+    };
+    Releation relation;
+    std::string accountUuid;
+    std::string name;
+    Status status;
+    std::string currentName;
+    std::string currentMap;
+};
+
 class Receiver
 {
 public:

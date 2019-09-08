@@ -120,6 +120,7 @@ public:
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
+    /// Client requested the friend list
     void GetFriendList();
     void WriteToOutput(const Net::NetworkMessage& message);
     bool IsResigned() const { return resigned_; }
@@ -131,6 +132,9 @@ public:
     }
 
     void Update(uint32_t timeElapsed, Net::NetworkMessage& message) override;
+    /// Client resutsed guild members
+    void GetGuildMembers();
+    /// Client requests the inventory
     void GetInventory();
     bool AddToInventory(uint32_t itemId) override;
     void DropInventoryItem(uint16_t pos);
