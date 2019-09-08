@@ -54,14 +54,8 @@ abserv/HealComp.h
 abserv/IOAccount.cpp
 abserv/IOAccount.h
 abserv/IOAsset.h
-abserv/IOFriendList.cpp
-abserv/IOFriendList.h
 abserv/IOGame.cpp
 abserv/IOGame.h
-abserv/IOGuild.cpp
-abserv/IOGuild.h
-abserv/IOItem.cpp
-abserv/IOItem.h
 abserv/IOMail.cpp
 abserv/IOMail.h
 abserv/IOMap.cpp
