@@ -46,7 +46,7 @@ void ProtocolGame::OnConnect()
     Receive();
 }
 
-void ProtocolGame::OnReceive(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::OnReceive(InputMessage& message)
 {
     try
     {
@@ -79,12 +79,13 @@ void ProtocolGame::OnError(ConnectionError connectionError, const asio::error_co
         receiver_->OnNetworkError(connectionError, err);
 }
 
-void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseMessage(InputMessage& message)
 {
     AB::GameProtocol::GameProtocolCodes opCode = AB::GameProtocol::NoError;
-    while (!message->Eof())
+    // One such message contains a variable number of packets and then some padding bytes.
+    while (!message.Eof())
     {
-        opCode = static_cast<AB::GameProtocol::GameProtocolCodes>(message->Get<uint8_t>());
+        opCode = static_cast<AB::GameProtocol::GameProtocolCodes>(message.Get<uint8_t>());
 
         switch (opCode)
         {
@@ -246,270 +247,270 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
             ParsePlayerLoggedOut(message);
             break;
         case AB::GameProtocol::CodeLast:
-            // Padding bytes
+            // Padding bytes, i.e. end of message
             return;
         default:
         {
-            // End of message. Encryption adds some padding bytes, so after this
-            // its probably just junk.
             std::stringstream ss2;
-            ss2 << "ProtocolGame::ParseMessage(): Unknown OP code " << static_cast<int>(opCode);
+            ss2 << "ProtocolGame::ParseMessage(): Unknown packet code " << static_cast<int>(opCode) <<
+                " unread size " << message.GetUnreadSize();
             LogMessage(ss2.str());
+            // Unknown packet, discard whole message
             return;
         }
         }
     }
 }
 
-void ProtocolGame::ParseKeyExchange(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseKeyExchange(InputMessage& message)
 {
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
-        serverKey_[i] = message->Get<uint8_t>();
+        serverKey_[i] = message.Get<uint8_t>();
 }
 
-void ProtocolGame::ParseObjectRotUpdate(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectRotUpdate(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    float rot = message->Get<float>();
-    bool manual = message->Get<uint8_t>() != 0;
+    uint32_t objectId = message.Get<uint32_t>();
+    float rot = message.Get<float>();
+    bool manual = message.Get<uint8_t>() != 0;
     if (receiver_)
         receiver_->OnObjectRot(updateTick_, objectId, rot, manual);
 }
 
-void ProtocolGame::ParseObjectStateChange(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectStateChange(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
+    uint32_t objectId = message.Get<uint32_t>();
+    AB::GameProtocol::CreatureState state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectStateChange(updateTick_, objectId, state);
 }
 
-void ProtocolGame::ParseObjectSpeedChange(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectSpeedChange(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    float speedFactor = message->Get<float>();
+    uint32_t objectId = message.Get<uint32_t>();
+    float speedFactor = message.Get<float>();
     if (receiver_)
         receiver_->OnObjectSpeedChange(updateTick_, objectId, speedFactor);
 }
 
-void ProtocolGame::ParseObjectSelected(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectSelected(InputMessage& message)
 {
-    uint32_t sourceId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
+    uint32_t sourceId = message.Get<uint32_t>();
+    uint32_t targetId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnObjectSelected(updateTick_, sourceId, targetId);
 }
 
-void ProtocolGame::ParseObjectSkillFailure(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectSkillFailure(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    int skillIndex = static_cast<int>(message->Get<int8_t>());
-    AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message->Get<uint8_t>());
+    uint32_t objectId = message.Get<uint32_t>();
+    int skillIndex = static_cast<int>(message.Get<int8_t>());
+    AB::GameProtocol::SkillError skillError = static_cast<AB::GameProtocol::SkillError>(message.Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectSkillFailure(updateTick_, objectId, skillIndex, skillError);
 }
 
-void ProtocolGame::ParseObjectUseSkill(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectUseSkill(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
     // Index in the skill bar, 1 based
-    int skillIndex = static_cast<int>(message->Get<uint8_t>());
-    uint16_t energy = message->Get<uint16_t>();
-    uint16_t adrenaline = message->Get<uint16_t>();
-    uint16_t activation = message->Get<uint16_t>();
-    uint16_t overcast = message->Get<uint16_t>();
-    uint16_t hpScarifies = message->Get<uint16_t>();
+    int skillIndex = static_cast<int>(message.Get<uint8_t>());
+    uint16_t energy = message.Get<uint16_t>();
+    uint16_t adrenaline = message.Get<uint16_t>();
+    uint16_t activation = message.Get<uint16_t>();
+    uint16_t overcast = message.Get<uint16_t>();
+    uint16_t hpScarifies = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectUseSkill(updateTick_, objectId, skillIndex, energy, adrenaline, activation, overcast, hpScarifies);
 }
 
-void ProtocolGame::ParseObjectEndUseSkill(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectEndUseSkill(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    int skillIndex = static_cast<int>(message->Get<uint8_t>());
-    uint16_t recharge = message->Get<uint16_t>();
+    uint32_t objectId = message.Get<uint32_t>();
+    int skillIndex = static_cast<int>(message.Get<uint8_t>());
+    uint16_t recharge = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectEndUseSkill(updateTick_, objectId, skillIndex, recharge);
 }
 
-void ProtocolGame::ParseObjectAttackFailure(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectAttackFailure(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    AB::GameProtocol::AttackError attackError = static_cast<AB::GameProtocol::AttackError>(message->Get<uint8_t>());
+    uint32_t objectId = message.Get<uint32_t>();
+    AB::GameProtocol::AttackError attackError = static_cast<AB::GameProtocol::AttackError>(message.Get<uint8_t>());
     if (receiver_)
         receiver_->OnObjectAttackFailure(updateTick_, objectId, attackError);
 }
 
-void ProtocolGame::ParseObjectPingTarget(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectPingTarget(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
-    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(message->Get<uint8_t>());
-    int skillIndex = message->Get<int8_t>();
+    uint32_t objectId = message.Get<uint32_t>();
+    uint32_t targetId = message.Get<uint32_t>();
+    AB::GameProtocol::ObjectCallType type = static_cast<AB::GameProtocol::ObjectCallType>(message.Get<uint8_t>());
+    int skillIndex = message.Get<int8_t>();
     if (receiver_)
         receiver_->OnObjectPingTarget(updateTick_, objectId, targetId, type, skillIndex);
 }
 
-void ProtocolGame::ParseObjectEffectAdded(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectEffectAdded(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    uint32_t effectIndex = message->Get<uint32_t>();
-    uint32_t ticks = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
+    uint32_t effectIndex = message.Get<uint32_t>();
+    uint32_t ticks = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnObjectEffectAdded(updateTick_, objectId, effectIndex, ticks);
 }
 
-void ProtocolGame::ParseObjectEffectRemoved(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectEffectRemoved(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    uint32_t effectIndex = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
+    uint32_t effectIndex = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnObjectEffectRemoved(updateTick_, objectId, effectIndex);
 }
 
-void ProtocolGame::ParseObjectDamaged(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectDamaged(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    uint32_t sourceId = message->Get<uint32_t>();
-    uint16_t index = message->Get<uint16_t>();
-    uint8_t damageType = message->Get<uint8_t>();
-    int16_t damageValue = message->Get<uint16_t>();
+    uint32_t objectId = message.Get<uint32_t>();
+    uint32_t sourceId = message.Get<uint32_t>();
+    uint16_t index = message.Get<uint16_t>();
+    uint8_t damageType = message.Get<uint8_t>();
+    int16_t damageValue = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectDamaged(updateTick_, objectId, sourceId, index, damageType, damageValue);
 }
 
-void ProtocolGame::ParseObjectHealed(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectHealed(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    uint32_t healerId = message->Get<uint32_t>();
-    uint16_t index = message->Get<uint16_t>();
-    int16_t healValue = message->Get<uint16_t>();
+    uint32_t objectId = message.Get<uint32_t>();
+    uint32_t healerId = message.Get<uint32_t>();
+    uint16_t index = message.Get<uint16_t>();
+    int16_t healValue = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectHealed(updateTick_, objectId, healerId, index, healValue);
 }
 
-void ProtocolGame::ParseObjectProgress(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectProgress(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(message->Get<uint8_t>());
-    int value = static_cast<int>(message->Get<int16_t>());
+    uint32_t objectId = message.Get<uint32_t>();
+    AB::GameProtocol::ObjectProgressType type = static_cast<AB::GameProtocol::ObjectProgressType>(message.Get<uint8_t>());
+    int value = static_cast<int>(message.Get<int16_t>());
     if (receiver_)
         receiver_->OnObjectProgress(updateTick_, objectId, type, value);
 }
 
-void ProtocolGame::ParseObjectDroppedItem(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectDroppedItem(InputMessage& message)
 {
-    uint32_t dropperId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
-    uint32_t itemId = message->Get<uint32_t>();
-    uint32_t itemIndex = message->Get<uint32_t>();
-    uint32_t count = message->Get<uint32_t>();
-    uint16_t value = message->Get<uint16_t>();
+    uint32_t dropperId = message.Get<uint32_t>();
+    uint32_t targetId = message.Get<uint32_t>();
+    uint32_t itemId = message.Get<uint32_t>();
+    uint32_t itemIndex = message.Get<uint32_t>();
+    uint32_t count = message.Get<uint32_t>();
+    uint16_t value = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnObjectDroppedItem(updateTick_, dropperId, targetId, itemId, itemIndex, count, value);
 }
 
-void ProtocolGame::ParseObjectSetPosition(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectSetPosition(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
     Vec3 pos = {
-        message->Get<float>(),
-        message->Get<float>(),
-        message->Get<float>()
+        message.Get<float>(),
+        message.Get<float>(),
+        message.Get<float>()
     };
     if (receiver_)
         receiver_->OnObjectSetPosition(updateTick_, objectId, pos);
 }
 
-void ProtocolGame::ParseServerMessage(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseServerMessage(InputMessage& message)
 {
     AB::GameProtocol::ServerMessageType type =
-        static_cast<AB::GameProtocol::ServerMessageType>(message->Get<uint8_t>());
-    std::string sender = message->GetString();
-    std::string data = message->GetString();
+        static_cast<AB::GameProtocol::ServerMessageType>(message.Get<uint8_t>());
+    std::string sender = message.GetString();
+    std::string data = message.GetString();
     if (receiver_)
         receiver_->OnServerMessage(updateTick_, type, sender, data);
 }
 
-void ProtocolGame::ParseChatMessage(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseChatMessage(InputMessage& message)
 {
     AB::GameProtocol::ChatMessageChannel type =
-        static_cast<AB::GameProtocol::ChatMessageChannel>(message->Get<uint8_t>());
-    uint32_t senderId = message->Get<uint32_t>();
-    std::string sender = message->GetString();
-    std::string data = message->GetString();
+        static_cast<AB::GameProtocol::ChatMessageChannel>(message.Get<uint8_t>());
+    uint32_t senderId = message.Get<uint32_t>();
+    std::string sender = message.GetString();
+    std::string data = message.GetString();
     if (receiver_)
         receiver_->OnChatMessage(updateTick_, type, senderId, sender, data);
 }
 
-void ProtocolGame::ParsePartyPlayerInvited(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyPlayerInvited(InputMessage& message)
 {
-    uint32_t sourceId = message->Get<uint32_t>();         // Inviter (source)
-    uint32_t targetId = message->Get<uint32_t>();         // Invitee (target)
-    uint32_t partyId = message->Get<uint32_t>();
+    uint32_t sourceId = message.Get<uint32_t>();         // Inviter (source)
+    uint32_t targetId = message.Get<uint32_t>();         // Invitee (target)
+    uint32_t partyId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyInvited(updateTick_, sourceId, targetId, partyId);
 }
 
-void ProtocolGame::ParsePartyPlayerRemoved(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyPlayerRemoved(InputMessage& message)
 {
-    uint32_t sourceId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
-    uint32_t partyId = message->Get<uint32_t>();
+    uint32_t sourceId = message.Get<uint32_t>();
+    uint32_t targetId = message.Get<uint32_t>();
+    uint32_t partyId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyRemoved(updateTick_, sourceId, targetId, partyId);
 }
 
-void ProtocolGame::ParsePartyPlayerAdded(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyPlayerAdded(InputMessage& message)
 {
-    uint32_t acceptorId = message->Get<uint32_t>();
-    uint32_t leaderId = message->Get<uint32_t>();
-    uint32_t partyId = message->Get<uint32_t>();
+    uint32_t acceptorId = message.Get<uint32_t>();
+    uint32_t leaderId = message.Get<uint32_t>();
+    uint32_t partyId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyAdded(updateTick_, acceptorId, leaderId, partyId);
 }
 
-void ProtocolGame::ParsePartyInviteRemoved(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyInviteRemoved(InputMessage& message)
 {
-    uint32_t sourceId = message->Get<uint32_t>();
-    uint32_t targetId = message->Get<uint32_t>();
-    uint32_t partyId = message->Get<uint32_t>();
+    uint32_t sourceId = message.Get<uint32_t>();
+    uint32_t targetId = message.Get<uint32_t>();
+    uint32_t partyId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyInviteRemoved(updateTick_, sourceId, targetId, partyId);
 }
 
-void ProtocolGame::ParsePartyResigned(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyResigned(InputMessage& message)
 {
-    uint32_t partyId = message->Get<uint32_t>();
+    uint32_t partyId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyResigned(updateTick_, partyId);
 }
 
-void ProtocolGame::ParsePartyDefeated(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyDefeated(InputMessage& message)
 {
-    uint32_t partyId = message->Get<uint32_t>();
+    uint32_t partyId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnPartyDefeated(updateTick_, partyId);
 }
 
-void ProtocolGame::ParsePartyInfoMembers(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePartyInfoMembers(InputMessage& message)
 {
-    uint32_t partyId = message->Get<uint32_t>();
-    size_t count = message->Get<uint8_t>();
+    uint32_t partyId = message.Get<uint32_t>();
+    size_t count = message.Get<uint8_t>();
     std::vector<uint32_t> members;
     members.resize(count);
     for (size_t i = 0; i < count; i++)
     {
-        members[i] = message->Get<uint32_t>();
+        members[i] = message.Get<uint32_t>();
     }
     if (receiver_)
         receiver_->OnPartyInfoMembers(partyId, members);
 }
 
-void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseResourceChanged(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
-    AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(message->Get<uint8_t>());
+    uint32_t objectId = message.Get<uint32_t>();
+    AB::GameProtocol::ResourceType resType = static_cast<AB::GameProtocol::ResourceType>(message.Get<uint8_t>());
     switch (resType)
     {
     case AB::GameProtocol::ResourceTypeHealth:
@@ -519,7 +520,7 @@ void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& mes
     case AB::GameProtocol::ResourceTypeMaxHealth:
     case AB::GameProtocol::ResourceTypeMaxEnergy:
     {
-        int16_t value = message->Get<int16_t>();
+        int16_t value = message.Get<int16_t>();
         if (receiver_)
             receiver_->OnResourceChanged(updateTick_, objectId, resType, value);
         break;
@@ -527,7 +528,7 @@ void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& mes
     case AB::GameProtocol::ResourceTypeHealthRegen:
     case AB::GameProtocol::ResourceTypeEnergyRegen:
     {
-        int8_t value = message->Get<int8_t>();
+        int8_t value = message.Get<int8_t>();
         if (receiver_)
             receiver_->OnResourceChanged(updateTick_, objectId, resType, static_cast<int16_t>(value));
         break;
@@ -535,40 +536,40 @@ void ProtocolGame::ParseResourceChanged(const std::shared_ptr<InputMessage>& mes
     }
 }
 
-void ProtocolGame::ParseDialogTrigger(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseDialogTrigger(InputMessage& message)
 {
-    uint32_t dialogId = message->Get<uint32_t>();
+    uint32_t dialogId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnDialogTrigger(updateTick_, dialogId);
 }
 
-void ProtocolGame::ParseFriendListAll(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseFriendListAll(InputMessage& message)
 {
     std::vector<RelatedAccount> friends;
-    size_t count = message->Get<uint16_t>();
+    size_t count = message.Get<uint16_t>();
     friends.reserve(count);
     for (size_t i = 0; i < count; ++i)
     {
         friends.push_back({
-            static_cast<RelatedAccount::Releation>(message->Get<uint8_t>()),
-            message->GetString(),                         // Account UUID
-            message->GetString(),                         // Name
-            static_cast<RelatedAccount::Status>(message->Get<uint8_t>()),
-            message->GetString(),                         // Current name
-            message->GetString()                          // Current map
+            static_cast<RelatedAccount::Releation>(message.Get<uint8_t>()),
+            message.GetString(),                         // Account UUID
+            message.GetString(),                         // Name
+            static_cast<RelatedAccount::Status>(message.Get<uint8_t>()),
+            message.GetString(),                         // Current name
+            message.GetString()                          // Current map
         });
     }
     // TODO:
     (void)friends;
 }
 
-void ProtocolGame::ParseGuildMembersAll(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseGuildMembersAll(InputMessage& message)
 {
     // TODO:
     (void)message;
 }
 
-void ProtocolGame::ParsePlayerLoggedIn(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePlayerLoggedIn(InputMessage& message)
 {
     /*
     nmsg->AddString(accUuid);
@@ -577,15 +578,15 @@ void ProtocolGame::ParsePlayerLoggedIn(const std::shared_ptr<InputMessage>& mess
     nmsg->AddString(ch.currentMapUuid);
     */
     RelatedAccount player;
-    player.accountUuid = message->GetString();
-    player.currentName = message->GetString();
-    player.status = static_cast<RelatedAccount::Status>(message->Get<uint8_t>());
-    player.currentMap = message->GetString();
+    player.accountUuid = message.GetString();
+    player.currentName = message.GetString();
+    player.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
+    player.currentMap = message.GetString();
     if (receiver_)
         receiver_->OnPlayerLoggedIn(updateTick_, player);
 }
 
-void ProtocolGame::ParsePlayerLoggedOut(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePlayerLoggedOut(InputMessage& message)
 {
 /*
     nmsg->AddString(accUuid);
@@ -593,70 +594,70 @@ void ProtocolGame::ParsePlayerLoggedOut(const std::shared_ptr<InputMessage>& mes
     nmsg->Add<uint8_t>(account.onlineStatus);
 */
     RelatedAccount player;
-    player.accountUuid = message->GetString();
-    player.currentName = message->GetString();
-    player.status = static_cast<RelatedAccount::Status>(message->Get<uint8_t>());
+    player.accountUuid = message.GetString();
+    player.currentName = message.GetString();
+    player.status = static_cast<RelatedAccount::Status>(message.Get<uint8_t>());
     if (receiver_)
         receiver_->OnPlayerLoggedOut(updateTick_, player);
 }
 
-void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseObjectPosUpdate(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
     Vec3 newPos
     {
-        message->Get<float>(),
-        message->Get<float>(),
-        message->Get<float>()
+        message.Get<float>(),
+        message.Get<float>(),
+        message.Get<float>()
     };
     if (receiver_)
         receiver_->OnObjectPos(updateTick_, objectId, newPos);
 }
 
-void ProtocolGame::ParseLeaveObject(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseLeaveObject(InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
     if (receiver_)
         receiver_->OnDespawnObject(updateTick_, objectId);
 }
 
-void ProtocolGame::ParseSpawnObject(bool existing, const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseSpawnObject(bool existing, InputMessage& message)
 {
-    uint32_t objectId = message->Get<uint32_t>();
+    uint32_t objectId = message.Get<uint32_t>();
     ObjectSpawn os;
     os.pos = {
-        message->Get<float>(),
-        message->Get<float>(),
-        message->Get<float>()
+        message.Get<float>(),
+        message.Get<float>(),
+        message.Get<float>()
     };
-    os.rot = message->Get<float>();
+    os.rot = message.Get<float>();
     os.scale = {
-        message->Get<float>(),
-        message->Get<float>(),
-        message->Get<float>()
+        message.Get<float>(),
+        message.Get<float>(),
+        message.Get<float>()
     };
-    os.undestroyable = message->Get<uint8_t>() != 0;
-    os.selectable = message->Get<uint8_t>() != 0;
-    os.state = static_cast<AB::GameProtocol::CreatureState>(message->Get<uint8_t>());
-    os.speed = message->Get<float>();
-    os.groupId = message->Get<uint32_t>();
-    os.groupPos = message->Get<uint8_t>();
+    os.undestroyable = message.Get<uint8_t>() != 0;
+    os.selectable = message.Get<uint8_t>() != 0;
+    os.state = static_cast<AB::GameProtocol::CreatureState>(message.Get<uint8_t>());
+    os.speed = message.Get<float>();
+    os.groupId = message.Get<uint32_t>();
+    os.groupPos = message.Get<uint8_t>();
 
-    std::string data = message->GetString();
+    std::string data = message.GetString();
     PropReadStream stream;
     stream.Init(data.c_str(), data.length());
     if (receiver_)
         receiver_->OnSpawnObject(updateTick_, objectId, os, stream, existing);
 }
 
-void ProtocolGame::ParseUpdate(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseUpdate(InputMessage& message)
 {
-    updateTick_ = message->Get<int64_t>();
+    updateTick_ = message.Get<int64_t>();
 }
 
-void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePong(InputMessage& message)
 {
-    int32_t diff = message->Get<int32_t>();
+    int32_t diff = message.Get<int32_t>();
     // Clock difference between client and server
     clockDiff_ = static_cast<int64_t>(diff);
     // Round trip time
@@ -665,89 +666,89 @@ void ProtocolGame::ParsePong(const std::shared_ptr<InputMessage>& message)
         receiver_->OnPong(lastPing_);
 }
 
-void ProtocolGame::ParseGameError(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseGameError(InputMessage& message)
 {
-    AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(message->Get<uint8_t>());
+    AB::GameProtocol::PlayerErrorValue error = static_cast<AB::GameProtocol::PlayerErrorValue>(message.Get<uint8_t>());
     if (receiver_)
         receiver_->OnPlayerError(updateTick_, error);
 }
 
-void ProtocolGame::ParsePlayerAutoRun(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParsePlayerAutoRun(InputMessage& message)
 {
-    bool autorun = message->Get<uint8_t>() == 1;
+    bool autorun = message.Get<uint8_t>() == 1;
     if (receiver_)
         receiver_->OnPlayerAutorun(updateTick_, autorun);
 }
 
-void ProtocolGame::ParseServerJoined(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseServerJoined(InputMessage& message)
 {
     AB::Entities::Service s;
-    s.type = message->Get<AB::Entities::ServiceType>();
-    s.uuid = message->GetString();
-    s.host = message->GetString();
-    s.port = message->Get<uint16_t>();
-    s.location = message->GetString();
-    s.name = message->GetString();
+    s.type = message.Get<AB::Entities::ServiceType>();
+    s.uuid = message.GetString();
+    s.host = message.GetString();
+    s.port = message.Get<uint16_t>();
+    s.location = message.GetString();
+    s.name = message.GetString();
     if (receiver_)
         receiver_->OnServerJoined(s);
 }
 
-void ProtocolGame::ParseServerLeft(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseServerLeft(InputMessage& message)
 {
     AB::Entities::Service s;
-    s.type = message->Get<AB::Entities::ServiceType>();
-    s.uuid = message->GetString();
-    s.host = message->GetString();
-    s.port = message->Get<uint16_t>();
-    s.location = message->GetString();
-    s.name = message->GetString();
+    s.type = message.Get<AB::Entities::ServiceType>();
+    s.uuid = message.GetString();
+    s.host = message.GetString();
+    s.port = message.Get<uint16_t>();
+    s.location = message.GetString();
+    s.name = message.GetString();
     if (receiver_)
         receiver_->OnServerLeft(s);
 }
 
-void ProtocolGame::ParseError(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseError(InputMessage& message)
 {
-    uint8_t error = message->Get<uint8_t>();
+    uint8_t error = message.Get<uint8_t>();
     if (error != 0)
         ProtocolError(error);
 }
 
-void ProtocolGame::ParseEnterWorld(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseEnterWorld(InputMessage& message)
 {
-    std::string serverId = message->GetString();
-    std::string mapUuid = message->GetString();
-    std::string instanceUuid = message->GetString();
-    uint32_t playerId = message->Get<uint32_t>();
-    AB::Entities::GameType type = static_cast<AB::Entities::GameType>(message->Get<uint8_t>());
-    uint8_t partySize = message->Get<uint8_t>();
+    std::string serverId = message.GetString();
+    std::string mapUuid = message.GetString();
+    std::string instanceUuid = message.GetString();
+    uint32_t playerId = message.Get<uint32_t>();
+    AB::Entities::GameType type = static_cast<AB::Entities::GameType>(message.Get<uint8_t>());
+    uint8_t partySize = message.Get<uint8_t>();
     if (receiver_)
         receiver_->OnEnterWorld(updateTick_, serverId, mapUuid, instanceUuid, playerId, type, partySize);
 }
 
-void ProtocolGame::ParseChangeInstance(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseChangeInstance(InputMessage& message)
 {
     // The server is telling us to change the instance.
     // We should reply with an EnterWorld message.
-    std::string serverId = message->GetString();
-    std::string mapUuid = message->GetString();
-    std::string instanceUuid = message->GetString();
-    std::string charUuid = message->GetString();
+    std::string serverId = message.GetString();
+    std::string mapUuid = message.GetString();
+    std::string instanceUuid = message.GetString();
+    std::string charUuid = message.GetString();
     if (receiver_)
         receiver_->OnChangeInstance(updateTick_, serverId, mapUuid, instanceUuid, charUuid);
 }
 
-void ProtocolGame::ParseMailHeaders(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseMailHeaders(InputMessage& message)
 {
-    uint16_t mailCount = message->Get<uint16_t>();
+    uint16_t mailCount = message.Get<uint16_t>();
     std::vector<AB::Entities::MailHeader> mailHeaders;
     for (uint16_t i = 0; i < mailCount; i++)
     {
         mailHeaders.push_back({
-            message->GetString(),         // UUID
-            message->GetString(),         // From name
-            message->GetString(),         // Subject
-            message->Get<int64_t>(),      // Created
-            message->Get<uint8_t>() != 0  // Read
+            message.GetString(),         // UUID
+            message.GetString(),         // From name
+            message.GetString(),         // Subject
+            message.Get<int64_t>(),      // Created
+            message.Get<uint8_t>() != 0  // Read
         });
     }
     // Sort Date Desc
@@ -759,96 +760,96 @@ void ProtocolGame::ParseMailHeaders(const std::shared_ptr<InputMessage>& message
         receiver_->OnGetMailHeaders(updateTick_, mailHeaders);
 }
 
-void ProtocolGame::ParseMailComplete(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseMailComplete(InputMessage& message)
 {
     AB::Entities::Mail mail;
-    mail.fromAccountUuid = message->GetString();
-    mail.fromName = message->GetString();
-    mail.toName = message->GetString();
-    mail.subject = message->GetString();
-    mail.message = message->GetString();
-    mail.created = message->Get<int64_t>();
-    mail.isRead = message->Get<uint8_t>() != 0;
+    mail.fromAccountUuid = message.GetString();
+    mail.fromName = message.GetString();
+    mail.toName = message.GetString();
+    mail.subject = message.GetString();
+    mail.message = message.GetString();
+    mail.created = message.Get<int64_t>();
+    mail.isRead = message.Get<uint8_t>() != 0;
     if (receiver_)
         receiver_->OnGetMail(updateTick_, mail);
 }
 
-void ProtocolGame::ParseInventoryContent(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseInventoryContent(InputMessage& message)
 {
-    uint16_t count = message->Get<uint16_t>();
+    uint16_t count = message.Get<uint16_t>();
     std::vector<InventoryItem> items;
     items.reserve(count);
     for (uint16_t i = 0; i < count; i++)
     {
         items.push_back({
-            static_cast<AB::Entities::ItemType>(message->Get<uint16_t>()),
-            message->Get<uint32_t>(),
-            static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>()),
-            message->Get<uint16_t>(),
-            message->Get<uint32_t>(),
-            message->Get<uint16_t>()
+            static_cast<AB::Entities::ItemType>(message.Get<uint16_t>()),
+            message.Get<uint32_t>(),
+            static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>()),
+            message.Get<uint16_t>(),
+            message.Get<uint32_t>(),
+            message.Get<uint16_t>()
         });
     }
     if (receiver_)
         receiver_->OnGetInventory(updateTick_, items);
 }
 
-void ProtocolGame::ParseInventoryItemUpdate(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseInventoryItemUpdate(InputMessage& message)
 {
     InventoryItem item;
-    item.type = static_cast<AB::Entities::ItemType>(message->Get<uint16_t>());
-    item.index = message->Get<uint32_t>();
-    item.place = static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>());
-    item.pos = message->Get<uint16_t>();
-    item.count = message->Get<uint32_t>();
-    item.value = message->Get<uint16_t>();
+    item.type = static_cast<AB::Entities::ItemType>(message.Get<uint16_t>());
+    item.index = message.Get<uint32_t>();
+    item.place = static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>());
+    item.pos = message.Get<uint16_t>();
+    item.count = message.Get<uint32_t>();
+    item.value = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnInventoryItemUpdate(updateTick_, item);
 }
 
-void ProtocolGame::ParseInventoryItemDelete(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseInventoryItemDelete(InputMessage& message)
 {
-    uint16_t pos = message->Get<uint16_t>();
+    uint16_t pos = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnInventoryItemDelete(updateTick_, pos);
 }
 
-void ProtocolGame::ParseChestContent(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseChestContent(InputMessage& message)
 {
-    uint16_t count = message->Get<uint16_t>();
+    uint16_t count = message.Get<uint16_t>();
     std::vector<InventoryItem> items;
     items.reserve(count);
     for (uint16_t i = 0; i < count; ++i)
     {
         items.push_back({
-            static_cast<AB::Entities::ItemType>(message->Get<uint16_t>()),
-            message->Get<uint32_t>(),
-            static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>()),
-            message->Get<uint16_t>(),
-            message->Get<uint32_t>(),
-            message->Get<uint16_t>()
-            });
+            static_cast<AB::Entities::ItemType>(message.Get<uint16_t>()),
+            message.Get<uint32_t>(),
+            static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>()),
+            message.Get<uint16_t>(),
+            message.Get<uint32_t>(),
+            message.Get<uint16_t>()
+        });
     }
     if (receiver_)
         receiver_->OnGetChest(updateTick_, items);
 }
 
-void ProtocolGame::ParseChestItemUpdate(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseChestItemUpdate(InputMessage& message)
 {
     InventoryItem item;
-    item.type = static_cast<AB::Entities::ItemType>(message->Get<uint16_t>());
-    item.index = message->Get<uint32_t>();
-    item.place = static_cast<AB::Entities::StoragePlace>(message->Get<uint8_t>());
-    item.pos = message->Get<uint16_t>();
-    item.count = message->Get<uint32_t>();
-    item.value = message->Get<uint16_t>();
+    item.type = static_cast<AB::Entities::ItemType>(message.Get<uint16_t>());
+    item.index = message.Get<uint32_t>();
+    item.place = static_cast<AB::Entities::StoragePlace>(message.Get<uint8_t>());
+    item.pos = message.Get<uint16_t>();
+    item.count = message.Get<uint32_t>();
+    item.value = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnChestItemUpdate(updateTick_, item);
 }
 
-void ProtocolGame::ParseChestItemDelete(const std::shared_ptr<InputMessage>& message)
+void ProtocolGame::ParseChestItemDelete(InputMessage& message)
 {
-    uint16_t pos = message->Get<uint16_t>();
+    uint16_t pos = message.Get<uint16_t>();
     if (receiver_)
         receiver_->OnChestItemDelete(updateTick_, pos);
 }
@@ -873,7 +874,7 @@ void ProtocolGame::SendLoginPacket()
     msg->AddString(charUuid_);
     msg->AddString(mapUuid_);
     msg->AddString(instanceUuid_);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Logout()
@@ -881,7 +882,7 @@ void ProtocolGame::Logout()
     loggingOut_ = true;
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeLogout);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Ping()
@@ -890,7 +891,7 @@ void ProtocolGame::Ping()
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
     msg->Add<int64_t>(pingTick_),
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::ChangeMap(const std::string& mapUuid)
@@ -898,21 +899,21 @@ void ProtocolGame::ChangeMap(const std::string& mapUuid)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChangeMap);
     msg->AddString(mapUuid);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::GetMailHeaders()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMailHeaders);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::GetInventory()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetInventory);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::InventoryStoreItem(uint16_t pos)
@@ -920,7 +921,7 @@ void ProtocolGame::InventoryStoreItem(uint16_t pos)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryStoreInChest);
     msg->Add<uint16_t>(pos);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::InventoryDestroyItem(uint16_t pos)
@@ -928,7 +929,7 @@ void ProtocolGame::InventoryDestroyItem(uint16_t pos)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDestroyItem);
     msg->Add<uint16_t>(pos);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::InventoryDropItem(uint16_t pos)
@@ -936,14 +937,14 @@ void ProtocolGame::InventoryDropItem(uint16_t pos)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeInventoryDropItem);
     msg->Add<uint16_t>(pos);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::GetChest()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetChest);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::ChestDestroyItem(uint16_t pos)
@@ -951,7 +952,7 @@ void ProtocolGame::ChestDestroyItem(uint16_t pos)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeChestDestroyItem);
     msg->Add<uint16_t>(pos);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::GetMail(const std::string& mailUuid)
@@ -959,7 +960,7 @@ void ProtocolGame::GetMail(const std::string& mailUuid)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeGetMail);
     msg->AddString(mailUuid);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::DeleteMail(const std::string& mailUuid)
@@ -967,7 +968,7 @@ void ProtocolGame::DeleteMail(const std::string& mailUuid)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeDeleteMail);
     msg->AddString(mailUuid);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::SendMail(const std::string& recipient, const std::string& subject, const std::string& body)
@@ -977,7 +978,7 @@ void ProtocolGame::SendMail(const std::string& recipient, const std::string& sub
     msg->AddString(recipient);
     msg->AddString(subject);
     msg->AddString(body);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Move(uint8_t direction)
@@ -985,7 +986,7 @@ void ProtocolGame::Move(uint8_t direction)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeMove);
     msg->Add<uint8_t>(direction);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Turn(uint8_t direction)
@@ -993,7 +994,7 @@ void ProtocolGame::Turn(uint8_t direction)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeTurn);
     msg->Add<uint8_t>(direction);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::SetDirection(float rad)
@@ -1001,7 +1002,7 @@ void ProtocolGame::SetDirection(float rad)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetDirection);
     msg->Add<float>(rad);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
@@ -1010,7 +1011,7 @@ void ProtocolGame::ClickObject(uint32_t sourceId, uint32_t targetId)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeClickObject);
     msg->Add<uint32_t>(sourceId);
     msg->Add<uint32_t>(targetId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
@@ -1019,7 +1020,7 @@ void ProtocolGame::SelectObject(uint32_t sourceId, uint32_t targetId)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSelect);
     msg->Add<uint32_t>(sourceId);
     msg->Add<uint32_t>(targetId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::string& data)
@@ -1028,7 +1029,7 @@ void ProtocolGame::Command(AB::GameProtocol::CommandTypes type, const std::strin
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCommand);
     msg->Add<uint8_t>(type);
     msg->AddString(data);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::GotoPos(const Vec3& pos)
@@ -1038,7 +1039,7 @@ void ProtocolGame::GotoPos(const Vec3& pos)
     msg->Add<float>(pos.x);
     msg->Add<float>(pos.y);
     msg->Add<float>(pos.z);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Follow(uint32_t targetId, bool ping)
@@ -1047,7 +1048,7 @@ void ProtocolGame::Follow(uint32_t targetId, bool ping)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeFollow);
     msg->Add<uint32_t>(targetId);
     msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::UseSkill(uint32_t index, bool ping)
@@ -1056,7 +1057,7 @@ void ProtocolGame::UseSkill(uint32_t index, bool ping)
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUseSkill);
     msg->Add<uint8_t>(static_cast<uint8_t>(index));
     msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Attack(bool ping)
@@ -1064,14 +1065,14 @@ void ProtocolGame::Attack(bool ping)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeAttack);
     msg->Add<uint8_t>(static_cast<uint8_t>(ping ? 1 : 0));
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::Cancel()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeCancel);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
@@ -1079,7 +1080,7 @@ void ProtocolGame::SetPlayerState(AB::GameProtocol::CreatureState newState)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeSetState);
     msg->Add<uint8_t>(static_cast<uint8_t>(newState));
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
@@ -1087,7 +1088,7 @@ void ProtocolGame::PartyInvitePlayer(uint32_t targetId)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyInvitePlayer);
     msg->Add<uint32_t>(targetId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::PartyKickPlayer(uint32_t targetId)
@@ -1095,14 +1096,14 @@ void ProtocolGame::PartyKickPlayer(uint32_t targetId)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyKickPlayer);
     msg->Add<uint32_t>(targetId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::PartyLeave()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyLeave);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
@@ -1110,7 +1111,7 @@ void ProtocolGame::PartyAcceptInvite(uint32_t inviterId)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyAcceptInvite);
     msg->Add<uint32_t>(inviterId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
@@ -1118,7 +1119,7 @@ void ProtocolGame::PartyRejectInvite(uint32_t inviterId)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePartyRejectInvite);
     msg->Add<uint32_t>(inviterId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::PartyGetMembers(uint32_t partyId)
@@ -1126,21 +1127,21 @@ void ProtocolGame::PartyGetMembers(uint32_t partyId)
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacektTypeGetPartyMembers);
     msg->Add<uint32_t>(partyId);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::QueueMatch()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeQueue);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolGame::UnqueueMatch()
 {
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypeUnqueue);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 }

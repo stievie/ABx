@@ -106,7 +106,7 @@ void ProtocolLogin::SendLoginPacket()
     msg->Add<uint8_t>(AB::LoginProtocol::LoginLogin);
     msg->AddStringEncrypted(accountName_);
     msg->AddStringEncrypted(password_);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolLogin::SendCreateAccountPacket()
@@ -120,7 +120,7 @@ void ProtocolLogin::SendCreateAccountPacket()
     msg->AddStringEncrypted(password_);
     msg->AddStringEncrypted(email_);
     msg->AddStringEncrypted(accKey_);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolLogin::SendCreatePlayerPacket()
@@ -137,7 +137,7 @@ void ProtocolLogin::SendCreatePlayerPacket()
     msg->Add<uint8_t>(static_cast<uint8_t>(sex_));
     msg->AddString(profUuid_);
     msg->Add<uint8_t>(isPvp_ ? 1 : 0);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolLogin::SendGetOutpostsPacket()
@@ -149,7 +149,7 @@ void ProtocolLogin::SendGetOutpostsPacket()
     msg->Add<uint8_t>(AB::LoginProtocol::LoginGetOutposts);
     msg->AddStringEncrypted(accountUuid_);
     msg->AddStringEncrypted(password_);
-    Send(msg);
+    Send(std::move(msg));
 }
 
 void ProtocolLogin::SendGetServersPacket()
@@ -161,41 +161,41 @@ void ProtocolLogin::SendGetServersPacket()
     msg->Add<uint8_t>(AB::LoginProtocol::LoginGetGameServers);
     msg->AddStringEncrypted(accountUuid_);
     msg->AddStringEncrypted(password_);
-    Send(msg);
+    Send(std::move(msg));
 }
 
-void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
+void ProtocolLogin::ParseMessage(InputMessage& message)
 {
-    uint8_t recvByte = message->Get<uint8_t>();
+    uint8_t recvByte = message.Get<uint8_t>();
     switch (recvByte)
     {
     case AB::LoginProtocol::CharacterList:
     {
-        std::string accountUuid = message->GetStringEncrypted();
-        std::string host = message->GetString();
+        std::string accountUuid = message.GetStringEncrypted();
+        std::string host = message.GetString();
         if (!host.empty())
             gameHost_ = host;
-        gamePort_ = message->Get<uint16_t>();
-        host = message->GetString();
+        gamePort_ = message.Get<uint16_t>();
+        host = message.GetString();
         if (!host.empty())
             fileHost_ = host;
-        filePort_ = message->Get<uint16_t>();
+        filePort_ = message.Get<uint16_t>();
         loggedInCallback_(accountUuid);
 
-        /* int charSlots = */ message->Get<uint16_t>();
+        /* int charSlots = */ message.Get<uint16_t>();
         AB::Entities::CharList chars;
-        int count = message->Get<uint16_t>();
+        int count = message.Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {
             AB::Entities::Character cData;
-            cData.uuid = message->GetStringEncrypted();
-            cData.level = message->Get<uint8_t>();
-            cData.name = message->GetStringEncrypted();
-            cData.profession = message->GetStringEncrypted();
-            cData.profession2 = message->GetStringEncrypted();
-            cData.sex = static_cast<AB::Entities::CharacterSex>(message->Get<uint8_t>());
-            cData.modelIndex = message->Get<uint32_t>();
-            cData.lastOutpostUuid = message->GetStringEncrypted();
+            cData.uuid = message.GetStringEncrypted();
+            cData.level = message.Get<uint8_t>();
+            cData.name = message.GetStringEncrypted();
+            cData.profession = message.GetStringEncrypted();
+            cData.profession2 = message.GetStringEncrypted();
+            cData.sex = static_cast<AB::Entities::CharacterSex>(message.Get<uint8_t>());
+            cData.modelIndex = message.Get<uint32_t>();
+            cData.lastOutpostUuid = message.GetStringEncrypted();
             chars.push_back(cData);
         }
         if (charlistCallback_)
@@ -205,16 +205,16 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     case AB::LoginProtocol::OutpostList:
     {
         std::vector<AB::Entities::Game> games;
-        int count = message->Get<uint16_t>();
+        int count = message.Get<uint16_t>();
         for (int i = 0; i < count; ++i)
         {
             AB::Entities::Game g;
-            g.uuid = message->GetStringEncrypted();
-            g.name = message->GetStringEncrypted();
-            g.type = static_cast<AB::Entities::GameType>(message->Get<uint8_t>());
-            g.partySize = message->Get<uint8_t>();
-            g.mapCoordX = message->Get<int32_t>();
-            g.mapCoordY = message->Get<int32_t>();
+            g.uuid = message.GetStringEncrypted();
+            g.name = message.GetStringEncrypted();
+            g.type = static_cast<AB::Entities::GameType>(message.Get<uint8_t>());
+            g.partySize = message.Get<uint8_t>();
+            g.mapCoordX = message.Get<int32_t>();
+            g.mapCoordY = message.Get<int32_t>();
             games.push_back(g);
         }
         if (gamelistCallback_)
@@ -224,16 +224,16 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     case AB::LoginProtocol::ServerList:
     {
         std::vector<AB::Entities::Service> servers;
-        int count = message->Get<uint16_t>();
+        int count = message.Get<uint16_t>();
         for (int i = 0; i < count; i++)
         {
             AB::Entities::Service s;
-            s.type = message->Get<AB::Entities::ServiceType>();
-            s.uuid = message->GetStringEncrypted();
-            s.host = message->GetStringEncrypted();
-            s.port = message->Get<uint16_t>();
-            s.location = message->GetStringEncrypted();
-            s.name = message->GetStringEncrypted();
+            s.type = message.Get<AB::Entities::ServiceType>();
+            s.uuid = message.GetStringEncrypted();
+            s.host = message.GetStringEncrypted();
+            s.port = message.Get<uint16_t>();
+            s.location = message.GetStringEncrypted();
+            s.name = message.GetStringEncrypted();
             servers.push_back(s);
         }
         if (serverlistCallback_)
@@ -245,7 +245,7 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
     case AB::LoginProtocol::CreatePlayerError:
     case AB::LoginProtocol::AddAccountKeyError:
     {
-        uint8_t error = message->Get<uint8_t>();
+        uint8_t error = message.Get<uint8_t>();
         ProtocolError(error);
         break;
     }
@@ -255,8 +255,8 @@ void ProtocolLogin::ParseMessage(const std::shared_ptr<InputMessage>& message)
         break;
     case AB::LoginProtocol::CreatePlayerSuccess:
     {
-        std::string playerUuid = message->GetStringEncrypted();
-        std::string mapUuid = message->GetStringEncrypted();
+        std::string playerUuid = message.GetStringEncrypted();
+        std::string mapUuid = message.GetStringEncrypted();
         if (createPlayerCallback_)
             createPlayerCallback_(playerUuid, mapUuid);
         break;
@@ -295,7 +295,7 @@ void ProtocolLogin::OnConnect()
     Receive();
 }
 
-void ProtocolLogin::OnReceive(const std::shared_ptr<InputMessage>& message)
+void ProtocolLogin::OnReceive(InputMessage& message)
 {
     if (firstRecv_)
     {

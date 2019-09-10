@@ -40,10 +40,10 @@ void Protocol::Disconnect()
     }
 }
 
-void Protocol::Send(const std::shared_ptr<OutputMessage>& message)
+void Protocol::Send(std::shared_ptr<OutputMessage>&& message)
 {
     if (encryptEnabled_)
-        XTEAEncrypt(message);
+        XTEAEncrypt(*message);
     if (compressionEnabled_)
         message->Compress();
     if (checksumEnabled_)
@@ -106,42 +106,42 @@ void Protocol::InternalRecvData(uint8_t* buffer, uint16_t size)
     }
     if (encryptEnabled_)
     {
-        if (!XTEADecrypt(inputMessage_))
+        if (!XTEADecrypt(*inputMessage_))
         {
             return;
         }
     }
 
-    OnReceive(inputMessage_);
+    OnReceive(*inputMessage_);
 }
 
-bool Protocol::XTEADecrypt(const std::shared_ptr<InputMessage>& inputMessage)
+bool Protocol::XTEADecrypt(InputMessage& inputMessage)
 {
-    uint16_t encryptedSize = (uint16_t)inputMessage->GetUnreadSize();
+    uint16_t encryptedSize = (uint16_t)inputMessage.GetUnreadSize();
     if (encryptedSize % 8 != 0)
     {
         return false;
     }
 
-    uint32_t* buffer = (uint32_t*)(inputMessage->GetReadBuffer());
+    uint32_t* buffer = (uint32_t*)(inputMessage.GetReadBuffer());
     xxtea_dec(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
 
     return true;
 }
 
-void Protocol::XTEAEncrypt(const std::shared_ptr<OutputMessage>& outputMessage)
+void Protocol::XTEAEncrypt(OutputMessage& outputMessage)
 {
-    uint16_t encryptedSize = outputMessage->GetSize();
+    uint16_t encryptedSize = outputMessage.GetSize();
 
     //add bytes until reach 8 multiple
     if ((encryptedSize % 8) != 0)
     {
         uint16_t n = 8 - (encryptedSize % 8);
-        outputMessage->AddPaddingBytes(n);
+        outputMessage.AddPaddingBytes(n);
         encryptedSize += n;
     }
 
-    uint32_t* buffer = (uint32_t*)(outputMessage->GetDataBuffer());
+    uint32_t* buffer = (uint32_t*)(outputMessage.GetDataBuffer());
     xxtea_enc(buffer, encryptedSize / 4, reinterpret_cast<const uint32_t*>(&encKey_));
 }
 

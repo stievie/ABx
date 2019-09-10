@@ -90,7 +90,7 @@ void OutputMessage::AddStringEncrypted(const std::string& value)
 
 bool OutputMessage::CanWrite(int bytes)
 {
-    if (info_.pos + static_cast<uint16_t>(bytes) <= OUTPUTMESSAGE_BUFFER_SIZE)
+    if (static_cast<size_t>(info_.pos) + static_cast<size_t>(bytes) <= OUTPUTMESSAGE_BUFFER_SIZE)
         return true;
     return false;
 }

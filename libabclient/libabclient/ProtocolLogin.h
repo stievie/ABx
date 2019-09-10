@@ -58,10 +58,10 @@ private:
     void SendCreatePlayerPacket();
     void SendGetOutpostsPacket();
     void SendGetServersPacket();
-    void ParseMessage(const std::shared_ptr<InputMessage>& message);
+    void ParseMessage(InputMessage& message);
 protected:
     void OnConnect() override;
-    void OnReceive(const std::shared_ptr<InputMessage>& message) override;
+    void OnReceive(InputMessage& message) override;
 public:
     ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService);
     ~ProtocolLogin() override {}
