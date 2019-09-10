@@ -890,7 +890,7 @@ void ProtocolGame::Ping()
     std::shared_ptr<OutputMessage> msg = OutputMessage::New();
     msg->Add<uint8_t>(AB::GameProtocol::PacketTypePing);
     pingTick_ = AbTick();
-    msg->Add<int64_t>(pingTick_),
+    msg->Add<int64_t>(pingTick_);
     Send(std::move(msg));
 }
 
