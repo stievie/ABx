@@ -169,8 +169,6 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeMailboxFull,
     ServerMessageTypeMailDeleted,
     ServerMessageTypeServerId,
-    ServerMessageTypePlayerLoggedIn,
-    ServerMessageTypePlayerLoggedOut,
     ServerMessageTypePlayerResigned,
     ServerMessageTypePlayerQueued,
     ServerMessageTypePlayerUnqueued,
@@ -205,8 +203,8 @@ enum GameProtocolCodes : uint8_t
 
     ChangeInstance,
 
-    PlayerError,                         // Some GameError code
-    PlayerAutoRun,                // Server is controlling the player, client must stop client prediction
+    PlayerError,                       // Some GameError code
+    PlayerAutoRun,                     // Server is controlling the player, client must stop client prediction
 
     GameStart,                         // Start tick
     GameEnter,
@@ -257,6 +255,10 @@ enum GameProtocolCodes : uint8_t
     GuildMembersAll,
 
     DialogTrigger,                // Show a dialog
+    PlayerLoggedIn,                    // Notification sent to friends/guild members when a player logged in
+    PlayerLoggedOut,                   // Notification sent to friends/guild members when a player logged out
+
+    CodeLast = 0xFF
 };
 
 enum ObjectCallType : uint8_t

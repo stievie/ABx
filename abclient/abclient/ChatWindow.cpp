@@ -128,6 +128,8 @@ ChatWindow::ChatWindow(Context* context) :
     SubscribeToEvent(AbEvents::E_PARTYDEFEATED, URHO3D_HANDLER(ChatWindow, HandlePartyDefeated));
     SubscribeToEvent(AbEvents::E_OBJECTITEMDROPPED, URHO3D_HANDLER(ChatWindow, HandleItemDropped));
     SubscribeToEvent(AbEvents::E_OBJECTPROGRESS, URHO3D_HANDLER(ChatWindow, HandleObjectProgress));
+    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDIN, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedIn));
+    SubscribeToEvent(AbEvents::E_PLAYER_LOGGEDOUT, URHO3D_HANDLER(ChatWindow, HandlePlayerLoggedOut));
     SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(ChatWindow, HandleKeyDown));
 
     SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -267,12 +269,6 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         break;
     case AB::GameProtocol::ServerMessageTypePlayerNotOnline:
         HandleServerMessagePlayerNotOnline(eventData);
-        break;
-    case AB::GameProtocol::ServerMessageTypePlayerLoggedIn:
-        HandleServerMessagePlayerLoggedIn(eventData);
-        break;
-    case AB::GameProtocol::ServerMessageTypePlayerLoggedOut:
-        HandleServerMessagePlayerLoggedOut(eventData);
         break;
     case AB::GameProtocol::ServerMessageTypePlayerGotMessage:
         HandleServerMessagePlayerGotMessage(eventData);
@@ -460,17 +456,17 @@ void ChatWindow::HandleServerMessagePlayerNotOnline(VariantMap& eventData)
     AddLine("Player " + data + " is not online.", "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleServerMessagePlayerLoggedIn(VariantMap& eventData)
+void ChatWindow::HandlePlayerLoggedIn(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
-    const String& sender = eventData[P_SENDER].GetString();
+    using namespace AbEvents::PlayerLoggedIn;
+    const String& sender = eventData[P_NAME].GetString();
     AddLine(sender, sender + " logged in.", "ChatLogServerInfoText");
 }
 
-void ChatWindow::HandleServerMessagePlayerLoggedOut(VariantMap& eventData)
+void ChatWindow::HandlePlayerLoggedOut(StringHash, VariantMap& eventData)
 {
-    using namespace AbEvents::ServerMessage;
-    const String& sender = eventData[P_SENDER].GetString();
+    using namespace AbEvents::PlayerLoggedOut;
+    const String& sender = eventData[P_NAME].GetString();
     AddLine(sender, sender + " logged out.", "ChatLogServerInfoText");
 }
 

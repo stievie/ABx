@@ -73,6 +73,7 @@ public:
     uint32_t GetIp() const;
 
     // Receiver
+    void OnLog(const std::string& message) override;
     void OnNetworkError(ConnectionError connectionError, const std::error_code& err) override;
     void OnProtocolError(uint8_t err) override;
     void OnPong(int lastPing) override;
@@ -141,6 +142,8 @@ public:
     void OnPartyDefeated(int64_t updateTick, uint32_t partyId) override;
     void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
+    void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) override;
+    void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) override;
 
     std::string accountUuid_;
     std::string password_;

@@ -29,6 +29,7 @@ private:
     DH_KEY serverKey_;
     bool loggingOut_;
 
+    void LogMessage(const std::string& message);
     void SendLoginPacket();
 protected:
     void OnConnect() override;
@@ -86,6 +87,8 @@ protected:
     void ParseDialogTrigger(const std::shared_ptr<InputMessage>& message);
     void ParseFriendListAll(const std::shared_ptr<InputMessage>& message);
     void ParseGuildMembersAll(const std::shared_ptr<InputMessage>& message);
+    void ParsePlayerLoggedIn(const std::shared_ptr<InputMessage>& message);
+    void ParsePlayerLoggedOut(const std::shared_ptr<InputMessage>& message);
 public:
     ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService);
     ~ProtocolGame() override = default;

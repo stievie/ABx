@@ -66,6 +66,7 @@ struct RelatedAccount
 class Receiver
 {
 public:
+    virtual void OnLog(const std::string& message) = 0;
     virtual void OnNetworkError(ConnectionError connectionError, const std::error_code& err) = 0;
     virtual void OnProtocolError(uint8_t err) = 0;
     virtual void OnPong(int lastPing) = 0;
@@ -134,6 +135,8 @@ public:
     virtual void OnPartyDefeated(int64_t updateTick, uint32_t partyId) = 0;
     virtual void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) = 0;
     virtual void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) = 0;
+    virtual void OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player) = 0;
+    virtual void OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player) = 0;
 };
 
 }

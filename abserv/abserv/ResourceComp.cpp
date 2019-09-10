@@ -251,8 +251,13 @@ void ResourceComp::Update(uint32_t timeElapsed)
     if (SetValue(SetValueType::Increase, (energyRegen_ * 0.33f) * sec, static_cast<float>(maxEnergy_), energy_))
         dirtyFlags_ |= ResourceDirty::DirtyEnergy;
     // Überzaubert wird alle drei Sekunden um einen Punkt abgebaut
-    if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, static_cast<float>(maxEnergy_), overcast_))
-        dirtyFlags_ |= ResourceDirty::DirtyOvercast;
+    if (overcast_ > 0.0f)
+    {
+        if (SetValue(SetValueType::Decrease, (1.0f / 3.0f) * sec, static_cast<float>(maxEnergy_), overcast_))
+            dirtyFlags_ |= ResourceDirty::DirtyOvercast;
+    }
+    else if (overcast_ < 0.0f)
+        overcast_ = 0.0f;
 
     if (health_ <= 0.0f && !owner_.IsDead())
         owner_.Die();

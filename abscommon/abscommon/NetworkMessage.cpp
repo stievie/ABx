@@ -79,7 +79,7 @@ void NetworkMessage::AddPaddingBytes(uint32_t n)
     if (!CanAdd(n))
         return;
 
-    memset((void*)&buffer_[info_.position], 0x33, n);
+    memset((void*)&buffer_[info_.position], static_cast<int>(AB::GameProtocol::CodeLast), n);
     info_.length += static_cast<MsgSize_t>(n);
 }
 

@@ -20,6 +20,7 @@
 #include "ItemsCache.h"
 #include "UuidUtils.h"
 #include "IOAccount.h"
+#include "Scheduler.h"
 
 namespace Game {
 
@@ -100,6 +101,7 @@ void Player::Initialize()
 {
     Actor::Initialize();
     SetParty(GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid));
+    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(std::bind(&Player::LoadFriendList, this)));
 }
 
 void Player::Logout()
@@ -416,16 +418,10 @@ void Player::NotifyNewMail()
 
 void Player::GetFriendList()
 {
-    if (!friendList_)
-    {
-        friendList_ = std::make_unique<FriendList>(data_.accountUuid);
-        friendList_->Load();
-    }
-
     auto msg = Net::NetworkMessage::GetNew();
     msg->AddByte(AB::GameProtocol::FriendListAll);
     msg->Add<uint16_t>(static_cast<uint16_t>(friendList_->Count()));
-    friendList_->VisitAll([&msg](AB::Entities::Friend& current)
+    friendList_->VisitAll([&msg](const AB::Entities::Friend& current)
     {
         msg->Add<uint8_t>(current.relation);
         msg->AddString(current.friendUuid);
@@ -726,10 +722,26 @@ void Player::PartyGetMembers(uint32_t partyId)
 #endif
 }
 
+bool Player::IsIgnored(const Player& player)
+{
+    return friendList_->IsIgnored(player.account_.uuid);
+}
+
+bool Player::IsFriend(const Player& player)
+{
+    return friendList_->IsFriend(player.account_.uuid);
+}
+
 Party* Player::_LuaGetParty()
 {
     auto party = GetParty();
     return party ? party.get() : nullptr;
+}
+
+void Player::LoadFriendList()
+{
+    friendList_ = std::make_unique<FriendList>(data_.accountUuid);
+    friendList_->Load();
 }
 
 void Player::OnHandleCommand(AB::GameProtocol::CommandTypes type,

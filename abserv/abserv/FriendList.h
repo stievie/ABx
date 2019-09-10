@@ -34,6 +34,9 @@ public:
     FriendList::Error Remove(const std::string& playerName);
     FriendList::Error ChangeNickname(const std::string& currentName, const std::string& newName);
 
+    bool IsFriend(const std::string& accountUuid);
+    bool IsIgnored(const std::string& accountUuid);
+
     template <typename Callback>
     void VisitAll(const Callback& callback)
     {

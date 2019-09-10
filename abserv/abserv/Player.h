@@ -28,6 +28,7 @@ private:
     bool resigned_;
     bool queueing_{ false };
     Party* _LuaGetParty();
+    void LoadFriendList();
 
     void OnPingObject(uint32_t targetId, AB::GameProtocol::ObjectCallType type, int skillIndex);
     void OnInventoryFull();
@@ -156,6 +157,10 @@ public:
     /// We reject the invite of inviterId
     void PartyRejectInvite(uint32_t inviterId);
     void PartyGetMembers(uint32_t partyId);
+
+    /// This player ignores player
+    bool IsIgnored(const Player& player);
+    bool IsFriend(const Player& player);
 
     AB::Entities::Character data_;
     AB::Entities::Account account_;

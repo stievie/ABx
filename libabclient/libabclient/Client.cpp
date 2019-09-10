@@ -404,11 +404,29 @@ void Client::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
         receiver_->OnDialogTrigger(updateTick, dialogId);
 }
 
+void Client::OnPlayerLoggedIn(int64_t updateTick, const RelatedAccount& player)
+{
+    if (receiver_)
+        receiver_->OnPlayerLoggedIn(updateTick, player);
+}
+
+void Client::OnPlayerLoggedOut(int64_t updateTick, const RelatedAccount& player)
+{
+    if (receiver_)
+        receiver_->OnPlayerLoggedOut(updateTick, player);
+}
+
 void Client::OnSpawnObject(int64_t updateTick, uint32_t id, const ObjectSpawn& objectSpawn,
     PropReadStream& data, bool existing)
 {
     if (receiver_)
         receiver_->OnSpawnObject(updateTick, id, objectSpawn, data, existing);
+}
+
+void Client::OnLog(const std::string& message)
+{
+    if (receiver_)
+        receiver_->OnLog(message);
 }
 
 void Client::OnNetworkError(ConnectionError connectionError, const std::error_code& err)

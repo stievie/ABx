@@ -126,6 +126,7 @@ public:
     void QueueMatch();
     void UnqueueMatch();
 
+    void OnLog(const std::string& message) override;
     /// asio network error
     void OnNetworkError(Client::ConnectionError connectionError, const std::error_code& err) override;
     /// Protocol error, e.g. Login failed
@@ -196,6 +197,8 @@ public:
     void OnPartyDefeated(int64_t updateTick, uint32_t partyId) override;
     void OnPartyInfoMembers(uint32_t partyId, const std::vector<uint32_t>& members) override;
     void OnDialogTrigger(int64_t updateTick, uint32_t dialogId) override;
+    void OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player) override;
+    void OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player) override;
 
     void SetState(Client::Client::ClientState state)
     {

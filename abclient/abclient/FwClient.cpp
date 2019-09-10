@@ -860,6 +860,11 @@ void FwClient::UnqueueMatch()
         client_.UnqueueMatch();
 }
 
+void FwClient::OnLog(const std::string& message)
+{
+    URHO3D_LOGINFO(String(message.c_str()));
+}
+
 void FwClient::OnLoggedIn(const std::string&)
 {
     LoadData();
@@ -1530,4 +1535,25 @@ void FwClient::OnDialogTrigger(int64_t updateTick, uint32_t dialogId)
     eData[P_UPDATETICK] = static_cast<long long>(updateTick);
     eData[P_DIALOGID] = dialogId;
     QueueEvent(AbEvents::E_DIALOGGTRIGGER, eData);
+}
+
+void FwClient::OnPlayerLoggedIn(int64_t updateTick, const Client::RelatedAccount& player)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PlayerLoggedIn;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_NAME] = String(player.currentName.c_str());
+    eData[P_STATUS] = static_cast<uint8_t>(player.status);
+    eData[P_MAP] = String(player.currentMap.c_str());
+    QueueEvent(AbEvents::E_PLAYER_LOGGEDIN, eData);
+}
+
+void FwClient::OnPlayerLoggedOut(int64_t updateTick, const Client::RelatedAccount& player)
+{
+    VariantMap& eData = GetEventDataMap();
+    using namespace AbEvents::PlayerLoggedOut;
+    eData[P_UPDATETICK] = static_cast<long long>(updateTick);
+    eData[P_NAME] = String(player.currentName.c_str());
+    eData[P_STATUS] = static_cast<uint8_t>(player.status);
+    QueueEvent(AbEvents::E_PLAYER_LOGGEDOUT, eData);
 }

@@ -239,10 +239,24 @@ void ProtocolGame::ParseMessage(const std::shared_ptr<InputMessage>& message)
         case AB::GameProtocol::GuildMembersAll:
             ParseGuildMembersAll(message);
             break;
+        case AB::GameProtocol::PlayerLoggedIn:
+            ParsePlayerLoggedIn(message);
+            break;
+        case AB::GameProtocol::PlayerLoggedOut:
+            ParsePlayerLoggedOut(message);
+            break;
+        case AB::GameProtocol::CodeLast:
+            // Padding bytes
+            return;
         default:
+        {
             // End of message. Encryption adds some padding bytes, so after this
             // its probably just junk.
+            std::stringstream ss2;
+            ss2 << "ProtocolGame::ParseMessage(): Unknown OP code " << static_cast<int>(opCode);
+            LogMessage(ss2.str());
             return;
+        }
         }
     }
 }
@@ -554,6 +568,38 @@ void ProtocolGame::ParseGuildMembersAll(const std::shared_ptr<InputMessage>& mes
     (void)message;
 }
 
+void ProtocolGame::ParsePlayerLoggedIn(const std::shared_ptr<InputMessage>& message)
+{
+    /*
+    nmsg->AddString(accUuid);
+    nmsg->AddString(ch.name);
+    nmsg->Add<uint8_t>(account.onlineStatus);
+    nmsg->AddString(ch.currentMapUuid);
+    */
+    RelatedAccount player;
+    player.accountUuid = message->GetString();
+    player.currentName = message->GetString();
+    player.status = static_cast<RelatedAccount::Status>(message->Get<uint8_t>());
+    player.currentMap = message->GetString();
+    if (receiver_)
+        receiver_->OnPlayerLoggedIn(updateTick_, player);
+}
+
+void ProtocolGame::ParsePlayerLoggedOut(const std::shared_ptr<InputMessage>& message)
+{
+/*
+    nmsg->AddString(accUuid);
+    nmsg->AddString(ch.name);
+    nmsg->Add<uint8_t>(account.onlineStatus);
+*/
+    RelatedAccount player;
+    player.accountUuid = message->GetString();
+    player.currentName = message->GetString();
+    player.status = static_cast<RelatedAccount::Status>(message->Get<uint8_t>());
+    if (receiver_)
+        receiver_->OnPlayerLoggedOut(updateTick_, player);
+}
+
 void ProtocolGame::ParseObjectPosUpdate(const std::shared_ptr<InputMessage>& message)
 {
     uint32_t objectId = message->Get<uint32_t>();
@@ -805,6 +851,12 @@ void ProtocolGame::ParseChestItemDelete(const std::shared_ptr<InputMessage>& mes
     uint16_t pos = message->Get<uint16_t>();
     if (receiver_)
         receiver_->OnChestItemDelete(updateTick_, pos);
+}
+
+void ProtocolGame::LogMessage(const std::string& message)
+{
+    if (receiver_)
+        receiver_->OnLog(message);
 }
 
 void ProtocolGame::SendLoginPacket()

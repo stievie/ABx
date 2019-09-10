@@ -129,24 +129,37 @@ size_t IOPlayer::GetInterestedParties(const std::string& accountUuid, std::vecto
         return 0;
 
     accounts.clear();
+    std::vector<std::string> ignored;
 
     AB::Entities::FriendList fl;
     for (const auto& f : fl.friends)
     {
         if (f.relation == AB::Entities::FriendRelationFriend)
             accounts.push_back(f.friendUuid);
+        else if (f.relation == AB::Entities::FriendRelationIgnore)
+            ignored.push_back(f.friendUuid);
     }
+
+    auto isIgnored = [&ignored](const std::string& uuid)
+    {
+        const auto it = std::find_if(ignored.begin(), ignored.end(), [&uuid](const std::string& current)
+        {
+            return Utils::Uuid::IsEqual(current, uuid);
+        });
+        return it != ignored.end();
+    };
 
     if (!Utils::Uuid::IsEmpty(acc.guildUuid))
     {
-        // If this guy is in a guild also inform guild members
+        // If this guy is in a guild, also inform guild members
         AB::Entities::GuildMembers gms;
         gms.uuid = acc.guildUuid;
         if (client->Read(gms))
         {
             for (const auto& gm : gms.members)
             {
-                if (!Utils::Uuid::IsEqual(accountUuid, gm.accountUuid))
+                if (!Utils::Uuid::IsEqual(accountUuid, gm.accountUuid) && !isIgnored(gm.accountUuid))
+                    // Don't add self and ignored
                     accounts.push_back(gm.accountUuid);
             }
         }

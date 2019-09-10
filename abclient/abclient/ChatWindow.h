@@ -44,8 +44,6 @@ private:
     void HandleServerMessageXp(VariantMap& eventData);
     void HandleServerMessagePos(VariantMap& eventData);
     void HandleServerMessagePlayerNotOnline(VariantMap& eventData);
-    void HandleServerMessagePlayerLoggedIn(VariantMap& eventData);
-    void HandleServerMessagePlayerLoggedOut(VariantMap& eventData);
     void HandleServerMessagePlayerGotMessage(VariantMap& eventData);
     void HandleServerMessageNewMail(VariantMap& eventData);
     void HandleServerMessageMailSent(VariantMap& eventData);
@@ -67,6 +65,8 @@ private:
     void HandlePartyDefeated(StringHash eventType, VariantMap& eventData);
     void HandleTargetPinged(StringHash eventType, VariantMap& eventData);
     void HandleItemDropped(StringHash eventType, VariantMap& eventData);
+    void HandlePlayerLoggedIn(StringHash eventType, VariantMap& eventData);
+    void HandlePlayerLoggedOut(StringHash eventType, VariantMap& eventData);
     bool ParseChatCommand(const String& text, AB::GameProtocol::ChatMessageChannel defChannel);
     void CreateChatTab(TabGroup* tabs, AB::GameProtocol::ChatMessageChannel channel);
     LineEdit* GetActiveLineEdit();

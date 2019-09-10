@@ -364,6 +364,21 @@ URHO3D_EVENT(E_DIALOGGTRIGGER, DialogTrigger)
     URHO3D_PARAM(P_DIALOGID, DialogId);     // unit32_t
 }
 
+URHO3D_EVENT(E_PLAYER_LOGGEDIN, PlayerLoggedIn)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_NAME, Name);
+    URHO3D_PARAM(P_STATUS, Status);
+    URHO3D_PARAM(P_MAP, Map);
+}
+
+URHO3D_EVENT(E_PLAYER_LOGGEDOUT, PlayerLoggedOut)
+{
+    URHO3D_PARAM(P_UPDATETICK, UpdateTick);
+    URHO3D_PARAM(P_NAME, Name);
+    URHO3D_PARAM(P_STATUS, Status);
+}
+
 // Shortcuts
 URHO3D_EVENT(E_SC_TOGGLEMAP, ToggleMap)
 {

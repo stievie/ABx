@@ -108,4 +108,34 @@ FriendList::Error FriendList::ChangeNickname(const std::string& currentName, con
     return FriendList::Error::Success;
 }
 
+bool FriendList::IsFriend(const std::string& accountUuid)
+{
+    bool result = false;
+    VisitAll([&accountUuid, &result](const AB::Entities::Friend& current)
+    {
+        if (Utils::Uuid::IsEqual(accountUuid, current.friendUuid) && (current.relation == AB::Entities::FriendRelationFriend))
+        {
+            result = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
+    });
+    return result;
+}
+
+bool FriendList::IsIgnored(const std::string& accountUuid)
+{
+    bool result = false;
+    VisitAll([&accountUuid, &result](const AB::Entities::Friend& current)
+    {
+        if (Utils::Uuid::IsEqual(accountUuid, current.friendUuid) && (current.relation == AB::Entities::FriendRelationIgnore))
+        {
+            result = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
+    });
+    return result;
+}
+
 }

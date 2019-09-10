@@ -9,6 +9,7 @@
 #include "Subsystems.h"
 #include "IOPlayer.h"
 #include <AB/Entities/Character.h>
+#include "IOAccount.h"
 
 void MessageDispatcher::DispatchGuildChat(const Net::MessageMsg& msg)
 {
@@ -113,19 +114,26 @@ void MessageDispatcher::DispatchPlayerLoggedIn(const Net::MessageMsg& msg)
     std::vector<std::string> accounts;
     IO::IOPlayer::GetInterestedParties(accUuid, accounts);
 
+    AB::Entities::Account account;
+    AB::Entities::Character character;
+    account.uuid = accUuid;
+    IO::IOAccount::GetAccountInfo(account, character);
+
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerLoggedIn);
+    nmsg->AddByte(AB::GameProtocol::PlayerLoggedIn);
+    nmsg->AddString(accUuid);
     nmsg->AddString(ch.name);
-    nmsg->AddString("");
+    nmsg->Add<uint8_t>(account.onlineStatus);
+    nmsg->AddString(ch.currentMapUuid);
 
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
     for (const auto& acc : accounts)
     {
         auto player = playerMan->GetPlayerByAccountUuid(acc);
         if (player)
+        {
             player->WriteToOutput(*nmsg);
-
+        }
     }
 }
 
@@ -151,11 +159,16 @@ void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
     std::vector<std::string> accounts;
     IO::IOPlayer::GetInterestedParties(accUuid, accounts);
 
+    AB::Entities::Account account;
+    account.uuid = accUuid;
+    if (!client->Read(account))
+        return;
+
     auto nmsg = Net::NetworkMessage::GetNew();
-    nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    nmsg->AddByte(AB::GameProtocol::ServerMessageTypePlayerLoggedOut);
+    nmsg->AddByte(AB::GameProtocol::PlayerLoggedOut);
+    nmsg->AddString(accUuid);
     nmsg->AddString(ch.name);
-    nmsg->AddString("");
+    nmsg->Add<uint8_t>(account.onlineStatus);
 
     auto* playerMan = GetSubsystem<Game::PlayerManager>();
     for (const auto& acc : accounts)
@@ -163,7 +176,6 @@ void MessageDispatcher::DispatchPlayerLoggedOut(const Net::MessageMsg& msg)
         auto player = playerMan->GetPlayerByAccountUuid(acc);
         if (player)
             player->WriteToOutput(*nmsg);
-
     }
 }
 

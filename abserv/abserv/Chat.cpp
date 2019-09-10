@@ -127,8 +127,10 @@ bool GameChatChannel::Talk(Player* player, const std::string& text)
         msg->Add<uint32_t>(player->id_);
         msg->AddString(player->GetName());
         msg->AddString(text);
-        g->VisitPlayers([&msg](Player* player) {
-            player->WriteToOutput(*msg);
+        g->VisitPlayers([player, &msg](Player* current) {
+            if (current->IsIgnored(*player))
+                return Iteration::Continue;
+            current->WriteToOutput(*msg);
             return Iteration::Continue;
         });
         return true;
@@ -171,6 +173,9 @@ bool WhisperChatChannel::Talk(Player* player, const std::string& text)
 {
     if (auto p = player_.lock())
     {
+        if (p->IsIgnored(*player))
+            return false;
+
         auto msg = Net::NetworkMessage::GetNew();
         msg->AddByte(AB::GameProtocol::ChatMessage);
         msg->AddByte(AB::GameProtocol::ChatChannelWhisper);
