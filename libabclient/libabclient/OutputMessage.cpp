@@ -6,8 +6,6 @@
 #include <AB/ProtocolCodes.h>
 #include <lz4.h>
 
-#include "DebugNew.h"
-
 namespace Client {
 
 std::vector<std::shared_ptr<OutputMessage>> OutputMessage::pool_;

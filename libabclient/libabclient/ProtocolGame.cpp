@@ -4,8 +4,6 @@
 #include <AB/Entities/MailList.h>
 #include <AB/Entities/Mail.h>
 
-#include "DebugNew.h"
-
 namespace Client {
 
 ProtocolGame::ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService) :

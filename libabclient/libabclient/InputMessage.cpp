@@ -5,8 +5,6 @@
 #include <AB/ProtocolCodes.h>
 #include <lz4.h>
 
-#include "DebugNew.h"
-
 namespace Client {
 
 InputMessage::InputMessage()

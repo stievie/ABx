@@ -4,8 +4,6 @@
 #include <AB/ProtocolCodes.h>
 #include <abcrypto.hpp>
 
-#include "DebugNew.h"
-
 namespace Client {
 
 Protocol::Protocol(Crypto::DHKeys& keys, asio::io_service& ioService) :

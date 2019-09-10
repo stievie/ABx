@@ -3,8 +3,6 @@
 #include <AB/ProtocolCodes.h>
 #include <AB/Entities/Character.h>
 
-#include "DebugNew.h"
-
 namespace Client {
 
 ProtocolLogin::ProtocolLogin(Crypto::DHKeys& keys, asio::io_service& ioService) :
