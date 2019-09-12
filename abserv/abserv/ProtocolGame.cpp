@@ -59,7 +59,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         return;
     }
 
-    std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(playerUuid, GetThis());
+    std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetThis());
     assert(player);
 
     if (!IO::IOPlayer::LoadPlayerByUuid(*player, playerUuid))
@@ -68,6 +68,8 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
         DisconnectClient(AB::Errors::ErrorLoadingCharacter);
         return;
     }
+    // Account and player is loaded create the index for the player
+    playerMan->UpdatePlayerIndex(*player);
 
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     // Check if game exists.

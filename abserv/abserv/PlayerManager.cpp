@@ -8,22 +8,16 @@ namespace Game {
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 {
-    auto it = std::find_if(players_.begin(), players_.end(), [&name](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
-    {
-        return Utils::StringEquals(current.second->data_.name, name);
-    });
-    if (it != players_.end())
-        return (*it).second;
-
-    return std::shared_ptr<Player>();
+    return GetPlayerById(GetPlayerIdByName(name));
 }
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByUuid(const std::string& uuid)
 {
-    auto it = playerUuids_.find(uuid);
-    if (it != playerUuids_.end())
-        return GetPlayerById((*it).second);
-    return std::shared_ptr<Player>();
+    auto& index = playerIndex_.get<1>();
+    const auto accountIt = index.find(uuid);
+    if (accountIt == index.end())
+        return std::shared_ptr<Player>();
+    return GetPlayerById((*accountIt).id);
 }
 
 std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
@@ -37,36 +31,39 @@ std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string& uuid)
 {
-    auto it = std::find_if(players_.begin(), players_.end(), [&uuid](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
-    {
-        return Utils::Uuid::IsEqual(current.second->data_.accountUuid, uuid);
-    });
-    if (it != players_.end())
-        return (*it).second;
-
-    return std::shared_ptr<Player>();
+    auto& index = playerIndex_.get<3>();
+    const auto accountIt = index.find(uuid);
+    if (accountIt == index.end())
+        return std::shared_ptr<Player>();
+    return GetPlayerById((*accountIt).id);
 }
 
 uint32_t PlayerManager::GetPlayerIdByName(const std::string& name)
 {
-    auto it = std::find_if(players_.begin(), players_.end(), [&name](const std::pair<uint32_t, std::shared_ptr<Player>>& current)
-    {
-        // Player names are case insensitive
-        return Utils::StringEquals(current.second->data_.name, name);
-    });
-    if (it != players_.end())
-        return (*it).first;
-    return 0;
+    auto& index = playerIndex_.get<2>();
+    // Player names are case insensitive
+    const auto accountIt = index.find(Utils::ToLower(name));
+    if (accountIt == index.end())
+        return 0;
+    return (*accountIt).id;
 }
 
-std::shared_ptr<Player> PlayerManager::CreatePlayer(const std::string& playerUuid,
-    std::shared_ptr<Net::ProtocolGame> client)
+std::shared_ptr<Player> PlayerManager::CreatePlayer(std::shared_ptr<Net::ProtocolGame> client)
 {
     std::shared_ptr<Player> result = std::make_shared<Player>(client);
     players_[result->id_] = result;
-    playerUuids_[playerUuid] = result->id_;
 
     return result;
+}
+
+void PlayerManager::UpdatePlayerIndex(const Player& player)
+{
+    playerIndex_.insert({
+        player.id_,
+        player.data_.uuid,
+        Utils::ToLower(player.GetName()),
+        player.account_.uuid
+    });
 }
 
 void PlayerManager::RemovePlayer(uint32_t playerId)
@@ -74,8 +71,11 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
     auto it = players_.find(playerId);
     if (it != players_.end())
     {
-        const std::string& uuid = (*it).second->data_.uuid;
-        playerUuids_.erase(uuid);
+        auto& idIndex = playerIndex_.get<0>();
+        auto indexIt = idIndex.find((*it).second->id_);
+        if (indexIt != idIndex.end())
+            idIndex.erase(indexIt);
+
         players_.erase(it);
 
         if (players_.size() == 0)
