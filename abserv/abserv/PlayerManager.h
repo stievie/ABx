@@ -31,25 +31,36 @@ private:
         std::string accountUuid;
     };
 
+    struct IdIndexTag {};
+    struct PlayerUuidIndexTag {};
+    struct PlayerNameIndexTag {};
+    struct AccountUuidIndexTag {};
+
     using PlayerIndex = multi_index::multi_index_container <
         PlayerIndexItem,
         multi_index::indexed_by <
             multi_index::hashed_unique<
+                multi_index::tag<IdIndexTag>,
                 multi_index::member<PlayerIndexItem, uint32_t, &PlayerIndexItem::id>
             >,
             multi_index::hashed_unique<
+                multi_index::tag<PlayerUuidIndexTag>,
                 multi_index::member<PlayerIndexItem, std::string, &PlayerIndexItem::playerUuid>
             >,
             multi_index::hashed_unique<
+                multi_index::tag<PlayerNameIndexTag>,
                 multi_index::member<PlayerIndexItem, std::string, &PlayerIndexItem::playerName>
             >,
             multi_index::hashed_unique<
+                multi_index::tag<AccountUuidIndexTag>,
                 multi_index::member<PlayerIndexItem, std::string, &PlayerIndexItem::accountUuid>
             >
         >
     >;
 
+    /// Index to lookup players
     PlayerIndex playerIndex_;
+    /// Time with no players
     int64_t idleTime_;
     /// The owner of players
     std::map<uint32_t, std::shared_ptr<Player>> players_;

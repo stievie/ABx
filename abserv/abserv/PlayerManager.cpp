@@ -13,7 +13,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByName(const std::string& name)
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByUuid(const std::string& uuid)
 {
-    auto& index = playerIndex_.get<1>();
+    auto& index = playerIndex_.get<PlayerUuidIndexTag>();
     const auto accountIt = index.find(uuid);
     if (accountIt == index.end())
         return std::shared_ptr<Player>();
@@ -31,7 +31,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerById(uint32_t id)
 
 std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string& uuid)
 {
-    auto& index = playerIndex_.get<3>();
+    auto& index = playerIndex_.get<AccountUuidIndexTag>();
     const auto accountIt = index.find(uuid);
     if (accountIt == index.end())
         return std::shared_ptr<Player>();
@@ -40,7 +40,7 @@ std::shared_ptr<Player> PlayerManager::GetPlayerByAccountUuid(const std::string&
 
 uint32_t PlayerManager::GetPlayerIdByName(const std::string& name)
 {
-    auto& index = playerIndex_.get<2>();
+    auto& index = playerIndex_.get<PlayerNameIndexTag>();
     // Player names are case insensitive
     const auto accountIt = index.find(Utils::ToLower(name));
     if (accountIt == index.end())
@@ -71,7 +71,7 @@ void PlayerManager::RemovePlayer(uint32_t playerId)
     auto it = players_.find(playerId);
     if (it != players_.end())
     {
-        auto& idIndex = playerIndex_.get<0>();
+        auto& idIndex = playerIndex_.get<IdIndexTag>();
         auto indexIt = idIndex.find((*it).second->id_);
         if (indexIt != idIndex.end())
             idIndex.erase(indexIt);
