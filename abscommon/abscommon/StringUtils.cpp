@@ -28,12 +28,14 @@ bool StringEquals(const std::wstring& l, const std::wstring& r)
 
 std::wstring Utf8ToWString(const std::string& utf8)
 {
+    // FIXME: Deprecated in C++17
     std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
     return convert.from_bytes(utf8);
 }
 
 std::string WStringToUtf8(const std::wstring& wstr)
 {
+    // FIXME: Deprecated in C++17
     std::wstring_convert<std::codecvt_utf8<wchar_t>> convert;
     return convert.to_bytes(wstr);
 }
@@ -42,7 +44,7 @@ std::string ToLower(const std::string& str)
 {
     std::wstring result = Utf8ToWString(str);
     std::transform(result.begin(), result.end(), result.begin(),
-        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        [](wchar_t c) { return std::tolower<wchar_t>(c, std::locale()); });
     return WStringToUtf8(result);
 }
 
