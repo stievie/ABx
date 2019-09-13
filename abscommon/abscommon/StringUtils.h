@@ -8,6 +8,8 @@ namespace Utils {
 bool StringEquals(const std::string& l, const std::string& r);
 bool StringEquals(const std::wstring& l, const std::wstring& r);
 std::string ToLower(const std::string& str);
+std::wstring Utf8ToWString(const std::string& utf8);
+std::string WStringToUtf8(const std::wstring& wstr);
 /// On Windows case insensitive, otherwise case sensitive
 bool SameFilename(const std::string& l, const std::string& r);
 std::string ChangeFileExt(const std::string& fn, const std::string& ext);
