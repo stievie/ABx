@@ -3,4 +3,4 @@ parameters:
   configuration: 'Release'
 
 steps:
-  - script: cd makefiles && make config=${{ parameters.configuration }}
+  - script: cd makefiles && make CCACHE="" config=${{ parameters.configuration }}
