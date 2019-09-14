@@ -40,7 +40,7 @@ std::string WStringToUtf8(const std::wstring& wstr)
     return convert.to_bytes(wstr);
 }
 
-std::string ToLower(const std::string& str)
+std::string Utf8ToLower(const std::string& str)
 {
     std::wstring result = Utf8ToWString(str);
     std::transform(result.begin(), result.end(), result.begin(),

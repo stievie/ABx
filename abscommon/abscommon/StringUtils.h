@@ -7,7 +7,7 @@ namespace Utils {
 /// Case insensitive string compare
 bool StringEquals(const std::string& l, const std::string& r);
 bool StringEquals(const std::wstring& l, const std::wstring& r);
-std::string ToLower(const std::string& str);
+std::string Utf8ToLower(const std::string& str);
 std::wstring Utf8ToWString(const std::string& utf8);
 std::string WStringToUtf8(const std::wstring& wstr);
 /// On Windows case insensitive, otherwise case sensitive

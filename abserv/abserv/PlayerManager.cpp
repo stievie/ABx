@@ -42,7 +42,7 @@ uint32_t PlayerManager::GetPlayerIdByName(const std::string& name)
 {
     auto& index = playerIndex_.get<PlayerNameIndexTag>();
     // Player names are case insensitive
-    const auto accountIt = index.find(Utils::ToLower(name));
+    const auto accountIt = index.find(Utils::Utf8ToLower(name));
     if (accountIt == index.end())
         return 0;
     return (*accountIt).id;
@@ -61,7 +61,7 @@ void PlayerManager::UpdatePlayerIndex(const Player& player)
     playerIndex_.insert({
         player.id_,
         player.data_.uuid,
-        Utils::ToLower(player.GetName()),
+        Utils::Utf8ToLower(player.GetName()),
         player.account_.uuid
     });
 }

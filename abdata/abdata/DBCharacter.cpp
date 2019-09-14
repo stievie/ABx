@@ -5,6 +5,9 @@
 
 namespace DB {
 
+// Player names are case insensitive. The DB needs a proper index for that:
+// CREATE INDEX players_name_ci_index ON players USING btree (lower(name))
+
 bool DBCharacter::Create(AB::Entities::Character& character)
 {
     if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
@@ -61,7 +64,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
     if (!character.uuid.empty() && !uuids::uuid(character.uuid).nil())
         query << "`uuid` = " << db->EscapeString(character.uuid);
     else if (!character.name.empty())
-        query << "`name` = " << db->EscapeString(character.name);
+        query << "LOWER(`name`) = LOWER(" << db->EscapeString(character.name) << ")";
     else
     {
         LOG_ERROR << "UUID (" << character.uuid << ") and name (" << character.name << ") are empty" << std::endl;
@@ -170,7 +173,7 @@ bool DBCharacter::Exists(const AB::Entities::Character& character)
     if (!character.uuid.empty() && !uuids::uuid(character.uuid).nil())
         query << "`uuid` = " << db->EscapeString(character.uuid);
     else if (!character.name.empty())
-        query << "`name` = " << db->EscapeString(character.name);
+        query << "LOWER(`name`) = LOWER(" << db->EscapeString(character.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;

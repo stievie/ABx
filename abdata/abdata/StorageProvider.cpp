@@ -237,11 +237,7 @@ void StorageProvider::CacheData(const std::string& table, const uuids::uuid& id,
     {
         AB::Entities::Character ch;
         if (GetEntity(*data, ch))
-        {
-            // Avoid warning: https://developercommunity.visualstudio.com/content/problem/23811/stdtransform-with-toupper-fails-at-warning-level-4.html
-            std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), [](char c) -> char { return static_cast<char>(std::tolower(static_cast<int>(c))); });
-            playerNames_[Utils::ToLower(ch.name)] = key;
-        }
+            playerNames_[Utils::Utf8ToLower(ch.name)] = key;
     }
 }
 
@@ -275,15 +271,7 @@ bool StorageProvider::Read(const IO::DataKey& key, std::shared_ptr<std::vector<u
         AB::Entities::Character ch;
         if (GetEntity(*data, ch) && !ch.name.empty())
         {
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4244)
-#endif
-            std::transform(ch.name.begin(), ch.name.end(), ch.name.begin(), ::tolower);
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-            auto playerIt = playerNames_.find(Utils::ToLower(ch.name));
+            auto playerIt = playerNames_.find(Utils::Utf8ToLower(ch.name));
             if (playerIt != playerNames_.end())
             {
                 const auto& playerKey = (*playerIt).second;
@@ -744,7 +732,7 @@ void StorageProvider::RemovePlayerFromCache(const IO::DataKey& key)
         AB::Entities::Character ch;
         if (GetEntity(*(*_data).second.second, ch))
         {
-            auto it = playerNames_.find(Utils::ToLower(ch.name));
+            auto it = playerNames_.find(Utils::Utf8ToLower(ch.name));
             if (it != playerNames_.end())
                 playerNames_.erase(it);
         }

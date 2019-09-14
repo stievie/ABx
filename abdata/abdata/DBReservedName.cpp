@@ -6,6 +6,9 @@
 
 namespace DB {
 
+// Player names are case insensitive. The DB needs a proper index for that:
+// CREATE INDEX reserved_names_name_ci_index ON reserved_names USING btree (lower(name))
+
 bool DBReservedName::Create(AB::Entities::ReservedName&)
 {
     // Do nothing
@@ -21,7 +24,7 @@ bool DBReservedName::Load(AB::Entities::ReservedName& n)
     if (!n.uuid.empty() && !uuids::uuid(n.uuid).nil())
         query << "`uuid` = " << db->EscapeString(n.uuid);
     else if (!n.name.empty())
-        query << "`name` = " << db->EscapeString(n.name);
+        query << "LOWER(`name`) = LOWER(" << db->EscapeString(n.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
@@ -62,7 +65,7 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
     if (!n.uuid.empty() && !uuids::uuid(n.uuid).nil())
         query << "`uuid` = " << db->EscapeString(n.uuid);
     else if (!n.name.empty())
-        query << "`name` = " << db->EscapeString(n.name);
+        query << "LOWER(`name`) = LOWER(" << db->EscapeString(n.name) << ")";
     else
     {
         LOG_ERROR << "UUID and name are empty" << std::endl;
