@@ -1,7 +1,6 @@
 include("/scripts/includes/consts.lua")
 include("/scripts/includes/skill_consts.lua")
 
--- Morale is forever but can change
 isPersistent = false
 internal = false
 

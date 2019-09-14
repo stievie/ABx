@@ -94,6 +94,15 @@ void EffectsComp::RemoveEffect(uint32_t index)
     }
 }
 
+bool EffectsComp::HasEffect(uint32_t index)
+{
+    auto it = std::find_if(effects_.begin(), effects_.end(), [index](const std::shared_ptr<Effect>& current)
+    {
+        return current->data_.index == index;
+    });
+    return it != effects_.end();
+}
+
 std::shared_ptr<Effect> EffectsComp::GetLast(AB::Entities::EffectCategory category)
 {
     for (auto i = effects_.rbegin(); i != effects_.rend(); ++i)

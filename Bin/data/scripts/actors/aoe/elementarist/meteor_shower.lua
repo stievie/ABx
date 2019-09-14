@@ -27,7 +27,7 @@ function onUpdate(timeElapsed)
     local source = self:GetSource()
     for i, actor in ipairs(actors) do
       if (actor:IsEnemy(source))
-        actor:ApplyDamage(source, self:Index(), DAMAGETYPE_FIRE, damage, 0)
+        actor:Damage(source, self:Index(), DAMAGETYPE_FIRE, damage)
         actor:KnockDown(source, 500)
       end
     end

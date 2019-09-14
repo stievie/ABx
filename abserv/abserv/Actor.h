@@ -156,7 +156,8 @@ public:
     DamagePos GetDamagePos() const { return damageComp_->GetDamagePos(); }
     int GetResource(Components::ResourceType type) const { return resourceComp_->GetValue(type); }
     void SetResource(Components::ResourceType type, Components::SetValueType t, int value);
-    /// Adds damage to this actor, skill or effect index my be 0.
+    /// Adds damage to this actor, skill or effect index may be 0. Damage reduction/increase should be already calculated.
+    /// Use Actor::Damage() to add damage instead. This is more an internal function...
     void ApplyDamage(Actor* source, uint32_t index, DamageType type, int value, float penetration);
     /// Steal life from this actor. The source must add the returned value to its life.
     int DrainLife(Actor* source, uint32_t index, int value);
@@ -227,6 +228,7 @@ public:
     /// Knock the Actor down caused by source. If time = 0 DEFAULT_KNOCKDOWN_TIME is used.
     bool KnockDown(Actor* source, uint32_t time);
     int Healing(Actor* source, uint32_t index, int value);
+    int Damage(Actor* source, uint32_t index, DamageType type, int value);
     bool IsEnemy(const Actor* other) const;
     bool IsAlly(const Actor* other) const;
     void AddFriendFoe(uint32_t frnd, uint32_t foe);

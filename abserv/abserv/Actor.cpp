@@ -37,7 +37,7 @@ void Actor::RegisterLua(kaguya::State& state)
         .addFunction("GetAttackDamage", &Actor::GetAttackDamage)
         .addFunction("GetCriticalChance", &Actor::GetCriticalChance)
         .addFunction("GetDamagePos", &Actor::GetDamagePos)
-        .addFunction("ApplyDamage", &Actor::ApplyDamage)
+        .addFunction("Damage", &Actor::Damage)
         .addFunction("DrainLife", &Actor::DrainLife)
         .addFunction("DrainEnergy", &Actor::DrainEnergy)
         .addFunction("SetHealthRegen", &Actor::SetHealthRegen)
@@ -938,6 +938,17 @@ int Actor::Healing(Actor* source, uint32_t index, int value)
     CallEvent<void(Actor*, int&)>(EVENT_ON_HEALING, source, val);
     healComp_->Healing(source, index, val);
     CallEvent<void(int)>(EVENT_ON_HEALED, val);
+    return val;
+}
+
+int Actor::Damage(Actor* source, uint32_t index, DamageType type, int value)
+{
+    if (IsDead())
+        return 0;
+    int val = value;
+    bool crit = false;
+    effectsComp_->GetDamage(type, val, crit);
+    ApplyDamage(source, index, type, val, 0.0f);
     return val;
 }
 

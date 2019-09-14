@@ -11,7 +11,7 @@ function onHitTarget(creature)
   -- TODO: Make some index for this "skill"
   local actor = creature:AsActor()
   if (actor ~= nil) then
-    actor:ApplyDamage(nil, 0, DAMAGETYPE_PIERCING, 33, 0)
+    actor:Damage(nil, 0, DAMAGETYPE_PIERCING, 33)
     actor:AddEffect(nil, 10002, 8000)
   end
 end

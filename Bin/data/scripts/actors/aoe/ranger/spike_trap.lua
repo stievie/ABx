@@ -34,7 +34,7 @@ function onTrigger(other)
     self:SetState(CREATURESTATE_TRIGGERED)
     local actors = self:GetActorsInRange(self:GetRange())
     for i, actor in ipairs(actors) do
-      actor:ApplyDamage(self:GetSource(), self:Index(), DAMAGETYPE_PIERCING, damage, 0)
+      actor:Damage(self:GetSource(), self:Index(), DAMAGETYPE_PIERCING, damage)
       actor:KnockDown(self:GetSource(), 0)
       actor:AddEffect(self:GetSource(), 10001, crippledTime)
     end

@@ -44,7 +44,7 @@ function onUpdate(timeElapsed)
     for i, object in ipairs(objects) do
       local actor = object:AsActor()
       if (actor ~= nil) then
-        actor:ApplyDamage(nil, self:Index(), DAMAGETYPE_COLD, damage, 0)
+        actor:Damage(nil, self:Index(), DAMAGETYPE_COLD, damage)
         actor:AddEffect(nil, 10002, 12000)
       end
     end
