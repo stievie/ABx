@@ -44,7 +44,7 @@ Logger::Logger(std::ostream& stream /* = std::cout */) :
 #endif
 }
 
-Logger& Logger::operator << (endlType endl)
+Logger& Logger::operator << (EndlType endl)
 {
 #if !defined(AB_WINDOWS)
     static Color::Modifier def(Color::FG_DEFAULT);

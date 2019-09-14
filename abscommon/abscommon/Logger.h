@@ -35,12 +35,12 @@ private:
     HANDLE hConsole_{ 0 };
     short foregroundDefault_{ 0 };
 #endif
-    bool nextIsBegin_{ false };
+    bool nextIsBegin_{ true };
     std::ofstream fstream_;
     std::ostream& stream_;
     Mode mode_;
     int64_t logStart_;
-    using endlType = decltype(std::endl<char, std::char_traits<char>>);
+    using EndlType = decltype(std::endl<char, std::char_traits<char>>);
 public:
     static std::string logDir_;
 
@@ -61,7 +61,7 @@ public:
     }
 
     // Overload for std::endl only:
-    Logger& operator << (endlType endl);
+    Logger& operator << (EndlType endl);
     // Some special types
     Logger& operator << (bool value)
     {
