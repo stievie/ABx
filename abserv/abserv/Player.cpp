@@ -857,6 +857,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
     std::shared_ptr<Player> target = GetSubsystem<PlayerManager>()->GetPlayerByName(name);
     if (target)
     {
+        // Found a player with the name so the target is on this server.
         std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Whisper, target->id_);
         if (channel)
         {
@@ -873,6 +874,7 @@ void Player::HandleWhisperCommand(const std::string& arguments, Net::NetworkMess
         return;
     }
 
+    // No player found with the name, pass the message to the message server
     AB_PROFILE;
     IO::DataClient* cli = GetSubsystem<IO::DataClient>();
     AB::Entities::Character character;

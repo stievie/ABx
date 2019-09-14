@@ -41,7 +41,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
 #ifdef DEBUG_NET
     LOG_DEBUG << "Player " << playerUuid << " logging in" << std::endl;
 #endif
-    auto playerMan = GetSubsystem<Game::PlayerManager>();
+    auto* playerMan = GetSubsystem<Game::PlayerManager>();
     std::shared_ptr<Game::Player> foundPlayer = playerMan->GetPlayerByUuid(playerUuid);
     if (foundPlayer)
     {
@@ -62,6 +62,7 @@ void ProtocolGame::Login(const std::string& playerUuid, const uuids::uuid& accou
     std::shared_ptr<Game::Player> player = playerMan->CreatePlayer(GetThis());
     assert(player);
 
+    // Load player and account data from DB
     if (!IO::IOPlayer::LoadPlayerByUuid(*player, playerUuid))
     {
         LOG_ERROR << "Error loading player " << playerUuid << std::endl;
@@ -374,7 +375,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
     keys->GetSharedKey(clientKey_, encKey_);
 
     const std::string accountUuid = msg.GetString();
-    if (accountUuid.empty())
+    if (Utils::Uuid::IsEmpty(accountUuid))
     {
         LOG_ERROR << "Invalid account " << accountUuid << std::endl;
         DisconnectClient(AB::Errors::InvalidAccount);
@@ -468,7 +469,7 @@ void ProtocolGame::EnterGame()
     auto gameMan = GetSubsystem<Game::GameManager>();
     bool success = false;
     std::shared_ptr<Game::Game> instance;
-    if (!uuids::uuid(player->data_.instanceUuid).nil())
+    if (!Utils::Uuid::IsEmpty(player->data_.instanceUuid))
     {
         // Enter an existing instance
         instance = gameMan->GetInstance(player->data_.instanceUuid);
