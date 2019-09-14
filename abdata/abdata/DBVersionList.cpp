@@ -15,10 +15,15 @@ bool DBVersionList::Load(AB::Entities::VersionList& vl)
     Database* db = GetSubsystem<Database>();
 
     std::ostringstream query;
-    query << "SELECT `uuid` FROM `versions`";
+    query << "SELECT * FROM `versions` WHERE `internal` = 0";
     for (std::shared_ptr<DB::DBResult> result = db->StoreQuery(query.str()); result; result = result->Next())
     {
-        vl.versionUuids.push_back(result->GetString("uuid"));
+        vl.versions.push_back({
+            result->GetString("uuid"),
+            result->GetString("name"),
+            result->GetUInt("value"),
+            false
+        });
     }
     return true;
 }

@@ -9,6 +9,7 @@
 //it can be created either internally (via configuration) or externally (pointer to context).
 #include <bitsery/ext/inheritance.h>
 #include <AB/Entities/Limits.h>
+#include "Version.h"
 
 using bitsery::ext::BaseClass;
 
@@ -27,13 +28,13 @@ struct VersionList : Entity
     void serialize(S& s)
     {
         s.ext(*this, BaseClass<Entity>{});
-        s.container(versionUuids, Limits::MAX_VERSIONS, [&s](std::string& c)
+        s.container(versions, Limits::MAX_VERSIONS, [&s](Version& c)
         {
-            s.text1b(c, Limits::MAX_UUID);
+            c.serialize(s);
         });
     }
 
-    std::vector<std::string> versionUuids;
+    std::vector<Version> versions;
 };
 
 }

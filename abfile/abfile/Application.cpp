@@ -1115,15 +1115,8 @@ void Application::GetHandlerVersions(std::shared_ptr<HttpsServer::Response> resp
     declarationNode.append_attribute("standalone").set_value("yes");
     auto root = doc.append_child("versions");
 
-    for (const std::string& uuid : vl.versionUuids)
+    for (const AB::Entities::Version& v : vl.versions)
     {
-        AB::Entities::Version v;
-        v.uuid = uuid;
-        if (!dataClient->Read(v))
-            continue;
-        if (v.isInternal)
-            continue;
-
         auto gNd = root.append_child("version");
         gNd.append_attribute("uuid").set_value(v.uuid.c_str());
         gNd.append_attribute("name").set_value(v.name.c_str());

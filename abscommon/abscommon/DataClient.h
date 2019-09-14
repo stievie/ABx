@@ -130,8 +130,7 @@ private:
     static bool GetEntity(DataBuff& data, E& e)
     {
         using InputAdapter = bitsery::InputBufferAdapter<DataBuff>;
-        InputAdapter ia(data.begin(), data.size());
-        auto state = bitsery::quickDeserialization<InputAdapter, E>(ia, e);
+        auto state = bitsery::quickDeserialization<InputAdapter, E>({ data.begin(), data.size() }, e);
         return state.first == bitsery::ReaderError::NoError;
     }
     /// Serialize Entity.
