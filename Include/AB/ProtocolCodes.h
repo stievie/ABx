@@ -424,7 +424,7 @@ enum CommandTypes : uint8_t
     CommandTypeLaugh,                // /laugh
     // Admin/GM
     CommandTypeAdmin = 50,
-    CommandTypeEnterMap,             // /entermap <name>
+    CommandTypeEnterMap = CommandTypeAdmin,             // /entermap <name>
     CommandTypeEnterInstance,        // /enterinstance <uuid>
     CommandTypeInstances,            // /instances
     CommandTypeDie,                  // /die (only GM)
