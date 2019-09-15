@@ -80,7 +80,7 @@ public:
     void OnServerJoined(const AB::Entities::Service& service) override;
     void OnServerLeft(const AB::Entities::Service& service) override;
 
-    void OnLoggedIn(const std::string& accountUuid) override;
+    void OnLoggedIn(const std::string& accountUui, const std::string& authTokend) override;
     void OnGetCharlist(const AB::Entities::CharList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;
@@ -147,6 +147,7 @@ public:
 
     std::string accountUuid_;
     std::string password_;
+    std::string authToken_;
     std::string loginHost_;
     uint16_t loginPort_;
     std::string fileHost_;

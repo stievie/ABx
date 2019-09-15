@@ -13,7 +13,8 @@ public:
         OK = 0,
         InvalidAccount,
         AlreadyLoggedIn,
-        PasswordMismatch
+        PasswordMismatch,
+        InternalError
     };
     enum AccountKeyStatus : uint8_t
     {
@@ -52,7 +53,7 @@ public:
     static Result AddAccountKey(const std::string& accountUuid, const std::string& pass,
         const std::string& accKey);
     static IOAccount::LoginError LoginServerAuth(const std::string& pass,
-        AB::Entities::Account& account);
+        AB::Entities::Account& account, bool createToken = false);
     static IOAccount::CreatePlayerResult CreatePlayer(const std::string& accountUuid,
         const std::string& name, const std::string& profUuid,
         uint32_t modelIndex,

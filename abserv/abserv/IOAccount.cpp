@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "IOAccount.h"
-#include <abcrypto.hpp>
 #include "IOGame.h"
 #include "DataClient.h"
 #include <AB/Entities/AccountKey.h>
@@ -11,7 +10,7 @@
 
 namespace IO {
 
-bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string& pass,
+bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string& authToken,
     const std::string& charUuid)
 {
     AB_PROFILE;
@@ -24,8 +23,11 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
         LOG_ERROR << "Error reading account " << accountUuid << std::endl;
         return false;
     }
-    if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
+    if (!Utils::Uuid::IsEqual(authToken, acc.authToken))
+    {
+        LOG_ERROR << "Wrong auth token " << authToken << " expected " << acc.authToken << std::endl;
         return false;
+    }
 
     AB::Entities::Character ch;
     ch.uuid = charUuid;

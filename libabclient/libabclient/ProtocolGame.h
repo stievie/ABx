@@ -17,7 +17,7 @@ public:
     enum { UseChecksum = true };
 private:
     std::string accountUuid_;
-    std::string accountPass_;
+    std::string authToken_;
     std::string charUuid_;
     std::string mapUuid_;
     std::string instanceUuid_;
@@ -95,7 +95,7 @@ public:
 
     Receiver* receiver_;
 
-    void Login(const std::string& accountUuid, const std::string& accountPass,
+    void Login(const std::string& accountUuid, const std::string& authToken,
         const std::string& charUuid, const std::string& mapUuid, const std::string& instanceUuid,
         const std::string& host, uint16_t port);
     void Logout();

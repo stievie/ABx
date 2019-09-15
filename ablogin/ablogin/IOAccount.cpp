@@ -159,13 +159,13 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
 }
 
 IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
-    AB::Entities::Account& account)
+    AB::Entities::Account& account, bool createToken /* = false */)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))
     {
-        LOG_ERROR << "Unable to read account UUID " << account.uuid << std::endl;
+        LOG_ERROR << "Unable to read account UUID " << account.uuid << " name " << account.name << std::endl;
         return LoginError::InvalidAccount;
     }
     if (account.status != AB::Entities::AccountStatusActivated)
@@ -180,6 +180,12 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
     if (account.onlineStatus != AB::Entities::OnlineStatusOffline)
         return LoginError::AlreadyLoggedIn;
 
+    if (createToken)
+    {
+        account.authToken = Utils::Uuid::New();
+        if (!client->Update(account))
+            return LoginError::InternalError;
+    }
     return LoginError::OK;
 }
 

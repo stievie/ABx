@@ -135,7 +135,7 @@ public:
     void OnServerJoined(const AB::Entities::Service& service) override;
     void OnServerLeft(const AB::Entities::Service& service) override;
 
-    void OnLoggedIn(const std::string&) override;
+    void OnLoggedIn(const std::string&, const std::string&) override;
     void OnGetCharlist(const AB::Entities::CharList& chars) override;
     void OnGetOutposts(const std::vector<AB::Entities::Game>& games) override;
     void OnGetServices(const std::vector<AB::Entities::Service>& services) override;

@@ -170,6 +170,7 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
     case AB::LoginProtocol::CharacterList:
     {
         std::string accountUuid = message.GetStringEncrypted();
+        std::string authToken = message.GetStringEncrypted();
         std::string host = message.GetString();
         if (!host.empty())
             gameHost_ = host;
@@ -178,7 +179,7 @@ void ProtocolLogin::ParseMessage(InputMessage& message)
         if (!host.empty())
             fileHost_ = host;
         filePort_ = message.Get<uint16_t>();
-        loggedInCallback_(accountUuid);
+        loggedInCallback_(accountUuid, authToken);
 
         /* int charSlots = */ message.Get<uint16_t>();
         AB::Entities::CharList chars;

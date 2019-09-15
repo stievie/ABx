@@ -18,13 +18,14 @@ ProtocolGame::ProtocolGame(Crypto::DHKeys& keys, asio::io_service& ioService) :
 }
 
 void ProtocolGame::Login(const std::string& accountUuid,
-    const std::string& accountPass, const std::string& charUuid,
+    const std::string& authToken, const std::string& charUuid,
     const std::string& mapUuid,
     const std::string& instanceUuid,
     const std::string& host, uint16_t port)
 {
     accountUuid_ = accountUuid;
-    accountPass_ = accountPass;
+    authToken_ = authToken;
+    charUuid_ = charUuid;
     charUuid_ = charUuid;
     mapUuid_ = mapUuid;
     instanceUuid_ = instanceUuid;
@@ -868,7 +869,7 @@ void ProtocolGame::SendLoginPacket()
     for (int i = 0; i < DH_KEY_LENGTH; ++i)
         msg->Add<uint8_t>(key[i]);
     msg->AddString(accountUuid_);
-    msg->AddString(accountPass_);
+    msg->AddString(authToken_);
     msg->AddString(charUuid_);
     msg->AddString(mapUuid_);
     msg->AddString(instanceUuid_);

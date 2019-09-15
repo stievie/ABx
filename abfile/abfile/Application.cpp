@@ -466,8 +466,8 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         return false;
     }
     const std::string accId = (*it).second.substr(0, 36);
-    const std::string passwd = (*it).second.substr(36);
-    if (passwd.empty() || Utils::Uuid::IsEmpty(accId))
+    const std::string token = (*it).second.substr(36);
+    if (Utils::Uuid::IsEmpty(token) || Utils::Uuid::IsEmpty(accId))
     {
         LOG_ERROR << request->remote_endpoint_address() << ":" << request->remote_endpoint_port() << ": "
             << "Wrong Auth header " << (*it).second << std::endl;
@@ -491,7 +491,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         return false;
     }
 
-    if (bcrypt_checkpass(passwd.c_str(), acc.password.c_str()) != 0)
+    if (!Utils::Uuid::IsEqual(acc.authToken, token))
     {
         banMan->AddLoginAttempt(ip, false);
         return false;

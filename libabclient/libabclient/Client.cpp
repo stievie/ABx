@@ -87,9 +87,10 @@ void Client::Terminate()
     Connection::Terminate();
 }
 
-void Client::OnLoggedIn(const std::string& accountUuid)
+void Client::OnLoggedIn(const std::string& accountUuid, const std::string& authToken)
 {
     accountUuid_ = accountUuid;
+    authToken_ = authToken;
     gamePort_ = protoLogin_->gamePort_;
     if (!protoLogin_->gameHost_.empty())
         gameHost_ = protoLogin_->gameHost_;
@@ -111,7 +112,7 @@ void Client::OnLoggedIn(const std::string& accountUuid)
         httpClient_ = new HttpsClient(ss.str(), false);
     }
     if (receiver_)
-        receiver_->OnLoggedIn(accountUuid_);
+        receiver_->OnLoggedIn(accountUuid_, authToken_);
 }
 
 void Client::OnGetCharlist(const AB::Entities::CharList& chars)
@@ -482,7 +483,7 @@ void Client::Login(const std::string& name, const std::string& pass)
 
     // 1. Login to login server -> get character list
     GetProtoLogin()->Login(loginHost_, loginPort_, name, pass,
-        std::bind(&Client::OnLoggedIn, this, std::placeholders::_1),
+        std::bind(&Client::OnLoggedIn, this, std::placeholders::_1, std::placeholders::_2),
         std::bind(&Client::OnGetCharlist, this, std::placeholders::_1));
 }
 
@@ -573,7 +574,7 @@ void Client::EnterWorld(const std::string& charUuid, const std::string& mapUuid,
         protoGame_->receiver_ = this;
     }
 
-    protoGame_->Login(accountUuid_, password_, charUuid, mapUuid, instanceId,
+    protoGame_->Login(accountUuid_, authToken_, charUuid, mapUuid, instanceId,
         gameHost_, gamePort_);
 }
 
@@ -612,7 +613,7 @@ bool Client::HttpRequest(const std::string& path, std::ostream& out)
     SimpleWeb::CaseInsensitiveMultimap header;
     header.emplace("Connection", "keep-alive");
     std::stringstream ss;
-    ss << accountUuid_ << password_;
+    ss << accountUuid_ << authToken_;
     header.emplace("Auth", ss.str());
     try
     {

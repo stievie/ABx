@@ -865,7 +865,7 @@ void FwClient::OnLog(const std::string& message)
     URHO3D_LOGINFO(String(message.c_str()));
 }
 
-void FwClient::OnLoggedIn(const std::string&)
+void FwClient::OnLoggedIn(const std::string&, const std::string&)
 {
     LoadData();
 }

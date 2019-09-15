@@ -35,8 +35,11 @@ bool IOService::GetService(AB::Entities::ServiceType type,
         if (s.type == AB::Entities::ServiceTypeFileServer || s.type == AB::Entities::ServiceTypeGameServer)
         {
             if (Utils::TimeElapsed(s.heartbeat) > AB::Entities::HEARTBEAT_INTERVAL * 2)
+            {
                 // Maybe dead
+                LOG_INFO << "No heart beat from service " << s.uuid << " for " << Utils::TimeElapsed(s.heartbeat) << "ms" << std::endl;
                 continue;
+            }
         }
         if (s.type == type)
         {

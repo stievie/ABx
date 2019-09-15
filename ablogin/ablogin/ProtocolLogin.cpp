@@ -337,7 +337,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 {
     AB::Entities::Account account;
     account.name = accountName;
-    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
+    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account, true);
     auto banMan = GetSubsystem<Auth::BanManager>();
     switch (res)
     {
@@ -352,6 +352,9 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
+        break;
+    case IO::IOAccount::LoginError::InternalError:
+        DisconnectClient(AB::Errors::UnknownError);
         break;
     default:
         break;
@@ -385,6 +388,7 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     output->AddByte(AB::LoginProtocol::CharacterList);
 
     output->AddStringEncrypted(account.uuid);
+    output->AddStringEncrypted(account.authToken);
 
     output->AddString(gameServer.host);
     output->Add<uint16_t>(gameServer.port);
@@ -431,6 +435,9 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
+    case IO::IOAccount::LoginError::InternalError:
+        DisconnectClient(AB::Errors::UnknownError);
+        break;
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
     case IO::IOAccount::LoginError::OK:
         // OK
@@ -474,6 +481,9 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
     case IO::IOAccount::LoginError::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
+    case IO::IOAccount::LoginError::InternalError:
+        DisconnectClient(AB::Errors::UnknownError);
+        break;
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
     case IO::IOAccount::LoginError::OK:
         // OK
@@ -562,6 +572,9 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
+    case IO::IOAccount::LoginError::InternalError:
+        DisconnectClient(AB::Errors::UnknownError);
+        break;
     case IO::IOAccount::LoginError::OK:
         // OK
         break;
@@ -631,6 +644,9 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
+    case IO::IOAccount::LoginError::InternalError:
+        DisconnectClient(AB::Errors::UnknownError);
+        break;
     case IO::IOAccount::LoginError::OK:
         // OK
         break;
@@ -687,6 +703,9 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
     case IO::IOAccount::LoginError::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
+        break;
+    case IO::IOAccount::LoginError::InternalError:
+        DisconnectClient(AB::Errors::UnknownError);
         break;
     case IO::IOAccount::LoginError::OK:
         // OK

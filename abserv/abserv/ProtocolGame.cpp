@@ -381,7 +381,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string password = msg.GetString();
+    const std::string authToken = msg.GetString();
     const std::string characterUuid = msg.GetString();
     const std::string map = msg.GetString();
     const std::string instance = msg.GetString();
@@ -394,7 +394,7 @@ void ProtocolGame::OnRecvFirstMessage(NetworkMessage& msg)
         return;
     }
 
-    if (!IO::IOAccount::GameWorldAuth(accountUuid, password, characterUuid))
+    if (!IO::IOAccount::GameWorldAuth(accountUuid, authToken, characterUuid))
     {
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;

@@ -73,7 +73,7 @@ public:
     virtual void OnServerJoined(const AB::Entities::Service& service) = 0;
     virtual void OnServerLeft(const AB::Entities::Service& service) = 0;
 
-    virtual void OnLoggedIn(const std::string& accountUuid) = 0;
+    virtual void OnLoggedIn(const std::string& accountUuid, const std::string& authToken) = 0;
     virtual void OnGetCharlist(const AB::Entities::CharList& chars) = 0;
     virtual void OnGetOutposts(const std::vector<AB::Entities::Game>& games) = 0;
     virtual void OnGetServices(const std::vector<AB::Entities::Service>& services) = 0;
