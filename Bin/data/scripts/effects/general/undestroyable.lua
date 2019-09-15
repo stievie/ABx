@@ -15,7 +15,11 @@ end
 function onEnd(source, target)
 end
 
-function onUpdate(timeElapsed)
+function onUpdate(source, target, timeElapsed)
+  local maxHp = target:GetResource(RESOURCE_TYPE_MAXHEALTH)
+  target:SetResource(RESOURCE_TYPE_HEALTH, SETVALUE_TYPE_ABSOLUTE, maxHp)
+  local maxE = target:GetResource(RESOURCE_TYPE_MAXENERGY)
+  target:SetResource(RESOURCE_TYPE_ENERGY, SETVALUE_TYPE_ABSOLUTE, maxE)
 end
 
 function onRemove(source, target)
