@@ -187,10 +187,14 @@ void Application::SpawnServer()
         ss << " -machine " << machine_;
 
     const std::string cmdLine = ss.str();
-#if defined(_WIN32) && defined(UNICODE)
+#ifdef AB_WINDOWS
+#if defined(UNICODE)
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::wstring wcmdLine = converter.from_bytes(cmdLine);
     System::Process process(wcmdLine);
+#else
+    System::Process process(cmdLine);
+#endif
 #else
     System::Process process(cmdLine);
 #endif
