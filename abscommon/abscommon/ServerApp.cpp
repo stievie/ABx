@@ -11,6 +11,8 @@
 #include "StringUtils.h"
 #include "MessageClient.h"
 #include "UuidUtils.h"
+#include "Process.hpp"
+#include <codecvt>
 
 std::string ServerApp::GetFreeName(IO::DataClient* client)
 {
@@ -237,4 +239,38 @@ bool ServerApp::Initialize(const std::vector<std::string>& args)
     arguments_ = args;
 
     return true;
+}
+
+void ServerApp::Spawn(const std::string& additionalArguments)
+{
+    std::stringstream ss;
+    ss << "\"" << exeFile_ << "\"";
+    // 1. Use same config file
+    // 2. Use dynamic server ID
+    // 3. Use generic server name
+    // 4. Use random free port
+    ss << " -conf \"" << configFile_ << "\" -id 00000000-0000-0000-0000-000000000000 -name generic -port 0";
+    if (!logDir_.empty())
+        ss << " -log \"" << logDir_ << "\"";
+    if (!serverIp_.empty())
+        ss << " -ip " << serverIp_;
+    if (!serverHost_.empty())
+        ss << " -host " << serverHost_;
+    if (!machine_.empty())
+        ss << " -machine " << machine_;
+    if (!additionalArguments.empty())
+        ss << " " << additionalArguments;
+
+    const std::string cmdLine = ss.str();
+#ifdef AB_WINDOWS
+#if defined(UNICODE)
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::wstring wcmdLine = converter.from_bytes(cmdLine);
+    System::Process process(wcmdLine);
+#else
+    System::Process process(cmdLine);
+#endif
+#else
+    System::Process process(cmdLine);
+#endif
 }

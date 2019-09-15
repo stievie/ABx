@@ -106,6 +106,5 @@ public:
     bool Initialize(const std::vector<std::string>& args) override;
     void Run() override;
     void Stop() override;
-    void SpawnServer();
 };
 

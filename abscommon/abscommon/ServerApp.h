@@ -65,6 +65,7 @@ public:
     bool SendServerLeft(Net::MessageClient* client, const AB::Entities::Service& service);
     bool GetCommandLineValue(const std::string& name, std::string& value);
     bool GetCommandLineValue(const std::string& name);
+    void Spawn(const std::string& additionalArguments);
 
     std::string path_;
     std::string exeFile_;
