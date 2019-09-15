@@ -77,6 +77,15 @@ std::shared_ptr<Game> GameManager::GetOrCreateInstance(const std::string& mapUui
     return result;
 }
 
+bool GameManager::InstanceExists(const std::string& uuid)
+{
+    auto it = std::find_if(games_.begin(), games_.end(), [&](auto const& current)
+    {
+        return Utils::Uuid::IsEqual(current.second->instanceData_.uuid, uuid);
+    });
+    return it != games_.end();
+}
+
 std::shared_ptr<Game> GameManager::GetInstance(const std::string& instanceUuid)
 {
     auto it = std::find_if(games_.begin(), games_.end(), [&](auto const& current)

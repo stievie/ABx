@@ -21,6 +21,7 @@
 #include "UuidUtils.h"
 #include "IOAccount.h"
 #include "Scheduler.h"
+#include "IOGame.h"
 
 namespace Game {
 
@@ -821,28 +822,43 @@ void Player::OnHandleCommand(AB::GameProtocol::CommandTypes type,
         HandleDieCommand(arguments, message);
         break;
     case AB::GameProtocol::CommandTypeDeaths:
-        // TODO:
+        HandleDeathsCommand(arguments, message);
+        break;
+    case AB::GameProtocol::CommandTypeInstances:
+        HandleInstancesCommand(arguments, message);
+        break;
+    case AB::GameProtocol::CommandTypeGodMode:
+        HandleGodModeCommand(arguments, message);
+        break;
+    case AB::GameProtocol::CommandTypeGMInfo:
+        HandleGMInfoCommand(arguments, message);
+        break;
+    case AB::GameProtocol::CommandTypeEnterMap:
+        HandleEnterMapCommand(arguments, message);
+        break;
+    case AB::GameProtocol::CommandTypeEnterInstance:
+        HandleEnterInstanceCommand(arguments, message);
+        break;
+    case AB::GameProtocol::CommandTypeGotoPlayer:
+        HandleGotoPlayerCommand(arguments, message);
         break;
     }
 }
 
 void Player::HandleServerIdCommand(const std::string&, Net::NetworkMessage&)
 {
+    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
     auto nmsg = Net::NetworkMessage::GetNew();
     nmsg->AddByte(AB::GameProtocol::ServerMessage);
-    if (account_.type >= AB::Entities::AccountTypeGamemaster)
-    {
-        // Since it's more for debugging, it's only available for >= GM
-        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeServerId);
-        nmsg->AddString(GetName());
-        nmsg->AddString(Application::Instance->GetServerId());
-    }
-    else
-    {
-        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
-        nmsg->AddString(GetName());
-        nmsg->AddString("");
-    }
+    // Since it's more for debugging, it's only available for >= GM
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeServerId);
+    nmsg->AddString(GetName());
+    nmsg->AddString(Application::Instance->GetServerId());
     WriteToOutput(*nmsg);
 }
 
@@ -982,12 +998,7 @@ void Player::HandlePosCommand(const std::string&, Net::NetworkMessage&)
 {
     if (account_.type < AB::Entities::AccountTypeGamemaster)
     {
-        std::unique_ptr<Net::NetworkMessage> nmsg = Net::NetworkMessage::GetNew();
-        nmsg->AddByte(AB::GameProtocol::ServerMessage);
-        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
-        nmsg->AddString(GetName());
-        nmsg->AddString("");
-        WriteToOutput(*nmsg);
+        HandleUnknownCommand();
         return;
     }
 
@@ -1068,19 +1079,45 @@ void Player::HandleLaughCommand(const std::string&, Net::NetworkMessage&)
     stateComp_.SetState(AB::GameProtocol::CreatureStateEmoteLaugh);
 }
 
+void Player::HandleDeathsCommand(const std::string&, Net::NetworkMessage&)
+{
+    // TODO:
+}
+
 void Player::HandleDieCommand(const std::string&, Net::NetworkMessage&)
 {
-    if (account_.type >= AB::Entities::AccountTypeGamemaster)
-        Die();
-    else
+    if (account_.type < AB::Entities::AccountTypeGod)
     {
-        auto nmsg = Net::NetworkMessage::GetNew();
-        nmsg->AddByte(AB::GameProtocol::ServerMessage);
-        nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
-        nmsg->AddString(GetName());
-        nmsg->AddString("");
-        WriteToOutput(*nmsg);
+        HandleUnknownCommand();
+        return;
     }
+
+    Die();
+}
+
+void Player::HandleInstancesCommand(const std::string&, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGod)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeInstances);
+    nmsg->AddString(GetName());
+    auto* gameMan = GetSubsystem<GameManager>();
+    const auto& games = gameMan->GetGames();
+    std::stringstream ss;
+    for (const auto& game : games)
+    {
+        ss << game.second->instanceData_.uuid << ",";
+        ss << game.second->data_.uuid << ",";
+        ss << game.second->data_.name << ";";
+    }
+    nmsg->AddString(ss.str());
+    WriteToOutput(*nmsg);
 }
 
 void Player::HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&)
@@ -1095,6 +1132,115 @@ void Player::HandlePartyChatCommand(const std::string& arguments, Net::NetworkMe
     std::shared_ptr<ChatChannel> channel = GetSubsystem<Chat>()->Get(ChatType::Party, GetParty()->id_);
     if (channel)
         channel->Talk(this, arguments);
+}
+
+void Player::HandleGodModeCommand(const std::string&, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
+    static const uint32_t EFFECTINDEX_UNDESTROYABLE = 900000;
+
+    if (effectsComp_->HasEffect(EFFECTINDEX_UNDESTROYABLE))
+        effectsComp_->RemoveEffect(EFFECTINDEX_UNDESTROYABLE);
+    else
+        effectsComp_->AddEffect(std::shared_ptr<Actor>(), EFFECTINDEX_UNDESTROYABLE, 0);
+}
+
+void Player::HandleGMInfoCommand(const std::string& message, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeGMInfo);
+    nmsg->AddString(GetName());
+    nmsg->AddString(message);
+    auto* playerMan = GetSubsystem<PlayerManager>();
+    playerMan->VisitPlayers([&nmsg](Player& current) {
+        current.WriteToOutput(*nmsg);
+        return Iteration::Continue;
+    });
+}
+
+void Player::HandleEnterMapCommand(const std::string& mapName, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGod)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
+    std::string uuid = IO::IOGame::GetGameUuidFromName(mapName);
+    if (Utils::Uuid::IsEmpty(uuid))
+        return;
+    ChangeMap(uuid);
+}
+
+void Player::HandleEnterInstanceCommand(const std::string& instanceUuid, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGod)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
+    auto* gameMan = GetSubsystem<GameManager>();
+    auto game = gameMan->GetInstance(instanceUuid);
+    if (!game)
+        return;
+
+    ChangeInstance(game->data_.uuid, instanceUuid);
+}
+
+void Player::HandleGotoPlayerCommand(const std::string& playerName, Net::NetworkMessage&)
+{
+    if (account_.type < AB::Entities::AccountTypeGamemaster)
+    {
+        HandleUnknownCommand();
+        return;
+    }
+
+    // May need to enter this commandd twice:
+    // 1. Change to the instance
+    // 2. Teleport to player
+    auto* playerMan = GetSubsystem<PlayerManager>();
+    auto player = playerMan->GetPlayerByName(playerName);
+    if (!player)
+        return;
+
+    auto* gameMan = GetSubsystem<GameManager>();
+    const std::string& currentMap = player->data_.currentMapUuid;
+    const std::string& currentInst = player->data_.instanceUuid;
+    if (!gameMan->InstanceExists(currentInst))
+        return;
+
+    if (Utils::Uuid::IsEqual(data_.instanceUuid, currentInst))
+    {
+        // This is the same instance -> teleport to player
+        moveComp_->SetPosition(player->transformation_.position_);
+        moveComp_->forcePosition_ = true;
+        return;
+    }
+    // enter the same instance as the player
+    ChangeInstance(currentMap, currentInst);
+}
+
+void Player::HandleUnknownCommand()
+{
+    auto nmsg = Net::NetworkMessage::GetNew();
+    nmsg->AddByte(AB::GameProtocol::ServerMessage);
+    nmsg->AddByte(AB::GameProtocol::ServerMessageTypeUnknownCommand);
+    nmsg->AddString(GetName());
+    nmsg->AddString("");
+    WriteToOutput(*nmsg);
 }
 
 void Player::ChangeMap(const std::string mapUuid)

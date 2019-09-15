@@ -36,15 +36,24 @@ const HashMap<String, AB::GameProtocol::CommandTypes> ChatWindow::CHAT_COMMANDS 
     { "deaths", AB::GameProtocol::CommandTypeDeaths },
     { "hp", AB::GameProtocol::CommandTypeHealth },
     { "xp", AB::GameProtocol::CommandTypeXp },
-    { "pos", AB::GameProtocol::CommandTypePos },
-    { "id", AB::GameProtocol::CommandTypeServerId },
     { "taunt", AB::GameProtocol::CommandTypeTaunt },
     { "ponder", AB::GameProtocol::CommandTypePonder },
     { "wave", AB::GameProtocol::CommandTypeWave },
     { "laugh", AB::GameProtocol::CommandTypeLaugh },
     { "resign", AB::GameProtocol::CommandTypeResign },
     { "stuck", AB::GameProtocol::CommandTypeStuck },
-    // Internal
+    // Admin/GM
+    { "pos", AB::GameProtocol::CommandTypePos },
+    { "id", AB::GameProtocol::CommandTypeServerId },
+    { "entermap", AB::GameProtocol::CommandTypeEnterMap },
+    { "enterinstance", AB::GameProtocol::CommandTypeEnterInstance },
+    { "instances", AB::GameProtocol::CommandTypeInstances },
+    { "die", AB::GameProtocol::CommandTypeDie },
+    { "god", AB::GameProtocol::CommandTypeGodMode },
+    { "gotoplayer", AB::GameProtocol::CommandTypeGotoPlayer },
+    { "gminfo", AB::GameProtocol::CommandTypeGMInfo },
+
+    // Internal, handled by the client
     { "help", AB::GameProtocol::CommandTypeHelp },
     { "ip", AB::GameProtocol::CommandTypeIp },
     { "prefpath", AB::GameProtocol::CommandTypePrefPath },
@@ -296,6 +305,12 @@ void ChatWindow::HandleServerMessage(StringHash, VariantMap& eventData)
         break;
     case AB::GameProtocol::ServerMessageTypeUnknownCommand:
         HandleServerMessageUnknownCommand(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeInstances:
+        HandleServerMessageInstances(eventData);
+        break;
+    case AB::GameProtocol::ServerMessageTypeGMInfo:
+        HandleServerMessageGMInfo(eventData);
         break;
     case AB::GameProtocol::ServerMessageTypeUnknown:
         break;
@@ -602,6 +617,35 @@ void ChatWindow::HandleServerMessagePlayerResigned(VariantMap& eventData)
     data.set("name", std::string(resigner.CString(), resigner.Length()));
     std::string t = tpl.render(data);
     AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+}
+
+void ChatWindow::HandleServerMessageInstances(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& instances = eventData[P_DATA].GetString();
+    auto instVec = instances.Split(';');
+    kainjow::mustache::mustache tpl{ "{{instance}}: {{name}} ({{game}})" };
+    for (auto& inst : instVec)
+    {
+        auto instData = inst.Split(',');
+        if (instData.Size() != 3)
+            continue;
+
+        kainjow::mustache::data data;
+        data.set("instance", std::string(instData[0].CString(), instData[0].Length()));
+        data.set("game", std::string(instData[1].CString(), instData[1].Length()));
+        data.set("name", std::string(instData[2].CString(), instData[2].Length()));
+        std::string t = tpl.render(data);
+        AddLine(String(t.c_str(), (unsigned)t.size()), "ChatLogServerInfoText");
+    }
+}
+
+void ChatWindow::HandleServerMessageGMInfo(VariantMap& eventData)
+{
+    using namespace AbEvents::ServerMessage;
+    const String& sender = eventData[P_SENDER].GetString();
+    const String& message = eventData[P_DATA].GetString();
+    AddLine(sender, message, "ChatLogServerInfoText");
 }
 
 void ChatWindow::HandleShortcutChatParty(StringHash, VariantMap&)

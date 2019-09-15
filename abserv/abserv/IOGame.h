@@ -15,6 +15,7 @@ public:
     static std::string GetLandingGameUuid();
     static AB::Entities::GameType GetGameType(const std::string& mapUuid);
     static std::vector<AB::Entities::Game> GetGameList();
+    static std::string GetGameUuidFromName(const std::string& name);
 };
 
 }

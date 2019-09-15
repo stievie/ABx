@@ -173,6 +173,9 @@ enum ServerMessageType : uint8_t
     ServerMessageTypePlayerQueued,
     ServerMessageTypePlayerUnqueued,
 
+    ServerMessageTypeInstances,
+    ServerMessageTypeGMInfo,
+
     ServerMessageTypeUnknownCommand = 0xff
 };
 
@@ -419,7 +422,15 @@ enum CommandTypes : uint8_t
     CommandTypePonder,               // /ponder
     CommandTypeWave,                 // /wave
     CommandTypeLaugh,                // /laugh
-    CommandTypeDie,                  // /die (only admin)
+    // Admin/GM
+    CommandTypeAdmin = 50,
+    CommandTypeEnterMap,             // /entermap <name>
+    CommandTypeEnterInstance,        // /enterinstance <uuid>
+    CommandTypeInstances,            // /instances
+    CommandTypeDie,                  // /die (only GM)
+    CommandTypeGodMode,              // /gm  Toggle god mode
+    CommandTypeGotoPlayer,           // /gotoplayer <name>
+    CommandTypeGMInfo,               // /gminfo <message>  GM info massage
 
     // Internal
     CommandTypeInternal = 100,

@@ -52,9 +52,18 @@ private:
     void HandlePonderCommand(const std::string&, Net::NetworkMessage&);
     void HandleWaveCommand(const std::string&, Net::NetworkMessage&);
     void HandleLaughCommand(const std::string&, Net::NetworkMessage&);
+    void HandleDeathsCommand(const std::string&, Net::NetworkMessage&);
     void HandleDieCommand(const std::string&, Net::NetworkMessage&);
+    void HandleInstancesCommand(const std::string&, Net::NetworkMessage&);
     void HandleGeneralChatCommand(const std::string& arguments, Net::NetworkMessage&);
     void HandlePartyChatCommand(const std::string& arguments, Net::NetworkMessage&);
+    void HandleGodModeCommand(const std::string&, Net::NetworkMessage&);
+    void HandleGMInfoCommand(const std::string&, Net::NetworkMessage&);
+    void HandleEnterMapCommand(const std::string&, Net::NetworkMessage&);
+    void HandleEnterInstanceCommand(const std::string&, Net::NetworkMessage&);
+    void HandleGotoPlayerCommand(const std::string&, Net::NetworkMessage&);
+    // Send command unknown message to the client
+    void HandleUnknownCommand();
 public:
     static void RegisterLua(kaguya::State& state);
 

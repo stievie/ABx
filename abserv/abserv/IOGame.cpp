@@ -91,4 +91,15 @@ std::vector<AB::Entities::Game> IOGame::GetGameList()
     return result;
 }
 
+std::string IOGame::GetGameUuidFromName(const std::string& name)
+{
+    auto* client = GetSubsystem<IO::DataClient>();
+    AB::Entities::Game g;
+    g.name = name;
+    if (client->Read(g))
+        return g.uuid;
+
+    return Utils::Uuid::EMPTY_UUID;
+}
+
 }
