@@ -16,44 +16,46 @@
 
 namespace IO {
 
-IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::string& pass,
+IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name, const std::string& pass,
     const std::string& email, const std::string& accKey)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     AB::Entities::Account acc;
     if (name.empty())
-        return Result::NameExists;
+        return CreateAccountResult::NameExists;
     if (pass.empty())
-        return Result::PasswordError;
+        return CreateAccountResult::PasswordError;
 #if defined(EMAIL_MANDATORY)
     if (pass.empty())
         return Result::EmailError;
 #endif
     acc.name = name;
     if (client->Exists(acc))
-        return Result::NameExists;
+        return CreateAccountResult::NameExists;
 
     AB::Entities::AccountKey akey;
     akey.uuid = accKey;
     akey.status = AB::Entities::AccountKeyStatus::KeryStatusReadyForUse;
     akey.type = AB::Entities::AccountKeyType::KeyTypeAccount;
     if (!client->Read(akey))
-        return Result::InvalidAccountKey;
+        return CreateAccountResult::InvalidAccountKey;
     if (akey.used + 1 > akey.total)
-        return Result::InvalidAccountKey;
+        return CreateAccountResult::InvalidAccountKey;
 
     // Create the account
     char pwhash[61];
     if (bcrypt_newhash(pass.c_str(), 10, pwhash, 61) != 0)
     {
         LOG_ERROR << "bcrypt_newhash() failed" << std::endl;
-        return Result::InternalError;
+        return CreateAccountResult::InternalError;
     }
     std::string passwordHash(pwhash, 61);
     acc.uuid = Utils::Uuid::New();
     acc.password = passwordHash;
     acc.email = email;
+    acc.authToken = Utils::Uuid::New();
+    acc.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
     acc.type = AB::Entities::AccountType::AccountTypeNormal;
     acc.status = AB::Entities::AccountStatus::AccountStatusActivated;
     acc.creation = Utils::Tick();
@@ -61,7 +63,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     if (!client->Create(acc))
     {
         LOG_ERROR << "Creating account with name " << name << " failed" << std::endl;
-        return Result::InternalError;
+        return CreateAccountResult::InternalError;
     }
 
     // Bind account to key
@@ -72,7 +74,7 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
     {
         LOG_ERROR << "Creating account - account key failed" << std::endl;
         client->Delete(acc);
-        return Result::InternalError;
+        return CreateAccountResult::InternalError;
     }
 
     // Update account key
@@ -82,69 +84,62 @@ IOAccount::Result IOAccount::CreateAccount(const std::string& name, const std::s
         LOG_ERROR << "Updating account key failed" << std::endl;
         client->Delete(aka);
         client->Delete(acc);
-        return Result::InternalError;
+        return CreateAccountResult::InternalError;
     }
 
     AB::Entities::AccountList al;
     client->Invalidate(al);
 
-    return Result::OK;
+    return CreateAccountResult::OK;
 }
 
-IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const std::string& pass,
+IOAccount::CreateAccountResult IOAccount::AddAccountKey(AB::Entities::Account& account,
     const std::string& accKey)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Account acc;
-    acc.uuid = accountUuid;
-    if (!client->Read(acc))
-        return Result::InvalidAccount;
-
-    if (bcrypt_checkpass(pass.c_str(), acc.password.c_str()) != 0)
-        return Result::InvalidAccount;
 
     AB::Entities::AccountKey ak;
     ak.uuid = accKey;
     if (!client->Read(ak))
-        return Result::InvalidAccountKey;
+        return CreateAccountResult::InvalidAccountKey;
     if (ak.used + 1 > ak.total)
-        return Result::InvalidAccountKey;
+        return CreateAccountResult::InvalidAccountKey;
 
     switch (ak.type)
     {
     case AB::Entities::KeyTypeCharSlot:
     {
-        acc.charSlots++;
-        if (!client->Update(acc))
+        account.charSlots++;
+        if (!client->Update(account))
         {
-            LOG_ERROR << "Account update failed " << accountUuid << std::endl;
-            return Result::InternalError;
+            LOG_ERROR << "Account update failed " << account.uuid << std::endl;
+            return CreateAccountResult::InternalError;
         }
         break;
     }
     case AB::Entities::KeyTypeChestSlots:
     {
-        acc.chest_size += AB::Entities::CHEST_SLOT_INCREASE;
-        if (!client->Update(acc))
+        account.chest_size += AB::Entities::CHEST_SLOT_INCREASE;
+        if (!client->Update(account))
         {
-            LOG_ERROR << "Account update failed " << accountUuid << std::endl;
-            return Result::InternalError;
+            LOG_ERROR << "Account update failed " << account.uuid << std::endl;
+            return CreateAccountResult::InternalError;
         }
         break;
     }
     default:
-        return Result::InvalidAccountKey;
+        return CreateAccountResult::InvalidAccountKey;
     }
 
     // Bind account to key
     AB::Entities::AccountKeyAccounts aka;
     aka.uuid = ak.uuid;
-    aka.accountUuid = acc.uuid;
+    aka.accountUuid = account.uuid;
     if (!client->Create(aka))
     {
         LOG_ERROR << "Creating account - account key failed" << std::endl;
-        return Result::InternalError;
+        return CreateAccountResult::InternalError;
     }
 
     // Update account key
@@ -152,44 +147,60 @@ IOAccount::Result IOAccount::AddAccountKey(const std::string& accountUuid, const
     if (!client->Update(ak))
     {
         LOG_ERROR << "Updating account key failed" << std::endl;
-        return Result::InternalError;
+        return CreateAccountResult::InternalError;
     }
 
-    return Result::OK;
+    return CreateAccountResult::OK;
 }
 
-IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
-    AB::Entities::Account& account, bool createToken /* = false */)
+IOAccount::PasswordAuthResult IOAccount::PasswordAuth(const std::string& pass,
+    AB::Entities::Account& account)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))
     {
         LOG_ERROR << "Unable to read account UUID " << account.uuid << " name " << account.name << std::endl;
-        return LoginError::InvalidAccount;
+        return PasswordAuthResult::InvalidAccount;
     }
     if (account.status != AB::Entities::AccountStatusActivated)
     {
         LOG_ERROR << "Account not activated UUID " << account.uuid << std::endl;
-        return LoginError::InvalidAccount;
+        return PasswordAuthResult::InvalidAccount;
     }
 
     if (bcrypt_checkpass(pass.c_str(), account.password.c_str()) != 0)
-        return LoginError::PasswordMismatch;
+        return PasswordAuthResult::PasswordMismatch;
 
     if (account.onlineStatus != AB::Entities::OnlineStatusOffline)
-        return LoginError::AlreadyLoggedIn;
+        return PasswordAuthResult::AlreadyLoggedIn;
 
-    if (createToken)
-    {
-        account.authToken = Utils::Uuid::New();
-    }
-    // Always refresh token
+    account.authToken = Utils::Uuid::New();
     account.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
     if (!client->Update(account))
-        return LoginError::InternalError;
+        return PasswordAuthResult::InternalError;
 
-    return LoginError::OK;
+    return PasswordAuthResult::OK;
+}
+
+IOAccount::TokenAuthResult IOAccount::TokenAuth(const std::string& token, AB::Entities::Account& account)
+{
+    AB_PROFILE;
+    IO::DataClient* client = GetSubsystem<IO::DataClient>();
+    if (!client->Read(account))
+    {
+        LOG_ERROR << "Unable to read account UUID " << account.uuid << " name " << account.name << std::endl;
+        return TokenAuthResult::InvalidAccount;
+    }
+    if (!Utils::Uuid::IsEqual(account.authToken, token))
+    {
+        return TokenAuthResult::InvalidToken;
+    }
+    if (account.authTokenExpiry < Utils::Tick())
+    {
+        return TokenAuthResult::ExpiredToken;
+    }
+    return TokenAuthResult::OK;
 }
 
 IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& accountUuid,

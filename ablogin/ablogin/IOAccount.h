@@ -8,13 +8,20 @@ namespace IO {
 class IOAccount
 {
 public:
-    enum class LoginError
+    enum class PasswordAuthResult
     {
         OK = 0,
         InvalidAccount,
         AlreadyLoggedIn,
         PasswordMismatch,
         InternalError
+    };
+    enum class TokenAuthResult
+    {
+        OK = 0,
+        InvalidAccount,
+        InvalidToken,
+        ExpiredToken
     };
     enum AccountKeyStatus : uint8_t
     {
@@ -27,7 +34,7 @@ public:
         KeyTypeAccount = 0,
         KeyTypeCharSlot = 1,
     };
-    enum class Result
+    enum class CreateAccountResult
     {
         OK,
         NameExists,
@@ -48,12 +55,14 @@ public:
         InvalidName
     };
     IOAccount() = delete;
-    static Result CreateAccount(const std::string& name, const std::string& pass,
+    static CreateAccountResult CreateAccount(const std::string& name, const std::string& pass,
         const std::string& email, const std::string& accKey);
-    static Result AddAccountKey(const std::string& accountUuid, const std::string& pass,
+    static CreateAccountResult AddAccountKey(AB::Entities::Account& account,
         const std::string& accKey);
-    static IOAccount::LoginError LoginServerAuth(const std::string& pass,
-        AB::Entities::Account& account, bool createToken = false);
+    static IOAccount::PasswordAuthResult PasswordAuth(const std::string& pass,
+        AB::Entities::Account& account);
+    static IOAccount::TokenAuthResult TokenAuth(const std::string& token,
+        AB::Entities::Account& account);
     static IOAccount::CreatePlayerResult CreatePlayer(const std::string& accountUuid,
         const std::string& name, const std::string& profUuid,
         uint32_t modelIndex,

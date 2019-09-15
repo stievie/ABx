@@ -27,17 +27,17 @@ public:
 private:
     void DisconnectClient(uint8_t error);
     void SendCharacterList(const std::string& accountName, const std::string& password);
-    void SendOutposts(const std::string& accountUuid, const std::string& password);
-    void SendServers(const std::string& accountUuid, const std::string& password);
+    void SendOutposts(const std::string& accountUuid, const std::string& token);
+    void SendServers(const std::string& accountUuid, const std::string& token);
     void CreateAccount(const std::string& accountName, const std::string& password,
         const std::string& email, const std::string& accKey);
-    void CreatePlayer(const std::string& accountUuid, const std::string& password,
+    void AddAccountKey(const std::string& accountUuid, const std::string& token,
+        const std::string& accKey);
+    void CreatePlayer(const std::string& accountUuid, const std::string& token,
         const std::string& name, const std::string& prof,
         uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp);
-    void AddAccountKey(const std::string& accountUuid, const std::string& password,
-        const std::string& accKey);
-    void DeletePlayer(const std::string& accountUuid, const std::string& password,
+    void DeletePlayer(const std::string& accountUuid, const std::string& token,
         const std::string& playerUuid);
     void HandleLoginPacket(NetworkMessage& message);
     void HandleCreateAccountPacket(NetworkMessage& message);

@@ -247,8 +247,8 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    const std::string token = message.GetStringEncrypted();
+    if (token.empty())
     {
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
@@ -264,7 +264,7 @@ void ProtocolLogin::HandleAddAccountKeyPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::AddAccountKey, thisPtr,
-            accountUuid, password,
+            accountUuid, token,
             accKey
         ))
     );
@@ -281,11 +281,11 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    const std::string token = message.GetStringEncrypted();
+    if (token.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid password " << password << std::endl;
+        LOG_ERROR << "Invalid token" << std::endl;
 #endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
@@ -295,7 +295,7 @@ void ProtocolLogin::HandleGetOutpostsPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendOutposts, thisPtr,
-            accountUuid, password
+            accountUuid, token
         ))
     );
 }
@@ -314,11 +314,11 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
     }
-    const std::string password = message.GetStringEncrypted();
-    if (password.empty())
+    const std::string token = message.GetStringEncrypted();
+    if (token.empty())
     {
 #ifdef DEBUG_NET
-        LOG_ERROR << "Invalid password " << password << std::endl;
+        LOG_ERROR << "Invalid token" << std::endl;
 #endif
         DisconnectClient(AB::Errors::InvalidPassword);
         return;
@@ -328,7 +328,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
             &ProtocolLogin::SendServers, thisPtr,
-            accountUuid, password
+            accountUuid, token
         ))
     );
 }
@@ -337,23 +337,23 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
 {
     AB::Entities::Account account;
     account.name = accountName;
-    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account, true);
+    IO::IOAccount::PasswordAuthResult res = IO::IOAccount::PasswordAuth(password, account);
     auto banMan = GetSubsystem<Auth::BanManager>();
     switch (res)
     {
-    case IO::IOAccount::LoginError::InvalidAccount:
+    case IO::IOAccount::PasswordAuthResult::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::PasswordMismatch:
+    case IO::IOAccount::PasswordAuthResult::PasswordMismatch:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::AlreadyLoggedIn:
+    case IO::IOAccount::PasswordAuthResult::AlreadyLoggedIn:
         DisconnectClient(AB::Errors::AlreadyLoggedIn);
         banMan->AddLoginAttempt(GetIP(), false);
         break;
-    case IO::IOAccount::LoginError::InternalError:
+    case IO::IOAccount::PasswordAuthResult::InternalError:
         DisconnectClient(AB::Errors::UnknownError);
         break;
     default:
@@ -422,24 +422,21 @@ void ProtocolLogin::SendCharacterList(const std::string& accountName, const std:
     Disconnect();
 }
 
-void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::string& password)
+void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::string& token)
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
+    IO::IOAccount::TokenAuthResult res = IO::IOAccount::TokenAuth(token, account);
     switch (res)
     {
-    case IO::IOAccount::LoginError::InvalidAccount:
+    case IO::IOAccount::TokenAuthResult::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
-    case IO::IOAccount::LoginError::PasswordMismatch:
+    case IO::IOAccount::TokenAuthResult::InvalidToken:
+    case IO::IOAccount::TokenAuthResult::ExpiredToken:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
-    case IO::IOAccount::LoginError::InternalError:
-        DisconnectClient(AB::Errors::UnknownError);
-        break;
-    case IO::IOAccount::LoginError::AlreadyLoggedIn:
-    case IO::IOAccount::LoginError::OK:
+    case IO::IOAccount::TokenAuthResult::OK:
         // OK
         break;
     }
@@ -465,27 +462,24 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
     Disconnect();
 }
 
-void ProtocolLogin::SendServers(const std::string& accountUuid, const std::string& password)
+void ProtocolLogin::SendServers(const std::string& accountUuid, const std::string& token)
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::LoginError res = IO::IOAccount::LoginServerAuth(password, account);
+    IO::IOAccount::TokenAuthResult res = IO::IOAccount::TokenAuth(token, account);
     switch (res)
     {
-    case IO::IOAccount::LoginError::InvalidAccount:
+    case IO::IOAccount::TokenAuthResult::InvalidAccount:
 #ifdef DEBUG_NET
         LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
 #endif
         DisconnectClient(AB::Errors::InvalidAccount);
         return;
-    case IO::IOAccount::LoginError::PasswordMismatch:
+    case IO::IOAccount::TokenAuthResult::InvalidToken:
+    case IO::IOAccount::TokenAuthResult::ExpiredToken:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         return;
-    case IO::IOAccount::LoginError::InternalError:
-        DisconnectClient(AB::Errors::UnknownError);
-        break;
-    case IO::IOAccount::LoginError::AlreadyLoggedIn:
-    case IO::IOAccount::LoginError::OK:
+    case IO::IOAccount::TokenAuthResult::OK:
         // OK
         break;
     }
@@ -514,11 +508,11 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
 void ProtocolLogin::CreateAccount(const std::string& accountName, const std::string& password,
     const std::string& email, const std::string& accKey)
 {
-    IO::IOAccount::Result res = IO::IOAccount::CreateAccount(accountName, password, email, accKey);
+    IO::IOAccount::CreateAccountResult res = IO::IOAccount::CreateAccount(accountName, password, email, accKey);
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == IO::IOAccount::Result::OK)
+    if (res == IO::IOAccount::CreateAccountResult::OK)
     {
         output->AddByte(AB::LoginProtocol::CreateAccountSuccess);
     }
@@ -527,16 +521,16 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
         output->AddByte(AB::LoginProtocol::CreateAccountError);
         switch (res)
         {
-        case IO::IOAccount::Result::NameExists:
+        case IO::IOAccount::CreateAccountResult::NameExists:
             output->AddByte(AB::Errors::AccountNameExists);
             break;
-        case IO::IOAccount::Result::InvalidAccountKey:
+        case IO::IOAccount::CreateAccountResult::InvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
-        case IO::IOAccount::Result::PasswordError:
+        case IO::IOAccount::CreateAccountResult::PasswordError:
             output->AddByte(AB::Errors::InvalidPassword);
             break;
-        case IO::IOAccount::Result::EmailError:
+        case IO::IOAccount::CreateAccountResult::EmailError:
             output->AddByte(AB::Errors::InvalidEmail);
             break;
         default:
@@ -549,33 +543,28 @@ void ProtocolLogin::CreateAccount(const std::string& accountName, const std::str
     Disconnect();
 }
 
-void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::string& password,
+void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::string& token,
     const std::string& name, const std::string& prof,
     uint32_t modelIndex,
     AB::Entities::CharacterSex sex, bool isPvp)
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
+    IO::IOAccount::TokenAuthResult authRes = IO::IOAccount::TokenAuth(token, account);
     auto banMan = GetSubsystem<Auth::BanManager>();
     switch (authRes)
     {
-    case IO::IOAccount::LoginError::InvalidAccount:
+    case IO::IOAccount::TokenAuthResult::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::PasswordMismatch:
+    case IO::IOAccount::TokenAuthResult::InvalidToken:
+    case IO::IOAccount::TokenAuthResult::ExpiredToken:
+        // TODO: More meaningful result codes
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::AlreadyLoggedIn:
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        banMan->AddLoginAttempt(GetIP(), false);
-        break;
-    case IO::IOAccount::LoginError::InternalError:
-        DisconnectClient(AB::Errors::UnknownError);
-        break;
-    case IO::IOAccount::LoginError::OK:
+    case IO::IOAccount::TokenAuthResult::OK:
         // OK
         break;
     }
@@ -623,39 +612,33 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
     Disconnect();
 }
 
-void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::string& password,
+void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::string& token,
     const std::string& accKey)
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
+    IO::IOAccount::TokenAuthResult authRes = IO::IOAccount::TokenAuth(token, account);
     auto banMan = GetSubsystem<Auth::BanManager>();
     switch (authRes)
     {
-    case IO::IOAccount::LoginError::InvalidAccount:
+    case IO::IOAccount::TokenAuthResult::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::PasswordMismatch:
+    case IO::IOAccount::TokenAuthResult::InvalidToken:
+    case IO::IOAccount::TokenAuthResult::ExpiredToken:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::AlreadyLoggedIn:
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        banMan->AddLoginAttempt(GetIP(), false);
-        break;
-    case IO::IOAccount::LoginError::InternalError:
-        DisconnectClient(AB::Errors::UnknownError);
-        break;
-    case IO::IOAccount::LoginError::OK:
+    case IO::IOAccount::TokenAuthResult::OK:
         // OK
         break;
     }
 
-    IO::IOAccount::Result res = IO::IOAccount::AddAccountKey(accountUuid, password, accKey);
+    IO::IOAccount::CreateAccountResult res = IO::IOAccount::AddAccountKey(account, accKey);
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
 
-    if (res == IO::IOAccount::Result::OK)
+    if (res == IO::IOAccount::CreateAccountResult::OK)
     {
         output->AddByte(AB::LoginProtocol::AddAccountKeySuccess);
     }
@@ -664,13 +647,13 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
         output->AddByte(AB::LoginProtocol::AddAccountKeyError);
         switch (res)
         {
-        case IO::IOAccount::Result::NameExists:
+        case IO::IOAccount::CreateAccountResult::NameExists:
             output->AddByte(AB::Errors::AccountNameExists);
             break;
-        case IO::IOAccount::Result::InvalidAccountKey:
+        case IO::IOAccount::CreateAccountResult::InvalidAccountKey:
             output->AddByte(AB::Errors::InvalidAccountKey);
             break;
-        case IO::IOAccount::Result::InvalidAccount:
+        case IO::IOAccount::CreateAccountResult::InvalidAccount:
             output->AddByte(AB::Errors::InvalidAccount);
             break;
         default:
@@ -683,31 +666,25 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
     Disconnect();
 }
 
-void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::string& password,
+void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::string& token,
     const std::string& playerUuid)
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::LoginError authRes = IO::IOAccount::LoginServerAuth(password, account);
+    IO::IOAccount::TokenAuthResult authRes = IO::IOAccount::TokenAuth(token, account);
     auto banMan = GetSubsystem<Auth::BanManager>();
     switch (authRes)
     {
-    case IO::IOAccount::LoginError::InvalidAccount:
+    case IO::IOAccount::TokenAuthResult::InvalidAccount:
         DisconnectClient(AB::Errors::InvalidAccount);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::PasswordMismatch:
+    case IO::IOAccount::TokenAuthResult::InvalidToken:
+    case IO::IOAccount::TokenAuthResult::ExpiredToken:
         DisconnectClient(AB::Errors::NamePasswordMismatch);
         banMan->AddLoginAttempt(GetIP(), false);
         return;
-    case IO::IOAccount::LoginError::AlreadyLoggedIn:
-        DisconnectClient(AB::Errors::AlreadyLoggedIn);
-        banMan->AddLoginAttempt(GetIP(), false);
-        break;
-    case IO::IOAccount::LoginError::InternalError:
-        DisconnectClient(AB::Errors::UnknownError);
-        break;
-    case IO::IOAccount::LoginError::OK:
+    case IO::IOAccount::TokenAuthResult::OK:
         // OK
         break;
     }

@@ -39,6 +39,7 @@ private:
     std::string accountName_;
     std::string accountUuid_;
     std::string password_;
+    std::string authToken_;
     std::string email_;
     std::string accKey_;
     std::string charName_;
@@ -75,16 +76,16 @@ public:
         const std::string& email, const std::string& accKey,
         const CreateAccountCallback& callback);
     void CreatePlayer(std::string& host, uint16_t port,
-        const std::string& accountUuid, const std::string& password,
+        const std::string& accountUuid, const std::string& token,
         const std::string& charName, const std::string& profUuid,
         uint32_t modelIndex,
         AB::Entities::CharacterSex sex, bool isPvp,
         const CreatePlayerCallback& callback);
     void GetOutposts(std::string& host, uint16_t port,
-        const std::string& accountUuid, const std::string& password,
+        const std::string& accountUuid, const std::string& token,
         const GamelistCallback& callback);
     void GetServers(std::string& host, uint16_t port,
-        const std::string& accountUuid, const std::string& password,
+        const std::string& accountUuid, const std::string& token,
         const ServerlistCallback& callback);
 
     std::string gameHost_;

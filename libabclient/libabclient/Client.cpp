@@ -511,7 +511,7 @@ void Client::CreatePlayer(const std::string& charName, const std::string& profUu
     if (accountUuid_.empty() || password_.empty())
         return;
 
-    GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, password_,
+    GetProtoLogin()->CreatePlayer(loginHost_, loginPort_, accountUuid_, authToken_,
         charName, profUuid, modelIndex, sex, isPvp,
         std::bind(&Client::OnPlayerCreated, this, std::placeholders::_1, std::placeholders::_2));
 }
@@ -533,7 +533,7 @@ void Client::GetOutposts()
     if (accountUuid_.empty() || password_.empty())
         return;
 
-    GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, password_,
+    GetProtoLogin()->GetOutposts(loginHost_, loginPort_, accountUuid_, authToken_,
         std::bind(&Client::OnGetOutposts, this, std::placeholders::_1));
 }
 
@@ -542,7 +542,7 @@ void Client::GetServers()
     if (accountUuid_.empty() || password_.empty())
         return;
 
-    GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, password_,
+    GetProtoLogin()->GetServers(loginHost_, loginPort_, accountUuid_, authToken_,
         std::bind(&Client::OnGetServices, this, std::placeholders::_1));
 }
 
