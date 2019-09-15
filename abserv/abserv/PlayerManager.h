@@ -86,6 +86,7 @@ public:
     void UpdatePlayerIndex(const Player& player);
     void RemovePlayer(uint32_t playerId);
     void CleanPlayers();
+    void RefreshAuthTokens();
     void KickPlayer(uint32_t playerId);
     void KickAllPlayers();
     void BroadcastNetMessage(const Net::NetworkMessage& msg);

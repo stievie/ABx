@@ -75,6 +75,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.password = result->GetString("password");
     account.email = result->GetString("email");
     account.authToken = result->GetString("auth_token");
+    account.authTokenExpiry = result->GetLong("auth_token_expiry");
     account.type = static_cast<AB::Entities::AccountType>(result->GetInt("type"));
     account.status = static_cast<AB::Entities::AccountStatus>(result->GetInt("status"));
     account.creation = result->GetULong("creation");
@@ -114,6 +115,7 @@ bool DBAccount::Save(const AB::Entities::Account& account)
     query << " `password` = " << db->EscapeString(account.password) << ",";
     query << " `email` = " << db->EscapeString(account.email) << ",";
     query << " `auth_token` = " << db->EscapeString(account.authToken) << ",";
+    query << " `auth_token_expiry` = " << account.authTokenExpiry << ",";
     query << " `type` = " << static_cast<int>(account.type) << ",";
     query << " `status` = " << static_cast<int>(account.status) << ",";
     query << " `char_slots` = " << account.charSlots << ",";

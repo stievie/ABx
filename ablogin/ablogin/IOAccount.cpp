@@ -183,9 +183,12 @@ IOAccount::LoginError IOAccount::LoginServerAuth(const std::string& pass,
     if (createToken)
     {
         account.authToken = Utils::Uuid::New();
-        if (!client->Update(account))
-            return LoginError::InternalError;
     }
+    // Always refresh token
+    account.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
+    if (!client->Update(account))
+        return LoginError::InternalError;
+
     return LoginError::OK;
 }
 

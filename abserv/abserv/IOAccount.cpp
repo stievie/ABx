@@ -25,7 +25,12 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
     }
     if (!Utils::Uuid::IsEqual(authToken, acc.authToken))
     {
-        LOG_ERROR << "Wrong auth token " << authToken << " expected " << acc.authToken << std::endl;
+        LOG_WARNING << "Wrong auth token " << authToken << " expected " << acc.authToken << std::endl;
+        return false;
+    }
+    if (acc.authTokenExpiry < Utils::Tick())
+    {
+        LOG_INFO << "Expired auth token " << authToken << " of account " << acc.name << std::endl;
         return false;
     }
 

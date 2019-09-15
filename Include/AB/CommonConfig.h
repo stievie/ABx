@@ -40,3 +40,8 @@ constexpr int PLAYER_MAX_ATTRIBUTES = 10;
 constexpr float BASE_MOVE_SPEED = 150.0f;
 constexpr float BASE_TURN_SPEED = 2000.0f;
 }
+
+namespace Auth {
+// Auth token expires in 1 hr of inactivity
+constexpr long long AUTH_TOKEN_EXPIRES_IN = 1000 * 60 * 60;
+}

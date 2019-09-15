@@ -104,6 +104,21 @@ void PlayerManager::CleanPlayers()
    }
 }
 
+void PlayerManager::RefreshAuthTokens()
+{
+    // No inactive players here
+    auto* client = GetSubsystem<IO::DataClient>();
+    int64_t tick = Utils::Tick();
+    for (const auto& player : players_)
+    {
+        if (tick - player.second->account_.authTokenExpiry < Auth::AUTH_TOKEN_EXPIRES_IN / 2)
+        {
+            player.second->account_.authTokenExpiry = tick + Auth::AUTH_TOKEN_EXPIRES_IN;
+            client->Update(player.second->account_);
+        }
+    }
+}
+
 void PlayerManager::KickPlayer(uint32_t playerId)
 {
     auto it = players_.find(playerId);

@@ -39,7 +39,9 @@ void Maintenance::CleanGamesTask()
 
 void Maintenance::CleanPlayersTask()
 {
-    GetSubsystem<Game::PlayerManager>()->CleanPlayers();
+    auto* playerMan = GetSubsystem<Game::PlayerManager>();
+    playerMan->CleanPlayers();
+    playerMan->RefreshAuthTokens();
     if (status_ == MaintenanceStatus::Runnig)
     {
         GetSubsystem<Asynch::Scheduler>()->Add(
