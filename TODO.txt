@@ -3,4 +3,3 @@
 ~ Revisit GameObject::Serialize and GameObject::WriteSpawnData. A lot useless
 stuff is sent. Also the object type should be written in WriteSpawnData(),
 like the id_.
-

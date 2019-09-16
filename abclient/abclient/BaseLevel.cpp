@@ -114,6 +114,17 @@ void BaseLevel::OnProtocolError(uint8_t err)
 {
     String msg = FwClient::GetProtocolErrorMessage(err);
     URHO3D_LOGERRORF("Protocol error (%d): %s", err, msg.CString());
+
+    if (err == AB::Errors::TokenAuthFailure)
+    {
+        // Expired/invalid token -> re-login
+        VariantMap& e = GetEventDataMap();
+        using namespace AbEvents::SetLevel;
+        e[P_NAME] = "LoginLevel";
+        SendEvent(AbEvents::E_SETLEVEL, e);
+        return;
+    }
+
     if (!msg.Empty())
         ShowError(msg, "Error");
 }

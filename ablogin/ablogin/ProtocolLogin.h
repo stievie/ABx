@@ -26,7 +26,7 @@ public:
     void OnRecvFirstMessage(NetworkMessage& message) final;
 private:
     void DisconnectClient(uint8_t error);
-    void SendCharacterList(const std::string& accountName, const std::string& password);
+    void AuthenticateSendCharacterList(const std::string& accountName, const std::string& password);
     void SendOutposts(const std::string& accountUuid, const std::string& token);
     void SendServers(const std::string& accountUuid, const std::string& token);
     void CreateAccount(const std::string& accountName, const std::string& password,

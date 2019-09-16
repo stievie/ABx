@@ -16,13 +16,6 @@ public:
         PasswordMismatch,
         InternalError
     };
-    enum class TokenAuthResult
-    {
-        OK = 0,
-        InvalidAccount,
-        InvalidToken,
-        ExpiredToken
-    };
     enum AccountKeyStatus : uint8_t
     {
         NotActivated = 0,
@@ -61,7 +54,7 @@ public:
         const std::string& accKey);
     static IOAccount::PasswordAuthResult PasswordAuth(const std::string& pass,
         AB::Entities::Account& account);
-    static IOAccount::TokenAuthResult TokenAuth(const std::string& token,
+    static bool TokenAuth(const std::string& token,
         AB::Entities::Account& account);
     static IOAccount::CreatePlayerResult CreatePlayer(const std::string& accountUuid,
         const std::string& name, const std::string& profUuid,

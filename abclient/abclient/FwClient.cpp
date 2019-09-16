@@ -69,6 +69,8 @@ String FwClient::GetProtocolErrorMessage(uint8_t err)
         return "All Servers are full, please try again later.";
     case AB::Errors::ErrorException:
         return "Exception";
+    case AB::Errors::TokenAuthFailure:
+        return "Token authentication failure";
     default:
         return "";
     }

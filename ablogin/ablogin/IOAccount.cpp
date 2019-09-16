@@ -183,24 +183,20 @@ IOAccount::PasswordAuthResult IOAccount::PasswordAuth(const std::string& pass,
     return PasswordAuthResult::OK;
 }
 
-IOAccount::TokenAuthResult IOAccount::TokenAuth(const std::string& token, AB::Entities::Account& account)
+bool IOAccount::TokenAuth(const std::string& token, AB::Entities::Account& account)
 {
     AB_PROFILE;
     IO::DataClient* client = GetSubsystem<IO::DataClient>();
     if (!client->Read(account))
     {
         LOG_ERROR << "Unable to read account UUID " << account.uuid << " name " << account.name << std::endl;
-        return TokenAuthResult::InvalidAccount;
+        return false;
     }
     if (!Utils::Uuid::IsEqual(account.authToken, token))
-    {
-        return TokenAuthResult::InvalidToken;
-    }
+        return false;
     if (account.authTokenExpiry < Utils::Tick())
-    {
-        return TokenAuthResult::ExpiredToken;
-    }
-    return TokenAuthResult::OK;
+        return false;
+    return true;
 }
 
 IOAccount::CreatePlayerResult IOAccount::CreatePlayer(const std::string& accountUuid,

@@ -96,7 +96,7 @@ void ProtocolLogin::HandleLoginPacket(NetworkMessage& message)
     std::shared_ptr<ProtocolLogin> thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
     GetSubsystem<Asynch::Dispatcher>()->Add(
         Asynch::CreateTask(std::bind(
-            &ProtocolLogin::SendCharacterList, thisPtr,
+            &ProtocolLogin::AuthenticateSendCharacterList, thisPtr,
             accountName, password
         ))
     );
@@ -333,7 +333,7 @@ void ProtocolLogin::HandleGetServersPacket(NetworkMessage& message)
     );
 }
 
-void ProtocolLogin::SendCharacterList(const std::string& accountName, const std::string& password)
+void ProtocolLogin::AuthenticateSendCharacterList(const std::string& accountName, const std::string& password)
 {
     AB::Entities::Account account;
     account.name = accountName;
@@ -426,19 +426,11 @@ void ProtocolLogin::SendOutposts(const std::string& accountUuid, const std::stri
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::TokenAuthResult res = IO::IOAccount::TokenAuth(token, account);
-    switch (res)
+    bool res = IO::IOAccount::TokenAuth(token, account);
+    if (!res)
     {
-    case IO::IOAccount::TokenAuthResult::InvalidAccount:
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
-    case IO::IOAccount::TokenAuthResult::InvalidToken:
-    case IO::IOAccount::TokenAuthResult::ExpiredToken:
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
-        return;
-    case IO::IOAccount::TokenAuthResult::OK:
-        // OK
-        break;
     }
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -466,22 +458,11 @@ void ProtocolLogin::SendServers(const std::string& accountUuid, const std::strin
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::TokenAuthResult res = IO::IOAccount::TokenAuth(token, account);
-    switch (res)
+    bool res = IO::IOAccount::TokenAuth(token, account);
+    if (!res)
     {
-    case IO::IOAccount::TokenAuthResult::InvalidAccount:
-#ifdef DEBUG_NET
-        LOG_ERROR << "Invalid account UUID " << accountUuid << std::endl;
-#endif
-        DisconnectClient(AB::Errors::InvalidAccount);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
-    case IO::IOAccount::TokenAuthResult::InvalidToken:
-    case IO::IOAccount::TokenAuthResult::ExpiredToken:
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
-        return;
-    case IO::IOAccount::TokenAuthResult::OK:
-        // OK
-        break;
     }
 
     std::shared_ptr<OutputMessage> output = OutputMessagePool::Instance()->GetOutputMessage();
@@ -550,23 +531,11 @@ void ProtocolLogin::CreatePlayer(const std::string& accountUuid, const std::stri
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::TokenAuthResult authRes = IO::IOAccount::TokenAuth(token, account);
-    auto banMan = GetSubsystem<Auth::BanManager>();
-    switch (authRes)
+    bool ses = IO::IOAccount::TokenAuth(token, account);
+    if (!ses)
     {
-    case IO::IOAccount::TokenAuthResult::InvalidAccount:
-        DisconnectClient(AB::Errors::InvalidAccount);
-        banMan->AddLoginAttempt(GetIP(), false);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
-    case IO::IOAccount::TokenAuthResult::InvalidToken:
-    case IO::IOAccount::TokenAuthResult::ExpiredToken:
-        // TODO: More meaningful result codes
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
-        banMan->AddLoginAttempt(GetIP(), false);
-        return;
-    case IO::IOAccount::TokenAuthResult::OK:
-        // OK
-        break;
     }
 
     std::string uuid;
@@ -617,22 +586,11 @@ void ProtocolLogin::AddAccountKey(const std::string& accountUuid, const std::str
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::TokenAuthResult authRes = IO::IOAccount::TokenAuth(token, account);
-    auto banMan = GetSubsystem<Auth::BanManager>();
-    switch (authRes)
+    bool authres = IO::IOAccount::TokenAuth(token, account);
+    if (!authres)
     {
-    case IO::IOAccount::TokenAuthResult::InvalidAccount:
-        DisconnectClient(AB::Errors::InvalidAccount);
-        banMan->AddLoginAttempt(GetIP(), false);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
-    case IO::IOAccount::TokenAuthResult::InvalidToken:
-    case IO::IOAccount::TokenAuthResult::ExpiredToken:
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
-        banMan->AddLoginAttempt(GetIP(), false);
-        return;
-    case IO::IOAccount::TokenAuthResult::OK:
-        // OK
-        break;
     }
 
     IO::IOAccount::CreateAccountResult res = IO::IOAccount::AddAccountKey(account, accKey);
@@ -671,22 +629,11 @@ void ProtocolLogin::DeletePlayer(const std::string& accountUuid, const std::stri
 {
     AB::Entities::Account account;
     account.uuid = accountUuid;
-    IO::IOAccount::TokenAuthResult authRes = IO::IOAccount::TokenAuth(token, account);
-    auto banMan = GetSubsystem<Auth::BanManager>();
-    switch (authRes)
+    bool authRes = IO::IOAccount::TokenAuth(token, account);
+    if (!authRes)
     {
-    case IO::IOAccount::TokenAuthResult::InvalidAccount:
-        DisconnectClient(AB::Errors::InvalidAccount);
-        banMan->AddLoginAttempt(GetIP(), false);
+        DisconnectClient(AB::Errors::TokenAuthFailure);
         return;
-    case IO::IOAccount::TokenAuthResult::InvalidToken:
-    case IO::IOAccount::TokenAuthResult::ExpiredToken:
-        DisconnectClient(AB::Errors::NamePasswordMismatch);
-        banMan->AddLoginAttempt(GetIP(), false);
-        return;
-    case IO::IOAccount::TokenAuthResult::OK:
-        // OK
-        break;
     }
 
     bool res = IO::IOAccount::DeletePlayer(

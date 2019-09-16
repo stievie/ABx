@@ -63,6 +63,7 @@ enum ErrorCodes : uint8_t
     NoMoreCharSlots = 0x16,
     InvalidGame = 0x17,
     AllServersFull = 0x18,
+    TokenAuthFailure = 0x19,
 
     ErrorException = 0xff
 };
