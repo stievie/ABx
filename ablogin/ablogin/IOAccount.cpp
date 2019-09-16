@@ -196,6 +196,11 @@ bool IOAccount::TokenAuth(const std::string& token, AB::Entities::Account& accou
         return false;
     if (account.authTokenExpiry < Utils::Tick())
         return false;
+
+    // Refresh token
+    account.authTokenExpiry = Utils::Tick() + Auth::AUTH_TOKEN_EXPIRES_IN;
+    client->Update(account);
+
     return true;
 }
 
