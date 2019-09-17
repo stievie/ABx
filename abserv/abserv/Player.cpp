@@ -102,7 +102,7 @@ void Player::Initialize()
 {
     Actor::Initialize();
     SetParty(GetSubsystem<PartyManager>()->GetByUuid(data_.partyUuid));
-    GetSubsystem<Asynch::Scheduler>()->Add(Asynch::CreateScheduledTask(std::bind(&Player::LoadFriendList, this)));
+    GetSubsystem<Asynch::Dispatcher>()->Add(Asynch::CreateTask(std::bind(&Player::LoadFriendList, this)));
 }
 
 void Player::Logout()
