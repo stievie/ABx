@@ -29,17 +29,12 @@ void ProtocolLogin::OnRecvFirstMessage(NetworkMessage& message)
 
     std::shared_ptr<Connection> conn = GetConnection();
     uint32_t clientIp = conn->GetIP();
-    auto banMan = GetSubsystem<Auth::BanManager>();
+    auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(clientIp))
     {
         DisconnectClient(AB::Errors::IPBanned);
         return;
     }
-/*    if (Auth::BanManager::Instance.IsIpDisabled(clientIp))
-    {
-        DisconnectClient(AB::Errors::TooManyConnectionsFromThisIP);
-        return;
-    }*/
 
     uint8_t recvByte = message.GetByte();
     switch (recvByte)

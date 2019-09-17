@@ -29,7 +29,7 @@ public:
     };
     enum class CreateAccountResult
     {
-        OK,
+        OK = 0,
         NameExists,
         InvalidAccountKey,
         InvalidAccount,
@@ -39,7 +39,7 @@ public:
     };
     enum class CreatePlayerResult
     {
-        OK,
+        OK = 0,
         NameExists,
         InvalidAccount,
         NoMoreCharSlots,

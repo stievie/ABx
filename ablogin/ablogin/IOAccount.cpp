@@ -27,7 +27,7 @@ IOAccount::CreateAccountResult IOAccount::CreateAccount(const std::string& name,
     if (pass.empty())
         return CreateAccountResult::PasswordError;
 #if defined(EMAIL_MANDATORY)
-    if (pass.empty())
+    if (email.empty())
         return Result::EmailError;
 #endif
     acc.name = name;
