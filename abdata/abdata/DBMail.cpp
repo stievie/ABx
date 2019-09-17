@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBMail::Create(AB::Entities::Mail& mail)
 {
-    if (mail.uuid.empty() || uuids::uuid(mail.uuid).nil())
+    if (Utils::Uuid::IsEmpty(mail.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -57,7 +57,7 @@ bool DBMail::Create(AB::Entities::Mail& mail)
 
 bool DBMail::Load(AB::Entities::Mail& mail)
 {
-    if (mail.uuid.empty() || uuids::uuid(mail.uuid).nil())
+    if (Utils::Uuid::IsEmpty(mail.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -85,7 +85,7 @@ bool DBMail::Load(AB::Entities::Mail& mail)
 
 bool DBMail::Save(const AB::Entities::Mail& mail)
 {
-    if (mail.uuid.empty() || uuids::uuid(mail.uuid).nil())
+    if (Utils::Uuid::IsEmpty(mail.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -119,7 +119,7 @@ bool DBMail::Save(const AB::Entities::Mail& mail)
 
 bool DBMail::Delete(const AB::Entities::Mail& mail)
 {
-    if (mail.uuid.empty() || uuids::uuid(mail.uuid).nil())
+    if (Utils::Uuid::IsEmpty(mail.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -141,7 +141,7 @@ bool DBMail::Delete(const AB::Entities::Mail& mail)
 
 bool DBMail::Exists(const AB::Entities::Mail& mail)
 {
-    if (mail.uuid.empty() || uuids::uuid(mail.uuid).nil())
+    if (Utils::Uuid::IsEmpty(mail.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

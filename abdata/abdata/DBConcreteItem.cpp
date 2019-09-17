@@ -9,7 +9,7 @@ namespace DB {
 
 bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -55,7 +55,7 @@ bool DBConcreteItem::Create(AB::Entities::ConcreteItem& item)
 
 bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -92,8 +92,7 @@ bool DBConcreteItem::Load(AB::Entities::ConcreteItem& item)
 
 bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
 {
-    // Do nothing
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -135,7 +134,7 @@ bool DBConcreteItem::Save(const AB::Entities::ConcreteItem& item)
 
 bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -157,7 +156,7 @@ bool DBConcreteItem::Delete(const AB::Entities::ConcreteItem& item)
 
 bool DBConcreteItem::Exists(const AB::Entities::ConcreteItem& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

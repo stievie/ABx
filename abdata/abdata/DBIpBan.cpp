@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBIpBan::Create(AB::Entities::IpBan& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -53,7 +53,7 @@ bool DBIpBan::Load(AB::Entities::IpBan& ban)
 
     std::ostringstream query;
     query << "SELECT * FROM `ip_bans` WHERE ";
-    if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(ban.uuid))
         query << "`uuid` = " << ban.uuid;
     else if (ban.ip != 0)
     {
@@ -84,7 +84,7 @@ bool DBIpBan::Load(AB::Entities::IpBan& ban)
 
 bool DBIpBan::Save(const AB::Entities::IpBan& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -113,7 +113,7 @@ bool DBIpBan::Save(const AB::Entities::IpBan& ban)
 
 bool DBIpBan::Delete(const AB::Entities::IpBan& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -139,7 +139,7 @@ bool DBIpBan::Exists(const AB::Entities::IpBan& ban)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `ip_bans` WHERE ";
-    if (!ban.uuid.empty() && !uuids::uuid(ban.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(ban.uuid))
         query << "`uuid` = " << db->EscapeString(ban.uuid);
     else if (ban.ip != 0)
     {

@@ -7,8 +7,7 @@ namespace DB {
 
 bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil() ||
-        ak.accountUuid.empty() || uuids::uuid(ak.accountUuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid) || Utils::Uuid::IsEmpty(ak.accountUuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -37,8 +36,7 @@ bool DBAccountKeyAccounts::Create(AB::Entities::AccountKeyAccounts& ak)
 
 bool DBAccountKeyAccounts::Load(AB::Entities::AccountKeyAccounts& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil() ||
-        ak.accountUuid.empty() || uuids::uuid(ak.accountUuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid) || Utils::Uuid::IsEmpty(ak.accountUuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -74,8 +72,7 @@ bool DBAccountKeyAccounts::Delete(const AB::Entities::AccountKeyAccounts&)
 
 bool DBAccountKeyAccounts::Exists(const AB::Entities::AccountKeyAccounts& ak)
 {
-    if (ak.uuid.empty() || uuids::uuid(ak.uuid).nil() ||
-        ak.accountUuid.empty() || uuids::uuid(ak.accountUuid).nil())
+    if (Utils::Uuid::IsEmpty(ak.uuid) || Utils::Uuid::IsEmpty(ak.accountUuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

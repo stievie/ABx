@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBMailList::Create(AB::Entities::MailList& ml)
 {
-    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ml.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -17,7 +17,7 @@ bool DBMailList::Create(AB::Entities::MailList& ml)
 
 bool DBMailList::Load(AB::Entities::MailList& ml)
 {
-    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ml.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -51,7 +51,7 @@ bool DBMailList::Load(AB::Entities::MailList& ml)
 
 bool DBMailList::Save(const AB::Entities::MailList& ml)
 {
-    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ml.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -62,8 +62,7 @@ bool DBMailList::Save(const AB::Entities::MailList& ml)
 
 bool DBMailList::Delete(const AB::Entities::MailList& ml)
 {
-    // Delete all mails for this account
-    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ml.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -73,7 +72,7 @@ bool DBMailList::Delete(const AB::Entities::MailList& ml)
 
 bool DBMailList::Exists(const AB::Entities::MailList& ml)
 {
-    if (ml.uuid.empty() || uuids::uuid(ml.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ml.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

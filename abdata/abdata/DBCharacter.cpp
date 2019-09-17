@@ -10,7 +10,7 @@ namespace DB {
 
 bool DBCharacter::Create(AB::Entities::Character& character)
 {
-    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+    if (Utils::Uuid::IsEmpty(character.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -61,7 +61,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
 
     std::ostringstream query;
     query << "SELECT * FROM `players` WHERE ";
-    if (!character.uuid.empty() && !uuids::uuid(character.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(character.uuid))
         query << "`uuid` = " << db->EscapeString(character.uuid);
     else if (!character.name.empty())
         query << "LOWER(`name`) = LOWER(" << db->EscapeString(character.name) << ")";
@@ -103,7 +103,7 @@ bool DBCharacter::Load(AB::Entities::Character& character)
 
 bool DBCharacter::Save(const AB::Entities::Character& character)
 {
-    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+    if (Utils::Uuid::IsEmpty(character.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -144,7 +144,7 @@ bool DBCharacter::Save(const AB::Entities::Character& character)
 
 bool DBCharacter::Delete(const AB::Entities::Character& character)
 {
-    if (character.uuid.empty() || uuids::uuid(character.uuid).nil())
+    if (Utils::Uuid::IsEmpty(character.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -170,7 +170,7 @@ bool DBCharacter::Exists(const AB::Entities::Character& character)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `players` WHERE ";
-    if (!character.uuid.empty() && !uuids::uuid(character.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(character.uuid))
         query << "`uuid` = " << db->EscapeString(character.uuid);
     else if (!character.name.empty())
         query << "LOWER(`name`) = LOWER(" << db->EscapeString(character.name) << ")";

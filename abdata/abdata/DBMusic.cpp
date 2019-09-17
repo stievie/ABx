@@ -7,8 +7,7 @@ namespace DB {
 
 bool DBMusic::Create(AB::Entities::Music& item)
 {
-    // Do nothing
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -46,7 +45,7 @@ bool DBMusic::Create(AB::Entities::Music& item)
 
 bool DBMusic::Load(AB::Entities::Music& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -74,7 +73,7 @@ bool DBMusic::Load(AB::Entities::Music& item)
 
 bool DBMusic::Save(const AB::Entities::Music& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -105,7 +104,7 @@ bool DBMusic::Save(const AB::Entities::Music& item)
 
 bool DBMusic::Delete(const AB::Entities::Music& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -127,7 +126,7 @@ bool DBMusic::Delete(const AB::Entities::Music& item)
 
 bool DBMusic::Exists(const AB::Entities::Music& item)
 {
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

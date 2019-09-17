@@ -8,7 +8,7 @@ namespace DB {
 bool DBSkill::Create(AB::Entities::Skill& skill)
 {
     // Do nothing
-    if (skill.uuid.empty() || uuids::uuid(skill.uuid).nil())
+    if (Utils::Uuid::IsEmpty(skill.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -22,7 +22,7 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
 
     std::ostringstream query;
     query << "SELECT * FROM `game_skills` WHERE ";
-    if (!skill.uuid.empty() && !uuids::uuid(skill.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(skill.uuid))
         query << "`uuid` = " << db->EscapeString(skill.uuid);
     else
         // 0 is a valid index, it is the None skill
@@ -53,7 +53,7 @@ bool DBSkill::Load(AB::Entities::Skill& skill)
 bool DBSkill::Save(const AB::Entities::Skill& skill)
 {
     // Do nothing
-    if (skill.uuid.empty() || uuids::uuid(skill.uuid).nil())
+    if (Utils::Uuid::IsEmpty(skill.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -64,7 +64,7 @@ bool DBSkill::Save(const AB::Entities::Skill& skill)
 bool DBSkill::Delete(const AB::Entities::Skill& skill)
 {
     // Do nothing
-    if (skill.uuid.empty() || uuids::uuid(skill.uuid).nil())
+    if (Utils::Uuid::IsEmpty(skill.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -78,7 +78,7 @@ bool DBSkill::Exists(const AB::Entities::Skill& skill)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_skills` WHERE ";
-    if (!skill.uuid.empty() && !uuids::uuid(skill.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(skill.uuid))
         query << "`uuid` = " << db->EscapeString(skill.uuid);
     else if (skill.index != 0)
         query << "`idx` = " << skill.index;

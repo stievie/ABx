@@ -17,7 +17,7 @@ bool DBVersion::Load(AB::Entities::Version& v)
 
     std::ostringstream query;
     query << "SELECT * FROM `versions` WHERE ";
-    if (!v.uuid.empty() && !uuids::uuid(v.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(v.uuid))
         query << "`uuid` = " << db->EscapeString(v.uuid);
     else if (!v.name.empty())
         query << "`name` = " << db->EscapeString(v.name);
@@ -57,7 +57,7 @@ bool DBVersion::Exists(const AB::Entities::Version& v)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `versions` WHERE ";
-    if (!v.uuid.empty() && !uuids::uuid(v.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(v.uuid))
         query << "`uuid` = " << db->EscapeString(v.uuid);
     else if (!v.name.empty())
         query << "`name` = " << db->EscapeString(v.name);

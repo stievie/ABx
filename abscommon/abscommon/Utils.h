@@ -44,6 +44,11 @@ inline int64_t Tick()
     return int64_t(t.millitm) + int64_t(t.time) * 1000;
 }
 
+inline bool IsExpired(int64_t expiresAt)
+{
+    return expiresAt < Tick();
+}
+
 /// Return the time that's elapsed since in ms
 inline uint32_t TimeElapsed(int64_t since)
 {

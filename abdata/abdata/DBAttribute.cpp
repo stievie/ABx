@@ -18,7 +18,7 @@ bool DBAttribute::Load(AB::Entities::Attribute& attr)
 
     std::ostringstream query;
     query << "SELECT * FROM `game_attributes` WHERE ";
-    if (!attr.uuid.empty() && !uuids::uuid(attr.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(attr.uuid))
         query << "`uuid` = " << db->EscapeString(attr.uuid);
     else if (attr.index != AB::Entities::INVALID_INDEX)
         query << "`idx` = " << attr.index;
@@ -59,7 +59,7 @@ bool DBAttribute::Exists(const AB::Entities::Attribute& attr)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) FROM `game_attributes` WHERE ";
-    if (!attr.uuid.empty() && !uuids::uuid(attr.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(attr.uuid))
         query << "`uuid` = " << db->EscapeString(attr.uuid);
     else if (attr.index != AB::Entities::INVALID_INDEX)
         query << "`idx` = " << attr.index;

@@ -8,7 +8,7 @@ namespace DB {
 bool DBEffect::Create(AB::Entities::Effect& effect)
 {
     // Do nothing
-    if (effect.uuid.empty() || uuids::uuid(effect.uuid).nil())
+    if (Utils::Uuid::IsEmpty(effect.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -22,7 +22,7 @@ bool DBEffect::Load(AB::Entities::Effect& effect)
 
     std::ostringstream query;
     query << "SELECT * FROM `game_effects` WHERE ";
-    if (!effect.uuid.empty() && !uuids::uuid(effect.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(effect.uuid))
         query << "`uuid` = " << db->EscapeString(effect.uuid);
     else if (effect.index != 0)
         query << "`idx` = " << effect.index;
@@ -51,7 +51,7 @@ bool DBEffect::Load(AB::Entities::Effect& effect)
 bool DBEffect::Save(const AB::Entities::Effect& effect)
 {
     // Do nothing
-    if (effect.uuid.empty() || uuids::uuid(effect.uuid).nil())
+    if (Utils::Uuid::IsEmpty(effect.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -62,7 +62,7 @@ bool DBEffect::Save(const AB::Entities::Effect& effect)
 bool DBEffect::Delete(const AB::Entities::Effect& effect)
 {
     // Do nothing
-    if (effect.uuid.empty() || uuids::uuid(effect.uuid).nil())
+    if (Utils::Uuid::IsEmpty(effect.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -76,7 +76,7 @@ bool DBEffect::Exists(const AB::Entities::Effect& effect)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_effects` WHERE ";
-    if (!effect.uuid.empty() && !uuids::uuid(effect.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(effect.uuid))
         query << "`uuid` = " << db->EscapeString(effect.uuid);
     else if (effect.index != 0)
         query << "`idx` = " << effect.index;

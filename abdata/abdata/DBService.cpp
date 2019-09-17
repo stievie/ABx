@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBService::Create(AB::Entities::Service& s)
 {
-    if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
+    if (Utils::Uuid::IsEmpty(s.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -53,7 +53,7 @@ bool DBService::Create(AB::Entities::Service& s)
 
 bool DBService::Load(AB::Entities::Service& s)
 {
-    if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
+    if (Utils::Uuid::IsEmpty(s.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -89,7 +89,7 @@ bool DBService::Load(AB::Entities::Service& s)
 
 bool DBService::Save(const AB::Entities::Service& s)
 {
-    if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
+    if (Utils::Uuid::IsEmpty(s.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -128,7 +128,7 @@ bool DBService::Save(const AB::Entities::Service& s)
 
 bool DBService::Delete(const AB::Entities::Service& s)
 {
-    if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
+    if (Utils::Uuid::IsEmpty(s.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -150,7 +150,7 @@ bool DBService::Delete(const AB::Entities::Service& s)
 
 bool DBService::Exists(const AB::Entities::Service& s)
 {
-    if (s.uuid.empty() || uuids::uuid(s.uuid).nil())
+    if (Utils::Uuid::IsEmpty(s.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

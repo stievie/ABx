@@ -8,7 +8,7 @@ namespace DB {
 bool DBFriendList::Create(AB::Entities::FriendList& fl)
 {
     // Do nothing
-    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    if (Utils::Uuid::IsEmpty(fl.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -18,7 +18,7 @@ bool DBFriendList::Create(AB::Entities::FriendList& fl)
 
 bool DBFriendList::Load(AB::Entities::FriendList& fl)
 {
-    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    if (Utils::Uuid::IsEmpty(fl.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -49,7 +49,7 @@ bool DBFriendList::Load(AB::Entities::FriendList& fl)
 
 bool DBFriendList::Save(const AB::Entities::FriendList& fl)
 {
-    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    if (Utils::Uuid::IsEmpty(fl.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -90,7 +90,7 @@ bool DBFriendList::Save(const AB::Entities::FriendList& fl)
 
 bool DBFriendList::Delete(const AB::Entities::FriendList& fl)
 {
-    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    if (Utils::Uuid::IsEmpty(fl.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -114,7 +114,7 @@ bool DBFriendList::Delete(const AB::Entities::FriendList& fl)
 bool DBFriendList::Exists(const AB::Entities::FriendList& fl)
 {
     // Do nothing
-    if (fl.uuid.empty() || uuids::uuid(fl.uuid).nil())
+    if (Utils::Uuid::IsEmpty(fl.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

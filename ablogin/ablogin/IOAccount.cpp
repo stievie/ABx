@@ -194,7 +194,7 @@ bool IOAccount::TokenAuth(const std::string& token, AB::Entities::Account& accou
     }
     if (!Utils::Uuid::IsEqual(account.authToken, token))
         return false;
-    if (account.authTokenExpiry < Utils::Tick())
+    if (Utils::IsExpired(account.authTokenExpiry))
         return false;
 
     // Refresh token

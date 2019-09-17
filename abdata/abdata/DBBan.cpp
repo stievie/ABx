@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBBan::Create(AB::Entities::Ban& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -42,7 +42,7 @@ bool DBBan::Create(AB::Entities::Ban& ban)
 
 bool DBBan::Load(AB::Entities::Ban& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -70,7 +70,7 @@ bool DBBan::Load(AB::Entities::Ban& ban)
 
 bool DBBan::Save(const AB::Entities::Ban& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -102,7 +102,7 @@ bool DBBan::Save(const AB::Entities::Ban& ban)
 
 bool DBBan::Delete(const AB::Entities::Ban& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -124,7 +124,7 @@ bool DBBan::Delete(const AB::Entities::Ban& ban)
 
 bool DBBan::Exists(const AB::Entities::Ban& ban)
 {
-    if (ban.uuid.empty() || uuids::uuid(ban.uuid).nil())
+    if (Utils::Uuid::IsEmpty(ban.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

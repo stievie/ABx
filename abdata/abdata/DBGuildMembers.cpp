@@ -9,7 +9,7 @@ namespace DB {
 
 bool DBGuildMembers::Create(AB::Entities::GuildMembers& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -20,7 +20,7 @@ bool DBGuildMembers::Create(AB::Entities::GuildMembers& g)
 
 bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -57,7 +57,7 @@ bool DBGuildMembers::Load(AB::Entities::GuildMembers& g)
 
 bool DBGuildMembers::Save(const AB::Entities::GuildMembers& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -68,7 +68,7 @@ bool DBGuildMembers::Save(const AB::Entities::GuildMembers& g)
 
 bool DBGuildMembers::Delete(const AB::Entities::GuildMembers& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -79,7 +79,7 @@ bool DBGuildMembers::Delete(const AB::Entities::GuildMembers& g)
 
 bool DBGuildMembers::Exists(const AB::Entities::GuildMembers& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

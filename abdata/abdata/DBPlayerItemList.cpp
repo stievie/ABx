@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBPlayerItemList::Create(AB::Entities::PlayerItemList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -18,7 +18,7 @@ bool DBPlayerItemList::Create(AB::Entities::PlayerItemList& il)
 
 bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -41,7 +41,7 @@ bool DBPlayerItemList::Load(AB::Entities::PlayerItemList& il)
 
 bool DBPlayerItemList::Save(const AB::Entities::PlayerItemList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -52,7 +52,7 @@ bool DBPlayerItemList::Save(const AB::Entities::PlayerItemList& il)
 
 bool DBPlayerItemList::Delete(const AB::Entities::PlayerItemList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -63,7 +63,7 @@ bool DBPlayerItemList::Delete(const AB::Entities::PlayerItemList& il)
 
 bool DBPlayerItemList::Exists(const AB::Entities::PlayerItemList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

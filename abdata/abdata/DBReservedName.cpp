@@ -21,7 +21,7 @@ bool DBReservedName::Load(AB::Entities::ReservedName& n)
 
     std::ostringstream query;
     query << "SELECT * FROM `reserved_names` WHERE ";
-    if (!n.uuid.empty() && !uuids::uuid(n.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(n.uuid))
         query << "`uuid` = " << db->EscapeString(n.uuid);
     else if (!n.name.empty())
         query << "LOWER(`name`) = LOWER(" << db->EscapeString(n.name) << ")";
@@ -62,7 +62,7 @@ bool DBReservedName::Exists(const AB::Entities::ReservedName& n)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `reserved_names` WHERE ";
-    if (!n.uuid.empty() && !uuids::uuid(n.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(n.uuid))
         query << "`uuid` = " << db->EscapeString(n.uuid);
     else if (!n.name.empty())
         query << "LOWER(`name`) = LOWER(" << db->EscapeString(n.name) << ")";

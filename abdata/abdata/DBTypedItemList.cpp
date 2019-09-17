@@ -22,7 +22,7 @@ bool DBTypedItemList::Load(AB::Entities::TypedItemList& il)
         "FROM game_item_chances LEFT JOIN game_items ON game_items.uuid = game_item_chances.item_uuid " <<
         "WHERE (map_uuid = " << db->EscapeString(il.uuid);
     // Empty GUID means can drop an all maps
-    if (!uuids::uuid(il.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(il.uuid))
         query << " OR `map_uuid` = " << db->EscapeString(Utils::Uuid::EMPTY_UUID);
     query << ")";
     if (il.type != AB::Entities::ItemTypeUnknown)

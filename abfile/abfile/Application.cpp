@@ -466,7 +466,7 @@ bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
         banMan->AddLoginAttempt(ip, false);
         return false;
     }
-    if (acc.authTokenExpiry < Utils::Tick())
+    if (Utils::IsExpired(acc.authTokenExpiry))
     {
         // Expired auth token
         banMan->AddLoginAttempt(ip, false);

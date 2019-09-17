@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBInstance::Create(AB::Entities::GameInstance& inst)
 {
-    if (inst.uuid.empty() || uuids::uuid(inst.uuid).nil())
+    if (Utils::Uuid::IsEmpty(inst.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -52,7 +52,7 @@ bool DBInstance::Load(AB::Entities::GameInstance& inst)
 
     std::ostringstream query;
     query << "SELECT * FROM `instances` WHERE ";
-    if (!inst.uuid.empty() && !uuids::uuid(inst.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(inst.uuid))
         query << "`uuid` = " << db->EscapeString(inst.uuid);
     else if (!inst.recording.empty())
         query << "`recording` = " << db->EscapeString(inst.recording);
@@ -81,7 +81,7 @@ bool DBInstance::Load(AB::Entities::GameInstance& inst)
 
 bool DBInstance::Save(const AB::Entities::GameInstance& inst)
 {
-    if (inst.uuid.empty() || uuids::uuid(inst.uuid).nil())
+    if (Utils::Uuid::IsEmpty(inst.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -115,7 +115,7 @@ bool DBInstance::Save(const AB::Entities::GameInstance& inst)
 
 bool DBInstance::Delete(const AB::Entities::GameInstance& inst)
 {
-    if (inst.uuid.empty() || uuids::uuid(inst.uuid).nil())
+    if (Utils::Uuid::IsEmpty(inst.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -141,7 +141,7 @@ bool DBInstance::Exists(const AB::Entities::GameInstance& inst)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `instances` WHERE ";
-    if (!inst.uuid.empty() && !uuids::uuid(inst.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(inst.uuid))
         query << "`uuid` = " << db->EscapeString(inst.uuid);
     else if (!inst.recording.empty())
         query << "`recording` = " << db->EscapeString(inst.recording);

@@ -8,7 +8,7 @@ namespace DB {
 
 bool DBItemChanceList::Create(AB::Entities::ItemChanceList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -19,7 +19,7 @@ bool DBItemChanceList::Create(AB::Entities::ItemChanceList& il)
 
 bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -45,7 +45,7 @@ bool DBItemChanceList::Load(AB::Entities::ItemChanceList& il)
 
 bool DBItemChanceList::Save(const AB::Entities::ItemChanceList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -56,7 +56,7 @@ bool DBItemChanceList::Save(const AB::Entities::ItemChanceList& il)
 
 bool DBItemChanceList::Delete(const AB::Entities::ItemChanceList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -67,7 +67,7 @@ bool DBItemChanceList::Delete(const AB::Entities::ItemChanceList& il)
 
 bool DBItemChanceList::Exists(const AB::Entities::ItemChanceList& il)
 {
-    if (il.uuid.empty() || uuids::uuid(il.uuid).nil())
+    if (Utils::Uuid::IsEmpty(il.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;

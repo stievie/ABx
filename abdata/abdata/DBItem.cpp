@@ -8,7 +8,7 @@ namespace DB {
 bool DBItem::Create(AB::Entities::Item& item)
 {
     // Do nothing
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -22,7 +22,7 @@ bool DBItem::Load(AB::Entities::Item& item)
 
     std::ostringstream query;
     query << "SELECT * FROM `game_items` WHERE ";
-    if (!item.uuid.empty() && !uuids::uuid(item.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(item.uuid))
         query << "`uuid` = " << db->EscapeString(item.uuid);
     else if (item.index != 0)
         query << "`idx` = " << item.index;
@@ -56,7 +56,7 @@ bool DBItem::Load(AB::Entities::Item& item)
 bool DBItem::Save(const AB::Entities::Item& item)
 {
     // Do nothing
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -67,7 +67,7 @@ bool DBItem::Save(const AB::Entities::Item& item)
 bool DBItem::Delete(const AB::Entities::Item& item)
 {
     // Do nothing
-    if (item.uuid.empty() || uuids::uuid(item.uuid).nil())
+    if (Utils::Uuid::IsEmpty(item.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -81,7 +81,7 @@ bool DBItem::Exists(const AB::Entities::Item& item)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `game_items` WHERE ";
-    if (!item.uuid.empty() && !uuids::uuid(item.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(item.uuid))
         query << "`uuid` = " << db->EscapeString(item.uuid);
     else if (item.index != 0)
         query << "`idx` = " << item.index;

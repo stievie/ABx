@@ -7,7 +7,7 @@ namespace DB {
 
 bool DBGuild::Create(AB::Entities::Guild& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -46,7 +46,7 @@ bool DBGuild::Load(AB::Entities::Guild& g)
 
     std::ostringstream query;
     query << "SELECT * FROM `guilds` WHERE ";
-    if (!g.uuid.empty() && !uuids::uuid(g.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(g.uuid))
         query << "`uuid` = " << db->EscapeString(g.uuid);
     else if (!g.name.empty())
         query << "`name` = " << db->EscapeString(g.name);
@@ -71,7 +71,7 @@ bool DBGuild::Load(AB::Entities::Guild& g)
 
 bool DBGuild::Save(const AB::Entities::Guild& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -103,7 +103,7 @@ bool DBGuild::Save(const AB::Entities::Guild& g)
 
 bool DBGuild::Delete(const AB::Entities::Guild& g)
 {
-    if (g.uuid.empty() || uuids::uuid(g.uuid).nil())
+    if (Utils::Uuid::IsEmpty(g.uuid))
     {
         LOG_ERROR << "UUID is empty" << std::endl;
         return false;
@@ -129,7 +129,7 @@ bool DBGuild::Exists(const AB::Entities::Guild& g)
 
     std::ostringstream query;
     query << "SELECT COUNT(*) AS `count` FROM `guilds` WHERE ";
-    if (!g.uuid.empty() && !uuids::uuid(g.uuid).nil())
+    if (!Utils::Uuid::IsEmpty(g.uuid))
         query << "`uuid` = " << db->EscapeString(g.uuid);
     else if (!g.name.empty())
         query << "`name` = " << db->EscapeString(g.name);
