@@ -27,7 +27,13 @@ then
         ./ablogin &
 fi
 
-./abserv &
+ps auxw | grep abserv | grep -v grep > /dev/null
+if [ $? != 0 ]
+then
+        ./abserv &
+fi
+
+# ./abserv &
 # start abserv -conf abserv2.lua
 # start abserv -conf abserv3.lua
 
