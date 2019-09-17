@@ -35,11 +35,11 @@ struct GuildMember
     std::string inviteName;
     GuildRole role = GuildRoleUnknown;
     /// Time invited
-    int64_t invited = 0;
+    timestamp_t invited = 0;
     /// Time joined
-    int64_t joined = 0;
+    timestamp_t joined = 0;
     /// Time membership expires or 0 does not expire
-    int64_t expires = 0;
+    timestamp_t expires = 0;
 };
 
 /// List of Guild members. UUID is the Guild UUID. To add members to a Guild, add

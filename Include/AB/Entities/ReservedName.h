@@ -27,7 +27,7 @@ struct ReservedName : Entity
     std::string name;
     bool isReserved = false;
     std::string reservedForAccountUuid = EMPTY_GUID;
-    int64_t expires = 0;
+    timestamp_t expires = 0;
 };
 
 }

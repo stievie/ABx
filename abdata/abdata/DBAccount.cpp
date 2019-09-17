@@ -78,7 +78,7 @@ bool DBAccount::Load(AB::Entities::Account& account)
     account.authTokenExpiry = result->GetLong("auth_token_expiry");
     account.type = static_cast<AB::Entities::AccountType>(result->GetInt("type"));
     account.status = static_cast<AB::Entities::AccountStatus>(result->GetInt("status"));
-    account.creation = result->GetULong("creation");
+    account.creation = result->GetLong("creation");
     account.charSlots = result->GetUInt("char_slots");
     account.currentCharacterUuid = result->GetString("current_character_uuid");
     account.currentServerUuid = result->GetString("current_server_uuid");

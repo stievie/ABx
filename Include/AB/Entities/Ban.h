@@ -36,8 +36,8 @@ struct Ban : Entity
         s.text1b(comment, Limits::MAX_BAN_COMMENT);
     }
 
-    int64_t expires = 0;
-    int64_t added = 0;
+    timestamp_t expires = 0;
+    timestamp_t added = 0;
     BanReason reason = BanReasonUnknown;
     bool active = false;
     std::string adminUuid = EMPTY_GUID;

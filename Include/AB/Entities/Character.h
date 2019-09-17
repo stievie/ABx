@@ -82,11 +82,11 @@ struct Character : Entity
 
     int64_t onlineTime = 0;
     /// 0 if not deleted
-    int64_t deletedTime = 0;
-    int64_t creation = 0;
+    timestamp_t deletedTime = 0;
+    timestamp_t creation = 0;
 
-    int64_t lastLogin = 0;
-    int64_t lastLogout = 0;
+    timestamp_t lastLogin = 0;
+    timestamp_t lastLogout = 0;
     /// ID of AB::Entities::GameInstance
     std::string instanceUuid = EMPTY_GUID;
     /// AB::Entities::Party

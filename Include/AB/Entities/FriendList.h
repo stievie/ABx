@@ -31,6 +31,7 @@ struct Friend
     /// Character or nick name of the friend
     std::string friendName;
     FriendRelation relation;
+    timestamp_t creation;
 };
 
 /// Friendlist. UUID is Account UUID
@@ -49,6 +50,7 @@ struct FriendList : Entity
             s.text1b(c.friendUuid, Limits::MAX_UUID);
             s.text1b(c.friendName, Limits::MAX_CHARACTER_NAME);
             s.value1b(c.relation);
+            s.value8b(c.creation);
         });
     }
 

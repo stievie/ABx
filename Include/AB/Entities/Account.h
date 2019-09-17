@@ -74,12 +74,12 @@ struct Account : Entity
 
     AccountType type = AccountTypeUnknown;
     AccountStatus status = AccountStatusUnknown;
-    uint64_t creation = 0;
+    timestamp_t creation = 0;
     std::string name;
     std::string password;
     std::string email;
     std::string authToken;
-    int64_t authTokenExpiry;
+    timestamp_t authTokenExpiry;
     /// The server currently logged in. Required for cross server chat etc.
     std::string currentServerUuid = EMPTY_GUID;
     uint32_t charSlots = ACCOUNT_DEF_CHARSLOTS;

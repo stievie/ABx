@@ -66,8 +66,8 @@ struct Service : Entity
     uint16_t port = 0;
     std::string ip;
     ServiceStatus status = ServiceStatusOffline;
-    int64_t startTime = 0;
-    int64_t stopTime = 0;
+    timestamp_t startTime = 0;
+    timestamp_t stopTime = 0;
     /// Runtime in seconds
     int64_t runTime = 0;
     /// Machine the server is running on
@@ -82,7 +82,7 @@ struct Service : Entity
     /// is responsible to update this value.
     uint8_t load = 0;
     /// Last heart beat time
-    int64_t heartbeat{ 0 };
+    timestamp_t heartbeat{ 0 };
 };
 
 }

@@ -59,7 +59,7 @@ bool DBBan::Load(AB::Entities::Ban& ban)
 
     ban.uuid = result->GetString("uuid");
     ban.expires = result->GetLong("expires");
-    ban.added = result->GetLong("expires");
+    ban.added = result->GetLong("added");
     ban.reason = static_cast<AB::Entities::BanReason>(result->GetInt("reason"));
     ban.active = result->GetUInt("active") != 0;
     ban.adminUuid = result->GetString("admin_uuid");

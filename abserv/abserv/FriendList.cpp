@@ -35,7 +35,8 @@ FriendList::Error FriendList::AddFriendAccount(const std::string& accountUuid,
     friendList_.friends.push_back({
         accountUuid,
         name,
-        relation
+        relation,
+        Utils::Tick()
     });
     auto* client = GetSubsystem<IO::DataClient>();
     if (!client->Update(friendList_))

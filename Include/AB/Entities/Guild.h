@@ -38,7 +38,7 @@ struct Guild : Entity
     std::string name;
     std::string tag;
     std::string creatorAccountUuid = EMPTY_GUID;
-    int64_t creation;
+    timestamp_t creation;
 };
 
 }

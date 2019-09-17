@@ -16,6 +16,7 @@ using bitsery::ext::BaseClass;
 namespace AB {
 namespace Entities {
 
+typedef long long timestamp_t;
 static constexpr uint32_t INVALID_INDEX = std::numeric_limits<uint32_t>::max();
 static constexpr auto EMPTY_GUID = "00000000-0000-0000-0000-000000000000";
 

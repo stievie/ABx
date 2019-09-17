@@ -42,8 +42,8 @@ struct GameInstance : Entity
     std::string name;
     /// Recording filename
     std::string recording;
-    int64_t startTime{ 0 };
-    int64_t stopTime{ 0 };
+    timestamp_t startTime{ 0 };
+    timestamp_t stopTime{ 0 };
     /// If there are more instances of the same game on the same server this is the number, e.g. District.
     uint16_t number = 0;
     bool running{ false };

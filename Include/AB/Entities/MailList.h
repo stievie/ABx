@@ -14,7 +14,7 @@ struct MailHeader
     std::string uuid;
     std::string fromName;
     std::string subject;
-    int64_t created;
+    timestamp_t created;
     bool isRead;
 };
 
