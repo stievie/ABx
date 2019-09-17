@@ -40,6 +40,13 @@ std::string WStringToUtf8(const std::wstring& wstr)
     return convert.to_bytes(wstr);
 }
 
+bool SameName(const std::string& l, const std::string& r)
+{
+    const std::wstring wl = Utf8ToWString(l);
+    const std::wstring wr = Utf8ToWString(r);
+    return StringEquals(wl, wr);
+}
+
 std::string Utf8ToLower(const std::string& str)
 {
     std::wstring result = Utf8ToWString(str);

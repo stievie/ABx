@@ -417,6 +417,101 @@ void Player::NotifyNewMail()
         WriteToOutput(*msg);
 }
 
+void Player::AddFriend(const std::string playerName, AB::Entities::FriendRelation relation)
+{
+    auto res = friendList_->AddFriendByName(playerName, relation);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    switch (res)
+    {
+    case FriendList::Error::Success:
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypeFriendAdded);
+        msg->AddString(GetName());
+        msg->AddString(playerName);
+        break;
+    case FriendList::Error::NoFriend:
+        // N/A
+    case FriendList::Error::AlreadyFriend:
+    case FriendList::Error::InternalError:
+        // Do nothing
+        break;
+    case FriendList::Error::PlayerNotFound:
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypePlayerNotFound);
+        msg->AddString(GetName());
+        msg->AddString(playerName);
+        break;
+    }
+
+    if (msg->GetSize() != 0)
+        WriteToOutput(*msg);
+}
+
+void Player::RemoveFriend(const std::string accountUuid)
+{
+    auto res = friendList_->Remove(accountUuid);
+
+    auto msg = Net::NetworkMessage::GetNew();
+    switch (res)
+    {
+    case FriendList::Error::Success:
+        msg->AddByte(AB::GameProtocol::ServerMessage);
+        msg->AddByte(AB::GameProtocol::ServerMessageTypeFriendRemoved);
+        msg->AddString(GetName());
+        msg->AddString(accountUuid);
+        break;
+    case FriendList::Error::AlreadyFriend:
+        // N/A
+    case FriendList::Error::NoFriend:
+    case FriendList::Error::InternalError:
+    case FriendList::Error::PlayerNotFound:
+        // Do nothing
+        break;
+    }
+
+    if (msg->GetSize() != 0)
+        WriteToOutput(*msg);
+}
+
+void Player::GetFriend(const std::string nickName)
+{
+    auto msg = Net::NetworkMessage::GetNew();
+    AB::Entities::Friend f;
+    bool found = friendList_->GetFriendByName(nickName, f);
+
+    msg->AddByte(AB::GameProtocol::FriendSingle);
+    msg->Add<uint8_t>(found ? 1 : 0);
+    if (found)
+    {
+        msg->Add<uint8_t>(f.relation);
+        msg->AddString(f.friendUuid);
+        msg->AddString(f.friendName);
+
+        if (f.relation == AB::Entities::FriendRelationFriend)
+        {
+            AB::Entities::Account friendAccount;
+            friendAccount.uuid = f.friendUuid;
+            AB::Entities::Character friendToon;
+            /* const bool success = */ IO::IOAccount::GetAccountInfo(friendAccount, friendToon);
+            // If success == false -> offline, empty toon name
+            msg->Add<uint8_t>(friendAccount.onlineStatus);
+            msg->AddString(friendToon.name);
+            msg->AddString(friendToon.currentMapUuid);
+        }
+        else
+        {
+            // Ignored always offline and no current toon
+            msg->Add<uint8_t>(AB::Entities::OnlineStatusOffline);
+            msg->AddString("");
+            msg->AddString(Utils::Uuid::EMPTY_UUID);
+        }
+    }
+
+    // So if the first byte is 0 (= not in fl) the client must not read further
+    WriteToOutput(*msg);
+}
+
 void Player::GetFriendList()
 {
     auto msg = Net::NetworkMessage::GetNew();

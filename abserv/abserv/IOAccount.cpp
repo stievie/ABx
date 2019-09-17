@@ -50,13 +50,6 @@ bool IOAccount::GameWorldAuth(const std::string& accountUuid, const std::string&
     return true;
 }
 
-bool IOAccount::Save(const AB::Entities::Account& account)
-{
-    AB_PROFILE;
-    IO::DataClient* client = GetSubsystem<IO::DataClient>();
-    return client->Update(account);
-}
-
 bool IOAccount::AccountLogout(const std::string& uuid)
 {
     AB_PROFILE;

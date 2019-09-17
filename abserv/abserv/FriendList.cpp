@@ -57,7 +57,7 @@ FriendList::Error FriendList::AddFriendByName(const std::string& playerName, AB:
     return AddFriendAccount(ch.accountUuid, playerName, relation);
 }
 
-FriendList::Error FriendList::RemoveByAccount(const std::string& accountUuid)
+FriendList::Error FriendList::Remove(const std::string& accountUuid)
 {
     if (Utils::Uuid::IsEqual(accountUuid_, accountUuid))
         // Can not add self as friend
@@ -76,18 +76,6 @@ FriendList::Error FriendList::RemoveByAccount(const std::string& accountUuid)
         return FriendList::Error::InternalError;
     transaction.Commit();
     return FriendList::Error::Success;
-}
-
-FriendList::Error FriendList::Remove(const std::string& playerName)
-{
-    auto* client = GetSubsystem<IO::DataClient>();
-    AB::Entities::Character ch;
-    ch.name = playerName;
-    if (!client->Read(ch))
-    {
-        return FriendList::Error::PlayerNotFound;
-    }
-    return RemoveByAccount(ch.accountUuid);
 }
 
 FriendList::Error FriendList::ChangeNickname(const std::string& currentName, const std::string& newName)
@@ -136,6 +124,46 @@ bool FriendList::IsIgnored(const std::string& accountUuid)
         }
         return Iteration::Continue;
     });
+    return result;
+}
+
+bool FriendList::GetFriendByName(const std::string& name, AB::Entities::Friend& f)
+{
+    bool result = false;
+    VisitAll([&](const AB::Entities::Friend& current)
+    {
+        if (Utils::SameName(name, current.friendName))
+        {
+            f.creation = current.creation;
+            f.friendName = current.friendName;
+            f.friendUuid = current.friendUuid;
+            f.relation = current.relation;
+            result = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
+    });
+
+    return result;
+}
+
+bool FriendList::GetFriendByAccount(const std::string& accountUuid, AB::Entities::Friend& f)
+{
+    bool result = false;
+    VisitAll([&](const AB::Entities::Friend& current)
+    {
+        if (Utils::Uuid::IsEqual(accountUuid, current.friendUuid))
+        {
+            f.creation = current.creation;
+            f.friendName = current.friendName;
+            f.friendUuid = current.friendUuid;
+            f.relation = current.relation;
+            result = true;
+            return Iteration::Break;
+        }
+        return Iteration::Continue;
+    });
+
     return result;
 }
 

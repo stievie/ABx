@@ -9,6 +9,7 @@
 #include <AB/Entities/Account.h>
 #include "Party.h"
 #include "QuestComp.h"
+#include <AB/Entities/FriendList.h>
 
 namespace Game {
 
@@ -130,6 +131,10 @@ public:
     void GetMail(const std::string mailUuid);
     void DeleteMail(const std::string mailUuid);
     void NotifyNewMail();
+    void AddFriend(const std::string playerName, AB::Entities::FriendRelation relation);
+    void RemoveFriend(const std::string accountUuid);
+    void GetFriend(const std::string nickName);
+
     /// Client requested the friend list
     void GetFriendList();
     void WriteToOutput(const Net::NetworkMessage& message);

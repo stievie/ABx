@@ -416,6 +416,7 @@ void Application::Stop()
 
 bool Application::IsAllowed(std::shared_ptr<HttpsServer::Request> request)
 {
+    AB_PROFILE;
     uint32_t ip = request->remote_endpoint->address().to_v4().to_uint();
     auto* banMan = GetSubsystem<Auth::BanManager>();
     if (banMan->IsIpBanned(ip))

@@ -21,7 +21,6 @@ private:
     AB::Entities::FriendList friendList_;
     FriendList::Error AddFriendAccount(const std::string& accountUuid, const std::string& name,
         AB::Entities::FriendRelation relation);
-    FriendList::Error RemoveByAccount(const std::string& accountUuid);
 public:
     FriendList(const std::string accountUuid) :
         accountUuid_(accountUuid),
@@ -31,12 +30,13 @@ public:
 
     void Load();
     FriendList::Error AddFriendByName(const std::string& playerName, AB::Entities::FriendRelation relation);
-    FriendList::Error Remove(const std::string& playerName);
     FriendList::Error ChangeNickname(const std::string& currentName, const std::string& newName);
+    FriendList::Error Remove(const std::string& accountUuid);
 
     bool IsFriend(const std::string& accountUuid);
     bool IsIgnored(const std::string& accountUuid);
-
+    bool GetFriendByName(const std::string& name, AB::Entities::Friend& f);
+    bool GetFriendByAccount(const std::string& accountUuid, AB::Entities::Friend& f);
     template <typename Callback>
     void VisitAll(const Callback& callback)
     {

@@ -18,6 +18,7 @@
 #include "Subsystems.h"
 #include <AB/DHKeys.hpp>
 #include "UuidUtils.h"
+#include <AB/Entities/FriendList.h>
 
 namespace Net {
 
@@ -336,6 +337,25 @@ void ProtocolGame::ParsePacket(NetworkMessage& message)
     case AB::GameProtocol::PacketTypeGetFriendList:
         AddPlayerTask(&Game::Player::GetFriendList);
         break;
+    case AB::GameProtocol::PacketTypeAddFriend:
+    {
+        std::string playerName = message.GetString();
+        AB::Entities::FriendRelation rel = static_cast<AB::Entities::FriendRelation>(message.Get<uint8_t>());
+        AddPlayerTask(&Game::Player::AddFriend, playerName, rel);
+        break;
+    }
+    case AB::GameProtocol::PacketTypeRemoveFriend:
+    {
+        std::string accountUuid = message.GetString();
+        AddPlayerTask(&Game::Player::RemoveFriend, accountUuid);
+        break;
+    }
+    case AB::GameProtocol::PacketTypeGetFriend:
+    {
+        std::string nickName = message.GetString();
+        AddPlayerTask(&Game::Player::GetFriend, nickName);
+        break;
+    }
     case AB::GameProtocol::PacketTypeGetGuildMembers:
         AddPlayerTask(&Game::Player::GetGuildMembers);
         break;

@@ -54,6 +54,9 @@ private:
     void HandleServerMessagePlayerResigned(VariantMap& eventData);
     void HandleServerMessageInstances(VariantMap& eventData);
     void HandleServerMessageGMInfo(VariantMap& eventData);
+    void HandleServerMessageFriendAdded(VariantMap& eventData);
+    void HandleServerMessageFriendRemoved(VariantMap& eventData);
+    void HandleServerMessagePlayerNotFound(VariantMap& eventData);
     void HandleChatMessage(StringHash eventType, VariantMap& eventData);
     void HandleTabSelected(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);

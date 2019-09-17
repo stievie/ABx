@@ -24,18 +24,26 @@ AccountChestDialog::~AccountChestDialog()
 
 void AccountChestDialog::HandleChest(StringHash, VariantMap& eventData)
 {
+    // TODO:
+    (void)eventData;
 }
 
 void AccountChestDialog::HandleChestItemUpdate(StringHash, VariantMap& eventData)
 {
+    // TODO:
+    (void)eventData;
 }
 
 void AccountChestDialog::HandleChestItemRemove(StringHash, VariantMap& eventData)
 {
+    // TODO:
+    (void)eventData;
 }
 
 void AccountChestDialog::HandleItemClicked(StringHash, VariantMap& eventData)
 {
+    // TODO:
+    (void)eventData;
 }
 
 void AccountChestDialog::SubscribeEvents()

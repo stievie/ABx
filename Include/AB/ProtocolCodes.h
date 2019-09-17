@@ -177,6 +177,10 @@ enum ServerMessageType : uint8_t
     ServerMessageTypeInstances,
     ServerMessageTypeGMInfo,
 
+    ServerMessageTypeFriendAdded,
+    ServerMessageTypeFriendRemoved,
+    ServerMessageTypePlayerNotFound,
+
     ServerMessageTypeUnknownCommand = 0xff
 };
 
@@ -255,6 +259,7 @@ enum GameProtocolCodes : uint8_t
     ChestItemDelete,
     // Friend list
     FriendListAll,
+    FriendSingle,             // Returns a single friend
     // Guild
     GuildMembersAll,
 
@@ -321,7 +326,7 @@ enum AttackError : uint8_t
 enum PlayerErrorValue : uint8_t
 {
     PlayerErrorNone = 0,
-    PlayerErrorInventoryFull,
+    PlayerErrorInventoryFull
 };
 
 enum GameObjectType : uint8_t
@@ -391,6 +396,9 @@ enum GamePacketTypes : uint8_t
     PacketTypeChestDestroyItem,
     // Friend list
     PacketTypeGetFriendList,
+    PacketTypeAddFriend,
+    PacketTypeRemoveFriend,
+    PacketTypeGetFriend,
     // Guild
     PacketTypeGetGuildMembers,
 };
